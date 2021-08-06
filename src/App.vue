@@ -1,8 +1,8 @@
 <template>
   <img alt="Vue logo" src="./assets/logo.png" />
   <h3>描述是:{{textWord}}</h3>
-  <!-- <HelloWorld :msg="textWord" @test2="change2()"/> -->
-  <Testemit @emitclick="change2" :number="n2"></Testemit>
+  <HelloWorld :msg="textWord" @test2="change2()"/>
+  <!-- <Testemit @emitclick="change2" :number="n2"></Testemit> -->
 </template>
 
 <script lang="ts">
