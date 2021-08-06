@@ -8,10 +8,7 @@ let configRouters:Array<any> = []
 
 for (const key in files) {
   if(key!=='../modules/index.ts'){
-    // console.log(files[key].default);
     configRouters.push(files[key].default)
   }
 }
-// console.log(configRouters);
-  
  export default configRouters
