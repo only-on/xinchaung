@@ -1,4 +1,5 @@
 import { createStore } from "vuex";
+import CommonState from "./common/common"
 import extStorage from "../utils/extStorage";
 const { sStorage } = extStorage;
 // 登录数据恢复和保存
@@ -36,6 +37,9 @@ const store:any = createStore({
     },
   },
   actions: {},
+  modules:{
+    CommonState
+  }
 });
 
 export default store;

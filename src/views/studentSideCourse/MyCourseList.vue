@@ -1,5 +1,5 @@
 <template>
-  <div>我的课程</div>
+  <h2>我的课程</h2>
 </template>
 
 <script lang="ts">

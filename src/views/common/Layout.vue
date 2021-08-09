@@ -3,8 +3,8 @@
   <div class="row">
     <div style="logo">人工智能教学系统</div>
     <div class="nav">
-      <router-link to="/Experimental/index" tag="span">实验1</router-link>
-      <router-link to="/Course/index" tag="span">课程</router-link>
+      <div  @click="goTo('/Experimental')">实训</div>
+      <div  @click="goTo('/Course')">课程</div>
     </div>
   </div>
   <div>
@@ -12,13 +12,36 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent,watch ,getCurrentInstance, onMounted } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
+import { useRouter } from 'vue-router';
+// import router from "../../routers/index";
 export default defineComponent({
   name: "Layout",
   setup: () => {
+    const router = useRouter();
+    console.log(router);
+    
     const count = ref(0);
-    return { count };
+    onBeforeRouteUpdate ((to,from,next) => {
+      console.log(45);
+      
+      console.log(to.path);
+      console.log(from.path);
+    });
+    function goTo(path:string){
+      // console.log(path);
+      router.replace(path)
+    }
+    onMounted(()=>{
+      // router.push('/Course/index')
+    })
+    return { count ,goTo};
   },
+  beforeRouteUpdate(to,from,next){
+    console.log(to.path);
+    console.log(from.path);
+  }
 });
 </script>
 <style scoped lang="scss">
@@ -33,7 +56,8 @@ export default defineComponent({
   }
   .nav{
     padding: 0 2em;
-    span{
+    div{
+      cursor: pointer;
       font-size: 18px;
       padding: 0 2em;
     }

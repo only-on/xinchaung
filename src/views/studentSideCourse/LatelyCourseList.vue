@@ -1,5 +1,5 @@
 <template>
-  <div>最近学习课程</div>
+  <h2>最近学习课程</h2>
 </template>
 
 <script lang="ts">

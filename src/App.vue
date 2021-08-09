@@ -10,11 +10,13 @@
 import { defineComponent,ref, onMounted } from 'vue'
 import HelloWorld from './components/HelloWorld.vue'
 import Testemit from './components/Test.vue'
+import storeC from "./components/store.vue"
 export default defineComponent({
   name: 'App',
   components: {
     HelloWorld,
-    Testemit
+    Testemit,
+    storeC
   },
   setup: (props,{emit}) => {
     const textWord=ref('儿子')

@@ -1,6 +1,5 @@
 <template>
   <NavTab @tabSwitch="tabSwitch" :tabs="tabs" />
-  <div>课程引导</div>
   <component :is="componentName" />
 </template>
 
@@ -17,12 +16,12 @@ export default defineComponent({
   },
   setup: (props,context) => {
     const tabs=[{name:'最近学习',componentName:'LatelyCourseList'},{name:'我的课程',componentName:'MyCourseList'}]
-    const componentName=ref('MyCourseList')
+    const componentName=ref('LatelyCourseList')
     function tabSwitch(item:any){
       componentName.value=item.componentName
     }
     onMounted(()=>{
-     
+      // console.
     })
     return {componentName,tabSwitch ,tabs};
   },

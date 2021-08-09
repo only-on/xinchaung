@@ -1,6 +1,5 @@
 <template>
   <h1>h1{{ msg }}</h1>
-
   <p>
     Recommended IDE setup:
     <a href="https://code.visualstudio.com/" target="_blank">VSCode</a>
@@ -48,7 +47,8 @@ import "../style/hello.scss";
 import request from '../api'
 import serve from '../request/getRequest'
 export default defineComponent({
-  
+  components:{
+  },
   name: "HelloWorld",
   props: {
     msg: {
