@@ -3,11 +3,12 @@ export default {
   path: "/Course",
   component: () => import("src/views/common/Layout.vue"),
   meta: {
-    title: "首页",
+    title: "课程",
+    authCode: "Course",
   },
   children: [
     {
-      path: "",
+      path: "index",
       component: RouterView,
       meta: {
         title: "我的课程",

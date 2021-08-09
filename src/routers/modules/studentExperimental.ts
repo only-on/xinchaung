@@ -3,14 +3,15 @@ export default {
   path: "/Experimental",
   component: () => import("src/views/common/Layout.vue"),
   meta: {
-    title: "首页",
+    title: "实训",
+    authCode: "Experimental",
   },
   children: [
     {
-      path: "",
+      path: "index",
       component: RouterView,
       meta: {
-        title: "我的课程",
+        title: "我的实训",
         icon: "",
         authCode: "index",
       },
@@ -20,28 +21,9 @@ export default {
           name: "index",
           component: () => {
             const component = import("src/views/studentExperimental/index.vue")
-            console.log('[router]: ', component)
           },
           meta: {
-            title: "我的课程",
-            authCode: "",
-          },
-        },
-        {
-          path: "Create",
-          name: "Create",
-          component: () => import("src/views/studentSideCourse/Create.vue"),
-          meta: {
-            title: "新建课程",
-            authCode: "",
-          },
-        },
-        {
-          path: "Detail",
-          name: "Detail",
-          component: () => import("src/views/studentSideCourse/Detail.vue"),
-          meta: {
-            title: "课程详情",
+            title: "实训列表",
             authCode: "",
           },
         },

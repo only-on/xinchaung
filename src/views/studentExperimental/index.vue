@@ -1,6 +1,6 @@
 <template>
 
-  <!-- <NavTab :tabs="tabs" @tabSwitch="tabSwitch" /> -->
+  <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
   <h3>实训引导</h3>
 </template>
 

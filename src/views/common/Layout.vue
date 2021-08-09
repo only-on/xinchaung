@@ -3,8 +3,8 @@
   <div class="row">
     <div style="logo">人工智能教学系统</div>
     <div class="nav">
-      <div  @click="goTo('/Experimental')">实训</div>
-      <div  @click="goTo('/Course')">课程</div>
+      <div  @click="goTo('/Experimental/index')">实训</div>
+      <div  @click="goTo('/Course/index')">课程</div>
     </div>
   </div>
   <div>
@@ -20,18 +20,16 @@ export default defineComponent({
   name: "Layout",
   setup: () => {
     const router = useRouter();
-    console.log(router);
     
     const count = ref(0);
     onBeforeRouteUpdate ((to,from,next) => {
       console.log(45);
-      
       console.log(to.path);
       console.log(from.path);
     });
     function goTo(path:string){
       // console.log(path);
-      router.replace(path)
+      router.push(path)
     }
     onMounted(()=>{
       // router.push('/Course/index')

@@ -10,7 +10,7 @@ const router= createRouter({
   history: createWebHashHistory(),
   routes
 });
-console.log(routes);
+// console.log(routes);
 
 // 登录状态检查
 router.beforeEach((to, _, next) => {
