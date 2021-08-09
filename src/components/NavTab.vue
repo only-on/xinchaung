@@ -1,7 +1,7 @@
 <template>
  <div class="navList">
         <div class="tab">
-          <div v-for="v in tabs2" :key="v.name" :class="activeName ===v.name?'active':''" @click="activeName !==v.name?tabChange(v):''">{{v.name}}</div>
+          <div v-for="v in tabs" :key="v.name" :class="activeName ===v.name?'active':''" @click="activeName !==v.name?tabChange(v):''">{{v.name}}</div>
         </div>
         <div class="nav">
           <div>首页</div>
@@ -19,23 +19,23 @@ export default defineComponent({
   props:{
     tabs:{
       required: false,
-      type:()=>{[]}
+      type: Array,
+      default: () => [{}],
     }
   },
   emits:["tabSwitch"],
   setup: (props,context) => {
-    const tabs2=reactive([{name:'最近学习',componentName:'LatelyCourseList'},{name:'我的课程',componentName:'MyCourseList'}])
-    // const tabs=reactive([])
-    console.log(props);
-    const activeName=ref(tabs2[0].name)
+    // const tabs2=reactive([{name:'最近学习',componentName:'LatelyCourseList'},{name:'我的课程',componentName:'MyCourseList'}])
+    const tabs=reactive(props.tabs)
+    const activeName=ref((tabs as any)[0].name)
     function tabChange(item:any){
       context.emit('tabSwitch',item)
       activeName.value=item.name
     }
     onMounted(()=>{
-     console.log(props);
+     
     })
-    return {tabs2 ,activeName,tabChange};
+    return {tabs ,activeName,tabChange};
   },
 })
 </script>

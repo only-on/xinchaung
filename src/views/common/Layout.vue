@@ -19,6 +19,7 @@ export default defineComponent({
     const count = ref(0);
     return { count };
   },
+  
 });
 </script>
 <style scoped lang="scss">
