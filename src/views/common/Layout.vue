@@ -3,8 +3,8 @@
   <div class="row">
     <div style="logo">人工智能教学系统</div>
     <div class="nav">
-      <router-link to="/Experimental/index" tag="span">实验1</router-link>
-      <router-link to="/Course/index" tag="span">课程</router-link>
+      <router-link to="/Experimental" tag="span">实训</router-link>
+      <router-link to="/Course" >课程</router-link>
     </div>
   </div>
   <div>
@@ -12,14 +12,37 @@
   </div>
 </template>
 <script lang="ts">
-import { ref, defineComponent } from "vue";
+import { ref, defineComponent,watch ,getCurrentInstance, onMounted } from "vue";
+import { onBeforeRouteUpdate } from "vue-router";
+import { useRouter } from 'vue-router';
+// import router from "../../routers/index";
 export default defineComponent({
   name: "Layout",
   setup: () => {
+    const router = useRouter();
     const count = ref(0);
-    return { count };
+    onBeforeRouteUpdate ((to,from,next) => {
+      console.log(45);
+      
+      console.log(to.path);
+      console.log(from.path);
+    });
+    function goTo(){
+      
+    }
+    // watch(()=>(router as any).path,()=>{
+    //   console.log(465);
+      
+    // })
+    onMounted(()=>{
+      // router.push('/Course/index')
+    })
+    return { count ,goTo};
   },
-  
+  beforeRouteUpdate(to,from,next){
+    console.log(to.path);
+    console.log(from.path);
+  }
 });
 </script>
 <style scoped lang="scss">

@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted ,reactive} from 'vue'
+import { defineComponent,ref, onMounted ,reactive,watch} from 'vue'
 
 export default defineComponent({
   name: 'NavTab',

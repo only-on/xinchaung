@@ -1,7 +1,7 @@
 <template>
 
   <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
-    <div>实验引导</div>
+    <div>实训引导</div>
 </template>
 
 <script lang="ts">

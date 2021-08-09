@@ -8,7 +8,7 @@ export default {
     // component: () => import("src/components/HelloWorld.vue"), studentExperimental
     children:[
       {
-        path: "index",
+        path: "",
         component: RouterView,
         meta: {
           title: "我的实验",

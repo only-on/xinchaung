@@ -15,6 +15,20 @@ export default defineComponent({
   emits:["emitclick"],
   props:['number'],
   setup(props,context) {
+    //     方式1
+    // import { useRouter } from 'vue-router';
+    // const router = useRouter();
+    // function goto(){
+    //   router.push("/about");
+    // }
+
+    // 方式2
+    // import router from "../../router/index.js";
+    // router.push("/");
+
+    // const data=getCurrentInstance()           全局注册后组件引入  实测可用
+    //   const { appContext : { config: { globalProperties } } } = (data as any)
+    //   console.log(globalProperties.$router); 
     const state:any=reactive({
       testemit:()=>{
           context.emit("emitclick","1212121")
