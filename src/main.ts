@@ -6,7 +6,7 @@ import "dayjs/locale/zh-cn";
 import locale from "element-plus/lib/locale/lang/zh-cn";
 
 import router from "./routers/index";
-// import store from "./store/index.js";
+import store from "./store/index";
 
 
 import NavTab from './components/NavTab.vue'
@@ -19,6 +19,7 @@ app.use(router);
 // app.use(store);
 
 app.config.globalProperties.$router = $router
+app.use(store);
 app.mount("#app");
 app.component('NavTab',NavTab)
 
