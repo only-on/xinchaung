@@ -1,7 +1,7 @@
 <template>
   <div> <div @click="testemit">测试emit</div></div>
   <div class="map">
-    <p v-for="v,k of list" :key="k" @click="fun(v)">{{v}}</p>
+    <p v-for="v,k of dataList.content_type" :key="k" @click="fun(v)">{{v}}</p>
   </div>
   <div @click="fun(add)">我是计算{{add}}</div>
   <div>我是父传的值{{number}}</div>
@@ -32,14 +32,14 @@ export default defineComponent({
     })
     onMounted(()=>{
       serve.v(state)           // 传内一个引用类型的字段
-      const http=(request as any).teacherExperimental
-      // http.getList({param:{init_type:0},bindName:'dataList',concurrent:true})
-      // http.getList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
+      const httpTeacherExperimental=(request as any).teacherExperimental
+      // httpTeacherExperimental.getList({param:{init_type:0},bindName:'dataList',concurrent:true})
+      // httpTeacherExperimental.getList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
       //   console.log(res);
       // })         concurrent:true     同个接口可以并发请求     或者用 await等第一次请求完再下一次
-      http.getList({param:{init_type:0}})
-      http.getList({param:{init_type:0},concurrent:true}).then((res:any)=>{
-        // console.log(res);
+      httpTeacherExperimental.getList({param:{init_type:0}})
+      httpTeacherExperimental.getList({param:{init_type:0},concurrent:true,bindName:'dataList'}).then((res:any)=>{
+        console.log(res);
       })
     })
   return {...toRefs(state)}
