@@ -34,14 +34,14 @@ export default defineComponent({
       context.emit('tabSwitch',item)
       activeName.value=item.name
     }
-    function go(path:string){
-      router.push(path)
-    }
+    // function go(path:string){
+    //   router.push(path)
+    // }
     // let breadcrumbArr = computed(()=>{ return store.state.breadcrumbArr });
     onMounted(()=>{
      
     })
-    return {tabs ,activeName,tabChange,go};
+    return {tabs ,activeName,tabChange};
   },
 })
 </script>
