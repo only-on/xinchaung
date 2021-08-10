@@ -13,6 +13,13 @@ export default {
       meta: {
         title: "国际化",
       }
+    },
+    {
+      path: "menu",
+      component: () => import('src/components/Menu.vue'),
+      meta: {
+        title: "菜单",
+      }
     }
   ]
 }
