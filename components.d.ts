@@ -4,7 +4,12 @@
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
+    ACalendar: typeof import('ant-design-vue/es')['Calendar']
+    AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
+    ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
+    ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    I18n: typeof import('./src/components/dev/I18n.vue')['default']
     NavTab: typeof import('./src/components/NavTab.vue')['default']
     RouterView: typeof import('./src/components/RouterView.vue')['default']
     Store: typeof import('./src/components/store.vue')['default']
