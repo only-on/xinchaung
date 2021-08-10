@@ -59,5 +59,6 @@ export default defineComponent({
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background: #f7f7f7;
+  height: 100%;
 }
 </style>
