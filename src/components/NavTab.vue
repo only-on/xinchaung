@@ -12,7 +12,7 @@
 
 <script lang="ts">
 import { defineComponent,ref, onMounted ,reactive,watch} from 'vue'
-
+import { onBeforeRouteUpdate } from "vue-router";
 export default defineComponent({
   name: 'NavTab',
   props:{

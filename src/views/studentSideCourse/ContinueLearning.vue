@@ -1,12 +1,12 @@
 <template>
-  <div></div>
+  <h2>继续学习</h2>
 </template>
 
 <script lang="ts">
 import { defineComponent,ref, onMounted } from 'vue'
 
 export default defineComponent({
-  name: '',
+  name: 'ContinueLearning',
   components: {
    
   },

@@ -10,11 +10,11 @@ const router= createRouter({
   history: createWebHashHistory(),
   routes
 });
-// console.log(routes);
+console.log(routes);
 
 // 登录状态检查
 router.beforeEach((to, _, next) => {
-  // console.log(to.matched);
+  // console.log(to);
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
   if (to.meta && to.meta.outward) {
