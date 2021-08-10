@@ -42,6 +42,7 @@ export default defineConfig({
         target: 'http://192.168.101.150',
         changeOrigin: true,
       },
-    }
+    },
+    port: 3000
   }
 })
