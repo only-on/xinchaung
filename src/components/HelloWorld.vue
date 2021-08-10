@@ -26,9 +26,8 @@
     <a href="https://v3.vuejs.org/" target="_blank">Vue 3 Docs</a>
   </p>
 
-  <el-button class="result" type="primary"  @click="test"
-    >el-button</el-button
-  >
+  <a-button class="result" type="primary"  @click="test"
+    >a-button</a-button>
   <span class="result"
     >count is:
     {{ count }}
