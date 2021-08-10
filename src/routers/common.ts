@@ -1,14 +1,17 @@
 
+import Layout from "../views/common/Layout.vue";
 export default [{
     path: "/",
-    component: () => import("src/views/common/Layout.vue"),
+    component: Layout,
+    // component: () => import("src/components/HelloWorld.vue"),
     meta: {
         title: "首页",
+        authCode: "Home",
     },
     // redirect: "/home",
     children: [
             {
-                path: "home",
+                path: "",
                 name: "Home",
                 component: () => import("src/components/HelloWorld.vue"),
                 // component: () => import("src/views/common/Layout.vue"),

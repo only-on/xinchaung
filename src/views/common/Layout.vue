@@ -3,8 +3,9 @@
   <div class="row">
     <div style="logo">人工智能教学系统</div>
     <div class="nav">
-      <div  @click="goTo('/Experimental/index')">实训</div>
-      <div  @click="goTo('/Course/index')">课程</div>
+     
+      <div  @click="goTo('/Course/CourseList')">课程</div>
+      <div  @click="goTo('/Experimental/ExperimentalList')">实训</div>
     </div>
   </div>
   <div>
