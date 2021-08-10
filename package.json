@@ -26,6 +26,7 @@
     "vite": "^2.3.7",
     "vite-plugin-components": "^0.13.2",
     "vite-plugin-style-import": "^1.0.0",
-    "vue-tsc": "^0.0.24"
+    "vue-tsc": "^0.0.24",
+    "vue3-ace-editor": "^2.0.2"
   }
 }

@@ -6,9 +6,9 @@
                 <li>数据</li>
                 <li>教学</li>
                 <li>用户</li>
-                <li>课程</li>
-                <li>实训</li>
-                <li>实验</li>
+                <router-link to="/Course">课程</router-link>
+                <router-link to="/vm">虚拟机</router-link>
+                <router-link to="/Experimental">实验</router-link>
                 <li>考试</li>
                 <li>论坛 </li>
             </ul>
@@ -54,7 +54,7 @@
         align-items: center;
         >ul{
             display: flex;
-            >li{
+            >a,>li{
                 margin-left: 45px;
             }
         }
