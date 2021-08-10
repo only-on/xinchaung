@@ -1,4 +1,4 @@
-import RouterView from "../../components/RouterView.vue";
+import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
   path: "/Experimental",
@@ -9,17 +9,17 @@ export default {
   },
   children: [
     {
-      path: "ExperimentalList",
-      component: RouterView,
+      path: "",
+      component: RouterViews,
       meta: {
         title: "我的实训",
         icon: "",
-        authCode: "index",
+        authCode: "ExperimentalList",
       },
       children: [
         {
-          path: "list",
-          name: "index",
+          path: "",
+          name: "ExperimentalList",
           component: () => import("src/views/studentExperimental/index.vue"),
           // component: () => {
           //   const component = import("src/views/studentExperimental/index.vue")

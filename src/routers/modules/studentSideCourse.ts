@@ -1,4 +1,4 @@
-import RouterView from "../../components/RouterView.vue";
+import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
   path: "/Course",
@@ -9,17 +9,17 @@ export default {
   },
   children: [
     {
-      path: "CourseList",
-      component: RouterView,
+      path: "",
+      component: RouterViews,
       meta: {
         title: "我的课程",
         icon: "",
-        authCode: "index",
+        authCode: "CourseList",
       },
       children: [
         {
           path: "",
-          name: "index",
+          name: "CourseList",
           component: () => import("src/views/studentSideCourse/index.vue"),
           meta: {
             title: "我的课程",

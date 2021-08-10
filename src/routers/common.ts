@@ -3,7 +3,6 @@ import Layout from "../views/common/Layout.vue";
 export default [{
     path: "/",
     component: Layout,
-    // component: () => import("src/components/HelloWorld.vue"),
     meta: {
         title: "首页",
         authCode: "Home",
@@ -21,7 +20,7 @@ export default [{
             },
     ],
 },
-{
+    {
     path: "/login",
     name: "login",
     component: () => import("src/views/common/Login.vue"),
@@ -35,5 +34,5 @@ export default [{
     path: "/:pathMatch(.*)*",
     name: "NotFound",
     component: () => import("src/views/common/NotFound.vue"),
-},
+    },
 ]
