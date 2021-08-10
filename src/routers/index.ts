@@ -2,19 +2,17 @@ import { createRouter, createWebHashHistory ,RouteRecordRaw} from "vue-router";
 import store from "../store/index";
 import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
-const routes: Array<RouteRecordRaw>=[...RouterModule,...RouterCommon,
-  
-]
+const routes: Array<RouteRecordRaw>=[...RouterModule,...RouterCommon,]
 // console.log(routes);
 const router= createRouter({
   history: createWebHashHistory(),
   routes
 });
-console.log(routes);
+// console.log(router);
 
 // 登录状态检查
 router.beforeEach((to, _, next) => {
-  // console.log(to);
+  handleRouter(to)
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
   if (to.meta && to.meta.outward) {
@@ -27,5 +25,11 @@ router.beforeEach((to, _, next) => {
     next()
   }
 });
-
+function handleRouter(obj:any){
+  const breadcrumbArr=[{name:'首页',path:'/'}] 
+  console.log(obj.path);
+  
+  console.log(obj.path.split('/'));
+  // store.commit('saveBreadcrumb',breadcrumbArr)
+}
 export default router;

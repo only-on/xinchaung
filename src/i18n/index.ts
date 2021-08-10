@@ -16,5 +16,5 @@ const i18n = createI18n({
     messages
 })
 
-console.log('[i18n] messages: ', messages)
+// console.log('[i18n] messages: ', messages)
 export default i18n

@@ -4,18 +4,16 @@ export default [
     {
         path: "/",
         component:Layout,
-        // component: () => import("src/components/HelloWorld.vue"),
         meta: {
             title: "首页",
             authCode: "Home",
         },
-        // redirect: "/home",
+        redirect: "/home",
         children: [
                 {
-                    path: "",
+                    path: "home",
                     name: "Home",
                     component: () => import("src/components/HelloWorld.vue"),
-                    // component: () => import("src/views/common/Layout.vue"),
                     meta: {
                         title: "首页",
                     },

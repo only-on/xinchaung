@@ -9,7 +9,7 @@ const clearStore = (keys:any) =>
   keys.forEach((key:any) => {
     sStorage.del(key);
   });
-
+  const breadcrumb = sStorage.get("breadcrumb") || [];
 const store:any = createStore({
   // state() {
   //   return {
@@ -18,6 +18,7 @@ const store:any = createStore({
   // },
   state:{
      adminInfo: restore("adminInfo") || {},
+     breadcrumb,
   },
   getters: {
     isLogged() {
@@ -35,8 +36,14 @@ const store:any = createStore({
       state.adminInfo = {};
       clearStore(["adminInfo"]);
     },
+    saveBreadcrumb(state, breadcrumb){
+      state.breadcrumb = breadcrumb;
+      sStorage.set("breadcrumb", breadcrumb);
+    }
   },
-  actions: {},
+  actions: {
+    
+  },
   modules:{
     CommonState
   }

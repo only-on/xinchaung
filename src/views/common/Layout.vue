@@ -22,11 +22,6 @@ export default defineComponent({
     const router = useRouter();
     
     const count = ref(0);
-    onBeforeRouteUpdate ((to,from,next) => {
-      console.log(45);
-      console.log(to.path);
-      console.log(from.path);
-    });
     function goTo(path:string){
       // console.log(path);
       router.push(path)
@@ -34,12 +29,16 @@ export default defineComponent({
     onMounted(()=>{
       // router.push('/Course/index')
     })
+    watch(router,()=>{
+      // console.log(n,o)
+    })
+    onBeforeRouteUpdate((to,from,next)=>{
+      // console.log(to.path);
+      // console.log(from.path);
+      next()
+    })
     return { count ,goTo};
   },
-  beforeRouteUpdate(to,from,next){
-    console.log(to.path);
-    console.log(from.path);
-  }
 });
 </script>
 <style lang="scss">
@@ -49,8 +48,10 @@ export default defineComponent({
   min-height: 100%;
   .main-box{
     flex: 1;
+    // margin: 0 auto;
+    // max-width: 1330px;
     >div{
-      width: 100%;
+      // width: 100%;
       &.img-bg{
         background-image: url("../../assets/common/layout_bg.jpg");
         background-size: 100% 312px;

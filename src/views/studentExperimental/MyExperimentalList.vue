@@ -13,10 +13,6 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
-    function go(){
-      // console.log(path);
-      router.push('/Experimental/CreateExperimental')
-    }
     function go1(){
       // console.log(path);
       router.push('/Experimental/ExperimentalDetail')
@@ -24,7 +20,7 @@ export default defineComponent({
     onMounted(()=>{
      
     })
-    return {go,go1 };
+    return {go1 };
   },
 })
 </script>

@@ -2,8 +2,9 @@
   <router-view />
 </template>
 
-<script>
-export default {
-  name: "RouterViews",
-};
+<script lang="ts">
+import { defineComponent} from 'vue'
+export default defineComponent({
+  name: 'RouterView',
+})
 </script>

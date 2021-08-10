@@ -1,6 +1,8 @@
 <template>
-  <h2>我的课程</h2>
-  <h2  @click="go()">去啊啊啊继续学习</h2>
+  <div>
+    <h2>我的课程</h2>
+    <h2  @click="go()">去啊啊啊继续学习</h2>
+  </div>
 </template>
 
 <script lang="ts">
