@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-radio-group v-model:value="locale" style="position: absolute; bottom: 0; right: 0;">
+    <a-radio-group v-model:value="locale" style="position: absolute; bottom: 0; right: 0; z-index: 1081;">
       <a-radio-button key="en" :value="enUS.locale">English</a-radio-button>
       <a-radio-button key="cn" :value="zhCN.locale">中文</a-radio-button>
     </a-radio-group>
