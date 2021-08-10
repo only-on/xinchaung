@@ -1,7 +1,10 @@
 <template>
-
-  <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
-  <h3>实训引导</h3>
+<div class="img-bg">
+  <div>
+    <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
+    <h3>实训引导</h3>
+  </div>
+</div>
 </template>
 
 <script lang="ts">

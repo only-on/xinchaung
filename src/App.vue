@@ -3,7 +3,6 @@
   <h3>描述是:{{textWord}}</h3>
   <HelloWorld :msg="textWord" @test2="change2()"/>
   <Testemit @emitclick="change2" :number="n2"></Testemit> -->
-  <a-button type="primary"> ant design vue button</a-button>
   <router-view />
 </template>
 
@@ -41,8 +40,6 @@ export default defineComponent({
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background: #f7f7f7;
 }
 </style>
