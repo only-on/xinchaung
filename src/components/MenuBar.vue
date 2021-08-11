@@ -57,13 +57,13 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .nav__menu {
   display: flex;
   align-items: center;
   .menu__top-item {
     display: inline-block;
-    padding: 0 15px;
+    padding: 0 @padding-md;
     color: @text-color-secondary;
     font-size: @font-size-lg;
     text-align: center;
@@ -74,7 +74,7 @@ export default defineComponent({
 }
 .menu__item {
   span {
-    padding: 5px 15px;
+    padding: @padding-xss @padding-md;
     font-size: @font-size-base;
   }
 }
