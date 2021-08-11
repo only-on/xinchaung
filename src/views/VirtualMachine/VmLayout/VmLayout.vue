@@ -6,7 +6,7 @@
       <div class="vm-nav">
           <ul>
               <li>打开</li>
-              <li v-for="(item,index) in vmData" :key="index">{{item}}</li>
+              <li v-for="(item,index) in vmData" :key="index.toString()">{{item}}</li>
           </ul>
       </div>
       <div class="vm-content">

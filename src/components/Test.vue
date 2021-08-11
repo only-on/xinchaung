@@ -9,7 +9,7 @@
 <script lang="ts">
 import { defineComponent ,reactive,ref,toRef,toRefs,watch,computed,shallowReactive, onMounted,getCurrentInstance} from 'vue'
 import request from '../api'
-import serve from '../request/getRequest'
+import serve from '../request/getRequest.js'
 export default defineComponent({
   name:"Test",
   emits:["emitclick"],

@@ -44,7 +44,7 @@ import { ref, defineComponent, onMounted, reactive} from "vue";
 // scss文件引入需要带上后缀名，否则报错
 import "../style/hello.scss";
 import request from '../api'
-import serve from '../request/getRequest'
+import serve from '../request/getRequest.js'
 export default defineComponent({
   components:{
   },
