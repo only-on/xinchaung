@@ -5,7 +5,7 @@ import i18n from './i18n'
 import store from "./store/index";
 import NavTab from './components/NavTab.vue'
 import $router from "./routers/index";
-
+import "src/assets/theme/purple.less"
 // 公共样式
 import "./style/common.scss"
 
