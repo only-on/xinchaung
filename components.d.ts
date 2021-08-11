@@ -15,7 +15,6 @@ declare module 'vue' {
     Breadcrumb: typeof import('./src/components/Breadcrumb.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     I18n: typeof import('./src/components/dev/I18n.vue')['default']
-    Menu: typeof import('./src/components/Menu.vue')['default']
     MenuBar: typeof import('./src/components/MenuBar.vue')['default']
     NavTab: typeof import('./src/components/NavTab.vue')['default']
     RouterView: typeof import('./src/components/RouterView.vue')['default']
