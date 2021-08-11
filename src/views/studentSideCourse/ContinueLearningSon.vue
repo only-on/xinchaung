@@ -1,19 +1,14 @@
 <template>
-  <h2>课程详情</h2>
   <div>
-    <!-- <Breadcrumb /> -->
+    <h2>课程详情儿子</h2>
   </div>
-  <h2 @click="go()">
-    去子组件
-  </h2>
-  <router-view />
 </template>
 
 <script lang="ts">
 import { defineComponent,ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
-  name: 'ContinueLearning',
+  name: '',
   components: {
    
   },
@@ -24,7 +19,7 @@ export default defineComponent({
     })
     function go(){
       // console.log(path);
-      router.push('/Course/ContinueLearning/ContinueLearningSon')
+      router.push('/Course/ContinueLearning')
     }
     return { go};
   },

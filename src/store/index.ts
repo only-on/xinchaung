@@ -9,7 +9,7 @@ const clearStore = (keys:any) =>
   keys.forEach((key:any) => {
     sStorage.del(key);
   });
-  const breadcrumb = sStorage.get("breadcrumb") || [{name:132}];
+  const breadcrumb = sStorage.get("breadcrumb") || [];
   const store:any = createStore({
   // state() {
   //   return {
@@ -18,7 +18,8 @@ const clearStore = (keys:any) =>
   // },
   state:{
      adminInfo: restore("adminInfo") || {},
-     breadcrumb:"1212121",
+     breadcrumb,
+     aaa:'798'
   },
   getters: {
     isLogged() {

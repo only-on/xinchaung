@@ -10,5 +10,5 @@ for (const key in files) {
         messages = Object.assign(messages, { [k]: files[key].default })
     }
 }
-console.log('[i18n/zh_CN] messages: ', messages)
+// console.log('[i18n/zh_CN] messages: ', messages)
 export default messages

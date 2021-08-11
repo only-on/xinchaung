@@ -5,8 +5,8 @@ export default {
   component: Layout,
   // component: () => import("src/views/studentExperimental/index.vue"),
   meta: {
-    title: "首页",
-    // authCode: "Experimental",
+    title: "实训",
+    authCode: "Experimental",
   },
   children: [
     {
@@ -20,8 +20,8 @@ export default {
       },
       children:[
         {
-          path:'',
-          name: "Experimental",
+          path:'ExperimentalList',
+          name: "ExperimentalList",
           component: () => import("src/views/studentExperimental/index.vue"),
           meta: {
             title: "实训列表",

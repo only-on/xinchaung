@@ -5,13 +5,14 @@ export default {
   component: Layout,
   // component: () => import("src/views/studentSideCourse/index.vue"),
   meta: {
-    title: "首页",
+    title: "课程",
     authCode: "Course",
   },
   children: [
     {
       path: "Course",
       component: RouterViews,
+      // component: () => import("src/views/studentSideCourse/index.vue"),
       meta: {
         title: "我的课程",
         icon: "",
@@ -19,11 +20,11 @@ export default {
       },
       children: [
         {
-          path: "",
+          path: "CourseList",
           name: "CourseList",
           component: () => import("src/views/studentSideCourse/index.vue"),
           meta: {
-            title: "我的课程",
+            title: "课程列表",
             authCode: "",
           },
         },
@@ -32,9 +33,20 @@ export default {
           name: "ContinueLearning",
           component: () => import("src/views/studentSideCourse/ContinueLearning.vue"),
           meta: {
-            title: "继续学习",
+            title: "课程详情",
             authCode: "",
           },
+          children:[
+            {
+              path: "ContinueLearningSon",
+              name: "ContinueLearningSon",
+              component: () => import("src/views/studentSideCourse/ContinueLearningSon.vue"),
+              meta: {
+                title: "详情儿子",
+                authCode: "",
+              },
+            },
+          ]
         },
       ],
     }

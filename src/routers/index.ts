@@ -27,9 +27,60 @@ router.beforeEach((to, _, next) => {
 });
 function handleRouter(obj:any){
   const breadcrumbArr=[{name:'首页',path:'/'}] 
-  // console.log(obj.path);
+  store.commit('saveBreadcrumb',breadcrumbArr)
+  if(obj.path==='/'){
+    store.commit('saveBreadcrumb',breadcrumbArr)
+    return
+  }
+  const moduleName=obj.path.split('/')[1]
+  // let ParentPath=obj.path
+  const curPath=obj.path.split('/').slice(-1)[0]
+  let curModule={}
+  routes.forEach((v:any)=>{
+    if(v.path==='/' && v.meta.authCode===moduleName){
+      curModule=v
+    }
+  })
+  // console.log(curModule);
+  console.log(curPath);
+  addBreadcrumb(curModule)
+  function addBreadcrumb(curObj:any){
+    // console.log(curObj);
+    if(curObj.children){
+      if(curObj.path !=='/' && curObj.path !== ''){
+        changeBread(curObj)
+      }
+      if(curObj.path === curPath){
+        // changeBread(curObj)
+        return
+      }
+      myFiller(curObj.children)
+    }else{
+      if(curObj.path !== ''){
+        changeBread(curObj)
+      }
+    }
+    // console.log(breadcrumbArr);
+  }
+  function myFiller(arr:any[]){
+    const pathArr=arr.filter(v=> v.path === curPath)
+    let curItem={}
+    if(pathArr && pathArr.length){
+      curItem=pathArr[0]
+    }else{
+      curItem=arr[0]
+    }
+    addBreadcrumb(curItem)
+  }
+  function changeBread(v:any){
+    let obj={
+      path:`${v.path}`,
+      name:v.meta.title,
+    }
+    breadcrumbArr.push(obj)
+  }
+  // console.log(breadcrumbArr);
   
-  // console.log(obj.path.split('/'));
   store.commit('saveBreadcrumb',breadcrumbArr)
 }
 export default router;
