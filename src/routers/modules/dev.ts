@@ -16,7 +16,7 @@ export default {
     },
     {
       path: "menu",
-      component: () => import('src/components/Menu.vue'),
+      component: () => import('src/components/MenuBar.vue'),
       meta: {
         title: "菜单",
       }

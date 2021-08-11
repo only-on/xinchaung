@@ -74,7 +74,7 @@ export const FakeMenu = {
                     active: false,
                 },
             ],
-            active: false,
+            active: true,
         },
         {
             label: "用户",

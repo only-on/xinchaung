@@ -2,12 +2,15 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import {resolve} from 'path';
 import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
+import vueJsx from '@vitejs/plugin-vue-jsx';
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     ViteComponents({
+      // 有效的组件后缀
+      extensions: ['vue'],
       // 对自动导入的组件实施TypeScript支持，需要vscode安装Volar插件
       globalComponentsDeclaration: true,
       // 自动导入组件
@@ -17,7 +20,9 @@ export default defineConfig({
       customComponentResolvers: [AntDesignVueResolver({
         importStyle: 'less' // 导入less文件，以便后面的less modifyVars可以生效
       })],
-    })
+    }),
+    // https://www.npmjs.com/package/@vitejs/plugin-vue-jsx
+    vueJsx()
   ],
   css: {
     preprocessorOptions: {
