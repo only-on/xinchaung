@@ -22,11 +22,11 @@
           </li>
         </ul>
       </div>
-      <div class="vm-content">
+      <div class="vm-content" ref="vmWrapEl">
         <div
           class="vm-content-left"
           ref="leftEl"
-          :style="{ width: openStatus ? '434px' : '0px' }"
+          :style="{ width: openStatus ? leftWidth + 'px' : '0px' }"
         >
           <div class="vm-content-box">
             <component :is="currentComponent"></component>
@@ -64,12 +64,16 @@ export default defineComponent({
     const currentComponent = ref("VM");
     const openStatus = ref(false); // left内容打开状态
 
+    const vmWrapEl=ref(null)
     const leftEl = ref(null); // 左侧dom
     const rightEl = ref(null); // 右侧dom
-    const leftWidth = ref(0); // 左侧宽度
+    const vmWrapWidth=ref(0)
+    const leftWidth = ref(443); // 左侧宽度
     const rightWidth = ref(0); // 右侧宽度
     let mouseStart = 0; // 鼠标开始移动位置
-    let isMove = false;
+    let isMove = false; // 当前是否可以拖动标识
+    let currentNavKey = "VM";
+
     onMounted(() => {
       console.log("12121");
       document.onmouseup = () => {
@@ -98,8 +102,14 @@ export default defineComponent({
     }
     // 左边菜单点击事件
     function open(key: string) {
+      // 当为关闭状态时，从新设置值
+      if (!openStatus.value) {
+        leftWidth.value = 443;
+      }
+
       if (key) {
         openStatus.value = true;
+        currentNavKey = key;
         currentComponent.value = setCurrentComponent(key);
       } else {
         openStatus.value = !openStatus.value;
@@ -108,21 +118,19 @@ export default defineComponent({
 
     // 鼠标按下事件
     function mousedown(e: MouseEvent) {
-      console.log("按下");
-      console.log(leftEl.value);
       leftWidth.value = (leftEl as any).value.clientWidth;
       rightWidth.value = (rightEl as any).value.clientWidth;
+      vmWrapWidth.value=(vmWrapEl as any).value.clientWidth;
       mouseStart = e.pageX;
       isMove = true;
-      console.log(leftWidth.value, rightWidth.value, mouseStart);
       document.onmousemove = (event: any) => {
         changeWidth(event);
       };
     }
     // 鼠标抬起事件
     function mouseup() {
-      console.log("抬起");
       isMove = false;
+      document.onmousemove = null;
     }
 
     function changeWidth(event: MouseEvent) {
@@ -130,13 +138,13 @@ export default defineComponent({
         (leftEl as any).value.style.transition = "none";
         const mouseEnd = event.pageX;
         if (mouseStart > mouseEnd) {
-          console.log("左");
-          (leftEl as any).value.style.width =
-            leftWidth.value - mouseStart - (mouseStart - mouseEnd) + "px";
+          if (leftWidth.value < 8) return;
+          leftWidth.value = leftWidth.value - (mouseStart - mouseEnd);
+          console.log(leftWidth.value);
         } else {
-          console.log("右");
-          (leftEl as any).value.style.width =
-            leftWidth.value - mouseStart + (mouseEnd - mouseStart) + "px";
+          if (vmWrapWidth.value-leftWidth.value < 8) return;
+          leftWidth.value = leftWidth.value + (mouseEnd - mouseStart);
+          
         }
         mouseStart = mouseEnd;
       }
@@ -146,10 +154,12 @@ export default defineComponent({
       open,
       vmData,
       currentComponent,
+      vmWrapEl,
       leftEl,
       rightEl,
       mousedown,
       mouseup,
+      leftWidth,
     };
   },
 });
@@ -205,6 +215,7 @@ export default defineComponent({
       display: flex;
       flex-direction: row;
       .vm-content-left {
+        position: relative;
         width: 434px;
         flex-shrink: 0;
         border-right: 1px solid #515151;
@@ -223,6 +234,8 @@ export default defineComponent({
           flex-shrink: 0;
           cursor: col-resize;
           transition: 0.1s;
+          position: absolute;
+          right: 0;
           &:hover {
             transition: 0.1s;
             transform: scaleX(1);
@@ -231,6 +244,7 @@ export default defineComponent({
       }
       .vm-content-right {
         width: 100%;
+        overflow: hidden;
       }
     }
   }
