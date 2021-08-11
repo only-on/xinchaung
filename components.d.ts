@@ -4,7 +4,6 @@
 declare module 'vue' {
   export interface GlobalComponents {
     AButton: typeof import('ant-design-vue/es')['Button']
-    ACalendar: typeof import('ant-design-vue/es')['Calendar']
     AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']

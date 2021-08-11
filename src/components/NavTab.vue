@@ -6,7 +6,7 @@
         <div class="nav">
           <!-- <div>首页</div>
           <div class="qian">我的课程</div> -->
-          <!-- <div v-for="(v,k) in breadcrumbArr" :key="v.name" :class="k?'qian':''" @click="go(v.path)">{{v.name}}</div> -->
+          <div v-for="(v,k) in breadcrumbArr" :key="v.name" :class="k?'qian':''" @click="go(v.path)">{{v.name}}</div>
         </div>
       </div>
 </template>
@@ -21,7 +21,7 @@ export default defineComponent({
     tabs:{
       required: false,
       type: Array,
-      default: () => [{}],
+      default: () => [{name:'21'}],
     }
   },
   emits:["tabSwitch"],
@@ -37,11 +37,12 @@ export default defineComponent({
     // function go(path:string){
     //   router.push(path)
     // }
-    // let breadcrumbArr = computed(()=>{ return store.state.breadcrumbArr });
+    let breadcrumbArr = computed(()=>{ return store.state.breadcrumbArr });
+    // console.log(breadcrumbArr)
     onMounted(()=>{
      
     })
-    return {tabs ,activeName,tabChange};
+    return {tabs ,activeName,tabChange,breadcrumbArr};
   },
 })
 </script>

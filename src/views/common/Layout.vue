@@ -1,9 +1,11 @@
 <template>
-    <Header></Header>
-    <div class="main-box">
-      <router-view />
+    <div class="app_content">
+      <Header></Header>
+      <div class="main-box">
+        <router-view />
+      </div>
+      <Footer></Footer>
     </div>
-    <Footer></Footer>
 </template>
 <script lang="ts">
 import Header from "./Header.vue"
@@ -29,9 +31,9 @@ export default defineComponent({
     onMounted(()=>{
       // router.push('/Course/index')
     })
-    watch(router,()=>{
-      // console.log(n,o)
-    })
+    // watch(router,()=>{
+      
+    // })
     onBeforeRouteUpdate((to,from,next)=>{
       // console.log(to.path);
       // console.log(from.path);
@@ -45,7 +47,12 @@ export default defineComponent({
 #app{
   display: flex;
   flex-direction: column;
-  min-height: 100%;
+  height: 100%;
+  .app_content{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
   .main-box{
     flex: 1;
     // margin: 0 auto;
@@ -65,21 +72,4 @@ export default defineComponent({
     }
   }
 }
-  // .row,.nav{
-  //   display: flex;
-  // }
-  // .row{
-  //   padding: 3em 0;
-  // }
-  // .logo{
-  //   padding: 0 2em;
-  // }
-  // .nav{
-  //   padding: 0 2em;
-  //   div{
-  //     cursor: pointer;
-  //     font-size: 18px;
-  //     padding: 0 2em;
-  //   }
-  // }
 </style>

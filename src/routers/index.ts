@@ -27,9 +27,9 @@ router.beforeEach((to, _, next) => {
 });
 function handleRouter(obj:any){
   const breadcrumbArr=[{name:'首页',path:'/'}] 
-  console.log(obj.path);
+  // console.log(obj.path);
   
-  console.log(obj.path.split('/'));
-  // store.commit('saveBreadcrumb',breadcrumbArr)
+  // console.log(obj.path.split('/'));
+  store.commit('saveBreadcrumb',breadcrumbArr)
 }
 export default router;
