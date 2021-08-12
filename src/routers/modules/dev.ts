@@ -27,6 +27,13 @@ export default {
       meta: {
         title: "功能测试",
       }
+    },
+    {
+      path: "login",
+      component: () => import('src/views/common/Login.vue'),
+      meta: {
+        title: "登录",
+      }
     }
   ]
 }
