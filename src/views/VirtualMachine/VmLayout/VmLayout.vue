@@ -73,9 +73,9 @@ export default defineComponent({
     const currentComponent = ref("VM");
     const openStatus = ref(false); // left内容打开状态
 
-    const vmWrapEl = ref(null);
-    const leftEl = ref(null); // 左侧dom
-    const rightEl = ref(null); // 右侧dom
+    const vmWrapEl:Ref<HTMLElement|null> = ref(null);
+    const leftEl:Ref<HTMLElement|null> = ref(null); // 左侧dom
+    const rightEl:Ref<HTMLElement|null> = ref(null); // 右侧dom
     const vmWrapWidth = ref(0);
     const leftWidth = ref(443); // 左侧宽度
     const rightWidth = ref(0); // 右侧宽度
