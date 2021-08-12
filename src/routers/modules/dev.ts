@@ -20,6 +20,13 @@ export default {
       meta: {
         title: "菜单",
       }
+    },
+    {
+      path: "test",
+      component: () => import('src/components/Test.vue'),
+      meta: {
+        title: "功能测试",
+      }
     }
   ]
 }

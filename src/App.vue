@@ -12,7 +12,6 @@
 import { defineComponent, ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import HelloWorld from "./components/HelloWorld.vue";
-import Testemit from "./components/Test.vue";
 import storeC from "./components/store.vue";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import enUS from "ant-design-vue/es/locale/en_US";
@@ -21,7 +20,6 @@ export default defineComponent({
   name: "App",
   components: {
     HelloWorld,
-    Testemit,
     storeC,
   },
   setup: (props, { emit }) => {

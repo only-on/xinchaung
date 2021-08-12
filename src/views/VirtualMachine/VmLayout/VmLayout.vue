@@ -42,13 +42,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref, Ref } from "vue";
 import VM from "./VM/VM.vue";
 import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
 import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises.vue";
 import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
 import InClassForum from "./InClassForum/InClassForum.vue";
+interface Vm {
+  key: string,
+  icon: string,
+  name: string
+}
 export default defineComponent({
   components: {
     VM,
@@ -60,7 +65,7 @@ export default defineComponent({
   },
   props: ["VmData"],
   setup(props, { emit }) {
-    const vmData = reactive(props.VmData);
+    const vmData: Ref<Array<Vm>> = reactive(props.VmData);
     const currentComponent = ref("VM");
     const openStatus = ref(false); // left内容打开状态
 
@@ -101,7 +106,7 @@ export default defineComponent({
       }
     }
     // 左边菜单点击事件
-    function open(key: string) {
+    function open(key?: string) {
       // 当为关闭状态时，从新设置值
       if (!openStatus.value) {
         leftWidth.value = 443;

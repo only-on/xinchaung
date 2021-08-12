@@ -8,8 +8,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted ,reactive} from 'vue'
+import { defineComponent,ref, onMounted ,reactive, Ref} from 'vue'
 import {useStore} from "vuex"
+interface Tab {
+  name: string
+}
 export default defineComponent({
   name: 'NavTab',
   props:{
@@ -21,7 +24,7 @@ export default defineComponent({
   },
   emits:["tabSwitch"],
   setup: (props,context) => {
-    const tabs=reactive(props.tabs)
+    const tabs:Tab[]=reactive(props.tabs) as Tab[]
     const activeName=ref((tabs as any)[0].name)
     function tabChange(item:any){
       context.emit('tabSwitch',item)
