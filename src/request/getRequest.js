@@ -17,7 +17,7 @@ GetRequest.prototype.parseRouter=function(moduleName,obj){
 }
 
 
-GetRequest.prototype.sendServe=function(modulename,name,init,config){
+GetRequest.prototype.sendServe=function(modulename,name,init,config={}){
   var bindName=config.bindName?config.bindName:'';                  // 传组件内的一个引用类型的字段  此字段会被直接赋值为res.data  使用此选项需先在组件内调用 serve.v(this)   // this 为上下文对象或引用值对象
   var concurrent=config.concurrent?config.concurrent:false          // 相同接口是否需要并发请求     
   var param=config.param||{};                                       //  调用接口需要的参数 格式为param

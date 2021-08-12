@@ -9,13 +9,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch } from "vue";
+import { defineComponent, ref, onMounted, watch, provide } from "vue";
 import { useI18n } from "vue-i18n";
 import HelloWorld from "./components/HelloWorld.vue";
 import storeC from "./components/store.vue";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import enUS from "ant-design-vue/es/locale/en_US";
-
+import * as echarts from 'echarts'
 export default defineComponent({
   name: "App",
   components: {
@@ -25,7 +25,7 @@ export default defineComponent({
   setup: (props, { emit }) => {
     // 放在setup的顶行，这个是全局的i18n对象
     const { locale } = useI18n({ useScope: "global" });
-
+    provide('ec',echarts)
     const textWord = ref("儿子");
     const n2 = ref(0);
 
