@@ -18,8 +18,8 @@
           <a-button type="primary" @click="back">返回</a-button>
       </div>
     </template>
-    <template v-slot:right>
-        <vue-no-vnc background="rgb(40,40,40)" refName="refName" password="vncpassword" wsUrl="ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"/>
+    <template v-slot:right="data">
+        <vue-no-vnc background="rgb(40,40,40)" :width="data" refName="refName" password="vncpassword" wsUrl="ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"/>
     </template>
   </layout>
 </template>

@@ -105,5 +105,6 @@ export default defineComponent({
 <style lang="less">
 .novnc-wrap{
     height: 100%;
+    width: 100%;
 }
 </style>

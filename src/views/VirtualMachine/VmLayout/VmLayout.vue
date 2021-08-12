@@ -38,7 +38,7 @@
           ref="rightEl"
           :style="{ width: rightWidth + 'px' }"
         >
-          <slot name="right"></slot>
+          <slot name="right" :data="rightWidth"></slot>
         </div>
       </div>
     </div>
@@ -76,17 +76,21 @@ export default defineComponent({
     const vmWrapEl:Ref<HTMLElement|null> = ref(null);
     const leftEl:Ref<HTMLElement|null> = ref(null); // 左侧dom
     const rightEl:Ref<HTMLElement|null> = ref(null); // 右侧dom
-    const vmWrapWidth = ref(0);
-    const leftWidth = ref(443); // 左侧宽度
-    const rightWidth = ref(0); // 右侧宽度
-    let mouseStart = 0; // 鼠标开始移动位置
-    let isMove = false; // 当前是否可以拖动标识
-    let currentNavKey = "VM";
-
+    const vmWrapWidth:Ref<number>= ref(0);
+    const leftWidth:Ref<number> = ref(443); // 左侧宽度
+    const rightWidth:Ref<number> = ref(0); // 右侧宽度
+    let mouseStart:number = 0; // 鼠标开始移动位置
+    let isMove:boolean = false; // 当前是否可以拖动标识
+    let currentNavKey:string = "VM";
+    // 自定义事件
+    const eventCustom = document.createEvent("HTMLEvents");
+               eventCustom.initEvent("resize", true, true);
     onMounted(() => {
       console.log("12121");
       nextTick(() => {
-        vmWrapWidth.value = (vmWrapEl as any).value.clientWidth;
+        vmWrapWidth.value = window.innerWidth-70;
+        rightWidth.value =
+            vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
       });
       // window鼠标抬起事件
       document.onmouseup = () => {
@@ -95,7 +99,8 @@ export default defineComponent({
       };
       // 监听window变化事件
       window.addEventListener("resize", function () {
-          vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
+          // vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
+          vmWrapWidth.value =window.innerWidth-70
       });
     });
 
@@ -126,13 +131,11 @@ export default defineComponent({
     // 左边菜单点击事件
     function open(key?: string) {
       // 当为关闭状态时，从新设置值
+       vmWrapWidth.value =window.innerWidth-70
       if (!openStatus.value) {
         leftWidth.value = 443;
-        rightWidth.value = vmWrapWidth.value - leftWidth.value - 2;
-      } else {
-        rightWidth.value = vmWrapWidth.value - 1;
       }
-
+      
       if (key) {
         openStatus.value = true;
         currentNavKey = key;
@@ -140,13 +143,15 @@ export default defineComponent({
       } else {
         openStatus.value = !openStatus.value;
       }
+      rightWidth.value = vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+      window.dispatchEvent(eventCustom);
     }
 
     // 鼠标按下事件
     function mousedown(e: MouseEvent) {
       leftWidth.value = (leftEl as any).value.clientWidth;
       rightWidth.value = (rightEl as any).value.clientWidth;
-      vmWrapWidth.value = (vmWrapEl as any).value.clientWidth;
+      vmWrapWidth.value = window.innerWidth-70;
       mouseStart = e.pageX;
       isMove = true;
       document.onmousemove = (event: any) => {
@@ -169,7 +174,6 @@ export default defineComponent({
         if (mouseStart > mouseEnd) {
           if (leftWidth.value < 8) return; // 左边预留8px
           leftWidth.value = leftWidth.value - (mouseStart - mouseEnd);
-          console.log(leftWidth.value);
           rightWidth.value = vmWrapWidth.value - leftWidth.value;
         } else {
           // 向右移动
@@ -179,6 +183,7 @@ export default defineComponent({
         }
         mouseStart = mouseEnd;
       }
+       window.dispatchEvent(eventCustom);
     }
     return {
       openStatus,

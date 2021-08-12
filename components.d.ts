@@ -3,10 +3,7 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
-    ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
-    ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
-    ACalendar: typeof import('ant-design-vue/es')['Calendar']
     AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AMenu: typeof import('ant-design-vue/es')['Menu']
