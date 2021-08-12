@@ -73,11 +73,11 @@ function handleRouter(obj:any){
     addBreadcrumb(curItem)
   }
   function changeBread(v:any){
-    let obj={
-      path:`${v.path}`,
-      name:v.meta.title,
-    }
-    breadcrumbArr.push(obj)
+    // let obj={
+    //   path:`${v.path}`,
+    //   name:v.meta.title,
+    // }
+    // breadcrumbArr.push(obj)
   }
   // console.log(breadcrumbArr);
   

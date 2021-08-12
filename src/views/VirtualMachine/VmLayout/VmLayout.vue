@@ -14,7 +14,7 @@
           <li
             class="vm-nav-item"
             v-for="(item, index) in vmData"
-            :key="index"
+            :key="index.toString()"
             @click="open(item.key)"
           >
             <span class="iconfont" :class="item.icon"></span>
@@ -33,7 +33,11 @@
           </div>
           <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
         </div>
-        <div class="vm-content-right" ref="rightEl">
+        <div
+          class="vm-content-right"
+          ref="rightEl"
+          :style="{ width: rightWidth + 'px' }"
+        >
           <slot name="right"></slot>
         </div>
       </div>
@@ -42,7 +46,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, Ref } from "vue";
+import { defineComponent, onMounted, reactive, ref, nextTick,watch,Ref } from "vue";
 import VM from "./VM/VM.vue";
 import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
 import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises.vue";
@@ -81,11 +85,25 @@ export default defineComponent({
 
     onMounted(() => {
       console.log("12121");
+      nextTick(() => {
+        vmWrapWidth.value = (vmWrapEl as any).value.clientWidth;
+      });
+      // window鼠标抬起事件
       document.onmouseup = () => {
         isMove = false;
         document.onmousemove = null;
       };
+      // 监听window变化事件
+      window.addEventListener("resize", function () {
+          vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
+      });
     });
+
+    // 监听vmWrapWidth变化
+    watch(vmWrapWidth,()=>{
+      rightWidth.value =
+            vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+    })
     // 返回当前的菜单类型
     function setCurrentComponent(key: string) {
       switch (key) {
@@ -110,6 +128,9 @@ export default defineComponent({
       // 当为关闭状态时，从新设置值
       if (!openStatus.value) {
         leftWidth.value = 443;
+        rightWidth.value = vmWrapWidth.value - leftWidth.value - 2;
+      } else {
+        rightWidth.value = vmWrapWidth.value - 1;
       }
 
       if (key) {
@@ -138,17 +159,23 @@ export default defineComponent({
       document.onmousemove = null;
     }
 
+    // 左右比例发生变化时
     function changeWidth(event: MouseEvent) {
+      // 可以改变比例
       if (isMove && event.button === 0) {
         (leftEl as any).value.style.transition = "none";
         const mouseEnd = event.pageX;
+        // 向左移动
         if (mouseStart > mouseEnd) {
-          if (leftWidth.value < 8) return;
+          if (leftWidth.value < 8) return; // 左边预留8px
           leftWidth.value = leftWidth.value - (mouseStart - mouseEnd);
           console.log(leftWidth.value);
+          rightWidth.value = vmWrapWidth.value - leftWidth.value;
         } else {
-          if (vmWrapWidth.value - leftWidth.value < 8) return;
+          // 向右移动
+          if (vmWrapWidth.value - leftWidth.value < 8) return; // 右边预留8px
           leftWidth.value = leftWidth.value + (mouseEnd - mouseStart);
+          rightWidth.value = vmWrapWidth.value - leftWidth.value;
         }
         mouseStart = mouseEnd;
       }
@@ -164,6 +191,7 @@ export default defineComponent({
       mousedown,
       mouseup,
       leftWidth,
+      rightWidth,
     };
   },
 });
@@ -175,6 +203,7 @@ export default defineComponent({
   height: 100%;
   display: flex;
   flex-direction: column;
+  overflow: hidden;
   .vm-header {
     height: 70px;
     background: #2c2e45;
@@ -237,12 +266,12 @@ export default defineComponent({
           height: 100%;
           flex-shrink: 0;
           cursor: col-resize;
-          transition: 0.1s;
+          // transition: 0.1s;
           position: absolute;
           right: 0;
           &:hover {
-            transition: 0.1s;
-            transform: scaleX(1);
+            // transition: 0.1s;
+            // transform: scaleX(1);
           }
         }
       }

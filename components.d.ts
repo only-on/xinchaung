@@ -18,6 +18,7 @@ declare module 'vue' {
     I18n: typeof import('./src/components/dev/I18n.vue')['default']
     MenuBar: typeof import('./src/components/MenuBar.vue')['default']
     NavTab: typeof import('./src/components/NavTab.vue')['default']
+    NoVnc: typeof import('./src/components/noVnc/noVnc.vue')['default']
     RouterView: typeof import('./src/components/RouterView.vue')['default']
     Store: typeof import('./src/components/store.vue')['default']
     Test: typeof import('./src/components/Test.vue')['default']
