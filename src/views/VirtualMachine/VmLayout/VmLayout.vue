@@ -1,7 +1,7 @@
 
 <template>
   <div class="vm-layout">
-    <div class="vm-header"><slot name="header"></slot></div>
+    <div class="vm-header"><slot name="header"> </slot></div>
     <div class="vm-main">
       <div class="vm-nav">
         <ul class="vm-nav-list">
@@ -64,10 +64,10 @@ export default defineComponent({
     const currentComponent = ref("VM");
     const openStatus = ref(false); // left内容打开状态
 
-    const vmWrapEl=ref(null)
+    const vmWrapEl = ref(null);
     const leftEl = ref(null); // 左侧dom
     const rightEl = ref(null); // 右侧dom
-    const vmWrapWidth=ref(0)
+    const vmWrapWidth = ref(0);
     const leftWidth = ref(443); // 左侧宽度
     const rightWidth = ref(0); // 右侧宽度
     let mouseStart = 0; // 鼠标开始移动位置
@@ -120,7 +120,7 @@ export default defineComponent({
     function mousedown(e: MouseEvent) {
       leftWidth.value = (leftEl as any).value.clientWidth;
       rightWidth.value = (rightEl as any).value.clientWidth;
-      vmWrapWidth.value=(vmWrapEl as any).value.clientWidth;
+      vmWrapWidth.value = (vmWrapEl as any).value.clientWidth;
       mouseStart = e.pageX;
       isMove = true;
       document.onmousemove = (event: any) => {
@@ -142,9 +142,8 @@ export default defineComponent({
           leftWidth.value = leftWidth.value - (mouseStart - mouseEnd);
           console.log(leftWidth.value);
         } else {
-          if (vmWrapWidth.value-leftWidth.value < 8) return;
+          if (vmWrapWidth.value - leftWidth.value < 8) return;
           leftWidth.value = leftWidth.value + (mouseEnd - mouseStart);
-          
         }
         mouseStart = mouseEnd;
       }
