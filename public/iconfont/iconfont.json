@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "9533365",
+      "name": "运行",
+      "font_class": "yunhang",
+      "unicode": "e67b",
+      "unicode_decimal": 59003
+    },
+    {
+      "icon_id": "16503671",
+      "name": "回滚",
+      "font_class": "huigun",
+      "unicode": "e78a",
+      "unicode_decimal": 59274
+    },
+    {
+      "icon_id": "18080824",
+      "name": "备份",
+      "font_class": "beifen",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
       "icon_id": "14306947",
       "name": "word",
       "font_class": "word",
