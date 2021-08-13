@@ -1,11 +1,12 @@
+import { RESP_AUTH_FAILURE, RESP_SUCCESS } from './../api/index';
+import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from './fetch.d';
 import store from "../store/index";
-import router from "../routers/index";
 // 检查是否为对象
-function isObject(value) {
+function isObject(value: any) {
   return Object.prototype.toString.call(value) === "[object Object]";
 }
 // 构造 URL 的查询字符串
-function urlParams(data) {
+function urlParams(data: Record<string, string>): string {
   let urlParams = new URLSearchParams();
   Object.keys(data).forEach((key) => {
     urlParams.append(key, data[key]);
@@ -13,32 +14,29 @@ function urlParams(data) {
   return urlParams.toString();
 }
 // 检查 response 返回状态
-function checkStatus(response) {
+function checkStatus(response: Response) {
   if (response.status >= 200 && response.status < 300) {
     return response;
-  } else {
-    let error = new Error(response.statusText);
-    error.response = response;
-    throw error;
   }
+  throw response
 }
 // 根据 ContentType 猜测解析方式
-function guessType(ct) {
+function guessType(ct: string): TMimeTypes {
   // 常用类型检查,可以修改此进行调整
-  const typeMap = {
+  const typeMap: IMimeMap = {
     blob: ["image", "video"],
     json: ["json"],
     arrayBuffer: ["octet-stream"],
     text: ["text", "x-javascript"],
   };
   const target = Object.keys(typeMap).find((key) =>
-    typeMap[key].some((vi) => ct.toLocaleLowerCase().includes(vi))
+    typeMap[key as TMimeTypes].some((vi) => ct.toLocaleLowerCase().includes(vi))
   );
   // 如果未找到预设，则直接返回text
-  return target || "text";
+  return target as TMimeTypes || "text";
 }
 // 检查 response 返回数据类型，并进行相应解析，解析异常时，直接按照文本解析
-function checkResponseType(response) {
+function checkResponseType(response: Response) {
   const contentType = response.headers.get("Content-Type");
   if (contentType) {
     return response[guessType(contentType)]();
@@ -47,54 +45,53 @@ function checkResponseType(response) {
   }
 }
 // 格式化发送数据类型和数据格式
-function contentTypeAndData(dataType, body) {
+function contentTypeAndData(dataType: TDataType, body: string | Record<string, string>) {
   const currentMode = {
-    URLENCODED: {
+    urlencoded: {
       contentType: "application/x-www-form-urlencoded;charset=utf-8",
-      data: isObject(body) ? urlParams(body) : "",
+      data: isObject(body) ? urlParams(body as Record<string, string>) : "",
     },
-    JSON: {
+    json: {
       contentType: "application/json;charset=utf-8",
       data: isObject(body) ? JSON.stringify(body) : "",
     },
-    TEXT: {
+    text: {
       contentType: "text/plain;charset=utf-8",
       data: typeof body === "string" ? body : "",
     },
-    FORMDATA: {
-      contentType: null,
+    formdata: {
+      contentType: '',
       data: isObject(body) ? body : "",
     },
-  }[dataType.toLocaleUpperCase()];
+  }[dataType];
   if (currentMode) {
     return {
       sendContentType: currentMode.contentType,
       data: currentMode.data,
     };
-  } else {
-    throw "dataType 不在预设范围中...，请手动设置 headers 和 body";
   }
+  throw new Error("dataType 不在预设范围中...，请手动设置 headers 和 body");
 }
 
 // 请求成功的处理；请在此处添加自定义成功处理
-function responseSucceed(response) {
-  var codeList=[1]
-  if(codeList.includes(response.code)){
-    response.code=200
-  }
+function responseSucceed(response: IBusinessResp) {
+  // const codeList = [1]
+  // if (codeList.includes(response.status)) {
+  //   response.code = 200
+  // }
   return response;
 }
 // 请求错误处理返回信息；请在此处添加自定错误处理
-function responseError(error) {
+function responseError(error: Error) {
   const errorMsgMap = {
     "Failed to fetch": "请求失败，详见控制台(Console)",
     "Not Found": "请求地址不存在，请核对地址",
   };
   if (error.message) {
+    // @ts-ignore
     return errorMsgMap[error.message] || error.message;
-  } else {
-    return error;
   }
+  return error;
 }
 
 // fetch 简易包装
@@ -108,17 +105,17 @@ export default function request({
   mode = "cors",
   dataType = "urlencoded",
   timeout = 0,
-}) {
+}: IRequestParams): Promise<IBusinessResp> {
   // fetch 参数方便后续调整
-  let init = { headers, method, cache, credentials, mode };
-  let fetchUrl = window.apiPrefix ? window.apiPrefix + url : url;
+  let init: RequestInit = { headers, method, cache: cache, credentials: credentials, mode };
+  let fetchUrl = url;
   // 根据发送数据类型来自动生成 ContentType 和 body格式
   let { sendContentType, data } = contentTypeAndData(dataType, body);
   // headers构造
-  let httpHeaders = {
+  let httpHeaders: THttpHeaders = {
     "Cache-Control": cache,
     "Content-Type": sendContentType,
-    token: store.state.adminInfo.token || {},
+    'Authorization': store.state.adminInfo.token as string || '',
     ...headers,
   };
   // 如果Content-Type不存在，删除Content-Type
@@ -131,12 +128,12 @@ export default function request({
   init.headers = new Headers(httpHeaders);
   // GET DELETE 请求特殊处理
   if (["GET", "DELETE"].includes(init.method)) {
-    const urlParamsStr = urlParams(body);
+    const urlParamsStr = urlParams(body as Record<string, string>);
     // 重新设置请求路径
     fetchUrl = urlParamsStr ? [fetchUrl, urlParamsStr].join("?") : fetchUrl;
   } else {
     // 设置数据
-    init.body = sendContentType ? data : body;
+    init.body = sendContentType ? data as string : body as string;
   }
   // 检查是否支持 AbortController，AbortSignal ，来确定是否使用超时
   if ("signal" in new Request("") && timeout > 0) {
@@ -150,17 +147,19 @@ export default function request({
       .then(checkStatus)
       .then(checkResponseType)
       .then(responseSucceed)
-      .then((res) => {
-        if (res.code == 200) {
-            resolve(res);
-        } else if(res.code=='3003'){    // 登录失效或其他特殊状态码处理
-            // store.commit("logout");
-            // router.replace({ path: "/login" }).catch(() => {});
-        }else{
-            // ElMessage.warning({ message: res.msg });
+      .then((res: IBusinessResp) => {
+        if (res.status === RESP_SUCCESS) {
+          resolve(res);
+        } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
+          // store.commit("logout");
+          // router.replace({ path: "/login" }).catch(() => {});
+          reject(null)
+        } else {
+          // ElMessage.warning({ message: res.msg });
+          reject(null)
         }
       })
-      .catch((error) => {
+      .catch((error: Error) => {
         reject(responseError(error));
       });
   });
