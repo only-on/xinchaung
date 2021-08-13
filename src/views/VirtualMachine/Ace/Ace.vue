@@ -1,7 +1,7 @@
 <template>
   <layout :VmData="data">
     <template v-slot:header>
-      <div class="vm-header-student" v-if="roleType">
+      <div class="vm-header-student" v-if="!roleType">
         <div class="vm-header-left">
           <a-button type="primary" @click="back">返回</a-button>
         </div>
@@ -17,11 +17,20 @@
         </div>
       </div>
       <div v-else class="vm-header-teacher">
-        <a-button type="primary" @click="back">返回</a-button>
+        <div class="vm-header-left">
+          <a-button type="primary" @click="back">返回</a-button>
+        </div>
+
+        <div class="vm-header-title">实验名称</div>
+        <div class="vm-header-right">
+          <a-button type="danger">结束备课</a-button>
+        </div>
       </div>
     </template>
     <template v-slot:right>
-      <div class="ace-left">tree</div>
+      <div class="ace-loading" v-if="!aceLoading">loading...</div>
+      <div class="ace-box">
+        <div class="ace-left">tree</div>
       <div class="ace-right">
         <div class="ace-action">
           <span><i class="iconfont icon-baocun"></i>保存</span>
@@ -55,6 +64,7 @@
           </div>
         </div>
       </div>
+      </div>
     </template>
   </layout>
 </template>
@@ -80,7 +90,10 @@ export default defineComponent({
 
       enableLiveAutocompletion: true,
     };
-
+    let aceLoading:Ref<boolean>=ref(false)
+    setTimeout(()=>{
+      aceLoading.value=true
+    },3000)
     let content = ref("测试12");
     const roleType = ref(true);
     const router = useRouter();
@@ -108,6 +121,7 @@ export default defineComponent({
       content,
       openOrClose,
       openOrCloseResultStatus,
+      aceLoading
     };
   },
 });
@@ -115,7 +129,7 @@ export default defineComponent({
 <style lang="less">
 .vm-layout {
   .vm-header {
-    .vm-header-student {
+    .vm-header-student,.vm-header-teacher {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
@@ -142,8 +156,21 @@ export default defineComponent({
   .vm-main {
     .vm-content {
       .vm-content-right {
-        display: flex;
-        flex-direction: row;
+        .ace-loading{
+          position: relative;
+          width: 100%;
+          height: 100%;
+          background: rgba(#515151,0.5);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: @white;
+        }
+        .ace-box{
+          display: flex;
+          flex-direction: row;
+          height: 100%;
+        }
         .ace-left {
           width: 200px;
           flex-shrink: 0;
