@@ -96,14 +96,26 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,inject,onMounted} from 'vue'
-import {useRouter} from "vue-router"
+import {defineComponent,inject,onMounted,reactive} from 'vue'
 import request from '../../api'
+interface ObjType{
+    number?:number;
+    index?:number;
+    content?:string;
+}
+interface State{
+    course:ObjType[];
+    exper:ObjType[];
+}
 export default defineComponent({
-    name:'statistic',
+    name:'Statistic',
     setup:(props,{emit})=>{
-    const router=useRouter()
-    let staticInfo:object={}
+    // let course:ObjType[]=[{content:'wwhaah'}]
+    // let exper:ObjType[]=[]
+    const state: State = reactive({
+        course:[{content:'wwhaah44444444445'}],
+        exper:[]
+    })
     function DrawEchar(){
     let echarts=inject("ec");
     let myChart = (echarts as any).init(document.getElementById("myChart"));
@@ -179,14 +191,15 @@ export default defineComponent({
     function getData(){
     const infoRequest=(request as any).statistic
      infoRequest.getInfo().then((res:any)=>{
-         staticInfo=res.data
+        //  staticInfo=res.data
      })
     }
     onMounted(()=>{
         DrawEchar()
         getData()
+        console.log(state,'state')
     })
-    return {getData};
+    return {getData,...state};
     },
 })
 </script>
