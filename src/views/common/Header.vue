@@ -28,7 +28,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style lang="less" scoped>
 .header-box {
   height: 60px;
   flex-shrink: 0;
@@ -39,6 +39,7 @@ export default defineComponent({
   padding: 0 70px;
   background: #fff;
   min-width: 1330px;
+  box-shadow: 0 0 5px #c2aad6;
   > .header-left {
     flex-shrink: 0;
     display: flex;
@@ -51,7 +52,7 @@ export default defineComponent({
       margin-right: 10px;
     }
     .web-title {
-      color: #4a1c6e;
+      color: @theme-color;
       font-size: 22px;
     }
   }

@@ -39,7 +39,7 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .navList{
   width: 1330px;
   margin: 0 auto;
@@ -63,7 +63,7 @@ export default defineComponent({
       }
     }
     .active{
-       background: #8955b5;
+       background:  @primary-color;
        color: #fff;
        &:hover{
         color: #fff;

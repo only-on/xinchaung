@@ -43,7 +43,7 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="scss">
+<style lang="less" scoped>
 #app{
   display: flex;
   flex-direction: column;
@@ -55,6 +55,8 @@ export default defineComponent({
   }
   .main-box{
     flex: 1;
+    background-color: #edf0f5;
+    margin-top: 5px;     //遮挡了header阴影
     // margin: 0 auto;
     // max-width: 1330px;
     >div{
