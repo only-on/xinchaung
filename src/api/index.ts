@@ -1,4 +1,5 @@
-import { TAvailableModules } from './index.d';
+import { IHttpClient } from '../typings/getRequest';
+import { TAvailableModules } from '../typings/api';
 // import  request  from "../utils/fetch.js";
 // //   预设了四中数据格式  URLENCODED(默认)    JSON   TEXT  FORMDATA
 

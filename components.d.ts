@@ -9,7 +9,6 @@ declare module 'vue' {
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
-    Api: typeof import('./src/components/dev/api.vue')['default']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
     Breadcrumb: typeof import('./src/components/Breadcrumb.vue')['default']

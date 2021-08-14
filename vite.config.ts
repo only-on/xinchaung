@@ -51,7 +51,11 @@ export default defineConfig({
   server:{
     proxy:{
       '/api/': {
-        target: 'http://192.168.101.150',
+        target: 'http://192.168.101.150:85',
+        changeOrigin: true,
+      },
+      '/classic/': {
+        target: 'http://192.168.101.150:85',
         changeOrigin: true,
       },
     },

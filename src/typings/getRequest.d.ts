@@ -1,14 +1,18 @@
-import { IBusinessResp, TFRequest } from './fetch.d';
+import { IApiCollection } from './api'
+import { IBusinessResp, TFRequest } from './fetch';
 import { DefineComponent, Ref } from 'vue';
-import { IApiItem, TAvailableModules } from '../api/index.d'
-export type TGetRequest = {
+import { IApiItem, TAvailableModules } from './api'
+export interface IHttpClient extends IApiCollection {
     server: TFRequest;
     nowHandle: DefineComponent | null;
     baseUrl: string;
-    v: (context: any) => TGetRequest;
+    v: (context: any) => IHttpClient;
     parseRouter: (moduleName: TAvailableModules, obj: Record<string, any>) => void;
     sendServe: (modulename: TAvailableModules, name: string, init: IApiItem, config: IRequestConfig) => void
-} & Record<TAvailableModules, Record<string, any>>;
+}
+
+// 发送http请求的方法
+export type TFHttpSend = (config: IRequestConfig) => Promise<IBusinessResp | null>
 
 export interface IRequestConfig {
     bindName?: string;

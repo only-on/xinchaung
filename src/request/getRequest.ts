@@ -1,17 +1,17 @@
-import { IBusinessResp } from './fetch.d';
-import { TAvailableModules, IApiItem } from './../api/index.d';
-import { IRequestConfig, TGetRequest } from './getRequest.d';
+import { IBusinessResp } from '../typings/fetch';
+import { TAvailableModules, IApiItem } from '../typings/api';
+import { IRequestConfig, IHttpClient } from '../typings/getRequest';
 import request from "./fetch";
 // import qs from 'qs';
 // https://stackoverflow.com/questions/28920753/declaring-the-type-of-this-in-a-typescript-function/41358367
 // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
-const GetRequest = function (this: TGetRequest, baseUrl = "") {
+const GetRequest = function (this: IHttpClient, baseUrl = "") {
   this.server = request;
   this.nowHandle = null;
   this.baseUrl = baseUrl;
   // 底下这里需要这么写，否则会提示这个方法缺少一个构造函数签名
   // https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript
-} as any as { new(baseUrl: string): TGetRequest } 
+} as any as { new(baseUrl: string): IHttpClient }
 
 GetRequest.prototype.v = function (context: any) {
   this.nowHandle = context;
@@ -30,7 +30,7 @@ GetRequest.prototype.sendServe = function (
   name: string,
   init: IApiItem,
   config: IRequestConfig = {}
-) {
+): Promise<IBusinessResp | null> {
   const bindName = config.bindName ? config.bindName : ""; // 传组件内的一个引用类型的字段  此字段会被直接赋值为res.data  使用此选项需先在组件内调用 serve.v(this)   // this 为上下文对象或引用值对象
   const concurrent = config.concurrent ? config.concurrent : false; // 相同接口是否需要并发请求
   const param = config.param || {}; //  调用接口需要的参数 格式为param
@@ -52,7 +52,7 @@ GetRequest.prototype.sendServe = function (
     successFun(response);
     return response;
   };
-  if (self[modulename][name].customState == "await" || concurrent) {
+  if (self[modulename][name].customState === "await" || concurrent) {
     self[modulename][name].customState = "end";
     return request({
       url: url,
@@ -61,6 +61,7 @@ GetRequest.prototype.sendServe = function (
       dataType: dataType,
     }).then(callback);
   }
+  return new Promise((resolve, reject) => { resolve(null) });
 };
 
-export default new GetRequest('http://192.168.101.150:85');
+export default new GetRequest('');

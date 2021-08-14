@@ -1,5 +1,5 @@
 import { RESP_AUTH_FAILURE, RESP_SUCCESS } from './../api/index';
-import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from './fetch.d';
+import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from '../typings/fetch';
 import store from "../store/index";
 // 检查是否为对象
 function isObject(value: any) {
