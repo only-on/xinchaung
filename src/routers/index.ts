@@ -1,10 +1,10 @@
-import { createRouter, createWebHashHistory ,RouteRecordRaw} from "vue-router";
+import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
 import store from "../store/index";
 import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
-const routes: Array<RouteRecordRaw>=[...RouterModule,...RouterCommon,]
+const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon,]
 // console.log(routes);
-const router= createRouter({
+const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
@@ -25,62 +25,79 @@ router.beforeEach((to, _, next) => {
     next()
   }
 });
-function handleRouter(obj:any){
-  const breadcrumbArr=[{name:'首页',path:'/'}] 
-  store.commit('saveBreadcrumb',breadcrumbArr)
-  if(obj.path==='/'){
-    store.commit('saveBreadcrumb',breadcrumbArr)
+
+// 在路由后置守卫中来处理面包屑导航
+router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
+  const breadcrumbs = [{ name: '首页', path: '/' }]
+  let processedPath: string[] = []
+  to.matched.forEach((routeSegment: any) => {
+    // 避免父级页面由子级来显示导致面包屑重复
+    if (!processedPath.includes(routeSegment.path)) {
+      breadcrumbs.push({ path: `${routeSegment.path}`, name: routeSegment.meta.title, })
+      processedPath.push(routeSegment.path)
+    }
+  })
+  store.commit('saveBreadcrumb', breadcrumbs)
+
+  console.log('[routers] afterEach to: ', to, ' from: ', from)
+})
+
+function handleRouter(obj: any) {
+  const breadcrumbArr = [{ name: '首页', path: '/' }]
+  store.commit('saveBreadcrumb', breadcrumbArr)
+  if (obj.path === '/') {
+    store.commit('saveBreadcrumb', breadcrumbArr)
     return
   }
-  const moduleName=obj.path.split('/')[1]
+  const moduleName = obj.path.split('/')[1]
   // let ParentPath=obj.path
-  const curPath=obj.path.split('/').slice(-1)[0]
-  let curModule={}
-  routes.forEach((v:any)=>{
-    if(v.path==='/' && v.meta.authCode===moduleName){
-      curModule=v
+  const curPath = obj.path.split('/').slice(-1)[0]
+  let curModule = {}
+  routes.forEach((v: any) => {
+    if (v.path === '/' && v.meta.authCode === moduleName) {
+      curModule = v
     }
   })
   // console.log(curModule);
   console.log(curPath);
   addBreadcrumb(curModule)
-  function addBreadcrumb(curObj:any){
+  function addBreadcrumb(curObj: any) {
     // console.log(curObj);
-    if(curObj.children){
-      if(curObj.path !=='/' && curObj.path !== ''){
+    if (curObj.children) {
+      if (curObj.path !== '/' && curObj.path !== '') {
         changeBread(curObj)
       }
-      if(curObj.path === curPath){
+      if (curObj.path === curPath) {
         // changeBread(curObj)
         return
       }
       myFiller(curObj.children)
-    }else{
-      if(curObj.path !== ''){
+    } else {
+      if (curObj.path !== '') {
         changeBread(curObj)
       }
     }
     // console.log(breadcrumbArr);
   }
-  function myFiller(arr:any[]){
-    const pathArr=arr.filter(v=> v.path === curPath)
-    let curItem={}
-    if(pathArr && pathArr.length){
-      curItem=pathArr[0]
-    }else{
-      curItem=arr[0]
+  function myFiller(arr: any[]) {
+    const pathArr = arr.filter(v => v.path === curPath)
+    let curItem = {}
+    if (pathArr && pathArr.length) {
+      curItem = pathArr[0]
+    } else {
+      curItem = arr[0]
     }
     addBreadcrumb(curItem)
   }
-  function changeBread(v:any){
-    let obj={
-      path:`${v.path}`,
-      name:v.meta.title,
+  function changeBread(v: any) {
+    let obj = {
+      path: `${v.path}`,
+      name: v.meta.title,
     }
     breadcrumbArr.push(obj)
   }
   // console.log(breadcrumbArr);
-  
-  store.commit('saveBreadcrumb',breadcrumbArr)
+
+  store.commit('saveBreadcrumb', breadcrumbArr)
 }
 export default router;

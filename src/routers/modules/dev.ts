@@ -4,14 +4,15 @@ export default {
   component: Layout,
   meta: {
     title: "开发测试",
-    authCode: "dev",
+    authCode: 'dev'
   },
   children: [
     {
-      path: "i18n",
+      path: "",
       component: () => import('src/components/dev/I18n.vue'),
       meta: {
         title: "国际化",
+        authCode: 'i18n'
       }
     },
     {
@@ -19,6 +20,7 @@ export default {
       component: () => import('src/components/MenuBar.vue'),
       meta: {
         title: "菜单",
+        authCode: 'menu'
       }
     },
     {
@@ -26,6 +28,7 @@ export default {
       component: () => import('src/components/Test.vue'),
       meta: {
         title: "功能测试",
+        authCode: 'test'
       }
     },
     {
@@ -33,6 +36,7 @@ export default {
       component: () => import('src/views/common/Login.vue'),
       meta: {
         title: "登录",
+        authCode: 'login'
       }
     }
   ]

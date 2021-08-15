@@ -5,15 +5,16 @@ export default {
     component: Layout,
     meta: {
         title: "精品课",
-        authCode: "classical",
+        authCode: 'classical'
     },
     children: [
         {
-            path: "asset",
+            path: "",
             name: "classicalAsset",
             component: () => import("src/views/classicalAsset/Panel.vue"),
             meta: {
-                title: "classicalPanel",
+                title: "精品课资源",
+                authCode: 'classicalAsset'
             },
         }
     ]
