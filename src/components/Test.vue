@@ -17,7 +17,7 @@ import {
   onMounted,
 } from "vue";
 import request from "../api";
-import serve from "../request/getRequest.js";
+import serve from "../request/getRequest";
 interface StateDataList {
   content_type?: StateV[];
 }
