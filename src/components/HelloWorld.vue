@@ -65,13 +65,13 @@ export default defineComponent({
     const state=reactive({dataList:{}})
     onMounted(()=>{
       serve.v(state)
-      const http=(request as any).teacherExperimental
-      // http.getList({param:{init_type:0},bindName:'dataList',concurrent:true})
-      // http.getList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
+      const http=(request as any).Experimental
+      // http.getMyExperimentalList({param:{init_type:0},bindName:'dataList',concurrent:true})
+      // http.getMyExperimentalList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
       //   console.log(res);
       // })         concurrent:true     同个接口可以并发请求     或者用 await等第一次请求完再下一次
-      http.getList({param:{init_type:0}})
-      http.getList({param:{init_type:0},concurrent:true}).then((res:any)=>{ })
+      http.getMyExperimentalList({param:{init_type:0}})
+      http.getMyExperimentalList({param:{init_type:0},concurrent:true}).then((res:any)=>{ })
     })
     return { count,test };
   },

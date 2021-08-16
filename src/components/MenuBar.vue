@@ -52,7 +52,7 @@ export default defineComponent({
       return <div class="nav__menu">{children}</div>;
     };
 
-    console.log("[Menu] menuData: ", FakeMenu.data);
+    // console.log("[Menu] menuData: ", FakeMenu.data);
     return renderMenu(FakeMenu.data as MenuItem[]);
   },
 });

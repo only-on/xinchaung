@@ -50,13 +50,10 @@ export default defineConfig({
   },
   server:{
     proxy:{
-      '/api/': {
+      '/proxyPrefix': {
         target: 'http://192.168.101.150:85',
         changeOrigin: true,
-      },
-      '/classic/': {
-        target: 'http://192.168.101.150:85',
-        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
     },
     port: 3000,

@@ -8,7 +8,7 @@ import request from "./fetch";
 const GetRequest = function (this: IHttpClient, baseUrl = "") {
   this.server = request;
   this.nowHandle = null;
-  this.baseUrl = baseUrl;
+  this.baseUrl = baseUrl || '/proxyPrefix';
   // 底下这里需要这么写，否则会提示这个方法缺少一个构造函数签名
   // https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript
 } as any as { new(baseUrl: string): IHttpClient }

@@ -71,13 +71,13 @@ export default defineComponent({
     onMounted(() => {
       serve.v(state); // 传内一个引用类型的字段
       const httpTeacherExperimental = (request as any).teacherExperimental;
-      // httpTeacherExperimental.getList({param:{init_type:0},bindName:'dataList',concurrent:true})
-      // httpTeacherExperimental.getList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
+      // httpTeacherExperimental.getMyExperimentalList({param:{init_type:0},bindName:'dataList',concurrent:true})
+      // httpTeacherExperimental.getMyExperimentalList({param:{init_type:0},bindName:'dataList',concurrent:true}).then((res:any)=>{
       //   console.log(res);
       // })         concurrent:true     同个接口可以并发请求     或者用 await等第一次请求完再下一次
-      httpTeacherExperimental.getList({ param: { init_type: 0 } });
+      httpTeacherExperimental.getMyExperimentalList({ param: { init_type: 0 } });
       httpTeacherExperimental
-        .getList({
+        .getMyExperimentalList({
           param: { init_type: 0 },
           concurrent: true,
           bindName: "dataList",

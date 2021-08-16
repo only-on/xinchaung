@@ -56,6 +56,7 @@ export default defineComponent({
     width: 1330px;
     margin: 20px auto 0;
     background: #fff;
+    height: 100%;
     .content_box{
       width: 100%;
       margin-bottom: 20px;
@@ -64,6 +65,8 @@ export default defineComponent({
       border-radius: 3px;
       padding: 10px;
       margin-top: 20px;
+      height: calc(100% - 102px);
+      overflow: auto;
     }
   }
 </style>
