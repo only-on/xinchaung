@@ -15,7 +15,7 @@ export interface IApiItem {
     dataType?: TDataType;
 }
 
-export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'Experimental'
+export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'Experimental' | 'forum'
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -34,5 +34,10 @@ export interface IApiCollection {
         loginIn: TFHttpSend,
         getMyExperimentalList: TFHttpSend
         getLatelyExperimentalList:TFHttpSend
+    },
+    forum:{
+        attend: TFHttpSend,
+        myself: TFHttpSend,
+        pubIndex: TFHttpSend,
     }
 }

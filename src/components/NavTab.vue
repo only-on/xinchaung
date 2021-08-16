@@ -55,7 +55,7 @@ export default defineComponent({
       margin-right: 15px;
       color: #444;
       font-size: 16px;
-      width: 94px;
+      padding: 0 15px;
       text-align: center;
       cursor: pointer;
       &:hover{

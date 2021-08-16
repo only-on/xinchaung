@@ -44,7 +44,7 @@
 import { defineComponent,ref, onMounted,reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
-interface listItem{
+interface IlistItem{
   url:string,
   name:string,
   status_name:string,
@@ -63,12 +63,12 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
-    var list:listItem[]=reactive([])
+    var list:IlistItem[]=reactive([])
     const http=(request as any).Experimental
     function initData(){
       http.getLatelyExperimentalList().then((res:any)=>{
         list=res.data
-        list.map((v:listItem)=>{
+        list.map((v:IlistItem)=>{
           v.url=v.url?v.url:defaultUrl
         })
       })

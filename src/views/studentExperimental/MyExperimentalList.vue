@@ -29,12 +29,12 @@
       <div class="card_info">
         <h3>{{v.name}}</h3>
         <div class="text-primary">
-          <span>{{v.status}}</span>
+          <span>{{v.status_name}}</span>
           <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
           <span>学习至 {{v.content_name}}</span>
         </div>
         <p class="status">实训教师：{{v.u_name}}</p>
-        <p class="status">实训状态：{{v.status}}</p>
+        <p class="status">实训状态：{{v.status_name}}</p>
         <p class="status">起止时间：{{v.times}}</p>
       </div>
     </div>
@@ -44,10 +44,10 @@
 import { defineComponent,ref, onMounted,reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
-interface listItem{
+interface IlistItem{
   url:string,
   name:string,
-  status:string,
+  status_name:string,
   cost_time:string,
   content_name:string,
   u_name:string,
@@ -62,12 +62,12 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
-    var list:listItem[]=reactive([])
+    var list:IlistItem[]=reactive([])
     const http=(request as any).Experimental
     function initData(){
       http.getMyExperimentalList().then((res:any)=>{
         list=res.data
-        list.map((v:listItem)=>{
+        list.map((v:IlistItem)=>{
           v.url=v.url?v.url:defaultUrl
         })
       })

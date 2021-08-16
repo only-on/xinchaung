@@ -13,7 +13,7 @@ export default {
       component: RouterViews,
       // component: () => import("src/views/studentExperimental/index.vue"),
       meta: {
-        title: "论坛",
+        title: "论坛列表",
         icon: "",
         authCode: "forum",
       },
@@ -21,7 +21,7 @@ export default {
         {
           path:'forumList',
           name: "forumList",
-          component: () => import("src/views/studentExperimental/index.vue"),
+          component: () => import("src/views/forum/index.vue"),
           meta: {
             title: "随堂论坛",
           },
@@ -29,7 +29,7 @@ export default {
         {
           path:'CreatePosts',
           name: "CreatePosts",
-          component: () => import("src/views/studentExperimental/CreatePosts.vue"),
+          component: () => import("src/views/forum/CreatePosts.vue"),
           meta: {
             title: "发帖",
           },
