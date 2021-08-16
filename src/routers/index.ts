@@ -39,7 +39,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) =>
   })
   store.commit('saveBreadcrumb', breadcrumbs)
 
-  console.log('[routers] afterEach to: ', to, ' from: ', from)
+  // console.log('[routers] afterEach to: ', to, ' from: ', from)
 })
 
 export default router;

@@ -33,5 +33,6 @@ export interface IApiCollection {
     Experimental: {
         loginIn: TFHttpSend,
         getMyExperimentalList: TFHttpSend
+        getLatelyExperimentalList:TFHttpSend
     }
 }

@@ -1,4 +1,5 @@
 export default{
   loginIn:{url:'/api/loginIn',method:'POST',dataType:"JSON"},
-  getMyExperimentalList:{url:`/student-train/latest`,method: "GET",}
+  getLatelyExperimentalList:{url:`/student-train/latest`,method: "GET",},
+  getMyExperimentalList:{url:`/student-train/my`,method: "GET",}
 }

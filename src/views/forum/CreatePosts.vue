@@ -1,12 +1,12 @@
 <template>
-  <h2>最近学习课程</h2>
+  <h2>发帖</h2>
 </template>
 
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive } from 'vue'
 
 export default defineComponent({
-  name: '',
+  name: 'CreatePosts',
   components: {
    
   },

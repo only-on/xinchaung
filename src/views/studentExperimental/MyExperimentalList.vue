@@ -1,35 +1,58 @@
 <template>
   <div class="list_content">
-    <div class="info" v-for="v in 20" :key="v">
+    <div class="info" v-for="v in 1" :key="v">
       <div class="card">
         <div class="mask"></div>
-        <div class="card_pic"></div>
+        <div class="card_pic">
+          <img :src="defaultUrl" />
+        </div>
       </div>
       <div class="card_info">
-        <h3>{{"我的课件测试"}}</h3>
+        <h3>我的课件测试</h3>
         <div class="text-primary">
-          <span>{{'已结束'}}</span>
-          <span> 用时&nbsp;&nbsp; {{'01时12分54秒'}} </span>
-          <span>学习至 {{'任务一'}}</span>
+          <span>已结束</span>
+          <span> 用时&nbsp;&nbsp; 01时12分54秒 </span>
+          <span>学习至 任务一</span>
         </div>
         <p class="status">实训教师：{{'sihai'}}</p>
         <p class="status">实训状态：{{'已结束'}}</p>
         <p class="status">起止时间：{{'2021-08-03 - 2021-08-06'}}</p>
       </div>
     </div>
+    <div class="info" v-for="v in list" :key="v.name">
+      <div class="card">
+        <div class="mask"></div>
+        <div class="card_pic">
+          <img :src="v.url" />
+        </div>
+      </div>
+      <div class="card_info">
+        <h3>{{v.name}}</h3>
+        <div class="text-primary">
+          <span>{{v.status}}</span>
+          <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
+          <span>学习至 {{v.content_name}}</span>
+        </div>
+        <p class="status">实训教师：{{v.u_name}}</p>
+        <p class="status">实训状态：{{v.status}}</p>
+        <p class="status">起止时间：{{v.times}}</p>
+      </div>
+    </div>
   </div>
 </template>
-
 <script lang="ts">
-import { defineComponent,ref, onMounted } from 'vue'
+import { defineComponent,ref, onMounted,reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 interface listItem{
-  title:string,
-  status:number,
-  date:string,
-  stage:string,
-  teacherName:string
+  url:string,
+  name:string,
+  status:string,
+  cost_time:string,
+  content_name:string,
+  u_name:string,
+  times:string,
+  
 }
 export default defineComponent({
   name: 'MyExperimentalList',
@@ -38,18 +61,21 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
-    const list:listItem[]=[]
+    var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
+    var list:listItem[]=reactive([])
     const http=(request as any).Experimental
     function initData(){
-      console.log(132)
       http.getMyExperimentalList().then((res:any)=>{
-
+        list=res.data
+        list.map((v:listItem)=>{
+          v.url=v.url?v.url:defaultUrl
+        })
       })
     }
     onMounted(()=>{
-    //  initData()
+     initData()
     })
-    return {list,initData };
+    return {list,defaultUrl };
   },
 })
 </script>
@@ -86,7 +112,11 @@ export default defineComponent({
         position: absolute;
         width: 100%;
         height: 100%;
-        background: url('../../assets/images/Experimental/cover5.png') no-repeat center 100%/100%;
+        // background: url('../../assets/images/Experimental/cover5.png') no-repeat center 100%/100%;
+        img{
+          width: 100%;
+          height: 100%;
+        }
       }
       .card_info{
         flex: 1;
