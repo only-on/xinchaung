@@ -6,7 +6,7 @@
   </p>
   <p v-show="!finished">
     前往登录：
-    <a href="http://192.168.101.150/site/login-port">
+    <a href="http://192.168.101.150:85/site/login-port">
       http://192.168.101.150:85/site/login-port</a
     >
   </p>

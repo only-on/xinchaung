@@ -11,6 +11,7 @@ declare module 'vue' {
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
+    ATag: typeof import('ant-design-vue/es')['Tag']
     Breadcrumb: typeof import('./src/components/Breadcrumb.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     I18n: typeof import('./src/components/dev/I18n.vue')['default']
