@@ -1,4 +1,4 @@
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import store from "../store/index";
 import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
@@ -30,10 +30,10 @@ router.beforeEach((to, _, next) => {
 router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
   const breadcrumbs = [{ name: '首页', path: '/' }]
   let processedPath: string[] = []
-  to.matched.forEach((routeSegment: any) => {
+  to.matched.forEach((routeSegment: RouteRecordNormalized) => {
     // 避免父级页面由子级来显示导致面包屑重复
     if (!processedPath.includes(routeSegment.path)) {
-      breadcrumbs.push({ path: `${routeSegment.path}`, name: routeSegment.meta.title, })
+      breadcrumbs.push({ path: `${routeSegment.path}`, name: routeSegment.meta.title as string, })
       processedPath.push(routeSegment.path)
     }
   })
