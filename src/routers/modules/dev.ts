@@ -38,6 +38,14 @@ export default {
         title: "登录",
         authCode: 'login'
       }
+    },
+    {
+      path: "webmsg",
+      component: () => import('src/components/dev/Webmsg.vue'),
+      meta: {
+        title: "推送测试",
+        authCode: 'webmsg'
+      }
     }
   ]
 }
