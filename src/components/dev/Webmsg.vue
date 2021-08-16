@@ -9,12 +9,12 @@ export default defineComponent({
   setup() {
     const message = ref("");
     onMounted(() => {
-      const wmc = Wmc({
+      Wmc({
         url: `ws://${document.location.host}/ws?uid=abc&attach=abc`,
-        close: function (evt) {
+        close: function (_) {
           message.value += "\nConnection closed.";
         },
-        message: function (evt, data) {
+        message: function (_, data) {
           message.value += `\ngot message: ${data}`;
         },
       });
