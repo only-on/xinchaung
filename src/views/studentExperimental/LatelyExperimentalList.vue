@@ -45,7 +45,7 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-    //  initData()
+     initData()
     })
     return {list,initData };
   },

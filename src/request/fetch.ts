@@ -1,6 +1,7 @@
 import { RESP_AUTH_FAILURE, RESP_SUCCESS } from './../api/index';
 import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from '../typings/fetch';
 import store from "../store/index";
+import { message } from 'ant-design-vue';
 // 检查是否为对象
 function isObject(value: any) {
   return Object.prototype.toString.call(value) === "[object Object]";
@@ -149,13 +150,14 @@ export default function request({
       .then(responseSucceed)
       .then((res: IBusinessResp) => {
         if (res.status === RESP_SUCCESS) {
+          // message.success('成功');
           resolve(res);
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
           // store.commit("logout");
           // router.replace({ path: "/login" }).catch(() => {});
           reject(null)
         } else {
-          // ElMessage.warning({ message: res.msg });
+          message.warning(res.msg);
           reject(null)
         }
       })
