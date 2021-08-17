@@ -1,40 +1,30 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
-  path: "/",
+  path: "/forum",
   component: Layout,
   meta: {
     title: "论坛",
-    authCode: "Experimental",
+    authCode: "forum",
   },
   children: [
     {
-      path: "forum",
-      component: RouterViews,
-      // component: () => import("src/views/studentExperimental/index.vue"),
+      path: "",
+      // component: RouterViews,
+      component: () => import("src/views/forum/index.vue"),
       meta: {
         title: "论坛列表",
         icon: "",
         authCode: "forum",
       },
-      children:[
-        {
-          path:'forumList',
-          name: "forumList",
-          component: () => import("src/views/forum/index.vue"),
-          meta: {
-            title: "随堂论坛",
-          },
-        },
-        {
-          path:'CreatePosts',
-          name: "CreatePosts",
-          component: () => import("src/views/forum/CreatePosts.vue"),
-          meta: {
-            title: "发帖",
-          },
-        }
-      ]
+    },
+    {
+      path:'CreatePosts',
+      name: "CreatePosts",
+      component: () => import("src/views/forum/CreatePosts.vue"),
+      meta: {
+        title: "发帖",
+      },
     }
   ]
 }

@@ -10,10 +10,16 @@ import "src/assets/theme/purple.less"
 import "./style/common.scss"
 import ant from 'ant-design-vue'
 
+import NavTab from 'src/components/NavTab.vue'
+import Breadcrumb from 'src/components/Breadcrumb.vue'
 const app = createApp(App);
 app.use(router);
 app.use(i18n);
 // app.use(store);
 app.use(ant)
 app.use(store);
+
+  
+app.component('NavTab',NavTab)
+app.component('Breadcrumb',Breadcrumb)
 app.mount("#app");

@@ -61,7 +61,7 @@ export default defineComponent({
       width: 100%;
       margin-bottom: 20px;
       background: #fff;
-      box-shadow: 0px 0 5px 5px rgb(0 0 0 / 10%);
+      box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
       border-radius: 3px;
       padding: 10px;
       margin-top: 20px;
