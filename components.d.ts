@@ -3,14 +3,18 @@
 
 declare module 'vue' {
   export interface GlobalComponents {
+    ABreadcrumb: typeof import('ant-design-vue/es')['Breadcrumb']
+    ABreadcrumbItem: typeof import('ant-design-vue/es')['BreadcrumbItem']
     AButton: typeof import('ant-design-vue/es')['Button']
     Ace: typeof import('./src/components/ace/ace.vue')['default']
     AConfigProvider: typeof import('ant-design-vue/es')['ConfigProvider']
     ADropdown: typeof import('ant-design-vue/es')['Dropdown']
     AMenu: typeof import('ant-design-vue/es')['Menu']
     AMenuItem: typeof import('ant-design-vue/es')['MenuItem']
+    APagination: typeof import('ant-design-vue/es')['Pagination']
     ARadioButton: typeof import('ant-design-vue/es')['RadioButton']
     ARadioGroup: typeof import('ant-design-vue/es')['RadioGroup']
+    ATable: typeof import('ant-design-vue/es')['Table']
     Breadcrumb: typeof import('./src/components/Breadcrumb.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     I18n: typeof import('./src/components/dev/I18n.vue')['default']

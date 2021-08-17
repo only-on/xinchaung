@@ -19,6 +19,7 @@
         <p class="status">起止时间：{{'2021-08-03 - 2021-08-06'}}</p>
       </div>
     </div>
+    <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
     <div class="info" v-for="v in list" :key="v.name">
       <div class="card">
         <div class="mask"></div>
@@ -41,7 +42,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 interface IlistItem{
@@ -52,7 +53,9 @@ interface IlistItem{
   content_name:string,
   u_name:string,
   times:string,
-  
+}
+interface load{
+  loading:boolean
 }
 export default defineComponent({
   name: 'MyExperimentalList',
@@ -63,26 +66,33 @@ export default defineComponent({
     const router = useRouter();
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
     var list:IlistItem[]=reactive([])
+    var loading:Ref<boolean> =ref(false)
     const http=(request as any).Experimental
     function initData(){
+      loading.value=true
       http.getMyExperimentalList().then((res:any)=>{
+        // loading.value=false
         list=res.data
-        list.map((v:IlistItem)=>{
+        list.length?list.map((v:IlistItem)=>{
           v.url=v.url?v.url:defaultUrl
-        })
+        }):''
       })
     }
     onMounted(()=>{
      initData()
     })
-    return {list,defaultUrl };
+    return {list,defaultUrl,loading };
   },
 })
 </script>
 
 <style scoped lang="less">
+  .ant-spin-spinning{
+    margin-top: 200px;
+  }
   .list_content{
     padding: 20px 10px;
+    text-align: center;
     .info{
       margin: 16px 0;
       padding-bottom: 10px;
@@ -90,6 +100,7 @@ export default defineComponent({
       display: flex;
       justify-content: space-between;
       align-items: center;
+      text-align: left;
       .card{
         position: relative;
         width: 290px;
