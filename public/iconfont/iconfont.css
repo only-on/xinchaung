@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2736704 */
-  src: url('iconfont.woff2?t=1628839602581') format('woff2'),
-       url('iconfont.woff?t=1628839602581') format('woff'),
-       url('iconfont.ttf?t=1628839602581') format('truetype');
+  src: url('iconfont.woff2?t=1629084114063') format('woff2'),
+       url('iconfont.woff?t=1629084114063') format('woff'),
+       url('iconfont.ttf?t=1629084114063') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-warn:before {
+  content: "\e67c";
 }
 
 .icon-yunhang:before {

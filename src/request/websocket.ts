@@ -1,8 +1,7 @@
-import Wm from "js-wm/dist.js"
-import { WsOptions,Wmc } from "js-wm/src/index"
+import Wmc from "js-wm"
 
 
-let conn:Wmc
+let conn:any
     
 function getQueryString(name: string) {
     let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -19,7 +18,7 @@ function wsConnect(url:string) {
     }
     try {
         // 创建Wm对象示实例
-        conn = Wm({
+        conn = Wmc({
             url: schema + url,
             // 设置open事件处理器
             open: (ev:Event) => {
@@ -44,7 +43,7 @@ function wsConnect(url:string) {
         })
     } catch (e:any) {
         console.error(e)
-        new Error(e)
+        throw new Error(e)
     }
 }
 

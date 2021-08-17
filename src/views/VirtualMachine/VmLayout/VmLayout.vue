@@ -29,6 +29,7 @@
           :style="{ width: openStatus ? leftWidth + 'px' : '0px' }"
         >
           <div class="vm-content-box">
+            <div class="warn-hint"><span class="iconfont icon-warn"></span>该课件仅用于人工智能教学，请勿用于其他用途。</div>
             <component :is="currentComponent"></component>
           </div>
           <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
@@ -264,6 +265,16 @@ export default defineComponent({
         transition: 0.5s;
         .vm-content-box {
           width: 100%;
+          .warn-hint{
+            color: #FF3E00;
+            text-align: center;
+            font-size: 12px;
+            line-height: 25px;
+            background: #FFF8F8;
+            >.iconfont{
+              margin-right: 5px;
+            }
+          }
         }
         .move-bar {
           width: 6px;
