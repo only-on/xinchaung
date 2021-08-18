@@ -66,6 +66,8 @@ export default defineComponent({
     }
     .vm-loading-box {
       position: relative;
+      width: 384px;
+      height: 215px;
       .vm-image {
         display: block;
         margin: 20px auto 37px auto;

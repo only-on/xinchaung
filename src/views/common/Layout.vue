@@ -1,10 +1,10 @@
 <template>
     <div class="app_content">
       <Header></Header>
-      <div class="main-box">
+      <div class="main-box" id="main-box">
         <router-view />
       </div>
-      <Footer></Footer>
+      <!-- <Footer></Footer> -->
     </div>
 </template>
 <script lang="ts">
@@ -56,22 +56,18 @@ export default defineComponent({
   .main-box{
     flex: 1;
     background-color: #edf0f5;
-    margin-top: 5px;     //遮挡了header阴影
+    // margin-top: 5px;     //遮挡了header阴影
     // margin: 0 auto;
     // max-width: 1330px;
     height: calc(100% - 87px);     // footer组件失去后 修改此
+    padding-top: 32px;
+    padding-bottom: 32px;
     >div{
+      width: 1330px;
+      margin: 0px auto;
+      height: 100%;
+      background: @white;
       // width: 100%;
-      &.img-bg{
-        background-image: url("../../assets/common/layout_bg.jpg");
-        background-size: 100% 312px;
-        background-repeat: no-repeat;
-        min-height: 700px;
-      }
-      >div{
-        width: 1330px;
-        margin: 0 auto;
-      }
     }
   }
 }

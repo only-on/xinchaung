@@ -21,7 +21,7 @@
                 </span>
             </div>
       </div>
-      <div v-else class="vm-header-teacher">
+      <div v-else class="vm-header-teacher" v-layout-bg="'../assets/common/layout_bg.jpg'">
           <div class="vm-header-left">
             <a-button type="primary"  @click="back">返回</a-button>
             <a-button type="primary">操作</a-button>

@@ -31,7 +31,7 @@
       <div class="ace-loading" v-if="!aceLoading">loading...</div>
       <div class="ace-box">
         <div class="ace-left">tree</div>
-      <div class="ace-right">
+      <div class="ace-right" v-layout-bg="'../assets/common/layout_bg1.jpg'">
         <div class="ace-action">
           <span><i class="iconfont icon-baocun"></i>保存</span>
           <span><i class="iconfont icon-beifen"></i>备份</span>

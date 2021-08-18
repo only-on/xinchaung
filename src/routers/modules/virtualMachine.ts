@@ -18,7 +18,7 @@ export default{
             },
         },
         {
-            path:"/vnc",
+            path:"vnc",
             name:"vnc",
             component:()=>import("src/views/VirtualMachine/Vnc/Vnc.vue"),
             meta:{
