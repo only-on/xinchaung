@@ -3,9 +3,10 @@
       <a-radio-button key="en" :value="enUS.locale">English</a-radio-button>
       <a-radio-button key="cn" :value="zhCN.locale">中文</a-radio-button>
     </a-radio-group>
-    <a-config-provider :locale="locale === 'en' ? enUS : zhCN">
+    <!-- <a-config-provider :locale="locale === 'en' ? enUS : zhCN">
       <router-view />
-    </a-config-provider>
+    </a-config-provider> -->
+     <router-view />
 </template>
 
 <script lang="ts">

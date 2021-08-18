@@ -11,7 +11,7 @@
                     <div>起止时间:111111</div>
                     <div class="train-status">实训状态:已完成</div>
                     <div class="train-table">
-                    <a-table :columns="columns" :data-source="data" :pagination="false">
+                    <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
                      </a-table>
                     </div>
                 </div>
@@ -122,9 +122,16 @@ export default defineComponent({
     }
     .ant-table-thead > tr > th, .ant-table-tbody > tr > td{
         padding: 8px;
+        text-align: center;
     }
     .ant-table-thead>tr>th{
         background-color:#f6f0fa;
     }
+    .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td {
+    border-right: 1px solid white;
+    }
+    .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
+    background:white;
+   }
 }
 </style>

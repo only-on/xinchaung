@@ -17,6 +17,15 @@ export default {
                 title: "studentPerformance",
                 authCode: ""
             },
+        },
+        {
+            path: "/courseScore",
+            name: "uuuuuu",
+            component: () => import("src/views/studentPerformance/CourseAchievement/courseScore/index.vue"),
+            meta: {
+                title: "studentPerformance",
+                authCode: ""
+            },
         }
     ]
 }
