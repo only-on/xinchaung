@@ -26,4 +26,5 @@ export interface IBusinessResp {
     status: number;
     msg: string;
     data: any;
+    error:any
 }

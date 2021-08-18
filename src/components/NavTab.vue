@@ -15,7 +15,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref } from "vue";
+import { number } from "echarts";
+import { defineComponent, ref, onMounted, reactive, Ref ,watch} from "vue";
 import { useStore } from "vuex";
 
 export declare interface ITab {
@@ -27,21 +28,31 @@ export default defineComponent({
   name: "NavTab",
   props: {
     tabs: {
-      required: false,
+      required: true,
       type: Array,
-      default: () => [{ name: "21" }],
+      default: () => [{ name: "未知模块" ,componenttype:0}],
     },
+    current:{
+      required: false,
+      type:Number,
+      default:0
+    }
   },
   emits: ["tabSwitch"],
   setup: (props, context) => {
     const tabs = reactive(props.tabs) as ITab[];
-    const activeName = ref(tabs[0].name);
+    const activeName:Ref<string> = ref('');
+    const currentTab:Ref<number>=ref(props.current)
     function tabChange(item: ITab) {
       context.emit("tabSwitch", item);
       activeName.value = item.name;
     }
-
-    onMounted(() => {});
+    onMounted(() => {
+      activeName.value=tabs[currentTab.value].name
+    });
+    watch(props,()=>{
+      activeName.value=tabs[props.current].name
+    })
     return { tabs, activeName, tabChange };
   },
 });

@@ -1,25 +1,15 @@
 <template>
   <div class="content">
-    <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
+    <NavTab :tabs="tabs" @tabSwitch="tabSwitch" :current="type" />
     <div class="content_box">
       <div class="header">
         <div class="search">
-          <!-- <a-form :model="ForumSearch" :label-col="{ span: 2 }" :wrapper-col="{ span: 4 }">
-              <a-form-item label="帖子名称">
-                <a-input v-model:value="ForumSearch.title" />
-              </a-form-item>
-              <a-form-item label="发帖类型">
-                <a-select v-model:value="ForumSearch.type" placeholder="please select your zone">
-                  <a-select-option value="shanghai">Zone one</a-select-option>
-                  <a-select-option value="beijing">Zone two</a-select-option>
-                </a-select>
-              </a-form-item>
-          </a-form> -->
           <div class="item"><span>帖子名称：</span>
-            <a-input v-model="ForumSearch.title" />
+            <a-input v-model:value="ForumSearch.title" />
           </div>
           <div  class="item"><span>发帖类型：</span>
-                <a-select v-model="ForumSearch.type" placeholder="请选择">
+                <a-select v-model:value="ForumSearch.type" placeholder="请选择">
+                  <a-select-option value="0">请选择</a-select-option>
                   <a-select-option value="1">求助</a-select-option>
                   <a-select-option value="2">分享</a-select-option>
                   <a-select-option value="3">通知</a-select-option>
@@ -27,33 +17,43 @@
                 </a-select>
           </div>
           <div class="item">
-            <a-button type="primary">查询</a-button>
-            <a-button type="primary">清空</a-button>
+            <a-button type="primary" @click="search()">查询</a-button>
+            <a-button type="primary" @click="clearSearch()">清空</a-button>
           </div>
         </div>
         <a-button type="primary">发布问题</a-button>
       </div>
-      <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"  class="components-table-demo-nested">
-        <template #operation>
-          <a  class="caozuo">回帖</a>
-          <a  class="caozuo">删除</a>
+      <!-- :row-key="(record) => record.id" -->
+      <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
+        :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage}"  
+        class="components-table-demo-nested">
+        <template #operation="{record}">
+          <a  class="caozuo" @click="replyCard(record )">回帖</a>
+          <a  class="caozuo" @click="delateCard(record )">删除</a>
         </template>
-        <template>
-          <a-pagination v-model:current="ForumSearch.page" :total="total" show-less-items />
-        </template>
+        <!-- <template>
+          <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
+        </template> -->
       </a-table>
     </div>
+    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="620">
+      <h4>回复内容</h4>
+      <a-textarea v-model:value="ForumArticle.content" placeholder="请输入回复内容" :rows="6" showCount :maxlength="100" />
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,UnwrapRef,Ref  } from 'vue'
+  import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal,message } from 'ant-design-vue';
+import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs } from 'vue'
+import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
-
+import serve from "../../request/getRequest";
 interface IforumSearch{
   title:string,
-  type:number,
+  type:string,
   pageSize:number,
   page:number
 }
@@ -65,11 +65,16 @@ interface ItdItems{
   reply:string,
   id:number,
 }
+interface Ireply{
+  forum_id:number,
+  content:string
+}
 const columns=[
   {
     title: '帖子名称',
     dataIndex:"title",
     align:'center',
+    width:260
   },
   {
     title: '类型',
@@ -79,7 +84,8 @@ const columns=[
   {
     title: '发帖人/发帖时间',
     dataIndex: 'creat',
-    align:'center'
+    align:'center',
+    width:260
   },
   {
     title: '回复数/查看数',
@@ -89,15 +95,18 @@ const columns=[
   {
     title: '最近回帖人/最近回帖时间',
     dataIndex: 'reply',
-    align:'center'
+    align:'center',
+    width:260
   },
   {
     title: '操作',
     dataIndex: 'operation',
     align:'center',
     slots: { customRender: 'operation' },
+    fixed:'right'
   }
 ]
+
 export default defineComponent({
   name: 'forumindex',
   components: {
@@ -108,28 +117,44 @@ export default defineComponent({
     const route:any = useRoute()
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
     const http=(request as any).forum
-    const apiName=['pubIndex','myself','attend']
-    var type=ref(0)
+    const apiName=['pubIndex','myself','attend'] 
+    var type:Ref<number>=ref(0)
     var loading:Ref<boolean>=ref(false)
+    var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
-    const list:Array<ItdItems>=reactive([{title:'铁汁',type:'分享',creat:'创建',replyViews:'回复数',reply:'回帖人', id: 2},{title:'铁汁2',type:'分享2',creat:'创建2',replyViews:'回复数2',reply:'回帖人2', id: 3}])
-    var ForumSearch:UnwrapRef<IforumSearch>=reactive({
+    var list:ItdItems[]=reactive([])
+    var currentPosts:any=reactive({})
+    var replyContent:Ref<string>=ref('')
+    var ForumArticle:Ireply=reactive({
+      forum_id:0,
+      content:''
+    })
+    // var list: Ref<ItdItems[]> = ref([])
+    var ForumSearch:IforumSearch=reactive({
       title:'',
-      type:0,
+      type:'0',
       pageSize:10,
       page:1
     })
     function tabSwitch(val:any){
       if(val.componenttype!==type.value){
         type.value=val.componenttype
-        // initData()
         updateRouter()
+        initData()
       }
     }
     function initData(){
       loading.value=true
-      http[apiName[type.value]]().then((res:any)=>{
+      http[apiName[type.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
         loading.value=false
+        let data=res.data.list
+        data.map((v:any)=>{
+          v.creat=`${v.user_name} / ${v.created_at}`,
+          v.replyViews=`${v.reply_num} / ${v.views_num}`,
+          v.reply=`${v.last_reply_username} / ${v.last_reply_time}`
+        })
+        list.push(...data)
+        total.value=res.data.page.totalCount
       })
     }
     function updateRouter(){
@@ -138,20 +163,77 @@ export default defineComponent({
             query: { currentTab: type.value },
        })
     }
+    function search(){
+      console.log(ForumSearch)
+      if(ForumSearch.title!=='' || ForumSearch.type!=='0'){
+        ForumSearch.page=1
+        initData()
+      }
+    }
+    function delateCard(val:ItdItems){
+      // console.log(val)
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.delateCard({param:{id:val.id}}).then((res:IBusinessResp)=>{
+            if(res.status===1){
+              message.success('删除成功')
+            }else{
+              message.warning(res.msg)
+            }
+            
+          })
+        }
+      });
+    }
+    function replyCard(val:ItdItems){
+      visible.value=true
+      console.log(val)
+      ForumArticle.forum_id=val.id
+    }
+    function handleReply(){
+      let obj:any={'ForumArticle[forum_id]':ForumArticle.forum_id,'ForumArticle[content]':ForumArticle.content}
+      http.handleReply({param:{...obj}}).then((res:IBusinessResp)=>{
+        if(res.status===1){
+              message.success('回复成功')
+            }else{
+              message.warning(res.error.msg)
+            }
+      })
+    }
+    function clearSearch(){
+      if(ForumSearch.title || ForumSearch.type){
+        ForumSearch.title=''
+        ForumSearch.type='0'
+        ForumSearch.page=1
+        initData()
+      }
+    }
+    function onChangePage(val:number){
+      ForumSearch.page=val
+      initData()
+    }
     onMounted(()=>{
+      // serve.v(dataObj); 
       const { currentTab } = route.query
       currentTab?type.value=Number(currentTab):''
       updateRouter()
-       initData()
+      initData()
     })
-    // pubIndex  myself   attend
-    return {tabs ,tabSwitch,list,columns,ForumSearch,loading,total};
+    return {tabs,type,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,tabSwitch,search,onChangePage,clearSearch,delateCard,replyCard,handleReply};
   },
 })
 </script>
 
 <style scoped lang="less">
-  
+  :deep(.ant-modal-header){
+      border:  1px solid @theme-color;
+      background: @theme-color;
+    }
 .content{
     width: 1330px;
     margin: 20px auto 0;

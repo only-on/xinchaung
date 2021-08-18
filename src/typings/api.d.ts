@@ -1,5 +1,6 @@
 import { TFHttpSend } from './getRequest';
 import { TDataType } from './fetch';
+import { IForumAps } from 'src/api/modules/forum'
 /**
  * 通用响应类型
  */
@@ -33,11 +34,7 @@ export interface IApiCollection {
     Experimental: {
         loginIn: TFHttpSend,
         getMyExperimentalList: TFHttpSend
-        getLatelyExperimentalList:TFHttpSend
+        getLatelyExperimentalList: TFHttpSend
     },
-    forum:{
-        attend: TFHttpSend,
-        myself: TFHttpSend,
-        pubIndex: TFHttpSend,
-    }
+    forum: IForumAps
 }

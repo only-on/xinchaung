@@ -157,7 +157,7 @@ export default function request({
           // router.replace({ path: "/login" }).catch(() => {});
           reject(null)
         } else {
-          message.warning(res.msg);
+          message.warning(res.msg?res.msg:res.error.msg);
           reject(null)
         }
       })
