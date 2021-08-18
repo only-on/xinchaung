@@ -1,7 +1,7 @@
 import RouterViews  from "../../components/RouterView.vue";
 
 export default{
-    path: "/",
+    path: "/vm",
     component: RouterViews,
     meta: {
         title: "实训",
@@ -9,7 +9,7 @@ export default{
     },
     children: [
         {
-            path:"/ace",
+            path:"ace",
             name:"ace",
             component:()=>import("src/views/VirtualMachine/Ace/Ace.vue"),
             meta:{

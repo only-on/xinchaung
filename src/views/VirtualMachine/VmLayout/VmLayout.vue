@@ -216,7 +216,7 @@ export default defineComponent({
     flex-shrink: 0;
   }
   .vm-main {
-    flex: 1;
+    height: calc(100% - 70px);
     display: flex;
     flex-direction: row;
     .vm-nav {
