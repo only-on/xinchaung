@@ -10,13 +10,16 @@
         {{ v.name }}
       </div>
     </div>
-    <Breadcrumb />
+    <div class="nav__tab--middle">
+      <slot></slot>
+    </div>
+    <breadcrumb />
   </div>
 </template>
 
 <script lang="ts">
 import { number } from "echarts";
-import { defineComponent, ref, onMounted, reactive, Ref ,watch} from "vue";
+import { defineComponent, ref, onMounted, reactive, Ref, watch } from "vue";
 import { useStore } from "vuex";
 
 export declare interface ITab {
@@ -30,29 +33,29 @@ export default defineComponent({
     tabs: {
       required: true,
       type: Array,
-      default: () => [{ name: "未知模块" ,componenttype:0}],
+      default: () => [{ name: "未知模块", componenttype: 0 }],
     },
-    current:{
+    current: {
       required: false,
-      type:Number,
-      default:0
-    }
+      type: Number,
+      default: 0,
+    },
   },
   emits: ["tabSwitch"],
   setup: (props, context) => {
     const tabs = reactive(props.tabs) as ITab[];
-    const activeName:Ref<string> = ref('');
-    const currentTab:Ref<number>=ref(props.current)
+    const activeName: Ref<string> = ref("");
+    const currentTab: Ref<number> = ref(props.current);
     function tabChange(item: ITab) {
       context.emit("tabSwitch", item);
       activeName.value = item.name;
     }
     onMounted(() => {
-      activeName.value=tabs[currentTab.value].name
+      activeName.value = tabs[currentTab.value].name;
     });
-    watch(props,()=>{
-      activeName.value=tabs[props.current].name
-    })
+    watch(props, () => {
+      activeName.value = tabs[props.current].name;
+    });
     return { tabs, activeName, tabChange };
   },
 });
@@ -88,6 +91,11 @@ export default defineComponent({
         color: #fff;
       }
     }
+  }
+  .nav__tab--middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
   }
 }
 </style>

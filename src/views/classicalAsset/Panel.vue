@@ -1,8 +1,9 @@
 <template>
   <div class="classical__container">
     <div class="classical__card">
-      <nav-tab :tabs="tabs" @tabSwitch="tabSwitch" style="width: auto" />
-      <disk-usage></disk-usage>
+      <nav-tab :tabs="tabs" @tabSwitch="tabSwitch" style="width: auto">
+        <disk-usage></disk-usage
+      ></nav-tab>
       <div class="classical__search-form">
         <a-input-search
           class="classical_search-input"
@@ -27,12 +28,12 @@ import { defineComponent, ref } from "vue";
 // import http from "src/api/index";
 import { ITab } from "src/components/NavTab.vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
-import DiskUsage from '../../components/classical/DiskUsage.vue';
+import DiskUsage from "../../components/classical/DiskUsage.vue";
 export default defineComponent({
   name: "ClassicalAssetPanel",
   components: {
     AssetFolder,
-    DiskUsage
+    DiskUsage,
   },
   setup() {
     const searchStr = ref("");
