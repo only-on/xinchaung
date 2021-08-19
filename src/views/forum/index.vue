@@ -4,17 +4,11 @@
     <div class="content_box">
       <div class="header">
         <div class="search">
-          <div class="item"><span>帖子名称：</span>
-            <a-input v-model:value="ForumSearch.title" />
+          <div class="item custom_input">
+            <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" />
           </div>
-          <div  class="item"><span>发帖类型：</span>
-                <a-select v-model:value="ForumSearch.type" placeholder="请选择">
-                  <a-select-option value="0">请选择</a-select-option>
-                  <a-select-option value="1">求助</a-select-option>
-                  <a-select-option value="2">分享</a-select-option>
-                  <a-select-option value="3">通知</a-select-option>
-                  <a-select-option value="4">公告</a-select-option>
-                </a-select>
+          <div  class="item custom_select">
+              <a-select  placeholder="请选择发帖类型" :options="options"></a-select>
           </div>
           <div class="item">
             <a-button type="primary" @click="search()">查询</a-button>
@@ -27,10 +21,13 @@
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
         :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage}"  
         class="components-table-demo-nested">
+        <template #title="{record, text }">
+          <a @click="detaile(record.id)">{{ text }}</a>
+        </template>
         <template #operation="{record}">
           <a  class="caozuo" @click="replyCard(record )">回帖</a>
           <a  class="caozuo" @click="editCard(record )" v-if="type===1">编辑</a>
-          <a  class="caozuo" @click="delateCard(record )">删除</a>
+          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
         </template>
         <!-- <template>
           <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
@@ -40,21 +37,27 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="620">
       <h4>回复内容</h4>
       <a-textarea v-model:value="ForumArticle.content" placeholder="请输入回复内容" :rows="6" showCount :maxlength="100" />
+      <template #footer>
+        <a-button @click="handleReply" type="primary">提交</a-button>
+      </template>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts">
-  import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal,message } from 'ant-design-vue';
-import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs } from 'vue'
+import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs} from 'vue'
 import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
+import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
+import { SelectTypes } from 'ant-design-vue/es/select';
+import myicon from 'src/assets/images/forum/data-type.png'
 interface IforumSearch{
   title:string,
-  type:string,
+  type:string | undefined,
   pageSize:number,
   page:number
 }
@@ -75,7 +78,8 @@ const columns=[
     title: '帖子名称',
     dataIndex:"title",
     align:'center',
-    width:260
+    width:260,
+    slots: { customRender: 'title' },
   },
   {
     title: '类型',
@@ -112,12 +116,14 @@ const columns=[
 export default defineComponent({
   name: 'forumindex',
   components: {
-   
+    SmileOutlined,
+    MehOutlined,
   },
   setup: (props,{emit}) => {
     const router = useRouter();
-    const route:any = useRoute()
+    const route = useRoute();
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
+    const options = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '1', label: '分享'},{value: '1', label: '通知'},{value: '1', label: '公告'},])
     const http=(request as any).forum
     const apiName=['pubIndex','myself','attend'] 
     var type:Ref<number>=ref(0)
@@ -134,9 +140,9 @@ export default defineComponent({
     // var list: Ref<ItdItems[]> = ref([])
     var ForumSearch:IforumSearch=reactive({
       title:'',
-      type:'0',
       pageSize:10,
-      page:1
+      page:1,
+      type:undefined
     })
     function tabSwitch(val:any){
       if(val.componenttype!==type.value){
@@ -195,12 +201,11 @@ export default defineComponent({
     }
     function replyCard(val:ItdItems){
       visible.value=true
-      console.log(val)
+      // console.log(val)
       ForumArticle.forum_id=val.id
     }
     function handleReply(){
-      let obj:any={'ForumArticle[forum_id]':ForumArticle.forum_id,'ForumArticle[content]':ForumArticle.content}
-      http.handleReply({param:{...obj}}).then((res:IBusinessResp)=>{
+      http.handleReply({param:{ForumArticle:{...ForumArticle}}}).then((res:IBusinessResp)=>{
         if(res.status===1){
               initData()
               message.success('回复成功')
@@ -212,7 +217,6 @@ export default defineComponent({
       })
     }
     function editCard(val:ItdItems){
-
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -229,6 +233,9 @@ export default defineComponent({
     function release(){
       router.push('/forum/CreatePosts')
     }
+    function detaile(id:number){
+      router.push('/forum/PostsDetailed?id='+id)
+    }
     onMounted(()=>{
       // serve.v(dataObj); 
       const { currentTab } = route.query
@@ -236,7 +243,7 @@ export default defineComponent({
       updateRouter()
       initData()
     })
-    return {tabs,type,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,tabSwitch,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release};
+    return {tabs,type,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,tabSwitch,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
   },
 })
 </script>
@@ -281,23 +288,49 @@ export default defineComponent({
         .item{
           display: flex;
           align-items: center;
-          >span{
-            width: 94px;
-            text-align: center;
-            color: #444;
-            font-weight: bold;
-            font-size: 14px;
-          }
           :deep(.ant-select-selector){
-            width: 220px;
+            width: 240px;
             height: 35px;
+            padding-left: 30px;
+            align-items: center;
           }
+          .ant-input{
+            padding-left: 30px;
+          }
+        }
+        .item:nth-child(2){
+          padding: 0 20px;
         }
         .item:nth-child(3){
           .ant-btn{
             margin: 0 10px;
           }
         } 
+        
+        .custom_select{
+          :deep(.ant-select-selector)::before{
+            content: '';
+            position: absolute;
+            left:5px;
+            top:6px;
+            background: url(../../assets/images/forum/data-type.png) no-repeat;
+            width: 18px;
+            height: 18px;
+          }
+        }
+        .custom_input{
+          position: relative;
+          &::before{
+              content: '';
+              position: absolute;
+              left:5px;
+              top:6px;
+              background: url(../../assets/images/forum/data-type.png) no-repeat;
+              width: 18px;
+              height: 18px;
+              z-index: 10;
+          }
+        }
       }
     }
   }

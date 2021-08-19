@@ -149,6 +149,7 @@ export default function request({
       .then(checkResponseType)
       .then(responseSucceed)
       .then((res: IBusinessResp) => {
+        // console.log(res);
         if (res.status === RESP_SUCCESS) {
           // message.success('成功');
           resolve(res);

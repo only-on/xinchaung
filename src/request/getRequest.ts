@@ -48,7 +48,6 @@ GetRequest.prototype.sendServe = function (
   };
   const successFun = success || defaultFn;
   const callback = function (response: IBusinessResp) {
-    self[modulename][name].customState = "await";
     successFun(response);
     return response;
   };
@@ -59,7 +58,9 @@ GetRequest.prototype.sendServe = function (
       method: method,
       body: param,
       dataType: dataType,
-    }).then(callback);
+    }).then(callback).finally(()=>{
+      self[modulename][name].customState = "await";
+    });
   }
   return new Promise((resolve, reject) => { resolve(null) });
 };

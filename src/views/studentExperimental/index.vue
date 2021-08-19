@@ -56,7 +56,7 @@ export default defineComponent({
     width: @center-width;
     margin: 20px auto 0;
     background: #fff;
-    height: 100%;
+    min-height: 100%;
     .content_box{
       width: 100%;
       margin-bottom: 20px;

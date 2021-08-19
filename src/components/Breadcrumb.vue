@@ -1,5 +1,5 @@
 <template>
-  <a-breadcrumb :class="type === 'default'?'':'allWhite'">
+  <a-breadcrumb :class="type?'':'allWhite'">
     <!-- <div class="nav"> -->
           <!-- <div>首页</div>
           <div class="qian">我的课程</div> -->
@@ -25,8 +25,8 @@ export default defineComponent({
   props:{
     type:{
       required: false,
-      type: String,
-      default: 'default',
+      type: Boolean,
+      default: true,
     }
   },
   setup: (props,{emit}) => {
@@ -75,7 +75,7 @@ export default defineComponent({
       }
   }
   .allWhite{
-    a,span:last-child{
+    a,span,span:last-child{
       color:#fff;
     }
     :deep(.ant-breadcrumb-separator){
