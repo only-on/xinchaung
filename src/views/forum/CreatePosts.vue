@@ -32,11 +32,11 @@ export default defineComponent({
   .header{
     display: flex;
     justify-content: space-between;
-    width: @Edition-Center;
+    width: @center-width;
     margin: 0 auto;
   }
   .content{
-    width: @Edition-Center;
+    width: @center-width;
     margin: 20px auto 0;
     background: #fff;
     height: 100%;

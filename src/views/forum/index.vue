@@ -247,7 +247,7 @@ export default defineComponent({
       background: @theme-color;
     }
 .content{
-    width: @Edition-Center;
+    width: @center-width;
     margin: 20px auto 0;
     background: #fff;
     height: 100%;

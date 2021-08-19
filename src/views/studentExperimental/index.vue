@@ -53,7 +53,7 @@ export default defineComponent({
 
 <style scoped lang="less">
   .content{
-    width: @Edition-Center;
+    width: @center-width;
     margin: 20px auto 0;
     background: #fff;
     height: 100%;
