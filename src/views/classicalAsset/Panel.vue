@@ -2,8 +2,8 @@
   <div class="classical__container">
     <div class="classical__card">
       <nav-tab :tabs="tabs" @tabSwitch="tabSwitch" style="width: auto">
-        <disk-usage></disk-usage
-      ></nav-tab>
+        <disk-usage v-show="showDiskUsage"></disk-usage>
+      </nav-tab>
       <div class="classical__search-form">
         <a-input-search
           class="classical_search-input"
@@ -37,6 +37,7 @@ export default defineComponent({
   },
   setup() {
     const searchStr = ref("");
+    const showDiskUsage = ref(false);
     const tabs = [
       { name: "公有", componenttype: 0 },
       { name: "私有", componenttype: 1 },
@@ -56,12 +57,12 @@ export default defineComponent({
     // });
 
     const tabSwitch = (tab: ITab) => {
-      console.log(tab);
+      showDiskUsage.value = tab.componenttype === 1;
     };
     const handleSearch = (searchValue: string) => {
       console.log("[classical][panel] searching: ", searchValue);
     };
-    return { tabs, searchStr, tabSwitch, handleSearch };
+    return { tabs, searchStr, showDiskUsage, tabSwitch, handleSearch };
   },
 });
 </script>

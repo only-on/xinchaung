@@ -2,8 +2,9 @@ import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecor
 import store from "../store/index";
 import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
-const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon,]
-// console.log(routes);
+import RoutesTeacherSide from './teacherSide'
+const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide]]
+// console.log('all routes: ', routes);
 const router = createRouter({
   history: createWebHashHistory(),
   routes
