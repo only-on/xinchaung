@@ -32,6 +32,7 @@ export default defineComponent({
   // 相同块元素之间，在垂直方向上，其margin会叠加，css这样设计的意义在于避免产生双倍边距
   margin: @margin-md 0px;
   color: @text-color-secondary;
+  background-color: @background-color-light;
 
   &:hover {
       box-shadow: @shadow-ring;
