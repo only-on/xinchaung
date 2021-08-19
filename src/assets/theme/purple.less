@@ -75,8 +75,8 @@
 @heading-5-size: ceil(@font-size-base * 1.14);
 // https://github.com/ant-design/ant-design/issues/20210
 @line-height-base: 1.5715;
-@border-radius-base: 2px;
-@border-radius-sm: @border-radius-base;
+@border-radius-base: @border-radius-default;
+@border-radius-sm: @border-radius-default;
 
 // vertical paddings
 @padding-lg: 24px; // containers
@@ -166,8 +166,8 @@
 
 // Buttons
 @btn-font-weight: 400;
-@btn-border-radius-base: @border-radius-base;
-@btn-border-radius-sm: @border-radius-base;
+@btn-border-radius-base: @border-radius-default;
+@btn-border-radius-sm: @border-radius-default;
 @btn-border-width: @border-width-base;
 @btn-border-style: @border-style-base;
 @btn-shadow: 0 2px 0 rgba(0, 0, 0, 0.015);
@@ -349,7 +349,7 @@
 @animation-duration-fast: 0.1s; // Tooltip
 
 //CollapsePanel
-@collapse-panel-border-radius: @border-radius-base;
+@collapse-panel-border-radius: @border-radius-default;
 
 //Dropdown
 @dropdown-menu-bg: @component-background;
@@ -563,7 +563,7 @@
 @table-expanded-row-bg: #fbfbfb;
 @table-padding-vertical: 16px;
 @table-padding-horizontal: 16px;
-@table-border-radius-base: @border-radius-base;
+@table-border-radius-base: @border-radius-default;
 @table-footer-bg: @background-color-light;
 @table-footer-color: @heading-color;
 @table-header-bg-sm: transparent;
@@ -622,7 +622,7 @@
 @card-skeleton-bg: #cfd8dc;
 @card-background: @component-background;
 @card-shadow: 0 2px 8px rgba(0, 0, 0, 0.09);
-@card-radius: @border-radius-sm;
+@card-radius: @border-radius-card;
 
 // Comment
 // ---
@@ -678,7 +678,7 @@
 @avatar-font-size-sm: 14px;
 @avatar-bg: #ccc;
 @avatar-color: #fff;
-@avatar-border-radius: @border-radius-base;
+@avatar-border-radius: @border-radius-default;
 @avatar-group-overlapping: -8px;
 @avatar-group-space: 3px;
 @avatar-group-border-color: #fff;
@@ -874,3 +874,8 @@
 @result-subtitle-font-size: @font-size-base;
 @result-icon-font-size: 72px;
 @result-extra-margin: 24px 0 0 0;
+
+// 高职ai
+@border-radius-card: @border-radius-default; // 默认边框、弹窗圆角值
+@border-radius-default: 4px; // 表单控件圆角值，input、button等
+@shadow-ring: 0 0 6px 3px @shadow-color; // 环状box-shadow
