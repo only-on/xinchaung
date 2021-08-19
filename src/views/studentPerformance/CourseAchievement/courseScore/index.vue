@@ -43,12 +43,12 @@
                             <li v-bind="{class:flag}" class="exper-con" v-for="(itm,j) in item.exper" :key="j">
                             <div class="task">
                                 <div class="task-left">{{itm.expername}}</div>
-                                <div class="task-right" @click="viewResults(index,j)">查看成绩</div>
+                                <div class="task-right" @click="viewResults(index,j,itm.experdis)">查看成绩</div>
                             </div>
-                            <!-- <div class="score-table" v-else>
+                            <div class="score-table" v-if="itm.experdis">
                                 <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
                                 </a-table>
-                            </div> -->
+                            </div>
                         </li>
                         </div>
                     </ul>
@@ -58,16 +58,22 @@
     </div>
 </template>
 <script lang="ts">
-import { BlockList } from 'net'
 import {defineComponent,onMounted,reactive, toRefs} from 'vue'
+interface ObjectD{
+    expername?:string,
+    experdis?:boolean,
+}
 interface ObjectArrType{
-    exper?:any[]
+    exper:ObjectD[],
+    dis?:boolean,
+    chapter?:string,
+    score?:any,
 }
 interface State{
     CourseScoreInfo:ObjectArrType[],
-    flag:any,
     columns:any[],
-    data:any[]
+    data:any[],
+    flag?:boolean
 }
 export default defineComponent({
     name:'courseScore',
@@ -90,7 +96,6 @@ export default defineComponent({
                     expername:'webideinit',
                 }]
             }],
-            flag:false,
              columns:[
                     {   title:'花费时间',
                         dataIndex: 'name',
@@ -139,24 +144,26 @@ export default defineComponent({
             }]
         })
         function expand(index:number){
-            // state.CourseScoreInfo[index].dis=!state.CourseScoreInfo[index].dis
+            state.CourseScoreInfo[index].dis=!state.CourseScoreInfo[index].dis
         }
-        function viewResults(index:number,j:number){
-            // (state.CourseScoreInfo[index].exper[j].dis=!state.CourseScoreInfo[index].exper[j].dis
+        function viewResults(index:number,j:number,c:any){
+            state.CourseScoreInfo[index].exper[j].experdis=!state.CourseScoreInfo[index].exper[j].experdis
         }
          onMounted(() => {
             state.CourseScoreInfo.forEach((item:any,j)=>{
                 if(j==0){
-                    (item.dis as boolean)=true
-                    // item['dis']=true 
+                    item.dis=true
                 }else{
-                    (item.dis as boolean)=state.flag
+                    item.dis=false
                 }
                 console.log(item,item.exper)
-                // state.CourseScoreInfo[j].exper.forEach((itm:object,x:number) => {
-                //     state.CourseScoreInfo[j].exper[x]=true
-                // });
-            })  
+            })
+            
+            for(var i=0;i<state.CourseScoreInfo.length;i++){
+                state.CourseScoreInfo[i].exper?.forEach((item,index)=>{
+                    item.experdis=true
+                })
+            }
          })
         return {...toRefs(state),expand,viewResults}
     }
