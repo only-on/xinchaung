@@ -21,7 +21,7 @@
             <a-button type="primary" @click="clearSearch()">清空</a-button>
           </div>
         </div>
-        <a-button type="primary">发布问题</a-button>
+        <a-button @click="release()" type="primary">发布问题</a-button>
       </div>
       <!-- :row-key="(record) => record.id" -->
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
@@ -29,6 +29,7 @@
         class="components-table-demo-nested">
         <template #operation="{record}">
           <a  class="caozuo" @click="replyCard(record )">回帖</a>
+          <a  class="caozuo" @click="editCard(record )" v-if="type===1">编辑</a>
           <a  class="caozuo" @click="delateCard(record )">删除</a>
         </template>
         <!-- <template>
@@ -103,7 +104,8 @@ const columns=[
     dataIndex: 'operation',
     align:'center',
     slots: { customRender: 'operation' },
-    fixed:'right'
+    fixed:'right',
+    width:200
   }
 ]
 
@@ -181,6 +183,7 @@ export default defineComponent({
         onOk(){
           http.delateCard({param:{id:val.id}}).then((res:IBusinessResp)=>{
             if(res.status===1){
+              initData()
               message.success('删除成功')
             }else{
               message.warning(res.msg)
@@ -199,11 +202,17 @@ export default defineComponent({
       let obj:any={'ForumArticle[forum_id]':ForumArticle.forum_id,'ForumArticle[content]':ForumArticle.content}
       http.handleReply({param:{...obj}}).then((res:IBusinessResp)=>{
         if(res.status===1){
+              initData()
               message.success('回复成功')
+              visible.value=false
+              ForumArticle.content=''
             }else{
               message.warning(res.error.msg)
             }
       })
+    }
+    function editCard(val:ItdItems){
+
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -217,6 +226,9 @@ export default defineComponent({
       ForumSearch.page=val
       initData()
     }
+    function release(){
+      router.push('/forum/CreatePosts')
+    }
     onMounted(()=>{
       // serve.v(dataObj); 
       const { currentTab } = route.query
@@ -224,7 +236,7 @@ export default defineComponent({
       updateRouter()
       initData()
     })
-    return {tabs,type,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,tabSwitch,search,onChangePage,clearSearch,delateCard,replyCard,handleReply};
+    return {tabs,type,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,tabSwitch,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release};
   },
 })
 </script>
@@ -235,7 +247,7 @@ export default defineComponent({
       background: @theme-color;
     }
 .content{
-    width: 1330px;
+    width: @Edition-Center;
     margin: 20px auto 0;
     background: #fff;
     height: 100%;
