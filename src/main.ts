@@ -4,7 +4,7 @@ import initProject from 'src/utils/project'
 import "src/assets/theme/purple.less"
 
 // 公共样式
-import "./style/common.scss"
+import "./style/common.less"
 
 const app = createApp(App);
 initProject(app)

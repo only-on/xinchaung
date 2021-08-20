@@ -6,7 +6,7 @@
     <div class="exam-info">
       <div class="exam-info-name">
         <span class="exam-title">试卷名称</span>
-        <span class="back-btn">返回</span>
+        <span class="back-btn" @click="back">返回</span>
       </div>
       <div class="exam-count">
         <span>
@@ -37,7 +37,14 @@ import { defineComponent, ref } from "vue";
 import { useRouter } from "vue-router";
 export default defineComponent({
   setup() {
+    const router=useRouter()
+    function back(){
+      router.push({
+        path:"/exam/list"
+      })
+    }
     return {
+      back
     };
   },
 });
@@ -65,6 +72,8 @@ export default defineComponent({
         margin-left: 30px;
         padding: 5px 15px;
         border-radius: 3px;
+        color: @theme-color;
+        cursor: pointer;
       }
     }
     >div{
@@ -72,6 +81,7 @@ export default defineComponent({
         margin-bottom: 15px;
         >span{
           font-size: 14px;
+          margin-right: 10px;
           >i{
             font-style: normal;
             color: @theme-color;

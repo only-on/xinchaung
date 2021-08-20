@@ -1,5 +1,5 @@
 /*公共样式--开始*/
-$theme:#8955b5;
+
 
 *{margin: 0;padding: 0;box-sizing: border-box;}
 html, body {
@@ -96,12 +96,14 @@ textarea {
     }
     // 滚动条两端的按钮
     &::-webkit-scrollbar-button{
-        background-color:cyan;
+        background-color:@theme-color;
+        width: 10px;
+        height: 1px;
     }
     // 外层轨道
     &::-webkit-scrollbar-track{
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: rosybrown;
+        background-color: #f9d6ff;
         border-radius: 3px;
     }
     // 内层轨道
@@ -112,11 +114,11 @@ textarea {
     &::-webkit-scrollbar-thumb{
         border-radius: 7px;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: #E8E8E8;
+        background-color: @theme-color;
     }
     // 定义右下角汇合处的样式
     &::-webkit-scrollbar-corner{
-        background:khaki;
+        background:@theme-color;
     }
     // 两个滚动条交汇处用于拖动调整元素大小的小控件
     &::-webkit-resizer{
