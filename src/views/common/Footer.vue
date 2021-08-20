@@ -1,6 +1,6 @@
 <template>
     <div class="footer-box">
-        <div>暂时menu：<router-link to="/exam/list">考试管理</router-link><router-link to="/exam/look">查看成绩</router-link></div>
+        <div>临时menu：<router-link to="/exam/list">考试管理</router-link></div>
     </div>
 </template>
 

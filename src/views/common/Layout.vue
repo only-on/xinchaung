@@ -66,7 +66,7 @@ export default defineComponent({
       width: 1330px;
       margin: 0px auto;
       height: 100%;
-      background: @white;
+      // background: @white;
       // width: 100%;
     }
   }
