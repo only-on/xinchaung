@@ -117,7 +117,7 @@ export default defineComponent({
         exper:[]
     })
     function DrawEchar(){
-    let echarts=inject("ec");
+    let echarts=inject("echarts");
     let myChart = (echarts as any).init(document.getElementById("myChart"));
       // 绘制图表
       myChart.setOption({

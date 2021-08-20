@@ -26,7 +26,7 @@ export default defineComponent({
   setup: (props, { emit }) => {
     // 放在setup的顶行，这个是全局的i18n对象
     const { locale } = useI18n({ useScope: "global" });
-    provide('ec',echarts)
+    provide('echarts',echarts)
     const textWord = ref("儿子");
     const n2 = ref(0);
 
