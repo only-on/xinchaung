@@ -5,7 +5,12 @@
       <div>93GB可用（共99GB）</div>
     </div>
     <div class="classical__disk-usage--progress">
-      <a-progress :percent="progress" :show-info="false" status="success" />
+      <a-progress
+        :percent="progress"
+        :show-info="false"
+        strokeColor="#FF9A34"
+        trailColor="#e8e8e8"
+      />
     </div>
   </div>
 </template>
@@ -23,8 +28,8 @@ export default defineComponent({
 </script>
 <style lang="less">
 .classical__disk-usage {
-    width: 50%;
-    line-height: 16px;
+  width: 370px;
+  line-height: 16px;
   .classical__disk-usage--desc {
     display: flex;
     justify-content: space-between;
@@ -32,7 +37,7 @@ export default defineComponent({
   .classical__disk-usage--progress {
     line-height: 5px;
     .ant-progress {
-        line-height: 8px;
+      line-height: 8px;
     }
   }
 }

@@ -1,26 +1,38 @@
 <template>
   <div class="classical__container">
-    <div class="classical__card">
-      <nav-tab :tabs="tabs" @tabSwitch="tabSwitch" style="width: auto">
-        <disk-usage v-show="showDiskUsage"></disk-usage>
-      </nav-tab>
+    <nav-tab :tabs="tabs" @tabSwitch="tabSwitch" style="width: auto"></nav-tab>
+    <a-card class="classical__card">
       <div class="classical__search-form">
-        <a-input-search
-          class="classical_search-input"
-          v-model:value="searchStr"
-          placeholder="请输入目录名称关键字查询"
-          @search="handleSearch"
-        />
-        <a-button type="primary" @click="createFolder">
-          <template #icon
-            ><span class="iconfont icon-tianjia"></span>&nbsp;</template
+        <div class="classical__search">
+          <a-input
+            class="classical_search-input"
+            v-model:value="searchStr"
+            placeholder="请输入目录名称关键字查询"
+            @search="handleSearch"
           >
-          创建目录
-        </a-button>
+            <template #prefix>
+              <a-button type="text" class="classical__search-form--prefix">
+                <span class="iconfont icon-sousuo" />
+              </a-button>
+            </template>
+          </a-input>
+        </div>
+        <div class="classical_op">
+          <disk-usage
+            v-show="showDiskUsage"
+            class="classical__disk-usage--container"
+          ></disk-usage>
+          <a-button type="primary" @click="createFolder">
+            <template #icon
+              ><span class="iconfont icon-tianjia"></span>&nbsp;</template
+            >
+            创建目录
+          </a-button>
+        </div>
       </div>
       <asset-folder></asset-folder>
       <asset-folder></asset-folder>
-    </div>
+    </a-card>
     <a-modal
       v-model:visible="createFolderVisible"
       title="创建目录"
@@ -35,10 +47,9 @@
           <a-input
             placeholder="输入名称"
             v-model:value="folderInfo.name"
-            :showCount="true"
-            :maxlength="60"
+            showCount
+            maxlength="10"
           >
-            <template #suffix> 0/30 </template>
           </a-input>
         </a-form-item>
         <a-form-item label="描述：">
@@ -48,6 +59,7 @@
             v-model:value="folderInfo.description"
             showCount
             :maxlength="100"
+            class="classical__folder-desc"
           />
         </a-form-item>
       </a-form>
@@ -132,15 +144,33 @@ export default defineComponent({
   .classical__card {
     width: 100%;
     height: 100%;
+    margin-top: @margin-lg;
+    box-shadow: 0 3px 6px 0px @shadow-color;
+    .ant-card-body {
+      padding: 40px 50px;
+    }
+    .classical__disk-usage--container {
+      margin-right: @margin-lg;
+    }
     .classical__search-form {
-      margin-top: @margin-md;
-      padding: @padding-md 0px;
+      padding: 0px 0px @padding-md 0px;
       display: flex;
       justify-content: space-between;
+      .classical__search-form--prefix {
+        padding: 0;
+      }
       .classical_search-input {
-        width: 50%;
+        width: 400px;
+      }
+      .classical_op {
+        display: flex;
       }
     }
+  }
+}
+.classical__folder-desc {
+  textarea {
+    resize: none;
   }
 }
 </style>
