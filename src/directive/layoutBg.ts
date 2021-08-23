@@ -2,7 +2,7 @@ import { ObjectDirective } from "vue"
 import bg from "../assets/common/layout_bg.jpg"
 const layoutBg:ObjectDirective={
     mounted(el:HTMLElement,binging:any){
-        const dom=document.getElementById("main-box")
+        const dom=document.getElementById("app")
         if (Object.prototype.toString.call(binging.value)==='[object Object]') {
             let layoutBg=binging.value.bg?binging.value.bg:bg
             let layoutSize=binging.value.size?binging.value.size:'312px'
@@ -16,7 +16,9 @@ const layoutBg:ObjectDirective={
         dom?.style?dom.style.backgroundRepeat="no-repeat":''
     },
     unmounted(){
-
+        console.log(121);
+        const dom=document.getElementById("app")
+        dom?.style?dom.style.backgroundImage="unset":''
     }
 }
 
