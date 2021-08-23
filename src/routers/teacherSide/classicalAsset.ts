@@ -16,6 +16,15 @@ export default {
                 title: "精品课资源",
                 authCode: 'classicalAsset'
             },
-        }
+        },
+        {
+            path: "/virtualEnv",
+            name: "virtualEnv",
+            component: () => import("src/views/teachCourse/index.vue"),
+            meta: {
+                title: "课程环境",
+                authCode: 'virtualEnv'
+            },
+        },
     ]
 }

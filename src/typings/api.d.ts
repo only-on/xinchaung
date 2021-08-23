@@ -36,5 +36,14 @@ export interface IApiCollection {
         getMyExperimentalList: TFHttpSend
         getLatelyExperimentalList: TFHttpSend
     },
-    forum: IForumAps
+    forum: IForumAps,
+    course: {
+        getPre: TFHttpSend,
+        vmOpen: TFHttpSend,
+        vmClose: TFHttpSend,
+        vmRevert: TFHttpSend,
+        vmReset: TFHttpSend,
+        preLimit: TFHttpSend,
+        saveTopoinst: TFHttpSend,
+    },
 }
