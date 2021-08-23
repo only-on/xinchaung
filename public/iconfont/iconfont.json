@@ -6,6 +6,90 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "11677985",
+      "name": "竖线",
+      "font_class": "weibiaoti--",
+      "unicode": "e68d",
+      "unicode_decimal": 59021
+    },
+    {
+      "icon_id": "18311667",
+      "name": "说明",
+      "font_class": "shuoming",
+      "unicode": "e68b",
+      "unicode_decimal": 59019
+    },
+    {
+      "icon_id": "20409853",
+      "name": "目录",
+      "font_class": "mulu",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "20421678",
+      "name": "方向",
+      "font_class": "fangxiang",
+      "unicode": "e687",
+      "unicode_decimal": 59015
+    },
+    {
+      "icon_id": "22265574",
+      "name": "院系",
+      "font_class": "yuanxi",
+      "unicode": "e68a",
+      "unicode_decimal": 59018
+    },
+    {
+      "icon_id": "7312806",
+      "name": "ren",
+      "font_class": "ren",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "20206908",
+      "name": "名称",
+      "font_class": "mingcheng",
+      "unicode": "e685",
+      "unicode_decimal": 59013
+    },
+    {
+      "icon_id": "21972585",
+      "name": "鼠标",
+      "font_class": "shubiao1",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "10316356",
+      "name": "状态",
+      "font_class": "zhuangtai",
+      "unicode": "e683",
+      "unicode_decimal": 59011
+    },
+    {
+      "icon_id": "18739338",
+      "name": "类型",
+      "font_class": "leixing-01",
+      "unicode": "e682",
+      "unicode_decimal": 59010
+    },
+    {
+      "icon_id": "14095366",
+      "name": "IP",
+      "font_class": "IP",
+      "unicode": "e79e",
+      "unicode_decimal": 59294
+    },
+    {
+      "icon_id": "14841706",
+      "name": "取消",
+      "font_class": "quxiaobeifen",
+      "unicode": "e681",
+      "unicode_decimal": 59009
+    },
+    {
       "icon_id": "10240921",
       "name": "警告",
       "font_class": "warn",
@@ -683,6 +767,20 @@
       "font_class": "shangyi1",
       "unicode": "e680",
       "unicode_decimal": 59008
+    },
+    {
+      "icon_id": "23709396",
+      "name": "教师",
+      "font_class": "jiaoshi122-copy",
+      "unicode": "e8e2",
+      "unicode_decimal": 59618
+    },
+    {
+      "icon_id": "23709184",
+      "name": "renshu",
+      "font_class": "renshu2-copy",
+      "unicode": "e8e1",
+      "unicode_decimal": 59617
     },
     {
       "icon_id": "13532530",
