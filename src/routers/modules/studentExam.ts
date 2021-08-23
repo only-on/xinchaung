@@ -20,7 +20,7 @@ export default{
                 {
                     path:"list",
                     name:"list",
-                    component:()=>import("src/views/exam/examList/examList.vue"),
+                    component:()=>import("src/views/studentExam/examList/examList.vue"),
                     meta:{
                         title:"考试列表",
                         authCode:""
@@ -32,7 +32,7 @@ export default{
         {
             path:"examDoing",
             name:"examDoing",
-            component:()=>import("src/views/exam/examDoing/examDoing.vue"),
+            component:()=>import("src/views/studentExam/examDoing/examDoing.vue"),
             meta:{
                 title:"正在考试",
                 authCode:""
@@ -41,7 +41,7 @@ export default{
         {
             path:"look",
             name:"look",
-            component:()=>import("src/views/exam/transcript/transcript.vue"),
+            component:()=>import("src/views/studentExam/transcript/transcript.vue"),
             meta:{
                 title:"查看成绩",
                 authCode:""

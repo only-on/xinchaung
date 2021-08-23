@@ -16,7 +16,6 @@ const layoutBg:ObjectDirective={
         dom?.style?dom.style.backgroundRepeat="no-repeat":''
     },
     unmounted(){
-        console.log(121);
         const dom=document.getElementById("main-box")
         dom?.style?dom.style.backgroundImage="unset":''
     }
