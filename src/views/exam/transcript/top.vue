@@ -1,6 +1,6 @@
 <template>
   <div class="exam-list-top">
-    <div class="exam-top-img">
+    <div class="exam-top-img" v-layout-bg>
       <img src="../../../assets/exam/top-images.png" alt="" />
     </div>
     <div class="exam-info">
@@ -39,9 +39,10 @@ export default defineComponent({
   setup() {
     const router=useRouter()
     function back(){
-      router.push({
-        path:"/exam/list"
-      })
+      // router.push({
+      //   path:"/exam/list"
+      // })
+      router.go(-1)
     }
     return {
       back
