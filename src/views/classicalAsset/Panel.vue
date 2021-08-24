@@ -68,7 +68,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, reactive } from "vue";
-// import http from "src/api/index";
+import http from "src/api/index";
 import { ITab } from "src/components/NavTab.vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
@@ -94,6 +94,19 @@ export default defineComponent({
       { name: "私有", componenttype: 1 },
     ];
 
+    http.classicalAsset.fakeRequest({
+      param: {
+        fake: 'yes'
+      },
+      urlParams: {
+        name: 'xiaowang'
+      }
+    })
+    http.classicalAsset.fakeRequestNoUrlParam({
+      param: {
+        fake: 'yes'
+      },
+    })
     // http.classicalAsset.datasetList({
     //   param: {
     //     type: 3,

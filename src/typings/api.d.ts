@@ -23,7 +23,9 @@ export interface IApiCollection {
     // 这是api层下的模块名
     classicalAsset: {
         // 这是具体的api名
-        datasetList: TFHttpSend
+        datasetList: TFHttpSend,
+        fakeRequest: TFHttpSend,
+        fakeRequestNoUrlParam: TFHttpSend
     },
     common: {
         getMenu: TFHttpSend

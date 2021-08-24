@@ -18,5 +18,6 @@ export interface IRequestConfig {
     bindName?: string;
     concurrent?: false;
     param?: Record<string, any>;
+    urlParams?: object;
     success?: (resp: IBusinessResp) => void
 }
