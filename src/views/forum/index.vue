@@ -127,14 +127,17 @@ export default defineComponent({
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
     var replyContent:Ref<string>=ref('')
+
     var configuration:any=inject('configuration')
-    watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
-      tabType.value=val
-        initData()
-    })
     var updata=inject('updataNav') as Function
     updata({tabs:tabs,navPosition:'inside',navType:true,showContent:true,componenttype:undefined})
+    
+    watch(()=>{return configuration.componenttype},(val)=>{
+      console.log(val)
+      tabType.value=val
+      initData()
+    })
+   
     var ForumArticle:Ireply=reactive({
       forum_id:0,
       content:''

@@ -48,7 +48,6 @@ export default defineComponent({
       showContent:true,                //  是否需要内容区盒子   不需要则 layout只带顶部导航
     })
     function updataNav(val:config){
-      // console.log(val)
       Object.assign(configuration,val)
       // val?Object.keys(val).forEach((v)=>{
       //   let key=v as Titem
@@ -61,16 +60,14 @@ export default defineComponent({
     provide('configuration',configuration)
     provide('updataNav', updataNav)
     onMounted(()=>{
-      // router.push('/Course/index')
+     
     })
     function tabSwitch(val:any){
       // console.log(val)
       configuration.componenttype=val
     }
     watch(configuration, () => {
-      // navType.value=props.configuration.navType
-      // console.log(tabs[props.configuration.componenttype])
-      // activeName.value = tabs[props.configuration.componenttype].name;
+     
     });
     return {tabSwitch,configuration};
   },
@@ -102,6 +99,7 @@ export default defineComponent({
       background: #fff;
       height: 100%;
       min-height: 750px;
+      border-radius: 6px;
       .content_box{
         width: 100%;
         background: #fff;
@@ -111,7 +109,7 @@ export default defineComponent({
         // height: calc(100% - 102px);
         height: calc(100% - 44px);
         overflow: hidden;
-        border-radius: 4px;
+        border-radius: 6px;
       }
     }
     .customized{

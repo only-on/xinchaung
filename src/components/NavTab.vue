@@ -53,19 +53,8 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const tabs = reactive(configuration.tabs) as ITab[];
-    // const tabs= computed(()=>{
-    //   return (configuration.tabs) as ITab[]
-    // })
     const activeName: Ref<string> = ref("");
-    // const   activeName=computed(()=>{
-    //   return configuration.navType
-    // }) 
-    const navType:Ref<boolean>=ref(configuration.navType)
-    // const   navType=computed(()=>{
-    //   return configuration.navType
-    // })
-    // const componenttype: Ref<number> = ref(configuration.componenttype);
-      var updata=inject('updataNav') as Function
+    var updata=inject('updataNav') as Function
       
     function tabChange(item: ITab) {
       // console.log(item)
@@ -87,7 +76,6 @@ export default defineComponent({
       if(configuration.tabs && configuration.tabs.length){
         const { currentTab } = route.query
         updateRouter(currentTab?Number(currentTab):0)
-        // currentTab?configuration.componenttype=Number(currentTab):0
         configuration.componenttype=currentTab?Number(currentTab):0
         activeName.value =configuration.tabs[configuration.componenttype].name
         tabChange(configuration.tabs[configuration.componenttype])
@@ -97,9 +85,7 @@ export default defineComponent({
       initData()
     });
     watch(configuration, (val) => {
-      // console.log(val)
-      // navType.value=configuration.navType
-      // initData()
+    
     });
     return { activeName, tabChange ,configuration};
   },
@@ -113,6 +99,7 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   line-height: 43px;
+  // padding: 16px 0;
   .tab {
     display: flex;
     div {
