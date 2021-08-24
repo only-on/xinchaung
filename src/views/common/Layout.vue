@@ -22,11 +22,15 @@ import Footer from "./Footer.vue"
 import { ref, defineComponent,watch , onMounted ,Ref,reactive,provide,toRefs} from "vue";
 import { useRouter } from 'vue-router';
 // import router from "../../routers/index";
+interface tab{
+  name:string;
+  componenttype:number;
+}
 interface config{
   showNav?:boolean;
   navPosition?:string;
   navType?:boolean;
-  tabs?:any[];
+  tabs?:tab[];
   componenttype:number | undefined,
   showContent:boolean
 }

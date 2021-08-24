@@ -131,9 +131,9 @@ export default defineComponent({
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
     updata({tabs:tabs,navPosition:'inside',navType:true,showContent:true,componenttype:undefined})
-    
+
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       tabType.value=val
       initData()
     })
