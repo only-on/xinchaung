@@ -49,7 +49,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     var updata=inject('updataNav') as Function
-    updata({navType:false,tabs:[],navPosition:'outside',componenttype:undefined})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:undefined})
     const state:Istate=reactive({
       formRef:'formRef',
       formState:{

@@ -51,7 +51,7 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false})
+    updata({showContent:true,tabs:[],navPosition:'outside',navType:false})
     const state:Istate=reactive({
       Reply:()=>{
 
