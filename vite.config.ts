@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import {resolve} from 'path';
 // import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import loadProxyConfig from "./config/proxy/index"  // proxy 配置
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -61,7 +62,7 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/ws/, '')
-      },
+      }
     },
     port: 3000,
     host:'0.0.0.0',

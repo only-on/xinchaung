@@ -121,7 +121,7 @@ export default defineComponent({
       content,
       openOrClose,
       openOrCloseResultStatus,
-      aceLoading
+      aceLoading,
     };
   },
 });

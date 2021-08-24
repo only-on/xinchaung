@@ -13,6 +13,7 @@
           </li>
           <li
             class="vm-nav-item"
+            :class="currentNavKey===item.key?'active':''"
             v-for="(item, index) in vmData"
             :key="index.toString()"
             @click="open(item.key)"
@@ -82,7 +83,7 @@ export default defineComponent({
     const rightWidth:Ref<number> = ref(0); // 右侧宽度
     let mouseStart:number = 0; // 鼠标开始移动位置
     let isMove:boolean = false; // 当前是否可以拖动标识
-    let currentNavKey:string = "VM";
+    let currentNavKey:Ref<string> = ref("VM");
     // 自定义事件
     const eventCustom = document.createEvent("HTMLEvents");
                eventCustom.initEvent("resize", true, true);
@@ -139,7 +140,7 @@ export default defineComponent({
       
       if (key) {
         openStatus.value = true;
-        currentNavKey = key;
+        currentNavKey.value = key;
         currentComponent.value = setCurrentComponent(key);
       } else {
         openStatus.value = !openStatus.value;
@@ -198,6 +199,7 @@ export default defineComponent({
       mouseup,
       leftWidth,
       rightWidth,
+      currentNavKey,
     };
   },
 });
@@ -232,6 +234,9 @@ export default defineComponent({
           margin-bottom: 32px;
           color: #050101;
           transition: 0.5s;
+          &.active{
+            color: @theme-color;
+          }
           .iconfont {
             font-size: 22px;
           }
