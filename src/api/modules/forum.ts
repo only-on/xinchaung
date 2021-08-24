@@ -7,6 +7,9 @@ export default{
   delateCard:{url:`/forum/delete`,method: "POST"},
   handleReply:{url:`/forum/list-reply`,method: "POST",dataType:'json'},
   createForum:{url:`/forum/create`,method: "POST",dataType:'json'},
+  postsDetailed:{url:`/forum/view`,method: "GET"},
+  editReply:{url:`/forum/reply`,method: "POST",dataType:'json'},
+  delateReply:{url:`/forum/delete-forum-article`,method: "POST"}
 }
 
 export interface IForumAps {
@@ -16,6 +19,9 @@ export interface IForumAps {
   delateCard: TFHttpSend;
   handleReply:TFHttpSend;
   createForum:TFHttpSend;
+  postsDetailed:TFHttpSend;
+  editReply:TFHttpSend;
+  delateReply:TFHttpSend;
 }
 
 export const MODULE_NAME = 'forum'

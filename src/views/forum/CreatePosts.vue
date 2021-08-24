@@ -15,7 +15,7 @@
           <a-textarea v-model:value="formState.content" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" />
         </a-form-item>
         <a-form-item class="error-infos" :wrapper-col="{ span: 14, offset: 4 }" >
-          <a-button type="primary" @click.prevent="onSubmit"> 保 存 </a-button>
+          <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
           <!-- <a-button style="margin-left: 10px" @click="resetFields">Reset</a-button> -->
         </a-form-item>
       </a-form> 
@@ -39,6 +39,7 @@ interface Istate{
   formState:form,
   rules:any,
   onSubmit: () => void;
+  getDetail: () => void;
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -48,8 +49,11 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
+    const {editId}= route.query
+
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+
     const state:Istate=reactive({
       formRef:'formRef',
       formState:{
@@ -65,27 +69,32 @@ export default defineComponent({
         type: [{ required: true, message: '请选择帖子类型', trigger: 'change' }],
         content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
       },
+      getDetail:()=>{
+        http.postsDetailed({param:{id:editId}}).then((res:any)=>{
+            // let typePosts={'分享':'1','求助':'2'}
+            state.formState.title=res.data.title
+            state.formState.type=res.data.type==='分享'?'1':'2'
+            state.formState.content=res.data.content
+        })
+      },
       onSubmit:()=>{
         state.formRef.validate().then(() => {
           console.log('验证过');
-            // createForum
             console.log(http);
             http.createForum({param:{forum:{...state.formState}}}).then((res:IBusinessResp)=>{
               if(res){
-                message.success('发布成功')
+                message.success(editId?'修改成功':'发布成功')
                 router.go(-1)
               }
             })
-            // .catch((err:any) => {
-            //     console.error('error', err);
-            //   });
         })
       }
     })
+    editId?state.getDetail():''
     onMounted(()=>{
      
     })
-    return { ...toRefs(state)};
+    return { ...toRefs(state),editId};
   },
 })
 </script>

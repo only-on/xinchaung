@@ -15,14 +15,14 @@
       <a-button @click="release()" type="primary">发布问题</a-button>
     </div>
     <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-      :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage}"  
+      :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}"  
       class="components-table-demo-nested">
       <template #title="{record, text }">
         <a @click="detaile(record.id)">{{ text }}</a>
       </template>
       <template #operation="{record}">
         <a  class="caozuo" @click="replyCard(record )">回帖</a>
-        <a  class="caozuo" @click="editCard(record )" v-if="tabType===1">编辑</a>
+        <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a>
         <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
       </template>
       <!-- <template>
@@ -41,7 +41,7 @@
 <script lang="ts">
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal,message } from 'ant-design-vue';
-import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch} from 'vue'
+import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch, computed} from 'vue'
 import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
@@ -117,7 +117,11 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
-    const options = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'},])
+    const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
+    const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
+    const options = computed(()=>{
+        return tabType.value===1?options2.value:options1.value
+    })
     const http=(request as any).forum
     const apiName=['pubIndex','myself','attend'] 
     var tabType:Ref<number>=ref(0)
@@ -126,7 +130,7 @@ export default defineComponent({
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
     var replyContent:Ref<string>=ref('')
-
+      
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
@@ -208,6 +212,7 @@ export default defineComponent({
       })
     }
     function editCard(val:ItdItems){
+      router.push('/forum/CreatePosts?editId='+val.id)
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -225,7 +230,7 @@ export default defineComponent({
       router.push('/forum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/forum/PostsDetailed?editId='+id)
+      router.push('/forum/PostsDetailed?detailId='+id)
     }
     onMounted(()=>{
       // serve.v(dataObj); 
@@ -283,11 +288,11 @@ export default defineComponent({
           :deep(.ant-select-selector)::before{
             content: '';
             position: absolute;
-            left:5px;
-            top:6px;
-            background: url(../../assets/images/forum/data-type.png) no-repeat;
-            width: 18px;
-            height: 18px;
+            left:8px;
+            top:10px;
+            background: url(../../assets/images/screenicon/Group3.png) no-repeat;
+            width: 14px;
+            height: 15px;
           }
         }
         .custom_input{
@@ -295,11 +300,11 @@ export default defineComponent({
           &::before{
               content: '';
               position: absolute;
-              left:5px;
-              top:6px;
-              background: url(../../assets/images/forum/data-type.png) no-repeat;
-              width: 18px;
-              height: 18px;
+              left:8px;
+              top:10px;
+              background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+              width: 14px;
+              height: 15px;
               z-index: 10;
           }
         }

@@ -75,7 +75,7 @@ export default defineComponent({
     function initData(){
       if(configuration.tabs && configuration.tabs.length){
         const { currentTab } = route.query
-        updateRouter(0)
+        updateRouter(currentTab?Number(currentTab):0)
         configuration.componenttype=currentTab?Number(currentTab):0
         activeName.value =configuration.tabs[configuration.componenttype].name
         tabChange(configuration.tabs[configuration.componenttype])
