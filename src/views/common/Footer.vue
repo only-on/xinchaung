@@ -13,6 +13,7 @@
   flex-shrink: 0;
   text-align: center;
   background: #fff;
+  height: 22px;
   a {
     margin-left: 15px;
   }

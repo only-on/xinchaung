@@ -1,10 +1,5 @@
 <template>
-    <div class="header">
-      <p></p>
-      <Breadcrumb :type="false" />
-    </div>
-    <div class="content" v-layout-bg>
-      <div class="content_box">
+   <div class=""  v-layout-bg>
         <h1>发帖</h1>
         <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
           <a-form-item label="帖子名称"  name="name">
@@ -24,13 +19,13 @@
             <!-- <a-button style="margin-left: 10px" @click="resetFields">Reset</a-button> -->
           </a-form-item>
         </a-form> 
-      </div>
-    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,toRefs } from 'vue'
+import { defineComponent,ref, onMounted,reactive,toRefs ,inject} from 'vue'
 import request from '../../api/index'
+import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 const http=(request as any).forum
@@ -53,6 +48,8 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
+    var updata=inject('updataNav') as Function
+    updata({navType:false,tabs:[],navPosition:'outside',componenttype:undefined})
     const state:Istate=reactive({
       formRef:'formRef',
       formState:{
@@ -73,7 +70,7 @@ export default defineComponent({
           console.log('验证过');
             // createForum
             console.log(http);
-            http.createForum({param:{forum:{...state.formState}}}).then((res:any)=>{
+            http.createForum({param:{forum:{...state.formState}}}).then((res:IBusinessResp)=>{
               if(res){
                 message.success('发布成功')
                 router.go(-1)
@@ -100,22 +97,9 @@ export default defineComponent({
     width: @center-width;
     margin: 0 auto;
   }
-  .content{
-    width: @center-width;
-    margin: 20px auto 0;
-    background: #fff;
-    min-height: 100%;
-    .content_box{
-      width: 100%;
-      margin-bottom: 20px;
-      background: #fff;
-      box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
-      border-radius: 3px;
-      padding: 10px 25px;
-      margin-top: 20px;
-      height: calc(100% - 102px);
-      overflow: auto;
-      >h1{
+  
+    
+      h1{
         color: #333;
         font-size: 17px;
         height: 20px;
@@ -125,6 +109,11 @@ export default defineComponent({
       :deep(.ant-form-item-control){
         flex: 0 0 100%;
       }
-    }
-  }
+      
+      .error-infos{
+        :deep(.ant-form-item-control-input-content){
+          text-align: center;
+        }
+      }
+    
 </style>

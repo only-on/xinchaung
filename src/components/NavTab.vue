@@ -1,8 +1,8 @@
 <template>
-  <div class="navList">
+  <div class="navList" :class="configuration.tabs && configuration.tabs.length?'border_bottom':''">
     <div class="tab">
       <div
-        v-for="v in tabs"
+        v-for="v in configuration.tabs"
         :key="v.name"
         :class="activeName === v.name ? 'active' : ''"
         @click="activeName !== v.name ? tabChange(v) : ''"
@@ -13,15 +13,16 @@
     <div class="nav__tab--middle">
       <slot></slot>
     </div>
-    <breadcrumb />
+    <breadcrumb :type="configuration.navType" />
   </div>
 </template>
 
 <script lang="ts">
 import { number } from "echarts";
-import { defineComponent, ref, onMounted, reactive, Ref, watch } from "vue";
+import { defineComponent, ref, onMounted, reactive, Ref, watch ,inject, computed} from "vue";
 import { useStore } from "vuex";
-
+import { useRouter ,useRoute } from 'vue-router';
+import { log } from "util";
 export declare interface ITab {
   name: string;
   componenttype: number;
@@ -30,33 +31,77 @@ export declare interface ITab {
 export default defineComponent({
   name: "NavTab",
   props: {
-    tabs: {
-      required: true,
-      type: Array,
-      default: () => [{ name: "未知模块", componenttype: 0 }],
-    },
-    current: {
-      required: false,
-      type: Number,
-      default: 0,
-    },
+    // tabs: {
+    //   required: true,
+    //   type: Array,
+    //   default: () => [],
+    // },
+    // current: {
+    //   required: false,
+    //   type: Number,
+    //   default: 0,
+    // },
+    // configuration:{
+    //   required: true,
+    //   type: Object,
+    //   default: () => {},
+    // }
   },
   emits: ["tabSwitch"],
   setup: (props, context) => {
-    const tabs = reactive(props.tabs) as ITab[];
+    var configuration:any=inject('configuration')
+    const router = useRouter();
+    const route = useRoute();
+    const tabs = reactive(configuration.tabs) as ITab[];
+    // const tabs= computed(()=>{
+    //   return (configuration.tabs) as ITab[]
+    // })
     const activeName: Ref<string> = ref("");
-    const currentTab: Ref<number> = ref(props.current);
+    // const   activeName=computed(()=>{
+    //   return configuration.navType
+    // }) 
+    const navType:Ref<boolean>=ref(configuration.navType)
+    // const   navType=computed(()=>{
+    //   return configuration.navType
+    // })
+    // const componenttype: Ref<number> = ref(configuration.componenttype);
+      var updata=inject('updataNav') as Function
+      
     function tabChange(item: ITab) {
-      context.emit("tabSwitch", item);
-      activeName.value = item.name;
+      // console.log(item)
+      if(activeName.value!==item.name){
+        context.emit("tabSwitch", item);
+        activeName.value = item.name;
+        updateRouter(item.componenttype);
+        updata({...configuration,componenttype:item.componenttype})
+      }
+    }
+    function updateRouter(val?:number){
+      const {query,path}= route
+      router.replace({
+            path: path,
+            query: {...query, currentTab: val },
+       })
+    }
+    function initData(){
+      if(configuration.tabs && configuration.tabs.length){
+        const { currentTab } = route.query
+        updateRouter(currentTab?Number(currentTab):0)
+        // currentTab?configuration.componenttype=Number(currentTab):0
+        configuration.componenttype=currentTab?Number(currentTab):0
+        activeName.value =configuration.tabs[configuration.componenttype].name
+        tabChange(configuration.tabs[configuration.componenttype])
+      }
     }
     onMounted(() => {
-      activeName.value = tabs[currentTab.value].name;
+      initData()
     });
-    watch(props, () => {
-      activeName.value = tabs[props.current].name;
+    watch(configuration, (val) => {
+      // console.log(val)
+      // navType.value=configuration.navType
+      // initData()
     });
-    return { tabs, activeName, tabChange };
+    return { activeName, tabChange ,configuration};
   },
 });
 </script>
@@ -67,7 +112,6 @@ export default defineComponent({
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
-  border-bottom: 1px solid #d0d0d0;
   line-height: 43px;
   .tab {
     display: flex;
@@ -97,5 +141,8 @@ export default defineComponent({
     display: flex;
     align-items: center;
   }
+}
+.border_bottom{
+  border-bottom: 1px solid #d0d0d0;
 }
 </style>
