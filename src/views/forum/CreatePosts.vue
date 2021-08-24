@@ -1,24 +1,24 @@
 <template>
    <div class=""  v-layout-bg>
-        <h1>发帖</h1>
-        <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
-          <a-form-item label="帖子名称"  name="name">
-            <a-input v-model:value="formState.title" />
-          </a-form-item>
-          <a-form-item label="帖子类型"  name="type">
-            <a-select v-model:value="formState.type" placeholder="请选择发帖类型">
-              <a-select-option value="1">求助</a-select-option>
-              <a-select-option value="2">分享</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="发帖内容" name="content">
-            <a-textarea v-model:value="formState.content" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" />
-          </a-form-item>
-          <a-form-item class="error-infos" :wrapper-col="{ span: 14, offset: 4 }" >
-            <a-button type="primary" @click.prevent="onSubmit"> 保 存 </a-button>
-            <!-- <a-button style="margin-left: 10px" @click="resetFields">Reset</a-button> -->
-          </a-form-item>
-        </a-form> 
+      <h1>发帖</h1>
+      <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
+        <a-form-item label="帖子名称"  name="name">
+          <a-input v-model:value="formState.title" />
+        </a-form-item>
+        <a-form-item label="帖子类型"  name="type">
+          <a-select v-model:value="formState.type" placeholder="请选择发帖类型">
+            <a-select-option value="1">求助</a-select-option>
+            <a-select-option value="2">分享</a-select-option>
+          </a-select>
+        </a-form-item>
+        <a-form-item label="发帖内容" name="content">
+          <a-textarea v-model:value="formState.content" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" />
+        </a-form-item>
+        <a-form-item class="error-infos" :wrapper-col="{ span: 14, offset: 4 }" >
+          <a-button type="primary" @click.prevent="onSubmit"> 保 存 </a-button>
+          <!-- <a-button style="margin-left: 10px" @click="resetFields">Reset</a-button> -->
+        </a-form-item>
+      </a-form> 
   </div>
 </template>
 
@@ -49,7 +49,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:undefined})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
     const state:Istate=reactive({
       formRef:'formRef',
       formState:{
@@ -99,21 +99,22 @@ export default defineComponent({
   }
   
     
-      h1{
-        color: #333;
-        font-size: 17px;
-        height: 20px;
-        line-height: 20px;
-        margin: 20px 0 10px 0;
-      }
-      :deep(.ant-form-item-control){
-        flex: 0 0 100%;
-      }
-      
-      .error-infos{
-        :deep(.ant-form-item-control-input-content){
-          text-align: center;
-        }
-      }
+  h1{
+    color: #333;
+    font-size: 17px;
+    height: 20px;
+    line-height: 20px;
+    margin: 20px 0 10px 0;
+  }
+  :deep(.ant-form-item-control){
+    flex: 0 0 100%;
+  }
+  
+  .error-infos{
+    margin-top: 80px;
+    :deep(.ant-form-item-control-input-content){
+      text-align: center;
+    }
+  }
     
 </style>

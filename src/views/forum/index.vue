@@ -1,35 +1,34 @@
 <template>
-  <div class="forum">
-      <div class="header">
-        <div class="search">
-          <div class="item custom_input">
-            <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" />
-          </div>
-          <div  class="item custom_select">
-              <a-select  placeholder="请选择发帖类型" :options="options"></a-select>
-          </div>
-          <div class="item">
-            <a-button type="primary" @click="search()">查询</a-button>
-            <a-button type="primary" @click="clearSearch()">清空</a-button>
-          </div>
+    <div class="header" v-layout-bg>
+      <div class="search">
+        <div class="item custom_input">
+          <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" />
         </div>
-        <a-button @click="release()" type="primary">发布问题</a-button>
+        <div  class="item custom_select">
+            <a-select  placeholder="请选择发帖类型" :options="options"></a-select>
+        </div>
+        <div class="item">
+          <a-button type="primary" @click="search()">查询</a-button>
+          <a-button type="primary" @click="clearSearch()">清空</a-button>
+        </div>
       </div>
-      <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-        :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage}"  
-        class="components-table-demo-nested">
-        <template #title="{record, text }">
-          <a @click="detaile(record.id)">{{ text }}</a>
-        </template>
-        <template #operation="{record}">
-          <a  class="caozuo" @click="replyCard(record )">回帖</a>
-          <a  class="caozuo" @click="editCard(record )" v-if="tabType===1">编辑</a>
-          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
-        </template>
-        <!-- <template>
-          <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
-        </template> -->
-      </a-table>
+      <a-button @click="release()" type="primary">发布问题</a-button>
+    </div>
+    <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
+      :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage}"  
+      class="components-table-demo-nested">
+      <template #title="{record, text }">
+        <a @click="detaile(record.id)">{{ text }}</a>
+      </template>
+      <template #operation="{record}">
+        <a  class="caozuo" @click="replyCard(record )">回帖</a>
+        <a  class="caozuo" @click="editCard(record )" v-if="tabType===1">编辑</a>
+        <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
+      </template>
+      <!-- <template>
+        <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
+      </template> -->
+    </a-table>
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="620">
       <h4>回复内容</h4>
       <a-textarea v-model:value="ForumArticle.content" placeholder="请输入回复内容" :rows="6" showCount :maxlength="100" />
@@ -37,7 +36,6 @@
         <a-button @click="handleReply" type="primary">提交</a-button>
       </template>
     </a-modal>
-  </div>
 </template>
 
 <script lang="ts">
@@ -90,7 +88,8 @@ const columns=[
   {
     title: '回复数/查看数',
     dataIndex: 'replyViews',
-    align:'center'
+    align:'center',
+    width:160
   },
   {
     title: '最近回帖人/最近回帖时间',
@@ -130,14 +129,13 @@ export default defineComponent({
 
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'inside',navType:true,showContent:true,componenttype:undefined})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
 
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
       tabType.value=val
       initData()
     })
-   
     var ForumArticle:Ireply=reactive({
       forum_id:0,
       content:''
@@ -165,7 +163,7 @@ export default defineComponent({
       })
     }
     function search(){
-      console.log(ForumSearch)
+      // console.log(ForumSearch)
       if(ForumSearch.title!=='' || ForumSearch.type!=='0'){
         ForumSearch.page=1
         initData()
@@ -239,10 +237,6 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-  .forum{
-    height: 100%;
-    overflow: auto;
-  }
     :deep(.ant-modal-header){
       border:  1px solid @theme-color;
       background: @theme-color;

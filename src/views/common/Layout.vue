@@ -6,7 +6,7 @@
         <div class="content" v-if="configuration.showContent">
           <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='inside'" />
           <div class="content_box">
-            <router-view />
+            <div><router-view /></div>
           </div>
         </div>
         <div v-else class="customized">
@@ -70,7 +70,7 @@ export default defineComponent({
       // console.log(val)
       configuration.componenttype=val
     }
-    watch(configuration, () => {
+    watch(()=>{return configuration.componenttype}, () => {
      
     });
     return {tabSwitch,configuration};
@@ -97,23 +97,26 @@ export default defineComponent({
     padding-top: 32px;
     padding-bottom: 32px;
     margin-top: 5px;
+    min-height: 750px;
     .content{
       width: @center-width;
       margin: 0 auto;
       background: #fff;
-      height: 100%;
+      height: calc(100% - 44px); 
       min-height: 750px;
       border-radius: 6px;
       .content_box{
         width: 100%;
         background: #fff;
         box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
-        border-radius: 3px;
-        padding: 40px 50px 100px;
-        // height: calc(100% - 102px);
-        height: calc(100% - 44px);
+        padding: 40px 50px 80px;
+        height: 100%;
         overflow: hidden;
         border-radius: 6px;
+        >div{
+          height: 100%;
+          overflow: auto;
+        }
       }
     }
     .customized{

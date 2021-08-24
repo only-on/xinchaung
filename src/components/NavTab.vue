@@ -75,7 +75,7 @@ export default defineComponent({
     function initData(){
       if(configuration.tabs && configuration.tabs.length){
         const { currentTab } = route.query
-        updateRouter(currentTab?Number(currentTab):0)
+        updateRouter(0)
         configuration.componenttype=currentTab?Number(currentTab):0
         activeName.value =configuration.tabs[configuration.componenttype].name
         tabChange(configuration.tabs[configuration.componenttype])
@@ -85,7 +85,12 @@ export default defineComponent({
       initData()
     });
     watch(configuration, (val) => {
-    
+      // initData()
+    });
+    watch(()=>{return configuration.componenttype}, (val) => {
+      if(val===undefined){
+        initData()
+      }
     });
     return { activeName, tabChange ,configuration};
   },
@@ -99,20 +104,20 @@ export default defineComponent({
   display: flex;
   justify-content: space-between;
   line-height: 43px;
-  // padding: 16px 0;
+  margin-bottom: 20px;
   .tab {
     display: flex;
     div {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       margin-right: 15px;
-      color: #444;
+      color: #ffffffb3;
       font-size: 16px;
       padding: 0 15px;
       text-align: center;
       cursor: pointer;
       &:hover {
-        color: #999;
+        color: @theme-color;
       }
     }
     .active {
@@ -130,6 +135,6 @@ export default defineComponent({
   }
 }
 .border_bottom{
-  border-bottom: 1px solid #d0d0d0;
+  border-bottom: 1px solid #765e8b;
 }
 </style>

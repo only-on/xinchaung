@@ -31,7 +31,7 @@ export default {
       name: "PostsDetailed",
       component: () => import("src/views/forum/PostsDetailed.vue"),
       meta: {
-        title: "发帖",
+        title: "帖子详情",
       },
     }
   ]

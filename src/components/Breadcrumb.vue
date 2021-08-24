@@ -75,7 +75,7 @@ export default defineComponent({
       }
   }
   .allWhite{
-    padding: 16px 0;
+    // padding: 16px 0;
     a,span,span:last-child{
       color:#fff;
     }
