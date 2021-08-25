@@ -1,35 +1,21 @@
 <template>
   <div class="list_content">
-    <div class="info" v-for="v in 1" :key="v">
-      <div class="card">
-        <div class="mask"></div>
-        <div class="card_pic">
-          <img :src="defaultUrl" />
-        </div>
-      </div>
-      <div class="card_info">
-        <h3>我的课件测试</h3>
-        <div class="text-primary">
-          <span>已结束</span>
-          <span> 用时&nbsp;&nbsp; 01时12分54秒 </span>
-          <span>学习至 任务一</span>
-        </div>
-        <p class="status">实训教师：{{'sihai'}}</p>
-        <p class="status">实训状态：{{'已结束'}}</p>
-        <p class="status">起止时间：{{'2021-08-03 - 2021-08-06'}}</p>
-      </div>
-    </div>
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
     <div class="info" v-for="v in list" :key="v.name">
       <div class="card">
-        <div class="mask"></div>
+        <div class="mask">
+          <div class="link" @click="startTraining">
+            <img src="../../assets/images/Experimental/tap.png" alt="">
+            <span>点击开始实训</span>
+          </div>
+        </div>
         <div class="card_pic">
-          <img :src="v.url" />
+          <img :src="v.img" />
         </div>
       </div>
       <div class="card_info">
         <h3>{{v.name}}</h3>
-        <div class="text-primary">
+        <div class="text-primary" v-if="v.cost_time">
           <span>{{v.status_name}}</span>
           <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
           <span>学习至 {{v.content_name}}</span>
@@ -37,6 +23,9 @@
         <p class="status">实训教师：{{v.u_name}}</p>
         <p class="status">实训状态：{{v.status_name}}</p>
         <p class="status">起止时间：{{v.times}}</p>
+      </div>
+      <div class="start_training">
+        <a-button @click="startTraining" type="primary"> 开始实训 </a-button>
       </div>
     </div>
   </div>
@@ -46,7 +35,7 @@ import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 interface IlistItem{
-  url:string,
+  img:string,
   name:string,
   status_name:string,
   cost_time:string,
@@ -71,17 +60,20 @@ export default defineComponent({
     function initData(){
       loading.value=true
       http.getMyExperimentalList().then((res:any)=>{
-        // loading.value=false
-        list=res.data
+        loading.value=false
+        list.push(...res.data)
         list.length?list.map((v:IlistItem)=>{
-          v.url=v.url?v.url:defaultUrl
+          v.img=v.img?v.img:defaultUrl
         }):''
       })
+    }
+    function startTraining() {
+      router.push('')
     }
     onMounted(()=>{
      initData()
     })
-    return {list,defaultUrl,loading };
+    return {list,loading,startTraining };
   },
 })
 </script>
@@ -118,6 +110,18 @@ export default defineComponent({
         width: 100%;
         height: 100%;
         background-color: rgba(34, 34, 34, 0.46);
+        .link{
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 68px;
+          cursor: pointer;
+          span{
+            font-size: 16px;
+            padding: 0 5px;
+          }
+        }
       }
       .card_pic{
         position: absolute;
@@ -152,6 +156,9 @@ export default defineComponent({
         .status{
           margin-bottom: 10px;
         }
+      }
+      .start_training{
+        padding-top: 123px;
       }
     }
   }

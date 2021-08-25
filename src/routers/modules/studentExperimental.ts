@@ -5,7 +5,7 @@ export default {
   component: Layout,
   // component: () => import("src/views/studentExperimental/index.vue"),
   meta: {
-    title: "实训",
+    title: "我的实训",
     authCode: "Experimental",
   },
   children: [

@@ -1,14 +1,11 @@
 <template>
-  <div class="content">
-    <NavTab :tabs="tabs" @tabSwitch="tabSwitch" />
-    <div class="content_box">
-      <component :is="componentName" />
-    </div>
+  <div v-layout-bg>
+    <component :is="componentName" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive, toRefs } from 'vue'
+import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref} from 'vue'
 import LatelyExperimentalList from './LatelyExperimentalList.vue'
 import MyExperimentalList from './MyExperimentalList.vue'
 import {useStore} from "vuex"
@@ -18,10 +15,8 @@ interface Iitem{
   path:string,
 }
 interface state{
-    tabs:Array<TtabItem>,
     componentName:string,
-    breadcrumbArr: Array<Tbreadcrumb>,
-    tabSwitch:(item:Iitem)=>void
+   
 }
 type TtabItem =Pick<Iitem,'name' | 'componentName'>
 type Tbreadcrumb=Omit<Iitem,'componentName'>
@@ -33,40 +28,31 @@ export default defineComponent({
    LatelyExperimentalList
   },
   setup: (props,context) => {
-    const state:state=reactive({
-      tabs:[{name:'最近实训',componentName:'LatelyExperimentalList'},{name:'我的实训',componentName:'MyExperimentalList'}],
-      breadcrumbArr:[{name:'首页',path:'/'},{name:'我的实训',path:'/Experimental/ExperimentalList'}],
-      componentName:'LatelyExperimentalList',
-      tabSwitch:(item:any)=>{
-        state.componentName=item.componentName
-      }
-    })
     const store=useStore()
-    onMounted(()=>{
-      // console.
-      // store.commit('saveBreadcrumb',state.breadcrumbArr)
+
+    const componentNames=['LatelyExperimentalList','MyExperimentalList']
+    const tabs=[{name:'最近实训',componenttype:0},{name:'我的实训',componenttype:1}]
+    var componentName:Ref<string>=ref('')
+
+    var tabType:Ref<number>=ref(0)
+    var configuration:any=inject('configuration')
+    var updata=inject('updataNav') as Function
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
+
+    watch(()=>{return configuration.componenttype},(val)=>{
+      console.log(val)
+      tabType.value=val
+      componentName.value=componentNames[val]
     })
-    return {...toRefs(state)};
+  
+    onMounted(()=>{
+     
+    })
+    return {componentName,};
   },
 })
 </script>
 
 <style scoped lang="less">
-  .content{
-    width: @center-width;
-    margin: 20px auto 0;
-    background: #fff;
-    min-height: 100%;
-    .content_box{
-      width: 100%;
-      margin-bottom: 20px;
-      background: #fff;
-      box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
-      border-radius: 3px;
-      padding: 10px;
-      margin-top: 20px;
-      height: calc(100% - 102px);
-      overflow: auto;
-    }
-  }
+  
 </style>

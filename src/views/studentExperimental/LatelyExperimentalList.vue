@@ -1,27 +1,13 @@
 <template>
   <div class="list_content">
-    <div class="info" v-for="v in 1" :key="v">
-      <div class="card">
-        <div class="mask"></div>
-        <div class="card_pic">
-          <img :src="defaultUrl" />
-        </div>
-      </div>
-      <div class="card_info">
-        <h3>最近课件测试</h3>
-        <div class="text-primary">
-          <span>已结束</span>
-          <span> 用时&nbsp;&nbsp; 01时12分54秒 </span>
-          <span>学习至 任务一</span>
-        </div>
-        <p class="status">实训教师：{{'sihai'}}</p>
-        <p class="status">实训状态：{{'已结束'}}</p>
-        <p class="status">起止时间：{{'2021-08-03 - 2021-08-06'}}</p>
-      </div>
-    </div>
     <div class="info" v-for="v in list" :key="v.name">
       <div class="card">
-        <div class="mask"></div>
+        <div class="mask">
+          <div class="link" @click="continueTraining">
+            <img src="../../assets/images/Experimental/tap.png" alt="">
+            <span>点击继续实训</span>
+          </div>
+        </div>
         <div class="card_pic">
           <img :src="v.url" />
         </div>
@@ -37,6 +23,9 @@
         <p class="status">实训状态：{{v.status_name}}</p>
         <p class="status">起止时间：{{v.times}}</p>
       </div>
+      <div class="start_training">
+        <a-button @click="continueTraining" type="primary"> 继续实训 </a-button>
+      </div>
     </div>
   </div>
 </template>
@@ -44,6 +33,7 @@
 import { defineComponent,ref, onMounted,reactive } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
+import { IBusinessResp} from '../../typings/fetch.d';
 interface IlistItem{
   url:string,
   name:string,
@@ -51,9 +41,7 @@ interface IlistItem{
   cost_time:string,
   content_name:string,
   u_name:string,
-
   times:string,
-  
 }
 export default defineComponent({
   name: 'LatelyExperimentalList',
@@ -66,17 +54,21 @@ export default defineComponent({
     var list:IlistItem[]=reactive([])
     const http=(request as any).Experimental
     function initData(){
-      http.getLatelyExperimentalList().then((res:any)=>{
-        list=res.data
+      http.getLatelyExperimentalList().then((res:IBusinessResp)=>{
+        // console.log(res)
+        list.push(...res.data)
         list.map((v:IlistItem)=>{
           v.url=v.url?v.url:defaultUrl
         })
       })
     }
+    function  continueTraining() {
+      router.push('')
+    }
     onMounted(()=>{
-     initData()
+      initData()
     })
-    return {list,defaultUrl };
+    return {list,defaultUrl ,continueTraining};
   },
 })
 </script>
@@ -108,6 +100,18 @@ export default defineComponent({
         width: 100%;
         height: 100%;
         background-color: rgba(34, 34, 34, 0.46);
+        .link{
+          color: #fff;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-top: 68px;
+          cursor: pointer;
+          span{
+            font-size: 16px;
+            padding: 0 5px;
+          }
+        }
       }
       .card_pic{
         position: absolute;
@@ -142,6 +146,9 @@ export default defineComponent({
         .status{
           margin-bottom: 10px;
         }
+      }
+      .start_training{
+        padding-top: 123px;
       }
     }
   }

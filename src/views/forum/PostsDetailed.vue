@@ -165,6 +165,7 @@ export default defineComponent({
   }
   .cont{
     padding: 20px;
+    word-break: break-all;
   }
   .forumBody{
     padding: 30px;
