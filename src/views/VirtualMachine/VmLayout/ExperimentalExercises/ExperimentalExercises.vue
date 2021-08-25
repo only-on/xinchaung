@@ -19,9 +19,10 @@
         :index="index"
         v-if="item.type === 3"
       ></multiple-choice>
+      
     </template>
     <div class="exercise-action">
-        <a-button type="primary">提交</a-button><i>您以提交过习题答案</i>
+      <a-button type="primary">提交</a-button><i>您以提交过习题答案</i>
     </div>
   </div>
 </template>
@@ -30,11 +31,12 @@ import { defineComponent, ref, watch, toRefs, reactive } from "vue";
 import judge from "src/components/exercises/judge.vue";
 import singleChoice from "src/components/exercises/singleChoice.vue";
 import multipleChoice from "src/components/exercises/multipleChoice.vue";
+
 export default defineComponent({
   components: {
     judge,
     "single-choice": singleChoice,
-    "multiple-choice":multipleChoice
+    "multiple-choice": multipleChoice,
   },
   setup(props) {
     const data: Array<any> = [
@@ -129,7 +131,7 @@ export default defineComponent({
       },
       { deep: true }
     );
-    return { judgeData};
+    return { judgeData };
   },
 });
 </script>
@@ -139,14 +141,14 @@ export default defineComponent({
   padding: 11px;
   height: calc(100% - 22px);
   overflow: auto;
-  .exercise-action{
-      margin-top: 40px;
-      >i{
-          font-style: normal;
-          color: #FF8F00;
-          font-size: 14px;
-          margin-left: 21px;
-      }
+  .exercise-action {
+    margin-top: 40px;
+    > i {
+      font-style: normal;
+      color: #ff8f00;
+      font-size: 14px;
+      margin-left: 21px;
+    }
   }
 }
 </style>

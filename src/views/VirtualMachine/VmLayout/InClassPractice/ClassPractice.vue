@@ -298,6 +298,129 @@ export default defineComponent({
           },
         ],
       },
+      {
+        paperName: "测试试卷4",
+        count: 12,
+        score: 170,
+        question: [
+          {
+            name: "判断题",
+            type: 1,
+            options: [
+              {
+                id: 1,
+                option: "正确",
+              },
+              {
+                id: 2,
+                option: "错误",
+              },
+            ],
+            answers: [
+              {
+                id: 2,
+                answer: "正确",
+              },
+            ],
+          },
+          {
+            name: "单选题名称",
+            type: 2,
+            options: [
+              {
+                id: 1,
+                option: "A:好设计是诚实的",
+              },
+              {
+                id: 2,
+                option: "B:改变别人之前，先改变自己吧",
+              },
+              {
+                id: 3,
+                option: "C:不怕输，才会赢",
+              },
+              {
+                id: 4,
+                option: "D:改变别人之前，先改变自己吧",
+              },
+            ],
+            answers: [
+              {
+                id: 3,
+                answer: "正确",
+              },
+            ],
+          },
+          {
+            name: "多选题名称",
+            type: 3,
+            options: [
+              {
+                id: 1,
+                option: "A:好设计是诚实的",
+              },
+              {
+                id: 2,
+                option: "B:改变别人之前，先改变自己吧",
+              },
+              {
+                id: 3,
+                option: "C:不怕输，才会赢",
+              },
+              {
+                id: 4,
+                option: "改变别人之前，先改变自己吧",
+              },
+            ],
+            answers: [
+              {
+                id: 4,
+                answer: "改变别人之前，先改变自己吧",
+              },
+              {
+                id: 1,
+                answer: "A:好设计是诚实的",
+              },
+            ],
+          },
+          {
+            name: "填空题名称",
+            type: 4,
+            options: [
+              {
+                id: 1,
+                option: "A:好设计是诚实的",
+                score:10,
+              },
+              {
+                id: 2,
+                option: "B:改变别人之前，先改变自己吧",
+                score:21,
+              },
+              {
+                id: 3,
+                option: "C:不怕输，才会赢",
+                score:31,
+              },
+              {
+                id: 4,
+                option: "改变别人之前，先改变自己吧",
+                score:41,
+              },
+            ],
+            answers: [
+              {
+                id: 4,
+                answer: "改变别人之前，先改变自己吧",
+              },
+              {
+                id: 1,
+                answer: "A:好设计是诚实的",
+              },
+            ],
+          },
+        ],
+      },
     ];
     const data = reactive(paper);
 
