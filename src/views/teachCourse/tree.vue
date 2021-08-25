@@ -1,5 +1,12 @@
 <template>
-  <a-tree :tree-data="treeData" show-icon v-model:selectedKeys="selectedKeys" @select="selectedChange" :checkable="false">
+  <a-tree 
+    :tree-data="treeData.data" 
+    show-icon 
+    default-expand-all 
+    v-model:selectedKeys="selectedKeys" 
+    @select="selectedChange"
+    :replace-fields="replaceFields"
+    >
     <template #program>
       <span class="iconfont icon-program"></span>
     </template>
@@ -9,74 +16,100 @@
   </a-tree>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue';
-import { TreeDataItem } from 'ant-design-vue/es/tree/Tree';
+import { defineComponent, onMounted, PropType, reactive, ref } from 'vue';
+import request from 'src/api/index'
 
-const treeData: TreeDataItem[] = [
-  {
-    title: '第一章',
-    key: '0-0',
-    // slots: {
-    //   icon: 'smile',
-    // },
-    children: [
-      { title: '1445', key: '0-0-0', slots: { icon: 'program' } },
-      { title: 'leaf', key: '0-0-1', slots: { icon: 'program' } },
-      { title: 'tree', key: '0-0-2', slots: { icon: 'zhuomianshiyan' } },
-      { title: '验证实验', key: '0-0-3', slots: { icon: 'zhuomianshiyan' } },
-    ],
-  },
-  {
-    title: '第二章',
-    key: '0-1',
-    // slots: {
-    //   icon: 'smile',
-    // },
-    children: [
-      { title: '不知道', key: '0-1-0', slots: { icon: 'meh' } },
-      { title: '假的', key: '0-1-1', slots: { icon: 'meh' } },
-    ]
-  },
-  {
-    title: '第三章',
-    key: '0-2',
-    // slots: {
-    //   icon: 'smile',
-    // },
-    children: []
-  }
-];
+interface ITreeDataItem {
+  id: number
+  name: string
+  sort: number
+  type: string
+  is_high?: boolean
+  slots: any
+  contents: ITreeDataItem[]
+}
 
+interface ITreeData {
+  data: ITreeDataItem[]
+}
+interface ICourseInfo {
+  type: string,
+  courseId: number
+  courseType: number
+}
 export default defineComponent({
-  setup(props, {emit}) {
-    function selectedChange(selectedkeys:any, e:any) {
-      console.log(selectedkeys);
-      console.log(e.selectedNodes);
-      let node = {
-        taskId: 533005,
-        type: 'course',
-        name: '',
-        courseId: 501703,
-        grouped: 0
-      }
-      emit('selectNode', node)
+  emit: ['selectNode'],
+  props: {
+    courseInfo: {
+      type: Object as PropType<ICourseInfo>,
+      default: {}
     }
+  },
+  setup(props, {emit}) {
+    const http=(request as any).teachCourse
+    let selectedKeys = ref([532558])
+    function selectedChange(selectedkeys:any, e:any) {
+      console.log(selectedkeys, 'selectedChange');
+      console.log(e.selectedNodes);
+      if (e.selectedNodes.length && e.selectedNodes[0].props.type) {
+        let node = {
+          taskId: e.selectedNodes[0].props.key,
+          type: e.selectedNodes[0].props.type,
+          isHigh: e.selectedNodes[0].props.is_high,
+          grouped: 0
+        }
+        emit('selectNode', node)
+      } else {
+        emit('selectNode', '')
+      }
+    }
+    let treeData = reactive<ITreeData>({
+      data: []
+    })
+    let replaceFields = {
+      title: "name",
+      key: "id",
+      children: "contents",
+    }
+    // let treeList = reactive<TreeDataItem>([{title: ''}])
+    function getTreeList() {
+      http.getTreeList({urlParams: {courseId: props.courseInfo.courseId}}).then((res:any) => {
+        treeData.data = res.data
+        treeData.data.forEach((v) => {
+          if (v.contents && v.contents.length) {
+            v.contents.forEach(vv => {
+              let typeList = vv.type.split('-')
+              vv.slots = {}
+              vv.slots.icon = typeList[typeList.length - 1] === '4' ? 'program' : 'zhuomianshiyan'
+            })
+          }
+        })
+        let first = treeData.data[0].contents
+        let node = {
+          taskId: first[0].id,
+          type: first[0].type,
+          isHigh: first[0].is_high,
+          grouped: 0
+        }
+        emit('selectNode', node)
+        // return treeList
+      })
+    }
+      
 
     onMounted(() => {
+      getTreeList()
       // let nodes = treeData[0].children[0]
-      let node = {
-        taskId: 533005,
-        type: 'course',
-        name: '',
-        courseId: 501703,
-        grouped: 0
-      }
-      emit('selectNode', node)
+      // let node = {
+      //   taskId: treeData[0].children[0].key
+      // }
+      // emit('selectNode', node)
     })
     return {
-      selectedKeys: ref(['0-0-3']),
+      selectedKeys,
       treeData,
-      selectedChange
+      selectedChange,
+      replaceFields,
     };
   },
 });

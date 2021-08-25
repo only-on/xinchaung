@@ -1,29 +1,25 @@
 <template>
   <span class="stu-name">{{list.username? list.username : '--'}}</span>
-  <span class="stu-id"><span class="stu-idname">学号：</span>{{list.student_id ? list.student_id : '--'}}</span>
+  <span class="stu-id" v-if="list.student_id === '' && list.number === ''"><span class="stu-idname">学号：</span>{{list.number ||'--'}}</span>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange">
       <template #prevArrow>
-        <div class="custom-slick-arrow">
-          左
-        </div>
+        <div class="custom-slick-arrow"></div>
       </template>
       <template #nextArrow>
-        <div class="custom-slick-arrow">
-          右
-        </div>
+        <div class="custom-slick-arrow"></div>
       </template>
       <div v-for="v in list.vms" :key="v.uuid" :class="{'active': v.status === 'ACTIVE', 'noactive': v.status !== 'ACTIVE'}"></div>
     </a-carousel>
     <div class="kvm-info">
       <p class="kvm-status">虚机状态：<span>{{list.vms[current].status === 'ACTIVE' ? '开启' : '关闭'}}</span></p>
-      <p class="operation-status">操作状态：<span>空闲</span></p>
+      <p class="operation-status">操作状态：<span>{{list.online && list.vms[current].uuid === list.current ? '繁忙' : '空闲'}}</span></p>
     </div>
   </div>
   <div class="btns">
-    <a-button type="primary" title="重置" :disabled="list.vms[current].status === 'SHUTOFF'" @click="btnClick(3)"><sync-outlined/></a-button>
-    <a-button type="primary" title="重启" :disabled="list.vms[current].status === 'SHUTOFF'" @click="btnClick(2)"><reload-outlined/></a-button>
-    <a-button type="primary" title="关机" :disabled="list.vms[current].status === 'SHUTOFF'" @click="btnClick(1)"><poweroff-outlined /></a-button>
+    <a-button type="primary" title="重置" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(3)"><sync-outlined/></a-button>
+    <a-button type="primary" title="重启" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(2)"><reload-outlined/></a-button>
+    <a-button type="primary" title="关机" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(1)"><poweroff-outlined /></a-button>
     <a-button type="primary" title="开机" :disabled="list.vms[current].status === 'ACTIVE'" @click="btnClick(0)"><play-circle-outlined /></a-button>
   </div>
 </template>
@@ -37,12 +33,15 @@ import { defineComponent, ref, toRefs, PropType } from 'vue'
 interface Ivms {
   uuid: string
   // atype: string
-  status: string
+  status: string,
 }
 interface Ilist {
-  id: number,
-  username: string,
-  student_id: number,
+  id: number
+  username: string
+  student_id: string
+  online: number
+  number: string
+  current: string
   vms: Ivms[]
 }
 
@@ -56,10 +55,10 @@ export default defineComponent({
       }
     }
   },
+  emits: ['getList'],
   components: {PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined},
   setup(props, {emit}) {
-    console.log(props.list);
-    const http=(request as any).course
+    const http=(request as any).teachCourse
     let current = ref(0)
     function beforeChange(from:any, to:number) {
       current.value= to
@@ -71,7 +70,6 @@ export default defineComponent({
       atype: 'course'
     }
     function btnClick(v: number) {
-      console.log(apiList[v]);
       http[apiList[v]]({param: params}).then((res:any) => {
         if (res && res.status) {
           // 请求数据

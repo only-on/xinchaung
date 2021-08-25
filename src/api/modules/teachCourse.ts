@@ -34,5 +34,9 @@ export default {
     method: 'POST',
     dataType: 'json'
   },
+  getTreeList: {
+    url: 'api/course/courses/{courseId}/chapters/tree',
+    method: 'GET',
+  }
   
 }

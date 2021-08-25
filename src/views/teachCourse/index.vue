@@ -2,7 +2,7 @@
   <div class="virtual-env">
     <div class="content-wrapper">
       <div class="tree">
-        <tree @selectNode="selectNode"></tree>
+        <tree @selectNode="selectNode" :courseInfo="courseInfo"></tree>
       </div>
       <div class="content">
         <div class="search">
@@ -13,13 +13,18 @@
             @search="onSearch"
             enter-button="查询"
           />
-          <a-button type="primary" @click="openEnv">开启实验环境</a-button>
+          <modal :limit="limit" @saveTopinst="saveTopinst" :selectedNodes="selectedNodes" :courseInfo="courseInfo"></modal>
         </div>
         <div class="env-lists">
+          <!-- <div class="loading" v-if="envListState.loading">
+            <a-space>
+              <a-spin size="large" />
+            </a-space>
+          </div> -->
           <div class="env-list" v-for="v in envListState.data" :key="v.id">
             <card :list="v" @getList="getList"></card>
           </div>
-          <div v-if="!envListState.data.length" class="nodata">暂无相关数据</div>
+          <div v-if="!envListState.data.length" class="nodata">{{noDataPrompt}}</div>
         </div>
         <a-pagination 
           show-quick-jumper 
@@ -30,30 +35,17 @@
           :hideOnSinglePage="true" 
         />
       </div>
-      <div>
-        <a-modal
-          v-model:visible="visible"
-          title="设置环境数量"
-          :ok-button-props="{ disabled: false }"
-          :cancel-button-props="{ disabled: false }"
-          @ok="handleOk"
-        >
-          <a-input v-model:value="openEnvNum"  allow-clear />
-          <span class="prompt">*最多开启{{limit}}套环境</span>
-        </a-modal>
-      </div>
     </div>
   </div>
 </template>
 
-<script lang="ts" scope> 
-import { PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined, LeftCircleOutlined, RightCircleOutlined  } from '@ant-design/icons-vue';
+<script lang="ts"> 
 import tree from './tree.vue'
 import card from './card.vue'
+import modal from './modal.vue'
 import request from 'src/api/index'
-import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef} from 'vue'
+import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef, provide} from 'vue'
 import { message } from 'ant-design-vue'
-import {getTree} from './api'
 
 
 interface Ipage {
@@ -70,7 +62,13 @@ interface Iparams {
   page: Ipage
   grouped: number
 }
-interface INode extends Pick<Iparams, 'taskId' | 'type' | 'name' | 'courseId' | 'grouped' >{}
+// interface INode extends Pick<Iparams, 'taskId' | 'type' | 'name' | 'courseId' | 'grouped' >{}
+interface INode {
+  taskId: number
+  type: string
+  grouped: number
+  isHigh: boolean
+}
 
 interface Ivms {
   uuid: string
@@ -79,22 +77,18 @@ interface Ivms {
 interface Iuser {
   username: string
   id: number
-  student_id: number
+  student_id: string
+  online: number
+  number: string
+  current: string
   [propname: string]: any
   vms: Ivms[]
 }
 
 interface IListState {
+  loading: boolean
   data: Iuser[];
   page: Ipage
-}
-
-interface IlimitParams {
-  taskId: number
-  type: string
-  count: number
-  limit: number
-  courseId: number
 }
 
 interface IselectTreeNode {
@@ -105,20 +99,28 @@ interface IselectTreeNode {
   grouped: number
 }
 
+interface ICourseInfo {
+  type: string,
+  courseId: number
+  courseType: number
+}
+
 export default defineComponent({
   components: {
     tree,
     card,
-    PlayCircleOutlined,
-    PoweroffOutlined,
-    ReloadOutlined,
-    SyncOutlined,
-    LeftCircleOutlined, 
-    RightCircleOutlined
+    modal,
   },
   setup() {
-    const http=(request as any).course
+    const courseInfo = reactive<ICourseInfo>({
+      type: 'course',
+      courseType: 1,
+      courseId: 501703,
+    })
+    // provide('courseInfo', courseInfo)
+    const http=(request as any).teachCourse
     const envListState = reactive<IListState>({
+      loading: true,
       data: [],
       page: {
         pageSize: 6,
@@ -126,17 +128,11 @@ export default defineComponent({
         keyWord: ''
       }
     })
-    let page = reactive<Ipage>({
-      totals: 0,
-      pageSize: 6,
-      currPage: 1,
-      keyWord: ''
-    })
     const params = reactive<Iparams>({
       taskId: 533005,
-      type: 'course',
+      type: courseInfo.type,
       name: '',
-      courseId: 501703,
+      courseId: courseInfo.courseId,
       page: envListState.page,
       grouped: 0
     })
@@ -148,60 +144,78 @@ export default defineComponent({
       courseId: 1,
       grouped: 2
     })
+    let taskType = ref()
+    let selectedNodes = reactive<INode>({
+      taskId: 1,
+      type: '',
+      isHigh: false,
+      grouped: 0
+    })
     const selectNode = (node:INode) => {
-      console.log(node)
-      selectTreeNode.taskId = node.taskId
-      selectTreeNode.type = node.type
-      selectTreeNode.name = node.name
-      selectTreeNode.courseId = node.courseId
-      selectTreeNode.grouped = node.grouped
-      params.taskId = node.taskId
-      params.type = node.type
-      params.name = node.name
-      params.courseId = node.courseId
-      params.grouped = node.grouped
-      getList()
-      console.log(selectTreeNode.taskId);
-      
+      console.log(node);
+      if (node) { 
+        selectedNodes.taskId = node.taskId
+        selectedNodes.type = node.type
+        selectedNodes.isHigh = node.isHigh
+        selectedNodes.grouped = node.grouped
+        params.taskId = node.taskId
+        let typeList = node.type.split('-')
+        taskType.value = typeList[typeList.length - 1]
+        getList() 
+      } else {
+        envListState.data = []
+        selectedNodes.taskId = 0
+        selectedNodes.type = ''
+        selectedNodes.isHigh = false
+        selectedNodes.grouped = 0
+      }
     }
     
     // 查询
     const search = reactive({
       stuName: '',
       onSearch: (val: string) => {
-        console.log(search.stuName, '查询环境列表');
         params.page.keyWord = search.stuName
-        console.log(toRefs(toRefs(params)));
-        
         getList()
       }
     })
 
-    
+    let noDataPrompt = ref('')
     function getList() {
+      envListState.loading = true
       http.getPre({param: params}).then((res: any) => {
+        // envListState.loading = false
         if(res && res.status) {
           message.success({ content: '请求成功!', duration: 2 });
           let {data, page} = res.datas.data
           envListState.data = data
-          envListState.data[0] = {
-            username: 'hello',
-            id: 111,
-            student_id: 11,
-            number: '',
-            is_online: 1,
-            current: 1,
-            vms: [
-              {
-                status: 'SHUTOFF',
-                uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a',
-              },
-              {
-                status: 'ACTIVE',
-                uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a'
-              }
-            ]
+          let taskType = res.datas.task_type
+          if (params.page.keyWord !== '') {
+            noDataPrompt.value = '暂无相关数据'
+          }else if (taskType === 1) {
+            let type = courseInfo.type === "train" ? "实训" : (courseInfo.courseType == 2 ? "课程" : "实验")
+            noDataPrompt.value = `尚未开启${type}环境`
+          } else if (taskType === 4) {
+            noDataPrompt.value = '交互编程类型实验不支持开启虚拟机环境'
           }
+          // envListState.data[0] = {
+          //   username: 'hello',
+          //   id: 111,
+          //   student_id: 11,
+          //   number: '',
+          //   is_online: 1,
+          //   current: 1,
+          //   vms: [
+          //     {
+          //       status: 'SHUTOFF',
+          //       uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a',
+          //     },
+          //     {
+          //       status: 'ACTIVE',
+          //       uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a'
+          //     }
+          //   ]
+          // }
           envListState.page = page
         }
       })
@@ -211,44 +225,25 @@ export default defineComponent({
       getList()
     }
 
-    // 弹框
-    const showModal = ref<boolean>(false);
-    const visible = ref<boolean>(false);
-    const openEnv = () => {
-      visible.value = true;
-    }
-    const handleOk = (e: MouseEvent) => {
-      console.log(e);
-      visible.value = false;
-      saveTopinst()
-    };
-    const handleCancel = (e: MouseEvent) => {
-      console.log(e);
-      visible.value = false;
-    };
-
-    
-
-    let openEnvNum = ref('')
-    let limit = ref(0)
+    let limit = ref()
     function getLimit() {
       http.preLimit().then((res: any) => {
-        limit.value = res.data
+        // limit.value = res.data
+        limit.value = 10
       })
     }
-    function saveTopinst() {
+    function saveTopinst(num: any) {
       // const limitParams = reactive<IlimitParams>({
       const limitParams = {
-        taskId: selectTreeNode.taskId,
-        type: selectTreeNode.type,
-        count: openEnvNum.value,
+        taskId: params.taskId,
+        type: params.type,
+        count: num,
         limit: limit.value,
-        courseId: selectTreeNode.courseId
+        courseId: params.courseId
       }
-      console.log(limitParams);
-      
       http.saveTopoinst({param: limitParams}).then((res: any) => {
         if (res && res.status) {
+          getList()
           message.success({ content: '请求成功!', duration: 2 });
         }
       })
@@ -261,25 +256,21 @@ export default defineComponent({
         clearInterval(timer)
         getLimit()
       }, 60000)
-      getTree(501703).then((res) => {
-        console.log(res, 'tree')
-      })
-    })
+    }) 
+      
 
     return {
+      selectedNodes,
+      courseInfo,
       ...toRefs(search),
       envListState,
       getList,
-      page,
+      noDataPrompt,
       onChangePage,
-      showModal,
-      visible,
-      openEnv,
-      handleOk,
-      handleCancel,
       selectNode,
+      taskType,
       limit,
-      openEnvNum,
+      saveTopinst,
     }
   },
 })

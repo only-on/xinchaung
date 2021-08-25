@@ -39,7 +39,7 @@ export interface IApiCollection {
         getLatelyExperimentalList: TFHttpSend
     },
     forum: IForumAps,
-    course: {
+    teachCourse: {
         getPre: TFHttpSend,
         vmOpen: TFHttpSend,
         vmClose: TFHttpSend,
@@ -47,5 +47,6 @@ export interface IApiCollection {
         vmReset: TFHttpSend,
         preLimit: TFHttpSend,
         saveTopoinst: TFHttpSend,
+        getTreeList: TFHttpSend,
     },
 }
