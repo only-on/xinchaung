@@ -2,7 +2,7 @@
     <div class="multiple-choice-box">
         <h2 class="question-title">{{index+1}}、{{data.name}}</h2>
         <a-checkbox-group class="answer-list" @change="answerChange" v-model:value="answers">
-            <div v-for="(item,index) in data.options" :key="index">
+            <div v-for="(item,index) in data.options" :key="index.toString()">
                 <a-checkbox class="answer-item"  :value="item.id" >{{item.option}}</a-checkbox>  
             </div>
         </a-checkbox-group>
