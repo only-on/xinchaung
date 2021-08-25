@@ -19,7 +19,6 @@ export default defineComponent({
         const index=ref(props.index)
         const answers=ref([])
         function answerChange(val:any){
-            console.log(val);
             data.answers=getAnswer(val,data.options)
             emit("update:modelValue",data)
         }
@@ -38,10 +37,6 @@ export default defineComponent({
             })
             return answer
         }
-
-        let test=[1,2,3]
-        console.log(test.indexOf(4));
-        
         return {data,answerChange,index,answers}
     },
 })

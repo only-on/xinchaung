@@ -1,21 +1,39 @@
 <template>
-  <div>
-      <div v-for="(item,index) in data" :key="index">
-
+  <div class="class-practice-box scrollbar">
+    <div v-for="(item, index) in data" :key="index" class="test-paper-item">
+      <h2 class="test-paper-title">{{ item.paperName }}</h2>
+      <div class="test-paper-count">
+        <span class="question-count"
+          >共<i>{{ item.count }}</i
+          >题</span
+        >
+        <span class="question-score"
+          >满分<i>{{ item.score }}</i
+          >分</span
+        >
+        <span class="open-close-btn" @click="openOrClose(index)"
+          >{{openIndexs.includes(index) ?"收起":"展开"}}<i
+            class="iconfont"
+            :class="openIndexs.includes(index) ? 'icon-shouqi' : 'icon-zhankai'"
+          ></i
+        ></span>
       </div>
+      <div
+        class="test-paper-question-box"
+        :style="{ height: openIndexs.includes(index) ? '100%' : '0' }"
+      >
+        <test-paper v-model="data[index].question"></test-paper>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
-import judge from "src/components/exercises/judge.vue";
-import singleChoice from "src/components/exercises/singleChoice.vue";
-import multipleChoice from "src/components/exercises/multipleChoice.vue";
+import { defineComponent, reactive, watch } from "vue";
+import testPaper from "./testPaper.vue";
 export default defineComponent({
   components: {
-      judge,
-    "single-choice": singleChoice,
-    "multiple-choice":multipleChoice
+    "test-paper": testPaper,
   },
   setup() {
     const paper = [
@@ -50,19 +68,19 @@ export default defineComponent({
             options: [
               {
                 id: 1,
-                option: "A:好设计是诚实的",
+                option: "A:好设计是诚实的2",
               },
               {
                 id: 2,
-                option: "B:改变别人之前，先改变自己吧",
+                option: "B:改变别人之前，先改变自己吧2",
               },
               {
                 id: 3,
-                option: "C:不怕输，才会赢",
+                option: "C:不怕输，才会赢2",
               },
               {
                 id: 4,
-                option: "D:改变别人之前，先改变自己吧",
+                option: "D:改变别人之前，先改变自己吧2",
               },
             ],
             answers: [
@@ -282,7 +300,71 @@ export default defineComponent({
       },
     ];
     const data = reactive(paper);
-    return {data}
+
+    const openIndexs: Array<number> = reactive([]);
+    function openOrClose(i: number) {
+      if (openIndexs.includes(i)) {
+        openIndexs.splice(openIndexs.indexOf(i), 1);
+      } else {
+        openIndexs.push(i);
+      }
+    }
+    watch(data, () => {
+      console.log(data);
+    });
+    return { data, openIndexs, openOrClose };
   },
 });
 </script>
+
+<style lang="less">
+.class-practice-box {
+  height: calc(100% - 30px);
+  padding: 8px;
+  margin-right: 8px;
+  overflow: auto;
+  box-sizing: content-box;
+  white-space: normal;
+
+  .test-paper-item {
+    background: linear-gradient(270deg, #ecf0ff 0%, #fdf5ff);
+    margin-bottom: 12px;
+    padding: 0 15px;
+    .test-paper-title {
+      font-size: 16px;
+    }
+    .test-paper-count {
+      margin-right: 15px;
+      //   padding-bottom: 12px;
+      border-bottom: 1px dashed rgba(187, 156, 214, 0.24);
+      //   margin-bottom: 12px;
+      display: flex;
+      flex-direction: row;
+      > span {
+        font-size: 12px;
+        color: rgba(5, 1, 1, 0.45);
+        > i {
+          font-style: normal;
+          margin: 0 5px;
+        }
+        &.question-score {
+          margin-left: 24px;
+        }
+        &.open-close-btn {
+          margin-left: auto;
+          font-size: 14px;
+          color: @theme-color;
+          cursor: pointer;
+        }
+      }
+    }
+    .test-paper-question-box {
+      overflow: hidden;
+      box-sizing: border-box;
+      .test-paper-question-list {
+        margin-top: 12px;
+      }
+    }
+  }
+}
+</style>

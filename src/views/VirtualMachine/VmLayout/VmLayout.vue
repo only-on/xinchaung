@@ -88,7 +88,6 @@ export default defineComponent({
     const eventCustom = document.createEvent("HTMLEvents");
                eventCustom.initEvent("resize", true, true);
     onMounted(() => {
-      console.log("12121");
       nextTick(() => {
         vmWrapWidth.value = window.innerWidth-70;
         rightWidth.value =
