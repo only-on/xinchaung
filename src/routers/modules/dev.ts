@@ -46,6 +46,14 @@ export default {
         title: "推送测试",
         authCode: 'webmsg'
       }
+    },
+    {
+      path: "markdown",
+      component: () => import('src/components/dev/Markdown.vue'),
+      meta: {
+        title: "markdown",
+        authCode: 'markdown'
+      }
     }
   ]
 }
