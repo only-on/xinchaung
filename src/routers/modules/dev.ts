@@ -47,13 +47,13 @@ export default {
         authCode: 'webmsg'
       }
     },
-    // {
-    //   path: "markdown",
-    //   component: () => import('src/components/dev/Markdown.vue'),
-    //   meta: {
-    //     title: "markdown",
-    //     authCode: 'markdown'
-    //   }
-    // }
+    {
+      path: "markdown",
+      component: () => import('src/components/dev/Markdown.vue'),
+      meta: {
+        title: "markdown",
+        authCode: 'markdown'
+      }
+    }
   ]
 }

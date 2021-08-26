@@ -1,8 +1,9 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
-import {resolve} from 'path';
+import { resolve } from 'path';
 // import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import viteRawPlugin from "vite-raw-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -22,7 +23,10 @@ export default defineConfig({
     //   })],
     // }),
     // https://www.npmjs.com/package/@vitejs/plugin-vue-jsx
-    vueJsx()
+    vueJsx(),
+    viteRawPlugin({
+      fileRegex: /\.md$/,
+    }),
   ],
   css: {
     preprocessorOptions: {
@@ -38,7 +42,7 @@ export default defineConfig({
         //   hack: `true; @import (reference) "${resolve('src/assets/theme/purple.less')}";`,
         // },
         javascriptEnabled: true, // 想要less的modifyVars生效，这个必须启用
-        additionalData:'@import "src/assets/theme/purple";\n'
+        additionalData: '@import "src/assets/theme/purple";\n'
       }
     }
   },
@@ -46,11 +50,13 @@ export default defineConfig({
     // rollup的别名配置：https://github.com/rollup/plugins/tree/master/packages/alias#entries
     alias: [
       { find: /^~/, replacement: '' },
-      { find: /^src/,replacement:resolve(__dirname,'./src') }
+      { find: /^src/, replacement: resolve(__dirname, './src') },
+      { find: /^packages/, replacement: resolve(__dirname, './packages') },
+      { find: /^vue-i18n$/, replacement: 'vue-i18n/dist/vue-i18n.cjs.js' },
     ],
   },
-  server:{
-    proxy:{
+  server: {
+    proxy: {
       '/proxyPrefix': {
         target: 'http://192.168.101.150:85',
         changeOrigin: true,
@@ -64,8 +70,8 @@ export default defineConfig({
       }
     },
     port: 3000,
-    host:'0.0.0.0',
-    open:true,
-    force:true
+    host: '0.0.0.0',
+    open: true,
+    force: true
   }
 })

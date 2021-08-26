@@ -233,5 +233,44 @@ export const FakeMenu = {
             ],
             active: false,
         },
+        {
+            label: "开发",
+            url: [null],
+            options: { class: "menu-first-li menu-dev" },
+            icon: "fa fa-circle-o",
+            items: [
+                {
+                    label: "国际化",
+                    url: ["/#/dev"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
+                {
+                    label: "菜单",
+                    url: ["/#/dev/menu"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
+                {
+                    label: "登录",
+                    url: ["/#/dev/login"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
+                {
+                    label: "webmsg",
+                    url: ["/#/dev/webmsg"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
+                {
+                    label: "markdown",
+                    url: ["/#/dev/markdown"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
+            ],
+            active: false,
+        },
     ],
 };
