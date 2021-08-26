@@ -4,7 +4,7 @@
     <div class="info" v-for="v in list" :key="v.name">
       <div class="card">
         <div class="mask">
-          <div class="link" @click="startTraining">
+          <div class="link" @click="startTraining" v-if="v.status==='进行中'">
             <img src="../../assets/images/Experimental/tap.png" alt="">
             <span>点击开始实训</span>
           </div>
@@ -16,15 +16,15 @@
       <div class="card_info">
         <h3>{{v.name}}</h3>
         <div class="text-primary" v-if="v.cost_time">
-          <span>{{v.status_name}}</span>
+          <span>{{v.status}}</span>
           <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
           <span>学习至 {{v.content_name}}</span>
         </div>
         <p class="status">实训教师：{{v.u_name}}</p>
-        <p class="status">实训状态：{{v.status_name}}</p>
+        <p class="status">实训状态：{{v.status}}</p>
         <p class="status">起止时间：{{v.times}}</p>
       </div>
-      <div class="start_training">
+      <div class="start_training" v-if="v.status==='进行中'">
         <a-button @click="startTraining" type="primary"> 开始实训 </a-button>
       </div>
     </div>
@@ -34,17 +34,15 @@
 import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
+import { IBusinessResp} from '../../typings/fetch.d';
 interface IlistItem{
   img:string,
   name:string,
-  status_name:string,
+  status:string,
   cost_time:string,
   content_name:string,
   u_name:string,
   times:string,
-}
-interface load{
-  loading:boolean
 }
 export default defineComponent({
   name: 'MyExperimentalList',
@@ -56,10 +54,10 @@ export default defineComponent({
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
     var list:IlistItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
-    const http=(request as any).Experimental
+    const http=(request as any).studentExperimental
     function initData(){
       loading.value=true
-      http.getMyExperimentalList().then((res:any)=>{
+      http.getMyExperimentalList().then((res:IBusinessResp)=>{
         loading.value=false
         list.push(...res.data)
         list.length?list.map((v:IlistItem)=>{
@@ -83,8 +81,6 @@ export default defineComponent({
     margin-top: 200px;
   }
   .list_content{
-    padding: 20px 10px;
-    text-align: center;
     .info{
       margin: 16px 0;
       padding-bottom: 10px;
@@ -158,7 +154,7 @@ export default defineComponent({
         }
       }
       .start_training{
-        padding-top: 123px;
+        padding: 123px 20px 0 0;
       }
     }
   }

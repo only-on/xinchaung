@@ -1,32 +1,313 @@
 <template>
-  <div>
-    <h2>我的课程</h2>
-    <h2  @click="go()">去啊啊啊继续学习</h2>
+  <div  class="item custom_select">
+      <a-select v-model:value="courseDirection"  placeholder="请选择课程方向" :options="options"></a-select>
+  </div>
+  <div class="list_content">
+    <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
+    <div class="info" v-for="v in 6" :key="v">
+      <div class="main">
+        <div class="card" @click="keepLearning">
+          <div class="mask">
+            {{'进行中'}}
+          </div>
+          <div class="task">学至~{{'桌面测试任务'}}</div>
+          <div class="card_pic">
+            <img :src="defaultUrl" />
+          </div>
+        </div>
+        <div class="card_info">
+          <div class="course_name">{{'测试课程名称'}}</div>
+          <div class="course_mid">
+            <div class="left">
+              <p class="row">{{'2021-04-26 ~ 2022-04-30'}}</p>
+              <p class="row">
+                <span  class="iconfont icon-jiaoshi1"></span>
+                <span>教师</span>
+                <span>{{'文和'}}</span>
+              </p>
+            </div>
+            <div class="right">
+              <div class="circle">
+                <div class="left"></div>
+                <div class="right"></div>
+                <div class="progress">85%</div>
+              </div>
+            </div>
+          </div>
+          <div class="course_time">
+              <span class="iconfont icon-daojishi"></span>
+              <span>用时</span>
+              <span>{{'0小时0分钟0秒'}}</span>
+              <span>已学{{'4'}}%</span>
+          </div>
+        </div>
+        <div class="start_training">
+          <a-button @click="keepLearning" type="link"> 继续学习 </a-button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
+import request from '../../api/index'
+import { IBusinessResp} from '../../typings/fetch.d';
+import { SelectTypes } from 'ant-design-vue/es/select';
+interface IListItem{
+  course_url:string,
+  name:string;
+  study_time:string;
+  course_status:string;
+  status:number;
+  progress:number;
+  between_time:string;
+  used_time:string;
+  recent:string;
+  userName:string;
+}
 export default defineComponent({
   name: '',
   components: {
    
   },
   setup: (props,{emit}) => {
-    const router = useRouter();
-    onMounted(()=>{
-     
-    })
-    function go(){
-      // console.log(path);
-      router.push('/Course/ContinueLearning')
+    const router = useRouter()
+    const options = ref<SelectTypes['options']>([{value: '1', label: '全部课程'},{value: '2', label: '课程1'},{value: '3', label: '课程2'},{value: '4', label: '课程3'}])
+    var list:IListItem[]=reactive([])
+    var loading:Ref<boolean> =ref(false)
+    var courseDirection:Ref<string | undefined>=ref('1')
+    const http=(request as any).studentCourse
+    var defaultUrl:string='/src/assets/images/studentcourse/course-default1.jpg'
+    function initData(){
+      loading.value=true
+      http.getLatelyCourseList().then((res:IBusinessResp)=>{
+        loading.value=false
+        list.push(...res.data)
+        list.length?list.map((v:IListItem)=>{
+          v.course_url=v.course_url?v.course_url:defaultUrl
+        }):''
+      })
     }
-    return { go};
+    function keepLearning(){
+
+    }
+    onMounted(()=>{
+     initData()
+    })
+    return {list,loading,keepLearning,defaultUrl,options,courseDirection };
   },
 })
 </script>
 
-<style scoped lang="scss">
-
+<style  scoped lang="less">
+  @Circular_width:5em;
+  @Semicircle_width:2.5em;
+  .list_content{
+    display: flex;
+    flex-wrap: wrap;
+    .info{
+      width: 25%;
+      text-align: center;
+      margin-bottom:20px;
+      cursor: pointer;
+      transition: all .6s;
+      .main{
+        margin: 0 auto;
+        width: 270px;
+        box-shadow: 0px 2px 4px 0px rgb(164 36 167 / 14%);
+      }
+    }
+    .info:hover{
+      .card_info{
+        .course_time{
+          display: none;
+        }
+        .course_mid .right .circle{
+          display: none;
+        }
+      }
+      .start_training{
+          display: block;
+        }
+    }
+  }
+  .card{
+    position: relative;
+    width: 270px;
+    height: 166px;
+    cursor: pointer;
+    margin: 0 auto;
+  }
+  .mask{
+    position: absolute;
+    right: 0px;
+    top: 20px;
+    width:64px;
+    height: 24px;
+    background-color: #60AE34;
+    text-align: center;
+    line-height: 24px;
+    border-top-left-radius: 12px;
+    border-bottom-left-radius: 12px;
+    cursor: auto;
+    color: #fff;
+  }
+  .task{
+    text-align: left;
+    position: absolute;
+    left: 0px;
+    bottom: 20px;
+    background-color: rgba(5,1,1,0.77);
+    color: rgba(255,255,255, 0.7);
+    padding: 0 5px;
+    width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    height: 26px;
+    line-height: 26px;
+  }
+  .card_info{
+    width: 270px;
+    margin: 0 auto;
+    text-align: left;
+    padding: 0 12px;
+    color: #707070;
+    .course_name{
+      font-size: 18px;
+      color: #333;
+      margin-bottom:10px;
+      line-height: 33px;
+    }
+    .course_mid{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+      .left{
+        .row{
+          line-height: 25px;
+          margin-bottom:10px;
+        }
+        .row:nth-child(2){
+          margin-bottom:0px;
+          span{
+            margin-right: 10px;
+          }
+        }
+      }
+      .right {
+        width: 24%;
+        .circle{
+          width: @Circular_width;
+          height: @Circular_width;
+          position: relative;
+          .progress {
+              position: absolute;
+              width: 3.75em;
+              height: 3.75em;
+              background-color: white;
+              border-radius: 50%;
+              left: 0.625em;
+              top: 0.625em;
+              line-height: 3.75em;
+              text-align: center;
+          }
+          .left,.right {
+            width: @Semicircle_width;
+            height: @Circular_width;
+            overflow: hidden;
+            position: relative;
+            float: left;
+            background-color: @theme-color;
+          }
+    
+          .left {
+              border-radius: @Circular_width 0 0 @Circular_width;
+          }
+          
+          .right {
+              border-radius: 0 @Circular_width @Circular_width 0;
+          }
+          .left:after,.right:after {
+              content: "";
+              position: absolute;
+              display: block;
+              width: @Semicircle_width;
+              height: @Circular_width;
+              background-color: white;
+              border-radius: @Circular_width 0 0 @Circular_width;
+              background-color: #ddd;
+          }
+          .right:after {
+              content: "";
+              position: absolute;
+              display: block;
+              border-radius: 0 @Circular_width @Circular_width 0;
+          }
+          .left:after {
+              transform-origin: right center;
+          }
+    
+          .right:after {
+              transform-origin: left center;
+              transform: rotateZ(45deg);
+          }
+        }
+        
+      }
+    }
+    .course_time{
+      margin-bottom: 10px;
+      padding-top: 15px;
+      span{
+        margin-right: 10px;
+      }
+      span:nth-child(4){
+        margin: 0 0 0 20px;
+        color: @theme-light-color;
+      }
+    }
+  }
+  .card_pic{
+  
+    width: 100%;
+    height: 100%;
+    img{
+      width: 100%;
+      height: 100%;
+      border-top-left-radius: 10px;
+      border-top-right-radius: 10px;
+    }
+  }
+  .start_training{
+    display: none;
+    width: 100%;
+    height: 40px;
+    line-height: 40px;
+    background-color: #fafafa;
+    border-top: 1px solid #E9E9E9;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+  }
+  .custom_select{
+    padding: 0 0 20px 20px;
+    :deep(.ant-select-selector){
+      width: 400px;
+      height: 35px;
+      padding-left: 30px;
+      align-items: center;
+    }
+    :deep(.ant-select-selector)::before{
+      content: '';
+      position: absolute;
+      left:8px;
+      top:10px;
+      background: url(../../assets/images/screenicon/Group3.png) no-repeat;
+      width: 14px;
+      height: 15px;
+    }
+  }
 </style>

@@ -123,6 +123,7 @@ export default defineComponent({
     .active {
       background: @primary-color;
       color: #fff;
+      transition: all .3s;
       &:hover {
         color: #fff;
       }

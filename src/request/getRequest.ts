@@ -6,10 +6,13 @@ import pupa from 'pupa';
 // import qs from 'qs';
 // https://stackoverflow.com/questions/28920753/declaring-the-type-of-this-in-a-typescript-function/41358367
 // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
+const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+
 const GetRequest = function (this: IHttpClient, baseUrl = "") {
   this.server = request;
   this.nowHandle = null;
-  this.baseUrl = baseUrl || '/proxyPrefix';
+  this.baseUrl = baseUrl || (dev_base_url as string);
+  // this.baseUrl = baseUrl ||'/proxyPrefix'
   // 底下这里需要这么写，否则会提示这个方法缺少一个构造函数签名
   // https://stackoverflow.com/questions/43623461/new-expression-whose-target-lacks-a-construct-signature-in-typescript
 } as any as { new(baseUrl: string): IHttpClient }

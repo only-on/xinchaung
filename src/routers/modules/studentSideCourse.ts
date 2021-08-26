@@ -1,54 +1,42 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
-  path: "/",
+  path: "/studentSideCourse",
   component: Layout,
   // component: () => import("src/views/studentSideCourse/index.vue"),
   meta: {
     title: "课程",
-    authCode: "Course",
+    authCode: "studentSideCourse",
   },
   children: [
     {
-      path: "Course",
-      component: RouterViews,
-      // component: () => import("src/views/studentSideCourse/index.vue"),
+      path: "",
+      name: "",
+      component: () => import("src/views/studentSideCourse/index.vue"),
       meta: {
-        title: "我的课程",
-        icon: "",
-        authCode: "CourseList",
+        title: "课程列表",
+        authCode: "studentSideCourse",
       },
-      children: [
+    },
+    {
+      path: "ContinueDetail",
+      name: "ContinueDetail",
+      component: () => import("src/views/studentSideCourse/ContinueDetail.vue"),
+      meta: {
+        title: "课程详情",
+        authCode: "",
+      },
+      children:[
         {
-          path: "CourseList",
-          name: "CourseList",
-          component: () => import("src/views/studentSideCourse/index.vue"),
+          path: "ContinueLearningSon",
+          name: "ContinueLearningSon",
+          component: () => import("src/views/studentSideCourse/ContinueLearningSon.vue"),
           meta: {
-            title: "课程列表",
+            title: "详情儿子",
             authCode: "",
           },
         },
-        {
-          path: "ContinueLearning",
-          name: "ContinueLearning",
-          component: () => import("src/views/studentSideCourse/ContinueLearning.vue"),
-          meta: {
-            title: "课程详情",
-            authCode: "",
-          },
-          children:[
-            {
-              path: "ContinueLearningSon",
-              name: "ContinueLearningSon",
-              component: () => import("src/views/studentSideCourse/ContinueLearningSon.vue"),
-              meta: {
-                title: "详情儿子",
-                authCode: "",
-              },
-            },
-          ]
-        },
-      ],
-    }
-  ]
+      ]
+    },
+  ],
 }

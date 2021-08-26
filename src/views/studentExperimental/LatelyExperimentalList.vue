@@ -3,7 +3,7 @@
     <div class="info" v-for="v in list" :key="v.name">
       <div class="card">
         <div class="mask">
-          <div class="link" @click="continueTraining">
+          <div class="link" @click="continueTraining" v-if="v.status_name==='进行中'">
             <img src="../../assets/images/Experimental/tap.png" alt="">
             <span>点击继续实训</span>
           </div>
@@ -23,7 +23,7 @@
         <p class="status">实训状态：{{v.status_name}}</p>
         <p class="status">起止时间：{{v.times}}</p>
       </div>
-      <div class="start_training">
+      <div class="start_training" v-if="v.status_name==='进行中'">
         <a-button @click="continueTraining" type="primary"> 继续实训 </a-button>
       </div>
     </div>
@@ -52,7 +52,7 @@ export default defineComponent({
     const router = useRouter();
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
     var list:IlistItem[]=reactive([])
-    const http=(request as any).Experimental
+    const http=(request as any).studentExperimental
     function initData(){
       http.getLatelyExperimentalList().then((res:IBusinessResp)=>{
         // console.log(res)
@@ -75,7 +75,6 @@ export default defineComponent({
 
 <style scoped lang="less">
   .list_content{
-    padding: 20px 10px;
     .info{
       margin: 16px 0;
       padding-bottom: 10px;
@@ -148,7 +147,7 @@ export default defineComponent({
         }
       }
       .start_training{
-        padding-top: 123px;
+        padding: 123px 20px 0 0;
       }
     }
   }

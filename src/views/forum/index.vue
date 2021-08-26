@@ -5,7 +5,7 @@
           <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" />
         </div>
         <div  class="item custom_select">
-            <a-select  placeholder="请选择发帖类型" :options="options"></a-select>
+            <a-select v-model:value="ForumSearch.type"  placeholder="请选择发帖类型" :options="options"></a-select>
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>

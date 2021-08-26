@@ -13,7 +13,7 @@
 import { defineComponent,ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
-  name: 'ContinueLearning',
+  name: 'ContinueDetail',
   components: {
    
   },
