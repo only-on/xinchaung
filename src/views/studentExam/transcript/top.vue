@@ -28,6 +28,10 @@
     </div>
     <div class="scoer-image">
       <img src="../../../assets/exam/stu-bg-score.jpg" alt="">
+      <div class="result-score">
+        <span>分数</span>
+        <span>100</span>
+      </div>
     </div>
   </div>
 </template>
@@ -96,6 +100,25 @@ export default defineComponent({
   .scoer-image {
     margin-left: auto;
     flex-shrink: 0;
+    position: relative;
+    .result-score{
+      position: absolute;
+      right: 132px;
+      top: 20px;
+      display: flex;
+      flex-direction: column;
+      color: red;
+      align-items: center;
+      >span{
+        &:nth-child(1){
+          font-size: 16px;
+        }
+        &:nth-child(2){
+          font-size: 32px;
+          font-weight: 700;
+        }
+      }
+    }
   }
 }
 </style>

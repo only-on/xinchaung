@@ -12,7 +12,8 @@
           >分</span
         >
         <span class="open-close-btn" @click="openOrClose(index)"
-          >{{openIndexs.includes(index) ?"收起":"展开"}}<i
+          >{{ openIndexs.includes(index) ? "收起" : "展开"
+          }}<i
             class="iconfont"
             :class="openIndexs.includes(index) ? 'icon-shouqi' : 'icon-zhankai'"
           ></i
@@ -23,6 +24,9 @@
         :style="{ height: openIndexs.includes(index) ? '100%' : '0' }"
       >
         <test-paper v-model="data[index].question"></test-paper>
+        <div>
+          <a-button type="primary">提交</a-button>
+        </div>
       </div>
     </div>
   </div>
@@ -390,22 +394,22 @@ export default defineComponent({
               {
                 id: 1,
                 option: "A:好设计是诚实的",
-                score:10,
+                score: 10,
               },
               {
                 id: 2,
                 option: "B:改变别人之前，先改变自己吧",
-                score:21,
+                score: 21,
               },
               {
                 id: 3,
                 option: "C:不怕输，才会赢",
-                score:31,
+                score: 31,
               },
               {
                 id: 4,
                 option: "改变别人之前，先改变自己吧",
-                score:41,
+                score: 41,
               },
             ],
             answers: [

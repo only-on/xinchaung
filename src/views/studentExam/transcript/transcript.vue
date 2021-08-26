@@ -17,8 +17,13 @@
           <p class="echarts-title">答题详情</p>
           <div class="answer-detail-box scrollbar">
             <ul class="answer-order-list">
-              <li class="answer-order-item" v-for="i in 10" :key="i">
-                {{ i }}
+              <li
+                class="answer-order-item"
+                v-for="(item, index) in data"
+                :key="index"
+                @click="selectQuestion(item, index)"
+              >
+                {{ index + 1 }}
               </li>
             </ul>
             <div class="legend">
@@ -26,7 +31,28 @@
               <span><i class="legend-icon bg-pink"></i>错误题</span>
               <span><i class="legend-icon bg-greay"></i>空答案</span>
             </div>
-            <div>问题</div>
+            <div>
+              <judge
+                v-if="currentSelectQuestion.type === 3"
+                :data="currentSelectQuestion"
+                :index="currentIndex"
+              ></judge>
+              <gap-filling
+                v-if="currentSelectQuestion.type === 4"
+                :data="currentSelectQuestion"
+                :index="currentIndex"
+              ></gap-filling>
+              <multiple-choice
+                v-if="currentSelectQuestion.type === 2"
+                :data="currentSelectQuestion"
+                :index="currentIndex"
+              ></multiple-choice>
+              <single-choice
+                v-if="currentSelectQuestion.type === 1"
+                :data="currentSelectQuestion"
+                :index="currentIndex"
+              ></single-choice>
+            </div>
           </div>
         </div>
       </div>
@@ -35,16 +61,140 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted } from "vue";
+import { defineComponent, inject, onMounted, ref } from "vue";
 import top from "./top.vue";
 import examLayout from "../examLayout.vue";
 import { scoreDetailEcharts, accuracyEcharts } from "./echartsCanvas";
+import gapFilling from "./gapFilling/gapFilling.vue";
+import judge from "./judge/judge.vue";
+import multipleChoice from "./multipleChoice/multipleChoice.vue";
+import singleChoice from "./singleChoice/singleChoice.vue";
 export default defineComponent({
   components: {
     top,
     examLayout,
+    judge,
+    "gap-filling": gapFilling,
+    "multiple-choice": multipleChoice,
+    "single-choice": singleChoice,
   },
   setup() {
+    const data = [
+      {
+        name: "单选题名称",
+        type: 1,
+        options: [
+          {
+            id: 1,
+            content: "我说答案1",
+          },
+          {
+            id: 2,
+            content: "我说答案2",
+          },
+          {
+            id: 3,
+            content: "我说答案3",
+          },
+        ],
+        answers: [
+          {
+            id: 1,
+            answer: "我说答案2",
+          },
+        ],
+      },
+      {
+        name: "多选题名称",
+        type: 2,
+        options: [
+          {
+            id: 1,
+            content: "我说答案1",
+          },
+          {
+            id: 2,
+            content: "我说答案2",
+          },
+          {
+            id: 3,
+            content: "我说答案3",
+          },
+          {
+            id: 4,
+            content: "我说答案4",
+          },
+        ],
+        answers: [
+          {
+            id: 1,
+            answer: "我说答案2",
+          },
+          {
+            id: 3,
+            answer: "我说答案3",
+          },
+        ],
+      },
+      {
+        name: "判断题名称",
+        type: 3,
+        options: [
+          {
+            id: 1,
+            content: "正确",
+          },
+          {
+            id: 2,
+            content: "错误",
+          },
+        ],
+        answers: [
+          {
+            id: 1,
+            answer: "正确",
+          },
+        ],
+      },
+      {
+        name: "填空题名称",
+        type: 4,
+        options: [
+          {
+            id: 1,
+            content: "我说答案1",
+          },
+          {
+            id: 2,
+            content: "我说答案2",
+          },
+          {
+            id: 3,
+            content: "我说答案3",
+          },
+        ],
+        answers: [
+          {
+            id: 1,
+            answer: "我说答案1",
+          },
+          {
+            id: 2,
+            answer: "我说答案2",
+          },
+          {
+            id: 3,
+            answer: "我说答案3",
+          },
+        ],
+      },
+    ];
+    const currentSelectQuestion = ref(data[0]); // 当前选择的题
+    const currentIndex = ref(0);
+    function selectQuestion(val: any, index: number) {
+      currentSelectQuestion.value = val;
+      currentIndex.value = index;
+    }
     onMounted(() => {
       const scoreDetail = scoreDetailEcharts(
         document.getElementById("scoreDetail") as HTMLDivElement,
@@ -59,6 +209,12 @@ export default defineComponent({
         accuracy.resize();
       };
     });
+    return {
+      currentSelectQuestion,
+      data,
+      selectQuestion,
+      currentIndex,
+    };
   },
 });
 </script>
@@ -133,27 +289,28 @@ export default defineComponent({
         }
       }
       > .legend {
-          font-size: 12px;
-          color: #6c6e72;
-          margin-right: 5%;
-          text-align: right;
-          .legend-icon {
-            width: 30px;
-            height: 10px;
-            border-radius: 8px;
-            display: inline-block;
-            margin-left: 12px;
-            &.bg-truth{
-              background: @theme-color;
-            }
-            &.bg-pink{
-              background: rgba(251,118,122,1);
-            }
-            &.bg-greay{
-              background: rgba(195,203,217,1);
-            }
+        font-size: 12px;
+        color: #6c6e72;
+        margin-right: 5%;
+        text-align: right;
+        float: right;
+        .legend-icon {
+          width: 30px;
+          height: 10px;
+          border-radius: 8px;
+          display: inline-block;
+          margin-left: 12px;
+          &.bg-truth {
+            background: @theme-color;
+          }
+          &.bg-pink {
+            background: rgba(251, 118, 122, 1);
+          }
+          &.bg-greay {
+            background: rgba(195, 203, 217, 1);
           }
         }
+      }
     }
   }
   .second-box,

@@ -7,6 +7,7 @@ import viteRawPlugin from "vite-raw-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base:"./",
   plugins: [
     vue(),
     // ViteComponents({
