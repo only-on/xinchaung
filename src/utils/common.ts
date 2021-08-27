@@ -16,10 +16,15 @@ function getStudentTranscriptAnswer(answers:Array<any>,type:string=""){
     let contentAndCode=""
     answers.forEach((item,index)=>{
         code+=numToAbc(index+1)+' '
-        content+=item.answer+','
+        if (item.content) {
+            content+=item.content+','
+        } else {
+            content+=item.answer+','
+        }
+        
     })
-    if (type==="conetnt") {
-        return content.substring(content.length-1)
+    if (type==="content") {
+        return content.substring(0,content.length-1)
     } else {
         return code
     }

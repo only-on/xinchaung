@@ -1,29 +1,23 @@
 <template>
   <div class="gap-filling-box">
-    <h2 class="answer-title">{{ index }}、{{ data.name }}</h2>
-    <div class="student-answer error-answer">回答错误：{{getStudentAnswer(data.options)}}</div>
-    <div class="question-answer correct-answer">回答正确：{{getStudentAnswer(data.options)}}</div>
-    <div class="question-answer standard-answer">标准答案：{{getStandardAnswer(data.answers)}}</div>
+    <h2 :class="styles['answer-title']">{{ index }}、{{ data.name }}</h2>
+    <div :class="[styles['student-answer'], styles['error-answer']]">回答错误：{{getStudentTranscriptAnswer(data.options,'content')}}</div>
+    <div :class="[styles['question-answer'], ['correct-answer']]">回答正确：{{getStudentTranscriptAnswer(data.options,'content')}}</div>
+    <div :class="[styles['question-answer'] ,styles['standard-answer']]">标准答案：{{getStudentTranscriptAnswer(data.answers,'content')}}</div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
+import styles from "../question.module.less"
+import {getStudentTranscriptAnswer} from "src/utils/common"
 export default defineComponent({
   props: ["data", "index"],
   setup() {
-      function getStudentAnswer(answers:Array<any>){
-          let answer=""
-          return  answer
-      }
-       function getStandardAnswer(answers:Array<any>){
-          let answer=""
-          return  answer
-      }
+      
       return {
-          getStudentAnswer,
-          getStandardAnswer
+          styles,
+          getStudentTranscriptAnswer
       }
   },
 });

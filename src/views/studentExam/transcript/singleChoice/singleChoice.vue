@@ -21,7 +21,6 @@ export default defineComponent({
   props: ["data","index"],
   setup(props) {
       console.log(props.data);
-      console.log(styles);
     return {numToAbc,styles,getStudentTranscriptAnswer};
   },
 });
