@@ -1,4 +1,8 @@
-// 数字转换字母
+/**
+ * @param num 数字
+ * @description 数字转换字母
+ */
+
 function numToAbc(num:number){
     return  String.fromCharCode(64+num)
 }
@@ -30,8 +34,10 @@ function getStudentTranscriptAnswer(answers:Array<any>,type:string=""){
     }
     
 }
+
+
  export {
     numToAbc,
-    getStudentTranscriptAnswer
+    getStudentTranscriptAnswer,
  }
  

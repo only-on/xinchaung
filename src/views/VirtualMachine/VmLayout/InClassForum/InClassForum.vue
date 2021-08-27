@@ -17,13 +17,21 @@
             </div>
             <div class="forum-content-header">
               <div class="forum-content-header-left">
-                <span><i class="icon-zhuangtai iconfont"></i>公告</span>
+                <span><i class="icon-gonggao iconfont"></i>公告</span>
                 帖子题题目题目题目帖子题题目题目题目题题目题目题目
               </div>
               <div class="forum-content-header-right">
                 <a-button type="ghost" size="small">回复</a-button>
                 <span @click="openOrClose(i)"
-                  ><i class="iconfont icon-shouqi"></i>收起</span
+                  ><i
+                    class="iconfont"
+                    :class="
+                      currentOpenContent === i
+                        ? 'icon-zhankai2-copy'
+                        : 'icon-shouqi-copy'
+                    "
+                  ></i
+                  >{{ currentOpenContent === i ? "收起" : "展开" }}</span
                 >
               </div>
             </div>
@@ -53,30 +61,57 @@
         </div>
       </a-tab-pane>
       <a-tab-pane key="2" tab="我的提问">
-        <div></div>
+        <div>
+          <div @click="vncScreenshot">截图</div>
+            <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+        </div>
       </a-tab-pane>
     </a-tabs>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-
+import { defineComponent, ref, Ref } from "vue";
+import html2canvas from "html2canvas";
+import { canvasToImage, canvasToFile,imageFileToBase64,screenshot } from "src/utils/manipulatePicture";
 export default defineComponent({
   setup() {
     const searchContent = ref("");
-    const currentOpenContent = ref(0);
+    const currentOpenContent: Ref<number | string> = ref(0);
+    const imageUrl: Ref<string> = ref("");
     function onSearch() {
       console.log(searchContent.value);
     }
     function openOrClose(index: number) {
-      currentOpenContent.value = index;
+      currentOpenContent.value === index
+        ? (currentOpenContent.value = "")
+        : (currentOpenContent.value = index);
     }
+
+    // 截图
+    function vncScreenshot() {
+      let novncWrap: HTMLCanvasElement | null = document.querySelector(
+        ".novnc-wrap>div>canvas"
+      );
+      if (!novncWrap) return;
+
+      screenshot(novncWrap).then((canvas)=>{
+          let file= canvasToFile(canvas,'testname.png')
+          imageFileToBase64(file).then((url:string)=>{
+              imageUrl.value=url
+          })
+      });
+    }
+
+    
+
     return {
       activeKey: ref("1"),
       searchContent,
       onSearch,
       currentOpenContent,
       openOrClose,
+      vncScreenshot,
+      imageUrl,
     };
   },
 });
@@ -124,6 +159,9 @@ export default defineComponent({
       > .forum-content-header-left {
         font-size: 14px;
         font-weight: 400;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
         > span {
           color: #07b28f;
           margin-right: 6px;
@@ -136,6 +174,9 @@ export default defineComponent({
       > .forum-content-header-right {
         color: @theme-color;
         font-size: @font-size-sm;
+        margin-left: 15px;
+        flex-shrink: 0;
+        cursor: pointer;
         > button {
           margin-right: 15px;
           font-size: @font-size-sm;
