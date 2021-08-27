@@ -79,7 +79,7 @@ export default defineComponent({
       })
     }
     function startLearning(id:number) {
-      router.push('')
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+id)
     }
     onMounted(()=>{
      initData()

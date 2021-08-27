@@ -5,7 +5,7 @@ export default {
   component: Layout,
   // component: () => import("src/views/studentSideCourse/index.vue"),
   meta: {
-    title: "课程",
+    title: "我的课程",
     authCode: "studentSideCourse",
   },
   children: [

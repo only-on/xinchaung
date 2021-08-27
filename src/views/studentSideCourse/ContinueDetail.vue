@@ -1,16 +1,12 @@
 <template>
-  <h2>课程详情</h2>
+  <h2 v-layout-bg>课程详情</h2>
   <div>
     <!-- <Breadcrumb /> -->
   </div>
-  <h2 @click="go()">
-    去子组件
-  </h2>
-  <router-view />
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted } from 'vue'
+import { defineComponent,ref, onMounted,inject } from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
   name: 'ContinueDetail',
@@ -19,6 +15,9 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
+    var configuration:any=inject('configuration')
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false})
     onMounted(()=>{
      
     })

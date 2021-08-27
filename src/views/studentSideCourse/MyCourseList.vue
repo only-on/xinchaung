@@ -6,7 +6,7 @@
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" />  -->
     <div class="info" v-for="v in list" :key="v.course_id" :class="v.state!=='已结束'?'info_hover':''">
       <div class="main">
-        <div class="card" @click="keepLearning">
+        <div class="card" @click="keepLearning(v.course_id)">
           <div class="mask" :class="v.state==='已结束'?'mask_end':''">
             {{v.state}}
           </div>
@@ -39,12 +39,12 @@
           <div class="course_time">
               <span class="iconfont icon-daojishi"></span>
               <span>用时</span>
-              <span>{{'0小时0分钟0秒'}}</span>
+              <span>{{v.time_cost}}</span>
               <span v-if="v.progress">已学{{v.progress}}%</span>
           </div>
         </div>
         <div class="start_training">
-          <a-button @click="keepLearning" type="link"> {{v.progress?'继续学习':'开始学习'}} </a-button>
+          <a-button @click="keepLearning(v.course_id)" type="link"> {{v.progress?'继续学习':'开始学习'}} </a-button>
         </div>
       </div>
     </div>
@@ -66,6 +66,7 @@ interface IListItem{
   recent:string;
   teacher:string;
   course_id:number;
+  time_cost:string;
 }
 export default defineComponent({
   name: '',
@@ -92,8 +93,8 @@ export default defineComponent({
         }):''
       })
     }
-    function keepLearning(){
-
+    function keepLearning(id:number){
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+id)
     }
     function getDirection(){
       http.courseDirection().then((res:IBusinessResp)=>{
