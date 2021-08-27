@@ -48,7 +48,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const http = (request as Ihttp).teachCourse
     let selectedKeys = ref([532558])
-    function selectedChange(selectedkeys:string[] | number[], e:any) {
+    function selectedChange(selectedkeys:string[] | number[], e: {selct: boolean, selectedNodes: Record<string, any>[]}) {
       if (e.selectedNodes.length && e.selectedNodes[0].dataRef.type) {
         let node = {
           taskId: e.selectedNodes[0].dataRef.id,

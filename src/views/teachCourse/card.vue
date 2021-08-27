@@ -15,6 +15,7 @@
       <p class="kvm-status">虚机状态：<span>{{list.vms[current].status === 'ACTIVE' ? '开启' : '关闭'}}</span></p>
       <p class="operation-status">操作状态：<span>{{list.online && list.vms[current].uuid === list.current ? '繁忙' : '空闲'}}</span></p>
     </div>
+    <div class="mask" @click="jumpHandle()"></div>
   </div>
   <div class="btns">
     <a-button type="primary" title="重置" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(3)"><sync-outlined/></a-button>
@@ -31,6 +32,7 @@ import { message } from 'ant-design-vue'
 import { defineComponent, ref, toRefs, PropType, inject } from 'vue'
 import { IBusinessResp } from 'src/typings/fetch'
 import { Ihttp, ICourseInfo } from './typings'
+import { useRouter, useRoute } from 'vue-router'
 
 interface Ivms {
   uuid: string
@@ -57,12 +59,14 @@ export default defineComponent({
   emits: ['getList'],
   components: {PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined},
   setup(props, {emit}) {
-    let courseInfo = inject('courseInfo') as ICourseInfo
+    const router = useRouter()
+    const route = useRoute()
+    const courseInfo = inject('courseInfo') as ICourseInfo
     
     const http=(request as Ihttp).teachCourse
 
     let current = ref(0)
-    function beforeChange(from:any, to:number) {
+    function beforeChange(from:Function, to:number) {
       current.value= to
     }
 
@@ -82,12 +86,19 @@ export default defineComponent({
         }
       })
     }
+
+    function jumpHandle() {
+      console.log(props.list.vms[current.value].uuid);
+      console.log(route.path);
+      router.push('/teacher')
+    }
     
     return {
       ...toRefs(props),
       current,
       beforeChange,
       btnClick,
+      jumpHandle,
     }
   },
 })
@@ -95,6 +106,15 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .swiper-box {
+  .mask {
+    width: 200px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 21px;
+    cursor: pointer;
+    // background-color: papayawhip;
+  }
   .active {
     background: url(src/assets/images/vm/kvm-computer-open.png) center no-repeat;
     height: 165px;

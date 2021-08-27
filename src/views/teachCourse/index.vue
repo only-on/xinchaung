@@ -97,6 +97,13 @@ interface IselectTreeNode {
   courseId: number
   grouped: number
 }
+interface IResponseData {
+  status: number;
+  msg: string;
+  data: any;
+  error:any;
+  datas: any
+}
 
 export default defineComponent({
   components: {
@@ -177,7 +184,7 @@ export default defineComponent({
     function getList() {
       envListState.data = []
       envListState.loading = true
-      http.getPre({param: params}).then((res: any) => {
+      http.getPre({param: params}).then((res: IResponseData) => {
         envListState.loading = false
         if(res && res.status) {
           message.success({ content: '请求成功!', duration: 2 });
@@ -332,6 +339,7 @@ export default defineComponent({
           }
           .swiper-box {
             height: 165px;
+            position: relative;
             .kvm-info {
               height: 100%;
               display: flex;
