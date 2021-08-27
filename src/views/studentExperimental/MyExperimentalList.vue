@@ -66,7 +66,7 @@ export default defineComponent({
       })
     }
     function startTraining() {
-      router.push('')
+      router.push('/vm/vnc')
     }
     onMounted(()=>{
      initData()

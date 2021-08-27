@@ -7,9 +7,9 @@ import MyServer from '../request/getRequest'
 
 const files: any = import.meta.globEager("./modules/*.ts")
 for (const key in files) {
-    let k = key.split('/')[2].split('.')[0]
+    let file_name = key.split('/')[2].split('.')[0]
     let moduleFiles = files[key].default
-    MyServer.parseRouter(k as TAvailableModules, moduleFiles)
+    MyServer.parseRouter(file_name as TAvailableModules, moduleFiles)
 }
 
 export default MyServer;
