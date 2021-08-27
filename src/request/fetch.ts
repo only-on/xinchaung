@@ -109,7 +109,8 @@ export default function request({
 }: IRequestParams): Promise<IBusinessResp> {
   // fetch 参数方便后续调整
   let init: RequestInit = { headers, method, cache: cache, credentials: credentials, mode };
-  let fetchUrl = url;
+  // let fetchUrl = url;
+  let fetchUrl = (window as any).proxy_api ? `${(window as any).proxy_api}${url}` : url;
   // 根据发送数据类型来自动生成 ContentType 和 body格式
   let { sendContentType, data } = contentTypeAndData(dataType, body);
   // headers构造

@@ -1,36 +1,38 @@
 <template>
   <div  class="item custom_select">
-      <a-select v-model:value="courseDirection"  placeholder="请选择课程方向" :options="options"></a-select>
+      <a-select v-model:value="course_category_id"  placeholder="请选择课程方向" :options="options" @change="handleChange"></a-select>
   </div>
   <div class="list_content">
-    <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
-    <div class="info" v-for="v in 6" :key="v">
+    <!-- <a-spin v-if="loading" tip="Loading..." size="large" />  -->
+    <div class="info" v-for="v in list" :key="v.course_id" :class="v.state!=='已结束'?'info_hover':''">
       <div class="main">
         <div class="card" @click="keepLearning">
-          <div class="mask">
-            {{'进行中'}}
+          <div class="mask" :class="v.state==='已结束'?'mask_end':''">
+            {{v.state}}
           </div>
-          <div class="task">学至~{{'桌面测试任务'}}</div>
+          <div class="task">学至~{{v.recent}}</div>
           <div class="card_pic">
             <img :src="defaultUrl" />
           </div>
         </div>
         <div class="card_info">
-          <div class="course_name">{{'测试课程名称'}}</div>
+          <div class="course_name">{{v.name}}</div>
           <div class="course_mid">
             <div class="left">
-              <p class="row">{{'2021-04-26 ~ 2022-04-30'}}</p>
+              <p class="row">{{v.start_end_time}}</p>
               <p class="row">
                 <span  class="iconfont icon-jiaoshi1"></span>
                 <span>教师</span>
-                <span>{{'文和'}}</span>
+                <span>{{v.teacher}}</span>
               </p>
             </div>
             <div class="right">
-              <div class="circle">
-                <div class="left"></div>
-                <div class="right"></div>
-                <div class="progress">85%</div>
+              <div class="circle" v-if="v.progress">
+                <a-progress type="circle" :percent="v.progress" :width="50" :stroke-width="14" 
+                  :showInfo="false" 
+                  :stroke-color="'#8955b5'" 
+                  :trail-color="'#ddd'"
+                />
               </div>
             </div>
           </div>
@@ -38,11 +40,11 @@
               <span class="iconfont icon-daojishi"></span>
               <span>用时</span>
               <span>{{'0小时0分钟0秒'}}</span>
-              <span>已学{{'4'}}%</span>
+              <span v-if="v.progress">已学{{v.progress}}%</span>
           </div>
         </div>
         <div class="start_training">
-          <a-button @click="keepLearning" type="link"> 继续学习 </a-button>
+          <a-button @click="keepLearning" type="link"> {{v.progress?'继续学习':'开始学习'}} </a-button>
         </div>
       </div>
     </div>
@@ -56,16 +58,14 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { SelectTypes } from 'ant-design-vue/es/select';
 interface IListItem{
-  course_url:string,
+  url:string,
   name:string;
-  study_time:string;
-  course_status:string;
+  start_end_time:string;
   status:number;
   progress:number;
-  between_time:string;
-  used_time:string;
   recent:string;
-  userName:string;
+  teacher:string;
+  course_id:number;
 }
 export default defineComponent({
   name: '',
@@ -74,36 +74,51 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter()
-    const options = ref<SelectTypes['options']>([{value: '1', label: '全部课程'},{value: '2', label: '课程1'},{value: '3', label: '课程2'},{value: '4', label: '课程3'}])
+    const options = ref<SelectTypes['options']>([{id:1,name:'全部',value:1, label: '全部课程'}])
     var list:IListItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
-    var courseDirection:Ref<string | undefined>=ref('1')
+    var course_category_id:Ref<number | undefined>=ref(1)
     const http=(request as any).studentCourse
     var defaultUrl:string='/src/assets/images/studentcourse/course-default1.jpg'
     function initData(){
+      let param=course_category_id.value!==1?{course_category_id:course_category_id.value}:{}
       loading.value=true
-      http.getLatelyCourseList().then((res:IBusinessResp)=>{
+      list.length=0
+      http.getMyCourseList({param:param}).then((res:IBusinessResp)=>{
         loading.value=false
         list.push(...res.data)
         list.length?list.map((v:IListItem)=>{
-          v.course_url=v.course_url?v.course_url:defaultUrl
+          v.url=v.url?v.url:defaultUrl
         }):''
       })
     }
     function keepLearning(){
 
     }
+    function getDirection(){
+      http.courseDirection().then((res:IBusinessResp)=>{
+        let data=res.data
+        data.length?data.map((v:any)=>{
+          v.value=v.id
+          v.label=v.name
+          // console.log(v);
+        }):'';
+        options.value.push(...data)
+      })
+    }
+    function handleChange(val:any){
+      initData()
+    }
     onMounted(()=>{
      initData()
+     getDirection()
     })
-    return {list,loading,keepLearning,defaultUrl,options,courseDirection };
+    return {list,loading,keepLearning,defaultUrl,options,course_category_id,handleChange};
   },
 })
 </script>
 
 <style  scoped lang="less">
-  @Circular_width:5em;
-  @Semicircle_width:2.5em;
   .list_content{
     display: flex;
     flex-wrap: wrap;
@@ -111,7 +126,7 @@ export default defineComponent({
       width: 25%;
       text-align: center;
       margin-bottom:20px;
-      cursor: pointer;
+      cursor: auto;
       transition: all .6s;
       .main{
         margin: 0 auto;
@@ -119,7 +134,8 @@ export default defineComponent({
         box-shadow: 0px 2px 4px 0px rgb(164 36 167 / 14%);
       }
     }
-    .info:hover{
+    .info_hover:hover{
+      cursor: pointer;
       .card_info{
         .course_time{
           display: none;
@@ -153,6 +169,10 @@ export default defineComponent({
     border-bottom-left-radius: 12px;
     cursor: auto;
     color: #fff;
+  }
+  .mask_end{
+    background-color: rgba(0,0,0,9.5);
+    color: rgba(138,138,138,1);
   }
   .task{
     text-align: left;
@@ -200,63 +220,11 @@ export default defineComponent({
       }
       .right {
         width: 24%;
-        .circle{
-          width: @Circular_width;
-          height: @Circular_width;
-          position: relative;
-          .progress {
-              position: absolute;
-              width: 3.75em;
-              height: 3.75em;
-              background-color: white;
-              border-radius: 50%;
-              left: 0.625em;
-              top: 0.625em;
-              line-height: 3.75em;
-              text-align: center;
+          .circle{
+            width: 50px;
+            height:50px;
+            /* position: relative; */
           }
-          .left,.right {
-            width: @Semicircle_width;
-            height: @Circular_width;
-            overflow: hidden;
-            position: relative;
-            float: left;
-            background-color: @theme-color;
-          }
-    
-          .left {
-              border-radius: @Circular_width 0 0 @Circular_width;
-          }
-          
-          .right {
-              border-radius: 0 @Circular_width @Circular_width 0;
-          }
-          .left:after,.right:after {
-              content: "";
-              position: absolute;
-              display: block;
-              width: @Semicircle_width;
-              height: @Circular_width;
-              background-color: white;
-              border-radius: @Circular_width 0 0 @Circular_width;
-              background-color: #ddd;
-          }
-          .right:after {
-              content: "";
-              position: absolute;
-              display: block;
-              border-radius: 0 @Circular_width @Circular_width 0;
-          }
-          .left:after {
-              transform-origin: right center;
-          }
-    
-          .right:after {
-              transform-origin: left center;
-              transform: rotateZ(45deg);
-          }
-        }
-        
       }
     }
     .course_time{
@@ -285,12 +253,13 @@ export default defineComponent({
   .start_training{
     display: none;
     width: 100%;
-    height: 40px;
-    line-height: 40px;
+    height: 25px;
+    line-height: 25px;
     background-color: #fafafa;
     border-top: 1px solid #E9E9E9;
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    
   }
   .custom_select{
     padding: 0 0 20px 20px;

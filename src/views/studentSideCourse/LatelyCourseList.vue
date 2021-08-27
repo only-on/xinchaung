@@ -1,10 +1,10 @@
 <template>
   <div class="list_content">
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
-    <div class="list_item" v-for="v in list" :key="v.name">
+    <div class="list_item" v-for="v in list" :key="v.course_id">
       <div class="time">{{v.study_time}}</div>
       <div class="info">
-        <div class="card" @click="startLearning">
+        <div class="card" @click="startLearning(v.course_id)">
           <div class="mask">
             {{v.course_status}}
           </div>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="card_info">
-          <div class="title" @click="startLearning">
+          <div class="title" @click="startLearning(v.course_id)">
             <span>已学{{v.progress}}%</span>
             <div>{{v.name}}</div>
           </div>
@@ -32,7 +32,7 @@
           </p>
         </div>
         <div class="start_training" v-if="v.course_status==='进行中'">
-          <a-button @click="startLearning" type="primary"> 继续学习 </a-button>
+          <a-button @click="startLearning(v.course_id)" type="primary"> 继续学习 </a-button>
         </div>
       </div>
     </div>
@@ -55,6 +55,7 @@ interface IlistItem{
   used_time:string;
   recent:string;
   userName:string;
+  course_id:number;
 }
 export default defineComponent({
   name: '',
@@ -77,7 +78,7 @@ export default defineComponent({
         }):''
       })
     }
-    function startLearning() {
+    function startLearning(id:number) {
       router.push('')
     }
     onMounted(()=>{

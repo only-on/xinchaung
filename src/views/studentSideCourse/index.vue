@@ -26,7 +26,7 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       componentName.value=componentNames[val]
     })
     onMounted(()=>{
