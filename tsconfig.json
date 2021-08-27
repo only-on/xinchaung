@@ -13,7 +13,8 @@
     "paths": {
       "src/": ["src/"], // 设置路径提示
       "packages/": ["packages/"]
-    }
+    },
+    "suppressImplicitAnyIndexErrors": true,  //类型string可以用于索引类型
   },
   "include": [
     "src/**/*.ts",

@@ -1,5 +1,5 @@
 <template>
-  <span class="stu-name">{{list.username? list.username : '--'}}</span>
+  <span class="stu-name">{{list.username || '--'}}</span>
   <span class="stu-id" v-if="list.student_id === '' && list.number === ''"><span class="stu-idname">学号：</span>{{list.number ||'--'}}</span>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange">
@@ -28,7 +28,9 @@
 import { PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined  } from '@ant-design/icons-vue';
 import request from 'src/api/index'
 import { message } from 'ant-design-vue'
-import { defineComponent, ref, toRefs, PropType } from 'vue'
+import { defineComponent, ref, toRefs, PropType, inject } from 'vue'
+import { IBusinessResp } from 'src/typings/fetch'
+import { Ihttp, ICourseInfo } from './typings'
 
 interface Ivms {
   uuid: string
@@ -45,48 +47,47 @@ interface Ilist {
   vms: Ivms[]
 }
 
-const key = 'updatable';
 export default defineComponent({
   props: {
     list: {
       type: Object as PropType<Ilist>,
-      default: {
-        
-      }
+      default: {}
     }
   },
   emits: ['getList'],
   components: {PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined},
   setup(props, {emit}) {
-    const http=(request as any).teachCourse
+    let courseInfo = inject('courseInfo') as ICourseInfo
+    
+    const http=(request as Ihttp).teachCourse
+
     let current = ref(0)
     function beforeChange(from:any, to:number) {
       current.value= to
     }
+
     let apiList = ['vmOpen', 'vmClose', 'vmRevert', 'vmReset']
     let params = {
       // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
       uuid: props.list.vms[current.value].uuid,
-      atype: 'course'
+      atype: courseInfo.type
     }
     function btnClick(v: number) {
-      http[apiList[v]]({param: params}).then((res:any) => {
+      http[apiList[v]]({param: params}).then((res:IBusinessResp) => {
         if (res && res.status) {
-          // 请求数据
           emit('getList')
-          message.success({ content: '请求成功!', key, duration: 2 });
+          message.success({ content: '请求成功!', duration: 2 });
         } else if (res) {
           // res.error.msg
         }
-        
       })
-      
     }
+    
     return {
       ...toRefs(props),
       current,
       beforeChange,
-      btnClick
+      btnClick,
     }
   },
 })

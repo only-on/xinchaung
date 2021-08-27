@@ -16,15 +16,13 @@
           <modal :limit="limit" @saveTopinst="saveTopinst" :selectedNodes="selectedNodes" :courseInfo="courseInfo"></modal>
         </div>
         <div class="env-lists">
-          <!-- <div class="loading" v-if="envListState.loading">
-            <a-space>
+          <div class="loading" v-if="envListState.loading">
               <a-spin size="large" />
-            </a-space>
-          </div> -->
+          </div>
           <div class="env-list" v-for="v in envListState.data" :key="v.id">
             <card :list="v" @getList="getList"></card>
           </div>
-          <div v-if="!envListState.data.length" class="nodata">{{noDataPrompt}}</div>
+          <div v-if="!envListState.data.length && !envListState.loading" class="nodata">{{noDataPrompt}}</div>
         </div>
         <a-pagination 
           show-quick-jumper 
@@ -46,6 +44,8 @@ import modal from './modal.vue'
 import request from 'src/api/index'
 import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef, provide} from 'vue'
 import { message } from 'ant-design-vue'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { Ihttp, ICourseInfo } from './typings'
 
 
 interface Ipage {
@@ -81,7 +81,6 @@ interface Iuser {
   online: number
   number: string
   current: string
-  [propname: string]: any
   vms: Ivms[]
 }
 
@@ -99,12 +98,6 @@ interface IselectTreeNode {
   grouped: number
 }
 
-interface ICourseInfo {
-  type: string,
-  courseId: number
-  courseType: number
-}
-
 export default defineComponent({
   components: {
     tree,
@@ -117,10 +110,10 @@ export default defineComponent({
       courseType: 1,
       courseId: 501703,
     })
-    // provide('courseInfo', courseInfo)
-    const http=(request as any).teachCourse
+    provide('courseInfo', courseInfo)
+    const http=(request as Ihttp).teachCourse
     const envListState = reactive<IListState>({
-      loading: true,
+      loading: false,
       data: [],
       page: {
         pageSize: 6,
@@ -145,14 +138,14 @@ export default defineComponent({
       grouped: 2
     })
     let taskType = ref()
+
     let selectedNodes = reactive<INode>({
       taskId: 1,
       type: '',
       isHigh: false,
       grouped: 0
     })
-    const selectNode = (node:INode) => {
-      console.log(node);
+    function selectNode(node:INode) {
       if (node) { 
         selectedNodes.taskId = node.taskId
         selectedNodes.type = node.type
@@ -182,13 +175,15 @@ export default defineComponent({
 
     let noDataPrompt = ref('')
     function getList() {
+      envListState.data = []
       envListState.loading = true
       http.getPre({param: params}).then((res: any) => {
-        // envListState.loading = false
+        envListState.loading = false
         if(res && res.status) {
           message.success({ content: '请求成功!', duration: 2 });
           let {data, page} = res.datas.data
           envListState.data = data
+          // envListState.data[0].vms.push(data[0].vms[0])
           let taskType = res.datas.task_type
           if (params.page.keyWord !== '') {
             noDataPrompt.value = '暂无相关数据'
@@ -227,12 +222,12 @@ export default defineComponent({
 
     let limit = ref()
     function getLimit() {
-      http.preLimit().then((res: any) => {
-        // limit.value = res.data
-        limit.value = 10
+      http.preLimit().then((res: IBusinessResp) => {
+        limit.value = res.data
+        // limit.value = 10
       })
     }
-    function saveTopinst(num: any) {
+    function saveTopinst(num: number) {
       // const limitParams = reactive<IlimitParams>({
       const limitParams = {
         taskId: params.taskId,
@@ -241,7 +236,7 @@ export default defineComponent({
         limit: limit.value,
         courseId: params.courseId
       }
-      http.saveTopoinst({param: limitParams}).then((res: any) => {
+      http.saveTopoinst({param: limitParams}).then((res: IBusinessResp) => {
         if (res && res.status) {
           getList()
           message.success({ content: '请求成功!', duration: 2 });
@@ -279,7 +274,7 @@ export default defineComponent({
 <style lang="less">
 @hover-color: #7c49a8;
 .virtual-env {
-  margin-top: 80px;
+  margin-top: 50px;
   .content-wrapper {
     width: 1330px;
     min-height: 750px;
@@ -305,6 +300,7 @@ export default defineComponent({
       }
       .env-lists {
         height: 600px;
+        // text-align: center;
         .env-list {
           // width: 31.1%;
           width: 264px;
@@ -366,6 +362,9 @@ export default defineComponent({
               opacity: .65;
             }
           }
+        }
+        .loading {
+          text-align: center;
         }
         .nodata {
           height: 600px;

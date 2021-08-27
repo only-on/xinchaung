@@ -18,11 +18,7 @@
 <script lang="ts">
   import {defineComponent, ref, toRef, inject, PropType } from 'vue'
   import { message } from 'ant-design-vue'
-  interface ICourseInfo {
-    type: string,
-    courseId: number
-    courseType: number
-  }
+  import { ICourseInfo } from './typings'
   interface INode {
     taskId: number
     type: string
@@ -45,7 +41,6 @@
     },
     emits: ['saveTopinst'],
     setup(props, {emit}) {
-      console.log(props.limit);
       // let courseInfo:ICourseInfo = inject('courseInfo')
       
       // 弹框
@@ -53,8 +48,6 @@
       const visible = ref<boolean>(false);
       let openEnvNum = ref<number>()
       const openEnv = () => {
-        console.log(props);
-        
         let name = props.courseInfo.type === 'train' ? '实训' : '实验'
         if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1) || props.courseInfo.type === 'train') {
           message.warning(`请选择${name}!`);
@@ -76,7 +69,6 @@
         visible.value = true;
       }
       const handleOk = (e: MouseEvent) => {
-        console.log(openEnvNum.value);
         if (openEnvNum.value) {
           visible.value = false;
 
@@ -89,8 +81,6 @@
       const handleCancel = (e: MouseEvent) => {
         visible.value = false;
         openEnvNum.value = undefined
-        console.log(openEnvNum.value);
-        
       };
 
       return {

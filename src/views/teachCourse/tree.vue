@@ -1,5 +1,5 @@
 <template>
-  <a-tree 
+  <a-directory-tree 
     :tree-data="treeData.data" 
     show-icon 
     default-expand-all 
@@ -7,35 +7,35 @@
     @select="selectedChange"
     :replace-fields="replaceFields"
     >
+    <template #zhangjie></template>
     <template #program>
       <span class="iconfont icon-program"></span>
     </template>
     <template #zhuomianshiyan>
       <span class="iconfont icon-zhuomianshiyan"></span>
     </template>
-  </a-tree>
+  </a-directory-tree>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, PropType, reactive, ref } from 'vue';
 import request from 'src/api/index'
+import { Ihttp, ICourseInfo } from './typings'
+import { IBusinessResp } from 'src/typings/fetch'
 
+interface Isolts {
+  icon: string
+}
 interface ITreeDataItem {
   id: number
   name: string
   sort: number
   type: string
   is_high?: boolean
-  slots: any
+  slots: Isolts
   contents: ITreeDataItem[]
 }
-
 interface ITreeData {
   data: ITreeDataItem[]
-}
-interface ICourseInfo {
-  type: string,
-  courseId: number
-  courseType: number
 }
 export default defineComponent({
   emit: ['selectNode'],
@@ -46,16 +46,14 @@ export default defineComponent({
     }
   },
   setup(props, {emit}) {
-    const http=(request as any).teachCourse
+    const http = (request as Ihttp).teachCourse
     let selectedKeys = ref([532558])
-    function selectedChange(selectedkeys:any, e:any) {
-      console.log(selectedkeys, 'selectedChange');
-      console.log(e.selectedNodes);
-      if (e.selectedNodes.length && e.selectedNodes[0].props.type) {
+    function selectedChange(selectedkeys:string[] | number[], e:any) {
+      if (e.selectedNodes.length && e.selectedNodes[0].dataRef.type) {
         let node = {
-          taskId: e.selectedNodes[0].props.key,
-          type: e.selectedNodes[0].props.type,
-          isHigh: e.selectedNodes[0].props.is_high,
+          taskId: e.selectedNodes[0].dataRef.id,
+          type: e.selectedNodes[0].dataRef.type,
+          isHigh: e.selectedNodes[0].dataRef.is_high,
           grouped: 0
         }
         emit('selectNode', node)
@@ -69,17 +67,36 @@ export default defineComponent({
     let replaceFields = {
       title: "name",
       key: "id",
+      ishigh: 'is_high',
+      type: "type",
       children: "contents",
     }
     // let treeList = reactive<TreeDataItem>([{title: ''}])
     function getTreeList() {
-      http.getTreeList({urlParams: {courseId: props.courseInfo.courseId}}).then((res:any) => {
+      http.getTreeList({urlParams: {courseId: props.courseInfo.courseId}}).then((res: IBusinessResp) => {
         treeData.data = res.data
         treeData.data.forEach((v) => {
           if (v.contents && v.contents.length) {
+            v.slots = {icon: ''}
+            v.slots.icon = 'zhangjie'
             v.contents.forEach(vv => {
               let typeList = vv.type.split('-')
-              vv.slots = {}
+              vv.slots = {icon: ''}
+              switch (typeList[typeList.length - 1]) {
+                case '1': 
+                  // vv.class='ishigh'   // 设置单个节点的class
+                  vv.slots.icon = 'zhuomianshiyan'
+                  break;
+                case '2': 
+                  vv.slots.icon = 'sheji'
+                  break;
+                case '3': 
+                  vv.slots.icon = 'zhuomianshiyan'
+                  break;
+                case '4': 
+                  vv.slots.icon = 'program'
+                  break;
+              }
               vv.slots.icon = typeList[typeList.length - 1] === '4' ? 'program' : 'zhuomianshiyan'
             })
           }
@@ -96,7 +113,6 @@ export default defineComponent({
       })
     }
       
-
     onMounted(() => {
       getTreeList()
       // let nodes = treeData[0].children[0]
@@ -118,7 +134,7 @@ export default defineComponent({
 <style lang="less" scope>
 .ant-tree li .ant-tree-child-tree {
   .ant-tree-node-content-wrapper.ant-tree-node-selected {
-    color: @theme-color;
+    color: @theme-color!important;
     background-color: #eaeaea;
   } 
   .ant-tree-node-content-wrapper:hover {
@@ -138,6 +154,25 @@ export default defineComponent({
   .ant-tree-switcher  {
     display: none;
   }
+}
+.ant-tree li .ishigh .ant-tree-node-content-wrapper,
+.ant-tree li .ishigh .ant-tree-child-tree .ant-tree-iconEle {
+  color: orange;
+}
+
+.ant-tree.ant-tree-directory > li.ant-tree-treenode-selected > span.ant-tree-node-content-wrapper::before, 
+.ant-tree.ant-tree-directory .ant-tree-child-tree > li.ant-tree-treenode-selected > span.ant-tree-node-content-wrapper::before {
+  background: #eaeaea!important;
+  color: @theme-color!important;
+}
+.ant-tree.ant-tree-directory > li.ant-tree-treenode-selected > span.ant-tree-switcher, 
+.ant-tree.ant-tree-directory .ant-tree-child-tree > li.ant-tree-treenode-selected > span.ant-tree-switcher {
+  background: #eaeaea!important;
+  color: @theme-color!important;
+}
+.ant-tree.ant-tree-directory > li span.ant-tree-node-content-wrapper.ant-tree-node-selected, 
+.ant-tree.ant-tree-directory .ant-tree-child-tree > li span.ant-tree-node-content-wrapper.ant-tree-node-selected {
+  color: @theme-color!important;
 }
 </style>
 
