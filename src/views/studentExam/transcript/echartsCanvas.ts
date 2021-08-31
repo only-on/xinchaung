@@ -1,6 +1,15 @@
 import * as echarts from "echarts"
 // 成绩详情分布图
-function scoreDetailEcharts(el: HTMLDivElement, data: any) {
+function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
+    const my_score:Array<number>=[]
+    const average_score:Array<number>=[]
+    const xNames:Array<string>=[]
+    data.forEach((item)=>{
+        my_score.push(item.myself)
+        average_score.push(item.average)
+        xNames.push(item.question_type)
+    })
+    
     const chart = echarts.init(el)
     let options = {
         grid: {
@@ -33,7 +42,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: any) {
         },
         xAxis: [
             {
-                data: ['选择题', '判断题', '填空题', '简答题', '实操考核题'],
+                data: xNames,
                 type: 'category',
                 axisLine: {
                     show: false
@@ -95,7 +104,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: any) {
                     formatter: '{c}' + '分',
                     color: "#8955b5"
                 },
-                data: [320, 332, 301, 334, 390]
+                data: my_score
             },
             {
                 name: '平均分',
@@ -115,7 +124,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: any) {
                     position: ['0', '-20'],
                     formatter: '{c}' + '分'
                 },
-                data: [120, 35, 41, 90, 220]
+                data: average_score
             }
         ]
     }
@@ -124,14 +133,18 @@ function scoreDetailEcharts(el: HTMLDivElement, data: any) {
 }
 
 function accuracyEcharts(el: HTMLDivElement, data: any) {
+    const rates:Array<number>=[]
+    const xAxisData:Array<string>=[]
+    data.forEach((item:any) => {
+        rates.push(item.rate)
+        xAxisData.push(item.question_type)
+    });
     let accuracyChart = echarts.init(el)
-    let xAxisData = ['选择题', '判断题', '填空题', '简答题', '实操考核']
-    let rightData = [50, 60, 20, 70, 30]
     var series = [{
         name: '条',
         type: 'bar',
         xAxisIndex: 0,
-        data: rightData,
+        data: rates,
         barWidth: 12,
         label: {
             show: true,

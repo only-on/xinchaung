@@ -1,59 +1,91 @@
 <template>
   <div class="exam-content-box">
     <div class="search-box">
-      <a-radio-group default-value="a" button-style="solid">
-        <a-radio-button value="a"> 全部 </a-radio-button>
-        <a-radio-button value="b"> 未开始 </a-radio-button>
-        <a-radio-button value="c"> 进行中 </a-radio-button>
-        <a-radio-button value="d"> 已结束 </a-radio-button>
+      <a-radio-group v-model:value="searchExamParams.status"  button-style="solid" @change="typeChange">
+        <a-radio-button value=""> 全部 </a-radio-button>
+        <a-radio-button value="1"> 未开始 </a-radio-button>
+        <a-radio-button value="2"> 进行中 </a-radio-button>
+        <a-radio-button value="3"> 已结束 </a-radio-button>
       </a-radio-group>
       <a-input-search
         placeholder="请输入考试名称关键搜索"
         size="small"
+        v-model:value="searchExamParams.name"
         @search="onSearch"
       />
     </div>
     <div class="exam-content-list">
-      <div class="exam-content-item" v-for="i in 5" :key="i">
+      <div class="exam-content-item" v-for="(item,index) in examData?.list" :key="Number(index)">
         <div class="exam-item-card">
           <div class="exam-card-head">
-            <span class="card-item-header-title">试卷名称</span>
-            <span class="card-item-header-status has-end">已结束</span>
+            <span class="card-item-header-title">{{item.name}}</span>
+            <span class="card-item-header-status has-end">{{item.status}}</span>
           </div>
           <div class="exam-card-content">
-            <p>日期：2021.03.08</p>
-            <p>时间：12:05:00~ 12:15:00</p>
+            <p>日期：{{item.start_date}}</p>
+            <p>时间：{{item.times}}</p>
             <div class="exam-action-card">
-              <router-link to="/exam/look">查看成绩</router-link>
-              <span class="teacher-name"><i class="user-icon"></i>文和</span>
+              <router-link :to="'/exam/look?id='+item.id">查看成绩</router-link>
+              <span class="teacher-name"><i class="user-icon"></i>{{item.teacher}}</span>
             </div>
           </div>
         </div>
       </div>
+    </div>
+    <div class="page-box">
+      <a-pagination  :total="examData?.page.totalCount" v-model:current="searchExamParams.page" v-model:pageSize="searchExamParams.limit" @change="pageSizeChange"/>
     </div>
   </div>
  
 </template>
 
 <script lang="ts">
-import { defineComponent,ref } from "vue";
+import { defineComponent,ref,reactive,toRefs,PropType } from "vue";
+import {IexamData} from "./examlist.type"
 
 export default defineComponent({
-  setup() {
+  props:{
+    examData:{
+      type:Object  as  PropType<IexamData>,
+      require:true
+    }
+  },
+  setup(props,{emit}) {
       const visible=ref<boolean>(false)
+      const reactiveData=reactive({examData:props.examData,searchExamParams:{
+        status:"",
+        name:"",
+        limit:20,
+        page:2
+      }})
+      console.log(reactiveData.examData);
+      
       const showModal=()=>{
           visible.value=true
       }
       const closeModal=()=>{
           visible.value=false
       }
-    function onSearch() {}
+    function onSearch() {
+      emit("search",reactiveData.searchExamParams)
+    }
+
+    function typeChange(){
+      emit("search",reactiveData.searchExamParams)
+    }
+
+    function pageSizeChange(){
+      emit("search",reactiveData.searchExamParams)
+    }
 
     return {
       onSearch,
       visible,
       showModal,
-      closeModal
+      closeModal,
+      ...toRefs(reactiveData),
+      typeChange,
+      pageSizeChange
     };
   },
 });
@@ -164,6 +196,10 @@ export default defineComponent({
         }
       }
     }
+  }
+  .page-box{
+    text-align: center;
+    margin-top: 40px;
   }
 }
 </style>

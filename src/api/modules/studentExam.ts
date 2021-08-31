@@ -1,3 +1,12 @@
+import { TFHttpSend } from "src/typings/getRequest";
+
 export default{
-    studentExaminationlList:{url:'/exams/student-examination/my-exam',method:'GET'},
-  }
+    studentExaminationlList:{url:'/api/question/students/{student_id}/paper-exams',method:'GET'},
+}
+
+export interface IstudentExam{
+  studentExaminationlList:TFHttpSend
+}
+
+
+export const MODULE_NAME = 'studentExam'

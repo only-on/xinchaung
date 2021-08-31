@@ -4,54 +4,54 @@
       <a-tab-pane key="1" tab="交流中心">
         <div>
           <a-input-search
-            v-model:value="searchContent"
+            v-model:value="searchTitle"
             placeholder="请输入搜索关键字"
             style="width: 90%; max-width: 314px"
             @search="onSearch"
           />
-          <div class="in-class-forum-item" v-for="i in 5" :key="i">
+          <div class="in-class-forum-item" v-for="(item,index) in forumListData" :key="index.toString()">
             <div class="forum-header">
-              <span class="forum-username">发帖人：张三李四</span>
-              <span class="forum-time">2017-12-24 14:24:17</span>
-              <span class="forum-reply-count">回复数/查看数：4/33</span>
+              <span class="forum-username">发帖人：{{item['user_name']}}</span>
+              <span class="forum-time">{{item['created_at']}}</span>
+              <span class="forum-reply-count">回复数/查看数：{{item?.reply_num}}/{{item?.views_num}}</span>
             </div>
             <div class="forum-content-header">
               <div class="forum-content-header-left">
                 <span><i class="icon-gonggao iconfont"></i>公告</span>
-                帖子题题目题目题目帖子题题目题目题目题题目题目题目
+                {{item.title}}
               </div>
               <div class="forum-content-header-right">
                 <a-button type="ghost" size="small">回复</a-button>
-                <span @click="openOrClose(i)"
+                <span @click="openOrClose(item)"
                   ><i
                     class="iconfont"
                     :class="
-                      currentOpenContent === i
+                      currentOpenContent === item
                         ? 'icon-zhankai2-copy'
                         : 'icon-shouqi-copy'
                     "
                   ></i
-                  >{{ currentOpenContent === i ? "收起" : "展开" }}</span
+                  >{{ currentOpenContent === item ? "收起" : "展开" }}</span
                 >
               </div>
             </div>
             <div
               class="forum-content-box"
-              :class="currentOpenContent === i ? 'open-active' : ''"
+              :class="currentOpenContent === item ? 'open-active' : ''"
             >
               <div class="forum-content-padding">
-                <div class="forum-content">
-                  帖子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖子内子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖子内容帖
+                <div class="forum-content" v-html="item?.content">
+                  
                 </div>
 
-                <section class="forum-reply-item" v-for="i in 5" :key="i">
+                <section class="forum-reply-item" v-for="(ct,ci) in item.forum_articles" :key="ci.toString()">
                   <div class="forum-reply-header">
-                    <span>回帖人：星期四</span>
-                    <span>发帖时间：2017-12-25 07:54:57</span>
+                    <span>回帖人：{{ct.user_name}}</span>
+                    <span>发帖时间：{{ct.updated_at}}</span>
                   </div>
                   <div class="forum-reply-content-box">
-                    <p class="forum-reply-content">
-                      回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字回复文字
+                    <p class="forum-reply-content" v-html="ct.content">
+                      
                     </p>
                   </div>
                 </section>
@@ -70,16 +70,33 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, Ref } from "vue";
-import html2canvas from "html2canvas";
+import { defineComponent, ref, Ref,onMounted,reactive,toRefs } from "vue";
 import { canvasToImage, canvasToFile,imageFileToBase64,screenshot } from "src/utils/manipulatePicture";
+import request from "src/request/getRequest"
+interface Iparams{
+  title:string
+  type:string
+  pageSize:number
+  page:number
+}
+
+interface IreactiveData{
+  forumListData:any
+}
 export default defineComponent({
   setup() {
-    const searchContent = ref("");
+    const forum = request.forum
+    console.log(forum);
+    
+    const searchTitle = ref("");
     const currentOpenContent: Ref<number | string> = ref(0);
     const imageUrl: Ref<string> = ref("");
+    const reactiveData:IreactiveData=reactive({forumListData:[]})
+    onMounted(()=>{
+      getPubIndex({title:searchTitle.value,type:"",pageSize:10,page:1})
+    })
     function onSearch() {
-      console.log(searchContent.value);
+      console.log(searchTitle.value);
     }
     function openOrClose(index: number) {
       currentOpenContent.value === index
@@ -102,16 +119,27 @@ export default defineComponent({
       });
     }
 
-    
+    // 获取论坛列表
+    function getPubIndex(params:Iparams){
+      return new Promise((resolve:any,reject:any)=>{
+        forum.pubIndex({param:{title:params.title,type:params.type,pageSize:params.pageSize,page:params.page}}).then((res:any)=>{
+          console.log(res);
+          if (res?.status===1) {
+            reactiveData.forumListData=res.data.list
+          }
+        })
+      })
+    }
 
     return {
       activeKey: ref("1"),
-      searchContent,
+      searchTitle,
       onSearch,
       currentOpenContent,
       openOrClose,
       vncScreenshot,
       imageUrl,
+      ...toRefs(reactiveData)
     };
   },
 });
@@ -128,6 +156,7 @@ export default defineComponent({
   .in-class-forum-item {
     margin-top: 25px;
     border: 1px solid #d9d9d9;
+    word-break: break-all;
     .forum-header {
       background: #d9d9d9;
       padding: 0 20px;

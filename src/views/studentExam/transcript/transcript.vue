@@ -2,7 +2,7 @@
   <examLayout>
     <template v-slot>
       <div class="exam-transcript-content">
-        <top class="transcript-top"></top>
+        <top class="transcript-top" :data="transcriptDetailData"></top>
         <div class="frist-box">
           <div class="score-detail-echarts">
             <p class="echarts-title">成绩详情</p>
@@ -19,7 +19,7 @@
             <ul class="answer-order-list">
               <li
                 class="answer-order-item"
-                v-for="(item, index) in data"
+                v-for="(item, index) in transcriptDetailData.questions"
                 :key="index"
                 @click="selectQuestion(item, index)"
               >
@@ -33,22 +33,22 @@
             </div>
             <div>
               <judge
-                v-if="currentSelectQuestion.type === 3"
+                v-if="currentSelectQuestion.type_id === 3"
                 :data="currentSelectQuestion"
                 :index="currentIndex"
               ></judge>
               <gap-filling
-                v-if="currentSelectQuestion.type === 4"
+                v-if="currentSelectQuestion.type_id === 4"
                 :data="currentSelectQuestion"
                 :index="currentIndex"
               ></gap-filling>
               <multiple-choice
-                v-if="currentSelectQuestion.type === 2"
+                v-if="currentSelectQuestion.type_id === 2"
                 :data="currentSelectQuestion"
                 :index="currentIndex"
               ></multiple-choice>
               <single-choice
-                v-if="currentSelectQuestion.type === 1"
+                v-if="currentSelectQuestion.type_id === 1"
                 :data="currentSelectQuestion"
                 :index="currentIndex"
               ></single-choice>
@@ -61,7 +61,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, ref } from "vue";
+import { defineComponent, inject, onMounted, ref ,reactive,toRefs} from "vue";
 import top from "./top.vue";
 import examLayout from "../examLayout.vue";
 import { scoreDetailEcharts, accuracyEcharts } from "./echartsCanvas";
@@ -189,8 +189,138 @@ export default defineComponent({
         ],
       },
     ];
-    const currentSelectQuestion = ref(data[0]); // 当前选择的题
+    const detailData={
+    "status": 1,
+    "msg": "成功",
+    "data": {
+        "id": "1",
+        "name": "试卷1",
+        "questions_count": 12,
+        "paper_score_total": 85,
+        "pass_score": 60,
+        "use_time_seconds": 3600,
+        "class_rank": 12,
+        "score_result": [
+            {
+                "average": "80",
+                "myself": "85",
+                "question_type": "选择题"
+            },
+            {
+                "average": "80",
+                "myself": "85",
+                "question_type": "判断题"
+            },
+            {
+                "average": "80",
+                "myself": "85",
+                "question_type": "填空题"
+            },
+            {
+                "average": "80",
+                "myself": "85",
+                "question_type": "简答题"
+            },
+            {
+                "average": "80",
+                "myself": "85",
+                "question_type": "实操考核题"
+            }
+        ],
+        "correct_rate": [
+            {
+                "question_type": "选择题",
+                "rate": 82
+            },
+            {
+                "question_type": "判断题",
+                "rate": 60
+            },
+            {
+                "question_type": "填空题",
+                "rate": 40
+            },
+            {
+                "question_type": "简答题",
+                "rate": 60
+            },
+            {
+                "question_type": "实操考核",
+                "rate": 32
+            }
+        ],
+        "questions": [
+            {
+                "id": 4,
+                "question": "习题1",
+                "type_id": 1,
+                "level_id": 1,
+                "pool_id": 8,
+                "default_score": 20,
+                "user_id": 105,
+                "created_at": "2021-08-17 14:23:00",
+                "updated_at": "2021-08-17 14:23:03",
+                "type": {
+                    "id": 1,
+                    "name": "单选题"
+                },
+                "level": {
+                    "id": 1,
+                    "name": "简单"
+                },
+                "answers": [
+                    {
+                        "id": 2,
+                        "answer": "9"
+                    }
+                ],
+                "student_answers": [
+                    {
+                        "id": 2,
+                        "answer": "9"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "question": "习题2",
+                "type_id": 1,
+                "level_id": 1,
+                "pool_id": 8,
+                "default_score": 20,
+                "user_id": 105,
+                "created_at": "2021-08-17 14:23:00",
+                "updated_at": "2021-08-17 14:23:03",
+                "type": {
+                    "id": 1,
+                    "name": "单选题"
+                },
+                "level": {
+                    "id": 1,
+                    "name": "简单"
+                },
+                "answers": [
+                    {
+                        "id": 2,
+                        "answer": "9"
+                    }
+                ],
+                "student_answers": [
+                    {
+                        "id": 2,
+                        "answer": "9"
+                    }
+                ]
+            }
+        ]
+    }
+}
+    const currentSelectQuestion:any = ref(data[0]); // 当前选择的题
     const currentIndex = ref(0);
+    const reactiveData = reactive({
+      transcriptDetailData:detailData.data
+    })
+
     function selectQuestion(val: any, index: number) {
       currentSelectQuestion.value = val;
       currentIndex.value = index;
@@ -198,11 +328,11 @@ export default defineComponent({
     onMounted(() => {
       const scoreDetail = scoreDetailEcharts(
         document.getElementById("scoreDetail") as HTMLDivElement,
-        ""
+        reactiveData.transcriptDetailData.score_result
       );
       const accuracy = accuracyEcharts(
         document.getElementById("accuracy") as HTMLDivElement,
-        ""
+        reactiveData.transcriptDetailData.correct_rate
       );
       window.onresize = function () {
         scoreDetail.resize();
@@ -214,6 +344,7 @@ export default defineComponent({
       data,
       selectQuestion,
       currentIndex,
+      ...toRefs(reactiveData)
     };
   },
 });
