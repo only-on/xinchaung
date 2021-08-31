@@ -9,7 +9,7 @@
 import { defineComponent,ref, onMounted,inject } from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
-  name: 'Resources',
+  name: '',
   components: {
    
   },

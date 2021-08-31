@@ -1,6 +1,6 @@
 <template>
   <div class="ctuChapter">
-    <div style="background-color: rgba(247, 247, 247, 1)" v-if="chapterData.nums">
+    <div class="main" v-if="chapterData.nums">
       <div v-if="chapterData.status === 0" class="mainrightTop">
         <div>
           <span class="black">课后习题</span>
@@ -37,19 +37,16 @@
         </div>
       </div>
       <div class="chapter scroll-bar-customize">
-        <div
-          class="chapterList"
+        <div class="chapterList"
           :style="chapterData.status === 0 ? 'pointer-events:auto' : 'pointer-events:none'"
-          v-for="(item, index) in chapterData.quest_list_questions"
-          :key="item.id"
-        >
-          <multipl-echoice
-            :index="index"
-            :data="item"
-            v-if="item.type === 2"
-          />
-          <single-echoice v-if="item.type === 1" :index="index" :data="item" />
-          <judge v-if="item.type === 3" :index="index" :data="item" />
+          v-for="(item) in chapterData.quest_list_questions" :key="item.id">
+
+          <single-echoice v-if="item.type === 1" :index="item.index" :data="item" />
+
+          <multipl-echoice v-if="item.type === 2" :data="item" :index="item.index" />
+          
+          <judge v-if="item.type === 3" :index="item.index" :data="item" />
+          
         </div>
       </div>
     </div>
@@ -67,10 +64,14 @@ import { useRouter } from 'vue-router';
 import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch.d';
 import MultiplEchoice from './MultiplEchoice.vue'
+import SingleEchoice from './SingleEchoice.vue'
+import judge from './Judge.vue'
 export default defineComponent({
   name: 'StuChapter',
   components: {
-   MultiplEchoice
+   MultiplEchoice,
+   SingleEchoice,
+   judge,
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -79,7 +80,7 @@ export default defineComponent({
     var visable:Ref<boolean> =ref(false)
     var totalScoreAll=computed(()=>{
       let scoreAll = 0
-        console.log(chapterData.quest_list_questions)
+        // console.log(chapterData.quest_list_questions)
         if (chapterData.quest_list_questions && chapterData.quest_list_questions.length) {
           chapterData.quest_list_questions.forEach((item:any) => {
             scoreAll += item.default_score
@@ -88,20 +89,27 @@ export default defineComponent({
         return scoreAll
     })
     function init(){
+      // {course_id:501477,chapter_id:513342}
+      // {course_id:501378,chapter_id:508992}
       http.questionsList({param:{course_id:501378,chapter_id:508992}}).then((res:IBusinessResp)=>{
-       console.log(res)
-       Object.assign(chapterData,res.data)
+       
+       let data=res.data
+       data.quest_list_questions?data.quest_list_questions.map((v:any,k:Number)=>{
+         v.index=k
+       }):''
+      //  console.log(data)
+       Object.assign(chapterData,data)
      })
     } 
    
     function answerQues(){
-
+      visable.value=true
     }
     function submitOk(){
 
     }
     function submitCancel(){
-
+        visable.value=false
     }
     onMounted(()=>{
      init()
@@ -116,13 +124,28 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
+.ctuChapter{
+  height: 100%;
+  overflow: hidden;
+  .main{
+    background-color: rgba(247, 247, 247, 1);
+    height: 100%;
+  }
+}
+.chapter::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+    background: #e3d9ff;
+}
+.chapter::-webkit-scrollbar{
+  width: 8px;
+}
 .chapter {
     width: 100%;
-    padding: 20px 30px;
     text-align: left;
-    height:528px;
     overflow: auto;
     background: #fff;
+    height: calc(100% - 112px);
+    padding: 0 30px;
 
     .chapterList {
 
@@ -190,9 +213,9 @@ export default defineComponent({
 
 .mainrightTop {
     width: 100%;
-    padding: 15px 30px;
+    padding: 15px 30px 35px;
     background-color: white;
-    margin-bottom: 20px;
+    // margin-bottom: 20px;
     display: flex;
     .black {
         font-size: 18px;

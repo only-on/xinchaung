@@ -1,5 +1,5 @@
 <template>
-  <div class="course_info" v-layout-bg="bg">
+  <div class="course_info" v-layout-bg="{bg,size:'234px'}">
     <div class="header">
       <div class="title">
         <div class="left">
@@ -40,7 +40,7 @@
     </div>
     <div class="coursemain">
       <div class="mainLeft scroll-bar-customize">
-        <Drag-tree :tree="tree" />
+        <!-- <Drag-tree :tree="tree" /> -->
       </div>
       <div class="mainRight">
         <component :is="componentName" />
@@ -112,7 +112,7 @@ export default defineComponent({
     .header{
       color:@white;
       .title{
-        margin-bottom: 53px;
+        margin-bottom: 20px;
         position: relative;
       }
       .title,.info,.title>.left{
@@ -129,7 +129,7 @@ export default defineComponent({
         cursor: pointer;
         position: absolute;
         right: 0;
-        top: 30px;
+        top: 10px;
       }
       .title .left{
         div{
@@ -187,11 +187,10 @@ export default defineComponent({
       }
     }
     .coursemain{
-      margin-top: 96px;
       background-color: transparent;
       display: flex;
       justify-content: center;
-      // margin-bottom: 44px;
+      padding: 44px 0;
       // height: calc(100% - 260px);
       flex: 1;
       overflow: auto;
