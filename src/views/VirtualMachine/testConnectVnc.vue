@@ -28,7 +28,7 @@ export default defineComponent({
             // router.push({
             //     path:"/vm/vnc"
             // })
-          connect.value=  wsConnect("://127.0.0.1:8082/?uid="+res.data.connection_id)
+          connect.value=  wsConnect("://192.168.101.150:8080/?uid="+res.data.connection_id)
         }
       });
     }
