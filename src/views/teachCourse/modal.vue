@@ -96,6 +96,69 @@
 </script>
 
 <style lang="less" scoped>
+@hover-color: #7c49a8;
+.ant-modal-content {
+  .ant-btn {
+    height: 30px;
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+    border-radius: 3px;
+    color: #fff;
+    background-color: @theme-color;
+    border-color: @hover-color;
+  }
+  .ant-modal-close-x {
+    height: 40px;
+    color: #fff;
+    line-height: 40px;
+  }
+  .ant-modal-header {
+    background-color: @theme-color;
+    padding: 0;
+    height: 40px;
+    /* line-height: 40px; */
+    /* font-size: 1.15em; */
+    /* font-weight: bold; */
+    /* color: #fff; */
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    border-bottom-color: #f4f4f4;
+    .ant-modal-title {
+      line-height: 40px;
+      font-weight: bold;
+      padding-left: 15px;
+      color: #fff;
+      font-size: 15px;
+    }
+  }
+  .ant-modal-body {
+    padding-top: 40px;
+    .ant-input-affix-wrapper {
+      width: 300px;
+    }
+    .prompt {
+      color: red;
+      padding-left: 6px;
+    }
+  }
+}
+
+
+.ant-btn.ant-btn-primary {
+  height: 41px;
+  background-color: @theme-color;
+  border-color: @hover-color;
+  color: #fff;
+  padding: 0 20px;
+  line-height: 41px;
+  font-size: 16px;
+  float: right;
+}
+.ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
+  background-color: @hover-color;
+  border-color: @hover-color;
+}
 .ant-input-number {
   width: 250px;
 }

@@ -12,6 +12,7 @@ interface IteachCourse {
   vmClose: Function
   vmRevert: Function
   vmReset: Function
+  canAccessVm: Function
 }
 export interface Ihttp {
   teachCourse: IteachCourse

@@ -48,7 +48,7 @@ export default defineComponent({
   setup(props, {emit}) {
     const http = (request as Ihttp).teachCourse
     let selectedKeys = ref([532558])
-    function selectedChange(selectedkeys:string[] | number[], e: {selct: boolean, selectedNodes: Record<string, any>[]}) {
+    function selectedChange(selectedkeys:string[] | number[], e: {selected: boolean, selectedNodes: Record<string, any>[]}) {
       if (e.selectedNodes.length && e.selectedNodes[0].dataRef.type) {
         let node = {
           taskId: e.selectedNodes[0].dataRef.id,
@@ -131,7 +131,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less" scope>
+<style lang="less">
 .ant-tree li .ant-tree-child-tree {
   .ant-tree-node-content-wrapper.ant-tree-node-selected {
     color: @theme-color!important;

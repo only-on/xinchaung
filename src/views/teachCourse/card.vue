@@ -1,6 +1,6 @@
 <template>
   <span class="stu-name">{{list.username || '--'}}</span>
-  <span class="stu-id" v-if="list.student_id === '' && list.number === ''"><span class="stu-idname">学号：</span>{{list.number ||'--'}}</span>
+  <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')"><span class="stu-idname">学号：</span>{{list.number ||'--'}}</span>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange">
       <template #prevArrow>
@@ -15,13 +15,13 @@
       <p class="kvm-status">虚机状态：<span>{{list.vms[current].status === 'ACTIVE' ? '开启' : '关闭'}}</span></p>
       <p class="operation-status">操作状态：<span>{{list.online && list.vms[current].uuid === list.current ? '繁忙' : '空闲'}}</span></p>
     </div>
-    <div class="mask" @click="jumpHandle()"></div>
+    <div class="mask" @click="jumpHandle(list)"></div>
   </div>
   <div class="btns">
-    <a-button type="primary" title="重置" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(3)"><sync-outlined/></a-button>
-    <a-button type="primary" title="重启" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(2)"><reload-outlined/></a-button>
-    <a-button type="primary" title="关机" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(1)"><poweroff-outlined /></a-button>
     <a-button type="primary" title="开机" :disabled="list.vms[current].status === 'ACTIVE'" @click="btnClick(0)"><play-circle-outlined /></a-button>
+    <a-button type="primary" title="关机" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(1)"><poweroff-outlined /></a-button>
+    <a-button type="primary" title="重启" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(2)"><reload-outlined/></a-button>
+    <a-button type="primary" title="重置" :disabled="list.vms[current].status !== 'ACTIVE'" @click="btnClick(3)"><sync-outlined/></a-button>
   </div>
 </template>
 
@@ -77,7 +77,7 @@ export default defineComponent({
       atype: courseInfo.type
     }
     function btnClick(v: number) {
-      http[apiList[v]]({param: params}).then((res:IBusinessResp) => {
+      http[apiList[v]]({param: params}).then((res: IBusinessResp) => {
         if (res && res.status) {
           emit('getList')
           message.success({ content: '请求成功!', duration: 2 });
@@ -87,10 +87,26 @@ export default defineComponent({
       })
     }
 
-    function jumpHandle() {
+    function jumpHandle(list: {id: number}) {
       console.log(props.list.vms[current.value].uuid);
       console.log(route.path);
-      router.push('/teacher')
+      http.canAccessVm({
+        param: {uuid: props.list.vms[current.value].uuid}
+      }).then((res: IBusinessResp) => {
+        console.log(res);
+        if (res.status) {
+          // router.push('/teacher')
+          router.push({
+            name: 'classicalAsset',
+            params: {
+              uuid: props.list.vms[current.value].uuid,
+              id: list.id
+            }
+          })
+        } else {
+          message.warning({ content: res.error.msg, duration: 2 });
+        }
+      })
     }
     
     return {
@@ -105,6 +121,62 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
+.stu-name {
+  color: @theme-color;
+  font-size: 22px;
+  min-height: 25px;
+  font-weight: 600;
+  display: inline-block;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.stu-id {
+  font-size: 16px;
+  color: #464646;
+  line-height: 29px;
+  display: inline-block;
+  max-width: 135px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  float: right;
+}
+.swiper-box {
+  height: 165px;
+  position: relative;
+  .kvm-info {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    text-align: center;
+    top: -165px;
+    position: relative;
+    color: #fff;
+    font-size: 12px;
+  }
+}
+.btns {
+  text-align: center;
+  .btn {
+    height: 30px;
+    font-size: 20px;
+    color: #fff;
+    padding: 0 13px;
+    margin: 0px 2px;
+    background-color: @theme-color;
+    color: #fff;
+    border: 1px solid transparent;
+    border-radius: 3px;
+    // opacity: .65;
+  }
+  .btn.disabled {
+    opacity: .65;
+  }
+}
+
 .swiper-box {
   .mask {
     width: 200px;
@@ -128,7 +200,7 @@ export default defineComponent({
 }
 .btns {
   height: 30px;
-  padding-right: 17px;
+  // padding-right: 17px;
   .ant-btn {
     height: 30px;
     font-size: 20px;
@@ -152,5 +224,55 @@ export default defineComponent({
     border: 1px solid transparent;
     opacity: .65;
   }
+}
+
+.ant-carousel {
+  height: 100%;
+  // background: url(./kvm-computer-open.png) center no-repeat;
+  background-size: 90%;
+  .custom-slick-arrow.slick-arrow  {
+    width: 0;
+    height: 0;
+    // border: 15px solid @theme-color;
+    border: 15px solid #d6c4e5;;
+    border-bottom-color: transparent;
+    border-top-color: transparent;
+    z-index: 1;
+  }
+  .custom-slick-arrow.slick-arrow.slick-prev {
+    border-left-color: transparent;
+    left: -12px;
+  }
+  .custom-slick-arrow.slick-arrow.slick-next {
+    border-right-color: transparent;
+    right: -12px;
+  }
+  .swiper {
+    height: 165px;
+  }
+}
+.ant-carousel :deep(.slick-slide) {
+  text-align: center;
+  height: 160px;
+  line-height: 160px;
+  // background: #364d79;
+  overflow: hidden;
+}
+// .ant-carousel :deep(.slick-arrow.custom-slick-arrow) {
+//   width: 25px;
+//   height: 25px;
+//   font-size: 25px;
+//   color: #fff;
+//   background-color: rgba(31, 45, 61, 0.11);
+//   opacity: 0.3;
+// }
+.ant-carousel :deep(.custom-slick-arrow:before) {
+  display: none;
+}
+.ant-carousel :deep(.custom-slick-arrow:hover) {
+  opacity: 0.5;
+}
+.ant-carousel :deep(.slick-slide h3) {
+  color: #fff;
 }
 </style>

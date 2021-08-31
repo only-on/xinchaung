@@ -1,5 +1,5 @@
 <template>
-  <div class="virtual-env">
+  <div class="virtual-env"  v-layout-bg>
     <div class="content-wrapper">
       <div class="tree">
         <tree @selectNode="selectNode" :courseInfo="courseInfo"></tree>
@@ -278,16 +278,17 @@ export default defineComponent({
 })
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 @hover-color: #7c49a8;
 .virtual-env {
-  margin-top: 50px;
+  width: 1330px;
+  // margin-top: 50px;
+  min-height: 750px;
+  margin: 0 auto;
   .content-wrapper {
-    width: 1330px;
-    min-height: 750px;
-    margin: 0 auto;
     padding: 30px;
     border: 10px;
+    border-radius: 10px;
     background-color: #fff;
     box-shadow: 0 0 5px rgb(0 0 0 / 10%);
     display: flex;
@@ -315,61 +316,6 @@ export default defineComponent({
           margin: 10px;
           border: 1px solid #ccc;
           display: inline-block;
-          .stu-name {
-            color: @theme-color;
-            font-size: 22px;
-            min-height: 25px;
-            font-weight: 600;
-            display: inline-block;
-            max-width: 130px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
-          .stu-id {
-            font-size: 16px;
-            color: #464646;
-            line-height: 29px;
-            display: inline-block;
-            max-width: 135px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            float: right;
-          }
-          .swiper-box {
-            height: 165px;
-            position: relative;
-            .kvm-info {
-              height: 100%;
-              display: flex;
-              flex-direction: column;
-              justify-content: center;
-              text-align: center;
-              top: -165px;
-              position: relative;
-              color: #fff;
-              font-size: 12px;
-            }
-          }
-          .btns {
-            text-align: center;
-            .btn {
-              height: 30px;
-              font-size: 20px;
-              color: #fff;
-              padding: 0 13px;
-              margin: 0px 2px;
-              background-color: @theme-color;
-              color: #fff;
-              border: 1px solid transparent;
-              border-radius: 3px;
-              // opacity: .65;
-            }
-            .btn.disabled {
-              opacity: .65;
-            }
-          }
         }
         .loading {
           text-align: center;
@@ -386,7 +332,7 @@ export default defineComponent({
   }
 }
 
-.ant-input-search {
+:deep(.ant-input-search) {
   .ant-input-group{
     .ant-input {
       border-radius: 4px;
@@ -428,107 +374,10 @@ export default defineComponent({
   border-color: @hover-color;
 }
 
-.ant-carousel {
-  height: 100%;
-  // background: url(./kvm-computer-open.png) center no-repeat;
-  background-size: 90%;
-  .custom-slick-arrow.slick-arrow  {
-    width: 0;
-    height: 0;
-    // border: 15px solid @theme-color;
-    border: 15px solid #d6c4e5;;
-    border-bottom-color: transparent;
-    border-top-color: transparent;
-    z-index: 1;
-  }
-  .custom-slick-arrow.slick-arrow.slick-prev {
-    border-left-color: transparent;
-    left: -12px;
-  }
-  .custom-slick-arrow.slick-arrow.slick-next {
-    border-right-color: transparent;
-    right: -12px;
-  }
-  .swiper {
-    height: 165px;
-  }
-}
-.ant-carousel :deep(.slick-slide) {
-  text-align: center;
-  height: 160px;
-  line-height: 160px;
-  background: #364d79;
-  overflow: hidden;
-}
-
-.ant-carousel :deep(.slick-arrow.custom-slick-arrow) {
-  width: 25px;
-  height: 25px;
-  font-size: 25px;
-  color: #fff;
-  background-color: rgba(31, 45, 61, 0.11);
-  opacity: 0.3;
-}
-.ant-carousel :deep(.custom-slick-arrow:before) {
-  display: none;
-}
-.ant-carousel :deep(.custom-slick-arrow:hover) {
-  opacity: 0.5;
-}
-
-.ant-carousel :deep(.slick-slide h3) {
-  color: #fff;
-}
-
-.ant-modal-content {
-  .ant-btn {
-    height: 30px;
-    padding: 5px 10px;
-    font-size: 12px;
-    line-height: 1.5;
-    border-radius: 3px;
-    color: #fff;
-    background-color: @theme-color;
-    border-color: @hover-color;
-  }
-  .ant-modal-close-x {
-    height: 40px;
-    color: #fff;
-    line-height: 40px;
-  }
-  .ant-modal-header {
-    background-color: @theme-color;
-    padding: 0;
-    height: 40px;
-    /* line-height: 40px; */
-    /* font-size: 1.15em; */
-    /* font-weight: bold; */
-    /* color: #fff; */
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-color: #f4f4f4;
-    .ant-modal-title {
-      line-height: 40px;
-      font-weight: bold;
-      padding-left: 15px;
-      color: #fff;
-      font-size: 15px;
-    }
-  }
-  .ant-modal-body {
-    padding-top: 40px;
-    .ant-input-affix-wrapper {
-      width: 300px;
-    }
-    .prompt {
-      color: red;
-      padding-left: 6px;
-    }
-  }
-}
 
 
-ul.ant-pagination {
+
+/deep/ ul.ant-pagination {
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;

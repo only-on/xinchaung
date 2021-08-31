@@ -37,6 +37,11 @@ export default {
   getTreeList: {
     url: 'api/course/courses/{courseId}/chapters/tree',
     method: 'GET',
+  },
+  canAccessVm: {
+    url: '/teacher-course/can-access-vm',
+    method: 'POST',
+    dataType: 'json'
   }
   
 }
