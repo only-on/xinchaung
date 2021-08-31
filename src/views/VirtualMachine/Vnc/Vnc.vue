@@ -43,10 +43,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive,ref ,Ref,provide,watch} from "vue";
+import { defineComponent, reactive,ref ,Ref,provide,watch,onMounted} from "vue";
 import layout from "../VmLayout/VmLayout.vue";
 import { useRouter } from "vue-router";
 import VueNoVnc from "src/components/noVnc/noVnc.vue"
+import {wsConnect} from "src/request/websocket"
 export default defineComponent({
   components: {
     layout,
@@ -70,16 +71,15 @@ export default defineComponent({
       router.go(-1);
     }
     
-    // setInterval(()=>{
-    //   // console.log(vncLoadingV.value);
-    //   vncLoadingV.value=!vncLoadingV.value
-    //   // console.log(vncLoadingV.value=false);
-      
-    // },1000)
-
     watch(vncLoadingV,()=>{
       console.log(vncLoadingV.value);
-      
+    })
+
+    function connect(){
+      wsConnect("://127.0.0.1:8082/?uid=1")
+    }
+    onMounted(()=>{
+      connect()
     })
     return { roleType,back, data,provide,vncLoadingV };
   },

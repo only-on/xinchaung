@@ -45,6 +45,7 @@ function wsConnect(url:string) {
         console.error(e)
         throw new Error(e)
     }
+    return conn
 }
 
 function disconnect() {
@@ -74,6 +75,16 @@ function sendToTarget(target:string, targetType:string, targetContent:string) {
 function broadcast(message:string) {
     // 发送广播
     conn.broadcast(message)
+}
+
+export {
+    wsConnect,
+    disconnect,
+    joinRoom,
+    leaveRoom,
+    register,
+    sendToTarget,
+    broadcast
 }
 
 export default {

@@ -4,6 +4,7 @@ import { IForumAps } from 'src/api/modules/forum'
 import { IStudentCourseAps } from 'src/api/modules/studentCourse'
 import { IStudentExperimentalAps } from 'src/api/modules/studentExperimental'
 import {IstudentExam} from "src/api/modules/studentExam"
+import {IvmApi} from "src/api/modules/vmApi"
 
 /**
  * 通用响应类型
@@ -51,5 +52,6 @@ export interface IApiCollection {
         getTreeList: TFHttpSend,
         canAccessVm: TFHttpSend,
     },
-    studentExam:IstudentExam
+    studentExam:IstudentExam,
+    vmApi:IvmApi
 }

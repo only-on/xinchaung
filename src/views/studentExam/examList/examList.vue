@@ -10,11 +10,10 @@ import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import top from "./top.vue";
 import content from "./content.vue";
 import request from "src/request/getRequest";
-
 export default defineComponent({
   components: {
     top,
-    content,
+    content
   },
   setup() {
     const studentExam = request.studentExam;
