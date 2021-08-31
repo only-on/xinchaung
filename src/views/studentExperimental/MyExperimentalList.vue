@@ -107,7 +107,7 @@ export default defineComponent({
         height: 100%;
         background-color: rgba(34, 34, 34, 0.46);
         .link{
-          color: #fff;
+          color: @white;
           display: flex;
           align-items: center;
           justify-content: center;

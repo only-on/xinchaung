@@ -121,6 +121,7 @@ export default defineComponent({
     }
     .customized{
       height: 100%;
+      overflow: hidden;
     }
   }
 }

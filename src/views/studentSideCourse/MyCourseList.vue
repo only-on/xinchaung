@@ -4,9 +4,9 @@
   </div>
   <div class="list_content">
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" />  -->
-    <div class="info" v-for="v in list" :key="v.course_id" :class="v.state!=='已结束'?'info_hover':''">
+    <div class="info" v-for="v in list" :key="v.course_student_id" :class="v.state!=='已结束'?'info_hover':''">
       <div class="main">
-        <div class="card" @click="keepLearning(v.course_id)">
+        <div class="card" @click="keepLearning(v.course_student_id)">
           <div class="mask" :class="v.state==='已结束'?'mask_end':''">
             {{v.state}}
           </div>
@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="start_training">
-          <a-button @click="keepLearning(v.course_id)" type="link"> {{v.progress?'继续学习':'开始学习'}} </a-button>
+          <a-button @click="keepLearning(v.course_student_id)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@ interface IListItem{
   progress:number;
   recent:string;
   teacher:string;
-  course_id:number;
+  course_student_id:number;
   time_cost:string;
 }
 export default defineComponent({
@@ -114,8 +114,8 @@ export default defineComponent({
      initData()
      getDirection()
     })
-    return {list,loading,keepLearning,defaultUrl,options,course_category_id,handleChange};
-  },
+    return {list,loading,keepLearning,defaultUrl,options,course_category_id,handleChange}
+  }
 })
 </script>
 
@@ -128,7 +128,7 @@ export default defineComponent({
       text-align: center;
       margin-bottom:20px;
       cursor: auto;
-      transition: all .6s;
+      transition: all .3s;
       .main{
         margin: 0 auto;
         width: 270px;
@@ -169,7 +169,7 @@ export default defineComponent({
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     cursor: auto;
-    color: #fff;
+    color: @white;
   }
   .mask_end{
     background-color: rgba(0,0,0,9.5);

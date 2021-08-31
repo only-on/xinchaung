@@ -151,7 +151,7 @@ export default function request({
       .then(responseSucceed)
       .then((res: IBusinessResp) => {
         // console.log(res);
-        if (res.status === RESP_SUCCESS) {
+        if (res.status === RESP_SUCCESS || res.code === 0) {
           // message.success('成功');
           resolve(res);
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理

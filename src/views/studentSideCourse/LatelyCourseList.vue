@@ -1,10 +1,10 @@
 <template>
   <div class="list_content">
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
-    <div class="list_item" v-for="v in list" :key="v.course_id">
+    <div class="list_item" v-for="v in list" :key="v.course_student_id">
       <div class="time">{{v.study_time}}</div>
       <div class="info">
-        <div class="card" @click="startLearning(v.course_id)">
+        <div class="card" @click="startLearning(v.course_student_id)">
           <div class="mask">
             {{v.course_status}}
           </div>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="card_info">
-          <div class="title" @click="startLearning(v.course_id)">
+          <div class="title" @click="startLearning(v.course_student_id)">
             <span>已学{{v.progress}}%</span>
             <div>{{v.name}}</div>
           </div>
@@ -32,7 +32,7 @@
           </p>
         </div>
         <div class="start_training" v-if="v.course_status==='进行中'">
-          <a-button @click="startLearning(v.course_id)" type="primary"> 继续学习 </a-button>
+          <a-button @click="startLearning(v.course_student_id)" type="primary"> 继续学习 </a-button>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@ interface IlistItem{
   used_time:string;
   recent:string;
   userName:string;
-  course_id:number;
+  course_student_id:number;
 }
 export default defineComponent({
   name: '',
@@ -97,7 +97,7 @@ export default defineComponent({
       .list_item{
         border-left: 1px solid @theme-color;
         position: relative;
-        padding: 16px 100px 16px 24px;
+        padding: 0px 100px 16px 24px;
         margin-left: 5px;
         &::before{
           position: absolute;
@@ -108,7 +108,7 @@ export default defineComponent({
           border-radius: 50%;
           top: 0;
           left: -5px;
-          background-color: #fff;
+          background-color: @white;
         }
         .time{
           color: rgba(5,1,1,0.85);
@@ -144,7 +144,7 @@ export default defineComponent({
           border-top-left-radius: 12px;
           border-bottom-left-radius: 12px;
           cursor: auto;
-          color: #fff;
+          color: @white;
         }
         .card_pic{
           // position: absolute;

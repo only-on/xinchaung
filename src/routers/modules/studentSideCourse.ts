@@ -25,18 +25,16 @@ export default {
       meta: {
         title: "课程详情",
         authCode: "",
-      },
-      children:[
-        {
-          path: "ContinueLearningSon",
-          name: "ContinueLearningSon",
-          component: () => import("src/views/studentSideCourse/ContinueLearningSon.vue"),
-          meta: {
-            title: "详情儿子",
-            authCode: "",
-          },
-        },
-      ]
+      }
     },
+    {
+      path: "Resources",
+      name: "Resources",
+      component: () => import("src/views/studentSideCourse/Resources.vue"),
+      meta: {
+        title: "课程资源",
+        authCode: "",
+      }
+    }
   ],
 }
