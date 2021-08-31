@@ -56,8 +56,7 @@ import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import serve from "../../request/getRequest";
 import { IBusinessResp} from '../../typings/fetch.d';
-import DragTree from './component/DragTree.vue'
-import StuChapter from './component/StuChapter.vue'
+import StuChapter from 'component/StuChapter.vue'
 interface IdetailObj{
   info:any;
   tree:any[]
@@ -65,7 +64,6 @@ interface IdetailObj{
 export default defineComponent({
   name: 'ContinueDetail',
   components: {
-    DragTree,
     StuChapter
   },
   setup: (props,{emit}) => {

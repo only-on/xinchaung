@@ -46,7 +46,7 @@
           <multipl-echoice v-if="item.type === 2" :data="item" :index="item.index" />
           
           <judge v-if="item.type === 3" :index="item.index" :data="item" />
-          
+
         </div>
       </div>
     </div>
@@ -65,7 +65,7 @@ import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch.d';
 import MultiplEchoice from './MultiplEchoice.vue'
 import SingleEchoice from './SingleEchoice.vue'
-import judge from './Judge.vue'
+import judge from 'Judge.vue'
 export default defineComponent({
   name: 'StuChapter',
   components: {
