@@ -1,7 +1,7 @@
 <template>
   <div class="judge-box">
     <h2 :class="styles['answer-title']">
-      {{index+1}}、{{ data.name }}
+      {{index+1}}、{{ data.question }}
     </h2>
     <div :class="styles['question-item-box']">
       <div v-for="(item,index) in data.options" :key="index.toString()">{{numToAbc(Number(index)+1)}}、{{item.content}}</div>

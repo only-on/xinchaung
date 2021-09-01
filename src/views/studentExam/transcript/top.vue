@@ -37,13 +37,24 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { get } from "http";
+import { computed, defineComponent, ref,WritableComputedRef } from "vue";
 import { useRouter } from "vue-router";
+import {IDetailData} from "../studentExam.type"
 export default defineComponent({
   props:["data"],
   setup(props) {
     const router=useRouter()
-    const infoData=ref(props.data)
+    const infoData:WritableComputedRef<IDetailData>=computed({
+      get(){
+        return props.data
+      },
+      set(val){
+        infoData.value=val
+      }   
+    })
+    console.log(infoData);
+    
     function back(){
       router.go(-1)
     }

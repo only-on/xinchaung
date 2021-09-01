@@ -23,10 +23,15 @@ async function studentExamResult(urlParams:IExamResult) {
    return await  studentExam.studentExamResult({urlParams})
 }
 
+/** */
 
+async function startExam(params:any) {
+    return "as"
+}
 export {
     getStudentExaminationlList,
-    studentExamResult  
+    studentExamResult,
+    startExam  
 }
 
 

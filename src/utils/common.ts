@@ -35,6 +35,7 @@ function getStudentTranscriptAnswer(answers:Array<any>,type:string=""){
     
 }
 
+// 获取url参数
 function getQuery(name:string):string | null {
     var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
     var r = window.location.search.substr(1).match(reg);
@@ -43,6 +44,8 @@ function getQuery(name:string):string | null {
     }
     return null;
 }
+
+
 function htmlDecode(text: any) {
     //1.首先动态创建一个容器标签元素，如DIV
     var temp = document.createElement('div')
@@ -50,11 +53,40 @@ function htmlDecode(text: any) {
     temp.innerHTML = text
     //3.最后返回这个元素的innerText(ie支持)或者textContent(火狐，google支持)，即得到经过HTML解码的字符串了。
     return temp.innerText || temp.textContent
+}
+
+// 比较对象
+function deepEqual(object1:Object, object2:Object) {
+    const keys1 = Object.keys(object1);
+    const keys2 = Object.keys(object2);
+  
+    if (keys1.length !== keys2.length) {
+      return false;
+    }
+  
+    for (let index = 0; index < keys1.length; index++) {
+      const val1 = object1[keys1[index]];
+      const val2 = object2[keys2[index]];
+      const areObjects = isObject(val1) && isObject(val2);
+      if (areObjects && !deepEqual(val1, val2) || 
+          !areObjects && val1 !== val2) {
+        return false;
+      }
+    }
+  
+    return true;
   }
- export {
+  
+  // 判断是否为对象
+  function isObject(object:any) {
+    return object != null && typeof object === 'object';
+  }
+
+export {
     numToAbc,
     getStudentTranscriptAnswer,
     getQuery,
     htmlDecode,
+    deepEqual
  }
  

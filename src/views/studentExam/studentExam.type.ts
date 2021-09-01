@@ -15,7 +15,7 @@ export interface Ipage {
     totalCount?: number
 }
 
-export interface IExamListParam{
+export interface IExamListParam {
     limit: number,
     name: string,
     page: number,
@@ -30,9 +30,65 @@ export interface IExamListParams {
 
 export interface IExamResult {
     student_id: number | string
-    paper_id: number | string |null
+    paper_id: number | string | null
 }
 export type IexamData = {
     list: Array<Iexamlist>
     page: Ipage
+}
+
+export interface IScoreResult {
+    average: number,
+    myself: number,
+    question_type: string
+}
+
+export interface ICorrectRate {
+    rate: number,
+    question_type: string
+}
+
+export interface IQuestions {
+    id: number
+    question: string
+    type_id: number
+    level_id: number
+    pool_id: number
+    default_score: number
+    user_id: number
+    created_at: Date
+    updated_at: Date
+    type: {
+        id: number
+        name: string
+    }
+    level: {
+        id: number
+        name: string
+    }
+    answers: [
+        {
+            id: number
+            answer: string
+        }
+    ]
+    student_answers: [
+        {
+            id: number
+            answer: string
+        }
+    ]
+}
+export interface IDetailData {
+    id: number,
+    name: string,
+    questions_count: number,
+    paper_score_total: number,
+    pass_score: number,
+    myself_score: number,
+    use_time_seconds: number,
+    class_rank: number,
+    score_result: IScoreResult[],
+    correct_rate: ICorrectRate[],
+    questions: IQuestions[]
 }
