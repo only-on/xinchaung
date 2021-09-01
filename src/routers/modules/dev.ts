@@ -54,6 +54,14 @@ export default {
         title: "markdown",
         authCode: 'markdown'
       }
+    },
+    {
+      path: "editormd",
+      component: () => import('src/components/dev/EditorMd.vue'),
+      meta: {
+        title: "editormd",
+        authCode: 'editormd'
+      }
     }
   ]
 }

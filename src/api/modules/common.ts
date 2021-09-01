@@ -269,6 +269,12 @@ export const FakeMenu = {
                     icon: "fa fa-circle-o",
                     active: false,
                 },
+                {
+                    label: "editormd",
+                    url: ["/#/dev/editormd"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
             ],
             active: false,
         },
