@@ -56,7 +56,7 @@ import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import serve from "../../request/getRequest";
 import { IBusinessResp} from '../../typings/fetch.d';
-import StuChapter from 'component/StuChapter.vue'
+import StuChapter from './component/StuChapter1.vue'
 interface IdetailObj{
   info:any;
   tree:any[]

@@ -67,6 +67,13 @@ interface IListItem{
   teacher:string;
   course_student_id:number;
   time_cost:string;
+  state:String
+}
+interface Ioptions{
+  id:number;
+  name:String;
+  value:number;
+  label:String;
 }
 export default defineComponent({
   name: '',
@@ -75,7 +82,8 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter()
-    const options = ref<SelectTypes['options']>([{id:1,name:'全部',value:1, label: '全部课程'}])
+    var options = ref<Ioptions[]>([{id:1,name:'全部',value:1, label: '全部课程'}]);
+    // var options:Ioptions[] = ref<SelectTypes['options']>([{id:1,name:'全部',value:1, label: '全部课程'}])
     var list:IListItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
     var course_category_id:Ref<number | undefined>=ref(1)
@@ -102,8 +110,8 @@ export default defineComponent({
         data.length?data.map((v:any)=>{
           v.value=v.id
           v.label=v.name
-          // console.log(v);
         }):'';
+        console.log(options);
         options.value.push(...data)
       })
     }

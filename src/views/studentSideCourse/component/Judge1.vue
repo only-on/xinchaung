@@ -22,7 +22,7 @@
 import { defineComponent,ref, onMounted,inject,reactive,Ref,watch } from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
-  name: '',
+  name: 'Judge',
   components: {
    
   },

@@ -6,7 +6,7 @@
           <span class="black">课后习题</span>
           <span class="tip">(共{{ chapterData.nums }}题,满分{{ totalScoreAll }}分)</span>
         </div>
-        <div>
+        <div>../../../typings/fetch
           <a-button type="primary" @click="answerQues">答题</a-button>
           <a-modal
             title="提示"
@@ -62,10 +62,10 @@
 import { defineComponent,ref, onMounted,inject,reactive,Ref, computed } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../../api/index'
-import { IBusinessResp} from '../../../typings/fetch.d';
+import { IBusinessResp} from '../../../typings/fetch';
 import MultiplEchoice from './MultiplEchoice.vue'
 import SingleEchoice from './SingleEchoice.vue'
-import judge from 'Judge.vue'
+import judge from './Judge1.vue'
 export default defineComponent({
   name: 'StuChapter',
   components: {

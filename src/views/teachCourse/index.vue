@@ -377,7 +377,7 @@ export default defineComponent({
 
 
 
-/deep/ ul.ant-pagination {
+:deep(ul.ant-pagination){
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;
