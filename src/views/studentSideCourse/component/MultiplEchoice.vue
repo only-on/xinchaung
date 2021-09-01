@@ -30,6 +30,8 @@ import { defineComponent,ref, onMounted,inject,reactive,watch, computed,Ref } fr
 import { useRouter } from 'vue-router';
 import { htmlDecode } from 'src/utils/common'
 import request from '../../../api/index'
+import { IBusinessResp} from '../../../typings/fetch.d';
+import {message } from 'ant-design-vue';
 export default defineComponent({
   name: 'MultiplEchoice',
   components: {
@@ -62,7 +64,7 @@ export default defineComponent({
             str+=`${arr[k]}`
         }
       }):''
-      return `(${str})`
+      return str?`(${str})`:str
     })
     function multipleChoice(val:any,index:any){
         if (question.student_answer.includes(index.toString())) {
@@ -73,7 +75,7 @@ export default defineComponent({
      
       submitQuesAnswer(index)
     }
-    function submitQuesAnswer(val:any) {
+    function submitQuesAnswer(index:any) {
       let obj={
         course_id:question.course_id,
         chapter_id:question.chapter_id,
@@ -82,7 +84,18 @@ export default defineComponent({
           student_answer:[...question.student_answer]
         },
       }
-      http.submitCheckbox({param:{...obj}})
+      console.log(obj)
+      http.submitQuest({param:{...obj}}).then((res:IBusinessResp)=>{
+          if(res){
+             message.success('操作成功')
+          }else{
+            if (question.student_answer.includes(index.toString())) {
+              question.student_answer.splice(question.student_answer.indexOf(index.toString()), 1)
+            } else {
+              question.student_answer.push(index.toString())
+            }
+          }
+      })
     }
     function numToAbc(i:any) {
       let arr=['A','B','C','D','']
@@ -91,10 +104,6 @@ export default defineComponent({
     onMounted(()=>{
      
     })
-    function go(){
-      // console.log(path);
-      router.push('/Course/ContinueLearning/ContinueLearningSon')
-    }
     return {question,index,multipleChoice,answer,numToAbc,htmlDecode};
   },
 })

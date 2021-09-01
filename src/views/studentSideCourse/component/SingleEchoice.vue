@@ -30,6 +30,9 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,inject,watch,Ref,reactive,computed } from 'vue'
 import { useRouter } from 'vue-router';
+import request from '../../../api/index'
+import { IBusinessResp} from '../../../typings/fetch.d';
+import {message } from 'ant-design-vue';
 export default defineComponent({
   name: '',
   components: {
@@ -44,6 +47,7 @@ export default defineComponent({
     },
   },
   setup: (props,{emit}) => {
+    const http=(request as any).studentCourse
     const router = useRouter();
     var question:any=reactive({})
     var last_student_answer:Ref<string>=ref('')
@@ -56,30 +60,33 @@ export default defineComponent({
     last_student_answer.value = question.student_answer_format
 
     var answer=computed(()=>{
-      if (!question.question_content[0]) {
-          return false
+      let str:string=''
+      let arr:string[]=['A','B','C','D']
+      question.question_content.length?question.question_content.forEach((v:any,k:string)=>{
+        if(v.is_ansewr === '1'){
+            str+=`${arr[k]}`
         }
-        if ('is_ansewr' in question.question_content[0]) {
-          let answer = '('
-          if (question.question_content[0].is_ansewr === '1') {
-            answer += 'A'
-          }
-          if (question.question_content[1].is_ansewr === '1') {
-            answer += 'B'
-          }
-          if (question.question_content[2].is_ansewr === '1') {
-            answer += 'C'
-          }
-          if (question.question_content[3].is_ansewr === '1') {
-            answer += 'D'
-          }
-          return answer + ')'
-        } else {
-          return ''
-        }
+      }):''
+      return str?`(${str})`:str
     })
     function submitQuesAnswer() {
-      
+      let obj={
+        course_id:question.course_id,
+        chapter_id:question.chapter_id,
+        question:{
+          question_id:question.quest_list_questions_id,
+          student_answer:[...question.student_answer_format]
+        },
+      }
+      console.log(obj)
+      http.submitQuest({param:{...obj}}).then((res:IBusinessResp)=>{
+          if(res){
+             message.success('操作成功')
+             last_student_answer = question.student_answer_format
+          }else{
+            question.student_answer_format = last_student_answer
+          }
+      })
     }
     function numToAbc(i:any) {
       let arr=['A','B','C','D','']
@@ -88,10 +95,6 @@ export default defineComponent({
     onMounted(()=>{
      
     })
-    function go(){
-      // console.log(path);
-      router.push('/Course/ContinueLearning/ContinueLearningSon')
-    }
     return { index,answer,submitQuesAnswer,question,numToAbc};
   },
 })

@@ -21,6 +21,9 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,inject,reactive,Ref,watch } from 'vue'
 import { useRouter } from 'vue-router';
+import request from '../../../api/index'
+import { IBusinessResp} from '../../../typings/fetch.d';
+import {message } from 'ant-design-vue';
 export default defineComponent({
   name: 'Judge',
   components: {
@@ -35,6 +38,7 @@ export default defineComponent({
     },
   },
   setup: (props,{emit}) => {
+    const http=(request as any).studentCourse
     const router = useRouter();
     var question:any=reactive({})
     var last_student_answer:Ref<string>=ref('')
@@ -50,8 +54,23 @@ export default defineComponent({
      
     })
     function submitQuesAnswer(){
-      // console.log(path);
-      // router.push('/Course/ContinueLearning/ContinueLearningSon')
+       let obj={
+        course_id:question.course_id,
+        chapter_id:question.chapter_id,
+        question:{
+          question_id:question.quest_list_questions_id,
+          student_answer:[...question.student_answer_format]
+        },
+      }
+      console.log(obj)
+      http.submitQuest({param:{...obj}}).then((res:IBusinessResp)=>{
+          if(res){
+             message.success('操作成功')
+             last_student_answer = question.student_answer_format
+          }else{
+            question.student_answer_format = last_student_answer
+          }
+      })
     }
     function judgeAnswer() {
       if ('is_ansewr' in question.question_content[0]) {

@@ -4,15 +4,15 @@
   </div>
   <div class="list_content">
     <!-- <a-spin v-if="loading" tip="Loading..." size="large" />  -->
-    <div class="info" v-for="v in list" :key="v.course_student_id" :class="v.state!=='已结束'?'info_hover':''">
+    <div class="info" v-for="v in list" :key="v.id" :class="v.state!=='已结束'?'info_hover':''">
       <div class="main">
-        <div class="card" @click="keepLearning(v.course_student_id)">
+        <div class="card" @click="keepLearning(v)">
           <div class="mask" :class="v.state==='已结束'?'mask_end':''">
             {{v.state}}
           </div>
           <div class="task">学至~{{v.recent}}</div>
           <div class="card_pic">
-            <img :src="defaultUrl" />
+            <img :src="v.url" />
           </div>
         </div>
         <div class="card_info">
@@ -44,7 +44,7 @@
           </div>
         </div>
         <div class="start_training">
-          <a-button @click="keepLearning(v.course_student_id)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
+          <a-button @click="keepLearning(v)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
         </div>
       </div>
     </div>
@@ -65,9 +65,10 @@ interface IListItem{
   progress:number;
   recent:string;
   teacher:string;
-  course_student_id:number;
+  id:number;
   time_cost:string;
-  state:String
+  state:String;
+  course_id:number;
 }
 interface Ioptions{
   id:number;
@@ -101,8 +102,8 @@ export default defineComponent({
         }):''
       })
     }
-    function keepLearning(id:number){
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+id)
+    function keepLearning(val:IListItem){
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.id+'&course_id='+val.course_id)
     }
     function getDirection(){
       http.courseDirection().then((res:IBusinessResp)=>{
@@ -111,7 +112,7 @@ export default defineComponent({
           v.value=v.id
           v.label=v.name
         }):'';
-        console.log(options);
+        // console.log(options);
         options.value.push(...data)
       })
     }

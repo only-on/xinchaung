@@ -7,6 +7,7 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router';
+
 export default defineComponent({
   name: '',
   components: {
@@ -26,6 +27,6 @@ export default defineComponent({
 })
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 
 </style>

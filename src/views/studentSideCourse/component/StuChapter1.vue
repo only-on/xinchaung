@@ -6,7 +6,7 @@
           <span class="black">课后习题</span>
           <span class="tip">(共{{ chapterData.nums }}题,满分{{ totalScoreAll }}分)</span>
         </div>
-        <div>../../../typings/fetch
+        <div>
           <a-button type="primary" @click="answerQues">答题</a-button>
           <a-modal
             title="提示"
@@ -59,10 +59,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,inject,reactive,Ref, computed } from 'vue'
-import { useRouter } from 'vue-router';
+import { defineComponent,ref, onMounted,inject,reactive,Ref, computed,onBeforeMount,watch } from 'vue'
+import { useRouter ,useRoute} from 'vue-router';
 import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch';
+import {message } from 'ant-design-vue';
 import MultiplEchoice from './MultiplEchoice.vue'
 import SingleEchoice from './SingleEchoice.vue'
 import judge from './Judge1.vue'
@@ -73,10 +74,26 @@ export default defineComponent({
    SingleEchoice,
    judge,
   },
+  props:{
+    chapter_id:{
+      required:true,
+      type:Number,
+      default:0,
+    }
+  },
   setup: (props,{emit}) => {
     const router = useRouter();
+    const route = useRoute();
     const http=(request as any).studentCourse
     const chapterData:any=reactive({})
+    const {course_id}= route.query
+    var chapter_id:Ref<number>=ref(0)
+    watch(()=>{return props.chapter_id},(val:any)=>{
+      console.log(val)
+        chapter_id.value=val
+        init()
+    })
+    chapter_id.value=props.chapter_id
     var visable:Ref<boolean> =ref(false)
     var totalScoreAll=computed(()=>{
       let scoreAll = 0
@@ -89,16 +106,15 @@ export default defineComponent({
         return scoreAll
     })
     function init(){
-      // {course_id:501477,chapter_id:513342}
-      // {course_id:501378,chapter_id:508992}
-      http.questionsList({param:{course_id:501378,chapter_id:508992}}).then((res:IBusinessResp)=>{
-       
-       let data=res.data
-       data.quest_list_questions?data.quest_list_questions.map((v:any,k:Number)=>{
-         v.index=k
-       }):''
-      //  console.log(data)
-       Object.assign(chapterData,data)
+      // chapter_id:513342   508992   509065
+      http.questionsList({param:{course_id:course_id,chapter_id:chapter_id.value}}).then((res:IBusinessResp)=>{
+        if(res){
+            let data=res.data
+            data.quest_list_questions?data.quest_list_questions.map((v:any,k:Number)=>{
+              v.index=k
+            }):''
+            Object.assign(chapterData,data)
+        } 
      })
     } 
    
@@ -106,13 +122,19 @@ export default defineComponent({
       visable.value=true
     }
     function submitOk(){
-
+        visable.value=false
+        http.submitQuesAnswer({param:{course_id:course_id,chapter_id:chapter_id.value}}).then((res:IBusinessResp)=>{
+            if(res){
+              message.success('操作成功')
+              init()
+            }
+        })
     }
     function submitCancel(){
         visable.value=false
     }
-    onMounted(()=>{
-     init()
+    onBeforeMount(()=>{
+      init()
     })
     function go(){
       // console.log(path);

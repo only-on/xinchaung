@@ -28,4 +28,5 @@ export interface IBusinessResp {
     data: any;
     error:any;
     code: number;
+    message: string;
 }

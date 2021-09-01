@@ -151,7 +151,7 @@ export default function request({
       .then(responseSucceed)
       .then((res: IBusinessResp) => {
         // console.log(res);
-        if (res.status === RESP_SUCCESS || res.code === 0) {
+        if (res.status === RESP_SUCCESS) {
           // message.success('成功');
           resolve(res);
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
@@ -159,7 +159,8 @@ export default function request({
           // router.replace({ path: "/login" }).catch(() => {});
           reject(null)
         } else {
-          message.warning(res.msg?res.msg:res.error.msg);
+          let meg= res.message || res.msg || res.error.msg
+          message.warning(meg);
           reject(null)
         }
       })

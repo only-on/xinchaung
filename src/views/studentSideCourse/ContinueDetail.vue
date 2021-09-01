@@ -43,7 +43,9 @@
         <!-- <Drag-tree :tree="tree" /> -->
       </div>
       <div class="mainRight">
-        <component :is="componentName" />
+        <!-- <component :is="componentName" /> -->
+        <StuChapter :chapter_id="chapter_id" />
+        <!-- <ChapterExperiment :experimentalId="experimentalId" /> -->
       </div>
     </div>
   </div>
@@ -51,12 +53,13 @@
 
 <script lang="ts">
 import bg from '../../assets/images/studentcourse/course-detail_bg.jpg'
-import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref } from 'vue'
+import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref ,onBeforeMount} from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import serve from "../../request/getRequest";
 import { IBusinessResp} from '../../typings/fetch.d';
 import StuChapter from './component/StuChapter1.vue'
+import ChapterExperiment from './component/ChapterExperiment.vue'
 interface IdetailObj{
   info:any;
   tree:any[]
@@ -64,9 +67,11 @@ interface IdetailObj{
 export default defineComponent({
   name: 'ContinueDetail',
   components: {
-    StuChapter
+    StuChapter,
+    ChapterExperiment,
   },
   setup: (props,{emit}) => {
+   
     const router = useRouter();
     const http=(request as any).studentCourse
     var configuration:any=inject('configuration')
@@ -76,6 +81,9 @@ export default defineComponent({
     var componentName:Ref<string>=ref('StuChapter')
 
     const route = useRoute();
+    var chapter_id:Ref<number>=ref(513342)
+    var experimentalId:Ref<number>=ref(523187)
+    
     const {DetailId}= route.query
     const detail:IdetailObj=reactive({
       info:{},
@@ -83,19 +91,23 @@ export default defineComponent({
     })
     function init(){
       http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
-        detail.info=res.data
-        detail.tree=res.data.tree
+        // console.log(res)
+        if(res){
+          detail.info=res.data
+          detail.tree=res.data.tree
+        }
+        
       })
     }
     function go(){
       // console.log(path);
       router.push('/Course/ContinueLearning/ContinueLearningSon')
     }
-    onMounted(()=>{
+    onBeforeMount(()=>{
       init()
     })
    
-    return {...toRefs(detail),bg,componentName};
+    return {...toRefs(detail),bg,componentName,chapter_id,experimentalId};
   },
 })
 </script>
@@ -110,7 +122,7 @@ export default defineComponent({
     .header{
       color:@white;
       .title{
-        margin-bottom: 20px;
+        // margin-bottom: 20px;
         position: relative;
       }
       .title,.info,.title>.left{
@@ -130,6 +142,7 @@ export default defineComponent({
         top: 10px;
       }
       .title .left{
+        height: 57px;
         div{
           font-size: 24px;
         }
@@ -152,6 +165,7 @@ export default defineComponent({
             margin-right: 25px;
           }
           .item{
+            height: 80px;
             display: flex;
             flex-direction: column;
             align-items: center;

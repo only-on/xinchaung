@@ -4,7 +4,7 @@
     <div class="list_item" v-for="v in list" :key="v.course_student_id">
       <div class="time">{{v.study_time}}</div>
       <div class="info">
-        <div class="card" @click="startLearning(v.course_student_id)">
+        <div class="card" @click="startLearning(v)">
           <div class="mask">
             {{v.course_status}}
           </div>
@@ -13,7 +13,7 @@
           </div>
         </div>
         <div class="card_info">
-          <div class="title" @click="startLearning(v.course_student_id)">
+          <div class="title" @click="startLearning(v)">
             <span>已学{{v.progress}}%</span>
             <div>{{v.name}}</div>
           </div>
@@ -32,7 +32,7 @@
           </p>
         </div>
         <div class="start_training" v-if="v.course_status==='进行中'">
-          <a-button @click="startLearning(v.course_student_id)" type="primary"> 继续学习 </a-button>
+          <a-button @click="startLearning(v)" type="primary"> 继续学习 </a-button>
         </div>
       </div>
     </div>
@@ -56,6 +56,7 @@ interface IlistItem{
   recent:string;
   userName:string;
   course_student_id:number;
+  course_id:number;
 }
 export default defineComponent({
   name: '',
@@ -78,8 +79,8 @@ export default defineComponent({
         }):''
       })
     }
-    function startLearning(id:number) {
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+id)
+    function startLearning(val:IlistItem) {
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.course_id)
     }
     onMounted(()=>{
      initData()
