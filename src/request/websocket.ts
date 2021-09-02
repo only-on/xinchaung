@@ -37,9 +37,10 @@ function wsConnect(options:any) {
             // 设置message事件处理器
             message: (ev:MessageEvent) => {
                 console.log('[message]', ev)
-                let messages = ev.data.split('\n');
-                for (let i = 0; i < messages.length; i++) {
+                if (options.message) {
+                    options.message(ev)
                 }
+               
             }
         })
     } catch (e:any) {

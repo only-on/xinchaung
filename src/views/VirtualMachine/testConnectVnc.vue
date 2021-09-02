@@ -20,7 +20,7 @@ export default defineComponent({
     const param: IcreateExamples = reactive({
       type: "train",
       opType: "start",
-      taskId: 50223,
+      taskId: 50227,
     });
     const connect =ref({})
     function createConnect() {
@@ -31,7 +31,7 @@ export default defineComponent({
             // router.push({
             //     path:"/vm/vnc"
             // })
-             router.push({path:"/vm/webmsg",query:{
+             router.push({path:"/vm/vnc",query:{
                connection_id:res.data.connection_id
              }})
           // connect.value=  wsConnect("://127.0.0.1:8082/?uid="+res.data.connection_id)

@@ -97,6 +97,8 @@ export default defineComponent({
       document.onmouseup = () => {
         isMove = false;
         document.onmousemove = null;
+        document.body.style.pointerEvents="all"
+        document.body.style.userSelect="auto"
       };
       // 监听window变化事件
       window.addEventListener("resize", function () {
@@ -156,6 +158,8 @@ export default defineComponent({
       mouseStart = e.pageX;
       isMove = true;
       document.onmousemove = (event: any) => {
+        document.body.style.pointerEvents="none"
+        document.body.style.userSelect="none"
         changeWidth(event);
       };
     }
@@ -281,6 +285,7 @@ export default defineComponent({
           }
         }
         .move-bar {
+          pointer-events: all;
           width: 6px;
           background: #515151;
           height: 100%;

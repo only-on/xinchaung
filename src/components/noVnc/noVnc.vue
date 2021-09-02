@@ -2,8 +2,14 @@
   <div class="novnc-wrap" :id="refName"></div>
 </template>
 <script lang="ts">
-import { defineComponent, nextTick, ref, onMounted, watch,inject,Ref } from "vue";
+import { defineComponent, nextTick, ref, onMounted, watch,inject,Ref,PropType } from "vue";
 import RFB from "@novnc/novnc/core/rfb.js";
+type Toptions={
+  password:string
+  wsUrl:string
+  userName:string
+}
+
 export default defineComponent({
   name: "WhNovnc",
   props: {
@@ -12,15 +18,20 @@ export default defineComponent({
       type: String,
       default: "novncEl",
     },
+    // 配置
+    options:{
+      require:true,
+      type:Object as PropType<Toptions>
+    },
     // 密码
-    password: {
-      type: String,
-      default: "",
-    },
-    // ws url
-    wsUrl: {
-      type: String,
-    },
+    // password: {
+    //   type: String,
+    //   default: "",
+    // },
+    // // ws url
+    // wsUrl: {
+    //   type: String,
+    // },
     // 背景
     background: {
       type: String,
@@ -43,7 +54,7 @@ export default defineComponent({
           connectVnc();
         } else {
           //这里做不可重新连接的一些操作
-          console.log("链接失败,重新链接中-------" + props.wsUrl);
+          console.log("链接失败,重新链接中-------" + props.options?.wsUrl);
           connectVnc();
         }
       },2000);
@@ -64,13 +75,19 @@ export default defineComponent({
     }
     // 连接vnc
     function connectVnc() {
+      if (!props.options?.wsUrl) {
+        return false
+      }
+      if (document.getElementById(props.refName)) {
+          (document.getElementById(props.refName) as HTMLDivElement).innerHTML=""
+      }
       // vncLoading!.value=false
       // 实例化rfb
-      rfb = new RFB(document.getElementById(props.refName), props.wsUrl, {
+      rfb = new RFB(document.getElementById(props.refName), props.options?.wsUrl, {
         // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
         credentials: {
-          password: props.password,
-          username: props.userName,
+          password: props.options?.password,
+          username: props.options?.userName,
         },
       });
       rfb.addEventListener("connect", success); // 与服务器连接成功时，触发的事件

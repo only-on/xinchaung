@@ -1,13 +1,13 @@
 <template>
   <div class="vm-list-box scrollbar">
-    <div class="vm-item" v-for="i in 5" :key="i">
+    <div class="vm-item" v-for="(item,index) in vms" :key="Number(index)">
       <h2 class="vm-title">远程连接</h2>
       <div class="vm-info">
         <div class="vm-info-line">
-          <span>用户名：Username</span><span>密码：password</span>
+          <span>用户名：{{item.name}}</span><span>密码：{{'vncpassword'}}</span>
         </div>
         <div class="vm-info-line">
-          <span>IP：192.168.101.150</span><span>rdp端开：123456</span>
+          <span>IP：{{item.host_ip}}</span><span>rdp端口：{{item.classify==="Linux"?item.ssh_port:item.rdp_port}}</span>
         </div>
       </div>
       <div class="vm-loading-box">
@@ -16,8 +16,8 @@
           src="../../../../assets/images/vm/kvm-computer-active.png"
           alt=""
         />
-        <div class="loading">
-            loading
+        <div class="loading" @click="openVM(item,Number(index))">
+           {{vncLoading?(currentIndex===index?'关闭':'打开'):'打开'}}
         </div>
       </div>
     </div>
@@ -25,11 +25,38 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-
+import { defineComponent,inject,watch,ref,Ref } from "vue";
+import { getVmConnectSetting } from "src/utils/seeting";
 export default defineComponent({
   setup() {
-    return {};
+    const currentIndex=ref(0)
+    const vmInfoData:any=inject("vmInfoData")
+    let vncLoading:Ref<boolean>|undefined=inject("vncLoading")
+    const vmOptions:any=inject("vmOptions")
+    const vms:any=ref([])
+    watch(()=>vmInfoData.value,()=>{
+      if (vmInfoData.value.data&&vmInfoData.value.data.vms) {
+        vms.value=vmInfoData.value.data.vms
+        console.log(vms.value);
+      }
+    },{immediate:true})
+    function openVM(val:any,index:number){
+      currentIndex.value=index
+      settingCurrentVM(val)
+    }
+    
+    function settingCurrentVM(data: any) {
+      vmOptions.value.password = getVmConnectSetting.VNCPASS;
+      vmOptions.value.wsUrl =
+        getVmConnectSetting.VNCPROTOC +
+        "://" +
+        data.host_ip +
+        ":" +
+        getVmConnectSetting.VNCPORT +
+        "/websockify?vm_uuid=" +
+        data.uuid;
+    }
+    return {vms,vncLoading,currentIndex,openVM};
   },
 });
 </script>
@@ -55,6 +82,8 @@ export default defineComponent({
           font-size: 14px;
           color: #050101;
           line-height: 30px;
+          overflow: hidden;
+          text-overflow: ellipsis;
           &:nth-child(1) {
             width: 60%;
           }
@@ -73,6 +102,7 @@ export default defineComponent({
         margin: 20px auto 37px auto;
       }
       .loading{
+          cursor: pointer;
           position: absolute;
           top: 50%;
           left: 50%;
