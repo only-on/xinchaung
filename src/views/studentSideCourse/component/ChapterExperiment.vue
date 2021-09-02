@@ -23,7 +23,7 @@
         <!-- <div></div> -->
         <div>
           <span class="iconfont icon-bianji1" v-if="saveOrEdit === 3" @click="toEdit"></span>
-          <span class="iconfont iconbaocun" v-if="saveOrEdit === 2" @click="ToSaveExperContent"></span>
+          <span class="iconfont icon-baocun" v-if="saveOrEdit === 2" @click="ToSaveExperContent"></span>
           <span class="iconfont icon-download" @click="clickExportNote('pdf')"></span>
         </div>
       </div>
@@ -34,6 +34,10 @@
         </div>
         <!-- 编辑 -->
         <div v-if="saveOrEdit === 2" class="edit">
+          <EditorMd v-model="content1" />
+          <!-- <Markdown v-model="content1" /> -->
+          <!-- <antdv-markdown v-model="content1" class="markdown__editor" /> -->
+          <!-- <a-textarea v-model:value="content1" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" /> -->
           <!-- <quill-editor ref="myQuillEditor" v-model="content1" :options="editorOption" /> -->
         </div>
         <!-- 笔记内容为空 -->
@@ -49,11 +53,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,Ref, computed,onBeforeMount,watch,toRefs } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref, computed,onBeforeMount,watch,toRefs,inject } from 'vue'
 import { useRouter ,useRoute} from 'vue-router';
 import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch';
 import {message } from 'ant-design-vue';
+import EditorMd from '../../../components/dev/EditorMd.vue'
+import Markdown from '../../../components/dev/Markdown.vue'
+
 interface IdetailObj{
   saveOrEdit:number;
   experData:any;
@@ -65,7 +72,8 @@ interface IdetailObj{
 export default defineComponent({
   name: '',
   components: {
-   
+   EditorMd,
+   Markdown
   },
   props:{
     experimentalId:{
@@ -79,19 +87,25 @@ export default defineComponent({
     const route = useRoute();
     const http=(request as any).studentCourse
     var id:Ref<number>=ref(0)
-    var saveOrEdit:Ref<number>=ref(0)
+    var course_id:Ref<string>=inject('course_id')!
+    var taskid:Ref<string>=inject('taskid')!
+    var noteid:Ref<string>=inject('noteid')!
+    // console.log(course_id,taskid,noteid)
     const detail:IdetailObj=reactive({
       saveOrEdit:0,
       experData:null,
       updatedAt:'',
       content1:'',
       experimentDetail:{},
-      studystr:''
+      studystr:'',
     })
     watch(()=>{return props.experimentalId},(val:any)=>{
       console.log(val)
        id.value=val
         init()
+    })
+    watch(()=>{return detail.content1},(val:any)=>{
+      console.log(val)
     })
     id.value=props.experimentalId
     function init() {
@@ -110,20 +124,38 @@ export default defineComponent({
         }
       })
     }
-    function clickExportNote(val:string) {
-      
+    async function clickExportNote(val:string) {
+      let obj={
+        note_id:noteid,
+        courseId:course_id,
+        taskId:taskid,
+      }
+      const data:any=await http.exportNote({param:{...obj}})
+      console.log(data)
+      // const data2:any= await http.exportNote({param:{note_id:noteid}})
+      // console.log(data2)
     }
     function ToSaveExperContent(val:any) {
-      
+      let obj={
+        taskId:taskid,
+        courseId:course_id,
+        content:JSON.stringify(detail.content1)
+      }
+      http.SaveExperContent({param:{...obj}}).then((res:any)=>{
+          // noteid.value = res.note_id       // 给上级刷新noteid
+          message.success('操作成功')
+          init()
+      })
     }
     function toEdit() {
-      
+      detail.saveOrEdit = 2
+      detail.content1 = detail.experData
     }
     function addNote() {
-      saveOrEdit.value = 2
+      detail.saveOrEdit = 2
     }
     function study(val:any) {
-      
+      console.log('准备虚拟机环境')
     }
     function getStudyStatus(type:any) {
       let obj={'start':'开始学习','continue':'继续学习','finish':'重修','rebuild':'重修'}
@@ -142,9 +174,30 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
+.quill{
+      width: 100%;
+    height: calc(100% - 35px);
+    overflow: hidden;
+}
+.edit{
+  width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+:deep(.demo__emd){
+  width: 100%;
+}
+:deep(.mark__body .mark__editor){
+  min-width: auto;
+  min-height: 360px;
+}
+:deep(.mark__body .mark__preview){
+  min-width: auto;
+}
   .experRight {
     background-color: rgba(247,247,247,1);
-
+    height: 100%;
+    overflow: hidden;
     .rightTop {
         display: flex;
         justify-content: space-between;
@@ -170,7 +223,8 @@ export default defineComponent({
 
     .rightBottom {
         background-color: white;
-        height: 541px;
+        // height: 541px;
+        height: calc(100% - 78px);
         padding:24px 20px;
         border-radius: 4px;
         .exhibation{

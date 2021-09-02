@@ -8,7 +8,9 @@ export default{
   submitQuest:{url:`/classic/exercises-student/submit-quest`,method: "POST",dataType:'json'},
   submitQuesAnswer:{url:`/classic/exercises-student/submit-answer`,method: "POST",dataType:'json'},
   experimentalNotes:{url:`/api/course/contents/detail`,method: "GET"},
-   
+  SaveExperContent:{url:`/student-course/setnote`,method: "POST",dataType:'json'},
+  exportNote:{url:`/student-course/convert-as-pdf`,method: "GET"},
+   // /student-course/setnote
 }
 export interface IStudentCourseAps {
   getLatelyCourseList: TFHttpSend;
@@ -19,6 +21,8 @@ export interface IStudentCourseAps {
   submitQuest: TFHttpSend;
   submitQuesAnswer: TFHttpSend;
   experimentalNotes: TFHttpSend;
+  SaveExperContent: TFHttpSend;
+  exportNote: TFHttpSend;
 }
 
 export const MODULE_NAME = 'studentCourse'

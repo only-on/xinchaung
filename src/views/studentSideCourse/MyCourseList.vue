@@ -37,9 +37,11 @@
             </div>
           </div>
           <div class="course_time">
-              <span class="iconfont icon-daojishi"></span>
-              <span>用时</span>
-              <span>{{v.time_cost}}</span>
+              <div>
+                <span class="iconfont icon-daojishi"></span>
+                <span>用时</span>
+                <span>{{v.time_cost}}</span>
+              </div>
               <span v-if="v.progress">已学{{v.progress}}%</span>
           </div>
         </div>
@@ -238,14 +240,17 @@ export default defineComponent({
       }
     }
     .course_time{
-      margin-bottom: 10px;
-      padding-top: 15px;
-      span{
-        margin-right: 10px;
-      }
-      span:nth-child(4){
+      /* margin-bottom: 10px; */
+      padding: 15px 0 10px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      &>span{
         margin: 0 0 0 20px;
         color: @theme-light-color;
+      }
+      div>span{
+        margin-right: 10px;
       }
     }
   }
@@ -263,8 +268,8 @@ export default defineComponent({
   .start_training{
     display: none;
     width: 100%;
-    height: 25px;
-    line-height: 25px;
+    height: 40px;
+    line-height: 40px;
     background-color: #fafafa;
     border-top: 1px solid #E9E9E9;
     border-bottom-left-radius: 10px;

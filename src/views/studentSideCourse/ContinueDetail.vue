@@ -44,8 +44,8 @@
       </div>
       <div class="mainRight">
         <!-- <component :is="componentName" /> -->
-        <StuChapter :chapter_id="chapter_id" />
-        <!-- <ChapterExperiment :experimentalId="experimentalId" /> -->
+        <!-- <StuChapter :chapter_id="chapter_id" /> -->
+        <ChapterExperiment :experimentalId="experimentalId" />
       </div>
     </div>
   </div>
@@ -53,7 +53,7 @@
 
 <script lang="ts">
 import bg from '../../assets/images/studentcourse/course-detail_bg.jpg'
-import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref ,onBeforeMount} from 'vue'
+import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref ,onBeforeMount,provide} from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import serve from "../../request/getRequest";
@@ -79,12 +79,17 @@ export default defineComponent({
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false})
 
     var componentName:Ref<string>=ref('StuChapter')
-
-    const route = useRoute();
-    var chapter_id:Ref<number>=ref(513342)
-    var experimentalId:Ref<number>=ref(523187)
     
-    const {DetailId}= route.query
+    const route = useRoute();
+    var chapter_id:Ref<number>=ref(509065)
+    var experimentalId:Ref<number>=ref(509073)
+    var taskid:Ref<number>=ref(509072)
+    var noteid:Ref<string>=ref('100')
+    const {DetailId,course_id}= route.query
+    provide('course_id',course_id)
+    provide('taskid',taskid.value)
+    provide('noteid',noteid.value)
+    
     const detail:IdetailObj=reactive({
       info:{},
       tree:[]
@@ -202,10 +207,10 @@ export default defineComponent({
       background-color: transparent;
       display: flex;
       justify-content: center;
-      padding: 44px 0;
-      // height: calc(100% - 260px);
-      flex: 1;
-      overflow: auto;
+      padding-top: 44px;
+      height: calc(100% - 160px);
+      // flex: 1;
+      // overflow: auto;
       .mainLeft{
         width: 378px;
         background-color: #fff;
@@ -219,6 +224,8 @@ export default defineComponent({
         background-color: #fff;
         border-radius: 4px;
         flex: 1;
+        height: 100%;
+        overflow: hidden;
       }
     }
   }
