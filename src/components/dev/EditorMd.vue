@@ -1,6 +1,19 @@
 <template>
   <div class="demo__emd">
-    <editormd @change="handleChange" :emd-options="emdOptions" />
+    <!-- <div class="top">
+      <div class="left">
+        <editormd @change="handleChangeTopLeft" :emd-options="topLeftOptions" />
+      </div>
+      <div class="right">
+        <editormd
+          @change="handleChangeTopRight"
+          :emd-options="topRightOptions"
+        />
+      </div>
+    </div> -->
+    <div class="bottom">
+      <editormd @change="handleChange" :emd-options="bottomOptions" />
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -13,7 +26,7 @@ export default defineComponent({
     Editormd,
   },
   setup() {
-    const emdOptions = reactive({
+    const bottomOptions = reactive({
       path: "/assets/editor.md/lib/",
       gotoLine: false,
       emoji: false,
@@ -21,12 +34,41 @@ export default defineComponent({
       flowChart: true,
       markdown: demoContent,
     });
+    const topLeftOptions = reactive({
+      path: "/assets/editor.md/lib/",
+      gotoLine: false,
+      emoji: false,
+      tex: true,
+      flowChart: true,
+      markdown: "# top left",
+      toolbarIcons: "mini",
+    });
+    const topRightOptions = reactive({
+      mode: "gfm",
+      path: "/assets/editor.md/lib/",
+      gotoLine: false,
+      emoji: false,
+      tex: true,
+      flowChart: true,
+      markdown: "# top right",
+      toolbarIcons: "simple",
+    });
     const handleChange = function (val: string) {
-      console.log("[EditorMd/change] ", val);
+      // console.log("[EditorMd/change] ", val);
+    };
+    const handleChangeTopLeft = function (val: string) {
+      // console.log("[EditorMd/change] ", val);
+    };
+    const handleChangeTopRight = function (val: string) {
+      // console.log("[EditorMd/change] ", val);
     };
     return {
-      emdOptions,
+      bottomOptions,
+      topLeftOptions,
+      topRightOptions,
       handleChange,
+      handleChangeTopLeft,
+      handleChangeTopRight,
     };
   },
 });
@@ -36,5 +78,17 @@ export default defineComponent({
   width: 70%;
   margin: 0 auto;
   height: 100%;
+  .top {
+    height: 50%;
+    display: flex;
+    .left,
+    .right {
+      width: 50%;
+      height: 50%;
+    }
+  }
+  .bottom {
+    height: 50%;
+  }
 }
 </style>

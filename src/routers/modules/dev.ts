@@ -62,6 +62,14 @@ export default {
         title: "editormd",
         authCode: 'editormd'
       }
+    },
+    {
+      path: "quill",
+      component: () => import('src/components/dev/Quill.vue'),
+      meta: {
+        title: "quill",
+        authCode: 'quill'
+      }
     }
   ]
 }

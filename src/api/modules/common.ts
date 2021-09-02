@@ -275,6 +275,12 @@ export const FakeMenu = {
                     icon: "fa fa-circle-o",
                     active: false,
                 },
+                {
+                    label: "quill",
+                    url: ["/#/dev/quill"],
+                    icon: "fa fa-circle-o",
+                    active: false,
+                },
             ],
             active: false,
         },
