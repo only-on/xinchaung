@@ -34,6 +34,15 @@ export default{
                 title:"vnc",
                 authCode:""
             },
+        },
+        {
+            path:"webmsg",
+            name:"webmsg",
+            component:()=>import("src/views/VirtualMachine/webmsg.vue"),
+            meta:{
+                title:"webmsg",
+                authCode:""
+            },
         }
     ]
 }
