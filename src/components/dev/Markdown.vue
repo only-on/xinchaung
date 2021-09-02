@@ -23,6 +23,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .markdown__editor {
-  // height: 700px;
+  height: 700px;
 }
 </style>

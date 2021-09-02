@@ -34,8 +34,8 @@
         </div>
         <!-- 编辑 -->
         <div v-if="saveOrEdit === 2" class="edit">
-          <EditorMd v-model="content1" />
-          <!-- <Markdown v-model="content1" /> -->
+          <!-- <EditorMd v-model="content1" /> -->
+          <Markdown v-model="content1" />
           <!-- <antdv-markdown v-model="content1" class="markdown__editor" /> -->
           <!-- <a-textarea v-model:value="content1" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" /> -->
           <!-- <quill-editor ref="myQuillEditor" v-model="content1" :options="editorOption" /> -->
@@ -183,6 +183,9 @@ export default defineComponent({
   width: 100%;
     height: 100%;
     overflow: auto;
+}
+:deep(.markdown__editor){
+  height: auto;
 }
 :deep(.demo__emd){
   width: 100%;
