@@ -1,6 +1,6 @@
 <template>
     <div class="single-choice-box">
-        <h2 class="question-title">{{index+1}}、{{data.name}}</h2>
+        <h2 class="question-title">{{index+1}}、{{data?.question}}</h2>
         <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
             <div v-for="(item,index) in data.options" :key="index.toString()">
                 <a-radio class="answer-item"  :value="item.id" >{{item.option}}</a-radio>
@@ -10,17 +10,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,reactive ,ref} from 'vue'
+import { defineComponent,reactive ,ref,watch,toRefs} from 'vue'
 import _ from "lodash"
 export default defineComponent({
     props:['modelValue','index'],
     setup(props,{emit}) {
-        const data:any=reactive(props.modelValue)
+        const reactiveData:any=reactive({data:props.modelValue})
         const index=ref(props.index)
+        let {data}=toRefs(reactiveData)
+        console.log(data);
         
+        watch(props,()=>{
+            console.log(props);
+            data.value=props.modelValue
+            index.value=props.index
+            console.log(data);
+            
+        },{deep:true})
         function answerChange(val:Event){
-            data.answers[0].answer=getAnswer(data.answers[0].id,data.options)
-            emit("update:modelValue",data)
+            data.value.answers[0].answer=getAnswer(data.value.answers[0].id,data.value.options)
+            emit("update:modelValue",data.value)
+            emit("answerChange",data.value)
         }
         // 获取答案
         function getAnswer(id:number,options:Array<any>){
@@ -29,7 +39,7 @@ export default defineComponent({
             })
             return options[i].option
         }
-        return {data,answerChange,index}
+        return {data,answerChange,index,...toRefs(reactiveData)}
     },
 })
 </script>

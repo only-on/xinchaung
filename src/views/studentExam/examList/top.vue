@@ -5,20 +5,20 @@
     </div>
     <div class="exam-info">
       <div class="exam-count">
-        <span>总分：12</span>
-        <span>试题数量：1</span>
-        <span>通过分数：6</span>
+        <span>总分：{{startExamInfoData?.all_score}}</span>
+        <span>试题数量：{{startExamInfoData?.questions_count}}</span>
+        <span>通过分数：{{startExamInfoData?.pass_score}}</span>
       </div>
       <div>试卷名称</div>
       <div class="teacher-or-start-status">
-        <span><i class="teacher-icon"></i>文和</span>
+        <span><i class="teacher-icon"></i>{{startExamInfoData?.questions_count}}</span>
         <span class="exam-status">即将开始</span>
       </div>
     </div>
     <div class="exam-action">
       <span class="exam-time">
-        <i>2021.08.19</i>
-        10:10 ~ 10:12
+        <i>{{startExamInfoData?.start_date}}</i>
+        {{startExamInfoData?.times}}
       </span>
       <a-button type="primary" @click="showModal">开始考试</a-button>
     </div>
@@ -31,7 +31,7 @@
     @cancel="closeModal"
   >
     <div class="notice-content">
-      <p>考试描述</p>
+      <p>{{startExamInfoData?.description}}</p>
       <div>
         <p>考试须知:</p>
         <ul>
@@ -42,34 +42,61 @@
       </div>
     </div>
     <template v-slot:footer>
-      <a-button type="primary" @click="startExam">开始考试</a-button>
+      <a-button type="primary" @click="toStartExam">开始考试</a-button>
     </template>
   </a-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref,inject,Ref } from "vue";
 import { useRouter } from "vue-router";
+import {startedExam} from "../studentExam.model"
+import {TStartedExam} from "../studentExam.type"
+import storage from "src/utils/extStorage"
+
 export default defineComponent({
   setup() {
     const visible = ref<boolean>(false);
     const router = useRouter();
+    let startExamInfoData:any=inject("startExamInfoData")
+    let student_id= storage.lStorage.get("uid")
+
+
     const showModal = () => {
       visible.value = true;
     };
     const closeModal = () => {
       visible.value = false;
     };
-    function startExam() {
+    function startExam(){
+      let params:TStartedExam={
+      urlParams:{
+        student_id:student_id,
+        exam_id:startExamInfoData?.value.id
+      }
+    }
+      startedExam(params).then((res=>{
+        console.log(res);
+        
+      }))
+    }
+    function toStartExam() {
+      console.log(1111);
+      
+      startExam()
       router.push({
         path: "/exam/examDoing",
+        query:{
+          paper_id:startExamInfoData?.value.id
+        }
       });
     }
     return {
       visible,
       showModal,
       closeModal,
-      startExam,
+      toStartExam,
+      startExamInfoData
     };
   },
 });

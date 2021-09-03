@@ -153,7 +153,6 @@ export default defineComponent({
         "/websockify?vm_uuid=" +
         data.uuid;
     }
-    provide("settingCurrentVM",settingCurrentVM)
     return {
       roleType,
       back,

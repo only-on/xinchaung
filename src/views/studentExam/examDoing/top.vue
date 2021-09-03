@@ -5,33 +5,64 @@
     </div>
     <div class="exam-info">
       <div class="exam-count">
-        <span>总分：12</span>
-        <span>试题数量：1</span>
-        <span>通过分数：6</span>
+        <span>总分：{{startExamInfoData?.all_score}}</span>
+        <span>试题数量：{{startExamInfoData?.questions_count}}</span>
+        <span>通过分数：{{startExamInfoData?.pass_score}}</span>
       </div>
       <div>试卷名称</div>
       <div class="teacher-or-start-status">
-        <span><i class="teacher-icon"></i>文和</span>
-        <span class="exam-status">即将开始</span>
+        <span><i class="teacher-icon"></i>{{startExamInfoData?.author_name}}</span>
+        <span class="exam-status">进行中</span>
       </div>
     </div>
     <div class="exam-action">
       <span class="count-down-time">
           <i>倒计时：</i>
-          00<i>小时</i>
-          00<i>分</i>
-          52<i>秒</i>
+          {{times.h>9?times.h:'0'+times.h}}<i>小时</i>
+          {{times.m>9?times.m:"0"+times.m}}<i>分</i>
+          {{times.s>9?times.s:'0'+times.s}}<i>秒</i>
       </span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
+import { defineComponent, ref,inject ,Ref,watch} from "vue";
 import { useRouter } from "vue-router";
+import {countDown,Itimes} from "src/utils/common"
 export default defineComponent({
   setup() {
+    let startExamInfoData:any=inject("startExamInfoData")
+    console.log(startExamInfoData);
+    
+    const times:Ref<Itimes> |undefined=ref({d:"00",h:"00",m:"00",s:"00"})
+    // console.log(times);
+    watch(()=>startExamInfoData,()=>{
+      console.log(1111);
+      if (!startExamInfoData?.value) return;
+      if (!startExamInfoData?.value.times) return;
+      let endTime=startExamInfoData?.value.times.split("~")
+      times.value=countDown(new Date(),startExamInfoData?.value.start_date+endTime[1])
+    },{deep:true,immediate:true})
+    function calculateTime(){
+      if (!times?.value)  return
+        if (times.value.s>0) {
+          times.value.s=Number(times.value.s)-1
+        }else{
+          if (times.value.m>0) {
+            times.value.m=Number(times.value.m)-1
+          }else{
+            times.value.h=Number(times.value.h)-1
+          }
+        }
+    }
+
+    setInterval(()=>{
+      calculateTime()
+    },1000)
     return {
+      startExamInfoData,
+      times
     };
   },
 });

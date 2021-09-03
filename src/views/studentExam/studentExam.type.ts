@@ -92,3 +92,13 @@ export interface IDetailData {
     correct_rate: ICorrectRate[],
     questions: IQuestions[]
 }
+
+
+// 开始考试
+export type TStartedExam = {
+    urlParams: {
+        student_id: number | string
+        exam_id: number | string
+    }
+
+}

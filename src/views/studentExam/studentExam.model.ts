@@ -1,5 +1,5 @@
 import request from "src/request/getRequest";
-import { IExamListParams ,IExamResult} from "./studentExam.type"
+import { IExamListParams ,IExamResult,TStartedExam} from "./studentExam.type"
 
 const studentExam = request.studentExam;
 
@@ -23,15 +23,32 @@ async function studentExamResult(urlParams:IExamResult) {
    return await  studentExam.studentExamResult({urlParams})
 }
 
-/** */
+/** 
+ * @description 获取开始考试
+ * @param params {urlParams:{student_id}}
+*/
 
 async function startExam(params:any) {
-    return "as"
+    return await studentExam.startExam(params)
 }
+
+
+
+/** 
+ * @description 开始考试
+ * @param params {urlParams:{student_id,exam_id}}
+*/
+
+async function startedExam(params:TStartedExam) {
+    return await studentExam.startedExam(params)
+}
+
+
 export {
     getStudentExaminationlList,
     studentExamResult,
-    startExam  
+    startExam,
+    startedExam  
 }
 
 
