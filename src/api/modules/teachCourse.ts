@@ -1,3 +1,5 @@
+import { TFHttpSend } from "src/typings/getRequest";
+
 export default {
   getPre: {
     url: `/base-study/get-pre-topoinst`,
@@ -44,4 +46,16 @@ export default {
     dataType: 'json'
   }
   
+}
+
+export interface ITeacherCourseApis {
+  getPre: TFHttpSend,
+  vmOpen: TFHttpSend,
+  vmClose: TFHttpSend,
+  vmRevert: TFHttpSend,
+  vmReset: TFHttpSend,
+  preLimit: TFHttpSend,
+  saveTopoinst: TFHttpSend,
+  getTreeList: TFHttpSend,
+  canAccessVm: TFHttpSend,
 }
