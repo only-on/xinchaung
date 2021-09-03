@@ -10,6 +10,7 @@ export default{
   experimentalNotes:{url:`/api/course/contents/detail`,method: "GET"},
   SaveExperContent:{url:`/student-course/setnote`,method: "POST",dataType:'json'},
   exportNote:{url:`/student-course/convert-as-pdf`,method: "GET"},
+  getResources :{url:`/api/course/courses/{courseId}/resources`,method: "GET"}
    // /student-course/setnote
 }
 export interface IStudentCourseAps {
@@ -23,6 +24,7 @@ export interface IStudentCourseAps {
   experimentalNotes: TFHttpSend;
   SaveExperContent: TFHttpSend;
   exportNote: TFHttpSend;
+  getResources:TFHttpSend;
 }
 
 export const MODULE_NAME = 'studentCourse'

@@ -35,17 +35,18 @@
             <span>课程时间</span>
           </div>
         </div>
-        <span class="iconfont icon-xiangmu1" title="课程资源"></span>
+        <span class="iconfont icon-xiangmu1" @click="Resources" title="课程资源"></span>
       </div>
     </div>
     <div class="coursemain">
       <div class="mainLeft scroll-bar-customize">
         <!-- <Drag-tree :tree="tree" /> -->
+        <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
       <div class="mainRight">
-        <!-- <component :is="componentName" /> -->
+        <component :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" />
         <!-- <StuChapter :chapter_id="chapter_id" /> -->
-        <ChapterExperiment :experimentalId="experimentalId" />
+        <!-- <ChapterExperiment :experimentalId="experimentalId" /> -->
       </div>
     </div>
   </div>
@@ -60,6 +61,7 @@ import serve from "../../request/getRequest";
 import { IBusinessResp} from '../../typings/fetch.d';
 import StuChapter from './component/StuChapter1.vue'
 import ChapterExperiment from './component/ChapterExperiment.vue'
+import DragTree from '../../components/dragTree.vue'
 interface IdetailObj{
   info:any;
   tree:any[]
@@ -69,6 +71,7 @@ export default defineComponent({
   components: {
     StuChapter,
     ChapterExperiment,
+    DragTree
   },
   setup: (props,{emit}) => {
    
@@ -78,12 +81,12 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false})
 
-    var componentName:Ref<string>=ref('StuChapter')
+    var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter
     
     const route = useRoute();
     var chapter_id:Ref<number>=ref(509065)
-    var experimentalId:Ref<number>=ref(509073)
-    var taskid:Ref<number>=ref(509072)
+    var experimentalId:Ref<number>=ref(0)
+    var taskid:Ref<number>=ref(0)
     var noteid:Ref<string>=ref('100')
     const {DetailId,course_id}= route.query
     provide('course_id',course_id)
@@ -97,22 +100,39 @@ export default defineComponent({
     function init(){
       http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
         // console.log(res)
-        if(res){
-          detail.info=res.data
-          detail.tree=res.data.tree
-        }
-        
+        let data=res.data
+        let tree=data.tree
+        tree.length?tree.map((v:any)=>{
+          v.name=v.chapter_name
+          v.contents=v.task_list
+          v.contents.length?v.contents.map((i:any)=>{
+            i.id=i.tid
+          }):''
+        }):''
+        detail.info=data
+        detail.tree=tree
+      
       })
     }
-    function go(){
+    function selectChapter(val:any) {
+      // console.log(val)
+      chapter_id.value=val.id
+      componentName.value='StuChapter'
+    }
+    function selectExperiment(val:any) {
+      // console.log(val)
+      experimentalId.value=val.id
+      componentName.value='ChapterExperiment'
+    }
+    function Resources(){
       // console.log(path);
-      router.push('/Course/ContinueLearning/ContinueLearningSon')
+      router.push('/studentSideCourse/Resources?course_id='+course_id)
     }
     onBeforeMount(()=>{
       init()
     })
    
-    return {...toRefs(detail),bg,componentName,chapter_id,experimentalId};
+    return {...toRefs(detail),bg,componentName,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
   },
 })
 </script>
@@ -219,6 +239,13 @@ export default defineComponent({
         margin-right: 10px;
         flex-shrink: 0;
         border-radius: 4px;
+      }
+      .mainLeft::-webkit-scrollbar-thumb {
+        border-radius: 3px;
+          background: #e3d9ff;
+      }
+      .mainLeft::-webkit-scrollbar{
+        width: 8px;
       }
       .mainRight{
         background-color: #fff;

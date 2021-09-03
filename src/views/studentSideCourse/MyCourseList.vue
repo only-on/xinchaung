@@ -142,7 +142,7 @@ export default defineComponent({
       transition: all .3s;
       .main{
         margin: 0 auto;
-        width: 270px;
+        width: 285px;
         box-shadow: 0px 2px 4px 0px rgb(164 36 167 / 14%);
       }
     }
@@ -202,7 +202,7 @@ export default defineComponent({
     line-height: 26px;
   }
   .card_info{
-    width: 270px;
+    width: 100%;
     margin: 0 auto;
     text-align: left;
     padding: 0 12px;

@@ -34,11 +34,7 @@
         </div>
         <!-- 编辑 -->
         <div v-if="saveOrEdit === 2" class="edit">
-          <!-- <EditorMd v-model="content1" /> -->
-          <Markdown v-model="content1" />
-          <!-- <antdv-markdown v-model="content1" class="markdown__editor" /> -->
-          <!-- <a-textarea v-model:value="content1" placeholder="请输入发帖内容" :rows="6" showCount :maxlength="100" /> -->
-          <!-- <quill-editor ref="myQuillEditor" v-model="content1" :options="editorOption" /> -->
+          <QuillEditor toolbar="full" :options="options" v-model:content="content1"  />
         </div>
         <!-- 笔记内容为空 -->
         <div v-if="saveOrEdit === 1" class="empty">
@@ -53,31 +49,31 @@
 </template>
 
 <script lang="ts">
+import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html'
 import { defineComponent,ref, onMounted,reactive,Ref, computed,onBeforeMount,watch,toRefs,inject } from 'vue'
 import { useRouter ,useRoute} from 'vue-router';
 import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch';
 import {message } from 'ant-design-vue';
-import EditorMd from '../../../components/dev/EditorMd.vue'
-import Markdown from '../../../components/dev/Markdown.vue'
-
+import Editormd from "@jiangyue/vue3-editormd/src/index.vue";
+import { QuillEditor, Delta } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IdetailObj{
   saveOrEdit:number;
   experData:any;
   updatedAt:string;
   content1:string;
-  experimentDetail:any
   studystr:string;
 }
 export default defineComponent({
   name: '',
   components: {
-   EditorMd,
-   Markdown
+   Editormd,
+   QuillEditor
   },
   props:{
     experimentalId:{
-      required:true,
+      required:false,
       type:Number,
       default:0,
     }
@@ -91,38 +87,43 @@ export default defineComponent({
     var taskid:Ref<string>=inject('taskid')!
     var noteid:Ref<string>=inject('noteid')!
     // console.log(course_id,taskid,noteid)
+    const options = {
+      placeholder: "输入内容...",
+      theme: "snow",
+    };
     const detail:IdetailObj=reactive({
       saveOrEdit:0,
       experData:null,
       updatedAt:'',
       content1:'',
-      experimentDetail:{},
       studystr:'',
     })
+    // const content = ref<Delta>({})
     watch(()=>{return props.experimentalId},(val:any)=>{
-      console.log(val)
+      // console.log(val)
        id.value=val
         init()
     })
     watch(()=>{return detail.content1},(val:any)=>{
-      console.log(val)
+      // console.log(val)
     })
     id.value=props.experimentalId
     function init() {
       http.experimentalNotes({param:{id:id.value}}).then((res:IBusinessResp)=>{
         if(res){
             detail.studystr=res.data.study
-            detail.experimentDetail=res.data
             detail.updatedAt=res.data.note.updated_at
-            detail.saveOrEdit=res.data.note.length === undefined?3:1
-            detail.experData=res.data.note.length
-            // console.log(res.data.note.length)
-            if(res.data.note.length){
-              // var converter = new QuillDeltaToHtmlConverter(res.data.note.ops, {})
-              // detail.experData = converter.convert()
+            detail.saveOrEdit=res.data.note.ops?3:1
+            if(res.data.note.ops){
+              detail.content1 = res.data.note.ops
+              var converter = new QuillDeltaToHtmlConverter(res.data.note.ops, {})
+              detail.experData = converter.convert()
             }
         }
       })
+    }
+    function getHTML(val:any) {
+      console.log(val)
     }
     async function clickExportNote(val:string) {
       let obj={
@@ -130,8 +131,6 @@ export default defineComponent({
         courseId:course_id,
         taskId:taskid,
       }
-      const data:any=await http.exportNote({param:{...obj}})
-      console.log(data)
       // const data2:any= await http.exportNote({param:{note_id:noteid}})
       // console.log(data2)
     }
@@ -139,7 +138,7 @@ export default defineComponent({
       let obj={
         taskId:taskid,
         courseId:course_id,
-        content:JSON.stringify(detail.content1)
+        content:detail.content1
       }
       http.SaveExperContent({param:{...obj}}).then((res:any)=>{
           // noteid.value = res.note_id       // 给上级刷新noteid
@@ -149,7 +148,7 @@ export default defineComponent({
     }
     function toEdit() {
       detail.saveOrEdit = 2
-      detail.content1 = detail.experData
+      // detail.content1 = detail.experData
     }
     function addNote() {
       detail.saveOrEdit = 2
@@ -168,7 +167,7 @@ export default defineComponent({
       // console.log(path);
       router.push('/Course/ContinueLearning')
     }
-    return { go,getStudyStatus,addNote,study,clickExportNote,toEdit,ToSaveExperContent,...toRefs(detail)};
+    return { go,getHTML,getStudyStatus,addNote,study,clickExportNote,toEdit,ToSaveExperContent,options,...toRefs(detail)};
   },
 })
 </script>
@@ -261,7 +260,7 @@ export default defineComponent({
         }
         .empty{
             width:100%;
-            height:508px;
+            height:100%;
             // padding:24px 30px;
             background-color: white;
             // border: 1px solid #ccc;

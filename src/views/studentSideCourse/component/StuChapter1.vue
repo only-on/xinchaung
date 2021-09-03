@@ -287,7 +287,7 @@ export default defineComponent({
 .ctuChapter {
     .empty {
         width: 100%;
-        height: 613px;
+        height: 100%;
         padding: 0px 20px;
         // margin: 20px;
         background-color: white;

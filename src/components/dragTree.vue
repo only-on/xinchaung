@@ -132,7 +132,7 @@ export default defineComponent({
     };
 
     function getExperimentClassName(type: string | number, typeName: string) {
-      if (type === '1-1') {
+      if (type === '1-1' || type === 1) {
         return typeName === 'icon' ? 'icon-zhuomianshiyan' : '实验'
       }
       if (type === '1-4') {
