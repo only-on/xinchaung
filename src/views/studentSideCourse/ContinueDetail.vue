@@ -44,7 +44,7 @@
         <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
       <div class="mainRight">
-        <component :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" />
+        <component :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" />
         <!-- <StuChapter :chapter_id="chapter_id" /> -->
         <!-- <ChapterExperiment :experimentalId="experimentalId" /> -->
       </div>
@@ -84,14 +84,14 @@ export default defineComponent({
     var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter
     
     const route = useRoute();
-    var chapter_id:Ref<number>=ref(509065)
+    var chapter_id:Ref<number>=ref(0)
     var experimentalId:Ref<number>=ref(0)
     var taskid:Ref<number>=ref(0)
-    var noteid:Ref<string>=ref('100')
+    var note_id:Ref<string>=ref('')
+    var experimentName:Ref<string>=ref('')
+    
     const {DetailId,course_id}= route.query
     provide('course_id',course_id)
-    provide('taskid',taskid.value)
-    provide('noteid',noteid.value)
     
     const detail:IdetailObj=reactive({
       info:{},
@@ -120,7 +120,12 @@ export default defineComponent({
       componentName.value='StuChapter'
     }
     function selectExperiment(val:any) {
-      // console.log(val)
+       console.log(val)
+      if(val.type ===1 || val.type === 2){
+        taskid.value=val.tid
+      }
+      experimentName.value=val.name
+      note_id.value=val.notes_id
       experimentalId.value=val.id
       componentName.value='ChapterExperiment'
     }
@@ -132,7 +137,7 @@ export default defineComponent({
       init()
     })
    
-    return {...toRefs(detail),bg,componentName,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
+    return {...toRefs(detail),bg,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
   },
 })
 </script>

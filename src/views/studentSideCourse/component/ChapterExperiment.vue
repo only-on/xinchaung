@@ -76,7 +76,22 @@ export default defineComponent({
       required:false,
       type:Number,
       default:0,
-    }
+    },
+    taskid:{
+      required:false,
+      type:Number,
+      default:0,
+    },
+    experimentName:{
+      required:false,
+      type:String,
+      default:'',
+    },
+    note_id:{
+      required:false,
+      type:String,
+      default:'',
+    },
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -84,9 +99,7 @@ export default defineComponent({
     const http=(request as any).studentCourse
     var id:Ref<number>=ref(0)
     var course_id:Ref<string>=inject('course_id')!
-    var taskid:Ref<string>=inject('taskid')!
-    var noteid:Ref<string>=inject('noteid')!
-    // console.log(course_id,taskid,noteid)
+    var notesId:Ref<string>=ref('')
     const options = {
       placeholder: "输入内容...",
       theme: "snow",
@@ -102,10 +115,13 @@ export default defineComponent({
     watch(()=>{return props.experimentalId},(val:any)=>{
       // console.log(val)
        id.value=val
-        init()
+       detail.content1=''
+       init()
     })
-    watch(()=>{return detail.content1},(val:any)=>{
+    notesId.value=props.note_id
+    watch(()=>{return props.note_id},(val:any)=>{
       // console.log(val)
+      notesId.value=val
     })
     id.value=props.experimentalId
     function init() {
@@ -126,29 +142,43 @@ export default defineComponent({
       console.log(val)
     }
     async function clickExportNote(val:string) {
-      let obj={
-        note_id:noteid,
-        courseId:course_id,
-        taskId:taskid,
-      }
-      // const data2:any= await http.exportNote({param:{note_id:noteid}})
-      // console.log(data2)
+      const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      let url=`${dev_base_url}/student-course/convert-as-pdf?note_id=${notesId.value}`
+      fetch(url,{
+          method: 'get',
+      }).then((res:any) => {     
+          return res.arrayBuffer();
+      }).then(arraybuffer => {
+          let blob = new Blob([arraybuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+          let fileName = props.experimentName+".pdf";
+          var link = document.createElement('a');
+          link.href = window.URL.createObjectURL(blob);
+          link.download = fileName;
+          link.click();
+          window.URL.revokeObjectURL(link.href);
+      })
+      // const data:any= await http.exportNote({param:{note_id:notesId.value}})
+      // // console.log(data)
+      //  const a: any = document.createElement('a')
+      //   location.href = '/student-course/convert-as-pdf?note_id='+notesId.value
+      //     a.href = '/student-course/convert-as-pdf?note_id='+notesId.value
+      //     a.download =props.experimentName
+      //     a.click()
     }
     function ToSaveExperContent(val:any) {
       let obj={
-        taskId:taskid,
+        taskId:props.taskid,
         courseId:course_id,
-        content:detail.content1
+        content:JSON.stringify(detail.content1)
       }
       http.SaveExperContent({param:{...obj}}).then((res:any)=>{
-          // noteid.value = res.note_id       // 给上级刷新noteid
+          notesId.value = res.note_id       // 新增时  刷新noteid
           message.success('操作成功')
           init()
       })
     }
     function toEdit() {
       detail.saveOrEdit = 2
-      // detail.content1 = detail.experData
     }
     function addNote() {
       detail.saveOrEdit = 2

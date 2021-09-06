@@ -159,7 +159,10 @@ export default function request({
           // router.replace({ path: "/login" }).catch(() => {});
           reject(null)
         } else {
-          let meg= res.message || res.msg || res.error.msg
+          let meg='请求出错'
+          if(res.message){meg=res.message}
+          if(res.msg){meg=res.msg}
+          if(res.error){meg=res.error.msg}
           message.warning(meg);
           reject(null)
         }

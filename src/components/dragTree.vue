@@ -91,7 +91,7 @@ export default defineComponent({
     }
     // 选择实验树
     function selectExperiment(val: ITreeDataItem) {
-      console.log(val)
+      // console.log(val)
       selectid.value = val.id
       emit('selectExperiment', val)
     }
@@ -186,7 +186,7 @@ export default defineComponent({
     // 点击文字触发
     let expandedKeys = ref<number[]>([])
     function handleSelected(keys: number[], info: SelectEvent) {
-      console.log('点击树节点触发', info.node.eventKey)
+      // console.log('点击树节点触发', info.node.eventKey)
       // console.log('点击文字:', info.node.eventKey)
       
       const itemKey = info.node.eventKey
