@@ -89,8 +89,8 @@ export default defineComponent({
   setup() {
     const route = useRoute();
     const uid = storage.lStorage.get("uid");
-    // const paper_id:any=route.query?.id
-    const paper_id: any = 5;
+    const paper_id:any=route.query?.id
+    // const paper_id: any = 5;
     console.log(paper_id);
 
     const data = [

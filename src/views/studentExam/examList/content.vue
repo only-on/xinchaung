@@ -32,7 +32,7 @@
             }}</span>
           </div>
           <div class="exam-card-content">
-            <p>日期：{{ item.start_date }}</p>
+            <p>日期：{{ item.start_day }}</p>
             <p>时间：{{ item.times }}</p>
             <div class="exam-action-card">
               <router-link :to="'/exam/look?id=' + item.id"

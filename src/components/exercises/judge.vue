@@ -1,6 +1,6 @@
 <template>
     <div class="judge-box">
-        <h2 class="question-title">{{index+1}}、{{data.name}}</h2>
+        <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         
         <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
             <div v-for="(item,index) in data.options" :key="index.toString()">
@@ -20,9 +20,11 @@ export default defineComponent({
     setup(props,{emit}) {
         const data:any=reactive(props.modelValue)
         const index=ref(props.index)
+        
         function answerChange(val:Event){
             data.answers[0].answer=getAnswer(data.answers[0].id,data.options)
             emit("update:modelValue",data)
+            emit("answerChange",data)
         }
         // 获取答案
         function getAnswer(id:number,options:Array<any>){

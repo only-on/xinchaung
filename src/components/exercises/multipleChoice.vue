@@ -1,30 +1,44 @@
 <template>
     <div class="multiple-choice-box">
-        <h2 class="question-title">{{index+1}}、{{data.name}}</h2>
+        <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         <a-checkbox-group class="answer-list" @change="answerChange" v-model:value="answers">
             <div v-for="(item,index) in data.options" :key="index.toString()">
-                <a-checkbox class="answer-item"  :value="item.id" >{{item.option}}</a-checkbox>  
+                <a-checkbox class="answer-item"  :value="item.id" >{{numToAbc(index+1)}}、{{item.option}}</a-checkbox>  
             </div>
         </a-checkbox-group>
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,reactive ,ref} from 'vue'
+import { defineComponent,reactive ,ref,watch,toRefs,Ref} from 'vue'
 import _ from "lodash"
+import {numToAbc} from "src/utils/common"
 export default defineComponent({
     props:['modelValue','index'],
     setup(props,{emit}) {
-        const data:any=reactive(props.modelValue)
+        const reactiveData:any=reactive({data:props.modelValue})
+       
         const index=ref(props.index)
-        const answers=ref([])
+        let {data}=toRefs(reactiveData)
+        const answers:Ref<Array<number>>|undefined=ref([])
+       
+        watch(props,()=>{
+            console.log(props);
+            data.value=props.modelValue
+            index.value=props.index
+            console.log(data);
+            answers.value=[]
+            data.value.answers.forEach((item:any) => {
+                answers.value.push(item.id)
+            });
+        },{deep:true,immediate:true})
         function answerChange(val:any){
-            data.answers=getAnswer(val,data.options)
-            emit("update:modelValue",data)
+            data.value.answers=getAnswer(val,data.value.options)
+            emit("update:modelValue",data.value)
+            emit("answerChange",data.value)
         }
         // 获取答案
         function getAnswer(ids:Array<number>,options:Array<any>){
-            
             let answer:Array<any>=[]
             options.forEach((item)=>{
                 if (ids.indexOf(item.id)!==-1) {
@@ -37,7 +51,7 @@ export default defineComponent({
             })
             return answer
         }
-        return {data,answerChange,index,answers}
+        return {data,answerChange,index,answers,numToAbc}
     },
 })
 </script>

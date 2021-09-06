@@ -16,6 +16,7 @@ import content from "./content.vue";
 import storage from "src/utils/extStorage";
 import { getStudentExaminationlList, startExam } from "../studentExam.model";
 import { IExamListParams, IexamData } from "../studentExam.type";
+
 interface IReactiveData {
   examData: IexamData;
   startExamInfoData: any;
@@ -72,13 +73,19 @@ export default defineComponent({
     onMounted(() => {
       studentExamList();
       getStartExam();
-      reactiveData.startExamInfoData = startExamInfo.data;
+      
     });
 
     // 学生试卷列表
     function studentExamList() {
+      
+      let tempParam:any={}
+      if(params.name) tempParam.name=params.name
+      if(params.status) tempParam.status=params.status
+      tempParam.limit=params.limit
+      tempParam.page=params.page
       let param: IExamListParams = {
-        param: params,
+        param: tempParam,
         urlParams: {
           student_id: uid,
         },
@@ -95,7 +102,9 @@ export default defineComponent({
           student_id: uid,
         },
       }).then((res) => {
-        console.log(res);
+        reactiveData.startExamInfoData = res?.data;
+        console.log(reactiveData.startExamInfoData);
+        
       });
     }
     // 查找考试列表

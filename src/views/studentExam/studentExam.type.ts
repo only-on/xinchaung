@@ -102,3 +102,15 @@ export type TStartedExam = {
     }
 
 }
+
+// 提交考试 type
+export type TSubmitAnswer={
+    param:{
+        relation_id: number | string
+        answers: Array<string|number>
+    },
+    urlParams: {
+        student_id:number|string
+        exam_id:number|string
+    }
+}

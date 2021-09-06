@@ -1,5 +1,5 @@
 import request from "src/request/getRequest";
-import { IExamListParams ,IExamResult,TStartedExam} from "./studentExam.type"
+import { IExamListParams ,IExamResult,TStartedExam,TSubmitAnswer} from "./studentExam.type"
 
 const studentExam = request.studentExam;
 
@@ -44,11 +44,31 @@ async function startedExam(params:TStartedExam) {
 }
 
 
+/** 
+ * @description 提交考试答案
+ * @param params {param:{relation_id:习题学生关联ID,answers:[答案集合]},urlParams:{student_id,exam_id}}
+*/
+
+async function submitAnswer(params:TSubmitAnswer) {
+    return await studentExam.submitAnswer(params)
+}
+
+/** 
+ * @description 结束考试
+ * @param params {urlParams:{student_id:习题学生关联ID,exam_id:[答案集合]}}
+*/
+
+async function endStudentAnswer(params:TStartedExam) {
+    return await studentExam.endAnswer(params)
+}
+
 export {
     getStudentExaminationlList,
     studentExamResult,
     startExam,
-    startedExam  
+    startedExam,
+    submitAnswer,
+    endStudentAnswer  
 }
 
 

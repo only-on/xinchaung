@@ -9,10 +9,10 @@
         <span>试题数量：{{startExamInfoData?.questions_count}}</span>
         <span>通过分数：{{startExamInfoData?.pass_score}}</span>
       </div>
-      <div>试卷名称</div>
+      <div>{{startExamInfoData?.name}}</div>
       <div class="teacher-or-start-status">
         <span><i class="teacher-icon"></i>{{startExamInfoData?.questions_count}}</span>
-        <span class="exam-status">即将开始</span>
+        <span class="exam-status">{{examStatus}}</span>
       </div>
     </div>
     <div class="exam-action">
@@ -48,11 +48,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref,inject,Ref } from "vue";
+import { defineComponent, ref,inject,Ref,computed } from "vue";
 import { useRouter } from "vue-router";
 import {startedExam} from "../studentExam.model"
 import {TStartedExam} from "../studentExam.type"
 import storage from "src/utils/extStorage"
+import {contrastTime} from "src/utils/common"
 
 export default defineComponent({
   setup() {
@@ -61,7 +62,11 @@ export default defineComponent({
     let startExamInfoData:any=inject("startExamInfoData")
     let student_id= storage.lStorage.get("uid")
 
-
+    const examStatus= computed(()=>{
+      if (!startExamInfoData.value.start_day) return "未开始"
+      let startTime=new Date(startExamInfoData.value.start_day+startExamInfoData.value.times.split("~")[1])
+      return contrastTime(startTime,new Date())?"即将开始":"考试进行中"
+    })
     const showModal = () => {
       visible.value = true;
     };
@@ -96,7 +101,8 @@ export default defineComponent({
       showModal,
       closeModal,
       toStartExam,
-      startExamInfoData
+      startExamInfoData,
+      examStatus
     };
   },
 });

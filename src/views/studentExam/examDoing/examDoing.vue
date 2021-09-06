@@ -5,7 +5,67 @@
         <top></top>
         <div class="exam-content-box">
           <div class="exam-content-left">
-            <single-choice @answerChange="answerChange" v-if="examQuestions[currentQuestion]" v-model="examQuestions[currentQuestion]" :index="currentQuestion"></single-choice>
+            <div>
+              <single-choice
+                @answerChange="answerChange"
+                v-if="
+                  examQuestions[currentQuestion] &&
+                  examQuestions[currentQuestion].type_id === 1
+                "
+                v-model="examQuestions[currentQuestion]"
+                :index="currentQuestion"
+              ></single-choice>
+              <multiple-choice
+                @answerChange="answerChange"
+                v-if="
+                  examQuestions[currentQuestion] &&
+                  examQuestions[currentQuestion].type_id === 2
+                "
+                v-model="examQuestions[currentQuestion]"
+                :index="currentQuestion"
+              ></multiple-choice>
+              <judge
+                @answerChange="answerChange"
+                v-if="
+                  examQuestions[currentQuestion] &&
+                  examQuestions[currentQuestion].type_id === 3
+                "
+                v-model="examQuestions[currentQuestion]"
+                :index="currentQuestion"
+              ></judge>
+              <gap-fillings
+                @answerChange="answerChange"
+                v-if="
+                  examQuestions[currentQuestion] &&
+                  examQuestions[currentQuestion].type_id === 4
+                "
+                v-model="examQuestions[currentQuestion]"
+                :index="currentQuestion"
+              ></gap-fillings>
+              <short-answer-question
+                @answerChange="answerChange"
+                v-if="
+                  examQuestions[currentQuestion] &&
+                  examQuestions[currentQuestion].type_id === 5
+                "
+                v-model="examQuestions[currentQuestion]"
+                :index="currentQuestion"
+              ></short-answer-question>
+            </div>
+            <div class="next-last-box">
+              <a-button
+                v-if="currentQuestion > 0"
+                type="primary"
+                @click="nextOrLast('last')"
+                >上一题</a-button
+              >
+              <a-button
+                v-if="currentQuestion < examQuestions.length - 1"
+                type="primary"
+                @click="nextOrLast('next')"
+                >下一题</a-button
+              >
+            </div>
           </div>
           <div class="exam-content-right">
             <div class="exam-topic-box">
@@ -16,9 +76,18 @@
               >
                 <ul class="question-list-box">
                   <li class="question-type-box">
-                    <div class="question-type-head" @click="openCard(1)"><span>选择题</span><span>1/2</span></div>
-                    <ul class="question-type-list" :style="{height:currentOpenCard===1?'auto':''}">
-                      <li class="question-type-item" v-for="(item, index) in multipleChoices" :key="index">
+                    <div class="question-type-head" @click="openCard(1)">
+                      <span>选择题</span><span>1/2</span>
+                    </div>
+                    <ul
+                      class="question-type-list"
+                      :style="{ height: currentOpenCard === 1 ? 'auto' : '' }"
+                    >
+                      <li
+                        class="question-type-item"
+                        v-for="(item, index) in multipleChoices"
+                        :key="index"
+                      >
                         <label>
                           <span>{{ index + 1 }}</span>
                           <a-radio :value="item.index"></a-radio>
@@ -27,9 +96,18 @@
                     </ul>
                   </li>
                   <li class="question-type-box">
-                    <div class="question-type-head" @click="openCard(2)"><span>判断题</span><span>1/2</span></div>
-                    <ul class="question-type-list" :style="{height:currentOpenCard===2?'auto':''}">
-                      <li class="question-type-item" v-for="(item, index) in judges" :key="index">
+                    <div class="question-type-head" @click="openCard(2)">
+                      <span>判断题</span><span>1/2</span>
+                    </div>
+                    <ul
+                      class="question-type-list"
+                      :style="{ height: currentOpenCard === 2 ? 'auto' : '' }"
+                    >
+                      <li
+                        class="question-type-item"
+                        v-for="(item, index) in judges"
+                        :key="index"
+                      >
                         <label>
                           <span>{{ index + 1 }}</span>
                           <a-radio :value="item.index"></a-radio>
@@ -38,9 +116,18 @@
                     </ul>
                   </li>
                   <li class="question-type-box">
-                    <div class="question-type-head" @click="openCard(3)"><span>填空题</span><span>1/2</span></div>
-                    <ul class="question-type-list" :style="{height:currentOpenCard===3?'auto':''}">
-                      <li class="question-type-item" v-for="(item, index) in gapFilling" :key="index">
+                    <div class="question-type-head" @click="openCard(3)">
+                      <span>填空题</span><span>1/2</span>
+                    </div>
+                    <ul
+                      class="question-type-list"
+                      :style="{ height: currentOpenCard === 3 ? 'auto' : '' }"
+                    >
+                      <li
+                        class="question-type-item"
+                        v-for="(item, index) in gapFilling"
+                        :key="index"
+                      >
                         <label>
                           <span>{{ index + 1 }}</span>
                           <a-radio :value="item.index"></a-radio>
@@ -49,9 +136,18 @@
                     </ul>
                   </li>
                   <li class="question-type-box">
-                    <div class="question-type-head" @click="openCard(4)"><span>简答题</span><span>1/2</span></div>
-                    <ul class="question-type-list" :style="{height:currentOpenCard===4?'auto':''}">
-                      <li class="question-type-item" v-for="(item, index) in shortAnswerQuestionS" :key="index">
+                    <div class="question-type-head" @click="openCard(4)">
+                      <span>简答题</span><span>1/2</span>
+                    </div>
+                    <ul
+                      class="question-type-list"
+                      :style="{ height: currentOpenCard === 4 ? 'auto' : '' }"
+                    >
+                      <li
+                        class="question-type-item"
+                        v-for="(item, index) in shortAnswerQuestionS"
+                        :key="index"
+                      >
                         <label>
                           <span>{{ index + 1 }}</span>
                           <a-radio :value="item.index"></a-radio>
@@ -87,12 +183,19 @@ import {
   Ref,
 } from "vue";
 import top from "./top.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import examLayput from "../examLayout.vue";
-import { startExam } from "../studentExam.model";
+import {
+  startExam,
+  submitAnswer,
+  endStudentAnswer,
+} from "../studentExam.model";
 import storage from "src/utils/extStorage";
 import judge from "src/components/exercises/judge.vue";
-import singleChoice from "src/components/exercises/singleChoice.vue"
+import singleChoice from "src/components/exercises/singleChoice.vue";
+import multipleChoice from "src/components/exercises/multipleChoice.vue";
+import gapFillings from "src/components/exercises/gapFillings.vue";
+import shortAnswerQuestion from "src/components/exercises/shortAnswerQuestion.vue";
 
 type TreactiveData = {
   startExamInfoData: any;
@@ -107,11 +210,16 @@ export default defineComponent({
     top,
     examLayput,
     judge,
-    "single-choice":singleChoice
+    "single-choice": singleChoice,
+    "multiple-choice": multipleChoice,
+    "gap-fillings": gapFillings,
+    "short-answer-question": shortAnswerQuestion,
   },
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const uid = storage.lStorage.get("uid");
+    const paper_id: any = route.query.paper_id ? route.query.paper_id : "";
     const reactiveData: TreactiveData = reactive({
       startExamInfoData: {},
       examQuestions: [],
@@ -121,7 +229,9 @@ export default defineComponent({
       shortAnswerQuestionS: [],
     });
     const currentQuestion = ref(0);
-    const currentOpenCard=ref(1)
+    const lastQuestion = ref(0);
+    const currentOpenCard = ref(1);
+    const isChange = ref(false);
     const startExamInfo = {
       code: 1,
       status: 1,
@@ -421,38 +531,42 @@ export default defineComponent({
       shortAnswerQuestionS,
     } = toRefs(reactiveData);
 
-    watch(examQuestions, () => {
-      console.log(111, examQuestions.value);
+    watch(
+      examQuestions,
+      () => {
+        console.log(111, examQuestions.value);
 
-      if (!examQuestions.value.length) return;
-      multipleChoices.value = [];
-      judges.value = [];
-      gapFilling.value = [];
-      shortAnswerQuestionS.value = [];
+        if (!examQuestions.value.length) return;
+        multipleChoices.value = [];
+        judges.value = [];
+        gapFilling.value = [];
+        shortAnswerQuestionS.value = [];
 
-      examQuestions.value.forEach((item: any, index: number) => {
-        if (item.type_id === 2 || item.type_id === 1) {
-          item.index = index;
-          multipleChoices?.value.push(item);
-          console.log(multipleChoices?.value);
-        }
-        if (item.type_id === 3) {
-          item.index = index;
-          judges?.value.push(item);
-          console.log(judges?.value);
-        }
-        if (item.type_id === 4) {
-          item.index = index;
-          gapFilling?.value.push(item);
-          console.log(gapFilling?.value);
-        }
-        if (item.type_id === 5) {
-          item.index = index;
-          shortAnswerQuestionS?.value.push(item);
-          console.log(shortAnswerQuestionS?.value);
-        }
-      });
-    });
+        examQuestions.value.forEach((item: any, index: number) => {
+          if (item.type_id === 2 || item.type_id === 1) {
+            item.index = index;
+            multipleChoices?.value.push(item);
+            // console.log(multipleChoices?.value);
+          }
+          if (item.type_id === 3) {
+            item.index = index;
+            judges?.value.push(item);
+            // console.log(judges?.value);
+          }
+          if (item.type_id === 4) {
+            item.index = index;
+            gapFilling?.value.push(item);
+            // console.log(gapFilling?.value);
+          }
+          if (item.type_id === 5) {
+            item.index = index;
+            shortAnswerQuestionS?.value.push(item);
+            // console.log(shortAnswerQuestionS?.value);
+          }
+        });
+      },
+      { deep: true }
+    );
 
     provide("startExamInfoData", startExamInfoData);
     onMounted(() => {
@@ -460,7 +574,16 @@ export default defineComponent({
       reactiveData.startExamInfoData = startExamInfo.data;
       reactiveData.examQuestions = examQuestionsData.data;
     });
+
+    // 结束考试
     function finshExam() {
+      let params = {
+        urlParams: {
+          student_id: uid,
+          exam_id: paper_id,
+        },
+      };
+      endStudentAnswer(params);
       router.push({
         path: "/exam/list",
       });
@@ -476,18 +599,90 @@ export default defineComponent({
         console.log(res);
       });
     }
-    function questionTypeChange(val: number) {
+
+    // 当前试题变化
+    async function questionTypeChange(val: number) {
       console.log(val);
       console.log(currentQuestion.value);
+
+      if (isChange.value) {
+        console.log("我发生了变化");
+        try {
+          let res: any = await submitExamAnswer(lastQuestion.value);
+          console.log(res);
+
+          if (res.status === 1) {
+            lastQuestion.value = currentQuestion.value;
+            isChange.value = false;
+          }
+        } catch (err) {
+          currentQuestion.value = lastQuestion.value;
+        }
+      } else {
+        lastQuestion.value = currentQuestion.value;
+        isChange.value = false;
+      }
     }
 
     // 答案发生变化时
-    function answerChange(val:any){
-      console.log("答案变化了"+val);
-      
+    function answerChange(val: any) {
+      console.log("答案变化了", val);
+      isChange.value = true;
     }
-    function openCard(i:number){
-      currentOpenCard.value=i
+    function openCard(i: number) {
+      currentOpenCard.value = i;
+    }
+
+    // 上一题下一题
+    async function nextOrLast(type: string) {
+      if (currentQuestion.value === 0 && type === "last") return;
+      if (
+        currentQuestion.value === examQuestions.value.length - 1 &&
+        type === "next"
+      )
+        return;
+      if (isChange.value) {
+        console.log("我发生了变化");
+        try {
+          let res: any = await submitExamAnswer(currentQuestion.value);
+          console.log(res);
+          if (res.status === 1) {
+            type === "next" ? currentQuestion.value++ : currentQuestion.value--;
+            isChange.value = false;
+          }
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        type === "next" ? currentQuestion.value++ : currentQuestion.value--;
+        isChange.value = false;
+      }
+    }
+
+    // 提交答案
+
+    async function submitExamAnswer(index:number) {
+      let answers: Array<number | string> = [];
+      console.log(index);
+      console.log(examQuestions.value);
+      
+      console.log(examQuestions.value[index].answers);
+      
+      examQuestions.value[index].answers.forEach(
+        (item: any) => {
+          answers.push(item.id);
+        }
+      );
+      let params = {
+        param: {
+          relation_id: examQuestions.value[index].relation_id,
+          answers: answers,
+        },
+        urlParams: { student_id:uid,exam_id:paper_id},
+      };
+      console.log(params);
+      
+     return  await submitAnswer(params);
     }
     return {
       finshExam,
@@ -497,7 +692,8 @@ export default defineComponent({
       currentQuestion,
       currentOpenCard,
       openCard,
-      answerChange
+      answerChange,
+      nextOrLast,
     };
   },
 });
@@ -517,8 +713,19 @@ export default defineComponent({
     flex: 1;
     display: flex;
     flex-direction: row;
+    margin-top: 0;
     .exam-content-left {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      margin-top: 24px;
+      .next-last-box {
+        margin-bottom: 74px;
+        > button {
+          margin-right: 20px;
+        }
+      }
     }
     .exam-content-right {
       padding: 50px 10px 50px 0px;
@@ -534,12 +741,12 @@ export default defineComponent({
         margin-top: 80px;
         width: 300px;
         margin-left: 83px;
-        .question-lengle-box{
+        .question-lengle-box {
           width: 100%;
           height: 328px;
           overflow: auto;
-          .question-type-box{
-            .question-type-head{
+          .question-type-box {
+            .question-type-head {
               background: #f0f3f2;
               font-size: @font-size-sm;
               line-height: 35px;
@@ -549,18 +756,17 @@ export default defineComponent({
               justify-content: space-between;
               margin: 10px 0;
             }
-            .question-type-list{
+            .question-type-list {
               display: flex;
               flex-wrap: wrap;
               height: 0;
               overflow: hidden;
-              .question-type-item{
+              .question-type-item {
                 margin-left: 10px;
-                >label{
-                  >span{
+                > label {
+                  > span {
                     margin-right: 5px;
                   }
-                  
                 }
               }
             }

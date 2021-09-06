@@ -1,20 +1,28 @@
 <template>
     <div class="gap-filling-box">
-        <h2 class="question-title">{{index}}、{{data.name}}</h2>
+        <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         <div class="answer-list">
-            <label>答案：</label><a-textarea></a-textarea>
+            <label>答案：</label><a-textarea v-model:value="data.answers[0]"></a-textarea>
         </div>
     </div>
 </template>
 <script lang="ts">
-import { defineComponent,reactive,ref } from 'vue'
+import { defineComponent,reactive,ref,toRefs,watch } from 'vue'
 
 export default defineComponent({
     props:["index","modelValue"],
-    setup(props) {
-        const data:any=reactive(props.modelValue)
+    setup(props,{emit}) {
+        const reactiveData:any=reactive({data:props.modelValue})
         const index=ref(props.index)
+        const {data} = toRefs(reactiveData)
+        watch(props,()=>{
+            data.value=props.modelValue
+            index.value=props.index
+        },{deep:true,immediate:true})
 
+        watch(()=>props.modelValue,()=>{
+            emit("answerChange",data.value)
+        },{deep:true})
         return {
             data,
             index

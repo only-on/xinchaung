@@ -3,7 +3,7 @@
         <h2 class="question-title">{{index+1}}、{{data?.question}}</h2>
         <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
             <div v-for="(item,index) in data.options" :key="index.toString()">
-                <a-radio class="answer-item"  :value="item.id" >{{item.option}}</a-radio>
+                <a-radio class="answer-item"  :value="item.id" >{{numToAbc(index+1)}}、{{item.option}}</a-radio>
             </div>
         </a-radio-group>
     </div>
@@ -12,6 +12,7 @@
 <script lang="ts">
 import { defineComponent,reactive ,ref,watch,toRefs} from 'vue'
 import _ from "lodash"
+import {numToAbc} from "src/utils/common"
 export default defineComponent({
     props:['modelValue','index'],
     setup(props,{emit}) {
@@ -26,7 +27,7 @@ export default defineComponent({
             index.value=props.index
             console.log(data);
             
-        },{deep:true})
+        },{deep:true,immediate:true})
         function answerChange(val:Event){
             data.value.answers[0].answer=getAnswer(data.value.answers[0].id,data.value.options)
             emit("update:modelValue",data.value)
@@ -39,7 +40,7 @@ export default defineComponent({
             })
             return options[i].option
         }
-        return {data,answerChange,index,...toRefs(reactiveData)}
+        return {data,answerChange,index,...toRefs(reactiveData),numToAbc}
     },
 })
 </script>

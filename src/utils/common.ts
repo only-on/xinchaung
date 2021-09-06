@@ -109,11 +109,15 @@ function countDown(start:Date,end:Date):Itimes{
         s:parseInt((seconds%60).toString()), // 秒
     }
 }
+function contrastTime(start:Date,end:Date) {
+    return (end.getTime()-start.getTime())>0?true:false
+}
 export {
     numToAbc,
     getStudentTranscriptAnswer,
     getQuery,
     htmlDecode,
     deepEqual,
-    countDown
+    countDown,
+    contrastTime
 }
