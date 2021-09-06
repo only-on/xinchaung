@@ -29,9 +29,11 @@
         <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
       </template> -->
     </a-table>
-    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="620">
+    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745">
       <h4>回复内容</h4>
-      <a-textarea v-model:value="ForumArticle.content" placeholder="请输入回复内容" :rows="6" showCount :maxlength="100" />
+      <div class="text" style="height:300px;">
+        <QuillEditor toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
+      </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>
       </template>
@@ -48,6 +50,8 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
+import { QuillEditor, Delta } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IforumSearch{
   title:string,
   type:string | undefined,
@@ -112,6 +116,7 @@ export default defineComponent({
   components: {
     SmileOutlined,
     MehOutlined,
+    QuillEditor
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -200,7 +205,11 @@ export default defineComponent({
       ForumArticle.forum_id=val.id
     }
     function handleReply(){
-      http.handleReply({param:{ForumArticle:{...ForumArticle}}}).then((res:IBusinessResp)=>{
+      let obj={
+              ...ForumArticle,
+              content:JSON.stringify(ForumArticle.content)
+            }
+      http.handleReply({param:{ForumArticle:{...obj}}}).then((res:IBusinessResp)=>{
         if(res.status===1){
               initData()
               message.success('回复成功')
@@ -310,5 +319,8 @@ export default defineComponent({
         }
       }
     }
+    :deep(.ql-container){
+    height: calc(100% - 43px);
+  }
 
 </style>

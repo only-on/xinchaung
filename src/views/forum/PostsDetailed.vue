@@ -34,16 +34,19 @@
             </div>
         </div>
     </div>
-    <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="620">
+    <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
-      <a-textarea v-model:value="ForumArticle.content" placeholder="请输入回复内容" :rows="6" showCount :maxlength="100" />
-      <template #footer>
+      <div class="text" style="height:300px;">
+        <QuillEditor toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
+      </div>
+      <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
       </template>
     </a-modal>
 </template>
 
 <script lang="ts">
+import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode,defineComponent,ref, onMounted,reactive ,toRefs,inject,Ref} from 'vue'
 import request from '../../api/index'
@@ -51,6 +54,8 @@ import serve from "../../request/getRequest";
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
+import { QuillEditor, Delta } from "@vueup/vue-quill";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface Ireply{
   forum_id:number,
   content:string
@@ -61,14 +66,16 @@ interface Istate{
   detale: (val:any) => void;
   detailObj:any;
   visible:boolean;
+  options:any;
   editReply: () => void;
   ForumArticle:Ireply
+  goHtml:(val:Delta)=>{}
 }
 
 export default defineComponent({
   name: 'PostsDetailed',
   components: {
-   
+   QuillEditor
   },
   setup: (props,{emit}) => {
     var updata=inject('updataNav') as Function
@@ -77,18 +84,25 @@ export default defineComponent({
     const route = useRoute();
     const {detailId}= route.query
     var visible:Ref<boolean>=ref(false)
-    var my_content="<p>wo1回复内容测试<br/></p>"
     const state:Istate=reactive({
       visible:false,
       ForumArticle:{
         forum_id:Number(detailId),
         content:''
       },
+     options:{
+        placeholder: "输入内容...",
+        theme: "snow",
+      },
       reply:()=>{
         visible.value=true
       },
       editReply:()=>{
-        http.editReply({param:{ForumArticle:{...state.ForumArticle}}}).then((res:IBusinessResp)=>{
+        let obj={
+              ...state.ForumArticle,
+              content:JSON.stringify(state.ForumArticle.content)
+            }
+        http.editReply({param:{ForumArticle:{...obj}}}).then((res:IBusinessResp)=>{
           if(res.status===1){
             state.initData()
               message.success('回复成功')
@@ -119,18 +133,36 @@ export default defineComponent({
             }
         });
       },
-      initData:()=>{
-        http.postsDetailed({param:{id:detailId},bindName:'detailObj'}).then((res:any)=>{
-            // console.log(res.data.content)
-        })
+      goHtml:(val:Delta)=>{
+        // console.log(val.toString())
+        if(val.split('ops').length>1){
+          let text=JSON.parse(val)
+          var converter = new QuillDeltaToHtmlConverter(text.ops, {})
+          var html = converter.convert()
+          // console.log(html)
+          return html
+        }else{
+          return val
+        }
       },
-      detailObj:{}
+      detailObj:{},
+      initData:()=>{
+        http.postsDetailed({param:{id:detailId}}).then((res:any)=>{
+            let data=res.data
+            data.content=state.goHtml(data.content)
+            if(data.forum_articles && data.forum_articles.length){
+                data.forum_articles.map((v:any)=>{
+                  v.content=state.goHtml(v.content)
+                })
+            }
+            Object.assign(state.detailObj,data)
+        })
+      }
     })
     onMounted(()=>{
-      serve.v(state);
       state.initData()
     })
-    return { ...toRefs(state),visible,my_content};
+    return { ...toRefs(state),visible};
   },
 })
 </script>
@@ -180,4 +212,20 @@ export default defineComponent({
     // max-height: 200px;
     overflow-y: auto;
   }
+  :deep(.ql-container){
+    // text-align: center;
+    height: calc(100% - 43px);
+  }
+  .postModal :deep(.ant-modal-footer){
+    padding: 20px 16px;
+  }
+  .postModal :deep(.ant-modal-header){
+    background-color: @theme-color;
+    color: @white;
+  }
+  :deep(.postModal .ant-modal-header){
+    background-color: @theme-color;
+    color: @white;
+  }
+  
 </style>

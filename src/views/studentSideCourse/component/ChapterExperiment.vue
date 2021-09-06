@@ -138,9 +138,6 @@ export default defineComponent({
         }
       })
     }
-    function getHTML(val:any) {
-      console.log(val)
-    }
     async function clickExportNote(val:string) {
       const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
       let url=`${dev_base_url}/student-course/convert-as-pdf?note_id=${notesId.value}`
@@ -157,13 +154,6 @@ export default defineComponent({
           link.click();
           window.URL.revokeObjectURL(link.href);
       })
-      // const data:any= await http.exportNote({param:{note_id:notesId.value}})
-      // // console.log(data)
-      //  const a: any = document.createElement('a')
-      //   location.href = '/student-course/convert-as-pdf?note_id='+notesId.value
-      //     a.href = '/student-course/convert-as-pdf?note_id='+notesId.value
-      //     a.download =props.experimentName
-      //     a.click()
     }
     function ToSaveExperContent(val:any) {
       let obj={
@@ -197,7 +187,7 @@ export default defineComponent({
       // console.log(path);
       router.push('/Course/ContinueLearning')
     }
-    return { go,getHTML,getStudyStatus,addNote,study,clickExportNote,toEdit,ToSaveExperContent,options,...toRefs(detail)};
+    return { go,getStudyStatus,addNote,study,clickExportNote,toEdit,ToSaveExperContent,options,...toRefs(detail)};
   },
 })
 </script>
