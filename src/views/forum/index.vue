@@ -2,7 +2,7 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input">
-          <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" />
+          <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" @keyup="search" />
         </div>
         <div  class="item custom_select">
             <a-select v-model:value="ForumSearch.type"  placeholder="请选择发帖类型" :options="options"></a-select>
@@ -303,8 +303,8 @@ export default defineComponent({
               left:8px;
               top:10px;
               background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-              width: 14px;
-              height: 15px;
+              width: 16px;
+              height: 16px;
               z-index: 10;
           }
         }
