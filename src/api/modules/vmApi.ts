@@ -8,7 +8,7 @@ export default{
     resourceInspect:{url:"/api/operate/envirments/limit",method:'POST'},
     getVmBaseInfo:{url:"/api/operate/operates/info",method:'GET'},
     endOperates:{url:"/api/operate/operates/step",method:'POST'},
-    endEnvirment:{url:"/api/operate/operates/stop",method:'POST'}
+    endExperiment:{url:"/api/operate/operates/stop",method:'POST'}
 }
 
 // 
@@ -19,7 +19,7 @@ export interface IvmApi{
     resourceInspect:TFHttpSend
     getVmBaseInfo:TFHttpSend
     endOperates:TFHttpSend
-    endEnvirment:TFHttpSend
+    endExperiment:TFHttpSend
 }
 
 export const MODULE_NAME="vmApi"

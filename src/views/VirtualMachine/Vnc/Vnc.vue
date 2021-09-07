@@ -16,7 +16,7 @@
           <a-button class="delayed-btn">延时</a-button>
           <span class="vm-action-box">
             <a-button type="primary">保存进度</a-button>
-            <a-button type="danger" @click="endExperiment">结束实验</a-button>
+            <a-button type="danger" @click="finishExperiment">结束实验</a-button>
           </span>
         </div>
       </div>
@@ -29,10 +29,10 @@
           <a-button type="primary" @click="back">返回</a-button>
           <a-button type="primary">操作</a-button>
         </div>
-        <!-- <div class="vm-header-title">{{allInfo?.base_info.name}}</div> -->
+        <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
         <div class="vm-header-right">
           <span class="vm-action-box">
-            <a-button type="danger" @click="endExperiment">结束备课</a-button>
+            <a-button type="danger" @click="finishExperiment">结束备课</a-button>
           </span>
         </div>
       </div>
@@ -42,7 +42,7 @@
       <div v-else-if="!vncLoadingV" class="vncloading">Loading...</div>
       <vue-no-vnc
         background="rgb(40,40,40)"
-        :options="reactiveData.options"
+        :options="vmOptions"
         refName="refName"
       />
     </template>
@@ -60,6 +60,7 @@ import {
   onMounted,
   toRefs,
 } from "vue";
+import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
 import {
   onBeforeRouteLeave,
@@ -75,15 +76,19 @@ import { getVmConnectSetting } from "src/utils/seeting";
 import {
   getVmBaseInfo,
   endOperates,
+  endExperiment,
   TopType,
   TStudyType,
   IStopOperatesParam,
 } from "src/utils/vmInspect";
 
-
-type TvmQuery={
-  opType:TopType, connection_id:string, topoinst_uuid:string, taskId:number, type:TStudyType
-}
+type TvmQuery = {
+  opType: TopType;
+  connection_id: string;
+  topoinst_uuid: string;
+  taskId: number;
+  type: TStudyType;
+};
 export default defineComponent({
   components: {
     layout,
@@ -92,15 +97,20 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
-    let vmQuery = (route.query) as any;
+    let vmQuery = route.query as any;
 
-    const { opType, connection_id, topoinst_uuid, taskId, type }:TvmQuery = vmQuery;
+    const { opType, connection_id, topoinst_uuid, taskId, type }: TvmQuery =
+      vmQuery;
 
-    const step_score_exists:boolean |string=""
-    const reactiveData: any = reactive({
-      allInfo:{},
+    const step_score_exists: boolean | string = "";
+    const reactiveData: UnwrapNestedRefs<{
+      allInfo: any;
+      vmInfoData: any;
+      vmOptions: any;
+    }> = reactive({
+      allInfo: {},
       vmInfoData: {},
-      options: {
+      vmOptions: {
         password: "", // vncpassword
         wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
       },
@@ -111,9 +121,9 @@ export default defineComponent({
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
-    let { vmInfoData, options, allInfo } = toRefs(reactiveData);
+    let { vmInfoData, vmOptions, allInfo } = toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
-    provide("vmOptions", options);
+    provide("vmOptions", vmOptions);
     let navData = [
       { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
@@ -172,14 +182,24 @@ export default defineComponent({
       };
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
-        allInfo.value=res.data
+        allInfo.value = res.data;
         console.log(allInfo);
-        
       });
     }
 
+    // 结束脚本入口
+    function endVmEnvirment() {
+      let params = {
+        opType: opType,
+        type: type,
+        taskId: taskId,
+      };
+      endExperiment(params).then((res) => {
+        console.log(res);
+      });
+    }
     // 结束实验
-    function endExperiment() {
+  async  function endVmOperates() {
       let param: IStopOperatesParam = {
         type: type,
         taskId: taskId,
@@ -187,14 +207,22 @@ export default defineComponent({
         action: "recommend",
         topoinst_id: topoinst_uuid,
       };
-      endOperates(param).then((res) => {
-        console.log(res);
-      });
+    return await endOperates(param)
+    }
+
+    function finishExperiment() {
+      if (allInfo.value.base_info.step_score_exists) {
+        endVmOperates().then((res)=>{
+          endVmEnvirment()
+        })
+      } else {
+        endVmEnvirment()
+      }
     }
     // 设置当前虚拟机信息
     function settingCurrentVM(data: any) {
-      reactiveData.options.password = getVmConnectSetting.VNCPASS;
-      reactiveData.options.wsUrl =
+      reactiveData.vmOptions.password = getVmConnectSetting.VNCPASS;
+      reactiveData.vmOptions.wsUrl =
         getVmConnectSetting.VNCPROTOC +
         "://" +
         data.host_ip +
@@ -211,9 +239,10 @@ export default defineComponent({
       provide,
       vncLoadingV,
       uuidLoading,
-      reactiveData,
-      endExperiment,
-      allInfo
+      ...toRefs(reactiveData),
+      finishExperiment,
+      // allInfo,
+      // vmOptions
     };
   },
 });

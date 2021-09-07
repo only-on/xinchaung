@@ -195,9 +195,9 @@ function getVmBaseInfo(params: IEnvirmentsParam) {
  * @description 学生结束实验/实训
  * @param params 
  */
- function endEnvirment(params: IEnvirmentsParam) {
+ function endExperiment(params: IEnvirmentsParam) {
   return new Promise((resolve:any,reject:any)=>{
-    vmApi.endEnvirment({param:params}).then(res=>{
+    vmApi.endExperiment({param:params}).then(res=>{
       resolve(res)
     }).catch(err=>{
       reject(err)
@@ -208,6 +208,6 @@ export {
   openVm,
   getVmBaseInfo,
   endOperates,
-  endEnvirment
+  endExperiment
 }
 
