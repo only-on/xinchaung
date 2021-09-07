@@ -164,7 +164,7 @@ export default function request({
           if(res.msg){meg=res.msg}
           if(res.error){meg=res.error.msg}
           message.warning(meg);
-          reject(null)
+          reject(res)
         }
       })
       .catch((error: Error) => {

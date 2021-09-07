@@ -3,7 +3,7 @@
         <h2 class="question-title">{{index+1}}、{{data?.question}}</h2>
         <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
             <div v-for="(item,index) in data.options" :key="index.toString()">
-                <a-radio class="answer-item"  :value="item.id" >{{numToAbc(index+1)}}、{{item.option}}</a-radio>
+                <a-radio class="answer-item"  :value="item.id" >{{numToAbc(Number(index)+1)}}、{{item.option}}</a-radio>
             </div>
         </a-radio-group>
     </div>

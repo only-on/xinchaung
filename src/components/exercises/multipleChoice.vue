@@ -3,7 +3,7 @@
         <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         <a-checkbox-group class="answer-list" @change="answerChange" v-model:value="answers">
             <div v-for="(item,index) in data.options" :key="index.toString()">
-                <a-checkbox class="answer-item"  :value="item.id" >{{numToAbc(index+1)}}、{{item.option}}</a-checkbox>  
+                <a-checkbox class="answer-item"  :value="item.id" >{{numToAbc((Number(index))+1)}}、{{item.option}}</a-checkbox>  
             </div>
         </a-checkbox-group>
     </div>

@@ -16,7 +16,7 @@
           <a-button class="delayed-btn">延时</a-button>
           <span class="vm-action-box">
             <a-button type="primary">保存进度</a-button>
-            <a-button type="danger">结束实验</a-button>
+            <a-button type="danger" @click="endExperiment">结束实验</a-button>
           </span>
         </div>
       </div>
@@ -29,11 +29,10 @@
           <a-button type="primary" @click="back">返回</a-button>
           <a-button type="primary">操作</a-button>
         </div>
-
-        <div class="vm-header-title">实验名称</div>
+        <!-- <div class="vm-header-title">{{allInfo?.base_info.name}}</div> -->
         <div class="vm-header-right">
           <span class="vm-action-box">
-            <a-button type="danger">结束备课</a-button>
+            <a-button type="danger" @click="endExperiment">结束备课</a-button>
           </span>
         </div>
       </div>
@@ -62,11 +61,29 @@ import {
   toRefs,
 } from "vue";
 import layout from "../VmLayout/VmLayout.vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+import {
+  onBeforeRouteLeave,
+  useRoute,
+  useRouter,
+  LocationQuery,
+  LocationQueryValue,
+} from "vue-router";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import { wsConnect } from "src/request/websocket";
 import { message } from "ant-design-vue";
 import { getVmConnectSetting } from "src/utils/seeting";
+import {
+  getVmBaseInfo,
+  endOperates,
+  TopType,
+  TStudyType,
+  IStopOperatesParam,
+} from "src/utils/vmInspect";
+
+
+type TvmQuery={
+  opType:TopType, connection_id:string, topoinst_uuid:string, taskId:number, type:TStudyType
+}
 export default defineComponent({
   components: {
     layout,
@@ -75,8 +92,13 @@ export default defineComponent({
   setup(props, { emit }) {
     const route = useRoute();
     const router = useRouter();
+    let vmQuery = (route.query) as any;
 
+    const { opType, connection_id, topoinst_uuid, taskId, type }:TvmQuery = vmQuery;
+
+    const step_score_exists:boolean |string=""
     const reactiveData: any = reactive({
+      allInfo:{},
       vmInfoData: {},
       options: {
         password: "", // vncpassword
@@ -89,10 +111,9 @@ export default defineComponent({
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
-    let { vmInfoData,options} = toRefs(reactiveData);
+    let { vmInfoData, options, allInfo } = toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", options);
-    const connection_id = route.query.connection_id;
     let navData = [
       { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
@@ -128,7 +149,7 @@ export default defineComponent({
 
             vmInfoData.value = JSON.parse(ev.data);
 
-            settingCurrentVM(vmInfoData.value.data.vms[0])
+            settingCurrentVM(vmInfoData.value.data.vms[0]);
             uuidLoading.value = true;
           }
         },
@@ -140,8 +161,37 @@ export default defineComponent({
     });
     onMounted(() => {
       initWs();
+      getVmBase();
     });
+    // 获取虚拟机基本信息pageinfo
+    function getVmBase() {
+      let params = {
+        opType: opType,
+        type: type,
+        taskId: taskId,
+      };
+      getVmBaseInfo(params).then((res: any) => {
+        console.log(res);
+        allInfo.value=res.data
+        console.log(allInfo);
+        
+      });
+    }
 
+    // 结束实验
+    function endExperiment() {
+      let param: IStopOperatesParam = {
+        type: type,
+        taskId: taskId,
+        opType: opType,
+        action: "recommend",
+        topoinst_id: topoinst_uuid,
+      };
+      endOperates(param).then((res) => {
+        console.log(res);
+      });
+    }
+    // 设置当前虚拟机信息
     function settingCurrentVM(data: any) {
       reactiveData.options.password = getVmConnectSetting.VNCPASS;
       reactiveData.options.wsUrl =
@@ -153,6 +203,7 @@ export default defineComponent({
         "/websockify?vm_uuid=" +
         data.uuid;
     }
+
     return {
       roleType,
       back,
@@ -161,6 +212,8 @@ export default defineComponent({
       vncLoadingV,
       uuidLoading,
       reactiveData,
+      endExperiment,
+      allInfo
     };
   },
 });

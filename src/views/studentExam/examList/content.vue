@@ -32,10 +32,10 @@
             }}</span>
           </div>
           <div class="exam-card-content">
-            <p>日期：{{ item.start_day }}</p>
-            <p>时间：{{ item.times }}</p>
+            <p>日期：{{ item.start_day?item.start_day:'' }}</p>
+            <p>时间：{{ item?.times }}</p>
             <div class="exam-action-card">
-              <router-link :to="'/exam/look?id=' + item.id"
+              <router-link :to="'/exam/look?id=' + item?.id"
                 >查看成绩</router-link
               >
               <span class="teacher-name"
