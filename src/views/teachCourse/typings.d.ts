@@ -14,6 +14,16 @@ interface IteachCourse {
   vmReset: Function
   canAccessVm: Function
 }
+interface IcourseTree {
+  getTreeList: Function
+  chapterSort: Function
+  contentSort: Function
+  editNode: Function
+  deleteNode: Function
+}
 export interface Ihttp {
-  teachCourse: IteachCourse
+  teachCourse: IteachCourse,
+}
+export interface ITreeHttp {
+  courseTree: IcourseTree
 }

@@ -95,14 +95,14 @@ export default defineComponent({
       }).then((res: IBusinessResp) => {
         console.log(res);
         if (res.status) {
-          // router.push('/teacher')
-          router.push({
-            name: 'classicalAsset',
-            params: {
-              uuid: props.list.vms[current.value].uuid,
-              id: list.id
-            }
-          })
+          router.push('/vm/vnc')  // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
+          // router.push({
+          //   name: 'classicalAsset',
+          //   params: {
+          //     uuid: props.list.vms[current.value].uuid,
+          //     id: list.id
+          //   }
+          // })
         } else {
           message.warning({ content: res.error.msg, duration: 2 });
         }

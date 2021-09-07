@@ -72,6 +72,10 @@ export default defineComponent({
       type: Array as PropType<ITreeDataItem[]>,
       default: []
     },
+    isDefaultSelectChapter: {
+      type: Boolean,
+      default: true
+    }
   },
   emits: ['updateData', 'selectChapter', 'selectExperiment', 'editNode', 'deleteNode'],
   setup(props, { emit }) {
@@ -86,8 +90,10 @@ export default defineComponent({
     // 选择章节树
     function selectChapter(val: ITreeDataItem) {
       console.log(val, 'aaaaaa')
-      selectid.value = val.id
-      emit('selectChapter', val)
+      if (props.isDefaultSelectChapter) {
+        selectid.value = val.id
+        emit('selectChapter', val)
+      }
     }
     // 选择实验树
     function selectExperiment(val: ITreeDataItem) {
@@ -132,7 +138,7 @@ export default defineComponent({
     };
 
     function getExperimentClassName(type: string | number, typeName: string) {
-      if (type === '1-1' || type === 1) {
+      if (type === '1-1' || type === '1-') {
         return typeName === 'icon' ? 'icon-zhuomianshiyan' : '实验'
       }
       if (type === '1-4') {
@@ -304,9 +310,15 @@ export default defineComponent({
 
     watch(() => {return props.treeData}, (val) => {
       if (val.length) {
-        selectid.value = props.treeData[0].id
-        expandedKeys.value = [props.treeData[0].id]
-        emit('selectChapter', props.treeData[0])
+        if (props.isDefaultSelectChapter) {
+          selectid.value = props.treeData[0].id
+          expandedKeys.value = [props.treeData[0].id]
+          emit('selectChapter', props.treeData[0])
+        } else {
+          selectid.value = props.treeData[0].contents && props.treeData[0].contents.length ? props.treeData[0].contents[0].id : 0
+          expandedKeys.value = [props.treeData[0].id]
+          emit('selectExperiment', props.treeData[0].contents[0])
+        }
       }
     }, { deep: true })
     return {
@@ -503,6 +515,9 @@ export default defineComponent({
     .experiment-name {
       color: #eab362;
     }
+  }
+  &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
+    background-color: #fff;
   }
 }
 </style>
