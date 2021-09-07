@@ -44,9 +44,19 @@
         <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
       <div class="mainRight">
-        <component :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" />
-        <!-- <StuChapter :chapter_id="chapter_id" /> -->
-        <!-- <ChapterExperiment :experimentalId="experimentalId" /> -->
+        <!-- <component v-if="type === 1 || type === 2" :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" /> -->
+        <StuChapter v-if="componentName === 'StuChapter'" :chapter_id="chapter_id" />
+        <ChapterExperiment v-if="componentName === 'ChapterExperiment'" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" />
+        <div v-if="type === 3">
+          <div class="videofu" style="height: 100%; padding: 20px">
+            <video style="width: 100%; height: 576px" controls="true" :src="videoUrl"></video>
+          </div>
+        </div>
+        <div style="height: 100%" v-if="type === 4">
+          <div style="height: 100%; padding: 20px">
+            <iframe :src="pptUrl" id="customViewPdf" class="'+classes+'" name="customViewPdf" width="100%" height="100%" frameborder="0"></iframe>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -62,6 +72,7 @@ import { IBusinessResp} from '../../typings/fetch.d';
 import StuChapter from './component/StuChapter1.vue'
 import ChapterExperiment from './component/ChapterExperiment.vue'
 import DragTree from '../../components/dragTree.vue'
+
 interface IdetailObj{
   info:any;
   tree:any[]
@@ -81,7 +92,7 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false})
 
-    var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter
+    var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter type
     
     const route = useRoute();
     var chapter_id:Ref<number>=ref(0)
@@ -89,7 +100,10 @@ export default defineComponent({
     var taskid:Ref<number>=ref(0)
     var note_id:Ref<string>=ref('')
     var experimentName:Ref<string>=ref('')
-    
+    var type:Ref<number>=ref(0)            // 实验类型 videoUrl   pptUrl
+    var videoUrl:Ref<string>=ref('')
+    var pptUrl:Ref<string>=ref('')
+    var controls='controls'
     const {DetailId,course_id}= route.query
     provide('course_id',course_id)
     
@@ -106,7 +120,7 @@ export default defineComponent({
           v.name=v.chapter_name
           v.contents=v.task_list
           v.contents.length?v.contents.map((i:any)=>{
-            i.id=i.tid
+            i.id=(i.type===1 || i.type===2)?i.tid:i.id
           }):''
         }):''
         detail.info=data
@@ -120,14 +134,25 @@ export default defineComponent({
       componentName.value='StuChapter'
     }
     function selectExperiment(val:any) {
-       console.log(val)
+      //  console.log(val)
+       componentName.value=''
+       const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+       type.value=val.type
       if(val.type ===1 || val.type === 2){
         taskid.value=val.tid
+        experimentName.value=val.name
+        note_id.value=val.notes_id
+        experimentalId.value=val.id
+        componentName.value='ChapterExperiment'
+      }else if (val.type === 3) {
+        videoUrl.value = `${val.dataset.file_url}`
+      } else if (val.type === 4) {
+        pptUrl.value = `/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`
+        // pptUrl.value = `http://192.168.101.150:80/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`  
+  
+        // pptUrl.value = `proxyPrefix2/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`
       }
-      experimentName.value=val.name
-      note_id.value=val.notes_id
-      experimentalId.value=val.id
-      componentName.value='ChapterExperiment'
+      
     }
     function Resources(){
       // console.log(path);
@@ -137,7 +162,7 @@ export default defineComponent({
       init()
     })
    
-    return {...toRefs(detail),bg,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
+    return {...toRefs(detail),bg,controls,type,pptUrl,videoUrl,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
   },
 })
 </script>
