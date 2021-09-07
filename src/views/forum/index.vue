@@ -32,7 +32,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="options3" v-model:content="ForumArticle.content"  /> 
+        <QuillEditor toolbar="full" :options="QuillOptions" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>
@@ -121,7 +121,7 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
-    const options3 = {
+    const QuillOptions = {
       placeholder: "输入内容...",
       theme: "snow",
     };
@@ -249,7 +249,7 @@ export default defineComponent({
       // serve.v(dataObj); 
       // initData()
     })
-    return {tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,options3,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
+    return {tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,QuillOptions,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
   },
 })
 </script>
