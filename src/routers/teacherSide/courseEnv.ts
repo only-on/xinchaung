@@ -24,7 +24,7 @@ export default {
     },
     {
       path: 'tsx',
-      component: () => import('src/views/teachCourse/experienceTsx')
+      // component: () => import('src/views/teachCourse/experienceTsx')
     }
   ]
 }

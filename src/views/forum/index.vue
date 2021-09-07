@@ -32,7 +32,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
+        <QuillEditor toolbar="full" :options="options3" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>
@@ -121,6 +121,10 @@ export default defineComponent({
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
+    const options3 = {
+      placeholder: "输入内容...",
+      theme: "snow",
+    };
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
     const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
     const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
@@ -245,7 +249,7 @@ export default defineComponent({
       // serve.v(dataObj); 
       // initData()
     })
-    return {tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
+    return {tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,options3,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
   },
 })
 </script>

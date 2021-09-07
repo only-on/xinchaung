@@ -74,7 +74,7 @@ export default defineComponent({
         type: [{ required: true, message: '请选择帖子类型', trigger: 'change' }],
         content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
       },
-      options :{
+      options:{
         placeholder: "输入内容...",
         theme: "snow",
       },
@@ -106,7 +106,7 @@ export default defineComponent({
     onMounted(()=>{
      
     })
-    return { ...toRefs(state),editId,options};
+    return { ...toRefs(state),editId};
   },
 })
 </script>
