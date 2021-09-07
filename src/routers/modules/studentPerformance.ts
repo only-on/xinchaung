@@ -14,7 +14,7 @@ export default {
             name: "studentPerformance",
             component: () => import("src/views/studentPerformance/index.vue"),
             meta: {
-                title: "studentPerformance",
+                title: "课程成绩",
                 authCode: ""
             },
         },
@@ -23,7 +23,7 @@ export default {
             name: "uuuuuu",
             component: () => import("src/views/studentPerformance/CourseAchievement/courseScore/index.vue"),
             meta: {
-                title: "studentPerformance",
+                title: "实训成绩",
                 authCode: ""
             },
         }

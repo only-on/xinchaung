@@ -26,8 +26,10 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent, reactive,toRefs} from 'vue'
+import { message } from 'ant-design-vue'
+import {defineComponent, reactive,toRefs,onMounted} from 'vue'
 import {useRouter} from 'vue-router'
+import request from '../../../api'
 interface CourseType{
     name?:string;
     index?:string;
@@ -42,7 +44,7 @@ export default defineComponent({
     name:'CourseAchievement',
     setup:(props,context)=>{
         const router=useRouter()
-         const state: State=reactive({
+        const state: State=reactive({
              courseDataList:[
                 { name:'1111',index:'1',time:'233',status:'进行中',teacher:'1223'},
                 { name:'1111',index:'2',time:'233',status:'进行中',teacher:'sihaif'},
@@ -59,7 +61,26 @@ export default defineComponent({
         function lookScore(){
             router.push({path:'/courseScore'})
         }
-         return {onSearch,lookScore,...state}
+        function getData(){
+            const infoRequest=(request as any).studentPerformance
+            infoRequest.courseAchievement()
+            .then((res:any)=>{
+            if(res.status==1){
+                console.log(res.data)
+                state.courseDataList=res.data.list
+            }else{
+                    message.error(res.msg)
+                }
+
+            })
+            .catch((err:any)=>{
+                console.log(err)
+            })
+        }
+        onMounted(()=>{
+            getData()    
+        })
+        return {onSearch,lookScore,getData,...state}
     }
 })
 </script>

@@ -20,7 +20,9 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent, reactive} from 'vue'
+import { message } from 'ant-design-vue'
+import {defineComponent, onMounted, reactive} from 'vue'
+import request from '../../../api'
 interface State{
     columns:any[],
     data:any[]
@@ -75,6 +77,25 @@ export default defineComponent({
                 tags1: ['nice'],
                 tags2: ['nice'],
             }]
+        })
+        function getData(){
+            const infoRequest=(request as any).studentPerformance
+            infoRequest.trainingResults()
+            .then((res:any)=>{
+            if(res.status==1){
+                console.log(res.data)
+                state.columns=res.data.list
+            }else{
+                    message.error(res.msg)
+                }
+
+            })
+            .catch((err:any)=>{
+                console.log(err)
+            })
+        }
+        onMounted(()=>{
+            getData()
         })
         return {...state}
     }

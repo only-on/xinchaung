@@ -58,7 +58,7 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,onMounted,reactive, toRefs} from 'vue'
+import {defineComponent,onMounted,reactive, toRefs,inject,watch} from 'vue'
 interface ObjectD{
     expername?:string,
     experdis?:boolean,
@@ -78,6 +78,7 @@ interface State{
 export default defineComponent({
     name:'courseScore',
     setup:(props,context)=>{
+
         const state:State=reactive({
             CourseScoreInfo:[{
                 chapter:'第一章节',
@@ -143,6 +144,8 @@ export default defineComponent({
                 tags2: ['nice'],
             }]
         })
+        var updata=inject('updataNav') as Function
+        updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:0})
         function expand(index:number){
             state.CourseScoreInfo[index].dis=!state.CourseScoreInfo[index].dis
         }

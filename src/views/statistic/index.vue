@@ -2,34 +2,18 @@
     <div id='statistic'>
         <div class="box-left">
             <div class="left-f1 f1">
-                <p class="hint">sy，又是元气满满的一天！</p>
+                <p class="hint">{{staticInfo.userProfile?.name}}，又是元气满满的一天！</p>
                 <div class="hint-msg">每天进步一点点，成长足迹看得见！</div>
             </div>
             <div class="left-f2 f2">
-                <div id="myChart" style="width:100%;height:100%"></div>
+                <div id="myChart"></div>
             </div>
             <div class="left-f3 f3">
                <div class="left-f3-course">
-                   <div class="content-title">课程薄弱点</div>
-                   <div class="content-list" v-for="(item,index) in course" :key="index">
-                    <div class="content-item">
-                        <span>
-                            <span>{{item.number}}</span>
-                        </span>
-                        <span>{{item.content}}</span>
-                    </div>
-                </div>
+                    <list-item :infoList='staticInfo.weakKnowledges' :title='"课程薄弱点"' :listname='"knowledge_map_name"' :color1='linePurple' :circlecolor="'#647fea'"></list-item>
                </div>
                <div class="left-f3-exper">
-                   <div class="content-title">推荐实验</div>
-                   <div class="content-list" v-for="(item,index) in exper" :key="index">
-                    <div class="content-item">
-                        <span>
-                            <span>{{item.number}}</span>
-                        </span>
-                        <span>{{item.content}}</span>
-                    </div>
-                </div>
+                    <list-item :infoList='staticInfo?.weakCourseContents' :title='"推荐实验"' :listname='"name"' :color1='lineOrange' :circlecolor="'#f79620'"></list-item>
                 </div>
             </div>
         </div>
@@ -46,17 +30,17 @@
                 </div>
             </div>
             <div class="right-f2 f2">
-                 <div class="stu-proess">学习进度概况</div>
+                <div class="stu-proess">学习进度概况</div>
                 <div class="stu-proess-con">
                     <div class="proess-con-left">
                         <div class="stu-state-row">
                              <div class="study-left course-state-icon"></div>
                      <div class="study-right">
                         <div class="study-right-left">
-                           <span>课已完成实验数</span>
+                           <span>学习进度排名</span>
                         </div>
                         <div style="width: 100%;color: #050101;font-size: 24px;font-weight: 700;">
-                           10                                 <span class="unit">/ 个</span>
+                           <span>NO.</span><span>{{staticInfo.avgRank}}</span>
                         </div>
                      </div>
                         </div>
@@ -66,8 +50,8 @@
                         <div class="study-right-left">
                            <span>课已完成实验数</span>
                         </div>
-                        <div style="width: 100%;color: #050101;font-size: 24px;font-weight: 700;">
-                           10                                 <span class="unit">/ 个</span>
+                        <div style="width: 100%;">
+                           <span style="color: #050101;font-size: 24px;font-weight: 700;">{{staticInfo.courseProgress?.finished_content_count}}</span><span class="unit">/ 个</span>
                         </div>
                      </div>
                         </div>
@@ -75,10 +59,10 @@
                              <div class="study-left course-state-icon"></div>
                      <div class="study-right">
                         <div class="study-right-left">
-                           <span>课已完成实验数</span>
+                           <span>未完成实验数</span>
                         </div>
-                        <div style="width: 100%;color: #050101;font-size: 24px;font-weight: 700;">
-                           10                                 <span class="unit">/ 个</span>
+                        <div style="width: 100%;">
+                           <span style="color: #050101;font-size: 24px;font-weight: 700;">{{staticInfo.courseProgress?.left_content_count}}</span><span class="unit">/ 个</span>
                         </div>
                      </div>
                         </div>
@@ -89,44 +73,83 @@
                 </div>
             </div>
             <div class="right-f3 f3">
-                <div class="content-title">发展方向</div>
-                <a-button @click="getData">获取数据</a-button>
+                <!-- <div class="content-title">发展方向</div>
+                <div class="content-list" v-for="(item,index) in staticInfo.jobDirections" :key="index">
+                    <div :class="staticInfo.jobDirections.length>3?'content-item min-content-item':'content-item max-content-item'">
+                        <span>
+                            <span>{{index+1}}</span>
+                        </span>
+                        <span>{{item.name}}</span>
+                    </div>
+                </div> -->
+                <list-item :infoList='staticInfo.jobDirections' :title='"发展方向"' :listname='"name"' :color1='lineBlue' :circlecolor="'#1290ef'"></list-item>
             </div>
         </div>
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,inject,onMounted,reactive} from 'vue'
+import { message } from 'ant-design-vue';
+import {defineComponent,inject,onMounted,provide,reactive, toRefs} from 'vue'
 import request from '../../api'
-interface ObjType{
+import listItem from './listItem/index.vue'
+interface objType{
+    name?:string
+}
+interface StatisType{
+    // 用户信息
+    userProfile?:objType;
+    // 课程成绩
+    courseGrade?:any[];
+    // 学习进度排名
+    avgRank?:any;
+    // 课程薄弱点
+    weakKnowledges?:any[];
+    weakCourseContents?:any[];
+    jobDirections?:any[];
+    courseProgress?:any;
     number?:number;
     index?:number;
     content?:string;
 }
 interface State{
-    course:ObjType[];
-    exper:ObjType[];
+    staticInfo:StatisType;
+    lineBlue:string;
+    lineOrange:string;
+    linePurple:string;
 }
+
 export default defineComponent({
     name:'Statistic',
+    components:{
+        listItem
+    },
     setup:(props,{emit})=>{
-    // let course:ObjType[]=[{content:'wwhaah'}]
-    // let exper:ObjType[]=[]
+    var courseGrandEcharName:any[]=[];
+    var courseGrandEcharValue:any[]=[];
     const state: State = reactive({
-        course:[{content:'wwhaah44444444445'}],
-        exper:[]
+        staticInfo:{},
+        lineBlue:'linear-gradient(90deg, rgba(18, 144, 239, 0.12) 24%, rgba(98, 126, 234, 0) 78%)',
+        lineOrange:'linear-gradient(90deg,rgba(247,147,26,0.12) 24%, rgba(98,126,234,0.00) 78%)',
+        linePurple:'linear-gradient(90deg,rgba(98,126,234,0.12) 24%, rgba(98,126,234,0.00) 78%)',
     })
-    function DrawEchar(){
+     // 绘制图表
     let echarts=inject("echarts");
-    let myChart = (echarts as any).init(document.getElementById("myChart"));
-      // 绘制图表
-      myChart.setOption({
+    var courseOption={
         title: { text: "课程成绩" },  //图标中的表题
-        tooltip: {},
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+            type: 'shadow' ,       // 默认为直线，可选为：'line' | 'shadow'
+            shadowStyle: {
+            color: "rgba(51,51,51,0.2)"
+            }
+          }
+        },
         grid: {
-            left: 15,
+            left:40,
             right: 40,
-            containLabel: true
+            top:80,
+            bottom:80,
         },
         xAxis: {
           name:'课程',
@@ -134,11 +157,11 @@ export default defineComponent({
           nameTextStyle:{
               color:'999'
           },
-          data: ["衬衫", "羊毛衫", "雪纺衫"],
+          data:courseGrandEcharName,
           axisLabel: {
             textStyle:{
                 color:'#999'
-            }
+                }
             },
         interval:0,
           axisTick: {
@@ -155,59 +178,203 @@ export default defineComponent({
         },
         
         yAxis: {   
-               name: '成绩',
-               nameTextStyle: {
-                  color:'#666'
-               },
-               max: 100,
-               min: 0,
-               interval: 20,
-               axisLabel: {
-                  show: true,
-               },
-               axisTick: {
-                  show: false
-               },
-               axisLine:{
-                  show:false,
-               },
-               splitLine: {
-                  show: true
-               },
+                    name: '成绩',
+                    nameTextStyle: {
+                        color:'#666'
+                    },
+                    max: 100,
+                    min: 0,
+                    interval: 20,
+                    axisLabel: {
+                        show: true,
+                    },
+                    axisTick: {
+                        show: false
+                    },
+                    axisLine:{
+                        show:false,
+                    },
+                    splitLine: {
+                        show: true
+                    },
                 },
-        series: [
-          {
-            name: "销量",
-            type: "bar",
-            barWidth:30,
-            data: [5, 10, 20],
-            itemStyle: {
-             color: '#a693e1'
-            },
-          },
-        ],
-      });
+                series: [
+                {
+                    name: "销量",
+                    type: "bar",
+                    barWidth:30,
+                    data:courseGrandEcharValue,
+                    itemStyle: {
+                    color: '#a693e1'
+                    },
+                },
+                ],
+      }
+    function DrawEchar(){
+        var myChart = (echarts as any).init(document.getElementById("myChart"));
+        myChart.setOption(courseOption);
+        return myChart  
     }
     function getData(){
     const infoRequest=(request as any).statistic
-     infoRequest.getInfo().then((res:any)=>{
-        //  staticInfo=res.data
+     infoRequest.getInfo()
+     .then((res:any)=>{
+        if(res.status==1){
+           state.staticInfo= {
+        "userProfile": {
+            "name": "sihai fu",
+        },
+        "courseGrade": [
+            {
+                "name": "1447",
+                "value": 10
+            },
+            {
+                "name": "test_rdp_resource2",
+                "value": 70
+            },
+            {
+                "name": "150569",
+                "value": 37
+            },
+            {
+                "name": "成绩测试",
+                "value": 19
+            },
+            {
+                "name": "test_rdp_resource",
+                "value": 18
+            }
+        ],
+        avgRank: 4,
+        "weakKnowledges": [
+            {
+                "id": 13,
+                "knowledge_map_name": "DataNode",
+                "pid": 10,
+                "create_time": "2019-07-10 10:05:26",
+                "update_time": "2019-09-18 17:15:31",
+                "is_factory": "2",
+                "nodes_number": 5
+            },
+            {
+                "id": 14,
+                "knowledge_map_name": "block",
+                "pid": 10,
+                "create_time": "2019-07-10 10:05:32",
+                "update_time": "2021-06-24 11:54:10",
+                "is_factory": "2",
+                "nodes_number": 5
+            },
+            {
+                "id": 15,
+                "knowledge_map_name": "NameNode",
+                "pid": 10,
+                "create_time": "2019-07-10 10:05:41",
+                "update_time": "2019-07-16 17:28:12",
+                "is_factory": "2",
+                "nodes_number": 5
+            },
+            {
+                "id": 28,
+                "knowledge_map_name": "可靠性",
+                "pid": 8,
+                "create_time": "2019-07-16 17:25:12",
+                "update_time": null,
+                "is_factory": "2",
+                "nodes_number": 4
+            }
+        ],
+        "weakCourseContents": [
+            {
+                "knowledge_map_id": "13",
+                "content_id": "500622",
+                "name": "init_content_high",
+                "max_csc_id": null
+            },
+            {
+                "knowledge_map_id": "13",
+                "content_id": "500731",
+                "name": "shujuji4",
+                "max_csc_id": null
+            },
+            {
+                "knowledge_map_id": "13",
+                "content_id": "500746",
+                "name": "zuomian008",
+                "max_csc_id": null
+            },
+            {
+                "knowledge_map_id": "13",
+                "content_id": "500652",
+                "name": "init_step2",
+                "max_csc_id": null
+            }
+        ],
+        "jobDirections": [
+            {
+                "id": 500005,
+                "name": "职业方向B",
+                "parent_id": 0,
+                "created_at": 1616399642,
+                "deleted_at": 0
+            },
+            {
+                "id": 500004,
+                "name": "zjq职业方向01",
+                "parent_id": 0,
+                "created_at": 1615809887,
+                "deleted_at": 0
+            },
+            {
+                "id": 500000,
+                "name": "人工智能",
+                "parent_id": 0,
+                "created_at": 1611220932,
+                "deleted_at": 0
+            }
+        ],
+        "courseProgress": {
+            "id": 1,
+            "user_id": 129,
+            "total_course_count": 70,
+            "finished_content_count": 57,
+            "left_content_count": 1754,
+            "last_content_id": 629,
+            "created_at": 1628626501,
+            "updated_at": 1628626501
+        }
+        }
+        state.staticInfo.courseGrade?.forEach(item=>{
+            courseGrandEcharName.push(item.name)
+            courseGrandEcharValue.push(item.value)
+        })
+        let courseEchar:any=DrawEchar()
+        courseEchar.setOption(courseOption)
+        }else{
+            message.error(res.msg)
+        }
+
      })
+     .catch((err:any)=>{
+         console.log(err)
+     })
+     provide('staticInfo','state.staticInfo')
     }
     onMounted(()=>{
-        DrawEchar()
-        getData()
-        console.log(state,'state')
+        getData()    
     })
-    return {getData,...state};
+    return {getData,...toRefs(state)};
     },
 })
 </script>
 <style lang="less" scoped>
 #statistic{
-    width:1330px;
+    width:@center-width;
+    height: 100%;
     display: flex;
     margin: 0 auto;
+    overflow-y: auto;
     .box-left{
         width:64.7%;
         display: flex;
@@ -225,20 +392,26 @@ export default defineComponent({
         flex-shrink: 0;
         line-height: 45px;
     }
+    .min-content-item{
+        height: 32px;
+    }
+    .max-content-item{
+        height: 44px;
+    }
     .content-item{
         border-radius: 14px;
-        height: 44px;
         padding-left: 13px;                                             
         display: flex;
         align-items: center;
         margin-bottom: 30px;
+        font-size: 12px;
         background: linear-gradient(90deg,rgba(18,144,239,0.12) 24%, rgba(98,126,234,0.00) 78%);
         >span:nth-child(1) {
         width: 26px;
         height: 26px;
         border-radius: 50%;
         display: inline-block;
-        line-height: 26px;
+        line-height: 22px;
         text-align: center;
         padding: 2px;
         margin-right: 14px;
@@ -310,7 +483,10 @@ export default defineComponent({
         border-radius: 8px;
         padding: @padding-lg 30px;
         box-sizing: border-box;
-        background: @white; 
+        background: @white;
+         #myChart{
+        height:375px;
+        }
     }
     .right-f2{
           border-radius: 8px;
@@ -327,7 +503,7 @@ export default defineComponent({
         .stu-proess-con{
            display: flex;
            width:100%;
-           height: 80%;
+           height:93%;
            .proess-con-left{
                width: 50%;
                .stu-state-row{
@@ -336,6 +512,8 @@ export default defineComponent({
                 align-items: flex-end;
                 height: 33.33%;
                 .study-right{
+                    font-size: 12px;
+                    color: rgba(5,1,1,0.45);
                     .study-right-left>{
                         span:nth-child(1){
                             font-size: 12px;
