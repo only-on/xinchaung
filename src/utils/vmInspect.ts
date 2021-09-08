@@ -1,11 +1,9 @@
-import { resolve } from 'path';
-import { type } from "os";
 import request from "src/request/getRequest";
 import { message, Modal } from "ant-design-vue";
 const vmApi = request.vmApi
 
 export type TStudyType = 'course' | 'train' // 学习类别：course:课程实验/实训；train:实训
-export type TopType = 'start' | 'continue' | 'rebuild' | 'test' | 'prepare' // 操作类型:start/continue/rebuild/test/prepare
+export type TopType = 'start' | 'continue' | 'rebuild' | 'test' | 'prepare' | 'recommend' // 操作类型:start/continue/rebuild/test/prepare
 
 
 export interface IEnvirmentsParam {
@@ -14,12 +12,18 @@ export interface IEnvirmentsParam {
   taskId: any
 }
 
-export interface IStopOperatesParam extends IEnvirmentsParam{
+export interface IStopOperatesParam extends IEnvirmentsParam {
   action: string
   topoinst_id: string
 }
 
-console.log(vmApi);
+
+export interface IRecommendExperiment {
+  recommendType: 'content' | 'train'
+  opType: 'recommend'
+  type: TStudyType
+  taskId: any
+}
 /**
  * @description 检查创建环境
  * @param params 
@@ -29,12 +33,16 @@ function openVm(params: IEnvirmentsParam) {
     envirmentsInspect(params).then((result: any) => {
       if (result.status === 1) {
         resourceInspect().then(() => {
-          createExamples(params).then((res) => {
-            resolve({data:res,query:{
-              opType:params.opType,
-              type:params.type,
-              taskId:params.taskId,
-            }});
+          createExamples(params).then((res:any) => {
+            console.log(res);
+
+            resolve({
+              data: res, query: {
+                opType: params.opType,
+                type: res.data.type.type,
+                taskId: params.taskId,
+              }
+            });
           })
         })
       } else {
@@ -48,7 +56,15 @@ function openVm(params: IEnvirmentsParam) {
                 cleanEnvirments(result.msg.topoinst_id).then(() => {
                   resourceInspect().then(() => {
                     createExamples(params).then((res) => {
-                      resolve(res);
+                      console.log(res);
+                      
+                      resolve({
+                        data: res, query: {
+                          opType: params.opType,
+                          type: params.type,
+                          taskId: params.taskId,
+                        }
+                      });
                     })
                   })
                 })
@@ -168,24 +184,24 @@ function createExamples(params: IEnvirmentsParam) {
  * @param params 
  */
 function getVmBaseInfo(params: IEnvirmentsParam) {
-    return new Promise((resolve:any,reject:any)=>{
-      vmApi.getVmBaseInfo({param:params}).then(res=>{
-        resolve(res)
-      }).catch(err=>{
-        reject(err)
-      })
+  return new Promise((resolve: any, reject: any) => {
+    vmApi.getVmBaseInfo({ param: params }).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
     })
+  })
 }
 
 /**
  * @description 结束脚本入口
  * @param params 
  */
- function endOperates(params: IStopOperatesParam) {
-  return new Promise((resolve:any,reject:any)=>{
-    vmApi.endOperates({param:params}).then(res=>{
+function endOperates(params: IStopOperatesParam) {
+  return new Promise((resolve: any, reject: any) => {
+    vmApi.endOperates({ param: params }).then(res => {
       resolve(res)
-    }).catch(err=>{
+    }).catch(err => {
       reject(err)
     })
   })
@@ -195,19 +211,134 @@ function getVmBaseInfo(params: IEnvirmentsParam) {
  * @description 学生结束实验/实训
  * @param params 
  */
- function endExperiment(params: IEnvirmentsParam) {
-  return new Promise((resolve:any,reject:any)=>{
-    vmApi.endExperiment({param:params}).then(res=>{
+function endExperiment(params: IEnvirmentsParam) {
+  return new Promise((resolve: any, reject: any) => {
+    vmApi.endExperiment({ param: params }).then(res => {
       resolve(res)
-    }).catch(err=>{
+    }).catch(err => {
       reject(err)
     })
   })
 }
+
+/**
+ * @description 学生学习推荐实验/实训
+ * @param params 
+ */
+function recommendExperiment(params: IRecommendExperiment) {
+  return new Promise((resolve: any, reject: any) => {
+    vmApi.recommendExperiment({ param: params }).then(res => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
+  })
+}
+
+
+// 跳转虚拟机页面
+async function toVmConnect(router: any, param: IEnvirmentsParam,routerQuery:any) {
+  const createEnvirments: any = await openVm(param);
+  console.log(createEnvirments,JSON.stringify(routerQuery));
+  if (createEnvirments.data.data.connection_id) {
+    router.push({
+      path: "/vm/vnc",
+      query: {
+        connection_id: createEnvirments.data.data.connection_id,
+        opType: createEnvirments.query.opType,
+        type: createEnvirments.query.type,
+        taskId: createEnvirments.query.taskId,
+        topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
+        topoinst_id: createEnvirments.data.data.topoinst_id,
+        routerQuery:JSON.stringify(routerQuery)
+      },
+    });
+  }
+}
+
+// 推荐学习实验跳转
+async function toStudyRecommendExperiment(router: any, param: IRecommendExperiment, otherParams: any) {
+  recommendExperiment(param).then((res: any) => {
+    console.log(res);
+    let routeUrl = router.resolve({
+      path: "/vm/vnc",
+
+      query: {
+        connection_id: res.data.connection_id,
+        opType: "recommend",
+        type: res.data.type.type,
+        taskId: param.taskId,
+        topoinst_uuid: res.data.topoinst_uuid,
+        topoinst_id: otherParams.topoinst_id
+      },
+    });
+    window.open(routeUrl.href, "_blank");
+  });
+}
+
+
+
+
+
+
+/* ------工具方法start----- */
+/**
+ * @description 计时器
+ * @param time_s 秒数
+ */
+function secondToHHMMSS(time_s: number) {
+  let h = 0, m = 0, s = 0
+  h = parseInt((time_s / 60/60).toString())
+  m = parseInt((time_s / 60 % 60).toString())
+  s = parseInt((time_s % 60).toString())
+
+  return { h: h > 9 ? h : '0' + h, m: m > 9 ? m : '0' + m, s: s > 9 ? s : '0' + s }
+}
+
+/**
+ * @description 结束实验跳转
+ * @param type 课程：course、实训：train
+ * @param role 权限：1、2、3
+ */
+function backTo(route:any,type:string,role:number,routerQuery:string) {
+  let otherParams:any={}
+  if (routerQuery) {
+    otherParams=JSON.parse(routerQuery)
+  }
+  
+  if (role===3) {
+    if (type==="course") {
+      route.push({
+        path:"/studentSideCourse/ContinueDetail",
+        query:{
+          DetailId:otherParams.detailId,
+          course_id:otherParams.course_id
+        }
+      })
+      return;
+    }
+    if (type==="train") {
+      route.push({
+        path:"/studentExperimental",
+        query:{
+          currentTab:0
+        }
+      })
+      return;
+    }
+  }
+}
+/* ------工具方法end----- */
+
 export {
   openVm,
   getVmBaseInfo,
   endOperates,
-  endExperiment
+  endExperiment,
+  recommendExperiment,
+  toVmConnect,
+  toStudyRecommendExperiment,
+  secondToHHMMSS,
+  backTo
 }
 

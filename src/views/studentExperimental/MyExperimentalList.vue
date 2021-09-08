@@ -25,7 +25,7 @@
         <p class="status">起止时间：{{v.times}}</p>
       </div>
       <div class="start_training" v-if="v.status==='进行中'">
-        <a-button @click="startTraining" type="primary"> 开始实训 </a-button>
+        <a-button @click="startTraining(v)" type="primary"> 开始实训 </a-button>
       </div>
     </div>
   </div>
@@ -35,6 +35,7 @@ import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
+import {toVmConnect} from "src/utils/vmInspect"
 interface IlistItem{
   img:string,
   name:string,
@@ -65,8 +66,16 @@ export default defineComponent({
         }):''
       })
     }
-    function startTraining() {
-      router.push('/vm/vnc')
+    function startTraining(val:any) {
+      let param :any= {
+        type: "train",
+        opType: "start",
+        taskId: val.train_id,
+      }
+      console.log(val);
+      
+      toVmConnect(router,param,'')
+      // router.push('/vm/vnc')
     }
     onMounted(()=>{
      initData()

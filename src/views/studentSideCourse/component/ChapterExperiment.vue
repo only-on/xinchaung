@@ -58,6 +58,9 @@ import {message } from 'ant-design-vue';
 import { QuillEditor } from "@vueup/vue-quill";
 // import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+
+import {toVmConnect,IEnvirmentsParam} from "src/utils/vmInspect" // 打开虚拟机
+
 interface IdetailObj{
   saveOrEdit:number;
   experData:any;
@@ -98,6 +101,7 @@ export default defineComponent({
     const http=(request as any).studentCourse
     var id:Ref<number>=ref(0)
     var course_id:Ref<string>=inject('course_id')!
+    var detailId=inject("detailId")
     var notesId:Ref<string>=ref('')
     const options = {
       placeholder: "输入内容...",
@@ -173,6 +177,13 @@ export default defineComponent({
     }
     function study(val:any) {
       console.log('准备虚拟机环境')
+      let param:IEnvirmentsParam= {
+        type: "course",
+        opType: val,
+        taskId: id.value,
+      }
+
+      toVmConnect(router,param,{detailId:detailId,course_id:course_id})
     }
     function getStudyStatus(type:any) {
       let obj={'start':'开始学习','continue':'继续学习','finish':'重修','rebuild':'重修'}

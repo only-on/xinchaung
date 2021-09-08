@@ -1,7 +1,7 @@
 <template>
   <layout :VmData="data">
     <template v-slot:header>
-      <div class="vm-header-student" v-if="!roleType">
+      <div class="vm-header-student" v-if="roleType">
         <div class="vm-header-left">
           <a-button type="primary" @click="back">返回</a-button>
           <a-button type="primary">操作</a-button>
@@ -11,12 +11,24 @@
         <div class="vm-header-right">
           <span class="vm-time">
             <span class="icon-shijian1 iconfont"></span>
-            <span>实验剩余时间: 05时07分43秒</span>
+            <span
+              >实验剩余时间:
+              {{
+                experimentTime.h +
+                "时" +
+                experimentTime.m +
+                "分" +
+                experimentTime.s +
+                "秒"
+              }}</span
+            >
           </span>
           <a-button class="delayed-btn">延时</a-button>
           <span class="vm-action-box">
             <a-button type="primary">保存进度</a-button>
-            <a-button type="danger" @click="finishExperiment">结束实验</a-button>
+            <a-button type="danger" @click="finishExperiment"
+              >结束实验</a-button
+            >
           </span>
         </div>
       </div>
@@ -32,7 +44,9 @@
         <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
         <div class="vm-header-right">
           <span class="vm-action-box">
-            <a-button type="danger" @click="finishExperiment">结束备课</a-button>
+            <a-button type="danger" @click="finishExperiment"
+              >结束备课</a-button
+            >
           </span>
         </div>
       </div>
@@ -47,6 +61,24 @@
       />
     </template>
   </layout>
+  <a-modal
+    :visible="recommendVisible"
+    title="推荐实验"
+    @cancel="closeRecommend"
+    @ok="okRecommend"
+  >
+    <div>
+      <ul>
+        <li
+          v-for="(item, index) in recommendExperimentData"
+          :key="index"
+          @click="recommend(item)"
+        >
+          {{ item.name }}
+        </li>
+      </ul>
+    </div>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -60,6 +92,7 @@ import {
   onMounted,
   toRefs,
 } from "vue";
+import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
 import {
@@ -68,11 +101,13 @@ import {
   useRouter,
   LocationQuery,
   LocationQueryValue,
+  onBeforeRouteUpdate,
 } from "vue-router";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import { wsConnect } from "src/request/websocket";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import { getVmConnectSetting } from "src/utils/seeting";
+import { countDown } from "src/utils/common";
 import {
   getVmBaseInfo,
   endOperates,
@@ -80,6 +115,11 @@ import {
   TopType,
   TStudyType,
   IStopOperatesParam,
+  recommendExperiment,
+  IRecommendExperiment,
+  toStudyRecommendExperiment,
+  secondToHHMMSS,
+  backTo
 } from "src/utils/vmInspect";
 
 type TvmQuery = {
@@ -88,6 +128,8 @@ type TvmQuery = {
   topoinst_uuid: string;
   taskId: number;
   type: TStudyType;
+  topoinst_id: string;
+  routerQuery:string
 };
 export default defineComponent({
   components: {
@@ -99,14 +141,22 @@ export default defineComponent({
     const router = useRouter();
     let vmQuery = route.query as any;
 
-    const { opType, connection_id, topoinst_uuid, taskId, type }: TvmQuery =
-      vmQuery;
+    const {
+      opType,
+      connection_id,
+      topoinst_uuid,
+      taskId,
+      type,
+      topoinst_id,
+      routerQuery
+    }: TvmQuery = vmQuery;
 
     const step_score_exists: boolean | string = "";
     const reactiveData: UnwrapNestedRefs<{
       allInfo: any;
       vmInfoData: any;
       vmOptions: any;
+      recommendExperimentData: Array<any>;
     }> = reactive({
       allInfo: {},
       vmInfoData: {},
@@ -114,14 +164,24 @@ export default defineComponent({
         password: "", // vncpassword
         wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
       },
+      recommendExperimentData: [],
     });
+    const recommendVisible: Ref<boolean> = ref(false);
     // const vmInfoData=ref({})
     let vncLoadingV = ref(false);
     let uuidLoading = ref(false);
+    let use_time: number = 900;
+    let experimentTime: Ref<Object> = ref({
+      h: 0,
+      m: 0,
+      s: 0,
+    });
+    let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
-    let { vmInfoData, vmOptions, allInfo } = toRefs(reactiveData);
+    let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
+      toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
     let navData = [
@@ -134,7 +194,12 @@ export default defineComponent({
     ];
     const data = reactive(navData);
     function back() {
-      router.go(-1);
+      if (opType==="test"||opType==="prepare") {
+        endVmEnvirment()
+      }else{
+        backTo(router,type,3,routerQuery)
+      }
+      
     }
 
     watch(vncLoadingV, () => {
@@ -158,9 +223,12 @@ export default defineComponent({
             console.log(vmInfoData.value);
 
             vmInfoData.value = JSON.parse(ev.data);
+            console.log(vmInfoData.value);
 
-            settingCurrentVM(vmInfoData.value.data.vms[0]);
-            uuidLoading.value = true;
+            if (vmInfoData.value.data.vms.length > 0) {
+              settingCurrentVM(vmInfoData.value.data.vms[0]);
+              uuidLoading.value = true;
+            }
           }
         },
       });
@@ -168,10 +236,40 @@ export default defineComponent({
     onBeforeRouteLeave(() => {
       console.log("离开页面");
       (wsVmConnect.value as any).close();
+      clearInterval(Number(timer));
+    });
+
+    onBeforeRouteUpdate(() => {
+      console.log(1111);
     });
     onMounted(() => {
       initWs();
       getVmBase();
+
+      clearInterval(Number(timer));
+      timer = setInterval(() => {
+        experimentTime.value = secondToHHMMSS(use_time);
+        if (type === "train") {
+          use_time++;
+        } else {
+          use_time--;
+          if (use_time===0) {
+            Modal.confirm({
+              title:"是否延时？",
+              okText:"确认",
+              onOk:()=>{
+                console.log("延时");
+                
+              },
+              cancelText:"取消",
+              onCancel:()=>{
+                endVmEnvirment()
+              }
+            })
+            clearInterval(Number(timer));
+          }
+        }
+      }, 1000);
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
@@ -183,6 +281,9 @@ export default defineComponent({
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
         allInfo.value = res.data;
+        console.log(res.data.current.used_time);
+        
+        use_time = res.data.current.used_time;
         console.log(allInfo);
       });
     }
@@ -193,13 +294,37 @@ export default defineComponent({
         opType: opType,
         type: type,
         taskId: taskId,
+        topoinst_id: topoinst_id,
       };
-      endExperiment(params).then((res) => {
+      // recommendExperimentData.value = [
+      //   {
+      //     id: 50139,
+      //     name: "实训111",
+      //     recommend_type: "train",
+      //   },
+      //   {
+      //     id: 50158,
+      //     name: "实训名称",
+      //     recommend_type: "train",
+      //   },
+      //   {
+      //     id: 50224,
+      //     name: "step_train1",
+      //     recommend_type: "train",
+      //   },
+      // ];
+
+      endExperiment(params).then((res: any) => {
         console.log(res);
+        if (res.data.length > 0) {
+          recommendExperimentData.value = res.data;
+          recommendVisible.value = true;
+        }
+        message.success("结束成功");
       });
     }
     // 结束实验
-  async  function endVmOperates() {
+    async function endVmOperates() {
       let param: IStopOperatesParam = {
         type: type,
         taskId: taskId,
@@ -207,17 +332,42 @@ export default defineComponent({
         action: "recommend",
         topoinst_id: topoinst_uuid,
       };
-    return await endOperates(param)
+      return await endOperates(param);
     }
 
+    // 结束实验
     function finishExperiment() {
-      if (allInfo.value.base_info.step_score_exists) {
-        endVmOperates().then((res)=>{
-          endVmEnvirment()
-        })
-      } else {
-        endVmEnvirment()
-      }
+     let modal= Modal.confirm({
+        title: "确认结束实验吗？",
+        okText: "确认",
+        onOk: () => {
+          if (opType === "recommend") {
+            endVmEnvirment();
+            return;
+          }
+          if (
+            allInfo &&
+            allInfo.value &&
+            allInfo.value.base_info &&
+            allInfo.value.base_info.step_score_exists
+          ) {
+            endVmOperates().then((res: any) => {
+              // recommendVisible.value = true;
+              console.log(res);
+              recommendExperimentData.value = res.data;
+              endVmEnvirment();
+            });
+          } else {
+            endVmEnvirment();
+          }
+          modal.destroy()
+        },
+        cancelText: "取消",
+        onCancel: () => {
+          console.log("quxiao1");
+          modal.destroy()
+        },
+      });
     }
     // 设置当前虚拟机信息
     function settingCurrentVM(data: any) {
@@ -232,6 +382,51 @@ export default defineComponent({
         data.uuid;
     }
 
+    // 推荐实验
+    function recommend(val: {
+      id: number;
+      name: string;
+      recommend_type: "content" | "train";
+    }) {
+      console.log(val);
+      let cloneVal = _.cloneDeep(val);
+      let params: IRecommendExperiment = {
+        recommendType: cloneVal.recommend_type,
+        opType: "recommend",
+        type: type,
+        taskId: cloneVal.id,
+      };
+      toStudyRecommendExperiment(router, params, { topoinst_id });
+      // studyRecommendExperiment(params).then((res: any) => {
+      //   console.log(res);
+      //   let routeUrl = router.resolve({
+      //     path: "/vm/vnc",
+
+      //     query: {
+      //       connection_id: res.data.connection_id,
+      //       opType: "recommend",
+      //       type: res.data.type.type,
+      //       taskId: 50227,
+      //       topoinst_uuid: res.data.topoinst_uuid,
+      //     },
+      //   });
+      //   window.open(routeUrl.href, "_blank");
+      // });
+    }
+
+    // 学生学习推荐实验/实训
+    // async function studyRecommendExperiment(params: IRecommendExperiment) {
+    //   return await recommendExperiment(params);
+    // }
+
+    // 关闭推荐modal
+    function closeRecommend() {
+      recommendVisible.value = false;
+    }
+    // 确认推荐modal
+    function okRecommend() {
+      recommendVisible.value = false;
+    }
     return {
       roleType,
       back,
@@ -241,8 +436,11 @@ export default defineComponent({
       uuidLoading,
       ...toRefs(reactiveData),
       finishExperiment,
-      // allInfo,
-      // vmOptions
+      recommendVisible,
+      recommend,
+      closeRecommend,
+      okRecommend,
+      experimentTime,
     };
   },
 });

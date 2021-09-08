@@ -106,7 +106,7 @@ export default defineComponent({
     var controls='controls'
     const {DetailId,course_id}= route.query
     provide('course_id',course_id)
-    
+    provide('detailId',DetailId)
     const detail:IdetailObj=reactive({
       info:{},
       tree:[]

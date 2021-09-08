@@ -24,7 +24,7 @@
         <p class="status">起止时间：{{v.times}}</p>
       </div>
       <div class="start_training" v-if="v.status_name==='进行中'">
-        <a-button @click="continueTraining" type="primary"> 继续实训 </a-button>
+        <a-button @click="continueTraining(v)" type="primary"> 继续实训 </a-button>
       </div>
     </div>
   </div>
@@ -43,6 +43,7 @@ interface IlistItem{
   u_name:string,
   times:string,
 }
+import {toVmConnect} from "src/utils/vmInspect"
 export default defineComponent({
   name: 'LatelyExperimentalList',
   components: {
@@ -62,8 +63,16 @@ export default defineComponent({
         })
       })
     }
-    function  continueTraining() {
-      router.push('/vm/vnc')
+    function  continueTraining(val:any) {
+      let param :any= {
+        type: "train",
+        opType: "start",
+        taskId: val.train_id,
+      }
+      console.log(val);
+      
+      toVmConnect(router,param,'')
+      // router.push('/vm/vnc')
     }
     onMounted(()=>{
       initData()
