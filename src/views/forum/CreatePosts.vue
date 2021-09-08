@@ -80,7 +80,7 @@ export default defineComponent({
         theme: "snow",
       },
       getDetail:()=>{
-        http.postsDetailed({param:{id:editId}}).then((res:any)=>{
+        http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{
             // let typePosts={'分享':'1','求助':'2'}
             state.formState.title=res.data.title
             state.formState.type=res.data.type==='分享'?'1':'2'

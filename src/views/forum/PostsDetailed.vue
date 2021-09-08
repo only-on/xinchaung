@@ -148,7 +148,7 @@ export default defineComponent({
       },
       detailObj:{},
       initData:()=>{
-        http.postsDetailed({param:{id:detailId}}).then((res:any)=>{
+        http.postsDetailed({param:{id:detailId}}).then((res:IBusinessResp)=>{
             let data=res.data
             data.content=state.goHtml(data.content)
             if(data.forum_articles && data.forum_articles.length){
