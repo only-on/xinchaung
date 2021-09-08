@@ -70,7 +70,7 @@ interface Istate{
   options:any;
   editReply: () => void;
   ForumArticle:Ireply
-  goHtml:(val:any)=>{}
+  goHtml:(val:string)=>{}
 }
 
 export default defineComponent({
@@ -134,7 +134,7 @@ export default defineComponent({
             }
         });
       },
-      goHtml:(val:any)=>{
+      goHtml:(val:string)=>{
         // console.log(val.toString())
         if(val.split('ops').length>1){
           let text=JSON.parse(val)
