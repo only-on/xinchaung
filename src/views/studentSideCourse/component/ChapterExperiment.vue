@@ -56,7 +56,8 @@ import request from '../../../api/index'
 import { IBusinessResp} from '../../../typings/fetch';
 import {message } from 'ant-design-vue';
 import Editormd from "@jiangyue/vue3-editormd/src/index.vue";
-import { QuillEditor, Delta } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
+// import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IdetailObj{
   saveOrEdit:number;
@@ -111,7 +112,6 @@ export default defineComponent({
       content1:'',
       studystr:'',
     })
-    // const content = ref<Delta>({})
     watch(()=>{return props.experimentalId},(val:any)=>{
       // console.log(val)
        id.value=val

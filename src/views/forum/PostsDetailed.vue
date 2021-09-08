@@ -54,7 +54,8 @@ import serve from "../../request/getRequest";
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-import { QuillEditor, Delta } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
+import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface Ireply{
   forum_id:number,
@@ -69,7 +70,7 @@ interface Istate{
   options:any;
   editReply: () => void;
   ForumArticle:Ireply
-  goHtml:(val:Delta)=>{}
+  goHtml:(val:any)=>{}
 }
 
 export default defineComponent({
@@ -133,7 +134,7 @@ export default defineComponent({
             }
         });
       },
-      goHtml:(val:Delta)=>{
+      goHtml:(val:any)=>{
         // console.log(val.toString())
         if(val.split('ops').length>1){
           let text=JSON.parse(val)

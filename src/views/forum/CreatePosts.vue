@@ -27,7 +27,8 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
-import { QuillEditor, Delta } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
+// import { Delta } from "../../typings/quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 const http=(request as any).forum
 interface form{

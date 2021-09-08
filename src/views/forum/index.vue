@@ -50,7 +50,8 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { QuillEditor, Delta } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
+// import { Delta } from "../../typings/quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IforumSearch{
   title:string,

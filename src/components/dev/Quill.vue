@@ -21,8 +21,9 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch } from "vue";
-import { QuillEditor, Delta } from "@vueup/vue-quill";
+import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import { Delta } from "quill-delta";
 export default defineComponent({
   name: "Quill",
   components: {
