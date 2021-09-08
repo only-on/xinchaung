@@ -20,7 +20,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch, Ref } from "vue";
 import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import { Delta } from "quill-delta";
@@ -34,7 +34,7 @@ export default defineComponent({
       placeholder: "输入内容...",
       theme: "snow",
     };
-    const content = ref<Delta>({
+    const content: Ref<Delta> = ref({
       ops: [
         { insert: "Delta", attributes: { bold: true } },
         { insert: "是一种富有表现力的数据格式，它是" },
