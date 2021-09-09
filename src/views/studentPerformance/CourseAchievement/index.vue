@@ -1,10 +1,10 @@
 <template>
     <div id="CourseAchievement">
         <div class="searchInput">
-            <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入课程名称关键字查询" @search="onSearch"/>
+            <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入课程名称关键字查询" @keyup.enter="onSearch" @search="onSearch"/>
         </div>
-        <div class="content-list">
-            <div class="itemlist" v-for="(item,index) in courseDataList" :key="index">
+        <div v-if="courseDataList.length" class="content-list">
+                <div class="itemlist" v-for="(item,index) in courseDataList" :key="index">
                 <div class="card-pic">
                    <!-- <img src="../../../assets/images/stuAchievement/d3.jpg" alt=""> -->
                    <img :src="item.url" alt="">
@@ -21,6 +21,14 @@
                         <span class="look-score" @click="lookScore(item.id)">查看成绩</span>
                     </div>
                 </div>
+            </div>
+        </div>
+        <div v-else class="no-search-data">
+            <div class="noMatching">
+                 <div>
+                <span class="iconfont icon-kongshuju"></span>    
+                </div>
+                <div>亲~这里什么都没有~</div>
             </div>
         </div>
 
@@ -55,25 +63,23 @@ export default defineComponent({
              courseDataList:[]
          })
         function onSearch(value:string){
-            console.log(value,'oooooooooooooo')
+            getData(value,true)
         }
         function lookScore(id:any){
             router.push({path:'/courseScore',query:{id:id}})
         }
-        function getData(){
+        function getData(value?:any,ifSearch?:boolean){
             const infoRequest=(request as any).studentPerformance
-            infoRequest.courseAchievement()
+            infoRequest.courseAchievement(ifSearch?{
+               param:{keyword:value} 
+            }:'')
             .then((res:any)=>{
             if(res.status==1){
-                console.log(res.data)
+                console.log(res.data.list)
                 state.courseDataList=res.data.list
             }else{
                     message.error(res.msg)
                 }
-
-            })
-            .catch((err:any)=>{
-                message.error(err)
             })
         }
         onMounted(()=>{
@@ -87,6 +93,18 @@ export default defineComponent({
 .searchInput{
     height: 100px;
     line-height: 100px;
+}
+.no-search-data{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #8955B5;
+    min-height:650px;
+    .noMatching{
+        .icon-kongshuju{
+            font-size: 86px;
+        }
+    }
 }
 .content-list{
     display: flex;

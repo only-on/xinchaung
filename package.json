@@ -26,6 +26,7 @@
     "@commitlint/cli": "^12.1.4",
     "@commitlint/config-angular": "^12.1.4",
     "@commitlint/config-conventional": "^12.1.4",
+    "@jiangyue/vue3-editormd": "^1.0.2",
     "@novnc/novnc": "^1.2.0",
     "@types/node": "^16.4.13",
     "@vitejs/plugin-vue": "^1.2.3",

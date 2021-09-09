@@ -6,15 +6,15 @@ export default {
     component: Layout,
     meta: {
         title: "统计",
-        authCode: "statistic",
+        authCode: "studentStatistic",
     },
     children: [
         {
-            path: "/statistic",
-            name: "statistic",
-            component: () => import("src/views/statistic/index.vue"),
+            path: "/studentStatistic",
+            name: "studentStatistic",
+            component: () => import("src/views/studentStatistic/index.vue"),
             meta: {
-                title: "statistic",
+                title: "studentStatistic",
                 authCode: ""
             },
         }
