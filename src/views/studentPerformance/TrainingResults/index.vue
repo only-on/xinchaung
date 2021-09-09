@@ -96,7 +96,6 @@ export default defineComponent({
             if(res.status==1){
                 console.log(res.data)
                 state.traningResult=res.data.list
-                state.tableData=res.data.list
             }else{
                     message.error(res.msg)
                 }
@@ -109,7 +108,8 @@ export default defineComponent({
                 })
             .then((res:any)=>{
                 if(res.status==1){
-                    var tableGetData:any=res.data.list
+                    // var tableGetData:any=res.data.list[]
+                    var tableGetData:any=[]
                     tableGetData=[{
                         used_time:'00时00分52秒',
                         video:'查看',

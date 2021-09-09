@@ -2,7 +2,7 @@
     <div class="listItem">
         <div class="content-title">{{title}}</div>
             <div class="content-list" v-for="(item,index) in infoList" :key="index">
-                <div :style="{'background':color1,}" :class="infoList.length>3?'content-item min-content-item':'content-item max-content-item'">
+                <div :style="{'background':color1,}" :class="infoList?(infoList.length>3?'content-item min-content-item':'content-item max-content-item'):'content-item max-content-item'">
                 <span :style="{'border':'1px solid'+ circlecolor}">
                     <span :style="{'background':circlecolor}">{{index+1}}</span>
                 </span>

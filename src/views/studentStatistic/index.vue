@@ -210,6 +210,8 @@ export default defineComponent({
                 },
                 ],
       }
+     var updata=inject('updataNav') as Function
+        updata({tabs:[],showContent:false,showNav:false})
     function DrawEchar(){
         var myChart = (echarts as any).init(document.getElementById("myChart"));
         myChart.setOption(courseOption);
