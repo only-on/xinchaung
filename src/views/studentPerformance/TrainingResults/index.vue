@@ -107,8 +107,6 @@ export default defineComponent({
                 param: {type:'train'}
                 })
             .then((res:any)=>{
-                if(res.status==1){
-                    // var tableGetData:any=res.data.list[]
                     var tableGetData:any=[]
                     tableGetData=[{
                         used_time:'00时00分52秒',
@@ -131,7 +129,6 @@ export default defineComponent({
                     }
                     console.log('获取实训成绩')
                     console.log(res.data)
-                }
             })
         }
         function onSearch(value:string,){

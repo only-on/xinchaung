@@ -211,7 +211,8 @@ export default defineComponent({
                 ],
       }
      var updata=inject('updataNav') as Function
-        updata({tabs:[],showContent:false,showNav:false})
+     updata({tabs:[],showContent:false,showNav:false})
+      
     function DrawEchar(){
         var myChart = (echarts as any).init(document.getElementById("myChart"));
         myChart.setOption(courseOption);
@@ -221,7 +222,6 @@ export default defineComponent({
     const infoRequest=(request as any).studentStatistic
      infoRequest.getInfo()
      .then((res:any)=>{
-        if(res.status==1){
         state.staticInfo=res.data
         state.staticInfo.courseGrade?.forEach(item=>{
             courseGrandEcharName.push(item.name)
@@ -229,13 +229,6 @@ export default defineComponent({
         })
         let courseEchar:any=DrawEchar()
         courseEchar.setOption(courseOption)
-        }else{
-            message.error(res.msg)
-        }
-
-     })
-     .catch((err:any)=>{
-         console.log(err)
      })
      provide('staticInfo','state.staticInfo')
     }

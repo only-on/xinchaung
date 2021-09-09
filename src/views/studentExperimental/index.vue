@@ -26,7 +26,7 @@ export default defineComponent({
     // var tabType:Ref<number>=ref(0)
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
 
     watch(()=>{return configuration.componenttype},(val)=>{
       console.log(val)

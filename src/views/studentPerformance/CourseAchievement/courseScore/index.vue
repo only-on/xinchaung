@@ -173,12 +173,10 @@ export default defineComponent({
                 param: {type:'course',relate_id:relateId}
                 })
             .then((res:any)=>{
-                if(res.status==1){
-                    console.log('获取课程成绩')
-                    console.log(res.data)
-                    state.courseDetail=res.data
-                    state.CourseScoreInfo=res.data.tree
-                }
+                console.log('获取课程成绩')
+                console.log(res.data)
+                state.courseDetail=res.data
+                state.CourseScoreInfo=res.data.tree
             })
             
         }
