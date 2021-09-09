@@ -14,11 +14,11 @@
             <span
               >实验剩余时间:
               {{
-                experimentTime.h +
+                experimentTime?.h +
                 "时" +
-                experimentTime.m +
+                experimentTime?.m +
                 "分" +
-                experimentTime.s +
+                experimentTime?.s +
                 "秒"
               }}</span
             >
@@ -168,10 +168,10 @@ export default defineComponent({
     });
     const recommendVisible: Ref<boolean> = ref(false);
     // const vmInfoData=ref({})
-    let vncLoadingV = ref(false);
+    let vncLoadingV = ref(true);
     let uuidLoading = ref(false);
     let use_time: number = 900;
-    let experimentTime: Ref<Object> = ref({
+    let experimentTime: Ref<any>= ref({
       h: 0,
       m: 0,
       s: 0,
@@ -207,6 +207,7 @@ export default defineComponent({
     });
 
     function initWs() {
+      vncLoadingV.value=false
       wsVmConnect.value = wsConnect({
         url: "://192.168.101.150:9035/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
@@ -248,12 +249,12 @@ export default defineComponent({
 
       clearInterval(Number(timer));
       timer = setInterval(() => {
-        experimentTime.value = secondToHHMMSS(use_time);
+        experimentTime!.value = secondToHHMMSS(use_time);
         if (type === "train") {
           use_time++;
         } else {
           use_time--;
-          if (use_time===0) {
+          if (use_time===600) {
             Modal.confirm({
               title:"是否延时？",
               okText:"确认",
@@ -263,9 +264,13 @@ export default defineComponent({
               },
               cancelText:"取消",
               onCancel:()=>{
-                endVmEnvirment()
+                
               }
             })
+            
+          }
+          if (use_time===0) {
+            endVmEnvirment()
             clearInterval(Number(timer));
           }
         }
@@ -321,6 +326,7 @@ export default defineComponent({
           recommendVisible.value = true;
         }
         message.success("结束成功");
+        backTo(router,type,3,routerQuery)
       });
     }
     // 结束实验

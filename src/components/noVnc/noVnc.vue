@@ -63,7 +63,7 @@ export default defineComponent({
     function success(msg: any) {
       console.log(msg);
       console.log("连接成功");
-        vncLoading!.value=true
+        setTimeout(()=>{vncLoading!.value=true},5000)
     }
 
     function securityfailure(msg: any) {
@@ -81,6 +81,7 @@ export default defineComponent({
       if (document.getElementById(props.refName)) {
           (document.getElementById(props.refName) as HTMLDivElement).innerHTML=""
       }
+      vncLoading!.value=false
       // vncLoading!.value=false
       // 实例化rfb
       rfb = new RFB(document.getElementById(props.refName), props.options?.wsUrl, {
