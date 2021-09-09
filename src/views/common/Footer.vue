@@ -5,6 +5,7 @@
       <router-link to="/vm/ace">ace</router-link>
       <router-link to="/vm/vnc">vnc</router-link>
       <router-link to="/vm/test">测试连接虚拟机</router-link>
+      <router-link to="/dev/login">登录</router-link>
     </div>
   </div>
 </template>

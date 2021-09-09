@@ -87,8 +87,6 @@ export default defineComponent({
     function loadingCircle() {
       clearInterval(Number(timer))
       timer=setInterval(()=>{
-        console.log(rightDeg.value);
-        
         if (rightDeg.value===315) {
           clearInterval(Number(timer))
         }else{
