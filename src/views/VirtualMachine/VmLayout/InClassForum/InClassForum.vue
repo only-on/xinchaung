@@ -85,7 +85,7 @@ interface IreactiveData{
 }
 export default defineComponent({
   setup() {
-    const forum = request.forum
+    const forum = request.studentForum
     console.log(forum);
     
     const searchTitle = ref("");
