@@ -1,6 +1,6 @@
 <template>
   <div class="footer-box">
-    <div>
+    <div class="box">
       临时menu：<router-link to="/exam/list">考试管理</router-link>
       <router-link to="/vm/ace">ace</router-link>
       <router-link to="/vm/vnc">vnc</router-link>
@@ -18,6 +18,9 @@
   height: 22px;
   a {
     margin-left: 15px;
+  }
+  .box{
+    height: 100%;
   }
 }
 </style>
