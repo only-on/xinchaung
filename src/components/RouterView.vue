@@ -3,7 +3,8 @@
 </template>
 
 <script lang="ts">
-export default {
-  name: "RouterViews",
-};
+import { defineComponent} from "vue";
+export default defineComponent({
+name: "RouterViews",
+})
 </script>

@@ -52,15 +52,8 @@ export default defineComponent({
       showContent:false,                //  是否需要内容区盒子   不需要则 layout只带顶部导航
     })
     function updataNav(val:config){
-      console.log(val)
+      // console.log(val)
       Object.assign(configuration,val)
-      // val?Object.keys(val).forEach((v)=>{
-      //   let key=v as Titem
-      //   if(configuration[key]){
-      //       configuration[key]=val[key]
-      //     }
-      // }):''
-      // console.log(configuration)
     }
     provide('configuration',configuration)
     provide('updataNav', updataNav)
