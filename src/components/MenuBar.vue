@@ -41,7 +41,9 @@ export default defineComponent({
                 if(item.items && item.items.length){
                   e.preventDefault();
                 }else{
+                  // menus[2].active=true
                   router.replace(item.url[0]!)
+                  // console.log(menus)
                 }
               }}
             >
@@ -56,6 +58,7 @@ export default defineComponent({
         </a-menu-item>
       );
     };
+
     var menus:MenuItem[]=reactive([])
     var children: Array<VNode>=reactive([])
     const renderMenu = function (menuData: MenuItem[]) {
