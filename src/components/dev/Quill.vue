@@ -70,6 +70,15 @@ export default defineComponent({
     });
     const customize = function () {
       console.log("customized quill toolbar button.");
+      content.value={
+        ops: [
+        { insert: "这是第二个quill编辑器，" },
+        { insert: "吐血警告，不要使用" },
+        { insert: "delta", attributes: { color: "#8955b5", bold: true } },
+        { insert: "作为quill的content" },
+      ],
+      }
+      
     };
     return {
       options,

@@ -109,8 +109,20 @@ function countDown(start:Date,end:Date):Itimes{
         s:parseInt((seconds%60).toString()), // 秒
     }
 }
+// 判断时间大小
 function contrastTime(start:Date,end:Date) {
     return (end.getTime()-start.getTime())>0?true:false
+}
+
+function isJsonString(str:any) {
+    try {
+        if (typeof JSON.parse(str)==="object") {
+            return true
+        }
+    } catch (e) {
+        
+    }
+    return false
 }
 export {
     numToAbc,
@@ -119,5 +131,6 @@ export {
     htmlDecode,
     deepEqual,
     countDown,
-    contrastTime
+    contrastTime,
+    isJsonString
 }

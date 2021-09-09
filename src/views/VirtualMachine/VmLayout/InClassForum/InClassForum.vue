@@ -52,7 +52,13 @@
               :class="currentOpenContent === item ? 'open-active' : ''"
             >
               <div class="forum-content-padding">
-                <div class="forum-content" v-html="item?.content"></div>
+                <div class="forum-content">
+                  <QuillEditor
+                    v-model="item.content"
+                    type="preview"
+                    height="500px"
+                  ></QuillEditor>
+                </div>
 
                 <section
                   class="forum-reply-item"
@@ -64,7 +70,13 @@
                     <span>发帖时间：{{ ct.updated_at }}</span>
                   </div>
                   <div class="forum-reply-content-box">
-                    <p class="forum-reply-content" v-html="ct.content"></p>
+                    <p class="forum-reply-content">
+                      <QuillEditor
+                        v-model="ct.content"
+                        type="preview"
+                        height="500px"
+                      ></QuillEditor>
+                    </p>
                   </div>
                 </section>
               </div>
@@ -99,7 +111,8 @@
       @ok="replySubmit"
       width="740px"
     >
-      <QuillEditor v-model="content" height="500px"></QuillEditor>
+      <QuillEditor v-if="replyVisible" v-model="content" height="500px"></QuillEditor>
+      {{ content }}
     </a-modal>
   </div>
 </template>
@@ -123,6 +136,7 @@ interface Iparams {
 
 interface IreactiveData {
   forumListData: Array<any>;
+  content: Delta;
 }
 export default defineComponent({
   components: {
@@ -134,7 +148,13 @@ export default defineComponent({
 
     const currentOpenContent: Ref<number | string> = ref(0);
     const imageUrl: Ref<string> = ref("");
-    const reactiveData: IreactiveData = reactive({ forumListData: [] });
+    const reactiveData: IreactiveData = reactive({
+      forumListData: [],
+      content: {
+        ops: [],
+      },
+    });
+    const { forumListData, content } = toRefs(reactiveData);
     const lookParams: Ref<Iparams> = ref({
       title: "",
       type: "",
@@ -144,25 +164,14 @@ export default defineComponent({
     const pageSum: Ref<number> = ref(0);
     const replyToUser: Ref<string> = ref("@");
     const replyVisible: Ref<boolean> = ref(false);
-    const content: Ref<Delta> = ref({
-      ops: [
-        { insert: "Delta", attributes: { bold: true } },
-        { insert: "是一种富有表现力的数据格式，它是" },
-        { insert: "JSON", attributes: { color: "#8955b5", bold: true } },
-        {
-          insert:
-            "的严格子集，Quill用它来描述Quill的文档及其文档的变化，它的链接在这里：",
-        },
-        {
-          insert: "https://quilljs.com/docs/delta",
-          attributes: { link: "https://quilljs.com/docs/delta" },
-        },
-      ],
-    });
-    let replyParams:any = {
-        forum_id: "",
-        content: "",
-      };
+    // const content: Ref<Delta> = ref({
+    //   ops: [
+    //   ],
+    // });
+    let replyParams: any = {
+      forum_id: "",
+      content: "",
+    };
     onMounted(() => {
       getPubIndex(lookParams.value);
     });
@@ -230,25 +239,29 @@ export default defineComponent({
     function reply(val: any) {
       replyVisible.value = true;
       replyToUser.value = "@" + val.user_name;
-      replyParams.forum_id=val.id
+      replyParams.forum_id = val.id;
       console.log(val);
-      
     }
     function closeReplyModal() {
       replyVisible.value = false;
       replyToUser.value = "@";
-      replyParams.forum_id=""
-      replyParams.content=""
+      replyParams.forum_id = "";
+      replyParams.content = "";
+      content.value = {
+        ops: [],
+      };
     }
 
     function replySubmit() {
-      console.log(content.value);
-      replyParams.content=JSON.stringify(content.value)
-      console.log(replyParams);
-      
+      replyParams.content = JSON.stringify(content.value);
       forum.editReply({param:{ForumArticle:replyParams}}).then((res:any)=>{
-        console.log(res);
          getPubIndex(lookParams.value);
+        //  replyVisible.value = false;
+         content.value={
+           ops:[]
+         }
+
+         replyToUser.value = "@";
       });
     }
     return {
