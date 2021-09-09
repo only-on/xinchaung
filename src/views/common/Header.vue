@@ -7,7 +7,7 @@
       >
     </div>
     <div class="header-middle">
-      <menu-bar v-if="menus && menus.length" :menus="menus"></menu-bar>
+      <menu-bar></menu-bar>
     </div>
     <div class="header-right">
       <div class="help-message"><span></span><span>远程协助消息</span></div>
@@ -23,17 +23,22 @@ import MenuBar from "src/components/MenuBar.vue";
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch';
 import { FakeMenu, MenuItem } from "src/api/modules/common";
+import extStorage from "src/utils/extStorage";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
+    const { lStorage } = extStorage
+    const role = lStorage.get('role')
       const http=(request as any).common
       var menus:MenuItem[]=reactive([])
-      http.getMenu().then((res:IBusinessResp)=>{
-        menus.length=0
-        menus.push(...res.data)
-      //  html=renderMenu(res.data as MenuItem[]);
-    })
+    //   http.getMenu().then((res:IBusinessResp)=>{
+    //     menus.length=0
+    //     let data=res.data
+    //     // console.log('menus',data)
+    //     menus.push(...data)
+    //   //  html=renderMenu(res.data as MenuItem[]);
+    // })
     return {menus}
   },
 });

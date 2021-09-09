@@ -1,8 +1,9 @@
 <script lang="tsx">
-import { defineComponent, VNode} from "vue";
+import { defineComponent, VNode,reactive} from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
-import request from '../api/index'
-import { IBusinessResp} from '../typings/fetch';
+import { useRouter } from 'vue-router';
+import request from 'src/api/index'
+import { IBusinessResp} from 'src/typings/fetch';
 export default defineComponent({
   name: "MenuBar",
   props: {
@@ -13,7 +14,7 @@ export default defineComponent({
     },
   },
   setup(props,context) {
-    const http=(request as any).common
+    const router = useRouter();
     const renderItem = function (item: MenuItem, level: number): VNode {
       if (level % 2 === 0) {
         let items: VNode | null = null;
@@ -37,7 +38,11 @@ export default defineComponent({
             <a
               class={item.active ? "menu__top-item active" : "menu__top-item"}
               onClick={(e: Event) => {
-                e.preventDefault();
+                if(item.items && item.items.length){
+                  e.preventDefault();
+                }else{
+                  router.replace(item.url[0]!)
+                }
               }}
             >
               {item.label}
@@ -51,64 +56,23 @@ export default defineComponent({
         </a-menu-item>
       );
     };
+    var menus:MenuItem[]=reactive([])
+    var children: Array<VNode>=reactive([])
     const renderMenu = function (menuData: MenuItem[]) {
-      let children: Array<VNode> = [];
       menuData.forEach((item) => {
         children.push(renderItem(item, 0));
       });
       return <div class="nav__menu">{children}</div>;
     };
-    return () => (renderMenu(props.menus as MenuItem[]));
+    const http=(request as any).common
+    http.getMenu().then((res:IBusinessResp)=>{
+      menus.length=0
+      let data=res.data
+      menus.push(...data)
+    })
+    return () => (renderMenu(menus as MenuItem[]));
   },
   components: {},
-  //  render() {
-  //   const renderItem = function (item: MenuItem, level: number): VNode {
-  //     if (level % 2 === 0) {
-  //       let items: VNode | null = null;
-  //       if (item.items) {
-  //         level += 1;
-  //         let tmpChildren: Array<VNode> = [];
-  //         for (let i in item.items) {
-  //           tmpChildren.push(renderItem(item.items[i], level));
-  //         }
-  //         items = <a-menu class="menu__group">{tmpChildren}</a-menu>;
-  //       }
-
-  //       return (
-  //         <a-dropdown
-  //           v-slots={{
-  //             overlay() {
-  //               return items;
-  //             },
-  //           }}
-  //         >
-  //           <a
-  //             class={item.active ? "menu__top-item active" : "menu__top-item"}
-  //             onClick={(e: Event) => {
-  //               e.preventDefault();
-  //             }}
-  //           >
-  //             {item.label}
-  //           </a>
-  //         </a-dropdown>
-  //       );
-  //     }
-  //     return (
-  //       <a-menu-item class="menu__item">
-  //         <a href={item.url[0] + ""}>{item.label}</a>
-  //       </a-menu-item>
-  //     );
-  //   };
-
-  //   const renderMenu = function (menuData: MenuItem[]) {
-  //     let children: Array<VNode> = [];
-  //     menuData.forEach((item) => {
-  //       children.push(renderItem(item, 0));
-  //     });
-  //     return <div class="nav__menu">{children}</div>;
-  //   };
-  //   return renderMenu(FakeMenu.data as MenuItem[]);
-  // },
 });
 </script>
 <style lang="less" scoped>

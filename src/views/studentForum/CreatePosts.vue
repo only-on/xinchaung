@@ -30,7 +30,7 @@ import { Modal,message } from 'ant-design-vue';
 import { QuillEditor } from "@vueup/vue-quill";
 // import { Delta } from "../../typings/quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
-const http=(request as any).forum
+const http=(request as any).studentForum
 interface form{
   title:string,
   type:string,

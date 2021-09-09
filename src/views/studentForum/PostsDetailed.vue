@@ -81,7 +81,7 @@ export default defineComponent({
   setup: (props,{emit}) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,tabs:[],navPosition:'outside',navType:false})
-    const http=(request as any).forum
+    const http=(request as any).studentForum
     const route = useRoute();
     const {detailId}= route.query
     var visible:Ref<boolean>=ref(false)

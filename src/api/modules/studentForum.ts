@@ -24,7 +24,7 @@ export interface IForumAps {
   delateReply:TFHttpSend;
 }
 
-export const MODULE_NAME = 'forum'
+export const MODULE_NAME = 'studentForum'
 
 
 

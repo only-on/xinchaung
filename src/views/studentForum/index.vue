@@ -132,7 +132,7 @@ export default defineComponent({
     const options = computed(()=>{
         return tabType.value===1?options2.value:options1.value
     })
-    const http=(request as any).forum
+    const http=(request as any).studentForum
     const apiName=['pubIndex','myself','attend'] 
     var tabType:Ref<number>=ref(0)
     var loading:Ref<boolean>=ref(false)
@@ -226,7 +226,7 @@ export default defineComponent({
       })
     }
     function editCard(val:ItdItems){
-      router.push('/forum/CreatePosts?editId='+val.id)
+      router.push('/studentForum/CreatePosts?editId='+val.id)
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -241,10 +241,10 @@ export default defineComponent({
       initData()
     }
     function release(){
-      router.push('/forum/CreatePosts')
+      router.push('/studentForum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/forum/PostsDetailed?detailId='+id)
+      router.push('/studentForum/PostsDetailed?detailId='+id)
     }
     onMounted(()=>{
       // serve.v(dataObj); 
