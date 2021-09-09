@@ -2,6 +2,7 @@ import { TFHttpSend } from './getRequest';
 import { TDataType } from './fetch';
 import { IForumAps } from 'src/api/modules/forum'
 import { IStudentCourseAps } from 'src/api/modules/studentCourse'
+import { ICommonAps } from 'src/api/modules/common'
 import { IStudentExperimentalAps } from 'src/api/modules/studentExperimental'
 import {IstudentExam} from "src/api/modules/studentExam"
 import {IvmApi} from "src/api/modules/vmApi"
@@ -34,9 +35,7 @@ export interface IApiCollection {
         fakeRequest: TFHttpSend,
         fakeRequestNoUrlParam: TFHttpSend
     },
-    common: {
-        getMenu: TFHttpSend
-    },
+    common: ICommonAps,
     statistic: {
         getInfo: TFHttpSend
     },

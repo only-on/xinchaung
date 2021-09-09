@@ -12,7 +12,7 @@
       </div>
     </div> -->
     <div class="bottom">
-      <editormd @change="handleChange" :emd-options="bottomOptions" />
+      <!-- <editormd @change="handleChange" :emd-options="bottomOptions" /> -->
     </div>
   </div>
 </template>

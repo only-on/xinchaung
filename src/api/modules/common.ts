@@ -14,9 +14,13 @@ export interface FakeMenu {
     status: number;
     data: MenuItem[]
 }
-
+import { TFHttpSend } from "src/typings/getRequest";
 export default {
-    getMenu: { url: '/api/site/menu', method: 'GET', dataType: "JSON" },
+    getMenu: { url: '/site/menu', method: 'GET', dataType: "json" },
+}
+export interface ICommonAps {
+    getMenu:TFHttpSend;
+    getLIst:TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

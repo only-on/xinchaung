@@ -7,7 +7,7 @@
       >
     </div>
     <div class="header-middle">
-      <menu-bar></menu-bar>
+      <menu-bar v-if="menus && menus.length" :menus="menus"></menu-bar>
     </div>
     <div class="header-right">
       <div class="help-message"><span></span><span>远程协助消息</span></div>
@@ -18,13 +18,24 @@
   </header>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent,reactive } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
-
+import request from '../../api/index'
+import { IBusinessResp} from '../../typings/fetch';
+import { FakeMenu, MenuItem } from "src/api/modules/common";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
-  setup() {},
+  setup() {
+      const http=(request as any).common
+      var menus:MenuItem[]=reactive([])
+      http.getMenu().then((res:IBusinessResp)=>{
+        menus.length=0
+        menus.push(...res.data)
+      //  html=renderMenu(res.data as MenuItem[]);
+    })
+    return {menus}
+  },
 });
 </script>
 
