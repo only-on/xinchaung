@@ -3,7 +3,7 @@
         <div class="content-title">{{title}}</div>
             <div class="content-list" v-for="(item,index) in infoList" :key="index">
                 <div :style="{'background':color1,}" :class="4>3?'content-item min-content-item':'content-item max-content-item'">
-                <span :style="{'border':circlecolor}">
+                <span :style="{'border':'1px solid'+ circlecolor}">
                     <span :style="{'background':circlecolor}">{{index+1}}</span>
                 </span>
                 <span v-if="listname=='knowledge_map_name'">{{item.knowledge_map_name}}</span>
@@ -43,10 +43,11 @@ export default defineComponent({
         }
     },
     setup:(props,{emit})=>{
-        // const aa:Ref<PropType<dataProps[]>|undefined>=props.infoList
+        // var aa:Ref<PropType<dataProps[]>|undefined>=props.infoList
         watch(()=>props.infoList,()=>{
             console.log(props.infoList,'props')
         })
+        return
     }
 })
 </script>
@@ -78,18 +79,19 @@ export default defineComponent({
         height: 26px;
         border-radius: 50%;
         display: inline-block;
-        line-height: 22px;
+        line-height: 26px;
         text-align: center;
         padding: 2px;
         margin-right: 14px;
-        background: #e2f1fd;
-        // border: 1px solid #1290ef;
+        box-sizing: content-box;
+        border: 1px solid #1290ef;
             >span {
-                display: inline-block;
                 width: 100%;
                 height: 100%;
+                display:flex;
                 border-radius: 50%;
-                // background: #1290ef;
+                justify-content: center;
+                align-items: center;
                 color:@white;
             }
         }

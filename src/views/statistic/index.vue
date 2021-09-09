@@ -40,7 +40,7 @@
                            <span>学习进度排名</span>
                         </div>
                         <div style="width: 100%;color: #050101;font-size: 24px;font-weight: 700;">
-                           <span>NO.</span><span>{{staticInfo.avgRank}}</span>
+                           <span>NO.</span><span>{{staticInfo.courseProgress?.id}}</span>
                         </div>
                      </div>
                         </div>
@@ -123,7 +123,7 @@ export default defineComponent({
     components:{
         listItem
     },
-    setup:(props,{emit})=>{
+    setup:()=>{
     var courseGrandEcharName:any[]=[];
     var courseGrandEcharValue:any[]=[];
     const state: State = reactive({
@@ -220,131 +220,7 @@ export default defineComponent({
      infoRequest.getInfo()
      .then((res:any)=>{
         if(res.status==1){
-           state.staticInfo= {
-        "userProfile": {
-            "name": "sihai fu",
-        },
-        "courseGrade": [
-            {
-                "name": "1447",
-                "value": 10
-            },
-            {
-                "name": "test_rdp_resource2",
-                "value": 70
-            },
-            {
-                "name": "150569",
-                "value": 37
-            },
-            {
-                "name": "成绩测试",
-                "value": 19
-            },
-            {
-                "name": "test_rdp_resource",
-                "value": 18
-            }
-        ],
-        avgRank: 4,
-        "weakKnowledges": [
-            {
-                "id": 13,
-                "knowledge_map_name": "DataNode",
-                "pid": 10,
-                "create_time": "2019-07-10 10:05:26",
-                "update_time": "2019-09-18 17:15:31",
-                "is_factory": "2",
-                "nodes_number": 5
-            },
-            {
-                "id": 14,
-                "knowledge_map_name": "block",
-                "pid": 10,
-                "create_time": "2019-07-10 10:05:32",
-                "update_time": "2021-06-24 11:54:10",
-                "is_factory": "2",
-                "nodes_number": 5
-            },
-            {
-                "id": 15,
-                "knowledge_map_name": "NameNode",
-                "pid": 10,
-                "create_time": "2019-07-10 10:05:41",
-                "update_time": "2019-07-16 17:28:12",
-                "is_factory": "2",
-                "nodes_number": 5
-            },
-            {
-                "id": 28,
-                "knowledge_map_name": "可靠性",
-                "pid": 8,
-                "create_time": "2019-07-16 17:25:12",
-                "update_time": null,
-                "is_factory": "2",
-                "nodes_number": 4
-            }
-        ],
-        "weakCourseContents": [
-            {
-                "knowledge_map_id": "13",
-                "content_id": "500622",
-                "name": "init_content_high",
-                "max_csc_id": null
-            },
-            {
-                "knowledge_map_id": "13",
-                "content_id": "500731",
-                "name": "shujuji4",
-                "max_csc_id": null
-            },
-            {
-                "knowledge_map_id": "13",
-                "content_id": "500746",
-                "name": "zuomian008",
-                "max_csc_id": null
-            },
-            {
-                "knowledge_map_id": "13",
-                "content_id": "500652",
-                "name": "init_step2",
-                "max_csc_id": null
-            }
-        ],
-        "jobDirections": [
-            {
-                "id": 500005,
-                "name": "职业方向B",
-                "parent_id": 0,
-                "created_at": 1616399642,
-                "deleted_at": 0
-            },
-            {
-                "id": 500004,
-                "name": "zjq职业方向01",
-                "parent_id": 0,
-                "created_at": 1615809887,
-                "deleted_at": 0
-            },
-            {
-                "id": 500000,
-                "name": "人工智能",
-                "parent_id": 0,
-                "created_at": 1611220932,
-                "deleted_at": 0
-            }
-        ],
-        "courseProgress": {
-            "id": 1,
-            "user_id": 129,
-            "total_course_count": 70,
-            "finished_content_count": 57,
-            "left_content_count": 1754,
-            "last_content_id": 629,
-            "created_at": 1628626501,
-            "updated_at": 1628626501
-        }
-        }
+        state.staticInfo=res.data
         state.staticInfo.courseGrade?.forEach(item=>{
             courseGrandEcharName.push(item.name)
             courseGrandEcharValue.push(item.value)
@@ -415,7 +291,6 @@ export default defineComponent({
         text-align: center;
         padding: 2px;
         margin-right: 14px;
-        background: #e2f1fd;
         border: 1px solid #1290ef;
             >span {
                 display: inline-block;
@@ -436,7 +311,7 @@ export default defineComponent({
         margin-bottom: 30px;
     }
     .f3{
-        height: 290px;
+        height:361px;
     }
     .left-f1{
         width: 100%;
@@ -543,10 +418,11 @@ export default defineComponent({
        .left-f3-course{
            width: 49%;
            height: 100%;
+           min-height: 361px;
            border-radius: 8px;
            padding: 15px 26px 30px 26px;
            box-sizing: border-box;
-        background: @white;
+           background: @white;
        }
        .left-f3-exper{
              width:49%;

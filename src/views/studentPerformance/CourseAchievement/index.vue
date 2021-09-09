@@ -6,18 +6,19 @@
         <div class="content-list">
             <div class="itemlist" v-for="(item,index) in courseDataList" :key="index">
                 <div class="card-pic">
-                   <img src="../../../assets/images/stuAchievement/d3.jpg" alt="">
+                   <!-- <img src="../../../assets/images/stuAchievement/d3.jpg" alt=""> -->
+                   <img :src="item.url" alt="">
                 </div>
-                <div class="card-mask" @click="lookScore">
+                <div class="card-mask" @click="lookScore(item.id)">
                     <div class="state-desc">{{item.name}}</div>
                 </div>
                 <div class="card-info">
                     <h3 class="card-info-top">{{item.name}}</h3>
-                    <div class="card-info-time">起止时间:{{item.time}}</div>
-                    <div class="card-info-status">课程状态:{{item.status}}</div>
+                    <div class="card-info-time">起止时间:{{item.between_time}}</div>
+                    <div class="card-info-status">课程状态:{{item.state}}</div>
                     <div class="check-score">
-                        <span><img src="../../../assets/images/stuAchievement/teacher.png" alt="" srcset="">{{item.teacher}}</span>
-                        <span class="look-score" @click="lookScore">查看成绩</span>
+                        <span><img src="../../../assets/images/stuAchievement/teacher.png" alt="" srcset="">{{item.user_nick_name}}</span>
+                        <span class="look-score" @click="lookScore(item.id)">查看成绩</span>
                     </div>
                 </div>
             </div>
@@ -27,10 +28,16 @@
 </template>
 <script lang="ts">
 import { message } from 'ant-design-vue'
-import {defineComponent, reactive,toRefs,onMounted} from 'vue'
+import {defineComponent, reactive,toRefs,onMounted, computed} from 'vue'
 import {useRouter} from 'vue-router'
 import request from '../../../api'
 interface CourseType{
+    url?:string,
+    id?:number,
+    between_time?:string,
+    state?:string,
+    user_nick_name?:string,
+    chapter_score?:any,
     name?:string;
     index?:string;
     time?:string;
@@ -45,21 +52,13 @@ export default defineComponent({
     setup:(props,context)=>{
         const router=useRouter()
         const state: State=reactive({
-             courseDataList:[
-                { name:'1111',index:'1',time:'233',status:'进行中',teacher:'1223'},
-                { name:'1111',index:'2',time:'233',status:'进行中',teacher:'sihaif'},
-                { name:'1111',index:'3',time:'233',status:'进行中',teacher:'ddd'}, 
-                { name:'1111',index:'4',time:'233',status:'进行中',teacher:'cdcd'},
-                { name:'1111',index:'5',time:'233',status:'进行中',teacher:'deuh'},
-                { name:'1111',index:'6',time:'233',status:'进行中',teacher:'1223'},
-                { name:'1111',index:'7',time:'233',status:'进行中',teacher:'1223'},
-            ]
+             courseDataList:[]
          })
         function onSearch(value:string){
             console.log(value,'oooooooooooooo')
         }
-        function lookScore(){
-            router.push({path:'/courseScore'})
+        function lookScore(id:any){
+            router.push({path:'/courseScore',query:{id:id}})
         }
         function getData(){
             const infoRequest=(request as any).studentPerformance
@@ -74,13 +73,13 @@ export default defineComponent({
 
             })
             .catch((err:any)=>{
-                console.log(err)
+                message.error(err)
             })
         }
         onMounted(()=>{
-            getData()    
+            getData()
         })
-        return {onSearch,lookScore,getData,...state}
+        return {onSearch,lookScore,getData,...toRefs(state)}
     }
 })
 </script>

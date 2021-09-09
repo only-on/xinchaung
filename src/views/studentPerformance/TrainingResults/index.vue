@@ -4,15 +4,15 @@
             <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入课程名称关键字查询"/>
         </div>
         <div class="content-list">
-            <div class="item-list">
+            <div class="item-list" v-for="(item,i) in traningResult" :key="i">
                 <div class="item-img"><img src="../../../assets/images/cover2.png" alt="" srcset=""></div>
                 <div class="item-info">
-                    <h3>123</h3>
-                    <div>起止时间:111111</div>
-                    <div class="train-status">实训状态:已完成</div>
+                    <h3>{{item.name}}</h3>
+                    <div>起止时间:{{item.between_time}}</div>
+                    <div class="train-status">实训状态:{{item.state}}</div>
                     <div class="train-table">
-                    <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
-                     </a-table>
+                    <a-table :columns="columns" :data-source="tableData" :bordered='true' :pagination="false">
+                    </a-table>
                     </div>
                 </div>
             </div>
@@ -21,62 +21,56 @@
 </template>
 <script lang="ts">
 import { message } from 'ant-design-vue'
-import {defineComponent, onMounted, reactive} from 'vue'
+import {defineComponent, onMounted, reactive, toRefs} from 'vue'
 import request from '../../../api'
 interface State{
+    traningResult:any[],
     columns:any[],
-    data:any[]
+    tableData:any[]
 }
 export default defineComponent({
     name:'TrainingResults',
-    setup:(props,context)=>{
+    setup:()=>{
         const state :State=reactive({
+            traningResult:[],
             columns:[
                     {   title:'花费时间',
-                        dataIndex: 'name',
-                        key: 'name',
+                        dataIndex: 'used_time',
+                        key: 'used_time',
                     },
                     {
                         title: '实训报告',
-                        dataIndex: 'age',
-                        key: 'age',
+                        dataIndex: 'report',
+                        scopedSlots: { customRender: 'report' },
                     },
                     {
                         title: '实训结果',
-                        dataIndex: 'address',
-                        key: 'address',
+                        dataIndex: 'notes',
+                        scopedSlots: { customRender: 'notes' },
                     },
                     {
                         title: '操作视频',
-                        key: 'tags',
-                        dataIndex: 'tags',
-                        scopedSlots: { customRender: 'tags' },
+                        key: 'video',
+                        dataIndex: 'video',
+                        scopedSlots: { customRender: 'video' },
                     },
                     {
                         title: '实训成绩',
-                        key: 'action',
-                        scopedSlots: { customRender: 'action' },
+                        key: 'final_score',
+                        scopedSlots: { customRender: 'final_score' },
                     },
                     {
                         title: '班级排名',
-                        key: 'tags1',
-                        scopedSlots: { customRender: 'action' },
+                        key: 'rank',
+                        scopedSlots: { customRender: 'rank' },
                     },
                      {
                         title: '班级最高分',
-                        key: 'tags2',
-                        scopedSlots: { customRender: 'action' },
+                        dataIndex: 'max_score',
+                        key: 'max_score',
                     },
                 ],
-            data:[{
-                key: '1',
-                name: 'John Brown',
-                age: 32,
-                address: 'New ',
-                tags: ['nice'],
-                tags1: ['nice'],
-                tags2: ['nice'],
-            }]
+            tableData:[]
         })
         function getData(){
             const infoRequest=(request as any).studentPerformance
@@ -84,7 +78,7 @@ export default defineComponent({
             .then((res:any)=>{
             if(res.status==1){
                 console.log(res.data)
-                state.columns=res.data.list
+                state.traningResult=res.data.list
             }else{
                     message.error(res.msg)
                 }
@@ -93,11 +87,22 @@ export default defineComponent({
             .catch((err:any)=>{
                 console.log(err)
             })
+            infoRequest.experimentalResults(
+                {    
+                param: {type:'train'}
+                })
+            .then((res:any)=>{
+                if(res.status==1){
+                    state.tableData=res.data.list
+                    console.log('获取实训成绩')
+                    console.log(res.data)
+                }
+            })
         }
         onMounted(()=>{
             getData()
         })
-        return {...state}
+        return {...toRefs(state)}
     }
     
 })
