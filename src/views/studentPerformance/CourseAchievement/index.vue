@@ -4,7 +4,7 @@
             <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入课程名称关键字查询" @keyup.enter="onSearch" @search="onSearch"/>
         </div>
         <div v-if="courseDataList.length" class="content-list">
-                <div class="itemlist" v-for="(item,index) in courseDataList" :key="index">
+            <div class="itemlist" v-for="(item,index) in courseDataList" :key="index">
                 <div class="card-pic">
                    <!-- <img src="../../../assets/images/stuAchievement/d3.jpg" alt=""> -->
                    <img :src="item.url" alt="">
@@ -14,11 +14,11 @@
                 </div>
                 <div class="card-info">
                     <h3 class="card-info-top">{{item.name}}</h3>
-                    <div class="card-info-time">起止时间:{{item.between_time}}</div>
+                    <div class="card-info-time">起止时间:{{item.between_time?.substring(0,10)+'-'+item.between_time?.substring(20,30)}}</div>
                     <div class="card-info-status">课程状态:{{item.state}}</div>
                     <div class="check-score">
                         <span><img src="../../../assets/images/stuAchievement/teacher.png" alt="" srcset="">{{item.user_nick_name}}</span>
-                        <span class="look-score" @click="lookScore(item.id)">查看成绩</span>
+                        <span class="look-score" @click="lookScore(item.id)"><span class="iconfont icon-chakan1"></span>查看成绩</span>
                     </div>
                 </div>
             </div>
@@ -31,7 +31,7 @@
                 <div>亲~这里什么都没有~</div>
             </div>
         </div>
-
+    <a-pagination :hideOnSinglePage='true' v-model="pagingData.currentPage" :pageSize='pagingData.perPage' :total="pagingData.totalCount" @change="pageChange" />
     </div>
 </template>
 <script lang="ts">
@@ -52,44 +52,69 @@ interface CourseType{
     status?:string;
     teacher?:string;
 }
+interface pageingType{
+    currentPage?:number,
+    pageCount?:number,
+    perPage?:number,
+    totalCount?:number,
+}
+interface paramsType{
+   keyword?:string,
+   limit?:number,
+   page?:number   
+}
 interface State{
     courseDataList:CourseType[];
+    pagingData:pageingType;
+    params:paramsType;
 }
 export default defineComponent({
     name:'CourseAchievement',
     setup:(props,context)=>{
         const router=useRouter()
         const state: State=reactive({
-             courseDataList:[]
+             courseDataList:[],
+             pagingData:{},
+             params:{}
          })
         function onSearch(value:string){
-            getData(value,true)
+            state.params.keyword=value,
+            getData()
         }
         function lookScore(id:any){
             router.push({path:'/courseScore',query:{id:id}})
         }
-        function getData(value?:any,ifSearch?:boolean){
+        function getData(){
             const infoRequest=(request as any).studentPerformance
-            infoRequest.courseAchievement(ifSearch?{
-               param:{keyword:value} 
-            }:'')
+            infoRequest.courseAchievement({
+               param:state.params
+            })
             .then((res:any)=>{
             if(res.status==1){
                 console.log(res.data.list)
                 state.courseDataList=res.data.list
+                state.pagingData=res.data.page
             }else{
                     message.error(res.msg)
                 }
             })
         }
+        function pageChange(current:number){
+            state.pagingData.currentPage
+           state.params.page=current,
+           getData()
+        }
         onMounted(()=>{
             getData()
         })
-        return {onSearch,lookScore,getData,...toRefs(state)}
+        return {onSearch,lookScore,getData,...toRefs(state),pageChange}
     }
 })
 </script>
 <style lang="less" scoped>
+#CourseAchievement{
+    font-size: 14px;
+}
 .searchInput{
     height: 100px;
     line-height: 100px;
