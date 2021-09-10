@@ -213,7 +213,7 @@ export default defineComponent({
       highScore: [],
       lowScore: []
     })
-    function handleData(data) {
+    function handleData(data:any) {
       score.highScore = data.high
       score.lowScore = data.low
       ratio.achievement = data.score

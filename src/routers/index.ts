@@ -15,6 +15,7 @@ const router = createRouter({
 import { inject } from 'vue'
 router.beforeEach((to, _, next) => {
   // handleRouter(to)
+  // console.log(to)
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
   if (to.meta && to.meta.outward) {

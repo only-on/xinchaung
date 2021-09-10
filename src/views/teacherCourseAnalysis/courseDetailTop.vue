@@ -204,7 +204,7 @@ export default defineComponent({
       getReportTemplate()
     }
 
-    function onSearch(val) {
+    function onSearch(val:string) {
       dataSource.name = val
       getReportTemplate()
     }

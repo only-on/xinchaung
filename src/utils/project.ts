@@ -1,6 +1,7 @@
 import { App, Plugin, Component } from 'vue'
 import NavTab from 'src/components/NavTab.vue'
 import Breadcrumb from 'src/components/Breadcrumb.vue'
+import Empty from 'src/components/Empty.vue'
 import { initAntdv } from './antdv'
 import router from "../routers/index";
 import i18n from '../i18n'
@@ -50,7 +51,7 @@ export default function initProject(app: App<Element>) {
             app: app
         }
     })(app)
-    appManager.registerComponents({NavTab, Breadcrumb}).installPlugins(router, i18n, store, customDirective)
+    appManager.registerComponents({NavTab, Breadcrumb,Empty}).installPlugins(router, i18n, store, customDirective)
     initAntdv(appManager).installPlugins(...AntdvMarkdownRegistration.plugins).registerComponents(AntdvMarkdownRegistration.components)
     return app
 }

@@ -9,7 +9,7 @@
 <script lang="ts">
   import { defineComponent, onMounted, reactive, toRefs, ref, nextTick, watch } from 'vue'
   import * as echarts from 'echarts'
-  import * as option from './barOption.ts'
+  import * as option from './barOption'
   interface ISeriesData {
     value: any
     name: string
@@ -78,7 +78,7 @@
         console.log(props.studentEva)
         console.log(arr)
         option.pieOption.color = ['#8955b5', '#ea775c', '#6d7e9d', '#ffc719', '#63baad', '#e3e6dd']
-        option.pieOption.title.text = num
+        // option.pieOption.title.text = num
         option.pieOption.series[0].data = arr
         echartsPie3.setOption(option.pieOption)
       }

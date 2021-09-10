@@ -2,7 +2,7 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input">
-          <a-input v-model:value="ForumSearch.title" placeholder="请输入帖子名称" @keyup="search" />
+          <a-input-search v-model:value="ForumSearch.title" placeholder="请输入帖子名称" @search="search" />
         </div>
         <div  class="item custom_select">
             <a-select v-model:value="ForumSearch.type"  placeholder="请选择发帖类型" :options="options"></a-select>
@@ -55,7 +55,7 @@ import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IforumSearch{
   title:string,
-  type:string | undefined,
+  type:string | '' ,
   pageSize:number,
   page:number
 }
@@ -148,6 +148,9 @@ export default defineComponent({
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
       tabType.value=val
+      ForumSearch.title=''
+      ForumSearch.page=1
+      ForumSearch.type=''
       initData()
     })
     var ForumArticle:Ireply=reactive({
@@ -158,7 +161,7 @@ export default defineComponent({
       title:'',
       pageSize:10,
       page:1,
-      type:undefined
+      type:''
     })
     function initData(){
       loading.value=true
@@ -285,8 +288,8 @@ export default defineComponent({
             padding-left: 30px;
             align-items: center;
           }
-          .ant-input{
-            padding-left: 30px;
+          :deep(.ant-input){
+              padding-left: 20px;
           }
         }
         .item:nth-child(2){

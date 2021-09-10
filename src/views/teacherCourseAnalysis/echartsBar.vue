@@ -6,7 +6,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs, ref } from 'vue'
 import * as echarts from 'echarts'
-import * as option from './barOption.ts'
+import * as option from './barOption'
 export default defineComponent({
   components: {},
   setup() {

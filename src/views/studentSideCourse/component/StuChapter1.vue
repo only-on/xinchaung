@@ -50,11 +50,7 @@
         </div>
       </div>
     </div>
-    <div class="empty" v-if="!chapterData.nums">
-      <div class="emptyContent">
-        <span class="emptyCon">当前章节暂无相关资料!</span>
-      </div>
-    </div>
+    <Empty v-if="!chapterData.nums" :text="'当前章节暂无相关资料!'" />
   </div>
 </template>
 
