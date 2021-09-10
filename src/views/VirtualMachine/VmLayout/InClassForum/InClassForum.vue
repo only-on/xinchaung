@@ -95,9 +95,26 @@
         </div>
       </a-tab-pane>
       <a-tab-pane key="2" tab="我的提问">
-        <div>
-          <div @click="vncScreenshot">截图</div>
-          <img v-if="imageUrl" :src="imageUrl" alt="avatar" />
+        <div class="put-question-tab">
+          <span
+            @click="vncScreenshot"
+            class="icon-jieping iconfont screen-shot theme-active"
+          ></span>
+
+          <div>
+            <div class="put-question-head">
+              <label>主题：</label><a-input v-model:value="forumThemeTitle"></a-input>
+            </div>
+            <QuillEditor
+              v-model="forumThemeContent"
+              height="500px"
+            ></QuillEditor>
+            <div class="put-question-footer">
+              <a-button type="primary" @click="activeKey='1'">返回</a-button>
+              <a-button type="primary" @click="questionSubmit">提交</a-button>
+            </div>
+            <img v-if="imageUrl" :src="imageUrl" />
+          </div>
         </div>
       </a-tab-pane>
     </a-tabs>
@@ -111,13 +128,24 @@
       @ok="replySubmit"
       width="740px"
     >
-      <QuillEditor v-if="replyVisible" v-model="content" height="500px"></QuillEditor>
-      {{ content }}
+      <QuillEditor
+        v-if="replyVisible"
+        v-model="content"
+        height="500px"
+      ></QuillEditor>
     </a-modal>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, Ref, onMounted, reactive, toRefs } from "vue";
+import {
+  defineComponent,
+  ref,
+  Ref,
+  onMounted,
+  reactive,
+  toRefs,
+  watch,
+} from "vue";
 import {
   canvasToImage,
   canvasToFile,
@@ -137,6 +165,7 @@ interface Iparams {
 interface IreactiveData {
   forumListData: Array<any>;
   content: Delta;
+  forumThemeContent: Delta;
 }
 export default defineComponent({
   components: {
@@ -145,7 +174,7 @@ export default defineComponent({
   setup() {
     const forum = request.studentForum;
     console.log(forum);
-
+    const activeKey=ref("1")
     const currentOpenContent: Ref<number | string> = ref(0);
     const imageUrl: Ref<string> = ref("");
     const reactiveData: IreactiveData = reactive({
@@ -153,8 +182,11 @@ export default defineComponent({
       content: {
         ops: [],
       },
+      forumThemeContent: {
+        ops: [],
+      },
     });
-    const { forumListData, content } = toRefs(reactiveData);
+    const { forumListData, content, forumThemeContent } = toRefs(reactiveData);
     const lookParams: Ref<Iparams> = ref({
       title: "",
       type: "",
@@ -164,6 +196,8 @@ export default defineComponent({
     const pageSum: Ref<number> = ref(0);
     const replyToUser: Ref<string> = ref("@");
     const replyVisible: Ref<boolean> = ref(false);
+    const forumThemeTitle: Ref<string> = ref("");
+
     // const content: Ref<Delta> = ref({
     //   ops: [
     //   ],
@@ -175,6 +209,13 @@ export default defineComponent({
     onMounted(() => {
       getPubIndex(lookParams.value);
     });
+
+    watch(
+      () => forumThemeContent.value,
+      () => {
+        console.log(forumThemeContent.value);
+      }
+    );
     function onSearch() {
       lookParams.value.page = 1;
       getPubIndex(lookParams.value);
@@ -254,18 +295,35 @@ export default defineComponent({
 
     function replySubmit() {
       replyParams.content = JSON.stringify(content.value);
-      forum.editReply({param:{ForumArticle:replyParams}}).then((res:any)=>{
-         getPubIndex(lookParams.value);
-        //  replyVisible.value = false;
-         content.value={
-           ops:[]
-         }
+      forum
+        .editReply({ param: { ForumArticle: replyParams } })
+        .then((res: any) => {
+          getPubIndex(lookParams.value);
+          //  replyVisible.value = false;
+          content.value = {
+            ops: [],
+          };
 
-         replyToUser.value = "@";
+          replyToUser.value = "@";
+        });
+    }
+
+    function questionSubmit() {
+      let params = {
+        forum: {
+          type: 1,
+          title:forumThemeTitle.value,
+          content:JSON.stringify(forumThemeContent.value)
+        },
+      };
+      forum.createForum({ param: params }).then((res:any)=>{
+        console.log(res);
+        
       });
+      activeKey.value="1"
     }
     return {
-      activeKey: ref("1"),
+      activeKey,
       onSearch,
       currentOpenContent,
       openOrClose,
@@ -281,6 +339,8 @@ export default defineComponent({
       replySubmit,
       closeReplyModal,
       content,
+      forumThemeTitle,
+      questionSubmit,
     };
   },
 });
@@ -406,6 +466,32 @@ export default defineComponent({
 .forum-modal {
   .ant-modal-footer {
     text-align: center;
+  }
+}
+.put-question-tab {
+  position: relative;
+  .screen-shot {
+    position: absolute;
+    right: 0;
+    top: -58px;
+    font-size: 24px;
+    color: @theme-color;
+    cursor: pointer;
+  }
+  .put-question-head {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    > label {
+      flex-shrink: 0;
+    }
+  }
+  .put-question-footer {
+    text-align: right;
+    margin-top: 20px;
+    > button {
+      margin-left: 15px;
+    }
   }
 }
 </style>

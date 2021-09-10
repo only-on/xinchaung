@@ -72,7 +72,7 @@ export default defineComponent({
   props: ["VmData"],
   setup(props, { emit }) {
     const vmData: Ref<Array<Vm>> = reactive(props.VmData);
-    const currentComponent = ref("VM");
+    const currentComponent = ref(vmData[0].key);
     const openStatus = ref(false); // left内容打开状态
 
     const vmWrapEl:Ref<HTMLElement|null> = ref(null);

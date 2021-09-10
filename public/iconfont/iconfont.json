@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "24250988",
+      "name": "截屏",
+      "font_class": "jieping",
+      "unicode": "e691",
+      "unicode_decimal": 59025
+    },
+    {
       "icon_id": "5121525",
       "name": "项目",
       "font_class": "xiangmu1",

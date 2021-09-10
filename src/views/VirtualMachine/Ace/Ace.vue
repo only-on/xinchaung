@@ -36,7 +36,7 @@
           <span><i class="iconfont icon-baocun"></i>保存</span>
           <span><i class="iconfont icon-beifen"></i>备份</span>
           <span><i class="iconfont icon-huigun"></i>回滚</span>
-          <span><i class="iconfont icon-yunhang"></i>运行</span>
+          <span @click="run"><i class="iconfont icon-yunhang"></i>运行</span>
         </div>
         <ace
           v-model:value="content"
@@ -99,7 +99,7 @@ export default defineComponent({
     const router = useRouter();
     onMounted(() => {});
     let navData = [
-      { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+      // { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
       { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
       { name: "实验报告", key: "report", icon: "icon-baogao1" },
@@ -113,6 +113,10 @@ export default defineComponent({
     function openOrClose() {
       openOrCloseResultStatus.value = !openOrCloseResultStatus.value;
     }
+
+    function  run() {
+      content.value="111111111111111111"
+    }
     return {
       roleType,
       back,
@@ -122,6 +126,7 @@ export default defineComponent({
       openOrClose,
       openOrCloseResultStatus,
       aceLoading,
+      run
     };
   },
 });

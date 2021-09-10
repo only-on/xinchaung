@@ -179,7 +179,7 @@ export default defineComponent({
       console.log('准备虚拟机环境')
       let param:IEnvirmentsParam= {
         type: "course",
-        opType: val,
+        opType: 'start',
         taskId: id.value,
       }
 
