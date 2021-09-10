@@ -16,7 +16,7 @@
                                 <img src="../../../../assets/images/stuAchievement/teacher.png" alt="" srcset="">
                                 {{courseDetail.teacher}}
                             </p>
-                            <a href="">课程资源&nbsp;>></a>
+                            <p class="resource" @click="toCourseResource(courseDetail.id)">课程资源&nbsp;>></p>
                         </div>
                     </div>
                 </div>
@@ -80,6 +80,7 @@ interface ObjectArrType{
     index?:string,
 }
 interface courseDetailType{
+    id?:any,
     name?:string,
     url?:string,
     expire?:any,
@@ -100,43 +101,61 @@ interface State{
 export default defineComponent({
     name:'courseScore',
     setup:(props,context)=>{
-
+        const router = useRouter();
+        var updata=inject('updataNav') as Function
+        updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:0})
         const state:State=reactive({
             courseDetail:{},
             CourseScoreInfo:[],
+            						
              columns:[
-                    {   title:'花费时间',
+                    {   title:'实验得分',
                         dataIndex: 'name',
                         key: 'name',
                     },
                     {
-                        title: '实训报告',
+                        title: '重修得分',
                         dataIndex: 'age',
                         key: 'age',
                     },
                     {
-                        title: '实训结果',
+                        title: '最终得分',
                         dataIndex: 'address',
                         key: 'address',
                     },
                     {
-                        title: '操作视频',
+                        title: '班级排名',
                         key: 'tags',
                         dataIndex: 'tags',
                         scopedSlots: { customRender: 'tags' },
                     },
                     {
-                        title: '实训成绩',
+                        title: '班级最高分',
                         key: 'action',
                         scopedSlots: { customRender: 'action' },
                     },
                     {
-                        title: '班级排名',
+                        title: '实验习题',
                         key: 'tags1',
                         scopedSlots: { customRender: 'action' },
                     },
                      {
-                        title: '班级最高分',
+                        title: '实验报告',
+                        key: 'tags2',
+                        scopedSlots: { customRender: 'action' },
+                    },
+                     {
+                        title: '自评结果',
+                        key: 'tags2',
+                        scopedSlots: { customRender: 'action' },
+                    },
+                     {
+                        title: '教师评价',
+                        key: 'tags2',
+                        scopedSlots: { customRender: 'action' },
+                    },
+                     {
+                        title: '成绩明细',
                         key: 'tags2',
                         scopedSlots: { customRender: 'action' },
                     },
@@ -151,8 +170,6 @@ export default defineComponent({
                 tags2: ['nice'],
             }]
         })
-        var updata=inject('updataNav') as Function
-        updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:0})
         function expand(index:number){
             state.CourseScoreInfo[index].dis=!state.CourseScoreInfo[index].dis
         }
@@ -165,8 +182,7 @@ export default defineComponent({
                 state.CourseScoreInfo[index].children[j].experdis=!state.CourseScoreInfo[index].children[j].experdis
             }
         }
-         function getData(){
-            const router = useRouter();
+        function getData(){
             const relateId=router.currentRoute.value.query.id
             console.log(router.currentRoute.value.query.id)
             const infoRequest=(request as any).studentPerformance
@@ -181,6 +197,10 @@ export default defineComponent({
                 state.CourseScoreInfo=res.data.tree
             })
             
+        }
+        function toCourseResource(id:any){
+            console.log(id)
+            router.push('/courseResources')
         }
          onMounted(() => {
             getData()
@@ -199,7 +219,7 @@ export default defineComponent({
                 })
             }
          })
-        return {...toRefs(state),expand,viewResults,getData}
+        return {...toRefs(state),expand,viewResults,toCourseResource,getData}
     }
     
 })
@@ -236,11 +256,14 @@ export default defineComponent({
                     font-weight: 600;
                 }
                 .card-info-bottom{
-                    img{
-                        width: 24px;
-                        height: 24px;
-                        margin-right: 8px;
-                       }
+                        img{
+                            width: 24px;
+                            height: 24px;
+                            margin-right: 8px;
+                        }
+                        .resource{
+                            color: #8955B5;
+                        }
                     }
                 }
             }

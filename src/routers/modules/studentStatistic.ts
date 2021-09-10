@@ -2,7 +2,7 @@
 import Layout from "../../views/common/Layout.vue";
 
 export default {
-    path: "",
+    path: "/studentStatistic",
     component: Layout,
     meta: {
         title: "统计",
@@ -10,7 +10,7 @@ export default {
     },
     children: [
         {
-            path: "/studentStatistic",
+            path: "",
             name: "studentStatistic",
             component: () => import("src/views/studentStatistic/index.vue"),
             meta: {

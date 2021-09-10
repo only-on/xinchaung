@@ -2,7 +2,7 @@
 import Layout from "../../views/common/Layout.vue";
 
 export default {
-    path: "",
+    path: "/studentPerformance",
     component: Layout,
     meta: {
         title: "成绩",
@@ -10,7 +10,7 @@ export default {
     },
     children: [
         {
-            path: "/studentPerformance",
+            path: "",
             name: "studentPerformance",
             component: () => import("src/views/studentPerformance/index.vue"),
             meta: {
@@ -20,12 +20,21 @@ export default {
         },
         {
             path: "/courseScore",
-            name: "uuuuuu",
+            name: "courseScore",
             component: () => import("src/views/studentPerformance/CourseAchievement/courseScore/index.vue"),
             meta: {
-                title: "实训成绩",
+                title: "课程得分",
                 authCode: ""
             },
-        }
+        },
+        {
+            path: "/courseResources",
+            name: "courseResources",
+            component: () => import("src/views/studentPerformance/CourseAchievement/courseResources/index.vue"),
+            meta: {
+                title: "课程资源",
+                authCode: ""
+            },
+        },
     ]
 }
