@@ -1,9 +1,10 @@
 <script lang="tsx">
-import { defineComponent, VNode,reactive} from "vue";
+import { defineComponent, VNode,reactive,Ref,ref} from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { useRouter } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch';
+import { watch } from "fs";
 export default defineComponent({
   name: "MenuBar",
   props: {
@@ -26,39 +27,38 @@ export default defineComponent({
           }
           items = <a-menu class="menu__group">{tmpChildren}</a-menu>;
         }
-
+      // select
         return (
-          <a-dropdown
+          <a-dropdown 
             v-slots={{
               overlay() {
                 return items;
               },
             }}
           >
-            <a
-              class={item.active ? "menu__top-item active" : "menu__top-item"}
-              onClick={(e: Event) => {
-                if(item.items && item.items.length){
-                  e.preventDefault();
-                }else{
-                  // menus[2].active=true
-                  router.replace(item.url[0]!)
-                  // console.log(menus)
+            <div
+              class={(item.label === activeName.value) ? "menu__top-item active" : "menu__top-item"}
+              onClick={
+                  (e: Event) => {
+                    if(item.items && item.items.length){
+                      // console.log(item.items)
+                    }else{
+                      select('Parent',item)
+                    }
                 }
-              }}
+              } 
             >
               {item.label}
-            </a>
+            </div>
           </a-dropdown>
         );
       }
       return (
         <a-menu-item class="menu__item">
-          <a href={item.url[0] + ""}>{item.label}</a>
+          <div onClick={(e: Event)=>{select('Children',item)}}>{item.label}</div>
         </a-menu-item>
       );
     };
-
     var menus:MenuItem[]=reactive([])
     var children: Array<VNode>=reactive([])
     const renderMenu = function (menuData: MenuItem[]) {
@@ -67,13 +67,39 @@ export default defineComponent({
       });
       return <div class="nav__menu">{children}</div>;
     };
+    var activeName:Ref<string>=ref('')
+    function select(level:string,val:MenuItem){
+       router.replace(val.url[0]!)
+      if(level==='Parent'){
+        // router.replace(val.url[0]!)
+        activeName.value=val.label
+      }else{
+        menus.forEach((v:MenuItem)=>{
+          v.items?v.items.forEach((i:MenuItem)=>{
+            if(i.label===val.label){
+                activeName.value=v.label
+                return
+            }
+          }):''
+        })
+      }
+      // console.log(val)     //  ant-dropdown-open
+    }
+    function loopTree(val:any){
+      const fn=()=>{
+
+      }
+    }
     const http=(request as any).common
     http.getMenu().then((res:IBusinessResp)=>{
       menus.length=0
       let data=res.data
+      activeName.value=data && data[0].label
       menus.push(...data)
     })
     return () => (renderMenu(menus as MenuItem[]));
+    // return () => (renderMenu(FakeMenu.data as MenuItem[]));
+    
   },
   components: {},
 });
@@ -88,6 +114,7 @@ export default defineComponent({
     color: @text-color-secondary;
     font-size: @font-size-lg;
     text-align: center;
+    cursor: pointer;
     &.active {
       color: @text-color;
     }
