@@ -4,7 +4,8 @@
             <div class="course-info">
                 <div class="course-info-left">
                     <div class="card-pic">
-                        <img src="../../../../assets/images/stuAchievement/d3.jpg" alt="">
+                        <!-- <img src="../../../../assets/images/stuAchievement/d3.jpg" alt=""> -->
+                        <img :src="courseDetail.url" alt="">
                     </div>
                     <div class="card-info">
                         <h3 class="card-info-top">{{courseDetail.name}}</h3>
@@ -80,6 +81,7 @@ interface ObjectArrType{
 }
 interface courseDetailType{
     name?:string,
+    url?:string,
     expire?:any,
     state?:any,
     teacher?:any,

@@ -5,7 +5,10 @@
         </div>
         <div v-if="traningResult.length" class="content-list">
             <div class="item-list" v-for="(item,i) in traningResult" :key="i">
-                <div class="item-img"><img src="../../../assets/images/cover2.png" alt="" srcset=""></div>
+                <div class="item-img">
+                    <!-- <img src="../../../assets/images/cover2.png" alt="" srcset=""> -->
+                    <img :src="item.url" alt="">
+                </div>
                 <div class="item-info">
                     <h3>{{item.name}}</h3>
                     <div>起止时间:{{item.between_time}}</div>
@@ -16,6 +19,7 @@
                     </div>
                 </div>
             </div>
+            <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div>
         </div>
         <div v-else class="no-search-data">
             <div class="noMatching">
@@ -31,8 +35,15 @@
 import { message } from 'ant-design-vue'
 import {defineComponent, onMounted, reactive, toRefs} from 'vue'
 import request from '../../../api'
+interface pageingType{
+    currentPage?:number,
+    pageCount?:number,
+    perPage?:number,
+    totalCount?:number,
+}
 interface State{
     traningResult:any[],
+    pagingData:pageingType;
     columns:any[],
     tableData:any[]
 }
@@ -41,6 +52,7 @@ export default defineComponent({
     setup:()=>{
         const state :State=reactive({
             traningResult:[],
+            pagingData:{},
             columns:[
                     {   title:'花费时间',
                         key:'used_time',
@@ -96,6 +108,7 @@ export default defineComponent({
             if(res.status==1){
                 console.log(res.data)
                 state.traningResult=res.data.list
+                state.pagingData=res.data.page
             }else{
                     message.error(res.msg)
                 }
