@@ -346,6 +346,9 @@ export default defineComponent({
 
 <style lang="less">
   // @theme-color: #8955B5;
+  @node-icon-color: #bb9cd6;
+  @high-color: #eab362;   // 高配颜色
+  @hover-bgcolor: #f1e6f5;    
 .course-left-tree {
   li {
     padding: 0px !important;
@@ -357,7 +360,7 @@ export default defineComponent({
     color: rgba(0,0,0,.65);
     font-size: 14px;
     &:hover {
-      background-color: #f1e6f5
+      background-color: @hover-bgcolor;
     }
   }
   li .ant-tree-node-content-wrapper {
@@ -367,7 +370,7 @@ export default defineComponent({
     color: rgba(0,0,0,.65);
     font-size: 14px;
     &:hover {
-      background-color: #f1e6f5
+      background-color: @hover-bgcolor;
     }
   }
   li ul {
@@ -469,16 +472,16 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: #bb9cd6;
+          color: @node-icon-color;
           font-size: 14px;
           &.icon-jinzhi {
-            color: #eab362;
+            color: @high-color;
           }
         }
       }
       .type-name {
         font-size: 12px;
-        color: #bb9cd6;
+        color: @node-icon-color;
         margin-left: 5px;
       }
     }
@@ -509,11 +512,11 @@ export default defineComponent({
   div.height-experiment {
     .experiment-type {
       .type-name {
-        color: #eab362;
+        color: @high-color;
       }
     }
     .experiment-name {
-      color: #eab362;
+      color: @high-color;
     }
   }
   &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {

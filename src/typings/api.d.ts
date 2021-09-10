@@ -8,6 +8,7 @@ import {IstudentExam} from "src/api/modules/studentExam"
 import {IvmApi} from "src/api/modules/vmApi"
 import { ICourseTreeApis } from "src/api/modules/courseTree"
 import { ITeacherCourseApis } from "src/api/modules/teachCourse"
+import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysis"
 
 /**
  * 通用响应类型
@@ -24,7 +25,7 @@ export interface IApiItem {
     dataType?: TDataType;
 }
 
-export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'studentCourse' | 'teachCourse' | 'courseTree'
+export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'studentCourse' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis'
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -45,5 +46,6 @@ export interface IApiCollection {
     teachCourse: ITeacherCourseApis,
     studentExam:IstudentExam,
     vmApi:IvmApi,
-    courseTree: ICourseTreeApis
+    courseTree: ICourseTreeApis,
+    teacherCourseAnalysis: ITeacherCourseAnalysisApis,
 }

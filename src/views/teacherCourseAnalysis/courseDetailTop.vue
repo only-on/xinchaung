@@ -1,0 +1,370 @@
+<template>
+  <div class="course-info">
+    <div class="name-box">
+      <span class="name">{{data.name}}</span>
+      <!-- <span class="status in-progress">进行中</span -->
+      <span class="status" 
+      :class="{'not-start': data.state === 2, 'in-progress': data.state === 3, 'finish': data.state !== 3 && data.state !== 2}"
+      >{{courseStatus(data.state)}}
+      </span>
+      <span class="icon-fanhui iconfont"></span>
+    </div>
+    <div class="desc-box">
+      <span class="desc" :title="data.introduce">{{data.introduce}}</span>
+    </div>
+    <div class="statistics">
+      <div class="statistics-info chapter-box">
+        <span>{{data.chapter_total}}</span>
+        <span>章节</span>
+      </div>
+      <div class="statistics-info experiment-box">
+        <span>{{data.content_total}}</span>
+        <span>实验</span>
+      </div>
+      <div class="statistics-info type-box">
+        <span>{{data.category ? data.category.name: ''}}</span>
+        <span>课程方向</span>
+      </div>
+      <div class="statistics-info job-box">
+        <span>{{data.direction ? data.direction.name: ''}}</span>
+        <span>职业方向</span>
+      </div>
+      <div class="statistics-info time">
+        <span> 
+          {{data.start_time ? data.start_time.split(' ')[0] : ''}} - 
+          {{data.end_time ? data.end_time.split(' ')[0] : ''}}
+        </span>
+        <span>课程时间</span>
+      </div>
+      <div class="operation-box">
+        <span class="icon-mobandaishezhi iconfont" title="选择报告模板" @click="openReportModal()"></span>
+        <span class="icon-bianji1 iconfont" title="编辑"></span>
+      </div>
+    </div>
+  </div>
+  <a-modal class="report-modal" title="选择实验报告" :footer="null" :visible="reportVisible" @cancel="reportVisible = false">
+    <div class="search-top-box">
+      <a-input-search v-model="name" placeholder="请输入查询关键字" style="width: 300px" @search="onSearch" />
+    </div>
+    <a-table 
+      :rowKey="rowkey"
+      :dataSource="reportList" 
+      :columns="columns" 
+      :bordered="true"
+      :pagination="false"
+    >
+      <template #operation="{ record }">
+        <a @click="selectReport(record.id)">选择</a>
+      </template>
+    </a-table>
+    <div class="page-footer-box">
+      <a-pagination
+        show-size-changer
+        :total="total"
+        :page-size="pageSize"
+        @change="pageChange"
+        @showSizeChange="onShowSizeChange"
+      />
+    </div>
+  </a-modal>
+</template>
+
+<script lang="ts">
+import { defineComponent, onMounted, reactive, toRefs, ref } from 'vue'
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { ICourseAnalysisHttp, ICourseInfo, ITreeData, ITreeDataItem } from './typings'
+interface IreportList {
+  type: string
+  name: string
+}
+interface IDataSource {
+  reportList: IreportList[],
+  pageSize: number
+  total: number
+  page: number
+  name: string
+}
+
+export default defineComponent({
+  setup() {
+    let courseInfo = reactive<ICourseInfo>({
+      type: 'course',
+      courseType: 1,
+      courseId: 501703,
+    })
+    const http=(request as ICourseAnalysisHttp).teacherCourseAnalysis
+
+    let courseDetail = reactive({
+      data: {
+        name: '',
+        state: 0,
+        introduce: '',
+        content_total: 0,
+        chapter_total: 0,
+        category: {name: ''},
+        direction: {name: ''},
+        start_time: '',
+        end_time: '',
+      }
+    })
+    function getCourseDetail() {
+      http.getCourseDetail({
+        urlParams: {
+          courseId: courseInfo.courseId
+        }
+      }).then((res: IBusinessResp) => {
+        console.log(res.data)
+        courseDetail.data = res.data
+      })
+    }
+    // 判断课程进行状态
+    function courseStatus(sort: number) {
+      if (sort === 1) {
+        return '已结束' // 未开始
+      } else if (sort === 2) {
+        return '未开始' // 已结束
+      } else if (sort === 3) {
+        return '进行中' // 进行中
+      } else {
+        return '未知'
+      }
+    }
+
+    let reportVisible = ref(false)
+    let dataSource = reactive<IDataSource>({
+      reportList: [],
+      total: 0,
+      pageSize: 10,
+      page: 1,
+      name: ''
+    })
+    // 选择实验报告
+    function openReportModal() {
+      console.log(111)
+      reportVisible.value = true
+      getReportTemplate()
+    }
+    function getReportTemplate () {
+      http.getReportTemplate({
+        param: {
+          name: dataSource.name,
+          page: dataSource.page,
+          pageSize: dataSource.pageSize
+        }
+      }).then((res: IBusinessResp) => {
+        console.log(res)
+        dataSource.reportList = res.data.list
+        dataSource.total = res.data.page.totalCount
+        dataSource.pageSize = res.data.page.perPage
+      })
+    }
+    let columns = [
+      {
+        title: '模板名称',
+        dataIndex: 'name',
+        key: 'name',
+      },
+      {
+        title: '模板类型',
+        dataIndex: 'type',
+        key: 'type',
+      },
+      {
+        title: '操作',
+        dataIndex: 'operation',
+        key: 'operation',
+        slots: { customRender: 'operation' },
+      },
+    ]
+    function selectReport(id: number) {
+      console.log(222, id)
+      http.saveReportTemplate({
+        param: {
+          owner_type: courseInfo.type,
+          owner_id: courseInfo.courseId,
+          template_id: id
+        }
+      }).then((res: IBusinessResp) => {
+        console.log(res)
+        reportVisible.value = false
+      })
+    }
+    // 页码发生变化时
+    function pageChange(page: number, pageSize: number) {
+      dataSource.page = page
+      dataSource.pageSize = pageSize
+      getReportTemplate()
+    }
+    // pageSize 变化的回调
+    function onShowSizeChange(current: number, size: number) {
+      console.log(current, size)
+      dataSource.page = current
+      dataSource.pageSize = size
+      getReportTemplate()
+    }
+
+    function onSearch(val) {
+      dataSource.name = val
+      getReportTemplate()
+    }
+    function rowkey(record: {}, index: number) {
+      return index
+    }
+    onMounted(() => {
+      getCourseDetail()
+    })
+    return {
+      ...toRefs(courseDetail),
+      courseStatus,
+      openReportModal,
+      reportVisible,
+      columns,
+      selectReport,
+      ...toRefs(dataSource),
+      onShowSizeChange,
+      pageChange,
+      rowkey,
+      onSearch,
+    }
+  },
+})
+</script>
+
+
+<style lang="less" scoped>
+.course-info {
+  // padding: 0 70px;
+  .name-box {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    .name {
+      font-size: 24px;
+      color: #fff;
+      line-height: 33px;
+      letter-spacing: 2px;
+    }
+    .status {
+      right: 0;
+      padding: 3px 10px;
+      background: #373737;
+      font-size: 12px;
+      text-align: center;
+      vertical-align: text-bottom;
+      margin-left: 24px;
+      border-radius: 11px;
+      height: 22px;
+      &.not-start {
+        background: @white;
+        color: #acacac;
+      }
+      &.in-progress {
+        background: #60ae34;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+        color: @white;
+      }
+      &.finish {
+        color: @white;
+        background: #989898;
+        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+      }
+    }
+    .icon-fanhui {
+      margin-left: auto;
+      display: inline-block;
+      line-height: 40px;
+      text-align: center;
+      width: 40px;
+      height: 40px;
+      background: rgba(137,85,181,.8);
+      border-radius: 50%;
+      color: hsla(0,0%,100%,.8);
+      cursor: pointer;
+    }
+  }
+  .desc-box {
+    height: 66px;
+    margin-top: 12px;
+    .desc {
+      width: 926px;
+      height: 50px;
+      font-size: 14px;
+      font-weight: 400;
+      text-align: left;
+      color: #fff;
+      line-height: 24px;
+      letter-spacing: 1px;
+      display: block;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+    }
+  }
+  .statistics {
+    display: flex;
+    .statistics-info {
+      display: flex;
+      flex-direction: column;
+      border-right: 1px solid rgba(255, 255, 255, 0.25);
+      padding-right: 32px;
+      padding-left: 32px;
+      > span {
+        text-align: center;
+
+        &:nth-child(1) {
+          color: #ffffff;
+          font-size: 14px;
+        }
+
+        &:nth-child(2) {
+          color: rgba(255, 255, 255, 0.65);
+          font-size: 12px;
+        }
+      }
+      &.chapter-box {
+        padding-left: 0;
+      }
+      &.time {
+        Padding-right: 0;
+        border-right: none;
+      }
+    }
+    .operation-box {
+    margin-left: auto;
+
+      > span {
+        display: inline-block;
+        line-height: 40px;
+        text-align: center;
+        width: 40px;
+        height: 40px;
+        background: #ff8f00;
+        border-radius: 50%;
+        margin-left: 24px;
+        color: @white;
+        cursor: pointer;
+
+        &:hover {
+          background: #ffaf00;
+        }
+      }
+    }
+  }
+}
+:deep(.ant-table) .ant-table-content .ant-table-body > table {
+  border: 1px solid #e8e8e8;
+  .ant-table-thead > tr > th {
+    border-bottom: 1px solid #e8e8e8;
+  }
+  .ant-table-tbody > tr > td {
+    border-bottom: 1px solid #e8e8e8;
+  }
+}
+.search-top-box {
+  margin-bottom: 20px;
+}
+.page-footer-box {
+  text-align: center;
+  margin-top: 20px;
+}
+</style>

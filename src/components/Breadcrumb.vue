@@ -34,7 +34,7 @@ export default defineComponent({
     const store=useStore()
     const router = useRouter();
     let breadcrumbArr = computed(()=>{ return store.state.breadcrumb });
-    // console.log(breadcrumbArr.value)
+    console.log(breadcrumbArr.value)
     function Jump(v:any){
       router.push(v)
     }
