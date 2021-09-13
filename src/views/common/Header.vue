@@ -1,7 +1,9 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <img class="logo" src="../../assets/test/favicon.png" alt="" /><span
+      <!-- <img class="logo" src="../../assets/test/favicon.png" alt="" /> -->
+      <div class="logo"></div>
+      <span
         class="web-title"
         >人工智能教学实训系统</span
       >
@@ -12,7 +14,9 @@
     <div class="header-right">
       <div class="help-message"><span></span><span>远程协助消息</span></div>
       <div class="user-name">
-        <img src="../../assets/test/teacher_p.png" /><span>文和</span>
+        <!-- <img src="../../assets/test/teacher_p.png" /> -->
+        <div class="nser-img"></div>
+        <span>文和</span>
       </div>
     </div>
   </header>
@@ -66,6 +70,9 @@ export default defineComponent({
       width: 35px;
       height: 22px;
       margin-right: 10px;
+      background:url('../../assets/test/favicon.png') no-repeat center;
+      background-size: 100% 100%;
+     
     }
     .web-title {
       color: @theme-color;
@@ -92,6 +99,16 @@ export default defineComponent({
     align-items: center;
     .help-message {
       margin-right: 15px;
+    }
+    .user-name{
+      display: flex;
+      align-items: center;
+      .nser-img{
+        width:28px;
+        height:28px;
+         background:url('../../assets/test/teacher_p.png') no-repeat center;
+         background-size: 100% 100%;
+      }
     }
   }
 }

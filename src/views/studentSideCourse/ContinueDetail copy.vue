@@ -64,15 +64,13 @@
 
 <script lang="ts">
 import bg from '../../assets/images/studentcourse/course-detail_bg.jpg'
-import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref,provide} from 'vue'
+import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref ,onBeforeMount,provide} from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import StuChapter from './component/StuChapter1.vue'
 import ChapterExperiment from './component/ChapterExperiment.vue'
 import DragTree from '../../components/dragTree.vue'
-import { resolve } from 'path/posix';
-import { log } from 'console';
 
 interface IdetailObj{
   info:any;
@@ -88,9 +86,11 @@ export default defineComponent({
   setup (props,{emit}){
     const router = useRouter();
     const http=(request as any).studentCourse
-    var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter type
+    var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({showContent:false,tabs:[],navPosition:'outside',navType:false})
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false})
+
+    var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter type
     
     const route = useRoute();
     var chapter_id:Ref<number>=ref(0)
@@ -113,23 +113,34 @@ export default defineComponent({
       initData()
     })
     function initData(){
-     
-     http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
+      // const data2=await http.coursesInfo({param:{id:DetailId}})
+      // console.log(data2)
+      promise1().then((res)=>{
         console.log(res)
-        let data=res.data
-        let tree=data.tree
-        tree.length?tree.map((v:any)=>{
-          v.name=v.chapter_name
-          v.contents=v.task_list
-          v.contents.length?v.contents.map((i:any)=>{
-            i.id=(i.type===1 || i.type===2)?i.tid:i.id
-          }):''
-        }):''
-        detail.info=data
-        detail.tree=tree
-        
       })
+    //  http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
+      
+    //     console.log(res)
+    //     let data=res.data
+    //     let tree=data.tree
+    //     tree.length?tree.map((v:any)=>{
+    //       v.name=v.chapter_name
+    //       v.contents=v.task_list
+    //       v.contents.length?v.contents.map((i:any)=>{
+    //         i.id=(i.type===1 || i.type===2)?i.tid:i.id
+    //       }):''
+    //     }):''
+    //     detail.info=data
+    //     detail.tree=tree
+    //   })
     }
+    
+function promise1(){
+  return new Promise((resolve,reject)=>{
+    resolve(0)
+  })
+}
+
     function selectChapter(val:any) {
       // console.log(val)
       chapter_id.value=val.id

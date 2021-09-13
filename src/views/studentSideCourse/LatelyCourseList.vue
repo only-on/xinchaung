@@ -40,7 +40,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref,inject } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
@@ -72,6 +72,7 @@ export default defineComponent({
     function initData(){
       loading.value=true
       http.getLatelyCourseList().then((res:IBusinessResp)=>{
+        //  console.log(res)
         loading.value=false
         list.push(...res.data)
         list.length?list.map((v:IlistItem)=>{
@@ -79,6 +80,8 @@ export default defineComponent({
         }):''
       })
     }
+    var updata=inject('updataNav') as Function
+    
     function startLearning(val:IlistItem) {
       router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.course_id)
     }

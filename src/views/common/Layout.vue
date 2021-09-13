@@ -3,23 +3,23 @@
       <Header></Header>
       <div class="main-box" id="main-box">
         <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='outside'" />
-        <div class="content" v-if="configuration.showContent">
-          <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='inside'" />
-          <div class="content_box">
-            <div><router-view /></div>
+        <div :class="configuration.showContent?'content':'customized'">
+          <NavTab @tabSwitch="tabSwitch" v-if="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
+          <div :class="configuration.showContent?'content_box':''">
+            <div>
+              <router-view />
+            </div>
           </div>
-        </div>
-        <div v-else class="customized">
-          <router-view />
         </div>
       </div>
       <Footer></Footer>
     </div>
 </template>
 <script lang="ts">
+// :class="configuration.showContent?'content':'customized'"
 import Header from "./Header.vue"
 import Footer from "./Footer.vue"
-import { ref, defineComponent,watch , onMounted ,Ref,reactive,provide,toRefs} from "vue";
+import { ref, defineComponent,watch , onMounted ,Ref,reactive,provide,toRefs, computed} from "vue";
 import { useRouter } from 'vue-router';
 // import router from "../../routers/index";
 interface tab{
