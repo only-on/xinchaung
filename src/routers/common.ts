@@ -8,17 +8,17 @@ export default [
             title: "首页",
             authCode: "Home",
         },
-        redirect: "/home",
-        children: [
-            {
-                path: "home",
-                name: "Home",
-                component: () => import("src/components/HelloWorld.vue"),
-                meta: {
-                    title: "首页",
-                },
-            },
-        ],
+        redirect: "/studentStatistic",
+        // children: [
+        //     {
+        //         path: "home",
+        //         name: "Home",
+        //         component: () => import("src/components/HelloWorld.vue"),
+        //         meta: {
+        //             title: "首页",
+        //         },
+        //     },
+        // ],
     },
     {
         path: "/login",

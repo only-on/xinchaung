@@ -1,7 +1,7 @@
 <script lang="tsx">
-import { defineComponent, VNode,reactive,Ref,ref,watch} from "vue";
+import { defineComponent, VNode,reactive,Ref,ref,watch,onMounted} from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch';
 import extStorage from "src/utils/extStorage";
@@ -16,6 +16,7 @@ export default defineComponent({
   },
   setup(props,context) {
     const router = useRouter();
+    const route = useRoute();
     const { lStorage } = extStorage
     const renderItem = function (item: MenuItem, level: number): VNode {
       if (level % 2 === 0) {
@@ -96,6 +97,9 @@ export default defineComponent({
       activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data[0].label)
       menus.push(...data)
     })
+    onMounted(() => {
+      // console.log(route.path)
+    });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));
     

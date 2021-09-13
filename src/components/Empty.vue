@@ -1,5 +1,5 @@
 <template>
-  <div class="empty">
+  <div class="no-data" :class="emptyType">
     <div class="emptyContent">
       <span class="emptyCon">{{emptyText}}</span>
     </div>
@@ -7,9 +7,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,computed ,Ref} from 'vue'
+import { defineComponent,ref, onMounted,computed ,Ref, PropType} from 'vue'
 import {useStore} from "vuex"
 import { useRouter } from 'vue-router';
+type TemptyType= 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty'
 export default defineComponent({
   name: 'Empty',
   components: {
@@ -19,36 +20,59 @@ export default defineComponent({
     text:{
       required: false,
       type: String,
-      default: true,
+      default: '',
+    },
+    type:{
+      required: false,
+      type: String as PropType<TemptyType>,
+      default: 'empty',
     }
   },
   setup: (props,{emit}) => {
-    const store=useStore()
-    const router = useRouter();
     var emptyText:Ref<string>=ref('')
-    emptyText.value=props.text || '暂无数据!'
+    var emptyType:Ref<string>=ref('')
+    let defaultText={
+      empty:'此页面暂无数据!',
+      searchEmpty:'暂未搜到数据1',
+      tableEmpty:'抱歉。该表格暂无数据！',
+      tableSearchEmpty:'抱歉。未搜到相关数据！',
+    }
+    emptyType.value=props.type
+    emptyText.value=props.text?props.text:defaultText[emptyType.value]
     onMounted(()=>{
      
     })
-    return {emptyText};
+    return {emptyText,emptyType};
   },
 })
 </script>
 
 <style scoped lang="less">
-  .empty {
+  .empty{
+    background-image: url('src/assets/images/empty/empty.png');
+  }
+  .searchEmpty{
+    background-image: url('src/assets/images/empty/searchEmpty.png');    
+  }
+  .tableEmpty{
+    background-image: url('src/assets/images/empty/tableEmpty.jpg');    
+  }
+  .tableSearchEmpty{
+    background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
+  }
+  .no-data {
         width: 100%;
         height: 100%;
         padding: 0px 20px;
         // margin: 20px;
         background-color: white;
-        // border: 1px solid #ccc;
         display: flex;
         justify-content: center;
         align-items: center;
-        background-image: url('../../assets/images/empty.png');
         background-repeat: no-repeat;
         background-position: center;
+        // background-size: 100% 100%;
+        // background-size: contain;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -61,44 +85,22 @@ export default defineComponent({
             justify-content: center;
             align-items:center;
             .emptyCon {
-                font-size: 18px;
+                font-size: 16px;
                 padding-top: 306px;
             }
         }
-        .black {
-            font-size: 18px;
-            color: #050101;
-            font-weight: bold;
-        }
-
-        .tip {
-            font-size: 14px;
-            margin-left: 20px;
-            color: rgba(5, 1, 1, 0.48);
-        }
-
-        .orange {
-            color: #FFA900;
-            font-size: 40px;
-            margin: 0 10px;
-        }
-
-        .gray {
-            color: #777;
-            font-size: 20px;
-            margin: 0 10px;
-        }
-
-        .green {
-            color: #62CB2B;
-            font-size: 30px;
-            margin: 0 10px;
-        }
-
-        .red {
-            color: #F2222A;
-            font-size: 30px;
-            margin: 0 10px
-        }
+  }
+  .empty,.searchEmpty{
+    .emptyCon{
+      color:#050101;
     }
+  }
+  .tableEmpty,.tableSearchEmpty{
+    .emptyCon{
+      color:rgb(5, 1, 1,.45);
+      font-size: 14px;
+    }
+  }
+  
+  
 </style>

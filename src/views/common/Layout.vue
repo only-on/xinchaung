@@ -33,7 +33,6 @@ interface config{
   componenttype:number | undefined,
   showContent:boolean
 }
-type Titem ='showNav' | 'navPosition' | 'navType' | 'tabs' ;
 export default defineComponent({
   name: "Layout",
   components:{

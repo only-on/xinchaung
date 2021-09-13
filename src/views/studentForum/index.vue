@@ -14,21 +14,21 @@
       </div>
       <a-button @click="release()" type="primary">发布问题</a-button>
     </div>
-    <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-      :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}"  
-      class="components-table-demo-nested">
-      <template #title="{record, text }">
-        <a @click="detaile(record.id)">{{ text }}</a>
-      </template>
-      <template #operation="{record}">
-        <a  class="caozuo" @click="replyCard(record )">回帖</a>
-        <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a>
-        <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
-      </template>
-      <!-- <template>
-        <a-pagination v-model:current="ForumSearch.page" :total="14" show-less-items @change="onChangePage" />
-      </template> -->
-    </a-table>
+    <a-config-provider :renderEmpty="customizeRenderEmpty">
+      <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
+        :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+
+        class="components-table-demo-nested">
+        <template #title="{record, text }">
+          <a @click="detaile(record.id)">{{ text }}</a>
+        </template>
+        <template #operation="{record}">
+          <a  class="caozuo" @click="replyCard(record )">回帖</a>
+          <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a>
+          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
+        </template>
+      </a-table>
+    </a-config-provider>
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
@@ -40,10 +40,10 @@
     </a-modal>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { Modal,message } from 'ant-design-vue';
-import {createVNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch, computed} from 'vue'
+import { Modal,message} from 'ant-design-vue';
+import {createVNode,VNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch, computed} from 'vue'
 import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
@@ -153,6 +153,14 @@ export default defineComponent({
       ForumSearch.type=''
       initData()
     })
+    const customizeRenderEmpty =function (): VNode{
+      if(loading.value){
+        return <template></template>
+      }else{
+        let type=(ForumSearch.title || ForumSearch.type)?'tableSearchEmpty':'tableEmpty'
+        return <empty type={type} />
+      }
+    }
     var ForumArticle:Ireply=reactive({
       forum_id:0,
       content:''
@@ -167,7 +175,7 @@ export default defineComponent({
       loading.value=true
       list.length=0
       http[apiName[tabType.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
-        loading.value=false
+         loading.value=false
         let data=res.data.list
         data.map((v:any)=>{
           v.creat=`${v.user_name} / ${v.created_at}`,
@@ -253,7 +261,7 @@ export default defineComponent({
       // serve.v(dataObj); 
       // initData()
     })
-    return {tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,QuillOptions,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
+    return {customizeRenderEmpty,tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,QuillOptions,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
   },
 })
 </script>
