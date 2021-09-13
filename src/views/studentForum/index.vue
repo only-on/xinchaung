@@ -17,7 +17,6 @@
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
         :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
-
         class="components-table-demo-nested">
         <template #title="{record, text }">
           <a @click="detaile(record.id)">{{ text }}</a>

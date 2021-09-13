@@ -32,8 +32,8 @@ export default defineComponent({
     var emptyText:Ref<string>=ref('')
     var emptyType:Ref<string>=ref('')
     let defaultText={
-      empty:'此页面暂无数据!',
-      searchEmpty:'暂未搜到数据1',
+      empty:'暂无数据！',
+      searchEmpty:'暂未搜到数据！',
       tableEmpty:'抱歉。该表格暂无数据！',
       tableSearchEmpty:'抱歉。未搜到相关数据！',
     }

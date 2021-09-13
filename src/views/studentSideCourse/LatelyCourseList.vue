@@ -36,6 +36,7 @@
         </div>
       </div>
     </div>
+    <empty v-if="!loading && list.length===0" />
   </div>
 </template>
 

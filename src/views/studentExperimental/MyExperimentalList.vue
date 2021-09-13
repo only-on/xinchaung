@@ -28,6 +28,7 @@
         <a-button @click="startTraining(v)" type="primary"> 开始实训 </a-button>
       </div>
     </div>
+    <empty v-if="!loading && list.length===0" />
   </div>
 </template>
 <script lang="ts">

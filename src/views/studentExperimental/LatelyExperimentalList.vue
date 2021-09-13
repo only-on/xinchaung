@@ -27,10 +27,11 @@
         <a-button @click="continueTraining(v)" type="primary"> 继续实训 </a-button>
       </div>
     </div>
+    <empty v-if="!loading && list.length===0" />
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
@@ -53,10 +54,13 @@ export default defineComponent({
     const router = useRouter();
     var defaultUrl:string='/src/assets/images/Experimental/cover5.png'
     var list:IlistItem[]=reactive([])
+    var loading:Ref<boolean> =ref(false)
     const http=(request as any).studentExperimental
     function initData(){
+      loading.value=true
       http.getLatelyExperimentalList().then((res:IBusinessResp)=>{
         // console.log(res)
+        loading.value=false
         list.push(...res.data)
         list.map((v:IlistItem)=>{
           v.url=v.url?v.url:defaultUrl
@@ -77,7 +81,7 @@ export default defineComponent({
     onMounted(()=>{
       initData()
     })
-    return {list,defaultUrl ,continueTraining};
+    return {list,defaultUrl ,continueTraining,loading};
   },
 })
 </script>
