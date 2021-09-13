@@ -69,7 +69,6 @@ export default defineComponent({
       }
     }
     function updateRouter(val?:number){
-      console.log(666)
       const {query,path}= route
       router.replace({
             path: path,

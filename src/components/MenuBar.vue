@@ -1,21 +1,22 @@
 <script lang="tsx">
-import { defineComponent, VNode,reactive,Ref,ref} from "vue";
+import { defineComponent, VNode,reactive,Ref,ref,watch} from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { useRouter } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch';
-import { watch } from "fs";
+import extStorage from "src/utils/extStorage";
 export default defineComponent({
   name: "MenuBar",
   props: {
-    menus: {
-      required: false,
-      type: Array,
-      default: () => [],
-    },
+    // menus: {
+    //   required: false,
+    //   type: Array,
+    //   default: () => [],
+    // },
   },
   setup(props,context) {
     const router = useRouter();
+    const { lStorage } = extStorage
     const renderItem = function (item: MenuItem, level: number): VNode {
       if (level % 2 === 0) {
         let items: VNode | null = null;
@@ -67,7 +68,8 @@ export default defineComponent({
       });
       return <div class="nav__menu">{children}</div>;
     };
-    var activeName:Ref<string>=ref('')
+    var activeName:Ref<string>=ref(lStorage.get('menuActiveName') || '')
+
     function select(level:string,val:MenuItem){
        router.replace(val.url[0]!)
       if(level==='Parent'){
@@ -83,18 +85,15 @@ export default defineComponent({
           }):''
         })
       }
-      // console.log(val)     //  ant-dropdown-open
     }
-    function loopTree(val:any){
-      const fn=()=>{
-
-      }
-    }
+    watch(activeName,(val:any)=>{
+      lStorage.set('menuActiveName',val)
+    })
     const http=(request as any).common
     http.getMenu().then((res:IBusinessResp)=>{
       menus.length=0
       let data=res.data
-      activeName.value=data && data[0].label
+      activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data[0].label)
       menus.push(...data)
     })
     return () => (renderMenu(menus as MenuItem[]));
