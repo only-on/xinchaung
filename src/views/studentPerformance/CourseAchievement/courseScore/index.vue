@@ -50,8 +50,10 @@
                                 </div>
                             </div>
                             <div class="score-table" v-if="itm.experdis">
-                                <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
-                                </a-table>
+                                <!-- <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
+                                </a-table> -->
+                                <score-table></score-table>
+                                <!-- hahaha -->
                             </div>
                         </li>
                         </div>
@@ -64,6 +66,7 @@
 <script lang="ts">
 import { message } from 'ant-design-vue'
 import {defineComponent,onMounted,reactive,toRefs,inject,getCurrentInstance} from 'vue'
+import scoreTable from '../scoreTable/index.vue'
 import { useRouter } from 'vue-router'
 import request from '../../../../api'
 interface ObjectD{
@@ -100,6 +103,9 @@ interface State{
 }
 export default defineComponent({
     name:'courseScore',
+    components:{
+    'score-table':scoreTable
+    },
     setup:(props,context)=>{
         const router = useRouter();
         var updata=inject('updataNav') as Function
@@ -300,7 +306,7 @@ export default defineComponent({
          }
          .stowOrUnfold{
              margin: 12px 27px;
-         }
+         }                                                      
          .exper-con{
              background: url(../../../../assets/images/stuAchievement/task_finish.png) no-repeat 38px 42px;
              .task{
