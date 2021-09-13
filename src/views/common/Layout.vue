@@ -5,8 +5,8 @@
         <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='outside'" />
         <div :class="configuration.showContent?'content':'customized'">
           <NavTab @tabSwitch="tabSwitch" v-if="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
-          <div :class="configuration.showContent?'content_box':''">
-            <div>
+          <div :class="configuration.showContent?'content_box':'customizedSon'">
+            <div :class="configuration.showContent?'':'customizedSon'">
               <router-view />
             </div>
           </div>
@@ -16,7 +16,6 @@
     </div>
 </template>
 <script lang="ts">
-// :class="configuration.showContent?'content':'customized'"
 import Header from "./Header.vue"
 import Footer from "./Footer.vue"
 import { ref, defineComponent,watch , onMounted ,Ref,reactive,provide,toRefs, computed} from "vue";
@@ -115,6 +114,10 @@ export default defineComponent({
     }
     .customized{
       height: 100%;
+      overflow: hidden;
+    }
+    .customizedSon{
+       height: 100%;
       overflow: hidden;
     }
   }

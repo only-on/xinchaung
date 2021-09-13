@@ -115,7 +115,6 @@ export default defineComponent({
     function initData(){
      
      http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
-        console.log(res)
         let data=res.data
         let tree=data.tree
         tree.length?tree.map((v:any)=>{
@@ -127,7 +126,6 @@ export default defineComponent({
         }):''
         detail.info=data
         detail.tree=tree
-        
       })
     }
     function selectChapter(val:any) {
