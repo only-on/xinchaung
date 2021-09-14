@@ -67,8 +67,8 @@ export default defineComponent({
     align-items: center;
     margin-right: 100px;
     .logo {
-      width: 35px;
-      height: 22px;
+      width: 32px;
+      height: 32px;
       margin-right: 10px;
       background:url('../../assets/test/favicon.png') no-repeat center;
       background-size: 100% 100%;
