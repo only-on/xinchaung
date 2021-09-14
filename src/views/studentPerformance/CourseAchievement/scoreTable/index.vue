@@ -17,7 +17,7 @@
                 <span>未评价</span>
             </template>
             <template v-slot:action5>
-                <span class="detail" @click="scoreDetails(record)">成绩明细</span>
+                <span class="detail" @click="scoreDetails()">成绩明细</span>
             </template>
         </a-table>
         <div>
@@ -32,13 +32,16 @@
             @ok="handleOk"
             @cancel="handleCancel"
             >
-            <p>
-                <a-tabs v-model="activeKey" type="card" @edit="onEdit">
-                    <a-tab-pane v-for="pane in panes" :key="pane.key" :tab="pane.title">
-                        {{ pane.content }}
+            <div>
+                <a-tabs default-active-key="1" type="card">
+                    <a-tab-pane key="1" tab="试验得分">
+                      <test-score></test-score>
+                    </a-tab-pane>
+                    <a-tab-pane key="2" tab="Tab 2" force-render>
+                    Content of Tab Pane 2
                     </a-tab-pane>
                 </a-tabs>
-            </p>
+            </div>
         </a-modal>
         </div>
     </div>
@@ -49,6 +52,9 @@ import {defineComponent,reactive,ref,Ref} from 'vue'
 import testScore from '../testScore/index.vue'
 export default defineComponent({
     name:'scoreTable',
+    components:{
+    'test-score':testScore
+    },
     setup:(props,context)=>{
         const columns:any=[
                     {   title:'实验得分',
@@ -124,11 +130,11 @@ export default defineComponent({
         var confirmLoading:boolean=false
         var ModalText:string='你好啊'
         var visable:Ref<boolean> = ref(false)
-        var panes:Ref<any[]>=ref([
-        { title: '试验得分', content: '试验得分', key: '1' },
-        { title: 'Tab 2', content: 'Content of Tab 2', key: '2' },
-        ]);
-        var activeKey:Ref<any>=panes.value[0].key
+        // var panes:Ref<any[]>=ref([
+        // { title: '试验得分', content:testScore, key: '1' },
+        // { title: 'Tab 2', content: 'Content of Tab 2', key: '2' },
+        // ]);
+        // var activeKey:Ref<any>=panes.value[0].key
         //成绩明细弹框
         function scoreDetails(){
             visable.value=true
@@ -140,10 +146,10 @@ export default defineComponent({
         function handleCancel(){
             visable.value = false;
         }
-        function onEdit(targetKey:string, action:string){
-           console.log(targetKey, action) 
-        }
-        return {columns,data,confirmLoading,visable,ModalText,panes,activeKey,onEdit,scoreDetails,handleOk,handleCancel}
+        // function onEdit(targetKey:string, action:string){
+        //    console.log(targetKey, action) 
+        // }
+        return {columns,data,confirmLoading,visable,ModalText,scoreDetails,handleOk,handleCancel}
     }
 })
 </script>
