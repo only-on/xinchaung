@@ -87,42 +87,54 @@ function isObject(object: any) {
  * @param start 开始时间
  * @param end 结束时间
  */
-export interface Itimes{
-    d:number | string
-    h:number | string
-    m:number | string
-    s:number | string
-    
+export interface Itimes {
+    d: number | string
+    h: number | string
+    m: number | string
+    s: number | string
+
 }
-function countDown(start:Date,end:Date):Itimes{
-    let startTime=new Date(start)
-    let endTime=new Date(end)
+function countDown(start: Date, end: Date): Itimes {
+    let startTime = new Date(start)
+    let endTime = new Date(end)
     console.log(end);
-    
-    console.log(startTime,endTime);
-    
-    var seconds=parseInt(((endTime.getTime()-startTime.getTime())/1000).toString())
+
+    console.log(startTime, endTime);
+
+    var seconds = parseInt(((endTime.getTime() - startTime.getTime()) / 1000).toString())
     return {
-        d:parseInt((seconds/3600/24).toString()), // 天数
-        h:parseInt((seconds/3600%24).toString()), // 小算
-        m:parseInt((seconds/60%60).toString()), // 分钟
-        s:parseInt((seconds%60).toString()), // 秒
+        d: parseInt((seconds / 3600 / 24).toString()), // 天数
+        h: parseInt((seconds / 3600 % 24).toString()), // 小算
+        m: parseInt((seconds / 60 % 60).toString()), // 分钟
+        s: parseInt((seconds % 60).toString()), // 秒
     }
 }
 // 判断时间大小
-function contrastTime(start:Date,end:Date) {
-    return (end.getTime()-start.getTime())>0?true:false
+function contrastTime(start: Date, end: Date) {
+    return (end.getTime() - start.getTime()) > 0 ? true : false
 }
 
-function isJsonString(str:any) {
+function isJsonString(str: any) {
     try {
-        if (typeof JSON.parse(str)==="object") {
+        if (typeof JSON.parse(str) === "object") {
             return true
         }
     } catch (e) {
-        
+
     }
     return false
+}
+// 笔记内容回显
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
+function goHtml(val: string) {
+    if (val.split('ops').length > 1) {
+        let text = JSON.parse(val)
+        var converter = new QuillDeltaToHtmlConverter(text.ops, {})
+        var html = converter.convert()
+        return html
+    } else {
+        return val
+    }
 }
 export {
     numToAbc,
@@ -132,5 +144,6 @@ export {
     deepEqual,
     countDown,
     contrastTime,
-    isJsonString
+    isJsonString,
+    goHtml
 }
