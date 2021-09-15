@@ -13,6 +13,16 @@ interface IteachCourse {
   vmRevert: Function
   vmReset: Function
   canAccessVm: Function
+  getResultInfo: Function
+  studentCount: Function
+  resultCount: Function
+  resultCreate: Function
+  exportTaskView: Function
+  getSocre: Function
+  changeEvaluate: Function
+  allClasses: Function
+  evaluteProject: Function
+  showNotes: Function
 }
 interface IcourseTree {
   getTreeList: Function
