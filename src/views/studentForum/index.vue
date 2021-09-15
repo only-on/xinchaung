@@ -126,8 +126,8 @@ export default defineComponent({
       theme: "snow",
     };
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
-    const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
-    const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
+    const options1 = ref<SelectTypes['options']>([{value: '0', label: '请选择帖子类型',disabled:true},{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
+    const options2 =ref<SelectTypes['options']>([{value: '0', label: '请选择帖子类型',disabled:true},{value: '1', label: '求助'},{value: '2', label: '分享'}])
     const options = computed(()=>{
         return tabType.value===1?options2.value:options1.value
     })
@@ -149,14 +149,14 @@ export default defineComponent({
       tabType.value=val
       ForumSearch.title=''
       ForumSearch.page=1
-      ForumSearch.type=''
+      ForumSearch.type='0'
       initData()
     })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
       }else{
-        let type=(ForumSearch.title || ForumSearch.type)?'tableSearchEmpty':'tableEmpty'
+        let type=(ForumSearch.title || ForumSearch.type!=='0')?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} />
       }
     }
@@ -168,7 +168,7 @@ export default defineComponent({
       title:'',
       pageSize:10,
       page:1,
-      type:''
+      type:'0'
     })
     function initData(){
       loading.value=true
@@ -281,7 +281,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 20px 30px 0 ;
+      padding: 0px 0 15px ;
       .search{
         flex: 1;
         display: flex;
@@ -289,6 +289,7 @@ export default defineComponent({
         .item{
           display: flex;
           align-items: center;
+          margin-right: 22px;
           :deep(.ant-select-selector){
             width: 240px;
             height: 35px;
@@ -299,10 +300,7 @@ export default defineComponent({
               padding-left: 20px;
           }
         }
-        .item:nth-child(2){
-          padding: 0 20px;
-        }
-        .item:nth-child(3){
+        .item:last-child{
           .ant-btn{
             margin: 0 10px;
           }

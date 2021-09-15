@@ -1,7 +1,6 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <!-- <img class="logo" src="../../assets/test/favicon.png" alt="" /> -->
       <div class="logo"></div>
       <span
         class="web-title"
@@ -12,19 +11,34 @@
       <menu-bar></menu-bar>
     </div>
     <div class="header-right">
-      <div class="help-message"><span></span><span>远程协助消息</span></div>
-      <div class="user-name">
-        <!-- <img src="../../assets/test/teacher_p.png" /> -->
-        <div class="nser-img"></div>
-        <span>文和</span>
-      </div>
+      <a-popover title="" trigger="click" placement="bottom">
+        <template #content>
+          <p class="assist">{{assistText}}</p>
+        </template>
+        <div class="help-message" v-if="isOperation" @click="helpMessage">
+          <img src="../../assets/images/reqi_icon.png" alt="">
+          <span>远程协助消息</span>
+        </div>
+      </a-popover>
+      <a-popover title="" trigger="hover" placement="bottom">
+        <template #content>
+          <p class="operation" v-if="!power" @click="information">个人信息</p>
+          <p class="operation" v-if="!power" @click="modifyPassword">修改密码</p>
+          <p class="operation" @click="loginOut">退出登录</p>
+        </template>
+        <div class="user-name">
+          <div class="nser-img"></div>
+          <span>文和</span>
+        </div>
+      </a-popover>
     </div>
   </header>
 </template>
 <script lang="ts">
-import { defineComponent,reactive } from "vue";
+import { defineComponent,reactive,computed,Ref,ref } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from '../../api/index'
+import { useRouter } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch';
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import extStorage from "src/utils/extStorage";
@@ -32,18 +46,32 @@ export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
+    const router = useRouter();
     const { lStorage } = extStorage
     const role = lStorage.get('role')
-      const http=(request as any).common
-      var menus:MenuItem[]=reactive([])
-    //   http.getMenu().then((res:IBusinessResp)=>{
-    //     menus.length=0
-    //     let data=res.data
-    //     // console.log('menus',data)
-    //     menus.push(...data)
-    //   //  html=renderMenu(res.data as MenuItem[]);
-    // })
-    return {menus}
+    const http=(request as any).common
+    const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
+    const isOperation = computed(() => {
+      // 教师有远程协助消息提醒
+      return role === 3
+    })
+    const power = computed(() => {
+      // 2 4  个人信息  3 1修改密码
+      return role === 3 || role === 1
+    })
+    function information(){
+      router.push('/personalInformation')
+    }
+    function loginOut(){
+      
+    }
+    function helpMessage(){
+      
+    }
+    function modifyPassword(){
+      router.push('/personalInformation')
+    }
+    return {isOperation,power,loginOut,information,helpMessage,modifyPassword,assistText}
   },
 });
 </script>
@@ -55,8 +83,8 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   width: 100%;
-  align-content: center;
-  padding: 0 70px;
+  align-items: center;
+  padding: 0 50px;
   background: #fff;
   min-width: 1330px;
   box-shadow: 0 0 5px #c2aad6;
@@ -97,8 +125,14 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
+    cursor: pointer;
     .help-message {
-      margin-right: 15px;
+      margin-right: 30px;
+      img{
+        -webkit-filter: brightness(30%); /* Chrome, Safari, Opera */
+        filter: brightness(.3);
+        margin-right: 7px;
+      }
     }
     .user-name{
       display: flex;
@@ -111,5 +145,20 @@ export default defineComponent({
       }
     }
   }
+}
+.ant-popover-inner-content{
+  .operation{
+    margin-bottom: 0;
+    padding: .5em;
+  }
+  .operation:hover{
+    cursor: pointer;
+    color: @theme-color;
+  }
+  
+}
+.assist{
+  color: #857878;
+  margin: 5px;
 }
 </style>

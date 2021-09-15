@@ -5,8 +5,8 @@
         <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='outside'" />
         <div :class="configuration.showContent?'content':'customized'">
           <NavTab @tabSwitch="tabSwitch" v-if="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
-          <div :class="configuration.showContent?'content_box':'customizedSon'">
-            <div :class="configuration.showContent?'':'customizedSon'">
+          <div  :class="configuration.showContent?'content_box':'customizedSon'">
+            <div :class="configuration.showContent?'setScrollbar':'customizedSon'">
               <router-view />
             </div>
           </div>

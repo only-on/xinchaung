@@ -18,7 +18,8 @@
           <div class="cont" v-html="detailObj.content">
           </div>
         </div>
-        <div class="forumBody">
+        <!-- setScrollbar -->
+        <div class="forumBody ">
             <div class="item" v-for="v in detailObj.forum_articles" :key="v.id">
               <div class="topInfo">
                 <div class="left">
@@ -46,17 +47,16 @@
 </template>
 
 <script lang="ts">
-import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { createVNode,defineComponent,ref, onMounted,reactive ,toRefs,inject,Ref} from 'vue'
 import request from '../../api/index'
-import serve from "../../request/getRequest";
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
 import { QuillEditor } from "@vueup/vue-quill";
-import { Delta } from "quill-delta";
+// import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import {goHtml} from 'src/utils/common'
 interface Ireply{
   forum_id:number,
   content:string
@@ -70,7 +70,6 @@ interface Istate{
   options:any;
   editReply: () => void;
   ForumArticle:Ireply
-  goHtml:(val:string)=>{}
 }
 
 export default defineComponent({
@@ -104,14 +103,10 @@ export default defineComponent({
               content:JSON.stringify(state.ForumArticle.content)
             }
         http.editReply({param:{ForumArticle:{...obj}}}).then((res:IBusinessResp)=>{
-          if(res.status===1){
-            state.initData()
+              state.initData()
               message.success('回复成功')
               visible.value=false
               state.ForumArticle.content=''
-            }else{
-              message.warning(res.error.msg)
-            }
         })
       },
       detale:(val:any)=>{
@@ -123,38 +118,21 @@ export default defineComponent({
             cancelText: '取消',
             onOk(){
               http.delateReply({param:{id:val.id}}).then((res:IBusinessResp)=>{
-                if(res.status===1){
-                  state.initData()
-                  message.success('删除回复成功')
-                }else{
-                  message.warning(res.msg)
-                }
-                
+                state.initData()
+                message.success('删除回复成功')
               })
             }
         });
-      },
-      goHtml:(val:string)=>{
-        // console.log(val.toString())
-        if(val.split('ops').length>1){
-          let text=JSON.parse(val)
-          var converter = new QuillDeltaToHtmlConverter(text.ops, {})
-          var html = converter.convert()
-          // console.log(html)
-          return html
-        }else{
-          return val
-        }
       },
       detailObj:{},
       initData:()=>{
         http.postsDetailed({param:{id:detailId}}).then((res:IBusinessResp)=>{
             console.log(res)
             let data=res.data
-            data.content=state.goHtml(data.content)
+            data.content=goHtml(data.content)
             if(data.forum_articles && data.forum_articles.length){
                 data.forum_articles.map((v:any)=>{
-                  v.content=state.goHtml(v.content)
+                  v.content=goHtml(v.content)
                 })
             }
             Object.assign(state.detailObj,data)

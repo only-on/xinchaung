@@ -96,9 +96,12 @@ export default defineComponent({
       let data=res.data
       activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data[0].label)
       menus.push(...data)
+      if(route.path===(data && data[0].url[0])){
+        activeName.value=(data && data[0].label)
+      }
     })
     onMounted(() => {
-      // console.log(route.path)
+      console.log(route.path)
     });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));

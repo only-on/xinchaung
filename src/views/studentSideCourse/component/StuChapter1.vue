@@ -36,7 +36,7 @@
           题
         </div>
       </div>
-      <div class="chapter scroll-bar-customize">
+      <div class="chapter setScrollbar">
         <div class="chapterList"
           :style="chapterData.status === 0 ? 'pointer-events:auto' : 'pointer-events:none'"
           v-for="(item) in chapterData.quest_list_questions" :key="item.id">
@@ -149,13 +149,6 @@ export default defineComponent({
     background-color: rgba(247, 247, 247, 1);
     height: 100%;
   }
-}
-.chapter::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-    background: #e3d9ff;
-}
-.chapter::-webkit-scrollbar{
-  width: 8px;
 }
 .chapter {
     width: 100%;

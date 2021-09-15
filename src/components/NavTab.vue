@@ -60,9 +60,7 @@ export default defineComponent({
       // console.log(item)
       if(activeName.value!==item.name){
         context.emit("tabSwitch", item);
-        if(configuration.tabs && configuration.tabs.length){
-          updateRouter(item.componenttype);
-        }
+        updateRouter(item.componenttype);
         activeName.value = item.name;
         
         updata({...configuration,componenttype:item.componenttype})

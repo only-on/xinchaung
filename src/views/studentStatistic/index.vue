@@ -1,5 +1,5 @@
 <template>
-    <div id='statistic'>
+    <div id='statistic' class="setScrollbar">
         <div class="box-left">
             <div class="left-f1 f1">
                 <p class="hint">{{staticInfo.userProfile?.name}}，又是元气满满的一天！</p>

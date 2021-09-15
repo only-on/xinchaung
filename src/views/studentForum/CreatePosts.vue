@@ -95,10 +95,8 @@ export default defineComponent({
               content:JSON.stringify(state.formState.content)
             }
             http.createForum({param:{forum:{...obj}}}).then((res:IBusinessResp)=>{
-              if(res){
-                message.success(editId?'修改成功':'发布成功')
+              message.success(editId?'修改成功':'发布成功')
                 router.go(-1)
-              }
             })
         })
       }

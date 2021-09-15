@@ -6,7 +6,7 @@
           <div>{{info.name}}</div>
           <span>{{info.course_status}}</span>
         </div>
-        <span class="iconfont icon-fanhui"></span>
+        <span class="iconfont icon-fanhui" @click="goBack"></span>
       </div>
       <div class="info">
         <div class="left">
@@ -39,7 +39,7 @@
       </div>
     </div>
     <div class="coursemain">
-      <div class="mainLeft scroll-bar-customize">
+      <div class="mainLeft setScrollbar">
         <!-- <Drag-tree :tree="tree" /> -->
         <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
@@ -157,7 +157,10 @@ export default defineComponent({
     function Resources(){
       router.push('/studentSideCourse/Resources?course_id='+course_id)
     }
-    return {...toRefs(detail),bg,controls,type,pptUrl,videoUrl,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,Resources,selectChapter,selectExperiment};
+    function goBack(){
+      router.go(-1)
+    }
+    return {...toRefs(detail),bg,controls,type,pptUrl,videoUrl,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,goBack,Resources,selectChapter,selectExperiment};
   },
 })
 </script>
@@ -265,13 +268,13 @@ export default defineComponent({
         flex-shrink: 0;
         border-radius: 4px;
       }
-      .mainLeft::-webkit-scrollbar-thumb {
-        border-radius: 3px;
-          background: #e3d9ff;
-      }
-      .mainLeft::-webkit-scrollbar{
-        width: 8px;
-      }
+      // .mainLeft::-webkit-scrollbar-thumb {
+      //   border-radius: 3px;
+      //   background: #e3d9ff;
+      // }
+      // .mainLeft::-webkit-scrollbar{
+      //   width: 8px;
+      // }
       .mainRight{
         background-color: #fff;
         border-radius: 4px;
