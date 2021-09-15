@@ -1,5 +1,4 @@
 <template>
-  <breadcrumb></breadcrumb>
   <div class="virtual-env"  v-layout-bg>
     <div class="content-wrapper">
       <div class="tree">
@@ -51,7 +50,7 @@ import dragTree from 'src/components/dragTree.vue'
 import card from './card.vue'
 import modal from './modal.vue'
 import request from 'src/api/index'
-import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef, provide} from 'vue'
+import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef, provide, inject} from 'vue'
 import { message } from 'ant-design-vue'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { Ihttp, ICourseInfo, ITreeHttp } from './typings'
@@ -141,6 +140,9 @@ export default defineComponent({
       courseType: 1,
       courseId: 501703,
     })
+    // 面包屑
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
     // 是否默认选中章节
     const isDefaultSelectChapter = ref(false)
     provide('courseInfo', courseInfo)
@@ -155,7 +157,7 @@ export default defineComponent({
       }
     })
     const params = reactive<Iparams>({
-      taskId: 533005,
+      taskId: 0,
       type: courseInfo.type,
       name: '',
       courseId: courseInfo.courseId,
@@ -423,7 +425,7 @@ export default defineComponent({
     padding: 30px;
     border: 10px;
     border-radius: 10px;
-    background-color: #fff;
+    background-color: @white;
     box-shadow: 0 0 5px rgb(0 0 0 / 10%);
     display: flex;
     .tree {
@@ -471,7 +473,7 @@ export default defineComponent({
   .ant-input-group{
     .ant-input {
       border-radius: 4px;
-      background: #fff;
+      background: @white;
       color: #5e5e5e;
       font-size: 15px;
       padding: 8px 5px 8px 30px;
@@ -486,7 +488,7 @@ export default defineComponent({
     .ant-btn{
       background-color: @theme-color;
       border-color: @hover-color;
-      color: #fff;
+      color: @white;
       height: 41px;
       width: 100px;
       font-size: 16px;
@@ -498,7 +500,7 @@ export default defineComponent({
   height: 41px;
   background-color: @theme-color;
   border-color: @hover-color;
-  color: #fff;
+  color: @white;
   padding: 0 20px;
   line-height: 41px;
   font-size: 16px;
@@ -512,14 +514,14 @@ export default defineComponent({
 
 
 
-/deep/ ul.ant-pagination {
+:deep(ul.ant-pagination) {
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;
     background: @theme-color;
     border-color: @theme-color;
     a {
-      color: #fff;
+      color: @white;
     }
   }
   .ant-pagination-item:focus, 
@@ -528,14 +530,14 @@ export default defineComponent({
     border-color: @theme-color;
     transition: all 0.3s;
     a {
-      color: #fff;
+      color: @white;
     }
   }
   .ant-pagination-next .ant-pagination-item-link:hover,
   .ant-pagination-next .ant-pagination-item-link:focus,
   .ant-pagination-prev .ant-pagination-item-link:hover,
   .ant-pagination-prev .ant-pagination-item-link:focus {
-    color: #fff;
+    color: @white;
     background: @theme-color; 
     border-color: @theme-color;
     transition: all 0.3s;
@@ -544,7 +546,7 @@ export default defineComponent({
   .ant-pagination-disabled .ant-pagination-item-link:hover {
     color: rgba(0, 0, 0, 0.25);
     border-color: #d9d9d9;
-    background-color: #fff;
+    background-color: @white;
   }
   .ant-pagination-options-quick-jumper input:hover,
   .ant-pagination-options-quick-jumper input:focus {
