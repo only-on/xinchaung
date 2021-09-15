@@ -17,7 +17,10 @@
   export default defineComponent({
     components: {},
     props: {
-      id: String,
+      id: {
+        type: String,
+        default: ''
+      },
       achievement: {
         type: Array,
         default: []
@@ -32,39 +35,51 @@
       },
     },
     setup(props) {
-  
+      let echartsPie: any
       function drawEchartsPie1() {
-        let echartsPie1 = (echarts as any).init(document.getElementById("echarts-pie1"))
+        // let echartsPie1 = (echarts as any).init(document.getElementById("echarts-pie1"))
         let names = ['A', 'B', 'C', 'D']
         let arr:ISeriesData[] = []
-        props.achievement.forEach((v, i) => {
+        let num = 0
+        props.achievement.forEach((v: any, i) => {
           arr.push({
             value: v,
             name: names[i]
           })
+          num += v
         })
         option.pieOption.series[0].data = arr
-        echartsPie1.setOption(option.pieOption)
+        option.pieOption.title.text = [
+          '{name|总人数}',
+          '{value|'+num+'}'+' {p|人}',
+        ].join('\n')
+        echartsPie.setOption(option.pieOption)
       }
   
       function drawEchartsPie2() {
-        let echartsPie2 = (echarts as any).init(document.getElementById("echarts-pie2"))
+        // let echartsPie2 = (echarts as any).init(document.getElementById("echarts-pie2"))
         let names = ['优秀', '良好', '合格', '不合格', '未评价']
         let arr:ISeriesData[] = []
-        props.teacherEva.forEach((v, i) => {
+        let num = 0
+        props.teacherEva.forEach((v: any, i) => {
           arr.push({
             value: v,
             name: names[i]
           })
+          num += v
         })
         option.pieOption.color = ['#8955b5', '#ea775c', '#6d7e9d', '#ffc719', '#e3e6dd'],
+        option.pieOption.title.text = [
+          '{name|总人数}',
+          '{value|'+num+'}'+' {p|人}',
+        ].join('\n')
         option.pieOption.series[0].data = arr
-        echartsPie2.setOption(option.pieOption)
+        echartsPie.setOption(option.pieOption)
       }
   
       function drawEchartsPie3() {
-        console.log(props.studentEva)
-        let echartsPie3 = (echarts as any).init(document.getElementById("echarts-pie3"))
+        // console.log(props.studentEva)
+        // let echartsPie3 = (echarts as any).init(document.getElementById("echarts-pie3"))
         let names = ['一星', '二星', '三星', '四星', '五星', '未评价']
         let arr:ISeriesData[] = []
         let num = 0
@@ -78,19 +93,16 @@
         console.log(props.studentEva)
         console.log(arr)
         option.pieOption.color = ['#8955b5', '#ea775c', '#6d7e9d', '#ffc719', '#63baad', '#e3e6dd']
-        // option.pieOption.title.text = num
+        option.pieOption.title.text = [
+          '{name|总人数}',
+          '{value|'+num+'}'+' {p|人}',
+        ].join('\n')
         option.pieOption.series[0].data = arr
-        echartsPie3.setOption(option.pieOption)
+        echartsPie.setOption(option.pieOption)
       }
       onMounted(() => {
         nextTick(() => {
-          if (props.id === 'echarts-pie1') {
-            drawEchartsPie1()
-          } else if (props.id === 'echarts-pie2') {
-            drawEchartsPie2()
-          } else if (props.id === 'echarts-pie3') {
-            drawEchartsPie3()
-          }
+          echartsPie = (echarts as any).init(document.getElementById(props.id))
         })
       })
       watch(() => {return props.achievement}, () => {

@@ -1,27 +1,33 @@
 <template>
   <div class="course-analysis"  v-layout-bg="{bg, size:'234px'}">
     <div class="course-analysis-top">
-      <course-detail-top></course-detail-top>
+      <course-detail-top :courseInfo="courseInfo"></course-detail-top>
     </div>
     <div class="course-analysis-content">
       <div class="condition">
         <div class="top">
-          <div class="stu-gro">
-            <span class="active">按学生分析</span>
-            <span class="">按班级分析</span>
-          </div>
-          <div class="chapter">
+          <!-- <div class="stu-gro">
+            <span :class="{active: isStudentType === 1}" @click="selectStudentType(1)">按学生分析</span>
+            <span :class="{active: isStudentType === 2}" @click="selectStudentType(2)">按班级分析</span>
+          </div> -->
+          <!-- <div class="chapter">
             <span :class="{active: item.id === currentChapter}" v-for="item in data" :key="item.id" @click="selectChapter(item)">{{item.name}}</span>
           </div>
-          <span class="more">更多<span class="icon-zhankai iconfont"></span></span>
+          <span class="more">更多<span class="icon-zhankai iconfont"></span></span> -->
+          <a-tabs
+            :default-active-key="currentChapter"
+            @change="change"
+          >
+            <a-tab-pane v-for="(item) in data" :key="item.id" :tab="item.name"></a-tab-pane>
+          </a-tabs>
         </div>
       </div>
-      <div class="analysis-content">
+      <div class="analysis-content setScrollbar">
         <div class="analysis-type experiment-typebox">
           <span class="title">实验:</span>
           <div class="experiment-list list" :class="{'noshow-all': !IsShowAllExperimen}">
-            <span class="name" :class="{ active: currentExperiment === 0}">全部</span>
-            <span class="name" :class="{ active: currentExperiment === list.id }" v-for="list in experimentList" :key="list.id" @click="selectExperiment(list)">{{list.name}}</span>
+            <span class="name" :class="{ active: currentExperiment === 0}" @click="selectExperiment(currentChapter, 'chapter')">全部</span>
+            <span class="name" :class="{ active: currentExperiment === list.labelId }" v-for="list in experimentList" :key="list.labelId" @click="selectExperiment(list.labelId)">{{list.labelName}}</span>
           </div>
           <span class="open-close-btn" @click="showAllExperimen()">
             {{IsShowAllExperimen ? '收起' : '展开'}}
@@ -32,11 +38,11 @@
         <div class="analysis-type type-box">
           <span class="title">类型:</span>
           <div class="type-list list">
-            <span class="active">按学生分析</span>
-            <span class="">按班级分析</span>
+            <span :class="{active: isStudentType === 0}" @click="selectStudentType(0)">按学生分析</span>
+            <span :class="{active: isStudentType === 1}" @click="selectStudentType(1)">按班级分析</span>
           </div>
         </div>
-        <div class="analysis-type classical-box">
+        <div class="analysis-type classical-box" v-if="isStudentType === 1">
           <span class="title">班级:</span>
           <div class="classical-list list">
             <span class="active">1</span>
@@ -44,9 +50,9 @@
           </div>
         </div>
         <div class="echarts-box">
-          <echarts-bar></echarts-bar>
-          <div class="echarts-pie">
-            <ratio-distribution :id="id1" :achievement="achievement">
+          <echarts-bar v-if="isStudentType === 1 &&  type === 1"></echarts-bar>
+          <div class="echarts-pie" v-if="type === 1 || isStudentType === 0">
+            <ratio-distribution :id="id1" :achievement="achievement" :key="id1">
               <template v-slot:title>
                 <p>成绩比例分布</p>
               </template>
@@ -66,7 +72,7 @@
                 </div>
               </template>
             </ratio-distribution>
-            <ratio-distribution :id="id2" :teacherEva="teacherEva">
+            <ratio-distribution :id="id2" :teacherEva="teacherEva" :key="id2">
               <template v-slot:title>
                 <p>教师评价比例分布</p>
               </template>
@@ -87,7 +93,7 @@
                 </div>
               </template>
             </ratio-distribution>
-            <ratio-distribution :id="id3" :studentEva="studentEva">
+            <ratio-distribution :id="id3" :studentEva="studentEva" :key="id3">
               <template v-slot:title>
                 <p>学生自评比例分布</p>
               </template>
@@ -110,8 +116,27 @@
               </template>
             </ratio-distribution>
           </div>
+          <div class="echarts-bar" v-if="isStudentType === 0">
+            <experimentRatio v-for="(ratio, i) in experimentRatioIds" :id="ratio" :key="i" :experimentRatioTable="experimentRatioTable[i]">
+              <template v-slot:title>
+                <p>{{experimentRatioTitle[i]}}</p>
+              </template>
+              <template v-slot:default>
+                <div class="bottom-table">
+                  <a-row>
+                    <a-col :span="12">{{experimentRatioTable[i].names[0]}}</a-col>
+                    <a-col :span="12">{{experimentRatioTable[i].names[1]}}</a-col>
+                  </a-row>
+                  <a-row>
+                    <a-col :span="12">{{experimentRatioTable[i].values[0]}}</a-col>
+                    <a-col :span="12">{{experimentRatioTable[i].values[1]}}</a-col>
+                  </a-row>
+                </div>
+              </template>
+            </experimentRatio>
+          </div>
         </div>
-        <div class="score-box">
+        <div class="score-box" v-if="type === 1 || isStudentType === 0">
           <div class="score">
             <div class="high">
               <p>最高分</p>
@@ -137,10 +162,11 @@ import { IBusinessResp } from 'src/typings/fetch.d'
 import { ICourseAnalysisHttp, ITreeHttp, ICourseInfo, ITreeData, ITreeDataItem } from './typings'
 import echartsBar from './echartsBar.vue'
 import ratioDistribution from './ratioDistribution.vue'
+import experimentRatio from './experimentRatio.vue'
 import score from './score.vue'
 
 export default defineComponent({
-  components: { courseDetailTop, echartsBar, ratioDistribution, score },
+  components: { courseDetailTop, echartsBar, ratioDistribution, score, experimentRatio },
   setup() {
     let courseInfo = reactive<ICourseInfo>({
       type: 'course',
@@ -158,34 +184,43 @@ export default defineComponent({
       data: [],
       experimentList: []
     })
-    let currentChapter = ref<number>()
+    let currentChapter = ref<number>(0)
     let currentExperiment = ref<number>(0)
+    let isStudentType = ref<number>(0)
     function getTreeList() {
       TreeTttp.getTreeList({
         param: {endpoint: 'env'}, 
         urlParams: {courseId: courseInfo.courseId}
       }).then((res: IBusinessResp) => {
         treeData.data = res.data
-        selectChapter(res.data[0])
+        // selectChapter(res.data[0])
+        change(res.data[0].id)
       })
+    }
+
+    function change(id: number) {
+      currentChapter.value = id
+      selectExperiment(id, 'chapter')
     }
     // 点击章节
     function selectChapter(item: ITreeDataItem) {
       currentChapter.value = item.id
-      treeData.experimentList = item.contents
-      currentExperiment.value = 0
-      selectExperiment(item, 'chapter')
+      // treeData.experimentList = item.contents
+      selectExperiment(item.id, 'chapter')
     }
     // 点击实验
-    function selectExperiment(list: ITreeDataItem, sign?: string) {
+    function selectExperiment(id: number, sign?: string) {
+      if (isStudentType.value === 1 && type.value === 0) return
       if (sign) {
-        getContentList(list.id)
+        currentExperiment.value = 0
+        getContentList(id)
       } else {
-        currentExperiment.value = list.id
-        getContentScore(list.id)
+        currentExperiment.value = id
+        getContentScore(id)
       }
     }
-    function getContentList(id: number) {
+    // 
+    function getContentList(id: number | undefined) {
       http.getContentList({param: {project_id: id}}).then((res: IBusinessResp) => {
         console.log(res)
         handleData(res.data)
@@ -195,30 +230,58 @@ export default defineComponent({
       http.getContentScore({
         param: {
           course_id: courseInfo.courseId,
-          type: 0,
+          type: isStudentType.value,
           content_id: id,
-          classes_id: ''
+          classes_id: 0
         }
       }).then((res: IBusinessResp) => {
         console.log(res)
         handleData(res.data)
       })
     }
+    
     let ratio = reactive({
-      achievement: [],
+      achievement: [],  // 成绩比例分布
       studentEva: [],
       teacherEva: []
     })
-    let score = reactive({
+    let score = reactive({   // 最高分 最低分
       highScore: [],
       lowScore: []
     })
-    function handleData(data:any) {
+
+    let experimentRatioTable = reactive([  
+      {names: ["40分钟以下学生数","40分钟以上学生数"], values: [30, 10]},    // 用时比例分布
+      {names: ["已提交学生数","未提交学生数"], values: [30, 10]},
+      {names: ["全部正确学生数","有错误学生数"], values: [30, 10]},
+      {names: ["全部正确学生数","有错误学生数"], values: [30, 10]}])
+    let type = ref(0)  //0的时候 只有学生分析 1的时候 学生，班级都有
+    function handleData(data: any) {
+      if (data.list) {
+        treeData.experimentList = data.list
+      }
+      if(!data.student.length) return
+      type.value = 1
       score.highScore = data.high
       score.lowScore = data.low
       ratio.achievement = data.score
       ratio.studentEva = data.student
       ratio.teacherEva = data.teacher
+      experimentRatioTable[0].values = data.time ? data.time : data.list_score.time
+      experimentRatioTable[1].values = data.report ? data.report : data.list_score.report
+      experimentRatioTable[2].values = data.question ? data.question : data.list_score.question
+      experimentRatioTable[3].values = data.step ? data.step : data.list_score.step
+    }
+    // 选择学生或班级分析
+    function selectStudentType(t: number) {
+      isStudentType.value = t
+      currentExperiment.value = 0
+      if (t === 0) {   // 按学生分析
+        getContentList(currentChapter.value)
+      // } else if (t === 1 && type.value === 1) {
+      } else {
+        getContentList(currentChapter.value)
+      }
     }
 
     // 展开实验
@@ -233,19 +296,26 @@ export default defineComponent({
     
     return {
       bg,
+      courseInfo,
       ...toRefs(treeData),
       selectChapter,
       selectExperiment,
       currentChapter,
       currentExperiment,
+      isStudentType,
+      selectStudentType,
       showAllExperimen,
       IsShowAllExperimen,
       id1: 'echarts-pie1',
       id2: 'echarts-pie2',
       id3: 'echarts-pie3',
+      experimentRatioIds: ['echarts-bar1', 'echarts-bar2', 'echarts-bar3', 'echarts-bar4'],
+      experimentRatioTitle: ['任务用时比例分布', '任务报告比例分布', '任务习题比例分布', '任务步骤比例分布'],
+      experimentRatioTable,
       ...toRefs(score),
       ...toRefs(ratio),
-      
+      type,
+      change,
     }
   },
 }) 
@@ -253,23 +323,28 @@ export default defineComponent({
 
 
 <style lang="less" scoped>
+@opacity65-color: rgba(0,0,0,.65);
+@opacity85-color: rgba(0,0,0,.85);
+@echart-title-bgcolor: #f7edff;
+@echart-table-bordercolor: #dcc0f4;
 .course-analysis {
   width: 1330px;
   height: 100%;
   margin: 0 auto;
   .course-analysis-top {
-    height: 203px;
-    margin-top: -46px;
+    // height: 203px;
+    // margin-top: -46px;
+    height: 157px;
   }
   .course-analysis-content {
     background-color: @white;
     // height: 100%;
-    height: 583px;
-    overflow-y: scroll;
+    // height: 583px;
+    // overflow-y: scroll;
     .condition {
       margin: 0 auto;
       width: 1196px;
-      padding-top: 40px;
+      padding-top: 20px;
       .top {
         border-bottom: 1px solid #ebebeb;
         display: flex;
@@ -279,7 +354,7 @@ export default defineComponent({
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: rgba(0,0,0,.65);
+            color: @opacity65-color;
             cursor: pointer;
             &.active {
               border-bottom: 1px solid @theme-color;
@@ -292,7 +367,7 @@ export default defineComponent({
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: rgba(0,0,0,.65);
+            color: @opacity65-color;
             cursor: pointer;
             &.active {
               color: @theme-color;
@@ -302,7 +377,7 @@ export default defineComponent({
         .more {
           flex-shrink: 0;
           margin-left: auto;
-          color: rgba(0,0,0,.65);
+          color: @opacity65-color;
           cursor: pointer;
           .iconfont {
             font-size: 12px;
@@ -319,7 +394,7 @@ export default defineComponent({
       overflow-x: hidden;
       .analysis-type {
         display: flex;
-        padding: 23px 0 16px;
+        padding-top: 23px;
         border-bottom: 1px dashed #e9e9e9;
         span {
           padding: 6px 8px;
@@ -333,15 +408,15 @@ export default defineComponent({
           flex-wrap: wrap;
           width: 100%;
           span {
-            color: rgba(0,0,0,.65);
+            color: @opacity65-color;
             margin: 0 12px;
             cursor: pointer;
           }
           .active {
             // padding: 6px 8px;
-            background: #8955b5;
+            background: @theme-color;
             border-radius: 4px;
-            color: #fff;
+            color: @white;
           }
         }
       }
@@ -379,12 +454,13 @@ export default defineComponent({
       .echarts-pie {
         margin-top: 45px;
         display: flex;
+        justify-content: center;
         p {
           height: 40px;
           line-height: 40px;
-          background: #f7edff;
-          border-bottom: 1px solid #dcc0f4;
-          color: #8955b5;
+          background: @echart-title-bgcolor;
+          border-bottom: 1px solid @echart-table-bordercolor;
+          color: @theme-color;
           font-size: 16px;
           text-align: center;
         }
@@ -393,13 +469,15 @@ export default defineComponent({
     .score-box {
       margin: 0 auto;
       width: 1196px;
+      margin-bottom: 40px;
       .score {
         margin-top: 45px;
         display: flex;
+        padding: 0 30px;
         p {
           font-size: 16px;
           font-weight: 500;
-          color: rgba(0,0,0,0.85);
+          color: @opacity85-color;
           margin: 0;
         }
         .high {
@@ -439,8 +517,8 @@ export default defineComponent({
     width: 20%;
     height: 32px;
     text-align: center;
-    border-top: 1px solid #dcc0f4;
-    border-right: 1px solid #dcc0f4;
+    border-top: 1px solid @echart-table-bordercolor;
+    border-right: 1px solid @echart-table-bordercolor;
     line-height: 32px;
     font-size: 16px;
     color: #050101;
@@ -451,5 +529,52 @@ export default defineComponent({
       color: @theme-color;
     }
   }
+}
+.echarts-bar {
+  display: flex;
+  justify-content: center;
+  margin-top: 35px;
+  p {
+    height: 51px;
+    line-height: 51px;
+    background: @echart-title-bgcolor;
+    // border-bottom: 1px solid #dcc0f4;
+    color: @theme-color;
+    font-size: 16px;
+    text-align: center;
+    margin-bottom: 0;
+  }
+  :deep(.ant-row) {
+    &:first-child {
+      .ant-col {
+        color: @theme-color;
+      }
+    }
+    &:nth-child(2) {
+      .ant-col {
+        color: @opacity65-color;
+      }
+    }
+     .ant-col {
+      font-size: 14px;
+      height: 57px;
+      line-height: 57px;
+    }
+  }
+}
+:deep(.ant-tabs-nav) {
+  .ant-tabs-tab {
+    font-size: 14px;
+    color: @opacity65-color;
+  }
+  .ant-tabs-tab-active {
+    color: @theme-color;
+  }
+}
+:deep(.ant-tabs-bar) {
+  margin: 0;
+}
+.navList {
+  margin: 0;
 }
 </style>

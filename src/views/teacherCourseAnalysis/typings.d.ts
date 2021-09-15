@@ -19,13 +19,19 @@ interface ICourseAnalysis{
   getCourseDetail: Function
   saveReportTemplate: Function
   getReportTemplate: Function
+  getCourseDirections: Function
+  getCourseCategories: Function
+  uploadImg: Function
+  editCourse: Function
+  
 }
 export interface ICourseAnalysisHttp {
   teacherCourseAnalysis: ICourseAnalysis
 }
 
-interface Isolts {
-  icon: string
+interface IExperimentList {
+  labelName: string
+  labelId: number
 }
 export interface ITreeDataItem {
   id: number
@@ -37,5 +43,5 @@ export interface ITreeDataItem {
 }
 export interface ITreeData {
   data: ITreeDataItem[],
-  experimentList: ITreeDataItem[],
+  experimentList: IExperimentList[],
 }

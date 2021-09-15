@@ -7,7 +7,7 @@
       :class="{'not-start': data.state === 2, 'in-progress': data.state === 3, 'finish': data.state !== 3 && data.state !== 2}"
       >{{courseStatus(data.state)}}
       </span>
-      <span class="icon-fanhui iconfont"></span>
+      <span class="icon-fanhui iconfont" @click="goBack()"></span>
     </div>
     <div class="desc-box">
       <span class="desc" :title="data.introduce">{{data.introduce}}</span>
@@ -38,7 +38,7 @@
       </div>
       <div class="operation-box">
         <span class="icon-mobandaishezhi iconfont" title="选择报告模板" @click="openReportModal()"></span>
-        <span class="icon-bianji1 iconfont" title="编辑"></span>
+        <span class="icon-bianji1 iconfont" title="编辑" @click="detailVisible =true"></span>
       </div>
     </div>
   </div>
@@ -53,6 +53,9 @@
       :bordered="true"
       :pagination="false"
     >
+      <template #type="{ record }">
+        <span>{{ record.type === 'form' ? '在线报告' : '离线报告' }}</span>
+      </template>
       <template #operation="{ record }">
         <a @click="selectReport(record.id)">选择</a>
       </template>
@@ -67,13 +70,16 @@
       />
     </div>
   </a-modal>
+    <edit-detail :detail="data" :courseId="courseInfo.courseId" v-if="detailVisible" :detailVisible="detailVisible" @cancelDetail="cancelDetail"></edit-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, ref } from 'vue'
+import { defineComponent, onMounted, reactive, toRefs, ref, PropType } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ICourseAnalysisHttp, ICourseInfo, ITreeData, ITreeDataItem } from './typings'
+import editDetail from './editDetail.vue'
+import { useRouter, useRoute } from 'vue-router'
 interface IreportList {
   type: string
   name: string
@@ -87,12 +93,21 @@ interface IDataSource {
 }
 
 export default defineComponent({
-  setup() {
-    let courseInfo = reactive<ICourseInfo>({
-      type: 'course',
-      courseType: 1,
-      courseId: 501703,
-    })
+  components: {editDetail},
+  props: {
+    courseInfo: {
+      type: Object as PropType<ICourseInfo>,
+      default: {}
+    }
+  },
+  setup(props) {
+    // let courseInfo = reactive<ICourseInfo>({
+    //   type: 'course',
+    //   courseType: 1,
+    //   courseId: 501703,
+    // })
+    const router = useRouter()
+    const route = useRoute()
     const http=(request as ICourseAnalysisHttp).teacherCourseAnalysis
 
     let courseDetail = reactive({
@@ -106,12 +121,16 @@ export default defineComponent({
         direction: {name: ''},
         start_time: '',
         end_time: '',
+        course_category_id: 0,
+        course_direction_id: 0,
+        desc: '', 
+        url: ''
       }
     })
     function getCourseDetail() {
       http.getCourseDetail({
         urlParams: {
-          courseId: courseInfo.courseId
+          courseId: props.courseInfo.courseId
         }
       }).then((res: IBusinessResp) => {
         console.log(res.data)
@@ -169,6 +188,7 @@ export default defineComponent({
         title: '模板类型',
         dataIndex: 'type',
         key: 'type',
+        slots: { customRender: 'type' },
       },
       {
         title: '操作',
@@ -181,8 +201,8 @@ export default defineComponent({
       console.log(222, id)
       http.saveReportTemplate({
         param: {
-          owner_type: courseInfo.type,
-          owner_id: courseInfo.courseId,
+          owner_type: props.courseInfo.type,
+          owner_id: props.courseInfo.courseId,
           template_id: id
         }
       }).then((res: IBusinessResp) => {
@@ -204,17 +224,43 @@ export default defineComponent({
       getReportTemplate()
     }
 
-    function onSearch(val:string) {
+    function onSearch(val: string) {
       dataSource.name = val
       getReportTemplate()
     }
     function rowkey(record: {}, index: number) {
       return index
     }
+
+    function submitHandle() {
+      console.log(courseDetail.data)
+    }
+
+    // 编辑
+    let detailVisible = ref(false)
+    function cancelDetail(data: any) {
+      if (data) {
+        getCourseDetail()
+      }
+      detailVisible.value = false
+    }
+
+    // 返回
+    function goBack() {
+      router.push('/teacher/course/virtualEnv')
+          // router.push({
+          //   name: 'classicalAsset',
+          //   params: {
+          //     uuid: props.list.vms[current.value].uuid,
+          //     id: list.id
+          //   }
+          // })
+    }
     onMounted(() => {
       getCourseDetail()
     })
     return {
+      ...toRefs(props),
       ...toRefs(courseDetail),
       courseStatus,
       openReportModal,
@@ -226,6 +272,10 @@ export default defineComponent({
       pageChange,
       rowkey,
       onSearch,
+      detailVisible,
+      submitHandle,
+      cancelDetail,
+      goBack,
     }
   },
 })
@@ -241,7 +291,7 @@ export default defineComponent({
     align-items: center;
     .name {
       font-size: 24px;
-      color: #fff;
+      color: @white;
       line-height: 33px;
       letter-spacing: 2px;
     }
@@ -277,22 +327,22 @@ export default defineComponent({
       text-align: center;
       width: 40px;
       height: 40px;
-      background: rgba(137,85,181,.8);
+      background: @theme-color;
       border-radius: 50%;
-      color: hsla(0,0%,100%,.8);
+      color: @white;
       cursor: pointer;
     }
   }
   .desc-box {
     height: 66px;
-    margin-top: 12px;
+    // margin-top: 12px;
     .desc {
       width: 926px;
       height: 50px;
       font-size: 14px;
       font-weight: 400;
       text-align: left;
-      color: #fff;
+      color: @white;
       line-height: 24px;
       letter-spacing: 1px;
       display: block;
@@ -312,7 +362,7 @@ export default defineComponent({
         text-align: center;
 
         &:nth-child(1) {
-          color: #ffffff;
+          color: @white;
           font-size: 14px;
         }
 
