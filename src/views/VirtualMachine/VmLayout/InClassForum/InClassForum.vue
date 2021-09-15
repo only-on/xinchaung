@@ -1,6 +1,6 @@
 <template>
   <div class="in-class-forum-box scrollbar">
-    <a-tabs v-model:activeKey="activeKey">
+    <a-tabs v-model:activeKey="activeKey" @change="tabChange">
       <a-tab-pane key="1" tab="交流中心">
         <div>
           <a-input-search
@@ -103,17 +103,19 @@
 
           <div>
             <div class="put-question-head">
-              <label>主题：</label><a-input v-model:value="forumThemeTitle"></a-input>
+              <label>主题：</label
+              ><a-input v-model:value="forumThemeTitle"></a-input>
             </div>
             <QuillEditor
+              ref="quillQuestion"
               v-model="forumThemeContent"
+              v-model:rang="forumThemeContentRang"
               height="500px"
             ></QuillEditor>
             <div class="put-question-footer">
-              <a-button type="primary" @click="activeKey='1'">返回</a-button>
+              <a-button type="primary" @click="activeKey = '1'">返回</a-button>
               <a-button type="primary" @click="questionSubmit">提交</a-button>
             </div>
-            <img v-if="imageUrl" :src="imageUrl" />
           </div>
         </div>
       </a-tab-pane>
@@ -121,6 +123,7 @@
   </div>
   <div>
     <a-modal
+      ref="forumModal"
       class="forum-modal"
       :visible="replyVisible"
       :title="replyToUser"
@@ -129,6 +132,7 @@
       width="740px"
     >
       <QuillEditor
+        ref="quillRef"
         v-if="replyVisible"
         v-model="content"
         height="500px"
@@ -155,6 +159,7 @@ import {
 import request from "src/request/getRequest";
 import QuillEditor from "src/components/editor/quill.vue";
 import { Delta } from "quill-delta";
+import { context } from "ant-design-vue/lib/vc-image/src/PreviewGroup";
 interface Iparams {
   title: string;
   type: string;
@@ -174,7 +179,8 @@ export default defineComponent({
   setup() {
     const forum = request.studentForum;
     console.log(forum);
-    const activeKey=ref("1")
+    const activeKey = ref("1");
+    const quillQuestion = ref();
     const currentOpenContent: Ref<number | string> = ref(0);
     const imageUrl: Ref<string> = ref("");
     const reactiveData: IreactiveData = reactive({
@@ -197,7 +203,7 @@ export default defineComponent({
     const replyToUser: Ref<string> = ref("@");
     const replyVisible: Ref<boolean> = ref(false);
     const forumThemeTitle: Ref<string> = ref("");
-
+    const forumThemeContentRang=ref(1)
     // const content: Ref<Delta> = ref({
     //   ops: [
     //   ],
@@ -206,6 +212,8 @@ export default defineComponent({
       forum_id: "",
       content: "",
     };
+    const forumModal = ref();
+    const quillRef = ref();
     onMounted(() => {
       getPubIndex(lookParams.value);
     });
@@ -216,6 +224,13 @@ export default defineComponent({
         console.log(forumThemeContent.value);
       }
     );
+    watch(
+      () => content.value,
+      () => {
+        console.log(content.value);
+      }
+    );
+
     function onSearch() {
       lookParams.value.page = 1;
       getPubIndex(lookParams.value);
@@ -237,6 +252,8 @@ export default defineComponent({
         let file = canvasToFile(canvas, "testname.png");
         imageFileToBase64(file).then((url: string) => {
           imageUrl.value = url;
+          let htm='<img src='+url+'>'
+          quillQuestion.value.insertHtml(htm)
         });
       });
     }
@@ -284,13 +301,14 @@ export default defineComponent({
       console.log(val);
     }
     function closeReplyModal() {
-      replyVisible.value = false;
-      replyToUser.value = "@";
       replyParams.forum_id = "";
       replyParams.content = "";
       content.value = {
         ops: [],
       };
+      (quillRef.value as any).setContents(content.value);
+      replyVisible.value = false;
+      replyToUser.value = "@";
     }
 
     function replySubmit() {
@@ -299,12 +317,12 @@ export default defineComponent({
         .editReply({ param: { ForumArticle: replyParams } })
         .then((res: any) => {
           getPubIndex(lookParams.value);
-          //  replyVisible.value = false;
+          replyVisible.value = false;
           content.value = {
             ops: [],
           };
-
           replyToUser.value = "@";
+          (quillRef.value as any).setContents(content.value);
         });
     }
 
@@ -312,17 +330,27 @@ export default defineComponent({
       let params = {
         forum: {
           type: 1,
-          title:forumThemeTitle.value,
-          content:JSON.stringify(forumThemeContent.value)
+          title: forumThemeTitle.value,
+          content: JSON.stringify(forumThemeContent.value),
         },
       };
-      forum.createForum({ param: params }).then((res:any)=>{
+      forum.createForum({ param: params }).then((res: any) => {
         console.log(res);
-        
       });
-      activeKey.value="1"
+      activeKey.value = "1";
+    }
+
+    function tabChange(key: string) {
+      console.log(key);
+      if (key === "2") {
+        forumThemeContent.value.ops = [];
+        quillQuestion.value.setContents(forumThemeContent.value);
+        forumThemeTitle.value = "";
+      }
     }
     return {
+      forumModal,
+      quillRef,
       activeKey,
       onSearch,
       currentOpenContent,
@@ -341,6 +369,9 @@ export default defineComponent({
       content,
       forumThemeTitle,
       questionSubmit,
+      tabChange,
+      quillQuestion,
+      forumThemeContentRang
     };
   },
 });

@@ -24,6 +24,18 @@ export interface IRecommendExperiment {
   type: TStudyType
   taskId: any
 }
+
+export type IAction = 'startVm' | 'closeVm' | 'revertVm' | 'resetVm' | 'switch2Vnc' | 'saveKvm' | 'startRecord' | 'stopRecord' | 'delay'
+
+export interface IOperatesHandle {
+  "action": IAction,
+  "params": {
+    "type": TStudyType,
+    "opType": TopType,
+    "uuid": string,
+    "taskId": number
+  }
+}
 /**
  * @description 检查创建环境
  * @param params 
@@ -33,7 +45,7 @@ function openVm(params: IEnvirmentsParam) {
     envirmentsInspect(params).then((result: any) => {
       if (result.status === 1) {
         resourceInspect().then(() => {
-          createExamples(params).then((res:any) => {
+          createExamples(params).then((res: any) => {
             console.log(res);
 
             resolve({
@@ -57,7 +69,7 @@ function openVm(params: IEnvirmentsParam) {
                   resourceInspect().then(() => {
                     createExamples(params).then((res) => {
                       console.log(res);
-                      
+
                       resolve({
                         data: res, query: {
                           opType: params.opType,
@@ -237,9 +249,9 @@ function recommendExperiment(params: IRecommendExperiment) {
 
 
 // 跳转虚拟机页面
-async function toVmConnect(router: any, param: IEnvirmentsParam,routerQuery:any) {
+async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: any) {
   const createEnvirments: any = await openVm(param);
-  console.log(createEnvirments,JSON.stringify(routerQuery));
+  console.log(createEnvirments, JSON.stringify(routerQuery));
   if (createEnvirments.data.data.connection_id) {
     router.push({
       path: "/vm/vnc",
@@ -250,7 +262,7 @@ async function toVmConnect(router: any, param: IEnvirmentsParam,routerQuery:any)
         taskId: createEnvirments.query.taskId,
         topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
         topoinst_id: createEnvirments.data.data.topoinst_id,
-        routerQuery:JSON.stringify(routerQuery)
+        routerQuery: JSON.stringify(routerQuery)
       },
     });
   }
@@ -276,10 +288,21 @@ async function toStudyRecommendExperiment(router: any, param: IRecommendExperime
   });
 }
 
-
-
-
-
+/**
+ * @description 操作虚拟机
+ * @param params param:{action,params:{type,opType,taskId}}
+ */
+function operatesHandle(params: IOperatesHandle) {
+  return new Promise((resolve: any, reject: any) => {
+    vmApi.operatesHandle({param:params}).then((res) => {
+      resolve(res)
+    }).catch(err => {
+      reject(err)
+    })
+  }).catch(err => {
+    console.log(err);
+  })
+}
 
 /* ------工具方法start----- */
 /**
@@ -288,7 +311,7 @@ async function toStudyRecommendExperiment(router: any, param: IRecommendExperime
  */
 function secondToHHMMSS(time_s: number) {
   let h = 0, m = 0, s = 0
-  h = parseInt((time_s / 60/60).toString())
+  h = parseInt((time_s / 60 / 60).toString())
   m = parseInt((time_s / 60 % 60).toString())
   s = parseInt((time_s % 60).toString())
 
@@ -300,28 +323,28 @@ function secondToHHMMSS(time_s: number) {
  * @param type 课程：course、实训：train
  * @param role 权限：1、2、3
  */
-function backTo(route:any,type:string,role:number,routerQuery:string) {
-  let otherParams:any={}
+function backTo(route: any, type: string, role: number, routerQuery: string) {
+  let otherParams: any = {}
   if (routerQuery) {
-    otherParams=JSON.parse(routerQuery)
+    otherParams = JSON.parse(routerQuery)
   }
-  
-  if (role===3) {
-    if (type==="course") {
+
+  if (role === 3) {
+    if (type === "course") {
       route.push({
-        path:"/studentSideCourse/ContinueDetail",
-        query:{
-          DetailId:otherParams.detailId,
-          course_id:otherParams.course_id
+        path: "/studentSideCourse/ContinueDetail",
+        query: {
+          DetailId: otherParams.detailId,
+          course_id: otherParams.course_id
         }
       })
       return;
     }
-    if (type==="train") {
+    if (type === "train") {
       route.push({
-        path:"/studentExperimental",
-        query:{
-          currentTab:0
+        path: "/studentExperimental",
+        query: {
+          currentTab: 0
         }
       })
       return;
@@ -339,6 +362,7 @@ export {
   toVmConnect,
   toStudyRecommendExperiment,
   secondToHHMMSS,
-  backTo
+  backTo,
+  operatesHandle
 }
 

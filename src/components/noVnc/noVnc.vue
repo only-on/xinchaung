@@ -1,5 +1,5 @@
 <template>
-  <div class="novnc-wrap" :id="refName"></div>
+  <div class="novnc-wrap" ref="refName"></div>
 </template>
 <script lang="ts">
 import { defineComponent, nextTick, ref, onMounted, watch,inject,Ref,PropType } from "vue";
@@ -46,6 +46,7 @@ export default defineComponent({
   setup(props, context) {
     let rfb: any = ref(null);
     let vncLoading:Ref<boolean>|undefined=inject("vncLoading")
+    const refName=ref(props.refName)
     // 连接断开
     function disconnect(msg: any) {
       setTimeout(() => {
@@ -70,21 +71,24 @@ export default defineComponent({
       console.log("securityfailure:", msg);
     }
 
-    function clipboard(msg: any) {
-      console.log("clipboard:", msg);
+    function clipboard(msg: CustomEvent) {
+      context.emit("clipboard",msg)
     }
     // 连接vnc
     function connectVnc() {
       if (!props.options?.wsUrl) {
         return false
       }
-      if (document.getElementById(props.refName)) {
-          (document.getElementById(props.refName) as HTMLDivElement).innerHTML=""
+      // if (document.getElementById(props.refName)) {
+      //     (document.getElementById(props.refName) as HTMLDivElement).innerHTML=""
+      // }
+      if (refName.value) {
+          (refName.value as any).innerHTML=""
       }
       vncLoading!.value=false
       // vncLoading!.value=false
       // 实例化rfb
-      rfb = new RFB(document.getElementById(props.refName), props.options?.wsUrl, {
+      rfb = new RFB(refName.value, props.options?.wsUrl, {
         // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
         credentials: {
           password: props.options?.password,
@@ -98,9 +102,14 @@ export default defineComponent({
       rfb.scaleViewport = 0.65; //scaleViewport指示是否应在本地扩展远程会话以使其适合其容器。禁用时，如果远程会话小于其容器，则它将居中，或者根据clipViewport它是否更大来处理。默认情况下禁用。
       rfb.resizeSession = true; //是一个boolean指示是否每当容器改变尺寸应被发送到调整远程会话的请求。默认情况下禁用
       rfb.background = props.background;
-      // console.log(rfb);
+      console.log(rfb);
     }
 
+    function  sendSelectContent(text:string){
+      if (text&&rfb) {
+        rfb.clipboardPasteFrom(text)
+      }
+    }
     // 直接mounted周期
     onMounted(() => {
       connectVnc();
@@ -117,7 +126,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    return { connectVnc, rfb,vncLoading };
+    return { connectVnc, rfb,vncLoading,sendSelectContent ,refName};
   },
 });
 </script>

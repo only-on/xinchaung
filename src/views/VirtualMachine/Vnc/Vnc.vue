@@ -4,7 +4,37 @@
       <div class="vm-header-student" v-if="roleType">
         <div class="vm-header-left">
           <a-button type="primary" @click="back">返回</a-button>
-          <a-button type="primary">操作</a-button>
+          <a-dropdown class="">
+            <template #overlay>
+              <a-menu @click="handleMenuClick" class="action-handle-dropdown">
+                <a-menu-item key="revertVm" class="action-item">
+                  <span class="icon-fasong iconfont"></span>发送Ctrl+Alt+Del
+                </a-menu-item>
+                <a-menu-item key="sendSelectContent" class="action-item">
+                  <span class="icon-gongxiang1 iconfont"></span>发送选择内容
+                </a-menu-item>
+                <a-menu-item key="startRecord" class="action-item" :class="isScreenRecording?'disabled':''">
+                  <span class="icon-luping iconfont"></span>开始录屏
+                </a-menu-item>
+                <a-menu-item key="stopRecord" class="action-item" :class="!isScreenRecording?'disabled':''">
+                  <span class="icon-luping iconfont"></span>结束录屏
+                </a-menu-item>
+                <a-menu-item key="resetVm" class="action-item">
+                  <span class="icon-zhongzhi iconfont"></span>重置
+                </a-menu-item>
+                <a-menu-item key="closeVm" class="action-item">
+                  <span class="icon-kaiguanshenx iconfont"></span>关机
+                </a-menu-item>
+              </a-menu>
+            </template>
+            <a-button type="primary">
+              操作
+              <span
+                class="icon-zhankai iconfont"
+                style="margin-left: 5px"
+              ></span
+            ></a-button>
+          </a-dropdown>
         </div>
 
         <div class="vm-header-title">实验名称</div>
@@ -23,9 +53,9 @@
               }}</span
             >
           </span>
-          <a-button class="delayed-btn">延时</a-button>
+          <a-button class="delayed-btn" @click="delayedTime">延时</a-button>
           <span class="vm-action-box">
-            <a-button type="primary">保存进度</a-button>
+            <a-button type="primary" @click="saveKvm">保存进度</a-button>
             <a-button type="danger" @click="finishExperiment"
               >结束实验</a-button
             >
@@ -58,6 +88,8 @@
         background="rgb(40,40,40)"
         :options="vmOptions"
         refName="refName"
+        ref="novncEl"
+        @clipboard="clipboard"
       />
     </template>
   </layout>
@@ -108,6 +140,7 @@ import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { countDown } from "src/utils/common";
+import {copyText} from "src/utils/copySelect"
 import {
   getVmBaseInfo,
   endOperates,
@@ -119,8 +152,12 @@ import {
   IRecommendExperiment,
   toStudyRecommendExperiment,
   secondToHHMMSS,
-  backTo
-} from "src/utils/vmInspect";
+  backTo,
+  operatesHandle,
+  IOperatesHandle,
+  IAction,
+} from "src/utils/vncInspect";
+import { log } from "console";
 
 type TvmQuery = {
   opType: TopType;
@@ -129,7 +166,7 @@ type TvmQuery = {
   taskId: number;
   type: TStudyType;
   topoinst_id: string;
-  routerQuery:string
+  routerQuery: string;
 };
 export default defineComponent({
   components: {
@@ -140,7 +177,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     let vmQuery = route.query as any;
-
+    const novncEl=ref()
     const {
       opType,
       connection_id,
@@ -148,7 +185,7 @@ export default defineComponent({
       taskId,
       type,
       topoinst_id,
-      routerQuery
+      routerQuery,
     }: TvmQuery = vmQuery;
 
     const step_score_exists: boolean | string = "";
@@ -171,12 +208,15 @@ export default defineComponent({
     let vncLoadingV = ref(true);
     let uuidLoading = ref(false);
     let use_time: number = 900;
-    let experimentTime: Ref<any>= ref({
+    let experimentTime: Ref<any> = ref({
       h: 0,
       m: 0,
       s: 0,
     });
+    let uuid = "";
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
+    let taskType="" // 实验类型
+    const isScreenRecording=ref(false)
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
@@ -194,12 +234,11 @@ export default defineComponent({
     ];
     const data = reactive(navData);
     function back() {
-      if (opType==="test"||opType==="prepare") {
-        endVmEnvirment()
-      }else{
-        backTo(router,type,3,routerQuery)
+      if (opType === "test" || opType === "prepare") {
+        endVmEnvirment();
+      } else {
+        backTo(router, type, 3, routerQuery);
       }
-      
     }
 
     watch(vncLoadingV, () => {
@@ -207,7 +246,7 @@ export default defineComponent({
     });
 
     function initWs() {
-      vncLoadingV.value=false
+      vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
         url: "://192.168.101.150:9035/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
@@ -250,27 +289,23 @@ export default defineComponent({
       clearInterval(Number(timer));
       timer = setInterval(() => {
         experimentTime!.value = secondToHHMMSS(use_time);
-        if (type === "train") {
+        if (taskType === "实训") {
           use_time++;
         } else {
           use_time--;
-          if (use_time===600) {
+          if (use_time === 600) {
             Modal.confirm({
-              title:"是否延时？",
-              okText:"确认",
-              onOk:()=>{
-                console.log("延时");
-                
+              title: "是否延时？",
+              okText: "确认",
+              onOk: () => {
+                delayedTime()
               },
-              cancelText:"取消",
-              onCancel:()=>{
-                
-              }
-            })
-            
+              cancelText: "取消",
+              onCancel: () => {},
+            });
           }
-          if (use_time===0) {
-            endVmEnvirment()
+          if (use_time === 0) {
+            endVmEnvirment();
             clearInterval(Number(timer));
           }
         }
@@ -287,9 +322,10 @@ export default defineComponent({
         console.log(res);
         allInfo.value = res.data;
         console.log(res.data.current.used_time);
-        
+
         use_time = res.data.current.used_time;
         console.log(allInfo);
+        taskType=res.data.base_info.task_type.name
       });
     }
 
@@ -326,7 +362,7 @@ export default defineComponent({
           recommendVisible.value = true;
         }
         message.success("结束成功");
-        backTo(router,type,3,routerQuery)
+        backTo(router, type, 3, routerQuery);
       });
     }
     // 结束实验
@@ -343,7 +379,7 @@ export default defineComponent({
 
     // 结束实验
     function finishExperiment() {
-     let modal= Modal.confirm({
+      let modal = Modal.confirm({
         title: "确认结束实验吗？",
         okText: "确认",
         onOk: () => {
@@ -366,12 +402,12 @@ export default defineComponent({
           } else {
             endVmEnvirment();
           }
-          modal.destroy()
+          modal.destroy();
         },
         cancelText: "取消",
         onCancel: () => {
           console.log("quxiao1");
-          modal.destroy()
+          modal.destroy();
         },
       });
     }
@@ -386,6 +422,7 @@ export default defineComponent({
         getVmConnectSetting.VNCPORT +
         "/websockify?vm_uuid=" +
         data.uuid;
+      uuid = data.uuid;
     }
 
     // 推荐实验
@@ -433,7 +470,61 @@ export default defineComponent({
     function okRecommend() {
       recommendVisible.value = false;
     }
+
+    // 操作虚拟机
+    function VmOperatesHandle(actionType: IAction) {
+      let params: IOperatesHandle = {
+        action: actionType,
+        params: {
+          type: type,
+          opType: opType,
+          uuid: uuid,
+          taskId: taskId,
+        },
+      };
+      return new Promise((resolve: any, reject: any) => {
+        operatesHandle(params).then((res) => {
+          resolve(res)
+        }).catch(err=>{
+          reject(err)
+        });
+      }).catch();
+    }
+    // 操作虚拟机
+    function handleMenuClick(downEvent: any) {
+      let key = downEvent.key;
+      if (key==="sendSelectContent") {
+        novncEl.value.sendSelectContent(copyText)
+        return;
+      }
+      VmOperatesHandle(key).then((res)=>{
+        console.log(res);
+        message.success("操作成功")
+      });
+    }
+    
+    // 延时
+    function delayedTime() {
+      VmOperatesHandle('delay').then((res)=>{
+        console.log(res);
+      });
+    }
+
+    // 保存进度
+    function saveKvm() {
+      VmOperatesHandle('saveKvm').then((res)=>{
+        console.log(res);
+        backTo(router, type, 3, routerQuery);
+      });
+    }
+
+    // 选中内容发送变化时
+    function clipboard(message:CustomEvent) {
+      console.log(message);
+      
+    }
     return {
+      novncEl,
       roleType,
       back,
       data,
@@ -447,6 +538,11 @@ export default defineComponent({
       closeRecommend,
       okRecommend,
       experimentTime,
+      VmOperatesHandle,
+      handleMenuClick,
+      delayedTime,
+      saveKvm,
+      clipboard,
     };
   },
 });
@@ -507,6 +603,27 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
     }
+  }
+}
+.action-handle-dropdown {
+  .iconfont {
+    margin-right: 15px;
+    width: 15px;
+    display: inline-block;
+  }
+  
+  .action-item {
+    &:hover {
+      color: @theme-color;
+    }
+    &.active {
+      color: @theme-color;
+    }
+    &.disabled{
+      color: rgb(196, 196, 196);
+      pointer-events: none;
+    }
+    
   }
 }
 </style>

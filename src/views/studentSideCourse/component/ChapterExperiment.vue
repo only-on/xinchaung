@@ -59,7 +59,7 @@ import { QuillEditor } from "@vueup/vue-quill";
 // import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
-import {toVmConnect,IEnvirmentsParam} from "src/utils/vmInspect" // 打开虚拟机
+import {toVmConnect,IEnvirmentsParam} from "src/utils/vncInspect" // 打开虚拟机
 
 interface IdetailObj{
   saveOrEdit:number;
@@ -114,6 +114,7 @@ export default defineComponent({
       content1:'',
       studystr:'',
     })
+    let task_type:any={}
     watch(()=>{return props.experimentalId},(val:any)=>{
       // console.log(val)
        id.value=val
@@ -129,6 +130,7 @@ export default defineComponent({
     function init() {
       http.experimentalNotes({param:{id:id.value}}).then((res:IBusinessResp)=>{
         if(res){
+            task_type=res.data.task_type
             detail.studystr=res.data.study
             detail.updatedAt=res.data.note.updated_at
             detail.saveOrEdit=res.data.note.ops?3:1
@@ -182,8 +184,25 @@ export default defineComponent({
         opType: 'start',
         taskId: id.value,
       }
+      if (task_type.type===4) {
+        // webide
+        if (task_type.programing_type===1) {
+          router.push({
+            path:'/vm/ace',
+            query:{
+              type:param.type,
+              opType:param.opType,
+              taskId:param.taskId,
+              routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
+            }
+          })
+        }else{
+          // note
 
-      toVmConnect(router,param,{detailId:detailId,course_id:course_id})
+        }
+      }else{
+        toVmConnect(router,param,{detailId:detailId,course_id:course_id})
+      }
     }
     function getStudyStatus(type:any) {
       let obj={'start':'开始学习','continue':'继续学习','finish':'重修','rebuild':'重修'}

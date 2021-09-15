@@ -36,7 +36,7 @@ import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
-import {toVmConnect} from "src/utils/vmInspect"
+import {toVmConnect} from "src/utils/vncInspect"
 interface IlistItem{
   img:string,
   name:string,

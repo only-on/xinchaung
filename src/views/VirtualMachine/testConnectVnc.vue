@@ -19,7 +19,7 @@ import { defineComponent, ref, reactive, toRefs } from "vue";
 import { createExamples } from "src/utils/enterVmFront";
 import { useRouter } from "vue-router";
 import { wsConnect, disconnect } from "src/request/websocket";
-import { openVm, IEnvirmentsParam,toVmConnect } from "src/utils/vmInspect";
+import { openVm, IEnvirmentsParam,toVmConnect } from "src/utils/vncInspect";
 
 type TReactiveData = {
   param: IEnvirmentsParam;

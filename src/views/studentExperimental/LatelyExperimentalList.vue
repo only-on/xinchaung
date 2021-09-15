@@ -44,7 +44,7 @@ interface IlistItem{
   u_name:string,
   times:string,
 }
-import {toVmConnect} from "src/utils/vmInspect"
+import {toVmConnect} from "src/utils/vncInspect"
 export default defineComponent({
   name: 'LatelyExperimentalList',
   components: {
