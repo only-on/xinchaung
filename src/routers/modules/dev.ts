@@ -79,5 +79,21 @@ export default {
     //     authCode: 'quill'
     //   }
     // }
+    // {
+    //   path: 'marked-editor',
+    //   component: () => import('src/components/dev/MarkedEditor.vue'),
+    //   meta: {
+    //     title: 'quill',
+    //     authCode: 'quill'
+    //   }
+    // },
+    // {
+    //   path: 'sequence',
+    //   component: () => import('src/components/dev/Sequence.vue'),
+    //   meta: {
+    //     title: 'sequence',
+    //     authCode: 'sequence'
+    //   }
+    // }
   ]
 }
