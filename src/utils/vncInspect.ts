@@ -251,7 +251,10 @@ function recommendExperiment(params: IRecommendExperiment) {
 // 跳转虚拟机页面
 async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: any) {
   const createEnvirments: any = await openVm(param);
+<<<<<<< Updated upstream:src/utils/vncInspect.ts
   console.log(createEnvirments, JSON.stringify(routerQuery));
+=======
+>>>>>>> Stashed changes:src/utils/vmInspect.ts
   if (createEnvirments.data.data.connection_id) {
     router.push({
       path: "/vm/vnc",
@@ -262,6 +265,10 @@ async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: an
         taskId: createEnvirments.query.taskId,
         topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
         topoinst_id: createEnvirments.data.data.topoinst_id,
+<<<<<<< Updated upstream:src/utils/vncInspect.ts
+=======
+        record_id: createEnvirments.data.data.record_id,
+>>>>>>> Stashed changes:src/utils/vmInspect.ts
         routerQuery: JSON.stringify(routerQuery)
       },
     });
@@ -274,14 +281,13 @@ async function toStudyRecommendExperiment(router: any, param: IRecommendExperime
     console.log(res);
     let routeUrl = router.resolve({
       path: "/vm/vnc",
-
       query: {
         connection_id: res.data.connection_id,
         opType: "recommend",
         type: res.data.type.type,
         taskId: param.taskId,
         topoinst_uuid: res.data.topoinst_uuid,
-        topoinst_id: otherParams.topoinst_id
+        topoinst_id: otherParams.topoinst_id,
       },
     });
     window.open(routeUrl.href, "_blank");

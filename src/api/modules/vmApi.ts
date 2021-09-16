@@ -22,7 +22,10 @@ export default {
     cryptsSaveFileApi: { url: "/api/operate/crypts/saveFile", method: 'POST' },
     cryptsSwitchFileApi: { url: "/api/operate/crypts/switchFile", method: 'POST' },
     runCodeApi: { url: "/api/operate/crypts/run", method: 'POST' },
-    taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' }
+    taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
+    // 实验报告
+    experimentalReport: { url: "/report/record/create", method: 'POST' },
+    updateTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'formdata' }
 }
 
 // 
@@ -41,11 +44,13 @@ export interface IvmApi {
     createVersionApi: TFHttpSend
     switchVersionApi: TFHttpSend
     deleteVersionApi: TFHttpSend
-    cryptsFilesVersionApi:TFHttpSend
-    cryptsSaveFileApi:TFHttpSend
-    cryptsSwitchFileApi:TFHttpSend
-    runCodeApi:TFHttpSend
-    taskDetailApi:TFHttpSend
+    cryptsFilesVersionApi: TFHttpSend
+    cryptsSaveFileApi: TFHttpSend
+    cryptsSwitchFileApi: TFHttpSend
+    runCodeApi: TFHttpSend
+    taskDetailApi: TFHttpSend
+    experimentalReport: TFHttpSend
+    updateTemplateReport: TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"
