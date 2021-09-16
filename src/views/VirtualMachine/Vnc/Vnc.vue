@@ -1,5 +1,5 @@
 <template>
-  <layout :VmData="data">
+  <layout :VmData="data" isLeftContentShowType="line">
     <template v-slot:header>
       <div class="vm-header-student" v-if="roleType">
         <div class="vm-header-left">
@@ -337,23 +337,6 @@ export default defineComponent({
         taskId: taskId,
         topoinst_id: topoinst_id,
       };
-      // recommendExperimentData.value = [
-      //   {
-      //     id: 50139,
-      //     name: "实训111",
-      //     recommend_type: "train",
-      //   },
-      //   {
-      //     id: 50158,
-      //     name: "实训名称",
-      //     recommend_type: "train",
-      //   },
-      //   {
-      //     id: 50224,
-      //     name: "step_train1",
-      //     recommend_type: "train",
-      //   },
-      // ];
 
       endExperiment(params).then((res: any) => {
         console.log(res);
@@ -543,6 +526,7 @@ export default defineComponent({
       delayedTime,
       saveKvm,
       clipboard,
+      isScreenRecording
     };
   },
 });

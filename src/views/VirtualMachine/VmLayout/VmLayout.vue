@@ -13,7 +13,7 @@
           </li>
           <li
             class="vm-nav-item"
-            :class="currentNavKey===item.key?'active':''"
+            :class="currentNavKey === item.key ? 'active' : ''"
             v-for="(item, index) in vmData"
             :key="index.toString()"
             @click="open(item.key)"
@@ -28,9 +28,13 @@
           class="vm-content-left"
           ref="leftEl"
           :style="{ width: openStatus ? leftWidth + 'px' : '0px' }"
+          v-if="isLeftContentShowType === 'line'"
         >
           <div class="vm-content-box">
-            <div class="warn-hint"><span class="iconfont icon-warn"></span>该课件仅用于人工智能教学，请勿用于其他用途。</div>
+            <div class="warn-hint">
+              <span class="iconfont icon-warn"></span
+              >该课件仅用于人工智能教学，请勿用于其他用途。
+            </div>
             <component :is="currentComponent"></component>
           </div>
           <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
@@ -45,10 +49,36 @@
       </div>
     </div>
   </div>
+  <a-drawer
+    title="Basic Drawer"
+    placement="left"
+    :closable="false"
+    :visible="drawerVisible"
+    @close="drawerClose"
+    :style="{ left: drawerVisible ? '70px' : '0px' }"
+    width="600px"
+    class="content-drawer"
+  >
+    <div class="vm-content-box">
+      <div class="warn-hint">
+        <span class="iconfont icon-warn"></span
+        >该课件仅用于人工智能教学，请勿用于其他用途。
+      </div>
+      <component :is="currentComponent"></component>
+    </div>
+  </a-drawer>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, ref, nextTick,watch,Ref } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  ref,
+  nextTick,
+  watch,
+  Ref,
+} from "vue";
 import VM from "./VM/VM.vue";
 import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
 import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises.vue";
@@ -56,9 +86,9 @@ import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
 import InClassForum from "./InClassForum/InClassForum.vue";
 interface Vm {
-  key: string,
-  icon: string,
-  name: string
+  key: string;
+  icon: string;
+  name: string;
 }
 export default defineComponent({
   components: {
@@ -69,49 +99,51 @@ export default defineComponent({
     "in-class-practice": InClassPractice,
     "in-class-forum": InClassForum,
   },
-  props: ["VmData"],
+  props: ["VmData", "isLeftContentShowType"],
   setup(props, { emit }) {
     const vmData: Ref<Array<Vm>> = reactive(props.VmData);
     const currentComponent = ref(vmData[0].key);
     const openStatus = ref(false); // left内容打开状态
 
-    const vmWrapEl:Ref<HTMLElement|null> = ref(null);
-    const leftEl:Ref<HTMLElement|null> = ref(null); // 左侧dom
-    const rightEl:Ref<HTMLElement|null> = ref(null); // 右侧dom
-    const vmWrapWidth:Ref<number>= ref(0);
-    const leftWidth:Ref<number> = ref(443); // 左侧宽度
-    const rightWidth:Ref<number> = ref(0); // 右侧宽度
-    let mouseStart:number = 0; // 鼠标开始移动位置
-    let isMove:boolean = false; // 当前是否可以拖动标识
-    let currentNavKey:Ref<string> = ref("VM");
+    const vmWrapEl: Ref<HTMLElement | null> = ref(null);
+    const leftEl: Ref<HTMLElement | null> = ref(null); // 左侧dom
+    const rightEl: Ref<HTMLElement | null> = ref(null); // 右侧dom
+    const vmWrapWidth: Ref<number> = ref(0);
+    const leftWidth: Ref<number> = ref(443); // 左侧宽度
+    const rightWidth: Ref<number> = ref(0); // 右侧宽度
+    let mouseStart: number = 0; // 鼠标开始移动位置
+    let isMove: boolean = false; // 当前是否可以拖动标识
+    let currentNavKey: Ref<string> = ref("VM");
+    const isLeftContentShowType = props.isLeftContentShowType;
+    const drawerVisible = ref(false);
     // 自定义事件
     const eventCustom = document.createEvent("HTMLEvents");
-               eventCustom.initEvent("resize", true, true);
+    eventCustom.initEvent("resize", true, true);
     onMounted(() => {
       nextTick(() => {
-        vmWrapWidth.value = window.innerWidth-70;
+        vmWrapWidth.value = window.innerWidth - 70;
         rightWidth.value =
-            vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+          vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
       });
       // window鼠标抬起事件
       document.onmouseup = () => {
         isMove = false;
         document.onmousemove = null;
-        document.body.style.pointerEvents="all"
-        document.body.style.userSelect="auto"
+        document.body.style.pointerEvents = "all";
+        document.body.style.userSelect = "auto";
       };
       // 监听window变化事件
       window.addEventListener("resize", function () {
-          // vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
-          vmWrapWidth.value =window.innerWidth-70
+        // vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
+        vmWrapWidth.value = window.innerWidth - 70;
       });
     });
 
     // 监听vmWrapWidth变化
-    watch(vmWrapWidth,()=>{
+    watch(vmWrapWidth, () => {
       rightWidth.value =
-            vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
-    })
+        vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+    });
     // 返回当前的菜单类型
     function setCurrentComponent(key: string) {
       switch (key) {
@@ -133,33 +165,47 @@ export default defineComponent({
     }
     // 左边菜单点击事件
     function open(key?: string) {
-      // 当为关闭状态时，从新设置值
-       vmWrapWidth.value =window.innerWidth-70
-      if (!openStatus.value) {
-        leftWidth.value = 443;
+      if (isLeftContentShowType === "line") {
+        // 当为关闭状态时，从新设置值
+        vmWrapWidth.value = window.innerWidth - 70;
+        if (!openStatus.value) {
+          leftWidth.value = 443;
+        }
+
+        if (key) {
+          openStatus.value = true;
+          currentNavKey.value = key;
+          currentComponent.value = setCurrentComponent(key);
+        } else {
+          openStatus.value = !openStatus.value;
+        }
+        rightWidth.value =
+          vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+        window.dispatchEvent(eventCustom);
+        return;
       }
-      
-      if (key) {
-        openStatus.value = true;
-        currentNavKey.value = key;
-        currentComponent.value = setCurrentComponent(key);
-      } else {
-        openStatus.value = !openStatus.value;
+      if (isLeftContentShowType === "float") {
+        drawerVisible.value = true;
+        if (currentNavKey.value === key) {
+          return;
+        }
+        if (key) {
+          currentNavKey.value = key;
+          currentComponent.value = setCurrentComponent(key);
+        }
       }
-      rightWidth.value = vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
-      window.dispatchEvent(eventCustom);
     }
 
     // 鼠标按下事件
     function mousedown(e: MouseEvent) {
       leftWidth.value = (leftEl as any).value.clientWidth;
       rightWidth.value = (rightEl as any).value.clientWidth;
-      vmWrapWidth.value = window.innerWidth-70;
+      vmWrapWidth.value = window.innerWidth - 70;
       mouseStart = e.pageX;
       isMove = true;
       document.onmousemove = (event: any) => {
-        document.body.style.pointerEvents="none"
-        document.body.style.userSelect="none"
+        document.body.style.pointerEvents = "none";
+        document.body.style.userSelect = "none";
         changeWidth(event);
       };
     }
@@ -188,7 +234,12 @@ export default defineComponent({
         }
         mouseStart = mouseEnd;
       }
-       window.dispatchEvent(eventCustom);
+      window.dispatchEvent(eventCustom);
+    }
+
+    // 关闭抽屉
+    function drawerClose() {
+      drawerVisible.value = false;
     }
     return {
       openStatus,
@@ -203,6 +254,9 @@ export default defineComponent({
       leftWidth,
       rightWidth,
       currentNavKey,
+      isLeftContentShowType,
+      drawerVisible,
+      drawerClose,
     };
   },
 });
@@ -237,7 +291,7 @@ export default defineComponent({
           margin-bottom: 32px;
           color: #050101;
           transition: 0.5s;
-          &.active{
+          &.active {
             color: @theme-color;
           }
           .iconfont {
@@ -273,13 +327,13 @@ export default defineComponent({
         transition: 0.5s;
         .vm-content-box {
           width: 100%;
-          .warn-hint{
-            color: #FF3E00;
+          .warn-hint {
+            color: #ff3e00;
             text-align: center;
             font-size: 12px;
             line-height: 25px;
-            background: #FFF8F8;
-            >.iconfont{
+            background: #fff8f8;
+            > .iconfont {
               margin-right: 5px;
             }
           }
@@ -305,6 +359,27 @@ export default defineComponent({
         overflow: hidden;
       }
     }
+  }
+}
+.vm-content-box {
+  width: 100%;
+  .warn-hint {
+    color: #ff3e00;
+    text-align: center;
+    font-size: 12px;
+    line-height: 25px;
+    background: #fff8f8;
+    > .iconfont {
+      margin-right: 5px;
+    }
+  }
+}
+.content-drawer{
+  .ant-drawer-header{
+    display: none;
+  }
+  .ant-drawer-body{
+    padding: 0;
   }
 }
 </style>

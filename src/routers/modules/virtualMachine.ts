@@ -27,6 +27,15 @@ export default{
             },
         },
         {
+            path:"notebook",
+            name:"notebook",
+            component:()=>import("src/views/VirtualMachine/Notebook/notebook.vue"),
+            meta:{
+                title:"notebook",
+                authCode:""
+            },
+        },
+        {
             path:"test",
             name:"test",
             component:()=>import("src/views/VirtualMachine/testConnectVnc.vue"),
