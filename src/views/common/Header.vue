@@ -23,7 +23,7 @@
       <a-popover title="" trigger="hover" placement="bottom">
         <template #content>
           <p class="operation" v-if="!power" @click="information">个人信息</p>
-          <p class="operation" v-if="!power" @click="modifyPassword">修改密码</p>
+          <p class="operation" v-if="power" @click="modifyPassword">修改密码</p>
           <p class="operation" @click="loginOut">退出登录</p>
         </template>
         <div class="user-name">
