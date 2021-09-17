@@ -13,10 +13,18 @@
                 <a-menu-item key="sendSelectContent" class="action-item">
                   <span class="icon-gongxiang1 iconfont"></span>发送选择内容
                 </a-menu-item>
-                <a-menu-item key="startRecord" class="action-item" :class="isScreenRecording?'disabled':''">
+                <a-menu-item
+                  key="startRecord"
+                  class="action-item"
+                  :class="isScreenRecording ? 'disabled' : ''"
+                >
                   <span class="icon-luping iconfont"></span>开始录屏
                 </a-menu-item>
-                <a-menu-item key="stopRecord" class="action-item" :class="!isScreenRecording?'disabled':''">
+                <a-menu-item
+                  key="stopRecord"
+                  class="action-item"
+                  :class="!isScreenRecording ? 'disabled' : ''"
+                >
                   <span class="icon-luping iconfont"></span>结束录屏
                 </a-menu-item>
                 <a-menu-item key="resetVm" class="action-item">
@@ -140,7 +148,7 @@ import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { countDown } from "src/utils/common";
-import {copyText} from "src/utils/copySelect"
+import { copyText } from "src/utils/copySelect";
 import {
   getVmBaseInfo,
   endOperates,
@@ -177,7 +185,7 @@ export default defineComponent({
     const route = useRoute();
     const router = useRouter();
     let vmQuery = route.query as any;
-    const novncEl=ref()
+    const novncEl = ref();
     const {
       opType,
       connection_id,
@@ -215,8 +223,8 @@ export default defineComponent({
     });
     let uuid = "";
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
-    let taskType="" // 实验类型
-    const isScreenRecording=ref(false)
+    let taskType = ""; // 实验类型
+    const isScreenRecording = ref(false);
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
@@ -298,7 +306,7 @@ export default defineComponent({
               title: "是否延时？",
               okText: "确认",
               onOk: () => {
-                delayedTime()
+                delayedTime();
               },
               cancelText: "取消",
               onCancel: () => {},
@@ -325,7 +333,7 @@ export default defineComponent({
 
         use_time = res.data.current.used_time;
         console.log(allInfo);
-        taskType=res.data.base_info.task_type.name
+        taskType = res.data.base_info.task_type.name;
       });
     }
 
@@ -338,15 +346,17 @@ export default defineComponent({
         topoinst_id: topoinst_id,
       };
 
-      endExperiment(params).then((res: any) => {
-        console.log(res);
-        if (res.data.length > 0) {
-          recommendExperimentData.value = res.data;
-          recommendVisible.value = true;
-        }
-        message.success("结束成功");
-        backTo(router, type, 3, routerQuery);
-      });
+      setTimeout(() => {
+        endExperiment(params).then((res: any) => {
+          console.log(res);
+          if (res.data.length > 0) {
+            recommendExperimentData.value = res.data;
+            recommendVisible.value = true;
+          }
+          message.success("结束成功");
+          backTo(router, type, 3, routerQuery);
+        });
+      }, 3000);
     }
     // 结束实验
     async function endVmOperates() {
@@ -466,45 +476,46 @@ export default defineComponent({
         },
       };
       return new Promise((resolve: any, reject: any) => {
-        operatesHandle(params).then((res) => {
-          resolve(res)
-        }).catch(err=>{
-          reject(err)
-        });
+        operatesHandle(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       }).catch();
     }
     // 操作虚拟机
     function handleMenuClick(downEvent: any) {
       let key = downEvent.key;
-      if (key==="sendSelectContent") {
-        novncEl.value.sendSelectContent(copyText)
+      if (key === "sendSelectContent") {
+        novncEl.value.sendSelectContent(copyText);
         return;
       }
-      VmOperatesHandle(key).then((res)=>{
+      VmOperatesHandle(key).then((res) => {
         console.log(res);
-        message.success("操作成功")
+        message.success("操作成功");
       });
     }
-    
+
     // 延时
     function delayedTime() {
-      VmOperatesHandle('delay').then((res)=>{
+      VmOperatesHandle("delay").then((res) => {
         console.log(res);
       });
     }
 
     // 保存进度
     function saveKvm() {
-      VmOperatesHandle('saveKvm').then((res)=>{
+      VmOperatesHandle("saveKvm").then((res) => {
         console.log(res);
         backTo(router, type, 3, routerQuery);
       });
     }
 
     // 选中内容发送变化时
-    function clipboard(message:CustomEvent) {
+    function clipboard(message: CustomEvent) {
       console.log(message);
-      
     }
     return {
       novncEl,
@@ -526,7 +537,7 @@ export default defineComponent({
       delayedTime,
       saveKvm,
       clipboard,
-      isScreenRecording
+      isScreenRecording,
     };
   },
 });
@@ -595,7 +606,7 @@ export default defineComponent({
     width: 15px;
     display: inline-block;
   }
-  
+
   .action-item {
     &:hover {
       color: @theme-color;
@@ -603,11 +614,10 @@ export default defineComponent({
     &.active {
       color: @theme-color;
     }
-    &.disabled{
+    &.disabled {
       color: rgb(196, 196, 196);
       pointer-events: none;
     }
-    
   }
 }
 </style>

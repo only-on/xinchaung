@@ -158,7 +158,13 @@ import {
   createTopoApi,
 } from "src/utils/webideInspect";
 import { message, Modal } from "ant-design-vue";
-import { secondToHHMMSS, backTo, endExperiment,endOperates,operatesHandle } from "src/utils/vncInspect";
+import {
+  secondToHHMMSS,
+  backTo,
+  endExperiment,
+  endOperates,
+  operatesHandle,
+} from "src/utils/vncInspect";
 import { wsConnect } from "src/request/websocket";
 
 export default defineComponent({
@@ -212,7 +218,7 @@ export default defineComponent({
     const taskId = querys.taskId;
     const routerQuery = querys.routerQuery;
     let topoinst_id = "";
-    let topoinst_uuid=""
+    let topoinst_uuid = "";
     // const taskId = 534341;
     let version_id = ref(0);
     const version_name: Ref<string> = ref("");
@@ -332,7 +338,7 @@ export default defineComponent({
             console.log(res);
             connection_id = res?.data.connection_id;
             topoinst_id = res?.data.topoinst_id;
-            topoinst_uuid=res?.data.topoinst_uuid
+            topoinst_uuid = res?.data.topoinst_uuid;
             resolve(res?.data);
           })
           .catch((err) => {
@@ -557,11 +563,13 @@ export default defineComponent({
         topoinst_id: topoinst_id,
       };
 
-      endExperiment(params).then((res: any) => {
-        console.log(res);
-        message.success("结束成功");
-        backTo(router, type, 3, routerQuery);
-      });
+      setTimeout(() => {
+        endExperiment(params).then((res: any) => {
+          console.log(res);
+          message.success("结束成功");
+          backTo(router, type, 3, routerQuery);
+        });
+      }, 3000);
     }
     // 返回
     function back() {
@@ -627,16 +635,18 @@ export default defineComponent({
         },
       };
       return new Promise((resolve: any, reject: any) => {
-        operatesHandle(params).then((res) => {
-          resolve(res)
-        }).catch(err=>{
-          reject(err)
-        });
+        operatesHandle(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
       }).catch();
     }
     // 延时
     function delayedTime() {
-      VmOperatesHandle('delay').then((res:any)=>{
+      VmOperatesHandle("delay").then((res: any) => {
         console.log(res);
       });
     }
@@ -666,7 +676,7 @@ export default defineComponent({
       provide,
       runResult,
       finishExperiment,
-      delayedTime
+      delayedTime,
     };
   },
 });
