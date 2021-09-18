@@ -1,17 +1,17 @@
 <template>
   <div class="class-practice-box scrollbar">
-    <div v-for="(item, index) in data" :key="index" class="test-paper-item">
-      <h2 class="test-paper-title">{{ item.paperName }}</h2>
+    <div v-for="(item, index) in data" :key="index" class="test-paper-item" :class="item.is_submited?'is-submit':''">
+      <h2 class="test-paper-title">{{ item?.name }}</h2>
       <div class="test-paper-count">
         <span class="question-count"
-          >共<i>{{ item.count }}</i
+          >共<i>{{ item?.questions_count }}</i
           >题</span
         >
         <span class="question-score"
-          >满分<i>{{ item.score }}</i
+          >满分<i>{{ item?.score_total }}</i
           >分</span
         >
-        <span class="open-close-btn" @click="openOrClose(index)"
+        <span class="open-close-btn" @click="openOrClose(index, item?.id)"
           >{{ openIndexs.includes(index) ? "收起" : "展开"
           }}<i
             class="iconfont"
@@ -23,9 +23,12 @@
         class="test-paper-question-box"
         :style="{ height: openIndexs.includes(index) ? '100%' : '0' }"
       >
-        <test-paper v-model="data[index].question"></test-paper>
+        <test-paper
+          v-if="openIndexs.includes(index)"
+          v-model="questions[index]"
+        ></test-paper>
         <div>
-          <a-button type="primary">提交</a-button>
+          <a-button type="primary" @click="submitAnswer(index)">提交</a-button>
         </div>
       </div>
     </div>
@@ -33,13 +36,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch } from "vue";
+import { defineComponent, reactive, watch, toRefs, onMounted,toRef } from "vue";
 import testPaper from "./testPaper.vue";
+import request from "src/request/getRequest";
+import {useRoute} from "vue-router"
+
+interface TreactiveData{
+  data:any[]
+  questions:any
+}
 export default defineComponent({
   components: {
     "test-paper": testPaper,
   },
   setup() {
+    const examApi = request.studentExam;
+    let route =useRoute()
+    let course_id=JSON.parse(route.query.routerQuery as any).course_id
     const paper = [
       {
         paperName: "测试试卷1",
@@ -426,20 +439,78 @@ export default defineComponent({
         ],
       },
     ];
-    const data = reactive(paper);
+    const reactiveData:TreactiveData = reactive({
+      data: paper,
+      questions: {},
+    });
 
     const openIndexs: Array<number> = reactive([]);
-    function openOrClose(i: number) {
+    let paperParams = {
+      type: "test",
+      course_id:course_id,
+      limit: 100,
+      page: 1,
+    };
+    onMounted(() => {
+      getStudentExamPaper();
+    });
+    // 获取试卷列表
+    function getStudentExamPaper() {
+      examApi.getExamListApi({ param: paperParams }).then((res: any) => {
+        console.log(res);
+        reactiveData.data = res.data.list;
+      });
+    }
+    // 获取习题列表
+    function getQuestionsList(entity_id: number) {
+      let params = {
+        entity_id: entity_id,
+        entity_type: "test",
+        
+      };
+      return new Promise((resolve: any, reject: any) => {
+        examApi.getQuestionsListApi({ param:{include:"answers"},urlParams: params }).then((res) => {
+          console.log(res);
+          resolve(res?.data)
+        }).catch(err=>{
+          reject(err)
+        }).catch();
+      });
+    }
+   async function openOrClose(i: number, id: number) {
       if (openIndexs.includes(i)) {
         openIndexs.splice(openIndexs.indexOf(i), 1);
       } else {
+        
+         reactiveData.questions[i]= await getQuestionsList(id);
         openIndexs.push(i);
+        console.log(reactiveData.questions);
       }
     }
-    watch(data, () => {
-      console.log(data);
+    watch(reactiveData.data, () => {
+      console.log(reactiveData.data);
     });
-    return { data, openIndexs, openOrClose };
+
+    // 提交答案
+    function submitAnswer(index:number) {
+      console.log(reactiveData.questions[index]);
+      let params:any={
+        answer:[]
+      }
+      for (let i = 0; i < reactiveData.questions[index].length; i++) {
+        let answers={
+          relation_id:reactiveData.questions[index][i].relation_id,
+          answers:reactiveData.questions[index][i].student_answer
+        }
+        params.answer.push(answers)
+      }
+      console.log(params);
+      
+      examApi.submitAnswerApi({param:params}).then((res:any)=>{
+        console.log(res);
+      })
+    }
+    return { ...toRefs(reactiveData), openIndexs, openOrClose,submitAnswer };
   },
 });
 </script>
@@ -457,6 +528,9 @@ export default defineComponent({
     background: linear-gradient(270deg, #ecf0ff 0%, #fdf5ff);
     margin-bottom: 12px;
     padding: 0 15px;
+    &.is-submit{
+      pointer-events: none;
+    }
     .test-paper-title {
       font-size: 16px;
     }

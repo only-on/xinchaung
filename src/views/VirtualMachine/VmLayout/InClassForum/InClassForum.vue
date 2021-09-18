@@ -149,6 +149,7 @@ import {
   reactive,
   toRefs,
   watch,
+  nextTick,
 } from "vue";
 import {
   canvasToImage,
@@ -159,7 +160,6 @@ import {
 import request from "src/request/getRequest";
 import QuillEditor from "src/components/editor/quill.vue";
 import { Delta } from "quill-delta";
-import { context } from "ant-design-vue/lib/vc-image/src/PreviewGroup";
 interface Iparams {
   title: string;
   type: string;
@@ -246,8 +246,12 @@ export default defineComponent({
       let novncWrap: HTMLCanvasElement | null = document.querySelector(
         ".novnc-wrap>div>canvas"
       );
+      if (!novncWrap) {
+        novncWrap= document.querySelector(
+        ".ace-box>div .ace_editor.ace-monokai"
+      );
+      }
       if (!novncWrap) return;
-
       screenshot(novncWrap).then((canvas) => {
         let file = canvasToFile(canvas, "testname.png");
         imageFileToBase64(file).then((url: string) => {
@@ -344,7 +348,9 @@ export default defineComponent({
       console.log(key);
       if (key === "2") {
         forumThemeContent.value.ops = [];
-        quillQuestion.value.setContents(forumThemeContent.value);
+        nextTick(()=>{
+          quillQuestion.value.setContents(forumThemeContent.value);
+        })
         forumThemeTitle.value = "";
       }
     }

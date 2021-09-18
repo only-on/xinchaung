@@ -21,16 +21,18 @@
       </div>
     </template>
     <template #right>
-        <iframe src="http://localhost:3000/#/" frameborder="0" style="width:100%;height:100%"></iframe>
+        <iframe :src="'http://'+noteUrl" frameborder="0" style="width:100%;height:100%"></iframe>
     </template>
   </layout>
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive } from "vue";
+import { defineComponent, onMounted, reactive ,ref,toRefs} from "vue";
 import layout from "../VmLayout/VmLayout.vue";
 import {backTo} from "src/utils/vncInspect";
-import {useRoute,useRouter} from "vue-router"
+import {useRoute,useRouter,onBeforeRouteLeave} from "vue-router"
+import {wsConnect} from "src/request/websocket"
+import {message} from "ant-design-vue"
 
 export default defineComponent({
   components: {
@@ -57,6 +59,49 @@ export default defineComponent({
       routerQuery,
     }: any = vmQuery;
     const data = reactive(navData);
+    const wsVmConnect = ref(null);
+    let timer:NodeJS.Timer|null =null
+    const reactiveData:any=reactive({
+    })
+    let vmBaseInfo:any={}
+    let vm_uuid=""
+    const noteUrl=ref("")
+    onMounted(()=>{
+      initWs()
+    })
+    onBeforeRouteLeave(() => {
+      clearInterval(Number(timer));
+      console.log("离开页面");
+      wsVmConnect.value ? (wsVmConnect.value as any).close() : "";
+    });
+
+    function initWs() {
+      wsVmConnect.value = wsConnect({
+        url: "://192.168.101.150:9035/?uid=" + connection_id,
+        close: (ev: CloseEvent) => {
+          if (ev.type === "close") {
+            message.success("ws关闭成功");
+          }
+        },
+        message: (ev: MessageEvent) => {
+          console.log(ev);
+          console.log(typeof ev.data);
+          let regex = /\{.*?\}/g;
+
+          if (typeof ev.data === "string" && regex.test(ev.data)) {
+            console.log(JSON.parse(ev.data));
+            if (
+              JSON.parse(ev.data).data.vms &&
+              JSON.parse(ev.data).data.vms.length > 0
+            ) {
+              vmBaseInfo = JSON.parse(ev.data).data.vms[0];
+              vm_uuid = vmBaseInfo.uuid;
+              noteUrl.value=vmBaseInfo.base_ip+":"+vmBaseInfo.note_port
+            }
+          }
+        },
+      });
+    }
     function back() {
     //   if (opType === "test" || opType === "prepare") {
     //     endVmEnvirment();
@@ -66,7 +111,8 @@ export default defineComponent({
     }
     return {
       data,
-      back
+      back,
+      noteUrl
     };
   },
 });

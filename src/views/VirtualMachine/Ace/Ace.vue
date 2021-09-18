@@ -38,7 +38,6 @@
       </div>
     </template>
     <template v-slot:right>
-      <div class="ace-loading" v-if="!vncLoadingV">loading...</div>
       <div class="ace-box">
         <div class="ace-left">
           <p><span class="icon-wenjianjia iconfont"></span>project</p>
@@ -96,7 +95,11 @@
             theme="monokai"
             style="height: 100%"
             :options="options"
+            v-if="detailLoading"
           ></ace>
+          <div v-else class="loading-box">
+           <SyncOutlined spin />
+          </div>
           <div
             class="ace-result"
             :style="{ height: openOrCloseResultStatus ? '200px' : '35px' }"
@@ -146,6 +149,7 @@ import layout from "../VmLayout/VmLayout.vue";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
 import ace from "src/components/ace/ace.vue";
 import "src/components/ace/options";
+import {SyncOutlined} from '@ant-design/icons-vue';
 import {
   getTaskInfo,
   getVersionList,
@@ -171,6 +175,7 @@ export default defineComponent({
   components: {
     layout,
     ace,
+    SyncOutlined
   },
   setup(props, { emit }) {
     var reportTemid:Ref<any>=ref(0)
@@ -185,10 +190,7 @@ export default defineComponent({
 
       enableLiveAutocompletion: true,
     };
-    let vncLoadingV: Ref<boolean> = ref(true);
-    // setTimeout(() => {
-    //   vncLoadingV.value = true;
-    // }, 3000);
+    let detailLoading:Ref<boolean> =ref(false)
     let content = ref("");
     const roleType = ref(true);
     const reactiveData: {
@@ -294,7 +296,6 @@ export default defineComponent({
     ];
     const data = reactive(navData);
     function initWs() {
-      vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
         url: "://192.168.101.150:9035/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
@@ -315,8 +316,6 @@ export default defineComponent({
             ) {
               vmBaseInfo = JSON.parse(ev.data).data.vms[0];
               vm_uuid = vmBaseInfo.uuid;
-
-              vncLoadingV.value = true;
             }
           }
         },
@@ -424,6 +423,7 @@ export default defineComponent({
 
     // 切换文件
     function getCurrentSWitchFile() {
+      detailLoading.value=false
       let params = {
         type: type,
         opType: opType,
@@ -434,6 +434,7 @@ export default defineComponent({
       switchFile(params).then((res) => {
         console.log(res);
         content.value = res?.data.file_content;
+        detailLoading.value=true
       });
     }
     function run() {
@@ -660,7 +661,6 @@ export default defineComponent({
       content,
       openOrClose,
       openOrCloseResultStatus,
-      vncLoadingV,
       run,
       ...toRefs(reactiveData),
       experimentTime,
@@ -679,7 +679,8 @@ export default defineComponent({
       runResult,
       finishExperiment,
       delayedTime,
-      reportTemid
+      reportTemid,
+      detailLoading
     };
   },
 });
@@ -765,6 +766,14 @@ export default defineComponent({
           flex-direction: column;
           background: #2f3129;
           order: 0;
+          .loading-box{
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: @white;
+            font-size: 50px;
+          }
           .ace-action {
             flex-shrink: 0;
             color: @white;

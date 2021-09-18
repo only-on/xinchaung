@@ -1,9 +1,9 @@
 <template>
     <div class="judge-box">
-        <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
+        <h2 class="question-title">{{index+1}}、{{modelValue.question}}</h2>
         
-        <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
-            <div v-for="(item,index) in data.options" :key="index.toString()">
+        <a-radio-group class="answer-list" v-model:value="modelValue.student_answer[0]">
+            <div v-for="(item,index) in modelValue.options" :key="index.toString()">
                 <a-radio class="answer-item"  :value="item.id" >{{item.option}}</a-radio>
             </div>
             
@@ -12,28 +12,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,reactive ,ref} from 'vue'
-import {AnswerType} from "./exercises.type"
+import { defineComponent,reactive ,ref, toRefs,watch} from 'vue'
 import _ from "lodash"
 export default defineComponent({
     props:['modelValue','index'],
     setup(props,{emit}) {
-        const data:any=reactive(props.modelValue)
-        const index=ref(props.index)
-        
-        function answerChange(val:Event){
-            data.answers[0].answer=getAnswer(data.answers[0].id,data.options)
-            emit("update:modelValue",data)
-            emit("answerChange",data)
-        }
-        // 获取答案
-        function getAnswer(id:number,options:Array<any>){
-           let i= _.findIndex(options,(o:any)=>{
-                return id===o.id
-            })
-            return options[i].option
-        }
-        return {data,answerChange,index}
+        const {modelValue,index} =toRefs(props)
+        return {index,modelValue}
     },
 })
 </script>

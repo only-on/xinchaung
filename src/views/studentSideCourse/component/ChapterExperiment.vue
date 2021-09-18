@@ -198,15 +198,16 @@ export default defineComponent({
           })
         }else{
           // note
-            router.push({
-            path:'/vm/notebook',
-            query:{
-              type:param.type,
-              opType:param.opType,
-              taskId:param.taskId,
-              routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
-            }
-          })
+          //   router.push({
+          //   path:'/vm/notebook',
+          //   query:{
+          //     type:param.type,
+          //     opType:param.opType,
+          //     taskId:param.taskId,
+          //     routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
+          //   }
+          // })
+          toVmConnect(router,param,{detailId:detailId,course_id:course_id})
         }
       }else{
         toVmConnect(router,param,{detailId:detailId,course_id:course_id})

@@ -3,7 +3,7 @@
     <div class="exam-top-img">
       <img src="../../../assets/exam/top-images.png" alt="" />
     </div>
-    <div class="exam-info">
+    <div class="exam-info" v-if="startExamInfoData">
       <div class="exam-count">
         <span>总分：{{startExamInfoData?.all_score}}</span>
         <span>试题数量：{{startExamInfoData?.questions_count}}</span>
@@ -15,7 +15,7 @@
         <span class="exam-status">{{examStatus}}</span>
       </div>
     </div>
-    <div class="exam-action">
+    <div class="exam-action" v-if="startExamInfoData">
       <span class="exam-time">
         <i>{{startExamInfoData?.start_date}}</i>
         {{startExamInfoData?.times}}

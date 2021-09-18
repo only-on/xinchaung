@@ -1,7 +1,7 @@
 <template>
     <div class="single-choice-box">
         <h2 class="question-title">{{index+1}}、{{data?.question}}</h2>
-        <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.answers[0].id">
+        <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.student_answer[0]">
             <div v-for="(item,index) in data.options" :key="index.toString()">
                 <a-radio class="answer-item"  :value="item.id" >{{numToAbc(Number(index)+1)}}、{{item.option}}</a-radio>
             </div>
@@ -29,7 +29,7 @@ export default defineComponent({
             
         },{deep:true,immediate:true})
         function answerChange(val:Event){
-            data.value.answers[0].answer=getAnswer(data.value.answers[0].id,data.value.options)
+            // data.value.answers[0].answer=getAnswer(data.value.answers[0].id,data.value.options)
             emit("update:modelValue",data.value)
             emit("answerChange",data.value)
         }

@@ -2,7 +2,7 @@
     <div class="gap-filling-box">
         <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         <div class="answer-list">
-            <label>答案：</label><a-textarea v-model:value="data.answers[0]"></a-textarea>
+            <label>答案：</label><a-textarea v-model:value="data.student_answer[0]"></a-textarea>
         </div>
     </div>
 </template>

@@ -2,7 +2,7 @@
 export interface Iexamlist {
     id: number
     name: string,
-    status: "已结束" | "进行中" | "未开始"
+    status: 1 | 2 | 3
     start_day: string
     times: string
     teacher: string

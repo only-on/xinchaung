@@ -27,8 +27,8 @@
         <div class="exam-item-card">
           <div class="exam-card-head">
             <span class="card-item-header-title">{{ item.name }}</span>
-            <span class="card-item-header-status" :class="item.status==='进行中'?'has-ing':'has-end'">{{
-              item.status
+            <span class="card-item-header-status" :class="item.status===1?'has-ing':'has-end'">{{
+              examStatus(item.status)
             }}</span>
           </div>
           <div class="exam-card-content">
@@ -60,6 +60,7 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, toRefs, PropType, watch } from "vue";
 import { IexamData, IExamListParams,IExamListParam } from "../studentExam.type";
+import {examStatus} from "./exam.util"
 
 export default defineComponent({
   props: {
@@ -107,6 +108,7 @@ export default defineComponent({
       emit("search", reactiveData.searchExamParams);
     }
 
+    
     return {
       onSearch,
       visible,
@@ -115,6 +117,7 @@ export default defineComponent({
       ...toRefs(reactiveData),
       typeChange,
       pageSizeChange,
+      examStatus
     };
   },
 });

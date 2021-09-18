@@ -1,36 +1,38 @@
 <template>
   <div class="experimental-exercises">
     <template v-for="(item, index) in judgeData" :key="index">
-      <judge
-        class="experimental-exercises-item"
-        v-model="judgeData[index]"
-        :index="index"
-        v-if="item.type === 1"
-      ></judge>
+      
       <single-choice
         class="experimental-exercises-item"
         v-model="judgeData[index]"
         :index="index"
-        v-if="item.type === 2"
+        v-if="item.type_id === 1"
       ></single-choice>
       <multiple-choice
         class="experimental-exercises-item"
         v-model="judgeData[index]"
         :index="index"
-        v-if="item.type === 3"
+        v-if="item.type_id === 2"
       ></multiple-choice>
-      
+      <judge
+        class="experimental-exercises-item"
+        v-model="judgeData[index]"
+        :index="index"
+        v-if="item.type_id === 3"
+      ></judge>
     </template>
     <div class="exercise-action">
-      <a-button type="primary">提交</a-button><i>您以提交过习题答案</i>
+      <a-button type="primary" @click="submitAnswer">提交</a-button><i>您以提交过习题答案</i>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, toRefs, reactive } from "vue";
+import { defineComponent, ref, watch, toRefs, reactive, onMounted } from "vue";
 import judge from "src/components/exercises/judge.vue";
 import singleChoice from "src/components/exercises/singleChoice.vue";
 import multipleChoice from "src/components/exercises/multipleChoice.vue";
+import request from "src/request/getRequest"
+import {useRoute} from "vue-router"
 
 export default defineComponent({
   components: {
@@ -39,99 +41,121 @@ export default defineComponent({
     "multiple-choice": multipleChoice,
   },
   setup(props) {
-    const data: Array<any> = [
-      {
-        name: "判断题",
-        type: 1,
-        options: [
-          {
-            id: 1,
-            option: "正确",
-          },
-          {
-            id: 2,
-            option: "错误",
-          },
-        ],
-        answers: [
-          {
-            id: 2,
-            answer: "正确",
-          },
-        ],
-      },
-      {
-        name: "单选题名称",
-        type: 2,
-        options: [
-          {
-            id: 1,
-            option: "A:好设计是诚实的",
-          },
-          {
-            id: 2,
-            option: "B:改变别人之前，先改变自己吧",
-          },
-          {
-            id: 3,
-            option: "C:不怕输，才会赢",
-          },
-          {
-            id: 4,
-            option: "D:改变别人之前，先改变自己吧",
-          },
-        ],
-        answers: [
-          {
-            id: 3,
-            answer: "正确",
-          },
-        ],
-      },
-      {
-        name: "多选题名称",
-        type: 3,
-        options: [
-          {
-            id: 1,
-            option: "A:好设计是诚实的",
-          },
-          {
-            id: 2,
-            option: "B:改变别人之前，先改变自己吧",
-          },
-          {
-            id: 3,
-            option: "C:不怕输，才会赢",
-          },
-          {
-            id: 4,
-            option: "改变别人之前，先改变自己吧",
-          },
-        ],
-        answers: [
-          {
-            id: 4,
-            answer: "改变别人之前，先改变自己吧",
-          },
-          {
-            id: 1,
-            answer: "A:好设计是诚实的",
-          },
-        ],
-      },
-    ];
-    const judgeData = reactive(data);
-    console.log();
+    let experApi=request.studentExam
+    const route=useRoute()
 
+    let taskId= route.query.taskId
+    // const data: Array<any> = [
+    //   {
+    //     name: "判断题",
+    //     type: 1,
+    //     options: [
+    //       {
+    //         id: 1,
+    //         option: "正确",
+    //       },
+    //       {
+    //         id: 2,
+    //         option: "错误",
+    //       },
+    //     ],
+    //     answers: [
+    //       {
+    //         id: 2,
+    //         answer: "正确",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     name: "单选题名称",
+    //     type: 2,
+    //     options: [
+    //       {
+    //         id: 1,
+    //         option: "A:好设计是诚实的",
+    //       },
+    //       {
+    //         id: 2,
+    //         option: "B:改变别人之前，先改变自己吧",
+    //       },
+    //       {
+    //         id: 3,
+    //         option: "C:不怕输，才会赢",
+    //       },
+    //       {
+    //         id: 4,
+    //         option: "D:改变别人之前，先改变自己吧",
+    //       },
+    //     ],
+    //     answers: [
+    //       {
+    //         id: 3,
+    //         answer: "正确",
+    //       },
+    //     ],
+    //   },
+    //   {
+    //     name: "多选题名称",
+    //     type: 3,
+    //     options: [
+    //       {
+    //         id: 1,
+    //         option: "A:好设计是诚实的",
+    //       },
+    //       {
+    //         id: 2,
+    //         option: "B:改变别人之前，先改变自己吧",
+    //       },
+    //       {
+    //         id: 3,
+    //         option: "C:不怕输，才会赢",
+    //       },
+    //       {
+    //         id: 4,
+    //         option: "改变别人之前，先改变自己吧",
+    //       },
+    //     ],
+    //     answers: [
+    //       {
+    //         id: 4,
+    //         answer: "改变别人之前，先改变自己吧",
+    //       },
+    //       {
+    //         id: 1,
+    //         answer: "A:好设计是诚实的",
+    //       },
+    //     ],
+    //   },
+    // ];
+    const  reactiveData:{judgeData:any[]}= reactive({judgeData:[]});
+    console.log();
+    onMounted(()=>{
+      getQuestionListData()
+    })
     watch(
-      judgeData,
+      reactiveData.judgeData,
       () => {
-        console.log(judgeData);
+        console.log(reactiveData.judgeData);
       },
       { deep: true }
     );
-    return { judgeData };
+
+    function getQuestionListData(){
+      let params={
+        entity_type:"content",
+        entity_id:taskId
+      }
+      experApi.getQuestionsListApi({urlParams:params}).then(res=>{
+        console.log(res);
+        reactiveData.judgeData=res?.data
+      })
+    }
+
+    function submitAnswer(){
+      console.log(reactiveData.judgeData);
+      
+    }
+    return { ...toRefs(reactiveData),submitAnswer };
   },
 });
 </script>

@@ -1,7 +1,7 @@
 <template>
     <div class="multiple-choice-box">
         <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
-        <a-checkbox-group class="answer-list" @change="answerChange" v-model:value="answers">
+        <a-checkbox-group class="answer-list" @change="answerChange" v-model:value="data.student_answer">
             <div v-for="(item,index) in data.options" :key="index.toString()">
                 <a-checkbox class="answer-item"  :value="item.id" >{{numToAbc((Number(index))+1)}}、{{item.option}}</a-checkbox>  
             </div>
@@ -20,21 +20,14 @@ export default defineComponent({
        
         const index=ref(props.index)
         let {data}=toRefs(reactiveData)
-        const answers:Ref<Array<number>>|undefined=ref([])
-       
+
         watch(props,()=>{
-            console.log(props);
             data.value=props.modelValue
             index.value=props.index
-            console.log(data);
-            answers.value=[]
-            data.value.answers.forEach((item:any) => {
-                answers.value.push(item.id)
-            });
         },{deep:true,immediate:true})
         function answerChange(val:any){
-            data.value.answers=getAnswer(val,data.value.options)
-            emit("update:modelValue",data.value)
+            data.value.student_answer=val
+            // emit("update:modelValue",data.value)
             emit("answerChange",data.value)
         }
         // 获取答案
@@ -51,7 +44,7 @@ export default defineComponent({
             })
             return answer
         }
-        return {data,answerChange,index,answers,numToAbc}
+        return {data,answerChange,index,numToAbc}
     },
 })
 </script>

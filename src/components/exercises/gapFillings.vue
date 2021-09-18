@@ -2,7 +2,7 @@
     <div class="gap-filling-box">
         <h2 class="question-title">{{index+1}}、{{data.question}}</h2>
         <div class="answer-list">
-            <div class="answer-item" v-for="(item,index) in data.answers" :key="index.toString()"><label>答案{{Number(index)+1}}：</label><a-input v-model:value="item.answer"></a-input></div>
+            <div class="answer-item" v-for="(item,index) in data.answers" :key="index.toString()"><label>答案{{Number(index)+1}}：</label><a-input v-model:value="data.student_answer[index]"></a-input></div>
         </div>
     </div>
 </template>
