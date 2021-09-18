@@ -17,5 +17,14 @@ export default {
         authCode: 'virtualEnv'
       },
     },
+    {
+      path: "evalute",
+      name: "evalute",
+      component: () => import("src/views/teachCourse/evalute.vue"),
+      meta: {
+          title: "评价",
+          authCode: 'evalute'
+      },
+  },
   ]
 }

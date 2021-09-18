@@ -17,14 +17,5 @@ export default {
                 authCode: 'classicalAsset'
             },
         },
-        {
-            path: "/evalute",
-            name: "evalute",
-            component: () => import("src/views/teachCourse/evalute.vue"),
-            meta: {
-                title: "课程评价",
-                authCode: 'evalute'
-            },
-        },
     ]
 }
