@@ -183,26 +183,27 @@ export default defineComponent({
       imgSrc.value = ''
     }
     let sign = '/v0.1.0'
+    console.log(baseUrl)
     let defaultImg = ref([
       {
         id: 0,
-        src: baseUrl + sign + `/img/default/d1.jpg`,
+        src: `/src/assets/images/default/d1.jpg`,
       },
       {
         id: 1,
-        src: baseUrl + sign + `/img/default/d2.jpg`,
+        src: `/src/assets/images/default/d2.jpg`,
       },
       {
         id: 2,
-        src: baseUrl + sign + `/img/default/d3.jpg`,
+        src: `/src/assets/images/default/d3.jpg`,
       },
       {
         id: 3,
-        src: baseUrl + sign + `/img/default/d4.jpg`,
+        src: `/src/assets/images/default/d4.jpg`,
       },
       {
         id: 4,
-        src: baseUrl + sign + `/img/default/d5.jpg`,
+        src: `/src/assets/images/default/d5.jpg`,
       },
     ])
     
