@@ -1,6 +1,8 @@
 <template>
     <div class="report-content">
-      <table id="onlineReportTableEditable" class="report-table" v-if="reportTemplateData.template_type === 'form'">
+      <!-- 在线报告 -->
+      <div v-if="reportTemplateData.template_type === 'form'">
+         <table id="onlineReportTableEditable" class="report-table">
         <tr
           v-for="(item, index) in reportTemplateData.json_content"
           :key="index.toString()"
@@ -32,21 +34,42 @@
           </td>
         </tr>
       </table>
-      <!-- <pdf-view
-        v-if="reportTemplateData.type === 'template_type' && reportTemplateData.pdf_url && !loadurl"
-        :url="reportTemplateData.pdf_url"
-      /> -->
-      <!-- <div
-        v-if="reportTemplateData.type === 'file' && reportTemplateData.pdf_url && loadurl"
-        class="emptypdf-wrap"
-      >
-        <a-icon class="emptypdf-icon" type="sync" />
-        <div class="emptypdf-text">
-          <span>文档转换中，请稍后查看！</span>
-        </div>
-      </div> -->
+       <div v-if="reportTemplateData.can_student_update" class="bottom"><a-button class="btn" type="parmary" @click="submitOfflineReport">提交报告</a-button></div>
+      </div>
+     
+      <!-- 离线报告 -->
+      <div class="offlineReport" v-if="reportTemplateData.template_type === 'file'">
+        <iframe
+          v-if="reportTemplateData.report_word_url&& !reportTemplateData.can_student_update"
+          :src="'http://192.168.101.150/report/templatable/download?id=3043&file_name=BDT3.2%E5%9B%B4%E6%A0%87%E9%97%AE%E9%A2%98.docx'">
+        </iframe>
+      <div
+        v-if="reportTemplateData.can_student_update">
+        <div class="uploadReport">
+          <span>报告文件：</span>
+          <a-upload :file-list="fileList" :before-upload="beforeUpload">
+            <a-button> <a-icon type="upload" />选择</a-button>
+          </a-upload>
+         <a-button
+          type="primary"
+          style="margin-left: 16px"
+          @click="handleUpload"
+        >
+          <a-icon type="upload" />
+          上传
+        </a-button>
+      </div>
+      <div class="uploadOnece">
+        实验报告只能上传一次
+      </div>
+      <div class="clickDownLoad">
+        点击下载实验报告模板
+      </div>
+       
+    </div>
+      </div>
+      
       <!-- <div @click="getMarkdown">获取markdown的内容</div> -->
-      <div v-if="reportTemplateData.can_student_update" class="bottom"><a-button class="btn" type="parmary" @click="submitOfflineReport">提交报告</a-button></div>
     </div>
 </template>
 <script lang="ts">
@@ -65,6 +88,8 @@ export default defineComponent({
       const vmApi = request.vmApi
       var reportTemplateData:Ref<any>=ref(0)
       var templateId:Ref<any>=ref()
+      var reportId:any=inject('reportId')
+      const fileList:Ref<any>=ref([])
     // 从地址栏获取id
     function getUrlParam(name: string): string | null {
         var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -83,7 +108,7 @@ export default defineComponent({
     function submitOfflineReport(){
       var formData:any = new FormData();
        formData.append('id', reportTemplateData.value.templatable_id);
-       formData.append('csc_id',templateId.value);
+       formData.append('csc_id',reportId.value);
        reportTemplateData.value.json_content.forEach((element:any,i:number) => {
           formData.append(`json_content[`+[i]+`][type]`,element.type);
           formData.append(`json_content`+[i]+`[toolbar]`,element.toolbar);
@@ -105,21 +130,31 @@ export default defineComponent({
     function getMarkdown(){
       console.log(reportTemplateData,'reportTemplateData')
     }
-    
+    function beforeUpload(file:any) {
+      console.log(file)
+      fileList.value = [...fileList.value, file];
+      return false;
+    }
+    function handleUpload(){
+       let formData:any = new FormData();
+       console.log(fileList.value)
+    formData.append('file',fileList.value[0])
+    formData.append('id', reportTemplateData.value.templatable_id);
+    formData.append('csc_id',reportId.value);
+     vmApi.updateTemplateReport({param:formData}).then((res)=>{
+       reportTemplateData.value= res?.data
+     })
+    }
     onMounted(() => {
       //获取实验模板信息
-      let reportId:any=inject('reportId')
-      experReport({csc_id:reportId.value}) 
+      // experReport({csc_id:reportId.value}) 
+      experReport({csc_id:842}) 
     });
-    return{experReport,getUrlParam,submitOfflineReport,getMarkdown,reportTemplateData}
+    return{experReport,getUrlParam,submitOfflineReport,getMarkdown,reportTemplateData,fileList,beforeUpload,handleUpload,reportId}
   }
 })
 </script>
 <style lang="less">
-    // .report-content {
-//   display: flex;
-//   flex-direction: column;
-//   height: 100%;
   .emptypdf-wrap {
     text-align: center;
     padding-top: 100px;
@@ -302,5 +337,26 @@ export default defineComponent({
       color: white;
     }
   }
-// }
+// 离线报告
+  .offlineReport{
+    width: 100%;
+    .uploadReport{
+      width: 100%;
+      height: 100px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .uploadOnece{
+      width: 100%;
+      color:red;
+      display: flex;
+      justify-content: center;
+    }
+    .clickDownLoad{
+      display: flex;
+      justify-content: center;
+      color: @theme-color;
+    }
+  }
 </style>
