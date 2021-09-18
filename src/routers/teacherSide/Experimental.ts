@@ -25,5 +25,23 @@ export default {
                 authCode: 'creatExperimental'
             },
         },
+        {
+            path: 'resource',
+            name: 'resource',
+            component: () => import ("src/views/teacherExperimental/resource.vue"),
+            meta: {
+                title: "实训资源",
+                authCode: 'resource'
+            }
+        },
+        {
+            path: 'evaluate',
+            name: 'evaluate',
+            component: () => import ("src/views/teacherExperimental/evaluate.vue"),
+            meta: {
+                title: "实训审核",
+                authCode: 'evaluate'
+            }
+        }
     ]
 }
