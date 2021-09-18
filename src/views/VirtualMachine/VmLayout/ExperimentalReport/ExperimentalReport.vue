@@ -50,7 +50,7 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,onMounted,Ref,ref,} from 'vue'
+import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef, toRefs} from 'vue'
 import request from "src/request/getRequest";
 import AntdvMarkdown from "@jiangyue/antdv-markdown/src/index.vue";
 interface experReportParam {
@@ -105,12 +105,11 @@ export default defineComponent({
     function getMarkdown(){
       console.log(reportTemplateData,'reportTemplateData')
     }
+    
     onMounted(() => {
-      // 1.获取实验报告模板的id
-      templateId= ref(getUrlParam("record_id"));
-      console.log(templateId,templateId.value,'templateId')
-      // 2.获取实验模板信息
-      experReport({csc_id:templateId.value}) 
+      //获取实验模板信息
+      let reportId:any=inject('reportId')
+      experReport({csc_id:reportId.value}) 
     });
     return{experReport,getUrlParam,submitOfflineReport,getMarkdown,reportTemplateData}
   }

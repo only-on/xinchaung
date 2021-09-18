@@ -78,6 +78,9 @@ import {
   nextTick,
   watch,
   Ref,
+  provide,
+  computed,
+  toRefs
 } from "vue";
 import VM from "./VM/VM.vue";
 import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
@@ -99,9 +102,13 @@ export default defineComponent({
     "in-class-practice": InClassPractice,
     "in-class-forum": InClassForum,
   },
-  props: ["VmData", "isLeftContentShowType"],
+  props: ["VmData","reportId","isLeftContentShowType"],
   setup(props, { emit }) {
     const vmData: Ref<Array<Vm>> = reactive(props.VmData);
+    var reportId:any=computed(()=>{
+      return props.reportId
+    })
+    provide('reportId',reportId)
     const currentComponent = ref(vmData[0].key);
     const openStatus = ref(false); // left内容打开状态
 
@@ -245,6 +252,7 @@ export default defineComponent({
       openStatus,
       open,
       vmData,
+      reportId,
       currentComponent,
       vmWrapEl,
       leftEl,

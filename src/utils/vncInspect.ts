@@ -262,7 +262,6 @@ async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: an
         taskId: createEnvirments.query.taskId,
         topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
         topoinst_id: createEnvirments.data.data.topoinst_id,
-        record_id: createEnvirments.data.data.record_id,
         routerQuery: JSON.stringify(routerQuery)
       },
     });

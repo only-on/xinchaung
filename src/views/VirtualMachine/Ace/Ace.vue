@@ -1,5 +1,5 @@
 <template>
-  <layout :VmData="data" isLeftContentShowType="line">
+  <layout :VmData="data" :reportId='reportTemid' isLeftContentShowType="line">
     <template v-slot:header>
       <div class="vm-header-student" v-if="roleType">
         <div class="vm-header-left">
@@ -173,6 +173,7 @@ export default defineComponent({
     ace,
   },
   setup(props, { emit }) {
+    var reportTemid:Ref<any>=ref(0)
     const route = useRoute();
     const router = useRouter();
     const wsVmConnect = ref(null);
@@ -357,6 +358,7 @@ export default defineComponent({
         reactiveData.taskBaseInfo = res?.data;
         console.log(reactiveData.taskBaseInfo);
         use_time = res?.data.current.used_time;
+        reportTemid.value=res?.data.current.id
       });
     }
     // 获取版本列表
@@ -677,6 +679,7 @@ export default defineComponent({
       runResult,
       finishExperiment,
       delayedTime,
+      reportTemid
     };
   },
 });
