@@ -23,13 +23,14 @@
       :total="page.total" 
       v-model:selectedRows="selectedRows"
       @pageChange="pageChange"
+      :trainId="trainInfo.trainId"
     ></evaluate-table>
     <task-statistic></task-statistic>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,createVNode , reactive, toRefs } from 'vue'
+import { defineComponent, createVNode , reactive, toRefs } from 'vue'
 import evaluateTable from './evaluateComponent/evaluateTable.vue'
 import TaskStatistic from './evaluateComponent/taskStatistic.vue'
 import { Modal } from 'ant-design-vue';
@@ -73,7 +74,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 80,
         },
         {
           id: 1,
@@ -85,7 +87,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 0,
         },
         {
           id: 2,
@@ -97,7 +100,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 80,
         },
         {
           id: 0,
@@ -109,7 +113,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 80,
         },
         {
           id: 1,
@@ -121,7 +126,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 80,
         },
         {
           id: 2,
@@ -133,7 +139,8 @@ export default defineComponent({
           report: '2021.9.16',
           class: '大数据20级1班',
           result: 1,
-          env: 1
+          env: 1,
+          score: 80,
         },
       ]
       data.page.total = 100
@@ -178,14 +185,14 @@ export default defineComponent({
     }
     const exportScore = (param: {train_id: number, train_student_id?: number[]}) => {
       const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
-      console.log(dev_base_url)
+      console.log(dev_base_url, param)
       let url = `${dev_base_url}/teacher-train/train-score-export`
       fetch(url, {
         method: 'post',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
-        body: `train_id = ${param.train_id} & train_student_id = ${param.train_student_id}`
+        body: param.train_student_id ? `train_id = ${param.train_id} & train_student_id = ${param.train_student_id}` : `train_id = ${param.train_id}`
       }).then((res: any) => {     
         return res.arrayBuffer();
       }).then(arraybuffer => {
@@ -228,6 +235,7 @@ export default defineComponent({
       })
     }
     return {
+      trainInfo,
       ...toRefs(data),
       query,
       clear,
@@ -248,6 +256,7 @@ export default defineComponent({
     class: string
     result: number
     env: number
+    score: number
   }
   interface ISearchInfo {
     name: string
@@ -307,6 +316,9 @@ export default defineComponent({
   :deep(.ant-table) .ant-table-thead > tr > th,
   :deep(.ant-table) .ant-table-tbody > tr > td {
     .font-size-14();
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 </style>

@@ -6,7 +6,7 @@
       </a-form-item>
       <a-form-item label="资源类型">
         <a-select v-model:value="searchInfo.resourceType" placeholder="">
-          <a-select-option v-for="(v, i) in resourceTypeList" :key="i" :value="v">{{v}}</a-select-option>
+          <a-select-option v-for="(v, i) in resourceTypeList" :key="i" :value="i">{{v}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-button type="primary" @click="query()">查询</a-button>
@@ -39,11 +39,11 @@
       :pagination="false"
     >
       <template #type="{ record }">
-        <span>{{ record.type}}</span>
+        <span>{{ record.posfix}}</span>
       </template>
       <template #operation="{ record }">
         <!-- <span class="iconfont icon-download" @click="download(record.url)"></span> -->
-        <a class="iconfont icon-download" title="下载" :href="record.url"></a>
+        <a class="iconfont icon-download" title="下载" :href="record.url" download></a>
         <span class="iconfont icon-shanchu" title="删除" @click="deleteResource(record.id)"></span>
       </template>
     </a-table>
@@ -61,11 +61,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from 'vue'
+import { defineComponent, reactive, toRefs, createVNode } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperimentalHttp } from './typings'
 import { message } from 'ant-design-vue'
+import { Modal } from 'ant-design-vue';
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 
 export default defineComponent({
   setup() {
@@ -76,10 +78,10 @@ export default defineComponent({
     const http=(request as ITeacherExperimentalHttp).teacherExperimental
     console.log(request.teacherExperimental)
     const data = reactive<Idata>({
-      resourceTypeList: ["gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
+      resourceTypeList: ["请选择", "gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
       searchInfo: {
         resourceName: '',
-        resourceType: ''
+        resourceType: 0
       },
       uploadResourceInfo: {
         url: '',
@@ -137,7 +139,7 @@ export default defineComponent({
           posfix: 'lsx',
           size: '1024kb',
           created_time: '2021.9.16',
-          url: "/proxyPrefix/upload/train/50235/train_resource/16318707632925.png"
+          url: "/src/assets/images/bg1.jpg"
         }
       ]
     }
@@ -148,20 +150,29 @@ export default defineComponent({
     // 清空
     const clear = () => {
       data.searchInfo.resourceName = ''
-      data.searchInfo.resourceType = ''
+      data.searchInfo.resourceType = 0
     }
     // 下载
     const download = (url: string) => {
       console.log(url)
-      location.href = 'http://192.168.101.150/proxyPrefix' + url
+      location.href = url
     }
     // 删除
     const deleteResource = (id: number) => {
       console.log(id)
-      http.delResource({param: {train_resource_id: id}}).then((res: IBusinessResp) => {
-        console.log(res)
-        getResourceList()
-      })
+      Modal.confirm({
+        title: '提示',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '确定要删除吗？',
+        okText: '确认',
+        cancelText: '取消',
+        onOk: () => {
+          http.delResource({param: {train_resource_id: id}}).then((res: IBusinessResp) => {
+            console.log(res)
+            getResourceList()
+          })
+        }
+      });
     }
     // 页码发生变化时
     const pageChange = (page: number, pageSize: number) => {
@@ -244,7 +255,7 @@ export default defineComponent({
 })
 interface IsearchInfo {
   resourceName: string
-  resourceType: string
+  resourceType: number
 }
 interface IuploadResourceInfo {
   url: string
@@ -341,6 +352,7 @@ interface FileInfo {
     }
   }
   .page-footer-box {
+    margin-top: 28px;
     text-align: center;
   }
   :deep(.ant-table) .ant-table-thead > tr > th, 

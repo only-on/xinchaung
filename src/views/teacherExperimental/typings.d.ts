@@ -4,6 +4,8 @@ interface ITeacherExperimental {
   showExperimentalNote: Function
   delResource: Function
   uploadResource: Function
+  resetExperimentalServer: Function
+  setExperimentalScore: Function
 }
 export interface ITeacherExperimentalHttp {
   teacherExperimental: ITeacherExperimental
