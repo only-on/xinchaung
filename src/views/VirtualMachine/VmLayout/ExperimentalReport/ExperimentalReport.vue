@@ -10,7 +10,7 @@
           <td
             v-for="(ctd, cid) in item.fields"
             :key="cid.toString()"
-            :colspan="ctd.colspan"
+            :colspan="ctd.colspan?ctd.colspan:2"
             :class="ctd.align === 'center' ? 'al-cen' : 'al-lef'"
           >
             <div
@@ -18,7 +18,10 @@
               v-if="item.type === 'w8' || item.type === 'w7'"
               style="width:1;height:100%"
             >
-            <antdv-markdown style="height:100%" v-if="cid === 1 || cid === 3" v-model:value="ctd.value" />
+            <div v-if="cid === 1 || cid === 3">
+              <antdv-markdown v-if="reportTemplateData.can_student_update"  v-model="ctd.value" />
+              <antdv-markdown v-else :preview-only="true"  v-model="ctd.value" />
+            </div>
             <div v-else>{{ ctd.value }}</div>
             </div>
             <div
@@ -39,12 +42,14 @@
      
       <!-- 离线报告 -->
       <div class="offlineReport" v-if="reportTemplateData.template_type === 'file'">
-        <iframe
-          v-if="reportTemplateData.report_word_url&& !reportTemplateData.can_student_update"
-          :src="'http://192.168.101.150/report/templatable/download?id=3043&file_name=BDT3.2%E5%9B%B4%E6%A0%87%E9%97%AE%E9%A2%98.docx'">
+        <!-- src="/src/assets/sss.pdf"> -->
+        <iframe 
+        class="iframe"
+        v-if="reportTemplateData.pdf_url&& !reportTemplateData.can_student_update" 
+        :src="reportTemplateData.pdf_url">
         </iframe>
       <div
-        v-if="reportTemplateData.can_student_update">
+        v-if="!reportTemplateData.pdf_url&& reportTemplateData.can_student_update">
         <div class="uploadReport">
           <span>报告文件：</span>
           <a-upload :file-list="fileList" :before-upload="beforeUpload">
@@ -62,20 +67,17 @@
       <div class="uploadOnece">
         实验报告只能上传一次
       </div>
-      <div class="clickDownLoad">
+      <div class="clickDownLoad" @click="downLoadExperReport(reportTemplateData.report_word_url.replace(/\\/g,'/'),reportTemplateData.filename)">
         点击下载实验报告模板
-      </div>
-       
+      </div>  
     </div>
       </div>
-      
-      <!-- <div @click="getMarkdown">获取markdown的内容</div> -->
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef, toRefs} from 'vue'
+import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef,toRefs} from 'vue'
 import request from "src/request/getRequest";
-import AntdvMarkdown from "@jiangyue/antdv-markdown/src/index.vue";
+import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 interface experReportParam {
  csc_id:any
 }
@@ -89,6 +91,7 @@ export default defineComponent({
       var reportTemplateData:Ref<any>=ref(0)
       var templateId:Ref<any>=ref()
       var reportId:any=inject('reportId')
+      console.log(reportId,'reportId')
       const fileList:Ref<any>=ref([])
     // 从地址栏获取id
     function getUrlParam(name: string): string | null {
@@ -124,11 +127,9 @@ export default defineComponent({
       let htmltable:any=document.querySelector("#onlineReportTableEditable")
       formData.append('html_content',htmltable.outerHTML);
       vmApi.updateTemplateReport({param:formData}).then((res)=>{
-        reportTemplateData.value= res?.data
+        // reportTemplateData.value= res?.data
+        experReport({csc_id:reportId.value}) 
       })
-    }
-    function getMarkdown(){
-      console.log(reportTemplateData,'reportTemplateData')
     }
     function beforeUpload(file:any) {
       console.log(file)
@@ -137,7 +138,6 @@ export default defineComponent({
     }
     function handleUpload(){
        let formData:any = new FormData();
-       console.log(fileList.value)
     formData.append('file',fileList.value[0])
     formData.append('id', reportTemplateData.value.templatable_id);
     formData.append('csc_id',reportId.value);
@@ -145,12 +145,39 @@ export default defineComponent({
        reportTemplateData.value= res?.data
      })
     }
+    function downLoadExperReport(fileurl:any,filename:any){
+      const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      let url=`${dev_base_url}`+fileurl
+      fetch(url,{
+          method: 'get',
+      }).then((res:any) => {     
+          const content = res
+          const blob = new Blob([content])// 构造一个blob对象来处理数据
+          const fileName = filename+'docx'
+
+          // 对于<a>标签，只有 Firefox 和 Chrome（内核） 支持 download 属性
+          // IE10以上支持blob但是依然不支持download
+          if ('download' in document.createElement('a')) { // 支持a标签download的浏览器
+            const link = document.createElement('a')// 创建a标签
+            link.download = fileName// a标签添加属性
+            link.style.display = 'none'
+            link.href = URL.createObjectURL(blob)
+            document.body.appendChild(link)
+            link.click()// 执行下载
+            URL.revokeObjectURL(link.href) // 释放url
+            document.body.removeChild(link)// 释放标签
+          } else { // 其他浏览器
+            navigator.msSaveBlob(blob, fileName)
+          }
+      })
+    
+    }
     onMounted(() => {
       //获取实验模板信息
       // experReport({csc_id:reportId.value}) 
-      experReport({csc_id:842}) 
+      experReport({csc_id:reportId.value}) 
     });
-    return{experReport,getUrlParam,submitOfflineReport,getMarkdown,reportTemplateData,fileList,beforeUpload,handleUpload,reportId}
+    return{experReport,getUrlParam,submitOfflineReport,reportTemplateData,fileList,beforeUpload,handleUpload,reportId,downLoadExperReport}
   }
 })
 </script>
@@ -158,6 +185,7 @@ export default defineComponent({
   .emptypdf-wrap {
     text-align: center;
     padding-top: 100px;
+    // background: url();
     .emptypdf-icon {
       font-size: 86px;
       color: @theme-color;
@@ -203,6 +231,16 @@ export default defineComponent({
     }
     .mark__tool-bar{
       display: block;
+    }
+    .preview{
+        .mark__tool-bar{
+        display: block;
+      }
+    .editor{
+       .mark__tool-bar{
+        display:none;
+      }
+    }
     }
     .al-cen {
       text-align: center;
@@ -340,12 +378,17 @@ export default defineComponent({
 // 离线报告
   .offlineReport{
     width: 100%;
+    height: 100%;
+    .iframe{
+      width: 100%;
+      height: 100%;
+    }
     .uploadReport{
       width: 100%;
       height: 100px;
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items:flex-start;
     }
     .uploadOnece{
       width: 100%;
@@ -357,6 +400,9 @@ export default defineComponent({
       display: flex;
       justify-content: center;
       color: @theme-color;
+    }
+    .clickDownLoad:hover{
+      color:#a86cdc;
     }
   }
 </style>
