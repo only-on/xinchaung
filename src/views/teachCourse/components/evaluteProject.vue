@@ -52,11 +52,11 @@
         </template>
         <template #show="{record}">
           <span class="linkText" @click="checkDetail('notes', record)">笔记</span>
-          <span class="linkText">习题</span>
+          <span class="linkText" @click="checkDetail('exam', record)">习题</span>
           <span class="linkText">视频</span>
         </template>
-        <template #study_report="{ record, text }">
-          <span class="linkText" @click="checkDetail('report', record)">{{text}}</span>
+        <template #study_report="{ record }">
+          <span class="linkText" @click="checkDetail('report', record)">查看</span>
         </template>
         <template #evalute="{record}">
           <!-- <span class="linkText" @click="checkDetail('evalute')">评价</span> -->
@@ -73,7 +73,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,reactive, Ref, ref, watch } from 'vue';
+import { defineComponent,reactive, Ref, ref, watch, provide } from 'vue';
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
 import request from "src/api/index";
 import { Ihttp } from "../typings";
@@ -193,6 +193,9 @@ export default defineComponent({
       ],
       total: 0
     })
+    provide('refresh', (data:any)=>{
+      console.log('刷新了。。。', data)
+    })
     watch([()=>props.contentId, ()=>props.chapterId,()=>props.courseId], ([nContentId, nChapterId, nCourseId]) => {
       contentId.value = nContentId
       chapterId.value = nChapterId
@@ -211,7 +214,7 @@ export default defineComponent({
     }
     function onSelectChange (selectedRowKeys: ColumnProps['key'][]) {
       selectIds.push(...selectedRowKeys)
-      console.log(selectIds)
+      console.log(selectedRowKeys)
     }
     function pageChange(val:number){
       form.page = val

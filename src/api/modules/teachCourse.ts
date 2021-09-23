@@ -86,6 +86,10 @@ export default {
     url: '/teacher-course/show-notes',
     method: 'POST'
   },
+  reportAnnotate: {
+    url: '/report/record/teacher-update',
+    method: 'POST'
+  }
 }
 
 export interface ITeacherCourseApis {
@@ -107,5 +111,6 @@ export interface ITeacherCourseApis {
   changeEvaluate: TFHttpSend,
   allClasses: TFHttpSend,
   evaluteProject: TFHttpSend,
-  showNotes: TFHttpSend
+  showNotes: TFHttpSend,
+  reportAnnotate: TFHttpSend
 }

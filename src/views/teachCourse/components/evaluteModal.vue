@@ -28,12 +28,22 @@
       <div v-if="modalType == 'notes'">
         <div v-html="notesContent"></div>
       </div>
+      <!-- 习题 -->
+      <div v-if="modalType == 'exam'">
+        <problem-sets></problem-sets>
+      </div>
+      <!-- 报告 -->
+      <div v-if="modalType == 'report'">
+        <report></report>
+      </div>
     </a-modal>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, reactive, Ref, ref, toRefs, watch } from "vue";
 import ResultsDetail from "./resultsDetail.vue";
+import ProblemSets from "./problemSets.vue"
+import Report from './report.vue'
 import request from "src/api/index";
 import { Ihttp } from "../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -50,7 +60,9 @@ const options = [
 ];
 export default defineComponent({
   components: {
-    ResultsDetail
+    ResultsDetail,
+    ProblemSets,
+    Report
   },
   props: ["openModal", "params", "type"],
   setup(props, { emit }) {

@@ -23,6 +23,7 @@ interface IteachCourse {
   allClasses: Function
   evaluteProject: Function
   showNotes: Function
+  reportAnnotate: Function
 }
 interface IcourseTree {
   getTreeList: Function
