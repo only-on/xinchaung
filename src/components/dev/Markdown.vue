@@ -11,10 +11,26 @@
     <hr/>
     <div class="row">
       <div class="editor">
-        <antdv-markdown v-model="content2" class="markdown__editor"/>
+        <antdv-markdown v-model="content2" :tool-buttons="[
+        ['bold',
+            'italic',
+            'heading'],
+        '||',
+        ['bars',
+            'eyeSlash',
+            'arrowsAlt',
+            'windowMaximize'],
+        ['source',
+            'questionCircle'],
+    ]" class="markdown__editor"/>
       </div>
       <div class="textarea">
         <textarea v-model="content2"></textarea>
+      </div>
+    </div>
+    <div class="row">
+      <div class="editor">
+        <antdv-markdown v-model="content3" :preview-only="true" class="markdown__editor"/>
       </div>
     </div>
   </div>
@@ -32,10 +48,11 @@ export default defineComponent({
   setup() {
     const content = ref(readme);
     const content2 = ref('#demo\n不标准的markdown语法，支持html\n<center>第一个居中</center><center>\n第二个居中</center><center>第三个居中\n</center>\n<p style="background: blue; color: white">来一段蓝色背景文字</p>')
+    const content3 = ref('#仅预览模式')
     watch(content, (newVal) => {
       console.log("[markdown] content changed");
     });
-    return {content, content2};
+    return {content, content2, content3};
   },
 });
 </script>
