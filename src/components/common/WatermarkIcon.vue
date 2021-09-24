@@ -1,5 +1,5 @@
 <template>
-  <div class="wmi__container" :style="finalStyle">
+  <div class="wmi__container" :style="style">
     <span class="wmi__icon iconfont" :class="'icon-' + icon"/>
     <span class="wmi__title">{{ title }}</span>
     <span class="wmi__description">{{ description }}</span>
@@ -25,24 +25,11 @@ export default defineComponent({
       type: String,
       default: '描述信息'
     },
-    background: {
-      type: String,
-      default: '#8955b5'
-    },
     style: {
-      type: Object,
-      default: {background: '#8955b5'}
+      type: String,
+      default: 'background-color: #8955b5'
     }
   },
-  setup(props) {
-    const finalStyle = computed(() => {
-      const tmpStyle = props.style
-      return Object.assign(tmpStyle, {background: props.background})
-    })
-    return {
-      finalStyle
-    }
-  }
 })
 </script>
 
