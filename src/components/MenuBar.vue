@@ -96,7 +96,7 @@ export default defineComponent({
       let data=res.data
       activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].label)
       menus.push(...data)
-      if(route.path===(data && data[0].url[0])){
+      if(route.path===(data && data.length && data[0].url[0])){
         activeName.value=(data && data[0].label)
       }
     })
