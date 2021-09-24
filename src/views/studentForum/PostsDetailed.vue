@@ -38,7 +38,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
+        <QuillEditor v-if="visible" toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
@@ -127,7 +127,7 @@ export default defineComponent({
       detailObj:{},
       initData:()=>{
         http.postsDetailed({param:{id:detailId}}).then((res:IBusinessResp)=>{
-            console.log(res)
+            // console.log(res)
             let data=res.data
             data.content=goHtml(data.content)
             if(data.forum_articles && data.forum_articles.length){

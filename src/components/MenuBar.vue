@@ -101,7 +101,7 @@ export default defineComponent({
       }
     })
     onMounted(() => {
-      console.log(route.path)
+      // console.log(route.path)
     });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));

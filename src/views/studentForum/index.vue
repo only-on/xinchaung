@@ -28,7 +28,7 @@
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745">
+    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745" class="modal-post">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
         <QuillEditor toolbar="full" :options="QuillOptions" v-model:content="ForumArticle.content"  /> 
@@ -266,6 +266,15 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
+.modal-post{
+  :deep(.ant-modal-header){
+      border:  1px solid @theme-color;
+      background: @theme-color;
+    }
+  .ant-modal-header{
+    background: @theme-color;
+  }
+}
     :deep(.ant-modal-header){
       border:  1px solid @theme-color;
       background: @theme-color;

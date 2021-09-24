@@ -9,7 +9,11 @@ export default{
   setExperimentalScore:{url:`/teacher-train/set-score`, method: "POST", dataType: 'json'},
   // 资源
   delResource:{url:`/teacher-train/del-upload`, method: "GET", dataType: 'json'},
-  uploadResource: {url: `/teacher-train/upload-resource`,method: 'POST',dataType: 'formdata'}
+  uploadResource: {url: `/teacher-train/upload-resource`,method: 'POST',dataType: 'formdata'},
+
+  // 新建实训  选择环境
+  ImageList:{url:`/api/env/containers`,method: 'GET'},
+  trainUpload:{url:`/teacher-train/upload`,method: 'POST',dataType: 'formdata'}
 }
 
 export interface ITeacherExperimentallAps {
@@ -21,6 +25,9 @@ export interface ITeacherExperimentallAps {
   setExperimentalScore: TFHttpSend;
   delResource: TFHttpSend;
   uploadResource: TFHttpSend;
+
+  ImageList: TFHttpSend;
+  trainUpload: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExperimental'
