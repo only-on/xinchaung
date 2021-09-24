@@ -1,5 +1,5 @@
 <template>
-  <div class="wmi__container" :style="{background}">
+  <div class="wmi__container" :style="finalStyle">
     <span class="wmi__icon iconfont" :class="'icon-' + icon"/>
     <span class="wmi__title">{{ title }}</span>
     <span class="wmi__description">{{ description }}</span>
@@ -8,7 +8,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, computed} from "vue";
 
 export default defineComponent({
   name: "WatermarkIcon",
@@ -28,8 +28,21 @@ export default defineComponent({
     background: {
       type: String,
       default: '#8955b5'
+    },
+    style: {
+      type: Object,
+      default: {background: '#8955b5'}
     }
   },
+  setup(props) {
+    const finalStyle = computed(() => {
+      const tmpStyle = props.style
+      return Object.assign(tmpStyle, {background: props.background})
+    })
+    return {
+      finalStyle
+    }
+  }
 })
 </script>
 
@@ -56,6 +69,7 @@ export default defineComponent({
     display: block;
     font-size: 22px;
   }
+
   .wmi__description {
     opacity: .7;
     white-space: nowrap;
