@@ -17,5 +17,14 @@ export default {
                 authCode: 'classicalAsset'
             },
         },
+        {
+            path: "content/:type/:id",
+            name: "classicalAssetContent",
+            component: () => import("src/views/classicalAsset/Content.vue"),
+            meta: {
+                title: "资源内容",
+                authCode: 'classicalAssetContent'
+            },
+        },
     ]
 }

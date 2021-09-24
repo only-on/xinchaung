@@ -55,14 +55,6 @@ export default {
         authCode: 'markdown'
       }
     },
-    // {
-    //   path: "editormd",
-    //   component: () => import('src/components/dev/EditorMd.vue'),
-    //   meta: {
-    //     title: "editormd",
-    //     authCode: 'editormd'
-    //   }
-    // },
     {
       path: "quill",
       component: () => import('src/components/dev/Quill.vue'),
@@ -71,29 +63,13 @@ export default {
         authCode: 'quill'
       }
     },
-    // {
-    //   path: "marked-editor",
-    //   component: () => import('src/components/dev/MarkedEditor.vue'),
-    //   meta: {
-    //     title: "quill",
-    //     authCode: 'quill'
-    //   }
-    // }
-    // {
-    //   path: 'marked-editor',
-    //   component: () => import('src/components/dev/MarkedEditor.vue'),
-    //   meta: {
-    //     title: 'quill',
-    //     authCode: 'quill'
-    //   }
-    // },
-    // {
-    //   path: 'sequence',
-    //   component: () => import('src/components/dev/Sequence.vue'),
-    //   meta: {
-    //     title: 'sequence',
-    //     authCode: 'sequence'
-    //   }
-    // }
+    {
+      path: "demo",
+      component: () => import('src/components/dev/Demo.vue'),
+      meta: {
+        title: "demo",
+        authCode: 'demo'
+      }
+    },
   ]
 }

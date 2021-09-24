@@ -30,8 +30,8 @@
           </a-button>
         </div>
       </div>
-      <asset-folder/>
-      <asset-folder/>
+      <asset-folder @click="gotoContent(1)"/>
+      <asset-folder @click="gotoContent(2)"/>
     </a-card>
     <a-modal
         v-model:visible="createFolderVisible"
@@ -73,6 +73,7 @@ import {defineComponent, ref, reactive, inject, watch, computed} from "vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
 import {ILayoutConfiguration} from "../../types";
+import {useRouter} from "vue-router";
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
@@ -81,13 +82,14 @@ export default defineComponent({
     DiskUsage,
   },
   setup() {
+    const router = useRouter();
     const searchStr = ref("");
     const createFolderVisible = ref(false);
     const folderInfo = reactive({
       name: "",
       description: "",
     });
-    const updateNav: (config: any) => void = inject('updataNav')!
+    const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
       showNav: true,
       navPosition: 'outside',
@@ -105,7 +107,6 @@ export default defineComponent({
 
     const labelCol = {span: 3};
     const wrapperCol = {span: 21};
-    ;
     const handleSearch = (searchValue: string) => {
       console.log("[classical][panel] searching: ", searchValue);
     };
@@ -115,6 +116,10 @@ export default defineComponent({
     const handleCreateFolder = () => {
       createFolderVisible.value = false;
     };
+    const gotoContent = (id: number) => {
+      console.log('[asset/panel] goto: ', id)
+      router.push('/teacher/classical/content/private/232')
+    }
     return {
       searchStr,
       showDiskUsage,
@@ -122,6 +127,7 @@ export default defineComponent({
       folderInfo,
       labelCol,
       wrapperCol,
+      gotoContent,
       handleSearch,
       createFolder,
       handleCreateFolder,
@@ -139,7 +145,6 @@ export default defineComponent({
   .classical__card {
     width: 100%;
     height: 100%;
-    margin-top: @margin-lg;
     box-shadow: 0 3px 6px 0px @shadow-color;
 
     .ant-card-body {

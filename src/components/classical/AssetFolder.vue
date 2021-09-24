@@ -1,5 +1,5 @@
 <template>
-  <div class="classical__asset-folder">
+  <div class="classical__asset-folder" @click="handleClick">
     <div class="classical__asset-main">
       <div class="classical__asset-title">title</div>
     </div>
@@ -18,6 +18,13 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "AssetFolder",
+  emits: ["click"],
+  setup(props, {emit}) {
+    const handleClick = function () {
+      emit('click')
+    }
+    return {handleClick}
+  }
 });
 </script>
 <style lang="less">
@@ -31,6 +38,7 @@ export default defineComponent({
   // 相同块元素之间，在垂直方向上，其margin会叠加，css这样设计的意义在于避免产生双倍边距
   margin: @margin-md 0px;
   color: @text-color-secondary;
+  cursor: pointer;
 
   &:hover {
     box-shadow: @shadow-ring;
@@ -49,6 +57,7 @@ export default defineComponent({
       li {
         display: inline-block;
         margin-right: @margin-md;
+
         .classical__asset-item {
           margin-left: @margin-xss;
         }
