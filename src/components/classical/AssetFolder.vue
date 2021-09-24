@@ -2,21 +2,20 @@
   <div class="classical__asset-folder">
     <div class="classical__asset-main">
       <div class="classical__asset-title">title</div>
-      <div class="classical__asset-detail">
-          <ul>
-              <li><span class="iconfont icon-shijian"></span>2021-07-12</li>
-              <li><span class="iconfont icon-cunchuzhi"></span>10.2MB</li>
-              <li><span class="iconfont icon-wenjian"></span>3个</li>
-          </ul>
-      </div>
     </div>
     <div class="classical__asset-right">
-      <span class="iconfont icon-shanchu"></span>
+      <ul>
+        <li><span class="iconfont icon-shijian"/><span class="classical__asset-item">2021-07-12</span></li>
+        <li><span class="iconfont icon-cunchuzhi"/><span class="classical__asset-item">10.2MB</span></li>
+        <li><span class="iconfont icon-wenjian"/><span class="classical__asset-item">3个</span></li>
+        <li><span class="iconfont icon-shanchu"/><span class="classical__asset-item">3个</span></li>
+      </ul>
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import {defineComponent} from "vue";
+
 export default defineComponent({
   name: "AssetFolder",
 });
@@ -34,7 +33,7 @@ export default defineComponent({
   color: @text-color-secondary;
 
   &:hover {
-      box-shadow: @shadow-ring;
+    box-shadow: @shadow-ring;
   }
 
   .classical__asset-title {
@@ -43,18 +42,18 @@ export default defineComponent({
   }
 
   .classical__asset-right {
-    line-height: 53px;
-  }
+    ul {
+      margin: 0;
+      padding: 0;
 
-  .classical__asset-detail {
-      ul {
-          margin: 0;
-          padding: 0;
-          li {
-              display: inline-block;
-              margin-right: @margin-md;
-          }
+      li {
+        display: inline-block;
+        margin-right: @margin-md;
+        .classical__asset-item {
+          margin-left: @margin-xss;
+        }
       }
+    }
   }
 }
 </style>

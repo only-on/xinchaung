@@ -7,7 +7,7 @@ import router from "../routers/index";
 import i18n from '../i18n'
 import store from "../store/index";
 import customDirective from '../directive'
-import { registration as AntdvMarkdownRegistration } from '@jiangyue/antdv-markdown/src/index';
+import { registration as AntdvMarkdownRegistration } from '@xianfe/antdv-markdown/src/index';
 
 export declare interface IAppManager {
     // 安装插件，暂不支持设置options
