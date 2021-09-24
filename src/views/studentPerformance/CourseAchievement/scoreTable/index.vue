@@ -37,9 +37,9 @@
                     <a-tab-pane key="1" tab="试验得分">
                       <test-score></test-score>
                     </a-tab-pane>
-                    <a-tab-pane key="2" tab="Tab 2" force-render>
+                    <!-- <a-tab-pane key="2" tab="Tab 2" force-render>
                     Content of Tab Pane 2
-                    </a-tab-pane>
+                    </a-tab-pane> -->
                 </a-tabs>
             </div>
         </a-modal>
@@ -50,6 +50,7 @@
 import Vue, { toRefs } from 'vue'
 import {defineComponent,reactive,ref,Ref} from 'vue'
 import testScore from '../testScore/index.vue'
+import request from '../../../../api'
 export default defineComponent({
     name:'scoreTable',
     components:{
@@ -138,6 +139,7 @@ export default defineComponent({
         //成绩明细弹框
         function scoreDetails(){
             visable.value=true
+            getScore()
         } 
         //确认弹框
         function handleOk(){
@@ -146,10 +148,20 @@ export default defineComponent({
         function handleCancel(){
             visable.value = false;
         }
+        function getScore(){
+            const infoRequest=(request as any).studentPerformance
+             var formData:any = new FormData();
+       formData.append('tid',260);
+       formData.append('type','score');
+       formData.append('stu_id','');
+        infoRequest.getScore({param:formData}).then((res:any)=>{
+        console.log(res)
+      })
+        }
         // function onEdit(targetKey:string, action:string){
         //    console.log(targetKey, action) 
         // }
-        return {columns,data,confirmLoading,visable,ModalText,scoreDetails,handleOk,handleCancel}
+        return {columns,data,confirmLoading,visable,ModalText,scoreDetails,handleOk,handleCancel,getScore}
     }
 })
 </script>
