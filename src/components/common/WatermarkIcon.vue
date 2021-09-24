@@ -26,7 +26,7 @@ export default defineComponent({
       default: '描述信息'
     },
     style: {
-      type: String,
+      type: Object,
       default: 'background-color: #8955b5'
     }
   },
