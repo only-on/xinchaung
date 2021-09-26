@@ -146,6 +146,6 @@ export default defineComponent({
   border-bottom: 1px solid #765e8b;
 }
 .back{
-  margin-bottom: -10px;
+  margin-bottom: -16px;
 }
 </style>

@@ -7,7 +7,7 @@
     </div>
     <div class="main-box">
       <div class="list">
-        <div class="card cread-card">
+        <div class="card cread-card" @click="add">
           <div class="kernel">
             <div class="create-btn card-item-content">
               <i class="iconfont icon-chuangjian"></i>
@@ -31,7 +31,7 @@
               </div>
               <div class="footer-btns">
                 <i class="iconfont icon-fuyong" title="复用" @click="copy(v.id)"></i>
-                <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="v.is_edited"></i>
+                <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="!v.is_edited"></i>
                 <i class="iconfont icon-shanchu" title="删除" @click="delate(v.id)"></i>
               </div>
             </div>
@@ -126,9 +126,11 @@ export default defineComponent({
       });
      
     }
-    
+    function add(){
+      router.push('/teacher/teacherExam/CreateTestPaper')
+    }
     function edit(id:number){
-      // console.log(id);
+      console.log(id);
       router.push('/teacher/teacherExam/CreateTestPaper?editId='+id)
     }
     
@@ -142,7 +144,7 @@ export default defineComponent({
     onMounted(()=>{
      initData()
     })
-    return {list,loading,ForumSearch,totalCount,search,pageChange,copy,edit,delate};
+    return {list,loading,ForumSearch,totalCount,search,pageChange,copy,edit,delate,add};
   },
 })
 </script>
@@ -281,5 +283,6 @@ export default defineComponent({
 }
 .ant-pagination{
   text-align: center;
+  margin-top: 20px;
 }
 </style>
