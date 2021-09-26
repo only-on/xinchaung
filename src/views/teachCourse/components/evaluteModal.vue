@@ -34,7 +34,7 @@
       </div>
       <!-- 报告 -->
       <div v-if="modalType == 'report'">
-        <report></report>
+        <report :reportData="reportData"></report>
       </div>
     </a-modal>
   </div>
@@ -99,6 +99,7 @@ export default defineComponent({
     ])
     var evaluteVal = ref<string>('')
     var notesContent = ref<string>('')
+    var reportData = ref<any>()
     function handleCancel() {
       modalVisible.value = false
       emit("close");
@@ -122,7 +123,6 @@ export default defineComponent({
         if (newVal) {
           modalVisible.value = true;
           console.log(props.params)
-          console.log(props.type == 'score')
           let params = {
             tid: props.params.tid,
             type: props.type,
@@ -136,6 +136,8 @@ export default defineComponent({
             evaluteVal.value = props.params.evaluteNum + ''
           } else if (props.type == 'notes') {
             getNotes(params)
+          } else if (props.type == 'report') {
+            getReport({id: props.params.reportId})
           }
         }
       }
@@ -154,8 +156,9 @@ export default defineComponent({
     // 成绩明细
     function getScore (params:any) {
       http.getSocre({param: params}).then((res:IBusinessResp) => {
-        scoreData.value = res.data
-        console.log(scoreData.value)
+        if (res && res.data) {
+          scoreData.value = res.data
+        }
       })
     }
     // 笔记
@@ -163,6 +166,16 @@ export default defineComponent({
       http.showNotes({param: params}).then((res:IBusinessResp) => {
         if (res && res.data.notes) {
           notesContent.value = goHtml(res.data.notes)
+        }
+      })
+    }
+    // 报告
+    function getReport(params:any) {
+      http.reportView({param: params}).then((res:IBusinessResp) => {
+        console.log(res.data)
+        if (res && res.data) {
+          reportData.value = res.data
+          console.log(reportData.value)
         }
       })
     }
@@ -175,7 +188,8 @@ export default defineComponent({
       modalType,
       handleOk,
       handleCancel,
-      notesContent
+      notesContent,
+      reportData
     };
   },
 });

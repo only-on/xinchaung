@@ -24,6 +24,7 @@ interface IteachCourse {
   evaluteProject: Function
   showNotes: Function
   reportAnnotate: Function
+  reportView: Function
 }
 interface IcourseTree {
   getTreeList: Function

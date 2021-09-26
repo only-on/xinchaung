@@ -58,6 +58,9 @@
         <template #study_report="{ record }">
           <span class="linkText" @click="checkDetail('report', record)">查看</span>
         </template>
+        <template #rebuild_report="{ record }">
+          <span class="linkText" @click="checkDetail('report', record)">批阅</span>
+        </template>
         <template #evalute="{record}">
           <!-- <span class="linkText" @click="checkDetail('evalute')">评价</span> -->
           <span class="resultText">
@@ -68,7 +71,6 @@
       </a-table>
     </div>
     <!-- 弹框 -->
-    {{modalParam}}
     <evalute-modal :openModal="openModal" :params="modalParam" :type="modalType" @close="handleClose"></evalute-modal>
   </div>
 </template>
@@ -98,7 +100,8 @@ interface ImodalParam{
   course_id: number,
   task_id: number,
   stu_id: number,
-  evaluteNum: number
+  evaluteNum: number,
+  reportId?: number
 }
 const columns = [
   {
@@ -143,7 +146,8 @@ const columns = [
   {
     title: '重修报告',
     dataIndex: 'rebuild_report',
-    align:'center'
+    align:'center',
+    slots: { customRender: 'rebuild_report' }
   },
   {
     title: '教师评价',
@@ -276,6 +280,8 @@ export default defineComponent({
       modalType.value = type
       if (type == 'evalute') {
         modalParam.evaluteNum = item.evaluate
+      } else if (type == 'report') {
+        modalParam.reportId = 65
       }
     }
     function handleClose () {

@@ -24,7 +24,6 @@ export default defineComponent({
     var scoreData = ref<any>({});
     onMounted(()=>{
       setTimeout(()=>{
-        console.log('444cffffff')
         scoreData.value = props.scoreData
         console.log(scoreData.value)
       }, 400)

@@ -6,6 +6,11 @@ interface ITeacherExperimental {
   uploadResource: Function
   resetExperimentalServer: Function
   setExperimentalScore: Function
+  trainList: Function
+  changeStatus: Function
+  trainComplex: Function
+  trainArchived: Function
+  trainDeleted: Function
 }
 export interface ITeacherExperimentalHttp {
   teacherExperimental: ITeacherExperimental

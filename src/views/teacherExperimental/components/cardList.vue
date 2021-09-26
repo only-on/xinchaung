@@ -3,25 +3,26 @@
     <div class="cardBox mySelfCreate"  v-if="trainType === 0">
       <span>新建实训</span>
     </div>
-    <div class="cardBox">
+    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()">
       <div class="cardpic">
-        <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="trainType === 0">
-        <img src="../../../assets/images/Experimental/wlkc.png" alt="">
-        <span class="stateClass end" v-if="trainType === 0">已结束</span>
+        <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="item.is_highconf && trainType !== 2">
+        <img :src="item.url ? item.url: defaultImg" alt="">
+        <span :class="['stateClass', item.status === '已结束' ? 'end' : item.status === '进行中' ? 'onGoing' : 'noStart' ]" v-if="trainType === 0">{{item.status}}</span>
       </div>
       <!-- 我的实训 -->
       <div v-if="trainType === 0">
         <ul class="cardinfo">
-          <li class="train-title">实训名称</li> 
-          <li class="train-time"><span>2021-04-29</span> ~ <span>2021-05-02</span></li>
+          <li class="train-title">{{item.name}}</li> 
+          <li class="train-time"><span>{{item.start_time}}</span> ~ <span>{{item.end_time}}</span></li>
           <li class="desc-status">
             <span>
               任务描述状态:
-              <a-switch checked-children="开启" un-checked-children="关闭" v-model:checked="switchVal" />
+              <a-switch checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
             </span>
             <span>
-              <i class="iconfont icon-fuyong" title="复用"></i>
-              <i class="iconfont icon-guidang" title="归档"></i>
+              <i class="iconfont icon-fuyong" title="复用" @click="handleOperate(item.id, 'Complex')"></i>
+              <i v-if="item.status === '已结束'" class="iconfont icon-guidang" title="归档" @click="handleOperate(item.id, 'Archived')"></i>
+              <i v-if="item.status === '未开始'" class="iconfont icon-shanchu" title="删除" @click="handleOperate(item.id, 'Deleted')"></i>
             </span>
           </li>
         </ul>
@@ -29,17 +30,17 @@
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
-            <span>1</span>
+            <span>{{item.task_num}}</span>
           </li>
           <li>
             <i class="iconfont icon-shijian1"></i>
             课时
-            <span>2</span>
+            <span>{{item.class_cnt}}</span>
           </li>
           <li>
             <i class="iconfont icon-renshu"></i>
             学生
-            <span>0</span>
+            <span>{{item.stu_num}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
@@ -51,18 +52,18 @@
       <!-- 内置实训 -->
       <div v-if="trainType === 1" class="init">
         <ul class="cardinfo">
-          <li class="train-title">实训名称</li>
+          <li class="train-title">{{item.name}}</li>
         </ul>
         <ul class="cardfoot1">
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
-            <span>1</span>
+            <span>{{item.task_num}}</span>
           </li>
           <li>
             <i class="iconfont icon-shijian1"></i>
             课时
-            <span>2</span>
+            <span>{{item.class_cnt}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
@@ -74,13 +75,13 @@
       <!-- 归档实训 -->
       <div v-if="trainType === 2" class="archive">
         <ul class="cardinfo">
-          <li class="train-title">实训名称</li>
+          <li class="train-title">{{item.name}}</li>
         </ul>
         <ul class="cardfoot1">
           <li>
             <i class="iconfont icon-renwu"></i>
             归档时间：
-            <span>1</span>
+            <span>{{item.archive_time}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
@@ -91,19 +92,48 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
-
+import { defineComponent, ref, watch, toRef, reactive } from 'vue'
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { ITeacherExperimentalHttp } from '../typings'
+import { message } from 'ant-design-vue';
 export default defineComponent({
-  props: ['trainType'],
-  setup(props) {
+  props: ['trainType', 'data'],
+  setup(props,{emit}) {
+    const http=(request as ITeacherExperimentalHttp).teacherExperimental
     var switchVal=ref<boolean>(false)
     var trainType = ref<number>(props.trainType)
+    var dataList = ref<any>(props.data)
     watch(()=>props.trainType, (newVal) => {
       trainType.value = newVal
     })
+    watch(()=>props.data, (newVal) => {
+      dataList.value = newVal
+    })
+    function changeSwitch (item:any) {
+      item.is_open =item.is_open == 1 ? 0 : 1
+      let params = {
+        train_id: item.id,
+        is_open: item.is_open
+      }
+      http.changeStatus({param: params}).then((res:IBusinessResp) => {
+        message.success('操作成功')
+        emit('refresh')
+      })
+    }
+    function handleOperate (id:number, type:string) {
+      http['train'+type]({param:{train_id: id}}).then((res:IBusinessResp) => {
+        message.success(res.error ? res.error :'操作成功')
+        emit('refresh')
+      })
+    }
     return {
       switchVal,
-      trainType
+      trainType,
+      dataList,
+      changeSwitch,
+      handleOperate,
+      defaultImg: '/src/assets/images/Experimental/wlkc.png'
     }
   },
 })
@@ -120,6 +150,7 @@ export default defineComponent({
   box-shadow: 0px 2px 4px 0px rgba(164,36,167,0.14);
   margin: 0 1% 20px;
   &.mySelfCreate{
+    height: 277px;
     border: 1px dashed @theme-color;
     cursor: pointer;
     background: url('../../../assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;

@@ -13,7 +13,13 @@ export default{
 
   // 新建实训  选择环境
   ImageList:{url:`/api/env/containers`,method: 'GET'},
-  trainUpload:{url:`/teacher-train/upload`,method: 'POST',dataType: 'formdata'}
+  trainUpload:{url:`/teacher-train/upload`,method: 'POST',dataType: 'formdata'},
+  // 列表
+  trainList:{url: '/teacher-train/index', method: "GET"},
+  changeStatus:{url: '/teacher-train/change-status', method: "GET"},
+  trainComplex:{url: '/teacher-train/train-complex', method: "GET"},
+  trainArchived:{url: '/teacher-train/train-archived', method: "GET"},
+  trainDeleted:{url: '/teacher-train/train-deleted', method: "GET"}
 }
 
 export interface ITeacherExperimentallAps {
@@ -25,9 +31,13 @@ export interface ITeacherExperimentallAps {
   setExperimentalScore: TFHttpSend;
   delResource: TFHttpSend;
   uploadResource: TFHttpSend;
-
   ImageList: TFHttpSend;
   trainUpload: TFHttpSend;
+  trainList: TFHttpSend;
+  changeStatus: TFHttpSend;
+  trainComplex: TFHttpSend;
+  trainArchived: TFHttpSend;
+  trainDeleted: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherExperimental'

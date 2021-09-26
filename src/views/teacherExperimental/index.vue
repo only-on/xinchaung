@@ -1,7 +1,7 @@
 <template>
   <div class="experimentalList" v-layout-bg>
     <div class="head">
-      <a-input v-model:value="form.keyword" placeholder="请输入实训名称关键字查询" @pressEnter="handleSearch">
+      <a-input v-model:value="form.name" placeholder="请输入实训名称关键字查询" @pressEnter="handleSearch">
         <template #prefix>
           <i class="iconfont icon-sousuo"></i>
         </template>
@@ -9,31 +9,40 @@
       <a-button type="primary" @click="handleSearch">查询</a-button>
     </div>
     <div class="content">
-      <card-list :trainType="trainType"/>
+      <card-list v-if="listData.length > 0" :trainType="trainType" :data="listData" @refresh="refresh"/>
+      <Empty v-else/>
       <a-pagination
         show-size-changer
         v-model:current="form.page"
         v-model:pageSize="form.pageSize"
-        :total="500"
+        :total="total"
+        :hideOnSinglePage="true"
+        :pageSizeOptions="pageSizeOptions"
         @showSizeChange="onShowSizeChange"
+        @change="pageChange"
       />
     </div>
   </div>
 </template>
 <script lang="ts">
-import { number } from 'echarts'
-import { defineComponent, ref, inject, reactive, watch } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted } from 'vue'
 import cardList from './components/cardList.vue'
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { ITeacherExperimentalHttp } from './typings'
 interface Iform{
-  keyword: string,
+  name: string,
   page: number,
-  pageSize: number
+  pageSize: number,
+  is_archive: number,
+  is_init: number
 }
 export default defineComponent({
   components: {
     cardList
   },
   setup() {
+    const http=(request as ITeacherExperimentalHttp).teacherExperimental
     const tabs = [
       {
         name: '我的实训',
@@ -52,30 +61,77 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
     var configuration:any=inject('configuration')
     var form = reactive<Iform>({
-      keyword: '',
+      name: '',
       page: 1,
-      pageSize: 10
+      pageSize: 11,
+      is_archive: 0,
+      is_init: 0
     })
+    var listData =ref<any>([])
+    var total = ref<number>(0)
     var trainType = ref<number>(0)
-
+    var pageSizeOptions = ref<string[]>(['11','23','35'])
     watch(()=>configuration.componenttype, (newVal) => {
       trainType.value = newVal
-      form.keyword = ''
+      total.value = 0
+      form.name = ''
       form.page = 1
-      form.pageSize = 10
+      form.pageSize = 12
+      pageSizeOptions.value = ['12','24','36']
+      if (newVal == 0) {
+        // 我的实训
+        form.is_archive = 0
+        form.is_init = 0
+        form.pageSize = 11
+        pageSizeOptions.value = ['11','23','35']
+      } else if (newVal == 1) {
+        // 内置实训
+        form.is_archive = 0
+        form.is_init = 1
+      } else {
+        // 归档实训
+        form.is_archive = 1
+        form.is_init = 0
+      }
+      getList()
     })
-
+    function getList () {
+      http.trainList({param: form}).then((res:IBusinessResp) => {
+        if (res && res.data) {
+          listData.value =res.data.list
+          total.value = res.data.page.totalCount
+        }
+      })
+    }
+    function pageChange (page:number) {
+      form.page = page
+      getList()
+    }
     function onShowSizeChange (val:number,size:number) {
       form.pageSize = size
+      getList()
     }
     function handleSearch () {
-      console.log(form)
+      form.page = 1
+      getList()
     }
+    
+    function refresh () {
+      getList()
+    }
+    onMounted(()=>{
+      getList()
+    })
     return {
       form,
       trainType,
+      total,
+      listData,
       onShowSizeChange,
-      handleSearch
+      handleSearch,
+      pageChange,
+      refresh,
+      pageSizeOptions
     }
   },
 })
