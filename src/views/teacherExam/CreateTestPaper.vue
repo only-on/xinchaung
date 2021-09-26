@@ -1,19 +1,6 @@
 <template>
   <div>
-    <div class="header">
-      <div class="item custom_input">
-        <a-input-search v-model:value="ForumSearch.title" placeholder="请输入考试名称关键字搜索" @search="search" />
-      </div>
-      <div>
-        <span>仅显示</span>
-        <a-radio-group v-model:value="ForumSearch.type">
-          <a-radio :value="0">全部</a-radio>
-          <a-radio :value="1">未开始</a-radio>
-          <a-radio :value="2">进行中</a-radio>
-          <a-radio :value="3">已结束</a-radio>
-        </a-radio-group>
-      </div>
-    </div>
+    创建试卷
   </div>
 </template>
 <script lang="ts">
@@ -66,31 +53,5 @@ export default defineComponent({
 })
 </script>
 <style  scoped lang="less">
-.header{
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  .item{
-  display: flex;
-  align-items: center;
-  margin-right: 22px;
-  :deep(.ant-input){
-      width: 440px;
-      padding-left: 20px;
-    }
- }
-}
-.custom_input{
-  position: relative;
-  &::before{
-      content: '';
-      position: absolute;
-      left:8px;
-      top:10px;
-      background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-      width: 16px;
-      height: 16px;
-      z-index: 10;
-  }
-}
+
 </style>

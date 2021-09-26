@@ -58,7 +58,7 @@ export default defineComponent({
       theme: "snow",
     };
     var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
 
     const state:Istate=reactive({
       formRef:'formRef',

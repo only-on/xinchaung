@@ -1,5 +1,8 @@
 <template>
   <div class="navList" :class="configuration.tabs && configuration.tabs.length?'border_bottom':''">
+    <div class="back" v-if="configuration.backOff">
+      <a-button @click="back" type="primary">返回</a-button>
+    </div>
     <div class="tab">
       <div
         v-for="v in configuration.tabs"
@@ -82,6 +85,9 @@ export default defineComponent({
         tabChange(configuration.tabs[configuration.componenttype])
       }
     }
+    function back(){
+      router.go(-1)
+    }
     onMounted(() => {
       initData()
     });
@@ -93,7 +99,7 @@ export default defineComponent({
         initData()
       }
     });
-    return { activeName, tabChange ,configuration};
+    return { activeName, tabChange ,back,configuration};
   },
 });
 </script>
@@ -138,5 +144,8 @@ export default defineComponent({
 }
 .border_bottom{
   border-bottom: 1px solid #765e8b;
+}
+.back{
+  margin-bottom: -10px;
 }
 </style>
