@@ -8,7 +8,7 @@
         <li><span class="iconfont icon-shijian"/><span class="classical__asset-item">2021-07-12</span></li>
         <li><span class="iconfont icon-cunchuzhi"/><span class="classical__asset-item">10.2MB</span></li>
         <li><span class="iconfont icon-wenjian"/><span class="classical__asset-item">3个</span></li>
-        <li><span class="iconfont icon-shanchu"/><span class="classical__asset-item">3个</span></li>
+        <li><span class="iconfont icon-shanchu"/></li>
       </ul>
     </div>
   </div>

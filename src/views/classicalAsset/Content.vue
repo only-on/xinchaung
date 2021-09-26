@@ -10,7 +10,8 @@
         </div>
         <div class="right">
           <watermark-icon icon="cipanjiedian" title="30.7KB" description="文件大小" style="background-color: #2CB6FA"/>
-          <watermark-icon icon="wenjianshu" title="2个" description="文件个数" style="background-color: #FFBB3C; margin-left: 25px;"/>
+          <watermark-icon icon="wenjianshu" title="2个" description="文件个数"
+                          style="background-color: #FFBB3C; margin-left: 25px;"/>
         </div>
       </div>
       <div class="classical__content--main">
@@ -18,6 +19,19 @@
           <h3>描述</h3>
           <a-divider style="background-color: #d5d5d5;"/>
           <div>暂无描述！</div>
+        </div>
+        <a-divider style="opacity: 0;"/>
+        <div class="classical__data-list">
+          <div class="classical__data-list-header">
+            <h3>文件列表</h3>
+            <div class="classical__data-list-space"></div>
+            <div class="classical__data-list-form">
+              <a-input-search placeholder="请输入关键字查询" @search="handleSearch"/>
+            </div>
+          </div>
+          <div class="classical__data-list-content">
+            <file-card/>
+          </div>
         </div>
       </div>
     </a-card>
@@ -29,13 +43,15 @@ import {defineComponent, inject} from "vue";
 import {useRoute} from 'vue-router'
 import {ILayoutConfiguration} from "../../types";
 import WatermarkIcon from "../../components/common/WatermarkIcon.vue";
+import FileCard from "../../components/classical/FileCard.vue";
 
 export default defineComponent({
   name: "Content",
   components: {
-    WatermarkIcon
+    FileCard,
+    WatermarkIcon,
   },
-  setup() {
+  setup(props, {emit}) {
     const route = useRoute()
     console.log('[classical/content] route params: ', route.params.type, route.params.id)
 
@@ -45,6 +61,11 @@ export default defineComponent({
       navType: false,
       tabs: []
     })
+
+    const handleSearch = () => {
+      emit('search')
+    }
+    return {handleSearch}
   }
 })
 </script>
@@ -61,6 +82,24 @@ export default defineComponent({
 
     .left {
       flex: 1;
+    }
+  }
+
+  .classical__content--main {
+    margin-top: @margin-lg + 21px;
+    .classical__data-list {
+      .classical__data-list-header {
+        display: flex;
+        .classical__data-list-space {
+          flex: 1;
+        }
+        .classical__data-list-form {
+          width: 30%;
+        }
+      }
+      .classical__data-list-content {
+        padding: @padding-md 0px;
+      }
     }
   }
 }
