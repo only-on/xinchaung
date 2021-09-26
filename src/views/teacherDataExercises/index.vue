@@ -2,40 +2,57 @@
     <div id='teacherDataExercises' v-layout-bg>
         <div class="conTop">
              <div class="searchInput">
-                <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入目录名称关键字查询" />
+                <a-input-search @keyup.enter="onSearch" @search="onSearch" style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入目录名称关键字查询" />
             </div>
             <div v-if="type">
-                <a-button type="primary" @click="createExcerise">创建目录</a-button>
+                <a-button type="primary" @click="createExceriseBtn">创建目录</a-button>
             </div>
              <a-modal class="createExercise" :visible="visible" title="创建目录" width="900px" @cancel="handleCancel" @ok="handleOk">
                 <div class="modal-con">
+                    <a-form>
                         <a-form-item
                             label="名称"
                             >
                             <a-input
-                                
                                 placeholder="请输入名称"
-                                style="width:690px"
+                                required
+                                maxLength="200"
+                                v-model:value='form.name'
                             />
-                            <!-- v-decorator="[
-                                'username',
+                             <!-- v-decorator="[
+                                'name',
                                 { rules: [{ required: true, message: '请输入内容',max:30 }] },
                                 ]" -->
+                            <!--  -->
+                            <!--  -->
                         </a-form-item>
                         <a-form-item label="描述">
                             <a-textarea
                             :auto-size="{ minRows:4, maxRows:7 }"
-                                placeholder="请输入描述内容">
+                            v-model:value='form.description'
+                            placeholder="请输入描述内容">
                             </a-textarea>
                         </a-form-item>
+                    </a-form>
                 </div>
             </a-modal>
         </div>
-        <component :is="componentName" :componentData='componentData' />
+        <component :is="componentName" :componentData='componentData' @poolId='getPollId'/>
+         <a-pagination
+            v-model="pagination.current"
+            :page-size-options="pagination.pageSizeOptions"
+            :total="pagination.total"
+            show-size-changer
+            :page-size="pagination.pageSize"
+            @change="currentPageChange"
+            @showSizeChange="onShowSizeChange"
+            :hideOnSinglePage='true'
+        >
+        </a-pagination>
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,inject,watch,reactive,toRefs, onMounted, ToRefs,Ref,ref,provide} from 'vue'
+import {defineComponent,inject,watch,reactive,toRefs, onMounted,toRef,Ref,ref,provide} from 'vue'
 import privateExercises from './privateExercises/index.vue'
 import shareExercises from './shareExercises/index.vue'
 import request from "../../api";
@@ -43,16 +60,30 @@ interface Iitem{
   name:string,
   componenttype:any,
 }
+interface fromType{
+    name?:string,
+    description?:string,
+}
 interface state{
     tabs:Array<Iitem>,
     componentName:string,
     componentNames:Array<string>,
     componentData:any,
+    form:fromType,
+    pagination:paginationType,
 }
-interface createExerciseParam{
-    name:string,
-    description:string,
-    initial:boolean,
+interface ExerciseParam{
+    name?:string,
+    description?:string,
+    initial?:boolean,
+    limit?:number,
+    page?:number,
+}
+interface paginationType{
+     pageSizeOptions:string[],
+     current:number,
+     pageSize?:number,
+     total?:number,
 }
 export default defineComponent({
     name:'teacherDataExercises',
@@ -66,50 +97,88 @@ export default defineComponent({
             componentName:'',
             componentNames:['shareExercises','privateExercises'],
             tabs:[{name:'共有',componenttype:0},{name:'私有',componenttype:1}],
-            componentData:[]
+            componentData:[],
+            form:{},
+            pagination:{
+            pageSizeOptions:['10', '20', '30', '40', '50'],
+            current:1,
+            pageSize:10,
+        }
        })
         var type:Ref<any>=ref(0)
         var visible:Ref<any>=ref(false)
-        var form:Ref<any>=ref()
+        // let  form = ref<any>({})
         var componentData=ref([])
+        var params:ExerciseParam={}
+        var createParams:fromType={}
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
     updata({tabs:state.tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+    // 监听tab变化
     watch(()=>{return configuration.componenttype},(val)=>{
       state.componentName=state.componentNames[val]
-      type.value=val
-      getExerciseList()
+        type.value=val
+        params.initial=!val
+        if(val===0){
+            params.initial=true
+        }else{
+            params.initial=false
+        }
+        getExerciseList(params)
     })
-    function getExerciseList(){
-          teacherDataExerApi.getExerciseList({param:{initial:!type.value}}).then((res:any)=>{
-              componentData.value=res?.data.list
-              console.log(componentData,'componentData')
-              provide('componentData',componentData)
+    // 请求列表数据
+    function getExerciseList(params:any){
+          teacherDataExerApi.getExerciseList({param:params}).then((res:any)=>{
+            componentData.value=res?.data.list
+            state.pagination.total=res?.data.page.totalCount
+            state.pagination.pageSize=res?.data.page.perPage
+            state.pagination.current=res?.data.page.currentPage
           })
-        console.log(teacherDataExerApi)
     }
-    function createExcerise(params:createExerciseParam){
-        visible.value=true
-        console.log(visible)
-        // teacherDataExerApi.createExercise({param:params}).then((res:any)=>{
-        //     console.log(res)
-        // })
+    // 查询
+    function onSearch(value:string){
+        params.name=value
+        getExerciseList(params)
+    }
+    // 分页
+    function currentPageChange(page:any){
+        state.pagination.current=page
+        params.page=page
+         getExerciseList(params)
+    }
+    function onShowSizeChange(pageSize:any){
+        state.pagination.pageSize=pageSize
+        params.limit=pageSize
+        getExerciseList(params)
+    }
+    // 创建习题
+    function createExceriseBtn(){
+        visible.value=true   
+    }
+    function createExcerise(createParams:fromType){
+        teacherDataExerApi.createExercise({param:createParams}).then((res:any)=>{
+            console.log(res)
+            getExerciseList(params)
+        })
     }
     function handleOk(){
-         visible.value=false
-        form.value.validateFields((err:any, values:any) => {
-        if (!err) {
-          console.log('Received values of form: ', values);
-        }
-      });
-    } 
+        createParams.name=state.form.name
+        createParams.description=state.form.description
+        console.log(state.form,'form')
+        createExcerise(createParams)
+        visible.value=false
+        } 
     function handleCancel(){
          visible.value=false
     }
+    // 删除
+    function getPollId(id:any){
+        console.log(id,'id')
+    }
     onMounted(()=>{
-        getExerciseList()
+        getExerciseList(params)
     })
-      return {...toRefs(state),type,componentData,visible,form,getExerciseList,createExcerise,handleOk,handleCancel}
+      return {...toRefs(state),params,createParams,type,componentData,visible,getPollId,currentPageChange,onShowSizeChange,getExerciseList,createExceriseBtn,createExcerise,handleOk,handleCancel,onSearch}
     }
 })
 </script>
