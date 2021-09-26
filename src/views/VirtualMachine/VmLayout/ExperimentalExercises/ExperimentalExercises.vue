@@ -1,7 +1,6 @@
 <template>
   <div class="experimental-exercises">
     <template v-for="(item, index) in judgeData" :key="index">
-      
       <single-choice
         class="experimental-exercises-item"
         v-model="judgeData[index]"
@@ -22,17 +21,26 @@
       ></judge>
     </template>
     <div class="exercise-action">
-      <a-button type="primary" @click="submitAnswer">提交</a-button><i>您以提交过习题答案</i>
+      <a-button type="primary" @click="submitAnswer">提交</a-button>
+      <!-- <i>您以提交过习题答案</i> -->
     </div>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, toRefs, reactive, onMounted } from "vue";
+import {
+  defineComponent,
+  ref,
+  watch,
+  toRefs,
+  reactive,
+  onMounted,
+  inject,
+} from "vue";
 import judge from "src/components/exercises/judge.vue";
 import singleChoice from "src/components/exercises/singleChoice.vue";
 import multipleChoice from "src/components/exercises/multipleChoice.vue";
-import request from "src/request/getRequest"
-import {useRoute} from "vue-router"
+import request from "src/request/getRequest";
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   components: {
@@ -41,10 +49,11 @@ export default defineComponent({
     "multiple-choice": multipleChoice,
   },
   setup(props) {
-    let experApi=request.studentExam
-    const route=useRoute()
+    let experApi = request.studentExam;
+    const route = useRoute();
 
-    let taskId= route.query.taskId
+    let taskId = route.query.taskId;
+    let opType = route.query.opType;
     // const data: Array<any> = [
     //   {
     //     name: "判断题",
@@ -127,11 +136,11 @@ export default defineComponent({
     //     ],
     //   },
     // ];
-    const  reactiveData:{judgeData:any[]}= reactive({judgeData:[]});
+    const reactiveData: { judgeData: any[] } = reactive({ judgeData: [] });
     console.log();
-    onMounted(()=>{
-      getQuestionListData()
-    })
+    onMounted(() => {
+      getQuestionListData();
+    });
     watch(
       reactiveData.judgeData,
       () => {
@@ -140,22 +149,61 @@ export default defineComponent({
       { deep: true }
     );
 
-    function getQuestionListData(){
-      let params={
-        entity_type:"content",
-        entity_id:taskId
-      }
-      experApi.getQuestionsListApi({urlParams:params}).then(res=>{
+    let allInfo = inject("allInfo");
+    console.log(allInfo);
+
+    let course_student_content_id = (allInfo as any)?.value.current.id;
+    console.log(course_student_content_id);
+
+    function getQuestionListData() {
+      let params = {
+        entity_type: "content",
+        entity_id: taskId,
+      };
+      experApi.getQuestionsListApi({ urlParams: params }).then((res) => {
         console.log(res);
-        reactiveData.judgeData=res?.data
-      })
+        reactiveData.judgeData = res?.data;
+      });
     }
 
-    function submitAnswer(){
+    function submitAnswer() {
       console.log(reactiveData.judgeData);
-      
+      let answer: Array<any> = [];
+
+      reactiveData.judgeData.forEach((item) => {
+        answer.push({
+          answers: item.student_answer,
+          relation_id: item.relation_id,
+        });
+      });
+      let params = {
+        is_rebuild: opType === "rebuild" ? true : false,
+        course_student_content_id: course_student_content_id,
+        answer: answer,
+      };
+      experApi.submitAnswerApi({ param: params });
     }
-    return { ...toRefs(reactiveData),submitAnswer };
+
+    // function getExperimentStatus() {
+    //   return new Promise((resolve: any, reject: any) => {
+    //     let params = {
+    //       entity_type: "content",
+    //       entity_id: taskId,
+    //     };
+    //     experApi
+    //       .getExperimentStatusApi({ urlParams: params })
+    //       .then((res: any) => {
+    //         if (res.data&&res.data.has_submit_answer) {
+    //           resolve(res.data.has_submit_answer)
+    //         }else{
+    //           resolve(false)
+    //         }
+    //       }).catch((err)=>{
+    //         reject(err)
+    //       });
+    //   });
+    // }
+    return { ...toRefs(reactiveData), submitAnswer };
   },
 });
 </script>

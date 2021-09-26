@@ -5,18 +5,21 @@
       v-model="data[index]"
       :index="index"
       v-if="item.type_id === 1"
+      :isShowAnswer="isShowAnswer"
     ></single-choice>
     <multiple-choice
       class="experimental-exercises-item"
       v-model="data[index]"
       :index="index"
       v-if="item.type_id === 2"
+      :isShowAnswer="isShowAnswer"
     ></multiple-choice>
     <judge
       class="experimental-exercises-item"
       v-model="data[index]"
       :index="index"
       v-if="item.type_id === 3"
+      :isShowAnswer="isShowAnswer"
     ></judge>
     
     <gap-fillings
@@ -24,6 +27,7 @@
       v-model="data[index]"
       :index="index"
       v-if="item.type_id === 4"
+      :isShowAnswer="isShowAnswer"
       >
       </gap-fillings>
       <short-answer-question
@@ -31,6 +35,7 @@
       v-model="data[index]"
       :index="index"
       v-if="item.type_id === 5"
+      :isShowAnswer="isShowAnswer"
       >
       </short-answer-question>
   </div>
@@ -52,7 +57,7 @@ export default defineComponent({
     "gap-fillings": gapFillings,
     "short-answer-question":shortAnswerQuestion
   },
-  props: ["modelValue"],
+  props: ["modelValue","isShowAnswer"],
   setup(props) {
     const data=props.modelValue
     return {data}

@@ -1,5 +1,5 @@
 <template>
-  <layout :VmData="data" :reportId='reportTemid' isLeftContentShowType="line">
+  <layout :VmData="data" :reportId="reportTemid" isLeftContentShowType="line">
     <template v-slot:header>
       <div class="vm-header-student" v-if="roleType">
         <div class="vm-header-left">
@@ -64,7 +64,8 @@
           <a-button class="delayed-btn" @click="delayedTime">延时</a-button>
           <span class="vm-action-box">
             <a-button type="primary" @click="saveKvm">保存进度</a-button>
-            <a-button type="danger" @click="finishExperiment">结束实验</a-button
+            <a-button type="danger" @click="finishExperiment"
+              >结束实验</a-button
             >
           </span>
         </div>
@@ -181,7 +182,7 @@ export default defineComponent({
     "vue-no-vnc": VueNoVnc,
   },
   setup(props, { emit }) {
-    var reportTemid:Ref<any>=ref(0)
+    var reportTemid: Ref<any> = ref(0);
     const route = useRoute();
     const router = useRouter();
     let vmQuery = route.query as any;
@@ -232,6 +233,7 @@ export default defineComponent({
       toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
+    provide("allInfo", allInfo);
     let navData = [
       { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
@@ -334,7 +336,7 @@ export default defineComponent({
         use_time = res.data.current.used_time;
         console.log(allInfo);
         taskType = res.data.base_info.task_type.name;
-        reportTemid.value=res.data.current.id
+        reportTemid.value = res.data.current.id;
       });
     }
 
@@ -539,7 +541,7 @@ export default defineComponent({
       saveKvm,
       clipboard,
       isScreenRecording,
-      reportTemid
+      reportTemid,
     };
   },
 });

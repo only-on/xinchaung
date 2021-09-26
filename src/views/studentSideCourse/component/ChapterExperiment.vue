@@ -210,6 +210,7 @@ export default defineComponent({
           toVmConnect(router,param,{detailId:detailId,course_id:course_id})
         }
       }else{
+        debugger
         toVmConnect(router,param,{detailId:detailId,course_id:course_id})
       }
     }

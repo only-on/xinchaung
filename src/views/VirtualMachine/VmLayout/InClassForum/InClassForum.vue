@@ -340,6 +340,9 @@ export default defineComponent({
       };
       forum.createForum({ param: params }).then((res: any) => {
         console.log(res);
+        forumThemeContent.value={
+          ops:[]
+        }
       });
       activeKey.value = "1";
     }

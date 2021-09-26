@@ -1,6 +1,6 @@
 <template>
     <div class="judge-box">
-        <h2 class="question-title">{{index+1}}、{{modelValue.question}}</h2>
+        <h2 class="question-title">{{index+1}}、{{modelValue.question}}<i class="correct-answer" v-if="isShowAnswer">(正确答案：{{getAnswer(modelValue.answers[0].answer,modelValue.options)}})</i></h2>
         
         <a-radio-group class="answer-list" v-model:value="modelValue.student_answer[0]">
             <div v-for="(item,index) in modelValue.options" :key="index.toString()">
@@ -15,10 +15,21 @@
 import { defineComponent,reactive ,ref, toRefs,watch} from 'vue'
 import _ from "lodash"
 export default defineComponent({
-    props:['modelValue','index'],
+    props:['modelValue','index','isShowAnswer'],
     setup(props,{emit}) {
         const {modelValue,index} =toRefs(props)
-        return {index,modelValue}
+        // 获取答案
+        function getAnswer(id:number,options:Array<any>){
+            console.log(id,options);
+            
+           let i= _.findIndex(options,(o:any)=>{
+                return Number(id)===o.id
+            })
+            console.log(i);
+            
+            return options[i].option
+        }
+        return {index,modelValue,getAnswer}
     },
 })
 </script>
@@ -31,6 +42,11 @@ export default defineComponent({
         white-space: normal;
         font-size: 14px;
         text-align: justify;
+        .correct-answer{
+            color: #FF8F00;
+            font-style: normal;
+            margin-left: 10px;
+        }
     }
     .answer-list{
         .answer-item{

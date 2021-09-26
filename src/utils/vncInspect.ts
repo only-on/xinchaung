@@ -255,18 +255,18 @@ async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: an
   let url=""
   console.log(createEnvirments.data.data.type);
   
-  // if (createEnvirments.data.data.type.taskType==="notebook") {
-  //   url="/vm/notebook"
-  // }else{
-  //   url="/vm/vnc"
-  // }
+  if (createEnvirments.data.data.type.taskType==="notebook") {
+    url="/vm/notebook"
+  }else{
+    url="/vm/vnc"
+  }
   console.log(url);
   
   if (createEnvirments.data.data.connection_id) {
     console.log(12121111111111);
     
     router.push({
-      path: '/vm/vnc',
+      path: url,
       query: {
         connection_id: createEnvirments.data.data.connection_id,
         opType: createEnvirments.query.opType,

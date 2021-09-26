@@ -1,6 +1,6 @@
 <template>
   <div class="class-practice-box scrollbar">
-    <div v-for="(item, index) in data" :key="index" class="test-paper-item" :class="item.is_submited?'is-submit':''">
+    <div v-for="(item, index) in data" :key="index" class="test-paper-item">
       <h2 class="test-paper-title">{{ item?.name }}</h2>
       <div class="test-paper-count">
         <span class="question-count"
@@ -22,12 +22,14 @@
       <div
         class="test-paper-question-box"
         :style="{ height: openIndexs.includes(index) ? '100%' : '0' }"
+        :class="item.is_submited ? 'is-submit' : ''"
       >
         <test-paper
           v-if="openIndexs.includes(index)"
           v-model="questions[index]"
+          :isShowAnswer="item.is_submited"
         ></test-paper>
-        <div>
+        <div :class="item.is_submited ? 'hide' : ''">
           <a-button type="primary" @click="submitAnswer(index)">提交</a-button>
         </div>
       </div>
@@ -36,14 +38,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, watch, toRefs, onMounted,toRef } from "vue";
+import {
+  defineComponent,
+  reactive,
+  watch,
+  toRefs,
+  onMounted,
+  toRef,
+} from "vue";
 import testPaper from "./testPaper.vue";
 import request from "src/request/getRequest";
-import {useRoute} from "vue-router"
+import { useRoute } from "vue-router";
 
-interface TreactiveData{
-  data:any[]
-  questions:any
+interface TreactiveData {
+  data: any[];
+  questions: any;
 }
 export default defineComponent({
   components: {
@@ -51,8 +60,8 @@ export default defineComponent({
   },
   setup() {
     const examApi = request.studentExam;
-    let route =useRoute()
-    let course_id=JSON.parse(route.query.routerQuery as any).course_id
+    let route = useRoute();
+    let course_id = JSON.parse(route.query.routerQuery as any).course_id;
     const paper = [
       {
         paperName: "测试试卷1",
@@ -439,7 +448,7 @@ export default defineComponent({
         ],
       },
     ];
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       data: paper,
       questions: {},
     });
@@ -447,10 +456,12 @@ export default defineComponent({
     const openIndexs: Array<number> = reactive([]);
     let paperParams = {
       type: "test",
-      course_id:course_id,
+      course_id: course_id,
       limit: 100,
       page: 1,
     };
+
+    let answerState: any[] = [];
     onMounted(() => {
       getStudentExamPaper();
     });
@@ -466,23 +477,33 @@ export default defineComponent({
       let params = {
         entity_id: entity_id,
         entity_type: "test",
-        
       };
       return new Promise((resolve: any, reject: any) => {
-        examApi.getQuestionsListApi({ param:{include:"answers"},urlParams: params }).then((res) => {
-          console.log(res);
-          resolve(res?.data)
-        }).catch(err=>{
-          reject(err)
-        }).catch();
+        examApi
+          .getQuestionsListApi({
+            param: { include: "answers" },
+            urlParams: params,
+          })
+          .then((res) => {
+            console.log(res);
+            resolve(res?.data);
+          })
+          .catch((err) => {
+            reject(err);
+          })
+          .catch();
       });
     }
-   async function openOrClose(i: number, id: number) {
+    async function openOrClose(i: number, id: number) {
       if (openIndexs.includes(i)) {
         openIndexs.splice(openIndexs.indexOf(i), 1);
       } else {
-        
-         reactiveData.questions[i]= await getQuestionsList(id);
+        reactiveData.questions[i] = await getQuestionsList(id);
+        getExperimentStatus(id).then((res: any) => {
+          console.log(res);
+          answerState[i] = res;
+          console.log(answerState);
+        });
         openIndexs.push(i);
         console.log(reactiveData.questions);
       }
@@ -492,25 +513,53 @@ export default defineComponent({
     });
 
     // 提交答案
-    function submitAnswer(index:number) {
+    function submitAnswer(index: number) {
       console.log(reactiveData.questions[index]);
-      let params:any={
-        answer:[]
-      }
+      let params: any = {
+        answer: [],
+      };
       for (let i = 0; i < reactiveData.questions[index].length; i++) {
-        let answers={
-          relation_id:reactiveData.questions[index][i].relation_id,
-          answers:reactiveData.questions[index][i].student_answer
-        }
-        params.answer.push(answers)
+        let answer = {
+          relation_id: reactiveData.questions[index][i].relation_id,
+          answers: reactiveData.questions[index][i].student_answer,
+        };
+        params.answer.push(answer);
       }
       console.log(params);
-      
-      examApi.submitAnswerApi({param:params}).then((res:any)=>{
+
+      examApi.submitAnswerApi({ param: params }).then((res: any) => {
         console.log(res);
-      })
+      });
     }
-    return { ...toRefs(reactiveData), openIndexs, openOrClose,submitAnswer };
+
+    function getExperimentStatus(entity_id: number) {
+      return new Promise((resolve: any, reject: any) => {
+        let params = {
+          entity_id: entity_id,
+          entity_type: "test",
+        };
+        examApi
+          .getExperimentStatusApi({ urlParams: params })
+          .then((res: any) => {
+            if (res.data && res.data.has_submit_answer) {
+              resolve(res.data.has_submit_answer);
+            } else {
+              resolve(false);
+            }
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    }
+
+    return {
+      ...toRefs(reactiveData),
+      openIndexs,
+      openOrClose,
+      submitAnswer,
+      answerState,
+    };
   },
 });
 </script>
@@ -528,7 +577,7 @@ export default defineComponent({
     background: linear-gradient(270deg, #ecf0ff 0%, #fdf5ff);
     margin-bottom: 12px;
     padding: 0 15px;
-    &.is-submit{
+    &.is-submit {
       pointer-events: none;
     }
     .test-paper-title {
@@ -562,10 +611,20 @@ export default defineComponent({
     .test-paper-question-box {
       overflow: hidden;
       box-sizing: border-box;
+      &.is-submit {
+        pointer-events: none;
+      }
       .test-paper-question-list {
         margin-top: 12px;
       }
     }
   }
+  .hide {
+    display: none;
+  }
+  .forbidden {
+    pointer-events: none;
+  }
 }
 </style>
+

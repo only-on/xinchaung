@@ -10,6 +10,7 @@ export default{
     getExamListApi:{url:"/api/v1/question/papers",method:'GET'}, // 获取试卷列表
     getQuestionsListApi:{url:"/api/v1/question/{entity_type}/{entity_id}/questions",method:'GET'}, // 教师端-试卷-实体习题列表
     submitAnswerApi:{url:"/api/v1/question/answers",method:"POST",dataType:"json"},
+    getExperimentStatusApi :{url:"/api/v1/question/{entity_type}/{entity_id}/questions/has-submit-answer",method:"get"}, // 获取习题提交状态
 }
 
 export interface IstudentExam{
@@ -22,6 +23,7 @@ export interface IstudentExam{
   getExamListApi:TFHttpSend
   getQuestionsListApi:TFHttpSend
   submitAnswerApi:TFHttpSend
+  getExperimentStatusApi:TFHttpSend
 }
 
 
