@@ -9,88 +9,93 @@
             style="width: 90%; max-width: 314px"
             @search="onSearch"
           />
-          <div
-            class="in-class-forum-item"
-            v-for="(item, index) in forumListData"
-            :key="index.toString()"
-          >
-            <div class="forum-header">
-              <span class="forum-username"
-                >发帖人：{{ item["user_name"] }}</span
-              >
-              <span class="forum-time">{{ item["created_at"] }}</span>
-              <span class="forum-reply-count"
-                >回复数/查看数：{{ item?.reply_num }}/{{
-                  item?.views_num
-                }}</span
-              >
-            </div>
-            <div class="forum-content-header">
-              <div class="forum-content-header-left">
-                <span><i class="icon-gonggao iconfont"></i>公告</span>
-                {{ item.title }}
-              </div>
-              <div class="forum-content-header-right">
-                <a-button type="ghost" size="small" @click="reply(item)"
-                  >回复</a-button
-                >
-                <span @click="openOrClose(item)"
-                  ><i
-                    class="iconfont"
-                    :class="
-                      currentOpenContent === item
-                        ? 'icon-zhankai2-copy'
-                        : 'icon-shouqi-copy'
-                    "
-                  ></i
-                  >{{ currentOpenContent === item ? "收起" : "展开" }}</span
-                >
-              </div>
-            </div>
+          <div v-if="forumListData.length>0">
             <div
-              class="forum-content-box"
-              :class="currentOpenContent === item ? 'open-active' : ''"
+              class="in-class-forum-item"
+              v-for="(item, index) in forumListData"
+              :key="index.toString()"
             >
-              <div class="forum-content-padding">
-                <div class="forum-content">
-                  <QuillEditor
-                    v-model="item.content"
-                    type="preview"
-                    height="500px"
-                  ></QuillEditor>
-                </div>
-
-                <section
-                  class="forum-reply-item"
-                  v-for="(ct, ci) in item.forum_articles"
-                  :key="ci.toString()"
+              <div class="forum-header">
+                <span class="forum-username"
+                  >发帖人：{{ item["user_name"] }}</span
                 >
-                  <div class="forum-reply-header">
-                    <span>回帖人：{{ ct.user_name }}</span>
-                    <span>发帖时间：{{ ct.updated_at }}</span>
-                  </div>
-                  <div class="forum-reply-content-box">
-                    <p class="forum-reply-content">
-                      <QuillEditor
-                        v-model="ct.content"
-                        type="preview"
-                        height="500px"
-                      ></QuillEditor>
-                    </p>
-                  </div>
-                </section>
+                <span class="forum-time">{{ item["created_at"] }}</span>
+                <span class="forum-reply-count"
+                  >回复数/查看数：{{ item?.reply_num }}/{{
+                    item?.views_num
+                  }}</span
+                >
               </div>
+              <div class="forum-content-header">
+                <div class="forum-content-header-left">
+                  <span><i class="icon-gonggao iconfont"></i>公告</span>
+                  {{ item.title }}
+                </div>
+                <div class="forum-content-header-right">
+                  <a-button type="ghost" size="small" @click="reply(item)"
+                    >回复</a-button
+                  >
+                  <span @click="openOrClose(item)"
+                    ><i
+                      class="iconfont"
+                      :class="
+                        currentOpenContent === item
+                          ? 'icon-zhankai2-copy'
+                          : 'icon-shouqi-copy'
+                      "
+                    ></i
+                    >{{ currentOpenContent === item ? "收起" : "展开" }}</span
+                  >
+                </div>
+              </div>
+              <div
+                class="forum-content-box"
+                :class="currentOpenContent === item ? 'open-active' : ''"
+              >
+                <div class="forum-content-padding">
+                  <div class="forum-content">
+                    <QuillEditor
+                      v-model="item.content"
+                      type="preview"
+                      height="500px"
+                    ></QuillEditor>
+                  </div>
+
+                  <section
+                    class="forum-reply-item"
+                    v-for="(ct, ci) in item.forum_articles"
+                    :key="ci.toString()"
+                  >
+                    <div class="forum-reply-header">
+                      <span>回帖人：{{ ct.user_name }}</span>
+                      <span>发帖时间：{{ ct.updated_at }}</span>
+                    </div>
+                    <div class="forum-reply-content-box">
+                      <p class="forum-reply-content">
+                        <QuillEditor
+                          v-model="ct.content"
+                          type="preview"
+                          height="500px"
+                        ></QuillEditor>
+                      </p>
+                    </div>
+                  </section>
+                </div>
+              </div>
+            </div>
+            <div class="in-class-forum-footer">
+              <div
+                class="look-more"
+                @click="lookMore"
+                v-if="lookParams.page < pageSum"
+              >
+                查看更多...
+              </div>
+              <div v-else class="none-more">暂无更多</div>
             </div>
           </div>
-          <div class="in-class-forum-footer">
-            <div
-              class="look-more"
-              @click="lookMore"
-              v-if="lookParams.page < pageSum"
-            >
-              查看更多...
-            </div>
-            <div v-else class="none-more">暂无更多</div>
+          <div v-else>
+            <empty></empty>
           </div>
         </div>
       </a-tab-pane>
@@ -160,6 +165,7 @@ import {
 import request from "src/request/getRequest";
 import QuillEditor from "src/components/editor/quill.vue";
 import { Delta } from "quill-delta";
+import empty from "src/components/Empty.vue";
 interface Iparams {
   title: string;
   type: string;
@@ -175,6 +181,7 @@ interface IreactiveData {
 export default defineComponent({
   components: {
     QuillEditor,
+    empty,
   },
   setup() {
     const forum = request.studentForum;
@@ -203,7 +210,7 @@ export default defineComponent({
     const replyToUser: Ref<string> = ref("@");
     const replyVisible: Ref<boolean> = ref(false);
     const forumThemeTitle: Ref<string> = ref("");
-    const forumThemeContentRang=ref(1)
+    const forumThemeContentRang = ref(1);
     // const content: Ref<Delta> = ref({
     //   ops: [
     //   ],
@@ -247,17 +254,17 @@ export default defineComponent({
         ".novnc-wrap>div>canvas"
       );
       if (!novncWrap) {
-        novncWrap= document.querySelector(
-        ".ace-box>div .ace_editor.ace-monokai"
-      );
+        novncWrap = document.querySelector(
+          ".ace-box>div .ace_editor.ace-monokai"
+        );
       }
       if (!novncWrap) return;
       screenshot(novncWrap).then((canvas) => {
         let file = canvasToFile(canvas, "testname.png");
         imageFileToBase64(file).then((url: string) => {
           imageUrl.value = url;
-          let htm='<img src='+url+'>'
-          quillQuestion.value.insertHtml(htm)
+          let htm = "<img src=" + url + ">";
+          quillQuestion.value.insertHtml(htm);
         });
       });
     }
@@ -340,9 +347,9 @@ export default defineComponent({
       };
       forum.createForum({ param: params }).then((res: any) => {
         console.log(res);
-        forumThemeContent.value={
-          ops:[]
-        }
+        forumThemeContent.value = {
+          ops: [],
+        };
       });
       activeKey.value = "1";
     }
@@ -351,9 +358,9 @@ export default defineComponent({
       console.log(key);
       if (key === "2") {
         forumThemeContent.value.ops = [];
-        nextTick(()=>{
+        nextTick(() => {
           quillQuestion.value.setContents(forumThemeContent.value);
-        })
+        });
         forumThemeTitle.value = "";
       }
     }
@@ -380,7 +387,7 @@ export default defineComponent({
       questionSubmit,
       tabChange,
       quillQuestion,
-      forumThemeContentRang
+      forumThemeContentRang,
     };
   },
 });

@@ -1,6 +1,7 @@
 <template>
   <div class="class-practice-box scrollbar">
-    <div v-for="(item, index) in data" :key="index" class="test-paper-item">
+    <div v-if="data.length===0"><empty></empty></div>
+    <div v-else v-for="(item, index) in data" :key="index" class="test-paper-item">
       <h2 class="test-paper-title">{{ item?.name }}</h2>
       <div class="test-paper-count">
         <span class="question-count"
@@ -49,6 +50,7 @@ import {
 import testPaper from "./testPaper.vue";
 import request from "src/request/getRequest";
 import { useRoute } from "vue-router";
+import empty from "src/components/Empty.vue"
 
 interface TreactiveData {
   data: any[];
@@ -57,6 +59,7 @@ interface TreactiveData {
 export default defineComponent({
   components: {
     "test-paper": testPaper,
+    empty
   },
   setup() {
     const examApi = request.studentExam;

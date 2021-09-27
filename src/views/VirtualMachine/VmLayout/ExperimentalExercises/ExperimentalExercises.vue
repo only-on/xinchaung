@@ -1,6 +1,9 @@
 <template>
   <div class="experimental-exercises">
-    <template v-for="(item, index) in judgeData" :key="index">
+    <div v-if="judgeData.length===0">
+      <empty></empty>
+    </div>
+    <template v-else v-for="(item, index) in judgeData" :key="index">
       <single-choice
         class="experimental-exercises-item"
         v-model="judgeData[index]"
@@ -20,7 +23,7 @@
         v-if="item.type_id === 3"
       ></judge>
     </template>
-    <div class="exercise-action">
+    <div class="exercise-action" v-if="judgeData.length>0">
       <a-button type="primary" @click="submitAnswer">提交</a-button>
       <!-- <i>您以提交过习题答案</i> -->
     </div>
@@ -41,12 +44,14 @@ import singleChoice from "src/components/exercises/singleChoice.vue";
 import multipleChoice from "src/components/exercises/multipleChoice.vue";
 import request from "src/request/getRequest";
 import { useRoute } from "vue-router";
+import empty from "src/components/Empty.vue"
 
 export default defineComponent({
   components: {
     judge,
     "single-choice": singleChoice,
     "multiple-choice": multipleChoice,
+    empty
   },
   setup(props) {
     let experApi = request.studentExam;
