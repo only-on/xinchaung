@@ -47,15 +47,15 @@ export default {
   },
   // 课程评价
   getResultInfo: {
-    url: '/classic/exercises-teacher/quest-result-info',
+    url: '/api/v1/question/chapter/{chapter_id}/scored-analysis',
     method: 'GET',
   },
   studentCount: {
-    url: '/classic/exercises-teacher/quest-student-count',
+    url: '/api/v1/question/chapter/{chapter_id}/student-scores',
     method: 'GET'
   },
   resultCount: {
-    url: '/classic/exercises-teacher/quest-result-count',
+    url: '/api/v1/question/chapter/{chapter_id}/question-correct-rate',
     method: 'GET'
   },
   resultCreate: {

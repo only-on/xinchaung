@@ -1,12 +1,49 @@
 <template>
   <div class="report">
     <!-- 离线报告 -->
-    <div id="offline">
+    <div id="offline" v-if="showOffline">
       <iframe src="http://192.168.101.150/plugin/PDF/viewer.html?file=http://192.168.101.150/upload/report_records/pdf/0/0/56_1622792420.pdf" frameborder="0" width="100%" height="500px"></iframe>
     </div>
     <!-- 在线报告 -->
-    <div id="online">
-
+    <div id="online" v-if="showOnline">
+       <!-- v-html="getTr(reportData.json_content)" -->
+      <table>
+        <template v-for="(item,index) in reportData.json_content" :key="index">
+          <tr v-if="item.type === 'w1'">
+            <td colspan="6" class="report-title" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+          </tr>
+          <tr v-if="item.type === 'w2' || item.type === 'w5'">
+            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+            <td colspan="5" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+          </tr>
+          <tr v-if="item.type === 'w3'">
+            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+            <td colspan="2" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[2].value}}</td>
+            <td colspan="2" style='word-break: break-all;'>{{item.fields[3].value}}</td>
+          </tr>
+          <template v-if="item.type === 'w4'|| item.type === 'w6'">
+            <tr>
+              <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
+            </tr>
+            <tr>
+              <td colspan="6" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+            </tr>
+          </template>
+          <tr v-if="item.type === 'w7'">
+            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+            <td class="" colspan="5"><antdv-markdown :preview-only="true"  v-model="item.fields[1].value"/></td>
+          </tr>
+          <template v-if="item.type === 'w8'">
+            <tr>
+              <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
+            </tr>
+            <tr>
+              <td colspan="6"><antdv-markdown :preview-only="true" v-model="item.fields[1].value"/></td>
+            </tr>
+          </template>
+        </template>
+      </table>
     </div>
     <div class="annotate" @click="handleAnnotate">
       <i class="iconfont icon-piyue"></i>
@@ -17,7 +54,6 @@
     </div>
     <!-- 抽屉 -->
     <a-drawer
-      title="Basic Drawer"
       placement="right"
       :closable="false"
       v-model:visible="drawerVisible"
@@ -28,24 +64,25 @@
     >
       <a-form :model="form" layout="vertical" :rules="rules" ref="formRef" @finish="handleFinish">
         <a-form-item label="分数" name="score">
-          <a-input v-model:value="form.score" type="number"/>
+          <a-input v-model:value="form.score" :disabled="annotateDisabled"/>
         </a-form-item>
         <a-form-item label="批注" name="remark">
-          <a-textarea v-model:value="form.remark" :maxlength="500" :rows="6" />
+          <a-textarea v-model:value="form.remark" :maxlength="500" :rows="6" :disabled="annotateDisabled"/>
         </a-form-item>
-        <a-form-item style="text-align:center">
+        <a-form-item style="text-align:center" v-if="!annotateDisabled">
           <a-button type="primary" html-type="submit">确定</a-button>
         </a-form-item>
       </a-form>
     </a-drawer>
   </div>
 </template>
-<script lang="ts">
-import { defineComponent, reactive, ref, inject } from 'vue'
+<script lang="tsx">
+import { defineComponent, reactive, ref, inject, watch, onMounted, VNode } from 'vue'
 import { RuleObject } from 'ant-design-vue/es/form/interface';
 import request from "src/api/index";
 import { Ihttp } from "../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
+import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 interface Iform{
   score: string,
   remark: string
@@ -62,10 +99,18 @@ let checkScore = async (rule: RuleObject, value: string) => {
   }
 };
 export default defineComponent({
+  components: {
+    'antdv-markdown':AntdvMarkdown,
+  },
+  props: ['reportData'],
   setup(props,{emit}) {
     const http = (request as Ihttp).teachCourse;
     const drawerVisible = ref<boolean>(false)
     const formRef = ref();
+    var reportData = reactive<any>({})
+    var showOffline = ref<boolean>(false)
+    var showOnline = ref<boolean>(false)
+    var annotateDisabled = ref<boolean>(false)
     var refresh=inject('refresh') as Function
     var form = reactive<Iform>({
       score: '',
@@ -76,6 +121,26 @@ export default defineComponent({
         {required: true, validator: checkScore, trigger: 'blur'}
       ]
     }
+    onMounted(()=>{
+      setTimeout(()=>{
+        Object.assign(reportData, props.reportData)
+        if (reportData && reportData.template_type === 'file'&&reportData.pdf_url) {
+          showOffline.value = true
+        }
+        if (reportData && reportData.template_type === 'form'&& reportData.json_content.length > 0) {
+          showOnline.value = true
+        }
+        if (reportData && (reportData.score || reportData.score == 0)) {
+          form.score = reportData.score 
+          form.remark = reportData.remark
+        }
+        if (reportData.can_teacher_update) {
+          annotateDisabled.value = false
+        } else {
+          annotateDisabled.value = true
+        }
+      },400)
+    })
     function handleAnnotate () {
       drawerVisible.value = true
     }
@@ -95,8 +160,12 @@ export default defineComponent({
       drawerVisible,
       form,
       rules,
+      reportData,
+      showOffline,
+      showOnline,
+      annotateDisabled,
       handleAnnotate,
-      handleFinish
+      handleFinish,
     }
   },
 })
@@ -128,6 +197,35 @@ export default defineComponent({
       flex-direction: column;
       font-size: 14px;
       padding-left: 15px;
+    }
+  }
+  :deep(table){
+    width: 100%;
+    border: 1px solid #e1dddd;
+    color: #14191e;
+    td{
+      padding: 2px 5px;
+      height: 70px;
+      border: 1px solid #e5e5e5;
+    }
+    .w2{
+      width: 20%;
+    }
+    .title-text{
+      font-size: 14px;
+      color: #333;
+    }
+    .report-title{
+      font-size: 16px;
+      color: #333;
+    }
+  }
+  :deep(.mark__container){
+    border: none;
+    .mark__body .mark__preview{
+      border-left: none;
+      overflow-y: auto;
+      padding: 0;
     }
   }
 }

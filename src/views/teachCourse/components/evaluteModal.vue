@@ -67,7 +67,7 @@ export default defineComponent({
   props: ["openModal", "params", "type"],
   setup(props, { emit }) {
     const http = (request as Ihttp).teachCourse;
-    var modalVisible: Ref<boolean> = ref(false);
+    var modalVisible = ref<boolean>(false);
     var scoreData = ref<any>({})
     var modalTitle=ref<string>('')
     var modalType = ref<string>('')
@@ -142,16 +142,9 @@ export default defineComponent({
         }
       }
     );
-    // watch(props.params, (newVal) => {
-    //   http.getSocre({param: newVal}).then((res:IBusinessResp) => {
-    //     scoreData.value = res.data
-    //   })
-    // });
     watch(()=>props.type, (newVal) => {
       modalType.value = newVal
-      modalTitle.value = typeList.filter(item => {
-        return item.value == newVal
-      })[0].text
+      modalTitle.value = typeList.filter(item => item.value == newVal)[0].text
     })
     // 成绩明细
     function getScore (params:any) {
@@ -195,31 +188,4 @@ export default defineComponent({
 });
 </script>
 <style lang="less" scoped>
-.modal {
-  .ant-modal-content {
-    .ant-modal-close-x {
-      height: 40px;
-      color: #fff;
-      line-height: 40px;
-    }
-    .radioBox{
-      padding-left: 80px;
-    }
-  }
-  :deep(.ant-modal-header) {
-    background-color: @theme-color;
-    padding: 0;
-    height: 40px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-    border-bottom-color: #f4f4f4;
-    .ant-modal-title {
-      line-height: 40px;
-      font-weight: bold;
-      padding-left: 15px;
-      color: #fff;
-      font-size: 15px;
-    }
-  }
-}
 </style>

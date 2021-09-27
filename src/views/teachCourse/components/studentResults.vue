@@ -19,13 +19,13 @@
         </a-form-item>
       </a-form>
       <a-table
-        row-key="id"
+        row-key="user_id"
         :loading="tableData.loading"
         :columns="columns"
         :data-source="tableData.data"
         :pagination="{
-          current: form.page.currPage,
-          pageSize: form.page.pageSize,
+          current: form.page,
+          pageSize: form.limit,
           total: tableData.total,
           showSizeChanger:true,
           onShowSizeChange: showSizeChange,
@@ -38,13 +38,13 @@
       <a-form layout="inline" :form="questionForm">
         <a-form-item label="题目">
           <a-input
-            v-model:value="questionForm.question_name"
+            v-model:value="questionForm.question"
             @pressEnter="handleSearch(2)"
           ></a-input>
         </a-form-item>
         <a-form-item label="题型">
           <a-select
-            v-model:value="questionForm.question_type"
+            v-model:value="questionForm.type_id"
             :options="options"
             @change="selectChange"
           ></a-select>
@@ -54,20 +54,23 @@
         </a-form-item>
       </a-form>
       <a-table
-        row-key="ratio"
+        row-key="id"
         :loading="questionTable.loading"
         :columns="columns1"
         :data-source="questionTable.data"
         :pagination="{
-          current: questionForm.currPage,
-          pageSize: questionForm.pageSize,
+          current: questionForm.page,
+          pageSize: questionForm.limit,
           total: questionTable.total,
           showSizeChanger:true,
           onShowSizeChange: questionSizeChange,
           onChange: questionChange,
           hideOnSinglePage: true,
-        }"
-      />
+        }">
+        <template #level_id="{ record }">
+          <span>{{showLevel(record.level_id)}}</span>
+        </template>
+      </a-table>
     </div>
   </div>
 </template>
@@ -84,24 +87,22 @@ import request from "src/api/index";
 import { Ihttp } from "../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 interface Ipage {
-  currPage: number;
-  pageSize: number;
+  page: number;
+  limit: number;
 }
 interface Iform {
-  course_id: number;
-  chapter_id: number;
   name: string;
   username: string;
-  classes_id: number | string;
-  page: Ipage;
+  page: number;
+  limit: number;
 }
 interface IlistData {
-  accuracy: string;
-  id: string;
-  is_false: string;
-  is_true: string;
+  correct_rate: string;
+  user_id: number|string;
+  wrong_answers_number: number|string;
+  correct_answers_number: number|string;
   name: string;
-  score: string;
+  score_total: number|string;
   username: string;
 }
 interface ItableData {
@@ -110,18 +111,17 @@ interface ItableData {
   total: number;
 }
 interface Iquestionform {
-  course_id: number;
-  chapter_id: number;
-  question_name: string;
-  question_type: string;
-  currPage: number;
-  pageSize: number;
+  question: string;
+  type_id: number|string;
+  page: number;
+  limit: number;
 }
 interface IquestionData {
-  question_name: string;
-  question_type: string;
-  true_num: string;
-  ratio: string;
+  id: number,
+  question: string;
+  level_id: number|string;
+  correct_student_number: number|string;
+  correct_rate: string;
 }
 interface IquestionTable {
   loading: boolean;
@@ -141,181 +141,160 @@ const columns = [
   },
   {
     title: "正确题数",
-    dataIndex: "is_true",
+    dataIndex: "correct_answers_number",
     align: "center",
   },
   {
     title: "错误题数",
-    dataIndex: "is_false",
+    dataIndex: "wrong_answers_number",
     align: "center",
   },
   {
     title: "正确率",
-    dataIndex: "accuracy",
+    dataIndex: "correct_rate",
     align: "center",
   },
   {
     title: "成绩",
-    dataIndex: "score",
+    dataIndex: "score_total",
     align: "center",
   },
 ];
 const columns1 = [
   {
     title: "题目",
-    dataIndex: "question_name",
+    dataIndex: "question",
     align: "center",
     ellipsis: true
   },
   {
     title: "类型",
-    dataIndex: "question_type",
+    dataIndex: "level_id",
     align: "center",
+    slots: { customRender: 'level_id' }
   },
   {
     title: "正确人数",
-    dataIndex: "true_num",
+    dataIndex: "correct_student_number",
     align: "center",
   },
   {
     title: "正确率",
-    dataIndex: "ratio",
+    dataIndex: "correct_rate",
     align: "center",
   },
 ];
-export default defineComponent({
-  props: {
-    tabType: {
-      default: ''
+const options = [
+    {
+      value: "",
+      label: "全部",
     },
-    courseId: {},
-    chapterId: {}
-  },
+    {
+      value: "1",
+      label: "单选题",
+    },
+    {
+      value: "2",
+      label: "多选题",
+    },
+    {
+      value: "3",
+      label: "判断题",
+    },
+]
+export default defineComponent({
+  props: ['tabType', 'courseId', 'chapterId'],
   setup(props) {
     const http = (request as Ihttp).teachCourse;
-    const chapterId:any = ref(props.chapterId)
-    const courseId:any = ref(props.courseId)
-    var form: Iform = reactive({
-      course_id: courseId.value,
-      chapter_id: chapterId.value,
+    const chapterId= ref<any>(props.chapterId)
+    const courseId= ref<any>(props.courseId)
+    var form = reactive<Iform>({
       name: "",
       username: "",
-      classes_id: "",
-      page: {
-        pageSize: 10,
-        currPage: 1,
-      },
+      page: 1,
+      limit: 10
     });
     var tableData = reactive<ItableData>({
       loading: false,
       data: [],
       total: 0,
     });
-    // 题目
-    const options = ref<SelectTypes["options"]>([
-      {
-        value: "",
-        label: "全部",
-      },
-      {
-        value: "1",
-        label: "单选题",
-      },
-      {
-        value: "2",
-        label: "多选题",
-      },
-      {
-        value: "3",
-        label: "判断题",
-      },
-    ]);
     var questionForm = reactive<Iquestionform>({
-      course_id: courseId.value,
-      chapter_id: chapterId.value,
-      question_name: "",
-      question_type: "",
-      currPage: 1,
-      pageSize: 10
+      question: "",
+      type_id: "",
+      page: 1,
+      limit: 10
     });
     var questionTable = reactive<IquestionTable>({
       loading: false,
       data: [],
       total: 0,
     });
-    var questionlist: any[] = reactive([]);
+    var questionlist= reactive<any[]>([]);
     function handleSearch(type: number) {
       if (type === 1) {
         // 学生成绩
-        form.page.currPage = 1;
+        form.page = 1;
         getListData();
       } else {
         // 题目正确率
-        questionForm.currPage = 1;
+        questionForm.page = 1;
         getQuestionData();
       }
     }
     function pageChange(val: number) {
-      form.page.currPage = val;
+      form.page = val;
       getListData();
     }
     function showSizeChange(val:number, size: number){
-      form.page.pageSize = size
+      form.limit= size
       getListData();
     }
     // 学生成绩
     function getListData() {
       tableData.loading = true;
-      let obj = {
-        course_id: form.course_id,
-        chapter_id: form.chapter_id,
-        "CourseQuestStudentSearch[name]": form.name,
-        "CourseQuestStudentSearch[username]": form.username,
-        "CourseQuestStudentSearch[classes_id]": form.classes_id,
-        "page[currPage]": form.page.currPage,
-        "page[pageSize]": form.page.pageSize,
-      };
-      http.studentCount({ param: obj }).then((res: IBusinessResp) => {
-        if (res) {
+      tableData.data.length = 0
+      http.studentCount({param: form, urlParams: {chapter_id: chapterId.value} }).then((res: IBusinessResp) => {
+        if (res && res.data) {
           let result = res.data;
           tableData.loading = false;
-          tableData.data = result.data;
-          tableData.total = result.page.totals;
+          tableData.data.push(...result.list);
+          tableData.total = result.page.totalCount;
         }
       });
     }
     // 题目正确率
     function getQuestionData() {
       questionTable.loading = true
-      let params = {
-        "CourseQuestSearch[course_id]": questionForm.course_id,
-        "CourseQuestSearch[chapter_id]": questionForm.chapter_id,
-        "CourseQuestSearch[question_name]": questionForm.question_name,
-        "CourseQuestSearch[question_type]": questionForm.question_type,
-        "page[currPage]": questionForm.currPage,
-        "page[pageSize]": questionForm.pageSize,
-      };
-      http.resultCount({ param: params }).then((res: IBusinessResp) => {
-        if (res) {
+      questionTable.data.length = 0
+      http.resultCount({param: questionForm,urlParams: {chapter_id:chapterId.value}}).then((res: IBusinessResp) => {
+        if (res && res.data) {
           let result = res.data;
           questionTable.loading = false;
-          questionTable.data = result.data;
-          questionTable.total = result.page.totals;
+          questionTable.data.push(...result.list);
+          questionTable.total = result.page.totalCount;
         }
       });
     }
     function questionChange(val: number) {
-      questionForm.currPage = val;
+      questionForm.page = val;
       getQuestionData();
     }
     function questionSizeChange(val:number, size: number){
-      questionForm.pageSize = size
+      questionForm.limit = size
       getListData();
     }
     function selectChange(val: string) {
-      questionForm.currPage = 1;
-      questionForm.question_type = val;
+      questionForm.page = 1;
+      questionForm.type_id = val;
       getQuestionData();
+    }
+    function showLevel(val:any) {
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].value == val) {
+          return options[i].label
+        }
+      }
     }
     onMounted(() => {
       if (props.tabType === "student") {
@@ -338,9 +317,10 @@ export default defineComponent({
       selectChange,
       questionlist,
       showSizeChange,
-      questionSizeChange
+      questionSizeChange,
+      showLevel
     };
-  },
+  }
 });
 </script>
 <style lang="less" scoped>

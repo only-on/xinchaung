@@ -49,11 +49,11 @@
             <span>习题总分</span>
           </li>
           <li>
-            <span>{{resultsInfo.questions_num}}</span>
+            <span>{{resultsInfo.questions_count}}</span>
             <span>习题总数</span>
           </li>
           <li>
-            <span>{{resultsInfo.ave_score}}</span>
+            <span>{{resultsInfo.avg_score}}</span>
             <span>平均分</span>
           </li>
           <li>
@@ -65,11 +65,11 @@
             <span>最低分</span>
           </li>
           <li>
-            <span>{{resultsInfo.submit_num}}</span>
+            <span>{{resultsInfo.student_submitted_count}}</span>
             <span>已提交人数</span>
           </li>
           <li>
-            <span>{{resultsInfo.no_submit_num}}</span>
+            <span>{{resultsInfo.student_not_submitted_count}}</span>
             <span>未提交人数</span>
           </li>
         </ul>
@@ -90,7 +90,6 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, reactive,Ref, provide, watch, onMounted } from 'vue'
-import { ColumnProps } from 'ant-design-vue/es/table/interface';
 import StudentResults from './studentResults.vue'
 import request from 'src/api/index'
 import {Ihttp} from '../typings'
@@ -115,18 +114,14 @@ interface ItableData{
   data: IListData[],
   total: number
 }
-interface Icourse{
-  course_id: number,
-  chapter_id: number
-}
 interface Iresultsinfo{
   scores: number | string,
-  questions_num: number | string,
-  ave_score: number,
+  questions_count: number | string,
+  avg_score: number,
   max_score: number,
   min_score: number,
-  submit_num: number | string,
-  no_submit_num: number
+  student_submitted_count: number | string,
+  student_not_submitted_count: number
 }
 interface Ioptions{
   id: string,
@@ -191,18 +186,14 @@ export default defineComponent({
       undone: 0
     })
     var activeTab:Ref<string> = ref('1')
-    var basicParams = reactive<Icourse>({
-      course_id: courseId.value,
-      chapter_id:chapterId.value
-    })
     var resultsInfo = ref<Iresultsinfo>({
       scores:0,
-      questions_num: 0,
-      ave_score: 0,
+      questions_count: 0,
+      avg_score: 0,
       max_score: 0,
       min_score: 0,
-      submit_num: 0,
-      no_submit_num: 0
+      student_submitted_count: 0,
+      student_not_submitted_count: 0
     })
     var refresh:Ref<boolean> = ref(false)
     function pageChange(val:number){
@@ -227,7 +218,6 @@ export default defineComponent({
     }
     // 班级筛选
     function selectChange (val:number) {
-      console.log(val)
       form.page = 1
       form.classId = val
       getTableData()
@@ -238,7 +228,7 @@ export default defineComponent({
       getBasicInfo()
     }
     function getBasicInfo () {
-      http.getResultInfo({param: basicParams}).then((res:IBusinessResp) => {
+      http.getResultInfo({urlParams: {chapter_id: chapterId.value}}).then((res:IBusinessResp) => {
         refresh.value = true
         resultsInfo.value = res.data
       })
@@ -274,17 +264,14 @@ export default defineComponent({
     watch([()=>props.chapterId, ()=>props.courseId], ([nChapterId, nCourseId]) => {
       chapterId.value = nChapterId
       courseId.value = nCourseId
-      basicParams.course_id = nCourseId
-      basicParams.chapter_id = nChapterId
-      // 获取班级
+      // 
+      getTableData(true)
       options.length = 1
       http.allClasses({param: {course_id:props.courseId}}).then((res:IBusinessResp) => {
         if (res && res.data.length > 0) {
           options.push(...res.data)
         }
       })
-      // 
-      getTableData(true)
     })
     watch(()=>props.show, (newVal) => {
       if (newVal) {
@@ -300,7 +287,6 @@ export default defineComponent({
       activeTab,
       resultsInfo,
       refresh,
-      basicParams,
       courseId,
       chapterId,
       pageChange,

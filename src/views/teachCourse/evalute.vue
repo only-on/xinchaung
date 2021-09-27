@@ -41,7 +41,7 @@ export default defineComponent({
     var treeData = reactive<any[]>([])
     var chapterId:Ref<number> = ref(0)
     // 501287:成绩 501195:评价 501737
-    var courseId:Ref<number> = ref(501737)
+    var courseId:Ref<number> = ref(501234)
     var contentId:Ref<number> = ref(0)
     var showChapterContent:Ref<boolean> = ref(true)
     var courseInfo = reactive<ICourseInfo>({
