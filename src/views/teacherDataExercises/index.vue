@@ -2,7 +2,7 @@
     <div id='teacherDataExercises' v-layout-bg>
         <div class="conTop">
              <div class="searchInput">
-                <a-input-search @keyup.enter="onSearch" @search="onSearch" style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入目录名称关键字查询" />
+                <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入目录名称关键字查询" />
             </div>
             <div v-if="type">
                 <a-button type="primary" @click="createExceriseBtn">创建目录</a-button>
@@ -63,11 +63,13 @@ interface Iitem{
 interface fromType{
     name?:string,
     description?:string,
+    initial?:any,
 }
 interface state{
     tabs:Array<Iitem>,
     componentName:string,
     componentNames:Array<string>,
+    searchValue:string,
     componentData:any,
     form:fromType,
     pagination:paginationType,
@@ -75,7 +77,7 @@ interface state{
 interface ExerciseParam{
     name?:string,
     description?:string,
-    initial?:boolean,
+    initial?:any,
     limit?:number,
     page?:number,
 }
@@ -84,6 +86,9 @@ interface paginationType{
      current:number,
      pageSize?:number,
      total?:number,
+}
+interface paramsType{
+    pool_id:string
 }
 export default defineComponent({
     name:'teacherDataExercises',
@@ -97,6 +102,7 @@ export default defineComponent({
             componentName:'',
             componentNames:['shareExercises','privateExercises'],
             tabs:[{name:'共有',componenttype:0},{name:'私有',componenttype:1}],
+            searchValue:'',
             componentData:[],
             form:{},
             pagination:{
@@ -107,21 +113,22 @@ export default defineComponent({
        })
         var type:Ref<any>=ref(0)
         var visible:Ref<any>=ref(false)
-        // let  form = ref<any>({})
         var componentData=ref([])
         var params:ExerciseParam={}
         var createParams:fromType={}
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({tabs:state.tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+    updata({tabs:state.tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false})
     // 监听tab变化
     watch(()=>{return configuration.componenttype},(val)=>{
       state.componentName=state.componentNames[val]
         type.value=val
         params.initial=!val
-        if(val===0){
+        state.searchValue=''
+        params.name=''
+        if(type.value===0){
             params.initial=true
-        }else{
+        }else if(type.value===1){
             params.initial=false
         }
         getExerciseList(params)
@@ -136,8 +143,9 @@ export default defineComponent({
           })
     }
     // 查询
-    function onSearch(value:string){
-        params.name=value
+    function searchData(){
+        console.log('查询')
+        params.name=state.searchValue
         getExerciseList(params)
     }
     // 分页
@@ -164,6 +172,7 @@ export default defineComponent({
     function handleOk(){
         createParams.name=state.form.name
         createParams.description=state.form.description
+        createParams.initial=0
         console.log(state.form,'form')
         createExcerise(createParams)
         visible.value=false
@@ -174,11 +183,16 @@ export default defineComponent({
     // 删除
     function getPollId(id:any){
         console.log(id,'id')
+        deleteExamList(id)
     }
-    onMounted(()=>{
-        getExerciseList(params)
-    })
-      return {...toRefs(state),params,createParams,type,componentData,visible,getPollId,currentPageChange,onShowSizeChange,getExerciseList,createExceriseBtn,createExcerise,handleOk,handleCancel,onSearch}
+    function deleteExamList(id:any){
+           console.log(id,'id')
+           let deleteParams: paramsType={pool_id:id}
+           teacherDataExerApi.deleteExercise({urlParams:deleteParams}).then(()=>{
+               getExerciseList(params) 
+           })
+    }
+      return {...toRefs(state),params,createParams,type,componentData,visible,deleteExamList,getPollId,currentPageChange,onShowSizeChange,getExerciseList,createExceriseBtn,createExcerise,handleOk,handleCancel,searchData}
     }
 })
 </script>

@@ -2,7 +2,7 @@
     <div>
         <div class="exerciseList">
         <div class="directoryList">
-            <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()">
+            <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()" @click="toExerDetail(item)">
                 <div class="exam-list-title">{{item.name}}</div>
                 <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(" ")[0]}}</div>
                 <div class="exam-list-num"><i class="iconfont icon-xiangmu"></i>{{item.questions_count}}</div>
@@ -13,23 +13,21 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,}from 'vue'
-import request from "../../../api";
-interface paramsType{
-    pool_id:string
-}
+import {defineComponent, toRefs,}from 'vue'
+import { useRouter } from 'vue-router';
 export default defineComponent({
     name:'privateExercises',
     props: ["componentData"],
-     setup:(props,{emit})=>{
-        const teacherDataExerApi = (request as any).teacherDataExercises
+     setup:(props,context)=>{
+    const router = useRouter();
         function deleteExamItem(id:any){
-            console.log(id,'id')
-           const params: paramsType={pool_id:id}
-           teacherDataExerApi.deleteExercise({urlParams:params})
-           emit('pool_id',id)
+           context.emit('poolId',id)
         }
-        return {deleteExamItem}
+        function toExerDetail(item:any){
+            console.log(item,'item')
+            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item)}})
+        }
+        return {deleteExamItem,toExerDetail}
     }
 })
 </script>

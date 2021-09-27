@@ -15,6 +15,14 @@ export default {
                 title: " ",
                 authCode: 'exerciseList'
             },
-        },
+        }, {
+            path: '/exercisesDetail',
+            name: 'exercisesDetail',
+            component: () => import("src/views/teacherDataExercises/exercisesDetail/index.vue"),
+            meta: {
+                title: "习题目录详情",
+                authCode: 'exerciseList'
+            },
+        }
     ]
 }
