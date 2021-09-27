@@ -101,7 +101,7 @@
       />
     </template>
   </layout>
-  <a-modal
+  <!-- <a-modal
     :visible="recommendVisible"
     title="推荐实验"
     @cancel="closeRecommend"
@@ -118,7 +118,7 @@
         </li>
       </ul>
     </div>
-  </a-modal>
+  </a-modal> -->
 </template>
 
 <script lang="ts">
@@ -165,7 +165,6 @@ import {
   IOperatesHandle,
   IAction,
 } from "src/utils/vncInspect";
-import { log } from "console";
 
 type TvmQuery = {
   opType: TopType;
@@ -216,13 +215,13 @@ export default defineComponent({
     // const vmInfoData=ref({})
     let vncLoadingV = ref(true);
     let uuidLoading = ref(false);
-    let use_time: number = 900;
+    const use_time: Ref<number> = ref(900);
     let experimentTime: Ref<any> = ref({
       h: 0,
       m: 0,
       s: 0,
     });
-    let uuid = "";
+    let uuid = ref("");
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     let taskType = ""; // 实验类型
     const isScreenRecording = ref(false);
@@ -234,6 +233,10 @@ export default defineComponent({
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
     provide("allInfo", allInfo);
+    provide("novncEl",novncEl)
+    provide("uuid",uuid)
+    provide("use_time",use_time)
+    provide("taskType",taskType)
     let navData = [
       { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
@@ -251,9 +254,9 @@ export default defineComponent({
       }
     }
 
-    watch(vncLoadingV, () => {
-      console.log(vncLoadingV.value);
-    });
+    // watch(()=>use_time, () => {
+    //   console.log(use_time);
+    // },{deep:true});
 
     function initWs() {
       vncLoadingV.value = false;
@@ -296,30 +299,30 @@ export default defineComponent({
       initWs();
       getVmBase();
 
-      clearInterval(Number(timer));
-      timer = setInterval(() => {
-        experimentTime!.value = secondToHHMMSS(use_time);
-        if (taskType === "实训") {
-          use_time++;
-        } else {
-          use_time--;
-          if (use_time === 600) {
-            Modal.confirm({
-              title: "是否延时？",
-              okText: "确认",
-              onOk: () => {
-                delayedTime();
-              },
-              cancelText: "取消",
-              onCancel: () => {},
-            });
-          }
-          if (use_time === 0) {
-            endVmEnvirment();
-            clearInterval(Number(timer));
-          }
-        }
-      }, 1000);
+      // clearInterval(Number(timer));
+      // timer = setInterval(() => {
+      //   experimentTime!.value = secondToHHMMSS(use_time.value);
+      //   if (taskType === "实训") {
+      //     use_time.value++;
+      //   } else {
+      //     use_time.value--;
+      //     if (use_time.value === 600) {
+      //       Modal.confirm({
+      //         title: "是否延时？",
+      //         okText: "确认",
+      //         onOk: () => {
+      //           delayedTime();
+      //         },
+      //         cancelText: "取消",
+      //         onCancel: () => {},
+      //       });
+      //     }
+      //     if (use_time.value === 0) {
+      //       endVmEnvirment();
+      //       clearInterval(Number(timer));
+      //     }
+      //   }
+      // }, 1000);
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
@@ -333,7 +336,7 @@ export default defineComponent({
         allInfo.value = res.data;
         console.log(res.data.current.used_time);
 
-        use_time = res.data.current.used_time;
+        use_time.value = res.data.current.used_time;
         console.log(allInfo);
         taskType = res.data.base_info.task_type.name;
         reportTemid.value = res.data.current.id;
@@ -418,7 +421,7 @@ export default defineComponent({
         getVmConnectSetting.VNCPORT +
         "/websockify?vm_uuid=" +
         data.uuid;
-      uuid = data.uuid;
+      uuid.value = data.uuid;
     }
 
     // 推荐实验
@@ -474,7 +477,7 @@ export default defineComponent({
         params: {
           type: type,
           opType: opType,
-          uuid: uuid,
+          uuid: uuid.value,
           taskId: taskId,
         },
       };
@@ -548,49 +551,49 @@ export default defineComponent({
 </script>
 <style lang="less">
 .vm-layout {
-  .vm-header {
-    .vm-header-student,
-    .vm-header-teacher {
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      align-items: center;
-      height: 100%;
-      padding: 0 43px;
-      .vm-header-left {
-        > button {
-          margin-right: 20px;
-        }
-      }
-      .vm-header-title {
-        color: @white;
-      }
-      .vm-header-right {
-        .delayed-btn {
-          background: @warning-color;
-          color: @white;
-          border: none;
-          &:hover {
-            background: rgba(#faad14, 0.8);
-          }
-        }
-        .vm-time {
-          color: @warning-color;
-          margin: 0 10px;
-          .iconfont {
-            margin-right: 3px;
-            font-size: 12px;
-          }
-        }
-        .vm-action-box {
-          margin-left: 25px;
-          > button {
-            margin-left: 20px;
-          }
-        }
-      }
-    }
-  }
+  // .vm-header {
+  //   .vm-header-student,
+  //   .vm-header-teacher {
+  //     display: flex;
+  //     flex-direction: row;
+  //     justify-content: space-between;
+  //     align-items: center;
+  //     height: 100%;
+  //     padding: 0 43px;
+  //     .vm-header-left {
+  //       > button {
+  //         margin-right: 20px;
+  //       }
+  //     }
+  //     .vm-header-title {
+  //       color: @white;
+  //     }
+  //     .vm-header-right {
+  //       .delayed-btn {
+  //         background: @warning-color;
+  //         color: @white;
+  //         border: none;
+  //         &:hover {
+  //           background: rgba(#faad14, 0.8);
+  //         }
+  //       }
+  //       .vm-time {
+  //         color: @warning-color;
+  //         margin: 0 10px;
+  //         .iconfont {
+  //           margin-right: 3px;
+  //           font-size: 12px;
+  //         }
+  //       }
+  //       .vm-action-box {
+  //         margin-left: 25px;
+  //         > button {
+  //           margin-left: 20px;
+  //         }
+  //       }
+  //     }
+  //   }
+  // }
   .vm-content-right {
     .vncloading {
       position: relative;

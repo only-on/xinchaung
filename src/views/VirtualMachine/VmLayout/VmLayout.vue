@@ -1,7 +1,9 @@
 
 <template>
   <div class="vm-layout">
-    <div class="vm-header"><slot name="header"> </slot></div>
+    <div class="vm-header">
+      <vm-header></vm-header>
+    </div>
     <div class="vm-main">
       <div class="vm-nav">
         <ul class="vm-nav-list">
@@ -88,6 +90,7 @@ import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises
 import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
 import InClassForum from "./InClassForum/InClassForum.vue";
+import VmHeader from "./VmHeader.vue"
 interface Vm {
   key: string;
   icon: string;
@@ -101,6 +104,7 @@ export default defineComponent({
     "experimental-report": ExperimentalReport,
     "in-class-practice": InClassPractice,
     "in-class-forum": InClassForum,
+    "vm-header":VmHeader
   },
   props: ["VmData","reportId","isLeftContentShowType"],
   setup(props, { emit }) {

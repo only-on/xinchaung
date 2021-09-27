@@ -199,11 +199,7 @@ export default defineComponent({
       currentIndex: number;
       versionListData: any[];
     } = reactive({
-      taskBaseInfo: {
-        base_info: {
-          name: "1212",
-        },
-      },
+      taskBaseInfo: {},
       fileListData: [],
       currentIndex: 0,
       versionListData: [],
@@ -214,7 +210,7 @@ export default defineComponent({
       m: 0,
       s: 0,
     });
-    let use_time: number = 900;
+    const use_time: Ref<number> = ref(900);
     const querys: any = route.query;
     const type = querys.type;
     const opType = querys.opType;
@@ -230,7 +226,16 @@ export default defineComponent({
     const backupVisible: Ref<boolean> = ref(false);
     let last_version_name = "";
     let connection_id = "";
-    let vm_uuid = "";
+    let vm_uuid = ref("");
+    let taskType = ""; // 实验类型
+
+    let { taskBaseInfo } =
+      toRefs(reactiveData);
+    provide("allInfo", taskBaseInfo);
+    // provide("novncEl",novncEl)
+    provide("uuid",vm_uuid)
+    provide("use_time",use_time)
+    provide("taskType",taskType)
     const runResult = ref("");
     onBeforeRouteLeave(() => {
       clearInterval(Number(timer));
@@ -263,28 +268,28 @@ export default defineComponent({
       await getFileListData();
 
       getCurrentSWitchFile();
-      clearInterval(Number(timer));
-      timer = setInterval(() => {
-        experimentTime!.value = secondToHHMMSS(use_time);
+      // clearInterval(Number(timer));
+      // timer = setInterval(() => {
+      //   experimentTime!.value = secondToHHMMSS(use_time);
 
-        use_time--;
-        if (use_time === 600) {
-          Modal.confirm({
-            title: "是否延时？",
-            okText: "确认",
-            onOk: () => {
-              console.log("延时");
-            },
-            cancelText: "取消",
-            onCancel: () => {},
-          });
-        }
-        if (use_time === 0) {
-          console.log("结束");
+      //   use_time--;
+      //   if (use_time === 600) {
+      //     Modal.confirm({
+      //       title: "是否延时？",
+      //       okText: "确认",
+      //       onOk: () => {
+      //         console.log("延时");
+      //       },
+      //       cancelText: "取消",
+      //       onCancel: () => {},
+      //     });
+      //   }
+      //   if (use_time === 0) {
+      //     console.log("结束");
 
-          clearInterval(Number(timer));
-        }
-      }, 1000);
+      //     clearInterval(Number(timer));
+      //   }
+      // }, 1000);
     });
     let navData = [
       // { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
@@ -315,7 +320,7 @@ export default defineComponent({
               JSON.parse(ev.data).data.vms.length > 0
             ) {
               vmBaseInfo = JSON.parse(ev.data).data.vms[0];
-              vm_uuid = vmBaseInfo.uuid;
+              vm_uuid.value = vmBaseInfo.uuid;
             }
           }
         },
@@ -327,6 +332,8 @@ export default defineComponent({
     }
     // 创建实例
     function createTopo() {
+      console.log(12121);
+      
       let params = {
         type: type,
         opType: opType,
@@ -353,10 +360,13 @@ export default defineComponent({
         opType: opType,
         taskId: taskId,
       };
-      getTaskInfo(params).then((res) => {
+      getTaskInfo(params).then((res:any) => {
+        console.log(res);
+        
         reactiveData.taskBaseInfo = res?.data;
         console.log(reactiveData.taskBaseInfo);
-        use_time = res?.data.current.used_time;
+        use_time.value = res?.data.current.used_time;
+        taskType = res.data.base_info.task_type.name;
         reportTemid.value=res?.data.current.id
       });
     }
@@ -537,7 +547,7 @@ export default defineComponent({
         file_id: file_id,
         file_content: content.value,
         version_id: version_id.value,
-        vm_uuid: vm_uuid,
+        vm_uuid: vm_uuid.value,
       };
       runCodeApi(params)
         .then((res: any) => {
@@ -633,7 +643,7 @@ export default defineComponent({
         params: {
           type: type,
           opType: opType,
-          uuid: vm_uuid,
+          uuid: vm_uuid.value,
           taskId: taskId,
         },
       };

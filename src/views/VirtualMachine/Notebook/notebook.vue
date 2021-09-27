@@ -27,9 +27,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive ,ref,toRefs} from "vue";
+import { defineComponent, onMounted, reactive ,ref,toRefs,provide,Ref} from "vue";
 import layout from "../VmLayout/VmLayout.vue";
-import {backTo} from "src/utils/vncInspect";
+import {backTo,getVmBaseInfo} from "src/utils/vncInspect";
 import {useRoute,useRouter,onBeforeRouteLeave} from "vue-router"
 import {wsConnect} from "src/request/websocket"
 import {message} from "ant-design-vue"
@@ -62,12 +62,23 @@ export default defineComponent({
     const wsVmConnect = ref(null);
     let timer:NodeJS.Timer|null =null
     const reactiveData:any=reactive({
+      allInfo:{}
     })
+
+    const {allInfo} = toRefs(reactiveData)
     let vmBaseInfo:any={}
     let vm_uuid=""
     const noteUrl=ref("")
+    const use_time: Ref<number> = ref(900);
+    let taskType=""
+    provide("allInfo", allInfo);
+    // provide("novncEl",novncEl)
+    provide("uuid",vm_uuid)
+    provide("use_time",use_time)
+    provide("taskType",taskType)
     onMounted(()=>{
       initWs()
+      getTaskInfoData()
     })
     onBeforeRouteLeave(() => {
       clearInterval(Number(timer));
@@ -102,6 +113,24 @@ export default defineComponent({
         },
       });
     }
+
+    // 获取实验详情
+    function getTaskInfoData() {
+      let params = {
+        type: type,
+        opType: opType,
+        taskId: taskId,
+      };
+      getVmBaseInfo(params).then((res: any) => {
+        console.log(res);
+        allInfo.value = res.data;
+        console.log(res.data.current.used_time);
+
+        use_time.value = res.data.current.used_time;
+        console.log(allInfo);
+        taskType = res.data.base_info.task_type.name;
+      });
+    }
     function back() {
     //   if (opType === "test" || opType === "prepare") {
     //     endVmEnvirment();
@@ -112,7 +141,8 @@ export default defineComponent({
     return {
       data,
       back,
-      noteUrl
+      noteUrl,
+      provide
     };
   },
 });
