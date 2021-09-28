@@ -6,4 +6,7 @@ export default {
     detailExercise: { url: `/api/v1/question/pools/{pool_id}`, method: "GET" },
     typeExercise: { url: `/api/v1/question/types`, method: "GET", dataType: 'json' },
     getDetailExerciseList: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "GET" },
+    getDetailExerLevels: { url: `/api/v1/question/levels`, method: "GET" },
+    detailExerCreate: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "POST" },
+
 }

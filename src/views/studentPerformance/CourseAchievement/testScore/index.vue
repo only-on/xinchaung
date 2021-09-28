@@ -39,7 +39,7 @@ export default defineComponent({
     tooltip: {
         trigger: 'item'
     },
-    color:['#8955b5','#eb7e64','#f6bd16'],
+    color:['@theme-color','#eb7e64','#f6bd16'],
     legend: {
         orient: 'vertical',
         bottom: 'bottom',

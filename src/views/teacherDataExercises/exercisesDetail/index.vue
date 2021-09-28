@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="exam-question-type">
-            <div class="question-type-item" v-for="(item,index) in examtype" :key="index.toString()" @click="switchExer(item.id)"> 
+            <div class="question-type-item" v-bind="{class:selectedId===item.id?'selected':''}" v-for="(item,index) in examtype" :key="index.toString()" @click="switchExer(item.id)"> 
                 <div v-if="item.id===1" class="icon icon1"><span class="iconfont icon-danxuan1"></span></div>
                 <div v-if="item.id===2" class="icon icon2"><span class="iconfont icon-danxuan1"></span></div>
                 <div v-if="item.id===3" class="icon icon3"><span class="iconfont icon-danxuan1"></span></div>
@@ -21,12 +21,13 @@
                     <div>{{item.name}}</div>
                 </div>
             </div>
+            <!-- <div class="question-type-item"></div> -->
         </div>
         <div class="exam-question-content">
              <!-- <keep-alive>
                 <component :is="currentView"></component>
             </keep-alive> -->
-            <ques-comon-table></ques-comon-table>
+            <ques-comon-table :selectedId='selectedId'></ques-comon-table>
         </div>
     </div>
 </template>
@@ -59,7 +60,8 @@ interface stateData{
     examtype:examType[],
     componentNames:any[],
     currentView:string,
-    question_info:quesType[]
+    question_info:quesType[],
+    selectedId:number
 }
 export default defineComponent({
     name:'exerciseDetail',
@@ -78,23 +80,12 @@ export default defineComponent({
             componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
             question_info:[],
+            selectedId:1
         })
         const methods = {
           exerciseDetail(){
               const item:any=router.currentRoute.value.query.item
-            //   state.question_info=item.question_info
-              state.question_info= [
-                {
-                    type_id:1,
-                    type_name:'单选题',
-                    count:3
-                }, {
-                    type_id:2,
-                    type_name:'单选题',
-                    count:6
-                }
-                ];
-
+              state.question_info=item.question_info?item.question_info:[]
               const id:any=JSON.parse(item).id;
               teacherDataExerApi.detailExercise({urlParams:{pool_id:id}}).then((res:any)=>{
                   state.exambasic=res.data
@@ -109,9 +100,9 @@ export default defineComponent({
                 })
                 state.examtype=arr
               })
-          },
-          switchExer(id:any){
-              console.log(id,'id')
+          },   
+        switchExer(id:any){
+              state.selectedId=id
               switch(id){
                   case 1:
                   return state.currentView=state.componentNames[0];
@@ -136,7 +127,9 @@ export default defineComponent({
             }
           },
           exerciseDetailList(){
-              teacherDataExerApi.getDetailExerciseList().then((res:any)=>{
+              const item:any=router.currentRoute.value.query.item
+              const id:any=JSON.parse(item).id;
+              teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id}}).then((res:any)=>{
                   console.log(res)
               })
           },
@@ -179,7 +172,7 @@ export default defineComponent({
     }
     .exam-question-type{
         display: flex;
-        .question-type-item:hover{
+        .selected{
             background-color: #f2f2f2;
         }
         .question-type-item{

@@ -9,24 +9,18 @@
             </div>
              <a-modal class="createExercise" :visible="visible" title="创建目录" width="900px" @cancel="handleCancel" @ok="handleOk">
                 <div class="modal-con">
-                    <a-form>
+                    <a-form ref="formRef" :model="form" :rules="rules">
                         <a-form-item
                             label="名称"
+                            required
+                            name='name'
                             >
                             <a-input
                                 placeholder="请输入名称"
-                                required
-                                maxLength="200"
                                 v-model:value='form.name'
                             />
-                             <!-- v-decorator="[
-                                'name',
-                                { rules: [{ required: true, message: '请输入内容',max:30 }] },
-                                ]" -->
-                            <!--  -->
-                            <!--  -->
                         </a-form-item>
-                        <a-form-item label="描述">
+                        <a-form-item label="描述" name="description">
                             <a-textarea
                             :auto-size="{ minRows:4, maxRows:7 }"
                             v-model:value='form.description'
@@ -56,6 +50,7 @@ import {defineComponent,inject,watch,reactive,toRefs, onMounted,toRef,Ref,ref,pr
 import privateExercises from './privateExercises/index.vue'
 import shareExercises from './shareExercises/index.vue'
 import request from "../../api";
+import { message } from 'ant-design-vue';
 interface Iitem{
   name:string,
   componenttype:any,
@@ -64,15 +59,6 @@ interface fromType{
     name?:string,
     description?:string,
     initial?:any,
-}
-interface state{
-    tabs:Array<Iitem>,
-    componentName:string,
-    componentNames:Array<string>,
-    searchValue:string,
-    componentData:any,
-    form:fromType,
-    pagination:paginationType,
 }
 interface ExerciseParam{
     name?:string,
@@ -90,6 +76,17 @@ interface paginationType{
 interface paramsType{
     pool_id:string
 }
+interface state{
+    tabs:Array<Iitem>,
+    componentName:string,
+    componentNames:Array<string>,
+    searchValue:string,
+    componentData:any,
+    form:fromType,
+    pagination:paginationType,
+    formRef:any,
+    rules:any,
+}
 export default defineComponent({
     name:'teacherDataExercises',
     components: {
@@ -105,6 +102,12 @@ export default defineComponent({
             searchValue:'',
             componentData:[],
             form:{},
+            formRef:'formRef',
+            rules:{
+            name: [
+                {required: true, message: '请输入内容', trigger: 'blur'}
+            ],
+        },
             pagination:{
             pageSizeOptions:['10', '20', '30', '40', '50'],
             current:1,
@@ -174,8 +177,16 @@ export default defineComponent({
         createParams.description=state.form.description
         createParams.initial=0
         console.log(state.form,'form')
-        createExcerise(createParams)
-        visible.value=false
+    //     state.formRef.validateFields(state.form,(err:any, values:any) => {
+    //      console.log(err,'valid')
+    //      console.log(values,'valid')
+    //   });
+            if(state.form.name===''){
+                message.warn('请输入名称')
+            }else{
+                createExcerise(createParams)
+                visible.value=false
+            }
         } 
     function handleCancel(){
          visible.value=false
@@ -208,5 +219,8 @@ export default defineComponent({
 .modal-con a-form-item{
     display: flex;
     justify-content: center;
+}
+.createExercise .ant-form-horizontal .ant-form-item-label{
+    width: 57px;
 }
 </style>

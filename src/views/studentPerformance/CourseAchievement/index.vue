@@ -123,7 +123,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #8955B5;
+    color: @theme-color;
     min-height:650px;
     .noMatching{
         .icon-kongshuju{
@@ -194,7 +194,7 @@ export default defineComponent({
                     margin-right: 8px;
                 }
                 .look-score{
-                    color: #8955B5;
+                    color: @theme-color;
                     cursor: pointer;
                 }
             }

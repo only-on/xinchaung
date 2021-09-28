@@ -81,7 +81,7 @@ export default defineComponent({
             justify-content: center;
             align-items: center;
             .icon-fanhui{
-                color: #8955b5;
+                color:@theme-color;
             }
         }
     }

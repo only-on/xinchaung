@@ -268,13 +268,13 @@ export default defineComponent({
                             margin-right: 8px;
                         }
                         .resource{
-                            color: #8955B5;
+                            color: @theme-color;
                         }
                     }
                 }
             }
         .card-score{
-            color: #8955b5;
+            color: @theme-color;
         }
         }
     .content-info{
@@ -287,11 +287,11 @@ export default defineComponent({
             height: 46px;
             display: flex;
             justify-content: space-between;
-            border: 1px solid #8955B5;
-            background-color: #fdfaff;
+            border: 1px solid @theme-color;
+            background-color: @normal-color;
             line-height: 46px;
             padding-left: 30px;
-            color:#8955b5;
+            color:@theme-color;
             img{
                margin-right: 20px;  
             }
@@ -319,7 +319,7 @@ export default defineComponent({
              box-sizing: content-box;
              border-bottom: 1px solid #ddd;
              .task-right{
-                 color:#8955b5;
+                 color:@theme-color;
              }
              .cant-check{
                  color:#ccc;
@@ -345,13 +345,13 @@ export default defineComponent({
             text-align:center;
         }
         .ant-table-thead>tr>th{
-            background-color:#f6f0fa!important;
+            background-color:@normal-color!important;
         }
         .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td {
-        border-right: 1px solid white;
+        border-right: 1px solid @white;
         }
         .ant-table-thead > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-thead > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td, .ant-table-tbody > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
-        background:white;
+        background:@white;
     }
         .ant-radio-button-wrapper{
             display: none;

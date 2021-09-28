@@ -187,7 +187,7 @@ export default defineComponent({
             border-left: 0px;
         }
         .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab:nth-child(1){
-            border-left: 1px solid #f0f0f0;
+            border-left: 1px solid @normal-color;
         }
         .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active{
             border-top: 2px solid @theme-color;

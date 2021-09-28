@@ -166,7 +166,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    color: #8955B5;
+    color:@theme-color;
     min-height:650px;
     .noMatching{
         .icon-kongshuju{
@@ -215,19 +215,19 @@ export default defineComponent({
                 color:black;
             }
             td:nth-child(2){
-                color: #8955B5;
+                color: @theme-color;
             }
             td:nth-child(2):hover{
                 color: #a86cdc;
             }
             td:nth-child(3){
-                color: #8955B5;
+                color: @theme-color;
             }
              td:nth-child(3):hover{
                 color: #a86cdc;
             }
             td:nth-child(4){
-                color: #8955B5;
+                color: @theme-color;
             }
             td:nth-child(4):hover{
                 color: #a86cdc;
