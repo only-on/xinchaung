@@ -31,7 +31,7 @@
               </div>
               <div class="footer-btns">
                 <i class="iconfont icon-fuyong" title="复用" @click="copy(v.id)"></i>
-                <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="!v.is_edited"></i>
+                <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="v.is_edited"></i>
                 <i class="iconfont icon-shanchu" title="删除" @click="delate(v.id)"></i>
               </div>
             </div>
@@ -105,8 +105,8 @@ export default defineComponent({
       initData()
     }
     function copy(id:number){
-      http.copy({param:{id:id}}).then((res:IBusinessResp)=>{
-        message.success('操作成功')
+      http.copy({urlParams: {paper_id: id}}).then((res:IBusinessResp)=>{
+        message.success('复用成功')
          initData()
       })
     }

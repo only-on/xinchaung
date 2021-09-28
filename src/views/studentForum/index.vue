@@ -54,7 +54,7 @@ import { QuillEditor } from "@vueup/vue-quill";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IforumSearch{
   title:string,
-  type:string | '' ,
+  type:string | undefined,
   pageSize:number,
   page:number
 }
@@ -126,8 +126,8 @@ export default defineComponent({
       theme: "snow",
     };
     const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
-    const options1 = ref<SelectTypes['options']>([{value: '0', label: '请选择帖子类型',disabled:true},{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
-    const options2 =ref<SelectTypes['options']>([{value: '0', label: '请选择帖子类型',disabled:true},{value: '1', label: '求助'},{value: '2', label: '分享'}])
+    const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
+    const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
     const options = computed(()=>{
         return tabType.value===1?options2.value:options1.value
     })
@@ -149,14 +149,14 @@ export default defineComponent({
       tabType.value=val
       ForumSearch.title=''
       ForumSearch.page=1
-      ForumSearch.type='0'
+      ForumSearch.type=undefined
       initData()
     })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
       }else{
-        let type=(ForumSearch.title || ForumSearch.type!=='0')?'tableSearchEmpty':'tableEmpty'
+        let type=(ForumSearch.title || ForumSearch.type!==undefined)?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} />
       }
     }
@@ -168,7 +168,7 @@ export default defineComponent({
       title:'',
       pageSize:10,
       page:1,
-      type:'0'
+      type:undefined
     })
     function initData(){
       loading.value=true
@@ -188,7 +188,7 @@ export default defineComponent({
     }
     function search(){
       // console.log(ForumSearch)
-      if(ForumSearch.title!=='' || ForumSearch.type!=='0'){
+      if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
         ForumSearch.page=1
         initData()
       }
@@ -241,7 +241,7 @@ export default defineComponent({
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
         ForumSearch.title=''
-        ForumSearch.type='0'
+        ForumSearch.type=undefined
         ForumSearch.page=1
         initData()
       }
