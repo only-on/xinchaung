@@ -21,8 +21,20 @@
                 </div>
             </div>
             <div class="question-content-table">
-                <!-- <a-table :columns="columns" :loading="loading" :data-source="list"></a-table> -->
-                <a-table></a-table>
+                <a-table :columns="columns" rowKey="id" :loading="loading" :data-source="tabledata">
+                    <template #difficulty='{record}'>
+                        <span>{{record.level.name}}</span>
+                    </template>
+                    <template #operation>
+                        <span class="iconfont icon-bianji1"></span>
+                        <span class="iconfont icon-shanchu-copy"></span>
+                    </template>
+                    <template #select-answers='{record}'>
+                        <div v-for="(item,index) in record.options" :key="index.toString()">
+                          <span v-if="record.answers.answer==item.id">{{item.option}}</span>  
+                        </div>
+                    </template>
+                </a-table>
             </div>
             <div>
                 <a-modal
@@ -40,27 +52,28 @@
                                  <a-textarea v-model:value='expermodelValue.question'></a-textarea>
                             </a-form-item>
                              <!-- 单选题 或者 多选题 -->
-                             <div v-if="selectedId===1||selectedId===2">
-                                <div class="option" v-for="(item,index) in single" :key='index.toString()'>
-                                <div class="option-item">
-                                    <!-- v-for="(item,index) in exerparams.options" :key="index.toString()" -->
-                                     <a-form-item required :label='"选项"+item.optionLable'>
-                                        <a-input></a-input>
-                                        <!-- v-model="item.option" -->
-                                    </a-form-item>
-                                </div>
-                                <div class="setAnswer">
-                                    <!-- 单选框 -->
-                                    <a-radio v-if="selectedId===1">设为答案</a-radio>
-                                    <!-- 多选框 -->
-                                     <a-checkbox v-if="selectedId===2" @change="onChange">
-                                        设为答案
-                                    </a-checkbox>
-                                </div>
-                            </div>
+                             <div v-if="selectedId==='1'||selectedId==='2'">
+                                    <a-radio-group v-model="value" @change="onRadioChange">
+                                        <div class="option" v-for="(item,index) in single" :key='index.toString()'>
+                                            <div class="option-item">
+                                                <a-form-item required :label='"选项"+item.optionLable'>
+                                                    <a-input v-model:value="expermodelValue.options[index]"></a-input>
+                                                </a-form-item>
+                                            </div>
+                                            <div class="setAnswer">
+                                                <!-- 单选框 -->
+                                            
+                                                <a-radio v-if="selectedId==='1'" :value='index'>设为答案</a-radio>
+                                                <!-- 多选框 -->
+                                                <a-checkbox v-if="selectedId==='2'" @change="onChange">
+                                                    设为答案
+                                                </a-checkbox>
+                                            </div>
+                                        </div>
+                                    </a-radio-group>
                              </div>
                             <!-- 判断题 -->
-                            <div v-if="selectedId===3" style="display:flex;height:50px">
+                            <div v-if="selectedId==='3'" style="display:flex;height:50px">
                                 <div style="margin-right:20px">
                                      <a-form-item required label="答案">
                                     </a-form-item>
@@ -71,7 +84,7 @@
                                 </div>
                             </div>
                             <!-- 填空题 -->
-                            <div v-if="selectedId===4">
+                            <div v-if="selectedId==='4'">
                                 <div>
                                     <a-form-item required label="答案">
                                     <a-input></a-input>
@@ -84,27 +97,34 @@
                                 </div>
                             </div>
                             <!-- 解答题 -->
-                            <div v-if="selectedId===5">
+                            <div v-if="selectedId==='5'">
                                 <div>
                                     <a-form-item required label="答案">
-                                        <a-textarea></a-textarea>
+                                        <a-textarea v-model:value="expermodelValue.answers"></a-textarea>
                                     </a-form-item>
                                 </div>
                                  <div>
                                     <a-form-item required label="关键字">
-                                        <a-textarea></a-textarea>
+                                        <a-textarea v-model:value='expermodelValue.keyword'></a-textarea>
                                     </a-form-item>
                                 </div>
                             </div>
                             <div class="difficultyAndScore">
                                 <div class="difficult">
                                     <a-form-item required label="难度">
-                                        <a-input></a-input>
+                                        <a-select
+                                            @change="handleChangeLeves"
+                                            v-model:value="expermodelValue.leves"
+                                        >
+                                            <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
+                                            {{item.name}}
+                                            </a-select-option>
+                                        </a-select>
                                     </a-form-item>
                                 </div>
                                  <div class="score">
                                     <a-form-item required label="分数">
-                                        <a-input></a-input>
+                                        <a-input v-model:value="expermodelValue.score"></a-input>
                                     </a-form-item>
                                 </div>
                             </div>
@@ -121,6 +141,8 @@
 </template>
 <script lang="ts">
 import { configConsumerProps } from 'ant-design-vue/lib/config-provider';
+import { context } from 'ant-design-vue/lib/vc-image/src/PreviewGroup';
+import indexVue from 'src/views/studentExperimental/index.vue';
 import {defineComponent, onMounted, reactive,toRefs,watch} from 'vue'
 import { useRouter } from 'vue-router';
 import request from "../../../../api";
@@ -136,17 +158,20 @@ interface modalType{
 interface exerType{
  optionLable:string,
 }
+interface optionsType{
+    value:string,
+}
 interface paramsType{
     pool_id?:number,
     question:string,
     type_id?:number,//习题类型id
-    level_id?:number,
-    origin_score?:string,//分数
+    leves?:any,
+    score?:string,//分数
     ordered_answer?:boolean,//答案是否有序
-    options?:string[],//习题选项
-    keywords?:any[],//关键字
+    options:any[],//习题选项
+    keyword?:any[]|string,//关键字
     points?:[],// 知识点
-    answers?:[],
+    answers?:[]|string,
 }
 interface State{
     difficultyLevel:levelType[],
@@ -155,12 +180,15 @@ interface State{
     single:exerType[],
     exerparams?:paramsType,
     expermodelValue:paramsType,
+    loading:boolean,
+    columns:any[],
+    list:any[],
 }
 
 export default defineComponent({
     name:'quesComonTable',
-    props:['selectedId'],
-    setup:(props)=>{
+    props:['selectedId','poolid','tabledata'],
+    setup:(props,context)=>{
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
         const state:State=reactive({
@@ -174,9 +202,41 @@ export default defineComponent({
             single:[{optionLable:'A'},{optionLable:'B'},{optionLable:'C'},{optionLable:'D'}],
             expermodelValue:{
                 question:'',
-                options:[]
-            }
+                options:[],
+                leves:'',
+                score:'',
+            },
+            loading:false,
+            columns:[
+                {
+                    title: '题目',
+                    dataIndex: 'question',
+                    key: 'question',
+                },
+                {
+                    title: '难度',
+                    dataIndex: 'difficulty',
+                    slots: { customRender:'difficulty'},
+                },
+                {
+                    title: '答案',
+                    dataIndex: 'select-answers',
+                    slots: { customRender:'select-answers'},
+                },
+                {
+                    title: '分数',
+                    dataIndex: 'origin_score',
+                    key: 'origin_score',
+                },
+                {
+                    title: '操作',
+                    dataIndex: 'operation',
+                    slots: { customRender: 'operation' },
+                },
+                ],
+            list:[]
         })
+        var poolid:any=''
         const methods = {
          exerciseLevels(){
                 teacherDataExerApi.getDetailExerLevels().then((res:any)=>{
@@ -187,43 +247,81 @@ export default defineComponent({
              console.log(value)
              state.selectLeves=value
             },
+            handleChangeLeves(value:any){
+                state.expermodelValue.leves=value
+            },
             addTestQuestions(){
             // detailExerCreate
+            // console.log(id,'idddddddd')
+            // poolid=id
             state.createmodal.visible=true
             },
             handleOk(){
                 state.createmodal.visible=false
+                console.log(state.expermodelValue.options,'state.expermodelValue')
+                teacherDataExerApi.detailExerCreate({
+                urlParams:{pool_id:props.poolid}, 
+                param:{
+                question:state.expermodelValue.question,
+                type_id:props.selectedId,
+                level_id:state.expermodelValue.leves,
+                origin_score:state.expermodelValue.score,
+                "points": [
+                    "40","41"
+                ],
+                options:state.expermodelValue.options,
+                keywords:state.expermodelValue.keyword?[state.expermodelValue.keyword]:'',
+                answers: [state.expermodelValue.answers]}
+                }).then((res:any)=>{
+                    console.log(res)
+                    state.expermodelValue={
+                        question:'',
+                        leves:'',
+                        score:'',
+                        options:[],
+                        keyword:''
+                    },
+                    context.emit('finishCreate',true)
+                })
+               
             },
             handleCancel(){
                 state.createmodal.visible=false
             },
             onChange(e:any){
                 console.log(e)
+            },
+            onRadioChange(e:any){
+                const i=Number(e.target.value)
+                state.expermodelValue.answers=state.expermodelValue.options[i]
             }
         }
         watch(()=>props.selectedId, (newVal) => {
-          console.log(newVal,'newVal')
            switch(newVal){
-                  case 1:
+                  case '1':
                   return state.createmodal.title='添加单选题';
-                  case 2:
+                  case '2':
                   return state.createmodal.title='添加多选题';
-                  case 3:
+                  case '3':
                   return state.createmodal.title='添加判断题';
-                  case 4:
+                  case '4':
                   return state.createmodal.title='添加填空题';
-                  case 5:
+                  case '5':
                   return state.createmodal.title='添加解答题';
               }
         })
         onMounted(()=>{
              methods.exerciseLevels()
+            //  state.list=
         })
-        return {...methods,...toRefs(state)}
+        return {...methods,...toRefs(state),poolid}
     }
 })
 </script>
 <style lang="less">
+.ant-table-tbody > tr > td>.iconfont{
+            color: @theme-color;
+}
 .question-content-operate{
         display: flex;
         justify-content:space-between;

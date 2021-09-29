@@ -1,33 +1,38 @@
 <template>
     <div class="exerciseDetail" v-layout-bg>
-        <div class="exam-basic">
-            <div class="exam-basic-title">
-                <div class="title">{{exambasic.name}}</div><div class="edit"><span class="iconfont icon-bianji1"></span><span class="editText">编辑</span></div>
-            </div>
-             <div class="exam-basic-content">
-                <div>题库名称：{{exambasic.name}}</div>
-                <div>题库描述：{{exambasic.description}}</div>
-            </div>
-        </div>
-        <div class="exam-question-type">
-            <div class="question-type-item" v-bind="{class:selectedId===item.id?'selected':''}" v-for="(item,index) in examtype" :key="index.toString()" @click="switchExer(item.id)"> 
-                <div v-if="item.id===1" class="icon icon1"><span class="iconfont icon-danxuan1"></span></div>
-                <div v-if="item.id===2" class="icon icon2"><span class="iconfont icon-danxuan1"></span></div>
-                <div v-if="item.id===3" class="icon icon3"><span class="iconfont icon-danxuan1"></span></div>
-                <div v-if="item.id===4" class="icon icon4"><span class="iconfont icon-danxuan1"></span></div>
-                <div v-if="item.id===5" class="icon icon5"><span class="iconfont icon-danxuan1"></span></div>
-                <div>
-                    <div>{{numExercises(item.id)}}</div>
-                    <div>{{item.name}}</div>
+        <div class="exercise">
+            <div class="exam-basic">
+                <div class="eaxm-basic-left">
+                 <div class="titleinfo">
+                      <div class="exam-basic-left-title">{{exambasic.name}}</div>
+                      <div class="datainfo"><span class="createdate">创建日期:{{exambasic.created_at?.split(' ')[0]}}</span><span>修改日期:{{exambasic.updated_at?.split(' ')[0]}}</span></div>
+                 </div>
+                <div class="desc">
+                    描述
                 </div>
             </div>
-            <!-- <div class="question-type-item"></div> -->
+            <div class="exam-basic-right">
+                <watermark-icon title='102个' description="习题个数" background="#5e68DA"/>
+            </div>
+            </div>
+            <div class="exam-descript">
+                {{exambasic.description}}
+            </div> 
+        </div>
+        <div class="exam-question-type">
+            <a-tabs class="exercise-tab" default-active-key="1" @change="switchExer">
+                <a-tab-pane key="1" tab="单选题"></a-tab-pane>
+                <a-tab-pane key="2" tab="多选题" force-render></a-tab-pane>
+                <a-tab-pane key="3" tab="判断题"></a-tab-pane>
+                <a-tab-pane key="4" tab="填空题"></a-tab-pane>
+                <a-tab-pane key="5" tab="解答题"></a-tab-pane>
+             </a-tabs>
         </div>
         <div class="exam-question-content">
              <!-- <keep-alive>
                 <component :is="currentView"></component>
             </keep-alive> -->
-            <ques-comon-table :selectedId='selectedId'></ques-comon-table>
+            <ques-comon-table @finish-create="finishCreate" :tabledata="tabledata" :selectedId='selectedId' :poolid='poolid'></ques-comon-table>
         </div>
     </div>
 </template>
@@ -42,6 +47,7 @@ import judge from '../components/judge.vue'
 import fillBlanks from '../components/fillBlanks.vue'
 import answer from '../components/answer.vue'
 import quesComonTable from '../components/quesComonTable/index.vue'
+import WatermarkIcon from 'src/components/common/WatermarkIcon.vue';
 interface examBasic{
     name:string,
     description:string,
@@ -61,11 +67,13 @@ interface stateData{
     componentNames:any[],
     currentView:string,
     question_info:quesType[],
-    selectedId:number
+    selectedId:any,
+    poolid:number,
+    tabledata:any[]
 }
 export default defineComponent({
     name:'exerciseDetail',
-    components: {singleChoice,multipleChoice,judge,fillBlanks,answer,quesComonTable},
+    components: {singleChoice,multipleChoice,judge,fillBlanks,answer,quesComonTable, WatermarkIcon},
      setup:(props,context)=>{
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
@@ -80,7 +88,9 @@ export default defineComponent({
             componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
             question_info:[],
-            selectedId:1
+            selectedId:'1',
+            poolid:0,
+            tabledata:[]
         })
         const methods = {
           exerciseDetail(){
@@ -101,9 +111,9 @@ export default defineComponent({
                 state.examtype=arr
               })
           },   
-        switchExer(id:any){
-              state.selectedId=id
-              switch(id){
+        switchExer(key:any){
+              state.selectedId=key
+              switch(key){
                   case 1:
                   return state.currentView=state.componentNames[0];
                   case 2:
@@ -129,22 +139,30 @@ export default defineComponent({
           exerciseDetailList(){
               const item:any=router.currentRoute.value.query.item
               const id:any=JSON.parse(item).id;
-              teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id}}).then((res:any)=>{
+              teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers'}}).then((res:any)=>{
                   console.log(res)
+                  state.tabledata=res.data.list
               })
           },
+          finishCreate(val:any){
+              methods.exerciseDetailList()
+          }
        }
        onMounted(()=>{
            methods.exerciseDetail() 
-           methods.exerciseType()
+        //    methods.exerciseType()
            methods.exerciseDetailList()
+        const item:any=router.currentRoute.value.query.item
+        const id:any=JSON.parse(item).id;
+           state.poolid=id
        })
         return {...toRefs(state),...methods}
      }
 })
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .exerciseDetail{
+    color: #777777;
     .exam-basic-title{
         display: flex;
         justify-content:space-between;
@@ -175,39 +193,6 @@ export default defineComponent({
         .selected{
             background-color: #f2f2f2;
         }
-        .question-type-item{
-        display: flex;
-        align-items: center;
-        width: 170px;
-        height: 60px;
-        justify-content: center;
-        .iconfont{
-            color: white;
-        }
-        .icon{
-            width: 34px;
-            height: 34px;
-            line-height: 34px;
-            text-align: center;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-        .icon1{
-            background-color: #38c2eb;
-        }
-        .icon2{
-            background-color: #ff7500;
-        }
-        .icon3{
-            background-color: #06cf63;
-        }
-        .icon4{
-            background-color: #5892ff;
-        }
-        .icon5{
-            background-color: #ffcc2e;
-        }
-    }
     }
     .question-content-operate{
         display: flex;
@@ -220,5 +205,40 @@ export default defineComponent({
         }
     }
    
+}
+.exam-basic{
+    display: flex;
+    justify-content:space-between;
+    border-bottom: 1px solid #B2B2B2;
+    padding-bottom: 10px;
+    .eaxm-basic-left{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        .desc{
+            font-weight:500;
+        }
+    }
+    .exam-basic-left-title{
+        font-size: 24px;
+    }
+    .datainfo{
+        margin-top: 10px;
+        font-size: 14px;
+        .createdate{
+            display: inline-block;
+            margin-right:20px;
+        }
+    }
+}
+.exam-descript{
+    padding: 18px 0;
+}
+.exam-question-type .ant-tabs{
+    width: 100%;
+}
+.exercise-tab .ant-tabs-nav .ant-tabs-tab{
+    padding: 7px 0px;
+    margin-right: 35px;
 }
 </style>
