@@ -13,7 +13,15 @@
       layout="vertical"
     >
       <a-form-item label="选择目录" required>
-        <a-select v-model:value="formState.directory" placeholder="请选择题目目录" @select="change">
+        <a-select 
+          v-model:value="formState.directory" 
+          placeholder="请选择题目目录" 
+          @focus="changefocus" 
+          @blur="changeblur" 
+          :open="openSelect"
+           @select="change"
+           ref="select"
+        >
           <a-select-opt-group label="公有">
             <a-select-option :value="item.id" v-for="item in commonList" :key="item.id">{{item.name}}</a-select-option>
           </a-select-opt-group>
@@ -23,7 +31,7 @@
           <template #dropdownRender="{ menuNode: menu }">
             <v-nodes :vnodes="menu" />
             <div class="add">
-              <a-input v-model:value="directoryName"/>
+              <a-input v-model:value="directoryName" @focus="focusInput" @blur="blurInput"/>
               <span
                 class="btn"
                 @mousedown="e => e.preventDefault()"
@@ -192,15 +200,20 @@ export default defineComponent({
     let directoryList: IDirectoryList = inject('directoryList') || {commonList: [], privateList: []}
     let directoryName = ref('')
     const addItem = ()=> {
+      if (!directoryName.value) {
+        message.warn('请输入目录名称！')
+        return
+      }
       http.addCatalogue({
         param: {
-          name: directoryName,
+          name: directoryName.value,
           // description: '111',
           initial: 0   // 私有
         }
       }).then((res: IBusinessResp) => {
         console.log(res)
         if (!res.status) return
+        directoryName.value = ''
         emit('getPCatalogueList')
       })
     }
@@ -354,12 +367,44 @@ export default defineComponent({
     const delKnowledge = (i: number) => {
       knowledgeList.selectedKnowledgeList.splice(i, 1)
     }
-    const change = (v: string) => {
-      console.log(666, formState.directory)
-      console.log(v)
+
+    // 修改select 点击下拉里的input 下拉框不显示问题
+    let select = ref({
+      blur: function() {}
+    })
+    let openSelect = ref(false)
+    const change = () => {
+      console.log('change')
+      openSelect.value = false
+      isFocus = false
+      select.value.blur()
+      console.log(select.value)
     }
+    const changefocus = () => {
+      console.log('focus')
+      openSelect.value = true
+    }
+    let isFocus = false
+    const changeblur = () => {
+      console.log('blur')
+      !isFocus ? openSelect.value = false : ''
+    }
+    const focusInput = () => {
+      console.log('focusInput')
+      isFocus = true
+      // openSelect.value = false
+    }
+    const blurInput = () => {
+      console.log('blurInput')
+      isFocus = false
+      openSelect.value = false
+    }
+
     onMounted(() => {
       // getCCatalogueList()
+      nextTick(() => {
+        console.log(select.value)
+      })
     })
     let typeList: IpaperType = inject('typeList') || {paperType: [], levelType: []}
     console.log(typeList)
@@ -371,13 +416,19 @@ export default defineComponent({
       ...toRefs(directoryList),
       directoryName,
       addItem,
-      change,
       typeList,
       titles: {1: '添加单选题', 2: '添加多选题', 3: '添加判断题', 4: "添加填空题", 5: "添加简答题"},
       isShowKnowledge,
       ...toRefs(knowledgeList),
       selectKnowledge,
-      delKnowledge
+      delKnowledge,
+      changefocus,
+      changeblur,
+      focusInput,
+      blurInput,
+      change,
+      openSelect,
+      select,
     }
   },
 })
@@ -397,6 +448,7 @@ interface ItreeDatalist {
   id: string
   text: string
   children?: ItreeDatalist[]
+  disabled?: boolean
 }
 </script>
 

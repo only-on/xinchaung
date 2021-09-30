@@ -25,7 +25,7 @@
 </a-modal>
 </template>
 <script lang="ts">
-import { CarryOutOutlined, DownOutlined  } from '@ant-design/icons-vue';
+// import { CarryOutOutlined, DownOutlined  } from '@ant-design/icons-vue';
 import { defineComponent, ref, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
@@ -34,8 +34,8 @@ import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'knowledge',
   components: {
-    CarryOutOutlined,
-    DownOutlined ,
+    // CarryOutOutlined,
+    // DownOutlined ,
   },
   props: {
     isShow: Boolean,
@@ -63,7 +63,7 @@ export default defineComponent({
             children: res.data.children,
             id: res.data.id,
             text: res.data.text,
-            // disabled: true
+            disabled: true
           }]
         })
     }
@@ -128,12 +128,14 @@ interface ItreeData {
   id: string
   text: string
   children?: ItreeData[]
+  disabled?: boolean
 }
 </script>
 
 <style lang="less" scoped>
 .tree {
-  
+  height: 660px;
+  overflow: auto;
 }
 .prompt {
   position: absolute;
@@ -141,6 +143,24 @@ interface ItreeData {
   left: 116px;
   color: blue;
   font-size: 14px;
+}
+// :deep(.ant-tree li span.ant-tree-switcher.ant-tree-switcher_open .ant-tree-switcher-icon) {
+//   display: none;
+// }
+// :deep(.ant-tree li span.ant-tree-switcher.ant-tree-switcher_close .ant-tree-switcher-icon) {
+//   display: none;
+// }
+// :deep(.ant-tree-switcher.ant-tree-switcher_open) {
+//   background: url('src/assets/tianjia.png') center no-repeat;
+//   background-size: 14px 14px;
+// }
+// :deep(.ant-tree-switcher.ant-tree-switcher_close) {
+//   background-size: 14px 14px;
+//   background: url('src/assets/images/bg1.jpg') center no-repeat;
+// }
+:deep(.ant-modal-body) {
+  height: 710px;
+  overflow: auto;
 }
 </style>
 

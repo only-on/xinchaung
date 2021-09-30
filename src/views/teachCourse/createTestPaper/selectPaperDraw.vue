@@ -365,7 +365,7 @@ interface Ianswers {
       .iconfont {
         font-size: 18px;
         color: @theme-color;
-        // position: absolute;
+        position: absolute;
         bottom: 3px;
         right: 0;
         cursor: pointer;
