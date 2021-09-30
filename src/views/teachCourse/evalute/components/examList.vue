@@ -19,7 +19,6 @@ import { defineComponent, reactive, watch, ref, onMounted } from 'vue'
 export default defineComponent({
   props: ['examData'],
   setup(props) {
-    console.log(props.examData)
     var examList = reactive<any[]>(props.examData)
     function setColor (optionId:any, answers:any, stuAnswers:any) {
       let ids:any[] = []
@@ -48,7 +47,6 @@ export default defineComponent({
           return "E"
       }
     }
-    console.log(props.examData)
     return {
       examList,
       setSerial,

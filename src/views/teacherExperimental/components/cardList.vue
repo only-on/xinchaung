@@ -40,7 +40,7 @@
           <li>
             <i class="iconfont icon-renshu"></i>
             学生
-            <span>{{item.stu_num}}</span>
+            <span>{{item.stu_cnt}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
