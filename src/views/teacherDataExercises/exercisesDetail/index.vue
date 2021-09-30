@@ -20,19 +20,19 @@
             </div> 
         </div>
         <div class="exam-question-type">
-            <a-tabs class="exercise-tab" default-active-key="1" @change="switchExer">
-                <a-tab-pane key="1" tab="单选题"></a-tab-pane>
-                <a-tab-pane key="2" tab="多选题" force-render></a-tab-pane>
-                <a-tab-pane key="3" tab="判断题"></a-tab-pane>
-                <a-tab-pane key="4" tab="填空题"></a-tab-pane>
-                <a-tab-pane key="5" tab="解答题"></a-tab-pane>
+            <a-tabs class="exercise-tab" default-active-key=1 @change="switchExer">
+                <a-tab-pane key=1 tab="单选题"></a-tab-pane>
+                <a-tab-pane key=2 tab="多选题" force-render></a-tab-pane>
+                <a-tab-pane key=3 tab="判断题"></a-tab-pane>
+                <a-tab-pane key=4 tab="填空题"></a-tab-pane>
+                <a-tab-pane key=5 tab="解答题"></a-tab-pane>
              </a-tabs>
         </div>
         <div class="exam-question-content">
              <!-- <keep-alive>
                 <component :is="currentView"></component>
             </keep-alive> -->
-            <ques-comon-table @finish-create="finishCreate" :tabledata="tabledata" :selectedId='selectedId' :poolid='poolid'></ques-comon-table>
+            <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
         </div>
     </div>
 </template>
@@ -68,6 +68,8 @@ interface stateData{
     currentView:string,
     question_info:quesType[],
     selectedId:any,
+    levelId:any,
+    searchname:string,
     poolid:number,
     tabledata:any[]
 }
@@ -88,7 +90,9 @@ export default defineComponent({
             componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
             question_info:[],
-            selectedId:'1',
+            selectedId:1,
+            searchname:'',
+            levelId:'',
             poolid:0,
             tabledata:[]
         })
@@ -113,6 +117,7 @@ export default defineComponent({
           },   
         switchExer(key:any){
               state.selectedId=key
+              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
               switch(key){
                   case 1:
                   return state.currentView=state.componentNames[0];
@@ -136,22 +141,40 @@ export default defineComponent({
                return 0
             }
           },
-          exerciseDetailList(){
+          exerciseDetailList(selectedId:any,levelId:any,searchname:any){
+              console.log(levelId,'levelId')
               const item:any=router.currentRoute.value.query.item
               const id:any=JSON.parse(item).id;
-              teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers'}}).then((res:any)=>{
+              if(levelId){
+                   teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers',level_id:levelId,type_id:selectedId,name:searchname}}).then((res:any)=>{
                   console.log(res)
                   state.tabledata=res.data.list
               })
+              }else{
+                  teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers',type_id:selectedId,name:searchname}}).then((res:any)=>{
+                  console.log(res)
+                  state.tabledata=res.data.list
+              }) 
+              }
           },
           finishCreate(val:any){
-              methods.exerciseDetailList()
+              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+          },
+          selectLeves(val:any){
+              state.levelId=val
+              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+          },
+          searchExercise(val:any){
+              console.log(val,'val')
+              state.searchname=val
+              console.log(state.searchname,'state.searchname')
+              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
           }
        }
        onMounted(()=>{
            methods.exerciseDetail() 
         //    methods.exerciseType()
-           methods.exerciseDetailList()
+           methods.exerciseDetailList(state.selectedId,'','')
         const item:any=router.currentRoute.value.query.item
         const id:any=JSON.parse(item).id;
            state.poolid=id

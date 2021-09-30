@@ -8,5 +8,5 @@ export default {
     getDetailExerciseList: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "GET" },
     getDetailExerLevels: { url: `/api/v1/question/levels`, method: "GET" },
     detailExerCreate: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "POST", dataType: 'json' },
-
+    detailExerDelete: { url: `/api/v1/question/questions/{question_id}`, method: "DELETE", dataType: 'json' }
 }
