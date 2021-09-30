@@ -12,7 +12,7 @@
       <a-form-item label="课程名称" required>
         <a-input v-model:value="detailState.name"/>
       </a-form-item>
-      <a-form-item label="课程方向">
+      <a-form-item label="课程方向" required>
         <a-select v-model:value="detailState.course_category_id" placeholder="please select your zone">
           <a-select-option v-for="v in categoriesList" :value="v.id" :key="v.id">{{v.name}}</a-select-option>
         </a-select>

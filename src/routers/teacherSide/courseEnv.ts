@@ -25,6 +25,16 @@ export default {
           title: "评价",
           authCode: 'evalute'
       },
-  },
+    },
+    {
+      path: "createTestPaper",
+      name: "createTestPaper",
+      // component: () => import("src/views/teachCourse/createTestPaper/addMultipleModal.vue"),
+      component: () => import("src/views/teachCourse/createTestPaper/create.vue"),
+      meta: {
+        title: "创建试卷",
+        authCode: 'createTestPaper'
+      },
+    }
   ]
 }

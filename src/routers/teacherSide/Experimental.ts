@@ -39,7 +39,7 @@ export default {
             name: 'evaluate',
             component: () => import ("src/views/teacherExperimental/evaluate.vue"),
             meta: {
-                title: "实训审核",
+                title: "实训考核",
                 authCode: 'evaluate'
             }
         }

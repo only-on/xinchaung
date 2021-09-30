@@ -328,7 +328,7 @@ export default defineComponent({
 @echart-title-bgcolor: #f7edff;
 @echart-table-bordercolor: #dcc0f4;
 .course-analysis {
-  width: 1330px;
+  width: @center-width;
   height: 100%;
   margin: 0 auto;
   .course-analysis-top {

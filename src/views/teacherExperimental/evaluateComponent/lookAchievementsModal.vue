@@ -9,7 +9,7 @@
     <a-tabs v-model:activeKey="activeKey">
       <a-tab-pane v-for="(v, k) in lookAchievementsInfo" :key="k" :tab="v.name">
         <div v-if="v.note">
-          <antdv-markdown v-model="v.note" class="markdown__editor"/>
+          <antdv-markdown v-model="v.note" :preview-only="true" class="markdown__editor"/>
         </div>
         <div v-else>该任务未提交笔记</div>
       </a-tab-pane>

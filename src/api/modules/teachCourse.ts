@@ -94,6 +94,49 @@ export default {
     url: '/report/record/view',
     method: 'GET'
   },
+  // 创建测试卷
+  getCatalogueList: {
+    url: '/api/v1/question/pools',
+    method: 'GET'
+  },
+  addCatalogue: {
+    url: '/api/v1/question/pools',
+    method: 'POST'
+  },
+  getLevelList: {
+    url: '/api/v1/question/levels'
+  },
+  getPaperTypeList: {
+    url: '/api/v1/question/types'
+  },
+  getQuestionList: {
+    url: '/api/v1/question/pools/{poolId}/questions',
+    method: 'GET',
+    dataType: 'json'
+  },
+  createQuestion: {
+    url: '/api/v1/question/pools/{poolId}/questions',
+    method: 'POST',
+    dataType: 'json'
+  },
+  getKnowledgeList: {
+    url: '/knowledge-map/get-knowledge-map-list',
+    method: 'GET',
+    dataType: 'json'
+  },
+  createPaper: {
+    url: '/api/v1/question/papers',
+    method: 'POST',
+    dataType: 'json'
+  },
+  relationQuest: {
+    url: '/api/v1/question/{entity_type}/{entity_id}/relationships/questions',
+    method: 'POST',
+    dataType: 'json'
+  },
+  getPaperList: {
+    url: '/api/v1/question/papers'
+  }
 }
 
 export interface ITeacherCourseApis {
@@ -118,4 +161,14 @@ export interface ITeacherCourseApis {
   showNotes: TFHttpSend,
   reportAnnotate: TFHttpSend,
   reportView: TFHttpSend
+  getCatalogueList: TFHttpSend,
+  addCatalogue: TFHttpSend
+  getLevelList: TFHttpSend
+  getPaperTypeList: TFHttpSend
+  getQuestionList: TFHttpSend
+  createQuestion: TFHttpSend
+  getKnowledgeList: TFHttpSend
+  createPaper: TFHttpSend
+  relationQuest: TFHttpSend
+  getPaperList: TFHttpSend
 }
