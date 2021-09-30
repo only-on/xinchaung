@@ -45,55 +45,6 @@ export default {
     method: 'POST',
     dataType: 'json'
   },
-  // 课程评价
-  getResultInfo: {
-    url: '/api/v1/question/chapter/{chapter_id}/scored-analysis',
-    method: 'GET',
-  },
-  studentCount: {
-    url: '/api/v1/question/chapter/{chapter_id}/student-scores',
-    method: 'GET'
-  },
-  resultCount: {
-    url: '/api/v1/question/chapter/{chapter_id}/question-correct-rate',
-    method: 'GET'
-  },
-  resultCreate: {
-    url: '/course-export-task/create',
-    method: 'POST'
-  },
-  exportTaskView: {
-    url: '/course-export-task/view',
-    method: 'GET'
-  },
-  getSocre: {
-    url: '/teacher-course/get-score',
-    method: 'POST'
-  },
-  changeEvaluate: {
-    url: '/teacher-course/change-evaluate',
-    method: 'POST'
-  },
-  allClasses: {
-    url: '/teacher-course/all-classes',
-    method: 'GET'
-  },
-  evaluteProject: {
-    url: '/teacher-course/evalute-project',
-    method: 'POST'
-  },
-  showNotes: {
-    url: '/teacher-course/show-notes',
-    method: 'POST'
-  },
-  reportAnnotate: {
-    url: '/report/record/teacher-update',
-    method: 'POST'
-  },
-  reportView: {
-    url: '/report/record/view',
-    method: 'GET'
-  },
   // 创建测试卷
   getCatalogueList: {
     url: '/api/v1/question/pools',
@@ -136,7 +87,70 @@ export default {
   },
   getPaperList: {
     url: '/api/v1/question/papers'
-  }
+  },
+  
+  // 课程评价
+  getResultInfo: {
+    url: '/api/v1/question/chapter/{chapter_id}/scored-analysis',
+    method: 'GET',
+  },
+  studentCount: {
+    url: '/api/v1/question/chapter/{chapter_id}/student-scores',
+    method: 'GET'
+  },
+  resultCount: {
+    url: '/api/v1/question/chapter/{chapter_id}/question-correct-rate',
+    method: 'GET'
+  },
+  resultCreate: {
+    url: '/course-export-task/create',
+    method: 'POST',
+    dataType: 'json'
+  },
+  exportTaskView: {
+    url: '/course-export-task/view',
+    method: 'GET'
+  },
+  getSocre: {
+    url: '/teacher-course/get-score',
+    method: 'POST'
+  },
+  changeEvaluate: {
+    url: '/teacher-course/change-evaluate',
+    method: 'POST'
+  },
+  allClasses: {
+    url: '/teacher-course/all-classes',
+    method: 'GET'
+  },
+  evaluteProject: {
+    url: '/teacher-course/evalute-project',
+    method: 'POST'
+  },
+  evaluteContent: {
+    url: '/teacher-course/evalute-content',
+    method: 'POST'
+  },
+  showNotes: {
+    url: '/teacher-course/get-note-detail',
+    method: 'GET'
+  },
+  reportAnnotate: {
+    url: '/report/record/teacher-update',
+    method: 'POST'
+  },
+  reportView: {
+    url: '/report/record/view',
+    method: 'GET'
+  },
+  showQuestions: {
+    url: '/api/v1/question/contents/{content_id}/students/{student_id}/questions',
+    method: 'POST'
+  },
+  showVideos: {
+    url: '/teacher-course/get-videos',
+    method: 'POST'
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -171,4 +185,7 @@ export interface ITeacherCourseApis {
   createPaper: TFHttpSend
   relationQuest: TFHttpSend
   getPaperList: TFHttpSend
+  evaluteContent: TFHttpSend,
+  showQuestions: TFHttpSend,
+  showVideos: TFHttpSend
 }

@@ -82,14 +82,9 @@ import {
   ref,
   inject
 } from "vue";
-import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
-import { Ihttp } from "../typings";
+import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-interface Ipage {
-  page: number;
-  limit: number;
-}
 interface Iform {
   name: string;
   username: string;

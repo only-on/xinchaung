@@ -19,10 +19,10 @@ import bg from 'src/assets/images/studentcourse/course-detail_bg.jpg'
 import { defineComponent,reactive, Ref, ref, onMounted, provide, watch  } from 'vue'
 import EvaluteContent from './components/evaluteContent.vue'
 import EvaluteProject from './components/evaluteProject.vue'
-import courseDetailTop from '../teacherCourseAnalysis/courseDetailTop.vue'
+import courseDetailTop from '../../teacherCourseAnalysis/courseDetailTop.vue'
 import DragTree from 'src/components/dragTree.vue'
 import request from "src/api/index";
-import { Ihttp } from "./typings";
+import { Ihttp } from "../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 interface ICourseInfo{
   type: string,

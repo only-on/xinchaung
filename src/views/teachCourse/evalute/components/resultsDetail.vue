@@ -25,7 +25,6 @@ export default defineComponent({
     onMounted(()=>{
       setTimeout(()=>{
         scoreData.value = props.scoreData
-        console.log(scoreData.value)
       }, 400)
     })
     return {

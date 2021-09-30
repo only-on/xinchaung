@@ -20,7 +20,7 @@ export default {
     {
       path: "evalute",
       name: "evalute",
-      component: () => import("src/views/teachCourse/evalute.vue"),
+      component: () => import("src/views/teachCourse/evalute/evalute.vue"),
       meta: {
           title: "评价",
           authCode: 'evalute'

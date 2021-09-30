@@ -77,7 +77,7 @@ import { defineComponent, ref, reactive,Ref, provide, watch, onMounted } from 'v
 import StudentResults from './studentResults.vue'
 import Search from './search.vue'
 import request from 'src/api/index'
-import {Ihttp} from '../typings'
+import {Ihttp} from '../../typings'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Iform } from './public'
 
@@ -220,7 +220,9 @@ export default defineComponent({
         tableData.loading = false
         let result = res.data
         Object.assign(chapterCompletion, result.chapter_completion)
-        tableData.data.push(...result.chapter_progress.data)
+        console.log(result.chapter_progress)
+        if(result.chapter_progress.length == 0) return;
+        tableData.data.push(...result.chapter_progress?.data)
         tableData.data.forEach((item:any) => {
           item.chapter_progress = (item.chapter_progress * 100).toFixed(0) + '%'
         })

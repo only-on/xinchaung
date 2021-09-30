@@ -42,10 +42,10 @@
           <span :class="['text', {'linkText': record.has_video}]" @click="checkDetail('video', record.video_ids, record.has_video)">视频</span>
         </template>
         <template #has_report="{ record }">
-          <span :class="['text', {'linkText': record.report_id}]" @click="checkDetail('report', record.report_id, record.report_id)">{{!record.has_report ? '未提交': record.is_report_scored ? '查看' :'批阅'}}</span>
+          <span :class="['text', {'linkText': record.report_id}]" @click="checkDetail('report', record.report_id, record.report_id)">{{!record.has_report ? '未提交': record.is_report_scored && record.report_score ? record.report_score :'批阅'}}</span>
         </template>
         <template #has_rebuild_report="{ record }">
-          <span :class="['text', {'linkText': record.report_rebuild_id}]" @click="checkDetail('report', record.report_rebuild_id, record.report_rebuild_id)">{{!record.has_rebuild_report ? '未提交': record.is_rebuildreport_scored ? '查看' :'批阅'}}</span>
+          <span :class="['text', {'linkText': record.report_rebuild_id}]" @click="checkDetail('report', record.report_rebuild_id, record.report_rebuild_id)">{{!record.has_rebuild_report ? '未提交': record.is_rebuildreport_scored && record.rebuild_report_score ? record.rebuild_report_score :'批阅'}}</span>
         </template>
         <template #can_evaluate="{record}">
           <span :class="['text', {'resultText': record.can_evaluate}]">
@@ -65,7 +65,7 @@
 <script lang="ts">
 import { defineComponent,reactive, Ref, ref, watch, provide } from 'vue';
 import request from "src/api/index";
-import { Ihttp } from "../typings";
+import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 import EvaluteModal from './evaluteModal.vue'
 import Search from './search.vue'
@@ -334,7 +334,7 @@ export default defineComponent({
     }
     // 查看最终得分
     function checkDetail (type:string, val:any, canClick:boolean) {
-      // if(!canClick) return;
+      if(!canClick) return;
       openModal.value = true
       modalType.value = type
       switch (type){
@@ -423,10 +423,14 @@ export default defineComponent({
         margin-right: 10px;
       }
     }
+    :deep(.ant-table){
+      font-size: 14px;
+    }
     .text{
       color: #c9c9c9;
       margin-right: 5px;
       font-size: 14px;
+      cursor: default;
     }
     .linkText{
         cursor: pointer;

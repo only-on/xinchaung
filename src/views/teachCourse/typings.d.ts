@@ -25,6 +25,9 @@ interface IteachCourse {
   showNotes: Function
   reportAnnotate: Function
   reportView: Function
+  evaluteContent: Function
+  showQuestions: Function
+  showVideos: Function
 }
 interface IcourseTree {
   getTreeList: Function

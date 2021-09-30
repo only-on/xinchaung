@@ -64,7 +64,7 @@ import Report from './report.vue'
 import ExamList from "./examList.vue";
 import Video from "./video.vue"
 import request from "src/api/index";
-import { Ihttp } from "../typings";
+import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {goHtml} from 'src/utils/common'
 import {options, typeList} from './public'

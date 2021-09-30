@@ -80,7 +80,7 @@
 import { defineComponent, reactive, ref, inject, watch, onMounted, VNode } from 'vue'
 import { RuleObject } from 'ant-design-vue/es/form/interface';
 import request from "src/api/index";
-import { Ihttp } from "../typings";
+import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 interface Iform{
