@@ -148,6 +148,7 @@ import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { countDown } from "src/utils/common";
+import storage from "src/utils/extStorage";
 import { copyText } from "src/utils/copySelect";
 import {
   getVmBaseInfo,
@@ -186,6 +187,7 @@ export default defineComponent({
     const router = useRouter();
     let vmQuery = route.query as any;
     const novncEl = ref();
+    let role = storage.lStorage.get("role");
     const {
       opType,
       connection_id,
@@ -233,18 +235,24 @@ export default defineComponent({
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
     provide("allInfo", allInfo);
-    provide("novncEl",novncEl)
-    provide("uuid",uuid)
-    provide("use_time",use_time)
-    provide("taskType",taskType)
-    let navData = [
-      { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
-      { name: "实验指导", key: "guide", icon: "icon-zhidao" },
-      { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
-      { name: "实验报告", key: "report", icon: "icon-baogao1" },
-      { name: "随堂练习", key: "practice", icon: "icon-biji" },
-      { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
-    ];
+    provide("novncEl", novncEl);
+    provide("uuid", uuid);
+    provide("use_time", use_time);
+    provide("taskType", taskType);
+    let navData =
+      role === 4
+        ? [
+            { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+            { name: "实验指导", key: "guide", icon: "icon-zhidao" },
+            { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
+            { name: "实验报告", key: "report", icon: "icon-baogao1" },
+            { name: "随堂练习", key: "practice", icon: "icon-biji" },
+            { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
+          ]
+        : [
+            { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+            { name: "实验指导", key: "guide", icon: "icon-zhidao" },
+          ];
     const data = reactive(navData);
     function back() {
       if (opType === "test" || opType === "prepare") {

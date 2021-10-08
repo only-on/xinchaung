@@ -33,7 +33,7 @@ import {backTo,getVmBaseInfo} from "src/utils/vncInspect";
 import {useRoute,useRouter,onBeforeRouteLeave} from "vue-router"
 import {wsConnect} from "src/request/websocket"
 import {message} from "ant-design-vue"
-
+import storage from "src/utils/extStorage"
 export default defineComponent({
   components: {
     layout,
@@ -41,12 +41,15 @@ export default defineComponent({
   setup() {
       const route = useRoute();
       const router = useRouter();
-    let navData = [
+      let role = storage.lStorage.get("role");
+    let navData = role===4?[
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
       { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
       { name: "实验报告", key: "report", icon: "icon-baogao1" },
       { name: "随堂练习", key: "practice", icon: "icon-biji" },
       { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
+    ]:[
+      { name: "实验指导", key: "guide", icon: "icon-zhidao" },
     ];
     let vmQuery = route.query as any;
     const {

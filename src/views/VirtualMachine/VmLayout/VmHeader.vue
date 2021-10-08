@@ -2,7 +2,9 @@
   <div class="vm-header-box">
     <div class="vm-header-student" v-if="roleName === 'stuAndVnc'">
       <div class="vm-header-left">
-        <a-button type="primary" @click="back">返回</a-button>
+        <a-button type="primary" @click="back"
+          ><span class="icon-fanhui iconfont"></span>返回</a-button
+        >
         <a-dropdown class="">
           <template #overlay>
             <a-menu @click="handleMenuClick" class="action-handle-dropdown">
@@ -65,7 +67,9 @@
     </div>
     <div class="vm-header-student" v-if="roleName === 'stuAndwebide'">
       <div class="vm-header-left">
-        <a-button type="primary" @click="back">返回</a-button>
+        <a-button type="primary" @click="back"
+          ><span class="icon-fanhui iconfont"></span>返回</a-button
+        >
       </div>
       <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
       <div class="vm-header-right">
@@ -89,11 +93,67 @@
         </span>
       </div>
     </div>
-    <div v-if="roleName==='teacherAndVnc'">
-        teacher待开发
+    <div class="vm-header-student" v-if="roleName === 'teacherAndVnc'">
+      <div class="vm-header-left">
+        <a-button type="primary" @click="back"
+          ><span class="icon-fanhui iconfont"></span>返回</a-button
+        >
+        <a-dropdown class="">
+          <template #overlay>
+            <a-menu @click="handleMenuClick" class="action-handle-dropdown">
+              <a-menu-item key="revertVm" class="action-item">
+                <span class="icon-fasong iconfont"></span>发送Ctrl+Alt+Del
+              </a-menu-item>
+              <a-menu-item key="sendSelectContent" class="action-item">
+                <span class="icon-gongxiang1 iconfont"></span>发送选择内容
+              </a-menu-item>
+              <a-menu-item
+                key="startRecord"
+                class="action-item"
+                :class="isScreenRecording ? 'disabled' : ''"
+              >
+                <span class="icon-luping iconfont"></span>开始录屏
+              </a-menu-item>
+              <a-menu-item
+                key="stopRecord"
+                class="action-item"
+                :class="!isScreenRecording ? 'disabled' : ''"
+              >
+                <span class="icon-luping iconfont"></span>结束录屏
+              </a-menu-item>
+              <a-menu-item key="resetVm" class="action-item">
+                <span class="icon-zhongzhi iconfont"></span>重置
+              </a-menu-item>
+              <a-menu-item key="closeVm" class="action-item">
+                <span class="icon-kaiguanshenx iconfont"></span>关机
+              </a-menu-item>
+            </a-menu>
+          </template>
+          <a-button type="primary">
+            操作
+            <span class="icon-zhankai iconfont" style="margin-left: 5px"></span
+          ></a-button>
+        </a-dropdown>
+      </div>
+      <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
+      <div class="vm-header-right">
+        <span class="vm-action-box">
+          <a-button type="danger" @click="finishExperiment">结束备课</a-button>
+        </span>
+      </div>
     </div>
-    <div v-if="roleName==='teacherAndwebide'">
-        teacher交互编程待开发
+    <div class="vm-header-student" v-if="roleName === 'teacherAndwebide'">
+      <div class="vm-header-left">
+        <a-button type="primary" @click="back"
+          ><span class="icon-fanhui iconfont"></span>返回</a-button
+        >
+      </div>
+      <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
+      <div class="vm-header-right">
+        <span class="vm-action-box">
+          <a-button type="danger" @click="finishExperiment">结束备课</a-button>
+        </span>
+      </div>
     </div>
   </div>
   <a-modal
@@ -105,7 +165,7 @@
     <div>
       <ul>
         <li
-          v-for="(item) in recommendExperimentData"
+          v-for="item in recommendExperimentData"
           :key="item.id"
           @click="recommend(item)"
         >
@@ -137,13 +197,13 @@ import {
   backTo,
   operatesHandle,
   IAction,
-  toStudyRecommendExperiment
+  toStudyRecommendExperiment,
 } from "src/utils/vncInspect";
 
 import { message, Modal } from "ant-design-vue";
 import { copyText } from "src/utils/copySelect";
 import storage from "src/utils/extStorage";
-import _ from "lodash"
+import _ from "lodash";
 type TvmQuery = {
   opType: string;
   connection_id: string;
@@ -169,7 +229,7 @@ export default defineComponent({
     }: TvmQuery = vmQuery;
     const isScreenRecording = ref(false);
     const recommendVisible: Ref<boolean> = ref(false);
-    const reactiveData:any = reactive({ recommendExperimentData: {} });
+    const reactiveData: any = reactive({ recommendExperimentData: {} });
     const novncEl: any = inject("novncEl");
     const uuid: any = inject("uuid");
     let use_time: any = inject("use_time");
@@ -183,7 +243,7 @@ export default defineComponent({
       }
       // 学生
       if (role === 4) {
-          // 桌面实验
+        // 桌面实验
         if (allInfo.value?.base_info.task_type.name === "桌面实验") {
           return "stuAndVnc";
         }
@@ -194,7 +254,7 @@ export default defineComponent({
       }
       // 教师
       if (role === 3) {
-         // 桌面实验
+        // 桌面实验
         if (allInfo.value?.base_info.task_type.name === "桌面实验") {
           return "teacherAndVnc";
         }
@@ -229,30 +289,31 @@ export default defineComponent({
     onMounted(() => {
       clearInterval(Number(timer));
       console.log(use_time.value);
-
-      timer = setInterval(() => {
-        experimentTime!.value = secondToHHMMSS(Number(use_time.value));
-        if (taskType === "实训") {
-          use_time.value++;
-        } else {
-          use_time.value--;
-          if (use_time.value === 600) {
-            Modal.confirm({
-              title: "是否延时？",
-              okText: "确认",
-              onOk: () => {
-                delayedTime();
-              },
-              cancelText: "取消",
-              onCancel: () => {},
-            });
+      if (role === 4) {
+        timer = setInterval(() => {
+          experimentTime!.value = secondToHHMMSS(Number(use_time.value));
+          if (taskType === "实训") {
+            use_time.value++;
+          } else {
+            use_time.value--;
+            if (use_time.value === 600) {
+              Modal.confirm({
+                title: "是否延时？",
+                okText: "确认",
+                onOk: () => {
+                  delayedTime();
+                },
+                cancelText: "取消",
+                onCancel: () => {},
+              });
+            }
+            if (use_time.value === 0) {
+              endVmEnvirment();
+              clearInterval(Number(timer));
+            }
           }
-          if (use_time.value === 0) {
-            endVmEnvirment();
-            clearInterval(Number(timer));
-          }
-        }
-      }, 1000);
+        }, 1000);
+      }
     });
     function back() {
       if (opType === "test" || opType === "prepare") {
@@ -289,7 +350,7 @@ export default defineComponent({
     // 结束实验
     function finishExperiment() {
       let modal = Modal.confirm({
-        title: "确认结束实验吗？",
+        title: `确认结束${role===4?'实验':'备课'}吗？`,
         okText: "确认",
         onOk: () => {
           if (opType === "recommend") {
@@ -399,12 +460,22 @@ export default defineComponent({
     }
     // 结束脚本入口
     function endVmEnvirment() {
-      let params: any = {
-        opType: opType,
-        type: type,
-        taskId: taskId,
-        topoinst_id: topoinst_id,
-      };
+      let params: any = null;
+      if (role === 4) {
+        params = {
+          opType: opType,
+          type: type,
+          taskId: taskId,
+          topoinst_id: topoinst_id,
+        };
+      }
+      if (role===3) {
+        params = {
+          opType: opType,
+          type: type,
+          taskId: taskId,
+        };
+      }
 
       setTimeout(() => {
         endExperiment(params).then((res: any) => {
@@ -432,7 +503,7 @@ export default defineComponent({
       recommendVisible,
       allInfo,
       roleName,
-      recommendExperimentData
+      recommendExperimentData,
     };
   },
 });
@@ -453,6 +524,9 @@ export default defineComponent({
       .vm-header-left {
         > button {
           margin-right: 20px;
+          .icon-fanhui {
+            margin-right: 5px;
+          }
         }
       }
       .vm-header-title {

@@ -170,6 +170,7 @@ import {
   operatesHandle,
 } from "src/utils/vncInspect";
 import { wsConnect } from "src/request/websocket";
+import storage from "src/utils/extStorage"
 
 export default defineComponent({
   components: {
@@ -228,7 +229,7 @@ export default defineComponent({
     let connection_id = "";
     let vm_uuid = ref("");
     let taskType = ""; // 实验类型
-
+    let role = storage.lStorage.get("role");
     let { taskBaseInfo } =
       toRefs(reactiveData);
     provide("allInfo", taskBaseInfo);
@@ -291,13 +292,14 @@ export default defineComponent({
       //   }
       // }, 1000);
     });
-    let navData = [
-      // { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+    let navData = role===4?[
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
       { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
       { name: "实验报告", key: "report", icon: "icon-baogao1" },
       { name: "随堂练习", key: "practice", icon: "icon-biji" },
       { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
+    ]:[
+      { name: "实验指导", key: "guide", icon: "icon-zhidao" },
     ];
     const data = reactive(navData);
     function initWs() {
