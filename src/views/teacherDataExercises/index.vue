@@ -121,7 +121,7 @@ export default defineComponent({
         var createParams:fromType={}
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({tabs:state.tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false})
+    updata({tabs:state.tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     // 监听tab变化
     watch(()=>{return configuration.componenttype},(val)=>{
       state.componentName=state.componentNames[val]
@@ -130,9 +130,9 @@ export default defineComponent({
         state.searchValue=''
         params.name=''
         if(type.value===0){
-            params.initial=true
+            params.initial=1
         }else if(type.value===1){
-            params.initial=false
+            params.initial=0
         }
         getExerciseList(params)
     })

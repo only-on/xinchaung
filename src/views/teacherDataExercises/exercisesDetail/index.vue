@@ -17,8 +17,30 @@
             </div>
             <div class="exam-descript">
                 {{exambasic.description}}
-            </div> 
+            </div>
         </div>
+         <a-modal
+                title="编辑目录"
+                :visible="visible"
+                @ok="handleOk"
+                @cancel="handleCancel"
+                :width="900"
+                class="edit"
+                >
+                <div>
+                    
+                 <a-form >
+                    <a-form-item required label="名称">
+                        <!--  -->
+                        <a-input v-model:value="name"></a-input>
+                                </a-form-item>
+                    <a-form-item required label="描述">
+                        <!--  -->
+                        <a-textarea v-model:value='description'></a-textarea>
+                    </a-form-item>
+                    </a-form>  
+                </div>
+        </a-modal> 
         <div class="exam-question-type">
             <a-tabs class="exercise-tab" default-active-key=1 @change="switchExer">
                 <a-tab-pane key=1 tab="单选题"></a-tab-pane>
@@ -32,7 +54,7 @@
              <!-- <keep-alive>
                 <component :is="currentView"></component>
             </keep-alive> -->
-            <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
+            <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :initial='initial' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
         </div>
     </div>
 </template>
@@ -51,6 +73,8 @@ import WatermarkIcon from 'src/components/common/WatermarkIcon.vue';
 interface examBasic{
     name:string,
     description:string,
+    created_at:string,
+    updated_at:string
 }
 interface examType{
     id?:number,
@@ -60,6 +84,13 @@ interface quesType{
     type_id:number,
     type_name:string,
     count:number,
+}
+interface exerciseList{
+    initial:any,
+    type_id?:number,
+    level_id?:number,
+    name?:string,
+    include?:string,
 }
 interface stateData{
     exambasic:examBasic,
@@ -71,7 +102,13 @@ interface stateData{
     levelId:any,
     searchname:string,
     poolid:number,
-    tabledata:any[]
+    tabledata:any[],
+    exerListParams:exerciseList,
+    visible:boolean,
+    initial?:any,
+    initialIfEdit:any,
+    name:string,
+    description:string,
 }
 export default defineComponent({
     name:'exerciseDetail',
@@ -80,12 +117,15 @@ export default defineComponent({
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
         var updata=inject('updataNav') as Function
-        updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:0,backOff:true})
         const state:stateData=reactive({
             exambasic:{
                 name:'',
-                description:''
+                description:'',
+                created_at:'',
+                updated_at:'',
             },
+            name:'',
+            description:'',
             examtype:[],
             componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
@@ -94,16 +134,47 @@ export default defineComponent({
             searchname:'',
             levelId:'',
             poolid:0,
-            tabledata:[]
+            tabledata:[],
+            exerListParams:{initial:0,type_id:1},
+            visible:false,
+            initialIfEdit:true,
+            initial:1,
         })
+        updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
+        function myFn2(){
+            console.log("编辑目录")
+            state.visible = true
+            
+         }
         const methods = {
           exerciseDetail(){
               const item:any=router.currentRoute.value.query.item
+              state.initial=router.currentRoute.value.query.initial
+              state.initialIfEdit=(state.initial==='1'?false:true)
+               updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
               state.question_info=item.question_info?item.question_info:[]
               const id:any=JSON.parse(item).id;
               teacherDataExerApi.detailExercise({urlParams:{pool_id:id}}).then((res:any)=>{
                   state.exambasic=res.data
+                  state.name=state.exambasic.name
+                  state.description=state.exambasic.description
               })
+          },
+          handleOk(){
+            state.visible = false;
+            const item:any=router.currentRoute.value.query.item
+            const id:any=JSON.parse(item).id;
+            teacherDataExerApi.updateExercise({urlParams:{pool_id:id},param:{initial:0,name:state.name,description:state.description}}).then((res:any)=>{
+                console.log(res)
+                methods.exerciseDetail() 
+            })
+            // 习题更新
+            // detailExerUpdate
+          },
+          handleCancel(){
+            state.visible = false;
+            state.name=state.exambasic.name
+            state.description=state.exambasic.description
           },
           exerciseType(){
               teacherDataExerApi.typeExercise().then((res:any)=>{
@@ -117,7 +188,10 @@ export default defineComponent({
           },   
         switchExer(key:any){
               state.selectedId=key
-              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+              state.exerListParams.type_id=key
+              state.levelId=''
+              state.searchname=''
+              methods.exerciseDetailList(state.exerListParams)
               switch(key){
                   case 1:
                   return state.currentView=state.componentNames[0];
@@ -141,44 +215,37 @@ export default defineComponent({
                return 0
             }
           },
-          exerciseDetailList(selectedId:any,levelId:any,searchname:any){
-              console.log(levelId,'levelId')
+          exerciseDetailList(exerListParams:exerciseList){
               const item:any=router.currentRoute.value.query.item
               const id:any=JSON.parse(item).id;
-              if(levelId){
-                   teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers',level_id:levelId,type_id:selectedId,name:searchname}}).then((res:any)=>{
-                  console.log(res)
+            exerListParams.include='answers'
+            teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:exerListParams}).then((res:any)=>{
                   state.tabledata=res.data.list
               })
-              }else{
-                  teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:{initial:false,include:'answers',type_id:selectedId,name:searchname}}).then((res:any)=>{
-                  console.log(res)
-                  state.tabledata=res.data.list
-              }) 
-              }
           },
           finishCreate(val:any){
-              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+              methods.exerciseDetailList(state.exerListParams)
           },
           selectLeves(val:any){
               state.levelId=val
-              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+              state.exerListParams.level_id=val
+              methods.exerciseDetailList(state.exerListParams)
           },
           searchExercise(val:any){
               console.log(val,'val')
               state.searchname=val
+              state.exerListParams.name=val
               console.log(state.searchname,'state.searchname')
-              methods.exerciseDetailList(state.selectedId,state.levelId,state.searchname)
+              methods.exerciseDetailList(state.exerListParams)
           }
        }
        onMounted(()=>{
            methods.exerciseDetail() 
-        //    methods.exerciseType()
-           methods.exerciseDetailList(state.selectedId,'','')
-        const item:any=router.currentRoute.value.query.item
-        const id:any=JSON.parse(item).id;
-           state.poolid=id
-       })
+           methods.exerciseDetailList(state.exerListParams)
+            const item:any=router.currentRoute.value.query.item
+            const id:any=JSON.parse(item).id;
+            state.poolid=id
+        })
         return {...toRefs(state),...methods}
      }
 })
@@ -263,5 +330,8 @@ export default defineComponent({
 .exercise-tab .ant-tabs-nav .ant-tabs-tab{
     padding: 7px 0px;
     margin-right: 35px;
+}
+.edit .ant-modal-footer{
+    text-align: center;
 }
 </style>

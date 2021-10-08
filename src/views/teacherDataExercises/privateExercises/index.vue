@@ -6,7 +6,7 @@
                 <div class="exam-list-title">{{item.name}}</div>
                 <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(" ")[0]}}</div>
                 <div class="exam-list-num"><i class="iconfont icon-xiangmu"></i>{{item.questions_count}}</div>
-                <div class="exam-list-delete" @click="deleteExamItem(item.id)"><i class="iconfont icon-shanchu-copy"></i></div>
+                <div class="exam-list-delete" @click.stop="deleteExamItem(item.id)"><i class="iconfont icon-shanchu-copy"></i></div>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@ export default defineComponent({
         }
         function toExerDetail(item:any){
             console.log(item,'item')
-            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item)}})
+            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:0}})
         }
         return {deleteExamItem,toExerDetail}
     }

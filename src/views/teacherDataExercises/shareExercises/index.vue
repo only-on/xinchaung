@@ -2,7 +2,7 @@
     <div>
         <div class="exerciseList">
             <div class="directoryList">
-                <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()">
+                <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()" @click="toExerDetail(item)">
                     <div class="exam-list-title">{{item.name}}</div>
                     <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(' ')[0]}}</div>
                     <div class="exam-list-num"><i class="iconfont icon-xiangmu"></i>{{item.questions_count}}</div>
@@ -13,11 +13,18 @@
 </template>
 <script lang="ts">
 import {defineComponent}from 'vue'
+import { useRouter } from 'vue-router';
 export default defineComponent({
     name:'shareExercises',
     props: ["componentData"],
     setup:(props,context)=>{
         console.log(props,'props')
+        const router = useRouter();
+         function toExerDetail(item:any){
+            console.log(item,'item')
+            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:1}})
+        }
+        return {toExerDetail}
     }
 })
 </script>

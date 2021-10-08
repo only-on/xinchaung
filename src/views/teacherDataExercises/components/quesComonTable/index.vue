@@ -14,7 +14,7 @@
                 </a-select>
                   <a-input-search v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" style="width:352px;padding:0px 5px 0px 30px" placeholder="请输入目录名称关键字查询" />
                 </div>
-                <div class="question-btn">
+                <div class="question-btn" v-if="initial==='0'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
                     <a-button type="primary" @click="deleteCurrentRowMany">批量删除</a-button>
                     <a-button type="primary">批量导入</a-button>
@@ -27,7 +27,7 @@
                     </template>
                     <template #operation='{record}'>
                         <div>
-                            <span class="iconfont icon-bianji1" @click="editCurrentRow(record,edit=true)" style="margin-right:20px"></span>
+                            <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px"></span>
                             <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)"></span>
                         </div>
                     </template>
@@ -47,7 +47,7 @@
             </div>
             <div>
                 <a-modal
-                    :title="createmodal.title"
+                    :title="edit?'编辑'+createmodal.title:'添加'+createmodal.title"
                     :visible="createmodal.visible"
                     :confirm-loading="createmodal.confirmLoading"
                     @ok="handleOk"
@@ -62,7 +62,7 @@
                             </a-form-item>
                              <!-- 单选题 或者 多选题 -->
                              <div v-if="selectedId===1||selectedId===2">
-                                    <a-radio-group v-model="value" @change="onRadioChange">
+                                    <a-radio-group v-model:value='value' @change="onRadioChange">
                                         <div class="option" v-for="(item,index) in single" :key='index.toString()'>
                                             <div class="option-item">
                                                 <a-form-item required :label='"选项"+item.optionLable'>
@@ -73,7 +73,8 @@
                                                 <!-- 单选框 -->
                                                 <a-radio v-if="selectedId===1" :value='index'>设为答案</a-radio>
                                                 <!-- 多选框 -->
-                                                <a-checkbox v-if="selectedId===2" @change="e =>onMutilChange(e,expermodelValue.options,item,index)">
+                                                <!-- :checked='checked' -->
+                                                <a-checkbox v-if="selectedId===2"  @change="e =>onMutilChange(e,expermodelValue.options,item,index)">
                                                     设为答案
                                                 </a-checkbox>
                                             </div>
@@ -197,11 +198,13 @@ interface State{
     deleteidArr:number[],
     edit:any,
     searchExercise:string,
+    value:any,
+    question_id:any
 }
 
 export default defineComponent({
     name:'quesComonTable',
-    props:['selectedId','poolid','tabledata'],
+    props:['selectedId','poolid','tabledata','initial'],
     setup:(props,context)=>{
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
@@ -211,7 +214,7 @@ export default defineComponent({
             difficultyLevel:[],
             selectLeves:undefined,
             createmodal:{
-                title:'',
+                title:'单选题',
                 visible:false,
                 confirmLoading:false,
             },
@@ -254,7 +257,9 @@ export default defineComponent({
                     slots: { customRender: 'operation' },
                 },
                 ],
-            list:[]
+            list:[],
+            value:'',
+            question_id:'',
         })
         var poolid:any=''
         const methods = {
@@ -272,15 +277,45 @@ export default defineComponent({
                 state.expermodelValue.leves=value
             },
             addTestQuestions(){
+                state.edit=false
             state.createmodal.visible=true
             },
             handleOk(){
+                console.log(state.edit,'是编辑还是创建')
                 if(props.selectedId===3){
                     state.expermodelValue.options=['正确','错误']
                 }
                 state.createmodal.visible=false
                 console.log(state.expermodelValue.options,'state.expermodelValue')
-                teacherDataExerApi.detailExerCreate({
+                if(state.edit){
+                         teacherDataExerApi.detailExerUpdate({
+                urlParams:{question_id:state.question_id}, 
+                param:{
+                question:state.expermodelValue.question,
+                type_id:props.selectedId,
+                level_id:state.expermodelValue.leves,
+                origin_score:state.expermodelValue.score,
+                "points": [
+                    "40","41"
+                ],
+                options:state.expermodelValue.options,
+                keywords:state.expermodelValue.keyword?[state.expermodelValue.keyword]:[],
+                answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
+                }).then((res:any)=>{
+                    console.log(res)
+                    console.log('添加成功')
+                    state.expermodelValue={
+                        question:'',
+                        leves:'',
+                        score:'',
+                        options:[],
+                        keyword:[],
+                        answers:[]
+                    },
+                    context.emit('finishCreate',true)
+                })  
+                }else{
+                    teacherDataExerApi.detailExerCreate({
                 urlParams:{pool_id:props.poolid}, 
                 param:{
                 question:state.expermodelValue.question,
@@ -291,10 +326,11 @@ export default defineComponent({
                     "40","41"
                 ],
                 options:state.expermodelValue.options,
-                keywords:state.expermodelValue.keyword?state.expermodelValue.keyword:[],
+                keywords:state.expermodelValue.keyword?[state.expermodelValue.keyword]:[],
                 answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
                 }).then((res:any)=>{
                     console.log(res)
+                    console.log('添加成功')
                     state.expermodelValue={
                         question:'',
                         leves:'',
@@ -304,8 +340,8 @@ export default defineComponent({
                         answers:[]
                     },
                     context.emit('finishCreate',true)
-                })
-               
+                })  
+                }   
             },
             handleCancel(){
                 state.createmodal.visible=false
@@ -315,20 +351,20 @@ export default defineComponent({
             },
             onMutilChange(e:any,options:any[],item:any,index:number){
                 const quesAnswer:string=options[index].toString()
+                console.log(e.target.checked,'e.target.checked')
                 if(e.target.checked){
                     state.expermodelValue?.answers.push(quesAnswer)
                 }else{
                     const deleindex=state.expermodelValue?.answers.indexOf(quesAnswer)
                     state.expermodelValue.answers.splice(deleindex,1)
-                    console.log(state.expermodelValue.answers[index])
-                    
+                    console.log(state.expermodelValue.answers[index])    
                 }
                 console.log(state.expermodelValue.answers)
             },
             onRadioChange(e:any){
                 const i=Number(e.target.value);
                 state.expermodelValue.answers=state.expermodelValue.options?state.expermodelValue.options[i]:[]
-                console.log('hahaf')
+                // state.expermodelValue.answers=[e.target.value]    
             },
             // 删除调用
             deleteDetailExer(id:any){
@@ -357,15 +393,41 @@ export default defineComponent({
             //编辑
             editCurrentRow(record:any,edit:any){
                 state.edit=edit
+                state.question_id=record.id
                 console.log(record)
+                console.log(edit,'edit')
                  state.createmodal.visible=true
+                const options1:any=[]
+                const answer1:any=[]
+                // 单选题 多选题
+                record.options.forEach((item:any)=>{
+                    console.log(item.name)
+                    options1.push(item.option)
+                    })
+                record.answers.forEach((item:any) => {
+                    answer1.push(item.answer)
+                });
+                //单选答案
+                record.options.forEach((item:any,index:any)=>{
+                    if(item.id==record.answers[0].answer){
+                        return state.value=index
+                    }
+                })
+                // 多选题答案
+                 record.options.forEach((item:any,index:any)=>{
+                     record.answers.forEach((it:any,j:any)=>{
+                         if(item.id===it.answer){
+                             console.log(index,'index多选')
+                         }
+                     })
+                 })
                  state.expermodelValue={
                         question:record.question,
-                        leves:'',
-                        score:'',
-                        options:[],
+                        leves:record.level.id,
+                        score:record.origin_score,
+                        options:options1,
                         keyword:'',
-                        answers:[]
+                        answers:answer1
                     }
             },
             //查询
@@ -392,22 +454,8 @@ export default defineComponent({
         };
         watch(()=>props.selectedId, (newVal) => {
            state.selectLeves=''
-           context.emit('selectLeves',state.selectLeves)
            state.searchExercise=''
-           context.emit('searchExercise',state.searchExercise)
-           switch(newVal){
-                  case 1:
-                  return state.createmodal.title=state.edit?'编辑单选题':'添加单选题';
-                  case 2:
-                  return state.createmodal.title='添加多选题';
-                  case 3:
-                  return state.createmodal.title='添加判断题';
-                  case 4:
-                  return state.createmodal.title='添加填空题';
-                  case 5:
-                  return state.createmodal.title='添加解答题';
-              }
-               state.expermodelValue={
+           state.expermodelValue={
                         question:'',
                         leves:'',
                         score:'',
@@ -415,9 +463,21 @@ export default defineComponent({
                         keyword:'',
                         answers:[]
                     }
+           switch(newVal){
+                  case 1:
+                  return state.createmodal.title='单选题';
+                  case 2:
+                  return state.createmodal.title='多选题';
+                  case 3:
+                  return state.createmodal.title='判断题';
+                  case 4:
+                  return state.createmodal.title='填空题';
+                  case 5:
+                  return state.createmodal.title='解答题';
+              }
         })
         onMounted(()=>{
-             methods.exerciseLevels()
+            methods.exerciseLevels()
         })
         return {...methods,...toRefs(state),rowSelection,poolid}
     }
