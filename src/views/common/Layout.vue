@@ -33,6 +33,7 @@ interface config{
   componenttype:number | undefined;
   showContent:boolean;
   backOff:boolean;
+  showPageEdit:boolean;
   pageEdit: () => void;
 }
 export default defineComponent({
@@ -51,7 +52,8 @@ export default defineComponent({
       componenttype:undefined,           //  tab选中项   传tabs时需赋值 undefined做初始化，随后navtab组件会改其值为tabs的首项。 可监听configuration.componenttype 回调处理
       showContent:false,                //  是否需要内容区盒子   不需要则 layout只带顶部导航
       backOff:false,                    // 顶部与面包屑平齐的 返回 按钮
-      pageEdit:()=>{}
+      showPageEdit:false,               // 顶部与面包屑平齐的 编辑 按钮
+      pageEdit:()=>{}                  // 顶部与面包屑平齐的 编辑 按钮点击回调
 
     })
     function updataNav(val:config){

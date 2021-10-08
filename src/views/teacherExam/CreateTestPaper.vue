@@ -198,7 +198,7 @@ export default defineComponent({
       limit:10
     })
     var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true,pageEdit:myFn2})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true,showPageEdit:true,pageEdit:myFn2})
 
     const rules={
         name: [

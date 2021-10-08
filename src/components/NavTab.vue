@@ -1,8 +1,8 @@
 <template>
   <div class="navList" :class="configuration.tabs && configuration.tabs.length?'border_bottom':''">
-    <div class="back" v-if="configuration.backOff">
-      <a-button @click="back" type="primary">返回</a-button>
-      <a-button @click="pageEdit" type="primary">编辑</a-button>
+    <div class="back" v-if="configuration.backOff || configuration.showPageEdit">
+      <a-button v-if="configuration.backOff" @click="back" type="primary">返回</a-button>
+      <a-button v-if="configuration.showPageEdit" @click="pageEdit" type="primary">编辑</a-button>
     </div>
     <div class="tab">
       <div
@@ -150,5 +150,8 @@ export default defineComponent({
 }
 .back{
   margin-bottom: -16px;
+  .ant-btn-primary{
+    margin-right: 16px;
+  }
 }
 </style>
