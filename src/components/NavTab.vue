@@ -2,6 +2,7 @@
   <div class="navList" :class="configuration.tabs && configuration.tabs.length?'border_bottom':''">
     <div class="back" v-if="configuration.backOff">
       <a-button @click="back" type="primary">返回</a-button>
+      <a-button @click="pageEdit" type="primary">编辑</a-button>
     </div>
     <div class="tab">
       <div
@@ -21,11 +22,10 @@
 </template>
 
 <script lang="ts">
-import { number } from "echarts";
+// import { number } from "echarts";
 import { defineComponent, ref, onMounted, reactive, Ref, watch ,inject, computed} from "vue";
 import { useStore } from "vuex";
 import { useRouter ,useRoute } from 'vue-router';
-import { log } from "util";
 export declare interface ITab {
   name: string;
   componenttype: number;
@@ -69,6 +69,9 @@ export default defineComponent({
         updata({...configuration,componenttype:item.componenttype})
       }
     }
+    function pageEdit(){
+      configuration.pageEdit()
+    }
     function updateRouter(val?:number){
       const {query,path}= route
       router.replace({
@@ -99,7 +102,7 @@ export default defineComponent({
         initData()
       }
     });
-    return { activeName, tabChange ,back,configuration};
+    return { activeName, tabChange ,back,pageEdit,configuration};
   },
 });
 </script>

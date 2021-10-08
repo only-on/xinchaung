@@ -7,7 +7,7 @@
     </div>
     <div class="main-box">
       <div class="list">
-        <div class="card cread-card" @click="add">
+        <div v-if="ForumSearch.page===1" class="card cread-card" @click="add">
           <div class="kernel">
             <div class="create-btn card-item-content">
               <i class="iconfont icon-chuangjian"></i>
@@ -41,8 +41,8 @@
       <Empty v-if="!list.length" />
       <a-pagination v-if="list.length"
           v-model:current="ForumSearch.page"
-          :pageSize="10"
-          :total="totalCount"
+          :pageSize="12"
+          :total="totalCount+1"
           @change="pageChange"
         />
     </div>

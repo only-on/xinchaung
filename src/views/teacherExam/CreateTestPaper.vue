@@ -2,12 +2,12 @@
   <div v-layout-bg class="createPaper">
     <div class="header">
       <div class="left">
-        <a-form :model="ForumSearch" :label-col="{span:3 }" labelAlign="left" :wrapper-col="{span: 19}" :rules="rules" ref="'formRef'">
+        <a-form :model="ForumSearch" :label-col="{span:3 }" labelAlign="left" :wrapper-col="{span: 19}" :rules="rules" :ref="formRef">
           <a-form-item label="试卷名称" name="name">
             <a-input v-model:value="ForumSearch.name" />
           </a-form-item>
-          <a-form-item label="试卷描述" name="desc">
-            <a-textarea v-model:value="ForumSearch.desc" />
+          <a-form-item label="试卷描述" name="description">
+            <a-textarea v-model:value="ForumSearch.description" />
           </a-form-item>
         </a-form>
       </div>
@@ -18,7 +18,7 @@
         <div class="info">
           <div class="tit">试卷试题</div>
           <div class="fraction">
-            （<span class="num1">已选试题：<span class="num">{{'70'}}</span>个</span><span>试题总分：<span class="num">{{'100'}}</span>分</span>）
+            （<span class="num1">已选试题：<span class="num">{{selectedPaperIds && selectedPaperIds.length}}</span>个</span><span>试题总分：<span class="num">{{totalScore}}</span>分</span>）
           </div>
         </div>
         <div>
@@ -49,14 +49,14 @@
                   <div class="options" v-for="(i,k) in v.options" :key="i" :class="answers(i.id,v.answers)?'selected':''">{{`选项${option[k]}、${i.option}`}}</div>
                 </template>
                 <template v-if="activePaper==='pan'">
-                  <div v-for="v in ['正确','错误']" :key="v" class="options" :class="v?'selected':''">{{v}}</div>
+                  <div v-for="i in v.options" :key="i.id" class="options" :class="answers(i.id,v.answers)?'selected':''">{{i.option}}</div>
                 </template>
-                <template v-if="activePaper==='tian'">
-                  <div class="options">填空题答案</div>
+                <template v-if="activePaper==='tian' || activePaper==='jian'">
+                  <div class="options">{{v.answers[0] && v.answers[0].answer}}</div>
                 </template>
-                <template v-if="activePaper==='jian'">
-                  <div class="options">简答题内容</div>
-                </template>
+                <!-- <template v-if="activePaper==='jian'">
+                  <div class="options">{{getAnswer(v.answers)}}</div>
+                </template> -->
               </div>
             </div>
           </template>
@@ -67,6 +67,10 @@
         </div>
       </div>
     </div>
+    <div class="submit">
+      <a-button @click="cancel"> 取 消 </a-button>
+      <a-button type="primary" @click="submit"> 保 存 </a-button>
+    </div>
   </div>
   <a-drawer
     width="760"
@@ -76,11 +80,11 @@
   >
     <div class="selectPaper">
       <div class="tabs">
-        <div v-for="v in PaperList" :key="v.name" :class="v.type_id===search.type_id?'active':''" @click="search.type_id=v.type_id,getQuestions()">{{v.name}}</div>
+        <div v-for="v in PaperList" :key="v.name" :class="v.type_id===search.type_id?'active':''" @click="activeChange(v)">{{v.name}}</div>
       </div>
       <div class="search">
         <div  class="item custom_select">
-            <a-select style="width: 300px" v-model:value="search.pool_id"  placeholder="请选择题库" :options="options" @change="getQuestions"></a-select>
+            <a-select style="width: 300px" v-model:value="search.pool_id"  placeholder="请选择题库" :options="catalogueOptions" @change="getQuestions"></a-select>
         </div>
         <div  class="item custom_select">
             <a-select style="width: 300px" v-model:value="search.level_id" placeholder="请选择试题难度" :options="options2" @change="getQuestions"></a-select>
@@ -118,12 +122,11 @@
 </template>
 <script lang="ts">
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { defineComponent,ref, onMounted,reactive,Ref,inject, computed } from 'vue'
-import { useRouter } from 'vue-router';
+import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs } from 'vue'
+import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
-import { log } from 'console';
-import { dataTool } from 'echarts';
+import { Modal,message } from 'ant-design-vue';
 interface IlistItem{
   id:number;
   name:string;
@@ -135,7 +138,7 @@ interface IlistItem{
 }
 interface IforumSearch{
   name:string,
-  desc:string,
+  description:string,
 }
 interface ISearch{
   name:string;
@@ -152,6 +155,9 @@ interface IPaperList{
   data:any[],
   ids:number[]
 }
+interface Istate{
+  formRef:any,
+}
 export default defineComponent({
   name: '',
   components: {
@@ -159,21 +165,29 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
+    const route = useRoute();
+    const {editId}= route.query
     var QuestionsList:IlistItem[]=reactive([])
     var PaperList:IPaperList[]=reactive([{name:'单选题',type:'dan',type_id:1,data:[],ids:[]},{name:'多选题',type:'duo',type_id:2,data:[],ids:[]},{name:'判断题',type:'pan',type_id:3,data:[],ids:[]},{name:'填空题',type:'tian',type_id:4,data:[],ids:[]},{name:'简答题',type:'jian',type_id:5,data:[],ids:[]}])
     var activePaper:Ref<string> =ref('dan')
-    const options =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
+    const catalogueOptions =ref<SelectTypes['options']>([{label:'公有',options:[]},{label:'私有',options:[]}])    // 题库目录
     const options2 =ref<SelectTypes['options']>([{value: '1', label: '简单'},{value: '2', label: '中等'},{value: '3', label: '困难'}])
     // var activeKey:Ref<string> =ref('dan')
     var totalCount:Ref<number> =ref(0)
     var option=['A','B','C','D','E','F','G']
     var loading:Ref<boolean> =ref(false)
     const visible = ref<boolean>(false);
-    var selectedPaperIds:number[]=reactive([])          // 已选择的题目id
+    var selectedPaperIds:number[]=reactive([])          // 已选择的题目id  description
+    const totalScore = ref<number>(0);
+    // var formRef:Ref<string> =ref('formRef')
+    const formRef = ref();
+    const state:Istate=reactive({
+      formRef:'formRef',
+    })
     const http=(request as any).teacherExam
     const ForumSearch:IforumSearch=reactive({
       name:'',
-      desc:''
+      description:'',
     })
     var search:ISearch=reactive({
       name:'',
@@ -184,12 +198,16 @@ export default defineComponent({
       limit:10
     })
     var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true,pageEdit:myFn2})
+
     const rules={
         name: [
           { required: true, message: '请输入试卷名称', trigger: 'blur'},
         ],
-        desc: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
+        description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
+    }
+    function myFn2(){
+      console.log('page编辑')
     }
     var selectQuestionList= computed(()=>{
       type Tactive=Pick<IPaperList,'data'|'ids'>
@@ -218,7 +236,26 @@ export default defineComponent({
       return item
     })
     function initData(){
-      loading.value=true
+      // 获取题库目录
+      http.pools().then((res:IBusinessResp)=>{
+        interface IOptions{
+          value:string,
+          label:string,
+        }
+        let data=res.data.list
+        // console.log('[获取题库目录] ', data);
+        catalogueOptions.value![0].options.length=0
+        catalogueOptions.value![1].options.length=0
+        data.forEach((v:any)=>{
+          let obj:IOptions={value: v.id, label: v.name}
+          if(v.initial===1){
+            catalogueOptions.value![0].options.push(obj)
+          }else{
+            catalogueOptions.value![1].options.push(obj)
+          }
+        })
+        // console.log(catalogueOptions.value)
+      })
     }
     function screen(){
 
@@ -233,7 +270,7 @@ export default defineComponent({
     function getQuestions(){
       let obj={
         ...search,
-        pool_id:search.level_id?search.pool_id:'',
+        pool_id:search.pool_id?search.pool_id:'',
         level_id:search.level_id?search.level_id:'',
       }
       http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
@@ -249,6 +286,7 @@ export default defineComponent({
         pool_id:search.level_id?search.pool_id:'',
         level_id:search.level_id?search.level_id:'',
       }
+      // initData()
       http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
         QuestionsList.length=0
         QuestionsList.push(...res.data.list)
@@ -290,15 +328,45 @@ export default defineComponent({
       })
       if(num===-1){
         selectedPaperIds.push(val.id)
+        totalScore.value+=Number(val.origin_score)
       }else{
         selectedPaperIds.splice(num,1)
+        totalScore.value-=Number(val.origin_score)
       }
+      // totalScore
     }
-
+    function activeChange(v:IPaperList){
+      activePaper.value=v.type
+      search.type_id=v.type_id
+      search.name=''
+      search.level_id=undefined
+      search.pool_id=undefined
+      search.page=1
+      getQuestions()
+      // console.log(search)
+    }
+    function submit(){
+      // formRef.value.validate().then(()=>{
+      state.formRef.validate().then(()=>{
+        console.log('验证过');
+        let obj={
+          ...ForumSearch,
+          questions:selectedPaperIds,
+         type:'simple',
+        }
+        http.submitPaper({param:{...obj}}).then((res:IBusinessResp)=>{
+          message.success(editId?'修改成功':'创建成功')
+          router.go(-1)
+        })
+      })
+    }
+    function cancel(answer: any) {
+      router.go(-1)
+    }
     onMounted(()=>{
-    //  initData()
+     initData()
     })
-    return {QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,options,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
+    return {formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
   },
 })
 </script>
@@ -323,7 +391,7 @@ export default defineComponent({
 .questions{
   font-size: 16px;
   border: 1px solid #d5d5d5;
-  height: calc(100% - 193px);
+  height: calc(100% - 245px);
   overflow: hidden;
   .title{
     height: 58px;
@@ -459,7 +527,13 @@ export default defineComponent({
     }
   }
 }
-
+.submit{
+  text-align: center;
+  padding-top: 20px;
+  .ant-btn{
+    margin: 0 16px;
+  }
+}
 .selectPaper{
   height: 100%;
     display: flex;

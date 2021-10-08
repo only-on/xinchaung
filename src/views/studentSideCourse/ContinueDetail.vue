@@ -141,7 +141,7 @@ export default defineComponent({
       if(val.type ===1 || val.type === 2){
         taskid.value=val.tid
         experimentName.value=val.name
-        note_id.value=val.notes_id
+        note_id.value=String(val.notes_id)
         experimentalId.value=val.id
         componentName.value='ChapterExperiment'
       }else if (val.type === 3) {
