@@ -11,6 +11,7 @@ interface ITeacherExperimental {
   trainComplex: Function
   trainArchived: Function
   trainDeleted: Function
+  getResourceList: Function
 }
 export interface ITeacherExperimentalHttp {
   teacherExperimental: ITeacherExperimental

@@ -6,7 +6,8 @@
       </a-form-item>
       <a-form-item label="资源类型">
         <a-select v-model:value="searchInfo.resourceType" placeholder="">
-          <a-select-option v-for="(v, i) in resourceTypeList" :key="i" :value="i">{{v}}</a-select-option>
+          <a-select-option value="">请选择</a-select-option>
+          <a-select-option v-for="(v, i) in resourceTypeList" :key="i" :value="v">{{v}}</a-select-option>
         </a-select>
       </a-form-item>
       <a-button type="primary" @click="query()">查询</a-button>
@@ -37,16 +38,19 @@
       :columns="columns" 
       :bordered="true"
       :pagination="false"
+      v-if="tableList.length"
     >
       <template #type="{ record }">
-        <span>{{ record.posfix}}</span>
+        <span>{{ record.posfix }}</span>
       </template>
       <template #operation="{ record }">
         <!-- <span class="iconfont icon-download" @click="download(record.url)"></span> -->
-        <a class="iconfont icon-download" title="下载" :href="record.url" download></a>
+        <!-- href="http://192.168.101.150/upload/train/50304/train_resource/16336625584419.xlsx" -->
+        <a class="iconfont icon-download" title="下载" :href="'http://192.168.101.150'+record.url" :download="record.name"></a>
         <span class="iconfont icon-shanchu" title="删除" @click="deleteResource(record.id)"></span>
       </template>
     </a-table>
+    <Empty v-else/>
     <div class="page-footer-box">
         <!-- show-size-changer @showSizeChange="onShowSizeChange"-->
       <a-pagination
@@ -61,27 +65,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, createVNode } from 'vue'
+import { defineComponent, reactive, toRefs, createVNode, inject, onMounted } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperimentalHttp } from './typings'
 import { message } from 'ant-design-vue'
 import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   setup() {
-    const isMyself = true   // 教师自己的实训可以上传资源,内置实训不可以
-    const trainInfo = {
-      trainId: '50235'
+    var updata = inject('updataNav') as Function
+    updata({ tabs:[], navPosition:'outside', navType:false, showContent:false, componenttype:undefined })
+    let route = useRoute()
+    console.log(route.query)
+    const isMyself = route.query.trainType === '0'   // 教师自己的实训可以上传资源,内置实训不可以
+    const trainInfo:{trainId: any} = {
+      trainId: route.query.trainId
     }
     const http=(request as ITeacherExperimentalHttp).teacherExperimental
-    console.log(request.teacherExperimental)
+    console.log (request.teacherExperimental)
     const data = reactive<Idata>({
-      resourceTypeList: ["请选择", "gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
+      resourceTypeList: ["gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
       searchInfo: {
         resourceName: '',
-        resourceType: 0
+        resourceType: ''
       },
       uploadResourceInfo: {
         url: '',
@@ -118,8 +127,8 @@ export default defineComponent({
       },
       {
         title: '上传时间',
-        dataIndex: 'created_time',
-        key: 'created_time',
+        dataIndex: 'created_at',
+        key: 'created_at',
       },
       {
         title: '操作',
@@ -131,17 +140,35 @@ export default defineComponent({
     // 获取列表数据
     const getResourceList = () => {
       data.page.total = 30
-      data.tableList = [
-        {
-          id: 1,
-          name: '111',
-          describe: '222',
-          posfix: 'lsx',
-          size: '1024kb',
-          created_time: '2021.9.16',
-          url: "/src/assets/images/bg1.jpg"
+      // data.tableList = [
+      //   {
+      //     id: 1,
+      //     name: '111',
+      //     describe: '222',
+      //     posfix: 'lsx',
+      //     size: '1024kb',
+      //     created_time: '2021.9.16',
+      //     url: "/src/assets/images/bg1.jpg"
+      //   }
+      // ]
+      let param = {
+        query: {
+          id: trainInfo.trainId,
+          name: data.searchInfo.resourceName,
+          posfix: data.searchInfo.resourceType,
+        },
+        page: {
+          pageSize: data.page.pageSize,
+          page: data.page.page
         }
-      ]
+      }
+      console.log(param)
+      http.getResourceList({param}).then((res: IBusinessResp) => {
+        console.log(res)
+        data.tableList = res.data.list
+        data.page.page = res.data.page.currentPage
+        data.page.total = res.data.page.totalCount
+      })
     }
     // 查询
     const query = () => {
@@ -150,7 +177,7 @@ export default defineComponent({
     // 清空
     const clear = () => {
       data.searchInfo.resourceName = ''
-      data.searchInfo.resourceType = 0
+      data.searchInfo.resourceType = ''
     }
     // 下载
     const download = (url: string) => {
@@ -178,6 +205,7 @@ export default defineComponent({
     const pageChange = (page: number, pageSize: number) => {
       data.page.page = page
       data.page.pageSize = pageSize
+      getResourceList()
     }
     // pageSize 变化的回调
     const onShowSizeChange = (current: number, size: number) => {
@@ -236,6 +264,10 @@ export default defineComponent({
     const rowkey = (record: {}, index: number) => {
       return index
     }
+
+    onMounted(() => {
+      getResourceList()
+    })
     return {
       isMyself,
       ...toRefs(data),
@@ -255,7 +287,7 @@ export default defineComponent({
 })
 interface IsearchInfo {
   resourceName: string
-  resourceType: number
+  resourceType: string
 }
 interface IuploadResourceInfo {
   url: string
@@ -348,6 +380,7 @@ interface FileInfo {
         position: absolute;
         bottom: -10px;
         left: 0;
+        font-size: 14px;
       }
     }
   }

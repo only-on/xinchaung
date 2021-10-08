@@ -10,6 +10,7 @@ export default{
   // 资源
   delResource:{url:`/teacher-train/del-upload`, method: "GET", dataType: 'json'},
   uploadResource: {url: `/teacher-train/upload-resource`,method: 'POST',dataType: 'formdata'},
+  getResourceList: { url: '/teacher-train/get-resource-list', method: 'POST', dataType: 'json' },
 
   // 新建实训  选择环境
   ImageList:{url:`/api/env/containers`,method: 'GET'},
@@ -31,6 +32,7 @@ export interface ITeacherExperimentallAps {
   setExperimentalScore: TFHttpSend;
   delResource: TFHttpSend;
   uploadResource: TFHttpSend;
+  getResourceList: TFHttpSend;
   ImageList: TFHttpSend;
   trainUpload: TFHttpSend;
   trainList: TFHttpSend;
