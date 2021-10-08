@@ -1,8 +1,9 @@
 <template>
-  <div class="no-data" :class="emptyType">
-    <div class="emptyContent">
-      <span class="emptyCon">{{emptyText}}</span>
+  <div class="emptyContent">
+    <div class="no-data" :class="emptyType">
+  
     </div>
+    <div class="emptyCon">{{emptyText}}</div>
   </div>
 </template>
 
@@ -60,35 +61,30 @@ export default defineComponent({
   .tableSearchEmpty{
     background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
   }
+  .emptyContent{
+    margin: 20px;
+  }
   .no-data {
         width: 100%;
         height: 100%;
-        padding: 0px 20px;
-        // margin: 20px;
+        height: 300px;
         background-color: white;
         display: flex;
         justify-content: center;
         align-items: center;
         background-repeat: no-repeat;
         background-position: center;
-        // background-size: 100% 100%;
-        // background-size: contain;
+        background-size: auto 100%;
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        .emptyContent{
-            width: 100%;
-            height: 100%;
-            margin: 20px;
-            display: flex;
-            justify-content: center;
-            align-items:center;
-            .emptyCon {
-                font-size: 16px;
-                padding-top: 306px;
-            }
-        }
+  }
+  .emptyCon {
+    // margin-top: 20px;
+      font-size: 16px;
+      width: 100%;
+      text-align: center;
   }
   .empty,.searchEmpty{
     .emptyCon{

@@ -54,9 +54,6 @@
                 <template v-if="activePaper==='tian' || activePaper==='jian'">
                   <div class="options">{{v.answers[0] && v.answers[0].answer}}</div>
                 </template>
-                <!-- <template v-if="activePaper==='jian'">
-                  <div class="options">{{getAnswer(v.answers)}}</div>
-                </template> -->
               </div>
             </div>
           </template>
@@ -198,16 +195,13 @@ export default defineComponent({
       limit:10
     })
     var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true,showPageEdit:true,pageEdit:myFn2})
+    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
 
     const rules={
         name: [
           { required: true, message: '请输入试卷名称', trigger: 'blur'},
         ],
         description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
-    }
-    function myFn2(){
-      console.log('page编辑')
     }
     var selectQuestionList= computed(()=>{
       type Tactive=Pick<IPaperList,'data'|'ids'>
