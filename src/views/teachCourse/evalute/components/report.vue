@@ -2,11 +2,11 @@
   <div class="report">
     <!-- 离线报告 -->
     <div id="offline" v-if="showOffline">
-      <iframe :src="reportData.pdf_url" frameborder="0" width="100%" height="500px"></iframe>
+      <iframe v-if="showIframe" :src="reportData.pdf_url" frameborder="0" width="100%" height="500px"></iframe>
+      <div v-else>文档转换中，请稍后查看！</div>
     </div>
     <!-- 在线报告 -->
     <div id="online" v-if="showOnline">
-       <!-- v-html="getTr(reportData.json_content)" -->
       <table>
         <template v-for="(item,index) in reportData.json_content" :key="index">
           <tr v-if="item.type === 'w1'">
@@ -110,6 +110,7 @@ export default defineComponent({
     var showOffline = ref<boolean>(false)
     var showOnline = ref<boolean>(false)
     var annotateDisabled = ref<boolean>(false)
+    var showIframe = ref<boolean>(false)
     var refresh=inject('refresh') as Function
     var form = reactive<Iform>({
       score: '',
@@ -125,6 +126,15 @@ export default defineComponent({
         Object.assign(reportData, props.reportData)
         if (reportData && reportData.template_type === 'file'&& reportData.pdf_url) {
           showOffline.value = true
+          fetch(reportData.pdf_url,{
+              method: 'get',
+          }).then((res:any) => {     
+              if (res.status === 200) {
+                showIframe.value = true
+              } else {
+                showIframe.value = false
+              }
+          })
         }
         if (reportData && reportData.template_type === 'form'&& reportData.json_content.length > 0) {
           showOnline.value = true
@@ -162,6 +172,7 @@ export default defineComponent({
       showOffline,
       showOnline,
       annotateDisabled,
+      showIframe,
       handleAnnotate,
       handleFinish,
     }
@@ -172,6 +183,15 @@ export default defineComponent({
 .report{
   position: relative;
   overflow: hidden;
+  #offline{
+    &>div{
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: @theme-color
+    }
+  }
   .annotate{
     width: 85px;
     height: 50px;

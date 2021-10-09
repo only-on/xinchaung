@@ -425,6 +425,9 @@ export default defineComponent({
     }
     :deep(.ant-table){
       font-size: 14px;
+      .ant-table-tbody > tr > td{
+        padding: 16px 10px;
+      }
     }
     .text{
       color: #c9c9c9;

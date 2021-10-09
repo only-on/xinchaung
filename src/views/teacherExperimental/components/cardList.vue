@@ -1,6 +1,6 @@
 <template>
   <div class="cardList">
-    <div class="cardBox mySelfCreate"  v-if="trainType === 0">
+    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/Experimental/creatExperimental')">
       <span>新建实训</span>
     </div>
     <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()">
@@ -97,10 +97,12 @@ import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperimentalHttp } from '../typings'
 import { message } from 'ant-design-vue';
+import { useRouter} from 'vue-router'
 export default defineComponent({
   props: ['trainType', 'data'],
   setup(props,{emit}) {
     const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const router = useRouter();
     var switchVal=ref<boolean>(false)
     var trainType = ref<number>(props.trainType)
     var dataList = ref<any>(props.data)
@@ -133,7 +135,8 @@ export default defineComponent({
       dataList,
       changeSwitch,
       handleOperate,
-      defaultImg: '/src/assets/images/Experimental/wlkc.png'
+      defaultImg: '/src/assets/images/Experimental/wlkc.png',
+      router
     }
   },
 })
@@ -173,6 +176,7 @@ export default defineComponent({
     height: 166px;
     overflow: hidden;
     position: relative;
+    border-radius: 10px 10px 0 0;
     .pic-train{
       position: absolute;
       left: 0;
@@ -213,6 +217,7 @@ export default defineComponent({
   }
   .cardinfo{
     padding: 0 14px;
+    font-size: 14px;
     .train-title{
       line-height: 35px;
       font-size: 16px;
@@ -221,6 +226,7 @@ export default defineComponent({
     }
     .train-time{
       color: #8c8c8c;
+      line-height: 24px;
     }
     .desc-status{
       display: none;
@@ -324,6 +330,7 @@ export default defineComponent({
     li{
       color: #898989;
       margin-right: 20px;
+      font-size: 14px;
     }
   }
 }

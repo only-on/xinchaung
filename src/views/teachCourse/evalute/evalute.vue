@@ -40,8 +40,8 @@ export default defineComponent({
     const http = (request as Ihttp).teachCourse
     var treeData = reactive<any[]>([])
     var chapterId:Ref<number> = ref(0)
-    // 501287:成绩 501195:评价 501737 501743:视频
-    var courseId:Ref<number> = ref(501742)
+    // 501287:成绩 501195:评价 501737 501743:视频 501742
+    var courseId:Ref<number> = ref(501287)
     var contentId:Ref<number> = ref(0)
     var showChapterContent:Ref<boolean> = ref(true)
     var courseInfo = reactive<ICourseInfo>({
