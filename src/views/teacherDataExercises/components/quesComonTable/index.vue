@@ -20,6 +20,9 @@
                     <a-button type="primary">批量导入</a-button>
                 </div>
             </div>
+            <a-modal :visible="visibleDelete" title="提示" ok-text="确定" cancel-text="取消"  @ok="deleteOk" @cancel="deleteCancel">
+                <p>习题删除后将无法恢复，确定要删除吗?</p>
+            </a-modal>
             <div class="question-content-table">
                 <a-table :row-selection="rowSelection" :columns="columns" rowKey="id" :loading="loading" :data-source="tabledata">
                     <template #difficulty='{record}'>
@@ -27,8 +30,8 @@
                     </template>
                     <template #operation='{record}'>
                         <div>
-                            <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px"></span>
-                            <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)"></span>
+                            <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px;color:#8955b5"></span>
+                            <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)" style="color:#8955b5"></span>
                         </div>
                     </template>
                     <template #select-answers='{record}'>
@@ -63,6 +66,7 @@
                              <!-- 单选题 或者 多选题 -->
                              <div v-if="selectedId===1||selectedId===2">
                                     <a-radio-group v-model:value='value' @change="onRadioChange">
+                                        <a-checkbox-group  v-model:value="value1" name="checkboxgroup" @change="onMutilChange">
                                         <div class="option" v-for="(item,index) in single" :key='index.toString()'>
                                             <div class="option-item">
                                                 <a-form-item required :label='"选项"+item.optionLable'>
@@ -74,11 +78,10 @@
                                                 <a-radio v-if="selectedId===1" :value='index'>设为答案</a-radio>
                                                 <!-- 多选框 -->
                                                 <!-- :checked='checked' -->
-                                                <a-checkbox v-if="selectedId===2"  @change="e =>onMutilChange(e,expermodelValue.options,item,index)">
-                                                    设为答案
-                                                </a-checkbox>
+                                                <a-checkbox v-if="selectedId===2" :value='index'>设为答案</a-checkbox>
                                             </div>
                                         </div>
+                                        </a-checkbox-group>
                                     </a-radio-group>
                              </div>
                             <!-- 判断题 -->
@@ -88,9 +91,10 @@
                                     </a-form-item>
                                 </div>
                                 <div>
-                                    <a-radio-group v-model="value" @change="onJudgeChange">
-                                        <a-radio value='正确'>正确</a-radio>
-                                        <a-radio value='错误'>错误</a-radio>
+                                    {{value}}
+                                    <a-radio-group v-model:value="value" @change="onJudgeChange">
+                                        <a-radio :value='0'>正确</a-radio>
+                                        <a-radio :value='1'>错误</a-radio>
                                     </a-radio-group>
                                 </div>
                             </div>
@@ -102,9 +106,9 @@
                                 </a-form-item>
                                 </div>
                                 <div style="margin-bottom:20px">
-                                    <a-checkbox>
-                                    答案有序
-                                    </a-checkbox>
+                                        <a-checkbox :checked='expermodelValue.ordered_answer' @change='orderAnswerChange'>
+                                        答案有序
+                                        </a-checkbox>
                                 </div>
                             </div>
                             <!-- 解答题 -->
@@ -179,8 +183,8 @@ interface paramsType{
     score?:string,//分数
     ordered_answer?:boolean,//答案是否有序
     // options?:string[],//习题选项
-    options?:any[],//习题选项
-    keyword?:any[]|string,//关键字
+    options:any[],//习题选项
+    keyword?:string,//关键字
     points?:any[],// 知识点
     answers:any[],
 }
@@ -199,7 +203,10 @@ interface State{
     edit:any,
     searchExercise:string,
     value:any,
-    question_id:any
+    value1:any[],
+    question_id:any,
+    visibleDelete:boolean,
+    deleteRowId?:number,
 }
 
 export default defineComponent({
@@ -259,7 +266,9 @@ export default defineComponent({
                 ],
             list:[],
             value:'',
+            value1:[],
             question_id:'',
+            visibleDelete:false,
         })
         var poolid:any=''
         const methods = {
@@ -288,55 +297,61 @@ export default defineComponent({
                 state.createmodal.visible=false
                 console.log(state.expermodelValue.options,'state.expermodelValue')
                 if(state.edit){
-                         teacherDataExerApi.detailExerUpdate({
+                teacherDataExerApi.detailExerUpdate({
                 urlParams:{question_id:state.question_id}, 
                 param:{
                 question:state.expermodelValue.question,
                 type_id:props.selectedId,
                 level_id:state.expermodelValue.leves,
+                ordered_answer:state.expermodelValue.ordered_answer,
                 origin_score:state.expermodelValue.score,
                 "points": [
                     "40","41"
                 ],
                 options:state.expermodelValue.options,
-                keywords:state.expermodelValue.keyword?[state.expermodelValue.keyword]:[],
+                keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
                 answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
                 }).then((res:any)=>{
                     console.log(res)
-                    console.log('添加成功')
+                    console.log('编辑成功')
+                    state.value='',
+                    state.value1=[],
                     state.expermodelValue={
                         question:'',
                         leves:'',
                         score:'',
                         options:[],
-                        keyword:[],
+                        keyword:'',
                         answers:[]
                     },
                     context.emit('finishCreate',true)
                 })  
                 }else{
-                    teacherDataExerApi.detailExerCreate({
+                teacherDataExerApi.detailExerCreate({
                 urlParams:{pool_id:props.poolid}, 
                 param:{
                 question:state.expermodelValue.question,
                 type_id:props.selectedId,
                 level_id:state.expermodelValue.leves,
                 origin_score:state.expermodelValue.score,
+                ordered_answer:state.expermodelValue.ordered_answer,
                 "points": [
                     "40","41"
                 ],
                 options:state.expermodelValue.options,
-                keywords:state.expermodelValue.keyword?[state.expermodelValue.keyword]:[],
+                keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
                 answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
                 }).then((res:any)=>{
                     console.log(res)
                     console.log('添加成功')
+                     state.value='',
+                    state.value1=[],
                     state.expermodelValue={
                         question:'',
                         leves:'',
                         score:'',
                         options:[],
-                        keyword:[],
+                        keyword:'',
                         answers:[]
                     },
                     context.emit('finishCreate',true)
@@ -347,24 +362,19 @@ export default defineComponent({
                 state.createmodal.visible=false
             },
             onJudgeChange(e:any){
-                state.expermodelValue.answers=e.target.value
+                console.log(e.target.value,'判断题')
+                console.log(state.value)
+                state.expermodelValue.answers=[e.target.value]
             },
-            onMutilChange(e:any,options:any[],item:any,index:number){
-                const quesAnswer:string=options[index].toString()
-                console.log(e.target.checked,'e.target.checked')
-                if(e.target.checked){
-                    state.expermodelValue?.answers.push(quesAnswer)
-                }else{
-                    const deleindex=state.expermodelValue?.answers.indexOf(quesAnswer)
-                    state.expermodelValue.answers.splice(deleindex,1)
-                    console.log(state.expermodelValue.answers[index])    
-                }
-                console.log(state.expermodelValue.answers)
+            onMutilChange(checkedValues:any){
+                 state.expermodelValue.answers=checkedValues
             },
             onRadioChange(e:any){
-                const i=Number(e.target.value);
-                state.expermodelValue.answers=state.expermodelValue.options?state.expermodelValue.options[i]:[]
-                // state.expermodelValue.answers=[e.target.value]    
+                state.expermodelValue.answers=[e.target.value]    
+            },
+            orderAnswerChange(e:any){
+                console.log(e.target.checked)
+                state.expermodelValue.ordered_answer=e.target.checked
             },
             // 删除调用
             deleteDetailExer(id:any){
@@ -380,55 +390,83 @@ export default defineComponent({
                     message.warning('请至少选择一个记录')
                 } 
             },
+            // 确认删除弹框
+            deleteOk(){
+                state.visibleDelete=false
+                console.log('确认删除')
+                methods.deleteDetailExer(state.deleteRowId)
+                methods.deleteDetailExer(state.deleteidArr.join(','))
+            },
+            deleteCancel(){
+                state.visibleDelete=false
+            },
             // 删除一行
             deleteCurrentRow(id:any){
-                methods.deleteDetailExer(id)
+                state.visibleDelete=true
+                state.deleteRowId=id
+                // methods.deleteDetailExer(id)
             },
             //批量删除
             deleteCurrentRowMany(){
-                console.log(state.deleteidArr,'批量删除')
-                console.log(state.deleteidArr.join(','))
-                methods.deleteDetailExer(state.deleteidArr.join(','))
+                 state.visibleDelete=true
+                // console.log(state.deleteidArr,'批量删除')
+                // console.log(state.deleteidArr.join(','))
+                // methods.deleteDetailExer(state.deleteidArr.join(','))
             },
             //编辑
             editCurrentRow(record:any,edit:any){
                 state.edit=edit
                 state.question_id=record.id
-                console.log(record)
-                console.log(edit,'edit')
-                 state.createmodal.visible=true
+                console.log(record,'record')
                 const options1:any=[]
                 const answer1:any=[]
+                const keywords1:any=[]
                 // 单选题 多选题
                 record.options.forEach((item:any)=>{
                     console.log(item.name)
                     options1.push(item.option)
                     })
-                record.answers.forEach((item:any) => {
+                record.answers?.forEach((item:any) => {
                     answer1.push(item.answer)
                 });
-                //单选答案
+                    //单选答案回显
                 record.options.forEach((item:any,index:any)=>{
                     if(item.id==record.answers[0].answer){
-                        return state.value=index
+                        console.log(item.option,'option')
+                        return state.value=item.option
                     }
                 })
-                // 多选题答案
+                //多选题答案回显
                  record.options.forEach((item:any,index:any)=>{
                      record.answers.forEach((it:any,j:any)=>{
-                         if(item.id===it.answer){
+                         if(item.id==it.answer){
                              console.log(index,'index多选')
+                             state.value1.push(index)
                          }
                      })
                  })
+                // 判断题答案回显
+                record.options.forEach((item:any,index:any)=>{
+                    if(item.id==record.answers[0].answer){
+                        console.log(item.option)
+                        // return state.value=item.option
+                    }
+                })
+                 //关键词
+                record.keywords.forEach((item:any) => {
+                    keywords1.push(item.keyword)
+                })
+                 console.log(state.value1,'value1')
                  state.expermodelValue={
                         question:record.question,
                         leves:record.level.id,
                         score:record.origin_score,
                         options:options1,
-                        keyword:'',
-                        answers:answer1
+                        keyword:keywords1,
+                        answers:answer1,
+                        ordered_answer:record.ordered_answer
                     }
+                state.createmodal.visible=true
             },
             //查询
             searchExerData(){

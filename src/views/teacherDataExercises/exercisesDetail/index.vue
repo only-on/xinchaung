@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="exam-basic-right">
-                <watermark-icon title='102个' description="习题个数" background="#5e68DA"/>
+                <watermark-icon :title='exambasic.questions_count' description="习题个数" style="background-color:#474DA3"/>
             </div>
             </div>
             <div class="exam-descript">
@@ -31,11 +31,9 @@
                     
                  <a-form >
                     <a-form-item required label="名称">
-                        <!--  -->
                         <a-input v-model:value="name"></a-input>
                                 </a-form-item>
                     <a-form-item required label="描述">
-                        <!--  -->
                         <a-textarea v-model:value='description'></a-textarea>
                     </a-form-item>
                     </a-form>  
@@ -74,7 +72,8 @@ interface examBasic{
     name:string,
     description:string,
     created_at:string,
-    updated_at:string
+    updated_at:string,
+    questions_count?:any,
 }
 interface examType{
     id?:number,
