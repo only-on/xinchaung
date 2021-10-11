@@ -43,6 +43,8 @@ export interface IOperatesHandle {
 function openVm(params: IEnvirmentsParam) {
   return new Promise(async (resolve: any, reject: any) => {
     envirmentsInspect(params).then((result: any) => {
+      console.log(result);
+      
       if (result.status === 1) {
         resourceInspect().then(() => {
           createExamples(params).then((res: any) => {
@@ -156,6 +158,7 @@ function cleanEnvirments(topoinst_id: string) {
 function resourceInspect() {
   return new Promise((resolve: any, reject: any) => {
     vmApi.resourceInspect({}).then((res: any) => {
+console.log(res);
 
       if (res.status === 1) {
         // createExamples(params)
@@ -263,8 +266,6 @@ async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: an
   console.log(url);
   
   if (createEnvirments.data.data.connection_id) {
-    console.log(12121111111111);
-    
     router.push({
       path: url,
       query: {

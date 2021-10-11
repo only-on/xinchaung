@@ -82,7 +82,7 @@ import {
   Ref,
   provide,
   computed,
-  toRefs
+  toRefs,
 } from "vue";
 import VM from "./VM/VM.vue";
 import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
@@ -90,7 +90,11 @@ import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises
 import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
 import InClassForum from "./InClassForum/InClassForum.vue";
-import VmHeader from "./VmHeader.vue"
+import VmHeader from "./VmHeader.vue";
+import Note from "./Note/Note.vue";
+import TrainCourseware from "./TrainCourseware/TrainCoursewar.vue";
+import TrainResource from "./TrainResource/TrainResource.vue";
+
 interface Vm {
   key: string;
   icon: string;
@@ -104,15 +108,18 @@ export default defineComponent({
     "experimental-report": ExperimentalReport,
     "in-class-practice": InClassPractice,
     "in-class-forum": InClassForum,
-    "vm-header":VmHeader
+    "vm-header": VmHeader,
+    note: Note,
+    "train-courseware": TrainCourseware,
+    "train-resource": TrainResource,
   },
-  props: ["VmData","reportId","isLeftContentShowType"],
+  props: ["VmData", "reportId", "isLeftContentShowType"],
   setup(props, { emit }) {
     const vmData: Ref<Array<Vm>> = reactive(props.VmData);
-    var reportId:any=computed(()=>{
-      return props.reportId
-    })
-    provide('reportId',reportId)
+    var reportId: any = computed(() => {
+      return props.reportId;
+    });
+    provide("reportId", reportId);
     const currentComponent = ref(vmData[0].key);
     const openStatus = ref(false); // left内容打开状态
 
@@ -170,6 +177,12 @@ export default defineComponent({
           return "in-class-practice";
         case "forum":
           return "in-class-forum";
+        case "note":
+          return "note";
+        case "courseware":
+          return "train-courseware";
+        case "resource":
+          return "train-resource";
         default:
           return currentComponent.value;
       }
@@ -386,11 +399,11 @@ export default defineComponent({
     }
   }
 }
-.content-drawer{
-  .ant-drawer-header{
+.content-drawer {
+  .ant-drawer-header {
     display: none;
   }
-  .ant-drawer-body{
+  .ant-drawer-body {
     padding: 0;
   }
 }

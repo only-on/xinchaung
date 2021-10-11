@@ -18,7 +18,7 @@
         @search="onSearch"
       />
     </div>
-    <div class="exam-content-list">
+    <div class="exam-content-list" v-if="examData?.list.length>0">
       <div
         class="exam-content-item"
         v-for="(item, index) in examData?.list"
@@ -46,13 +46,16 @@
         </div>
       </div>
     </div>
-    <div class="page-box">
+    <div class="page-box" v-if="examData?.list.length>0">
       <a-pagination
         :total="examData?.page?.totalCount"
         v-model:current="searchExamParams.page"
         v-model:pageSize="searchExamParams.limit"
         @change="pageSizeChange"
       />
+    </div>
+    <div v-if="examData?.list.length===0" style="margin-top:15px">
+      <empty/>
     </div>
   </div>
 </template>
@@ -61,8 +64,12 @@
 import { defineComponent, ref, reactive, toRefs, PropType, watch } from "vue";
 import { IexamData, IExamListParams,IExamListParam } from "../studentExam.type";
 import {examStatus} from "./exam.util"
+import empty from "src/components/Empty.vue"
 
 export default defineComponent({
+  components:{
+    'empty':empty
+  },
   props: {
     examData: {
       type: Object as PropType<IexamData>,

@@ -241,14 +241,25 @@ export default defineComponent({
     provide("taskType", taskType);
     let navData =
       role === 4
-        ? [
-            { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
-            { name: "实验指导", key: "guide", icon: "icon-zhidao" },
-            { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
-            { name: "实验报告", key: "report", icon: "icon-baogao1" },
-            { name: "随堂练习", key: "practice", icon: "icon-biji" },
-            { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
-          ]
+        ? type === "course"
+          ? [
+              { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+              { name: "实验指导", key: "guide", icon: "icon-zhidao" },
+              { name: "实验笔记", key: "note", icon: "icon-biji1" },
+              { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
+              { name: "实验报告", key: "report", icon: "icon-baogao1" },
+              { name: "随堂练习", key: "practice", icon: "icon-biji" },
+              { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
+            ]
+          : [
+              { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
+              { name: "实训指导", key: "guide", icon: "icon-zhidao" },
+              { name: "实训笔记", key: "note", icon: "icon-biji1" },
+              { name: "实训课件", key: "courseware", icon: "icon-kejian1" },
+              { name: "实训资源", key: "resource", icon: "icon-leixing-01" },
+              { name: "实训报告", key: "report", icon: "icon-baogao1" },
+              { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
+            ]
         : [
             { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
             { name: "实验指导", key: "guide", icon: "icon-zhidao" },

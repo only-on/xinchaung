@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width:1330px;margin:0 auto">
     <top></top>
     <content
       :examData="examData"
