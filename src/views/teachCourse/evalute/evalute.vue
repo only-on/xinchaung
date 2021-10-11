@@ -8,8 +8,8 @@
         <drag-tree :treeData="treeData" @selectChapter="selectChapter" @selectExperiment="selectExperiment"></drag-tree>
       </div>
       <div class="right">
-         <evalute-content v-show="showChapterContent" :chapterId="chapterId" :courseId="courseId" :show="showChapterContent"></evalute-content>
-         <evalute-project v-show="!showChapterContent" :contentId="contentId" :chapterId="chapterId" :courseId="courseId"></evalute-project>
+         <evalute-content v-if="showChapterContent" :chapterId="chapterId" :courseId="courseId"></evalute-content>
+         <evalute-project v-if="!showChapterContent" :contentId="contentId" :chapterId="chapterId" :courseId="courseId"></evalute-project>
       </div>
     </div>
   </div>

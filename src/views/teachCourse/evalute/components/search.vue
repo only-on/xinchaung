@@ -32,7 +32,7 @@ interface Ioptions{
   classname: string
 }
 export default defineComponent({
-  props: ['courseId','contentId'],
+  props: ['courseId'],
   setup(props,{emit}) {
     const http=(request as Ihttp).teachCourse
     const form = reactive<Iform>({
@@ -46,11 +46,8 @@ export default defineComponent({
         classname: '全部班级'
       }
     ]);
-    watch([() => props.courseId,() => props.contentId],([nCourseId,nContentId]) => {
-      form.classId = ''
-      form.username = ''
-      form.name = ''
-      getOptions(nCourseId)
+    onMounted(()=>{
+      getOptions(props.courseId)
     })
     function getOptions (val:any) {
       options.length = 1

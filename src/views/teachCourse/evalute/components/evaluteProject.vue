@@ -19,7 +19,7 @@
     </div>
     <div class="content">
       <div class="search-box">
-        <Search :courseId="courseId" :contentId="contentId" @search="handleSearch"></Search>
+        <Search :courseId="courseId" @search="handleSearch"></Search>
           <div>
             <a-button type="primary" @click="handleExport">成绩导出</a-button>
             <a-button type="primary" @click="handleCreate" :disabled="btnLoading" v-show="!showBtn">{{btnLoading ? '成果获取中...' : '成果获取'}}</a-button>
@@ -63,7 +63,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,reactive, Ref, ref, watch, provide } from 'vue';
+import { defineComponent,reactive, Ref, ref, watch, provide, onMounted } from 'vue';
 import request from "src/api/index";
 import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -157,15 +157,15 @@ export default defineComponent({
     EvaluteModal,
     Search
   },
-  props: ['contentId', 'courseId', 'chapterId'],
+  props: ['contentId', 'courseId', 'chapterId', 'show'],
   setup(props) {
     const http = (request as Ihttp).teachCourse;
     var selectIds:any[] = reactive([])
     var btnLoading = ref<boolean>(false)
     var showBtn = ref<boolean>(false)
     var openModal = ref<boolean>(false)
-    var courseId = ref<number>(0)
-    var contentId = ref<number>(0)
+    var courseId = ref<number>(props.courseId)
+    var contentId = ref<number>(props.contentId)
     var resultId = ref<number>(0)
     // score:成绩明细 notes:笔记 video:视频 report: 报告 exam:习题
     var modalType = ref<string>('')
@@ -188,7 +188,7 @@ export default defineComponent({
       username: '',
       name: '',
       page: 1,
-      pageSize: 5
+      pageSize: 10
     })
     const tableData = reactive<ItableData>({
       loading: false,
@@ -205,7 +205,9 @@ export default defineComponent({
       modalParam.course_id = nCourseId
       modalParam.content_id = nContentId
       reset()
-      getTableList()
+    })
+    onMounted(()=>{
+      reset()
     })
     function reset() {
       btnLoading.value = false
@@ -215,7 +217,8 @@ export default defineComponent({
       form.name = ''
       form.username = ''
       form.page = 1
-      form.pageSize = 5
+      form.pageSize = 10
+      getTableList()
     }
     function getTableList () {
       tableData.loading = true
@@ -246,7 +249,6 @@ export default defineComponent({
     }
     function handleSearch (val:any) {
       Object.assign(form,val)
-      console.log(val)
       form.page = 1
       getTableList()
     }
@@ -428,6 +430,10 @@ export default defineComponent({
       .ant-table-tbody > tr > td{
         padding: 16px 10px;
       }
+    }
+    :deep(.ant-table-pagination.ant-pagination){
+      float: none;
+      text-align: center;
     }
     .text{
       color: #c9c9c9;

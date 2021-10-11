@@ -138,16 +138,15 @@ export default defineComponent({
   setup(props) {
     const http=(request as Ihttp).teachCourse
     const showChapter:Ref<boolean> = ref(true)
-    const chapterId:any = ref(0)
-    const courseId:any = ref(0)
+    const chapterId:any = ref(props.chapterId)
+    const courseId:any = ref(props.courseId)
     const form = reactive<Iform>({
       classId: '',
       username: '',
       name: '',
       page: 1,
-      pageSize: 5
+      pageSize: 10
     });
-   
     var tableData = reactive<ItableData>({
       loading: false,
       data: [],
@@ -218,9 +217,8 @@ export default defineComponent({
       }
       http.evaluteProject({param: params}).then((res:IBusinessResp) => {
         tableData.loading = false
-        let result = res.data
+        let result = res?.data
         Object.assign(chapterCompletion, result.chapter_completion)
-        console.log(result.chapter_progress)
         if(result.chapter_progress.length == 0) return;
         tableData.data.push(...result.chapter_progress?.data)
         tableData.data.forEach((item:any) => {
@@ -233,13 +231,17 @@ export default defineComponent({
       chapterId.value = nChapterId
       courseId.value = nCourseId
       form.page = 1
-      form.pageSize = 5
+      form.pageSize = 10
       getTableData(true)
     })
-    watch(()=>props.show, (newVal) => {
-      if (newVal) {
+    onMounted(()=>{
+      setTimeout(()=>{
+        chapterId.value = props.chapterId
         showChapter.value = true
-      }
+        form.page = 1
+        form.pageSize = 10
+        getTableData(true)
+      },400)
     })
     return {
       showChapter,
@@ -282,6 +284,10 @@ export default defineComponent({
       display: flex;
       justify-content: space-between;
       margin-bottom:30px;
+    }
+    :deep(.ant-table-pagination.ant-pagination){
+      float: none;
+      text-align: center;
     }
   }
   // 习题成绩
