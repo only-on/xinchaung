@@ -17,8 +17,12 @@
                 <div class="question-btn" v-if="initial==='0'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
                     <a-button type="primary" @click="deleteCurrentRowMany">批量删除</a-button>
-                    <a-button type="primary">批量导入</a-button>
+                    <a-button type="primary" @click="batchImport">批量导入</a-button>
                 </div>
+            </div>
+            <div>
+                {{poolid}}poolid1111111
+                <batch-import :isShowImport="isShowImport" :poolid="poolid"  @batch-import-close='batchImportClose'></batch-import>
             </div>
             <a-modal :visible="visibleDelete" title="提示" ok-text="确定" cancel-text="取消"  @ok="deleteOk" @cancel="deleteCancel">
                 <p>习题删除后将无法恢复，确定要删除吗?</p>
@@ -77,7 +81,6 @@
                                                 <!-- 单选框 -->
                                                 <a-radio v-if="selectedId===1" :value='index'>设为答案</a-radio>
                                                 <!-- 多选框 -->
-                                                <!-- :checked='checked' -->
                                                 <a-checkbox v-if="selectedId===2" :value='index'>设为答案</a-checkbox>
                                             </div>
                                         </div>
@@ -145,8 +148,15 @@
                             </div>
                             <div>
                                 <a-form-item label="知识点">
-                                    <a-button type="primary">选择</a-button>
+                                    <div class="knowledge">
+                                    <span v-for="(v, i) in selectedKnowledgeList" :key="v.id">
+                                        {{v.text}}
+                                        <i class="iconfont icon-guanbi1-copy" @click="delKnowledge(i)"></i>
+                                    </span>
+                                    </div>
+                                    <a-button type="primary" @click="selectKnowledge">选择</a-button>
                                 </a-form-item>
+                                <knowledge-modal v-model:isShow="isShowKnowledge" v-model:selectedList="selectedKnowledgeList"></knowledge-modal>
                             </div>
                         </a-form>
                     </div>
@@ -157,9 +167,11 @@
 <script lang="ts">
 
 import { message } from 'ant-design-vue';
-import {defineComponent, onMounted, reactive,toRefs,watch} from 'vue'
+import {defineComponent, onMounted, reactive,toRefs,watch,ref,Ref} from 'vue'
 import { useRouter } from 'vue-router';
 import request from "../../../../api";
+import knowledgeModal from '../../../teachCourse/createTestPaper/knowledgeModal.vue'
+import batchImport from '../batchImport.vue'
 interface levelType{
     name:string,
     id:number,
@@ -182,7 +194,6 @@ interface paramsType{
     leves?:any,
     score?:string,//分数
     ordered_answer?:boolean,//答案是否有序
-    // options?:string[],//习题选项
     options:any[],//习题选项
     keyword?:string,//关键字
     points?:any[],// 知识点
@@ -208,11 +219,29 @@ interface State{
     visibleDelete:boolean,
     deleteRowId?:number,
 }
-
+interface ItreeData {
+  selectedKnowledgeList: ItreeDatalist[]
+}
+interface ItreeDatalist {
+  id: string
+  text: string
+  children?: ItreeDatalist[]
+  disabled?: boolean
+}
 export default defineComponent({
     name:'quesComonTable',
+    components:{knowledgeModal,batchImport},
     props:['selectedId','poolid','tabledata','initial'],
     setup:(props,context)=>{
+        // 删除行还是批量
+        let deleteRowOrMany:Ref<string>=ref('')  // 一行
+         // 知识点
+        let isShowKnowledge = ref(false)
+        // 批量导入
+        let isShowImport=ref(false)
+        let knowledgeList = reactive<ItreeData>({
+      selectedKnowledgeList: []
+        })
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
         const state:State=reactive({
@@ -270,15 +299,14 @@ export default defineComponent({
             question_id:'',
             visibleDelete:false,
         })
-        var poolid:any=''
+        var poolid:any=props.poolid
         const methods = {
          exerciseLevels(){
                 teacherDataExerApi.getDetailExerLevels().then((res:any)=>{
-                    state.difficultyLevel=res.data
+                    state.difficultyLevel=res?.data
                 })
             },
          handleChange(value:any){
-             console.log(value)
              state.selectLeves=value
              context.emit('selectLeves',state.selectLeves)
             },
@@ -289,14 +317,65 @@ export default defineComponent({
                 state.edit=false
             state.createmodal.visible=true
             },
+            batchImportClose(value:any){
+                isShowImport.value=value
+            },
+            // 批量导入
+            batchImport(){
+                isShowImport.value=true
+            },
+            selectKnowledge(){
+            isShowKnowledge.value = true
+            },
+            delKnowledge(i: number){
+                knowledgeList.selectedKnowledgeList.splice(i, 1)
+            },
             handleOk(){
-                console.log(state.edit,'是编辑还是创建')
+                // 校yan
+                if(!state.expermodelValue.question){
+                    message.warning("题目不能为空")
+                    return
+                }
+                if(!state.expermodelValue.options[0]){
+                    message.warning("选项A不能为空")
+                    return
+                }
+                if(!state.expermodelValue.options[1]){
+                    message.warning("选项B不能为空")
+                    return
+                }
+                if(!state.expermodelValue.options[2]){
+                    message.warning("选项C不能为空")
+                    return
+                }
+                if(!state.expermodelValue.options[3]){
+                    message.warning("选项D不能为空")
+                    return
+                }
+                if(!state.expermodelValue.answers.length){
+                    message.warning("请选择答案")
+                    return
+                }
+                if(!state.expermodelValue.leves){
+                    message.warning("请选择试题难度")
+                    return
+                }
+                if(!state.expermodelValue.score){
+                     message.warning("分数不能为空")
+                    return
+                }
+                if(Number(state.expermodelValue.score)<1||Number(state.expermodelValue.score)>100||Number(state.expermodelValue.score)%1 !== 0){
+                    message.warning("分数请输入1-100的整数")
+                    return
+                }
+                // 校验完成
                 if(props.selectedId===3){
                     state.expermodelValue.options=['正确','错误']
                 }
                 state.createmodal.visible=false
-                console.log(state.expermodelValue.options,'state.expermodelValue')
+                state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
                 if(state.edit){
+                console.log(state.expermodelValue.answers,'编辑')
                 teacherDataExerApi.detailExerUpdate({
                 urlParams:{question_id:state.question_id}, 
                 param:{
@@ -305,15 +384,11 @@ export default defineComponent({
                 level_id:state.expermodelValue.leves,
                 ordered_answer:state.expermodelValue.ordered_answer,
                 origin_score:state.expermodelValue.score,
-                "points": [
-                    "40","41"
-                ],
+                points:state.expermodelValue.points,
                 options:state.expermodelValue.options,
                 keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
                 answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
                 }).then((res:any)=>{
-                    console.log(res)
-                    console.log('编辑成功')
                     state.value='',
                     state.value1=[],
                     state.expermodelValue={
@@ -327,6 +402,7 @@ export default defineComponent({
                     context.emit('finishCreate',true)
                 })  
                 }else{
+                console.log(state.expermodelValue.answers,'创建')
                 teacherDataExerApi.detailExerCreate({
                 urlParams:{pool_id:props.poolid}, 
                 param:{
@@ -335,16 +411,12 @@ export default defineComponent({
                 level_id:state.expermodelValue.leves,
                 origin_score:state.expermodelValue.score,
                 ordered_answer:state.expermodelValue.ordered_answer,
-                "points": [
-                    "40","41"
-                ],
+                points:state.expermodelValue.points,
                 options:state.expermodelValue.options,
                 keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
                 answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
                 }).then((res:any)=>{
-                    console.log(res)
-                    console.log('添加成功')
-                     state.value='',
+                    state.value='',
                     state.value1=[],
                     state.expermodelValue={
                         question:'',
@@ -360,10 +432,18 @@ export default defineComponent({
             },
             handleCancel(){
                 state.createmodal.visible=false
+                state.value='',
+                state.value1=[],
+                state.expermodelValue={
+                    question:'',
+                    leves:'',
+                    score:'',
+                    options:[],
+                    keyword:'',
+                    answers:[]
+                }
             },
             onJudgeChange(e:any){
-                console.log(e.target.value,'判断题')
-                console.log(state.value)
                 state.expermodelValue.answers=[e.target.value]
             },
             onMutilChange(checkedValues:any){
@@ -373,57 +453,54 @@ export default defineComponent({
                 state.expermodelValue.answers=[e.target.value]    
             },
             orderAnswerChange(e:any){
-                console.log(e.target.checked)
                 state.expermodelValue.ordered_answer=e.target.checked
-            },
-            // 删除调用
-            deleteDetailExer(id:any){
-                if(id){
-                    teacherDataExerApi.detailExerDelete({urlParams:{question_id:id}}).then((res:any)=>{
-                    console.log(res)
-                    if(res.code===1){
-                        state.deleteidArr=[]
-                        context.emit('finishCreate',true)
-                    }
-                })
-                } else{
-                    message.warning('请至少选择一个记录')
-                } 
-            },
-            // 确认删除弹框
-            deleteOk(){
-                state.visibleDelete=false
-                console.log('确认删除')
-                methods.deleteDetailExer(state.deleteRowId)
-                methods.deleteDetailExer(state.deleteidArr.join(','))
             },
             deleteCancel(){
                 state.visibleDelete=false
             },
-            // 删除一行
+             // 删除一行
             deleteCurrentRow(id:any){
+                deleteRowOrMany.value='row'
                 state.visibleDelete=true
                 state.deleteRowId=id
-                // methods.deleteDetailExer(id)
             },
             //批量删除
             deleteCurrentRowMany(){
+                deleteRowOrMany.value='many'
+                if(!state.deleteidArr.length){
+                    message.warning('请至少选择一条记录')
+                    return
+                }
                  state.visibleDelete=true
-                // console.log(state.deleteidArr,'批量删除')
-                // console.log(state.deleteidArr.join(','))
-                // methods.deleteDetailExer(state.deleteidArr.join(','))
+            },
+             // 删除调用
+            deleteDetailExer(id:any){
+                    teacherDataExerApi.detailExerDelete({urlParams:{question_id:id}}).then((res:any)=>{
+                    if(res.code===1){
+                        state.deleteidArr=[]
+                        context.emit('finishCreate',true)
+                    }
+                }) 
+            },
+            // 确认删除弹框
+            deleteOk(){
+                state.visibleDelete=false
+                if(deleteRowOrMany.value==='many'){
+                    methods.deleteDetailExer(state.deleteidArr.join(','))
+                }else{
+                     methods.deleteDetailExer(state.deleteRowId)
+                }   
             },
             //编辑
             editCurrentRow(record:any,edit:any){
                 state.edit=edit
                 state.question_id=record.id
-                console.log(record,'record')
                 const options1:any=[]
                 const answer1:any=[]
                 const keywords1:any=[]
+                state.createmodal.visible=true
                 // 单选题 多选题
                 record.options.forEach((item:any)=>{
-                    console.log(item.name)
                     options1.push(item.option)
                     })
                 record.answers?.forEach((item:any) => {
@@ -431,8 +508,7 @@ export default defineComponent({
                 });
                     //单选答案回显
                 record.options.forEach((item:any,index:any)=>{
-                    if(item.id==record.answers[0].answer){
-                        console.log(item.option,'option')
+                    if(item.id==record.answers[0]?.answer){
                         return state.value=item.option
                     }
                 })
@@ -440,7 +516,6 @@ export default defineComponent({
                  record.options.forEach((item:any,index:any)=>{
                      record.answers.forEach((it:any,j:any)=>{
                          if(item.id==it.answer){
-                             console.log(index,'index多选')
                              state.value1.push(index)
                          }
                      })
@@ -448,15 +523,13 @@ export default defineComponent({
                 // 判断题答案回显
                 record.options.forEach((item:any,index:any)=>{
                     if(item.id==record.answers[0].answer){
-                        console.log(item.option)
-                        // return state.value=item.option
+                        return state.value=index
                     }
                 })
                  //关键词
                 record.keywords.forEach((item:any) => {
                     keywords1.push(item.keyword)
                 })
-                 console.log(state.value1,'value1')
                  state.expermodelValue={
                         question:record.question,
                         leves:record.level.id,
@@ -466,11 +539,9 @@ export default defineComponent({
                         answers:answer1,
                         ordered_answer:record.ordered_answer
                     }
-                state.createmodal.visible=true
             },
             //查询
             searchExerData(){
-                console.log(state.searchExercise)
                 context.emit('searchExercise',state.searchExercise)
             }
         }
@@ -480,14 +551,11 @@ export default defineComponent({
                 selectedRows.forEach((item:any) => {
                     state.deleteidArr.push(item?.id)
                 });
-                console.log(state.deleteidArr)
             },
             onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
-                console.log(selected, selectedRows, changeRows);
                  selectedRows.forEach((item:any) => {
                     state.deleteidArr.push(item?.id)
                 });
-                console.log(state.deleteidArr,'state.deleteidArr')
             },
         };
         watch(()=>props.selectedId, (newVal) => {
@@ -515,9 +583,10 @@ export default defineComponent({
               }
         })
         onMounted(()=>{
+            console.log(props.poolid,'props.poolid')
             methods.exerciseLevels()
         })
-        return {...methods,...toRefs(state),rowSelection,poolid}
+        return {...methods,...toRefs(state),rowSelection,poolid,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany}
     }
 })
 </script>
@@ -590,5 +659,18 @@ export default defineComponent({
     .ant-modal-footer{
         text-align: center;
     }
+}
+.knowledge {
+  margin: 20px 0;
+  span {
+    padding: 6px 12px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    color: @theme-color;
+    margin-right: 12px;
+    .iconfont {
+      cursor: pointer;
+    }
+  }
 }
 </style>

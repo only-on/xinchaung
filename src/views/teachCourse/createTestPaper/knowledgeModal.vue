@@ -66,6 +66,14 @@ export default defineComponent({
             disabled: true
           }]
         })
+        .catch((error:any)=>{
+           data.treeData = [{
+            children: error.data.children,
+            id: error.data.id,
+            text: error.data.text,
+            disabled: true
+          }]
+        })
     }
     let checkedNodes: ItreeData[] = []
     const onCheck = (key: string[], e: any) => {

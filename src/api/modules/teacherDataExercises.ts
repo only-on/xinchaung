@@ -10,5 +10,7 @@ export default {
     getDetailExerLevels: { url: `/api/v1/question/levels`, method: "GET" },
     detailExerCreate: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "POST", dataType: 'json' },
     detailExerDelete: { url: `/api/v1/question/questions/{question_id}`, method: "DELETE", dataType: 'json' },
-    detailExerUpdate: { url: `/api/v1/question/questions/{question_id}`, method: "PUT", dataType: 'json' }
+    detailExerUpdate: { url: `/api/v1/question/questions/{question_id}`, method: "PUT", dataType: 'json' },
+    detailExerBatchImport: { url: `/api/v1/question/pools/{pool_id}/questions/import`, method: "POST", dataType: 'json' },
+    detailExerDownLoad: { url: `/api/v1/question/pools/{pool_id}/questions/import`, method: "GET", dataType: 'json' }
 }
