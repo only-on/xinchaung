@@ -3,7 +3,7 @@
       <Header></Header>
       <div class="main-box" id="main-box">
         <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='outside'" />
-        <div :class="configuration.showContent?'content':'customized'">
+        <div :class="configuration.showContent?'content':'customized'" :id="(configuration.showNav && configuration.navPosition==='outside')?'withTop':''">
           <NavTab @tabSwitch="tabSwitch" v-if="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
           <div  :class="configuration.showContent?'content_box':'customizedSon'">
             <div :class="configuration.showContent?'setScrollbar':'customizedSon'">
@@ -121,6 +121,9 @@ export default defineComponent({
     .customized{
       height: 100%;
       overflow: hidden;
+    }
+    #withTop{
+      height: calc(100% - 44px); 
     }
     .customizedSon{
        height: 100%;

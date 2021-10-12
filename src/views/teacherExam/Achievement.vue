@@ -75,12 +75,12 @@
                   <a-button type="primary" @click="clearSearch()">清空</a-button>
                 </div>
             </div>
-            <!-- <a-config-provider :renderEmpty="customizeRenderEmpty('Rate')">
+            <a-config-provider :renderEmpty="customizeRenderEmpty">
               <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
                 :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
                 class="components-table-demo-nested">
               </a-table>
-            </a-config-provider> -->
+            </a-config-provider>
           </div>
         </div>
       </div>
@@ -92,16 +92,22 @@
           <div>
             <div class="search export">
                 <div class="item custom_input">
-                  <a-input-search v-model:value="exportSearch.title" placeholder="请输入学生姓名关键字查询" @search="exportSearch" />
+                  <a-input-search v-model:value="exportSearch.title" placeholder="请输入学生姓名关键字查询" @search="studentSearch" />
                 </div>
                 <a-button type="primary" @click="achievementExport()">成绩导出</a-button>
             </div>
-            <!-- <a-config-provider :renderEmpty="customizeRenderEmpty2('export')">
+            <a-config-provider :renderEmpty="exportRenderEmpty">
               <a-table :columns="exportcolumns" :loading="exportloading" :data-source="exportList" :bordered="true"  row-key="id"
                 :pagination="{pageSize:exportSearch.pageSize,total:exportTotal,onChange:exportChangePage,hideOnSinglePage:true}" 
                 class="components-table-demo-nested">
+                <template #result="{record }">
+                  <span :class="record.result" style="color: #FF6766;">{{'不及格'}}</span>
+                </template>
+                <template #detaile="{record, text }">
+                  <a @click="see(record.id)">{{ text }}</a>
+                </template>
               </a-table>
-            </a-config-provider> -->
+            </a-config-provider>
           </div>
         </div>
       </div>
@@ -139,39 +145,79 @@ interface Istate{
   achievementExport: () => void;
   exportTotal:number;
   exportChangePage: (v:number) => void;
+  studentSearch: () => void;
+  see: (v:number) => void;
 }
 const columns=[
   {
     title: '题目',
     dataIndex:"title",
     align:'center',
-    width:260,
+    width:460,
   },
   {
     title: '类型',
     dataIndex:"title",
     align:'center',
-    width:260,
+    // width:260,
   },
   {
     title: '正确人数',
     dataIndex:"title",
     align:'center',
-    width:260,
+    // width:260,
   },
   {
     title: '正确率',
     dataIndex:"title",
     align:'center',
-    width:260,
+    // width:260,
   },
 ]
 const exportcolumns=[
   {
-    title: '题目',
-    dataIndex:"title",
+    title: '学号',
+    dataIndex:"hao",
     align:'center',
-    width:260,
+    // width:260,
+  },
+  {
+    title: '姓名',
+    dataIndex:"name",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '班级',
+    dataIndex:"ban",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '考试时长',
+    dataIndex:"time",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '成绩',
+    dataIndex:"ji",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '考试结果',
+    dataIndex:"result",
+    align:'center',
+    slots: { customRender: 'result' },
+    // width:260,
+  },
+  {
+    title: '考试详情',
+    dataIndex:"detaile",
+    align:'center',
+    // width:260,
+    slots: { customRender: 'detaile' },
   },
 ]
 export default defineComponent({
@@ -215,7 +261,7 @@ export default defineComponent({
           state.ForumSearch.title=''
           state.ForumSearch.type=undefined
           state.ForumSearch.page=1
-          initData()
+          // initData()
         }
       },
       exportList:[],
@@ -224,28 +270,30 @@ export default defineComponent({
         pageSize:5,
         title:'',
       },
+      studentSearch:()=>{
+        if(state.exportSearch.title!==''){
+          state.exportSearch.page=1
+          // initData()
+        }
+      },
       exportloading:false,
       exportTotal:0,
       achievementExport:()=>{
 
       },
       exportChangePage:(val:number)=>{
-        state.ForumSearch.page=val
+        state.exportSearch.page=val
         initData()
       },
+      see:(id:number)=>{}
     })
    
     onMounted(async ()=>{
      await initData();
      distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.data)
      typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.data)
-      // const scoreDetail = scoreDetailEcharts(
-      //   document.getElementById("scoreDetail") as HTMLDivElement,
-      //   state.data
-      // );
     })
-    const customizeRenderEmpty =function (val:string): VNode{
-      console.log(val)
+    const customizeRenderEmpty =function (): VNode{
       if(state.loading){
         return <template></template>
       }else{
@@ -253,16 +301,15 @@ export default defineComponent({
         return <empty type={type} height={100} />
       }
     }
-    const customizeRenderEmpty2 =function (val:string): VNode{
-      console.log(val)
-      if(state.loading){
+    const exportRenderEmpty =function (): VNode{
+      if(state.exportloading){
         return <template></template>
       }else{
-        let type=(state.ForumSearch.title || state.ForumSearch.type!==undefined)?'tableSearchEmpty':'tableEmpty'
+        let type=(state.exportSearch.title)?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} height={100} />
       }
     }
-    return {...toRefs(state),customizeRenderEmpty,customizeRenderEmpty2,columns,options,exportcolumns};
+    return {...toRefs(state),customizeRenderEmpty,exportRenderEmpty,columns,options,exportcolumns};
   },
 })
 </script>
