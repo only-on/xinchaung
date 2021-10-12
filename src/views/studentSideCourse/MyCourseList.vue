@@ -237,6 +237,9 @@ export default defineComponent({
             width: 50px;
             height:50px;
             /* position: relative; */
+            :deep(.ant-progress-text){
+              color: #A9A9A9;
+            }
           }
       }
     }

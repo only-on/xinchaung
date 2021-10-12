@@ -18,7 +18,7 @@
         @search="onSearch"
       />
     </div>
-    <div class="exam-content-list" v-if="examData?.list.length>0">
+    <div class="exam-content-list" v-if="examData?.list && examData.list.length">
       <div
         class="exam-content-item"
         v-for="(item, index) in examData?.list"
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="page-box" v-if="examData?.list.length>0">
+    <div class="page-box" v-if="examData?.list && examData.list.length">
       <a-pagination
         :total="examData?.page?.totalCount"
         v-model:current="searchExamParams.page"

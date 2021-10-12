@@ -5,47 +5,49 @@
         <a-input-search v-model:value="ForumSearch.name" placeholder="请输入试卷名关键字查询" @search="search" />
       </div>
     </div>
-    <div class="main-box">
-      <div class="list">
-        <div v-if="ForumSearch.page===1" class="card cread-card" @click="add">
-          <div class="kernel">
-            <div class="create-btn card-item-content">
-              <i class="iconfont icon-chuangjian"></i>
-              <span>创建试卷</span>
-            </div>
-          </div>
-        </div>
-        <div class="card" v-for="v in list" :key="v.id">
-          <div class="kernel">
-            <div class="card-item-heard">{{v.name}}</div>
-            <div class="card-item-content">
-              <div class="score">
-                <div class="score-text">总分</div>
-                <div class="score-num">{{v.score_total}}</div>
-              </div>
-              <div class="des">{{v.description}}</div>
-            </div>
-            <div class="card-item-foot">
-              <div class="footer-text">
-                试题数量：<span class="exam-paper-num">{{v.questions_count}}</span>
-              </div>
-              <div class="footer-btns">
-                <i class="iconfont icon-fuyong" title="复用" @click="copy(v.id)"></i>
-                <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="v.is_edited"></i>
-                <i class="iconfont icon-shanchu" title="删除" @click="delate(v.id)"></i>
+    <a-spin :spinning="loading" size="large">
+      <div class="main-box">
+        <div class="list">
+          <div v-if="ForumSearch.page===1" class="card cread-card" @click="add">
+            <div class="kernel">
+              <div class="create-btn card-item-content">
+                <i class="iconfont icon-chuangjian"></i>
+                <span>创建试卷</span>
               </div>
             </div>
           </div>
+          <div class="card" v-for="v in list" :key="v.id">
+            <div class="kernel">
+              <div class="card-item-heard">{{v.name}}</div>
+              <div class="card-item-content">
+                <div class="score">
+                  <div class="score-text">总分</div>
+                  <div class="score-num">{{v.score_total}}</div>
+                </div>
+                <div class="des">{{v.description}}</div>
+              </div>
+              <div class="card-item-foot">
+                <div class="footer-text">
+                  试题数量：<span class="exam-paper-num">{{v.questions_count}}</span>
+                </div>
+                <div class="footer-btns">
+                  <i class="iconfont icon-fuyong" title="复用" @click="copy(v.id)"></i>
+                  <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="v.is_edited"></i>
+                  <i class="iconfont icon-shanchu" title="删除" @click="delate(v.id)"></i>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        <Empty v-if="!list.length && !loading" />
+        <a-pagination v-if="list.length"
+            v-model:current="ForumSearch.page"
+            :pageSize="ForumSearch.page===1?11:12"
+            :total="totalCount+1"
+            @change="pageChange"
+          />
       </div>
-      <Empty v-if="!list.length" />
-      <a-pagination v-if="list.length"
-          v-model:current="ForumSearch.page"
-          :pageSize="12"
-          :total="totalCount+1"
-          @change="pageChange"
-        />
-    </div>
+    </a-spin>
   </div>
 </template>
 <script lang="ts">

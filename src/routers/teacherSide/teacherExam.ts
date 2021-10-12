@@ -25,23 +25,23 @@ export default {
                 authCode: 'CreateTestPaper'
             },
         },
-        // {
-        //     path: 'resource',
-        //     name: 'resource',
-        //     component: () => import ("src/views/teacherExam/resource.vue"),
-        //     meta: {
-        //         title: "预约考试",
-        //         authCode: 'resource'
-        //     }
-        // },
-        // {
-        //     path: 'evaluate',
-        //     name: 'evaluate',
-        //     component: () => import ("src/views/teacherExam/evaluate.vue"),
-        //     meta: {
-        //         title: "成绩详情",
-        //         authCode: 'evaluate'
-        //     }
-        // }
+        {
+            path: 'Achievement',
+            name: 'Achievement',
+            component: () => import ("src/views/teacherExam/Achievement.vue"),
+            meta: {
+                title: "成绩统计",
+                authCode: 'Achievement'
+            }
+        },
+        {
+            path: 'CreatedExamination',
+            name: 'CreatedExamination',
+            component: () => import ("src/views/teacherExam/CreatedExamination.vue"),
+            meta: {
+                title: "预约考试",
+                authCode: 'CreatedExamination'
+            }
+        }
     ]
 }
