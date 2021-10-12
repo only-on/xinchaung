@@ -11,6 +11,10 @@ export default {
     method: 'POST',
     dataType: 'json'
   },
+  getClassesList: {
+    url: `/api/course/courses/{courseId}/classes`,
+    method: 'GET'
+  },
   getCourseDetail: {
     url: `/api/course/courses/{courseId}`,
   },
@@ -44,6 +48,7 @@ export default {
 export interface ITeacherCourseAnalysisApis {
   getContentList: TFHttpSend,
   getContentScore: TFHttpSend,
+  getClassesList: TFHttpSend
   getCourseDetail: TFHttpSend,
   getReportTemplate: TFHttpSend,
   saveReportTemplate: TFHttpSend,

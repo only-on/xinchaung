@@ -34,12 +34,18 @@
         })
       })
       
-      watch(() => {return props.experimentRatioTable}, () => {
+      watch(
+        () => {return props.experimentRatioTable}, 
+        () => {
         // let echartsbar = (echarts as any).init(document.getElementById(props.id))
-          option.taskOption.xAxis[0].data = props.experimentRatioTable.names
-          option.taskOption.series[0].data = props.experimentRatioTable.values
-          echartsbar.setOption(option.taskOption)
-      }, {deep: true})
+          setTimeout(() => {
+            option.taskOption.xAxis[0].data = props.experimentRatioTable.names
+            option.taskOption.series[0].data = props.experimentRatioTable.values
+            echartsbar.setOption(option.taskOption)
+          }, 1)
+        }, 
+        {deep: true, immediate: true}
+      )
       return {
 
       }

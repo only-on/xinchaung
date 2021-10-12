@@ -16,6 +16,7 @@ export interface ITreeHttp {
 interface ICourseAnalysis{
   getContentList: Function
   getContentScore: Function
+  getClassesList: Function
   getCourseDetail: Function
   saveReportTemplate: Function
   getReportTemplate: Function
@@ -44,4 +45,15 @@ export interface ITreeDataItem {
 export interface ITreeData {
   data: ITreeDataItem[],
   experimentList: IExperimentList[],
+}
+
+interface IScoreList {
+  time: number[]
+  question: number[]
+  step: number[]
+  reports: number[]
+}
+export interface IExperimentScore {
+  studentList: string[],
+  scoreList: IScoreList
 }

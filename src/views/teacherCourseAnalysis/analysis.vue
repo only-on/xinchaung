@@ -16,17 +16,18 @@
           <span class="more">更多<span class="icon-zhankai iconfont"></span></span> -->
           <a-tabs
             :default-active-key="currentChapter"
-            @change="change"
+            @tabClick="change"
           >
             <a-tab-pane v-for="(item) in data" :key="item.id" :tab="item.name"></a-tab-pane>
           </a-tabs>
         </div>
       </div>
-      <div class="analysis-content setScrollbar">
+      <Empty v-if="!experimentList.length || !highScore.length"/>
+      <div class="analysis-content setScrollbar" v-if="experimentList.length && highScore.length">
         <div class="analysis-type experiment-typebox">
           <span class="title">实验:</span>
           <div class="experiment-list list" :class="{'noshow-all': !IsShowAllExperimen}">
-            <span class="name" :class="{ active: currentExperiment === 0}" @click="selectExperiment(currentChapter, 'chapter')">全部</span>
+            <!-- <span class="name" :class="{ active: currentExperiment === 0}" @click="selectExperiment(currentChapter, 'chapter')">全部</span> -->
             <span class="name" :class="{ active: currentExperiment === list.labelId }" v-for="list in experimentList" :key="list.labelId" @click="selectExperiment(list.labelId)">{{list.labelName}}</span>
           </div>
           <span class="open-close-btn" @click="showAllExperimen()">
@@ -45,12 +46,11 @@
         <div class="analysis-type classical-box" v-if="isStudentType === 1">
           <span class="title">班级:</span>
           <div class="classical-list list">
-            <span class="active">1</span>
-            <span class="">2</span>
+            <span :class="{active: clas.id === currentClass}" v-for="clas in classesList" :key="clas.id" @click="selectClasses(clas.id)">{{clas.classname}}</span>
           </div>
         </div>
         <div class="echarts-box">
-          <echarts-bar v-if="isStudentType === 1 &&  type === 1"></echarts-bar>
+          <echarts-bar v-if="isStudentType === 1 &&  type === 1" :experimentScore="experimentScore"></echarts-bar>
           <div class="echarts-pie" v-if="type === 1 || isStudentType === 0">
             <ratio-distribution :id="id1" :achievement="achievement" :key="id1">
               <template v-slot:title>
@@ -72,7 +72,7 @@
                 </div>
               </template>
             </ratio-distribution>
-            <ratio-distribution :id="id2" :teacherEva="teacherEva" :key="id2">
+            <ratio-distribution :id="id2" :achievement="teacherEva" :key="id2">
               <template v-slot:title>
                 <p>教师评价比例分布</p>
               </template>
@@ -93,7 +93,7 @@
                 </div>
               </template>
             </ratio-distribution>
-            <ratio-distribution :id="id3" :studentEva="studentEva" :key="id3">
+            <ratio-distribution :id="id3" :achievement="studentEva" :key="id3">
               <template v-slot:title>
                 <p>学生自评比例分布</p>
               </template>
@@ -159,7 +159,7 @@ import { defineComponent, inject, onMounted, reactive, toRefs, ref } from 'vue'
 import courseDetailTop from './courseDetailTop.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ICourseAnalysisHttp, ITreeHttp, ICourseInfo, ITreeData, ITreeDataItem } from './typings'
+import { ICourseAnalysisHttp, ITreeHttp, ICourseInfo, ITreeData, ITreeDataItem, IExperimentScore } from './typings'
 import echartsBar from './echartsBar.vue'
 import ratioDistribution from './ratioDistribution.vue'
 import experimentRatio from './experimentRatio.vue'
@@ -171,7 +171,7 @@ export default defineComponent({
     let courseInfo = reactive<ICourseInfo>({
       type: 'course',
       courseType: 1,
-      courseId: 501703,
+      courseId: 501747,
     })
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
@@ -192,6 +192,7 @@ export default defineComponent({
         param: {endpoint: 'env'}, 
         urlParams: {courseId: courseInfo.courseId}
       }).then((res: IBusinessResp) => {
+        if(!res.status) return
         treeData.data = res.data
         // selectChapter(res.data[0])
         change(res.data[0].id)
@@ -201,6 +202,8 @@ export default defineComponent({
     function change(id: number) {
       currentChapter.value = id
       selectExperiment(id, 'chapter')
+      isStudentType.value = 0
+      // currentExperiment.value = treeData.experimentList[0].labelId
     }
     // 点击章节
     function selectChapter(item: ITreeDataItem) {
@@ -210,8 +213,9 @@ export default defineComponent({
     }
     // 点击实验
     function selectExperiment(id: number, sign?: string) {
+      isStudentType.value = 0
       if (isStudentType.value === 1 && type.value === 0) return
-      if (sign) {
+      if (sign) {  // 全部实验
         currentExperiment.value = 0
         getContentList(id)
       } else {
@@ -222,7 +226,7 @@ export default defineComponent({
     // 
     function getContentList(id: number | undefined) {
       http.getContentList({param: {project_id: id}}).then((res: IBusinessResp) => {
-        console.log(res)
+        if (!res.status) return
         handleData(res.data)
       })
     }
@@ -231,11 +235,11 @@ export default defineComponent({
         param: {
           course_id: courseInfo.courseId,
           type: isStudentType.value,
-          content_id: id,
-          classes_id: 0
+          content_id: currentExperiment.value,
+          classes_id: isStudentType.value === 1 ? currentClass.value : ''
         }
       }).then((res: IBusinessResp) => {
-        console.log(res)
+        if (!res.status) return
         handleData(res.data)
       })
     }
@@ -256,32 +260,70 @@ export default defineComponent({
       {names: ["全部正确学生数","有错误学生数"], values: [30, 10]},
       {names: ["全部正确学生数","有错误学生数"], values: [30, 10]}])
     let type = ref(0)  //0的时候 只有学生分析 1的时候 学生，班级都有
+    let experimentScore = reactive<IExperimentScore>({   // 实验得分柱状图
+      studentList: [],
+      scoreList: {
+        time: [],
+        question: [],
+        reports: [],
+        step: []
+      }
+    })
     function handleData(data: any) {
       if (data.list) {
         treeData.experimentList = data.list
+        currentExperiment.value = data.list[0].labelId
       }
       if(!data.student.length) return
       type.value = 1
+      // 最高、最低分
       score.highScore = data.high
       score.lowScore = data.low
+      // 成绩比例、教师评价、学生自评比例
       ratio.achievement = data.score
       ratio.studentEva = data.student
+      data.teacher.reverse()
+      data.teacher[data.teacher.length-1] = data.teacher.splice(0,1)[0]
       ratio.teacherEva = data.teacher
+      // 任务比例分布
       experimentRatioTable[0].values = data.time ? data.time : data.list_score.time
       experimentRatioTable[1].values = data.report ? data.report : data.list_score.report
       experimentRatioTable[2].values = data.question ? data.question : data.list_score.question
       experimentRatioTable[3].values = data.step ? data.step : data.list_score.step
+      // 班级
+      if (isStudentType.value === 1 && data.student_name && data.student_name.length && data.student_name[0]) {
+        experimentScore.studentList = data.student_name
+        data.student_name.forEach((v: string, i :number) => {
+          // let totalScore = data.list_score.time[i] + data.list_score.question[i] + data.list_score.reports[i] + data.list_score.step[i]
+          // experimentScore.scoreList.time.push(Number((data.list_score.time[i] / totalScore * 100).toFixed(2)))
+          // experimentScore.scoreList.question.push(Number((data.list_score.question[i] / totalScore * 100).toFixed(2)))
+          // experimentScore.scoreList.reports.push(Number((data.list_score.reports[i] / totalScore * 100).toFixed(2)))
+          // experimentScore.scoreList.step.push(Number((data.list_score.step[i] / totalScore * 100).toFixed(2)))
+          experimentScore.scoreList.time[i] = data.list_score.time[i]
+          experimentScore.scoreList.question[i] = data.list_score.question[i]
+          experimentScore.scoreList.reports[i] = data.list_score.reports[i]
+          experimentScore.scoreList.step[i] = data.list_score.step[i]
+        })
+        console.log(experimentScore.scoreList)
+      } else {
+        experimentScore.studentList = ['']
+        experimentScore.scoreList.time = [0]
+        experimentScore.scoreList.question = [0]
+        experimentScore.scoreList.reports = [0]
+        experimentScore.scoreList.step = [0]
+      }
     }
     // 选择学生或班级分析
     function selectStudentType(t: number) {
       isStudentType.value = t
-      currentExperiment.value = 0
-      if (t === 0) {   // 按学生分析
-        getContentList(currentChapter.value)
+      // currentExperiment.value = 0
+      // if (t === 0) {   // 按学生分析
+      //   getContentList(currentChapter.value)
       // } else if (t === 1 && type.value === 1) {
-      } else {
-        getContentList(currentChapter.value)
-      }
+      // } else {
+        // getContentList(currentChapter.value)
+        getContentScore(currentExperiment.value)
+      // }
     }
 
     // 展开实验
@@ -290,8 +332,36 @@ export default defineComponent({
       IsShowAllExperimen.value = !IsShowAllExperimen.value
     }
 
+    // 获取所有班级
+    let classesData = reactive<IClassesData>({
+      classesList: []
+    })
+    let currentClass = ref<number>()
+    function getClassesList() {
+      http.getClassesList({
+        param: {
+          selected: 1,
+          classname: '',
+          page: 1,
+          limit: 100
+        },
+        urlParams: {
+          courseId: courseInfo.courseId,
+        } 
+      }).then((res: IBusinessResp) => {
+        if (!res.status) return
+        classesData.classesList = res.data.list
+        currentClass.value = res.data.list.length ? res.data.list[0].id : 0
+      })
+    }
+    function selectClasses(id: number) {
+      currentClass.value = id
+      getContentScore(currentExperiment.value)
+    }
+
     onMounted(() => {
       getTreeList()
+      getClassesList()
     })
     
     return {
@@ -312,13 +382,24 @@ export default defineComponent({
       experimentRatioIds: ['echarts-bar1', 'echarts-bar2', 'echarts-bar3', 'echarts-bar4'],
       experimentRatioTitle: ['任务用时比例分布', '任务报告比例分布', '任务习题比例分布', '任务步骤比例分布'],
       experimentRatioTable,
+      experimentScore,
       ...toRefs(score),
       ...toRefs(ratio),
       type,
       change,
+      ...toRefs(classesData),
+      currentClass,
+      selectClasses,
     }
   },
-}) 
+})
+interface IClassesList {
+  id: number
+  classname: string
+}
+interface IClassesData {
+  classesList: IClassesList[]
+}
 </script>
 
 
@@ -339,8 +420,8 @@ export default defineComponent({
   .course-analysis-content {
     background-color: @white;
     // height: 100%;
-    // height: 583px;
-    // overflow-y: scroll;
+    height: 600px;
+    overflow-y: scroll;
     .condition {
       margin: 0 auto;
       width: 1196px;
@@ -390,8 +471,8 @@ export default defineComponent({
       margin: 0 auto;
       width: 1196px;
       height: 520px;
-      overflow-y: auto;
-      overflow-x: hidden;
+      // overflow-y: auto;
+      // overflow-x: hidden;
       .analysis-type {
         display: flex;
         padding-top: 23px;

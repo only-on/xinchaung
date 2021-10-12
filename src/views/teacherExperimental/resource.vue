@@ -108,38 +108,43 @@ export default defineComponent({
         title: '资源名称',
         dataIndex: 'name',
         key: 'name',
+        ellipsis: true
       },
       {
         title: '资源说明',
         dataIndex: 'describe',
         key: 'describe',
+        ellipsis: true
       },
       {
         title: '文件类型',
         dataIndex: 'posfix',
         key: 'posfix',
         slots: { customRender: 'type' },
+        width: 120,
       },
       {
         title: '文件大小',
         dataIndex: 'size',
         key: 'size',
+        width: 120,
       },
       {
         title: '上传时间',
         dataIndex: 'created_at',
         key: 'created_at',
+        width: 220,
       },
       {
         title: '操作',
         dataIndex: 'operation',
         key: 'operation',
         slots: { customRender: 'operation' },
+        width: 120,
       },
     ]
     // 获取列表数据
     const getResourceList = () => {
-      data.page.total = 30
       // data.tableList = [
       //   {
       //     id: 1,
@@ -172,6 +177,7 @@ export default defineComponent({
     }
     // 查询
     const query = () => {
+      data.page.page = 1
       getResourceList()
     }
     // 清空
@@ -344,6 +350,7 @@ interface FileInfo {
   padding: 40px;
   .condition {
     display: flex;
+    justify-content: flex-start;
     :deep(.ant-form-item) {
       margin-right: 10px;
       .ant-form-item-control .ant-input, 
@@ -365,7 +372,9 @@ interface FileInfo {
     .upload-box {
       display: flex;
       position: relative;
+      margin-left: auto;
       :deep(.ant-upload) {
+        margin-right: 10px;
         .ant-input {
           width: 165px;
           .font-size-14();
@@ -383,6 +392,10 @@ interface FileInfo {
         font-size: 14px;
       }
     }
+  }
+  :deep(.ant-table-wrapper) {
+    height: 600px;
+    overflow: auto;
   }
   .page-footer-box {
     margin-top: 28px;

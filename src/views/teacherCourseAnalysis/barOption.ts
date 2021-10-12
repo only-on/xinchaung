@@ -65,7 +65,8 @@ let barOption = {
 		formatter: function (params: any) {
 			let str=params[0].name
 			params.forEach((item: any,index: number)=>{
-				str=str+'<br/>'+ item.marker + item.seriesName + ' : ' + (item.value).toFixed(2)+'%'
+				// str=str+'<br/>'+ item.marker + item.seriesName + ' : ' + (item.value).toFixed(2)+'%'
+				str=str+'<br/>'+ item.marker + item.seriesName + ' : ' + (item.value)+'%'
 			})
 			return str
 		}
