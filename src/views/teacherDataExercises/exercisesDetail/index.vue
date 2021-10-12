@@ -49,9 +49,6 @@
              </a-tabs>
         </div>
         <div class="exam-question-content">
-             <!-- <keep-alive>
-                <component :is="currentView"></component>
-            </keep-alive> -->
             <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :initial='initial' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
         </div>
     </div>
@@ -61,13 +58,7 @@ import { number } from 'echarts';
 import {defineComponent,inject,onMounted,reactive,toRefs} from 'vue'
 import { useRouter } from 'vue-router';
 import request from "../../../api";
-import singleChoice from '../components/singleChoice.vue'
-import multipleChoice from '../components/multipleChoice.vue'
-import judge from '../components/judge.vue'
-import fillBlanks from '../components/fillBlanks.vue'
-import answer from '../components/answer.vue'
 import quesComonTable from '../components/quesComonTable/index.vue'
-import WatermarkIcon from 'src/components/common/WatermarkIcon.vue';
 interface examBasic{
     name:string,
     description:string,
@@ -111,7 +102,7 @@ interface stateData{
 }
 export default defineComponent({
     name:'exerciseDetail',
-    components: {singleChoice,multipleChoice,judge,fillBlanks,answer,quesComonTable, WatermarkIcon},
+    components: {quesComonTable},
      setup:(props,context)=>{
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
@@ -191,18 +182,6 @@ export default defineComponent({
               state.levelId=''
               state.searchname=''
               methods.exerciseDetailList(state.exerListParams)
-              switch(key){
-                  case 1:
-                  return state.currentView=state.componentNames[0];
-                  case 2:
-                  return state.currentView=state.componentNames[1];
-                  case 3:
-                  return state.currentView=state.componentNames[2];
-                  case 4:
-                  return state.currentView=state.componentNames[3];
-                  case 5:
-                  return state.currentView=state.componentNames[4];
-              }
           },
           exerciseDetailList(exerListParams:exerciseList){
               const item:any=router.currentRoute.value.query.item
