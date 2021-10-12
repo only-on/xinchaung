@@ -204,16 +204,6 @@ export default defineComponent({
                   return state.currentView=state.componentNames[4];
               }
           },
-          numExercises(id:any){
-            let i:any= state.question_info?.findIndex((item)=>{
-                return item.type_id===id
-            })
-            if (i!=-1) {
-                return (state.question_info as any)[i].count
-            }else{
-               return 0
-            }
-          },
           exerciseDetailList(exerListParams:exerciseList){
               const item:any=router.currentRoute.value.query.item
               const id:any=JSON.parse(item).id;

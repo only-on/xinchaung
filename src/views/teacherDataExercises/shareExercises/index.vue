@@ -1,11 +1,19 @@
 <template>
     <div>
         <div class="exerciseList">
-            <div class="directoryList">
+            <div class="directoryList" v-if="componentData.length">
                 <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()" @click="toExerDetail(item)">
                     <div class="exam-list-title">{{item.name}}</div>
                     <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(' ')[0]}}</div>
                     <div class="exam-list-num"><i class="iconfont icon-xiangmu"></i>{{item.questions_count}}</div>
+                </div>
+            </div>
+            <div v-else>
+                <div v-if="searchValue">
+                    <empty type="searchEmpty"></empty>
+                </div>
+                <div v-else>
+                    <empty type="empty"></empty>
                 </div>
             </div>
         </div>
@@ -14,15 +22,18 @@
 <script lang="ts">
 import {defineComponent}from 'vue'
 import { useRouter } from 'vue-router';
+import Empty from 'src/components/Empty.vue'
 export default defineComponent({
     name:'shareExercises',
-    props: ["componentData"],
+    components:{Empty},
+    props: ["componentData","searchValue"],
     setup:(props,context)=>{
         console.log(props,'props')
         const router = useRouter();
          function toExerDetail(item:any){
             console.log(item,'item')
             router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:1}})
+            // router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
         }
         return {toExerDetail}
     }

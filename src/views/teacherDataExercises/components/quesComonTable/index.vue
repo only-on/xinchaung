@@ -21,36 +21,41 @@
                 </div>
             </div>
             <div>
-                {{poolid}}poolid1111111
                 <batch-import :isShowImport="isShowImport" :poolid="poolid"  @batch-import-close='batchImportClose'></batch-import>
             </div>
             <a-modal :visible="visibleDelete" title="提示" ok-text="确定" cancel-text="取消"  @ok="deleteOk" @cancel="deleteCancel">
                 <p>习题删除后将无法恢复，确定要删除吗?</p>
             </a-modal>
             <div class="question-content-table">
-                <a-table :row-selection="rowSelection" :columns="columns" rowKey="id" :loading="loading" :data-source="tabledata">
-                    <template #difficulty='{record}'>
-                        <span>{{record.level.name}}</span>
+                <a-config-provider>
+                    <a-table :row-selection="rowSelection" :columns="columns" rowKey="id" :loading="loading" :data-source="tabledata">
+                        <template #difficulty='{record}'>
+                            <span>{{record.level.name}}</span>
+                        </template>
+                        <template #operation='{record}'>
+                            <div>
+                                <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px;color:#8955b5"></span>
+                                <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)" style="color:#8955b5"></span>
+                            </div>
+                        </template>
+                        <template #select-answers='{record}'>
+                            <div v-if="record.type_id===4||record.type_id===5">
+                                <span>{{record.answers[0].answer}}</span>  
+                            </div>
+                            <div v-else>
+                                <span  v-for="(item,index) in record.options" :key="index.toString()">
+                                    <span v-for="(it,i) in record.answers" :key="i.toString()">
+                                        <span v-if="it.answer===item.id.toString()">{{item.option}}<span v-if="i!==record.answers.length-1">，</span></span>
+                                    </span>  
+                                </span>
+                            </div>
+                        </template>
+                    </a-table>
+                    <template #renderEmpty>
+                        <div v-if="!searchExercise"><empty type="tableEmpty"></empty></div>
+                        <div v-else><empty type="tableSearchEmpty"></empty></div>
                     </template>
-                    <template #operation='{record}'>
-                        <div>
-                            <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px;color:#8955b5"></span>
-                            <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)" style="color:#8955b5"></span>
-                        </div>
-                    </template>
-                    <template #select-answers='{record}'>
-                        <div v-if="record.type_id===4||record.type_id===5">
-                            <span>{{record.answers[0].answer}}</span>  
-                        </div>
-                        <div v-else>
-                            <span  v-for="(item,index) in record.options" :key="index.toString()">
-                                <span v-for="(it,i) in record.answers" :key="i.toString()">
-                                    <span v-if="it.answer===item.id.toString()">{{item.option}}<span v-if="i!==record.answers.length-1">，</span></span>
-                                </span>  
-                            </span>
-                        </div>
-                    </template>
-                </a-table>
+                </a-config-provider>
             </div>
             <div>
                 <a-modal
@@ -172,6 +177,7 @@ import { useRouter } from 'vue-router';
 import request from "../../../../api";
 import knowledgeModal from '../../../teachCourse/createTestPaper/knowledgeModal.vue'
 import batchImport from '../batchImport.vue'
+import Empty from 'src/components/Empty.vue'
 interface levelType{
     name:string,
     id:number,
@@ -230,7 +236,7 @@ interface ItreeDatalist {
 }
 export default defineComponent({
     name:'quesComonTable',
-    components:{knowledgeModal,batchImport},
+    components:{knowledgeModal,batchImport,Empty},
     props:['selectedId','poolid','tabledata','initial'],
     setup:(props,context)=>{
         // 删除行还是批量
@@ -299,7 +305,6 @@ export default defineComponent({
             question_id:'',
             visibleDelete:false,
         })
-        var poolid:any=props.poolid
         const methods = {
          exerciseLevels(){
                 teacherDataExerApi.getDetailExerLevels().then((res:any)=>{
@@ -319,6 +324,7 @@ export default defineComponent({
             },
             batchImportClose(value:any){
                 isShowImport.value=value
+                context.emit('finishCreate',true)
             },
             // 批量导入
             batchImport(){
@@ -336,26 +342,23 @@ export default defineComponent({
                     message.warning("题目不能为空")
                     return
                 }
-                if(!state.expermodelValue.options[0]){
-                    message.warning("选项A不能为空")
-                    return
-                }
-                if(!state.expermodelValue.options[1]){
-                    message.warning("选项B不能为空")
-                    return
-                }
-                if(!state.expermodelValue.options[2]){
-                    message.warning("选项C不能为空")
-                    return
-                }
-                if(!state.expermodelValue.options[3]){
-                    message.warning("选项D不能为空")
-                    return
-                }
-                if(!state.expermodelValue.answers.length){
-                    message.warning("请选择答案")
-                    return
-                }
+                    if(props.selectedId===1||props.selectedId===2){
+                        if(!state.expermodelValue.options[0]||!state.expermodelValue.options[1]||!state.expermodelValue.options[2]||!state.expermodelValue.options[3]){
+                        message.warning("选项不能为空")
+                        return
+                        }
+                    }
+                    if(props.selectedId===1||props.selectedId===2||props.selectedId===3){
+                        if(!state.expermodelValue.answers.length){
+                        message.warning("请选择答案")
+                        return
+                        }
+                    }else{
+                         if(!state.expermodelValue.answers.length){
+                        message.warning("答案不能为空")
+                        return
+                        }
+                    }
                 if(!state.expermodelValue.leves){
                     message.warning("请选择试题难度")
                     return
@@ -582,11 +585,12 @@ export default defineComponent({
                   return state.createmodal.title='解答题';
               }
         })
+        watch(()=>{props.poolid},(newVal)=>{
+        })
         onMounted(()=>{
-            console.log(props.poolid,'props.poolid')
             methods.exerciseLevels()
         })
-        return {...methods,...toRefs(state),rowSelection,poolid,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany}
+        return {...methods,...toRefs(state),rowSelection,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany}
     }
 })
 </script>

@@ -31,7 +31,7 @@
                 </div>
             </a-modal>
         </div>
-        <component :is="componentName" :componentData='componentData' @poolId='getPollId'/>
+        <component :is="componentName" :componentData='componentData' :searchValue='searchValue' @poolId='getPollId'/>
          <a-pagination
             v-model="pagination.current"
             :page-size-options="pagination.pageSizeOptions"

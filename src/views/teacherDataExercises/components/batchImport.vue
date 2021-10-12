@@ -8,21 +8,24 @@
   :footer="null"
 >
   <div>
-      {{poolid}}poolid
       <div class="choiceDocument">
            <a-upload
             name="file"
             :multiple="true"
             @change="handleChange"
             >
-               <a-button> <a-icon type="upload" /> Click to Upload </a-button>
+               <span>选择文件：</span><a-input style="width:160px" v-model:value='filename'></a-input><a-button type="primary">浏览</a-button>
             </a-upload>
-          <a-button type="primary">浏览</a-button><a-button type="primary" @click="detailExerUpload">上传</a-button><a-button type="primary" @click="closeModal">关闭</a-button>
+          <a-button type="primary" @click="detailExerUpload">上传</a-button><a-button type="primary" @click="closeModal">关闭</a-button>
           <div class="download" @click="dowmTemplate">
               下载试题模板
           </div>
       </div>
-        <a-table v-if="data" :columns="columns" :data-source="data" rowKey='id'></a-table>
+        <a-table v-if="data" :columns="columns" :data-source="data" rowKey='id'>
+          <template #index='{record}'>
+              <span>{{record.index}}</span>
+          </template>
+        </a-table>
          <div v-else  class="importNone">
             导入情况：无
         </div>
@@ -36,7 +39,8 @@ import { number } from 'echarts';
 interface State{
     columns:any[],
     uploadfile:any;
-    data:any
+    data:any,
+    filename:string
 }
 export default defineComponent({
     name:'batchImport',
@@ -48,11 +52,11 @@ export default defineComponent({
        const teacherDataExerApi = (request as any).teacherDataExercises
        const state:State=reactive({
            columns:[
-            {
-                dataIndex: '序号',
-                key: 'id',
-                slots: { title: 'customTitle' },
-                scopedSlots: { customRender: 'name' },
+           {
+                title: '序号',
+                dataIndex: 'index',
+                align: 'center',
+                slots: { customRender:'index'},
             },
             {
                 title: '题目',
@@ -72,13 +76,13 @@ export default defineComponent({
             },
             {
                 title: '导入状态',
+                dataIndex: 'action',
                 key: 'action',
-                scopedSlots: { customRender: 'action' },
             },
             ], 
             data:[
             {
-                name: '1',
+                index: 1,
                 age: '的的耳朵',
                 address: '简单',
                 tags:'10',
@@ -86,6 +90,7 @@ export default defineComponent({
             }
             ],
             uploadfile:null,
+            filename:''
        })
       function handleOk(){
           emit('batchImportClose',false)
@@ -98,7 +103,8 @@ export default defineComponent({
       }
       function handleChange(file:any){
           console.log(file,'file')
-          state.uploadfile=file
+          state.uploadfile=file.file
+          state.filename=file.file.name
       }
       function detailExerUpload(){
           teacherDataExerApi.detailExerBatchImport({urlParams:{pool_id:props.poolid},param:{csv_file:state.uploadfile}}).then((res:any)=>{
@@ -114,7 +120,7 @@ export default defineComponent({
   }
 })
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .choiceDocument{
     display: flex;
     justify-content:space-between;
@@ -125,60 +131,7 @@ export default defineComponent({
 .download:hover{
     color:@theme-light-color;
 }
-
-
-
-
-.opPanel {
-  margin-top: 10px;
-}
-.opPanel .inputBox {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    margin-bottom: 10px;
-}
-
-
-
-
-.settingPaperContentBox tbody tr td:first-child {
-  text-align: center;
-}
-.innerBox {
-  padding: 20px 10px;
-}
-.settingPaperContentBoxSystem {
+.ant-upload-list{
   display: none;
-  text-align: center;
 }
-.settingPaperContentBoxSystem select {
-  width: 100px;
-}
-.settingPaperContentBoxSystem > div {
-  padding: 10px 0;
-}
-.fileUploadBox input[type='text'] {
-  width: 125px;
-}
-.settingPaperContentBoxSystem .spanWidth {
-  display: inline-block;
-  width: 250px;
-  text-align: right;
-}
-.spanPos {
-  position: absolute;
-  top: 5px;
-  right: -145px;
-}
-.chooseContentPanel .chooseItemWrap table td {
-  padding: 5px;
-}
-.chooseContentPanel .chooseItemWrap table td input {
-  padding: 3px;
-}
-.chooseContentPanel .pagination {
-  margin: 0 auto;
-}
-
 </style>
