@@ -1,24 +1,25 @@
 <template>
   <div class="quill-editor-wrap">
-    <quill-editor
+    <XeQuill
       ref="quillDom"
       v-if="type === 'edit'"
       class="scrollbar"
       toolbar="full"
       :options="options"
-      v-model:content="content"
+      v-model:value="content"
       :style="{ height: height }"
       @selectionChange="selectionChange"
       @editorChange="editorChange"
     >
-    </quill-editor>
+    </XeQuill>
     <div v-if="type === 'preview'" v-html="html"></div>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, watch, PropType, ref, reactive, toRefs } from "vue";
-import { QuillEditor } from "@vueup/vue-quill";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
+// import { QuillEditor } from "@vueup/vue-quill";
+// import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import XeQuill from "@xianfe/vue-quill/src/index.vue";
 import { Delta } from "quill-delta";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { isJsonString } from "src/utils/common";
@@ -30,7 +31,7 @@ interface IreactiveData {
 export default defineComponent({
   name: "Quill",
   components: {
-    QuillEditor,
+    XeQuill,
   },
   props: {
     options: {
@@ -61,7 +62,7 @@ export default defineComponent({
     },
     quillRef: {
       default: "quillRef",
-      type: Object as PropType<Delta>,
+      type: String,
     },
   },
   setup(props, { emit }) {
@@ -70,6 +71,8 @@ export default defineComponent({
     const { content } = toRefs(reactiveData);
     const height = props.height;
     const quillDom = ref(props.quillRef);
+    console.log(quillDom);
+    
     watch(
       () => content.value,
       () => {
@@ -80,8 +83,11 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       () => {
+        console.log(props.modelValue);
+        
         content.value = props.modelValue;
-      }
+
+      },{deep:true}
     );
     let html: any = "";
     let contentPre: any = isJsonString(content.value)
@@ -119,6 +125,8 @@ export default defineComponent({
 
     // 插入html
     function  insertHtml(htmlString:string) {
+      console.log(quillDom.value);
+      // (quillDom.value as any).clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api')
       (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api')
     }
     return {

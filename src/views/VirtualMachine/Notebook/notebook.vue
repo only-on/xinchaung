@@ -73,7 +73,7 @@ export default defineComponent({
     let vm_uuid=""
     const noteUrl=ref("")
     const use_time: Ref<number> = ref(900);
-    let taskType=""
+    let taskType=ref("")
     provide("allInfo", allInfo);
     // provide("novncEl",novncEl)
     provide("uuid",vm_uuid)
@@ -131,7 +131,7 @@ export default defineComponent({
 
         use_time.value = res.data.current.used_time;
         console.log(allInfo);
-        taskType = res.data.base_info.task_type.name;
+        taskType.value = res.data.base_info.task_type.name;
       });
     }
     function back() {

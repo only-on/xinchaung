@@ -301,6 +301,26 @@ async function toStudyRecommendExperiment(router: any, param: IRecommendExperime
 }
 
 /**
+ * 
+ * @param params  opType	是	string	学生当前学习记录类型：start/continue/rebuild	start
+                  type	是	string	学习类别：course:课程实验/实训；train:实训	course
+                  taskId	是	int	课程实验id/实训id	0
+                  action	是	string	脚本运行类型：stepScore	stepScore
+                  topoinst_id	是	string	拓扑实例uuid	“”
+                  task_step_id	是	int	单个步骤的步骤id	0
+                  see_current_step	否	int	是否是查看步骤详情	0
+ * @description 步骤提交/查看步骤 
+ */
+function stepAction(params:any){
+  return new Promise((resolve:any,reject:any)=>{
+    vmApi.stepActionApi({param:params}).then((res)=>{
+      resolve(res)
+    }).catch(err=>{
+      reject(err)
+    })
+  })
+}
+/**
  * @description 操作虚拟机
  * @param params param:{action,params:{type,opType,taskId}}
  */
@@ -375,6 +395,7 @@ export {
   toStudyRecommendExperiment,
   secondToHHMMSS,
   backTo,
-  operatesHandle
+  operatesHandle,
+  stepAction
 }
 

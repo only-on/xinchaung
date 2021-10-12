@@ -251,7 +251,8 @@ export default defineComponent({
     // 截图
     function vncScreenshot() {
       let novncWrap: HTMLCanvasElement | null = document.querySelector(
-        ".novnc-wrap>div>canvas"
+        // ".novnc-wrap>div>canvas"
+        "#app"
       );
       if (!novncWrap) {
         novncWrap = document.querySelector(
@@ -317,7 +318,8 @@ export default defineComponent({
       content.value = {
         ops: [],
       };
-      (quillRef.value as any).setContents(content.value);
+      // (quillRef.value as any).setContents(content.value);
+      content.value.ops=[]
       replyVisible.value = false;
       replyToUser.value = "@";
     }
@@ -333,7 +335,8 @@ export default defineComponent({
             ops: [],
           };
           replyToUser.value = "@";
-          (quillRef.value as any).setContents(content.value);
+          // (quillRef.value as any).setContents(content.value);
+          content.value.ops=[]
         });
     }
 
@@ -357,9 +360,10 @@ export default defineComponent({
     function tabChange(key: string) {
       console.log(key);
       if (key === "2") {
-        forumThemeContent.value.ops = [];
+        // forumThemeContent.value.ops=[{insert:''}]
         nextTick(() => {
-          quillQuestion.value.setContents(forumThemeContent.value);
+          forumThemeContent.value.ops=[{insert:''}]
+          // quillQuestion.value.setContents(forumThemeContent.value);
         });
         forumThemeTitle.value = "";
       }

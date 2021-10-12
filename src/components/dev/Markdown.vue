@@ -2,7 +2,7 @@
   <div class="marked__demo">
     <div class="row">
       <div class="editor">
-        <antdv-markdown v-model="content" class="markdown__editor"/>
+        <antdv-markdown v-model="content"  class="markdown__editor"/>
       </div>
       <div class="textarea">
         <textarea v-model="content"></textarea>

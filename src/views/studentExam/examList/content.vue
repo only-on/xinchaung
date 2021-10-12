@@ -18,7 +18,7 @@
         @search="onSearch"
       />
     </div>
-    <div class="exam-content-list" v-if="examData?.list && examData.list.length">
+    <div class="exam-content-list" v-if="examData?examData.list.length>0:[]">
       <div
         class="exam-content-item"
         v-for="(item, index) in examData?.list"
@@ -46,7 +46,7 @@
         </div>
       </div>
     </div>
-    <div class="page-box" v-if="examData?.list && examData.list.length">
+    <div class="page-box" v-if="examData&&examData.list.length>0">
       <a-pagination
         :total="examData?.page?.totalCount"
         v-model:current="searchExamParams.page"
@@ -54,7 +54,7 @@
         @change="pageSizeChange"
       />
     </div>
-    <div v-if="examData?.list.length===0" style="margin-top:15px">
+    <div v-if="examData&&examData.list.length===0" style="margin-top:15px">
       <empty/>
     </div>
   </div>
@@ -90,7 +90,7 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const visible = ref<boolean>(false);
-    const examData = props.examData;
+    const examData:any = props.examData;
     const reactiveData = reactive({
       searchExamParams: props.params,
     });

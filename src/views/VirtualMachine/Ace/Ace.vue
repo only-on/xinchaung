@@ -228,7 +228,7 @@ export default defineComponent({
     let last_version_name = "";
     let connection_id = "";
     let vm_uuid = ref("");
-    let taskType = ""; // 实验类型
+    let taskType = ref(""); // 实验类型
     let role = storage.lStorage.get("role");
     let { taskBaseInfo } =
       toRefs(reactiveData);
@@ -368,7 +368,7 @@ export default defineComponent({
         reactiveData.taskBaseInfo = res?.data;
         console.log(reactiveData.taskBaseInfo);
         use_time.value = res?.data.current.used_time;
-        taskType = res.data.base_info.task_type.name;
+        taskType.value = res.data.base_info.task_type.type;
         reportTemid.value=res?.data.current.id
       });
     }

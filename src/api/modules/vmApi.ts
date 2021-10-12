@@ -25,7 +25,9 @@ export default {
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
     // 实验报告
     experimentalReport: { url: "/report/record/create", method: 'POST' },
-    updateTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'formdata' }
+    updateTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'formdata' },
+    // 提交步骤/查看答案
+    stepActionApi: { url: "/api/operate/operates/step", method: 'POST' },
 }
 
 // 
@@ -51,6 +53,7 @@ export interface IvmApi {
     taskDetailApi: TFHttpSend
     experimentalReport: TFHttpSend
     updateTemplateReport: TFHttpSend
+    stepActionApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

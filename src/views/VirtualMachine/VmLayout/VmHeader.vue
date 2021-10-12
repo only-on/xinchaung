@@ -237,34 +237,37 @@ export default defineComponent({
     let allInfo: any = inject("allInfo");
     let { recommendExperimentData } = toRefs(reactiveData);
     let role = storage.lStorage.get("role");
-    let roleName = computed(() => {
-      if (!allInfo.value?.base_info) {
-        return "none";
-      }
-      // 学生
-      if (role === 4) {
-        // 桌面实验
-        if (allInfo.value?.base_info.task_type.name === "桌面实验") {
-          return "stuAndVnc";
-        }
-        // 交互编程
-        if (allInfo.value?.base_info.task_type.name === "交互编程") {
-          return "stuAndwebide";
-        }
-      }
-      // 教师
-      if (role === 3) {
-        // 桌面实验
-        if (allInfo.value?.base_info.task_type.name === "桌面实验") {
-          return "teacherAndVnc";
-        }
-        // 交互编程
-        if (allInfo.value?.base_info.task_type.name === "交互编程") {
-          return "teacherAndwebide";
-        }
-      }
-      return "none";
-    });
+    const roleName=ref("none")
+    // let roleName = computed(() => {
+    //   console.log(allInfo.value);
+      
+    //   if (!allInfo.value?.base_info) {
+    //     return "none";
+    //   }
+    //   // 学生
+    //   if (role === 4) {
+    //     // 桌面实验
+    //     if (allInfo.value?.base_info.task_type.name === "桌面实验") {
+    //       return "stuAndVnc";
+    //     }
+    //     // 交互编程
+    //     if (allInfo.value?.base_info.task_type.name === "交互编程") {
+    //       return "stuAndwebide";
+    //     }
+    //   }
+    //   // 教师
+    //   if (role === 3) {
+    //     // 桌面实验
+    //     if (allInfo.value?.base_info.task_type.name === "桌面实验") {
+    //       return "teacherAndVnc";
+    //     }
+    //     // 交互编程
+    //     if (allInfo.value?.base_info.task_type.name === "交互编程") {
+    //       return "teacherAndwebide";
+    //     }
+    //   }
+    //   return "none";
+    // });
 
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     let experimentTime: Ref<any> = ref({
@@ -282,8 +285,42 @@ export default defineComponent({
       () => allInfo,
       () => {
         console.log(allInfo.value);
+      if (!allInfo.value?.base_info) {
+        roleName.value= "none";
+        return
+      }
+      console.log(role);
+      
+      // 学生
+      if (role === 4) {
+        // 桌面实验
+        if (["桌面实验",'验证实验','实训'].includes(allInfo.value?.base_info.task_type.name)) {
+          roleName.value=  "stuAndVnc";
+          return;
+        }
+        // 交互编程
+        if (allInfo.value?.base_info.task_type.name === "交互编程") {
+           roleName.value=  "stuAndwebide";
+           return
+        }
+      }
+      // 教师
+      if (role === 3) {
+        // 桌面实验
+        if (allInfo.value?.base_info.task_type.name === "桌面实验") {
+          roleName.value=  "teacherAndVnc";
+          return
+        }
+        // 交互编程
+        if (allInfo.value?.base_info.task_type.name === "交互编程") {
+          roleName.value=  "teacherAndwebide";
+          return
+        }
+      }
+      roleName.value=  "none";
+      return
       },
-      { deep: true }
+      { deep: true ,immediate:true}
     );
 
     onMounted(() => {
@@ -292,7 +329,9 @@ export default defineComponent({
       if (role === 4) {
         timer = setInterval(() => {
           experimentTime!.value = secondToHHMMSS(Number(use_time.value));
-          if (taskType === "实训") {
+          // console.log(taskType.value);
+          
+          if (!taskType.value) {
             use_time.value++;
           } else {
             use_time.value--;

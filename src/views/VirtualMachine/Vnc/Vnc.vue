@@ -225,7 +225,7 @@ export default defineComponent({
     });
     let uuid = ref("");
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
-    let taskType = ""; // 实验类型
+    let taskType = ref(""); // 实验类型
     const isScreenRecording = ref(false);
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
@@ -245,7 +245,7 @@ export default defineComponent({
           ? [
               { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
               { name: "实验指导", key: "guide", icon: "icon-zhidao" },
-              { name: "实验笔记", key: "note", icon: "icon-biji1" },
+              { name: "实验笔记", key: "experimental-note", icon: "icon-biji1" },
               { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
               { name: "实验报告", key: "report", icon: "icon-baogao1" },
               { name: "随堂练习", key: "practice", icon: "icon-biji" },
@@ -254,7 +254,7 @@ export default defineComponent({
           : [
               { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
               { name: "实训指导", key: "guide", icon: "icon-zhidao" },
-              { name: "实训笔记", key: "note", icon: "icon-biji1" },
+              { name: "实训笔记", key: "train-note", icon: "icon-biji1" },
               { name: "实训课件", key: "courseware", icon: "icon-kejian1" },
               { name: "实训资源", key: "resource", icon: "icon-leixing-01" },
               { name: "实训报告", key: "report", icon: "icon-baogao1" },
@@ -354,10 +354,16 @@ export default defineComponent({
         console.log(res);
         allInfo.value = res.data;
         console.log(res.data.current.used_time);
-
-        use_time.value = res.data.current.used_time;
+         taskType.value = res.data.base_info.task_type.type;
+        
+         if (!taskType.value) {
+            use_time.value = res.data.current.remaining_time;
+         }else{
+           use_time.value = res.data.current.used_time;
+         }
+       
         console.log(allInfo);
-        taskType = res.data.base_info.task_type.name;
+       
         reportTemid.value = res.data.current.id;
       });
     }

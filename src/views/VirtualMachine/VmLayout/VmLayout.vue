@@ -91,9 +91,10 @@ import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
 import InClassForum from "./InClassForum/InClassForum.vue";
 import VmHeader from "./VmHeader.vue";
-import Note from "./Note/Note.vue";
+import ExperimentalNote from "./ExperimentalNote/ExperimentalNote.vue";
 import TrainCourseware from "./TrainCourseware/TrainCoursewar.vue";
 import TrainResource from "./TrainResource/TrainResource.vue";
+import TrainNote from "./TrainNote/TrainNote.vue";
 
 interface Vm {
   key: string;
@@ -109,9 +110,10 @@ export default defineComponent({
     "in-class-practice": InClassPractice,
     "in-class-forum": InClassForum,
     "vm-header": VmHeader,
-    note: Note,
+    "experimental-note": ExperimentalNote,
     "train-courseware": TrainCourseware,
     "train-resource": TrainResource,
+    "train-note":TrainNote
   },
   props: ["VmData", "reportId", "isLeftContentShowType"],
   setup(props, { emit }) {
@@ -177,8 +179,10 @@ export default defineComponent({
           return "in-class-practice";
         case "forum":
           return "in-class-forum";
-        case "note":
-          return "note";
+        case "experimental-note":
+          return "experimental-note";
+          case "train-note":
+          return "train-note";
         case "courseware":
           return "train-courseware";
         case "resource":
