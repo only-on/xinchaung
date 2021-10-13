@@ -12,6 +12,7 @@ import { ICourseTreeApis } from "src/api/modules/courseTree"
 import { ITeacherCourseApis } from "src/api/modules/teachCourse"
 import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysis"
 import { ITeacherExamlAps } from "src/api/modules/teacherExam"
+import { ITeacherAssistant } from "src/api/modules/teacherAssistant"
 
 /**
  * 通用响应类型
@@ -54,4 +55,5 @@ export interface IApiCollection {
     teacherCourseAnalysis: ITeacherCourseAnalysisApis,
     teacherExperimental:ITeacherExperimentallAps
     teacherExam:ITeacherExamlAps
+    teacherAssistant:ITeacherAssistant
 }

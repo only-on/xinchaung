@@ -50,7 +50,8 @@ import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import addAssistant from './addAssistant.vue'
 import lookModel from './lookModel.vue'
-import { ITableList, IPage } from './typings'
+import { ITableList, IPage, IHttp } from './typings'
+import { useRouter } from 'vue-router'
 
 export default defineComponent({
   components: {addAssistant, lookModel},
@@ -73,12 +74,13 @@ export default defineComponent({
   },
   emits: ['update:selectedRows', 'pageChange'],
   setup(props, {emit}) {
+    const router = useRouter()
     const page = reactive<IPage>({
       page: 1,
       pageSize: 10,
       total: 0
     })
-    // const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const http=(request as IHttp).teacherAssistant
     const columns = [
       {
         title: '帐号',
@@ -160,19 +162,21 @@ export default defineComponent({
       status: 1
     })
     function edit(list: ITableList) {
-      console.log(list)
-      isShow.value = true
+      // console.log(list)
+      // isShow.value = true
       
-      formState.id = list.id
-      formState.username = list.username
-      formState.name = list.name
-      formState.sex = list.sex
-      formState.email = list.email
-      formState.phone = list.phone
-      formState.passWord = list.passWord
-      formState.submitPass = list.submitPass
-      formState.teacher = list.teacher
-      formState.status = list.status
+      // formState.id = list.id
+      // formState.username = list.username
+      // formState.name = list.name
+      // formState.sex = list.sex
+      // formState.email = list.email
+      // formState.phone = list.phone
+      // formState.passWord = list.passWord
+      // formState.submitPass = list.submitPass
+      // formState.teacher = list.teacher
+      // formState.status = list.status
+     
+      router.push('/teacher/assistantManager/update?id= ' + list.id)
     }
     // 查看
     let isShowLook = ref<boolean>(false)
@@ -186,14 +190,15 @@ export default defineComponent({
       updateTime: ''
     })
     function look(list: ITableList) {
-      isShowLook.value = true
-      lookDetail.username = list.username
-      lookDetail.name = list.name
-      lookDetail.sex = list.sex
-      lookDetail.teacher = list.teacher
-      lookDetail.status = list.status
-      lookDetail.createTime = list.createTime
-      lookDetail.updateTime = list.updateTime
+      // isShowLook.value = true
+      // lookDetail.username = list.username
+      // lookDetail.name = list.name
+      // lookDetail.sex = list.sex
+      // lookDetail.teacher = list.teacher
+      // lookDetail.status = list.status
+      // lookDetail.createTime = list.createTime
+      // lookDetail.updateTime = list.updateTime
+      router.push('/teacher/assistantManager/view?id=' + list.id)
     }
     var upTableList = inject('upTableList') as Function 
     // 删除
@@ -205,26 +210,24 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk: () => {
-          upTableList()
-          // http.delResource({param: {train_resource_id: id}}).then((res: IBusinessResp) => {
-          //   console.log(res)
-          //   getResourceList()
-          // })
+          http.delAssistant({urlParams: {ids: id}}).then((res: IBusinessResp) => {
+            console.log(res)
+            upTableList()
+          })
         }
       });
     }
 
     function changeSwitch (item:ITableList) {
       item.status = item.status == 1 ? 0 : 1
-      upTableList()
-      // let params = {
-      //   train_id: item.id,
-      //   is_open: item.is_open
-      // }
-      // http.changeStatus({param: params}).then((res:IBusinessResp) => {
-      //   message.success('操作成功')
-      //   emit('refresh')
-      // })
+      let params = {
+        aid: item.id,
+        state: item.status ? true : false
+      }
+        upTableList()
+      http.changeStatus({param: params}).then((res:IBusinessResp) => {
+        message.success('操作成功')
+      })
     } 
     const onChange = (pagination: PaginationType, filters: FilterType[], sorter: ColumnType) => {
       console.log('params', sorter);

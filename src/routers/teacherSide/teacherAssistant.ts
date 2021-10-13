@@ -17,5 +17,23 @@ export default {
                 authCode: 'assistant'
             },
         },
+        {
+            path: "update",
+            name: "update",
+            component: () => import("src/views/teacherAssistant/update.vue"),
+            meta: {
+                title: "编辑",
+                authCode: 'update'
+            },
+        },
+        {
+            path: "view",
+            name: "view",
+            component: () => import("src/views/teacherAssistant/view.vue"),
+            meta: {
+                title: "查看",
+                authCode: 'view'
+            },
+        },
     ]
 }

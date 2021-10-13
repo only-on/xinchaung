@@ -27,3 +27,13 @@ export interface IData {
   page: IPage,
   selectedRows: ITableList[]
 }
+
+interface ITeacherAssistant {
+  getAssistantList: Function
+  delAssistant: Function 
+  changeStatus: Function
+  addAssistant: Function
+}
+export interface IHttp {
+  teacherAssistant: ITeacherAssistant
+}

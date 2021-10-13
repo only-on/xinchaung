@@ -42,7 +42,7 @@ import Table from './Table.vue'
 import addAssistant from './addAssistant.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITableList, IData } from './typings'
+import { ITableList, IData, IHttp } from './typings'
 
 export default defineComponent({
   name: '',
@@ -53,6 +53,7 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false})
 
+    const http = (request as IHttp).teacherAssistant
     const data = reactive<IData>({
       searchInfo: {
         name: '',
@@ -110,6 +111,9 @@ export default defineComponent({
         pageSize: data.page.pageSize
       }
       console.log(params)
+      // http.getAssistantList().then((res: IBusinessResp) => {
+      //   console.log(res)
+      // })
       
       data.tableList = [
         {
@@ -171,12 +175,17 @@ export default defineComponent({
       visible.value = true
     }
     const handleOk = () => {
-      confirmLoading.value = true
-      getAssistantList()
-      setTimeout(() => {
+      if (!data.selectedRows.length) {
+        visible.value = false;
+        return
+      }
+      confirmLoading.value = true  
+      let ids = data.selectedRows.map(v => v.id).join(',')
+      http.delAssistant({urlParams: {ids}}).then((res: IBusinessResp) => {
+        console.log(res)
         visible.value = false;
         confirmLoading.value = false;
-      }, 2000);
+      })
     };
     const handleCancel = () => {
       visible.value = false;
