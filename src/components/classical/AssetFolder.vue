@@ -1,13 +1,13 @@
 <template>
   <div class="classical__asset-folder" @click="handleClick">
     <div class="classical__asset-main">
-      <div class="classical__asset-title">title</div>
+      <div class="classical__asset-title">{{ title }}</div>
     </div>
     <div class="classical__asset-right">
       <ul>
-        <li><span class="iconfont icon-shijian"/><span class="classical__asset-item">2021-07-12</span></li>
-        <li><span class="iconfont icon-cunchuzhi"/><span class="classical__asset-item">10.2MB</span></li>
-        <li><span class="iconfont icon-wenjian"/><span class="classical__asset-item">3个</span></li>
+        <li><span class="iconfont icon-shijian"/><span class="classical__asset-item">{{ date }}</span></li>
+        <li><span class="iconfont icon-cunchuzhi"/><span class="classical__asset-item">{{ size }}</span></li>
+        <li><span class="iconfont icon-wenjian"/><span class="classical__asset-item">{{ count }}</span></li>
         <li><span class="iconfont icon-shanchu"/></li>
       </ul>
     </div>
@@ -19,6 +19,24 @@ import {defineComponent} from "vue";
 export default defineComponent({
   name: "AssetFolder",
   emits: ["click"],
+  props: {
+    title: {
+      type: String,
+      default: ''
+    },
+    date: {
+      type: String,
+      default: ''
+    },
+    size: {
+      type: String,
+      default: ''
+    },
+    count: {
+      type: String,
+      default: ''
+    }
+  },
   setup(props, {emit}) {
     const handleClick = function () {
       emit('click')

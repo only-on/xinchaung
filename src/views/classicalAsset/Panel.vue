@@ -30,8 +30,23 @@
           </a-button>
         </div>
       </div>
-      <asset-folder @click="gotoContent(1)"/>
-      <asset-folder @click="gotoContent(2)"/>
+      <div class="data" v-if="data.length > 0">
+        <asset-folder v-for="(item, key) in data" :key="'dataset-dir-' + key"
+                      :title="item.name"
+                      :date="item.created_at"
+                      :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
+                      :count="(typeof item.item_count !== 'undefined' ? item.item_count : '') + '个'"
+                      @click="gotoContent(item.is_public, item.id)"/>
+      </div>
+      <div class="page" v-if="data.length > 0">
+        <a-pagination
+            show-size-changer
+            v-model:current="dataPage.current"
+            :pageSize="dataPage.pageSize"
+            :total="dataPage.total"
+            @change="handlePageChange"
+        />
+      </div>
     </div>
     <a-modal
         v-model:visible="createFolderVisible"
@@ -77,11 +92,12 @@
   </div>
 </template>
 <script lang="ts">
-import {defineComponent, ref, reactive, inject, watch, computed} from "vue";
+import {defineComponent, ref, reactive, inject, computed, Ref, onMounted} from "vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
 import {ILayoutConfiguration} from "../../types";
-import {useRouter} from "vue-router";
+import {useRoute, useRouter} from "vue-router";
+import http from '../../api'
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
@@ -91,6 +107,7 @@ export default defineComponent({
   },
   setup() {
     const router = useRouter();
+    const route = useRoute();
     const searchStr = ref("");
     const createFolderVisible = ref(false);
     const nameFocused = ref(false);
@@ -99,6 +116,13 @@ export default defineComponent({
       name: "",
       description: "",
     });
+    const data = ref([]) as Ref<any[]>;
+    // 分页组件数据
+    const dataPage = reactive({current: 1, pageSize: 10, total: 1})
+    // 数据集类型
+    let dataType = typeof route.query['type'] !== 'undefined' ? route.query['type'] : 3 // 3是课件
+    let dataIsPublic  = 0 // 是否公开
+
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
       showNav: true,
@@ -107,12 +131,13 @@ export default defineComponent({
         {name: "公有", componenttype: 0},
         {name: "私有", componenttype: 1},
       ],
-      componenttype: 0,
-      showContent:true,
+      componenttype: 1,
+      showContent: true,
       navType: false,
       backOff: false,
       showPageEdit: false,
-      pageEdit: () => {}
+      pageEdit: () => {
+      }
     })
     const configuration: ILayoutConfiguration = inject('configuration')!
     const showDiskUsage = computed(() => {
@@ -130,9 +155,14 @@ export default defineComponent({
     const handleCreateFolder = () => {
       createFolderVisible.value = false;
     };
-    const gotoContent = (id: number) => {
-      console.log('[asset/panel] goto: ', id)
-      router.push('/teacher/classical/content/private/232')
+    /**
+     * 前往数据详情页面
+     * @param {number} id 数据集id
+     * @param {number} open 是否公开
+     */
+    const gotoContent = (id: number, open: number) => {
+      console.log('[asset/panel] goto: ', id, open)
+      router.push('/teacher/classical/content/' + open + '/' + id)
     }
     const handleNameFocused = (e: FocusEvent) => {
       console.log('[classical/panel] name focused');
@@ -142,7 +172,6 @@ export default defineComponent({
       console.log('[classical/panel] description focused')
       descFocused.value = true
     }
-
     const handleNameBlurred = (e: Event) => {
       console.log('[classical/panel] name blurred');
       nameFocused.value = false;
@@ -151,6 +180,36 @@ export default defineComponent({
       console.log('[classical/panel] description blurred')
       descFocused.value = false
     }
+
+    // 获取数据
+    const getDataSetList = (page: number = 1, pageSize: number = 10) => {
+      http.classicalAsset.datasetList({
+        param: {
+          type: dataType,
+          is_public: dataIsPublic,
+          name: '',
+          page: page,
+          pageSize: pageSize,
+        }
+      }).then(res => {
+        console.log('datasetList: ', res)
+        data.value = res!.data.list
+
+        dataPage.current = res!.data.page.currentPage
+        dataPage.pageSize = res!.data.page.perPage
+        dataPage.total = res!.data.page.totalCount
+      })
+    }
+
+    // 处理翻页
+    const handlePageChange = (page: number, pageSize: number) => {
+      getDataSetList(page, pageSize)
+    }
+
+    onMounted(() => {
+      getDataSetList()
+    })
+
     return {
       searchStr,
       showDiskUsage,
@@ -160,6 +219,8 @@ export default defineComponent({
       wrapperCol,
       nameFocused,
       descFocused,
+      data,
+      dataPage,
       gotoContent,
       handleSearch,
       createFolder,
@@ -167,7 +228,8 @@ export default defineComponent({
       handleNameFocused,
       handleDescriptionFocused,
       handleNameBlurred,
-      handleDescriptionBlurred
+      handleDescriptionBlurred,
+      handlePageChange
     };
   },
 });
@@ -207,16 +269,23 @@ export default defineComponent({
         display: flex;
       }
     }
+
+    .page {
+      display: flex;
+      justify-content: center;
+    }
   }
 }
 
 .classical__input--count-inner {
   border: 1px solid @border-color-base;
   border-radius: @border-radius-base;
+
   :deep(.ant-input) {
     border: none;
     resize: none;
   }
+
   :deep(.ant-input:focus) {
     box-shadow: none;
   }

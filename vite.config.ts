@@ -3,6 +3,7 @@ import vue from '@vitejs/plugin-vue'
 import { resolve } from 'path';
 // import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+// @ts-ignore
 import viteRawPlugin from "vite-raw-plugin";
 
 // https://vitejs.dev/config/
