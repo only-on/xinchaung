@@ -78,8 +78,8 @@
         <Empty v-if="!list.length  && !loading" />
         <a-pagination v-if="list.length"
             v-model:current="ForumSearch.page"
-            :pageSize="12"
-            :total="totalCount+1"
+            :pageSize="11"
+            :total="totalCount"
             @change="pageChange"
           />
       </div>
@@ -132,7 +132,6 @@ export default defineComponent({
     function initData(){
       loading.value=true
       list.length=0
-      ForumSearch.limit=ForumSearch.page===1?11:12
       let obj={
         name:ForumSearch.name,
         page:ForumSearch.page,

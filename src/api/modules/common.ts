@@ -17,10 +17,11 @@ export interface FakeMenu {
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
     getMenu: { url: '/site/menu', method: 'GET', dataType: "json" },
+    loginOut:{url:`/site/logout`,method:'POST',}
 }
 export interface ICommonAps {
     getMenu:TFHttpSend;
-    getLIst:TFHttpSend
+    loginOut:TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

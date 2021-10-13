@@ -8,7 +8,7 @@
     <a-spin :spinning="loading" size="large">
       <div class="main-box">
         <div class="list">
-          <div v-if="ForumSearch.page===1" class="card cread-card" @click="add">
+          <div class="card cread-card" @click="add">
             <div class="kernel">
               <div class="create-btn card-item-content">
                 <i class="iconfont icon-chuangjian"></i>
@@ -42,8 +42,8 @@
         <Empty v-if="!list.length && !loading" />
         <a-pagination v-if="list.length"
             v-model:current="ForumSearch.page"
-            :pageSize="ForumSearch.page===1?11:12"
-            :total="totalCount+1"
+            :pageSize="ForumSearch.limit"
+            :total="totalCount"
             @change="pageChange"
           />
       </div>
@@ -92,7 +92,6 @@ export default defineComponent({
     function initData(){
       loading.value=true
       list.length=0
-      ForumSearch.limit=ForumSearch.page===1?11:12
       http.getTestPaperList({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
         //  console.log(res)
         loading.value=false

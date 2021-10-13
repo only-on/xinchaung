@@ -41,6 +41,7 @@ import request from '../../api/index'
 import { useRouter } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch';
 import { FakeMenu, MenuItem } from "src/api/modules/common";
+import { Modal,message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
 export default defineComponent({
   name: "Header",
@@ -63,7 +64,9 @@ export default defineComponent({
       router.push('/personalInformation')
     }
     function loginOut(){
-      
+      http.loginOut().then((res:IBusinessResp)=>{
+        // message.success('')
+      })
     }
     function helpMessage(){
       

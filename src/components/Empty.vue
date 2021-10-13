@@ -48,7 +48,7 @@ export default defineComponent({
     height.value=props.height
     emptyType.value=props.type
     emptyText.value=props.text?props.text:defaultText[emptyType.value]
-    console.log(props)
+    // console.log(props)
     onMounted(()=>{
      
     })

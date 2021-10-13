@@ -1,29 +1,64 @@
 <template>
-  <div v-layout-bg class="createPaper">
-    <h1>创建考试</h1>
+  <div v-layout-bg class="CreatedExamination">
+    <div class="leftBox">
+      <a-form :ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
+        <a-form-item label="考试名称"  name="name">
+          <a-input v-model:value="formState.title" />
+        </a-form-item>
+        <a-form-item label="考试试卷"  name="type">
+          <a-select v-model:value="formState.type" placeholder="请选择发帖类型">
+            <a-select-option value="1">求助</a-select-option>
+            <a-select-option value="2">分享</a-select-option>
+          </a-select>
+        </a-form-item>
+        <div class="duration">
+          <a-form-item label="考试开始时间"  name="name" :label-col="{span:8}" :wrapper-col="{span:20}">
+            <a-date-picker v-model:value="formState.title" />
+          </a-form-item>
+          <a-form-item label="考试时长"  name="name" :label-col="{span:6}" :wrapper-col="{span:16}">
+            <a-input v-model:value="formState.title" />
+            <div class="durationNotes">分钟</div>
+          </a-form-item>
+        </div>
+        <a-form-item label="通过分数比例"  name="name" :label-col="{span:6}" :wrapper-col="{span:20}" class="proportion">
+          <a-input v-model:value="formState.title" suffix="%" />
+          <div class="notes">注：此分数为百分比分数</div>
+        </a-form-item>
+        <a-form-item label="考试公告" name="desc">
+          <InputTextArea v-model:value="formState.desc"  />
+         </a-form-item>
+      </a-form>
+    </div>
+    <div class="rightBox"></div>
   </div>
+  <div class="information">
+    <div class="item">
+      <a-button type="primary" @click="select()">选择</a-button>
+      <a-button class="btn2" type="primary" @click="remove()">移除</a-button>
+    </div>
+    <div>
+    <a-radio-group v-model:value="information">
+      <a-radio value="1">班级信息</a-radio>
+      <a-radio value="2">学生信息</a-radio>
+    </a-radio-group>
+  </div>
+  </div>
+  <a-config-provider :renderEmpty="customizeRenderEmpty">
+    <a-table :columns="columns" :loading="loading" :data-source="selectList" :bordered="true"  row-key="id"
+      :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+      class="components-table-demo-nested">
+    </a-table>
+  </a-config-provider>
 </template>
-<script lang="ts">
+<script lang="tsx">
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs } from 'vue'
+import { defineComponent,ref,VNode, onMounted,reactive,Ref,inject, computed,toRefs } from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-interface IlistItem{
-  id:number;
-  name:string;
-  question:string;
-  origin_score:number;
-  answersany:any;
-  options:any;
-
-}
-interface IforumSearch{
-  name:string,
-  description:string,
-}
-interface ISearch{
+import { Input } from 'ant-design-vue'
+interface IFrom{
   name:string;
   page:number;
   limit:number;
@@ -31,225 +66,163 @@ interface ISearch{
   pool_id:string | undefined
   type_id:number
 }
-interface IPaperList{
-  name:string,
-  type:string,
-  type_id:number,
-  data:any[],
-  ids:number[]
-}
 interface Istate{
-  formRef:any,
+  formRef:string;
+  formState:any
+  rules:any;
+  select: () => void;
+  remove: () => void;
+  onChangePage: (v:number) => void;
+  information:string;
+  total:number;
+  loading:boolean;
+  pageSize:number;
+  page:number;
+  selectList:any[];
+  customizeRenderEmpty: () => void;
 }
+const columns=[
+  {
+    title: '题目',
+    dataIndex:"title",
+    align:'center',
+    width:460,
+  },
+  {
+    title: '类型',
+    dataIndex:"title",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '正确人数',
+    dataIndex:"title",
+    align:'center',
+    // width:260,
+  },
+  {
+    title: '正确率',
+    dataIndex:"title",
+    align:'center',
+    // width:260,
+  },
+]
 export default defineComponent({
   name: '',
   components: {
-    // dan
+    InputTextArea: Input.TextArea
   },
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
     const {editId}= route.query
-    var QuestionsList:IlistItem[]=reactive([])
-    var PaperList:IPaperList[]=reactive([{name:'单选题',type:'dan',type_id:1,data:[],ids:[]},{name:'多选题',type:'duo',type_id:2,data:[],ids:[]},{name:'判断题',type:'pan',type_id:3,data:[],ids:[]},{name:'填空题',type:'tian',type_id:4,data:[],ids:[]},{name:'简答题',type:'jian',type_id:5,data:[],ids:[]}])
-    var activePaper:Ref<string> =ref('dan')
-    const catalogueOptions =ref<SelectTypes['options']>([{label:'公有',options:[]},{label:'私有',options:[]}])    // 题库目录
-    const options2 =ref<SelectTypes['options']>([{value: '1', label: '简单'},{value: '2', label: '中等'},{value: '3', label: '困难'}])
-    // var activeKey:Ref<string> =ref('dan')
+    const options =ref<SelectTypes['options']>([{value: '1', label: '简单'},{value: '2', label: '中等'},{value: '3', label: '困难'}])
     var totalCount:Ref<number> =ref(0)
-    var option=['A','B','C','D','E','F','G']
     var loading:Ref<boolean> =ref(false)
     const visible = ref<boolean>(false);
-    var selectedPaperIds:number[]=reactive([])          // 已选择的题目id  description
     const totalScore = ref<number>(0);
-    // var formRef:Ref<string> =ref('formRef')
-    const formRef = ref();
-    const state:Istate=reactive({
-      formRef:'formRef',
-    })
-    const http=(request as any).teacherExam
-    const ForumSearch:IforumSearch=reactive({
-      name:'',
-      description:'',
-    })
-    var search:ISearch=reactive({
-      name:'',
-      level_id:undefined,
-      type_id:1,
-      pool_id:undefined,
-      page:1,
-      limit:10
-    })
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
-
-    const rules={
-        name: [
-          { required: true, message: '请输入试卷名称', trigger: 'blur'},
-        ],
-        description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
-    }
-    var selectQuestionList= computed(()=>{
-      type Tactive=Pick<IPaperList,'data'|'ids'>
-      let active:Tactive={
-        data:[],
-        ids:[]
-      }
-      PaperList.forEach((v:IPaperList)=>{
-        if(v.type===activePaper.value){
-          active={
-            data:v.data,
-            ids:v.ids
+    const http=(request as any).teacherExam
+    const state:Istate=reactive({
+          formRef:'formRef',
+          formState:{},
+          rules:{
+            name: [
+              { required: true, message: '请输入试卷名称', trigger: 'blur'},
+            ],
+            description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
+          },
+          select:()=>{},
+          remove:()=>{},
+          information:'1',
+          loading:false,
+          total:0,
+          pageSize:10,
+          page:1,
+          selectList:[],
+          onChangePage:(val:number)=>{
+            state.page=val
+            // initData()
+          },
+          customizeRenderEmpty:()=>{
+            if(state.loading){
+              return <template></template>
+            }else{
+              let type='tableEmpty'
+              return <empty type={type} height={100} />
+            }
           }
-        }
-      })
-      return active
     })
-    var avtiveData=computed(()=>{
-      var item:any[]=[] 
-      PaperList.filter((v:any)=>{
-          if(activePaper.value === v.type){
-            item=v.data
-          }
-        }
-      )
-      return item
-    })
-    function initData(){
-      // 获取题库目录
-      http.pools().then((res:IBusinessResp)=>{
-        interface IOptions{
-          value:string,
-          label:string,
-        }
-        let data=res.data.list
-        // console.log('[获取题库目录] ', data);
-        catalogueOptions.value![0].options.length=0
-        catalogueOptions.value![1].options.length=0
-        data.forEach((v:any)=>{
-          let obj:IOptions={value: v.id, label: v.name}
-          if(v.initial===1){
-            catalogueOptions.value![0].options.push(obj)
-          }else{
-            catalogueOptions.value![1].options.push(obj)
-          }
-        })
-        // console.log(catalogueOptions.value)
-      })
-    }
-    function screen(){
-
-    }
-    function answers(id:number,arr:any){
-      let pitch= arr.find((item:any) => {
-        return id === Number(item.answer)
-      });
-      // console.log(pitch)
-      return pitch?true:false
-    }
-    function getQuestions(){
-      let obj={
-        ...search,
-        pool_id:search.pool_id?search.pool_id:'',
-        level_id:search.level_id?search.level_id:'',
-      }
-      http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
-        QuestionsList.length=0
-        QuestionsList.push(...res.data.list)
-        totalCount.value=res.data.page.totalCount
-        visible.value=true
-      })
-    }
-    const  openSelectquestion = () => {
-      let obj={
-        ...search,
-        pool_id:search.level_id?search.pool_id:'',
-        level_id:search.level_id?search.level_id:'',
-      }
-      // initData()
-      http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
-        QuestionsList.length=0
-        QuestionsList.push(...res.data.list)
-        totalCount.value=res.data.page.totalCount
-         visible.value=true
-      })
-      
-    };
-    const onShowSizeChange=(current:any,pageSize:any)=>{
-        search.limit=pageSize
-        getQuestions()
-      }
-    const pageChange=(current:any,pageSize:any)=>{
-      search.page=current
-      getQuestions()
-    }
-    function selectquestionAll(){
-      // let type=search.type_id
-      QuestionsList.forEach((v:IlistItem)=>{
-        if(!selectedPaperIds.includes(v.id)){
-          selectquestion(v)
-        }
-      })
-    }
-    function selectquestion(val:any){
-      let num=selectedPaperIds.indexOf(val.id)
-      let typeId=1
-      PaperList.forEach((v:IPaperList)=>{
-        if(v.type_id===val.type_id){
-          let idx=v.ids.indexOf(val.id)
-          if(idx===-1){
-            v.ids.push(val.id)
-            v.data.push(val)
-          }else{
-            v.ids.splice(idx,1)
-            v.data.splice(idx,1)
-          }
-        }
-      })
-      if(num===-1){
-        selectedPaperIds.push(val.id)
-        totalScore.value+=Number(val.origin_score)
-      }else{
-        selectedPaperIds.splice(num,1)
-        totalScore.value-=Number(val.origin_score)
-      }
-      // totalScore
-    }
-    function activeChange(v:IPaperList){
-      activePaper.value=v.type
-      search.type_id=v.type_id
-      search.name=''
-      search.level_id=undefined
-      search.pool_id=undefined
-      search.page=1
-      getQuestions()
-      // console.log(search)
-    }
-    function submit(){
-      // formRef.value.validate().then(()=>{
-      state.formRef.validate().then(()=>{
-        console.log('验证过');
-        let obj={
-          ...ForumSearch,
-          questions:selectedPaperIds,
-         type:'simple',
-        }
-        http.submitPaper({param:{...obj}}).then((res:IBusinessResp)=>{
-          message.success(editId?'修改成功':'创建成功')
-          router.go(-1)
-        })
-      })
-    }
-    function cancel(answer: any) {
-      router.go(-1)
-    }
+    // const customizeRenderEmpty =function (): VNode{
+    //   if(state.loading){
+    //     return <template></template>
+    //   }else{
+    //     let type='tableEmpty'
+    //     return <empty type={type} height={100} />
+    //   }
+    // }
+    
     onMounted(()=>{
-     initData()
+    //  initData()
     })
-    return {formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
+    return {...toRefs(state),columns}
   },
+  // render() {
+
+  // }
 })
 </script>
 <style  scoped lang="less">
-
+.CreatedExamination{
+  display: flex;
+  justify-content: space-between;
+  .leftBox{
+    width: 56%;
+    :deep(.ant-form-item-control){
+      flex: 0 0 100%;
+    }
+    :deep(.ant-form-item){
+      flex-direction: column;
+    }
+    :deep(.ant-form-item-control-input-content){
+        display: flex;
+        align-items: center;
+      }
+    .proportion{
+     .notes{
+        width: 280px;
+        padding-left: 8px;
+      }
+    }
+    .duration{
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      :deep(.ant-form-item){
+        width: 50%;
+      }
+      .durationNotes{
+          width: 60px;
+          padding-left: 8px;
+        }
+    }
+  }
+  .rightBox{
+    width: 500px;
+    // flex-grow: 1;
+    height: 400px;
+    border: 1px solid red;
+  }
+}
+.information{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .item{
+    .btn2{
+      margin-left: 15px;
+    }
+  }
+}
 </style>
