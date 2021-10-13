@@ -21,7 +21,7 @@ export default defineComponent({
 
     const componentNames=['OperationList','Information']
     const tabs=[{name:'操作日志',componenttype:0},{name:'个人信息',componenttype:1}]
-    var componentName:Ref<string>=ref('')
+    var componentName:Ref<string>=ref('OperationList')
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
     const { lStorage } = extStorage

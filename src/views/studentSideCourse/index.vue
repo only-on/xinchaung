@@ -19,7 +19,7 @@ export default defineComponent({
   
     const componentNames=['LatelyCourseList','MyCourseList']
     const tabs=[{name:'最近学习',componenttype:0},{name:'我的课程',componenttype:1}]
-    var componentName:Ref<string>=ref('')
+    var componentName:Ref<string>=ref('LatelyCourseList')
     
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function

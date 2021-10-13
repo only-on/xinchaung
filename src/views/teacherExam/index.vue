@@ -1,11 +1,11 @@
 <template>
-    <div v-layout-bg>
+    <div v-layout-bg >
       <component :is="componentName" />
     </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,Ref,inject,watch } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref,inject,watch  } from 'vue'
 import ExaminationEenter from './ExaminationEenter.vue'
 import TestPaper from './TestPaper.vue'
 
@@ -13,13 +13,13 @@ export default defineComponent({
   name: '',
   components: {
    ExaminationEenter,
-   TestPaper
+   TestPaper,
   },
   setup: (props,context) => {
   
     const componentNames=['TestPaper','ExaminationEenter']
     const tabs=[{name:'试卷管理',componenttype:0},{name:'考试中心',componenttype:1}]
-    var componentName:Ref<string>=ref('')
+    var componentName:Ref<string>=ref('TestPaper')
     
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function

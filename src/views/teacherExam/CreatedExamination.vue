@@ -45,10 +45,31 @@
   </div>
   <a-config-provider :renderEmpty="customizeRenderEmpty">
     <a-table :columns="columns" :loading="loading" :data-source="selectList" :bordered="true"  row-key="id"
+      :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
       class="components-table-demo-nested">
+      <template #operation="{record}">
+          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">移除</a>
+        </template>
     </a-table>
   </a-config-provider>
+  <div class="footer">
+    <a-button type="primary" @click="cancel()"> 取 消 </a-button>
+    <a-button type="primary" @click="sunmit()"> 确 定 </a-button>
+  </div>
+  <a-modal v-model:visible="visible" title="学生选择" @ok="handleReply" :width="1080" class="modal-post">
+      <a-config-provider :renderEmpty="studentRenderEmpty">
+        <a-table :columns="selectStudentColumns" :loading="loading" :data-source="selectList" :bordered="true"  row-key="id"
+          :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+          :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+          class="components-table-demo-nested">
+        </a-table>
+      </a-config-provider>
+      <template #footer>
+        <span></span>
+        <!-- <a-button @click="handleReply" type="primary">提交</a-button> -->
+      </template>
+    </a-modal>
 </template>
 <script lang="tsx">
 import { SelectTypes } from 'ant-design-vue/es/select';
@@ -58,6 +79,7 @@ import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
 import { Input } from 'ant-design-vue'
+import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IFrom{
   name:string;
   page:number;
@@ -79,32 +101,85 @@ interface Istate{
   pageSize:number;
   page:number;
   selectList:any[];
-  customizeRenderEmpty: () => void;
+  selectedRowKeys:Key[];
+  onSelectChange: (v:Key[]) => void;
+  delateCard: (v:any) => void;
+  sunmit: () => void;
+  cancel: () => void;
+  visible:boolean;
+  handleReply: () => void;
 }
+type Key = ColumnProps['key'];
 const columns=[
   {
-    title: '题目',
+    title: '学号',
     dataIndex:"title",
     align:'center',
-    width:460,
+    // width:460,
   },
   {
-    title: '类型',
+    title: '姓名',
     dataIndex:"title",
     align:'center',
     // width:260,
   },
   {
-    title: '正确人数',
+    title: '院系',
     dataIndex:"title",
     align:'center',
     // width:260,
   },
   {
-    title: '正确率',
+    title: '班级',
     dataIndex:"title",
     align:'center',
     // width:260,
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    align:'center',
+    slots: { customRender: 'operation' },
+    fixed:'right',
+    // width:200
+  }
+]
+const selectStudentColumns=[
+  {
+    title: '学号',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '姓名',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '所属院系',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '年级',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '邮箱',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '电话',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
   },
 ]
 export default defineComponent({
@@ -119,7 +194,7 @@ export default defineComponent({
     const options =ref<SelectTypes['options']>([{value: '1', label: '简单'},{value: '2', label: '中等'},{value: '3', label: '困难'}])
     var totalCount:Ref<number> =ref(0)
     var loading:Ref<boolean> =ref(false)
-    const visible = ref<boolean>(false);
+    // const visible = ref<boolean>(false);
     const totalScore = ref<number>(0);
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
@@ -133,7 +208,9 @@ export default defineComponent({
             ],
             description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
           },
-          select:()=>{},
+          select:()=>{
+            state.visible=true
+          },
           remove:()=>{},
           information:'1',
           loading:false,
@@ -145,32 +222,39 @@ export default defineComponent({
             state.page=val
             // initData()
           },
-          customizeRenderEmpty:()=>{
-            if(state.loading){
-              return <template></template>
-            }else{
-              let type='tableEmpty'
-              return <empty type={type} height={100} />
-            }
-          }
+          selectedRowKeys:[],
+          onSelectChange:(selectedRowKeys:Key[])=>{
+            console.log('selectedRowKeys changed: ', selectedRowKeys);
+            state.selectedRowKeys = selectedRowKeys;
+          },
+          delateCard:(val:any)=>{},
+          cancel:()=>{router.go(-1)},
+          sunmit:()=>{},
+          visible:false,
+          handleReply:()=>{}
+
     })
-    // const customizeRenderEmpty =function (): VNode{
-    //   if(state.loading){
-    //     return <template></template>
-    //   }else{
-    //     let type='tableEmpty'
-    //     return <empty type={type} height={100} />
-    //   }
-    // }
-    
+    const customizeRenderEmpty =function (): VNode{
+      if(state.loading){
+        return <template></template>
+      }else{
+        let type='tableEmpty'
+        return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
+      }
+    }
+    const studentRenderEmpty =function (): VNode{
+      if(state.loading){
+        return <template></template>
+      }else{
+        let type='tableEmpty'
+        return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
+      }
+    }
     onMounted(()=>{
     //  initData()
     })
-    return {...toRefs(state),columns}
+    return {...toRefs(state),columns,selectStudentColumns,customizeRenderEmpty,studentRenderEmpty}
   },
-  // render() {
-
-  // }
 })
 </script>
 <style  scoped lang="less">
@@ -184,6 +268,9 @@ export default defineComponent({
     }
     :deep(.ant-form-item){
       flex-direction: column;
+    }
+    :deep(textarea.ant-input){
+      min-height: 160px;
     }
     :deep(.ant-form-item-control-input-content){
         display: flex;
@@ -223,6 +310,13 @@ export default defineComponent({
     .btn2{
       margin-left: 15px;
     }
+  }
+}
+.footer{
+  text-align: center;
+  margin-top: 50px;
+  .ant-btn-primary{
+    margin: 0 16px;
   }
 }
 </style>

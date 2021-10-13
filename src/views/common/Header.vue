@@ -66,6 +66,7 @@ export default defineComponent({
     function loginOut(){
       http.loginOut().then((res:IBusinessResp)=>{
         // message.success('')
+        window.location.href = '/site/login';
       })
     }
     function helpMessage(){

@@ -21,7 +21,7 @@ export default defineComponent({
 
     const componentNames=['LatelyExperimentalList','MyExperimentalList']
     const tabs=[{name:'最近实训',componenttype:0},{name:'我的实训',componenttype:1}]
-    var componentName:Ref<string>=ref('')
+    var componentName:Ref<string>=ref('LatelyExperimentalList')
 
     // var tabType:Ref<number>=ref(0)
     var configuration:any=inject('configuration')

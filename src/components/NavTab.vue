@@ -65,7 +65,6 @@ export default defineComponent({
         context.emit("tabSwitch", item);
         updateRouter(item.componenttype);
         activeName.value = item.name;
-        
         updata({...configuration,componenttype:item.componenttype})
       }
     }
@@ -81,9 +80,19 @@ export default defineComponent({
     }
     function initData(){
       if(configuration.tabs && configuration.tabs.length){
+        // const { currentTab } = route.query
+        // updateRouter(currentTab?Number(currentTab):0)
+        // configuration.componenttype=currentTab?Number(currentTab):0
+        // activeName.value =configuration.tabs[configuration.componenttype].name
+        // tabChange(configuration.tabs[configuration.componenttype])
+
         const { currentTab } = route.query
-        updateRouter(currentTab?Number(currentTab):0)
-        configuration.componenttype=currentTab?Number(currentTab):0
+        const SwitchNumber=currentTab?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
+        currentTab?'':updateRouter(SwitchNumber)
+        //  首次加currentTab参数   用户指定了componenttype时使用指定的，否则加componenttype为0
+        const newCurrentTab= route.query.currentTab
+        const newSwitchNumber=newCurrentTab?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
+        configuration.componenttype=newSwitchNumber
         activeName.value =configuration.tabs[configuration.componenttype].name
         tabChange(configuration.tabs[configuration.componenttype])
       }
