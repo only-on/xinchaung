@@ -10,4 +10,7 @@ export declare interface ILayoutConfiguration {
     tabs?: ILayoutTabItem[] // tab切换项 例 [{name:'随堂论坛',componenttype:0}]
     componenttype?: any | undefined //  tab选中项   传tabs时需赋值 undefined做初始化，随后navtab组件会改其值为tabs的首项。 可监听configuration.componenttype 回调处理
     showContent?: boolean // 是否需要内容区盒子   不需要则 layout只带顶部导航
+    backOff: boolean // 是否显示返回按钮
+    showPageEdit: boolean // 是否显示编辑按钮
+    pageEdit: () => void // 编辑按钮操作
 }

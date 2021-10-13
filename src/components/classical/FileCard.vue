@@ -18,6 +18,9 @@
       <a-button type="text" :href="downloadUrl">
         <font-awesome-icon icon="download"/>
       </a-button>
+      <a-button type="text" @click="handleRemove">
+        <span class="iconfont icon-shanchu"/>
+      </a-button>
     </div>
   </div>
 </template>
@@ -53,13 +56,17 @@ export default defineComponent({
       default: 'word'
     }
   },
-  emit: ['click'],
+  emit: ['preview', 'remove'],
   setup(props, {emit}) {
-    const handlePreview = () => {
-      emit('click')
+    const handlePreview = function () {
+      emit('preview')
+    }
+    const handleRemove = function () {
+      emit('remove')
     }
     return {
-      handlePreview
+      handlePreview,
+      handleRemove
     }
   }
 })
@@ -110,10 +117,12 @@ export default defineComponent({
     position: absolute;
     right: 8px;
     bottom: 8px;
+
     button, a {
       padding: @padding-xss - 2px;
       font-size: @font-size-base - 2px;
       color: @text-color-secondary;
+
       &:hover {
         color: @theme-color;
       }

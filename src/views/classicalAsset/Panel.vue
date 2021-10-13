@@ -1,6 +1,6 @@
 <template>
   <div class="classical__container" v-layout-bg>
-    <a-card class="classical__card">
+    <div class="classical__card">
       <div class="classical__search-form">
         <div class="classical__search">
           <a-input
@@ -32,11 +32,12 @@
       </div>
       <asset-folder @click="gotoContent(1)"/>
       <asset-folder @click="gotoContent(2)"/>
-    </a-card>
+    </div>
     <a-modal
         v-model:visible="createFolderVisible"
         title="创建目录"
         @ok="handleCreateFolder"
+        class="classical__create"
     >
       <a-form
           :model="folderInfo"
@@ -44,25 +45,32 @@
           :wrapper-col="wrapperCol"
       >
         <a-form-item label="名称：">
-          <a-textarea
-              rows="1"
-              placeholder="输入名称"
-              v-model:value="folderInfo.name"
-              showCount
-              :maxlength="10"
-              class="classical__folder-desc"
-          >
-          </a-textarea>
+          <div class="classical__input--count-inner" :class="{'classical__input--focused': nameFocused}">
+            <a-textarea
+                rows="1"
+                placeholder="输入名称"
+                v-model:value="folderInfo.name"
+                showCount
+                :maxlength="10"
+                class="classical__folder-desc"
+                @focus="handleNameFocused"
+                @blur="handleNameBlurred"
+            />
+          </div>
         </a-form-item>
         <a-form-item label="描述：">
-          <a-textarea
-              rows="4"
-              placeholder="请输入描述"
-              v-model:value="folderInfo.description"
-              showCount
-              :maxlength="500"
-              class="classical__folder-desc"
-          />
+          <div class="classical__input--count-inner" :class="{'classical__input--focused': descFocused}">
+            <a-textarea
+                rows="4"
+                placeholder="请输入描述"
+                v-model:value="folderInfo.description"
+                showCount
+                :maxlength="500"
+                class="classical__folder-desc"
+                @focus="handleDescriptionFocused"
+                @blur="handleDescriptionBlurred"
+            />
+          </div>
         </a-form-item>
       </a-form>
     </a-modal>
@@ -85,6 +93,8 @@ export default defineComponent({
     const router = useRouter();
     const searchStr = ref("");
     const createFolderVisible = ref(false);
+    const nameFocused = ref(false);
+    const descFocused = ref(false);
     const folderInfo = reactive({
       name: "",
       description: "",
@@ -98,7 +108,11 @@ export default defineComponent({
         {name: "私有", componenttype: 1},
       ],
       componenttype: 0,
-      navType: false
+      showContent:true,
+      navType: false,
+      backOff: false,
+      showPageEdit: false,
+      pageEdit: () => {}
     })
     const configuration: ILayoutConfiguration = inject('configuration')!
     const showDiskUsage = computed(() => {
@@ -120,6 +134,23 @@ export default defineComponent({
       console.log('[asset/panel] goto: ', id)
       router.push('/teacher/classical/content/private/232')
     }
+    const handleNameFocused = (e: FocusEvent) => {
+      console.log('[classical/panel] name focused');
+      nameFocused.value = true;
+    }
+    const handleDescriptionFocused = (e: FocusEvent) => {
+      console.log('[classical/panel] description focused')
+      descFocused.value = true
+    }
+
+    const handleNameBlurred = (e: Event) => {
+      console.log('[classical/panel] name blurred');
+      nameFocused.value = false;
+    }
+    const handleDescriptionBlurred = (e: Event) => {
+      console.log('[classical/panel] description blurred')
+      descFocused.value = false
+    }
     return {
       searchStr,
       showDiskUsage,
@@ -127,17 +158,22 @@ export default defineComponent({
       folderInfo,
       labelCol,
       wrapperCol,
+      nameFocused,
+      descFocused,
       gotoContent,
       handleSearch,
       createFolder,
       handleCreateFolder,
+      handleNameFocused,
+      handleDescriptionFocused,
+      handleNameBlurred,
+      handleDescriptionBlurred
     };
   },
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .classical__container {
-  width: @center-width;
   margin: 0 auto;
   min-height: 750px;
   background: none !important;
@@ -145,7 +181,6 @@ export default defineComponent({
   .classical__card {
     width: 100%;
     height: 100%;
-    box-shadow: 0 3px 6px 0px @shadow-color;
 
     .ant-card-body {
       padding: 40px 50px;
@@ -175,9 +210,29 @@ export default defineComponent({
   }
 }
 
-.classical__folder-desc {
-  textarea {
+.classical__input--count-inner {
+  border: 1px solid @border-color-base;
+  border-radius: @border-radius-base;
+  :deep(.ant-input) {
+    border: none;
     resize: none;
   }
+  :deep(.ant-input:focus) {
+    box-shadow: none;
+  }
+
+  :deep(.ant-input-textarea-show-count::after) {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    border: 1px solid @theme-color;
+  }
+
+  &.classical__input--focused {
+    border: 1px solid @theme-color;
+    box-shadow: 0 0 0 2px @theme-scroll;
+  }
 }
+
 </style>
