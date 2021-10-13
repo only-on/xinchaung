@@ -4,7 +4,7 @@
   title="批量添加" 
   @ok="handleOk"
   @cancel="handleCancel"
-  :width="600"
+  :width="800"
   :footer="null"
 >
   <div>
@@ -33,9 +33,10 @@
 </a-modal>
 </template>
 <script lang="ts">
-import { defineComponent,reactive, toRefs} from 'vue';
+import { defineComponent,onMounted,reactive, toRefs} from 'vue';
 import request from "src/api";
 import { number } from 'echarts';
+import FileSaver from 'file-saver'
 interface State{
     columns:any[],
     uploadfile:any;
@@ -92,6 +93,10 @@ export default defineComponent({
             uploadfile:null,
             filename:''
        })
+      onMounted(()=>{
+          console.log(document.querySelector(".downloadExam"))
+          console.log(window.location.origin)+'proxyPrefix'
+      })
       function handleOk(){
           emit('batchImportClose',false)
       } 
@@ -111,11 +116,12 @@ export default defineComponent({
               console.log(res)
           })
       }
-      function dowmTemplate(){
-          teacherDataExerApi.detailExerDownLoad({urlParams:{pool_id:props.poolid}}).then((res:any)=>{
-              console.log(res)
-          })
+      function dowmTemplate(){ 
+          let development=process.env.NODE_ENV == 'development' ? true : false;
+          let url=development?'http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo':"api/v1/question/questions/import/demo"
+        FileSaver.saveAs(url);
       }
+      
       return {handleOk,handleCancel,closeModal,handleChange,detailExerUpload,dowmTemplate,...toRefs(state)}
   }
 })

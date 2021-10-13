@@ -5,7 +5,7 @@ export default {
     component: Layout,
     meta: {
         title: "实训列表",
-        authCode: 'Experimental'  
+        authCode: 'Experimental'
     },
     children: [
         {
@@ -28,7 +28,7 @@ export default {
         {
             path: 'resource',
             name: 'resource',
-            component: () => import ("src/views/teacherExperimental/resource.vue"),
+            component: () => import("src/views/teacherExperimental/resource.vue"),
             meta: {
                 title: "实训资源",
                 authCode: 'resource'
@@ -37,10 +37,19 @@ export default {
         {
             path: 'evaluate',
             name: 'evaluate',
-            component: () => import ("src/views/teacherExperimental/evaluate.vue"),
+            component: () => import("src/views/teacherExperimental/evaluate.vue"),
             meta: {
                 title: "实训考核",
                 authCode: 'evaluate'
+            }
+        },
+        {
+            path: 'detail',
+            name: 'detail',
+            component: () => import("src/views/teacherExperimental/detail/index.vue"),
+            meta: {
+                title: "实训详情",
+                authCode: 'detail'
             }
         }
     ]

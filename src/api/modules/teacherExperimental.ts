@@ -1,26 +1,30 @@
 import { TFHttpSend } from "src/typings/getRequest";
-export default{
-  getLatelyExperimentalList:{url:`/student-train/latest`,method: "GET",},
+export default {
+  getLatelyExperimentalList: { url: `/student-train/latest`, method: "GET", },
   // 考核
-  releaseScore:{url:`/teacher-train/train-score-release`, method: "POST", dataType: 'json'},
-  exportScore:{url:`/teacher-train/train-score-export`, method: "POST", dataType: 'urlencoded'},
-  showExperimentalNote:{url:`/teacher-train/show-note`, method: "GET"},
-  resetExperimentalServer:{url:`/teacher-train/reset-server`, method: "POST", dataType: 'json'},
-  setExperimentalScore:{url:`/teacher-train/set-score`, method: "POST", dataType: 'json'},
+  releaseScore: { url: `/teacher-train/train-score-release`, method: "POST", dataType: 'json' },
+  exportScore: { url: `/teacher-train/train-score-export`, method: "POST", dataType: 'urlencoded' },
+  showExperimentalNote: { url: `/teacher-train/show-note`, method: "GET" },
+  resetExperimentalServer: { url: `/teacher-train/reset-server`, method: "POST", dataType: 'json' },
+  setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
   // 资源
-  delResource:{url:`/teacher-train/del-upload`, method: "GET", dataType: 'json'},
-  uploadResource: {url: `/teacher-train/upload-resource`,method: 'POST',dataType: 'formdata'},
+  delResource: { url: `/teacher-train/del-upload`, method: "GET", dataType: 'json' },
+  uploadResource: { url: `/teacher-train/upload-resource`, method: 'POST', dataType: 'formdata' },
   getResourceList: { url: '/teacher-train/get-resource-list', method: 'POST', dataType: 'json' },
 
   // 新建实训  选择环境
-  ImageList:{url:`/api/env/containers`,method: 'GET'},
-  trainUpload:{url:`/teacher-train/upload`,method: 'POST',dataType: 'formdata'},
+  ImageList: { url: `/api/env/containers`, method: 'GET' },
+  trainUpload: { url: `/teacher-train/upload`, method: 'POST', dataType: 'formdata' },
   // 列表
-  trainList:{url: '/teacher-train/index', method: "GET"},
-  changeStatus:{url: '/teacher-train/change-status', method: "GET"},
-  trainComplex:{url: '/teacher-train/train-complex', method: "GET"},
-  trainArchived:{url: '/teacher-train/train-archived', method: "GET"},
-  trainDeleted:{url: '/teacher-train/train-deleted', method: "GET"}
+  trainList: { url: '/teacher-train/index', method: "GET" },
+  changeStatus: { url: '/teacher-train/change-status', method: "GET" },
+  trainComplex: { url: '/teacher-train/train-complex', method: "GET" },
+  trainArchived: { url: '/teacher-train/train-archived', method: "GET" },
+  trainDeleted: { url: '/teacher-train/train-deleted', method: "GET" },
+
+  // 编辑实训
+  // 获取详情
+  trainDetailInfo: { url: '/teacher-train/details', method: "GET" }
 }
 
 export interface ITeacherExperimentallAps {
@@ -39,7 +43,8 @@ export interface ITeacherExperimentallAps {
   changeStatus: TFHttpSend;
   trainComplex: TFHttpSend;
   trainArchived: TFHttpSend;
-  trainDeleted: TFHttpSend
+  trainDeleted: TFHttpSend;
+  trainDetailInfo: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherExperimental'

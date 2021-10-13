@@ -24,12 +24,7 @@
             </div>
         </div>
         <div v-else class="no-search-data">
-            <div class="noMatching">
-                 <div>
-                <span class="iconfont icon-kongshuju"></span>    
-                </div>
-                <div>亲~这里什么都没有~</div>
-            </div>
+            <empty></empty>
         </div>
     <a-pagination :hideOnSinglePage='true' v-model="pagingData.currentPage" :pageSize='pagingData.perPage' :total="pagingData.totalCount" @change="pageChange" />
     </div>
@@ -39,6 +34,7 @@ import { message } from 'ant-design-vue'
 import {defineComponent, reactive,toRefs,onMounted, computed} from 'vue'
 import {useRouter} from 'vue-router'
 import request from '../../../api'
+import Empty from 'src/components/Empty.vue'
 interface CourseType{
     url?:string,
     id?:number,
@@ -70,6 +66,7 @@ interface State{
 }
 export default defineComponent({
     name:'CourseAchievement',
+    components:{Empty},
     setup:(props,context)=>{
         const router=useRouter()
         const state: State=reactive({
@@ -118,18 +115,6 @@ export default defineComponent({
 .searchInput{
     height: 100px;
     line-height: 100px;
-}
-.no-search-data{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color: @theme-color;
-    min-height:650px;
-    .noMatching{
-        .icon-kongshuju{
-            font-size: 86px;
-        }
-    }
 }
 .content-list{
     display: flex;

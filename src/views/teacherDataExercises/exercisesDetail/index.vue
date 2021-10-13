@@ -85,7 +85,7 @@ interface exerciseList{
 interface stateData{
     exambasic:examBasic,
     examtype:examType[],
-    componentNames:any[],
+    // componentNames:any[],
     currentView:string,
     question_info:quesType[],
     selectedId:any,
@@ -117,7 +117,7 @@ export default defineComponent({
             name:'',
             description:'',
             examtype:[],
-            componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
+            // componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
             question_info:[],
             selectedId:1,

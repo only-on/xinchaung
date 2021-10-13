@@ -22,12 +22,7 @@
             <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div>
         </div>
         <div v-else class="no-search-data">
-            <div class="noMatching">
-                 <div>
-                <span class="iconfont icon-kongshuju"></span>    
-                </div>
-                <div>亲~这里什么都没有~</div>
-            </div>
+            <empty></empty>
         </div>
     </div>
 </template>
@@ -35,6 +30,7 @@
 import { message } from 'ant-design-vue'
 import {defineComponent, onMounted, reactive, toRefs} from 'vue'
 import request from '../../../api'
+import Empty from 'src/components/Empty.vue'
 interface pageingType{
     currentPage?:number,
     pageCount?:number,
@@ -49,6 +45,7 @@ interface State{
 }
 export default defineComponent({
     name:'TrainingResults',
+    components:{Empty},
     setup:()=>{
         const state :State=reactive({
             traningResult:[],
@@ -162,18 +159,6 @@ export default defineComponent({
     height: 100px;
     line-height: 100px;
     }
-    .no-search-data{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    color:@theme-color;
-    min-height:650px;
-    .noMatching{
-        .icon-kongshuju{
-            font-size: 86px;
-        }
-    }
-}
     .content-list{
         padding: 14px;
         border-bottom: 1px solid #ddd;

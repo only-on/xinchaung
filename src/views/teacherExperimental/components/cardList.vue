@@ -3,7 +3,7 @@
     <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/Experimental/creatExperimental')">
       <span>新建实训</span>
     </div>
-    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()">
+    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id)">
       <div class="cardpic">
         <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="item.is_highconf && trainType !== 2">
         <img :src="item.url ? item.url: defaultImg" alt="">
@@ -129,6 +129,9 @@ export default defineComponent({
         emit('refresh')
       })
     }
+    function editExperimental(id:number){
+      router.push({path:'/teacher/Experimental/detail',query:{id:id}})
+    }
     return {
       switchVal,
       trainType,
@@ -136,7 +139,8 @@ export default defineComponent({
       changeSwitch,
       handleOperate,
       defaultImg: '/src/assets/images/Experimental/wlkc.png',
-      router
+      router,
+      editExperimental
     }
   },
 })
