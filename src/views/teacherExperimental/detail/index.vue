@@ -23,7 +23,7 @@
     <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
     </a-tabs>
-    <component :is="componentName" :trainDetailInfo='trainDetailInfo' />
+    <component :is="componentName" :trainDetailInfo='trainDetailInfo' :trainId="trainId" />
   </div>
 </template>
 <script lang="ts">
@@ -34,7 +34,8 @@ import basicInfo from './basicInfor/index.vue'
 import trainingGuide from './trainingGuide/index.vue'
 interface State{
   trainDetailInfo:any,
-  componentName:string
+  componentName:string,
+  trainId:any
 }
 export default defineComponent({
   name:'editExperimental',
@@ -46,12 +47,13 @@ export default defineComponent({
     updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
      const state:State=reactive({
        trainDetailInfo:"",
-       componentName:''
+       componentName:'basicInfo',
+       trainId:''
      })
     onMounted(()=>{
       console.log(router.query.id)
-      const id=router.query.id
-      http.trainDetailInfo({param:{train_id:id}}).then((res:any)=>{
+      state.trainId=router.query.id
+      http.trainDetailInfo({param:{train_id:state.trainId}}).then((res:any)=>{
         state.trainDetailInfo=res.datas
       })
     })
