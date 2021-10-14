@@ -7,10 +7,10 @@
               class="classical_search-input"
               v-model:value="searchStr"
               placeholder="请输入目录名称关键字查询"
-              @search="handleSearch"
+              @keypress.enter="handleSearch"
           >
             <template #prefix>
-              <a-button type="text" class="classical__search-form--prefix">
+              <a-button type="text" class="classical__search-form--prefix" @click="handleSearch">
                 <span class="iconfont icon-sousuo"/>
               </a-button>
             </template>
@@ -18,6 +18,9 @@
         </div>
         <div class="classical_op">
           <disk-usage
+              :available="diskUsage.available"
+              :total="diskUsage.total"
+              :ratio="diskUsage.ratio"
               v-show="showDiskUsage"
               class="classical__disk-usage--container"
           ></disk-usage>
@@ -36,7 +39,10 @@
                       :date="item.created_at"
                       :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
                       :count="(typeof item.item_count !== 'undefined' ? item.item_count : '') + '个'"
-                      @click="gotoContent(item.is_public, item.id)"/>
+                      @click="gotoContent(item.id, item.is_public)"/>
+      </div>
+      <div class="data" v-else>
+        <empty/>
       </div>
       <div class="page" v-if="data.length > 0">
         <a-pagination
@@ -98,12 +104,14 @@ import DiskUsage from "../../components/classical/DiskUsage.vue";
 import {ILayoutConfiguration} from "../../types";
 import {useRoute, useRouter} from "vue-router";
 import http from '../../api'
+import Empty from 'src/components/Empty.vue'
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
   components: {
     AssetFolder,
     DiskUsage,
+    Empty
   },
   setup() {
     const router = useRouter();
@@ -121,7 +129,8 @@ export default defineComponent({
     const dataPage = reactive({current: 1, pageSize: 10, total: 1})
     // 数据集类型
     let dataType = typeof route.query['type'] !== 'undefined' ? route.query['type'] : 3 // 3是课件
-    let dataIsPublic  = 0 // 是否公开
+    // 磁盘利用情况
+    const diskUsage = reactive({available: '0GB', total: '0GB', ratio: 0})
 
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
@@ -143,11 +152,14 @@ export default defineComponent({
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1
     })
+    const dataIsPublic = computed(() => {
+      return configuration.componenttype === 1 ? 0 : 1
+    })
 
     const labelCol = {span: 3};
     const wrapperCol = {span: 21};
-    const handleSearch = (searchValue: string) => {
-      console.log("[classical][panel] searching: ", searchValue);
+    const handleSearch = (e: Event) => {
+      getDataSetList(1, 10, searchStr.value)
     };
     const createFolder = () => {
       createFolderVisible.value = true;
@@ -182,12 +194,12 @@ export default defineComponent({
     }
 
     // 获取数据
-    const getDataSetList = (page: number = 1, pageSize: number = 10) => {
+    const getDataSetList = (page: number = 1, pageSize: number = 10, name = '') => {
       http.classicalAsset.datasetList({
         param: {
           type: dataType,
-          is_public: dataIsPublic,
-          name: '',
+          is_public: dataIsPublic.value,
+          name: name,
           page: page,
           pageSize: pageSize,
         }
@@ -201,13 +213,23 @@ export default defineComponent({
       })
     }
 
+    // 获取磁盘信息
+    const getDiskInfo = () => {
+      http.classicalAsset.diskInfo({}).then(res => {
+        diskUsage.available = res!.data.un_used
+        diskUsage.total = res!.data.total
+        diskUsage.ratio = parseFloat(res!.data.used_accuracy)
+      })
+    }
+
     // 处理翻页
     const handlePageChange = (page: number, pageSize: number) => {
-      getDataSetList(page, pageSize)
+      getDataSetList(page, pageSize, searchStr.value)
     }
 
     onMounted(() => {
       getDataSetList()
+      getDiskInfo()
     })
 
     return {
@@ -221,6 +243,7 @@ export default defineComponent({
       descFocused,
       data,
       dataPage,
+      diskUsage,
       gotoContent,
       handleSearch,
       createFolder,

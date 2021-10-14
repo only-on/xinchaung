@@ -2,14 +2,15 @@
   <div class="classical__container" v-layout-bg>
     <div class="classical__content--header">
       <div class="left">
-        <h2>demo目录</h2>
+        <h2>{{ detail.name }}</h2>
         <div>
-          创建日期：2021-03-11 最后修改：2021-05-06
+          创建日期：{{ detail.createdDate }} 最后修改：{{ detail.updatedDate }}
         </div>
       </div>
       <div class="right">
-        <watermark-icon icon="cipanjiedian" title="30.7KB" description="文件大小" style="background-color: #2CB6FA"/>
-        <watermark-icon icon="wenjianshu" title="2个" description="文件个数"
+        <watermark-icon icon="cipanjiedian" :title="detail.itemSize" description="文件大小"
+                        style="background-color: #2CB6FA"/>
+        <watermark-icon icon="wenjianshu" :title="detail.itemCount" description="文件个数"
                         style="background-color: #FFBB3C; margin-left: 25px;"/>
       </div>
     </div>
@@ -17,7 +18,7 @@
       <div class="more-detail">
         <h3>描述</h3>
         <a-divider style="background-color: #d5d5d5;"/>
-        <div>暂无描述！</div>
+        <div>{{ detail.description }}</div>
       </div>
       <a-divider style="opacity: 0;"/>
       <div class="classical__data-list">
@@ -25,28 +26,22 @@
           <h3>文件列表</h3>
           <div class="classical__data-list-space"></div>
           <div class="classical__data-list-form">
-            <a-input-search placeholder="请输入关键字查询" @search="handleSearch"/>
+            <a-input-search v-model:value="searchKeyword" placeholder="请输入关键字查询" @search="handleSearch"/>
           </div>
           <a-button class="classical__data-list-upload" type="primary" @click="openUploadDialog">
             <span class="iconfont icon-upload"/>上传文件
           </a-button>
         </div>
         <div class="classical__data-list-content">
-          <a-row :gutter="[16, 16]" class="classical__data-list-row">
-            <a-col :span="8">
-              <file-card/>
+          <a-row :gutter="[16, 16]" class="classical__data-list-row" v-if="itemList.length > 0">
+            <a-col :span="8" v-for="(item, index) in itemList" :key="'dataset-list-item-' + index">
+              <file-card :title="item.file_name" :size="item.size" :preview-url="item.file_html"
+                         :download-url="item.file_url" :id="item.id" :suffix="item.suffix"/>
             </a-col>
-            <a-col :span="8">
-              <file-card/>
-            </a-col>
-            <a-col :span="8">
-              <file-card/>
-            </a-col>
-            <a-col :span="8">
-              <file-card/>
-            </a-col>
-            <a-col :span="8">
-              <file-card/>
+          </a-row>
+          <a-row class="classical__data-list-row--no-data" v-else>
+            <a-col :span="24">
+              <empty/>
             </a-col>
           </a-row>
         </div>
@@ -59,22 +54,37 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, ref} from "vue";
+import {defineComponent, inject, ref, reactive, onMounted, nextTick, Ref} from "vue";
 import {useRoute} from 'vue-router'
 import {ILayoutConfiguration} from "../../types";
 import WatermarkIcon from "../../components/common/WatermarkIcon.vue";
 import FileCard from "../../components/classical/FileCard.vue";
+import http from 'src/api'
+import Empty from 'src/components/Empty.vue'
 
 export default defineComponent({
   name: "Content",
   components: {
     FileCard,
     WatermarkIcon,
+    Empty
   },
   setup(props, {emit}) {
     const route = useRoute()
     const uploadVisible = ref(false)
-    console.log('[classical/content] route params: ', route.params.type, route.params.id)
+    const detail = reactive({
+      name: '未知',
+      createdDate: '未知',
+      updatedDate: '未知',
+      itemSize: '0 bytes',
+      itemCount: '0 个',
+      description: '未知'
+    })
+    // 分页组件数据
+    const itemListPage = reactive({current: 1, pageSize: 10, total: 1})
+    // 数据集内部的数据列表
+    const itemList = ref([]) as Ref<any[]>
+    const searchKeyword = ref('')
 
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
@@ -95,9 +105,43 @@ export default defineComponent({
     }
 
     const handleSearch = () => {
-      emit('search')
+      getDatasetItemList(searchKeyword.value)
     }
-    return {uploadVisible, handleSearch, openUploadDialog}
+
+    /**
+     * 获取数据集详情
+     */
+    const getDatasetDetail = () => {
+      http.classicalAsset.datasetDetail({param: {id: route.params.id}}).then(res => {
+        detail.name = res?.data.name
+        detail.createdDate = res?.data.created_at
+        detail.updatedDate = res?.data.updated_at
+        detail.itemSize = res?.data.item_size
+        detail.itemCount = res?.data.item_count + ' 个'
+        detail.description = res?.data.description
+      })
+    }
+
+    /**
+     * 获取数据集详情列表
+     */
+    const getDatasetItemList = (search = '') => {
+      http.classicalAsset.datasetItemList({
+        param: {
+          dataset_id: route.params.id,
+          file_name: search,
+          pageSize: itemListPage.pageSize,
+          page: itemListPage.current
+        }
+      }).then(res => {
+        itemList.value = res?.data.list
+      })
+    }
+    onMounted(() => {
+      getDatasetDetail()
+      getDatasetItemList()
+    })
+    return {uploadVisible, detail, itemList, searchKeyword, handleSearch, openUploadDialog}
   }
 })
 </script>
@@ -138,6 +182,12 @@ export default defineComponent({
 
         .classical__data-list-row {
           width: 100%;
+        }
+
+        .classical__data-list-row--no-data {
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
       }
     }

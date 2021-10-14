@@ -14,6 +14,7 @@ import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysi
 import { ITeacherExamlAps } from "src/api/modules/teacherExam"
 import { ITeacherAssistant } from "src/api/modules/teacherAssistant"
 import { ITeacherHome } from "src/api/modules/teacherHome"
+import { IClassicalAssetApi } from "../api/modules/classicalAsset";
 
 /**
  * 通用响应类型
@@ -35,12 +36,7 @@ export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'stu
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
     // 这是api层下的模块名
-    classicalAsset: {
-        // 这是具体的api名
-        datasetList: TFHttpSend,
-        fakeRequest: TFHttpSend,
-        fakeRequestNoUrlParam: TFHttpSend
-    },
+    classicalAsset: IClassicalAssetApi,
     common: ICommonAps,
     statistic: {
         getInfo: TFHttpSend

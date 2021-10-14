@@ -1,7 +1,7 @@
 <template>
   <div class="file__container">
     <div class="file__icon">
-      <span class="iconfont" :class="'icon-' + icon + ' ' + fileType"/>
+      <span class="iconfont" :class="'icon-' + icon"/>
     </div>
     <div class="file__info">
       <div class="title">
@@ -22,19 +22,19 @@
         <span class="iconfont icon-shanchu"/>
       </a-button>
     </div>
+    <a-modal v-model:visible="confirmRemove" title="删除文件" @ok="handleRemoveItem">
+      文件删除后将无法恢复，确定要删除吗？
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent, computed, ref} from "vue";
+import http from 'src/api'
 
 export default defineComponent({
   name: "FileCard",
   props: {
-    icon: {
-      type: String,
-      default: 'word'
-    },
     title: {
       type: String,
       default: '课件'
@@ -51,22 +51,55 @@ export default defineComponent({
       type: String,
       default: '#'
     },
-    fileType: {
+    id: {
+      type: Number,
+      default: 0
+    },
+    suffix: {
       type: String,
-      default: 'word'
+      default: 'qita'
     }
   },
   emit: ['preview', 'remove'],
   setup(props, {emit}) {
+    const iconMap = {
+      bmp: "tupian",
+      svg: "tupian",
+      gif: "tupian",
+      png: "tupian",
+      jpg: "tupian",
+      doc: "word",
+      docx: "word",
+      pptx: "PPT",
+      ppt: "PPT",
+      mp4: "MP4",
+      MP4: "MP4",
+      flv: "MP4",
+      txt: "wendang",
+      'tar.gz': 'wenjianjia',
+      zip: 'wenjianjia',
+      tgz: 'wenjianjia',
+      tar: 'wenjianjia'
+    }
+    const confirmRemove = ref(false)
+    const icon = computed(() => {
+      return iconMap[props.suffix] || 'qita'
+    })
     const handlePreview = function () {
       emit('preview')
     }
     const handleRemove = function () {
-      emit('remove')
+      confirmRemove.value = true
+    }
+    const handleRemoveItem = () => {
+      http.classicalAsset.dataDelItem({param: {id: props.id}})
     }
     return {
+      icon,
+      confirmRemove,
       handlePreview,
-      handleRemove
+      handleRemove,
+      handleRemoveItem
     }
   }
 })
@@ -82,17 +115,34 @@ export default defineComponent({
   align-items: center;
 
   .file__icon {
-    .word {
+    .icon-tupian {
       color: #3b7ff5;
       font-size: 40px;
     }
 
-    .ppt {
-      color: #ec602c;
+    .icon-word {
+      color: #3b7ff5;
+      font-size: 40px;
     }
 
-    .mp4 {
+    .icon-PPT {
+      color: #ec602c;
+      font-size: 40px;
+    }
+
+    .icon-MP4 {
       color: #5c6cda;
+      font-size: 40px;
+    }
+
+    .icon-wendang {
+      color: #3b7ff5;
+      font-size: 40px;
+    }
+
+    .icon-wenjianjia {
+      color: #3b7ff5;
+      font-size: 40px;
     }
   }
 
