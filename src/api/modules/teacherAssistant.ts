@@ -6,7 +6,7 @@ export default{
   changeStatus:{url:`/assistant/teacher-bind`,method: "POST",dataType: 'json'},
 }
 
-export interface ITeacherExamlAps {
+export interface ITeacherAssistant {
   getAssistantList: TFHttpSend;
   addAssistant: TFHttpSend;
   delAssistant: TFHttpSend;
