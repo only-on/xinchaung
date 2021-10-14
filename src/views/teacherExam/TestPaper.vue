@@ -5,7 +5,7 @@
         <a-input-search v-model:value="ForumSearch.name" placeholder="请输入试卷名关键字查询" @search="search" />
       </div>
     </div>
-    <a-spin :spinning="loading" size="large">
+    <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="main-box">
         <div class="list">
           <div class="card cread-card" @click="add">

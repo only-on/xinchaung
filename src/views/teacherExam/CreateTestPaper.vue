@@ -95,8 +95,8 @@
         
       </div>
       <div class="dataList">
-        <div class="list" v-for="v in QuestionsList" :key="v.id">
-          <div class="item">
+        <div class="list" >
+          <div class="item" v-for="v in QuestionsList" :key="v.id">
             <div>
               <span>{{v.question}}</span>
               <span class="num">（{{v.origin_score}}）</span>
@@ -567,6 +567,7 @@ export default defineComponent({
   .dataList{
     .list{
       padding: 0 20px;
+      min-height: 430px;
       .item{
         display: flex;
         align-items: center;

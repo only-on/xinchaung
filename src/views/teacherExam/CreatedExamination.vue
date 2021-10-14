@@ -29,7 +29,30 @@
          </a-form-item>
       </a-form>
     </div>
-    <div class="rightBox"></div>
+    <div class="rightBox">
+      <div class="calendarBox">
+        <a-calendar v-model:value="formState.data" @select="onPanelChange" :fullscreen="false" >
+          <!-- <template #headerRender="{ value, type, onChange, onTypeChange }"></template> -->
+        </a-calendar>
+        <div class="title">考试预约情况</div>
+      </div>
+      <div class="subscribe">
+        <div class="calendar-content">
+          <div class="calendar-content-box" v-for="v in 5" :key="v">
+            <div class="calendar-content-icon">
+              <img src="src/assets/images/teacherExam/calendar-eaxm.png" />
+            </div>
+            <div class="calendar-content-text">
+              <div class="calendar-content-up">
+                <span>10:50 -11:50</span><span>教师sihaifu</span>
+              </div>
+              <div>考试说明</div>
+            </div>
+          </div>
+        </div>
+        <!-- <empty type="tableEmpty" :height="100" text="暂无人预约考试" /> -->
+      </div>
+    </div>
   </div>
   <div class="information">
     <div class="item">
@@ -43,28 +66,48 @@
     </a-radio-group>
   </div>
   </div>
-  <a-config-provider :renderEmpty="customizeRenderEmpty">
+  <!-- <a-config-provider :renderEmpty="customizeRenderEmpty"> -->
     <a-table :columns="columns" :loading="loading" :data-source="selectList" :bordered="true"  row-key="id"
       :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+      :locale="locale"
       class="components-table-demo-nested">
       <template #operation="{record}">
           <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">移除</a>
         </template>
     </a-table>
-  </a-config-provider>
+  <!-- </a-config-provider> -->
   <div class="footer">
     <a-button type="primary" @click="cancel()"> 取 消 </a-button>
     <a-button type="primary" @click="sunmit()"> 确 定 </a-button>
   </div>
   <a-modal v-model:visible="visible" title="学生选择" @ok="handleReply" :width="1080" class="modal-post">
-      <a-config-provider :renderEmpty="studentRenderEmpty">
-        <a-table :columns="selectStudentColumns" :loading="loading" :data-source="selectList" :bordered="true"  row-key="id"
+    <div class="header">
+      <div class="search">
+        <div class="item custom_input item1">
+          <a-input v-model:value="studentForum.name" placeholder="请输入学号" @search="getStudentList" />
+        </div>
+        <div class="item custom_input item2">
+          <a-input v-model:value="studentForum.name" placeholder="请输入姓名" @search="getStudentList" />
+        </div>
+        <div class="item custom_input item3">
+          <a-input v-model:value="studentForum.name" placeholder="请输入院系" @search="getStudentList" />
+        </div>
+      </div>
+      <div>
+        <a-button type="primary" @click="cancel()">添加</a-button>
+        <a-button type="primary" @click="cancel()">清空</a-button>
+        <a-button type="primary" @click="cancel()">查询</a-button>
+      </div>
+    </div>
+      <!-- <a-config-provider :renderEmpty="studentRenderEmpty"> -->
+        <a-table :columns="selectStudentColumns" :loading="loading" :data-source="studentList" :bordered="true"  row-key="id"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-          :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+          :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true,showSizeChanger:true}" 
+          :locale="studentLocale"
           class="components-table-demo-nested">
         </a-table>
-      </a-config-provider>
+      <!-- </a-config-provider> -->
       <template #footer>
         <span></span>
         <!-- <a-button @click="handleReply" type="primary">提交</a-button> -->
@@ -80,6 +123,7 @@ import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
 import { Input } from 'ant-design-vue'
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
+import { Moment } from 'moment';
 interface IFrom{
   name:string;
   page:number;
@@ -90,7 +134,8 @@ interface IFrom{
 }
 interface Istate{
   formRef:string;
-  formState:any
+  formState:any;
+  onPanelChange:(value: Moment,mode: string) => void;
   rules:any;
   select: () => void;
   remove: () => void;
@@ -108,6 +153,9 @@ interface Istate{
   cancel: () => void;
   visible:boolean;
   handleReply: () => void;
+  studentForum:any;
+  getStudentList: () => void;
+  studentList:any[]
 }
 type Key = ColumnProps['key'];
 const columns=[
@@ -202,6 +250,9 @@ export default defineComponent({
     const state:Istate=reactive({
           formRef:'formRef',
           formState:{},
+          onPanelChange:(val: Moment,mode: string)=>{
+            console.log(val);
+          },
           rules:{
             name: [
               { required: true, message: '请输入试卷名称', trigger: 'blur'},
@@ -231,29 +282,38 @@ export default defineComponent({
           cancel:()=>{router.go(-1)},
           sunmit:()=>{},
           visible:false,
-          handleReply:()=>{}
+          handleReply:()=>{},
+          studentForum:{},
+          getStudentList:()=>{},
+          studentList:[],
 
     })
-    const customizeRenderEmpty =function (): VNode{
-      if(state.loading){
-        return <template></template>
-      }else{
-        let type='tableEmpty'
-        return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
-      }
+    const locale={
+      emptyText:<empty type={'tableEmpty'} height={200} text={'亲~这里什么都没有~'} />
     }
-    const studentRenderEmpty =function (): VNode{
-      if(state.loading){
-        return <template></template>
-      }else{
-        let type='tableEmpty'
-        return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
-      }
+    const studentLocale={
+      emptyText:<empty type={'tableEmpty'} text={'亲~这里什么都没有~'} />
     }
+    // const customizeRenderEmpty =function (): VNode{
+    //   if(state.loading){
+    //     return <template></template>
+    //   }else{
+    //     let type='tableEmpty'
+    //     return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
+    //   }
+    // }
+    // const studentRenderEmpty =function (): VNode{
+    //   if(state.loading){
+    //     return <template></template>
+    //   }else{
+    //     let type='tableEmpty'
+    //     return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
+    //   }
+    // }
     onMounted(()=>{
     //  initData()
     })
-    return {...toRefs(state),columns,selectStudentColumns,customizeRenderEmpty,studentRenderEmpty}
+    return {...toRefs(state),columns,selectStudentColumns,locale,studentLocale}
   },
 })
 </script>
@@ -298,8 +358,87 @@ export default defineComponent({
   .rightBox{
     width: 500px;
     // flex-grow: 1;
-    height: 400px;
-    border: 1px solid red;
+    // height: 400px;
+    // border: 1px solid red;
+    .calendarBox{
+      position: relative;
+      width: 100%;
+      height: 380px;
+      overflow: auto;
+      background: url(src/assets/images/teacherExam/calendar.png.png) no-repeat;
+      background-size: 100% 100%;
+      .title{
+        position: absolute;
+        left: 20px;
+        top: 9px;
+        color: #fff;
+        font-size: 18px;
+      }
+      :deep(.ant-fullcalendar-header .ant-radio-group){
+        display: none;
+      }
+      :deep(.ant-fullcalendar-column-header){
+        color: #fff;
+      }
+      :deep(.ant-fullcalendar-value){
+        color: #fff;
+      }
+      :deep(.ant-fullcalendar-value){
+        color: #fff;
+      }
+      :deep(.ant-fullcalendar-value:hover){
+        color: #28dcb4;
+        // background: #f5f5f5;
+        // color:  #6ac5ec; 
+        color: @theme-color;
+        cursor: pointer;
+        // border: 2px solid #fac439;
+      }
+    }
+    .subscribe{
+      height: 190px;
+      // border: 1px solid red;
+      padding-top: 20px;
+      // overflow: auto;
+      border: 1px solid #E3E3E3;
+      .calendar-content{
+        overflow-y: auto;
+        height: 100%;
+        margin: auto 10px auto 50px;
+        padding: 10px 0 20px 0;
+        .calendar-content-box{
+          display: flex;
+          height: 45px;
+          margin-bottom: 10px;
+          .calendar-content-text{
+            margin-left: 5px;
+            width: calc(100% - 60px);
+            .calendar-content-up{
+              display: inline-flex;
+              align-items: center;
+               span:first-child {
+                  border: 1px solid #999;
+                  padding: 0px 20px;
+                  border-radius: 20px;
+                  margin-right: 10px;
+              }
+              span:last-child{
+                width: 200px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+            .calendar-content-down{
+              margin-top: 5px;
+              white-space: nowrap;
+              overflow: hidden;
+              text-overflow: ellipsis;
+            }
+          }
+        }
+      }
+    }
   }
 }
 .information{
@@ -317,6 +456,56 @@ export default defineComponent({
   margin-top: 50px;
   .ant-btn-primary{
     margin: 0 16px;
+  }
+}
+.modal-post{
+  .header{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .ant-btn-primary{
+      margin-right: 16px;
+    }
+    .search{
+      display: flex;
+      align-items: center;
+      .item{
+          display: flex;
+          align-items: center;
+          margin-right: 22px;
+          :deep(.ant-input){
+              padding-left: 28px;
+          }
+      }
+      .custom_input{
+          position: relative;
+          &::before{
+              content: '';
+              position: absolute;
+              left:8px;
+              top:10px;
+              // background: url(src/assets/images/screenicon/Group6.png) no-repeat;
+              width: 16px;
+              height: 16px;
+              z-index: 10;
+          }
+      }
+      .item1{
+        &::before{
+          background: url(src/assets/images/screenicon/Group7.png) no-repeat;
+        }
+      }
+      .item2{
+        &::before{
+          background: url(src/assets/images/screenicon/Group6.png) no-repeat;
+        }
+      }
+      .item3{
+        &::before{
+          background: url(src/assets/images/screenicon/Group8.png) no-repeat;
+        }
+      }
+    }
   }
 }
 </style>

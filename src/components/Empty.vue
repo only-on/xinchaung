@@ -3,7 +3,7 @@
     <div class="no-data" :class="emptyType" :style="height?`height:${height}px`:''">
   
     </div>
-    <div class="emptyCon">{{emptyText}}</div>
+    <div class="emptyCon" :class="`${emptyType}2`">{{emptyText}}</div>
   </div>
 </template>
 
@@ -95,16 +95,20 @@ export default defineComponent({
       width: 100%;
       text-align: center;
   }
-  .empty,.searchEmpty{
-    .emptyCon{
-      color:#050101;
-    }
+  .empty2,.searchEmpty2{
+    color:#050101;
+    // .emptyCon{
+    //   color:#050101;
+    // }
   }
-  .tableEmpty,.tableSearchEmpty{
-    .emptyCon{
-      color:rgb(5, 1, 1,.45);
-      font-size: 14px;
-    }
+  .tableEmpty2,.tableSearchEmpty2{
+    color: rgba(0, 0, 0, 0.25);
+    // color:rgb(5, 1, 1,.45);
+      // font-size: 14px;
+    // .emptyCon{
+    //   color:rgb(5, 1, 1,.45);
+    //   font-size: 14px;
+    // }
   }
   
   

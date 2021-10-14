@@ -2,56 +2,57 @@
   <div  class="item custom_select">
       <a-select v-model:value="course_category_id"  placeholder="请选择课程方向" :options="options" @change="handleChange"></a-select>
   </div>
-  <div class="list_content">
-    <!-- <a-spin v-if="loading" tip="Loading..." size="large" />  -->
-    <div class="info" v-for="v in list" :key="v.id" :class="v.state!=='已结束'?'info_hover':''">
-      <div class="main">
-        <div class="card" @click="keepLearning(v)">
-          <div class="mask" :class="v.state==='已结束'?'mask_end':''">
-            {{v.state}}
-          </div>
-          <div class="task">学至~{{v.recent}}</div>
-          <div class="card_pic">
-            <img :src="v.url" />
-          </div>
-        </div>
-        <div class="card_info">
-          <div class="course_name">{{v.name}}</div>
-          <div class="course_mid">
-            <div class="left">
-              <p class="row">{{v.start_end_time}}</p>
-              <p class="row">
-                <span  class="iconfont icon-jiaoshi1"></span>
-                <span>教师</span>
-                <span>{{v.teacher}}</span>
-              </p>
+  <a-spin v-if="loading" tip="Loading..." size="large"> 
+    <div class="list_content">
+      <div class="info" v-for="v in list" :key="v.id" :class="v.state!=='已结束'?'info_hover':''">
+        <div class="main">
+          <div class="card" @click="keepLearning(v)">
+            <div class="mask" :class="v.state==='已结束'?'mask_end':''">
+              {{v.state}}
             </div>
-            <div class="right">
-              <div class="circle" v-if="v.progress">
-                <a-progress type="circle" :percent="v.progress" :width="50" :stroke-width="14" 
-                  :showInfo="false" 
-                  :stroke-color="'#8955b5'" 
-                  :trail-color="'#ddd'"
-                />
-              </div>
+            <div class="task">学至~{{v.recent}}</div>
+            <div class="card_pic">
+              <img :src="v.url" />
             </div>
           </div>
-          <div class="course_time">
-              <div>
-                <span class="iconfont icon-daojishi"></span>
-                <span>用时</span>
-                <span>{{v.time_cost}}</span>
+          <div class="card_info">
+            <div class="course_name">{{v.name}}</div>
+            <div class="course_mid">
+              <div class="left">
+                <p class="row">{{v.start_end_time}}</p>
+                <p class="row">
+                  <span  class="iconfont icon-jiaoshi1"></span>
+                  <span>教师</span>
+                  <span>{{v.teacher}}</span>
+                </p>
               </div>
-              <span v-if="v.progress">已学{{v.progress}}%</span>
+              <div class="right">
+                <div class="circle" v-if="v.progress">
+                  <a-progress type="circle" :percent="v.progress" :width="50" :stroke-width="14" 
+                    :showInfo="false" 
+                    :stroke-color="'#8955b5'" 
+                    :trail-color="'#ddd'"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="course_time">
+                <div>
+                  <span class="iconfont icon-daojishi"></span>
+                  <span>用时</span>
+                  <span>{{v.time_cost}}</span>
+                </div>
+                <span v-if="v.progress">已学{{v.progress}}%</span>
+            </div>
           </div>
-        </div>
-        <div class="start_training">
-          <a-button @click="keepLearning(v)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
+          <div class="start_training">
+            <a-button @click="keepLearning(v)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
+          </div>
         </div>
       </div>
+      <empty v-if="!loading && list.length===0" />
     </div>
-    <empty v-if="!loading && list.length===0" />
-  </div>
+  </a-spin>
 </template>
 
 <script lang="ts">

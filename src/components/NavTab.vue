@@ -85,11 +85,12 @@ export default defineComponent({
         // configuration.componenttype=currentTab?Number(currentTab):0
         // activeName.value =configuration.tabs[configuration.componenttype].name
         // tabChange(configuration.tabs[configuration.componenttype])
-
+        
+        // 页面首次进入加currentTab参数    原地刷新则不刷新路由
         const { currentTab } = route.query
         const SwitchNumber=currentTab?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
         currentTab?'':updateRouter(SwitchNumber)
-        //  首次加currentTab参数   用户指定了componenttype时使用指定的，否则加componenttype为0
+        //     用户指定了componenttype时使用指定的，否则加componenttype为0
         const newCurrentTab= route.query.currentTab
         const newSwitchNumber=newCurrentTab?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
         configuration.componenttype=newSwitchNumber

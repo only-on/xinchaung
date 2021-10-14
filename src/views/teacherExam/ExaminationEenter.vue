@@ -14,7 +14,7 @@
         </a-radio-group>
       </div>
     </div>
-    <a-spin :spinning="loading" size="large">
+    <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="box-body">
         <div class="examination-paper-content">
           <div class="examination-paper-card create-btn-card" @click="add">

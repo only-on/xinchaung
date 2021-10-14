@@ -1,43 +1,44 @@
 <template>
-  <div class="list_content">
-    <!-- <a-spin v-if="loading" tip="Loading..." size="large" /> -->
-    <div class="list_item" v-for="v in list" :key="v.course_student_id">
-      <div class="time">{{v.study_time}}</div>
-      <div class="info">
-        <div class="card" @click="startLearning(v)">
-          <div class="mask">
-            {{v.course_status}}
+  <a-spin v-if="loading" tip="Loading..." size="large" > 
+    <div class="list_content">
+      <div class="list_item" v-for="v in list" :key="v.course_student_id">
+        <div class="time">{{v.study_time}}</div>
+        <div class="info">
+          <div class="card" @click="startLearning(v)">
+            <div class="mask">
+              {{v.course_status}}
+            </div>
+            <div class="card_pic">
+              <img :src="v.course_url" />
+            </div>
           </div>
-          <div class="card_pic">
-            <img :src="v.course_url" />
+          <div class="card_info">
+            <div class="title" @click="startLearning(v)">
+              <span>已学{{v.progress}}%</span>
+              <div>{{v.name}}</div>
+            </div>
+            <p class="status">{{v.between_time}}</p>
+            <p class="status">
+              <span class="iconfont icon-jiaoshi1"></span>
+              <span>教师</span>
+              <span>{{v.userName}}</span>
+            </p>
+            <p class="status">
+              <span class="iconfont icon-daojishi"></span>
+              <span>用时</span>
+              <span>{{v.used_time}}</span>
+              <span>学至</span>
+              <span>{{v.recent}}</span>
+            </p>
           </div>
-        </div>
-        <div class="card_info">
-          <div class="title" @click="startLearning(v)">
-            <span>已学{{v.progress}}%</span>
-            <div>{{v.name}}</div>
+          <div class="start_training" v-if="v.course_status==='进行中'">
+            <a-button @click="startLearning(v)" type="primary"> 继续学习 </a-button>
           </div>
-          <p class="status">{{v.between_time}}</p>
-          <p class="status">
-            <span class="iconfont icon-jiaoshi1"></span>
-            <span>教师</span>
-            <span>{{v.userName}}</span>
-          </p>
-          <p class="status">
-            <span class="iconfont icon-daojishi"></span>
-            <span>用时</span>
-            <span>{{v.used_time}}</span>
-            <span>学至</span>
-            <span>{{v.recent}}</span>
-          </p>
-        </div>
-        <div class="start_training" v-if="v.course_status==='进行中'">
-          <a-button @click="startLearning(v)" type="primary"> 继续学习 </a-button>
         </div>
       </div>
+      <empty v-if="!loading && list.length===0" />
     </div>
-    <empty v-if="!loading && list.length===0" />
-  </div>
+  </a-spin>
 </template>
 
 <script lang="ts">
