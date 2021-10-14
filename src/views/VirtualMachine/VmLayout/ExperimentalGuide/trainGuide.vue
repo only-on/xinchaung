@@ -9,6 +9,7 @@
       />
     </div>
     <div v-else>
+      <p class="guide-waraing"><span class="icon-shuoming iconfont"></span>查看任务步骤扣除50%的任务得分</p>
       <h4 class="experimental-step-title">
         {{ currentStepIndex + 1 }}、{{ steps.name
         }}<a-button type="primary" @click="lookStep" v-if="isLookStep === 0"

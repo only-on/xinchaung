@@ -73,10 +73,8 @@ export default defineComponent({
         opType: "start",
         taskId: val.train_id,
       }
-      console.log(val);
-      
-      // toVmConnect(router,param,'')
-      router.push({path:'/vm/vnc',query:{type:'train',opType:'',taskId:530247,routerQuery:"{detailId:12,course_id:501638}"}})
+      toVmConnect(router,param,'')
+      // router.push({path:'/vm/vnc',query:{type:'train',opType:'',taskId:530247,routerQuery:"{detailId:12,course_id:501638}"}})
     }
     onMounted(()=>{
       initData()

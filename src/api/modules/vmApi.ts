@@ -28,6 +28,14 @@ export default {
     updateTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'formdata' },
     // 提交步骤/查看答案
     stepActionApi: { url: "/api/operate/operates/step", method: 'POST' },
+
+    // 课程笔记
+    getNoteApi:{url: "/student-course/note", method: 'GET'},  // 
+    saveNoteApi:{url:"/student-course/setnote", method: 'POST', dataType: 'json'}, // 课程
+
+    // 实训笔记
+    getTrainNoteApi:{url: "/student-train/note", method: 'GET'},  // 
+    saveTrainNoteApi:{url:"/student-train/savenote", method: 'POST', dataType: 'json'} // 课程
 }
 
 // 
@@ -54,6 +62,10 @@ export interface IvmApi {
     experimentalReport: TFHttpSend
     updateTemplateReport: TFHttpSend
     stepActionApi:TFHttpSend
+    getNoteApi:TFHttpSend
+    saveNoteApi:TFHttpSend
+    getTrainNoteApi:TFHttpSend
+    saveTrainNoteApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

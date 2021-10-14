@@ -1,18 +1,41 @@
 <template>
   <div class="train-coursewar">
-    <iframe class="train-coursewar-pdf" :src="pdfUrl" frameborder="0"></iframe>
+    <iframe v-if="isNoData" class="train-coursewar-pdf" :src="pdfUrl" frameborder="0"></iframe>
+    <div v-else>
+      <empty/>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from "vue";
-
+import { defineComponent, ref,inject ,watch} from "vue";
+import empty from "src/components/Empty.vue"
 export default defineComponent({
+  components:{
+    empty
+  },
   setup() {
     const pdfUrl = ref("");
-    pdfUrl.value = "/public/pdfjs-2.5.207/web/viewer.html?file=''";
+    const allInfo:any= inject("allInfo")
+    // pdfUrl.value = "/public/pdfjs-2.5.207/web/viewer.html?file=''";
+    const env=process.env.NODE_ENV==="development"?true:false
+    console.log(env);
+    const isNoData=ref(false)
+    watch(()=>allInfo.value.base_info.courseware,()=>{
+      console.log(allInfo.value.base_info.courseware);
+      if (allInfo.value.base_info.courseware) {
+        isNoData.value=true
+        pdfUrl.value=env?"/public/pdfjs-2.5.207/web/viewer.html?file="+'/proxyPrefix'+allInfo.value.base_info.courseware:"/frontend/public/pdfjs-2.5.207/web/viewer.html?file="+allInfo.value.base_info.courseware
+      }else{
+        isNoData.value=false
+      }
+      
+    },{
+      immediate:true
+    })
     return {
       pdfUrl,
+      isNoData
     };
   },
 });
@@ -22,6 +45,7 @@ export default defineComponent({
 .train-coursewar {
   width: 100%;
   height: 100%;
+  background: @white;
   .train-coursewar-pdf {
     width: 100%;
     height: 100%;

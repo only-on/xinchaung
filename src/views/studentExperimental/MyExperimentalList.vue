@@ -71,7 +71,7 @@ export default defineComponent({
       let param :any= {
         type: "train",
         opType: "start",
-        taskId: val.train_id,
+        taskId: val.id,
       }
       console.log(val);
       

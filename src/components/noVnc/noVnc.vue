@@ -88,6 +88,7 @@ export default defineComponent({
       vncLoading!.value=false
       // vncLoading!.value=false
       // 实例化rfb
+      if (!refName.value)  return;
       rfb = new RFB(refName.value, props.options?.wsUrl, {
         // 向vnc 传递的一些参数，比如说虚拟机的开机密码等
         credentials: {

@@ -253,6 +253,8 @@ function recommendExperiment(params: IRecommendExperiment) {
 
 // 跳转虚拟机页面
 async function toVmConnect(router: any, param: IEnvirmentsParam, routerQuery: any) {
+  console.log(param);
+  
   const createEnvirments: any = await openVm(param);
   console.log(createEnvirments, JSON.stringify(routerQuery));
   let url=""

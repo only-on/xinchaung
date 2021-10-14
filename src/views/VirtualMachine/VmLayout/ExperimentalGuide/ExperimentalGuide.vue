@@ -110,5 +110,16 @@ export default defineComponent({
     min-width: auto;
     overflow: hidden;
   }
+  .guide-waraing{
+    background: #f19100;
+    color: @white;
+    font-size: 12px;
+    line-height: 24px;
+    text-align: center;
+    >span{
+      margin-right: 5px;
+      font-size: 12px;
+    }
+  }
 }
 </style>
