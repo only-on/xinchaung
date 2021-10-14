@@ -17,10 +17,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, onMounted } from "vue";
+import request from "src/request/getRequest"
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   setup() {
+    const TrainApi=request.vmApi
+    const route = useRoute();
+    let vmQuery = route.query as any;
+    const {
+      taskId,
+    }: any = vmQuery;
     const columns = [
       {
         title: "资源名称",
@@ -50,7 +58,21 @@ export default defineComponent({
         type:"pdf"
       },
     ];
-
+    onMounted(()=>{
+      getResource()
+    })
+    function  getResource() {
+      console.log(1212121);
+      let param={
+        query:{
+          id:taskId
+        }
+      }
+      TrainApi.getTrainResourceApi({param:param}).then((res)=>{
+        console.log(res);
+        
+      })
+    }
     const rowKey=(row:any)=>{
         return row.id
     }

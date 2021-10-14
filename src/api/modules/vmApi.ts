@@ -35,7 +35,10 @@ export default {
 
     // 实训笔记
     getTrainNoteApi:{url: "/student-train/note", method: 'GET'},  // 
-    saveTrainNoteApi:{url:"/student-train/savenote", method: 'POST', dataType: 'json'} // 课程
+    saveTrainNoteApi:{url:"/student-train/savenote", method: 'POST', dataType: 'json'}, // 课程
+
+    // 实训资源列表
+    getTrainResourceApi:{url: "/teacher-train/get-resource-list", method: 'POST', dataType: 'json'},
 }
 
 // 
@@ -66,6 +69,7 @@ export interface IvmApi {
     saveNoteApi:TFHttpSend
     getTrainNoteApi:TFHttpSend
     saveTrainNoteApi:TFHttpSend
+    getTrainResourceApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"
