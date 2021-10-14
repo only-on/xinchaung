@@ -66,7 +66,7 @@
         <div class="error-rate">
           <div class="item" v-for="(item,index) in errorKonwledge" :key="item.id">
             <template v-if="index < 10">
-              <span>{{item.knowledge_map_name}}</span>
+              <span :title="item.knowledge_map_name">{{item.knowledge_map_name}}</span>
               <a-progress
                 :stroke-color="{
                   '0%': '#be8edb',
@@ -121,13 +121,6 @@ interface Ierror{
   knowledge_map_name: string,
   error_rate: number | string
 }
-interface Igrade{
-  "0": number|string,
-  A: number,
-  B: number,
-  C: number,
-  D: number
-}
 interface Ilists{
   id: number | string,
   name: string
@@ -145,15 +138,15 @@ export default defineComponent({
       done: 0,
       undone: 0
     })
-    const gradeDistribution = reactive<Igrade>({
-      "0": 0,
+    const gradeDistribution = ref<any>({
+      0: 0,
       A: 0,
       B: 0,
       C: 0,
       D: 0
     })
     const errorKonwledge = reactive<Ierror[]>([])
-    const score_usedtime = reactive<any>({})
+    const score_usedtime = ref<any>({})
     const slideChangeTransitionEnd = (swiper:any) => {
       getData(courseLists[swiper.realIndex].id)
     };
@@ -171,7 +164,10 @@ export default defineComponent({
     }
     const changeTab =(index:number)=>{
       activeIndex.value = index
-      setChart('scater', scaterOptions(index, score_usedtime))
+      setChart('scater', scaterOptions(index, score_usedtime.value))
+    }
+    const handleData = (obj: Object, type?:string) =>{
+      return  Object.keys(obj).length ? obj : !type ? {} : {0:0,A:0,B:0,C:0,D:0}
     }
     const getData = (courseId: string | number)=>{
       errorKonwledge.length = 0
@@ -185,13 +181,13 @@ export default defineComponent({
           // 知识点错误率
           errorKonwledge.push(...result.error_knowledge)
           // 课程成绩分布
-          Object.assign(gradeDistribution, result?.course_rank)
-          setChart('radar', radarOptions(gradeDistribution))
+          gradeDistribution.value = handleData(result.course_rank, 'grade')
+          setChart('radar', radarOptions(gradeDistribution.value))
           // 实验成绩分布
-          Object.assign(score_usedtime, result?.score_usedtime ? result.score_usedtime : {})
-          setChart('scater', scaterOptions(0, score_usedtime))
+          score_usedtime.value =  handleData(result.score_usedtime)
+          setChart('scater', scaterOptions(0, score_usedtime.value))
           // 知识图谱
-          setChart('graph', graphOptions(result?.knowledge_map ? result.knowledge_map : {}))
+          setChart('graph', graphOptions(handleData(result.knowledge_map)))
         }
       })
     }
@@ -233,6 +229,7 @@ export default defineComponent({
   .banner-wrap{
     width: 100%;
     position: relative;
+    margin-bottom: 20px;
   }
   :deep(.swiper){
     padding: 70px 150px;
@@ -361,7 +358,7 @@ export default defineComponent({
   }
   .error-rate{
     .item{
-      margin-top: 15px;
+      margin-top: 9px;
       display: flex;
       align-items: center;
       span{
