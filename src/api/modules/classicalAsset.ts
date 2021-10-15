@@ -6,6 +6,8 @@ export default {
     datasetItemList: { url: '/classic/data/item-list', method: 'GET', dataType: 'json' },
     dataDelItem: {url: '/classic/data/del-item', method: 'POST', dataType: 'json'},
     datasetFolderCreate: { url: '/classic/data/create', method: 'POST', dataType: 'json' },
+    datasetItemUpload: { url: '/dataset/data/upload-file', method: 'POST', dataType: 'json' },
+    datasetAddItem: { url: '/classic/data/add-items', method: 'POST', dataType: 'json' },
     fakeRequest: { url: '/classic/data/{name}', method: 'GET', dataType: 'json' },
     fakeRequestNoUrlParam: { url: '/classic/data/fake', method: 'GET', dataType: 'json' },
     diskInfo: { url: '/classic/data/get-mount', method: 'GET', dataType: 'json' }
@@ -17,6 +19,8 @@ export interface IClassicalAssetApi {
     datasetItemList: TFHttpSend,
     dataDelItem: TFHttpSend,
     datasetFolderCreate: TFHttpSend,
+    datasetItemUpload: TFHttpSend,
+    datasetAddItem: TFHttpSend,
     fakeRequest: TFHttpSend,
     fakeRequestNoUrlParam: TFHttpSend,
     diskInfo: TFHttpSend,

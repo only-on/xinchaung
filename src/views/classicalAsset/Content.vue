@@ -48,12 +48,14 @@
       </div>
     </div>
   </div>
-  <a-modal v-model:visible="uploadVisible" title="上传文件">
+  <a-modal v-model:visible="uploadVisible" title="上传文件" @ok="addItem">
     <a-upload-dragger
         v-model:fileList="uploadFileList"
-        name="file"
+        accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        name="dataset"
+        :data="{pageType: dataType, dataId: dataId}"
         :multiple="false"
-        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        action="/proxyPrefix/dataset/data/upload-file"
         @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
@@ -113,7 +115,10 @@ export default defineComponent({
     // 数据集内部的数据列表
     const itemList = ref([]) as Ref<any[]>
     const searchKeyword = ref('')
-    const uploadFileList = ref([])
+    const uploadFileList: Ref<any[]> = ref([])
+    // 数据集类型
+    let dataType = typeof route.query['type'] !== 'undefined' ? route.query['type'] : 3 // 3是课件
+    let dataId = route.params.id
 
     const $message: MessageApi = inject('$message')!
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
@@ -180,6 +185,27 @@ export default defineComponent({
         itemList.value = res?.data.list
       })
     }
+
+    /**
+     * 创建数据集数据条目
+     */
+    const addItem = () => {
+      if (uploadFileList.value.length === 0) {
+        return
+      }
+      const beAddItems: any[] = []
+      uploadFileList.value.forEach((item) => {
+        beAddItems.push(item.response.data)
+      })
+      http.classicalAsset.datasetAddItem({
+        param: {
+          dataset_id: dataId, items: beAddItems
+        }
+      }).then(res => {
+        getDatasetItemList()
+        uploadVisible.value = false
+      })
+    }
     onMounted(() => {
       getDatasetDetail()
       getDatasetItemList()
@@ -190,9 +216,12 @@ export default defineComponent({
       itemList,
       searchKeyword,
       uploadFileList,
+      dataType,
+      dataId,
       handleSearch,
       openUploadDialog,
-      handleUploadChange
+      handleUploadChange,
+      addItem
     }
   }
 })
