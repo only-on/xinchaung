@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="file__op">
-      <a-button type="text" @click="handlePreview">
+      <a-button type="text" @click="handlePreview(previewUrl)">
         <font-awesome-icon icon="eye"/>
       </a-button>
       <a-button type="text" :href="downloadUrl">
@@ -22,15 +22,21 @@
         <span class="iconfont icon-shanchu"/>
       </a-button>
     </div>
-    <a-modal v-model:visible="confirmRemove" title="删除文件" @ok="handleRemoveItem">
-      文件删除后将无法恢复，确定要删除吗？
+    <a-modal v-model:visible="previewerVisible" wrapClassName="file__previewer--container"
+             title="预览文件"
+             :width="1200"
+             :footer="null">
+      <iframe id="pdf-iframe" :src="'/plugin/PDF/viewer.html?file=' + origin + previewFileUrl"
+              style="width: 100%; height: 700px; border: none"></iframe>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, computed, ref} from "vue";
+import {defineComponent, computed, ref, Ref, inject} from "vue";
 import http from 'src/api'
+import {ModalFunc} from "ant-design-vue/lib/modal/Modal";
+import {MessageApi} from "ant-design-vue/lib/message";
 
 export default defineComponent({
   name: "FileCard",
@@ -60,7 +66,7 @@ export default defineComponent({
       default: 'qita'
     }
   },
-  emit: ['preview', 'remove'],
+  emits: ['removed'],
   setup(props, {emit}) {
     const iconMap = {
       bmp: "tupian",
@@ -82,24 +88,39 @@ export default defineComponent({
       tar: 'wenjianjia'
     }
     const confirmRemove = ref(false)
+    const previewerVisible: Ref<boolean> = ref(false)
+    const previewFileUrl = ref('/default-not-found')
+    const origin = window.location.origin
+    const $confirm: ModalFunc = inject('$confirm')!
+    const $message: MessageApi = inject('$message')!
+
     const icon = computed(() => {
       return iconMap[props.suffix] || 'qita'
     })
-    const handlePreview = function () {
-      emit('preview')
+    const handlePreview = function (fileUrl: string) {
+      previewerVisible.value = true
+      previewFileUrl.value = fileUrl
     }
     const handleRemove = function () {
-      confirmRemove.value = true
-    }
-    const handleRemoveItem = () => {
-      http.classicalAsset.dataDelItem({param: {id: props.id}})
+      $confirm({
+        title: '删除文件',
+        content: '文件删除后将无法恢复，确定要删除吗？',
+        onOk: () => {
+          http.classicalAsset.dataDelItem({param: {id: props.id}}).then(res => {
+            $message.success('删除成功！')
+            emit('removed')
+          })
+        }
+      })
     }
     return {
       icon,
       confirmRemove,
+      previewerVisible,
+      previewFileUrl,
+      origin,
       handlePreview,
       handleRemove,
-      handleRemoveItem
     }
   }
 })
@@ -178,5 +199,8 @@ export default defineComponent({
       }
     }
   }
+}
+
+.file__previewer--container {
 }
 </style>

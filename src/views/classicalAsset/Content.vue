@@ -36,7 +36,7 @@
           <a-row :gutter="[16, 16]" class="classical__data-list-row" v-if="itemList.length > 0">
             <a-col :span="8" v-for="(item, index) in itemList" :key="'dataset-list-item-' + index">
               <file-card :title="item.file_name" :size="item.size" :preview-url="item.file_html"
-                         :download-url="item.file_url" :id="item.id" :suffix="item.suffix"/>
+                         :download-url="item.file_url" :id="item.id" :suffix="item.suffix" @removed="handleRemoved"/>
             </a-col>
           </a-row>
           <a-row class="classical__data-list-row--no-data" v-else>
@@ -146,7 +146,7 @@ export default defineComponent({
     const handleUploadChange = (info: FileInfo) => {
       const status = info.file.status;
       if (status !== 'uploading') {
-        console.log(info.file, info.fileList);
+        // console.log(info.file, info.fileList);
       }
       if (status === 'done') {
         $message.success(`${info.file.name} file uploaded successfully.`);
@@ -206,6 +206,14 @@ export default defineComponent({
         uploadVisible.value = false
       })
     }
+
+    /**
+     * 处理文件删除之后的逻辑
+     */
+    const handleRemoved = () => {
+      getDatasetItemList()
+    }
+
     onMounted(() => {
       getDatasetDetail()
       getDatasetItemList()
@@ -221,7 +229,8 @@ export default defineComponent({
       handleSearch,
       openUploadDialog,
       handleUploadChange,
-      addItem
+      addItem,
+      handleRemoved
     }
   }
 })
