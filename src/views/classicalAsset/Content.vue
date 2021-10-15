@@ -49,7 +49,21 @@
     </div>
   </div>
   <a-modal v-model:visible="uploadVisible" title="上传文件">
-    123
+    <a-upload-dragger
+        v-model:fileList="uploadFileList"
+        name="file"
+        :multiple="false"
+        action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+        @change="handleUploadChange"
+    >
+      <p class="ant-upload-drag-icon">
+        <span class="iconfont icon-upload"/>
+      </p>
+      <p class="ant-upload-text">点击选择文件或将文件拖拽到此处</p>
+      <p class="ant-upload-hint">
+        支持文件格式：ppt、pptx
+      </p>
+    </a-upload-dragger>
   </a-modal>
 </template>
 
@@ -61,6 +75,20 @@ import WatermarkIcon from "../../components/common/WatermarkIcon.vue";
 import FileCard from "../../components/classical/FileCard.vue";
 import http from 'src/api'
 import Empty from 'src/components/Empty.vue'
+import {MessageApi} from "ant-design-vue/lib/message";
+
+interface FileItem {
+  uid: string;
+  name?: string;
+  status?: string;
+  response?: string;
+  url?: string;
+}
+
+interface FileInfo {
+  file: FileItem;
+  fileList: FileItem[];
+}
 
 export default defineComponent({
   name: "Content",
@@ -85,7 +113,9 @@ export default defineComponent({
     // 数据集内部的数据列表
     const itemList = ref([]) as Ref<any[]>
     const searchKeyword = ref('')
+    const uploadFileList = ref([])
 
+    const $message: MessageApi = inject('$message')!
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
       showNav: true,
@@ -106,6 +136,19 @@ export default defineComponent({
 
     const handleSearch = () => {
       getDatasetItemList(searchKeyword.value)
+    }
+
+    const handleUploadChange = (info: FileInfo) => {
+      const status = info.file.status;
+      if (status !== 'uploading') {
+        console.log(info.file, info.fileList);
+      }
+      if (status === 'done') {
+        $message.success(`${info.file.name} file uploaded successfully.`);
+      } else if (status === 'error') {
+        $message.error(`${info.file.name} file upload failed.`);
+      }
+      console.log('upload changed')
     }
 
     /**
@@ -141,7 +184,16 @@ export default defineComponent({
       getDatasetDetail()
       getDatasetItemList()
     })
-    return {uploadVisible, detail, itemList, searchKeyword, handleSearch, openUploadDialog}
+    return {
+      uploadVisible,
+      detail,
+      itemList,
+      searchKeyword,
+      uploadFileList,
+      handleSearch,
+      openUploadDialog,
+      handleUploadChange
+    }
   }
 })
 </script>

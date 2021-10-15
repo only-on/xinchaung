@@ -167,6 +167,15 @@ export default defineComponent({
       createFolderVisible.value = true;
     };
     const handleCreateFolder = () => {
+      http.classicalAsset.datasetFolderCreate({
+        param: {
+          type: dataType,
+          name: folderInfo.name,
+          description: folderInfo.description
+        }
+      }).then(res => {
+        getDataSetList()
+      })
       createFolderVisible.value = false;
     };
     /**

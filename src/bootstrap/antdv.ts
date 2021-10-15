@@ -29,7 +29,7 @@ import {
     Upload,
     Col,
     Row,
-    Divider,
+    Divider
 } from 'ant-design-vue';
 import {IAppManager, TFInitApp} from './project';
 
