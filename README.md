@@ -1,14 +1,14 @@
 - [Vue 3 + Typescript + Vite](#vue-3--typescript--vite)
-  - [框架特性支持清单](#框架特性支持清单)
-  - [规范](#规范)
-  - [推荐的 IDE 设置](#推荐的-ide-设置)
-    - [若使用 `<script setup>`](#若使用-script-setup)
-  - [对 TS 中的`.vue`导入的类型支持](#对-ts-中的vue导入的类型支持)
-    - [若使用 Volar](#若使用-volar)
-    - [若使用 Vetur](#若使用-vetur)
-  - [开发指南](#开发指南)
-    - [主题变更](#主题变更)
-    - [国际化支持](#国际化支持)
+    - [框架特性支持清单](#框架特性支持清单)
+    - [规范](#规范)
+    - [推荐的 IDE 设置](#推荐的-ide-设置)
+        - [若使用 `<script setup>`](#若使用-script-setup)
+    - [对 TS 中的`.vue`导入的类型支持](#对-ts-中的vue导入的类型支持)
+        - [若使用 Volar](#若使用-volar)
+        - [若使用 Vetur](#若使用-vetur)
+    - [开发指南](#开发指南)
+        - [主题变更](#主题变更)
+        - [国际化支持](#国际化支持)
 
 # Vue 3 + Typescript + Vite
 
@@ -22,18 +22,18 @@ vue3 版本前端工程模板。
 | ----------------- | ------ | ---- | ------------ | ---- | ---- |
 | 主题管理          | 江月   | ✅   |              |      |      |
 | 代码生成工具      |        | 💤   |              |      |      |
-| 路由管理          |        | 💤   |              |      |      |
-| 状态管理          |        | 💤   |              |      |      |
+| 路由管理          |   元皓    | ✅   |              |      |      |
+| 状态管理          |   元皓     |  ✅  |              |      |      |
 | 国际化支持        | 江月   | ✅   |              |      |      |
 | eslint            |        | 💤   |              |      |      |
 | husky             | 江月   | ✅   |              |      |      |
 | 提交注释检查      | 江月   | ✅   |              |      |      |
 | 提交前代码检查    |        | 💤   |              |      |      |
-| api proxy         |        | 💤   |              |      |      |
-| http 库           |        | 💤   |              |      |      |
+| api proxy         |   全体     | ✅   |              |      |      |
+| http 库           |  元皓      | ✅   |              |      |      |
 | 日志代码清除      |        | 💤   |              |      |      |
 | 配置管理          |        | 💤   |              |      |      |
-| element-plus 集成 | 江月   | ✅   |              |      |      |
+| ant-design 集成 | 全体   | ✅   |              |      |      |
 
 ## 规范
 
@@ -43,15 +43,21 @@ vue3 版本前端工程模板。
 
 ## 推荐的 IDE 设置
 
-[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur). Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
+[VSCode](https://code.visualstudio.com/) + [Vetur](https://marketplace.visualstudio.com/items?itemName=octref.vetur).
+Make sure to enable `vetur.experimental.templateInterpolationService` in settings!
 
 ### 若使用 `<script setup>`
 
-[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead of Vetur (and disable Vetur).
+[`<script setup>`](https://github.com/vuejs/rfcs/pull/227) is a feature that is currently in RFC stage. To get proper
+IDE support for the syntax, use [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) instead
+of Vetur (and disable Vetur).
 
 ## 对 TS 中的`.vue`导入的类型支持
 
-Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type by default. In most cases this is fine if you don't really care about component prop types outside of templates. However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using manual `h(...)` calls), you can use the following:
+Since TypeScript cannot handle type information for `.vue` imports, they are shimmed to be a generic Vue component type
+by default. In most cases this is fine if you don't really care about component prop types outside of templates.
+However, if you wish to get actual prop types in `.vue` imports (for example to get props validation when using
+manual `h(...)` calls), you can use the following:
 
 ### 若使用 Volar
 
@@ -59,7 +65,8 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 
 ### 若使用 Vetur
 
-1. Install and add `@vuedx/typescript-plugin-vue` to the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
+1. Install and add `@vuedx/typescript-plugin-vue` to
+   the [plugins section](https://www.typescriptlang.org/tsconfig#plugins) in `tsconfig.json`
 2. Delete `src/shims-vue.d.ts` as it is no longer needed to provide module info to Typescript
 3. Open `src/main.ts` in VSCode
 4. Open the VSCode command palette
@@ -105,28 +112,60 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 对于业务自身的国际化工作，其国际化文件位置位于：`src/i18n`内部，在整个项目中已经将`vue-i18n`配置好了（具体查看源代码），在组件中使用方式如下：
 
 ```html
+
 <template>
-  <div>
-    <p>{{ t("home.hello") }}</p>
-    <a-calendar :fullscreen="false" :value="moment()" />
-  </div>
+    <div>
+        <p>{{ t("home.hello") }}</p>
+        <a-calendar :fullscreen="false" :value="moment()"/>
+    </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from "vue";
-  import moment from "moment";
-  import "moment/dist/locale/zh-cn";
-  import { useI18n } from "vue-i18n";
-  export default defineComponent({
-    name: "I18n",
-    setup(props) {
-      // 这段代码必须在setup的顶部执行
-      const { t } = useI18n();
-      return { moment, t };
-    },
-  });
+    import {defineComponent} from "vue";
+    import moment from "moment";
+    import "moment/dist/locale/zh-cn";
+    import {useI18n} from "vue-i18n";
+
+    export default defineComponent({
+        name: "I18n",
+        setup(props) {
+            // 这段代码必须在setup的顶部执行
+            const {t} = useI18n();
+            return {moment, t};
+        },
+    });
 </script>
 ```
 
 `t`方法使用方式：其参数为以`.`拼接的字符串，第一段为翻译文件名，第二段为对应文件中的消息键（`json path`）。
 
 > 注意：为了保持整个系统翻译方向一致，需要严格保证`ant-design-vue`的`ConfigProvider`和`vue-i18n`使用同样的`locale`值，这个工作已经做好了，现在只需要修改`src/i18n/index.ts`中`i18n`的`locale`就可以了。
+
+### api
+
+#### $message
+
+全局消息提示，通过`inject`可以得到全局`$message`对象来使用，它就是`ant-design-vue`的message。
+
+```ts
+import {MessageApi} from "ant-design-vue/lib/message";
+const $message: MessageApi = inject('$message')!
+$message.success('你删除了一条数据')
+```
+
+#### $confirm
+
+`$confirm`确认框，通过`inject`可以得到全局`$confirm`对象，它是`ant-design-vue`的`Modal.confirm`
+
+```ts
+import {ModalFunc} from "ant-design-vue/lib/modal/Modal";
+const $confirm: ModalFunc = inject('$confirm')!
+$confirm({
+    title: '确认删除吗？',
+    content: '删除后不可恢复',
+    okText: '确认无疑',
+    cancelText: '我再想想',
+    onOk: () => {
+      $message.success('你删除了一条数据')
+    }
+})
+```

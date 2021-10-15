@@ -105,6 +105,7 @@ import {ILayoutConfiguration} from "../../types";
 import {useRoute, useRouter} from "vue-router";
 import http from '../../api'
 import Empty from 'src/components/Empty.vue'
+import {MessageApi} from "ant-design-vue/lib/message";
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
@@ -132,6 +133,7 @@ export default defineComponent({
     // 磁盘利用情况
     const diskUsage = reactive({available: '0GB', total: '0GB', ratio: 0})
 
+    const $message: MessageApi = inject('$message')!
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
     updateNav({
       showNav: true,
@@ -204,12 +206,16 @@ export default defineComponent({
           pageSize: pageSize,
         }
       }).then(res => {
-        console.log('datasetList: ', res)
-        data.value = res!.data.list
+        if (!res) {
+          data.value = []
+          $message.error('无法获取数据！')
+          return
+        }
+        data.value = res?.data.list
 
-        dataPage.current = res!.data.page.currentPage
-        dataPage.pageSize = res!.data.page.perPage
-        dataPage.total = res!.data.page.totalCount
+        dataPage.current = res?.data.page.currentPage
+        dataPage.pageSize = res?.data.page.perPage
+        dataPage.total = res?.data.page.totalCount
       })
     }
 
