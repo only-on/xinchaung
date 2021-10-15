@@ -28,7 +28,7 @@
                 <a-button type="primary" v-else @click="saveModifiy">保存</a-button>
             </div>
             <div>
-                <upload-image :trainId="trainId"></upload-image>
+                <upload-image :trainId="trainId" :edit='edit' :uploadUrl="propTrainDetailInfo.url" @img-src='imgSrc' v-model:value="form.url"></upload-image>
             </div>
         </div>
     </div>
@@ -39,19 +39,21 @@ interface IformType{
     train_time?:number,
     start_time?:string,
     end_time?:string,
-    guide?:string
+    guide?:string,
+    url?:string
 }
 interface Istate{
     form:IformType,
     edit:boolean,
-    formRef:any,
+    formRef:any
 }
-import { defineComponent,reactive,onMounted, toRefs} from 'vue'
+import { defineComponent,onMounted,reactive,toRefs,watch} from 'vue'
 import uploadImage from 'src/components/uploadImage/uploadImage.vue'
 import request from 'src/api/index'
+import {cloneDeep} from 'lodash'
 export default defineComponent({
     name:'basicInfor',
-    props:['trainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId'],
     components:{uploadImage},
     setup(props,context){
         const http=(request as any).teacherExperimental
@@ -59,7 +61,7 @@ export default defineComponent({
             name: [{ required: true, message: '请输入实训名称', trigger: 'blur'},],
             start_time: [{ required: true, message: '请选择开始时间'},],
             end_time: [{ required: true, message: '请选择结束时间'},],
-            train_time: [{ required: true, message: '请输入课时', trigger: 'blur' },{ min: 1, max: 16, message: '课时1-16', trigger: 'blur'},],
+            train_time: [{ required: true, message: '请输入课时', trigger: 'blur' },],
             content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
             }
         const state:Istate=reactive({
@@ -71,26 +73,35 @@ export default defineComponent({
             toModifiy(){
                 state.edit=false
             },
+            imgSrc(value:any){
+                console.log(value)
+                state.form.url=value
+            },
             saveModifiy(){
                 state.formRef.validate().then(() => {
                     http.saveModefiy({param:
                     {train_id:props.trainId,
+                    name:state.form.name,
                     start_time:state.form.start_time,
-                    end_time:state.form.end_time,url:'',
+                    end_time:state.form.end_time,
+                    url:state.form.url,
                     train_time:state.form.train_time,
                     guide:state.form.guide,
                     courseware:''}})
                     .then((res:any)=>{
                         console.log(res)
-                        state.edit=true 
+                        state.edit=true
+                        context.emit('save-success')
                     })
                 })
-               
                 console.log(state.form)
             }
         }
-        onMounted(() => {
-           state.form=props.trainDetailInfo 
+        watch(()=>props.propTrainDetailInfo,(val:any)=>{
+             state.form=cloneDeep(props.propTrainDetailInfo)
+        })
+        onMounted(()=>{
+             state.form=cloneDeep(props.propTrainDetailInfo)
         })
         return{ ...toRefs(state),...methods,rules}
     }

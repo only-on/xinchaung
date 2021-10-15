@@ -1,22 +1,26 @@
 <template>
     <div class="uploadImage">
-        <a-radio-group v-model:value="value" @change="onChange">
+        <a-radio-group v-model:value="value" @change="onChange" :disabled='edit'>
           <div class="uploadImgdiv">
              <div class="uploadDiv">
-                 <a-upload
+                <div class="imgdiv" v-if="imgSrc">
+                   <img class="imgHasUpload" :src="imgSrc"/>
+                   <a-radio class="radio" :value='upload'></a-radio>
+                   <span class="iconfont icon-shanchu-copy" @click="deledeImg"></span>
+                </div>
+                <div v-else>
+                  <a-upload
                   accept=".jpg,.png,.image"
+                  :disabled='edit'
                   :show-upload-list='false'
                   :before-upload='beforeUpload'>
-                  <div>
-                     <img v-if="imgSrc" :src="imgSrc" alt="avatar" />
-                    <div v-else>
-                      <a-icon />
-                      <div class="ant-upload-text">
-                        Upload
-                      </div>
+                    <div class="upload-text">
+                      <i class="iconfont icon-upload"></i>
+                      <p class="ant-upload-hint">支持格式jpg、png</p>
+                      <p class="size-limit">尺寸限制：525px*300px</p>
                     </div>
-              </div>
-            </a-upload>
+                </a-upload>
+                </div>
               </div>
             <div class="imgdiv" v-for="(item,index) in defaultImg" :key="index.toString()">
               <img :src='item.src'/>
@@ -34,18 +38,19 @@ interface imgType{
 interface Istate{
   defaultImg:imgType[],
   imgSrc:string,
-  value:any
+  value:any,
+  file:any
 }
 import { message } from 'ant-design-vue'
-import { defineComponent,reactive,toRefs} from 'vue'
+import { defineComponent,reactive,toRefs,onMounted, onBeforeMount,watch} from 'vue'
 import request from 'src/api/index'
 export default defineComponent({
     name:'uploadImage',
-    props:['trainId'],
+    props:['trainId','uploadUrl','edit'],
     components:{},
     setup(props,context) {
       const http=(request as any).teacherExperimental
-       const state:Istate=reactive({
+      const state:Istate=reactive({
           defaultImg:[
           {
             id: 0,
@@ -78,25 +83,38 @@ export default defineComponent({
           },
         ],
         imgSrc:'',
-        value:''
+        value:'',
+        file:''
        })
       const methods={
         onChange(e:any){
         console.log(e.target.value)
+          if(e.target.value==='upload'){
+            state.file=state.imgSrc
+          }else{
+            state.file=state.defaultImg[e.target.value].src
+          }
+        },
+        deledeImg(){
+          state.imgSrc=''
         },
         beforeUpload(file:any){
           const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
           if (!isJpgOrPng) {
             message.error('只能上传图片')
           }
+          state.file=file
           if(isJpgOrPng){
             const fd = new FormData()
             fd.append('upload_type','image')
             fd.append('train_id',props.trainId)
-            fd.append('file', file)
+            fd.append('file', state.file)
             http.trainUploadImage({param:fd}).then((res: any) => {
             console.log(res)
-            state.imgSrc = res.datas.url
+            console.log(window.location.origin,'window.location.origin')
+            const baseurl=window.location.origin
+            state.imgSrc ='http://192.168.101.150:85/'+res.datas.url
+            context.emit('img-src',res.datas.url)
         })
         .catch(() => {
           message.error('网络错误')
@@ -104,6 +122,13 @@ export default defineComponent({
           }
         }
       }
+      watch(()=>props.uploadUrl,(val)=>{
+        console.log(val)
+        state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+      })
+      onMounted(()=>{
+          state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+        })
       return {...methods,...toRefs(state)}
     }
 })
@@ -121,11 +146,54 @@ export default defineComponent({
     height: 164px;
     border: 1px dashed @theme-color;
     border-radius: 4px;
+    position: relative;
+    .icon-shanchu-copy{
+      color:yellow;
+      font-size:20px;
+      position: absolute;
+      right: 10px;
+      bottom:10px;
+      // display: none;
+    }
+    .upload-text{
+      text-align: center;
+      color:rgba(0, 0, 0, 0.45);
+    }
+  }
+  .imgHasUpload:hover{
+    .uploadDiv .icon-shanchu-copy{
+      display: block;
+    }
   }
   .imgdiv{
     margin-top: 10px;
-     position: relative;
+    position: relative;
+    img{
+      opacity: 1.5;
+    }
   }
+  .imgdiv::before {
+    content: "";
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    z-index: 1;
+    background-color: rgba(0,0,0,.5);
+    transition: background-color .3s;
+    border-radius: 4px;
+  }
+  //  .imgdiv:hover{
+  //     .imgdiv::before {
+  //     content: "";
+  //     width: 100%;
+  //     height: 100%;
+  //     position: absolute;
+  //     z-index: 1;
+  //     background-color: rgba(0,0,0,0);
+  //     transition: background-color .3s;
+  //     border-radius: 4px;
+  //   }
+  // }
   .imgdiv:nth-child(1){
     margin-top: 0px;
   }
@@ -137,6 +205,7 @@ export default defineComponent({
   }
   img{
     width: 285px;
+    height: 164px;
     border-radius:4px;
   }
   .radio{

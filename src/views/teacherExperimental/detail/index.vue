@@ -6,7 +6,7 @@
         </div>
         <div class="info-right">
           <div>
-            <div>{{trainDetailInfo.name}}</div>
+            <div>{{trainDetailInfo.name}}namenamemnem</div>
             <div>
               课时数：{{trainDetailInfo.train_time}}
             </div>
@@ -23,7 +23,7 @@
     <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
     </a-tabs>
-    <component :is="componentName" :trainDetailInfo='trainDetailInfo' :trainId="trainId" />
+    <component :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' />
   </div>
 </template>
 <script lang="ts">
@@ -34,6 +34,7 @@ import basicInfo from './basicInfor/index.vue'
 import trainingGuide from './trainingGuide/index.vue'
 interface State{
   trainDetailInfo:any,
+  propTrainDetailInfo:any,
   componentName:string,
   trainId:any
 }
@@ -47,18 +48,27 @@ export default defineComponent({
     updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
      const state:State=reactive({
        trainDetailInfo:"",
+       propTrainDetailInfo:'',
        componentName:'basicInfo',
        trainId:''
      })
     onMounted(()=>{
       console.log(router.query.id)
-      state.trainId=router.query.id
-      http.trainDetailInfo({param:{train_id:state.trainId}}).then((res:any)=>{
-        state.trainDetailInfo=res.datas
-      })
+      methods.getTrainDetailInfo()
     })
     const componentsNames=ref([{key:0,textname:'基础信息',name:'basicInfo'},{key:1,textname:'实训指导',name:'trainingGuide'}])
     const methods={
+        getTrainDetailInfo(){
+          state.trainId=router.query.id
+          http.trainDetailInfo({param:{train_id:state.trainId}}).then((res:any)=>{
+          state.trainDetailInfo=res.datas
+          state.propTrainDetailInfo=res.datas
+        })
+      },
+      saveSuccess(){
+        console.log('修改成功')
+        methods.getTrainDetailInfo()
+      },
       goback(){
         window.history.go(-1)
       },
@@ -79,6 +89,7 @@ export default defineComponent({
     width:290px;
   }
   .info-right{
+    padding-right:10px;
     display: flex;
     justify-content: space-between;
     flex: 1;
