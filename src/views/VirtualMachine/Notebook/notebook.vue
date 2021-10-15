@@ -1,5 +1,5 @@
 <template>
-  <layout :VmData="data" isLeftContentShowType="float">
+  <layout :VmData="data" :reportId='reportTemid' isLeftContentShowType="float">
     <template #header>
       <div class="vm-header-student">
         <div class="vm-header-left">
@@ -74,6 +74,7 @@ export default defineComponent({
     const noteUrl=ref("")
     const use_time: Ref<number> = ref(900);
     let taskType=ref("")
+    var reportTemid:Ref<any>=ref(0)
     provide("allInfo", allInfo);
     // provide("novncEl",novncEl)
     provide("uuid",vm_uuid)
@@ -132,6 +133,7 @@ export default defineComponent({
         use_time.value = res.data.current.used_time;
         console.log(allInfo);
         taskType.value = res.data.base_info.task_type.name;
+        reportTemid.value=res?.data.current.id
       });
     }
     function back() {
@@ -145,7 +147,8 @@ export default defineComponent({
       data,
       back,
       noteUrl,
-      provide
+      provide,
+      reportTemid
     };
   },
 });

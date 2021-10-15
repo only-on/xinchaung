@@ -1,7 +1,7 @@
 <template>
     <div class="report-content">
       <!-- 在线报告 -->
-      <div v-if="reportTemplateData.template_type === 'form'">
+      <div v-if="reportTemplateData&&reportTemplateData.template_type === 'form'">
          <table id="onlineReportTableEditable" class="report-table">
         <tr
           v-for="(item, index) in reportTemplateData.json_content"
@@ -41,7 +41,7 @@
       </div>
      
       <!-- 离线报告 -->
-      <div class="offlineReport" v-if="reportTemplateData.template_type === 'file'">
+      <div class="offlineReport" v-if="reportTemplateData&&reportTemplateData.template_type === 'file'">
         <!-- src="/src/assets/sss.pdf"> -->
         <iframe 
         class="iframe"
