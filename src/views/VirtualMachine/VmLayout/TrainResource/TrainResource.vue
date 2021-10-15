@@ -6,6 +6,12 @@
       :rowKey="rowKey"
       :pagination="false"
     >
+    <template #name="{text}">
+      <div :title="text">{{text}}</div>
+    </template>
+    <template #describe="{text}">
+      <div :title="text">{{text}}</div>
+    </template>
       <template #operation="{ text }">
         <div class="row-action">
           <span @click="show(text)" class="icon-chakan1 iconfont"></span>
@@ -17,9 +23,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted } from "vue";
+import { defineComponent, onMounted ,ref} from "vue";
 import request from "src/request/getRequest"
 import { useRoute } from "vue-router";
+import {downloadUrl} from "src/utils/download"
 
 export default defineComponent({
   setup() {
@@ -38,11 +45,12 @@ export default defineComponent({
       },
       {
         title: "资源说明",
-        dataIndex: "desc",
+        dataIndex: "describe",
+        slots: { customRender: "describe" },
       },
       {
         title: "类型",
-        dataIndex: "type",
+        dataIndex: "posfix",
       },
       {
         title: "操作",
@@ -50,27 +58,20 @@ export default defineComponent({
       },
     ];
 
-    const dataSource: any = [
-      {
-        id: "1",
-        name:"文件名称",
-        desc:"测试文件",
-        type:"pdf"
-      },
-    ];
+    const dataSource: any =ref([]);
     onMounted(()=>{
       getResource()
     })
     function  getResource() {
-      console.log(1212121);
       let param={
-        query:{
-          id:taskId
-        }
+        train_id:taskId,
+        pageSize:100,
+        page:1
       }
       TrainApi.getTrainResourceApi({param:param}).then((res)=>{
-        console.log(res);
-        
+        if (res?.data) {
+          dataSource.value=res.data.list
+        }
       })
     }
     const rowKey=(row:any)=>{
@@ -82,9 +83,10 @@ export default defineComponent({
     }
 
     function down(val:any){
-        console.log(val);
-        
+      let env=process.env.NODE_ENV==="development"?true:false
+       downloadUrl(env?'/proxyPrefix'+val.url:val.url) 
     }
+    
     return { dataSource, columns,show ,down,rowKey};
   },
 });
@@ -101,6 +103,10 @@ export default defineComponent({
               cursor: pointer;
           }
       }
+  }
+  .ant-table-row-cell-break-word{
+    text-overflow: ellipsis;
+    overflow: hidden;
   }
 }
 </style>
