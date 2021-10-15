@@ -29,12 +29,12 @@
                 >
                 <div>
                     
-                 <a-form >
-                    <a-form-item required label="名称">
-                        <a-input v-model:value="name"></a-input>
+                 <a-form ref="formRef" :model="form" :rules="rules">
+                    <a-form-item  label="名称" name='name'>
+                        <a-input v-model:value="form.name"></a-input>
                                 </a-form-item>
-                    <a-form-item required label="描述">
-                        <a-textarea v-model:value='description'></a-textarea>
+                    <a-form-item label="描述" name='description'>
+                        <a-textarea v-model:value='form.description'></a-textarea>
                     </a-form-item>
                     </a-form>  
                 </div>
@@ -54,6 +54,7 @@
     </div>
 </template>
 <script lang="ts">
+import { message } from 'ant-design-vue';
 import { number } from 'echarts';
 import {defineComponent,inject,onMounted,reactive,toRefs} from 'vue'
 import { useRouter } from 'vue-router';
@@ -82,7 +83,12 @@ interface exerciseList{
     name?:string,
     include?:string,
 }
+interface fromType{
+    name?:string,
+    description?:string,
+}
 interface stateData{
+    rules:any,
     exambasic:examBasic,
     examtype:examType[],
     // componentNames:any[],
@@ -97,8 +103,7 @@ interface stateData{
     visible:boolean,
     initial?:any,
     initialIfEdit:any,
-    name:string,
-    description:string,
+    form:fromType,
 }
 export default defineComponent({
     name:'exerciseDetail',
@@ -108,14 +113,21 @@ export default defineComponent({
         const teacherDataExerApi = (request as any).teacherDataExercises
         var updata=inject('updataNav') as Function
         const state:stateData=reactive({
+             rules:{
+                name: [
+                    {required: true, message: '请输入内容', trigger: 'blur'},
+                ],
+                description:[
+                    {required: true, message: '请输入描述', trigger: 'blur'},
+                ],
+            },
             exambasic:{
                 name:'',
                 description:'',
                 created_at:'',
                 updated_at:'',
             },
-            name:'',
-            description:'',
+            form:{},
             examtype:[],
             // componentNames:['singleChoice','multipleChoice','judge','fillBlanks','answer'],
             currentView:'singleChoice',
@@ -138,23 +150,28 @@ export default defineComponent({
          }
         const methods = {
           exerciseDetail(){
-              const item:any=router.currentRoute.value.query.item
               state.initial=router.currentRoute.value.query.initial
               state.initialIfEdit=(state.initial==='1'?false:true)
                updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
-              state.question_info=item.question_info?item.question_info:[]
-              const id:any=JSON.parse(item).id;
+              const id:any=router.currentRoute.value.query.id;
               teacherDataExerApi.detailExercise({urlParams:{pool_id:id}}).then((res:any)=>{
                   state.exambasic=res.data
-                  state.name=state.exambasic.name
-                  state.description=state.exambasic.description
+                  state.form.name=state.exambasic.name
+                  state.form.description=state.exambasic.description
               })
           },
           handleOk(){
+            if(!state.form.name){
+                message.warning("请输入名称")
+                return
+            }
+            if(!state.form.description){
+                message.warning("请输入描述")
+                return
+            }
             state.visible = false;
-            const item:any=router.currentRoute.value.query.item
-            const id:any=JSON.parse(item).id;
-            teacherDataExerApi.updateExercise({urlParams:{pool_id:id},param:{initial:0,name:state.name,description:state.description}}).then((res:any)=>{
+              const id:any=router.currentRoute.value.query.id;
+            teacherDataExerApi.updateExercise({urlParams:{pool_id:id},param:{initial:0,name:state.form.name,description:state.form.description}}).then((res:any)=>{
                 console.log(res)
                 methods.exerciseDetail() 
             })
@@ -163,8 +180,8 @@ export default defineComponent({
           },
           handleCancel(){
             state.visible = false;
-            state.name=state.exambasic.name
-            state.description=state.exambasic.description
+            state.form.name=state.exambasic.name
+            state.form.description=state.exambasic.description
           },
           exerciseType(){
               teacherDataExerApi.typeExercise().then((res:any)=>{
@@ -184,8 +201,7 @@ export default defineComponent({
               methods.exerciseDetailList(state.exerListParams)
           },
           exerciseDetailList(exerListParams:exerciseList){
-              const item:any=router.currentRoute.value.query.item
-              const id:any=JSON.parse(item).id;
+              const id:any=router.currentRoute.value.query.id;
             exerListParams.include='answers'
             teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:exerListParams}).then((res:any)=>{
                   state.tabledata=res.data.list
@@ -210,8 +226,7 @@ export default defineComponent({
        onMounted(()=>{
            methods.exerciseDetail() 
            methods.exerciseDetailList(state.exerListParams)
-            const item:any=router.currentRoute.value.query.item
-            const id:any=JSON.parse(item).id;
+              const id:any=router.currentRoute.value.query.id;
             state.poolid=id
         })
         return {...toRefs(state),...methods}

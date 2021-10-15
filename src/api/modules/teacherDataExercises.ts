@@ -11,6 +11,6 @@ export default {
     detailExerCreate: { url: `/api/v1/question/pools/{pool_id}/questions`, method: "POST", dataType: 'json' },
     detailExerDelete: { url: `/api/v1/question/questions/{question_id}`, method: "DELETE", dataType: 'json' },
     detailExerUpdate: { url: `/api/v1/question/questions/{question_id}`, method: "PUT", dataType: 'json' },
-    detailExerBatchImport: { url: `/api/v1/question/pools/{pool_id}/questions/import`, method: "POST", dataType: 'json' },
+    detailExerBatchImport: { url: `/api/v1/question/pools/{pool_id}/questions/import`, method: "POST", dataType: 'formdata' },
     detailExerDownLoad: { url: `/api/v1/question/questions/import/demo`, method: "GET", dataType: 'json' }
 }

@@ -33,8 +33,8 @@ export default defineComponent({
         }
         function toExerDetail(item:any){
             console.log(item,'item')
-            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:0}})
-            // router.push({path:'/exercisesDetail',query:{id:item.id,initial:0}})
+            // router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:0}})
+            router.push({path:'/exercisesDetail',query:{id:item.id,initial:0}})
         }
         return {deleteExamItem,toExerDetail}
     }

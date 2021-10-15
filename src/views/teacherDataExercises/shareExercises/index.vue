@@ -32,8 +32,8 @@ export default defineComponent({
         const router = useRouter();
          function toExerDetail(item:any){
             console.log(item,'item')
-            router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:1}})
-            // router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
+            // router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:1}})
+            router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
         }
         return {toExerDetail}
     }

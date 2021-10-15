@@ -105,7 +105,10 @@ export default defineComponent({
             formRef:'formRef',
             rules:{
             name: [
-                {required: true, message: '请输入内容', trigger: 'blur'}
+                {required: true, message: '请输入内容', trigger: 'blur'},
+            ],
+             description:[
+                {required: true, message: '请输入描述', trigger: 'blur'},
             ],
         },
             pagination:{
@@ -173,20 +176,22 @@ export default defineComponent({
         })
     }
     function handleOk(){
-        createParams.name=state.form.name
-        createParams.description=state.form.description
-        createParams.initial=0
-        console.log(state.form,'form')
-    //     state.formRef.validateFields(state.form,(err:any, values:any) => {
-    //      console.log(err,'valid')
-    //      console.log(values,'valid')
-    //   });
-            if(state.form.name===''){
-                message.warn('请输入名称')
-            }else{
-                createExcerise(createParams)
-                visible.value=false
+        console.log(state.form.name)
+            if(!state.form.name){
+                message.warning('请输入名称')
+                return
             }
+            if(!state.form.description){
+                message.warning('请输入描述')
+                return
+            }
+            createParams.name=state.form.name
+            createParams.description=state.form.description
+            createParams.initial=0
+            console.log(state.form,'form')
+            createExcerise(createParams)
+            visible.value=false
+            
         } 
     function handleCancel(){
          visible.value=false

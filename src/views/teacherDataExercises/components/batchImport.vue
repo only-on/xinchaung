@@ -1,9 +1,10 @@
 <template>
     <a-modal 
+    class="modal"
   :visible="isShowImport" 
   title="批量添加" 
-  @ok="handleOk"
-  @cancel="handleCancel"
+  @ok="closeModal"
+  @cancel="closeModal"
   :width="800"
   :footer="null"
 >
@@ -12,7 +13,8 @@
            <a-upload
             name="file"
             :multiple="true"
-            @change="handleChange"
+            :show-upload-list='false'
+            :before-upload='beforeUpload'
             >
                <span>选择文件：</span><a-input style="width:160px" v-model:value='filename'></a-input><a-button type="primary">浏览</a-button>
             </a-upload>
@@ -21,9 +23,12 @@
               下载试题模板
           </div>
       </div>
-        <a-table v-if="data" :columns="columns" :data-source="data" rowKey='id'>
-          <template #index='{record}'>
-              <span>{{record.index}}</span>
+        <a-table v-if="data.length" :columns="columns" :data-source="data" rowKey='id'>
+          <template #index>
+              <span>1</span>
+          </template>
+          <template #action>
+              <span>导入成功</span>
           </template>
         </a-table>
          <div v-else  class="importNone">
@@ -37,6 +42,7 @@ import { defineComponent,onMounted,reactive, toRefs} from 'vue';
 import request from "src/api";
 import { number } from 'echarts';
 import FileSaver from 'file-saver'
+import { message } from 'ant-design-vue';
 interface State{
     columns:any[],
     uploadfile:any;
@@ -47,7 +53,8 @@ export default defineComponent({
     name:'batchImport',
     props: {
     isShowImport: Boolean,
-    poolid:Number
+    poolid:Number,
+    selectedId:Number
   },
   setup(props,{emit}){
        const teacherDataExerApi = (request as any).teacherDataExercises
@@ -61,35 +68,28 @@ export default defineComponent({
             },
             {
                 title: '题目',
-                dataIndex: 'age',
-                key: 'age',
+                dataIndex: 'question',
+                key: 'question',
+                ellipsis:true
             },
             {
                 title: '难度',
-                dataIndex: 'address',
-                key: 'address',
+                dataIndex: 'level',
+                key: 'level',
             },
             {
                 title: '分数',
-                key: 'tags',
-                dataIndex: 'tags',
-                scopedSlots: { customRender: 'tags' },
+                key: 'origin_score',
+                dataIndex: 'origin_score',
             },
             {
                 title: '导入状态',
                 dataIndex: 'action',
                 key: 'action',
+                slots: { customRender:'action'},
             },
             ], 
-            data:[
-            {
-                index: 1,
-                age: '的的耳朵',
-                address: '简单',
-                tags:'10',
-                action:'导入成功'
-            }
-            ],
+            data:[],
             uploadfile:null,
             filename:''
        })
@@ -97,23 +97,27 @@ export default defineComponent({
           console.log(document.querySelector(".downloadExam"))
           console.log(window.location.origin)+'proxyPrefix'
       })
-      function handleOk(){
-          emit('batchImportClose',false)
-      } 
-      function handleCancel(){
-          emit('batchImportClose',false)
-      }
       function closeModal(){
           emit('batchImportClose',false)
+          state.filename=''
+          state.uploadfile=''
+          state.data=[]
       }
-      function handleChange(file:any){
-          console.log(file,'file')
-          state.uploadfile=file.file
-          state.filename=file.file.name
+      function beforeUpload(file:any){
+          state.uploadfile=file
+          state.filename=file.name
       }
       function detailExerUpload(){
-          teacherDataExerApi.detailExerBatchImport({urlParams:{pool_id:props.poolid},param:{csv_file:state.uploadfile}}).then((res:any)=>{
+        const formdata=new FormData()
+        const typeid:any=props.selectedId
+        formdata.append('file',state.uploadfile)
+        formdata.append('type_id',typeid)
+          teacherDataExerApi.detailExerBatchImport({urlParams:{pool_id:props.poolid},param:formdata}).then((res:any)=>{
               console.log(res)
+              message.success("文件上传成功")
+              state.filename=''
+              state.uploadfile=''
+              state.data=res.data
           })
       }
       function dowmTemplate(){ 
@@ -122,7 +126,7 @@ export default defineComponent({
         FileSaver.saveAs(url);
       }
       
-      return {handleOk,handleCancel,closeModal,handleChange,detailExerUpload,dowmTemplate,...toRefs(state)}
+      return {closeModal,beforeUpload,detailExerUpload,dowmTemplate,...toRefs(state)}
   }
 })
 </script>
@@ -137,7 +141,15 @@ export default defineComponent({
 .download:hover{
     color:@theme-light-color;
 }
-.ant-upload-list{
+.importNone{
+    margin-top:30px;
+}
+.modal{
+    .ant-upload-list{
   display: none;
+}
+    .ant-modal-body{
+    min-height: 200px;
+    }
 }
 </style>

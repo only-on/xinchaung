@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div>
-                <batch-import :isShowImport="isShowImport" :poolid="poolid"  @batch-import-close='batchImportClose'></batch-import>
+                <batch-import :isShowImport="isShowImport" :poolid="poolid"  @batch-import-close='batchImportClose' :selectedId='selectedId'></batch-import>
             </div>
             <a-modal :visible="visibleDelete" title="提示" ok-text="确定" cancel-text="取消"  @ok="deleteOk" @cancel="deleteCancel">
                 <p>习题删除后将无法恢复，确定要删除吗?</p>
@@ -39,15 +39,8 @@
                             </div>
                         </template>
                         <template #select-answers='{record}'>
-                            <div v-if="record.type_id===4||record.type_id===5">
-                                <span>{{record.answers[0].answer}}</span>  
-                            </div>
-                            <div v-else>
-                                <span  v-for="(item,index) in record.options" :key="index.toString()">
-                                    <span v-for="(it,i) in record.answers" :key="i.toString()">
-                                        <span v-if="it.answer===item.id.toString()">{{item.option}}<span v-if="i!==record.answers.length-1">，</span></span>
-                                    </span>  
-                                </span>
+                            <div>
+                                {{answer(record)}}
                             </div>
                         </template>
                     </a-table>
@@ -99,7 +92,6 @@
                                     </a-form-item>
                                 </div>
                                 <div>
-                                    {{value}}
                                     <a-radio-group v-model:value="value" @change="onJudgeChange">
                                         <a-radio :value='0'>正确</a-radio>
                                         <a-radio :value='1'>错误</a-radio>
@@ -275,6 +267,7 @@ export default defineComponent({
                     title: '题目',
                     dataIndex: 'question',
                     key: 'question',
+                    ellipsis:true
                 },
                 {
                     title: '难度',
@@ -285,6 +278,7 @@ export default defineComponent({
                     title: '答案',
                     dataIndex: 'select-answers',
                     slots: { customRender:'select-answers'},
+                    ellipsis:true
                 },
                 {
                     title: '分数',
@@ -306,6 +300,21 @@ export default defineComponent({
             visibleDelete:false,
         })
         const methods = {
+            answer(record:any){
+                if(record.type_id===4||record.type_id===5){
+                    return record.answers[0].answer 
+                }else{
+                    const answer:any=[]
+                    record.answers.forEach((it:any) => {
+                        record.options.forEach((item:any) => {
+                            if(it.answer===item.id.toString()){
+                                answer.push(item.option)
+                            }
+                        });
+                    });
+                    return answer.join(',')
+                }
+            },
          exerciseLevels(){
                 teacherDataExerApi.getDetailExerLevels().then((res:any)=>{
                     state.difficultyLevel=res?.data
@@ -677,4 +686,7 @@ export default defineComponent({
     }
   }
 }
+// .symbol:nth-last-child(1){
+//     display: none;
+// }
 </style>
