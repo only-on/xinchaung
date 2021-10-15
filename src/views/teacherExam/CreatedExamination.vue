@@ -3,29 +3,26 @@
     <div class="leftBox">
       <a-form :ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <a-form-item label="考试名称"  name="name">
-          <a-input v-model:value="formState.title" />
+          <a-input v-model:value="formState.name" />
         </a-form-item>
-        <a-form-item label="考试试卷"  name="type">
-          <a-select v-model:value="formState.type" placeholder="请选择发帖类型">
-            <a-select-option value="1">求助</a-select-option>
-            <a-select-option value="2">分享</a-select-option>
-          </a-select>
+        <a-form-item label="考试试卷"  name="paper_id">{{formState.paper_id}}
+          <a-select v-model:value="formState.paper_id" placeholder="请选择试卷" :options="options" @change="change" />
         </a-form-item>
         <div class="duration">
-          <a-form-item label="考试开始时间"  name="name" :label-col="{span:8}" :wrapper-col="{span:20}">
-            <a-date-picker v-model:value="formState.title" />
+          <a-form-item label="考试开始时间"  name="started_at" :label-col="{span:8}" :wrapper-col="{span:20}">
+            <a-date-picker v-model:value="formState.started_at" :showTime="true" :disabled-date="disabledDate" valueFormat="YYYY-MM-DD HH:mm:ss"  format="YYYY-MM-DD HH:mm:ss" />
           </a-form-item>
-          <a-form-item label="考试时长"  name="name" :label-col="{span:6}" :wrapper-col="{span:16}">
-            <a-input v-model:value="formState.title" />
+          <a-form-item label="考试时长"  name="hour_long" :label-col="{span:6}" :wrapper-col="{span:16}">
+            <a-input v-model:value="formState.hour_long" />
             <div class="durationNotes">分钟</div>
           </a-form-item>
         </div>
-        <a-form-item label="通过分数比例"  name="name" :label-col="{span:6}" :wrapper-col="{span:20}" class="proportion">
-          <a-input v-model:value="formState.title" suffix="%" />
+        <a-form-item label="通过分数比例"  name="pass_rate" :label-col="{span:6}" :wrapper-col="{span:20}" class="proportion">
+          <a-input v-model:value="formState.pass_rate" suffix="%" />
           <div class="notes">注：此分数为百分比分数</div>
         </a-form-item>
-        <a-form-item label="考试公告" name="desc">
-          <InputTextArea v-model:value="formState.desc"  />
+        <a-form-item label="考试公告" name="note">
+          <InputTextArea v-model:value="formState.note" />
          </a-form-item>
       </a-form>
     </div>
@@ -56,13 +53,13 @@
   </div>
   <div class="information">
     <div class="item">
-      <a-button type="primary" @click="select()">选择</a-button>
-      <a-button class="btn2" type="primary" @click="remove()">移除</a-button>
+      <a-button type="primary" @click="select()">{{`选择${information===1?'班级':'学生'}`}}</a-button>
+      <a-button class="btn2" type="primary" @click="remove()">批量移除</a-button>
     </div>
     <div>
     <a-radio-group v-model:value="information">
-      <a-radio value="1">班级信息</a-radio>
-      <a-radio value="2">学生信息</a-radio>
+      <a-radio :value="1">班级信息</a-radio>
+      <a-radio :value="2">学生信息</a-radio>
     </a-radio-group>
   </div>
   </div>
@@ -81,27 +78,30 @@
     <a-button type="primary" @click="cancel()"> 取 消 </a-button>
     <a-button type="primary" @click="sunmit()"> 确 定 </a-button>
   </div>
-  <a-modal v-model:visible="visible" title="学生选择" @ok="handleReply" :width="1080" class="modal-post">
+  <a-modal v-model:visible="visible" :title="`${information===1?'班级':'学生'}选择`" @ok="handleReply" :width="1080" class="modal-post">
     <div class="header">
       <div class="search">
-        <div class="item custom_input item1">
-          <a-input v-model:value="studentForum.name" placeholder="请输入学号" @search="getStudentList" />
+        <div class="item custom_input item1" v-if="information===1">
+          <a-input v-model:value="studentForum.name" placeholder="请输入班级" />
         </div>
-        <div class="item custom_input item2">
-          <a-input v-model:value="studentForum.name" placeholder="请输入姓名" @search="getStudentList" />
+        <div class="item custom_input item1" v-if="information===2">
+          <a-input v-model:value="studentForum.name" placeholder="请输入学号" />
         </div>
-        <div class="item custom_input item3">
-          <a-input v-model:value="studentForum.name" placeholder="请输入院系" @search="getStudentList" />
+        <div class="item custom_input item2" v-if="information===2">
+          <a-input v-model:value="studentForum.name" placeholder="请输入姓名" />
+        </div>
+        <div class="item custom_input item3" v-if="information===2">
+          <a-input v-model:value="studentForum.name" placeholder="请输入院系" @search="getClassStudent" />
         </div>
       </div>
       <div>
         <a-button type="primary" @click="cancel()">添加</a-button>
         <a-button type="primary" @click="cancel()">清空</a-button>
-        <a-button type="primary" @click="cancel()">查询</a-button>
+        <a-button type="primary" @click="getClassStudent()">查询</a-button>
       </div>
     </div>
       <!-- <a-config-provider :renderEmpty="studentRenderEmpty"> -->
-        <a-table :columns="selectStudentColumns" :loading="loading" :data-source="studentList" :bordered="true"  row-key="id"
+        <a-table :columns="information===1?selectClassColums:selectStudentColumns" :loading="loading" :data-source="studentList" :bordered="true"  row-key="id"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
           :pagination="{pageSize:pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true,showSizeChanger:true}" 
           :locale="studentLocale"
@@ -123,24 +123,27 @@ import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
 import { Input } from 'ant-design-vue'
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
-import { Moment } from 'moment';
-interface IFrom{
+import moment, { Moment } from 'moment';
+interface IformState{
   name:string;
-  page:number;
-  limit:number;
-  level_id:string | undefined
-  pool_id:string | undefined
-  type_id:number
+  paper_id:number | undefined;
+  started_at:'';
+  hour_long:number | undefined;
+  pass_rate:number | undefined;
+  note:string;
+  data:Moment
 }
 interface Istate{
-  formRef:string;
-  formState:any;
+  formRef:any;
+  formState:IformState;
+  class_ids:number[];
+  student_ids:number[];
   onPanelChange:(value: Moment,mode: string) => void;
   rules:any;
   select: () => void;
   remove: () => void;
   onChangePage: (v:number) => void;
-  information:string;
+  information:number;
   total:number;
   loading:boolean;
   pageSize:number;
@@ -154,8 +157,10 @@ interface Istate{
   visible:boolean;
   handleReply: () => void;
   studentForum:any;
-  getStudentList: () => void;
-  studentList:any[]
+  getClassStudent: () => void;
+  studentList:any[];
+
+  change: (val:any) => void;
 }
 type Key = ColumnProps['key'];
 const columns=[
@@ -230,6 +235,20 @@ const selectStudentColumns=[
     // width:460,
   },
 ]
+const selectClassColums=[
+  {
+    title: '班级名称',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+  {
+    title: '人数',
+    dataIndex:"title",
+    align:'center',
+    // width:460,
+  },
+]
 export default defineComponent({
   name: '',
   components: {
@@ -239,7 +258,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const {editId}= route.query
-    const options =ref<SelectTypes['options']>([{value: '1', label: '简单'},{value: '2', label: '中等'},{value: '3', label: '困难'}])
+    var options =ref<SelectTypes['options']>([])
     var totalCount:Ref<number> =ref(0)
     var loading:Ref<boolean> =ref(false)
     // const visible = ref<boolean>(false);
@@ -249,21 +268,42 @@ export default defineComponent({
     const http=(request as any).teacherExam
     const state:Istate=reactive({
           formRef:'formRef',
-          formState:{},
+          formState:{
+            name:'',
+            paper_id: undefined,
+            started_at:'',
+            hour_long:undefined,
+            pass_rate:undefined,
+            note:'',
+            data:moment()
+          },
+          change:(val:any)=>{
+            console.log(typeof val);
+            console.log(state.formState.paper_id);
+          },
+          class_ids:[],
+          student_ids:[],
           onPanelChange:(val: Moment,mode: string)=>{
             console.log(val);
           },
           rules:{
-            name: [
-              { required: true, message: '请输入试卷名称', trigger: 'blur'},
-            ],
+            name: [{ required: true, message: '请输入试卷名称', trigger: 'blur'},],
+            paper_id:[{ required: true, message: '请选择考试试卷', trigger: 'change'}],
+            started_at:[{ required: true, message: '请选择考试开始时间', trigger: 'change'}],
+            hour_long: [{ required: true, message: '请输入考试时长', trigger: 'blur' },{pattern: /^(([0-9]|[1-9][0-9]|1[0-7][0-9])(\.[0-9]+)?|180)$/, message: "考试时长0-180", trigger: "blur"}],
+            pass_rate: [{ required: true, message: '请输入通过分数比例', trigger: 'blur' },{ pattern: /^([0-9]{1,2}|100)$/, message: "通过分数比例0-100", trigger: "blur" }],
             description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
           },
-          select:()=>{
+          select:async ()=>{
             state.visible=true
+            let res=await state.getClassStudent()
+            let methed=state.information===1?'getClass':'getStudent'
+            http[methed]().then((res:any)=>{
+
+            })
           },
           remove:()=>{},
-          information:'1',
+          information:1,
           loading:false,
           total:0,
           pageSize:10,
@@ -271,7 +311,8 @@ export default defineComponent({
           selectList:[],
           onChangePage:(val:number)=>{
             state.page=val
-            // initData()
+            
+            // initData()   
           },
           selectedRowKeys:[],
           onSelectChange:(selectedRowKeys:Key[])=>{
@@ -280,11 +321,17 @@ export default defineComponent({
           },
           delateCard:(val:any)=>{},
           cancel:()=>{router.go(-1)},
-          sunmit:()=>{},
+          sunmit:()=>{
+            console.log(state.formState)
+            // CreatedExamination
+            state.formRef.validate().then(()=>{
+              
+            })
+          },
           visible:false,
           handleReply:()=>{},
           studentForum:{},
-          getStudentList:()=>{},
+          getClassStudent:()=>{},
           studentList:[],
 
     })
@@ -294,26 +341,35 @@ export default defineComponent({
     const studentLocale={
       emptyText:<empty type={'tableEmpty'} text={'亲~这里什么都没有~'} />
     }
-    // const customizeRenderEmpty =function (): VNode{
-    //   if(state.loading){
-    //     return <template></template>
-    //   }else{
-    //     let type='tableEmpty'
-    //     return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
-    //   }
-    // }
-    // const studentRenderEmpty =function (): VNode{
-    //   if(state.loading){
-    //     return <template></template>
-    //   }else{
-    //     let type='tableEmpty'
-    //     return <empty type={type} height={200} text={'亲~这里什么都没有~'} />
-    //   }
-    // }
+    function getExaminationDetail(){
+      http.getExaminationDetail({urlParams: {exam_id: editId}}).then((res:IBusinessResp)=>{
+
+      })
+    }
+   function getTestPaperList(){
+      // interface IOptions{
+      //   value:number,
+      //   label:string,
+      // }
+      http.getTestPaperList({param:{limit:999}}).then((res:IBusinessResp)=>{
+        let data=res.data.list
+        data.length?data.forEach((v:any)=> {
+          let obj={value: v.id, label: v.name}
+          // @ts-ignore
+          options.value.push(obj)
+        }):'';
+      })
+    }
+    const disabledDate = (current: Moment) => {
+      // Can not select days before today and today
+      return current && current < moment().startOf('day');
+    };
     onMounted(()=>{
-    //  initData()
+      // console.log(editId);
+      getTestPaperList()
+      editId?getExaminationDetail():''
     })
-    return {...toRefs(state),columns,selectStudentColumns,locale,studentLocale}
+    return {...toRefs(state),columns,selectStudentColumns,selectClassColums,locale,studentLocale,moment,disabledDate,options}
   },
 })
 </script>
@@ -352,7 +408,10 @@ export default defineComponent({
       .durationNotes{
           width: 60px;
           padding-left: 8px;
-        }
+      }
+      :deep(.ant-calendar-time-picker-select){
+        overflow-y: auto;
+      }
     }
   }
   .rightBox{
@@ -441,6 +500,9 @@ export default defineComponent({
     }
   }
 }
+:deep(.ant-calendar-time-picker-select){
+        overflow-y: auto;
+      }
 .information{
   display: flex;
   align-items: center;

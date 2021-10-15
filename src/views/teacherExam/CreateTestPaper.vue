@@ -262,6 +262,8 @@ export default defineComponent({
       return pitch?true:false
     }
     function getQuestions(){
+      //  console.log(search)
+      // console.log(typeof search.pool_id);
       let obj={
         ...search,
         pool_id:search.pool_id?search.pool_id:'',

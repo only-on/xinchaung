@@ -67,7 +67,6 @@ interface IlistItem{
 }
 interface IforumSearch{
   name:string,
-  type:string,
   page:number,
   limit:number
 }
@@ -83,7 +82,6 @@ export default defineComponent({
     const http=(request as any).teacherExam
     const ForumSearch:IforumSearch=reactive({
       name:'',
-      type:'exam',
       page:1,
       limit:11
     })

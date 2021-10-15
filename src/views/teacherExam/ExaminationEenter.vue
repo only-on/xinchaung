@@ -48,7 +48,7 @@
                 <div>总分：{{v.all_score}}</div>
                 <div>通过比例：{{v.pass_rate}}%</div>
               </div>
-              <div class="score-num-right">
+              <div class="score-num-right" @click="publish(v.id,v.is_publish)">
                 <a-button type="primary" :disabled="v.status!==2" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
               </div>
             </div>
@@ -86,7 +86,7 @@
     </a-spin>
   </div>
 </template>
-<script lang="ts">
+<script lang="tsx">
 import { defineComponent,ref, onMounted,reactive,Ref,inject,createVNode } from 'vue'
 import { useRouter } from 'vue-router';
 import request from 'src/api/index'
@@ -162,8 +162,8 @@ export default defineComponent({
       router.push('/teacher/teacherExam/CreatedExamination')
     }
     function edit(id:number){
-      console.log(id);
-      router.push('/teacher/teacherExam/CreateTestPaper?editId='+id)
+      // console.log(id);
+      router.push('/teacher/teacherExam/CreatedExamination?editId='+id)
     }
     function Achievement(id:number){
       router.push('/teacher/teacherExam/Achievement?Id='+id)
@@ -184,10 +184,18 @@ export default defineComponent({
       });
      
     }
+    function publish(id:number,is_publish:number){
+      let methed=is_publish?'unpublished':'publish'       
+      http[methed]({urlParams: {exam_id: id}}).then((res:IBusinessResp)=>{
+        message.success(is_publish?'撤销成功':'发布成功')
+        // message.success(is_publish?'撤销成功':'发布成功')
+        initData()
+      })
+    }
     onMounted(()=>{
      initData()
     })
-    return {list,loading,ForumSearch,totalCount,search,pageChange,Achievement,delate,add,edit};
+    return {list,loading,ForumSearch,totalCount,search,pageChange,Achievement,delate,add,edit,publish};
   },
 })
 </script>

@@ -2,7 +2,7 @@
   <div  class="item custom_select">
       <a-select v-model:value="course_category_id"  placeholder="请选择课程方向" :options="options" @change="handleChange"></a-select>
   </div>
-  <a-spin v-if="loading" tip="Loading..." size="large"> 
+  <a-spin :spinning="loading" tip="Loading..." size="large"> 
     <div class="list_content">
       <div class="info" v-for="v in list" :key="v.id" :class="v.state!=='已结束'?'info_hover':''">
         <div class="main">
@@ -55,7 +55,7 @@
   </a-spin>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
 import { useRouter } from 'vue-router';
 import request from '../../api/index'

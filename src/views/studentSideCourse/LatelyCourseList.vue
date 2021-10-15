@@ -1,5 +1,5 @@
 <template>
-  <a-spin v-if="loading" tip="Loading..." size="large" > 
+  <a-spin :spinning="loading" tip="Loading..." size="large" > 
     <div class="list_content">
       <div class="list_item" v-for="v in list" :key="v.course_student_id">
         <div class="time">{{v.study_time}}</div>
