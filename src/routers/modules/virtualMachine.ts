@@ -36,9 +36,9 @@ export default{
             },
         },
         {
-            path:"test",
-            name:"test",
-            component:()=>import("src/views/VirtualMachine/testConnectVnc.vue"),
+            path:"vm",
+            name:"vm",
+            component:()=>import("src/views/VirtualMachine/Vm/Vm.vue"),
             meta:{
                 title:"vnc",
                 authCode:""

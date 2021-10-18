@@ -39,6 +39,9 @@ export default {
 
     // 实训资源列表
     getTrainResourceApi:{url: "/student-train/resource", method: 'get'},
+
+    // 学生提问
+    studentQuestionApi:{url:"/api/operate/operates/handle", method: 'POST', dataType: 'json'},
 }
 
 // 
@@ -70,6 +73,7 @@ export interface IvmApi {
     getTrainNoteApi:TFHttpSend
     saveTrainNoteApi:TFHttpSend
     getTrainResourceApi:TFHttpSend
+    studentQuestionApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

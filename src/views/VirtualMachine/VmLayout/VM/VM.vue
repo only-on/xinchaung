@@ -54,6 +54,7 @@ export default defineComponent({
     const vmInfoData: any = inject("vmInfoData");
     let vncLoading: Ref<boolean> | undefined = inject("vncLoading");
     const vmOptions: any = inject("vmOptions");
+    const uuid:any=inject("uuid")
     const vms: any = ref([]);
     const leftDeg=ref(135)
     const rightDeg=ref(135)
@@ -120,6 +121,7 @@ export default defineComponent({
         getVmConnectSetting.VNCPORT +
         "/websockify?vm_uuid=" +
         data.uuid;
+        uuid.value=data.uuid
     }
     return { vms, vncLoading, currentIndex, openVM ,leftDeg,rightDeg};
   },

@@ -41,6 +41,25 @@
             <span class="icon-zhankai iconfont" style="margin-left: 5px"></span
           ></a-button>
         </a-dropdown>
+        <a-dropdown class="">
+          <template #overlay>
+            <a-menu
+              @click="handleAssistMenuClick"
+              class="action-handle-dropdown"
+            >
+              <a-menu-item key="share" class="action-item">
+                共享桌面
+              </a-menu-item>
+              <a-menu-item key="assistance" class="action-item">
+                请求教师远程协助
+              </a-menu-item>
+            </a-menu>
+          </template>
+          <a-button type="primary">
+            协助共享
+            <span class="icon-zhankai iconfont" style="margin-left: 5px"></span
+          ></a-button>
+        </a-dropdown>
       </div>
       <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
       <div class="vm-header-right">
@@ -174,9 +193,40 @@
       </ul>
     </div>
   </a-modal>
+  <!--分享弹窗-->
+  <a-modal
+    class="share-desk-modal"
+    :visible="shareVisible"
+    :footer="false"
+    @cancel="closeShreModal"
+  >
+    <template #title>共享桌面</template>
+    <div>
+      <p>复制以下链接发给朋友，邀请他远程协助，与你共同完成实验</p>
+      <a-input v-model:value="vmUrl" />
+      <a-button @click="selectUrl" type="primary" style="margin-top: 10px"
+        >选中链接</a-button
+      >
+    </div>
+  </a-modal>
+  <a-modal
+    class="assistance-modal"
+    title="消息提示"
+    :visible="assistanceVisible"
+    @cancel="closeAssistance"
+    @ok="okAssistance"
+  >
+    <div>
+      <p>请简单的描述你的问题，30字以内</p>
+      <a-textarea
+        v-model:value="assistanceQuestion"
+        :auto-size="{ minRows: 2, maxRows: 6 }"
+      ></a-textarea>
+    </div>
+  </a-modal>
 </template>
 
-<script lang="ts">
+<script lang="tsx">
 import {
   defineComponent,
   ref,
@@ -187,6 +237,7 @@ import {
   onMounted,
   watch,
   computed,
+  VNode
 } from "vue";
 
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
@@ -204,6 +255,8 @@ import { message, Modal } from "ant-design-vue";
 import { copyText } from "src/utils/copySelect";
 import storage from "src/utils/extStorage";
 import _ from "lodash";
+import request from "src/request/getRequest"
+import { log } from "console";
 type TvmQuery = {
   opType: string;
   connection_id: string;
@@ -215,6 +268,7 @@ type TvmQuery = {
 };
 export default defineComponent({
   setup() {
+    const vmApi=request.vmApi
     const route = useRoute();
     const router = useRouter();
     let vmQuery = route.query as any;
@@ -235,12 +289,17 @@ export default defineComponent({
     let use_time: any = inject("use_time");
     let taskType: any = inject("taskType");
     let allInfo: any = inject("allInfo");
+    const vmOptions: any = inject("vmOptions");
     let { recommendExperimentData } = toRefs(reactiveData);
     let role = storage.lStorage.get("role");
-    const roleName=ref("none")
+    const roleName = ref("none");
+    const shareVisible=ref(false)
+    const vmUrl=ref("")
+    const assistanceVisible=ref(false)
+    const assistanceQuestion=ref("")
     // let roleName = computed(() => {
     //   console.log(allInfo.value);
-      
+
     //   if (!allInfo.value?.base_info) {
     //     return "none";
     //   }
@@ -285,42 +344,46 @@ export default defineComponent({
       () => allInfo,
       () => {
         console.log(allInfo.value);
-      if (!allInfo.value?.base_info) {
-        roleName.value= "none";
-        return
-      }
-      console.log(role);
-      
-      // 学生
-      if (role === 4) {
-        // 桌面实验
-        if (["桌面实验",'验证实验','实训'].includes(allInfo.value?.base_info.task_type.name)) {
-          roleName.value=  "stuAndVnc";
+        if (!allInfo.value?.base_info) {
+          roleName.value = "none";
           return;
         }
-        // 交互编程
-        if (allInfo.value?.base_info.task_type.name === "交互编程") {
-           roleName.value=  "stuAndwebide";
-           return
+        console.log(role);
+
+        // 学生
+        if (role === 4) {
+          // 桌面实验
+          if (
+            ["桌面实验", "验证实验", "实训"].includes(
+              allInfo.value?.base_info.task_type.name
+            )
+          ) {
+            roleName.value = "stuAndVnc";
+            return;
+          }
+          // 交互编程
+          if (allInfo.value?.base_info.task_type.name === "交互编程") {
+            roleName.value = "stuAndwebide";
+            return;
+          }
         }
-      }
-      // 教师
-      if (role === 3) {
-        // 桌面实验
-        if (allInfo.value?.base_info.task_type.name === "桌面实验") {
-          roleName.value=  "teacherAndVnc";
-          return
+        // 教师
+        if (role === 3) {
+          // 桌面实验
+          if (allInfo.value?.base_info.task_type.name === "桌面实验") {
+            roleName.value = "teacherAndVnc";
+            return;
+          }
+          // 交互编程
+          if (allInfo.value?.base_info.task_type.name === "交互编程") {
+            roleName.value = "teacherAndwebide";
+            return;
+          }
         }
-        // 交互编程
-        if (allInfo.value?.base_info.task_type.name === "交互编程") {
-          roleName.value=  "teacherAndwebide";
-          return
-        }
-      }
-      roleName.value=  "none";
-      return
+        roleName.value = "none";
+        return;
       },
-      { deep: true ,immediate:true}
+      { deep: true, immediate: true }
     );
 
     onMounted(() => {
@@ -330,7 +393,7 @@ export default defineComponent({
         timer = setInterval(() => {
           experimentTime!.value = secondToHHMMSS(Number(use_time.value));
           // console.log(taskType.value);
-          
+
           if (!taskType.value) {
             use_time.value++;
           } else {
@@ -389,7 +452,7 @@ export default defineComponent({
     // 结束实验
     function finishExperiment() {
       let modal = Modal.confirm({
-        title: `确认结束${role===4?'实验':'备课'}吗？`,
+        title: `确认结束${role === 4 ? "实验" : "备课"}吗？`,
         okText: "确认",
         onOk: () => {
           if (opType === "recommend") {
@@ -508,7 +571,7 @@ export default defineComponent({
           topoinst_id: topoinst_id,
         };
       }
-      if (role===3) {
+      if (role === 3) {
         params = {
           opType: opType,
           type: type,
@@ -528,6 +591,71 @@ export default defineComponent({
         });
       }, 3000);
     }
+
+    
+
+    function handleAssistMenuClick(val: any) {
+      console.log(val.key);
+      let key = val.key;
+      if (key === "share") {
+        Modal.confirm({
+          title:"消息提示",
+          class:"share-modal vm-modal",
+          content:<h2>确认共享桌面吗？</h2>,
+          okText:'是',
+          cancelText:"否",
+          onOk:()=>{
+            shareVisible.value=true
+          },
+          onCancel:()=>{
+
+          }
+        });
+      }
+      if (key==="assistance") {
+        assistanceVisible.value=true
+      }
+    }
+
+    // 选中链接
+    function selectUrl() {
+      let env=process.env.NODE_ENV==="development"?true:false
+      vmUrl.value=`${window.location.protocol}//${window.location.host}${env?'/#/':'/frontend/#/'}vm/vm?wsUrl=${vmOptions.value.wsUrl}`
+    }
+
+    // 关闭共享桌面modal
+    function closeShreModal() {
+      shareVisible.value=false
+      vmUrl.value=""
+    }
+
+    // 发送协助信息
+    function okAssistance() {
+      console.log(assistanceQuestion.value)
+      if (assistanceQuestion.value.length===0) {
+        message.warn("请输入请求协助内容")
+        return
+      }
+      let param={
+        action:"question",
+        params:{
+            type:type,
+            opType:opType,
+            taskId:taskId,
+            question:assistanceQuestion.value
+        }
+      }
+      vmApi.studentQuestionApi({param:{...param}}).then((res=>{
+        console.log(res)
+        assistanceVisible.value=false
+        message.success("请求发送成功")
+      }))
+    }
+    // 关闭协助modal
+    function closeAssistance() {
+      assistanceVisible.value=false
+      assistanceQuestion.value=""
+    }
     return {
       back,
       handleMenuClick,
@@ -543,6 +671,15 @@ export default defineComponent({
       allInfo,
       roleName,
       recommendExperimentData,
+      handleAssistMenuClick,
+      shareVisible,
+      vmUrl,
+      selectUrl,
+      closeShreModal,
+      closeAssistance,
+      okAssistance,
+      assistanceVisible,
+      assistanceQuestion
     };
   },
 });
@@ -596,6 +733,26 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+.vm-modal {
+  &.ant-modal-confirm .ant-modal-body {
+    padding: 0;
+  }
+  .ant-modal-confirm-body {
+    .ant-modal-confirm-title {
+      padding: 15px;
+      background: @theme-color;
+      font-size: 18px;
+      color: @white;
+    }
+    .ant-modal-confirm-content {
+      padding: 15px;
+    }
+  }
+  .ant-modal-confirm-btns {
+    padding-right: 30px;
+    padding-bottom: 30px;
   }
 }
 </style>
