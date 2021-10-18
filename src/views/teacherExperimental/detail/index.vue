@@ -23,7 +23,7 @@
     <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
     </a-tabs>
-    <component :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' />
+    <component  :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' />
   </div>
 </template>
 <script lang="ts">
@@ -87,6 +87,11 @@ export default defineComponent({
   margin-bottom: 10px;
   .info-left{
     width:290px;
+    margin-right: 10px;
+    img{
+      width: 290px;
+      height: 164px;
+    }
   }
   .info-right{
     padding-right:10px;

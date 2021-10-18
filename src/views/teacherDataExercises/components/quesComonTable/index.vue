@@ -238,7 +238,7 @@ export default defineComponent({
         // 批量导入
         let isShowImport=ref(false)
         let knowledgeList = reactive<ItreeData>({
-      selectedKnowledgeList: []
+            selectedKnowledgeList: []
         })
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises

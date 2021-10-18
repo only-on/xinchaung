@@ -5,7 +5,7 @@
              <div class="uploadDiv">
                 <div class="imgdiv" v-if="imgSrc">
                    <img class="imgHasUpload" :src="imgSrc"/>
-                   <a-radio class="radio" :value='upload'></a-radio>
+                   <a-radio class="radio" value='upload'></a-radio>
                    <span class="iconfont icon-shanchu-copy" @click="deledeImg"></span>
                 </div>
                 <div v-else>
@@ -41,7 +41,7 @@ interface Istate{
   value:any,
   file:any
 }
-import { message } from 'ant-design-vue'
+import { message, Upload } from 'ant-design-vue'
 import { defineComponent,reactive,toRefs,onMounted, onBeforeMount,watch} from 'vue'
 import request from 'src/api/index'
 export default defineComponent({
@@ -94,9 +94,13 @@ export default defineComponent({
           }else{
             state.file=state.defaultImg[e.target.value].src
           }
+          console.log(state.file)
+          context.emit('img-src',state.file)
         },
         deledeImg(){
           state.imgSrc=''
+          context.emit('img-src','')
+           console.log(state.imgSrc)
         },
         beforeUpload(file:any){
           const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -110,10 +114,12 @@ export default defineComponent({
             fd.append('train_id',props.trainId)
             fd.append('file', state.file)
             http.trainUploadImage({param:fd}).then((res: any) => {
+              state.value='upload'
             console.log(res)
             console.log(window.location.origin,'window.location.origin')
             const baseurl=window.location.origin
-            state.imgSrc ='http://192.168.101.150:85/'+res.datas.url
+            // state.imgSrc ='http://192.168.101.150:85/'+res.datas.url
+            state.imgSrc =res.datas.url
             context.emit('img-src',res.datas.url)
         })
         .catch(() => {
@@ -124,10 +130,23 @@ export default defineComponent({
       }
       watch(()=>props.uploadUrl,(val)=>{
         console.log(val)
-        state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+        
+        state.defaultImg.forEach((item:any)=>{
+          console.log(item.src)
+          console.log(item.src===props.uploadUrl)
+          if(item.src===props.uploadUrl){
+            return state.value=item.id
+          }
+        })
+        if(!state.value){
+          state.value='upload'
+          state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+        // state.imgSrc=props.uploadUrl
+        }
       })
       onMounted(()=>{
-          state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+          // state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
+          // state.imgSrc=props.uploadUrl
         })
       return {...methods,...toRefs(state)}
     }
@@ -159,6 +178,9 @@ export default defineComponent({
       text-align: center;
       color:rgba(0, 0, 0, 0.45);
     }
+  }
+  .imgHasUpload{
+    border-radius: 4px;
   }
   .imgHasUpload:hover{
     .uploadDiv .icon-shanchu-copy{
