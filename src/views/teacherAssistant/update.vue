@@ -29,17 +29,17 @@
           <a-input v-model:value="formState.name" />
         </a-form-item>
         <a-form-item label="性别" name="sex">
-          <a-select v-model:value="formState.sex" placeholder="请选择性别">
+          <a-select v-model:value="formState.gender" placeholder="请选择性别">
             <a-select-option value="">请选择</a-select-option>
-            <a-select-option value="男">男</a-select-option>
-            <a-select-option value="女">女</a-select-option>
+            <a-select-option :value="0">男</a-select-option>
+            <a-select-option :value="1">女</a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="电话" name="phone">
           <a-input v-model:value="formState.phone" />
         </a-form-item>
         <a-form-item label="所属教师" name="teacher">
-          <a-input v-model:value="formState.teacher" disabled/>
+          <a-input v-model:value="formState.teacher_name" disabled/>
         </a-form-item>
         <a-form-item label="状态" name="status">
           <a-select v-model:value="formState.status" disabled>
@@ -79,28 +79,29 @@ export default defineComponent({
       id: 0,
       username: '',
       name:'',
-      sex: '',
+      gender: '',
       phone: '',
       email: '',
       status: 0,
-      teacher: '',
+      teacher_name: '',
       createTime: '',
-      updateTime: ''
+      updateTime: '',
+      bind_status: ''
     })
     function getAssistantDetail() {
-      // http.getAssistantDetail().then((res: IBusinessResp) => {
-      //   console.log(res)
-      // })
-      formState.id = 43
-      formState.username = '大富豪'
-      formState.name = '十大高手'
-      formState.sex = '男'
-      formState.phone = '987654'
-      formState.email = '23456'
-      formState.status = 0
-      formState.teacher = 'vhg'
-      formState.passWord = '2020-11-20'
-      formState.submitPass = '2021-10-10'
+      http.getAssistantDetail({urlParams: {id}}).then((res: IBusinessResp) => {
+        console.log(res)
+        let {data} = res
+        formState.username = data.stu_no
+        formState.name = data.name
+        formState.gender = data.gender
+        formState.phone = data.phone_no
+        formState.email = data.email
+        formState.status = data.active_status
+        formState.teacher_name = data.teacher_name
+        formState.passWord = '2020-11-20'
+        formState.submitPass = '2021-10-10'
+      })
     }
     onMounted(() => {
       getAssistantDetail()
@@ -130,7 +131,7 @@ export default defineComponent({
         return Promise.reject('Please input the password');
       } else {
         if (formState.submitPass !== '') {
-          formRef.value.validateFields('checkPass');
+          formRef.value.validateFields('submitPass');
         }
         return Promise.resolve();
       }
@@ -140,6 +141,26 @@ export default defineComponent({
         return Promise.reject('Please input the password again');
       } else if (value !== formState.passWord) {
         return Promise.reject("Two inputs don't match!");
+      } else {
+        return Promise.resolve();
+      }
+    }
+    let validatePhone = async (rule: RuleObject, value: string) => {
+      if (!value) return
+      let tel = /^0\d{2,3}-?\d{7,8}$/
+      let phone = /^(((13[0-9]{1})|(15[0-9]{1})|(18[0-9]{1}))+\d{8})$/
+      if(value.length == 11 && phone.test(value)){//手机号码
+        return Promise.resolve();
+      }else if(value.length == 12 && value.indexOf("-") != -1 && tel.test(value)){//电话号码
+        return Promise.resolve();
+      }
+      return Promise.reject('电话是无效的。');
+    }
+    let validateEmail = async (rule: RuleObject, value: string) => {
+      if (!value) return
+      let register = /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/
+      if (!register.test(value)) {
+        return Promise.reject('邮箱是无效的。');
       } else {
         return Promise.resolve();
       }
@@ -163,6 +184,12 @@ export default defineComponent({
         { min: 1, max: 16, message: '名称长度为1-16个字符', trigger: 'change'},
         { validator: validatePass2, message: '两次输入密码不一致', trigger: 'change' }
       ],
+      phone: [
+        { validator: validatePhone, message: '电话是无效的。', trigger: 'blur' }
+      ],
+      email: [
+        { validator: validateEmail, message: '邮箱是无效的。', trigger: 'blur' }
+      ]
     }
     return {
       formRef,

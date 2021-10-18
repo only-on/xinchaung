@@ -10,14 +10,11 @@
       @change="onChange"
     >
       <!-- v-if="tableList.length" -->
-      <template #time="{ record }">
-        <span>{{ record.time || '--'}}</span>
-      </template>
-      <template #class="{ record }">
-        <span>{{ record.class || '--'}}</span>
+      <template #gender="{ record }">
+        <span>{{ genderList[record.gender] || '保密'}}</span>
       </template>
       <template #status="{ record }">
-        <a-switch checked-children="开启" un-checked-children="关闭" :checked="record.status ? true: false" @change="changeSwitch(record)"/>
+        <a-switch checked-children="启用" un-checked-children="禁用" :checked="record.bind_status === '1' ? true: false" @change="changeSwitch(record)"/>
       </template>
       <template #operate="{ record }">
         <span class="iconfont icon-chakan1" @click="look(record)"></span>
@@ -38,7 +35,6 @@
     </div>
   </div>
   <add-assistant v-model:isShow="isShow" v-model:formState="formState"></add-assistant>
-  <look-model v-model:isShowLook="isShowLook" :lookDetail="lookDetail"></look-model>
 </template>
 
 <script lang="ts">
@@ -49,12 +45,11 @@ import { message } from 'ant-design-vue'
 import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import addAssistant from './addAssistant.vue'
-import lookModel from './lookModel.vue'
 import { ITableList, IPage, IHttp } from './typings'
 import { useRouter } from 'vue-router'
 
 export default defineComponent({
-  components: {addAssistant, lookModel},
+  components: {addAssistant},
   props: {
     trainId: {
       type: String
@@ -86,7 +81,8 @@ export default defineComponent({
         title: '帐号',
         dataIndex: 'username',
         key: 'username',
-        width: 100,
+        width: 160,
+        ellipsis: true,
         sorter: (a: any, b: any) => {
           // console.log(a, b);  
         },
@@ -96,13 +92,15 @@ export default defineComponent({
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
-        width: 100,
+        width: 160,
+        ellipsis: true,
       },
       {
         title: '性别',
-        dataIndex: 'sex',
-        key: 'sex',
+        dataIndex: 'gender',
+        key: 'gender',
         width: 80,
+        slots: { customRender: 'gender' },
       },
       {
         title: '邮箱',
@@ -122,17 +120,17 @@ export default defineComponent({
       },
       {
         title: '所属教师',
-        dataIndex: 'teacher',
-        key: 'teacher',
-        slots: { customRender: 'report' },
-        width: 160,
+        dataIndex: 'teacher_name',
+        key: 'teacher_name',
+        width: 120,
+        ellipsis: true,
       },
       {
         title: '状态',
         dataIndex: 'status',
         key: 'status',
         slots: { customRender: 'status' },
-        width: 160,
+        width: 120,
         sorter: (a: any, b: any) => {
           // console.log(a, b);
           
@@ -144,7 +142,7 @@ export default defineComponent({
         dataIndex: 'operate',
         key: 'operate',
         slots: { customRender: 'operate' },
-        width: 160,
+        width: 120,
       },
     ]
     // 编辑
@@ -153,13 +151,14 @@ export default defineComponent({
       id: 1,
       username: '',
       name: '',
-      sex: '',
+      gender: '',
       email: '',
       phone: '',
       passWord: '1q2w',
       submitPass: '1q2w',
-      teacher: '',
-      status: 1
+      teacher_name: '',
+      status: 1,
+      bind_status: '1'
     })
     function edit(list: ITableList) {
       // console.log(list)
@@ -176,18 +175,19 @@ export default defineComponent({
       // formState.teacher = list.teacher
       // formState.status = list.status
      
-      router.push('/teacher/assistantManager/update?id= ' + list.id)
+      router.push('/teacher/assistantManager/update?id=' + list.id)
     }
     // 查看
     let isShowLook = ref<boolean>(false)
     let lookDetail = reactive<ITableList>({
       username: '',
       name: '',
-      sex: '',
-      teacher: '',
+      gender: '',
+      teacher_name: '',
       status: 1,
       createTime: '',
-      updateTime: ''
+      updateTime: '',
+      bind_status: ''
     })
     function look(list: ITableList) {
       // isShowLook.value = true
@@ -219,14 +219,14 @@ export default defineComponent({
     }
 
     function changeSwitch (item:ITableList) {
-      item.status = item.status == 1 ? 0 : 1
+      item.bind_status = item.bind_status === '1' ? '0' : '1'
       let params = {
         aid: item.id,
-        state: item.status ? true : false
+        state: item.bind_status === '1' ? true : false
       }
-        upTableList()
       http.changeStatus({param: params}).then((res:IBusinessResp) => {
         message.success('操作成功')
+        upTableList()
       })
     } 
     const onChange = (pagination: PaginationType, filters: FilterType[], sorter: ColumnType) => {
@@ -277,6 +277,7 @@ export default defineComponent({
       formState,
       isShowLook,
       lookDetail,
+      genderList: ['男', '女']
     }
   },
 })
@@ -307,6 +308,9 @@ type ColumnType = {
 
 <style lang="less" scoped>
 .assistant-table {
+  :deep(.ant-table) {
+    font-size: 14px;
+  }
   :deep(.ant-table-column-sorters) {
     .ant-table-column-title {
       color: @theme-color;

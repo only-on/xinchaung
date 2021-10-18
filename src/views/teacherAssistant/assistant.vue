@@ -62,7 +62,7 @@ export default defineComponent({
       tableList: [],
       page: {
         page: 1,
-        pageSize: 10,
+        pageSize: 1,
         total: 0
       },
       selectedRows: []
@@ -70,81 +70,75 @@ export default defineComponent({
 
     // 查询
     function query(){
-      data.tableList = [
-        {
-          id: 1,
-          username: '123',
-          name: '123',
-          sex: '男',
-          email: '1243234',
-          status: 1,
-          phone: '12313',
-          teacher: 'sfsaf',
-          passWord: '1q2w',
-          submitPass: '1q2w',
-          createTime: '2021-10-12',
-          updateTime: '2021-10-12'
-        },
-        {
-          id: 2,
-          username: 'dfhdfg',
-          name: 'dfghdfgh',
-          sex: '男',
-          email: 'dfghdfh',
-          status: 1,
-          phone: 'dghdfgh',
-          teacher: 'dfghkjhkhjk',
-          passWord: 'sfghsh',
-          submitPass: '1qsfhgshg2w',
-          createTime: '2021-11-12',
-          updateTime: '2021-12-12'
-        }
-      ]
+      getAssistantList()
+      // data.tableList = [
+      //   {
+      //     id: 1,
+      //     username: '123',
+      //     name: '123',
+      //     sex: '男',
+      //     email: '1243234',
+      //     status: 1,
+      //     phone: '12313',
+      //     teacher: 'sfsaf',
+      //     passWord: '1q2w',
+      //     submitPass: '1q2w',
+      //     createTime: '2021-10-12',
+      //     updateTime: '2021-10-12'
+      //   },
+      //   {
+      //     id: 2,
+      //     username: 'dfhdfg',
+      //     name: 'dfghdfgh',
+      //     sex: '男',
+      //     email: 'dfghdfh',
+      //     status: 1,
+      //     phone: 'dghdfgh',
+      //     teacher: 'dfghkjhkhjk',
+      //     passWord: 'sfghsh',
+      //     submitPass: '1qsfhgshg2w',
+      //     createTime: '2021-11-12',
+      //     updateTime: '2021-12-12'
+      //   }
+      // ]
     }
     // 列表
     function getAssistantList(sort?: '') {
       let params = {
-        username: data.searchInfo.username,
-        name: data.searchInfo.name,
-        sort: sort,
-        page: data.page.page,
-        pageSize: data.page.pageSize
+        query: {
+          username: data.searchInfo.username,
+          name: data.searchInfo.name,
+          sort: sort,
+        },
+        page: {
+          page: data.page.page,
+          pageSize: data.page.pageSize
+        }
       }
       console.log(params)
-      // http.getAssistantList().then((res: IBusinessResp) => {
-      //   console.log(res)
-      // })
+      http.getAssistantList({param: {params}}).then((res: IBusinessResp) => {
+        console.log(res)
+        data.tableList = res.data.list
+        data.page.page = res.data.page.currentPage
+        data.page.total = res.data.page.totalCount
+      })
       
-      data.tableList = [
-        {
-          id: 3,
-          username: 'hello',
-          name: 'hello',
-          sex: '女',
-          email: '1985567456',
-          status: 1,
-          phone: '098765',
-          teacher: '零空间',
-          passWord: '1q2w',
-          submitPass: '1q2w',
-          createTime: '2021-10-12',
-          updateTime: '2021-10-12'
-        },
-        {
-          id: 4,
-          username: 'world',
-          name: 'world',
-          sex: '男',
-          email: '876',
-          status: 0,
-          phone: '3456876',
-          teacher: '梵蒂冈h',
-          passWord: 'sfghsh',
-          submitPass: '1qsfhgshg2w',
-          createTime: '2021-11-12',
-          updateTime: '2021-12-12'
-        }
-      ]
+      // data.tableList = [
+      //   {
+      //     id: 3,
+      //     username: 'hello',
+      //     name: 'hello',
+      //     sex: '女',
+      //     email: '1985567456',
+      //     status: 1,
+      //     phone: '098765',
+      //     teacher: '零空间',
+      //     passWord: '1q2w',
+      //     submitPass: '1q2w',
+      //     createTime: '2021-10-12',
+      //     updateTime: '2021-10-12'
+      //   },
+      // ]
     }
     provide('upTableList', getAssistantList)
     // 清空
@@ -159,11 +153,12 @@ export default defineComponent({
     let formState = reactive({
       username: '',
       name: '',
-      sex: '',
+      gender: '',
       email: '',
       phone: '',
       passWord: '1q2w',
-      submitPass: '1q2w'
+      submitPass: '1q2w',
+      bind_status: ''
     })
     function addAssistant() {
       isShow.value = true
@@ -194,7 +189,9 @@ export default defineComponent({
     const pageChange = (page: number) => {
       data.page.page = page
     }
-
+    onMounted(() => {
+      getAssistantList()
+    })
     return {
       ...toRefs(data),
       query,

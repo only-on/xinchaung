@@ -2,15 +2,16 @@ export interface ITableList {
   id?: number
   username: string
   name: string
-  sex: string
+  gender: string
   email?: string
   status?: number
   phone?: string
-  teacher?: string
+  teacher_name?: string
   passWord?: string
   submitPass?: string
   createTime?: string
   updateTime?: string
+  bind_status: string
 }
 interface ISearchInfo {
   name: string
@@ -30,6 +31,7 @@ export interface IData {
 
 interface ITeacherAssistant {
   getAssistantList: Function
+  getAssistantDetail: Function
   delAssistant: Function 
   changeStatus: Function
   addAssistant: Function

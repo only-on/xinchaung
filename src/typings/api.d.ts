@@ -12,7 +12,7 @@ import { ICourseTreeApis } from "src/api/modules/courseTree"
 import { ITeacherCourseApis } from "src/api/modules/teachCourse"
 import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysis"
 import { ITeacherExamlAps } from "src/api/modules/teacherExam"
-import { ITeacherAssistant } from "src/api/modules/teacherAssistant"
+import { ITeacherAssistantApis } from "src/api/modules/teacherAssistant"
 import { ITeacherHome } from "src/api/modules/teacherHome"
 import { IClassicalAssetApi } from "../api/modules/classicalAsset";
 
@@ -52,6 +52,6 @@ export interface IApiCollection {
     teacherCourseAnalysis: ITeacherCourseAnalysisApis,
     teacherExperimental:ITeacherExperimentallAps
     teacherExam:ITeacherExamlAps
-    teacherAssistant:ITeacherAssistant
+    teacherAssistant:ITeacherAssistantApis
     teacherHome: ITeacherHome
 }

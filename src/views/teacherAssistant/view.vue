@@ -11,15 +11,15 @@
       </li>
       <li>
         <span>性别：</span>
-        <span>{{lookDetail.sex}}</span>
+        <span>{{lookDetail.gender}}</span>
       </li>
       <li>
         <span>所属教师：</span>
-        <span>{{lookDetail.teacher}}</span>
+        <span>{{lookDetail.teacher_name}}</span>
       </li>
       <li>
         <span>状态：</span>
-        <span>{{lookDetail.status}}</span>
+        <span>{{lookDetail.bind_status}}</span>
       </li>
       <li>
         <span>创建时间：</span>
@@ -63,18 +63,27 @@ export default defineComponent({
       id: 0,
       username: '',
       name:'',
-      sex: '',
+      gender: '',
       phone: '',
       email: '',
       status: 0,
-      teacher: '',
+      teacher_name: '',
       createTime: '',
-      updateTime: ''
+      updateTime: '',
+      bind_status: ''
     })
     function getAssistantDetail() {
-      // http.getAssistantDetail().then((res: IBusinessResp) => {
-      //   console.log(res)
-      // })
+      http.getAssistantDetail({urlParams: {id}}).then((res: IBusinessResp) => {
+        console.log(res)
+        let {data} = res
+        lookDetail.username = data.stu_no
+        lookDetail.name = data.name
+        lookDetail.gender = data.gender ? '女' : '男'
+        lookDetail.teacher_name = data.teacher_name
+        lookDetail.bind_status = data.active_status ? '启用' : '禁用'
+        lookDetail.createTime = data.created_at
+        lookDetail.updateTime = data.updated_at
+      })
     }
     onMounted(() => {
       getAssistantDetail()
