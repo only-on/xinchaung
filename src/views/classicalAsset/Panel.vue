@@ -143,7 +143,7 @@ export default defineComponent({
         {name: "私有", componenttype: 1},
       ],
       componenttype: 1,
-      showContent: true,
+      showContent: false,
       navType: false,
       backOff: false,
       showPageEdit: false,
@@ -276,7 +276,10 @@ export default defineComponent({
 .classical__container {
   margin: 0 auto;
   min-height: 750px;
-  background: none !important;
+  width: 1270px;
+  padding: 30px;
+  border-radius: @border-radius-base;
+  background: @white;
 
   .classical__card {
     width: 100%;

@@ -67,6 +67,47 @@
       </p>
     </a-upload-dragger>
   </a-modal>
+  <a-modal
+      v-model:visible="editContentVisible"
+      title="创建目录"
+      @ok="handleUpdateFolder"
+      class="classical__create"
+  >
+    <a-form
+        :model="folderInfo"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
+    >
+      <a-form-item label="名称：">
+        <div class="classical__input--count-inner" :class="{'classical__input--focused': nameFocused}">
+          <a-textarea
+              rows="1"
+              placeholder="输入名称"
+              v-model:value="folderInfo.name"
+              showCount
+              :maxlength="10"
+              class="classical__folder-desc"
+              @focus="handleNameFocused"
+              @blur="handleNameBlurred"
+          />
+        </div>
+      </a-form-item>
+      <a-form-item label="描述：">
+        <div class="classical__input--count-inner" :class="{'classical__input--focused': descFocused}">
+          <a-textarea
+              rows="4"
+              placeholder="请输入描述"
+              v-model:value="folderInfo.description"
+              showCount
+              :maxlength="500"
+              class="classical__folder-desc"
+              @focus="handleDescriptionFocused"
+              @blur="handleDescriptionBlurred"
+          />
+        </div>
+      </a-form-item>
+    </a-form>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -102,6 +143,18 @@ export default defineComponent({
   setup(props, {emit}) {
     const route = useRoute()
     const uploadVisible = ref(false)
+    const editContentVisible = ref(false)
+    const nameFocused = ref(false);
+    const descFocused = ref(false);
+    const folderInfo = reactive({
+      name: "",
+      description: "",
+    });
+    const originalFolderInfo = {name: '', description: ''}
+
+    const labelCol = {span: 3};
+    const wrapperCol = {span: 21};
+
     const detail = reactive({
       name: '未知',
       createdDate: '未知',
@@ -131,7 +184,9 @@ export default defineComponent({
       backOff: true,
       showPageEdit: true,
       pageEdit: () => {
-        console.log('page edit')
+        folderInfo.name = originalFolderInfo.name
+        folderInfo.description = originalFolderInfo.description
+        editContentVisible.value = true
       }
     })
 
@@ -167,6 +222,12 @@ export default defineComponent({
         detail.itemSize = res?.data.item_size
         detail.itemCount = res?.data.item_count + ' 个'
         detail.description = res?.data.description
+
+        folderInfo.name = res?.data.name
+        folderInfo.description = res?.data.description
+
+        originalFolderInfo.name = res?.data.name
+        originalFolderInfo.description = res?.data.description
       })
     }
 
@@ -214,6 +275,44 @@ export default defineComponent({
       getDatasetItemList()
     }
 
+    /**
+     * 更新文件夹
+     */
+    const handleUpdateFolder = () => {
+      http.classicalAsset.datasetFolderCreate({
+        param: {
+          type: dataType,
+          id: dataId,
+          name: folderInfo.name,
+          description: folderInfo.description
+        }
+      }).then(res => {
+        if (!res) {
+          $message.error('更新失败！')
+          return
+        }
+        editContentVisible.value = false
+        getDatasetDetail()
+      })
+    }
+
+    const handleNameFocused = (e: FocusEvent) => {
+      console.log('[classical/panel] name focused');
+      nameFocused.value = true;
+    }
+    const handleDescriptionFocused = (e: FocusEvent) => {
+      console.log('[classical/panel] description focused')
+      descFocused.value = true
+    }
+    const handleNameBlurred = (e: Event) => {
+      console.log('[classical/panel] name blurred');
+      nameFocused.value = false;
+    }
+    const handleDescriptionBlurred = (e: Event) => {
+      console.log('[classical/panel] description blurred')
+      descFocused.value = false
+    }
+
     onMounted(() => {
       getDatasetDetail()
       getDatasetItemList()
@@ -226,11 +325,22 @@ export default defineComponent({
       uploadFileList,
       dataType,
       dataId,
+      labelCol,
+      wrapperCol,
+      editContentVisible,
+      folderInfo,
+      nameFocused,
+      descFocused,
       handleSearch,
       openUploadDialog,
       handleUploadChange,
       addItem,
-      handleRemoved
+      handleRemoved,
+      handleUpdateFolder,
+      handleNameFocused,
+      handleDescriptionFocused,
+      handleNameBlurred,
+      handleDescriptionBlurred
     }
   }
 })
@@ -281,6 +391,33 @@ export default defineComponent({
         }
       }
     }
+  }
+}
+
+.classical__input--count-inner {
+  border: 1px solid @border-color-base;
+  border-radius: @border-radius-base;
+
+  :deep(.ant-input) {
+    border: none;
+    resize: none;
+  }
+
+  :deep(.ant-input:focus) {
+    box-shadow: none;
+  }
+
+  :deep(.ant-input-textarea-show-count::after) {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    border: 1px solid @theme-color;
+  }
+
+  &.classical__input--focused {
+    border: 1px solid @theme-color;
+    box-shadow: 0 0 0 2px @theme-scroll;
   }
 }
 </style>

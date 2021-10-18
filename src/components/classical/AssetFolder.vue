@@ -57,9 +57,10 @@ export default defineComponent({
   margin: @margin-md 0px;
   color: @text-color-secondary;
   cursor: pointer;
+  transition: all 0.5s ease;
 
   &:hover {
-    box-shadow: @shadow-ring;
+    box-shadow: 0 0 5px 3px @border-color-base;
   }
 
   .classical__asset-title {
@@ -78,6 +79,10 @@ export default defineComponent({
 
         .classical__asset-item {
           margin-left: @margin-xss;
+        }
+
+        &:not(:last-child) {
+          width: 120px;
         }
       }
     }
