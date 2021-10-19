@@ -35,6 +35,7 @@ interface ITeacherAssistant {
   delAssistant: Function 
   changeStatus: Function
   addAssistant: Function
+  updateAssistant: Function
 }
 export interface IHttp {
   teacherAssistant: ITeacherAssistant

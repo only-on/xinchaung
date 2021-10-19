@@ -3,7 +3,7 @@
     <ul>
       <li>
         <span>帐号：</span>
-        <span>{{lookDetail.username}}</span>
+        <span>{{lookDetail.stu_no}}</span>
       </li>
       <li>
         <span>姓名：</span>
@@ -11,7 +11,7 @@
       </li>
       <li>
         <span>性别：</span>
-        <span>{{lookDetail.gender}}</span>
+        <span>{{lookDetail.gender ? '女' : '男'}}</span>
       </li>
       <li>
         <span>所属教师：</span>
@@ -19,15 +19,15 @@
       </li>
       <li>
         <span>状态：</span>
-        <span>{{lookDetail.bind_status}}</span>
+        <span>{{lookDetail.active_status ? '启用' : '禁用'}}</span>
       </li>
       <li>
         <span>创建时间：</span>
-        <span>{{lookDetail.createTime}}</span>
+        <span>{{lookDetail.created_at}}</span>
       </li>
       <li>
         <span>更新时间：</span>
-        <span>{{lookDetail.updateTime}}</span>
+        <span>{{lookDetail.updated_at}}</span>
       </li>
     </ul>
   </div>
@@ -53,36 +53,30 @@ export default defineComponent({
   emits: [],
   setup(props, {emit}) {
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,backOff:true})
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,backOff:false})
 
     const http = (request as IHttp).teacherAssistant
     const route = useRoute()
     const { id } = route.query
     console.log(id)
-    let lookDetail = reactive<ITableList>({
-      id: 0,
-      username: '',
+    let lookDetail = reactive({
+      stu_no: '',
       name:'',
       gender: '',
-      phone: '',
+      phone_no: '',
       email: '',
-      status: 0,
+      active_status: 0,
       teacher_name: '',
-      createTime: '',
-      updateTime: '',
-      bind_status: ''
+      passWord: '**********',
+      submitPass: '**********',
+      created_at: '',
+      updated_at: ''
     })
     function getAssistantDetail() {
       http.getAssistantDetail({urlParams: {id}}).then((res: IBusinessResp) => {
         console.log(res)
         let {data} = res
-        lookDetail.username = data.stu_no
-        lookDetail.name = data.name
-        lookDetail.gender = data.gender ? '女' : '男'
-        lookDetail.teacher_name = data.teacher_name
-        lookDetail.bind_status = data.active_status ? '启用' : '禁用'
-        lookDetail.createTime = data.created_at
-        lookDetail.updateTime = data.updated_at
+        lookDetail = Object.assign(lookDetail, {...data})
       })
     }
     onMounted(() => {

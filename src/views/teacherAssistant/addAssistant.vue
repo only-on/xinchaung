@@ -21,8 +21,8 @@
       <a-form-item label="性别" name="sex">
         <a-select v-model:value="formState.gender" placeholder="请选择性别">
           <a-select-option value="">请选择</a-select-option>
-          <a-select-option value="男">男</a-select-option>
-          <a-select-option value="女">女</a-select-option>
+          <a-select-option value="0">男</a-select-option>
+          <a-select-option value="1">女</a-select-option>
         </a-select>
       </a-form-item>
       <a-form-item label="邮箱" name="email">
@@ -65,8 +65,10 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType } from 'vue'
-import { ITableList } from './typings'
 import { RuleObject } from 'ant-design-vue/es/form/interface';
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { ITableList, IData, IHttp } from './typings'
 
 export default defineComponent({
   name: '',
@@ -78,44 +80,71 @@ export default defineComponent({
       default: {}
     }
   },
-  emits: ['update:isShow', 'update:formState'],
+  emits: ['update:isShow'],
   setup(props, {emit}) {
     var upTableList = inject('upTableList') as Function 
+    const http = (request as IHttp).teacherAssistant
     let formRef = ref()
+    let formState = reactive({
+      username: '',
+      name: '',
+      gender: '',
+      email: '',
+      phone: '',
+      passWord: '1q2w',
+      submitPass: '1q2w',
+      bind_status: ''
+    })
     const handleOk = () => {
       console.log(formRef.value)
       formRef.value.validate().then(() => {
-        console.log(111)
-        upTableList()
+        http.addAssistant({
+          param: {
+            Assistant: {
+              username: formState.username,
+              password_hash: checked.value ? '' : formState.passWord,
+              userinitpassword: checked.value,
+              email: formState.email
+            },
+            AssistantProfile: {
+              name: formState.name,
+              gender: formState.gender ? formState.gender : 0,
+              phone: formState.phone,
+            }
+          }
+        }).then((res: IBusinessResp) => {
+          emit('update:isShow', false)
+          upTableList()
+          checked.value = true
+          formRef.value.resetFields()
+        })  
       }).catch((err: any) => {
         console.log(err)
       })
     }
     const handleCancel = () =>{
       emit('update:isShow', false)
+      checked.value = true
+      formRef.value.resetFields()
     }
     let checked = ref<boolean>(true)
     const onChange = () => {
       if (checked.value) {
-        props.formState.passWord = '1q2w'
-        props.formState.submitPass = '1q2w'
-        emit('update:formState', props.formState)
+        formState.passWord = '1q2w'
+        formState.submitPass = '1q2w'
       } else {
-        props.formState.passWord = ''
-        props.formState.submitPass = ''
-        emit('update:formState', props.formState)
+        formState.passWord = ''
+        formState.submitPass = ''
       }
     }
     let reset = ref<boolean>(false)
     const resetChange = () => {
       if (reset.value) {
-        props.formState.passWord = ''
-        props.formState.submitPass = ''
-        emit('update:formState', props.formState)
+        formState.passWord = ''
+        formState.submitPass = ''
       } else {
-        props.formState.passWord = '1q2w'
-        props.formState.submitPass = '1q2w'
-        emit('update:formState', props.formState)
+        formState.passWord = '1q2w'
+        formState.submitPass = '1q2w'
       }
     }
 
@@ -123,7 +152,7 @@ export default defineComponent({
       if (value === '') {
         return Promise.reject('Please input the password');
       } else {
-        if (props.formState.submitPass !== '') {
+        if (formState.submitPass !== '') {
           formRef.value.validateFields('submitPass');
         }
         return Promise.resolve();
@@ -132,7 +161,7 @@ export default defineComponent({
     let validatePass2 = async (rule: RuleObject, value: string) => {
       if (value === '') {
         return Promise.reject('Please input the password again');
-      } else if (value !== props.formState.passWord) {
+      } else if (value !== formState.passWord) {
         return Promise.reject("Two inputs don't match!");
       } else {
         return Promise.resolve();
@@ -186,8 +215,8 @@ export default defineComponent({
     }
     return {
       formRef,
-      ...toRefs(props),
-      // formState,
+      // ...toRefs(props),
+      formState,
       handleOk,
       handleCancel,
       onChange,

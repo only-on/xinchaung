@@ -7,8 +7,8 @@
       :rules="rules"
     >
       <div class="left">
-        <a-form-item label="帐号" name="username" required>
-          <a-input v-model:value="formState.username" disabled/>
+        <a-form-item label="帐号" name="stu_no" required>
+          <a-input v-model:value="formState.stu_no" disabled/>
         </a-form-item>
         <a-form-item has-feedback label="密码" name="passWord" required>
           <a-input v-model:value="formState.passWord" type="password" autocomplete="off" :disabled="!reset" />
@@ -28,21 +28,21 @@
         <a-form-item label="姓名" name="name" required>
           <a-input v-model:value="formState.name" />
         </a-form-item>
-        <a-form-item label="性别" name="sex">
+        <a-form-item label="性别" name="gender">
           <a-select v-model:value="formState.gender" placeholder="请选择性别">
             <a-select-option value="">请选择</a-select-option>
             <a-select-option :value="0">男</a-select-option>
             <a-select-option :value="1">女</a-select-option>
           </a-select>
         </a-form-item>
-        <a-form-item label="电话" name="phone">
-          <a-input v-model:value="formState.phone" />
+        <a-form-item label="电话" name="phone_no">
+          <a-input v-model:value="formState.phone_no" />
         </a-form-item>
-        <a-form-item label="所属教师" name="teacher">
+        <a-form-item label="所属教师" name="teacher_name">
           <a-input v-model:value="formState.teacher_name" disabled/>
         </a-form-item>
-        <a-form-item label="状态" name="status">
-          <a-select v-model:value="formState.status" disabled>
+        <a-form-item label="状态" name="active_status">
+          <a-select v-model:value="formState.active_status" disabled>
             <a-select-option :value="1">开启</a-select-option>
             <a-select-option :value="0">关闭</a-select-option>
           </a-select>
@@ -64,43 +64,37 @@ import { ITableList, IHttp } from './typings'
 import { useRouter, useRoute } from 'vue-router'
 
 export default defineComponent({
-  name: '',
+  name: 'assistant-update',
   components: {},
   emits: [],
   setup(props, {emit}) {
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,backOff:true})
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,backOff:false})
+
+    let router = useRouter()
 
     const http = (request as IHttp).teacherAssistant
     const route = useRoute()
     const { id } = route.query
     console.log(id)
-    let formState = reactive<ITableList>({
-      id: 0,
-      username: '',
+    let formState = reactive({
+      stu_no: '',
       name:'',
       gender: '',
-      phone: '',
+      phone_no: '',
       email: '',
-      status: 0,
+      active_status: 0,
       teacher_name: '',
-      createTime: '',
-      updateTime: '',
-      bind_status: ''
+      passWord: '**********',
+      submitPass: '**********',
+      created_at: '',
+      updated_at: ''
     })
     function getAssistantDetail() {
       http.getAssistantDetail({urlParams: {id}}).then((res: IBusinessResp) => {
         console.log(res)
         let {data} = res
-        formState.username = data.stu_no
-        formState.name = data.name
-        formState.gender = data.gender
-        formState.phone = data.phone_no
-        formState.email = data.email
-        formState.status = data.active_status
-        formState.teacher_name = data.teacher_name
-        formState.passWord = '2020-11-20'
-        formState.submitPass = '2021-10-10'
+        formState = Object.assign(formState, {...data})
       })
     }
     onMounted(() => {
@@ -110,7 +104,27 @@ export default defineComponent({
     const handleOk = () => {
       console.log(formRef.value)
       formRef.value.validate().then(() => {
-        console.log(111)
+        http.updateAssistant({
+          param: {
+            Assistant: {
+              // username: formState.stu_no,
+              password_hash: reset ? formState.passWord : '',
+              userinitpassword: reset,
+              email: formState.email
+            },
+            AssistantProfile: {
+              name: formState.name,
+              gender: formState.gender ? formState.gender : 0,
+              phone: formState.phone_no,
+            }
+          },
+          urlParams: {
+            id
+          }
+        }).then((res: IBusinessResp) => {
+          console.log(res)
+          router.push('/teacher/assistantManager/view?id=' + id)
+        })
       }).catch((err: any) => {
         console.log(err)
       })
@@ -166,7 +180,7 @@ export default defineComponent({
       }
     }
     const rules = {
-      username: [
+      stu_no: [
         { required: true, message: '请输入帐号', trigger: 'change'},
         { min: 1, max: 10, message: '帐号长度为1-10个字符', trigger: 'change'},
       ],

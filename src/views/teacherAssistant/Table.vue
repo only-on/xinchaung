@@ -8,8 +8,8 @@
       :pagination="false"
       :row-selection="rowSelection"
       @change="onChange"
+      v-if="tableList.length"
     >
-      <!-- v-if="tableList.length" -->
       <template #gender="{ record }">
         <span>{{ genderList[record.gender] || '保密'}}</span>
       </template>
@@ -22,7 +22,7 @@
         <span class="iconfont icon-shanchu" @click="del(record.id)"></span>
       </template>
     </a-table>
-    <!-- <Empty v-else/> -->
+    <Empty v-else/>
     <div class="page-footer-box">
         <!-- show-quick-jumper  -->
       <a-pagination
@@ -163,18 +163,6 @@ export default defineComponent({
     function edit(list: ITableList) {
       // console.log(list)
       // isShow.value = true
-      
-      // formState.id = list.id
-      // formState.username = list.username
-      // formState.name = list.name
-      // formState.sex = list.sex
-      // formState.email = list.email
-      // formState.phone = list.phone
-      // formState.passWord = list.passWord
-      // formState.submitPass = list.submitPass
-      // formState.teacher = list.teacher
-      // formState.status = list.status
-     
       router.push('/teacher/assistantManager/update?id=' + list.id)
     }
     // 查看
@@ -191,13 +179,6 @@ export default defineComponent({
     })
     function look(list: ITableList) {
       // isShowLook.value = true
-      // lookDetail.username = list.username
-      // lookDetail.name = list.name
-      // lookDetail.sex = list.sex
-      // lookDetail.teacher = list.teacher
-      // lookDetail.status = list.status
-      // lookDetail.createTime = list.createTime
-      // lookDetail.updateTime = list.updateTime
       router.push('/teacher/assistantManager/view?id=' + list.id)
     }
     var upTableList = inject('upTableList') as Function 
