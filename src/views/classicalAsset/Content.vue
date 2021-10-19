@@ -51,10 +51,11 @@
   <a-modal v-model:visible="uploadVisible" title="上传文件" @ok="addItem">
     <a-upload-dragger
         v-model:fileList="uploadFileList"
-        :accept="accept"
         name="dataset"
+        :accept="accept"
         :data="{pageType: dataType, dataId: dataId}"
         :multiple="false"
+        :before-upload="handleBeforeUpload"
         action="/proxyPrefix/dataset/data/upload-file"
         @change="handleUploadChange"
     >
@@ -191,6 +192,28 @@ export default defineComponent({
       }
     })
 
+    const fileRequirements = {
+      3: {
+        suffix: ['ppt', 'pptx'],
+        mime: ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+        size: 1024 * 1024 * 5, // 5MB
+      },
+      4: {
+        suffix: ['mp4'],
+        mime: ['video/mp4'],
+        size: 1024 * 1024 * 500, // 视频-500MB
+      },
+      5: {
+        suffix: ['doc', 'docx'],
+        mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        size: 1024 * 1024 * 5, // 5MB
+      },
+      6: {
+        suffix: ['doc', 'docx'],
+        mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        size: 1024 * 1024 * 5, // 5MB
+      },
+    }
     const acceptMap = {
       3: '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation', // 课件
       4: '.mp4,video/mp4', // 视频
@@ -344,6 +367,41 @@ export default defineComponent({
       descFocused.value = false
     }
 
+    const checkSuffix = (dataType: number, file: File) => {
+      const suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
+      return fileRequirements[dataType].suffix.includes(suffix)
+    }
+
+    const checkSize = (dataType: number, file: File) => {
+      return file.size <= fileRequirements[dataType].size
+    }
+
+    const checkMime = (dataType: number, file: File) => {
+      return fileRequirements[dataType].mime.includes(file.type)
+    }
+
+    /**
+     * 上传文件前进行检查，返回false则不上传；
+     * 支持返回promise，对于promise，只有在resolve之后才上传
+     * @param file
+     * @param fileList
+     */
+    const handleBeforeUpload = (file: File, fileList: File[]) => {
+      console.log('[handleBeforeUpload] file: ', file, ', fileList: ', fileList)
+      if (!checkSuffix(dataType, file)) {
+        $message.warning('文件后缀名不符合要求，要求为：' + fileRequirements[dataType].suffix.join(''))
+        return false
+      }
+      if (!checkSize(dataType, file)) {
+        $message.warning('文件大小不符合要求，要求为：' + (fileRequirements[dataType].size / 1024 / 1024) + 'MB')
+        return false
+      }
+      if (!checkMime(dataType, file)) {
+        $message.warning('文件类型不符合要求，要求为：' + fileRequirements[dataType].mime.join(''))
+        return false
+      }
+    }
+
     onMounted(() => {
       getDatasetDetail()
       getDatasetItemList()
@@ -374,7 +432,8 @@ export default defineComponent({
       handleNameFocused,
       handleDescriptionFocused,
       handleNameBlurred,
-      handleDescriptionBlurred
+      handleDescriptionBlurred,
+      handleBeforeUpload
     }
   }
 })
