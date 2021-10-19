@@ -2,7 +2,8 @@
     <div class="report-content">
       <!-- 在线报告 -->
       <div v-if="reportTemplateData&&reportTemplateData.template_type === 'form'">
-         <table id="onlineReportTableEditable" class="report-table">
+        <on-line />
+         <!-- <table id="onlineReportTableEditable" class="report-table">
         <tr
           v-for="(item, index) in reportTemplateData.json_content"
           :key="index.toString()"
@@ -36,7 +37,7 @@
             </div>
           </td>
         </tr>
-      </table>
+      </table> -->
        <div v-if="reportTemplateData.can_student_update" class="bottom"><a-button class="btn" type="parmary" @click="submitOfflineReport">提交报告</a-button></div>
       </div>
      
@@ -75,9 +76,11 @@
     </div>
 </template>
 <script lang="ts">
-import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef,toRefs} from 'vue'
+import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef,toRefs,provide} from 'vue'
 import request from "src/request/getRequest";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
+import OnLine from "./OnLine.vue"
+
 interface experReportParam {
  csc_id:any
 }
@@ -85,14 +88,19 @@ export default defineComponent({
     name:'experReport',
       components: {
       'antdv-markdown':AntdvMarkdown,
+      "on-line":OnLine
   },
   setup(props,context){
       const vmApi = request.vmApi
       var reportTemplateData:Ref<any>=ref(0)
+      provide("reportTemplateData",reportTemplateData)
       var templateId:Ref<any>=ref()
       var reportId:any=inject('reportId')
       console.log(reportId,'reportId')
       const fileList:Ref<any>=ref([])
+      watch(()=>reportTemplateData,()=>{
+        console.log(reportTemplateData)
+      },{deep:true})
     // 从地址栏获取id
     function getUrlParam(name: string): string | null {
         var reg = new RegExp('(^|&)' + name + '=([^&]*)(&|$)', 'i');
@@ -167,7 +175,7 @@ export default defineComponent({
             URL.revokeObjectURL(link.href) // 释放url
             document.body.removeChild(link)// 释放标签
           } else { // 其他浏览器
-            navigator.msSaveBlob(blob, fileName)
+            (navigator as any).msSaveBlob(blob, fileName)
           }
       })
     
@@ -177,7 +185,7 @@ export default defineComponent({
       // experReport({csc_id:reportId.value}) 
       experReport({csc_id:reportId.value}) 
     });
-    return{experReport,getUrlParam,submitOfflineReport,reportTemplateData,fileList,beforeUpload,handleUpload,reportId,downLoadExperReport}
+    return{provide,experReport,getUrlParam,submitOfflineReport,reportTemplateData,fileList,beforeUpload,handleUpload,reportId,downLoadExperReport}
   }
 })
 </script>
@@ -212,7 +220,8 @@ export default defineComponent({
     height: 100%;
     overflow-y: auto;
     padding: 15px;
-    height: 750px;
+    word-break: break-all;
+        white-space: normal;
   }
   .report-table {
     width: 100%;
