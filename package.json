@@ -14,6 +14,7 @@
     "ant-design-vue": "^2.2.3",
     "echarts": "^5.1.2",
     "file-saver": "^2.0.5",
+    "jsmind": "^0.4.6",
     "moment": "^2.29.1",
     "pupa": "^3.0.0",
     "quill-delta-to-html": "^0.12.0",

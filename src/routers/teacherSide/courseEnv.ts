@@ -35,6 +35,14 @@ export default {
         title: "创建试卷",
         authCode: 'createTestPaper'
       },
-    }
+    },
+    {
+      path: "/knowledgeMap",
+      component: () => import("src/views/knowledgeMap/index.vue"),
+      meta: {
+        title: "知识图谱",
+        authCode: 'knowledgeMap'
+      },
+    },
   ]
 }

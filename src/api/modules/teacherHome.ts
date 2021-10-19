@@ -1,7 +1,7 @@
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
   courseList:{
-    url: '//teacher-env/index',
+    url: '/teacher-env/index',
     method: 'GET'
   },
   courseData:{
