@@ -23,7 +23,7 @@
     <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
     </a-tabs>
-    <component  :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' />
+    <component  :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' @uploadppt='uploadppt' />
   </div>
 </template>
 <script lang="ts">
@@ -32,6 +32,11 @@ import { useRoute } from "vue-router";
 import request from 'src/api/index'
 import basicInfo from './basicInfor/index.vue'
 import trainingGuide from './trainingGuide/index.vue'
+import trainCourseware from './trainCourseware/index.vue'
+import trainEnvironment from './trainEnvironment/index.vue'
+import customerInfor from './customerInfor/index.vue'
+import groupingInfor from './groupingInfor/index.vue'
+import resources from './resources/index.vue'
 interface State{
   trainDetailInfo:any,
   propTrainDetailInfo:any,
@@ -40,7 +45,7 @@ interface State{
 }
 export default defineComponent({
   name:'editExperimental',
-  components:{basicInfo,trainingGuide},
+  components:{basicInfo,trainingGuide,trainCourseware,trainEnvironment,customerInfor,groupingInfor,resources},
   setup() {
     let router = useRoute();
     const http=(request as any).teacherExperimental
@@ -56,7 +61,15 @@ export default defineComponent({
       console.log(router.query.id)
       methods.getTrainDetailInfo()
     })
-    const componentsNames=ref([{key:0,textname:'基础信息',name:'basicInfo'},{key:1,textname:'实训指导',name:'trainingGuide'}])
+    const componentsNames=ref([
+      {key:0,textname:'基础信息',name:'basicInfo'},
+      {key:1,textname:'实训指导',name:'trainingGuide'},
+      {key:2,textname:'实训课件',name:'trainCourseware'},
+      {key:3,textname:'实训环境',name:'trainEnvironment'},
+      {key:4,textname:'排课信息',name:'customerInfor'},
+      {key:5,textname:'分组信息',name:'groupingInfor'},
+      {key:6,textname:'资源',name:'resources'},
+      ])
     const methods={
         getTrainDetailInfo(){
           state.trainId=router.query.id
@@ -67,6 +80,9 @@ export default defineComponent({
       },
       saveSuccess(){
         console.log('修改成功')
+        methods.getTrainDetailInfo()
+      },
+      uploadppt(){
         methods.getTrainDetailInfo()
       },
       goback(){
