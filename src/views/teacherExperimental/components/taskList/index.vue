@@ -6,20 +6,32 @@
                 <span>{{item.name}}</span>
             </span>
             <span class="status">状态：{{item.step.state===1?'显示':'隐藏'}}</span>
-            <span class="points-box">知识点：{{item.step.knowledges.join()}}</span>
-            <span class="more-icon" :title='item.step.knowledges.join()'>
-                <div></div>
-                <div></div>
-                <div></div>
+            <span class="points-box">知识点：{{item.step.knowledges?.join()}}
+                <span class="more-icon" :title='item.step.knowledges?.join()'>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </span>
             </span>
-            <span>
+            
+            <span class="delete" @click="deleteTask(index)">
                 <span v-if="!edit" class="iconfont icon-shanchu-copy"></span>
             </span>
+            <a-modal
+            title="删除提示"
+            :visible="visible"
+            @ok="handleOk"
+            @cancel="handleCancel"
+            >
+            <p>任务删除后无法恢复，确认删除吗？</p>
+            </a-modal>
         </div>
     </div>
 </template>
 <script lang="ts">
 interface Istate{
+    visible:boolean,
+    deleteIndex?:number,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 export default defineComponent({
@@ -27,9 +39,21 @@ export default defineComponent({
     props:['contentList','edit'],
     setup(props,context){
     const state:Istate=reactive({
-
+        visible:false
     })
     const methods={
+        deleteTask(index:any){
+            state.visible=true 
+            state.deleteIndex=index
+        },
+        handleOk(){
+            state.visible=false
+            context.emit('deleteItemIndex',state.deleteIndex)
+        },
+        handleCancel(){
+            state.visible=false
+        }
+       
     }
     return {...toRefs(state),...methods}
     }
@@ -47,8 +71,19 @@ export default defineComponent({
             cursor: pointer;
             transition: all .3s;
             display: flex;
-            justify-content:space-between;
+            // justify-content:space-between;
             align-items: center;
+            .name{
+                width: 40%;
+            }
+            .status{
+                width: 20%;
+            }
+            .points-box{
+                width: 35%;
+                display: flex;
+                justify-content: space-between;
+            }
             .number{
                 display: inline-block;
                 text-align: center;
@@ -70,7 +105,7 @@ export default defineComponent({
                 height: 15px;
                 line-height:15px;
                 background: #f2e5ff;
-                text-align: center;
+                text-align:right;
                 div{
                     border-radius: 50px;
                     background: #8955B5;
@@ -80,6 +115,10 @@ export default defineComponent({
                     margin: 2px 4px;
                     cursor: pointer;
                 }
+            }
+            .delete{
+                width: 5%;
+                text-align: right;
             }
         }
     }

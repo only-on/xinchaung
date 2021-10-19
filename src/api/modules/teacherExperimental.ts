@@ -26,7 +26,8 @@ export default {
   // 获取详情
   trainDetailInfo: { url: '/teacher-train/details', method: "GET" },
   trainUploadImage: { url: '/teacher-train/upload', method: "POST", dataType: 'formdata' },
-  saveModefiy: { url: '/teacher-train/set-content', method: "POST" }
+  saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
+  saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' }
 }
 
 export interface ITeacherExperimentallAps {
