@@ -98,7 +98,7 @@
   </div>
 </template>
 <script lang="ts">
-import {defineComponent, ref, reactive, inject, computed, Ref, onMounted} from "vue";
+import {defineComponent, ref, reactive, inject, computed, Ref, onMounted, watch} from "vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
 import {ILayoutConfiguration} from "../../types";
@@ -151,6 +151,9 @@ export default defineComponent({
       }
     })
     const configuration: ILayoutConfiguration = inject('configuration')!
+    watch(() => configuration.componenttype, (newVal: number) => {
+      getDataSetList()
+    })
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1
     })
@@ -185,7 +188,7 @@ export default defineComponent({
      */
     const gotoContent = (id: number, open: number) => {
       console.log('[asset/panel] goto: ', id, open)
-      router.push('/teacher/classical/content/' + open + '/' + id)
+      router.push('/teacher/classical/content/' + open + '/' + dataType + '/' + id)
     }
     const handleNameFocused = (e: FocusEvent) => {
       console.log('[classical/panel] name focused');
@@ -206,6 +209,7 @@ export default defineComponent({
 
     // 获取数据
     const getDataSetList = (page: number = 1, pageSize: number = 10, name = '') => {
+      console.log('[getDataSetList] type: ', dataType)
       http.classicalAsset.datasetList({
         param: {
           type: dataType,
@@ -276,7 +280,7 @@ export default defineComponent({
 .classical__container {
   margin: 0 auto;
   min-height: 750px;
-  width: 1270px;
+  width: 1330px;
   padding: 30px;
   border-radius: @border-radius-base;
   background: @white;

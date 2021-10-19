@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="file__op">
-      <a-button type="text" @click="handlePreview(previewUrl)">
+      <a-button type="text" @click="handlePreview">
         <font-awesome-icon icon="eye"/>
       </a-button>
       <a-button type="text" :href="downloadUrl">
@@ -26,7 +26,9 @@
              title="预览文件"
              :width="1200"
              :footer="null">
-      <iframe id="pdf-iframe" :src="'/plugin/PDF/viewer.html?file=' + origin + previewFileUrl"
+      <video v-if="suffix.toLowerCase() === 'mp4'" style="width: 100%; height: auto" controls="true"
+             :src="origin + previewFileUrl"></video>
+      <iframe v-else id="pdf-iframe" :src="'/plugin/PDF/viewer.html?file=' + origin + previewFileUrl"
               style="width: 100%; height: 700px; border: none"></iframe>
     </a-modal>
   </div>
@@ -37,6 +39,7 @@ import {defineComponent, computed, ref, Ref, inject} from "vue";
 import http from 'src/api'
 import {ModalFunc} from "ant-design-vue/lib/modal/Modal";
 import {MessageApi} from "ant-design-vue/lib/message";
+import {useRoute} from "vue-router";
 
 export default defineComponent({
   name: "FileCard",
@@ -68,6 +71,7 @@ export default defineComponent({
   },
   emits: ['removed'],
   setup(props, {emit}) {
+    const route = useRoute()
     const iconMap = {
       bmp: "tupian",
       svg: "tupian",
@@ -93,13 +97,14 @@ export default defineComponent({
     const origin = window.location.origin
     const $confirm: ModalFunc = inject('$confirm')!
     const $message: MessageApi = inject('$message')!
+    const dataType = parseInt(route.params.type as string)
 
     const icon = computed(() => {
       return iconMap[props.suffix] || 'qita'
     })
-    const handlePreview = function (fileUrl: string) {
+    const handlePreview = function () {
+      previewFileUrl.value = dataType === 4 ? props.downloadUrl : props.previewUrl
       previewerVisible.value = true
-      previewFileUrl.value = fileUrl
     }
     const handleRemove = function () {
       $confirm({

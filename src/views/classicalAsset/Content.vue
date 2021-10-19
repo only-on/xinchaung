@@ -51,7 +51,7 @@
   <a-modal v-model:visible="uploadVisible" title="上传文件" @ok="addItem">
     <a-upload-dragger
         v-model:fileList="uploadFileList"
-        accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation"
+        :accept="accept"
         name="dataset"
         :data="{pageType: dataType, dataId: dataId}"
         :multiple="false"
@@ -63,7 +63,8 @@
       </p>
       <p class="ant-upload-text">点击选择文件或将文件拖拽到此处</p>
       <p class="ant-upload-hint">
-        支持文件格式：ppt、pptx
+        <span v-if="supportedSuffix">支持文件格式：{{ supportedSuffix }}</span>
+        <span v-if="supportedSize">，支持文件大小：{{ supportedSize }}以内</span>
       </p>
     </a-upload-dragger>
   </a-modal>
@@ -111,7 +112,7 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, ref, reactive, onMounted, nextTick, Ref} from "vue";
+import {defineComponent, inject, ref, reactive, onMounted, nextTick, Ref, computed} from "vue";
 import {useRoute} from 'vue-router'
 import {ILayoutConfiguration} from "../../types";
 import WatermarkIcon from "../../components/common/WatermarkIcon.vue";
@@ -170,8 +171,8 @@ export default defineComponent({
     const searchKeyword = ref('')
     const uploadFileList: Ref<any[]> = ref([])
     // 数据集类型
-    let dataType = typeof route.query['type'] !== 'undefined' ? route.query['type'] : 3 // 3是课件
-    let dataId = route.params.id
+    let dataType: number = parseInt(route.params.type as string) // 3是课件
+    let dataId: number = parseInt(route.params.id as string)
 
     const $message: MessageApi = inject('$message')!
     const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
@@ -188,6 +189,36 @@ export default defineComponent({
         folderInfo.description = originalFolderInfo.description
         editContentVisible.value = true
       }
+    })
+
+    const acceptMap = {
+      3: '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation', // 课件
+      4: '.mp4,video/mp4', // 视频
+      5: '.doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document', // 备课资料
+      6: '.doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document', // 教学指导
+    };
+    const accept = computed(() => {
+      return acceptMap[dataType] || acceptMap[3]
+    })
+
+    const supportedSuffixMap = {
+      3: 'ppt、pptx',
+      4: 'mp4',
+      5: 'doc、docx',
+      6: 'doc、docx'
+    }
+    const supportedSuffix = computed(() => {
+      return supportedSuffixMap[dataType] || supportedSuffixMap[3]
+    })
+
+    const supportedSizeMap = {
+      3: '',
+      4: '500MB',
+      5: '',
+      6: ''
+    }
+    const supportedSize = computed(() => {
+      return supportedSizeMap[dataType] || ''
     })
 
     const openUploadDialog = function () {
@@ -331,6 +362,9 @@ export default defineComponent({
       folderInfo,
       nameFocused,
       descFocused,
+      accept,
+      supportedSuffix,
+      supportedSize,
       handleSearch,
       openUploadDialog,
       handleUploadChange,

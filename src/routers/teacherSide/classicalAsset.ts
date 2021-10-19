@@ -18,7 +18,7 @@ export default {
             },
         },
         {
-            path: "content/:public/:id",
+            path: "content/:public/:type/:id",
             name: "classicalAssetContent",
             component: () => import("src/views/classicalAsset/Content.vue"),
             meta: {
