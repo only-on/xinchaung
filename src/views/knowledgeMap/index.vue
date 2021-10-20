@@ -11,7 +11,7 @@
           <li v-for="(item,index) in contentList" :key="index" @click="router.push(item.task_url)" :title="item.task_name">{{item.task_name}}</li>
         </template>
         <template v-if="contentList.length === 0 && isShow">
-          <li>该知识点无关联实验！</li>
+          <li class="nodata">该知识点无关联实验！</li>
         </template>
       </ul>
     </div>
@@ -239,8 +239,10 @@ export default defineComponent({
       isShow.value = true
       contentList.length = 0
       http.getContentlist({ param: pageInfo}).then((res:IBusinessResp) => {
-        if (res&&res.data) {
+        if (res&&res.data.length > 0) {
           contentList.push(...res.data)
+        } else {
+          $message.warning('该知识点无关联实验!')
         }
       })
     }
@@ -336,9 +338,11 @@ export default defineComponent({
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        cursor: pointer;
         color: @theme-color;
         border-bottom: 1px solid #C7AEDC;
+        &:not(.nodata){
+          cursor: pointer;
+        }
         &:hover{
           color: #ff8400;
         }

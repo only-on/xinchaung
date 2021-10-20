@@ -192,6 +192,23 @@ function goHtml(val: string) {
         return val
     }
 }
+// 获取地址栏参数
+function urlSearch() {
+    var str=location.href; //取得整个地址栏
+    var num=str.indexOf("?") 
+    str=str.substr(num+1); //取得所有参数
+    var arr=str.split("&"); //各个参数放到数组里
+    let obj:any = {}
+    for(let i=0;i < arr.length;i++){ 
+        num=arr[i].indexOf("="); 
+        if(num>0){ 
+            let name=arr[i].substring(0,num);
+            let value=arr[i].substr(num+1);
+            obj[name] = value
+        } 
+    } 
+    return obj
+}
 export {
     numToAbc,
     getStudentTranscriptAnswer,
@@ -202,5 +219,6 @@ export {
     contrastTime,
     isJsonString,
     goHtml,
-    NoToCh
+    NoToCh,
+    urlSearch
 }

@@ -24,6 +24,7 @@ import DragTree from 'src/components/dragTree.vue'
 import request from "src/api/index";
 import { Ihttp } from "../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { urlSearch } from 'src/utils/common'
 interface ICourseInfo{
   type: string,
   courseType: number,
@@ -41,7 +42,7 @@ export default defineComponent({
     var treeData = reactive<any[]>([])
     var chapterId:Ref<number> = ref(0)
     // 501287:成绩 501195:评价 501737 501743:视频 501742
-    var courseId:Ref<number> = ref(501287)
+    var courseId:Ref<number> = ref(urlSearch().courseId)
     var contentId:Ref<number> = ref(0)
     var showChapterContent:Ref<boolean> = ref(true)
     var courseInfo = reactive<ICourseInfo>({
