@@ -217,14 +217,16 @@ export default defineComponent({
       }
       http.evaluteProject({param: params}).then((res:IBusinessResp) => {
         tableData.loading = false
-        let result = res?.data
-        Object.assign(chapterCompletion, result.chapter_completion)
-        if(result.chapter_progress.length == 0) return;
-        tableData.data.push(...result.chapter_progress?.data)
-        tableData.data.forEach((item:any) => {
-          item.chapter_progress = (item.chapter_progress * 100).toFixed(0) + '%'
-        })
-        tableData.total = result.chapter_progress.total
+        if (res && res.data) {
+          let result = res.data
+          Object.assign(chapterCompletion, result.chapter_completion)
+          if(result.chapter_progress.length == 0) return;
+          tableData.data.push(...result.chapter_progress?.data)
+          tableData.data.forEach((item:any) => {
+            item.chapter_progress = (item.chapter_progress * 100).toFixed(0) + '%'
+          })
+          tableData.total = result.chapter_progress.total
+        }
       })
     }
     watch([()=>props.chapterId, ()=>props.courseId], ([nChapterId, nCourseId]) => {

@@ -342,9 +342,9 @@ export default defineComponent({
         border-bottom: 1px solid #C7AEDC;
         &:not(.nodata){
           cursor: pointer;
-        }
-        &:hover{
-          color: #ff8400;
+          &:hover{
+            color: #ff8400;
+          }
         }
       }
     }
