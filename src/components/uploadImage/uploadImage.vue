@@ -3,10 +3,12 @@
         <a-radio-group v-model:value="value" @change="onChange" :disabled='edit'>
           <div class="uploadImgdiv">
              <div class="uploadDiv">
-                <div class="imgdiv" v-if="imgSrc">
+                <div v-if="imgSrc">
+                  <div :class="value==='upload'?'imgdiv active':'imgdiv'">
                    <img class="imgHasUpload" :src="imgSrc"/>
                    <a-radio class="radio" value='upload'></a-radio>
-                   <span class="iconfont icon-shanchu-copy" @click="deledeImg"></span>
+                   <span :class='edit?"noevents":""' @click="deledeImg" class="iconfont icon-shanchu-copy"></span>
+                   </div>
                 </div>
                 <div v-else>
                   <a-upload
@@ -22,7 +24,7 @@
                 </a-upload>
                 </div>
               </div>
-            <div class="imgdiv" v-for="(item,index) in defaultImg" :key="index.toString()">
+            <div :class="value===item.id?'imgdiv active':'imgdiv'" v-for="(item,index) in defaultImg" :key="index.toString()">
               <img :src='item.src'/>
             <a-radio class="radio" :value='item.id'></a-radio>
             </div>
@@ -50,6 +52,8 @@ export default defineComponent({
     components:{},
     setup(props,context) {
       const http=(request as any).teacherExperimental
+      let development=process.env.NODE_ENV == 'development' ? true : false;
+      let baseurl=development?'http://192.168.101.150:85/':""
       const state:Istate=reactive({
           defaultImg:[
           {
@@ -99,8 +103,8 @@ export default defineComponent({
         },
         deledeImg(){
           state.imgSrc=''
-          context.emit('img-src','')
-           console.log(state.imgSrc)
+          // context.emit('img-src','')
+          console.log(state.imgSrc,'hh')
         },
         beforeUpload(file:any){
           const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -117,15 +121,15 @@ export default defineComponent({
               state.value='upload'
             console.log(res)
             console.log(window.location.origin,'window.location.origin')
-            const baseurl=window.location.origin
-            // state.imgSrc ='http://192.168.101.150:85/'+res.datas.url
-            state.imgSrc =res.datas.url
+            state.imgSrc =baseurl+res.datas.url
+            // state.imgSrc =res.datas.url
             context.emit('img-src',res.datas.url)
         })
         .catch(() => {
           message.error('网络错误')
         })
           }
+          return false
         }
       }
       watch(()=>props.uploadUrl,(val)=>{
@@ -145,14 +149,13 @@ export default defineComponent({
         }
       })
       onMounted(()=>{
-          // state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
-          // state.imgSrc=props.uploadUrl
+          state.imgSrc=baseurl+props.uploadUrl
         })
       return {...methods,...toRefs(state)}
     }
 })
 </script>
-<style lang="less" scoped>
+<style lang="less">
 .uploadImgdiv{
   width:100%;
   display: flex;
@@ -166,8 +169,12 @@ export default defineComponent({
     border: 1px dashed @theme-color;
     border-radius: 4px;
     position: relative;
+    .noevents{
+      // pointer-events: none;
+      cursor: no-drop;;
+    }
     .icon-shanchu-copy{
-      color:yellow;
+      color:red;
       font-size:20px;
       position: absolute;
       right: 10px;
@@ -204,18 +211,12 @@ export default defineComponent({
     transition: background-color .3s;
     border-radius: 4px;
   }
-  //  .imgdiv:hover{
-  //     .imgdiv::before {
-  //     content: "";
-  //     width: 100%;
-  //     height: 100%;
-  //     position: absolute;
-  //     z-index: 1;
-  //     background-color: rgba(0,0,0,0);
-  //     transition: background-color .3s;
-  //     border-radius: 4px;
-  //   }
-  // }
+  .imgdiv.active::before {
+    background-color: rgba(0,0,0,0);
+  }
+  .imgdiv:hover::before{
+     background-color: rgba(0,0,0,0);
+  }
   .imgdiv:nth-child(1){
     margin-top: 0px;
   }
@@ -234,6 +235,35 @@ export default defineComponent({
     position: absolute;
     left: 10px;
     top: 10px;
+    .ant-radio-inner{
+      width: 20px;
+      height: 20px;
+  }
+  .ant-radio-input{
+      width: 16px;
+      height: 16px;
+  }
+  /* 单选选中样式 */
+  .ant-radio-checked .ant-radio-inner {
+    background-color:#ffcc33;
+    border: none;
+  }
+  .ant-radio-inner::after {
+    content: '';
+    width: 12px;
+    height: 8px;
+    border: 2px solid white;
+    border-top: transparent;
+    border-right: transparent;
+    text-align: center;
+    display: block;
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    transform: rotate(-45deg);
+    border-radius: 0px;
+    background: none;
+  }
   }
 }
 </style>

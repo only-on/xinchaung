@@ -12,7 +12,7 @@
        </div>
        <div class="stuAndclass">
            <div class="operateBtn">
-               <a-button type="primary" class="choice">选择</a-button>
+               <a-button type="primary" class="choice" @click="selectStuClass">选择</a-button>
                <a-button type="primary">移除</a-button>
            </div>
            <div>
@@ -23,7 +23,9 @@
                     </template>
                 </a-config-provider>
            </div>
-           <div></div>
+           <div>
+               <select-stu-class :selectvalue='value' :isvisible='isvisible' @if-select='ifSelect'></select-stu-class>
+           </div>
        </div>
     </div>
 </template>
@@ -33,22 +35,26 @@ interface Istate{
    stuColumns:any[],
    classColumns:any[],
    columns:any[],
-   data:any[]
+   data:any[],
+   isvisible:boolean
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
+import selectStuClass from '../../components/selectStuClass/index.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'customerInfor',
     props:['propTrainDetailInfo','trainId'],
     components:{
-        Empty
+        Empty,
+        selectStuClass
     },
     setup(props,context){
     const http=(request as any).teacherExperimental
     const state:Istate=reactive({
       value:1,
+      isvisible:false,
       classColumns:[
         {
             title: '班级名称',
@@ -119,13 +125,14 @@ export default defineComponent({
     const methods={
        onChange(e:any) {
         console.log('radio checked', e.target.value);
-            if(e.target.value===1){
-                state.columns=state.stuColumns 
-            }else{
-                state.columns=state.classColumns
-            }
+            state.columns=e.target.value===1?state.stuColumns:state.classColumns
+        },
+        selectStuClass(){
+            state.isvisible=true
+        },
+        ifSelect(){
+            state.isvisible=false
         }
-
     }
     onMounted(()=>{
         state.columns=state.stuColumns

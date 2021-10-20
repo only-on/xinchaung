@@ -30,6 +30,7 @@ export default {
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
 
+  studentGroup: { url: '/teacher-train/get-student?{train_id}', method: "POST", dataType: 'formdata' },
 }
 
 export interface ITeacherExperimentallAps {
@@ -49,7 +50,12 @@ export interface ITeacherExperimentallAps {
   trainComplex: TFHttpSend;
   trainArchived: TFHttpSend;
   trainDeleted: TFHttpSend;
-  trainDetailInfo: TFHttpSend
+  trainDetailInfo: TFHttpSend,
+  trainUploadImage: TFHttpSend,
+  saveModefiy: TFHttpSend,
+  saveTrainGuide: TFHttpSend,
+  savepptModefiy: TFHttpSend,
+  studentGroup: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherExperimental'

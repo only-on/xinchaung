@@ -58,11 +58,11 @@ export default defineComponent({
     setup(props,context){
         const http=(request as any).teacherExperimental
         const rules={
-            name: [{ required: true, message: '请输入实训名称', trigger: 'blur'},],
+            name: [{ required: true, message: '请输入实训名称'},],
             start_time: [{ required: true, message: '请选择开始时间'},],
             end_time: [{ required: true, message: '请选择结束时间'},],
-            train_time: [{ required: true, message: '请输入课时', trigger: 'blur' },],
-            content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
+            train_time: [{ required: true, message: '请输入课时'},],
+            content: [{ required: true, message: '请输入帖子内容'}],
             }
         const state:Istate=reactive({
             form:{},
