@@ -2,7 +2,7 @@ import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
   getTreeList: {
-    url: 'api/course/courses/{courseId}/chapters/tree',
+    url: '/api/course/courses/{courseId}/chapters/tree',
     method: 'GET',
   },
   chapterSort: {
@@ -16,11 +16,11 @@ export default {
     dataType: 'json'
   },
   deleteNode: {
-    url: 'api/course/courses/{courseId}/chapters/{nodeId}',
+    url: '/api/course/courses/{courseId}/chapters/{nodeId}',
     method: 'DELETE'
   },
   editNode: {
-    url: 'api/course/courses/{courseId}/chapters/{nodeId}',
+    url: '/api/course/courses/{courseId}/chapters/{nodeId}',
     method: 'PUT',
     dataType: 'json'
   }

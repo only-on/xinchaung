@@ -37,7 +37,7 @@ export default {
     dataType: 'json'
   },
   getTreeList: {
-    url: 'api/course/courses/{courseId}/chapters/tree',
+    url: '/api/course/courses/{courseId}/chapters/tree',
     method: 'GET',
   },
   canAccessVm: {

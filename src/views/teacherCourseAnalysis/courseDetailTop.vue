@@ -247,14 +247,8 @@ export default defineComponent({
 
     // 返回
     function goBack() {
-      router.push('/teacher/course/virtualEnv')
-          // router.push({
-          //   name: 'classicalAsset',
-          //   params: {
-          //     uuid: props.list.vms[current.value].uuid,
-          //     id: list.id
-          //   }
-          // })
+      window.history.go(-1)
+      // router.push('/teacher/course/virtualEnv')
     }
     onMounted(() => {
       getCourseDetail()
