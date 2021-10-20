@@ -357,9 +357,9 @@ export default defineComponent({
          taskType.value = res.data.base_info.task_type.type;
         
          if (!taskType.value) {
-            use_time.value = res.data.current.remaining_time;
+            use_time.value = res.data.current.used_time;
          }else{
-           use_time.value = res.data.current.used_time;
+           use_time.value = res.data.current.remaining_time;
          }
        
         console.log(allInfo);

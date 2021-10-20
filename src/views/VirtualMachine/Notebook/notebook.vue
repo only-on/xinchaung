@@ -128,11 +128,11 @@ export default defineComponent({
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
         allInfo.value = res.data;
-        console.log(res.data.current.used_time);
+        console.log(res.data.current.remaining_time);
 
-        use_time.value = res.data.current.used_time;
+        use_time.value = res.data.current.remaining_time;
         console.log(allInfo);
-        taskType.value = res.data.base_info.task_type.name;
+        taskType.value = res.data.base_info.task_type.type;
         reportTemid.value=res?.data.current.id
       });
     }

@@ -60,6 +60,17 @@
             <span class="icon-zhankai iconfont" style="margin-left: 5px"></span
           ></a-button>
         </a-dropdown>
+        <span v-if="isScreenRecording" class="video-time"
+          >录制时间:
+          {{
+            videoTimeText?.h +
+            "时" +
+            videoTimeText?.m +
+            "分" +
+            videoTimeText?.s +
+            "秒"
+          }}</span
+        >
       </div>
       <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
       <div class="vm-header-right">
@@ -153,6 +164,17 @@
             <span class="icon-zhankai iconfont" style="margin-left: 5px"></span
           ></a-button>
         </a-dropdown>
+        <span v-if="isScreenRecording" class="video-time"
+          >录制时间:
+          {{
+            videoTimeText?.h +
+            "时" +
+            videoTimeText?.m +
+            "分" +
+            videoTimeText?.s +
+            "秒"
+          }}</span
+        >
       </div>
       <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
       <div class="vm-header-right">
@@ -209,6 +231,7 @@
       >
     </div>
   </a-modal>
+  <!--请求协助modal-->
   <a-modal
     class="assistance-modal"
     title="消息提示"
@@ -222,6 +245,30 @@
         v-model:value="assistanceQuestion"
         :auto-size="{ minRows: 2, maxRows: 6 }"
       ></a-textarea>
+    </div>
+  </a-modal>
+  <!--保存进度modal-->
+  <a-modal
+    class="save-progress-modal"
+    :visible="progressVisible"
+    @cancel="closeProgress"
+    @ok="okProgress"
+  >
+    <div>
+      <a-radio-group
+        @change="progressChange"
+        v-model:value="selectProgressData"
+      >
+        <div v-for="(key, val) in saveExperimentData" :key="val.toString()">
+          <div v-for="item in saveExperimentData[val]" :key="item.id">
+            <a-radio
+              :value="val.toString() + '、' + item.id"
+              :key="val.toString() + '、' + item.id"
+              >{{ item.name }}</a-radio
+            >
+          </div>
+        </div>
+      </a-radio-group>
     </div>
   </a-modal>
 </template>
@@ -256,7 +303,7 @@ import { copyText } from "src/utils/copySelect";
 import storage from "src/utils/extStorage";
 import _ from "lodash";
 import request from "src/request/getRequest"
-import { log } from "console";
+import { isJsonString } from "src/utils/common";
 type TvmQuery = {
   opType: string;
   connection_id: string;
@@ -297,6 +344,12 @@ export default defineComponent({
     const vmUrl=ref("")
     const assistanceVisible=ref(false)
     const assistanceQuestion=ref("")
+    const selectProgressData=ref("")
+    const progressVisible=ref(false)
+    const saveExperimentData:any=ref({
+      course:[],
+      train:[]
+    })
     // let roleName = computed(() => {
     //   console.log(allInfo.value);
 
@@ -335,9 +388,17 @@ export default defineComponent({
       s: 0,
     });
 
+    let viodeTimer: NodeJS.Timer | null = null; // 录屏计时
+    let videoTime=ref(0)
+    let videoTimeText: Ref<any>=ref({
+      h: 0,
+      m: 0,
+      s: 0,
+    })
     onBeforeRouteLeave(() => {
       console.log("离开页面");
       clearInterval(Number(timer));
+      clearInterval(Number(viodeTimer))
     });
 
     watch(
@@ -388,6 +449,7 @@ export default defineComponent({
 
     onMounted(() => {
       clearInterval(Number(timer));
+      clearInterval(Number(viodeTimer))
       console.log(use_time.value);
       if (role === 4) {
         timer = setInterval(() => {
@@ -418,11 +480,23 @@ export default defineComponent({
       }
     });
     function back() {
-      if (opType === "test" || opType === "prepare") {
-        endVmEnvirment();
-      } else {
-        backTo(router, type, 3, routerQuery);
-      }
+      Modal.confirm(
+        {
+          title:"提示",
+          content:"返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+          onOk:()=>{
+              if (opType === "test" || opType === "prepare") {
+                endVmEnvirment();
+              } else {
+                backTo(router, type, 3, routerQuery);
+              }
+          },
+          onCancel:()=>{
+
+          }
+        }
+      )
+      
     }
     // 延时
     function delayedTime() {
@@ -432,9 +506,23 @@ export default defineComponent({
     }
     // 保存进度
     function saveKvm() {
-      VmOperatesHandle("saveKvm").then((res) => {
+      VmOperatesHandle("saveKvm").then((res:any) => {
         console.log(res);
-        backTo(router, type, 3, routerQuery);
+        if (res.data) {
+          backTo(router, type, 3, routerQuery);
+        }else{
+          saveExperimentData.value={
+            course:[],
+            train:[]
+          }
+          if (isJsonString(res.msg)) {
+            progressVisible.value=true
+            let jsonData=JSON.parse(res.msg)
+            console.log(jsonData)
+            saveExperimentData.value=jsonData
+          }
+        }
+        
       });
     }
     // 结束实验
@@ -494,6 +582,19 @@ export default defineComponent({
       VmOperatesHandle(key).then((res) => {
         console.log(res);
         message.success("操作成功");
+        if (key==="startRecord") {
+          isScreenRecording.value=true
+          videoTime.value=0
+          viodeTimer=setInterval(()=>{
+            videoTime.value++
+           videoTimeText.value= secondToHHMMSS(Number(videoTime.value));
+          },1000)
+        }else if (key==="stopRecord") {
+          isScreenRecording.value=false
+          videoTime.value=0
+          clearInterval(Number(viodeTimer))
+          videoTimeText.value=secondToHHMMSS(Number(videoTime.value));
+        }
       });
     }
 
@@ -656,6 +757,46 @@ export default defineComponent({
       assistanceVisible.value=false
       assistanceQuestion.value=""
     }
+
+    // modal ok保存进度
+    function okProgress() {
+      console.log(selectProgressData)
+      if (!selectProgressData.value) {
+        return;
+      }
+      let tempArry=selectProgressData.value.split("、")
+      let params: any = {
+          action: 'saveKvm',
+          params: {
+            type: type,
+            opType: opType,
+            uuid: uuid.value,
+            taskId: taskId,
+            replace_id:tempArry[1],
+            replace_type:tempArry[0]
+          },
+        };
+        operatesHandle(params)
+          .then((res:any) => {
+            if (res.data) {
+              backTo(router, type, 3, routerQuery);
+              progressVisible.value=false
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+    }
+    // 关闭保存进度modal
+    function closeProgress(){
+      progressVisible.value=false
+      selectProgressData.value=""
+    }
+
+    // 保存modal选项发生变化
+    function  progressChange(key:any) {
+      console.log(key)
+    }
     return {
       back,
       handleMenuClick,
@@ -679,7 +820,15 @@ export default defineComponent({
       closeAssistance,
       okAssistance,
       assistanceVisible,
-      assistanceQuestion
+      assistanceQuestion,
+      videoTime,
+      videoTimeText,
+      closeProgress,
+      okProgress,
+      progressVisible,
+      saveExperimentData,
+      progressChange,
+      selectProgressData
     };
   },
 });
@@ -703,6 +852,9 @@ export default defineComponent({
           .icon-fanhui {
             margin-right: 5px;
           }
+        }
+        .video-time {
+          color: #71f371;
         }
       }
       .vm-header-title {

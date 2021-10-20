@@ -367,7 +367,7 @@ export default defineComponent({
         
         reactiveData.taskBaseInfo = res?.data;
         console.log(reactiveData.taskBaseInfo);
-        use_time.value = res?.data.current.used_time;
+        use_time.value = res?.data.current.remaining_time;
         taskType.value = res.data.base_info.task_type.type;
         reportTemid.value=res?.data.current.id
       });
