@@ -46,7 +46,7 @@
     <div class="introduce">
       <a-form-item label="课程介绍">
         <a-textarea
-          v-model="detailState.introduce"
+          v-model:value="detailState.introduce"
           placeholder="请输入课程介绍"
           :rows="3"
         />

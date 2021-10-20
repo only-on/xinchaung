@@ -41,8 +41,7 @@
 import { defineComponent, reactive, toRefs, PropType, ref, createVNode, inject } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { message } from 'ant-design-vue'
-import { Modal } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import addAssistant from './addAssistant.vue'
 import { ITableList, IPage, IHttp } from './typings'

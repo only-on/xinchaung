@@ -7,7 +7,9 @@
       :columns="columns" 
       :bordered="true"
       :pagination="false"
+      v-if="tableList.length"
     />
+    <Empty v-else/>
     <div class="page-footer-box">
         <!-- show-quick-jumper  -->
       <a-pagination

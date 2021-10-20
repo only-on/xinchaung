@@ -44,9 +44,9 @@
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
-          <li>考核</li>
-          <li>资源</li>
-          <li>环境</li>
+          <li @click.stop="evaluate(item.id)">考核</li>
+          <li @click.stop="resource(item.id)">资源</li>
+          <li @click.stop="virtualEnv(item.id)">环境</li>
         </ul>
       </div>
       <!-- 内置实训 -->
@@ -68,7 +68,7 @@
         </ul>
         <ul class="cardfoot cardbtn">
           <li>内容</li>
-          <li>资源</li>
+          <li @click.stop="resource(item.id)">资源</li>
           <li>保存到我的</li>
         </ul>
       </div>
@@ -97,7 +97,7 @@ import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperimentalHttp } from '../typings'
 import { message } from 'ant-design-vue';
-import { useRouter} from 'vue-router'
+import { useRouter, useRoute, RouteParamsRaw } from 'vue-router'
 export default defineComponent({
   props: ['trainType', 'data'],
   setup(props,{emit}) {
@@ -109,6 +109,7 @@ export default defineComponent({
     watch(()=>props.trainType, (newVal) => {
       trainType.value = newVal
     })
+
     watch(()=>props.data, (newVal) => {
       dataList.value = newVal
     })
@@ -132,6 +133,34 @@ export default defineComponent({
     function editExperimental(id:number){
       router.push({path:'/teacher/Experimental/detail',query:{id:id}})
     }
+    // 考核
+    const evaluate = (id: number) => {
+      router.push('/teacher/Experimental/evaluate?trainId=' + id)
+    }
+
+    // 资源
+    const resource = (id: number) => {
+      let param = {
+        trainType: trainType.value,
+        trainId: id
+      }
+      router.replace({
+        path: '/teacher/Experimental/resource',
+        query: param
+      })
+    }
+
+    // 环境
+    const virtualEnv = (id: number) => {
+      let param = {
+        type: 'train',
+        taskId: id
+      }
+      router.replace({
+        path: '/teacher/course/virtualEnv',
+        query: param
+      })
+    }
     return {
       switchVal,
       trainType,
@@ -140,7 +169,10 @@ export default defineComponent({
       handleOperate,
       defaultImg: '/src/assets/images/Experimental/wlkc.png',
       router,
-      editExperimental
+      editExperimental,
+      evaluate,
+      virtualEnv,
+      resource,
     }
   },
 })

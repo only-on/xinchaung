@@ -1,7 +1,9 @@
 export interface ICourseInfo {
   type: string,
   courseId: number
-  courseType: number
+  courseType?: number
+  taskId: number
+  grouped: number
 }
 interface IteachCourse {
   getPre: Function

@@ -32,13 +32,14 @@
           />
           <a-button type="primary" @click="selectAllHandle">全选（{{paperList.length}}）</a-button>
         </div>
-        <ul>
+        <ul v-if="paperList.length">
           <li v-for="(list, i) in paperList" :key="i">
             <p>{{list.question}}<span>（{{list.origin_score}}）</span></p>
             <span class="iconfont icon-del" @click="add(i)" v-if="!list.isChecked"></span>
             <span class="iconfont icon-yichu" @click="del(i)" v-if="list.isChecked"></span>
           </li>
         </ul>
+        <Empty v-else text="暂未添加该类型试题！" />
       </div>
       <div class="footer">
         <a-pagination
@@ -186,7 +187,7 @@ export default defineComponent({
     // 取消选择的习题
     const del = (i: number) => {
       console.log(list.paperList)
-      // list.paperList[i].isChecked = false
+      list.paperList[i].isChecked = false
       // list.paperList.splice(i, 1)
       // let arr = list.paperList
       // arr.forEach(list => {

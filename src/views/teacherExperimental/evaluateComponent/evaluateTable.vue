@@ -7,6 +7,7 @@
       :bordered="true"
       :pagination="false"
       :row-selection="rowSelection"
+      v-if="tableList.length"
     >
       <template #time="{ record }">
         <span>{{ record.time || '--'}}</span>
@@ -32,6 +33,7 @@
         <span class="operation-btn disabled" @click="reset(record)">重置</span>
       </template>
     </a-table>
+    <Empty v-else/>
     <div class="page-footer-box">
         <!-- show-quick-jumper  -->
       <a-pagination
@@ -76,7 +78,7 @@ export default defineComponent({
   components: { lookAchievementsModal, lookReportModal, lookVideoModal },
   props: {
     trainId: {
-      type: Number
+      type: String
     },
     tableList: {
       type: Array as PropType<ITableList[]>,
@@ -187,7 +189,10 @@ export default defineComponent({
       // 查看视频
       videoUrl: '',
       lookVideo: (id: number) => {
-        // message.warn('服务器没有该文件！')
+        if (!id) {
+          message.warn('服务器没有该文件！')
+          return
+        }
         isShowVideo.value = true
         operationHandle.videoUrl = '/src/assets/video.mp4'
       },
@@ -195,7 +200,10 @@ export default defineComponent({
       isShowReport: false,
       reportUrl: '',
       lookReport: (id: number) => {
-        // message.warn('服务器没有该文件！')
+        if (!id) {
+          message.warn('服务器没有该文件！')
+          return
+        }
         operationHandle.reportUrl = 'http://192.168.101.150/upload/train_html/50243/16322969161533.pdf'
         operationHandle.isShowReport = true
       },

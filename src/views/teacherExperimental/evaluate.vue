@@ -30,7 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, createVNode , reactive, toRefs } from 'vue'
+import { defineComponent, createVNode , reactive, toRefs, inject } from 'vue'
 import evaluateTable from './evaluateComponent/evaluateTable.vue'
 import TaskStatistic from './evaluateComponent/taskStatistic.vue'
 import { Modal } from 'ant-design-vue';
@@ -38,13 +38,23 @@ import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperimentalHttp } from './typings'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   components: { evaluateTable, TaskStatistic },
   setup() {
-    const trainInfo = {
-      trainId: 50235
+    let updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+
+    let route = useRoute()
+    console.log(route.query)
+    const trainInfo: {trainId: any} = {
+      trainId: route.query.trainId
     }
+    // const trainInfo = {
+    //   trainId: 50235
+    // }
+
     const http=(request as ITeacherExperimentalHttp).teacherExperimental
     const data = reactive<IData>({
       searchInfo: {
@@ -183,7 +193,7 @@ export default defineComponent({
         train_student_id: ids
       })
     }
-    const exportScore = (param: {train_id: number, train_student_id?: number[]}) => {
+    const exportScore = (param: {train_id: string, train_student_id?: number[]}) => {
       const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
       console.log(dev_base_url, param)
       let url = `${dev_base_url}/teacher-train/train-score-export`
@@ -229,7 +239,7 @@ export default defineComponent({
         train_student_id: ids
       })
     }
-    const releaseScore = (param: {train_id: number, train_student_id?: number[]}) => {
+    const releaseScore = (param: {train_id: string, train_student_id?: number[]}) => {
       http.releaseScore({param: param}).then((res: IBusinessResp) => {
         console.log(res)
       })

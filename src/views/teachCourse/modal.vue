@@ -49,16 +49,17 @@
       let openEnvNum = ref<number>()
       const openEnv = () => {
         let name = props.courseInfo.type === 'train' ? '实训' : '实验'
-        if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1) || props.courseInfo.type === 'train') {
+        // if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1) || props.courseInfo.type === 'train') {
+        if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1)) {
           message.warning(`请选择${name}!`);
-          return;
-        }
-        if (!props.limit) {
-          message.warning('授权人数为0，无法开启!');
           return;
         }
         if (props.selectedNodes.isHigh) {
           message.warning(`该${name}为高配${name}，无法预启动${name}环境!`);
+          return;
+        }
+        if (!props.limit) {
+          message.warning('授权人数为0，无法开启!');
           return;
         }
         let typeList = props.selectedNodes.type.split('-')

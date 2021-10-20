@@ -164,14 +164,16 @@ import echartsBar from './echartsBar.vue'
 import ratioDistribution from './ratioDistribution.vue'
 import experimentRatio from './experimentRatio.vue'
 import score from './score.vue'
+import { urlSearch } from 'src/utils/common'
 
 export default defineComponent({
   components: { courseDetailTop, echartsBar, ratioDistribution, score, experimentRatio },
   setup() {
+    const query = urlSearch()
     let courseInfo = reactive<ICourseInfo>({
       type: 'course',
       courseType: 1,
-      courseId: 501747,
+      courseId: Number(query.courseId),
     })
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
@@ -275,7 +277,7 @@ export default defineComponent({
         currentExperiment.value = data.list[0].labelId
       }
       if(!data.student.length) return
-      type.value = 1
+      type.value = data.type
       // 最高、最低分
       score.highScore = data.high
       score.lowScore = data.low

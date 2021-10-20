@@ -1,7 +1,7 @@
 <template>
   <div class="virtual-env"  v-layout-bg>
     <div class="content-wrapper">
-      <div class="tree">
+      <div class="tree" v-if="courseInfo.type === 'course'">
         <drag-tree 
         :treeData="treeData.data"
          @updateData="updateData"
@@ -30,6 +30,7 @@
           <div class="env-list" v-for="v in envListState.data" :key="v.id">
             <card :list="v" @getList="getList"></card>
           </div>
+          <!-- <Empty v-if="!envListState.data.length && !envListState.loading"/> -->
           <div v-if="!envListState.data.length && !envListState.loading" class="nodata">{{noDataPrompt}}</div>
         </div>
         <a-pagination 
@@ -54,6 +55,7 @@ import { defineComponent, onMounted, ref, reactive, toRefs, UnwrapRef, provide, 
 import { message } from 'ant-design-vue'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { Ihttp, ICourseInfo, ITreeHttp } from './typings'
+import { urlSearch } from 'src/utils/common'
 
 
 interface Ipage {
@@ -120,8 +122,9 @@ interface ITreeDataItem {
   name: string
   sort: number
   type: string
-  is_high?: boolean
+  is_high: boolean
   slots: Isolts
+  grouped: number
   contents: ITreeDataItem[]
 }
 interface ITreeData {
@@ -135,12 +138,33 @@ export default defineComponent({
     modal,
   },
   setup() {
-    let courseInfo = reactive<ICourseInfo>({
-      type: 'course',
-      courseType: 1,
-      courseId: 501703,
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+
+    const query = urlSearch()
+    // 课程
+    let  courseInfo = reactive<ICourseInfo>({
+      type: String(query.type),
+      taskId: Number(query.taskId),
+      courseType: Number(query.courseType),
+      courseId: query.type === 'train' ? 0 : Number(query.courseId),
+      grouped: 0
     })
-    // 面包屑
+    // let courseInfo = reactive<ICourseInfo>({
+    //   type: 'course',      // 课程'course' 实训'train'
+    //   courseType: 1,
+    //   courseId: 501703,   // 课程id
+    //   taskId: 50235,         // 实验id
+    //   grouped: 1          // 1分组 0未分组
+    // })
+    // 实训
+    // let trainInfo = reactive<ICourseInfo>({
+    //   taskId: 50234,
+    //   type: 'train',
+    //   courseId: 0,
+    //   grouped: 0
+    // })
+    
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
     // 是否默认选中章节
@@ -151,18 +175,19 @@ export default defineComponent({
       loading: false,
       data: [],
       page: {
-        pageSize: 6,
+        totals: 0,
+        pageSize: courseInfo.type === 'train' ? 8 : 6,
         currPage: 1,
         keyWord: ''
       }
     })
     const params = reactive<Iparams>({
-      taskId: 0,
+      taskId: courseInfo.taskId,
       type: courseInfo.type,
       name: '',
       courseId: courseInfo.courseId,
       page: envListState.page,
-      grouped: 0
+      grouped: courseInfo.grouped
     })
 
     // tree
@@ -172,32 +197,6 @@ export default defineComponent({
       isHigh: false,
       grouped: 0
     })
-    interface node {
-      id: number
-      type: string
-      grouped: number
-      is_high: boolean
-    }
-    // function selectNodeHandle(node: node) {
-    //   console.log(node);
-    //     selectedKeys.value = [node.id]
-    //   if (node.type) {     // 章节
-    //     selectedNodes.taskId = node.id
-    //     selectedNodes.type = node.type
-    //     selectedNodes.isHigh = node.is_high
-    //     selectedNodes.grouped = node.grouped
-    //     params.taskId = node.id
-    //     let typeList = node.type.split('-')
-    //     getList() 
-    //   } else {        // 实验
-    //     // expandedKeys.value = [node.id]
-    //     envListState.data = []
-    //     selectedNodes.taskId = 0
-    //     selectedNodes.type = ''
-    //     selectedNodes.isHigh = false
-    //     selectedNodes.grouped = 0
-    //   }
-    // }
     
     // 查询
     const search = reactive({
@@ -208,11 +207,13 @@ export default defineComponent({
       }
     })
 
+    // let noDataPrompt = ref('')
     let noDataPrompt = ref('请选择')
     function getList() {
       let type = courseInfo.type === "train" ? "实训" : (courseInfo.courseType == 2 ? "课程" : "实验")
       envListState.data = []
       envListState.loading = true
+      console.log(params)
       http.getPre({param: params}).then((res: IResponseData) => {
         envListState.loading = false
         if(res && res.status) {
@@ -227,25 +228,9 @@ export default defineComponent({
             noDataPrompt.value = `尚未开启${type}环境`
           } else if (taskType === 4) {
             noDataPrompt.value = '交互编程类型实验不支持开启虚拟机环境'
+          } else {
+            noDataPrompt.value = '暂无数据'
           }
-          // envListState.data[0] = {
-          //   username: 'hello',
-          //   id: 111,
-          //   student_id: 11,
-          //   number: '',
-          //   is_online: 1,
-          //   current: 1,
-          //   vms: [
-          //     {
-          //       status: 'SHUTOFF',
-          //       uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a',
-          //     },
-          //     {
-          //       status: 'ACTIVE',
-          //       uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a'
-          //     }
-          //   ]
-          // }
           envListState.page = page
         }
       })
@@ -254,6 +239,15 @@ export default defineComponent({
       params.page.currPage = page
       getList()
     }
+ 
+    onMounted(() => {
+      courseInfo.type === 'train' ? getList() : getTreeList()
+      getLimit()
+      let timer = setInterval(() => {
+        clearInterval(timer)
+        getLimit()
+      }, 60000)
+    }) 
 
     // 开启实验环境
     let limit = ref()
@@ -291,11 +285,12 @@ export default defineComponent({
         urlParams: {courseId: courseInfo.courseId}
       }).then((res: IBusinessResp) => {
         treeData.data = res.data
+        console.log(treeData.data)
       })
     }
     // 更新tree数据
     const updateData = (data: ITreeDataItem[], parentId: number) => {
-      console.log(data, parentId)
+      console.log(data, parentId, '更新数据')
       let obj = {}
       treeData.data = data
       if (!parentId) {
@@ -344,9 +339,10 @@ export default defineComponent({
       console.log(val, '点击实验树');
       selectedNodes.taskId = val.id
       selectedNodes.type = val.type
-      // selectedNodes.isHigh = val.is_high
+      selectedNodes.isHigh = val.is_high
       // selectedNodes.grouped = val.grouped
       params.taskId = val.id
+      // params.grouped = val.grouped
       getList() 
     }
     // 编辑节点
@@ -380,16 +376,6 @@ export default defineComponent({
         message.success({ content: res.msg, duration: 2 });
       })
     }
-    
-    onMounted(() => {
-      // getList()
-      getTreeList()
-      getLimit()
-      let timer = setInterval(() => {
-        clearInterval(timer)
-        getLimit()
-      }, 60000)
-    }) 
       
 
     return {
