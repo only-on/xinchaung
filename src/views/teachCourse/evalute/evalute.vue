@@ -1,7 +1,7 @@
 <template>
   <div class="evalute" v-layout-bg="{bg, size:'234px'}">
     <div class="top">
-      <course-detail-top :courseInfo="courseInfo"/>
+      <course-detail-top :courseInfo="courseInfo" :showOperate="false"/>
     </div>
     <div class="content">
       <div class="left">

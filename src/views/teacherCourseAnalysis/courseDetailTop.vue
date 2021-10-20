@@ -36,7 +36,7 @@
         </span>
         <span>课程时间</span>
       </div>
-      <div class="operation-box">
+      <div class="operation-box" v-show="showOperate">
         <span class="icon-mobandaishezhi iconfont" title="选择报告模板" @click="openReportModal()"></span>
         <span class="icon-bianji1 iconfont" title="编辑" @click="detailVisible =true"></span>
       </div>
@@ -98,6 +98,9 @@ export default defineComponent({
     courseInfo: {
       type: Object as PropType<ICourseInfo>,
       default: {}
+    },
+    showOperate: {
+      default: true
     }
   },
   setup(props) {
