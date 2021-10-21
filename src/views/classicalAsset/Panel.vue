@@ -348,6 +348,9 @@ export default defineComponent({
       }
     }
 
+    .data {
+      min-height: 646px;
+    }
     .page {
       display: flex;
       justify-content: center;
