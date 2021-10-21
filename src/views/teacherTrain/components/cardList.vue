@@ -95,13 +95,13 @@
 import { defineComponent, ref, watch, toRef, reactive } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperimentalHttp } from '../typings'
+import { ITeacherTrainHttp } from '../typings'
 import { message } from 'ant-design-vue';
 import { useRouter, useRoute, RouteParamsRaw } from 'vue-router'
 export default defineComponent({
   props: ['trainType', 'data'],
   setup(props,{emit}) {
-    const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const http=(request as ITeacherTrainHttp).teacherTrain
     const router = useRouter();
     var switchVal=ref<boolean>(false)
     var trainType = ref<number>(props.trainType)

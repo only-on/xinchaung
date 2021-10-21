@@ -68,7 +68,7 @@
 import { defineComponent, reactive, toRefs, PropType, ref } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperimentalHttp } from './../typings'
+import { ITeacherTrainHttp } from './../typings'
 import { message } from 'ant-design-vue'
 import lookAchievementsModal from './lookAchievementsModal.vue'
 import lookReportModal from './lookReportModal.vue'
@@ -102,7 +102,7 @@ export default defineComponent({
         pageSize: 10,
       }
     })
-    const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const http=(request as ITeacherTrainHttp).teacherTrain
     const columns = [
       {
         title: '学号',

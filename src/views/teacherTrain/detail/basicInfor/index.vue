@@ -56,7 +56,7 @@ export default defineComponent({
     props:['propTrainDetailInfo','trainId'],
     components:{uploadImage},
     setup(props,context){
-        const http=(request as any).teacherExperimental
+        const http=(request as any).teacherTrain
         const rules={
             name: [{ required: true, message: '请输入实训名称'},],
             start_time: [{ required: true, message: '请选择开始时间'},],

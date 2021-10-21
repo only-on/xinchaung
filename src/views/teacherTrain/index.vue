@@ -9,7 +9,7 @@
       <a-button type="primary" @click="handleSearch">查询</a-button>
     </div>
     <div class="content">
-      <card-list v-if="listData.length > 0" :trainType="trainType" :data="listData" @refresh="refresh"/>
+      <card-list v-if="listData.length > 0 || trainType === 0" :trainType="trainType" :data="listData" @refresh="refresh"/>
       <Empty v-else/>
       <a-pagination
         show-size-changer
@@ -29,7 +29,7 @@ import { defineComponent, ref, inject, reactive, watch, onMounted } from 'vue'
 import cardList from './components/cardList.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperimentalHttp } from './typings'
+import { ITeacherTrainHttp } from './typings'
 interface Iform{
   name: string,
   page: number,
@@ -42,7 +42,7 @@ export default defineComponent({
     cardList
   },
   setup() {
-    const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const http=(request as ITeacherTrainHttp).teacherTrain
     const tabs = [
       {
         name: '我的实训',

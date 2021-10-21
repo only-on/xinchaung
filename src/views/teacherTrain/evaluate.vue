@@ -37,7 +37,7 @@ import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperimentalHttp } from './typings'
+import { ITeacherTrainHttp } from './typings'
 import { useRoute } from 'vue-router'
 
 export default defineComponent({
@@ -55,7 +55,7 @@ export default defineComponent({
     //   trainId: 50235
     // }
 
-    const http=(request as ITeacherExperimentalHttp).teacherExperimental
+    const http=(request as ITeacherTrainHttp).teacherTrain
     const data = reactive<IData>({
       searchInfo: {
         name: '',

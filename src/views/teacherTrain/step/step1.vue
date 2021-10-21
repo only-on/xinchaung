@@ -141,7 +141,7 @@ import cover4 from 'src/assets/images/teacher-default/cover4.png'
 import cover5 from 'src/assets/images/teacher-default/cover5.png'
 import cover6 from 'src/assets/images/teacher-default/cover6.png'
 import cover7 from 'src/assets/images/teacher-default/cover7.png'
-const http=(request as any).teacherExperimental
+const http=(request as any).teacherTrain
 interface form{
   name:string;
   train_time:string;

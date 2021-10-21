@@ -1,4 +1,4 @@
-interface ITeacherExperimental {
+interface ITeacherTrain {
   releaseScore: Function
   exportScore: Function
   showExperimentalNote: Function
@@ -13,6 +13,6 @@ interface ITeacherExperimental {
   trainDeleted: Function
   getResourceList: Function
 }
-export interface ITeacherExperimentalHttp {
-  teacherExperimental: ITeacherExperimental
+export interface ITeacherTrainHttp {
+  teacherTrain: ITeacherTrain
 }

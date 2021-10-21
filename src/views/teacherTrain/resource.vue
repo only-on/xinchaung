@@ -68,7 +68,7 @@
 import { defineComponent, reactive, toRefs, createVNode, inject, onMounted } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperimentalHttp } from './typings'
+import { ITeacherTrainHttp } from './typings'
 import { message } from 'ant-design-vue'
 import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -84,8 +84,8 @@ export default defineComponent({
     const trainInfo:{trainId: any} = {
       trainId: route.query.trainId
     }
-    const http=(request as ITeacherExperimentalHttp).teacherExperimental
-    console.log (request.teacherExperimental)
+    const http=(request as ITeacherTrainHttp).teacherTrain
+    console.log (request.teacherTrain)
     const data = reactive<Idata>({
       resourceTypeList: ["gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
       searchInfo: {

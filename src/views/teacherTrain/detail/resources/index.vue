@@ -41,7 +41,7 @@ export default defineComponent({
         Empty
     },
     setup(props,context){
-    const http=(request as any).teacherExperimental
+    const http=(request as any).teacherTrain
     const state:Istate=reactive({
         columns: [{
                 title: '资源名称',

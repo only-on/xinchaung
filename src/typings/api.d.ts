@@ -51,7 +51,7 @@ export interface IApiCollection {
     vmApi:IvmApi,
     courseTree: ICourseTreeApis,
     teacherCourseAnalysis: ITeacherCourseAnalysisApis,
-    teacherExperimental:ITeacherTrainAps
+    teacherTrain:ITeacherTrainAps
     teacherExam:ITeacherExamlAps
     teacherAssistant:ITeacherAssistantApis
     teacherHome: ITeacherHome

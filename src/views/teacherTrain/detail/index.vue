@@ -48,7 +48,7 @@ export default defineComponent({
   components:{basicInfo,trainingGuide,trainCourseware,trainEnvironment,customerInfor,groupingInfor,resources},
   setup() {
     let router = useRoute();
-    const http=(request as any).teacherExperimental
+    const http=(request as any).teacherTrain
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
      const state:State=reactive({

@@ -51,7 +51,7 @@ export default defineComponent({
         selectStuClass
     },
     setup(props,context){
-    const http=(request as any).teacherExperimental
+    const http=(request as any).teacherTrain
     const state:Istate=reactive({
       value:1,
       isvisible:false,
