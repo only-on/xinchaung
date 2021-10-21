@@ -35,7 +35,7 @@ export default {
   selectEnvirList: { url: '/api/env/containers', methods: "GET" }
 }
 
-export interface ITeacherExperimentallAps {
+export interface ITeacherTrainAps {
   getLatelyExperimentalList: TFHttpSend;
   releaseScore: TFHttpSend;
   exportScore: TFHttpSend;
@@ -60,4 +60,4 @@ export interface ITeacherExperimentallAps {
   studentGroup: TFHttpSend
 }
 
-export const MODULE_NAME = 'teacherExperimental'
+export const MODULE_NAME = 'teacherTrain'

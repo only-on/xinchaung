@@ -14,7 +14,7 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,Ref,reactive,toRefs ,inject, computed,watch} from 'vue'
 import request from '../../api/index'
-import { IBusinessResp} from '../../typings/fetch.d';
+import { IBusinessResp} from '../../typings/fetch';
 import { useRouter ,useRoute } from 'vue-router';
 import step1 from './step/step1.vue'
 const http=(request as any).studentForum

@@ -1,34 +1,34 @@
 import Layout from 'src/views/common/Layout.vue';
 
 export default {
-    path: "Experimental",
+    path: "train",
     component: Layout,
     meta: {
         title: "实训列表",
-        authCode: 'Experimental'
+        authCode: 'train'
     },
     children: [
         {
             path: "",
-            component: () => import("src/views/teacherExperimental/index.vue"),
+            component: () => import("src/views/teacherTrain/index.vue"),
             meta: {
                 title: "实训列表",
-                authCode: 'Experimental'
+                authCode: 'train'
             },
         },
         {
-            path: "creatExperimental",
-            name: "creatExperimental",
-            component: () => import("src/views/teacherExperimental/creatExperimental.vue"),
+            path: "creatTrain",
+            name: "creatTrain",
+            component: () => import("src/views/teacherTrain/creatTrain.vue"),
             meta: {
                 title: "创建实训",
-                authCode: 'creatExperimental'
+                authCode: 'creatTrain'
             },
         },
         {
             path: 'resource',
             name: 'resource',
-            component: () => import("src/views/teacherExperimental/resource.vue"),
+            component: () => import("src/views/teacherTrain/resource.vue"),
             meta: {
                 title: "实训资源",
                 authCode: 'resource'
@@ -37,7 +37,7 @@ export default {
         {
             path: 'evaluate',
             name: 'evaluate',
-            component: () => import("src/views/teacherExperimental/evaluate.vue"),
+            component: () => import("src/views/teacherTrain/evaluate.vue"),
             meta: {
                 title: "实训考核",
                 authCode: 'evaluate'
@@ -46,7 +46,7 @@ export default {
         {
             path: 'detail',
             name: 'detail',
-            component: () => import("src/views/teacherExperimental/detail/index.vue"),
+            component: () => import("src/views/teacherTrain/detail/index.vue"),
             meta: {
                 title: "实训详情",
                 authCode: 'detail'
