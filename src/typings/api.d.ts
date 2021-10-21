@@ -16,6 +16,7 @@ import { ITeacherAssistantApis } from "src/api/modules/teacherAssistant"
 import { ITeacherHome } from "src/api/modules/teacherHome"
 import { IClassicalAssetApi } from "../api/modules/classicalAsset";
 import { IKnowledgeMap } from 'src/api/modules/knowledgeMap';
+import {IteacherWorkbench} from "src/api/modules/teacherWorkbench"
 
 /**
  * 通用响应类型
@@ -56,4 +57,5 @@ export interface IApiCollection {
     teacherAssistant:ITeacherAssistantApis
     teacherHome: ITeacherHome
     knowledgeMap: IKnowledgeMap
+    teacherWorkbench:IteacherWorkbench
 }

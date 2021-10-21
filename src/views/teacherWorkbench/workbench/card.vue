@@ -1,0 +1,324 @@
+<template>
+  <div class="workbench-card-box">
+    <div class="workbench-content-box">
+      <div class="workbench-info-box">
+        <div class="content-left">
+          <span class="time-text">剩余存活时间</span>
+          <span
+            class="time-no"
+            :style="
+              !isNaN(timeToArray(data.is_permanent)[0])
+                ? 'font-size:54px'
+                : 'font-size:44px'
+            "
+            >{{ timeToArray(data.is_permanent)[0]
+            }}<sub class="time-unit">{{
+              timeToArray(data.is_permanent)[1]
+                ? "/ " + timeToArray(data.is_permanent)[1]
+                : ""
+            }}</sub></span
+          >
+        </div>
+        <div class="content-right">
+          <table class="base-info">
+            <tr>
+              <td>
+                <span>内存</span>
+                <span>{{data.flavor.ram_text}}</span>
+              </td>
+              <td>
+                <span>CPU</span>
+                <span>{{data.flavor.cpu_text}}</span>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <span>硬盘</span>
+                <span>{{data.flavor.disk_text}}</span>
+              </td>
+              <td>
+                <span>GPU</span>
+                <span>{{data.use_gpu_text}}</span>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+      <div class="use-image-box">
+        <span></span>
+        <div class="image-right">
+          <span class="image-title">使用镜像</span>
+          <span class="image-name">{{ data.image.name }}</span>
+        </div>
+      </div>
+      <div class="data-set-box">
+        <span></span>
+        <div class="data-set-right">
+          <span class="data-set-title">使用镜像</span>
+          <span class="data-set-name"
+            >{{ data.dataset.length > 0 ? data.dataset[0].name : '本工作台无数据集！' }}
+            <a-tooltip placement="top" overlayClassName="data-set-more-tooltip" v-if="data.dataset && data.dataset.length > 1">
+              <template #title>
+                <div class="more-list">
+                  <div v-for="(ct, ci) in data.dataset" :key="ci">{{ ct ? ct.name : '' }}</div>
+                </div>
+              </template>
+              <span
+                class="data-set-more icon-gengduo iconfont"
+              ></span> </a-tooltip
+          ></span>
+        </div>
+      </div>
+    </div>
+    <div class="action-box">
+      <div>
+        <span @click="deleteFun">
+          <span class="icon-shanchu iconfont"></span>
+          删除
+        </span>
+      </div>
+      <div>
+        <span @click="enterFun">
+          <span class="iconfont icon-jinru"></span>
+          进入
+        </span>
+      </div>
+      <div>
+        <span @click="openOrCloseFun">
+          <span class="iconfont icon-kaiguanshenx"></span>
+          开启
+        </span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+
+export default defineComponent({
+  props: ["content"],
+  emits: ["openOrCloseFun", "enterFun", "deleteFun"],
+  setup(props, { emit }) {
+    const data = props.content;
+    console.log(data)
+    function openOrCloseFun(val: any) {
+      console.log(11111111);
+      emit("openOrCloseFun", val);
+    }
+    function enterFun(val: any) {
+      emit("enterFun", val);
+    }
+    function deleteFun(val: any) {
+      emit("deleteFun", val);
+    }
+    // 处理时间
+    function timeToArray(time: string) {
+      return time.split(":");
+    }
+    return {
+      data,
+      enterFun,
+      openOrCloseFun,
+      deleteFun,
+      timeToArray,
+    };
+  },
+});
+</script>
+
+
+<style lang="less">
+.workbench-card-box {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  .workbench-content-box {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    height: 264px;
+    .workbench-info-box {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-bottom: auto;
+      .content-left {
+        display: flex;
+        flex-direction: column;
+        background-image: url("../../../assets/workbench/time.png");
+        background-size: 100% 100%;
+        justify-content: space-between;
+        text-align: center;
+        width: 104px;
+        height: 90px;
+        // word-break: normal;
+        white-space: nowrap;
+        .time-text {
+          font-size: 12px;
+          letter-spacing: 1px;
+          color: #5e66ff;
+          margin-top: 10px;
+        }
+        .time-no {
+          font-size: 54px;
+          background: linear-gradient(180deg, #5e66ff, #8955b5);
+          -webkit-background-clip: text;
+          color: transparent;
+          font-weight: 500;
+          position: relative;
+          bottom: 10px;
+          .time-unit {
+            font-size: 12px;
+            color: #5e66ff;
+          }
+        }
+      }
+      .content-right {
+        table.base-info {
+          border-collapse: collapse;
+          border: none;
+          tr {
+            &:nth-child(2) {
+              border-bottom: none;
+              td {
+                border-bottom: none;
+                border-left: none;
+                &:nth-child(2) {
+                  border-right: none;
+                }
+              }
+            }
+            &:nth-child(1) {
+              border-top: none;
+              td {
+                border-top: none;
+                border-left: none;
+                &:nth-child(2) {
+                  border-right: none;
+                }
+              }
+            }
+            td {
+              border: 1px solid #eadff4;
+              height: 50px;
+              padding: 0 10px;
+              text-align: center;
+              > span {
+                display: block;
+                &:nth-child(1) {
+                  font-size: 12px;
+                  color: rgba(5, 1, 1, 0.45);
+                }
+                &:nth-child(2) {
+                  font-size: 14px;
+                  color: #050101;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    .use-image-box {
+      display: flex;
+      flex-direction: row;
+      > span {
+        &:nth-child(1) {
+          background: url("../../../assets/workbench/iamge.png");
+          width: 36px;
+          height: 36px;
+          display: block;
+        }
+      }
+      .image-right {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        .image-title {
+          font-size: 12px;
+          color: rgba(5, 1, 1, 0.45);
+        }
+        .image-name {
+          font-size: 14px;
+          color: #050101;
+        }
+      }
+    }
+    .data-set-box {
+      display: flex;
+      flex-direction: row;
+      margin-top: 20px;
+      > span {
+        &:nth-child(1) {
+          background: url("../../../assets/workbench/data-set.png");
+          width: 36px;
+          height: 36px;
+          display: block;
+        }
+      }
+      .data-set-right {
+        display: flex;
+        flex-direction: column;
+        margin-left: 10px;
+        .data-set-title {
+          font-size: 12px;
+          color: rgba(5, 1, 1, 0.45);
+        }
+        .data-set-name {
+          font-size: 14px;
+          color: #050101;
+          .data-set-more {
+            margin-left: 5px;
+
+            width: 30px;
+            text-align: center;
+            display: inline-block;
+            border-radius: 8px;
+            height: 12px;
+            line-height: 10px;
+            border: 1px solid @theme-color;
+            &:hover {
+              background-color: @theme-color;
+              color: @white;
+              cursor: pointer;
+            }
+          }
+        }
+      }
+    }
+  }
+  .action-box {
+    height: 50px;
+    display: flex;
+    flex-direction: row;
+    background-color: @theme-color;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+    > div {
+      width: 33.3333%;
+      text-align: center;
+      line-height: 50px;
+      color: @white;
+      cursor: pointer;
+    }
+  }
+}
+.data-set-more-tooltip {
+  .ant-tooltip-inner {
+    background: @white;
+    .more-list {
+      color: grey;
+      padding: 0 5px 5px 5px;
+    }
+  }
+  .ant-tooltip-arrow-content {
+    background-color: @white;
+  }
+}
+</style>
+
+
