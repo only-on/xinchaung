@@ -5,9 +5,10 @@
              <div class="uploadDiv">
                 <div v-if="imgSrc">
                   <div :class="value==='upload'?'imgdiv active':'imgdiv'">
-                   <img class="imgHasUpload" :src="imgSrc"/>
-                   <a-radio class="radio" value='upload'></a-radio>
-                   <span :class='edit?"noevents":""' @click="deledeImg" class="iconfont icon-shanchu-copy"></span>
+                    <img class="imgHasUpload" :src="imgSrc"/>
+                    <a-radio class="radio" value='upload'></a-radio>
+                    <!-- :class='edit?"noevents delete":"delete"' -->
+                    <span v-if="!edit" @click="deledeImg" class="iconfont icon-shanchu-copy"></span>
                    </div>
                 </div>
                 <div v-else>
@@ -62,7 +63,6 @@ export default defineComponent({
           },
           {
             id: 1,
-            // src: this.baseUrl + `img/default/d2.jpg`,
             src:`src/assets/images/teacher-default/cover2.png`,
           },
           {
@@ -118,7 +118,7 @@ export default defineComponent({
             fd.append('train_id',props.trainId)
             fd.append('file', state.file)
             http.trainUploadImage({param:fd}).then((res: any) => {
-              state.value='upload'
+            state.value='upload'
             console.log(res)
             console.log(window.location.origin,'window.location.origin')
             state.imgSrc =baseurl+res.datas.url
@@ -130,26 +130,31 @@ export default defineComponent({
         })
           }
           return false
+        },
+        pictureEcho(){
+          state.imgSrc=''
+          let flag:boolean=false
+          let id:any=''
+          state.defaultImg.forEach((item:any)=>{
+            console.log(item.src,props.uploadUrl)
+            if(item.src===props.uploadUrl){
+              flag=true
+              id=item.id
+              }
+           })
+            if(flag){
+              return state.value=id
+            }else{
+              state.imgSrc=baseurl+props.uploadUrl
+              return state.value='upload'
+            }
         }
       }
       watch(()=>props.uploadUrl,(val)=>{
-        console.log(val)
-        
-        state.defaultImg.forEach((item:any)=>{
-          console.log(item.src)
-          console.log(item.src===props.uploadUrl)
-          if(item.src===props.uploadUrl){
-            return state.value=item.id
-          }
-        })
-        if(!state.value){
-          state.value='upload'
-          state.imgSrc='http://192.168.101.150:85/'+props.uploadUrl
-        // state.imgSrc=props.uploadUrl
-        }
+        methods.pictureEcho()
       })
       onMounted(()=>{
-          state.imgSrc=baseurl+props.uploadUrl
+        methods.pictureEcho()
         })
       return {...methods,...toRefs(state)}
     }
@@ -160,6 +165,9 @@ export default defineComponent({
   width:100%;
   display: flex;
   flex-wrap: wrap;
+  // .uploadDiv:hover .delete{
+  //     display:block;
+  // }
   .uploadDiv{
     display: flex;
     justify-content: center;
@@ -169,17 +177,19 @@ export default defineComponent({
     border: 1px dashed @theme-color;
     border-radius: 4px;
     position: relative;
-    .noevents{
-      // pointer-events: none;
-      cursor: no-drop;;
-    }
+    // .delete{
+    //   display: none;
+    // }
+    // .noevents{
+    //   // pointer-events: none;
+    //   cursor: no-drop;
+    // }
     .icon-shanchu-copy{
-      color:red;
+      color:#ffcc33;
       font-size:20px;
       position: absolute;
       right: 10px;
       bottom:10px;
-      // display: none;
     }
     .upload-text{
       text-align: center;

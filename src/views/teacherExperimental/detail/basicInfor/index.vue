@@ -48,7 +48,7 @@ interface Istate{
     formRef:any
 }
 import { defineComponent,onMounted,reactive,toRefs,watch} from 'vue'
-import uploadImage from 'src/components/uploadImage/uploadImage.vue'
+import uploadImage from '../../components/uploadImage/uploadImage.vue'
 import request from 'src/api/index'
 import {cloneDeep} from 'lodash'
 export default defineComponent({

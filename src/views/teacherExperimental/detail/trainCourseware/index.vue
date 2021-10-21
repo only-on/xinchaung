@@ -63,10 +63,9 @@ export default defineComponent({
             fd.append('file',file)
             http.trainUploadImage({param:fd}).then((res: any) => {
             state.file=res.datas.url
-            // http://localhost:3000/proxyPrefix
         })
-        .catch(() => {
-          message.error('网络错误')
+        .catch((err:any) => {
+          message.error(err.error)
         })
         return false
        },
@@ -99,6 +98,9 @@ export default defineComponent({
     }
     .pdtView{
         margin-top: 30px;
+    }
+    .ant-upload-list-item-info{
+        width: 450px;
     }
 }
 </style>

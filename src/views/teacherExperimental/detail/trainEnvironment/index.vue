@@ -23,33 +23,40 @@
                     </div>
                </div>
            </div>
-           <div class="uploadEnvir" v-if="edit">
+           <div class="uploadEnvir" v-if="edit" @click="selectEnvir">
                <div>
                    <span class="iconfont icon-tianjia"></span>
                </div>
                <div>选择环境</div>
+           </div>
+           <div>
+               <selectEnvir @select-envir-ok='selectEnvirOk' @select-envir-cancel='selectEnvirCancel' :envirVisible='envirVisible' />
            </div>
        </div>
     </div>
 </template>
 <script lang="ts">
 interface Istate{
-   edit:boolean
+   edit:boolean,
+   envirVisible:boolean
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
+import selectEnvir from '../../components/selectEnvir/index.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'trainEnvironment',
     props:['propTrainDetailInfo','trainId'],
     components:{
-        Empty
+        Empty,
+        selectEnvir
     },
     setup(props,context){
     const http=(request as any).teacherExperimental
     const state:Istate=reactive({
-      edit:false
+      edit:false,
+      envirVisible:false
     })
     const methods={
       toEdit(){
@@ -57,6 +64,15 @@ export default defineComponent({
       },
       toSave(){
           state.edit=false
+      },
+      selectEnvir(){
+          state.envirVisible=true
+      },
+      selectEnvirOk(){
+          state.envirVisible=false
+      },
+      selectEnvirCancel(){
+          state.envirVisible=false
       }
     }
     onMounted(()=>{
