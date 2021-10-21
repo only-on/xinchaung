@@ -177,7 +177,7 @@ export default defineComponent({
     var selectedPaperIds:number[]=reactive([])          // 已选择的题目id  description
     const totalScore = ref<number>(0);
     // var formRef:Ref<string> =ref('formRef')
-    const formRef = ref();
+    // const formRef = ref();
     const state:Istate=reactive({
       formRef:'formRef',
     })
@@ -362,7 +362,7 @@ export default defineComponent({
     onMounted(()=>{
      initData()
     })
-    return {formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
+    return {...toRefs(state),totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
   },
 })
 </script>
@@ -574,7 +574,7 @@ export default defineComponent({
         display: flex;
         align-items: center;
         justify-content: space-between;
-        line-height: 40px;
+        line-height: 50px;
         .num{
           color: red;
         }

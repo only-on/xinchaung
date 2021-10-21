@@ -7,7 +7,7 @@
         <span class="iconfont icon-fanhui" @click="go"></span>
     </div>
     <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-      :pagination="{pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}"  
+      :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}"  
       class="components-table-demo-nested">
       <template #operation="{record}">
         <span class="iconfont icon-download" @click="downloadResource(record)"></span>

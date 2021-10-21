@@ -886,3 +886,15 @@
 @border-radius-card: @border-radius-default; // 默认边框、弹窗圆角值
 @border-radius-default: 4px; // 默认圆角值
 @shadow-ring: 0 0 6px 3px @shadow-color; // 环状box-shadow
+
+// a-date-picker  时间选择器去除秒选项
+
+.ant-calendar-time-picker-select:last-child{
+  display: none;
+}
+.ant-calendar-time-picker-select {
+  overflow-y: auto;
+}
+.ant-calendar-time-picker-column-3 .ant-calendar-time-picker-select {
+  width: 50%;
+}

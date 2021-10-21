@@ -52,7 +52,7 @@
 </template>
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,Ref,inject,createVNode } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import {Modal,message} from 'ant-design-vue';
@@ -77,6 +77,7 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
+    const route=useRoute();
     var list:IlistItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
     const http=(request as any).teacherExam
@@ -136,6 +137,11 @@ export default defineComponent({
     function pageChange(current:any,pageSize:any){
         // console.log(current, pageSize);
         ForumSearch.page=current
+        const {query,path}= route
+        router.replace({
+              path: path,
+              query: {...query, page: current},
+        })
         initData()
       }
     var updata=inject('updataNav') as Function

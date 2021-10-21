@@ -11,9 +11,14 @@ export default{
   publish:{url:`/api/v1/question/exams/{exam_id}/publish`,method:'PUT',},
   unpublished:{url:`/api/v1/question/exams/{exam_id}/unpublished`,method:'PUT',},
   getExaminationDetail:{url:`/api/v1/question/exams/{exam_id}`,method: "GET"},
-  CreatedExamination:{url:`/api/v1/question/exams`,method:"POST",dataType:'json'},
-  getStudent:{url:`/api/v1/question/exams/{exam_id}/users`,method: "GET"},
-  getClass:{url:`/api/v1/question/exams/{exam_id}/classes`,method: "GET"},
+  getStudent:{url:`/api/v1/question/exams/users`,method: "GET"},
+  getClass:{url:`/api/v1/question/exams/classes`,method: "GET"},
+  appointment:{url:`/api/v1/question/exams/booking/list`,method: "GET"},
+  examsDateTesting:{url:`/api/v1/question/exams/booking/date-check`,method: "POST"},
+  submit:{url:`/api/v1/question/exams`,method:'POST',dataType:'json'},
+  editSubmit:{url:`/api/v1/question/exams/{editId}`,method: "PUT",dataType:'json'},
+  getClassDetaileList:{url:`/api/v1/question/exams/classes/detail`,method:'GET',},
+  initialization:{url:`api/v1/question/exams/users/reset-password`,method:'PUT',},
 }
 
 export interface ITeacherExamlAps {
@@ -30,6 +35,12 @@ export interface ITeacherExamlAps {
   CreatedExamination: TFHttpSend;
   getStudent: TFHttpSend;
   getClass: TFHttpSend;
+  appointment: TFHttpSend;
+  examsDateTesting: TFHttpSend;
+  submit: TFHttpSend;
+  editSubmit: TFHttpSend;
+  getClassDetaileList: TFHttpSend;
+  initialization: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExam'

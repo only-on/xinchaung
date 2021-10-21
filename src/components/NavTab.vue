@@ -75,7 +75,7 @@ export default defineComponent({
       const {query,path}= route
       router.replace({
             path: path,
-            query: {...query, currentTab: val },
+            query: {currentTab: val},
        })
     }
     function initData(){

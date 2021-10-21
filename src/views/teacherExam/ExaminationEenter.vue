@@ -27,51 +27,51 @@
           </div>
           <div class="examination-paper-card" v-for="v in list" :key="v.id">
             <div class="kernel">
-            <div class="card-item-header">
-              <div class="card-item-title">{{v.name}}</div>
-              <div class="card-item-text">{{v.paper_name}}</div>
-              <div class="card-item-text card-item-time">{{v.start_day}}&nbsp;&nbsp;&nbsp;&nbsp;{{v.times}}</div>
-              <div class="card-item-operate">
-                <i class="iconfont icon-bianji1" @click="edit(v.id)" :class="v.status===3?'cursorNotAllowed':''"></i>
-                <i class="iconfont icon-shanchu" @click="delate(v.id)" :class="v.status===3?'cursorNotAllowed':''"></i>
+              <div class="card-item-header">
+                <div class="card-item-title">{{v.name}}</div>
+                <div class="card-item-text">{{v.paper_name}}</div>
+                <div class="card-item-text card-item-time">{{v.start_day}}&nbsp;&nbsp;&nbsp;&nbsp;{{v.times}}</div>
+                <div class="card-item-operate">
+                  <i class="iconfont icon-bianji1" @click="edit(v.id)" :class="v.status!==2?'cursorNotAllowed':''"></i>
+                  <i class="iconfont icon-shanchu" @click="delate(v.id)" :class="v.status!==2?'cursorNotAllowed':''"></i>
+                </div>
               </div>
-            </div>
-            <div class="card-item-content">
-              <div class="score-text-scale">
-                <a-progress type="circle" :percent="v.pass_rate" :width="50" :stroke-width="14" 
-                    :showInfo="true" 
-                    :stroke-color="'#8955b5'" 
-                    :trail-color="'#ddd'"
-                  />
+              <div class="card-item-content">
+                <div class="score-text-scale">
+                  <a-progress type="circle" :percent="v.pass_rate" :width="50" :stroke-width="14" 
+                      :showInfo="true" 
+                      :stroke-color="'#8955b5'" 
+                      :trail-color="'#ddd'"
+                    />
+                </div>
+                <div class="score-num-middle">
+                  <div>总分：{{v.all_score}}</div>
+                  <div>通过比例：{{v.pass_rate}}%</div>
+                </div>
+                <div class="score-num-right" @click="publish(v.id,v.is_publish)">
+                  <a-button type="primary" :disabled="v.status !== 2" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
+                </div>
               </div>
-              <div class="score-num-middle">
-                <div>总分：{{v.all_score}}</div>
-                <div>通过比例：{{v.pass_rate}}%</div>
+              <div class="card-item-content">
+                <div class="score-text-scale">
+                  <a-progress type="circle" :percent="Math.round(v.closed_students_count/v.students_count*100)" :width="50" :stroke-width="14" 
+                      :showInfo="true" 
+                      :stroke-color="'#FFB900'" 
+                      :trail-color="'#ddd'"
+                    >
+                    <template #format="percent">
+                      <span :title="percent">{{ v.closed_students_count }}</span>
+                    </template>
+                  </a-progress>
+                </div>
+                <div class="score-num-middle">
+                  <div>学生数：{{v.students_count}}</div>
+                  <div>已交卷：{{v.closed_students_count}}</div>
+                </div>
+                <div class="score-num-right" @click="Achievement(v.id)">
+                  <a-button type="primary" :disabled="v.status!==3" ghost>成绩统计</a-button>
+                </div>
               </div>
-              <div class="score-num-right" @click="publish(v.id,v.is_publish)">
-                <a-button type="primary" :disabled="v.status!==2" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
-              </div>
-            </div>
-            <div class="card-item-content">
-              <div class="score-text-scale">
-                <a-progress type="circle" :percent="Math.round(v.closed_students_count/v.students_count*100)" :width="50" :stroke-width="14" 
-                    :showInfo="true" 
-                    :stroke-color="'#FFB900'" 
-                    :trail-color="'#ddd'"
-                  >
-                  <template #format="percent">
-                    <span :title="percent">{{ v.closed_students_count }}</span>
-                  </template>
-                </a-progress>
-              </div>
-              <div class="score-num-middle">
-                <div>学生数：{{v.students_count}}</div>
-                <div>已交卷：{{v.closed_students_count}}</div>
-              </div>
-              <div class="score-num-right" @click="Achievement(v.id)">
-                <a-button type="primary" :disabled="v.status!==3" ghost>成绩统计</a-button>
-              </div>
-            </div>
             </div>
           </div>
         </div>
@@ -88,7 +88,7 @@
 </template>
 <script lang="tsx">
 import { defineComponent,ref, onMounted,reactive,Ref,inject,createVNode } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import {Modal,message} from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
@@ -119,6 +119,7 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
+    const route=useRoute();
     var list:IlistItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
     const http=(request as any).teacherExam
@@ -157,6 +158,11 @@ export default defineComponent({
         // console.log(current, pageSize);  CreatedExamination
         ForumSearch.page=current
         initData()
+        const {query,path}= route
+        router.replace({
+              path: path,
+              query: {...query, page: current},
+        })
     }
     function add(){
       router.push('/teacher/teacherExam/CreatedExamination')
@@ -193,6 +199,8 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
+     const {page}= route.query
+     page?ForumSearch.page=Number(page):''
      initData()
     })
     return {list,loading,ForumSearch,totalCount,search,pageChange,Achievement,delate,add,edit,publish};

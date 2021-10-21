@@ -128,8 +128,8 @@ export default function request({
   init.method = method.toLocaleUpperCase();
   // 请求headers
   init.headers = new Headers(httpHeaders);
-  // GET DELETE 请求特殊处理
-  if (["GET", "DELETE","PUT"].includes(init.method)) {
+  // GET  请求特殊处理
+  if (["GET"].includes(init.method)) {
     const urlParamsStr = urlParams(body as Record<string, string>);
     // 重新设置请求路径
     fetchUrl = urlParamsStr ? [fetchUrl, urlParamsStr].join("?") : fetchUrl;
