@@ -131,7 +131,7 @@ export default defineComponent({
       })
     }
     function editExperimental(id:number){
-      router.push({path:'/teacher/Experimental/detail',query:{id:id}})
+      router.push({path:'/teacher/train/detail',query:{id:id}})
     }
     // 考核
     const evaluate = (id: number) => {

@@ -29,10 +29,9 @@ export default {
   saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
-
   studentGroup: { url: '/teacher-train/get-student?{train_id}', method: "POST", dataType: 'formdata' },
-  // api/env/containers?name=&limit=10&page=1&withs=image%2Cconfig%2Cimage.classify&types=
-  selectEnvirList: { url: '/api/env/containers', methods: "GET" }
+  selectEnvirList: { url: '/api/env/containers', method: "GET" },
+  saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' }
 }
 
 export interface ITeacherTrainAps {

@@ -103,8 +103,6 @@ export default defineComponent({
         },
         deledeImg(){
           state.imgSrc=''
-          // context.emit('img-src','')
-          console.log(state.imgSrc,'hh')
         },
         beforeUpload(file:any){
           const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
@@ -119,10 +117,7 @@ export default defineComponent({
             fd.append('file', state.file)
             http.trainUploadImage({param:fd}).then((res: any) => {
             state.value='upload'
-            console.log(res)
-            console.log(window.location.origin,'window.location.origin')
             state.imgSrc =baseurl+res.datas.url
-            // state.imgSrc =res.datas.url
             context.emit('img-src',res.datas.url)
         })
         .catch(() => {
@@ -136,7 +131,6 @@ export default defineComponent({
           let flag:boolean=false
           let id:any=''
           state.defaultImg.forEach((item:any)=>{
-            console.log(item.src,props.uploadUrl)
             if(item.src===props.uploadUrl){
               flag=true
               id=item.id

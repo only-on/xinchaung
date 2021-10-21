@@ -17,7 +17,20 @@
            </div>
            <div>
                 <a-config-provider>
-                    <a-table :columns="columns" :data-source="data"></a-table>
+                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" :rowkey='rowkey'>
+                        <template #stuaction>
+                            <div>
+                                <span>移除</span>
+                                <span>初始化密码</span>
+                            </div>
+                        </template>
+                        <template #classaction>
+                            <div>
+                                <span>查看</span>
+                                <span>删除</span>
+                            </div>
+                        </template>
+                    </a-table>
                     <template #renderEmpty>
                         <div><empty type="tableEmpty"></empty></div>
                     </template>
@@ -60,19 +73,17 @@ export default defineComponent({
             title: '班级名称',
             dataIndex: 'classname',
             align: 'center',
-            scopedSlots: { customRender: 'classname' },
         },
         {
             title: '人数',
             dataIndex: 'total',
             align: 'center',
-            scopedSlots: { customRender: 'total' },
         },
         {
             title: '操作',
-            dataIndex: '',
+            dataIndex: 'classaction',
             align: 'center',
-            scopedSlots: { customRender: 'action' },
+            slots: { customRender: 'classaction' },
         },
         ],
       stuColumns:[
@@ -81,47 +92,52 @@ export default defineComponent({
         dataIndex: 'stu_no',
         align: 'left',
         ellipsis: true,
-        scopedSlots: { customRender: 'stu_no' },
     },
     {
         title: '姓名',
         dataIndex: 'username',
         ellipsis: true,
-        scopedSlots: { customRender: 'username' },
     },
     {
         title: '所属院系',
         dataIndex: 'department',
         ellipsis: true,
-        scopedSlots: { customRender: 'department' },
     },
     {
         title: '性别',
         dataIndex: 'gender',
-        scopedSlots: { customRender: 'gender' },
     },
     {
         title: '邮箱',
         dataIndex: 'email',
         align: 'center',
         ellipsis: true,
-        scopedSlots: { customRender: 'email' },
     },
     {
         title: '电话',
         dataIndex: 'phone',
         ellipsis: true,
-        scopedSlots: { customRender: 'phone' },
     },
     {   title: '操作', 
-        dataIndex: '', 
+        dataIndex: 'stuaction', 
         align: 'center', 
-        scopedSlots: { customRender: 'action' } 
+        slots: { customRender: 'stuaction' } 
     },
         ],
       columns:[],
       data:[]
     })
+    const rowSelection = {
+            onChange: (selectedRowKeys:any, selectedRows:any) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            },
+            onSelect: (record:any, selected:any, selectedRows:any) => {
+                console.log(record, selected, selectedRows);
+            },
+            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
+                console.log(selected, selectedRows, changeRows);
+            },
+        };
     const methods={
        onChange(e:any) {
         console.log('radio checked', e.target.value);
@@ -132,12 +148,21 @@ export default defineComponent({
         },
         ifSelect(){
             state.isvisible=false
+        },
+        rowkey(record: {}, index: number){
+         return index
         }
     }
     onMounted(()=>{
         state.columns=state.stuColumns
+        console.log('请求学生接口')
+        state.data=[
+            {stu_no:1,username:'huahwww',classname:'班级1',total:2},
+            {stu_no:2,username:'huahwww',classname:'班级2',total:12},
+            {stu_no:3,username:'huahwww',classname:'班级3',total:23},
+            ]
     })
-    return {...toRefs(state),...methods}
+    return {...toRefs(state),...methods,rowSelection}
     }
 })
 </script>

@@ -6,7 +6,7 @@
        </div>
        <div>
            <a-config-provider>
-                    <a-table class="groupTable" :columns="columns" :data-source="data">
+                    <a-table class="groupTable" :columns="columns" :data-source="data" :rowkey='rowkey'>
                         <template #action>
                             <div class="action">
                                <span @click="deleteGroup">删除</span>
@@ -124,6 +124,9 @@ export default defineComponent({
     //   手动分组
       manualGroup(){
           state.editvisible=true
+      },
+      rowkey(record: {}, index: number){
+         return index
       }
     }
     onMounted(()=>{

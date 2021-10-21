@@ -15,19 +15,33 @@
                     <div class="btntype">类型：</div>
                     <div :class="typeNumber===Number(index)?'btn selectedBtn':'btn'" v-for="(item,index) in typeTabs" :key="index.toString()" @click="selectEnvirType(index)">{{item}}</div>
                 </div>
-                <div v-if="envirListData.length">
-                    <div class="searchInput">
-                        <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:340px;padding:4px 30px 4px 11px" placeholder="请输入目录名称关键字查询" />
-                    </div>
-                    <div  class="tableList">
-                        <div class="listItem" v-for="(item,index) in envirListData"  :key="index.toString()">
-                            <div class="name">{{item.image.name}}</div>
-                            <div class="tags">标签：{{item.image.tag.join()}}</div>
-                            <div class="selectDelete">
-                                <span>选择</span>
-                            </div>
+                <div class="searchInput">
+                    <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:340px;padding:4px 30px 4px 11px" placeholder="请输入目录名称关键字查询" />
+                </div>
+                <div v-if="envirListData.length" class="tableList">
+                    <div class="listItem" v-for="(item,index) in envirListData"  :key="index.toString()">
+                        <div class="name">{{item.image.name}}</div>
+                        <div class="tags">标签：{{item.image.tag.join()}}</div>
+                        <div class="selectDelete">
+                            <span v-if="choice" @click="choiceEnvir(item)">选择</span>
+                            <span v-else @click="deleteEnvir(item)" class="iconfont icon-shanchu-copy"></span>
                         </div>
                     </div>
+                    <a-pagination
+                        v-model="pageInfo.current"
+                        :page-size-options="pageInfo.pageSizeOptions"
+                        :total="pageInfo.total"
+                        show-size-changer
+                        :page-size="pageInfo.pageSize"
+                        :hideOnSinglePage='true'
+                        @change="currentPageChange"
+                        @showSizeChange="onShowSizeChange"
+                    >
+                        <template #buildOptionText="props">
+                            <span v-if="props.value !== '50'">{{ props.value }}条/页</span>
+                            <span v-if="props.value === '50'">全部</span>
+                        </template>
+                    </a-pagination>
                 </div>
                 <div v-else>
                     <empty/>
@@ -44,6 +58,13 @@ interface envirType{
     withs?:any,
     types?:any,
 }
+interface pageInfoType{
+    pageSizeOptions?:any[],
+    current?:number,
+    pageSize?:number,
+    total?:number,
+    pageCount?:number,
+}
 interface Istate{
     confirmLoading:boolean,
     searchValue:string,
@@ -51,6 +72,9 @@ interface Istate{
     envirListData:any[],
     typeTabs:any[],
     typeNumber:number,
+    pageInfo:pageInfoType,
+    choice:boolean,
+    choicedEnvir:any[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -70,29 +94,56 @@ export default defineComponent({
        searchValue:'',
        envirListParmas:{},
        envirListData:[],
-       typeNumber:0
+       typeNumber:0,
+       pageInfo:{
+           pageSizeOptions: ['10', '20', '30', '40', '50'],
+       },
+       choice:true,
+       choicedEnvir:[]
     })
     const methods={
         handleOk(){
-            context.emit('selectEnvirOk')
+            context.emit('selectEnvirOk',state.choicedEnvir)
         },
         handleCancel(){
             context.emit('selectEnvirCancel')
         },
         searchData(){
-
+            state.envirListParmas.name=state.searchValue
+            methods.getSelectEnvirList()
         },
         getSelectEnvirList(){
             state.envirListParmas.withs='image,config,image.classify'
             http.selectEnvirList({param:state.envirListParmas}).then((res:any)=>{
                 console.log(res)
                 state.envirListData=res.data.list
+                state.pageInfo.total=res.data.page.totalCount
+                state.pageInfo.pageSize=res.data.page.perPage
+                state.pageInfo.current=res.data.page.currentPage
+                state.pageInfo.pageCount=res.data.page.pageCount
             })
         },
         selectEnvirType(index:any){
-            state.envirListParmas.types=index
-            state.typeNumber=Number(index)===0?'':index
+            state.envirListParmas.types=index===0?'':index
+            state.typeNumber=index
             methods.getSelectEnvirList()
+        },
+        onShowSizeChange(current:any, pageSize:any) {
+            console.log(current)
+            state.pageInfo.pageSize = pageSize;
+            state.envirListParmas.limit=pageSize;
+            methods.getSelectEnvirList()
+        },
+        currentPageChange(page:any, pageSize:any){
+            state.envirListParmas.page=page;
+            methods.getSelectEnvirList()
+        },
+        choiceEnvir(item:any){
+            state.choice=false
+            state.choicedEnvir=item
+        },
+        deleteEnvir(item:any){
+            context.emit('deleteOneEnivr',item)
         }
     }
     onMounted(()=>{

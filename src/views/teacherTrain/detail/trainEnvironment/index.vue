@@ -4,7 +4,7 @@
            <div>
                <span class="star">*</span>
                <span>实训环境</span>
-               <span class="orange">已选总内存：<span class="number">2</span>G</span>
+               <span class="orange">已选总内存：<span class="number">{{memoryNumber()}}</span>G</span>
            </div>
            <div>
                <a-button type="primary" v-if="!edit" @click="toEdit">编辑</a-button>
@@ -19,7 +19,7 @@
                     <div>CPU:{{item.cpu}}</div>
                     <div class="cont-delete">
                         <span>硬盘:{{item.disk}}</span>
-                        <span><span v-if="edit" class="iconfont icon-shanchu-copy"></span></span>
+                        <span><span @click="deleteSelectedEnvir(item)" v-if="edit" class="iconfont icon-shanchu-copy"></span></span>
                     </div>
                </div>
            </div>
@@ -30,7 +30,11 @@
                <div>选择环境</div>
            </div>
            <div>
-               <selectEnvir @select-envir-ok='selectEnvirOk' @select-envir-cancel='selectEnvirCancel' :envirVisible='envirVisible' />
+               <selectEnvir 
+               @select-envir-ok='selectEnvirOk' 
+               @select-envir-cancel='selectEnvirCancel'
+               @delete-one-enivr='deleteOneEnivr'
+               :envirVisible='envirVisible' />
            </div>
        </div>
     </div>
@@ -63,16 +67,44 @@ export default defineComponent({
           state.edit=true
       },
       toSave(){
+          if(props.propTrainDetailInfo.server.length<1){
+              message.warning('请至少选择一项记录！')
+              return
+          }
           state.edit=false
+          const formdata=new FormData()
+          formdata.append('train_id',props.trainId)
+          props.propTrainDetailInfo.server.forEach((item:any) => {
+              formdata.append('container_id[]',item.id)
+          });
+          http.saveSelectEnvir({param:formdata}).then((res:any)=>{
+              console.log(res)
+              message.success('保存成功')
+          })
       },
       selectEnvir(){
           state.envirVisible=true
       },
-      selectEnvirOk(){
+      selectEnvirOk(value:any){
+          context.emit('selectedEnvie',value)
           state.envirVisible=false
       },
       selectEnvirCancel(){
           state.envirVisible=false
+      },
+      deleteSelectedEnvir(value:any){
+           context.emit('selectedEnvirDelete',value)
+      },
+      deleteOneEnivr(value:any){
+          context.emit('selectedEnvirDelete',value)
+      },
+      memoryNumber(){
+          let ramnumber:number=0
+          props.propTrainDetailInfo.server.forEach((item:any) => {
+              console.log(item.ram)
+              ramnumber=ramnumber+Number(item.ram.split('G')[0])
+          });
+          return ramnumber
       }
     }
     onMounted(()=>{

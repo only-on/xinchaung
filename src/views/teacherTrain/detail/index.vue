@@ -6,7 +6,7 @@
         </div>
         <div class="info-right">
           <div>
-            <div>{{trainDetailInfo.name}}namenamemnem</div>
+            <div>{{trainDetailInfo.name}}</div>
             <div>
               课时数：{{trainDetailInfo.train_time}}
             </div>
@@ -23,7 +23,14 @@
     <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
     </a-tabs>
-    <component  :is="componentName" :propTrainDetailInfo='propTrainDetailInfo' :trainId="trainId" @save-success='saveSuccess' @uploadppt='uploadppt' />
+    <component  
+    :is="componentName" 
+    :propTrainDetailInfo='propTrainDetailInfo' 
+    :trainId="trainId" 
+    @save-success='saveSuccess' 
+    @uploadppt='uploadppt' 
+    @selected-envie='selectedEnvie' 
+    @selected-envir-delete='selectedEnvirDelete' />
   </div>
 </template>
 <script lang="ts">
@@ -90,6 +97,20 @@ export default defineComponent({
       },
       callback(key:any){
         state.componentName=componentsNames.value[key].name
+      },
+      selectedEnvie(value:any){
+        const item={id:value.id,name:value.image.name,cpu:value.config.cpu_text,disk:value.config.disk_text,ram:value.config.ram_text}
+        state.propTrainDetailInfo.server?.push(item)
+      },
+      selectedEnvirDelete(value:any){
+        console.log(value)
+        let deleteIndex:number=0
+        state.propTrainDetailInfo.server.forEach((item:any,index:number) => {
+            if(item.id===value.id){
+              return deleteIndex=index
+            }
+        });
+        state.propTrainDetailInfo.server.splice(deleteIndex,1)
       }
     }
     return {...toRefs(state),...methods,componentsNames,defaultImg: '/src/assets/images/Experimental/wlkc.png'}

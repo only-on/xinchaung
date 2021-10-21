@@ -2,6 +2,7 @@
     <div class="selectStuClass" v-layout-bg>
         <a-modal
         width="1000px"
+        :rowkey='rowkey'
         :title="selectvalue===1?'学生选择':'班级选择'"
         :visible="isvisible"
         :confirm-loading="confirmLoading"
@@ -37,7 +38,7 @@
                 </a-form> 
             </div>
             <a-config-provider>
-                    <a-table :columns="columns" :data-source="data"></a-table>
+                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection"></a-table>
                     <template #renderEmpty>
                         <div><empty type="tableEmpty"></empty></div>
                     </template>
@@ -130,16 +131,35 @@ export default defineComponent({
       },
       handleCancel(){
           context.emit('ifSelect','cancel')
+      },
+      rowkey(record: {}, index: number){
+         return index
       }
     }
+    const rowSelection = {
+            onChange: (selectedRowKeys:any, selectedRows:any) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            },
+            onSelect: (record:any, selected:any, selectedRows:any) => {
+                console.log(record, selected, selectedRows);
+            },
+            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
+                console.log(selected, selectedRows, changeRows);
+            },
+        };
     watch(()=>props.selectvalue,(val:any)=>{
         console.log(val) 
         state.columns=val===1?state.selectStu:state.selectClass  
     })
     onMounted(()=>{
         state.columns=state.selectStu
+        state.data=[
+            {stu_no:1,username:'huahwww',classname:'班级1',total:2},
+            {stu_no:2,username:'huahwww',classname:'班级2',total:12},
+            {stu_no:3,username:'huahwww',classname:'班级3',total:23},
+            ]
     })
-    return {...toRefs(state),...methods}
+    return {...toRefs(state),...methods,rowSelection}
     }
 })
 </script>
