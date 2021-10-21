@@ -1,14 +1,18 @@
 - [Vue 3 + Typescript + Vite](#vue-3--typescript--vite)
-    - [框架特性支持清单](#框架特性支持清单)
-    - [规范](#规范)
-    - [推荐的 IDE 设置](#推荐的-ide-设置)
-        - [若使用 `<script setup>`](#若使用-script-setup)
-    - [对 TS 中的`.vue`导入的类型支持](#对-ts-中的vue导入的类型支持)
-        - [若使用 Volar](#若使用-volar)
-        - [若使用 Vetur](#若使用-vetur)
-    - [开发指南](#开发指南)
-        - [主题变更](#主题变更)
-        - [国际化支持](#国际化支持)
+  - [框架特性支持清单](#框架特性支持清单)
+  - [规范](#规范)
+  - [推荐的 IDE 设置](#推荐的-ide-设置)
+    - [若使用 `<script setup>`](#若使用-script-setup)
+  - [对 TS 中的`.vue`导入的类型支持](#对-ts-中的vue导入的类型支持)
+    - [若使用 Volar](#若使用-volar)
+    - [若使用 Vetur](#若使用-vetur)
+  - [开发指南](#开发指南)
+    - [主题变更](#主题变更)
+    - [国际化支持](#国际化支持)
+    - [api](#api)
+      - [$message](#message)
+      - [$confirm](#confirm)
+    - [面包屑](#面包屑)
 
 # Vue 3 + Typescript + Vite
 
@@ -18,21 +22,21 @@ vue3 版本前端工程模板。
 
 ## 框架特性支持清单
 
-| 特性              | 维护者 | 状态 | 计划截止时间 | 链接 | 备注 |
-| ----------------- | ------ | ---- | ------------ | ---- | ---- |
-| 主题管理          | 江月   | ✅   |              |      |      |
-| 代码生成工具      |        | 💤   |              |      |      |
-| 路由管理          |   元皓    | ✅   |              |      |      |
-| 状态管理          |   元皓     |  ✅  |              |      |      |
-| 国际化支持        | 江月   | ✅   |              |      |      |
-| eslint            |        | 💤   |              |      |      |
-| husky             | 江月   | ✅   |              |      |      |
-| 提交注释检查      | 江月   | ✅   |              |      |      |
-| 提交前代码检查    |        | 💤   |              |      |      |
-| api proxy         |   全体     | ✅   |              |      |      |
-| http 库           |  元皓      | ✅   |              |      |      |
-| 日志代码清除      |        | 💤   |              |      |      |
-| 配置管理          |        | 💤   |              |      |      |
+| 特性            | 维护者 | 状态 | 计划截止时间 | 链接 | 备注 |
+| --------------- | ------ | ---- | ------------ | ---- | ---- |
+| 主题管理        | 江月   | ✅   |              |      |      |
+| 代码生成工具    |        | 💤   |              |      |      |
+| 路由管理        | 元皓   | ✅   |              |      |      |
+| 状态管理        | 元皓   | ✅   |              |      |      |
+| 国际化支持      | 江月   | ✅   |              |      |      |
+| eslint          |        | 💤   |              |      |      |
+| husky           | 江月   | ✅   |              |      |      |
+| 提交注释检查    | 江月   | ✅   |              |      |      |
+| 提交前代码检查  |        | 💤   |              |      |      |
+| api proxy       | 全体   | ✅   |              |      |      |
+| http 库         | 元皓   | ✅   |              |      |      |
+| 日志代码清除    |        | 💤   |              |      |      |
+| 配置管理        |        | 💤   |              |      |      |
 | ant-design 集成 | 全体   | ✅   |              |      |      |
 
 ## 规范
@@ -112,27 +116,26 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 对于业务自身的国际化工作，其国际化文件位置位于：`src/i18n`内部，在整个项目中已经将`vue-i18n`配置好了（具体查看源代码），在组件中使用方式如下：
 
 ```html
-
 <template>
-    <div>
-        <p>{{ t("home.hello") }}</p>
-        <a-calendar :fullscreen="false" :value="moment()"/>
-    </div>
+  <div>
+    <p>{{ t("home.hello") }}</p>
+    <a-calendar :fullscreen="false" :value="moment()" />
+  </div>
 </template>
 <script lang="ts">
-    import {defineComponent} from "vue";
-    import moment from "moment";
-    import "moment/dist/locale/zh-cn";
-    import {useI18n} from "vue-i18n";
+  import { defineComponent } from "vue";
+  import moment from "moment";
+  import "moment/dist/locale/zh-cn";
+  import { useI18n } from "vue-i18n";
 
-    export default defineComponent({
-        name: "I18n",
-        setup(props) {
-            // 这段代码必须在setup的顶部执行
-            const {t} = useI18n();
-            return {moment, t};
-        },
-    });
+  export default defineComponent({
+    name: "I18n",
+    setup(props) {
+      // 这段代码必须在setup的顶部执行
+      const { t } = useI18n();
+      return { moment, t };
+    },
+  });
 </script>
 ```
 
@@ -144,12 +147,12 @@ Run `Volar: Switch TS Plugin on/off` from VSCode command palette.
 
 #### $message
 
-全局消息提示，通过`inject`可以得到全局`$message`对象来使用，它就是`ant-design-vue`的message。
+全局消息提示，通过`inject`可以得到全局`$message`对象来使用，它就是`ant-design-vue`的 message。
 
 ```ts
-import {MessageApi} from "ant-design-vue/lib/message";
-const $message: MessageApi = inject('$message')!
-$message.success('你删除了一条数据')
+import { MessageApi } from "ant-design-vue/lib/message";
+const $message: MessageApi = inject("$message")!;
+$message.success("你删除了一条数据");
 ```
 
 #### $confirm
@@ -157,15 +160,57 @@ $message.success('你删除了一条数据')
 `$confirm`确认框，通过`inject`可以得到全局`$confirm`对象，它是`ant-design-vue`的`Modal.confirm`
 
 ```ts
-import {ModalFunc} from "ant-design-vue/lib/modal/Modal";
-const $confirm: ModalFunc = inject('$confirm')!
+import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
+const $confirm: ModalFunc = inject("$confirm")!;
 $confirm({
-    title: '确认删除吗？',
-    content: '删除后不可恢复',
-    okText: '确认无疑',
-    cancelText: '我再想想',
-    onOk: () => {
-      $message.success('你删除了一条数据')
-    }
-})
+  title: "确认删除吗？",
+  content: "删除后不可恢复",
+  okText: "确认无疑",
+  cancelText: "我再想想",
+  onOk: () => {
+    $message.success("你删除了一条数据");
+  },
+});
 ```
+
+### 面包屑
+
+变更：
+
+1. 支持面包屑片段显示/隐藏。因为某些路由只是为了分端，而不是具体的业务功能，比如`教师`路由，对于这样的路由，设置`meta.showInBreadcrumb`为`false`即可。
+
+   ```js
+   const teacherRoutes = {
+     path: "/teacher",
+     name: "teacher",
+     component: RouterView,
+     meta: {
+       title: "教师",
+       authCode: "teacher",
+       showInBreadcrumb: false,
+     },
+     redirect: "/teacher/classical",
+     children: configRoutes,
+   };
+   ```
+
+2. 支持自定义面包屑片段显示名称。对于动态路由页面来说，一个页面代表了好多不同的业务功能，比如下方例子，`classicalAsset`路由代表了课件、视频、备课资料等诸多页面，这时需要支持面包屑片段名称动态更新，就可以通过将`meta.title`设置为`(params?: RouteParams, query?: LocationQuery): string`类型的方法来对面包屑片段名称进行自定义。
+
+   ```js
+    meta: {
+        title: (params?: RouteParams, query?: LocationQuery) => {
+            // 是资源列表，需要根据type param来决定如何设置面包屑
+            const dataMap = {
+                3: '课件',
+                4: '视频',
+                5: '备课资料',
+                6: '教学指导'
+            }
+            const type = query?.type || 3
+            return dataMap[type.toString()] || '未知'
+        },
+        authCode: 'classicalAsset',
+    },
+   ```
+
+3. 解决了先前通过`path`设置面包屑地址不支持动态路由的问题。

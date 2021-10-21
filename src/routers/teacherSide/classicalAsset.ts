@@ -1,5 +1,5 @@
 import Layout from 'src/views/common/Layout.vue';
-import { LocationQuery, NavigationGuardNext, RouteLocationNormalized, RouteParams } from 'vue-router';
+import { LocationQuery, RouteParams } from 'vue-router';
 
 export default {
     path: "classical",
@@ -16,10 +16,6 @@ export default {
             path: "list/:type",
             name: 'classicalAsset',
             component: () => import("src/components/RouterView.vue"),
-            beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-                console.log('beforeEnter classicalAsset')
-                next()
-            },
             meta: {
                 title: (params?: RouteParams, query?: LocationQuery) => {
                     // 是资源列表，需要根据type param来决定如何设置面包屑
@@ -39,13 +35,7 @@ export default {
                     path: '',
                     name: 'classicalAsset1',
                     component: () => import("src/views/classicalAsset/Panel.vue"),
-                    beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-                        console.log('beforeEnter classicalAsset1')
-                        next()
-                    },
                     meta: {
-                        title: 'ddd',
-                        showInBreadcrumb: true,
                         authCode: 'classicalAsset1',
                     }
                 },
@@ -53,10 +43,6 @@ export default {
                     path: "content/:id",
                     name: "classicalAssetContent",
                     component: () => import("src/views/classicalAsset/Content.vue"),
-                    beforeEnter: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
-                        console.log('beforeEnter classicalAssetContent')
-                        next()
-                    },
                     meta: {
                         title: (params?: RouteParams, query?: LocationQuery) => {
                             const dataDetailMap = {
