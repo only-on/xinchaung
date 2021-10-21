@@ -12,10 +12,12 @@ for (const key in files) {
 
 const teacherRoutes = {
     path: "/teacher",
+    name: 'teacher',
     component: RouterView,
     meta: {
         title: "教师",
-        authCode: 'teacher'
+        authCode: 'teacher',
+        showInBreadcrumb: false
     },
     redirect: '/teacher/classical',
     children: configRoutes

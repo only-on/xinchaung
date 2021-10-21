@@ -8,40 +8,71 @@
         </div>
       </div>
       <div class="right">
-        <watermark-icon icon="cipanjiedian" :title="detail.itemSize" description="文件大小"
-                        style="background-color: #2CB6FA"/>
-        <watermark-icon icon="wenjianshu" :title="detail.itemCount" description="文件个数"
-                        style="background-color: #FFBB3C; margin-left: 25px;"/>
+        <watermark-icon
+          icon="cipanjiedian"
+          :title="detail.itemSize"
+          description="文件大小"
+          style="background-color: #2cb6fa"
+        />
+        <watermark-icon
+          icon="wenjianshu"
+          :title="detail.itemCount"
+          description="文件个数"
+          style="background-color: #ffbb3c; margin-left: 25px"
+        />
       </div>
     </div>
     <div class="classical__content--main">
       <div class="more-detail">
         <h3>描述</h3>
-        <a-divider style="background-color: #d5d5d5;"/>
+        <a-divider style="background-color: #d5d5d5" />
         <div>{{ detail.description }}</div>
       </div>
-      <a-divider style="opacity: 0;"/>
+      <a-divider style="opacity: 0" />
       <div class="classical__data-list">
         <div class="classical__data-list-header">
           <h3>文件列表</h3>
           <div class="classical__data-list-space"></div>
           <div class="classical__data-list-form">
-            <a-input-search v-model:value="searchKeyword" placeholder="请输入关键字查询" @search="handleSearch"/>
+            <a-input-search
+              v-model:value="searchKeyword"
+              placeholder="请输入关键字查询"
+              @search="handleSearch"
+            />
           </div>
-          <a-button class="classical__data-list-upload" type="primary" @click="openUploadDialog">
-            <span class="iconfont icon-upload"/>上传文件
+          <a-button
+            class="classical__data-list-upload"
+            type="primary"
+            @click="openUploadDialog"
+          >
+            <span class="iconfont icon-upload" />上传文件
           </a-button>
         </div>
         <div class="classical__data-list-content">
-          <a-row :gutter="[16, 16]" class="classical__data-list-row" v-if="itemList.length > 0">
-            <a-col :span="8" v-for="(item, index) in itemList" :key="'dataset-list-item-' + index">
-              <file-card :title="item.file_name" :size="item.size" :preview-url="item.file_html"
-                         :download-url="item.file_url" :id="item.id" :suffix="item.suffix" @removed="handleRemoved"/>
+          <a-row
+            :gutter="[16, 16]"
+            class="classical__data-list-row"
+            v-if="itemList.length > 0"
+          >
+            <a-col
+              :span="8"
+              v-for="(item, index) in itemList"
+              :key="'dataset-list-item-' + index"
+            >
+              <file-card
+                :title="item.file_name"
+                :size="item.size"
+                :preview-url="item.file_html"
+                :download-url="item.file_url"
+                :id="item.id"
+                :suffix="item.suffix"
+                @removed="handleRemoved"
+              />
             </a-col>
           </a-row>
           <a-row class="classical__data-list-row--no-data" v-else>
             <a-col :span="24">
-              <empty/>
+              <empty />
             </a-col>
           </a-row>
         </div>
@@ -50,61 +81,65 @@
   </div>
   <a-modal v-model:visible="uploadVisible" title="上传文件" @ok="addItem">
     <a-upload-dragger
-        v-model:fileList="uploadFileList"
-        name="dataset"
-        :accept="accept"
-        :data="{pageType: dataType, dataId: dataId}"
-        :multiple="false"
-        :before-upload="handleBeforeUpload"
-        action="/proxyPrefix/dataset/data/upload-file"
-        @change="handleUploadChange"
+      v-model:fileList="uploadFileList"
+      name="dataset"
+      :accept="accept"
+      :data="{ pageType: dataType, dataId: dataId }"
+      :multiple="false"
+      :before-upload="handleBeforeUpload"
+      action="/proxyPrefix/dataset/data/upload-file"
+      @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
-        <span class="iconfont icon-upload"/>
+        <span class="iconfont icon-upload" />
       </p>
       <p class="ant-upload-text">点击选择文件或将文件拖拽到此处</p>
       <p class="ant-upload-hint">
         <span v-if="supportedSuffix">支持文件格式：{{ supportedSuffix }}</span>
-        <span v-if="supportedSize">，支持文件大小：{{ supportedSize }}以内</span>
+        <span v-if="supportedSize"
+          >，支持文件大小：{{ supportedSize }}以内</span
+        >
       </p>
     </a-upload-dragger>
   </a-modal>
   <a-modal
-      v-model:visible="editContentVisible"
-      title="创建目录"
-      @ok="handleUpdateFolder"
-      class="classical__create"
+    v-model:visible="editContentVisible"
+    title="创建目录"
+    @ok="handleUpdateFolder"
+    class="classical__create"
   >
-    <a-form
-        :model="folderInfo"
-        :label-col="labelCol"
-        :wrapper-col="wrapperCol"
-    >
+    <a-form :model="folderInfo" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-item label="名称：">
-        <div class="classical__input--count-inner" :class="{'classical__input--focused': nameFocused}">
+        <div
+          class="classical__input--count-inner"
+          :class="{ 'classical__input--focused': nameFocused }"
+        >
           <a-textarea
-              rows="1"
-              placeholder="输入名称"
-              v-model:value="folderInfo.name"
-              showCount
-              :maxlength="10"
-              class="classical__folder-desc"
-              @focus="handleNameFocused"
-              @blur="handleNameBlurred"
+            rows="1"
+            placeholder="输入名称"
+            v-model:value="folderInfo.name"
+            showCount
+            :maxlength="10"
+            class="classical__folder-desc"
+            @focus="handleNameFocused"
+            @blur="handleNameBlurred"
           />
         </div>
       </a-form-item>
       <a-form-item label="描述：">
-        <div class="classical__input--count-inner" :class="{'classical__input--focused': descFocused}">
+        <div
+          class="classical__input--count-inner"
+          :class="{ 'classical__input--focused': descFocused }"
+        >
           <a-textarea
-              rows="4"
-              placeholder="请输入描述"
-              v-model:value="folderInfo.description"
-              showCount
-              :maxlength="500"
-              class="classical__folder-desc"
-              @focus="handleDescriptionFocused"
-              @blur="handleDescriptionBlurred"
+            rows="4"
+            placeholder="请输入描述"
+            v-model:value="folderInfo.description"
+            showCount
+            :maxlength="500"
+            class="classical__folder-desc"
+            @focus="handleDescriptionFocused"
+            @blur="handleDescriptionBlurred"
           />
         </div>
       </a-form-item>
@@ -113,14 +148,23 @@
 </template>
 
 <script lang="ts">
-import {defineComponent, inject, ref, reactive, onMounted, nextTick, Ref, computed} from "vue";
-import {useRoute} from 'vue-router'
-import {ILayoutConfiguration} from "../../types";
+import {
+  defineComponent,
+  inject,
+  ref,
+  reactive,
+  onMounted,
+  nextTick,
+  Ref,
+  computed,
+} from "vue";
+import { useRoute } from "vue-router";
+import { ILayoutConfiguration } from "../../types";
 import WatermarkIcon from "../../components/common/WatermarkIcon.vue";
 import FileCard from "../../components/classical/FileCard.vue";
-import http from 'src/api'
-import Empty from 'src/components/Empty.vue'
-import {MessageApi} from "ant-design-vue/lib/message";
+import http from "src/api";
+import Empty from "src/components/Empty.vue";
+import { MessageApi } from "ant-design-vue/lib/message";
 
 interface FileItem {
   uid: string;
@@ -140,245 +184,264 @@ export default defineComponent({
   components: {
     FileCard,
     WatermarkIcon,
-    Empty
+    Empty,
   },
-  setup(props, {emit}) {
-    const route = useRoute()
-    const uploadVisible = ref(false)
-    const editContentVisible = ref(false)
+  setup(props, { emit }) {
+    const route = useRoute();
+    const uploadVisible = ref(false);
+    const editContentVisible = ref(false);
     const nameFocused = ref(false);
     const descFocused = ref(false);
     const folderInfo = reactive({
       name: "",
       description: "",
     });
-    const originalFolderInfo = {name: '', description: ''}
+    const originalFolderInfo = { name: "", description: "" };
 
-    const labelCol = {span: 3};
-    const wrapperCol = {span: 21};
+    const labelCol = { span: 3 };
+    const wrapperCol = { span: 21 };
 
     const detail = reactive({
-      name: '未知',
-      createdDate: '未知',
-      updatedDate: '未知',
-      itemSize: '0 bytes',
-      itemCount: '0 个',
-      description: '未知'
-    })
+      name: "未知",
+      createdDate: "未知",
+      updatedDate: "未知",
+      itemSize: "0 bytes",
+      itemCount: "0 个",
+      description: "未知",
+    });
     // 分页组件数据
-    const itemListPage = reactive({current: 1, pageSize: 10, total: 1})
+    const itemListPage = reactive({ current: 1, pageSize: 10, total: 1 });
     // 数据集内部的数据列表
-    const itemList = ref([]) as Ref<any[]>
-    const searchKeyword = ref('')
-    const uploadFileList: Ref<any[]> = ref([])
+    const itemList = ref([]) as Ref<any[]>;
+    const searchKeyword = ref("");
+    const uploadFileList: Ref<any[]> = ref([]);
     // 数据集类型
-    let dataType: number = parseInt(route.params.type as string) // 3是课件
-    let dataId: number = parseInt(route.params.id as string)
+    let dataType: number = parseInt(route.params.type as string); // 3是课件
+    let dataId: number = parseInt(route.params.id as string);
 
-    const $message: MessageApi = inject('$message')!
-    const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
+    const $message: MessageApi = inject("$message")!;
+    const updateNav: (config: ILayoutConfiguration) => void =
+      inject("updataNav")!;
     updateNav({
       showNav: true,
       navType: false,
       tabs: [],
       showContent: true,
-      navPosition: 'outside',
+      navPosition: "outside",
       backOff: true,
       showPageEdit: true,
       pageEdit: () => {
-        folderInfo.name = originalFolderInfo.name
-        folderInfo.description = originalFolderInfo.description
-        editContentVisible.value = true
-      }
-    })
+        folderInfo.name = originalFolderInfo.name;
+        folderInfo.description = originalFolderInfo.description;
+        editContentVisible.value = true;
+      },
+    });
 
     const fileRequirements = {
       3: {
-        suffix: ['ppt', 'pptx'],
-        mime: ['application/vnd.ms-powerpoint', 'application/vnd.openxmlformats-officedocument.presentationml.presentation'],
+        suffix: ["ppt", "pptx"],
+        mime: [
+          "application/vnd.ms-powerpoint",
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        ],
         size: 1024 * 1024 * 5, // 5MB
       },
       4: {
-        suffix: ['mp4'],
-        mime: ['video/mp4'],
+        suffix: ["mp4"],
+        mime: ["video/mp4"],
         size: 1024 * 1024 * 500, // 视频-500MB
       },
       5: {
-        suffix: ['doc', 'docx'],
-        mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        suffix: ["doc", "docx"],
+        mime: [
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ],
         size: 1024 * 1024 * 5, // 5MB
       },
       6: {
-        suffix: ['doc', 'docx'],
-        mime: ['application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'],
+        suffix: ["doc", "docx"],
+        mime: [
+          "application/msword",
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        ],
         size: 1024 * 1024 * 5, // 5MB
       },
-    }
+    };
     const acceptMap = {
-      3: '.ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation', // 课件
-      4: '.mp4,video/mp4', // 视频
-      5: '.doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document', // 备课资料
-      6: '.doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document', // 教学指导
+      3: ".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation", // 课件
+      4: ".mp4,video/mp4", // 视频
+      5: ".doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 备课资料
+      6: ".doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 教学指导
     };
     const accept = computed(() => {
-      return acceptMap[dataType] || acceptMap[3]
-    })
+      return acceptMap[dataType] || acceptMap[3];
+    });
 
     const supportedSuffixMap = {
-      3: 'ppt、pptx',
-      4: 'mp4',
-      5: 'doc、docx',
-      6: 'doc、docx'
-    }
+      3: "ppt、pptx",
+      4: "mp4",
+      5: "doc、docx",
+      6: "doc、docx",
+    };
     const supportedSuffix = computed(() => {
-      return supportedSuffixMap[dataType] || supportedSuffixMap[3]
-    })
+      return supportedSuffixMap[dataType] || supportedSuffixMap[3];
+    });
 
     const supportedSizeMap = {
-      3: '',
-      4: '500MB',
-      5: '',
-      6: ''
-    }
+      3: "",
+      4: "500MB",
+      5: "",
+      6: "",
+    };
     const supportedSize = computed(() => {
-      return supportedSizeMap[dataType] || ''
-    })
+      return supportedSizeMap[dataType] || "";
+    });
 
     const openUploadDialog = function () {
-      uploadVisible.value = true
-    }
+      uploadVisible.value = true;
+    };
 
     const handleSearch = () => {
-      getDatasetItemList(searchKeyword.value)
-    }
+      getDatasetItemList(searchKeyword.value);
+    };
 
     const handleUploadChange = (info: FileInfo) => {
       const status = info.file.status;
-      if (status !== 'uploading') {
+      if (status !== "uploading") {
         // console.log(info.file, info.fileList);
       }
-      if (status === 'done') {
+      if (status === "done") {
         $message.success(`${info.file.name} file uploaded successfully.`);
-      } else if (status === 'error') {
+      } else if (status === "error") {
         $message.error(`${info.file.name} file upload failed.`);
       }
-      console.log('upload changed')
-    }
+      console.log("upload changed");
+    };
 
     /**
      * 获取数据集详情
      */
     const getDatasetDetail = () => {
-      http.classicalAsset.datasetDetail({param: {id: route.params.id}}).then(res => {
-        detail.name = res?.data.name
-        detail.createdDate = res?.data.created_at
-        detail.updatedDate = res?.data.updated_at
-        detail.itemSize = res?.data.item_size
-        detail.itemCount = res?.data.item_count + ' 个'
-        detail.description = res?.data.description
+      http.classicalAsset
+        .datasetDetail({ param: { id: route.params.id } })
+        .then((res) => {
+          detail.name = res?.data.name;
+          detail.createdDate = res?.data.created_at;
+          detail.updatedDate = res?.data.updated_at;
+          detail.itemSize = res?.data.item_size;
+          detail.itemCount = res?.data.item_count + " 个";
+          detail.description = res?.data.description;
 
-        folderInfo.name = res?.data.name
-        folderInfo.description = res?.data.description
+          folderInfo.name = res?.data.name;
+          folderInfo.description = res?.data.description;
 
-        originalFolderInfo.name = res?.data.name
-        originalFolderInfo.description = res?.data.description
-      })
-    }
+          originalFolderInfo.name = res?.data.name;
+          originalFolderInfo.description = res?.data.description;
+        });
+    };
 
     /**
      * 获取数据集详情列表
      */
-    const getDatasetItemList = (search = '') => {
-      http.classicalAsset.datasetItemList({
-        param: {
-          dataset_id: route.params.id,
-          file_name: search,
-          pageSize: itemListPage.pageSize,
-          page: itemListPage.current
-        }
-      }).then(res => {
-        itemList.value = res?.data.list
-      })
-    }
+    const getDatasetItemList = (search = "") => {
+      http.classicalAsset
+        .datasetItemList({
+          param: {
+            dataset_id: route.params.id,
+            file_name: search,
+            pageSize: itemListPage.pageSize,
+            page: itemListPage.current,
+          },
+        })
+        .then((res) => {
+          itemList.value = res?.data.list;
+        });
+    };
 
     /**
      * 创建数据集数据条目
      */
     const addItem = () => {
       if (uploadFileList.value.length === 0) {
-        return
+        return;
       }
-      const beAddItems: any[] = []
+      const beAddItems: any[] = [];
       uploadFileList.value.forEach((item) => {
-        beAddItems.push(item.response.data)
-      })
-      http.classicalAsset.datasetAddItem({
-        param: {
-          dataset_id: dataId, items: beAddItems
-        }
-      }).then(res => {
-        getDatasetItemList()
-        uploadVisible.value = false
-      })
-    }
+        beAddItems.push(item.response.data);
+      });
+      http.classicalAsset
+        .datasetAddItem({
+          param: {
+            dataset_id: dataId,
+            items: beAddItems,
+          },
+        })
+        .then((res) => {
+          getDatasetItemList();
+          uploadVisible.value = false;
+        });
+    };
 
     /**
      * 处理文件删除之后的逻辑
      */
     const handleRemoved = () => {
-      getDatasetItemList()
-    }
+      getDatasetItemList();
+    };
 
     /**
      * 更新文件夹
      */
     const handleUpdateFolder = () => {
-      http.classicalAsset.datasetFolderCreate({
-        param: {
-          type: dataType,
-          id: dataId,
-          name: folderInfo.name,
-          description: folderInfo.description
-        }
-      }).then(res => {
-        if (!res) {
-          $message.error('更新失败！')
-          return
-        }
-        editContentVisible.value = false
-        getDatasetDetail()
-      })
-    }
+      http.classicalAsset
+        .datasetFolderCreate({
+          param: {
+            type: dataType,
+            id: dataId,
+            name: folderInfo.name,
+            description: folderInfo.description,
+          },
+        })
+        .then((res) => {
+          if (!res) {
+            $message.error("更新失败！");
+            return;
+          }
+          editContentVisible.value = false;
+          getDatasetDetail();
+        });
+    };
 
     const handleNameFocused = (e: FocusEvent) => {
-      console.log('[classical/panel] name focused');
+      console.log("[classical/panel] name focused");
       nameFocused.value = true;
-    }
+    };
     const handleDescriptionFocused = (e: FocusEvent) => {
-      console.log('[classical/panel] description focused')
-      descFocused.value = true
-    }
+      console.log("[classical/panel] description focused");
+      descFocused.value = true;
+    };
     const handleNameBlurred = (e: Event) => {
-      console.log('[classical/panel] name blurred');
+      console.log("[classical/panel] name blurred");
       nameFocused.value = false;
-    }
+    };
     const handleDescriptionBlurred = (e: Event) => {
-      console.log('[classical/panel] description blurred')
-      descFocused.value = false
-    }
+      console.log("[classical/panel] description blurred");
+      descFocused.value = false;
+    };
 
     const checkSuffix = (dataType: number, file: File) => {
-      const suffix = file.name.substring(file.name.lastIndexOf('.') + 1)
-      return fileRequirements[dataType].suffix.includes(suffix)
-    }
+      const suffix = file.name.substring(file.name.lastIndexOf(".") + 1);
+      return fileRequirements[dataType].suffix.includes(suffix);
+    };
 
     const checkSize = (dataType: number, file: File) => {
-      return file.size <= fileRequirements[dataType].size
-    }
+      return file.size <= fileRequirements[dataType].size;
+    };
 
     const checkMime = (dataType: number, file: File) => {
-      return fileRequirements[dataType].mime.includes(file.type)
-    }
+      return fileRequirements[dataType].mime.includes(file.type);
+    };
 
     /**
      * 上传文件前进行检查，返回false则不上传；
@@ -387,25 +450,40 @@ export default defineComponent({
      * @param fileList
      */
     const handleBeforeUpload = (file: File, fileList: File[]) => {
-      console.log('[handleBeforeUpload] file: ', file, ', fileList: ', fileList)
+      console.log(
+        "[handleBeforeUpload] file: ",
+        file,
+        ", fileList: ",
+        fileList
+      );
       if (!checkSuffix(dataType, file)) {
-        $message.warning('文件后缀名不符合要求，要求为：' + fileRequirements[dataType].suffix.join(''))
-        return false
+        $message.warning(
+          "文件后缀名不符合要求，要求为：" +
+            fileRequirements[dataType].suffix.join("")
+        );
+        return false;
       }
       if (!checkSize(dataType, file)) {
-        $message.warning('文件大小不符合要求，要求为：' + (fileRequirements[dataType].size / 1024 / 1024) + 'MB')
-        return false
+        $message.warning(
+          "文件大小不符合要求，要求为：" +
+            fileRequirements[dataType].size / 1024 / 1024 +
+            "MB"
+        );
+        return false;
       }
       if (!checkMime(dataType, file)) {
-        $message.warning('文件类型不符合要求，要求为：' + fileRequirements[dataType].mime.join(''))
-        return false
+        $message.warning(
+          "文件类型不符合要求，要求为：" +
+            fileRequirements[dataType].mime.join("")
+        );
+        return false;
       }
-    }
+    };
 
     onMounted(() => {
-      getDatasetDetail()
-      getDatasetItemList()
-    })
+      getDatasetDetail();
+      getDatasetItemList();
+    });
     return {
       uploadVisible,
       detail,
@@ -433,10 +511,10 @@ export default defineComponent({
       handleDescriptionFocused,
       handleNameBlurred,
       handleDescriptionBlurred,
-      handleBeforeUpload
-    }
-  }
-})
+      handleBeforeUpload,
+    };
+  },
+});
 </script>
 
 <style lang="less" scoped>

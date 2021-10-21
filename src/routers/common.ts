@@ -3,6 +3,7 @@ import Layout from "../views/common/Layout.vue";
 export default [
     {
         path: "/",
+        name: 'index',
         component: Layout,
         meta: {
             title: "首页",

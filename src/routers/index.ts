@@ -1,21 +1,18 @@
-import { createRouter, createWebHashHistory, RouteLocationNormalized, RouteRecordNormalized, RouteRecordRaw } from "vue-router";
+import { createRouter, createWebHashHistory, NavigationFailure, NavigationGuardNext, RouteLocationNormalized, RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import store from "../store/index";
 import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
 import RoutesTeacherSide from './teacherSide'
+// 登录状态检查
+import { IRouteTuple } from "src/types";
+
 const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide]]
-// console.log('all routes: ', routes);
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
-// console.log(router);
 
-// 登录状态检查
-import { inject } from 'vue'
-router.beforeEach((to, _, next) => {
-  // handleRouter(to)
-  // console.log(to)
+router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
   if (to.meta && to.meta.outward) {
@@ -30,19 +27,33 @@ router.beforeEach((to, _, next) => {
 });
 
 // 在路由后置守卫中来处理面包屑导航
-router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized) => {
-  const breadcrumbs = [{ name: '首页', path: '/' }]
+router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, failure: NavigationFailure | void) => {
+  const breadcrumbs: IRouteTuple[] = [{ control: { title: '首页', enabled: true }, route: { name: 'index' } }]
   let processedPath: string[] = []
   to.matched.forEach((routeSegment: RouteRecordNormalized) => {
+    if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
+      // 显性要求不显示面包屑，直接跳过
+      return
+    }
+
     // 避免父级页面由子级来显示导致面包屑重复
     if (!processedPath.includes(routeSegment.path)) {
-      breadcrumbs.push({ path: `${routeSegment.path}`, name: routeSegment.meta.title as string, })
+      let routeTuple: IRouteTuple = {
+        control: {
+          title: (typeof routeSegment.meta.title === 'function' ? routeSegment.meta.title(to.params, to.query) : routeSegment.meta.title as string),
+          enabled: routeSegment.path !== to.path // 禁用最后一截路由
+        }, route: router.resolve({
+          name: routeSegment.name,
+          query: to.query,
+          params: to.params,
+        }).fullPath
+      }
+
+      breadcrumbs.push(routeTuple)
       processedPath.push(routeSegment.path)
     }
   })
   store.commit('saveBreadcrumb', breadcrumbs)
-
-  // console.log('[routers] afterEach to: ', to, ' from: ', from)
 })
 
 export default router;

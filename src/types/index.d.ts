@@ -1,3 +1,5 @@
+import { RouteLocationRaw, RouteRecordName } from "vue-router";
+
 export declare interface ILayoutTabItem {
     name: string
     componenttype: number
@@ -13,4 +15,12 @@ export declare interface ILayoutConfiguration {
     backOff: boolean // 是否显示返回按钮
     showPageEdit: boolean // 是否显示编辑按钮
     pageEdit: () => void // 编辑按钮操作
+}
+
+export declare interface IRouteTuple {
+    control: {
+        title: string
+        enabled: boolean
+    }
+    route: RouteLocationRaw
 }

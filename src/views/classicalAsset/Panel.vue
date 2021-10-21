@@ -4,92 +4,107 @@
       <div class="classical__search-form">
         <div class="classical__search">
           <a-input
-              class="classical_search-input"
-              v-model:value="searchStr"
-              placeholder="请输入目录名称关键字查询"
-              @keypress.enter="handleSearch"
+            class="classical_search-input"
+            v-model:value="searchStr"
+            placeholder="请输入目录名称关键字查询"
+            @keypress.enter="handleSearch"
           >
             <template #prefix>
-              <a-button type="text" class="classical__search-form--prefix" @click="handleSearch">
-                <span class="iconfont icon-sousuo"/>
+              <a-button
+                type="text"
+                class="classical__search-form--prefix"
+                @click="handleSearch"
+              >
+                <span class="iconfont icon-sousuo" />
               </a-button>
             </template>
           </a-input>
         </div>
         <div class="classical_op">
           <disk-usage
-              :available="diskUsage.available"
-              :total="diskUsage.total"
-              :ratio="diskUsage.ratio"
-              v-show="showDiskUsage"
-              class="classical__disk-usage--container"
+            :available="diskUsage.available"
+            :total="diskUsage.total"
+            :ratio="diskUsage.ratio"
+            v-show="showDiskUsage"
+            class="classical__disk-usage--container"
           ></disk-usage>
           <a-button type="primary" @click="createFolder">
             <template #icon
-            ><span class="iconfont icon-tianjia"></span>&nbsp;
-            </template
-            >
+              ><span class="iconfont icon-tianjia"></span>&nbsp;
+            </template>
             创建目录
           </a-button>
         </div>
       </div>
       <div class="data" v-if="data.length > 0">
-        <asset-folder v-for="(item, key) in data" :key="'dataset-dir-' + key"
-                      :title="item.name"
-                      :date="item.created_at"
-                      :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
-                      :count="(typeof item.item_count !== 'undefined' ? item.item_count : '') + '个'"
-                      @click="gotoContent(item.id, item.is_public)"/>
+        <asset-folder
+          v-for="(item, key) in data"
+          :key="'dataset-dir-' + key"
+          :title="item.name"
+          :date="item.created_at"
+          :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
+          :count="
+            (typeof item.item_count !== 'undefined' ? item.item_count : '') +
+            '个'
+          "
+          @click="gotoContent(item.id)"
+        />
       </div>
       <div class="data" v-else>
-        <empty/>
+        <empty />
       </div>
       <div class="page" v-if="data.length > 0">
         <a-pagination
-            show-size-changer
-            v-model:current="dataPage.current"
-            :pageSize="dataPage.pageSize"
-            :total="dataPage.total"
-            @change="handlePageChange"
+          show-size-changer
+          v-model:current="dataPage.current"
+          :pageSize="dataPage.pageSize"
+          :total="dataPage.total"
+          @change="handlePageChange"
         />
       </div>
     </div>
     <a-modal
-        v-model:visible="createFolderVisible"
-        title="创建目录"
-        @ok="handleCreateFolder"
-        class="classical__create"
+      v-model:visible="createFolderVisible"
+      title="创建目录"
+      @ok="handleCreateFolder"
+      class="classical__create"
     >
       <a-form
-          :model="folderInfo"
-          :label-col="labelCol"
-          :wrapper-col="wrapperCol"
+        :model="folderInfo"
+        :label-col="labelCol"
+        :wrapper-col="wrapperCol"
       >
         <a-form-item label="名称：">
-          <div class="classical__input--count-inner" :class="{'classical__input--focused': nameFocused}">
+          <div
+            class="classical__input--count-inner"
+            :class="{ 'classical__input--focused': nameFocused }"
+          >
             <a-textarea
-                rows="1"
-                placeholder="输入名称"
-                v-model:value="folderInfo.name"
-                showCount
-                :maxlength="10"
-                class="classical__folder-desc"
-                @focus="handleNameFocused"
-                @blur="handleNameBlurred"
+              rows="1"
+              placeholder="输入名称"
+              v-model:value="folderInfo.name"
+              showCount
+              :maxlength="10"
+              class="classical__folder-desc"
+              @focus="handleNameFocused"
+              @blur="handleNameBlurred"
             />
           </div>
         </a-form-item>
         <a-form-item label="描述：">
-          <div class="classical__input--count-inner" :class="{'classical__input--focused': descFocused}">
+          <div
+            class="classical__input--count-inner"
+            :class="{ 'classical__input--focused': descFocused }"
+          >
             <a-textarea
-                rows="4"
-                placeholder="请输入描述"
-                v-model:value="folderInfo.description"
-                showCount
-                :maxlength="500"
-                class="classical__folder-desc"
-                @focus="handleDescriptionFocused"
-                @blur="handleDescriptionBlurred"
+              rows="4"
+              placeholder="请输入描述"
+              v-model:value="folderInfo.description"
+              showCount
+              :maxlength="500"
+              class="classical__folder-desc"
+              @focus="handleDescriptionFocused"
+              @blur="handleDescriptionBlurred"
             />
           </div>
         </a-form-item>
@@ -98,21 +113,30 @@
   </div>
 </template>
 <script lang="ts">
-import {defineComponent, ref, reactive, inject, computed, Ref, onMounted, watch} from "vue";
+import {
+  defineComponent,
+  ref,
+  reactive,
+  inject,
+  computed,
+  Ref,
+  onMounted,
+  watch,
+} from "vue";
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
-import {ILayoutConfiguration} from "../../types";
-import {useRoute, useRouter} from "vue-router";
-import http from '../../api'
-import Empty from 'src/components/Empty.vue'
-import {MessageApi} from "ant-design-vue/lib/message";
+import { ILayoutConfiguration } from "../../types";
+import { useRoute, useRouter } from "vue-router";
+import http from "../../api";
+import Empty from "src/components/Empty.vue";
+import { MessageApi } from "ant-design-vue/lib/message";
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
   components: {
     AssetFolder,
     DiskUsage,
-    Empty
+    Empty,
   },
   setup() {
     const router = useRouter();
@@ -127,129 +151,138 @@ export default defineComponent({
     });
     const data = ref([]) as Ref<any[]>;
     // 分页组件数据
-    const dataPage = reactive({current: 1, pageSize: 10, total: 1})
+    const dataPage = reactive({ current: 1, pageSize: 10, total: 1 });
     // 数据集类型
-    let dataType = typeof route.query['type'] !== 'undefined' ? route.query['type'] : 3 // 3是课件
+    let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
+    console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
-    const diskUsage = reactive({available: '0GB', total: '0GB', ratio: 0})
+    const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
 
-    const $message: MessageApi = inject('$message')!
-    const updateNav: (config: ILayoutConfiguration) => void = inject('updataNav')!
+    const $message: MessageApi = inject("$message")!;
+    const updateNav: (config: ILayoutConfiguration) => void =
+      inject("updataNav")!;
     updateNav({
       showNav: true,
-      navPosition: 'outside',
+      navPosition: "outside",
       tabs: [
-        {name: "公有", componenttype: 0},
-        {name: "私有", componenttype: 1},
+        { name: "公有", componenttype: 0 },
+        { name: "私有", componenttype: 1 },
       ],
       componenttype: 1,
       showContent: false,
       navType: false,
       backOff: false,
       showPageEdit: false,
-      pageEdit: () => {
+      pageEdit: () => {},
+    });
+    const configuration: ILayoutConfiguration = inject("configuration")!;
+    watch(
+      () => configuration.componenttype,
+      (newVal: number) => {
+        getDataSetList();
       }
-    })
-    const configuration: ILayoutConfiguration = inject('configuration')!
-    watch(() => configuration.componenttype, (newVal: number) => {
-      getDataSetList()
-    })
+    );
     const showDiskUsage = computed(() => {
-      return configuration.componenttype === 1
-    })
+      return configuration.componenttype === 1;
+    });
     const dataIsPublic = computed(() => {
-      return configuration.componenttype === 1 ? 0 : 1
-    })
+      return configuration.componenttype === 1 ? 0 : 1;
+    });
 
-    const labelCol = {span: 3};
-    const wrapperCol = {span: 21};
+    const labelCol = { span: 3 };
+    const wrapperCol = { span: 21 };
     const handleSearch = (e: Event) => {
-      getDataSetList(1, 10, searchStr.value)
+      getDataSetList(1, 10, searchStr.value);
     };
     const createFolder = () => {
       createFolderVisible.value = true;
     };
     const handleCreateFolder = () => {
-      http.classicalAsset.datasetFolderCreate({
-        param: {
-          type: dataType,
-          name: folderInfo.name,
-          description: folderInfo.description
-        }
-      }).then(res => {
-        getDataSetList()
-      })
+      http.classicalAsset
+        .datasetFolderCreate({
+          param: {
+            type: dataType,
+            name: folderInfo.name,
+            description: folderInfo.description,
+          },
+        })
+        .then((res) => {
+          getDataSetList();
+        });
       createFolderVisible.value = false;
     };
     /**
      * 前往数据详情页面
      * @param {number} id 数据集id
-     * @param {number} open 是否公开
      */
-    const gotoContent = (id: number, open: number) => {
-      console.log('[asset/panel] goto: ', id, open)
-      router.push('/teacher/classical/content/' + open + '/' + dataType + '/' + id)
-    }
+    const gotoContent = (id: number) => {
+      router.push({
+        name: "classicalAssetContent",
+        params: { type: dataType, id: id },
+      });
+    };
     const handleNameFocused = (e: FocusEvent) => {
-      console.log('[classical/panel] name focused');
       nameFocused.value = true;
-    }
+    };
     const handleDescriptionFocused = (e: FocusEvent) => {
-      console.log('[classical/panel] description focused')
-      descFocused.value = true
-    }
+      descFocused.value = true;
+    };
     const handleNameBlurred = (e: Event) => {
-      console.log('[classical/panel] name blurred');
       nameFocused.value = false;
-    }
+    };
     const handleDescriptionBlurred = (e: Event) => {
-      console.log('[classical/panel] description blurred')
-      descFocused.value = false
-    }
+      descFocused.value = false;
+    };
 
     // 获取数据
-    const getDataSetList = (page: number = 1, pageSize: number = 10, name = '') => {
-      console.log('[getDataSetList] type: ', dataType)
-      http.classicalAsset.datasetList({
-        param: {
-          type: dataType,
-          is_public: dataIsPublic.value,
-          name: name,
-          page: page,
-          pageSize: pageSize,
-        }
-      }).then(res => {
-        if (!res) {
-          data.value = []
-          $message.error('无法获取数据！')
-          return
-        }
-        data.value = res?.data.list
+    const getDataSetList = (
+      page: number = 1,
+      pageSize: number = 10,
+      name = ""
+    ) => {
+      console.log("[getDataSetList] type: ", dataType);
+      http.classicalAsset
+        .datasetList({
+          param: {
+            type: dataType,
+            is_public: dataIsPublic.value,
+            name: name,
+            page: page,
+            pageSize: pageSize,
+          },
+        })
+        .then((res) => {
+          if (!res) {
+            data.value = [];
+            $message.error("无法获取数据！");
+            return;
+          }
+          data.value = res?.data.list;
 
-        dataPage.current = res?.data.page.currentPage
-        dataPage.pageSize = res?.data.page.perPage
-        dataPage.total = res?.data.page.totalCount
-      })
-    }
+          dataPage.current = res?.data.page.currentPage;
+          dataPage.pageSize = res?.data.page.perPage;
+          dataPage.total = res?.data.page.totalCount;
+        });
+    };
 
     // 获取磁盘信息
     const getDiskInfo = () => {
-      http.classicalAsset.diskInfo({}).then(res => {
-        diskUsage.available = res!.data.un_used
-        diskUsage.total = res!.data.total
-        diskUsage.ratio = parseFloat(res!.data.used_accuracy)
-      })
-    }
+      http.classicalAsset.diskInfo({}).then((res) => {
+        diskUsage.available = res!.data.un_used;
+        diskUsage.total = res!.data.total;
+        diskUsage.ratio = parseFloat(res!.data.used_accuracy);
+      });
+    };
 
     // 处理翻页
     const handlePageChange = (page: number, pageSize: number) => {
-      getDataSetList(page, pageSize, searchStr.value)
-    }
+      getDataSetList(page, pageSize, searchStr.value);
+    };
 
     onMounted(() => {
-      getDataSetList()
-      getDiskInfo()
-    })
+      getDataSetList();
+      getDiskInfo();
+    });
 
     return {
       searchStr,
@@ -271,7 +304,7 @@ export default defineComponent({
       handleDescriptionFocused,
       handleNameBlurred,
       handleDescriptionBlurred,
-      handlePageChange
+      handlePageChange,
     };
   },
 });
@@ -348,5 +381,4 @@ export default defineComponent({
     box-shadow: 0 0 0 2px @theme-scroll;
   }
 }
-
 </style>
