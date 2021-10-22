@@ -16,5 +16,13 @@ export default {
                 authCode: 'workbench'
             },
         },
+        {
+            path: "createWorkbench",
+            component: () => import("src/views/teacherWorkbench/createWorkbench/index.vue"),
+            meta: {
+                title: "创建工作台",
+                authCode: 'createWorkbench'
+            },
+        },
     ]
 }

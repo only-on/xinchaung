@@ -21,7 +21,7 @@ export default defineComponent({
   
     const componentNames=['workbench','myImage','preinstallImage']
     const tabs=[{name:'工作台',componenttype:0},{name:'我的镜像',componenttype:1},{name:'预设镜像',componenttype:2}]
-    var componentName:Ref<string>=ref('myImage')
+    var componentName:Ref<string>=ref('workbench')
     
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function

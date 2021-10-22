@@ -24,21 +24,21 @@
             <tr>
               <td>
                 <span>内存</span>
-                <span>{{data.flavor.ram_text}}</span>
+                <span>{{ data.flavor.ram_text }}</span>
               </td>
               <td>
                 <span>CPU</span>
-                <span>{{data.flavor.cpu_text}}</span>
+                <span>{{ data.flavor.cpu_text }}</span>
               </td>
             </tr>
             <tr>
               <td>
                 <span>硬盘</span>
-                <span>{{data.flavor.disk_text}}</span>
+                <span>{{ data.flavor.disk_text }}</span>
               </td>
               <td>
                 <span>GPU</span>
-                <span>{{data.use_gpu_text}}</span>
+                <span>{{ data.use_gpu_text }}</span>
               </td>
             </tr>
           </table>
@@ -56,11 +56,21 @@
         <div class="data-set-right">
           <span class="data-set-title">使用镜像</span>
           <span class="data-set-name"
-            >{{ data.dataset.length > 0 ? data.dataset[0].name : '本工作台无数据集！' }}
-            <a-tooltip placement="top" overlayClassName="data-set-more-tooltip" v-if="data.dataset && data.dataset.length > 1">
+            >{{
+              data.dataset.length > 0
+                ? data.dataset[0].name
+                : "本工作台无数据集！"
+            }}
+            <a-tooltip
+              placement="top"
+              overlayClassName="data-set-more-tooltip"
+              v-if="data.dataset && data.dataset.length > 1"
+            >
               <template #title>
                 <div class="more-list">
-                  <div v-for="(ct, ci) in data.dataset" :key="ci">{{ ct ? ct.name : '' }}</div>
+                  <div v-for="(ct, ci) in data.dataset" :key="ci">
+                    {{ ct ? ct.name : "" }}
+                  </div>
                 </div>
               </template>
               <span
@@ -70,23 +80,34 @@
         </div>
       </div>
     </div>
-    <div class="action-box">
-      <div>
+    <div class="action-box" :class="isPoll ? 'not-allowed' : ''">
+      <div :class="isPoll ? 'no-event' : ''">
         <span @click="deleteFun">
           <span class="icon-shanchu iconfont"></span>
           删除
         </span>
       </div>
-      <div>
+      <div
+        :class="[
+          data.vm
+            ? data.vm.status === 1 && data.task_state === null
+              ? ''
+              : data.vm.status === 1
+              ? 'iconloading no-click'
+              : 'no-click'
+            : 'no-click',
+          isPoll ? 'no-event' : '',
+        ]"
+      >
         <span @click="enterFun">
           <span class="iconfont icon-jinru"></span>
           进入
         </span>
       </div>
-      <div>
+      <div :class="isPoll ? 'no-event' : ''">
         <span @click="openOrCloseFun">
           <span class="iconfont icon-kaiguanshenx"></span>
-          开启
+          {{ data.vm ? (data.vm.status === 1 ? "关闭" : "开启") : "开启" }}
         </span>
       </div>
     </div>
@@ -97,20 +118,21 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  props: ["content"],
+  props: ["content", "index", "isPoll"],
   emits: ["openOrCloseFun", "enterFun", "deleteFun"],
   setup(props, { emit }) {
     const data = props.content;
-    console.log(data)
-    function openOrCloseFun(val: any) {
-      console.log(11111111);
-      emit("openOrCloseFun", val);
+    const index = props.index;
+    const isPoll = props.isPoll;
+    console.log(data);
+    function openOrCloseFun() {
+      emit("openOrCloseFun", data, index);
     }
-    function enterFun(val: any) {
-      emit("enterFun", val);
+    function enterFun() {
+      emit("enterFun", data, index);
     }
-    function deleteFun(val: any) {
-      emit("deleteFun", val);
+    function deleteFun() {
+      emit("deleteFun", data, index);
     }
     // 处理时间
     function timeToArray(time: string) {
@@ -118,6 +140,7 @@ export default defineComponent({
     }
     return {
       data,
+      isPoll,
       enterFun,
       openOrCloseFun,
       deleteFun,
@@ -304,6 +327,25 @@ export default defineComponent({
       line-height: 50px;
       color: @white;
       cursor: pointer;
+    }
+    .no-click {
+      color: rgba(#ffffff, 0.25);
+      pointer-events: none;
+
+      .iconloading {
+        color: #ffffff;
+
+        b {
+          color: rgba(#ffffff, 0.25);
+        }
+      }
+    }
+    .no-event {
+      pointer-events: none !important;
+    }
+
+    &.not-allowed {
+      cursor: not-allowed !important;
     }
   }
 }
