@@ -23,7 +23,7 @@
                         <div class="name">{{item.image.name}}</div>
                         <div class="tags">标签：{{item.image.tag.join()}}</div>
                         <div class="selectDelete">
-                            <span v-if="choice" @click="choiceEnvir(item)">选择</span>
+                            <span v-if="choice=envirIdArr.indexOf(item.id)===-1?true:false" @click="choiceEnvir(item)">选择</span>
                             <span v-else @click="deleteEnvir(item)" class="iconfont icon-shanchu-copy"></span>
                         </div>
                     </div>
@@ -74,9 +74,10 @@ interface Istate{
     typeNumber:number,
     pageInfo:pageInfoType,
     choice:boolean,
-    choicedEnvir:any[]
+    choicedEnvir:any[],
+    envirIdArr:number[]
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch, computed} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
@@ -99,11 +100,16 @@ export default defineComponent({
            pageSizeOptions: ['10', '20', '30', '40', '50'],
        },
        choice:true,
-       choicedEnvir:[]
+       choicedEnvir:[],
+       envirIdArr:[]
     })
     const methods={
         handleOk(){
-            context.emit('selectEnvirOk',state.choicedEnvir)
+            if(state.choice){
+                context.emit('deleteOneEnivr',state.choicedEnvir)
+            }else{
+                context.emit('selectEnvirOk',state.choicedEnvir)
+            }
         },
         handleCancel(){
             context.emit('selectEnvirCancel')
@@ -115,7 +121,6 @@ export default defineComponent({
         getSelectEnvirList(){
             state.envirListParmas.withs='image,config,image.classify'
             http.selectEnvirList({param:state.envirListParmas}).then((res:any)=>{
-                console.log(res)
                 state.envirListData=res.data.list
                 state.pageInfo.total=res.data.page.totalCount
                 state.pageInfo.pageSize=res.data.page.perPage
@@ -129,7 +134,6 @@ export default defineComponent({
             methods.getSelectEnvirList()
         },
         onShowSizeChange(current:any, pageSize:any) {
-            console.log(current)
             state.pageInfo.pageSize = pageSize;
             state.envirListParmas.limit=pageSize;
             methods.getSelectEnvirList()
@@ -139,13 +143,25 @@ export default defineComponent({
             methods.getSelectEnvirList()
         },
         choiceEnvir(item:any){
-            state.choice=false
+            // state.choice=false
+            state.envirIdArr.push(item.id)
             state.choicedEnvir=item
         },
         deleteEnvir(item:any){
-            context.emit('deleteOneEnivr',item)
+            // state.choice=true
+            const index=state.envirIdArr.indexOf(item.id)
+            state.envirIdArr.splice(index,1)
+            state.choicedEnvir=item
         }
     }
+    watch(()=>props.propTrainDetailInfo,(val:any)=>{
+        props.propTrainDetailInfo.server.forEach((item:any) => {
+            state.envirIdArr.push(item.id)  
+        });
+    },{
+        deep:true,
+        immediate:true
+    })
     onMounted(()=>{
         methods.getSelectEnvirList()
     })

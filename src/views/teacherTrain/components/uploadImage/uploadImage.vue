@@ -146,9 +146,11 @@ export default defineComponent({
       }
       watch(()=>props.uploadUrl,(val)=>{
         methods.pictureEcho()
+      },{
+        deep:true,
+        immediate:true
       })
       onMounted(()=>{
-        methods.pictureEcho()
         })
       return {...methods,...toRefs(state)}
     }

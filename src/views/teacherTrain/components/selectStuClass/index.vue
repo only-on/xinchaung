@@ -148,7 +148,6 @@ export default defineComponent({
             },
         };
     watch(()=>props.selectvalue,(val:any)=>{
-        console.log(val) 
         state.columns=val===1?state.selectStu:state.selectClass  
     })
     onMounted(()=>{

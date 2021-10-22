@@ -19,15 +19,15 @@
                 <a-config-provider>
                     <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" :rowkey='rowkey'>
                         <template #stuaction>
-                            <div>
-                                <span>移除</span>
-                                <span>初始化密码</span>
+                            <div class="action">
+                                <span class="spanleft" @click="removeStudent">移除</span>
+                                <span @click="initPassword">初始化密码</span>
                             </div>
                         </template>
                         <template #classaction>
-                            <div>
-                                <span>查看</span>
-                                <span>删除</span>
+                            <div class="action">
+                                <span class="spanleft" @click="checkClass">查看</span>
+                                <span @click="deleteClass">删除</span>
                             </div>
                         </template>
                     </a-table>
@@ -39,6 +39,34 @@
            <div>
                <select-stu-class :selectvalue='value' :isvisible='isvisible' @if-select='ifSelect'></select-stu-class>
            </div>
+           <div>
+                <a-modal
+                width="600px"
+                :rowkey='rowkey'
+                title="班级信息"
+                :visible="classInfoVisible"
+                :confirm-loading="classInfoLoading"
+                :footer="null"
+                @ok="classInfoOk"
+                @cancel="classInfoCancel"
+                >
+                <div>
+                    <a-table :columns="classInfoColumns" :data-source="classInfoData" :rowkey='rowkey'></a-table>
+                </div>
+                </a-modal>
+           </div>
+           <div>
+                <a-modal
+                :rowkey='rowkey'
+                title="删除提示"
+                :visible="classDeleteVisible"
+                :confirm-loading="classDeleteLoading"
+                @ok="classDeleteOk"
+                @cancel="classDeleteCancel"
+                >
+                <p>确定要删除这个班级吗？</p>
+                </a-modal>
+           </div>
        </div>
     </div>
 </template>
@@ -49,7 +77,13 @@ interface Istate{
    classColumns:any[],
    columns:any[],
    data:any[],
-   isvisible:boolean
+   isvisible:boolean,
+   classInfoColumns:any[],
+   classInfoData:any[],
+   classInfoVisible:boolean,
+   classInfoLoading:boolean,
+   classDeleteVisible:boolean,
+   classDeleteLoading:boolean
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -87,45 +121,82 @@ export default defineComponent({
         },
         ],
       stuColumns:[
-    {
-        title: '学号',
-        dataIndex: 'stu_no',
-        align: 'left',
-        ellipsis: true,
-    },
-    {
-        title: '姓名',
-        dataIndex: 'username',
-        ellipsis: true,
-    },
-    {
-        title: '所属院系',
-        dataIndex: 'department',
-        ellipsis: true,
-    },
-    {
-        title: '性别',
-        dataIndex: 'gender',
-    },
-    {
-        title: '邮箱',
-        dataIndex: 'email',
-        align: 'center',
-        ellipsis: true,
-    },
-    {
-        title: '电话',
-        dataIndex: 'phone',
-        ellipsis: true,
-    },
-    {   title: '操作', 
-        dataIndex: 'stuaction', 
-        align: 'center', 
-        slots: { customRender: 'stuaction' } 
-    },
+        {
+            title: '学号',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
+        {
+            title: '姓名',
+            dataIndex: 'username',
+            ellipsis: true,
+        },
+        {
+            title: '所属院系',
+            dataIndex: 'department',
+            ellipsis: true,
+        },
+        {
+            title: '性别',
+            dataIndex: 'gender',
+        },
+        {
+            title: '邮箱',
+            dataIndex: 'email',
+            align: 'center',
+            ellipsis: true,
+        },
+        {
+            title: '电话',
+            dataIndex: 'phone',
+            ellipsis: true,
+        },
+        {   title: '操作', 
+            dataIndex: 'stuaction', 
+            align: 'center', 
+            slots: { customRender: 'stuaction' } 
+        },
+        ],
+      classInfoColumns:[
+        {
+            title: '账号',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
+        {
+            title: '姓名',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
+        {
+            title: '性别',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
+        {
+            title: '院系',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
+        {
+            title: '班级',
+            dataIndex: 'stu_no',
+            align: 'left',
+            ellipsis: true,
+        },
         ],
       columns:[],
-      data:[]
+      data:[],
+      classInfoData:[],
+      classInfoVisible:false,
+      classInfoLoading:false,
+      classDeleteVisible:false,
+      classDeleteLoading:false
     })
     const rowSelection = {
             onChange: (selectedRowKeys:any, selectedRows:any) => {
@@ -151,6 +222,30 @@ export default defineComponent({
         },
         rowkey(record: {}, index: number){
          return index
+        },
+        checkClass(){
+            state.classInfoVisible=true
+        },
+        deleteClass(){
+            state.classDeleteVisible=true
+        },
+        removeStudent(){
+
+        },
+        initPassword(){
+
+        },
+        classInfoOk(){
+             state.classInfoVisible=false
+        },
+        classInfoCancel(){
+            state.classInfoVisible=false
+        },
+        classDeleteOk(){
+             state.classDeleteVisible=false
+        },
+        classDeleteCancel(){
+            state.classDeleteVisible=false
         }
     }
     onMounted(()=>{
@@ -205,6 +300,12 @@ export default defineComponent({
         .operateBtn{
             .choice{
                 margin-right: 10px;
+            }
+        }
+        .action{
+            color: @theme-color;
+            .spanleft{
+                margin-right: 5px;
             }
         }
     }

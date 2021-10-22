@@ -13,7 +13,7 @@
        </div>
        <div class="envirList">
            <div class="envirItem" v-for="(item,index) in propTrainDetailInfo.server" :key="index.toString()">
-               <div class='env-wrap-header'>{{item.name}}</div>
+               <div class='env-wrap-header'>{{item.image_name}}</div>
                <div class="env-cont-wrap">
                    <div>内存:{{item.ram}}</div>
                     <div>CPU:{{item.cpu}}</div>
@@ -34,6 +34,7 @@
                @select-envir-ok='selectEnvirOk' 
                @select-envir-cancel='selectEnvirCancel'
                @delete-one-enivr='deleteOneEnivr'
+               :propTrainDetailInfo='propTrainDetailInfo'
                :envirVisible='envirVisible' />
            </div>
        </div>
@@ -97,6 +98,7 @@ export default defineComponent({
       },
       deleteOneEnivr(value:any){
           context.emit('selectedEnvirDelete',value)
+          state.envirVisible=false
       },
       memoryNumber(){
           let ramnumber:number=0

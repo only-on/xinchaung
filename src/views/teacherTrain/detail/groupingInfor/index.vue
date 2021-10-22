@@ -28,16 +28,31 @@
                 >
                 <p>确定要删除此分组吗？</p>
                 </a-modal>
-                <group-modal :trainId="trainId" :editvisible='editvisible' @edit-modal='editModal'></group-modal>
+                <group-modal :trainId="trainId" :editvisible='editvisible' @edit-modal='editModal' :ifautoGroupEdit='ifautoGroupEdit'></group-modal>
                  <a-modal
                 title="学生分组"
+                width="550px"
                 :visible="autoGroupVisible"
                 :confirm-loading="autoConfirmLoading"
                 @ok="autoGroupOk"
                 @cancel="autoGroupCancel"
                 class="groupModal"
                 >
-                <p>分组方式</p>
+                <div class="groupWay">
+                     <span class="groupItem">分组方式：</span>
+                     <span class="groupItem">
+                        <a-select default-value="小组数" style="width:100px;height:32px" @change="handleChange">
+                            <a-select-option value="小组数">
+                                小组数
+                            </a-select-option>
+                            <a-select-option value="分组人数">
+                                分组人数
+                            </a-select-option>
+                     </a-select>
+                     </span>
+                     <a-input class="groupItem" style="width:170px"></a-input>
+                     <a-button type="primary">分组</a-button>
+                </div>
                 </a-modal>
        </div>
     </div>
@@ -51,6 +66,7 @@ interface Istate{
    editvisible:boolean,
    autoGroupVisible:boolean,
    autoConfirmLoading:boolean,
+   ifautoGroupEdit:boolean
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -72,6 +88,7 @@ export default defineComponent({
         editvisible:false,
         autoGroupVisible:false,
         autoConfirmLoading:false,
+        ifautoGroupEdit:false,
       columns:[{
         title: '小组名称',
         dataIndex: 'name',
@@ -101,6 +118,7 @@ export default defineComponent({
       },
       editGroup(){
           state.editvisible=true
+          state.ifautoGroupEdit=true
       },
       deleteOk(){
           state.deletevisible=false
@@ -110,6 +128,7 @@ export default defineComponent({
       },
       editModal(){
           state.editvisible=false
+          state.ifautoGroupEdit=false
       },
     //   自动分组
       aotuGroup(){
@@ -124,6 +143,9 @@ export default defineComponent({
     //   手动分组
       manualGroup(){
           state.editvisible=true
+      },
+      handleChange(value:any){
+          console.log(value)
       },
       rowkey(record: {}, index: number){
          return index
@@ -156,14 +178,21 @@ export default defineComponent({
         }
     }
 }
-    .editCon{
-            display: flex;
-            .transferBox {
-        float: left;
-        padding: 160px 0 0 10px;
-        width: 84px;
-        text-align: center;
-     }
+.editCon{
+    display: flex;
+    .transferBox {
+    float: left;
+    padding: 160px 0 0 10px;
+    width: 84px;
+    text-align: center;
     }
-
+}
+.groupWay{
+    // justify-content: center;
+    // align-items:center;
+    text-align: center;
+    .groupItem{
+        margin-right: 5px;
+    }
+}
 </style>

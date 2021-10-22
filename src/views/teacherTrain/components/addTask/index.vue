@@ -93,7 +93,6 @@ export default defineComponent({
         },
         saveAddTask(){
             state.addtaskInfo.points=knowledgeList.selectedKnowledgeList.map(v => v.text)
-            console.log(state.addtaskInfo)
             if(!state.addtaskInfo.name){
                 message.warning('实训任务名称不能为空！')
                 return
