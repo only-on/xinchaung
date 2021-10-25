@@ -136,7 +136,8 @@ export default defineComponent({
     function selectExperiment(val:any) {
       //  console.log(val)
        componentName.value=''
-       const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      //  const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+       const dev_base_url=(window as any).proxy_api
        type.value=val.type
       if(val.type ===1 || val.type === 2){
         taskid.value=val.tid

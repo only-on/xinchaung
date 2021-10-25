@@ -154,7 +154,8 @@ export default defineComponent({
      })
     }
     function downLoadExperReport(fileurl:any,filename:any){
-      const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      // const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      const dev_base_url=(window as any).proxy_api
       let url=`${dev_base_url}`+fileurl
       fetch(url,{
           method: 'get',

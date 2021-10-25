@@ -1,9 +1,17 @@
-import { options } from './../../teachCourse/evalute/components/public';
+// import { options } from './../../teachCourse/evalute/components/public';
 import * as echarts from "echarts"
 function distributionEcharts(el: HTMLDivElement, data: Array<any>) {
   var max_num:number= 2
-  let indicatorData:Array<any>=[{name:'A(90% ~100%)',max:max_num},{name: "B(80% ~90%)",max:max_num},{name: "C(70%~80%)",max:max_num},{name: "D(60% ~70%)",max:max_num},{name: "E(0 ~60%)",max:max_num}]
-  const seriesData:Array<number>=[0,0,0,0,2]
+  // let indicatorData:Array<any>=[{name:'A(90% ~100%)',max:max_num},{name: "B(80% ~90%)",max:max_num},{name: "C(70%~80%)",max:max_num},{name: "D(60% ~70%)",max:max_num},{name: "E(0 ~60%)",max:max_num}]
+  let seriesData:Array<number>=[]
+	let indicatorData:Array<any>=[]
+	data.map((v:any)=>{
+		v.max=2
+		delete v.value
+		seriesData.push(v.value)
+	})
+	// console.log(data);
+	indicatorData=data
   const chart = echarts.init(el)
   // let options={}
   var options = {
@@ -84,25 +92,19 @@ function distributionEcharts(el: HTMLDivElement, data: Array<any>) {
   return chart;
 }
 function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
-  let res=[
-    {name: "选择题", max: 0, min: 0, average: 0},
-    {name: "判断题", max: 0, min: 0, average: 0},
-    {name: "填空题", max: 0, min: 0, average: 0},
-    {name: "简答题", max: 0, min: 0, average: 0},
-    {name: "实操考核题", max: 0, min: 0, average: 0}
-  ]
-  var maxData = [],
-		minData = [],
-		averageData = [],
-		xAxisLabeData = [];
-	for (var i = 0; i < res.length; i++) {
-		maxData.push(res[i].max)
-		minData.push(res[i].min)
-		averageData.push(res[i].average)
-		xAxisLabeData.push(res[i].name)
-	}
+	let res=["选择题","判断题","填空题","简答题","实操考核题",];
+	var maxData:Array<any> = [],
+		minData:Array<any> = [],
+		averageData:Array<any> = [],
+		xAxisLabeData:Array<any> = [];
+	data.forEach((v:any)=>{
+		maxData.push(v.highest_score)
+		minData.push(v.lowest_score)
+		averageData.push(v.average_score)
+		xAxisLabeData.push(res[v.type_id-1])
+	})
+  
   const chart = echarts.init(el)
-  // let options={}
   var options = {
 		backgroundColor: '#fff',
 		tooltip: {

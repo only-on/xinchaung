@@ -157,7 +157,8 @@ export default defineComponent({
 
     let imgSrc = ref('')
     let selectedImg = ref('')
-    let baseUrl = import.meta.env.VITE_APP_BASE_API || ''
+    // let baseUrl = import.meta.env.VITE_APP_BASE_API || ''
+    const dev_base_url=(window as any).proxy_api
     const beforeUpload = (file: any) => {
       const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png'
       if (!isJpgOrPng) {

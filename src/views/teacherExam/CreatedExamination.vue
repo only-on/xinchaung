@@ -771,7 +771,7 @@ export default defineComponent({
       width: 100%;
       height: 380px;
       overflow: auto;
-      background: url(src/assets/images/teacherExam/calendar.png.png) no-repeat;
+      background: url(src/assets/images/teacherExam/calendar.png) no-repeat;
       background-size: 100% 100%;
       .title{
         position: absolute;

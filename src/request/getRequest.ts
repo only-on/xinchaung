@@ -7,6 +7,7 @@ import pupa from 'pupa';
 // https://stackoverflow.com/questions/28920753/declaring-the-type-of-this-in-a-typescript-function/41358367
 // https://www.typescriptlang.org/docs/handbook/2/functions.html#declaring-this-in-a-function
 const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+// const dev_base_url=(window as any).proxy_api
 
 const GetRequest = function (this: IHttpClient, baseUrl = "") {
   this.server = request;

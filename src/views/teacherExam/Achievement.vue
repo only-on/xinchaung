@@ -5,7 +5,7 @@
         <div class="box box1">
           <div class="top-info flexCenter">
             <div class="title">{{detaile.name}}</div>
-            <div>考试时间：2021-06-07 16:20:00 ~ 2021-06-07 16:25:00</div>
+            <div>考试时间：{{started_at}} ~ {{closed_at}}</div>
           </div>
           <div class="flexCenter content">
             <div class="score-block">
@@ -22,15 +22,15 @@
                 <div>及格线</div>
               </div>
               <div class="item">
-                <strong>{{detaile.all_score}}</strong>
+                <strong>{{hour_long}}</strong>
                 <div>考试时长</div>
               </div>
               <div class="item">
-                <strong>{{detaile.all_score}}</strong>
+                <strong>{{detaile.student_total}}</strong>
                 <div>考试人数</div>
               </div>
               <div class="item">
-                <strong class="huang">{{detaile.pass_rate}}%</strong>
+                <strong class="huang">{{detaile.pass_rate*100}}%</strong>
                 <div>及格率</div>
               </div>
               <div class="item ">
@@ -114,7 +114,18 @@
     </div>
   </div>
   <a-modal v-model:visible="Visible" title="成绩明细" :width="1413" class="modal-post">
-    <div class="base-info"></div>
+    <div class="base-info">
+      <div class="top-info-item portrait">
+        <div class="photo"></div>
+        <div class="student-cont-info">
+          <span>账户：132</span>
+          <span>名字：xxx</span>
+        </div>
+      </div>
+      <div class="top-info-item"></div>
+      <div class="top-info-item"></div>
+      <div class="top-info-item"></div>
+    </div>
     <template #footer>
       <span></span>
     </template>
@@ -154,11 +165,15 @@ interface Istate{
   see: (v:number) => void;
   Visible:boolean;
   detaile:any;
+  hour_long:number;
+  started_at:string;
+  closed_at:string;
+  examName:string;
 }
 const columns=[
   {
     title: '题目',
-    dataIndex:"title",
+    dataIndex:"option",
     align:'center',
     width:460,
   },
@@ -239,11 +254,15 @@ export default defineComponent({
     const http=(request as any).teacherExam
     var updata=inject('updataNav') as Function
     updata({showContent:false,navType:false,tabs:[],navPosition:'outside',backOff:true})
-    function initData(){
-      http.getExaminationDetail({urlParams: {exam_id: Id}}).then((res:IBusinessResp)=>{
+    async function  initData(){
+      await http.getExaminationDetail({urlParams: {exam_id: Id}}).then((res:IBusinessResp)=>{
           let data=res.data
           state.detaile=res.data.analysis
-        // console.log(state.formState)
+          state.hour_long=res.data.hour_long
+          state.started_at=res.data.started_at
+          state.closed_at=res.data.closed_at
+          state.examName=res.data.name
+        // console.log(state.formState)  examName
       })
     }
     // 各试题正确率
@@ -254,6 +273,7 @@ export default defineComponent({
         let list=  [{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}]
         state.list.length?state.list.map((v:any)=>{
           v.type_name=list[v.type].label
+          v.correct_rete=`${(v.correct_rete*100).toFixed(0)}%`
         }):''
       })
     }
@@ -276,6 +296,10 @@ export default defineComponent({
       },
       list:[],
       total:0,
+      hour_long:0,
+      started_at:'',
+      closed_at:'',
+      examName:'',
       onChangePage:(val:number)=>{
         state.ForumSearch.page=val
         CorrectRate()
@@ -309,7 +333,26 @@ export default defineComponent({
       exportloading:false,
       exportTotal:0,
       achievementExport:()=>{
+        // http.achievementExport({param:{exam_id: Id}}).then((res:IBusinessResp)=>{
 
+        // })
+        const dev_base_url=(window as any).proxy_api
+        let url=`${dev_base_url}/api/v1/question/exams/student-exam-score/export?exam_id=${Id}`
+        fetch(url,{
+            method: 'get',
+        }).then((res:any) => {    
+          //  const contentType = res.headers.get("content-disposition");
+          //   console.log(contentType) 
+            return res.arrayBuffer();
+        }).then(arraybuffer => {
+            let blob = new Blob([arraybuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+            let fileName = `${state.examName}学生成绩.xlsx`;
+            var link = document.createElement('a');
+            link.href = window.URL.createObjectURL(blob);
+            link.download = fileName;
+            link.click();
+            window.URL.revokeObjectURL(link.href);
+        })
       },
       exportChangePage:(val:number)=>{
         state.exportSearch.page=val
@@ -325,8 +368,9 @@ export default defineComponent({
      CorrectRate()
      achievement()
      await initData();
-     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.detaile)
-     typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.detaile)
+    //  console.log(state.detaile)
+     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.detaile.score_distribution)
+     typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.detaile.type_scores)
     })
     const customizeRenderEmpty =function (): VNode{
       if(state.loading){
@@ -549,6 +593,23 @@ export default defineComponent({
   }
 }
 .modal-post{
-
+  .base-info{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    .top-info-item{
+      display: flex;
+      
+    }
+    .portrait{
+      .photo{
+        width: 89px;
+        height: 89px;
+        background: url(src/assets/images/teacherExam/student.png) no-repeat;
+        background-size: 100% 100%;
+      }
+    }
+    
+  }
 }
 </style>
