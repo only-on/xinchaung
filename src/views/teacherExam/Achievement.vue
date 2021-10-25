@@ -4,45 +4,45 @@
       <div class="row12">
         <div class="box box1">
           <div class="top-info flexCenter">
-            <div class="title">测试考试</div>
+            <div class="title">{{detaile.name}}</div>
             <div>考试时间：2021-06-07 16:20:00 ~ 2021-06-07 16:25:00</div>
           </div>
           <div class="flexCenter content">
             <div class="score-block">
               <span>总分</span>
-              <strong>1</strong>
+              <strong>{{detaile.all_score}}</strong>
             </div>
             <div class="exam-details-info flexCenter">
               <div class="item">
-                <strong>1</strong>
+                <strong>{{detaile.questions_count}}</strong>
                 <div>试题</div>
               </div>
               <div class="item">
-                <strong>1</strong>
+                <strong>{{detaile.pass_score}}</strong>
                 <div>及格线</div>
               </div>
               <div class="item">
-                <strong>5</strong>
+                <strong>{{detaile.all_score}}</strong>
                 <div>考试时长</div>
               </div>
               <div class="item">
-                <strong>1</strong>
+                <strong>{{detaile.all_score}}</strong>
                 <div>考试人数</div>
               </div>
               <div class="item">
-                <strong class="huang">1%</strong>
+                <strong class="huang">{{detaile.pass_rate}}%</strong>
                 <div>及格率</div>
               </div>
               <div class="item ">
-                <strong class="hong">1</strong>
+                <strong class="hong">{{detaile.highest_score}}</strong>
                 <div>最高分</div>
               </div>
               <div class="item ">
-                <strong class="lv">1</strong>
+                <strong class="lv">{{detaile.lowest_score}}</strong>
                 <div>最低分</div>
               </div>
               <div class="item ">
-                <strong class="lan">1</strong>
+                <strong class="lan">{{detaile.average_score}}</strong>
                 <div>平均分</div>
               </div>
             </div>
@@ -65,10 +65,10 @@
           <div>
             <div class="search">
                 <div class="item custom_input">
-                  <a-input-search v-model:value="ForumSearch.title" placeholder="请输入题目名称" @search="search" />
+                  <a-input-search v-model:value="ForumSearch.question" placeholder="请输入题目名称" @search="search" />
                 </div>
                 <div  class="item custom_select">
-                    <a-select v-model:value="ForumSearch.type"  placeholder="请选择试题类型" :options="options"></a-select>
+                    <a-select v-model:value="ForumSearch.type_id"  placeholder="请选择试题类型" :options="options"></a-select>
                 </div>
                 <div class="item">
                   <a-button type="primary" @click="search()">查询</a-button>
@@ -77,7 +77,7 @@
             </div>
             <a-config-provider :renderEmpty="customizeRenderEmpty">
               <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-                :pagination="{pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+                :pagination="{pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
                 class="components-table-demo-nested">
               </a-table>
             </a-config-provider>
@@ -92,19 +92,19 @@
           <div>
             <div class="search export">
                 <div class="item custom_input">
-                  <a-input-search v-model:value="exportSearch.title" placeholder="请输入学生姓名关键字查询" @search="studentSearch" />
+                  <a-input-search v-model:value="exportSearch.username" placeholder="请输入学生姓名关键字查询" @search="studentSearch" />
                 </div>
                 <a-button type="primary" @click="achievementExport()">成绩导出</a-button>
             </div>
             <a-config-provider :renderEmpty="exportRenderEmpty">
               <a-table :columns="exportcolumns" :loading="exportloading" :data-source="exportList" :bordered="true"  row-key="id"
-                :pagination="{pageSize:exportSearch.pageSize,total:exportTotal,onChange:exportChangePage,hideOnSinglePage:true}" 
+                :pagination="{pageSize:exportSearch.limit,total:exportTotal,onChange:exportChangePage,hideOnSinglePage:true}" 
                 class="components-table-demo-nested">
                 <template #result="{record }">
-                  <span :class="record.result" style="color: #FF6766;">{{'不及格'}}</span>
+                  <span :class="record.exam_result?'pass':'nopass'">{{record.exam_result?'及格':'不及格'}}</span>
                 </template>
-                <template #detaile="{record, text }">
-                  <a @click="see(record.id)">{{ text }}</a>
+                <template #detaile="{record}">
+                  <a  class="caozuo" @click="see(record.id)">查看</a>
                 </template>
               </a-table>
             </a-config-provider>
@@ -113,6 +113,12 @@
       </div>
     </div>
   </div>
+  <a-modal v-model:visible="Visible" title="成绩明细" :width="1413" class="modal-post">
+    <div class="base-info"></div>
+    <template #footer>
+      <span></span>
+    </template>
+  </a-modal>
 </template>
 <script lang="tsx">
 import { SelectTypes } from 'ant-design-vue/es/select';
@@ -131,7 +137,6 @@ interface ItdItems{
   id:number,
 }
 interface Istate{
-  data:any;
   loading:boolean;
   ForumSearch:any;
   list:ItdItems[];
@@ -147,6 +152,8 @@ interface Istate{
   exportChangePage: (v:number) => void;
   studentSearch: () => void;
   see: (v:number) => void;
+  Visible:boolean;
+  detaile:any;
 }
 const columns=[
   {
@@ -157,19 +164,19 @@ const columns=[
   },
   {
     title: '类型',
-    dataIndex:"title",
+    dataIndex:"type_name",
     align:'center',
     // width:260,
   },
   {
     title: '正确人数',
-    dataIndex:"title",
+    dataIndex:"correct_count",
     align:'center',
     // width:260,
   },
   {
     title: '正确率',
-    dataIndex:"title",
+    dataIndex:"correct_rete",
     align:'center',
     // width:260,
   },
@@ -177,7 +184,7 @@ const columns=[
 const exportcolumns=[
   {
     title: '学号',
-    dataIndex:"hao",
+    dataIndex:"username",
     align:'center',
     // width:260,
   },
@@ -189,7 +196,7 @@ const exportcolumns=[
   },
   {
     title: '班级',
-    dataIndex:"ban",
+    dataIndex:"class_name",
     align:'center',
     // width:260,
   },
@@ -201,13 +208,13 @@ const exportcolumns=[
   },
   {
     title: '成绩',
-    dataIndex:"ji",
+    dataIndex:"score",
     align:'center',
     // width:260,
   },
   {
     title: '考试结果',
-    dataIndex:"result",
+    dataIndex:"exam_result",
     align:'center',
     slots: { customRender: 'result' },
     // width:260,
@@ -229,52 +236,75 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const {Id}= route.query
+    const http=(request as any).teacherExam
     var updata=inject('updataNav') as Function
     updata({showContent:false,navType:false,tabs:[],navPosition:'outside',backOff:true})
     function initData(){
-
+      http.getExaminationDetail({urlParams: {exam_id: Id}}).then((res:IBusinessResp)=>{
+          let data=res.data
+          state.detaile=res.data.analysis
+        // console.log(state.formState)
+      })
+    }
+    // 各试题正确率
+    function CorrectRate(){
+      http.CorrectRate({urlParams: {exam_id: Id},param:{...state.ForumSearch}}).then((res:IBusinessResp)=>{
+        state.list=res.data.list
+        state.total=res.data.page.totalCount
+        let list=  [{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}]
+        state.list.length?state.list.map((v:any)=>{
+          v.type_name=list[v.type].label
+        }):''
+      })
+    }
+    // 学生成绩 ×
+    function achievement(){
+      http.achievement({urlParams: {exam_id: Id},param:{...state.exportSearch}}).then((res:IBusinessResp)=>{
+        state.exportList=res.data.list
+        state.exportTotal=res.data.page.totalCount
+      })
     }
     const options = ref<SelectTypes['options']>([{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}])
     const state:Istate=reactive({
-      data:{},
+      detaile:{},
       loading:false,
       ForumSearch:{
-        title:'',
-        type:undefined,
+        question:'',
+        type_id:undefined,
         page:1,
-        pageSize:5
+        limit:5
       },
       list:[],
       total:0,
       onChangePage:(val:number)=>{
         state.ForumSearch.page=val
-        initData()
+        CorrectRate()
       },
       search:()=>{
-        if(state.ForumSearch.title!=='' || state.ForumSearch.type!==undefined){
+        // if(state.ForumSearch.question!=='' || state.ForumSearch.type_id!==undefined){
           state.ForumSearch.page=1
-          initData()
-        }
+          CorrectRate()
+        // }
       },
       clearSearch:()=>{
-        if(state.ForumSearch.title || state.ForumSearch.type){
-          state.ForumSearch.title=''
-          state.ForumSearch.type=undefined
+        if(state.ForumSearch.question || state.ForumSearch.type_id){
+          state.ForumSearch.question=''
+          state.ForumSearch.type_id=undefined
           state.ForumSearch.page=1
-          // initData()
+          CorrectRate()
         }
       },
       exportList:[],
       exportSearch:{
         page:1,
-        pageSize:5,
-        title:'',
+        limit:5,
+        username:'',
       },
       studentSearch:()=>{
-        if(state.exportSearch.title!==''){
+        // if(state.exportSearch.username!==''){
           state.exportSearch.page=1
-          // initData()
-        }
+          achievement()
+        // }
       },
       exportloading:false,
       exportTotal:0,
@@ -283,21 +313,26 @@ export default defineComponent({
       },
       exportChangePage:(val:number)=>{
         state.exportSearch.page=val
-        initData()
+        achievement()
       },
-      see:(id:number)=>{}
+      Visible:false,
+      see:(id:number)=>{
+        state.Visible=true
+      }
     })
    
     onMounted(async ()=>{
+     CorrectRate()
+     achievement()
      await initData();
-     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.data)
-     typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.data)
+     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.detaile)
+     typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.detaile)
     })
     const customizeRenderEmpty =function (): VNode{
       if(state.loading){
         return <template></template>
       }else{
-        let type=(state.ForumSearch.title || state.ForumSearch.type!==undefined)?'tableSearchEmpty':'tableEmpty'
+        let type=(state.ForumSearch.question || state.ForumSearch.type_id!==undefined)?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} height={100} />
       }
     }
@@ -305,7 +340,7 @@ export default defineComponent({
       if(state.exportloading){
         return <template></template>
       }else{
-        let type=(state.exportSearch.title)?'tableSearchEmpty':'tableEmpty'
+        let type=(state.exportSearch.question)?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} height={100} />
       }
     }
@@ -509,5 +544,11 @@ export default defineComponent({
       width: 600px;
     }
   }
+  .nopass{
+    color: #FF6766;
+  }
+}
+.modal-post{
+
 }
 </style>

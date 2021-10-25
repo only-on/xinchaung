@@ -147,6 +147,8 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
 
     onMounted(()=>{
+       const {page}= route.query
+      page?ForumSearch.page=Number(page):''
      initData()
     })
     return {list,loading,ForumSearch,totalCount,search,pageChange,copy,edit,delate,add};

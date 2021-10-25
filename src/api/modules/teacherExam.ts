@@ -19,6 +19,8 @@ export default{
   editSubmit:{url:`/api/v1/question/exams/{editId}`,method: "PUT",dataType:'json'},
   getClassDetaileList:{url:`/api/v1/question/exams/classes/detail`,method:'GET',},
   initialization:{url:`api/v1/question/exams/users/reset-password`,method:'PUT',},
+  CorrectRate:{url:`/api/v1/question/exams/{exam_id}/questions/correct-rate`,method: "GET"},
+  achievement:{url:`api/v1/question/exams/{exam_id}/students/scores`,method: "GET"},
 }
 
 export interface ITeacherExamlAps {
@@ -41,6 +43,8 @@ export interface ITeacherExamlAps {
   editSubmit: TFHttpSend;
   getClassDetaileList: TFHttpSend;
   initialization: TFHttpSend;
+  CorrectRate: TFHttpSend;
+  achievement: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExam'

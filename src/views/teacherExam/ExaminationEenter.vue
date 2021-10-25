@@ -2,11 +2,11 @@
   <div>
     <div class="header">
       <div class="item custom_input">
-        <a-input-search v-model:value="ForumSearch.name" placeholder="请输入考试名称关键字搜索" @search="search" />
+        <a-input-search v-model:value="Forum.name" placeholder="请输入考试名称关键字搜索" @search="search" />
       </div>
       <div class="type">
         <span>仅显示</span>
-        <a-radio-group v-model:value="ForumSearch.status" @change="search">
+        <a-radio-group v-model:value="Forum.status" @change="search">
           <a-radio :value="0">全部</a-radio>
           <a-radio :value="2">未开始</a-radio>
           <a-radio :value="1">进行中</a-radio>
@@ -77,7 +77,7 @@
         </div>
         <Empty v-if="!list.length  && !loading" />
         <a-pagination v-if="list.length"
-            v-model:current="ForumSearch.page"
+            v-model:current="Forum.page"
             :pageSize="11"
             :total="totalCount"
             @change="pageChange"
@@ -106,7 +106,7 @@ interface IlistItem{
   is_publish:number
   status:number
 }
-interface IforumSearch{
+interface IForum{
   name:string,
   status?:number,
   page:number,
@@ -117,13 +117,13 @@ export default defineComponent({
   components: {
    
   },
-  setup: (props,{emit}) => {
+  setup: (props,{emit}) => { //Forum
     const router = useRouter();
     const route=useRoute();
     var list:IlistItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
     const http=(request as any).teacherExam
-    const ForumSearch:IforumSearch=reactive({
+    const Forum:IForum=reactive({
       name:'',
       status:0,
       page:1,
@@ -134,10 +134,10 @@ export default defineComponent({
       loading.value=true
       list.length=0
       let obj={
-        name:ForumSearch.name,
-        page:ForumSearch.page,
-        status:ForumSearch.status,
-        limit:ForumSearch.limit
+        name:Forum.name,
+        page:Forum.page,
+        status:Forum.status,
+        limit:Forum.limit
       }
       obj.status? '' : delete  obj.status
       http.ExaminationEnter({param:{...obj}}).then((res:IBusinessResp)=>{
@@ -149,14 +149,14 @@ export default defineComponent({
     }
     function search(val:any){
       console.log(val) 
-      if(ForumSearch.name || ForumSearch.status===0){
+      if(Forum.name || Forum.status===0){
          initData()
        }
     }
     var updata=inject('updataNav') as Function
     function pageChange(current:any,pageSize:any){
         // console.log(current, pageSize);  CreatedExamination
-        ForumSearch.page=current
+        Forum.page=current
         initData()
         const {query,path}= route
         router.replace({
@@ -199,11 +199,13 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-     const {page}= route.query
-     page?ForumSearch.page=Number(page):''
-     initData()
+    //  const {page}= route.query
+      const {page}= route.query
+      page?Forum.page=Number(page):''
+      // console.log(route.query)   
+      initData()
     })
-    return {list,loading,ForumSearch,totalCount,search,pageChange,Achievement,delate,add,edit,publish};
+    return {list,loading,Forum,totalCount,search,pageChange,Achievement,delate,add,edit,publish};
   },
 })
 </script>

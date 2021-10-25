@@ -59,11 +59,11 @@ export default defineComponent({
     const activeName: Ref<string> = ref("");
     var updata=inject('updataNav') as Function
       
-    function tabChange(item: ITab) {
+    async function tabChange(item: ITab) {
       // console.log(item)
       if(activeName.value!==item.name){
         context.emit("tabSwitch", item);
-        updateRouter(item.componenttype);
+        await updateRouter(item.componenttype);
         activeName.value = item.name;
         updata({...configuration,componenttype:item.componenttype})
       }
@@ -71,31 +71,30 @@ export default defineComponent({
     function pageEdit(){
       configuration.pageEdit()
     }
-    function updateRouter(val?:number){
+    async function  updateRouter(val?:number){
       const {query,path}= route
-      router.replace({
+      // console.log(query)
+      let Newquery={currentTab: val}
+      await router.replace({
             path: path,
-            query: {currentTab: val},
-       })
+            query: Newquery,
+      })
+      // var query2= route.query
+      // console.log(query2)
     }
-    function initData(){
+    async function initData(){
       if(configuration.tabs && configuration.tabs.length){
-        // const { currentTab } = route.query
-        // updateRouter(currentTab?Number(currentTab):0)
-        // configuration.componenttype=currentTab?Number(currentTab):0
-        // activeName.value =configuration.tabs[configuration.componenttype].name
-        // tabChange(configuration.tabs[configuration.componenttype])
-        
         // 页面首次进入加currentTab参数    原地刷新则不刷新路由
         const { currentTab } = route.query
         const SwitchNumber=currentTab?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
-        currentTab?'':updateRouter(SwitchNumber)
+        currentTab?'':await updateRouter(SwitchNumber)
         //     用户指定了componenttype时使用指定的，否则加componenttype为0
         const newCurrentTab= route.query.currentTab
         const newSwitchNumber=newCurrentTab?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
+        await tabChange(configuration.tabs[newSwitchNumber])
         configuration.componenttype=newSwitchNumber
         activeName.value =configuration.tabs[configuration.componenttype].name
-        tabChange(configuration.tabs[configuration.componenttype])
+        
       }
     }
     function back(){

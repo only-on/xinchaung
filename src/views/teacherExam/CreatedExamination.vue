@@ -10,7 +10,7 @@
         </a-form-item>
         <div class="duration">
           <a-form-item label="考试开始时间"  name="started_at" :label-col="{span:8}" :wrapper-col="{span:20}">
-            <a-date-picker v-model:value="formState.started_at" @ok="dateOk" :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss'),minuteStep:5,secondStep:60 }" :disabled-date="disabledDate"  valueFormat="YYYY-MM-DD HH:mm:ss"  format="YYYY-MM-DD HH:mm:ss" />
+            <a-date-picker v-model:value="formState.started_at" @blur="dateOk" @ok="dateOk" :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss'),minuteStep:5,secondStep:60 }" :disabled-date="disabledDate" :disabled-time="disabledDateTime"  valueFormat="YYYY-MM-DD HH:mm:ss"  format="YYYY-MM-DD HH:mm:ss" />
           </a-form-item>
           <a-form-item label="考试时长"  name="hour_long" :label-col="{span:6}" :wrapper-col="{span:16}">
             <a-input v-model:value="formState.hour_long" @blur="hourLongChange()" />
@@ -140,7 +140,6 @@
     </div>
     <template #footer>
       <span></span>
-      <!-- <a-button @click="handleReply" type="primary">提交</a-button> -->
     </template>
   </a-modal>
 </template>
@@ -210,6 +209,7 @@ interface Istate{
   examsDateTesting: () => void;
   dateOk: (v:any) => void;
   hourLongChange: () => void;
+  verificationDate:boolean;
 }
 type Key = ColumnProps['key'];
 const StudentColumns=[
@@ -391,7 +391,7 @@ export default defineComponent({
             note:'',
             date:moment()
           },
-          send_ids:[],        // 弹窗内一页临时选中项
+          send_ids:[],        //  创建页已选的list   ids
           onPanelChange:(val: Moment,mode: string)=>{
             // console.log(val);
             state.appointment()
@@ -428,7 +428,6 @@ export default defineComponent({
               // console.log(repeat)
               if(repeat.length===0){
                 state.information===1?state.classAllRowKeys.push(v):state.studentAllRowKeys.push(v)
-                // state.AllRowKeys.push(v)
                 state.send_ids.push(v.id)
               }
               //  console.log('classAllRowKeys: ', state.classAllRowKeys);
@@ -436,8 +435,8 @@ export default defineComponent({
             })
           },
           selectedRows:[],           //    弹窗当前页全部已选  list
-          selectedRowKeys:[],         //   弹窗 当前页已选 ids
-          studentAllRowKeys:[],              //  创建页展示 list
+          selectedRowKeys:[],         //   弹窗 当前页全部已勾选 ids
+          studentAllRowKeys:[],          //  创建页展示 list
           classAllRowKeys:[],              //  创建页展示 list
           AllselectedRowKeys:[],       // 创建页 准备批量操作的已选项 ids
           // 创建页面已选的list
@@ -450,14 +449,16 @@ export default defineComponent({
           onSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{        // 记录当前页码已选择的总数
             // console.log('RowKeys changed: ', selectedRowKeys);
             // console.log('selectedRows: ', selectedRows);
-            state.selectedRowKeys = selectedRowKeys;
-            state.selectedRows = selectedRows;
+            state.selectedRowKeys = selectedRowKeys;         // 不去分别分页的弹窗已选ids
+            state.selectedRows = selectedRows;               // 弹窗当前页已选 list
           },
           delateCard:(val:any)=>{
             let n=state.send_ids.indexOf(val)
             state.information===1?state.classAllRowKeys.splice(n,1):state.studentAllRowKeys.splice(n,1)
-            // state.AllRowKeys.splice(n,1)
             state.send_ids.splice(n,1)
+            state.selectedRowKeys.splice(n,1)
+            // console.log(state.selectedRowKeys,state.send_ids)
+            // console.log(state.studentAllRowKeys)
           },
           CardDetaile:(val:any)=>{
             state.searchClassDetails.class_id=val
@@ -481,10 +482,12 @@ export default defineComponent({
               ...state.formState,
             }
             obj[name]=state.send_ids
-            
-            console.log(obj)
-            // CreatedExamination
+            // console.log(obj)
             state.formRef.validate().then(()=>{
+              if(state.verificationDate===false){
+                message.warn(`请选择合理的考试开始时间`)
+                return
+              }
               if(obj[name].length===0){
                 message.warn(`请选择${state.information===1?'班级':'学生'}`)
                 return
@@ -535,7 +538,9 @@ export default defineComponent({
           },
           onChangePage:(val:number)=>{
             state.searchClassStudent.page=val
+            state.selectedRowKeys=[...state.send_ids]
             state.getClassStudent()
+            // console.log(state.selectedRowKeys,state.send_ids)
           },
           ClassDetailsShowSizeChange:(current:number,pageSize:number)=>{
             console.log(current,pageSize)
@@ -609,19 +614,24 @@ export default defineComponent({
               classname:'',
             }
           },
-          examsDateTesting:()=>{
+          verificationDate:false,      //  考试开始时间合理性验证
+          examsDateTesting:async ()=>{
             let obj={
               exam_id:editId?editId:'',
               started_at:state.formState.started_at,
               hour_long:state.formState.hour_long
             }
-            http.examsDateTesting({param:{...obj}}).then((res:IBusinessResp)=>{
-
+            state.verificationDate=false
+            await http.examsDateTesting({param:{...obj}}).then((res:IBusinessResp)=>{
+              state.verificationDate=true
+              // console.log(state.verificationDate)
             })
           },
           dateOk:(val:any)=>{
             // console.log(val)
-            state.examsDateTesting()
+            if(state.formState.started_at!==''){
+              state.examsDateTesting()
+            }
           },
           // 检查考试时间是否冲突
           hourLongChange:()=>{
@@ -642,7 +652,7 @@ export default defineComponent({
     }
     function getExaminationDetail(){
       http.getExaminationDetail({urlParams: {exam_id: editId}}).then((res:IBusinessResp)=>{
-        let data=res.data
+          let data=res.data
           state.formState={
             name:data.name,
             paper_id: data.paper_id,
@@ -653,15 +663,19 @@ export default defineComponent({
             date:moment()
           }
           if(data.class_ids && data.class_ids.length){
+            state.currentinformation=1
             state.information=1
-            state.classAllRowKeys=data.classes_info
-            state.send_ids=data.class_ids
+            state.classAllRowKeys=[...data.classes_info]  
+            state.send_ids=[...data.class_ids]
+            state.selectedRowKeys=[...data.class_ids]
           }else{
+            state.currentinformation=2
             state.information=2
-            state.studentAllRowKeys=data.student_info
-            state.send_ids=data.student_ids
+            state.studentAllRowKeys=[...data.students_info]  
+            state.send_ids=[...data.student_ids]
+            state.selectedRowKeys=[...data.student_ids]
           }
-        console.log(state.formState)
+        // console.log(state.formState)
       })
     }
     function getTestPaperList(){
@@ -688,7 +702,7 @@ export default defineComponent({
         return result;
       };
       let date=moment().toObject()
-      console.log(state.formState.started_at)
+      // console.log(state.formState.started_at)
       return {
         // disabledHours: () => range(0, 24).splice(0,date.hours),
         // disabledMinutes: () => range(0,date.minutes),
