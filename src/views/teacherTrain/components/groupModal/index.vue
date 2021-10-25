@@ -22,15 +22,15 @@
                 </div>
                 <div>
                     <!-- :replaceFields='replaceFields' -->
-                    <a-tree :treeData='treeData' :replaceFields='replaceFields'></a-tree>
+                    <a-tree :treeData='treeData' :replaceFields='replaceFields' :defaultExpandAll='true'></a-tree>
                 </div>
             </div>
             <div>
             <div class="transferBox">
-                <div>
+                <div :class='isMoveLeft'>
                     <span @click="leftMove" class="icon-chuansuojiantou iconfont"></span>
                 </div>
-                <div>
+                <div :class='isMoveRight'>
                     <span @click="rightMove" class="icon-chuansuojiantou-copy iconfont"></span>
                 </div>
             </div>
@@ -38,8 +38,8 @@
             <div class="unGroup">
                 <div>未分组情况(未分组学生)</div>
                 <div class="groupOperate" v-if="!ifautoGroupEdit">
-                    <a-input style="width:180px" placeholder="选择学生命名新数组"></a-input>
-                    <a-button type='primary'>添加分组</a-button>
+                    <a-input style="width:180px" placeholder="选择学生命名新数组" v-model:value="groupname"></a-input>
+                    <a-button type='primary' @click="addGroup">添加分组</a-button>
                 </div>
                 <div class="checkGroup">
                     <a-checkbox-group @change="onChange">
@@ -66,6 +66,7 @@ interface Istate{
    group:groupType,
    treeData:any,
    replaceFields:any,
+   groupname:string,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -92,7 +93,8 @@ export default defineComponent({
             {train_id: "50225", group_id: 313, id: 4249, name: "乔晶晶"},
             {train_id: "50225", group_id: 313, id: 4246, name: "123456"}]
         },
-        replaceFields:{children:'children', title:'title', key:'id'}        
+        replaceFields:{children:'student_list', title:'name', key:'id'},
+        groupname:''      
     })
     const methods={
       editOk(){
@@ -117,13 +119,20 @@ export default defineComponent({
       },
       onChange(checkedValues:any) {
       console.log('checked = ', checkedValues);
-    },
+        },
+      addGroup(){
+          if(!state.groupname){
+              message.warning('请输入分组名称')
+              return
+          }
+      }
     }
     onMounted(()=>{
         // methods.getStuGroup()
         state.treeData=[{
-            title:state.group.group_info.group_name,
-            children:state.group.student_list,
+            name:state.group.group_info.group_name,
+            id:state.group.group_info.group_id,
+            student_list:state.group.student_list,
         }]
     })
     return {...toRefs(state),...methods}
@@ -136,6 +145,12 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-content: center;
+        .isMoveRight{
+            cursor: none;
+        }
+        .isMoveLeft{
+            cursor: none;
+        }
     }
 }
 .hasGroup,.unGroup{

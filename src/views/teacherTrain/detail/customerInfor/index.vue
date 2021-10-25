@@ -42,7 +42,6 @@
            <div>
                 <a-modal
                 width="600px"
-                :rowkey='rowkey'
                 title="班级信息"
                 :visible="classInfoVisible"
                 :confirm-loading="classInfoLoading"
@@ -57,7 +56,6 @@
            </div>
            <div>
                 <a-modal
-                :rowkey='rowkey'
                 title="删除提示"
                 :visible="classDeleteVisible"
                 :confirm-loading="classDeleteLoading"
@@ -123,7 +121,7 @@ export default defineComponent({
       stuColumns:[
         {
             title: '学号',
-            dataIndex: 'stu_no',
+            dataIndex: 'id',
             align: 'left',
             ellipsis: true,
         },
@@ -161,7 +159,7 @@ export default defineComponent({
       classInfoColumns:[
         {
             title: '账号',
-            dataIndex: 'stu_no',
+            dataIndex: 'id',
             align: 'left',
             ellipsis: true,
         },

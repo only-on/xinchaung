@@ -99,13 +99,10 @@ export default defineComponent({
         }
         watch(()=>props.propTrainDetailInfo,(val:any)=>{
              state.form=cloneDeep(props.propTrainDetailInfo)
-        },{
-        deep:true,
-        immediate:true
-        })
-        // onMounted(()=>{
-        //      state.form=cloneDeep(props.propTrainDetailInfo)
-        // })
+            },{
+            deep:true,
+            immediate:true
+            })
         return{ ...toRefs(state),...methods,rules}
     }
 })

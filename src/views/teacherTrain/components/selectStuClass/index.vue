@@ -15,24 +15,24 @@
                 <a-form layout="inline" class="searchContent">
                     <div class="stuSearch" v-if="selectvalue===1">
                         <a-form-item label="学号">
-                            <a-input style="width:150px"></a-input>
+                            <a-input style="width:150px" v-model:value="studentValue"></a-input>
                         </a-form-item>
                         <a-form-item label="姓名">
-                            <a-input style="width:150px"></a-input>
+                            <a-input style="width:150px" v-model:value="fullName"></a-input>
                         </a-form-item>
                         <a-form-item label="院系">
-                            <a-input style="width:150px"></a-input>
+                            <a-input style="width:150px" v-model:value="faculty"></a-input>
                         </a-form-item>
                     </div>
                     <div class="classSearch" v-else>
                         <a-form-item label="班级">
-                            <a-input style="width:150px"></a-input>
+                            <a-input style="width:150px" v-model:value="classes"></a-input>
                         </a-form-item>
                     </div>
                     <div class="operateBtn">
-                        <a-button class="add" type="primary">添加</a-button>
-                        <a-button class="clear" type="primary">清空</a-button>
-                        <a-button type="primary">查询</a-button>
+                        <a-button class="add" type="primary" @click="addittion">添加</a-button>
+                        <a-button class="clear" type="primary" @click="clearAll">清空</a-button>
+                        <a-button type="primary" @click="inquiry">查询</a-button>
                     </div>
                     
                 </a-form> 
@@ -53,7 +53,11 @@ interface Istate{
    selectClass:any[],
    selectStu:any[],
    columns:any[],
-   data:any[]
+   data:any[],
+   studentValue:string,
+   fullName:string,
+   faculty:string,
+   classes:string
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -123,7 +127,11 @@ export default defineComponent({
         },
         ],
         columns:[],
-        data:[]
+        data:[],
+        studentValue:'',
+        fullName:'',
+        faculty:'',
+        classes:''
     })
     const methods={
       handleOk(){
@@ -134,6 +142,18 @@ export default defineComponent({
       },
       rowkey(record: {}, index: number){
          return index
+      },
+      addittion(){
+         console.log(props.selectvalue)
+      },
+      clearAll(){
+        state.studentValue=''
+        state.fullName=''
+        state.faculty=''
+        state.classes=''
+      },
+      inquiry(){
+          console.log(props.selectvalue)
       }
     }
     const rowSelection = {
@@ -165,7 +185,7 @@ export default defineComponent({
 <style lang="less">
 .searchContent{
     display: flex;
-    justify-content:space-between;
+    // justify-content:space-between;
 }
 .stuSearch{
     display: flex;

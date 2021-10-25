@@ -32,6 +32,7 @@
                  <a-modal
                 title="学生分组"
                 width="550px"
+                :footer="null"
                 :visible="autoGroupVisible"
                 :confirm-loading="autoConfirmLoading"
                 @ok="autoGroupOk"
@@ -50,8 +51,8 @@
                             </a-select-option>
                      </a-select>
                      </span>
-                     <a-input class="groupItem" style="width:170px"></a-input>
-                     <a-button type="primary">分组</a-button>
+                     <a-input class="groupItem" style="width:170px" v-model:value="groupNumber"></a-input>
+                     <a-button type="primary" @click="grouping">分组</a-button>
                 </div>
                 </a-modal>
        </div>
@@ -66,13 +67,15 @@ interface Istate{
    editvisible:boolean,
    autoGroupVisible:boolean,
    autoConfirmLoading:boolean,
-   ifautoGroupEdit:boolean
+   ifautoGroupEdit:boolean,
+   groupNumber?:number
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 import groupModal from '../../components/groupModal/index.vue'
+import { number } from 'echarts';
 export default defineComponent({
     name:'groupingInfor',
     props:['propTrainDetailInfo','trainId'],
@@ -140,6 +143,14 @@ export default defineComponent({
       autoGroupCancel(){
           state.autoGroupVisible=false
       },
+      grouping(){
+          if(!state.groupNumber){
+              message.warning('人数或小组数不能为空！')
+              return
+          }
+          console.log(state.groupNumber)
+          console.log('分组')
+      },
     //   手动分组
       manualGroup(){
           state.editvisible=true
@@ -193,6 +204,11 @@ export default defineComponent({
     text-align: center;
     .groupItem{
         margin-right: 5px;
+    }
+}
+.groupModal{
+    .ant-modal-body{
+        min-height: 120px;
     }
 }
 </style>
