@@ -97,6 +97,21 @@ export async function createWorkbenchApi(params: any) {
  *               page:1
  */
 
-export async function getMyImageApi(params:any) {
-    return await workbenchApi.getMyImageApi({param:params})
+export async function getMyImageApi(params: any) {
+    return await workbenchApi.getMyImageApi({ param: params })
 }
+
+/**
+ * @description 获取预设镜像列表
+ * @param  param name
+ *              limit:16
+ *              withs:classify
+ *              page:1
+ *              is_init: 1
+ */
+
+export async function getPresetMirror(params: any) {
+    return await workbenchApi.getPresetMirror({ param: params })
+}
+
+
