@@ -27,10 +27,10 @@
             </div>
             <div>
             <div class="transferBox">
-                <div :class='isMoveLeft'>
+                <div>
                     <span @click="leftMove" class="icon-chuansuojiantou iconfont"></span>
                 </div>
-                <div :class='isMoveRight'>
+                <div>
                     <span @click="rightMove" class="icon-chuansuojiantou-copy iconfont"></span>
                 </div>
             </div>

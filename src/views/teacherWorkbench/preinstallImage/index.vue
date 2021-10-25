@@ -12,10 +12,12 @@
                         <div>容量:{{item.size}}</div>
                         <div>系统：{{item.classify.name}}</div>
                     </div>
-                    <img src="">
+                    <img class="img-type" v-if="item.ostypes==='kvm'" src="src/assets/workbench/kvm.png">
+                    <img class="img-type" v-if="item.ostypes==='docker'" src="src/assets/workbench/docker.png">
                 </div>
                 <div class="image-desc">
-                    <p>暂无介绍</p>
+                    <p v-if="item.description!==''">{{item.description}}</p>
+                    <p v-else>暂无介绍</p>
                 </div>
             </div>
         </div>
@@ -103,6 +105,16 @@ export default defineComponent({
         line-height: 25px;
         color: hsla(0,0%,100%,.5);
     }
+    .img-type{
+        position: absolute;
+        right: 20px;
+        bottom: -15px;
+        width: 64px;
+        height: 64px;
+        box-shadow: 0 4px 6px 0 rgb(0 35 214 / 29%);
+        border-radius: 50%;
+        overflow: hidden;
+        }
 }
 .image-desc {
     padding: 14px;
