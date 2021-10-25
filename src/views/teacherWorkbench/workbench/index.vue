@@ -229,6 +229,7 @@ export default defineComponent({
 
     // 创建容器
     function createWorkbench() {
+      clearInterval(Number(timer));
       router.push({path:"/teacher/Workbench/createWorkbench"})
     }
 

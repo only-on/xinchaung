@@ -103,7 +103,9 @@
         <a-button type="primary" @click="create">创建</a-button>
       </div>
     </a-form>
-    <a-drawer :closable="false" placement="right"  :visible="drawerVisible" @close="closeDrawer" width="640"></a-drawer>
+    <a-drawer class="select-imag-drawer" :closable="false" placement="right"  :visible="drawerVisible" @close="closeDrawer" width="640">
+      <select-data-set></select-data-set>
+    </a-drawer>
   </div>
 </template>
 
@@ -121,7 +123,11 @@ import {
 import moment from "moment";
 import { getConfigApi } from "../api";
 import { includes } from "lodash";
+import selectDataSet from "src/components/selectDataSet/selectDataSet.vue"
 export default defineComponent({
+  components:{
+    "select-data-set":selectDataSet
+  },
   setup() {
     const dateFormat = "YYYY-MM-DD";
     var updata = inject("updataNav") as Function;
@@ -357,6 +363,11 @@ export default defineComponent({
         margin-right: 40px;
       }
     }
+  }
+}
+.select-imag-drawer{
+  .ant-drawer-body{
+    height: 100%;
   }
 }
 </style>

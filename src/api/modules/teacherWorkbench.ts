@@ -6,7 +6,8 @@ export default {
     openWorkbenchApi:{url:"/api/env/workbenchs/start/{id}",method:"POST"},
     getWorkbenchInfoApi:{url:"/api/env/workbenchs/info/{id}",method:"GET"},
     getWorkbenchStatusApi:{url:"/api/env/workbenchs/vms",method:"GET"},
-    getConfigApi:{url:"/api/env/images/config",method:"GET"} // 获取工作台配置
+    getConfigApi:{url:"/api/env/images/config",method:"GET"}, // 获取工作台配置
+    getDataSetApi:{url:"/dmc/v1.0/datasets",method:"GET"}
 }
 
 export interface IteacherWorkbench{
@@ -17,4 +18,5 @@ export interface IteacherWorkbench{
     getWorkbenchInfoApi:TFHttpSend
     getWorkbenchStatusApi:TFHttpSend
     getConfigApi:TFHttpSend
+    getDataSetApi:TFHttpSend
 }
