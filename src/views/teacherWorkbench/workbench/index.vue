@@ -1,12 +1,14 @@
 <template>
   <div class="workbench-main">
     <div class="workbench-head">
-      <a-button type="primary" @click="createWorkbench">创建容器({{ limit }}/5)</a-button>
+      <a-button type="primary" @click="createWorkbench"
+        >创建容器({{ limit }}/5)</a-button
+      >
     </div>
-    <div class="workbench-list-box">
+    <div class="workbench-list-box" v-if="workbenchDataList.length > 0">
       <div
         class="workbench-item"
-        v-for="(item, index) in dataList"
+        v-for="(item, index) in workbenchDataList"
         :key="index"
       >
         <div class="box-border">
@@ -21,6 +23,7 @@
         </div>
       </div>
     </div>
+    <empty v-else />
   </div>
 </template>
 
@@ -39,20 +42,21 @@ import card from "./card.vue";
 import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import storage from "src/utils/extStorage";
-import { onBeforeRouteLeave ,useRouter} from "vue-router";
-
+import { onBeforeRouteLeave, useRouter } from "vue-router";
+import empty from "src/components/Empty.vue";
 
 export default defineComponent({
   components: {
     card,
+    empty,
   },
   setup() {
-    const router=useRouter()
+    const router = useRouter();
     const reactiveData: {
       params: TgetWorkbench;
-      dataList: any[];
+      workbenchDataList: any[];
       limit: number;
-      isPoll:boolean
+      isPoll: boolean;
     } = reactive({
       params: {
         page: 1,
@@ -60,30 +64,31 @@ export default defineComponent({
         name: "",
         withs: "image,flavor,vm,image.classify",
       },
-      dataList: [],
+      workbenchDataList: [],
       limit: 0,
-      isPoll:false, // 是否在轮询
+      isPoll: false, // 是否在轮询
     });
 
     const ws = ref(null);
     let uid = storage.lStorage.get("uid");
     let timer: NodeJS.Timer | null = null;
-    
+
     onBeforeRouteLeave(() => {
       console.log("离开页面");
-      reactiveData.isPoll=false
+      reactiveData.isPoll = false;
       ws.value ? (ws.value as any).close() : "";
       clearInterval(Number(timer));
     });
 
     onMounted(() => {
-      init();
+      reactiveData.workbenchDataList=[]
+        init();
       connectWs();
     });
 
-   async function init() {
+    async function init() {
       await getDataList();
-      getWorkbenchStatus(-1)
+      getWorkbenchStatus(-1);
     }
     // 链接websocker
     function connectWs() {
@@ -109,14 +114,16 @@ export default defineComponent({
     // 获取工作台列表
     function getDataList() {
       return new Promise((reslove: any, reject: any) => {
-        getWorkbenchApi(reactiveData.params).then((res: any) => {
-          console.log(res);
-          reslove(res)
-          reactiveData.dataList = res.data.list;
-          reactiveData.limit = res.data.page.totalCount;
-        }).catch(err=>{
-          reject(err)
-        });
+        getWorkbenchApi(reactiveData.params)
+          .then((res: any) => {
+            console.log(res);
+            reslove(res);
+            reactiveData.workbenchDataList = res.data.list;
+            reactiveData.limit = res.data.page.totalCount;
+          })
+          .catch((err) => {
+            reject(err);
+          });
       });
     }
 
@@ -177,13 +184,13 @@ export default defineComponent({
           .catch(() => {
             message.error("开启失败");
           });
-          getWorkbenchStatus(ind)
+        getWorkbenchStatus(ind);
       }
     }
 
     // 轮询获取工作台状态
     function getWorkbenchStatus(index: number) {
-      reactiveData.isPoll=true
+      reactiveData.isPoll = true;
       clearInterval(Number(timer));
       timer = setInterval(() => {
         getWorkbenchStatusApi().then((res: any) => {
@@ -195,11 +202,11 @@ export default defineComponent({
                 workbenchStatus[index].status !== "none"
               ) {
                 message.success("开启成功");
-                for (let i = 0; i < reactiveData.dataList.length; i++) {
-                  reactiveData.dataList[i].vm.status = 0;
+                for (let i = 0; i < reactiveData.workbenchDataList.length; i++) {
+                  reactiveData.workbenchDataList[i].vm.status = 0;
                 }
-                reactiveData.dataList[index].vm.status = 1;
-                reactiveData.isPoll=false
+                reactiveData.workbenchDataList[index].vm.status = 1;
+                reactiveData.isPoll = false;
                 clearInterval(Number(timer));
               }
             } else {
@@ -212,13 +219,13 @@ export default defineComponent({
                   isLx = false;
                 }
                 if (workbenchStatus[i].status !== "ACTIVE") {
-                  reactiveData.dataList[i].vm.status = 0;
+                  reactiveData.workbenchDataList[i].vm.status = 0;
                 } else {
-                  reactiveData.dataList[i].vm.status = 1;
+                  reactiveData.workbenchDataList[i].vm.status = 1;
                 }
               }
               if (isLx) {
-                reactiveData.isPoll=false
+                reactiveData.isPoll = false;
                 clearInterval(Number(timer));
               }
             }
@@ -230,15 +237,21 @@ export default defineComponent({
     // 创建容器
     function createWorkbench() {
       clearInterval(Number(timer));
-      router.push({path:"/teacher/Workbench/createWorkbench"})
+      router.push({ path: "/teacher/Workbench/createWorkbench" });
     }
 
+    // 清除定时器
+    function clearTimer() {
+      console.log(1111111111)
+      clearInterval(Number(timer));
+    }
     return {
       ...toRefs(reactiveData),
       enterFun,
       deleteFun,
       openOrCloseFun,
-      createWorkbench
+      createWorkbench,
+      clearTimer
     };
   },
 });

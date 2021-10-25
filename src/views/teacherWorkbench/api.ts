@@ -30,24 +30,24 @@ export function getWorkbenchApi(params: TgetWorkbench) {
  * @param id:string
  */
 
-export async function deleteWorkbenchApi(id:any) {
-    return await workbenchApi.deleteWorkbenchApi({urlParams:{id:id}})
+export async function deleteWorkbenchApi(id: any) {
+    return await workbenchApi.deleteWorkbenchApi({ urlParams: { id: id } })
 }
 
 /**
  * @description 开启工作台
  * @param id
  */
-export async function openWorkbenchApi(id:any) {
-    return await workbenchApi.openWorkbenchApi({urlParams:{id:id}})
+export async function openWorkbenchApi(id: any) {
+    return await workbenchApi.openWorkbenchApi({ urlParams: { id: id } })
 }
 
 /**
  * @description 关闭工作台
  * @param id
  */
- export async function closeWorkbenchApi(id:any) {
-    return await workbenchApi.closeWorkbenchApi({urlParams:{id:id}})
+export async function closeWorkbenchApi(id: any) {
+    return await workbenchApi.closeWorkbenchApi({ urlParams: { id: id } })
 }
 
 /**
@@ -55,8 +55,8 @@ export async function openWorkbenchApi(id:any) {
  * @param id
  */
 
-export async function getWorkbenchInfoApi(id:any) {
-    return await workbenchApi.getWorkbenchInfoApi({urlParams:id})
+export async function getWorkbenchInfoApi(id: any) {
+    return await workbenchApi.getWorkbenchInfoApi({ urlParams: id })
 }
 
 /**
@@ -71,4 +71,32 @@ export async function getWorkbenchStatusApi() {
  */
 export async function getConfigApi() {
     return await workbenchApi.getConfigApi({})
+}
+
+
+/**
+ * @description 创建工作台
+ * @param params {"dataset_id":["264f397ec43511ebb6230242ac110005","329f7020c41911eb9e990242ac110005"],
+ *                  "image_id":50000,
+ *                  "use_gpu":0,
+ *                  "flavor":{"cpu":1,"ram":2048,"disk":30},
+ *                  "is_permanent":1,
+ *                  "start_time":null,
+ *                  "end_time":null}
+ */
+
+export async function createWorkbenchApi(params: any) {
+    return await workbenchApi.createWorkbenchApi({ param: params })
+}
+
+/**
+ * @description 获取我的镜像列表
+ * @param  param name
+ *              limit:16
+ *              withs:image,config,image.classify
+ *               page:1
+ */
+
+export async function getMyImageApi(params:any) {
+    return await workbenchApi.getMyImageApi({param:params})
 }

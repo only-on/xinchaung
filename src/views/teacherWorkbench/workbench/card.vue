@@ -68,7 +68,7 @@
             >
               <template #title>
                 <div class="more-list">
-                  <div v-for="(ct, ci) in data.dataset" :key="ci">
+                  <div v-for="(ct, ci) in data.dataset" :key="ci.toString()">
                     {{ ct ? ct.name : "" }}
                   </div>
                 </div>
@@ -124,7 +124,6 @@ export default defineComponent({
     const data = props.content;
     const index = props.index;
     const isPoll = props.isPoll;
-    console.log(data);
     function openOrCloseFun() {
       emit("openOrCloseFun", data, index);
     }
@@ -135,8 +134,8 @@ export default defineComponent({
       emit("deleteFun", data, index);
     }
     // 处理时间
-    function timeToArray(time: string) {
-      return time.split(":");
+    function timeToArray(time: string):number[] {
+      return (time as any).split(":");
     }
     return {
       data,

@@ -11,11 +11,11 @@
         <a-form-item has-feedback name="end_time" class="time-item">
           <template #label>
             <div class="time-label">
-              <span>容器使用日期</span
-              ><label class="time-check-box">
+              <span>容器使用日期</span>
+              <div class="time-check-box">
                 <a-checkbox v-model:checked="permanent"></a-checkbox>
-                永久有效</label
-              >
+                永久有效
+              </div>
             </div>
           </template>
           <div class="start-end-date-box">
@@ -24,6 +24,8 @@
             <a-date-picker
               v-model:value="ruleForm.end_time"
               :allowClear="false"
+              :disabled="permanent"
+              :disabled-date="disabledDate"
             />
           </div>
         </a-form-item>
@@ -59,10 +61,8 @@
           </a-radio-group>
         </a-form-item>
         <div>
-          <label>
-            <a-checkbox v-if="showGPU" v-model="ruleForm.openGPU"
-              >启动GPU</a-checkbox
-            >
+          <label v-if="showGPU">
+            <a-checkbox v-model:checked="ruleForm.openGPU">启动GPU</a-checkbox>
           </label>
         </div>
       </div>
@@ -84,27 +84,40 @@
           </a-select>
         </a-form-item>
         <a-form-item name="datasets" label="选择数据集">
-          <a-button @click="addDataset" v-if="ruleForm.datasets.length < 3" class="add-data-set-btn"
-            ><span class="icon-tianjia iconfont"></span></a-button
-          >
+          <a-button
+            @click="addDataset"
+            v-if="selectedName.length < 3"
+            class="add-data-set-btn"
+            ><span class="icon-tianjia iconfont"></span
+          ></a-button>
           <div
             class="data-set-item"
-            v-for="it in ruleForm.datasets"
+            v-for="(it, ind) in selectedName"
             :key="it"
             :value="it"
           >
-            <span>{{ it }}</span>
-            <span class="iconfont icon-shanchu"></span>
+            <span>{{ it.name }}</span>
+            <span @click="remove(it, ind)" class="iconfont icon-shanchu"></span>
           </div>
         </a-form-item>
       </div>
       <div class="form-bottom">
-        <a-button>取消</a-button>
+        <a-button @click="cancel">取消</a-button>
         <a-button type="primary" @click="create">创建</a-button>
       </div>
     </a-form>
-    <a-drawer class="select-imag-drawer" :closable="false" placement="right"  :visible="drawerVisible" @close="closeDrawer" width="640">
-      <select-data-set></select-data-set>
+    <a-drawer
+      class="select-imag-drawer"
+      :closable="false"
+      placement="right"
+      :visible="drawerVisible"
+      @close="closeDrawer"
+      width="640"
+    >
+      <select-data-set
+        v-model:value="ruleForm.datasets"
+        v-model:name="selectedName"
+      ></select-data-set>
     </a-drawer>
   </div>
 </template>
@@ -121,14 +134,18 @@ import {
   onMounted,
 } from "vue";
 import moment from "moment";
-import { getConfigApi } from "../api";
+import { getConfigApi, createWorkbenchApi } from "../api";
 import { includes } from "lodash";
-import selectDataSet from "src/components/selectDataSet/selectDataSet.vue"
+import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
+import { RuleObject } from "ant-design-vue/es/form/interface";
+import { message } from "ant-design-vue";
+import { useRouter } from "vue-router";
 export default defineComponent({
-  components:{
-    "select-data-set":selectDataSet
+  components: {
+    "select-data-set": selectDataSet,
   },
   setup() {
+    const router = useRouter();
     const dateFormat = "YYYY-MM-DD";
     var updata = inject("updataNav") as Function;
     updata({
@@ -141,29 +158,48 @@ export default defineComponent({
       backOff: false,
       showPageEdit: false,
     });
-
-    const reactiveData = reactive({
+    let endTimeValidator = async (rule: RuleObject, value: string) => {
+      if (reactiveData.permanent) {
+        return Promise.resolve();
+      } else {
+        if (value) {
+          return Promise.resolve();
+        } else {
+          return Promise.reject("请选择结束时间");
+        }
+      }
+    };
+    // 规则验证
+    let rules = {
+      end_time: [{ validator: endTimeValidator, trigger: "change" }],
+      cpu: [{ required: true, message: "请选择cpu" }],
+      ram: [{ required: true, message: "请选择内存" }],
+      disk: [{ required: true, message: "请选择硬盘" }],
+      image: [{ required: true, message: "请选择" }],
+    };
+    const reactiveData:{
+      ruleForm:any,
+      permanent:boolean,
+      configs:any,
+      images: any,
+      showGPU: boolean,
+      drawerVisible: boolean,
+      selectedName: any[], 
+    } = reactive({
       // form数据
       ruleForm: {
         start_time: moment(new Date(), dateFormat),
-        end_time: moment("2019-11-22", dateFormat),
+        end_time: undefined,
         cpu: 1,
         ram: 1,
         disk: 1,
         image: undefined,
         openGPU: false,
-        datasets: [1],
+        datasets: [],
       },
-      // 规则验证
-      rules: {
-        end_time: [{ required: true, message: "请选择结束时间" }],
-        cpu: [{ required: true, message: "请选择cpu" }],
-        ram: [{ required: true, message: "请选择内存" }],
-        disk: [{ required: true, message: "请选择硬盘" }],
-        image: [{ required: true, message: "请选择" }],
-      },
+
       // 是否永久有效
-      permanent: true,
+      permanent: false,
       configs: {
         cpu: {},
         disk: {},
@@ -174,12 +210,25 @@ export default defineComponent({
         vnc: [],
       },
       showGPU: false,
-      drawerVisible:false,
+      drawerVisible: false,
+      selectedName: [], // 已经选择的数据集
     });
-
+    const ruleFormDom = ref();
+    // 禁止选择的时间
+    function disabledDate(current: any) {
+      return current && current < moment().endOf("day");
+    }
     onMounted(() => {
       init();
     });
+
+    watch(
+      () => reactiveData.ruleForm.datasets,
+      () => {
+        console.log(11111);
+      },
+      { deep: true }
+    );
     function init() {
       getConfig().then(() => {
         const { cpu, disk, ram } = reactiveData.configs || {};
@@ -250,25 +299,86 @@ export default defineComponent({
 
     // 打开选择数据集抽屉
     function addDataset() {
-        reactiveData.drawerVisible=true
+      reactiveData.drawerVisible = true;
     }
 
     // 关闭抽屉
     function closeDrawer() {
-        reactiveData.drawerVisible=false
+      reactiveData.drawerVisible = false;
     }
     // 创建
     function create() {
-      console.log(reactiveData.ruleForm.image);
+      ruleFormDom.value.validate().then(() => {
+        console.log(reactiveData.ruleForm);
+        let params: any = {
+          flavor: {},
+        };
+        params.dataset_id = reactiveData.ruleForm.datasets;
+        if (reactiveData.permanent) {
+          params.is_permanent = 1;
+          params.start_time = null;
+          params.end_time = null;
+        } else {
+          params.start_time =
+            moment(reactiveData.ruleForm.start_time).format("yyyy-MM-DD") +
+            " 00:00:00";
+          params.end_time =
+            moment(reactiveData.ruleForm.end_time).format("yyyy-MM-DD") +
+            " 23:59:00";
+        }
+        if (reactiveData.showGPU) {
+          params.use_gpu = reactiveData.ruleForm.openGPU ? 1 : 0;
+        } else {
+          params.use_gpu = 0;
+        }
+
+        params.image_id = reactiveData.ruleForm.image;
+        params.flavor.cpu = Number(reactiveData.ruleForm.cpu);
+        params.flavor.ram = Number(reactiveData.ruleForm.ram);
+        params.flavor.disk = Number(reactiveData.ruleForm.disk);
+
+        createWorkbenchApi(params).then((res: any) => {
+          console.log(res);
+          message.success("创建成功!");
+          router.push({
+            path: "/teacher/Workbench",
+            query: {
+              currentTab: 0,
+            },
+          });
+        });
+      });
+    }
+
+    // 移除数据集
+    function remove(val: any, index: number) {
+      let i = (reactiveData.ruleForm as any).datasets.indexOf(val.uid);
+      i != -1 ? (reactiveData.ruleForm as any).datasets.splice(i, 1) : "";
+      reactiveData.selectedName.splice(index, 1);
+    }
+
+    // 取消
+    function cancel() {
+      router.push({
+        path: "/teacher/Workbench",
+        query: {
+          currentTab: 0,
+        },
+      });
     }
     return {
       ...toRefs(reactiveData),
       dateFormat,
+      rules,
       moment,
+      ruleFormDom,
+      disabledDate,
       iamgeChange,
       addDataset,
       closeDrawer,
       create,
+      remove,
+      cancel,
     };
   },
 });
@@ -291,6 +401,7 @@ export default defineComponent({
           width: 100%;
         }
         .start-end-date-box {
+          display: flex;
           border: 1px solid #d9d9d9;
           .and-line {
             position: relative;
@@ -312,6 +423,13 @@ export default defineComponent({
                 display: none;
               }
             }
+          }
+        }
+      }
+      .time-item {
+        .ant-form-item-label {
+          > label {
+            width: 100%;
           }
         }
       }
@@ -365,8 +483,8 @@ export default defineComponent({
     }
   }
 }
-.select-imag-drawer{
-  .ant-drawer-body{
+.select-imag-drawer {
+  .ant-drawer-body {
     height: 100%;
   }
 }

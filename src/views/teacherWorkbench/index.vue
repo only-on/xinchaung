@@ -1,6 +1,6 @@
 <template>
-    <div v-layout-bg >
-      <component :is="componentName" />
+    <div v-layout-bg style="height:100%">
+      <component ref="tabRef" :is="componentName" />
     </div>
 </template>
 
@@ -9,6 +9,7 @@ import { defineComponent,ref, onMounted,Ref,inject,watch  } from 'vue'
 import workbench from './workbench/index.vue'
 import myImage from './myImage/index.vue'
 import preinstallImage from "./preinstallImage/index.vue"
+import { number } from 'echarts'
 
 export default defineComponent({
   name: '',
@@ -25,16 +26,23 @@ export default defineComponent({
     
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
+    const tabRef=ref(null)
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
+      console.log(tabRef)
+      if (tabRef.value && (tabRef.value as any).clearTimer) {
+        console.log((tabRef.value as any).clearTimer);
+        
+           clearInterval(Number((tabRef.value as any).clearTimer()))
+      }
+     
       componentName.value=componentNames[val]
-    })
+    },{immediate:true})
     onMounted(()=>{
     
     })
-    return {componentName ,tabs};
+    return {componentName ,tabs,tabRef};
   },
 })
 </script>
