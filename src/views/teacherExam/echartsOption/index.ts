@@ -206,7 +206,6 @@ function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
 				itemStyle: {
 					color: '#00C99A',
 					borderRadius: 11,
-
 				},
 				data: minData
 			},
@@ -226,7 +225,371 @@ function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
   chart.setOption(options)
   return chart;
 }
+// 成绩明细-成绩详情
+import choice from '/src/assets/images/teacherExam/choice.png'
+import judgement from '/src/assets/images/teacherExam/judgement.png'
+import completion from '/src/assets/images/teacherExam/completion.png'
+import shortAnswer from '/src/assets/images/teacherExam/shortAnswer.png'
+import shicao from '/src/assets/images/teacherExam/shicao.png'
+
+function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
+	let data=[
+		{average: 2, my_score: 3, name: "选择题"},
+		{average: 0, my_score: 0, name: "判断题"},
+		{average: 1, my_score: 2, name: "填空题"},
+		{average: 0, my_score: 0, name: "简答题"},
+		{average: 10, my_score: 8, name: "实操考核题"}
+	]
+	//成绩详情柱状图
+	let chartDatas:any = {
+		typeArr:[],
+		avarageScore: [],
+		personalScore: []
+	}
+	for (var i = 0; i < data.length; i++) {
+		chartDatas.typeArr.push(data[i].name)
+		chartDatas.avarageScore.push(data[i].average)
+		chartDatas.personalScore.push(data[i].my_score)
+	}
+	var max_num = function () {
+		var maxNum:number=0;
+		var arr = chartDatas.avarageScore.concat(chartDatas.personalScore)
+		var maxNum = Math.max.apply(null, arr)
+		return maxNum + maxNum*0.1
+	}
+	let option = {
+		tooltip: {
+			trigger: 'axis',
+			axisPointer: { // 坐标轴指示器，坐标轴触发有效
+				type: 'shadow' // 默认为直线，可选为：'line' | 'shadow'
+			},
+			extraCssText: 'width:160px;height:90px;'
+		},
+		legend: {
+			top: 0,
+			right: '40%',
+			itemWidth: 28,
+			itemHeight: 13,
+			color: '#6C6E72',
+			data: ['我的成绩', '平均分']
+		},
+		grid: {
+			top: '12%',
+			left: '0%',
+			right: '0%',
+			bottom: '0%',
+			containLabel: true
+		},
+		xAxis: [{
+			type: 'category',
+			axisLine: {
+				show: false
+			},
+			axisTick: {
+				show: false
+			},
+			axisLabel: {
+				inside: false,
+				color: '#6c6e72',
+				fontSize: '14'
+			},
+			data: chartDatas.typeArr
+		}],
+		yAxis: {
+			show: false,
+			max: max_num()
+		},
+		series: [{
+			name: '我的成绩',
+			type: 'bar',
+			itemStyle: {
+				show: true,
+				color: '#8955b5',
+				borderRadius: 5
+			},
+			zlevel: 2,
+			barWidth: 28,
+			label: {
+				show: true,
+				position: ['0', '-20'],
+				distance: 5,
+				formatter: '{c}' + '分'
+			},
+			data: chartDatas.personalScore,
+		}, {
+			name: '平均分',
+			type: 'bar',
+			itemStyle: {
+				show: true,
+				color: '#e3c3fd',
+				borderRadius: 5
+			},
+			zlevel: 1,
+			barWidth: 28,
+			label: {
+				show: true,
+				color:'#6C6E72',
+				position: ['0', '-20'],
+				formatter: '{c}' + '分'
+			},
+			data: chartDatas.avarageScore,
+		}]
+	};
+	const chart = echarts.init(el)
+	chart.setOption(option)
+  return chart;
+
+}
+//成绩明细数据温度计图
+function renderAccuracy(el: HTMLDivElement, data2: Array<any>) {
+	// var AccuracyChart = echarts.init(document.getElementById('accuracy-canvas'));
+	let datas=[
+		{rate: 0, name: "选择题"},
+		{rate: 0.1, name: "判断题"},
+		{rate: 0.2, name: "填空题"},
+		{rate: 0.3, name: "简答题"},
+		{rate: 0.6, name: "实操考核题"}
+	]
+	//成绩明细数据温度计图
+	var chartsDatas = datas
+
+	var xAxisData = []; //坐标轴文字
+	var rightData = []; //正确题数
+
+	for (var i = 0; i < chartsDatas.length; i++) {
+		xAxisData.push(chartsDatas[i].name)
+		rightData.push(chartsDatas[i].rate * 100+16)
+	}
+	var series = [{
+			name: '条',
+			type: 'bar',
+			xAxisIndex: 0,
+			data: rightData,
+			barWidth: 12,
+			label: {
+				show: true,
+				position: ['8', '-12'],
+				distance: 5,
+				formatter: function (parms:any) {
+					// console.log(parms.value)
+					return '{b|}' + '{d|>}' + (parms.value-16) + '%'
+				},
+				rich: {
+					d: { //箭头
+						color: '#8955B5',
+					},
+					c: {
+						color: '#07a387',
+						align: 'left',
+					},
+					b: { //横线
+						width: 20,
+						height: 0,
+						borderWidth: 1,
+						borderColor: '#8955B5',
+						align: 'left'
+					},
+				},
+				color: '#8955B5',
+			},
+			itemStyle: {
+				color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+					offset: 0,
+					color: '#8955b5  ' // 0% 处的颜色
+				}, {
+					offset: 1,
+					color: '#8955b5 ' // 100% 处的颜色
+				}], false),
+				borderRadius: [10, 10, 0, 0],
+			},
+			z: 2
+		},
+		{
+			name: '外框',
+			type: 'bar',
+			xAxisIndex: 2,
+			barGap: '-100%',
+			data: [130,130,130,130,130],
+			barWidth: 28,
+			itemStyle: {
+				color: '#e0d4ff',
+				borderRadius: [30, 30, 0, 0],
+			},
+			z: 0
+		},
+		{
+			name: '圆',
+			type: 'scatter',
+			// hoverAnimation: false,
+			data: [0,0,0,0,0],
+			xAxisIndex: 0,
+			symbolSize: 48,
+			itemStyle: {
+				color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
+						offset: 0,
+						color: '#8955b5'
+					},
+					{
+						offset: 1,
+						color: '#c3c4fd'
+					}
+				]),
+				opacity: 1,
+			},
+			label:{
+				show:true,
+				formatter:function(params:any){
+					switch(params.name){
+						case '选择题':return '{a|}';
+						case '判断题':return '{b|}';
+						case '填空题':return '{c|}';
+						case '简答题':return '{d|}';
+						case '实操考核题':return '{e|}';
+					}
+				},
+				rich: {
+					a: {
+						backgroundColor: {
+							image:  choice
+						},
+						height: 24
+					},
+					b: {
+						backgroundColor: {
+							image: judgement
+						},
+						height: 20
+					},
+					c: {
+						backgroundColor: {
+							image: completion
+						},
+						height: 24
+					},
+					d: {
+						backgroundColor: {
+							image: shortAnswer
+						},
+						height: 24
+					},
+					e: {
+						backgroundColor: {
+							image: shicao
+						},
+						height: 24
+					}
+				}
+			},
+			z: 2
+		},
+		{
+			name: '外圆',
+			type: 'scatter',
+			// hoverAnimation: false,
+			data: [0,0,0,0,0],
+			xAxisIndex: 2,
+			symbolSize: 60,
+			itemStyle: {
+				color: '#c3c4fd',
+				opacity: 1,
+			},
+			z: 0
+		}
+	];
+
+	var options = {
+		backgroundColor: 'transparent',
+		boundaryGap: false,
+		grid: {
+			left: '-10%',
+			right: '0%',
+			bottom: '0%',
+			top: '0%',
+			containLabel: true
+		},
+		tooltip: {
+			show: false,
+			trigger: 'item',
+			padding: [8, 10], //内边距
+			formatter: '{b}<br />正确率: {c0}%',
+		},
+		xAxis: [{
+				type: 'category',
+				axisTick: {
+					show: false
+				},
+				axisLine: {
+					show: false,
+				},
+				axisLabel: {
+					color: '#6c6e72',
+					fontSize: '14',
+					margin:30
+				},
+				data: xAxisData
+			},
+			{
+				type: 'category',
+				axisLine: {
+					show: false
+				},
+				axisTick: {
+					show: false
+				},
+				axisLabel: {
+					show: false
+				},
+				splitArea: {
+					show: false
+				},
+				splitLine: {
+					show: false
+				},
+				data: xAxisData
+			},
+			{
+				type: 'category',
+				axisLine: {
+					show: false
+				},
+				axisTick: {
+					show: false
+				},
+				axisLabel: {
+					show: false
+				},
+				splitArea: {
+					show: false
+				},
+				splitLine: {
+					show: false
+				},
+				data: xAxisData
+			},{
+				show: false,
+				min: -110,
+				max: 100,
+
+			}],
+		yAxis:[{
+			show: false,
+			min: 0,
+			max: 130,
+		}, {
+			show: false,
+			data: [],
+			min: 0,
+			max: 130,
+		}],
+		series: series
+
+	};
+	const chart = echarts.init(el)
+	chart.setOption(options);
+}
 export {
   distributionEcharts,
-  typeStatisticsEcharts
+  typeStatisticsEcharts,
+	renderScoreBar,
+	renderAccuracy
 }

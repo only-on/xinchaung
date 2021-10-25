@@ -114,17 +114,62 @@
     </div>
   </div>
   <a-modal v-model:visible="Visible" title="成绩明细" :width="1413" class="modal-post">
-    <div class="base-info">
-      <div class="top-info-item portrait">
-        <div class="photo"></div>
-        <div class="student-cont-info">
-          <span>账户：132</span>
-          <span>名字：xxx</span>
+    <div class="info-box">
+      <div class="base-info">
+        <div class="top-info-item portrait">
+          <div class="photo"></div>
+          <div class="student-cont-info">
+            <span>账户：132</span>
+            <span>名字：xxx</span>
+          </div>
+        </div>
+        <div class="top-info-item">
+          <i class="iconfont icon-kongshuju"></i>
+          <div class="student-cont-info">
+            <span>成绩</span>
+            <span class="score">{{'0'}}<span>分</span></span>
+          </div>
+        </div>
+        <div class="top-info-item">
+          <i class="iconfont icon-shijian1"></i>
+          <div class="student-cont-info">
+            <span>考试用时</span>
+            <span class="score">{{'0'}}<span>分钟</span></span>
+          </div>
+        </div>
+        <div class="top-info-item">
+          <i class="iconfont icon-paiming"></i>
+          <div class="student-cont-info">
+            <span>班级排名</span>
+            <span class="score">{{'0'}}<span>名</span></span>
+          </div>
         </div>
       </div>
-      <div class="top-info-item"></div>
-      <div class="top-info-item"></div>
-      <div class="top-info-item"></div>
+      <div class="chart-info-cont">
+        <div class="chart">
+          <div class="border-title">成绩详情</div>
+          <div id="gradeCanvas"></div>
+        </div>
+        <div class="chart">
+          <div class="border-title">正确率</div>
+          <div id="accuracyCanvas"></div>
+        </div>
+      </div>
+      <div class="answer-info-cont">
+        <div class="border-title">答案详情</div>
+        <div class="question-index-cont setScrollbar">
+          <span class="bg-greay" v-for="v in 8" :key="v">1</span>
+          <span class="bg-pink" v-for="v in 8" :key="v">2</span>
+          <span class="bg-truth" v-for="v in 8" :key="v">3</span>
+        </div>
+        <div class="answer-info">
+          <div class="top">
+            <div class="legend "></div>
+          </div>
+          <div class="stu-answer"> 提示：未作答 </div>
+          <div class="stand-answer">标准答案：1</div>
+        </div>
+      </div>
     </div>
     <template #footer>
       <span></span>
@@ -133,12 +178,13 @@
 </template>
 <script lang="tsx">
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs,VNode } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs,VNode,nextTick } from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-import { distributionEcharts ,typeStatisticsEcharts} from "./echartsOption/index";
+import { distributionEcharts ,typeStatisticsEcharts,renderScoreBar,renderAccuracy} from "./echartsOption/index";
+import { log } from 'console';
 interface ItdItems{
   title:string,
   type:string,
@@ -361,6 +407,12 @@ export default defineComponent({
       Visible:false,
       see:(id:number)=>{
         state.Visible=true
+        
+        nextTick(()=>{
+          // console.log(document.getElementById("gradeCanvas"))
+          renderScoreBar(document.getElementById("gradeCanvas") as HTMLDivElement,state.detaile.type_scores)
+          renderAccuracy(document.getElementById("accuracyCanvas") as HTMLDivElement,state.detaile.type_scores)
+        })
       }
     })
    
@@ -368,7 +420,7 @@ export default defineComponent({
      CorrectRate()
      achievement()
      await initData();
-    //  console.log(state.detaile)
+    //  console.log(document.getElementById("distribution"))
      distributionEcharts(document.getElementById("distribution") as HTMLDivElement,state.detaile.score_distribution)
      typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,state.detaile.type_scores)
     })
@@ -593,13 +645,41 @@ export default defineComponent({
   }
 }
 .modal-post{
+  
+  .info-box{
+    padding: 11px 46px;
+  }
   .base-info{
+    padding: 20px 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
     .top-info-item{
       display: flex;
-      
+      width: 200px;
+      // height: 70px;
+      background: rgba(220, 230, 228, .5);
+      justify-content: center;
+      i{
+        font-size: 40px;
+        color: #C3CBD9;
+      }
+      .student-cont-info{
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        padding-left: 16px;
+        color: #595B5A;
+        font-size: 16px;
+        .score{
+          font-size: 24px;
+          color: #FB767A;
+          span{
+             font-size: 16px;
+             color: #595B5A;
+          }
+        }
+      }
     }
     .portrait{
       .photo{
@@ -610,6 +690,67 @@ export default defineComponent({
       }
     }
     
+  }
+  .chart-info-cont{
+    display: flex;
+    justify-content: space-between;
+    &>div{
+      width: 49%;
+      #gradeCanvas,#accuracyCanvas{
+        width: 100%;
+        height: 280px;
+      }
+    }
+  }
+}
+.border-title{
+  font-size: 15px;
+  color: rgba(108, 110, 114, 1);
+  border-left: 4px solid rgba(108, 110, 114, 1);
+  text-indent: 10px;
+  margin-bottom: 20px;
+  &::after{
+    content: '';
+    width: 100%;
+    height: 1px;
+    margin-top: 4px;
+    background-color: rgba(207, 213, 223, 1);
+    display: block;
+    transform: translate(-5px, 10px);
+  }
+}
+.answer-info-cont{
+  padding-top: 16px;
+  .question-index-cont{
+    width: 100%;
+    overflow: auto;
+    display: flex;
+    padding-bottom: 9px;
+    span{
+      width: 66px;
+      height: 32px;
+      line-height: 32px;
+      font-size: 16px;
+      color: #fff;
+      text-align: center;
+      border: none;
+      border-radius: 10px;
+      display: block;
+      margin-right: 20px;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .bg-truth {
+      background: @theme-color;
+    }
+
+    .bg-pink {
+      background: rgba(251,118,122,1);
+    }
+
+    .bg-greay {
+      background: rgba(195,203,217,1);
+    }
   }
 }
 </style>
