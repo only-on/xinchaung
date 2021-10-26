@@ -173,7 +173,7 @@ export default defineComponent({
         http.uploadImg({param: fd}).then((res: IBusinessResp) => {
           console.log(res)
           if (res.status) {
-            imgSrc.value = baseUrl+res.data.url
+            imgSrc.value = dev_base_url+res.data.url
             detailState.url = imgSrc.value
           }
         })
@@ -184,7 +184,7 @@ export default defineComponent({
       imgSrc.value = ''
     }
     let sign = '/v0.1.0'
-    console.log(baseUrl)
+    // console.log(dev_base_url)
     let defaultImg = ref([
       {
         id: 0,
