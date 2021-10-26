@@ -314,6 +314,7 @@ export default defineComponent({
 
             if (vmInfoData.value.data.vms.length > 0) {
               if (ind===0&&allInfo.value.base_info&&allInfo.value.base_info.is_webssh===1) {
+                ind++
                 currentInterface.value="ssh"
                 let currentvm:any=vmInfoData.value.data.vms[0]
                 uuid.value = currentvm.uuid;

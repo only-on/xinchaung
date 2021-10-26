@@ -372,6 +372,7 @@ export default defineComponent({
     const assistanceQuestion=ref("")
     const selectProgressData=ref("")
     const progressVisible=ref(false)
+    let isSwitch:boolean=false
     const saveExperimentData:any=ref({
       course:[],
       train:[]
@@ -397,7 +398,6 @@ export default defineComponent({
       clearInterval(Number(timer));
       clearInterval(Number(viodeTimer))
     });
-
     watch(
       () => allInfo,
       () => {
@@ -809,26 +809,34 @@ export default defineComponent({
         sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
       }
       if (key==="vnc") {
+        
         currentInterface.value="vnc"
-        let param={
-          action:"switch2Vnc",
-          params:{
-              type:type,
-              opType:opType,
-              uuid:uuid.value,
-              taskId:taskId
+        if (isSwitch) {
+          vmOptions.value.password = getVmConnectSetting.VNCPASS;
+          vmOptions.value.wsUrl =
+          getVmConnectSetting.VNCPROTOC +
+          "://" +
+          currentvm.host_ip +
+          ":" +
+          getVmConnectSetting.VNCPORT +
+          "/websockify?vm_uuid=" +
+          currentvm.uuid;
+        }else{
+          let param={
+            action:"switch2Vnc",
+            params:{
+                type:type,
+                opType:opType,
+                uuid:uuid.value,
+                taskId:taskId
+            }
           }
+          vmApi.switchInterfaceApi({param:{...param}}).then(()=>{
+            isSwitch=true
+          })
         }
-        vmApi.switchInterfaceApi({param:{...param}})
-        // vmOptions.value.password = getVmConnectSetting.VNCPASS;
-        // vmOptions.value.wsUrl =
-        // getVmConnectSetting.VNCPROTOC +
-        // "://" +
-        // currentvm.host_ip +
-        // ":" +
-        // getVmConnectSetting.VNCPORT +
-        // "/websockify?vm_uuid=" +
-        // currentvm.uuid;
+        
+        
       }
     }
     return {
