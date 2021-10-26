@@ -237,11 +237,12 @@ export default defineComponent({
     const wsVmConnect = ref(); // ws实例
     const sshUrl = ref("");
     const currentInterface=ref("vnc")
+    const vmCurrentIndex=ref(0)
     let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
       toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
-    provide("vmCurrentIndex", ref(0));
+    provide("vmCurrentIndex", vmCurrentIndex);
     provide("allInfo", allInfo);
     provide("novncEl", novncEl);
     provide("uuid", uuid);
@@ -316,12 +317,12 @@ export default defineComponent({
               if (ind===0&&allInfo.value.base_info&&allInfo.value.base_info.is_webssh===1) {
                 ind++
                 currentInterface.value="ssh"
-                let currentvm:any=vmInfoData.value.data.vms[0]
+                let currentvm:any=vmInfoData.value.data.vms[vmCurrentIndex.value]
                 uuid.value = currentvm.uuid;
                 sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
               }else{
                 currentInterface.value="vnc"
-                settingCurrentVM(vmInfoData.value.data.vms[0]);
+                settingCurrentVM(vmInfoData.value.data.vms[vmCurrentIndex.value]);
               }
               uuidLoading.value = true;
             }

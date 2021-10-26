@@ -372,7 +372,6 @@ export default defineComponent({
     const assistanceQuestion=ref("")
     const selectProgressData=ref("")
     const progressVisible=ref(false)
-    let isSwitch:boolean=false
     const saveExperimentData:any=ref({
       course:[],
       train:[]
@@ -811,7 +810,7 @@ export default defineComponent({
       if (key==="vnc") {
         
         currentInterface.value="vnc"
-        if (isSwitch) {
+        if (currentvm.switch===1) {
           vmOptions.value.password = getVmConnectSetting.VNCPASS;
           vmOptions.value.wsUrl =
           getVmConnectSetting.VNCPROTOC +
@@ -831,9 +830,7 @@ export default defineComponent({
                 taskId:taskId
             }
           }
-          vmApi.switchInterfaceApi({param:{...param}}).then(()=>{
-            isSwitch=true
-          })
+          vmApi.switchInterfaceApi({param:{...param}})
         }
         
         
