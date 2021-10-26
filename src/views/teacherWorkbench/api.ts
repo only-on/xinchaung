@@ -104,7 +104,7 @@ export async function getMyImageApi(params: any) {
 /**
  * @description 获取预设镜像列表
  * @param  param name
- *              limit:16
+ *              limit:12
  *              withs:classify
  *              page:1
  *              is_init: 1

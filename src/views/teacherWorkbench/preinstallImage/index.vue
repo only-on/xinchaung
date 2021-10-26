@@ -3,29 +3,43 @@
         <div>
             <a-input-search placeholder="请输入关键字查询" v-model:value='imageName' style="width: 506px" @search="onSearch" />
         </div>
-        <div class='image-list'>
-            <div class="image-item" v-for="(item,index) in mirrorList" :key="index.toString()">
-                <div class="image-base">
-                    <h3 class="image-name">{{item.name}}</h3>
-                    <div class="type">{{item.tag.join()}}</div>
-                    <div class="memory">
-                        <div>容量:{{item.size}}</div>
-                        <div>系统：{{item.classify.name}}</div>
+        <div v-if="ifTip" class="loading">
+            <a-spin tip="加载中...">
+            <div class="spin-content">
+            </div>
+            </a-spin>
+        </div>
+        <div v-else>
+            <div v-if="total" class='image-list'>
+                <div class="image-item" v-for="(item,index) in mirrorList" :key="index.toString()">
+                    <div class="image-base">
+                        <h3 class="image-name">{{item.name}}</h3>
+                        <div class="type">{{item.tag.join()}}</div>
+                        <div class="memory">
+                            <div>容量:{{item.size}}</div>
+                            <div>系统：{{item.classify.name}}</div>
+                        </div>
+                        <img class="img-type" v-if="item.ostypes==='kvm'" src="src/assets/workbench/kvm.png">
+                        <img class="img-type" v-if="item.ostypes==='docker'" src="src/assets/workbench/docker.png">
                     </div>
-                    <img class="img-type" v-if="item.ostypes==='kvm'" src="src/assets/workbench/kvm.png">
-                    <img class="img-type" v-if="item.ostypes==='docker'" src="src/assets/workbench/docker.png">
-                </div>
-                <div class="image-desc">
-                    <p v-if="item.description!==''">{{item.description}}</p>
-                    <p v-else>暂无介绍</p>
+                    <div class="image-desc">
+                        <p v-if="item.description!==''">{{item.description}}</p>
+                        <p v-else>暂无介绍</p>
+                    </div>
                 </div>
             </div>
+            <empty v-else></empty>
         </div>
+        <div class="pagination">
+            <a-pagination :hideOnSinglePage='true' :defaultPageSize='params.limit' @change='pageChange' v-model:value="current" :total="total"/>
+        </div>
+       
     </div>
 </template>
 <script lang="ts">
 import { defineComponent,onMounted,reactive,toRefs } from 'vue'
 import {getPresetMirror} from "../api"
+import Empty from 'src/components/Empty.vue'
 interface IparamsType{
     name:string,
     limit:number,
@@ -34,31 +48,49 @@ interface IparamsType{
     is_init: number
 }
 interface Istate{
-    imageName?:string,
+    imageName:string,
     params:IparamsType,
-    mirrorList:any[]
+    mirrorList:any[],
+    current:number,
+    total:number,
+    ifTip:boolean,
 }
 export default defineComponent({
+    name:'preinstallImage',
+    components:{
+       Empty 
+    },
     setup() {
          const state:Istate=reactive({
              params:{
                 name:'',
-                limit:16,
+                limit:12,
                 withs:'classify',
                 page:1,
                 is_init:1
              },
-             mirrorList:[]
+             mirrorList:[],
+             imageName:'',
+             current:1,
+             total:0,
+             ifTip:true
         })
         const methods={
             onSearch(){
-                console.log(state.imageName)
+                state.params.name=state.imageName
+                methods.PresetMirror()
             },
             PresetMirror(){
+                state.ifTip=true
                 getPresetMirror(state.params).then((res:any)=>{
-                    console.log(res)
                     state.mirrorList=res.data.list
+                    state.total=res.data.page.totalCount
+                    state.ifTip=false
                 })
+            },
+            pageChange(page:any){
+                state.params.page=page
+                methods.PresetMirror()
             }
         }
         onMounted(()=>{
@@ -69,10 +101,17 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
+.preinstallImage{
+    .loading{
+        padding:245px;
+    }
+    .spin-content {
+    padding: 30px;
+    }
+}
 .image-list{
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
 }
 .image-item {
     width: 24%;
@@ -81,7 +120,11 @@ export default defineComponent({
     height: 240px;
     transition: .5s;
     box-sizing: border-box;
-    box-shadow: 0px 0px 3px 0px rgb(0 0 0 / 17%);
+    box-shadow: 0px 3px 6px 0px rgb(0 0 0 / 5%);
+    margin-right: 14px;
+}
+.image-item:nth-child(4n){
+    margin-right: 0px;
 }
 .image-base {
     flex-shrink: 0;
@@ -122,8 +165,19 @@ export default defineComponent({
     color: rgba(13,8,17,.55);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
+    p{
+        text-overflow: ellipsis;
+        white-space: normal;
+        word-break: break-all;
+        overflow: hidden;
+    }
 }
 .memory{
     display: flex;
 }
+.pagination{
+    text-align: center;
+    margin: 32px auto 0 auto;
+}
+
 </style>
