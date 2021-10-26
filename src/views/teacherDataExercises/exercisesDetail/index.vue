@@ -12,7 +12,7 @@
                 </div>
             </div>
             <div class="exam-basic-right">
-                <watermark-icon :title='exambasic.questions_count' description="习题个数" style="background-color:#474DA3"/>
+                <watermark-icon :title='exambasic.questions_count' description="习题个数" style="background-color:#5e68da"/>
             </div>
             </div>
             <div class="exam-descript">
@@ -50,6 +50,16 @@
         </div>
         <div class="exam-question-content">
             <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :initial='initial' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
+            <div v-if="total" class="pagination">
+                <a-pagination
+                show-size-changer
+                :default-current="pagination.current"
+                :pageSize="pagination.pageSize"
+                :total="total"
+                @change='changePage'
+                @showSizeChange="onShowSizeChange"
+                />
+            </div>
         </div>
     </div>
 </template>
@@ -60,6 +70,8 @@ import {defineComponent,inject,onMounted,reactive,toRefs} from 'vue'
 import { useRouter } from 'vue-router';
 import request from "../../../api";
 import quesComonTable from '../components/quesComonTable/index.vue'
+import WatermarkIcon from '../../../components/common/WatermarkIcon.vue'
+import { Pagination } from 'swiper';
 interface examBasic{
     name:string,
     description:string,
@@ -82,10 +94,16 @@ interface exerciseList{
     level_id?:number,
     name?:string,
     include?:string,
+    limit?:number,
+    page?:number,
 }
 interface fromType{
     name?:string,
     description?:string,
+}
+interface paginationType{
+    current:number,
+    pageSize:number
 }
 interface stateData{
     rules:any,
@@ -99,15 +117,17 @@ interface stateData{
     searchname:string,
     poolid:number,
     tabledata:any[],
+    total?:number,
     exerListParams:exerciseList,
     visible:boolean,
     initial?:any,
     initialIfEdit:any,
     form:fromType,
+    pagination:paginationType,
 }
 export default defineComponent({
     name:'exerciseDetail',
-    components: {quesComonTable},
+    components: {quesComonTable,WatermarkIcon},
      setup:(props,context)=>{
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
@@ -141,6 +161,11 @@ export default defineComponent({
             visible:false,
             initialIfEdit:true,
             initial:1,
+            total:0,
+            pagination:{
+                current:1,
+                pageSize:10
+            }
         })
         updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
         function myFn2(){
@@ -151,7 +176,7 @@ export default defineComponent({
         const methods = {
           exerciseDetail(){
               state.initial=router.currentRoute.value.query.initial
-              state.initialIfEdit=(state.initial==='1'?false:true)
+              state.initialIfEdit=(state.initial==='0'?false:true)
                updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
               const id:any=router.currentRoute.value.query.id;
               teacherDataExerApi.detailExercise({urlParams:{pool_id:id}}).then((res:any)=>{
@@ -198,13 +223,18 @@ export default defineComponent({
               state.exerListParams.type_id=key
               state.levelId=''
               state.searchname=''
+              state.pagination.current=1
+              state.pagination.pageSize=10
               methods.exerciseDetailList(state.exerListParams)
           },
           exerciseDetailList(exerListParams:exerciseList){
               const id:any=router.currentRoute.value.query.id;
             exerListParams.include='answers'
+            exerListParams.limit=state.pagination.pageSize
+            exerListParams.page=state.pagination.current
             teacherDataExerApi.getDetailExerciseList({urlParams:{pool_id:id},param:exerListParams}).then((res:any)=>{
                   state.tabledata=res.data.list
+                  state.total=res.data.page.totalCount
               })
           },
           finishCreate(val:any){
@@ -221,6 +251,16 @@ export default defineComponent({
               state.exerListParams.name=val
               console.log(state.searchname,'state.searchname')
               methods.exerciseDetailList(state.exerListParams)
+          },
+          changePage(page:any,pageSize:any){
+              console.log(page,pageSize)
+              state.pagination.current=page
+              methods.exerciseDetailList(state.exerListParams)
+          },
+          onShowSizeChange(current:any,pageSize:any){
+              console.log(current,pageSize)
+              state.pagination.pageSize=pageSize
+              methods.exerciseDetailList(state.exerListParams)
           }
        }
        onMounted(()=>{
@@ -236,6 +276,9 @@ export default defineComponent({
 <style lang="less">
 .exerciseDetail{
     color: #777777;
+    .exam-basic .eaxm-basic-left .desc{
+        color: #333333;
+    }
     .exam-basic-title{
         display: flex;
         justify-content:space-between;
@@ -294,6 +337,7 @@ export default defineComponent({
     }
     .exam-basic-left-title{
         font-size: 24px;
+        color: #333333;
     }
     .datainfo{
         margin-top: 10px;
@@ -315,6 +359,10 @@ export default defineComponent({
     margin-right: 35px;
 }
 .edit .ant-modal-footer{
+    text-align: center;
+}
+.pagination{
+    padding: 30px;
     text-align: center;
 }
 </style>

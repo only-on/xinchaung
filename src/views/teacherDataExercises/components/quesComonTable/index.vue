@@ -5,16 +5,16 @@
                      <a-select
                     style="width:90px"
                     @change="handleChange"
-                    placeholder='全部'
+                    default-value="全部"
                     v-model:value="selectLeves"
                 >
                     <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
                      {{item.name}}
                     </a-select-option>
                 </a-select>
-                  <a-input-search v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" style="width:352px;padding:0px 5px 0px 30px" placeholder="请输入目录名称关键字查询" />
+                  <a-input-search v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" style="width:352px;padding:0px 5px 0px 30px;border-left:none" placeholder="请输入目录名称关键字查询" />
                 </div>
-                <div class="question-btn" v-if="initial==='0'">
+                <div class="question-btn" v-if="initial==='1'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
                     <a-button type="primary" @click="deleteCurrentRowMany">批量删除</a-button>
                     <a-button type="primary" @click="batchImport">批量导入</a-button>
@@ -28,7 +28,13 @@
             </a-modal>
             <div class="question-content-table">
                 <a-config-provider>
-                    <a-table :row-selection="rowSelection" :columns="columns" rowKey="id" :loading="loading" :data-source="tabledata">
+                    <a-table
+                    :row-selection="rowSelection"
+                    :columns="columns"
+                    rowKey="id"
+                    :loading="loading" 
+                    :pagination='false' 
+                    :data-source="tabledata">
                         <template #difficulty='{record}'>
                             <span>{{record.level.name}}</span>
                         </template>
@@ -39,7 +45,7 @@
                             </div>
                         </template>
                         <template #select-answers='{record}'>
-                            <div>
+                            <div class="select-answers">
                                 {{answer(record)}}
                             </div>
                         </template>
@@ -215,7 +221,7 @@ interface State{
     value1:any[],
     question_id:any,
     visibleDelete:boolean,
-    deleteRowId?:number,
+    deleteRowId?:number
 }
 interface ItreeData {
   selectedKnowledgeList: ItreeDatalist[]
@@ -229,7 +235,7 @@ interface ItreeDatalist {
 export default defineComponent({
     name:'quesComonTable',
     components:{knowledgeModal,batchImport,Empty},
-    props:['selectedId','poolid','tabledata','initial'],
+    props:['selectedId','poolid','tabledata','total','initial'],
     setup:(props,context)=>{
         // 删除行还是批量
         let deleteRowOrMany:Ref<string>=ref('')  // 一行
@@ -271,6 +277,7 @@ export default defineComponent({
                 },
                 {
                     title: '难度',
+                    width:200,
                     dataIndex: 'difficulty',
                     slots: { customRender:'difficulty'},
                 },
@@ -282,22 +289,23 @@ export default defineComponent({
                 },
                 {
                     title: '分数',
+                    width:100,
                     dataIndex: 'origin_score',
                     key: 'origin_score',
                 },
                 {
-                    title: '操作',
-                    dataIndex: 'operation',
-                    width:200,
+                    title:props.initial==='1'?'操作':'',
+                    dataIndex: props.initial==='1'?'operation':'',
+                    width:100,
                     align:'center',
-                    slots: { customRender: 'operation' },
+                    slots: { customRender: props.initial==='1'?'operation':'' },
                 },
                 ],
             list:[],
             value:'',
             value1:[],
             question_id:'',
-            visibleDelete:false,
+            visibleDelete:false
         })
         const methods = {
             answer(record:any){
@@ -411,6 +419,7 @@ export default defineComponent({
                         keyword:'',
                         answers:[]
                     },
+                    knowledgeList.selectedKnowledgeList=[]
                     context.emit('finishCreate',true)
                 })  
                 }else{
@@ -438,6 +447,7 @@ export default defineComponent({
                         keyword:'',
                         answers:[]
                     },
+                    knowledgeList.selectedKnowledgeList=[]
                     context.emit('finishCreate',true)
                 })  
                 }   
@@ -454,6 +464,7 @@ export default defineComponent({
                     keyword:'',
                     answers:[]
                 }
+                knowledgeList.selectedKnowledgeList=[]
             },
             onJudgeChange(e:any){
                 state.expermodelValue.answers=[e.target.value]
@@ -583,14 +594,19 @@ export default defineComponent({
                     }
            switch(newVal){
                   case 1:
+                      state.selectLeves='全部';
                   return state.createmodal.title='单选题';
                   case 2:
+                      state.selectLeves='全部';
                   return state.createmodal.title='多选题';
                   case 3:
+                      state.selectLeves='全部';
                   return state.createmodal.title='判断题';
                   case 4:
+                      state.selectLeves='全部';
                   return state.createmodal.title='填空题';
                   case 5:
+                      state.selectLeves='全部';
                   return state.createmodal.title='解答题';
               }
         })
@@ -686,7 +702,10 @@ export default defineComponent({
     }
   }
 }
-// .symbol:nth-last-child(1){
-//     display: none;
-// }
+.select-answers{
+    width: 100%;
+    overflow: hidden;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
 </style>

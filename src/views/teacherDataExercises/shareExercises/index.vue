@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="exerciseList">
-            <div class="directoryList" v-if="componentData.length">
+            <div class="directoryList" v-if="componentData?.length">
                 <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()" @click="toExerDetail(item)">
                     <div class="exam-list-title">{{item.name}}</div>
                     <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(' ')[0]}}</div>
@@ -9,12 +9,7 @@
                 </div>
             </div>
             <div v-else>
-                <div v-if="searchValue">
-                    <empty type="searchEmpty"></empty>
-                </div>
-                <div v-else>
-                    <empty type="empty"></empty>
-                </div>
+                <empty type="empty"></empty>
             </div>
         </div>
     </div>
@@ -32,8 +27,7 @@ export default defineComponent({
         const router = useRouter();
          function toExerDetail(item:any){
             console.log(item,'item')
-            // router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:1}})
-            router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
+            router.push({path:'/exercisesDetail',query:{id:item.id,initial:0}})
         }
         return {toExerDetail}
     }

@@ -90,40 +90,34 @@ export default defineComponent({
         selectStu:[
         {
             title: '学号',
-            dataIndex: 'stu_no',
+            dataIndex: 'id',
             align: 'left',
             ellipsis: true,
-            scopedSlots: { customRender: 'stu_no' },
         },
         {
             title: '姓名',
-            dataIndex: 'username',
+            dataIndex: 'nickname',
             ellipsis: true,
-            scopedSlots: { customRender: 'username' },
         },
         {
             title: '所属院系',
             dataIndex: 'department',
             ellipsis: true,
-            scopedSlots: { customRender: 'department' },
         },
         {
             title: '性别',
             dataIndex: 'gender',
-            scopedSlots: { customRender: 'gender' },
         },
         {
             title: '邮箱',
             dataIndex: 'email',
             align: 'center',
             ellipsis: true,
-            scopedSlots: { customRender: 'email' },
         },
         {
             title: '电话',
             dataIndex: 'phone',
             ellipsis: true,
-            scopedSlots: { customRender: 'phone' },
         },
         ],
         columns:[],
@@ -152,9 +146,16 @@ export default defineComponent({
         state.faculty=''
         state.classes=''
       },
+
       inquiry(){
           console.log(props.selectvalue)
+      },
+      getUnselectStu(){
+          http.unSelectStudentGroup({param:{train_id:props.trainId}}).then((res:any)=>{
+              state.data=res.data.data
+          })
       }
+      
     }
     const rowSelection = {
             onChange: (selectedRowKeys:any, selectedRows:any) => {
@@ -168,15 +169,21 @@ export default defineComponent({
             },
         };
     watch(()=>props.selectvalue,(val:any)=>{
-        state.columns=val===1?state.selectStu:state.selectClass  
-    })
+        state.columns=val===1?state.selectStu:state.selectClass 
+        if(val===1){
+            methods.getUnselectStu() 
+        }   
+        },{
+            deep:true,
+            immediate:true 
+        })
     onMounted(()=>{
-        state.columns=state.selectStu
-        state.data=[
-            {stu_no:1,username:'huahwww',classname:'班级1',total:2},
-            {stu_no:2,username:'huahwww',classname:'班级2',total:12},
-            {stu_no:3,username:'huahwww',classname:'班级3',total:23},
-            ]
+        // state.columns=state.selectStu
+        // state.data=[
+        //     {stu_no:1,username:'huahwww',classname:'班级1',total:2},
+        //     {stu_no:2,username:'huahwww',classname:'班级2',total:12},
+        //     {stu_no:3,username:'huahwww',classname:'班级3',total:23},
+        //     ]
     })
     return {...toRefs(state),...methods,rowSelection}
     }

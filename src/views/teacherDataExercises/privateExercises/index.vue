@@ -1,42 +1,59 @@
 <template>
     <div>
         <div class="exerciseList">
-            <div class="directoryList" v-if="componentData.length">
+            <div class="directoryList" v-if="componentData?.length">
                 <div class="data-set-listItem" v-for="(item,index) in componentData" :key="index.toString()" @click="toExerDetail(item)">
                     <div class="exam-list-title">{{item.name}}</div>
                     <div class="exam-list-time"><i class="iconfont icon-shijian"></i>{{item.created_at.split(" ")[0]}}</div>
                     <div class="exam-list-num"><i class="iconfont icon-xiangmu"></i>{{item.questions_count}}</div>
                     <div class="exam-list-delete" @click.stop="deleteExamItem(item.id)"><i class="iconfont icon-shanchu-copy"></i></div>
                 </div>
+                <a-modal
+                    title="提示"
+                    :visible="visible"
+                    @ok="handleOk"
+                    @cancel="handleCancel"
+                    >
+                    <p>目录删除后将无法恢复，确定要删除吗？</p>
+                </a-modal>
             </div>
             <div v-else>
-                <div v-if="searchValue">
-                    <empty type="searchEmpty"></empty>
-                </div>
-                <div v-else>
-                    <empty type="empty"></empty>
-                </div>
+                <empty type="empty"></empty>
             </div>
         </div>
     </div>
 </template>
 <script lang="ts">
-import {defineComponent, toRefs,}from 'vue'
+interface State{
+    visible:boolean,
+    poolId?:number,
+}
+import {defineComponent, toRefs,reactive}from 'vue'
 import { useRouter } from 'vue-router';
 export default defineComponent({
     name:'privateExercises',
     props: ["componentData","searchValue"],
      setup:(props,context)=>{
     const router = useRouter();
+     const state:State=reactive({
+         visible:false
+     })
         function deleteExamItem(id:any){
-           context.emit('poolId',id)
+           state.visible=true
+           state.poolId=id
         }
         function toExerDetail(item:any){
             console.log(item,'item')
-            // router.push({path:'/exercisesDetail',query:{item:JSON.stringify(item),initial:0}})
-            router.push({path:'/exercisesDetail',query:{id:item.id,initial:0}})
+            router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
         }
-        return {deleteExamItem,toExerDetail}
+        function handleOk(){
+           state.visible=false
+           context.emit('poolId',state.poolId)
+        }
+        function handleCancel(){
+            state.visible=false
+        }
+        return {deleteExamItem,toExerDetail,handleOk,handleCancel,...toRefs(state)}
     }
 })
 </script>

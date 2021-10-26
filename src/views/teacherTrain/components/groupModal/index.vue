@@ -104,12 +104,8 @@ export default defineComponent({
          context.emit('editModal',false)
       },
       getStuGroup(){
-          const formdata=new FormData()
-          formdata.append('train_id','50317')
-          formdata.append('group_id','308')
-          http.studentGroup({urlParams:{train_id:50317}},).then((res:any)=>{
-              
-          })
+          
+        
       },
       leftMove(){
 

@@ -16,9 +16,9 @@
             :show-upload-list='false'
             :before-upload='beforeUpload'
             >
-               <span>选择文件：</span><a-input style="width:160px" v-model:value='filename'></a-input><a-button type="primary">浏览</a-button>
+               <span>选择文件：</span><a-input style="width:160px" v-model:value='filename'></a-input><a-button class="browse" type="primary">浏览</a-button>
             </a-upload>
-          <a-button type="primary" @click="detailExerUpload">上传</a-button><a-button type="primary" @click="closeModal">关闭</a-button>
+          <a-button type="primary" class="upload" @click="detailExerUpload">上传</a-button><a-button type="primary" class="close" @click="closeModal">关闭</a-button>
           <div class="download" @click="dowmTemplate">
               下载试题模板
           </div>
@@ -123,7 +123,7 @@ export default defineComponent({
       function dowmTemplate(){ 
           let development=process.env.NODE_ENV == 'development' ? true : false;
           let url=development?'http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo':"api/v1/question/questions/import/demo"
-        FileSaver.saveAs(url);
+            FileSaver.saveAs(url);
       }
       
       return {closeModal,beforeUpload,detailExerUpload,dowmTemplate,...toRefs(state)}
@@ -133,7 +133,17 @@ export default defineComponent({
 <style lang="less">
 .choiceDocument{
     display: flex;
-    justify-content:space-between;
+    // justify-content:space-between;
+    .browse{
+        margin-left: 20px;
+    }
+    .upload{
+        margin-left: 20px;
+    }
+    .close{
+        margin-left: 20px;
+        margin-right: 20px;
+    }
 }
 .download{
     color: @theme-color;

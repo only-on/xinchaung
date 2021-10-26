@@ -37,7 +37,7 @@
                 </a-config-provider>
            </div>
            <div>
-               <select-stu-class :selectvalue='value' :isvisible='isvisible' @if-select='ifSelect'></select-stu-class>
+               <select-stu-class :selectvalue='value' :trainId="trainId" :isvisible='isvisible' @if-select='ifSelect'></select-stu-class>
            </div>
            <div>
                 <a-modal
@@ -159,31 +159,31 @@ export default defineComponent({
       classInfoColumns:[
         {
             title: '账号',
-            dataIndex: 'id',
+            dataIndex: 'stu_no',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '姓名',
-            dataIndex: 'stu_no',
+            dataIndex: 'username',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '性别',
-            dataIndex: 'stu_no',
+            dataIndex: 'gender',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '院系',
-            dataIndex: 'stu_no',
+            dataIndex: 'department',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '班级',
-            dataIndex: 'stu_no',
+            dataIndex: 'classes',
             align: 'left',
             ellipsis: true,
         },
@@ -211,6 +211,9 @@ export default defineComponent({
        onChange(e:any) {
         console.log('radio checked', e.target.value);
             state.columns=e.target.value===1?state.stuColumns:state.classColumns
+            if(e.target.value===1){
+                methods.getStudentList()
+            }
         },
         selectStuClass(){
             state.isvisible=true
@@ -244,16 +247,23 @@ export default defineComponent({
         },
         classDeleteCancel(){
             state.classDeleteVisible=false
+        },
+        getStudentList(){
+            http.studentGroup({param:{train_id:props.trainId}}).then((res:any)=>{
+                console.log(res)
+                state.data=res.data.list
+            })
         }
     }
     onMounted(()=>{
         state.columns=state.stuColumns
         console.log('请求学生接口')
-        state.data=[
-            {stu_no:1,username:'huahwww',classname:'班级1',total:2},
-            {stu_no:2,username:'huahwww',classname:'班级2',total:12},
-            {stu_no:3,username:'huahwww',classname:'班级3',total:23},
-            ]
+        methods.getStudentList()
+        // state.data=[
+        //     {stu_no:1,username:'huahwww',classname:'班级1',total:2},
+        //     {stu_no:2,username:'huahwww',classname:'班级2',total:12},
+        //     {stu_no:3,username:'huahwww',classname:'班级3',total:23},
+        //     ]
     })
     return {...toRefs(state),...methods,rowSelection}
     }

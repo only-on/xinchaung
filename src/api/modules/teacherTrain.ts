@@ -29,9 +29,10 @@ export default {
   saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
-  studentGroup: { url: '/teacher-train/get-student?{train_id}', method: "POST", dataType: 'formdata' },
+  studentGroup: { url: '/teacher-train/set-student', method: "GET" },
+  unSelectStudentGroup: { url: '/teacher-train/get-student-list', method: "GET" },
   selectEnvirList: { url: '/api/env/containers', method: "GET" },
-  saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' }
+  saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' },
 }
 
 export interface ITeacherTrainAps {

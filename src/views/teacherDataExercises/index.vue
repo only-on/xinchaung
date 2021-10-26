@@ -40,7 +40,6 @@
             :page-size="pagination.pageSize"
             @change="currentPageChange"
             @showSizeChange="onShowSizeChange"
-            :hideOnSinglePage='true'
         >
         </a-pagination>
     </div>
@@ -129,15 +128,18 @@ export default defineComponent({
     watch(()=>{return configuration.componenttype},(val)=>{
       state.componentName=state.componentNames[val]
         type.value=val
-        params.initial=!val
         state.searchValue=''
         params.name=''
+        params.limit=10
+        params.page=1
         if(type.value===0){
             params.initial=1
+            getExerciseList(params)
         }else if(type.value===1){
             params.initial=0
+            getExerciseList(params)
         }
-        getExerciseList(params)
+        
     })
     // 请求列表数据
     function getExerciseList(params:any){
@@ -160,7 +162,8 @@ export default defineComponent({
         params.page=page
          getExerciseList(params)
     }
-    function onShowSizeChange(pageSize:any){
+    function onShowSizeChange(current:any,pageSize:any){
+        console.log(current,pageSize)
         state.pagination.pageSize=pageSize
         params.limit=pageSize
         getExerciseList(params)
