@@ -23,7 +23,7 @@
           alt=""
         />
 
-        <div class="circle-progress-box" v-if="currentIndex === index&&!vncLoading">
+        <div class="circle-progress-box" v-if="vmCurrentIndex === index&&!vncLoading">
           <div class="circle-text">开机中</div>
           <div class="circle-progress">
             <div class="content left">
@@ -37,7 +37,7 @@
         <div class="vm-loading" @click="openVM(item, Number(index))">
           <span class="icon-kaiguanshenx iconfont"></span>
           <span>{{
-            vncLoading ? (currentIndex === index ? "关机" : "开机") : "开机"
+            vncLoading ? (vmCurrentIndex === index ? "关机" : "开机") : "开机"
           }}</span>
         </div>
       </div>
@@ -50,7 +50,7 @@ import { defineComponent, inject, watch, ref, Ref } from "vue";
 import { getVmConnectSetting } from "src/utils/seeting";
 export default defineComponent({
   setup() {
-    const currentIndex = ref(0);
+    const vmCurrentIndex:any = inject("vmCurrentIndex");
     const vmInfoData: any = inject("vmInfoData");
     let vncLoading: Ref<boolean> | undefined = inject("vncLoading");
     const vmOptions: any = inject("vmOptions");
@@ -107,7 +107,7 @@ export default defineComponent({
       },10)
     }
     function openVM(val: any, index: number) {
-      currentIndex.value = index;
+      vmCurrentIndex.value = index;
       settingCurrentVM(val);
     }
 
@@ -123,7 +123,7 @@ export default defineComponent({
         data.uuid;
         uuid.value=data.uuid
     }
-    return { vms, vncLoading, currentIndex, openVM ,leftDeg,rightDeg};
+    return { vms, vncLoading, vmCurrentIndex, openVM ,leftDeg,rightDeg};
   },
 });
 </script>

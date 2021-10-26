@@ -90,15 +90,20 @@
       </div>
     </template>
     <template v-slot:right>
-      <div v-if="!uuidLoading">websocket链接中</div>
-      <div v-else-if="!vncLoadingV" class="vncloading">Loading...</div>
-      <vue-no-vnc
-        background="rgb(40,40,40)"
-        :options="vmOptions"
-        refName="refName"
-        ref="novncEl"
-        @clipboard="clipboard"
-      />
+      <template v-if="currentInterface==='ssh'">
+        <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
+      </template>
+      <template v-else>
+        <div v-if="!uuidLoading">websocket链接中</div>
+        <div v-else-if="!vncLoadingV" class="vncloading">Loading...</div>
+        <vue-no-vnc
+          background="rgb(40,40,40)"
+          :options="vmOptions"
+          refName="refName"
+          ref="novncEl"
+          @clipboard="clipboard"
+        />
+      </template>
     </template>
   </layout>
   <!-- <a-modal
@@ -230,22 +235,32 @@ export default defineComponent({
     provide("vncLoading", vncLoadingV);
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
+    const sshUrl = ref("");
+    const currentInterface=ref("vnc")
     let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
       toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
     provide("vmOptions", vmOptions);
+    provide("vmCurrentIndex", ref(0));
     provide("allInfo", allInfo);
     provide("novncEl", novncEl);
     provide("uuid", uuid);
     provide("use_time", use_time);
     provide("taskType", taskType);
+    provide("sshUrl", sshUrl);
+    provide("currentInterface",currentInterface)
+    let ind=0 // 记录是否是刚进页面
     let navData =
       role === 4
         ? type === "course"
           ? [
               { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
               { name: "实验指导", key: "guide", icon: "icon-zhidao" },
-              { name: "实验笔记", key: "experimental-note", icon: "icon-biji1" },
+              {
+                name: "实验笔记",
+                key: "experimental-note",
+                icon: "icon-biji1",
+              },
               { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
               { name: "实验报告", key: "report", icon: "icon-baogao1" },
               { name: "随堂练习", key: "practice", icon: "icon-biji" },
@@ -298,7 +313,15 @@ export default defineComponent({
             console.log(vmInfoData.value);
 
             if (vmInfoData.value.data.vms.length > 0) {
-              settingCurrentVM(vmInfoData.value.data.vms[0]);
+              if (ind===0&&allInfo.value.base_info&&allInfo.value.base_info.is_webssh===1) {
+                currentInterface.value="ssh"
+                let currentvm:any=vmInfoData.value.data.vms[0]
+                uuid.value = currentvm.uuid;
+                sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
+              }else{
+                currentInterface.value="vnc"
+                settingCurrentVM(vmInfoData.value.data.vms[0]);
+              }
               uuidLoading.value = true;
             }
           }
@@ -314,9 +337,10 @@ export default defineComponent({
     onBeforeRouteUpdate(() => {
       console.log(1111);
     });
-    onMounted(() => {
+    onMounted(async () => {
+      await getVmBase();
       initWs();
-      getVmBase();
+      
 
       // clearInterval(Number(timer));
       // timer = setInterval(() => {
@@ -345,7 +369,8 @@ export default defineComponent({
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
-      let params = {
+      return new Promise((resolve:any,reject:any)=>{
+        let params = {
         opType: opType,
         type: type,
         taskId: taskId,
@@ -354,18 +379,20 @@ export default defineComponent({
         console.log(res);
         allInfo.value = res.data;
         console.log(res.data.current.used_time);
-         taskType.value = res.data.base_info.task_type.type;
-        
-         if (!taskType.value) {
-            use_time.value = res.data.current.used_time;
-         }else{
-           use_time.value = res.data.current.remaining_time;
-         }
-       
+        taskType.value = res.data.base_info.task_type.type;
+
+        if (!taskType.value) {
+          use_time.value = res.data.current.used_time;
+        } else {
+          use_time.value = res.data.current.remaining_time;
+        }
+
         console.log(allInfo);
-       
+
         reportTemid.value = res.data.current.id;
+        resolve()
       });
+      })
     }
 
     // 结束脚本入口
@@ -570,6 +597,8 @@ export default defineComponent({
       clipboard,
       isScreenRecording,
       reportTemid,
+      sshUrl,
+      currentInterface
     };
   },
 });
@@ -651,5 +680,9 @@ export default defineComponent({
       pointer-events: none;
     }
   }
+}
+#sshIframe {
+  width: 100%;
+  height: 100%;
 }
 </style>

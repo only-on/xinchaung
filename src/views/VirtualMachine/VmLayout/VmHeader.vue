@@ -88,8 +88,29 @@
             }}</span
           >
         </span>
+
         <a-button class="delayed-btn" @click="delayedTime">延时</a-button>
+
         <span class="vm-action-box">
+          <a-dropdown class="" v-if="allInfo?.base_info.is_webssh === 1">
+            <template #overlay>
+              <a-menu @click="switchChange" class="action-handle-dropdown">
+                <a-menu-item key="ssh" class="action-item">
+                  WEBSSH界面
+                </a-menu-item>
+                <a-menu-item key="vnc" class="action-item">
+                  VNC界面
+                </a-menu-item>
+              </a-menu>
+            </template>
+            <a-button type="primary">
+              切换界面
+              <span
+                class="icon-zhankai iconfont"
+                style="margin-left: 5px"
+              ></span
+            ></a-button>
+          </a-dropdown>
           <a-button type="primary" @click="saveKvm">保存进度</a-button>
           <a-button type="danger" @click="finishExperiment">结束实验</a-button>
         </span>
@@ -304,6 +325,7 @@ import storage from "src/utils/extStorage";
 import _ from "lodash";
 import request from "src/request/getRequest"
 import { isJsonString } from "src/utils/common";
+import { getVmConnectSetting } from "src/utils/seeting";
 type TvmQuery = {
   opType: string;
   connection_id: string;
@@ -337,6 +359,10 @@ export default defineComponent({
     let taskType: any = inject("taskType");
     let allInfo: any = inject("allInfo");
     const vmOptions: any = inject("vmOptions");
+    const vmInfoData:any=inject("vmInfoData")
+    const vmCurrentIndex:any = inject("vmCurrentIndex");
+    const sshUrl: any = inject("sshUrl");
+    const currentInterface:any=inject("currentInterface")
     let { recommendExperimentData } = toRefs(reactiveData);
     let role = storage.lStorage.get("role");
     const roleName = ref("none");
@@ -350,36 +376,7 @@ export default defineComponent({
       course:[],
       train:[]
     })
-    // let roleName = computed(() => {
-    //   console.log(allInfo.value);
-
-    //   if (!allInfo.value?.base_info) {
-    //     return "none";
-    //   }
-    //   // 学生
-    //   if (role === 4) {
-    //     // 桌面实验
-    //     if (allInfo.value?.base_info.task_type.name === "桌面实验") {
-    //       return "stuAndVnc";
-    //     }
-    //     // 交互编程
-    //     if (allInfo.value?.base_info.task_type.name === "交互编程") {
-    //       return "stuAndwebide";
-    //     }
-    //   }
-    //   // 教师
-    //   if (role === 3) {
-    //     // 桌面实验
-    //     if (allInfo.value?.base_info.task_type.name === "桌面实验") {
-    //       return "teacherAndVnc";
-    //     }
-    //     // 交互编程
-    //     if (allInfo.value?.base_info.task_type.name === "交互编程") {
-    //       return "teacherAndwebide";
-    //     }
-    //   }
-    //   return "none";
-    // });
+  
 
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     let experimentTime: Ref<any> = ref({
@@ -797,6 +794,43 @@ export default defineComponent({
     function  progressChange(key:any) {
       console.log(key)
     }
+
+    // 切换界面
+    function switchChange(val:any) {
+      let key=val.key
+      console.log(key)
+      console.log(vmInfoData.value.data.vms)
+      let currentvm=vmInfoData.value.data.vms[vmCurrentIndex.value]
+      let cureentIp=location.protocol+"//"+location.hostname
+      
+      console.log(cureentIp)
+      if (key==="ssh") {
+        currentInterface.value="ssh"
+        sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
+      }
+      if (key==="vnc") {
+        currentInterface.value="vnc"
+        let param={
+          action:"switch2Vnc",
+          params:{
+              type:type,
+              opType:opType,
+              uuid:uuid.value,
+              taskId:taskId
+          }
+        }
+        vmApi.switchInterfaceApi({param:{...param}})
+        // vmOptions.value.password = getVmConnectSetting.VNCPASS;
+        // vmOptions.value.wsUrl =
+        // getVmConnectSetting.VNCPROTOC +
+        // "://" +
+        // currentvm.host_ip +
+        // ":" +
+        // getVmConnectSetting.VNCPORT +
+        // "/websockify?vm_uuid=" +
+        // currentvm.uuid;
+      }
+    }
     return {
       back,
       handleMenuClick,
@@ -828,7 +862,9 @@ export default defineComponent({
       progressVisible,
       saveExperimentData,
       progressChange,
-      selectProgressData
+      selectProgressData,
+      switchChange,
+      sshUrl
     };
   },
 });

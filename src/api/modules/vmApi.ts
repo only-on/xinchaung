@@ -12,6 +12,7 @@ export default {
     endExperiment: { url: "/api/operate/operates/stop", method: 'POST' },
     recommendExperiment: { url: "/api/operate/operates/action", method: 'POST' },
     operatesHandle: { url: "/api/operate/operates/handle", method: 'POST', dataType: "json" },
+    switchInterfaceApi:{url:"/api/operate/operates/handle",method: 'POST', dataType: "json"},  
     /* webide */
     webideVersionsApi: { url: '/api/operate/crypts/versions', method: 'GET' },
     currentVersionApi: { url: "/api/operate/crypts/currentVersion", method: 'GET' },
@@ -74,6 +75,7 @@ export interface IvmApi {
     saveTrainNoteApi:TFHttpSend
     getTrainResourceApi:TFHttpSend
     studentQuestionApi:TFHttpSend
+    switchInterfaceApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"
