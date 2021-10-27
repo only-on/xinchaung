@@ -87,7 +87,7 @@
       :data="{ pageType: dataType, dataId: dataId }"
       :multiple="false"
       :before-upload="handleBeforeUpload"
-      action="/proxyPrefix/dataset/data/upload-file"
+      action="/dataset/data/upload-file"
       @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
