@@ -6,7 +6,7 @@
       </a-steps>
      </div>
      <div class="step">
-       <component :is="componentName" />
+       <component @step-status='stepStatus' :is="componentName" />
      </div>
   </div>
 </template>
@@ -17,11 +17,12 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch';
 import { useRouter ,useRoute } from 'vue-router';
 import step1 from './step/step1.vue'
+import step2 from './step/step2.vue'
 const http=(request as any).studentForum
 export default defineComponent({
   name: 'CreatePosts',
   components: {
-   step1
+   step1,step2
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -33,24 +34,26 @@ export default defineComponent({
     };
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
-    var componentName:Ref<string>=ref('')
+    var componentName:Ref<string>=ref('step1')
     var current:Ref<number>=ref(0)
-    watch(componentName,(val:any)=>{
-      console.log(val)
-      stepList.forEach((v:any,k)=>{
-        if(val===v.component){
-          current.value=k
-        }
-      })
-    })
-    function getClass(){
-
+    var stepList=[
+    {name:'基本信息',component:'step1'},
+    {name:'实训环境',component:'step2'},
+    {name:'实训内容',component:'step3'},
+    {name:'实训资源',component:'step4'},
+    {name:'实训成员',component:'step5'},
+    {name:'分组信息',component:'step6'},
+    {name:'完成',component:'step7'}]
+    const methods={
+      stepStatus(val:any){
+        componentName.value=stepList[val].component
+        current.value=val
+      }
     }
-    var stepList=[{name:'设置基本信息',component:'step1'},{name:'设置实训内容',component:'step2'},{name:'添加实训资源',component:'step3'},{name:'设置排课信息',component:'step4'},{name:'分组信息',component:'step5'},{name:'完成',component:'step6'}]
     onMounted(()=>{
      componentName.value='step1'
     })
-    return {componentName,stepList,current}
+    return {componentName,stepList,current,...methods}
   },
 })
 </script>
@@ -94,6 +97,8 @@ export default defineComponent({
     }
   }
   .step{
+    width: 1100px;
+    margin: 0 auto;
     height: calc(100% - 100px);
     overflow: auto;
   }

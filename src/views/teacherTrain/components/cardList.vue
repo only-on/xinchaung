@@ -1,6 +1,6 @@
 <template>
   <div class="cardList">
-    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/Experimental/creatExperimental')">
+    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/train/creatTrain')">
       <span>新建实训</span>
     </div>
     <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id)">

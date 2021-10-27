@@ -3,7 +3,7 @@
         <div class="question-content-operate">
                 <div class="question-search">
                      <a-select
-                    style="width:90px"
+                    class="select"
                     @change="handleChange"
                     default-value="全部"
                     v-model:value="selectLeves"
@@ -12,7 +12,7 @@
                      {{item.name}}
                     </a-select-option>
                 </a-select>
-                  <a-input-search v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" style="width:352px;padding:0px 5px 0px 30px;border-left:none" placeholder="请输入目录名称关键字查询" />
+                  <a-input-search class="search-input" v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" placeholder="请输入目录名称关键字查询" />
                 </div>
                 <div class="question-btn" v-if="initial==='0'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
@@ -40,8 +40,8 @@
                         </template>
                         <template #operation='{record}'>
                             <div>
-                                <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)" style="margin-right:20px;color:#8955b5"></span>
-                                <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)" style="color:#8955b5"></span>
+                                <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)"></span>
+                                <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)"></span>
                             </div>
                         </template>
                         <template #select-answers='{record}'>
@@ -92,8 +92,8 @@
                                     </a-radio-group>
                              </div>
                             <!-- 判断题 -->
-                            <div v-if="selectedId===3" style="display:flex;height:50px">
-                                <div style="margin-right:20px">
+                            <div v-if="selectedId===3" class="judgeBox">
+                                <div class='check'>
                                      <a-form-item required label="答案">
                                     </a-form-item>
                                 </div>
@@ -111,10 +111,10 @@
                                     <a-input v-model:value="expermodelValue.answers"></a-input>
                                 </a-form-item>
                                 </div>
-                                <div style="margin-bottom:20px">
-                                        <a-checkbox :checked='expermodelValue.ordered_answer' @change='orderAnswerChange'>
-                                        答案有序
-                                        </a-checkbox>
+                                <div class="check">
+                                    <a-checkbox :checked='expermodelValue.ordered_answer' @change='orderAnswerChange'>
+                                    答案有序
+                                    </a-checkbox>
                                 </div>
                             </div>
                             <!-- 解答题 -->
@@ -620,6 +620,15 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
+.question-content-table{
+    .icon-bianji1{
+        margin-right:20px;
+        color:@theme-color;
+    }
+    .icon-shanchu-copy{
+        color:@theme-color;
+    }
+}
 .ant-table-tbody > tr > td>.iconfont{
     color:@theme-color;
 }
@@ -639,6 +648,14 @@ export default defineComponent({
         padding: 20px 0;
         .question-search{
             display: flex;
+            .serch-input{
+                width:352px;
+                padding:0px 5px 0px 30px;
+                border-left:none;
+            }
+            .select{
+                width:90px;
+            }
             .input-search{
                 margin-right: 20px;
             }
@@ -653,6 +670,13 @@ export default defineComponent({
         }
     }
 .modal-content{
+    .judgeBox{
+        display:flex;
+        height:50px;
+    }
+    .check{
+        margin-right:20px;
+    }
     .option{
         display: flex;
         justify-content: space-between;

@@ -23,8 +23,7 @@ export default {
   trainDeleted: { url: '/teacher-train/train-deleted', method: "GET" },
 
   // 编辑实训
-  // 获取详情
-  trainDetailInfo: { url: '/teacher-train/details', method: "GET" },
+  trainDetailInfo: { url: '/teacher-train/details', method: "GET" }, // 获取详情
   trainUploadImage: { url: '/teacher-train/upload', method: "POST", dataType: 'formdata' },
   saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
@@ -33,7 +32,13 @@ export default {
   unSelectStudentGroup: { url: '/teacher-train/get-student-list', method: "GET" },
   selectEnvirList: { url: '/api/env/containers', method: "GET" },
   saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' },
+
+  // 创建实训
+  createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
+  selectEnvir: { url: '/api/env/topos/stores', method: "POST", }
 }
+
+
 
 export interface ITeacherTrainAps {
   getLatelyExperimentalList: TFHttpSend;
@@ -57,7 +62,9 @@ export interface ITeacherTrainAps {
   saveModefiy: TFHttpSend,
   saveTrainGuide: TFHttpSend,
   savepptModefiy: TFHttpSend,
-  studentGroup: TFHttpSend
+  studentGroup: TFHttpSend,
+  createTrain: TFHttpSend,
+  selectEnvir: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTrain'

@@ -49,7 +49,7 @@ import { defineComponent,reactive,toRefs,onMounted, onBeforeMount,watch} from 'v
 import request from 'src/api/index'
 export default defineComponent({
     name:'uploadImage',
-    props:['trainId','uploadUrl','edit'],
+    props:['trainId','uploadUrl','edit','trainCreateOrEdit'],
     components:{},
     setup(props,context) {
       const http=(request as any).teacherTrain
@@ -76,15 +76,7 @@ export default defineComponent({
           {
             id: 4,
             src:`src/assets/images/teacher-default/cover5.png`,
-          },
-          {
-            id: 5,
-            src:`src/assets/images/teacher-default/cover6.png`,
-          },
-          {
-            id: 6,
-            src:`src/assets/images/teacher-default/cover7.png`,
-          },
+          }
         ],
         imgSrc:'',
         value:'',
@@ -161,9 +153,6 @@ export default defineComponent({
   width:100%;
   display: flex;
   flex-wrap: wrap;
-  // .uploadDiv:hover .delete{
-  //     display:block;
-  // }
   .uploadDiv{
     display: flex;
     justify-content: center;
@@ -173,13 +162,6 @@ export default defineComponent({
     border: 1px dashed @theme-color;
     border-radius: 4px;
     position: relative;
-    // .delete{
-    //   display: none;
-    // }
-    // .noevents{
-    //   // pointer-events: none;
-    //   cursor: no-drop;
-    // }
     .icon-shanchu-copy{
       color:#ffcc33;
       font-size:20px;

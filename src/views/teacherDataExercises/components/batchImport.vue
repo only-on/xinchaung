@@ -16,7 +16,7 @@
             :show-upload-list='false'
             :before-upload='beforeUpload'
             >
-               <span>选择文件：</span><a-input style="width:160px" v-model:value='filename'></a-input><a-button class="browse" type="primary">浏览</a-button>
+               <span>选择文件：</span><a-input class="selectFile" v-model:value='filename'></a-input><a-button class="browse" type="primary">浏览</a-button>
             </a-upload>
           <a-button type="primary" class="upload" @click="detailExerUpload">上传</a-button><a-button type="primary" class="close" @click="closeModal">关闭</a-button>
           <div class="download" @click="dowmTemplate">
@@ -134,6 +134,9 @@ export default defineComponent({
 .choiceDocument{
     display: flex;
     // justify-content:space-between;
+    .selectFile{
+        width:160px;
+    }
     .browse{
         margin-left: 20px;
     }

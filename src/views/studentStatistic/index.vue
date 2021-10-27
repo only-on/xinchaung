@@ -10,10 +10,10 @@
             </div>
             <div class="left-f3 f3">
                <div class="left-f3-course">
-                    <list-item :infoList='staticInfo.weakKnowledges' :title='"课程薄弱点"' :listname='"knowledge_map_name"' :color1='linePurple' :circlecolor="'#647fea'"></list-item>
+                    <list-item :infoList='staticInfo.weakKnowledges' :title='"课程薄弱点"' :listname='"knowledge_map_name"' :color1='linePurple' :circlecolor="circlecolor1"></list-item>
                </div>
                <div class="left-f3-exper">
-                    <list-item :infoList='staticInfo?.weakCourseContents' :title='"推荐实验"' :listname='"name"' :color1='lineOrange' :circlecolor="'#f79620'"></list-item>
+                    <list-item :infoList='staticInfo?.weakCourseContents' :title='"推荐实验"' :listname='"name"' :color1='lineOrange' :circlecolor="circlecolor2"></list-item>
                 </div>
             </div>
         </div>
@@ -22,11 +22,11 @@
                 <div class="right-f1-left">
                     <div class="top-title">教师综合评价</div>
                     <div class="evaluate">
-                        <img src="../../assets/images/excellent-no.png" alt="" srcset="">
+                        <img src="../../assets/images/excellent-no.png">
                     </div>
                 </div>
                 <div class="right-f1-img">
-                    <img src="../../assets/images/evaluate-no.png" alt="" srcset="">
+                    <img src="../../assets/images/evaluate-no.png">
                 </div>
             </div>
             <div class="right-f2 f2">
@@ -39,7 +39,7 @@
                         <div class="study-right-left">
                            <span>学习进度排名</span>
                         </div>
-                        <div style="width: 100%;color: #050101;font-size: 24px;font-weight: 700;">
+                        <div class="courseProgress">
                            <span>NO.</span><span>{{staticInfo.courseProgress?.id}}</span>
                         </div>
                      </div>
@@ -50,8 +50,8 @@
                         <div class="study-right-left">
                            <span>课已完成实验数</span>
                         </div>
-                        <div style="width: 100%;">
-                           <span style="color: #050101;font-size: 24px;font-weight: 700;">{{staticInfo.courseProgress?.finished_content_count}}</span><span class="unit">/ 个</span>
+                        <div class="progressdiv">
+                           <span class="courseProgress">{{staticInfo.courseProgress?.finished_content_count}}</span><span class="unit">/ 个</span>
                         </div>
                      </div>
                         </div>
@@ -61,8 +61,8 @@
                         <div class="study-right-left">
                            <span>未完成实验数</span>
                         </div>
-                        <div style="width: 100%;">
-                           <span style="color: #050101;font-size: 24px;font-weight: 700;">{{staticInfo.courseProgress?.left_content_count}}</span><span class="unit">/ 个</span>
+                        <div class="progressdiv">
+                           <span class="courseProgress">{{staticInfo.courseProgress?.left_content_count}}</span><span class="unit">/ 个</span>
                         </div>
                      </div>
                         </div>
@@ -82,7 +82,7 @@
                         <span>{{item.name}}</span>
                     </div>
                 </div> -->
-                <list-item :infoList='staticInfo.jobDirections' :title='"发展方向"' :listname='"name"' :color1='lineBlue' :circlecolor="'#1290ef'"></list-item>
+                <list-item :infoList='staticInfo.jobDirections' :title='"发展方向"' :listname='"name"' :color1='lineBlue' :circlecolor="circlecolor3"></list-item>
             </div>
         </div>
     </div>
@@ -116,6 +116,9 @@ interface State{
     lineBlue:string;
     lineOrange:string;
     linePurple:string;
+    circlecolor1:string;
+    circlecolor2:string;
+    circlecolor3:string;
 }
 
 export default defineComponent({
@@ -131,6 +134,9 @@ export default defineComponent({
         lineBlue:'linear-gradient(90deg, rgba(18, 144, 239, 0.12) 24%, rgba(98, 126, 234, 0) 78%)',
         lineOrange:'linear-gradient(90deg,rgba(247,147,26,0.12) 24%, rgba(98,126,234,0.00) 78%)',
         linePurple:'linear-gradient(90deg,rgba(98,126,234,0.12) 24%, rgba(98,126,234,0.00) 78%)',
+        circlecolor1:'#647fea',
+        circlecolor2:'#f79620',
+        circlecolor3:'#1290ef'
     })
      // 绘制图表
     let echarts=inject("echarts");
@@ -387,6 +393,14 @@ export default defineComponent({
                     .study-right-left>{
                         span:nth-child(1){
                             font-size: 12px;
+                        }
+                    }
+                    .progressdiv{
+                        width: 100%;
+                        .courseProgress{
+                            color: #050101;
+                            font-size: 24px;
+                            font-weight: 700;
                         }
                     }
                 }

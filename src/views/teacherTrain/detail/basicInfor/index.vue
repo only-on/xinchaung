@@ -17,7 +17,7 @@
                     </a-form-item>
                 </div>
                 <a-form-item label="实训指导书">
-                   <a-textarea v-model:value="form.guide" style="height:450px" :disabled='edit' />
+                   <a-textarea v-model:value="form.guide" style="height:279px" :disabled='edit' />
                 </a-form-item>
             </a-form>
         </div>
@@ -28,7 +28,7 @@
                 <a-button type="primary" v-else @click="saveModifiy">保存</a-button>
             </div>
             <div>
-                <upload-image :trainId="trainId" :edit='edit' :uploadUrl="propTrainDetailInfo.url" @img-src='imgSrc' v-model:value="form.url"></upload-image>
+                <upload-image trainCreateOrEdit='create' :trainId="trainId" :edit='edit' :uploadUrl="propTrainDetailInfo.url" @img-src='imgSrc' v-model:value="form.url"></upload-image>
             </div>
         </div>
     </div>
@@ -67,7 +67,7 @@ export default defineComponent({
         const state:Istate=reactive({
             form:{},
             edit:true,
-            formRef:'formRef',
+            formRef:'formRef'
         })
         const methods={
             toModifiy(){

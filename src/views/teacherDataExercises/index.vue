@@ -2,7 +2,7 @@
     <div id='teacherDataExercises' v-layout-bg>
         <div class="conTop">
              <div class="searchInput">
-                <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入目录名称关键字查询" />
+                <a-input-search class="inputToSearch" v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" placeholder="请输入目录名称关键字查询" />
             </div>
             <div v-if="type">
                 <a-button type="primary" @click="createExceriseBtn">创建目录</a-button>
@@ -220,6 +220,10 @@ export default defineComponent({
     display: flex;
     justify-content:space-between;
     margin-bottom: 20px;
+    .inputToSearch{
+       width:503px;
+       padding:8px 5px 8px 30px;
+    }
 }
 .createExercise .ant-modal-footer{
     text-align: center;
