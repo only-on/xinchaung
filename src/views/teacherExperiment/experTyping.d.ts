@@ -28,6 +28,7 @@ interface IEnvirment {
   disk: number
 }
 export interface IExporimentList {
+  id: number
   task_type: number
   name: string
   class_cnt: number

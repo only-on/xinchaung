@@ -214,6 +214,7 @@ export default defineComponent({
   },
   setup() {
     let route = useRoute()
+    let router = useRouter()
     const http=(request as ITeacherExperHttp).teacherExperiment
     const $message: MessageApi = inject("$message")!;
     const $confirm: ModalFunc = inject("$confirm")!;
@@ -324,7 +325,6 @@ export default defineComponent({
           $message.warn('章节名称为2-19个字符')
           return
         }
-        debugger
         if (isEditChapter.value) {
           http.updateChapter({
             param: {name: chapterInfo.chapterName},
@@ -508,8 +508,8 @@ export default defineComponent({
     // 实验上下排序
     function sortExperimental(i: number, flag: boolean) {
       const param = {
-        up_id: '',
-        down_id: '',
+        up_id: 0,
+        down_id: 0,
       }
 
       if (flag) {   // shangyi
@@ -777,15 +777,15 @@ export default defineComponent({
       
     })
     function create() {
-      console.log('创建实验')
-      // this.$router.push({
-      //   path: '/createExperimental',
+      // console.log('创建实验')
+      // router.push({
+      //   path: '/teacher/experiment/creatExperiment',
       //   query: {
-      //     chapter_id: this.currentSkillInfo.chapter_id,
-      //     chapter_name: this.currentSkillInfo.chapter_name,
-      //     skill_name: this.currentSkillInfo.skill_name,
-      //     course_index: this.currentCourseIndex.toString(),
-      //     chapter_index: this.currentChapterIndex.toString(),
+      //     chapter_id: currentSkillInfo.chapter_id,
+      //     chapter_name: currentSkillInfo.chapter_name,
+      //     skill_name: currentSkillInfo.skill_name,
+      //     course_index: currentCourseIndex.value.toString(),
+      //     chapter_index: currentChapterIndex.value.toString(),
       //   },
       // })
     }
