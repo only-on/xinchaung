@@ -14,7 +14,7 @@
                 </a-select>
                   <a-input-search v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" style="width:352px;padding:0px 5px 0px 30px;border-left:none" placeholder="请输入目录名称关键字查询" />
                 </div>
-                <div class="question-btn" v-if="initial==='1'">
+                <div class="question-btn" v-if="initial==='0'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
                     <a-button type="primary" @click="deleteCurrentRowMany">批量删除</a-button>
                     <a-button type="primary" @click="batchImport">批量导入</a-button>

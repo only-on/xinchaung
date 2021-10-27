@@ -27,13 +27,20 @@ export default defineComponent({
         const router = useRouter();
          function toExerDetail(item:any){
             console.log(item,'item')
-            router.push({path:'/exercisesDetail',query:{id:item.id,initial:0}})
+            router.push({path:'/exercisesDetail',query:{id:item.id,initial:1}})
         }
         return {toExerDetail}
     }
 })
 </script>
 <style lang="less" scoped>
+    .directoryList{
+      margin: 2px;  
+    }
+    .data-set-listItem:hover{
+        border: 1px solid rgba(42, 191, 158, 0.05);
+        box-shadow: 0 0 5px 3px rgb(0 0 0 / 10%);
+    }
     .data-set-listItem{
         border-radius: 5px;
         border: 1px solid #DDDDDD;

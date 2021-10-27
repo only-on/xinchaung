@@ -24,7 +24,13 @@
             </div>
         </div>
         <div v-else class="no-search-data">
-            <empty></empty>
+            <div v-if="ifTip" class="loading">
+                <a-spin tip="加载中...">
+                <div class="spin-content">
+                </div>
+                </a-spin>
+            </div>
+            <empty v-else></empty>
         </div>
     <a-pagination :hideOnSinglePage='true' v-model="pagingData.currentPage" :pageSize='pagingData.perPage' :total="pagingData.totalCount" @change="pageChange" />
     </div>
@@ -60,9 +66,10 @@ interface paramsType{
    page?:number   
 }
 interface State{
-    courseDataList:CourseType[];
-    pagingData:pageingType;
-    params:paramsType;
+    courseDataList:CourseType[],
+    pagingData:pageingType,
+    params:paramsType,
+    ifTip:boolean,
 }
 export default defineComponent({
     name:'CourseAchievement',
@@ -72,7 +79,8 @@ export default defineComponent({
         const state: State=reactive({
              courseDataList:[],
              pagingData:{},
-             params:{}
+             params:{},
+             ifTip:false
          })
         function onSearch(value:string){
             state.params.keyword=value,
@@ -82,6 +90,7 @@ export default defineComponent({
             router.push({path:'/courseScore',query:{id:id}})
         }
         function getData(){
+            state.ifTip=true
             const infoRequest=(request as any).studentPerformance
             infoRequest.courseAchievement({
                param:state.params
@@ -94,6 +103,7 @@ export default defineComponent({
             }else{
                     message.error(res.msg)
                 }
+             state.ifTip=false
             })
         }
         function pageChange(current:number){
@@ -111,6 +121,12 @@ export default defineComponent({
 <style lang="less" scoped>
 #CourseAchievement{
     font-size: 14px;
+     .loading{
+        padding:245px;
+    }
+    .spin-content {
+    padding: 30px;
+    }
 }
 .searchInput{
     height: 100px;

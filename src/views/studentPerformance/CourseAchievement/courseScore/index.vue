@@ -288,7 +288,7 @@ export default defineComponent({
             display: flex;
             justify-content: space-between;
             border: 1px solid @theme-color;
-            background-color: @normal-color;
+            background-color: #fdfaff;
             line-height: 46px;
             padding-left: 30px;
             color:@theme-color;
@@ -345,7 +345,7 @@ export default defineComponent({
             text-align:center;
         }
         .ant-table-thead>tr>th{
-            background-color:@normal-color!important;
+            background-color:#f6f0fa!important;
         }
         .ant-table-bordered .ant-table-thead > tr > th, .ant-table-bordered .ant-table-tbody > tr > td {
         border-right: 1px solid @white;

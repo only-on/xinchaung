@@ -176,7 +176,7 @@ export default defineComponent({
         const methods = {
           exerciseDetail(){
               state.initial=router.currentRoute.value.query.initial
-              state.initialIfEdit=(state.initial==='0'?false:true)
+              state.initialIfEdit=(state.initial==='0'?true:false)
                updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
               const id:any=router.currentRoute.value.query.id;
               teacherDataExerApi.detailExercise({urlParams:{pool_id:id}}).then((res:any)=>{

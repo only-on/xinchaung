@@ -17,7 +17,7 @@
                 <span>未评价</span>
             </template>
             <template v-slot:action5>
-                <span class="detail" @click="scoreDetails()">成绩明细</span>
+                <span class="detail" @click="scoreDetails">成绩明细</span>
             </template>
         </a-table>
         <div>
@@ -150,13 +150,13 @@ export default defineComponent({
         }
         function getScore(){
             const infoRequest=(request as any).studentPerformance
-             var formData:any = new FormData();
-       formData.append('tid',260);
-       formData.append('type','score');
-       formData.append('stu_id','');
-        infoRequest.getScore({param:formData}).then((res:any)=>{
-        console.log(res)
-      })
+            var formData:any = new FormData();
+            formData.append('tid',260);
+            formData.append('type','score');
+            formData.append('stu_id','');
+                infoRequest.getScore({param:formData}).then((res:any)=>{
+                console.log(res)
+            })
         }
         // function onEdit(targetKey:string, action:string){
         //    console.log(targetKey, action) 

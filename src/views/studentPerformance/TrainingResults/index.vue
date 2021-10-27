@@ -22,7 +22,13 @@
             <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div>
         </div>
         <div v-else class="no-search-data">
-            <empty></empty>
+            <div v-if="ifTip" class="loading">
+                <a-spin tip="加载中...">
+                <div class="spin-content">
+                </div>
+                </a-spin>
+            </div>
+            <empty v-else></empty>
         </div>
     </div>
 </template>
@@ -41,7 +47,8 @@ interface State{
     traningResult:any[],
     pagingData:pageingType;
     columns:any[],
-    tableData:any[]
+    tableData:any[],
+    ifTip:boolean,
 }
 export default defineComponent({
     name:'TrainingResults',
@@ -94,9 +101,11 @@ export default defineComponent({
                         final_score:'待教师评分',
                         rank: "待教师评分",
                         max_score: "待教师评分",
-                    }]
+                }],
+            ifTip:false
         })
         function getData(value?:any,ifSearch?:boolean){
+            state.ifTip=true
             const infoRequest=(request as any).studentPerformance
             infoRequest.trainingResults(ifSearch?{
                param:{keyword:value} 
@@ -109,7 +118,7 @@ export default defineComponent({
             }else{
                     message.error(res.msg)
                 }
-
+              state.ifTip=false
             })
             
             infoRequest.experimentalResults(
@@ -155,6 +164,12 @@ export default defineComponent({
 <style lang="less">
 #TrainingResults{
     font-size: 14px;
+     .loading{
+        padding:245px;
+    }
+    .spin-content {
+    padding: 30px;
+    }
      .searchInput{
     height: 100px;
     line-height: 100px;
