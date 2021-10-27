@@ -2,6 +2,8 @@ import { RESP_AUTH_FAILURE, RESP_SUCCESS } from './../api/index';
 import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from '../typings/fetch';
 import store from "../store/index";
 import { message } from 'ant-design-vue';
+import { useRouter,useRoute } from 'vue-router';
+const router = useRouter();
 // 检查是否为对象
 function isObject(value: any) {
   return Object.prototype.toString.call(value) === "[object Object]";
@@ -156,7 +158,7 @@ export default function request({
           resolve(res);
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
           // store.commit("logout");
-          // router.replace({ path: "/login" }).catch(() => {});
+          router.replace({ path: "/login" }).catch(() => {});
           reject(null)
         } else {
           let meg='请求出错'

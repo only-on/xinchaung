@@ -12,7 +12,6 @@
 import { defineComponent,ref, onMounted,computed ,Ref, PropType} from 'vue'
 import {useStore} from "vuex"
 import { useRouter } from 'vue-router';
-import { log } from 'console';
 type TemptyType= 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty'
 export default defineComponent({
   name: 'Empty',

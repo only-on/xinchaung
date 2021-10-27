@@ -58,8 +58,12 @@
             </div>
           </template>
           <div class="nodata" v-else>
-            <div class="kong"><empty text="暂未添加该类型试题，可点击下方按钮在题库中选择添加" /></div>
-            <div class="select-question"><a-button type="primary" @click="openSelectquestion">选择试题</a-button></div>
+            <div class="kong">
+              <empty text="暂未添加该类型试题，可点击下方按钮在题库中选择添加" />
+            </div>
+            <div class="select-question">
+              <a-button type="primary" @click="openSelectquestion">选择试题</a-button>
+            </div>
           </div>
         </div>
       </div>

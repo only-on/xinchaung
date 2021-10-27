@@ -1,7 +1,7 @@
 <template>
   <div v-layout-bg class="Achievement setScrollbar">
     <div class="row">
-      <div class="row12">
+      <div class="row12" v-if="detaile && detaile.id">
         <div class="box box1">
           <div class="top-info flexCenter">
             <div class="title">{{detaile.name}}</div>
@@ -113,35 +113,37 @@
       </div>
     </div>
   </div>
-  <a-modal v-model:visible="Visible" title="成绩明细" :width="1413" class="modal-post">
+  <a-modal v-model:visible="Visible" title="成绩明细" :width="1413" class="modal-post" :destroyOnClose="true">
     <div class="info-box">
       <div class="base-info">
         <div class="top-info-item portrait">
-          <div class="photo"></div>
+          <div class="photo">
+            <img :src="scoreDate.avatar?scoreDate.avatar:imgUrl" alt="个人头像">
+          </div>
           <div class="student-cont-info">
-            <span>账户：132</span>
-            <span>名字：xxx</span>
+            <span>账户：{{scoreDate.account}}</span>
+            <span>名字：{{scoreDate.name}}</span>
           </div>
         </div>
         <div class="top-info-item">
           <i class="iconfont icon-kongshuju"></i>
           <div class="student-cont-info">
             <span>成绩</span>
-            <span class="score">{{'0'}}<span>分</span></span>
+            <span class="score">{{scoreDate.score}}<span>分</span></span>
           </div>
         </div>
         <div class="top-info-item">
           <i class="iconfont icon-shijian1"></i>
           <div class="student-cont-info">
             <span>考试用时</span>
-            <span class="score">{{'0'}}<span>分钟</span></span>
+            <span class="score">{{scoreDate.spend_time}}<span>分钟</span></span>
           </div>
         </div>
         <div class="top-info-item">
           <i class="iconfont icon-paiming"></i>
           <div class="student-cont-info">
             <span>班级排名</span>
-            <span class="score">{{'0'}}<span>名</span></span>
+            <span class="score">{{scoreDate.class_rank}}<span>名</span></span>
           </div>
         </div>
       </div>
@@ -158,16 +160,34 @@
       <div class="answer-info-cont">
         <div class="border-title">答案详情</div>
         <div class="question-index-cont setScrollbar">
-          <span class="bg-greay" v-for="v in 8" :key="v">1</span>
-          <span class="bg-pink" v-for="v in 8" :key="v">2</span>
-          <span class="bg-truth" v-for="v in 8" :key="v">3</span>
+          <span :class="['bg-greay','bg-pink','bg-truth'][v.answerState]" v-for="(v,k) in scoreDate.question_info" :key="v" @click="activeQuestion=Number(k)">{{Number(k)+1}}</span>
+          <!-- <span class="bg-greay" v-for="v in 1" :key="v">2</span>
+          <span class="bg-pink" v-for="v in 1" :key="v">2</span>
+          <span class="bg-truth" v-for="v in 1" :key="v">3</span> -->
         </div>
-        <div class="answer-info">
+        <div class="answer-info" v-if="scoreDate.question_info && scoreDate.question_info.length">
           <div class="top">
-            <div class="legend "></div>
+            <div class="title">{{`${activeQuestion+1}、${scoreDate.question_info[activeQuestion].question}`}}</div>
+            <div class="legend ">
+              <span><i class="legend-icon bg-truth"></i>正确</span>
+              <span><i class="legend-icon bg-pink"></i>错误</span>
+              <span><i class="legend-icon bg-greay"></i>空</span>
+            </div>
           </div>
-          <div class="stu-answer"> 提示：未作答 </div>
-          <div class="stand-answer">标准答案：1</div>
+          <div class="chooseList" v-if="[1,2,3].includes(scoreDate.question_info[activeQuestion].type_id)">
+            <div v-if="[1,2].includes(scoreDate.question_info[activeQuestion].type_id)">
+              <div class="choose-span" v-for="(i,k) in scoreDate.question_info[activeQuestion].options" :key="i">{{`${['A','B','C','D','E','F','G','H'][Number(k)]}、${i.option}`}}</div>
+              <!-- <div class="choose-span">B、选项一</div>
+              <div class="choose-span">C、选项一</div>
+              <div class="choose-span">D、选项一</div> -->
+            </div>
+            <div v-if="scoreDate.question_info[activeQuestion].type_id===3">
+              <div class="choose-span" v-for="(i,k) in scoreDate.question_info[activeQuestion].options" :key="Number(k)">{{`${i.option}`}}</div>
+              <!-- <div class="choose-span">错误</div> -->
+            </div>
+          </div>
+          <div class="stu-answer" :class="['','error','correct'][scoreDate.question_info[activeQuestion].answerState]"> {{scoreDate.question_info[activeQuestion].wrongAnswer}} </div>
+          <div class="stand-answer">标准答案：{{scoreDate.question_info[activeQuestion].standardAnswer}}</div>
         </div>
       </div>
     </div>
@@ -184,7 +204,7 @@ import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
 import { distributionEcharts ,typeStatisticsEcharts,renderScoreBar,renderAccuracy} from "./echartsOption/index";
-import { log } from 'console';
+import imgUrl from '/src/assets/images/teacherExam/student.png'
 interface ItdItems{
   title:string,
   type:string,
@@ -194,6 +214,7 @@ interface ItdItems{
   id:number,
 }
 interface Istate{
+  activeQuestion:number;
   loading:boolean;
   ForumSearch:any;
   list:ItdItems[];
@@ -215,6 +236,7 @@ interface Istate{
   started_at:string;
   closed_at:string;
   examName:string;
+  scoreDate:any;
 }
 const columns=[
   {
@@ -263,7 +285,7 @@ const exportcolumns=[
   },
   {
     title: '考试时长',
-    dataIndex:"time",
+    dataIndex:"spend_times",
     align:'center',
     // width:260,
   },
@@ -332,6 +354,10 @@ export default defineComponent({
     }
     const options = ref<SelectTypes['options']>([{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}])
     const state:Istate=reactive({
+      activeQuestion:0,
+      scoreDate:{
+        question_info:[]
+      },
       detaile:{},
       loading:false,
       ForumSearch:{
@@ -407,11 +433,71 @@ export default defineComponent({
       Visible:false,
       see:(id:number)=>{
         state.Visible=true
-        
-        nextTick(()=>{
-          // console.log(document.getElementById("gradeCanvas"))
-          renderScoreBar(document.getElementById("gradeCanvas") as HTMLDivElement,state.detaile.type_scores)
-          renderAccuracy(document.getElementById("accuracyCanvas") as HTMLDivElement,state.detaile.type_scores)
+        http.scoreDetails({urlParams: {exam_id: Id,student_id:id}}).then((res:IBusinessResp)=>{
+          // question_info
+          let data=res.data
+          data.question_info.length?data.question_info.map((v:any)=>{
+            //  lajihouduan      answer_is_right=null 答案空   answer_is_right=false答错   answer_is_right=true 对
+            if(v.answer_is_right===null){
+              v.answerState=0
+            }else{
+              v.answerState=v.answer_is_right===false?1:2
+            }
+            // 错误答案
+            v.wrongAnswer=''
+            // 处理题目标准答案展示
+            v.standardAnswer=''
+            if([1,2,3].includes(v.type_id!)){
+              let standardArr=v.answers.reduce((previous:any, current:any) => {
+                previous.indexOf(current)===-1 && previous.push(current.answer)
+                return previous
+              }, [])
+              let wrongArr=v.student_answer.length?v.student_answer.reduce((previous:any, current:any) => {
+                previous.indexOf(current)===-1 && previous.push(current.answer)
+                return previous
+              }, []):[]
+
+              v.options.forEach((i:any,k:number)=>{
+                if(standardArr.includes(String(i.id))){
+                  if(v.type_id===3){
+                    v.standardAnswer=i.option
+                  }else{
+                    v.standardAnswer+=`${['A','B','C','D','E','F','G','H'][k]}、`
+                  }
+                }
+                if(wrongArr.includes(String(i.id))){
+                  if(v.type_id===3){
+                    v.wrongAnswer=i.option
+                  }else{
+                    v.wrongAnswer+=`${['A','B','C','D','E','F','G','H'][k]}、`
+                  }
+                }
+              })
+            }else{
+              v.standardAnswer=v.answers.reduce((previous:any, current:any) => {
+                previous.indexOf(current)===-1 && previous.push(current.answer)
+                return previous
+              }, []).join('、')
+              v.wrongAnswer=v.student_answer?v.student_answer.reduce((previous:any, current:any) => {
+                previous.indexOf(current)===-1 && previous.push(current.answer)
+                return previous
+              }, []).join('、'):''
+            }
+            if(v.answerState===0){
+                v.wrongAnswer=`提示：未作答`
+             }else{
+               let str=v.answerState===1?'回答错误':'回答正确'
+               v.wrongAnswer=`${str}：${v.wrongAnswer}`
+             }
+          }):''
+          // console.log(data.question_info)
+          state.scoreDate=data
+          // console.log(state.scoreDate.question_info)  standardAnswer
+          nextTick(()=>{
+            // console.log(document.getElementById("gradeCanvas"))
+            renderScoreBar(document.getElementById("gradeCanvas") as HTMLDivElement,state.scoreDate.score_info)
+            renderAccuracy(document.getElementById("accuracyCanvas") as HTMLDivElement,state.scoreDate.rate_info)
+          })
         })
       }
     })
@@ -440,7 +526,7 @@ export default defineComponent({
         return <empty type={type} height={100} />
       }
     }
-    return {...toRefs(state),customizeRenderEmpty,exportRenderEmpty,columns,options,exportcolumns};
+    return {...toRefs(state),imgUrl,customizeRenderEmpty,exportRenderEmpty,columns,options,exportcolumns};
   },
 })
 </script>
@@ -648,6 +734,7 @@ export default defineComponent({
   
   .info-box{
     padding: 11px 46px;
+    min-height: 800px;
   }
   .base-info{
     padding: 20px 0;
@@ -656,7 +743,7 @@ export default defineComponent({
     justify-content: space-between;
     .top-info-item{
       display: flex;
-      width: 200px;
+      width: max-content;
       // height: 70px;
       background: rgba(220, 230, 228, .5);
       justify-content: center;
@@ -685,8 +772,12 @@ export default defineComponent({
       .photo{
         width: 89px;
         height: 89px;
-        background: url(src/assets/images/teacherExam/student.png) no-repeat;
-        background-size: 100% 100%;
+        // background: url(src/assets/images/teacherExam/student.png) no-repeat;
+        // background-size: 100% 100%;
+        img{
+          width: 89px;
+          height: 89px;
+        }
       }
     }
     
@@ -719,6 +810,17 @@ export default defineComponent({
     transform: translate(-5px, 10px);
   }
 }
+.bg-truth {
+  background: @theme-color;
+}
+
+.bg-pink {
+  background: rgba(251,118,122,1);
+}
+
+.bg-greay {
+  background: rgba(195,203,217,1);
+}
 .answer-info-cont{
   padding-top: 16px;
   .question-index-cont{
@@ -740,16 +842,50 @@ export default defineComponent({
       cursor: pointer;
       flex-shrink: 0;
     }
-    .bg-truth {
-      background: @theme-color;
+    
+  }
+  .answer-info{
+    font-size: 14px;
+    color: #838CA5;
+    .top{
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-right: 5%;
+      margin-bottom: 10px;
+      .legend{
+        display: flex;
+        span{
+          margin-left: 12px;
+          .legend-icon{
+            width: 30px;
+            height: 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-right: 2px;
+          }
+        }
+      }
     }
-
-    .bg-pink {
-      background: rgba(251,118,122,1);
+    .chooseList{
+      .choose-span{
+        margin-left: 20px;
+        margin-bottom: 5px;
+      }
     }
-
-    .bg-greay {
-      background: rgba(195,203,217,1);
+    .stu-answer{
+      margin: 10px 0 10px 20px;
+    }
+    .error{
+      color: #de2525;
+    }
+    .correct{
+      // color:@theme-color;
+      color: #2288fa;
+    }
+    .stand-answer{
+      margin: 0px 0 10px 20px;
+      color: #1db98f;
     }
   }
 }

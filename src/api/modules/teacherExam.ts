@@ -22,6 +22,7 @@ export default{
   CorrectRate:{url:`/api/v1/question/exams/{exam_id}/questions/correct-rate`,method: "GET"},
   achievement:{url:`/api/v1/question/exams/{exam_id}/students/scores`,method: "GET"},
   achievementExport:{url:`/api/v1/question/exams/student-exam-score/export`,method: "GET"},
+  scoreDetails:{url:`/api/v1/question/exams/{exam_id}/users/{student_id}/score`,method: "GET"}
 }
 
 export interface ITeacherExamlAps {
@@ -47,6 +48,7 @@ export interface ITeacherExamlAps {
   CorrectRate: TFHttpSend;
   achievement: TFHttpSend;
   achievementExport: TFHttpSend;
+  scoreDetails: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExam'

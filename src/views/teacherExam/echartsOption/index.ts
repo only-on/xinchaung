@@ -232,14 +232,15 @@ import completion from '/src/assets/images/teacherExam/completion.png'
 import shortAnswer from '/src/assets/images/teacherExam/shortAnswer.png'
 import shicao from '/src/assets/images/teacherExam/shicao.png'
 
-function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
-	let data=[
-		{average: 2, my_score: 3, name: "选择题"},
-		{average: 0, my_score: 0, name: "判断题"},
-		{average: 1, my_score: 2, name: "填空题"},
-		{average: 0, my_score: 0, name: "简答题"},
-		{average: 10, my_score: 8, name: "实操考核题"}
-	]
+function renderScoreBar(el: HTMLDivElement, data: Array<any>){
+	// {type_id: 1, type_name: "单选题", avg_score: 0, my_score: 0}
+	// let data=[
+	// 	{avg_score: 2, my_score: 3, type_name: "选择题"},
+	// 	{avg_score: 0, my_score: 0, type_name: "判断题"},
+	// 	{avg_score: 1, my_score: 2, type_name: "填空题"},
+	// 	{avg_score: 0, my_score: 0, type_name: "简答题"},
+	// 	{avg_score: 10, my_score: 8, type_name: "实操考核题"}
+	// ]
 	//成绩详情柱状图
 	let chartDatas:any = {
 		typeArr:[],
@@ -247,8 +248,8 @@ function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
 		personalScore: []
 	}
 	for (var i = 0; i < data.length; i++) {
-		chartDatas.typeArr.push(data[i].name)
-		chartDatas.avarageScore.push(data[i].average)
+		chartDatas.typeArr.push(data[i].type_name)
+		chartDatas.avarageScore.push(data[i].avg_score)
 		chartDatas.personalScore.push(data[i].my_score)
 	}
 	var max_num = function () {
@@ -291,7 +292,8 @@ function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
 			axisLabel: {
 				inside: false,
 				color: '#6c6e72',
-				fontSize: '14'
+				fontSize: '14',
+				// height:30
 			},
 			data: chartDatas.typeArr
 		}],
@@ -310,6 +312,7 @@ function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
 			zlevel: 2,
 			barWidth: 28,
 			label: {
+				color: '#8955b5',
 				show: true,
 				position: ['0', '-20'],
 				distance: 5,
@@ -336,20 +339,21 @@ function renderScoreBar(el: HTMLDivElement, data2: Array<any>){
 		}]
 	};
 	const chart = echarts.init(el)
+	// chart.dispose()
 	chart.setOption(option)
   return chart;
 
 }
 //成绩明细数据温度计图
-function renderAccuracy(el: HTMLDivElement, data2: Array<any>) {
+function renderAccuracy(el: HTMLDivElement, datas: Array<any>) {
 	// var AccuracyChart = echarts.init(document.getElementById('accuracy-canvas'));
-	let datas=[
-		{rate: 0, name: "选择题"},
-		{rate: 0.1, name: "判断题"},
-		{rate: 0.2, name: "填空题"},
-		{rate: 0.3, name: "简答题"},
-		{rate: 0.6, name: "实操考核题"}
-	]
+	// let datas=[
+	// 	{rate: 0, name: "选择题"},
+	// 	{rate: 0.1, name: "判断题"},
+	// 	{rate: 0.2, name: "填空题"},
+	// 	{rate: 0.3, name: "简答题"},
+	// 	{rate: 0.6, name: "实操考核题"}
+	// ]
 	//成绩明细数据温度计图
 	var chartsDatas = datas
 
@@ -357,7 +361,7 @@ function renderAccuracy(el: HTMLDivElement, data2: Array<any>) {
 	var rightData = []; //正确题数
 
 	for (var i = 0; i < chartsDatas.length; i++) {
-		xAxisData.push(chartsDatas[i].name)
+		xAxisData.push(chartsDatas[i].type_name)
 		rightData.push(chartsDatas[i].rate * 100+16)
 	}
 	var series = [{
@@ -524,7 +528,7 @@ function renderAccuracy(el: HTMLDivElement, data2: Array<any>) {
 				axisLabel: {
 					color: '#6c6e72',
 					fontSize: '14',
-					margin:30
+					margin:40
 				},
 				data: xAxisData
 			},
@@ -585,6 +589,7 @@ function renderAccuracy(el: HTMLDivElement, data2: Array<any>) {
 
 	};
 	const chart = echarts.init(el)
+	// chart.dispose()
 	chart.setOption(options);
 }
 export {
