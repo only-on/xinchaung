@@ -7,70 +7,61 @@
             </a-button>
         </div>
         <div class="listTable">
-            <div class="listItem">
-                <span>u16_k_2g2g50b_vnc</span>
+            <div class="listItem" v-for="(item,index) in mirrorTable" :key='index.toString()'>
+                <span class='itemname'>{{item.name}}</span>
                 <div class="itemselect">
                     <a-form-item label="cpu">
-                        <a-select default-value="lucy" style="width: 120px" @change="handleChange">
-                            <a-select-option value="jack">
-                                Jack
-                            </a-select-option>
-                            <a-select-option value="lucy">
-                                Lucy
+                        <a-select v-model:value="item.cpu"  class="selectWidth">
+                            <a-select-option v-for="(item,index) in selectOption?.cpu" :key="index.toString()" :value="item.key">
+                                {{item}}核
                             </a-select-option>
                         </a-select>
                     </a-form-item>
                     <a-form-item label="内存">
-                        <a-select default-value="lucy" style="width: 120px" @change="handleChange">
-                            <a-select-option value="jack">
-                                Jack
-                            </a-select-option>
-                            <a-select-option value="lucy">
-                                Lucy
+                        <a-select v-model:value="item.ram" class="selectWidth">
+                            <a-select-option v-for="(item,index) in selectOption?.ram" :key="index.toString()" :value="item.key">
+                                {{item}}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
                     <a-form-item label="硬盘">
-                        <a-select default-value="lucy" style="width: 120px" @change="handleChange">
-                            <a-select-option value="jack">
-                                Jack
-                            </a-select-option>
-                            <a-select-option value="lucy">
-                                Lucy
+                        <a-select v-model:value="item.disk"  class="selectWidth">
+                            <a-select-option v-for="(item,index) in selectOption?.disk" :key="index.toString()" :value="item.key">
+                                {{item}}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    <a-form-item label="GPU">
-                        <a-select default-value="lucy" style="width: 120px" @change="handleChange">
-                            <a-select-option value="jack">
-                                Jack
+                    <a-form-item v-if="item.tags.indexOf(3)!==-1" label="GPU">
+                        <a-select default-value="是" class="selectWidth">
+                            <a-select-option :value="true">
+                                是
                             </a-select-option>
-                            <a-select-option value="lucy">
-                                Lucy
+                            <a-select-option :value="false">
+                                否
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    </div>
-                <!-- </a-form> -->
-                <span class="icon-shanchu-copy iconfont"></span>
+                </div>
+                <div class="itemdelete">
+                    <span @click="deleteItem(item)" class="icon-shanchu-copy iconfont"></span>
+                </div>
             </div>
         </div>
        </div>
        <a-drawer
-        title="设置环境"
         placement="right"
         :closable="false"
         :visible="visible"
-        width="800"
+        width="640"
         :after-visible-change="afterVisibleChange"
         @close="onClose"
         >
-        <select-mirror></select-mirror>
+        <select-mirror @choice-item='choiceItem' @delete-item='deleteItem' :mirroridArr='mirroridArr'></select-mirror>
         </a-drawer>
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
-        <a-button class='save' type="primary" @click.prevent="onSave">下一步</a-button>
+        <a-button class='save' type="primary" @click.prevent="nextStep">下一步</a-button>
       </div>
   </div>
 </template>
@@ -80,6 +71,7 @@ import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from '
 import request from 'src/api/index'
 import uploadImage from '../components/uploadImage/uploadImage.vue'
 import selectMirror from '../components/selectMirror/index.vue'
+import messages from 'src/i18n/zh_CN'
 const http=(request as any).teacherTrain
 interface paramsType{
     container:any[],
@@ -87,12 +79,23 @@ interface paramsType{
     flavor:any[],
     is_use_gup:number
 }
+interface mirrorTableType{
+    name:string,
+    cpu:string,
+    ram:string,
+    disk:string,
+    tags:number[]
+}
 interface Istate{
     params:paramsType,
-    visible:boolean
+    visible:boolean,
+    mirrorTable:mirrorTableType[],
+    mirroridArr:number[],
+    selectOption:any,
 }
 export default defineComponent({
   name: 'CreatePosts',
+   props:['trainId'],
   components: {
     uploadImage,
     selectMirror
@@ -109,15 +112,13 @@ export default defineComponent({
             is_use_gup:0
          },
          visible:false,
+         mirrorTable:[],
+         mirroridArr:[],
+         selectOption:{}
      })
      const methods={
          previousStep(){
              context.emit('step-status',0)
-         },
-         choiceEnvir(){
-             http.selectEnvir({param:state.params}).then((res:any)=>{
-
-             })
          },
          selectMirror(){
              state.visible = true;
@@ -128,9 +129,56 @@ export default defineComponent({
         onClose() {
             state.visible = false;
         },
+        choiceItem(item:any){
+            console.log(item)
+            state.mirrorTable.push(item),
+            state.mirroridArr.push(item.id)
+        },
+        deleteItem(item:any){
+            console.log(item)
+            const index=state.mirroridArr.indexOf(item.id)
+            state.mirrorTable.splice(index,1)
+            state.mirroridArr.splice(index,1)
+        },
+        configlist(){
+            http.selectConfig().then((res:any)=>{
+                console.log(res)
+                state.selectOption=res.data.image_configs
+            })
+        },
+        // 第一步
+        createTemplate(){
+            console.log(state.mirrorTable,'数据888888')
+            let container:any=[]
+            state.mirrorTable.forEach((item:any,index:any)=>{
+                container.push(
+                    {image:item.id,
+                    flavor: {
+                    cpu:item.cpu,
+                    ram:item.ram,
+                    disk:item.disk
+                    },
+                    is_use_gpu:item.is_use_gpu
+                })
+            })
+            console.log(container,'container')
+            http.createMirrorTemplate({param:{container}}).then((res:any)=>{
+                let topo_id=res.data.id
+                http.saveMirrorEnvir({param:{train_id:props.trainId,topo_id:topo_id}}).then((res:any)=>{
+                    console.log(res)
+                    topo_id=''
+                })
+             })
+         },
+        onCancel(){
+
+        },
+        nextStep(){
+        methods.createTemplate()
+        }
      }
     onMounted(()=>{
-        
+        methods.configlist()
     })
     return {...toRefs(state),...methods};
   },
@@ -149,20 +197,32 @@ export default defineComponent({
   .listTable{
       width: 100%;
       margin-top: 30px;
+      min-height: 400px;
       .listItem{
           display:flex;
           height: 64px;
-        //   line-height:64px;
           border: 1px solid #D9D9D9;
           background-color: #F5F5F5;
-          justify-content:space-between;
+          justify-content:left;
           align-items: center;
           padding: 0 14px;
+          margin-bottom: 20px;
+          .itemname{
+              width:20%;
+          }
           .itemselect{
               display: flex;
+              width: 70%;
               .ant-form-item{
                   margin-bottom: 0px;
               }
+              .selectWidth{
+                  width: 120px;
+              }
+          }
+          .itemdelete{
+              width: 10%;
+              text-align: right;
           }
       }
   }

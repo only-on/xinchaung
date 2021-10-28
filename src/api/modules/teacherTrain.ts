@@ -35,7 +35,11 @@ export default {
 
   // 创建实训
   createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
-  selectEnvir: { url: '/api/env/topos/stores', method: "POST", }
+  selectConfig: { url: '/api/env/images/config', method: "GET" },
+  selectMirror: { url: '/api/env/images', method: "GET" },
+  createMirrorTemplate: { url: '/api/env/topos/stores', method: "POST", dataType: 'json' },
+  createMirror: { url: '/api/content/content/template', method: "POST" },
+  saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" }
 }
 
 
@@ -64,7 +68,11 @@ export interface ITeacherTrainAps {
   savepptModefiy: TFHttpSend,
   studentGroup: TFHttpSend,
   createTrain: TFHttpSend,
-  selectEnvir: TFHttpSend
+  selectConfig: TFHttpSend,
+  selectMirror: TFHttpSend,
+  createMirrorTemplate: TFHttpSend,
+  createMirror: TFHttpSend,
+  saveMirrorEnvir: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTrain'

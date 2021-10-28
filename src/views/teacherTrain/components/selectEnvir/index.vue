@@ -16,7 +16,7 @@
                     <div :class="typeNumber===Number(index)?'btn selectedBtn':'btn'" v-for="(item,index) in typeTabs" :key="index.toString()" @click="selectEnvirType(index)">{{item}}</div>
                 </div>
                 <div class="searchInput">
-                    <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:340px;padding:4px 30px 4px 11px" placeholder="请输入目录名称关键字查询" />
+                    <a-input-search class="input-search" v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" placeholder="请输入目录名称关键字查询" />
                 </div>
                 <div v-if="envirListData.length" class="tableList">
                     <div class="listItem" v-for="(item,index) in envirListData"  :key="index.toString()">
@@ -194,6 +194,10 @@ export default defineComponent({
     }
     .searchInput{
         margin-top: 20px;
+         .input-search{
+          width:340px;
+          padding:4px 30px 4px 11px;
+        }
     }
     .tableList{
         margin-top: 20px;

@@ -6,7 +6,7 @@
       </a-steps>
      </div>
      <div class="step">
-       <component @step-status='stepStatus' :is="componentName" />
+       <component @step-status='stepStatus' @content-trainid='contentTrainid' :trainId='trainId' :is="componentName" />
      </div>
   </div>
 </template>
@@ -36,6 +36,7 @@ export default defineComponent({
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
     var componentName:Ref<string>=ref('step1')
     var current:Ref<number>=ref(0)
+    var trainId:Ref<string>=ref('')
     var stepList=[
     {name:'基本信息',component:'step1'},
     {name:'实训环境',component:'step2'},
@@ -48,12 +49,15 @@ export default defineComponent({
       stepStatus(val:any){
         componentName.value=stepList[val].component
         current.value=val
+      },
+      contentTrainid(val:any){
+        trainId.value=val
       }
     }
     onMounted(()=>{
      componentName.value='step1'
     })
-    return {componentName,stepList,current,...methods}
+    return {componentName,stepList,current,trainId,...methods}
   },
 })
 </script>

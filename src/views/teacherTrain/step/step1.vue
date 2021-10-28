@@ -11,10 +11,10 @@
                   </a-form-item>
                   <div class="time">
                     <a-form-item label="开始时间" name="start_time">
-                        <a-date-picker class="time" placeholder="开始日期" v-model:value="formState.start_time" valueFormat='YYYY-MM-DD' :disabled='edit'/>
+                        <a-date-picker class="time" placeholder="开始日期" v-model:value="formState.start_time" valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
                     <a-form-item label="结束时间" name="end_time">
-                        <a-date-picker placeholder="结束日期" v-model:value="formState.end_time" valueFormat='YYYY-MM-DD' :disabled='edit' />
+                        <a-date-picker placeholder="结束日期" v-model:value="formState.end_time" valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
                   </div>
                   <div>
@@ -98,28 +98,29 @@ export default defineComponent({
           
         },
         onSubmit(){
-          // state.formRef.validate().then(() => {
-          //   // methods.setupTrain()
-          //   // stepStatus
-            
-          // })
-          context.emit('step-status',1)
+          state.formState.url='/images/upload/teacher-default/cover2.png'
+          state.formState.url_is_uploaded='0'
+          state.formRef.validate().then(() => {
+              methods.setupTrain()
+          })
         },
         onSave(){
 
         },
         setupTrain(){
           let formdata=new FormData()
-          formdata.append('train_id','')
           formdata.append('name',state.formState.name)
           formdata.append('start_time',state.formState.start_time)
           formdata.append('end_time',state.formState.end_time)
           formdata.append('url',state.formState.url)
           formdata.append('url_is_uploaded',state.formState.url_is_uploaded)
           formdata.append('train_time',state.formState.train_time)
-          formdata.append('train_time',state.formState.guide)
+          formdata.append('guide',state.formState.guide)
           http.createTrain({param:formdata}).then((res:any)=>{
             console.log(res)
+            const trainId=res.datas.train_id
+            context.emit('content-trainid',trainId)
+            context.emit('step-status',1)
           })
         }
      }
