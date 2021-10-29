@@ -39,7 +39,9 @@ export default {
   selectMirror: { url: '/api/env/images', method: "GET" },
   createMirrorTemplate: { url: '/api/env/topos/stores', method: "POST", dataType: 'json' },
   createMirror: { url: '/api/content/content/template', method: "POST" },
-  saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" }
+  saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" },
+  saveTrainContents: { url: '/teacher-train/save-train-contents', method: "POST", dataType: 'formdata' },// 保存实训内容
+
 }
 
 
@@ -72,7 +74,8 @@ export interface ITeacherTrainAps {
   selectMirror: TFHttpSend,
   createMirrorTemplate: TFHttpSend,
   createMirror: TFHttpSend,
-  saveMirrorEnvir: TFHttpSend
+  saveMirrorEnvir: TFHttpSend,
+  saveTrainContents: TFHttpSend,
 }
 
 export const MODULE_NAME = 'teacherTrain'

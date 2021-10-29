@@ -1,5 +1,5 @@
 <template>
-   <div class="creat"  v-layout-bg>
+   <div class="createProgress1"  v-layout-bg>
         <a-form ref="formRef" layout="vertical" :model="formState" :rules="rules">
           <div class="main">
               <div class="left">
@@ -36,7 +36,6 @@
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="onSubmit"> 下一步 </a-button>
-        <a-button class='save' type="primary" @click.prevent="onSave"> 保存 </a-button>
       </div>
   </div>
 </template>
@@ -98,6 +97,7 @@ export default defineComponent({
           
         },
         onSubmit(){
+          context.emit('step-status',1)
           state.formState.url='/images/upload/teacher-default/cover2.png'
           state.formState.url_is_uploaded='0'
           state.formRef.validate().then(() => {
@@ -133,7 +133,9 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-  .main{
+.createProgress1{
+  margin: 0px 30px;
+    .main{
     width: 100%;
     display: flex;
     margin: 0 auto;
@@ -167,4 +169,6 @@ export default defineComponent({
       margin-left: 10px;
     }
   }
+}
+
 </style>

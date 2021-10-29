@@ -83,7 +83,7 @@ export default defineComponent({
                 formdata.append('list_content['+index+'][step][serial]',item.step.serial)
                 formdata.append('list_content['+index+'][step][type]',item.step.type)
                 item.step.knowledge?.forEach((it:any) => {
-                    formdata.append('list_content['+index+'][step][nowledge][]',it)
+                    formdata.append('list_content['+index+'][step][knowledge][]',it)
                 });
                 item.step.knowledges?.forEach((j:any) => {
                     formdata.append('list_content['+index+'][step][knowledges][]',j)
@@ -126,8 +126,7 @@ export default defineComponent({
 <style lang="less">
 .trainingGuide{
     margin: 10px;
-}
-    .traindescribe{
+     .traindescribe{
         margin-bottom: 20px;
     }
     .star{
@@ -155,4 +154,6 @@ export default defineComponent({
         margin-right:20px;
     }
     }
+}
+   
 </style>

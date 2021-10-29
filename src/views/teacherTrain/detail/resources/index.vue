@@ -7,7 +7,7 @@
                 name="file"
                 :beforeUpload='beforeUpload'
                 >
-                   <a-input style="width:140px" v-model:value="name"></a-input><a-button type="primary">浏览</a-button>
+                <a-input style="width:140px" v-model:value="name"></a-input><a-button type="primary">浏览</a-button>
                 </a-upload>
             </span>
            <span>资源说明：<a-input style="width:140px" v-model:value="introduce"></a-input><a-button type="primary" @click="uploadFile">上传文件</a-button><span class="fileLimit">文件限制：512M，文件格式：gif,jpg,png,mp4,xlsx,xls,docx,doc,rar,pdf,ppt,pptx</span></span>
@@ -132,8 +132,8 @@ export default defineComponent({
             margin-right:20px;
         }
         .ant-btn{
-                margin-left: 10px;
-            }
+            margin-left: 10px;
+        }
         .fileLimit{
             color:#777;
             font-size: 14px;

@@ -18,11 +18,16 @@ import { IBusinessResp} from '../../typings/fetch';
 import { useRouter ,useRoute } from 'vue-router';
 import step1 from './step/step1.vue'
 import step2 from './step/step2.vue'
+import step3 from './step/step3.vue'
+import step4 from './step/step4.vue'
+import step5 from './step/step5.vue'
+import step6 from './step/step6.vue'
+import step7 from './step/step7.vue'
 const http=(request as any).studentForum
 export default defineComponent({
   name: 'CreatePosts',
   components: {
-   step1,step2
+   step1,step2,step3,step4,step5,step6,step7
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -101,7 +106,7 @@ export default defineComponent({
     }
   }
   .step{
-    width: 1100px;
+    width:100%;
     margin: 0 auto;
     height: calc(100% - 100px);
     overflow: auto;

@@ -92,7 +92,9 @@ export default defineComponent({
         state.addtaskInfo.disabled = disabled;
         },
         saveAddTask(){
+            console.log(knowledgeList.selectedKnowledgeList,'知识点知识点知识点知识点知识点')
             state.addtaskInfo.points=knowledgeList.selectedKnowledgeList.map(v => v.text)
+            let knowledge_map_id=knowledgeList.selectedKnowledgeList.map(v => v.id)
             if(!state.addtaskInfo.name){
                 message.warning('实训任务名称不能为空！')
                 return
@@ -109,14 +111,17 @@ export default defineComponent({
                 message.warning('实训任务步骤不能为空！')
                 return
             }
+            console.log(state.addtaskInfo,'哈啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊啊')
             const taskInfo={
                 describe:state.addtaskInfo.describe,
                 name:state.addtaskInfo.name,
                 step:{
                     knowledges:state.addtaskInfo.points,
                     state:state.addtaskInfo.disabled?1:0,
-                    detail:state.addtaskInfo.taskStep
-                }
+                    detail:state.addtaskInfo.taskStep,
+                    knowledge_map_id:knowledge_map_id
+                },
+
             }
             context.emit('addtask-info',taskInfo)
         },
@@ -129,7 +134,8 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
-   .points{
+.addTask{
+       .points{
        margin-top:30px;
    }
    .knowledge {
@@ -163,5 +169,14 @@ export default defineComponent({
         margin-right:10px;
         color:#ccc;
     }
+}
+.bottom-btn{
+    display:flex;
+    justify-content:center;
+    margin-top: 20px;
+    .return{
+        margin-right: 20px;
+    }
+}
 }
 </style>

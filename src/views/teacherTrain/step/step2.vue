@@ -1,5 +1,5 @@
 <template>
-   <div class="selectEnvir"  v-layout-bg>
+   <div class="createProgress2"  v-layout-bg>
        <div>
         <div>
             <a-button type="primary" @click="selectMirror">
@@ -167,6 +167,7 @@ export default defineComponent({
                 http.saveMirrorEnvir({param:{train_id:props.trainId,topo_id:topo_id}}).then((res:any)=>{
                     console.log(res)
                     topo_id=''
+                    context.emit('step-status',2)
                 })
              })
          },
@@ -174,7 +175,8 @@ export default defineComponent({
 
         },
         nextStep(){
-        methods.createTemplate()
+        // methods.createTemplate()
+        context.emit('step-status',2)
         }
      }
     onMounted(()=>{
@@ -186,7 +188,8 @@ export default defineComponent({
 </script>
 
 <style  lang="less">
-.selectEnvir{
+.createProgress2{
+    margin: 0px 30px;
     .foot{
     margin-top:30px;
     text-align: center;
