@@ -11,7 +11,19 @@ export default {
   sortExperimental: {url: `/api/content/content/sortby`, method: 'POST', dataType:'json'},
   shareExperimental: {url: `/api/content/content/share`, method: 'POST', dataType:'json'},
   deleteExperimental: {url: `/api/content/content/{id}`, method: 'DELETE'},
-  saveToContent: {url: `/api/content/content/saved_my_content`, method: 'POST', dataType:'json'}
+  saveToContent: {url: `/api/content/content/saved_my_content`, method: 'POST', dataType:'json'},
+  // 镜像
+  getConfigs: {url: `/api/env/images/config`, method: 'GET'},
+  getMeImage: {url: `/api/env/containers`, method: 'GET'},
+  // 同屏
+  getSameScreenInfo: {url: `/api/content/content/template`, method: 'POST', dataType:'json'},
+  getTopoVmInfo: {url: `/api/content/content/topoInfo`, method: 'POST', dataType:'json'},
+  deleteTopo: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType:'json'},
+  // 上传任务
+  uploadTaskFile: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType: 'formdata'},
+  // 创建实验
+  createVnc: {url: `/api/content/vnc/create_vnc`, method: 'POST', dataType:'json'},
+  createJupyter: {url: `/api/content/jupyter/create_jupyter`, method: 'POST', dataType:'json'},
 }
 
 export interface ITeacherExperAps {
@@ -27,6 +39,14 @@ export interface ITeacherExperAps {
   shareExperimental: TFHttpSend;
   deleteExperimental: TFHttpSend;
   saveToContent: TFHttpSend;
+  getConfigs: TFHttpSend;
+  getMeImage: TFHttpSend;
+  getSameScreenInfo: TFHttpSend;
+  getTopoVmInfo: TFHttpSend;
+  deleteTopo: TFHttpSend;
+  uploadTaskFile: TFHttpSend;
+  createVnc: TFHttpSend;
+  createJupyter: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExperiment'

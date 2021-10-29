@@ -684,8 +684,10 @@ export default defineComponent({
       }
     }
     watch(()=>configuration.componenttype, (newVal) => {
-      currentTabType.value = newVal
-      init()
+      if (typeof(newVal) === 'number') {
+        currentTabType.value = newVal
+        init()
+      }
       
       if (newVal == 0) {
         // 我的实验
@@ -697,7 +699,8 @@ export default defineComponent({
       }
     })
     onMounted(() => {
-      console.log(111)
+      currentTabType.value = route.query.currentTab ? Number(route.query.currentTab) : 0
+      init()
     })
     // 获取实验类型和难度
     let TypeList = reactive({
@@ -778,16 +781,16 @@ export default defineComponent({
     })
     function create() {
       // console.log('创建实验')
-      // router.push({
-      //   path: '/teacher/experiment/creatExperiment',
-      //   query: {
-      //     chapter_id: currentSkillInfo.chapter_id,
-      //     chapter_name: currentSkillInfo.chapter_name,
-      //     skill_name: currentSkillInfo.skill_name,
-      //     course_index: currentCourseIndex.value.toString(),
-      //     chapter_index: currentChapterIndex.value.toString(),
-      //   },
-      // })
+      router.push({
+        path: '/teacher/experiment/creatExperiment',
+        query: {
+          chapter_id: currentSkillInfo.chapter_id,
+          chapter_name: currentSkillInfo.chapter_name,
+          skill_name: currentSkillInfo.skill_name,
+          course_index: currentCourseIndex.value.toString(),
+          chapter_index: currentChapterIndex.value.toString(),
+        },
+      })
     }
     // 查看实验详情
     function lookDetail(val: IExporimentList) {

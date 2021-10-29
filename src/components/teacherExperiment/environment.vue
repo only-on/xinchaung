@@ -1,0 +1,297 @@
+<template>
+  <div class="image-box">
+    <div class="tags">
+      <span>类型：</span>
+      <span :class="currentType === '' ? 'active' : ''" @click="tabChange('')">
+        全部
+      </span>
+      <span :class="currentType === key ? 'active' : ''" v-for="(item, key) in imageTypes" :key="key" @click="tabChange(key)">
+        {{item}}
+      </span>
+    </div>
+    <div class="search-box">
+      <a-input-search
+        v-model:value="searchVal"
+        class="search-inbput"
+        placeholder="请输入关键字查询"
+        @search="onSearch"
+      />
+    </div>
+    <div class="image-list" v-if="imageData.length">
+      <div class="image-item" v-for="(item, index) in imageData" :key="item.id">
+        <span v-if="item.image">{{item.image.name}}</span>
+        <span v-if="item.image">
+          标签：<span v-for="(o, i) in item.image.tag" :key="i">{{i < item.image.tag.length - 1 ? o + ' / ' : o}}</span>
+        </span>
+        <span v-if="item.isSelect" class="shanchu iconfont icon-shanchu" @click="del(index)"></span>
+        <span v-else @click="select(index)">选择</span>
+      </div>
+    </div>
+    <Empty v-else></Empty>
+    <!-- <div v-else style="text-align: center; margin-top: '50px'; color: '#b6b6b6';">暂无数据</div> -->
+    <div class="more-btn-box" v-if="pageinfo.page < pageinfo.pageCount">
+      <a-button @click="addMoreImage" >加载更多</a-button>
+    </div>
+  </div>
+</template>
+<script lang="ts">
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, onUnmounted } from 'vue'
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import Tree from 'src/components/Tree.vue'
+import { MessageApi } from "ant-design-vue/lib/message";
+import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
+import { useRoute, useRouter } from 'vue-router'
+export default defineComponent({
+  components: {
+    Tree
+  },
+  props: ["modelValue"],
+  setup(props, {emit}) {
+    let route = useRoute()
+    let router = useRouter()
+    const http=(request as any).teacherExperiment
+    const $message: MessageApi = inject("$message")!;
+
+    let currentType = ref<string>('')
+    let searchVal = ref<string>('')
+    let pageinfo = reactive({
+      page: 1,
+      pageSize: 20,
+      pageCount: 0
+    })
+    let loading = ref<boolean>(false)
+    let imageData = reactive<IimageData[]>([])
+    // 获取镜像
+    function getMeImage(isMore: boolean) {
+      loading.value = true
+      let param = {
+        name: searchVal.value,
+        types: currentType.value,
+        page: pageinfo.page,
+        limit: pageinfo.pageSize,
+        withs: 'image,config,image.classify',
+      }
+      if (!isMore) {
+        imageData.length = 0
+      }
+      http.getMeImage({param}).then((res: any) => {
+        if (res.code === 1) {
+          loading.value = false
+          let {list, page} = res.data
+          list.forEach((v: IimageData) => {
+            v.isSelect = false
+            props.modelValue?.forEach((vv: IimageData) => {
+              if (v.id === vv.id) v.isSelect = true
+            })
+          })
+          imageData.push(...list)
+          pageinfo.page = page.currentPage
+          pageinfo.pageSize = page.perPage
+          pageinfo.pageCount = page.pageCount
+          console.log(pageinfo)
+        }
+      })
+    }
+    onMounted(() => {
+      getMeImage(false)
+    })
+    function select(i: number) {
+      if (props.modelValue.length >= 3) {
+        $message.warn('最多可选3个镜像!')
+        return
+      }
+      imageData[i].isSelect = true
+      props.modelValue.push(imageData[i])
+      emit('update:modelValue', props.modelValue)
+    }
+    function del(i: number) {
+      imageData[i].isSelect = false
+      let arr = props.modelValue
+      emit('update:modelValue', arr?.filter((v: IimageData) => v.id !== imageData[i].id))
+    }
+    // 获取配置
+    let imageTypes = reactive({})
+    function getConfigs() {
+      http.getConfigs().then((res: any) => {
+        if (res.code === 1) {
+          imageTypes = Object.assign(imageTypes, res.data.image_types)
+        }
+      })
+    }
+    getConfigs()
+    function tabChange(key: string) {
+      currentType.value = key
+      getMeImage(false)
+    }
+    function onSearch() {
+      getMeImage(false)
+    }
+    function addMoreImage() {
+      pageinfo.page ++
+      getMeImage(true)
+    }
+    // watch(
+    //   () => props.modelValue,
+    //   (newVal) => {
+    //     console.log(newVal)
+    //     imageData.forEach((v: IimageData) => {
+    //       v.isSelect = false
+    //       newVal?.forEach((vv: IimageData) => {
+    //         if (v.id === vv.id) v.isSelect = true
+    //       })
+    //     })
+    //   },
+    //   {deep: true}
+    // )
+    // onUnmounted(() => {
+    //   debugger
+    // })
+    return {
+      currentType,
+      searchVal,
+      pageinfo,
+      imageTypes,
+      tabChange,
+      imageData,
+      select,
+      del,
+      onSearch,
+      addMoreImage,
+    }
+  }
+})
+interface Iimage {
+  name: string
+  tag: []
+}
+interface Icongig {
+  cpu_text: string
+  disk_text: string
+  ram_text: string
+  swap: string
+}
+interface IimageData {
+  id: number
+  isSelect: boolean
+  image: Iimage
+  config: Icongig
+}
+</script>
+
+<style lang="less" scoped>
+.image-box {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    min-height: 30px;
+    line-height: 30px;
+    flex-shrink: 0;
+
+    >span {
+      padding: 0px 20px;
+      color: #000000;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    >span.active {
+      background: @theme-color;
+      color: #fff;
+      border-radius: 4px;
+    }
+
+    >span:nth-child(1) {
+      padding: 2px 0;
+      cursor: auto;
+    }
+  }
+
+  .search-box {
+    margin-top: 27px;
+    width: 341px;
+    height: 32px;
+    background: #ffffff;
+    border-radius: 6px;
+    margin-bottom: 27px;
+    flex-shrink: 0;
+  }
+
+  .image-list {
+    height: 100%;
+    overflow: auto;
+    padding-right: 15px;
+
+    &::-webkit-scrollbar {
+      /*滚动条整体样式*/
+      width: 10px;
+      /*高宽分别对应横竖滚动条的尺寸*/
+      height: 1px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      /*滚动条里面小方块*/
+      border-radius: 10px;
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      background: #CCACE7;
+    }
+
+    &::-webkit-scrollbar-track {
+      /*滚动条里面轨道*/
+      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+      border-radius: 10px;
+      background: transparent;
+    }
+
+    .image-item {
+      padding: 10px 16px;
+      background: #ffffff;
+      border: 1px solid #eeeeee;
+      border-radius: 6px;
+      display: flex;
+      margin-bottom: 16px;
+
+      &:hover {
+        background: #fdfaff;
+        border: 1px solid #b083d5;
+        border-radius: 6px;
+        box-shadow: 0px 3px 6px 0px rgba(187, 156, 214, 0.40);
+        cursor: pointer;
+      }
+
+      >span {
+        margin: auto 0;
+      }
+
+      >span:nth-child(1) {
+        width: 60%;
+        color: #050101;
+        font-size: 14px;
+      }
+
+      >span:nth-child(2) {
+        width: 40%;
+        color: rgba(5, 1, 1, 0.45);
+        font-size: 12px;
+      }
+
+      >span:nth-child(3) {
+        width: 50px;
+        flex-shrink: 0;
+        text-align: center;
+        color: #8955b5;
+        font-size: 14px;
+      }
+    }
+  }
+
+  .more-btn-box {
+    flex-shrink: 0;
+    text-align: center;
+  }
+}
+</style>

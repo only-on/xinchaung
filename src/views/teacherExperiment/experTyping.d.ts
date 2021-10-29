@@ -11,6 +11,12 @@ interface ITeacherExperApi {
   shareExperimental: Function
   deleteExperimental: Function
   saveToContent: Function
+  getSameScreenInfo: Function
+  getTopoVmInfo: Function
+  deleteTopo: Function
+  uploadTaskFile: Function
+  createVnc: Function
+  createJupyter: Function
 }
 export interface ITeacherExperHttp {
   teacherExperiment: ITeacherExperApi
@@ -43,4 +49,20 @@ export interface IListSearchInfo {
   total: number
   experimentalDataList: IExporimentList[],
   loading: boolean
+}
+interface Iimage {
+  name: string
+  tag: []
+}
+interface Icongig {
+  cpu_text: string
+  disk_text: string
+  ram_text: string
+  swap: string
+}
+export interface IimageData {
+  id: number
+  isSelect: boolean
+  image: Iimage
+  config: Icongig
 }

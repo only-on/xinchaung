@@ -1,0 +1,623 @@
+<template>
+  <div class="create-wrap" v-layout-bg>
+    <div class="create-nav-head">
+      <span>{{ skillName }} > {{ chapterName }}</span>
+    </div>
+    <div class="base-box">
+      <a-form
+        ref="formRef"
+        :model="formState"
+        layout="vertical"
+        :rules="rules"
+      >
+        <div class="base-info">
+          <a-form-item label="实验名称" name="name" required>
+            <a-input v-model:value="formState.name" placeholder="请输入实验名称"/>
+          </a-form-item>
+          <a-form-item label="课时数" name="class_cnt" required>
+            <a-input v-model:value="formState.class_cnt" placeholder="请输入课时数"/>
+          </a-form-item>
+        </div>
+        <a-form-item label="实验环境" required>
+          <a-button class="add-btn" @click="select('image')">
+            <span class="iconfont icon-tianjia"></span>
+          </a-button>
+          <span class="max-hint">最多可选3个镜像</span>
+          <env-list :envData="formState.imageDataSelected"></env-list>
+        </a-form-item>
+        <a-form-item label="数据集" name="selectedName">
+          <a-button class="add-btn" @click="select('data')">
+            <span class="iconfont icon-tianjia"></span>
+          </a-button>
+          <span class="max-hint">最多可选3个数据集</span>
+          <div class="data-list-box">
+            <div class="data-item" v-for="(item, index) in formState.selectedName" :key="item.uid">
+              <span class="data-name">{{ item.name }}</span>
+              <span class="wenjian iconfont icon-wenjian">256个</span>
+              <span class="cunchuzhi iconfont icon-cunchuzhi">124MB</span>
+              <span class="shanchu iconfont icon-shanchu" @click="removeDataSet(item, index)"></span>
+            </div>
+          </div>
+        </a-form-item>
+        <a-form-item label="实验指导" required v-if="type === 'vnc'">
+          <div class="guide">
+            <div class="guide-top">
+              <div class="upload-box">
+                <a-upload
+                  class="upload"
+                  :transform-file="transformFile"
+                  :showUploadList="false"
+                  :before-upload="mdBeforeUpload"
+                  accept=".md"
+                >
+                  <a-button>
+                    <span class="iconfont icon-upload"></span>
+                    上传文档
+                  </a-button>
+                </a-upload>
+                <i class="hint">仅支持md文件</i>
+              </div>
+              <div class="osd-mode">
+                <span @click="openScreen">
+                  <span class="iconfont icon-xushitongping"></span>
+                  同屏模式
+                </span>
+              </div>
+            </div>
+          </div>
+          <antdv-markdown v-model="formState.guide"  class="markdown__editor"/>
+        </a-form-item>
+        <a-form-item label="实验任务" required v-if="type === 'note'">
+          <task-list v-model:taskData="taskData" :jupyterUuid="jupyterUuid"></task-list>
+        </a-form-item>
+        <a-form-item class="footer-btn">
+          <a-button @click="cancel">取消</a-button>
+          <a-button class="create-btn" type="primary" @click="submit">创建</a-button>
+        </a-form-item>
+      </a-form>
+    </div>
+    <a-drawer
+      class="data-image-drawer"
+      width="640"
+      placement="right"
+      :closable="false"
+      :visible="visible"
+      @close="onClose"
+     >
+      <div class="data" v-if="selectType === 'data'">
+        <data-set v-model:value="formState.datasets" v-model:name="formState.selectedName"></data-set>
+      </div>
+      <div class="image" v-if="selectType === 'image'">
+        <environment v-model="formState.imageDataSelected"></environment>
+      </div>
+    </a-drawer>
+    <same-screen ref="sameScreen" v-model:screenStatus="screenStatus" v-model="formState.guide" :screenInfo="screenVmInfo"></same-screen>
+  </div>
+</template>
+
+<script lang="ts">
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs } from 'vue'
+import request from 'src/api/index'
+import { IBusinessResp } from 'src/typings/fetch.d'
+import { ITeacherExperHttp, ITreeList, IListSearchInfo, IExporimentList, IimageData } from './../experTyping'
+import { useRoute, useRouter } from 'vue-router'
+import dataSet from 'src/components/selectDataSet/selectDataSet.vue'
+import environment from 'src/components/teacherExperiment/environment.vue'
+import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
+import { MessageApi } from "ant-design-vue/lib/message";
+import sameScreen from 'src/components/teacherExperiment/sameScreen.vue'
+import taskList from './taskList.vue'
+import envList from './envList.vue'
+import { UUID } from 'src/utils/uuid'
+import _ from 'lodash'
+export default defineComponent({
+  components: {dataSet, environment, AntdvMarkdown, sameScreen, taskList, envList},
+  setup() {
+    let route = useRoute()
+    let router = useRouter()
+    const http=(request as ITeacherExperHttp).teacherExperiment
+    const $message: MessageApi = inject("$message")!;
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:true})
+    const type = ref<string>(String(route.query.type))
+    
+    let jupyterUuid = ref(UUID.uuid4())
+
+    // 技术名称
+    const skillName = route.query.skill_name
+    // 章节名称
+    const chapterName = route.query.chapter_name
+    let formState = reactive<formState>({
+      name: '',
+      class_cnt: undefined,
+      datasets: [],
+      selectedName: [],
+      // 已选择镜像数据
+      imageDataSelected: [],
+      // 实验指导
+      guide: ''
+    })
+    let visible = ref<boolean>(false)
+    let selectType = ref<string>()
+    // 选择环境 数据集 抽屉
+    function select(s: string) {
+      selectType.value = s
+      visible.value = true
+    }
+    function onClose() {
+      visible.value = false
+      selectType.value = ''
+    }
+    let formRef = ref()
+    function submit() {
+      console.log(formState, formRef.value, taskData)
+      formRef.value.validate().then(async() => {
+        // await aaa()
+        if (!formState.imageDataSelected.length) {
+          $message.warn('请选择实验环境')
+          return
+        }
+        let param:{
+          category_id: any
+          name: string
+          class_cnt: any
+          container_ids: number[],
+          dataset_ids: any,
+          detail: string,
+          jupyter_tasks: any,
+          taskfile_subdir: any
+        } = {
+          category_id: route.query.chapter_id,
+          name: formState.name,
+          class_cnt: formState.class_cnt,
+          container_ids: formState.imageDataSelected.map(v => v.id),
+          dataset_ids: formState.datasets,
+          detail: formState.guide,
+          jupyter_tasks: [],
+          taskfile_subdir: jupyterUuid.value
+        }
+        debugger
+        if (type.value === 'vnc') {
+          if (!formState.guide) {
+            $message.warn('请输入实验指导')
+            return
+          }
+          http.createVnc({param}).then((res: IBusinessResp) => {
+            console.log(res)
+            if (res.code === 1) {
+              $message.success('创建实验成功')
+              router.push({
+                path: '/teacher/experiment',
+                query: {
+                  course_index: route.query.course_index,
+                  chapter_index: route.query.chapter_index,
+                },
+              })
+            } else {
+              $message.warn(res.msg)
+            }
+          })
+          return
+        }
+        if (_.findKey(taskData, ['name', ''])) {
+          $message.warn('请上传文件')
+          return
+        }
+        if (_.findKey(taskData, ['status', false])) {
+          $message.warn('文件上传中，请稍后重试')
+          return
+        }
+        taskData.forEach((item: any, index: number) => {
+          console.log(item, index)
+          const temp = {
+            type: 1,
+            file_name: item.data.file_name,
+            file_url: item.data.file_path,
+            suffix: item.data.suffix,
+            size: item.data.size,
+            sort: index, //排序
+          }
+          param.jupyter_tasks.push(temp)
+          console.log(param)
+          http.createJupyter({param}).then((res: any) => {
+            console.log(res)
+            if (res.code === 1) {
+              $message.success('创建实验成功')
+              router.push({
+                path: '/teacher/experiment',
+                query: {
+                  course_index: route.query.course_index,
+                  chapter_index: route.query.chapter_index,
+                  currentTab: 0
+                },
+              })
+            } else {
+              $message.warn(res.msg)
+            }
+          })
+        })
+      }).catch((err: any) => {
+        console.log(err)
+      })
+    }
+    function aaa () {
+      if (!formState.imageDataSelected.length) {
+        $message.warn('请选择实验环境')
+        return
+      }
+    }
+    function cancel() {
+      router.push({
+        path: '/teacher/experiment/creatExperiment',
+        query: {
+          chapter_id: route.query.chapter_id,
+          chapter_name: route.query.chapter_name,
+          skill_name: route.query.skill_name,
+          course_index: route.query.course_index,
+          chapter_index: route.query.chapter_index,
+        },
+      })
+    }
+    // 移除镜像
+    function removeImage(index: number) {
+      formState.imageDataSelected.splice(index, 1)
+    }
+    // 移除数据集
+    function removeDataSet(val: IselectedName, index: number) {
+      let i = formState.datasets.indexOf(val.uid);
+      i != -1 ? formState.datasets.splice(i, 1) : "";
+      formState.selectedName.splice(index, 1);
+    }
+    // 上传md文件
+    function mdBeforeUpload(file: any) {
+      const suffix = (file && file.name).split('.')[1]
+      console.log(suffix)
+      if (suffix !== 'md') {
+        $message.warn('请上传 .md 格式文件')
+        return false
+      }
+      const reader = new FileReader()
+      reader.readAsText(file, 'utf-8')
+      reader.onload = () => {
+        console.log(reader)
+        if (reader.result) {
+          formState.guide = reader.result
+        }
+      }
+      return false
+    }
+    function transformFile(file: any) {
+      console.log(file)
+    }
+    // 打开同屏
+    let sameScreen = ref()
+    let screenStatus = ref<boolean>(false)
+    // 获取同屏连接信息请求参数
+    let screenParam: any = reactive({
+      container_id: [],
+      topo_id: '',
+      dataset_id: [],
+    })
+    // topo实例id
+    let topoinstId = -1
+    function openScreen() {
+      screenParam.container_id = []
+      screenParam.dataset_id = []
+      formState.selectedName.forEach((item: any) => {
+        screenParam.dataset_id.push(item.uid)
+      })
+      formState.imageDataSelected.forEach((item: any) => {
+        screenParam.container_id.push(item.id)
+      })
+      if (screenParam.container_id.length <= 0) {
+        $message.warn('请选择镜像')
+        return
+      }
+      console.log(sameScreen.value)
+      sameScreen.value.detail = formState.guide
+      screenStatus.value = true
+      getTopoBaseInfo().then((res: any) => {
+        console.log(res)
+        if (res.code === 1) {
+          if (res.data?.topo?.id) {
+            screenParam.topo_id = res.data.topo.id
+          }
+          // this.oldImageDataSelected = _.cloneDeep(this.imageDataSelected)
+          topoinstId = res.data.topoinst.topoinst_id
+          pollGetVM(res.data.topoinst.topoinst_id)
+          // this.screenStatus = true
+        }
+      })
+      .catch(err => {
+        $message.warn(err.message)
+      })
+    }
+    function getTopoBaseInfo() {
+      return new Promise((response: any, reject: any) => {
+        http.getSameScreenInfo({param: screenParam})
+          .then((res: IBusinessResp) => {
+            response(res)
+          })
+          .catch((err: any) => {
+            reject(err)
+          })
+      })
+    }
+    let timers: any = null
+    // 同屏vm连接信息
+    let screenVmInfo: any = reactive([])
+    function pollGetVM(id: number) {
+      screenVmInfo.length = 0
+      clearInterval(timers)
+      timers = setInterval(() => {
+        http.getTopoVmInfo({ param: {id} })
+          .then((res: IBusinessResp) => {
+            console.log(res)
+            if (res.code === 1) {
+              if (res.data.vms.length > 0) {
+                screenVmInfo.push(...res.data.vms)
+                // this.vncLoading = false
+                clearInterval(timers)
+                sameScreen.value.init()
+                // this.screenStatus = true
+              }
+            }
+          })
+          .catch((err: any) => {
+            $message.warn(err.message)
+          })
+      }, 1500)
+    }
+    // 获取同屏数据
+    function getGuidData(val: any) {
+      console.log(val)
+      // this.form.detail = val
+    }
+    watch(
+      () => screenStatus.value,
+      (newVal) => {
+        if (!screenStatus.value) {
+          clearInterval(timers)
+          topoinstId != -1
+            ? http.deleteTopo({param: {
+              id: topoinstId,
+            }})
+              .then((r: IBusinessResp) => {
+                if (r.code === 1) {
+                  $message.success('退出同屏模式！')
+                }
+              })
+              .catch((err: any) => {
+                $message.warn(err.message)
+              })
+            : ''
+        }
+      },
+      {deep: true}
+    )
+    // 模拟实验任务数据
+    let taskData: any = reactive([{ name: '', status: false }])
+    // 删除上传文件list对象
+    function deleteFile(i: number) {
+      console.log(i)
+      // this.taskData.splice(i, 1)
+    }
+    function classCutValidator(rule: any, value: any, callback: any) {
+      const reg = new RegExp('^[1-9][0-9]*$')
+      //     console.log(this.form1.class_cnt)
+      if (!formState.class_cnt) {
+        return Promise.reject('请输入课时数')
+      } else if (!reg.test(String(formState.class_cnt))) {
+        return Promise.reject('请输入1~16之间整数')
+      } else if (formState.class_cnt < 0 || formState.class_cnt > 16) {
+        return Promise.reject('课时数在1~16之间')
+      } else {
+        return Promise.resolve();
+      }
+    }
+    function nameValidator(rule: any, value: any, callback: any) {
+      const reg = new RegExp('^[a-zA-Z0-9_\u4e00-\u9fa5]+$')
+      //     console.log(this.form1.class_cnt)
+      if (!formState.name) {
+        return Promise.reject('请输入实验名称')
+      } else if (!reg.test(String(formState.name))) {
+        return Promise.reject('请输入1~实验名称只能包含汉字、数字、字母和下划线')
+      } else if (formState.name.length > 20) {
+        return Promise.reject('实验名称最长为20字符')
+      } else {
+        return Promise.resolve();
+      }
+    }
+    const rules = {
+      name: [
+        // { required: true, message: '请输入实验名称', trigger: 'change' },
+        // { max: 20, message: '实验名称最长为20字符', trigger: 'change' },
+        { validator: nameValidator, trigger: 'change' },
+      ],
+      class_cnt: [
+        // { required: true, message: '请输入课时数', trigger: 'change' },
+        { validator: classCutValidator, trigger: 'change' },
+      ],
+      detail: [{ required: true, message: '请输入实验指导', trigger: 'change' }],
+    }
+    return {
+      jupyterUuid,
+      formRef,
+      type,
+      skillName,
+      chapterName,
+      rules,
+      formState,
+      cancel,
+      submit,
+      selectType,
+      select,
+      visible,
+      onClose,
+      removeDataSet,
+      removeImage,
+      mdBeforeUpload,
+      transformFile,
+      openScreen,
+      screenStatus,
+      sameScreen,
+      screenVmInfo,
+      taskData,
+    }
+  }
+})
+interface formState {
+  name: string
+  class_cnt: number | undefined
+  datasets: string[]
+  selectedName: IselectedName[]
+  // 已选择镜像数据
+  imageDataSelected: IimageData[]
+  guide: any
+}
+interface IselectedName {
+  uid: string
+  name: string
+}
+</script>
+
+<style lang="less" scoped>
+.create-wrap {
+  width: @center-width;
+  margin: 0 auto;
+  height: 100%;
+  background-color: @white;
+  overflow-y: scroll;
+  .create-nav-head {
+    line-height: 58px;
+    border-bottom: 1px solid #eaeaea;
+    text-align: center;
+    margin-bottom: 24px;
+
+    >span {
+      display: inline-block;
+      width: 850px;
+      color: @theme-color;
+      font-size: 16px;
+      font-weight: 400;
+      text-align: left;
+    }
+  }
+  .base-box {
+    width: 930px;
+    margin: auto;
+    .base-info {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      .ant-form-item {
+        width: 400px;
+      }
+    }
+    .add-btn {
+      width: 112px;
+      height: 32px;
+      border: 1px solid @theme-color;
+      border-radius: 4px;
+      color: @theme-color;
+      .iconfont {
+        font-weight: 600;
+        font-size: 18px;
+      }
+    }
+    .max-hint {
+      color: rgba(5,1,1,.25);
+      font-size: 12px;
+      margin-left: 14px;
+    }
+    .footer-btn {
+      text-align: center;
+      font-size: 14px;
+      margin-top: 35px;
+
+      .create-btn {
+        margin-left: 14px;
+      }
+    }
+    .data-list-box {
+      .data-item {
+        border: 1px solid #d9d9d9;
+        border-radius: 2px;
+        background: #f5f5f5;
+        line-height: 38px;
+        margin-top: 16px;
+        padding: 0 10px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+
+        .data-name {
+          flex: 1;
+          max-width: 100%;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+
+        .shanchu {
+          width: 20px;
+          flex-shrink: 0;
+          cursor: pointer;
+        }
+        .iconfont {
+          color: rgba(0,0,0,.45);
+          font-size: 14px;
+        }
+        .wenjian {
+          margin-right: 50px;
+        }
+        .cunchuzhi {
+          margin-right: 170px;
+        }
+      }
+    }
+    .guide {
+      position: absolute;
+      top: -38px;
+      left: 80px;
+      width: calc(100% - 80px)
+    }
+    .guide-top {
+      display: flex;
+      .upload-box {
+        .upload {
+          button {
+            border: none;
+            background: #ffffff;
+            height: auto;
+            color: @theme-color;
+            .iconfont {
+              margin-right: 8px;
+            }
+          }
+        }
+      }
+      .hint {
+        font-style: normal;
+        margin-left: 15px;
+        color: rgba(0, 0, 0, 0.2);
+        font-size: 12px;
+        line-height: 24px;
+      }
+      .osd-mode {
+        margin-left: auto;
+        color: @theme-color;
+        cursor: pointer;
+      }
+    }
+  }
+}
+.ant-select-dropdown-content {
+  .ant-select-item {
+    color: rgba(0,0,0,0.65);
+    font-size: 14px;
+  }
+}
+.mark__container.markdown__editor {
+  min-height: 300px;
+}
+</style>

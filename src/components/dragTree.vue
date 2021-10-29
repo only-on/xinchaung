@@ -48,7 +48,7 @@
   </a-tree>
   <a-modal v-model:visible="visible" :title="'编辑'+title" @ok="handleOk">
     <span>{{title}}名称：</span>
-    <a-input v-model:value="name" placeholder="请输入章节或实验名称" />
+    <a-input v-model:value="name" :placeholder="'请输入'+title+'名称'" />
   </a-modal>
 </template>
 
@@ -376,13 +376,13 @@ export default defineComponent({
   li ul {
     padding: 0px !important;
   }
-  .ant-tree-treenode-selected {
-    .tree-first-title {
-      > div {
-        border-bottom: none !important;
-      }
-    }
-  }
+  // .ant-tree-treenode-selected {
+  //   .tree-first-title {
+  //     > div {
+  //       border-bottom: none !important;
+  //     }
+  //   }
+  // }
   .ant-tree-treenode-switcher-open {
     .open-close-cion {
       display: inline-block;
@@ -403,6 +403,7 @@ export default defineComponent({
       border-bottom: 1px solid #e6e6e6 !important;
       height: 45px;
       align-items: center;
+      box-sizing: content-box;
       .chapter-cion {
         // width: 18px;
         // height: 18px;
