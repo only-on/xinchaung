@@ -4,7 +4,6 @@
   
     </div>
     <div class="emptyCon" :class="`${emptyType}2`">{{emptyText}}</div>
-    <slot name="btn"></slot>
   </div>
 </template>
 

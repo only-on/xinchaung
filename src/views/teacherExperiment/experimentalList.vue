@@ -63,22 +63,16 @@
     </div>
     <div class="content-right">
       <div v-if="isEmptyExperimental">
-        <Empty :text="currentTabType === 0 ? '该技术方向暂无章节，先来创建一个您需要的章节吧!' : '该技术方向暂无章节'">
-          <template v-slot:btn>
-            <div class="empty-chapter-box">
-              <a-button type="primary" v-if="currentTabType === 0" @click="addChapter">添加章节</a-button>
-            </div>
-          </template>
-        </Empty>
+        <Empty :text="currentTabType === 0 ? '该技术方向暂无章节，先来创建一个您需要的章节吧!' : '该技术方向暂无章节'"/>
+        <div class="empty-chapter-box">
+          <a-button type="primary" v-if="currentTabType === 0" @click="addChapter">添加章节</a-button>
+        </div>
       </div>
       <div v-else-if="!loading && !isParamSelect && experimentalDataList.length === 0">
-        <Empty :text="currentTabType === 0 ? '该章节暂无实验，快去创建您需要的实验吧!' : '该章节暂无实验'">
-          <template v-slot:btn>
-            <div class="empty-chapter-box">
-              <a-button type="primary" v-if="currentTabType === 0" @click="create">创建实验</a-button>
-            </div>
-          </template>
-        </Empty>
+        <Empty :text="currentTabType === 0 ? '该章节暂无实验，快去创建您需要的实验吧!' : '该章节暂无实验'"/>
+        <div class="empty-chapter-box">
+          <a-button type="primary" v-if="currentTabType === 0" @click="create">创建实验</a-button>
+        </div>
       </div>
       <div v-else style="padding-bottom: 15px; display: flex; flex-direction: column; background: #fff">
         <div class="task-type-box" v-if="TypeList.content_type">
@@ -280,7 +274,7 @@ export default defineComponent({
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
           console.log(res)
-          if (res.code === 1) {
+          if (res && res.code === 1) {
             taskData.push(...res.data)
             currentSelectChapter = Object.assign(currentSelectChapter, res.data[0].children[0])
             getExperimentList()
@@ -710,8 +704,10 @@ export default defineComponent({
     function getSearchInfo() {
       http.getSearchInfo({param: {init_type: currentTabType.value}}).then((res: IBusinessResp) => {
         console.log(res)
-        TypeList.content_type = res.data.content_type
-        TypeList.content_level = res.data.content_level
+        if (res) {
+          TypeList.content_type = res.data.content_type
+          TypeList.content_level = res.data.content_level
+        }
       })
     }
     let currentTaskType = ref<number>(0)
