@@ -176,7 +176,7 @@
           </div>
           <div class="chooseList" v-if="[1,2,3].includes(scoreDate.question_info[activeQuestion].type_id)">
             <div v-if="[1,2].includes(scoreDate.question_info[activeQuestion].type_id)">
-              <div class="choose-span" v-for="(i,k) in scoreDate.question_info[activeQuestion].options" :key="i">{{`${['A','B','C','D','E','F','G','H'][Number(k)]}、${i.option}`}}</div>
+              <div class="choose-span" v-for="(i,k) in scoreDate.question_info[activeQuestion].options" :key="i">{{`${AlphabeticOptions[Number(k)]}、${i.option}`}}</div>
               <!-- <div class="choose-span">B、选项一</div>
               <div class="choose-span">C、选项一</div>
               <div class="choose-span">D、选项一</div> -->
@@ -237,6 +237,7 @@ interface Istate{
   closed_at:string;
   examName:string;
   scoreDate:any;
+  AlphabeticOptions:any[]
 }
 const columns=[
   {
@@ -324,7 +325,7 @@ export default defineComponent({
     updata({showContent:false,navType:false,tabs:[],navPosition:'outside',backOff:true})
     async function  initData(){
       await http.getExaminationDetail({urlParams: {exam_id: Id}}).then((res:IBusinessResp)=>{
-          let data=res.data
+          // let data=res.data
           state.detaile=res.data.analysis
           state.hour_long=res.data.hour_long
           state.started_at=res.data.started_at
@@ -354,7 +355,7 @@ export default defineComponent({
     }
     const options = ref<SelectTypes['options']>([{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}])
     const state:Istate=reactive({
-      activeQuestion:0,
+      activeQuestion:0,        // 当前展示的题目详情下标
       scoreDate:{
         question_info:[]
       },
@@ -462,14 +463,14 @@ export default defineComponent({
                   if(v.type_id===3){
                     v.standardAnswer=i.option
                   }else{
-                    v.standardAnswer+=`${['A','B','C','D','E','F','G','H'][k]}、`
+                    v.standardAnswer+=`${state.AlphabeticOptions[k]}、`
                   }
                 }
                 if(wrongArr.includes(String(i.id))){
                   if(v.type_id===3){
                     v.wrongAnswer=i.option
                   }else{
-                    v.wrongAnswer+=`${['A','B','C','D','E','F','G','H'][k]}、`
+                    v.wrongAnswer+=`${state.AlphabeticOptions[k]}、`
                   }
                 }
               })
@@ -499,7 +500,8 @@ export default defineComponent({
             renderAccuracy(document.getElementById("accuracyCanvas") as HTMLDivElement,state.scoreDate.rate_info)
           })
         })
-      }
+      },
+      AlphabeticOptions:['A','B','C','D','E','F','G','H','I','J','K']
     })
    
     onMounted(async ()=>{
