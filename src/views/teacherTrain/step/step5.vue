@@ -1,6 +1,6 @@
 <template>
-   <div class="selectEnvir"  v-layout-bg>
-       实训成员
+   <div class="createProgress5"  v-layout-bg>
+       <customerInfor :trainId='trainId' />
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
@@ -12,8 +12,7 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
-import uploadImage from '../components/uploadImage/uploadImage.vue'
-import selectMirror from '../components/selectMirror/index.vue'
+import customerInfor from '../detail/customerInfor/index.vue'
 import messages from 'src/i18n/zh_CN'
 const http=(request as any).teacherTrain
 interface Istate{
@@ -21,10 +20,7 @@ interface Istate{
 export default defineComponent({
   name: 'CreatePosts',
    props:['trainId'],
-  components: {
-    uploadImage,
-    selectMirror
-  },
+  components: {customerInfor},
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
@@ -51,5 +47,14 @@ export default defineComponent({
 </script>
 
 <style  lang="less">
-
+.createProgress5{
+   margin: 0px 20px;
+  .foot{
+    margin-top:30px;
+    text-align: center;
+    .next,.save{
+      margin-left: 10px;
+    }
+  }
+}
 </style>

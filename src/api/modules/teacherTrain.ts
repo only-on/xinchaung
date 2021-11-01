@@ -30,6 +30,7 @@ export default {
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
   studentGroup: { url: '/teacher-train/set-student', method: "GET" },
   unSelectStudentGroup: { url: '/teacher-train/get-student-list', method: "GET" },
+  unSelectClassGroup: { url: '/teacher-train/get-classes-list', method: "GET" },
   selectEnvirList: { url: '/api/env/containers', method: "GET" },
   saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' },
 
@@ -41,7 +42,9 @@ export default {
   createMirror: { url: '/api/content/content/template', method: "POST" },
   saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" },
   saveTrainContents: { url: '/teacher-train/save-train-contents', method: "POST", dataType: 'formdata' },// 保存实训内容
-
+  // /teacher-train/get-resource-list
+  resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
+  deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
 }
 
 
@@ -76,6 +79,9 @@ export interface ITeacherTrainAps {
   createMirror: TFHttpSend,
   saveMirrorEnvir: TFHttpSend,
   saveTrainContents: TFHttpSend,
+  resourceList: TFHttpSend,
+  deleteResource: TFHttpSend,
+  unSelectClassGroup: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTrain'

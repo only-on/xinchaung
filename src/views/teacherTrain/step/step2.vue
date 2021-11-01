@@ -168,18 +168,24 @@ export default defineComponent({
                     console.log(res)
                     topo_id=''
                     context.emit('step-status',2)
+                    inject['oneStep']=state.mirrorTable
                 })
              })
+            
          },
         onCancel(){
 
         },
         nextStep(){
-        // methods.createTemplate()
+        methods.createTemplate()
         context.emit('step-status',2)
         }
      }
     onMounted(()=>{
+        console.log(inject['oneStep'],'第二步的数据')
+        if(inject['oneStep']){
+            state.mirrorTable=inject['oneStep']
+        }
         methods.configlist()
     })
     return {...toRefs(state),...methods};

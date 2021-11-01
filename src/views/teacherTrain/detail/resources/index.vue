@@ -14,7 +14,15 @@
        </div>
        <div>
            <a-config-provider>
-                    <a-table :columns="columns" :data-source="data"></a-table>
+                    <a-table :columns="columns" :data-source="data" rowKey="id">
+                         <template #action='{record}'>
+                            <div class='action'>
+                                <span class="spanleft" @click='deleteUploadFile(record.id)'>删除</span>
+                                <span @click="downLoad(record.url)">下载</span>
+                                <!-- <a :href="record.url">下载</a> -->
+                            </div>
+                        </template>
+                    </a-table>
                     <template #renderEmpty>
                         <div><empty type="tableEmpty"></empty></div>
                     </template>
@@ -28,12 +36,13 @@ interface Istate{
    data:any[],
    file:any,
    name:string,
-   introduce:string,
+   introduce:string
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
+import  FileSaver  from 'file-saver'
 export default defineComponent({
     name:'resources',
     props:['propTrainDetailInfo','trainId'],
@@ -50,21 +59,21 @@ export default defineComponent({
             },
             {
                 title: '资源说明',
-                dataIndex: 'username',
+                dataIndex: 'describe',
                 ellipsis: true,
             },
             {
                 title: '文件类型',
-                dataIndex: 'department',
+                dataIndex: 'posfix',
                 ellipsis: true,
             },
             {
                 title: '文件大小',
-                dataIndex: 'gender',
+                dataIndex: 'size',
             },
             {
                 title: '上传时间',
-                dataIndex: 'email',
+                dataIndex: 'created_at',
                 align: 'center',
             },
             {   title: '操作', 
@@ -83,6 +92,14 @@ export default defineComponent({
            state.name=file.name
            state.file=file
         return false
+       },
+       getResourceList(){
+           const fd=new FormData();
+           fd.append('query[id]',props.trainId)
+           http.resourceList({param:fd}).then((res:any)=>{
+               console.log(res)
+               state.data=res.data.list
+           })
        },
        uploadFile(){
            if(!state.file){
@@ -108,10 +125,35 @@ export default defineComponent({
              state.file=''
              state.name=''
              state.introduce=''
+             methods.getResourceList()
         })
         .catch(() => {
           message.error('网络错误')
         })
+       },
+       deleteUploadFile(id:any){
+           const fd = new FormData()
+           fd.append('upload_type','train_resource')
+           fd.append('id',id)
+           http.deleteResource({param:fd}).then((res:any)=>{
+               console.log(res)
+               message.warning('删除成功')
+               methods.getResourceList()
+           })
+       },
+       downLoad(url:any){
+            let development=process.env.NODE_ENV == 'development' ? true : false;
+            let baseurl=development?'http://localhost:3000/proxyPrefix':""
+            FileSaver.saveAs(baseurl+url);
+        //    const formdata=new FormData()
+        //    formdata.append('train_id',props.trainId)
+        //    formdata.append('courseware',state.file)
+        //    http.savepptModefiy({param:formdata}).then((res:any)=>{
+        //        console.log(res)
+        //     //   state.ppt_url=baseurl+res.datas.courseware_html
+        //     //   context.emit('uploadppt')
+        //    })
+
        }
     }
     onMounted(()=>{
@@ -140,5 +182,11 @@ export default defineComponent({
             margin-left: 10px;
         }
     }
+     .action{
+            color: @theme-color;
+            .spanleft{
+                margin-right: 5px;
+            }
+        }
 }
 </style>

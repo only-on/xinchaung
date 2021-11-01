@@ -57,7 +57,8 @@ interface Istate{
    studentValue:string,
    fullName:string,
    faculty:string,
-   classes:string
+   classes:string,
+   selectedRows:any[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -125,7 +126,8 @@ export default defineComponent({
         studentValue:'',
         fullName:'',
         faculty:'',
-        classes:''
+        classes:'',
+        selectedRows:[]
     })
     const methods={
       handleOk(){
@@ -138,7 +140,10 @@ export default defineComponent({
          return index
       },
       addittion(){
+        //   添加
          console.log(props.selectvalue)
+        //  state.selectedRows
+        context.emit('selected-rows',state.selectedRows)
       },
       clearAll(){
         state.studentValue=''
@@ -154,8 +159,12 @@ export default defineComponent({
           http.unSelectStudentGroup({param:{train_id:props.trainId}}).then((res:any)=>{
               state.data=res.data.data
           })
+      },
+      getUnselectClass(){
+          http.unSelectClassGroup({param:{train_id:props.trainId}}).then((res:any)=>{
+              state.data=res.data.data
+          })
       }
-      
     }
     const rowSelection = {
             onChange: (selectedRowKeys:any, selectedRows:any) => {
@@ -163,6 +172,7 @@ export default defineComponent({
             },
             onSelect: (record:any, selected:any, selectedRows:any) => {
                 console.log(record, selected, selectedRows);
+                state.selectedRows=selectedRows
             },
             onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
                 console.log(selected, selectedRows, changeRows);
@@ -172,6 +182,8 @@ export default defineComponent({
         state.columns=val===1?state.selectStu:state.selectClass 
         if(val===1){
             methods.getUnselectStu() 
+        }else{
+            methods.getUnselectClass() 
         }   
         },{
             deep:true,

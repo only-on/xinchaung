@@ -37,7 +37,7 @@
                 </a-config-provider>
            </div>
            <div>
-               <select-stu-class :selectvalue='value' :trainId="trainId" :isvisible='isvisible' @if-select='ifSelect'></select-stu-class>
+               <select-stu-class :selectvalue='value' :trainId="trainId" :isvisible='isvisible' @if-select='ifSelect' @selected-rows='selectedRows'></select-stu-class>
            </div>
            <div>
                 <a-modal
@@ -247,6 +247,13 @@ export default defineComponent({
         },
         classDeleteCancel(){
             state.classDeleteVisible=false
+        },
+        // 添加学生班级
+        selectedRows(value:any){
+            console.log(value)
+            value.forEach((item:any) => {
+                state.data.push(item)
+            });
         },
         getStudentList(){
             http.studentGroup({param:{train_id:props.trainId}}).then((res:any)=>{

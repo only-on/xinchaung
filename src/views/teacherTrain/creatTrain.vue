@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,Ref,reactive,toRefs ,inject, computed,watch} from 'vue'
+import { defineComponent,ref, onMounted,Ref,reactive,toRefs ,provide,inject, computed,watch} from 'vue'
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch';
 import { useRouter ,useRoute } from 'vue-router';
@@ -39,6 +39,7 @@ export default defineComponent({
     };
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    provide('oneStep','')
     var componentName:Ref<string>=ref('step1')
     var current:Ref<number>=ref(0)
     var trainId:Ref<string>=ref('')

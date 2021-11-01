@@ -59,7 +59,8 @@ interface form{
 }
 interface Istate{
   formState:form,
-  formRef:any
+  formRef:any,
+  againForm?:form
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -119,13 +120,17 @@ export default defineComponent({
           http.createTrain({param:formdata}).then((res:any)=>{
             console.log(res)
             const trainId=res.datas.train_id
+            inject['oneStep']=state.formState
             context.emit('content-trainid',trainId)
             context.emit('step-status',1)
           })
         }
      }
     onMounted(()=>{
-     
+       console.log(inject['oneStep'])
+       if(inject['oneStep']){
+         state.formState=inject['oneStep']
+       }
     })
     return {...toRefs(state),...methods,rules};
   },

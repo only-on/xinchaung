@@ -1,6 +1,6 @@
 <template>
    <div class="createProgress4"  v-layout-bg>
-       <resource></resource>
+       <resource :trainId='trainId'></resource>
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
