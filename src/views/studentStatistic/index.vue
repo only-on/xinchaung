@@ -92,6 +92,7 @@ import { message } from 'ant-design-vue';
 import {defineComponent,inject,onMounted,provide,reactive, toRefs} from 'vue'
 import request from '../../api'
 import listItem from './listItem/index.vue'
+import * as echarts from 'echarts'
 interface objType{
     name?:string
 }
@@ -126,9 +127,11 @@ export default defineComponent({
     components:{
         listItem
     },
-    setup:()=>{
+    setup: (props, { emit }) => {
     var courseGrandEcharName:any[]=[];
     var courseGrandEcharValue:any[]=[];
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],showContent:false,showNav:false})
     const state: State = reactive({
         staticInfo:{},
         lineBlue:'linear-gradient(90deg, rgba(18, 144, 239, 0.12) 24%, rgba(98, 126, 234, 0) 78%)',
@@ -139,7 +142,8 @@ export default defineComponent({
         circlecolor3:'#1290ef'
     })
      // 绘制图表
-    let echarts=inject("echarts");
+    // let echarts=inject("echarts");
+    // var myChart = (echarts as any).init(document.getElementById("myChart"));
     var courseOption={
         title: { text: "课程成绩" },  //图标中的表题
         tooltip: {
@@ -165,9 +169,7 @@ export default defineComponent({
           },
           data:courseGrandEcharName,
           axisLabel: {
-            textStyle:{
                 color:'#999'
-                }
             },
         interval:0,
           axisTick: {
@@ -216,9 +218,6 @@ export default defineComponent({
                 },
                 ],
       }
-     var updata=inject('updataNav') as Function
-     updata({tabs:[],showContent:false,showNav:false})
-      
     function DrawEchar(){
         var myChart = (echarts as any).init(document.getElementById("myChart"));
         myChart.setOption(courseOption);

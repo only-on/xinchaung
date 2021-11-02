@@ -168,7 +168,7 @@ export default defineComponent({
                     console.log(res)
                     topo_id=''
                     context.emit('step-status',2)
-                    inject['oneStep']=state.mirrorTable
+                    inject['stepInfoTwo']=state.mirrorTable
                 })
              })
             
@@ -182,9 +182,9 @@ export default defineComponent({
         }
      }
     onMounted(()=>{
-        console.log(inject['oneStep'],'第二步的数据')
-        if(inject['oneStep']){
-            state.mirrorTable=inject['oneStep']
+        console.log(inject['stepInfoTwo'],'第二步的数据')
+        if(inject['stepInfoTwo']){
+            state.mirrorTable=inject['stepInfoTwo']
         }
         methods.configlist()
     })

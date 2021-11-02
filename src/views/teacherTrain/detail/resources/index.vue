@@ -38,14 +38,14 @@ interface Istate{
    name:string,
    introduce:string
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,watch,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 import  FileSaver  from 'file-saver'
 export default defineComponent({
     name:'resources',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId','resource'],
     components:{
         Empty
     },
@@ -99,6 +99,8 @@ export default defineComponent({
            http.resourceList({param:fd}).then((res:any)=>{
                console.log(res)
                state.data=res.data.list
+            //    context.emit('stepFourInfo',state.data)
+            inject['stepInfoFour']=state.data
            })
        },
        uploadFile(){
@@ -156,7 +158,20 @@ export default defineComponent({
 
        }
     }
+    //  watch(()=>props.resource,(val:any)=>{
+    //      console.log(val,'sssdccccddccddcdcdc')
+    //      if(val!=={}){
+    //          state.data=val;
+    //      }
+    // },{
+    //     deep:true,
+    //     immediate:true
+    // })
     onMounted(()=>{
+        console.log(inject['stepInfoFour'])
+        if(inject['stepInfoFour']){
+            state.data=inject['stepInfoFour']
+        }
     })
     return {...toRefs(state),...methods}
     }

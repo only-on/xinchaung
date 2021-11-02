@@ -75,7 +75,6 @@ import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 import groupModal from '../../components/groupModal/index.vue'
-import { number } from 'echarts';
 export default defineComponent({
     name:'groupingInfor',
     props:['propTrainDetailInfo','trainId'],

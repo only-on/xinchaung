@@ -1,6 +1,6 @@
 <template>
    <div class="createProgress4"  v-layout-bg>
-       <resource :trainId='trainId'></resource>
+       <resource :trainId='trainId' @step-four-info='stepFourInfo' :resource="step4Info"></resource>
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
@@ -16,6 +16,7 @@ import { message } from 'ant-design-vue';
 import resource from '../detail/resources/index.vue'  
 const http=(request as any).teacherTrain
 interface Istate{
+  step4Info:any;
 }
 export default defineComponent({
   name: 'createProgress4',
@@ -26,8 +27,13 @@ export default defineComponent({
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
     const http=(request as any).teacherTrain
      const state:Istate=reactive({
+       step4Info:{}
      })
      const methods={
+        stepFourInfo(value:any){
+          console.log(value,'step4Info222222')
+          state.step4Info= value
+        },
         onCancel(){
 
         },
@@ -36,11 +42,14 @@ export default defineComponent({
 
         },
         nextStep(){
+            inject['stepInfoFour']=state.step4Info
             context.emit('step-status',4)
         }
      }
     onMounted(()=>{
-        
+        if(inject['stepInfoFour']){
+          state.step4Info=inject['stepInfoFour']
+        }
     })
     return {...toRefs(state),...methods};
   },

@@ -103,11 +103,19 @@ export default defineComponent({
             })
              http.saveTrainContents({param:formdata}).then((res:any)=>{
                  context.emit('step-status',3)
+                 let step3Info:any={
+                     describe:state.describe,
+                     content_list:state.content_list,
+                 }
+                inject['stepInfoThree']=step3Info
              })
         }
      }
     onMounted(()=>{
-        
+         if(inject['stepInfoThree']){
+            state.content_list=inject['stepInfoThree'].content_list
+            state.describe=inject['stepInfoThree'].describe
+        }
     })
     return {...toRefs(state),...methods};
   },

@@ -39,7 +39,11 @@ export default defineComponent({
     };
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
-    provide('oneStep','')
+    provide('stepInfoOne','')
+    provide('stepInfoTwo','')
+    provide('stepInfoThree','')
+    provide('stepInfoFour','')
+    provide('stepInfoFive','')
     var componentName:Ref<string>=ref('step1')
     var current:Ref<number>=ref(0)
     var trainId:Ref<string>=ref('')

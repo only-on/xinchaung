@@ -41,13 +41,6 @@ export default defineComponent({
             type:String,
             required:false
         }
-    },
-    setup:(props,{emit})=>{
-        // var aa:Ref<PropType<dataProps[]>|undefined>=props.infoList
-        watch(()=>props.infoList,()=>{
-            console.log(props.infoList,'props')
-        })
-        return
     }
 })
 </script>

@@ -11,14 +11,14 @@
                   </a-form-item>
                   <div class="time">
                     <a-form-item label="开始时间" name="start_time">
-                        <a-date-picker class="time" placeholder="开始日期" v-model:value="formState.start_time" valueFormat='YYYY-MM-DD'/>
+                        <a-date-picker class="time" placeholder="开始日期" v-model:value="formState.start_time" :disabled-date="disabledDate" valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
                     <a-form-item label="结束时间" name="end_time">
-                        <a-date-picker placeholder="结束日期" v-model:value="formState.end_time" valueFormat='YYYY-MM-DD'/>
+                        <a-date-picker placeholder="结束日期"  v-model:value="formState.end_time" :disabled-date='disableEndDate' valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
                   </div>
                   <div>
-                <upload-image></upload-image>
+                <upload-image :uploadUrl="formState.url" @img-src='imgSrc'></upload-image>
             </div>
               </div>
               <div class="right">
@@ -43,8 +43,9 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
-import uploadImage from '../components/uploadImage/uploadImage.vue'
-import { context } from 'ant-design-vue/lib/vc-image/src/PreviewGroup'
+import uploadImage from '../components/uploadImageCreate/uploadImage.vue'
+import { message } from 'ant-design-vue'
+import moment from 'moment';
 const http=(request as any).teacherTrain
 interface form{
   name:string;
@@ -79,7 +80,7 @@ export default defineComponent({
             content: [{ required: true, message: '请输入帖子内容'}],
             guide: [{ required: true, message: '请输入实训指导内容'}],
             }
-     const state:Istate=reactive({
+    const state:Istate=reactive({
         formRef:'formRef',
         formState:{
           name:'',
@@ -94,13 +95,26 @@ export default defineComponent({
         },
      })
      const methods={
-        onCancel(){
+      disabledDate(current:any) {
+        return current && current < moment().endOf('day').subtract(1, 'days')
+      },
+      disableEndDate(current:any){
+        return current && current <  moment(state.formState.start_time)
+      },
+      imgSrc(val:any){
+        state.formState.url=val
+      },
+      onCancel(){
           
         },
         onSubmit(){
           context.emit('step-status',1)
           state.formState.url='/images/upload/teacher-default/cover2.png'
           state.formState.url_is_uploaded='0'
+          if(Number(state.formState.train_time)<1||Number(state.formState.train_time)>16||Number(state.formState.train_time)%1!==0){
+            message.warning("课时必须是1-16的整数")
+            return
+          }
           state.formRef.validate().then(() => {
               methods.setupTrain()
           })
@@ -120,16 +134,15 @@ export default defineComponent({
           http.createTrain({param:formdata}).then((res:any)=>{
             console.log(res)
             const trainId=res.datas.train_id
-            inject['oneStep']=state.formState
+            inject['stepInfoOne']=state.formState
             context.emit('content-trainid',trainId)
             context.emit('step-status',1)
           })
         }
      }
     onMounted(()=>{
-       console.log(inject['oneStep'])
-       if(inject['oneStep']){
-         state.formState=inject['oneStep']
+       if(inject['stepInfoOne']){
+         state.formState=inject['stepInfoOne']
        }
     })
     return {...toRefs(state),...methods,rules};
@@ -147,15 +160,15 @@ export default defineComponent({
     justify-content:space-between;
 
     .left{
-      // width:45%;
-      width:54%;
+      width:48%;
+      // width:54%;
       .time{
         display: flex;
         justify-content:space-between;
       }
     }
     .right{
-      width:45%;
+      width:48%;
       .addCourseware{
         width: 112px;
         height:32px;

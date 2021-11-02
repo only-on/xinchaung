@@ -19,16 +19,18 @@
                   :before-upload='beforeUpload'>
                     <div class="upload-text">
                       <i class="iconfont icon-upload"></i>
-                      <p class="ant-upload-hint">支持格式jpg、png</p>
-                      <p class="size-limit">尺寸限制：525px*300px</p>
+                      <!-- <p class="ant-upload-hint">支持格式jpg、png</p>
+                      <p class="size-limit">尺寸限制：525px*300px</p> -->
+                      <p class='ant-upload-hint'>上传图片</p>
                     </div>
                 </a-upload>
                 </div>
               </div>
             <div :class="value===item.id?'imgdiv active':'imgdiv'" v-for="(item,index) in defaultImg" :key="index.toString()">
               <img :src='item.src'/>
-            <a-radio class="radio" :value='item.id'></a-radio>
+              <a-radio class="radio" :value='item.id'></a-radio>
             </div>
+            
           </div>
         </a-radio-group>
     </div>
@@ -123,6 +125,7 @@ export default defineComponent({
           let flag:boolean=false
           let id:any=''
           state.defaultImg.forEach((item:any)=>{
+            console.log(item.src,'itemsrc')
             if(item.src===props.uploadUrl){
               flag=true
               id=item.id
@@ -137,7 +140,10 @@ export default defineComponent({
         }
       }
       watch(()=>props.uploadUrl,(val)=>{
-        methods.pictureEcho()
+        console.log(props.uploadUrl,"图片111")
+        if(props.uploadUrl){
+          methods.pictureEcho()
+        }
       },{
         deep:true,
         immediate:true
@@ -153,105 +159,66 @@ export default defineComponent({
   width:100%;
   display: flex;
   flex-wrap: wrap;
-  .uploadDiv{
+  // background-color: aqua;
+  .uploadDiv,.imgdiv{
+    width: 32%;
+    height: 85px;
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 285px;
-    height: 164px;
-    border: 1px dashed @theme-color;
+    margin-top:10px;
     border-radius: 4px;
     position: relative;
-    .icon-shanchu-copy{
+
+  }
+   .uploadDiv{
+    border: 1px dashed @theme-color;
+    >div{
+      width: 100%;
+      text-align: center;
+    }
+      .imgdiv{
+        width: 100%;
+        margin-top: 0px;
+        border: none;
+      }
+      .imgHasUpload{
+        width: 100%;
+        height: 100%;
+      }
+      .icon-shanchu-copy{
       color:#ffcc33;
-      font-size:20px;
+      font-size:14px;
       position: absolute;
-      right: 10px;
-      bottom:10px;
+      right:5px;
+      bottom:5px;
     }
     .upload-text{
       text-align: center;
-      color:rgba(0, 0, 0, 0.45);
+      color: @theme-color;;
     }
   }
-  .imgHasUpload{
-    border-radius: 4px;
+  .imgdiv:nth-child(2){
+    margin-left:10px;
   }
-  .imgHasUpload:hover{
-    .uploadDiv .icon-shanchu-copy{
-      display: block;
-    }
+  .imgdiv:nth-child(3){
+    margin-left:10px;
   }
-  .imgdiv{
-    margin-top: 10px;
-    position: relative;
-    img{
-      opacity: 1.5;
-    }
+   .imgdiv:nth-child(5){
+    margin-left:10px;
   }
-  .imgdiv::before {
-    content: "";
+  .imgdiv:nth-child(6){
+    margin-left:10px;
+  }
+  .imgdiv img{
     width: 100%;
     height: 100%;
-    position: absolute;
-    z-index: 1;
-    background-color: rgba(0,0,0,.5);
-    transition: background-color .3s;
     border-radius: 4px;
-  }
-  .imgdiv.active::before {
-    background-color: rgba(0,0,0,0);
-  }
-  .imgdiv:hover::before{
-     background-color: rgba(0,0,0,0);
-  }
-  .imgdiv:nth-child(1){
-    margin-top: 0px;
-  }
-  .uploadDiv{
-    margin-top: 10px;
-  }
-  .imgdiv:nth-child(2n){
-    margin-left: 10px;
-  }
-  img{
-    width: 285px;
-    height: 164px;
-    border-radius:4px;
   }
   .radio{
     position: absolute;
-    left: 10px;
-    top: 10px;
-    .ant-radio-inner{
-      width: 20px;
-      height: 20px;
-  }
-  .ant-radio-input{
-      width: 16px;
-      height: 16px;
-  }
-  /* 单选选中样式 */
-  .ant-radio-checked .ant-radio-inner {
-    background-color:#ffcc33;
-    border: none;
-  }
-  .ant-radio-inner::after {
-    content: '';
-    width: 12px;
-    height: 8px;
-    border: 2px solid white;
-    border-top: transparent;
-    border-right: transparent;
-    text-align: center;
-    display: block;
-    position: absolute;
-    top: 4px;
-    left: 4px;
-    transform: rotate(-45deg);
-    border-radius: 0px;
-    background: none;
-  }
+    left:5px;
+    top:5px;
   }
 }
 </style>
