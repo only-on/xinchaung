@@ -1,5 +1,6 @@
 <script lang="tsx">
 import { defineComponent, ref } from "@vue/runtime-core";
+import videoCover from "src/assets/images/common/video-cover.jpg";
 export default defineComponent({
   name: "CommonVideo",
   setup() {
@@ -11,7 +12,7 @@ export default defineComponent({
   render() {
     return (
       <video
-        poster="src/assets/images/common/video-cover.jpg"
+        poster={videoCover}
         class="common-video video-js vjs-big-play-centered vjs-fluid"
         webkit-playsinline="true"
         playsinline="true"
