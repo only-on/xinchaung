@@ -235,7 +235,7 @@ export default defineComponent({
     })
     function initData(){
       // 获取题库目录
-      http.pools().then((res:IBusinessResp)=>{
+      http.pools({param:{limit:10000}}).then((res:IBusinessResp)=>{
         interface IOptions{
           value:string,
           label:string,

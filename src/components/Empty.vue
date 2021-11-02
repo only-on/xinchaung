@@ -70,7 +70,8 @@ export default defineComponent({
     background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
   }
   .emptyContent{
-    margin: 20px;
+    width: 100%;
+    padding: 20px;
   }
   .no-data {
     width: 100%;

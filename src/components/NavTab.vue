@@ -62,7 +62,7 @@ export default defineComponent({
     async function tabChange(item: ITab) {
       // console.log(item)
       if(activeName.value!==item.name){
-        context.emit("tabSwitch", item);
+        context.emit("tabSwitch", item.componenttype);
         await updateRouter(item.componenttype);
         activeName.value = item.name;
         updata({...configuration,componenttype:item.componenttype})
