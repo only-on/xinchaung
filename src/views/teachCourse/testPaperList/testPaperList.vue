@@ -1,0 +1,433 @@
+<template>
+  <div v-layout-bg style="height: 100%" class="test-paper-list">
+    <div>
+      <a-input-search
+        placeholder="请输入测试卷名称"
+        v-model:value="params.title"
+        style="width: 767px; height: 40px; margin-bottom: 39px"
+        @keyup.enter="searchCourseFUp"
+        @search="searchCourseFUp"
+      />
+    </div>
+    <div class="card-box">
+      <div class="card-item"></div>
+      <testpaper-card
+        class="card-item"
+        v-for="(item, index) in testPaperList"
+        v-model:value="testPaperList[index]"
+        :key="index"
+        @selectStu="selectStu"
+      ></testpaper-card>
+    </div>
+    <div class="page-box">
+      <a-pagination
+        :default-current="1"
+        :default-page-size="11"
+        :total="totalCount"
+        @change="pageChange"
+      />
+    </div>
+  </div>
+  <a-modal
+    :visible="stuModalVisiable"
+    @cancel="cancelStuModal"
+    @ok="okStuModal"
+    :width="700"
+  >
+    <template #title>选学生</template>
+    <div class="stu-no-choice">
+      <div class="stu-left-choice">
+        <div>
+          <span
+            >{{ selectedNoStuRowKeys.length }}/{{
+              searchNoStudata.length
+            }}</span
+          >
+          <span>学生列表</span>
+        </div>
+        <div>
+          <a-input-search
+            placeholder="请输入学号或者姓名"
+            style="width: 100%"
+            v-model:value="NameLeft"
+            @search="searchStu('left')"
+          />
+        </div>
+        <a-table
+          class="stu-list-table scrollbar"
+          :row-selection="{
+            selectedRowKeys: selectedNoStuRowKeys,
+            onChange: onSelectNoStuChange,
+          }"
+          :columns="noStuColumns"
+          :data-source="searchNoStudata"
+          :rowKey="NoSturowKey"
+          :pagination="false"
+        />
+      </div>
+      <div class="stu-center-choice">
+        <span
+          class="icon iconfont icon-jiantou-copy-copy"
+          :class="selectedNoStuRowKeys.length > 0 ? 'selected' : 'no-selected'"
+          style="
+            color: #fff;
+            font-size: 18px;
+            line-height: 24px;
+            text-align: center;
+          "
+          @click="removeStu('left')"
+        ></span>
+        <span
+          class="iconfont icon-jiantou-copy"
+          :class="selectedStuRowKeys.length > 0 ? 'selected' : 'no-selected'"
+          style="
+            color: #fff;
+            font-size: 18px;
+            line-height: 24px;
+            text-align: center;
+          "
+          @click="removeStu('right')"
+        ></span>
+      </div>
+      <div class="stu-right-choice">
+        <div>
+          <span
+            >{{ selectedStuRowKeys.length }}/{{ searchSelectData.length }}</span
+          >
+          <span>学生列表</span>
+        </div>
+        <div>
+          <a-input-search
+            placeholder="请输入学号或者姓名"
+            style="width: 100%"
+            v-model:value="NameRight"
+            @search="searchStu('right')"
+          />
+        </div>
+        <a-table
+          class="stu-list-table scrollbar"
+          :row-selection="{
+            selectedRowKeys: selectedStuRowKeys,
+            onChange: onSelectStuChange,
+          }"
+          :columns="noStuColumns"
+          :data-source="searchSelectData"
+          :rowKey="NoSturowKey"
+          :pagination="false"
+        />
+      </div>
+    </div>
+  </a-modal>
+</template>
+
+<script lang="ts">
+import { defineComponent, inject, ref, toRefs, reactive, onMounted } from "vue";
+import { getTestPaperListApi, getStudentListApi,updateStudentSelectApi } from "./api";
+import { useRoute } from "vue-router";
+import testPaperCard from "./testPaperCard.vue";
+import _ from "lodash";
+
+export default defineComponent({
+  components: {
+    "testpaper-card": testPaperCard,
+  },
+  setup() {
+    const route = useRoute();
+    const course_id = route.query.courseid as any as number;
+    var updata = inject("updataNav") as Function;
+    const NoSturowKey = (row: any) => {
+      return row.user_id + ",," + row.user_number + ",," + row.user_name;
+    };
+    updata({
+      tabs: [],
+      navPosition: "outside",
+      navType: false,
+      showContent: true,
+      componenttype: undefined,
+      showNav: true,
+      backOff: false,
+      showPageEdit: false,
+    });
+    const noStuColumns = [
+      {
+        title: "学号",
+        dataIndex: "user_number",
+      },
+      {
+        title: "姓名",
+        dataIndex: "user_name",
+      },
+    ];
+    onMounted(() => {
+      getTestPaperList();
+    });
+    let paper_id=-1
+    const reactiveData = reactive({
+      params: {
+        page: 1,
+        pageSize: 15,
+        course_id: course_id,
+        title: "",
+      },
+      testPaperList: [],
+      totalCount: 0,
+      stuModalVisiable: false,
+      pushData: [],
+      noStudata: [],
+      searchNoStudata: [],
+      selectedNoStuRowKeys: [],
+      selectedStuRowKeys: [],
+      selectStuData: [],
+      searchSelectData: [],
+      NameLeft: "",
+      NameRight: "",
+    });
+    function getTestPaperList() {
+      getTestPaperListApi(reactiveData.params).then((res: any) => {
+        console.log(res);
+        reactiveData.testPaperList = res.data.list;
+        reactiveData.totalCount = res.data.totalCount;
+      });
+    }
+    // 查询
+    function searchCourseFUp() {
+      console.log(reactiveData.params);
+      reactiveData.params.page = 1;
+      reactiveData.params.pageSize = 15;
+      getTestPaperList();
+    }
+
+    // page发生变化时
+    function pageChange(page: number, pageSize: number) {
+      reactiveData.params.page = page;
+      reactiveData.params.pageSize = pageSize;
+      getTestPaperList();
+    }
+
+    // 打开选择学生modal
+    function selectStu(id: number) {
+      reactiveData.stuModalVisiable = true;
+      paper_id=id
+      reactiveData.selectedNoStuRowKeys=[]
+      reactiveData.selectedStuRowKeys=[]
+      reactiveData.NameLeft=""
+      reactiveData.NameRight=""
+      getStudentList({ paper_id: id });
+    }
+
+    // 关闭选择学生modal
+    function cancelStuModal() {
+      reactiveData.stuModalVisiable = false;
+    }
+    // 确认学生modal
+    function okStuModal() {
+      let no_relation_student:any[]=[]
+      let relation_student:any[]=[]
+      reactiveData.searchNoStudata.forEach((item:any)=>{
+        no_relation_student.push(item.user_id)
+      })
+      reactiveData.searchSelectData.forEach((item:any)=>{
+        relation_student.push(item.user_id)
+      })
+      console.log(no_relation_student.join(","))
+      let params={
+        paper_id:paper_id,
+        no_relation_student:no_relation_student.join(","),
+        relation_student:relation_student.join(",")
+      }
+      updateStudentSelectApi(params).then(()=>{
+        reactiveData.stuModalVisiable = false;
+      })
+      
+    }
+
+    // 搜索未选择的学生
+    function searchStu(type: string) {
+      // 左边搜索
+      if (type === "left") {
+        console.log(reactiveData.NameLeft);
+        (reactiveData.searchNoStudata as any) = _.filter(
+          reactiveData.noStudata,
+          (item: any) => {
+            return (
+              item.user_name.indexOf(reactiveData.NameLeft) >= 0 ||
+              item.user_number.indexOf(reactiveData.NameLeft) >= 0
+            );
+          }
+        );
+      }
+      // 右边搜索
+      if (type === "right") {
+        (reactiveData.searchSelectData as any) = _.filter(
+          reactiveData.selectStuData,
+          (item: any) => {
+            return (
+              item.user_name.indexOf(reactiveData.NameRight) >= 0 ||
+              item.user_number.indexOf(reactiveData.NameRight) >= 0
+            );
+          }
+        );
+      }
+    }
+
+    // 选择学生
+    function onSelectNoStuChange(selectedRowKeys: any) {
+      reactiveData.selectedNoStuRowKeys = selectedRowKeys;
+      console.log(reactiveData.selectedNoStuRowKeys);
+    }
+
+    // 选择已选择学生
+    function onSelectStuChange(selectedRowKeys: any) {
+      reactiveData.selectedStuRowKeys = selectedRowKeys;
+      console.log(reactiveData.selectedStuRowKeys);
+    }
+    function getStudentList(params: { paper_id: number }) {
+      getStudentListApi(params).then((res: any) => {
+        console.log(res);
+        reactiveData.noStudata = res.data.no_relation_student || [];
+        reactiveData.searchNoStudata = res.data.no_relation_student || [];
+        reactiveData.selectStuData = res.data.relation_student || [];
+        reactiveData.searchSelectData = res.data.relation_student || [];
+      });
+    }
+    // 移动
+    function removeStu(type: string) {
+      // 向右移动
+      if (type === "left") {
+        let userIdArry: any = [];
+        reactiveData.selectedNoStuRowKeys.forEach((item: any) => {
+          console.log(item.split(",,"));
+          let arr = item.split(",,");
+          userIdArry.push(arr[0]);
+          let temp = {
+            user_id: arr[0],
+            user_name: arr[2],
+            user_number: arr[1],
+          };
+          (reactiveData.searchSelectData as any).push(temp);
+        });
+        (reactiveData.searchNoStudata as any) = _.filter(
+          reactiveData.searchNoStudata,
+          (item: any) => {
+            return !userIdArry.includes(item.user_id);
+          }
+        );
+        reactiveData.selectedNoStuRowKeys = [];
+      }
+      // 向左移动
+      if (type === "right") {
+        let userIdArry: any = [];
+        reactiveData.selectedStuRowKeys.forEach((item: any) => {
+          console.log(item.split(",,"));
+          let arr = item.split(",,");
+          userIdArry.push(arr[0]);
+          let temp = {
+            user_id: arr[0],
+            user_name: arr[2],
+            user_number: arr[1],
+          };
+          (reactiveData.searchNoStudata as any).push(temp);
+        });
+        (reactiveData.searchSelectData as any) = _.filter(
+          reactiveData.searchSelectData,
+          (item: any) => {
+            return !userIdArry.includes(item.user_id);
+          }
+        );
+        reactiveData.selectedStuRowKeys = [];
+      }
+      reactiveData.noStudata = reactiveData.searchNoStudata;
+      reactiveData.selectStuData = reactiveData.searchSelectData;
+    }
+
+    
+    return {
+      noStuColumns,
+      ...toRefs(reactiveData),
+      searchCourseFUp,
+      pageChange,
+      selectStu,
+      cancelStuModal,
+      okStuModal,
+      searchStu,
+      onSelectNoStuChange,
+      NoSturowKey,
+      onSelectStuChange,
+      removeStu,
+    };
+  },
+});
+</script>
+
+<style lang="less">
+.test-paper-list {
+  .card-box {
+    display: flex;
+    flex-wrap: wrap;
+    .card-item {
+      &:nth-child(4n + 1) {
+        margin-right: 1.33333%;
+      }
+      &:nth-child(4n + 2) {
+        margin-right: 1.33333%;
+      }
+      &:nth-child(4n + 3) {
+        margin-right: 1.33333%;
+      }
+    }
+  }
+  .page-box {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+.stu-no-choice {
+  display: flex;
+  justify-content: space-around;
+  .stu-left-choice,
+  .stu-right-choice {
+    width: 45%;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 10px 15px;
+    > div {
+      &:nth-child(1) {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+      }
+      &:nth-child(2) {
+        margin: 15px 0;
+      }
+    }
+  }
+  .stu-center-choice {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    > span {
+      width: 36px;
+      height: 30px;
+      margin-top: 15px;
+      &.selected {
+        background: @theme-color;
+        pointer-events: all;
+        cursor: pointer;
+      }
+      &.no-selected {
+        background: #d9d9d9;
+        pointer-events: none;
+      }
+    }
+  }
+  .stu-right-choice {
+    width: 45%;
+  }
+  .stu-list-table {
+    height: 334px;
+    overflow-y: auto;
+  }
+}
+</style>

@@ -9,6 +9,15 @@ export default {
   },
   children: [
     {
+      path:"courseList",
+      name:"",
+      component: () => import("src/views/teachCourse/courseList/index.vue"),
+      meta: {
+        title: "课程列表",
+        authCode: 'courseList'
+      },
+    },
+    {
       path: "virtualEnv",
       name: "virtualEnv",
       component: () => import("src/views/teachCourse/virtualEnv.vue"),
@@ -42,6 +51,14 @@ export default {
       meta: {
         title: "知识图谱",
         authCode: 'knowledgeMap'
+      },
+    },
+    {
+      path: "testPaperList",
+      component: () => import("src/views/teachCourse/testPaperList/testPaperList.vue"),
+      meta: {
+        title: "知识图谱",
+        authCode: 'testPaperList'
       },
     },
   ]

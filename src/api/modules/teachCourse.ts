@@ -151,6 +151,43 @@ export default {
     url: '/teacher-course/get-videos',
     method: 'POST'
   },
+  getDirectionsApi:{
+    url:"/api/course/courses/directions",
+    method:"GET"
+  },
+  getCategoryApi:{
+    url:"/api/course/courses/categories",
+    method:"GET"
+  },
+  getCourseListApi: {
+    url: `/api/course/courses`,
+    method: 'GET',
+  },
+  settingGuideStateApi:{
+    url:"/teacher-course/change-status",
+    method:"POST"
+  },
+  copyCourseApi:{
+    url:"/teacher-course/repeat",
+    method:"POST"
+  },
+  deleteCourseApi:{
+    url:"/api/course/courses/{id}",
+    method:"DELETE"
+  },
+  getTestPaperListApi:{
+    url:"/classtest/default/paper_list",
+    method:"GET"
+  },
+  getStudentListApi:{
+    url:"/classtest/default/get_student_list",
+    method:"GET"
+  },
+  updateStudentSelectApi:{
+    url:"/classtest/default/edit_student",
+    method:"POST",
+    dataType:"formdata"
+  }
 }
 
 export interface ITeacherCourseApis {
@@ -188,4 +225,13 @@ export interface ITeacherCourseApis {
   evaluteContent: TFHttpSend,
   showQuestions: TFHttpSend,
   showVideos: TFHttpSend
+  getDirectionsApi:TFHttpSend
+  getCategoryApi:TFHttpSend,
+  getCourseListApi:TFHttpSend,
+  settingGuideStateApi:TFHttpSend,
+  copyCourseApi:TFHttpSend,
+  deleteCourseApi:TFHttpSend
+  getTestPaperListApi:TFHttpSend
+  getStudentListApi:TFHttpSend
+  updateStudentSelectApi:TFHttpSend
 }
