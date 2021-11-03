@@ -37,7 +37,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, PropType } from 'vue'
+import { defineComponent, ref, reactive, watch, onMounted, PropType } from 'vue'
 import _ from 'lodash'
 export default defineComponent({
   name: 'Tree',

@@ -3,11 +3,12 @@
     <XeQuill
       ref="quillDom"
       v-if="type === 'edit'"
-      class="scrollbar"
+      class=""
       toolbar="full"
       :options="options"
       v-model:value="content"
-      :style="{ height: height }"
+      :modules="modules"
+      :style="{ height: height}"
       @selectionChange="selectionChange"
       @editorChange="editorChange"
     >
@@ -19,11 +20,14 @@
 import { defineComponent, watch, PropType, ref, reactive, toRefs } from "vue";
 // import { QuillEditor } from "@vueup/vue-quill";
 // import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import XeQuill from "@xianfe/vue-quill/src/index.vue";
+import {Quill, XeQuill} from "@xianfe/vue-quill/index";
 import { Delta } from "quill-delta";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { isJsonString } from "src/utils/common";
-import { number } from "echarts";
+import {container, ImageExtend, QuillWatch} from 'quill-image-extend-module/index.js'
+Quill.register('modules/ImageExtend', ImageExtend)
+const dev_base_url=(window as any).proxy_api
+const updateUrl=`${dev_base_url}/api/instance/uploads/file`
 interface IreactiveData {
   content: Delta;
 }
@@ -36,10 +40,14 @@ export default defineComponent({
   props: {
     options: {
       default: () => {
+        // return {
+        //   placeholder: "输入内容...",
+        //   theme: "snow",
+        // };
         return {
-          placeholder: "输入内容...",
-          theme: "snow",
-        };
+           placeholder: "输入内容...",
+            theme: "snow",
+        }
       },
     },
     modelValue: {
@@ -52,7 +60,7 @@ export default defineComponent({
       // default: () => 0,
     },
     height: {
-      default: "250px",
+      default: "200px",
       type: String,
       require: false,
     },
@@ -67,11 +75,31 @@ export default defineComponent({
   },
   setup(props, { emit }) {
     const options = props.options;
+    const modules:any={
+      ImageExtend: {
+        loading: true,
+        name: 'img',
+        action: updateUrl,
+        response: (res:any) => {
+          console.log(res)
+          // return res.info
+        }
+      },
+      toolbar: {
+        container: container,
+        handlers: {
+          'image': function () {
+            // QuillWatch.emit(this.quill.id)
+            console.log(1111)
+          }
+        }
+      }
+    }
     const reactiveData: IreactiveData = reactive({ content: props.modelValue });
     const { content } = toRefs(reactiveData);
     const height = props.height;
     const quillDom = ref(props.quillRef);
-    console.log(quillDom);
+    // console.log(quillDom);
     
     watch(
       () => content.value,
@@ -107,7 +135,7 @@ export default defineComponent({
         (quillDom.value as any).setContents({ ops: [] });
       }
     }
-    console.log(props.rang);
+    // console.log(props.rang);
     
     // 选择的发送变化时
     function  selectionChange(val:any) {
@@ -138,7 +166,8 @@ export default defineComponent({
       setContents,
       selectionChange,
       editorChange,
-      insertHtml
+      insertHtml,
+      modules
     };
   },
 });
@@ -147,5 +176,11 @@ export default defineComponent({
 .quill-editor-wrap {
   width: 100%;
   height: 100%;
+}
+.quill-editor{
+  overflow: auto;
+}
+:deep(.ql-container){
+  min-height: calc(100% - 43px);
 }
 </style>

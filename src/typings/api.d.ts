@@ -1,6 +1,7 @@
 import { TFHttpSend } from './getRequest';
 import { TDataType } from './fetch';
 import { IForumAps } from 'src/api/modules/studentForum'
+import { ITeacherForum } from 'src/api/modules/teacherForum'
 import { IStudentCourseAps } from 'src/api/modules/studentCourse'
 import { ICommonAps } from 'src/api/modules/common'
 import {IPersonalInformationlAps} from 'src/api/modules/personalInformation'
@@ -34,7 +35,7 @@ export interface IApiItem {
     dataType?: TDataType;
 }
 
-export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment'
+export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'teacherForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment'
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -47,6 +48,7 @@ export interface IApiCollection {
     personalInformation:IPersonalInformationlAps,
     studentExperimental: IStudentExperimentalAps,
     studentForum: IForumAps,
+    teacherForum:ITeacherForum,
     studentCourse:IStudentCourseAps,
     teachCourse: ITeacherCourseApis,
     studentExam:IstudentExam,

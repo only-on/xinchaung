@@ -13,7 +13,7 @@
         </a-form-item>
       </a-form>
       <div class="text">
-        <quill-editor toolbar="full" :options="options" v-model:content="formState.content"  /> 
+        <quill-editor toolbar="full"  v-model="formState.content" :height="'350px'" /> 
       </div>
       <div class="foot">
         <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
@@ -27,14 +27,21 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
-import { QuillEditor } from "@vueup/vue-quill";
+// import { QuillEditor } from "@vueup/vue-quill";
+// import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
 // import { Delta } from "../../typings/quill-delta";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import  QuillEditor  from "src/components/editor/quill.vue";
+// import "@vueup/vue-quill/dist/vue-quill.snow.css";
+// import  {Quill, XeQuill}  from "@xianfe/vue-quill/index";
+// import {container, ImageExtend, QuillWatch} from 'quill-image-extend-module/index.js'
+// Quill.register('modules/ImageExtend', ImageExtend)
+const dev_base_url=(window as any).proxy_api
+const updateUrl=`${dev_base_url}/api/instance/uploads/file`
 const http=(request as any).studentForum
 interface form{
   title:string,
   type:string,
-  content:string
+  content:any
 }
 interface Istate{
   formRef:any,
@@ -53,10 +60,6 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const {editId}= route.query
-    const options = {
-      placeholder: "输入内容...",
-      theme: "snow",
-    };
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
 
@@ -65,7 +68,9 @@ export default defineComponent({
       formState:{
         title:'',
         type:'1',
-        content:''
+        content:{
+          ops: [],
+        }
       },
       rules:{
         title: [
@@ -78,6 +83,25 @@ export default defineComponent({
       options:{
         placeholder: "输入内容...",
         theme: "snow",
+        // modules:{
+        //   ImageExtend: {
+        //       loading: true,
+        //       name: 'img',
+        //       action: updateUrl,
+        //       response: (res:any) => {
+        //         console.log(res)
+        //         // return res.info
+        //       }
+        //     },
+        //     toolbar: {
+        //       container: container,
+        //       handlers: {
+        //         'image': function () {
+        //           // QuillWatch.emit(this.quill.id)
+        //         }
+        //       }
+        //     }
+        // }
       },
       getDetail:()=>{
         http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{
@@ -88,6 +112,8 @@ export default defineComponent({
         })
       },
       onSubmit:()=>{
+        console.log(state.formState)
+        // return
         state.formRef.validate().then(() => {
             console.log('验证过');
             let obj={
@@ -140,7 +166,7 @@ export default defineComponent({
       height: calc(100% - 43px);
     }
   .text{
-    height: 340px;
+    // height: 340px;
   }
   .foot{
     margin: 50px 0;

@@ -38,7 +38,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor v-if="visible" toolbar="full" :options="options" :modelValue="ForumArticle.content"  /> 
+        <QuillEditor v-if="visible" toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
@@ -53,14 +53,14 @@ import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-// import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
+// import { QuillEditor } from "@vueup/vue-quill";
+import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
 // import { Delta } from "quill-delta";
 // import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import  QuillEditor  from "src/components/editor/quill.vue";
 import {goHtml} from 'src/utils/common'
 interface Ireply{
   forum_id:number,
-  content:any
+  content:string
 }
 interface Istate{
   reply: () => void;
@@ -81,7 +81,7 @@ export default defineComponent({
   setup: (props,{emit}) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,tabs:[],navPosition:'outside',navType:false})
-    const http=(request as any).studentForum
+    const http=(request as any).teacherForum
     const route = useRoute();
     const {detailId}= route.query
     var visible:Ref<boolean>=ref(false)
@@ -89,9 +89,7 @@ export default defineComponent({
       visible:false,
       ForumArticle:{
         forum_id:Number(detailId),
-        content:{
-          ops: [],
-        }
+        content:''
       },
      options:{
         placeholder: "输入内容...",

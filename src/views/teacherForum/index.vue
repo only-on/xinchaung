@@ -49,10 +49,9 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
-// import { QuillEditor } from "@vueup/vue-quill";
-import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
+import { QuillEditor } from "@vueup/vue-quill";
 // import { Delta } from "../../typings/quill-delta";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import "@vueup/vue-quill/dist/vue-quill.snow.css";
 interface IforumSearch{
   title:string,
   type:string | undefined,
@@ -132,7 +131,7 @@ export default defineComponent({
     const options = computed(()=>{
         return tabType.value===1?options2.value:options1.value
     })
-    const http=(request as any).studentForum
+    const http=(request as any).teacherForum
     const apiName=['pubIndex','myself','attend'] 
     var tabType:Ref<number>=ref(0)
     var loading:Ref<boolean>=ref(false)
@@ -237,7 +236,7 @@ export default defineComponent({
       })
     }
     function editCard(val:ItdItems){
-      router.push('/studentForum/CreatePosts?editId='+val.id)
+      router.push('/teacherForum/CreatePosts?editId='+val.id)
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -252,10 +251,10 @@ export default defineComponent({
       initData()
     }
     function release(){
-      router.push('/studentForum/CreatePosts')
+      router.push('/teacherForum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/studentForum/PostsDetailed?detailId='+id)
+      router.push('/teacherForum/PostsDetailed?detailId='+id)
     }
     onMounted(()=>{
       // serve.v(dataObj); 

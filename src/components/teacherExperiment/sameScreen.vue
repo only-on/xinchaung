@@ -43,7 +43,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, nextTick, PropType } from 'vue'
+import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType } from 'vue'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 export default defineComponent({
   components: {AntdvMarkdown},

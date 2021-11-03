@@ -1,7 +1,7 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
-  path: "/studentForum",
+  path: "/teacherForum",
   component: Layout,
   meta: {
     title: "论坛",
@@ -11,7 +11,7 @@ export default {
     {
       path: "",
       // component: RouterViews,
-      component: () => import("src/views/studentForum/index.vue"),
+      component: () => import("src/views/teacherForum/index.vue"),
       meta: {
         title: "",
         icon: "",
@@ -20,16 +20,16 @@ export default {
     },
     {
       path:'CreatePosts',
-      name: "CreatePosts",
-      component: () => import("src/views/studentForum/CreatePosts.vue"),
+      name: "teacherCreatePosts",
+      component: () => import("src/views/teacherForum/CreatePosts.vue"),
       meta: {
         title: "发帖",
       },
     },
     {
       path:'PostsDetailed',
-      name: "PostsDetailed",
-      component: () => import("src/views/studentForum/PostsDetailed.vue"),
+      name: "teacherPostsDetailed",
+      component: () => import("src/views/teacherForum/PostsDetailed.vue"),
       meta: {
         title: "帖子详情",
       },

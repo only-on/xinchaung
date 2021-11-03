@@ -184,6 +184,7 @@ function isJsonString(str: any) {
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 function goHtml(val: string) {
     if (val.split('ops').length > 1) {
+        // console.log(JSON.parse(val));
         let text = JSON.parse(val)
         var converter = new QuillDeltaToHtmlConverter(text.ops, {})
         var html = converter.convert()
