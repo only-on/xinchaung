@@ -35,6 +35,7 @@ export default {
   saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' },
 
   // 创建实训
+  uploadsFile: { url: `/api/instance/uploads/file`, method: 'POST', dataType: 'formdata' },
   createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
   selectConfig: { url: '/api/env/images/config', method: "GET" },
   selectMirror: { url: '/api/env/images', method: "GET" },
@@ -45,6 +46,12 @@ export default {
   // /teacher-train/get-resource-list
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
+  // 分组信息
+  groupList: { url: '/api/course/student/group/list', method: "GET" },
+  // 自动分组
+  automaticGroup: { url: '/teacher-train/student-group', method: "POST" },
+  // 获取分组的和没分组的学生列表
+  getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }
 
 
@@ -72,6 +79,7 @@ export interface ITeacherTrainAps {
   saveTrainGuide: TFHttpSend,
   savepptModefiy: TFHttpSend,
   studentGroup: TFHttpSend,
+  uploadsFile: TFHttpSend,
   createTrain: TFHttpSend,
   selectConfig: TFHttpSend,
   selectMirror: TFHttpSend,

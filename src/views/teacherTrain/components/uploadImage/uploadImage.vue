@@ -1,7 +1,7 @@
 <template>
     <div class="uploadImage">
         <a-radio-group v-model:value="value" @change="onChange" :disabled='edit'>
-          <div class="uploadImgdiv">
+          <div :class="createOrEdit==='create'?'createuploadImgdiv':'uploadImgdiv'">
              <div class="uploadDiv">
                 <div v-if="imgSrc">
                   <div :class="value==='upload'?'imgdiv active':'imgdiv'">
@@ -19,8 +19,9 @@
                   :before-upload='beforeUpload'>
                     <div class="upload-text">
                       <i class="iconfont icon-upload"></i>
-                      <p class="ant-upload-hint">支持格式jpg、png</p>
-                      <p class="size-limit">尺寸限制：525px*300px</p>
+                      <!-- <p class="ant-upload-hint">支持格式jpg、png</p>
+                      <p class="size-limit">尺寸限制：525px*300px</p> -->
+                      <p class='ant-upload-hint'>上传图片</p>
                     </div>
                 </a-upload>
                 </div>
@@ -49,7 +50,7 @@ import { defineComponent,reactive,toRefs,onMounted, onBeforeMount,watch} from 'v
 import request from 'src/api/index'
 export default defineComponent({
     name:'uploadImage',
-    props:['trainId','uploadUrl','edit','trainCreateOrEdit'],
+    props:['trainId','uploadUrl','edit','createOrEdit'],
     components:{},
     setup(props,context) {
       const http=(request as any).teacherTrain
@@ -137,7 +138,9 @@ export default defineComponent({
         }
       }
       watch(()=>props.uploadUrl,(val)=>{
-        methods.pictureEcho()
+         if(props.uploadUrl){
+          methods.pictureEcho()
+        }
       },{
         deep:true,
         immediate:true
@@ -252,6 +255,72 @@ export default defineComponent({
     border-radius: 0px;
     background: none;
   }
+  }
+}
+.createuploadImgdiv{
+  width:100%;
+  display: flex;
+  flex-wrap: wrap;
+  // background-color: aqua;
+  .uploadDiv,.imgdiv{
+    width: 32%;
+    height: 85px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top:10px;
+    border-radius: 4px;
+    position: relative;
+
+  }
+   .uploadDiv{
+    border: 1px dashed @theme-color;
+    >div{
+      width: 100%;
+      text-align: center;
+    }
+      .imgdiv{
+        width: 100%;
+        margin-top: 0px;
+        border: none;
+      }
+      .imgHasUpload{
+        width: 100%;
+        height: 100%;
+      }
+      .icon-shanchu-copy{
+      color:#ffcc33;
+      font-size:14px;
+      position: absolute;
+      right:5px;
+      bottom:5px;
+    }
+    .upload-text{
+      text-align: center;
+      color: @theme-color;;
+    }
+  }
+  .imgdiv:nth-child(2){
+    margin-left:10px;
+  }
+  .imgdiv:nth-child(3){
+    margin-left:10px;
+  }
+   .imgdiv:nth-child(5){
+    margin-left:10px;
+  }
+  .imgdiv:nth-child(6){
+    margin-left:10px;
+  }
+  .imgdiv img{
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+  }
+  .radio{
+    position: absolute;
+    left:5px;
+    top:5px;
   }
 }
 </style>

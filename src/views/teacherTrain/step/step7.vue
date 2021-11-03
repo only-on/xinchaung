@@ -14,19 +14,12 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
-import uploadImage from '../components/uploadImage/uploadImage.vue'
-import selectMirror from '../components/selectMirror/index.vue'
-import messages from 'src/i18n/zh_CN'
 const http=(request as any).teacherTrain
 interface Istate{
 }
 export default defineComponent({
   name: 'finish',
-   props:['trainId'],
-  components: {
-    uploadImage,
-    selectMirror
-  },
+  props:['trainId'],
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})

@@ -77,38 +77,38 @@ export default defineComponent({
              context.emit('step-status',1)
        },
        nextStep(){
-        //  context.emit('step-status',3)    
-           if(!state.describe){
-                message.warning("实训概述不能为空！")
-                return
-            }
-            const formdata=new FormData()
-            formdata.append('train_id',props.trainId)
-            formdata.append('detail',state.describe)
-            state.content_list?.forEach((item:any,index:any)=>{
-                formdata.append('list_content['+index+'][train_content_id]','')
-                formdata.append('list_content['+index+'][name]',item.name)
-                formdata.append('list_content['+index+'][describe]',item.describe)
-                formdata.append('list_content['+index+'][step][id]','')
-                formdata.append('list_content['+index+'][step][step_name]','')
-                formdata.append('list_content['+index+'][step][knowledge_map_id]',item.step.knowledge_map_id.join())
-                formdata.append('list_content['+index+'][step][state]',item.step.state)
-                formdata.append('list_content['+index+'][step][serial]','')
-                item.step.knowledge_map_id?.forEach((it:any) => {
-                    formdata.append('list_content['+index+'][step][knowledge][]',it)
-                });
-                item.step.knowledges?.forEach((j:any) => {
-                    formdata.append('list_content['+index+'][step][knowledges][]',j)
-                })
-            })
-             http.saveTrainContents({param:formdata}).then((res:any)=>{
-                 context.emit('step-status',3)
-                 let step3Info:any={
-                     describe:state.describe,
-                     content_list:state.content_list,
-                 }
-                inject['stepInfoThree']=step3Info
-             })
+         context.emit('step-status',3)    
+    //        if(!state.describe){
+    //             message.warning("实训概述不能为空！")
+    //             return
+    //         }
+    //         const formdata=new FormData()
+    //         formdata.append('train_id',props.trainId)
+    //         formdata.append('detail',state.describe)
+    //         state.content_list?.forEach((item:any,index:any)=>{
+    //             formdata.append('list_content['+index+'][train_content_id]','')
+    //             formdata.append('list_content['+index+'][name]',item.name)
+    //             formdata.append('list_content['+index+'][describe]',item.describe)
+    //             formdata.append('list_content['+index+'][step][id]','')
+    //             formdata.append('list_content['+index+'][step][step_name]','')
+    //             formdata.append('list_content['+index+'][step][knowledge_map_id]',item.step.knowledge_map_id.join())
+    //             formdata.append('list_content['+index+'][step][state]',item.step.state)
+    //             formdata.append('list_content['+index+'][step][serial]','')
+    //             item.step.knowledge_map_id?.forEach((it:any) => {
+    //                 formdata.append('list_content['+index+'][step][knowledge][]',it)
+    //             });
+    //             item.step.knowledges?.forEach((j:any) => {
+    //                 formdata.append('list_content['+index+'][step][knowledges][]',j)
+    //             })
+    //         })
+    //          http.saveTrainContents({param:formdata}).then((res:any)=>{
+    //              context.emit('step-status',3)
+    //              let step3Info:any={
+    //                  describe:state.describe,
+    //                  content_list:state.content_list,
+    //              }
+    //             inject['stepInfoThree']=step3Info
+    //          })
         }
      }
     onMounted(()=>{

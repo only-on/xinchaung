@@ -50,6 +50,7 @@ interface Istate{
 import { defineComponent,onMounted,reactive,toRefs,watch} from 'vue'
 import uploadImage from '../../components/uploadImage/uploadImage.vue'
 import request from 'src/api/index'
+// import requestFile from 'src/api/modules/'
 import {cloneDeep} from 'lodash'
 export default defineComponent({
     name:'basicInfor',

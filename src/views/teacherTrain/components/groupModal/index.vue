@@ -20,10 +20,7 @@
                     <a-button type="primary">编辑</a-button>
                     <a-button type="primary">解散</a-button>
                 </div>
-                <div>
-                    <!-- :replaceFields='replaceFields' -->
-                    <a-tree :treeData='treeData' :replaceFields='replaceFields' :defaultExpandAll='true'></a-tree>
-                </div>
+                    <a-tree :treeData='treeData' @select='selectTree'  :replaceFields='replaceFields'></a-tree>
             </div>
             <div>
             <div class="transferBox">
@@ -60,13 +57,19 @@ interface groupType{
     group_info:any,
     student_list:any,
 }
+interface groupItem{
+    name:string,
+    student_list:any[]
+}
 interface Istate{
    editLoading:boolean,
    ungroup:any[],
    group:groupType,
-   treeData:any,
+   treeData:groupItem[],
    replaceFields:any,
    groupname:string,
+   checkedValues:number[],
+   selectedKeys:string[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -85,16 +88,13 @@ export default defineComponent({
         ungroup: [{id: 4253, name: "lee dong", train_id: "50225"}],
         treeData:[],
         group:{
-            group_info: {group_id: 313, group_name: "小组2"},
-            student_list:[
-            {train_id: "50225", group_id: 313, id: 4259, name: "sihaiv1"},
-            {train_id: "50225", group_id: 313, id: 4251, name: "yt"},
-            {train_id: "50225", group_id: 313, id: 4250, name: "lmm2"},
-            {train_id: "50225", group_id: 313, id: 4249, name: "乔晶晶"},
-            {train_id: "50225", group_id: 313, id: 4246, name: "123456"}]
+            group_info: {},
+            student_list:[]
         },
         replaceFields:{children:'student_list', title:'name', key:'id'},
-        groupname:''      
+        groupname:'' ,
+        checkedValues:[],
+        selectedKeys:[]    
     })
     const methods={
       editOk(){
@@ -104,8 +104,9 @@ export default defineComponent({
          context.emit('editModal',false)
       },
       getStuGroup(){
-          
-        
+           http.getGroupAndNogroupStu({param:{train_id:50347}}).then((res:any)=>{
+               console.log(res)
+           })
       },
       leftMove(){
 
@@ -114,22 +115,45 @@ export default defineComponent({
           
       },
       onChange(checkedValues:any) {
-      console.log('checked = ', checkedValues);
+        state.checkedValues=checkedValues
+           
         },
       addGroup(){
           if(!state.groupname){
               message.warning('请输入分组名称')
               return
           }
+          let deleteArr:any=[]
+          state.ungroup.forEach((item:any,index:any)=>{
+               state.checkedValues.forEach((value:any)=>{
+                    if(item.id===value){
+                        deleteArr.push(index)
+                        state.group.student_list.push(item)
+                    }
+               })
+           })
+           deleteArr.forEach((value:any)=>{
+               state.ungroup.splice(value,1)
+           })
+           const treeItem:any={
+            name:state.groupname,
+            student_list:state.group.student_list,
+            }
+            console.log(treeItem)
+            state.treeData.push(treeItem)
+            state.checkedValues=[]
+            console.log(state.checkedValues)
+      },
+      selectTree(selectedKeys:any){
+          console.log(selectedKeys,'hvvvvvvvvvvvvvv')
       }
     }
     onMounted(()=>{
-        // methods.getStuGroup()
-        state.treeData=[{
-            name:state.group.group_info.group_name,
-            id:state.group.group_info.group_id,
-            student_list:state.group.student_list,
-        }]
+        methods.getStuGroup()
+        state.ungroup=[
+        {id: 4251, name: "yt", train_id: "50338"},
+        {id: 4255, name: "sihai fu", train_id: "50338"},
+        {id: 4253, name: "lee dong", train_id: "50338"}]
     })
     return {...toRefs(state),...methods}
     }

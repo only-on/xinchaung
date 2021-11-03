@@ -42,11 +42,11 @@
                 <div class="groupWay">
                      <span class="groupItem">分组方式：</span>
                      <span class="groupItem">
-                        <a-select default-value="小组数" style="width:100px;height:32px" @change="handleChange">
-                            <a-select-option value="小组数">
+                        <a-select default-value="1" style="width:100px;height:32px" @change="handleChange">
+                            <a-select-option value="1">
                                 小组数
                             </a-select-option>
-                            <a-select-option value="分组人数">
+                            <a-select-option value="2">
                                 分组人数
                             </a-select-option>
                      </a-select>
@@ -68,7 +68,8 @@ interface Istate{
    autoGroupVisible:boolean,
    autoConfirmLoading:boolean,
    ifautoGroupEdit:boolean,
-   groupNumber?:number
+   groupNumber:any,
+   groupway:number
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -91,6 +92,8 @@ export default defineComponent({
         autoGroupVisible:false,
         autoConfirmLoading:false,
         ifautoGroupEdit:false,
+        groupway:1,
+        groupNumber:'',
       columns:[{
         title: '小组名称',
         dataIndex: 'name',
@@ -147,8 +150,23 @@ export default defineComponent({
               message.warning('人数或小组数不能为空！')
               return
           }
-          console.log(state.groupNumber)
-          console.log('分组')
+        //   AutomaticGroup
+          let params:any={}
+          if(state.groupway===1){
+              params={
+              train_id:props.trainId,
+              group_num:state.groupNumber
+              }
+          }else{
+               params={
+            //    train_id:props.trainId,
+               train_id:50338,
+               group_people_num:state.groupNumber
+            }
+          }
+         http.automaticGroup({param:params}).then((res:any)=>{
+             console.log(res)
+         })
       },
     //   手动分组
       manualGroup(){
@@ -156,12 +174,20 @@ export default defineComponent({
       },
       handleChange(value:any){
           console.log(value)
+          state.groupway=value
       },
       rowkey(record: {}, index: number){
          return index
+      },
+    //   获取分组列表
+      getGroupList(){
+          http.groupList({param:{course_id:501714}}).then((res:any)=>{
+              console.log(res)
+          })
       }
     }
     onMounted(()=>{
+        methods.getGroupList()
     })
     return {...toRefs(state),...methods}
     }

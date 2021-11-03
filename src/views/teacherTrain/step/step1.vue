@@ -18,7 +18,7 @@
                     </a-form-item>
                   </div>
                   <div>
-                <upload-image :uploadUrl="formState.url" @img-src='imgSrc'></upload-image>
+                <upload-image :uploadUrl="formState.url" @img-src='imgSrc' createOrEdit='create'></upload-image>
             </div>
               </div>
               <div class="right">
@@ -26,9 +26,15 @@
                       <a-textarea style="height:220px" v-model:value="formState.guide" />
                   </a-form-item>
                   <a-form-item label="添加实训课件">
-                      <a-button class="addCourseware" >
-                        <span class="icon-tianjia iconfont"></span>
-                      </a-button>
+                     <a-upload
+                        name="file"
+                        :multiple="false"
+                        :before-upload="beforeUpload"
+                        >
+                        <a-button class="addCourseware">
+                            <span class="icon-tianjia iconfont"></span>
+                        </a-button>
+                    </a-upload>
                   </a-form-item>
               </div>
             </div>
@@ -43,7 +49,7 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
-import uploadImage from '../components/uploadImageCreate/uploadImage.vue'
+import uploadImage from '../components/uploadImage/uploadImage.vue'
 import { message } from 'ant-design-vue'
 import moment from 'moment';
 const http=(request as any).teacherTrain
@@ -102,14 +108,30 @@ export default defineComponent({
         return current && current <  moment(state.formState.start_time)
       },
       imgSrc(val:any){
+        console.log(val)
         state.formState.url=val
+      },
+      beforeUpload(file:any){
+        console.log(file)
+        const fileType =file.name.split('.')[file.name.split('.').length-1]
+        const isType=fileType==='ppt'||fileType==='pptx'||fileType==='pdf'
+        if(!isType){
+          message.error('文件格式不正确!')
+          return
+        }
+        const fd=new FormData()
+        fd.append('uploadFiled',file)
+        fd.append('upload_path','addcourse')
+        http.uploadsFile({param:fd}).then((res:any)=>{
+          console.log(res)
+        })
+        return false
       },
       onCancel(){
           
         },
         onSubmit(){
           context.emit('step-status',1)
-          state.formState.url='/images/upload/teacher-default/cover2.png'
           state.formState.url_is_uploaded='0'
           if(Number(state.formState.train_time)<1||Number(state.formState.train_time)>16||Number(state.formState.train_time)%1!==0){
             message.warning("课时必须是1-16的整数")

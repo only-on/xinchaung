@@ -11,21 +11,21 @@
                 <span class='itemname'>{{item.name}}</span>
                 <div class="itemselect">
                     <a-form-item label="cpu">
-                        <a-select v-model:value="item.cpu"  class="selectWidth">
+                        <a-select default-value="1" v-model:value="item.cpu"  class="selectWidth">
                             <a-select-option v-for="(item,index) in selectOption?.cpu" :key="index.toString()" :value="item.key">
                                 {{item}}核
                             </a-select-option>
                         </a-select>
                     </a-form-item>
                     <a-form-item label="内存">
-                        <a-select v-model:value="item.ram" class="selectWidth">
+                        <a-select default-value="2048" v-model:value="item.ram" class="selectWidth">
                             <a-select-option v-for="(item,index) in selectOption?.ram" :key="index.toString()" :value="item.key">
                                 {{item}}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
                     <a-form-item label="硬盘">
-                        <a-select v-model:value="item.disk"  class="selectWidth">
+                        <a-select default-value="30" v-model:value="item.disk"  class="selectWidth">
                             <a-select-option v-for="(item,index) in selectOption?.disk" :key="index.toString()" :value="item.key">
                                 {{item}}
                             </a-select-option>
@@ -154,9 +154,9 @@ export default defineComponent({
                 container.push(
                     {image:item.id,
                     flavor: {
-                    cpu:item.cpu,
-                    ram:item.ram,
-                    disk:item.disk
+                    cpu:item.cpu?item.cpu:1,
+                    ram:item.ram?item.ram:2048,
+                    disk:item.disk?item.disk:30,
                     },
                     is_use_gpu:item.is_use_gpu
                 })
@@ -170,8 +170,7 @@ export default defineComponent({
                     context.emit('step-status',2)
                     inject['stepInfoTwo']=state.mirrorTable
                 })
-             })
-            
+             })  
          },
         onCancel(){
 
