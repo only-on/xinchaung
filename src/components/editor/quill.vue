@@ -7,31 +7,32 @@
       toolbar="full"
       :options="options"
       v-model:value="content"
-      :modules="modules"
+      :handlers="handlers"
       :style="{ height: height}"
       @selectionChange="selectionChange"
       @editorChange="editorChange"
     >
     </XeQuill>
     <div v-if="type === 'preview'" v-html="html"></div>
+    <!-- <img :src="imgUrl" alt="测试图片"> -->
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, watch, PropType, ref, reactive, toRefs } from "vue";
+import { defineComponent, watch, PropType, ref, Ref,reactive, toRefs,computed } from "vue";
 // import { QuillEditor } from "@vueup/vue-quill";
 // import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import {Quill, XeQuill} from "@xianfe/vue-quill/index";
 import { Delta } from "quill-delta";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { isJsonString } from "src/utils/common";
-import {container, ImageExtend, QuillWatch} from 'quill-image-extend-module/index.js'
-Quill.register('modules/ImageExtend', ImageExtend)
-const dev_base_url=(window as any).proxy_api
-const updateUrl=`${dev_base_url}/api/instance/uploads/file`
+const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
 interface IreactiveData {
   content: Delta;
 }
-
+import { IBusinessResp} from 'src/typings/fetch.d';
+import request from 'src/api/index'
+const http=(request as any).common
+// const http=(request as any).teacherCourseAnalysis
 export default defineComponent({
   name: "Quill",
   components: {
@@ -57,7 +58,7 @@ export default defineComponent({
     },
     rang:{
       type: Number,
-      // default: () => 0,
+      default: () => 0,
     },
     height: {
       default: "200px",
@@ -74,31 +75,41 @@ export default defineComponent({
     },
   },
   setup(props, { emit }) {
+    const quillDom = ref(props.quillRef);
     const options = props.options;
-    const modules:any={
-      ImageExtend: {
-        loading: true,
-        name: 'img',
-        action: updateUrl,
-        response: (res:any) => {
-          console.log(res)
-          // return res.info
+    const fileName: Ref<string> = ref("quillfile");
+    const imgUrl: Ref<string> = ref("");
+    const temporaryRang: Ref<number> = ref(1);
+    const handlers:any={
+        'image': async function () {
+          // quillDom.value.insertHtml(htm);
+          var input = document.createElement('input');
+          input.type = 'file';
+          input.name = fileName.value;
+          input.accept = 'image/jpeg,image/png,image/jpg,image/gif';
+          input.onchange = await onFileChange;
+          input.click()
         }
-      },
-      toolbar: {
-        container: container,
-        handlers: {
-          'image': function () {
-            // QuillWatch.emit(this.quill.id)
-            console.log(1111)
-          }
+    }
+    async function onFileChange(e:any){
+      var fileInput = e.target;
+        if (fileInput.files.length === 0) {
+          return
         }
-      }
+        const fd = new FormData()
+        fd.append('file', fileInput.files[0])
+        fd.append('upload_path', 'studentForum')
+        fd.append('default_name', '1')
+        await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
+           let html= `<img src="${dev_base_url}${res.data.url}" alt="">`
+          //  imgUrl.value=`${dev_base_url}${res.data.url}`
+          //  console.log(html);
+           insertHtml(html);
+        })
     }
     const reactiveData: IreactiveData = reactive({ content: props.modelValue });
     const { content } = toRefs(reactiveData);
     const height = props.height;
-    const quillDom = ref(props.quillRef);
     // console.log(quillDom);
     
     watch(
@@ -111,7 +122,7 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       () => {
-        console.log(props.modelValue);
+        // console.log(props.modelValue);
         
         content.value = props.modelValue;
 
@@ -139,23 +150,28 @@ export default defineComponent({
     
     // 选择的发送变化时
     function  selectionChange(val:any) {
+      // console.log( val.range && val.range.index);
       // (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(2,'<img src="https://gw.alicdn.com/tps/TB1W_X6OXXXXXcZXVXXXXXXXXXX-400-400.png">','api')
-
       val.range?emit("update:rang", val.range.index):'';
+      val.range?temporaryRang.value=val.range.index:''
     }
 
     // 编辑器发送变化时
     function  editorChange(val:any) {
       if (val.name==="selection-change") {
         val.range?emit("update:rang", val.range.index):'';
+        // console.log( val.range && val.range.index);
+        val.range?temporaryRang.value=val.range.index:''
       }
     }
 
     // 插入html
     function  insertHtml(htmlString:string) {
-      console.log(quillDom.value);
-      // (quillDom.value as any).clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api')
-      (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api')
+      // console.log(quillDom.value);
+      const rang=props.rang?props.rang:temporaryRang.value;
+      // (quillDom.value as any).clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api') 
+      // console.log(rang);
+      (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'api')
     }
     return {
       options,
@@ -167,7 +183,8 @@ export default defineComponent({
       selectionChange,
       editorChange,
       insertHtml,
-      modules
+      handlers,
+      imgUrl
     };
   },
 });

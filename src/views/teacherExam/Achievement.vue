@@ -409,7 +409,7 @@ export default defineComponent({
         // http.achievementExport({param:{exam_id: Id}}).then((res:IBusinessResp)=>{
 
         // })
-        const dev_base_url=(window as any).proxy_api
+        const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
         let url=`${dev_base_url}/api/v1/question/exams/student-exam-score/export?exam_id=${Id}`
         fetch(url,{
             method: 'get',

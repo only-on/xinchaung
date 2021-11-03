@@ -143,8 +143,7 @@ export default defineComponent({
       })
     }
     function clickExportNote(val:string) {
-      // const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
-      const dev_base_url=(window as any).proxy_api
+      const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
       let url=`${dev_base_url}/student-course/convert-as-pdf?note_id=${notesId.value}`
       fetch(url,{
           method: 'get',

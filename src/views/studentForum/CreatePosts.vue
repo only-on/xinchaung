@@ -13,7 +13,7 @@
         </a-form-item>
       </a-form>
       <div class="text">
-        <quill-editor toolbar="full"  v-model="formState.content" :height="'350px'" /> 
+        <quill-editor toolbar="full"  v-model="formState.content" :height="'300px'" /> 
       </div>
       <div class="foot">
         <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
@@ -27,16 +27,8 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
-// import { QuillEditor } from "@vueup/vue-quill";
-// import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
 // import { Delta } from "../../typings/quill-delta";
 import  QuillEditor  from "src/components/editor/quill.vue";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
-// import  {Quill, XeQuill}  from "@xianfe/vue-quill/index";
-// import {container, ImageExtend, QuillWatch} from 'quill-image-extend-module/index.js'
-// Quill.register('modules/ImageExtend', ImageExtend)
-const dev_base_url=(window as any).proxy_api
-const updateUrl=`${dev_base_url}/api/instance/uploads/file`
 const http=(request as any).studentForum
 interface form{
   title:string,

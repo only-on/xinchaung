@@ -194,8 +194,7 @@ export default defineComponent({
       })
     }
     const exportScore = (param: {train_id: string, train_student_id?: number[]}) => {
-      // const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
-      const dev_base_url=(window as any).proxy_api
+      const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
       console.log(dev_base_url, param)
       let url = `${dev_base_url}/teacher-train/train-score-export`
       fetch(url, {
