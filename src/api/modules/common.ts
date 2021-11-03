@@ -17,12 +17,8 @@ export interface FakeMenu {
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
     getMenu: { url: '/site/menu', method: 'GET', dataType: "json" },
-<<<<<<< Updated upstream
     loginOut:{url:`/site/logout`,method:'POST',},
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
-=======
-    loginOut: { url: `/site/logout`, method: 'POST' }
->>>>>>> Stashed changes
 }
 export interface ICommonAps {
     getMenu: TFHttpSend;
