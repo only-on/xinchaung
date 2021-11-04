@@ -30,8 +30,8 @@
     </a-config-provider>
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745" class="modal-post">
       <h4>回复内容</h4>
-      <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="QuillOptions" v-model:content="ForumArticle.content"  /> 
+      <div class="text">
+        <QuillEditor toolbar="" :height="'300px'" v-model="ForumArticle.content"  /> 
       </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>
@@ -49,10 +49,7 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
-// import { QuillEditor } from "@vueup/vue-quill";
-import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
-// import { Delta } from "../../typings/quill-delta";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import  QuillEditor  from "src/components/editor/quill.vue";
 interface IforumSearch{
   title:string,
   type:string | undefined,
@@ -69,7 +66,7 @@ interface ItdItems{
 }
 interface Ireply{
   forum_id:number,
-  content:string
+  content:any
 }
 const columns=[
   {
@@ -143,7 +140,7 @@ export default defineComponent({
       
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
@@ -163,7 +160,7 @@ export default defineComponent({
     }
     var ForumArticle:Ireply=reactive({
       forum_id:0,
-      content:''
+      content:{}
     })
     var ForumSearch:IforumSearch=reactive({
       title:'',

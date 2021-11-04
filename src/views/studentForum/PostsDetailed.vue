@@ -37,8 +37,8 @@
     </div>
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
-      <div class="text" style="height:300px;">
-        <QuillEditor v-if="visible" toolbar="full" :options="options" :modelValue="ForumArticle.content"  /> 
+      <div class="text">
+        <QuillEditor v-if="visible" toolbar="" :height="'300px'" v-model="ForumArticle.content" /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
@@ -53,9 +53,6 @@ import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-// import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
-// import { Delta } from "quill-delta";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
 import  QuillEditor  from "src/components/editor/quill.vue";
 import {goHtml} from 'src/utils/common'
 interface Ireply{
@@ -89,9 +86,7 @@ export default defineComponent({
       visible:false,
       ForumArticle:{
         forum_id:Number(detailId),
-        content:{
-          ops: [],
-        }
+        content:{}
       },
      options:{
         placeholder: "输入内容...",

@@ -60,9 +60,7 @@ export default defineComponent({
       formState:{
         title:'',
         type:'1',
-        content:{
-          ops: [],
-        }
+        content:{}
       },
       rules:{
         title: [

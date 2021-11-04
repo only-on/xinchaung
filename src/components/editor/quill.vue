@@ -4,7 +4,7 @@
       ref="quillDom"
       v-if="type === 'edit'"
       class=""
-      toolbar="full"
+      :toolbar="toolbar"
       :options="options"
       v-model:value="content"
       :handlers="handlers"
@@ -14,7 +14,6 @@
     >
     </XeQuill>
     <div v-if="type === 'preview'" v-html="html"></div>
-    <!-- <img :src="imgUrl" alt="测试图片"> -->
   </div>
 </template>
 <script lang="ts">
@@ -73,12 +72,15 @@ export default defineComponent({
       default: "quillRef",
       type: String,
     },
+    toolbar:{
+      default: "full",
+      // type: String,
+    }
   },
   setup(props, { emit }) {
     const quillDom = ref(props.quillRef);
     const options = props.options;
     const fileName: Ref<string> = ref("quillfile");
-    const imgUrl: Ref<string> = ref("");
     const temporaryRang: Ref<number> = ref(1);
     const handlers:any={
         'image': async function () {
@@ -101,8 +103,8 @@ export default defineComponent({
         fd.append('upload_path', 'studentForum')
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
-           let html= `<img src="${dev_base_url}${res.data.url}" alt="">`
-          //  imgUrl.value=`${dev_base_url}${res.data.url}`
+          let html= `<img src="${dev_base_url}${res.data.url}" alt="">`
+          // let html= `<img src="${res.data.url}" alt="">`
           //  console.log(html);
            insertHtml(html);
         })
@@ -110,6 +112,7 @@ export default defineComponent({
     const reactiveData: IreactiveData = reactive({ content: props.modelValue });
     const { content } = toRefs(reactiveData);
     const height = props.height;
+    const toolbar=props.toolbar
     // console.log(quillDom);
     
     watch(
@@ -171,12 +174,13 @@ export default defineComponent({
       const rang=props.rang?props.rang:temporaryRang.value;
       // (quillDom.value as any).clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api') 
       // console.log(rang);
-      (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'api')
+      (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'user')
     }
     return {
       options,
       ...toRefs(reactiveData),
       height,
+      toolbar,
       html,
       quillDom,
       setContents,
@@ -184,7 +188,6 @@ export default defineComponent({
       editorChange,
       insertHtml,
       handlers,
-      imgUrl
     };
   },
 });
