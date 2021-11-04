@@ -14,7 +14,7 @@
       <a-pagination
         show-size-changer
         v-model:current="form.page"
-        v-model:pageSize="form.pageSize"
+        v-model:pageSize="form.limit"
         :total="total"
         :hideOnSinglePage="true"
         :pageSizeOptions="pageSizeOptions"
@@ -33,7 +33,7 @@ import { ITeacherTrainHttp } from './typings'
 interface Iform{
   name: string,
   page: number,
-  pageSize: number,
+  limit: number,
   is_archive: number,
   is_init: number
 }
@@ -63,7 +63,7 @@ export default defineComponent({
     var form = reactive<Iform>({
       name: '',
       page: 1,
-      pageSize: 11,
+      limit: 11,
       is_archive: 0,
       is_init: 0
     })
@@ -76,13 +76,13 @@ export default defineComponent({
       total.value = 0
       form.name = ''
       form.page = 1
-      form.pageSize = 12
+      form.limit = 12
       pageSizeOptions.value = ['12','24','36']
       if (newVal == 0) {
         // 我的实训
         form.is_archive = 0
         form.is_init = 0
-        form.pageSize = 11
+        form.limit = 11
         pageSizeOptions.value = ['11','23','35']
       } else if (newVal == 1) {
         // 内置实训
@@ -108,7 +108,7 @@ export default defineComponent({
       getList()
     }
     function onShowSizeChange (val:number,size:number) {
-      form.pageSize = size
+      form.limit = size
       getList()
     }
     function handleSearch () {

@@ -10,8 +10,9 @@ export default {
     getDataSetApi: { url: "/dmc/v1.0/datasets", method: "GET" }, // 获取数据集
     getDatacategoryApi: { url: "/dmc/v1.0/datacategory", method: "GET" }, // 获取数据集类型
     createWorkbenchApi: { url: "/api/env/workbenchs", method: "POST", dataType: "json" },
-    getMyImageApi:{url:"/api/env/images",method:"GET"},
-    getPresetMirror: { url: "/api/env/images", method: "GET" }
+    getMyImageApi: { url: "/api/env/images", method: "GET" },
+    getPresetMirror: { url: "/api/env/images", method: "GET" },
+    createMirrorApi: { url: "/api/env/containers", method: "POST", dataType: "json" },
 }
 
 export interface IteacherWorkbench {
@@ -27,4 +28,5 @@ export interface IteacherWorkbench {
     createWorkbenchApi: TFHttpSend
     getMyImageApi: TFHttpSend
     getPresetMirror: TFHttpSend
+    createMirrorApi: TFHttpSend
 }

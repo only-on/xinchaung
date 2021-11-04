@@ -58,7 +58,6 @@ interface form{
   start_time:string,
   end_time:string,
   url:string,
-  url_is_uploaded:string,
   train_time:string,
   guide:string,
   courseware:string,
@@ -93,7 +92,6 @@ export default defineComponent({
           start_time:'',
           end_time:'',
           url:'',
-          url_is_uploaded:'',
           train_time:'',
           guide:'',
           courseware:'',
@@ -121,9 +119,10 @@ export default defineComponent({
         }
         const fd=new FormData()
         fd.append('uploadFiled',file)
-        fd.append('upload_path','addcourse')
+        fd.append('upload_path','teacherTrain')
         http.uploadsFile({param:fd}).then((res:any)=>{
           console.log(res)
+          state.formState.courseware=res.data.url
         })
         return false
       },
@@ -131,8 +130,8 @@ export default defineComponent({
           
         },
         onSubmit(){
-          context.emit('step-status',1)
-          state.formState.url_is_uploaded='0'
+          // context.emit('step-status',1)
+          if(state.formState.name)
           if(Number(state.formState.train_time)<1||Number(state.formState.train_time)>16||Number(state.formState.train_time)%1!==0){
             message.warning("课时必须是1-16的整数")
             return
@@ -150,15 +149,15 @@ export default defineComponent({
           formdata.append('start_time',state.formState.start_time)
           formdata.append('end_time',state.formState.end_time)
           formdata.append('url',state.formState.url)
-          formdata.append('url_is_uploaded',state.formState.url_is_uploaded)
-          formdata.append('train_time',state.formState.train_time)
+          formdata.append('courseware',state.formState.courseware)
+          formdata.append('class_cnt',state.formState.train_time)
           formdata.append('guide',state.formState.guide)
           http.createTrain({param:formdata}).then((res:any)=>{
             console.log(res)
-            const trainId=res.datas.train_id
-            inject['stepInfoOne']=state.formState
-            context.emit('content-trainid',trainId)
             context.emit('step-status',1)
+            const trainId=res.data.id
+            context.emit('content-trainid',trainId)
+            inject['stepInfoOne']=state.formState
           })
         }
      }

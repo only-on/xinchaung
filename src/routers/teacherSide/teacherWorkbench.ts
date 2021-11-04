@@ -24,5 +24,13 @@ export default {
                 authCode: 'createWorkbench'
             },
         },
+        {
+            path: "createImage",
+            component: () => import("src/views/teacherWorkbench/createImage/index.vue"),
+            meta: {
+                title: "创建镜像",
+                authCode: 'createImage'
+            },
+        },
     ]
 }

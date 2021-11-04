@@ -162,22 +162,17 @@ export default defineComponent({
                 })
             })
             console.log(container,'container')
-            http.createMirrorTemplate({param:{container}}).then((res:any)=>{
-                let topo_id=res.data.id
-                http.saveMirrorEnvir({param:{train_id:props.trainId,topo_id:topo_id}}).then((res:any)=>{
-                    console.log(res)
-                    topo_id=''
-                    context.emit('step-status',2)
-                    inject['stepInfoTwo']=state.mirrorTable
-                })
-             })  
+            console.log(props.trainId)
+            http.createMirrorTemplate({urlParams:{train:props.trainId},param:{container}}).then((res:any)=>{
+                console.log(res)
+                context.emit('step-status',2)
+            })
          },
         onCancel(){
 
         },
         nextStep(){
         methods.createTemplate()
-        context.emit('step-status',2)
         }
      }
     onMounted(()=>{

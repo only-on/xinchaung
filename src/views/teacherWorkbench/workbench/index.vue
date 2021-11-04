@@ -42,7 +42,7 @@ import card from "./card.vue";
 import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import storage from "src/utils/extStorage";
-import { onBeforeRouteLeave, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRouter} from "vue-router";
 import empty from "src/components/Empty.vue";
 
 export default defineComponent({
@@ -84,6 +84,7 @@ export default defineComponent({
       reactiveData.workbenchDataList=[]
         init();
       connectWs();
+      
     });
 
     async function init() {

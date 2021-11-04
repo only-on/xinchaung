@@ -62,6 +62,7 @@ export default defineComponent({
       },
       contentTrainid(val:any){
         trainId.value=val
+        console.log(val)
       }
     }
     onMounted(()=>{

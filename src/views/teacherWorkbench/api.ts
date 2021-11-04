@@ -114,4 +114,20 @@ export async function getPresetMirror(params: any) {
     return await workbenchApi.getPresetMirror({ param: params })
 }
 
+/**
+ * @description 创建镜像
+ * @param  param name: values.name,
+                file_path: this.formData.image.file_path,
+                file_size: this.formData.image.file_size,
+                classify_id: Number(values.system),
+                tag: values.tag,
+                description: this.formData.image.description,
+                ssh_user: values.userName,
+                ssh_pass: values.userPassword,
+                is_use_gpu: this.isActiveGPU ? 1 : 0,
+ */
+export async function createMirrorApi(params: any) {
+    return await workbenchApi.createMirrorApi({ param: params })
+}
+
 

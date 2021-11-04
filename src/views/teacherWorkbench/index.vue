@@ -9,6 +9,8 @@ import { defineComponent,ref, onMounted,Ref,inject,watch  } from 'vue'
 import workbench from './workbench/index.vue'
 import myImage from './myImage/index.vue'
 import preinstallImage from "./preinstallImage/index.vue"
+import { onBeforeRouteLeave, useRouter,useRoute } from "vue-router";
+
 import { number } from 'echarts'
 
 export default defineComponent({
@@ -19,7 +21,6 @@ export default defineComponent({
    preinstallImage
   },
   setup: (props,context) => {
-  
     const componentNames=['workbench','myImage','preinstallImage']
     const tabs=[{name:'工作台',componenttype:0},{name:'我的镜像',componenttype:1},{name:'预设镜像',componenttype:2}]
     var componentName:Ref<string>=ref('workbench')
@@ -38,9 +39,8 @@ export default defineComponent({
       }
      
       componentName.value=componentNames[val]
-    },{immediate:true})
+    })
     onMounted(()=>{
-    
     })
     return {componentName ,tabs,tabRef};
   },

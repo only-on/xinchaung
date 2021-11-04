@@ -16,7 +16,8 @@ export default {
   ImageList: { url: `/api/env/containers`, method: 'GET' },
   trainUpload: { url: `/teacher-train/upload`, method: 'POST', dataType: 'formdata' },
   // 列表
-  trainList: { url: '/teacher-train/index', method: "GET" },
+  // trainList: { url: '/teacher-train/index', method: "GET" },
+  trainList: { url: '/api/train/trains', method: "GET" },
   changeStatus: { url: '/teacher-train/change-status', method: "GET" },
   trainComplex: { url: '/teacher-train/train-complex', method: "GET" },
   trainArchived: { url: '/teacher-train/train-archived', method: "GET" },
@@ -36,13 +37,16 @@ export default {
 
   // 创建实训
   uploadsFile: { url: `/api/instance/uploads/file`, method: 'POST', dataType: 'formdata' },
-  createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
+  // createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
+  createTrain: { url: '/api/train/trains', method: "POST", dataType: 'formdata' },
   selectConfig: { url: '/api/env/images/config', method: "GET" },
   selectMirror: { url: '/api/env/images', method: "GET" },
-  createMirrorTemplate: { url: '/api/env/topos/stores', method: "POST", dataType: 'json' },
+  // createMirrorTemplate: { url: '/api/env/topos/stores', method: "POST", dataType: 'json' },
+  createMirrorTemplate: { url: `/api/train/trains/env/{train}`, method: "PUT", dataType: 'json' },
   createMirror: { url: '/api/content/content/template', method: "POST" },
-  saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" },
-  saveTrainContents: { url: '/teacher-train/save-train-contents', method: "POST", dataType: 'formdata' },// 保存实训内容
+  // saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" },
+  // 创建第三步
+  saveTrainContents: { url: '/api/train/trains/content/{train}', method: "PUT", dataType: 'json' },// 保存实训内容
   // /teacher-train/get-resource-list
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },

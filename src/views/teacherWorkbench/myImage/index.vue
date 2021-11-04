@@ -23,6 +23,7 @@
 
 <script lang="ts">
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { useRouter } from "vue-router";
 import { getMyImageApi } from "../api";
 import card from "./card.vue";
 
@@ -31,6 +32,7 @@ export default defineComponent({
     card,
   },
   setup() {
+    const router = useRouter();
     const reactiveData: {
       params: any;
       myImageList: any[];
@@ -73,8 +75,8 @@ export default defineComponent({
     // 创建镜像
     function createImage() {
       console.log("创建");
+      router.push({ path: "/teacher/Workbench/createImage" });
     }
-
     // 搜索
     function onSearch() {}
     return {
