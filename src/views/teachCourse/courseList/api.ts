@@ -39,3 +39,9 @@ export async function copyCourseApi(params:{courseId:number}) {
 export async function deleteCourseApi(params:{id:number}) {
     return courseApi.deleteCourseApi({urlParams:params})
 }
+/**
+ * @description 保存到我的实验
+ */
+export async function saveToCourseApi(params:{courseId:number}) {
+    return await courseApi.saveToCourseApi({param:params})
+}

@@ -9,7 +9,7 @@ import { defineComponent,ref, onMounted,Ref,inject,watch  } from 'vue'
 import myCourse from './myCourse.vue'
 import initCourse from './initCourse.vue'
 import archiveCourse from "./archiveCourse.vue"
-
+import {useRoute} from "vue-router"
 export default defineComponent({
   name: '',
   components: {
@@ -18,7 +18,8 @@ export default defineComponent({
    archiveCourse
   },
   setup: (props,context) => {
-  
+    const route=useRoute()
+
     const componentNames=['myCourse','initCourse','archiveCourse']
     const tabs=[{name:'我的课程',componenttype:0},{name:'内置课程',componenttype:1},{name:'归档课程',componenttype:2}]
     var componentName:Ref<string>=ref('myCourse')
@@ -29,11 +30,16 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-     
-      componentName.value=componentNames[val]
+      console.log(val);
+      // if (val||val===0) {
+        componentName.value=componentNames[val]
+      // }
+      
     },{immediate:true})
     onMounted(()=>{
-    
+      if (route.query.currentTab) {
+        componentName.value=componentNames[route.query.currentTab.toString()]
+      }
     })
     return {componentName ,tabs,tabRef};
   },

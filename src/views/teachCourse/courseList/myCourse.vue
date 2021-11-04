@@ -9,9 +9,14 @@
       <tag @tagChange="tagChange"></tag>
     </div>
     <div class="course-list">
-      <div class="crate-card course-item"></div>
+      <div class="crate-card course-item create-box">
+        <div class="create-btn">
+          <span class="icon-chuangjian iconfont"></span
+          ><span class="create-text">创建课程</span>
+        </div>
+      </div>
       <course-card
-        v-for="(item,index) in courseList"
+        v-for="(item, index) in courseList"
         :key="item.id"
         :courseData="item"
         :currentTab="currentTab"
@@ -21,7 +26,12 @@
       ></course-card>
     </div>
     <div class="page-box">
-      <a-pagination :default-current="1" :default-page-size="11" :total="totalCount" @change="pageChange"/>
+      <a-pagination
+        :default-current="1"
+        :default-page-size="11"
+        :total="totalCount"
+        @change="pageChange"
+      />
     </div>
   </div>
 </template>
@@ -40,22 +50,23 @@ import tag from "./tag.vue";
 import courseCard from "./courseCard.vue";
 import { getCourseListApi } from "./api";
 
-type TreactiveData={
-  directionTag: any[],
-      allTag: any|null,
-      directionsShow: boolean,
-      directionsHeight:number,
-      params: {
-        directions: string,
-        category: string,
-        name: string,
-        page: number,
-        limit: number,
-        direction: string,
-      },
-      courseList: any[],
-      totalCount:number
-}
+type TreactiveData = {
+  directionTag: any[];
+  allTag: any | null;
+  directionsShow: boolean;
+  directionsHeight: number;
+  params: {
+    directions: string;
+    category: string;
+    name: string;
+    page: number;
+    limit: number;
+    direction: string;
+    state: number;
+  };
+  courseList: any[];
+  totalCount: number;
+};
 export default defineComponent({
   components: {
     tag,
@@ -64,7 +75,7 @@ export default defineComponent({
   props: ["currentTab"],
   setup(props) {
     const currentTab = props.currentTab;
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       directionTag: [{}],
       allTag: null,
       directionsShow: true,
@@ -76,13 +87,14 @@ export default defineComponent({
         page: 1,
         limit: 11,
         direction: "",
+        state: 1,
       },
       courseList: [],
-      totalCount:0
+      totalCount: 0,
     });
 
     onMounted(() => {
-      getCourseList();
+      init();
       // setTimeout(()=>{
       //   console.log(111111111)
       //   reactiveData.courseList=[]
@@ -90,41 +102,48 @@ export default defineComponent({
     });
 
     function init() {
-       reactiveData.params= {
+      reactiveData.params = {
         directions: "",
         category: "",
         name: "",
         page: 1,
         limit: 11,
         direction: "",
-      }
-      getCourseList()
+        state: 1,
+      };
+      getCourseList();
     }
-    function onSearch() {}
+    function onSearch(val:any) {
+      reactiveData.params.name = val;
+      reactiveData.params.page = 1;
+      reactiveData.params.limit = 12;
+      getCourseList();
+    }
     // tag选择
     function tagChange(tags: any) {
-      console.log(tags);
+      reactiveData.params.direction = tags.directions;
+      reactiveData.params.category = tags.category;
+      getCourseList();
     }
 
-    
     // 获取课程列表
     function getCourseList() {
       getCourseListApi(reactiveData.params).then((res) => {
-        console.log(res);
+     
         reactiveData.courseList = res?.data.list;
-        reactiveData.totalCount=res?.data.page.totalCount
+        reactiveData.totalCount = res?.data.page.totalCount;
       });
     }
 
     // page发生变化时
-    function pageChange(page:number, pageSize:number) {
-      reactiveData.params.page=page
-      reactiveData.params.limit=pageSize
-      getCourseList()
+    function pageChange(page: number, pageSize: number) {
+      reactiveData.params.page = page;
+      reactiveData.params.limit = pageSize;
+      getCourseList();
     }
     // 更新数据
-    function updateData(val:any,index:number) {
-      reactiveData.courseList[index]=val
+    function updateData(val: any, index: number) {
+      reactiveData.courseList[index] = val;
     }
     // 设置参数
     return {
@@ -134,7 +153,7 @@ export default defineComponent({
       currentTab,
       updateData,
       init,
-      pageChange
+      pageChange,
     };
   },
 });
@@ -149,8 +168,29 @@ export default defineComponent({
     flex: 1;
     display: flex;
     flex-wrap: wrap;
+    .create-box {
+      border: 1px dashed @theme-color;
+      border-radius: 11px;
+      box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+      .create-btn {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        .icon-chuangjian {
+          font-size: 67px;
+          color: @theme-color;
+        }
+        .create-text {
+          font-size: 20px;
+          color: @theme-color;
+        }
+      }
+    }
   }
-  .page-box{
+  .page-box {
     margin-top: 20px;
     text-align: center;
   }

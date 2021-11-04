@@ -89,11 +89,50 @@
               <span @click="environment(data)">环境</span>
               <!-- <span @click="inClassinteraction(item)">随测</span> -->
               <router-link
-                :to="{ path: '/teacher/course/testPaperList', query: { courseid: data.id } }"
+                :to="{
+                  path: '/teacher/course/testPaperList',
+                  query: { courseid: data.id },
+                }"
                 >随测</router-link
               >
             </div>
           </div>
+        </div>
+      </div>
+      <div
+        class="init-course-base-statistics-box"
+        v-if="currentTab === 'initCourse'"
+      >
+        <h2>{{ data.name }}</h2>
+        <div class="base-init-action">
+          <span>实验</span><span>资源</span
+          ><span @click="saveToMy">保存到我的</span>
+        </div>
+        <div class="base-init-show">
+          <div class="content-total-box">
+            <span class="iconfont icon-shiyan"></span><span>实验</span
+            ><span>{{ data.content_total }}</span>
+          </div>
+          <div class="time-total-box">
+            <span class="iconfont icon-keshi"></span><span>课时</span
+            ><span>{{ data.class_total }}</span>
+          </div>
+        </div>
+      </div>
+      <div
+        class="archived-course-base-statistics-box"
+        v-if="currentTab === 'archiveCourse'"
+      >
+        <h2>{{ data.name }}</h2>
+        <div class="base-archived-action">
+          <span>详情</span><span @click="downloadExport">导出</span>
+        </div>
+        <div class="archived-time-box">
+          <span class="icon-jingli iconfont"></span
+          ><span class="time"
+            ><span style="margin-right: 8px">归档时间</span>
+            {{ data.updated_at }}
+          </span>
         </div>
       </div>
       <!----><!---->
@@ -103,18 +142,24 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import moment from "moment";
-import { settingGuideStateApi, copyCourseApi, deleteCourseApi } from "./api";
+import {
+  settingGuideStateApi,
+  copyCourseApi,
+  deleteCourseApi,
+  saveToCourseApi,
+} from "./api";
 import { message, Modal } from "ant-design-vue";
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router";
+import fileSaver from "file-saver";
 export default defineComponent({
   props: ["courseData", "currentTab", "index"],
   setup(props, { emit }) {
-    const router = useRouter()
-    
+    const router = useRouter();
+
     const data = props.courseData;
     const currentTab = props.currentTab;
     const index = props.index;
-    
+
     // 开启、关闭课程指导
     function setGuideStatus(val: any) {
       settingGuideStateApi({
@@ -127,7 +172,6 @@ export default defineComponent({
     }
     // 复制课程
     function copyCourse(id: number) {
-      console.log(id);
       copyCourseApi({ courseId: id }).then((res: any) => {
         message.success("复制成功");
         emit("update");
@@ -137,7 +181,6 @@ export default defineComponent({
       console.log(id);
     }
     function deleteCourse(id: number) {
-      console.log(id);
       Modal.confirm({
         title: "确定要删除该课程吗？",
         okText: "删除",
@@ -151,33 +194,46 @@ export default defineComponent({
       });
     }
     function evalute(val: any) {
-        router.push({
-            path:"/teacher/course/evalute",
-            query:{
-                courseId:val.id
-            }
-        })
+      router.push({
+        path: "/teacher/course/evalute",
+        query: {
+          courseId: val.id,
+        },
+      });
     }
     function analyse(val: any) {
-      console.log(val);
       router.push({
-          path:"/teacher/course/analysis",
-          query:{
-              courseId:val.id
-          }
-      })
+        path: "/teacher/course/analysis",
+        query: {
+          courseId: val.id,
+        },
+      });
     }
     // 环境
     function environment(val: any) {
-      console.log(val);
       router.push({
-          path:"/teacher/course/virtualEnv",
-          query:{
-              courseId:val.id,
-              type:"course",
-              courseType:val.course_type
-          }
-      })
+        path: "/teacher/course/virtualEnv",
+        query: {
+          courseId: val.id,
+          type: "course",
+          courseType: val.course_type,
+        },
+      });
+    }
+
+    // 保存到我的
+    function saveToMy() {
+      saveToCourseApi({ courseId: data.id }).then((res: any) => {
+        
+        message.success("操作成功");
+      });
+    }
+    // 归档导出
+    function downloadExport() {
+      fileSaver.saveAs(
+        "/teacher-course/course-export?course_id=" + data.id,
+        "课程详情报表.xls"
+      );
     }
     // 判断课程进行状态
     function courseStatus(sort: number) {
@@ -192,6 +248,7 @@ export default defineComponent({
       }
     }
     return {
+      downloadExport,
       data,
       currentTab,
       courseStatus,
@@ -203,6 +260,7 @@ export default defineComponent({
       environment,
       analyse,
       evalute,
+      saveToMy,
     };
   },
 });
@@ -419,12 +477,122 @@ export default defineComponent({
           }
         }
       }
+
+      .init-course-base-statistics-box {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        > h2 {
+          color: #000;
+          font-size: 16px;
+          font-weight: 700;
+          margin-top: 15px;
+          padding: 0 15px;
+        }
+        .base-init-show {
+          display: flex;
+          flex-direction: row;
+          margin-bottom: 22px;
+          padding-left: 15px;
+          .content-total-box {
+            padding-right: 16px;
+            border-right: 1px solid #e9e9e9;
+            > span {
+              font-size: 13px;
+              color: #8f8f8f;
+              margin-right: 6px;
+            }
+          }
+          .time-total-box {
+            padding-left: 16px;
+            > span {
+              font-size: 13px;
+              color: #8f8f8f;
+              margin-right: 6px;
+            }
+          }
+        }
+        .base-init-action {
+          height: 40px;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center;
+          text-align: center;
+          background: #fafafa;
+          display: none;
+          border-top: 1px solid #e9e9e9;
+          > span {
+            width: 33.333333%;
+            &:nth-child(1) {
+              border-right: 1px solid #e9e9e9;
+            }
+            &:nth-child(2) {
+              border-right: 1px solid #e9e9e9;
+            }
+          }
+        }
+      }
+
+      .archived-course-base-statistics-box {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        > h2 {
+          color: #000;
+          font-size: 16px;
+          font-weight: 700;
+          margin-top: 15px;
+          padding: 0 15px;
+        }
+        .base-archived-action {
+          height: 40px;
+          flex-direction: row;
+          justify-content: space-around;
+          align-items: center;
+          text-align: center;
+          background: #fafafa;
+          display: none;
+          > span {
+            width: 50%;
+            &:nth-child(1) {
+              border-right: 1px solid #e9e9e9;
+            }
+          }
+        }
+        .archived-time-box {
+          padding-left: 15px;
+          margin-bottom: 30px;
+          > span {
+            font-size: 13px;
+            color: #8f8f8f;
+            margin-right: 6px;
+          }
+        }
+      }
       &:hover {
         .remove-hover {
           display: none;
         }
         .add-hover {
           display: flex;
+        }
+        .init-course-base-statistics-box {
+          .base-init-action {
+            display: flex;
+          }
+          .base-init-show {
+            display: none;
+          }
+        }
+        .archived-course-base-statistics-box {
+          .base-archived-action {
+            display: flex;
+          }
+          .archived-time-box {
+            display: none;
+          }
         }
       }
     }

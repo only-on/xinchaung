@@ -187,6 +187,27 @@ export default {
     url:"/classtest/default/edit_student",
     method:"POST",
     dataType:"formdata"
+  },
+  deleteFollowApi:{
+    url:"/classtest/default/edit_paper",
+    method:"POST",
+    dataType:"formdata"
+  },
+  getDefaultPaperInfoApi:{
+    url:"/classtest/default/paper_info",
+    method:"GET"
+  },
+  getAchievStatisApi:{
+    url:`/classtest/default/student_achievement`,
+    method:"GET"
+  },
+  editQuestionApi:{
+    url:"/classtest/default/edit_question",
+    method:"POST"
+  },
+  saveToCourseApi:{
+    url:"/teacher-course/save-to-course",
+    method:"POST",
   }
 }
 
@@ -234,4 +255,9 @@ export interface ITeacherCourseApis {
   getTestPaperListApi:TFHttpSend
   getStudentListApi:TFHttpSend
   updateStudentSelectApi:TFHttpSend
+  deleteFollowApi:TFHttpSend
+  getDefaultPaperInfoApi:TFHttpSend
+  getAchievStatisApi:TFHttpSend
+  editQuestionApi:TFHttpSend
+  saveToCourseApi:TFHttpSend
 }

@@ -100,10 +100,10 @@ import request from "src/request/getRequest";
 type TreactiveData = {
   directionTag: any[];
   CategoryTag: any[];
-  allTag: any|null;
+  allTag: any | null;
   directionsShow: boolean;
   directionsHeight: number;
-  categoryHeight:number;
+  categoryHeight: number;
   categoryShow: boolean;
   params: {
     directions: string;
@@ -129,30 +129,38 @@ export default defineComponent({
     });
     onMounted(() => {
       // 课程方向
-      getDirections().then(() => {
-        nextTick(() => {
-          reactiveData.directionsHeight = (
-            reactiveData as any
-          ).allTag.clientHeight;
-          if (reactiveData.directionsHeight > 40) {
-            reactiveData.directionsShow = false;
-          } else {
-            reactiveData.directionsShow = true;
-          }
-        });
+      getDirections().then((res: any) => {
+        if (res) {
+          console.log(res);
+          
+          nextTick(() => {
+            reactiveData.directionsHeight = (
+              reactiveData as any
+            ).allTag.clientHeight;
+            if (reactiveData.directionsHeight > 40) {
+              reactiveData.directionsShow = false;
+            } else {
+              reactiveData.directionsShow = true;
+            }
+          });
+        }
       });
       // 职业方向
-      getCategory().then(() => {
-        nextTick(() => {
-          reactiveData.categoryHeight = (
-            reactiveData as any
-          ).allTag.clientHeight;
-          if (reactiveData.categoryHeight > 40) {
-            reactiveData.categoryShow = false;
-          } else {
-            reactiveData.categoryShow = true;
-          }
-        });
+      getCategory().then((res) => {
+        if (res) {
+          console.log(res);
+          
+          nextTick(() => {
+            reactiveData.categoryHeight = (
+              reactiveData as any
+            ).allTag.clientHeight;
+            if (reactiveData.categoryHeight > 40) {
+              reactiveData.categoryShow = false;
+            } else {
+              reactiveData.categoryShow = true;
+            }
+          });
+        }
       });
     });
     watch(
@@ -168,9 +176,8 @@ export default defineComponent({
     function getDirections() {
       return new Promise((resolve: any) => {
         courseApi.getDirectionsApi({}).then((res) => {
-          console.log(res);
           reactiveData.directionTag = res?.data;
-          resolve();
+          resolve(res);
         });
       });
     }
@@ -178,9 +185,8 @@ export default defineComponent({
     function getCategory() {
       return new Promise((resolve: any) => {
         courseApi.getCategoryApi({}).then((res) => {
-          console.log(res);
           reactiveData.CategoryTag = res?.data;
-          resolve();
+          resolve(res);
         });
       });
     }

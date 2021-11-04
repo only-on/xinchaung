@@ -1,3 +1,135 @@
 <template>
-    <div>init</div>
+  <div class="init-course-box">
+    <a-input-search
+      placeholder="请输入课程名称"
+      style="width: 450px"
+      @search="onSearch"
+    />
+    <tag @tagChange="tagChange"></tag>
+    <div class="course-list">
+      <course-card
+        v-for="(item, index) in courseList"
+        :key="item.id"
+        :courseData="item"
+        :currentTab="currentTab"
+        :index="index"
+      ></course-card>
+    </div>
+
+    <div class="page-box">
+      <a-pagination
+        :default-current="1"
+        :default-page-size="12"
+        :total="totalCount"
+        @change="pageChange"
+      />
+    </div>
+  </div>
 </template>
+
+<script lang="ts">
+import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { getCourseListApi } from "./api";
+import tag from "./tag.vue";
+import courseCard from "./courseCard.vue";
+type TreactiveData={
+    params: {
+        directions: string,
+        category: string,
+        name: string,
+        page: number,
+        limit: number,
+        direction:string,
+        state: number,
+      },
+      courseList: any[],
+      totalCount: number,
+}
+export default defineComponent({
+  components: {
+    tag,
+    "course-card": courseCard,
+  },
+  props: ["currentTab"],
+  setup(props) {
+    const currentTab = props.currentTab;
+    const reactiveData:TreactiveData = reactive({
+      params: {
+        directions: "",
+        category: "",
+        name: "",
+        page: 1,
+        limit: 12,
+        direction: "",
+        state: 2,
+      },
+      courseList: [],
+      totalCount: 0,
+    });
+    onMounted(() => {
+      init();
+    });
+    function init() {
+      reactiveData.params = {
+        directions: "",
+        category: "",
+        name: "",
+        page: 1,
+        limit: 12,
+        direction: "",
+        state: 1,
+      };
+      getCourseList();
+    }
+    // 获取课程列表
+    function getCourseList() {
+      getCourseListApi(reactiveData.params).then((res: any) => {
+        reactiveData.courseList = res?.data.list;
+        reactiveData.totalCount = res?.data.page.totalCount;
+      });
+    }
+    // 标签发生变化时
+    function tagChange(tags: any) {
+      console.log(tags);
+      reactiveData.params.direction = tags.directions;
+      reactiveData.params.category = tags.category;
+      getCourseList();
+    }
+    // 搜索
+    function onSearch(val: any) {
+      reactiveData.params.name = val;
+      reactiveData.params.page = 1;
+      reactiveData.params.limit = 12;
+      getCourseList();
+    }
+    // page发生变化时
+    function pageChange(page: number, pageSize: number) {
+      reactiveData.params.page = page;
+      reactiveData.params.limit = pageSize;
+      getCourseList();
+    }
+    return {
+      ...toRefs(reactiveData),
+      onSearch,
+      tagChange,
+      currentTab,
+      init,
+      pageChange,
+    };
+  },
+});
+</script>
+
+<style lang="less">
+.init-course-box {
+  .course-list {
+    flex: 1;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .page-box {
+    margin-top: 20px;
+    text-align: center;
+  }
+}
+</style>

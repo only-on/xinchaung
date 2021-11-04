@@ -57,8 +57,16 @@ export default {
       path: "testPaperList",
       component: () => import("src/views/teachCourse/testPaperList/testPaperList.vue"),
       meta: {
-        title: "知识图谱",
+        title: "随堂测试",
         authCode: 'testPaperList'
+      },
+    },
+    {
+      path: "result",
+      component: () => import("src/views/teachCourse/testPaperList/interationResult.vue"),
+      meta: {
+        title: "测试结果",
+        authCode: 'result'
       },
     },
   ]

@@ -1,26 +1,25 @@
 <template>
   <div class="test-paper-card">
     <div class="itemTop">
-      <div>未作答</div>
+      <div>{{data.paper_title}}</div>
       <div class="itemTopSecond">
-        <span class="icon-zhangjie iconfont">2</span>
-        <span class="icon-fenshu1 iconfont">47</span>
-        <span class="icon-renshu iconfont">1</span>
+        <span class="icon-zhangjie iconfont">{{ data.question_count }}</span>
+        <span class="icon-fenshu1 iconfont">{{ data.score }}</span>
+        <span class="icon-renshu iconfont">{{ data.student_count }}</span>
       </div>
-      <div>2021-06-16 16:20:29</div>
+      <div>{{ data.updated_at }}</div>
     </div>
     <div class="itemBottom">
       <span><span class="item-bom-btn" @click="selectStu">选学生</span></span
-      ><span
-        ><a href="/v0.1.0/#/interationResult?resultid=227" class="item-bom-btn">
-          查结果
-        </a></span
       >
+      <span>
+        <router-link :to="{path:'/teacher/course/result',query:{paper_id:data.paper_id}}">查结果</router-link>
+      </span>
       <a-popover placement="bottom">
         <template v-slot:content>
           <div class="edit">
-            <p class="item-bom-btn" style="cursor: default">编辑</p>
-            <p class="item-bom-btn" style="cursor: default">删除</p>
+            <p class="item-bom-btn" @click="editTest" style="cursor: default">编辑</p>
+            <p class="item-bom-btn" @click="deleteTest" style="cursor: default">删除</p>
           </div>
         </template>
         <span>
@@ -36,17 +35,26 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   props: ["value"],
-  emits:["selectStu"],
+  emits:["selectStu","editTest","deleteTest"],
   setup(props, { emit }) {
-    console.log(props.value);
     const data = props.value;
     // 打开选择学生modal
     function selectStu() {
         emit("selectStu",data.paper_id)
     }
+    // 编辑
+    function editTest() {
+      emit("editTest",data.paper_id)
+    }
+    // 删除
+    function deleteTest() {
+      emit("deleteTest",data.paper_id)
+    }
     return {
       data,
-      selectStu
+      selectStu,
+      editTest,
+      deleteTest
     };
   },
 });

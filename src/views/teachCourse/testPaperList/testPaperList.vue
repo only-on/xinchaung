@@ -17,6 +17,8 @@
         v-model:value="testPaperList[index]"
         :key="index"
         @selectStu="selectStu"
+        @editTest="editTest"
+        @deleteTest="deleteTest"
       ></testpaper-card>
     </div>
     <div class="page-box">
@@ -122,10 +124,16 @@
 
 <script lang="ts">
 import { defineComponent, inject, ref, toRefs, reactive, onMounted } from "vue";
-import { getTestPaperListApi, getStudentListApi,updateStudentSelectApi } from "./api";
-import { useRoute } from "vue-router";
+import {
+  getTestPaperListApi,
+  getStudentListApi,
+  updateStudentSelectApi,
+  deleteFollowApi,
+} from "./api";
+import { useRoute, useRouter } from "vue-router";
 import testPaperCard from "./testPaperCard.vue";
 import _ from "lodash";
+import { Modal, message } from "ant-design-vue";
 
 export default defineComponent({
   components: {
@@ -133,6 +141,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
+    const router = useRouter();
     const course_id = route.query.courseid as any as number;
     var updata = inject("updataNav") as Function;
     const NoSturowKey = (row: any) => {
@@ -159,13 +168,13 @@ export default defineComponent({
       },
     ];
     onMounted(() => {
-      getTestPaperList();
+      init()
     });
-    let paper_id=-1
+    let paper_id = -1;
     const reactiveData = reactive({
       params: {
         page: 1,
-        pageSize: 15,
+        pageSize: 11,
         course_id: course_id,
         title: "",
       },
@@ -182,16 +191,23 @@ export default defineComponent({
       NameLeft: "",
       NameRight: "",
     });
+    function init() {
+      reactiveData.params = {
+        page: 1,
+        pageSize: 11,
+        course_id: course_id,
+        title: "",
+      };
+      getTestPaperList();
+    }
     function getTestPaperList() {
       getTestPaperListApi(reactiveData.params).then((res: any) => {
-        console.log(res);
         reactiveData.testPaperList = res.data.list;
         reactiveData.totalCount = res.data.totalCount;
       });
     }
     // 查询
     function searchCourseFUp() {
-      console.log(reactiveData.params);
       reactiveData.params.page = 1;
       reactiveData.params.pageSize = 15;
       getTestPaperList();
@@ -207,11 +223,11 @@ export default defineComponent({
     // 打开选择学生modal
     function selectStu(id: number) {
       reactiveData.stuModalVisiable = true;
-      paper_id=id
-      reactiveData.selectedNoStuRowKeys=[]
-      reactiveData.selectedStuRowKeys=[]
-      reactiveData.NameLeft=""
-      reactiveData.NameRight=""
+      paper_id = id;
+      reactiveData.selectedNoStuRowKeys = [];
+      reactiveData.selectedStuRowKeys = [];
+      reactiveData.NameLeft = "";
+      reactiveData.NameRight = "";
       getStudentList({ paper_id: id });
     }
 
@@ -221,31 +237,28 @@ export default defineComponent({
     }
     // 确认学生modal
     function okStuModal() {
-      let no_relation_student:any[]=[]
-      let relation_student:any[]=[]
-      reactiveData.searchNoStudata.forEach((item:any)=>{
-        no_relation_student.push(item.user_id)
-      })
-      reactiveData.searchSelectData.forEach((item:any)=>{
-        relation_student.push(item.user_id)
-      })
-      console.log(no_relation_student.join(","))
-      let params={
-        paper_id:paper_id,
-        no_relation_student:no_relation_student.join(","),
-        relation_student:relation_student.join(",")
-      }
-      updateStudentSelectApi(params).then(()=>{
+      let no_relation_student: any[] = [];
+      let relation_student: any[] = [];
+      reactiveData.searchNoStudata.forEach((item: any) => {
+        no_relation_student.push(item.user_id);
+      });
+      reactiveData.searchSelectData.forEach((item: any) => {
+        relation_student.push(item.user_id);
+      });
+      let params = {
+        paper_id: paper_id,
+        no_relation_student: no_relation_student.join(","),
+        relation_student: relation_student.join(","),
+      };
+      updateStudentSelectApi(params).then(() => {
         reactiveData.stuModalVisiable = false;
-      })
-      
+      });
     }
 
     // 搜索未选择的学生
     function searchStu(type: string) {
       // 左边搜索
       if (type === "left") {
-        console.log(reactiveData.NameLeft);
         (reactiveData.searchNoStudata as any) = _.filter(
           reactiveData.noStudata,
           (item: any) => {
@@ -273,17 +286,14 @@ export default defineComponent({
     // 选择学生
     function onSelectNoStuChange(selectedRowKeys: any) {
       reactiveData.selectedNoStuRowKeys = selectedRowKeys;
-      console.log(reactiveData.selectedNoStuRowKeys);
     }
 
     // 选择已选择学生
     function onSelectStuChange(selectedRowKeys: any) {
       reactiveData.selectedStuRowKeys = selectedRowKeys;
-      console.log(reactiveData.selectedStuRowKeys);
     }
     function getStudentList(params: { paper_id: number }) {
       getStudentListApi(params).then((res: any) => {
-        console.log(res);
         reactiveData.noStudata = res.data.no_relation_student || [];
         reactiveData.searchNoStudata = res.data.no_relation_student || [];
         reactiveData.selectStuData = res.data.relation_student || [];
@@ -296,7 +306,6 @@ export default defineComponent({
       if (type === "left") {
         let userIdArry: any = [];
         reactiveData.selectedNoStuRowKeys.forEach((item: any) => {
-          console.log(item.split(",,"));
           let arr = item.split(",,");
           userIdArry.push(arr[0]);
           let temp = {
@@ -318,7 +327,6 @@ export default defineComponent({
       if (type === "right") {
         let userIdArry: any = [];
         reactiveData.selectedStuRowKeys.forEach((item: any) => {
-          console.log(item.split(",,"));
           let arr = item.split(",,");
           userIdArry.push(arr[0]);
           let temp = {
@@ -340,7 +348,31 @@ export default defineComponent({
       reactiveData.selectStuData = reactiveData.searchSelectData;
     }
 
-    
+    // 编辑
+    function editTest(paper_id: number) {
+      router.push({
+        path: "/teacher/course/createTestPaper",
+        query: {
+          paper_id: paper_id,
+        },
+      });
+    }
+    // 删除
+    function deleteTest(paper_id: number) {
+      Modal.confirm({
+        title: "删除测试卷",
+        content: "你确定要删除当前试卷吗？",
+        onOk() {
+          deleteFollowApi({
+            id: paper_id,
+            "paper_data[paper_status]": -1,
+          }).then((res: any) => {
+            message.success("删除成功");
+            init()
+          });
+        },
+      });
+    }
     return {
       noStuColumns,
       ...toRefs(reactiveData),
@@ -354,6 +386,8 @@ export default defineComponent({
       NoSturowKey,
       onSelectStuChange,
       removeStu,
+      editTest,
+      deleteTest,
     };
   },
 });
