@@ -11,7 +11,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
-
+// console.log(routes)
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）

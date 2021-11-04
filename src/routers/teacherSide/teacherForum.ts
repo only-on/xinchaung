@@ -1,10 +1,10 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 export default {
-  path: "/teacherForum",
+  path: "teacherForum",
   component: Layout,
   meta: {
-    title: "论坛",
+    title: "公共论坛",
     authCode: "forum",
   },
   children: [

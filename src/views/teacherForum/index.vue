@@ -125,7 +125,7 @@ export default defineComponent({
       placeholder: "输入内容...",
       theme: "snow",
     };
-    const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
+    const tabs=[{name:'公共论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
     const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
     const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
     const options = computed(()=>{
@@ -236,7 +236,7 @@ export default defineComponent({
       })
     }
     function editCard(val:ItdItems){
-      router.push('/teacherForum/CreatePosts?editId='+val.id)
+      router.push('/teacher/teacherForum/CreatePosts?editId='+val.id)
     }
     function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
@@ -251,10 +251,10 @@ export default defineComponent({
       initData()
     }
     function release(){
-      router.push('/teacherForum/CreatePosts')
+      router.push('/teacher/teacherForum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/teacherForum/PostsDetailed?detailId='+id)
+      router.push('/teacher/teacherForum/PostsDetailed?detailId='+id)
     }
     onMounted(()=>{
       // serve.v(dataObj); 
