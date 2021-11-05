@@ -1,7 +1,7 @@
 <template>
   <div class="course-item">
     <div class="course-item-box">
-      <div class="cover-box">
+      <div class="cover-box" @click="toDetail">
         <img
           :src="data.url ? data.url : '/img/default/cover.png'"
           alt=""
@@ -235,6 +235,17 @@ export default defineComponent({
         "课程详情报表.xls"
       );
     }
+
+    // 跳转详情
+    function toDetail() {
+      router.push({
+        path:"/teacher/course/detail",
+        query:{
+          course_id:data.id,
+          currentTab:currentTab
+        }
+      })
+    }
     // 判断课程进行状态
     function courseStatus(sort: number) {
       if (sort === 1) {
@@ -261,6 +272,7 @@ export default defineComponent({
       analyse,
       evalute,
       saveToMy,
+      toDetail
     };
   },
 });

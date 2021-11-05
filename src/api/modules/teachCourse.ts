@@ -208,6 +208,10 @@ export default {
   saveToCourseApi:{
     url:"/teacher-course/save-to-course",
     method:"POST",
+  },
+  getCourseDetailApi:{
+    url:"/api/course/courses/{course_id}",
+    method:"GET"
   }
 }
 
@@ -260,4 +264,5 @@ export interface ITeacherCourseApis {
   getAchievStatisApi:TFHttpSend
   editQuestionApi:TFHttpSend
   saveToCourseApi:TFHttpSend
+  getCourseDetailApi:TFHttpSend
 }
