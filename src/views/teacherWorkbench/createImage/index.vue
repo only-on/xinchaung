@@ -2,7 +2,12 @@
   <div v-layout-bg class="create-image-box">
         <a-form layout="vertical">
             <a-form-item label="镜像文件" required>
-                <upload-image></upload-image>
+                <upload-image 
+                action="/api/instance/uploads/file"
+                resumeAction='/api/instance/uploads/chunk' 
+                deleteAction="/api/instance/uploads/delete"
+                mergedAction="/api/instance/uploads/merge"
+                ></upload-image>
             </a-form-item>
             <div class='create-img-middle'>
                 <div>
