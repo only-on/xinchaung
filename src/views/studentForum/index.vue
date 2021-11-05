@@ -143,7 +143,7 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
+      console.log(val)
       tabType.value=val
       ForumSearch.title=''
       ForumSearch.page=1
@@ -169,6 +169,11 @@ export default defineComponent({
       type:undefined
     })
     function initData(){
+      const {page,title,type}= route.query
+      console.log(page,title,type)
+      page?ForumSearch.page=Number(page):''
+      title?ForumSearch.title=String(title):''
+      type?ForumSearch.type=String(type):''
       loading.value=true
       list.length=0
       http[apiName[tabType.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
@@ -187,6 +192,18 @@ export default defineComponent({
     function search(){
       // console.log(ForumSearch)
       if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
+        const {query,path}= route
+        let obj:any={}
+        if(ForumSearch.title){
+          obj.title=ForumSearch.title
+        }
+        if(ForumSearch.type){
+          obj.type=ForumSearch.type
+        }
+        router.replace({
+              path: path,
+              query: {...query,...obj},
+        })
         ForumSearch.page=1
         initData()
       }
@@ -236,15 +253,24 @@ export default defineComponent({
     function editCard(val:ItdItems){
       router.push('/studentForum/CreatePosts?editId='+val.id)
     }
-    function clearSearch(){
+    async function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
         ForumSearch.title=''
         ForumSearch.type=undefined
-        ForumSearch.page=1
+        let {query,path}= route
+       await router.replace({
+              path: path,
+              query: {page:ForumSearch.page},
+        })
         initData()
       }
     }
     function onChangePage(val:number){
+      const {query,path}= route
+      router.replace({
+            path: path,
+            query: {...query,page:val},
+      })
       ForumSearch.page=val
       initData()
     }

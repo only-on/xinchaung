@@ -29,7 +29,7 @@ import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 // import { Delta } from "../../typings/quill-delta";
 import  QuillEditor  from "src/components/editor/quill.vue";
-const http=(request as any).studentForum
+const http=(request as any).teacherForum
 interface form{
   title:string,
   type:string,

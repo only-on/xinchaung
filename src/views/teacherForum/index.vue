@@ -22,9 +22,10 @@
           <a @click="detaile(record.id)">{{ text }}</a>
         </template>
         <template #operation="{record}">
-          <a  class="caozuo" @click="replyCard(record )">回帖</a>
-          <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a>
-          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
+          <a  class="caozuo" @click="detaile(record.id)">查看</a>
+          <!-- <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a> -->
+          <!-- <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a> -->
+          <a  class="caozuo" @click="delateCard(record )" v-if="tabType===1">删除</a>
         </template>
       </a-table>
     </a-config-provider>
@@ -81,33 +82,40 @@ const columns=[
   {
     title: '类型',
     dataIndex: 'type',
-    align:'center'
+    align:'center',
+    width:100
   },
   {
-    title: '发帖人/发帖时间',
+    title: '发帖人',
     dataIndex: 'creat',
     align:'center',
-    width:260
+    width:120
   },
   {
-    title: '回复数/查看数',
-    dataIndex: 'replyViews',
-    align:'center',
-    width:160
-  },
-  {
-    title: '最近回帖人/最近回帖时间',
+    title: '最后回复',
     dataIndex: 'reply',
     align:'center',
     width:260
+  },
+  {
+    title: '查看 / 回复',
+    dataIndex: 'replyViews',
+    align:'center',
+    width:140
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'created_at',
+    align:'center',
+    width:200
   },
   {
     title: '操作',
     dataIndex: 'operation',
     align:'center',
     slots: { customRender: 'operation' },
-    fixed:'right',
-    width:200
+    fixed: 'right',
+    width:160
   }
 ]
 
@@ -145,7 +153,7 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
+       // console.log(val)
       tabType.value=val
       ForumSearch.title=''
       ForumSearch.page=1
@@ -171,14 +179,18 @@ export default defineComponent({
       type:undefined
     })
     function initData(){
+      const {page,title,type}= route.query
+      page?ForumSearch.page=Number(page):''
+      title?ForumSearch.title=String(title):''
+      type?ForumSearch.type=String(type):''
       loading.value=true
       list.length=0
       http[apiName[tabType.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
          loading.value=false
         let data=res.data.list
         data.map((v:any)=>{
-          v.creat=`${v.user_name} / ${v.created_at}`,
-          v.replyViews=`${v.reply_num} / ${v.views_num}`,
+          v.creat=`${v.user_name}`,
+          v.replyViews=`${v.views_num} / ${v.reply_num}`,
           v.reply=`${v.last_reply_username} / ${v.last_reply_time}`
         })
         list.push(...data)
@@ -189,6 +201,18 @@ export default defineComponent({
     function search(){
       // console.log(ForumSearch)
       if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
+        const {query,path}= route
+        let obj:any={}
+        if(ForumSearch.title){
+          obj.title=ForumSearch.title
+        }
+        if(ForumSearch.type){
+          obj.type=ForumSearch.type
+        }
+        router.replace({
+              path: path,
+              query: {...query,...obj},
+        })
         ForumSearch.page=1
         initData()
       }
@@ -238,15 +262,24 @@ export default defineComponent({
     function editCard(val:ItdItems){
       router.push('/teacher/teacherForum/CreatePosts?editId='+val.id)
     }
-    function clearSearch(){
+    async function clearSearch(){
       if(ForumSearch.title || ForumSearch.type){
         ForumSearch.title=''
         ForumSearch.type=undefined
-        ForumSearch.page=1
+        let {query,path}= route
+        await router.replace({
+              path: path,
+              query: {page:ForumSearch.page},
+        })
         initData()
       }
     }
-    function onChangePage(val:number){
+   function onChangePage(val:number){
+      const {query,path}= route
+      router.replace({
+            path: path,
+            query: {...query,page:val},
+      })
       ForumSearch.page=val
       initData()
     }

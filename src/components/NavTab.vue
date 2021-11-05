@@ -62,10 +62,10 @@ export default defineComponent({
     async function tabChange(item: ITab) {
       // console.log(item)
       if(activeName.value!==item.name){
-        context.emit("tabSwitch", item.componenttype);
         await updateRouter(item.componenttype);
-        activeName.value = item.name;
+        context.emit("tabSwitch", item.componenttype);
         updata({...configuration,componenttype:item.componenttype})
+        activeName.value = item.name;
       }
     }
     function pageEdit(){
@@ -77,10 +77,9 @@ export default defineComponent({
       let Newquery={currentTab: val}
       await router.replace({
             path: path,
-            query: Newquery,
+            query:Newquery,
       })
-      // var query2= route.query
-      // console.log(query2)
+      // console.log(route.query)
     }
     async function initData(){
       if(configuration.tabs && configuration.tabs.length){
@@ -94,7 +93,6 @@ export default defineComponent({
         await tabChange(configuration.tabs[newSwitchNumber])
         configuration.componenttype=newSwitchNumber
         activeName.value =configuration.tabs[configuration.componenttype].name
-        
       }
     }
     function back(){
