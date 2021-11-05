@@ -184,10 +184,13 @@ function isJsonString(str: any) {
 import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
 function goHtml(val: string) {
     if (val.split('ops').length > 1) {
-        // console.log(JSON.parse(val));
-        let text = JSON.parse(val)
+        // console.log(val);
+        var val2:any=val.indexOf('base64')===-1?val:"{\"ops\":[{\"insert\":\" \\n\"}]}";
+        // console.log(val2);
+        var text=JSON.parse(val2)
         var converter = new QuillDeltaToHtmlConverter(text.ops, {})
         var html = converter.convert()
+        // console.log(html);
         return html
     } else {
         return val

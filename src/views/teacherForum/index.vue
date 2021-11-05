@@ -12,7 +12,7 @@
           <a-button type="primary" @click="clearSearch()">清空</a-button>
         </div>
       </div>
-      <a-button @click="release()" type="primary">发布问题</a-button>
+      <a-button @click="release()" type="primary"> 发 帖 </a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
@@ -24,8 +24,8 @@
         <template #operation="{record}">
           <a  class="caozuo" @click="detaile(record.id)">查看</a>
           <!-- <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a> -->
-          <!-- <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a> -->
-          <a  class="caozuo" @click="delateCard(record )" v-if="tabType===1">删除</a>
+          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
+          <!-- <a  class="caozuo" @click="delateCard(record )" v-if="tabType===1">删除</a> -->
         </template>
       </a-table>
     </a-config-provider>
@@ -83,7 +83,7 @@ const columns=[
     title: '类型',
     dataIndex: 'type',
     align:'center',
-    width:100
+    // width:100
   },
   {
     title: '发帖人',

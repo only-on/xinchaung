@@ -143,7 +143,7 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       tabType.value=val
       ForumSearch.title=''
       ForumSearch.page=1
@@ -174,6 +174,7 @@ export default defineComponent({
       page?ForumSearch.page=Number(page):''
       title?ForumSearch.title=String(title):''
       type?ForumSearch.type=String(type):''
+      console.log(ForumSearch)
       loading.value=true
       list.length=0
       http[apiName[tabType.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
@@ -189,24 +190,23 @@ export default defineComponent({
         // console.log(list)
       })
     }
-    function search(){
+    async function search(){
       // console.log(ForumSearch)
-      if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
+      // if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
         const {query,path}= route
-        let obj:any={}
-        if(ForumSearch.title){
-          obj.title=ForumSearch.title
+        let obj:any={
+          title:ForumSearch.title,
+          type:ForumSearch.type
         }
-        if(ForumSearch.type){
-          obj.type=ForumSearch.type
-        }
-        router.replace({
+        ForumSearch.title?'': delete obj.title
+        ForumSearch.type === undefined ? delete obj.type:''
+        await router.replace({
               path: path,
-              query: {...query,...obj},
+              query: {currentTab:query.currentTab,...obj},
         })
         ForumSearch.page=1
         initData()
-      }
+      // }
     }
     function delateCard(val:ItdItems){
       // console.log(val)

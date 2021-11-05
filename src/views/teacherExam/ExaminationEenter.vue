@@ -131,6 +131,10 @@ export default defineComponent({
     })
     var totalCount:Ref<number>=ref(0)
     function initData(){
+      const {page,name,status}= route.query
+      page?Forum.page=Number(page):''
+      name?Forum.name=String(name):''
+      status?Forum.status=Number(status):''
       loading.value=true
       list.length=0
       let obj={
@@ -147,11 +151,28 @@ export default defineComponent({
         totalCount.value=res.data.page.totalCount
       })
     }
-    function search(val:any){
-      console.log(val) 
-      if(Forum.name || Forum.status===0){
+    async function search(val:any){
+      // console.log(val) 
+      // console.log(Forum) 
+      // if(Forum.name || Forum.status!==0){
+        const {query,path}= route
+        let obj:any={
+          name:Forum.name,
+          status:Forum.status,
+          // page:Forum.page,
+        }
+        Forum.name?'': delete obj.name
+        Forum.status===0? delete obj.status:''
+        // Forum.page===1?delete obj.page:''
+        await router.replace({
+              path: path,
+              query: {currentTab:query.currentTab,...obj},
+        })
+        // console.log(query) 
+        // console.log(obj) 
+         Forum.page=1
          initData()
-       }
+      //  }
     }
     var updata=inject('updataNav') as Function
     function pageChange(current:any,pageSize:any){

@@ -89,6 +89,9 @@ export default defineComponent({
     // const totalCount
     var totalCount:Ref<number>=ref(0)
     function initData(){
+      const {page,name}= route.query
+      page?ForumSearch.page=Number(page):''
+      name?ForumSearch.name=String(name):''
       loading.value=true
       list.length=0
       http.getTestPaperList({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
@@ -98,10 +101,18 @@ export default defineComponent({
         totalCount.value=res.data.page.totalCount
       })
     }
-    function search(val:any){
-      if(ForumSearch.name===''){
-         return
-       }
+    async function search(val:any){
+      const {query,path}= route
+        let obj:any={
+          name:ForumSearch.name,
+        }
+        ForumSearch.name?'': delete obj.name
+        // Forum.page===1?delete obj.page:''
+        await router.replace({
+              path: path,
+              query: {currentTab:query.currentTab,...obj},
+        })
+       ForumSearch.page=1
       initData()
     }
     function copy(id:number){

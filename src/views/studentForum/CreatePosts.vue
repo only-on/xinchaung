@@ -98,7 +98,7 @@ export default defineComponent({
             // let typePosts={'分享':'1','求助':'2'}
             state.formState.title=res.data.title
             state.formState.type=res.data.type==='分享'?'1':'2'
-            state.formState.content=res.data.content
+            state.formState.content=res.data.content?JSON.parse(res.data.content):{}
         })
       },
       onSubmit:()=>{

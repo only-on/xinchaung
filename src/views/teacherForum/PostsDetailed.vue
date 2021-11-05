@@ -37,8 +37,8 @@
     </div>
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
-      <div class="text" style="height:300px;">
-        <QuillEditor v-if="visible" toolbar="full" :options="options" v-model:content="ForumArticle.content"  /> 
+      <div class="text">
+        <QuillEditor v-if="visible" :height="'300px'" toolbar="" v-model="ForumArticle.content"  /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
@@ -68,7 +68,6 @@ interface Istate{
   detale: (val:any) => void;
   detailObj:any;
   visible:boolean;
-  options:any;
   editReply: () => void;
   ForumArticle:Ireply
 }
@@ -90,10 +89,6 @@ export default defineComponent({
       ForumArticle:{
         forum_id:Number(detailId),
         content:''
-      },
-     options:{
-        placeholder: "输入内容...",
-        theme: "snow",
       },
       reply:()=>{
         visible.value=true
