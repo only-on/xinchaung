@@ -36,7 +36,7 @@ export default defineComponent({
 
     function select(type: string) {
       router.push({
-        path: '/teacher/experiment/creatTypeExperiment',
+        path: '/teacher/teacherExperiment/creatTypeExperiment',
         query: {
           type: type,
           chapter_id: route.query.chapter_id,

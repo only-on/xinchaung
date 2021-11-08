@@ -187,7 +187,7 @@ export default defineComponent({
             if (res.code === 1) {
               $message.success('创建实验成功')
               router.push({
-                path: '/teacher/experiment',
+                path: '/teacher/teacherExperiment',
                 query: {
                   course_index: route.query.course_index,
                   chapter_index: route.query.chapter_index,
@@ -224,7 +224,7 @@ export default defineComponent({
             if (res.code === 1) {
               $message.success('创建实验成功')
               router.push({
-                path: '/teacher/experiment',
+                path: '/teacher/teacherExperiment',
                 query: {
                   course_index: route.query.course_index,
                   chapter_index: route.query.chapter_index,
@@ -248,7 +248,7 @@ export default defineComponent({
     }
     function cancel() {
       router.push({
-        path: '/teacher/experiment/creatExperiment',
+        path: '/teacher/teacherExperiment/creatExperiment',
         query: {
           chapter_id: route.query.chapter_id,
           chapter_name: route.query.chapter_name,
@@ -619,5 +619,11 @@ interface IselectedName {
 }
 .mark__container.markdown__editor {
   min-height: 300px;
+}
+.data-image-drawer{
+  .image,.data{
+    height: 100%;
+    overflow: hidden;
+  }
 }
 </style>

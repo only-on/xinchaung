@@ -571,6 +571,8 @@ export default defineComponent({
     }
   }
   .dataList{
+    height: calc(100% - 175px);
+    overflow: auto;
     .list{
       padding: 0 20px;
       min-height: 430px;

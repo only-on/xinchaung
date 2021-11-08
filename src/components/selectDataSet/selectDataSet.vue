@@ -35,7 +35,7 @@
     <div class="data-set-base-box">
       <template v-if="dataSetList.length > 0">
         <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
-          <div><img :src="item.cover" :alt="item.name" /></div>
+          <div><img :src="item.cover" alt="" /></div>
           <div class="data-base-info">
             <h2>{{ item.name }}</h2>
             <div class="tag">
@@ -72,16 +72,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, toRefs,watch,Ref,ref,inject } from "vue";
 import request from "src/request/getRequest";
 import storage from "src/utils/extStorage";
 import empty from "src/components/Empty.vue";
+import { MessageApi } from "ant-design-vue/lib/message";
 export default defineComponent({
   components: { empty },
-  props: ["modelValue", "modelName"],
+  props: ["value", "name",'limitNumber'],
   setup(props, { emit }) {
+    const $message: MessageApi = inject("$message")!;
     const datasetApi = request.teacherWorkbench;
     const uid = storage.lStorage.get("uid");
+    const limitNumber: Ref<number> = ref(3);
+    props.limitNumber?limitNumber.value=props.value:''
     const reactiveData: {
       params: any;
       category: any[];
@@ -123,7 +127,7 @@ export default defineComponent({
       datasetApi
         .getDataSetApi({ param: reactiveData.params })
         .then((res: any) => {
-          console.log(res);
+          // console.log(res);
           reactiveData.dataSetList.push(...res.data);
           reactiveData.count = res.total;
         });
@@ -164,6 +168,10 @@ export default defineComponent({
 
     // 选择
     function select(val: any) {
+      if(limitNumber.value === reactiveData.selected.length){
+        $message.warn('数据集最多可选择三个')
+        return
+      }
       reactiveData.selected.includes(val.uid)
         ? ""
         : reactiveData.selected.push(val.uid);
@@ -174,17 +182,17 @@ export default defineComponent({
     function updateData() {
       let names: any = [];
       emit("update:value", reactiveData.selected);
-      console.log(reactiveData.selected);
-
+      // console.log(reactiveData.selected);
       reactiveData.dataSetList.map((item: any) => {
         reactiveData.selected.includes(item.uid)
           ? names.push({ uid: item.uid, name: item.name })
           : "";
       });
-      console.log(names);
-
       emit("update:name", names);
     }
+    watch(()=>{return props.value},(val:any)=>{
+      reactiveData.selected=val
+    },{deep:true,immediate:true})
     return {
       ...toRefs(reactiveData),
       onSearch,
@@ -201,6 +209,7 @@ export default defineComponent({
 <style lang="less">
 .data-set-box {
   height: 100%;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
   .data-set-type {
@@ -227,7 +236,8 @@ export default defineComponent({
     }
   }
   .data-set-base-box {
-    flex: 1;
+    // flex: 1;
+    height: calc(100% - 150px);
     overflow: auto;
     padding-top: 25px;
     .data-set-item {

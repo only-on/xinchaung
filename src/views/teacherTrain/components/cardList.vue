@@ -135,7 +135,7 @@ export default defineComponent({
     }
     // 考核
     const evaluate = (id: number) => {
-      router.push('/teacher/Experimental/evaluate?trainId=' + id)
+      router.push('/teacher/teacherExperiment/evaluate?trainId=' + id)
     }
 
     // 资源
@@ -145,7 +145,7 @@ export default defineComponent({
         trainId: id
       }
       router.replace({
-        path: '/teacher/Experimental/resource',
+        path: '/teacher/teacherExperiment/resource',
         query: param
       })
     }

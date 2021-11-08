@@ -778,7 +778,7 @@ export default defineComponent({
     function create() {
       // console.log('创建实验')
       router.push({
-        path: '/teacher/experiment/creatExperiment',
+        path: '/teacher/teacherExperiment/creatExperiment',
         query: {
           chapter_id: currentSkillInfo.chapter_id,
           chapter_name: currentSkillInfo.chapter_name,
