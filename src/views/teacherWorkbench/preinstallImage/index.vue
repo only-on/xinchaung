@@ -14,7 +14,7 @@
                 <div class="image-item" v-for="(item,index) in mirrorList" :key="index.toString()">
                     <div class="image-base">
                         <h3 class="image-name">{{item.name}}</h3>
-                        <div class="type">{{item.tag.join()}}</div>
+                        <div class="type">{{item.tag.join('/')}}</div>
                         <div class="memory">
                             <div>容量:{{item.size}}</div>
                             <div>系统：{{item.classify.name}}</div>

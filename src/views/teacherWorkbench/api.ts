@@ -129,5 +129,31 @@ export async function getPresetMirror(params: any) {
 export async function createMirrorApi(params: any) {
     return await workbenchApi.createMirrorApi({ param: params })
 }
+/**
+ * @description 删除镜像
+ * @param  id
+ * 
+ * */
+export async function deleteMyImageApi(id: any) {
+    return await workbenchApi.deleteMyImageApi({ urlParams: { id: id } })
+}
+
+/**
+ * @description 编辑镜像
+ * @param  params 
+ * @param id 
+ *              name: values.name,
+                file_path: this.formData.image.file_path,
+                file_size: this.formData.image.file_size,
+                classify_id: Number(values.system),
+                tag: values.tag,
+                description: this.formData.image.description,
+                ssh_user: values.userName,
+                ssh_pass: values.userPassword,
+                is_use_gpu: this.isActiveGPU ? 1 : 0,
+ */
+export async function editMyImageApi(id: any, params: any) {
+    return await workbenchApi.editMyImageApi({ urlParams: id, param: params })
+}
 
 

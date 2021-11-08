@@ -2,11 +2,11 @@
   <div class="image-card-box">
     <div class="card-content">
       <div class="card-top">
-        <div class="card-title">{{ data.name }}</div>
-        <div class="card-tag">{{data.tag.join(" / ")}}</div>
+        <div class="card-title">{{ modelValue.name }}</div>
+        <div class="card-tag">{{modelValue.tag.join(" / ")}}</div>
         <img
           class="image-type"
-          :src=" data.ostypes === 'kvm'
+          :src="modelValue.ostypes === 'kvm'
                 ?'../../../../src/assets/workbench/kvm.png'
                 :'../../../../src/assets/workbench/docker.png'
           "
@@ -14,28 +14,52 @@
         />
       </div>
       <div class="card-bottom">
+         <!-- <div>
+          <span>内存：{{modelValue.config.ram_text}}</span>
+          <span>CPU：{{modelValue.config.cpu_text}}</span>
+        </div> -->
         <div>
-          <span>容量：{{data.size}}</span>
-          <span>系统：{{data.size}}</span>
+          <!-- <span>硬盘：{{modelValue.config.disk_text}}</span>
+          <span>GPU：{{modelValue.image.is_use_gpu?"开启":"未启用"}}</span> -->
+          <span>容量：{{modelValue.size}}</span>
+          <!-- <span>系统：{{modelValue.image.classify.name}}</span> -->
         </div>
       </div>
     </div>
-    <div></div>
+    <div>
+      <div class="card-head">
+        <div class="description">{{modelValue.description}}</div>
+      </div>
+      <div class="card-foot">
+        <div class="icon-operate">
+          <!-- <span class="iconfont icon-fuyong" @click="copyImage(data)"></span> -->
+          <span class="iconfont icon-bianji1" @click="editImage(modelValue)"></span>
+          <span class="iconfont icon-shanchu-copy" @click="deleteImage(modelValue.id)"></span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-
 export default defineComponent({
   props: ["modelValue"],
   setup(props, { emit }) {
    const  baseUrl = process.env.NODE_ENV !== 'development' ? process.env.BASE_URL : ''
-    console.log(props.modelValue);
-    const data = props.modelValue;
-    console.log(data);
-    
-    return { baseUrl,data };
+    // const data = props.modelValue;
+    const methods={
+      copyImage(data:number){
+        emit('copy-image',data)
+      },
+      editImage(data:number){
+        emit('edit-image',data)
+      },
+      deleteImage(id:number){
+        emit('delete-image',id)
+      }
+    }
+    return { baseUrl,...methods};
   },
 });
 </script>
@@ -88,16 +112,75 @@ export default defineComponent({
         color: #ffde00;
       }
       .image-type{
-        position: absolute;
-        right:20px;
+       position: absolute;
+      right: 20px;
+      bottom: -15px;
+      width: 64px;
+      height: 64px;
+      box-shadow: 0 4px 6px 0 rgb(0 35 214 / 29%);
+      border-radius: 50%;
+      overflow: hidden;
       }
     }
     .card-bottom {
+      color: rgba(0,0,0,.65);
+      padding: 14px;
+      font-size: 12px;
       height: 66px;
       background: @white;
       border-radius: 6px;
       box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
+      >div{
+        >span{
+          display: inline-block;
+          width: 32%;
+        }
+        >span{
+          margin-right:2%;
+        }
+        >span:nth-child(3){
+          margin-right:0px;
+        }
+      }
     }
   }
+  .card-head{
+      .description{
+      word-break: break-all;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      font-size: 12px;
+      color: #0d0811;
+      line-height: 22px;
+      -webkit-user-select: text;
+      -moz-user-select: text;
+      -ms-user-select: text;
+      user-select: text
+      }
+    }
+   .card-foot{
+      display: flex;
+      width: 100%;
+      justify-content:right;
+      align-items: center;
+      .image-type{
+        font-size: 24px;
+        color: #d0bce6;
+        margin-right: auto;
+        letter-spacing: 2px;
+        font-weight: 700;
+      }
+       .icon-operate{
+        width: 20%;
+        display: flex;
+        justify-content:space-between;
+        .iconfont:hover{
+          color: @theme-color;
+        }
+      }
+    }
 }
 </style>
