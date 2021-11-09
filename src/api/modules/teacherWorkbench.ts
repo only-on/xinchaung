@@ -12,9 +12,9 @@ export default {
     createWorkbenchApi: { url: "/api/env/workbenchs", method: "POST", dataType: "json" },
     getMyImageApi: { url: "/api/env/images", method: "GET" },
     deleteMyImageApi: { url: "/api/env/images/{id}", method: "DELETE" },
-    editMyImageApi: { url: "/api/env/containers/{id}", method: "PUT", dataType: "json" },
+    editMyImageApi: { url: "/api/env/images/{id}", method: "PUT", dataType: "json" },
     getPresetMirror: { url: "/api/env/images", method: "GET" },
-    createMirrorApi: { url: "/api/env/containers", method: "POST", dataType: "json" },
+    createMirrorApi: { url: "/api/env/images", method: "POST", dataType: "json" },
 }
 
 export interface IteacherWorkbench {

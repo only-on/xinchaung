@@ -101,12 +101,9 @@ export default defineComponent({
           }
         },
         message: (ev: MessageEvent) => {
-          console.log(ev);
-          console.log(typeof ev.data);
           let regex = /\{.*?\}/g;
 
           if (typeof ev.data === "string" && regex.test(ev.data)) {
-            console.log(JSON.parse(ev.data));
           }
         },
       });
@@ -117,7 +114,6 @@ export default defineComponent({
       return new Promise((reslove: any, reject: any) => {
         getWorkbenchApi(reactiveData.params)
           .then((res: any) => {
-            console.log(res);
             reslove(res);
             reactiveData.workbenchDataList = res.data.list;
             reactiveData.limit = res.data.page.totalCount;

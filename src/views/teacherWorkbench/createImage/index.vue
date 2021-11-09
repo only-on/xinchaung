@@ -1,6 +1,6 @@
 <template>
   <div v-layout-bg class="create-image-box">
-        <a-form layout="vertical">
+        <a-form layout="vertical" ref="formRef" :model="image"  :rules="rules">
             <a-form-item label="镜像文件" required>
                 <upload-image 
                 action="/api/instance/uploads/file"
@@ -11,29 +11,29 @@
             </a-form-item>
             <div class='create-img-middle'>
                 <div>
-                    <a-form-item label="镜像名称">
+                    <a-form-item label="镜像名称" name="name">
                         <a-input class="form-input" v-model:value="image.name"></a-input>
                     </a-form-item>
-                     <a-form-item label="镜像类型">
-                        <a-input class="form-input" v-model:value="image.imageType"></a-input>     
+                     <a-form-item label="镜像类型" required>
+                        <a-input class="form-input" disabled v-model:value="image.imageType"></a-input>     
                     </a-form-item>
                 </div>
                 <div>
-                    <a-form-item label="系统类型">
-                        <a-select class="form-input" v-model:value="image.systemType" placeholder='请选择系统类型'>
-                            <a-select-option :value="item" v-for="(item,index) in config.image_classify" :key="index.toString()">
+                    <a-form-item label="系统类型" name="classify_id">
+                        <a-select class="form-input" v-model:value="image.classify_id" placeholder='请选择系统类型'>
+                            <a-select-option :value="Number(index)" v-for="(item,index) in config.image_classify" :key="index.toString()">
                               {{item}}
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    <a-form-item label="镜像标签">
+                    <a-form-item label="镜像标签" name="tag">
                         <a-checkbox-group v-model:value="image.tag" @change="onChange">
-                            <a-checkbox v-for="(item,index) in config.tags" :key="index.toString()" :value='item'>{{item}}</a-checkbox>
+                            <a-checkbox  v-for="(item,index) in config.tags" :key="index.toString()" :value='Number(index)'>{{item}}</a-checkbox>
                         </a-checkbox-group>
                     </a-form-item>
                 </div>
             </div>
-            <a-form-item label="描述">
+            <a-form-item label="镜像描述">
                 <a-textarea placeholder="镜像描述"  class="ant-input-desc" v-model:value="image.desc"></a-textarea>
             </a-form-item>
         </a-form>
@@ -64,24 +64,31 @@ import uploadImage from './uploadImage/index.vue'
 interface ImageType{
     name:string,
     imageType:any,
-    systemType:any,
+    classify_id:any,
     tag:any,
     desc:any,
 }
 interface Istate {
     image:ImageType,
-    config:any
+    config:any,
+    formRef:any,
 }
 export default defineComponent({
   components: {uploadImage},
   setup() {
     const router = useRouter();
     var updata = inject("updataNav") as Function;
+    const rules={
+            name: [{ required: true, message: '请输入镜像名称'}],
+            classify_id: [{ required: true, message: '请选择系统类型'}],
+            tag:[{required: true, message: '请选择镜像标签'}],
+            }
     const state:Istate=reactive({
+      formRef:'formRef',
       image:{
         name:'',
         imageType:'',
-        systemType:undefined,
+        classify_id:undefined,
         tag:[],
         desc:'',
       },
@@ -98,6 +105,19 @@ export default defineComponent({
       showPageEdit: false,
     });
     const methods={
+        onChange(tag:any){
+            if(tag[tag.length-1]===1){
+                const index=tag.indexOf(2)
+                if(index!==-1){
+                    tag.splice(index,1)
+                }    
+            }else if(tag[tag.length-1]===2){
+                const index=tag.indexOf(1)
+                if(index!==-1){
+                    tag.splice(index,1)
+                } 
+            }
+        },
         cancel(){
             router.push({
                 path: "/teacher/Workbench",
@@ -106,18 +126,24 @@ export default defineComponent({
                 },
             });
         },
-        onChange(e:any){
-            console.log(e)
-            console.log(state.image.tag)
-        },
         create(){
-            console.log(state.image.name)
-            console.log(state.image.systemType)
-            console.log(state.image.tag)
-            console.log(state.image.desc)
-            createMirrorApi({param:state.image}).then((res:any)=>{
-                console.log(res)
-            })
+                state.formRef.validate().then(() => {
+                     const parmas= {
+                        name:state.image.name,
+                        file_path:"/www/test1.qcow2",
+                        file_size:"13167616",
+                        classify_id:state.image.classify_id,
+                        tag:state.image.tag,
+                        description:state.image.desc,
+                        ssh_user:"41",
+                        ssh_pass:"1",
+                        is_use_gpu:state.image.tag.indexOf(3)!==-1?1:0,
+                    }
+                    createMirrorApi(parmas).then((res:any)=>{
+                        console.log(res)
+                        methods.cancel()
+                    })
+                })
         },
         getConfig(){
             getConfigApi().then((res:any)=>{
@@ -129,7 +155,7 @@ export default defineComponent({
     onMounted(() => {
          methods.getConfig()
     });
-    return {...methods,...toRefs(state)};
+    return {...methods,...toRefs(state),rules};
   },
 });
 </script>
