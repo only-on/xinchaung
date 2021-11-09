@@ -1,0 +1,318 @@
+<template>
+  <div v-if="prepareShowTab === 'loading'" class="prepare-lessons-loading">
+    <SyncOutlined spin />
+  </div>
+  <div v-if="prepareShowTab === 'pdf'" class="chapter-intro">
+    <div class="action-box">
+      <a-button type="primary" @click="remove">移除</a-button>
+      <a-button type="primary" @click="openUploadModal">上传</a-button>
+      <a-button type="primary" @click="selectFile">选择</a-button>
+    </div>
+    <iframe
+      :src="`/pdfjs-2.5.207/web/viewer.html?file=${
+        env ? '/proxyPrefix' + introFile[0].file_html : introFile[0].file_html 
+      }`"
+      frameborder="0"
+    ></iframe>
+  </div>
+  <div v-if="prepareShowTab === 'none'" class="chapter-intro-none">
+    <empty text="暂无数据，可从数据中心选择或本地上传文件"> </empty>
+    <div class="action-btn">
+      <a-button type="primary" @click="openUploadModal">上传</a-button>
+      <a-button type="primary" @click="selectFile">选择</a-button>
+    </div>
+  </div>
+  <div v-if="prepareShowTab === 'select'" class="select-data-set-box">
+    <div class="select-head">
+      <a-select
+        v-model:value="tableParams.dataset_id"
+        placeholder="请选择数据集目录"
+        @change="datasetChange"
+        style="width: 200px"
+      >
+        <a-select-opt-group v-for="(val, key) in datasetList" :key="key">
+          <template #label>
+            <span>
+              {{ key === "public" ? "共有" : "私有" }}
+            </span>
+          </template>
+          <a-select-option v-for="(v, k) in val" :key="k" :value="k">{{
+            v
+          }}</a-select-option>
+        </a-select-opt-group>
+      </a-select>
+      <a-input
+        class="p-file-name"
+        placeholder="请输入关键字"
+        v-model:value="tableParams.file_name"
+      />
+      <a-button type="primary" @click="searchBtn">查询</a-button>
+      <a-button type="primary" class="back-btn" @click="backBtn">返回</a-button>
+    </div>
+    <a-table :pagination="false" :columns="columns" :dataSource="tableList">
+      <template #action="{ text }"
+        ><span @click="selectData(text)">选择</span></template
+      >
+    </a-table>
+  </div>
+</template>
+<script lang="ts">
+import { SyncOutlined } from "@ant-design/icons-vue";
+import { defineComponent, reactive, inject, onMounted, toRefs } from "vue";
+import {
+  getPreparingDataApi,
+  getDataSetListApi,
+  getDataSetFileApi,
+  savePrepareLessonsFileApi,
+  removePrepareLessonsFileApi,
+  getDataSetGuideApi
+} from "../../api";
+import empty from "src/components/Empty.vue";
+type TreactiveData={
+  introFile: any[],
+      prepareShowTab: string,
+      selectParams: {
+        type: number,
+        name:string,
+      },
+      datasetList: {
+        public:{},
+        self:{}
+      },
+      tableParams: {
+        course_id: number,
+        chapter_id: number,
+        dataset_id: undefined |number,
+        file_name: string,
+        page: number,
+        pageSize: number,
+      },
+      tableList: any[],
+}
+export default defineComponent({
+  components: {
+    empty,
+    SyncOutlined,
+  },
+  props: ["activeKey"],
+  setup(props) {
+    const env = process.env.NODE_ENV == "development" ? true : false;
+    const course_id: any = inject("course_id");
+    const chapter_id: any = inject("chapter_id");
+    const activeKey = props.activeKey;
+    let datasetType = -1;
+    if (activeKey === "2") {
+      datasetType = 5;
+    }
+    if (activeKey === "3") {
+      datasetType = 6;
+    }
+    const columns = [
+      {
+        title: "文件名称",
+        dataIndex: "file_name",
+      },
+      {
+        title: "大小",
+        dataIndex: "size",
+      },
+      {
+        title: "操作",
+        slots: { customRender: "action" },
+      },
+    ];
+    const reactiveData:TreactiveData = reactive({
+      introFile: [],
+      prepareShowTab: "loading",
+      selectParams: {
+        type: datasetType,
+        name: "",
+      },
+      datasetList: {
+        public:{},
+        self:{}
+      },
+      tableParams: {
+        course_id: course_id,
+        chapter_id: chapter_id,
+        dataset_id: undefined,
+        file_name: "",
+        page: 1,
+        pageSize: 10000,
+      },
+      tableList: [],
+    });
+    onMounted(() => {
+      getDataSetFileDetail();
+    });
+    // 获取备课资料
+    function getDataSetFileDetail() {
+      let params = {
+        query: {
+          course_id: course_id,
+          chapter_id: chapter_id.value,
+        },
+        pageinfo: {
+          index: 1,
+          size: 10,
+        },
+      };
+      if (datasetType === 5) {
+        getPreparingDataApi(params).then((res: any) => {
+          console.log(res);
+          reactiveData.introFile = res.data.data;
+          if (reactiveData.introFile.length > 0) {
+            reactiveData.prepareShowTab = "pdf";
+          } else {
+            reactiveData.prepareShowTab = "none";
+          }
+        });
+        return;
+      }
+      if (datasetType === 6) {
+        getDataSetGuideApi(params).then((res: any) => {
+          console.log(res);
+          reactiveData.introFile = res.data.data;
+          if (reactiveData.introFile.length > 0) {
+            reactiveData.prepareShowTab = "pdf";
+          } else {
+            reactiveData.prepareShowTab = "none";
+          }
+        });
+        return;
+      }
+    }
+    // 获取数据集列表
+    function getDataSetList() {
+      return new Promise((resolve, reject) => {
+        getDataSetListApi(reactiveData.selectParams).then((res: any) => {
+          reactiveData.datasetList = res.data;
+          loop: for (const key in reactiveData.datasetList) {
+            if (
+              Object.prototype.hasOwnProperty.call(
+                reactiveData.datasetList,
+                key
+              )
+            ) {
+              for (const key1 in reactiveData.datasetList[key]) {
+                if (
+                  Object.prototype.hasOwnProperty.call(
+                    reactiveData.datasetList[key],
+                    key1
+                  )
+                ) {
+                  (reactiveData.tableParams as any).dataset_id = key1;
+                  console.log(key1);
+                  break loop;
+                }
+              }
+            }
+          }
+
+          resolve(true);
+        });
+      });
+    }
+    // 获取数据集文件列表
+    function getDataSetFile() {
+      getDataSetFileApi(reactiveData.tableParams).then((res: any) => {
+        reactiveData.tableList = res.data.list;
+      });
+    }
+    // 打开上传modal
+    function openUploadModal() {
+      console.log("打开上传");
+    }
+    // 选择按钮
+    function selectFile() {
+      getDataSetList().then(() => {
+        getDataSetFile();
+      });
+      reactiveData.prepareShowTab = "select";
+    }
+    // 数据集类型发生变化
+    function datasetChange() {
+      getDataSetFile();
+    }
+
+    // 查询
+    function searchBtn() {
+      getDataSetFile();
+    }
+    // 返回
+    function backBtn() {
+      getDataSetFileDetail();
+    }
+    // 选择数据
+    function selectData(val: any) {
+      console.log(val);
+      savePrepareLessonsFileApi({
+        course_id: course_id,
+        chapter_id: chapter_id.value,
+        item_id: val.id,
+      }).then((res) => {
+        getDataSetFileDetail();
+      });
+    }
+    // 移除
+    function remove() {
+      console.log((reactiveData.introFile as any)[0].aid);
+      removePrepareLessonsFileApi({
+        aid: (reactiveData.introFile as any)[0].aid,
+      }).then(() => {
+        getDataSetFileDetail();
+      });
+    }
+    return {
+      ...toRefs(reactiveData),
+      openUploadModal,
+      selectFile,
+      columns,
+      env,
+      datasetChange,
+      searchBtn,
+      backBtn,
+      selectData,
+      remove,
+    };
+  },
+});
+</script>
+
+<style lang="less">
+.chapter-intro {
+  .action-box {
+    text-align: right;
+    margin-bottom: 15px;
+    > button {
+      margin-left: 10px;
+    }
+  }
+}
+
+.prepare-lessons-loading {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  > .anticon-sync {
+    font-size: 50px;
+  }
+}
+.select-data-set-box {
+  .select-head {
+    display: flex;
+    margin-bottom: 15px;
+    .p-file-name {
+      width: 200px;
+    }
+    > * {
+      margin-right: 15px;
+    }
+    .back-btn {
+      margin-left: auto;
+    }
+  }
+}
+</style>

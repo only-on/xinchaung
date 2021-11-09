@@ -212,6 +212,66 @@ export default {
   getCourseDetailApi:{
     url:"/api/course/courses/{course_id}",
     method:"GET"
+  },
+  updateCourseBaseApi:{
+    url:"/api/course/courses/{course_id}",
+    method:"PUT",
+    dataType:"json"
+  },
+  getCourseTreeApi:{
+    url:"/api/course/courses/{course_id}/chapters/tree",
+    method:"GET"
+  },
+  updateChapterApi:{
+    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method:"PUT"
+  },
+  getChapterDetailApi:{
+    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method:"GET"
+  },
+  saveChapterIntroApi:{
+    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method:"PUT",
+    dataType:"json"
+  },
+  getPreparingDataApi:{
+    url:"/classic/course-dataset/preparation-materials",
+    method:"POST",
+    dataType:"json"
+  },
+  getDataSetListApi:{
+    url:"/classic/data/dataset-select",
+    method:"GET"
+  },
+  getDataSetFileApi:{
+    url:"/classic/data/item-list",
+    method:"GET"
+  },
+  savePrepareLessonsFileApi:{
+    url:"/classic/course-dataset/save-item",
+    method:"POST",
+    dataType:"json"
+  },
+  removePrepareLessonsFileApi:{
+    url:"/classic/course-dataset/remove",
+    method:"POST",
+    dataType:"json"
+  },
+  uploadFileApi:{
+    url:"/dataset/data/upload-file",
+    method:"POST",
+    dataType:"formdata"
+  },
+  addDataSetFileApi:{
+    url:"/classic/data/add-items",
+    method:"POST",
+    dataType:"formdata"
+  },
+  getDataSetGuideApi:{
+    url:"/classic/course-dataset/guide",
+    method:"POST",
+    dataType:"json"
   }
 }
 
@@ -265,4 +325,17 @@ export interface ITeacherCourseApis {
   editQuestionApi:TFHttpSend
   saveToCourseApi:TFHttpSend
   getCourseDetailApi:TFHttpSend
+  updateCourseBaseApi:TFHttpSend
+  getCourseTreeApi:TFHttpSend
+  updateChapterApi:TFHttpSend
+  getChapterDetailApi:TFHttpSend
+  saveChapterIntroApi:TFHttpSend
+  getPreparingDataApi:TFHttpSend
+  getDataSetListApi:TFHttpSend
+  getDataSetFileApi:TFHttpSend
+  savePrepareLessonsFileApi:TFHttpSend
+  removePrepareLessonsFileApi:TFHttpSend
+  uploadFileApi:TFHttpSend
+  addDataSetFileApi:TFHttpSend
+  getDataSetGuideApi:TFHttpSend
 }

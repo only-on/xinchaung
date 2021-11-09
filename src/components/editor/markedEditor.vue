@@ -13,17 +13,16 @@
     },
     props:['modelValue','preview'],
     setup(props,{emit}){
-        const preview=props.preview
+        // const preview=props.preview
         const content=ref("")
         watch(()=>props.modelValue,()=>{
             content.value=props.modelValue
         },{deep:true,immediate:true})
-
         watch(()=>content.value,()=>{
-            emit("modelValue",content.value)
+            emit("update:modelValue",content.value)
         })
         return{
-            preview,
+            // preview,
             content
         }
     }

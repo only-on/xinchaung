@@ -8,32 +8,35 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
-import Header from "./Header.vue";
-export default defineComponent({
-  components: {
-    Header,
-  },
-  setup() {},
-});
+  import { defineComponent } from "vue";
+  import Header from "./Header.vue";
+  export default defineComponent({
+    components: {
+      Header,
+    },
+    setup() { },
+  });
 </script>
 
 <style lang="less">
-.custom-layout {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-position-y: 60px;
-  .custom-main{
+  .custom-layout {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-position-y: 60px;
+
+    .custom-main {
       width: 1330px;
       margin: 21px auto;
+      height: calc(100% - 84px);
+    }
+
+    .header-box {
+      flex-shrink: 0;
+    }
+
+    .header-right {
+      flex-shrink: 0;
+    }
   }
-  
-  .header-box {
-    flex-shrink: 0;
-  }
-  .header-right {
-    flex-shrink: 0;
-  }
-}
 </style>
