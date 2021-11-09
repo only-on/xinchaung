@@ -111,56 +111,58 @@
         </div>
         <div class="task-list scroll-bar-customize" :class="currentTabType === 1 ? 'built-in' : ''">
           <div v-if="taskData.length > 0">
-            <a-spin v-if="loading"  size="large" />
-            <div v-else-if="!loading && experimentalDataList.length === 0">
-              <Empty/>
-            </div>
-            <div v-else>
-              <div
-                class="task-item"
-                v-for="(item, index) in experimentalDataList"
-                :key="index"
-                @click="lookDetail(item)"
-              >
-                <div class="task-base-name">
-                  <span class="iconfont" :class="item.task_type === 1 ? 'icon-zhuomianshiyan' : 'icon-program'"></span>
-                  {{ item.name }}
-                </div>
-                <div class="task-base-info">
-                  <span class="class-num">{{ item.class_cnt }}课时</span>
-                  <span class="cpu hover-none">CPU:{{ item.envirment.cpu }}核</span>
-                  <div class="memory hover-none">
-                    <span>内存：{{ item.envirment.ram }}G</span>
+            <a-spin :spinning="loading" size="large" tip="Loading...">
+              <!-- <div v-if="experimentalDataList.length === 0">
+                <Empty/>
+              </div> -->
+              <div>
+                <div
+                  class="task-item"
+                  v-for="(item, index) in experimentalDataList"
+                  :key="index"
+                  @click="lookDetail(item)"
+                >
+                  <div class="task-base-name">
+                    <span class="iconfont" :class="item.task_type === 1 ? 'icon-zhuomianshiyan' : 'icon-program'"></span>
+                    {{ item.name }}
                   </div>
-                  <span class="disk hover-none">硬盘：{{ item.envirment.disk }}G</span>
-                  <div class="hover-block">
-                    <span
-                      class="iconfont icon-shangyi"
-                      @click.stop="sortExperimental(index, true)"
-                      v-if="currentTabType === 0"
-                    ></span>
-                    <span
-                      class="iconfont icon-xiayi"
-                      @click.stop="sortExperimental(index, false)"
-                      v-if="currentTabType === 0"
-                    ></span>
-                    <span
-                      class="iconfont"
-                      :class="item.is_share === 0 ? 'icon-gongxiang' : 'icon-quxiaogongxiang'"
-                      v-if="currentTabType === 0 && (item.is_final_share === 0 || item.is_share === 1)"
-                      @click.stop="shareExperimental(item)"
-                    ></span>
-                    <span
-                      class="iconfont icon-shanchu"
-                      @click.stop="deleteExperimental(item)"
-                      v-if="currentTabType === 0"
-                    ></span>
+                  <div class="task-base-info">
+                    <span class="class-num">{{ item.class_cnt }}课时</span>
+                    <span class="cpu hover-none">CPU:{{ item.envirment.cpu }}核</span>
+                    <div class="memory hover-none">
+                      <span>内存：{{ item.envirment.ram }}G</span>
+                    </div>
+                    <span class="disk hover-none">硬盘：{{ item.envirment.disk }}G</span>
+                    <div class="hover-block">
+                      <span
+                        class="iconfont icon-shangyi"
+                        @click.stop="sortExperimental(index, true)"
+                        v-if="currentTabType === 0"
+                      ></span>
+                      <span
+                        class="iconfont icon-xiayi"
+                        @click.stop="sortExperimental(index, false)"
+                        v-if="currentTabType === 0"
+                      ></span>
+                      <span
+                        class="iconfont"
+                        :class="item.is_share === 0 ? 'icon-gongxiang' : 'icon-quxiaogongxiang'"
+                        v-if="currentTabType === 0 && (item.is_final_share === 0 || item.is_share === 1)"
+                        @click.stop="shareExperimental(item)"
+                      ></span>
+                      <span
+                        class="iconfont icon-shanchu"
+                        @click.stop="deleteExperimental(item)"
+                        v-if="currentTabType === 0"
+                      ></span>
 
-                    <span class="iconfont icon-baocun" v-if="currentTabType === 2" @click.stop="saveToMy(item)"></span>
+                      <span class="iconfont icon-baocun" v-if="currentTabType === 2" @click.stop="saveToMy(item)"></span>
+                    </div>
                   </div>
                 </div>
+                <Empty v-if="experimentalDataList.length === 0" />
               </div>
-            </div>
+            </a-spin>
           </div>
         </div>
         <div v-if="experimentalDataList.length > 0" class="pagination-box">
@@ -273,7 +275,7 @@ export default defineComponent({
         }
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
-          console.log(res)
+          // console.log(res)
           if (res && res.code === 1) {
             taskData.push(...res.data)
             currentSelectChapter = Object.assign(currentSelectChapter, res.data[0].children[0])
@@ -301,7 +303,7 @@ export default defineComponent({
       parent_id: 0
     })
     function addOrUpdate(val: any, flag: boolean) {
-      console.log(val, flag)
+      // console.log(val, flag)
        //flag true 添加
       isEditChapter.value = !flag
       visible.value = true
@@ -390,7 +392,7 @@ export default defineComponent({
         cancelText: '取消',
         onOk() {
           http.deleteChapter({urlParams: {id}}).then((res: IBusinessResp) => {
-            console.log(res)
+            // console.log(res)
             if (res.code === 1) {
               $message.success('删除章节成功')
               getExperimentList()
@@ -406,7 +408,7 @@ export default defineComponent({
     }
     // 共享章节
     function shareChapter(data: any) {
-      console.log(data)
+      // console.log(data)
       if (data.contents_count === 0) {
         $message.warn('该章节下没有可以操作的实验')
         return
@@ -470,7 +472,7 @@ export default defineComponent({
       }
       ListSearchInfo.loading = true
       http.getExperimentList({param}).then((res: IBusinessResp) => {
-        console.log(res)
+        // console.log(res)
         ListSearchInfo.loading = false
         if (res && res.code === 1) {
           let {list, page} = res.data
@@ -487,14 +489,14 @@ export default defineComponent({
     }
     // 页码发生变化时
     const pageChange = (current: number, pageSize: number) => {
-      console.log(current, pageSize)
+      // console.log(current, pageSize)
       ListSearchInfo.page = current
       ListSearchInfo.pageSize = pageSize
       getExperimentList()
     }
     // pageSize 变化的回调
     const onShowSizeChange = (current: number, pageSize: number) => {
-      console.log(current, pageSize)
+      // console.log(current, pageSize)
       ListSearchInfo.page = current
       ListSearchInfo.pageSize = pageSize
       getExperimentList()
@@ -528,13 +530,13 @@ export default defineComponent({
         if (res.code === 1) {
           $message.success('实验顺序交换成功')
           if (flag) {
-            console.log(i)
-            console.log('上衣')
+            // console.log(i)
+            // console.log('上衣')
             // moveUp(this.experimentalDataList, i)
             ListSearchInfo.experimentalDataList[i - 1] = ListSearchInfo.experimentalDataList.splice(i, 1, ListSearchInfo.experimentalDataList[i - 1])[0]
           } else {
-            console.log(i)
-            console.log('下衣')
+            // console.log(i)
+            // console.log('下衣')
             // moveDown(this.experimentalDataList, i)
             ListSearchInfo.experimentalDataList[i + 1] = ListSearchInfo.experimentalDataList.splice(i, 1, ListSearchInfo.experimentalDataList[i + 1])[0]
           }
@@ -600,9 +602,9 @@ export default defineComponent({
     }
     // 保存到我的实验
     function saveToMy(val: any) {
-      console.log(val)
+      // console.log(val)
       http.saveToContent({param: {id: val.id }}).then((res: any) => {
-        console.log(res)
+        // console.log(res)
         if (res.code === 1) {
           $message.success('已保存到我的实验')
           getExperimentList()
@@ -619,10 +621,8 @@ export default defineComponent({
           currentCourseIndex.value = Number(route.query.course_index)
 
           currentChapterIndex.value = Number(route.query.chapter_index)
-          currentSelectChapter.id = taskData[currentCourseIndex.value].children[
-            currentChapterIndex.value
-          ].id
-          console.log(currentCourseIndex, currentChapterIndex)
+          currentSelectChapter.id = taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
+          // console.log(currentCourseIndex, currentChapterIndex)
           recoverTreeStatus()
           getExperimentList()
         } else {
@@ -685,7 +685,7 @@ export default defineComponent({
       
       if (newVal == 0) {
         // 我的实验
-        console.log(newVal)
+        // console.log(newVal)
       } else if (newVal == 1) {
         // 内置实验
       } else {
@@ -703,7 +703,7 @@ export default defineComponent({
     })
     function getSearchInfo() {
       http.getSearchInfo({param: {init_type: currentTabType.value}}).then((res: IBusinessResp) => {
-        console.log(res)
+        // console.log(res)
         if (res) {
           TypeList.content_type = res.data.content_type
           TypeList.content_level = res.data.content_level
@@ -725,7 +725,7 @@ export default defineComponent({
     }
     // 选择章节
     function selectTree(data: any) {
-      console.log(data)
+      // console.log(data)
       if (currentSelectChapter.id === data.data.id) {
         return
       } else {
@@ -750,7 +750,7 @@ export default defineComponent({
       currentCourseIndex.value = index
       currentCourseContent = Object.assign(currentCourseContent, val)
       lastChapterIndex.value = 0
-      console.log(val, index)
+      // console.log(val, index)
       initExperimental(val)
     }
     // 恢复上次展开的树
@@ -790,8 +790,8 @@ export default defineComponent({
     }
     // 查看实验详情
     function lookDetail(val: IExporimentList) {
-      console.log(val, '查看实验详情')
-      console.log(currentTabType.value)
+      // console.log(val, '查看实验详情')
+      // console.log(currentTabType.value)
       // this.$router.push({
       //   path: '/detail',
       //   query: {

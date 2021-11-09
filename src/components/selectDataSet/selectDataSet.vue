@@ -32,7 +32,7 @@
         @search="onSearch"
       />
     </div>
-    <div class="data-set-base-box">
+    <div class="data-set-base-box setScrollbar">
       <template v-if="dataSetList.length > 0">
         <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
           <div><img :src="item.cover" alt="" /></div>
@@ -290,6 +290,9 @@ export default defineComponent({
             }
           }
         }
+      }
+      .select-btn,.shanchu{
+        color: @theme-color;
       }
     }
   }

@@ -145,11 +145,11 @@ export default defineComponent({
       router.push('/teacher/teacherExam/CreateTestPaper?editId='+id)
     }
     
-    function pageChange(current:any,pageSize:any){
+    async function pageChange(current:any,pageSize:any){
         // console.log(current, pageSize);
         ForumSearch.page=current
         const {query,path}= route
-        router.replace({
+        await router.replace({
               path: path,
               query: {...query, page: current},
         })

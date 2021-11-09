@@ -11,14 +11,14 @@
         :rules="rules"
       >
         <div class="base-info">
-          <a-form-item label="实验名称" name="name" required>
+          <a-form-item label="实验名称" name="name">
             <a-input v-model:value="formState.name" placeholder="请输入实验名称"/>
           </a-form-item>
-          <a-form-item label="课时数" name="class_cnt" required>
+          <a-form-item label="课时数" name="class_cnt">
             <a-input v-model:value="formState.class_cnt" placeholder="请输入课时数"/>
           </a-form-item>
         </div>
-        <a-form-item label="实验环境" required>
+        <a-form-item label="实验环境" name="imageDataSelected" required>
           <a-button class="add-btn" @click="select('image')">
             <span class="iconfont icon-tianjia"></span>
           </a-button>
@@ -39,7 +39,7 @@
             </div>
           </div>
         </a-form-item>
-        <a-form-item label="实验指导" required v-if="type === 'vnc'">
+        <a-form-item label="实验指导" v-if="type === 'vnc'" name="guide">
           <div class="guide">
             <div class="guide-top">
               <div class="upload-box">
@@ -67,8 +67,8 @@
           </div>
           <antdv-markdown v-model="formState.guide"  class="markdown__editor"/>
         </a-form-item>
-        <a-form-item label="实验任务" required v-if="type === 'note'">
-          <task-list v-model:taskData="taskData" :jupyterUuid="jupyterUuid"></task-list>
+        <a-form-item label="实验任务" v-if="type === 'note'" name="taskData">
+          <task-list v-model:taskData="formState.taskData" :jupyterUuid="jupyterUuid"></task-list>
         </a-form-item>
         <a-form-item class="footer-btn">
           <a-button @click="cancel">取消</a-button>
@@ -110,6 +110,17 @@ import taskList from './taskList.vue'
 import envList from './envList.vue'
 import { UUID } from 'src/utils/uuid'
 import _ from 'lodash'
+import { RuleObject } from 'ant-design-vue/es/form/interface';
+interface Iparam{
+  category_id: any
+  name: string
+  class_cnt: any
+  container_ids: number[],
+  dataset_ids: any,
+  detail: string,
+  jupyter_tasks: any,
+  taskfile_subdir: any
+}
 export default defineComponent({
   components: {dataSet, environment, AntdvMarkdown, sameScreen, taskList, envList},
   setup() {
@@ -135,7 +146,8 @@ export default defineComponent({
       // 已选择镜像数据
       imageDataSelected: [],
       // 实验指导
-      guide: ''
+      guide: '',
+      taskData:[{ name:'', status: false }]
     })
     let visible = ref<boolean>(false)
     let selectType = ref<string>()
@@ -150,23 +162,11 @@ export default defineComponent({
     }
     let formRef = ref()
     function submit() {
-      console.log(formState, formRef.value, taskData)
-      formRef.value.validate().then(async() => {
-        // await aaa()
-        if (!formState.imageDataSelected.length) {
-          $message.warn('请选择实验环境')
-          return
-        }
-        let param:{
-          category_id: any
-          name: string
-          class_cnt: any
-          container_ids: number[],
-          dataset_ids: any,
-          detail: string,
-          jupyter_tasks: any,
-          taskfile_subdir: any
-        } = {
+      // console.log(_.findKey(taskData, ['name', '']))
+      formRef.value.validate().then(() => {
+         // console.log(formState, formRef.value, taskData)
+         console.log(type.value)
+        let param:Iparam = {
           category_id: route.query.chapter_id,
           name: formState.name,
           class_cnt: formState.class_cnt,
@@ -176,15 +176,8 @@ export default defineComponent({
           jupyter_tasks: [],
           taskfile_subdir: jupyterUuid.value
         }
-        debugger
         if (type.value === 'vnc') {
-          if (!formState.guide) {
-            $message.warn('请输入实验指导')
-            return
-          }
           http.createVnc({param}).then((res: IBusinessResp) => {
-            console.log(res)
-            if (res.code === 1) {
               $message.success('创建实验成功')
               router.push({
                 path: '/teacher/teacherExperiment',
@@ -193,22 +186,19 @@ export default defineComponent({
                   chapter_index: route.query.chapter_index,
                 },
               })
-            } else {
-              $message.warn(res.msg)
-            }
           })
           return
         }
-        if (_.findKey(taskData, ['name', ''])) {
+        if (_.findKey(formState.taskData, ['name', ''])) {
           $message.warn('请上传文件')
           return
         }
-        if (_.findKey(taskData, ['status', false])) {
+        if (_.findKey(formState.taskData, ['status', false])) {
           $message.warn('文件上传中，请稍后重试')
           return
         }
-        taskData.forEach((item: any, index: number) => {
-          console.log(item, index)
+        formState.taskData.forEach((item: any, index: number) => {
+          // console.log(item, index)
           const temp = {
             type: 1,
             file_name: item.data.file_name,
@@ -218,33 +208,21 @@ export default defineComponent({
             sort: index, //排序
           }
           param.jupyter_tasks.push(temp)
-          console.log(param)
-          http.createJupyter({param}).then((res: any) => {
-            console.log(res)
-            if (res.code === 1) {
-              $message.success('创建实验成功')
-              router.push({
-                path: '/teacher/teacherExperiment',
-                query: {
-                  course_index: route.query.course_index,
-                  chapter_index: route.query.chapter_index,
-                  currentTab: 0
-                },
-              })
-            } else {
-              $message.warn(res.msg)
-            }
-          })
+        })
+        http.createJupyter({param}).then((res: any) => {
+            $message.success('创建实验成功')
+            router.push({
+              path: '/teacher/teacherExperiment',
+              query: {
+                course_index: route.query.course_index,
+                chapter_index: route.query.chapter_index,
+                currentTab: 0
+              },
+            })
         })
       }).catch((err: any) => {
         console.log(err)
       })
-    }
-    function aaa () {
-      if (!formState.imageDataSelected.length) {
-        $message.warn('请选择实验环境')
-        return
-      }
     }
     function cancel() {
       router.push({
@@ -396,49 +374,36 @@ export default defineComponent({
       {deep: true}
     )
     // 模拟实验任务数据
-    let taskData: any = reactive([{ name: '', status: false }])
+    // let taskData: any = reactive([{ name: '', status: false }])
     // 删除上传文件list对象
     function deleteFile(i: number) {
       console.log(i)
       // this.taskData.splice(i, 1)
     }
-    function classCutValidator(rule: any, value: any, callback: any) {
-      const reg = new RegExp('^[1-9][0-9]*$')
-      //     console.log(this.form1.class_cnt)
-      if (!formState.class_cnt) {
-        return Promise.reject('请输入课时数')
-      } else if (!reg.test(String(formState.class_cnt))) {
-        return Promise.reject('请输入1~16之间整数')
-      } else if (formState.class_cnt < 0 || formState.class_cnt > 16) {
-        return Promise.reject('课时数在1~16之间')
-      } else {
-        return Promise.resolve();
+    async function imageDataSelectedValidator(rule: RuleObject, value: string){
+      if (!value) return
+      if(formState.imageDataSelected.length===0){ 
+        return Promise.reject('请选择实验环境')
       }
     }
-    function nameValidator(rule: any, value: any, callback: any) {
-      const reg = new RegExp('^[a-zA-Z0-9_\u4e00-\u9fa5]+$')
-      //     console.log(this.form1.class_cnt)
-      if (!formState.name) {
-        return Promise.reject('请输入实验名称')
-      } else if (!reg.test(String(formState.name))) {
-        return Promise.reject('请输入1~实验名称只能包含汉字、数字、字母和下划线')
-      } else if (formState.name.length > 20) {
-        return Promise.reject('实验名称最长为20字符')
-      } else {
-        return Promise.resolve();
+    async function taskDataValidator(rule: RuleObject, value: string){
+      if (!value) return
+      if(formState.taskData.length<=1 && formState.taskData[0].name===''){ 
+        return Promise.reject('请选择实验任务')
       }
     }
     const rules = {
       name: [
-        // { required: true, message: '请输入实验名称', trigger: 'change' },
-        // { max: 20, message: '实验名称最长为20字符', trigger: 'change' },
-        { validator: nameValidator, trigger: 'change' },
+        { required: true, message: '请输入实验名称', trigger: 'blur'},
+        {pattern:/^[a-zA-Z0-9_\u4e00-\u9fa5]{0,20}$/,message: "实验名称只能包含汉字、数字、字母和下划线，名称最长为20字符", trigger: "blur"}
       ],
       class_cnt: [
-        // { required: true, message: '请输入课时数', trigger: 'change' },
-        { validator: classCutValidator, trigger: 'change' },
+        { required: true, message: '请输入课时数', trigger: 'blur'},
+        {pattern:/^([1-9]|[1][0-6])$/,message: "课时数为1~16之间整数", trigger: "blur"}
       ],
-      detail: [{ required: true, message: '请输入实验指导', trigger: 'change' }],
+      guide: [{ required: true, message: '请输入实验指导', trigger: 'blur' }],
+      imageDataSelected: [{ required: true, message: ''},{ validator: imageDataSelectedValidator, trigger: 'blur'}],
+      taskData: [{ required: true, message: '',},{ validator: taskDataValidator, trigger: 'blur'}],
     }
     return {
       jupyterUuid,
@@ -462,7 +427,7 @@ export default defineComponent({
       screenStatus,
       sameScreen,
       screenVmInfo,
-      taskData,
+      // taskData,
     }
   }
 })
@@ -473,7 +438,8 @@ interface formState {
   selectedName: IselectedName[]
   // 已选择镜像数据
   imageDataSelected: IimageData[]
-  guide: any
+  guide: any,
+  taskData:any[]
 }
 interface IselectedName {
   uid: string

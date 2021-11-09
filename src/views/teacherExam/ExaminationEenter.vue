@@ -175,15 +175,15 @@ export default defineComponent({
       //  }
     }
     var updata=inject('updataNav') as Function
-    function pageChange(current:any,pageSize:any){
+    async function pageChange(current:any,pageSize:any){
         // console.log(current, pageSize);  CreatedExamination
         Forum.page=current
-        initData()
         const {query,path}= route
-        router.replace({
+        await router.replace({
               path: path,
               query: {...query, page: current},
         })
+        initData()
     }
     function add(){
       router.push('/teacher/teacherExam/CreatedExamination')

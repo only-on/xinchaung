@@ -1,53 +1,51 @@
 <template>
-  <div
-    class="task-item"
-    v-for="(item, index) in taskData"
-    :key="index"
-    :class="item.name ? 'add-file-item' : ''"
-  >
-    <p>任务{{ NumberToChinese(index) }}</p>
-    <div class="task-item-content">
-      <div class="task-left">
-        <div class="task-file">
-          <label>
-            <i>*</i>
-            ipynb文件
-          </label>
-          <div class="upload-file-box">
-            <div v-if="item.name" class="file-info">
-              <span>
-                {{ item.name }}
-                <!-- <a-icon v-if="!item.status" type="loading" /> -->
-              </span>
-              <span class="iconfont icon-shanchu" @click="removeFile(index)"></span>
+ <div>
+    <div
+      class="task-item"
+      v-for="(item, index) in taskData"
+      :key="index"
+      :class="item.name ? 'add-file-item' : ''"
+    >
+      <p>任务{{ NumberToChinese(index) }}</p>
+      <div class="task-item-content">
+        <div class="task-left">
+          <div class="task-file">
+            <label>
+              <i>*</i>
+              ipynb文件
+            </label>
+            <div class="upload-file-box">
+              <div v-if="item.name" class="file-info">
+                <span>
+                  {{ item.name }}
+                  <!-- <a-icon v-if="!item.status" type="loading" /> -->
+                </span>
+                <span class="iconfont icon-shanchu" @click="removeFile(index)"></span>
+              </div>
+              <a-upload
+                v-else
+                name="file"
+                :show-upload-list="false"
+                accept=".ipynb"
+                :multiple="false"
+                :before-upload="beforeUpload"
+              >
+                <a-button type="primary">选择文件</a-button>
+              </a-upload>
             </div>
-            <a-upload
-              v-else
-              name="file"
-              :show-upload-list="false"
-              accept=".ipynb"
-              :multiple="false"
-            >
-            
-              <!-- :before-upload="(file) => {
-                beforeUpload(file, index)
-                return false
-              }" -->
-              <a-button type="primary">选择文件</a-button>
-            </a-upload>
           </div>
         </div>
-      </div>
-      <div class="task-right">
-        <span v-if="item.name && index === taskData.length - 1" class="iconfont icon--tainjia" @click="addFile"></span>
-        <span
-          v-if="!item.name && taskData.length !== 1"
-          class="iconfont icon-shanchu"
-          @click="deleteFile(index)"
-        ></span>
+        <div class="task-right">
+          <span v-if="item.name && index === taskData.length - 1" class="iconfont icon--tainjia" @click="addFile"></span>
+          <span
+            v-if="!item.name && taskData.length !== 1"
+            class="iconfont icon-shanchu"
+            @click="deleteFile(index)"
+          ></span>
+        </div>
       </div>
     </div>
-  </div>
+ </div>
 </template>
 
 <script lang="ts">
@@ -67,7 +65,7 @@ export default defineComponent({
     },
     jupyterUuid: String as any
   },
-  emit: [],
+  // emit: [],
   setup(props, {emit}) {
     const $message: MessageApi = inject("$message")!;
     const http=(request as ITeacherExperHttp).teacherExperiment
@@ -78,30 +76,30 @@ export default defineComponent({
     //   },
     //   {deep: true}
     // )
-    function beforeUpload(file: any, i: number) {
-      console.log(file, i)
+    function beforeUpload(file: any, fileList: any) {
+      // console.log(file, fileList)
       let arr = file.name.split('.')
       if (arr[arr.length - 1] !== 'ipynb') {
         $message.warn('请上传jupyter')
         return
       }
-      props.taskData[i].status = false
-      props.taskData[i].name = file.name
+      props.taskData[props.taskData.length-1].status = false
+      props.taskData[props.taskData.length-1].name = file.name
       // emit('update:taskData', props.taskData) 
       // console.log(111)
       const fs = new FormData()
       fs.append('jupyter_file', file)
       fs.append('taskfile_subdir', props.jupyterUuid)
+      // console.log(fs)
+      // console.log(http)
+      // return
       http.uploadTaskFile({param: fs}).then((res: any) => {
-        console.log(res)
-        if (res.code === 1) {
-          props.taskData[i].status = true
-          props.taskData[i].data = res.data
-        }
+          props.taskData[props.taskData.length-1].status = true
+          props.taskData[props.taskData.length-1].data = res.data
       })
     }
     function addFile() {
-      props.taskData?.push({ name: '', file: '', status: false })
+      props.taskData?.push({ name: '', file: '', status: false,data:{} })
     }
     function deleteFile(i: number) {
       props.taskData?.splice(i, 1)

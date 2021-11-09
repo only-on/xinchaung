@@ -17,7 +17,7 @@
         @search="onSearch"
       />
     </div>
-    <div class="image-list" v-if="imageData.length">
+    <div class="image-list setScrollbar" v-if="imageData.length">
       <div class="image-item" v-for="(item, index) in imageData" :key="item.id">
         <span v-if="item.image">{{item.image.name}}</span>
         <span v-if="item.image">
@@ -76,7 +76,7 @@ export default defineComponent({
         imageData.length = 0
       }
       http.getMeImage({param}).then((res: any) => {
-        if (res.code === 1) {
+        // if (res.code === 1) {
           loading.value = false
           let {list, page} = res.data
           list.forEach((v: IimageData) => {
@@ -89,8 +89,8 @@ export default defineComponent({
           pageinfo.page = page.currentPage
           pageinfo.pageSize = page.perPage
           pageinfo.pageCount = page.pageCount
-          console.log(pageinfo)
-        }
+          // console.log(pageinfo)
+        // }
       })
     }
     onMounted(() => {
@@ -114,9 +114,9 @@ export default defineComponent({
     let imageTypes = reactive({})
     function getConfigs() {
       http.getConfigs().then((res: any) => {
-        if (res.code === 1) {
+        // if (res.code === 1) {
           imageTypes = Object.assign(imageTypes, res.data.image_types)
-        }
+        // }
       })
     }
     getConfigs()
@@ -226,27 +226,6 @@ interface IimageData {
     overflow: auto;
     padding-right: 15px;
 
-    &::-webkit-scrollbar {
-      /*滚动条整体样式*/
-      width: 10px;
-      /*高宽分别对应横竖滚动条的尺寸*/
-      height: 1px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-      /*滚动条里面小方块*/
-      border-radius: 10px;
-      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      background: #CCACE7;
-    }
-
-    &::-webkit-scrollbar-track {
-      /*滚动条里面轨道*/
-      box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
-      border-radius: 10px;
-      background: transparent;
-    }
-
     .image-item {
       padding: 10px 16px;
       background: #ffffff;
@@ -259,7 +238,7 @@ interface IimageData {
         background: #fdfaff;
         border: 1px solid #b083d5;
         border-radius: 6px;
-        box-shadow: 0px 3px 6px 0px rgba(187, 156, 214, 0.40);
+        box-shadow: 0px 3px 6px 0px rgba(15, 11, 19, 0.4);
         cursor: pointer;
       }
 
