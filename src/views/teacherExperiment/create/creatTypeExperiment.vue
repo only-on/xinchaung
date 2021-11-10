@@ -18,13 +18,13 @@
             <a-input v-model:value="formState.class_cnt" placeholder="请输入课时数"/>
           </a-form-item>
         </div>
-        <a-form-item label="实验环境" name="imageDataSelected" required>
+        <a-form-item label="实验环境" name="imageDataSelected">
           <a-button class="add-btn" @click="select('image')">
             <span class="iconfont icon-tianjia"></span>
           </a-button>
           <span class="max-hint">最多可选3个镜像</span>
-          <env-list :envData="formState.imageDataSelected"></env-list>
         </a-form-item>
+         <env-list :envData="formState.imageDataSelected"></env-list>
         <a-form-item label="数据集" name="selectedName">
           <a-button class="add-btn" @click="select('data')">
             <span class="iconfont icon-tianjia"></span>
@@ -140,7 +140,7 @@ export default defineComponent({
     const chapterName = route.query.chapter_name
     let formState = reactive<formState>({
       name: '',
-      class_cnt: undefined,
+      class_cnt: 2,
       datasets: [],
       selectedName: [],
       // 已选择镜像数据
@@ -159,6 +159,7 @@ export default defineComponent({
     function onClose() {
       visible.value = false
       selectType.value = ''
+      formRef.value.validate()
     }
     let formRef = ref()
     function submit() {
@@ -373,6 +374,11 @@ export default defineComponent({
       },
       {deep: true}
     )
+    watch(()=>{return formState.guide},(val:any)=>{
+      // console.log(val)
+      formRef.value.validate()
+    })
+    // formState.guide
     // 模拟实验任务数据
     // let taskData: any = reactive([{ name: '', status: false }])
     // 删除上传文件list对象
@@ -381,15 +387,27 @@ export default defineComponent({
       // this.taskData.splice(i, 1)
     }
     async function imageDataSelectedValidator(rule: RuleObject, value: string){
-      if (!value) return
+      // if (!value) return
+      // console.log(value)
       if(formState.imageDataSelected.length===0){ 
         return Promise.reject('请选择实验环境')
+      }else{
+        return Promise.resolve()
       }
     }
     async function taskDataValidator(rule: RuleObject, value: string){
-      if (!value) return
+      // if (!value) return
       if(formState.taskData.length<=1 && formState.taskData[0].name===''){ 
         return Promise.reject('请选择实验任务')
+      }
+    }
+    async function classCutValidator(rule: RuleObject, value: string){
+      if (!value){
+        return Promise.reject('请输入课时数')
+      } 
+      const reg = new RegExp('^([1-9]|[1][0-6])$')
+      if(!reg.test(String(formState.class_cnt))){
+        return Promise.reject('课时数为1~16之间整数')
       }
     }
     const rules = {
@@ -398,12 +416,16 @@ export default defineComponent({
         {pattern:/^[a-zA-Z0-9_\u4e00-\u9fa5]{0,20}$/,message: "实验名称只能包含汉字、数字、字母和下划线，名称最长为20字符", trigger: "blur"}
       ],
       class_cnt: [
-        { required: true, message: '请输入课时数', trigger: 'blur'},
-        {pattern:/^([1-9]|[1][0-6])$/,message: "课时数为1~16之间整数", trigger: "blur"}
+        { required: true,message: '',},
+        // {pattern:/^([1-9]|[1][0-6])$/,message: "课时数为1~16之间整数", trigger: "blur"},
+        {validator: classCutValidator, trigger: 'blur'}
       ],
       guide: [{ required: true, message: '请输入实验指导', trigger: 'blur' }],
-      imageDataSelected: [{ required: true, message: ''},{ validator: imageDataSelectedValidator, trigger: 'blur'}],
-      taskData: [{ required: true, message: '',},{ validator: taskDataValidator, trigger: 'blur'}],
+      imageDataSelected: [
+        {required: true,message: '',},
+        { validator: imageDataSelectedValidator, message: '请选择实验环境'}
+        ],
+      taskData: [{ required: true, message: '',trigger: 'blur'},{ validator: taskDataValidator, trigger: 'blur'}],
     }
     return {
       jupyterUuid,

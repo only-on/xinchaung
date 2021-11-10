@@ -1,11 +1,20 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
+import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "/studentSideCourse",
   component: Layout,
   // component: () => import("src/views/studentSideCourse/index.vue"),
   meta: {
-    title: "我的课程",
+    // title: "我的课程",
+    title: (params?: RouteParams, query?: RouteParams) => {
+      // console.log(query)
+      const dataDetailMap = {
+          '0': '最近学习',
+          '1': '我的课程',
+      }
+      return dataDetailMap[query!.currentTab.toString()] || '我的课程'
+    },
     authCode: "studentSideCourse",
   },
   children: [

@@ -276,7 +276,7 @@ export default defineComponent({
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
           // console.log(res)
-          if (res && res.code === 1) {
+          if (res && res.status === 1) {
             taskData.push(...res.data)
             currentSelectChapter = Object.assign(currentSelectChapter, res.data[0].children[0])
             getExperimentList()
@@ -285,8 +285,7 @@ export default defineComponent({
             reject(false)
           }
         })
-      })
-        .catch(err => {
+      }).catch(err => {
           console.error(err)
         })
         .finally(() => {
@@ -326,7 +325,7 @@ export default defineComponent({
             param: {name: chapterInfo.chapterName},
             urlParams: {id: chapterInfo.chapterId}
           }).then((res: IBusinessResp) => {
-            if (res.code === 1) {
+            if (res.status === 1) {
               $message.success('编辑章节成功')
               visible.value = false
               experimentalTreeList().then(() => {
@@ -340,7 +339,7 @@ export default defineComponent({
           http.addChapter({
             param: {name: chapterInfo.chapterName, parent_id: chapterInfo.parent_id},
           }).then((res: IBusinessResp) => {
-            if (res.code === 1) {
+            if (res.status === 1) {
               $message.success('添加章节成功')
               visible.value = false
               isEmptyExperimental.value = false
@@ -393,7 +392,7 @@ export default defineComponent({
         onOk() {
           http.deleteChapter({urlParams: {id}}).then((res: IBusinessResp) => {
             // console.log(res)
-            if (res.code === 1) {
+            if (res.status === 1) {
               $message.success('删除章节成功')
               getExperimentList()
               experimentalTreeList().then(() => {
@@ -418,7 +417,7 @@ export default defineComponent({
         share_type: data.contents_count === data.contents_share_count ? 1 : 0,
       }
       http.shareChapter({param}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
+        if (res.status === 1) {
           $message.success(param.share_type === 0 ? '分享成功' : '取消分享成功')
           experimentalTreeList().then(res => {
             if (res) {
@@ -434,7 +433,7 @@ export default defineComponent({
     function saveToMyAll(val: any) {
       const data = val.data.data
       http.saveToContentAll({param: { id: data.id }}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
+        if (res.status === 1) {
           $message.success('已保存到我的实验')
           getExperimentList()
         } else {
@@ -474,7 +473,7 @@ export default defineComponent({
       http.getExperimentList({param}).then((res: IBusinessResp) => {
         // console.log(res)
         ListSearchInfo.loading = false
-        if (res && res.code === 1) {
+        if (res && res.status === 1) {
           let {list, page} = res.data
           ListSearchInfo.total = page.totalCount
           ListSearchInfo.experimentalDataList = list
@@ -527,7 +526,7 @@ export default defineComponent({
         param.down_id = ListSearchInfo.experimentalDataList[i].id
       }
       http.sortExperimental({param}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
+        if (res.status === 1) {
           $message.success('实验顺序交换成功')
           if (flag) {
             // console.log(i)
@@ -557,7 +556,7 @@ export default defineComponent({
         share_type: data.is_share,
       }
       http.shareExperimental({param}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
+        if (res.status === 1) {
           if (data.is_share === 0) {
             $message.success('共享成功')
           } else {
@@ -585,7 +584,7 @@ export default defineComponent({
         cancelText: '取消',
         onOk() {
           http.deleteExperimental({urlParams: {id: data.id}}).then((res: IBusinessResp) => {
-            if (res.code === 1) {
+            if (res.status === 1) {
               $message.success('删除成功')
               getExperimentList()
               experimentalTreeList().then(res => {
@@ -605,7 +604,7 @@ export default defineComponent({
       // console.log(val)
       http.saveToContent({param: {id: val.id }}).then((res: any) => {
         // console.log(res)
-        if (res.code === 1) {
+        if (res.status === 1) {
           $message.success('已保存到我的实验')
           getExperimentList()
         } else {
@@ -622,7 +621,7 @@ export default defineComponent({
 
           currentChapterIndex.value = Number(route.query.chapter_index)
           currentSelectChapter.id = taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
-          // console.log(currentCourseIndex, currentChapterIndex)
+          // console.log(currentCourseIndex, currentChapterIndex)  ExperimentDetaile
           recoverTreeStatus()
           getExperimentList()
         } else {

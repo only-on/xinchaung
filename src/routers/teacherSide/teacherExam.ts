@@ -1,10 +1,18 @@
 import Layout from 'src/views/common/Layout.vue';
-
+import { LocationQuery, RouteParams } from 'vue-router';
 export default {
     path: "teacherExam",
     component: Layout,
     meta: {
-        title: "考试管理",
+        // title: "考试管理",
+        title: (params?: RouteParams, query?: RouteParams) => {
+            // console.log(query)
+            const dataDetailMap = {
+                '0': '试卷管理',
+                '1': '考试中心',
+            }
+            return dataDetailMap[query!.currentTab.toString()] || '试卷管理'
+          },
         authCode: 'teacherExam'  
     },
     children: [
@@ -12,7 +20,7 @@ export default {
             path: "",
             component: () => import("src/views/teacherExam/index.vue"),
             meta: {
-                title: "考试管理",
+                title: "",
                 authCode: 'teacherExam'
             },
         },

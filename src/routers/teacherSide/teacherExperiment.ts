@@ -43,5 +43,15 @@ export default {
                 authCode: 'creatTypeExperiment'
             },
         },
+        // ExperimentDetail
+        {
+            path: "ExperimentDetail",
+            name: "ExperimentDetail",
+            component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
+            meta: {
+                title: "实验详情",
+                authCode: 'ExperimentDetail'
+            },
+        },
     ]
 }
