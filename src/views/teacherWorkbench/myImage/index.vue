@@ -5,18 +5,27 @@
         placeholder="请输入关键字查询"
         v-model:value="params.name"
         style="width: 506px"
+        @keyup.enter="onSearch"
         @search="onSearch"
       />
       <a-button type="primary" @click="createImage">创建镜像</a-button>
     </div>
-    <div class="my-image-box">
-      <div
-        class="my-image-item"
-        v-for="(item, index) in myImageList"
-        :key="index.toString()"
-      >
-        <card :modelValue="myImageList[index]" @delete-image='deleteImage' @copy-image='copyImage' @edit-image='editImage'/>
+    <div v-if="ifTip" class="loading">
+            <a-spin tip="加载中...">
+            <div class="spin-content">
+            </div>
+            </a-spin>
+        </div>
+    <div v-else class="my-image-box">
+      <div class="my-image-item" v-if="myImageList?.length">
+          <div
+          v-for="(item, index) in myImageList"
+          :key="index.toString()"
+        >
+          <card :modelValue="myImageList[index]" @delete-image='deleteImage' @copy-image='copyImage' @edit-image='editImage'/>
+        </div>
       </div>
+      <empty v-else></empty>
     </div>
     <!-- 编辑镜像 -->
      <a-modal
@@ -35,10 +44,8 @@
                         <a-input class="form-input" v-model:value="imageData.name" ></a-input>
                     </a-form-item>
                     <a-form-item required  label="系统类型">
-                      <!-- imageData.image.classify.name -->
-                       <!-- v-model:value="" -->
-                        <a-select class="form-input" placeholder='请选择系统类型'>
-                            <a-select-option :value="item" v-for="(item,index) in config.image_classify" :key="index.toString()">
+                        <a-select class="form-input" v-model:value="imageData.classify_id" placeholder='请选择系统类型'>
+                            <a-select-option :value="Number(index)" v-for="(item,index) in config.image_classify" :key="index.toString()">
                               {{item}}
                             </a-select-option>
                         </a-select>     
@@ -65,6 +72,7 @@ import { defineComponent, onMounted, reactive, toRefs,ref } from "vue";
 import { useRouter } from "vue-router";
 import { getMyImageApi,deleteMyImageApi,getConfigApi,editMyImageApi} from "../api";
 import { message, Modal } from "ant-design-vue";
+import Empty from 'src/components/Empty.vue'
 import {cloneDeep} from 'lodash'
 import card from "./card.vue";
 interface Istate{
@@ -72,27 +80,28 @@ interface Istate{
   visible:boolean,
   imageData:any,
   config:any,
-  target:any
+  target:any,
+  ifTip:boolean,
 }
 export default defineComponent({
   components: {
     card,
+    Empty
   },
   setup() {
     const router = useRouter();
     const myImageList=ref([])
     const reactiveData: {
       params: any;
-      // myImageList: any[];
       pageCount: number;
     } = reactive({
       params: {
         name: "",
         limit: 16,
-        withs: "image,config,image.classify",
+        // withs: "image,config,image.classify",
+        withs: "classify,user,userProfile",
         page: 1,
       },
-      // myImageList: [],
       pageCount: 0,
     });
       const state:Istate=reactive({
@@ -100,13 +109,14 @@ export default defineComponent({
         visible:false,
         imageData:{},
         config:{},
-        target:''
+        target:'',
+        ifTip:false
         })
     function init() {
       reactiveData.params = {
         name: "",
         limit: 16,
-        withs: "image,config,image.classify",
+        withs: "classify,user,userProfile",
         page: 1,
         is_init:0,
         type:""
@@ -115,7 +125,9 @@ export default defineComponent({
     }
     // 获取我的镜像列表
     function getMyImage() {
+      state.ifTip=true;
       getMyImageApi(reactiveData.params).then((res) => {
+        state.ifTip=false;
         myImageList.value = res?.data.list;
         reactiveData.params.page = res?.data.page.currentPage;
         reactiveData.params.limit = res?.data.page.perPage;
@@ -124,14 +136,14 @@ export default defineComponent({
     }
     // 创建镜像
     function createImage() {
-      console.log("创建");
       router.push({ path: "/teacher/Workbench/createImage" });
     }
     // 搜索
-    function onSearch() {}
+    function onSearch() {
+      getMyImage()
+    }
     const methods={
        deleteImage(id:number){
-         console.log(id)
         Modal.confirm({
         title: "确定要删除这个镜像吗？",
         content: "删除后不可恢复",
@@ -154,30 +166,33 @@ export default defineComponent({
 
       },
       editImage(data:any){
-        console.log(data)
         state.imageData=cloneDeep(data)
         state.visible=true
       },
       handleOk(){
         state.visible=false
-        console.log(state.imageData.config.disk,'jijijjjjjjjjjjjjj')
         let params:any={
-          flavor:{
-            cpu:state.imageData.config.cpu,
-            disk:state.imageData.config.disk,
-            ram:state.imageData.config.ram,
-          },
-          image:{
-            name:state.imageData.image.name,
-            classify_id:state.imageData.image.classify_id,
-            is_use_gpu:state.imageData.image.is_use_gpu?1:0,
-            description:state.imageData.image.description
-          },
-          tag:state.imageData.image.tags
+          // flavor:{
+          //   cpu:state.imageData.config.cpu,
+          //   disk:state.imageData.config.disk,
+          //   ram:state.imageData.config.ram,
+          // },
+          // image:{
+          //   name:state.imageData.image.name,
+          //   classify_id:state.imageData.image.classify_id,
+          //   is_use_gpu:state.imageData.image.is_use_gpu?1:0,
+          //   description:state.imageData.image.description
+          // },
+          // tag:state.imageData.image.tags
+            "name":state.imageData.name,
+            "classify_id":state.imageData.classify_id,
+            "tag":state.imageData.tags,
+            "description":state.imageData.description,
+            "is_use_gpu":state.imageData.is_use_gpu,
+            "ssh_user":" ",
+            "ssh_pass":" "
         }
         editMyImageApi({id:state.imageData.id},params).then((res:any)=>{
-          console.log(res)
-          console.log(state.imageData.id,'iddddddddddddddddd')
           params={}
          getMyImage();
         })
@@ -187,7 +202,6 @@ export default defineComponent({
       },
       getConfig(){
         getConfigApi().then((res:any)=>{
-            console.log(res)
             state.config=res.data
             })
       },
@@ -224,6 +238,12 @@ export default defineComponent({
 <style lang="less">
 .my-image-tab {
   height: 100%;
+   .loading{
+        padding:245px;
+    }
+    .spin-content {
+    padding: 30px;
+    }
   .my-image-search {
     display: flex;
     flex-direction: row;

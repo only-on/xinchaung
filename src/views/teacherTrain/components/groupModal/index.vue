@@ -10,39 +10,55 @@
         >
         <div class="editCon">
             <div class="hasGroup">
-                <div>分组情况</div>
+                <div class="groupHeader"><a-input placeholder="请输入组名" style="width:70%" v-model:value="inputGroupName"></a-input><a-button type="primary" @click='addGroup'>创建</a-button></div>
                 <div class="groupOperate" v-if="ifautoGroupEdit">
                     <a-input style="width:150px"></a-input>
                     <a-button type="primary">修改</a-button>
                 </div>
                 <div class="groupOperate" v-else>
-                    <a-input style="width:150px"></a-input>
+                    <!-- <a-input style="width:150px"></a-input>
                     <a-button type="primary">编辑</a-button>
-                    <a-button type="primary">解散</a-button>
+                    <a-button type="primary">解散</a-button> -->
+
                 </div>
-                    <a-tree :treeData='treeData' @select='selectTree'  :replaceFields='replaceFields'></a-tree>
+                    <a-tree :treeData='treeData' @select='selectTree'  :replaceFields='replaceFields'>
+                        <template #switcherIcon>
+                            dd
+                        </template>
+                    </a-tree>
             </div>
             <div>
             <div class="transferBox">
-                <div>
+                <div class='move'>
                     <span @click="leftMove" class="icon-chuansuojiantou iconfont"></span>
                 </div>
-                <div>
+                <div class="move">
                     <span @click="rightMove" class="icon-chuansuojiantou-copy iconfont"></span>
                 </div>
             </div>
             </div>
             <div class="unGroup">
-                <div>未分组情况(未分组学生)</div>
+                <div>学生列表
+                     <a-checkbox 
+                     :indeterminate="indeterminate" 
+                     v-model:checked="checkAll" 
+                     @change="onCheckAllChange">
+                        {{checkedValues?.length}}/{{unGroupData?.length}}人
+                    </a-checkbox>
+                </div>
                 <div class="groupOperate" v-if="!ifautoGroupEdit">
-                    <a-input style="width:180px" placeholder="选择学生命名新数组" v-model:value="groupname"></a-input>
-                    <a-button type='primary' @click="addGroup">添加分组</a-button>
+                    <a-input-search style="width:100%" 
+                    placeholder="请输入搜索关键字" 
+                    v-model:value="groupname" 
+                    @keyup.enter="onSearch"
+                    @search="onSearch"></a-input-search>
+                    <!-- <a-button type='primary' @click="addGroup">添加分组</a-button> -->
                 </div>
                 <div class="checkGroup">
-                    <a-checkbox-group @change="onChange">
-                        <div v-for="(item,index) in ungroup" :key="index.toString()">
+                    <a-checkbox-group v-model:value="checkedValues">
+                        <div v-for="(item,index) in unGroupData" :key="index.toString()">
                             <a-checkbox :value="item.id">
-                                {{item.name}}
+                                {{item.userProfile.name}}
                             </a-checkbox>
                         </div>
                    </a-checkbox-group>
@@ -63,21 +79,23 @@ interface groupItem{
 }
 interface Istate{
    editLoading:boolean,
-   ungroup:any[],
    group:groupType,
    treeData:groupItem[],
    replaceFields:any,
    groupname:string,
    checkedValues:number[],
-   selectedKeys:string[]
+   selectedKeys:string[],
+   indeterminate:boolean,
+   checkAll:boolean,
+   inputGroupName:string
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'resources',
-    props:['propTrainDetailInfo','trainId','editvisible','ifautoGroupEdit'],
+    props:['propTrainDetailInfo','trainId','editvisible','ifautoGroupEdit','unGroupData'],
     components:{
         Empty
     },
@@ -85,7 +103,6 @@ export default defineComponent({
     const http=(request as any).teacherTrain
     const state:Istate=reactive({
         editLoading:false,
-        ungroup: [{id: 4253, name: "lee dong", train_id: "50225"}],
         treeData:[],
         group:{
             group_info: {},
@@ -94,7 +111,10 @@ export default defineComponent({
         replaceFields:{children:'student_list', title:'name', key:'id'},
         groupname:'' ,
         checkedValues:[],
-        selectedKeys:[]    
+        selectedKeys:[],
+        indeterminate:false,
+        checkAll: false,
+        inputGroupName:''
     })
     const methods={
       editOk(){
@@ -102,6 +122,20 @@ export default defineComponent({
       },
       editCancel(){
          context.emit('editModal',false)
+      },
+      onCheckAllChange(e: any){
+            state.checkedValues=[] 
+            props.unGroupData.forEach((item:any,index:any)=>{
+                state.checkedValues.push(item.id)
+            })
+            Object.assign(state, {
+                checkedValues: e.target.checked ?state.checkedValues : [],
+                indeterminate:true,
+            });
+      },
+      onSearch(){
+          console.log(state.groupname)
+          context.emit("search-group",state.groupname)
       },
       getStuGroup(){
            http.getGroupAndNogroupStu({param:{train_id:50347}}).then((res:any)=>{
@@ -114,30 +148,30 @@ export default defineComponent({
       rightMove(){
           
       },
-      onChange(checkedValues:any) {
-        state.checkedValues=checkedValues
+    //   onChange(checkedValues:any) {
+    //     state.checkedValues=checkedValues
            
-        },
+    //     },
       addGroup(){
-          if(!state.groupname){
+          if(!state.inputGroupName){
               message.warning('请输入分组名称')
               return
           }
           let deleteArr:any=[]
-          state.ungroup.forEach((item:any,index:any)=>{
-               state.checkedValues.forEach((value:any)=>{
-                    if(item.id===value){
-                        deleteArr.push(index)
-                        state.group.student_list.push(item)
-                    }
-               })
-           })
-           deleteArr.forEach((value:any)=>{
-               state.ungroup.splice(value,1)
-           })
+        //   props.unGroupData.forEach((item:any,index:any)=>{
+        //        state.checkedValues.forEach((value:any)=>{
+        //             if(item.id===value){
+        //                 deleteArr.push(index)
+        //                 state.group.student_list.push(item)
+        //             }
+        //        })
+        //    })
+        //    deleteArr.forEach((value:any)=>{
+        //        props.unGroupData.splice(value,1)
+        //    })
            const treeItem:any={
-            name:state.groupname,
-            student_list:state.group.student_list,
+            name:state.inputGroupName,
+            // student_list:state.group.student_list,
             }
             console.log(treeItem)
             state.treeData.push(treeItem)
@@ -148,12 +182,15 @@ export default defineComponent({
           console.log(selectedKeys,'hvvvvvvvvvvvvvv')
       }
     }
+    watch(
+      () => state.checkedValues,
+      val => {
+        state.indeterminate = !!val.length && val.length < props.unGroupData.length;
+        state.checkAll = val.length === props.unGroupData.length;
+      }
+    ),
     onMounted(()=>{
         methods.getStuGroup()
-        state.ungroup=[
-        {id: 4251, name: "yt", train_id: "50338"},
-        {id: 4255, name: "sihai fu", train_id: "50338"},
-        {id: 4253, name: "lee dong", train_id: "50338"}]
     })
     return {...toRefs(state),...methods}
     }
@@ -165,6 +202,12 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-content: center;
+        .move{
+            width: 50px;
+            height: 50px;
+            background-color:#f5f5f5;
+            border: 1px solid #C5D2DA;
+        }
         .isMoveRight{
             cursor: none;
         }
@@ -180,6 +223,12 @@ export default defineComponent({
         height: 390px;
         overflow-y: auto;
         text-align: left;
+        .groupHeader{
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            // border-bottom: 1px solid #C5D2DA;
+        }
         .groupOperate{
             margin-top:10px;
             display: flex;

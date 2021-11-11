@@ -1,7 +1,7 @@
 <template>
     <div class="customerInfor" v-layout-bg>
        <div class="radioInfo">
-           <a-radio-group size="large" v-model:value="value" @change="onChange">
+           <a-radio-group size="large" v-model:value="value" @change="onRadioChange">
                 <a-radio  :value="1">
                 学生信息
                 </a-radio>
@@ -13,21 +13,33 @@
        <div class="stuAndclass">
            <div class="operateBtn">
                <a-button type="primary" class="choice" @click="selectStuClass">选择</a-button>
-               <a-button type="primary">移除</a-button>
+               <a-button type="primary" @click="deleteMany">移除</a-button>
            </div>
            <div>
                 <a-config-provider>
-                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" :rowkey='rowkey'>
-                        <template #stuaction>
+                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" rowkey='id'>
+                        <template #name="{ record }">
+                           <div>{{record.userProfile.name}}</div>
+                        </template>
+                        <template #department="{ record }">
+                           <div>{{record.userProfile.department}}</div>
+                        </template>
+                        <template #gender="{ record }">
+                           <div>{{record.userProfile.gender}}</div>
+                        </template>
+                        <template #phone="{ record }">
+                           <div>{{record.userProfile.phone}}</div>
+                        </template>
+                        <template #stuaction="{ record }">
                             <div class="action">
-                                <span class="spanleft" @click="removeStudent">移除</span>
+                                <span class="spanleft" @click="removeStudent(record.id)">移除</span>
                                 <span @click="initPassword">初始化密码</span>
                             </div>
                         </template>
-                        <template #classaction>
+                        <template #classaction='{record}'>
                             <div class="action">
                                 <span class="spanleft" @click="checkClass">查看</span>
-                                <span @click="deleteClass">删除</span>
+                                <span @click="deleteClass(record.id)">删除</span>
                             </div>
                         </template>
                     </a-table>
@@ -37,7 +49,16 @@
                 </a-config-provider>
            </div>
            <div>
-               <select-stu-class :selectvalue='value' :trainId="trainId" :isvisible='isvisible' @if-select='ifSelect' @selected-rows='selectedRows'></select-stu-class>
+               <select-stu-class
+               :unSelectData='unSelectData' 
+               :selectvalue='value' 
+               :trainId="trainId" 
+               :isvisible='isvisible' 
+               @if-select='ifSelect' 
+               @selected-rows='addSelectedRows'
+               @search-inquiry='searchInquiry' 
+               :addids='addidarr'>
+               </select-stu-class>
            </div>
            <div>
                 <a-modal
@@ -50,7 +71,7 @@
                 @cancel="classInfoCancel"
                 >
                 <div>
-                    <a-table :columns="classInfoColumns" :data-source="classInfoData" :rowkey='rowkey'></a-table>
+                    <a-table :columns="classInfoColumns" :data-source="classInfoData" rowkey='id'></a-table>
                 </div>
                 </a-modal>
            </div>
@@ -69,6 +90,23 @@
     </div>
 </template>
 <script lang="ts">
+interface stuType{
+    name?:string,	
+    nick?:string,	
+    department?:string,
+    limit?:number,	
+    page?:number,	
+    type?:number,	
+    id?:number,	
+    withs?:string,
+}
+interface classType{
+    name?:string,
+    limit?:number,
+    page?:number,
+    type?:number,
+    id?:number,
+}
 interface Istate{
    value:number,
    stuColumns:any[],
@@ -81,13 +119,19 @@ interface Istate{
    classInfoVisible:boolean,
    classInfoLoading:boolean,
    classDeleteVisible:boolean,
-   classDeleteLoading:boolean
+   classDeleteLoading:boolean,
+   addidarr:any,
+   unSelectData:any,
+   selectStuOrClassKeys:any[],
+   classStuDeleteid:any[],
+   stuUnselectParams:stuType,
+   classUnselectParams:classType,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import selectStuClass from '../../components/selectStuClass/index.vue'
-import { message } from 'ant-design-vue';
+import { message,Modal} from 'ant-design-vue';
 export default defineComponent({
     name:'customerInfor',
     props:['propTrainDetailInfo','trainId'],
@@ -98,8 +142,19 @@ export default defineComponent({
     setup(props,context){
     const http=(request as any).teacherTrain
     const state:Istate=reactive({
+      stuUnselectParams:{
+          id:props.trainId,
+          type:2,
+          withs:'userProfile'
+      },
+      classUnselectParams:{
+          id:props.trainId,
+          type:2
+      },
       value:1,
       isvisible:false,
+      unSelectData:[],
+      classStuDeleteid:[],
       classColumns:[
         {
             title: '班级名称',
@@ -121,23 +176,26 @@ export default defineComponent({
       stuColumns:[
         {
             title: '学号',
-            dataIndex: 'id',
+            dataIndex: 'user_id',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '姓名',
-            dataIndex: 'username',
+            dataIndex: 'name',
             ellipsis: true,
+            slots: { customRender: 'name' } 
         },
         {
             title: '所属院系',
             dataIndex: 'department',
             ellipsis: true,
+            slots: { customRender: 'department' } 
         },
         {
             title: '性别',
             dataIndex: 'gender',
+            slots: { customRender: 'gender' } 
         },
         {
             title: '邮箱',
@@ -149,6 +207,7 @@ export default defineComponent({
             title: '电话',
             dataIndex: 'phone',
             ellipsis: true,
+            slots: { customRender: 'phone' } 
         },
         {   title: '操作', 
             dataIndex: 'stuaction', 
@@ -194,29 +253,38 @@ export default defineComponent({
       classInfoVisible:false,
       classInfoLoading:false,
       classDeleteVisible:false,
-      classDeleteLoading:false
+      classDeleteLoading:false,
+      addidarr:[],
+      selectStuOrClassKeys:[]
     })
     const rowSelection = {
-            onChange: (selectedRowKeys:any, selectedRows:any) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
+            onChange: (selectedRowKeys1:any, selectedRows1:any) => {
+                console.log(`selectedRowKeys: ${selectedRowKeys1}`, 'selectedRows: ', selectedRows1);
+                state.classStuDeleteid=selectedRows1
             },
-            onSelect: (record:any, selected:any, selectedRows:any) => {
-                console.log(record, selected, selectedRows);
-            },
-            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
-                console.log(selected, selectedRows, changeRows);
-            },
+            onSelectAll: (selected1:any, selectedRows1:any, changeRows1:any) => {
+                console.log(selected1, selectedRows1, changeRows1);
+                state.classStuDeleteid=selectedRows1
+            }
         };
     const methods={
-       onChange(e:any) {
-        console.log('radio checked', e.target.value);
-            state.columns=e.target.value===1?state.stuColumns:state.classColumns
-            if(e.target.value===1){
+       onRadioChange(e:any) {
+            state.columns=e.target.value==1?state.stuColumns:state.classColumns
+            state.data=[]
+            state.unSelectData=[]
+            if(e.target.value==1){
                 methods.getStudentList()
+            }else{
+                 methods.getClassList()
             }
         },
         selectStuClass(){
             state.isvisible=true
+            if(state.value===1){
+                methods.getUnselectStu()
+            }else{
+                methods.getUnselectClass()
+            }
         },
         ifSelect(){
             state.isvisible=false
@@ -227,12 +295,6 @@ export default defineComponent({
         checkClass(){
             state.classInfoVisible=true
         },
-        deleteClass(){
-            state.classDeleteVisible=true
-        },
-        removeStudent(){
-
-        },
         initPassword(){
 
         },
@@ -242,21 +304,143 @@ export default defineComponent({
         classInfoCancel(){
             state.classInfoVisible=false
         },
-        classDeleteOk(){
-             state.classDeleteVisible=false
-        },
         classDeleteCancel(){
             state.classDeleteVisible=false
         },
-        // 添加学生班级
-        selectedRows(value:any){
-            console.log(value)
+        // 按学生或者班级排课
+        addSelectedRows(value:any,selectValue:any){
+            console.log(selectValue)
             value.forEach((item:any) => {
-                state.data.push(item)
+                state.addidarr.push(item.id) 
             });
+            if(selectValue===1){
+                const params:any={
+                id:props.trainId,
+                student_id:state.addidarr,
+                type:2
+                }
+                http.scheduleStudent({param: params}).then((res:any)=>{
+                    console.log(res)
+                    console.log('再次请求未排课的学生接口')
+                    methods.getUnselectStu()
+                    methods.getStudentList()
+                })
+            }else{
+                const params:any={
+                id:props.trainId,
+                class_id:state.addidarr,
+                type:2
+                }
+                http.scheduleClass({param: params}).then((res:any)=>{
+                    methods.getUnselectClass()
+                    methods.getClassList()
+                })
+            }
+            console.log(state.addidarr,'ids')
         },
+        // 学生排课移除
+        removeStudent(id:any){
+            http.deleteScheduleStu({urlParams:{id:id}}).then((res:any)=>{
+                message.success('移除成功')
+                methods.getStudentList()
+            })
+        },
+        // 班级排课删除
+        deleteClass(id:any){
+            state.classDeleteVisible=true
+            state.classStuDeleteid=[id]
+        },
+        // 确定删除班级
+        classDeleteOk(){
+             state.classDeleteVisible=false
+                const deleteParmas={
+                id:state.classStuDeleteid,
+                relate_id:props.trainId,
+                type:2
+                }
+             http.deleteScheduleClass({param:deleteParmas}).then((res:any)=>{
+                 console.log(res)
+                 message.success("删除成功")
+                 state.classStuDeleteid=[]
+             })
+        },
+        // 批量删除
+        deleteMany(){
+            console.log(state.classStuDeleteid)
+            if(!state.classStuDeleteid.length){
+                message.warning('请至少选择一条记录！')
+                return
+            }else{
+                Modal.confirm({
+                title: '确认删除吗？',
+                content: '删除后不可恢复',
+                okText: '确认',
+                cancelText: '取消',
+                onOk(){
+                    let deleteid:any=[]
+                    state.classStuDeleteid.forEach((item:any)=>{
+                        deleteid.push(item.id)
+                    })
+                    if(state.value===1){
+                        const deleteParmas={id:deleteid}
+                        http.deleteScheduleStuMany({param:deleteParmas}).then((res:any)=>{
+                            message.success('删除成功')
+                            methods.getStudentList()
+                        })
+                    }else{
+                            const deleteParmas={
+                            id:deleteid,
+                            relate_id:props.trainId,
+                            type:2
+                            }
+                            http.deleteScheduleClass({param:deleteParmas}).then((res:any)=>{
+                            console.log(res)
+                            message.success("删除成功")
+                            state.classStuDeleteid=[]
+                            methods.getClassList()
+                            })
+                        }
+                    }
+                })
+            }
+        },
+        // 未排课查询
+        searchInquiry(studentValue:any,fullName:any,faculty:any,classes:any){
+            console.log(studentValue,fullName,faculty,classes)
+            if(state.value===1){
+                state.stuUnselectParams.nick=studentValue
+                state.stuUnselectParams.name=fullName
+                state.stuUnselectParams.department=faculty
+                methods.getUnselectStu()
+            }else{
+                state.classUnselectParams.name=classes
+                methods.getUnselectClass()
+            }
+        },
+        // 未排课学生
+        getUnselectStu(){
+            http.unSelectStudentGroup({param:state.stuUnselectParams}).then((res:any)=>{
+                // state.data=res.data.list
+                state.unSelectData=res.data.list
+            })
+        },
+        // 未排课班级列表
+        getUnselectClass(){
+            http.unSelectClassGroup({param:state.classUnselectParams}).then((res:any)=>{
+                // state.data=res.data.list
+                state.unSelectData=res.data.list
+            })
+        },
+        // 已选学生列表
         getStudentList(){
-            http.studentGroup({param:{train_id:props.trainId}}).then((res:any)=>{
+            http.studentGroup({param:{id:props.trainId,type:2,withs:'userProfile'}}).then((res:any)=>{
+                console.log(res)
+                state.data=res.data.list
+            })
+        },
+        // 已选班级列表
+        getClassList(){
+            http.classGroup({param:{id:props.trainId,type:2}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
             })
@@ -264,13 +448,8 @@ export default defineComponent({
     }
     onMounted(()=>{
         state.columns=state.stuColumns
-        console.log('请求学生接口')
+        // console.log('请求学生接口')
         methods.getStudentList()
-        // state.data=[
-        //     {stu_no:1,username:'huahwww',classname:'班级1',total:2},
-        //     {stu_no:2,username:'huahwww',classname:'班级2',total:12},
-        //     {stu_no:3,username:'huahwww',classname:'班级3',total:23},
-        //     ]
     })
     return {...toRefs(state),...methods,rowSelection}
     }

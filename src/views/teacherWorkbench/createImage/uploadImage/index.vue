@@ -12,10 +12,10 @@
         <p class="ant-upload-hint">选择要上传的镜像或将镜像拖拽到此处 仅支持tar和qcow2</p>
     </a-upload-dragger>
     <div class="uploadBtn">
-        <a-button @click='onUpload'>上传</a-button>
-        <a-button >恢复</a-button>
-        <a-button >暂停</a-button>
-        <a-button >删除</a-button>
+        <a-button class='btn' @click='onUpload'>上传</a-button>
+        <a-button class="btn">恢复</a-button>
+        <a-button class='btn'>暂停</a-button>
+        <a-button class='btn'>删除</a-button>
     </div>
   </div>
 </template>
@@ -280,8 +280,16 @@ export default defineComponent({
 
 <style lang="less">
 .uploadImage{
+  .icon-upload{
+    font-size: 24px;
+    color: @theme-color;
+  }
     .uploadBtn{
       display: flex;
+      margin-top:10px;
+      .btn{
+        margin-right: 10px;
+      }
     }
     .upload{
       .ant-upload.ant-upload-drag .ant-upload-btn{

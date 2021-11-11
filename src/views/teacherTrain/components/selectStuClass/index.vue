@@ -2,7 +2,6 @@
     <div class="selectStuClass" v-layout-bg>
         <a-modal
         width="1000px"
-        :rowkey='rowkey'
         :title="selectvalue===1?'学生选择':'班级选择'"
         :visible="isvisible"
         :confirm-loading="confirmLoading"
@@ -38,7 +37,17 @@
                 </a-form> 
             </div>
             <a-config-provider>
-                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection"></a-table>
+                    <a-table :columns="columns" :data-source="unSelectData" :row-selection="rowSelection" rowKey="id">
+                        <template #department="{ record }">
+                            <div>{{ record.user_profile.department}}</div>
+                        </template>
+                        <template #gender="{ record }">
+                            <div>{{ record.user_profile.gender}}</div>
+                        </template>
+                        <template #phone="{ record }">
+                            <div>{{ record.user_profile.phone}}</div>
+                        </template>
+                    </a-table>
                     <template #renderEmpty>
                         <div><empty type="tableEmpty"></empty></div>
                     </template>
@@ -58,15 +67,17 @@ interface Istate{
    fullName:string,
    faculty:string,
    classes:string,
-   selectedRows:any[]
+   selectedRows:any[],
+   unSelectKeys:any[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
+import test from './test.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'selectStuClass',
-    props:['propTrainDetailInfo','trainId','selectvalue','isvisible'],
+    props:['propTrainDetailInfo','trainId','selectvalue','isvisible','addids','unSelectData'],
     components:{
         Empty
     },
@@ -83,9 +94,9 @@ export default defineComponent({
         },
         {
             title: '人数',
-            dataIndex: 'total',
+            dataIndex: 'number',
             align: 'center',
-            scopedSlots: { customRender: 'total' },
+            scopedSlots: { customRender: 'number' },
         },
         ],
         selectStu:[
@@ -97,17 +108,19 @@ export default defineComponent({
         },
         {
             title: '姓名',
-            dataIndex: 'nickname',
+            dataIndex: 'username',
             ellipsis: true,
         },
         {
             title: '所属院系',
             dataIndex: 'department',
             ellipsis: true,
+            slots: { customRender: 'department' },
         },
         {
             title: '性别',
             dataIndex: 'gender',
+            slots: { customRender: 'gender' },
         },
         {
             title: '邮箱',
@@ -119,6 +132,7 @@ export default defineComponent({
             title: '电话',
             dataIndex: 'phone',
             ellipsis: true,
+            slots: { customRender: 'phone' },
         },
         ],
         columns:[],
@@ -127,8 +141,22 @@ export default defineComponent({
         fullName:'',
         faculty:'',
         classes:'',
-        selectedRows:[]
+        selectedRows:[],
+        unSelectKeys:[]
     })
+    const rowSelection = {
+        //    selectedRowKeys:state.selectedRows,
+           onChange: (selectedRowKeys:any, selectedRows:any) => {
+                state.selectedRows=selectedRows
+            },
+            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
+                state.selectedRows=selectedRows
+            },
+            getCheckboxProps: (record:any) => ({
+                disabled: record.selected,
+                defaultChecked:record.selected
+            }),
+    };
     const methods={
       handleOk(){
           context.emit('ifSelect','ok')
@@ -141,9 +169,8 @@ export default defineComponent({
       },
       addittion(){
         //   添加
-         console.log(props.selectvalue)
-        //  state.selectedRows
-        context.emit('selected-rows',state.selectedRows)
+        console.log(state.selectedRows,'选中的数据')
+        context.emit('selected-rows',state.selectedRows,props.selectvalue)
       },
       clearAll(){
         state.studentValue=''
@@ -151,51 +178,17 @@ export default defineComponent({
         state.faculty=''
         state.classes=''
       },
-
       inquiry(){
-          console.log(props.selectvalue)
-      },
-      getUnselectStu(){
-          http.unSelectStudentGroup({param:{train_id:props.trainId}}).then((res:any)=>{
-              state.data=res.data.data
-          })
-      },
-      getUnselectClass(){
-          http.unSelectClassGroup({param:{train_id:props.trainId}}).then((res:any)=>{
-              state.data=res.data.data
-          })
-      }
+          console.log(state.studentValue,state.fullName,state.faculty,state.classes)
+              context.emit('search-inquiry',state.studentValue,state.fullName,state.faculty,state.classes)
+        },
     }
-    const rowSelection = {
-            onChange: (selectedRowKeys:any, selectedRows:any) => {
-                console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows);
-            },
-            onSelect: (record:any, selected:any, selectedRows:any) => {
-                console.log(record, selected, selectedRows);
-                state.selectedRows=selectedRows
-            },
-            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
-                console.log(selected, selectedRows, changeRows);
-            },
-        };
-    watch(()=>props.selectvalue,(val:any)=>{
-        state.columns=val===1?state.selectStu:state.selectClass 
-        if(val===1){
-            methods.getUnselectStu() 
-        }else{
-            methods.getUnselectClass() 
-        }   
+    watch(()=>props.isvisible,(val:any)=>{
+        state.columns=props.selectvalue===1?state.selectStu:state.selectClass  
         },{
-            deep:true,
             immediate:true 
         })
     onMounted(()=>{
-        // state.columns=state.selectStu
-        // state.data=[
-        //     {stu_no:1,username:'huahwww',classname:'班级1',total:2},
-        //     {stu_no:2,username:'huahwww',classname:'班级2',total:12},
-        //     {stu_no:3,username:'huahwww',classname:'班级3',total:23},
-        //     ]
     })
     return {...toRefs(state),...methods,rowSelection}
     }

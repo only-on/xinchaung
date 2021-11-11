@@ -13,7 +13,7 @@
       <div v-if="trainType === 0">
         <ul class="cardinfo">
           <li class="train-title">{{item.name}}</li> 
-          <li class="train-time"><span>{{item.start_time}}</span> ~ <span>{{item.end_time}}</span></li>
+          <li class="train-time"><span>{{item.start_times}}</span> ~ <span>{{item.end_times}}</span></li>
           <li class="desc-status">
             <span>
               任务描述状态:

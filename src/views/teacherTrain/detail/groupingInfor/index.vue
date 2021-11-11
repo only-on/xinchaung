@@ -7,9 +7,14 @@
        <div>
            <a-config-provider>
                     <a-table class="groupTable" :columns="columns" :data-source="data" :rowkey='rowkey'>
-                        <template #action>
+                        <template #created_time="{record}">
+                            <div>
+                             {{record.created_time.split(' ')[0]}}
+                            </div>
+                        </template>
+                        <template #action="{record}">
                             <div class="action">
-                               <span @click="deleteGroup">删除</span>
+                               <span @click="deleteGroup(record.id)">删除</span>
                                <span @click="editGroup">编辑</span>
                             </div>
                         </template>
@@ -28,7 +33,14 @@
                 >
                 <p>确定要删除此分组吗？</p>
                 </a-modal>
-                <group-modal :trainId="trainId" :editvisible='editvisible' @edit-modal='editModal' :ifautoGroupEdit='ifautoGroupEdit'></group-modal>
+                <group-modal 
+                :trainId="trainId" 
+                :editvisible='editvisible' 
+                @edit-modal='editModal'
+                :unGroupData='unGroupData'
+                @search-group='searchGroup'
+                :ifautoGroupEdit='ifautoGroupEdit'>
+                </group-modal>
                  <a-modal
                 title="学生分组"
                 width="550px"
@@ -69,7 +81,10 @@ interface Istate{
    autoConfirmLoading:boolean,
    ifautoGroupEdit:boolean,
    groupNumber:any,
-   groupway:number
+   groupway:number,
+   deleteGroupId:number,
+   unGroupPrams:any,
+   unGroupData:any
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -94,6 +109,16 @@ export default defineComponent({
         ifautoGroupEdit:false,
         groupway:1,
         groupNumber:'',
+        deleteGroupId:0,
+        unGroupPrams:{
+            name:'',
+            limit:10,
+            page:1,
+            type:2,
+            id:props.trainId,
+            withs:'userProfile'
+        },
+        unGroupData:[],
       columns:[{
         title: '小组名称',
         dataIndex: 'name',
@@ -101,13 +126,14 @@ export default defineComponent({
     },
     {
         title: '小组人数',
-        dataIndex: 'age',
+        dataIndex: 'num',
         align: 'center',
     },
     {
         title: '创建时间',
-        dataIndex: 'createtime',
+        dataIndex: 'created_time',
         align: 'center',
+        slots: { customRender: 'created_time' },
     },
     {
         title: '操作',
@@ -115,18 +141,30 @@ export default defineComponent({
         align: 'center',
         slots: { customRender: 'action' },
     },],
-    data:[{name:'小组1',age:3,createtime:'2019-09-8'}]
+    data:[]
     })
     const methods={
-      deleteGroup(){
+      // 删除分组确认框
+      deleteGroup(id:any){
           state.deletevisible=true
+          state.deleteGroupId=id
+      },
+      //   确定删除分组
+      deleteOk(){
+          state.deletevisible=false
+          http.deleteGroupListItem({urlParams:{group:state.deleteGroupId}}).then((res:any)=>{
+              console.log(res)
+              methods.getGroupList()
+          })
+      },
+      searchGroup(val:any){
+          console.log(val)
+          state.unGroupPrams.name=val
+          methods.unGroupList()
       },
       editGroup(){
           state.editvisible=true
           state.ifautoGroupEdit=true
-      },
-      deleteOk(){
-          state.deletevisible=false
       },
       deleteCancel(){
           state.deletevisible=false
@@ -135,9 +173,26 @@ export default defineComponent({
           state.editvisible=false
           state.ifautoGroupEdit=false
       },
-    //   自动分组
-      aotuGroup(){
-          state.autoGroupVisible=true
+        //   自动分组
+        aotuGroup(){
+            state.autoGroupVisible=true  //   展示弹框内容
+        },
+        // 点击分组按钮
+        grouping(){
+          if(!state.groupNumber){
+              message.warning('人数或小组数不能为空！')
+              return
+          }
+           const params={
+                id:props.trainId,
+                type:2,
+                number:state.groupNumber,
+                group_type:state.groupway===1?"group_people_num":"group_num" 
+            }
+         http.automaticGroup({param:params}).then((res:any)=>{
+             console.log(res)
+             methods.getGroupList()
+         })
       },
       autoGroupOk(){
           state.autoGroupVisible=false
@@ -145,32 +200,19 @@ export default defineComponent({
       autoGroupCancel(){
           state.autoGroupVisible=false
       },
-      grouping(){
-          if(!state.groupNumber){
-              message.warning('人数或小组数不能为空！')
-              return
-          }
-        //   AutomaticGroup
-          let params:any={}
-          if(state.groupway===1){
-              params={
-              train_id:props.trainId,
-              group_num:state.groupNumber
-              }
-          }else{
-               params={
-            //    train_id:props.trainId,
-               train_id:50338,
-               group_people_num:state.groupNumber
-            }
-          }
-         http.automaticGroup({param:params}).then((res:any)=>{
-             console.log(res)
-         })
-      },
     //   手动分组
       manualGroup(){
-          state.editvisible=true
+          state.editvisible=true 
+          methods.unGroupList()  
+      },
+      //获取待分组排课用户列表
+      unGroupList(){
+           http.usersTobeGrouped({param:state.unGroupPrams}).then((res:any)=>{
+              console.log(res)
+              state.unGroupData=res.data.list
+          })
+        //   http.userHasGrouped({}).then((res:any)=>{
+        //   })
       },
       handleChange(value:any){
           console.log(value)
@@ -181,8 +223,9 @@ export default defineComponent({
       },
     //   获取分组列表
       getGroupList(){
-          http.groupList({param:{course_id:501714}}).then((res:any)=>{
+          http.groupList({param:{id:props.trainId,type:2}}).then((res:any)=>{
               console.log(res)
+              state.data=res.data.list
           })
       }
     }

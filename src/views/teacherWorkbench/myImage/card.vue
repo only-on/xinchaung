@@ -14,15 +14,9 @@
         />
       </div>
       <div class="card-bottom">
-         <!-- <div>
-          <span>内存：{{modelValue.config.ram_text}}</span>
-          <span>CPU：{{modelValue.config.cpu_text}}</span>
-        </div> -->
         <div>
-          <!-- <span>硬盘：{{modelValue.config.disk_text}}</span>
-          <span>GPU：{{modelValue.image.is_use_gpu?"开启":"未启用"}}</span> -->
           <span>容量：{{modelValue.size}}</span>
-          <!-- <span>系统：{{modelValue.image.classify.name}}</span> -->
+          <span>系统：{{modelValue.classify_id===1?'Windows':'Linux'}}</span>
         </div>
       </div>
     </div>
@@ -31,8 +25,8 @@
         <div class="description">{{modelValue.description}}</div>
       </div>
       <div class="card-foot">
+        <div class='image-type'>{{modelValue.classify_id===1?'Windows':'Linux'}}</div>
         <div class="icon-operate">
-          <!-- <span class="iconfont icon-fuyong" @click="copyImage(data)"></span> -->
           <span class="iconfont icon-bianji1" @click="editImage(modelValue)"></span>
           <span class="iconfont icon-shanchu-copy" @click="deleteImage(modelValue.id)"></span>
         </div>
