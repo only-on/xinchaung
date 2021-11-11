@@ -29,31 +29,36 @@ export default {
   saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
-  studentGroup: { url: '/teacher-train/set-student', method: "GET" },
-  unSelectStudentGroup: { url: '/teacher-train/get-student-list', method: "GET" },
-  unSelectClassGroup: { url: '/teacher-train/get-classes-list', method: "GET" },
+  // studentGroup: { url: '/teacher-train/set-student', method: "GET" }, //学生列表接口
+  studentGroup: { url: '/api/arrange/students/search', method: "GET" }, //学生列表接口
+  classGroup: { url: '/api/arrange/classes/search', method: "GET" }, //班级列表接口
+  unSelectStudentGroup: { url: '/api/arrange/students', method: "GET" },//待选的学生列表
+  unSelectClassGroup: { url: '/api/arrange/classes', method: "GET" },//待排课的班级列表
+  scheduleStudent: { url: '/api/arrange/students', method: "POST", dataType: 'json' },//学生排课
+  deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },//删除学生排课
+  deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },//批量删除学生排课
+  scheduleClass: { url: '/api/arrange/classes', method: "POST", dataType: 'json' },//班级排课
+  deleteScheduleClass: { url: '/api/arrange/classes/delete', method: "POST" },//删除班级排课
   selectEnvirList: { url: '/api/env/containers', method: "GET" },
   saveSelectEnvir: { url: '/teacher-train/save-server', method: "POST", dataType: 'formdata' },
 
   // 创建实训
   uploadsFile: { url: `/api/instance/uploads/file`, method: 'POST', dataType: 'formdata' },
-  // createTrain: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
   createTrain: { url: '/api/train/trains', method: "POST", dataType: 'formdata' },
   selectConfig: { url: '/api/env/images/config', method: "GET" },
   selectMirror: { url: '/api/env/images', method: "GET" },
-  // createMirrorTemplate: { url: '/api/env/topos/stores', method: "POST", dataType: 'json' },
   createMirrorTemplate: { url: `/api/train/trains/env/{train}`, method: "PUT", dataType: 'json' },
   createMirror: { url: '/api/content/content/template', method: "POST" },
-  // saveMirrorEnvir: { url: '/teacher-train/save-env', method: "POST" },
   // 创建第三步
   saveTrainContents: { url: '/api/train/trains/content/{train}', method: "PUT", dataType: 'json' },// 保存实训内容
-  // /teacher-train/get-resource-list
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
-  // 分组信息
-  groupList: { url: '/api/course/student/group/list', method: "GET" },
-  // 自动分组
-  automaticGroup: { url: '/teacher-train/student-group', method: "POST" },
+
+  groupList: { url: '/api/arrange/groups', method: "GET" },// 用户分组列表
+  automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
+  deleteGroupListItem: { url: '/api/arrange/groups/{group}', method: "DELETE" },//删除分组
+  usersTobeGrouped: { url: '/api/arrange/groups/search', method: "GET" },//待分组排课用户列表
+  userHasGrouped: { url: '/api/arrange/groups/members', method: "GET" },//已经分组用户列表
   // 获取分组的和没分组的学生列表
   getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }
@@ -83,6 +88,7 @@ export interface ITeacherTrainAps {
   saveTrainGuide: TFHttpSend,
   savepptModefiy: TFHttpSend,
   studentGroup: TFHttpSend,
+  classGroup: TFHttpSend,
   uploadsFile: TFHttpSend,
   createTrain: TFHttpSend,
   selectConfig: TFHttpSend,
