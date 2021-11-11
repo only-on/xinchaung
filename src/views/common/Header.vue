@@ -16,7 +16,7 @@
           <p class="assist">{{assistText}}</p>
         </template>
         <div class="help-message" v-if="isOperation" @click="helpMessage">
-          <img src="../../assets/images/reqi_icon.png" alt="">
+          <img src="src/assets/images/reqi_icon.png" alt="">
           <span>远程协助消息</span>
         </div>
       </a-popover>

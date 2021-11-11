@@ -422,7 +422,7 @@ export default defineComponent({
       ],
       class_cnt: [
         { required: true,message: '',},
-        // {pattern:/^([1-9]|[1][0-6])$/,message: "课时数为1~16之间整数", trigger: "blur"},
+        // {pattern:/^([1-9]|[1][0-6])$/,message: "课时数为1~16之间整数", trigger: "blur"},       
         {validator: classCutValidator, trigger: 'blur'}
       ],
       guide: [{ required: true, message: '请输入实验指导', trigger: 'blur' }],

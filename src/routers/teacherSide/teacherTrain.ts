@@ -1,11 +1,11 @@
 import Layout from 'src/views/common/Layout.vue';
 
 export default {
-    path: "train",
+    path: "teacherTrain",
     component: Layout,
     meta: {
         title: "实训列表",
-        authCode: 'train'
+        authCode: 'teacherTrain'
     },
     children: [
         {
@@ -13,7 +13,7 @@ export default {
             component: () => import("src/views/teacherTrain/index.vue"),
             meta: {
                 title: "实训列表",
-                authCode: 'train'
+                authCode: 'teacherTrain'
             },
         },
         {

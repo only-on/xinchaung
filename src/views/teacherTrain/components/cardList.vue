@@ -1,6 +1,6 @@
 <template>
   <div class="cardList">
-    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/train/creatTrain')">
+    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/teacherTrain/creatTrain')">
       <span>新建实训</span>
     </div>
     <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id)">
@@ -132,11 +132,11 @@ export default defineComponent({
       })
     }
     function editExperimental(id:number){
-      router.push({path:'/teacher/train/detail',query:{id:id}})
+      router.push({path:'/teacher/teacherTrain/detail',query:{id:id}})
     }
     // 考核
     const evaluate = (id: number) => {
-      router.push('/teacher/teacherExperiment/evaluate?trainId=' + id)
+      router.push('/teacher/teacherTrain/evaluate?trainId=' + id)
     }
 
     // 资源
@@ -146,7 +146,7 @@ export default defineComponent({
         trainId: id
       }
       router.replace({
-        path: '/teacher/teacherExperiment/resource',
+        path: '/teacher/teacherTrain/resource',
         query: param
       })
     }
@@ -193,7 +193,7 @@ export default defineComponent({
     height: 277px;
     border: 1px dashed @theme-color;
     cursor: pointer;
-    background: url('../../../assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
+    background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
     position: relative;
     span{
       position: absolute;
