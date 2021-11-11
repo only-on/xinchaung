@@ -44,6 +44,7 @@ import trainEnvironment from './trainEnvironment/index.vue'
 import customerInfor from './customerInfor/index.vue'
 import groupingInfor from './groupingInfor/index.vue'
 import resources from './resources/index.vue'
+import defaultImg from 'src/assets/images/Experimental/wlkc.png'
 interface State{
   trainDetailInfo:any,
   propTrainDetailInfo:any,
@@ -125,7 +126,7 @@ export default defineComponent({
         state.propTrainDetailInfo.server.splice(deleteIndex,1)
       }
     }
-    return {...toRefs(state),...methods,componentsNames,defaultImg: '/src/assets/images/Experimental/wlkc.png'}
+    return {...toRefs(state),...methods,componentsNames,defaultImg}
   },
 })
 </script>

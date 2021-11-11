@@ -98,6 +98,7 @@ import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherTrainHttp } from '../typings'
 import { message } from 'ant-design-vue';
 import { useRouter, useRoute, RouteParamsRaw } from 'vue-router'
+import defaultImg from 'src/assets/images/Experimental/wlkc.png'
 export default defineComponent({
   props: ['trainType', 'data'],
   setup(props,{emit}) {
@@ -167,7 +168,7 @@ export default defineComponent({
       dataList,
       changeSwitch,
       handleOperate,
-      defaultImg: '/src/assets/images/Experimental/wlkc.png',
+      defaultImg,
       router,
       editExperimental,
       evaluate,

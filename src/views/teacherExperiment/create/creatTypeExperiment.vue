@@ -378,6 +378,11 @@ export default defineComponent({
       // console.log(val)
       formRef.value.validate()
     })
+    // formState.taskData
+    watch(()=>{return formState.taskData},(val:any)=>{
+      console.log(val)
+      formRef.value.validate()
+    })
     // formState.guide
     // 模拟实验任务数据
     // let taskData: any = reactive([{ name: '', status: false }])
@@ -396,7 +401,7 @@ export default defineComponent({
       }
     }
     async function taskDataValidator(rule: RuleObject, value: string){
-      // if (!value) return
+      // if (!value) return // fromState.taskData
       if(formState.taskData.length<=1 && formState.taskData[0].name===''){ 
         return Promise.reject('请选择实验任务')
       }

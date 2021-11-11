@@ -5,7 +5,16 @@ export default {
     path: "teacherExperiment",
     component: Layout,
     meta: {
-        title: "实验管理",
+        // title: "实验管理",
+        title: (params?: RouteParams, query?: RouteParams) => {
+            // console.log(query)
+            const dataDetailMap = {
+                '0': `实验管理${'\xa0\xa0'}/${'\xa0\xa0'}我的实验`,
+                '1': `实验管理${'\xa0\xa0'}/${'\xa0\xa0'}内置实验`, 
+                '2': `实验管理${'\xa0\xa0'}/${'\xa0\xa0'}共享实验`,
+            }
+            return dataDetailMap[query!.currentTab && query!.currentTab.toString()] || '实验管理'
+          },
         authCode: 'experiment'
     },
     children: [
@@ -22,7 +31,7 @@ export default {
             name: "creatExperiment",
             component: () => import("src/views/teacherExperiment/creatExperiment.vue"),
             meta: {
-                title: "创建实验",
+                title: "我的实验",
                 authCode: 'creatExperiment'
             },
         },
@@ -43,7 +52,6 @@ export default {
                 authCode: 'creatTypeExperiment'
             },
         },
-        // ExperimentDetail
         {
             path: "ExperimentDetail",
             name: "ExperimentDetail",

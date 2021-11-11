@@ -74,7 +74,7 @@
           <a-button type="primary" v-if="currentTabType === 0" @click="create">创建实验</a-button>
         </div>
       </div>
-      <div v-else style="padding-bottom: 15px; display: flex; flex-direction: column; background: #fff">
+      <div v-else class="listBox">
         <div class="task-type-box" v-if="TypeList.content_type">
           <span>实验类型：</span>
           <span :class="currentTaskType === 0 ? 'active' : ''" @click="taskChange(0)">全部</span>
@@ -196,7 +196,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs,createVNode } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperHttp, ITreeList, IListSearchInfo, IExporimentList } from './experTyping'
@@ -204,6 +204,7 @@ import Tree from 'src/components/Tree.vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { useRoute, useRouter } from 'vue-router'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 export default defineComponent({
   components: {
     Tree
@@ -276,14 +277,15 @@ export default defineComponent({
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
           // console.log(res)
-          if (res && res.status === 1) {
+          // if (res && res.status === 1) {
+            let Chapter=(res.data && res.data[0] && res.data[0].children && res.data[0].children[0]) || []
             taskData.push(...res.data)
-            currentSelectChapter = Object.assign(currentSelectChapter, res.data[0].children[0])
+            currentSelectChapter = Object.assign(currentSelectChapter, Chapter)
             getExperimentList()
             resp(true)
-          } else {
-            reject(false)
-          }
+          // } else {
+          //   reject(false)
+          // }
         })
       }).catch(err => {
           console.error(err)
@@ -385,9 +387,9 @@ export default defineComponent({
       }
       $confirm({
         title: '确定要删除这个章节吗？',
+        icon: createVNode(ExclamationCircleOutlined),
         content: '删除后不可恢复',
-        okText: '删除',
-        okType: 'danger',
+        okText: '确认',
         cancelText: '取消',
         onOk() {
           http.deleteChapter({urlParams: {id}}).then((res: IBusinessResp) => {
@@ -579,8 +581,8 @@ export default defineComponent({
       $confirm({
         title: '确定要删除这个实验吗？',
         content: '删除后不可恢复',
-        okText: '删除',
-        okType: 'danger',
+        icon: createVNode(ExclamationCircleOutlined),
+        okText: '确认',
         cancelText: '取消',
         onOk() {
           http.deleteExperimental({urlParams: {id: data.id}}).then((res: IBusinessResp) => {
@@ -749,7 +751,7 @@ export default defineComponent({
       currentCourseIndex.value = index
       currentCourseContent = Object.assign(currentCourseContent, val)
       lastChapterIndex.value = 0
-      // console.log(val, index)
+      console.log(val, index)
       initExperimental(val)
     }
     // 恢复上次展开的树
