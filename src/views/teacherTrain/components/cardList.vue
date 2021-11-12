@@ -6,7 +6,8 @@
     <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id)">
       <div class="cardpic">
         <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="item.is_highconf && trainType !== 2">
-        <img :src="item.url ? item.url: defaultImg" alt="">
+        <!-- <img :src="item.url ? item.url: defaultImg" alt=""> -->
+        <img :src="item.url" alt="">
         <span :class="['stateClass', item.status === '已结束' ? 'end' : item.status === '进行中' ? 'onGoing' : 'noStart' ]" v-if="trainType === 0">{{item.status}}</span>
       </div>
       <!-- 我的实训 -->

@@ -24,7 +24,7 @@ export default {
   trainDeleted: { url: '/teacher-train/train-deleted', method: "GET" },
 
   // 编辑实训
-  trainDetailInfo: { url: '/teacher-train/details', method: "GET" }, // 获取详情
+  trainDetailInfo: { url: '/api/train/trains/{train}', method: "GET" }, // 获取详情
   trainUploadImage: { url: '/teacher-train/upload', method: "POST", dataType: 'formdata' },
   saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
@@ -54,11 +54,12 @@ export default {
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
 
-  groupList: { url: '/api/arrange/groups', method: "GET" },// 用户分组列表
   automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
   deleteGroupListItem: { url: '/api/arrange/groups/{group}', method: "DELETE" },//删除分组
   usersTobeGrouped: { url: '/api/arrange/groups/search', method: "GET" },//待分组排课用户列表
   userHasGrouped: { url: '/api/arrange/groups/members', method: "GET" },//已经分组用户列表
+  manualGrouping: { url: '/api/arrange/groups', method: "POST", dataType: 'json' },//手动分组
+  groupList: { url: '/api/arrange/groups', method: "GET" },
   // 获取分组的和没分组的学生列表
   getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }

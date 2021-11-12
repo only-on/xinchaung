@@ -38,6 +38,7 @@
                 :editvisible='editvisible' 
                 @edit-modal='editModal'
                 :unGroupData='unGroupData'
+                :groupType='groupType'
                 @search-group='searchGroup'
                 :ifautoGroupEdit='ifautoGroupEdit'>
                 </group-modal>
@@ -84,7 +85,8 @@ interface Istate{
    groupway:number,
    deleteGroupId:number,
    unGroupPrams:any,
-   unGroupData:any
+   unGroupData:any,
+   groupType:any,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -112,13 +114,11 @@ export default defineComponent({
         deleteGroupId:0,
         unGroupPrams:{
             name:'',
-            limit:10,
-            page:1,
             type:2,
             id:props.trainId,
-            withs:'userProfile'
         },
         unGroupData:[],
+        groupType:'class',
       columns:[{
         title: '小组名称',
         dataIndex: 'name',
@@ -169,7 +169,25 @@ export default defineComponent({
       deleteCancel(){
           state.deletevisible=false
       },
-      editModal(){
+      editModal(value:any,groupdata:any){
+          console.log(value,groupdata)
+          if(value){
+              const params:any={
+                  id:props.trainId,
+                  type:2,
+                  groups:[]
+              }
+              groupdata.forEach((item:any,index:any)=>{
+                  const members:any=[]
+                  item.student_list.forEach((it:any)=>{
+                      members.push(it.userProfile.id)
+                  })
+                  params.groups.push({name:item.name,members:members})
+              })
+              http.manualGrouping({param:params}).then((res:any)=>{
+                console.log(res)
+              })
+          }
           state.editvisible=false
           state.ifautoGroupEdit=false
       },
@@ -208,8 +226,9 @@ export default defineComponent({
       //获取待分组排课用户列表
       unGroupList(){
            http.usersTobeGrouped({param:state.unGroupPrams}).then((res:any)=>{
-              console.log(res)
-              state.unGroupData=res.data.list
+              console.log(res.data.data,'unGroupData')
+              state.groupType=res.data.type,
+              state.unGroupData=res.data.data
           })
         //   http.userHasGrouped({}).then((res:any)=>{
         //   })
@@ -261,7 +280,7 @@ export default defineComponent({
     display: flex;
     .transferBox {
     float: left;
-    padding: 160px 0 0 10px;
+    padding: 160px 0 0 34%;
     width: 84px;
     text-align: center;
     }

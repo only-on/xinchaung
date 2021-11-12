@@ -21,10 +21,15 @@
                     <a-button type="primary">解散</a-button> -->
 
                 </div>
-                    <a-tree :treeData='treeData' @select='selectTree'  :replaceFields='replaceFields'>
+                <!-- :treeData='treeData'   :replaceFields='replaceFields' -->
+                    <a-tree  checkable @select='selectTree'>
                         <template #switcherIcon>
-                            dd
+                            <down-outlined />
                         </template>
+                        <a-tree-node :checkable='false' v-for="(item,index) in treeData" :key="index" :title="item.name">
+                            <a-tree-node :checkable='false' v-for="(it,j) in item.student_list" :key="index+''+j" :title="it?.userProfile?.name">
+                            </a-tree-node>
+                        </a-tree-node>
                     </a-tree>
             </div>
             <div>
@@ -32,7 +37,7 @@
                 <div class='move'>
                     <span @click="leftMove" class="icon-chuansuojiantou iconfont"></span>
                 </div>
-                <div class="move">
+                <div :class="checkedValues.length?'moveHover':'move'">
                     <span @click="rightMove" class="icon-chuansuojiantou-copy iconfont"></span>
                 </div>
             </div>
@@ -54,10 +59,23 @@
                     @search="onSearch"></a-input-search>
                     <!-- <a-button type='primary' @click="addGroup">添加分组</a-button> -->
                 </div>
-                <div class="checkGroup">
+                 <!-- 如果按班级排课 -->
+                <div v-if="groupType==='class'" class="checkGroup">
+                   <a-tree checkable  v-model:selectedKeys="selectedKeysClass" @expand='expandTree' checkStrictly>
+                       <template #switcherIcon>
+                            <down-outlined />
+                       </template>
+                       <a-tree-node :checkable='false' v-for="(item,index) in unGroupData" :key="index" :title="index">
+                            <a-tree-node v-for="(it,j) in item.student_list" :key="j" :checkable='true' :title="it?.userProfile?.name">
+                            </a-tree-node>
+                       </a-tree-node>
+                   </a-tree>    
+                </div>
+                <!-- 如果按学生排课 -->
+                <div v-else class="checkGroup">
                     <a-checkbox-group v-model:value="checkedValues">
                         <div v-for="(item,index) in unGroupData" :key="index.toString()">
-                            <a-checkbox :value="item.id">
+                            <a-checkbox :value="item.userProfile.id">
                                 {{item.userProfile.name}}
                             </a-checkbox>
                         </div>
@@ -87,17 +105,21 @@ interface Istate{
    selectedKeys:string[],
    indeterminate:boolean,
    checkAll:boolean,
-   inputGroupName:string
+   inputGroupName:string,
+   selectedKeysClass:string[],
+   selectedGroup:any,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
+import { DownOutlined} from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'resources',
-    props:['propTrainDetailInfo','trainId','editvisible','ifautoGroupEdit','unGroupData'],
+    props:['propTrainDetailInfo','trainId','editvisible','ifautoGroupEdit','unGroupData','groupType'],
     components:{
-        Empty
+        Empty,
+        DownOutlined
     },
     setup(props,context){
     const http=(request as any).teacherTrain
@@ -114,11 +136,14 @@ export default defineComponent({
         selectedKeys:[],
         indeterminate:false,
         checkAll: false,
-        inputGroupName:''
+        inputGroupName:'',
+        selectedKeysClass:[],
+        selectedGroup:''
     })
     const methods={
       editOk(){
-         context.emit('editModal',true)
+          console.log(state.treeData,'treeData')
+        //  context.emit('editModal',true,state.treeData)
       },
       editCancel(){
          context.emit('editModal',false)
@@ -126,7 +151,7 @@ export default defineComponent({
       onCheckAllChange(e: any){
             state.checkedValues=[] 
             props.unGroupData.forEach((item:any,index:any)=>{
-                state.checkedValues.push(item.id)
+                state.checkedValues.push(item.userProfile.id)
             })
             Object.assign(state, {
                 checkedValues: e.target.checked ?state.checkedValues : [],
@@ -145,8 +170,8 @@ export default defineComponent({
       leftMove(){
 
       },
-      rightMove(){
-          
+      expandTree(e:any){
+          console.log(e)
       },
     //   onChange(checkedValues:any) {
     //     state.checkedValues=checkedValues
@@ -157,30 +182,45 @@ export default defineComponent({
               message.warning('请输入分组名称')
               return
           }
-          let deleteArr:any=[]
-        //   props.unGroupData.forEach((item:any,index:any)=>{
-        //        state.checkedValues.forEach((value:any)=>{
-        //             if(item.id===value){
-        //                 deleteArr.push(index)
-        //                 state.group.student_list.push(item)
-        //             }
-        //        })
-        //    })
-        //    deleteArr.forEach((value:any)=>{
-        //        props.unGroupData.splice(value,1)
-        //    })
+        // state.group.student_list
            const treeItem:any={
             name:state.inputGroupName,
-            // student_list:state.group.student_list,
+            student_list:[],
             }
             console.log(treeItem)
             state.treeData.push(treeItem)
             state.checkedValues=[]
             console.log(state.checkedValues)
       },
-      selectTree(selectedKeys:any){
-          console.log(selectedKeys,'hvvvvvvvvvvvvvv')
-      }
+      selectTree(selectedKeys:any, e:any){
+          state.selectedGroup=selectedKeys[0]
+      },
+      clickTree(index:any){
+          state.selectedGroup=index
+      },
+      rightMove(){
+        console.log(state.selectedGroup,'state.selectedGroup')
+        if(state.selectedGroup===''){
+            message.warning('请选择或者创建分组')
+            return
+        }
+        let deleteArr:any=[]
+        props.unGroupData.forEach((item:any,index:any)=>{
+               console.log(item,'item')
+               state.checkedValues.forEach((it:any)=>{
+                    if(item.id===it){
+                        console.log(it)
+                        deleteArr.push(index)
+                    }
+               })
+        })
+        deleteArr.forEach((value:any)=>{
+                console.log(value,'value3333333333')
+               state.treeData[state.selectedGroup].student_list.push(props.unGroupData[value])
+               props.unGroupData.splice(value,1)
+        })
+        state.checkedValues=[]
+      },
     }
     watch(
       () => state.checkedValues,
@@ -189,6 +229,9 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
+    watch(state.selectedKeysClass, () => {
+      console.log('selectedKeys',state.selectedKeysClass);
+    });
     onMounted(()=>{
         methods.getStuGroup()
     })
@@ -197,16 +240,25 @@ export default defineComponent({
 })
 </script>
 <style lang="less">
-.groupModal{
-    .transferBox{
-        display: flex;
-        flex-direction: column;
-        align-content: center;
+.transferBox{
         .move{
-            width: 50px;
-            height: 50px;
-            background-color:#f5f5f5;
-            border: 1px solid #C5D2DA;
+        width:24px;
+        height:24px;
+        border-radius: 2px;
+        background-color:#f5f5f5;
+        }
+        .move:hover{
+            cursor: not-allowed
+        }
+        .moveHover{
+            width:24px;
+            height:24px;
+            border-radius: 2px;
+            background-color:@theme-color; 
+            color: white;
+        }
+        .move:nth-child(1){
+            margin-bottom:20px;
         }
         .isMoveRight{
             cursor: none;
@@ -215,7 +267,9 @@ export default defineComponent({
             cursor: none;
         }
     }
-}
+// .groupModal{
+    
+// }
 .hasGroup,.unGroup{
         width: 45%;
         border: 1px solid #C5D2DA;

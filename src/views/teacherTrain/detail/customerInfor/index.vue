@@ -126,6 +126,8 @@ interface Istate{
    classStuDeleteid:any[],
    stuUnselectParams:stuType,
    classUnselectParams:classType,
+   allClassId:any[],
+   allStuId:any[],
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -151,6 +153,8 @@ export default defineComponent({
           id:props.trainId,
           type:2
       },
+      allClassId:[],
+      allStuId:[],
       value:1,
       isvisible:false,
       unSelectData:[],
@@ -314,6 +318,14 @@ export default defineComponent({
                 state.addidarr.push(item.id) 
             });
             if(selectValue===1){
+                // 先把班级排课删除掉
+                console.log(state.allClassId,'班级所有ID')
+                if(state.allClassId.length){
+                    http.deleteScheduleClass({param:{id:state.allClassId,relate_id:props.trainId,type: 2}}).then((res:any)=>{
+                    console.log(res)
+                    state.allClassId=[]
+                })
+                }
                 const params:any={
                 id:props.trainId,
                 student_id:state.addidarr,
@@ -326,6 +338,15 @@ export default defineComponent({
                     methods.getStudentList()
                 })
             }else{
+                // 先把学生排课全部删除
+                console.log(state.allStuId,'学生所有ID')
+                if(state.allStuId.length){
+                    http.deleteScheduleStuMany({param:{ id:state.allStuId}}).then((res:any)=>{
+                    console.log(res)
+                    message.success("删除成功")
+                    state.allStuId=[]
+                })
+                }
                 const params:any={
                 id:props.trainId,
                 class_id:state.addidarr,
@@ -436,6 +457,9 @@ export default defineComponent({
             http.studentGroup({param:{id:props.trainId,type:2,withs:'userProfile'}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
+                state.data.forEach((item:any)=>{
+                    state.allStuId.push(item.id)
+                })
             })
         },
         // 已选班级列表
@@ -443,6 +467,9 @@ export default defineComponent({
             http.classGroup({param:{id:props.trainId,type:2}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
+                state.data.forEach((item:any)=>{
+                    state.allClassId.push(item.id)
+                })
             })
         }
     }

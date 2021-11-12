@@ -2,19 +2,19 @@
   <div class="editExperimental" v-layout-bg>
     <div class="top-info">
         <div class="info-left">
-          <img :src="trainDetailInfo.url?trainDetailInfo.url:defaultImg">
+          <img :src="trainDetailInfo.url">
         </div>
         <div class="info-right">
           <div>
             <div>{{trainDetailInfo.name}}</div>
             <div>
-              课时数：{{trainDetailInfo.train_time}}
+              课时数：{{trainDetailInfo.class_cnt}}
             </div>
             <div>
-              实验数：{{trainDetailInfo.vm_type}}
+              实验数：{{trainDetailInfo.task_num}}
             </div>
             <div>
-              实训时间：{{trainDetailInfo.start_time}}-{{trainDetailInfo.end_time}}
+              实训时间：{{trainDetailInfo.start_times}}-{{trainDetailInfo.end_times}}
             </div>
           </div>
           <a-button type="primary" @click="goback"><span class="iconfont icon-fanhui"></span> 返回</a-button>
@@ -81,9 +81,9 @@ export default defineComponent({
     const methods={
         getTrainDetailInfo(){
           state.trainId=router.query.id
-          http.trainDetailInfo({param:{train_id:state.trainId}}).then((res:any)=>{
-          state.trainDetailInfo=res.datas
-          state.propTrainDetailInfo=res.datas
+          http.trainDetailInfo({urlParams:{train:state.trainId}}).then((res:any)=>{
+          state.trainDetailInfo=res.data
+          state.propTrainDetailInfo=res.data
         })
       },
       saveSuccess(){

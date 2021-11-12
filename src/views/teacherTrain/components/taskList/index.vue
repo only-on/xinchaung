@@ -13,7 +13,6 @@
                     <div></div>
                 </span>
             </span>
-            
             <span class="delete" @click="deleteTask(index)">
                 <span v-if="!edit" class="iconfont icon-shanchu-copy"></span>
             </span>
