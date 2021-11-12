@@ -58,7 +58,11 @@
         </template>
       </a-tab-pane>
       <a-tab-pane key="4" tab="课后习题" force-render
-        >Content of Tab Pane 3</a-tab-pane
+        >
+        <template v-if="activeKey === '4'">
+          <chapter-exercise-tab/>
+        </template>
+        </a-tab-pane
       >
     </a-tabs>
   </div>
@@ -78,6 +82,7 @@ import markedEditor from "src/components/editor/markedEditor.vue";
 import empty from "src/components/Empty.vue";
 import { getChapterDetailApi, saveChapterIntro } from "./api";
 import prepareOrGuide from "./components/prepareOrGuide/prepareOrGuide.vue";
+import chapterExerciseTab from "./components/chapterExerciseTab.vue"
 type TreactiveData = {
   activeKey: string;
   isEditIntro: boolean;
@@ -90,6 +95,7 @@ export default defineComponent({
     "marked-editor": markedEditor,
     empty,
     "prepare-or-guide": prepareOrGuide,
+    "chapter-exercise-tab":chapterExerciseTab
   },
   setup() {
     const course_id: any = inject("course_id");
@@ -164,12 +170,13 @@ export default defineComponent({
 <style lang="less">
 .chapter-detail-box {
   padding: 15px;
-  height: calc(100% - 30px);
+  height: calc(100%);
   background: @white;
   display: flex;
   flex-direction: column;
+ 
   .ant-tabs {
-    height: calc(100% - 30px);
+    height: calc(100%);
     display: flex;
     flex-direction: column;
     .ant-tabs-bar {

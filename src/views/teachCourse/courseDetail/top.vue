@@ -194,13 +194,13 @@ export default defineComponent({
     }
     // 判断编辑按钮是否显示
     const isEditeShow = () => {
-      if (![1, 4].includes(currentRole)) {
+      if (![1, 3].includes(currentRole)) {
         return false;
       } else {
         if (currentRole == 1) {
           return true;
         }
-        if (currentRole == 4 && currentTab === "myCourse") {
+        if (currentRole == 3 && currentTab === "myCourse") {
           return true;
         }
         return false;
@@ -209,7 +209,7 @@ export default defineComponent({
 
     // 判断实验报告选择按钮
     const isReportShow = () => {
-      if (currentRole == 4 && currentTab === "myCourse") {
+      if (currentRole == 3 && currentTab === "myCourse") {
         return true;
       }
       return false;

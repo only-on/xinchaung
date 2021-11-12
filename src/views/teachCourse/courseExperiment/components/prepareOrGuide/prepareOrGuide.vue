@@ -10,7 +10,7 @@
     </div>
     <iframe
       :src="`/pdfjs-2.5.207/web/viewer.html?file=${
-        env ? '/proxyPrefix' + introFile[0].file_html : introFile[0].file_html 
+        env ? '/proxyPrefix' + introFile[0].file_html : introFile[0].file_html
       }`"
       frameborder="0"
     ></iframe>
@@ -55,44 +55,72 @@
       >
     </a-table>
   </div>
+  <a-modal
+    class="upload-modal"
+    v-model:visible="uploadVisible"
+    @ok="submitFileToDataset"
+    @cancel="closeUploadModal"
+  >
+    <template #title>上传数据集文件</template>
+    <upload-data-set-file
+      :activeKey="activeKey"
+      v-model:value="fileInfo"
+      v-model:dataset_id="dataset_id"
+      ref="uploadRef"
+    ></upload-data-set-file>
+  </a-modal>
 </template>
 <script lang="ts">
 import { SyncOutlined } from "@ant-design/icons-vue";
-import { defineComponent, reactive, inject, onMounted, toRefs } from "vue";
+import {
+  defineComponent,
+  reactive,
+  inject,
+  onMounted,
+  toRefs,
+  watch,
+  ref,
+} from "vue";
 import {
   getPreparingDataApi,
   getDataSetListApi,
   getDataSetFileApi,
   savePrepareLessonsFileApi,
   removePrepareLessonsFileApi,
-  getDataSetGuideApi
+  getDataSetGuideApi,
+  addDataSetFileApi,
 } from "../../api";
 import empty from "src/components/Empty.vue";
-type TreactiveData={
-  introFile: any[],
-      prepareShowTab: string,
-      selectParams: {
-        type: number,
-        name:string,
-      },
-      datasetList: {
-        public:{},
-        self:{}
-      },
-      tableParams: {
-        course_id: number,
-        chapter_id: number,
-        dataset_id: undefined |number,
-        file_name: string,
-        page: number,
-        pageSize: number,
-      },
-      tableList: any[],
-}
+import uploadDataSetFile from "../uploadDataSetFile.vue";
+import { message } from "ant-design-vue";
+type TreactiveData = {
+  introFile: any[];
+  prepareShowTab: string;
+  selectParams: {
+    type: number;
+    name: string;
+  };
+  datasetList: {
+    public: {};
+    self: {};
+  };
+  tableParams: {
+    course_id: number;
+    chapter_id: number;
+    dataset_id: undefined | number;
+    file_name: string;
+    page: number;
+    pageSize: number;
+  };
+  tableList: any[];
+  uploadVisible: boolean;
+  dataset_id: number;
+};
 export default defineComponent({
   components: {
     empty,
     SyncOutlined,
+    "upload-data-set-file": uploadDataSetFile,
   },
   props: ["activeKey"],
   setup(props) {
@@ -121,7 +149,7 @@ export default defineComponent({
         slots: { customRender: "action" },
       },
     ];
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       introFile: [],
       prepareShowTab: "loading",
       selectParams: {
@@ -129,8 +157,8 @@ export default defineComponent({
         name: "",
       },
       datasetList: {
-        public:{},
-        self:{}
+        public: {},
+        self: {},
       },
       tableParams: {
         course_id: course_id,
@@ -141,7 +169,30 @@ export default defineComponent({
         pageSize: 10000,
       },
       tableList: [],
+      uploadVisible: false,
+      dataset_id: -1,
     });
+    const fileInfo = ref({
+      file_name: "",
+      file_url: "",
+      suffix: "",
+      size: 0,
+    });
+    const uploadRef = ref(null);
+    watch(
+      () => fileInfo.value,
+      () => {
+        console.log(fileInfo.value);
+      },
+      { deep: true }
+    );
+     watch(
+      () => reactiveData.dataset_id,
+      () => {
+        console.log(reactiveData.dataset_id);
+      },
+      { deep: true }
+    );
     onMounted(() => {
       getDataSetFileDetail();
     });
@@ -222,6 +273,7 @@ export default defineComponent({
     // 打开上传modal
     function openUploadModal() {
       console.log("打开上传");
+      reactiveData.uploadVisible = true;
     }
     // 选择按钮
     function selectFile() {
@@ -263,6 +315,39 @@ export default defineComponent({
         getDataSetFileDetail();
       });
     }
+
+    // 提交文件到数据集
+    function submitFileToDataset() {
+      if ((uploadRef.value as any).upload) {
+        message.warn("文件上传中，请稍后提交");
+        return;
+      }
+      console.log(reactiveData.dataset_id);
+      const body=new FormData();
+      body.append("items[0][file_name]",fileInfo.value.file_name)
+      body.append("items[0][file_url]",fileInfo.value.file_url)
+      body.append("items[0][suffix]",fileInfo.value.suffix)
+      body.append("items[0][size]",fileInfo.value.size as any)
+      body.append("dataset_id",reactiveData.dataset_id as any)
+      addDataSetFileApi(body).then((res: any) => {
+        console.log(res);
+        fileInfo.value = {
+          file_name: "",
+          file_url: "",
+          suffix: "",
+          size: 0,
+        };
+        reactiveData.uploadVisible = false;
+        let item_id=res.data.count[0]
+        selectData({id:item_id})
+      });
+    }
+    // 关闭文件上传弹框
+    function closeUploadModal() {
+      console.log();
+      (uploadRef.value as any).remove();
+      reactiveData.uploadVisible = false;
+    }
     return {
       ...toRefs(reactiveData),
       openUploadModal,
@@ -274,6 +359,10 @@ export default defineComponent({
       backBtn,
       selectData,
       remove,
+      submitFileToDataset,
+      closeUploadModal,
+      fileInfo,
+      uploadRef,
     };
   },
 });
@@ -313,6 +402,11 @@ export default defineComponent({
     .back-btn {
       margin-left: auto;
     }
+  }
+}
+.upload-modal {
+  .ant-modal-footer {
+    text-align: center;
   }
 }
 </style>

@@ -2,7 +2,7 @@
   <div class="course-experiment-box">
     <div class="course-experiment-left">
       <div class="action-top-box">
-        <a-button type="primary" size="small">+自定义章节</a-button>
+        <a-button type="primary" size="small" @click="openAddChapterModal">+自定义章节</a-button>
         <a-button type="primary" size="small" @click="openAddChapter">+添加章节</a-button>
         <a-button type="primary" size="small" @click="openAddExperiment">+添加实验</a-button>
       </div>
@@ -21,17 +21,22 @@
         <experimentDetail v-if="rightTab==='experimentDetail'"/>
     </div>
   </div>
+  <a-modal :visible="createChapterVisible" title="添加章节" @cancel="closeCreateChapterModel" @ok="submitCreateChapter">
+    <label>章节名称：</label>
+    <a-input v-model:value="chapterName"/>
+  </a-modal>
 </template>
 
 <script lang="ts">
 import { defineComponent ,onMounted,reactive,toRefs,provide,ref} from "vue";
 import DragTree from 'src/components/dragTree.vue'
-import {getCourseTreeApi,updateChapterApi} from "./api"
+import {getCourseTreeApi,updateChapterApi,createCourseChapterApi} from "./api"
 import {useRoute} from "vue-router"
 import chapterDetail from "./chapterDetail.vue"
 import addChapter from "./addChapter.vue"
 import addExperiment from "./addExperiment.vue"
 import experimentDetail from "./experimentDetail.vue"
+import { message } from "ant-design-vue";
 
 export default defineComponent({
     components:{
@@ -49,9 +54,12 @@ export default defineComponent({
       provide("course_id",course_id)
       provide("chapter_id",chapter_id)
       provide("experiment_id",experiment_id)
+      
       const reactiveData=reactive({
           treeData:[],
-          rightTab:"chapterDetail"
+          rightTab:"chapterDetail",
+          createChapterVisible:false,
+          chapterName:""
       })
       onMounted(()=>{
           getCourseTree()
@@ -81,7 +89,7 @@ export default defineComponent({
               reactiveData.treeData=res.data
           })
       }
-
+      provide("updateTree",getCourseTree)
       // 编辑课程实验
       function editNode(val:string, nodeId:number) {
           console.log(val,nodeId);
@@ -90,6 +98,25 @@ export default defineComponent({
               getCourseTree()
           })
       }
+
+      // 打开添加章节弹框
+      function openAddChapterModal() {
+        reactiveData.createChapterVisible=true
+      }
+      // 关闭创建章节弹框
+      function closeCreateChapterModel() {
+        reactiveData.createChapterVisible=false
+      }
+      // 提交创建章节
+      function submitCreateChapter() {
+        createCourseChapterApi({chapter_name:reactiveData.chapterName},{course_id:course_id}).then((res:any)=>{
+          console.log(res);
+          reactiveData.createChapterVisible=false
+          message.success(res.msg)
+          reactiveData.chapterName=""
+          getCourseTree()
+        })
+      }
       return {
           selectChapter,
           selectExperiment,
@@ -97,7 +124,10 @@ export default defineComponent({
           ...toRefs(reactiveData),
           openAddChapter,
           openAddExperiment,
-          provide
+          provide,
+          openAddChapterModal,
+          closeCreateChapterModel,
+          submitCreateChapter
       }
   },
 });

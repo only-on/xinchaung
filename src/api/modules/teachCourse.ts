@@ -265,11 +265,57 @@ export default {
   },
   addDataSetFileApi:{
     url:"/classic/data/add-items",
-    method:"POST",
-    dataType:"formdata"
+    method: 'POST',
+    dataType: 'formdata'
   },
   getDataSetGuideApi:{
     url:"/classic/course-dataset/guide",
+    method:"POST",
+    dataType:"json"
+  },
+  getChapterExerciseApi:{
+    url:"/api/v1/question/chapters/{chapter_id}/questions",
+    method:"GET"
+  },
+  getExercisesMapApi:{
+    url:"/api/v1/question/pools",
+    method:"GET"
+  },
+  getQuestionTypesApi:{
+    url:"/api/v1/question/types",
+    method:"GET"
+  },
+  getPoolsExerciseListApi:{
+    url:"/api/v1/question/pools/{pool_id}/questions",
+    method:"GET",
+    dataType:"json"
+  },
+  createCourseChapterApi:{
+    url:"/api/course/courses/{course_id}/chapters",
+    method:"POST",
+    dataType:"json"
+  },
+  chapterAddExerciseApi:{
+    url:"api/v1/question/chapters/{chapter_id}/relationships/questions",
+    method:"POST",
+    dataType:"json"
+  },
+  deleteChapterExerciseApi:{
+    url:"/api/v1/question/chapters/relationships/questions",
+    method:"DELETE",
+    dataType:"json"
+  },
+  getAllChapterListApi:{
+    url:"/api/course/courses/{course_id}/chapters",
+    method:"GET"
+  },
+  saveChapterToCourseApi:{
+    url:"/api/course/chapter/course",
+    method:"POST",
+    dataType:"json"
+  },
+  saveContentToChapterApi:{
+    url:"/api/course/courses/{course_id}/chapters/{chapter_id}/content",
     method:"POST",
     dataType:"json"
   }
@@ -338,4 +384,14 @@ export interface ITeacherCourseApis {
   uploadFileApi:TFHttpSend
   addDataSetFileApi:TFHttpSend
   getDataSetGuideApi:TFHttpSend
+  getChapterExerciseApi:TFHttpSend
+  getExercisesMapApi:TFHttpSend
+  getQuestionTypesApi:TFHttpSend
+  getPoolsExerciseListApi:TFHttpSend
+  createCourseChapterApi:TFHttpSend
+  chapterAddExerciseApi:TFHttpSend
+  deleteChapterExerciseApi:TFHttpSend
+  getAllChapterListApi:TFHttpSend
+  saveChapterToCourseApi:TFHttpSend
+  saveContentToChapterApi:TFHttpSend
 }
