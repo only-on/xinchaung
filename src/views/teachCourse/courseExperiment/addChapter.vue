@@ -21,19 +21,27 @@
                   >选择章节</a-button
                 >
                 <div class="statistics-box">
-                  <span>已选择<i>0</i>个章节</span>
-                  <span>包含实验共计<i>0</i>个</span>
+                  <span
+                    >已选择<i>{{ chapterCount }}</i
+                    >个章节</span
+                  >
+                  <span
+                    >包含实验共计<i>{{ contentCount }}</i
+                    >个</span
+                  >
                   <span>清空</span>
                 </div>
               </div>
             </template>
-            <template #footer>1111</template>
+            <template #footer>
+              <a-pagination :default-current="params.page" :default-page-size="params.limit" :total="totalCount" @change="pageChange"/>
+            </template>
             <template #icon>
               <span class="iconfont icon-zhangjie"></span>
             </template>
           </select-list>
           <div class="add-content-loading" v-if="isLoading">
-             <LoadingOutlined />
+            <LoadingOutlined />
           </div>
         </template>
       </a-tab-pane>
@@ -57,19 +65,27 @@
                   >选择章节</a-button
                 >
                 <div class="statistics-box">
-                  <span>已选择<i>0</i>个章节</span>
-                  <span>包含实验共计<i>0</i>个</span>
+                  <span
+                    >已选择<i>{{ chapterCount }}</i
+                    >个章节</span
+                  >
+                  <span
+                    >包含实验共计<i>{{ contentCount }}</i
+                    >个</span
+                  >
                   <span>清空</span>
                 </div>
               </div>
             </template>
-            <template #footer>1111</template>
+            <template #footer>
+              <a-pagination :default-current="params.page" :default-page-size="params.limit" :total="totalCount" @change="pageChange"/>
+            </template>
             <template #icon>
               <span class="iconfont icon-zhangjie"></span>
             </template>
           </select-list>
           <div class="add-content-loading" v-if="isLoading">
-             <LoadingOutlined />
+            <LoadingOutlined />
           </div>
         </template>
       </a-tab-pane>
@@ -80,7 +96,7 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, inject, watch } from "vue";
 import selectList from "./components/selectList.vue";
-import {LoadingOutlined} from "@ant-design/icons-vue"
+import { LoadingOutlined } from "@ant-design/icons-vue";
 import {
   getAllChapterListApi,
   saveChapterToCourseApi,
@@ -97,19 +113,23 @@ type TreactiveData = {
   };
   chapterList: any[];
   keys: number[];
-  isLoading:boolean
+  isLoading: boolean;
+  chapterCount:number;
+  contentCount: number;
+  initChapterCount:number
+  initContentCount:number
+  totalCount:number
 };
 
 export default defineComponent({
   components: {
     "select-list": selectList,
-    LoadingOutlined
+    LoadingOutlined,
   },
   setup() {
     const course_id = inject("course_id") as number;
-    const updateTree:any=inject("updateTree")
-    console.log(updateTree);
-    
+    const updateTree: any = inject("updateTree");
+
     const columns = {
       key: "id", // id
       name: "name", // 展示name字段
@@ -126,14 +146,22 @@ export default defineComponent({
         page: 1,
         name: "",
       },
+      totalCount:0,
       chapterList: [],
       keys: [],
-      isLoading:false
+      isLoading: false,
+      chapterCount: 0,
+      contentCount: 0,
+      initChapterCount: 0,
+      initContentCount: 0,
     });
     watch(
       () => reactiveData.currentKey,
       () => {
         reactiveData.params.type = reactiveData.currentKey;
+        reactiveData.params.page=1
+        reactiveData.params.limit=10
+        reactiveData.params.name=""
         getAllChapterList();
       },
       { deep: true, immediate: true }
@@ -149,6 +177,10 @@ export default defineComponent({
       () => reactiveData.keys,
       () => {
         console.log(reactiveData.keys);
+        const selectedData=filterData(reactiveData.keys)
+        console.log(selectedData);
+        reactiveData.chapterCount=reactiveData.initChapterCount+selectedData.chapterCount
+        reactiveData.contentCount=reactiveData.initContentCount+selectedData.contentCount
       },
       { deep: true }
     );
@@ -159,6 +191,19 @@ export default defineComponent({
       ).then((res: any) => {
         console.log(res);
         reactiveData.chapterList = res.data.list;
+        reactiveData.totalCount=res.data.page.totalCount
+        reactiveData.contentCount=0
+        const selectedChapters=reactiveData.chapterList.filter((el:any)=>{
+          if (el.is_selected===true) {
+            reactiveData.contentCount+=el.contents_count
+          }
+         return el.is_selected===true
+        })
+        reactiveData.chapterCount=selectedChapters.length
+        reactiveData.initChapterCount=reactiveData.chapterCount
+        reactiveData.initContentCount=reactiveData.contentCount
+        console.log(reactiveData.chapterCount);
+        
       });
     }
     // 选择按钮
@@ -184,7 +229,7 @@ export default defineComponent({
         content_ids.push(val.content_ids);
       }
       console.log(content_ids);
-      reactiveData.isLoading=true
+      reactiveData.isLoading = true;
       saveChapterToCourseApi({ ...chapterParams }).then(async (res: any) => {
         const sum = res.data.chapter_ids.length;
         let i = 0;
@@ -194,12 +239,12 @@ export default defineComponent({
               { content_ids: content_ids[i], type: 1 },
               { course_id: course_id, chapter_id: res.data.chapter_ids[i] }
             );
-          }else{
-           await getAllChapterList();
-           reactiveData.isLoading=false
-           updateTree()
+          } else {
+            await getAllChapterList();
+            reactiveData.isLoading = false;
+            updateTree();
           }
-          i++
+          i++;
         }
         // res.data.chapter_ids.forEach((item: any, index: number) => {
         //   setTimeout(() => {
@@ -209,17 +254,32 @@ export default defineComponent({
         //     );
         //   }, 2000);
         // });
-
-        
       });
     }
     // 搜索
     function onSearch() {}
+    // 分页发生变化时
+    function pageChange(page:number, pageSize:number) {
+      reactiveData.params.page=page
+      reactiveData.params.limit=pageSize
+      getAllChapterList()
+    }
+    // 筛选出当前选中的项
+    function filterData(keys:any[]) {
+      let i=0
+     return {chapterCount:reactiveData.chapterList.filter((item:any)=>{
+       if (item.selected) {
+         i+=item.contents_count
+       }
+        return item.selected&&keys.includes(item.id)
+      }).length,contentCount:i}
+    }
     return {
       columns,
       ...toRefs(reactiveData),
       selectBtn,
       onSearch,
+      pageChange
     };
   },
 });
@@ -233,7 +293,7 @@ export default defineComponent({
   .add-chapter-tabs {
     height: 100%;
     position: relative;
-    .add-content-loading{
+    .add-content-loading {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -243,7 +303,7 @@ export default defineComponent({
       display: flex;
       justify-content: center;
       align-items: center;
-      span{
+      span {
         font-size: 50px;
       }
     }
@@ -283,6 +343,10 @@ export default defineComponent({
           }
         }
       }
+    }
+    .ant-pagination{
+      text-align: center;
+      margin-top: 15px;
     }
   }
 }

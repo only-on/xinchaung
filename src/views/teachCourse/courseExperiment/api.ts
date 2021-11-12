@@ -159,7 +159,7 @@ export async function deleteChapterExerciseApi(params:{relation_ids:number[]}) {
 /**
  * @description 获取所有课程所有章节
  */
-export async function getAllChapterListApi(params:{type:string,limit:number,page:number,name:string},urlParams:{course_id:number}) {
+export async function getAllChapterListApi(params:{type:string,limit:number},urlParams:{course_id:number}) {
     return await courseApi.getAllChapterListApi({param:params,urlParams:urlParams})
 }
 
@@ -184,4 +184,46 @@ export async function saveChapterToCourseApi(params:{
     chapter_id:number
 }) {
     return await courseApi.saveContentToChapterApi({param:params,urlParams:urlParams})
+}
+
+/**
+ * @description 删除章节或实验
+ */
+export async function deleteChapterApi(urlParams:{course_id:number,chapter_id:number}) {
+    return await courseApi.deleteChapterApi({urlParams:urlParams})
+}
+
+/**
+ * @description 获取实验列表
+ */
+export async function  getContentListApi(params:{type?:number,course_id:number,limit:number,page:number,name?:string,content_category_id?:number|undefined}) {
+    return await courseApi.getContentListApi({param:params})
+}
+
+/**
+ * @description 获取实训列表
+ */
+ export async function  getTrainListApi(params:{type?:number,course_id:number,limit:number,page:number,name?:string}) {
+    return await courseApi.getTrainListApi({param:params})
+}
+
+/**
+ * @description 获取视频列表
+ */
+ export async function  getVideosListApi(params:{course_id:number,limit:number,page:number,dataset_id?:number|undefined}) {
+    return await courseApi.getVideosListApi({param:params})
+}
+
+/**
+ * @description 获取文档列表
+ */
+ export async function  getDocumentsListApi(params:{course_id:number,limit:number,page:number,dataset_id?:number|undefined}) {
+    return await courseApi.getDocumentsListApi({param:params})
+}
+
+/**
+ * @description 获取数据集目录树
+ */
+export async function getDataSetCatalogApi(params:{type:number,name?:string}) {
+    return await courseApi.getDataSetCatalogApi({param:params})
 }

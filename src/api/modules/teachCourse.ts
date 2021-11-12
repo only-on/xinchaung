@@ -318,6 +318,30 @@ export default {
     url:"/api/course/courses/{course_id}/chapters/{chapter_id}/content",
     method:"POST",
     dataType:"json"
+  },
+  deleteChapterApi:{
+    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method:"DELETE",
+  },
+  getContentListApi:{
+    url:"/api/course/contents/list",
+    method:"GET"
+  },
+  getTrainListApi:{
+    url:"/api/course/trains/list",
+    method:"GET"
+  },
+  getVideosListApi:{
+    url:"/api/course/videos/list",
+    method:"GET"
+  },
+  getDocumentsListApi:{
+    url:"/api/course/documents/list",
+    method:"GET"
+  },
+  getDataSetCatalogApi:{
+    url:"/classic/data/dataset-select",
+    method:"GET"
   }
 }
 
@@ -394,4 +418,10 @@ export interface ITeacherCourseApis {
   getAllChapterListApi:TFHttpSend
   saveChapterToCourseApi:TFHttpSend
   saveContentToChapterApi:TFHttpSend
+  deleteChapterApi:TFHttpSend
+  getContentListApi:TFHttpSend
+  getTrainListApi:TFHttpSend
+  getVideosListApi:TFHttpSend
+  getDocumentsListApi:TFHttpSend
+  getDataSetCatalogApi:TFHttpSend
 }

@@ -92,7 +92,7 @@ export default defineComponent({
       console.log(val, 'aaaaaa')
       if (props.isDefaultSelectChapter) {
         selectid.value = val.id
-        emit('selectChapter', val)
+        emit('selectChapter', val,true) // val选中的数据，true 是否初始化右侧
       }
     }
     // 选择实验树

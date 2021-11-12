@@ -11,7 +11,7 @@
         >已添加的实验/章节可以拖动排序
       </div>
       <div class="course-menu-tree">
-          <drag-tree :treeData="treeData" @selectChapter="selectChapter" @selectExperiment="selectExperiment" @editNode="editNode"></drag-tree>
+          <drag-tree :treeData="treeData" @selectChapter="selectChapter" @selectExperiment="selectExperiment" @editNode="editNode" @deleteNode="deleteNode"></drag-tree>
       </div>
     </div>
     <div class="course-experiment-right">
@@ -30,7 +30,7 @@
 <script lang="ts">
 import { defineComponent ,onMounted,reactive,toRefs,provide,ref} from "vue";
 import DragTree from 'src/components/dragTree.vue'
-import {getCourseTreeApi,updateChapterApi,createCourseChapterApi} from "./api"
+import {getCourseTreeApi,updateChapterApi,createCourseChapterApi,deleteChapterApi} from "./api"
 import {useRoute} from "vue-router"
 import chapterDetail from "./chapterDetail.vue"
 import addChapter from "./addChapter.vue"
@@ -59,15 +59,17 @@ export default defineComponent({
           treeData:[],
           rightTab:"chapterDetail",
           createChapterVisible:false,
-          chapterName:""
+          chapterName:"",
       })
       onMounted(()=>{
           getCourseTree()
       })
-      function selectChapter(val:any) {
-          console.log(val);
+      function selectChapter(val:any,isinit:boolean) {
           chapter_id.value=val.id
-          reactiveData.rightTab="chapterDetail"
+          if (isinit) {
+            reactiveData.rightTab="chapterDetail"
+          }
+          
       }
       function selectExperiment(val:any) {
         console.log(val);
@@ -80,7 +82,7 @@ export default defineComponent({
       }
       // 打开添加实验面板
       function openAddExperiment() {
-          reactiveData.rightTab="experimentDetail"
+          reactiveData.rightTab="addExperiment"
       }
       // 获取课程实验树
       function getCourseTree() {
@@ -117,6 +119,15 @@ export default defineComponent({
           getCourseTree()
         })
       }
+      // 删除章节或者实验
+      function deleteNode(val:any) {
+        console.log(val);
+        deleteChapterApi({course_id:course_id,chapter_id:val.id}).then((res:any)=>{
+          message.success(res.msg)
+          getCourseTree()
+          reactiveData.rightTab="chapterDetail"
+        })
+      }
       return {
           selectChapter,
           selectExperiment,
@@ -127,7 +138,8 @@ export default defineComponent({
           provide,
           openAddChapterModal,
           closeCreateChapterModel,
-          submitCreateChapter
+          submitCreateChapter,
+          deleteNode
       }
   },
 });

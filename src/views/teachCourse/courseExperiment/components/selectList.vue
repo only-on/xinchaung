@@ -2,6 +2,7 @@
   <div class="select-list">
     <slot name="head"></slot>
     <div class="list-box">
+      <template v-if="dataList&&dataList.length">
       <div class="list-item" v-for="item in dataList" :key="item[columns.id]">
         <template v-if="item[columns.is_selected]">
           <a-checkbox
@@ -31,6 +32,7 @@
           <span>选择</span>
         </span>
       </div>
+      </template>
     </div>
     <slot name="footer"></slot>
   </div>
@@ -42,7 +44,7 @@ import { CheckEvent } from "ant-design-vue/lib/tree/Tree";
 import { defineComponent, watch, reactive, toRefs } from "vue";
 
 export default defineComponent({
-  props: ["value", "columns"],
+  props: ["value", "columns","keys"],
   setup(props, { emit }) {
     const reactiveData = reactive({
       dataList: [],
@@ -53,6 +55,7 @@ export default defineComponent({
       () => {
         reactiveData.dataList = props.value;
         let keys: any[] = [];
+        if (!reactiveData.dataList) return;
         reactiveData.dataList.map((item: any) => {
           if (item[columns.selected]) {
             keys.push(item[columns.key]);
@@ -133,6 +136,7 @@ export default defineComponent({
         color: @theme-color;
         &.active {
           color: #d6d6d6;
+          pointer-events: none;
         }
       }
     }
