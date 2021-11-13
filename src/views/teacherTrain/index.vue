@@ -144,7 +144,7 @@ export default defineComponent({
       border-radius: 0;
       width: 400px;
       i{
-        color: #e1dddd;
+        color: #c7c4c4;
         font-weight: bold;
       }
     }
