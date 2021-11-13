@@ -27,7 +27,7 @@
           <a-select-option :value="1">关闭</a-select-option>
         </a-select>
       </div>
-      <span class="shanchu iconfont icon-shanchu" @click="removeImage(index)"></span>
+      <span class="shanchu iconfont icon-shanchu" @click="removeImage(index)" v-if="!edit"></span>
     </div>
   </div>
 </template>
@@ -43,6 +43,10 @@ export default defineComponent({
     envData: {
       type: Array as PropType<IimageData[]>,
       default: []
+    },
+    edit:{
+      type:Boolean,
+      default:false
     }
   },
   emit: [],

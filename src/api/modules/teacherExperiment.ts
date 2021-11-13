@@ -24,6 +24,7 @@ export default {
   // 创建实验
   createVnc: {url: `/api/content/vnc/create_vnc`, method: 'POST', dataType:'json'},
   createJupyter: {url: `/api/content/jupyter/create_jupyter`, method: 'POST', dataType:'json'},
+  getContentDetail: {url: `/api/content/content/show/{id}`, method: 'GET'},
 }
 
 export interface ITeacherExperAps {
@@ -47,6 +48,7 @@ export interface ITeacherExperAps {
   uploadTaskFile: TFHttpSend;
   createVnc: TFHttpSend;
   createJupyter: TFHttpSend;
+  getContentDetail: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExperiment'

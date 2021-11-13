@@ -22,7 +22,7 @@
           <a-button class="add-btn" @click="select('image')">
             <span class="iconfont icon-tianjia"></span>
           </a-button>
-          <span class="max-hint">最多可选3个镜像</span>
+          <span class="max-hint">最多可选{{limitNumber}}个镜像</span>
         </a-form-item>
          <env-list :envData="formState.imageDataSelected"></env-list>
         <a-form-item label="数据集" name="selectedName">
@@ -33,8 +33,8 @@
           <div class="data-list-box">
             <div class="data-item" v-for="(item, index) in formState.selectedName" :key="item.uid">
               <span class="data-name">{{ item.name }}</span>
-              <span class="wenjian iconfont icon-wenjian">256个</span>
-              <span class="cunchuzhi iconfont icon-cunchuzhi">124MB</span>
+              <span class="wenjian iconfont icon-wenjian">&nbsp;{{item.amount}}个</span>
+              <span class="cunchuzhi iconfont icon-cunchuzhi">&nbsp;{{item.size}}</span>
               <span class="shanchu iconfont icon-shanchu" @click="removeDataSet(item, index)"></span>
             </div>
           </div>
@@ -88,7 +88,7 @@
         <data-set v-model:value="formState.datasets" v-model:name="formState.selectedName"></data-set>
       </div>
       <div class="image" v-if="selectType === 'image'">
-        <environment v-model="formState.imageDataSelected"></environment>
+        <environment v-model="formState.imageDataSelected" :limitNumber="limitNumber"></environment>
       </div>
     </a-drawer>
     <same-screen ref="sameScreen" v-model:screenStatus="screenStatus" v-model="formState.guide" :screenInfo="screenVmInfo"></same-screen>
@@ -96,7 +96,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs,Ref } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperHttp, ITreeList, IListSearchInfo, IExporimentList, IimageData } from './../experTyping'
@@ -122,7 +122,7 @@ interface Iparam{
   taskfile_subdir: any
 }
 export default defineComponent({
-  components: {dataSet, environment, AntdvMarkdown, sameScreen, taskList, envList},
+  components: {dataSet, environment, AntdvMarkdown, sameScreen, taskList, envList,},
   setup() {
     let route = useRoute()
     let router = useRouter()
@@ -131,7 +131,7 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:true})
     const type = ref<string>(String(route.query.type))
-    
+    const limitNumber: Ref<number> = ref(type.value==='vnc'?3:1);
     let jupyterUuid = ref(UUID.uuid4())
 
     // 技术名称
@@ -382,7 +382,7 @@ export default defineComponent({
     watch(()=>{return formState.taskData},(val:any)=>{
       console.log(val)
       formRef.value.validate()
-    })
+    },{deep:true})
     // formState.guide
     // 模拟实验任务数据
     // let taskData: any = reactive([{ name: '', status: false }])
@@ -427,10 +427,10 @@ export default defineComponent({
       ],
       guide: [{ required: true, message: '请输入实验指导', trigger: 'blur' }],
       imageDataSelected: [
-        {required: true,message: '',},
-        { validator: imageDataSelectedValidator, message: '请选择实验环境'}
+          {required: true,message: '',},
+          { validator: imageDataSelectedValidator, message: '请选择实验环境'}
         ],
-      taskData: [{ required: true, message: '',trigger: 'blur'},{ validator: taskDataValidator, trigger: 'blur'}],
+      taskData: [{ required: true, message: ''},{ validator: taskDataValidator,message: '请选择实验任务'}],
     }
     return {
       jupyterUuid,
@@ -454,6 +454,7 @@ export default defineComponent({
       screenStatus,
       sameScreen,
       screenVmInfo,
+      limitNumber
       // taskData,
     }
   }
@@ -471,6 +472,8 @@ interface formState {
 interface IselectedName {
   uid: string
   name: string
+  amount:number
+  size:string
 }
 </script>
 

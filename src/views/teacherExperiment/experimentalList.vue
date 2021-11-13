@@ -622,7 +622,8 @@ export default defineComponent({
           currentCourseIndex.value = Number(route.query.course_index)
 
           currentChapterIndex.value = Number(route.query.chapter_index)
-          currentSelectChapter.id = taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
+          let Id=taskData[currentCourseIndex.value].children && taskData[currentCourseIndex.value].children[currentChapterIndex.value] && taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
+          currentSelectChapter.id = Id
           // console.log(currentCourseIndex, currentChapterIndex)  ExperimentDetaile
           recoverTreeStatus()
           getExperimentList()
@@ -791,17 +792,17 @@ export default defineComponent({
     }
     // 查看实验详情
     function lookDetail(val: IExporimentList) {
-      // console.log(val, '查看实验详情')
-      // console.log(currentTabType.value)
-      // this.$router.push({
-      //   path: '/detail',
-      //   query: {
-      //     tab_type: this.currentTabType === 0 ? 'me' : this.currentTabType === 1 ? 'init' : 'share',
+      console.log(val, '查看实验详情')
+      console.log(currentTabType.value)
+        //     tab_type: this.currentTabType === 0 ? 'me' : this.currentTabType === 1 ? 'init' : 'share',
       //     task_type: val.task_type,
-      //     id: val.id,
-      //     currentTabType: String(this.currentTabType),
-      //   },
-      // })
+      router.push({
+        path: '/teacher/teacherExperiment/ExperimentDetail',
+        query: {
+          id: val.id,
+          currentTabType: String(currentTabType.value),
+        },
+      })
     }
     return {
       myTree,

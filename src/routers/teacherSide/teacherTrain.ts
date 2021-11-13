@@ -1,10 +1,19 @@
 import Layout from 'src/views/common/Layout.vue';
-
+import { LocationQuery, RouteParams } from 'vue-router';
 export default {
     path: "teacherTrain",
     component: Layout,
     meta: {
-        title: "实训列表",
+        // title: "实训列表",
+        title: (params?: RouteParams, query?: RouteParams) => {
+            // console.log(query)
+            const dataDetailMap = {
+                '0': '我的实训',
+                '1': '内置实训',
+                '2': '归档实训',
+            }
+            return dataDetailMap[query!.currentTab.toString()] || '我的实训'
+          },
         authCode: 'teacherTrain'
     },
     children: [
@@ -12,7 +21,7 @@ export default {
             path: "",
             component: () => import("src/views/teacherTrain/index.vue"),
             meta: {
-                title: "实训列表",
+                title: "我的实训",
                 authCode: 'teacherTrain'
             },
         },

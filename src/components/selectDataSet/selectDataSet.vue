@@ -85,7 +85,7 @@ export default defineComponent({
     const datasetApi = request.teacherWorkbench;
     const uid = storage.lStorage.get("uid");
     const limitNumber: Ref<number> = ref(3);
-    props.limitNumber?limitNumber.value=props.value:''
+    props.limitNumber?limitNumber.value=props.limitNumber:''
     const reactiveData: {
       params: any;
       category: any[];
@@ -169,7 +169,7 @@ export default defineComponent({
     // 选择
     function select(val: any) {
       if(limitNumber.value === reactiveData.selected.length){
-        $message.warn('数据集最多可选择三个')
+        $message.warn(`数据集最多可选择${limitNumber.value}个`)
         return
       }
       reactiveData.selected.includes(val.uid)
@@ -185,7 +185,7 @@ export default defineComponent({
       // console.log(reactiveData.selected);
       reactiveData.dataSetList.map((item: any) => {
         reactiveData.selected.includes(item.uid)
-          ? names.push({ uid: item.uid, name: item.name })
+          ? names.push({ uid: item.uid, name: item.name,amount:item.amount,size:item.size })
           : "";
       });
       emit("update:name", names);

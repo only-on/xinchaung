@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, onUnmounted } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, onUnmounted,Ref } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import Tree from 'src/components/Tree.vue'
@@ -46,13 +46,14 @@ export default defineComponent({
   components: {
     Tree
   },
-  props: ["modelValue"],
+  props: ["modelValue",'limitNumber'],
   setup(props, {emit}) {
     let route = useRoute()
     let router = useRouter()
     const http=(request as any).teacherExperiment
     const $message: MessageApi = inject("$message")!;
-
+    const limitNumber: Ref<number> = ref(3);
+    props.limitNumber?limitNumber.value=props.limitNumber:''
     let currentType = ref<string>('')
     let searchVal = ref<string>('')
     let pageinfo = reactive({
@@ -97,8 +98,12 @@ export default defineComponent({
       getMeImage(false)
     })
     function select(i: number) {
-      if (props.modelValue.length >= 3) {
-        $message.warn('最多可选3个镜像!')
+      // if (props.modelValue.length >= 3) {
+      //   $message.warn('最多可选3个镜像!')
+      //   return
+      // }
+       if (props.modelValue.length >= limitNumber.value) {
+        $message.warn(`镜像最多可选择${limitNumber.value}个`)
         return
       }
       imageData[i].isSelect = true
