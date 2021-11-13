@@ -81,7 +81,7 @@ export default defineComponent({
        }
     }
     onMounted(()=>{
-        state.ppt_url=baseurl+props.propTrainDetailInfo.html_url
+        state.ppt_url=baseurl+props.propTrainDetailInfo.courseware_html
     })
     return {...toRefs(state),...methods,baseurl}
     }

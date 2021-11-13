@@ -1,6 +1,6 @@
 <template>
    <div class="createProgress5"  v-layout-bg>
-       <customerInfor :trainId='trainId' />
+       <customerInfor :trainId='trainId' @class-or-stu-data='classOrStuData' />
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
@@ -11,11 +11,13 @@
 
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
+import { useRouter ,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import customerInfor from '../detail/customerInfor/index.vue'
-import messages from 'src/i18n/zh_CN'
+import { message } from 'ant-design-vue'
 const http=(request as any).teacherTrain
 interface Istate{
+  selectData:any[]
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -24,18 +26,33 @@ export default defineComponent({
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    const router = useRouter();
     const http=(request as any).teacherTrain
      const state:Istate=reactive({
+       selectData:[]
      })
      const methods={
         onCancel(){
-
+            router.go(-1)
+            inject['stepInfoOne']={}
+            inject['stepInfoTwo']={}
+            inject['stepInfoThree']={}
+            inject['stepInfoFour']={}
+            inject['stepInfoFive']={}
         },
         previousStep(){
              context.emit('step-status',3)
         },
         nextStep(){
-             context.emit('step-status',5)
+          if(state.selectData?.length){
+            context.emit('step-status',5)
+          }else{
+            message.warning('您没有添加学生！')
+          }
+        },
+        classOrStuData(selectvalue:any,data:any){
+          console.log(selectvalue,data,'班级活着学生的数据')
+          state.selectData=data
         }
      }
     onMounted(()=>{

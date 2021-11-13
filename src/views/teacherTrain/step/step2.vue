@@ -71,7 +71,8 @@ import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from '
 import request from 'src/api/index'
 import uploadImage from '../components/uploadImage/uploadImage.vue'
 import selectMirror from '../components/selectMirror/index.vue'
-import messages from 'src/i18n/zh_CN'
+import { useRouter ,useRoute } from 'vue-router';
+import { message } from 'ant-design-vue'
 const http=(request as any).teacherTrain
 interface paramsType{
     container:any[],
@@ -103,6 +104,7 @@ export default defineComponent({
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    const router = useRouter();
     const http=(request as any).teacherTrain
      const state:Istate=reactive({
          params:{
@@ -169,10 +171,20 @@ export default defineComponent({
             })
          },
         onCancel(){
-
+            router.go(-1)
+            inject['stepInfoOne']={}
+            inject['stepInfoTwo']={}
+            inject['stepInfoThree']={}
+            inject['stepInfoFour']={}
+            inject['stepInfoFive']={}
         },
         nextStep(){
-        methods.createTemplate()
+            if(state.mirrorTable.length){
+                methods.createTemplate()
+            }else{
+                message.warning('请选择镜像')
+                return
+            }
         }
      }
     onMounted(()=>{

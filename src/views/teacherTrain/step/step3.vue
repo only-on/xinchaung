@@ -30,6 +30,7 @@ import request from 'src/api/index'
 import trainingGuide from '../detail/trainingGuide/index.vue'
 import addTask from '../components/addTask/index.vue'
 import taskList from '../components/taskList/index.vue'
+import { useRouter ,useRoute } from 'vue-router';
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue"
 import { message } from 'ant-design-vue';
 const http=(request as any).teacherTrain
@@ -46,6 +47,7 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
     const http=(request as any).teacherTrain
+    const router = useRouter();
      const state:Istate=reactive({
          describe:'',
          addTask:true,
@@ -70,8 +72,13 @@ export default defineComponent({
          cancelAdd(){
              state.addTask=true
          },
-          onCancel(){
-
+         onCancel(){
+            router.go(-1)
+            inject['stepInfoOne']={}
+            inject['stepInfoTwo']={}
+            inject['stepInfoThree']={}
+            inject['stepInfoFour']={}
+            inject['stepInfoFive']={}
         },
        previousStep(){
              context.emit('step-status',1)
@@ -79,6 +86,11 @@ export default defineComponent({
        nextStep(){   
            if(!state.describe){
                 message.warning("实训概述不能为空！")
+                return
+            }
+            console.log(state.content_list.length)
+            if(!state.content_list.length){
+                message.warning('请添加实训任务！')
                 return
             }
             const content:any=[]

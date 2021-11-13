@@ -1,7 +1,6 @@
 <template>
    <div class="selectEnvir"  v-layout-bg>
-       分组信息
-       <groupingInfor/>
+       <groupingInfor :trainId='trainId'/>
       <div class="foot">
         <a-button  @click.prevent="onCancel"> 取 消 </a-button>
         <a-button class="next" type="primary" @click.prevent="previousStep"> 上一步 </a-button>
@@ -13,6 +12,7 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
+import { useRouter ,useRoute } from 'vue-router';
 import groupingInfor from '../detail/groupingInfor/index.vue'
 import messages from 'src/i18n/zh_CN'
 const http=(request as any).teacherTrain
@@ -20,25 +20,38 @@ interface Istate{
 }
 export default defineComponent({
   name: 'CreatePosts',
-   props:['trainId'],
+  props:['trainId'],
   components: {
     groupingInfor
   },
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    const router = useRouter();
     const http=(request as any).teacherTrain
      const state:Istate=reactive({
      })
      const methods={
         onCancel(){
-
+            router.go(-1)
+            inject['stepInfoOne']={}
+            inject['stepInfoTwo']={}
+            inject['stepInfoThree']={}
+            inject['stepInfoFour']={}
+            inject['stepInfoFive']={}
+        },
+        lastStep(){
+          http.createTrainLastStep({urlParams:{train:props.trainId}}).then((res:any)=>{
+            console.log(res)
+            // message.warning('创建成功')
+          })
         },
         previousStep(){
              context.emit('step-status',4)
         },
         nextStep(){
              context.emit('step-status',6)
+             methods.lastStep()
         }
      }
     onMounted(()=>{

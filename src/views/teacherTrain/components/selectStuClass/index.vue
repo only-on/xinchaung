@@ -37,7 +37,7 @@
                 </a-form> 
             </div>
             <a-config-provider>
-                    <a-table :columns="columns" :data-source="unSelectData" :row-selection="rowSelection" rowKey="id">
+                    <a-table :columns="columns" :loading='unselectLoading' :data-source="unSelectData" :row-selection="rowSelection" rowKey="id">
                         <template #department="{ record }">
                             <div>{{ record.user_profile.department}}</div>
                         </template>
@@ -68,7 +68,7 @@ interface Istate{
    faculty:string,
    classes:string,
    selectedRows:any[],
-   unSelectKeys:any[]
+   unSelectKeys:any[],
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -77,7 +77,7 @@ import test from './test.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'selectStuClass',
-    props:['propTrainDetailInfo','trainId','selectvalue','isvisible','addids','unSelectData'],
+    props:['propTrainDetailInfo','trainId','selectvalue','isvisible','addids','unSelectData','unselectLoading'],
     components:{
         Empty
     },

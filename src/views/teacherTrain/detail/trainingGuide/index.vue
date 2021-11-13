@@ -36,7 +36,7 @@ interface Istate{
     content_list:any[],
     addTask:boolean,
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import taskList from '../../components/taskList/index.vue'
 import addTask from '../../components/addTask/index.vue'
@@ -115,9 +115,8 @@ export default defineComponent({
         }
     }
     onMounted(()=>{
-        console.log(props.propTrainDetailInfo)
         state.describe=props.propTrainDetailInfo.detail
-        state.content_list=props.propTrainDetailInfo.content_list
+        state.content_list=props.propTrainDetailInfo.contents
     })
     return {...toRefs(state),...methods}
     }

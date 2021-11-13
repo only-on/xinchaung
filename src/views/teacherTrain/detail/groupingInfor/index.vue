@@ -65,6 +65,7 @@
                      </a-select>
                      </span>
                      <a-input class="groupItem" style="width:170px" v-model:value="groupNumber"></a-input>
+                     {{trainId}}trainIdtrainIdtrainIdtrainId
                      <a-button type="primary" @click="grouping">分组</a-button>
                 </div>
                 </a-modal>
@@ -197,6 +198,7 @@ export default defineComponent({
         },
         // 点击分组按钮
         grouping(){
+            console.log(props.trainId,'trainId',)
           if(!state.groupNumber){
               message.warning('人数或小组数不能为空！')
               return

@@ -26,12 +26,14 @@ export default {
   // 编辑实训
   trainDetailInfo: { url: '/api/train/trains/{train}', method: "GET" }, // 获取详情
   trainUploadImage: { url: '/teacher-train/upload', method: "POST", dataType: 'formdata' },
-  saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
+  // saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
+  saveModefiy: { url: '/api/train/trains/{train}', method: "PUT" },//编辑实训基本信息
   saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
   // studentGroup: { url: '/teacher-train/set-student', method: "GET" }, //学生列表接口
   studentGroup: { url: '/api/arrange/students/search', method: "GET" }, //学生列表接口
   classGroup: { url: '/api/arrange/classes/search', method: "GET" }, //班级列表接口
+  classMembersList: { url: '/api/arrange/classes/members', method: "GET" },//班级成员列表 
   unSelectStudentGroup: { url: '/api/arrange/students', method: "GET" },//待选的学生列表
   unSelectClassGroup: { url: '/api/arrange/classes', method: "GET" },//待排课的班级列表
   scheduleStudent: { url: '/api/arrange/students', method: "POST", dataType: 'json' },//学生排课
@@ -53,6 +55,9 @@ export default {
   saveTrainContents: { url: '/api/train/trains/content/{train}', method: "PUT", dataType: 'json' },// 保存实训内容
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
+
+  createTrainLastStep: { url: '/api/train/succeed/{train}', method: "POST" },//创建实训最后一步
+
 
   automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
   deleteGroupListItem: { url: '/api/arrange/groups/{group}', method: "DELETE" },//删除分组

@@ -95,6 +95,11 @@ export default defineComponent({
       },
       goback(){
         window.history.go(-1)
+        inject['stepInfoOne']={}
+        inject['stepInfoTwo']={}
+        inject['stepInfoThree']={}
+        inject['stepInfoFour']={}
+        inject['stepInfoFive']={}
       },
       callback(key:any){
         state.componentName=componentsNames.value[key].name

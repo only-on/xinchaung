@@ -50,6 +50,7 @@
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
 import uploadImage from '../components/uploadImage/uploadImage.vue'
+import { useRouter ,useRoute } from 'vue-router';
 import { message } from 'ant-design-vue'
 import moment from 'moment';
 const http=(request as any).teacherTrain
@@ -76,6 +77,7 @@ export default defineComponent({
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    const router = useRouter();
     const http=(request as any).teacherTrain
     const rules={
             name: [{ required: true, message: '请输入实训名称'},],
@@ -126,8 +128,13 @@ export default defineComponent({
         })
         return false
       },
-      onCancel(){
-          
+        onCancel(){
+          router.go(-1)
+          inject['stepInfoOne']={}
+          inject['stepInfoTwo']={}
+          inject['stepInfoThree']={}
+          inject['stepInfoFour']={}
+          inject['stepInfoFive']={}
         },
         onSubmit(){
           // context.emit('step-status',1)

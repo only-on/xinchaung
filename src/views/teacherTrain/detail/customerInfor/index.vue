@@ -38,7 +38,7 @@
                         </template>
                         <template #classaction='{record}'>
                             <div class="action">
-                                <span class="spanleft" @click="checkClass">查看</span>
+                                <span class="spanleft" @click="checkClass(record.id)">查看</span>
                                 <span @click="deleteClass(record.id)">删除</span>
                             </div>
                         </template>
@@ -51,6 +51,7 @@
            <div>
                <select-stu-class
                :unSelectData='unSelectData' 
+               :unselectLoading='unselectLoading'
                :selectvalue='value' 
                :trainId="trainId" 
                :isvisible='isvisible' 
@@ -71,7 +72,23 @@
                 @cancel="classInfoCancel"
                 >
                 <div>
-                    <a-table :columns="classInfoColumns" :data-source="classInfoData" rowkey='id'></a-table>
+                    <a-table :columns="classInfoColumns" :data-source="classInfoData" rowkey='id'>
+                        <template #name='{record}'>
+                            <div>
+                                {{record.user_profile.name}}
+                            </div>
+                        </template>
+                        <template #gender='{record}'>
+                            <div>
+                                {{record.user_profile.gender}}
+                            </div>
+                        </template>
+                        <template #department='{record}'>
+                            <div>
+                                {{record.user_profile.department}}
+                            </div>
+                        </template>
+                    </a-table>
                 </div>
                 </a-modal>
            </div>
@@ -122,6 +139,7 @@ interface Istate{
    classDeleteLoading:boolean,
    addidarr:any,
    unSelectData:any,
+   unselectLoading:boolean,
    selectStuOrClassKeys:any[],
    classStuDeleteid:any[],
    stuUnselectParams:stuType,
@@ -129,7 +147,7 @@ interface Istate{
    allClassId:any[],
    allStuId:any[],
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import selectStuClass from '../../components/selectStuClass/index.vue'
@@ -167,7 +185,7 @@ export default defineComponent({
         },
         {
             title: '人数',
-            dataIndex: 'total',
+            dataIndex: 'number',
             align: 'center',
         },
         {
@@ -222,33 +240,37 @@ export default defineComponent({
       classInfoColumns:[
         {
             title: '账号',
-            dataIndex: 'stu_no',
+            dataIndex: 'username',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '姓名',
-            dataIndex: 'username',
+            dataIndex: 'name',
             align: 'left',
             ellipsis: true,
+            slots: { customRender: 'name' } 
         },
         {
             title: '性别',
             dataIndex: 'gender',
             align: 'left',
             ellipsis: true,
+            slots: { customRender: 'gender' } 
         },
         {
             title: '院系',
             dataIndex: 'department',
             align: 'left',
             ellipsis: true,
+            slots: { customRender: 'department' } 
         },
         {
             title: '班级',
             dataIndex: 'classes',
             align: 'left',
             ellipsis: true,
+            slots: { customRender: 'classes' } 
         },
         ],
       columns:[],
@@ -259,7 +281,8 @@ export default defineComponent({
       classDeleteVisible:false,
       classDeleteLoading:false,
       addidarr:[],
-      selectStuOrClassKeys:[]
+      selectStuOrClassKeys:[],
+      unselectLoading:false,
     })
     const rowSelection = {
             onChange: (selectedRowKeys1:any, selectedRows1:any) => {
@@ -296,8 +319,11 @@ export default defineComponent({
         rowkey(record: {}, index: number){
          return index
         },
-        checkClass(){
+        checkClass(id:any){
             state.classInfoVisible=true
+            http.classMembersList({param:{id:id,withs:'userProfile'}}).then((res:any)=>{
+                state.classInfoData=res.data.list
+            })
         },
         initPassword(){
 
@@ -440,16 +466,20 @@ export default defineComponent({
         },
         // 未排课学生
         getUnselectStu(){
+            state.unselectLoading=true
             http.unSelectStudentGroup({param:state.stuUnselectParams}).then((res:any)=>{
                 // state.data=res.data.list
                 state.unSelectData=res.data.list
+                state.unselectLoading=false
             })
         },
         // 未排课班级列表
         getUnselectClass(){
+            state.unselectLoading=true
             http.unSelectClassGroup({param:state.classUnselectParams}).then((res:any)=>{
                 // state.data=res.data.list
                 state.unSelectData=res.data.list
+                state.unselectLoading=false
             })
         },
         // 已选学生列表
@@ -473,6 +503,13 @@ export default defineComponent({
             })
         }
     }
+    watch(()=>state.data,(val:any)=>{
+            //  state.form=cloneDeep(props.propTrainDetailInfo)
+            context.emit('class-or-stu-data',state.value,state.data)
+            },{
+            deep:true,
+            immediate:true
+            })
     onMounted(()=>{
         state.columns=state.stuColumns
         // console.log('请求学生接口')

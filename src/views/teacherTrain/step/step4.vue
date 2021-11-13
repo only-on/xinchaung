@@ -11,6 +11,7 @@
 
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
+import { useRouter ,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { message } from 'ant-design-vue';
 import resource from '../detail/resources/index.vue'  
@@ -25,6 +26,7 @@ export default defineComponent({
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})
+    const router = useRouter();
     const http=(request as any).teacherTrain
      const state:Istate=reactive({
        step4Info:{}
@@ -34,8 +36,13 @@ export default defineComponent({
           console.log(value,'step4Info222222')
           state.step4Info= value
         },
-        onCancel(){
-
+         onCancel(){
+            router.go(-1)
+            inject['stepInfoOne']={}
+            inject['stepInfoTwo']={}
+            inject['stepInfoThree']={}
+            inject['stepInfoFour']={}
+            inject['stepInfoFive']={}
         },
         previousStep(){
             context.emit('step-status',2)

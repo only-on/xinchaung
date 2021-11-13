@@ -80,8 +80,10 @@ export default defineComponent({
             },
             saveModifiy(){
                 state.formRef.validate().then(() => {
-                    http.saveModefiy({param:
-                    {train_id:props.trainId,
+                    http.saveModefiy({ 
+                    urlParams: {train:props.trainId},
+                    param:
+                    {
                     name:state.form.name,
                     start_time:state.form.start_times,
                     end_time:state.form.end_times,
