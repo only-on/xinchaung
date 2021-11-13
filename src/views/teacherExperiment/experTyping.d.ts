@@ -17,14 +17,6 @@ interface ITeacherExperApi {
   uploadTaskFile: Function
   createVnc: Function
   createJupyter: Function
-  mineTemplateList: Function
-  initTemplateList: Function
-  sharedTemplateList: Function
-  teachersTemplateList: Function
-  deleteTemplate: Function
-  copyTemplate: Function
-  shareTemplate: Function
-  unshareTemplate: Function
 }
 export interface ITeacherExperHttp {
   teacherExperiment: ITeacherExperApi

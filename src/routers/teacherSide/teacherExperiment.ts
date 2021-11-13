@@ -7,7 +7,6 @@ export default {
     meta: {
         // title: "实验管理",
         title: (params?: RouteParams, query?: RouteParams) => {
-            // console.log(query)
             const dataDetailMap = {
                 '0': `实验管理${'\xa0\xa0'}/${'\xa0\xa0'}我的实验`,
                 '1': `实验管理${'\xa0\xa0'}/${'\xa0\xa0'}内置实验`, 
@@ -60,22 +59,6 @@ export default {
                 title: "实验详情",
                 authCode: 'ExperimentDetail'
             },
-        },
-        {
-            path: "TemplateList",
-            name: "TemplateList",
-            component: () => import("src/views/teacherExperiment/experimentTemplate/templateList.vue"),
-            meta: {
-                title: (params?: RouteParams, query?: RouteParams) => {
-                    const dataDetailMap = {
-                        '0': localStorage.role == 3 ? '我的模板' : '教师创建模板',
-                        '1': localStorage.role == 3 ? '内置模板' : '系统内置模板',
-                        '2': '共享模板'
-                    }
-                    return dataDetailMap[query!.currentTab.toString()] || '实验模板'
-                },
-                authCode: 'TemplateList'
-            },
-        },
+        }
     ]
 }

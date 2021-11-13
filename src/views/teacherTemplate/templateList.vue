@@ -36,7 +36,7 @@ import { defineComponent,inject, reactive, watch, ref, onMounted, toRefs } from 
 import cardList from './components/cardList.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherExperHttp } from '../experTyping'
+import { ITeacherTemplateHttp } from './templateTyping'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import copySave from './components/copySave.vue'
@@ -92,7 +92,7 @@ export default defineComponent({
     uploadFile
   },
   setup() {
-    const http=(request as ITeacherExperHttp).teacherExperiment
+    const http=(request as ITeacherTemplateHttp).teacherTemplate
     const $message: MessageApi = inject("$message")!;
     const $confirm: ModalFunc = inject("$confirm")!;
     const httpType = [http.mineTemplateList, http.initTemplateList, http.sharedTemplateList, http.teachersTemplateList]
