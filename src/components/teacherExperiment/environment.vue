@@ -80,11 +80,12 @@ export default defineComponent({
         // if (res.code === 1) {
           loading.value = false
           let {list, page} = res.data
-          list.forEach((v: IimageData) => {
+          list.map((v: IimageData) => {
             v.isSelect = false
             props.modelValue?.forEach((vv: IimageData) => {
               if (v.id === vv.id) v.isSelect = true
             })
+            v.config.ramNum=v.config.ram/1024
           })
           imageData.push(...list)
           pageinfo.page = page.currentPage
@@ -175,6 +176,10 @@ interface Icongig {
   disk_text: string
   ram_text: string
   swap: string
+  cpu:number
+  ram:number
+  disk:number
+  ramNum:number
 }
 interface IimageData {
   id: number

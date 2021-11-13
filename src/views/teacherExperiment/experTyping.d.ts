@@ -59,6 +59,10 @@ interface Icongig {
   disk_text: string
   ram_text: string
   swap: string
+  cpu:number
+  ram:number
+  disk:number
+  ramNum:number
 }
 export interface IimageData {
   id: number

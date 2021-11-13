@@ -2,16 +2,15 @@
   <div class="ExperimentDetail setScrollbar">
     <div class="base-info box flexCenter">
       <div class="left">
-        <!-- <img src="../../assets/images/teacherExperiment/base_info.jpg" alt=""> -->
-        <div class="title">实验名称</div>
+        <div class="title">{{detail.name}}</div>
         <div class="base-footer">
           <div class="info">
-            <span>类型：{{'验证实验'}}</span>
-            <span>课时数“：{{'12'}}</span>
-            <span>CPU：{{'起用'}}</span>
+            <span>类型：{{detail.task_type_text}}</span>
+            <span>课时数“：{{detail.class_cnt}}</span>
+            <span>CPU：{{detail.is_used_gpu?'启用':'未启用'}}</span>
           </div>
           <div class="label">
-            <span v-for="v in 5" :key="v">知识点{{v}}</span>
+            <span v-for="v in detail.knowledge_maps" :key="v">{{v[v.length - 1]}}</span>
           </div>
         </div>
       </div>
@@ -26,9 +25,9 @@
         <div class="left">
           <div class="title">实验环境</div>
           <div class="title-info">
-            <span>CPU ：2核</span> | 
-            <span>内存 ：2G</span> | 
-            <span>磁盘· ：30G</span>
+            <span>CPU ：{{environmentInfo.cpu}}核</span> | 
+            <span>内存 ：{{environmentInfo.ram}}G</span> | 
+            <span>磁盘· ：{{environmentInfo.disk}}G</span>
           </div>
         </div>
         <div class="right">
@@ -43,7 +42,7 @@
       <span class="max-hint">最多可选{{detail.task_type===4?1:3}}个镜像</span>
     </div>
     <div class="box"  v-if="EditEnvironment">
-      <env-list :envData="formState.imageDataSelected" :edit="true"></env-list>
+      <env-list :envData="formState.imageDataSelected" :edit="!EditEnvironment"></env-list>
     </div>
     <div class="dateSet box">
       <div class="head">
@@ -69,7 +68,7 @@
         <span class="shanchu iconfont icon-shanchu" v-if="!EditDateSet" @click="removeDataSet(item, index)"></span>
       </div>
     </div>
-    <div class="box">
+    <div class="box" v-if="detail.task_type===4">
       <div class="head">
         <div class="left">
           <div class="title">实验任务</div>
@@ -79,10 +78,10 @@
         </div>
       </div>
     </div>
-    <div v-if="EditTask" class="task box">
+    <div v-if="EditTask && detail.task_type===4" class="task box">
       <task-list v-model:taskData="formState.taskData" :jupyterUuid="jupyterUuid"></task-list>
     </div>
-    <div class="box">
+    <div class="box" v-if="detail.task_type===1">
       <div class="head">
         <div class="left">
           <div class="title">实验指导</div>
@@ -92,8 +91,8 @@
         </div>
       </div>
     </div>
-    <div class="box markdownBox" v-if="EditGuidance">
-      <antdv-markdown v-model="formState.guide"  class="markdown__editor"/>
+    <div class="box markdownBox" v-if="detail.task_type===1">
+      <antdv-markdown v-model="formState.guide"  :preview-only="!EditGuidance" class="markdown__editor"/>
     </div>
     <a-drawer
       class="data-image-drawer"
@@ -119,6 +118,7 @@ import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
+// import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import envList from './create/envList.vue'
 import taskList from './create/taskList.vue'
 import dataSet from 'src/components/selectDataSet/selectDataSet.vue'
@@ -137,8 +137,8 @@ interface Istate{
   EditDateSet:boolean;
   EditTask:boolean;
   EditGuidance:boolean;
-  limitNumbe:number;
   removeDataSet:(val: IselectedName, index: number) => void;
+  environmentInfo:any;
 }
 interface IformState {
   name: string
@@ -183,7 +183,11 @@ export default defineComponent({
       EditDateSet:false,
       EditTask:false,
       EditGuidance:false,
-      limitNumbe:3,
+      environmentInfo:{
+        cpu:0,
+        ram:0,
+        disk:0,
+      },
       select:(val:string)=>{
         state.selectType = val
         state.visible = true
@@ -207,16 +211,29 @@ export default defineComponent({
       // 已选择镜像数据
       imageDataSelected: [],
       // 实验指导
-      guide: '',
+      guide: '666',
       taskData:[{ name:'', status: false }]
     })
     function getContentDetail(){
       http.getContentDetail({urlParams: {id: id}}).then((res:any)=>{
         state.detail=res.data
+        // formState.imageDataSelected=res.data.image
       })
     }
-    watch(()=>{return formState.imageDataSelected},()=>{
-
+    watch(()=>{return formState.imageDataSelected},(val:any)=>{
+        if(val.length){
+          state.environmentInfo={
+            cpu:0,
+            ram:0,
+            disk:0,
+          }
+        val.forEach((v:any)=>{
+          state.environmentInfo.cpu+=Number(parseFloat(v.config.cpu_text))
+          state.environmentInfo.ram+=parseFloat(v.config.ram_text)
+          state.environmentInfo.disk+=parseFloat(v.config.disk_text)
+        })
+      }
+      // console.log(state.environmentInfo)
     },{immediate:true,deep:true})
     onMounted(() => {
       getContentDetail()

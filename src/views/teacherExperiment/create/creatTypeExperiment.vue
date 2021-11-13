@@ -65,7 +65,7 @@
               </div>
             </div>
           </div>
-          <antdv-markdown v-model="formState.guide"  class="markdown__editor"/>
+          <antdv-markdown v-model="formState.guide" class="markdown__editor" />
         </a-form-item>
         <a-form-item label="实验任务" v-if="type === 'note'" name="taskData">
           <task-list v-model:taskData="formState.taskData" :jupyterUuid="jupyterUuid"></task-list>
@@ -104,6 +104,7 @@ import { useRoute, useRouter } from 'vue-router'
 import dataSet from 'src/components/selectDataSet/selectDataSet.vue'
 import environment from 'src/components/teacherExperiment/environment.vue'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
+// import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import sameScreen from 'src/components/teacherExperiment/sameScreen.vue'
 import taskList from './taskList.vue'
@@ -613,7 +614,7 @@ interface IselectedName {
     font-size: 14px;
   }
 }
-.mark__container.markdown__editor {
+.markdown__editor {
   min-height: 300px;
 }
 .data-image-drawer{
