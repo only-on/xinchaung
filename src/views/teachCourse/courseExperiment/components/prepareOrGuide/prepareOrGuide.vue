@@ -63,10 +63,11 @@
   >
     <template #title>上传数据集文件</template>
     <upload-data-set-file
-      :activeKey="activeKey"
+      :type="datasetType"
       v-model:value="fileInfo"
       v-model:dataset_id="dataset_id"
       ref="uploadRef"
+      accept=".doc,.docx"
     ></upload-data-set-file>
   </a-modal>
 </template>
@@ -128,12 +129,12 @@ export default defineComponent({
     const course_id: any = inject("course_id");
     const chapter_id: any = inject("chapter_id");
     const activeKey = props.activeKey;
-    let datasetType = -1;
+    const datasetType = ref(-1);
     if (activeKey === "2") {
-      datasetType = 5;
+      datasetType.value = 5;
     }
     if (activeKey === "3") {
-      datasetType = 6;
+      datasetType.value = 6;
     }
     const columns = [
       {
@@ -179,20 +180,6 @@ export default defineComponent({
       size: 0,
     });
     const uploadRef = ref(null);
-    watch(
-      () => fileInfo.value,
-      () => {
-        console.log(fileInfo.value);
-      },
-      { deep: true }
-    );
-     watch(
-      () => reactiveData.dataset_id,
-      () => {
-        console.log(reactiveData.dataset_id);
-      },
-      { deep: true }
-    );
     onMounted(() => {
       getDataSetFileDetail();
     });
@@ -208,9 +195,8 @@ export default defineComponent({
           size: 10,
         },
       };
-      if (datasetType === 5) {
+      if (datasetType.value === 5) {
         getPreparingDataApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.introFile = res.data.data;
           if (reactiveData.introFile.length > 0) {
             reactiveData.prepareShowTab = "pdf";
@@ -220,9 +206,8 @@ export default defineComponent({
         });
         return;
       }
-      if (datasetType === 6) {
+      if (datasetType.value === 6) {
         getDataSetGuideApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.introFile = res.data.data;
           if (reactiveData.introFile.length > 0) {
             reactiveData.prepareShowTab = "pdf";
@@ -253,7 +238,6 @@ export default defineComponent({
                   )
                 ) {
                   (reactiveData.tableParams as any).dataset_id = key1;
-                  console.log(key1);
                   break loop;
                 }
               }
@@ -272,7 +256,6 @@ export default defineComponent({
     }
     // 打开上传modal
     function openUploadModal() {
-      console.log("打开上传");
       reactiveData.uploadVisible = true;
     }
     // 选择按钮
@@ -297,7 +280,6 @@ export default defineComponent({
     }
     // 选择数据
     function selectData(val: any) {
-      console.log(val);
       savePrepareLessonsFileApi({
         course_id: course_id,
         chapter_id: chapter_id.value,
@@ -308,7 +290,6 @@ export default defineComponent({
     }
     // 移除
     function remove() {
-      console.log((reactiveData.introFile as any)[0].aid);
       removePrepareLessonsFileApi({
         aid: (reactiveData.introFile as any)[0].aid,
       }).then(() => {
@@ -322,7 +303,6 @@ export default defineComponent({
         message.warn("文件上传中，请稍后提交");
         return;
       }
-      console.log(reactiveData.dataset_id);
       const body=new FormData();
       body.append("items[0][file_name]",fileInfo.value.file_name)
       body.append("items[0][file_url]",fileInfo.value.file_url)
@@ -330,7 +310,6 @@ export default defineComponent({
       body.append("items[0][size]",fileInfo.value.size as any)
       body.append("dataset_id",reactiveData.dataset_id as any)
       addDataSetFileApi(body).then((res: any) => {
-        console.log(res);
         fileInfo.value = {
           file_name: "",
           file_url: "",
@@ -344,7 +323,6 @@ export default defineComponent({
     }
     // 关闭文件上传弹框
     function closeUploadModal() {
-      console.log();
       (uploadRef.value as any).remove();
       reactiveData.uploadVisible = false;
     }
@@ -363,6 +341,7 @@ export default defineComponent({
       closeUploadModal,
       fileInfo,
       uploadRef,
+      datasetType
     };
   },
 });

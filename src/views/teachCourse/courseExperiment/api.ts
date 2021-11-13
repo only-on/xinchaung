@@ -157,6 +157,12 @@ export async function deleteChapterExerciseApi(params:{relation_ids:number[]}) {
 }
 
 /**
+ * @description 获取章节习题统计
+ */
+ export async function getChapterExerciseAnalysisApi(urlParams:{chapter_id:number}) {
+    return await courseApi.getChapterExerciseAnalysisApi({urlParams:urlParams})
+}
+/**
  * @description 获取所有课程所有章节
  */
 export async function getAllChapterListApi(params:{type:string,limit:number},urlParams:{course_id:number}) {
@@ -226,4 +232,54 @@ export async function  getContentListApi(params:{type?:number,course_id:number,l
  */
 export async function getDataSetCatalogApi(params:{type:number,name?:string}) {
     return await courseApi.getDataSetCatalogApi({param:params})
+}
+
+/**
+ * @description 获取课程实验详情
+ */
+
+export async function getContentDetailApi(params:{id:number}) {
+    return await courseApi.getContentDetailApi({param:params})
+}
+
+/**
+ * @description 是否对学生开发资源
+ */
+export async function  isDisparkApi(params:{is_visible:boolean},urlParams:{course_id:number,experiment_id:number}) {
+    return await courseApi.isDisparkApi({param:params,urlParams:urlParams})
+}
+
+/**
+ * @description 获取实验报告
+ * @param {owner_type:string,owner_id:number} owner_type "cc_mid"
+ */
+export async function getExperimentReportApi(params:FormData) {
+    return await courseApi.getExperimentReportApi({param:params})
+}
+
+/**
+ * @description 实验添加习题
+ */
+ export async function contentAddExerciseApi(params:{question_ids:number[]},urlParams:{content_id:number}) {
+    return await courseApi.contentAddExerciseApi({urlParams:urlParams,param:params})
+}
+/**
+ * @description 解除实验关联习题
+ */
+export async function deleteContentExerciseApi(params:{relation_ids:number[]}) {
+    return await courseApi.deleteContentExerciseApi({param:params})
+}
+
+/**
+ * @description 获取实验习题
+ */
+ export async function getContentExerciseApi(params:{limit:number,page:number},urlParams:{content_id:number}) {
+    return await courseApi.getContentExerciseApi({param:params,urlParams:urlParams})
+}
+
+/**
+ * @description 获取实验习题统计
+ */
+ export async function getContentExerciseAnalysisApi(urlParams:{content_id:number}) {
+    return await courseApi.getContentExerciseAnalysisApi({urlParams:urlParams})
 }

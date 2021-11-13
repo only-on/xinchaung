@@ -26,11 +26,14 @@
           <i class="iconfont icon-fenshu"></i>
           {{ item.score }}
         </span>
-        <span class="exam-list-detele iconfont icon-shanchu" @click="deleteChapterExercise(item)"></span>
+        <span
+          class="exam-list-detele iconfont icon-shanchu"
+          @click="deleteChapterExercise(item)"
+        ></span>
       </div>
     </div>
   </div>
-  <div v-if="showPanel === 'none'">
+  <div v-if="showPanel === 'none'" style="height:100%;background:#fff">
     <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
     <div class="action-btn" style="text-align: center">
       <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
@@ -96,7 +99,7 @@
     />
   </div>
 </template>
-<script lang="ts">
+  <script lang="ts">
 import { SyncOutlined } from "@ant-design/icons-vue";
 import {
   defineComponent,
@@ -109,16 +112,15 @@ import {
   unref,
 } from "vue";
 import {
-  getChapterExerciseApi,
+  getContentExerciseApi,
   getExercisesMapApi,
   getQuestionTypesApi,
   getPoolsExerciseListApi,
-  chapterAddExerciseApi,
-  deleteChapterExerciseApi,
-  getChapterExerciseAnalysisApi
-} from "../api";
+  contentAddExerciseApi,
+  deleteContentExerciseApi,
+  getContentExerciseAnalysisApi
+} from "../../api";
 import empty from "src/components/Empty.vue";
-import { Key } from "readline";
 import { message, Modal } from "ant-design-vue";
 type TreactiveData = {
   showPanel: string;
@@ -139,8 +141,8 @@ export default defineComponent({
     empty,
   },
   setup() {
-    const chapter_id: any = inject("chapter_id");
-    console.log(chapter_id);
+    const experiment_id: any = inject("experiment_id");
+    console.log(experiment_id);
     const reactiveData: TreactiveData = reactive({
       showPanel: "loading",
       publicData: [],
@@ -174,7 +176,7 @@ export default defineComponent({
     ];
     onMounted(() => {
       getChapterExercise();
-      getChapterExerciseAnalysis()
+      getContentExerciseAnalysis()
     });
     const selectedRowKeys = ref<number[]>([]);
     const onSelectChange = (changableRowKeys: number[]) => {
@@ -188,10 +190,10 @@ export default defineComponent({
       return {
         selectedRowKeys: unref(selectedRowKeys),
         onChange: onSelectChange,
-        getCheckboxProps:(record: any)=>({
-          disabled:reactiveData.selectedIds.includes(record.id),
-          name:record.name
-        })
+        getCheckboxProps: (record: any) => ({
+          disabled: reactiveData.selectedIds.includes(record.id),
+          name: record.name,
+        }),
       };
     });
     // 获取共有章节目录
@@ -244,12 +246,12 @@ export default defineComponent({
     }
     // 获取章节习题
     function getChapterExercise() {
-      getChapterExerciseApi(
+      getContentExerciseApi(
         {
           page: 1,
           limit: 500,
         },
-        { chapter_id: chapter_id.value }
+        { content_id: experiment_id.value }
       ).then((res: any) => {
         console.log(res);
         reactiveData.chapterExerciseList = res.data.list;
@@ -266,8 +268,8 @@ export default defineComponent({
     }
 
     // 获取习题统计
-    function getChapterExerciseAnalysis() {
-        getChapterExerciseAnalysisApi({chapter_id:chapter_id.value}).then((res:any)=>{
+    function getContentExerciseAnalysis() {
+        getContentExerciseAnalysisApi({content_id:experiment_id.value}).then((res:any)=>{
             console.log(res);
             reactiveData.questionCount=res.data.question_total
             reactiveData.scores=res.data.score_total
@@ -276,7 +278,7 @@ export default defineComponent({
     // 打开选择习题面板
     async function openSelectPanel() {
       reactiveData.showPanel = "select";
-      selectedRowKeys.value=[]
+      selectedRowKeys.value = [];
       await getPublicExercisesMap();
       await getSelfExercisesMap();
       await getQuestionTypes();
@@ -293,34 +295,36 @@ export default defineComponent({
     // 选择按钮
     function selectExercise() {
       console.log(selectedRowKeys.value);
-      chapterAddExerciseApi(
+      contentAddExerciseApi(
         { question_ids: selectedRowKeys.value },
-        { chapter_id: chapter_id.value }
+        { content_id: experiment_id.value }
       ).then((res: any) => {
         console.log(res);
         getChapterExercise();
-        getChapterExerciseAnalysis()
+        getContentExerciseAnalysis()
       });
     }
     // 返回
     function backList() {
       getChapterExercise();
-      getChapterExerciseAnalysis()
+      getContentExerciseAnalysis()
     }
 
     // 删除章节习题
-    function deleteChapterExercise(val:any) {
+    function deleteChapterExercise(val: any) {
       Modal.confirm({
-        title:"删除提示",
-        content:"确认删除习题"+val.question+"吗？",
-        onOk:()=>{
-          deleteChapterExerciseApi({relation_ids:[val.relation_id]}).then((res:any)=>{
-            message.success(res.msg)
-            getChapterExercise()
-            getChapterExerciseAnalysis()
-          })
-        }
-      })
+        title: "删除提示",
+        content: "确认删除习题" + val.question + "吗？",
+        onOk: () => {
+          deleteContentExerciseApi({ relation_ids: [val.relation_id] }).then(
+            (res: any) => {
+              message.success(res.msg);
+              getChapterExercise();
+              getContentExerciseAnalysis()
+            }
+          );
+        },
+      });
     }
     return {
       ...toRefs(reactiveData),
@@ -332,14 +336,14 @@ export default defineComponent({
       columns,
       selectRowSelection,
       rowKey,
-      deleteChapterExercise
+      deleteChapterExercise,
     };
   },
 });
 </script>
-
-<style lang="less">
-.exercise-list-tab{
+  
+  <style lang="less">
+.exercise-list-tab {
   height: 100%;
 }
 .prepare-lessons-loading {

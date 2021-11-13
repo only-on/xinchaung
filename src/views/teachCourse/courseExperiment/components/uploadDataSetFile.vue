@@ -17,13 +17,14 @@
       :show-upload-list="false"
       :before-upload="beforeUpload"
       class="avatar-uploader"
-      accept=".doc,.docx"
+      :accept="accept"
       :remove="remove"
     >
       <div class="upload-box">
         <span class="icon-upload iconfont"></span>
         <p class="hint-handle-type">点击或将文件拖拽这里上传</p>
-        <p class="hint-file-type">支持文件类型：.doc、docx</p>
+        <p class="hint-file-type">支持文件类型：{{accept}}</p>
+        <p class="hint-file-size" v-if="fileSize">支持文件大小：{{fileSize}}</p>
       </div>
     </a-upload>
     <div v-if="uploadFileList.file_name" class="progress-box">
@@ -48,16 +49,16 @@ type TreactiveData = {
 };
 
 export default defineComponent({
-  props: ["activeKey","value","dataset_id"],
+  props: ["type","value","dataset_id","accept","fileSize"],
   setup(props,{emit}) {
     const env = process.env.NODE_ENV == "development" ? true : false;
     // 获取数据集列表
-    const types = {
-      "1": -1,
-      "2": 5,
-      "3": 6,
-    };
-    let type = types[props.activeKey];
+    let type = -1
+    watch(()=>props.type,()=>{
+      type=props.type
+      getDataSetList();
+    },{deep:true,immediate:true})
+    
     const reactiveData: TreactiveData = reactive({
       selfDataSetList: {},
       dataset_id: undefined,
@@ -65,9 +66,9 @@ export default defineComponent({
       progress:0,
       upload:""
     });
-    onMounted(() => {
-      getDataSetList();
-    });
+    // onMounted(() => {
+    //   getDataSetList();
+    // });
     watch(()=>props.value,()=>{
        reactiveData.uploadFileList=props.value
     },{deep:true})
@@ -197,7 +198,7 @@ export default defineComponent({
         .hint-handle-type {
           font-size: 14px;
         }
-        .hint-file-type {
+        .hint-file-type,.hint-file-size {
           font-size: 12px;
           color: #b4b4b4;
         }

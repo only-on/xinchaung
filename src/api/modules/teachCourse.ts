@@ -305,6 +305,10 @@ export default {
     method:"DELETE",
     dataType:"json"
   },
+  getChapterExerciseAnalysisApi:{
+    url:"/api/v1/question/chapters/{chapter_id}/question-analysis",
+    method:"GET"
+  },
   getAllChapterListApi:{
     url:"/api/course/courses/{course_id}/chapters",
     method:"GET"
@@ -342,6 +346,38 @@ export default {
   getDataSetCatalogApi:{
     url:"/classic/data/dataset-select",
     method:"GET"
+  },
+  getContentDetailApi:{
+    url:"/api/course/contents/detail",
+    method:"GET"
+  },
+  isDisparkApi:{
+    url:"/api/course/courses/{course_id}/chapters/{experiment_id}",
+    method:"PUT",
+    dataType:"json"
+  },
+  getExperimentReportApi:{
+    url:"/report/templatable/view",
+    method:"POST",
+    dataType:"formdata"
+  },
+  getContentExerciseApi:{
+    url:"/api/v1/question/contents/{content_id}/questions",
+    method:"GET"
+  },
+  getContentExerciseAnalysisApi:{
+    url:"api/v1/question/contents/{content_id}/question-analysis",
+    method:"GET"
+  },
+  contentAddExerciseApi:{
+    url:"/api/v1/question/contents/{content_id}/relationships/questions",
+    method:"POST",
+    dataType:"json"
+  },
+  deleteContentExerciseApi:{
+    url:"api/v1/question/contents/relationships/questions",
+    method:"DELETE",
+    dataType:"json"
   }
 }
 
@@ -424,4 +460,12 @@ export interface ITeacherCourseApis {
   getVideosListApi:TFHttpSend
   getDocumentsListApi:TFHttpSend
   getDataSetCatalogApi:TFHttpSend
+  getContentDetailApi:TFHttpSend
+  isDisparkApi:TFHttpSend
+  getExperimentReportApi:TFHttpSend
+  getContentExerciseApi:TFHttpSend
+  getContentExerciseAnalysisApi:TFHttpSend
+  contentAddExerciseApi:TFHttpSend
+  deleteContentExerciseApi:TFHttpSend
+  getChapterExerciseAnalysisApi:TFHttpSend
 }

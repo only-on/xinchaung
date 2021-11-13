@@ -48,10 +48,7 @@
               </div>
             </template>
             <template #icon="data">
-              <span
-                class="iconfont"
-                :class="settingIcon(data.data)"
-              ></span>
+              <span class="iconfont" :class="settingIcon(data.data)"></span>
             </template>
             <template #footer>
               <a-pagination
@@ -148,7 +145,7 @@
                   </a-select-opt-group>
                 </a-select>
                 <div class="select-right">
-                  <a-button type="primary">上传</a-button>
+                  <a-button type="primary" @click="openUploadModal(4)">上传</a-button>
                   <a-button
                     class=""
                     type="primary"
@@ -188,7 +185,7 @@
             v-model:keys="keys"
             @select="selectBtn"
           >
-          <template #head>
+            <template #head>
               <div class="select-list-head">
                 <a-select
                   style="width: 200px"
@@ -209,7 +206,7 @@
                   </a-select-opt-group>
                 </a-select>
                 <div class="select-right">
-                  <a-button type="primary">上传</a-button>
+                  <a-button type="primary" @click="openUploadModal(3)">上传</a-button>
                   <a-button
                     class=""
                     type="primary"
@@ -243,9 +240,25 @@
       </a-tab-pane>
     </a-tabs>
   </div>
+  <a-modal
+    class="upload-modal"
+    v-model:visible="uploadVisible"
+    @ok="submitFileToDataset"
+    @cancel="closeUploadModal"
+  >
+    <template #title>上传数据集文件</template>
+    <upload-data-set-file
+      :type="datasetType"
+      v-model:value="fileInfo"
+      v-model:dataset_id="dataset_id"
+      ref="uploadRef"
+      :accept="accept"
+      :fileSize="fileSize"
+    ></upload-data-set-file>
+  </a-modal>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, inject, watch } from "vue";
+import { defineComponent, reactive, toRefs, inject, watch,ref } from "vue";
 import selectList from "./components/selectList.vue";
 import {
   getAllChapterListApi,
@@ -255,8 +268,10 @@ import {
   getDocumentsListApi,
   saveContentToChapterApi,
   getDataSetCatalogApi,
+  addDataSetFileApi
 } from "./api";
 import { message } from "ant-design-vue";
+import uploadDataSetFile from "./components/uploadDataSetFile.vue";
 
 type TreactiveData = {
   currentKey: string;
@@ -293,10 +308,22 @@ type TreactiveData = {
   initChapterCount: number;
   initContentCount: number;
   datasetList: any;
+  datasetType: number;
+  uploadVisible: boolean;
+  fileInfo: {
+    file_name: string;
+    file_url: string;
+    suffix: string;
+    size: number;
+  };
+  dataset_id:number
+  accept:string
+  fileSize:string
 };
 export default defineComponent({
   components: {
     "select-list": selectList,
+    "upload-data-set-file": uploadDataSetFile,
   },
   setup() {
     const course_id = inject("course_id") as number;
@@ -337,7 +364,19 @@ export default defineComponent({
       initChapterCount: 0,
       initContentCount: 0,
       datasetList: {},
+      datasetType: -1,
+      uploadVisible: false,
+      fileInfo: {
+        file_name: "",
+        file_url: "",
+        suffix: "",
+        size: 0,
+      },
+      dataset_id:-1,
+      accept:"",
+      fileSize:""
     });
+    const uploadRef=ref(null)
     const initData = {
       "0": {
         init: () => {
@@ -425,9 +464,6 @@ export default defineComponent({
     watch(
       () => reactiveData.keys,
       () => {
-        console.log(reactiveData.keys);
-        console.log(reactiveData.currentKey);
-
         if (reactiveData.currentKey === "0") {
           const countObj = filterData(
             reactiveData.contentDataList,
@@ -475,30 +511,27 @@ export default defineComponent({
       getAllChapterListApi(reactiveData.chapterParams, {
         course_id: course_id,
       }).then((res: any) => {
-        console.log(res);
         reactiveData.chapterList = res.data.list;
       });
     }
     // 获取数据集目录树
     function getDataSetCatalog() {
-      let type = -1;
       if (reactiveData.currentKey === "2") {
-        type = 4;
+        reactiveData.datasetType = 4;
       }
       if (reactiveData.currentKey === "3") {
-        type = 3;
+        reactiveData.datasetType = 3;
       }
 
-      getDataSetCatalogApi({ type }).then((res: any) => {
-        console.log(res);
-        reactiveData.datasetList = res.data;
-      });
+      getDataSetCatalogApi({ type: reactiveData.datasetType }).then(
+        (res: any) => {
+          reactiveData.datasetList = res.data;
+        }
+      );
     }
     // 获取实验列表
     function getContentList() {
       getContentListApi(getNewObj(reactiveData.params)).then((res: any) => {
-        console.log(res);
-
         reactiveData.contentDataList = res.data.list;
         reactiveData.totalCount = res.data.page.totalCount;
         reactiveData.initContentCount = 0;
@@ -519,7 +552,6 @@ export default defineComponent({
     // 获取实训列表
     function getTrainList() {
       getTrainListApi(getNewObj(reactiveData.params)).then((res: any) => {
-        console.log(res);
         reactiveData.trainDataList = res.data.list;
         reactiveData.totalCount = res.data.page.totalCount;
         reactiveData.initContentCount = 0;
@@ -540,12 +572,10 @@ export default defineComponent({
     // 获取视频列表
     function getVideosList() {
       getVideosListApi(getNewObj(reactiveData.params)).then((res: any) => {
-        console.log(res);
         reactiveData.videosDataList = res.data.list;
         reactiveData.totalCount = res.data.page.totalCount;
         const selectedContent = reactiveData.videosDataList.filter(
           (item: any) => {
-            
             return item.is_selected === true;
           }
         );
@@ -556,12 +586,10 @@ export default defineComponent({
     // 获取文档列表
     function getDocumentsList() {
       getDocumentsListApi(getNewObj(reactiveData.params)).then((res: any) => {
-        console.log(res);
         reactiveData.documentDataList = res.data.list;
         reactiveData.totalCount = res.data.page.totalCount;
         const selectedContent = reactiveData.documentDataList.filter(
           (item: any) => {
-            
             return item.is_selected === true;
           }
         );
@@ -632,7 +660,6 @@ export default defineComponent({
     function selectContent(val: any) {
       if (!val && reactiveData.keys.length === 0)
         return message.warn("请选择数据");
-      console.log(11);
       const types = {
         "0": 1,
         "1": 2,
@@ -646,7 +673,6 @@ export default defineComponent({
         },
         { course_id: course_id, chapter_id: chapter_id.value as any }
       ).then((res) => {
-        console.log(res);
         if (reactiveData.currentKey === "0") {
           getContentList();
         }
@@ -664,7 +690,6 @@ export default defineComponent({
     }
     // 单个选择按钮
     function selectBtn(val: any) {
-      console.log(val);
       selectContent(val.id);
     }
     // 清空选择
@@ -676,6 +701,16 @@ export default defineComponent({
       }
       if (reactiveData.currentKey === "1") {
         reactiveData.trainDataList.map((item: any) => {
+          item.selected = false;
+        });
+      }
+      if (reactiveData.currentKey === "2") {
+        reactiveData.videosDataList.map((item: any) => {
+          item.selected = false;
+        });
+      }
+      if (reactiveData.currentKey === "3") {
+        reactiveData.documentDataList.map((item: any) => {
           item.selected = false;
         });
       }
@@ -695,7 +730,6 @@ export default defineComponent({
     }
     // 设置图标
     function settingIcon(data: any) {
-        
       if (data.task_type === 1) {
         return "icon-zhuomianshiyan";
       }
@@ -709,13 +743,54 @@ export default defineComponent({
       let i = 0;
       return {
         count: dataList.filter((item: any) => {
-          if (countType&&item.selected) {
+          if (countType && item.selected) {
             i += item[countType];
           }
           return item.selected && keys.includes(item.id);
         }).length,
         counts: i,
       };
+    }
+    // 提交数据集
+    function submitFileToDataset() {
+      if ((uploadRef.value as any).upload) {
+        message.warn("文件上传中，请稍后提交");
+        return;
+      }
+      const body=new FormData();
+      body.append("items[0][file_name]",reactiveData.fileInfo.file_name)
+      body.append("items[0][file_url]",reactiveData.fileInfo.file_url)
+      body.append("items[0][suffix]",reactiveData.fileInfo.suffix)
+      body.append("items[0][size]",reactiveData.fileInfo.size as any)
+      body.append("dataset_id",reactiveData.dataset_id as any)
+      addDataSetFileApi(body).then((res: any) => {
+        reactiveData.fileInfo = {
+          file_name: "",
+          file_url: "",
+          suffix: "",
+          size: 0,
+        };
+        reactiveData.uploadVisible = false;
+        let item_id=res.data.count[0]
+        selectContent(item_id)
+      });
+    }
+    // 打开上传modal
+    function openUploadModal(val:number) {
+      reactiveData.datasetType=val
+      if (reactiveData.datasetType===4) {
+        reactiveData.accept=".mp4"
+        reactiveData.fileSize="500m"
+      }
+      if (reactiveData.datasetType===3) {
+        reactiveData.accept=".ppt,.pptx"
+        reactiveData.fileSize=""
+      }
+      reactiveData.uploadVisible=true
+    }
+    // 关闭上传modal
+    function closeUploadModal() {
+      reactiveData.uploadVisible=false
     }
     return {
       ...toRefs(reactiveData),
@@ -728,6 +803,10 @@ export default defineComponent({
       selectBtn,
       onSearch,
       datasetChange,
+      submitFileToDataset,
+      uploadRef,
+      openUploadModal,
+      closeUploadModal
     };
   },
 });
