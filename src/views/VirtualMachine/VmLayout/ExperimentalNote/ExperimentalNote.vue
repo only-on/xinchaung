@@ -1,6 +1,6 @@
 <template>
   <div class="experimental-note">
-    <QuillEditor v-model="noteContent" height="700px"></QuillEditor>
+    <QuillEditor v-model="noteContent" height="700px" :uploadPathName="'ExperimentalNote'"></QuillEditor>
     <div class="experimental-action">
       <a-button type="primary" @click="submitNote">提交笔记</a-button>
     </div>

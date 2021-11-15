@@ -75,6 +75,11 @@ export default defineComponent({
     toolbar:{
       default: "full",
       // type: String,
+    },
+    uploadPathName:{      //  编辑器上传文件至服务     服务器存储目录   
+      default: "",
+      type: String,
+      require: true
     }
   },
   setup(props, { emit }) {
@@ -100,7 +105,7 @@ export default defineComponent({
         }
         const fd = new FormData()
         fd.append('file', fileInput.files[0])
-        fd.append('upload_path', 'studentForum')
+        fd.append('upload_path', props.uploadPathName)
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
           let html= `<img src="${dev_base_url}${res.data.url}" alt="">`

@@ -32,7 +32,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745" class="modal-post">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="QuillOptions" v-model:content="ForumArticle.content"  /> 
+        <QuillEditor toolbar="full" :options="QuillOptions" :uploadPathName="'teacherForum'" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>

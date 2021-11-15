@@ -13,7 +13,7 @@
         </a-form-item>
       </a-form>
       <div class="text">
-        <quill-editor  v-model="formState.content" :height="'300px'" /> 
+        <QuillEditor  v-model="formState.content" :height="'300px'" :uploadPathName="'studentForum'" /> 
       </div>
       <div class="foot">
         <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>

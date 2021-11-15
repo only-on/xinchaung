@@ -116,6 +116,7 @@
               v-model="forumThemeContent"
               v-model:rang="forumThemeContentRang"
               height="500px"
+              :uploadPathName="'InClassForum'"
             ></QuillEditor>
             <div class="put-question-footer">
               <a-button type="primary" @click="activeKey = '1'">返回</a-button>

@@ -67,6 +67,13 @@ interface Icongig {
 export interface IimageData {
   id: number
   isSelect: boolean
-  image: Iimage
-  config: Icongig
+  flavor: any
+  is_use_gpu:boolean
+  name:''
+  cpu:number
+  ram:number
+  disk:number
+  tag:string[]
+  showSelectGpu:any
+  is_use_gpuNumber:number
 }

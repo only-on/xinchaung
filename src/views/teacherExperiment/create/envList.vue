@@ -1,30 +1,30 @@
 <template>
   <div class="image-list-box">
     <div class="image-item" v-for="(item, index) in envData" :key="item.id">
-      <span class="image-name" v-if="item.image">{{ item.image.name }}</span>
+      <span class="image-name" v-if="item">{{ item.name}}</span>
       <div class="cpu options">
         <span>CPU</span>
-        <a-select v-model:value="item.config.cpu_text">
-          <a-select-option v-for="item in cpuList" :key="item" :value="item">{{item}}</a-select-option>
+        <a-select v-model:value="item.flavor.cpu" :disabled="edit">
+          <a-select-option v-for="item in cpuList" :key="item" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
       </div>
       <div class="neicun options">
         <span>内存</span>
-        <a-select v-model:value="item.config.ram_text">
-          <a-select-option v-for="item in ramList" :key="item" :value="item">{{item}}</a-select-option>
+        <a-select v-model:value="item.flavor.ram" :disabled="edit">
+          <a-select-option v-for="item in ramList" :key="item" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
       </div>
       <div class="disk options">
-        <span>硬盘</span>
-        <a-select v-model:value="item.config.disk_text">
-          <a-select-option v-for="item in diskList" :key="item" :value="item">{{item}}</a-select-option>
+        <span>硬盘</span>   
+        <a-select v-model:value="item.flavor.disk" :disabled="edit">
+          <a-select-option v-for="item in diskList" :key="item" :value="item.value">{{item.name}}</a-select-option>
         </a-select>
       </div>
-      <div class="gpu options">
+      <div class="gpu options" v-if="item.showSelectGpu">
         <span>GPU</span>
-        <a-select v-model:value="item.config.swap">
-          <a-select-option :value="0">开启</a-select-option>
-          <a-select-option :value="1">关闭</a-select-option>
+        <a-select v-model:value="item.is_use_gpuNumber" :disabled="edit">
+          <a-select-option v-for="item in gpuList" :key="item" :value="item.value">{{item.name}}</a-select-option>
+          <!-- <a-select-option :value="false">关闭</a-select-option> -->
         </a-select>
       </div>
       <span class="shanchu iconfont icon-shanchu" @click="removeImage(index)" v-if="!edit"></span>
@@ -35,7 +35,7 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType } from 'vue'
 import { IimageData } from './../experTyping'
-
+import request from 'src/api/index'
 export default defineComponent({
   name: '',
   components: {},
@@ -52,14 +52,48 @@ export default defineComponent({
   emit: [],
   setup(props, {emit}) {
     // 移除镜像
+    const http=(request as any).common
     function removeImage(index: number) {
       props.envData.splice(index, 1)
     }
+    let cpuList = reactive<any[]>([])
+    let ramList = reactive<any[]>([])
+    let diskList = reactive<any[]>([])
+    function getConfigs() {
+      http.getConfigs().then((res: any) => {
+       const {cpu,ram,disk}=res.data.image_configs
+        Object.keys(cpu).forEach((v:any)=>{
+          cpuList.push({name:`${cpu[v]}核`,value:Number(v)})
+        })
+        Object.keys(ram).forEach((v:any)=>{
+          ramList.push({name:`${ram[v]}`,value:Number(v)})
+        })
+        Object.keys(disk).forEach((v:any)=>{
+          diskList.push({name:`${disk[v]}`,value:Number(v)})
+        })
+      })
+    }
+    getConfigs()
+    onMounted(() => {
+      
+    })
     return {
       removeImage,
-      cpuList: ['1核', '2核', '3核', '4核'],
-      ramList: ['2GB', '4G', '6G', '8G'],
-      diskList: ['30GB', '40GB', '50GB'],
+      cpuList,
+      ramList,
+      diskList,
+      // cpuList:[
+      //   {name:'1核',value:1},{name:'2核',value:2},{name:'3核',value:3},{name:'4核',value:4}
+      // ],
+      // ramList:[
+      //   {name:'2GB',value:2048},{name:'4GB',value:4096},{name:'6GB',value:6144},{name:'8GB',value:8192}
+      // ],
+      // diskList:[
+      //   {name:'30GB',value:30},{name:'40GB',value:40},{name:'50GB',value:50}
+      // ],
+      gpuList:[
+        {name:'开启',value:1},{name:'关闭',value:0}
+      ],
     }
   }
 })

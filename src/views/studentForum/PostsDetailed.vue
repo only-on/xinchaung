@@ -38,7 +38,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
       <div class="text">
-        <QuillEditor v-if="visible" :height="'300px'" toolbar="" v-model="ForumArticle.content"  /> 
+        <QuillEditor v-if="visible" :height="'300px'" toolbar="" v-model="ForumArticle.content" :uploadPathName="'studentForum'" /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>

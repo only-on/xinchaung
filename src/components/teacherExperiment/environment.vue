@@ -19,9 +19,9 @@
     </div>
     <div class="image-list setScrollbar" v-if="imageData.length">
       <div class="image-item" v-for="(item, index) in imageData" :key="item.id">
-        <span v-if="item.image">{{item.image.name}}</span>
-        <span v-if="item.image">
-          标签：<span v-for="(o, i) in item.image.tag" :key="i">{{i < item.image.tag.length - 1 ? o + ' / ' : o}}</span>
+        <span v-if="item">{{item.name}}</span>
+        <span v-if="item">
+          标签：<span v-for="(o, i) in item.tag" :key="i">{{i < item.tag.length - 1 ? o + ' / ' : o}}</span>
         </span>
         <span v-if="item.isSelect" class="shanchu iconfont icon-shanchu" @click="del(index)"></span>
         <span v-else @click="select(index)">选择</span>
@@ -42,6 +42,7 @@ import Tree from 'src/components/Tree.vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { useRoute, useRouter } from 'vue-router'
+import { IimageData } from 'src/views/teacherExperiment/experTyping'
 export default defineComponent({
   components: {
     Tree
@@ -50,7 +51,8 @@ export default defineComponent({
   setup(props, {emit}) {
     let route = useRoute()
     let router = useRouter()
-    const http=(request as any).teacherExperiment
+    const http=(request as any).common
+    // const http=(request as any).teacherTrain
     const $message: MessageApi = inject("$message")!;
     const limitNumber: Ref<number> = ref(3);
     props.limitNumber?limitNumber.value=props.limitNumber:''
@@ -62,7 +64,8 @@ export default defineComponent({
       pageCount: 0
     })
     let loading = ref<boolean>(false)
-    let imageData = reactive<IimageData[]>([])
+    // let imageData = reactive<IimageData[]>([])
+    let imageData = reactive<any[]>([])
     // 获取镜像
     function getMeImage(isMore: boolean) {
       loading.value = true
@@ -82,10 +85,17 @@ export default defineComponent({
           let {list, page} = res.data
           list.map((v: IimageData) => {
             v.isSelect = false
-            props.modelValue?.forEach((vv: IimageData) => {
-              if (v.id === vv.id) v.isSelect = true
+            v.flavor={
+              cpu:1,
+              ram:2048,
+              disk:30
+            }
+            v.is_use_gpuNumber=0           //   替代 is_use_gpu  是布尔值无法做下拉选项的数据类型   
+            v.showSelectGpu=(v.tag && v.tag.length && v.tag.includes('GPU'))?true:false
+            props.modelValue?.forEach((i: IimageData) => {
+              if (v.id === i.id) v.isSelect = true
             })
-            v.config.ramNum=v.config.ram/1024
+            // console.log( )
           })
           imageData.push(...list)
           pageinfo.page = page.currentPage
@@ -120,9 +130,7 @@ export default defineComponent({
     let imageTypes = reactive({})
     function getConfigs() {
       http.getConfigs().then((res: any) => {
-        // if (res.code === 1) {
-          imageTypes = Object.assign(imageTypes, res.data.image_types)
-        // }
+        imageTypes = Object.assign(imageTypes, res.data.image_types)
       })
     }
     getConfigs()
@@ -180,12 +188,6 @@ interface Icongig {
   ram:number
   disk:number
   ramNum:number
-}
-interface IimageData {
-  id: number
-  isSelect: boolean
-  image: Iimage
-  config: Icongig
 }
 </script>
 

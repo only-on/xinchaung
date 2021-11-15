@@ -19,10 +19,18 @@ export default {
     getMenu: { url: '/site/menu', method: 'GET', dataType: "json" },
     loginOut:{url:`/site/logout`,method:'POST',},
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
+
+     // 镜像全部配置项
+    getConfigs: {url: `/api/env/images/config`, method: 'GET'},
+    // 镜像列表
+    getMeImage: {url: `/api/env/images`, method: 'GET'},
 }
 export interface ICommonAps {
-    getMenu: TFHttpSend;
+    getMenu: TFHttpSend
     loginOut: TFHttpSend
+    uploadsFile: TFHttpSend
+    getConfigs: TFHttpSend
+    getMeImage: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

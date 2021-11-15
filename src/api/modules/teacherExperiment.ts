@@ -12,19 +12,24 @@ export default {
   shareExperimental: {url: `/api/content/content/share`, method: 'POST', dataType:'json'},
   deleteExperimental: {url: `/api/content/content/{id}`, method: 'DELETE'},
   saveToContent: {url: `/api/content/content/saved_my_content`, method: 'POST', dataType:'json'},
-  // 镜像
-  getConfigs: {url: `/api/env/images/config`, method: 'GET'},
-  getMeImage: {url: `/api/env/containers`, method: 'GET'},
+
   // 同屏
   getSameScreenInfo: {url: `/api/content/content/template`, method: 'POST', dataType:'json'},
   getTopoVmInfo: {url: `/api/content/content/topoInfo`, method: 'POST', dataType:'json'},
   deleteTopo: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType:'json'},
   // 上传任务
   uploadTaskFile: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType: 'formdata'},
-  // 创建实验
+  // 创建实验 
   createVnc: {url: `/api/content/vnc/create_vnc`, method: 'POST', dataType:'json'},
   createJupyter: {url: `/api/content/jupyter/create_jupyter`, method: 'POST', dataType:'json'},
-  getContentDetail: {url: `/api/content/content/show/{id}`, method: 'GET'}
+  getContentDetail: {url: `/api/content/content/show/{id}`, method: 'GET'},
+
+  // 实验详情  编辑
+  // /api/content/jupyter/update_base
+  editBaseInfo:{url: `/api/content/jupyter/update_base`, method: 'POST', dataType:'json'},
+  editEnvironmentInfo:{url: `/api/content/vnc/update_env`, method: 'POST', dataType:'json'},
+  editDateSetInfo:{url: `/api/content/vnc/update_dataset`, method: 'POST', dataType:'json'},
+  editGuideInfo:{url: `/api/content/vnc/update_detail`, method: 'POST', dataType:'json'},
 }
 
 export interface ITeacherExperAps {
@@ -40,8 +45,6 @@ export interface ITeacherExperAps {
   shareExperimental: TFHttpSend;
   deleteExperimental: TFHttpSend;
   saveToContent: TFHttpSend;
-  getConfigs: TFHttpSend;
-  getMeImage: TFHttpSend;
   getSameScreenInfo: TFHttpSend;
   getTopoVmInfo: TFHttpSend;
   deleteTopo: TFHttpSend;
@@ -49,6 +52,11 @@ export interface ITeacherExperAps {
   createVnc: TFHttpSend;
   createJupyter: TFHttpSend;
   getContentDetail: TFHttpSend;
+
+  editBaseInfo: TFHttpSend;
+  editEnvironmentInfo: TFHttpSend;
+  editDateSetInfo: TFHttpSend;
+  editGuideInfo: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExperiment'

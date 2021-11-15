@@ -8,6 +8,7 @@
         v-model="noteContent"
         v-if="quillLoading"
         height="500px"
+        :uploadPathName="'TrainNote'"
       ></QuillEditor>
       <div class="action-box">
         <a-button type="primary" @click="lastStep" v-if="currentIndex != 0"

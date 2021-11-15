@@ -116,7 +116,7 @@ interface Iparam{
   category_id: any
   name: string
   class_cnt: any
-  container_ids: number[],
+  container: any[],
   dataset_ids: any,
   detail: string,
   jupyter_tasks: any,
@@ -166,18 +166,28 @@ export default defineComponent({
     function submit() {
       // console.log(_.findKey(taskData, ['name', '']))
       formRef.value.validate().then(() => {
-         // console.log(formState, formRef.value, taskData)
-         console.log(type.value)
+         // console.log(formState, formRef.value, taskData)  detail  dataset_ids
+        //  console.log(type.value)
+         let containerList:any[]=[]
+         formState.imageDataSelected.forEach((v:any)=>{
+           let obj={
+             image:v.id,
+             flavor:v.flavor,
+             is_use_gpu:v.is_use_gpuNumber===1?true:false
+           }
+           containerList.push(obj)
+         })
         let param:Iparam = {
           category_id: route.query.chapter_id,
           name: formState.name,
           class_cnt: formState.class_cnt,
-          container_ids: formState.imageDataSelected.map(v => v.id),
+          container: containerList,
           dataset_ids: formState.datasets,
           detail: formState.guide,
           jupyter_tasks: [],
           taskfile_subdir: jupyterUuid.value
         }
+        console.log(param)
         if (type.value === 'vnc') {
           http.createVnc({param}).then((res: IBusinessResp) => {
               $message.success('创建实验成功')
@@ -381,7 +391,7 @@ export default defineComponent({
     })
     // formState.taskData
     watch(()=>{return formState.taskData},(val:any)=>{
-      console.log(val)
+      // console.log(val)
       formRef.value.validate()
     },{deep:true})
     // formState.guide
