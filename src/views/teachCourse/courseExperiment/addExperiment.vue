@@ -821,6 +821,9 @@ export default defineComponent({
     height: 100%;
     > .ant-tabs-top-content {
       height: calc(100% - 58px);
+      >.ant-tabs-tabpane{
+        height: calc(100% - 28px);
+      }
       .select-list-head {
         display: flex;
         width: 100%;
@@ -868,6 +871,7 @@ export default defineComponent({
         }
       }
       .select-list {
+        width: 100%;
         .list-box {
           .list-item {
             .title-name {

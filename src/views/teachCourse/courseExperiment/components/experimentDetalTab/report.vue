@@ -1,18 +1,28 @@
 <template>
   <div class="experiment-report-box">
-      <div class="action-btn">
-          <a-button type="primary">更换实验报告</a-button>
-      </div>
+    <div class="action-btn">
+      <a-button type="primary" @click="openSelectReport">更换实验报告</a-button>
+    </div>
     <report-on-line v-if="reportInfo.type === 'form'"></report-on-line>
 
     <iframe
-    v-if="reportInfo.type === 'file'"
+      v-if="reportInfo.type === 'file'"
       :src="`/pdfjs-2.5.207/web/viewer.html?file=${
-        env ? '/proxyPrefix' + reportInfo.pdf_url:reportInfo.pdf_url
+        env ? '/proxyPrefix' + reportInfo.pdf_url : reportInfo.pdf_url
       }`"
       frameborder="0"
     ></iframe>
   </div>
+  <a-modal
+    title="选择实验报告"
+    :visible="reportVisible"
+    :footer="null"
+    :width="800"
+    class="report-modal"
+    @cancel="closeReportModal"
+  >
+    <select-report @close="closeReportModal"></select-report>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -27,17 +37,21 @@ import {
 } from "vue";
 import { getExperimentReportApi } from "../../api";
 import reportOnLine from "src/components/reportOnLine/reportOnLine.vue";
+import selectReport from "../selectReport.vue"
 
 export default defineComponent({
   components: {
     "report-on-line": reportOnLine,
+    "select-report":selectReport
   },
   setup() {
-      const env = process.env.NODE_ENV == "development" ? true : false;
+    const env = process.env.NODE_ENV == "development" ? true : false;
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
-    const reactiveData = reactive({});
-    const reportInfo:any = ref({});
+    const reactiveData = reactive({
+      reportVisible: false,
+    });
+    const reportInfo: any = ref({});
     provide("reportTemplateData", reportInfo);
     onMounted(() => {
       getExperimentReport();
@@ -50,29 +64,42 @@ export default defineComponent({
         reportInfo.value = res.data;
       });
     }
+    // 打开更换实验报告弹窗
+    function openSelectReport() {
+      reactiveData.reportVisible = true;
+    }
+    // 关闭实验报告弹窗
+    function closeReportModal(val:any) {
+      reactiveData.reportVisible = false;
+      if (val===true) {
+        getExperimentReport();
+      }
+    }
     return {
       ...toRefs(reactiveData),
       provide,
       reportInfo,
-      env
+      env,
+      openSelectReport,
+      closeReportModal
     };
   },
 });
 </script>
 
 <style lang="less">
-.experiment-report-box{
-    padding: 15px;
-    .action-btn{
-        display: flex;
-        >button{
-            margin-left: auto;
-            margin-bottom: 10px;
-        }
+.experiment-report-box {
+  padding: 15px;
+  .action-btn {
+    display: flex;
+    > button {
+      margin-left: auto;
+      margin-bottom: 10px;
     }
-    >iframe{
-        width: 100%;
-        height: 100%;
-    }
+  }
+  > iframe {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -122,14 +122,15 @@
         }
 
         table {
-            width: 100%;
-            height: 100%;
+            /* width: 100%;
+            height: 100%; */
             border: 1px solid #a3a3a3;
             border-collapse: collapse;
             border-spacing: 0;
 
             tr {
                 border: 1px solid #a3a3a3;
+                height:150px;
             }
 
             td {

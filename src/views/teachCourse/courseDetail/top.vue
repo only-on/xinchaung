@@ -44,6 +44,7 @@
           v-if="isReportShow()"
           class="icon-mobandaishezhi iconfont"
           title="选择报告模板"
+          @click="openSelectReport"
         ></span>
         <span
           v-if="isEditeShow()"
@@ -67,6 +68,16 @@
       v-model:checkout="checkout"
     ></editcourse-base>
   </a-modal>
+   <a-modal
+    title="选择实验报告"
+    :visible="reportVisible"
+    :footer="null"
+    :width="800"
+    class="report-modal"
+    @cancel="closeReportModal"
+  >
+    <select-report @close="closeReportModal" type="course"></select-report>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -78,14 +89,17 @@ import editCourseBase from "src/components/course/editCourseBase.vue";
 import moment from "moment";
 import { cloneDeep } from "lodash";
 import { message } from "ant-design-vue";
+import selectReport from "../courseExperiment/components/selectReport.vue"
 type TreactiveData = {
   baseInfoData: any;
   editVisible: boolean;
+  reportVisible:boolean
 };
 
 export default defineComponent({
   components: {
     "editcourse-base": editCourseBase,
+    "select-report":selectReport
   },
   setup() {
     const route = useRoute();
@@ -98,6 +112,7 @@ export default defineComponent({
     const reactiveData: TreactiveData = reactive({
       baseInfoData: {},
       editVisible: false,
+      reportVisible: false,
     });
     onMounted(() => {
       getCourseDetail();
@@ -174,6 +189,15 @@ export default defineComponent({
     function editCancel() {
       reactiveData.editVisible = false;
     }
+    // 打开更换实验报告弹窗
+    function openSelectReport() {
+      reactiveData.reportVisible = true;
+    }
+    // 关闭实验报告弹窗
+    function closeReportModal() {
+      reactiveData.reportVisible = false;
+
+    }
     // 获取课程css状态
     function settingCss(state: number) {
       const cssObj = {
@@ -233,6 +257,8 @@ export default defineComponent({
       moment,
       formData,
       checkout,
+      openSelectReport,
+      closeReportModal
     };
   },
 });

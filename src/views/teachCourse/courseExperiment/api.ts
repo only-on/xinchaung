@@ -283,3 +283,20 @@ export async function deleteContentExerciseApi(params:{relation_ids:number[]}) {
  export async function getContentExerciseAnalysisApi(urlParams:{content_id:number}) {
     return await courseApi.getContentExerciseAnalysisApi({urlParams:urlParams})
 }
+
+/**
+ * @description 获取实验报告模板
+ */
+export async function getReportListApi(params:{name:string,page:number,pageSize:number}) {
+    return await courseApi.getReportListApi({param:params})
+}
+
+/**
+ * @description 保存实验报告模板
+ * @param   owner_type: cc_mid
+            owner_id: 523319
+            template_id: 64
+ */
+ export async function saveReportTemplateApi(params:{owner_type:string,owner_id:number,template_id:number}) {
+    return await courseApi.saveReportTemplateApi({param:params})
+}

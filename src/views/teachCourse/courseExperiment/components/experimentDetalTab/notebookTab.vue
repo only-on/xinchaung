@@ -12,18 +12,7 @@
         <span v-for="(item,index) in know_points" :key="index">{{item}}</span>
       </div>
     </div>
-    <div class="note-book-tabs">
-      <span :class="currentKey === 1 ? 'active' : ''" @click="keyChange(1)"
-        >详情</span
-      >
-      <span :class="currentKey === 2 ? 'active' : ''" @click="keyChange(2)"
-        >报告</span
-      >
-      <span :class="currentKey === 3 ? 'active' : ''" @click="keyChange(3)"
-        >习题</span
-      >
-      <a-button type="primary">备课</a-button>
-    </div>
+    <tabs v-model:currentKey="currentKey" @change="keyChange"/>
     <template v-if="currentKey === 1">
       <div class="data-set-box">
         <label>数据集</label>
@@ -40,7 +29,6 @@
     </template>
     <template v-if="currentKey === 2">
       <report/>
-      
     </template>
     <template v-if="currentKey === 3">
       <experiment-exercise/>
@@ -51,18 +39,21 @@
 import { defineComponent, reactive, toRefs,inject,watch,ref } from "vue";
 import report from "./report.vue"
 import experimentExercise from "./experimentExercise.vue"
+import tabs from "../tabs.vue"
 export default defineComponent({
   components:{
     report,
-    "experiment-exercise":experimentExercise
+    "experiment-exercise":experimentExercise,
+    tabs
   },
   setup() {
     const reactiveData = reactive({
-      currentKey: 1,
+      // currentKey: 1,
     });
+    const currentKey=ref(1)
      const detailInfo: any = inject("detailInfo");
-    const course_id = inject("course_id") as number;
-    const experiment_id: any = inject("experiment_id");
+    // const course_id = inject("course_id") as number;
+    // const experiment_id: any = inject("experiment_id");
     const know_points=ref([])
     watch(()=>detailInfo,()=>{
       if (detailInfo.value.know_point&&detailInfo.value.know_point.knowledge_name) {
@@ -70,13 +61,14 @@ export default defineComponent({
       }
     },{deep:true,immediate:true})
     function keyChange(key: number) {
-      reactiveData.currentKey = key;
+      currentKey.value = key;
     }
     return {
       detailInfo,
       keyChange,
       ...toRefs(reactiveData),
-      know_points
+      know_points,
+      currentKey
     };
   },
 });
@@ -129,39 +121,7 @@ export default defineComponent({
       }
     }
   }
-  .note-book-tabs {
-    background: @white;
-    margin: 16px 0;
-    height: 40px;
-    display: flex;
-    padding: 0 15px;
-    align-items: center;
-    > span {
-      margin-right: 50px;
-      position: relative;
-      line-height: 40px;
-      padding: 0 15px;
-      cursor: pointer;
-
-      &.active {
-        color: @theme-color;
-        transition: 0.5s;
-        &::after {
-          position: absolute;
-          content: "";
-          width: 100%;
-          height: 2px;
-          background: @theme-color;
-          bottom: 0;
-          left: 0;
-          transition: 0.5s;
-        }
-      }
-    }
-    button {
-      margin-left: auto;
-    }
-  }
+  
   .data-set-box {
     display: flex;
     flex-direction: row;

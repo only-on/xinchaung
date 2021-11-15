@@ -88,7 +88,7 @@ export default {
   getPaperList: {
     url: '/api/v1/question/papers'
   },
-  
+
   // 课程评价
   getResultInfo: {
     url: '/api/v1/question/chapter/{chapter_id}/scored-analysis',
@@ -151,233 +151,242 @@ export default {
     url: '/teacher-course/get-videos',
     method: 'POST'
   },
-  getDirectionsApi:{
-    url:"/api/course/courses/directions",
-    method:"GET"
+  getDirectionsApi: {
+    url: "/api/course/courses/directions",
+    method: "GET"
   },
-  getCategoryApi:{
-    url:"/api/course/courses/categories",
-    method:"GET"
+  getCategoryApi: {
+    url: "/api/course/courses/categories",
+    method: "GET"
   },
   getCourseListApi: {
     url: `/api/course/courses`,
     method: 'GET',
   },
-  settingGuideStateApi:{
-    url:"/teacher-course/change-status",
-    method:"POST"
+  settingGuideStateApi: {
+    url: "/teacher-course/change-status",
+    method: "POST"
   },
-  copyCourseApi:{
-    url:"/teacher-course/repeat",
-    method:"POST"
+  copyCourseApi: {
+    url: "/teacher-course/repeat",
+    method: "POST"
   },
-  deleteCourseApi:{
-    url:"/api/course/courses/{id}",
-    method:"DELETE"
+  deleteCourseApi: {
+    url: "/api/course/courses/{id}",
+    method: "DELETE"
   },
-  getTestPaperListApi:{
-    url:"/classtest/default/paper_list",
-    method:"GET"
+  getTestPaperListApi: {
+    url: "/classtest/default/paper_list",
+    method: "GET"
   },
-  getStudentListApi:{
-    url:"/classtest/default/get_student_list",
-    method:"GET"
+  getStudentListApi: {
+    url: "/classtest/default/get_student_list",
+    method: "GET"
   },
-  updateStudentSelectApi:{
-    url:"/classtest/default/edit_student",
-    method:"POST",
-    dataType:"formdata"
+  updateStudentSelectApi: {
+    url: "/classtest/default/edit_student",
+    method: "POST",
+    dataType: "formdata"
   },
-  deleteFollowApi:{
-    url:"/classtest/default/edit_paper",
-    method:"POST",
-    dataType:"formdata"
+  deleteFollowApi: {
+    url: "/classtest/default/edit_paper",
+    method: "POST",
+    dataType: "formdata"
   },
-  getDefaultPaperInfoApi:{
-    url:"/classtest/default/paper_info",
-    method:"GET"
+  getDefaultPaperInfoApi: {
+    url: "/classtest/default/paper_info",
+    method: "GET"
   },
-  getAchievStatisApi:{
-    url:`/classtest/default/student_achievement`,
-    method:"GET"
+  getAchievStatisApi: {
+    url: `/classtest/default/student_achievement`,
+    method: "GET"
   },
-  editQuestionApi:{
-    url:"/classtest/default/edit_question",
-    method:"POST"
+  editQuestionApi: {
+    url: "/classtest/default/edit_question",
+    method: "POST"
   },
-  saveToCourseApi:{
-    url:"/teacher-course/save-to-course",
-    method:"POST",
+  saveToCourseApi: {
+    url: "/teacher-course/save-to-course",
+    method: "POST",
   },
-  getCourseDetailApi:{
-    url:"/api/course/courses/{course_id}",
-    method:"GET"
+  getCourseDetailApi: {
+    url: "/api/course/courses/{course_id}",
+    method: "GET"
   },
-  updateCourseBaseApi:{
-    url:"/api/course/courses/{course_id}",
-    method:"PUT",
-    dataType:"json"
+  updateCourseBaseApi: {
+    url: "/api/course/courses/{course_id}",
+    method: "PUT",
+    dataType: "json"
   },
-  getCourseTreeApi:{
-    url:"/api/course/courses/{course_id}/chapters/tree",
-    method:"GET"
+  getCourseTreeApi: {
+    url: "/api/course/courses/{course_id}/chapters/tree",
+    method: "GET"
   },
-  updateChapterApi:{
-    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
-    method:"PUT"
+  updateChapterApi: {
+    url: "/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method: "PUT"
   },
-  getChapterDetailApi:{
-    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
-    method:"GET"
+  getChapterDetailApi: {
+    url: "/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method: "GET"
   },
-  saveChapterIntroApi:{
-    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
-    method:"PUT",
-    dataType:"json"
+  saveChapterIntroApi: {
+    url: "/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method: "PUT",
+    dataType: "json"
   },
-  getPreparingDataApi:{
-    url:"/classic/course-dataset/preparation-materials",
-    method:"POST",
-    dataType:"json"
+  getPreparingDataApi: {
+    url: "/classic/course-dataset/preparation-materials",
+    method: "POST",
+    dataType: "json"
   },
-  getDataSetListApi:{
-    url:"/classic/data/dataset-select",
-    method:"GET"
+  getDataSetListApi: {
+    url: "/classic/data/dataset-select",
+    method: "GET"
   },
-  getDataSetFileApi:{
-    url:"/classic/data/item-list",
-    method:"GET"
+  getDataSetFileApi: {
+    url: "/classic/data/item-list",
+    method: "GET"
   },
-  savePrepareLessonsFileApi:{
-    url:"/classic/course-dataset/save-item",
-    method:"POST",
-    dataType:"json"
+  savePrepareLessonsFileApi: {
+    url: "/classic/course-dataset/save-item",
+    method: "POST",
+    dataType: "json"
   },
-  removePrepareLessonsFileApi:{
-    url:"/classic/course-dataset/remove",
-    method:"POST",
-    dataType:"json"
+  removePrepareLessonsFileApi: {
+    url: "/classic/course-dataset/remove",
+    method: "POST",
+    dataType: "json"
   },
-  uploadFileApi:{
-    url:"/dataset/data/upload-file",
-    method:"POST",
-    dataType:"formdata"
+  uploadFileApi: {
+    url: "/dataset/data/upload-file",
+    method: "POST",
+    dataType: "formdata"
   },
-  addDataSetFileApi:{
-    url:"/classic/data/add-items",
+  addDataSetFileApi: {
+    url: "/classic/data/add-items",
     method: 'POST',
     dataType: 'formdata'
   },
-  getDataSetGuideApi:{
-    url:"/classic/course-dataset/guide",
-    method:"POST",
-    dataType:"json"
+  getDataSetGuideApi: {
+    url: "/classic/course-dataset/guide",
+    method: "POST",
+    dataType: "json"
   },
-  getChapterExerciseApi:{
-    url:"/api/v1/question/chapters/{chapter_id}/questions",
-    method:"GET"
+  getChapterExerciseApi: {
+    url: "/api/v1/question/chapters/{chapter_id}/questions",
+    method: "GET"
   },
-  getExercisesMapApi:{
-    url:"/api/v1/question/pools",
-    method:"GET"
+  getExercisesMapApi: {
+    url: "/api/v1/question/pools",
+    method: "GET"
   },
-  getQuestionTypesApi:{
-    url:"/api/v1/question/types",
-    method:"GET"
+  getQuestionTypesApi: {
+    url: "/api/v1/question/types",
+    method: "GET"
   },
-  getPoolsExerciseListApi:{
-    url:"/api/v1/question/pools/{pool_id}/questions",
-    method:"GET",
-    dataType:"json"
+  getPoolsExerciseListApi: {
+    url: "/api/v1/question/pools/{pool_id}/questions",
+    method: "GET",
+    dataType: "json"
   },
-  createCourseChapterApi:{
-    url:"/api/course/courses/{course_id}/chapters",
-    method:"POST",
-    dataType:"json"
+  createCourseChapterApi: {
+    url: "/api/course/courses/{course_id}/chapters",
+    method: "POST",
+    dataType: "json"
   },
-  chapterAddExerciseApi:{
-    url:"api/v1/question/chapters/{chapter_id}/relationships/questions",
-    method:"POST",
-    dataType:"json"
+  chapterAddExerciseApi: {
+    url: "api/v1/question/chapters/{chapter_id}/relationships/questions",
+    method: "POST",
+    dataType: "json"
   },
-  deleteChapterExerciseApi:{
-    url:"/api/v1/question/chapters/relationships/questions",
-    method:"DELETE",
-    dataType:"json"
+  deleteChapterExerciseApi: {
+    url: "/api/v1/question/chapters/relationships/questions",
+    method: "DELETE",
+    dataType: "json"
   },
-  getChapterExerciseAnalysisApi:{
-    url:"/api/v1/question/chapters/{chapter_id}/question-analysis",
-    method:"GET"
+  getChapterExerciseAnalysisApi: {
+    url: "/api/v1/question/chapters/{chapter_id}/question-analysis",
+    method: "GET"
   },
-  getAllChapterListApi:{
-    url:"/api/course/courses/{course_id}/chapters",
-    method:"GET"
+  getAllChapterListApi: {
+    url: "/api/course/courses/{course_id}/chapters",
+    method: "GET"
   },
-  saveChapterToCourseApi:{
-    url:"/api/course/chapter/course",
-    method:"POST",
-    dataType:"json"
+  saveChapterToCourseApi: {
+    url: "/api/course/chapter/course",
+    method: "POST",
+    dataType: "json"
   },
-  saveContentToChapterApi:{
-    url:"/api/course/courses/{course_id}/chapters/{chapter_id}/content",
-    method:"POST",
-    dataType:"json"
+  saveContentToChapterApi: {
+    url: "/api/course/courses/{course_id}/chapters/{chapter_id}/content",
+    method: "POST",
+    dataType: "json"
   },
-  deleteChapterApi:{
-    url:"/api/course/courses/{course_id}/chapters/{chapter_id}",
-    method:"DELETE",
+  deleteChapterApi: {
+    url: "/api/course/courses/{course_id}/chapters/{chapter_id}",
+    method: "DELETE",
   },
-  getContentListApi:{
-    url:"/api/course/contents/list",
-    method:"GET"
+  getContentListApi: {
+    url: "/api/course/contents/list",
+    method: "GET"
   },
-  getTrainListApi:{
-    url:"/api/course/trains/list",
-    method:"GET"
+  getTrainListApi: {
+    url: "/api/course/trains/list",
+    method: "GET"
   },
-  getVideosListApi:{
-    url:"/api/course/videos/list",
-    method:"GET"
+  getVideosListApi: {
+    url: "/api/course/videos/list",
+    method: "GET"
   },
-  getDocumentsListApi:{
-    url:"/api/course/documents/list",
-    method:"GET"
+  getDocumentsListApi: {
+    url: "/api/course/documents/list",
+    method: "GET"
   },
-  getDataSetCatalogApi:{
-    url:"/classic/data/dataset-select",
-    method:"GET"
+  getDataSetCatalogApi: {
+    url: "/classic/data/dataset-select",
+    method: "GET"
   },
-  getContentDetailApi:{
-    url:"/api/course/contents/detail",
-    method:"GET"
+  getContentDetailApi: {
+    url: "/api/course/contents/detail",
+    method: "GET"
   },
-  isDisparkApi:{
-    url:"/api/course/courses/{course_id}/chapters/{experiment_id}",
-    method:"PUT",
-    dataType:"json"
+  isDisparkApi: {
+    url: "/api/course/courses/{course_id}/chapters/{experiment_id}",
+    method: "PUT",
+    dataType: "json"
   },
-  getExperimentReportApi:{
-    url:"/report/templatable/view",
-    method:"POST",
-    dataType:"formdata"
+  getExperimentReportApi: {
+    url: "/report/templatable/view",
+    method: "POST",
+    dataType: "formdata"
   },
-  getContentExerciseApi:{
-    url:"/api/v1/question/contents/{content_id}/questions",
-    method:"GET"
+  getContentExerciseApi: {
+    url: "/api/v1/question/contents/{content_id}/questions",
+    method: "GET"
   },
-  getContentExerciseAnalysisApi:{
-    url:"api/v1/question/contents/{content_id}/question-analysis",
-    method:"GET"
+  getContentExerciseAnalysisApi: {
+    url: "api/v1/question/contents/{content_id}/question-analysis",
+    method: "GET"
   },
-  contentAddExerciseApi:{
-    url:"/api/v1/question/contents/{content_id}/relationships/questions",
-    method:"POST",
-    dataType:"json"
+  contentAddExerciseApi: {
+    url: "/api/v1/question/contents/{content_id}/relationships/questions",
+    method: "POST",
+    dataType: "json"
   },
-  deleteContentExerciseApi:{
-    url:"api/v1/question/contents/relationships/questions",
-    method:"DELETE",
-    dataType:"json"
+  deleteContentExerciseApi: {
+    url: "api/v1/question/contents/relationships/questions",
+    method: "DELETE",
+    dataType: "json"
+  },
+  getReportListApi: {
+    url: "/report/templatable/index",
+    method: "GET"
+  },
+  saveReportTemplateApi: {
+    url: "/report/templatable/save",
+    method: "POST",
+    dataType: "json"
   }
 }
 
@@ -416,56 +425,58 @@ export interface ITeacherCourseApis {
   evaluteContent: TFHttpSend,
   showQuestions: TFHttpSend,
   showVideos: TFHttpSend
-  getDirectionsApi:TFHttpSend
-  getCategoryApi:TFHttpSend,
-  getCourseListApi:TFHttpSend,
-  settingGuideStateApi:TFHttpSend,
-  copyCourseApi:TFHttpSend,
-  deleteCourseApi:TFHttpSend
-  getTestPaperListApi:TFHttpSend
-  getStudentListApi:TFHttpSend
-  updateStudentSelectApi:TFHttpSend
-  deleteFollowApi:TFHttpSend
-  getDefaultPaperInfoApi:TFHttpSend
-  getAchievStatisApi:TFHttpSend
-  editQuestionApi:TFHttpSend
-  saveToCourseApi:TFHttpSend
-  getCourseDetailApi:TFHttpSend
-  updateCourseBaseApi:TFHttpSend
-  getCourseTreeApi:TFHttpSend
-  updateChapterApi:TFHttpSend
-  getChapterDetailApi:TFHttpSend
-  saveChapterIntroApi:TFHttpSend
-  getPreparingDataApi:TFHttpSend
-  getDataSetListApi:TFHttpSend
-  getDataSetFileApi:TFHttpSend
-  savePrepareLessonsFileApi:TFHttpSend
-  removePrepareLessonsFileApi:TFHttpSend
-  uploadFileApi:TFHttpSend
-  addDataSetFileApi:TFHttpSend
-  getDataSetGuideApi:TFHttpSend
-  getChapterExerciseApi:TFHttpSend
-  getExercisesMapApi:TFHttpSend
-  getQuestionTypesApi:TFHttpSend
-  getPoolsExerciseListApi:TFHttpSend
-  createCourseChapterApi:TFHttpSend
-  chapterAddExerciseApi:TFHttpSend
-  deleteChapterExerciseApi:TFHttpSend
-  getAllChapterListApi:TFHttpSend
-  saveChapterToCourseApi:TFHttpSend
-  saveContentToChapterApi:TFHttpSend
-  deleteChapterApi:TFHttpSend
-  getContentListApi:TFHttpSend
-  getTrainListApi:TFHttpSend
-  getVideosListApi:TFHttpSend
-  getDocumentsListApi:TFHttpSend
-  getDataSetCatalogApi:TFHttpSend
-  getContentDetailApi:TFHttpSend
-  isDisparkApi:TFHttpSend
-  getExperimentReportApi:TFHttpSend
-  getContentExerciseApi:TFHttpSend
-  getContentExerciseAnalysisApi:TFHttpSend
-  contentAddExerciseApi:TFHttpSend
-  deleteContentExerciseApi:TFHttpSend
-  getChapterExerciseAnalysisApi:TFHttpSend
+  getDirectionsApi: TFHttpSend
+  getCategoryApi: TFHttpSend,
+  getCourseListApi: TFHttpSend,
+  settingGuideStateApi: TFHttpSend,
+  copyCourseApi: TFHttpSend,
+  deleteCourseApi: TFHttpSend
+  getTestPaperListApi: TFHttpSend
+  getStudentListApi: TFHttpSend
+  updateStudentSelectApi: TFHttpSend
+  deleteFollowApi: TFHttpSend
+  getDefaultPaperInfoApi: TFHttpSend
+  getAchievStatisApi: TFHttpSend
+  editQuestionApi: TFHttpSend
+  saveToCourseApi: TFHttpSend
+  getCourseDetailApi: TFHttpSend
+  updateCourseBaseApi: TFHttpSend
+  getCourseTreeApi: TFHttpSend
+  updateChapterApi: TFHttpSend
+  getChapterDetailApi: TFHttpSend
+  saveChapterIntroApi: TFHttpSend
+  getPreparingDataApi: TFHttpSend
+  getDataSetListApi: TFHttpSend
+  getDataSetFileApi: TFHttpSend
+  savePrepareLessonsFileApi: TFHttpSend
+  removePrepareLessonsFileApi: TFHttpSend
+  uploadFileApi: TFHttpSend
+  addDataSetFileApi: TFHttpSend
+  getDataSetGuideApi: TFHttpSend
+  getChapterExerciseApi: TFHttpSend
+  getExercisesMapApi: TFHttpSend
+  getQuestionTypesApi: TFHttpSend
+  getPoolsExerciseListApi: TFHttpSend
+  createCourseChapterApi: TFHttpSend
+  chapterAddExerciseApi: TFHttpSend
+  deleteChapterExerciseApi: TFHttpSend
+  getAllChapterListApi: TFHttpSend
+  saveChapterToCourseApi: TFHttpSend
+  saveContentToChapterApi: TFHttpSend
+  deleteChapterApi: TFHttpSend
+  getContentListApi: TFHttpSend
+  getTrainListApi: TFHttpSend
+  getVideosListApi: TFHttpSend
+  getDocumentsListApi: TFHttpSend
+  getDataSetCatalogApi: TFHttpSend
+  getContentDetailApi: TFHttpSend
+  isDisparkApi: TFHttpSend
+  getExperimentReportApi: TFHttpSend
+  getContentExerciseApi: TFHttpSend
+  getContentExerciseAnalysisApi: TFHttpSend
+  contentAddExerciseApi: TFHttpSend
+  deleteContentExerciseApi: TFHttpSend
+  getChapterExerciseAnalysisApi: TFHttpSend
+  getReportListApi: TFHttpSend
+  saveReportTemplateApi:TFHttpSend
 }

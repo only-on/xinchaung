@@ -23,7 +23,7 @@
         </a-select>
       </a-form-item>
     </div>
-    <div v-if="currentRole === 4" class="col-2 time-item">
+    <div v-if="currentRole === 3" class="col-2 time-item">
       <a-form-item label="开始时间">
         <a-date-picker
           :disabled-date="disabledStartDate"

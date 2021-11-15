@@ -1,12 +1,20 @@
 <template>
   <div class="course-experiment-detail-box">
     <template v-if="currentContent === 'initNotebook'"><notebook-tab/></template>
-    <div v-if="currentContent === 'initWebide'">initWebide</div>
-    <div v-if="currentContent === 'initVnc'">initVnc</div>
-    <div v-if="currentContent === 'teacherVnc'">teacherVnc</div>
+    <template v-if="currentContent === 'initWebide'">
+      <webide-tab/>
+    </template>
+    <template v-if="currentContent === 'initVnc'">
+      <vnc-tab/>
+    </template>
+    <template v-if="currentContent === 'teacherVnc'">
+      <vnc-tab/>
+    </template>
     <template v-if="currentContent === 'teacherNotebook'"><notebook-tab/></template>
-    <div v-if="currentContent === 'initTrain'">initTrain</div>
-    <div v-if="currentContent === 'teacherTrain'">teacherTrain</div>
+    <template v-if="currentContent === 'initTrain'">
+      <train-tab/>
+    </template>
+    <template v-if="currentContent === 'teacherTrain'"><train-tab/></template>
     <template v-if="currentContent === 'video'">
         <video-tab></video-tab>
     </template>
@@ -32,6 +40,9 @@ import { getContentDetailApi } from "./api";
 import videoTab from "./components/experimentDetalTab/videoTab.vue"
 import documentTab from "./components/experimentDetalTab/documentTab.vue"
 import notebookTab from "./components/experimentDetalTab/notebookTab.vue"
+import webideTab from "./components/experimentDetalTab/webideTab.vue"
+import vncTab from "./components/experimentDetalTab/vncTab.vue"
+import trainTab from "./components/experimentDetalTab/trainTab.vue"
 type TcurrentContent =
   | "initNotebook"
   | "initWebide"
@@ -50,7 +61,10 @@ export default defineComponent({
     components:{
         "video-tab":videoTab,
         "document-tab":documentTab,
-        "notebook-tab":notebookTab
+        "notebook-tab":notebookTab,
+        "webide-tab":webideTab,
+        "vnc-tab":vncTab,
+        "train-tab":trainTab
     },
   setup() {
     const experiment_id: any = inject("experiment_id");

@@ -309,6 +309,7 @@ export default defineComponent({
     }
     > .ant-tabs-top-content {
       height: calc(100% - 58px);
+      
       .select-top {
         display: flex;
         flex-wrap: wrap;

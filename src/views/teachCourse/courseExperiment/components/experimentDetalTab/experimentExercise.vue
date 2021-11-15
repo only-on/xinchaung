@@ -345,6 +345,8 @@ export default defineComponent({
   <style lang="less">
 .exercise-list-tab {
   height: 100%;
+  background: @white;
+  padding: 15px;
 }
 .prepare-lessons-loading {
   width: 100%;
