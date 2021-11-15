@@ -1,0 +1,112 @@
+.wrapper {
+  width: 100%;
+  height: 24px;
+  display: flex;
+  // margin-right: 22px;
+  background-color: rgba(@theme-color, 0.1);
+  margin-bottom: 12px;
+
+  &.vertical {
+    flex-direction: column;
+  }
+
+  &-column {
+    height: 50px;
+  }
+
+  &-region {
+    height: 70px;
+  }
+
+  &.region {
+    height: 70px;
+  }
+}
+
+.title {
+  background-color: rgba(@theme-color, 0.1);
+  // justify-content: center;
+  align-items: center;
+
+  &-text {
+    width: 11px;
+    height: 26px;
+    font-size: 20px;
+    font-family: Microsoft YaHei, Microsoft YaHei-Regular;
+    font-weight: 400;
+    text-align: left;
+    color: #ffb745;
+    line-height: 24px;
+    letter-spacing: 2px;
+  }
+}
+
+.slash {
+  // background: rgba(@theme-color, 0.3);
+  flex-shrink: 0;
+  background-color: #E2DFFF;
+
+  &.vertical {
+    height: 100%;
+    width: 67px;
+
+    &-T {
+      width: 36px;
+    }
+  }
+
+  &.horizontal {
+    height: 24px;
+    width: 100%;
+  }
+}
+
+.slash-wrapper {
+  display: flex;
+  flex: 1 0 auto;
+  justify-content: center;
+  align-items: center;
+
+  &.break-wrap {
+    flex-wrap: wrap;
+
+    .slash-middle {
+      margin-top: 7px;
+      margin-bottom: 7px;
+    }
+
+    .slash-block {
+      margin-top: 1px;
+    }
+  }
+
+  .slash-mean-less {
+    &.space-right {
+      margin-right: 6px;
+    }
+  }
+
+  .slash-lager {
+    width: 27px;
+    height: 2px;
+    background: @component-background;
+  }
+
+  .slash-small {
+    width: 8px;
+    height: 2px;
+    background: @component-background;
+  }
+
+  .slash-middle {
+    width: 12px;
+    height: 2px;
+    background: @component-background;
+  }
+
+  .slash-block {
+    width: 12px;
+    height: 10px;
+    background: @component-background;
+  }
+}

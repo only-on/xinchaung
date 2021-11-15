@@ -1,7 +1,7 @@
 <template>
   <div class="cardList">
     <div class="cardBox mySelfCreate" v-if="type === 'mine' && getRole() == 3">
-      <div class="operate-btn">
+      <div class="operate-btn" @click="handleCreate">
         <span class="iconfont icon-upload"></span>
         创建在线模板
       </div>
@@ -115,6 +115,10 @@ export default defineComponent({
     const handleUpload = () => {
       emit('upload')
     }
+    // 创建
+    const handleCreate = () => {
+      emit('create')
+    }
     return {
       type,
       dataList,
@@ -127,7 +131,8 @@ export default defineComponent({
       handleCopy,
       handleShare,
       handleDownload,
-      handleUpload
+      handleUpload,
+      handleCreate
     }
   },
 })

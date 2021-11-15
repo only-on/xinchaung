@@ -15,7 +15,8 @@
         @copy="handleCopy"
         @share="handleShare"
         @down="handleDownload"
-        @upload="handleUpload"/>
+        @upload="handleUpload"
+        @create="handleCreate"/>
       <Empty v-else/>
       <a-pagination
         v-model:current="form.page"
@@ -33,6 +34,7 @@
 </template>
 <script lang="ts">
 import { defineComponent,inject, reactive, watch, ref, onMounted, toRefs } from 'vue'
+import {useRouter} from 'vue-router'
 import cardList from './components/cardList.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
@@ -95,6 +97,7 @@ export default defineComponent({
     const http=(request as ITeacherTemplateHttp).teacherTemplate
     const $message: MessageApi = inject("$message")!;
     const $confirm: ModalFunc = inject("$confirm")!;
+    const router = useRouter()
     const httpType = [http.mineTemplateList, http.initTemplateList, http.sharedTemplateList, http.teachersTemplateList]
     const tabs = localStorage.role == 3 ? teacherTabs : adminTabs
     var listData = reactive<IlistData>({
@@ -206,6 +209,10 @@ export default defineComponent({
     const handleUpload = () => {
       uploadDialog.value = true
     }
+    // 创建在线模板
+    const handleCreate = () => {
+      router.push('/teacher/teacherTemplate/createTemplate')
+    }
     onMounted(()=>{
       getList()
     })
@@ -224,7 +231,8 @@ export default defineComponent({
       handleDownload,
       handleUpload,
       uploadDialog,
-      getList
+      getList,
+      handleCreate
     }
   },
 })

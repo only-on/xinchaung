@@ -25,5 +25,14 @@ export default {
                 authCode: 'TemplateList'
             },
         },
+        {
+            path: "createTemplate",
+            name: "createTemplate",
+            component: () => import("src/views/teacherTemplate/createTemplate.vue"),
+            meta: {
+                title:"创建实验模板",
+                authCode: 'createTemplate'
+            },
+        },
     ]
 }

@@ -33,6 +33,9 @@ export default defineComponent({
     }
     watch(()=> props.dialogVisible, newVal => {
       visible.value = newVal
+      if (!newVal) {
+        fileList.length = 0
+      }
     })
     const onChange = (info:any) => {
       const status = info.file.status
@@ -48,7 +51,7 @@ export default defineComponent({
           } else {
             $message.error(
               `${info.fileList[info.fileList.length - 1].name} ${
-                info.fileList[info.fileList.length - 1].response.error.msg
+                info.fileList[info.fileList.length - 1].response.msg
               }.`,
             )
           }
