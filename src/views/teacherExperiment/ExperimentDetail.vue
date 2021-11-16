@@ -143,7 +143,6 @@ import envList from 'src/components/teacherExperiment/envList.vue'
 import taskList from './create/taskList.vue'
 import dataSet from 'src/components/selectDataSet/selectDataSet.vue'
 import environment from 'src/components/teacherExperiment/environment.vue'
-// import environment from 'src/views/teacherTrain/components/selectMirror.vue'
 import sameScreen from 'src/components/teacherExperiment/sameScreen.vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { UUID } from 'src/utils/uuid'
