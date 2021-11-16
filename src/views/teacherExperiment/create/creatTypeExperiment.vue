@@ -108,7 +108,7 @@ import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import sameScreen from 'src/components/teacherExperiment/sameScreen.vue'
 import taskList from './taskList.vue'
-import envList from './envList.vue'
+import envList from 'src/components/teacherExperiment/envList.vue'
 import { UUID } from 'src/utils/uuid'
 import _ from 'lodash'
 import { RuleObject } from 'ant-design-vue/es/form/interface';

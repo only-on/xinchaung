@@ -24,7 +24,6 @@
         <span>GPU</span>
         <a-select v-model:value="item.is_use_gpuNumber" :disabled="edit">
           <a-select-option v-for="item in gpuList" :key="item" :value="item.value">{{item.name}}</a-select-option>
-          <!-- <a-select-option :value="false">关闭</a-select-option> -->
         </a-select>
       </div>
       <span class="shanchu iconfont icon-shanchu" @click="removeImage(index)" v-if="!edit"></span>
@@ -34,7 +33,7 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType } from 'vue'
-import { IimageData } from './../experTyping'
+import { IimageData } from 'src/views/teacherExperiment/experTyping'
 import request from 'src/api/index'
 export default defineComponent({
   name: '',
@@ -82,15 +81,6 @@ export default defineComponent({
       cpuList,
       ramList,
       diskList,
-      // cpuList:[
-      //   {name:'1核',value:1},{name:'2核',value:2},{name:'3核',value:3},{name:'4核',value:4}
-      // ],
-      // ramList:[
-      //   {name:'2GB',value:2048},{name:'4GB',value:4096},{name:'6GB',value:6144},{name:'8GB',value:8192}
-      // ],
-      // diskList:[
-      //   {name:'30GB',value:30},{name:'40GB',value:40},{name:'50GB',value:50}
-      // ],
       gpuList:[
         {name:'开启',value:1},{name:'关闭',value:0}
       ],

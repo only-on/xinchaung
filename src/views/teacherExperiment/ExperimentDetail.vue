@@ -139,7 +139,7 @@ import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
-import envList from './create/envList.vue'
+import envList from 'src/components/teacherExperiment/envList.vue'
 import taskList from './create/taskList.vue'
 import dataSet from 'src/components/selectDataSet/selectDataSet.vue'
 import environment from 'src/components/teacherExperiment/environment.vue'
