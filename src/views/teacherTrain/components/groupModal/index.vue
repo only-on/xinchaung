@@ -9,6 +9,7 @@
         width="800px"
         >
         <div class="editCon">
+            <!-- <transfer></transfer> -->
             <div class="hasGroup">
                 <div class="groupHeader"><a-input placeholder="请输入组名" style="width:70%" v-model:value="inputGroupName"></a-input><a-button type="primary" @click='addGroup'>创建</a-button></div>
                 <div class="groupOperate" v-if="ifautoGroupEdit">
@@ -61,20 +62,20 @@
                 </div>
                  <!-- 如果按班级排课 -->
                 <div v-if="groupType==='class'" class="checkGroup">
-                   <a-tree checkable  v-model:selectedKeys="selectedKeysClass" @expand='expandTree' checkStrictly>
+                   <a-tree checkable  v-model:checkedKeys="checkedKeys" @check='check'  v-model:selectedKeys="selectedKeysClass" @expand='expandTree' checkStrictly>
                        <template #switcherIcon>
                             <down-outlined />
                        </template>
-                       <a-tree-node :checkable='false' v-for="(item,index) in unGroupData" :key="index" :title="index">
-                            <a-tree-node v-for="(it,j) in item.student_list" :key="j" :checkable='true' :title="it?.userProfile?.name">
+                       <a-tree-node :checkable='false' v-for="(val,key) in unGroupData1" :key="key" :title="key">
+                            <a-tree-node v-for="(it) in val" :key="key+'-'+it?.userProfile?.id" :checkable='true' :title="it?.userProfile?.name">
                             </a-tree-node>
                        </a-tree-node>
                    </a-tree>    
                 </div>
                 <!-- 如果按学生排课 -->
                 <div v-else class="checkGroup">
-                    <a-checkbox-group v-model:value="checkedValues">
-                        <div v-for="(item,index) in unGroupData" :key="index.toString()">
+                    <a-checkbox-group v-model:value="checkedValues" v-if="flag">
+                        <div v-for="(item,index) in unGroupData1" :key="index.toString()">
                             <a-checkbox :value="item.userProfile.id">
                                 {{item.userProfile.name}}
                             </a-checkbox>
@@ -107,19 +108,24 @@ interface Istate{
    checkAll:boolean,
    inputGroupName:string,
    selectedKeysClass:string[],
+   checkedKeys:any[],
    selectedGroup:any,
+   unGroupData1:any[],
+   flag:boolean
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { DownOutlined} from '@ant-design/icons-vue';
 import { message } from 'ant-design-vue';
+import transfer from '../transfer/transfer.vue'
 export default defineComponent({
     name:'resources',
     props:['propTrainDetailInfo','trainId','editvisible','ifautoGroupEdit','unGroupData','groupType'],
     components:{
         Empty,
-        DownOutlined
+        DownOutlined,
+        transfer
     },
     setup(props,context){
     const http=(request as any).teacherTrain
@@ -138,12 +144,18 @@ export default defineComponent({
         checkAll: false,
         inputGroupName:'',
         selectedKeysClass:[],
-        selectedGroup:''
+        selectedGroup:'',
+        unGroupData1:[],
+        flag:true,
+        checkedKeys:[]
     })
     const methods={
       editOk(){
           console.log(state.treeData,'treeData')
-        //  context.emit('editModal',true,state.treeData)
+            context.emit('editModal',true,state.treeData)
+      },
+      handGroup(){
+         
       },
       editCancel(){
          context.emit('editModal',false)
@@ -162,13 +174,12 @@ export default defineComponent({
           console.log(state.groupname)
           context.emit("search-group",state.groupname)
       },
-      getStuGroup(){
-           http.getGroupAndNogroupStu({param:{train_id:50347}}).then((res:any)=>{
-               console.log(res)
-           })
-      },
       leftMove(){
 
+      },
+      check(checkedKeys:any,e:any){
+          console.log(checkedKeys,e,'hhhh')
+          state.checkedValues=checkedKeys.checked
       },
       expandTree(e:any){
           console.log(e)
@@ -185,11 +196,14 @@ export default defineComponent({
         // state.group.student_list
            const treeItem:any={
             name:state.inputGroupName,
-            student_list:[],
+            student_list:[]
             }
             console.log(treeItem)
             state.treeData.push(treeItem)
+            state.inputGroupName=''
             state.checkedValues=[]
+        state.selectedGroup=[]
+
             console.log(state.checkedValues)
       },
       selectTree(selectedKeys:any, e:any){
@@ -204,21 +218,42 @@ export default defineComponent({
             message.warning('请选择或者创建分组')
             return
         }
-        let deleteArr:any=[]
-        props.unGroupData.forEach((item:any,index:any)=>{
-               console.log(item,'item')
-               state.checkedValues.forEach((it:any)=>{
-                    if(item.id===it){
-                        console.log(it)
-                        deleteArr.push(index)
-                    }
-               })
+        if(props.groupType==='class'){
+                let deleteids:any=[]
+                
+                state.checkedValues.forEach((item:any,index:any)=>{
+                    let i:any=item.split('-')[0]
+                    let j:any=item.split('-')[1]
+                    console.log(state.unGroupData1,item,i,j)
+                    let ids:any=[]
+                    state.unGroupData1[i].forEach((item:any)=>{
+                            ids.push(item.userProfile.id)
+                    })
+                    console.log(ids,j,'ids','j')
+                    let indexj:any=ids.indexOf(Number(j))
+                    console.log(ids,indexj,'下标'),
+                    console.log(state.unGroupData1[i][indexj],'添加的数据www')
+                    state.treeData[state.selectedGroup].student_list.push(state.unGroupData1[i][indexj])
+                    deleteids.push({i:i,j:indexj})
+                })
+                deleteids.forEach((item:any,index:any)=>{
+                    console.log(item)
+                    state.unGroupData1[item.i].splice(item.j,1)
+                })
+        }else{
+            state.unGroupData1.forEach((item:any,index:any)=>{
+            if (state.checkedValues.includes(item.userProfile.id)) {
+                state.treeData[state.selectedGroup].student_list.push(state.unGroupData1[index])
+            }
+            state.unGroupData1=state.unGroupData1.filter((item:any)=>{
+            return !state.checkedValues.includes(item.userProfile.id)
+            })
         })
-        deleteArr.forEach((value:any)=>{
-                console.log(value,'value3333333333')
-               state.treeData[state.selectedGroup].student_list.push(props.unGroupData[value])
-               props.unGroupData.splice(value,1)
-        })
+        state.flag=false
+        }
+        setTimeout(()=>{
+           state.flag=true 
+        },100)
         state.checkedValues=[]
       },
     }
@@ -229,11 +264,15 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
-    watch(state.selectedKeysClass, () => {
-      console.log('selectedKeys',state.selectedKeysClass);
+     watch(state.checkedKeys, () => {
+      console.log('selectedKeys',state.checkedKeys,'哈啊啊啊啊啊啊啊啊啊啊啊啊啊哈啊啊啊啊啊啊爱好');
     });
+    watch(()=>props.unGroupData,(val:any)=>{
+        state.unGroupData1 = val
+    },{
+        immediate:true
+    })
     onMounted(()=>{
-        methods.getStuGroup()
     })
     return {...toRefs(state),...methods}
     }

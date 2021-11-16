@@ -18,9 +18,9 @@
             </span>
         </div>
         <div class="pdtView" v-if="ppt_url">
-            <iframe width="100%" height="460px" :src="ppt_url" frameborder="0"></iframe>
+            <iframe width="100%" height="460px" :src="baseurl+ppt_url" frameborder="0"></iframe>
         </div>
-        <div v-else>
+        <div v-if="!propTrainDetailInfo.courseware_html">
             <empty text='亲~这里什么都没有~'></empty>
         </div>
     </div>
@@ -81,7 +81,7 @@ export default defineComponent({
        }
     }
     onMounted(()=>{
-        state.ppt_url=baseurl+props.propTrainDetailInfo.courseware_html
+        state.ppt_url=props.propTrainDetailInfo.courseware_html
     })
     return {...toRefs(state),...methods,baseurl}
     }

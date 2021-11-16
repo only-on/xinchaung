@@ -28,7 +28,7 @@ export default {
   trainUploadImage: { url: '/teacher-train/upload', method: "POST", dataType: 'formdata' },
   // saveModefiy: { url: '/teacher-train/set-content', method: "POST" },
   saveModefiy: { url: '/api/train/trains/{train}', method: "PUT" },//编辑实训基本信息
-  saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
+  // saveTrainGuide: { url: '/teacher-train/train-content-update', method: "POST", dataType: 'formdata' },
   savepptModefiy: { url: '/teacher-train/set-content', method: "POST", dataType: 'formdata' },
   // studentGroup: { url: '/teacher-train/set-student', method: "GET" }, //学生列表接口
   studentGroup: { url: '/api/arrange/students/search', method: "GET" }, //学生列表接口
@@ -56,7 +56,7 @@ export default {
   resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
   deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
 
-  createTrainLastStep: { url: '/api/train/succeed/{train}', method: "POST" },//创建实训最后一步
+  createTrainLastStep: { url: '/api/train/trains/succeed/{train}', method: "PUT" },//创建实训最后一步
 
 
   automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
@@ -65,7 +65,6 @@ export default {
   userHasGrouped: { url: '/api/arrange/groups/members', method: "GET" },//已经分组用户列表
   manualGrouping: { url: '/api/arrange/groups', method: "POST", dataType: 'json' },//手动分组
   groupList: { url: '/api/arrange/groups', method: "GET" },
-  // 获取分组的和没分组的学生列表
   getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }
 

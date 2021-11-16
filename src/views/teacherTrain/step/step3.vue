@@ -55,8 +55,19 @@ export default defineComponent({
      })
      const methods={
          addtaskInfo(value:any){
+            console.log(value,'添加的每一项数据')
             state.addTask=true
-            state.content_list.push(value)
+            // state.content_list.push(value)
+            state.content_list.push({
+                describe:value.describe,
+                name:value.name,
+                steps:[{
+                    detail:value.step.detail,
+                    knowledge_id:{knowledge_name:value.step.knowledges.join(',')},
+                    knowledge_map_id:value.step.knowledge_map_id
+                }]
+            })
+            console.log(value,'hahhhha ')
         },
          deleteItemIndex(value:any){
             console.log(value)
@@ -96,14 +107,13 @@ export default defineComponent({
             const content:any=[]
             console.log()
             state.content_list.forEach((item:any,index:any)=>{
-                console.log(item.step.detail)
                 content.push({
                     name:item.name,
                     describe:item.describe,
                     step:[{
-                        detail:item.step.detail,
-                        state:item.step.state,
-                        knowledge_ids:item.step.knowledge_map_id
+                        detail:item.steps[0].detail,
+                        state:item.steps[0].state,
+                        knowledge_ids:item.steps[0].knowledge_map_id
                     }]
                 })
             })

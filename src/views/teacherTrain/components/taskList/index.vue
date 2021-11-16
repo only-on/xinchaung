@@ -5,14 +5,14 @@
                 <span class="number">{{Number(index)+1}}</span>
                 <span>{{item.name}}</span>
             </span>
-            <!-- <span class="status">状态：{{item.steps[0].state===1?'显示':'隐藏'}}</span>
-            <span class="points-box">知识点：{{item.steps.knowledges?.join()}}
-                <span class="more-icon" :title='item.step.knowledges?.join()'>
+            <span class="status">状态：{{item.steps[0].state===1?'显示':'隐藏'}}</span>
+            <span class="points-box">知识点：{{item.steps[0].knowledge_id.knowledge_name}}
+                <span class="more-icon" :title='item.steps[0].knowledge_id.knowledge_name'>
                     <div></div>
                     <div></div>
                     <div></div>
                 </span>
-            </span> -->
+            </span>
             <span class="delete" @click="deleteTask(index)">
                 <span v-if="!edit" class="iconfont icon-shanchu-copy"></span>
             </span>
@@ -32,7 +32,7 @@ interface Istate{
     visible:boolean,
     deleteIndex?:number,
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 export default defineComponent({
     name:'taskList',
     props:['contentList','edit'],
@@ -54,6 +54,12 @@ export default defineComponent({
         }
        
     }
+    onMounted(() => {
+        console.log(props.contentList)
+    }),
+    watch(() => {return props.contentList},(val:any)=>{
+        console.log(props.contentList,'props.contentList')
+    })
     return {...toRefs(state),...methods}
     }
 })

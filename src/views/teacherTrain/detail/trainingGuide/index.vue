@@ -67,39 +67,47 @@ export default defineComponent({
                 message.warning("实训概述不能为空！")
                 return
             }
-            const formdata=new FormData()
-            formdata.append('train_id',props.trainId)
-            formdata.append('detail',state.describe)
-            state.content_list?.forEach((item:any,index:any)=>{
-                formdata.append('list_content['+index+'][train_content_id]',item.train_content_id)
-                formdata.append('list_content['+index+'][train_id]',item.train_id)
-                formdata.append('list_content['+index+'][name]',item.name)
-                formdata.append('list_content['+index+'][describe]',item.describe)
-                formdata.append('list_content['+index+'][step][id]',item.step.id)
-                formdata.append('list_content['+index+'][step][step_name]',item.step.step_name)
-                formdata.append('list_content['+index+'][step][knowledge_id]',item.step.knowledge_id)
-                formdata.append('list_content['+index+'][step][summary]',item.step.summary)
-                formdata.append('list_content['+index+'][step][state]',item.step.state)
-                formdata.append('list_content['+index+'][step][serial]',item.step.serial)
-                formdata.append('list_content['+index+'][step][type]',item.step.type)
-                item.step.knowledge?.forEach((it:any) => {
-                    formdata.append('list_content['+index+'][step][knowledge][]',it)
-                });
-                item.step.knowledges?.forEach((j:any) => {
-                    formdata.append('list_content['+index+'][step][knowledges][]',j)
+            console.log(state.content_list.length)
+            if(!state.content_list.length){
+                message.warning('请添加实训任务！')
+                return
+            }
+            const content:any=[]
+            console.log(state.content_list)
+            state.content_list.forEach((item:any,index:any)=>{
+                content.push({
+                    name:item.name,
+                    describe:item.describe,
+                    step:[{
+                        detail:item.steps[0].detail,
+                        state:item.steps[0].state,
+                        knowledge_ids:item.steps[0].knowledge_map_id
+                    }]
                 })
             })
-            http.saveTrainGuide({param:formdata}).then((res:any)=>{
-                console.log(res)
-                state.edit=true
-            })
+            http.saveTrainContents({urlParams:{train:props.trainId},param:{detail:state.describe,content:content}}).then((res:any)=>{
+                 console.log(res)
+                 if(res.code===1){
+                     state.edit=true
+                 }
+             })
         },
         doAddTask(){
             state.addTask=false
         },
         addtaskInfo(value:any){
+            console.log(value,'添加的每一项数据')
             state.addTask=true
-            state.content_list.push(value)
+            // state.content_list.push(value)
+            state.content_list.push({
+                describe:value.describe,
+                name:value.name,
+                steps:[{
+                    detail:value.step.detail,
+                    knowledge_id:{knowledge_name:value.step.knowledges.join(',')},
+                    knowledge_map_id:value.step.knowledge_map_id
+                }]
+            })
             console.log(value,'hahhhha ')
         },
         cancelAdd(){

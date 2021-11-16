@@ -181,7 +181,7 @@ export default defineComponent({
               groupdata.forEach((item:any,index:any)=>{
                   const members:any=[]
                   item.student_list.forEach((it:any)=>{
-                      members.push(it.userProfile.id)
+                      members.push(it.id)
                   })
                   params.groups.push({name:item.name,members:members})
               })
