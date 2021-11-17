@@ -1,20 +1,23 @@
 <template>
   <div
     v-layout-bg="{ size: '234px', bg: bg }"
-    style="height: calc(100% - 24px)"
+    style="height: calc(100% - 24px);width:1330px;margin:0 auto"
   >
     <top></top>
     <a-tabs
       default-active-key="1"
       @change="tabChange"
       class="course-detail-tabs"
+      v-model:activeKey="activeKey"
     >
       <a-tab-pane
         key="1"
         tab="课程实验"
         v-if="tabs.includes('courseExperimentTab')"
       >
+      <template v-if="activeKey==='1'">
         <course-experiment-tab></course-experiment-tab>
+      </template>
       </a-tab-pane>
       <a-tab-pane
         key="2"
@@ -22,7 +25,9 @@
         force-render
         v-if="tabs.includes('courseMembersTab')"
       >
+      <template v-if="activeKey==='2'">
         <course-members-tab></course-members-tab>
+      </template>
       </a-tab-pane>
       <a-tab-pane
         key="3"
@@ -30,7 +35,9 @@
         force-render
         v-if="tabs.includes('groupInfoTab')"
       >
+      <template v-if="activeKey==='3'">
         <group-info-tab></group-info-tab>
+      </template>
       </a-tab-pane>
       <a-tab-pane
         key="4"
@@ -38,14 +45,17 @@
         force-render
         v-if="tabs.includes('courseResourcesTab')"
       >
+      <template v-if="activeKey==='4'">
         <course-resources-tab></course-resources-tab>
+      </template>
+        
       </a-tab-pane>
     </a-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, inject, onMounted, reactive, toRefs,provide } from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import top from "./top.vue";
 import storage from "src/utils/extStorage";
@@ -57,6 +67,7 @@ import courseResourcesTab from "./courseResourcesTab.vue";
 
 type TreactiveData = {
   tabs: any[];
+  activeKey:string
 };
 export default defineComponent({
   components: {
@@ -67,12 +78,17 @@ export default defineComponent({
     "course-resources-tab": courseResourcesTab,
   },
   setup() {
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'',navType:true,showContent:false,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     const route = useRoute();
     const currentRole: number = storage.lStorage.get("role");
     const currentTab = route.query.currentTab;
+    const course_id=route.query.course_id
     const reactiveData: TreactiveData = reactive({
       tabs: [],
+      activeKey:"1"
     });
+    provide("course_id",course_id)
     onMounted(() => {
       reactiveData.tabs = settingTab();
     });
@@ -106,6 +122,7 @@ export default defineComponent({
       tabChange,
       bg,
       ...toRefs(reactiveData),
+      provide
     };
   },
 });

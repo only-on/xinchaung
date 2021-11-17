@@ -2,7 +2,7 @@
   <div class="direction-tag-box">
     <span class="tag-label">课程方向：</span>
     <div class="tag-right">
-      <div class="tag" ref="allTag" v-if="directionsShow">
+      <div class="tag" ref="allTag1" v-if="directionsShow">
         <span
           :class="!params.directions ? 'active' : ''"
           @click="params.directions = ''"
@@ -45,7 +45,7 @@
   <div class="category-tag-box">
     <span class="tag-label">职业方向：</span>
     <div class="tag-right">
-      <div class="tag" ref="allTag" v-if="categoryShow">
+      <div class="tag" ref="allTag2" v-if="categoryShow">
         <span
           :class="!params.category ? 'active' : ''"
           @click="params.category = ''"
@@ -100,7 +100,8 @@ import request from "src/request/getRequest";
 type TreactiveData = {
   directionTag: any[];
   CategoryTag: any[];
-  allTag: any | null;
+  allTag1: any | null;
+  allTag2: any | null;
   directionsShow: boolean;
   directionsHeight: number;
   categoryHeight: number;
@@ -117,7 +118,8 @@ export default defineComponent({
     const reactiveData: TreactiveData = reactive({
       directionTag: [{}],
       CategoryTag: [],
-      allTag: null,
+      allTag1: null,
+      allTag2: null,
       directionsShow: true,
       directionsHeight: 0,
       categoryHeight: 0,
@@ -132,16 +134,20 @@ export default defineComponent({
       getDirections().then((res: any) => {
         if (res) {
           console.log(res);
-          
+
           nextTick(() => {
-            reactiveData.directionsHeight = (
-              reactiveData as any
-            ).allTag.clientHeight;
-            if (reactiveData.directionsHeight > 40) {
-              reactiveData.directionsShow = false;
-            } else {
-              reactiveData.directionsShow = true;
-            }
+            setTimeout(() => {
+              reactiveData.directionsHeight = (
+                reactiveData as any
+              ).allTag1.clientHeight;
+              console.log(reactiveData.directionsHeight);
+              
+              if (reactiveData.directionsHeight > 40) {
+                reactiveData.directionsShow = false;
+              } else {
+                reactiveData.directionsShow = true;
+              }
+            },100);
           });
         }
       });
@@ -149,11 +155,11 @@ export default defineComponent({
       getCategory().then((res) => {
         if (res) {
           console.log(res);
-          
+
           nextTick(() => {
             reactiveData.categoryHeight = (
               reactiveData as any
-            ).allTag.clientHeight;
+            ).allTag2.clientHeight;
             if (reactiveData.categoryHeight > 40) {
               reactiveData.categoryShow = false;
             } else {
@@ -185,7 +191,12 @@ export default defineComponent({
     function getCategory() {
       return new Promise((resolve: any) => {
         courseApi.getCategoryApi({}).then((res) => {
-          reactiveData.CategoryTag = res?.data;
+          if (res?.data.list) {
+            reactiveData.CategoryTag = res?.data.list;
+          }else{
+            reactiveData.CategoryTag = res?.data;
+          }
+          
           resolve(res);
         });
       });

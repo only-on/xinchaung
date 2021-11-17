@@ -1,5 +1,5 @@
 <template>
-    <div class="resources" v-layout-bg>
+    <div class="resources">
        <div class="resource-top">
            <span class="choiceFile">
                选择文件:
@@ -45,7 +45,7 @@ import { message } from 'ant-design-vue';
 import  FileSaver  from 'file-saver'
 export default defineComponent({
     name:'resources',
-    props:['propTrainDetailInfo','trainId','resource'],
+    props:['propTrainDetailInfo','trainId','resource','type'], // type 判断是否是课程资源
     components:{
         Empty
     },
@@ -168,10 +168,16 @@ export default defineComponent({
     //     immediate:true
     // })
     onMounted(()=>{
+        
         console.log(inject['stepInfoFour'])
-        if(inject['stepInfoFour']){
+        if (props.type==='course') {
+            methods.getResourceList()
+        }else{
+            if(inject['stepInfoFour']){
             state.data=inject['stepInfoFour']
         }
+        }
+        
     })
     return {...toRefs(state),...methods}
     }

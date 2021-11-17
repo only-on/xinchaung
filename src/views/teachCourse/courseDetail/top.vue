@@ -266,7 +266,7 @@ export default defineComponent({
 
 <style lang="less">
 .course-detail-top {
-  height: 189px;
+  height: 205px;
   color: @white;
   display: flex;
   flex-direction: column;

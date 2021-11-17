@@ -362,8 +362,7 @@ function backTo(route: any, type: string, role: number, routerQuery: string) {
   if (routerQuery) {
     otherParams = JSON.parse(routerQuery)
   }
-
-  if (role === 3) {
+  if (role === 4) {
     if (type === "course") {
       route.push({
         path: "/studentSideCourse/ContinueDetail",
@@ -383,6 +382,27 @@ function backTo(route: any, type: string, role: number, routerQuery: string) {
       })
       return;
     }
+  }
+  if (role===3) {
+    if (type === "course") {
+      route.push({
+        path: "/teacher/course/detail",
+        query: {
+          course_id: otherParams.course_id,
+          currentTab: otherParams.currentTab
+        }
+      })
+      return;
+    }
+    // if (type === "train") {
+    //   route.push({
+    //     path: "/studentExperimental",
+    //     query: {
+    //       currentTab: 0
+    //     }
+    //   })
+    //   return;
+    // }
   }
 }
 /* ------工具方法end----- */

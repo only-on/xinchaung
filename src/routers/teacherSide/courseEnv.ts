@@ -69,5 +69,21 @@ export default {
         authCode: 'result'
       },
     },
+    {
+      path: "create",
+      component: () => import("src/views/teachCourse/createCourse/index.vue"),
+      meta: {
+        title: "创建",
+        authCode: 'create'
+      },
+    },
+    {
+      path: "detail",
+      component: () => import("src/views/teachCourse/courseDetail/index.vue"),
+      meta: {
+        title: "详情",
+        authCode: 'detail'
+      },
+    },
   ]
 }

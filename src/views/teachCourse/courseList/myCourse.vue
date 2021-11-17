@@ -10,7 +10,7 @@
     </div>
     <div class="course-list">
       <div class="crate-card course-item create-box">
-        <div class="create-btn">
+        <div class="create-btn" @click="create">
           <span class="icon-chuangjian iconfont"></span
           ><span class="create-text">创建课程</span>
         </div>
@@ -49,6 +49,7 @@ import {
 import tag from "./tag.vue";
 import courseCard from "./courseCard.vue";
 import { getCourseListApi } from "./api";
+import {useRouter} from "vue-router"
 
 type TreactiveData = {
   directionTag: any[];
@@ -74,6 +75,7 @@ export default defineComponent({
   },
   props: ["currentTab"],
   setup(props) {
+    const router = useRouter()
     const currentTab = props.currentTab;
     const reactiveData: TreactiveData = reactive({
       directionTag: [{}],
@@ -145,6 +147,12 @@ export default defineComponent({
     function updateData(val: any, index: number) {
       reactiveData.courseList[index] = val;
     }
+    // 跳转到创建页面
+    function create() {
+      router.push({
+        path:"/teacher/course/create"
+      })
+    }
     // 设置参数
     return {
       onSearch,
@@ -154,6 +162,7 @@ export default defineComponent({
       updateData,
       init,
       pageChange,
+      create
     };
   },
 });

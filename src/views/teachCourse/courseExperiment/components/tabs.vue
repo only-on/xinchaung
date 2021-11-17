@@ -23,6 +23,7 @@ export default defineComponent({
       const router=useRouter()
     const currentKey:any = ref(1);
     const detailInfo: any = inject("detailInfo");
+    const experiment_id: any = inject("experiment_id");
     const routeQuery=useRoute().query
     console.log(routeQuery);
     
@@ -43,7 +44,7 @@ export default defineComponent({
       let param:any= {
         type: "course",
         opType: 'prepare',
-        taskId: detailInfo.value.id,
+        taskId: experiment_id.value,
       }
       if (detailInfo.value.task_type.type===4) {
         // webide

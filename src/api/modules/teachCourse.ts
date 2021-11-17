@@ -387,7 +387,12 @@ export default {
     url: "/report/templatable/save",
     method: "POST",
     dataType: "json"
-  }
+  },
+  createCourseBaseApi: {
+    url: "/api/course/courses",
+    method: "POST",
+    dataType: "formdata"
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -478,5 +483,6 @@ export interface ITeacherCourseApis {
   deleteContentExerciseApi: TFHttpSend
   getChapterExerciseAnalysisApi: TFHttpSend
   getReportListApi: TFHttpSend
-  saveReportTemplateApi:TFHttpSend
+  saveReportTemplateApi: TFHttpSend
+  createCourseBaseApi:TFHttpSend
 }

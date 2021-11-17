@@ -1,6 +1,9 @@
 <template>
     <div v-layout-bg style="height:100%">
-      <component ref="tabRef" :is="componentName" :currentTab="componentName"/>
+      <!-- <component ref="tabRef" :is="componentName" :currentTab="componentName"/> -->
+      <myCourse ref="tabRef" v-if="componentName==='myCourse'" :currentTab="componentName"></myCourse>
+      <initCourse ref="tabRef" v-if="componentName==='initCourse'" :currentTab="componentName"></initCourse>
+      <archiveCourse ref="tabRef" v-if="componentName==='archiveCourse'" :currentTab="componentName"></archiveCourse>
     </div>
 </template>
 
@@ -30,8 +33,9 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val);
+      console.log("val",val);
       // if (val||val===0) {
+        val=val?val:(route.query.currentTab?route.query.currentTab:0)
         componentName.value=componentNames[val]
       // }
       

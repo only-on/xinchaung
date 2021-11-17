@@ -380,6 +380,9 @@ export default defineComponent({
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
         allInfo.value = res.data;
+        if (!res.data.current) {
+          resolve()
+        }
         console.log(res.data.current.used_time);
         taskType.value = res.data.base_info.task_type.type;
 

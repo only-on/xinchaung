@@ -1,7 +1,7 @@
 import Layout from 'src/views/common/customLayout.vue';
 
 export default {
-  path: "course",
+  path: "course1",
   component: Layout,
   meta: {
     title: "课程",

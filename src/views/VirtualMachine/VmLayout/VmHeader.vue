@@ -427,7 +427,7 @@ export default defineComponent({
         // 教师
         if (role === 3) {
           // 桌面实验
-          if (allInfo.value?.base_info.task_type.name === "桌面实验") {
+          if (["验证实验",'实训'].includes(allInfo.value?.base_info.task_type.name)) {
             roleName.value = "teacherAndVnc";
             return;
           }
@@ -539,7 +539,7 @@ export default defineComponent({
         title: `确认结束${role === 4 ? "实验" : "备课"}吗？`,
         okText: "确认",
         onOk: () => {
-          if (opType === "recommend") {
+          if (["recommend","prepare"].includes(opType)) {
             endVmEnvirment();
             return;
           }

@@ -1,5 +1,5 @@
 <template>
-    <div class="selectStuClass" v-layout-bg>
+    <div class="selectStuClass">
         <a-modal
         width="1000px"
         :title="selectvalue===1?'学生选择':'班级选择'"

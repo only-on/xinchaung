@@ -12,8 +12,8 @@
       </a-form-item>
     </div>
     <div class="col-2">
-      <a-form-item label="课程方向" name="category">
-        <a-select v-model:value="formData.course_category_id">
+      <a-form-item label="课程方向" name="course_category_id">
+        <a-select v-model:value="formData.course_category_id" placeholder="请选择课程方向">
           <a-select-option
             v-for="item in categoryList"
             :key="item.id"
@@ -31,12 +31,15 @@
         />
       </a-form-item>
       <a-form-item label="结束时间">
-        <a-date-picker :disabled-date="disabledDate" v-model:value="formData.end_time" />
+        <a-date-picker
+          :disabled-date="disabledDate"
+          v-model:value="formData.end_time"
+        />
       </a-form-item>
     </div>
     <div class="col-2">
-      <a-form-item label="职业方向" name="direction">
-        <a-select v-model:value="formData.course_direction_id">
+      <a-form-item label="职业方向" name="course_direction_id">
+        <a-select v-model:value="formData.course_direction_id" placeholder="请选择职业方向">
           <a-select-option
             v-for="item in directionsList"
             :key="item.id"
@@ -108,9 +111,6 @@ export default defineComponent({
       type: Object,
       require: true,
     },
-    checkout: {
-      type: Object as any,
-    },
   },
   setup(props, { emit }) {
     const courseApi = request.teachCourse;
@@ -124,37 +124,21 @@ export default defineComponent({
     const reactiveData: TreactiveData = reactive({
       rules: {
         name: [{ required: true, message: "课程名称不能为空" }],
-        category: [{ required: true, message: "课程方向不能为空" }],
-        direction: [{ required: true, message: "职业方向不能为空" }],
+        course_category_id: [{ required: true, message: "课程方向不能为空" }],
+        course_direction_id: [{ required: true, message: "职业方向不能为空" }],
         created_at: [{ required: true, message: "时间不能为空" }],
         end_time: [{ required: true, message: "时间不能为空" }],
       },
       categoryList: [],
       directionsList: [],
     });
-    watch(
-      () => formData,
-      () => {
-        if (!formDom.value) {
-          return;
-        }
-        (formDom.value as any)
-          .validate()
-          .then(() => {
-            emit("update:checkout", {});
-          })
-          .catch((error: ValidateErrorEntity<any>) => {
-            emit("update:checkout", error);
-          });
-      },
-      { deep: true }
-    );
+
     onMounted(() => {
-      if (course_id) {
+      // if (course_id) {
         // getCourseDetail();
         getCategory();
         getDirections();
-      }
+      // }
     });
     // 获取课程详情
     // function getCourseDetail() {
@@ -170,7 +154,12 @@ export default defineComponent({
     // 获取课程方向
     function getCategory() {
       courseApi.getCategoryApi({}).then((res: any) => {
-        reactiveData.categoryList = res.data;
+        if (res.data&&res.data.list) {
+          reactiveData.categoryList = res.data.list;
+        }else{
+          reactiveData.categoryList = res.data;
+        }
+        
       });
     }
     // 获取职业方向
@@ -191,8 +180,12 @@ export default defineComponent({
 
     // 现在结束时间
     function disabledDate(current: any) {
-    return current && current < formData.created_at
-  }
+      return current && current < formData.created_at;
+    }
+    function validate() {
+     return  (formDom.value as any).validate()
+        
+    }
     return {
       ...toRefs(reactiveData),
       formDom,
@@ -202,7 +195,8 @@ export default defineComponent({
       formData,
       urlChange,
       disabledStartDate,
-      disabledDate
+      disabledDate,
+      validate
     };
   },
 });

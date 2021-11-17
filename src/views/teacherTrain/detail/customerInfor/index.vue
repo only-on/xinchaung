@@ -1,5 +1,5 @@
 <template>
-    <div class="customerInfor" v-layout-bg>
+    <div class="customerInfor">
        <div class="radioInfo">
            <a-radio-group size="large" v-model:value="value" @change="onRadioChange">
                 <a-radio  :value="1">
