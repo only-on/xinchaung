@@ -24,12 +24,17 @@
             <a-button type="primary">修改</a-button>
           </div> -->
           <!-- <div class="groupOperate" v-else> -->
-            <!-- <a-input style="width:150px"></a-input>
+          <!-- <a-input style="width:150px"></a-input>
                     <a-button type="primary">编辑</a-button>
                     <a-button type="primary">解散</a-button> -->
           <!-- </div> -->
           <!-- :treeData='treeData'   :replaceFields='replaceFields' -->
-          <a-tree checkable @select="selectTree" v-model:checkedKeys="groupedKeys">
+          <a-tree
+            checkable
+            @select="selectTree"
+            v-model:checkedKeys="groupedKeys"
+            v-if="flag === true"
+          >
             <template #switcherIcon>
               <down-outlined />
             </template>
@@ -38,15 +43,31 @@
               v-for="(item, index) in treeData"
               :key="index"
             >
-            <!-- :title="item.name" -->
-            <template #title>
-              <div class='title'>
-                <!-- <span class="name">{{item.name}}</span> -->
-                <a-input class="name inputname" v-model:value="item.name"></a-input>
-                <span class="edit icon-bianji1 iconfont"></span>
-                <span class="delete icon-shanchu-copy iconfont"></span>
-              </div>
-            </template>
+              <!-- :title="item.name" -->
+              <template #title>
+                <div class="tree-title title">
+                  <template v-if="currentEditData === index">
+                    <a-input
+                      class="name inputname"
+                      v-model:value="item.name"
+                      @blur="titleBlurs"
+                    ></a-input>
+                  </template>
+                  <template v-else>
+                    <span class="name"
+                      >{{ item.name }}
+                      <i
+                        class="edit icon-bianji1 iconfont"
+                        @click="editTreeTittle(index)"
+                      ></i>
+                      <in-class-forum
+                        class="delete icon-shanchu-copy iconfont"
+                        @click="deleteTree(index)"
+                      ></in-class-forum>
+                    </span>
+                  </template>
+                </div>
+              </template>
               <a-tree-node
                 :checkable="true"
                 v-for="it in item.student_list"
@@ -102,6 +123,7 @@
               @check="check"
               @expand="expandTree"
               checkStrictly
+              v-if="flag === true"
             >
               <template #switcherIcon>
                 <down-outlined />
@@ -124,7 +146,10 @@
           </div>
           <!-- 如果按学生排课 -->
           <div v-else class="checkGroup">
-            <a-checkbox-group v-model:value="checkedValues" v-if="flag===true">
+            <a-checkbox-group
+              v-model:value="checkedValues"
+              v-if="flag === true"
+            >
               <div
                 v-for="(item, index) in unGroupData1"
                 :key="index.toString()"
@@ -156,7 +181,7 @@ interface Istate {
   replaceFields: any;
   groupname: string;
   checkedValues: number[];
-  groupedKeys:number[];
+  groupedKeys: number[];
   selectedKeys: string[];
   indeterminate: boolean;
   checkAll: boolean;
@@ -166,6 +191,7 @@ interface Istate {
   selectedGroup: any;
   unGroupData1: any[];
   flag: boolean;
+  currentEditData: any;
 }
 import {
   defineComponent,
@@ -190,7 +216,7 @@ export default defineComponent({
     "ifautoGroupEdit",
     "unGroupData",
     "groupType",
-    "groupData"
+    "groupData",
   ],
   components: {
     Empty,
@@ -210,7 +236,7 @@ export default defineComponent({
       groupname: "",
       checkedValues: [],
       selectedKeys: [],
-      groupedKeys:[],
+      groupedKeys: [],
       indeterminate: false,
       checkAll: false,
       inputGroupName: "",
@@ -219,6 +245,7 @@ export default defineComponent({
       unGroupData1: [],
       flag: true,
       checkedKeys: [],
+      currentEditData: "",
     });
     const methods = {
       editOk() {
@@ -279,25 +306,65 @@ export default defineComponent({
         state.selectedGroup = index;
       },
       leftMove() {
-        console.log('哈哈哈哈')
-       
+        console.log("哈哈哈哈");
+
         // if (props.groupType === "class"){
 
         // }else{
-          const checkys:any=[]
-          state.groupedKeys.forEach((item:any)=>{
-            checkys.push(item.split("-")[1])
-          })
-          console.log(checkys,'checkyscheckyscheckys')
-          state.unGroupData1=state.treeData[0].student_list.filter((item:any)=>{
-            console.log(checkys,item.userProfile.id.toString(),checkys.includes(Number(item.userProfile.id)))
-              return checkys.includes(item.userProfile.id.toString());
-          })
-          state.treeData=state.treeData[0].student_list.filter((item:any)=>{
-            console.log(item)
-              return checkys.includes(!item.userProfile.id.toString());
-          })
-          
+        // const checkys: any = [];
+        if (props.groupType === "class") {
+          state.groupedKeys.forEach((item: any, index) => {
+            // checkys.push(item.split("-")[1]);
+            let treeIndex = Number(item.split("-")[0]);
+            let childrenId = Number(item.split("-")[1]);
+            let i = state.treeData[treeIndex].student_list.findIndex(
+              (it: any) => {
+                return childrenId == it.userProfile.id;
+              }
+            );
+            state.unGroupData1[
+              state.treeData[treeIndex].student_list[i].classes.classname
+            ].push(state.treeData[treeIndex].student_list[i]);
+            state.treeData[treeIndex].student_list.splice(i, 1);
+          });
+          state.flag = false;
+          setTimeout(() => {
+            state.flag = true;
+          }, 100);
+          state.groupedKeys = [];
+        } else {
+          state.groupedKeys.forEach((item: any, index) => {
+            // checkys.push(item.split("-")[1]);
+            let treeIndex = Number(item.split("-")[0]);
+            let childrenId = Number(item.split("-")[1]);
+            let i = state.treeData[treeIndex].student_list.findIndex(
+              (it: any) => {
+                return childrenId == it.userProfile.id;
+              }
+            );
+
+            state.unGroupData1.push(state.treeData[treeIndex].student_list[i])
+            state.treeData[treeIndex].student_list.splice(i,1)
+          });
+          state.groupedKeys = [];
+        }
+
+        // console.log(checkys, "checkyscheckyscheckys");
+        // state.unGroupData1 = state.treeData[0].student_list.filter(
+        //   (item: any) => {
+        //     console.log(
+        //       checkys,
+        //       item.userProfile.id.toString(),
+        //       checkys.includes(Number(item.userProfile.id))
+        //     );
+        //     return checkys.includes(item.userProfile.id.toString());
+        //   }
+        // );
+        // state.treeData = state.treeData[0].student_list.filter((item: any) => {
+        //   console.log(item);
+        //   return checkys.includes(!item.userProfile.id.toString());
+        // });
+
         // }
       },
       rightMove() {
@@ -324,23 +391,41 @@ export default defineComponent({
             state.unGroupData1[i].splice(ci, 1);
           });
         } else {
-          state.unGroupData1.forEach((item: any, index: any) => {
-            if (state.checkedValues.includes(item.userProfile.id)) {
-              state.treeData[state.selectedGroup].student_list.push(
-                state.unGroupData1[index]
-              );
-            }
-            state.unGroupData1 = state.unGroupData1.filter((item: any) => {
-              return !state.checkedValues.includes(item.userProfile.id);
+          state.checkedValues.forEach((item, index) => {
+            let i = state.unGroupData1.findIndex((it) => {
+              return it.userProfile.id == item;
             });
+            state.treeData[state.selectedGroup].student_list.push(
+              state.unGroupData1[i]
+            );
+            state.unGroupData1.splice(i, 1);
           });
+          // state.unGroupData1.forEach((item: any, index: any) => {
+          //   let i = state.unGroupData1.findIndex((it) => {
+          //     return state.checkedValues.includes(it.userProfile.id);
+          //   });
+          //   console.log(i);
+
+          //   state.treeData[state.selectedGroup].student_list.push(
+          //     state.unGroupData1[i]
+          //   );
+          //   state.unGroupData1.splice(i, 1);
+          // if (state.checkedValues.includes(item.userProfile.id)) {
+          //   state.treeData[state.selectedGroup].student_list.push(
+          //     state.unGroupData1[index]
+          //   );
+          // }
+          // state.unGroupData1 = state.unGroupData1.filter((item: any) => {
+          //   return !state.checkedValues.includes(item.userProfile.id);
+          // });
+          // });
         }
         state.flag = false;
         setTimeout(() => {
           state.flag = true;
         }, 100);
         state.checkedValues = [];
-        state.checkedKeys=[]
+        state.checkedKeys = [];
       },
     };
     watch(
@@ -351,13 +436,16 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
-    watch(()=>state.groupedKeys, () => {
-        console.log(
-          "selectedKeys",
-          state.groupedKeys,
-          "哈啊啊啊啊啊啊啊啊啊啊啊啊啊哈啊啊啊啊啊啊爱好"
-        );
-      });
+      watch(
+        () => state.groupedKeys,
+        () => {
+          console.log(
+            "selectedKeys",
+            state.groupedKeys,
+            "哈啊啊啊啊啊啊啊啊啊啊啊啊啊哈啊啊啊啊啊啊爱好"
+          );
+        }
+      );
     watch(
       () => props.unGroupData,
       (val: any) => {
@@ -367,7 +455,7 @@ export default defineComponent({
         immediate: true,
       }
     );
-     watch(
+    watch(
       () => props.groupData,
       (val: any) => {
         state.treeData = val;
@@ -376,8 +464,41 @@ export default defineComponent({
         immediate: true,
       }
     );
+    // 编辑学生分组tree标题
+    function editTreeTittle(index: number) {
+      state.currentEditData = index;
+    }
+    // 编辑学生分组tree标题失去焦点时
+    function titleBlurs() {
+      state.currentEditData = "";
+    }
+    // 删除树
+    function deleteTree(index: number) {
+      if (props.groupType === "class") {
+        state.treeData[index].student_list.forEach((item: any, index: any) => {
+          state.unGroupData1[item.classes.classname].push(item);
+        });
+        state.treeData.splice(index, 1);
+        state.groupedKeys = [];
+        state.flag = false;
+        setTimeout(() => {
+          state.flag = true;
+        }, 100);
+      } else {
+        state.unGroupData1 = state.unGroupData1.concat(
+          ...state.treeData[index].student_list
+        );
+        state.treeData.splice(index, 1);
+      }
+    }
     onMounted(() => {});
-    return { ...toRefs(state), ...methods };
+    return {
+      ...toRefs(state),
+      ...methods,
+      editTreeTittle,
+      titleBlurs,
+      deleteTree,
+    };
   },
 });
 </script>
@@ -399,13 +520,13 @@ export default defineComponent({
     background-color: @theme-color;
     color: white;
   }
-  .moveHoverRight{
+  .moveHoverRight {
     width: 24px;
     height: 24px;
     border-radius: 2px;
     background-color: @theme-color;
     color: white;
-    margin-bottom:20px;
+    margin-bottom: 20px;
   }
   .move:nth-child(1) {
     margin-bottom: 20px;
@@ -434,22 +555,32 @@ export default defineComponent({
     margin-top: 10px;
     // border-bottom: 1px solid #C5D2DA;
   }
-  .title{
-    .name{
-      display: inline-block;
-      width: 225px;
+  .title {
+    .name {
+      display: flex;
+      width: 280px;
     }
-    .inputname{
-      height:25px;
-      width:225px;
+    .inputname {
+      height: 25px;
+      width: 260px;
     }
-    .edit{
+    .edit {
       margin-left: 10px;
-      margin-right:15px;
+      margin-right: 15px;
       color: @theme-color;
+      display: none;
+      margin-left: auto;
     }
-    .delete{
+    .delete {
       color: @theme-color;
+      display: none;
+    }
+    &.tree-title {
+      &:hover {
+        .iconfont {
+          display: inline-block;
+        }
+      }
     }
   }
   .groupOperate {
