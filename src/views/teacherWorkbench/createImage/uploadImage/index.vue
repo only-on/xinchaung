@@ -143,14 +143,14 @@ export default defineComponent({
             // worker.postMessage({chunks: fileChunks })
             console.log(fileChunks,'fileChunks')
             console.log(worker,'worker00000000')
-            worker.onmessage = (e:any) => {
-              const { hash, percent } = e.data
-              if (hash) {
-                resolve(e.data)
-              }
-              const chunkProgressPercent = percent
-              state.chunkProgressPercent = parseInt(chunkProgressPercent)
-            }
+            // worker.onmessage = (e:any) => {
+            //   const { hash, percent } = e.data
+            //   if (hash) {
+            //     resolve(e.data)
+            //   }
+            //   const chunkProgressPercent = percent
+            //   state.chunkProgressPercent = parseInt(chunkProgressPercent)
+            // }
           })
         },
         emitModel(data: any) {
@@ -177,7 +177,7 @@ export default defineComponent({
     const uploadPercent: any = (loaded / state.file.size) * 100
     state.uploadPercent = parseInt(uploadPercent)
   },
-         // 恢复上传
+  // 恢复上传
   handleResume(
     res: APIModel<{
       uploaded_size: []
@@ -208,41 +208,43 @@ export default defineComponent({
   },
         // 上传校验，检测文件有没有上传过
       resumeUpload(){
-             return request({
-          url:props.resumeAction,
-          body: null,
-          onBefore: xhr => {
-            xhr.setRequestHeader('X-File-Hash', state.fileHash)
-          },
-        })
-      .then((res:any) => {
-        const resumed = methods.handleResume(res, state.file)
+      //   console.log(props.resumeAction,state.fileHash,'分片的的额得得得')
+        
+      //        return request({
+      //     url:props.resumeAction,
+      //     body: null,
+      //     onBefore: xhr => {
+      //       xhr.setRequestHeader('X-File-Hash', state.fileHash)
+      //     },
+      //   })
+      // .then((res:any) => {
+      //   const resumed = methods.handleResume(res, state.file)
 
-        console.log('resumeUpload => ', res)
+      //   console.log('resumeUpload => ', res)
 
-        if (resumed === false) {
-          throw new Error(staticMessage.resumeFailure)
-        }
-        if (resumed === true) {
-          state.chunks.forEach(fileChunkUploaded)
-          state.status.uploaded()
-          methods.calcUploadPercent()
-          // scheduler.emit('image-arrangement-upload-file-into-vm', 'end')
-          return
-        }
-        if (Array.isArray(resumed)) {
-          resumed.forEach(index => {
-            fileChunkUploaded(state.chunks[index])
-          })
-        }
+      //   if (resumed === false) {
+      //     throw new Error(staticMessage.resumeFailure)
+      //   }
+      //   if (resumed === true) {
+      //     state.chunks.forEach(fileChunkUploaded)
+      //     state.status.uploaded()
+      //     methods.calcUploadPercent()
+      //     // scheduler.emit('image-arrangement-upload-file-into-vm', 'end')
+      //     return
+      //   }
+      //   if (Array.isArray(resumed)) {
+      //     resumed.forEach(index => {
+      //       fileChunkUploaded(state.chunks[index])
+      //     })
+      //   }
 
-        state.status.uploading()
-        // state.concurrent ? methods.parallelUpload() : methods.serialUpload() // 串行上传
-      })
-      .catch((err:any) => {
-        state.status.detectingFailed()
-        methods.onError(err, 'resume')
-      })
+      //   state.status.uploading()
+      //   // state.concurrent ? methods.parallelUpload() : methods.serialUpload() // 串行上传
+      // })
+      // .catch((err:any) => {
+        // state.status.detectingFailed()
+        // methods.onError(err, 'resume')
+      // })
         },
         // 上传前校验必选项目，并生成文件hash
         async  validateAndExecUpload(type:OperateAction){ 
@@ -261,14 +263,14 @@ export default defineComponent({
             if(!state.fileHash){
               console.log(state.chunks,'chunks')
               const hash = await methods.calculateHash(state.chunks)
-              state.fileHash = hash.hash
+              // state.fileHash = hash.hash
+              console.log('267行',state.fileHash)
             }
-            methods.resumeUpload().catch((err:any)=>{
-              message.error(err)
-            })
+            methods.resumeUpload()
           } catch (error:any) {
             methods.onError(error,'validate')
           }
+
         }
     }
     onMounted(() => {

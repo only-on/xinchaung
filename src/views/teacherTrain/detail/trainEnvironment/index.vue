@@ -70,11 +70,16 @@
     </div>
 </template>
 <script lang="ts">
+interface IselectType{
+ disk?:any[],
+ ram?:any[],
+ cpu?:any[]
+}
 interface Istate{
    edit:boolean,
    visible:boolean,
    mirroridArr:number[],
-   selectOption:any[]
+   selectOption:IselectType
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -94,7 +99,7 @@ export default defineComponent({
       edit:false,
       visible:false,
       mirroridArr:[],
-      selectOption:[]
+      selectOption:{}
     })
     const methods={
       toEdit(){

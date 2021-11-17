@@ -90,6 +90,7 @@ interface Istate{
    unGroupData:any,
    groupType:any,
    groupData:any,
+   editId:any
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -116,6 +117,7 @@ export default defineComponent({
         groupway:1,
         groupNumber:'',
         deleteGroupId:0,
+        editId:'',
         unGroupPrams:{
             name:'',
             type:2,
@@ -177,10 +179,12 @@ export default defineComponent({
           })
       },
       editGroup(name:any,id:any){
+          state.editId=id
           state.editvisible=true
           state.ifautoGroupEdit=true
           console.log('编辑分组')
           methods.getGroupMembers(name,id)
+          methods.unGroupList() 
       },
       editGroupList(){
           http.editGroupStu().then((res:any)=>{
@@ -191,9 +195,9 @@ export default defineComponent({
       deleteCancel(){
           state.deletevisible=false
       },
-      editModal(value:any,groupdata:any){
-          console.log(value,groupdata)
-          if(value){
+      editModal(value:any,groupdata:any,ifEdit:any){
+          console.log(value,groupdata,ifEdit)
+          if(value&&!ifEdit){
               const params:any={
                   id:props.trainId,
                   type:2,
@@ -208,6 +212,22 @@ export default defineComponent({
               })
               http.manualGrouping({param:params}).then((res:any)=>{
                 console.log(res)
+                methods.getGroupList()
+              })
+          }
+          if(value&&ifEdit){
+              const params:any={
+                  name:'',
+                  members:[]
+              }
+              groupdata.forEach((item:any,index:any)=>{
+                  params.name=item.name
+                 item.student_list.forEach((it:any)=>{
+                       params.members.push(it.id)
+                })
+              })
+              http.editGroupStu({param:params,urlParams:{group:state.editId}}).then((res:any)=>{
+                  methods.getGroupList()
               })
           }
           state.editvisible=false

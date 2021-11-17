@@ -54,7 +54,7 @@
       <div class="data-set-box">
         <span></span>
         <div class="data-set-right">
-          <span class="data-set-title">使用镜像</span>
+          <span class="data-set-title">数据集</span>
           <span class="data-set-name"
             >{{
               data.dataset.length > 0

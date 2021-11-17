@@ -11,7 +11,7 @@
       <div class="editCon">
         <!-- <transfer></transfer> -->
         <div class="hasGroup">
-          <div class="groupHeader">
+          <div v-if="!ifautoGroupEdit" class="groupHeader">
             <a-input
               placeholder="请输入组名"
               style="width: 70%"
@@ -96,7 +96,8 @@
         </div>
         <div class="unGroup">
           <div>
-            学生列表
+            <span v-if="groupType === 'class'">班级列表</span>
+            <span v-else>学生列表</span>
             <a-checkbox
               :indeterminate="indeterminate"
               v-model:checked="checkAll"
@@ -250,7 +251,7 @@ export default defineComponent({
     const methods = {
       editOk() {
         console.log(state.treeData, "treeData");
-        context.emit("editModal", true, state.treeData);
+        context.emit("editModal", true, state.treeData,props.ifautoGroupEdit);
       },
       handGroup() {},
       editCancel() {
@@ -400,25 +401,6 @@ export default defineComponent({
             );
             state.unGroupData1.splice(i, 1);
           });
-          // state.unGroupData1.forEach((item: any, index: any) => {
-          //   let i = state.unGroupData1.findIndex((it) => {
-          //     return state.checkedValues.includes(it.userProfile.id);
-          //   });
-          //   console.log(i);
-
-          //   state.treeData[state.selectedGroup].student_list.push(
-          //     state.unGroupData1[i]
-          //   );
-          //   state.unGroupData1.splice(i, 1);
-          // if (state.checkedValues.includes(item.userProfile.id)) {
-          //   state.treeData[state.selectedGroup].student_list.push(
-          //     state.unGroupData1[index]
-          //   );
-          // }
-          // state.unGroupData1 = state.unGroupData1.filter((item: any) => {
-          //   return !state.checkedValues.includes(item.userProfile.id);
-          // });
-          // });
         }
         state.flag = false;
         setTimeout(() => {
@@ -436,20 +418,13 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
-      watch(
-        () => state.groupedKeys,
-        () => {
-          console.log(
-            "selectedKeys",
-            state.groupedKeys,
-            "哈啊啊啊啊啊啊啊啊啊啊啊啊啊哈啊啊啊啊啊啊爱好"
-          );
-        }
-      );
     watch(
       () => props.unGroupData,
       (val: any) => {
-        state.unGroupData1 = val;
+        state.unGroupData1 = val; 
+        if(!props.groupData){
+          state.treeData=[]
+        }
       },
       {
         immediate: true,
