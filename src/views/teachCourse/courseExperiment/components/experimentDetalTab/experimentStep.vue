@@ -12,12 +12,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent, ref, watch,Ref } from "vue";
 
 export default defineComponent({
   props: ["modelValue","type"],
   setup(props,{emit}) {
-    const steps = ref([]);
+    const steps:Ref<any[]> = ref([]);
     watch(
       () => props.modelValue,
       () => {
