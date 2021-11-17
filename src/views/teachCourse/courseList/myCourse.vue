@@ -8,30 +8,39 @@
       />
       <tag @tagChange="tagChange"></tag>
     </div>
-    <div class="course-list">
-      <div class="crate-card course-item create-box">
-        <div class="create-btn" @click="create">
-          <span class="icon-chuangjian iconfont"></span
-          ><span class="create-text">创建课程</span>
+    <template v-if="courseList.length >0">
+      <div class="course-list">
+        <div class="crate-card course-item create-box">
+          <div class="create-btn" @click="create">
+            <span class="icon-chuangjian iconfont"></span
+            ><span class="create-text">创建课程</span>
+          </div>
         </div>
+        <course-card
+          v-for="(item, index) in courseList"
+          :key="item.id"
+          :courseData="item"
+          :currentTab="currentTab"
+          :index="index"
+          @updateData="updateData"
+          @update="init"
+        ></course-card>
       </div>
-      <course-card
-        v-for="(item, index) in courseList"
-        :key="item.id"
-        :courseData="item"
-        :currentTab="currentTab"
-        :index="index"
-        @updateData="updateData"
-        @update="init"
-      ></course-card>
-    </div>
-    <div class="page-box">
-      <a-pagination
-        :default-current="1"
-        :default-page-size="11"
-        :total="totalCount"
-        @change="pageChange"
-      />
+      <div class="page-box">
+        <a-pagination
+          :default-current="1"
+          :default-page-size="11"
+          :total="totalCount"
+          @change="pageChange"
+        />
+      </div>
+    </template>
+
+    <div v-else>
+      <empty :text="emptyText" :type="emptyType" />
+      <div v-if="emptyType==='empty'" style="text-align:center;margin-top:30px">
+        <a-button type="primary" @click="create">创建课程</a-button>
+      </div>
     </div>
   </div>
 </template>
@@ -49,7 +58,8 @@ import {
 import tag from "./tag.vue";
 import courseCard from "./courseCard.vue";
 import { getCourseListApi } from "./api";
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router";
+import empty from "src/components/Empty.vue";
 
 type TreactiveData = {
   directionTag: any[];
@@ -67,15 +77,18 @@ type TreactiveData = {
   };
   courseList: any[];
   totalCount: number;
+  emptyText: string;
+  emptyType: 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty';
 };
 export default defineComponent({
   components: {
     tag,
     "course-card": courseCard,
+    empty,
   },
   props: ["currentTab"],
   setup(props) {
-    const router = useRouter()
+    const router = useRouter();
     const currentTab = props.currentTab;
     const reactiveData: TreactiveData = reactive({
       directionTag: [{}],
@@ -93,8 +106,27 @@ export default defineComponent({
       },
       courseList: [],
       totalCount: 0,
+      emptyText: "您还未创建课程，可点击下方按钮进行创建。",
+      emptyType: "empty",
     });
 
+    watch(
+      () => reactiveData.params,
+      () => {
+        if (
+          reactiveData.params.directions ||
+          reactiveData.params.category ||
+          reactiveData.params.name
+        ) {
+          console.log(1212);
+          
+          (reactiveData.emptyType = "searchEmpty");
+            (reactiveData.emptyText =
+              "暂未搜到相关数据，可点击下方按钮创建您需要的工作台。");
+        }
+      },
+      { deep: true, immediate: true }
+    );
     onMounted(() => {
       init();
       // setTimeout(()=>{
@@ -115,7 +147,7 @@ export default defineComponent({
       };
       getCourseList();
     }
-    function onSearch(val:any) {
+    function onSearch(val: any) {
       reactiveData.params.name = val;
       reactiveData.params.page = 1;
       reactiveData.params.limit = 12;
@@ -131,7 +163,6 @@ export default defineComponent({
     // 获取课程列表
     function getCourseList() {
       getCourseListApi(reactiveData.params).then((res) => {
-     
         reactiveData.courseList = res?.data.list;
         reactiveData.totalCount = res?.data.page.totalCount;
       });
@@ -150,8 +181,8 @@ export default defineComponent({
     // 跳转到创建页面
     function create() {
       router.push({
-        path:"/teacher/course/create"
-      })
+        path: "/teacher/course/create",
+      });
     }
     // 设置参数
     return {
@@ -162,7 +193,7 @@ export default defineComponent({
       updateData,
       init,
       pageChange,
-      create
+      create,
     };
   },
 });

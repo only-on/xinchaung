@@ -5,52 +5,62 @@
       style="width: 450px"
       @search="onSearch"
     />
-    <div class="course-list">
-      <course-card
-        v-for="(item, index) in courseList"
-        :key="item.id"
-        :courseData="item"
-        :currentTab="currentTab"
-        :index="index"
-      ></course-card>
-    </div>
+    <template v-if="courseList.length">
+      <div class="course-list">
+        <course-card
+          v-for="(item, index) in courseList"
+          :key="item.id"
+          :courseData="item"
+          :currentTab="currentTab"
+          :index="index"
+        ></course-card>
+      </div>
 
-    <div class="page-box">
-      <a-pagination
-        :default-current="1"
-        :default-page-size="12"
-        :total="totalCount"
-        @change="pageChange"
-      />
+      <div class="page-box">
+        <a-pagination
+          :default-current="1"
+          :default-page-size="12"
+          :total="totalCount"
+          @change="pageChange"
+        />
+      </div>
+    </template>
+
+    <div v-else>
+      <empty :text="emptyText" :type="emptyType" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs } from "vue";
+import { defineComponent, onMounted, reactive, toRefs,watch } from "vue";
 import { getCourseListApi } from "./api";
 import courseCard from "./courseCard.vue";
-type TreactiveData={
-    params: {
-        directions: string,
-        category: string,
-        name: string,
-        page: number,
-        limit: number,
-        direction:string,
-        state: number,
-      },
-      courseList: any[],
-      totalCount: number,
-}
+import empty from "src/components/Empty.vue";
+type TreactiveData = {
+  params: {
+    directions: string;
+    category: string;
+    name: string;
+    page: number;
+    limit: number;
+    direction: string;
+    state: number;
+  };
+  courseList: any[];
+  totalCount: number;
+  emptyText: string;
+  emptyType: 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty';
+};
 export default defineComponent({
   components: {
     "course-card": courseCard,
+    empty,
   },
   props: ["currentTab"],
   setup(props) {
     const currentTab = props.currentTab;
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       params: {
         directions: "",
         category: "",
@@ -62,7 +72,24 @@ export default defineComponent({
       },
       courseList: [],
       totalCount: 0,
+      emptyText: "暂无数据。",
+      emptyType: "empty",
     });
+     watch(
+      () => reactiveData.params,
+      () => {
+        if (
+          reactiveData.params.name
+        ) {
+          console.log(1212);
+          
+          (reactiveData.emptyType = "searchEmpty");
+            (reactiveData.emptyText =
+              "暂未搜到相关数据");
+        }
+      },
+      { deep: true, immediate: true }
+    );
     onMounted(() => {
       init();
     });

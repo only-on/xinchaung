@@ -84,10 +84,14 @@ export default defineComponent({
     const currentRole: number = storage.lStorage.get("role");
     const currentTab = route.query.currentTab;
     const course_id=route.query.course_id
+    const type=route.query.type
     const reactiveData: TreactiveData = reactive({
       tabs: [],
       activeKey:"1"
     });
+    if (type==='resource') {
+      reactiveData.activeKey="4"
+    }
     provide("course_id",course_id)
     onMounted(() => {
       reactiveData.tabs = settingTab();

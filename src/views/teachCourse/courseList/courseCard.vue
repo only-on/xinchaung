@@ -1,7 +1,7 @@
 <template>
   <div class="course-item">
     <div class="course-item-box">
-      <div class="cover-box" @click="toDetail">
+      <div class="cover-box" @click="toDetail('experiment')">
         <img
           :src="data.url ? data.url : '/img/default/cover.png'"
           alt=""
@@ -105,7 +105,7 @@
       >
         <h2>{{ data.name }}</h2>
         <div class="base-init-action">
-          <span>实验</span><span>资源</span
+          <span @click="toDetail('experiment')">实验</span><span @click="toDetail('resource')">资源</span
           ><span @click="saveToMy">保存到我的</span>
         </div>
         <div class="base-init-show">
@@ -237,12 +237,13 @@ export default defineComponent({
     }
 
     // 跳转详情
-    function toDetail() {
+    function toDetail(type:string) {
       router.push({
         path:"/teacher/course/detail",
         query:{
           course_id:data.id,
-          currentTab:currentTab
+          currentTab:currentTab,
+          type:type
         }
       })
     }
