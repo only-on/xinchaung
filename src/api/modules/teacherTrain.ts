@@ -9,7 +9,7 @@ export default {
   setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
   // 资源
   delResource: { url: `/teacher-train/del-upload`, method: "GET", dataType: 'json' },
-  uploadResource: { url: `/teacher-train/upload-resource`, method: 'POST', dataType: 'formdata' },
+  uploadResource: { url: `/api/service/resources`, method: 'POST', dataType: 'json' },
   getResourceList: { url: '/teacher-train/get-resource-list', method: 'POST', dataType: 'json' },
 
   // 新建实训  选择环境
@@ -53,8 +53,8 @@ export default {
   createMirror: { url: '/api/content/content/template', method: "POST" },
   // 创建第三步
   saveTrainContents: { url: '/api/train/trains/content/{train}', method: "PUT", dataType: 'json' },// 保存实训内容
-  resourceList: { url: '/teacher-train/get-resource-list', method: "POST", dataType: 'formdata' },
-  deleteResource: { url: '/teacher-train/del-upload', method: "POST", dataType: 'formdata' },
+  resourceList: { url: '/api/service/resources', method: "GET", dataType: 'json' },
+  deleteResource: { url: '/api/service/resources/{resource}', method: "DELETE", dataType: 'formdata' },
 
   createTrainLastStep: { url: '/api/train/trains/succeed/{train}', method: "PUT" },//创建实训最后一步
 
@@ -64,7 +64,9 @@ export default {
   usersTobeGrouped: { url: '/api/arrange/groups/search', method: "GET" },//待分组排课用户列表
   userHasGrouped: { url: '/api/arrange/groups/members', method: "GET" },//已经分组用户列表
   manualGrouping: { url: '/api/arrange/groups', method: "POST", dataType: 'json' },//手动分组
-  groupList: { url: '/api/arrange/groups', method: "GET" },
+  groupList: { url: '/api/arrange/groups', method: "GET" },//分组列表
+  groupMembersList: { url: 'api/arrange/groups/members', method: "GET" },//显示分组成员列表
+  editGroupStu: { url: '/api/arrange/groups/{group}', method: "PUT" },//编辑分组
   getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }
 

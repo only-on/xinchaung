@@ -15,7 +15,7 @@
                         <template #action="{record}">
                             <div class="action">
                                <span @click="deleteGroup(record.id)">删除</span>
-                               <span @click="editGroup">编辑</span>
+                               <span @click="editGroup(record.name,record.id)">编辑</span>
                             </div>
                         </template>
                     </a-table>
@@ -38,6 +38,7 @@
                 :editvisible='editvisible' 
                 @edit-modal='editModal'
                 :unGroupData='unGroupData'
+                :groupData='groupData'
                 :groupType='groupType'
                 @search-group='searchGroup'
                 :ifautoGroupEdit='ifautoGroupEdit'>
@@ -65,7 +66,7 @@
                      </a-select>
                      </span>
                      <a-input class="groupItem" style="width:170px" v-model:value="groupNumber"></a-input>
-                     {{trainId}}trainIdtrainIdtrainIdtrainId
+                     {{trainId}}
                      <a-button type="primary" @click="grouping">分组</a-button>
                 </div>
                 </a-modal>
@@ -88,12 +89,14 @@ interface Istate{
    unGroupPrams:any,
    unGroupData:any,
    groupType:any,
+   groupData:any,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 import groupModal from '../../components/groupModal/index.vue'
+import { stat } from 'fs';
 export default defineComponent({
     name:'groupingInfor',
     props:['propTrainDetailInfo','trainId'],
@@ -119,6 +122,7 @@ export default defineComponent({
             id:props.trainId,
         },
         unGroupData:[],
+        groupData:[],
         groupType:'class',
       columns:[{
         title: '小组名称',
@@ -163,10 +167,27 @@ export default defineComponent({
           state.unGroupPrams.name=val
           methods.unGroupList()
       },
-      editGroup(){
+      getGroupMembers(name:any,id:any){
+          http.groupMembersList({param:{group_id:id,withs:'userProfile'}}).then((res:any)=>{
+              console.log(res)
+              state.groupData=[{
+                name:name,
+                student_list:res.data.list,
+              }]
+          })
+      },
+      editGroup(name:any,id:any){
           state.editvisible=true
           state.ifautoGroupEdit=true
+          console.log('编辑分组')
+          methods.getGroupMembers(name,id)
       },
+      editGroupList(){
+          http.editGroupStu().then((res:any)=>{
+              console.log(res)
+          })
+      },
+    //   
       deleteCancel(){
           state.deletevisible=false
       },

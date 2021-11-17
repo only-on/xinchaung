@@ -36,6 +36,7 @@ interface Istate{
    data:any[],
    file:any,
    name:string,
+   size:string,
    introduce:string
 } 
 import { defineComponent,onMounted,watch,inject,reactive,toRefs,ref} from 'vue'
@@ -84,6 +85,7 @@ export default defineComponent({
         data:[],
         file:'',
         name:'',
+        size:'',
         introduce:''
     })
     const methods={
@@ -91,12 +93,15 @@ export default defineComponent({
            console.log(file)
            state.name=file.name
            state.file=file
+           state.size=file.size
         return false
        },
        getResourceList(){
-           const fd=new FormData();
-           fd.append('query[id]',props.trainId)
-           http.resourceList({param:fd}).then((res:any)=>{
+          const params={
+              type:2,
+              id:props.trainId,
+          }
+           http.resourceList({param:params}).then((res:any)=>{
                console.log(res)
                state.data=res.data.list
             //    context.emit('stepFourInfo',state.data)
@@ -117,27 +122,25 @@ export default defineComponent({
                message.warning('资源说明不能为空！')
                return
            }
-           const fd=new FormData()
-          fd.append('resource',state.file)
-          fd.append('train_id',props.trainId)
-          fd.append('introduce',state.introduce)
-           http.uploadResource({param:fd}).then((res: any) => {
-             console.log(res)
-             message.warning('文件上传成功')
-             state.file=''
-             state.name=''
-             state.introduce=''
-             methods.getResourceList()
-        })
-        .catch(() => {
-          message.error('网络错误')
-        })
+           const params={
+                relate_id:props.trainId,
+                name:state.name,
+                url:"/resource/"+state.name,
+                size:state.size.toString(),
+                posfix:type,
+                describe:state.introduce,
+                type:2
+           }
+           http.uploadResource({param:params}).then((res:any)=>{
+               console.log(res)
+                methods.getResourceList()
+           })
+           .catch(() => {
+             message.error('网络错误')
+            })
        },
        deleteUploadFile(id:any){
-           const fd = new FormData()
-           fd.append('upload_type','train_resource')
-           fd.append('id',id)
-           http.deleteResource({param:fd}).then((res:any)=>{
+           http.deleteResource({urlParams:{resource:id}}).then((res:any)=>{
                console.log(res)
                message.warning('删除成功')
                methods.getResourceList()
@@ -168,14 +171,10 @@ export default defineComponent({
     //     immediate:true
     // })
     onMounted(()=>{
-        
+        methods.getResourceList()
         console.log(inject['stepInfoFour'])
-        if (props.type==='course') {
-            methods.getResourceList()
-        }else{
             if(inject['stepInfoFour']){
             state.data=inject['stepInfoFour']
-        }
         }
         
     })

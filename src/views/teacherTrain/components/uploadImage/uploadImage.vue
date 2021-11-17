@@ -8,7 +8,7 @@
                     <img class="imgHasUpload" :src="imgSrc"/>
                     <a-radio class="radio" value='upload'></a-radio>
                     <!-- :class='edit?"noevents delete":"delete"' -->
-                    <span v-if="!edit" @click="deledeImg" class="iconfont icon-shanchu-copy"></span>
+                    <span v-if="!edit" @click.stop="deledeImg" class="iconfont icon-shanchu-copy"></span>
                    </div>
                 </div>
                 <div v-else>
@@ -95,6 +95,7 @@ export default defineComponent({
           context.emit('img-src',state.file)
         },
         deledeImg(){
+          console.log('删除qqqqqq')
           state.imgSrc=''
         },
         beforeUpload(file:any){
@@ -171,6 +172,7 @@ export default defineComponent({
       position: absolute;
       right: 10px;
       bottom:10px;
+      z-index: 200;
     }
     .upload-text{
       text-align: center;
@@ -294,6 +296,7 @@ export default defineComponent({
       position: absolute;
       right:5px;
       bottom:5px;
+      z-index: 1000;
     }
     .upload-text{
       text-align: center;

@@ -19,17 +19,17 @@
             ></a-input
             ><a-button type="primary" @click="addGroup">创建</a-button>
           </div>
-          <div class="groupOperate" v-if="ifautoGroupEdit">
+          <!-- <div class="groupOperate" v-if="ifautoGroupEdit">
             <a-input style="width: 150px"></a-input>
             <a-button type="primary">修改</a-button>
-          </div>
-          <div class="groupOperate" v-else>
+          </div> -->
+          <!-- <div class="groupOperate" v-else> -->
             <!-- <a-input style="width:150px"></a-input>
                     <a-button type="primary">编辑</a-button>
                     <a-button type="primary">解散</a-button> -->
-          </div>
+          <!-- </div> -->
           <!-- :treeData='treeData'   :replaceFields='replaceFields' -->
-          <a-tree checkable @select="selectTree">
+          <a-tree checkable @select="selectTree" v-model:checkedKeys="groupedKeys">
             <template #switcherIcon>
               <down-outlined />
             </template>
@@ -37,12 +37,20 @@
               :checkable="false"
               v-for="(item, index) in treeData"
               :key="index"
-              :title="item.name"
             >
+            <!-- :title="item.name" -->
+            <template #title>
+              <div class='title'>
+                <!-- <span class="name">{{item.name}}</span> -->
+                <a-input class="name inputname" v-model:value="item.name"></a-input>
+                <span class="edit icon-bianji1 iconfont"></span>
+                <span class="delete icon-shanchu-copy iconfont"></span>
+              </div>
+            </template>
               <a-tree-node
-                :checkable="false"
-                v-for="(it, j) in item.student_list"
-                :key="index + '' + j"
+                :checkable="true"
+                v-for="it in item.student_list"
+                :key="index + '-' + it?.userProfile?.id"
                 :title="it?.userProfile?.name"
               >
               </a-tree-node>
@@ -51,7 +59,7 @@
         </div>
         <div>
           <div class="transferBox">
-            <div class="move">
+            <div :class="groupedKeys.length ? 'moveHoverRight' : 'move'">
               <span
                 @click="leftMove"
                 class="icon-chuansuojiantou iconfont"
@@ -148,6 +156,7 @@ interface Istate {
   replaceFields: any;
   groupname: string;
   checkedValues: number[];
+  groupedKeys:number[];
   selectedKeys: string[];
   indeterminate: boolean;
   checkAll: boolean;
@@ -181,6 +190,7 @@ export default defineComponent({
     "ifautoGroupEdit",
     "unGroupData",
     "groupType",
+    "groupData"
   ],
   components: {
     Empty,
@@ -200,6 +210,7 @@ export default defineComponent({
       groupname: "",
       checkedValues: [],
       selectedKeys: [],
+      groupedKeys:[],
       indeterminate: false,
       checkAll: false,
       inputGroupName: "",
@@ -232,7 +243,6 @@ export default defineComponent({
         console.log(state.groupname);
         context.emit("search-group", state.groupname);
       },
-      leftMove() {},
       check(checkedKeys: any, e: any) {
         console.log(checkedKeys, e, "hhhh");
         state.checkedValues = checkedKeys.checked;
@@ -268,6 +278,28 @@ export default defineComponent({
       clickTree(index: any) {
         state.selectedGroup = index;
       },
+      leftMove() {
+        console.log('哈哈哈哈')
+       
+        // if (props.groupType === "class"){
+
+        // }else{
+          const checkys:any=[]
+          state.groupedKeys.forEach((item:any)=>{
+            checkys.push(item.split("-")[1])
+          })
+          console.log(checkys,'checkyscheckyscheckys')
+          state.unGroupData1=state.treeData[0].student_list.filter((item:any)=>{
+            console.log(checkys,item.userProfile.id.toString(),checkys.includes(Number(item.userProfile.id)))
+              return checkys.includes(item.userProfile.id.toString());
+          })
+          state.treeData=state.treeData[0].student_list.filter((item:any)=>{
+            console.log(item)
+              return checkys.includes(!item.userProfile.id.toString());
+          })
+          
+        // }
+      },
       rightMove() {
         console.log(state.selectedGroup, "state.selectedGroup");
         if (state.selectedGroup === "") {
@@ -290,22 +322,7 @@ export default defineComponent({
               state.unGroupData1[i][ci]
             );
             state.unGroupData1[i].splice(ci, 1);
-            // console.log(state.unGroupData1,item,i,j)
-            // let ids:any=[]
-            // state.unGroupData1[i].forEach((item:any)=>{
-            //         ids.push(item.userProfile.id)
-            // })
-            // console.log(ids,j,'ids','j')
-            // let indexj:any=ids.indexOf(Number(j))
-            // console.log(ids,indexj,'下标'),
-            // console.log(state.unGroupData1[i][indexj],'添加的数据www')
-            // state.treeData[state.selectedGroup].student_list.push(state.unGroupData1[i][indexj])
-            // deleteids.push({i:i,j:indexj})
           });
-          // deleteids.forEach((item:any,index:any)=>{
-          //     console.log(item)
-          //     state.unGroupData1[item.i].splice(item.j,1)
-          // })
         } else {
           state.unGroupData1.forEach((item: any, index: any) => {
             if (state.checkedValues.includes(item.userProfile.id)) {
@@ -334,10 +351,10 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
-      watch(state.checkedKeys, () => {
+    watch(()=>state.groupedKeys, () => {
         console.log(
           "selectedKeys",
-          state.checkedKeys,
+          state.groupedKeys,
           "哈啊啊啊啊啊啊啊啊啊啊啊啊啊哈啊啊啊啊啊啊爱好"
         );
       });
@@ -345,6 +362,15 @@ export default defineComponent({
       () => props.unGroupData,
       (val: any) => {
         state.unGroupData1 = val;
+      },
+      {
+        immediate: true,
+      }
+    );
+     watch(
+      () => props.groupData,
+      (val: any) => {
+        state.treeData = val;
       },
       {
         immediate: true,
@@ -373,6 +399,14 @@ export default defineComponent({
     background-color: @theme-color;
     color: white;
   }
+  .moveHoverRight{
+    width: 24px;
+    height: 24px;
+    border-radius: 2px;
+    background-color: @theme-color;
+    color: white;
+    margin-bottom:20px;
+  }
   .move:nth-child(1) {
     margin-bottom: 20px;
   }
@@ -399,6 +433,24 @@ export default defineComponent({
     justify-content: space-between;
     margin-top: 10px;
     // border-bottom: 1px solid #C5D2DA;
+  }
+  .title{
+    .name{
+      display: inline-block;
+      width: 225px;
+    }
+    .inputname{
+      height:25px;
+      width:225px;
+    }
+    .edit{
+      margin-left: 10px;
+      margin-right:15px;
+      color: @theme-color;
+    }
+    .delete{
+      color: @theme-color;
+    }
   }
   .groupOperate {
     margin-top: 10px;
