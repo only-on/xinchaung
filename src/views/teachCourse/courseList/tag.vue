@@ -182,7 +182,11 @@ export default defineComponent({
     function getDirections() {
       return new Promise((resolve: any) => {
         courseApi.getDirectionsApi({}).then((res) => {
-          reactiveData.directionTag = res?.data;
+          if (res?.data.list) {
+            reactiveData.directionTag = res?.data.list;
+          }else{
+            reactiveData.directionTag = res?.data;
+          }
           resolve(res);
         });
       });

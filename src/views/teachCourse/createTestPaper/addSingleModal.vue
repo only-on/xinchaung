@@ -75,7 +75,7 @@
             required
           >
             <a-input v-model:value="item.content" />
-            <a-checkbox :value="item.index">设为答案</a-checkbox>
+            <a-checkbox :value="index">设为答案</a-checkbox>
           </a-form-item>
         </div>
       </a-checkbox-group>
