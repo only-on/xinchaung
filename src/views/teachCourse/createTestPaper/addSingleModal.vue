@@ -22,9 +22,9 @@
            @select="change"
            ref="select"
         >
-          <a-select-opt-group label="公有">
+          <!-- <a-select-opt-group label="公有">
             <a-select-option :value="item.id" v-for="item in commonList" :key="item.id">{{item.name}}</a-select-option>
-          </a-select-opt-group>
+          </a-select-opt-group> -->
           <a-select-opt-group label="私有">
             <a-select-option :value="item.id" v-for="item in privateList" :key="item.id">{{item.name}}</a-select-option>
           </a-select-opt-group>
@@ -61,7 +61,7 @@
             required
           >
             <a-input v-model:value="item.content" />
-            <a-radio :value="item.content">设为答案</a-radio>
+            <a-radio :value="index">设为答案</a-radio>
           </a-form-item>
         </div>
       </a-radio-group>
@@ -75,7 +75,7 @@
             required
           >
             <a-input v-model:value="item.content" />
-            <a-checkbox :value="item.content">设为答案</a-checkbox>
+            <a-checkbox :value="item.index">设为答案</a-checkbox>
           </a-form-item>
         </div>
       </a-checkbox-group>
@@ -146,6 +146,7 @@ import { IBusinessResp } from 'src/typings/fetch.d'
 import { Ihttp, IpaperType } from './typings'
 import knowledgeModal from './knowledgeModal.vue'
 import { message } from 'ant-design-vue'
+import {useRoute} from "vue-router"
 
 export default defineComponent({
   name: '',
@@ -167,7 +168,9 @@ export default defineComponent({
   setup(props, {emit}) {
     console.log(props)
     const http = (request as Ihttp).teachCourse
-    // const formRef = ref();
+    const formRef:any = ref(null);
+    const route=useRoute()
+    const paper_id=route.query.paper_id
     let formState = reactive({
       directory: undefined,
       desc: '',
@@ -257,6 +260,9 @@ export default defineComponent({
       }).then((res: IBusinessResp) => {
         console.log(res.data)
         if (!res.status) return
+        if (paper_id) {
+          relationQuests([res.data.id])
+        }
         emit('update:isShow', false)
         let arr = res.data
         let answersList: number[] = []
@@ -275,8 +281,28 @@ export default defineComponent({
         arr.keywordsList = arr.keywords.map((v:any) => v.keyword).join(' ')
         arr.answersList = answersList
         emit('addPaperContent', arr)
+        
+        
       })
       // emit('addPaperContent', Object.assign(formState, {type: props.addType}))
+    }
+
+    // 关联习题
+    function relationQuests(questions:any) {
+      http
+        .relationQuest({
+          param: {
+            questions: questions,
+          },
+          urlParams: {
+            entity_id: paper_id,
+            entity_type: "test",
+          },
+        })
+        .then((res: IBusinessResp) => {
+          console.log(res);
+          // getPaperList()
+        });
     }
     const validateRule = () => {
       console.log(formState)
@@ -352,7 +378,8 @@ export default defineComponent({
       formState.fillChecked = false
       formState.shortAnswer = ''
       formState.shortKey = ''
-
+      console.log(formRef);
+      formRef.value.resetFields()
       emit('update:isShow', false)
     }
 
@@ -429,6 +456,7 @@ export default defineComponent({
       change,
       openSelect,
       select,
+      formRef
     }
   },
 })

@@ -382,6 +382,7 @@ export default defineComponent({
         path: "/teacher/teacherCourse/createTestPaper",
         query: {
           paper_id: paper_id,
+          course_id:course_id
         },
       });
     }

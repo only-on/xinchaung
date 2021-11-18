@@ -396,6 +396,14 @@ export default {
     url:"/api/v1/question/{entity_type}/{entity_id}/relationships/questions",
     method: "PUT",
     dataType: "json"
+  },
+  getPaperDetailApi:{
+    url:"/api/v1/question/papers/{paper_id}",
+    method:"GET"
+  },
+  updatePaperBaseApi:{
+    url:"api/v1/question/papers/{paper_id}",
+    method: "PUT",
   }
 }
 
@@ -490,4 +498,6 @@ export interface ITeacherCourseApis {
   saveReportTemplateApi: TFHttpSend
   createCourseBaseApi:TFHttpSend
   deleteQuestionPaperApi:TFHttpSend
+  getPaperDetailApi:TFHttpSend
+  updatePaperBaseApi:TFHttpSend
 }

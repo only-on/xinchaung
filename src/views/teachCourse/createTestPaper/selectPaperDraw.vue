@@ -61,6 +61,7 @@ import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, wat
 import { Ihttp, IpaperType } from './typings'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
+import {cloneDeep } from "lodash"
 
 export default defineComponent({
   name: '',
@@ -73,7 +74,7 @@ export default defineComponent({
       default: []
     }
   },
-  emits: ['update:isShow', 'update:selectType', 'update:modelValue'],
+  emits: ['update:isShow', 'update:selectType', 'update:modelValue','allSelect',"add","del"],
   setup(props, {emit}) {
     const http = (request as Ihttp).teachCourse
     console.log(props)
@@ -129,6 +130,7 @@ export default defineComponent({
     }
     // 全选
     const selectAllHandle = () => {
+      emit("allSelect",cloneDeep(list.paperList))
       list.paperList.forEach(list => {
         list.isChecked = true
         let answersList: number[] = []
@@ -157,6 +159,7 @@ export default defineComponent({
     }
     // 选择习题
     const add = (i: number) => {
+      emit("add",cloneDeep(list.paperList[i]))
       console.log(list.paperList)
       // let arr = list.paperList
       // arr.forEach(list => {
@@ -187,6 +190,8 @@ export default defineComponent({
     // 取消选择的习题
     const del = (i: number) => {
       console.log(list.paperList)
+      emit("del",cloneDeep(list.paperList[i]))
+      
       list.paperList[i].isChecked = false
       // list.paperList.splice(i, 1)
       // let arr = list.paperList
