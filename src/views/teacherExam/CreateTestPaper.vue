@@ -18,6 +18,7 @@
         <div class="info">
           <div class="tit">试卷试题</div>
           <div class="fraction">
+            <!-- <div>{{PaperList[0].data}}</div> -->
             （<span class="num1">已选试题：<span class="num">{{selectedPaperIds && selectedPaperIds.length}}</span>个</span><span>试题总分：<span class="num">{{totalScore}}</span>分</span>）
           </div>
         </div>
@@ -36,7 +37,7 @@
         <div class="questionsList setScrollbar">
           <template v-if="avtiveData.length">
             <div  class="duo">
-              <div class="item" v-for="(v,k) in selectQuestionList.data" :key="v">
+              <div class="item" v-for="(v,k) in avtiveData" :key="v">
                 <div class="subject">
                   <div class="serial">
                     <span class="number">{{k+1}}、</span>
@@ -79,7 +80,7 @@
     :closable="false"
     v-model:visible="visible"
   >
-    <div class="selectPaper">
+    <div class="selectPaper" v-if="true">
       <div class="tabs">
         <div v-for="v in PaperList" :key="v.name" :class="v.type_id===search.type_id?'active':''" @click="activeChange(v)">{{v.name}}</div>
       </div>
@@ -98,7 +99,7 @@
         </div>
         
       </div>
-      <div class="dataList">
+      <div class="dataList setScrollbar">
         <div class="list" >
           <div class="item" v-for="v in QuestionsList" :key="v.id">
             <div>
@@ -109,25 +110,28 @@
           </div>
         </div>
         <Empty v-if="!QuestionsList.length" text="暂未添加该类型试题！" />
-        <a-pagination v-if="QuestionsList.length"
-          show-size-changer
-          v-model:current="search.page"
-          v-model:pageSize="search.limit"
-          :total="totalCount"
-          @change="pageChange"
-          @showSizeChange="onShowSizeChange"
-        />
       </div>
+      <a-pagination v-if="QuestionsList.length"
+        show-size-changer
+        v-model:current="search.page"
+        v-model:pageSize="search.limit"
+        :total="totalCount"
+        @change="pageChange"
+        @showSizeChange="onShowSizeChange"
+      />
     </div>
+
+    <SelectPaper v-if="false" v-model:value="comQuestionList" v-model:classifyValue="PaperList"  v-model:totalScore="totalScore" />
   </a-drawer>
 </template>
 <script lang="ts">
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs } from 'vue'
+import { defineComponent,ref, onMounted,reactive,Ref,inject, computed,toRefs,watch } from 'vue'
 import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
+import SelectPaper from 'src/components/selectPaper.vue'
 interface IlistItem{
   id:number;
   name:string;
@@ -157,12 +161,12 @@ interface IPaperList{
   ids:number[]
 }
 interface Istate{
-  formRef:any,
+  // formRef:any,
 }
 export default defineComponent({
   name: '',
   components: {
-    // dan
+    SelectPaper
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -182,8 +186,9 @@ export default defineComponent({
     const totalScore = ref<number>(0);
     // var formRef:Ref<string> =ref('formRef')
     // const formRef = ref();
+    let formRef = ref()
     const state:Istate=reactive({
-      formRef:'formRef',
+      // formRef:'formRef',
     })
     const http=(request as any).teacherExam
     const ForumSearch:IforumSearch=reactive({
@@ -207,6 +212,14 @@ export default defineComponent({
         ],
         description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
     }
+    var comQuestionList=reactive([])
+    watch(PaperList,(val:any)=>{
+
+      console.log(val)
+      console.log(totalScore.value)
+
+    },{immediate:true,deep:true})
+
     var selectQuestionList= computed(()=>{
       type Tactive=Pick<IPaperList,'data'|'ids'>
       let active:Tactive={
@@ -281,6 +294,8 @@ export default defineComponent({
       })
     }
     const  openSelectquestion = () => {
+      visible.value=true
+      // return
       let obj={
         ...search,
         pool_id:search.level_id?search.pool_id:'',
@@ -291,7 +306,7 @@ export default defineComponent({
         QuestionsList.length=0
         QuestionsList.push(...res.data.list)
         totalCount.value=res.data.page.totalCount
-         visible.value=true
+        
       })
       
     };
@@ -347,7 +362,7 @@ export default defineComponent({
     }
     function submit(){
       // formRef.value.validate().then(()=>{
-      state.formRef.validate().then(()=>{
+      formRef.value.validate().then(()=>{
         console.log('验证过');
         let obj={
           ...ForumSearch,
@@ -366,7 +381,7 @@ export default defineComponent({
     onMounted(()=>{
      initData()
     })
-    return {...toRefs(state),totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
+    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
   },
 })
 </script>
@@ -592,9 +607,9 @@ export default defineComponent({
         }
       }
     }
-    .ant-pagination{
+  }
+  .ant-pagination{
       text-align: center;
     }
-  }
 }
 </style>

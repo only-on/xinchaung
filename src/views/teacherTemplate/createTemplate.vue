@@ -48,7 +48,7 @@ import widgetThumb from './components/widgetThumb.vue'
 import widgetCreate from './components/widgetCreate.vue'
 import {widgetDataModel} from './components/DM'
 import {useRoute, useRouter} from 'vue-router'
-import { MessageApi } from "ant-design-vue/lib/message";
+import { MessageApi } from "ant-design-vue/lib/message"
 import dragGable from 'vuedraggable'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'

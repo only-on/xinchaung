@@ -11,7 +11,7 @@ export default {
                 '0': '试卷管理',
                 '1': '考试中心',
             }
-            return dataDetailMap[query!.currentTab.toString()] || '试卷管理'
+            return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
           },
         authCode: 'teacherExam'  
     },

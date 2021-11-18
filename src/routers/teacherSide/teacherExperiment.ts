@@ -56,22 +56,22 @@ export default {
                 authCode: 'creatTypeExperiment'
             },
         },
-        // {
-        //     path: "ExperimentDetail",
-        //     name: "ExperimentDetail",
-        //     component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
-        //     meta: {
-        //         title: "实验详情",
-        //         authCode: 'ExperimentDetail'
-        //     },
-        // },
-        // {
-        //     path: "ExperimentalStepsDetail",
-        //     component: () => import("src/views/teacherExperiment/ExperimentalStepsDetail.vue"),
-        //     meta:{
-        //         title: "实验步骤详情",
-        //         authCode: ''
-        //     },
-        // }
+        {
+            path: "ExperimentDetail",
+            name: "ExperimentDetail",
+            component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
+            meta: {
+                title: "实验详情",
+                authCode: 'ExperimentDetail'
+            },
+        },
+        {
+            path: "ExperimentalStepsDetail",
+            component: () => import("src/views/teacherExperiment/ExperimentalStepsDetail.vue"),
+            meta:{
+                title: "实验步骤详情",
+                authCode: ''
+            },
+        }
     ]
 }

@@ -21,7 +21,7 @@
       <div class="image-item" v-for="(item, index) in imageData" :key="item.id">
         <span v-if="item">{{item.name}}</span>
         <span v-if="item">
-          标签：<span v-for="(o, i) in item.tag" :key="i">{{i < item.tag.length - 1 ? o + ' / ' : o}}</span>
+          标签：<span v-for="(o, i) in item.tag" :key="o">{{(Number(i)< item.tag.length - 1) ? o + ' / ' : o}}</span>
         </span>
         <span v-if="item.isSelect" class="shanchu iconfont icon-shanchu" @click="del(index)"></span>
         <span v-else @click="select(index)">选择</span>

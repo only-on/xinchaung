@@ -37,7 +37,7 @@
       </div>
     </template>
     <template v-else>
-      <empty :text="emptyText" :type="emptyType" />
+      <empty :text="emptyText" :type="'empty'" />
       <div style="text-align: center" v-if="emptyType==='empty'">
         <a-button @click="createExam" type="primary">创建试卷</a-button>
       </div>

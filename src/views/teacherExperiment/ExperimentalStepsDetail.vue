@@ -7,7 +7,7 @@
           <div class="title">{{detail.name}}</div>
           <div class="base-footer">
             <div class="label">
-              <span v-for="v in detail.step_knowledge_map_names" :key="v">{{v.name}}</span>
+              <span v-for="v in detail.step_knowledge" :key="v">{{v}}</span>
               <!-- <span v-for="v in 6" :key="v">{{`知识点${v}`}}</span> -->
             </div>
           </div>
@@ -96,8 +96,9 @@ export default defineComponent({
     })
     function taskStepDetail(){
       http.taskStepDetail({urlParams: {id: stepId}}).then((res:IBusinessResp)=>{
-            // $message.success('编辑成功')
             state.detail=res.data
+            state.detail.step_knowledge=(res.data.step_knowledge_map_names && res.data.step_knowledge_map_names.knowledge_name)?res.data.step_knowledge_map_names.knowledge_name.split():[]
+            // console.log(state.detail)
           })
     }
     onMounted(() => {
@@ -221,7 +222,7 @@ export default defineComponent({
 .markdownBox{
   padding-right: 30px;
   .markdown__editor {
-    min-height: 300px;
+    min-height: 200px;
   }
 }
 </style>
