@@ -33,11 +33,6 @@ export default defineComponent({
       type: Number,
       default: 0,
     },
-    list:{
-      required: false,
-      type:Array as PropType<TemptyType[]>,
-      default: 0,
-    },
   },
   setup: (props,{emit}) => {
     var emptyText:Ref<string>=ref('')
