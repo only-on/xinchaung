@@ -30,11 +30,11 @@
     </div>
     <!-- 试题列表 -->
     <div class="create-content">
-      <test-paper-list v-model="formSate.paperLists"></test-paper-list>
+      <test-paper-list v-model="paperLists"></test-paper-list>
     </div>
     <div class="btns">
-      <a-button>取消</a-button>
-      <a-button type="primary" @click="createHandle">创建</a-button>
+      <a-button @click="cancel">取消</a-button>
+      <a-button type="primary" @click="createHandle">{{paper_id?"更新":"创建"}}</a-button>
     </div>
   </div>
   <add-single-modal v-model:isShow="isShowSingle" :addType="addType" @addPaperContent="addPaperContent" @getPCatalogueList="getPCatalogueList"></add-single-modal>
@@ -50,6 +50,7 @@ import selectPaperDraw from './selectPaperDraw.vue'
 import request from 'src/api/index'
 import { IformSate, IPaperList, Ihttp, IpaperType, Ilist } from './typings'
 import { IBusinessResp } from 'src/typings/fetch.d'
+import {useRoute,useRouter} from "vue-router"
 
 export default defineComponent({
   name: '',
@@ -57,11 +58,14 @@ export default defineComponent({
   props: {},
   emit: [],
   setup() {
-    let courseId = 501736
+    const route = useRoute()
+    const router=useRouter()
+    let course_id = route.query.course_id
+    const paper_id=route.query.paper_id
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
     const http = (request as Ihttp).teachCourse
-
+    const examApi=request.studentExam
     // 试题名称
     let formSate = reactive<IformSate>({
       testName: '',
@@ -70,6 +74,9 @@ export default defineComponent({
 
     let isShowSingle = ref(false)
     let addType = ref(0)
+    onMounted(()=>{
+      getQuestionsList()
+    })
     // 点击添加试题
     const clickAddPaper = ({key}: {key: string}) => {
       // if(!formSate.testName) {
@@ -105,17 +112,32 @@ export default defineComponent({
         message.warning('请填写测试卷名称')
         return 
       }
+      if (paper_id) {
+        router.push({
+          path:"/teacher/teacherCourse/testPaperList",
+          query:{
+            course_id: course_id
+          }
+        })
+        return;
+      }
       console.log(formSate.paperLists)
       http.createPaper({
         param: {
           name: formSate.testName,
           type: 'test',  // 随测
           // is_publish:    // 发布
-          course_id: courseId
+          course_id: course_id
         }
       }).then((res: IBusinessResp) => {
         console.log(res)
         relationQuest(res.data.id)
+        router.push({
+          path:"/teacher/teacherCourse/testPaperList",
+          query:{
+            course_id: course_id
+          }
+        })
       })
     }
     // 关联习题
@@ -133,13 +155,20 @@ export default defineComponent({
         // getPaperList()
       })
     }
+    // 获取试卷习题
+    function getQuestionsList() {
+      examApi.getQuestionsListApi({urlParams:{entity_type:"test",entity_id:paper_id},param:{include:"answers"}}).then((res:any)=>{
+        console.log(res);
+        formSate.paperLists=res.data
+      })
+    }
     // 获取试卷列表
     const getPaperList = () => {
       http.getPaperList({
         param: {
           // name: 'test',
           type: 'test',
-          course_id: courseId,
+          course_id: course_id,
         }
       }).then((res: IBusinessResp) => {
         console.log(res)
@@ -190,8 +219,17 @@ export default defineComponent({
         typeList.levelType = res.data
       })
     })
-
+    // 取消
+    function cancel() {
+      router.push({
+          path:"/teacher/teacherCourse/testPaperList",
+          query:{
+            course_id: course_id
+          }
+        })
+    }
     return {
+      ...toRefs(formSate),
       formSate,
       ...toRefs(typeList),
       clickAddPaper,
@@ -203,6 +241,8 @@ export default defineComponent({
       selectType,
       createHandle,
       getPCatalogueList,
+      cancel,
+      paper_id
     }
   },
 })

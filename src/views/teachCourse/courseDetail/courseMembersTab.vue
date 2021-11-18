@@ -1,6 +1,6 @@
 <template>
     <div>
-        <customerInfor :trainId="course_id"/>
+        <customerInfor :trainId="course_id" type="course"/>
     </div>
 </template>
 

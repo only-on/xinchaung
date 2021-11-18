@@ -8,7 +8,7 @@ const courseApi=request.teachCourse
                     course_id: 501378
  *              }
  */
-export async function getTestPaperListApi(params:{page:number,pageSize:number,course_id:number}) {
+export async function getTestPaperListApi(params:{page:number,limit:number,course_id:number,type:string,name:string}) {
     return await courseApi.getTestPaperListApi({param:params})
 }
 
@@ -30,8 +30,8 @@ export async function updateStudentSelectApi(params:{paper_id:number,no_relation
 /**
  * @description 删除试卷
  */
-export async function deleteFollowApi(params:{id:number,"paper_data[paper_status]":any}) {
-    return await courseApi.deleteFollowApi({param:params})
+export async function deleteFollowApi(urlParams:{paper_id:number}) {
+    return await courseApi.deleteFollowApi({urlParams:urlParams})
 }
 
 /**

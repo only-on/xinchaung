@@ -386,7 +386,7 @@ function backTo(route: any, type: string, role: number, routerQuery: string) {
   if (role===3) {
     if (type === "course") {
       route.push({
-        path: "/teacher/course/detail",
+        path: "/teacher/teacherCourse/detail",
         query: {
           course_id: otherParams.course_id,
           currentTab: otherParams.currentTab

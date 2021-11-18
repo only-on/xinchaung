@@ -28,8 +28,8 @@ export async function settingGuideStateApi(params:any) {
  * @param params courseId:课程id
  */
 
-export async function copyCourseApi(params:{courseId:number}) {
-    return courseApi.copyCourseApi({param:params})
+export async function copyCourseApi(urlParams:{course_id:number}) {
+    return courseApi.copyCourseApi({urlParams:urlParams})
 }
 
 /**

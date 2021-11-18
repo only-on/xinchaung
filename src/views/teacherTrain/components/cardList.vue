@@ -159,7 +159,7 @@ export default defineComponent({
         taskId: id
       }
       router.replace({
-        path: '/teacher/course/virtualEnv',
+        path: '/teacher/teacherCourse/virtualEnv',
         query: param
       })
     }

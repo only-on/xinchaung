@@ -89,7 +89,7 @@ export default defineComponent({
 
     function cancel() {
       router.push({
-        path: "/teacher/course/courseList",
+        path: "/teacher/teacherCourse/courseList",
       });
     }
 
@@ -113,14 +113,14 @@ export default defineComponent({
               updateCourseBaseApi(params, { course_id: course_id }).then(
                 (res: any) => {
                   router.push({
-                    path: "/teacher/course/courseList",
+                    path: "/teacher/teacherCourse/courseList",
                   });
                 }
               );
             } else {
               createCourseBaseApi(params).then((res: any) => {
                 router.push({
-                  path: "/teacher/course/courseList",
+                  path: "/teacher/teacherCourse/courseList",
                 });
               });
             }
@@ -143,7 +143,7 @@ export default defineComponent({
         updateCourseBaseApi(params, { course_id: course_id }).then(
           (res: any) => {
             router.push({
-              path: "/teacher/course/courseList",
+              path: "/teacher/teacherCourse/courseList",
             });
           }
         );
@@ -183,7 +183,7 @@ export default defineComponent({
                 (res: any) => {
                   reactiveData.currentStep++;
                   router.push({
-                    path: "/teacher/course/create",
+                    path: "/teacher/teacherCourse/create",
                     query: {
                       course_id: course_id,
                     },
@@ -195,7 +195,7 @@ export default defineComponent({
               createCourseBaseApi(body).then((res: any) => {
                 reactiveData.currentStep++;
                 router.replace({
-                  path: "/teacher/course/create",
+                  path: "/teacher/teacherCourse/create",
                   query: {
                     course_id: res.data.id,
                   },
@@ -234,7 +234,7 @@ export default defineComponent({
     // 继续添加课程
     function goAdd() {
       router.replace({
-        path: "/teacher/course/create",
+        path: "/teacher/teacherCourse/create",
       });
       setTimeout(() => {
         location.reload();
@@ -243,7 +243,7 @@ export default defineComponent({
     // 查看课程
     function lookCourse() {
       router.push({
-        path: "/teacher/course/courseList",
+        path: "/teacher/teacherCourse/courseList",
       });
     }
     return {

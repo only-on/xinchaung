@@ -1,11 +1,11 @@
 <template>
   <div class="test-paper-card">
     <div class="itemTop">
-      <div>{{data.paper_title}}</div>
+      <div>{{data.name}}</div>
       <div class="itemTopSecond">
-        <span class="icon-zhangjie iconfont">{{ data.question_count }}</span>
-        <span class="icon-fenshu1 iconfont">{{ data.score }}</span>
-        <span class="icon-renshu iconfont">{{ data.student_count }}</span>
+        <span class="icon-zhangjie iconfont">{{ data.questions_count }}</span>
+        <span class="icon-fenshu1 iconfont">{{ data.score_total }}</span>
+        <span class="icon-renshu iconfont">{{ data.students_count }}</span>
       </div>
       <div>{{ data.updated_at }}</div>
     </div>
@@ -13,7 +13,7 @@
       <span><span class="item-bom-btn" @click="selectStu">选学生</span></span
       >
       <span>
-        <router-link :to="{path:'/teacher/course/result',query:{paper_id:data.paper_id}}">查结果</router-link>
+        <router-link :to="{path:'/teacher/teacherCourse/result',query:{paper_id:data.id,course_id:course_id}}">查结果</router-link>
       </span>
       <a-popover placement="bottom">
         <template v-slot:content>
@@ -32,29 +32,33 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import {useRoute} from "vue-router"
 
 export default defineComponent({
   props: ["value"],
   emits:["selectStu","editTest","deleteTest"],
   setup(props, { emit }) {
+    const route=useRoute()
+    const course_id=route.query.course_id
     const data = props.value;
     // 打开选择学生modal
     function selectStu() {
-        emit("selectStu",data.paper_id)
+        emit("selectStu",data.id)
     }
     // 编辑
     function editTest() {
-      emit("editTest",data.paper_id)
+      emit("editTest",data.id)
     }
     // 删除
     function deleteTest() {
-      emit("deleteTest",data.paper_id)
+      emit("deleteTest",data.id)
     }
     return {
       data,
       selectStu,
       editTest,
-      deleteTest
+      deleteTest,
+      course_id
     };
   },
 });

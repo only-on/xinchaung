@@ -3,32 +3,45 @@
     <div>
       <a-input-search
         placeholder="请输入测试卷名称"
-        v-model:value="params.title"
+        v-model:value="params.name"
         style="width: 767px; height: 40px; margin-bottom: 39px"
         @keyup.enter="searchCourseFUp"
         @search="searchCourseFUp"
       />
     </div>
-    <div class="card-box">
-      <div class="card-item"></div>
-      <testpaper-card
-        class="card-item"
-        v-for="(item, index) in testPaperList"
-        v-model:value="testPaperList[index]"
-        :key="index"
-        @selectStu="selectStu"
-        @editTest="editTest"
-        @deleteTest="deleteTest"
-      ></testpaper-card>
-    </div>
-    <div class="page-box">
-      <a-pagination
-        :default-current="1"
-        :default-page-size="11"
-        :total="totalCount"
-        @change="pageChange"
-      />
-    </div>
+    <template v-if="testPaperList.length > 0">
+      <div class="card-box">
+        <div class="card-item create-card">
+          <div class="create-btn" @click="createExam">
+            <span class="icon-chuangjian iconfont"></span>
+            <span class="create-text">创建随堂测试题</span>
+          </div>
+        </div>
+        <testpaper-card
+          class="card-item"
+          v-for="(item, index) in testPaperList"
+          v-model:value="testPaperList[index]"
+          :key="index"
+          @selectStu="selectStu"
+          @editTest="editTest"
+          @deleteTest="deleteTest"
+        ></testpaper-card>
+      </div>
+      <div class="page-box">
+        <a-pagination
+          :default-current="1"
+          :default-page-size="11"
+          :total="totalCount"
+          @change="pageChange"
+        />
+      </div>
+    </template>
+    <template v-else>
+      <empty :text="emptyText" :type="emptyType" />
+      <div style="text-align: center" v-if="emptyType==='empty'">
+        <a-button @click="createExam" type="primary">创建试卷</a-button>
+      </div>
+    </template>
   </div>
   <a-modal
     :visible="stuModalVisiable"
@@ -123,7 +136,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, toRefs, reactive, onMounted } from "vue";
+import { defineComponent, inject, ref, toRefs, reactive, onMounted, watch } from "vue";
 import {
   getTestPaperListApi,
   getStudentListApi,
@@ -134,15 +147,17 @@ import { useRoute, useRouter } from "vue-router";
 import testPaperCard from "./testPaperCard.vue";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
+import empty from "src/components/Empty.vue";
 
 export default defineComponent({
   components: {
     "testpaper-card": testPaperCard,
+    empty,
   },
   setup() {
     const route = useRoute();
     const router = useRouter();
-    const course_id = route.query.courseid as any as number;
+    const course_id = route.query.course_id as any as number;
     var updata = inject("updataNav") as Function;
     const NoSturowKey = (row: any) => {
       return row.user_id + ",," + row.user_number + ",," + row.user_name;
@@ -168,15 +183,16 @@ export default defineComponent({
       },
     ];
     onMounted(() => {
-      init()
+      init();
     });
     let paper_id = -1;
     const reactiveData = reactive({
       params: {
         page: 1,
-        pageSize: 11,
+        limit: 11,
         course_id: course_id,
-        title: "",
+        name: "",
+        type:"test"
       },
       testPaperList: [],
       totalCount: 0,
@@ -190,13 +206,25 @@ export default defineComponent({
       searchSelectData: [],
       NameLeft: "",
       NameRight: "",
+      emptyText: "您还未创建随测，可点击下方按钮进行创建。",
+      emptyType: "empty",
     });
+    watch(()=>reactiveData.params.name,()=>{
+      if (reactiveData.params.name) {
+        reactiveData.emptyType="searchEmpty"
+        reactiveData.emptyText="暂未搜到相关数据"
+      }else{
+        reactiveData.emptyType="empty"
+        reactiveData.emptyText="您还未创建随测，可点击下方按钮进行创建。"
+      }
+    })
     function init() {
       reactiveData.params = {
         page: 1,
-        pageSize: 11,
+        limit: 11,
         course_id: course_id,
-        title: "",
+        name: "",
+        type:"test"
       };
       getTestPaperList();
     }
@@ -209,14 +237,14 @@ export default defineComponent({
     // 查询
     function searchCourseFUp() {
       reactiveData.params.page = 1;
-      reactiveData.params.pageSize = 15;
+      reactiveData.params.limit = 15;
       getTestPaperList();
     }
 
     // page发生变化时
     function pageChange(page: number, pageSize: number) {
       reactiveData.params.page = page;
-      reactiveData.params.pageSize = pageSize;
+      reactiveData.params.limit = pageSize;
       getTestPaperList();
     }
 
@@ -351,7 +379,7 @@ export default defineComponent({
     // 编辑
     function editTest(paper_id: number) {
       router.push({
-        path: "/teacher/course/createTestPaper",
+        path: "/teacher/teacherCourse/createTestPaper",
         query: {
           paper_id: paper_id,
         },
@@ -364,13 +392,20 @@ export default defineComponent({
         content: "你确定要删除当前试卷吗？",
         onOk() {
           deleteFollowApi({
-            id: paper_id,
-            "paper_data[paper_status]": -1,
+            paper_id: paper_id,
           }).then((res: any) => {
             message.success("删除成功");
-            init()
+            init();
           });
         },
+      });
+    }
+    function createExam() {
+      router.push({
+        path: "/teacher/teacherCourse/createTestPaper",
+        query:{
+          course_id:course_id
+        }
       });
     }
     return {
@@ -388,6 +423,7 @@ export default defineComponent({
       removeStu,
       editTest,
       deleteTest,
+      createExam,
     };
   },
 });
@@ -398,6 +434,31 @@ export default defineComponent({
   .card-box {
     display: flex;
     flex-wrap: wrap;
+    .create-card {
+      box-sizing: border-box;
+      opacity: 1;
+      background: #fff;
+      border-radius: 7px;
+      box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+      border: 1px dashed @theme-color;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      .create-btn {
+        color: @theme-color;
+        cursor: pointer;
+        .iconfont {
+          font-size: 70px;
+          text-align: center;
+          display: block;
+        }
+        .create-text {
+          font-size: 20px;
+          font-weight: 400;
+        }
+      }
+    }
     .card-item {
       &:nth-child(4n + 1) {
         margin-right: 1.33333%;

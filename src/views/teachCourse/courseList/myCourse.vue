@@ -181,7 +181,7 @@ export default defineComponent({
     // 跳转到创建页面
     function create() {
       router.push({
-        path: "/teacher/course/create",
+        path: "/teacher/teacherCourse/create",
       });
     }
     // 设置参数

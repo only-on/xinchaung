@@ -16,7 +16,7 @@
 </template>
 <script lang="ts">
 import bg from 'src/assets/images/studentcourse/course-detail_bg.jpg'
-import { defineComponent,reactive, Ref, ref, onMounted, provide, watch  } from 'vue'
+import { defineComponent,reactive, Ref, ref, onMounted, provide, watch ,inject } from 'vue'
 import EvaluteContent from './components/evaluteContent.vue'
 import EvaluteProject from './components/evaluteProject.vue'
 import courseDetailTop from '../../teacherCourseAnalysis/courseDetailTop.vue'
@@ -38,6 +38,8 @@ export default defineComponent({
     courseDetailTop
   },
   setup() {
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'',navType:true,showContent:false,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     const http = (request as Ihttp).teachCourse
     var treeData = reactive<any[]>([])
     var chapterId:Ref<number> = ref(0)

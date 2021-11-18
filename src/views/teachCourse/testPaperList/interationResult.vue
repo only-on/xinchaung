@@ -173,6 +173,7 @@ export default defineComponent({
   setup: (props, context) => {
     const route = useRoute();
     const paper_id = route.query.paper_id as any as number;
+    const course_id=route.query.course_id as any as number;
     var updata = inject("updataNav") as Function;
 
     updata({
@@ -306,9 +307,9 @@ export default defineComponent({
     // 返回列表
     function backPaperList() {
         router.push({
-            path:"/teacher/course/testPaperList",
+            path:"/teacher/teacherCourse/testPaperList",
             query:{
-                courseid:(reactiveData.stupaperCount as any).course_id
+                course_id:course_id
             }
         })
     }

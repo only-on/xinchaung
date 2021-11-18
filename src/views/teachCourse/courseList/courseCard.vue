@@ -90,8 +90,8 @@
               <!-- <span @click="inClassinteraction(item)">随测</span> -->
               <router-link
                 :to="{
-                  path: '/teacher/course/testPaperList',
-                  query: { courseid: data.id },
+                  path: '/teacher/teacherCourse/testPaperList',
+                  query: { course_id: data.id },
                 }"
                 >随测</router-link
               >
@@ -172,7 +172,7 @@ export default defineComponent({
     }
     // 复制课程
     function copyCourse(id: number) {
-      copyCourseApi({ courseId: id }).then((res: any) => {
+      copyCourseApi({ course_id: id }).then((res: any) => {
         message.success("复制成功");
         emit("update");
       });
@@ -195,7 +195,7 @@ export default defineComponent({
     }
     function evalute(val: any) {
       router.push({
-        path: "/teacher/course/evalute",
+        path: "/teacher/teacherCourse/evalute",
         query: {
           courseId: val.id,
         },
@@ -203,7 +203,7 @@ export default defineComponent({
     }
     function analyse(val: any) {
       router.push({
-        path: "/teacher/course/analysis",
+        path: "/teacher/teacherCourse/analysis",
         query: {
           courseId: val.id,
         },
@@ -212,7 +212,7 @@ export default defineComponent({
     // 环境
     function environment(val: any) {
       router.push({
-        path: "/teacher/course/virtualEnv",
+        path: "/teacher/teacherCourse/virtualEnv",
         query: {
           courseId: val.id,
           type: "course",
@@ -239,7 +239,7 @@ export default defineComponent({
     // 跳转详情
     function toDetail(type:string) {
       router.push({
-        path:"/teacher/course/detail",
+        path:"/teacher/teacherCourse/detail",
         query:{
           course_id:data.id,
           currentTab:currentTab,

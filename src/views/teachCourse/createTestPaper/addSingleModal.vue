@@ -82,8 +82,8 @@
       <!-- 判断题 -->
       <a-form-item required label="答案" name="judge" v-if="addType === 3">
         <a-radio-group v-model:value="formState.judge">
-          <a-radio value="正确">正确</a-radio>
-          <a-radio value="错误">错误</a-radio>
+          <a-radio value="0">正确</a-radio>
+          <a-radio value="1">错误</a-radio>
         </a-radio-group>
       </a-form-item>
       <!-- 填空题 -->

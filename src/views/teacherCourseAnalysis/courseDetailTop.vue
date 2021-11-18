@@ -251,7 +251,7 @@ export default defineComponent({
     // 返回
     function goBack() {
       window.history.go(-1)
-      // router.push('/teacher/course/virtualEnv')
+      // router.push('/teacher/teacherCourse/virtualEnv')
     }
     onMounted(() => {
       getCourseDetail()

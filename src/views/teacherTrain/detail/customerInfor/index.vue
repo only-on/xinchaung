@@ -154,7 +154,7 @@ import selectStuClass from '../../components/selectStuClass/index.vue'
 import { message,Modal} from 'ant-design-vue';
 export default defineComponent({
     name:'customerInfor',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId',"type"],
     components:{
         Empty,
         selectStuClass
@@ -164,12 +164,12 @@ export default defineComponent({
     const state:Istate=reactive({
       stuUnselectParams:{
           id:props.trainId,
-          type:2,
+          type:props.type==='course'?1:2,
           withs:'userProfile'
       },
       classUnselectParams:{
           id:props.trainId,
-          type:2
+          type:props.type==='course'?1:2,
       },
       allClassId:[],
       allStuId:[],
@@ -347,7 +347,7 @@ export default defineComponent({
                 // 先把班级排课删除掉
                 console.log(state.allClassId,'班级所有ID')
                 if(state.allClassId.length){
-                    http.deleteScheduleClass({param:{id:state.allClassId,relate_id:props.trainId,type: 2}}).then((res:any)=>{
+                    http.deleteScheduleClass({param:{id:state.allClassId,relate_id:props.trainId,type: props.type==='course'?1:2,}}).then((res:any)=>{
                     console.log(res)
                     state.allClassId=[]
                 })
@@ -355,7 +355,7 @@ export default defineComponent({
                 const params:any={
                 id:props.trainId,
                 student_id:state.addidarr,
-                type:2
+                type:props.type==='course'?1:2,
                 }
                 http.scheduleStudent({param: params}).then((res:any)=>{
                     console.log(res)
@@ -376,7 +376,7 @@ export default defineComponent({
                 const params:any={
                 id:props.trainId,
                 class_id:state.addidarr,
-                type:2
+                type:props.type==='course'?1:2,
                 }
                 http.scheduleClass({param: params}).then((res:any)=>{
                     methods.getUnselectClass()
@@ -403,7 +403,7 @@ export default defineComponent({
                 const deleteParmas={
                 id:state.classStuDeleteid,
                 relate_id:props.trainId,
-                type:2
+                type:props.type==='course'?1:2,
                 }
              http.deleteScheduleClass({param:deleteParmas}).then((res:any)=>{
                  console.log(res)
@@ -438,7 +438,7 @@ export default defineComponent({
                             const deleteParmas={
                             id:deleteid,
                             relate_id:props.trainId,
-                            type:2
+                            type:props.type==='course'?1:2,
                             }
                             http.deleteScheduleClass({param:deleteParmas}).then((res:any)=>{
                             console.log(res)
@@ -484,7 +484,7 @@ export default defineComponent({
         },
         // 已选学生列表
         getStudentList(){
-            http.studentGroup({param:{id:props.trainId,type:2,withs:'userProfile'}}).then((res:any)=>{
+            http.studentGroup({param:{id:props.trainId,type:props.type==='course'?1:2,withs:'userProfile'}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
                 state.data.forEach((item:any)=>{
@@ -494,7 +494,7 @@ export default defineComponent({
         },
         // 已选班级列表
         getClassList(){
-            http.classGroup({param:{id:props.trainId,type:2}}).then((res:any)=>{
+            http.classGroup({param:{id:props.trainId,type:props.type==='course'?1:2,}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
                 state.data.forEach((item:any)=>{

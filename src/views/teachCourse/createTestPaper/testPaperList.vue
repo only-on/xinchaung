@@ -52,7 +52,8 @@
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType } from 'vue'
 import { IPaperList, Ilist } from './typings'
-
+import {useRoute} from "vue-router"
+import request from "src/api/index"
 export default defineComponent({
   name: '',
   components: {},
@@ -61,10 +62,25 @@ export default defineComponent({
   },
   emit: ['update:modelValue'],
   setup(props, {emit}) {
+    const route=useRoute()
+    const paper_id=route.query.paper_id
+    const examApi=request.teachCourse
     function del(i: number) {
-      let arr = props.modelValue
-      arr?.splice(i, 1)
-      emit('update:modelValue', arr)
+      let arr:any = props.modelValue
+      console.log(arr);
+      
+      if (paper_id) {
+        examApi.deleteQuestionPaperApi({urlParams:{entity_type:'test',entity_id:paper_id},param:{questions:[arr[i].id]}}).then((res:any)=>{
+          console.log(res);
+          arr?.splice(i, 1)
+          emit('update:modelValue', arr)
+        })
+        
+      }else{
+        arr?.splice(i, 1)
+        emit('update:modelValue', arr)
+      }
+      
     }
     function remove(i: number) {
       if (i === 0) return

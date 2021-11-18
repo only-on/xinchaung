@@ -168,15 +168,15 @@ export default {
     method: "POST"
   },
   copyCourseApi: {
-    url: "/teacher-course/repeat",
-    method: "POST"
+    url: "/api/course/courses/{course_id}/replicate",
+    method: "PUT"
   },
   deleteCourseApi: {
     url: "/api/course/courses/{id}",
     method: "DELETE"
   },
   getTestPaperListApi: {
-    url: "/classtest/default/paper_list",
+    url: "/api/v1/question/papers",
     method: "GET"
   },
   getStudentListApi: {
@@ -189,9 +189,8 @@ export default {
     dataType: "formdata"
   },
   deleteFollowApi: {
-    url: "/classtest/default/edit_paper",
-    method: "POST",
-    dataType: "formdata"
+    url: "/api/v1/question/papers/{paper_id}",
+    method: "DELETE",
   },
   getDefaultPaperInfoApi: {
     url: "/classtest/default/paper_info",
@@ -393,6 +392,11 @@ export default {
     method: "POST",
     dataType: "formdata"
   },
+  deleteQuestionPaperApi:{
+    url:"/api/v1/question/{entity_type}/{entity_id}/relationships/questions",
+    method: "PUT",
+    dataType: "json"
+  }
 }
 
 export interface ITeacherCourseApis {
@@ -485,4 +489,5 @@ export interface ITeacherCourseApis {
   getReportListApi: TFHttpSend
   saveReportTemplateApi: TFHttpSend
   createCourseBaseApi:TFHttpSend
+  deleteQuestionPaperApi:TFHttpSend
 }
