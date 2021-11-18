@@ -18,7 +18,6 @@
         <div class="info">
           <div class="tit">试卷试题</div>
           <div class="fraction">
-            <!-- <div>{{PaperList[0].data}}</div> -->
             （<span class="num1">已选试题：<span class="num">{{selectedPaperIds && selectedPaperIds.length}}</span>个</span><span>试题总分：<span class="num">{{totalScore}}</span>分</span>）
           </div>
         </div>
@@ -120,8 +119,6 @@
         @showSizeChange="onShowSizeChange"
       />
     </div>
-
-    <SelectPaper v-if="false" v-model:value="comQuestionList" v-model:classifyValue="PaperList"  v-model:totalScore="totalScore" />
   </a-drawer>
 </template>
 <script lang="ts">
@@ -131,7 +128,6 @@ import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-import SelectPaper from 'src/components/selectPaper.vue'
 interface IlistItem{
   id:number;
   name:string;
@@ -166,7 +162,7 @@ interface Istate{
 export default defineComponent({
   name: '',
   components: {
-    SelectPaper
+    
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -213,29 +209,6 @@ export default defineComponent({
         description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
     }
     var comQuestionList=reactive([])
-    watch(PaperList,(val:any)=>{
-
-      console.log(val)
-      console.log(totalScore.value)
-
-    },{immediate:true,deep:true})
-
-    var selectQuestionList= computed(()=>{
-      type Tactive=Pick<IPaperList,'data'|'ids'>
-      let active:Tactive={
-        data:[],
-        ids:[]
-      }
-      PaperList.forEach((v:IPaperList)=>{
-        if(v.type===activePaper.value){
-          active={
-            data:v.data,
-            ids:v.ids
-          }
-        }
-      })
-      return active
-    })
     var avtiveData=computed(()=>{
       var item:any[]=[] 
       PaperList.filter((v:any)=>{
@@ -267,9 +240,6 @@ export default defineComponent({
         })
         // console.log(catalogueOptions.value)
       })
-    }
-    function screen(){
-
     }
     function answers(id:number,arr:any){
       let pitch= arr.find((item:any) => {
@@ -381,7 +351,7 @@ export default defineComponent({
     onMounted(()=>{
      initData()
     })
-    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,selectQuestionList,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,screen,visible};
+    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,visible};
   },
 })
 </script>
