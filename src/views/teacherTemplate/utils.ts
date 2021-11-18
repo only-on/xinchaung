@@ -1,6 +1,6 @@
 export const initialWidgetThumb: Array<any> = [
   {
-    title: '报告标题',
+    title: '标题',
     widget: [
       {
         type: 'w1',
@@ -46,3 +46,4 @@ export const initialWidgetThumb: Array<any> = [
 ]
 export const genFieldName = (type: string, kind: string, key: number): string => `${type}_${kind}_${key}`
 export const splitFieldName = (name: string): Array<string> => name?.split('_')
+export const deepClone = (obj:any) => JSON.parse(JSON.stringify(obj))

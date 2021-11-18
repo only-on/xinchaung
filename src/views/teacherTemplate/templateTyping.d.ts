@@ -7,6 +7,9 @@ interface ITeacherTemplateApi {
   copyTemplate: Function
   shareTemplate: Function
   unshareTemplate: Function
+  createTemplate: Function
+  viewTemplate: Function
+  updateTemplate: Function
 }
 export interface ITeacherTemplateHttp {
   teacherTemplate: ITeacherTemplateApi
@@ -49,7 +52,7 @@ export interface WidgetField {
   value: string | number
   placeholder: string | void
   readonly: boolean
-  align: string
+  align?: string
   colspan?: number
 }
 
@@ -64,4 +67,10 @@ export interface WidgetModel {
 
 export type WidgetDataModelMap = {
   [key in keyof WidgetTypes]: WidgetModel
+}
+export interface Iform{
+  name: string,
+  json_content: WidgetModel[],
+  html_content: string,
+  id?: string | number
 }

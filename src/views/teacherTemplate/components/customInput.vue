@@ -4,7 +4,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, reactive, watch, ref } from 'vue'
-import {splitFieldName} from '../utils'
+import {splitFieldName, deepClone} from '../utils'
 
 export default defineComponent({
   props: {
@@ -17,16 +17,18 @@ export default defineComponent({
       default: 'input'
     }
   },
+  emits: ['change'],
   setup(props,{emit}) {
-    var field = reactive<any>(props.field)
+    var field = reactive<any>(deepClone(props.field))
     var type = ref<any>(props.type)
     watch(()=>props.field, newVal => {
-      Object.assign(field, newVal)
+      Object.assign(field, deepClone(newVal))
     })
     watch(()=>props.type, newVal => {
       type.value = newVal
     })
     const handleChange = (e:any) => {
+      field.value = e.target.value
       emit('change', e.target.value)
     }
     const getClass = (name:string) => {

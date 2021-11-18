@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "4512042",
+      "name": "移动",
+      "font_class": "yidong",
+      "unicode": "e695",
+      "unicode_decimal": 59029
+    },
+    {
+      "icon_id": "9777254",
+      "name": "创建",
+      "font_class": "chuangjian1",
+      "unicode": "e694",
+      "unicode_decimal": 59028
+    },
+    {
       "icon_id": "20994249",
       "name": "对号",
       "font_class": "duihao",

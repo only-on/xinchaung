@@ -2,7 +2,7 @@
   <div class="cardList">
     <div class="cardBox mySelfCreate" v-if="type === 'mine' && getRole() == 3">
       <div class="operate-btn" @click="handleCreate">
-        <span class="iconfont icon-upload"></span>
+        <span class="iconfont icon-chuangjian1"></span>
         创建在线模板
       </div>
       <div class="operate-btn" @click="handleUpload">
@@ -11,7 +11,7 @@
       </div>
     </div>
     <div class="cardBox" v-for="item in dataList" :key="item.id">
-      <div class="cardPic">
+      <div class="cardPic" @click="handleView(item)">
         <img class="card-cover" :src="item.type === 'form' ? img3: img4 " :alt="item.name">
         <div class="info">
           <div class="title">{{item.name}}</div>
@@ -22,7 +22,7 @@
         <!-- 我的模板 -->
         <template v-if="type === 'mine'">
           <span v-if="item.can_download" @click="handleDownload(item)">下载</span>
-          <span v-if="item.can_update && item.type === 'form'">编辑</span>
+          <span v-if="item.can_update && item.type === 'form'" @click="handleEdit(item)">编辑</span>
           <span v-if="item.can_shared" @click="handleShare(item)">{{ item.is_shared ? '取共' : '共享' }}</span>
           <span v-if="item.can_copy && item.can_delete">
             <a-tooltip placement="bottom" color="#fff">
@@ -47,7 +47,7 @@
         <!-- 共享模板 -->
         <template v-if="type === 'shared'">
           <span v-if="item.can_download" @click="handleDownload(item)">下载</span>
-          <span v-if="item.can_update && item.type === 'form'">编辑</span>
+          <span v-if="item.can_update && item.type === 'form'" @click="handleEdit(item)">编辑</span>
           <span v-if="item.can_shared" @click="handleShare(item)">{{ item.is_shared ? '取共' : '共享' }}</span>
           <span v-if="item.can_copy && !item.can_delete" @click="handleCopy(item)">保存</span>
           <span v-if="item.can_copy && item.can_delete">
@@ -93,7 +93,7 @@ export default defineComponent({
       }
     })
     const setStyle =()=>{
-      return 'display:block;color: #898989;line-height:30px;padding:0 15px;cursor:pointer;text-align:center'
+      return 'display:block;color: #898989;line-height:30px;padding:0 15px;cursor:pointer;text-align:center;font-size:14px'
     }
     // 删除
     const handleDelete = (item:any) => {
@@ -119,6 +119,14 @@ export default defineComponent({
     const handleCreate = () => {
       emit('create')
     }
+    // 编辑
+    const handleEdit = (item:any) => {
+      emit('edit', item)
+    }
+    // 查看
+    const handleView = (item:any) => {
+      emit('view', item)
+    }
     return {
       type,
       dataList,
@@ -132,7 +140,9 @@ export default defineComponent({
       handleShare,
       handleDownload,
       handleUpload,
-      handleCreate
+      handleCreate,
+      handleEdit,
+      handleView
     }
   },
 })
@@ -153,6 +163,7 @@ export default defineComponent({
     overflow: hidden;
     display: flex;
     flex-direction: column;
+    font-size: 14px;
     &.mySelfCreate{
       display: flex;
       flex-direction: column;
@@ -183,6 +194,7 @@ export default defineComponent({
     .cardPic{
       height: 118px;
       position: relative;
+      cursor: pointer;
       img{
         height: 100%;
         width: 100%;
@@ -198,6 +210,11 @@ export default defineComponent({
         justify-content: space-between;
         align-items: center;
         color: @white;
+        .title{
+          text-align: center;
+          word-break: break-all;
+          font-size: 16px;
+        }
       }
     }
     .cardfoot{

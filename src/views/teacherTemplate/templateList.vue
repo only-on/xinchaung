@@ -16,7 +16,9 @@
         @share="handleShare"
         @down="handleDownload"
         @upload="handleUpload"
-        @create="handleCreate"/>
+        @create="handleCreate"
+        @edit="handleEdit"
+        @view="handleView"/>
       <Empty v-else/>
       <a-pagination
         v-model:current="form.page"
@@ -31,6 +33,8 @@
 <copy-save :dialogVisible="copyDialog" :name="copyItem.name" @close="copyDialog = false" @save="handleCopySave"/>
 <!-- 离线文件上传 -->
 <upload-file :dialogVisible="uploadDialog" @refresh="getList" @close="uploadDialog = false" />
+<!-- 离线报告详情 -->
+<offline-report :dialogVisible="offlineDialog" :pdfUrl="pdfUrl" @close="offlineDialog = false"/>
 </template>
 <script lang="ts">
 import { defineComponent,inject, reactive, watch, ref, onMounted, toRefs } from 'vue'
@@ -38,11 +42,12 @@ import {useRouter} from 'vue-router'
 import cardList from './components/cardList.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherTemplateHttp } from './templateTyping'
+import { ITeacherTemplateHttp,TemplateModel } from './templateTyping'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import copySave from './components/copySave.vue'
 import uploadFile from './components/uploadFile.vue'
+import offlineReport from './components/offlineReport.vue'
 interface Iform{
   name: string,
   page: number,
@@ -50,7 +55,7 @@ interface Iform{
 } 
 interface IlistData{
   total: number,
-  data: any[]
+  data: TemplateModel[]
 }
 const tabNames = ['mine', 'init', 'shared', 'teacher']
 const teacherTabs = [
@@ -91,7 +96,8 @@ export default defineComponent({
   components: {
     cardList,
     copySave,
-    uploadFile
+    uploadFile,
+    offlineReport
   },
   setup() {
     const http=(request as ITeacherTemplateHttp).teacherTemplate
@@ -116,6 +122,8 @@ export default defineComponent({
     })
     var copyDialog = ref<boolean>(false)
     var uploadDialog = ref<boolean>(false)
+    var offlineDialog = ref<boolean>(false)
+    var pdfUrl = ref<string>('')
     var copyItem = reactive<any>({})
     const handleSearch = () => {
       form.page = 1
@@ -213,6 +221,32 @@ export default defineComponent({
     const handleCreate = () => {
       router.push('/teacher/teacherTemplate/createTemplate')
     }
+    // 编辑
+    const handleEdit = (item:any) => {
+      router.push({
+        path: '/teacher/teacherTemplate/createTemplate',
+        query: {
+          id: item.id
+        }
+      })
+    }
+    // 查看
+    const handleView = (item:any) => {
+      if (item.type === 'file') {
+        offlineDialog.value = true
+        if (item.pdf_url) {
+          pdfUrl.value = item.pdf_url
+        }
+      } else {
+        router.push({
+          path: '/teacher/teacherTemplate/createTemplate',
+          query: {
+            id: item.id,
+            type: 'view'
+          }
+        })
+      }
+    }
     onMounted(()=>{
       getList()
     })
@@ -232,7 +266,11 @@ export default defineComponent({
       handleUpload,
       uploadDialog,
       getList,
-      handleCreate
+      handleCreate,
+      handleEdit,
+      handleView,
+      offlineDialog,
+      pdfUrl
     }
   },
 })

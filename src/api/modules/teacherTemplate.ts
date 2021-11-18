@@ -9,6 +9,9 @@ export default {
   copyTemplate: {url: `/report/template/copy`, method: 'POST'},
   shareTemplate: {url: `/report/template/share`, method: 'POST'},
   unshareTemplate: {url: `/report/template/unshare`, method: 'POST'},
+  createTemplate: {url: `/report/template/create`, method: 'POST', dataType:'json'},
+  viewTemplate: {url: `/report/template/view`, method: 'GET'},
+  updateTemplate: {url: `/report/template/update`, method: 'POST', dataType:'json'},
 }
 
 export interface ITeacherTemplateApis {
@@ -19,7 +22,10 @@ export interface ITeacherTemplateApis {
   deleteTemplate: TFHttpSend;
   copyTemplate: TFHttpSend;
   shareTemplate: TFHttpSend;
-  unshareTemplate: TFHttpSend
+  unshareTemplate: TFHttpSend;
+  createTemplate: TFHttpSend;
+  viewTemplate: TFHttpSend;
+  updateTemplate: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTemplate'
