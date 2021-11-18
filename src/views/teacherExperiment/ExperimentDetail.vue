@@ -1,7 +1,8 @@
 <template>
   <div class="ExperimentDetail setScrollbar">
     <a-spin :spinning="loading" size="large" tip="Loading...">
-      <div class="base-info box flexCenter">
+      <!-- 基础信息 -->
+      <div class="base-info box flexCenter" v-if="Subcomponents.includes('baseInfo')">
         <div class="left">
           <div class="title">{{detail.name}}</div>
           <div class="base-footer">
@@ -16,12 +17,13 @@
           </div>
         </div>
         <div class="right">
-          <div class="inonBox">
-            <i class="iconfont icon-bianji1" :class="EditInfo?'icon-baocun':'icon-bianji1'" @click="openInfoModul"></i>
+          <div class="inonBox"  v-if="currentTabType==='0'" >
+            <i class="iconfont" :class="EditInfo?'icon-baocun':'icon-bianji1'" @click="openInfoModul"></i>
           </div>
         </div>
       </div>
-      <div class="environment box">
+      <!-- 实验环境 -->
+      <div class="environment box" v-if="Subcomponents.includes('environment')">
         <div class="head">
           <div class="left">
             <div class="title">实验环境</div>
@@ -32,69 +34,91 @@
             </div>
           </div>
           <div class="right">
-            <i class="iconfont" :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
+            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
           </div>
         </div>
+        <div class="maxAdd" v-if="EditEnvironment">
+          <a-button class="add-btn" @click="select('image')">
+            <span class="iconfont icon-tianjia"></span>
+          </a-button>
+          <span class="max-hint">最多可选{{detail.task_type===4?1:3}}个镜像</span>
+        </div>
+        <div class="environmentDataBox">
+          <env-list :envData="formState.imageDataSelected" :edit="!EditEnvironment"></env-list>
+        </div>
       </div>
-      <div class="environmentList box" v-if="EditEnvironment">
-        <a-button class="add-btn" @click="select('image')">
-          <span class="iconfont icon-tianjia"></span>
-        </a-button>
-        <span class="max-hint">最多可选{{detail.task_type===4?1:3}}个镜像</span>
-      </div>
-      <div class="box imageDataBox">
-        <env-list :envData="formState.imageDataSelected" :edit="!EditEnvironment"></env-list>
-      </div>
-      <div class="dateSet box">
+      <!-- 数据集 -->
+      <div class="dateSet box" v-if="Subcomponents.includes('dateSet')">
         <div class="head">
           <div class="left">
             <div class="title">数据集</div>
           </div>
           <div class="right">
-            <i class="iconfont" :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
+            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
+          </div>
+        </div>
+        <div class="maxAdd" v-if="EditDateSet">
+          <a-button class="add-btn" @click="select('data')">
+            <span class="iconfont icon-tianjia"></span>
+          </a-button>
+          <span class="max-hint">最多可选3个数据集</span>
+        </div>
+        <div class="data-list-box">
+          <div class="data-item" v-for="(item, index) in formState.selectedName" :key="item.uid">
+            <span class="data-name">{{ item.name }}</span>
+            <span class="wenjian iconfont icon-wenjian">&nbsp;{{item.amount}}个</span>
+            <span class="cunchuzhi iconfont icon-cunchuzhi">&nbsp;{{item.size}}</span>
+            <span class="shanchu iconfont icon-shanchu" v-if="EditDateSet" @click="removeDataSet(item, index)"></span>
           </div>
         </div>
       </div>
-      <div class="environmentList box" v-if="EditDateSet">
-        <a-button class="add-btn" @click="select('data')">
-          <span class="iconfont icon-tianjia"></span>
-        </a-button>
-        <span class="max-hint">最多可选3个数据集</span>
-      </div>
-      <div class="data-list-box box">
-        <div class="data-item" v-for="(item, index) in formState.selectedName" :key="item.uid">
-          <span class="data-name">{{ item.name }}</span>
-          <span class="wenjian iconfont icon-wenjian">&nbsp;{{item.amount}}个</span>
-          <span class="cunchuzhi iconfont icon-cunchuzhi">&nbsp;{{item.size}}</span>
-          <span class="shanchu iconfont icon-shanchu" v-if="EditDateSet" @click="removeDataSet(item, index)"></span>
-        </div>
-      </div>
-      <div class="box" v-if="detail.task_type===4">
+      <!-- 实验任务 -->
+      <div class="box task" v-if="Subcomponents.includes('task')">
         <div class="head">
           <div class="left">
             <div class="title">实验任务</div>
           </div>
           <div class="right">
-            <i class="iconfont" :class="EditTask?'icon-baocun':'icon-bianji1'" @click="EditTask=true"></i>
+            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditTask?'icon-baocun':'icon-bianji1'" @click="editTaskInfo"></i>
           </div>
         </div>
+        <div class="taskContent" v-if="!EditTask && formState.taskData[0].name">
+          <div class="item" v-for="v in formState.taskData" :key="v.name">{{v.name}}</div>
+        </div>
+        <task-list v-if="EditTask" v-model:taskData="formState.taskData" :jupyterUuid="jupyterUuid"></task-list>
       </div>
-      <div v-if="EditTask && detail.task_type===4" class="task box">
-        <task-list v-model:taskData="formState.taskData" :jupyterUuid="jupyterUuid"></task-list>
-      </div>
-      <div class="box" v-if="detail.task_type===1">
+      <!-- 实验指导 -->
+      <div class="box" v-if="Subcomponents.includes('guide')">
         <div class="head">
           <div class="left">
             <div class="title">实验指导</div>
           </div>
           <div class="right">
-            <i class="iconfont" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+            <i class="iconfont" v-if="currentTabType==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+          </div>
+        </div>
+        <div class="markdownBox">
+          <antdv-markdown v-model="formState.guide"  :preview-only="!EditGuidance" class="markdown__editor"/>
+        </div>
+      </div>
+      <!-- 实验步骤-->
+      <div class="box" v-if="Subcomponents.includes('ExperimentalSteps')">
+        <div class="head">
+          <div class="left">
+            <div class="title">实验步骤</div>
+          </div>
+          <div class="right">
+            <i class="iconfont" v-if="currentTabType==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+          </div>
+        </div>
+        <div class="ExperimentalSteps">
+          <div v-for="v in detail.task_steps" :key="v.id" class="item">
+            <span class="name">{{v.name}}</span>
+            <span class="detaile" @click="viewStep(v.id)">{{"查看详情"}}</span>
           </div>
         </div>
       </div>
-      <div class="box markdownBox" v-if="detail.task_type===1">
-        <antdv-markdown v-model="formState.guide"  :preview-only="!EditGuidance" class="markdown__editor"/>
-      </div>
+      <!-- 镜像 数据集 选择 -->
       <a-drawer
         class="data-image-drawer"
         width="640"
@@ -110,7 +134,9 @@
           <environment v-model="formState.imageDataSelected" :limitNumber="detail.task_type===4?1:3"></environment>
         </div>
       </a-drawer>
+      <!-- 同屏模式 -->
       <same-screen ref="sameScreen" v-model:screenStatus="screenStatus" v-model="formState.guide" :screenInfo="screenVmInfo"></same-screen>
+      <!-- 编辑基础信息 -->
       <a-modal v-model:visible="visibleBaseInfo" title="编辑基础信息" @ok="editBaseInfo" @cancel="handleCancel" class="postModal">
         <a-form
           ref="formRef"
@@ -149,18 +175,21 @@ import { UUID } from 'src/utils/uuid'
 import { IimageData } from './experTyping'
 import { RuleObject } from 'ant-design-vue/es/form/interface';
 interface Istate{
+  Subcomponents:string[];
   detail:any;
   select: (val:string) => void;
   selectType:string;
   visible:boolean;
   visibleBaseInfo:boolean;
   onClose:(val:string) => void;
+  viewStep:(val:number) => void;
   editBaseInfo:() => void;
   handleCancel:() => void;
   openInfoModul:() => void;
   editEnvironmentInfo:() => void;
   editDateSetInfo:() => void;
   editGuideInfo:() => void;
+  editTaskInfo:() => void;
   screenStatus:boolean;
   screenVmInfo:any[];
   EditEnvironment:boolean;
@@ -202,6 +231,7 @@ export default defineComponent({
     let formRef = ref()
     let jupyterUuid = ref(UUID.uuid4())
     const state:Istate=reactive({
+      Subcomponents:[],  // baseInfo  environment  dateSet  guide  task  ExperimentalSteps
       rules:{
         name: [
         { required: true, message: '请输入实验名称', trigger: 'blur'},
@@ -301,6 +331,43 @@ export default defineComponent({
           getContentDetail()
         })
       },
+      editTaskInfo:()=>{
+        if(state.EditTask===false){
+          state.EditTask=true
+          return
+        }
+        let jupyter_tasks:any[]=[]
+        formState.taskData.forEach((item: any, index: number) => {
+          const temp = {
+            type: 1,
+            file_name: item.data.file_name,
+            file_url: item.data.file_path,
+            suffix: item.data.suffix,
+            size: item.data.size,
+            sort: index, 
+          }
+          jupyter_tasks.push(temp)
+        })
+        let obj={
+          id:id,
+          jupyter_tasks:jupyter_tasks,
+        }
+        state.loading=true
+        http.editTaskInfo({param:obj}).then((res:IBusinessResp)=>{
+          $message.success('编辑成功')
+          state.EditTask=false
+          state.loading=false
+          getContentDetail()
+        })
+      },
+      viewStep:(val:number)=>{
+         router.push({
+          path: '/teacher/teacherExperiment/ExperimentDetail/ExperimentalStepsDetail',
+          // query: {
+          //   id: val,
+          // },
+        })
+      },
       // dataset_ids
       detail:{},
       selectType:'',
@@ -366,6 +433,43 @@ export default defineComponent({
           return pre
         },[]):[]
         formState.guide=res.data.detail
+
+        let taskFile=res.data.content_task_files?res.data.content_task_files:[]
+        if(taskFile.length){
+          let arr:any[]=[]
+          taskFile.forEach((v:any) => {
+            arr.push({
+              data:{
+                file_name:v.file_name,
+                file_path:v.file_url,
+                size:v.size,
+                suffix:v.suffix,
+
+              },
+              status:true,
+              name:v.file_name
+            })
+          });
+          formState.taskData=arr
+        }
+
+        // Subcomponents  处理显示的详情组件   baseInfo  environment  dateSet  guide  task  ExperimentalSteps
+        if(state.detail.task_type===4){     // 交互
+          state.Subcomponents=['baseInfo','environment','dateSet','task']
+          if(currentTabType==='1'){     //内置
+            if(state.detail.programing_type===0){  // notebook
+              state.Subcomponents=['baseInfo','dateSet','task']
+            }else{                       // webide
+              state.Subcomponents=['baseInfo','guide']
+            }
+          }
+        }else{
+          state.Subcomponents=['baseInfo','environment','dateSet','guide']
+          if(currentTabType==='1'){
+            state.Subcomponents=['baseInfo','environment','dateSet','guide','ExperimentalSteps']
+          }
+        }
+        // console.log(state.Subcomponents)
         // console.log(formState)
       })
     }
@@ -379,24 +483,23 @@ export default defineComponent({
       }
     }
     watch(()=>{return formState.imageDataSelected},(val:any)=>{
+        state.environmentInfo={ cpu:0,ram:0,disk:0, }
         if(val.length){
-          // state.environmentInfo={
-          //   cpu:0,
-          //   ram:0,
-          //   disk:0,
-          // }
-        // val.forEach((v:any)=>{
-        //   state.environmentInfo.cpu+=Number(parseFloat(v.config.cpu_text))
-        //   state.environmentInfo.ram+=parseFloat(v.config.ram_text)
-        //   state.environmentInfo.disk+=parseFloat(v.config.disk_text)
-        // })
-      }
+          val.forEach((v:any)=>{
+            state.environmentInfo.cpu+=Number(v.flavor.cpu)
+            state.environmentInfo.ram+=Number(v.flavor.ram)/1024
+            state.environmentInfo.disk+=Number(v.flavor.disk)
+          })
+        }
       // console.log(state.environmentInfo)
     },{immediate:true,deep:true})
+    watch(()=>{return formState.taskData},(val:any)=>{
+      // console.log(val)
+    },{deep:true})
     onMounted(() => {
       getContentDetail()
     })
-    return {...toRefs(state),formState,formRef,jupyterUuid}
+    return {...toRefs(state),formState,formRef,jupyterUuid,currentTabType}
   }
 })
 </script>
@@ -520,7 +623,7 @@ export default defineComponent({
     }
   }
 }
-.environmentList{
+.maxAdd{
   .add-btn {
       width: 112px;
       height: 32px;
@@ -538,7 +641,7 @@ export default defineComponent({
     margin-left: 14px;
    }
 }
-.imageDataBox{
+.environmentDataBox{
   padding-right: 30px;
 }
 .data-list-box {
@@ -579,12 +682,47 @@ export default defineComponent({
   }
 }
 .task{
-  padding-right: 34px;
+  .taskContent{
+    padding-right: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    .item{
+      width:46%;
+      line-height: 44px;
+      border: 1px solid @theme-color;
+      font-size: 14px;
+      color: #050101;
+      margin-bottom: 14px;
+      border-radius: 6px;
+      padding: 0 14px;
+    }
+  }
 }
 .markdownBox{
   padding-right: 30px;
   .markdown__editor {
     min-height: 300px;
+  }
+}
+.ExperimentalSteps{
+  padding: 40px 30px 40px 0;
+  .item{
+    border: 1px solid @theme-color;
+    border-radius: 6px;
+    line-height: 44px;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 14px;
+    margin-bottom: 15px;
+    .name{
+      color: #050101;
+      font-size: 14px;
+    }
+    .detaile{
+      color: @theme-color;
+      cursor: pointer;
+    }
   }
 }
 </style>

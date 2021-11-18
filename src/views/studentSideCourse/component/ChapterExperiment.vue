@@ -297,7 +297,7 @@ export default defineComponent({
                 font-size: 12px;
             }
             .iconfont {
-                color: #8955B5;
+                color: @theme-color;
                 margin-left: 20px;
                 cursor: pointer;
             }

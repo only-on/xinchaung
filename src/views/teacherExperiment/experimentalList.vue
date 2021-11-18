@@ -127,7 +127,7 @@
                     {{ item.name }}
                   </div>
                   <div class="task-base-info">
-                    <span class="class-num">{{ item.class_cnt }}课时</span>
+                    <span class="class-num ">{{ item.class_cnt }}课时</span>
                     <span class="cpu hover-none">CPU:{{ item.envirment.cpu }}核</span>
                     <div class="memory hover-none">
                       <span>内存：{{ item.envirment.ram }}G</span>
@@ -205,6 +205,7 @@ import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { useRoute, useRouter } from 'vue-router'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { log } from 'console'
 export default defineComponent({
   components: {
     Tree
@@ -277,15 +278,15 @@ export default defineComponent({
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
           // console.log(res)
-          // if (res && res.status === 1) {
+          if (res && res.status === 1) {
             let Chapter=(res.data && res.data[0] && res.data[0].children && res.data[0].children[0]) || []
             taskData.push(...res.data)
             currentSelectChapter = Object.assign(currentSelectChapter, Chapter)
             getExperimentList()
             resp(true)
-          // } else {
-          //   reject(false)
-          // }
+          } else {
+            reject(false)
+          }
         })
       }).catch(err => {
           console.error(err)
@@ -327,21 +328,16 @@ export default defineComponent({
             param: {name: chapterInfo.chapterName},
             urlParams: {id: chapterInfo.chapterId}
           }).then((res: IBusinessResp) => {
-            if (res.status === 1) {
-              $message.success('编辑章节成功')
-              visible.value = false
-              experimentalTreeList().then(() => {
-                recoverTreeStatus()
-              })
-            } else {
-              $message.warn(res.msg)
-            }
+            $message.success('编辑章节成功')
+            visible.value = false
+            experimentalTreeList().then(() => {
+              recoverTreeStatus()
+            })
           })
         } else {
           http.addChapter({
             param: {name: chapterInfo.chapterName, parent_id: chapterInfo.parent_id},
           }).then((res: IBusinessResp) => {
-            if (res.status === 1) {
               $message.success('添加章节成功')
               visible.value = false
               isEmptyExperimental.value = false
@@ -356,9 +352,6 @@ export default defineComponent({
               //   name: res.data.name,
               //   parent_id: res.data.parent_id,
               // })
-            } else {
-              $message.warn(res.msg)
-            }
           })
         }
       }).catch((err: any) => {
@@ -393,21 +386,16 @@ export default defineComponent({
         cancelText: '取消',
         onOk() {
           http.deleteChapter({urlParams: {id}}).then((res: IBusinessResp) => {
-            // console.log(res)
-            if (res.status === 1) {
               $message.success('删除章节成功')
               getExperimentList()
-              experimentalTreeList().then(() => {
-                if (res) recoverTreeStatus()
+              experimentalTreeList().then((data:any) => {
+                if (data) recoverTreeStatus()
               })
-            } else {
-              $message.warn('出错了，请重新尝试')
-            }
           })
         },
       })
     }
-    // 共享章节
+    // 分享章节 
     function shareChapter(data: any) {
       // console.log(data)
       if (data.contents_count === 0) {
@@ -419,28 +407,18 @@ export default defineComponent({
         share_type: data.contents_count === data.contents_share_count ? 1 : 0,
       }
       http.shareChapter({param}).then((res: IBusinessResp) => {
-        if (res.status === 1) {
           $message.success(param.share_type === 0 ? '分享成功' : '取消分享成功')
-          experimentalTreeList().then(res => {
-            if (res) {
-              recoverTreeStatus()
-            }
+          experimentalTreeList().then((data:any) => {
+            recoverTreeStatus()
           })
           getExperimentList()
-        } else {
-          $message.warn(res.msg)
-        }
       })
     }
     function saveToMyAll(val: any) {
       const data = val.data.data
       http.saveToContentAll({param: { id: data.id }}).then((res: IBusinessResp) => {
-        if (res.status === 1) {
           $message.success('已保存到我的实验')
           getExperimentList()
-        } else {
-          $message.success(res.msg)
-        }
       })
     }
     // 获取实验列表
@@ -476,7 +454,8 @@ export default defineComponent({
         // console.log(res)
         ListSearchInfo.loading = false
         if (res && res.status === 1) {
-          let {list, page} = res.data
+          let {list, page} =res.data
+          // let list=res.data.list
           ListSearchInfo.total = page.totalCount
           ListSearchInfo.experimentalDataList = list
           if (ListSearchInfo.experimentalDataList.length) {
@@ -528,23 +507,19 @@ export default defineComponent({
         param.down_id = ListSearchInfo.experimentalDataList[i].id
       }
       http.sortExperimental({param}).then((res: IBusinessResp) => {
-        if (res.status === 1) {
           $message.success('实验顺序交换成功')
           if (flag) {
             // console.log(i)
-            // console.log('上衣')
+            // console.log('上移')
             // moveUp(this.experimentalDataList, i)
             ListSearchInfo.experimentalDataList[i - 1] = ListSearchInfo.experimentalDataList.splice(i, 1, ListSearchInfo.experimentalDataList[i - 1])[0]
           } else {
             // console.log(i)
-            // console.log('下衣')
+            // console.log('下移')
             // moveDown(this.experimentalDataList, i)
             ListSearchInfo.experimentalDataList[i + 1] = ListSearchInfo.experimentalDataList.splice(i, 1, ListSearchInfo.experimentalDataList[i + 1])[0]
           }
           // this.experimentalList()
-        } else {
-          $message.success('操作失败')
-        }
       })
     }
     // 共享/取消共享实验
@@ -558,22 +533,17 @@ export default defineComponent({
         share_type: data.is_share,
       }
       http.shareExperimental({param}).then((res: IBusinessResp) => {
-        if (res.status === 1) {
           if (data.is_share === 0) {
             $message.success('共享成功')
           } else {
             $message.success('取消共享成功')
           }
           getExperimentList()
-          experimentalTreeList().then(res => {
-            if (res) {
+          experimentalTreeList().then((data:any) => {
+            if (data) {
               recoverTreeStatus()
             }
           })
-        } else {
-          $message.warn('操作失败')
-          // this.$message.warn(res.msg)
-        }
       })
     }
     // 删除实验
@@ -586,17 +556,13 @@ export default defineComponent({
         cancelText: '取消',
         onOk() {
           http.deleteExperimental({urlParams: {id: data.id}}).then((res: IBusinessResp) => {
-            if (res.status === 1) {
               $message.success('删除成功')
               getExperimentList()
-              experimentalTreeList().then(res => {
-                if (res) {
+              experimentalTreeList().then((data:any) => {
+                if (data) {
                   recoverTreeStatus()
                 }
               })
-            } else {
-              $message.warn(res.msg)
-            }
           })
         },
       })
@@ -606,12 +572,8 @@ export default defineComponent({
       // console.log(val)
       http.saveToContent({param: {id: val.id }}).then((res: any) => {
         // console.log(res)
-        if (res.status === 1) {
-          $message.success('已保存到我的实验')
-          getExperimentList()
-        } else {
-          $message.success(res.msg)
-        }
+        $message.success('已保存到我的实验')
+        getExperimentList()
       })
     }
     // 初始化
@@ -706,7 +668,7 @@ export default defineComponent({
     function getSearchInfo() {
       http.getSearchInfo({param: {init_type: currentTabType.value}}).then((res: IBusinessResp) => {
         // console.log(res)
-        if (res) {
+        if(res && res.data){
           TypeList.content_type = res.data.content_type
           TypeList.content_level = res.data.content_level
         }
@@ -731,9 +693,6 @@ export default defineComponent({
       if (currentSelectChapter.id === data.data.id) {
         return
       } else {
-        // this.$set(this.experimentalSelectParam, 'content_type', '')
-        // this.$set(this.experimentalSelectParam, 'content_level', '')
-        // this.$set(this.experimentalSelectParam, 'name', '')
         currentTaskType.value = 0
         currentTaskRankType.value = 0
         ListSearchInfo.experimentKeyWord = ''
@@ -752,12 +711,11 @@ export default defineComponent({
       currentCourseIndex.value = index
       currentCourseContent = Object.assign(currentCourseContent, val)
       lastChapterIndex.value = 0
-      console.log(val, index)
+      // console.log(val, index)
       initExperimental(val)
     }
     // 恢复上次展开的树
     function recoverTreeStatus() {
-
       if (route.query.course_index && route.query.chapter_index) {
         myTree.value.resetSelect(taskData[currentCourseIndex.value].id)
         myTree.value.resetSelectChapter(
@@ -768,11 +726,10 @@ export default defineComponent({
         return 
       }
       myTree.value.resetSelect(currentCourseContent.id)
-      myTree.value.resetSelectChapter(
-        currentCourseContent.children[
-          currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
-        ].id,
-      )
+      // console.log(currentCourseContent)
+      let index=currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
+      let Id=currentCourseContent.children && currentCourseContent.children[index] && currentCourseContent.children[index].id
+      myTree.value.resetSelectChapter(Id)
     }
     onMounted(() => {
       
@@ -792,15 +749,15 @@ export default defineComponent({
     }
     // 查看实验详情
     function lookDetail(val: IExporimentList) {
-      console.log(val, '查看实验详情')
-      console.log(currentTabType.value)
+      // console.log(val, '查看实验详情')
+      // console.log(currentTabType.value)
         //     tab_type: this.currentTabType === 0 ? 'me' : this.currentTabType === 1 ? 'init' : 'share',
       //     task_type: val.task_type,
       router.push({
         path: '/teacher/teacherExperiment/ExperimentDetail',
         query: {
           id: val.id,
-          currentTabType: String(currentTabType.value),
+          currentTabType: currentTabType.value,
         },
       })
     }

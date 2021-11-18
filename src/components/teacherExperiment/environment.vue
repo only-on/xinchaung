@@ -248,7 +248,7 @@ interface Icongig {
 
       &:hover {
         background: #fdfaff;
-        border: 1px solid #b083d5;
+        border: 1px solid @theme-color;
         border-radius: 6px;
         box-shadow: 0px 3px 6px 0px rgba(15, 11, 19, 0.4);
         cursor: pointer;
@@ -270,11 +270,11 @@ interface Icongig {
         font-size: 12px;
       }
 
-      >span:nth-child(3) {
+      >span:nth-child(3) { 
         width: 50px;
         flex-shrink: 0;
         text-align: center;
-        color: #8955b5;
+        color: @theme-color;
         font-size: 14px;
       }
     }

@@ -1,5 +1,6 @@
 import Layout from 'src/views/common/Layout.vue';
 import { LocationQuery, RouteParams } from 'vue-router';
+import RouterViews from "src/components/RouterView.vue";
 
 export default {
     path: "classical",
@@ -15,7 +16,7 @@ export default {
         {
             path: "list/:type",
             name: 'classicalAsset',
-            component: () => import("src/components/RouterView.vue"),
+            component: RouterViews,
             meta: {
                 title: (params?: RouteParams, query?: LocationQuery) => {
                     // 是资源列表，需要根据type param来决定如何设置面包屑

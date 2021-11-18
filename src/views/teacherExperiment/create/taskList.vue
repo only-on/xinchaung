@@ -63,7 +63,11 @@ export default defineComponent({
       type: Array as PropType<ITaskList[]>,
       default: []
     },
-    jupyterUuid: String as any
+    jupyterUuid: String as any,
+    edit:{
+      type:Boolean,
+      default:false
+    }
   },
   // emit: [],
   setup(props, {emit}) {

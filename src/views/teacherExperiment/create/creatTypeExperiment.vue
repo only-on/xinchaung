@@ -391,7 +391,7 @@ export default defineComponent({
     })
     // formState.taskData
     watch(()=>{return formState.taskData},(val:any)=>{
-      // console.log(val)
+      console.log(val)
       formRef.value.validate()
     },{deep:true})
     // formState.guide
