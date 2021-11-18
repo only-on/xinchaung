@@ -585,7 +585,7 @@ export default defineComponent({
       };
       endStudentAnswer(params);
       router.push({
-        path: "/exam/list",
+        path: "/studentExam/list",
       });
     }
 

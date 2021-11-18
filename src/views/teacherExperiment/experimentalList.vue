@@ -10,14 +10,14 @@
       >
         暂无数据
       </div>
-      <Tree class="scroll-bar-customize" v-model:treeData="taskData" ref="myTree" :currentTabType="currentTabType" @open="openTree" v-else>
+      <Tree class="scroll-bar-customize" v-model:treeData="taskData" ref="myTree" :currentTab="currentTab" @open="openTree" v-else>
         <template v-slot:first="scope">
           <div class="task-title">
             <span class="task-icon icon-jsfx iconfont"></span>
             <span class="task-name">{{ scope.data.name ? scope.data.name : '' }}</span>
           </div>
         </template>
-        <template v-slot:add="scope" v-if="currentTabType === 0">
+        <template v-slot:add="scope" v-if="currentTab === 0">
           <div class="btn-box">
             <a-button class="add-btn" @click="addOrUpdate(scope, true)">
               <span class="iconfont icon-tianjia"></span>
@@ -29,22 +29,22 @@
           <div class="children-tree-item" @click="selectTree(scope.data)">
             <span class="iconfont icon-zhangjie"></span>
             <span class="chapter-name">{{ scope.data.data.name ? scope.data.data.name : '' }}</span>
-            <span class="task-num" :class="currentTabType !== 1 ? 'hover-none' : ''">
+            <span class="task-num" :class="currentTab !== 1 ? 'hover-none' : ''">
               {{ scope.data.data.contents_count }}
             </span>
             <span
               class="iconfont icon-baocun save"
-              v-if="currentTabType === 2"
+              v-if="currentTab === 2"
               @click.stop="saveToMyAll(scope)"
             ></span>
             <span
-              v-if="currentTabType === 0"
+              v-if="currentTab === 0"
               @click.stop="delChapter(scope.data)"
               class="iconfont icon-shanchu hover-block delete-pop"
             ></span>
             <span
               class="hover-block iconfont icon-bianji1"
-              v-if="currentTabType === 0"
+              v-if="currentTab === 0"
               @click.stop="addOrUpdate(scope.data, false)"
             ></span>
             <span
@@ -54,7 +54,7 @@
                   ? 'icon-quxiaogongxiang'
                   : 'icon-gongxiang'
               "
-              v-if="currentTabType === 0"
+              v-if="currentTab === 0"
               @click.stop="shareChapter(scope.data.data)"
             ></span>
           </div>
@@ -63,15 +63,15 @@
     </div>
     <div class="content-right">
       <div v-if="isEmptyExperimental">
-        <Empty :text="currentTabType === 0 ? '该技术方向暂无章节，先来创建一个您需要的章节吧!' : '该技术方向暂无章节'"/>
+        <Empty :text="currentTab === 0 ? '该技术方向暂无章节，先来创建一个您需要的章节吧!' : '该技术方向暂无章节'"/>
         <div class="empty-chapter-box">
-          <a-button type="primary" v-if="currentTabType === 0" @click="addChapter">添加章节</a-button>
+          <a-button type="primary" v-if="currentTab === 0" @click="addChapter">添加章节</a-button>
         </div>
       </div>
       <div v-else-if="!loading && !isParamSelect && experimentalDataList.length === 0">
-        <Empty :text="currentTabType === 0 ? '该章节暂无实验，快去创建您需要的实验吧!' : '该章节暂无实验'"/>
+        <Empty :text="currentTab === 0 ? '该章节暂无实验，快去创建您需要的实验吧!' : '该章节暂无实验'"/>
         <div class="empty-chapter-box">
-          <a-button type="primary" v-if="currentTabType === 0" @click="create">创建实验</a-button>
+          <a-button type="primary" v-if="currentTab === 0" @click="create">创建实验</a-button>
         </div>
       </div>
       <div v-else class="listBox">
@@ -107,9 +107,9 @@
               @search="onExperimentalSearch"
             />
           </div>
-          <a-button v-if="currentTabType === 0" type="primary" @click="create">新建实验</a-button>
+          <a-button v-if="currentTab === 0" type="primary" @click="create">新建实验</a-button>
         </div>
-        <div class="task-list scroll-bar-customize" :class="currentTabType === 1 ? 'built-in' : ''">
+        <div class="task-list scroll-bar-customize" :class="currentTab === 1 ? 'built-in' : ''">
           <div v-if="taskData.length > 0">
             <a-spin :spinning="loading" size="large" tip="Loading...">
               <!-- <div v-if="experimentalDataList.length === 0">
@@ -137,26 +137,26 @@
                       <span
                         class="iconfont icon-shangyi"
                         @click.stop="sortExperimental(index, true)"
-                        v-if="currentTabType === 0"
+                        v-if="currentTab === 0"
                       ></span>
                       <span
                         class="iconfont icon-xiayi"
                         @click.stop="sortExperimental(index, false)"
-                        v-if="currentTabType === 0"
+                        v-if="currentTab === 0"
                       ></span>
                       <span
                         class="iconfont"
                         :class="item.is_share === 0 ? 'icon-gongxiang' : 'icon-quxiaogongxiang'"
-                        v-if="currentTabType === 0 && (item.is_final_share === 0 || item.is_share === 1)"
+                        v-if="currentTab === 0 && (item.is_final_share === 0 || item.is_share === 1)"
                         @click.stop="shareExperimental(item)"
                       ></span>
                       <span
                         class="iconfont icon-shanchu"
                         @click.stop="deleteExperimental(item)"
-                        v-if="currentTabType === 0"
+                        v-if="currentTab === 0"
                       ></span>
 
-                      <span class="iconfont icon-baocun" v-if="currentTabType === 2" @click.stop="saveToMy(item)"></span>
+                      <span class="iconfont icon-baocun" v-if="currentTab === 2" @click.stop="saveToMy(item)"></span>
                     </div>
                   </div>
                 </div>
@@ -231,10 +231,10 @@ export default defineComponent({
       }
     ]
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:true})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     var configuration:any=inject('configuration')
 
-    let currentTabType = ref<number>()
+    let currentTab = ref<number>()
     let myTree = ref()
     // 当前展开的课程方向数据
     let currentCourseContent: any = {}
@@ -268,7 +268,7 @@ export default defineComponent({
     function experimentalTreeList() {
       return new Promise((resp, reject) => {
         let param = {
-          init_type: currentTabType.value,
+          init_type: currentTab.value,
           // name: treeSelectKeyWord.value
         }
         if (treeSelectKeyWord.value) {
@@ -433,7 +433,7 @@ export default defineComponent({
     function getExperimentList() {
       let param = {
         category_id: currentSelectChapter.id,
-        init_type: currentTabType.value,
+        init_type: currentTab.value,
         content_type: currentTaskType.value,
         content_level: currentTaskRankType.value,
         name: ListSearchInfo.experimentKeyWord,
@@ -643,7 +643,7 @@ export default defineComponent({
     }
     watch(()=>configuration.componenttype, (newVal) => {
       if (typeof(newVal) === 'number') {
-        currentTabType.value = newVal
+        currentTab.value = newVal
         init()
       }
       
@@ -657,7 +657,7 @@ export default defineComponent({
       }
     })
     onMounted(() => {
-      currentTabType.value = route.query.currentTab ? Number(route.query.currentTab) : 0
+      currentTab.value = route.query.currentTab ? Number(route.query.currentTab) : 0
       init()
     })
     // 获取实验类型和难度
@@ -666,7 +666,7 @@ export default defineComponent({
       content_type: [],
     })
     function getSearchInfo() {
-      http.getSearchInfo({param: {init_type: currentTabType.value}}).then((res: IBusinessResp) => {
+      http.getSearchInfo({param: {init_type: currentTab.value}}).then((res: IBusinessResp) => {
         // console.log(res)
         if(res && res.data){
           TypeList.content_type = res.data.content_type
@@ -750,20 +750,20 @@ export default defineComponent({
     // 查看实验详情
     function lookDetail(val: IExporimentList) {
       // console.log(val, '查看实验详情')
-      // console.log(currentTabType.value)
-        //     tab_type: this.currentTabType === 0 ? 'me' : this.currentTabType === 1 ? 'init' : 'share',
+      // console.log(currentTab.value)
+        //     tab_type: this.currentTab === 0 ? 'me' : this.currentTab === 1 ? 'init' : 'share',
       //     task_type: val.task_type,
       router.push({
         path: '/teacher/teacherExperiment/ExperimentDetail',
         query: {
           id: val.id,
-          currentTabType: currentTabType.value,
+          currentTab: currentTab.value,
         },
       })
     }
     return {
       myTree,
-      currentTabType,
+      currentTab,
       treeSelectKeyWord,
       onTreeSearch,
       taskData,

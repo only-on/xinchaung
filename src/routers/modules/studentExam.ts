@@ -2,11 +2,11 @@ import Layout from "../../views/common/Layout.vue";
 import RouterView from "/src/components/RouterView.vue"
 
 export default{
-    path: "/exam",
+    path: "/studentExam",
     component: RouterView,
     meta: {
         title: "考试",
-        authCode: "vm",
+        authCode: "studentExam",
     },
     children: [
         {
@@ -14,7 +14,7 @@ export default{
             component: Layout,
             meta: {
                 title: "考试",
-                authCode: "vm",
+                authCode: "studentExam",
             },
             children:[
                 {
@@ -23,7 +23,7 @@ export default{
                     component:()=>import("src/views/studentExam/examList/examList.vue"),
                     meta:{
                         title:"考试列表",
-                        authCode:""
+                        authCode:"studentExam"
                     },
                 },
                 

@@ -31,6 +31,9 @@ export default {
   editDateSetInfo:{url: `/api/content/vnc/update_dataset`, method: 'POST', dataType:'json'},
   editGuideInfo:{url: `/api/content/vnc/update_detail`, method: 'POST', dataType:'json'},
   editTaskInfo:{url: `/api/content/jupyter/update_task`, method: 'POST', dataType:'json'},
+
+  // 实验步骤详情
+  taskStepDetail: {url: `/api/content/taskstep/show/{id}`, method: 'GET'},
 }
 
 export interface ITeacherExperAps {
@@ -59,6 +62,8 @@ export interface ITeacherExperAps {
   editDateSetInfo: TFHttpSend;
   editGuideInfo: TFHttpSend;
   editTaskInfo: TFHttpSend;
+
+  taskStepDetail: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExperiment'

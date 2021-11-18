@@ -4,7 +4,7 @@ export default{
     path: "/vm",
     component: RouterViews,
     meta: {
-        title: "实训",
+        title: "虚拟机",
         authCode: "vm",
     },
     children: [

@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="inonBox"  v-if="currentTabType==='0'" >
+          <div class="inonBox"  v-if="currentTab==='0'" >
             <i class="iconfont" :class="EditInfo?'icon-baocun':'icon-bianji1'" @click="openInfoModul"></i>
           </div>
         </div>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
+            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
           </div>
         </div>
         <div class="maxAdd" v-if="EditEnvironment">
@@ -54,7 +54,7 @@
             <div class="title">数据集</div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
+            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
           </div>
         </div>
         <div class="maxAdd" v-if="EditDateSet">
@@ -79,7 +79,7 @@
             <div class="title">实验任务</div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTabType==='0'"  :class="EditTask?'icon-baocun':'icon-bianji1'" @click="editTaskInfo"></i>
+            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditTask?'icon-baocun':'icon-bianji1'" @click="editTaskInfo"></i>
           </div>
         </div>
         <div class="taskContent" v-if="!EditTask && formState.taskData[0].name">
@@ -94,7 +94,7 @@
             <div class="title">实验指导</div>
           </div>
           <div class="right">
-            <i class="iconfont" v-if="currentTabType==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+            <i class="iconfont" v-if="currentTab==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
           </div>
         </div>
         <div class="markdownBox">
@@ -108,7 +108,7 @@
             <div class="title">实验步骤</div>
           </div>
           <div class="right">
-            <i class="iconfont" v-if="currentTabType==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+            <i class="iconfont" v-if="currentTab==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
           </div>
         </div>
         <div class="ExperimentalSteps">
@@ -227,7 +227,7 @@ export default defineComponent({
     const http=(request as any).teacherExperiment
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:true,showContent:false,componenttype:undefined,showNav:true})
-    const {id,currentTabType}=route.query
+    const {id,currentTab}=route.query
     let formRef = ref()
     let jupyterUuid = ref(UUID.uuid4())
     const state:Istate=reactive({
@@ -362,10 +362,11 @@ export default defineComponent({
       },
       viewStep:(val:number)=>{
          router.push({
-          path: '/teacher/teacherExperiment/ExperimentDetail/ExperimentalStepsDetail',
-          // query: {
-          //   id: val,
-          // },
+          path: '/teacher/teacherExperiment/ExperimentalStepsDetail',
+          query: {
+            stepId: val,
+            currentTab:currentTab
+          },
         })
       },
       // dataset_ids
@@ -456,7 +457,7 @@ export default defineComponent({
         // Subcomponents  处理显示的详情组件   baseInfo  environment  dateSet  guide  task  ExperimentalSteps
         if(state.detail.task_type===4){     // 交互
           state.Subcomponents=['baseInfo','environment','dateSet','task']
-          if(currentTabType==='1'){     //内置
+          if(currentTab==='1'){     //内置
             if(state.detail.programing_type===0){  // notebook
               state.Subcomponents=['baseInfo','dateSet','task']
             }else{                       // webide
@@ -465,7 +466,7 @@ export default defineComponent({
           }
         }else{
           state.Subcomponents=['baseInfo','environment','dateSet','guide']
-          if(currentTabType==='1'){
+          if(currentTab==='1'){
             state.Subcomponents=['baseInfo','environment','dateSet','guide','ExperimentalSteps']
           }
         }
@@ -499,7 +500,7 @@ export default defineComponent({
     onMounted(() => {
       getContentDetail()
     })
-    return {...toRefs(state),formState,formRef,jupyterUuid,currentTabType}
+    return {...toRefs(state),formState,formRef,jupyterUuid,currentTab}
   }
 })
 </script>

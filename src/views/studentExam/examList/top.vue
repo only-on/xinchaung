@@ -90,7 +90,7 @@ export default defineComponent({
       
       startExam()
       router.push({
-        path: "/exam/examDoing",
+        path: "/studentExam/examDoing",
         query:{
           paper_id:startExamInfoData?.value.id
         }
