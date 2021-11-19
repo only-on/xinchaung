@@ -8,9 +8,9 @@ export default {
   resetExperimentalServer: { url: `/teacher-train/reset-server`, method: "POST", dataType: 'json' },
   setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
   // 资源
-  delResource: { url: `/teacher-train/del-upload`, method: "GET", dataType: 'json' },
+  delResource: { url: '/api/service/resources/{resource}', method: "DELETE", dataType: 'formdata' },
   uploadResource: { url: `/api/service/resources`, method: 'POST', dataType: 'json' },
-  getResourceList: { url: '/teacher-train/get-resource-list', method: 'POST', dataType: 'json' },
+  getResourceList: { url: '/api/service/resources', method: "GET", dataType: 'json' },
 
   // 新建实训  选择环境
   ImageList: { url: `/api/env/containers`, method: 'GET' },

@@ -136,29 +136,55 @@ export default defineComponent({
       router.push({path:'/teacher/teacherTrain/detail',query:{id:id}})
     }
     // 考核
-    const evaluate = (id: number) => {
+    // const evaluate = (id: number) => {
+    //   router.push('/teacher/teacherTrain/evaluate?trainId=' + id)
+    // }
+    function evaluate(id: number){
+      console.log('考核')
       router.push('/teacher/teacherTrain/evaluate?trainId=' + id)
     }
 
     // 资源
-    const resource = (id: number) => {
+    // const resource = (id: number) => {
+    //   let param = {
+    //     trainType: trainType.value,
+    //     trainId: id
+    //   }
+    //   router.replace({
+    //     path: '/teacher/teacherTrain/resource',
+    //     query: param
+    //   })
+    // }
+    function resource(id: number){
+      console.log('资源')
       let param = {
         trainType: trainType.value,
         trainId: id
       }
-      router.replace({
+      router.push({
         path: '/teacher/teacherTrain/resource',
         query: param
       })
     }
 
     // 环境
-    const virtualEnv = (id: number) => {
+    // const virtualEnv = (id: number) => {
+    //   let param = {
+    //     type: 'train',
+    //     taskId: id
+    //   }
+    //   router.replace({
+    //     path: '/teacher/teacherTrain/virtualEnv',
+    //     query: param
+    //   })
+    // }
+    function virtualEnv(id: number){
+      console.log('环境')
       let param = {
         type: 'train',
         taskId: id
       }
-      router.replace({
+      router.push({
         path: '/teacher/teacherCourse/virtualEnv',
         query: param
       })

@@ -67,13 +67,15 @@ export default defineComponent({
 
     let current = ref(0)
     function beforeChange(from:Function, to:number) {
+      console.log(to)
       current.value= to
     }
 
     let apiList = ['vmOpen', 'vmClose', 'vmRevert', 'vmReset']
+    console.log(props.list,current.value,props.list.vms,props.list.vms[current.value],'props.listllllllllllllllll')
     let params = {
       // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
-      uuid: props.list.vms[current.value].uuid,
+      uuid: props.list.vms[current.value]?.uuid,
       atype: courseInfo.type
     }
     function btnClick(v: number) {

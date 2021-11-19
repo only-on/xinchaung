@@ -1,5 +1,5 @@
 <template>
-  <a-button type="primary" @click="openEnv">开启实验环境</a-button>
+  <a-button type="primary" @click="openEnv">开启{{courseInfo.type === 'train' ? '实训' : '实验'}}环境</a-button>
   <a-modal
     v-model:visible="visible"
     title="设置环境数量"
@@ -48,6 +48,7 @@
       const visible = ref<boolean>(false);
       let openEnvNum = ref<number>()
       const openEnv = () => {
+        console.log(props.limit,'授权人数',props.courseInfo,props.selectedNodes)
         let name = props.courseInfo.type === 'train' ? '实训' : '实验'
         // if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1) || props.courseInfo.type === 'train') {
         if (!props.selectedNodes.taskId && (props.courseInfo.type === 'course' && props.courseInfo.courseType === 1)) {

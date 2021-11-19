@@ -150,15 +150,6 @@ export default defineComponent({
             let development=process.env.NODE_ENV == 'development' ? true : false;
             let baseurl=development?'http://localhost:3000/proxyPrefix':""
             FileSaver.saveAs(baseurl+url);
-        //    const formdata=new FormData()
-        //    formdata.append('train_id',props.trainId)
-        //    formdata.append('courseware',state.file)
-        //    http.savepptModefiy({param:formdata}).then((res:any)=>{
-        //        console.log(res)
-        //     //   state.ppt_url=baseurl+res.datas.courseware_html
-        //     //   context.emit('uploadppt')
-        //    })
-
        }
     }
     //  watch(()=>props.resource,(val:any)=>{

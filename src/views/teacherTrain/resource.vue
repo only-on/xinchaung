@@ -18,11 +18,11 @@
           name="file"
           :multiple="false"
           @change="handleChange"
-          :before-upload=beforeUpload
+          :before-upload='beforeUpload'
           >
           <a-input v-model:value="uploadResourceInfo.url" :disabled="true"/>
-          <a-button>
-            上传
+          <a-button type="primary">
+            浏览
           </a-button>
         </a-upload>
         <a-form-item label="资源说明">
@@ -36,7 +36,6 @@
       :rowKey="rowkey"
       :dataSource="tableList" 
       :columns="columns" 
-      :bordered="true"
       :pagination="false"
       v-if="tableList.length"
     >
@@ -46,7 +45,8 @@
       <template #operation="{ record }">
         <!-- <span class="iconfont icon-download" @click="download(record.url)"></span> -->
         <!-- href="http://192.168.101.150/upload/train/50304/train_resource/16336625584419.xlsx" -->
-        <a class="iconfont icon-download" title="下载" :href="'http://192.168.101.150'+record.url" :download="record.name"></a>
+        <!-- <a class="iconfont icon-download" title="下载" :href="'http://192.168.101.150'+record.url" :download="record.name"></a> -->
+        <span class="iconfont icon-download" title="下载" @click="downLoadResource(record.url)"></span>
         <span class="iconfont icon-shanchu" title="删除" @click="deleteResource(record.id)"></span>
       </template>
     </a-table>
@@ -73,7 +73,19 @@ import { message } from 'ant-design-vue'
 import { Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { useRoute } from 'vue-router'
+import  FileSaver  from 'file-saver'
 
+
+interface Istate{
+  params:{
+    name:string,
+    ext:string,
+    limit?:number,
+    page?:number,
+    type:number,
+    id:string,
+  }
+}
 export default defineComponent({
   setup() {
     var updata = inject('updataNav') as Function
@@ -86,6 +98,14 @@ export default defineComponent({
     }
     const http=(request as ITeacherTrainHttp).teacherTrain
     console.log (request.teacherTrain)
+    const state:Istate=reactive({
+        params:{
+          name:'',
+          ext:'',
+          type:2,
+          id:trainInfo.trainId,
+        }
+     })
     const data = reactive<Idata>({
       resourceTypeList: ["gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
       searchInfo: {
@@ -94,7 +114,9 @@ export default defineComponent({
       },
       uploadResourceInfo: {
         url: '',
-        explain: ''
+        explain: '',
+        size:'',
+        type:''
       },
       tableList: [],
       page: {
@@ -131,8 +153,8 @@ export default defineComponent({
       },
       {
         title: '上传时间',
-        dataIndex: 'created_at',
-        key: 'created_at',
+        dataIndex: 'created_time',
+        key: 'created_time',
         width: 220,
       },
       {
@@ -145,40 +167,16 @@ export default defineComponent({
     ]
     // 获取列表数据
     const getResourceList = () => {
-      // data.tableList = [
-      //   {
-      //     id: 1,
-      //     name: '111',
-      //     describe: '222',
-      //     posfix: 'lsx',
-      //     size: '1024kb',
-      //     created_time: '2021.9.16',
-      //     url: "/src/assets/images/bg1.jpg"
-      //   }
-      // ]
-      let param = {
-        query: {
-          id: trainInfo.trainId,
-          name: data.searchInfo.resourceName,
-          posfix: data.searchInfo.resourceType,
-        },
-        page: {
-          pageSize: data.page.pageSize,
-          page: data.page.page
-        }
-      }
-      console.log(param)
-      http.getResourceList({param}).then((res: IBusinessResp) => {
-        console.log(res)
-        data.tableList = res.data.list
-        data.page.page = res.data.page.currentPage
-        data.page.total = res.data.page.totalCount
-      })
+           http.getResourceList({param:state.params}).then((res:any)=>{
+               console.log(res)
+               data.tableList=res.data.list
+           })
     }
     // 查询
     const query = () => {
-      data.page.page = 1
-      getResourceList()
+         state.params.name =data.searchInfo.resourceName
+         state.params.ext =data.searchInfo.resourceType
+        getResourceList()
     }
     // 清空
     const clear = () => {
@@ -186,9 +184,11 @@ export default defineComponent({
       data.searchInfo.resourceType = ''
     }
     // 下载
-    const download = (url: string) => {
-      console.log(url)
-      location.href = url
+    const downLoadResource=(url: string)=>{
+      console.log(url,'urlurlurlurlurlur')
+        let development=process.env.NODE_ENV == 'development' ? true : false;
+        let baseurl=development?'http://localhost:3000/proxyPrefix':""
+        FileSaver.saveAs(baseurl+url);
     }
     // 删除
     const deleteResource = (id: number) => {
@@ -200,7 +200,7 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk: () => {
-          http.delResource({param: {train_resource_id: id}}).then((res: IBusinessResp) => {
+          http.delResource({urlParams: {resource: id}}).then((res: IBusinessResp) => {
             console.log(res)
             getResourceList()
           })
@@ -235,6 +235,8 @@ export default defineComponent({
         return false
       }
       data.uploadResourceInfo.url = file.name
+      data.uploadResourceInfo.size=file.size
+      data.uploadResourceInfo.type=file.name.split('.')[file.name.split('.').length-1]
       uploadfile = file
       return false
     }
@@ -251,18 +253,22 @@ export default defineComponent({
         message.warn('资源说明不能为空!');
         return
       }
-      console.log(uploadfile)
-      const fd = new FormData()
-      fd.append('resource', uploadfile)
-      fd.append('train_id', trainInfo.trainId)
-      fd.append('introduce', data.uploadResourceInfo.explain)
-      console.log(fd)
+       const params={
+              relate_id:trainInfo.trainId,
+              name:data.uploadResourceInfo.url,
+              url:"/resource/"+data.uploadResourceInfo.url,
+              size:data.uploadResourceInfo.url.toString(),
+              posfix:data.uploadResourceInfo.type,
+              describe:data.uploadResourceInfo.explain,
+              type:2
+           }
       http.uploadResource({
-        param: fd
+        param:params
       }).then((res: IBusinessResp) => {
         if (res.status) {
           data.uploadResourceInfo.url = ''
           data.uploadResourceInfo.explain = ''
+          data.uploadResourceInfo.type=''
           getResourceList()
         }
       })
@@ -276,11 +282,12 @@ export default defineComponent({
     })
     return {
       isMyself,
+      ...toRefs(state),
       ...toRefs(data),
       query,
       clear,
       columns,
-      download,
+      downLoadResource,
       deleteResource,
       pageChange,
       onShowSizeChange,
@@ -298,6 +305,8 @@ interface IsearchInfo {
 interface IuploadResourceInfo {
   url: string
   explain: string
+  size:any,
+  type: string
 }
 interface Ipage{
   page: number

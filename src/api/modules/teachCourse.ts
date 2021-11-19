@@ -31,8 +31,13 @@ export default {
     method: 'POST',
     dataType: 'json'
   },
+  // saveTopoinst: {
+  //   url: '/base-study/pre-save-topoinst',
+  //   method: 'POST',
+  //   dataType: 'json'
+  // },
   saveTopoinst: {
-    url: '/base-study/pre-save-topoinst',
+    url: '/api/operate/preCreates/create',
     method: 'POST',
     dataType: 'json'
   },
@@ -234,9 +239,14 @@ export default {
     method: "PUT",
     dataType: "json"
   },
+  // getPreparingDataApi: {
+  //   url: "/classic/course-dataset/preparation-materials",
+  //   method: "POST",
+  //   dataType: "json"
+  // },
   getPreparingDataApi: {
-    url: "/classic/course-dataset/preparation-materials",
-    method: "POST",
+    url: "/api/operate/preCreates/list",
+    method: "GET",
     dataType: "json"
   },
   getDataSetListApi: {
@@ -392,17 +402,17 @@ export default {
     method: "POST",
     dataType: "formdata"
   },
-  deleteQuestionPaperApi:{
-    url:"/api/v1/question/{entity_type}/{entity_id}/relationships/questions",
+  deleteQuestionPaperApi: {
+    url: "/api/v1/question/{entity_type}/{entity_id}/relationships/questions",
     method: "PUT",
     dataType: "json"
   },
-  getPaperDetailApi:{
-    url:"/api/v1/question/papers/{paper_id}",
-    method:"GET"
+  getPaperDetailApi: {
+    url: "/api/v1/question/papers/{paper_id}",
+    method: "GET"
   },
-  updatePaperBaseApi:{
-    url:"api/v1/question/papers/{paper_id}",
+  updatePaperBaseApi: {
+    url: "api/v1/question/papers/{paper_id}",
     method: "PUT",
   }
 }
@@ -496,8 +506,8 @@ export interface ITeacherCourseApis {
   getChapterExerciseAnalysisApi: TFHttpSend
   getReportListApi: TFHttpSend
   saveReportTemplateApi: TFHttpSend
-  createCourseBaseApi:TFHttpSend
-  deleteQuestionPaperApi:TFHttpSend
-  getPaperDetailApi:TFHttpSend
-  updatePaperBaseApi:TFHttpSend
+  createCourseBaseApi: TFHttpSend
+  deleteQuestionPaperApi: TFHttpSend
+  getPaperDetailApi: TFHttpSend
+  updatePaperBaseApi: TFHttpSend
 }

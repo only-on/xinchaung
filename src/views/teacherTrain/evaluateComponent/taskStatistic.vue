@@ -1,15 +1,20 @@
 <template>
   <div class="task-statistic">
     <h3 class="title">任务统计</h3>
-    <a-table 
-      :rowKey="rowkey"
-      :dataSource="tableList" 
-      :columns="columns" 
-      :bordered="true"
-      :pagination="false"
-      v-if="tableList.length"
-    />
-    <Empty v-else/>
+    <div>
+       <a-config-provider>
+          <a-table 
+            :rowKey="rowkey"
+            :dataSource="tableList" 
+            :columns="columns"  
+          >
+          </a-table>
+          <template #renderEmpty>
+              <div><empty type="tableEmpty"></empty></div>
+          </template>
+        </a-config-provider>
+    </div>
+    <!-- :pagination='false'  -->
     <div class="page-footer-box">
         <!-- show-quick-jumper  -->
       <a-pagination
@@ -25,9 +30,16 @@
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted } from 'vue'
-
+import Empty from 'src/components/Empty.vue'
 export default defineComponent({
+  components:{
+    Empty
+  },
   setup() {
+    const pagination = reactive<any>({
+      hideOnSinglePage:false,
+      total:1,
+    })
     const data = reactive<IData>({
       tableList: [],
       page: {
@@ -38,17 +50,17 @@ export default defineComponent({
     })
     const getTaskStatisticList = () => {
       data.tableList = [
-        {
-          taskName: '项目名称框架介绍',
-          KnowledgePoints: 'dashuju',
-          lookNum: 2,
-          unknownRate: '20%',
-          correctNum: 5,
-          errorNum: 5,
-          correctRate: '100%'
-        }
+        // {
+        //   taskName: '项目名称框架介绍',
+        //   KnowledgePoints: 'dashuju',
+        //   lookNum: 2,
+        //   unknownRate: '20%',
+        //   correctNum: 5,
+        //   errorNum: 5,
+        //   correctRate: '100%'
+        // }
       ]
-      data.page.total = 100
+      data.page.total = 0
     }
     // 页码变化
     const pageChange = (page: number, pageSize: number) => {
@@ -63,6 +75,7 @@ export default defineComponent({
     return {
       columns,
       rowkey,
+      pagination,
       ...toRefs(data),
       pageChange,
     }

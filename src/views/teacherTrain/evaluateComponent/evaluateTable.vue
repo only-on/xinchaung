@@ -1,48 +1,52 @@
 <template>
   <div class="evaluate-table">
-    <a-table 
-      :rowKey="rowkey"
-      :dataSource="tableList" 
-      :columns="columns" 
-      :bordered="true"
-      :pagination="false"
-      :row-selection="rowSelection"
-      v-if="tableList.length"
-    >
-      <template #time="{ record }">
-        <span>{{ record.time || '--'}}</span>
-      </template>
-      <template #class="{ record }">
-        <span>{{ record.class || '--'}}</span>
-      </template>
-      <template #achievements="{ record }">
-        <span class="operation-btn" @click="lookAchievements(236 || record.id)">查看</span>
-      </template>
-      <template #video="{ record }">
-        <span class="operation-btn" @click="lookVideo(record.id)">查看</span>
-      </template>
-      <template #report="{ record }">
-        <span class="operation-btn" @click="lookReport(record.id)">查看</span>
-      </template>
-      <template #result="{ record }">
-        <span class="" v-if="record.score">{{record.score}}分</span>
-        <span class="operation-btn" v-if="record.score" @click="editScore(record)">修改</span>
-        <span class="operation-btn" v-else @click="Review(record.id)">批阅</span>
-      </template>
-      <template #env="{ record }">
-        <span class="operation-btn disabled" @click="reset(record)">重置</span>
-      </template>
-    </a-table>
-    <Empty v-else/>
+         <a-config-provider>
+              <a-table 
+              :rowKey="rowkey"
+              :dataSource="tableList" 
+              :columns="columns" 
+              :row-selection="rowSelection"
+              :hideOnSinglePage='true'
+            >
+              <template #time="{ record }">
+                <span>{{ record.time || '--'}}</span>
+              </template>
+              <template #class="{ record }">
+                <span>{{ record.class || '--'}}</span>
+              </template>
+              <template #achievements="{ record }">
+                <span class="operation-btn" @click="lookAchievements(236 || record.id)">查看</span>
+              </template>
+              <template #video="{ record }">
+                <span class="operation-btn" @click="lookVideo(record.id)">查看</span>
+              </template>
+              <template #report="{ record }">
+                <span class="operation-btn" @click="lookReport(record.id)">查看</span>
+              </template>
+              <template #result="{ record }">
+                <span class="" v-if="record.score">{{record.score}}分</span>
+                <span class="operation-btn" v-if="record.score" @click="editScore(record)">修改</span>
+                <span class="operation-btn" v-else @click="Review(record.id)">批阅</span>
+              </template>
+              <template #env="{ record }">
+                <span class="operation-btn disabled" @click="reset(record)">重置</span>
+              </template>
+              </a-table>
+              <template #renderEmpty>
+                  <div><empty type="tableEmpty"></empty></div>
+              </template>
+        </a-config-provider>
+    
+    <!-- <Empty v-else/> -->
     <div class="page-footer-box">
         <!-- show-quick-jumper  -->
-      <a-pagination
+      <!-- <a-pagination
         v-model:current="page.page" 
         :pageSize="page.pageSize" 
         :total="total" 
         @change="pageChange" 
         :hideOnSinglePage="true"
-      />
+      /> -->
     </div>
   </div>
   <a-modal v-model:visible="visible" title="请输入分数：" @ok="handleOk" :width="420">

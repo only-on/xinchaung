@@ -65,12 +65,12 @@ interface Ipage {
   keyWord?: string
 }
 interface Iparams {
-  taskId: number
-  type: string
-  name: string
-  courseId: number
+  taskId?: number
+  type?: string
+  keyword?: string
+  courseId?: number
   page: Ipage
-  grouped: number
+  grouped?: number
 }
 // interface INode extends Pick<Iparams, 'taskId' | 'type' | 'name' | 'courseId' | 'grouped' >{}
 interface INode {
@@ -181,13 +181,13 @@ export default defineComponent({
         keyWord: ''
       }
     })
+    //  courseId: courseInfo.courseId,
+    // grouped: courseInfo.grouped
     const params = reactive<Iparams>({
       taskId: courseInfo.taskId,
       type: courseInfo.type,
-      name: '',
-      courseId: courseInfo.courseId,
+      keyword: '',
       page: envListState.page,
-      grouped: courseInfo.grouped
     })
 
     // tree
@@ -202,7 +202,7 @@ export default defineComponent({
     const search = reactive({
       stuName: '',
       onSearch: (val: string) => {
-        params.page.keyWord = search.stuName
+        params.keyword=search.stuName
         getList()
       }
     })
@@ -222,7 +222,7 @@ export default defineComponent({
           envListState.data = data
           // envListState.data[0].vms.push(data[0].vms[0])
           let taskType = res.datas.task_type
-          if (params.page.keyWord !== '') {
+          if (params.keyword !== '') {
             noDataPrompt.value = '暂无相关数据'
           }else if (taskType === 1) {
             noDataPrompt.value = `尚未开启${type}环境`
@@ -258,13 +258,15 @@ export default defineComponent({
       })
     }
     function saveTopinst(num: number) {
+      console.log(params,'virtualEnv params')
       // const limitParams = reactive<IlimitParams>({
+          // limit: limit.value,
+          // courseId: params.courseId
       const limitParams = {
-        taskId: params.taskId,
+        opType:'precreate',
         type: params.type,
+        taskId: params.taskId,
         count: num,
-        limit: limit.value,
-        courseId: params.courseId
       }
       http.saveTopoinst({param: limitParams}).then((res: IBusinessResp) => {
         if (res && res.status) {

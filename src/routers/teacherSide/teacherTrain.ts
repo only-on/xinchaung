@@ -13,7 +13,7 @@ export default {
                 '2': '归档实训',
             }
             return dataDetailMap[query!.currentTab.toString()] || '我的实训'
-          },
+        },
         authCode: 'teacherTrain'
     },
     children: [
