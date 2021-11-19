@@ -89,7 +89,7 @@ export default defineComponent({
 
     function cancel() {
       router.push({
-        path: "/teacher/teacherCourse/courseList",
+        path: "/teacher/teacherCourse",
       });
     }
 
@@ -113,14 +113,14 @@ export default defineComponent({
               updateCourseBaseApi(params, { course_id: course_id }).then(
                 (res: any) => {
                   router.push({
-                    path: "/teacher/teacherCourse/courseList",
+                    path: "/teacher/teacherCourse",
                   });
                 }
               );
             } else {
               createCourseBaseApi(params).then((res: any) => {
                 router.push({
-                  path: "/teacher/teacherCourse/courseList",
+                  path: "/teacher/teacherCourse",
                 });
               });
             }
@@ -143,7 +143,7 @@ export default defineComponent({
         updateCourseBaseApi(params, { course_id: course_id }).then(
           (res: any) => {
             router.push({
-              path: "/teacher/teacherCourse/courseList",
+              path: "/teacher/teacherCourse",
             });
           }
         );
@@ -243,7 +243,7 @@ export default defineComponent({
     // 查看课程
     function lookCourse() {
       router.push({
-        path: "/teacher/teacherCourse/courseList",
+        path: "/teacher/teacherCourse",
       });
     }
     return {

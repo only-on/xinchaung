@@ -13,11 +13,11 @@ export default {
       }
       return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:'课程'
     },
-    authCode: 'course'
+    authCode: 'courseList'
   },
   children: [
     {
-      path:"courseList",
+      path:"",
       name:"",
       component: () => import("src/views/teachCourse/courseList/index.vue"),
       meta: {
