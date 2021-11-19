@@ -2,12 +2,11 @@
   <div v-layout-bg class="create-image-box">
         <a-form layout="vertical" ref="formRef" :model="image"  :rules="rules">
             <a-form-item label="镜像文件" required>
-                <upload-image 
-                action="/api/instance/uploads/file"
+                <upload-image @upload-imageinfo='uploadImageinfo'></upload-image>
+                <!-- action="/api/instance/uploads/file"
                 resumeAction='/api/instance/uploads/chunk' 
                 deleteAction="/api/instance/uploads/delete"
-                mergedAction="/api/instance/uploads/merge"
-                ></upload-image>
+                mergedAction="/api/instance/uploads/merge" -->
             </a-form-item>
             <div class='create-img-middle'>
                 <div>
@@ -60,13 +59,15 @@ import {createMirrorApi,getConfigApi} from '../api'
 import { includes } from "lodash";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
-import uploadImage from './uploadImage/index.vue'
+import uploadImage from './uploadImage.vue'
 interface ImageType{
     name:string,
     imageType:any,
     classify_id:any,
     tag:any,
     desc:any,
+    fileName:any,
+    fileSize:any,
 }
 interface Istate {
     image:ImageType,
@@ -91,6 +92,8 @@ export default defineComponent({
         classify_id:undefined,
         tag:[],
         desc:'',
+        fileSize:'',
+        fileName:'',
       },
       config:{},
     })
@@ -105,6 +108,12 @@ export default defineComponent({
       showPageEdit: false,
     });
     const methods={
+        uploadImageinfo(name:any,size:any,url:any){
+            state.image.fileName=name
+            state.image.fileSize=size
+            state.image.imageType=state.image.fileName.split('.')[state.image.fileName.split('.').length-1]
+            state.image.classify_id=state.image.imageType==='qcow2'?2:1
+        },
         onChange(tag:any){
             if(tag[tag.length-1]===1){
                 const index=tag.indexOf(2)
@@ -130,8 +139,8 @@ export default defineComponent({
                 state.formRef.validate().then(() => {
                      const parmas= {
                         name:state.image.name,
-                        file_path:"/www/test1.qcow2",
-                        file_size:"13167616",
+                        file_path:"/www/tusd/uploads"+state.image.fileName,
+                        file_size:state.image.fileSize,
                         classify_id:state.image.classify_id,
                         tag:state.image.tag,
                         description:state.image.desc,

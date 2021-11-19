@@ -16,14 +16,11 @@
             </div>
             </a-spin>
         </div>
-    <div v-else class="my-image-box">
-      <div class="my-image-item" v-if="myImageList?.length">
-          <div
-          v-for="(item, index) in myImageList"
-          :key="index.toString()"
-        >
-          <card :modelValue="myImageList[index]" @delete-image='deleteImage' @copy-image='copyImage' @edit-image='editImage'/>
-        </div>
+    <div v-else >
+      <div class="my-image-box" v-if="myImageList?.length">
+        <div class="my-image-item" v-for="(item, index) in myImageList" :key="index.toString()">
+            <card :modelValue="myImageList[index]" @delete-image='deleteImage' @copy-image='copyImage' @edit-image='editImage'/>
+      </div>
       </div>
       <empty v-else></empty>
     </div>

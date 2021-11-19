@@ -48,6 +48,11 @@ interface Istate{
 import { message, Upload } from 'ant-design-vue'
 import { defineComponent,reactive,toRefs,onMounted, onBeforeMount,watch} from 'vue'
 import request from 'src/api/index'
+import cover1 from 'src/assets/images/teacher-default/cover1.png'
+import cover2 from 'src/assets/images/teacher-default/cover2.png'
+import cover3 from 'src/assets/images/teacher-default/cover3.png'
+import cover4 from 'src/assets/images/teacher-default/cover4.png'
+import cover5 from 'src/assets/images/teacher-default/cover5.png'
 export default defineComponent({
     name:'uploadImage',
     props:['trainId','uploadUrl','edit','createOrEdit'],
@@ -60,23 +65,23 @@ export default defineComponent({
           defaultImg:[
           {
             id: 0,
-            src:`src/assets/images/teacher-default/cover1.png`,
+            src:cover1,
           },
           {
             id: 1,
-            src:`src/assets/images/teacher-default/cover2.png`,
+            src:cover2,
           },
           {
             id: 2,
-            src:`src/assets/images/teacher-default/cover3.png`,
+            src:cover3,
           },
           {
             id: 3,
-            src:`src/assets/images/teacher-default/cover4.png`,
+            src:cover4,
           },
           {
             id: 4,
-            src:`src/assets/images/teacher-default/cover5.png`,
+            src:cover5,
           }
         ],
         imgSrc:'',
