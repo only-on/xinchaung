@@ -1,3 +1,5 @@
+import { number } from "echarts"
+
 interface ITeacherTemplateApi {
   mineTemplateList: Function
   initTemplateList: Function
@@ -63,6 +65,7 @@ export interface WidgetModel {
   onlyOne?: boolean
   id?: number
   children?: WidgetModel
+  idx?: number
 }
 
 export type WidgetDataModelMap = {

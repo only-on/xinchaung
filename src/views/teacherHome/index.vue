@@ -171,6 +171,9 @@ export default defineComponent({
     }
     const getData = (courseId: string | number)=>{
       errorKonwledge.length = 0
+      if (!courseId) {
+        return
+      }
       http.courseData({param: {course_id: courseId}}).then((res:IBusinessResp) => {
         if (res && res.data) {
           let result = res.data
