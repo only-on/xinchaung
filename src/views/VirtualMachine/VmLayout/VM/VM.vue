@@ -19,7 +19,7 @@
       <div class="vm-loading-box">
         <img
           class="vm-image"
-          src="../../../../assets/images/vm/kvm-computer-active.png"
+          :src="kvmComputerActive"
           alt=""
         />
 
@@ -48,6 +48,7 @@
 <script lang="ts">
 import { defineComponent, inject, watch, ref, Ref } from "vue";
 import { getVmConnectSetting } from "src/utils/seeting";
+import kvmComputerActive from "src/assets/images/vm/kvm-computer-active.png"
 export default defineComponent({
   setup() {
     const vmCurrentIndex:any = inject("vmCurrentIndex");
@@ -123,7 +124,7 @@ export default defineComponent({
         data.uuid;
         uuid.value=data.uuid
     }
-    return { vms, vncLoading, vmCurrentIndex, openVM ,leftDeg,rightDeg};
+    return { vms, vncLoading, vmCurrentIndex, openVM ,leftDeg,rightDeg,kvmComputerActive};
   },
 });
 </script>

@@ -73,7 +73,7 @@
       <div
         v-else
         class="vm-header-teacher"
-        v-layout-bg="'../assets/common/layout_bg.jpg'"
+        v-layout-bg="layoutBg"
       >
         <div class="vm-header-left">
           <a-button type="primary" @click="back">返回</a-button>
@@ -140,6 +140,7 @@ import {
 import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
+import layoutBg from "src/assets/common/layout_bg.jpg"
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -603,7 +604,8 @@ export default defineComponent({
       isScreenRecording,
       reportTemid,
       sshUrl,
-      currentInterface
+      currentInterface,
+      layoutBg
     };
   },
 });

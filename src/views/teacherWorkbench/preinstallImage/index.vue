@@ -19,8 +19,8 @@
                             <div>容量:{{item.size}}</div>
                             <div>系统：{{item.classify.name}}</div>
                         </div>
-                        <img class="img-type" v-if="item.ostypes==='kvm'" src="src/assets/workbench/kvm.png">
-                        <img class="img-type" v-if="item.ostypes==='docker'" src="src/assets/workbench/docker.png">
+                        <img class="img-type" v-if="item.ostypes==='kvm'" :src="kvmImg">
+                        <img class="img-type" v-if="item.ostypes==='docker'" :src="dockerImg">
                     </div>
                     <div class="image-desc">
                         <p v-if="item.description!==''">{{item.description}}</p>
@@ -40,6 +40,8 @@
 import { defineComponent,onMounted,reactive,toRefs } from 'vue'
 import {getPresetMirror} from "../api"
 import Empty from 'src/components/Empty.vue'
+import  kvmImg from "src/assets/workbench/kvm.png"
+import dockerImg from "src/assets/workbench/docker.png"
 interface IparamsType{
     name:string,
     limit:number,
@@ -96,7 +98,7 @@ export default defineComponent({
         onMounted(()=>{
             methods.PresetMirror()
         })
-        return {...toRefs(state),...methods}
+        return {...toRefs(state),...methods,kvmImg,dockerImg}
     },
 })
 </script>

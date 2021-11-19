@@ -7,8 +7,8 @@
         <img
           class="image-type"
           :src="modelValue.ostypes === 'kvm'
-                ?'../../../../src/assets/workbench/kvm.png'
-                :'../../../../src/assets/workbench/docker.png'
+                ?kvmImg
+                :dockerImg
           "
           alt=""
         />
@@ -37,6 +37,8 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
+import kvmImg from "src/assets/workbench/kvm.png"
+import dockerImg from "src/assets/workbench/docker.png"
 export default defineComponent({
   props: ["modelValue"],
   setup(props, { emit }) {
@@ -53,7 +55,7 @@ export default defineComponent({
         emit('delete-image',id)
       }
     }
-    return { baseUrl,...methods};
+    return { baseUrl,...methods,kvmImg,dockerImg};
   },
 });
 </script>

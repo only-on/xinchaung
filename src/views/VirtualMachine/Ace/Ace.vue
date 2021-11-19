@@ -53,7 +53,7 @@
             </li>
           </ul>
         </div>
-        <div class="ace-right" v-layout-bg="'../assets/common/layout_bg1.jpg'">
+        <div class="ace-right" v-layout-bg="layoutBg">
           <div class="ace-action">
             <span @click="saveFileData"
               ><i class="iconfont icon-baocun"></i>保存</span
@@ -171,6 +171,7 @@ import {
 } from "src/utils/vncInspect";
 import { wsConnect } from "src/request/websocket";
 import storage from "src/utils/extStorage"
+import layoutBg from "src/assets/common/layout_bg.jpg"
 
 export default defineComponent({
   components: {
@@ -692,7 +693,8 @@ export default defineComponent({
       finishExperiment,
       delayedTime,
       reportTemid,
-      detailLoading
+      detailLoading,
+      layoutBg
     };
   },
 });

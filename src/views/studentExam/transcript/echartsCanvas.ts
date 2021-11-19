@@ -1,4 +1,9 @@
 import * as echarts from "echarts"
+import choiceImg from "src/assets/exam/choice.png"
+import judgementImg from "src/assets/exam/judgement.png"
+import completionImg from "src/assets/exam/completion.png"
+import shortAnswerImg from "src/assets/exam/shortAnswer.png"
+import shicaoImg from "src/assets/exam/shicao.png"
 // 成绩详情分布图
 function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
     const my_score:Array<number>=[]
@@ -237,31 +242,31 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
             rich: {
                 a: {
                     backgroundColor: {
-                        image: window.location.origin + '/src/assets/exam/choice.png'
+                        image: window.location.origin + choiceImg
                     },
                     height: 24
                 },
                 b: {
                     backgroundColor: {
-                        image: window.location.origin + '/src/assets/exam/judgement.png'
+                        image: window.location.origin + judgementImg
                     },
                     height: 20
                 },
                 c: {
                     backgroundColor: {
-                        image: window.location.origin + '/src/assets/exam/completion.png'
+                        image: window.location.origin + completionImg
                     },
                     height: 24
                 },
                 d: {
                     backgroundColor: {
-                        image: window.location.origin + '/src/assets/exam/shortAnswer.png'
+                        image: window.location.origin + shortAnswerImg
                     },
                     height: 24
                 },
                 e: {
                     backgroundColor: {
-                        image: window.location.origin + '/src/assets/exam/shicao.png'
+                        image: window.location.origin + shicaoImg
                     },
                     height: 24
                 }

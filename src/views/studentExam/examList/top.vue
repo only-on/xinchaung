@@ -1,7 +1,7 @@
 <template>
   <div class="exam-list-top">
     <div class="exam-top-img">
-      <img src="../../../assets/exam/top-images.png" alt="" />
+      <img :src="topImages" alt="" />
     </div>
     <div class="exam-info" v-if="startExamInfoData">
       <div class="exam-count">
@@ -54,6 +54,7 @@ import {startedExam} from "../studentExam.model"
 import {TStartedExam} from "../studentExam.type"
 import storage from "src/utils/extStorage"
 import {contrastTime} from "src/utils/common"
+import topImages from "src/assets/exam/top-images.png"
 
 export default defineComponent({
   setup() {
@@ -102,7 +103,8 @@ export default defineComponent({
       closeModal,
       toStartExam,
       startExamInfoData,
-      examStatus
+      examStatus,
+      topImages
     };
   },
 });

@@ -3,7 +3,7 @@
     <div class="course-item-box">
       <div class="cover-box" @click="toDetail('experiment')">
         <img
-          :src="data.url ? data.url : '/img/default/cover.png'"
+          :src="data.url ? data.url : img1"
           alt=""
           class="img"
         />
@@ -151,6 +151,7 @@ import {
 import { message, Modal } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import fileSaver from "file-saver";
+import img1 from "src/assets/images/teacher-default/cover.png"
 export default defineComponent({
   props: ["courseData", "currentTab", "index"],
   setup(props, { emit }) {
@@ -273,7 +274,8 @@ export default defineComponent({
       analyse,
       evalute,
       saveToMy,
-      toDetail
+      toDetail,
+      img1
     };
   },
 });

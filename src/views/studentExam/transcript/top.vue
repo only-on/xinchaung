@@ -1,7 +1,7 @@
 <template>
   <div class="exam-list-top">
     <div class="exam-top-img" v-layout-bg>
-      <img src="../../../assets/exam/top-images.png" alt="" />
+      <img :src="topImages" alt="" />
     </div>
     <div class="exam-info">
       <div class="exam-info-name">
@@ -27,7 +27,7 @@
       </div>
     </div>
     <div class="scoer-image">
-      <img src="../../../assets/exam/stu-bg-score.jpg" alt="">
+      <img :src="stuBgScore" alt="">
       <div class="result-score">
         <span>分数</span>
         <span>{{infoData.myself_score?infoData.myself_score:0}}</span>
@@ -41,6 +41,9 @@ import { get } from "http";
 import { computed, defineComponent, ref,WritableComputedRef } from "vue";
 import { useRouter } from "vue-router";
 import {IDetailData} from "../studentExam.type"
+import topImages from "src/assets/exam/top-images.png"
+import stuBgScore from "src/assets/exam/stu-bg-score.jpg"
+
 export default defineComponent({
   props:["data"],
   setup(props) {
@@ -60,7 +63,9 @@ export default defineComponent({
     }
     return {
       back,
-      infoData
+      infoData,
+      topImages,
+      stuBgScore
     };
   },
 });

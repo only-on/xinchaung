@@ -1,7 +1,7 @@
 <template>
   <div class="exam-list-top">
     <div class="exam-top-img">
-      <img src="../../../assets/exam/top-images.png" alt="" />
+      <img :src="topImages" alt="" />
     </div>
     <div class="exam-info">
       <div class="exam-count">
@@ -30,6 +30,7 @@
 import { defineComponent, ref,inject ,Ref,watch} from "vue";
 import { useRouter } from "vue-router";
 import {countDown,Itimes} from "src/utils/common"
+import topImages from "src/assets/exam/top-images.png"
 export default defineComponent({
   setup() {
     let startExamInfoData:any=inject("startExamInfoData")
@@ -62,7 +63,8 @@ export default defineComponent({
     },1000)
     return {
       startExamInfoData,
-      times
+      times,
+      topImages
     };
   },
 });
