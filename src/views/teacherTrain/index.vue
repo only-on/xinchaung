@@ -58,7 +58,7 @@ export default defineComponent({
       }
     ]
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     var configuration:any=inject('configuration')
     var form = reactive<Iform>({
       name: '',

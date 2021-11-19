@@ -4,7 +4,7 @@
       <div class="saveimg" @click="handleImg"></div>
       <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
-    <div class="right">
+    <div class="right setScrollbar">
       <div class="title">所选知识点相关内容链接</div>
       <ul>
         <template v-if="contentList.length > 0">
@@ -27,7 +27,7 @@
   
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted, reactive, inject } from 'vue'
+import { defineComponent,ref, onMounted, reactive, inject, nextTick } from 'vue'
 import { useRouter } from 'vue-router'
 import 'jsmind/style/jsmind.css'
 import jsMind from 'jsmind/js/jsmind.js'
@@ -73,7 +73,7 @@ export default defineComponent({
     const showEdit = ref<boolean>(true)
     const isShow = ref<boolean>(false)
     var updata=inject('updataNav') as Function
-    updata({navPosition:'outside',showContent:false,componenttype:undefined,showNav:true})
+    updata({tabs:[],navPosition:'outside',navType:true,showContent:false,showNav:true, backOff:false,showPageEdit:false})
     const mapData = reactive<ImapData>({
       data: [],
       meta: {},
@@ -108,6 +108,7 @@ export default defineComponent({
         mode: 'full', // 显示模式
       }
       jm = jsMind.show(options, mapData)
+      document.getElementsByClassName('jsmind-inner')[0].classList.add('setScrollbar')
     }
     function canvasCopy($source:any, $target:any) {
         var source = $source;
@@ -267,22 +268,6 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.scrollBar(){
-  &::-webkit-scrollbar{
-    width: 4px;
-    height: 10px;
-  }
-  &::-webkit-scrollbar-thumb{
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    background: rgba(0,0,0,0.2);
-  }
-  &::-webkit-scrollbar-track{
-    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
-    border-radius: 0;
-    background: rgba(0,0,0,0.1);
-  }
-}
 .knowledgeMap{
   height: 100%;
   width: 1300px;
@@ -297,7 +282,7 @@ export default defineComponent({
       left: 0;
       cursor: pointer;
       z-index: 999;
-      background: url(../../assets/images/green-camera.png) no-repeat left top;
+      background: url(src/assets/images/green-camera.png) no-repeat left top;
       min-width: 23px;
       min-height: 20px;
     }
@@ -305,7 +290,7 @@ export default defineComponent({
       width: 100%;
       height: 100%;
       .jsmind-inner{
-        .scrollBar();
+        // .scrollBar();
       }
       jmnodes.theme-success jmnode{
         background: @theme-color !important;
@@ -323,7 +308,6 @@ export default defineComponent({
     width: 280px;
     background: #f0f5ff;
     overflow: auto;
-    .scrollBar();
     .title{
       padding-left: 18px;
       line-height: 56px;

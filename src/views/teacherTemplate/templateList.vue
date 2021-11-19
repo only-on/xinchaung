@@ -111,7 +111,7 @@ export default defineComponent({
       data: []
     })
     var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true, backOff:false,showPageEdit:false})
     var configuration:any=inject('configuration')
     var tabType = ref<number>(0)
     var templateType = ref<string>(tabNames[0])

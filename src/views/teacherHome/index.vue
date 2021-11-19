@@ -97,7 +97,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onBeforeUnmount, onMounted, reactive, ref } from 'vue';
+import { defineComponent, onBeforeUnmount, onMounted, reactive, ref, inject } from 'vue';
 import { Swiper, SwiperSlide } from 'swiper/vue';
 import { Navigation } from 'swiper';
 import 'swiper/css'
@@ -147,6 +147,8 @@ export default defineComponent({
     })
     const errorKonwledge = reactive<Ierror[]>([])
     const score_usedtime = ref<any>({})
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'inside',navType:false,showContent:false,showNav:true, backOff:false,showPageEdit:false})
     const slideChangeTransitionEnd = (swiper:any) => {
       getData(courseLists[swiper.realIndex].id)
     };
@@ -169,9 +171,18 @@ export default defineComponent({
     const handleData = (obj: Object, type?:string) =>{
       return  Object.keys(obj).length ? obj : !type ? {} : {0:0,A:0,B:0,C:0,D:0}
     }
+    const reset = () => {
+      courseCompletion.done = 0
+      courseCompletion.undone = 0
+      setChart('pie', pieOptions(courseCompletion))
+      setChart('radar', radarOptions(handleData({}, 'grade')))
+      setChart('scater', scaterOptions(0, {}))
+      setChart('graph', graphOptions({}))
+    }
     const getData = (courseId: string | number)=>{
       errorKonwledge.length = 0
       if (!courseId) {
+        reset()
         return
       }
       http.courseData({param: {course_id: courseId}}).then((res:IBusinessResp) => {

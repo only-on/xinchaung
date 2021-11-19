@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, ComputedRef } from "vue";
+import { defineComponent, ref, onMounted, computed, ComputedRef,watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { IRouteTuple } from "src/types";
@@ -49,6 +49,10 @@ export default defineComponent({
         router.push(v.route);
       }
     }
+    watch(()=>{return props.type},(val:any)=>{
+      type.value=val
+    })
+    
     onMounted(() => {});
     return { breadcrumbArr, type, Jump };
   },

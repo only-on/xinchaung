@@ -11,7 +11,7 @@ export default {
           '1': '内置课程',
           '2': '归档课程',
       }
-      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:'课程'
+      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:'课程管理'
     },
     authCode: 'courseList'
   },
@@ -54,7 +54,7 @@ export default {
       },
     },
     {
-      path: "/knowledgeMap",
+      path: "knowledgeMap",
       component: () => import("src/views/knowledgeMap/index.vue"),
       meta: {
         title: "知识图谱",

@@ -1,5 +1,3 @@
-import { number } from "echarts"
-
 interface ITeacherTemplateApi {
   mineTemplateList: Function
   initTemplateList: Function
