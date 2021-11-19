@@ -101,6 +101,10 @@ export default defineComponent({
           let result = res.data
           form.name = result.name
           Object.assign(dataList, result.json_content)
+          // 增加唯一标识， 否则拖拽排序时input的value值会被影响
+          dataList.forEach((item:WidgetModel, index:number) => {
+            item.idx = index
+          })
         }
       })
     }
