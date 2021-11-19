@@ -40,7 +40,6 @@
                 <div class="score-text-scale">
                   <a-progress type="circle" :percent="v.pass_rate" :width="50" :stroke-width="14" 
                       :showInfo="true" 
-                      :stroke-color="'#8955b5'" 
                       :trail-color="'#ddd'"
                     />
                 </div>

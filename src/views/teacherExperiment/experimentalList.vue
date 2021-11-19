@@ -109,7 +109,7 @@
           </div>
           <a-button v-if="currentTab === 0" type="primary" @click="create">新建实验</a-button>
         </div>
-        <div class="task-list scroll-bar-customize" :class="currentTab === 1 ? 'built-in' : ''">
+        <div class="task-list setScrollbar" :class="currentTab === 1 ? 'built-in' : ''">
           <div v-if="taskData.length > 0">
             <a-spin :spinning="loading" size="large" tip="Loading...">
               <!-- <div v-if="experimentalDataList.length === 0">

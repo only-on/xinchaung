@@ -1,5 +1,10 @@
 
 import Layout from "../views/common/Layout.vue";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage
+const role = lStorage.get('role')
+const PathList={1:'',2:'',3:'/teacher/home',4:'',5:'/studentStatistic'}
+const homePath=PathList[role]
 export default [
     {
         path: "/",
@@ -9,7 +14,8 @@ export default [
             title: "首页",
             authCode: "Home",
         },
-        redirect: "/studentStatistic",
+        // redirect: homePath,
+        redirect: '/studentStatistic',
         // children: [
         //     {
         //         path: "home",

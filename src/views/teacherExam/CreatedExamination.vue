@@ -680,12 +680,14 @@ export default defineComponent({
     }
     function getTestPaperList(){
       http.getTestPaperList({param:{limit:999}}).then((res:IBusinessResp)=>{
-        let data=res.data.list
-        data.length?data.forEach((v:any)=> {
-          let obj={value: v.id, label: v.name}
-          // @ts-ignore
-          options.value.push(obj)
-        }):'';
+        if(res && res.data){
+          let data=res.data.list
+          data.length?data.forEach((v:any)=> {
+            let obj={value: v.id, label: v.name}
+            // @ts-ignore
+            options.value.push(obj)
+          }):'';
+        }
       })
     }
     const disabledDate = (current: Moment) => {
