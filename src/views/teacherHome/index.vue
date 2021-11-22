@@ -216,11 +216,7 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-      // (document.getElementById('app') as any).style.height = 'auto'
       getCourseList()
-    })
-    onBeforeUnmount(()=>{
-      // (document.getElementById('app') as any).style.height = '100%'
     })
     return {
       slideChangeTransitionEnd,
