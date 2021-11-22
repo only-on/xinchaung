@@ -23,7 +23,7 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
-const http=(request as any).common
+const http=(request as any).personalInformation
 interface form{
   oldpass:string,
   newpass:string,
@@ -34,7 +34,6 @@ interface Istate{
   formState:form,
   rules:any,
   onSubmit: () => void;
-  getDetail: () => void;
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -60,13 +59,6 @@ export default defineComponent({
         newpass: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
         repeatnewpass: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }],
       },
-      getDetail:()=>{
-        http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{
-            state.formState.oldpass=''
-            state.formState.newpass=''
-            state.formState.repeatnewpass=''
-        })
-      },
       onSubmit:()=>{
         state.formRef.validate().then(() => {
            console.log('验证过');
@@ -84,7 +76,6 @@ export default defineComponent({
         })
       }
     })
-    // editId?state.getDetail():''
     onMounted(()=>{
      
     })

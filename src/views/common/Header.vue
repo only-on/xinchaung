@@ -35,7 +35,7 @@
   </header>
 </template>
 <script lang="ts">
-import { defineComponent,reactive,computed,Ref,ref } from "vue";
+import { defineComponent,reactive,computed,Ref,ref,onMounted } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from '../../api/index'
 import { useRouter } from 'vue-router';
@@ -69,6 +69,9 @@ export default defineComponent({
         console.log(res)
         // message.success('')
         // window.location.href = 'http://192.168.101.150:85/site/login';
+        let url=`${window.origin}/site/login`
+        console.log(url)
+        window.location.href=url
       })
     }
     function helpMessage(){
@@ -80,6 +83,10 @@ export default defineComponent({
       //   console.log(res)
       // })
     }
+    onMounted(() => {
+      
+    });
+    
     return {isOperation,power,name,loginOut,information,helpMessage,modifyPassword,assistText}
   },
 });

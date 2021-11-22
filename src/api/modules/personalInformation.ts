@@ -1,11 +1,12 @@
 import { TFHttpSend } from "src/typings/getRequest";
 export default{
-  journalList:{url:``,method: "GET",},
-  saveInformation:{url:``,method:"POST",dataType:'json'}
+  operationLog:{ url: '/api/system/user-logs', method: 'GET',},
+  resetPassword:{url: `/site/change-password`, method: 'POST', dataType: "json" },
 }
 
 export interface IPersonalInformationlAps {
-  journalList: TFHttpSend;
+  operationLog:TFHttpSend
+  resetPassword: TFHttpSend
 }
 
 export const MODULE_NAME = 'personalInformation'

@@ -21,11 +21,11 @@ export default defineComponent({
     const renderItem = function (item: MenuItem, level: number): VNode {
       if (level % 2 === 0) {
         let items: VNode | null = null;
-        if (item.items) {
+        if (item.children) {
           level += 1;
           let tmpChildren: Array<VNode> = [];
-          for (let i in item.items) {
-            tmpChildren.push(renderItem(item.items[i], level));
+          for (let i in item.children) {
+            tmpChildren.push(renderItem(item.children[i], level));
           }
           items = <a-menu class="menu__group">{tmpChildren}</a-menu>;
         }
@@ -39,10 +39,10 @@ export default defineComponent({
             }}
           >
             <div
-              class={(item.label === activeName.value) ? "menu__top-item active" : "menu__top-item"}
+              class={(item.name === activeName.value) ? "menu__top-item active" : "menu__top-item"}
               onClick={
                   (e: Event) => {
-                    if(item.items && item.items.length){
+                    if(item.children && item.children.length){
                       // console.log(item.items)
                     }else{
                       select('Parent',item)
@@ -50,14 +50,14 @@ export default defineComponent({
                 }
               } 
             >
-              {item.label}
+              {item.name}
             </div>
           </a-dropdown>
         );
       }
       return (
         <a-menu-item class="menu__item">
-          <div onClick={(e: Event)=>{select('Children',item)}}>{item.label}</div>
+          <div onClick={(e: Event)=>{select('Children',item)}}>{item.name}</div>
         </a-menu-item>
       );
     };
@@ -75,12 +75,12 @@ export default defineComponent({
        router.replace(val.url[0]!)
       if(level==='Parent'){
         // router.replace(val.url[0]!)
-        activeName.value=val.label
+        activeName.value=val.name
       }else{
         menus.forEach((v:MenuItem)=>{
-          v.items?v.items.forEach((i:MenuItem)=>{
-            if(i.label===val.label){
-                activeName.value=v.label
+          v.children?v.children.forEach((i:MenuItem)=>{
+            if(i.name===val.name){
+                activeName.value=v.name
                 return
             }
           }):''
@@ -92,16 +92,18 @@ export default defineComponent({
     })
     const http=(request as any).common
     http.getMenu().then((res:IBusinessResp)=>{
-      menus.length=0
-      let data=res.data
-      activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].label)
-      menus.push(...data.menus)
-      if(route.path===(data && data.length && data[0].url[0])){
-        activeName.value=(data && data[0].label)
+      if(res){
+        menus.length=0
+        let data=res.data.menus
+        activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].name)
+        menus.push(...data)
+        if(route.path===(data && data.length && data[0].url[0])){
+          activeName.value=(data && data[0].name)
+        }
+        let user=res.data.user
+        lStorage.set('role',user.role)
+        lStorage.set('name',user.name)
       }
-      let role=res.data.user.role
-      lStorage.set('role',role)
-      lStorage.set('name',res.data.user.name)
     })
     onMounted(() => {
       // console.log(route.path)

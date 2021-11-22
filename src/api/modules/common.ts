@@ -1,12 +1,12 @@
 export interface MenuItem {
-    label: string;
+    name: string;
     url: Array<string | null>;
     options?: {
         class: string
     };
     icon?: string;
-    active: boolean;
-    items?: MenuItem[]
+    active?: boolean;
+    children?: MenuItem[]
 
 }
 export interface FakeMenu {
@@ -16,11 +16,9 @@ export interface FakeMenu {
 }
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
-    getMenu: { url: '/api/system/menus', method: 'GET', dataType: "json" },
+    getMenu: { url: '/api/system/menus', method: 'GET'},
     loginOut:{url:`/site/logout1`,method:'POST',},
-    resetPassword:{url: `/site/change-password`, method: 'POST', dataType: "json" },
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
-
      // 镜像全部配置项
     getConfigs: {url: `/api/env/images/config`, method: 'GET'},
     // 镜像列表
@@ -32,7 +30,6 @@ export interface ICommonAps {
     uploadsFile: TFHttpSend
     getConfigs: TFHttpSend
     getMeImage: TFHttpSend
-    resetPassword: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",
