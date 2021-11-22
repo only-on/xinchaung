@@ -11,7 +11,7 @@
     <template v-if="type === 'w4'">
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index" >
-          <customInput :field="field" @change="handleCustom($event,index)" class="baseLine"/>
+          <customInput :field="field" @change="handleCustom($event,index)"/>
         </template>
       </td>
       <td class="toolCol">
@@ -58,7 +58,7 @@
     <template v-if="type === 'w8'">
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index">
-          <customInput v-show="index === 0" :field="field" @change="handleCustom($event,index)"/>
+          <customInput v-show="index === 0" :field="field" @change="handleCustom($event,index)" class="borderInput"/>
           <antdv-markdown v-show="index === 1" v-model="field.value"/>
         </template>
       </td>
@@ -98,17 +98,12 @@ export default defineComponent({
       Object.assign(fields, deepClone(newVal))
     })
     
-    const getClass = (name:string) => {
-      let style = splitFieldName(name)[1]
-      return `baseStyle ${style}`
-    }
     const handleCustom = (data:any,index:any) => {
       if (typeof data === 'object') return
       fields[index].value = data
       emit("update:fields", fields)
     }
     return {
-      getClass,
       handleCustom,
       ...toRefs(props)
     }
@@ -117,7 +112,6 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .baseCol{
-  padding: 10px;
   border: 1px solid #e4e4e4;
   position: relative;
 }
@@ -125,38 +119,17 @@ export default defineComponent({
   position: relative;
   width: 22px;
 }
-.baseLine{
-  display: block;
-  margin-bottom: 10px;
-}
-.readonlyBg{
-  background: @component-background;
-}
 .baseStyle{
   background: none;
   color: #777;
   font-family: 'Microsoft YaHei, Microsoft YaHei-Regular';
   letter-spacing: 2px;
-  padding: 10px 0;
+  padding: 15px 10px;
   resize: none;
   overflow: hidden;
-  border: 1px solid transparent;
   width: 100%;
   outline: none;
-  &.tt{
-    font-size: 16px;
-    // text-align: center;
-    line-height: 24px;
-  }
-  &.st{
-    font-size: 14px;
-    // text-align: center;
-    line-height: 18px;
-  }
-  &.ct{
-    font-size: 14px;
-    height: 62px;
-  }
+  font-size: 14px;
   &.focus{
     background: @component-background;
   }
@@ -171,14 +144,21 @@ export default defineComponent({
   }
 }
 table td{
+  vertical-align: top;
   input:nth-child(2n), &:first-child>textarea{
     border-top: 1px solid #e4e4e4;
+    margin-top: 5px;
+    padding-top: 10px;
   }
-  textarea.baseStyle.ct{
+  .borderInput{
+    border-bottom: 1px solid #e4e4e4;
+  }
+  textarea.baseStyle{
     height: 102px;
   }
   :deep(.mark__container){
     height: 300px;
+    border: none;
     .mark__editor, .mark__preview{
       min-width: auto;
       overflow-y: auto;

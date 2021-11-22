@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper" v-layout-bg>
-    <div class="toolbar">
+    <div class="toolbar setScrollbar">
       <div class="toolbar-title">报告模板组件</div>
       <div v-for="(item,index) in initialWidgetThumb" :key="index">
         <div class="toolbar-subject">{{item.title}}</div>
@@ -11,7 +11,7 @@
         </drag-gable>
       </div>
     </div>
-    <div class="content">
+    <div class="content setScrollbar">
       <div class="dnd-space">
         <a-form :model="form" :rules="rules" layout="vertical" ref="formRef">
           <a-form-item label="报告模板名称" name="name">
@@ -178,9 +178,12 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  height: 100%;
 }
 .content {
   flex:1;
+  overflow: auto;
+  padding-right: 10px;
   .dnd-space {
     padding-left: 25px;
     min-height: 800px;
@@ -201,7 +204,7 @@ export default defineComponent({
   border-radius: 8px;
   box-sizing: border-box;
   padding-right: 25px;
-
+  overflow: auto;
   &-title {
     font-size: 16px;
     font-family: Microsoft YaHei, Microsoft YaHei-Regular;

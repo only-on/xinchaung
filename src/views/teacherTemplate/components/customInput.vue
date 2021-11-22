@@ -1,6 +1,6 @@
 <template>
-    <input v-if="type ==='input'" :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" :class="getClass(field.name)" @input="handleChange($event)"/>
-    <textarea  v-else :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" :class="getClass(field.name)" @input="handleChange($event)"/> 
+    <input v-if="type ==='input'" :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/>
+    <textarea  v-else :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/> 
 </template>
 <script lang="ts">
 import { defineComponent, reactive, watch, ref } from 'vue'

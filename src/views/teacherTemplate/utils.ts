@@ -33,7 +33,7 @@ export const initialWidgetThumb: Array<any> = [
     ],
   },
   {
-    title: 'markdown',
+    title: 'Markdown',
     widget: [
       {
         type: 'w7',

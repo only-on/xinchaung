@@ -147,6 +147,7 @@ export default defineComponent({
     })
     const errorKonwledge = reactive<Ierror[]>([])
     const score_usedtime = ref<any>({})
+    const chartDom = reactive<any>([])
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'inside',navType:false,showContent:false,showNav:true, backOff:false,showPageEdit:false})
     const slideChangeTransitionEnd = (swiper:any) => {
@@ -162,6 +163,7 @@ export default defineComponent({
     const setChart =(ele:string, options:object) => {
       document.getElementById(ele)?.removeAttribute("_echarts_instance_")
       let eleChart = (echarts as any).init(document.getElementById(ele));
+      chartDom.push(eleChart)
       eleChart.setOption(options);
     }
     const changeTab =(index:number)=>{
@@ -217,6 +219,11 @@ export default defineComponent({
     }
     onMounted(()=>{
       getCourseList()
+      window.addEventListener("resize", () => {
+        chartDom.forEach((item:any) => {
+          item.resize()
+        })
+      });
     })
     return {
       slideChangeTransitionEnd,
@@ -267,7 +274,7 @@ export default defineComponent({
         content: '';
         width: 60px;
         height: 60px;
-        background: url(../../assets/images/teacher-default/left.png) no-repeat;
+        background: url(src/assets/images/teacher-default/left.png) no-repeat;
       }
     }
     .swiper-button-next{
@@ -276,7 +283,7 @@ export default defineComponent({
         content: '';
         width: 60px;
         height: 60px;
-        background: url(../../assets/images/teacher-default/right.png) no-repeat;
+        background: url(src/assets/images/teacher-default/right.png) no-repeat;
       }
     }
     .swiper-wrapper{
@@ -293,7 +300,7 @@ export default defineComponent({
         justify-content: center;
         align-items: center;
         transition-property: all;
-        background: url(../../assets/images/teacher-default/banner-bg.png) no-repeat;
+        background: url(src/assets/images/teacher-default/banner-bg.png) no-repeat;
         word-break: break-all;
         padding: 10px;
         &.swiper-slide-next{
@@ -309,7 +316,7 @@ export default defineComponent({
     height: 400px;
     border-radius: 6px;
     &.completion{
-      background: url('../../assets/images/teacher-default/panel-first-bg.png') no-repeat 90% 55%;
+      background: url('src/assets/images/teacher-default/panel-first-bg.png') no-repeat 90% 55%;
       background-color: #fff;
       &>div:nth-child(2){
         display: flex;
@@ -335,7 +342,7 @@ export default defineComponent({
       font-weight: 600;
     }
     #pie,#radar {
-      width: 330px;
+      width: 40%;
       height: 330px;
     }
     #scater{
@@ -347,8 +354,8 @@ export default defineComponent({
       height: 300px;
     }
     .grade-distribution{
-      padding: 0 130px;
       display: flex;
+      justify-content: center;
       font-size: 14px;
       &>div:last-child{
         padding: 40px;
