@@ -1,19 +1,19 @@
 <template>
-  <div class="teacherHome">
+  <div class="teacherHome setScrollbar">
    <div class="banner-wrap">
     <swiper
-    v-if="courseLists.length > 0"
-    :modules="modules"
-    navigation
-    loop
-    centeredSlides
-    watchSlidesProgress
-    :slides-per-view="5"
-    :space-between="33"
-    @slideChangeTransitionEnd="slideChangeTransitionEnd"
-    @setTranslate="setTranslate"
-    >
-      <swiper-slide v-for="item in courseLists" :key="item.id">{{item.name}}</swiper-slide>
+      v-if="courseLists.length > 0"
+      :modules="modules"
+      navigation
+      loop
+      centeredSlides
+      watchSlidesProgress
+      :slides-per-view="5"
+      :space-between="33"
+      @slideChangeTransitionEnd="slideChangeTransitionEnd"
+      @setTranslate="setTranslate"
+      >
+        <swiper-slide v-for="item in courseLists" :key="item.id">{{item.name}}</swiper-slide>
     </swiper>
    </div>
   <a-row :gutter="[16,16]">
@@ -216,11 +216,11 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-      (document.getElementById('app') as any).style.height = 'auto'
+      // (document.getElementById('app') as any).style.height = 'auto'
       getCourseList()
     })
     onBeforeUnmount(()=>{
-      (document.getElementById('app') as any).style.height = '100%'
+      // (document.getElementById('app') as any).style.height = '100%'
     })
     return {
       slideChangeTransitionEnd,
@@ -239,6 +239,9 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .teacherHome{
+  min-width: @center-width;
+  overflow: auto;
+  height: 100%;
   padding: 0 60px;
   .banner-wrap{
     width: 100%;
