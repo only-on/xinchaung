@@ -14,9 +14,9 @@ export default {
   saveToContent: {url: `/api/content/content/saved_my_content`, method: 'POST', dataType:'json'},
 
   // 同屏
-  getSameScreenInfo: {url: `/api/content/content/template`, method: 'POST', dataType:'json'},
-  getTopoVmInfo: {url: `/api/content/content/topoInfo`, method: 'POST', dataType:'json'},
-  deleteTopo: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType:'json'},
+  getSameScreenInfo: {url: `/api/env/topos/templates`, method: 'POST', dataType:'json'},
+  getTopoVmInfo: {url: `/api/instance/topoInstances/info/{id}`, method: 'GET', dataType:'json'},
+  deleteTopo: {url: `/api/instance/topoInstances/{id}`, method: 'DELETE', dataType:'json'},
   // 上传任务
   uploadTaskFile: {url: `/api/content/jupyter/upload_taskfile`, method: 'POST', dataType: 'formdata'},
   // 创建实验 

@@ -1,5 +1,5 @@
 <template>
-    <div class="groupingInfor" v-layout-bg>
+    <div class="groupingInfor">
        <div class="groupBtn">
            <a-button class="autoGroup" type="primary" @click="aotuGroup">自动分组</a-button>
            <a-button type="primary" @click="manualGroup">手动分组</a-button>
@@ -100,7 +100,7 @@ import groupModal from '../../components/groupModal/index.vue'
 import { stat } from 'fs';
 export default defineComponent({
     name:'groupingInfor',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId','type'],
     components:{
         Empty,
         groupModal

@@ -98,7 +98,7 @@ export default defineComponent({
        },
        getResourceList(){
           const params={
-              type:2,
+              type:props.type==='course'?1:2,
               id:props.trainId,
           }
            http.resourceList({param:params}).then((res:any)=>{
@@ -129,7 +129,7 @@ export default defineComponent({
                 size:state.size.toString(),
                 posfix:type,
                 describe:state.introduce,
-                type:2
+                type:props.type==='course'?1:2,
            }
            http.uploadResource({param:params}).then((res:any)=>{
                console.log(res)

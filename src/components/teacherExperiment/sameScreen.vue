@@ -36,6 +36,12 @@
         <div class="vm-base-right">数据集目录：/simpledata</div>
       </div>
       <div class="vm-box">
+        <vue-no-vnc
+          background="rgb(40,40,40)"
+          :options="vmOptions"
+          refName="refName"
+          ref="novncEl"
+        />
         <!-- <connect-vnc ref="vnc" :config="vncConnectOption" :loading="loading" v-model="vncConnectSucceed" /> -->
       </div>
     </div>
@@ -43,10 +49,17 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType } from 'vue'
+import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType, provide } from 'vue'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
+import VueNoVnc from "src/components/noVnc/noVnc.vue";
+type TvncConnectOption={
+  vmOptions:any
+}
 export default defineComponent({
-  components: {AntdvMarkdown},
+  components: {
+    AntdvMarkdown,
+    "vue-no-vnc":VueNoVnc
+  },
   props: {
     screenStatus: Boolean,
     modelValue: String ,
@@ -57,6 +70,8 @@ export default defineComponent({
   },
   setup(props, {emit}) {
     let detail = ref(props.modelValue)
+    const vncLoading=ref(false)
+    provide("vncLoading",vncLoading)
     function quitScreen() {
       emit('update:screenStatus', false)
       emit('update:modelValue', detail.value)
@@ -83,22 +98,21 @@ export default defineComponent({
       rdp_port: '',
       base_ip: ''
     })
-    let vncConnectOption = reactive({
-      protocol: '',
-      host: '',
-      port: '',
-      path: '',
-      password: ''
+    const vncConnectOption:TvncConnectOption = reactive({
+       vmOptions: {
+        password: "", // vncpassword
+        wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
+      },
     })
     function ipChange(val: string) {
+      vncLoading.value=false
       if (currentVmInfo.uuid === val) {
         return
       }
       props.screenInfo.forEach((item: any) => {
         if (item.uuid === val) {
           currentVmInfo = Object.assign(currentVmInfo, item)
-          vncConnectOption.host = item.base_ip
-          vncConnectOption.path = `websockify/?vm_uuid=${item.uuid}`
+          vncConnectOption.vmOptions.wsUrl="ws://"+item.base_ip+":8888/websockify?vm_uuid="+item.uuid
           // ;(this.$refs as any).vnc.startNoVnc()
         }
       })
@@ -106,13 +120,11 @@ export default defineComponent({
     let hostIp = ref()
     function init() {
       if (props.screenInfo.length > 0) {
+        vncLoading.value=false
         currentVmInfo = Object.assign(currentVmInfo, props.screenInfo[0])
         hostIp.value = props.screenInfo[0].ip
-        vncConnectOption.protocol = 'ws'
-        vncConnectOption.host = props.screenInfo[0].base_ip
-        vncConnectOption.port = '8888'
-        vncConnectOption.path = `websockify/?vm_uuid=${props.screenInfo[0].uuid}`
-        vncConnectOption.password = 'vncpassword'
+        vncConnectOption.vmOptions.wsUrl="ws://"+props.screenInfo[0].base_ip+":8888/websockify?vm_uuid="+props.screenInfo[0].uuid
+        vncConnectOption.vmOptions.password = 'vncpassword'
         // ;(this.$refs as any).vnc.startNoVnc()
       }
     }
@@ -131,7 +143,7 @@ export default defineComponent({
       currentVmInfo,
       hostIp,
       init,
-      vncConnectOption,
+      ...toRefs(vncConnectOption),
     }
   }
 })
