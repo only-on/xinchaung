@@ -72,9 +72,9 @@ export default defineComponent({
     var activeName:Ref<string>=ref(lStorage.get('menuActiveName') || '')
 
     function select(level:string,val:MenuItem){
-       router.replace(val.url[0]!)
+      console.log('to：path'+val.url)
+      router.replace(String(val.url))
       if(level==='Parent'){
-        // router.replace(val.url[0]!)
         activeName.value=val.name
       }else{
         menus.forEach((v:MenuItem)=>{
