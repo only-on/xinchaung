@@ -29,12 +29,10 @@ export default defineComponent({
     // 2 4  个人信息  3 1修改密码
     if(role===1 || role===3){
       componentName.value='Information'
-      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }else{
-      updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true})
+      updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }
-    
-
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
       if(role===2 || role===4){

@@ -27,8 +27,8 @@
           <p class="operation" @click="loginOut">退出登录</p>
         </template>
         <div class="user-name">
-          <div class="nser-img"></div>
-          <span>文和</span>
+          <div class="user-img"></div>
+          <span class="user-name">{{name}}</span>
         </div>
       </a-popover>
     </div>
@@ -50,6 +50,7 @@ export default defineComponent({
     const router = useRouter();
     const { lStorage } = extStorage
     const role = lStorage.get('role')
+    const name=lStorage.get('name')
     const http=(request as any).common
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const isOperation = computed(() => {
@@ -65,8 +66,9 @@ export default defineComponent({
     }
     function loginOut(){
       http.loginOut().then((res:IBusinessResp)=>{
+        console.log(res)
         // message.success('')
-        window.location.href = '/site/login';
+        // window.location.href = 'http://192.168.101.150:85/site/login';
       })
     }
     function helpMessage(){
@@ -74,8 +76,11 @@ export default defineComponent({
     }
     function modifyPassword(){
       router.push('/personalInformation')
+      // http.resetPassword({param:{}}).then((res:IBusinessResp)=>{
+      //   console.log(res)
+      // })
     }
-    return {isOperation,power,loginOut,information,helpMessage,modifyPassword,assistText}
+    return {isOperation,power,name,loginOut,information,helpMessage,modifyPassword,assistText}
   },
 });
 </script>
@@ -141,17 +146,21 @@ export default defineComponent({
     .user-name{
       display: flex;
       align-items: center;
-      .nser-img{
+      .user-img{
         width:28px;
         height:28px;
-         background:url('../../assets/test/teacher_p.png') no-repeat center;
+         background:url('src/assets/test/teacher_p.png') no-repeat center;
          background-size: 100% 100%;
+      }
+      .user-name{
+        padding:0 6px;
       }
     }
   }
 }
 .ant-popover-inner-content{
   .operation{
+    min-width: 80px;
     margin-bottom: 0;
     padding: .5em;
   }

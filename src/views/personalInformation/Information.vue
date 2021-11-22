@@ -1,14 +1,14 @@
 <template>
    <div class="creatpost"  v-layout-bg>
       <a-form ref="formRef" :model="formState" :label-col="{span:4}" :wrapper-col="{span:16}" labelAlign="right" :rules="rules">
-        <a-form-item label="旧密码"  name="psd">
-          <a-input v-model:value="formState.psd" />
+        <a-form-item label="旧密码"  name="oldpass">
+          <a-input v-model:value="formState.oldpass" />
         </a-form-item>
-        <a-form-item label="新密码"  name="newPsd">
-          <a-input v-model:value="formState.newPsd" />
+        <a-form-item label="新密码"  name="newpass">
+          <a-input v-model:value="formState.newpass" />
         </a-form-item>
-        <a-form-item label="再次输入新密码"  name="confirmPsd">
-          <a-input v-model:value="formState.confirmPsd" />
+        <a-form-item label="再次输入新密码"  name="repeatnewpass">
+          <a-input v-model:value="formState.repeatnewpass" />
         </a-form-item>
       </a-form>
       <div class="foot">
@@ -23,11 +23,11 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
-const http=(request as any).studentForum
+const http=(request as any).common
 interface form{
-  psd:string,
-  newPsd:string,
-  confirmPsd:string
+  oldpass:string,
+  newpass:string,
+  repeatnewpass:string
 }
 interface Istate{
   formRef:any,
@@ -35,7 +35,6 @@ interface Istate{
   rules:any,
   onSubmit: () => void;
   getDetail: () => void;
-  options:any
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -52,39 +51,40 @@ export default defineComponent({
     const state:Istate=reactive({
       formRef:'formRef',
       formState:{
-        psd:'',
-        newPsd:'',
-        confirmPsd:''
+        oldpass:'',
+        newpass:'',
+        repeatnewpass:''
       },
       rules:{
-        psd: [{ required: true, message: '请输入旧密码', trigger: 'blur'},],
-        newPsd: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
-        confirmPsd: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }],
-      },
-      options:{
-        placeholder: "输入内容...",
-        theme: "snow",
+        oldpass: [{ required: true, message: '请输入旧密码', trigger: 'blur'},],
+        newpass: [{ required: true, message: '请输入新密码', trigger: 'blur' }],
+        repeatnewpass: [{ required: true, message: '请再次输入新密码', trigger: 'blur' }],
       },
       getDetail:()=>{
         http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{
-            state.formState.psd=''
-            state.formState.newPsd=''
-            state.formState.confirmPsd=''
+            state.formState.oldpass=''
+            state.formState.newpass=''
+            state.formState.repeatnewpass=''
         })
       },
       onSubmit:()=>{
         state.formRef.validate().then(() => {
-            console.log('验证过');
-            http.saveInformation({param:{forum:{...state.formState}}}).then((res:IBusinessResp)=>{
-              
-            // message.success(editId?'修改成功':'发布成功')
-            // router.go(-1)
-              
-            })
+           console.log('验证过');
+          if(state.formState.newpass!==state.formState.repeatnewpass){
+            message.warn('输入新密码不一致')
+            return
+          }
+          // console.log(state.formState);
+          http.resetPassword({param:{reset_password_params:{...state.formState}}}).then((res:IBusinessResp)=>{
+          message.success('修改成功')
+          state.formRef.resetFields()
+          // router.go(-1)
+            
+          })
         })
       }
     })
-    editId?state.getDetail():''
+    // editId?state.getDetail():''
     onMounted(()=>{
      
     })

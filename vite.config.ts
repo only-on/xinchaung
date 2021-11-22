@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import styleImport from 'vite-plugin-style-import'
 import { resolve } from 'path';
 // import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
 import vueJsx from '@vitejs/plugin-vue-jsx';
@@ -75,5 +76,19 @@ export default defineConfig({
     host: '0.0.0.0',
     open: true,
     force: true
+  },
+  build:{
+    sourcemap:false,
+    brotliSize:false,
+    chunkSizeWarningLimit:10000,
+    rollupOptions:{
+      output:{
+        manualChunks(id){ // 分包
+          if(id.includes('node_modules')){
+            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+          }
+        }
+      }
+    }
   }
 })

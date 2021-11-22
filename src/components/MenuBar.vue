@@ -95,10 +95,13 @@ export default defineComponent({
       menus.length=0
       let data=res.data
       activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].label)
-      menus.push(...data)
+      menus.push(...data.menus)
       if(route.path===(data && data.length && data[0].url[0])){
         activeName.value=(data && data[0].label)
       }
+      let role=res.data.user.role
+      lStorage.set('role',role)
+      lStorage.set('name',res.data.user.name)
     })
     onMounted(() => {
       // console.log(route.path)

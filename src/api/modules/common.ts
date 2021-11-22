@@ -16,8 +16,9 @@ export interface FakeMenu {
 }
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
-    getMenu: { url: '/site/menu', method: 'GET', dataType: "json" },
-    loginOut:{url:`/site/logout`,method:'POST',},
+    getMenu: { url: '/api/system/menus', method: 'GET', dataType: "json" },
+    loginOut:{url:`/site/logout1`,method:'POST',},
+    resetPassword:{url: `/site/change-password`, method: 'POST', dataType: "json" },
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
 
      // 镜像全部配置项
@@ -31,6 +32,7 @@ export interface ICommonAps {
     uploadsFile: TFHttpSend
     getConfigs: TFHttpSend
     getMeImage: TFHttpSend
+    resetPassword: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",
