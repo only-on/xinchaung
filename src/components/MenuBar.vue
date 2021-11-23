@@ -103,6 +103,7 @@ export default defineComponent({
         let user=res.data.user
         lStorage.set('role',user.role)
         lStorage.set('name',user.name)
+        lStorage.set('user_id',user.id)
       }
     })
     onMounted(() => {

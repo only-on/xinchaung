@@ -5,7 +5,6 @@ import RouterCommon from './common' // 引入通用模块
 import RoutesTeacherSide from './teacherSide'
 // 登录状态检查
 import { IRouteTuple } from "src/types";
-
 const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide]]
 const router = createRouter({
   history: createWebHashHistory(),

@@ -2,7 +2,7 @@
   <div v-layout-bg class="createPaper">
     <div class="header">
       <div class="left">
-        <a-form :model="ForumSearch" :label-col="{span:3 }" labelAlign="left" :wrapper-col="{span: 19}" :rules="rules" :ref="formRef">
+        <a-form :model="ForumSearch" :label-col="{span:3 }" labelAlign="left" :wrapper-col="{span: 19}" :rules="rules" ref="formRef">
           <a-form-item label="试卷名称" name="name">
             <a-input v-model:value="ForumSearch.name" />
           </a-form-item>
@@ -180,8 +180,6 @@ export default defineComponent({
     const visible = ref<boolean>(false);
     var selectedPaperIds:number[]=reactive([])          // 已选择的题目id  description
     const totalScore = ref<number>(0);
-    // var formRef:Ref<string> =ref('formRef')
-    // const formRef = ref();
     let formRef = ref()
     const state:Istate=reactive({
       // formRef:'formRef',

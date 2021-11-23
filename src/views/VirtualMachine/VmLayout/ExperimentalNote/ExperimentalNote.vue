@@ -17,7 +17,7 @@ import { number } from "echarts";
 import { message } from "ant-design-vue";
 
 export default defineComponent({
-  components: {
+  components: {    
     QuillEditor,
   },
   setup() {

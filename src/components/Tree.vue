@@ -171,18 +171,18 @@ interface ITreeList {
         }
 
         .tree-children {
-            .add-chapter-action {
-                // height: 66px;
-            }
+            // .add-chapter-action {
+            //     // height: 66px;
+            // }
 
             height: 0;
             overflow: hidden;
             // overflow: auto;
             transition: 0.5s;
 
-            &.open {
-                // height: auto;
-            }
+            // &.open {
+            //     // height: auto;
+            // }
 
             .SecondLevel {
                 height: 42px;
