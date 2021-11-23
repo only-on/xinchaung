@@ -13,7 +13,7 @@
           </div>
         </div>
         <div
-          class="tree-children"
+          class="tree-children "
           :style="openList.includes(item.id) ? childrenHeight(item.children.length) : 'height: 0'"
         >
           <div class="item forbid add-chapter-action">
@@ -54,7 +54,7 @@ export default defineComponent({
       type: Array as PropType<ITreeList[]>,
       default: []
     },
-    currentTabType: Number
+    currentTab: Number
   },
   emit: ['open'],
   setup(prop, {emit}) {
@@ -117,7 +117,7 @@ export default defineComponent({
       openList.push(id)
     }
     function childrenHeight(num: number) {
-      if (prop.currentTabType === 0) {
+      if (prop.currentTab === 0) {
         return { height: 66 + 42 * num + 'px' }
       } else {
         return { height: 42 * num + 'px' }
@@ -177,6 +177,7 @@ interface ITreeList {
 
             height: 0;
             overflow: hidden;
+            // overflow: auto;
             transition: 0.5s;
 
             &.open {

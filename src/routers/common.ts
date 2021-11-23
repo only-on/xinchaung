@@ -4,7 +4,7 @@ import extStorage from "src/utils/extStorage";
 const { lStorage } = extStorage
 const role = lStorage.get('role')
 const PathList={1:'',2:'',3:'/teacher/home',4:'/studentStatistic',5:''}
-const homePath=PathList[role]
+const homePath=PathList[Number(role)]
 export default [
     {
         path: "/",

@@ -137,9 +137,14 @@ export default defineComponent({
     function initData(){ 
       console.log(ForumSearch)
       let search={
-        ...ForumSearch,
-        from:ForumSearch.date[0]?ForumSearch.date[0]:'',
-        to:ForumSearch.date[1]?ForumSearch.date[1]:''
+        // ...ForumSearch,
+        limit:ForumSearch.limit,
+        page:ForumSearch.page,
+        'search[type]':ForumSearch.type===undefined?'':ForumSearch.type,
+        'search[operation_type]':ForumSearch.operation_type,
+        'search[ip]':ForumSearch.ip,
+        'search[from]':ForumSearch.date[0]?ForumSearch.date[0]:'',
+        'search[to]':ForumSearch.date[1]?ForumSearch.date[1]:''
       }
       loading.value=true
       list.length=0

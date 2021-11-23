@@ -75,46 +75,43 @@
         </div>
       </div>
       <div v-else class="listBox">
-        <div class="task-type-box" v-if="TypeList.content_type">
-          <span>实验类型：</span>
-          <span :class="currentTaskType === 0 ? 'active' : ''" @click="taskChange(0)">全部</span>
-          <span
-            v-for="(value, key, index) in TypeList.content_type"
-            :key="index"
-            :class="currentTaskType === key ? 'active' : ''"
-            @click="taskChange(key)"
-          >
-            {{ value }}
-          </span>
-        </div>
-        <div class="task-rank-type-box" v-if="TypeList.content_level">
-          <span>实验难度：</span>
-          <span :class="currentTaskRankType === 0 ? 'active' : ''" @click="taskRankChange(0)">全部</span>
-          <span
-            v-for="(value, key, index) in TypeList.content_level"
-            :key="index"
-            :class="currentTaskRankType === key ? 'active' : ''"
-            @click="taskRankChange(key)"
-          >
-            {{ value }}
-          </span>
-        </div>
-        <div class="action-box">
-          <div class="search-box">
-            <a-input-search
-              v-model:value="experimentKeyWord"
-              placeholder="请输入搜索关键字查询"
-              @search="onExperimentalSearch"
-            />
+        <a-spin :spinning="loading" size="large" tip="Loading...">
+          <div class="task-type-box" v-if="TypeList.content_type">
+            <span>实验类型：</span>
+            <span :class="currentTaskType === 0 ? 'active' : ''" @click="taskChange(0)">全部</span>
+            <span
+              v-for="(value, key, index) in TypeList.content_type"
+              :key="index"
+              :class="currentTaskType === key ? 'active' : ''"
+              @click="taskChange(key)"
+            >
+              {{ value }}
+            </span>
           </div>
-          <a-button v-if="currentTab === 0" type="primary" @click="create">新建实验</a-button>
-        </div>
-        <div class="task-list setScrollbar" :class="currentTab === 1 ? 'built-in' : ''">
-          <div v-if="taskData.length > 0">
-            <a-spin :spinning="loading" size="large" tip="Loading...">
-              <!-- <div v-if="experimentalDataList.length === 0">
-                <Empty/>
-              </div> -->
+          <div class="task-rank-type-box" v-if="TypeList.content_level">
+            <span>实验难度：</span>
+            <span :class="currentTaskRankType === 0 ? 'active' : ''" @click="taskRankChange(0)">全部</span>
+            <span
+              v-for="(value, key, index) in TypeList.content_level"
+              :key="index"
+              :class="currentTaskRankType === key ? 'active' : ''"
+              @click="taskRankChange(key)"
+            >
+              {{ value }}
+            </span>
+          </div>
+          <div class="action-box">
+            <div class="search-box">
+              <a-input-search
+                v-model:value="experimentKeyWord"
+                placeholder="请输入搜索关键字查询"
+                @search="onExperimentalSearch"
+              />
+            </div>
+            <a-button v-if="currentTab === 0" type="primary" @click="create">新建实验</a-button>
+          </div>
+          <div class="task-list setScrollbar" :class="currentTab === 1 ? 'built-in' : ''">
+            <div v-if="taskData.length > 0">
               <div>
                 <div
                   class="task-item"
@@ -162,19 +159,19 @@
                 </div>
                 <Empty v-if="experimentalDataList.length === 0" />
               </div>
-            </a-spin>
+            </div>
           </div>
-        </div>
-        <div v-if="experimentalDataList.length > 0" class="pagination-box">
-          <a-pagination
-            show-size-changer
-            :total="total"
-            :current="page"
-            :page-size="pageSize"
-            @showSizeChange="onShowSizeChange"
-            @change="pageChange"
-          />
-        </div>
+          <div v-if="experimentalDataList.length > 0" class="pagination-box">
+            <a-pagination
+              show-size-changer
+              :total="total"
+              :current="page"
+              :page-size="pageSize"
+              @showSizeChange="onShowSizeChange"
+              @change="pageChange"
+            />
+          </div>
+        </a-spin>
       </div>
     </div>
     <a-modal v-model:visible="visible" :title="(isEditChapter ? '编辑' : '添加')+'章节'" @ok="handleOk">
