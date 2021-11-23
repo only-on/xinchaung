@@ -94,6 +94,14 @@ export default {
       },
     },
     {
+      path: "archive-detail",
+      component: () => import("src/views/teachCourse/courseDetail/archivedDetail.vue"),
+      meta: {
+        title: "归档详情",
+        authCode: 'archive-detail'
+      },
+    },
+    {
       path: "analysis",
       name: "analysis",
       component: () => import("src/views/teacherCourseAnalysis/analysis.vue"),

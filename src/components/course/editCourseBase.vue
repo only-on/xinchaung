@@ -165,7 +165,12 @@ export default defineComponent({
     // 获取职业方向
     function getDirections() {
       courseApi.getDirectionsApi({}).then((res: any) => {
-        reactiveData.directionsList = res.data;
+        if (res.data&&res.data.list) {
+          reactiveData.directionsList = res.data.list;
+        }else{
+          reactiveData.directionsList = res.data;
+        }
+        
       });
     }
     // 获取选择的封面

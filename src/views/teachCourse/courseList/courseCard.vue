@@ -125,7 +125,7 @@
       >
         <h2>{{ data.name }}</h2>
         <div class="base-archived-action">
-          <span>详情</span><span @click="downloadExport">导出</span>
+          <span @click="toArchiveDetail">详情</span><span @click="downloadExport">导出</span>
         </div>
         <div class="archived-time-box">
           <span class="icon-jingli iconfont"></span
@@ -248,6 +248,14 @@ export default defineComponent({
         }
       })
     }
+    function toArchiveDetail() {
+      router.push({
+        path:"/teacher/teacherCourse/evalute",
+        query:{
+          courseId:data.id,
+        }
+      })
+    }
     // 判断课程进行状态
     function courseStatus(sort: number) {
       if (sort === 1) {
@@ -275,7 +283,8 @@ export default defineComponent({
       evalute,
       saveToMy,
       toDetail,
-      img1
+      img1,
+      toArchiveDetail
     };
   },
 });

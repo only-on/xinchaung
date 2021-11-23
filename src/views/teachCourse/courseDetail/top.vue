@@ -41,13 +41,13 @@
       </div>
       <div class="base-right">
         <span
-          v-if="isReportShow()"
+          v-role="[tab]"
           class="icon-mobandaishezhi iconfont"
           title="选择报告模板"
           @click="openSelectReport"
         ></span>
         <span
-          v-if="isEditeShow()"
+          v-role="[tab]"
           class="icon-bianji1 iconfont"
           title="编辑"
           @click="openEditModal"
@@ -68,7 +68,7 @@
       v-model:checkout="checkout"
     ></editcourse-base>
   </a-modal>
-   <a-modal
+  <a-modal
     title="选择实验报告"
     :visible="reportVisible"
     :footer="null"
@@ -89,17 +89,17 @@ import editCourseBase from "src/components/course/editCourseBase.vue";
 import moment from "moment";
 import { cloneDeep } from "lodash";
 import { message } from "ant-design-vue";
-import selectReport from "../courseExperiment/components/selectReport.vue"
+import selectReport from "../courseExperiment/components/selectReport.vue";
 type TreactiveData = {
   baseInfoData: any;
   editVisible: boolean;
-  reportVisible:boolean
+  reportVisible: boolean;
 };
 
 export default defineComponent({
   components: {
     "editcourse-base": editCourseBase,
-    "select-report":selectReport
+    "select-report": selectReport,
   },
   setup() {
     const route = useRoute();
@@ -109,6 +109,7 @@ export default defineComponent({
     const currentRole: number = storage.lStorage.get("role");
     const formData = ref({});
     const checkout = ref({});
+    const tab = ref(-1);
     const reactiveData: TreactiveData = reactive({
       baseInfoData: {},
       editVisible: false,
@@ -130,6 +131,18 @@ export default defineComponent({
         console.log(checkout.value);
       },
       { deep: true }
+    );
+    watch(
+      () => currentTab,
+      () => {
+        if (currentTab === "myCourse") {
+          tab.value = 0;
+        }
+        if (currentTab === "initCourse") {
+          tab.value = 1;
+        }
+      },
+      { immediate: true }
     );
     // 获取课程详情
     function getCourseDetail() {
@@ -177,7 +190,7 @@ export default defineComponent({
         };
         updateCourseBaseApi({ ...params }).then((res: any) => {
           reactiveData.editVisible = false;
-          reactiveData.baseInfoData=cloneDeep(formData.value)
+          reactiveData.baseInfoData = cloneDeep(formData.value);
         });
       } else {
         if ((checkout.value as any).errorFields[0]) {
@@ -196,7 +209,6 @@ export default defineComponent({
     // 关闭实验报告弹窗
     function closeReportModal() {
       reactiveData.reportVisible = false;
-
     }
     // 获取课程css状态
     function settingCss(state: number) {
@@ -258,7 +270,8 @@ export default defineComponent({
       formData,
       checkout,
       openSelectReport,
-      closeReportModal
+      closeReportModal,
+      tab,
     };
   },
 });

@@ -2,9 +2,9 @@
   <div class="course-experiment-box">
     <div class="course-experiment-left">
       <div class="action-top-box">
-        <a-button type="primary" size="small" @click="openAddChapterModal">+自定义章节</a-button>
-        <a-button type="primary" size="small" @click="openAddChapter">+添加章节</a-button>
-        <a-button type="primary" size="small" @click="openAddExperiment">+添加实验</a-button>
+        <a-button type="primary" size="small" @click="openAddChapterModal" v-role="[tab]">+自定义章节</a-button>
+        <a-button type="primary" size="small" @click="openAddChapter" v-role="[tab]">+添加章节</a-button>
+        <a-button type="primary" size="small" @click="openAddExperiment" v-role="[tab]">+添加实验</a-button>
       </div>
       <div class="bacGray">
         <span data-v-d3afaa76="" class="waring-icon">!</span
@@ -28,7 +28,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent ,onMounted,reactive,toRefs,provide,ref} from "vue";
+import { defineComponent ,onMounted,reactive,toRefs,provide,ref,watch} from "vue";
 import DragTree from 'src/components/dragTree.vue'
 import {getCourseTreeApi,updateChapterApi,createCourseChapterApi,deleteChapterApi} from "./api"
 import {useRoute} from "vue-router"
@@ -49,12 +49,28 @@ export default defineComponent({
   setup() {
       const route=useRoute();
       const course_id=route.query.course_id as any as number
+      const currentTab=route.query.currentTab
       const chapter_id=ref("")
       const experiment_id=ref("")
+      const tab=ref(-1)
       provide("course_id",course_id)
       provide("chapter_id",chapter_id)
       provide("experiment_id",experiment_id)
       
+      watch(()=>currentTab,()=>{
+        if (currentTab) {
+          if (currentTab==="myCourse") {
+            tab.value=0
+          }
+          if (currentTab==="initCourse") {
+            tab.value=1
+          }
+        }else{
+          tab.value=0
+        }
+      },{
+        immediate:true
+      })
       const reactiveData=reactive({
           treeData:[],
           rightTab:"chapterDetail",
@@ -139,7 +155,8 @@ export default defineComponent({
           openAddChapterModal,
           closeCreateChapterModel,
           submitCreateChapter,
-          deleteNode
+          deleteNode,
+          tab
       }
   },
 });

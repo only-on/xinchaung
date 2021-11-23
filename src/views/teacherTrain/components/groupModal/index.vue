@@ -1,5 +1,5 @@
 <template>
-  <div class="groupModal" v-layout-bg>
+  <div class="groupModal">
     <a-modal
       title="学生分组"
       :visible="editvisible"
