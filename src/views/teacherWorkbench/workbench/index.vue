@@ -169,6 +169,7 @@ export default defineComponent({
         closeWorkbenchApi(val.id)
           .then((res: any) => {
             message.success("关闭成功");
+            reactiveData.workbenchDataList[ind].vm.status = 0
           })
           .catch((err) => {
             message.error("关闭失败");
@@ -203,6 +204,7 @@ export default defineComponent({
                   reactiveData.workbenchDataList[i].vm.status = 0;
                 }
                 reactiveData.workbenchDataList[index].vm.status = 1;
+                reactiveData.workbenchDataList[index].task_state=workbenchStatus[index].task_state
                 reactiveData.isPoll = false;
                 clearInterval(Number(timer));
               }
@@ -220,6 +222,7 @@ export default defineComponent({
                 } else {
                   reactiveData.workbenchDataList[i].vm.status = 1;
                 }
+                reactiveData.workbenchDataList[i].task_state=workbenchStatus[i].task_state
               }
               if (isLx) {
                 reactiveData.isPoll = false;

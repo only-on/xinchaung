@@ -90,11 +90,11 @@
       <div
         :class="[
           data.vm
-            ? data.vm.status === 1 && data.task_state === null
+            ? (data.vm.status === 1 && data.task_state === null
               ? ''
-              : data.vm.status === 1
+              : (data.vm.status === 1
               ? 'iconloading no-click'
-              : 'no-click'
+              : 'no-click'))
             : 'no-click',
           isPoll ? 'no-event' : '',
         ]"
@@ -115,23 +115,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent,watch,ref,Ref } from "vue";
 
 export default defineComponent({
   props: ["content", "index", "isPoll"],
   emits: ["openOrCloseFun", "enterFun", "deleteFun"],
   setup(props, { emit }) {
-    const data = props.content;
+    const data:Ref<any> = ref([]);
     const index = props.index;
-    const isPoll = props.isPoll;
+    const isPoll = ref(false);
+    watch(()=>props.content,()=>{
+      data.value=props.content
+      console.log(data.value);
+      
+    },{deep:true,immediate:true})
+
+    watch(()=>props.isPoll,()=>{
+      isPoll.value = props.isPoll;
+    })
     function openOrCloseFun() {
-      emit("openOrCloseFun", data, index);
+      emit("openOrCloseFun", data.value, index);
     }
     function enterFun() {
-      emit("enterFun", data, index);
+      emit("enterFun", data.value, index);
     }
     function deleteFun() {
-      emit("deleteFun", data, index);
+      emit("deleteFun", data.value, index);
     }
     // 处理时间
     function timeToArray(time: string):number[] {
