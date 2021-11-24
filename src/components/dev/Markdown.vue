@@ -2,43 +2,49 @@
   <div class="marked__demo">
     <div class="row">
       <div class="editor">
-        <antdv-markdown v-model="content"  class="markdown__editor"/>
+        <antdv-markdown v-model="content" class="markdown__editor" />
       </div>
       <div class="textarea">
         <textarea v-model="content"></textarea>
       </div>
     </div>
-    <hr/>
+    <a-divider></a-divider>
     <div class="row">
       <div class="editor">
-        <antdv-markdown v-model="content2" :tool-buttons="[
-        ['bold',
-            'italic',
-            'heading'],
-        '||',
-        ['bars',
-            'eyeSlash',
-            'arrowsAlt',
-            'windowMaximize'],
-        ['source',
-            'questionCircle'],
-    ]" class="markdown__editor"/>
+        <antdv-markdown
+          v-model="content2"
+          :tool-buttons="[
+            ['bold', 'italic', 'heading'],
+            '||',
+            ['bars', 'eyeSlash', 'arrowsAlt', 'windowMaximize'],
+            ['source', 'questionCircle'],
+          ]"
+          class="markdown__editor"
+        />
       </div>
       <div class="textarea">
         <textarea v-model="content2"></textarea>
       </div>
     </div>
+    <a-divider></a-divider>
     <div class="row">
       <div class="editor">
-        <antdv-markdown v-model="content3" :preview-only="true" class="markdown__editor"/>
+        <antdv-markdown
+          v-model="content3"
+          :preview-only="previewOnly"
+          class="markdown__editor"
+        />
+      </div>
+      <div class="operation">
+        <a-button type="primary" @click="togglePreview">切换仅预览</a-button>
       </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import {defineComponent, ref, watch} from "vue";
+import { defineComponent, ref, watch } from "vue";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
-import readme from '@xianfe/antdv-markdown/README.md';
+import readme from "@xianfe/antdv-markdown/README.md";
 
 export default defineComponent({
   name: "Markdown",
@@ -47,12 +53,19 @@ export default defineComponent({
   },
   setup() {
     const content = ref(readme);
-    const content2 = ref('#demo\n不标准的markdown语法，支持html\n<center>第一个居中</center><center>\n第二个居中</center><center>第三个居中\n</center>\n<p style="background: blue; color: white">来一段蓝色背景文字</p>')
-    const content3 = ref('#仅预览模式')
+    const content2 = ref(
+      '#demo\n不标准的markdown语法，支持html\n<center>第一个居中</center><center>\n第二个居中</center><center>第三个居中\n</center>\n<p style="background: blue; color: white">来一段蓝色背景文字</p>'
+    );
+    const content3 = ref("#仅预览模式");
+    const previewOnly = ref(true);
     watch(content, (newVal) => {
       console.log("[markdown] content changed");
     });
-    return {content, content2, content3};
+
+    const togglePreview = () => {
+      previewOnly.value = !previewOnly.value;
+    };
+    return { content, content2, content3, previewOnly, togglePreview };
   },
 });
 </script>
