@@ -99,6 +99,20 @@ export default defineComponent({
           .validate()
           .then((res: any) => {
             let baseInfo: any = cloneDeep(reactiveData.baseInfo);
+            const body = new FormData();
+            body.append("name", baseInfo.name);
+            body.append(
+              "start_time",
+              moment(baseInfo.created_at).format("YYYY-MM-DD")
+            );
+            body.append(
+              "end_time",
+              moment(baseInfo.end_time).format("YYYY-MM-DD")
+            );
+            body.append("introduce", baseInfo.courseDescriptions);
+            body.append("course_category_id", baseInfo.course_category_id);
+            body.append("course_direction_id", baseInfo.course_direction_id);
+            body.append("url", baseInfo.url);
             let params: any = {
               name: baseInfo.name,
               start_time: moment(baseInfo.created_at).format("YYYY-MM-DD"),
@@ -118,7 +132,8 @@ export default defineComponent({
                 }
               );
             } else {
-              createCourseBaseApi(params).then((res: any) => {
+              body.append("is_available", "1");
+              createCourseBaseApi(body).then((res: any) => {
                 router.push({
                   path: "/teacher/teacherCourse",
                 });
