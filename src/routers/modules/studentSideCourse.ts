@@ -13,7 +13,7 @@ export default {
           '0': '最近学习',
           '1': '我的课程',
       }
-      return dataDetailMap[query!.currentTab.toString()] || '我的课程'
+      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
     },
     authCode: "studentSideCourse",
   },

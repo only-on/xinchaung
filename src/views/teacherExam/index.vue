@@ -28,7 +28,6 @@ export default defineComponent({
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
       // const {page}= route.query
-      
       componentName.value=componentNames[val]
     })
     onMounted(()=>{

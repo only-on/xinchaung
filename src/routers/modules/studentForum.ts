@@ -13,7 +13,7 @@ export default {
           '1': '我的提问',
           '2': '我参与的帖子',
       }
-      return dataDetailMap[query!.currentTab.toString()] || '论坛'
+      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
     },
     authCode: "forum",
   },

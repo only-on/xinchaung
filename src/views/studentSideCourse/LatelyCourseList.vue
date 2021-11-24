@@ -1,5 +1,5 @@
 <template>
-  <a-spin :spinning="loading" tip="Loading..." size="large" > 
+  <a-spin :spinning="loading" tip="Loading..." size="large"> 
     <div class="list_content">
       <div class="list_item" v-for="v in list" :key="v.course_student_id">
         <div class="time">{{v.study_time}}</div>
@@ -43,7 +43,7 @@
 
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive,Ref,inject } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter ,useRoute} from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 interface IlistItem{
@@ -67,6 +67,7 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter();
+    const route=useRoute();
     var defaultUrl:string='/src/assets/images/studentcourse/course-default1.jpg'
     var list:IlistItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
@@ -85,7 +86,8 @@ export default defineComponent({
     var updata=inject('updataNav') as Function
     
     function startLearning(val:IlistItem) {
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.course_id)
+      const {currentTab}= route.query
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.course_id+'&currentTab='+currentTab)
     }
     onMounted(()=>{
      initData()
@@ -95,9 +97,9 @@ export default defineComponent({
 })
 </script>
 
-<style  scoped lang="less">
+<style scoped lang="less">
   .ant-spin-spinning{
-      margin-top: 200px;
+      // margin-top: 200px;
     }
     .list_content{
       .list_item{

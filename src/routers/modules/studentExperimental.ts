@@ -12,7 +12,7 @@ export default {
           '0': '最近实训',
           '1': '我的实训',
       }
-      return dataDetailMap[query!.currentTab.toString()] || '我的实训'
+      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
     },
     authCode: "studentExperimental",
   },

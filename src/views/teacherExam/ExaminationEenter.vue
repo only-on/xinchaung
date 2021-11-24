@@ -41,6 +41,7 @@
                   <a-progress type="circle" :percent="v.pass_rate" :width="50" :stroke-width="14" 
                       :showInfo="true" 
                       :trail-color="'#ddd'"
+                      :stroke-color="theme.themeColor" 
                     />
                 </div>
                 <div class="score-num-middle">
@@ -92,6 +93,7 @@ import request from 'src/api/index'
 import {Modal,message} from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { IBusinessResp} from 'src/typings/fetch.d';
+import {theme} from 'src/utils/theme'
 interface IlistItem{
   id:number;
   name:string;
@@ -225,7 +227,7 @@ export default defineComponent({
       // console.log(route.query)   
       initData()
     })
-    return {list,loading,Forum,totalCount,search,pageChange,Achievement,delate,add,edit,publish};
+    return {list,loading,Forum,totalCount,theme,search,pageChange,Achievement,delate,add,edit,publish};
   },
 })
 </script>

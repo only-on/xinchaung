@@ -1,7 +1,7 @@
 <template>
   <div v-layout-bg class="CreatedExamination">
     <div class="leftBox">
-      <a-form :ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
+      <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <a-form-item label="考试名称"  name="name">
           <a-input v-model:value="formState.name" />
         </a-form-item>

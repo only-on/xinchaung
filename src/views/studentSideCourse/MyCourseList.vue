@@ -57,7 +57,7 @@
 
 <script lang="tsx">
 import { defineComponent,ref, onMounted,reactive,Ref } from 'vue'
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { SelectTypes } from 'ant-design-vue/es/select';
@@ -87,6 +87,7 @@ export default defineComponent({
   },
   setup: (props,{emit}) => {
     const router = useRouter()
+    const route=useRoute();
     var options = ref<Ioptions[]>([{id:1,name:'全部',value:1, label: '全部课程'}]);
     // var options:Ioptions[] = ref<SelectTypes['options']>([{id:1,name:'全部',value:1, label: '全部课程'}])
     var list:IListItem[]=reactive([])
@@ -99,15 +100,18 @@ export default defineComponent({
       loading.value=true
       list.length=0
       http.getMyCourseList({param:param}).then((res:IBusinessResp)=>{
-        loading.value=false
-        list.push(...res.data)
-        list.length?list.map((v:IListItem)=>{
-          v.url=v.url?v.url:defaultUrl
-        }):''
+        if(res){
+          loading.value=false
+          list.push(...res.data)
+          list.length?list.map((v:IListItem)=>{
+            v.url=v.url?v.url:defaultUrl
+          }):''
+        }
       })
     }
     function keepLearning(val:IListItem){
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.id+'&course_id='+val.course_id)
+      const {currentTab}= route.query
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.id+'&course_id='+val.course_id+'&currentTab='+currentTab)
     }
     function getDirection(){
       http.courseDirection().then((res:IBusinessResp)=>{

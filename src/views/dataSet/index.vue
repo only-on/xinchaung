@@ -29,7 +29,7 @@ export default defineComponent({
       updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       // if(role===2 || role===4){
       //    componentName.value=componentNames[val]
       // }
