@@ -59,7 +59,7 @@
                         <span class="iconfont iconbiaoqian"></span>
                         <span v-if="!item.labels.length" class="notYet">暂无标签！</span>
                         <div class="labelsBox">
-                          <span v-for="(c, i) in item.labels" :key="i">
+                          <span v-for="c in item.labels" :key="c.name">
                             {{ c.name }}
                           </span>
                         </div>
@@ -113,7 +113,7 @@ export default defineComponent({
     const route = useRoute();
     const { lStorage } = extStorage
     const role = lStorage.get('role')
-    const uid=lStorage.get('uid')
+    const uid=lStorage.get('user_id')
     var currentTab:Ref<number>=ref(0)
     var configuration:any=inject('configuration')
     
@@ -183,7 +183,7 @@ export default defineComponent({
     }
     onMounted(()=>{
      categoryList()
-    //  init()
+     init()
     })
     return {loading,search,option,init,create,showCreate,dataList,role,currentTab,chinaToPy,setPadding,dataSetDetail,openDeletePop};
   },
