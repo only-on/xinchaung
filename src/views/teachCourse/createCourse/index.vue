@@ -193,13 +193,14 @@ export default defineComponent({
             } else {
               body.append("is_available", "0");
               createCourseBaseApi(body).then((res: any) => {
-                reactiveData.currentStep++;
+                
                 router.replace({
                   path: "/teacher/teacherCourse/create",
                   query: {
                     course_id: res.data.id,
                   },
                 });
+                reactiveData.currentStep++;
               });
             }
           })
