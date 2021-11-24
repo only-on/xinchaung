@@ -145,7 +145,10 @@ export default defineComponent({
       });
     }
     // 进入工作台
-    function enterFun(val: any) {
+    function enterFun(val: any,index:number) {
+      
+      
+      
       let tags: any[] = val.image.tag;
       let id = val.id;
       let status = val.vm.status;
@@ -153,12 +156,23 @@ export default defineComponent({
         message.warn("请先开启工作台，在重新进入");
         return;
       }
-      getWorkbenchInfoApi(id).then((res) => {
+      console.log(tags, id, status);
+      getWorkbenchInfoApi({id:id}).then((res) => {
+        console.log(res);
         if (res?.code === 1) {
           if (tags.indexOf("Notebook") > -1) {
             console.log("跳转notebook");
           } else {
             console.log("跳转vnc");
+            const {href}= router.resolve(
+              {
+                path:"/teacher/Workbench/open-image",
+                query:{
+                  id:id
+                }
+              }
+            )
+            window.open(href,"_blank")
           }
         }
       });

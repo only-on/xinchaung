@@ -157,3 +157,38 @@ export async function editMyImageApi(id: any, params: any) {
 }
 
 
+/**
+ * @description 获取虚拟机详情
+ */
+export async function getVmBaseInfoApi(params:{id:number}) {
+    return await workbenchApi.getVmBaseInfoApi({urlParams:params})
+}
+
+/**
+ * @description 保存镜像
+ */
+export async function createImageApi(params:{name:string,description:string},urlParams:{id:number}) {
+    return await workbenchApi.createImageApi({urlParams:urlParams,param:params})
+}
+
+/**
+ * @description 停止镜像
+ */
+export async function stopImageApi(params:{id:number}) {
+    return await workbenchApi.stopImageApi({urlParams:params})
+}
+
+/**
+ * @description 虚拟机文件上传
+ */
+export async function vmUploadApi(params:{file_path:string},urlParams:{id:number}) {
+    return await workbenchApi.vmUploadApi({urlParams:urlParams,param:params})
+}
+
+/**
+ * @description 延长session
+ */
+export async function extendSessionApi(params:{num:string}) {
+    return await workbenchApi.extendSessionApi({urlParams:params})
+}
+

@@ -15,6 +15,11 @@ export default {
     editMyImageApi: { url: "/api/env/images/{id}", method: "PUT", dataType: "json" },
     getPresetMirror: { url: "/api/env/images", method: "GET" },
     createMirrorApi: { url: "/api/env/images", method: "POST", dataType: "json" },
+    extendSessionApi:{url:"/api/site/ping?{num}",method: "POST"},
+    getVmBaseInfoApi:{url:"/api/env/workbenchs/info/{id}",method: "GET"},
+    createImageApi:{url:"/api/env/workbenchs/image/{id}",method: "POST", dataType: "json"},
+    stopImageApi:{url:"/api/env/workbenchs/stop/{id}",method: "POST"},
+    vmUploadApi:{url:"/api/env/workbenchs/upload/{id}",method: "POST",dataType: "json"},
 }
 
 export interface IteacherWorkbench {
@@ -33,4 +38,9 @@ export interface IteacherWorkbench {
     editMyImageApi: TFHttpSend
     getPresetMirror: TFHttpSend
     createMirrorApi: TFHttpSend
+    extendSessionApi:TFHttpSend
+    getVmBaseInfoApi:TFHttpSend
+    createImageApi:TFHttpSend
+    stopImageApi:TFHttpSend
+    vmUploadApi:TFHttpSend
 }

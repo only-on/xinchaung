@@ -32,5 +32,13 @@ export default {
                 authCode: 'createImage'
             },
         },
+        {
+            path: "open-image",
+            component: () => import("src/views/teacherWorkbench/openEnvironment/openEnvironment.vue"),
+            meta: {
+                title: "工作台镜像",
+                authCode: 'open-image'
+            },
+        },
     ]
 }
