@@ -8,8 +8,8 @@
           <div class="base-footer">
             <div class="info">
               <span>类型：{{detail.task_type_text}}</span>
-              <span>课时数“：{{detail.class_cnt}}</span>
-              <span>CPU：{{detail.is_used_gpu?'启用':'未启用'}}</span>
+              <span>课时数：{{detail.class_cnt}}</span>
+              <span>GPU：{{detail.is_used_gpu?'启用':'未启用'}}</span>
             </div>
             <div class="label">
               <span v-for="v in detail.knowledge_maps" :key="v">{{v[v.length - 1]}}</span>
@@ -28,9 +28,9 @@
           <div class="left">
             <div class="title">实验环境</div>
             <div class="title-info">
-              <span>CPU ：{{environmentInfo.cpu}}核</span> | 
-              <span>内存 ：{{environmentInfo.ram}}G</span> | 
-              <span>磁盘· ：{{environmentInfo.disk}}G</span>
+              <span>CPU：{{environmentInfo.cpu}}核</span> | 
+              <span>内存：{{environmentInfo.ram}}G</span> | 
+              <span>磁盘：{{environmentInfo.disk}}G</span>
             </div>
           </div>
           <div class="right">

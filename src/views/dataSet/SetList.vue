@@ -14,7 +14,7 @@
             @search="init"
           />
         </div>
-         <a-button type="primary" @click="create">新建数据集</a-button>
+         <a-button v-if="showCreate" type="primary" @click="create">新建数据集</a-button>
       </div>
     </div>
     <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -26,7 +26,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref} from 'vue'
+import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref,computed} from 'vue'
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
@@ -55,7 +55,11 @@ export default defineComponent({
       keyword:''
 
     })
+    var showCreate=computed(()=>{
+      return true
+    })
     var option:any[]=reactive([])
+    var dataList:any[]=reactive([])
     function create(){
 
     }
@@ -64,16 +68,23 @@ export default defineComponent({
       http.categoryList().then((res:IBusinessResp)=>{
           option.push(...res.data)
           option.unshift({uid:'',name:'全部'})
-          console.log(option)
+          // console.log(option)
       })
     }
     function init(){
-
+      dataList.length=0
+      loading.value=true
+      http.datasets({}).then((res:IBusinessResp)=>{
+          loading.value=false
+          dataList.push(...res.data)
+          console.log(dataList)
+      })
     }
     onMounted(()=>{
      categoryList()
+     init()
     })
-    return {loading,search,option,init,create};
+    return {loading,search,option,init,create,showCreate};
   },
 })
 </script>
