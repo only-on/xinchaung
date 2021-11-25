@@ -107,7 +107,7 @@ export default defineComponent({
           lStorage.set('role',user.role)
           lStorage.set('name',user.name)
           lStorage.set('user_id',user.id)
-
+          //   现阶段登录在后端    登录状态无法捕捉    分离之后用户信息改存在vuex
           store.commit('saveMenus', data)
         }
       })

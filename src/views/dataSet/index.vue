@@ -23,7 +23,7 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
     //
-    if(role===3){
+    if(role===3 || role===5){
       updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }else{
       updata({tabs:[],navPosition:'outside',navType:false,showContent:true,showNav:true,backOff:false,showPageEdit:false})

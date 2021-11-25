@@ -1,6 +1,6 @@
 <template>
   <div class="dateSetList">
-    <div class="search fixCenter">
+    <div class="search fixCenter" v-if="showSearch">
       <div class="left">
         <a-radio-group v-model:value="search.category" button-style="solid">
           <a-radio-button :value="v.uid" v-for="v in option" :key="v.name">{{v.name}}</a-radio-button>
@@ -14,91 +14,85 @@
             @search="init"
           />
         </div>
-         <a-button v-if="showCreate" type="primary" @click="create">新建数据集</a-button>
+         <a-button v-if="showNewly" type="primary" @click="create">新建数据集</a-button>
       </div>
     </div>
     <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="data-set-content setScrollbar">
         <div class="card-item" v-for="(item, index) in dataList" :key="index">
-            <div class="card-box">
-              <div class="card-content">
-                <div class="card-look">
-                  <div class="img"><img :src="item.cover" alt="" /></div>
-                  <div class="base-info-box">
-                    <h2>{{ item.name }}</h2>
-                    <div>
-                      <div class="system-box" v-if="role ===2">
-                        <div>
-                          <i>{{ FunChinaToPy(item.creator) }}</i>
-                          <span>{{ item.creator }}</span>
-                        </div>
+          <div class="card-box">
+            <div class="card-content">
+              <div class="card-look">
+                <div class="img"><img :src="item.cover" alt="" /></div>
+                <div class="base-info-box">
+                  <h2>{{ item.name }}</h2>
+                  <div>
+                    <div class="system-box" v-if="role ===2">
+                      <div>
+                        <i>{{ FunChinaToPy(item.creator) }}</i>
+                        <span>{{ item.creator }}</span>
                       </div>
-                      <div class="size-box">
-                        <div>
-                          <i class="iconfont icon-wenjianjia"></i>
-                          <span>{{ item.amount }}</span>
-                        </div>
-                        <div>
-                          <i class="iconfont icon-cunchuzhi"></i>
-                          <span>{{ item.size }}</span>
-                        </div>
+                    </div>
+                    <div class="size-box">
+                      <div>
+                        <i class="iconfont icon-wenjianjia"></i>
+                        <span>{{ item.amount }}</span>
+                      </div>
+                      <div>
+                        <i class="iconfont icon-cunchuzhi"></i>
+                        <span>{{ item.size }}</span>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div class="card-detail">
-                  <div @click.stop="dataSetDetail(item)">
-                    <div class="">
-                      <h2>{{ item.name }}</h2>
-                      <div class="data-set-detail-box" :title="item.description">
-                        {{ item.description }}
-                      </div>
-                      <div class="tags-box">
-                        <span class="iconfont iconbiaoqian"></span>
-                        <span v-if="!item.labels.length" class="notYet">暂无标签！</span>
-                        <div class="labelsBox">
-                          <span v-for="c in item.labels" :key="c.name">
-                            {{ c.name }}
-                          </span>
-                        </div>
+              </div>
+              <div class="card-detail">
+                <div @click.stop="dataSetDetail(item)">
+                  <div class="">
+                    <h2>{{ item.name }}</h2>
+                    <div class="data-set-detail-box" :title="item.description">
+                      {{ item.description }}
+                    </div>
+                    <div class="tags-box">
+                      <span class="iconfont icon-biaoqian"></span>
+                      <span v-if="!item.labels.length" class="notYet">暂无标签！</span>
+                      <div class="labelsBox">
+                        <span v-for="c in item.labels" :key="c.name">
+                          {{ c.name }}
+                        </span>
                       </div>
                     </div>
-                    <div class="action-box">
-                      <span
-                        class="iconfont iconshanchu"
-                        @click.stop="openDeletePop($event, item)"
-                        v-if="
-                          (role === 'admin' && item.role === '3') ||
-                          role === 'init' ||
-                          ((role === 'teacher' || role === 'assistant') && currentTab === 0)
-                        "
-                      ></span>
-                    </div>
+                  </div>
+                  <div class="action-box">
+                    <span
+                      class="iconfont icon-shanchu"
+                      @click.stop="openDeletePop(item)"
+                      v-if="(role === 2 && item.role === '3') || role === 1 || ((role === 3 || role === 5) && currentTab === 1)"></span>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-        <empty v-if="!loading && dataList.length===0" />
-        <a-pagination v-if="dataList.length"
-            v-model:current="search.page"
-            :pageSize="search.per_page"
-            :total="totalCount"
-            @change="pageChange"
-          />  
+        </div>
+        <div class="emptyBox" v-if="!loading">
+          <Empty v-if="dataList.length===0" :type="emptyType" :text="emptyText" :height="400" />
+          <a-button v-if="showCreate" type="primary" @click="create">创建数据集</a-button>
+        </div>
+        <a-pagination v-if="dataList.length" v-model:current="search.page" :pageSize="search.per_page" :total="totalCount" @change="pageChange"/>  
       </div>
     </a-spin>
     
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref,computed} from 'vue'
+import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref,computed,createVNode} from 'vue'
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
 import chinaToPy from 'src/utils/py'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 const http=(request as any).dataSet
 interface ISearch{
   category:string
@@ -120,10 +114,13 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
     const uid=lStorage.get('user_id')
+    var showSearch:Ref<boolean>=ref(false)
     var currentTab:Ref<number>=ref(0)
     var totalCount:Ref<number>=ref(0)
     var configuration:any=inject('configuration')
-    
+    var emptyType:Ref<string>=ref('empty')    // searchEmpty
+    // var emptyText:Ref<string>=ref('暂无数据集')       
+
     var loading:Ref<boolean> =ref(false)
     var search:ISearch=reactive({
       category:'',
@@ -134,13 +131,47 @@ export default defineComponent({
       user_id:uid,
       label:''
     })
+    var showNewly=computed(()=>{
+      let show:boolean=false
+      if(role===1 || ((role===3 || role===5) && currentTab.value===1)){
+        show=true
+      }
+      return show
+    })
     var showCreate=computed(()=>{
-      return true
+      var show:boolean=false
+      let empty=(!dataList.length && showSearch.value===false)?true:false
+      if(empty && showNewly.value===true){
+        show=true
+      }
+      return show
+    })
+    var emptyText=computed(()=>{
+      let Type:string=(!dataList.length && (search.category || search.keyword))?'search':'empty'
+      let str:string = ''
+      if (role === 1) {
+        str = Type !== 'empty' ? '未搜到符合条件的数据' : '您还未创建数据集'
+        str +=`${search.category==='' && search.keyword==='' ? '，快点击下方按钮创建吧！' : ''}`
+      } else if (role === 3 || role === 5) {
+        if (Type !== 'empty') {
+          str = '未搜到符合条件的数据'
+        } else {
+          str = currentTab.value === 1 ? '您还未创建数据集' : '暂无数据集'
+        }
+        str += `${currentTab.value ===1 && search.category==='' && search.keyword==='' ? '，快点击下方按钮创建吧！' : ''}`
+      } else if (role === 2) {
+        str = Type !== 'empty' ? '未搜到符合条件的数据' : '暂无数据集'
+      }
+      // str += `${currentTab.value ===1 && search.category==='' && search.keyword==='' ? '，快点击下方按钮创建吧！' : ''}`
+      return str
     })
     var option:any[]=reactive([])
     var dataList:any[]=reactive([])
     function create(){
-
+      router.push({
+        path: '/dataSet/Create',
+        // query: { id: item.uid, common: item.common, user_id: item.creator },
+      })
     }
     function categoryList(){
       option.length=0
@@ -155,12 +186,20 @@ export default defineComponent({
        // console.log(search)
       dataList.length=0
       loading.value=true
-      http.datasets({param:{...search}}).then((res:any)=>{
+      let promise:any=null
+      if(role===2){
+        promise=http.dataSetAll({param:{...search}})
+      }else{
+        promise=http.dataSets({param:{...search}})
+      }
+      promise.then((res:any)=>{
           if(res){
             loading.value=false
             dataList.push(...res.data)
             totalCount.value=res.total
             // console.log(dataList)
+            emptyType.value=(!dataList.length && (search.category || search.keyword))?'searchEmpty':'empty'
+            showSearch.value=(!dataList.length && search.keyword==='' && search.category==='')?false:true
           }
       })
     }
@@ -170,7 +209,7 @@ export default defineComponent({
       init()
     }
     watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
+      console.log(val)
       currentTab.value=val
       search.common=(val===1)?0:1
       search.page=1
@@ -185,27 +224,39 @@ export default defineComponent({
       init()
     })
     function FunChinaToPy(name: string) {
-      // return 'a'
       return chinaToPy.chineseToPinYin(name).substring(0, 1)
     }
-    function dataSetDetail(e: any) {
-      console.log(e)
-      // this.$router.push({
-      //   path: '/dataAggregateDetails',
-      //   query: { id: e.uid, common: e.common, user_id: e.creator },
-      // })
+    function dataSetDetail(item: any) {
+      console.log(item)
+      router.push({
+        path: '/dataSet/DataSetDetail',
+        query: { id: item.uid, common: item.common, user_id: item.creator },
+      })
     }
-    function openDeletePop(e:any,item:any){
-
+    function openDeletePop(item:any){
+      Modal.confirm({
+        title: '确定要删除这个数据集吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          let deleteParam=`data_id=${item.uid}&data_name=${item.name}`
+          http.deleteDataSet({urlParams: {deleteParam: deleteParam}}).then((res:IBusinessResp)=>{
+            message.success('删除成功')
+            init()
+          })
+        }
+      });
     }
     function categoryChange(val:any){
         console.log(val)
     }
     onMounted(()=>{
       categoryList()
-      // init()
+      init()
     })
-    return {loading,search,option,init,create,showCreate,dataList,role,currentTab,totalCount,FunChinaToPy,dataSetDetail,openDeletePop,pageChange,categoryChange};
+    return {loading,search,option,init,create,showSearch,showCreate,showNewly,dataList,role,currentTab,totalCount,emptyType,emptyText,FunChinaToPy,dataSetDetail,openDeletePop,pageChange,categoryChange};
   },
 })
 </script>
@@ -396,8 +447,9 @@ export default defineComponent({
                   }
 
                   > .tags-box {
-                    margin-top: 24px;
+                    margin-top: 14px;
                     display: flex;
+                    height: 71px;
                     // flex-wrap: wrap;
                     // justify-content: space-between;
                     span {
@@ -496,12 +548,14 @@ export default defineComponent({
                     color: #ffffff;
                     font-size: 18px;
                     background-color: #6b43f1;
+                    padding: 4px;
+                    border-radius: 50%;
                   }
                   span:hover{
                     background-color: #f7f7f7;
                     color:#6b43f1;
-                    padding: 4px;
-                    border-radius: 50%;
+                    // padding: 4px;
+                    // border-radius: 50%;
                   }
                 }
               }
@@ -525,5 +579,9 @@ export default defineComponent({
    width: 100%;
   text-align: center;
   margin-top: 20px;
+}
+.emptyBox{
+  width: 100%;
+  text-align: center;
 }
 </style>

@@ -23,23 +23,23 @@ export default {
                 authCode: 'dataSet'
             },
         },
-        // {
-        //     path: "CreateTestPaper",
-        //     name: "CreateTestPaper",
-        //     component: () => import("src/views/dataSet/CreateTestPaper.vue"),
-        //     meta: {
-        //         title: "新建数据集",
-        //         authCode: 'CreateTestPaper'
-        //     },
-        // },
-        // {
-        //     path: 'Achievement',
-        //     name: 'Achievement',
-        //     component: () => import ("src/views/dataSet/Achievement.vue"),
-        //     meta: {
-        //         title: "数据集详情",
-        //         authCode: 'Achievement'
-        //     }
-        // },
+        {
+            path: "Create",
+            name: "CreateDataSet",
+            component: () => import("src/views/dataSet/Create.vue"),
+            meta: {
+                title: "新建数据集",
+                authCode: 'CreateDataSet'
+            },
+        },
+        {
+            path: 'DataSetDetail',
+            name: 'DataSetDetail',
+            component: () => import ("src/views/dataSet/DataSetDetail.vue"),
+            meta: {
+                title: "数据集详情",
+                authCode: 'DataSetDetail'
+            }
+        },
     ]
 }

@@ -393,9 +393,9 @@ export default defineComponent({
        .fraction{
          font-size: 14px;
          color: #929090;
-         >span{
-          //  color: rgb(5, 1, 1,.45);
-         }
+        //  >span{
+        //   //  color: rgb(5, 1, 1,.45);
+        //  }
          .num{
            font-size: 18px;
             color: @theme-color;
@@ -488,9 +488,6 @@ export default defineComponent({
             justify-content: space-between;
             background: #f4f4f4;
             color: #000;
-            .serial{
-              
-            }
             .mark{
               color: #FF9300;
             }
