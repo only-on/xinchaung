@@ -1,5 +1,5 @@
 <template>
-    <div class="basicInfo"  v-layout-bg>
+    <div class="basicInfo">
         <div class="info-left">
             <a-form ref="formRef" :model="form" layout="vertical" :rules="rules">
                 <a-form-item label="实训名称" name="name">

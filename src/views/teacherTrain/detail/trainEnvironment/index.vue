@@ -1,12 +1,12 @@
 <template>
-    <div class="trainEnvironment" v-layout-bg>
+    <div class="trainEnvironment">
         <div class="top-info-btn">
            <div>
                <span class="star">*</span>
                <span>实训环境</span>
                <span class="orange">已选总内存：<span class="number">{{memoryNumber()}}</span>G</span>
            </div>
-           <div>
+           <div v-if="trainType!=='1'">
                <a-button type="primary" v-if="!edit" @click="toEdit">编辑</a-button>
                <a-button type="primary" v-if="edit" @click="toSave">保存</a-button>
            </div>
@@ -88,7 +88,7 @@ import selectMirror from '../../components/selectMirror/index.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'trainEnvironment',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId','trainType'],
     components:{
         Empty,
         selectMirror

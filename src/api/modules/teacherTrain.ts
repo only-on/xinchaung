@@ -7,6 +7,10 @@ export default {
   showExperimentalNote: { url: `/teacher-train/show-note`, method: "GET" },
   resetExperimentalServer: { url: `/teacher-train/reset-server`, method: "POST", dataType: 'json' },
   setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
+  // 考核列表
+  assessmentList: { url: `/api/operate/teacherResults/index`, method: "GET" },
+  // 考核任务统计
+  assessmentStatistic: { url: `/api/operate/teacherResults/evaluate`, method: "GET" },
   // 资源
   delResource: { url: '/api/service/resources/{resource}', method: "DELETE", dataType: 'formdata' },
   uploadResource: { url: `/api/service/resources`, method: 'POST', dataType: 'json' },
@@ -17,9 +21,20 @@ export default {
   trainUpload: { url: `/teacher-train/upload`, method: 'POST', dataType: 'formdata' },
   // 列表
   // trainList: { url: '/teacher-train/index', method: "GET" },
+  // 我的实训列表
   trainList: { url: '/api/train/trains', method: "GET" },
+  // 内置实训列表
+  builtTrainList: { url: '/api/train/trains/init', method: 'GET' },
+  // 归档实训列表
+  archiveTrainList: { url: '/api/train/trains/archive', method: 'GET' },
   changeStatus: { url: '/teacher-train/change-status', method: "GET" },
-  trainComplex: { url: '/teacher-train/train-complex', method: "GET" },
+  // trainComplex: { url: '/teacher-train/train-complex', method: "GET" },
+  // 复用实训
+  trainComplex: { url: '/api/train/trains/resuse/{train}', method: "POST" },
+  // 归档实训
+  fileTrain: { url: '/api/train/trains/archived', method: "POST", dataType: 'json' },
+  // 删除实训
+  deleteTrain: { url: '/api/train/trains/{train}', method: "DELETE" },
   trainArchived: { url: '/teacher-train/train-archived', method: "GET" },
   trainDeleted: { url: '/teacher-train/train-deleted', method: "GET" },
 
@@ -85,8 +100,12 @@ export interface ITeacherTrainAps {
   ImageList: TFHttpSend;
   trainUpload: TFHttpSend;
   trainList: TFHttpSend;
+  builtTrainList: TFHttpSend;
+  archiveTrainList: TFHttpSend;
   changeStatus: TFHttpSend;
   trainComplex: TFHttpSend;
+  fileTrain: TFHttpSend;
+  deleteTrain: TFHttpSend;
   trainArchived: TFHttpSend;
   trainDeleted: TFHttpSend;
   trainDetailInfo: TFHttpSend,
@@ -107,6 +126,8 @@ export interface ITeacherTrainAps {
   resourceList: TFHttpSend,
   deleteResource: TFHttpSend,
   unSelectClassGroup: TFHttpSend
+  assessmentList: TFHttpSend
+  assessmentStatistic: TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTrain'

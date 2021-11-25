@@ -3,10 +3,10 @@
     <h3 class="title">实训考核</h3>
     <div class="condition">
       <a-form-item label="学号">
-        <a-input v-model:value="searchInfo.num"/>
+        <a-input v-model:value="searchInfo.name"/>
       </a-form-item>
       <a-form-item label="姓名">
-        <a-input v-model:value="searchInfo.name"/>
+        <a-input v-model:value="searchInfo.nick"/>
       </a-form-item>
       <a-form-item label="班级">
         <a-input v-model:value="searchInfo.class"/>
@@ -25,12 +25,14 @@
       @pageChange="pageChange"
       :trainId="trainInfo.trainId"
     ></evaluate-table>
-    <task-statistic></task-statistic>
+    <task-statistic 
+    :trainId="trainInfo.trainId">
+    </task-statistic>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, createVNode , reactive, toRefs, inject } from 'vue'
+import { defineComponent, createVNode , reactive, toRefs, inject,onMounted} from 'vue'
 import evaluateTable from './evaluateComponent/evaluateTable.vue'
 import TaskStatistic from './evaluateComponent/taskStatistic.vue'
 import { Modal } from 'ant-design-vue';
@@ -58,9 +60,13 @@ export default defineComponent({
     const http=(request as ITeacherTrainHttp).teacherTrain
     const data = reactive<IData>({
       searchInfo: {
-        name: '',
-        num: '',
-        class: ''
+        id:trainInfo.trainId,
+        limit:0,
+        page:0,
+        withs:'userProfile',
+        name:'',
+        nick:'',
+        class:'',
       },
       tableList: [],
       page: {
@@ -72,88 +78,12 @@ export default defineComponent({
     })
     // 获取列表数据
     const getResourceList = () => {
+      http.assessmentList({param:data.searchInfo}).then((res:any)=>{
+        console.log(res)
+        data.tableList=res.data.list
+        data.page.total = res.data.page.totalCount
+      })
       console.log(data.searchInfo, data.page.page)
-      data.tableList = [
-        {
-          id: 0,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 80,
-        },
-        {
-          id: 1,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 0,
-        },
-        {
-          id: 2,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 80,
-        },
-        {
-          id: 0,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 80,
-        },
-        {
-          id: 1,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 80,
-        },
-        {
-          id: 2,
-          num: 1,
-          name: '111',
-          time: '222',
-          achievements: 'lsx',
-          video: '1024kb',
-          report: '2021.9.16',
-          class: '大数据20级1班',
-          result: 1,
-          env: 1,
-          score: 80,
-        },
-      ]
-      data.page.total = 100
     }
     // 查询
     const query = () => {
@@ -162,7 +92,7 @@ export default defineComponent({
     // 清空
     const clear = () => {
       data.searchInfo.name = ''
-      data.searchInfo.num = ''
+      data.searchInfo.nick = ''
       data.searchInfo.class = ''
       getResourceList()
     }
@@ -244,6 +174,9 @@ export default defineComponent({
         console.log(res)
       })
     }
+    onMounted(() => {
+      getResourceList()
+    })
     return {
       trainInfo,
       ...toRefs(data),
@@ -269,8 +202,12 @@ export default defineComponent({
     score: number
   }
   interface ISearchInfo {
+    id: number
+    limit: number
+    page: number
+    withs:string
     name: string
-    num: string
+    nick: string
     class: string
   }
   interface IPage {

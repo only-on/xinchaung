@@ -20,17 +20,25 @@
           <a-button type="primary" @click="goback"><span class="iconfont icon-fanhui"></span> 返回</a-button>
         </div>
     </div>
-    <a-tabs type="card" default-active-key="0" @change="callback">
+    <div v-if="trainType==='0'||trainType==='1'">
+       <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
-    </a-tabs>
-    <component  
-    :is="componentName" 
-    :propTrainDetailInfo='propTrainDetailInfo' 
-    :trainId="trainId" 
-    @save-success='saveSuccess' 
-    @uploadppt='uploadppt' 
-    @selected-envie='selectedEnvie' 
-    @selected-envir-delete='selectedEnvirDelete' />
+      </a-tabs>
+      <component  
+      :is="componentName" 
+      :propTrainDetailInfo='propTrainDetailInfo' 
+      :trainId="trainId"
+      :trainType="trainType" 
+      @save-success='saveSuccess' 
+      @uploadppt='uploadppt' 
+      @selected-envie='selectedEnvie' 
+      @selected-envir-delete='selectedEnvirDelete' />
+    </div>
+    <div v-else>
+      <archive-training-detail
+      :trainId="trainId"
+      ></archive-training-detail>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -44,16 +52,20 @@ import trainEnvironment from './trainEnvironment/index.vue'
 import customerInfor from './customerInfor/index.vue'
 import groupingInfor from './groupingInfor/index.vue'
 import resources from './resources/index.vue'
+import archiveTrainingDetail from './archiveTrainingDetail/index.vue'
 import defaultImg from 'src/assets/images/Experimental/wlkc.png'
+import { stat } from 'fs/promises';
 interface State{
   trainDetailInfo:any,
   propTrainDetailInfo:any,
   componentName:string,
-  trainId:any
+  trainId:any,
+  trainType:any,
+  componentsNames:any[]
 }
 export default defineComponent({
   name:'editExperimental',
-  components:{basicInfo,trainingGuide,trainCourseware,trainEnvironment,customerInfor,groupingInfor,resources},
+  components:{basicInfo,trainingGuide,trainCourseware,trainEnvironment,customerInfor,groupingInfor,resources,archiveTrainingDetail},
   setup() {
     let router = useRoute();
     const http=(request as any).teacherTrain
@@ -62,25 +74,39 @@ export default defineComponent({
      const state:State=reactive({
        trainDetailInfo:"",
        propTrainDetailInfo:'',
-       componentName:'basicInfo',
-       trainId:''
+       trainId:'',
+       trainType:'',
+       componentsNames:[
+        {key:0,textname:'基础信息',name:'basicInfo'},
+        {key:1,textname:'实训指导',name:'trainingGuide'},
+        {key:2,textname:'实训课件',name:'trainCourseware'},
+        {key:3,textname:'实训环境',name:'trainEnvironment'},
+        {key:4,textname:'排课信息',name:'customerInfor'},
+        {key:5,textname:'分组信息',name:'groupingInfor'},
+        {key:6,textname:'资源',name:'resources'},
+       ],
+       componentName:'basicInfo'
      })
     onMounted(()=>{
-      console.log(router.query.id)
+      state.trainType=router.query.trainType
+      state.trainId=router.query.id
+      console.log(router.query.id,state.trainType)
       methods.getTrainDetailInfo()
+      if(state.trainType==='1'){
+        state.componentName='trainingGuide'
+        state.componentsNames=[
+        {key:0,textname:'实训指导',name:'trainingGuide'},
+        {key:1,textname:'实训课件',name:'trainCourseware'},
+        {key:2,textname:'实训环境',name:'trainEnvironment'}
+        ]
+       }
+      // else if(state.trainType==='2'){
+      //   stat
+      // }
     })
-    const componentsNames=ref([
-      {key:0,textname:'基础信息',name:'basicInfo'},
-      {key:1,textname:'实训指导',name:'trainingGuide'},
-      {key:2,textname:'实训课件',name:'trainCourseware'},
-      {key:3,textname:'实训环境',name:'trainEnvironment'},
-      {key:4,textname:'排课信息',name:'customerInfor'},
-      {key:5,textname:'分组信息',name:'groupingInfor'},
-      {key:6,textname:'资源',name:'resources'},
-      ])
+    
     const methods={
         getTrainDetailInfo(){
-          state.trainId=router.query.id
           http.trainDetailInfo({urlParams:{train:state.trainId}}).then((res:any)=>{
           state.trainDetailInfo=res.data
           state.propTrainDetailInfo=res.data
@@ -102,7 +128,7 @@ export default defineComponent({
         inject['stepInfoFive']={}
       },
       callback(key:any){
-        state.componentName=componentsNames.value[key].name
+        state.componentName=state.componentsNames[key].name
       },
       selectedEnvie(value:any){
         let flag:boolean=false
@@ -131,7 +157,7 @@ export default defineComponent({
         state.propTrainDetailInfo.server.splice(deleteIndex,1)
       }
     }
-    return {...toRefs(state),...methods,componentsNames,defaultImg}
+    return {...toRefs(state),...methods,defaultImg}
   },
 })
 </script>

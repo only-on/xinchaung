@@ -96,12 +96,25 @@ export default defineComponent({
       getList()
     })
     function getList () {
-      http.trainList({param: form}).then((res:IBusinessResp) => {
-        if (res && res.data) {
+      if(trainType.value===0){
+          http.trainList({param: form}).then((res:IBusinessResp) => {
+          if (res && res.data) {
+            listData.value =res.data.list
+            total.value = res.data.page.totalCount
+          }
+        })
+      }else if(trainType.value===1){
+        http.builtTrainList({param: form}).then((res:IBusinessResp) => {
           listData.value =res.data.list
           total.value = res.data.page.totalCount
-        }
-      })
+        })
+      }else{
+        http.archiveTrainList({param: form}).then((res:IBusinessResp) => {
+          listData.value =res.data.list
+          total.value = res.data.page.totalCount
+        })
+      }
+      
     }
     function pageChange (page:number) {
       form.page = page

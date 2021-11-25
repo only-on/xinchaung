@@ -3,7 +3,7 @@
     <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/teacherTrain/creatTrain')">
       <span>新建实训</span>
     </div>
-    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id)">
+    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id,trainType)">
       <div class="cardpic">
         <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="item.is_highconf && trainType !== 2">
         <!-- <img :src="item.url ? item.url: defaultImg" alt=""> -->
@@ -21,9 +21,9 @@
               <a-switch checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
             </span>
             <span>
-              <i class="iconfont icon-fuyong" title="复用" @click="handleOperate(item.id, 'Complex')"></i>
-              <i v-if="item.status === '已结束'" class="iconfont icon-guidang" title="归档" @click="handleOperate(item.id, 'Archived')"></i>
-              <i v-if="item.status === '未开始'" class="iconfont icon-shanchu" title="删除" @click="handleOperate(item.id, 'Deleted')"></i>
+              <i class="iconfont icon-fuyong" title="复用" @click.stop="handleOperate(item.id, 'Complex')"></i>
+              <i v-if="item.status === '已结束'" class="iconfont icon-guidang" title="归档" @click.stop="planceOnFile(item.id, 'Archived')"></i>
+              <i v-if="item.status === '未开始'" class="iconfont icon-shanchu" title="删除" @click.stop="deleteTrain(item.id, 'Deleted')"></i>
             </span>
           </li>
         </ul>
@@ -70,7 +70,7 @@
         <ul class="cardfoot cardbtn">
           <li>内容</li>
           <li @click.stop="resource(item.id)">资源</li>
-          <li>保存到我的</li>
+          <li @click.stop="handleOperate(item.id, 'Complex')">保存到我的</li>
         </ul>
       </div>
       <!-- 归档实训 -->
@@ -82,7 +82,7 @@
           <li>
             <i class="iconfont icon-renwu"></i>
             归档时间：
-            <span>{{item.archive_time}}</span>
+            <span>{{item.created_time}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
@@ -127,13 +127,28 @@ export default defineComponent({
       })
     }
     function handleOperate (id:number, type:string) {
-      http['train'+type]({param:{train_id: id}}).then((res:IBusinessResp) => {
+      // http['train'+type]({param:{train_id: id}}).then((res:IBusinessResp) => {
+      //   message.success(res.error ? res.error :'操作成功')
+      //   emit('refresh')
+      // })
+      http.trainComplex({urlParams:{train:id}}).then((res:IBusinessResp) => {
         message.success(res.error ? res.error :'操作成功')
         emit('refresh')
       })
     }
-    function editExperimental(id:number){
-      router.push({path:'/teacher/teacherTrain/detail',query:{id:id}})
+    function planceOnFile(id:number, type:string){
+      http.fileTrain({param:{id:[id]}}).then((res:any)=>{
+        console.log(res)
+      })
+    }
+    function deleteTrain(id:number, type:string){
+      http.deleteTrain({urlParams:{train:id}}).then((res:any)=>{
+        console.log(res)
+        emit('refresh')
+      })
+    }
+    function editExperimental(id:number,trainType: number){
+      router.push({path:'/teacher/teacherTrain/detail',query:{id:id,trainType:trainType}})
     }
     // 考核
     // const evaluate = (id: number) => {
@@ -145,6 +160,7 @@ export default defineComponent({
     }
 
     // 资源
+
     // const resource = (id: number) => {
     //   let param = {
     //     trainType: trainType.value,
@@ -195,6 +211,8 @@ export default defineComponent({
       dataList,
       changeSwitch,
       handleOperate,
+      planceOnFile,
+      deleteTrain,
       defaultImg,
       router,
       editExperimental,

@@ -1,11 +1,13 @@
 <template>
-    <div class="trainingGuide" v-layout-bg>
+    <div class="trainingGuide">
         <div v-if="addTask">
             <div class="traindescribe">
                 <div class="trainingOverview">
                     <div><span class="star">*</span>实训概述:</div>
-                    <a-button type="primary" v-if="edit" @click="toEdit">编辑</a-button>
-                    <a-button type="primary" v-else @click="toSave">保存</a-button>
+                    <div v-if="trainType!=='1'">
+                        <a-button type="primary" v-if="edit" @click="toEdit">编辑</a-button>
+                        <a-button type="primary" v-else @click="toSave">保存</a-button>
+                    </div>
                 </div>
                 <div class="markdown">
                     <div v-if="edit" >
@@ -44,7 +46,7 @@ import request from 'src/api/index'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'trainingGuide',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId','trainType'],
     components:{
         'antdv-markdown':AntdvMarkdown,
         'task-list':taskList,

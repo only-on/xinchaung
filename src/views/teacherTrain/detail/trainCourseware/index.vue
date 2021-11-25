@@ -1,5 +1,5 @@
 <template>
-    <div class="trainCourseware" v-layout-bg>
+    <div class="trainCourseware">
         <div class="top-btn">
             <span>
                 <a-upload
@@ -12,7 +12,7 @@
                     <a-button type="primary">选择文件</a-button>
                 </a-upload>
             </span>
-            <span>
+            <span v-if="trainType!=='1'">
                 <a-button type="primary" v-if="edit" @click="toModify">修改</a-button>
                 <a-button type="primary" v-if="!edit" @click="ToSavepptModify">保存</a-button>
             </span>
@@ -37,7 +37,7 @@ import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'trainCourseware',
-    props:['propTrainDetailInfo','trainId'],
+    props:['propTrainDetailInfo','trainId','trainType'],
     components:{
         Empty
     },

@@ -31,11 +31,19 @@
 <script lang="ts">
 import { defineComponent, reactive, toRefs, onMounted } from 'vue'
 import Empty from 'src/components/Empty.vue'
+import request from 'src/api/index'
+import { ITeacherTrainHttp } from './../typings'
 export default defineComponent({
   components:{
     Empty
   },
-  setup() {
+  props: {
+    trainId: {
+      type: String
+    },
+  },
+  setup(props, {emit}) {
+    const http=(request as ITeacherTrainHttp).teacherTrain
     const pagination = reactive<any>({
       hideOnSinglePage:false,
       total:1,
@@ -49,18 +57,11 @@ export default defineComponent({
       }
     })
     const getTaskStatisticList = () => {
-      data.tableList = [
-        // {
-        //   taskName: '项目名称框架介绍',
-        //   KnowledgePoints: 'dashuju',
-        //   lookNum: 2,
-        //   unknownRate: '20%',
-        //   correctNum: 5,
-        //   errorNum: 5,
-        //   correctRate: '100%'
-        // }
-      ]
-      data.page.total = 0
+      http.assessmentStatistic({param:{id:props.trainId}}).then((res:any)=>{
+        console.log(res,'统计芙蓉如风')
+        data.tableList=res.data.list
+        data.page.total = res.data.page.totalCount
+      })
     }
     // 页码变化
     const pageChange = (page: number, pageSize: number) => {
@@ -87,8 +88,8 @@ const rowkey = (record: {}, index: number) => {
 const columns = [
   {
     title: '任务名称',
-    dataIndex: 'taskName',
-    key: 'taskName',
+    dataIndex: 'name',
+    key: 'name',
   },
   {
     title: '知识点',
@@ -97,32 +98,32 @@ const columns = [
   },
   {
     title: '查看人数',
-    dataIndex: 'lookNum',
-    key: 'lookNum',
+    dataIndex: 'is_see_count',
+    key: 'is_see_count',
     width: 140,
   },
   {
     title: '不知道率',
-    dataIndex: 'unknownRate',
-    key: 'unknownRate',
+    dataIndex: 'not_see_accuracy',
+    key: 'not_see_accuracy',
     width: 140,
   },
   {
     title: '答对人数',
-    dataIndex: 'correctNum',
-    key: 'correctNum',
+    dataIndex: 'right_count',
+    key: 'right_count',
     width: 120,
   },
   {
     title: '打错人数',
-    dataIndex: 'errorNum',
-    key: 'errorNum',
+    dataIndex: 'wrong_count',
+    key: 'wrong_count',
     width: 120,
   },
   {
     title: '正确率',
-    dataIndex: 'correctRate',
-    key: 'correctRate',
+    dataIndex: 'right_accuracy',
+    key: 'right_accuracy',
     width: 120,
   },
 ]
