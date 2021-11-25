@@ -111,15 +111,26 @@ export default defineComponent({
               return
           }
           state.edit=false
-          const formdata=new FormData()
-          formdata.append('train_id',props.trainId)
-          props.propTrainDetailInfo.container.forEach((item:any) => {
-              formdata.append('container_id[]',item.id)
-          });
-          http.saveSelectEnvir({param:formdata}).then((res:any)=>{
-              console.log(res)
-              message.success('保存成功')
-          })
+        //   
+         console.log(props.propTrainDetailInfo.container,'数据888888')
+            let container:any=[]
+            props.propTrainDetailInfo.container.forEach((item:any,index:any)=>{
+                container.push(
+                    {image:item.id,
+                    flavor: {
+                    cpu:item.cpu?item.cpu:1,
+                    ram:item.ram?item.ram:2048,
+                    disk:item.disk?item.disk:30,
+                    },
+                    is_use_gpu:item.is_use_gpu
+                })
+            })
+            console.log(container,'container')
+            console.log(props.trainId)
+            http.createMirrorTemplate({urlParams:{train:props.trainId},param:{container}}).then((res:any)=>{
+                console.log(res)
+                context.emit('step-status',2)
+            })
       },
       afterVisibleChange(val:any) {
         console.log('visible', val);

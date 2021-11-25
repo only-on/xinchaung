@@ -148,7 +148,6 @@ export default defineComponent({
                 state.selectOption=res.data.image_configs
             })
         },
-        // 第一步
         createTemplate(){
             console.log(state.mirrorTable,'数据888888')
             let container:any=[]
