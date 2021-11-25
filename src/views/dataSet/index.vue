@@ -26,7 +26,7 @@ export default defineComponent({
     if(role===3){
       updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }else{
-      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,showNav:true,backOff:false,showPageEdit:false})
     }
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)

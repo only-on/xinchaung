@@ -67,6 +67,7 @@ export default defineComponent({
     function loginOut(){
       http.loginOut().then((res:IBusinessResp)=>{
         console.log(res)
+        lStorage.clean()
         // message.success('')
         // window.location.href = 'http://192.168.101.150:85/site/login';
         let url=`${window.origin}/site/login`

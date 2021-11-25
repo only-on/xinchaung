@@ -18,8 +18,9 @@ const clearStore = (keys:any) =>
   // },
   state:{
      adminInfo: restore("adminInfo") || {},
+     Menus:[],
      breadcrumb,
-     aaa:'798'
+     aaa:'798',
   },
   getters: {
     isLogged() {
@@ -40,6 +41,9 @@ const clearStore = (keys:any) =>
     saveBreadcrumb(state, breadcrumb){
       state.breadcrumb = breadcrumb;
       sStorage.set("breadcrumb", breadcrumb);
+    },
+    saveMenus(state, Menus){
+      state.Menus = Menus;
     }
   },
   actions: {

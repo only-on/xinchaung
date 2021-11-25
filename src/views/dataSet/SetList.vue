@@ -19,8 +19,7 @@
     </div>
     <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="data-set-content setScrollbar">
-        <div class="card-item" v-for="(item, index) in dataList" :key="index" style="width: 25%">
-          <!-- <div class="card-box" :style="setPadding(index + 1)"></div> -->
+        <div class="card-item" v-for="(item, index) in dataList" :key="index">
             <div class="card-box">
               <div class="card-content">
                 <div class="card-look">
@@ -28,9 +27,9 @@
                   <div class="base-info-box">
                     <h2>{{ item.name }}</h2>
                     <div>
-                      <div class="system-box" v-if="role === 'admin'">
+                      <div class="system-box" v-if="role ===2">
                         <div>
-                          <i>{{ chinaToPy(item.creator) }}</i>
+                          <i>{{ FunChinaToPy(item.creator) }}</i>
                           <span>{{ item.creator }}</span>
                         </div>
                       </div>
@@ -39,7 +38,6 @@
                           <i class="iconfont icon-wenjianjia"></i>
                           <span>{{ item.amount }}</span>
                         </div>
-
                         <div>
                           <i class="iconfont icon-cunchuzhi"></i>
                           <span>{{ item.size }}</span>
@@ -81,6 +79,13 @@
               </div>
             </div>
           </div>
+        <empty v-if="!loading && dataList.length===0" />
+        <a-pagination v-if="dataList.length"
+            v-model:current="search.page"
+            :pageSize="search.per_page"
+            :total="totalCount"
+            @change="pageChange"
+          />  
       </div>
     </a-spin>
     
@@ -93,13 +98,14 @@ import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
+import chinaToPy from 'src/utils/py'
 const http=(request as any).dataSet
 interface ISearch{
   category:string
   page:number
   per_page:number
   keyword:string
-  common:number
+  common:number | undefined
   user_id:number
   label:string
 }
@@ -115,6 +121,7 @@ export default defineComponent({
     const role = lStorage.get('role')
     const uid=lStorage.get('user_id')
     var currentTab:Ref<number>=ref(0)
+    var totalCount:Ref<number>=ref(0)
     var configuration:any=inject('configuration')
     
     var loading:Ref<boolean> =ref(false)
@@ -123,7 +130,7 @@ export default defineComponent({
       page:1,
       per_page:12,
       keyword:'',
-      common:1,
+      common:undefined,
       user_id:uid,
       label:''
     })
@@ -144,32 +151,42 @@ export default defineComponent({
       })
     }
     function init(){
-      console.log(search)
+      search.common=search.common===undefined?1:search.common
+       // console.log(search)
       dataList.length=0
       loading.value=true
-      http.datasets({param:{...search}}).then((res:IBusinessResp)=>{
+      http.datasets({param:{...search}}).then((res:any)=>{
           if(res){
             loading.value=false
             dataList.push(...res.data)
-            console.log(dataList)
+            totalCount.value=res.total
+            // console.log(dataList)
           }
       })
     }
+    function pageChange(current:any){
+      // console.log(current)
+      search.page=current
+      init()
+    }
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       currentTab.value=val
       search.common=(val===1)?0:1
+      search.page=1
+      search.category=''
     })
     watch(()=>{return search.common},(val)=>{
+      // console.log(val)
+      init()
+    })
+    watch(()=>{return search.category},(val)=>{
       console.log(val)
       init()
     })
-    function chinaToPy(name: string) {
-      return 'a'
-      // return chinaToPy.chineseToPinYin(name).substring(0, 1)
-    }
-    function setPadding(index: number){
-      return 6
+    function FunChinaToPy(name: string) {
+      // return 'a'
+      return chinaToPy.chineseToPinYin(name).substring(0, 1)
     }
     function dataSetDetail(e: any) {
       console.log(e)
@@ -181,11 +198,14 @@ export default defineComponent({
     function openDeletePop(e:any,item:any){
 
     }
+    function categoryChange(val:any){
+        console.log(val)
+    }
     onMounted(()=>{
-     categoryList()
-     init()
+      categoryList()
+      // init()
     })
-    return {loading,search,option,init,create,showCreate,dataList,role,currentTab,chinaToPy,setPadding,dataSetDetail,openDeletePop};
+    return {loading,search,option,init,create,showCreate,dataList,role,currentTab,totalCount,FunChinaToPy,dataSetDetail,openDeletePop,pageChange,categoryChange};
   },
 })
 </script>
@@ -213,12 +233,13 @@ export default defineComponent({
     }
   }
   .data-set-content{
+    min-height: 200px;
       display: flex;
       flex-wrap: wrap;
-
       .card-item {
         height: 323px;
         margin-bottom: 20px;
+        width: 25%;
         .card-box {
           height: 100%;
           cursor: pointer;
@@ -233,13 +254,7 @@ export default defineComponent({
               display: flex;
               flex-direction: column;
               border-radius: 5px;
-              // box-shadow: 0px 0px 11px -4px rgb(0 0 0 / 50%);
               box-shadow: 0px 3px 6px 0px rgb(0 0 0 / 5%);
-              &:hover {
-                // box-shadow: 0px 11px 11px 0px rgba(0,0,0,0.23);
-                // box-shadow: 0px 0px 11px -4px rgb(0 0 0 / 50%);
-              }
-              // background: #404040;
               box-sizing: border-box;
 
               > div:nth-child(1) {
@@ -249,13 +264,6 @@ export default defineComponent({
                   width: 100%;
                   height: 100%;
                 }
-
-                // &.img {
-                //     background-image: url('../../../../assets/img/dataset/test.png');
-                //     background-size: 100% 100%;
-                //     background-repeat: no-repeat;
-                //     background-position: center;
-                // }
               }
 
               .base-info-box {
@@ -279,7 +287,6 @@ export default defineComponent({
                   justify-content: space-between;
                   > div {
                     // width: 0%;
-
                     span {
                       color: #808080;
                       font-size: 12px;
@@ -306,21 +313,19 @@ export default defineComponent({
 
                   .size-box {
                     text-align: left;
-
                     > div {
                       display: inline-block;
+                       i{
+                          color: #ffaf47;
+                        }
                     }
 
                     > div:nth-child(1) {
                       margin-right: 30px;
-
                       i {
-                        background-image: url('../../../../assets/img/dataset/wenjian.png');
-                        background-size: 18px 14px;
                         width: 18px;
                         height: 14px;
                         display: inline-block;
-                        vertical-align: middle;
                         margin-right: 10px;
                       }
 
@@ -331,12 +336,9 @@ export default defineComponent({
 
                     > div:nth-child(2) {
                       i {
-                        background-image: url('../../../../assets/img/dataset/shujuji.png');
-                        background-size: 16px 16px;
                         width: 16px;
                         height: 16px;
                         display: inline-block;
-                        vertical-align: middle;
                         margin-right: 10px;
                       }
 
@@ -404,7 +406,7 @@ export default defineComponent({
                       line-height: 18px;
                       padding: 5px;
                       &.more-point {
-                        border: 1px solid #8955b5;
+                        border: 1px solid @theme-color;
                         padding: 0 7px;
                         display: inline-block;
                         line-height: 12px;
@@ -450,8 +452,7 @@ export default defineComponent({
                           .more-tag-box {
                             display: flex;
                           }
-
-                          background: rgba(137, 99, 240);
+                          background: #8963f0;
                           color: #ffffff;
                           border: 1px solid transparent;
                         }
@@ -476,11 +477,6 @@ export default defineComponent({
                         color: #E1CFFF;
                       }
                     }
-                    //> span:nth-child(1) {
-                    //  font-size: 18px;
-                    //  vertical-align: middle;
-                    //  margin-right: 6px;
-                    //}
                   }
                 }
 
@@ -496,12 +492,10 @@ export default defineComponent({
                     line-height: 28px;
                     border: none;
                   }
-
                   span {
                     color: #ffffff;
                     font-size: 18px;
                     background-color: #6b43f1;
-                    // color:#6b43f1;
                   }
                   span:hover{
                     background-color: #f7f7f7;
@@ -526,5 +520,10 @@ export default defineComponent({
         }
       }
     }
+}
+.ant-pagination{
+   width: 100%;
+  text-align: center;
+  margin-top: 20px;
 }
 </style>

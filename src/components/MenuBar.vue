@@ -5,6 +5,7 @@ import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch';
 import extStorage from "src/utils/extStorage";
+import {useStore} from "vuex"
 export default defineComponent({
   name: "MenuBar",
   props: {
@@ -18,6 +19,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const { lStorage } = extStorage
+    const store=useStore()
     const renderItem = function (item: MenuItem, level: number): VNode {
       if (level % 2 === 0) {
         let items: VNode | null = null;
@@ -91,23 +93,32 @@ export default defineComponent({
       lStorage.set('menuActiveName',val)
     })
     const http=(request as any).common
-    http.getMenu().then((res:IBusinessResp)=>{
-      if(res){
-        menus.length=0
-        let data=res.data.menus
-        activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].name)
-        menus.push(...data)
-        if(route.path===(data && data.length && data[0].url[0])){
-          activeName.value=(data && data[0].name)
+    function getMenu(){
+      http.getMenu().then((res:IBusinessResp)=>{
+        if(res){
+          menus.length=0
+          let data=res.data.menus
+          activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].name)
+          menus.push(...data)
+          if(route.path===(data && data.length && data[0].url)){
+            activeName.value=(data && data[0].name)
+          }
+          let user=res.data.user
+          lStorage.set('role',user.role)
+          lStorage.set('name',user.name)
+          lStorage.set('user_id',user.id)
+
+          store.commit('saveMenus', data)
         }
-        let user=res.data.user
-        lStorage.set('role',user.role)
-        lStorage.set('name',user.name)
-        lStorage.set('user_id',user.id)
-      }
-    })
+      })
+    }
     onMounted(() => {
-      // console.log(route.path)
+      let Menus=store.state.Menus;
+      if(!Menus.length){
+         getMenu()
+      }else{
+        menus=Menus
+      }
     });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));
