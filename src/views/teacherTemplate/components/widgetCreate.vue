@@ -48,7 +48,7 @@
           <customInput :field="field" @change="handleCustom($event,index)"/>
         </td>
         <td v-show="index === 1" class="baseCol" colspan="3">
-          <antdv-markdown v-model="field.value"/>
+          <antdv-markdown v-model="field.value" :image-upload-url="uploadUrl"/>
         </td>
       </template>
       <td class="toolCol">
@@ -59,7 +59,7 @@
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index">
           <customInput v-show="index === 0" :field="field" @change="handleCustom($event,index)" class="borderInput"/>
-          <antdv-markdown v-show="index === 1" v-model="field.value"/>
+          <antdv-markdown v-show="index === 1" v-model="field.value" :image-upload-url="uploadUrl"/>
         </template>
       </td>
       <td class="toolCol">
@@ -70,7 +70,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch,reactive, toRefs,PropType } from 'vue'
-import {splitFieldName, deepClone} from '../utils'
+import {deepClone} from '../utils'
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import customInput from './customInput.vue'
 export default defineComponent({
@@ -91,6 +91,8 @@ export default defineComponent({
   setup(props,{emit}) {
     var type = ref<string>(props.type)
     var fields = reactive<any[]>(deepClone(props.fields))
+    const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
+    var uploadUrl=`${dev_base_url}/api/content/vnc/upload_mkfile`
     watch(()=>props.type, newVal => {
       type.value = newVal
     })
@@ -105,7 +107,8 @@ export default defineComponent({
     }
     return {
       handleCustom,
-      ...toRefs(props)
+      ...toRefs(props),
+      uploadUrl
     }
   },
 })
