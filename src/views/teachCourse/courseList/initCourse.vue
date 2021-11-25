@@ -107,7 +107,7 @@ export default defineComponent({
         page: 1,
         limit: 12,
         direction: "",
-        state: 1,
+        state: 2,
       };
       getCourseList();
     }
