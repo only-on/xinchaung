@@ -94,10 +94,10 @@ export default defineComponent({
     // 链接websocker
     function connectWs() {
       ws.value = wsConnect({
-        url: "://"+window._config.SOCKET_SERVE_IP+"/?uid=" + uid,
+        url: "://"+location.host+"/ws/?uid=" + uid,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
-            message.success("ws关闭成功");
+            // message.success("ws关闭成功");
           }
         },
         message: (ev: MessageEvent) => {

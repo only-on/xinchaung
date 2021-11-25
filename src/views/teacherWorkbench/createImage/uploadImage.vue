@@ -60,6 +60,7 @@ interface Istate {
 export default defineComponent({
     name:'uploadImage',
     setup(props,context) {
+        const env = process.env.NODE_ENV == "development" ? true : false;
     const state:Istate=reactive({
         upload:'',
         file:'',
@@ -104,7 +105,7 @@ export default defineComponent({
               // 创建一个tus实例
                 state.upload = new tus.Upload(state.file, {
                     // tus服务器的上传URL
-                    endpoint: "http://"+window._config.TUS_SERVE_IP+"/files/",
+                    endpoint: env?"http://192.168.101.150:1080/files/":"/files/",
                     // 数组或null
                     retryDelays: [0, 3000, 5000, 10000, 20000],
                     // 在所有请求中使用的具有自定义头值的对象。用于添加身份验证细节

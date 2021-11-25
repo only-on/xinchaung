@@ -71,7 +71,7 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
       '/ws': {
-        target: 'http://192.168.101.150:9034',
+        target: 'ws://192.168.101.150:9035',
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/ws/, '')
