@@ -1,0 +1,4 @@
+window._config = {
+    TUS_SERVE_IP:"192.168.101.150:1080",
+    SOCKET_SERVE_IP:"192.168.101.150:9035"
+}

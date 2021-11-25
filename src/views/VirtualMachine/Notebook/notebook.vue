@@ -92,7 +92,7 @@ export default defineComponent({
 
     function initWs() {
       wsVmConnect.value = wsConnect({
-        url: "://192.168.101.150:9035/?uid=" + connection_id,
+        url: "://"+window._config.SOCKET_SERVE_IP+"/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             message.success("ws关闭成功");
