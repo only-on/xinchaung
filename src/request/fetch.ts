@@ -159,10 +159,11 @@ export default function request({
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
           // store.commit("logout");
           // router.replace({ path: "/login" }).catch(() => {});
-          const url=`${window.origin}/site/login`
-          console.log(url)
-          window.location.href=url
+          message.warning(res.msg);
           reject(null)
+          // const url=`${window.origin}/site/login`
+          // console.log(url)
+          // window.location.href=url
         } else {
           let meg='请求出错'
           if(res.message){meg=res.message}

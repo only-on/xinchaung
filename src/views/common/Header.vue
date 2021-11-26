@@ -28,7 +28,7 @@
         </template>
         <div class="user-name">
           <div class="user-img"></div>
-          <span class="user-name">{{name}}</span>
+          <span class="user-name">{{userName}}</span>
         </div>
       </a-popover>
     </div>
@@ -50,7 +50,6 @@ export default defineComponent({
     const router = useRouter();
     const { lStorage } = extStorage
     const role = lStorage.get('role')
-    const name=lStorage.get('name')
     const http=(request as any).common
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const isOperation = computed(() => {
@@ -60,6 +59,9 @@ export default defineComponent({
     const power = computed(() => {
       // 2 4  个人信息  3 1修改密码
       return role === 3 || role === 1
+    })
+    const userName=computed(()=>{
+      return lStorage.get('name')
     })
     function information(){
       router.push('/personalInformation')
@@ -88,7 +90,7 @@ export default defineComponent({
       
     });
     
-    return {isOperation,power,name,loginOut,information,helpMessage,modifyPassword,assistText}
+    return {isOperation,power,userName,loginOut,information,helpMessage,modifyPassword,assistText}
   },
 });
 </script>
