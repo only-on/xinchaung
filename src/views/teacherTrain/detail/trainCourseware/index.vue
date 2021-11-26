@@ -17,9 +17,6 @@
                 <a-button type="primary" v-if="!edit" @click="ToSavepptModify">保存</a-button>
             </span>
         </div>
-        {{baseurl+ppt_url}}0000
-        <br>
-        {{baseurl+propTrainDetailInfo.courseware}}
         <div class="pdtView" v-if="ppt_url">
             <iframe width="100%" height="460px" :src="baseurl+ppt_url" frameborder="0"></iframe>
         </div>
@@ -32,9 +29,10 @@
 interface Istate{
     edit:boolean,
     ppt_url:string,
-    file:string
+    file:string,
+    url:string
 } 
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
@@ -49,7 +47,8 @@ export default defineComponent({
     const state:Istate=reactive({
         edit:true,
         ppt_url:'',
-        file:''
+        file:'',
+        url:''
     })
     let development=process.env.NODE_ENV == 'development' ? true : false;
     let baseurl=development?'http://localhost:3000/proxyPrefix':""
@@ -58,26 +57,24 @@ export default defineComponent({
            state.edit=false
        },  
        beforeUpload(file:any){
-        //    console.log(file)
-        //     state.file=file
-        //     const fd = new FormData()
-        //     fd.append('upload_type','train_ppt')
-        //     fd.append('train_id',props.trainId)
-        //     fd.append('file',file)
-        //     http.trainUploadImage({param:fd}).then((res: any) => {
-        //     state.file=res.datas.url
-        // })
-        // .catch((err:any) => {
-        //   message.error(err.error)
-        // })
-        console.log(file)
-        state.file=file
-        const fileType =file.name.split('.')[file.name.split('.').length-1]
-        const isType=fileType==='ppt'||fileType==='pptx'||fileType==='pdf'
-        if(!isType){
-          message.error('文件格式不正确!')
-          return
-        }
+           console.log(file)
+            state.file=file
+            const fileType =file.name.split('.')[file.name.split('.').length-1]
+            const isType=fileType==='ppt'||fileType==='pptx'||fileType==='pdf'
+            if(!isType){
+            message.error('文件格式不正确!')
+            return
+            }
+            const fd = new FormData()
+            fd.append('upload_type','train_ppt')
+            fd.append('train_id',props.trainId)
+            fd.append('file',file)
+            http.trainUploadImage({param:fd}).then((res: any) => {
+            state.url=res.datas.url
+        })
+        .catch((err:any) => {
+          message.error(err.error)
+        })
         // const fd=new FormData()
         // fd.append('uploadFiled',file)
         // fd.append('upload_path','trainCourseware')
@@ -88,23 +85,43 @@ export default defineComponent({
         return false
        },
        ToSavepptModify(){
-        //    const formdata=new FormData()
-        //    formdata.append('train_id',props.trainId)
-        //    formdata.append('courseware',state.file)
-        //    http.savepptModefiy({param:formdata}).then((res:any)=>{
-        //        console.log(res)
-        //       state.ppt_url=baseurl+res.datas.courseware_html
-        //     //   context.emit('uploadppt')
-        //    })
-        const fd=new FormData()
-        fd.append('uploadFiled',state.file)
-        fd.append('upload_path','trainCourseware')
-        http.uploadsFile({param:fd}).then((res:any)=>{
-          console.log(res)
-          state.file=res.data.url
-        })
-       }
+           const formdata=new FormData()
+           formdata.append('train_id',props.trainId)
+           formdata.append('courseware',state.url)
+           http.savepptModefiy({param:formdata}).then((res:any)=>{
+               console.log(res)
+              state.ppt_url=baseurl+res.datas.courseware_html
+              context.emit('uploadppt')
+           })
+    //     const fd=new FormData()
+    //     fd.append('uploadFiled',state.file)
+    //     fd.append('upload_path','trainCourseware')
+    //     http.uploadsFile({param:fd}).then((res:any)=>{
+    //       console.log(res)
+    //       state.file=res.data.url
+    //     })
+       },
+       pptTransIfOk(url:any){
+            const newurl=baseurl+url
+            var xhttp = new XMLHttpRequest();
+            xhttp.onreadystatechange = function(res:any) {
+                if (res.target.status == 404) {
+                    console.log('文件正在转换中')
+                }
+                console.log(res)
+            };
+            xhttp.open("GET", newurl, true);
+            xhttp.send();
+            }
     }
+    watch(()=>props.propTrainDetailInfo.courseware_html,(val:any)=>{
+        console.log(props.propTrainDetailInfo.courseware_html,'ppt发生变化了')
+        state.ppt_url=props.propTrainDetailInfo.courseware_html
+        methods.pptTransIfOk(state.ppt_url)
+    },{
+        immediate: true,
+        deep: true,
+    })
     onMounted(()=>{
         state.ppt_url=props.propTrainDetailInfo.courseware_html
     })

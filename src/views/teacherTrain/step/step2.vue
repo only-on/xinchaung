@@ -31,7 +31,7 @@
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    <a-form-item v-if="item.ostypes!=='kvm'&&item.is_use_gpu" label="GPU">
+                    <a-form-item v-if="item?.ostypes!=='kvm'&&item?.is_use_gpu" label="GPU">
                         <a-select default-value="是" class="selectWidth">
                             <a-select-option :value="true">
                                 是
@@ -85,7 +85,9 @@ interface mirrorTableType{
     cpu:string,
     ram:string,
     disk:string,
-    tags:number[]
+    tags:number[],
+    ostypes:string,
+    is_use_gpu:boolean
 }
 interface Istate{
     params:paramsType,
