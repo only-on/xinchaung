@@ -108,7 +108,7 @@
             />
           </a-col>
         </a-row>
-        <a-modal :visible="saveVisible">
+        <a-modal :visible="saveVisible" :closable="false">
           <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">

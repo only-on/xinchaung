@@ -162,11 +162,20 @@ export default defineComponent({
         if (res?.code === 1) {
           if (tags.indexOf("Notebook") > -1) {
             console.log("跳转notebook");
+            const {href}= router.resolve(
+              {
+                path:"/teacher/Workbench/open-jupyte",
+                query:{
+                  id:id
+                }
+              }
+            )
+            window.open(href,"_blank")
           } else {
             console.log("跳转vnc");
             const {href}= router.resolve(
               {
-                path:"/teacher/Workbench/open-image",
+                path:"/teacher/Workbench/open-vnc",
                 query:{
                   id:id
                 }

@@ -33,11 +33,19 @@ export default {
             },
         },
         {
-            path: "open-image",
-            component: () => import("src/views/teacherWorkbench/openEnvironment/openEnvironment.vue"),
+            path: "open-vnc",
+            component: () => import("src/views/teacherWorkbench/openEnvironment/openVnc.vue"),
             meta: {
                 title: "工作台镜像",
-                authCode: 'open-image'
+                authCode: 'open-vnc'
+            },
+        },
+        {
+            path: "open-jupyte",
+            component: () => import("src/views/teacherWorkbench/openEnvironment/openJupyte.vue"),
+            meta: {
+                title: "工作台镜像",
+                authCode: 'open-jupyte'
             },
         },
     ]
