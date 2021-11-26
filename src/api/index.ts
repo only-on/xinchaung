@@ -15,5 +15,5 @@ for (const key in files) {
 export default MyServer;
 
 export const RESP_SUCCESS = 1; // 响应成功的状态码
-export const RESP_AUTH_FAILURE = 3003; // 认证失败的状态码
+export const RESP_AUTH_FAILURE = 400100; // 认证失败的状态码
 

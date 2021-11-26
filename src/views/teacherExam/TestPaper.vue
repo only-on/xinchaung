@@ -17,7 +17,7 @@
             </div>
           </div>
           <div class="card" v-for="v in list" :key="v.id">
-            <div class="kernel">
+            <div class="kernel" @click.stop="detail(v.id)">
               <div class="card-item-heard">{{v.name}}</div>
               <div class="card-item-content">
                 <div class="score">
@@ -31,9 +31,9 @@
                   试题数量：<span class="exam-paper-num">{{v.questions_count}}</span>
                 </div>
                 <div class="footer-btns">
-                  <i class="iconfont icon-fuyong" title="复用" @click="copy(v.id)"></i>
-                  <i class="iconfont icon-bianji1" title="编辑" @click="edit(v.id)" v-if="v.is_edited"></i>
-                  <i class="iconfont icon-shanchu" title="删除" @click="delate(v.id)"></i>
+                  <i class="iconfont icon-fuyong" title="复用" @click.stop="copy(v.id)"></i>
+                  <i class="iconfont icon-bianji1" title="编辑" @click.stop="edit(v.id)" v-if="v.is_edited"></i>
+                  <i class="iconfont icon-shanchu" title="删除" @click.stop="delate(v.id)"></i>
                 </div>
               </div>
             </div>
@@ -144,7 +144,9 @@ export default defineComponent({
       // console.log(id);
       router.push('/teacher/teacherExam/CreateTestPaper?editId='+id)
     }
-    
+    function detail(id:number){
+      router.push('/teacher/teacherExam/TestPaperDetail?detailId='+id)
+    }
     async function pageChange(current:any,pageSize:any){
         // console.log(current, pageSize);
         ForumSearch.page=current
@@ -162,7 +164,7 @@ export default defineComponent({
       page?ForumSearch.page=Number(page):''
      initData()
     })
-    return {list,loading,ForumSearch,totalCount,search,pageChange,copy,edit,delate,add};
+    return {list,loading,ForumSearch,totalCount,search,pageChange,copy,edit,delate,add,detail};
   },
 })
 </script>

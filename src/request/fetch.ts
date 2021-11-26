@@ -1,6 +1,6 @@
-import { RESP_AUTH_FAILURE, RESP_SUCCESS } from './../api/index';
-import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from '../typings/fetch';
-import store from "../store/index";
+import { RESP_AUTH_FAILURE, RESP_SUCCESS } from 'src/api/index';
+import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from 'src/typings/fetch';
+import store from "src/store/index";
 import { message } from 'ant-design-vue';
 // import { useRouter,useRoute } from 'vue-router';
 // const router = useRouter();
@@ -159,6 +159,9 @@ export default function request({
         } else if (res.status === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
           // store.commit("logout");
           // router.replace({ path: "/login" }).catch(() => {});
+          const url=`${window.origin}/site/login`
+          console.log(url)
+          window.location.href=url
           reject(null)
         } else {
           let meg='请求出错'

@@ -22,7 +22,7 @@
           </div>
         </div>
         <div>
-          <a-button type="primary" @click="openSelectquestion">选择试题</a-button>
+          <a-button type="primary" @click="openSelectQuestion">选择试题</a-button>
         </div>
       </div>
       <div class="list">
@@ -34,16 +34,16 @@
           </div>
         </div>
         <div class="questionsList setScrollbar">
-          <template v-if="avtiveData.length">
+          <template v-if="activeData.length">
             <div  class="duo">
-              <div class="item" v-for="(v,k) in avtiveData" :key="v">
+              <div class="item" v-for="(v,k) in activeData" :key="v">
                 <div class="subject">
                   <div class="serial">
                     <span class="number">{{k+1}}、</span>
                     <span>{{v.question}}</span>
                     <span class="mark">（{{v.origin_score}}分）</span>
                   </div>
-                  <i class="iconfont icon-yichu1" @click="selectquestion(v)"></i>
+                  <i class="iconfont icon-yichu1" @click="selectQuestion(v)"></i>
                 </div>
                 <template v-if="activePaper==='duo' || activePaper==='dan'">
                   <div class="options" v-for="(i,k) in v.options" :key="i" :class="answers(i.id,v.answers)?'selected':''">{{`选项${option[k]}、${i.option}`}}</div>
@@ -62,7 +62,7 @@
               <empty text="暂未添加该类型试题，可点击下方按钮在题库中选择添加" />
             </div>
             <div class="select-question">
-              <a-button type="primary" @click="openSelectquestion">选择试题</a-button>
+              <a-button type="primary" @click="openSelectQuestion">选择试题</a-button>
             </div>
           </div>
         </div>
@@ -94,7 +94,7 @@
           <a-input-search v-model:value="search.name" placeholder="请输入搜索关键字" @search="getQuestions" />
         </div>
         <div class="item item4">
-          <a-button type="primary" @click="selectquestionAll">全选（{{QuestionsList && QuestionsList.length}}）</a-button>
+          <a-button type="primary" @click="selectQuestionAll">全选（{{QuestionsList && QuestionsList.length}}）</a-button>
         </div>
         
       </div>
@@ -105,7 +105,7 @@
               <span>{{v.question}}</span>
               <span class="num">（{{v.origin_score}}）</span>
             </div>
-            <span class="iconfont" :class="selectedPaperIds.includes(v.id)?'icon-yichu1':'icon--tainjia'" @click="selectquestion(v)"></span>
+            <span class="iconfont" :class="selectedPaperIds.includes(v.id)?'icon-yichu1':'icon--tainjia'" @click="selectQuestion(v)"></span>
           </div>
         </div>
         <Empty v-if="!QuestionsList.length" text="暂未添加该类型试题！" />
@@ -207,7 +207,7 @@ export default defineComponent({
         description: [{ required: true, message: '请输入试卷描述类型', trigger: 'blur' }],
     }
     var comQuestionList=reactive([])
-    var avtiveData=computed(()=>{
+    var activeData=computed(()=>{
       var item:any[]=[] 
       PaperList.filter((v:any)=>{
           if(activePaper.value === v.type){
@@ -261,7 +261,7 @@ export default defineComponent({
         visible.value=true
       })
     }
-    const  openSelectquestion = () => {
+    const  openSelectQuestion = () => {
       visible.value=true
       // return  search.page
       let obj={
@@ -286,15 +286,15 @@ export default defineComponent({
       search.page=current
       getQuestions()
     }
-    function selectquestionAll(){
+    function selectQuestionAll(){
       // let type=search.type_id
       QuestionsList.forEach((v:IlistItem)=>{
         if(!selectedPaperIds.includes(v.id)){
-          selectquestion(v)
+          selectQuestion(v)
         }
       })
     }
-    function selectquestion(val:any){
+    function selectQuestion(val:any){
       let num=selectedPaperIds.indexOf(val.id)
       let typeId=1
       PaperList.forEach((v:IPaperList)=>{
@@ -345,7 +345,7 @@ export default defineComponent({
     }
     function getPaperDetail(val:number){
       http.getPaperDetail({urlParams: {paper_id: val}}).then((res:IBusinessResp)=>{
-        console.log(res)
+        // console.log(res)
         let data=res.data
         ForumSearch.name=data.name
         ForumSearch.description=data.description
@@ -353,14 +353,14 @@ export default defineComponent({
     }
     function getDetailQuestions(val:number){
       http.getDetailQuestions({urlParams: {paper_id: val}}).then((res:IBusinessResp)=>{
-        console.log(res)
+        // console.log(res)
         let data=res.data
         data.forEach((v:any)=>{
-          selectquestion(v)
+          selectQuestion(v)
         })
       })
     }
-    function cancel(answer: any) {
+    function cancel() {
       router.go(-1)
     }
     onMounted(()=>{
@@ -370,7 +370,7 @@ export default defineComponent({
        getPaperDetail(Number(editId))
      }
     })
-    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,visible};
+    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,activeData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectQuestionAll,answers,selectQuestion,getQuestions,onShowSizeChange,openSelectQuestion,pageChange,visible};
   },
 })
 </script>

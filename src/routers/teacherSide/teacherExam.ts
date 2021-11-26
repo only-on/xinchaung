@@ -37,6 +37,14 @@ export default {
             },
         },
         {
+            path: "TestPaperDetail",
+            component: () => import("src/views/teacherExam/TestPaperDetail.vue"),
+            meta: {
+                title: "试卷详情",
+                authCode: 'TestPaperDetail'
+            },
+        },
+        {
             path: 'Achievement',
             name: 'Achievement',
             component: () => import ("src/views/teacherExam/Achievement.vue"),
