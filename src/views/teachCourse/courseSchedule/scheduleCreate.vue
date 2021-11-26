@@ -80,7 +80,7 @@
           </a-form-item>
         </div>
       </div>
-      <div class="">
+      <div class="table-content">
         <!-- <a-divider dashed /> -->
         <a-config-provider>
           <template #renderEmpty>
@@ -101,7 +101,7 @@
               :bordered="true"
               :pagination="false"
               size="middle"
-              :scroll="{ y: 200 }"
+              :scroll="{ y: 280 }"
             >
               <template v-slot:action="record">
                 <a-popconfirm
@@ -123,7 +123,7 @@
               bordered
               :pagination="false"
               size="middle"
-              :scroll="{ y: 200 }"
+              :scroll="{ y: 280 }"
             >
               <template #action="{record}">
                 <a-popconfirm
@@ -585,6 +585,9 @@ interface IForm {
       color: rgba(0,0,0,.65);
     }
   }
+  .table-content {
+    padding-bottom: 30px;
+  }
   .schedule-main-content-table {
     .schedule-main-content-table-title {
       color: #333;
@@ -592,7 +595,41 @@ interface IForm {
     }
   }
 }
-  :deep(.ant-tabs-bar) {
-    border-bottom: 1px solid #e8e8e8;
+:deep(.ant-tabs-bar) {
+  border-bottom: 1px solid #e8e8e8;
+}
+.table-border-color {
+  border-color: #e8e8e8;
+}
+:deep(.ant-table) {
+  .ant-table-header {
+    overflow-y: hidden!important;
   }
+  .ant-table-header > table {
+    .table-border-color();
+    .ant-table-thead>tr>th {
+      .table-border-color();
+      border-right: none;
+      &:last-child {
+        border-right: 1px solid #e8e8e8;
+      }
+    }
+  }
+  .ant-table-placeholder {
+    .table-border-color();
+    height: 280px;
+  }
+  .ant-table-body > table {
+    .table-border-color();
+    .ant-table-tbody > tr > td {
+      .table-border-color();
+    }
+  }
+  .ant-table-scroll {
+    overflow: hidden;
+  }
+  &.ant-table-bordered.ant-table-fixed-header .ant-table-scroll .ant-table-header.ant-table-hide-scrollbar .ant-table-thead > tr:only-child > th:last-child {
+    border-right: 1px solid #e8e8e8;
+  }
+}
 </style>

@@ -91,10 +91,13 @@ export default defineComponent({
       transition: all .1s;
     }
     .ant-tabs-tab-active {
-      background: #8955b5;
+      background: @theme-color;
       border-radius: 6px 6px 0 0;
-      color: #fff;
+      color: @white;
     }
   }
+}
+:deep(.ant-tabs) {
+  height: 52px;
 }
 </style>

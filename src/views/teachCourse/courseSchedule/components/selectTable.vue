@@ -199,6 +199,7 @@ interface ISelectedIds {
 .select-table {
   .ant-input-search {
     height: 34px;
+    margin: 5px 0;
   }
   :deep(.ant-table-pagination.ant-pagination) {
     float: inherit;
@@ -207,6 +208,21 @@ interface ISelectedIds {
   }
   .iconfont {
     cursor: pointer;
+  }
+  :deep(.ant-table) {
+    height: 750px;
+    overflow: auto;
+    .ant-table-body > table {
+      border-color: #e8e8e8;
+      .ant-table-thead > tr > th, 
+      .ant-table-tbody > tr > td {
+        border-color: #e8e8e8;
+        border-right: none;
+        &:last-child {
+          border-right: 1px solid #e8e8e8;
+        }
+      }
+    }
   }
 }
 </style>

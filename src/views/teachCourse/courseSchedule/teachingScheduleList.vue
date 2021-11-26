@@ -176,7 +176,7 @@
     </div>
   </div>
   <modal-confirm ref="modalConfirmRef" />
-  <!-- <setting-time-modal ref="settingTimeModalRef" /> -->
+  <setting-time-modal ref="settingTimeModalRef" />
 </template>
 
 <script lang="ts">
@@ -188,11 +188,11 @@ import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { useRouter, useRoute } from 'vue-router'
 import modalConfirm from 'src/components/modalConfirm/ModalConfirm.vue'
-// import settingTimeModal from './components/settingTimeModal.vue'
+import settingTimeModal from './components/settingTimeModal.vue'
 
 export default defineComponent({
   name: '',
-  components: { modalConfirm },
+  components: { modalConfirm, settingTimeModal },
   props: {},
   emit: [],
   setup() {
@@ -320,25 +320,26 @@ export default defineComponent({
         return moment(currentTimeYMD + ' ' + currentTimeHMS, 'YYYY-MM-DD hh:mm:ss').unix() < moment().unix()
       }
     }
+    // 环境监控
     function environmentalMonitoring() {
-
+      router.push("/teacher/teacherCourse/teachingSchedule/scheduleCreate");
     }
     function toDayList(index: number) {
       return weekTime.value.isoWeekday(index + 1).format('MM.DD')
     }
-    // let settingTimeModalRef = ref()
+    let settingTimeModalRef = ref()
     // 编辑时间
     function openSettingTimeModal(index: number, ) {
-      // settingTimeModalRef.value.showModal({
-      //   dayTime: dayTimes[index], 
-      //   index,
-      //   id: dayTimes[index].id,
-      //   callbackOk: () => {
-      //     getLeftTime()
-      //     getTimeTable(weekTime.value.format('YYYY-MM-DD'))
-      //     isNewData.value = false
-      //   }
-      // })
+      settingTimeModalRef.value.showModal({
+        dayTime: dayTimes[index], 
+        index,
+        id: dayTimes[index].id,
+        callbackOk: () => {
+          getLeftTime()
+          getTimeTable(weekTime.value.format('YYYY-MM-DD'))
+          isNewData.value = false
+        }
+      })
     }
     // 删除时间
     function deleteSettingTime(index: number) {
@@ -373,7 +374,7 @@ export default defineComponent({
     // 编辑预约
     function editTeachingSchedule(id: number, date: string) {
       router.push({
-        path: `/teacher/teacherCourse/scheduleEdit`,
+        path: `/teacher/teacherCourse/teachingSchedule/scheduleEdit`,
         query: {id, date}
       })
     }
@@ -407,7 +408,7 @@ export default defineComponent({
         time: dayTimes[classIndex].start + '~' + dayTimes[classIndex].end, // 开课时间1、开始时间，2、结束时间
       }
       router.push({
-        path: '/teacher/teacherCourse/scheduleCreate',
+        path: '/teacher/teacherCourse/teachingSchedule/scheduleCreate',
         query: params,
       })
     }
@@ -444,7 +445,7 @@ export default defineComponent({
       cancelScheduleConfirm,
       createTeachingSchedule,
       modalConfirmRef,
-      // settingTimeModalRef,
+      settingTimeModalRef,
     }
   },
 })
@@ -535,9 +536,6 @@ export default defineComponent({
       display: flex;
       align-items: center;
       justify-content: space-between;
-      .course-scheduling-wrap .header .change_title[data-v-3a566d4d]{
-        font-size: 28px;
-      }
       .change_title1{
         position: relative;
         left: 65px;
@@ -611,6 +609,7 @@ export default defineComponent({
         }
         .monitor:hover {
           color: #fff;
+          background-color: @theme-color;
         }
         .addDate {
           margin-left: 20px;
@@ -668,7 +667,7 @@ export default defineComponent({
           width: 100%;
         }
         .table-col {
-          .table-td[data-v-9aa96ed6]{
+          .table-td{
             border-bottom: none;
           }
           .table-td {
