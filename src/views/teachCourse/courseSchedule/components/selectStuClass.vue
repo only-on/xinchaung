@@ -32,15 +32,11 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType, computed } from 'vue'
-import classList from './classList.vue'
-import studentList from './studentList.vue'
 import selectTable from './selectTable.vue'
 
 export default defineComponent({
   name: 'selectStuclassDrawer',
   components: {
-    class: classList,
-    student: studentList,
     selectTable
   },
   props: {
