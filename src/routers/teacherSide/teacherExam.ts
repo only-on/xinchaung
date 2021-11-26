@@ -29,7 +29,10 @@ export default {
             name: "CreateTestPaper",
             component: () => import("src/views/teacherExam/CreateTestPaper.vue"),
             meta: {
-                title: "创建试卷",
+                // title: "创建试卷",
+                title: (params?: RouteParams, query?: RouteParams) => {
+                    return (query && query!.editId)?'编辑试卷':'创建试卷'
+                },
                 authCode: 'CreateTestPaper'
             },
         },

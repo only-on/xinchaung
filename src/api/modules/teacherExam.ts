@@ -2,6 +2,9 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default{
   getTestPaperList:{url:`/api/v1/question/papers`,method: "GET",},
   TestPaperDetele:{url:`/api/v1/question/papers/{paper_id}`,method: "delete",},
+  getPaperDetail:{url:`/api/v1/question/papers/{paper_id}`,method: "GET",},
+  // api/v1/question/{entity_type}/{entity_id}/questions
+  getDetailQuestions:{url:`/api/v1/question/paper/{paper_id}/questions?include=answers`,method: "GET",},
   copy:{url:`/api/v1/question/papers/{paper_id}/replicate`,method: "GET"},
   getQuestions:{url:`/api/v1/question/papers/questions`,method: "GET"},
   pools:{url:`/api/v1/question/pools`,method: "GET"},
@@ -49,6 +52,8 @@ export interface ITeacherExamlAps {
   achievement: TFHttpSend;
   achievementExport: TFHttpSend;
   scoreDetails: TFHttpSend;
+  getPaperDetail: TFHttpSend;
+  getDetailQuestions: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherExam'

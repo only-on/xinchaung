@@ -141,7 +141,7 @@ export default defineComponent({
       router.push('/teacher/teacherExam/CreateTestPaper')
     }
     function edit(id:number){
-      console.log(id);
+      // console.log(id);
       router.push('/teacher/teacherExam/CreateTestPaper?editId='+id)
     }
     

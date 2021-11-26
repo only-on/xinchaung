@@ -263,7 +263,7 @@ export default defineComponent({
     }
     const  openSelectquestion = () => {
       visible.value=true
-      // return
+      // return  search.page
       let obj={
         ...search,
         pool_id:search.level_id?search.pool_id:'',
@@ -343,11 +343,32 @@ export default defineComponent({
         })
       })
     }
+    function getPaperDetail(val:number){
+      http.getPaperDetail({urlParams: {paper_id: val}}).then((res:IBusinessResp)=>{
+        console.log(res)
+        let data=res.data
+        ForumSearch.name=data.name
+        ForumSearch.description=data.description
+      })
+    }
+    function getDetailQuestions(val:number){
+      http.getDetailQuestions({urlParams: {paper_id: val}}).then((res:IBusinessResp)=>{
+        console.log(res)
+        let data=res.data
+        data.forEach((v:any)=>{
+          selectquestion(v)
+        })
+      })
+    }
     function cancel(answer: any) {
       router.go(-1)
     }
     onMounted(()=>{
      initData()
+     if(editId){
+       getDetailQuestions(Number(editId))
+       getPaperDetail(Number(editId))
+     }
     })
     return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,avtiveData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectquestionAll,answers,selectquestion,getQuestions,onShowSizeChange,openSelectquestion,pageChange,visible};
   },
