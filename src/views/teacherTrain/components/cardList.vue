@@ -41,7 +41,7 @@
           <li>
             <i class="iconfont icon-renshu"></i>
             学生
-            <span>{{item.stu_cnt}}</span>
+            <span>{{item.user_num}}</span>
           </li>
         </ul>
         <ul class="cardfoot cardbtn">
@@ -139,6 +139,7 @@ export default defineComponent({
     function planceOnFile(id:number, type:string){
       http.fileTrain({param:{id:[id]}}).then((res:any)=>{
         console.log(res)
+        message.success('实训归档成功！')
       })
     }
     function deleteTrain(id:number, type:string){

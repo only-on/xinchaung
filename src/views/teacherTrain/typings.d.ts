@@ -18,6 +18,7 @@ interface ITeacherTrain {
   getResourceList: Function
   assessmentList: Function
   assessmentStatistic: Function
+  uploadsFile:Function 
 }
 export interface ITeacherTrainHttp {
   teacherTrain: ITeacherTrain

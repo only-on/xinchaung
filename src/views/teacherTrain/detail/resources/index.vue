@@ -18,7 +18,7 @@
                          <template #action='{record}'>
                             <div class='action'>
                                 <span class="spanleft" @click='deleteUploadFile(record.id)'>删除</span>
-                                <span @click="downLoad(record.url)">下载</span>
+                                <span @click="downLoad(record.url,record.name)">下载</span>
                                 <!-- <a :href="record.url">下载</a> -->
                             </div>
                         </template>
@@ -37,7 +37,9 @@ interface Istate{
    file:any,
    name:string,
    size:string,
-   introduce:string
+   introduce:string,
+   url:string,
+   type:string
 } 
 import { defineComponent,onMounted,watch,inject,reactive,toRefs,ref} from 'vue'
 import request from 'src/api/index'
@@ -74,7 +76,7 @@ export default defineComponent({
             },
             {
                 title: '上传时间',
-                dataIndex: 'created_at',
+                dataIndex: 'created_time',
                 align: 'center',
             },
             {   title: '操作', 
@@ -86,14 +88,29 @@ export default defineComponent({
         file:'',
         name:'',
         size:'',
-        introduce:''
+        introduce:'',
+        url:'',
+        type:''
     })
     const methods={
        beforeUpload(file:any){
+        const type=state.file.name.split(".")[state.file.name.split(".").length-1]
+        if(type!=='gif'&&type!=='jpg'&&type!=='png'&&type!=='mp4'&&type!=='xlsx'&&type!=='xls'&&type!=='docx'&&type!=='doc'&&type!=='rar'&&type!=='pdf'&&type!=='ppt'&&type!=='pptx'){
+            message.warning("文件格式不正确！")
+            return
+        }
            console.log(file)
            state.name=file.name
            state.file=file
            state.size=file.size
+           state.type=type
+        const fd=new FormData()
+        fd.append('uploadFiled',state.file)
+        fd.append('upload_path','trainCourseware')
+        http.uploadsFile({param:fd}).then((res:any)=>{
+          console.log(res)
+          state.url=res.data.url
+        })
         return false
        },
        getResourceList(){
@@ -113,11 +130,6 @@ export default defineComponent({
                message.warning('请上传文件！')
                return
            }
-           const type=state.file.name.split(".")[state.file.name.split(".").length-1]
-           if(type!=='gif'&&type!=='jpg'&&type!=='png'&&type!=='mp4'&&type!=='xlsx'&&type!=='xls'&&type!=='docx'&&type!=='doc'&&type!=='rar'&&type!=='pdf'&&type!=='ppt'&&type!=='pptx'){
-               message.warning("文件格式不正确！")
-               return
-           }
            if(!state.introduce){
                message.warning('资源说明不能为空！')
                return
@@ -125,9 +137,9 @@ export default defineComponent({
            const params={
                 relate_id:props.trainId,
                 name:state.name,
-                url:"/resource/"+state.name,
+                url:state.url,
                 size:state.size.toString(),
-                posfix:type,
+                posfix:state.type,
                 describe:state.introduce,
                 type:props.type==='course'?1:2,
            }
@@ -146,10 +158,10 @@ export default defineComponent({
                methods.getResourceList()
            })
        },
-       downLoad(url:any){
+       downLoad(url:any,name:any){
             let development=process.env.NODE_ENV == 'development' ? true : false;
             let baseurl=development?'http://localhost:3000/proxyPrefix':""
-            FileSaver.saveAs(baseurl+url);
+            FileSaver.saveAs(baseurl+url,name);
        }
     }
     //  watch(()=>props.resource,(val:any)=>{

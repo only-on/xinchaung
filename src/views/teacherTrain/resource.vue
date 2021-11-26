@@ -2,7 +2,7 @@
   <div class="resource" v-layout-bg>
     <div class="condition">
       <a-form-item label="资源名称">
-        <a-input v-model:value="searchInfo.resourceName"/>
+        <a-input @keyup.enter="query" v-model:value="searchInfo.resourceName"/>
       </a-form-item>
       <a-form-item label="资源类型">
         <a-select v-model:value="searchInfo.resourceType" placeholder="">
@@ -46,7 +46,7 @@
         <!-- <span class="iconfont icon-download" @click="download(record.url)"></span> -->
         <!-- href="http://192.168.101.150/upload/train/50304/train_resource/16336625584419.xlsx" -->
         <!-- <a class="iconfont icon-download" title="下载" :href="'http://192.168.101.150'+record.url" :download="record.name"></a> -->
-        <span class="iconfont icon-download" title="下载" @click="downLoadResource(record.url)"></span>
+        <span class="iconfont icon-download" title="下载" @click="downLoadResource(record.url,record.name)"></span>
         <span class="iconfont icon-shanchu" title="删除" @click="deleteResource(record.id)"></span>
       </template>
     </a-table>
@@ -84,7 +84,8 @@ interface Istate{
     page?:number,
     type:number,
     id:string,
-  }
+  },
+  url:string,
 }
 export default defineComponent({
   setup() {
@@ -104,7 +105,8 @@ export default defineComponent({
           ext:'',
           type:2,
           id:trainInfo.trainId,
-        }
+        },
+        url:''
      })
     const data = reactive<Idata>({
       resourceTypeList: ["gif", "jpg", "png", "mp4", "xlsx", "xls", "docx", "doc", "rar", "pdf", "ppt", "pptx"],
@@ -184,11 +186,11 @@ export default defineComponent({
       data.searchInfo.resourceType = ''
     }
     // 下载
-    const downLoadResource=(url: string)=>{
+    const downLoadResource=(url: string,name:string)=>{
       console.log(url,'urlurlurlurlurlur')
         let development=process.env.NODE_ENV == 'development' ? true : false;
         let baseurl=development?'http://localhost:3000/proxyPrefix':""
-        FileSaver.saveAs(baseurl+url);
+        FileSaver.saveAs(baseurl+url,name);
     }
     // 删除
     const deleteResource = (id: number) => {
@@ -238,6 +240,13 @@ export default defineComponent({
       data.uploadResourceInfo.size=file.size
       data.uploadResourceInfo.type=file.name.split('.')[file.name.split('.').length-1]
       uploadfile = file
+      const fd=new FormData()
+      fd.append('uploadFiled',file)
+      fd.append('upload_path','trainCourseware')
+      http.uploadsFile({param:fd}).then((res:any)=>{
+        console.log(res)
+        state.url=res.data.url
+      })
       return false
     }
     const handleChange = (info: FileInfo) => {
@@ -256,7 +265,7 @@ export default defineComponent({
        const params={
               relate_id:trainInfo.trainId,
               name:data.uploadResourceInfo.url,
-              url:"/resource/"+data.uploadResourceInfo.url,
+              url:state.url,
               size:data.uploadResourceInfo.url.toString(),
               posfix:data.uploadResourceInfo.type,
               describe:data.uploadResourceInfo.explain,
