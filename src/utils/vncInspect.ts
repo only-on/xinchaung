@@ -394,15 +394,15 @@ function backTo(route: any, type: string, role: number, routerQuery: string) {
       })
       return;
     }
-    // if (type === "train") {
-    //   route.push({
-    //     path: "/studentExperimental",
-    //     query: {
-    //       currentTab: 0
-    //     }
-    //   })
-    //   return;
-    // }
+    if (type === "train") {
+      route.push({
+        path: "/studentExperimental",
+        query: {
+          currentTab: 0
+        }
+      })
+      return;
+    }
   }
 }
 /* ------工具方法end----- */
