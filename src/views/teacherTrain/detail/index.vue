@@ -13,14 +13,14 @@
             <div>
               实验数：{{trainDetailInfo.task_num}}
             </div>
-            <div>
+            <div v-if="currentTab!=='1'">
               实训时间：{{trainDetailInfo.start_times}}-{{trainDetailInfo.end_times}}
             </div>
           </div>
           <a-button type="primary" @click="goback"><span class="iconfont icon-fanhui"></span> 返回</a-button>
         </div>
     </div>
-    <div v-if="trainType==='0'||trainType==='1'">
+    <div v-if="currentTab==='0'||currentTab==='1'">
        <a-tabs type="card" default-active-key="0" @change="callback">
         <a-tab-pane v-for="item in componentsNames" :key="item.key" :tab='item.textname'></a-tab-pane>
       </a-tabs>
@@ -28,7 +28,7 @@
       :is="componentName" 
       :propTrainDetailInfo='propTrainDetailInfo' 
       :trainId="trainId"
-      :trainType="trainType" 
+      :trainType="currentTab" 
       @save-success='saveSuccess' 
       @uploadppt='uploadppt' 
       @selected-envie='selectedEnvie' 
@@ -42,7 +42,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
+import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import { useRoute } from "vue-router";
 import request from 'src/api/index'
 import basicInfo from './basicInfor/index.vue'
@@ -60,7 +60,7 @@ interface State{
   propTrainDetailInfo:any,
   componentName:string,
   trainId:any,
-  trainType:any,
+  currentTab:any,
   componentsNames:any[]
 }
 export default defineComponent({
@@ -70,12 +70,13 @@ export default defineComponent({
     let router = useRoute();
     const http=(request as any).teacherTrain
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    var configuration:any=inject('configuration')
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,showNav:true,backOff:false,showPageEdit:false})
      const state:State=reactive({
        trainDetailInfo:"",
-       propTrainDetailInfo:'',
+       propTrainDetailInfo:{},
        trainId:'',
-       trainType:'',
+       currentTab:'',
        componentsNames:[
         {key:0,textname:'基础信息',name:'basicInfo'},
         {key:1,textname:'实训指导',name:'trainingGuide'},
@@ -88,11 +89,11 @@ export default defineComponent({
        componentName:'basicInfo'
      })
     onMounted(()=>{
-      state.trainType=router.query.trainType
+      state.currentTab=router.query.currentTab
       state.trainId=router.query.id
-      console.log(router.query.id,state.trainType)
+      console.log(router.query.id,state.currentTab)
       methods.getTrainDetailInfo()
-      if(state.trainType==='1'){
+      if(state.currentTab==='1'){
         state.componentName='trainingGuide'
         state.componentsNames=[
         {key:0,textname:'实训指导',name:'trainingGuide'},
@@ -100,7 +101,7 @@ export default defineComponent({
         {key:2,textname:'实训环境',name:'trainEnvironment'}
         ]
        }
-      // else if(state.trainType==='2'){
+      // else if(state.currentTab==='2'){
       //   stat
       // }
     })

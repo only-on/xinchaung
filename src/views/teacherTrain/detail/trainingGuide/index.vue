@@ -124,7 +124,12 @@ export default defineComponent({
             state.content_list.splice(value,1)
         }
     }
+    watch(()=>props.propTrainDetailInfo,(val:any)=>{
+        state.describe=props.propTrainDetailInfo.detail
+        state.content_list=props.propTrainDetailInfo.contents
+    },{deep:true,immediate:true})
     onMounted(()=>{
+        console.log(state.describe,state.content_list,'999999999999')
         state.describe=props.propTrainDetailInfo.detail
         state.content_list=props.propTrainDetailInfo.contents
     })

@@ -18,7 +18,15 @@
             </span>
         </div>
         <div class="pdtView" v-if="ppt_url">
-            <iframe width="100%" height="460px" :src="baseurl+ppt_url" frameborder="0"></iframe>
+            <div v-if="status">
+                <div class="status-img">
+                    <img :src="transimg">
+                </div>
+                <div class='status-word'>文档转换中，请稍后查看！</div>  
+            </div>
+            <div v-else>
+                <iframe width="100%" height="460px" :src="baseurl+ppt_url" frameborder="0"></iframe>
+            </div>
         </div>
         <div v-if="!propTrainDetailInfo.courseware_html">
             <empty text='亲~这里什么都没有~'></empty>
@@ -30,12 +38,14 @@ interface Istate{
     edit:boolean,
     ppt_url:string,
     file:string,
-    url:string
+    url:string,
+    status:boolean,
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
 import Empty from 'src/components/Empty.vue'
 import { message } from 'ant-design-vue';
+import transimg from 'src/assets/images/common/ppt-trans.gif';
 export default defineComponent({
     name:'trainCourseware',
     props:['propTrainDetailInfo','trainId','trainType'],
@@ -45,10 +55,12 @@ export default defineComponent({
     setup(props,context){
     const http=(request as any).teacherTrain
     const state:Istate=reactive({
+        transimg,
         edit:true,
         ppt_url:'',
         file:'',
-        url:''
+        url:'',
+        status:false
     })
     let development=process.env.NODE_ENV == 'development' ? true : false;
     let baseurl=development?'http://localhost:3000/proxyPrefix':""
@@ -107,6 +119,7 @@ export default defineComponent({
             xhttp.onreadystatechange = function(res:any) {
                 if (res.target.status == 404) {
                     console.log('文件正在转换中')
+                    state.status=true
                 }
                 console.log(res)
             };
@@ -117,6 +130,7 @@ export default defineComponent({
     watch(()=>props.propTrainDetailInfo.courseware_html,(val:any)=>{
         console.log(props.propTrainDetailInfo.courseware_html,'ppt发生变化了')
         state.ppt_url=props.propTrainDetailInfo.courseware_html
+        // setTimeout(function(){methods.pptTransIfOk(state.ppt_url)},5000);
         methods.pptTransIfOk(state.ppt_url)
     },{
         immediate: true,
@@ -140,6 +154,16 @@ export default defineComponent({
     }
     .pdtView{
         margin-top: 30px;
+        .status-img{
+            width: 100%;
+            text-align: center;
+            height: 200px;
+        }
+        .status-word{
+            color: @theme-color;
+            display: flex;
+            justify-content:center;
+        }
     }
     .ant-upload-list-item-info{
         width: 450px;

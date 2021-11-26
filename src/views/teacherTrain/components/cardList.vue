@@ -105,6 +105,8 @@ export default defineComponent({
   setup(props,{emit}) {
     const http=(request as ITeacherTrainHttp).teacherTrain
     const router = useRouter();
+    // const route = useRoute();
+    // const {currentTab}= route.query
     var switchVal=ref<boolean>(false)
     var trainType = ref<number>(props.trainType)
     var dataList = ref<any>(props.data)
@@ -149,7 +151,7 @@ export default defineComponent({
       })
     }
     function editExperimental(id:number,trainType: number){
-      router.push({path:'/teacher/teacherTrain/detail',query:{id:id,trainType:trainType}})
+      router.push({path:'/teacher/teacherTrain/detail',query:{id:id,currentTab:trainType}})
     }
     // 考核
     // const evaluate = (id: number) => {

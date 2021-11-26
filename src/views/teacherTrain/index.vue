@@ -30,6 +30,8 @@ import cardList from './components/cardList.vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherTrainHttp } from './typings'
+// import { useRouter ,useRoute } from 'vue-router';
+import { log } from 'console'
 interface Iform{
   name: string,
   page: number,
@@ -69,9 +71,12 @@ export default defineComponent({
     })
     var listData =ref<any>([])
     var total = ref<number>(0)
+    // const route = useRoute();
     var trainType = ref<number>(0)
     var pageSizeOptions = ref<string[]>(['11','23','35'])
     watch(()=>configuration.componenttype, (newVal) => {
+      console.log(newVal)
+      // componentName.value=componentNames[newVal]
       trainType.value = newVal
       total.value = 0
       form.name = ''
