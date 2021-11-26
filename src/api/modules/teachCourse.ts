@@ -414,7 +414,66 @@ export default {
   updatePaperBaseApi: {
     url: "api/v1/question/papers/{paper_id}",
     method: "PUT",
-  }
+  },
+  // 排课
+  getLeftTime: {
+    url: "/timetable/timetable-set/time-table",
+    method: "GET"
+  },
+  getTimeTable: {
+    url: "/timetable/timetable/index",
+    method: "GET"
+  }, 
+  getStudentList: {
+    url: "/timetable/timetable/students",
+    method: "POST",
+    dataType: "json"
+  },
+  getClassestList: {
+    url: "/timetable/timetable/classes",
+    method: "POST",
+    dataType: "json"
+  },
+  classStuIntersect: {
+    url: "/timetable/timetable/class-stu-intersect",
+    method: "POST",
+    dataType: "json"
+  },
+  createSchedule: {
+    url: "/timetable/timetable/create",
+    method: "POST",
+    dataType: "json"
+  },
+  scheduleDetail: {
+    url: "/timetable/timetable/view",
+    method: "GET",
+    dataType: "json"
+  },
+  scheduleUpdate: {
+    url: "/timetable/timetable/update",
+    method: "POST",
+    dataType: "json"
+  },
+  scheduleDelete: {
+    url: "/timetable/timetable/delete",
+    method: "POST",
+    dataType: "json"
+  },
+  setTimeTable: {
+    url: "/timetable/timetable-set/set",
+    method: "POST",
+    dataType: 'json'
+  },
+  updateTimeTable: {
+    url: "timetable/timetable-set/update",
+    method: "POST",
+    dataType: 'json'
+  },
+  deleteTimeTable: {
+    url: "/timetable/timetable-set/delete/",
+    method: "POST",
+    dataType: 'json'
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -510,4 +569,13 @@ export interface ITeacherCourseApis {
   deleteQuestionPaperApi: TFHttpSend
   getPaperDetailApi: TFHttpSend
   updatePaperBaseApi: TFHttpSend
+  getLeftTime: TFHttpSend
+  getTimeTable: TFHttpSend
+  getClassestList: TFHttpSend
+  getStudentList: TFHttpSend
+  classStuIntersect: TFHttpSend
+  createSchedule: TFHttpSend
+  scheduleDetail: TFHttpSend
+  scheduleUpdate: TFHttpSend
+  scheduleDelete: TFHttpSend
 }
