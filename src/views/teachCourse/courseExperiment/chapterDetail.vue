@@ -107,6 +107,8 @@ export default defineComponent({
       chapterIntro: "",
       isNoChapterIntro: true,
     });
+    console.log(course_id);
+    
     watch(
       () => chapter_id,
       () => {

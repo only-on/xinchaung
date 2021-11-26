@@ -7,3 +7,6 @@ packages/**
 *.history
 .idea
 .devcontainer
+.dockerignore
+docker-compose.yaml
+Dockerfile

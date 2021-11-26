@@ -61,17 +61,12 @@ export default defineConfig({
   server: {
     proxy: {
       '/proxyPrefix': {
-        target: 'http://192.168.101.150:85',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
-      },
-      '/testfile': {
-        target: 'http://127.0.0.1:1088',
+        target: 'http://192.168.101.130',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
       '/ws': {
-        target: 'ws://192.168.101.150:9035',
+        target: 'ws://192.168.101.130:9035',
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/ws/, '')

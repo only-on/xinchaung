@@ -219,6 +219,9 @@ export default defineComponent({
           res.data.list.forEach((item: any) => {
             reactiveData.selfData.push(item);
           });
+          if (!reactiveData.pools_id&&res.data.list.length > 0) {
+            reactiveData.pools_id = res.data.list[0].id;
+          }
           resolve(res);
         });
       }).catch();
@@ -236,6 +239,9 @@ export default defineComponent({
     }
     // 获取目录习题列表
     function getPoolsExerciseList() {
+      if (!reactiveData.pools_id) {
+        return;
+      }
       getPoolsExerciseListApi(
         { type_id: reactiveData.questionTypeId, limit: 500 },
         { pool_id: reactiveData.pools_id }

@@ -202,8 +202,11 @@ export default defineComponent({
           res.data.list.forEach((item: any) => {
             reactiveData.publicData.push(item);
           });
+           console.log(res.data.list);
           if (res.data.list.length > 0) {
             reactiveData.pools_id = res.data.list[0].id;
+            console.log(reactiveData.pools_id);
+            
           }
           resolve(res);
         });
@@ -217,6 +220,9 @@ export default defineComponent({
           res.data.list.forEach((item: any) => {
             reactiveData.selfData.push(item);
           });
+           if (!reactiveData.pools_id&&res.data.list.length > 0) {
+            reactiveData.pools_id = res.data.list[0].id;
+          }
           resolve(res);
         });
       }).catch();
@@ -234,6 +240,9 @@ export default defineComponent({
     }
     // 获取目录习题列表
     function getPoolsExerciseList() {
+      if (!reactiveData.pools_id) {
+        return
+      }
       getPoolsExerciseListApi(
         { type_id: reactiveData.questionTypeId, limit: 500 },
         { pool_id: reactiveData.pools_id }
@@ -280,6 +289,7 @@ export default defineComponent({
       await getPublicExercisesMap();
       await getSelfExercisesMap();
       await getQuestionTypes();
+    
       getPoolsExerciseList();
     }
     // 目录发生变化时

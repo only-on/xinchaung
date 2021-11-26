@@ -49,7 +49,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, reactive, toRefs, watch } from "vue";
+import { defineComponent, inject, ref, reactive, toRefs, watch,provide } from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import editCourseBase from "src/components/course/editCourseBase.vue";
 import courseExperiment from "../courseExperiment/courseExperiment.vue";
@@ -68,7 +68,13 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const course_id = route.query.course_id as any as number;
+    let course_id:any = ref("")
+    watch(()=>route.query,()=>{
+      course_id.value=route.query.course_id as any as number;
+      console.log(course_id.value);
+      
+    },{deep:true,immediate:true})
+    provide("course_id",course_id.value)
     var updata = inject("updataNav") as Function;
     const tabRef = ref(null);
     updata({
@@ -103,11 +109,11 @@ export default defineComponent({
             body.append("name", baseInfo.name);
             body.append(
               "start_time",
-              moment(baseInfo.created_at).format("YYYY-MM-DD")
+              moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00"
             );
             body.append(
               "end_time",
-              moment(baseInfo.end_time).format("YYYY-MM-DD")
+              moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
             body.append("introduce", baseInfo.courseDescriptions);
             body.append("course_category_id", baseInfo.course_category_id);
@@ -115,16 +121,18 @@ export default defineComponent({
             body.append("url", baseInfo.url);
             let params: any = {
               name: baseInfo.name,
-              start_time: moment(baseInfo.created_at).format("YYYY-MM-DD"),
-              end_time: moment(baseInfo.end_time).format("YYYY-MM-DD"),
+              start_time:
+                moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
+              end_time:
+                moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
               introduce: baseInfo.courseDescriptions,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url,
               is_available: 1,
             };
-            if (course_id) {
-              updateCourseBaseApi(params, { course_id: course_id }).then(
+            if (course_id.value) {
+              updateCourseBaseApi(params, { course_id: course_id.value }).then(
                 (res: any) => {
                   router.push({
                     path: "/teacher/teacherCourse",
@@ -147,15 +155,17 @@ export default defineComponent({
         let baseInfo: any = cloneDeep(reactiveData.baseInfo);
         let params: any = {
           name: baseInfo.name,
-          start_time: moment(baseInfo.created_at).format("YYYY-MM-DD"),
-          end_time: moment(baseInfo.end_time).format("YYYY-MM-DD"),
+          start_time:
+            moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
+          end_time:
+            moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
           introduce: baseInfo.courseDescriptions,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url,
           is_available: 1,
         };
-        updateCourseBaseApi(params, { course_id: course_id }).then(
+        updateCourseBaseApi(params, { course_id: course_id.value }).then(
           (res: any) => {
             router.push({
               path: "/teacher/teacherCourse",
@@ -174,11 +184,11 @@ export default defineComponent({
             body.append("name", baseInfo.name);
             body.append(
               "start_time",
-              moment(baseInfo.created_at).format("YYYY-MM-DD")
+              moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00"
             );
             body.append(
               "end_time",
-              moment(baseInfo.end_time).format("YYYY-MM-DD")
+              moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
             body.append("introduce", baseInfo.courseDescriptions);
             body.append("course_category_id", baseInfo.course_category_id);
@@ -186,21 +196,23 @@ export default defineComponent({
             body.append("url", baseInfo.url);
             let params: any = {
               name: baseInfo.name,
-              start_time: moment(baseInfo.created_at).format("YYYY-MM-DD"),
-              end_time: moment(baseInfo.end_time).format("YYYY-MM-DD"),
+              start_time:
+                moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
+              end_time:
+                moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
               introduce: baseInfo.courseDescriptions,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url,
             };
-            if (course_id) {
-              updateCourseBaseApi(params, { course_id: course_id }).then(
+            if (course_id.value) {
+              updateCourseBaseApi(params, { course_id: course_id.value }).then(
                 (res: any) => {
                   reactiveData.currentStep++;
                   router.push({
                     path: "/teacher/teacherCourse/create",
                     query: {
-                      course_id: course_id,
+                      course_id: course_id.value,
                     },
                   });
                 }
@@ -208,13 +220,13 @@ export default defineComponent({
             } else {
               body.append("is_available", "0");
               createCourseBaseApi(body).then((res: any) => {
-                
                 router.replace({
                   path: "/teacher/teacherCourse/create",
                   query: {
                     course_id: res.data.id,
                   },
                 });
+                provide("course_id",res.data.id)
                 reactiveData.currentStep++;
               });
             }
@@ -228,15 +240,17 @@ export default defineComponent({
         let baseInfo: any = cloneDeep(reactiveData.baseInfo);
         let params: any = {
           name: baseInfo.name,
-          start_time: moment(baseInfo.created_at).format("YYYY-MM-DD"),
-          end_time: moment(baseInfo.end_time).format("YYYY-MM-DD"),
+          start_time:
+            moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
+          end_time:
+            moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
           introduce: baseInfo.courseDescriptions,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url,
           is_available: 1,
         };
-        updateCourseBaseApi(params, { course_id: course_id }).then(
+        updateCourseBaseApi(params, { course_id: course_id.value }).then(
           (res: any) => {
             reactiveData.currentStep++;
           }
@@ -273,6 +287,7 @@ export default defineComponent({
       finishBg,
       goAdd,
       lookCourse,
+      provide
     };
   },
 });
