@@ -31,7 +31,7 @@
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    <a-form-item v-if="item.tags.indexOf(3)!==-1" label="GPU">
+                    <a-form-item v-if="item.ostypes!=='kvm'&&item.is_use_gpu" label="GPU">
                         <a-select default-value="是" class="selectWidth">
                             <a-select-option :value="true">
                                 是
@@ -166,6 +166,7 @@ export default defineComponent({
             console.log(props.trainId)
             http.createMirrorTemplate({urlParams:{train:props.trainId},param:{container}}).then((res:any)=>{
                 console.log(res)
+                inject['stepInfoTwo']=state.mirrorTable
                 context.emit('step-status',2)
             })
          },

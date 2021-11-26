@@ -41,7 +41,8 @@
                             </a-select-option>
                         </a-select>
                     </a-form-item>
-                    <a-form-item v-if="item.tags?.indexOf(3)!==-1" label="GPU">
+                    <!-- <a-form-item v-if="item.tags?.indexOf(3)!==-1" label="GPU"> -->
+                    <a-form-item v-if="item.ostypes!=='kvm'&&item.is_use_gpu" label="GPU">
                         <a-select :disabled='!edit' default-value="是" class="selectWidth">
                             <a-select-option :value="true">
                                 是
@@ -116,7 +117,7 @@ export default defineComponent({
             let container:any=[]
             props.propTrainDetailInfo.container.forEach((item:any,index:any)=>{
                 container.push(
-                    {image:item.id,
+                    {image:item.image_id,
                     flavor: {
                     cpu:item.cpu?item.cpu:1,
                     ram:item.ram?item.ram:2048,
@@ -139,13 +140,20 @@ export default defineComponent({
           state.visible=false
       },
       choiceItem(item:any){
-            console.log(item)
-            props.propTrainDetailInfo.container.push(item),
-            state.mirroridArr.push(item.id)
+            const newitem={
+            is_use_gpu:item.is_use_gpu,
+            ostypes:item.ostypes,
+            cpu:'2',
+            disk:'30',
+            image_id:item.id,
+            image_name:item.name,
+            ram:'2048'}
+            props.propTrainDetailInfo.container.push(newitem)
+            // state.mirroridArr.push(item.id)
+            // id:item.id,
         },
         deleteItem(item:any){
-            console.log(item)
-            const index=state.mirroridArr.indexOf(item.id)
+            const index=state.mirroridArr.indexOf(item.image_id)
             props.propTrainDetailInfo.container.splice(index,1)
             state.mirroridArr.splice(index,1)
       },
@@ -163,6 +171,7 @@ export default defineComponent({
      },
       memoryNumber(){
           let ramnumber:number=0
+          console.log(props.propTrainDetailInfo.container,'jjjjjjjjjjjjjjjj哈哈哈哈啊')
           props.propTrainDetailInfo.container.forEach((item:any) => {
               console.log(item.ram)
             //   ramnumber=ramnumber+Number(item.ram.split('G')[0])
