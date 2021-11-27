@@ -239,11 +239,11 @@ export default {
     method: "PUT",
     dataType: "json"
   },
-  // getPreparingDataApi: {
-  //   url: "/classic/course-dataset/preparation-materials",
-  //   method: "POST",
-  //   dataType: "json"
-  // },
+  getPreparingDataApi1: {
+    url: "/classic/course-dataset/preparation-materials",
+    method: "POST",
+    dataType: "json"
+  },
   getPreparingDataApi: {
     url: "/api/operate/preCreates/list",
     method: "GET",
@@ -532,6 +532,7 @@ export interface ITeacherCourseApis {
   getChapterDetailApi: TFHttpSend
   saveChapterIntroApi: TFHttpSend
   getPreparingDataApi: TFHttpSend
+  getPreparingDataApi1:TFHttpSend
   getDataSetListApi: TFHttpSend
   getDataSetFileApi: TFHttpSend
   savePrepareLessonsFileApi: TFHttpSend

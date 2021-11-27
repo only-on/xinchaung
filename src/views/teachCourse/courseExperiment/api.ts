@@ -35,7 +35,7 @@ export async function saveChapterIntro(urlParams: { course_id: number, chapter_i
  * @description 获取备课资料
  */
 export async function getPreparingDataApi(params: any) {
-    return await courseApi.getPreparingDataApi({ param: { ...params } })
+    return await courseApi.getPreparingDataApi1({ param: params })
 }
 
 /**
