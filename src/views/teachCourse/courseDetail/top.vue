@@ -3,7 +3,7 @@
     <div class="course-name-box">
       <span class="course-name"
         >{{ baseInfoData.name }}
-        <i :class="['course-status', settingCss(baseInfoData.state)]">
+        <i v-if="!baseInfoData.is_init" :class="['course-status', settingCss(baseInfoData.state)]">
           {{ courseStatus(baseInfoData.state) }}
         </i>
       </span>
@@ -30,7 +30,7 @@
           <i>{{ baseInfoData.direction ? baseInfoData.direction.name : "" }}</i>
           <i>职业方向</i>
         </span>
-        <span v-if="currentTab === 'myCourse'">
+        <span v-if="!baseInfoData.is_init">
           <i
             >{{ moment(baseInfoData.start_time).format("YYYY-MM-DD") }}
             -
