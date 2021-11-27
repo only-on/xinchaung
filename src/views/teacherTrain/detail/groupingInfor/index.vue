@@ -66,7 +66,6 @@
                      </a-select>
                      </span>
                      <a-input class="groupItem" style="width:170px" v-model:value="groupNumber"></a-input>
-                     {{trainId}}
                      <a-button type="primary" @click="grouping">分组</a-button>
                 </div>
                 </a-modal>
@@ -248,7 +247,7 @@ export default defineComponent({
                 id:props.trainId,
                 type:props.type==='course'?1:2,
                 number:state.groupNumber,
-                group_type:state.groupway===1?"group_people_num":"group_num" 
+                group_type:state.groupway===1?"group_num":"group_people_num" 
             }
          http.automaticGroup({param:params}).then((res:any)=>{
              console.log(res)

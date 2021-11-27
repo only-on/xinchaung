@@ -6,7 +6,7 @@ export default {
     // 课程成绩列表
     courseAchievement: { url: `/api/operate/studentResults/list`, method: "GET", },
     // 实训成绩列表
-    trainingResults: { url: `api/operate/studentResults/list`, method: "GET", },
+    trainingResults: { url: `/api/operate/studentResults/list`, method: "GET", },
     //get score
-    getScore: { url: `student-course/get-score`, method: "POST", dataType: 'formdata' }
+    getScore: { url: `/student-course/get-score`, method: "POST", dataType: 'formdata' }
 }

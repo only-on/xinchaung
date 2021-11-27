@@ -63,7 +63,7 @@ export default defineComponent({
         id:trainInfo.trainId,
         limit:0,
         page:0,
-        withs:'userProfile',
+        withs:'user,userProfile',
         name:'',
         nick:'',
         class:'',

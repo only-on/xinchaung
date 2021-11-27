@@ -38,7 +38,7 @@
                         <template #stuaction="{ record }">
                             <div class="action">
                                 <span class="spanleft" @click="removeStudent(record.id)">移除</span>
-                                <span @click="initPassword">初始化密码</span>
+                                <span @click="initPassword(record.id)">初始化密码</span>
                             </div>
                         </template>
                         <template #classaction='{record}'>
@@ -332,8 +332,10 @@ export default defineComponent({
                 state.classInfoData=res.data.list
             })
         },
-        initPassword(){
-
+        initPassword(id:any){
+            http.resetPassWord({param:{schedule_id:id}}).then((res:any)=>{
+                message.success('重置密码成功！')
+            })
         },
         classInfoOk(){
              state.classInfoVisible=false

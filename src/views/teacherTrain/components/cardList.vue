@@ -16,7 +16,7 @@
           <li class="train-title">{{item.name}}</li> 
           <li class="train-time"><span>{{item.start_times}}</span> ~ <span>{{item.end_times}}</span></li>
           <li class="desc-status">
-            <span>
+            <span @click.stop>
               任务描述状态:
               <a-switch checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
             </span>
@@ -125,7 +125,7 @@ export default defineComponent({
       }
       http.changeStatus({param: params}).then((res:IBusinessResp) => {
         message.success('操作成功')
-        emit('refresh')
+        // emit('refresh')
       })
     }
     function handleOperate (id:number, type:string) {

@@ -53,6 +53,7 @@ export default {
   unSelectClassGroup: { url: '/api/arrange/classes', method: "GET" },//待排课的班级列表
   scheduleStudent: { url: '/api/arrange/students', method: "POST", dataType: 'json' },//学生排课
   deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },//删除学生排课
+  resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
   deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },//批量删除学生排课
   scheduleClass: { url: '/api/arrange/classes', method: "POST", dataType: 'json' },//班级排课
   deleteScheduleClass: { url: '/api/arrange/classes/delete', method: "POST" },//删除班级排课
