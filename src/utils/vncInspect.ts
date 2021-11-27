@@ -358,52 +358,53 @@ function secondToHHMMSS(time_s: number) {
  * @param role 权限：1、2、3
  */
 function backTo(route: any, type: string, role: number, routerQuery: string) {
-  let otherParams: any = {}
-  if (routerQuery) {
-    otherParams = JSON.parse(routerQuery)
-  }
-  if (role === 4) {
-    if (type === "course") {
-      route.push({
-        path: "/studentSideCourse/ContinueDetail",
-        query: {
-          DetailId: otherParams.detailId,
-          course_id: otherParams.course_id
-        }
-      })
-      return;
-    }
-    if (type === "train") {
-      route.push({
-        path: "/studentExperimental",
-        query: {
-          currentTab: 0
-        }
-      })
-      return;
-    }
-  }
-  if (role===3) {
-    if (type === "course") {
-      route.push({
-        path: "/teacher/teacherCourse/detail",
-        query: {
-          course_id: otherParams.course_id,
-          currentTab: otherParams.currentTab
-        }
-      })
-      return;
-    }
-    if (type === "train") {
-      route.push({
-        path: "/studentExperimental",
-        query: {
-          currentTab: 0
-        }
-      })
-      return;
-    }
-  }
+  route.go(-1)
+  // let otherParams: any = {}
+  // if (routerQuery) {
+  //   otherParams = JSON.parse(routerQuery)
+  // }
+  // if (role === 4) {
+  //   if (type === "course") {
+  //     route.push({
+  //       path: "/studentSideCourse/ContinueDetail",
+  //       query: {
+  //         DetailId: otherParams.detailId,
+  //         course_id: otherParams.course_id
+  //       }
+  //     })
+  //     return;
+  //   }
+  //   if (type === "train") {
+  //     route.push({
+  //       path: "/studentExperimental",
+  //       query: {
+  //         currentTab: 0
+  //       }
+  //     })
+  //     return;
+  //   }
+  // }
+  // if (role===3) {
+  //   if (type === "course") {
+  //     route.push({
+  //       path: "/teacher/teacherCourse/detail",
+  //       query: {
+  //         course_id: otherParams.course_id,
+  //         currentTab: otherParams.currentTab
+  //       }
+  //     })
+  //     return;
+  //   }
+  //   if (type === "train") {
+  //     route.push({
+  //       path: "/studentExperimental",
+  //       query: {
+  //         currentTab: 0
+  //       }
+  //     })
+  //     return;
+  //   }
+  // }
 }
 /* ------工具方法end----- */
 
