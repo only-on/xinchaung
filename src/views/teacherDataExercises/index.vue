@@ -33,9 +33,11 @@
         </div>
         <component :is="componentName" :componentData='componentData' :searchValue='searchValue' @poolId='getPollId'/>
          <a-pagination
+            class="pagination"
             v-model="pagination.current"
             :page-size-options="pagination.pageSizeOptions"
             :total="pagination.total"
+            :hideOnSinglePage='true'
             show-size-changer
             :page-size="pagination.pageSize"
             @change="currentPageChange"
@@ -234,5 +236,8 @@ export default defineComponent({
 }
 .createExercise .ant-form-horizontal .ant-form-item-label{
     width: 57px;
+}
+.pagination{
+    text-align: center;
 }
 </style>

@@ -33,7 +33,7 @@ export default defineComponent({
     }
 })
 </script>
-<style lang="less" scoped>
+<style lang="less">
     .directoryList{
       margin: 2px;  
     }

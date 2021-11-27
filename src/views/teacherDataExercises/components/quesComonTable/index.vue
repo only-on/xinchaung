@@ -2,17 +2,22 @@
     <div class="quesComonTable">
         <div class="question-content-operate">
                 <div class="question-search">
-                     <a-select
-                    class="select"
-                    @change="handleChange"
-                    default-value="全部"
-                    v-model:value="selectLeves"
-                >
-                    <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
-                     {{item.name}}
-                    </a-select-option>
-                </a-select>
-                  <a-input-search class="search-input" v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" placeholder="请输入目录名称关键字查询" />
+                     <a-form-item label="题目：">
+                         <a-input-search class="search-input" v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" placeholder="请输入目录名称关键字查询" />
+                     </a-form-item>
+                     <div class="select">
+                         <a-form-item label="难度：">
+                         <a-select
+                            @change="handleChange"
+                            default-value="——请选择——"
+                            v-model:value="selectLeves"
+                        >
+                            <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
+                            {{item.name}}
+                            </a-select-option>
+                        </a-select>
+                     </a-form-item>
+                     </div>
                 </div>
                 <div class="question-btn" v-if="initial==='0'">
                     <a-button type="primary" @click="addTestQuestions">添加试题</a-button>
@@ -594,19 +599,19 @@ export default defineComponent({
                     }
            switch(newVal){
                   case 1:
-                      state.selectLeves='全部';
+                      state.selectLeves='——请选择——';
                   return state.createmodal.title='单选题';
                   case 2:
-                      state.selectLeves='全部';
+                      state.selectLeves='——请选择——';
                   return state.createmodal.title='多选题';
                   case 3:
-                      state.selectLeves='全部';
+                      state.selectLeves='——请选择——';
                   return state.createmodal.title='判断题';
                   case 4:
-                      state.selectLeves='全部';
+                      state.selectLeves='——请选择——';
                   return state.createmodal.title='填空题';
                   case 5:
-                      state.selectLeves='全部';
+                      state.selectLeves='——请选择——';
                   return state.createmodal.title='解答题';
               }
         })
@@ -633,14 +638,14 @@ export default defineComponent({
     color:@theme-color;
 }
 .quesComonTable{
-    .ant-select:not(.ant-select-customize-input) .ant-select-selector{
-    border-bottom-right-radius: 0px;
-    border-top-right-radius: 0px;
-    }
-    .ant-input-affix-wrapper{
-    border-bottom-left-radius: 0px;
-    border-top-left-radius: 0px;
-    }
+    // .ant-select:not(.ant-select-customize-input) .ant-select-selector{
+    // border-bottom-right-radius: 0px;
+    // border-top-right-radius: 0px;
+    // }
+    // .ant-input-affix-wrapper{
+    // border-bottom-left-radius: 0px;
+    // border-top-left-radius: 0px;
+    // }
 }
 .question-content-operate{
         display: flex;
@@ -654,7 +659,8 @@ export default defineComponent({
                 border-left:none;
             }
             .select{
-                width:90px;
+                width:250px;
+                margin-left: 20px;
             }
             .input-search{
                 margin-right: 20px;
