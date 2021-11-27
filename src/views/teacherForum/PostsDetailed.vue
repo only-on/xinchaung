@@ -53,10 +53,7 @@ import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-// import { QuillEditor } from "@vueup/vue-quill";
-import  QuillEditor  from "@xianfe/vue-quill/src/index.vue";
-// import { Delta } from "quill-delta";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import  QuillEditor  from "@xianfe/vue3-quill/src/index.vue";
 import {goHtml} from 'src/utils/common'
 interface Ireply{
   forum_id:number,

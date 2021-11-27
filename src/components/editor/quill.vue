@@ -18,9 +18,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, watch, PropType, ref, Ref,reactive, toRefs,computed } from "vue";
-// import { QuillEditor } from "@vueup/vue-quill";
-// import "@vueup/vue-quill/dist/vue-quill.snow.css";
-import {Quill, XeQuill} from "@xianfe/vue-quill/index";
+import XeQuill from '@xianfe/vue3-quill/src/index.vue'
 import { Delta } from "quill-delta";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { isJsonString } from "src/utils/common";
