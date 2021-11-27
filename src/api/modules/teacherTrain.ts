@@ -6,9 +6,12 @@ export default {
   exportScore: { url: `/teacher-train/train-score-export`, method: "POST", dataType: 'urlencoded' },
   showExperimentalNote: { url: `/teacher-train/show-note`, method: "GET" },
   resetExperimentalServer: { url: `/teacher-train/reset-server`, method: "POST", dataType: 'json' },
-  setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
+  // setExperimentalScore: { url: `/teacher-train/set-score`, method: "POST", dataType: 'json' },
+  setExperimentalScore: { url: `/api/operate/teacherResults/modify/{id}`, method: "POST" },
   // 考核列表
   assessmentList: { url: `/api/operate/teacherResults/index`, method: "GET" },
+  //教师实训考核项详情
+  assessmentDetails: { url: `/api/operate/teacherResults/show`, method: "GET" },
   // 考核任务统计
   assessmentStatistic: { url: `/api/operate/teacherResults/evaluate`, method: "GET" },
   // 资源
@@ -128,6 +131,7 @@ export interface ITeacherTrainAps {
   deleteResource: TFHttpSend,
   unSelectClassGroup: TFHttpSend
   assessmentList: TFHttpSend
+  assessmentDetails: TFHttpSend
   assessmentStatistic: TFHttpSend
 }
 

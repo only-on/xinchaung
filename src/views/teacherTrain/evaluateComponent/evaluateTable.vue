@@ -14,25 +14,25 @@
               <template #name="{ record }">
                 <span>{{ record.userProfile.name}}</span>
               </template>
-              <template #time="{ record }">
-                <span>{{ record.time}}</span>
+              <template #used_time="{ record }">
+                <span>{{ record.study_record?.used_time||'--'}}</span>
               </template>
               <!-- <template #class="{ record }">
                 <span>{{ record.class || '--'}}</span>
               </template> -->
               <template #achievements="{ record }">
-                <span class="operation-btn" @click="lookAchievements(236 || record.id)">查看</span>
+                <span  :class="record.study_record.id?'operation-btn':'nosee'" @click="lookAchievements(record.study_record?.id,'note')">查看</span>
               </template>
               <template #video="{ record }">
-                <span class="operation-btn" @click="lookVideo(record.id)">查看</span>
+                <span  :class="record.study_record.id?'operation-btn':'nosee'" @click="lookAchievements(record.study_record?.id,'video')">查看</span>
               </template>
               <template #report="{ record }">
-                <span class="operation-btn" @click="lookReport(record.id)">查看</span>
+                <span  :class="record.study_record.id?'operation-btn':'nosee'" @click="lookAchievements(record.study_record?.id,'report')">查看</span>
               </template>
               <template #result="{ record }">
-                <span class="" v-if="record.score">{{record.score}}分</span>
-                <span class="operation-btn" v-if="record.score" @click="editScore(record)">修改</span>
-                <span class="operation-btn" v-else @click="Review(record.id)">批阅</span>
+                <span class="" v-if="record.study_record?.score">{{record.score}}分</span>
+                <span class="operation-btn" v-if="record.study_record?.score" @click="editScore(record)">修改</span>
+                <span v-else :class="record.study_record.id?'operation-btn':'nosee'"  @click="Review(record.study_record?.id)">批阅</span>
               </template>
               <!-- <template #env="{ record }">
                 <span class="operation-btn disabled" @click="reset(record)">重置</span>
@@ -128,9 +128,9 @@ export default defineComponent({
       },
       {
         title: '花费时间',
-        dataIndex: 'time',
-        key: 'time',
-        slots: { customRender: 'time' },
+        dataIndex: 'used_time',
+        key: 'used_time',
+        slots: { customRender: 'used_time' },
       },
       {
         title: '实训成果',
@@ -173,74 +173,81 @@ export default defineComponent({
       // 查看成果
       isShowAchievements: false,
       lookAchievementsInfo: {},
-      lookAchievements: (id: number) => {
+      lookAchievements: (id: number,type:string) => {
         console.log(id)
-        operationHandle.lookAchievementsInfo = {}
-        http.showExperimentalNote({param: {train_student_id: id}})
-          .then((res: any) => {
-            operationHandle.isShowAchievements = true
-            console.log(res.datas || res.data && res.data.length)
-            if (res.datas || res.data && res.data.length) {
-              console.log(res.datas)
-              operationHandle.lookAchievementsInfo = res.datas
-            } else {
-              message.warn('暂无实训成果！')
-            }
-          })
+        // operationHandle.lookAchievementsInfo = {}
+        // http.showExperimentalNote({param: {train_student_id: id}})
+        //   .then((res: any) => {
+        //     operationHandle.isShowAchievements = true
+        //     console.log(res.datas || res.data && res.data.length)
+        //     if (res.datas || res.data && res.data.length) {
+        //       console.log(res.datas)
+        //       operationHandle.lookAchievementsInfo = res.datas
+        //     } else {
+        //       message.warn('暂无实训成果！')
+        //     }
+        //   })
+        http.assessmentDetails({param:{id:id,type:type}}).then((res:any)=>{
+          console.log(res)
+        })
       },
       lookAchievementsClose: () => {
         operationHandle.isShowAchievements = false
       },
-      // 查看视频
+      // // 查看视频
       videoUrl: '',
-      lookVideo: (id: number) => {
-        if (!id) {
-          message.warn('服务器没有该文件！')
-          return
-        }
-        isShowVideo.value = true
-        operationHandle.videoUrl = '/src/assets/video.mp4'
-      },
+      // lookVideo: (id: number) => {
+      //   if (!id) {
+      //     message.warn('服务器没有该文件！')
+      //     return
+      //   }
+      //   isShowVideo.value = true
+      //   operationHandle.videoUrl = '/src/assets/video.mp4'
+      // },
       // 查看报告
       isShowReport: false,
       reportUrl: '',
-      lookReport: (id: number) => {
-        if (!id) {
-          message.warn('服务器没有该文件！')
-          return
-        }
-        operationHandle.reportUrl = 'http://192.168.101.150/upload/train_html/50243/16322969161533.pdf'
-        operationHandle.isShowReport = true
-      },
+      // lookReport: (id: number) => {
+      //   if (!id) {
+      //     message.warn('服务器没有该文件！')
+      //     return
+      //   }
+      //   operationHandle.reportUrl = 'http://192.168.101.150/upload/train_html/50243/16322969161533.pdf'
+      //   operationHandle.isShowReport = true
+      // },
       lookReportClose: () => {
         operationHandle.isShowReport = false
       },
       // 批阅
       visible: false,
-      score: 0,
+      score: null,
       contentId: 0,
       Review: (id: number) => {
         operationHandle.visible = true
         operationHandle.contentId = id
       },
       handleOk: () =>{
-        http.setExperimentalScore({
-          param: {
-            // train_student_content_id: operationHandle.contentId,
-            train_student_content_id: 84,
-            score: operationHandle.score
-          }
-        }).then((res: IBusinessResp) => {
+        http.setExperimentalScore({urlParams:{id: operationHandle.contentId},param:{score: operationHandle.score}}).then((res:any)=>{
           console.log(res)
-          operationHandle.score = 0
           operationHandle.visible = false
-          // emit('pageChange', data.page.page)
         })
+        // http.setExperimentalScore({
+        //   param: {
+        //     // train_student_content_id: operationHandle.contentId,
+        //     train_student_content_id: 84,
+        //     score: operationHandle.score
+        //   }
+        // }).then((res: IBusinessResp) => {
+        //   console.log(res)
+        //   operationHandle.score = 0
+        //   operationHandle.visible = false
+        //   // emit('pageChange', data.page.page)
+        // })
       },
       editScore: (list: ITableList) => {
         operationHandle.visible = true
         operationHandle.contentId = list.id
-        operationHandle.score = list.score
+        // operationHandle.score = list.score
       },
       // 重置
       // reset: (list: ITableList) =>{
@@ -332,6 +339,10 @@ export default defineComponent({
       overflow: hidden;
       cursor: not-allowed;
     }
+  }
+  .nosee{
+    pointer-events:none;
+    color:@avatar-bg;
   }
   .page-footer-box {
     margin-top: 28px;

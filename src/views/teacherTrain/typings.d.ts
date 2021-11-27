@@ -17,6 +17,7 @@ interface ITeacherTrain {
   trainDeleted: Function
   getResourceList: Function
   assessmentList: Function
+  assessmentDetails:Function
   assessmentStatistic: Function
   uploadsFile:Function 
 }
