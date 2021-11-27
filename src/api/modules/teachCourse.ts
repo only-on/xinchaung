@@ -305,7 +305,7 @@ export default {
     dataType: "json"
   },
   chapterAddExerciseApi: {
-    url: "api/v1/question/chapters/{chapter_id}/relationships/questions",
+    url: "/api/v1/question/chapters/{chapter_id}/relationships/questions",
     method: "POST",
     dataType: "json"
   },
@@ -375,7 +375,7 @@ export default {
     method: "GET"
   },
   getContentExerciseAnalysisApi: {
-    url: "api/v1/question/contents/{content_id}/question-analysis",
+    url: "/api/v1/question/contents/{content_id}/question-analysis",
     method: "GET"
   },
   contentAddExerciseApi: {
@@ -384,7 +384,7 @@ export default {
     dataType: "json"
   },
   deleteContentExerciseApi: {
-    url: "api/v1/question/contents/relationships/questions",
+    url: "/api/v1/question/contents/relationships/questions",
     method: "DELETE",
     dataType: "json"
   },
@@ -412,7 +412,7 @@ export default {
     method: "GET"
   },
   updatePaperBaseApi: {
-    url: "api/v1/question/papers/{paper_id}",
+    url: "/api/v1/question/papers/{paper_id}",
     method: "PUT",
   },
   // 排课
@@ -465,7 +465,7 @@ export default {
     dataType: 'json'
   },
   updateTimeTable: {
-    url: "timetable/timetable-set/update",
+    url: "/timetable/timetable-set/update",
     method: "POST",
     dataType: 'json'
   },
