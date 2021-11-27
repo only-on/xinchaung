@@ -94,6 +94,7 @@ export default defineComponent({
     })
     const methods={
        beforeUpload(file:any){
+        state.file=file
         const type=state.file.name.split(".")[state.file.name.split(".").length-1]
         if(type!=='gif'&&type!=='jpg'&&type!=='png'&&type!=='mp4'&&type!=='xlsx'&&type!=='xls'&&type!=='docx'&&type!=='doc'&&type!=='rar'&&type!=='pdf'&&type!=='ppt'&&type!=='pptx'){
             message.warning("文件格式不正确！")
@@ -101,7 +102,6 @@ export default defineComponent({
         }
            console.log(file)
            state.name=file.name
-           state.file=file
            state.size=file.size
            state.type=type
         const fd=new FormData()

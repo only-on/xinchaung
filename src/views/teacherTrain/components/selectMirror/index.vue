@@ -8,7 +8,7 @@
             <a-input-search v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" style="width:340px;padding:4px 30px 4px 11px" placeholder="请输入目录名称关键字查询" />
         </div>
         <!-- envirListData.length -->
-        <div v-if="true" class="tableList">
+        <div v-if="envirListData.length" class="tableList">
             <div class="listItem" v-for="(item,index) in envirListData"  :key="index.toString()">
                 <div class="name">{{item.name}}</div>
                 <div class="tags">标签：{{item.tag.join('/')}}</div>

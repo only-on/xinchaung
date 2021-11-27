@@ -14,18 +14,18 @@
                 <a-form layout="inline" class="searchContent">
                     <div class="stuSearch" v-if="selectvalue===1">
                         <a-form-item label="学号">
-                            <a-input style="width:150px" v-model:value="studentValue"></a-input>
+                            <a-input style="width:150px" @keyup.enter="inquiry" v-model:value="studentValue"></a-input>
                         </a-form-item>
                         <a-form-item label="姓名">
-                            <a-input style="width:150px" v-model:value="fullName"></a-input>
+                            <a-input style="width:150px" @keyup.enter="inquiry" v-model:value="fullName"></a-input>
                         </a-form-item>
                         <a-form-item label="院系">
-                            <a-input style="width:150px" v-model:value="faculty"></a-input>
+                            <a-input style="width:150px" @keyup.enter="inquiry" v-model:value="faculty"></a-input>
                         </a-form-item>
                     </div>
                     <div class="classSearch" v-else>
                         <a-form-item label="班级">
-                            <a-input style="width:150px" v-model:value="classes"></a-input>
+                            <a-input style="width:150px" @keyup.enter="inquiry" v-model:value="classes"></a-input>
                         </a-form-item>
                     </div>
                     <div class="operateBtn">
@@ -38,6 +38,9 @@
             </div>
             <a-config-provider>
                     <a-table :columns="columns" :loading='unselectLoading' :data-source="unSelectData" :row-selection="rowSelection" rowKey="id">
+                        <template #name="{ record }">
+                            <div>{{ record.user_profile.name}}</div>
+                        </template>
                         <template #department="{ record }">
                             <div>{{ record.user_profile.department}}</div>
                         </template>
@@ -102,14 +105,15 @@ export default defineComponent({
         selectStu:[
         {
             title: '学号',
-            dataIndex: 'id',
+            dataIndex: 'username',
             align: 'left',
             ellipsis: true,
         },
         {
             title: '姓名',
-            dataIndex: 'username',
+            dataIndex: 'name',
             ellipsis: true,
+            slots: { customRender: 'name' },
         },
         {
             title: '所属院系',

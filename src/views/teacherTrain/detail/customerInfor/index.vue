@@ -18,6 +18,11 @@
            <div>
                 <a-config-provider>
                     <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" rowkey='id'>
+                        <template #username='{record}'>
+                            <div>
+                                {{record.user.username}}
+                            </div>
+                        </template>
                         <template #name="{ record }">
                            <div>{{record.userProfile.name}}</div>
                         </template>
@@ -198,9 +203,10 @@ export default defineComponent({
       stuColumns:[
         {
             title: '学号',
-            dataIndex: 'user_id',
+            dataIndex: 'username',
             align: 'left',
             ellipsis: true,
+            slots: { customRender: 'username' } 
         },
         {
             title: '姓名',
@@ -455,8 +461,8 @@ export default defineComponent({
         searchInquiry(studentValue:any,fullName:any,faculty:any,classes:any){
             console.log(studentValue,fullName,faculty,classes)
             if(state.value===1){
-                state.stuUnselectParams.nick=studentValue
-                state.stuUnselectParams.name=fullName
+                state.stuUnselectParams.nick=fullName
+                state.stuUnselectParams.name=studentValue
                 state.stuUnselectParams.department=faculty
                 methods.getUnselectStu()
             }else{
@@ -484,7 +490,7 @@ export default defineComponent({
         },
         // 已选学生列表
         getStudentList(){
-            http.studentGroup({param:{id:props.trainId,type:props.type==='course'?1:2,withs:'userProfile'}}).then((res:any)=>{
+            http.studentGroup({param:{id:props.trainId,type:props.type==='course'?1:2,withs:'userProfile,user'}}).then((res:any)=>{
                 console.log(res)
                 state.data=res.data.list
                 state.data.forEach((item:any)=>{
