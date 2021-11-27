@@ -8,6 +8,11 @@
             :dataSource="tableList" 
             :columns="columns"  
           >
+           <template #knowledge='{record}'>
+             <div>
+               {{record.knowledge.join()}}
+             </div>
+           </template>
           </a-table>
           <template #renderEmpty>
               <div><empty type="tableEmpty"></empty></div>
@@ -93,8 +98,9 @@ const columns = [
   },
   {
     title: '知识点',
-    dataIndex: 'KnowledgePoints',
-    key: 'KnowledgePoints',
+    dataIndex: 'knowledge',
+    key: 'knowledge',
+    slots: { customRender: 'knowledge' },
   },
   {
     title: '查看人数',

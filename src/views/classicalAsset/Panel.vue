@@ -153,7 +153,8 @@ export default defineComponent({
     // 分页组件数据
     const dataPage = reactive({ current: 1, pageSize: 10, total: 1 });
     // 数据集类型
-    let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
+    // let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
+    const dataType = ref(0);
     console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
     const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
@@ -201,7 +202,7 @@ export default defineComponent({
       http.classicalAsset
         .datasetFolderCreate({
           param: {
-            type: dataType,
+            type: dataType.value,
             name: folderInfo.name,
             description: folderInfo.description,
           },
@@ -216,9 +217,10 @@ export default defineComponent({
      * @param {number} id 数据集id
      */
     const gotoContent = (id: number) => {
+      console.log(id,'前往数据')
       router.push({
         name: "classicalAssetContent",
-        params: { type: dataType, id: id },
+        params: { type: dataType.value, id: id },
       });
     };
     const handleNameFocused = (e: FocusEvent) => {
@@ -244,7 +246,7 @@ export default defineComponent({
       http.classicalAsset
         .datasetList({
           param: {
-            type: dataType,
+            type:dataType.value,
             is_public: dataIsPublic.value,
             name: name,
             page: page,
@@ -278,13 +280,22 @@ export default defineComponent({
     const handlePageChange = (page: number, pageSize: number) => {
       getDataSetList(page, pageSize, searchStr.value);
     };
-
+    watch(()=>route.params["type"],(val:any)=>{
+      console.log(val,'route.params.type')
+      dataType.value=val
+      getDataSetList();
+    },{
+      immediate: true,
+      deep:true
+    })
     onMounted(() => {
       getDataSetList();
       getDiskInfo();
+
     });
 
     return {
+      dataType,
       searchStr,
       showDiskUsage,
       createFolderVisible,

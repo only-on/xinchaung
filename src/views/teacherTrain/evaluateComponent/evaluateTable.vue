@@ -8,12 +8,18 @@
               :row-selection="rowSelection"
               :hideOnSinglePage='true'
             >
+             <template #username="{ record }">
+                <span>{{ record.user.username}}</span>
+              </template>
+              <template #name="{ record }">
+                <span>{{ record.userProfile.name}}</span>
+              </template>
               <template #time="{ record }">
-                <span>{{ record.time || '--'}}</span>
+                <span>{{ record.time}}</span>
               </template>
-              <template #class="{ record }">
+              <!-- <template #class="{ record }">
                 <span>{{ record.class || '--'}}</span>
-              </template>
+              </template> -->
               <template #achievements="{ record }">
                 <span class="operation-btn" @click="lookAchievements(236 || record.id)">查看</span>
               </template>
@@ -28,9 +34,9 @@
                 <span class="operation-btn" v-if="record.score" @click="editScore(record)">修改</span>
                 <span class="operation-btn" v-else @click="Review(record.id)">批阅</span>
               </template>
-              <template #env="{ record }">
+              <!-- <template #env="{ record }">
                 <span class="operation-btn disabled" @click="reset(record)">重置</span>
-              </template>
+              </template> -->
               </a-table>
               <template #renderEmpty>
                   <div><empty type="tableEmpty"></empty></div>
@@ -110,13 +116,15 @@ export default defineComponent({
     const columns = [
       {
         title: '学号',
-        dataIndex: 'num',
-        key: 'num',
+        dataIndex: 'username',
+        key: 'username',
+        slots: { customRender: 'username' },
       },
       {
         title: '姓名',
         dataIndex: 'name',
         key: 'name',
+        slots: { customRender: 'name' },
       },
       {
         title: '花费时间',
@@ -147,24 +155,17 @@ export default defineComponent({
       },
       {
         title: '所属班级',
-        dataIndex: 'class',
-        key: 'class',
-        slots: { customRender: 'class' },
+        dataIndex: 'classes',
+        key: 'classes',
       },
+      // slots: { customRender: 'class' },
       {
         title: '实训成绩',
         dataIndex: 'result',
         key: 'result',
         slots: { customRender: 'result' },
         width: 120,
-      },
-      {
-        title: '实训环境',
-        dataIndex: 'env',
-        key: 'env',
-        slots: { customRender: 'env' },
-        width: 120,
-      },
+      }
     ]
     let isShowVideo = ref(false)
     // 操作处理
@@ -242,17 +243,17 @@ export default defineComponent({
         operationHandle.score = list.score
       },
       // 重置
-      reset: (list: ITableList) =>{
-        http.resetExperimentalServer({
-          param: {
-            train_id: props.trainId,
-            train_student_content_id: list.id
-          }
-        }).then((res: IBusinessResp) => {
-          console.log(res, data.page.page)
-          // emit('pageChange', data.page.page)
-        })
-      }
+      // reset: (list: ITableList) =>{
+      //   http.resetExperimentalServer({
+      //     param: {
+      //       train_id: props.trainId,
+      //       train_student_content_id: list.id
+      //     }
+      //   }).then((res: IBusinessResp) => {
+      //     console.log(res, data.page.page)
+      //     // emit('pageChange', data.page.page)
+      //   })
+      // }
     })
     // 页码发生变化时
     const pageChange = (page: number, pageSize: number) => {

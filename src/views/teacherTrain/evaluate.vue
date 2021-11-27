@@ -3,13 +3,13 @@
     <h3 class="title">实训考核</h3>
     <div class="condition">
       <a-form-item label="学号">
-        <a-input v-model:value="searchInfo.name"/>
+        <a-input @keyup.enter="query" v-model:value="searchInfo.name"/>
       </a-form-item>
       <a-form-item label="姓名">
-        <a-input v-model:value="searchInfo.nick"/>
+        <a-input @keyup.enter="query" v-model:value="searchInfo.nick"/>
       </a-form-item>
       <a-form-item label="班级">
-        <a-input v-model:value="searchInfo.class"/>
+        <a-input @keyup.enter="query" v-model:value="searchInfo.class"/>
       </a-form-item>
       <a-button type="primary" @click="query()">查询</a-button>
       <a-button type="primary" @click="clear()">清空</a-button>

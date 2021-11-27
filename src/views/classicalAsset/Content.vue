@@ -1,6 +1,7 @@
 <template>
   <div class="classical__container" v-layout-bg>
     <div class="classical__content--header">
+      {{route.params.type}}
       <div class="left">
         <h2>{{ detail.name }}</h2>
         <div>
@@ -157,6 +158,7 @@ import {
   nextTick,
   Ref,
   computed,
+  watch
 } from "vue";
 import { useRoute } from "vue-router";
 import { ILayoutConfiguration } from "../../types";
@@ -187,7 +189,7 @@ export default defineComponent({
     Empty,
   },
   setup(props, { emit }) {
-    const route = useRoute();
+    var route = useRoute();
     const uploadVisible = ref(false);
     const editContentVisible = ref(false);
     const nameFocused = ref(false);
@@ -479,11 +481,11 @@ export default defineComponent({
         return false;
       }
     };
-
     onMounted(() => {
       getDatasetDetail();
       getDatasetItemList();
     });
+    
     return {
       uploadVisible,
       detail,
