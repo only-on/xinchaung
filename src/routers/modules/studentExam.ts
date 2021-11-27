@@ -18,7 +18,7 @@ export default{
             },
             children:[
                 {
-                    path:"list",
+                    path:"",
                     name:"list",
                     component:()=>import("src/views/studentExam/examList/examList.vue"),
                     meta:{
