@@ -27,7 +27,7 @@ export default defineComponent({
     content,
   },
   setup() {
-    const uid = storage.lStorage.get("uid");
+    const uid:any = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
     const startExamInfo = {
       code: 1,
       status: 1,
