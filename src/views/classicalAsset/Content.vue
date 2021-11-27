@@ -1,7 +1,6 @@
 <template>
   <div class="classical__container" v-layout-bg>
     <div class="classical__content--header">
-      {{route.params.type}}
       <div class="left">
         <h2>{{ detail.name }}</h2>
         <div>
