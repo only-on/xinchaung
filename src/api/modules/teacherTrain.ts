@@ -81,7 +81,7 @@ export default {
   userHasGrouped: { url: '/api/arrange/groups/members', method: "GET" },//已经分组用户列表
   manualGrouping: { url: '/api/arrange/groups', method: "POST", dataType: 'json' },//手动分组
   groupList: { url: '/api/arrange/groups', method: "GET" },//分组列表
-  groupMembersList: { url: 'api/arrange/groups/members', method: "GET" },//显示分组成员列表
+  groupMembersList: { url: '/api/arrange/groups/members', method: "GET" },//显示分组成员列表
   editGroupStu: { url: '/api/arrange/groups/{group}', method: "PUT", dataType: 'json' },//编辑分组
   getGroupAndNogroupStu: { url: '/teacher-train/get-student', method: "POST" }
 }
