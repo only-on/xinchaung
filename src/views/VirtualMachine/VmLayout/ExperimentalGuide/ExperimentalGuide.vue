@@ -49,7 +49,7 @@ export default defineComponent({
     console.log(opType, taskId, type, topoinst_id);
     let allInfo: any = inject("allInfo");
     let taskType: any = inject("taskType");
-
+    console.log(taskType)
     return {
       allInfo,
       preview,

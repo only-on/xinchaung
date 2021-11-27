@@ -1,5 +1,5 @@
 <template>
-    <div class="report-content">
+    <div class="report-content" v-if="reportTemplateData">
       <!-- 在线报告 -->
       <div v-if="reportTemplateData&&reportTemplateData.template_type === 'form'">
         <on-line />
@@ -74,12 +74,16 @@
     </div>
       </div>
     </div>
+    <div v-else>
+      <empty/>
+    </div>
 </template>
 <script lang="ts">
 import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef,toRefs,provide} from 'vue'
 import request from "src/request/getRequest";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import OnLine from "./OnLine.vue"
+import empty from "src/components/Empty.vue"
 
 interface experReportParam {
  csc_id:any
@@ -88,7 +92,8 @@ export default defineComponent({
     name:'experReport',
       components: {
       'antdv-markdown':AntdvMarkdown,
-      "on-line":OnLine
+      "on-line":OnLine,
+      empty
   },
   setup(props,context){
       const vmApi = request.vmApi

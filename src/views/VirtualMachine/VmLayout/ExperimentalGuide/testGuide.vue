@@ -33,6 +33,9 @@
         >
       </div>
     </div>
+    <empty v-else>
+
+    </empty>
 </template>
 
 <script lang="ts">
@@ -41,9 +44,11 @@ import markedEditor from "src/components/editor/markedEditor.vue";
 import { stepAction } from "src/utils/vncInspect";
 import {findIndex} from "lodash"
 import {Modal} from "ant-design-vue"
+import empty from "src/components/Empty.vue"
 export default defineComponent({
     components: {
     "marked-editor": markedEditor,
+    empty
   },
   props: ["opType","type","taskId","topoinst_id"],
     setup(props) {

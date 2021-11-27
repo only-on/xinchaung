@@ -383,7 +383,9 @@ export default defineComponent({
         allInfo.value = res.data;
         if (!res.data.current) {
           resolve()
+          return
         }
+        
         console.log(res.data.current.used_time);
         taskType.value = res.data.base_info.task_type.type;
 

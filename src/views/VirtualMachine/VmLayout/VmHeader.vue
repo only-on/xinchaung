@@ -427,7 +427,7 @@ export default defineComponent({
         // 教师
         if (role === 3) {
           // 桌面实验
-          if (["验证实验",'实训'].includes(allInfo.value?.base_info.task_type.name)) {
+          if (["验证实验",'实训','桌面实验'].includes(allInfo.value?.base_info.task_type.name)) {
             roleName.value = "teacherAndVnc";
             return;
           }
