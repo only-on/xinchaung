@@ -120,7 +120,7 @@ export default defineComponent({
         editId:'',
         unGroupPrams:{
             name:'',
-            type:2,
+            type:props.type==='course'?1:2,
             id:props.trainId,
         },
         unGroupData:[],
@@ -200,7 +200,7 @@ export default defineComponent({
           if(value&&!ifEdit){
               const params:any={
                   id:props.trainId,
-                  type:2,
+                  type:props.type==='course'?1:2,
                   groups:[]
               }
               groupdata.forEach((item:any,index:any)=>{
@@ -246,7 +246,7 @@ export default defineComponent({
           }
            const params={
                 id:props.trainId,
-                type:2,
+                type:props.type==='course'?1:2,
                 number:state.groupNumber,
                 group_type:state.groupway===1?"group_people_num":"group_num" 
             }
@@ -285,7 +285,7 @@ export default defineComponent({
       },
     //   获取分组列表
       getGroupList(){
-          http.groupList({param:{id:props.trainId,type:2}}).then((res:any)=>{
+          http.groupList({param:{id:props.trainId,type:props.type==='course'?1:2}}).then((res:any)=>{
               console.log(res)
               state.data=res.data.list
           })

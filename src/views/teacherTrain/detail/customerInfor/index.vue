@@ -165,6 +165,7 @@ export default defineComponent({
         selectStuClass
     },
     setup(props,context){
+        console.log(props.type)
     const http=(request as any).teacherTrain
     const state:Istate=reactive({
       stuUnselectParams:{
