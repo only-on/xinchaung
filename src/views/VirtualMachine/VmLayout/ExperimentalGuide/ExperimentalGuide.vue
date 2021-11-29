@@ -5,14 +5,14 @@
       :opType="opType"
       :type="type"
       :taskId="taskId"
-      :topoinst_id="topoinst_id"
+      :topoinst_id="topoinst_uuid"
     ></train-guide>
     <test-guide
       v-else
       :opType="opType"
       :type="type"
       :taskId="taskId"
-      :topoinst_id="topoinst_id"
+      :topoinst_id="topoinst_uuid"
     ></test-guide>
   </div>
 </template>
@@ -58,6 +58,7 @@ export default defineComponent({
       type,
       topoinst_id,
       taskType,
+      topoinst_uuid
     };
   },
 });
