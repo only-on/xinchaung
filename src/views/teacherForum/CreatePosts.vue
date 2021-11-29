@@ -73,25 +73,6 @@ export default defineComponent({
       options:{
         placeholder: "输入内容...",
         theme: "snow",
-        // modules:{
-        //   ImageExtend: {
-        //       loading: true,
-        //       name: 'img',
-        //       action: updateUrl,
-        //       response: (res:any) => {
-        //         console.log(res)
-        //         // return res.info
-        //       }
-        //     },
-        //     toolbar: {
-        //       container: container,
-        //       handlers: {
-        //         'image': function () {
-        //           // QuillWatch.emit(this.quill.id)
-        //         }
-        //       }
-        //     }
-        // }
       },
       getDetail:()=>{
         http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{

@@ -1,5 +1,5 @@
 <template>
-   <div class="creatpost"  v-layout-bg>
+   <div class="creatpost setScrollbar" v-layout-bg>
       <h1>发帖</h1>
       <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <a-form-item label="帖子名称"  name="name">
