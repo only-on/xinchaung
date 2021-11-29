@@ -25,7 +25,6 @@
       v-model:selectedRows='selectedRows'
       @pageChange="pageChange"
       :trainId="trainInfo.trainId"
-      :start='start'
     ></evaluate-table>
     <task-statistic 
     :trainId="trainInfo.trainId">
@@ -163,7 +162,7 @@ export default defineComponent({
         // FileSaver.saveAs(baseurl+url,name);
     }
     //发布成绩
-    const releaseResult = (param: {train_id: string, id?: number[]}) =>{
+    const releaseResult = () =>{
       if (!data.selectedRows.length) {
         Modal.confirm({
           title: '发布成绩',
