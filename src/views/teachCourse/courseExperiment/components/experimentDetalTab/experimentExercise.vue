@@ -6,7 +6,7 @@
     <div class="exercise-list-head">
       <span>共<i>{{questionCount}}</i>道题</span>
       <span>共记<i>{{scores}}</i>分</span>
-      <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
+      <a-button type="primary" v-role="[tab]" @click="openSelectPanel">选择习题</a-button>
     </div>
     <div class="exercise-list-box">
       <div
@@ -27,6 +27,7 @@
           {{ item.score }}
         </span>
         <span
+         v-role="[tab]"
           class="exam-list-detele iconfont icon-shanchu"
           @click="deleteChapterExercise(item)"
         ></span>
@@ -35,7 +36,7 @@
   </div>
   <div v-if="showPanel === 'none'" style="height:100%;background:#fff">
     <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
-    <div class="action-btn" style="text-align: center">
+    <div class="action-btn" style="text-align: center;width:100%" v-role="[tab]">
       <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
     </div>
   </div>
@@ -142,6 +143,7 @@ export default defineComponent({
   },
   setup() {
     const experiment_id: any = inject("experiment_id");
+    const tab: any = inject("tab");
     const reactiveData: TreactiveData = reactive({
       showPanel: "loading",
       publicData: [],
@@ -333,6 +335,7 @@ export default defineComponent({
       selectRowSelection,
       rowKey,
       deleteChapterExercise,
+      tab
     };
   },
 });

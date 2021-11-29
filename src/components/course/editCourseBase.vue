@@ -52,7 +52,7 @@
     <div :class="type ? 'col-2' : 'col-1'">
       <a-form-item label="课程介绍">
         <a-textarea
-          v-model:value="formData.courseDescriptions"
+          v-model:value="formData.introduce"
           placeholder="请输入课程介绍"
           :auto-size="{ minRows: 7, maxRows: 15 }"
         />
@@ -117,7 +117,13 @@ export default defineComponent({
     const route = useRoute();
     const course_id = route.query.course_id;
     const formDom = ref(null);
-    const formData = props.modelValue;
+    const formData:any=ref({})
+    watch(()=>props.modelValue,()=>{
+      console.log(props.modelValue)
+      formData.value=props.modelValue
+      // formData.value.courseDescriptions=props.modelValue.introduce
+    },{deep:true,immediate:true})
+    
     const type = props.type;
     const currentRole = storage.lStorage.get("role");
 
@@ -175,7 +181,7 @@ export default defineComponent({
     }
     // 获取选择的封面
     function urlChange(fileUrl: string) {
-      formData.url = fileUrl;
+      formData.value.url = fileUrl;
     }
 
     // 限制开始时间选择
@@ -185,7 +191,7 @@ export default defineComponent({
 
     // 现在结束时间
     function disabledDate(current: any) {
-      return current && current < formData.created_at;
+      return current && current < formData.value.created_at;
     }
     function validate() {
      return  (formDom.value as any).validate()

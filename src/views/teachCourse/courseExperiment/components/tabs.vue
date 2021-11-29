@@ -9,7 +9,7 @@
     <span :class="currentKey === 3 ? 'active' : ''" @click="keyChange(3)"
       >习题</span
     >
-    <a-button type="primary" @click="prepare">备课</a-button>
+    <a-button type="primary" v-role="[tab]" @click="prepare">备课</a-button>
   </div>
 </template>
 
@@ -24,6 +24,7 @@ export default defineComponent({
     const currentKey:any = ref(1);
     const detailInfo: any = inject("detailInfo");
     const experiment_id: any = inject("experiment_id");
+    const tab: any = inject("tab");
     const routeQuery=useRoute().query
     watch(
       () => props.currentKey,
@@ -75,7 +76,8 @@ export default defineComponent({
     return {
       keyChange,
       currentKey,
-      prepare
+      prepare,
+      tab
     };
   },
 });

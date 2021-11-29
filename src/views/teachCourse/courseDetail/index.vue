@@ -1,7 +1,7 @@
 <template>
   <div
     v-layout-bg="{ size: '234px', bg: bg }"
-    style="height: calc(100% - 24px);width:1330px;margin:0 auto"
+    style="height: calc(100% - 24px); width: 1330px; margin: 0 auto"
   >
     <top></top>
     <a-tabs
@@ -15,9 +15,9 @@
         tab="课程实验"
         v-if="tabs.includes('courseExperimentTab')"
       >
-      <template v-if="activeKey==='1'">
-        <course-experiment-tab></course-experiment-tab>
-      </template>
+        <template v-if="activeKey === '1'">
+          <course-experiment-tab></course-experiment-tab>
+        </template>
       </a-tab-pane>
       <a-tab-pane
         key="2"
@@ -25,9 +25,9 @@
         force-render
         v-if="tabs.includes('courseMembersTab')"
       >
-      <template v-if="activeKey==='2'">
-        <course-members-tab></course-members-tab>
-      </template>
+        <template v-if="activeKey === '2'">
+          <course-members-tab></course-members-tab>
+        </template>
       </a-tab-pane>
       <a-tab-pane
         key="3"
@@ -35,9 +35,9 @@
         force-render
         v-if="tabs.includes('groupInfoTab')"
       >
-      <template v-if="activeKey==='3'">
-        <group-info-tab></group-info-tab>
-      </template>
+        <template v-if="activeKey === '3'">
+          <group-info-tab></group-info-tab>
+        </template>
       </a-tab-pane>
       <a-tab-pane
         key="4"
@@ -45,17 +45,25 @@
         force-render
         v-if="tabs.includes('courseResourcesTab')"
       >
-      <template v-if="activeKey==='4'">
-        <course-resources-tab></course-resources-tab>
-      </template>
-        
+        <template v-if="activeKey === '4'">
+          <course-resources-tab></course-resources-tab>
+        </template>
       </a-tab-pane>
     </a-tabs>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, onMounted, reactive, toRefs,provide } from "vue";
+import {
+  defineComponent,
+  inject,
+  onMounted,
+  reactive,
+  toRefs,
+  provide,
+  ref,
+  watch,
+} from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import top from "./top.vue";
 import storage from "src/utils/extStorage";
@@ -67,7 +75,7 @@ import courseResourcesTab from "./courseResourcesTab.vue";
 
 type TreactiveData = {
   tabs: any[];
-  activeKey:string
+  activeKey: string;
 };
 export default defineComponent({
   components: {
@@ -78,26 +86,54 @@ export default defineComponent({
     "course-resources-tab": courseResourcesTab,
   },
   setup() {
-    var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'',navType:true,showContent:false,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    var updata = inject("updataNav") as Function;
+    updata({
+      tabs: [],
+      navPosition: "",
+      navType: true,
+      showContent: false,
+      componenttype: undefined,
+      showNav: true,
+      backOff: false,
+      showPageEdit: false,
+    });
     const route = useRoute();
     const currentRole: number = storage.lStorage.get("role");
     const currentTab = route.query.currentTab;
-    const course_id=route.query.course_id
-    const type=route.query.type
+    const course_id = route.query.course_id;
+    const type = route.query.type;
     const reactiveData: TreactiveData = reactive({
       tabs: [],
-      activeKey:"1"
+      activeKey: "1",
     });
-    if (type==='resource') {
-      reactiveData.activeKey="4"
+    if (type === "resource") {
+      reactiveData.activeKey = "4";
     }
-    provide("course_id",course_id)
+    const tab = ref(-1);
+    watch(
+      () => currentTab,
+      () => {
+        if (currentTab) {
+          if (currentTab === "myCourse") {
+            tab.value = 0;
+          }
+          if (currentTab === "initCourse") {
+            tab.value = 1;
+          }
+        } else {
+          tab.value = 0;
+        }
+      },
+      {
+        immediate: true,
+      }
+    );
+    provide("course_id", course_id);
+    provide("tab", tab);
     onMounted(() => {
       reactiveData.tabs = settingTab();
     });
-    function tabChange(key: string) {
-    }
+    function tabChange(key: string) {}
 
     function settingTab() {
       if (![1, 3].includes(currentRole)) {
@@ -125,7 +161,7 @@ export default defineComponent({
       tabChange,
       bg,
       ...toRefs(reactiveData),
-      provide
+      provide,
     };
   },
 });
@@ -136,7 +172,7 @@ export default defineComponent({
   height: calc(100% - 200px);
   display: flex;
   flex-direction: column;
-  >.ant-tabs-top-content {
+  > .ant-tabs-top-content {
     height: calc(100% - 60px);
   }
   .ant-tabs-bar {

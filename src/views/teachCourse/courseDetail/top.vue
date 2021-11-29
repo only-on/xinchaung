@@ -81,7 +81,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, watch, ref } from "vue";
+import { defineComponent, onMounted, reactive, toRefs, watch, ref,inject } from "vue";
 import { getCourseDetailApi, updateCourseBaseApi } from "./api";
 import { useRoute, useRouter } from "vue-router";
 import storage from "src/utils/extStorage";
@@ -109,7 +109,7 @@ export default defineComponent({
     const currentRole: number = storage.lStorage.get("role");
     const formData = ref({});
     const checkout = ref({});
-    const tab = ref(-1);
+    // const tab = ref(-1);
     const reactiveData: TreactiveData = reactive({
       baseInfoData: {},
       editVisible: false,
@@ -118,18 +118,19 @@ export default defineComponent({
     onMounted(() => {
       getCourseDetail();
     });
-    watch(
-      () => currentTab,
-      () => {
-        if (currentTab === "myCourse") {
-          tab.value = 0;
-        }
-        if (currentTab === "initCourse") {
-          tab.value = 1;
-        }
-      },
-      { immediate: true }
-    );
+    const tab=inject("tab")
+    // watch(
+    //   () => currentTab,
+    //   () => {
+    //     if (currentTab === "myCourse") {
+    //       tab.value = 0;
+    //     }
+    //     if (currentTab === "initCourse") {
+    //       tab.value = 1;
+    //     }
+    //   },
+    //   { immediate: true }
+    // );
     // 获取课程详情
     function getCourseDetail() {
       getCourseDetailApi({ course_id: course_id }).then((res: any) => {

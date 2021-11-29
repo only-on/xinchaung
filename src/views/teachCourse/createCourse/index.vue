@@ -49,13 +49,23 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, inject, ref, reactive, toRefs, watch,provide } from "vue";
+import {
+  defineComponent,
+  inject,
+  ref,
+  reactive,
+  toRefs,
+  watch,
+  provide,
+  onMounted,
+} from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import editCourseBase from "src/components/course/editCourseBase.vue";
 import courseExperiment from "../courseExperiment/courseExperiment.vue";
 import customerInfor from "src/views/teacherTrain/detail/customerInfor/index.vue";
 import { useRouter, useRoute } from "vue-router";
 import { createCourseBaseApi, updateCourseBaseApi } from "./api";
+import { getCourseDetailApi } from "../courseDetail/api";
 import { cloneDeep } from "lodash";
 import moment from "moment";
 import finishBg from "src/assets/images/teacherCourse/finishBg.png";
@@ -68,11 +78,17 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
-    let course_id:any = ref("")
-    watch(()=>route.query,()=>{
-      course_id.value=route.query.course_id as any as number;
-    },{deep:true,immediate:true})
-    provide("course_id",course_id.value)
+    let course_id: any = ref("");
+    const tab = ref(0);
+    watch(
+      () => route.query,
+      () => {
+        course_id.value = route.query.course_id as any as number;
+      },
+      { deep: true, immediate: true }
+    );
+    provide("course_id", course_id.value);
+    provide("tab", tab);
     var updata = inject("updataNav") as Function;
     const tabRef = ref(null);
     updata({
@@ -91,6 +107,19 @@ export default defineComponent({
       createForm: null,
     });
 
+    onMounted(() => {
+      if (course_id.value) {
+        getCourseDetail();
+      }
+    });
+    // 获取课程详情
+    function getCourseDetail() {
+      getCourseDetailApi({ course_id: course_id.value }).then((res: any) => {
+        reactiveData.baseInfo = res.data;
+        (reactiveData.baseInfo as any).created_at = moment(res.data.created_at);
+        (reactiveData.baseInfo as any).end_time = moment(res.data.end_time);
+      });
+    }
     function cancel() {
       router.push({
         path: "/teacher/teacherCourse",
@@ -113,7 +142,7 @@ export default defineComponent({
               "end_time",
               moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
-            body.append("introduce", baseInfo.courseDescriptions);
+            body.append("introduce", baseInfo.introduce);
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
             body.append("url", baseInfo.url);
@@ -123,7 +152,7 @@ export default defineComponent({
                 moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
               end_time:
                 moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-              introduce: baseInfo.courseDescriptions,
+              introduce: baseInfo.introduce,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url,
@@ -157,7 +186,7 @@ export default defineComponent({
             moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
           end_time:
             moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-          introduce: baseInfo.courseDescriptions,
+          introduce: baseInfo.introduce,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url,
@@ -188,7 +217,7 @@ export default defineComponent({
               "end_time",
               moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
-            body.append("introduce", baseInfo.courseDescriptions);
+            body.append("introduce", baseInfo.introduce);
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
             body.append("url", baseInfo.url);
@@ -198,7 +227,7 @@ export default defineComponent({
                 moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
               end_time:
                 moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-              introduce: baseInfo.courseDescriptions,
+              introduce: baseInfo.introduce,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url,
@@ -206,13 +235,15 @@ export default defineComponent({
             if (course_id.value) {
               updateCourseBaseApi(params, { course_id: course_id.value }).then(
                 (res: any) => {
-                  reactiveData.currentStep++;
                   router.push({
                     path: "/teacher/teacherCourse/create",
                     query: {
                       course_id: course_id.value,
                     },
                   });
+                  setTimeout(() => {
+                    reactiveData.currentStep++;
+                  }, 10);
                 }
               );
             } else {
@@ -224,8 +255,9 @@ export default defineComponent({
                     course_id: res.data.id,
                   },
                 });
-                provide("course_id",res.data.id)
-                reactiveData.currentStep++;
+                setTimeout(() => {
+                  reactiveData.currentStep++;
+                }, 10);
               });
             }
           })
@@ -242,7 +274,7 @@ export default defineComponent({
             moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
           end_time:
             moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-          introduce: baseInfo.courseDescriptions,
+          introduce: baseInfo.introduce,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url,
@@ -285,7 +317,7 @@ export default defineComponent({
       finishBg,
       goAdd,
       lookCourse,
-      provide
+      provide,
     };
   },
 });

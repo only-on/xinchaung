@@ -1,7 +1,7 @@
 <template>
   <div class="experiment-report-box">
     <div class="action-btn">
-      <a-button type="primary" @click="openSelectReport">更换实验报告</a-button>
+      <a-button v-role="[tab]" type="primary" @click="openSelectReport">更换实验报告</a-button>
     </div>
     <report-on-line v-if="reportInfo.type === 'form'"></report-on-line>
 
@@ -48,6 +48,7 @@ export default defineComponent({
     const env = process.env.NODE_ENV == "development" ? true : false;
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
+    const tab: any = inject("tab");
     const reactiveData = reactive({
       reportVisible: false,
     });
@@ -81,7 +82,8 @@ export default defineComponent({
       reportInfo,
       env,
       openSelectReport,
-      closeReportModal
+      closeReportModal,
+      tab
     };
   },
 });

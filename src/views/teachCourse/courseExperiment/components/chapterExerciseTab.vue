@@ -6,7 +6,7 @@
     <div class="exercise-list-head">
       <span>共<i>{{questionCount}}</i>道题</span>
       <span>共记<i>{{scores}}</i>分</span>
-      <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
+      <a-button type="primary" @click="openSelectPanel" v-role="[tab]">选择习题</a-button>
     </div>
     <div class="exercise-list-box">
       <div
@@ -26,13 +26,13 @@
           <i class="iconfont icon-fenshu"></i>
           {{ item.score }}
         </span>
-        <span class="exam-list-detele iconfont icon-shanchu" @click="deleteChapterExercise(item)"></span>
+        <span v-role="[tab]" class="exam-list-detele iconfont icon-shanchu" @click="deleteChapterExercise(item)"></span>
       </div>
     </div>
   </div>
   <div v-if="showPanel === 'none'">
     <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
-    <div class="action-btn" style="text-align: center">
+    <div class="action-btn" style="text-align: center;width:100%" v-role="[tab]">
       <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
     </div>
   </div>
@@ -81,7 +81,7 @@
           >{{ item.name }}</a-select-option
         >
       </a-select>
-      <div class="btns">
+      <div class="btns" v-role="[tab]" style="width:100%">
         <a-button @click="selectExercise" type="primary">选择</a-button>
         <a-button @click="backList" type="primary">返回</a-button>
       </div>
@@ -140,6 +140,7 @@ export default defineComponent({
   },
   setup() {
     const chapter_id: any = inject("chapter_id");
+    const tab: any = inject("tab");
     const reactiveData: TreactiveData = reactive({
       showPanel: "loading",
       publicData: [],
@@ -329,7 +330,8 @@ export default defineComponent({
       columns,
       selectRowSelection,
       rowKey,
-      deleteChapterExercise
+      deleteChapterExercise,
+      tab
     };
   },
 });

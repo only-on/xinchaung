@@ -4,7 +4,7 @@
       <a-tab-pane key="1" tab="章节概述" force-render>
         <div class="chapter-intro-tab">
           <div v-if="isNoChapterIntro" style="height: calc(100% - 26px)">
-            <div class="intro-action-btn">
+            <div class="intro-action-btn" v-role="[tab]">
               <a-button
                 v-if="isEditIntro"
                 type="primary"
@@ -29,7 +29,7 @@
           </div>
           <div v-else>
             <empty text="暂无章节概述，可点击下方按钮添加"> </empty>
-            <div class="action-btn">
+            <div class="action-btn" v-role="[tab]">
               <a-button
                 type="primary"
                 @click="
@@ -100,6 +100,7 @@ export default defineComponent({
   setup() {
     const course_id: any = inject("course_id");
     const chapter_id: any = inject("chapter_id");
+    const tab: any = inject("tab");
     const chapterDetailData:Ref<any> = ref({});
     const reactiveData: TreactiveData = reactive({
       activeKey: "1",
@@ -112,7 +113,7 @@ export default defineComponent({
       () => chapter_id,
       () => {
         reactiveData.activeKey = "1";
-        getChapterDetail();
+          getChapterDetail();
       },
       { deep: true, immediate: true }
     );
@@ -155,6 +156,7 @@ export default defineComponent({
       saveIntro,
       editIntro,
       chapterDetailData,
+      tab
     };
   },
 });
@@ -185,9 +187,11 @@ export default defineComponent({
     flex-direction: column;
     height: 100%;
     .action-btn {
+      width: 100%;
       text-align: center;
     }
     .intro-action-btn {
+      width: 100%;
       text-align: right;
       flex-shrink: 0;
       margin-bottom: 15px;

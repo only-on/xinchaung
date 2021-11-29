@@ -3,7 +3,7 @@
     <SyncOutlined spin />
   </div>
   <div v-if="prepareShowTab === 'pdf'" class="chapter-intro">
-    <div class="action-box">
+    <div class="action-box" v-role="[tab]">
       <a-button type="primary" @click="remove">移除</a-button>
       <a-button type="primary" @click="openUploadModal">上传</a-button>
       <a-button type="primary" @click="selectFile">选择</a-button>
@@ -17,7 +17,7 @@
   </div>
   <div v-if="prepareShowTab === 'none'" class="chapter-intro-none">
     <empty text="暂无数据，可从数据中心选择或本地上传文件"> </empty>
-    <div class="action-btn">
+    <div class="action-btn" v-role="[tab]">
       <a-button type="primary" @click="openUploadModal">上传</a-button>
       <a-button type="primary" @click="selectFile">选择</a-button>
     </div>
@@ -128,6 +128,7 @@ export default defineComponent({
     const env = process.env.NODE_ENV == "development" ? true : false;
     const course_id: any = inject("course_id");
     const chapter_id: any = inject("chapter_id");
+    const tab: any = inject("tab");
     const activeKey = props.activeKey;
     const datasetType = ref(-1);
     if (activeKey === "2") {
@@ -341,7 +342,8 @@ export default defineComponent({
       closeUploadModal,
       fileInfo,
       uploadRef,
-      datasetType
+      datasetType,
+      tab
     };
   },
 });
@@ -350,6 +352,7 @@ export default defineComponent({
 <style lang="less">
 .chapter-intro {
   .action-box {
+    width: 100%;
     text-align: right;
     margin-bottom: 15px;
     > button {
@@ -386,6 +389,11 @@ export default defineComponent({
 .upload-modal {
   .ant-modal-footer {
     text-align: center;
+  }
+}
+.chapter-intro-none{
+  .action-btn{
+    width: 100%;
   }
 }
 </style>
