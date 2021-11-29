@@ -44,9 +44,9 @@
         <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
       <div class="mainRight">
-        <!-- <component v-if="type === 1 || type === 2" :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" /> -->
+        <!-- <component v-if="type === 1 || type === 2" :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :experimentName="experimentName" /> -->
         <StuChapter v-if="componentName === 'StuChapter'" :chapter_id="chapter_id" />
-        <ChapterExperiment v-if="componentName === 'ChapterExperiment'" :experimentalId="experimentalId" :taskid="taskid" :note_id="note_id" :experimentName="experimentName" />
+        <ChapterExperiment v-if="componentName === 'ChapterExperiment'" :experimentalId="experimentalId" :taskid="taskid" :experimentName="experimentName" />
         <div v-if="type === 3">
           <div class="videofu" style="height: 100%; padding: 20px">
             <video style="width: 100%; height: 576px" controls="true" :src="videoUrl"></video>
@@ -63,17 +63,14 @@
 </template>
 
 <script lang="ts">
-import bg from '../../assets/images/studentcourse/course-detail_bg.jpg'
+import bg from 'src/assets/images/studentcourse/course-detail_bg.jpg'
 import { defineComponent,ref, onMounted,inject,reactive, toRefs,Ref,provide} from 'vue'
 import { useRouter,useRoute } from 'vue-router';
-import request from '../../api/index'
-import { IBusinessResp} from '../../typings/fetch.d';
+import request from 'src/api/index'
+import { IBusinessResp} from 'src/typings/fetch.d';
 import StuChapter from './component/StuChapter1.vue'
 import ChapterExperiment from './component/ChapterExperiment.vue'
-import DragTree from '../../components/dragTree.vue'
-import { resolve } from 'path/posix';
-import { log } from 'console';
-
+import DragTree from 'src/components/dragTree.vue'
 interface IdetailObj{
   info:any;
   tree:any[];
@@ -96,7 +93,6 @@ export default defineComponent({
     var chapter_id:Ref<number>=ref(0)
     var experimentalId:Ref<number>=ref(0)
     var taskid:Ref<number>=ref(0)
-    var note_id:Ref<string>=ref('')
     var experimentName:Ref<string>=ref('')
     var type:Ref<number>=ref(0)            // 实验类型 videoUrl   pptUrl
     var videoUrl:Ref<string>=ref('')
@@ -134,14 +130,14 @@ export default defineComponent({
       componentName.value='StuChapter'
     }
     function selectExperiment(val:any) {
-      //  console.log(val)
+       console.log(val)
        componentName.value=''
-       const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
+      //  const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
        type.value=val.type
       if(val.type ===1 || val.type === 2){
         taskid.value=val.tid
         experimentName.value=val.name
-        note_id.value=String(val.notes_id)
+        // note_id.value=String(val.notes_id)
         experimentalId.value=val.id
         componentName.value='ChapterExperiment'
       }else if (val.type === 3) {
@@ -160,7 +156,7 @@ export default defineComponent({
     function goBack(){
       router.go(-1)
     }
-    return {...toRefs(detail),bg,controls,type,pptUrl,videoUrl,componentName,experimentName,taskid,note_id,chapter_id,experimentalId,goBack,Resources,selectChapter,selectExperiment};
+    return {...toRefs(detail),bg,controls,type,pptUrl,videoUrl,componentName,experimentName,taskid,chapter_id,experimentalId,goBack,Resources,selectChapter,selectExperiment};
   },
 })
 </script>

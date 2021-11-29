@@ -102,7 +102,7 @@ export default defineComponent({
     var id:Ref<number>=ref(0)
     var course_id:Ref<string>=inject('course_id')!
     var detailId=inject("detailId")
-    var notesId:Ref<string>=ref('')
+    var notesId:Ref<number>=ref(0)
     const options = {
       placeholder: "输入内容...",
       theme: "snow",
@@ -121,15 +121,12 @@ export default defineComponent({
        detail.content1=''
        init()
     })
-    notesId.value=props.note_id
-    watch(()=>{return props.note_id},(val:any)=>{
-      // console.log(val)
-      notesId.value=val
-    })
     id.value=props.experimentalId
     function init() {
       http.experimentalNotes({param:{id:id.value}}).then((res:IBusinessResp)=>{
         if(res){
+          //  console.log(res)
+           notesId.value=res.data.note && res.data.note.id
             task_type=res.data.task_type
             detail.studystr=res.data.study
             detail.updatedAt=res.data.note.updated_at
@@ -179,6 +176,7 @@ export default defineComponent({
     }
     function study(val:any) {
       console.log('准备虚拟机环境')
+      // detail.studystr
       let param:IEnvirmentsParam= {
         type: "course",
         opType: 'start',

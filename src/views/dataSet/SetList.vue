@@ -209,7 +209,7 @@ export default defineComponent({
       init()
     }
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       currentTab.value=val
       search.common=(val===1)?0:1
       search.page=1

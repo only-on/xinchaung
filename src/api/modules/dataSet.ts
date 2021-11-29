@@ -5,13 +5,16 @@ export default{
   categoryList:{ url:`/dmc/v1.0/datacategory`,method:'GET'},
   dataSets:{ url:`/dmc/v1.0/datasets`,method:'GET'},
   deleteDataSet:{url:`/dmc/v1.0/dataset?{deleteParam}`,method:'DELETE'},
-  dataSetAll:{url:`/api/dataset/all_datasets`,method:'GET'}
+  dataSetAll:{url:`/api/dataset/all_datasets`,method:'GET'},
+  upLoadCover:{url:`/dmc/v1.0/upload_image`,method:'POST',dataType: 'formdata'},
+
 }
 
 export interface IDataSet{
   categoryList:TFHttpSend
   dataSets:TFHttpSend
   dataSetAll:TFHttpSend
+  upLoadCover:TFHttpSend
 }
 
 
