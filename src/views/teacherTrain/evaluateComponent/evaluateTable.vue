@@ -5,9 +5,10 @@
               :rowKey="rowkey"
               :dataSource="tableList" 
               :columns="columns" 
-              :row-selection="rowSelection"
+              :row-selection="{ selectedRowKeys: selectedRowKeys,selectedRows:selectedRows,onChange: onSelectChange }"
               :hideOnSinglePage='true'
             >
+            <!-- rowSelection -->
              <template #username="{ record }">
                 <span>{{ record.user.username}}</span>
               </template>
@@ -75,7 +76,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRefs, PropType, ref } from 'vue'
+import { defineComponent, reactive, toRefs, PropType, ref ,watch} from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherTrainHttp } from './../typings'
@@ -106,6 +107,7 @@ export default defineComponent({
   emits: ['update:selectedRows', 'pageChange'],
   setup(props, {emit}) {
     const data = reactive<IData>({
+      selectedRowKeys:[],
       // tableList: [],
       page: {
         page: 1,
@@ -273,22 +275,19 @@ export default defineComponent({
       data.page.page = current
       data.page.pageSize = size
     }
-    
-    const rowSelection = {
-      onChange: (selectedRowKeys: (string | number)[], selectedRows: ITableList[]) => {
-        console.log(`selectedRowKeys: ${selectedRowKeys}`, 'selectedRows: ', selectedRows, 1);
+    const onSelectChange=(selectedRowKeys:any,selectedRows:any)=>{
+      console.log(selectedRows,'hhhhhhhhh哈哈哈')
+        data.selectedRowKeys = selectedRowKeys;
         emit('update:selectedRows', selectedRows)
-      },
-      onSelect: (record: ITableList, selected: boolean, selectedRows: ITableList[]) => {
-        console.log(record, selected, selectedRows, 2);
-      },
-      onSelectAll: (selected: boolean, selectedRows: ITableList[], changeRows: ITableList[]) => {
-        console.log(selected, selectedRows, changeRows, 3);
-      },
-    };
+    }
     const rowkey = (record: {}, index: number) => {
       return index
     }
+    watch(()=>props.selectedRows,(val:any)=>{
+      if(!val.length){
+        data.selectedRowKeys=[]
+      }
+    })
     return {
       ...toRefs(props),
       ...toRefs(data),
@@ -297,9 +296,10 @@ export default defineComponent({
       pageChange,
       onShowSizeChange,
       rowkey,
-      rowSelection,
+      onSelectChange,
       isShowVideo,
     }
+    
   },
 })
   interface ITableList {
@@ -322,7 +322,8 @@ export default defineComponent({
   }
   interface IData {
     // tableList: ITableList[],
-    page: IPage
+    page: IPage,
+    selectedRowKeys:any[]
   }
 </script>
 

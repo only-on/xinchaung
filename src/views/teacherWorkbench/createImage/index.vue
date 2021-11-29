@@ -144,8 +144,8 @@ export default defineComponent({
                         classify_id:state.image.classify_id,
                         tag:state.image.tag,
                         description:state.image.desc,
-                        ssh_user:"41",
-                        ssh_pass:"1",
+                        ssh_user:" ",
+                        ssh_pass:" ",
                         is_use_gpu:state.image.tag.indexOf(3)!==-1?1:0,
                     }
                     createMirrorApi(parmas).then((res:any)=>{

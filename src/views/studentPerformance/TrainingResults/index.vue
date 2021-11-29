@@ -19,7 +19,7 @@
                     </div>
                 </div>
             </div>
-            <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div>
+            <!-- <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div> -->
         </div>
         <div v-else class="no-search-data">
             <div v-if="ifTip" class="loading">

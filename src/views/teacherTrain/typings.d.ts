@@ -17,9 +17,10 @@ interface ITeacherTrain {
   trainDeleted: Function
   getResourceList: Function
   assessmentList: Function
-  assessmentDetails:Function
+  assessmentDetails: Function
   assessmentStatistic: Function
-  uploadsFile:Function 
+  uploadsFile: Function
+  releaseResults: Function
 }
 export interface ITeacherTrainHttp {
   teacherTrain: ITeacherTrain

@@ -60,7 +60,7 @@ export default defineComponent({
     setup(props,context) {
       const http=(request as any).teacherTrain
       let development=process.env.NODE_ENV == 'development' ? true : false;
-      let baseurl=development?'http://192.168.101.150:85/':""
+      let baseurl=development?'http://192.168.101.130:85/':""
       const state:Istate=reactive({
           defaultImg:[
           {

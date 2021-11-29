@@ -18,12 +18,14 @@
         <a-button type="primary" class="upload" @click="releaseResult()">发布成绩</a-button>
       </div>
     </div>
+    <!-- v-model:selectedRows="{selectedRowKeys,onSelectChange }" -->
     <evaluate-table 
       :tableList="tableList" 
       :total="page.total" 
-      v-model:selectedRows="selectedRows"
+      v-model:selectedRows='selectedRows'
       @pageChange="pageChange"
       :trainId="trainInfo.trainId"
+      :start='start'
     ></evaluate-table>
     <task-statistic 
     :trainId="trainInfo.trainId">
@@ -35,12 +37,13 @@
 import { defineComponent, createVNode , reactive, toRefs, inject,onMounted} from 'vue'
 import evaluateTable from './evaluateComponent/evaluateTable.vue'
 import TaskStatistic from './evaluateComponent/taskStatistic.vue'
-import { Modal } from 'ant-design-vue';
+import { message, Modal } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherTrainHttp } from './typings'
 import { useRoute } from 'vue-router'
+import  FileSaver  from 'file-saver'
 
 export default defineComponent({
   components: { evaluateTable, TaskStatistic },
@@ -101,6 +104,10 @@ export default defineComponent({
       data.page.page = page
       getResourceList()
     }
+    // const selectedRows=(val:any)=>{
+    //    data.selectedRows=val
+    // }
+    // 导出成绩
     const exportResult = () =>{
       console.log('导出', data.selectedRows)
       if (!data.selectedRows.length) {
@@ -112,43 +119,51 @@ export default defineComponent({
           cancelText: '取消',
           onOk: () => {
             console.log('导出全部')
-            exportScore({train_id: trainInfo.trainId})
+            let ids = data.tableList.map(v => v.id)
+              exportScore({
+                train_id: trainInfo.trainId,
+                id: ids
+              })
           }
         });
         return 
       }
-      let ids = data.selectedRows.map(v => v.id)
+      let ids = data.selectedRows.map(v => v?.study_record?.id)
       exportScore({
         train_id: trainInfo.trainId,
-        train_student_id: ids
+        id: ids
       })
     }
-    const exportScore = (param: {train_id: string, train_student_id?: number[]}) => {
-      const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
-      console.log(dev_base_url, param)
-      let url = `${dev_base_url}/teacher-train/train-score-export`
-      fetch(url, {
-        method: 'post',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: param.train_student_id ? `train_id = ${param.train_id} & train_student_id = ${param.train_student_id}` : `train_id = ${param.train_id}`
-      }).then((res: any) => {     
-        return res.arrayBuffer();
-      }).then(arraybuffer => {
-        let blob = new Blob([arraybuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
-        var link = document.createElement('a');
-        link.href = window.URL.createObjectURL(blob);
-        link.download = '学生实训成绩报表.xls';
-        link.click();
-        window.URL.revokeObjectURL(link.href);
-      })
+    // 导出成绩调用接口
+    const exportScore = (param: {train_id: string, id?: number[]}) => {
+      // const dev_base_url = import.meta.env.VITE_APP_BASE_API || ''
+      // console.log(dev_base_url, param)
+      // let url = `${dev_base_url}/teacher-train/train-score-export`
+      // fetch(url, {
+      //   method: 'post',
+      //   headers: {
+      //     'Content-Type': 'application/x-www-form-urlencoded'
+      //   },
+      //   body: param.train_student_id ? `train_id = ${param.train_id} & train_student_id = ${param.train_student_id}` : `train_id = ${param.train_id}`
+      // }).then((res: any) => {     
+      //   return res.arrayBuffer();
+      // }).then(arraybuffer => {
+      //   let blob = new Blob([arraybuffer], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
+      //   var link = document.createElement('a');
+      //   link.href = window.URL.createObjectURL(blob);
+      //   link.download = '学生实训成绩报表.xls';
+      //   link.click();
+      //   window.URL.revokeObjectURL(link.href);
+      // })
       // http.exportScore({param: param}).then((res: IBusinessResp) => {
       //   console.log(res)
       // })
+       let development=process.env.NODE_ENV == 'development' ? true : false;
+        let baseurl=development?'http://localhost:3000/proxyPrefix':""
+        // FileSaver.saveAs(baseurl+url,name);
     }
-
-    const releaseResult = () =>{
+    //发布成绩
+    const releaseResult = (param: {train_id: string, id?: number[]}) =>{
       if (!data.selectedRows.length) {
         Modal.confirm({
           title: '发布成绩',
@@ -158,7 +173,11 @@ export default defineComponent({
           cancelText: '取消',
           onOk: () => {
             console.log('发布全部')
-            releaseScore({train_id: trainInfo.trainId})
+             let ids = data.tableList.map(v => v.id)
+              releaseScore({
+                train_id: trainInfo.trainId,
+                id: ids
+              })
           }
         });
         return 
@@ -166,12 +185,18 @@ export default defineComponent({
       let ids = data.selectedRows.map(v => v.id)
       releaseScore({
         train_id: trainInfo.trainId,
-        train_student_id: ids
+        id: ids
       })
     }
-    const releaseScore = (param: {train_id: string, train_student_id?: number[]}) => {
-      http.releaseScore({param: param}).then((res: IBusinessResp) => {
-        console.log(res)
+    //发布成绩调用接口
+    const releaseScore = (param: {train_id: string, id?: number[]}) => {
+      // http.releaseScore({param: param}).then((res: IBusinessResp) => {
+      //   console.log(res)
+      // })
+       http.releaseResults({param: param}).then((res:any)=>{
+        message.success('发布成绩成功！')
+        data.selectedRows=[]
+        getResourceList()
       })
     }
     onMounted(() => {
@@ -200,6 +225,7 @@ export default defineComponent({
     result: number
     env: number
     score: number
+    study_record:any
   }
   interface ISearchInfo {
     id: number

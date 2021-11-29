@@ -17,7 +17,7 @@
            </div>
            <div>
                 <a-config-provider>
-                    <a-table :columns="columns" :data-source="data" :row-selection="rowSelection" rowkey='id'>
+                    <a-table :columns="columns" :data-source="data" :row-selection="{selectedRowKeys: selectedRowKeys, onChange: onSelectChange}" rowkey='id'>
                         <template #username='{record}'>
                             <div>
                                 {{record.user.username}}
@@ -151,6 +151,7 @@ interface Istate{
    classUnselectParams:classType,
    allClassId:any[],
    allStuId:any[],
+   selectedRowKeys:any[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -290,6 +291,7 @@ export default defineComponent({
       addidarr:[],
       selectStuOrClassKeys:[],
       unselectLoading:false,
+      selectedRowKeys:[]
     })
     const rowSelection = {
             onChange: (selectedRowKeys1:any, selectedRows1:any) => {
@@ -302,6 +304,10 @@ export default defineComponent({
             }
         };
     const methods={
+        onSelectChange(selectedRowKeys:any,selectedRows:any){
+            state.selectedRowKeys=selectedRowKeys
+            state.classStuDeleteid=selectedRows
+        },
        onRadioChange(e:any) {
             state.columns=e.target.value==1?state.stuColumns:state.classColumns
             state.data=[]
@@ -347,7 +353,7 @@ export default defineComponent({
             state.classDeleteVisible=false
         },
         // 按学生或者班级排课
-        addSelectedRows(value:any,selectValue:any){
+        addSelectedRows(value:any,selectValue:any,selectedRowKeys:any){
             console.log(selectValue)
             value.forEach((item:any) => {
                 state.addidarr.push(item.id) 
@@ -441,6 +447,7 @@ export default defineComponent({
                         const deleteParmas={id:deleteid}
                         http.deleteScheduleStuMany({param:deleteParmas}).then((res:any)=>{
                             message.success('删除成功')
+                            state.selectedRowKeys=[]
                             methods.getStudentList()
                         })
                     }else{
@@ -453,6 +460,7 @@ export default defineComponent({
                             console.log(res)
                             message.success("删除成功")
                             state.classStuDeleteid=[]
+                            state.selectedRowKeys=[]
                             methods.getClassList()
                             })
                         }

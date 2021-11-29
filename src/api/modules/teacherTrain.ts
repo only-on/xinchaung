@@ -12,6 +12,8 @@ export default {
   assessmentList: { url: `/api/operate/teacherResults/index`, method: "GET" },
   //教师实训考核项详情
   assessmentDetails: { url: `/api/operate/teacherResults/show`, method: "GET" },
+  //发布实训成绩
+  releaseResults: { url: `/api/operate/teacherResults/release`, method: "POST", dataType: 'json' },
   // 考核任务统计
   assessmentStatistic: { url: `/api/operate/teacherResults/evaluate`, method: "GET" },
   // 资源
@@ -133,6 +135,7 @@ export interface ITeacherTrainAps {
   assessmentList: TFHttpSend
   assessmentDetails: TFHttpSend
   assessmentStatistic: TFHttpSend
+  releaseResults:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherTrain'

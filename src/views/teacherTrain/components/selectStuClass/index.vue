@@ -37,7 +37,7 @@
                 </a-form> 
             </div>
             <a-config-provider>
-                    <a-table :columns="columns" :loading='unselectLoading' :data-source="unSelectData" :row-selection="rowSelection" rowKey="id">
+                    <a-table :columns="columns" :loading='unselectLoading' :data-source="unSelectData" :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange,getCheckboxProps:getCheckboxProps }" rowKey="id">
                         <template #name="{ record }">
                             <div>{{ record.user_profile.name}}</div>
                         </template>
@@ -72,6 +72,7 @@ interface Istate{
    classes:string,
    selectedRows:any[],
    unSelectKeys:any[],
+   selectedRowKeys:any[]
 } 
 import { defineComponent,onMounted,inject,reactive,toRefs,ref,watch} from 'vue'
 import request from 'src/api/index'
@@ -146,7 +147,8 @@ export default defineComponent({
         faculty:'',
         classes:'',
         selectedRows:[],
-        unSelectKeys:[]
+        unSelectKeys:[],
+        selectedRowKeys:[]
     })
     const rowSelection = {
         //    selectedRowKeys:state.selectedRows,
@@ -157,11 +159,19 @@ export default defineComponent({
                 state.selectedRows=selectedRows
             },
             getCheckboxProps: (record:any) => ({
-                disabled: record.selected,
-                defaultChecked:record.selected
+                // disabled: record.selected||record.number==0,
+                // defaultChecked:record.selected||record.number==0
             }),
     };
     const methods={
+        onSelectChange(selectedRowKeys:any, selectedRows:any){
+            state.selectedRowKeys=selectedRowKeys
+            state.selectedRows=selectedRows
+        },
+        getCheckboxProps: (record:any) => ({
+                disabled: record.selected||(props.selectvalue===2&&!record.number),
+                defaultChecked:record.selected
+        }),
       handleOk(){
           context.emit('ifSelect','ok')
       },
@@ -174,7 +184,8 @@ export default defineComponent({
       addittion(){
         //   添加
         console.log(state.selectedRows,'选中的数据')
-        context.emit('selected-rows',state.selectedRows,props.selectvalue)
+        context.emit('selected-rows',state.selectedRows,props.selectvalue,state.selectedRowKeys)
+        // state.selectedRowKeys=[]
       },
       clearAll(){
         state.studentValue=''
