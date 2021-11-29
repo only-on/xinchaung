@@ -129,7 +129,6 @@ export default defineComponent({
     }
     // 查看步骤详情
     function lookStepDetail(val: any) {
-      console.log(val);
       stepKnowPoints.value = [];
       reactiveData.stepDetail = val;
       reactiveData.currentShow = "step";

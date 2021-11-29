@@ -77,7 +77,6 @@ export default defineComponent({
   emits: ['update:isShow', 'update:selectType', 'update:modelValue','allSelect',"add","del"],
   setup(props, {emit}) {
     const http = (request as Ihttp).teachCourse
-    console.log(props)
     let searchInfo = reactive({
       poolId: 0,
       levelId: 1,
@@ -88,10 +87,8 @@ export default defineComponent({
     })
     // 页码变化
     const pageChange = (page: number) => {
-      console.log(page, searchInfo)
     }
     const onShowSizeChange = (current: number, pageSize: number) => {
-      console.log(current, pageSize, searchInfo);
       searchInfo.pageSize = pageSize
     };
     // 获取习题列表
@@ -113,7 +110,6 @@ export default defineComponent({
           poolId: searchInfo.poolId
         }
       }).then((res: IBusinessResp) => {
-        console.log(res, props)
         if (res) {
           list.paperList = res.data.list
           searchInfo.total = res.data.page.totalCount
@@ -149,8 +145,7 @@ export default defineComponent({
         list.keywordsList = list.keywords.map((v:any) => v.keyword).join(' ')
         list.answersList = answersList
         // props.modelValue.push(list)
-        let dd = props.modelValue.filter(v => v.id === list.id) 
-        console.log(dd)
+        let dd = props.modelValue.filter(v => v.id === list.id)
         if (!dd.length) {
           props.modelValue.push(list)
         }
@@ -160,7 +155,6 @@ export default defineComponent({
     // 选择习题
     const add = (i: number) => {
       emit("add",cloneDeep(list.paperList[i]))
-      console.log(list.paperList)
       // let arr = list.paperList
       // arr.forEach(list => {
       //   let answersList: number[] = []
@@ -189,7 +183,6 @@ export default defineComponent({
     }
     // 取消选择的习题
     const del = (i: number) => {
-      console.log(list.paperList)
       emit("del",cloneDeep(list.paperList[i]))
       
       list.paperList[i].isChecked = false
@@ -215,12 +208,10 @@ export default defineComponent({
       emit('update:selectType', i)
     }
     const changeDirectory = () => {
-      console.log(searchInfo.poolId)
       getQuestionList()
     }
     // 搜索
     const onSearch = () => {
-      console.log(searchInfo)
       getQuestionList()
     }
     // 难易程度改变
@@ -230,7 +221,6 @@ export default defineComponent({
     let typeList: IpaperType = inject('typeList') || {paperType: [], levelType: []}
     let directoryList: IDirectoryList = inject('directoryList') || {commonList: [], privateList: []}
     const afterVisibleChange = (visible: boolean) => {
-      console.log(visible)
       if (visible) {
         getQuestionList()
       } else {
@@ -242,7 +232,6 @@ export default defineComponent({
     watch(
       () => directoryList,
       (newVal) => {
-        console.log(newVal, 'watch')
         searchInfo.poolId = newVal.commonList.length ? newVal.commonList[0].id : newVal.privateList[0].id
         // getQuestionList()
       },

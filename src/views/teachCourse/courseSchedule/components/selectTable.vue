@@ -67,7 +67,6 @@ export default defineComponent({
       total: 0
     })
     function onSearch(value: string, e: any) {
-      console.log('onSearch')
       e.preventDefault()
       if (!value) {
         $message.warn('请输入查询关键词')
@@ -82,7 +81,6 @@ export default defineComponent({
         query: {class_ids: [], stu_no: name.value}
       }
       http.getStudentList({param}).then((res: IBusinessResp) => {
-        console.log(res)
         loading.value = false
         let {data, page, total} = res.data
         dataList.student = data
@@ -96,7 +94,6 @@ export default defineComponent({
         query: {classname: name.value}
       }
       http.getClassestList({param}).then((res: IBusinessResp) => {
-        console.log(res)
         loading.value = false
         let {data, page, total} = res.data
         dataList.class = data
@@ -122,8 +119,6 @@ export default defineComponent({
       return inject('selectedIds')
     })
     function neverShow(record: any) {
-      console.log([...selectedIds.value[props.currentType]])
-      console.log(record)
       const id = props.currentType === 'student' ? 'stu_id' : 'class_id'
       const neverShowId = [...selectedIds.value[props.currentType]].includes(record[id])
       if (neverShowId) {

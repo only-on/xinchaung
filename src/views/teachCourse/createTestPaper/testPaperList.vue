@@ -67,11 +67,8 @@ export default defineComponent({
     const examApi=request.teachCourse
     function del(i: number) {
       let arr:any = props.modelValue
-      console.log(arr);
-      
       if (paper_id) {
         examApi.deleteQuestionPaperApi({urlParams:{entity_type:'test',entity_id:paper_id},param:{questions:[arr[i].id]}}).then((res:any)=>{
-          console.log(res);
           arr?.splice(i, 1)
           emit('update:modelValue', arr)
         })

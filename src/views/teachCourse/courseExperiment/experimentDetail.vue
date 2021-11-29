@@ -83,19 +83,9 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     );
-
-    watch(
-      () => reactiveData.currentContent,
-      () => {
-        console.log(reactiveData.currentContent);
-        
-      },
-      { deep: true, immediate: true }
-    );
-
     function getContentDetail() {
       getContentDetailApi({ id: experiment_id.value }).then((res: any) => {
-        console.log(res);
+
         detailInfo.value = res.data;
         if (detailInfo.value.is_init === 1) {
           if (detailInfo.value.task_type.type === 4) {

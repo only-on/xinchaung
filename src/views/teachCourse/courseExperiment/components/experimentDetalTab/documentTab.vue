@@ -34,7 +34,6 @@ export default defineComponent({
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
     const is_visible = ref(false);
-    console.log(detailInfo);
     watch(
       () => detailInfo,
       () => {
@@ -47,9 +46,7 @@ export default defineComponent({
         { is_visible: is_visible.value },
         { course_id: course_id, experiment_id: experiment_id.value }
       ).then((res: any) => {
-        console.log(res);
       });
-      console.log(detailInfo.value.is_visible);
     }
     return {
       detailInfo,

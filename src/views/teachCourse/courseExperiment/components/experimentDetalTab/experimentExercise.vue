@@ -142,7 +142,6 @@ export default defineComponent({
   },
   setup() {
     const experiment_id: any = inject("experiment_id");
-    console.log(experiment_id);
     const reactiveData: TreactiveData = reactive({
       showPanel: "loading",
       publicData: [],
@@ -180,7 +179,6 @@ export default defineComponent({
     });
     const selectedRowKeys = ref<number[]>([]);
     const onSelectChange = (changableRowKeys: number[]) => {
-      console.log("selectedRowKeys changed: ", changableRowKeys);
       selectedRowKeys.value = changableRowKeys;
     };
     const rowKey = (row: any) => {
@@ -200,7 +198,6 @@ export default defineComponent({
     function getPublicExercisesMap() {
       return new Promise((resolve, reject) => {
         getExercisesMapApi({ initial: 1, limit: 500 }).then((res: any) => {
-          console.log(res);
           res.data.list.forEach((item: any) => {
             reactiveData.publicData.push(item);
           });
@@ -215,7 +212,6 @@ export default defineComponent({
     function getSelfExercisesMap() {
       return new Promise((resolve, reject) => {
         getExercisesMapApi({ initial: 0, limit: 500 }).then((res: any) => {
-          console.log(res);
           res.data.list.forEach((item: any) => {
             reactiveData.selfData.push(item);
           });
@@ -230,7 +226,6 @@ export default defineComponent({
     function getQuestionTypes() {
       return new Promise((resolve, reject) => {
         getQuestionTypesApi().then((res: any) => {
-          console.log(res);
           reactiveData.questionTypes = res.data;
           reactiveData.questionTypeId = reactiveData.questionTypes[0].id;
           resolve(res);
@@ -246,7 +241,6 @@ export default defineComponent({
         { type_id: reactiveData.questionTypeId, limit: 500 },
         { pool_id: reactiveData.pools_id }
       ).then((res: any) => {
-        console.log(res);
         reactiveData.questionList = res.data.list;
       });
     }
@@ -259,7 +253,6 @@ export default defineComponent({
         },
         { content_id: experiment_id.value }
       ).then((res: any) => {
-        console.log(res);
         reactiveData.chapterExerciseList = res.data.list;
         reactiveData.selectedIds = [];
         if (reactiveData.chapterExerciseList.length > 0) {
@@ -276,7 +269,6 @@ export default defineComponent({
     // 获取习题统计
     function getContentExerciseAnalysis() {
         getContentExerciseAnalysisApi({content_id:experiment_id.value}).then((res:any)=>{
-            console.log(res);
             reactiveData.questionCount=res.data.question_total
             reactiveData.scores=res.data.score_total
         })
@@ -300,12 +292,10 @@ export default defineComponent({
     }
     // 选择按钮
     function selectExercise() {
-      console.log(selectedRowKeys.value);
       contentAddExerciseApi(
         { question_ids: selectedRowKeys.value },
         { content_id: experiment_id.value }
       ).then((res: any) => {
-        console.log(res);
         getChapterExercise();
         getContentExerciseAnalysis()
       });

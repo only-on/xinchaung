@@ -58,7 +58,6 @@ export default defineComponent({
     const getKnowledgeList = () => {
       http.getKnowledgeList({param: {type: 'tree'}})
         .then((res: IBusinessResp) => {
-          console.log(res.data)
           let {list} = res.data
           data.treeData = [{
             children: list.children,
@@ -78,8 +77,6 @@ export default defineComponent({
     }
     let checkedNodes: ItreeData[] = []
     const onCheck = (key: string[], e: any) => {
-      console.log(key, e.checkedNodes)
-      console.log(checkedKeys)
       let arr = e.checkedNodes
       if (arr.length) {
         checkedNodes = []
@@ -94,7 +91,6 @@ export default defineComponent({
       checkedKeys.value = checkedNodes.map(v => v.id)
     }
     const handleOk = () => {
-      console.log(checkedNodes)
       if (checkedNodes.length > 3) {
         message.warn('此处最多选择3个知识点！')
         return
@@ -113,7 +109,6 @@ export default defineComponent({
     watch(
       () => props.isShow,
       (newVal) => {
-        console.log(newVal)
         if (newVal) {
           checkedKeys.value =  props.selectedList?.map(v => v.id)
         }

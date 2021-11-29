@@ -88,7 +88,6 @@ export default defineComponent({
           
       }
       function selectExperiment(val:any) {
-        console.log(val);
         experiment_id.value=val.id
          reactiveData.rightTab="experimentDetail"
       }
@@ -103,16 +102,13 @@ export default defineComponent({
       // 获取课程实验树
       function getCourseTree() {
           getCourseTreeApi({course_id:course_id}).then((res:any)=>{
-              console.log(res);
               reactiveData.treeData=res.data
           })
       }
       provide("updateTree",getCourseTree)
       // 编辑课程实验
       function editNode(val:string, nodeId:number) {
-          console.log(val,nodeId);
           updateChapterApi({course_id:course_id,chapter_id:nodeId},{chapter_name:val}).then((res:any)=>{
-              console.log(res);
               getCourseTree()
           })
       }
@@ -128,7 +124,6 @@ export default defineComponent({
       // 提交创建章节
       function submitCreateChapter() {
         createCourseChapterApi({chapter_name:reactiveData.chapterName},{course_id:course_id}).then((res:any)=>{
-          console.log(res);
           reactiveData.createChapterVisible=false
           message.success(res.msg)
           reactiveData.chapterName=""
@@ -137,7 +132,6 @@ export default defineComponent({
       }
       // 删除章节或者实验
       function deleteNode(val:any) {
-        console.log(val);
         deleteChapterApi({course_id:course_id,chapter_id:val.id}).then((res:any)=>{
           message.success(res.msg)
           getCourseTree()

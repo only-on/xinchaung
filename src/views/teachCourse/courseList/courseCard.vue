@@ -179,7 +179,6 @@ export default defineComponent({
       });
     }
     function setArchive(id: number) {
-      console.log(id);
     }
     function deleteCourse(id: number) {
       Modal.confirm({
@@ -189,7 +188,7 @@ export default defineComponent({
         cancelText: "取消",
         onOk() {
           deleteCourseApi({ id: id }).then((res: any) => {
-            console.log(res);
+            message.success("删除成功")
           });
         },
       });

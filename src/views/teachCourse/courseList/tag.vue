@@ -133,15 +133,11 @@ export default defineComponent({
       // 课程方向
       getDirections().then((res: any) => {
         if (res) {
-          console.log(res);
-
           nextTick(() => {
             setTimeout(() => {
               reactiveData.directionsHeight = (
                 reactiveData as any
               ).allTag1.clientHeight;
-              console.log(reactiveData.directionsHeight);
-              
               if (reactiveData.directionsHeight > 40) {
                 reactiveData.directionsShow = false;
               } else {
@@ -154,8 +150,6 @@ export default defineComponent({
       // 职业方向
       getCategory().then((res) => {
         if (res) {
-          console.log(res);
-
           nextTick(() => {
             reactiveData.categoryHeight = (
               reactiveData as any
@@ -172,7 +166,6 @@ export default defineComponent({
     watch(
       () => reactiveData.params,
       () => {
-        console.log(reactiveData.params);
         emit("tagChange", reactiveData.params);
       },
       { deep: true }

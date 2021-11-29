@@ -118,8 +118,6 @@ export default defineComponent({
           reactiveData.params.category ||
           reactiveData.params.name
         ) {
-          console.log(1212);
-          
           (reactiveData.emptyType = "searchEmpty");
             (reactiveData.emptyText =
               "暂未搜到相关数据，可点击下方按钮创建您需要的工作台。");
@@ -129,10 +127,6 @@ export default defineComponent({
     );
     onMounted(() => {
       init();
-      // setTimeout(()=>{
-      //   console.log(111111111)
-      //   reactiveData.courseList=[]
-      // },5000)
     });
 
     function init() {

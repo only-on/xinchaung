@@ -213,7 +213,6 @@ export default defineComponent({
       let type = courseInfo.type === "train" ? "实训" : (courseInfo.courseType == 2 ? "课程" : "实验")
       envListState.data = []
       envListState.loading = true
-      console.log(params)
       http.getPre({param: params}).then((res: IResponseData) => {
         envListState.loading = false
         if(res && res.status) {
@@ -258,7 +257,6 @@ export default defineComponent({
       })
     }
     function saveTopinst(num: number) {
-      console.log(params,'virtualEnv params')
       // const limitParams = reactive<IlimitParams>({
           // limit: limit.value,
           // courseId: params.courseId
@@ -287,12 +285,10 @@ export default defineComponent({
         urlParams: {courseId: courseInfo.courseId}
       }).then((res: IBusinessResp) => {
         treeData.data = res.data
-        console.log(treeData.data)
       })
     }
     // 更新tree数据
     const updateData = (data: ITreeDataItem[], parentId: number) => {
-      console.log(data, parentId, '更新数据')
       let obj = {}
       treeData.data = data
       if (!parentId) {
@@ -330,7 +326,6 @@ export default defineComponent({
       // selectedNodes.isHigh = val.is_high
       // selectedNodes.grouped = val.grouped
       params.taskId = 0
-      console.log(val, '点击章节');
       let type = courseInfo.type === "train" ? "实训" : (courseInfo.courseType == 2 ? "课程" : "实验")
       if (!selectedNodes.taskId) {
         noDataPrompt.value = `请选择${type}`
@@ -338,7 +333,6 @@ export default defineComponent({
     }
     // 点击实验树
     const selectExperiment = (val: ITreeDataItem) => {
-      console.log(val, '点击实验树');
       selectedNodes.taskId = val.id
       selectedNodes.type = val.type
       selectedNodes.isHigh = val.is_high
@@ -349,7 +343,6 @@ export default defineComponent({
     }
     // 编辑节点
     const editNode = (name: string, id: number) => {
-      console.log(name, id, '编辑')
       TreeTttp.editNode({
         param: {chapter_name: name},
         urlParams: {
@@ -365,7 +358,6 @@ export default defineComponent({
     }
     // 删除节点
     function deleteNode(val: ITreeDataItem) {
-      console.log(val, '删除')
       TreeTttp.deleteNode({
         urlParams: {
           courseId: courseInfo.courseId,

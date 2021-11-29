@@ -21,8 +21,6 @@ export default defineComponent({
     watch(
       () => props.modelValue,
       () => {
-        console.log(props.modelValue);
-
         steps.value = props.modelValue;
       },
       {
@@ -31,8 +29,6 @@ export default defineComponent({
       }
     );
     function look(val:any) {
-        console.log(val);
-        
         emit("look",val)
     }
     return {

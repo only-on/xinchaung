@@ -76,7 +76,6 @@ export default defineComponent({
     // 获取实验报告
     function getReportList() {
       getReportListApi(reactiveData.getParams).then((res: any) => {
-        console.log(res);
         reactiveData.dataSource = res.data.list;
         reactiveData.total = res.data.page.totalCount;
         reactiveData.getParams.page = res.data.page.currentPage;
@@ -96,14 +95,12 @@ export default defineComponent({
     }
     // 选择
     function select(val: any) {
-      console.log(val);
       let param = {
         owner_type: props.type==='course'?'course':"cc_mid",
         owner_id: props.type==='course'?Number(course_id):experiment_id.value,
         template_id: val,
       };
       saveReportTemplateApi(param).then((res: any) => {
-        console.log(res);
         message.success("模板更换成功");
         emit("close", true);
       });

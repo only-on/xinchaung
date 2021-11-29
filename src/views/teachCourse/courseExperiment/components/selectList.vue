@@ -70,7 +70,6 @@ export default defineComponent({
     );
 
     function checkedChange(e: CheckEvent, val: any) {
-      console.log(e, val);
     }
 
     // 选择按钮

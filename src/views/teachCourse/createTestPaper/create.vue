@@ -120,12 +120,9 @@ export default defineComponent({
     watch(
       () => formSate.paperLists,
       (newVal: any, oldVal: any) => {
-        console.log(newVal, oldVal);
         let arr1 = cloneDeep(newVal);
         let arr2 = cloneDeep(oldVal);
-        console.log(arr1, arr2);
         let arr3 = arr1.concat(...arr2);
-        console.log(arr3);
       },
       { deep: true }
     );
@@ -135,7 +132,6 @@ export default defineComponent({
       //   message.warning('请填写测试卷名称')
       //   return
       // }
-      console.log("clickAddPaper", key);
       addType.value = Number(key);
       isShowSingle.value = true;
     };
@@ -144,7 +140,6 @@ export default defineComponent({
     let selectType = ref(0);
     // 点击选择试题
     const clickSelectPaper = ({ key }: { key: string }) => {
-      console.log("clickAddPaper", key);
       // if(!formSate.testName) {
       //   message.warning('请填写测试卷名称')
       //   return
@@ -155,7 +150,6 @@ export default defineComponent({
 
     // 添加一条试题
     const addPaperContent = (list: Ilist) => {
-      console.log(list);
       formSate.paperLists.push(list);
     };
     // 创建试卷
@@ -183,7 +177,6 @@ export default defineComponent({
 
         return;
       }
-      console.log(formSate.paperLists);
       http
         .createPaper({
           param: {
@@ -194,7 +187,6 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
           relationQuest(res.data.id);
           router.push({
             path: "/teacher/teacherCourse/testPaperList",
@@ -217,7 +209,6 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
           // getPaperList()
         });
     };
@@ -237,8 +228,6 @@ export default defineComponent({
           param: { include: "answers" },
         })
         .then((res: any) => {
-          console.log(res);
-
           formSate.paperLists = res.data;
         });
     }
@@ -253,7 +242,6 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
         });
     };
     // 习题类型和难易类型
@@ -271,7 +259,6 @@ export default defineComponent({
       http
         .getCatalogueList({ param: { limit: 100 } })
         .then((res: IBusinessResp) => {
-          console.log(res);
           let commonList: ICPDirectoryList[] = [];
           let privateList: ICPDirectoryList[] = [];
           res.data.list.map((v: any) => {
@@ -286,7 +273,6 @@ export default defineComponent({
       http
         .getCatalogueList({ param: { initial: 0, limit: 100 } })
         .then((res: IBusinessResp) => {
-          console.log(res);
           directoryList.privateList = res.data.list;
         });
     };
@@ -296,18 +282,15 @@ export default defineComponent({
       getCCatalogueList();
       // 获取习题类型列表
       http.getPaperTypeList().then((res: IBusinessResp) => {
-        console.log(res);
         typeList.paperType = res.data;
       });
       // 获取习题难易程度列表
       http.getLevelList().then((res: IBusinessResp) => {
-        console.log(res);
         typeList.levelType = res.data;
       });
     });
     // 取消
     function cancel() {
-      console.log(1212, course_id);
       router.push({
         path: "/teacher/teacherCourse/testPaperList",
         query: {
@@ -321,7 +304,6 @@ export default defineComponent({
       if (!paper_id) {
         return;
       }
-      console.log(paperList);
       let questions: any = [];
       paperList.forEach((item: any) => {
         if (!item.isChecked) {
@@ -339,13 +321,11 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
           // getPaperList()
         });
     }
     // 删除
     function del(val: any) {
-      console.log(val);
       if (!paper_id) {
         return;
       }
@@ -355,7 +335,6 @@ export default defineComponent({
           param: { questions: [val.id] },
         })
         .then((res: any) => {
-          console.log(res);
         });
     }
     // 添加
@@ -374,7 +353,6 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
           // getPaperList()
         });
     }

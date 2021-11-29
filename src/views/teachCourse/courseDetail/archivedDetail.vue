@@ -205,12 +205,10 @@ export default defineComponent({
       getCourseTree();
     });
     function tabChange(key: string) {
-      console.log(key);
     }
     // 获取课程实验树
     function getCourseTree() {
       getCourseTreeApi({ course_id: course_id }).then((res: any) => {
-        console.log(res);
         reactiveData.treeData = res.data;
       });
     }
@@ -219,7 +217,6 @@ export default defineComponent({
       currentShowContent.value = "chapter";
     }
     function selectExperiment(val: any) {
-      console.log(val);
       experiment_id.value = val.id;
       currentShowContent.value = "experiment";
     }

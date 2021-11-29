@@ -71,8 +71,6 @@ export default defineComponent({
     let course_id:any = ref("")
     watch(()=>route.query,()=>{
       course_id.value=route.query.course_id as any as number;
-      console.log(course_id.value);
-      
     },{deep:true,immediate:true})
     provide("course_id",course_id.value)
     var updata = inject("updataNav") as Function;

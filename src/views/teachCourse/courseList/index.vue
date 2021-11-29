@@ -33,7 +33,6 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log("val",val);
       // if (val||val===0) {
         val=val?val:(route.query.currentTab?route.query.currentTab:0)
         componentName.value=componentNames[val]

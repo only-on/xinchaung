@@ -166,7 +166,6 @@ export default defineComponent({
   },
   emits: ['update:isShow', 'addPaperContent', 'getPCatalogueList'],
   setup(props, {emit}) {
-    console.log(props)
     const http = (request as Ihttp).teachCourse
     const formRef:any = ref(null);
     const route=useRoute()
@@ -214,21 +213,18 @@ export default defineComponent({
           initial: 0   // 私有
         }
       }).then((res: IBusinessResp) => {
-        console.log(res)
         if (!res.status) return
         directoryName.value = ''
         emit('getPCatalogueList')
       })
     }
     const handleOk = async() => {
-      // console.log(formRef.value)
       // formRef.value
       //   .validate()
       //   .then(() => {
       //     console.log('values', formState, toRaw(formState));
       //   })
       let validate: boolean | undefined = await validateRule()
-      console.log(formState, validate)
       if (!validate) {
         return
       }
@@ -237,7 +233,6 @@ export default defineComponent({
         : (props.addType === 2 ? formState.checkedList 
         : (props.addType === 3 ? [formState.judge] 
         : (props.addType === 4 ? formState.fillAnswer.split(',') : [formState.shortAnswer])))
-        console.log(knowledgeList.selectedKnowledgeList)
         // return 
       let points = knowledgeList.selectedKnowledgeList.map(v => v.id)
       let param = {
@@ -251,14 +246,12 @@ export default defineComponent({
         answers: answers,
         ordered_answer: formState.fillChecked
       }
-      console.log(formState, param)
       http.createQuestion({
         urlParams: {
           poolId: formState.directory
         },
         param
       }).then((res: IBusinessResp) => {
-        console.log(res.data)
         if (!res.status) return
         if (paper_id) {
           relationQuests([res.data.id])
@@ -300,12 +293,10 @@ export default defineComponent({
           },
         })
         .then((res: IBusinessResp) => {
-          console.log(res);
           // getPaperList()
         });
     }
     const validateRule = () => {
-      console.log(formState)
       if (!formState.directory) {
         message.warn('请选择目录！')
         return
@@ -378,7 +369,6 @@ export default defineComponent({
       formState.fillChecked = false
       formState.shortAnswer = ''
       formState.shortKey = ''
-      console.log(formRef);
       formRef.value.resetFields()
       emit('update:isShow', false)
     }
@@ -401,40 +391,30 @@ export default defineComponent({
     })
     let openSelect = ref(false)
     const change = () => {
-      console.log('change')
       openSelect.value = false
       isFocus = false
       select.value.blur()
-      console.log(select.value)
     }
     const changefocus = () => {
-      console.log('focus')
       openSelect.value = true
     }
     let isFocus = false
     const changeblur = () => {
-      console.log('blur')
       !isFocus ? openSelect.value = false : ''
     }
     const focusInput = () => {
-      console.log('focusInput')
       isFocus = true
       // openSelect.value = false
     }
     const blurInput = () => {
-      console.log('blurInput')
       isFocus = false
       openSelect.value = false
     }
 
     onMounted(() => {
       // getCCatalogueList()
-      nextTick(() => {
-        console.log(select.value)
-      })
     })
     let typeList: IpaperType = inject('typeList') || {paperType: [], levelType: []}
-    console.log(typeList)
     return {
       handleOk,
       handleCancel,

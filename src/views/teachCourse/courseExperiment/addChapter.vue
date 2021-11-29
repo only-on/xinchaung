@@ -167,18 +167,9 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
     watch(
-      () => reactiveData.chapterList,
-      () => {
-        console.log(reactiveData.chapterList);
-      },
-      { deep: true }
-    );
-    watch(
       () => reactiveData.keys,
       () => {
-        console.log(reactiveData.keys);
         const selectedData=filterData(reactiveData.keys)
-        console.log(selectedData);
         reactiveData.chapterCount=reactiveData.initChapterCount+selectedData.chapterCount
         reactiveData.contentCount=reactiveData.initContentCount+selectedData.contentCount
       },
@@ -189,7 +180,6 @@ export default defineComponent({
         { ...reactiveData.params },
         { course_id: course_id }
       ).then((res: any) => {
-        console.log(res);
         reactiveData.chapterList = res.data.list;
         reactiveData.totalCount=res.data.page.totalCount
         reactiveData.contentCount=0
@@ -202,7 +192,6 @@ export default defineComponent({
         reactiveData.chapterCount=selectedChapters.length
         reactiveData.initChapterCount=reactiveData.chapterCount
         reactiveData.initContentCount=reactiveData.contentCount
-        console.log(reactiveData.chapterCount);
         
       });
     }
@@ -228,7 +217,6 @@ export default defineComponent({
         chapterParams.chapter_ids = [val.id];
         content_ids.push(val.content_ids);
       }
-      console.log(content_ids);
       reactiveData.isLoading = true;
       saveChapterToCourseApi({ ...chapterParams }).then(async (res: any) => {
         const sum = res.data.chapter_ids.length;

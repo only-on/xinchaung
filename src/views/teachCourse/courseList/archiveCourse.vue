@@ -81,8 +81,6 @@ export default defineComponent({
         if (
           reactiveData.params.name
         ) {
-          console.log(1212);
-          
           (reactiveData.emptyType = "searchEmpty");
             (reactiveData.emptyText =
               "暂未搜到相关数据");

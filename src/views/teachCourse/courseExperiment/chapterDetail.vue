@@ -107,7 +107,6 @@ export default defineComponent({
       chapterIntro: "",
       isNoChapterIntro: true,
     });
-    console.log(course_id);
     
     watch(
       () => chapter_id,
@@ -116,14 +115,6 @@ export default defineComponent({
         getChapterDetail();
       },
       { deep: true, immediate: true }
-    );
-
-    watch(
-      () => reactiveData.chapterIntro,
-      () => {
-        console.log("reactiveData.chapterIntro", reactiveData.chapterIntro);
-      },
-      { deep: true }
     );
 
     // 获取章节详情

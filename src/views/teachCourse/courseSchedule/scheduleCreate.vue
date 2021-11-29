@@ -308,7 +308,6 @@ export default defineComponent({
     }
     // 保存
     function handleSubmit () {
-      console.log(form)
       ruleForm.value.validate().then(() => {
         if (selectedClassesData.length === 0 && selectedStudentsData.length === 0) {
           $message.warn('请选择班级或选择学生')
@@ -324,12 +323,10 @@ export default defineComponent({
           stuIds: selectedIds['student'],
           classIds: selectedIds['class'],
         }
-        console.log(id)
         if (id !== 'undefined' && id) {
           http.scheduleUpdate({
             param: {params: Object.assign(param, {id})}
           }).then((res: IBusinessResp) => {
-            console.log(res)
             if (res.code === 1) {
               $message.success('修改成功！')
               router.go(-1)
@@ -340,7 +337,6 @@ export default defineComponent({
           return
         }
         http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
-          console.log(res)
           if (res.code === 1) {
             $message.success('创建成功！')
             router.go(-1)

@@ -119,20 +119,6 @@ export default defineComponent({
       getCourseDetail();
     });
     watch(
-      () => formData.value,
-      () => {
-        console.log(formData.value);
-      },
-      { deep: true }
-    );
-    watch(
-      () => checkout.value,
-      () => {
-        console.log(checkout.value);
-      },
-      { deep: true }
-    );
-    watch(
       () => currentTab,
       () => {
         if (currentTab === "myCourse") {
@@ -147,7 +133,6 @@ export default defineComponent({
     // 获取课程详情
     function getCourseDetail() {
       getCourseDetailApi({ course_id: course_id }).then((res: any) => {
-        console.log(res);
         reactiveData.baseInfoData = res.data;
         (reactiveData.baseInfoData as any).created_at = moment(
           res.data.created_at

@@ -256,7 +256,6 @@ export default defineComponent({
       (newVal) => {
         if (newVal) {
           modalVisible.value = true;
-          console.log(props.params)
           if (props.type === 'score') {
             getScore(props.params.stuRecordId)
           } else if (props.type === 'evalute') {

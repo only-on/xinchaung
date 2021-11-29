@@ -67,12 +67,10 @@ export default defineComponent({
 
     let current = ref(0)
     function beforeChange(from:Function, to:number) {
-      console.log(to)
       current.value= to
     }
 
     let apiList = ['vmOpen', 'vmClose', 'vmRevert', 'vmReset']
-    console.log(props.list,current.value,props.list.vms,props.list.vms[current.value],'props.listllllllllllllllll')
     let params = {
       // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
       uuid: props.list.vms[current.value]?.uuid,
@@ -90,12 +88,9 @@ export default defineComponent({
     }
 
     function jumpHandle(list: {id: number}) {
-      console.log(props.list.vms[current.value].uuid);
-      console.log(route.path);
       http.canAccessVm({
         param: {uuid: props.list.vms[current.value].uuid}
       }).then((res: IBusinessResp) => {
-        console.log(res);
         if (res.status) {
           router.push('/vm/vnc')  // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
           // router.push({

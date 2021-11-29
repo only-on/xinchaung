@@ -60,7 +60,6 @@ export default defineComponent({
     }
 
     const handleOk = (e: MouseEvent) => {
-      console.log(e, startTime.value, moment(startTime.value).format('HH:mm'));
       let param = {
         start: moment(startTime.value).format('HH:mm'),
         end: moment(endTime.value).format('HH:mm'),

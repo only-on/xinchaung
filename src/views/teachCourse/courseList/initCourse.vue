@@ -87,8 +87,6 @@ export default defineComponent({
           reactiveData.params.category ||
           reactiveData.params.name
         ) {
-          console.log(1212);
-          
           (reactiveData.emptyType = "searchEmpty");
             (reactiveData.emptyText =
               "暂未搜到相关数据");
@@ -120,7 +118,6 @@ export default defineComponent({
     }
     // 标签发生变化时
     function tagChange(tags: any) {
-      console.log(tags);
       reactiveData.params.direction = tags.directions;
       reactiveData.params.category = tags.category;
       getCourseList();

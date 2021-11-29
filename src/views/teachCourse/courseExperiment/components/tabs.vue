@@ -25,22 +25,15 @@ export default defineComponent({
     const detailInfo: any = inject("detailInfo");
     const experiment_id: any = inject("experiment_id");
     const routeQuery=useRoute().query
-    console.log(routeQuery);
-    
     watch(
       () => props.currentKey,
       () => {
-          console.log(currentKey.value);
-          
         currentKey.value = props.currentKey;
       }
     );
 
     // 
     function prepare() {
-        console.log('准备虚拟机环境')
-        console.log(detailInfo);
-        
       let param:any= {
         type: "course",
         opType: 'prepare',

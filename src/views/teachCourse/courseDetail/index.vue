@@ -97,7 +97,6 @@ export default defineComponent({
       reactiveData.tabs = settingTab();
     });
     function tabChange(key: string) {
-      console.log(key);
     }
 
     function settingTab() {

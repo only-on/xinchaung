@@ -79,13 +79,10 @@ export default defineComponent({
         emit("update:value",reactiveData.uploadFileList)
     },{deep:true})
     watch(()=>reactiveData.dataset_id,()=>{
-        console.log(reactiveData.dataset_id);
-        
         emit("update:dataset_id",reactiveData.dataset_id)
     },{deep:true})
     function getDataSetList() {
       getDataSetListApi({ type: type, name: "" }).then((res: any) => {
-        console.log(res);
         reactiveData.selfDataSetList = res.data.self;
         loop: for (const key in reactiveData.selfDataSetList) {
           if (
@@ -95,14 +92,12 @@ export default defineComponent({
             )
           ) {
             reactiveData.dataset_id = key;
-            console.log(reactiveData.dataset_id);
             break loop;
           }
         }
       });
     }
     function beforeUpload(file: any) {
-        console.log(file);
       const body = {
         dataset: file,
         pageType: type,
@@ -116,7 +111,6 @@ export default defineComponent({
           : "/dataset/data/upload-file",
         body,
         success: (res: any) => {
-          console.log(res);
           if (res.status === 1) {
             reactiveData.uploadFileList = res.data;
           } else {
@@ -125,7 +119,6 @@ export default defineComponent({
           reactiveData.upload = "";
         },
         progress: (e: ProgressEvent) => {
-          console.log(e);
           if (e.total > 0) {
             reactiveData.progress= Number(Number(e.loaded / e.total * 100).toFixed(2));   
           }
@@ -148,7 +141,6 @@ export default defineComponent({
     }
     // 移除
     function remove() {
-      console.log("移除");
       abort()
       reactiveData.uploadFileList={}
       reactiveData.progress=0

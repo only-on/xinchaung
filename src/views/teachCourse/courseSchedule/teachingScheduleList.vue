@@ -245,7 +245,6 @@ export default defineComponent({
         newTime: true
       })
       for (const i in datas.tableList) {
-        console.log(datas.tableList[i])
         datas.tableList[i][dayTimes.length + 1] = {
           arrangements: [],
           belongs_to_currentteacher: false,
@@ -262,7 +261,6 @@ export default defineComponent({
     let dayTimes = reactive<IDaytime[]>([])
     function getLeftTime() {
       http.getLeftTime().then((res: IBusinessResp) => {
-        console.log(res)
         dayTimes.length = 0
         if (res.code == 1) {
           // this.loading = true
@@ -283,7 +281,6 @@ export default defineComponent({
       tableList: {}
     })
     function getTimeTable(data: string) {
-      console.log(data)
       const param = {
         date: data,
       }
@@ -385,7 +382,6 @@ export default defineComponent({
         text: '您确定要取消此项排课吗？',
         subText: '执行后无法恢复，请谨慎操作',
         callbackOk: () => {
-          console.log(id, 'id')
           http.scheduleDelete({param: {id}}).then((res: IBusinessResp) => {
             if (res.code == 1) {
               getLeftTime()
