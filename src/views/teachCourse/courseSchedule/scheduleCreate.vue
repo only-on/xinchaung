@@ -551,7 +551,7 @@ interface IForm {
     .retain {
       padding: 0px 30px;
       background: #fdfaff;
-      border: 1px solid #ebdbfa;
+      border: 1px solid rgba(@theme-color, 0.2);
       .ant-row {
         margin: 0;
 

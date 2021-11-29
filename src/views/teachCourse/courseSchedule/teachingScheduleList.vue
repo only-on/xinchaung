@@ -273,8 +273,8 @@ export default defineComponent({
         $message.error(err.message)
       })
     }
+    getLeftTime()
     onMounted(() => {
-      getLeftTime()
       getTimeTable(moment(new Date()).format('YYYY-MM-DD'))
     })
     let datas = reactive<ITableList>({
@@ -319,7 +319,7 @@ export default defineComponent({
     }
     // 环境监控
     function environmentalMonitoring() {
-      router.push("/teacher/teacherCourse/teachingSchedule/scheduleCreate");
+      router.push("/teacher/teacherCourse/envMonitoring");
     }
     function toDayList(index: number) {
       return weekTime.value.isoWeekday(index + 1).format('MM.DD')
@@ -371,7 +371,7 @@ export default defineComponent({
     // 编辑预约
     function editTeachingSchedule(id: number, date: string) {
       router.push({
-        path: `/teacher/teacherCourse/teachingSchedule/scheduleEdit`,
+        path: `/teacher/teacherCourse/scheduleEdit`,
         query: {id, date}
       })
     }
@@ -404,7 +404,7 @@ export default defineComponent({
         time: dayTimes[classIndex].start + '~' + dayTimes[classIndex].end, // 开课时间1、开始时间，2、结束时间
       }
       router.push({
-        path: '/teacher/teacherCourse/teachingSchedule/scheduleCreate',
+        path: '/teacher/teacherCourse/scheduleCreate',
         query: params,
       })
     }
@@ -657,8 +657,8 @@ export default defineComponent({
       }
       .table-content {
         display: flex;
-        height: 575px;
-        overflow-y: auto;
+        // height: 575px;
+        // overflow-y: auto;
         .table-body {
           width: 100%;
         }

@@ -116,36 +116,34 @@ export default {
       meta: {
         title: "排课管理",
         authCode: 'teachingSchedule'
+      }, 
+    }, 
+    {
+      path: 'scheduleCreate',
+      name: 'scheduleCreate',
+      component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
+      meta: {
+        title: "创建排课",
+        authCode: 'scheduleCreate'
       },
-      children: [   
-        {
-          path: 'scheduleCreate',
-          name: 'scheduleCreate',
-          component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
-          meta: {
-            title: "创建排课",
-            authCode: 'scheduleCreate'
-          },
-        },
-        {
-          path: 'scheduleEdit',
-          name: 'scheduleEdit',
-          component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
-          meta: {
-            title: "编辑排课",
-            authCode: 'scheduleEdit'
-          },
-        },
-        {
-          path: 'envMonitoring',
-          name: 'envMonitoring',
-          // component: () => import('src/views/teachCourse/courseSchedule/EnvMonitoring.vue'),
-          meta: {
-            title: "环境监控",
-            authCode: 'envMonitoring'
-          },
-        },
-      ]
+    },
+    {
+      path: 'scheduleEdit',
+      name: 'scheduleEdit',
+      component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
+      meta: {
+        title: "编辑排课",
+        authCode: 'scheduleEdit'
+      },
+    },
+    {
+      path: 'envMonitoring',
+      name: 'envMonitoring',
+      component: () => import('src/views/teachCourse/courseSchedule/EnvMonitoring.vue'),
+      meta: {
+        title: "环境监控",
+        authCode: 'envMonitoring'
+      },
     },
   ]
 }

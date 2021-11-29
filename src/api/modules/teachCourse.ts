@@ -474,6 +474,16 @@ export default {
     method: "POST",
     dataType: 'json'
   },
+  envMonitoringList: {
+    url: "/timetable/online-resource/index",
+    method: "POST",
+    dataType: 'json'
+  },
+  forbiddenUser: {
+    url: "/timetable/online-resource/disable",
+    method: "POST",
+    dataType: 'json'
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -579,4 +589,6 @@ export interface ITeacherCourseApis {
   scheduleDetail: TFHttpSend
   scheduleUpdate: TFHttpSend
   scheduleDelete: TFHttpSend
+  envMonitoringList: TFHttpSend
+  forbiddenUser: TFHttpSend
 }
