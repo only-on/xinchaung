@@ -38,7 +38,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="editReply" :width="745" class="postModal">
       <h4>回复内容</h4>
       <div class="text">
-        <QuillEditor v-if="visible" :height="'300px'" toolbar="" :uploadPathName="'teacherForum'" v-model="ForumArticle.content"  /> 
+        <QuillEditor v-if="visible" :height="'300px'" toolbar="" :uploadPathName="'teacherForum'" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer class="footer">
         <a-button @click="editReply" type="primary">提交</a-button>
@@ -53,7 +53,7 @@ import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch.d';
 import { Modal,message } from 'ant-design-vue';
-import  QuillEditor  from "@xianfe/vue3-quill/src/index.vue";
+import  QuillEditor  from "src/components/editor/quill.vue";
 import {goHtml} from 'src/utils/common'
 interface Ireply{
   forum_id:number,

@@ -32,7 +32,7 @@
     <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745" class="modal-post">
       <h4>回复内容</h4>
       <div class="text" style="height:300px;">
-        <QuillEditor toolbar="full" :options="QuillOptions" :uploadPathName="'teacherForum'" v-model:content="ForumArticle.content"  /> 
+        <QuillEditor toolbar="full" :uploadPathName="'teacherForum'" v-model:content="ForumArticle.content"  /> 
       </div>
       <template #footer>
         <a-button @click="handleReply" type="primary">提交</a-button>
@@ -50,9 +50,7 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
-import { QuillEditor } from "@vueup/vue-quill";
-// import { Delta } from "../../typings/quill-delta";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
+import  QuillEditor  from "src/components/editor/quill.vue";
 interface IforumSearch{
   title:string,
   type:string | undefined,
