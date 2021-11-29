@@ -39,7 +39,7 @@ export default {
     saveTrainNoteApi:{url:"/student-train/savenote", method: 'POST', dataType: 'json'}, // 课程
 
     // 实训资源列表
-    getTrainResourceApi:{url: "/student-train/resource", method: 'get'},
+    getTrainResourceApi:{url: "/api/service/resources", method: 'get'},
 
     // 学生提问
     studentQuestionApi:{url:"/api/operate/operates/handle", method: 'POST', dataType: 'json'},

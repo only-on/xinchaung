@@ -19,11 +19,12 @@
         </div>
       </template>
     </a-table>
+    <a-pagination class="page-box" v-if="total!=0" :default-current="param.page" :default-page-size="param.limit" :total="total" @change="pageChange"/>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted ,ref} from "vue";
+import { defineComponent, onMounted ,ref,reactive,toRefs} from "vue";
 import request from "src/request/getRequest"
 import { useRoute } from "vue-router";
 import {downloadUrl} from "src/utils/download"
@@ -57,18 +58,24 @@ export default defineComponent({
         slots: { customRender: "operation" },
       },
     ];
-
+    const reactiveData=reactive({
+      total:0,
+      param:{
+        id:taskId,
+        limit:20,
+        page:1,
+        name:"",
+        ext:"",
+        type:2
+      }
+    })
     const dataSource: any =ref([]);
     onMounted(()=>{
       getResource()
     })
     function  getResource() {
-      let param={
-        train_id:taskId,
-        pageSize:100,
-        page:1
-      }
-      TrainApi.getTrainResourceApi({param:param}).then((res)=>{
+      dataSource.value=[]
+      TrainApi.getTrainResourceApi({param:reactiveData.param}).then((res)=>{
         if (res?.data) {
           dataSource.value=res.data.list
         }
@@ -87,7 +94,21 @@ export default defineComponent({
        downloadUrl(env?'/proxyPrefix'+val.url:val.url) 
     }
     
-    return { dataSource, columns,show ,down,rowKey};
+    // 页码发生变化时
+    function pageChange(page:number, pageSize:number) {
+      reactiveData.param.limit=pageSize
+      reactiveData.param.page=page
+      getResource()
+    }
+    return { 
+      dataSource, 
+      columns,
+      show ,
+      down,
+      rowKey,
+      ...toRefs(reactiveData),
+      pageChange
+    };
   },
 });
 </script>
@@ -107,6 +128,10 @@ export default defineComponent({
   .ant-table-row-cell-break-word{
     text-overflow: ellipsis;
     overflow: hidden;
+  }
+  .page-box{
+    text-align: center;
+    margin-top: 15px;
   }
 }
 </style>
