@@ -59,7 +59,7 @@ import { QuillEditor } from "@vueup/vue-quill";
 // import { Delta } from "quill-delta";
 import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
-import {toVmConnect,IEnvirmentsParam} from "src/utils/vncInspect" // 打开虚拟机
+import {toVmConnect,IEnvirmentsParam,TopType} from "src/utils/vncInspect" // 打开虚拟机
 
 interface IdetailObj{
   saveOrEdit:number;
@@ -179,7 +179,7 @@ export default defineComponent({
       // detail.studystr
       let param:IEnvirmentsParam= {
         type: "course",
-        opType: 'start',
+        opType: (detail.studystr) as TopType,
         taskId: id.value,
       }
       if (task_type.type===4) {
