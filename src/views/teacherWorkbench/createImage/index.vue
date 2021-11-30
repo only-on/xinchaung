@@ -139,7 +139,7 @@ export default defineComponent({
                 state.formRef.validate().then(() => {
                      const parmas= {
                         name:state.image.name,
-                        file_path:"/www/tusd/uploads"+state.image.fileName,
+                        file_path:"/www/tusd/uploads/"+state.image.fileName,
                         file_size:state.image.fileSize,
                         classify_id:state.image.classify_id,
                         tag:state.image.tag,
