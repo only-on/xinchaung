@@ -185,8 +185,9 @@ import ppt from 'src/assets/images/file/ppt.svg'
 import dm from 'src/assets/images/file/dm.svg'
 const http=(request as any).dataSet
 interface IForumSearch{
-  name:string,
-  description:string,
+  creator:number
+  name:string
+  description:string
   cover:string
   categoryText:string
   category:any[]
@@ -274,6 +275,7 @@ export default defineComponent({
     }
     const state:IState=reactive({
       ForumSearch:{
+        creator:Number(lStorage.get('user_id')),
         role:Number(lStorage.get('role')),
         common:[3,5].includes(Number(lStorage.get('role')))?0:1,
         name:'',
@@ -355,7 +357,7 @@ export default defineComponent({
             // ...state.ForumSearch
             // content:JSON.stringify(state.formState.content)
           }
-          // http.createForum({param:{forum:{...obj}}}).then((res:IBusinessResp)=>{
+          // http.create({param:{forum:{...obj}}}).then((res:IBusinessResp)=>{
           //   message.success('创建成功')
           //     router.go(-1)
           // })
@@ -433,7 +435,7 @@ export default defineComponent({
       }
       delete state.ForumSearch.fileList[key]
     }
-    function removeFile(file:any, index:number){
+    function removeFile(file:any, index:any){
       file.files.forEach((item: any) => {
         if (item.xhr) {
           // console.log(item)

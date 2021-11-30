@@ -8,6 +8,7 @@ export default{
   dataSetAll:{url:`/api/dataset/all_datasets`,method:'GET'},
   upLoadCover:{url:`/dmc/v1.0/upload_image`,method:'POST',dataType: 'formdata'},
   uploadDoc:{url:`/dmc/v1.0/upload_doc`,method:'POST',dataType: 'formdata'},
+  create:{url:`/dmc/v1.0/dataset`,method:'POST',dataType: 'formdata'}
 }
 
 export interface IDataSet{
@@ -16,6 +17,7 @@ export interface IDataSet{
   dataSetAll:TFHttpSend
   upLoadCover:TFHttpSend
   uploadDoc:TFHttpSend
+  create:TFHttpSend
 }
 
 
