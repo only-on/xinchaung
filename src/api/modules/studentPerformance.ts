@@ -8,5 +8,8 @@ export default {
     // 实训成绩列表
     trainingResults: { url: `/api/operate/studentResults/list`, method: "GET", },
     //get score
-    getScore: { url: `/student-course/get-score`, method: "POST", dataType: 'formdata' }
+    getScore: { url: `/student-course/get-score`, method: "POST", dataType: 'formdata' },
+    // 资源列表
+    getResources: { url: `/api/service/resources`, method: "GET", dataType: 'json' },
+
 }

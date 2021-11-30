@@ -103,9 +103,6 @@ export default defineComponent({
       data.page.page = page
       getResourceList()
     }
-    // const selectedRows=(val:any)=>{
-    //    data.selectedRows=val
-    // }
     // 导出成绩
     const exportResult = () =>{
       console.log('导出', data.selectedRows)

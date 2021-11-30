@@ -10,22 +10,48 @@
              <a-modal class="createExercise" :visible="visible" title="创建目录" width="900px" @cancel="handleCancel" @ok="handleOk">
                 <div class="modal-con">
                     <a-form ref="formRef" :model="form" :rules="rules">
+                        
                         <a-form-item
                             label="名称"
                             required
                             name='name'
                             >
-                            <a-input
+                            <div
+                            class="classical__input--count-inner"
+                            :class="{ 'classical__input--focused': nameFocused }"
+                            >
+                                <a-textarea
+                                    rows="1"
+                                    placeholder="请输入名称"
+                                    v-model:value="form.name"
+                                    showCount
+                                    :maxlength="10"
+                                    class="classical__folder-desc"
+                                    @focus="handleNameFocused"
+                                    @blur="handleNameBlurred"
+                                />
+                            </div>
+                            <!-- <a-input
                                 placeholder="请输入名称"
                                 v-model:value='form.name'
-                            />
+                            /> -->
                         </a-form-item>
                         <a-form-item label="描述" name="description">
-                            <a-textarea
-                            :auto-size="{ minRows:4, maxRows:7 }"
-                            v-model:value='form.description'
-                            placeholder="请输入描述内容">
-                            </a-textarea>
+                            <div
+                            class="classical__input--count-inner"
+                            :class="{ 'classical__input--focused': descFocused }"
+                            >
+                                <a-textarea
+                                rows="4"
+                                v-model:value='form.description'
+                                :maxlength="500"
+                                placeholder="请输入描述内容"
+                                showCount
+                                class="classical__folder-desc"
+                                @focus="handleDescriptionFocused"
+                                @blur="handleDescriptionBlurred">
+                                </a-textarea>
+                            </div>   
                         </a-form-item>
                     </a-form>
                 </div>
@@ -95,6 +121,8 @@ export default defineComponent({
         shareExercises
     },
      setup:(props,context)=>{
+        const nameFocused = ref(false);
+        const descFocused = ref(false);
         const teacherDataExerApi = (request as any).teacherDataExercises
         const state:state=reactive({
             componentName:'',
@@ -174,6 +202,25 @@ export default defineComponent({
     function createExceriseBtn(){
         visible.value=true   
     }
+    // 题目字数限制
+    function handleNameFocused(e: FocusEvent){
+      console.log("[classical/panel] name focused");
+      nameFocused.value = true;
+    };
+    function handleNameBlurred(e: Event){
+      console.log("[classical/panel] name blurred");
+      nameFocused.value = false;
+    };
+    // 描述字数限制
+    function handleDescriptionFocused(e: FocusEvent){
+      console.log("[classical/panel] description focused");
+      descFocused.value = true;
+    };
+    function handleDescriptionBlurred(e: Event){
+      console.log("[classical/panel] description blurred");
+      descFocused.value = false;
+    };
+    
     function createExcerise(createParams:fromType){
         teacherDataExerApi.createExercise({param:createParams}).then((res:any)=>{
             console.log(res)
@@ -213,11 +260,32 @@ export default defineComponent({
                getExerciseList(params) 
            })
     }
-      return {...toRefs(state),params,createParams,type,componentData,visible,deleteExamList,getPollId,currentPageChange,onShowSizeChange,getExerciseList,createExceriseBtn,createExcerise,handleOk,handleCancel,searchData}
+      return {...toRefs(state),
+      params,
+      createParams,
+      type,
+      componentData,
+      visible,
+      deleteExamList,
+      getPollId,
+      currentPageChange,
+      onShowSizeChange,
+      getExerciseList,
+      createExceriseBtn,
+      createExcerise,
+      handleOk,
+      handleCancel,
+      searchData,
+    nameFocused,
+    descFocused,
+    handleNameFocused,
+    handleNameBlurred,
+    handleDescriptionFocused,
+    handleDescriptionBlurred}
     }
 })
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .conTop{
     display: flex;
     justify-content:space-between;
@@ -239,5 +307,31 @@ export default defineComponent({
 }
 .pagination{
     text-align: center;
+}
+.classical__input--count-inner {
+  border: 1px solid @border-color-base;
+  border-radius: @border-radius-base;
+
+  :deep(.ant-input) {
+    border: none;
+    resize: none;
+  }
+
+  :deep(.ant-input:focus) {
+    box-shadow: none;
+  }
+
+  :deep(.ant-input-textarea-show-count::after) {
+    margin-bottom: 0;
+  }
+
+  &:hover {
+    border: 1px solid @theme-color;
+  }
+
+  &.classical__input--focused {
+    border: 1px solid @theme-color;
+    box-shadow: 0 0 0 2px @theme-scroll;
+  }
 }
 </style>

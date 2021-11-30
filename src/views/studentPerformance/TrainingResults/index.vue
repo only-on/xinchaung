@@ -6,20 +6,43 @@
         <div v-if="traningResult.length" class="content-list">
             <div class="item-list" v-for="(item,i) in traningResult" :key="i">
                 <div class="item-img">
-                    <!-- <img src="../../../assets/images/cover2.png" alt="" srcset=""> -->
-                    <img :src="item.url" alt="">
+                    <img :src="item.url">
                 </div>
                 <div class="item-info">
-                    <h3>{{item.name}}</h3>
-                    <div>起止时间:{{item.between_time}}</div>
-                    <div class="train-status">实训状态:{{item.state}}</div>
+                    <h3>{{item.train.name}}</h3>
+                    <div>起止时间:{{item.train.between_time}}</div>
+                    <div class="train-status">实训状态:{{item.train.state}}</div>
                     <div class="train-table">
-                    <a-table class="trainResultTable" :columns="columns" :data-source="tableData" :bordered='true' :pagination="false">
+                    <a-table class="trainResultTable" :columns="columns" :data-source="[item]" :bordered='true' :pagination="false" rowKey="id">
+                         <template #used_time='{record}'>
+                            <div v-if="record.is_release">{{record.used_time}}</div>
+                            <div v-else>--</div>
+                        </template>
+                        <template #report>
+                            <div>查看</div>
+                        </template>
+                        <template #notes>
+                            <div>查看</div>
+                        </template>
+                        <template #video>
+                            <div>查看</div>
+                        </template>
+                        <template #final_score='{record}'>
+                            <div v-if="record.is_release">{{record.final_score}}</div>
+                            <div v-else>待教师评分</div>
+                        </template>
+                        <template #rank='{record}'>
+                            <div v-if="record.is_release">{{record.rank}}</div>
+                            <div v-else>待教师评分</div>
+                        </template>
+                        <template #max_score='{record}'>
+                            <div v-if="record.is_release">{{record.max_score}}</div>
+                            <div v-else>待教师评分</div>
+                        </template>
                     </a-table>
                     </div>
                 </div>
             </div>
-            <!-- <div>第{{1}}-{{pagingData.totalCount}}条，共{{pagingData.totalCount}}条数据</div> -->
         </div>
         <div v-else class="no-search-data">
             <div v-if="ifTip" class="loading">
@@ -47,7 +70,6 @@ interface State{
     traningResult:any[],
     pagingData:pageingType;
     columns:any[],
-    tableData:any[],
     ifTip:boolean,
 }
 export default defineComponent({
@@ -61,93 +83,62 @@ export default defineComponent({
                     {   title:'花费时间',
                         key:'used_time',
                         dataIndex: 'used_time',
+                        slots: { customRender: 'used_time' },
                     },
                     {
                         title: '实训报告',
                         dataIndex: 'report',
-                        scopedSlots: { customRender: 'report' },
+                        slots: { customRender: 'report' },
                     },
                     {
                         title: '实训结果',
                         dataIndex: 'notes',
-                        scopedSlots: { customRender: 'notes' },
+                        slots: { customRender: 'notes' },
                     },
                     {
                         title: '操作视频',
                         dataIndex: 'video',
-                        scopedSlots: { customRender: 'video' },
+                        slots: { customRender: 'video' },
                     },
                     {
                         title: '实训成绩',
                         dataIndex: 'final_score',
-                        scopedSlots: { customRender: 'final_score' },
+                        slots: { customRender: 'final_score' },
                     },
                     {
                         title: '班级排名',
                         dataIndex: 'rank',
-                        scopedSlots: { customRender: 'rank' },
+                        slots: { customRender: 'rank' },
                     },
                      {
                         title: '班级最高分',
                         dataIndex: 'max_score',
-                        scopedSlots: { customRender: 'max_score' },
+                        slots: { customRender: 'max_score' },
                     },
                 ],
-            tableData:[{
-                        used_time:'00时00分52秒',
-                        video:'查看',
-                        report:'查看',
-                        notes:'查看',
-                        final_score:'待教师评分',
-                        rank: "待教师评分",
-                        max_score: "待教师评分",
-                }],
             ifTip:false
         })
         function getData(value?:any,ifSearch?:boolean){
             state.ifTip=true
             const infoRequest=(request as any).studentPerformance
-            infoRequest.trainingResults(ifSearch?{
-               param:{keyword:value} 
-            }:'')
-            .then((res:any)=>{
-            if(res.status==1){
-                console.log(res.data)
+            // infoRequest.trainingResults(ifSearch?{
+            //    param:{keyword:value} 
+            // }:'')
+            // .then((res:any)=>{
+            // if(res.status==1){
+            //     console.log(res.data)
+            //     state.traningResult=res.data.list
+            //     state.pagingData=res.data.page
+            // }else{
+            //         message.error(res.msg)
+            //     }
+            //   state.ifTip=false
+            // })
+            
+            infoRequest.experimentalResults({param: {type:'train'}}).then((res:any)=>{
+                state.ifTip=false
                 state.traningResult=res.data.list
                 state.pagingData=res.data.page
-            }else{
-                    message.error(res.msg)
-                }
-              state.ifTip=false
-            })
-            
-            infoRequest.experimentalResults(
-                {    
-                param: {type:'train'}
-                })
-            .then((res:any)=>{
-                    var tableGetData:any=[]
-                    tableGetData=[{
-                        used_time:'00时00分52秒',
-                        video:'查看',
-                        report:'查看',
-                        notes:'查看',
-                        final_score:'90',
-                        rank: "待教师评分",
-                        max_score: "待教师评分",
-                    }]
-                    state.tableData=tableGetData
-                    if(tableGetData[0].final_score){
-                        state.tableData[0].final_score=tableGetData[0].final_score
-                    }
-                     if(tableGetData[0].rank){
-                        state.tableData[0].rank=tableGetData[0].rank
-                    }
-                     if(tableGetData[0].max_score){
-                        state.tableData[0].max_score=tableGetData[0].max_score
-                    }
-                    console.log('获取实训成绩')
-                    console.log(res.data)
             })
         }
         function onSearch(value:string,){

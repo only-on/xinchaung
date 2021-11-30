@@ -206,7 +206,7 @@ export default defineComponent({
         }
         function toCourseResource(id:any){
             console.log(id)
-            router.push('/courseResources')
+            router.push({path:'/courseResources',query:{id:id}})
         }
          onMounted(() => {
             getData()

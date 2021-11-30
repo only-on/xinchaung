@@ -14,7 +14,7 @@
         </p>
         <p class="ant-upload-hint">选择要上传的镜像或将镜像拖拽到此处 仅支持tar和qcow2</p>
     </a-upload-dragger>
-    <a-progress v-if="percentage" :percent="percentage" />
+    <a-progress v-if="ifProgress" :percent="percentage" />
     <div v-if="file" class="uploadBtn">
         <a-button class='btn' :disabled='uploadFile' @click='onUpload'>上传</a-button>
         <a-button class="btn" :disabled='recover' @click="recoveryUpload">恢复</a-button>
@@ -56,6 +56,7 @@ interface Istate {
   recover:boolean,
   stop:boolean,
   deleteFile:boolean,
+  ifProgress:boolean
 }
 export default defineComponent({
     name:'uploadImage',
@@ -72,6 +73,7 @@ export default defineComponent({
         recover:true,
         stop:true,
         deleteFile:false,
+        ifProgress:false,
     })
     const methods={
         // 有文件输入
@@ -85,6 +87,7 @@ export default defineComponent({
             return false;
         },
         onUpload(){
+                state.ifProgress=true
                 const type=state.name.split('.')[state.name.split('.').length-1]
                 if(!state.file){
                     message.warning('请先上传文件！')
@@ -105,7 +108,7 @@ export default defineComponent({
               // 创建一个tus实例
                 state.upload = new tus.Upload(state.file, {
                     // tus服务器的上传URL
-                    endpoint: env?"http://192.168.101.130:1080/files/":"/files/",
+                    endpoint: env?"http://192.168.101.130:1080/files/":"/tusd/files/",
                     // 数组或null
                     retryDelays: [0, 3000, 5000, 10000, 20000],
                     // 在所有请求中使用的具有自定义头值的对象。用于添加身份验证细节
@@ -172,7 +175,8 @@ export default defineComponent({
             state.percentage=0
             state.name=''
             state.size=''
-            context.emit('upload-imageinfo',state.name,state.size)
+            state.ifProgress=false
+            context.emit('upload-imageinfo','','')
             return true
         },
         remove(file:any){
