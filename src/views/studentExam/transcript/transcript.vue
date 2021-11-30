@@ -88,11 +88,8 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const uid = storage.lStorage.get("uid");
+    const uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
     const paper_id:any=route.query?.id
-    // const paper_id: any = 5;
-    console.log(paper_id);
-
     const data = [
       {
         name: "单选题名称",
@@ -357,14 +354,11 @@ export default defineComponent({
         accuracy.resize();
       };
       currentSelectQuestion.value=reactiveData.transcriptDetailData.questions[0]
-      console.log(currentSelectQuestion.value);
-      
     });
     function init() {
       return new Promise((resolve: any, reject: any) => {
         studentExamResult(params).then((res) => {
           reactiveData.transcriptDetailData=res?.data
-          console.log(res);
           resolve()
         }).catch(err=>{
           reject(err)

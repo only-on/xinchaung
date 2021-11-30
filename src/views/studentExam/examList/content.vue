@@ -35,7 +35,7 @@
             <p>日期：{{ item.start_day?item.start_day:'' }}</p>
             <p>时间：{{ item?.times }}</p>
             <div class="exam-action-card">
-              <router-link :to="'/exam/look?id=' + item?.id"
+              <router-link :to="'/studentExam/look?id=' + item?.id"
                 >查看成绩</router-link
               >
               <span class="teacher-name"
@@ -94,7 +94,6 @@ export default defineComponent({
     const reactiveData = reactive({
       searchExamParams: props.params,
     });
-    console.log(examData);
 
     const showModal = () => {
       visible.value = true;

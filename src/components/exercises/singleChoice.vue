@@ -3,7 +3,7 @@
         <h2 class="question-title">{{index+1}}、{{data?.question}}<i class="correct-answer" v-if="isShowAnswer">(正确答案：{{getAnswer(data.answers[0].answer,data.options)}})</i></h2>
         <a-radio-group class="answer-list" @change="answerChange" v-model:value="data.student_answer[0]">
             <div v-for="(item,index) in data.options" :key="item.id">
-                <a-radio class="answer-item"  :value="item.id" >{{numToAbc(Number(index)+1)}}、{{item.option}}</a-radio>
+                <a-radio class="answer-item"  :value="item.id.toString()" >{{numToAbc(Number(index)+1)}}、{{item.option}}</a-radio>
             </div>
         </a-radio-group>
     </div>

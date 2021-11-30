@@ -103,14 +103,11 @@ export default defineComponent({
         },
       }).then((res) => {
         reactiveData.startExamInfoData = res?.data;
-        console.log(reactiveData.startExamInfoData);
-        
       });
     }
     // 查找考试列表
     function searchExam(param: any) {
       params = Object.assign(params, param);
-      console.log(params);
       studentExamList();
     }
 

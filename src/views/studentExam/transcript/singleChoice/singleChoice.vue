@@ -20,7 +20,6 @@ import styles from "../question.module.less"
 export default defineComponent({
   props: ["data","index"],
   setup(props) {
-      console.log(props.data);
     return {numToAbc,styles,getStudentTranscriptAnswer};
   },
 });

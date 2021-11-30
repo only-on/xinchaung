@@ -1,4 +1,4 @@
-import request from "src/request/getRequest";
+import request from "src/api/index";
 import { IExamListParams ,IExamResult,TStartedExam,TSubmitAnswer} from "./studentExam.type"
 
 const studentExam = request.studentExam;
@@ -10,8 +10,6 @@ const studentExam = request.studentExam;
 async function getStudentExaminationlList(params: IExamListParams) {
    const data=  await studentExam
         .studentExaminationlList({...params})
-        console.log(data);
-        
     return data
 }
 
@@ -62,13 +60,22 @@ async function endStudentAnswer(params:TStartedExam) {
     return await studentExam.endAnswer(params)
 }
 
+/**
+ * @description 获取当前试卷习题
+ * @param entity_type 课程course, 章节chapter, 实验content, 随测test, 试卷paper
+ */
+
+async function getQuestionsListApi(urlParams:{entity_type:string,entity_id:number},param:{include:string}) {
+    return await studentExam.getQuestionsListApi({urlParams:{...urlParams},param: param })
+}
 export {
     getStudentExaminationlList,
     studentExamResult,
     startExam,
     startedExam,
     submitAnswer,
-    endStudentAnswer  
+    endStudentAnswer,
+    getQuestionsListApi  
 }
 
 

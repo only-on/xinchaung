@@ -3,7 +3,7 @@
     <div class="exam-top-img">
       <img :src="topImages" alt="" />
     </div>
-    <div class="exam-info" v-if="startExamInfoData">
+    <div class="exam-info" v-if="startExamInfoData.id">
       <div class="exam-count">
         <span>总分：{{startExamInfoData?.all_score}}</span>
         <span>试题数量：{{startExamInfoData?.questions_count}}</span>
@@ -15,12 +15,12 @@
         <span class="exam-status">{{examStatus}}</span>
       </div>
     </div>
-    <div class="exam-action" v-if="startExamInfoData">
+    <div class="exam-action" v-if="startExamInfoData.id">
       <span class="exam-time">
         <i>{{startExamInfoData?.start_date}}</i>
         {{startExamInfoData?.times}}
       </span>
-      <a-button type="primary" @click="showModal">开始考试</a-button>
+      <a-button type="primary" @click="showModal" :disabled="new Date(startExamInfoData?.started_at).getTime()>currentTime&&currentTime<new Date(startExamInfoData?.closed_at).getTime()">开始考试</a-button>
     </div>
   </div>
   <a-modal
@@ -48,21 +48,27 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref,inject,Ref,computed } from "vue";
+import { defineComponent, ref,inject,Ref,computed, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import {startedExam} from "../studentExam.model"
 import {TStartedExam} from "../studentExam.type"
 import storage from "src/utils/extStorage"
 import {contrastTime} from "src/utils/common"
 import topImages from "src/assets/exam/top-images.png"
+import moment from "moment"
 
 export default defineComponent({
   setup() {
     const visible = ref<boolean>(false);
     const router = useRouter();
     let startExamInfoData:any=inject("startExamInfoData")
-    let student_id= storage.lStorage.get("uid")
-
+    let student_id= storage.lStorage.get("uid") || storage.lStorage.get("user_id")
+    const currentTime=ref(new Date().getTime())
+    onMounted(()=>{
+      setInterval(()=>{
+        currentTime.value=new Date().getTime()
+      },1000)
+    })
     const examStatus= computed(()=>{
       if (!startExamInfoData.value.start_day) return "未开始"
       let startTime=new Date(startExamInfoData.value.start_day+startExamInfoData.value.times.split("~")[1])
@@ -83,17 +89,14 @@ export default defineComponent({
     }
       startedExam(params).then((res=>{
         console.log(res);
-        
       }))
     }
     function toStartExam() {
-      console.log(1111);
-      
       startExam()
       router.push({
         path: "/studentExam/examDoing",
         query:{
-          paper_id:startExamInfoData?.value.id
+          exam_id:startExamInfoData?.value.id
         }
       });
     }
@@ -104,7 +107,9 @@ export default defineComponent({
       toStartExam,
       startExamInfoData,
       examStatus,
-      topImages
+      topImages,
+      moment,
+      currentTime
     };
   },
 });

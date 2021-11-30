@@ -2,9 +2,9 @@
     <div class="judge-box">
         <h2 class="question-title">{{index+1}}、{{modelValue.question}}<i class="correct-answer" v-if="isShowAnswer">(正确答案：{{getAnswer(modelValue.answers[0].answer,modelValue.options)}})</i></h2>
         
-        <a-radio-group class="answer-list" v-model:value="modelValue.student_answer[0]">
+        <a-radio-group class="answer-list" v-model:value="modelValue.student_answer[0]" @change="radioChange">
             <div v-for="(item,index) in modelValue.options" :key="index.toString()">
-                <a-radio class="answer-item"  :value="item.id" >{{item.option}}</a-radio>
+                <a-radio class="answer-item"  :value="item.id.toString()" >{{item.option}}</a-radio>
             </div>
             
         </a-radio-group>
@@ -29,7 +29,14 @@ export default defineComponent({
             
             return options[i].option
         }
-        return {index,modelValue,getAnswer}
+
+        // 发生时
+        function radioChange(val:any) {
+            console.log(val)
+            console.log(modelValue)
+            emit("answerChange",val.target.value)
+        }
+        return {index,modelValue,getAnswer,radioChange}
     },
 })
 </script>

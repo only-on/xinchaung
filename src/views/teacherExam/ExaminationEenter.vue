@@ -49,7 +49,7 @@
                   <div>通过比例：{{v.pass_rate}}%</div>
                 </div>
                 <div class="score-num-right" @click="publish(v.id,v.is_publish)">
-                  <a-button type="primary" :disabled="v.status !== 2" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
+                  <a-button type="primary" :disabled="!['null',null,2].includes(v.status)" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
                 </div>
               </div>
               <div class="card-item-content">

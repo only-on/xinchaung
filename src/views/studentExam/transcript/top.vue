@@ -56,8 +56,6 @@ export default defineComponent({
         infoData.value=val
       }   
     })
-    console.log(infoData);
-    
     function back(){
       router.go(-1)
     }

@@ -28,22 +28,23 @@
 
 <script lang="ts">
 import { defineComponent, ref,inject ,Ref,watch} from "vue";
-import { useRouter } from "vue-router";
+import { useRouter,onBeforeRouteLeave } from "vue-router";
 import {countDown,Itimes} from "src/utils/common"
 import topImages from "src/assets/exam/top-images.png"
 export default defineComponent({
   setup() {
+    const router=useRouter()
     let startExamInfoData:any=inject("startExamInfoData")
-    console.log(startExamInfoData);
-    
-    const times:Ref<Itimes> |undefined=ref({d:"00",h:"00",m:"00",s:"00"})
-    // console.log(times);
+    const times:Ref<Itimes> |undefined=ref({d:"00",h:"00",m:"00",s:"00"});
+    let timers:NodeJS.Timer|null=null
+    onBeforeRouteLeave(()=>{
+      clearInterval(Number(timers))
+    })
     watch(()=>startExamInfoData,()=>{
-      console.log(1111);
       if (!startExamInfoData?.value) return;
       if (!startExamInfoData?.value.times) return;
       let endTime=startExamInfoData?.value.times.split("~")
-      times.value=countDown(new Date(),startExamInfoData?.value.start_date+endTime[1])
+      times.value=countDown(new Date(),startExamInfoData?.value.closed_at)
     },{deep:true,immediate:true})
     function calculateTime(){
       if (!times?.value)  return
@@ -56,9 +57,18 @@ export default defineComponent({
             times.value.h=Number(times.value.h)-1
           }
         }
+        if (times.value.s<=0&&times.value.m<=0&&times.value.h<=0) {
+          times.value.s=0
+          times.value.m=0
+          times.value.h=0
+          times.value.d=0
+          router.push({
+          path: "/studentExam",
+        });
+        }
     }
 
-    setInterval(()=>{
+    timers= setInterval(()=>{
       calculateTime()
     },1000)
     return {

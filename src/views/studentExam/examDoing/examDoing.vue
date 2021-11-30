@@ -189,6 +189,7 @@ import {
   startExam,
   submitAnswer,
   endStudentAnswer,
+  getQuestionsListApi,
 } from "../studentExam.model";
 import storage from "src/utils/extStorage";
 import judge from "src/components/exercises/judge.vue";
@@ -204,6 +205,7 @@ type TreactiveData = {
   judges: any[];
   gapFilling: any[];
   shortAnswerQuestionS: any[];
+  paper_id:number
 };
 export default defineComponent({
   components: {
@@ -218,8 +220,8 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const route = useRoute();
-    const uid = storage.lStorage.get("uid");
-    const paper_id: any = route.query.paper_id ? route.query.paper_id : "";
+    const uid = storage.lStorage.get("uid") || storage.lStorage.get("user_id");
+    const exam_id: any = route.query.exam_id ? route.query.exam_id : "";
     const reactiveData: TreactiveData = reactive({
       startExamInfoData: {},
       examQuestions: [],
@@ -227,37 +229,13 @@ export default defineComponent({
       judges: [],
       gapFilling: [],
       shortAnswerQuestionS: [],
+      paper_id:-1
     });
     const currentQuestion = ref(0);
     const lastQuestion = ref(0);
     const currentOpenCard = ref(1);
     const isChange = ref(false);
-    const startExamInfo = {
-      code: 1,
-      status: 1,
-      msg: "成功",
-      data: {
-        id: 5,
-        name: "试卷5",
-        code: "1emtHr55mG3cJiQ51NVxFluubvkiz1wM",
-        type: "exam",
-        author_id: 105,
-        is_publish: 1,
-        description: "desc-5",
-        note: "note-5",
-        rate: 60,
-        all_score: 150,
-        pass_score: 90,
-        questions_count: 6,
-        students_count: 2,
-        author_name: "文和",
-        exam_status: 2,
-        question_ids: [17, 7, 2, 18, 19, 20],
-        student_ids: [104, 112],
-        start_date: "2021-08-30",
-        times: "18:53:53 ~ 19:53:46",
-      },
-    };
+
     const examQuestionsData = {
       code: 1,
       status: 1,
@@ -534,8 +512,6 @@ export default defineComponent({
     watch(
       examQuestions,
       () => {
-        console.log(111, examQuestions.value);
-
         if (!examQuestions.value.length) return;
         multipleChoices.value = [];
         judges.value = [];
@@ -546,22 +522,18 @@ export default defineComponent({
           if (item.type_id === 2 || item.type_id === 1) {
             item.index = index;
             multipleChoices?.value.push(item);
-            // console.log(multipleChoices?.value);
           }
           if (item.type_id === 3) {
             item.index = index;
             judges?.value.push(item);
-            // console.log(judges?.value);
           }
           if (item.type_id === 4) {
             item.index = index;
             gapFilling?.value.push(item);
-            // console.log(gapFilling?.value);
           }
           if (item.type_id === 5) {
             item.index = index;
             shortAnswerQuestionS?.value.push(item);
-            // console.log(shortAnswerQuestionS?.value);
           }
         });
       },
@@ -569,48 +541,57 @@ export default defineComponent({
     );
 
     provide("startExamInfoData", startExamInfoData);
-    onMounted(() => {
-      getStartExam();
-      reactiveData.startExamInfoData = startExamInfo.data;
-      reactiveData.examQuestions = examQuestionsData.data;
+    onMounted(async() => {
+      await getStartExam();
+      getQuestionsList();
     });
-
+    // 获取试卷习题
+    function getQuestionsList() {
+      getQuestionsListApi(
+        { entity_type: "paper", entity_id: reactiveData.paper_id },
+        { include: "answers" }
+      ).then((res:any) => {
+        reactiveData.examQuestions=res?.data
+      });
+    }
     // 结束考试
     function finshExam() {
       let params = {
         urlParams: {
           student_id: uid,
-          exam_id: paper_id,
+          exam_id: exam_id,
         },
       };
-      endStudentAnswer(params);
-      router.push({
-        path: "/studentExam/list",
+      endStudentAnswer(params).then((res: any) => {
+        router.push({
+          path: "/studentExam",
+        });
       });
     }
 
     // 开始考试
     function getStartExam() {
-      startExam({
-        urlParams: {
-          student_id: uid,
-        },
-      }).then((res) => {
-        console.log(res);
+      return new Promise((resolve: any, reject: any) => {
+        startExam({
+          urlParams: {
+            student_id: uid,
+          },
+        }).then((res: any) => {
+          reactiveData.startExamInfoData = res.data;
+          if (reactiveData.startExamInfoData.id) {
+            reactiveData.paper_id=res.data.paper_id
+          }
+          
+          resolve();
+        });
       });
     }
 
     // 当前试题变化
     async function questionTypeChange(val: number) {
-      console.log(val);
-      console.log(currentQuestion.value);
-
       if (isChange.value) {
-        console.log("我发生了变化");
         try {
           let res: any = await submitExamAnswer(lastQuestion.value);
-          console.log(res);
-
           if (res.status === 1) {
             lastQuestion.value = currentQuestion.value;
             isChange.value = false;
@@ -626,7 +607,6 @@ export default defineComponent({
 
     // 答案发生变化时
     function answerChange(val: any) {
-      console.log("答案变化了", val);
       isChange.value = true;
     }
     function openCard(i: number) {
@@ -642,10 +622,8 @@ export default defineComponent({
       )
         return;
       if (isChange.value) {
-        console.log("我发生了变化");
         try {
           let res: any = await submitExamAnswer(currentQuestion.value);
-          console.log(res);
           if (res.status === 1) {
             type === "next" ? currentQuestion.value++ : currentQuestion.value--;
             isChange.value = false;
@@ -661,28 +639,16 @@ export default defineComponent({
 
     // 提交答案
 
-    async function submitExamAnswer(index:number) {
+    async function submitExamAnswer(index: number) {
       let answers: Array<number | string> = [];
-      console.log(index);
-      console.log(examQuestions.value);
-      
-      console.log(examQuestions.value[index].answers);
-      
-      examQuestions.value[index].answers.forEach(
-        (item: any) => {
-          answers.push(item.id);
-        }
-      );
       let params = {
         param: {
           relation_id: examQuestions.value[index].relation_id,
-          answers: answers,
+          answers: examQuestions.value[index].student_answer,
         },
-        urlParams: { student_id:uid,exam_id:paper_id},
+        urlParams: { student_id: uid, exam_id: exam_id },
       };
-      console.log(params);
-      
-     return  await submitAnswer(params);
+      return await submitAnswer(params);
     }
     return {
       finshExam,
