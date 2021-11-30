@@ -34,7 +34,7 @@
         </div>
         <!-- 编辑 -->
         <div v-if="saveOrEdit === 2" class="edit">
-          <QuillEditor toolbar="full" :options="options" v-model:content="content1"  />
+          <QuillEditor  v-model="content1"  :uploadPathName="'studentSideCourse'" />
         </div>
         <!-- 笔记内容为空 -->
         <div v-if="saveOrEdit === 1" class="empty">
@@ -52,12 +52,11 @@
 import {QuillDeltaToHtmlConverter} from 'quill-delta-to-html'
 import { defineComponent,ref, onMounted,reactive,Ref, computed,onBeforeMount,watch,toRefs,inject } from 'vue'
 import { useRouter ,useRoute} from 'vue-router';
-import request from '../../../api/index'
-import { IBusinessResp} from '../../../typings/fetch';
+import request from 'src/api/index'
+import { IBusinessResp} from 'src/typings/fetch';
 import {message } from 'ant-design-vue';
-import { QuillEditor } from "@vueup/vue-quill";
+import  QuillEditor  from "src/components/editor/quill.vue";
 // import { Delta } from "quill-delta";
-import "@vueup/vue-quill/dist/vue-quill.snow.css";
 
 import {toVmConnect,IEnvirmentsParam,TopType} from "src/utils/vncInspect" // 打开虚拟机
 
@@ -65,7 +64,7 @@ interface IdetailObj{
   saveOrEdit:number;
   experData:any;
   updatedAt:string;
-  content1:string;
+  content1:any;
   studystr:string;
 }
 export default defineComponent({
@@ -89,11 +88,6 @@ export default defineComponent({
       type:String,
       default:'',
     },
-    note_id:{
-      required:false,
-      type:String,
-      default:'',
-    },
   },
   setup: (props,{emit}) => {
     const router = useRouter();
@@ -111,7 +105,7 @@ export default defineComponent({
       saveOrEdit:0,
       experData:null,
       updatedAt:'',
-      content1:'',
+      content1:{},
       studystr:'',
     })
     let task_type:any={}
