@@ -47,7 +47,7 @@ interface IlistItem{
   times:string,
   state:string,
   period:string,
-  teacher:string
+  teacher:string,
 }
 export default defineComponent({
   name: 'MyExperimentalList',
@@ -74,7 +74,7 @@ export default defineComponent({
       let param :any= {
         type: "train",
         opType: "start",
-        taskId: val.id,
+        taskId: val.train_id,
       }
       console.log(val);
       
