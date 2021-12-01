@@ -15,7 +15,7 @@
       <div class="card_info">
         <h3>{{v.name}}</h3>
         <div class="text-primary">
-          <span>{{v.status_name}}</span>
+          <span>{{v.state}}</span>
           <span> 用时&nbsp;&nbsp; {{v.used_time}} </span>
           <span v-if="v.recent_content">学习至 {{v.recent_content}}</span>
         </div>

@@ -10,15 +10,15 @@
           </div>
         </div>
         <div class="card_pic">
-          <img :src="v.img" />
+          <img :src="v.url" />
         </div>
       </div>
       <div class="card_info">
         <h3>{{v.name}}</h3>
-        <div class="text-primary" v-if="v.cost_time">
+        <div class="text-primary" v-if="v.used_time">
           <span>{{v.state}}</span>
-          <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
-          <span>学习至 {{v.content_name}}</span>
+          <span> 用时&nbsp;&nbsp; {{v.used_time}} </span>
+          <span v-if="v.recent_content">学习至 {{v.recent_content}}</span>
         </div>
         <p class="status">实训教师：{{v.teacher}}</p>
         <p class="status">实训状态：{{v.state}}</p>
@@ -38,7 +38,7 @@ import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import {toVmConnect} from "src/utils/vncInspect"
 interface IlistItem{
-  img:string,
+  url:string,
   name:string,
   status:string,
   cost_time:string,
@@ -48,6 +48,8 @@ interface IlistItem{
   state:string,
   period:string,
   teacher:string,
+  recent_content: string,
+  used_time:string
 }
 export default defineComponent({
   name: 'MyExperimentalList',
@@ -66,7 +68,7 @@ export default defineComponent({
         loading.value=false
         list.push(...res.data)
         list.length?list.map((v:IlistItem)=>{
-          v.img=v.img?v.img:defaultUrl
+          v.url=v.url?v.url:defaultUrl
         }):''
       })
     }
