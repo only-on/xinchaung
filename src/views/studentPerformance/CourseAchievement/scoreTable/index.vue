@@ -1,6 +1,6 @@
 <template>
     <div class="scoreTable">
-         <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
+         <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false" rowKey="id">
             <template v-slot:action0>
                 <span class="detail">详情</span>
             </template>
@@ -11,7 +11,11 @@
                 <span class="detail">详情</span>
             </template>
             <template v-slot:action3>
-                    <img class="star" src="src/assets/images/stuAchievement/star-off.png">
+                <div class='scoreStar'>
+                    <div v-for="item in 3" :key="item">
+                        <img class="star" src="src/assets/images/stuAchievement/star-off.png">
+                    </div>
+                </div>  
             </template>
             <template v-slot:action4>
                 <span>未评价</span>
@@ -169,8 +173,12 @@ export default defineComponent({
     .detail{
         color:@primary-color;
     }
+    .scoreStar{
+        display: flex;
+    }
     .star{
         width: 22px;
+        display: inline-block;
     }
     .scoreDetailModal{
         .ant-modal-header{

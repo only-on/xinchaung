@@ -40,13 +40,20 @@
                 </div>
         </a-modal> 
         <div class="exam-question-type">
-            <a-tabs class="exercise-tab" default-active-key=1 @change="switchExer">
+            <a-tabs class="exercise-tab" default-active-key=1 tabBarExtraContent @change="switchExer">
+                <!-- <a-tab-pane key=1>
+                    <template #tab>
+                        <div>
+                            单选题(6)
+                        </div>
+                    </template>
+                </a-tab-pane> -->
                 <a-tab-pane key=1 tab="单选题"></a-tab-pane>
-                <a-tab-pane key=2 tab="多选题" force-render></a-tab-pane>
+                <a-tab-pane key=2 tab="多选题"></a-tab-pane>
                 <a-tab-pane key=3 tab="判断题"></a-tab-pane>
                 <a-tab-pane key=4 tab="填空题"></a-tab-pane>
-                <a-tab-pane key=5 tab="解答题"></a-tab-pane>
-             </a-tabs>
+                <a-tab-pane key=5 tab="解答题"></a-tab-pane>    
+            </a-tabs>
         </div>
         <div class="exam-question-content">
             <ques-comon-table @finish-create="finishCreate" @select-leves='selectLeves' @search-exercise='searchExercise' :initial='initial' :tabledata="tabledata" :selectedId='Number(selectedId)' :poolid='poolid'></ques-comon-table>
@@ -170,8 +177,7 @@ export default defineComponent({
         updata({showContent:true,navType:false,tabs:[],navPosition:'outside',componenttype:0,backOff:true,showPageEdit:state.initialIfEdit,pageEdit:myFn2})
         function myFn2(){
             console.log("编辑目录")
-            state.visible = true
-            
+            state.visible = true    
          }
         const methods = {
           exerciseDetail(){

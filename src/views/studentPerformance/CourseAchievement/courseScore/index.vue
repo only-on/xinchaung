@@ -177,6 +177,7 @@ export default defineComponent({
             }]
         })
         function expand(index:number){
+            console.log(index,'下标')
             state.CourseScoreInfo[index].dis=!state.CourseScoreInfo[index].dis
         }
         function viewResults(index:number,j:number,c:any,ifcheck:any){
@@ -211,6 +212,7 @@ export default defineComponent({
          onMounted(() => {
             getData()
             state.CourseScoreInfo.forEach((item:any,j)=>{
+                console.log(j,'第几个数的下标')
                 if(j==0){
                     item.dis=true
                 }else{
@@ -279,7 +281,7 @@ export default defineComponent({
         }
     .content-info{
         ul{
-             padding-bottom: 30px;
+            //  padding-bottom: 30px;
              margin-bottom: 0px;
             background: url(../../../../assets/images/stuAchievement/line02.jpg) repeat-y 45px 0;
          .courseChapter{
@@ -326,8 +328,7 @@ export default defineComponent({
              }
             .icon-chakan1{
                      font-size:20px;
-            }
-             
+            } 
               }
             .score-table{
                 margin-top: 30px;

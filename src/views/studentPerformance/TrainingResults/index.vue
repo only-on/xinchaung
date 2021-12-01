@@ -1,7 +1,7 @@
 <template>
     <div id="TrainingResults">
          <div class="searchInput">
-            <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入课程名称关键字查询"  @keyup.enter="onSearch" @search="onSearch"/>
+            <a-input-search style="width:503px;padding:8px 5px 8px 30px" placeholder="请输入实训名称关键字查询"  @keyup.enter="onSearch" @search="onSearch"/>
         </div>
         <div v-if="traningResult.length" class="content-list">
             <div class="item-list" v-for="(item,i) in traningResult" :key="i">
@@ -66,11 +66,19 @@ interface pageingType{
     perPage?:number,
     totalCount?:number,
 }
+interface paramsType{
+   relate_id?:number,
+   type:string,
+   keyword?:string,
+   limit?:number,
+   page?:number   
+}
 interface State{
     traningResult:any[],
     pagingData:pageingType;
     columns:any[],
     ifTip:boolean,
+    params:paramsType,
 }
 export default defineComponent({
     name:'TrainingResults',
@@ -116,7 +124,10 @@ export default defineComponent({
                         slots: { customRender: 'max_score' },
                     },
                 ],
-            ifTip:false
+            ifTip:false,
+            params:{
+                type:'train'
+            }
         })
         function getData(value?:any,ifSearch?:boolean){
             state.ifTip=true
@@ -135,13 +146,14 @@ export default defineComponent({
             //   state.ifTip=false
             // })
             
-            infoRequest.experimentalResults({param: {type:'train'}}).then((res:any)=>{
+            infoRequest.experimentalResults({param: state.params}).then((res:any)=>{
                 state.ifTip=false
                 state.traningResult=res.data.list
                 state.pagingData=res.data.page
             })
         }
         function onSearch(value:string,){
+            state.params.keyword=value
             getData(value,true)
         }
         onMounted(()=>{
