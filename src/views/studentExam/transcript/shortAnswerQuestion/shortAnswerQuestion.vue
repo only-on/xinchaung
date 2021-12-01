@@ -1,5 +1,5 @@
 <template>
-  <div class="gap-filling-box">
+  <div class="short-answer-question-box">
     <h2 :class="styles['answer-title']">{{ index+1 }}、{{ data.question }}</h2>
     <div :class="[styles['student-answer'], styles['error-answer']]" v-if="!contrastAnswers(data.answers,data.student_answer)">回答错误：{{data.student_answer.join(",")}}</div>
     <div :class="[styles['question-answer'], ['correct-answer']]" v-if="contrastAnswers(data.answers,data.student_answer)">回答正确：{{data.student_answer.join(",")}}</div>
@@ -11,11 +11,9 @@
 import { defineComponent } from "vue";
 import styles from "../question.module.less"
 import {getCorrectAnswer} from "src/utils/common"
-
 export default defineComponent({
   props: ["data", "index"],
   setup() {
-      
       // 对比答案
       function contrastAnswers(correct_answers:any[],stu_answers:any[]) {
         if (correct_answers.length!=stu_answers.length) {
@@ -31,16 +29,16 @@ export default defineComponent({
         return isCorrect
       }
       return {
+          contrastAnswers,
           styles,
-          getCorrectAnswer,
-          contrastAnswers
+          getCorrectAnswer
       }
   },
 });
 </script>
 
 <style lang="less">
-.gap-filling-box{
+.short-answer-question-box{
   .answer-title {
     font-size: @font-size-sm;
     color: #838ca5;

@@ -70,10 +70,14 @@ function NoToCh(num: number) {
  * @param type 其中之一content、code、contentAndCode
  * @description 获取学生成绩单选、多选答案
  */
-function getStudentTranscriptAnswer(answers: Array<any>, type: string = "") {
+function getCorrectAnswer(answers: Array<any>, type: string = "") {
     let code = ""
     let content = ""
     let contentAndCode = ""
+    console.log(answers);
+    if (!answers) {
+        return ""
+    }
     answers.forEach((item, index) => {
         code += numToAbc(index + 1) + ' '
         if (item.content) {
@@ -90,6 +94,8 @@ function getStudentTranscriptAnswer(answers: Array<any>, type: string = "") {
     }
 
 }
+
+
 
 // 获取url参数
 function getQuery(name: string): string | null {
@@ -215,7 +221,7 @@ function urlSearch() {
 }
 export {
     numToAbc,
-    getStudentTranscriptAnswer,
+    getCorrectAnswer,
     getQuery,
     htmlDecode,
     deepEqual,

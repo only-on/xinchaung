@@ -35,7 +35,7 @@
             <p>日期：{{ item.start_day?item.start_day:'' }}</p>
             <p>时间：{{ item?.times }}</p>
             <div class="exam-action-card">
-              <router-link :to="'/studentExam/look?id=' + item?.id"
+              <router-link :to="'/studentExam/look?exam_id=' + item?.id"
                 >查看成绩</router-link
               >
               <span class="teacher-name"
