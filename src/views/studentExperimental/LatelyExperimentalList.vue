@@ -16,14 +16,14 @@
         <h3>{{v.name}}</h3>
         <div class="text-primary">
           <span>{{v.status_name}}</span>
-          <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
-          <span>学习至 {{v.content_name}}</span>
+          <span> 用时&nbsp;&nbsp; {{v.used_time}} </span>
+          <span v-if="v.recent_content">学习至 {{v.recent_content}}</span>
         </div>
-        <p class="status">实训教师：{{v.u_name}}</p>
-        <p class="status">实训状态：{{v.status_name}}</p>
-        <p class="status">起止时间：{{v.times}}</p>
+        <p class="status">实训教师：{{v.teacher}}</p>
+        <p class="status">实训状态：{{v.state}}</p>
+        <p class="status">起止时间：{{v.period}}</p>
       </div>
-      <div class="start_training" v-if="v.status_name==='进行中'">
+      <div class="start_training" v-if="v.state==='进行中'">
         <a-button @click="continueTraining(v)" type="primary"> 继续实训 </a-button>
       </div>
     </div>
@@ -43,6 +43,11 @@ interface IlistItem{
   content_name:string,
   u_name:string,
   times:string,
+  used_time:string,
+  recent_content:string,
+  teacher:string,
+  state:string,
+  period:string,
 }
 import {toVmConnect} from "src/utils/vncInspect"
 export default defineComponent({

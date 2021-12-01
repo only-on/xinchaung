@@ -1,7 +1,8 @@
 import { TFHttpSend } from "src/typings/getRequest";
-export default{
-  getLatelyExperimentalList:{url:`/student-train/latest`,method: "GET",},
-  getMyExperimentalList:{url:`/student-train/my`,method: "GET",}
+export default {
+  // 学生端-最近实训列表
+  getLatelyExperimentalList: { url: `/api/operate/operates/recentTrain`, method: "GET", },
+  getMyExperimentalList: { url: `/api/operate/operates/myTrain`, method: "GET", }
 }
 
 export interface IStudentExperimentalAps {

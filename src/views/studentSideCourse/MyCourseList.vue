@@ -10,7 +10,7 @@
             <div class="mask" :class="v.state==='已结束'?'mask_end':''">
               {{v.state}}
             </div>
-            <div class="task">学至~{{v.recent}}</div>
+            <div class="task">学至~{{v.recent_content}}</div>
             <div class="card_pic">
               <img :src="v.url" />
             </div>
@@ -19,7 +19,7 @@
             <div class="course_name">{{v.name}}</div>
             <div class="course_mid">
               <div class="left">
-                <p class="row">{{v.start_end_time}}</p>
+                <p class="row">{{v.period}}</p>
                 <p class="row">
                   <span  class="iconfont icon-jiaoshi1"></span>
                   <span>教师</span>
@@ -40,7 +40,7 @@
                 <div>
                   <span class="iconfont icon-daojishi"></span>
                   <span>用时</span>
-                  <span>{{v.time_cost}}</span>
+                  <span>{{v.used_time}}</span>
                 </div>
                 <span v-if="v.progress">已学{{v.progress}}%</span>
             </div>
@@ -73,6 +73,11 @@ interface IListItem{
   time_cost:string;
   state:String;
   course_id:number;
+  course_student_id:number;
+  cousre_id: number;
+  used_time:string;
+  recent_content: string;
+  period:string;
 }
 interface Ioptions{
   id:number;
@@ -96,7 +101,7 @@ export default defineComponent({
     const http=(request as any).studentCourse
     var defaultUrl:string='/src/assets/images/studentcourse/course-default1.jpg'
     function initData(){
-      let param=course_category_id.value!==1?{course_category_id:course_category_id.value}:{}
+      let param=course_category_id.value!==1?{course_category:course_category_id.value}:{}
       loading.value=true
       list.length=0
       http.getMyCourseList({param:param}).then((res:IBusinessResp)=>{
@@ -111,7 +116,7 @@ export default defineComponent({
     }
     function keepLearning(val:IListItem){
       const {currentTab}= route.query
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.id+'&course_id='+val.course_id+'&currentTab='+currentTab)
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.cousre_id+'&currentTab='+currentTab)
     }
     function getDirection(){
       http.courseDirection().then((res:IBusinessResp)=>{

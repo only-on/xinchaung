@@ -16,15 +16,15 @@
       <div class="card_info">
         <h3>{{v.name}}</h3>
         <div class="text-primary" v-if="v.cost_time">
-          <span>{{v.status}}</span>
+          <span>{{v.state}}</span>
           <span> 用时&nbsp;&nbsp; {{v.cost_time}} </span>
           <span>学习至 {{v.content_name}}</span>
         </div>
-        <p class="status">实训教师：{{v.u_name}}</p>
-        <p class="status">实训状态：{{v.status}}</p>
-        <p class="status">起止时间：{{v.times}}</p>
+        <p class="status">实训教师：{{v.teacher}}</p>
+        <p class="status">实训状态：{{v.state}}</p>
+        <p class="status">起止时间：{{v.period}}</p>
       </div>
-      <div class="start_training" v-if="v.status==='进行中'">
+      <div class="start_training" v-if="v.state==='进行中'">
         <a-button @click="startTraining(v)" type="primary"> 开始实训 </a-button>
       </div>
     </div>
@@ -45,6 +45,9 @@ interface IlistItem{
   content_name:string,
   u_name:string,
   times:string,
+  state:string,
+  period:string,
+  teacher:string
 }
 export default defineComponent({
   name: 'MyExperimentalList',

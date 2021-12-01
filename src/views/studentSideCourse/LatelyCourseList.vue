@@ -5,11 +5,11 @@
         <div class="time">{{v.study_time}}</div>
         <div class="info">
           <div class="card" @click="startLearning(v)">
-            <div class="mask">
-              {{v.course_status}}
+            <div class="mask" :class="v.state==='已结束'?'mask_end':''">
+              {{v.state}}
             </div>
             <div class="card_pic">
-              <img :src="v.course_url" />
+              <img :src="v.url" />
             </div>
           </div>
           <div class="card_info">
@@ -17,21 +17,21 @@
               <span>已学{{v.progress}}%</span>
               <div>{{v.name}}</div>
             </div>
-            <p class="status">{{v.between_time}}</p>
+            <p class="status">{{v.period}}</p>
             <p class="status">
               <span class="iconfont icon-jiaoshi1"></span>
               <span>教师</span>
-              <span>{{v.userName}}</span>
+              <span>{{v.teacher}}</span>
             </p>
             <p class="status">
               <span class="iconfont icon-daojishi"></span>
               <span>用时</span>
               <span>{{v.used_time}}</span>
               <span>学至</span>
-              <span>{{v.recent}}</span>
+              <span>{{v.recent_content}}</span>
             </p>
           </div>
-          <div class="start_training" v-if="v.course_status==='进行中'">
+          <div class="start_training" v-if="v.state==='进行中'">
             <a-button @click="startLearning(v)" type="primary"> 继续学习 </a-button>
           </div>
         </div>
@@ -51,7 +51,7 @@ interface IlistItem{
   name:string;
   study_time:string;
   course_status:string;
-  status:number;
+  // status:number;
   progress:number;
   between_time:string;
   used_time:string;
@@ -59,6 +59,11 @@ interface IlistItem{
   userName:string;
   course_student_id:number;
   course_id:number;
+  url:string;
+  state:string;
+  period:string;
+  teacher:string;
+  recent_content: string;
 }
 export default defineComponent({
   name: '',
@@ -79,7 +84,7 @@ export default defineComponent({
         loading.value=false
         list.push(...res.data)
         list.length?list.map((v:IlistItem)=>{
-          v.course_url=v.course_url?v.course_url:defaultUrl
+          v.url=v.url?v.url:defaultUrl
         }):''
       })
     }
@@ -153,6 +158,10 @@ export default defineComponent({
           border-bottom-left-radius: 12px;
           cursor: auto;
           color: @white;
+        }
+        .mask_end{
+          background-color: rgba(0,0,0,9.5);
+          color: rgba(138,138,138,1);
         }
         .card_pic{
           // position: absolute;
