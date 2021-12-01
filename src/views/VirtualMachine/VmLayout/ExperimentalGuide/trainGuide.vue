@@ -71,6 +71,8 @@ import markedEditor from "src/components/editor/markedEditor.vue";
 import { Modal } from "ant-design-vue";
 import { stepAction } from "src/utils/vncInspect";
 import { findIndex } from "lodash";
+import { resolve } from "dns";
+import { rejects } from "assert/strict";
 
 export default defineComponent({
   components: {
@@ -100,15 +102,19 @@ export default defineComponent({
     }
 
     // 上一个任务
-    function lastTest() {
+    async function lastTest() {
+      
+      await submitStepAction()
       currentTestIndex.value--;
       currentStepIndex.value = 0;
+      
       getCurrentStep();
       getStepStatus(steps.value.id);
     }
 
     // 下一个任务
-    function nextTest() {
+    async function nextTest() {
+      await submitStepAction()
       currentTestIndex.value++;
       currentStepIndex.value = 0;
       getCurrentStep();
@@ -184,6 +190,25 @@ export default defineComponent({
     // 下一个步骤
     function nextStep() {
       console.log("nextStep");
+    }
+
+    // 查看步骤
+    function submitStepAction() {
+      return new Promise((resolve:any,rejects:any)=>{
+         let params = {
+            opType: props.opType,
+            type: props.type,
+            taskId: props.taskId,
+            action: "stepScore",
+            topoinst_id: props.topoinst_id,
+            task_step_id: steps.value.id,
+            see_current_step: 0,
+          };
+          stepAction(params).then((res) => {
+            resolve()
+          });
+      })
+     
     }
     return {
       allInfo,
