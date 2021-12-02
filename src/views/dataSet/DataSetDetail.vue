@@ -103,12 +103,11 @@
         @closeUpload="closeUpload"
       />
     </div>
-    <div>
-      <a-modal
+    <a-modal
         class="update-data-set-modal create-form"
         :visible="editVisible"
         title="编辑基本信息"
-        :width="600"
+        :width="650"
         @ok="saveBaseInfo"
         @cancel="closeBaseModel"
       >
@@ -125,10 +124,9 @@
                 v-model:value="ForumSearch.description"
                 placeholder="请输入数据简介 最多250字"
                 :maxLength="250"
-                :auto-size="{ minRows: 4, maxRows: 7 }"
+                :auto-size="{ minRows: 3, maxRows: 4 }"
               />
             </div>
-
             <div class="cover">
               <label for="cover">
                 <span>封面</span>
@@ -188,7 +186,6 @@
           </div>
         </a-form>
       </a-modal>
-    </div>
   </div>
 </template>
 <script  lang="ts">
@@ -204,6 +201,7 @@ import UploadFile from './UploadFile.vue'
 import File  from './File.vue'
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { getFileType } from 'src/utils/getFileType'
+import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 interface FileItem {
   uid: string;
   name?: string;
@@ -224,6 +222,7 @@ creator:number
 isEditMd:boolean
 isMdContent:boolean
 fileList:any
+initEditData:() => void
 editVisible:boolean
 uploadFileVisible:boolean
 editBase:() => void
@@ -242,7 +241,8 @@ export default defineComponent({
   components: {
     AntdvMarkdown,
     File,
-    UploadFile
+    UploadFile,
+    LoadingOutlined
   },
   setup() {
     const router = useRouter();
@@ -266,14 +266,10 @@ export default defineComponent({
       uploadFileVisible:false,
       editVisible:false,
       editBase:()=>{
-        // name:'',
-        // description:'',
-        // cover:'',
-        // categoryText:'',
-        // category:[],
-        // label:[],
-        // doc_name:'',
-        // documents:'',
+        
+        state.editVisible=true
+      },
+      initEditData:()=>{
         let obj=[{
           uid:'-1',
           name:'',
@@ -293,7 +289,6 @@ export default defineComponent({
         ForumSearch.label=label
         ForumSearch.doc_name=state.dataSetInfo.doc_name
         ForumSearch.documents=state.dataSetInfo.documents
-        state.editVisible=true
       },
       back:()=>{router.go(-1)},
       tabChange:(v:any)=>{
@@ -365,6 +360,7 @@ export default defineComponent({
         state.dataSetInfo = res.data
         state.dataSetInfo.creator=Number(state.dataSetInfo.creator)
         state.isMdContent = state.dataSetInfo.documents ? true : false
+        state.initEditData()
       })
     }
     function getDataFileList(flag = false) {
