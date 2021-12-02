@@ -11,7 +11,7 @@
       <ul v-if="fileList.length > 0">
         <li
           v-for="(item, index) in fileList"
-          :key="index"
+          :key="item.uid"
           :class="fileActive.uid === item.uid ? 'active' : ''"
           @click="selectFile(item,index)"
           :title="item.name"
@@ -78,8 +78,8 @@ export default defineComponent({
     function openUpload() {
       emit('openUpload')
     }
-    function selectFile(item:any,index:number){
-      Active.value=index
+    function selectFile(item:any,index:any){
+      Active.value=Number(index)
     }
     function download(){
       // { data_id: this.data_id, file_id: this.fileDetail.uid }

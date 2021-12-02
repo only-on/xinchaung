@@ -19,7 +19,7 @@
         </p>
         <p class="biaoqian-box">
           <span class="iconfont icon-biaoqian"></span>
-          <span v-for="(item, index) in dataSetInfo.labels" :key="index">
+          <span v-for="item in dataSetInfo.labels" :key="item">
             {{ item.name }}
           </span>
         </p>
@@ -42,7 +42,7 @@
           </span>
           <span class="file-type">
             <i class="icon-shipin2 iconfont"></i>
-            <span v-for="(ct, ci) in dataSetInfo.categorys" :key="ci">{{ ct.name }}</span>
+            <span v-for="ct in dataSetInfo.categorys" :key="ct">{{ ct.name }}</span>
           </span>
         </p>
       </div>
@@ -165,7 +165,7 @@
             <div>
               <label for="label">标签</label>
               <div class="label-list">
-                <span v-for="(item, index) in ForumSearch.label" :key="index" class="active">
+                <span v-for="item in ForumSearch.label" :key="item" class="active">
                   {{ item }}
                   <i class="remove iconfont icon-guanbi" @click="removeLabel(item)"></i>
                 </span>
