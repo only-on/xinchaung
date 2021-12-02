@@ -31,8 +31,8 @@
                 <span  :class="record.study_record.id?'operation-btn':'nosee'" @click="lookAchievements(record.study_record?.id,'report')">查看</span>
               </template>
               <template #result="{ record }">
-                <span class="" v-if="record.study_record?.score">{{record.score}}分</span>
-                <span class="operation-btn" v-if="record.study_record?.score" @click="editScore(record)">修改</span>
+                <span class="score" v-if="record.study_record?.status>1">{{record.study_record.score}}分</span>
+                <span class="operation-btn" v-if="record.study_record?.status>1" @click="editScore(record)">修改</span>
                 <span v-else :class="record.study_record.id?'operation-btn':'nosee'"  @click="Review(record.study_record?.id)">批阅</span>
               </template>
               <!-- <template #env="{ record }">
@@ -172,51 +172,49 @@ export default defineComponent({
     let isShowVideo = ref(false)
     // 操作处理
     const operationHandle = reactive({
-      // 查看成果
+      // 查看成果,视频,报告
       isShowAchievements: false,
       lookAchievementsInfo: {},
+      videoUrl: '',
+      isShowReport: false,
+      reportUrl: '',
       lookAchievements: (id: number,type:string) => {
         console.log(id)
-        // operationHandle.lookAchievementsInfo = {}
-        // http.showExperimentalNote({param: {train_student_id: id}})
-        //   .then((res: any) => {
-        //     operationHandle.isShowAchievements = true
-        //     console.log(res.datas || res.data && res.data.length)
-        //     if (res.datas || res.data && res.data.length) {
-        //       console.log(res.datas)
-        //       operationHandle.lookAchievementsInfo = res.datas
-        //     } else {
-        //       message.warn('暂无实训成果！')
-        //     }
-        //   })
         http.assessmentDetails({param:{id:id,type:type}}).then((res:any)=>{
           console.log(res)
+            if(res.data?.length){
+               switch(type){
+                  case 'note':
+                       operationHandle.isShowAchievements = true
+                       operationHandle.lookAchievementsInfo =res.data
+                      return 
+                  case 'video':
+                      isShowVideo.value = true
+                      operationHandle.videoUrl = '/src/assets/video.mp4'
+                      return
+                  case 'report':
+                       operationHandle.reportUrl = 'http://192.168.101.150/upload/train_html/50243/16322969161533.pdf'
+                       operationHandle.isShowReport = true
+                      return
+              }
+            }else{
+              switch(type){
+                  case 'note':
+                      message.warning('暂无实训成果！')
+                      return 
+                  case 'video':
+                      message.warn('服务器没有该文件！')
+                      return
+                  case 'report':
+                      message.warn('服务器没有该文件！')
+                      return
+              }
+            }
         })
       },
       lookAchievementsClose: () => {
         operationHandle.isShowAchievements = false
       },
-      // // 查看视频
-      videoUrl: '',
-      // lookVideo: (id: number) => {
-      //   if (!id) {
-      //     message.warn('服务器没有该文件！')
-      //     return
-      //   }
-      //   isShowVideo.value = true
-      //   operationHandle.videoUrl = '/src/assets/video.mp4'
-      // },
-      // 查看报告
-      isShowReport: false,
-      reportUrl: '',
-      // lookReport: (id: number) => {
-      //   if (!id) {
-      //     message.warn('服务器没有该文件！')
-      //     return
-      //   }
-      //   operationHandle.reportUrl = 'http://192.168.101.150/upload/train_html/50243/16322969161533.pdf'
-      //   operationHandle.isShowReport = true
-      // },
       lookReportClose: () => {
         operationHandle.isShowReport = false
       },
@@ -332,6 +330,9 @@ export default defineComponent({
   color: @theme-color;
 }
 .evaluate-table {
+  .score{
+    margin-right: 10px;
+  }
   .operation-btn {
     cursor: pointer;
     .theme-color();

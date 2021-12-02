@@ -18,8 +18,8 @@ interface ISearchInfo {
   username: string
 }
 export interface IPage {
-  page: number
-  pageSize: number
+  page: any
+  pageSize: any
   total: number
 }
 export interface IData {
@@ -32,7 +32,7 @@ export interface IData {
 interface ITeacherAssistant {
   getAssistantList: Function
   getAssistantDetail: Function
-  delAssistant: Function 
+  delAssistant: Function
   changeStatus: Function
   addAssistant: Function
   updateAssistant: Function
