@@ -2,10 +2,10 @@
   <div v-layout-bg>
     <div class="condition">
       <a-form-item label="帐号">
-        <a-input v-model:value="searchInfo.username"/>
+        <a-input v-model:value="searchInfo.username" @keyup.enter="query" />
       </a-form-item>
       <a-form-item label="姓名">
-        <a-input v-model:value="searchInfo.name"/>
+        <a-input v-model:value="searchInfo.name" @keyup.enter="query" />
       </a-form-item>
       <a-button type="primary" @click="query()">查询</a-button>
       <a-button type="primary" @click="clear()">清空</a-button>
@@ -104,19 +104,23 @@ export default defineComponent({
     }
     // 列表
     function getAssistantList(sort?: '') {
-      let params = {
-        query: {
-          username: data.searchInfo.username,
-          name: data.searchInfo.name,
-          sort: sort,
-        },
-        page: {
-          page: data.page.page,
-          pageSize: data.page.pageSize
-        }
-      }
-      console.log(params)
-      http.getAssistantList({param: {params}}).then((res: IBusinessResp) => {
+      // let params = {
+      //   query: {
+      //     username: data.searchInfo.username,
+      //     name: data.searchInfo.name,
+      //     // sort: sort,
+      //   },
+      //   page: {
+      //     page: data.page.page,
+      //     pageSize: data.page.pageSize
+      //   }
+      // }
+      let formdata=new FormData()
+      formdata.append('query[name]',data.searchInfo.name)
+      formdata.append('query[username]',data.searchInfo.username)
+      formdata.append('page[page]',data.page.page)
+      formdata.append('page[pageSize]',data?.page.pageSize)
+      http.getAssistantList({param:formdata}).then((res: IBusinessResp) => {
         console.log(res)
         data.tableList = res.data.list
         data.page.page = res.data.page.currentPage
