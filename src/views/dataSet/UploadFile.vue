@@ -22,34 +22,26 @@
           <p class="upload-hint" v-if="Unfinished">文件上传中,请勿关闭弹窗或浏览器</p>
           <div class="chunk-list">
             <div v-for="(v, k, i) in ChunkStatus" :key="i">
-              <span>文件名称：{{ v.name }}</span>
-              <span>计算md5进度：{{ v.chunks + '/' + v.currentChunk }}</span>
+              <span class="name">文件名称：{{ v.name }}</span>
+              <span class="chunks">计算md5进度：{{ v.chunks + '/' + v.currentChunk }}</span>
             </div>
           </div>
           <div class="upload-file-list scroll-bar-customize">
-            <div v-for="(value, key, index) in fileList" :key="index">
+            <div v-for="(value, key, index) in form.uploadFileList" :key="index">
               <div class="upload-file-item">
-                <span class="img" :class="getFileType(value.name)">
-                  <img :src="iconList[getFileType(value.name)]" alt="">
+                <span class="img" :class="getFileType(value.name)" :style="`background-image: url(${iconList[getFileType(value.name)]});`">
+                  <!-- <img :src="iconList[getFileType(value.name)]" alt=""> -->
                 </span>
                 <div>
-                  <div>
-                    <span class="name">
-                      <span>{{ value.name }}</span>
-                    </span>
+                  <div class="info">
+                    <span class="name">{{ value.name }}</span>
                     <div class="iconfontbox">
-                      <span class="deleteicon" v-if="value.status !== 'end'" @click="deleteFile(value, key)">
-                        <i>x</i>
-                      </span>
-                      <span
-                        v-if="value.status === 'end'"
-                        class="icon-shanchu iconfont"
-                        @click="removeFile(value, key)"
-                      ></span>
+                      <span class="deleteicon icon-guanbi iconfont" v-if="value.status !== 'end'" @click="deleteFile(value, key)"></span>
+                      <span v-if="value.status === 'end'" class="icon-shanchu iconfont" @click="removeFile(value, key)"></span>
                     </div>
                   </div>
                   <div>
-                    <p class="size">{{ size(value.file_size) }}</p>
+                    <p class="size">{{ size(value.size) }}</p>
                     <a-progress :percent="value.progress" />
                   </div>
                 </div>
@@ -68,7 +60,7 @@ import {useStore} from "vuex"
 import extStorage from "src/utils/extStorage";
 import request from 'src/api/index'
 const http=(request as any).dataSet
-import { getFileType } from 'src/utils/getFileType'
+import { getFileType,getFileSuffix } from 'src/utils/getFileType'
 import iconList from 'src/utils/iconList'
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
@@ -78,7 +70,7 @@ export default defineComponent({
   components: {
    SetList
   },
-  props:['fileList',''],
+  props:['data_id'],
   emits:['getDataFile','closeUpload'],
   setup: (props,{emit}) => {
     
@@ -103,50 +95,74 @@ export default defineComponent({
       return sign
     })
     function closeUpload(){
-      emit('closeUpload')
+      if(Unfinished.value===false){
+        emit('closeUpload')
+      }else{
+        message.warn('文件正在上传，请勿关闭！')
+      }
     }
     function closeUploadOk(){
-
+      if(Unfinished.value===false){
+        emit('closeUpload')
+      }else{
+        message.warn('文件正在上传，请勿关闭！')
+      }
     }
     function handleChange(){
 
     }
+    function deleteFile(file:any,key:any){
+      if (file.files.length > 0) {
+        file.files.forEach((item: any) => {
+          if (item.xhr) {
+            console.log(item)
 
-    function deleteFile(item:any,key:any){
-
+            item.xhr.abort()
+          }
+        })
+      }
+      delete form.uploadFileList[key]
     }
     function removeFile(item:any,key:any){
-
+      const deleteParam = {
+        file_id:item.uid,
+        file_name: item.name,
+      }
+      http.deleteFile({param:{...deleteParam}}).then((res:any)=>{
+        message.success('删除成功')
+        emit('getDataFile')
+      })
     }
     function size(size:any){
-
+      let num=Number(size)
+      console.log(num)
+      if (num < 1024 * 1024) {
+        return (num / 1024).toFixed(2) + 'kb'
+      } else {
+        return (num / 1024 / 1024).toFixed(2) + 'Mb'
+      }
     }
-    function FileBeforeUpload(file:any){
-       if (file && file.size === 0) {
+    function beforeUpload(file:any){
+      if (file && file.size === 0) {
          message.warn('文件大小不能为空')
           return false
         }
-      Object.assign(readyFileList,file)
-    }
-    function beforeUpload(file:any){
-      // console.log(file)
-        // if (file && file.size === 0) {
-        //  message.warn('文件大小不能为空')
-        //   return false
-        // }
+      if (getFileSuffix(file.name) === 'flv') {
+        message.warn('不允许上传flv视频文件')
+        return false
+      }
         Upload({
           startUploadURL: '/dmc/v1.0/create_multi_part',
           multiUploadURL: '/dmc/v1.0/multi_part_upload',
           mergeUploadUrl: '/dmc/v1.0/compose_part',
-          data_set_id: '',
+          data_set_id: props.data_id, //this.data_id
           file: file,
           chunkSize: 5242880, // 2096963
-          chunkFun:chunkFun,
-          startUploadFun: startUploadFun,
           processFun: processFun,
+          startUploadFun: startUploadFun,
           endUploadFun: endUploadFun,
+          chunkFun: chunkFun,
           eruptNum: 6,
-          uploadFileUuid: uploadFileUuid.value
         })
         return false
 
@@ -188,26 +204,17 @@ export default defineComponent({
       form.uploadFileList[v].status = 'end'
       form.uploadFileList[v].progress = 100
       form.uploadFileList[v].data = d
+      emit('getDataFile',true)
     }
     onMounted(()=>{
      
     })
-    return {props,iconList,getFileType,closeUpload,closeUploadOk,FileBeforeUpload,beforeUpload,handleChange,ChunkStatus,beReady,Unfinished,deleteFile,removeFile,size};
+    return {props,iconList,getFileType,closeUpload,closeUploadOk,beforeUpload,handleChange,form,ChunkStatus,beReady,Unfinished,deleteFile,removeFile,size};
   },
 })
 </script>
 <style scoped lang="less">
 .upload-model-box {
-
-
-    .ant-modal {
-        width: 1000px !important;
-    }
-
-    .ant-modal-header {
-        border: none !important;
-    }
-
     .ant-modal-footer {
         border: none;
         text-align: center;
@@ -284,56 +291,41 @@ export default defineComponent({
                     padding-bottom: 0px;
 
                     .img {
-                        width: 58px;
+                        width: 42px;
                         height: 42px;
                         flex-shrink: 0;
-                        padding-right: 16px;
-
-                        img {
-                            width: 100%;
-                            height: 100%;
-                        }
-                        svg {
-                            vertical-align: middle;
-                            // fill: #fff;
-                            .st7{
-                                fill: #FFFFFF;
-                            }
-                            .st6 {
-                                fill-rule: evenodd;
-                                clip-rule: evenodd;
-                                fill: #107C41;
-                            }
-                        }
+                        margin-right: 16px;
+                        background-repeat: no-repeat;
+                        background-size: 100% 100%;
+                        
                     }
-                    span.md{
-                        svg{
-                            fill: #FFFFFF;
-                        }
+                    .info{
+                      line-height: 28px;
+                      .iconfontbox{
+                        padding: 0 6px;
+                      }
+                      .name{
+                        padding: 0 6px;
+                        flex: 1;
+                        word-wrap: break-word;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        display: -webkit-box;
+                        overflow: hidden;
+                        -webkit-line-clamp: 1;
+                        -webkit-box-orient: vertical;
+                      }
                     }
                     >div {
                         width: 100%;
 
                         .icon-shanchu {
-                            display: none;
+                            // display: none;
                         }
 
                         span.deleteicon {
                             text-align: center;
-                            display: none;
-
-                            i {
-                                font-style: normal;
-                                width: 18px;
-                                height: 18px;
-                                line-height: 14px;
-
-                                display: block;
-                                border-radius: 50%;
-                                border: 1px solid #808080;
-                                color: #808080;
-
-                            }
+                            // display: none;
                         }
 
                         p.size {
@@ -414,6 +406,20 @@ export default defineComponent({
             display: flex;
             flex-direction: row;
             justify-content: space-between;
+            .chunks{
+              width: max-content;
+            }
+            .name{
+              padding: 0 6px;
+              flex: 1;
+              word-wrap: break-word;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              display: -webkit-box;
+              overflow: hidden;
+              -webkit-line-clamp: 1;
+              -webkit-box-orient: vertical;
+            }
         }
     }
     .ant-progress-outer{

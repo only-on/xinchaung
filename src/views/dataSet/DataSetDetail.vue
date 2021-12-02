@@ -48,7 +48,7 @@
       </div>
     </div>
     <div class="dataset-detail-file-box">
-      <a-tabs default-active-key="document" @change="tabChange">
+      <a-tabs default-active-key="document" @change="tabChange" :tabBarGutter="40">
         <a-tab-pane key="document" tab="文档" class="document">
           <div v-if="isShowEditMd" class="view-md">
             <div class="action-upload">
@@ -87,8 +87,8 @@
           <div v-show="fileList.length > 0">
             <File
               ref="file"
-              v-model:fileList="fileList"
-              v-model:data_id="dataSetInfo.uid"
+              :fileList="fileList"
+              :data_id="dataSetInfo.uid"
               @getDataFile="getDataFileList(true)"
               @openUpload="openUpload"
             />
@@ -687,9 +687,6 @@ export default defineComponent({
               margin-top: 15px;
               margin-left: 15px;
               &:hover {
-                // .icon-baocun:before {
-                //   color: #f7f7f7;
-                // }
                 color: #f7f7f7;
                 background: @theme-color;
               }
@@ -698,7 +695,7 @@ export default defineComponent({
 
           .action {
             text-align: right;
-            padding: 0 20px;
+            padding: 0 10px;
             .icon-bianji1.iconfont {
               // margin-right: -40px;
               &:hover {
@@ -724,10 +721,6 @@ export default defineComponent({
                 margin-bottom: 15px;
               }
             }
-          }
-          .markdown-body.shadow {
-            z-index: 999;
-            box-shadow: unset !important;
           }
         }
       }

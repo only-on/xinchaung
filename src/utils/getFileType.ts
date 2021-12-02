@@ -71,3 +71,16 @@ export const getFileType = (fileName: string) => {
   // 其他 文件类型
   return 'other'
 }
+
+// 获取文件后缀
+export const getFileSuffix = (fileName: string) => {
+  // 后缀
+  let suffix = ''
+  try {
+    const fileArray = fileName.split('.')
+    suffix = fileArray[fileArray.length - 1]
+  } catch (error) {
+    suffix = ''
+  }
+  return suffix
+}

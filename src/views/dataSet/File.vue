@@ -17,7 +17,7 @@
           :title="item.name"
         >
           <span class="img" :class="getFileType(item.name)" :style="`background-image: url(${iconList[getFileType(item.name)]});`"></span>
-          <span>{{ item.name }}</span>
+          <span class="fileName">{{ item.name }}</span>
         </li>
       </ul>
     </div>
@@ -92,7 +92,7 @@ export default defineComponent({
     }
     function openDeleteFile(){
       if (props.fileList.length - 1 <= 0) {
-        message.error('至少需要保留一个文件')
+        message.warn('至少需要保留一个文件')
         return
       }
       Modal.confirm({
@@ -108,6 +108,7 @@ export default defineComponent({
           }
           http.deleteFile({param:{...deleteParam}}).then((res:any)=>{
             message.success('删除成功')
+            Active.value=Active.value===0?Active.value:Active.value-1
             emit('getDataFile')
           })
         }
@@ -133,8 +134,7 @@ export default defineComponent({
     flex-direction: row;
 
     .file-tree-box {
-
-        width: 236px;
+        width: 280px;
         flex-shrink: 0;
         border-right: 1px solid #ebebeb;
 
@@ -165,9 +165,9 @@ export default defineComponent({
                 color: #808080;
                 font-size: 12px;
                 cursor: pointer;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                overflow: hidden;
+                // text-overflow: ellipsis;
+                // white-space: nowrap;
+                // overflow: hidden;
                 display: flex;
                 align-items: center;
                 span.img {
@@ -175,9 +175,19 @@ export default defineComponent({
                     height: 18px;
                     display: inline-block;
                     vertical-align: inherit;
-                    margin-right: 6px;
                     background-repeat: no-repeat;
                     background-size: 100% 100%;
+                }
+                .fileName{
+                  padding: 0 6px;
+                  flex: 1;
+                  word-wrap: break-word;
+                  text-overflow: ellipsis;
+                  overflow: hidden;
+                  display: -webkit-box;
+                  overflow: hidden;
+                  -webkit-line-clamp: 1;
+                  -webkit-box-orient: vertical;
                 }
                 &:hover {
                     background: #ffeed8;
@@ -194,7 +204,7 @@ export default defineComponent({
     }
 
     .file-content-box {
-        width: 100%;
+        width: calc(100% - 280px);
         padding: 29px 31px;
 
         .file-detail-box {

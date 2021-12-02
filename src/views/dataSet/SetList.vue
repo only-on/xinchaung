@@ -78,7 +78,7 @@
           <Empty v-if="dataList.length===0" :type="emptyType" :text="emptyText" :height="400" />
           <a-button v-if="showCreate" type="primary" @click="create">创建数据集</a-button>
         </div>
-        <a-pagination v-if="dataList.length" v-model:current="search.page" :pageSize="search.per_page" :total="totalCount" @change="pageChange"/>  
+        <a-pagination v-if="totalCount > search.per_page" v-model:current="search.page" :pageSize="search.per_page" :total="totalCount" @change="pageChange"/>  
       </div>
     </a-spin>
     
@@ -208,7 +208,7 @@ export default defineComponent({
       init()
     }
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val)
+      // console.log(val)
       currentTab.value=val
       search.common=(val===1)?0:1
       search.page=1
@@ -219,7 +219,7 @@ export default defineComponent({
       init()
     })
     watch(()=>{return search.category},(val)=>{
-      console.log(val)
+      // console.log(val)
       init()
     })
     function FunChinaToPy(name: string) {
