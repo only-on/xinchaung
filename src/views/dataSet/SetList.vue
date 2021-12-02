@@ -127,7 +127,7 @@ export default defineComponent({
       page:1,
       per_page:12,
       keyword:'',
-      common:undefined,
+      common:1,
       user_id:uid,
       label:''
     })
@@ -182,7 +182,6 @@ export default defineComponent({
       })
     }
     function init(){
-      search.common=search.common===undefined?1:search.common
        // console.log(search)
       dataList.length=0
       loading.value=true
@@ -209,7 +208,7 @@ export default defineComponent({
       init()
     }
     watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
+      console.log(val)
       currentTab.value=val
       search.common=(val===1)?0:1
       search.page=1
@@ -227,10 +226,10 @@ export default defineComponent({
       return chinaToPy.chineseToPinYin(name).substring(0, 1)
     }
     function dataSetDetail(item: any) {
-      console.log(item)
+      // console.log(item)
       router.push({
         path: '/dataSet/DataSetDetail',
-        query: { id: item.uid, common: item.common, user_id: item.creator },
+        query: { data_id: item.uid, common: item.common, user_id: item.creator },
       })
     }
     function openDeletePop(item:any){
@@ -253,6 +252,8 @@ export default defineComponent({
         console.log(val)
     }
     onMounted(()=>{
+      const {currentTab}= route.query
+      search.common=Number(currentTab)===1?0:1
       categoryList()
       init()
     })
@@ -414,7 +415,7 @@ export default defineComponent({
               > div {
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(131deg, #bb77ff 3%, #6b43f1 90%);
+                background: linear-gradient(131deg, @theme-color 3%, #6b43f1 90%);
                 padding: 44px 24px 24px 24px;
                 display: flex;
                 flex-direction: column;
@@ -504,7 +505,7 @@ export default defineComponent({
                           .more-tag-box {
                             display: flex;
                           }
-                          background: #8963f0;
+                          background: @theme-color;
                           color: #ffffff;
                           border: 1px solid transparent;
                         }

@@ -95,16 +95,7 @@
                   <div v-for="(value, key) in ForumSearch.fileList" :key="value">
                     <div class="progress-item">
                       <span class="img" :class="getFileType(value.name)">
-                        <!-- {{ getFileType(value.name) }} -->
-                        <!-- <w-csv v-if="getFileType(value.name) === 'csv'" />
-                        <w-xls v-if="getFileType(value.name) === 'excel'" />
-                        <w-zip v-if="getFileType(value.name) === 'zip'" />
-                        <w-txt v-if="getFileType(value.name) === 'txt'" />
-                        <w-rar v-if="getFileType(value.name) === 'rar'" />
-                        <w-other v-if="getFileType(value.name) === 'other'" />
-                        <w-ppt v-if="getFileType(value.name) === 'ppt'" />
-                        <w-dm v-if="getFileType(value.name) === 'md'" />
-                        <w-docx v-if="getFileType(value.name) === 'word'" /> -->
+                        <img :src="iconList[getFileType(value.name)]" alt="">
                       </span>
                       <span class="">
                         <span class="item-top">
@@ -173,16 +164,7 @@ import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import { RuleObject } from "ant-design-vue/es/form/interface";
-import csv from 'src/assets/images/file/csv.svg'
-import xls from 'src/assets/images/file/xls.svg'
-import other from 'src/assets/images/file/other.svg'
-import txt from 'src/assets/images/file/txt.svg'
-import rar from 'src/assets/images/file/rar.svg'
-import zip from 'src/assets/images/file/zip.svg'
-import docx from 'src/assets/images/file/doc.svg'
-import doc from 'src/assets/images/file/doc.svg'
-import ppt from 'src/assets/images/file/ppt.svg'
-import dm from 'src/assets/images/file/dm.svg'
+import iconList from 'src/utils/iconList'
 const http=(request as any).dataSet
 interface IForumSearch{
   creator:number
@@ -222,16 +204,6 @@ export default defineComponent({
   components: {
     LoadingOutlined,
     PlusOutlined,
-    // csv,
-    // 'w-xls': xls,
-    // 'w-txt': txt,
-    // 'w-rar': rar,
-    // 'w-zip': zip,
-    // 'w-other': other,
-    // 'w-docx': docx,
-    // 'w-doc': doc,
-    // 'w-ppt': ppt,
-    // 'w-dm': dm,
   },
   setup() {
     const router = useRouter();
@@ -329,7 +301,7 @@ export default defineComponent({
       })
     }
     function customFinish() {
-      console.log(state.customLabelV)
+      // console.log(state.customLabelV)
       if (state.customLabelV.trim()) {
           state.ForumSearch.label.push(state.customLabelV)
           state.customLabelV = ''
@@ -347,20 +319,14 @@ export default defineComponent({
       router.go(-1)
     }
     function submit() {
-      // console.log(state);
-      // return
       formRef.value.validate().then(() => {
-          console.log(state);
-          console.log('验证过');
-          // collectForm()
-          let obj={
-            // ...state.ForumSearch
-            // content:JSON.stringify(state.formState.content)
-          }
-          // http.create({param:{forum:{...obj}}}).then((res:IBusinessResp)=>{
-          //   message.success('创建成功')
-          //     router.go(-1)
-          // })
+          collectForm()
+          // console.log(state);
+          // console.log('验证过');
+          http.create({param:{...state.ForumSearch}}).then((res:any)=>{
+            message.success('创建成功')
+              router.go(-1)
+          })
       })
     }
     function fileBeforeUpload(file:any){
@@ -522,7 +488,7 @@ export default defineComponent({
      categoryList()
       // init()
     })
-    return {...toRefs(state),handlePreview,handleChange,rules,formRef,refCustomLabel,previewImage,coverFileList,handleCancel,beforeUpload,navList,loading,openCustom,removeLabel,clickCustomLabel,customFinish,changeLabel,closeCreateModal,submit,fileBeforeUpload,getFileType,ChunkStatus,deleteFile,removeFile,MdFileBeforeReader,RemoveMdFile,previewVisible}
+    return {...toRefs(state),iconList,handlePreview,handleChange,rules,formRef,refCustomLabel,previewImage,coverFileList,handleCancel,beforeUpload,navList,loading,openCustom,removeLabel,clickCustomLabel,customFinish,changeLabel,closeCreateModal,submit,fileBeforeUpload,getFileType,ChunkStatus,deleteFile,removeFile,MdFileBeforeReader,RemoveMdFile,previewVisible}
   },
 })
 </script>

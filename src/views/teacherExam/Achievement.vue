@@ -509,6 +509,7 @@ export default defineComponent({
      achievement()
      await initData();
     //  console.log(document.getElementById("distribution"))
+    console.log(state.detaile.score_distribution)
     let score_distribution=(state.detaile && state.detaile.score_distribution)?state.detaile.score_distribution:[]
     let type_scores=(state.detaile && state.detaile.type_scores)?state.detaile.type_scores:[]
      distributionEcharts(document.getElementById("distribution") as HTMLDivElement,score_distribution)

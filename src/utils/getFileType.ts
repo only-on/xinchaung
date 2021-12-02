@@ -11,7 +11,7 @@ export const getFileType = (fileName: string) => {
   }
   // fileName无后缀返回 false
   if (!suffix) {
-    return false
+    return 'other'
   }
   suffix = suffix.toLocaleLowerCase()
   // 匹配txt
@@ -39,12 +39,17 @@ export const getFileType = (fileName: string) => {
   }
 
   // 匹配 ppt
-  const pptlist = ['ppt', 'pptx', 'pdf']
+  const pptlist = ['ppt', 'pptx']
   result = pptlist.find(item => item === suffix)
   if (result) {
     return 'ppt'
   }
-
+// 匹配 pdf
+  const pdflist = ['pdf']
+  result = pdflist.find(item => item === suffix)
+  if (result) {
+    return 'pdf'
+  }
   // 匹配 压缩包
   const rarList = ['rar']
   result = rarList.find(item => item === suffix)

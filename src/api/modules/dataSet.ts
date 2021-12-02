@@ -8,7 +8,16 @@ export default{
   dataSetAll:{url:`/api/dataset/all_datasets`,method:'GET'},
   upLoadCover:{url:`/dmc/v1.0/upload_image`,method:'POST',dataType: 'formdata'},
   uploadDoc:{url:`/dmc/v1.0/upload_doc`,method:'POST',dataType: 'formdata'},
-  create:{url:`/dmc/v1.0/dataset`,method:'POST',dataType: 'formdata'}
+  create:{url:`/dmc/v1.0/dataset`,method:'POST',dataType: 'json'},
+  detailed:{url:`/dmc/v1.0/dataset`,method:'GET'},
+
+  editInfo:{url:`/dmc/v1.0/dataset`,method:'PATCH',dataType: 'json'},
+  editDoc:{url:`/dmc/v1.0/update_doc`,method:'PATCH',dataType: 'json'},
+  getDataFileList:{url:`/dmc/v1.0/datafile`,method:'GET'},
+  deleteFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
+  download:{url:`/dmc/v1.0/download`,method:'GET'}
+  // 
+
 }
 
 export interface IDataSet{
@@ -18,6 +27,12 @@ export interface IDataSet{
   upLoadCover:TFHttpSend
   uploadDoc:TFHttpSend
   create:TFHttpSend
+  detailed:TFHttpSend
+  editInfo:TFHttpSend
+  editDoc:TFHttpSend
+  getDataFileList:TFHttpSend
+  deleteFile:TFHttpSend
+  download:TFHttpSend
 }
 
 
