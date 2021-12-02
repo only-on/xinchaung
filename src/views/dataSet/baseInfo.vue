@@ -53,7 +53,7 @@
         <div>
           <label for="label">标签</label>
           <div class="label-list">
-            <span v-for="(item, index) in ForumSearch.label" :key="index" class="active">
+            <span v-for="item in ForumSearch.label" :key="item" class="active">
               {{ item }}
               <i class="remove iconfont icon-guanbi" @click="removeLabel(item)"></i>
             </span>
