@@ -254,7 +254,7 @@ export default defineComponent({
           },
         })
         .then((res) => {
-          if (!res) {
+          if (!res?.status) {
             data.value = [];
             $message.error("无法获取数据！");
             return;
