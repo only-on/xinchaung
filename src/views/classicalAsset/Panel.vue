@@ -36,7 +36,7 @@
           </a-button>
         </div>
       </div>
-      <div class="data" v-if="data.length > 0">
+      <div class="data" v-if="data?.length > 0">
         <asset-folder
           v-for="(item, key) in data"
           :key="'dataset-dir-' + key"
@@ -53,7 +53,7 @@
       <div class="data" v-else>
         <empty />
       </div>
-      <div class="page" v-if="data.length > 0">
+      <div class="page" v-if="data?.length > 0">
         <a-pagination
           show-size-changer
           v-model:current="dataPage.current"
@@ -254,11 +254,11 @@ export default defineComponent({
           },
         })
         .then((res) => {
-          if (!res?.status) {
-            data.value = [];
-            $message.error("无法获取数据！");
-            return;
-          }
+          // if (!res?.status) {
+          //   data.value = [];
+          //   $message.error("无法获取数据！");
+          //   return;
+          // }
           data.value = res?.data.list;
 
           dataPage.current = res?.data.page.currentPage;
