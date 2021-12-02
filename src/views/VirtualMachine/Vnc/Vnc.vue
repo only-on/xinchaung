@@ -194,6 +194,7 @@ export default defineComponent({
     let vmQuery = route.query as any;
     const novncEl = ref();
     let role = storage.lStorage.get("role");
+    let ws_config=storage.lStorage.get("ws_config")
     const {
       opType,
       connection_id,
@@ -297,7 +298,7 @@ export default defineComponent({
     function initWs() {
       vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
-        url: "://"+location.host+"/ws/?uid=" + connection_id,
+        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");

@@ -231,6 +231,7 @@ export default defineComponent({
     let vm_uuid = ref("");
     let taskType = ref(""); // 实验类型
     let role = storage.lStorage.get("role");
+    let ws_config=storage.lStorage.get("ws_config")
     let { taskBaseInfo } =
       toRefs(reactiveData);
     provide("allInfo", taskBaseInfo);
@@ -305,7 +306,7 @@ export default defineComponent({
     const data = reactive(navData);
     function initWs() {
       wsVmConnect.value = wsConnect({
-        url: "://"+location.host+"/ws/?uid=" + connection_id,
+        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");

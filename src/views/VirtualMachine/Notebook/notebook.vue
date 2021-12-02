@@ -42,6 +42,7 @@ export default defineComponent({
       const route = useRoute();
       const router = useRouter();
       let role = storage.lStorage.get("role");
+      let ws_config=storage.lStorage.get("ws_config")
     let navData = role===4?[
       { name: "实验指导", key: "guide", icon: "icon-zhidao" },
       { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
@@ -92,7 +93,7 @@ export default defineComponent({
 
     function initWs() {
       wsVmConnect.value = wsConnect({
-        url: "://"+location.host+"/ws/?uid=" + connection_id,
+        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");

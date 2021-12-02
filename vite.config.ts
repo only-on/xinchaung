@@ -70,12 +70,12 @@ export default defineConfig({
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
-      '/ws': {
-        target: 'ws://192.168.101.130',
-        changeOrigin: true,
-        ws: true,
+      // '/ws': {
+      //   target: 'ws://192.168.101.130',
+      //   changeOrigin: true,
+      //   ws: true,
         // rewrite: (path) => path.replace(/^\/ws/, '')
-      }
+      // }
     },
     port: 3000,
     host: '0.0.0.0',

@@ -70,9 +70,9 @@ export default defineComponent({
     });
 
     const ws = ref(null);
-    let uid = storage.lStorage.get("uid");
+    let uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
+    let ws_config=storage.lStorage.get("ws_config")
     let timer: NodeJS.Timer | null = null;
-
     onBeforeRouteLeave(() => {
       console.log("离开页面");
       reactiveData.isPoll = false;
@@ -94,7 +94,7 @@ export default defineComponent({
     // 链接websocker
     function connectWs() {
       ws.value = wsConnect({
-        url: "://"+location.host+"/ws/?uid=" + uid,
+        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + uid,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");

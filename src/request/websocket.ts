@@ -32,7 +32,10 @@ function wsConnect(options:any) {
             // 设置error事件处理器
             error: (ev:Event) => {
                 console.log('[error]', ev)
-                wsConnect(options)
+                setTimeout(() => {
+                    wsConnect(options) 
+                }, 200);
+                
             },
             // 设置message事件处理器
             message: (ev:MessageEvent) => {
