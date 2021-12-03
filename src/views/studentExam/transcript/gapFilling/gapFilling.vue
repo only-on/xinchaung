@@ -10,7 +10,6 @@
 <script lang="ts">
 import { defineComponent } from "vue";
 import styles from "../question.module.less"
-import {getCorrectAnswer} from "src/utils/common"
 
 export default defineComponent({
   props: ["data", "index"],
@@ -29,6 +28,17 @@ export default defineComponent({
           }
         }
         return isCorrect
+      }
+      // 获取标准答案
+      function getCorrectAnswer(answers:any[],options:any[]) {
+        let code=""
+        answers.forEach((item:any,index:number)=>{
+          options.forEach((it:any,ind:number)=>{
+            if (item.answer==it.id) {
+              code=item.option
+            }
+          })
+        })
       }
       return {
           styles,

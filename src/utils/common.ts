@@ -159,10 +159,6 @@ export interface Itimes {
 function countDown(start: Date, end: Date): Itimes {
     let startTime = new Date(start)
     let endTime = new Date(end)
-    console.log(end);
-
-    console.log(startTime, endTime);
-
     var seconds = parseInt(((endTime.getTime() - startTime.getTime()) / 1000).toString())
     return {
         d: parseInt((seconds / 3600 / 24).toString()), // 天数

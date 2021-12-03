@@ -5,76 +5,80 @@
     </div>
     <div class="exam-info">
       <div class="exam-count">
-        <span>总分：{{startExamInfoData?.all_score}}</span>
-        <span>试题数量：{{startExamInfoData?.questions_count}}</span>
-        <span>通过分数：{{startExamInfoData?.pass_score}}</span>
+        <span>总分：{{ startExamInfoData?.all_score }}</span>
+        <span>试题数量：{{ startExamInfoData?.questions_count }}</span>
+        <span>通过分数：{{ startExamInfoData?.pass_score }}</span>
       </div>
       <div>试卷名称</div>
       <div class="teacher-or-start-status">
-        <span><i class="teacher-icon"></i>{{startExamInfoData?.author_name}}</span>
+        <span
+          ><i class="teacher-icon"></i
+          >{{ startExamInfoData?.author_name }}</span
+        >
         <span class="exam-status">进行中</span>
       </div>
     </div>
     <div class="exam-action">
       <span class="count-down-time">
-          <i>倒计时：</i>
-          {{times.h>9?times.h:'0'+times.h}}<i>小时</i>
-          {{times.m>9?times.m:"0"+times.m}}<i>分</i>
-          {{times.s>9?times.s:'0'+times.s}}<i>秒</i>
+        <i>倒计时：</i>
+        {{ times.h > 9 ? times.h : "0" + times.h }}<i>小时</i>
+        {{ times.m > 9 ? times.m : "0" + times.m }}<i>分</i>
+        {{ times.s > 9 ? times.s : "0" + times.s }}<i>秒</i>
       </span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref,inject ,Ref,watch} from "vue";
-import { useRouter,onBeforeRouteLeave } from "vue-router";
-import {countDown,Itimes} from "src/utils/common"
-import topImages from "src/assets/exam/top-images.png"
+import { defineComponent, ref, inject, Ref, watch } from "vue";
+import { useRouter, onBeforeRouteLeave } from "vue-router";
+import { countDown, Itimes } from "src/utils/common";
+import topImages from "src/assets/exam/top-images.png";
 export default defineComponent({
-  setup() {
-    const router=useRouter()
-    let startExamInfoData:any=inject("startExamInfoData")
-    const times:Ref<Itimes> |undefined=ref({d:"00",h:"00",m:"00",s:"00"});
-    let timers:NodeJS.Timer|null=null
-    onBeforeRouteLeave(()=>{
-      clearInterval(Number(timers))
-    })
-    watch(()=>startExamInfoData,()=>{
-      if (!startExamInfoData?.value) return;
-      if (!startExamInfoData?.value.times) return;
-      let endTime=startExamInfoData?.value.times.split("~")
-      times.value=countDown(new Date(),startExamInfoData?.value.closed_at)
-    },{deep:true,immediate:true})
-    function calculateTime(){
-      if (!times?.value)  return
-        if (times.value.s>0) {
-          times.value.s=Number(times.value.s)-1
-        }else{
-          if (times.value.m>0) {
-            times.value.m=Number(times.value.m)-1
-          }else{
-            times.value.h=Number(times.value.h)-1
-          }
-        }
-        if (times.value.s<=0&&times.value.m<=0&&times.value.h<=0) {
-          times.value.s=0
-          times.value.m=0
-          times.value.h=0
-          times.value.d=0
-          router.push({
-          path: "/studentExam",
-        });
-        }
+  setup(props,{emit}) {
+    const router = useRouter();
+    let startExamInfoData: any = inject("startExamInfoData");
+    const times: Ref<Itimes> | undefined = ref({
+      d: "00",
+      h: "00",
+      m: "00",
+      s: "00",
+    });
+    let timers: NodeJS.Timer | null = null;
+    onBeforeRouteLeave(() => {
+      clearInterval(Number(timers));
+    });
+    watch(
+      () => startExamInfoData,
+      () => {
+        if (!startExamInfoData?.value) return;
+        if (!startExamInfoData?.value.times) return;
+        let endTime = startExamInfoData?.value.times.split("~");
+        times.value = countDown(new Date(), startExamInfoData?.value.closed_at);
+      },
+      { deep: true, immediate: true }
+    );
+    function calculateTime() {
+      if (!times?.value) {
+        return;
+      }
+      times.value = countDown(new Date(), startExamInfoData?.value.closed_at);
+      if (times.value.s <= 0 && times.value.m <= 0 && times.value.h <= 0) {
+        times.value.s = 0;
+        times.value.m = 0;
+        times.value.h = 0;
+        times.value.d = 0;
+        emit("finsh")
+      }
     }
 
-    timers= setInterval(()=>{
-      calculateTime()
-    },1000)
+    timers = setInterval(() => {
+      calculateTime();
+    }, 1000);
     return {
       startExamInfoData,
       times,
-      topImages
+      topImages,
     };
   },
 });

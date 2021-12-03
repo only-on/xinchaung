@@ -2,7 +2,7 @@
   <examLayput>
     <template v-slot>
       <div class="exam-doing-content">
-        <top></top>
+        <top @finsh="finshExam"></top>
         <div class="exam-content-box">
           <div class="exam-content-left">
             <div>
@@ -549,19 +549,20 @@ export default defineComponent({
     function getQuestionsList() {
       getQuestionsListApi(
         { entity_type: "paper", entity_id: reactiveData.paper_id },
-        { include: "answers" }
+        { include: "" } //answers
       ).then((res:any) => {
         reactiveData.examQuestions=res?.data
       });
     }
     // 结束考试
-    function finshExam() {
+    async function finshExam() {
       let params = {
         urlParams: {
           student_id: uid,
           exam_id: exam_id,
         },
       };
+      await submitExamAnswer(currentQuestion.value);
       endStudentAnswer(params).then((res: any) => {
         router.push({
           path: "/studentExam",
