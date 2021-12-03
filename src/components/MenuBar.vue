@@ -74,7 +74,7 @@ export default defineComponent({
     var activeName:Ref<string>=ref(lStorage.get('menuActiveName') || '')
 
     function select(level:string,val:MenuItem){
-      console.log('to：path'+val.url)
+      console.log('to：path：'+val.url)
       router.replace(String(val.url))
       if(level==='Parent'){
         activeName.value=val.name
@@ -114,12 +114,14 @@ export default defineComponent({
       })
     }
     onMounted(() => {
-      let Menus=store.state.Menus;
-      if(!Menus.length){
-         getMenu()
-      }else{
-        menus=Menus
-      }
+      // console.log(store.state.Menus)
+      // let Menus=store.state.Menus;
+      // if(!Menus.length){
+      //    getMenu()
+      // }else{
+      //   menus=Menus
+      // }
+      getMenu()
     });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));
