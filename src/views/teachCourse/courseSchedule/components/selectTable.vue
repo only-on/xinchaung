@@ -11,7 +11,7 @@
       </template>
       <div class="list-wrapper scroll-view-wrapper">
         <a-table
-          rowKey="class_id"
+          :rowKey="currentType === 'student' ? 'stu_id' : 'class_id'"
           :columns="columns[currentType]"
           :loading="loading"
           :data-source="dataList[currentType]"
@@ -27,7 +27,6 @@
         >
           <template #action="{record}">
             <span class="iconfont icon-del" @click="handleSelectData(record)" v-if="neverShow(record)"></span>
-            <!-- <span class="iconfont icon-yichu"></span> -->
           </template>
         </a-table>
       </div>
@@ -217,6 +216,9 @@ interface ISelectedIds {
           border-right: 1px solid #e8e8e8;
         }
       }
+    }
+    .ant-table-placeholder {
+      border-color: #e8e8e8;
     }
   }
 }

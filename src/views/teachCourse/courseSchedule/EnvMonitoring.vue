@@ -182,7 +182,6 @@ export default defineComponent({
       http.envMonitoringList({
         param: searchForm
       }).then((res: IBusinessResp) => {
-        console.log(res)
         const { data, total } = res.data
         pageInfo.total = total
         tableList.push(...data)

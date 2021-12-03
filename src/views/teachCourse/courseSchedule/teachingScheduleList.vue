@@ -60,6 +60,7 @@
           </div>
         </a-col>
       </a-row>
+      <div class="table-main setScrollbar">
       <div class="table-content">
         <div class="table-time-col">
           <!-- <setting-time-modal ref="settingTime" /> -->
@@ -172,6 +173,7 @@
             </div>
           </a-col>
         </a-row>
+      </div>
       </div>
     </div>
   </div>
@@ -542,9 +544,6 @@ export default defineComponent({
           // float: left;
         display: flex;
         align-items: center;
-        .week-group {
-            // padding-left: 20px;            
-        }
         .ant-calendar-picker input {
           cursor: pointer;
         }
@@ -655,10 +654,12 @@ export default defineComponent({
           color: #4D4D4D;
         }
       }
+      .table-main {
+        height: 575px;
+        overflow-y: auto
+      }
       .table-content {
-        display: flex;
-        // height: 575px;
-        // overflow-y: auto;
+        display: flex;;
         .table-body {
           width: 100%;
         }
@@ -768,9 +769,6 @@ export default defineComponent({
                 .top {
                   margin: 4px 0 16px 0;
                 }
-              }
-              .edit-wrap>*:hover {
-                  // color: #FF7900;
               }
               &.hover-edit:hover .edit-wrap {
                 display: flex;
