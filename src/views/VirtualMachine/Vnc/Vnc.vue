@@ -298,7 +298,7 @@ export default defineComponent({
     function initWs() {
       vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
-        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + connection_id,
+        url: "://"+ws_config.host+":"+ws_config.port+"/?uid=" + connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");

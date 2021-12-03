@@ -94,7 +94,7 @@ export default defineComponent({
     // 链接websocker
     function connectWs() {
       ws.value = wsConnect({
-        url: "://"+ws_config.host+":"+ws_config.port+"/ws/?uid=" + uid,
+        url: "://"+ws_config.host+":"+ws_config.port+"/?uid=" + uid,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");
