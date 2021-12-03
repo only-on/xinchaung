@@ -76,15 +76,11 @@ export default defineComponent({
         end_time: endTime.value?.format('YYYY-MM-DD HH:mm:ss')
       }
       http.forbiddenUser({param}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
-          $message.success('禁用成功', 3)
-          beginTime.value = moment(new Date())
-          endTime.value = undefined
-          isShow.value = false
-          callbackOk()
-        } else {
-          $message.warning('禁用失败', 3)
-        }
+        $message.success('禁用成功', 3)
+        beginTime.value = moment(new Date())
+        endTime.value = undefined
+        isShow.value = false
+        callbackOk()
       })
     }
     const handleCancel = () =>{

@@ -262,17 +262,10 @@ export default defineComponent({
     }
     let dayTimes = reactive<IDaytime[]>([])
     function getLeftTime() {
+      dayTimes.length = 0
       http.getLeftTime().then((res: IBusinessResp) => {
-        dayTimes.length = 0
-        if (res.code == 1) {
-          // this.loading = true
-          dayTimes.push(...res.data)
-        } else {
-          $message.warn(res.message)
-        }
-      })
-      .catch((err: any) => {
-        $message.error(err.message)
+        // this.loading = true
+        dayTimes.push(...res.data)
       })
     }
     getLeftTime()
@@ -288,14 +281,7 @@ export default defineComponent({
       }
       datas.tableList = {}
       http.getTimeTable({param}).then((res: IBusinessResp) => {
-        if (res.code === 1) {
-          datas.tableList = res.data
-        } else {
-          $message.error(res.message)
-        }
-      })
-      .catch((err: any) => {
-        $message.error(err.message)
+        datas.tableList = res.data
       })
     }
     let toDayTime = ref(moment())
@@ -359,13 +345,9 @@ export default defineComponent({
           http.deleteTimeTable({
             param: {serial_number: dayTimes[index].serial_number}
           }).then((res: IBusinessResp) => {
-            if (res.code == 1) {
-              $message.success('时间段删除成功')
-              getLeftTime()
-              getTimeTable(weekTime.value.format('YYYY-MM-DD'))
-            } else {
-              $message.error(res.message)
-            }
+            $message.success('时间段删除成功')
+            getLeftTime()
+            getTimeTable(weekTime.value.format('YYYY-MM-DD'))
           })
         },
       })
@@ -385,12 +367,8 @@ export default defineComponent({
         subText: '执行后无法恢复，请谨慎操作',
         callbackOk: () => {
           http.scheduleDelete({param: {id}}).then((res: IBusinessResp) => {
-            if (res.code == 1) {
-              getLeftTime()
-              getTimeTable(weekTime.value.format('YYYY-MM-DD'))
-            } else {
-              $message.error(res.message)
-            }
+            getLeftTime()
+            getTimeTable(weekTime.value.format('YYYY-MM-DD'))
           })
         },
       })

@@ -292,9 +292,6 @@ export default defineComponent({
             }
           }
         })
-        .catch((err: any) => {
-          $message.error(err.message)
-        })
     }
     provide('onCrossvalidation', onCrossvalidation)
     provide('selectedIds', selectedIds)
@@ -327,25 +324,15 @@ export default defineComponent({
           http.scheduleUpdate({
             param: {params: Object.assign(param, {id})}
           }).then((res: IBusinessResp) => {
-            if (res.code === 1) {
-              $message.success('修改成功！')
-              router.go(-1)
-            } else {
-              $message.warn(res.message)
-            }
+            $message.success('修改成功！')
+            router.go(-1)
           })
           return
         }
         http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
-          if (res.code === 1) {
-            $message.success('创建成功！')
-            router.go(-1)
-          } else {
-            $message.warn(res.message)
-          }
+          $message.success('创建成功！')
+          router.go(-1)
         })
-      }).catch((err: any) => {
-        console.log(err)
       })
     }
     //取消

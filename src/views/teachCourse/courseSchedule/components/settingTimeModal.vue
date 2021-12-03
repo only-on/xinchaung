@@ -68,26 +68,18 @@ export default defineComponent({
         http.updateTimeTable({
           param: Object.assign(param, {id: options.id})
         }).then((res: IBusinessResp) => {
-           if (res.code == 1) {
-            $message.success('更新时间段成功')
-            options.callbackOk()
-            visible.value = false
-          } else {
-            $message.warn(res.message)
-          }
+          $message.success('更新时间段成功')
+          options.callbackOk()
+          visible.value = false
         })
         return
       }
       http.setTimeTable({
         param: Object.assign(param, {serial_number: options.index + 1})
       }).then((res: IBusinessResp) => {
-        if (res.code == 1) {
-          $message.success('新增时间段成功')
-          options.callbackOk()
-          visible.value = false
-        } else {
-          $message.warn(res.message)
-        }
+        $message.success('新增时间段成功')
+        options.callbackOk()
+        visible.value = false
       })
     }
     function disabledPicker() {

@@ -11,13 +11,6 @@
       <a-tab-pane v-for="item in tabsList" :key="item.key" :tab="item.tab" />
     </a-tabs>
     <div v-if="visible">
-      <!-- <component
-        :is="activeName"
-      /> -->
-        <!-- :onCrossvalidation="onCrossvalidation"
-        :selectedIds="selectedIds[activeName]"
-        :selectClassIds="selectClassIds"
-        ref="studentComponent" -->
       <select-table 
         v-if="currentType === 'student'"
         :currentType="currentType"
@@ -82,8 +75,6 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.select-stuclass-drawer {
-}
 :deep(.ant-tabs-bar) {
   border-bottom: 1px solid #e8e8e8;
   .ant-tabs-nav {
