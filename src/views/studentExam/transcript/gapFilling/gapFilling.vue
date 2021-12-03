@@ -3,7 +3,7 @@
     <h2 :class="styles['answer-title']">{{ index+1 }}、{{ data.question }}</h2>
     <div :class="[styles['student-answer'], styles['error-answer']]" v-if="!contrastAnswers(data.answers,data.student_answer)">回答错误：{{data.student_answer.join(",")}}</div>
     <div :class="[styles['question-answer'], ['correct-answer']]" v-if="contrastAnswers(data.answers,data.student_answer)">回答正确：{{data.student_answer.join(",")}}</div>
-    <div :class="[styles['question-answer'] ,styles['standard-answer']]">标准答案：{{getCorrectAnswer(data.answers,'content')}}</div>
+    <div :class="[styles['question-answer'] ,styles['standard-answer']]">标准答案：{{getCorrectAnswer(data.answers)}}</div>
   </div>
 </template>
 
@@ -30,15 +30,17 @@ export default defineComponent({
         return isCorrect
       }
       // 获取标准答案
-      function getCorrectAnswer(answers:any[],options:any[]) {
+      function getCorrectAnswer(answers:any[]) {
         let code=""
         answers.forEach((item:any,index:number)=>{
-          options.forEach((it:any,ind:number)=>{
-            if (item.answer==it.id) {
-              code=item.option
-            }
-          })
+          code+=item.answer
+          // options.forEach((it:any,ind:number)=>{
+          //   if (item.answer==it.id) {
+          //     code+=item.option
+          //   }
+          // })
         })
+        return code
       }
       return {
           styles,

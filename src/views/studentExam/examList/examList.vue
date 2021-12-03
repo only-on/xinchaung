@@ -1,5 +1,5 @@
 <template>
-  <div style="width:1330px;margin:0 auto">
+  <div class="exam-list-wrap setScrollbar">
     <top></top>
     <content
       :examData="examData"
@@ -27,7 +27,8 @@ export default defineComponent({
     content,
   },
   setup() {
-    const uid:any = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
+    const uid: any =
+      storage.lStorage.get("uid") || storage.lStorage.get("user_id");
     const startExamInfo = {
       code: 1,
       status: 1,
@@ -73,17 +74,15 @@ export default defineComponent({
     onMounted(() => {
       studentExamList();
       getStartExam();
-      
     });
 
     // 学生试卷列表
     function studentExamList() {
-      
-      let tempParam:any={}
-      if(params.name) tempParam.name=params.name
-      if(params.status) tempParam.status=params.status
-      tempParam.limit=params.limit
-      tempParam.page=params.page
+      let tempParam: any = {};
+      if (params.name) tempParam.name = params.name;
+      if (params.status) tempParam.status = params.status;
+      tempParam.limit = params.limit;
+      tempParam.page = params.page;
       let param: IExamListParams = {
         param: tempParam,
         urlParams: {
@@ -115,3 +114,12 @@ export default defineComponent({
   },
 });
 </script>
+
+<style lang="less">
+.exam-list-wrap {
+  width: 1330px;
+  margin: 0 auto;
+  overflow: auto;
+  height: 100%;
+}
+</style>
