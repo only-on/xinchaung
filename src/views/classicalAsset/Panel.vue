@@ -162,20 +162,23 @@ export default defineComponent({
     const $message: MessageApi = inject("$message")!;
     const updateNav: (config: ILayoutConfiguration) => void =
       inject("updataNav")!;
-    updateNav({
-      showNav: true,
-      navPosition: "outside",
-      tabs: [
-        { name: "公有", componenttype: 0 },
-        { name: "私有", componenttype: 1 },
-      ],
-      componenttype: 1,
-      showContent: false,
-      navType: false,
-      backOff: false,
-      showPageEdit: false,
-      pageEdit: () => {},
-    });
+    upNav()
+    function upNav(){
+      updateNav({
+        showNav: true,
+        navPosition: "outside",
+        tabs: [
+          { name: "公有", componenttype: 0 },
+          { name: "私有", componenttype: 1 },
+        ],
+        componenttype: 1,
+        showContent: false,
+        navType: false,
+        backOff: false,
+        showPageEdit: false,
+        pageEdit: () => {},
+      });
+    }
     const configuration: ILayoutConfiguration = inject("configuration")!;
     watch(
       () => configuration.componenttype,
@@ -284,6 +287,7 @@ export default defineComponent({
       console.log(val,'route.params.type')
       dataType.value=val
       getDataSetList();
+      upNav()
     },{
       immediate: true,
       deep:true

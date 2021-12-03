@@ -1,22 +1,23 @@
+
 import Layout from 'src/views/common/Layout.vue';
 export default {
     path: "teacherDataExercises",
     component: Layout,
     meta: {
         title: "习题列表",
-        authCode: 'teacherDataExercises'
+        authCode: 'exerciseList'
     },
     children: [
         {
             path: "",
-            name: "exerciseList",
+            name: "teacherDataExercises",
             component: () => import("src/views/teacherDataExercises/index.vue"),
             meta: {
-                title: " ",
+                title: "",
                 authCode: 'exerciseList'
             },
         }, {
-            path: '/exercisesDetail',
+            path: 'exercisesDetail',
             name: 'exercisesDetail',
             component: () => import("src/views/teacherDataExercises/exercisesDetail/index.vue"),
             meta: {

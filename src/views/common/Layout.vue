@@ -2,9 +2,9 @@
     <div class="app_content">
       <Header></Header>
       <div class="main-box" id="main-box">
-        <NavTab @tabSwitch="tabSwitch" v-if="configuration.showNav && configuration.navPosition==='outside'" />
+        <NavTab @tabSwitch="tabSwitch" v-show="configuration.showNav && configuration.navPosition==='outside'" />
         <div :class="configuration.showContent?'content':'customized'" :id="(configuration.showNav && configuration.navPosition==='outside')?'withTop':''">
-          <NavTab @tabSwitch="tabSwitch" v-if="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
+          <NavTab @tabSwitch="tabSwitch" v-show="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
           <div  :class="configuration.showContent?'content_box':'customizedSon'">
             <div :class="configuration.showContent?'setScrollbar':'customizedSon'">
               <router-view />

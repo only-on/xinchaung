@@ -74,22 +74,23 @@ export default defineComponent({
     async function  updateRouter(val?:number){
       const {query,path}= route
       // console.log(query)
-      let Newquery={currentTab: val}
+      let NewQuery={currentTab: val}
       await router.replace({
             path: path,
-            query:Newquery,
+            query:NewQuery,
       })
       // console.log(route.query)
     }
     async function initData(){
       if(configuration.tabs && configuration.tabs.length){
+        // debugger
         // 页面首次进入加currentTab参数    原地刷新则不刷新路由
         const { currentTab } = route.query
-        const SwitchNumber=currentTab?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
-        currentTab?'':await updateRouter(SwitchNumber)
+        const SwitchNumber= currentTab !== undefined ?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
+        currentTab !== undefined ?'':await updateRouter(SwitchNumber)
         //     用户指定了componenttype时使用指定的，否则加componenttype为0
         const newCurrentTab= route.query.currentTab
-        const newSwitchNumber=newCurrentTab?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
+        const newSwitchNumber=newCurrentTab !==undefined ?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
         await tabChange(configuration.tabs[newSwitchNumber])
         configuration.componenttype=newSwitchNumber
         activeName.value =configuration.tabs[configuration.componenttype].name
@@ -100,9 +101,6 @@ export default defineComponent({
     }
     onMounted(() => {
       initData()
-    });
-    watch(configuration, (val) => {
-      // initData()
     });
     watch(()=>{return configuration.componenttype}, (val) => {
       if(val===undefined){

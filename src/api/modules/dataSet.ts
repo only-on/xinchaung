@@ -15,7 +15,8 @@ export default{
   editDoc:{url:`/dmc/v1.0/update_doc`,method:'PATCH',dataType: 'json'},
   getDataFileList:{url:`/dmc/v1.0/datafile`,method:'GET'},
   deleteFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
-  download:{url:`/dmc/v1.0/download`,method:'GET'}
+  download:{url:`/dmc/v1.0/download`,method:'GET'},
+  // upload_image:{url:`/dmc/v1.0/upload_image`}
   // 
 
 }

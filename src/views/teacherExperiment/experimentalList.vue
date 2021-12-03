@@ -193,7 +193,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs,createVNode } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs,createVNode,nextTick } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { ITeacherExperHttp, ITreeList, IListSearchInfo, IExporimentList } from './experTyping'
@@ -202,7 +202,6 @@ import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { useRoute, useRouter } from 'vue-router'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
-import { log } from 'console'
 export default defineComponent({
   components: {
     Tree
@@ -286,7 +285,7 @@ export default defineComponent({
           }
         })
       }).catch(err => {
-          console.error(err)
+          // console.error(err)
         })
         .finally(() => {
           // this.currentCourseContent.id ? this.recoverTreeStatus() : ''
@@ -588,8 +587,10 @@ export default defineComponent({
           getExperimentList()
         } else {
           if (res) {
-            myTree.value.init()
-            initExperimental()
+            nextTick(()=>{
+              myTree.value.init()
+              initExperimental()
+            })
           }
         }
       })

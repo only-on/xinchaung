@@ -1,12 +1,5 @@
 <template>
   <a-breadcrumb :class="type ? '' : 'allWhite'">
-    <!-- <div class="nav"> -->
-    <!-- <div>首页</div>
-          <div class="qian">我的课程</div> -->
-    <!-- <div v-for="(v,k) in breadcrumbArr" :key="v.name" :class="k?'qian':''" @click="go(v.path)">{{v.name}}</div> -->
-    <!-- </div> -->
-    <!-- <a-breadcrumb-item><a href="">Application Center</a></a-breadcrumb-item> -->
-
     <a-breadcrumb-item
       v-for="(v, i) in breadcrumbArr"
       :key="'breadcrumbs-' + i"

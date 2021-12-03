@@ -60,7 +60,12 @@
               <span @click="saveMd" class="iconfont icon-baocun"></span>
             </div>
             <div>
-              <antdv-markdown v-model="dataSetInfo.documents"  :preview-only="false" class="markdown__editor"/>
+              <antdv-markdown v-model="dataSetInfo.documents" 
+               :preview-only="false" class="markdown__editor" 
+                :image-upload-url="'/proxyPrefix/dmc/v1.0/upload_image'" 
+                :image-upload-data="{status:1}"
+                :image-upload-field-name="'upload_file'"
+                />
             </div>
           </div>
 
@@ -124,7 +129,7 @@
                 v-model:value="ForumSearch.description"
                 placeholder="请输入数据简介 最多250字"
                 :maxLength="250"
-                :auto-size="{ minRows: 3, maxRows: 4 }"
+                :auto-size="{ minRows: 3, maxRows: 3 }"
               />
             </div>
             <div class="cover">
@@ -199,7 +204,6 @@ const http=(request as any).dataSet
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import UploadFile from './UploadFile.vue'
 import File  from './File.vue'
-import { RuleObject } from "ant-design-vue/es/form/interface";
 import { getFileType } from 'src/utils/getFileType'
 import { PlusOutlined, LoadingOutlined } from '@ant-design/icons-vue';
 interface FileItem {
@@ -266,7 +270,7 @@ export default defineComponent({
       uploadFileVisible:false,
       editVisible:false,
       editBase:()=>{
-        
+        state.initEditData()
         state.editVisible=true
       },
       initEditData:()=>{
@@ -340,11 +344,16 @@ export default defineComponent({
         state.uploadFileVisible = false
       },
       saveBaseInfo:()=>{
-        http.editInfo({param:{...ForumSearch}}).then((res:any)=>{
-          message.success('修改成功')
-          detailed()
-          state.editVisible=false
-        })
+        formRef.value.validate().then(() => {
+          // console.log(ForumSearch);
+          // console.log('验证过');
+          http.editInfo({param:{...ForumSearch}}).then((res:any)=>{
+            message.success('修改成功')
+            detailed()
+            state.editVisible=false
+          })
+      })
+        
       },
       closeBaseModel:()=>{
         state.editVisible=false
@@ -360,7 +369,6 @@ export default defineComponent({
         state.dataSetInfo = res.data
         state.dataSetInfo.creator=Number(state.dataSetInfo.creator)
         state.isMdContent = state.dataSetInfo.documents ? true : false
-        state.initEditData()
       })
     }
     function getDataFileList(flag = false) {
@@ -398,7 +406,7 @@ export default defineComponent({
     })
     const rules={
         name: [
-          { required: true, message: '请输入数据集名称', trigger: 'blur'},
+          { required: true, message: '请输入数据集名称', trigger: 'onfocus'},
         ],
         categoryText: [{ required: true, message: '请选择数据集类型', trigger: 'change' }],
     }

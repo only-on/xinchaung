@@ -48,11 +48,11 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
           params: to.params,
         }).fullPath
       }
-
       breadcrumbs.push(routeTuple)
       processedPath.push(routeSegment.path)
     }
   })
+  console.log(breadcrumbs)
   store.commit('saveBreadcrumb', breadcrumbs)
 })
 
