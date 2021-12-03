@@ -174,7 +174,7 @@ export default defineComponent({
     const operationHandle = reactive({
       // 查看成果,视频,报告
       isShowAchievements: false,
-      lookAchievementsInfo: {},
+      lookAchievementsInfo:[],
       videoUrl: '',
       isShowReport: false,
       reportUrl: '',

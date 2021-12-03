@@ -14,7 +14,7 @@
         <div v-else>该任务未提交笔记</div>
       </a-tab-pane>
     </a-tabs> -->
-    <div v-for="(v, k) in achievementsInfo" :key="k">
+    <div v-for="(v, k) in achievementsInfo" :key="k.toString()">
       <xe-quill
       :toolbar="'none'"
       v-model:value="v.note"
