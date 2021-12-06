@@ -285,7 +285,11 @@ export default defineComponent({
       router.push('/teacher/teacherForum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/teacher/teacherForum/PostsDetailed?detailId='+id)
+      const {currentTab}= route.query
+      router.push({
+        path:'/teacher/teacherForum/PostsDetailed',
+        query:{detailId:id,currentTab:currentTab}
+      })
     }
     onMounted(()=>{
       // serve.v(dataObj); 

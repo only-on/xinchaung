@@ -46,7 +46,7 @@ import { defineComponent,ref, onMounted,reactive,Ref,inject } from 'vue'
 import { useRouter ,useRoute} from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
-interface IlistItem{
+interface IListItem{
   course_url:string,
   name:string;
   study_time:string;
@@ -58,7 +58,7 @@ interface IlistItem{
   recent:string;
   userName:string;
   course_student_id:number;
-  course_id:number;
+  cousre_id:number;
   url:string;
   state:string;
   period:string;
@@ -74,7 +74,7 @@ export default defineComponent({
     const router = useRouter();
     const route=useRoute();
     var defaultUrl:string='/src/assets/images/studentcourse/course-default1.jpg'
-    var list:IlistItem[]=reactive([])
+    var list:IListItem[]=reactive([])
     var loading:Ref<boolean> =ref(false)
     const http=(request as any).studentCourse
     function initData(){
@@ -83,16 +83,17 @@ export default defineComponent({
         //  console.log(res)
         loading.value=false
         list.push(...res.data)
-        list.length?list.map((v:IlistItem)=>{
+        list.length?list.map((v:IListItem)=>{
           v.url=v.url?v.url:defaultUrl
         }):''
       })
     }
     var updata=inject('updataNav') as Function
     
-    function startLearning(val:IlistItem) {
+    function startLearning(val:IListItem) {
+      console.log(val)
       const {currentTab}= route.query
-      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&course_id='+val.course_id+'&currentTab='+currentTab)
+      router.push('/studentSideCourse/ContinueDetail?DetailId='+val.course_student_id+'&cousre_id='+val.cousre_id+'&currentTab='+currentTab)
     }
     onMounted(()=>{
      initData()
