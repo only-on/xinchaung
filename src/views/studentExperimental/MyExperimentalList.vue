@@ -79,7 +79,6 @@ export default defineComponent({
         taskId: val.train_id,
       }
       console.log(val);
-      
       toVmConnect(router,param,'')
       // router.push('/vm/vnc')
     }

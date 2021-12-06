@@ -5,9 +5,8 @@ export default {
   path: "/studentExperimental",
   component: Layout,
   meta: {
-    // title: "我的实训",
+    name: "studentExperimental",
     title: (params?: RouteParams, query?: RouteParams) => {
-      // console.log(query)
       const dataDetailMap = {
           '0': '最近实训',
           '1': '我的实训',
@@ -19,7 +18,6 @@ export default {
   children: [
     {
       path: "",
-      // component: RouterViews,
       component: () => import("src/views/studentExperimental/index.vue"),
       meta: {
         title: "",

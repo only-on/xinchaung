@@ -30,12 +30,14 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
 router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, failure: NavigationFailure | void) => {
   const breadcrumbs: IRouteTuple[] = [{ control: { title: '首页', enabled: true }, route: { name: 'index' } }]
   let processedPath: string[] = []
+  // console.log('matched:=',to.matched)
+  // console.log('breadcrumbs:前=',breadcrumbs)
   to.matched.forEach((routeSegment: RouteRecordNormalized) => {
-    if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
-      // 显性要求不显示面包屑，直接跳过
-      return
-    }
-
+    console.log('routeSegment:=',routeSegment)
+    // if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
+    //   // 显性要求不显示面包屑，直接跳过
+    //   return
+    // }
     // 避免父级页面由子级来显示导致面包屑重复
     if (!processedPath.includes(routeSegment.path)) {
       let routeTuple: IRouteTuple = {
@@ -48,11 +50,13 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
           params: to.params,
         }).fullPath
       }
+      console.log('routeTuple:=',routeTuple)
       breadcrumbs.push(routeTuple)
       processedPath.push(routeSegment.path)
-    }
+    }   
   })
-  console.log(breadcrumbs)
+  console.log('breadcrumbs:=',breadcrumbs)
+  // console.log('processedPath:=',processedPath)
   store.commit('saveBreadcrumb', breadcrumbs)
 })
 

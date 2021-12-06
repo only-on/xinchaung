@@ -20,7 +20,7 @@ export declare interface ILayoutConfiguration {
 export declare interface IRouteTuple {
     control: {
         title: string
-        enabled: boolean
+        enabled?: boolean
     }
     route: RouteLocationRaw
 }

@@ -4,10 +4,9 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "/studentForum",
   component: Layout,
+  name:'studentForum',
   meta: {
-    // title: "论坛",
     title: (params?: RouteParams, query?: RouteParams) => {
-      console.log(query)
       const dataDetailMap = {
           '0': '随堂论坛',
           '1': '我的提问',
@@ -20,7 +19,6 @@ export default {
   children: [
     {
       path: "",
-      // component: RouterViews,
       component: () => import("src/views/studentForum/index.vue"),
       meta: {
         title: "",

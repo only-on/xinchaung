@@ -104,7 +104,7 @@ export default defineComponent({
               state.initData()
               message.success('回复成功')
               visible.value=false
-              state.ForumArticle.content=''
+              state.ForumArticle.content={}
         })
       },
       detale:(val:any)=>{
@@ -180,13 +180,13 @@ export default defineComponent({
   .forumBody{
     padding: 30px;
     overflow: auto;
-    max-height: calc(100% - 200px);
+    // max-height: calc(100% - 200px);
     .item{
       margin-bottom: 15px;
     }
   }
   .postItem{
-    height: 200px;
+    height: 300px;
     // max-height: 200px;
     overflow-y: auto;
   }

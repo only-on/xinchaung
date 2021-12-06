@@ -244,7 +244,7 @@ export default defineComponent({
               initData()
               message.success('回复成功')
               visible.value=false
-              ForumArticle.content=''
+              ForumArticle.content={}
             }else{
               message.warning(res.error.msg)
             }
@@ -278,7 +278,11 @@ export default defineComponent({
       router.push('/studentForum/CreatePosts')
     }
     function detaile(id:number){
-      router.push('/studentForum/PostsDetailed?detailId='+id)
+      let {currentTab}= route.query
+      router.push({
+        path:'/studentForum/PostsDetailed',
+        query:{detailId:id,currentTab:currentTab}
+      })
     }
     onMounted(()=>{
       // serve.v(dataObj); 
