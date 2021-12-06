@@ -1,33 +1,35 @@
 <template>
   <div class="list_content">
-    <div class="info" v-for="v in list" :key="v.name">
-      <div class="card">
-        <div class="mask">
-          <div class="link" @click="continueTraining" v-if="v.status_name==='进行中'">
-            <img src="../../assets/images/Experimental/tap.png" alt="">
-            <span>点击继续实训</span>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <div class="info" v-for="v in list" :key="v.name">
+        <div class="card">
+          <div class="mask">
+            <div class="link" @click="continueTraining" v-if="v.status_name==='进行中'">
+              <img src="../../assets/images/Experimental/tap.png" alt="">
+              <span>点击继续实训</span>
+            </div>
+          </div>
+          <div class="card_pic">
+            <img :src="v.url" />
           </div>
         </div>
-        <div class="card_pic">
-          <img :src="v.url" />
+        <div class="card_info">
+          <h3>{{v.name}}</h3>
+          <div class="text-primary">
+            <span>{{v.state}}</span>
+            <span> 用时&nbsp;&nbsp; {{v.used_time}} </span>
+            <span v-if="v.recent_content">学习至 {{v.recent_content}}</span>
+          </div>
+          <p class="status">实训教师：{{v.teacher}}</p>
+          <p class="status">实训状态：{{v.state}}</p>
+          <p class="status">起止时间：{{v.period}}</p>
+        </div>
+        <div class="start_training" v-if="[0,1].includes(Number(v.status)) && v.state==='进行中'">
+          <a-button @click="continueTraining(v)" type="primary"> {{['开始实训','继续实训'][Number(v.status)]}} </a-button>
         </div>
       </div>
-      <div class="card_info">
-        <h3>{{v.name}}</h3>
-        <div class="text-primary">
-          <span>{{v.state}}</span>
-          <span> 用时&nbsp;&nbsp; {{v.used_time}} </span>
-          <span v-if="v.recent_content">学习至 {{v.recent_content}}</span>
-        </div>
-        <p class="status">实训教师：{{v.teacher}}</p>
-        <p class="status">实训状态：{{v.state}}</p>
-        <p class="status">起止时间：{{v.period}}</p>
-      </div>
-      <div class="start_training" v-if="v.state==='进行中'">
-        <a-button @click="continueTraining(v)" type="primary"> 继续实训 </a-button>
-      </div>
-    </div>
-    <empty v-if="!loading && list.length===0" />
+      <empty v-if="!loading && list.length===0" :text="'您最近没有进行任何实训'" />
+    </a-spin>
   </div>
 </template>
 <script lang="ts">
@@ -36,6 +38,7 @@ import { useRouter } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 interface IlistItem{
+  status:string
   url:string,
   name:string,
   status_name:string,
@@ -90,7 +93,11 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
+.ant-spin-spinning{
+    margin-top: 200px;
+  }
   .list_content{
+    text-align: center;
     .info{
       margin: 16px 0;
       padding-bottom: 10px;
