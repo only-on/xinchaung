@@ -68,6 +68,7 @@
         :visible="visableDetail"
         @ok="detailOk"
         @cancel="detailCancel"
+        width="1000px"
       >
         <div>
           <component :is="componentName" :detailInfo="detailInfo"></component>
@@ -210,6 +211,9 @@ export default defineComponent({
       infoRequest.studentResults({ param: { id: id, type: type } }).then((res: any) => {
         console.log(res);
         if (res.data) {
+          visableDetail.value = true;
+          state.componentName = type;
+          state.detailInfo = res.data;
           switch (type) {
             case "exper":
               state.title = "实验习题";
@@ -221,9 +225,6 @@ export default defineComponent({
               state.title = "实验报告";
               return;
           }
-          visableDetail.value = true;
-          state.componentName = type;
-          state.detailInfo = res.data;
         } else {
           switch (type) {
             case "exper":

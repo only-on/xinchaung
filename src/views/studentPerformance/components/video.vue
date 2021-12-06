@@ -1,15 +1,13 @@
 <template>
-  <div>
+  <div class="content">
     <video
-      :src="videoUrl"
+      :src="detailInfo"
       :controls="true"
-      class="video-js vjs-big-play-centered vjs-fluid"
       webkit-playsinline="true"
       playsinline="true"
       x-webkit-airplay="allow"
       x5-playsinline
-      style="width: 100%; height: 600px"
-      :autoplay="true"
+      width="950"
     ></video>
   </div>
 </template>
@@ -23,9 +21,21 @@ export default defineComponent({
   props: ["detailInfo"],
   setup: (props, context) => {
     const state: Istate = reactive({
-      videoUrl: "",
+      // videoUrl:
+      //   "localhost:3000/proxyPrefix" +
+      //   "/trainvideo/453850030/ffmpeg14b542ae-566a-11ec-8350-ac1f6b3681fa.mp4",
+      videoUrl:
+        "http://192.168.101.130/trainvideo/453850030/ffmpeg14b542ae-566a-11ec-8350-ac1f6b3681fa.mp4",
     });
     return { ...toRefs(state) };
   },
 });
 </script>
+<style lang="less" scoped>
+.content {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  width: 100%;
+}
+</style>

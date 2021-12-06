@@ -71,6 +71,7 @@
         :visible="visableDetail"
         @ok="detailOk"
         @cancel="detailCancel"
+        width="1000px"
       >
         <div>
           <component :is="componentName" :detailInfo="detailInfo"></component>
@@ -203,19 +204,22 @@ export default defineComponent({
       if (data) {
         visableDetail.value = true;
         state.componentName = type;
-        state.detailInfo = data;
         switch (type) {
           case "note":
             state.title = "实训结果";
+            console.log(data, "hh");
+            state.detailInfo = data;
             return;
           case "exper":
             state.title = "实验习题";
             return;
           case "video":
             state.title = "操作视频";
+            state.detailInfo = data;
             return;
           case "report":
             state.title = "实验报告";
+            state.detailInfo = data;
             return;
         }
       } else {

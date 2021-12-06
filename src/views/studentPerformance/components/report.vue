@@ -1,6 +1,6 @@
 <template>
   <div>
-    <iframe :src="reportUrl" width="100%" height="700px"></iframe>
+    <iframe :src="detailInfo" width="100%" height="700px"></iframe>
   </div>
 </template>
 <script lang="ts">

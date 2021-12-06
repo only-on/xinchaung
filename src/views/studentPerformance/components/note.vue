@@ -1,14 +1,22 @@
 <template>
   <div>
-    <div v-for="(v, k) in achievementsInfo" :key="k.toString()">
-      <xe-quill
-        :toolbar="'none'"
-        v-model:value="v.note"
-        height="300px"
-        :readOnly="true"
-        ref="quilldom"
-      />
-    </div>
+    <a-tabs default-active-key="1">
+      <a-tab-pane v-for="(v, k) in achievementsInfo" :key="k.toString()">
+        <template #tab>
+          <div>{{ v.name }}</div>
+        </template>
+        <div v-if="v.note">
+          <xe-quill
+            :toolbar="'none'"
+            v-model:value="v.note"
+            height="300px"
+            :readOnly="true"
+            ref="quilldom"
+          />
+        </div>
+        <div v-else>该任务未提交笔记</div>
+      </a-tab-pane>
+    </a-tabs>
   </div>
 </template>
 <script lang="ts">
@@ -27,9 +35,11 @@ export default defineComponent({
         achievementsInfo.value = [];
         if (props.detailInfo?.length) {
           props.detailInfo.forEach((item: any) => {
+            console.log(item.name, item.note);
             achievementsInfo.value.push({
               id: item.id,
-              note: JSON.parse(item.note),
+              name: item.name,
+              note: item.note ? JSON.parse(item.note) : item.note,
             });
           });
         }

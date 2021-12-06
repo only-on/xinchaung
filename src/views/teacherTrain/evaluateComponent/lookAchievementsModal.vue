@@ -1,8 +1,9 @@
 <template>
-  <a-modal class="modal" 
-    title="实训成果" 
-    :footer="null" 
-    :visible="visible" 
+  <a-modal
+    class="modal"
+    title="实训成果"
+    :footer="null"
+    :visible="visible"
     @cancel="close()"
     :width="1000"
   >
@@ -14,24 +15,34 @@
         <div v-else>该任务未提交笔记</div>
       </a-tab-pane>
     </a-tabs> -->
-    <div v-for="(v, k) in achievementsInfo" :key="k.toString()">
-      <xe-quill
-      :toolbar="'none'"
-      v-model:value="v.note"
-      height="300px"
-      :readOnly="true"
-      ref="quilldom"
-    />
+    <div>
+      <a-tabs default-active-key="1">
+        <a-tab-pane v-for="(v, k) in achievementsInfo" :key="k.toString()">
+          <template #tab>
+            <div>{{ v.name }}</div>
+          </template>
+          <div v-if="v.note">
+            <xe-quill
+              :toolbar="'none'"
+              v-model:value="v.note"
+              height="300px"
+              :readOnly="true"
+              ref="quilldom"
+            />
+          </div>
+          <div v-else>该任务未提交笔记</div>
+        </a-tab-pane>
+      </a-tabs>
     </div>
   </a-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, toRefs, watch,computed ,Ref} from 'vue'
+import { defineComponent, ref, toRefs, watch, computed, Ref } from "vue";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import  XeQuill  from 'src/components/dev/Quill.vue';
 import XeQuill from "@xianfe/vue3-quill/src/index.vue";
-import {goHtml} from 'src/utils/common'
+import { goHtml } from "src/utils/common";
 
 export default defineComponent({
   components: {
@@ -41,20 +52,19 @@ export default defineComponent({
   props: {
     isShowAchievements: Boolean,
     lookAchievementsInfo: {
-      type:Array,
-      default:[]
-    }
+      type: Array,
+      default: [],
+    },
   },
-  emit: ['close'],
-  setup(props, {emit}) {
+  emit: ["close"],
+  setup(props, { emit }) {
+    let activeKey = ref("");
 
-    let activeKey = ref('')
-
-    let visible = ref(false)
-    let achievementsInfo:Ref<any>=ref([])
-    let note=ref()
-    let note1=ref()
-     let content: Ref<any> = ref({
+    let visible = ref(false);
+    let achievementsInfo: Ref<any> = ref([]);
+    let note = ref();
+    let note1 = ref();
+    let content: Ref<any> = ref({
       ops: [
         { insert: "Delta", attributes: { bold: true } },
         { insert: "是一种富有表现力的数据格式，它是" },
@@ -72,41 +82,36 @@ export default defineComponent({
     watch(
       () => props.isShowAchievements,
       (newVal) => {
-        visible.value = newVal
+        visible.value = newVal;
         if (newVal) {
-          console.log(props.lookAchievementsInfo)
-          activeKey.value = Object.keys(props.lookAchievementsInfo)[0]
+          console.log(props.lookAchievementsInfo);
+          activeKey.value = Object.keys(props.lookAchievementsInfo)[0];
         }
       },
-      {deep: true}
-    )
+      { deep: true }
+    );
     const close = () => {
-      emit('close')
+      emit("close");
       // activeKey.value = ''
-    }
-    const quillItem=(val:any)=>{
-        return JSON.parse(val)
-    }
+    };
+    const quillItem = (val: any) => {
+      return JSON.parse(val);
+    };
     watch(
-      ()=>props.lookAchievementsInfo,
+      () => props.lookAchievementsInfo,
       () => {
-        achievementsInfo.value=[]
-        if(props.lookAchievementsInfo?.length){
-            props.lookAchievementsInfo.forEach((item:any)=>{
-              achievementsInfo.value.push({
-                created_at:item.created_at,
-                deleted_at:item.deleted_at,
-                id:item.id,
-                note:JSON.parse(item.note),
-                train_content_id:item.train_content_id,
-                train_student_content_id:item.train_student_content_id,
-                train_student_id:item.train_student_id,
-                updated_at:item.updated_at
-                })
-            })
+        achievementsInfo.value = [];
+        if (props.lookAchievementsInfo?.length) {
+          props.lookAchievementsInfo.forEach((item: any) => {
+            achievementsInfo.value.push({
+              id: item.id,
+              name: item.name,
+              note: item.note ? JSON.parse(item.note) : item.note,
+            });
+          });
         }
       },
-      { deep: true,immediate: true}
+      { deep: true, immediate: true }
     );
     return {
       visible,
@@ -114,24 +119,26 @@ export default defineComponent({
       activeKey,
       note,
       achievementsInfo,
-      quillItem
-    }
+      quillItem,
+    };
   },
-})
+});
 </script>
 
 <style lang="less" scoped>
 :deep(.ant-modal-body) {
   height: 750px;
 }
-.modal{height:750px}
-.markdown__editor{
+.modal {
+  height: 750px;
+}
+.markdown__editor {
   height: 100px;
 }
-:deep(.ql-toolbar.ql-snow){
+:deep(.ql-toolbar.ql-snow) {
   display: none;
 }
-:deep(.ql-editor:nth-child(1)){
+:deep(.ql-editor:nth-child(1)) {
   border-top: 1px solid #ccc;
 }
 </style>
