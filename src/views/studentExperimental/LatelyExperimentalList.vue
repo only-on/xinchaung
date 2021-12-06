@@ -1,5 +1,5 @@
 <template>
-  <div class="list_content">
+  <div class="list_content" :class="loading?'center':''">
     <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="info" v-for="v in list" :key="v.name">
         <div class="card">
@@ -96,8 +96,10 @@ export default defineComponent({
 .ant-spin-spinning{
     margin-top: 200px;
   }
-  .list_content{
+  .center{
     text-align: center;
+  }
+  .list_content{
     .info{
       margin: 16px 0;
       padding-bottom: 10px;

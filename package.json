@@ -51,5 +51,11 @@
     "vite-plugin-components": "^0.13.2",
     "vite-plugin-style-import": "^1.0.0",
     "vue-tsc": "^0.0.24"
-  }
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8",
+    "since 2015"
+  ]
 }
