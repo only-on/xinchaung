@@ -297,11 +297,29 @@ export default defineComponent({
     provide('selectedIds', selectedIds)
     // 删除班级
     function onDeleteClass(id: number) {
-
+      selectedClassesData.forEach((v, k) => {
+        if (v.stu_id === id) {
+          selectedClassesData.splice(k, 1)
+        }
+      })
+      selectedIds['class'].forEach((v, k) => {
+        if (v === id) {
+          selectedIds['class'].splice(k, 1)
+        }
+      })
     }
     // 删除学生
     function onDeleteStudent(id: number) {
-
+      selectedStudentsData.forEach((v, k) => {
+        if (v.stu_id === id) {
+          selectedStudentsData.splice(k, 1)
+        }
+      })
+      selectedIds['student'].forEach((v, k) => {
+        if (v === id) {
+          selectedIds['student'].splice(k, 1)
+        }
+      })
     }
     // 保存
     function handleSubmit () {
@@ -613,6 +631,9 @@ interface IForm {
   }
   &.ant-table-bordered.ant-table-fixed-header .ant-table-scroll .ant-table-header.ant-table-hide-scrollbar .ant-table-thead > tr:only-child > th:last-child {
     border-right: 1px solid #e8e8e8;
+  }
+  &.ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {
+    overflow: auto!important;
   }
 }
 </style>
