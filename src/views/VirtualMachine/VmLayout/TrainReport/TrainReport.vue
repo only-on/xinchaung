@@ -1,6 +1,5 @@
 <template>
   <!-- 离线报告 -->
-  <div></div>
   <!-- <div
     class="offlineReport"
     v-if="reportTemplateData && reportTemplateData.template_type === 'file'"
@@ -46,12 +45,16 @@
       </div>
     </div>
   </div> -->
+  <div></div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent,inject } from "vue";
 
 export default defineComponent({
-  setup() {},
+  setup() {
+    console.log(inject("allInfo"));
+    const allInfo=inject("allInfo")
+  },
 });
 </script>

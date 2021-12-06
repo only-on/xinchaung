@@ -190,6 +190,7 @@ import {
   submitAnswer,
   endStudentAnswer,
   getExamQuestionListApi,
+  startedExam
 } from "../studentExam.model";
 import storage from "src/utils/extStorage";
 import judge from "src/components/exercises/judge.vue";
@@ -278,7 +279,8 @@ export default defineComponent({
 
     provide("startExamInfoData", startExamInfoData);
     onMounted(async() => {
-      await getStartExam();
+      await startExamSetting()
+      await getTopExamInfo();
       getQuestionsList();
     });
     // 获取试卷习题
@@ -305,7 +307,7 @@ export default defineComponent({
     }
 
     // 开始考试
-    function getStartExam() {
+    function getTopExamInfo() {
       return new Promise((resolve: any, reject: any) => {
         startExam({
           urlParams: {
@@ -322,6 +324,18 @@ export default defineComponent({
       });
     }
 
+    function startExamSetting() {
+      return new Promise((resolve: any, reject: any) => {
+        startedExam({
+          urlParams: {
+            student_id: uid,
+            exam_id:exam_id
+          },
+        }).then((res: any) => {
+          resolve();
+        });
+      });
+    }
     // 当前试题变化
     async function questionTypeChange(val: number) {
       if (isChange.value) {

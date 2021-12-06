@@ -395,9 +395,6 @@ export default defineComponent({
         } else {
           use_time.value = res.data.current.remaining_time;
         }
-
-        console.log(allInfo);
-
         reportTemid.value = res.data.current.id;
         resolve()
       });
