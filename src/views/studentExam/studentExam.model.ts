@@ -65,8 +65,8 @@ async function endStudentAnswer(params:TStartedExam) {
  * @param entity_type 课程course, 章节chapter, 实验content, 随测test, 试卷paper
  */
 
-async function getQuestionsListApi(urlParams:{entity_type:string,entity_id:number},param:{include:string}) {
-    return await studentExam.getQuestionsListApi({urlParams:{...urlParams},param: param })
+async function getExamQuestionListApi(urlParams:{exam_id:number}) {
+    return await studentExam.getExamQuestionListApi({urlParams:urlParams})
 }
 export {
     getStudentExaminationlList,
@@ -75,7 +75,7 @@ export {
     startedExam,
     submitAnswer,
     endStudentAnswer,
-    getQuestionsListApi  
+    getExamQuestionListApi  
 }
 
 

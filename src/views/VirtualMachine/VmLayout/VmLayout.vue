@@ -95,6 +95,7 @@ import ExperimentalNote from "./ExperimentalNote/ExperimentalNote.vue";
 import TrainCourseware from "./TrainCourseware/TrainCoursewar.vue";
 import TrainResource from "./TrainResource/TrainResource.vue";
 import TrainNote from "./TrainNote/TrainNote.vue";
+import TrainReport from "./TrainReport/TrainReport.vue"
 
 interface Vm {
   key: string;
@@ -113,7 +114,8 @@ export default defineComponent({
     "experimental-note": ExperimentalNote,
     "train-courseware": TrainCourseware,
     "train-resource": TrainResource,
-    "train-note":TrainNote
+    "train-note":TrainNote,
+    "train-report":TrainReport
   },
   props: ["VmData", "reportId", "isLeftContentShowType"],
   setup(props, { emit }) {
@@ -187,6 +189,8 @@ export default defineComponent({
           return "train-courseware";
         case "resource":
           return "train-resource";
+        case "train-report":
+          return "train-report"
         default:
           return currentComponent.value;
       }

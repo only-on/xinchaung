@@ -275,7 +275,7 @@ export default defineComponent({
               { name: "实训笔记", key: "train-note", icon: "icon-biji1" },
               { name: "实训课件", key: "courseware", icon: "icon-kejian1" },
               { name: "实训资源", key: "resource", icon: "icon-leixing-01" },
-              // { name: "实训报告", key: "report", icon: "icon-baogao1" },
+              { name: "实训报告", key: "train-report", icon: "icon-baogao1" },
               { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
             ]
         : [
