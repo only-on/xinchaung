@@ -8,9 +8,9 @@
           ><span>密码：{{ "vncpassword" }}</span>
         </div>
         <div class="vm-info-line">
-          <span>IP：{{ item.host_ip }}</span
+          <span>IP：{{ item.base_ip }}</span
           ><span
-            >rdp端口：{{
+            >{{item.classify === "Linux" ? 'ssh' : 'rdp'}}端口：{{
               item.classify === "Linux" ? item.ssh_port : item.rdp_port
             }}</span
           >
@@ -117,7 +117,7 @@ export default defineComponent({
       vmOptions.value.wsUrl =
         getVmConnectSetting.VNCPROTOC +
         "://" +
-        data.host_ip +
+        data.base_ip +
         ":" +
         getVmConnectSetting.VNCPORT +
         "/websockify?vm_uuid=" +

@@ -322,7 +322,7 @@ export default defineComponent({
                 currentInterface.value="ssh"
                 let currentvm:any=vmInfoData.value.data.vms[vmCurrentIndex.value]
                 uuid.value = currentvm.uuid;
-                sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
+                sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.base_ip+"/"+currentvm.ssh_port
               }else{
                 currentInterface.value="vnc"
                 settingCurrentVM(vmInfoData.value.data.vms[vmCurrentIndex.value]);
@@ -475,7 +475,7 @@ export default defineComponent({
       reactiveData.vmOptions.wsUrl =
         getVmConnectSetting.VNCPROTOC +
         "://" +
-        data.host_ip +
+        data.base_ip +
         ":" +
         getVmConnectSetting.VNCPORT +
         "/websockify?vm_uuid=" +
