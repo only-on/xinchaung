@@ -10,7 +10,7 @@ for (const key in files) {
     }
 }
 
-const teacherRoutes = {
+const adminRoutes = {
     path: "/admin",
     name: 'admin',
     component: RouterView,
@@ -22,4 +22,4 @@ const teacherRoutes = {
     // redirect: '/admin/classical',
     children: configRoutes
 };
-export default teacherRoutes
+export default adminRoutes

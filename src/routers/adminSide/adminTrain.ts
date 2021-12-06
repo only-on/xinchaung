@@ -7,28 +7,18 @@ export default {
     name: "adminTrain",
     component: Layout,
     meta: {
-        title: "管理端实训",
-        authCode: 'adminTrain',
-        showInBreadcrumb: false
+        title: "实训管理",
+        authCode: 'adminTrain'
     },
     children: [
         {
             path: "",
-            name: "exerciseList",
+            name: "",
             component: () => import("src/views/adminTrain/index.vue"),
             meta: {
-                title: " ",
-                authCode: 'exerciseList'
+                title: "教师实训信息管理",
+                authCode: ''
             },
         },
-        // {
-        //     path: '/exercisesDetail',
-        //     name: 'exercisesDetail',
-        //     component: () => import("src/views/teacherDataExercises/exercisesDetail/index.vue"),
-        //     meta: {
-        //         title: "习题目录详情",
-        //         authCode: 'exerciseList'
-        //     },
-        // }
     ]
 }
