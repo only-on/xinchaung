@@ -58,7 +58,7 @@
     </div>
     <div v-else class="no-search-data">
       <div v-if="ifTip" class="loading">
-        <a-spin tip="加载中...">
+        <a-spin tip="加载中..." size="large">
           <div class="spin-content"></div>
         </a-spin>
       </div>
@@ -163,7 +163,7 @@ export default defineComponent({
         type: "train",
       },
       title: "",
-      componentName: "",
+      componentName: "note",
       detailInfo: "",
     });
     function getData(value?: any, ifSearch?: boolean) {

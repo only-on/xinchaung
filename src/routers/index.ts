@@ -33,7 +33,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
   // console.log('matched:=',to.matched)
   // console.log('breadcrumbs:前=',breadcrumbs)
   to.matched.forEach((routeSegment: RouteRecordNormalized) => {
-    console.log('routeSegment:=',routeSegment)
+    // console.log('routeSegment:=',routeSegment)
     // if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
     //   // 显性要求不显示面包屑，直接跳过
     //   return
@@ -50,7 +50,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
           params: to.params,
         }).fullPath
       }
-      console.log('routeTuple:=',routeTuple)
+      // console.log('routeTuple:=',routeTuple)
       breadcrumbs.push(routeTuple)
       processedPath.push(routeSegment.path)
     }   

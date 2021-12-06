@@ -25,7 +25,7 @@
         </div>
         <div v-else class="no-search-data">
             <div v-if="ifTip" class="loading">
-                <a-spin tip="加载中...">
+                <a-spin tip="加载中..." size="large">
                 <div class="spin-content">
                 </div>
                 </a-spin>
@@ -87,7 +87,7 @@ export default defineComponent({
             getData()
         }
         function lookScore(id:any){
-            router.push({path:'/courseScore',query:{id:id}})
+            router.push({path:'/studentPerformance/courseScore',query:{id:id}})
         }
         function getData(){
             state.ifTip=true

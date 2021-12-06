@@ -44,8 +44,5 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-#studentPerformance{
-    height: 100%;
-    overflow-y: auto;
-}
+
 </style>

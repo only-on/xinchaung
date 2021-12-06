@@ -255,7 +255,7 @@ export default defineComponent({
     }
     function toCourseResource(id: any) {
       console.log(id);
-      router.push({ path: "/courseResources", query: { id: id } });
+      router.push({ path: "/studentPerformance/courseResources", query: { id: id } });
     }
     onMounted(() => {
       getData();
