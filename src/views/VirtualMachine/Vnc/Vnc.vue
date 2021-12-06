@@ -252,6 +252,7 @@ export default defineComponent({
     provide("taskType", taskType);
     provide("sshUrl", sshUrl);
     provide("currentInterface",currentInterface)
+    provide("taskId",taskId)
     let ind=0 // 记录是否是刚进页面
     let navData =
       role === 4
