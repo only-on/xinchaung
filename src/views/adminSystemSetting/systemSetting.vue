@@ -66,7 +66,7 @@
             </div>
           </div>
           <div class="no-authorization-wrap">
-            <no-authorization :data="authorizationData" />
+            <authorization :data="authorizationData" />
           </div>
         </div>
       </div>
@@ -91,6 +91,81 @@
             </div>
           </template>
         </tabTitle>
+        <div class="system-name-setting-box">
+          <div class="flex-row">
+            <label class="label">系统名：</label>
+            <a-input class="system-name" />
+          </div>
+          <div class="flex-row">
+            <label class="label">LOGO：</label>
+            <div class="form-right">
+              <div class="upload-logo-box">
+                <div class="logo-box">
+                  <span class="logo-title">登录</span>
+                  <div class="upload-logo">
+                    <a-upload
+                      name="avatar"
+                      list-type="picture-card"
+                      class="avatar-uploader login-logo"
+                      :show-upload-list="false"
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    >
+                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <div v-else>
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </div>
+                  <i>58x58px</i>
+                </div>
+                <div class="logo-box">
+                  <span class="logo-title">顶部-png</span>
+                  <div class="upload-logo">
+                    <a-upload
+                      name="avatar"
+                      list-type="picture-card"
+                      class="avatar-uploader top-logo"
+                      :show-upload-list="false"
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    >
+                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <div v-else>
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </div>
+                  <i>40x40px</i>
+                </div>
+                <div class="logo-hint">支持小于20K的png文件</div>
+              </div>
+              <div class="upload-logo-box">
+                <div class="logo-box">
+                  <span class="logo-title">标签-ico</span>
+                  <div class="upload-logo">
+                    <a-upload
+                      name="avatar"
+                      list-type="picture-card"
+                      class="avatar-uploader ico-logo"
+                      :show-upload-list="false"
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                    >
+                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <div v-else>
+                        <div class="ant-upload-text">Upload</div>
+                      </div>
+                    </a-upload>
+                  </div>
+                  <i>16x16px</i>
+                  <div class="logo-hint">支持小于10k的png文件</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex-row">
+            <a-button type="primary">编辑</a-button>
+            <a-button type="primary">设置初始化</a-button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -118,8 +193,8 @@ const tabTitle: any = (props: any, context: any) => {
 };
 tabTitle.props = ["name"];
 
-// 暂无授权
-const noAuthorization: any = (props: any, context: any) => {
+// 授权
+const Authorization: any = (props: any, context: any) => {
   const data = props.data;
   console.log(data);
   let showType = true;
@@ -169,36 +244,39 @@ const noAuthorization: any = (props: any, context: any) => {
               : h(
                   "div",
                   { class: ["num-box"] },
-                  day > 0?
-                        h("span", { class: ["day"] }, [
-                          day,
-                          h("i", { class: ["day-unit"] }, "天"),
-                        ])
-                    : [(h("span", { class: ["hour"] }, [
-                        hour,
-                        h("i", { class: ["day-unit"] }, "时"),
-                      ])),
-                      h("span", { class: ["minute"] }, [
-                        minute,
-                        h("i", { class: ["minute-unit"] }, "分"),
-                      ])]
-                )
+                  day > 0
+                    ? h("span", { class: ["day"] }, [
+                        day,
+                        h("i", { class: ["day-unit"] }, "天"),
+                      ])
+                    : [
+                        h("span", { class: ["hour"] }, [
+                          hour,
+                          h("i", { class: ["day-unit"] }, "时"),
+                        ]),
+                        h("span", { class: ["minute"] }, [
+                          minute,
+                          h("i", { class: ["minute-unit"] }, "分"),
+                        ]),
+                      ]
+                ),
           ]),
         ]),
   ]);
 };
-noAuthorization.props = ["data"];
+Authorization.props = ["data"];
 
 type TreactiveData = {
   classTime: number;
   authorizationCode: string;
   authorizationData: any;
   isShowBtn: boolean;
+  loginImg: string;
 };
 export default defineComponent({
   components: {
     tabTitle,
-    "no-authorization": noAuthorization,
+    authorization: Authorization,
   },
   setup() {
     const reactiveData: TreactiveData = reactive({
@@ -206,6 +284,7 @@ export default defineComponent({
       authorizationCode: "",
       authorizationData: {},
       isShowBtn: false,
+      loginImg: "",
     });
     onMounted(() => {
       method.getAuthorizationInfo();
@@ -221,7 +300,7 @@ export default defineComponent({
         getAuthorizationInfoApi().then((res: any) => {
           console.log(res);
           reactiveData.authorizationData = res?.datas;
-          
+
           if (!reactiveData.authorizationData.number) {
             reactiveData.isShowBtn = true;
           }
@@ -446,16 +525,110 @@ export default defineComponent({
             .day {
               font-size: 45px;
             }
-            .day-unit{
+            .day-unit {
               // display: inline-block;
               vertical-align: bottom;
             }
-            .minute{
+            .minute {
               font-size: 14px;
               margin-left: 5px;
             }
             i {
               font-size: 12px;
+            }
+          }
+        }
+      }
+    }
+  }
+  .system-name-setting-box {
+    padding: 30px 0;
+    .flex-row {
+      display: flex;
+      margin-bottom: 30px;
+      .label {
+        width: 70px;
+        flex-shrink: 0;
+      }
+      .form-right {
+        width: 100%;
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        > .upload-logo-box {
+          display: flex;
+          flex-wrap: wrap;
+          &:nth-child(1) {
+            width: 200px;
+            flex-shrink: 0;
+            .logo-box {
+              width: 100px;
+            }
+          }
+          &:nth-child(2) {
+            flex: 1;
+          }
+          .logo-title {
+            color: rgba(0, 0, 0, 0.85);
+            font-size: 14px;
+          }
+          .logo-hint {
+            font-size: 12px;
+            color: rgba(0, 0, 0, 0.25);
+            width: 140px;
+            border-top: 1px dashed rgba(0, 0, 0, 0.25);
+            margin-top: 10px;
+            padding-top: 10px;
+          }
+          i {
+            margin-top: auto;
+            color: rgba(0, 0, 0, 0.25);
+            font-style: normal;
+          }
+          .logo-box {
+            display: flex;
+            flex-direction: column;
+
+            .login-logo {
+              width: 58px;
+              height: 58px;
+              .ant-upload-select-picture-card {
+                display: block;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+              }
+            }
+            .ico-logo {
+              width: 16px;
+              height: 16px;
+              .ant-upload-select-picture-card {
+                display: block;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+              }
+            }
+            .top-logo {
+              width: 40px;
+              height: 40px;
+              .ant-upload-select-picture-card {
+                display: block;
+                width: 100%;
+                height: 100%;
+                padding: 0;
+                margin: 0;
+                overflow: hidden;
+              }
+            }
+            > .logo-hint {
+              width: 100%;
+              font-size: 12px;
+              color: rgba(0, 0, 0, 0.25);
             }
           }
         }
