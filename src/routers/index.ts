@@ -34,10 +34,10 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
   // console.log('breadcrumbs:前=',breadcrumbs)
   to.matched.forEach((routeSegment: RouteRecordNormalized) => {
     // console.log('routeSegment:=',routeSegment)
-    // if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
-    //   // 显性要求不显示面包屑，直接跳过
-    //   return
-    // }
+    if (typeof routeSegment.meta.showInBreadcrumb !== 'undefined' && routeSegment.meta.showInBreadcrumb === false) {
+      // 显性要求不显示面包屑，直接跳过
+      return
+    }
     // 避免父级页面由子级来显示导致面包屑重复
     if (!processedPath.includes(routeSegment.path)) {
       let routeTuple: IRouteTuple = {
@@ -55,7 +55,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
       processedPath.push(routeSegment.path)
     }   
   })
-  // console.log('breadcrumbs:=',breadcrumbs)
+  console.log('breadcrumbs:=',breadcrumbs)
   // console.log('processedPath:=',processedPath)
   store.commit('saveBreadcrumb', breadcrumbs)
 })

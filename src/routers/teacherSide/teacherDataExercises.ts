@@ -3,6 +3,7 @@ import Layout from 'src/views/common/Layout.vue';
 export default {
     path: "teacherDataExercises",
     component: Layout,
+    name:'exerciseList',
     meta: {
         title: "习题列表",
         authCode: 'teacherDataExercises'
@@ -10,7 +11,6 @@ export default {
     children: [
         {
             path: "",
-            name: "exerciseList",
             component: () => import("src/views/teacherDataExercises/index.vue"),
             meta: {
                 title: "",

@@ -3,6 +3,7 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
     path: "teacherTrain",
     component: Layout,
+    name:'teacherTrain',
     meta: {
         // title: "实训列表",
         title: (params?: RouteParams, query?: RouteParams) => {

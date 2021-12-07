@@ -3,6 +3,7 @@ import Layout from 'src/views/common/Layout.vue';
 export default {
     path: "Workbench",
     component: Layout,
+    name:'workbench',
     meta: {
         title: "工作台",
         authCode: 'Workbench'

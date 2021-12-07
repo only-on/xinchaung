@@ -5,7 +5,7 @@
   <div :class="loading?'center':''">
     <a-spin :spinning="loading" tip="Loading..." size="large">
       <div class="list_content"> 
-        <div class="info" v-for="v in list" :key="v.id" :class="v.state!=='已结束'?'info_hover':''">
+        <div class="info" v-for="v in list" :key="v.id" :class="v.state==='进行中'?'info_hover':''">
           <div class="main">
             <div class="card" @click="keepLearning(v)">
               <div class="mask" :class="v.state==='已结束'?'mask_end':''">

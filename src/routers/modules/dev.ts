@@ -2,6 +2,7 @@ import Layout from "../../views/common/Layout.vue";
 export default {
   path: "/dev",
   component: Layout,
+  name:'i18n',
   meta: {
     title: "开发测试",
     authCode: 'dev'

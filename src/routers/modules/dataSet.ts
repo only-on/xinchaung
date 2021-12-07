@@ -3,6 +3,7 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
     path: "/dataSet",
     component: Layout,
+    name:'dataSet',
     meta: {
         // title: (params?: RouteParams, query?: RouteParams) => {
         //     const dataDetailMap = {

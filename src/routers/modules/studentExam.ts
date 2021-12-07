@@ -4,6 +4,7 @@ import RouterView from "/src/components/RouterView.vue"
 export default {
     path: "/studentExam",
     component: RouterView,
+    name:'studentExam',
     meta: {
         title: "考试",
         authCode: "studentExam",

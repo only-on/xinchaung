@@ -4,8 +4,8 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "/studentExperimental",
   component: Layout,
+  name: "studentExperimental",
   meta: {
-    name: "studentExperimental",
     title: (params?: RouteParams, query?: RouteParams) => {
       const dataDetailMap = {
           '0': '最近实训',

@@ -12,6 +12,7 @@ import Layout from "src/views/common/Layout.vue";
 export default {
   path: "/personalInformation",
   component: Layout,
+  name:'personalInformation',
   meta: {
     title: title,
     authCode: "personalInformation",

@@ -3,6 +3,7 @@ import Layout from 'src/views/common/Layout.vue';
 export default {
     path: "assistantManager",
     component: Layout,
+    name:'assistant',
     meta: {
         title: "助教管理",
         authCode: 'assistant'

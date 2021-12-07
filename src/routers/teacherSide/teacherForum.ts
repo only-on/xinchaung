@@ -4,6 +4,7 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "teacherForum",
   component: Layout,
+  name:'forum',
   meta: {
     // title: "公共论坛",
     title: (params?: RouteParams, query?: RouteParams) => {
@@ -20,10 +21,8 @@ export default {
   children: [
     {
       path: "",
-      // component: RouterViews,
       component: () => import("src/views/teacherForum/index.vue"),
       meta: {
-        // title: "",
         icon: "",
         authCode: "forum",
       },

@@ -3,10 +3,9 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
     path: "teacherExam",
     component: Layout,
+    name:'teacherExam',
     meta: {
-        // title: "考试管理",
         title: (params?: RouteParams, query?: RouteParams) => {
-            // console.log(query)
             const dataDetailMap = {
                 '0': '试卷管理',
                 '1': '考试中心',

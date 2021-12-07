@@ -4,6 +4,7 @@ import RouterViews from "src/components/RouterView.vue";
 export default {
     path: "teacherExperiment",
     component: Layout,
+    name:'experiment',
     meta: {
         // title: "实验管理",
         title: (params?: RouteParams, query?: RouteParams) => {
@@ -35,7 +36,7 @@ export default {
             name: "creatExperiment",
             component: () => import("src/views/teacherExperiment/creatExperiment.vue"),
             meta: {
-                title: "我的实验",
+                title: "实验类型",
                 authCode: 'creatExperiment'
             },
         },
