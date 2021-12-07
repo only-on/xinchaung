@@ -2,7 +2,7 @@
   <div id="TrainingResults">
     <div class="searchInput">
       <a-input-search
-        style="width: 503px; padding: 8px 5px 8px 30px"
+        class="inputStyle"
         placeholder="请输入实训名称关键字查询"
         @keyup.enter="onSearch"
         @search="onSearch"
@@ -15,7 +15,7 @@
         </div>
         <div class="item-info">
           <h3>{{ item.train.name }}</h3>
-          <div>起止时间:{{ item.train.between_time }}</div>
+          <div>起止时间:{{ startEndTime(item.train.between_time) }}</div>
           <div class="train-status">实训状态:{{ item.train.state }}</div>
           <div class="train-table">
             <a-table
@@ -182,12 +182,16 @@ export default defineComponent({
       //     }
       //   state.ifTip=false
       // })
-
       infoRequest.experimentalResults({ param: state.params }).then((res: any) => {
         state.ifTip = false;
         state.traningResult = res.data.list;
         state.pagingData = res.data.page;
       });
+    }
+    function startEndTime(time: any) {
+      console.log(time);
+      const newtime = time?.substring(0, 10) + "-" + time?.substring(20, 30);
+      return newtime;
     }
     function onSearch(value: string) {
       state.params.keyword = value;
@@ -204,74 +208,23 @@ export default defineComponent({
       if (data) {
         visableDetail.value = true;
         state.componentName = type;
-        switch (type) {
-          case "note":
-            state.title = "实训结果";
-            console.log(data, "hh");
-            state.detailInfo = data;
-            return;
-          case "exper":
-            state.title = "实验习题";
-            return;
-          case "video":
-            state.title = "操作视频";
-            state.detailInfo = data;
-            return;
-          case "report":
-            state.title = "实验报告";
-            state.detailInfo = data;
-            return;
-        }
+        const types = {
+          exper: "实验习题",
+          video: "操作视频",
+          report: "实验报告",
+        };
+        state.title = types[type];
+        state.detailInfo = data;
       } else {
-        switch (type) {
-          case "exper":
-            message.warning("实验习题为空！");
-            return;
-          case "video":
-            message.warning("操作视频为空！");
-            return;
-          case "report":
-            message.warning("暂无实验报告！");
-            return;
-          case "note":
-            message.warning("暂无实训结果！");
-            return;
-        }
+        const warningMessage = {
+          exper: "实验习题为空！",
+          video: "操作视频为空！",
+          report: "暂无实验报告！",
+        };
+        message.warning(warningMessage[type]);
       }
     }
-    function lookResult(id: any, type: any) {
-      infoRequest.studentResults({ param: { id: id, type: type } }).then((res: any) => {
-        console.log(res);
-        if (res.data) {
-          switch (type) {
-            case "exper":
-              state.title = "实验习题";
-              return;
-            case "video":
-              state.title = "操作视频";
-              return;
-            case "report":
-              state.title = "实验报告";
-              return;
-          }
-          visableDetail.value = true;
-          state.componentName = type;
-          state.detailInfo = res.data;
-        } else {
-          switch (type) {
-            case "exper":
-              message.warning("实验习题为空！");
-              return;
-            case "video":
-              message.warning("操作视频为空！");
-              return;
-            case "report":
-              message.warning("暂无实验报告！");
-              return;
-          }
-        }
-      });
-    }
+
     onMounted(() => {
       getData();
     });
@@ -281,8 +234,8 @@ export default defineComponent({
       visableDetail,
       detailOk,
       detailCancel,
-      lookResult,
       toLookResult,
+      startEndTime,
     };
   },
 });
@@ -299,6 +252,10 @@ export default defineComponent({
   .searchInput {
     height: 100px;
     line-height: 100px;
+    .inputStyle {
+      width: 503px;
+      padding: 8px 5px 8px 30px;
+    }
   }
   .content-list {
     padding: 14px;

@@ -197,12 +197,13 @@ export default defineComponent({
         width: 120,
       },
     ];
-    let isShowVideo = ref(false);
+    // let isShowVideo = ref(false);
     // 操作处理
     const operationHandle = reactive({
       // 查看成果,视频,报告
       isShowAchievements: false,
       lookAchievementsInfo: [],
+      isShowVideo: false,
       videoUrl: "",
       isShowReport: false,
       reportUrl: "",
@@ -217,26 +218,21 @@ export default defineComponent({
                 operationHandle.lookAchievementsInfo = res.data;
                 return;
               case "video":
-                isShowVideo.value = true;
+                operationHandle.isShowVideo = true;
                 operationHandle.videoUrl = res.data;
                 return;
               case "report":
-                operationHandle.reportUrl = res.data;
                 operationHandle.isShowReport = true;
+                operationHandle.reportUrl = res.data;
                 return;
             }
           } else {
-            switch (type) {
-              case "note":
-                message.warning("暂无实训成果！");
-                return;
-              case "video":
-                message.warn("服务器没有该文件！");
-                return;
-              case "report":
-                message.warn("服务器没有该文件！");
-                return;
-            }
+            const warningMessage = {
+              note: "暂无实训成果!",
+              video: "服务器没有该文件！",
+              report: "服务器没有该文件！",
+            };
+            message.warn(warningMessage[type]);
           }
         });
       },
@@ -331,7 +327,6 @@ export default defineComponent({
       onShowSizeChange,
       rowkey,
       onSelectChange,
-      isShowVideo,
     };
   },
 });

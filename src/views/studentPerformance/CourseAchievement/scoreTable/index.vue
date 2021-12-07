@@ -214,29 +214,19 @@ export default defineComponent({
           visableDetail.value = true;
           state.componentName = type;
           state.detailInfo = res.data;
-          switch (type) {
-            case "exper":
-              state.title = "实验习题";
-              return;
-            case "video":
-              state.title = "操作视频";
-              return;
-            case "report":
-              state.title = "实验报告";
-              return;
-          }
+          const types = {
+            exper: "实验习题",
+            video: "操作视频",
+            report: "实验报告",
+          };
+          state.title = types[type];
         } else {
-          switch (type) {
-            case "exper":
-              message.warning("实验习题为空！");
-              return;
-            case "video":
-              message.warning("操作视频为空！");
-              return;
-            case "report":
-              message.warning("暂无实验报告！");
-              return;
-          }
+          const warningMeaasge = {
+            exper: "实验习题为空！",
+            video: "操作视频为空！",
+            report: "暂无实验报告！",
+          };
+          message.warning(warningMeaasge[type]);
         }
       });
     }
