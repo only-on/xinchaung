@@ -21,6 +21,7 @@ import {IteacherWorkbench} from "src/api/modules/teacherWorkbench"
 import {ITeacherExperAps} from "src/api/modules/teacherExperiment"
 import {ITeacherTemplateApis} from "src/api/modules/teacherTemplate"
 import {IDataSet} from "src/api/modules/dataSet"
+import {TAdminSystemSetting} from "src/api/modules/adminSystemSetting"
 
 /**
  * 通用响应类型
@@ -66,4 +67,5 @@ export interface IApiCollection {
     teacherExperiment:ITeacherExperAps
     teacherTemplate: ITeacherTemplateApis
     dataSet:IDataSet
+    adminSystemSetting:TAdminSystemSetting
 }

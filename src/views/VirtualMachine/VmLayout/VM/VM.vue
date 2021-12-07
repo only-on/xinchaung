@@ -8,7 +8,7 @@
           ><span>密码：{{ "vncpassword" }}</span>
         </div>
         <div class="vm-info-line">
-          <span>IP：{{ item.base_ip }}</span
+          <span>IP：{{ item.host_ip }}</span
           ><span
             >{{item.classify === "Linux" ? 'ssh' : 'rdp'}}端口：{{
               item.classify === "Linux" ? item.ssh_port : item.rdp_port

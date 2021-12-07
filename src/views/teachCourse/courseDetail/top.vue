@@ -136,7 +136,7 @@ export default defineComponent({
       getCourseDetailApi({ course_id: course_id }).then((res: any) => {
         reactiveData.baseInfoData = res.data;
         (reactiveData.baseInfoData as any).created_at = moment(
-          res.data.created_at
+          res.data.start_time
         );
         (reactiveData.baseInfoData as any).end_time = moment(res.data.end_time);
       });
@@ -149,9 +149,11 @@ export default defineComponent({
     // 提交编辑
     function submitEdit() {
       if (Object.keys(checkout.value).length === 0) {
+        console.log(formData.value);
+        
         const param = {
           name: (formData.value as any).name,
-          start_time: moment((formData.value as any).start_time).format(
+          start_time: moment((formData.value as any).created_at).format(
             "YYYY-MM-DD 00:00:00"
           ),
           end_time: moment((formData.value as any).end_time).format(
