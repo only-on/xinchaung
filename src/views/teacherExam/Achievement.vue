@@ -509,10 +509,10 @@ export default defineComponent({
      achievement()
      await initData();
     //  console.log(document.getElementById("distribution"))
-    console.log(state.detaile.score_distribution)
+    // console.log(state.detaile.score_distribution)
     let score_distribution=(state.detaile && state.detaile.score_distribution)?state.detaile.score_distribution:[]
     let type_scores=(state.detaile && state.detaile.type_scores)?state.detaile.type_scores:[]
-     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,score_distribution)
+     distributionEcharts(document.getElementById("distribution") as HTMLDivElement,score_distribution,state.detaile.student_total)
      typeStatisticsEcharts(document.getElementById("TypeStatistics") as HTMLDivElement,type_scores)
     })
     const customizeRenderEmpty =function (): VNode{

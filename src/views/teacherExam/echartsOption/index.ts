@@ -1,19 +1,26 @@
 // import { options } from './../../teachCourse/evalute/components/public';
 import * as echarts from "echarts"
-function distributionEcharts(el: HTMLDivElement, data: Array<any>) {
-  var max_num:number= 2
-  // let indicatorData:Array<any>=[{name:'A(90% ~100%)',max:max_num},{name: "B(80% ~90%)",max:max_num},{name: "C(70%~80%)",max:max_num},{name: "D(60% ~70%)",max:max_num},{name: "E(0 ~60%)",max:max_num}]
+import {theme} from 'src/utils/theme'
+function distributionEcharts(el: HTMLDivElement, data: Array<any>,student_total:number) {
+	var max_num:number= student_total
+	console.log(max_num);
+  let arr:Array<any>=[
+		{name:'A(90% ~100%)',max:max_num,value:0},
+		{name: "B(80% ~90%)",max:max_num,value:0},
+		{name: "C(70%~80%)",max:max_num,value:0},
+		{name: "D(60% ~70%)",max:max_num,value:0},
+		{name: "E(0 ~60%)",max:max_num,value:0}]
   let seriesData:Array<number>=[]
 	let indicatorData:Array<any>=[]
-	data.map((v:any)=>{
-		v.max=2
-		delete v.value
+	arr.map((v:any,k:number)=>{
+		let val=(data[k] && data[k].value)
+		v.value=val?val:0
 		seriesData.push(v.value)
+		indicatorData.push({name:v.name,max:v.max})
 	})
-	// console.log(data);
-	indicatorData=data
+	// console.log(seriesData);
+	// console.log(indicatorData);
   const chart = echarts.init(el)
-  // let options={}
   var options = {
 		backgroundColor: '#fff',
 		color: ['rgba(137,85,181,1)'],
@@ -92,17 +99,49 @@ function distributionEcharts(el: HTMLDivElement, data: Array<any>) {
   return chart;
 }
 function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
-	let res=["选择题","判断题","填空题","简答题","实操考核题",];
+	let arr:Array<any>=[
+		{type_id:1,type_name:'单选题',average_score:0,highest_score:0,lowest_score:0},
+		{type_id:2,type_name:'多选题',average_score:0,highest_score:0,lowest_score:0},
+		{type_id:3,type_name:'判断题',average_score:0,highest_score:0,lowest_score:0},
+		{type_id:4,type_name:'填空题',average_score:0,highest_score:0,lowest_score:0},
+		{type_id:5,type_name:'简答题',average_score:0,highest_score:0,lowest_score:0},
+	]
 	var maxData:Array<any> = [],
 		minData:Array<any> = [],
 		averageData:Array<any> = [],
 		xAxisLabeData:Array<any> = [];
-	data.forEach((v:any)=>{
+		// let arr2=[
+		// 	{type_id: 3, lowest_score: 1, average_score: 1, highest_score: 1},
+		// 	{type_id: 1, lowest_score: 2, average_score: 2, highest_score: 2},
+		// 	{type_id: 4, lowest_score: 3, average_score: 3, highest_score: 3},
+		// 	{type_id: 2, lowest_score: 4, average_score: 4, highest_score: 4},
+		// 	{type_id: 5, lowest_score: 5, average_score: 5, highest_score: 5},
+		// ]
+	arr.map((v:any,k:number)=>{
+		xAxisLabeData.push(v.type_name)
+		let val=data.length && data.filter((item:any)=>{return item.type_id === v.type_id}) && data.filter((item:any)=>{return item.type_id === v.type_id})[0]
+		// console.log(val);
+		if(val){
+			v.highest_score=val.highest_score
+			v.lowest_score=val.lowest_score
+			v.average_score=val.average_score
+		}
 		maxData.push(v.highest_score)
 		minData.push(v.lowest_score)
 		averageData.push(v.average_score)
-		xAxisLabeData.push(res[v.type_id-1])
+		
 	})
+
+	// var maxData:Array<any> = [],
+	// 	minData:Array<any> = [],
+	// 	averageData:Array<any> = [],
+	// 	xAxisLabeData:Array<any> = [];
+	// data.forEach((v:any)=>{
+	// 	maxData.push(v.highest_score)
+	// 	minData.push(v.lowest_score)
+	// 	averageData.push(v.average_score)
+	// 	xAxisLabeData.push(res[v.type_id-1])
+	// })
   
   const chart = echarts.init(el)
   var options = {
@@ -163,7 +202,6 @@ function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
 		yAxis: {
 			type: 'value',
 			// max:'{value}+20',
-
 			axisTick: {
 				show: false
 			},
@@ -306,13 +344,13 @@ function renderScoreBar(el: HTMLDivElement, data: Array<any>){
 			type: 'bar',
 			itemStyle: {
 				show: true,
-				color: '#8955b5',
+				color: theme.themeColor,
 				borderRadius: 5
 			},
 			zlevel: 2,
 			barWidth: 28,
 			label: {
-				color: '#8955b5',
+				color: theme.themeColor,
 				show: true,
 				position: ['0', '-20'],
 				distance: 5,
@@ -380,7 +418,7 @@ function renderAccuracy(el: HTMLDivElement, datas: Array<any>) {
 				},
 				rich: {
 					d: { //箭头
-						color: '#8955B5',
+						color: theme.themeColor,
 					},
 					c: {
 						color: '#07a387',
@@ -390,19 +428,19 @@ function renderAccuracy(el: HTMLDivElement, datas: Array<any>) {
 						width: 20,
 						height: 0,
 						borderWidth: 1,
-						borderColor: '#8955B5',
+						borderColor: theme.themeColor,
 						align: 'left'
 					},
 				},
-				color: '#8955B5',
+				color: theme.themeColor,
 			},
 			itemStyle: {
 				color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 					offset: 0,
-					color: '#8955b5  ' // 0% 处的颜色
+					color: theme.themeColor // 0% 处的颜色
 				}, {
 					offset: 1,
-					color: '#8955b5 ' // 100% 处的颜色
+					color: theme.themeColor // 100% 处的颜色
 				}], false),
 				borderRadius: [10, 10, 0, 0],
 			},
@@ -431,7 +469,7 @@ function renderAccuracy(el: HTMLDivElement, datas: Array<any>) {
 			itemStyle: {
 				color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
 						offset: 0,
-						color: '#8955b5'
+						color: theme.themeColor
 					},
 					{
 						offset: 1,

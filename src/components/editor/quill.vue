@@ -1,18 +1,20 @@
 <template>
   <div class="quill-editor-wrap">
-    <XeQuill
-      ref="quillDom"
-      v-if="type === 'edit'"
-      class=""
-      :toolbar="toolbar"
-      :options="options"
-      v-model:value="content"
-      :handlers="handlers"
-      :style="{ height: height}"
-      @selectionChange="selectionChange"
-      @editorChange="editorChange"
-    >
-    </XeQuill>
+    <a-spin :spinning="loading" tip="图片上传中...">
+      <XeQuill
+        ref="quillDom"
+        v-if="type === 'edit'"
+        class=""
+        :toolbar="toolbar"
+        :options="options"
+        v-model:value="content"
+        :handlers="handlers"
+        :style="{ height: height}"
+        @selectionChange="selectionChange"
+        @editorChange="editorChange"
+      >
+      </XeQuill>
+    </a-spin>
     <div v-if="type === 'preview'" v-html="html"></div>
   </div>
 </template>
@@ -38,10 +40,6 @@ export default defineComponent({
   props: {
     options: {
       default: () => {
-        // return {
-        //   placeholder: "输入内容...",
-        //   theme: "snow",
-        // };
         return {
            placeholder: "输入内容...",
             theme: "snow",
@@ -85,6 +83,7 @@ export default defineComponent({
     const options = props.options;
     const fileName: Ref<string> = ref("quillfile");
     const temporaryRang: Ref<number> = ref(1);
+    var loading:Ref<boolean> =ref(false)
     const handlers:any={
         'image': async function () {
           // quillDom.value.insertHtml(htm);
@@ -101,15 +100,15 @@ export default defineComponent({
         if (fileInput.files.length === 0) {
           return
         }
+        loading.value=true
         const fd = new FormData()
         fd.append('file', fileInput.files[0])
         fd.append('upload_path', props.uploadPathName)
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
-          let html= `<img src="${dev_base_url}${res.data.url}" alt="">`
-          // let html= `<img src="${res.data.url}" alt="">`
-          //  console.log(html);
+          let html= `<img src="${res.data.url}" alt="">`
            insertHtml(html);
+           loading.value=false
         })
     }
     const reactiveData: IreactiveData = reactive({ content: props.modelValue });
@@ -183,6 +182,7 @@ export default defineComponent({
       options,
       ...toRefs(reactiveData),
       height,
+      loading,
       toolbar,
       html,
       quillDom,
