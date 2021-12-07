@@ -68,6 +68,12 @@ export const getFileType = (fileName: string) => {
   if (result) {
     return 'md'
   }
+  // 匹配 mp4
+  const mp4List = ['mp4']
+  result = mp4List.find(item => item === suffix)
+  if (result) {
+    return 'mp4'
+  }
   // 其他 文件类型
   return 'other'
 }

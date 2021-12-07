@@ -1,7 +1,7 @@
 <template>
   <div class="file__container">
     <div class="file__icon">
-      <span class="iconfont" :class="'icon-' + icon" />
+      <span class="iconfont" :class="getFileType(title)" :style="`background-image: url(${iconList[getFileType(title)]});`" />
     </div>
     <div class="file__info">
       <div class="title">
@@ -51,7 +51,8 @@ import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { useRoute } from "vue-router";
 import CommonVideo from "../../components/common/CommonVideo.vue";
-
+import iconList from 'src/utils/iconList'
+import { getFileType } from 'src/utils/getFileType'
 export default defineComponent({
   name: "FileCard",
   props: {
@@ -86,25 +87,6 @@ export default defineComponent({
   emits: ["removed"],
   setup(props, { emit }) {
     const route = useRoute();
-    const iconMap = {
-      bmp: "tupian",
-      svg: "tupian",
-      gif: "tupian",
-      png: "tupian",
-      jpg: "tupian",
-      doc: "word",
-      docx: "word",
-      pptx: "PPT",
-      ppt: "PPT",
-      mp4: "MP4",
-      MP4: "MP4",
-      flv: "MP4",
-      txt: "wendang",
-      "tar.gz": "wenjianjia",
-      zip: "wenjianjia",
-      tgz: "wenjianjia",
-      tar: "wenjianjia",
-    };
     const confirmRemove = ref(false);
     const previewerVisible: Ref<boolean> = ref(false);
     const previewFileUrl = ref("/default-not-found");
@@ -112,10 +94,6 @@ export default defineComponent({
     const $confirm: ModalFunc = inject("$confirm")!;
     const $message: MessageApi = inject("$message")!;
     const dataType = parseInt(route.params.type as string);
-
-    const icon = computed(() => {
-      return iconMap[props.suffix] || "qita";
-    });
     const handlePreview = function () {
       previewFileUrl.value =
         dataType === 4 ? props.downloadUrl : props.previewUrl;
@@ -136,13 +114,14 @@ export default defineComponent({
       });
     };
     return {
-      icon,
       confirmRemove,
       previewerVisible,
       previewFileUrl,
       origin,
       handlePreview,
       handleRemove,
+      getFileType,
+      iconList
     };
   },
 });
@@ -158,34 +137,12 @@ export default defineComponent({
   align-items: center;
 
   .file__icon {
-    .icon-tupian {
-      color: #3b7ff5;
-      font-size: 40px;
-    }
-
-    .icon-word {
-      color: #3b7ff5;
-      font-size: 40px;
-    }
-
-    .icon-PPT {
-      color: #ec602c;
-      font-size: 40px;
-    }
-
-    .icon-MP4 {
-      color: #5c6cda;
-      font-size: 40px;
-    }
-
-    .icon-wendang {
-      color: #3b7ff5;
-      font-size: 40px;
-    }
-
-    .icon-wenjianjia {
-      color: #3b7ff5;
-      font-size: 40px;
+    display: flex;
+    .iconfont {
+      width: 40px;
+      height: 40px;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
     }
   }
 
@@ -222,8 +179,5 @@ export default defineComponent({
       }
     }
   }
-}
-
-.file__previewer--container {
 }
 </style>

@@ -87,7 +87,7 @@
       :data="{ pageType: dataType, dataId: dataId }"
       :multiple="false"
       :before-upload="handleBeforeUpload"
-      action="/dataset/data/upload-file"
+      action="/proxyPrefix/dataset/data/upload-file"
       @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
@@ -313,7 +313,8 @@ export default defineComponent({
         // console.log(info.file, info.fileList);
       }
       if (status === "done") {
-        $message.success(`${info.file.name} file uploaded successfully.`);
+        // $message.success(`${info.file.name} file uploaded successfully.`);
+        $message.success(`上传成功`);
       } else if (status === "error") {
         $message.error(`${info.file.name} file upload failed.`);
       }
