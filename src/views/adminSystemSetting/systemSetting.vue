@@ -18,11 +18,11 @@
             <div class="content-right">
               <span class="row-title">点击生成授权码</span>
               <div class="code-box">
-                <a-input v-model:value="authorizationCode"></a-input>
+                <a-input v-model:value="authorizationCode" ref="codeRef"></a-input>
                 <a-button type="primary" @click="saveClassTime"
                   >生成授权码</a-button
                 >
-                <a-button type="primary" @click="saveClassTime"
+                <a-button type="primary" @click="copyCode"
                   >复制授权码</a-button
                 >
               </div>
@@ -111,8 +111,8 @@
                       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     >
                       <img v-if="loginImg" :src="loginImg" alt="avatar" />
-                      <div v-else>
-                        <div class="ant-upload-text">Upload</div>
+                      <div>
+                        <span class="icon-huigun iconfont"></span>
                       </div>
                     </a-upload>
                   </div>
@@ -129,8 +129,8 @@
                       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     >
                       <img v-if="loginImg" :src="loginImg" alt="avatar" />
-                      <div v-else>
-                        <div class="ant-upload-text">Upload</div>
+                      <div>
+                        <span class="icon-huigun iconfont"></span>
                       </div>
                     </a-upload>
                   </div>
@@ -150,8 +150,8 @@
                       action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     >
                       <img v-if="loginImg" :src="loginImg" alt="avatar" />
-                      <div v-else>
-                        <div class="ant-upload-text">Upload</div>
+                      <div>
+                        <span class="icon-huigun iconfont"></span>
                       </div>
                     </a-upload>
                   </div>
@@ -161,7 +161,7 @@
               </div>
             </div>
           </div>
-          <div class="flex-row">
+          <div class="setting-btn-box">
             <a-button type="primary">编辑</a-button>
             <a-button type="primary">设置初始化</a-button>
           </div>
@@ -180,6 +180,7 @@ import {
   reactive,
   toRefs,
   onMounted,
+  ref
 } from "vue";
 
 import noImg from "src/assets/setting/is-authorization.png";
@@ -279,6 +280,7 @@ export default defineComponent({
     authorization: Authorization,
   },
   setup() {
+    const codeRef=ref(null)
     const reactiveData: TreactiveData = reactive({
       classTime: 30,
       authorizationCode: "",
@@ -294,7 +296,13 @@ export default defineComponent({
         console.log("保存课时");
       },
       saveLog() {
+        
         console.log("保存日志");
+      },
+      copyCode(e:Event){
+        e.preventDefault();
+    (codeRef.value as any).select();
+    document.execCommand("Copy");//
       },
       getAuthorizationInfo() {
         getAuthorizationInfoApi().then((res: any) => {
@@ -310,6 +318,7 @@ export default defineComponent({
     return {
       ...toRefs(reactiveData),
       ...method,
+      codeRef
     };
   },
 });
@@ -580,6 +589,24 @@ export default defineComponent({
             margin-top: 10px;
             padding-top: 10px;
           }
+          .ant-upload-select-picture-card {
+            display: block;
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            .ant-upload{
+              padding: 0;
+              display: block;
+              >div{
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+              }
+            }
+          }
           i {
             margin-top: auto;
             color: rgba(0, 0, 0, 0.25);
@@ -592,18 +619,10 @@ export default defineComponent({
             .login-logo {
               width: 58px;
               height: 58px;
-              .ant-upload-select-picture-card {
-                display: block;
-                width: 100%;
-                height: 100%;
-                padding: 0;
-                margin: 0;
-                overflow: hidden;
-              }
             }
             .ico-logo {
-              width: 16px;
-              height: 16px;
+              width: 24px;
+              height: 24px;
               .ant-upload-select-picture-card {
                 display: block;
                 width: 100%;
@@ -632,6 +651,12 @@ export default defineComponent({
             }
           }
         }
+      }
+    }
+    .setting-btn-box{
+      padding-left: 70px;
+      >button{
+        margin-right: 20px;
       }
     }
   }
