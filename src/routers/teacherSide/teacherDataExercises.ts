@@ -5,19 +5,19 @@ export default {
     component: Layout,
     meta: {
         title: "习题列表",
-        authCode: 'exerciseList'
+        authCode: 'teacherDataExercises'
     },
     children: [
         {
             path: "",
-            name: "teacherDataExercises",
+            name: "exerciseList",
             component: () => import("src/views/teacherDataExercises/index.vue"),
             meta: {
                 title: "",
                 authCode: 'exerciseList'
             },
         }, {
-            path: 'exercisesDetail',
+            path: '/exercisesDetail',
             name: 'exercisesDetail',
             component: () => import("src/views/teacherDataExercises/exercisesDetail/index.vue"),
             meta: {
@@ -27,3 +27,4 @@ export default {
         }
     ]
 }
+// exercisesDetail
