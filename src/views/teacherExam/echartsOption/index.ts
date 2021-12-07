@@ -131,18 +131,6 @@ function typeStatisticsEcharts(el: HTMLDivElement, data: Array<any>) {
 		averageData.push(v.average_score)
 		
 	})
-
-	// var maxData:Array<any> = [],
-	// 	minData:Array<any> = [],
-	// 	averageData:Array<any> = [],
-	// 	xAxisLabeData:Array<any> = [];
-	// data.forEach((v:any)=>{
-	// 	maxData.push(v.highest_score)
-	// 	minData.push(v.lowest_score)
-	// 	averageData.push(v.average_score)
-	// 	xAxisLabeData.push(res[v.type_id-1])
-	// })
-  
   const chart = echarts.init(el)
   var options = {
 		backgroundColor: '#fff',

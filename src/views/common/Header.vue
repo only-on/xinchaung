@@ -35,7 +35,7 @@
   </header>
 </template>
 <script lang="ts">
-import { defineComponent,reactive,computed,Ref,ref,onMounted } from "vue";
+import { defineComponent,reactive,computed,Ref,ref,onMounted,watch } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from '../../api/index'
 import { useRouter } from 'vue-router';
@@ -60,9 +60,14 @@ export default defineComponent({
       // 2 4  个人信息  3 1修改密码
       return role === 3 || role === 1
     })
-    const userName=computed(()=>{
+    // const userName = ref<string>('');
+    var userName=computed(()=>{
       return lStorage.get('name')
     })
+    // watch(name,(val:any)=>{
+    //   console.log(val)
+    //   userName.value=val
+    // })
     function information(){
       router.push('/personalInformation')
     }

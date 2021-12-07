@@ -31,7 +31,7 @@
                   <div class="circle" v-if="v.progress">
                     <a-progress type="circle" :percent="v.progress" :width="50" :stroke-width="14" 
                       :showInfo="false" 
-                      :stroke-color="'#8955b5'" 
+                      :stroke-color="theme.themeColor" 
                       :trail-color="'#ddd'"
                     />
                   </div>
@@ -47,7 +47,7 @@
               </div>
             </div>
             <div class="start_training">
-              <a-button @click="keepLearning(v)" type="link"> {{v.progress?'继续':'开始'}}学习</a-button>
+              <a-button @click="keepLearning(v)" type="link"> {{v.used_time!=='0秒'?'继续':'开始'}}学习</a-button>
             </div>
           </div>
         </div>
@@ -63,6 +63,7 @@ import { useRouter,useRoute } from 'vue-router';
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { SelectTypes } from 'ant-design-vue/es/select';
+import {theme} from 'src/utils/theme'
 interface IListItem{
   url:string,
   name:string;
@@ -138,7 +139,7 @@ export default defineComponent({
      initData()
      getDirection()
     })
-    return {list,loading,keepLearning,defaultUrl,options,course_category_id,handleChange}
+    return {theme,list,loading,keepLearning,defaultUrl,options,course_category_id,handleChange}
   }
 })
 </script>

@@ -9,13 +9,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, watch, provide } from "vue";
+import { defineComponent, ref, onMounted, watch, provide, computed } from "vue";
 import { useI18n } from "vue-i18n";
 import HelloWorld from "./components/HelloWorld.vue";
 import storeC from "./components/store.vue";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
 import enUS from "ant-design-vue/es/locale/en_US";
 import * as echarts from 'echarts'
+import extStorage from "src/utils/extStorage";
+import { useRouter ,useRoute } from 'vue-router';
 export default defineComponent({
   name: "App",
   components: {
@@ -23,7 +25,9 @@ export default defineComponent({
     storeC,
   },
   setup: (props, { emit }) => {
+    const { lStorage } = extStorage
     // 放在setup的顶行，这个是全局的i18n对象
+    const router = useRouter();
     const { locale } = useI18n({ useScope: "global" });
     provide('echarts',echarts)
     const textWord = ref("儿子");
@@ -38,6 +42,13 @@ export default defineComponent({
     onMounted(() => {
       //  console.log(textWord)
     });
+    const role = computed(()=>{
+      router.replace('/')
+      return lStorage.get('role')
+    })
+    watch(role.value,(val:any)=>{
+      router.replace('/')
+    })
     return { change2, textWord, n2, locale, zhCN, enUS };
   },
 });

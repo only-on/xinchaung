@@ -55,7 +55,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
       processedPath.push(routeSegment.path)
     }   
   })
-  console.log('breadcrumbs:=',breadcrumbs)
+  // console.log('breadcrumbs:=',breadcrumbs)
   // console.log('processedPath:=',processedPath)
   store.commit('saveBreadcrumb', breadcrumbs)
 })
