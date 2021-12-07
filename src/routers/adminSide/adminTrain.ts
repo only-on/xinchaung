@@ -20,5 +20,23 @@ export default {
                 authCode: ''
             },
         },
+        {
+            path: "/trainInfo",
+            name: "trainInfo",
+            component: () => import("src/views/adminTrain/teacherTrainInfo/trainDetail/index.vue"),
+            meta: {
+                title: "实训详情",
+                authCode: 'trainInfo'
+            },
+        },
+        {
+            path: "/trainResult",
+            name: "trainResult",
+            component: () => import("src/views/adminTrain/teacherTrainInfo/trainResult/index.vue"),
+            meta: {
+                title: "实训成果",
+                authCode: 'trainResult'
+            },
+        },
     ]
 }

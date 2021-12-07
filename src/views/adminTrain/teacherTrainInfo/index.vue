@@ -70,6 +70,8 @@ import {
 import Empty from "src/components/Empty.vue";
 import request from "src/api/index";
 import { Modal, message } from "ant-design-vue";
+import { useRouter } from "vue-router";
+
 interface state {
   data: any[];
   selectedRowKeys: any[];
@@ -80,6 +82,7 @@ export default defineComponent({
   name: "teacherTrainInfo",
   components: { Empty },
   setup: (props, context) => {
+    const router = useRouter();
     const http = (request as any).adminTrain;
     const columns: any = [
       { title: "实训名称", dataIndex: "name", slots: { customRender: "name" } },
@@ -176,10 +179,12 @@ export default defineComponent({
       //   我的实训详情
       lookTrainDetail(id: any) {
         console.log("我的实训详情", id);
+        router.push({ path: "/trainInfo", query: { id: id } });
       },
       //   我的实训查看结果
       lookResult(id: any) {
         console.log("我的实训结果", id);
+        router.push({ path: "/trainResult", query: { id: id } });
       },
     };
     onMounted(() => {

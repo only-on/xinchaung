@@ -63,22 +63,6 @@ export default defineComponent({
     let visible = ref(false);
     let achievementsInfo: Ref<any> = ref([]);
     let note = ref();
-    let note1 = ref();
-    let content: Ref<any> = ref({
-      ops: [
-        { insert: "Delta", attributes: { bold: true } },
-        { insert: "是一种富有表现力的数据格式，它是" },
-        { insert: "JSON", attributes: { color: "#8955b5", bold: true } },
-        {
-          insert:
-            "的严格子集，Quill用它来描述Quill的文档及其文档的变化，它的链接在这里：",
-        },
-        {
-          insert: "https://quilljs.com/docs/delta",
-          attributes: { link: "https://quilljs.com/docs/delta" },
-        },
-      ],
-    });
     watch(
       () => props.isShowAchievements,
       (newVal) => {
