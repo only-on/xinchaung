@@ -28,7 +28,9 @@
         <span v-else>未评价</span>
       </template>
       <template #courseDetail="{ record }">
-        <span class="detail" @click="scoreDetails(record.start, record.rebuild)"
+        <span
+          class="detail"
+          @click="scoreDetails(record.start, record.rebuild, record.detail_show_config)"
           >成绩明细</span
         >
       </template>
@@ -49,12 +51,20 @@
           <a-tabs type="card" @change="change">
             <a-tab-pane key="1" tab="试验得分">
               <template v-if="activeKey == '1'">
-                <test-score :scoredata="start" :activeKey="activeKey"></test-score>
+                <test-score
+                  :scoredata="start"
+                  :detailShowConfig="detailShowConfig"
+                  :activeKey="activeKey"
+                ></test-score>
               </template>
             </a-tab-pane>
             <a-tab-pane key="2" tab="重修得分" force-render>
               <template v-if="activeKey == '2'">
-                <test-score :scoredata="rebuild" :activeKey="activeKey"></test-score>
+                <test-score
+                  :scoredata="rebuild"
+                  :detailShowConfig="detailShowConfig"
+                  :activeKey="activeKey"
+                ></test-score>
               </template>
             </a-tab-pane>
           </a-tabs>
@@ -88,6 +98,7 @@ import video from "../../components/video.vue";
 interface Istate {
   start: any;
   rebuild: any;
+  detailShowConfig: any;
   scordata: any;
   panes: any[];
   activeKey: string;
@@ -170,6 +181,7 @@ export default defineComponent({
     const state: Istate = reactive({
       start: {},
       rebuild: {},
+      detailShowConfig: [],
       scordata: {},
       panes: [
         { title: "试验得分", content: testScore, key: "1", scoredata: {} },
@@ -181,10 +193,11 @@ export default defineComponent({
       title: "",
     });
     //成绩明细弹框
-    function scoreDetails(start: any, rebuild: any) {
+    function scoreDetails(start: any, rebuild: any, detail_show_config: any) {
       visable.value = true;
       state.start = start;
       state.rebuild = rebuild;
+      state.detailShowConfig = detail_show_config;
       state.panes[0].scoredata = state.start;
       state.panes[1].scoredata = state.rebuild;
     }

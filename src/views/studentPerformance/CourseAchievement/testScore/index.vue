@@ -1,12 +1,18 @@
 <template>
   <div class="experScore">
     <div class="getScoreItem">
-      <a-table
-        bordered
-        :columns="columns"
-        :data-source="data"
-        :pagination="false"
-      ></a-table>
+      <a-table bordered :columns="columns" :data-source="data" :pagination="false">
+        <template #scoreItem="{ record }">
+          <div>
+            {{ record.scoreItem }}
+          </div>
+        </template>
+        <template #score="{ record }">
+          <div>
+            {{ record.score }}
+          </div>
+        </template>
+      </a-table>
     </div>
     <div class="pieChart">
       <div id="pieChart"></div>
@@ -23,7 +29,7 @@ import { options } from "src/views/teachCourse/evalute/components/public";
 import { defineComponent, onMounted, ref, watch } from "vue";
 export default defineComponent({
   name: "experScore",
-  props: ["scoredata", "activeKey"],
+  props: ["scoredata", "activeKey", "detailShowConfig"],
   setup: (props, context) => {
     var myChart: any = "";
     var myChart1: any = "";
@@ -34,25 +40,35 @@ export default defineComponent({
         dataIndex: "scoreItem",
         key: "scoreItem",
         width: 100,
+        slots: { customRender: "scoreItem" },
       },
       {
         title: "分数",
         dataIndex: "score",
         key: "score",
         width: 70,
+        slots: { customRender: "score" },
       },
     ];
-    const data = [
+    const columnData = [
       { key: "1", scoreItem: "用时得分", score: props.scoredata?.time_score },
       { key: "2", scoreItem: "习题得分", score: props.scoredata?.score },
       { key: "3", scoreItem: "报告得分", score: props.scoredata?.report_score },
-      { key: "4", scoreItem: "总分", score: props.scoredata?.final_score },
+      { key: "4", scoreItem: "步骤得分", score: props.scoredata?.auto_score },
+      { key: "5", scoreItem: "总分", score: props.scoredata?.final_score },
     ];
+    const data =
+      props.detailShowConfig.indexOf("auto") === -1
+        ? columnData.slice(0, 3).concat(columnData.slice(4, 5))
+        : columnData;
     var option = ref({
       tooltip: {
         trigger: "item",
       },
-      color: ["@theme-color", "#eb7e64", "#f6bd16"],
+      color:
+        props.detailShowConfig.indexOf("auto") === -1
+          ? ["#8955b5", "#eb7e64", "#f6bd16"]
+          : ["#8955b5", "#eb7e64", "#f6bd16", "#5AD8A6"],
       legend: {
         orient: "vertical",
         bottom: "bottom",
@@ -63,16 +79,24 @@ export default defineComponent({
           name: "访问来源",
           type: "pie",
           radius: ["40%", "70%"],
-          data: [
-            { value: props.scoredata?.time_score, name: "用时得分" },
-            { value: props.scoredata?.score, name: "习题得分" },
-            { value: props.scoredata?.report_score, name: "报告得分" },
-          ],
+          data:
+            props.detailShowConfig.indexOf("auto") === -1
+              ? [
+                  { value: props.scoredata?.time_score, name: "用时得分" },
+                  { value: props.scoredata?.score, name: "习题得分" },
+                  { value: props.scoredata?.report_score, name: "报告得分" },
+                ]
+              : [
+                  { value: props.scoredata?.time_score, name: "用时得分" },
+                  { value: props.scoredata?.score, name: "习题得分" },
+                  { value: props.scoredata?.report_score, name: "报告得分" },
+                  { value: props.scoredata?.auto_score, name: "步骤得分" },
+                ],
           emphasis: {
             itemStyle: {
               shadowBlur: 10,
               shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
+              shadowColor: "rgba(0, 0, 0, 0.05)",
             },
           },
         },
@@ -245,6 +269,7 @@ export default defineComponent({
       drawCharts3();
     });
     return {
+      columnData,
       echarts,
       columns,
       data,
