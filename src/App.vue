@@ -46,9 +46,9 @@ export default defineComponent({
       router.replace('/')
       return lStorage.get('role')
     })
-    watch(role.value,(val:any)=>{
-      router.replace('/')
-    })
+    // watch(role.value,(val:any)=>{
+    //   router.replace('/')
+    // })
     return { change2, textWord, n2, locale, zhCN, enUS };
   },
 });

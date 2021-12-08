@@ -22,6 +22,7 @@ import {ITeacherExperAps} from "src/api/modules/teacherExperiment"
 import {ITeacherTemplateApis} from "src/api/modules/teacherTemplate"
 import {IDataSet} from "src/api/modules/dataSet"
 import {TAdminSystemSetting} from "src/api/modules/adminSystemSetting"
+import {IAdminUserManagement} from "src/api/modules/adminUserManagement"
 
 /**
  * 通用响应类型
@@ -38,7 +39,7 @@ export interface IApiItem {
     dataType?: TDataType;
 }
 
-export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'teacherForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment' | 'teacherTemplate' | 'dataSet'
+export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'teacherForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment' | 'teacherTemplate' | 'dataSet' | 'adminUserManagement'
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -68,4 +69,5 @@ export interface IApiCollection {
     teacherTemplate: ITeacherTemplateApis
     dataSet:IDataSet
     adminSystemSetting:TAdminSystemSetting
+    adminUserManagement:IAdminUserManagement
 }

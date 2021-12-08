@@ -41,7 +41,8 @@ export default defineComponent({
             }}
           >
             <div
-              class={(item.name === activeName.value) ? "menu__top-item active" : "menu__top-item"}
+              class={(item.name === activeName.value) ? "menu__top-item" : "menu__top-item"}
+              // class={(item.name === activeName.value) ? "menu__top-item active" : "menu__top-item"}
               onClick={
                   (e: Event) => {
                     if(item.children && item.children.length){
