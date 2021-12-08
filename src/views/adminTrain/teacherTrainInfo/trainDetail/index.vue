@@ -22,56 +22,70 @@
               {{ item.tab }}
             </div>
             <div v-else>
-              <!-- <span>{{ item.tab }}</span> -->
-              <a-select class="select" default-value="内容" @change="handleChange">
-                <a-select-option
-                  v-for="it in item.childTabs"
-                  :key="it.key"
-                  :value="it.key"
-                >
-                  {{ it.item }}
-                </a-select-option>
-              </a-select>
+              <a-dropdown>
+                <a class="ant-dropdown-link" @click.prevent>
+                  {{ item.tab }}
+                  <DownOutlined />
+                </a>
+                <template #overlay>
+                  <a-menu @click="onClickDrop">
+                    <a-menu-item v-for="it in item.childTabs" :key="it.key">
+                      {{ it.item }}
+                    </a-menu-item>
+                  </a-menu>
+                </template>
+              </a-dropdown>
             </div>
           </template>
         </a-tab-pane>
       </a-tabs>
-      <div></div>
+      <div>
+        <component :is="componentName"></component>
+      </div>
     </div>
   </div>
 </template>
 <script lang="ts">
-import router from "src/routers";
-import { defineComponent, onMounted, inject } from "vue";
+import { defineComponent, onMounted, inject, ref, Ref } from "vue";
 import { useRouter } from "vue-router";
 import BasicInfo from "../../components/basicInfo.vue";
+import assignment from "../../components/assignment.vue";
+import trainingGuide from "../../components/trainingGuide.vue";
+import trainingCourseware from "../../components/trainingCourseware.vue";
+import courseSchedule from "../../components/courseSchedule.vue";
 import groupInfo from "../../components/groupInfo.vue";
+import trainEnvir from "../../components/trainEnvir.vue";
+import { DownOutlined } from "@ant-design/icons-vue";
 export default defineComponent({
   name: "trainDetail",
-  components: { BasicInfo, groupInfo },
+  components: {
+    BasicInfo,
+    assignment,
+    trainingGuide,
+    trainingCourseware,
+    courseSchedule,
+    groupInfo,
+    trainEnvir,
+    DownOutlined,
+  },
   setup: (props, context) => {
     const router = useRouter();
     const tabs = [
-      { key: 1, tab: "基础信息" },
+      { key: 1, tab: "基础信息", componentName: "BasicInfo" },
       {
         key: 2,
         tab: "内容",
         childTabs: [
-          { key: 1, item: "实训任务书" },
-          { key: 2, item: "实训指导" },
-          { key: 3, item: "实训课件" },
-          { key: 4, item: "实训环境" },
+          { key: 1, item: "实训任务书", componentName: "assignment" },
+          { key: 2, item: "实训指导", componentName: "trainingGuide" },
+          { key: 3, item: "实训课件", componentName: "trainingCourseware" },
+          { key: 4, item: "实训环境", componentName: "trainEnvir" },
         ],
       },
-      { key: 3, tab: "排课信息" },
-      { key: 4, tab: "分组信息" },
+      { key: 3, tab: "排课信息", componentName: "courseSchedule" },
+      { key: 4, tab: "分组信息", componentName: "groupInfo" },
     ];
-    const componentsNames = {
-      1: "BasicInfo",
-      2: { content: {} },
-      3: "stu",
-      4: "groupInfo",
-    };
+    const componentName: Ref<string | undefined> = ref("BasicInfo");
     var updata = inject("updataNav") as Function;
     updata({
       tabs: [],
@@ -85,16 +99,19 @@ export default defineComponent({
     });
     const methods = {
       callback(key: any) {
-        console.log(key);
+        if (key !== 2) {
+          componentName.value = tabs[key - 1].componentName;
+        }
       },
-      handleChange(value: any) {
-        console.log(value);
+      onClickDrop(selectInfo: any) {
+        const dropdownTab: any = tabs[1].childTabs;
+        componentName.value = dropdownTab[selectInfo.key - 1].componentName;
       },
     };
     onMounted(() => {
       //   console.log(router.currentRoute.value.query.id, "kkkkkkkkk");
     });
-    return { tabs, ...methods, componentsNames };
+    return { tabs, ...methods, componentName };
   },
 });
 </script>
@@ -134,17 +151,13 @@ export default defineComponent({
     .ant-select-selector {
     box-shadow: none;
   }
-  //   .ant-select-single .ant-select-selector .ant-select-selection-item {
-  //     position: relative;
-  //     left: -43px !important;
-  //   }
-  //   .ant-select-arrow {
-  //     position: absolute;
-  //     right: 20px;
-  //   }
-  //   .ant-select-single.ant-select-show-arrow .ant-select-selection-item,
-  //   .ant-select-single.ant-select-show-arrow .ant-select-selection-placeholder {
-  //     opacity: 0;
-  //   }
+  a {
+    color: rgba(0, 0, 0, 0.85);
+  }
+  .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
+    a {
+      color: @theme-color;
+    }
+  }
 }
 </style>
