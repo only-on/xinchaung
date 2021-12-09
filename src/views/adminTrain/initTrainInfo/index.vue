@@ -85,6 +85,10 @@ export default defineComponent({
       },
       lookResource(id: any) {
         console.log(id);
+        router.push({
+          path: "adminTrain/initResource",
+          query: { trainId: id, trainType: "1" },
+        });
       },
       lookContent(id: any) {
         console.log(id);

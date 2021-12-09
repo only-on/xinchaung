@@ -118,7 +118,7 @@ export default defineComponent({
       },
     ];
     const state: state = reactive({
-      data: [{ name: "00" }],
+      data: [],
       selectedRowKeys: [],
       params: {
         name: "",
