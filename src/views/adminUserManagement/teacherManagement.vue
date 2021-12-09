@@ -34,7 +34,7 @@
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @ok="submit" :width="745" class="modal-post">
+    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
       <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <div class="formBox">
           <div class="left">
@@ -290,7 +290,7 @@ export default defineComponent({
     }
     watch(()=>{return formState.userinitpassword},(val)=>{
       // console.log(val)
-      if(val===true){
+      if(val===true && formState.username){
         formState.password_hash=`${formState.username}${suffix}`
         formState.repassword=`${formState.username}${suffix}`
       }else{
@@ -429,6 +429,9 @@ export default defineComponent({
       })      
       
     }
+    function cancel(){
+      formRef.value.resetFields()
+    }
     function editCard(val:ItdItems){
       editId.value=val.id
       http.viewTeacher({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
@@ -477,7 +480,7 @@ export default defineComponent({
     onMounted(()=>{
       // initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,InputPassword,formRef,formState,rules,tabType,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
+    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,tabType,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
   },
 })
 </script>
