@@ -1,13 +1,13 @@
 <template>
   <div class="customerInfor">
-    <div class="radioInfo">
+    <div v-if="role !== '2'" class="radioInfo">
       <a-radio-group size="large" v-model:value="value" @change="onRadioChange">
         <a-radio :value="1"> 学生信息 </a-radio>
         <a-radio :value="2"> 班级信息 </a-radio>
       </a-radio-group>
     </div>
     <div class="stuAndclass">
-      <div class="operateBtn">
+      <div v-if="role !== '2'" class="operateBtn">
         <a-button type="primary" class="choice" @click="selectStuClass">选择</a-button>
         <a-button type="primary" @click="deleteMany">移除</a-button>
       </div>
@@ -165,7 +165,7 @@ import selectStuClass from "../../components/selectStuClass/index.vue";
 import { message, Modal } from "ant-design-vue";
 export default defineComponent({
   name: "customerInfor",
-  props: ["propTrainDetailInfo", "trainId", "type"],
+  props: ["propTrainDetailInfo", "trainId", "type", "role"],
   components: {
     Empty,
     selectStuClass,

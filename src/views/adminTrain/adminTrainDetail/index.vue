@@ -1,19 +1,19 @@
 <template>
-  <div class="editExperimental" v-layout-bg>
+  <div class="teacherTrainDetail" v-layout-bg>
     <train-detail :trainId="trainId" :currentTab="currentTab" :role="role"></train-detail>
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import trainDetail from "./trainDetail.vue";
+import trainDetail from "src/views/teacherTrain/detail/trainDetail.vue";
 interface State {
   trainId: any;
   currentTab: any;
   role: any;
 }
 export default defineComponent({
-  name: "editExperimental",
+  name: "teacherTrainDetails",
   components: { trainDetail },
   setup() {
     let router = useRoute();

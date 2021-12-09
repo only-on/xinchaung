@@ -28,7 +28,7 @@
 import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
 import Empty from "src/components/Empty.vue";
 import request from "src/api/index";
-
+import { useRouter } from "vue-router";
 interface state {
   data: any[];
   params: any;
@@ -37,6 +37,7 @@ export default defineComponent({
   name: "initTrainInfo",
   components: { Empty },
   setup: (props, context) => {
+    const router = useRouter();
     const http = (request as any).adminTrain;
 
     const columns: any = [
@@ -87,6 +88,7 @@ export default defineComponent({
       },
       lookContent(id: any) {
         console.log(id);
+        router.push({ path: "adminTrain/trainInfo", query: { id: id, currentTab: 1 } });
       },
     };
     onMounted(() => {

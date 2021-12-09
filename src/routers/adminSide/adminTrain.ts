@@ -21,9 +21,9 @@ export default {
             },
         },
         {
-            path: "/trainInfo",
+            path: "trainInfo",
             name: "trainInfo",
-            component: () => import("src/views/adminTrain/teacherTrainInfo/trainDetail/index.vue"),
+            component: () => import("src/views/adminTrain/adminTrainDetail/index.vue"),
             meta: {
                 title: "实训详情",
                 authCode: 'trainInfo'

@@ -88,23 +88,23 @@ export default defineComponent({
       { title: "实训名称", dataIndex: "name", slots: { customRender: "name" } },
       {
         title: "任课教师",
-        dataIndex: "age",
+        dataIndex: "creater",
       },
       {
         title: "实训状态",
-        dataIndex: "address",
+        dataIndex: "status",
       },
       {
         title: "开始时间",
-        dataIndex: "tags",
+        dataIndex: "start_times",
       },
       {
         title: "结束时间",
-        dataIndex: "tags",
+        dataIndex: "end_times",
       },
       {
         title: "操作记录总大小",
-        dataIndex: "tags",
+        dataIndex: "video_size",
       },
       {
         title: "实训成果",
@@ -134,8 +134,8 @@ export default defineComponent({
       //   获取表格数据
       tableList() {
         http.trainList({ param: state.params }).then((res: any) => {
-          //   state.data = res.data.list;
-          state.data = [{ name: "122", id: "0001" }];
+          state.data = res.data.list;
+          // state.data = [{ name: "122", id: "0001" }];
         });
       },
       // 勾选多选框
@@ -162,6 +162,9 @@ export default defineComponent({
         } else {
           state.visible = true;
         }
+        // http.deleteTrain({urlParams:{train:}}).then((res: any) => {
+        //   console.log(res);
+        // });
       },
       //   删除录像记录
       clearVideoRecord(id: any) {
@@ -179,12 +182,17 @@ export default defineComponent({
       //   我的实训详情
       lookTrainDetail(id: any) {
         console.log("我的实训详情", id);
-        router.push({ path: "/trainInfo", query: { id: id } });
+
+        // router.push({
+        //   path: "/teacher/teacherTrain/detail",
+        //   query: { id: id, currentTab: 0 },
+        // });
+        router.push({ path: "adminTrain/trainInfo", query: { id: id, currentTab: 0 } });
       },
       //   我的实训查看结果
       lookResult(id: any) {
         console.log("我的实训结果", id);
-        router.push({ path: "/trainResult", query: { id: id } });
+        router.push({ path: "adminTrain/trainResult", query: { id: id } });
       },
     };
     onMounted(() => {

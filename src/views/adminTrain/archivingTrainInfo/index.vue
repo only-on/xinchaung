@@ -3,13 +3,13 @@
     <div class="header-search">
       <div class="search-left">
         <a-form-item label="实训名称">
-          <a-input />
+          <a-input @keyup.enter="querySearch" v-model:value="params.name" />
         </a-form-item>
         <a-form-item label="任课教师">
-          <a-input />
+          <a-input @keyup.enter="querySearch" v-model:value="params.teacher" />
         </a-form-item>
-        <a-button type="primary">查询</a-button>
-        <a-button type="primary">清空</a-button>
+        <a-button type="primary" @click="querySearch">查询</a-button>
+        <a-button type="primary" @click="clearParams">清空</a-button>
       </div>
       <div class="search-right">
         <a-button type="primary">批量删除</a-button>
@@ -23,7 +23,7 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <template #name="{ record }">
-          <div class="purple">
+          <div class="purple" @click="archivingInfo(record.id)">
             {{ record.name }}
           </div>
         </template>
@@ -41,44 +41,47 @@
 import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
 import Empty from "src/components/Empty.vue";
 import request from "src/api/index";
-
+import { useRouter } from "vue-router";
 interface state {
   data: any[];
   selectedRowKeys: any[];
+  params: any;
 }
 export default defineComponent({
   name: "archivingTrainInfo",
   components: { Empty },
   setup: (props, context) => {
+    const router = useRouter();
     const http = (request as any).adminTrain;
 
     const columns: any = [
       { title: "实训名称", dataIndex: "name", slots: { customRender: "name" } },
       {
         title: "任课教师",
-        dataIndex: "age",
-        key: "age",
+        dataIndex: "creater",
+        key: "creater",
       },
       {
         title: "实验数",
-        dataIndex: "address",
-        key: "address",
+        dataIndex: "task_num",
+        key: "task_num",
       },
       {
         title: "课时数",
-        key: "tags",
-        dataIndex: "tags",
-        scopedSlots: { customRender: "tags" },
+        key: "class_cnt",
+        dataIndex: "class_cnt",
       },
       {
         title: "学生数",
-        key: "action",
-        scopedSlots: { customRender: "action" },
+        key: "user_num",
+        dataIndex: "user_num",
       },
       {
         title: "归档时间",
-        key: "action",
-        scopedSlots: { customRender: "action" },
+        key: "updated_time",
+        dataIndex: "updated_time",
+        width: "150",
+        ellipsis: "true",
       },
       {
         title: "操作",
@@ -89,19 +92,34 @@ export default defineComponent({
     const state: state = reactive({
       data: [],
       selectedRowKeys: [],
+      params: {
+        name: "",
+        teacher: "",
+      },
     });
     const methods = {
       tableList() {
-        http.archiveTrainList().then((res: any) => {
+        http.archiveTrainList({ param: state.params }).then((res: any) => {
           state.data = res.data.list;
-          state.data = [{ name: "wse" }];
+          // state.data = [{ name: "wse" }];
         });
+      },
+      querySearch() {
+        methods.tableList();
+      },
+      clearParams() {
+        state.params.name = "";
+        state.params.teacher = "";
+        methods.tableList();
       },
       onSelectChange(selectedRowKeys: any) {
         state.selectedRowKeys = selectedRowKeys;
       },
       deleteRow(id: any) {
         console.log(id);
+      },
+      archivingInfo(id: any) {
+        router.push({ path: "adminTrain/trainInfo", query: { id: id, currentTab: 3 } });
       },
     };
     onMounted(() => {
