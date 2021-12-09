@@ -136,7 +136,8 @@ export default defineComponent({
     function tabChange(key: string) {}
 
     function settingTab() {
-      if (![1, 3].includes(currentRole)) {
+
+      if (![1, 3,2].includes(currentRole)) {
         return [];
       } else {
         if (
@@ -146,6 +147,14 @@ export default defineComponent({
           return ["courseExperimentTab", "courseResourcesTab"];
         }
         if (currentRole == 3 && currentTab === "myCourse") {
+          return [
+            "courseExperimentTab",
+            "courseResourcesTab",
+            "groupInfoTab",
+            "courseMembersTab",
+          ];
+        }
+        if (currentRole == 2) {
           return [
             "courseExperimentTab",
             "courseResourcesTab",

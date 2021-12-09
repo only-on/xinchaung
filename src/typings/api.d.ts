@@ -23,6 +23,7 @@ import {ITeacherTemplateApis} from "src/api/modules/teacherTemplate"
 import {IDataSet} from "src/api/modules/dataSet"
 import {TAdminSystemSetting} from "src/api/modules/adminSystemSetting"
 import {IAdminUserManagement} from "src/api/modules/adminUserManagement"
+import {TAdminCourse} from "src/api/modules/adminCourse"
 
 /**
  * 通用响应类型
@@ -70,4 +71,5 @@ export interface IApiCollection {
     dataSet:IDataSet
     adminSystemSetting:TAdminSystemSetting
     adminUserManagement:IAdminUserManagement
+    adminCourse:TAdminCourse
 }

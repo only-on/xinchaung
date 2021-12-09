@@ -5,7 +5,7 @@
         <tabTitle name="课时设置"></tabTitle>
         <div class="flex-line">
           <span>实验每课时</span>
-          <a-input v-model:value="classTime"></a-input>
+          <a-input v-model:value="sysetmInfo.each_class_time"></a-input>
           <span>分钟。</span>
           <a-button type="primary" @click="saveClassTime">保存</a-button>
         </div>
@@ -18,13 +18,15 @@
             <div class="content-right">
               <span class="row-title">点击生成授权码</span>
               <div class="code-box">
-                <a-input v-model:value="authorizationCode" ref="codeRef"></a-input>
-                <a-button type="primary" @click="saveClassTime"
+                <a-input
+                  v-model:value="authorizationData.authorization_code"
+                  ref="codeRef"
+                  style="pointer-events: none; background: #fafafa"
+                ></a-input>
+                <a-button type="primary" @click="createAuthorizationCode"
                   >生成授权码</a-button
                 >
-                <a-button type="primary" @click="copyCode"
-                  >复制授权码</a-button
-                >
+                <a-button type="primary" @click="copyCode">复制授权码</a-button>
               </div>
             </div>
           </div>
@@ -35,18 +37,21 @@
               <div class="upload-code-file">
                 <a-upload
                   name="file"
-                  :multiple="true"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  :multiple="false"
+                  :showUploadList="false"
+                  :beforeUpload="beforeUpload"
                 >
-                  <a-button type="primary" @click="saveClassTime"
-                    >选择文件</a-button
-                  >
+                  <a-button type="primary">选择文件</a-button>
                 </a-upload>
-                <div class="progress-box active">
-                  <div class="progress-bg">
-                    <div class="progress"></div>
-                  </div>
-                  <span class="iconfont icon-shanchu"></span>
+                <div
+                  class="progress-box active"
+                  v-if="authorizationFile.progress"
+                >
+                  <a-progress :percent="authorizationFile.progress" />
+                  <span
+                    @click="removeFile"
+                    class="iconfont icon-shanchu"
+                  ></span>
                 </div>
               </div>
             </div>
@@ -59,7 +64,7 @@
                 <a-button
                   type="primary"
                   :disabled="isShowBtn"
-                  @click="saveClassTime"
+                  @click="authorizationFun"
                   >授权</a-button
                 >
               </div>
@@ -76,8 +81,13 @@
         <tabTitle name="系统日志"></tabTitle>
         <div class="flex-line">
           <span>系统自动保存最近</span>
-          <a-select>
-            <a-select-option :value="1">一个月</a-select-option>
+          <a-select v-model:value="logSelectId">
+            <a-select-option
+              v-for="item in logTimeSelectData"
+              :value="item.value.toString()"
+              :key="item.value"
+              >{{ item.title }}</a-select-option
+            >
           </a-select>
           <span>内的系统日志</span>
           <a-button type="primary" @click="saveLog">保存</a-button>
@@ -94,7 +104,11 @@
         <div class="system-name-setting-box">
           <div class="flex-row">
             <label class="label">系统名：</label>
-            <a-input class="system-name" />
+            <a-input
+              :disabled="isEdit"
+              class="system-name"
+              v-model:value="systemBaseInfo.name"
+            />
           </div>
           <div class="flex-row">
             <label class="label">LOGO：</label>
@@ -108,9 +122,17 @@
                       list-type="picture-card"
                       class="avatar-uploader login-logo"
                       :show-upload-list="false"
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :beforeUpload="logUploadBefore"
                     >
-                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <img
+                        v-if="systemBaseInfo.login_logo"
+                        :src="
+                          env
+                            ? '/proxyPrefix' + systemBaseInfo.login_logo
+                            : systemBaseInfo.login_logo
+                        "
+                        alt="avatar"
+                      />
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -126,9 +148,17 @@
                       list-type="picture-card"
                       class="avatar-uploader top-logo"
                       :show-upload-list="false"
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :beforeUpload="topUploadBefore"
                     >
-                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <img
+                        v-if="systemBaseInfo.inner_logo"
+                        :src="
+                          env
+                            ? '/proxyPrefix' + systemBaseInfo.inner_logo
+                            : systemBaseInfo.inner_logo
+                        "
+                        alt="avatar"
+                      />
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -147,9 +177,13 @@
                       list-type="picture-card"
                       class="avatar-uploader ico-logo"
                       :show-upload-list="false"
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      :beforeUpload="iconUploadBefore"
                     >
-                      <img v-if="loginImg" :src="loginImg" alt="avatar" />
+                      <img
+                        v-if="systemBaseInfo.icon"
+                        :src="systemBaseInfo.icon"
+                        alt="avatar"
+                      />
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -162,8 +196,10 @@
             </div>
           </div>
           <div class="setting-btn-box">
-            <a-button type="primary">编辑</a-button>
-            <a-button type="primary">设置初始化</a-button>
+            <a-button type="primary" @click="editOrSave">{{
+              isEdit ? "编辑" : "保存"
+            }}</a-button>
+            <a-button type="primary" @click="initBaseInfo">设置初始化</a-button>
           </div>
         </div>
       </div>
@@ -180,11 +216,25 @@ import {
   reactive,
   toRefs,
   onMounted,
-  ref
+  ref,
 } from "vue";
 
 import noImg from "src/assets/setting/is-authorization.png";
-import { getAuthorizationInfoApi } from "./api";
+import {
+  getAuthorizationInfoApi,
+  saveCourseConfigApi,
+  getSystemSettingApi,
+  settingAutoKeyApi,
+  saveSettingApi,
+  getSystemLogTimeApi,
+  saveSystemLogApi,
+  uploadLogoImageApi,
+  updateSettingSiteApi,
+  getSettingSiteApi,
+  resetSystemSiteApi
+} from "./api";
+import { message, Modal } from "ant-design-vue";
+import uploadFile from "src/request/uploadFile";
 // 标题
 const tabTitle: any = (props: any, context: any) => {
   return h(`div`, { class: { "title-name": true } }, [
@@ -267,12 +317,26 @@ const Authorization: any = (props: any, context: any) => {
 };
 Authorization.props = ["data"];
 
+const modalEl = () => {
+  return h(
+    "div",
+    { style: { color: "red", "font-size": "20px", margin: "auto" } },
+    "本次生成会导致以前授权文件失效,您确定要重新生成授权码"
+  );
+};
 type TreactiveData = {
-  classTime: number;
   authorizationCode: string;
   authorizationData: any;
   isShowBtn: boolean;
   loginImg: string;
+  sysetmInfo: any;
+  upload: any;
+  authorizationFile: any;
+  logTimeSelectData: any[];
+  logSelectId: any;
+  log: any;
+  isEdit: boolean;
+  systemBaseInfo: any;
 };
 export default defineComponent({
   components: {
@@ -280,45 +344,240 @@ export default defineComponent({
     authorization: Authorization,
   },
   setup() {
-    const codeRef=ref(null)
+    const env = process.env.NODE_ENV == "development" ? true : false;
+    const codeRef = ref(null);
     const reactiveData: TreactiveData = reactive({
-      classTime: 30,
       authorizationCode: "",
       authorizationData: {},
       isShowBtn: false,
       loginImg: "",
+      sysetmInfo: {},
+      upload: {},
+      authorizationFile: {},
+      logTimeSelectData: [],
+      logSelectId: "",
+      log: {},
+      isEdit: true,
+      systemBaseInfo: {},
     });
     onMounted(() => {
       method.getAuthorizationInfo();
+      method.getSystemSetting();
+      method.getSystemLogTime();
+      method.getSettingSite();
     });
     const method = {
       saveClassTime: () => {
         console.log("保存课时");
+        const body = new FormData();
+        body.append(
+          "course_count",
+          reactiveData.sysetmInfo.selective_course_count
+        );
+        body.append("class_time", reactiveData.sysetmInfo.each_class_time);
+        saveCourseConfigApi(body).then(() => {
+          message.success("保存成功");
+        });
       },
       saveLog() {
-        
         console.log("保存日志");
+        saveSystemLogApi({ clearTime: reactiveData.logSelectId }).then(() => {
+          message.success("保存成功");
+        });
       },
-      copyCode(e:Event){
+      copyCode(e: Event) {
         e.preventDefault();
-    (codeRef.value as any).select();
-    document.execCommand("Copy");//
+        (codeRef.value as any).select();
+        document.execCommand("Copy"); //
       },
+      // 获取授权信息
       getAuthorizationInfo() {
         getAuthorizationInfoApi().then((res: any) => {
           console.log(res);
-          reactiveData.authorizationData = res?.datas;
-
+          reactiveData.authorizationData = res?.data;
+          reactiveData.isShowBtn = true;
           if (!reactiveData.authorizationData.number) {
-            reactiveData.isShowBtn = true;
           }
         });
+      },
+      // 获取系统设置
+      getSystemSetting() {
+        getSystemSettingApi().then((res: any) => {
+          reactiveData.sysetmInfo = res.data;
+        });
+      },
+      // 生成授权码
+      createAuthorizationCode() {
+        Modal.confirm({
+          title: "提示信息",
+          content: modalEl(),
+          width: "615px",
+          onOk: () => {
+            console.log("ok");
+            method.settingAutoKey();
+          },
+          onCancel: () => {
+            console.log("cancel");
+          },
+        });
+      },
+      // 设置授权码
+      settingAutoKey() {
+        settingAutoKeyApi().then((res: any) => {
+          reactiveData.authorizationData.authorization_code = res.datas.key;
+        });
+      },
+      // 上传授权文件
+      beforeUpload(file: any) {
+        console.log(file);
+        reactiveData.authorizationFile.filename = file.name;
+        let body = {
+          file_url: file,
+          file_id: 0,
+        };
+        reactiveData.upload = new uploadFile({
+          url: env
+            ? "/proxyPrefix/authorization/setting/upload-file"
+            : "/authorization/setting/upload-file",
+          body,
+          success: (res: any) => {
+            if (res.status === 1) {
+              reactiveData.authorizationFile.url = res.data.url;
+              reactiveData.isShowBtn = false;
+              reactiveData.authorizationFile.progress = 100;
+            } else {
+              message.error("上传失败");
+            }
+            reactiveData.upload = "";
+          },
+          progress: (e: ProgressEvent) => {
+            if (e.total > 0) {
+              reactiveData.authorizationFile.progress = Number(
+                Number((e.loaded / e.total) * 100).toFixed(2)
+              );
+              reactiveData.authorizationFile.progress =
+                reactiveData.authorizationFile.progress == 100
+                  ? 99
+                  : reactiveData.authorizationFile.progress;
+            }
+          },
+          abort: (xhr: XMLHttpRequest) => {
+            console.log("终止上传成功", xhr);
+          },
+          error: (err) => {
+            console.log(err);
+          },
+        });
+        reactiveData.upload.request();
+        return false;
+      },
+      removeFile() {
+        if (reactiveData.upload) {
+          reactiveData.upload.abortUpload();
+          reactiveData.authorizationFile = {};
+        }
+      },
+      // 授权
+      authorizationFun() {
+        if (!reactiveData.authorizationFile.filename) {
+          message.warn("请上传图片");
+          return;
+        }
+        if (!reactiveData.authorizationData.authorization_code) {
+          message.warn("请输入授权码");
+          return;
+        }
+        reactiveData.isShowBtn = true;
+        let params: any = {
+          params: reactiveData.authorizationFile.filename,
+          authNumber: reactiveData.authorizationData.authorization_code,
+          url: reactiveData.authorizationFile.url,
+        };
+        saveSettingApi(params).then((res: any) => {
+          reactiveData.authorizationData.authorization_code =
+            res.authNumber;
+          method.getAuthorizationInfo();
+        });
+      },
+      // 获取系统日志时间配置
+      getSystemLogTime() {
+        getSystemLogTimeApi().then((res: any) => {
+          console.log(res);
+          
+          reactiveData.logTimeSelectData = res.data.select;
+          console.log(reactiveData.logTimeSelectData);
+          
+          reactiveData.logSelectId = res.data.data.value;
+        });
+      },
+      logUploadBefore(file:any){
+        method.uploadLogoImage(file, 'loginLogo')
+        return false
+      },
+      topUploadBefore(file:any){
+        method.uploadLogoImage(file, 'innerLogo')
+        return false
+      },
+      iconUploadBefore(file:any){
+        method.uploadLogoImage(file, 'ico')
+        return false
+      },
+      uploadLogoImage(file: any, type: any) {
+        let objType = {
+          loginLogo: "login_logo",
+          innerLogo: "inner_logo",
+          ico: "icon",
+        };
+        console.log(file, type);
+        const body = new FormData();
+        body.append(type, file);
+        body.append("file_id", "0");
+        body.append("type", type);
+        uploadLogoImageApi(body).then((res: any) => {
+          console.log(res);
+          reactiveData.log[objType[type]] = res.datas.url;
+        });
+        return false;
+      },
+      getSettingSite() {
+        getSettingSiteApi().then((res: any) => {
+          reactiveData.systemBaseInfo = res.data;
+        });
+      },
+      initBaseInfo() {
+        console.log("初始化");
+        Modal.confirm({
+          title:"信息提示",
+          content:"确定要初始化名称和Logo吗？",
+          onOk:()=>{
+            resetSystemSiteApi().then((res)=>{
+              window.location.reload()
+            })
+          }
+        })
+      },
+      editOrSave() {
+        console.log("编辑保存");
+        if (reactiveData.isEdit) {
+          reactiveData.isEdit = false;
+        } else {
+          const body=new FormData();
+          body.append("name",reactiveData.systemBaseInfo.name)
+          body.append("login_logo",reactiveData.systemBaseInfo.login_logo)
+          body.append("inner_logo",reactiveData.systemBaseInfo.inner_logo)
+          body.append("ico",reactiveData.systemBaseInfo.icon)
+          updateSettingSiteApi(body).then((res)=>{
+            reactiveData.isEdit = true;
+            message.success("更新成功")
+          });
+        }
       },
     };
     return {
       ...toRefs(reactiveData),
       ...method,
-      codeRef
+      codeRef,
+      env,
     };
   },
 });
@@ -370,7 +629,7 @@ export default defineComponent({
       width: 70px;
     }
     > .ant-select {
-      width: 70px;
+      width: 100px;
     }
   }
   .author-content-box {
@@ -596,10 +855,10 @@ export default defineComponent({
             padding: 0;
             margin: 0;
             overflow: hidden;
-            .ant-upload{
+            .ant-upload {
               padding: 0;
               display: block;
-              >div{
+              > div {
                 height: 100%;
                 display: flex;
                 align-items: center;
@@ -653,9 +912,9 @@ export default defineComponent({
         }
       }
     }
-    .setting-btn-box{
+    .setting-btn-box {
       padding-left: 70px;
-      >button{
+      > button {
         margin-right: 20px;
       }
     }
