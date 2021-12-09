@@ -23,7 +23,7 @@ export default defineComponent({
     const route=useRoute();
     const componentNames=['teacherManagement','studentManagement','assistantManagement','classManagement']
     const tabs=[{name:'教师管理',componenttype:0},{name:'学生管理',componenttype:1},{name:'助教管理',componenttype:2},{name:'班级管理',componenttype:3}]
-    var componentName:Ref<string>=ref('TestPaper')
+    var componentName:Ref<string>=ref('teacherManagement')
     
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function

@@ -1,41 +1,101 @@
 <template>
     <div class="header" v-layout-bg>
       <div class="search">
-        <div class="item custom_input">
-          <a-input-search v-model:value="ForumSearch.title" placeholder="请输入帖子名称" @search="search" />
+        <div class="item custom_input custom_input1">
+          <a-input v-model:value="ForumSearch.username" placeholder="请输入账号" />
         </div>
-        <div  class="item custom_select">
-            <a-select v-model:value="ForumSearch.type"  placeholder="请选择发帖类型" :options="options"></a-select>
+        <div  class="item custom_input custom_input2">
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入姓名"  />
+        </div>
+        <div  class="item custom_input custom_input3">
+          <a-input v-model:value="ForumSearch.department" placeholder="请输入院系" />
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>
           <a-button type="primary" @click="clearSearch()">清空</a-button>
         </div>
       </div>
-      <a-button @click="release()" type="primary">发布问题</a-button>
+      <div class="addTeacher">
+        <a-button @click="addTeacher()" type="primary">添加教师</a-button>
+      </div>
+      <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
         :pagination="{current:ForumSearch.page,pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #title="{record, text }">
-          <a @click="detaile(record.id)">{{ text }}</a>
+          <a @click="details(record.id)">{{ text }}</a>
         </template>
         <template #operation="{record}">
-          <a  class="caozuo" @click="replyCard(record )">回帖</a>
-          <a  class="caozuo" @click="editCard(record)" v-if="tabType===1">编辑</a>
-          <a  class="caozuo" @click="delateCard(record )" v-if="record.can_delete">删除</a>
+          <i class="caozuo iconfont icon-bianji" @click="editCard(record )" title="更新"></i>
+          <i class="caozuo iconfont icon-shanchu" @click="delateCard(record.id )" title="删除"></i>
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" title="帖子回复" @ok="handleReply" :width="745" class="modal-post">
-      <h4>回复内容</h4>
-      <div class="text">
-        <QuillEditor toolbar="" :height="'300px'" v-model="ForumArticle.content"  :uploadPathName="'studentForum'" /> 
-      </div>
-      <template #footer>
-        <a-button @click="handleReply" type="primary">提交</a-button>
-      </template>
+    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @ok="submit" :width="745" class="modal-post">
+      <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
+        <div class="formBox">
+          <div class="left">
+            <a-form-item label="账号"  name="username">
+              <a-input v-model:value="formState.username" />
+            </a-form-item>
+            <a-form-item label="密码"  name="password_hash">
+              <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
+              <a-input-password v-model:value="formState.password_hash" :disabled="InputPassword" :visibilityToggle="false" />
+            </a-form-item>
+            <a-form-item label="确认密码"  name="repassword">
+              <!-- <a-input v-model:value="formState.repassword" :disabled="InputPassword" /> -->
+              <a-input-password v-model:value="formState.repassword" :disabled="InputPassword" :visibilityToggle="false" />
+            </a-form-item>
+            <div class="userinitpassword" v-if="!editId">
+              <span>使用初始密码</span>
+              <a-checkbox v-model:checked="formState.userinitpassword"></a-checkbox>
+              <span>{{`(账号+${suffix})`}}</span>
+            </div>
+            <div class="userinitpassword" v-if="editId">
+              <a-checkbox v-model:checked="formState.reset"></a-checkbox>
+              <span>重置密码</span>
+            </div>
+            <a-form-item label="院系"  name="department">
+              <a-input v-model:value="formState.department" />
+            </a-form-item>
+            <a-form-item label="所属技术方向"  name="direct">
+              <a-input v-model:value="formState.direct" />
+            </a-form-item>
+            <a-form-item label="主讲课程"  name="course">
+              <a-input v-model:value="formState.course" />
+            </a-form-item>
+          </div>
+          <div class="right">
+            <a-form-item label="姓名"  name="name">
+              <a-input v-model:value="formState.name" />
+            </a-form-item>
+            <a-form-item label="性别"  name="gender">
+              <a-select v-model:value="formState.gender" placeholder="请选择">
+                <a-select-option value="1">男</a-select-option>
+                <a-select-option value="2">女</a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="电话"  name="phone">
+              <a-input v-model:value="formState.phone" />
+            </a-form-item>
+            <a-form-item label="邮箱"  name="email">
+              <a-input v-model:value="formState.email" />
+            </a-form-item>
+            <a-form-item label="状态"  name="status">
+              <a-select v-model:value="formState.status" placeholder="请选择">
+                <a-select-option value="10">开启</a-select-option>
+                <a-select-option value="1">关闭</a-select-option>
+              </a-select>
+            </a-form-item>
+          </div>
+        </div>
+        <a-form-item label="介绍"  name="introduce">
+          <a-textarea v-model:value="formState.introduce" placeholder="输入介绍" :rows="4" />
+        </a-form-item>
+      </a-form>
     </a-modal>
 </template>
 
@@ -48,11 +108,11 @@ import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
-import { SelectTypes } from 'ant-design-vue/es/select';
-import  QuillEditor  from "src/components/editor/quill.vue";
+import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IforumSearch{
-  title:string,
-  type:string | undefined,
+  username:string,
+  department:string,
+  name:string,
   pageSize:number,
   page:number
 }
@@ -64,40 +124,76 @@ interface ItdItems{
   reply:string,
   id:number,
 }
-interface Ireply{
-  forum_id:number,
-  content:any
+type Key = ColumnProps['key'];
+interface TState{
+  selectedRowKeys:Key[];
+  onSelectChange: (v:Key[],selectedRows:Key[]) => void;
+}
+interface IFormState{
+  username:string
+  password_hash:string
+  repassword:string
+  userinitpassword:boolean
+  department:string
+  direct:string
+  course:string
+  name:string
+  gender:string
+  phone:string
+  email:string
+  status:string
+  introduce:string
+  reset:boolean
 }
 const columns=[
   {
-    title: '帖子名称',
-    dataIndex:"title",
+    title: '账号',
+    dataIndex:"stu_no",
     align:'center',
-    width:260,
-    slots: { customRender: 'title' },
+    width:120,
+    // slots: { customRender: 'title' },
   },
   {
-    title: '类型',
-    dataIndex: 'type',
-    align:'center'
+    title: '姓名',
+    dataIndex: 'name',
+    align:'center',
+    width:120
   },
   {
-    title: '发帖人/发帖时间',
-    dataIndex: 'creat',
+    title: '性别',
+    dataIndex: 'genderText',
     align:'center',
-    width:260
+    // width:260
   },
   {
-    title: '回复数/查看数',
-    dataIndex: 'replyViews',
+    title: '所属院系',
+    dataIndex: 'department',
     align:'center',
-    width:160
+    // width:160
   },
   {
-    title: '最近回帖人/最近回帖时间',
-    dataIndex: 'reply',
+    title: '研究方向',
+    dataIndex: 'direct',
     align:'center',
-    width:260
+    // width:260
+  },
+  {
+    title: '主讲课程',
+    dataIndex: 'course',
+    align:'center',
+    // width:260
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    align:'center',
+    width:200
+  },
+  {
+    title: '电话',
+    dataIndex: 'phone',
+    align:'center',
+    width:140
   },
   {
     title: '操作',
@@ -110,25 +206,15 @@ const columns=[
 ]
 
 export default defineComponent({
-  name: 'forumindex',
+  name: 'teacherManagement',
   components: {
     SmileOutlined,
     MehOutlined,
-    QuillEditor
   },
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
-    const QuillOptions = {
-      placeholder: "输入内容...",
-      theme: "snow",
-    };
-    const tabs=[{name:'随堂论坛',componenttype:0},{name:'我的提问',componenttype:1},{name:'我参与的帖子',componenttype:2}]
-    const options1 = ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'},{value: '3', label: '通知'},{value: '4', label: '公告'}])
-    const options2 =ref<SelectTypes['options']>([{value: '1', label: '求助'},{value: '2', label: '分享'}])
-    const options = computed(()=>{
-        return tabType.value===1?options2.value:options1.value
-    })
+
     const http=(request as any).adminUserManagement
     const apiName=['pubIndex','myself','attend'] 
     var tabType:Ref<number>=ref(0)
@@ -136,54 +222,125 @@ export default defineComponent({
     var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
-    var replyContent:Ref<string>=ref('')
-      
+    var editId:Ref<number>=ref(0)
+    var formRef = ref();
+    var suffix='1q2w'
+    var state:TState=reactive({
+      selectedRowKeys:[],
+      onSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
+          // console.log('RowKeys changed: ', selectedRowKeys);
+          // console.log('selectedRows: ', selectedRows);
+          state.selectedRowKeys = selectedRowKeys;           
+          // state.selectedRows = selectedRows;             
+        },
+    })  
     var configuration:any=inject('configuration')
-    var updata=inject('updataNav') as Function
-    updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
-
     watch(()=>{return configuration.componenttype},(val)=>{
       // console.log(val)
       tabType.value=val
-      ForumSearch.title=''
+      ForumSearch.username=''
       ForumSearch.page=1
-      ForumSearch.type=undefined
-      // initData()
+      ForumSearch.name=''
+      initData()
     })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
       }else{
-        let type=(ForumSearch.title || ForumSearch.type!==undefined)?'tableSearchEmpty':'tableEmpty'
+        let type=(ForumSearch.username || ForumSearch.name)?'tableSearchEmpty':'tableEmpty'
         return <empty type={type} />
       }
     }
-    var ForumArticle:Ireply=reactive({
-      forum_id:0,
-      content:{}
-    })
     var ForumSearch:IforumSearch=reactive({
-      title:'',
+      username:'',
       pageSize:10,
       page:1,
-      type:undefined
+      name:'',
+      department:''
+    })
+    var formState:IFormState=reactive({
+      username:'',
+      password_hash:'',
+      repassword:'',
+      userinitpassword:true,
+      department:'',
+      direct:'',
+      course:'',
+      name:'',
+      gender:'',
+      phone:'',
+      email:'',
+      status:'10',
+      introduce:'',
+      reset:false
+    })
+    const rules={
+        username: [
+          { required: true, message: '请输入账号', trigger: 'blur'},
+          {pattern:/^[_a-zA-Z0-9]{1,10}$/,message:'账号应为字母或数字，长度不超过10', trigger: 'blur'}
+          // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
+        ],
+        password_hash: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        repassword: [{ required: true, message: '请输入确认密码', trigger: 'blur' }],
+        name: [{ required: true, message: '请输入姓名', trigger: 'blur' }],
+        gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
+        email: [
+         {pattern:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,message:'邮箱格式有误', trigger: 'blur'},
+      ],  
+    }
+    watch(()=>{return formState.userinitpassword},(val)=>{
+      // console.log(val)
+      if(val===true){
+        formState.password_hash=`${formState.username}${suffix}`
+        formState.repassword=`${formState.username}${suffix}`
+      }else{
+        formState.password_hash=''
+        formState.repassword=''
+      }
+    },{immediate:true})
+    watch(()=>{return formState.username},(val)=>{
+      // console.log(val)
+      if(val && formState.userinitpassword===true){
+        formState.password_hash=`${formState.username}${suffix}`
+        formState.repassword=`${formState.username}${suffix}`
+      }
+    },{immediate:true})
+    watch(()=>{return formState.reset},(val)=>{
+      // console.log(val)
+      if(val===true){
+        formState.password_hash=''
+        formState.repassword=''
+      }
+    },{immediate:true})
+    const InputPassword=computed(()=>{
+      let sign=false
+      if(editId.value){
+        sign=formState.reset?false:true
+      }else{
+        sign=formState.userinitpassword?true:false
+      }
+      return sign
     })
     function initData(){
-      const {page,title,type}= route.query
-      console.log(page,title,type)
-      page?ForumSearch.page=Number(page):''
-      title?ForumSearch.title=String(title):''
-      type?ForumSearch.type=String(type):''
-      console.log(ForumSearch)
+      // console.log(ForumSearch)
       loading.value=true
       list.length=0
-      http[apiName[tabType.value]]({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
+      let obj={
+        query:{
+          username:ForumSearch.username,
+          name:ForumSearch.name,
+          department:ForumSearch.department
+        },
+        page:{
+          pageSize:ForumSearch.pageSize,
+          page:ForumSearch.page,
+        }
+      }
+      http.teacherList({param:{...obj}}).then((res:IBusinessResp)=>{
          loading.value=false
         let data=res.data.list
         data.map((v:any)=>{
-          v.creat=`${v.user_name} / ${v.created_at}`,
-          v.replyViews=`${v.reply_num} / ${v.views_num}`,
-          v.reply=`${v.last_reply_username} / ${v.last_reply_time}`
+          v.genderText=v.gender===2?'女':'男'
         })
         list.push(...data)
         total.value=res.data.page.totalCount
@@ -191,15 +348,13 @@ export default defineComponent({
       })
     }
     async function search(){
-      // console.log(ForumSearch)
-      // if(ForumSearch.title!=='' || ForumSearch.type!==undefined){
         const {query,path}= route
         let obj:any={
-          title:ForumSearch.title,
-          type:ForumSearch.type
+          title:ForumSearch.username,
+          type:ForumSearch.name
         }
-        ForumSearch.title?'': delete obj.title
-        ForumSearch.type === undefined ? delete obj.type:''
+        ForumSearch.username?'': delete obj.title
+        ForumSearch.name === undefined ? delete obj.type:''
         await router.replace({
               path: path,
               query: {currentTab:query.currentTab,...obj},
@@ -208,8 +363,8 @@ export default defineComponent({
         initData()
       // }
     }
-    function delateCard(val:ItdItems){
-      // console.log(val)
+    function delateCard(val:number){
+      console.log(val)
       Modal.confirm({
         title: '确认删除吗？',
         icon: createVNode(ExclamationCircleOutlined),
@@ -217,67 +372,102 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk(){
-          http.delateCard({param:{id:val.id}}).then((res:IBusinessResp)=>{
-            if(res.status===1){
-              initData()
-              message.success('删除成功')
-            }else{
-              message.warning(res.msg)
-            }
-            
+          http.teacherUserDelete({urlParams:{id:val}}).then((res:IBusinessResp)=>{
+            initData()
+            message.success('删除成功')
           })
         }
       });
     }
-    function replyCard(val:ItdItems){
-      visible.value=true
-      // console.log(val)
-      ForumArticle.forum_id=val.id
+    function BatchDelete(){
+      if(!state.selectedRowKeys.length){
+        message.warn('请选择要删除的数据')
+        return
+      }
+      http.teacherUserBatchDelete({param:{use_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+          initData()
+          message.success('删除成功')
+        })
     }
-    function handleReply(){
-      let obj={
-              ...ForumArticle,
-              content:JSON.stringify(ForumArticle.content)
+    function submit(){
+      // createTeacher
+      formRef.value.validate().then(()=>{
+        const {username,password_hash,repassword,userinitpassword,department,direct,course,name,gender,phone,email,status,introduce}=formState
+        if(password_hash !== repassword){
+          message.warn('密码输入不一致')
+          return
+        }
+        let obj:any={
+            Teacher:{
+              username:username,
+              email:email,
+              userinitpassword:userinitpassword,
+            },
+            TeacherProfile:{
+              department:department,
+              direct:direct,
+              course:course,
+              name:name,
+              gender:gender,
+              phone:phone,
+              status:status,
+              introduce:introduce,
             }
-      http.handleReply({param:{ForumArticle:{...obj}}}).then((res:IBusinessResp)=>{
-        if(res.status===1){
-              initData()
-              message.success('回复成功')
-              visible.value=false
-              ForumArticle.content={}
-            }else{
-              message.warning(res.error.msg)
-            }
-      })
+        }
+        if((formState.reset && editId.value) || editId.value === 0){
+          obj.Teacher.password_hash=password_hash
+          obj.Teacher.repassword=repassword
+        }
+        const promise=editId.value?http.editTeacher({urlParams:{id:editId.value},param:{...obj}}):http.createTeacher({param:{...obj}})
+        promise.then((res:IBusinessResp)=>{
+          initData()
+          message.success(editId.value?'编辑成功':'创建成功')
+          formRef.value.resetFields()
+          formState.reset=false
+          visible.value=false
+        })
+      })      
+      
     }
     function editCard(val:ItdItems){
-      router.push('/studentForum/CreatePosts?editId='+val.id)
+      editId.value=val.id
+      http.viewTeacher({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
+        Object.keys(res.data).forEach((v:any)=>{
+          if(v in formState){
+            formState[v]=res.data[v]
+          }
+        })
+        formState.status=String(res.data.status)
+        formState.gender=String(res.data.gender)
+        formState.username=res.data.stu_no
+      })
+      visible.value=true
+      // router.push('/studentForum/CreatePosts?editId='+val.id)
     }
     async function clearSearch(){
-      if(ForumSearch.title || ForumSearch.type){
-        ForumSearch.title=''
-        ForumSearch.type=undefined
-        let {query,path}= route
-       await router.replace({
-              path: path,
-              query: {page:ForumSearch.page},
-        })
+      if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
+        ForumSearch.username=''
+        ForumSearch.name=''
+        ForumSearch.department=''
         initData()
       }
     }
     function onChangePage(val:number){
       const {query,path}= route
+      ForumSearch.page=val
+      state.selectedRowKeys.length=0
       router.replace({
             path: path,
             query: {...query,page:val},
       })
-      ForumSearch.page=val
       initData()
     }
-    function release(){
-      router.push('/studentForum/CreatePosts')
+    function addTeacher(){
+      editId.value=0
+      visible.value=true
+      // router.push('/studentForum/CreatePosts')
     }
-    function detaile(id:number){
+    function details(id:number){
       let {currentTab}= route.query
       router.push({
         path:'/studentForum/PostsDetailed',
@@ -285,92 +475,115 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-      // serve.v(dataObj); 
       // initData()
     })
-    return {customizeRenderEmpty,tabType,list,columns,ForumSearch,loading,total,visible,replyContent,ForumArticle,options,QuillOptions,search,onChangePage,clearSearch,delateCard,replyCard,handleReply,editCard,release,detaile};
+    return {...toRefs(state),customizeRenderEmpty,suffix,InputPassword,formRef,formState,rules,tabType,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
   },
 })
 </script>
 
 <style scoped lang="less">
-.modal-post{
-  :deep(.ant-modal-header){
-      border:  1px solid @theme-color;
-      background: @theme-color;
-    }
-  .ant-modal-header{
-    background: @theme-color;
-  }
+// .modal-post{
+//   :deep(.ant-modal-header){
+//       border:  1px solid @theme-color;
+//       background: @theme-color;
+//     }
+//   .ant-modal-header{
+//     background: @theme-color;
+//   }
+// }
+    // :deep(.ant-modal-header){
+    //   border:  1px solid @theme-color;
+    //   background: @theme-color;
+    // }
+:deep(.ant-table-pagination.ant-pagination){
+  width: 100%;
+  text-align: center;
 }
-    :deep(.ant-modal-header){
-      border:  1px solid @theme-color;
-      background: @theme-color;
-    }
-    :deep(.ant-table-pagination.ant-pagination){
-      width: 100%;
-      text-align: center;
-    }
-    .caozuo{
-      padding: 0 8px;
-    }
-    .header{
+.caozuo{
+  padding: 0 8px;
+  color: @theme-color;
+  cursor: pointer;
+}
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 0 15px ;
+  .search{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    .item{
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0px 0 15px ;
-      .search{
-        flex: 1;
-        display: flex;
+      margin-right: 22px;
+      :deep(.ant-select-selector){
+        width: 240px;
+        height: 35px;
+        padding-left: 30px;
         align-items: center;
-        .item{
-          display: flex;
-          align-items: center;
-          margin-right: 22px;
-          :deep(.ant-select-selector){
-            width: 240px;
-            height: 35px;
-            padding-left: 30px;
-            align-items: center;
-          }
-          :deep(.ant-input){
-              padding-left: 20px;
-          }
-        }
-        .item:last-child{
-          .ant-btn{
-            margin: 0 10px;
-          }
-        } 
-        
-        .custom_select{
-          :deep(.ant-select-selector)::before{
-            content: '';
-            position: absolute;
-            left:8px;
-            top:10px;
-            background: url(../../assets/images/screenicon/Group3.png) no-repeat;
-            width: 14px;
-            height: 15px;
-          }
-        }
-        .custom_input{
-          position: relative;
-          &::before{
-              content: '';
-              position: absolute;
-              left:8px;
-              top:10px;
-              background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-              width: 16px;
-              height: 16px;
-              z-index: 10;
-          }
-        }
+      }
+      :deep(.ant-input){
+          padding-left: 26px;
       }
     }
-    :deep(.ql-container){
-    height: calc(100% - 43px);
+    .item:last-child{
+      .ant-btn{
+        margin: 0 8px;
+      }
+    } 
+    .custom_input{
+      position: relative;
+      &::before{
+          content: '';
+          position: absolute;
+          left:8px;
+          top:10px;
+          background: url(../../assets/images/screenicon/Group7.png) no-repeat;
+          width: 16px;
+          height: 16px;
+          z-index: 10;
+      }
+    }
+    .custom_input2{
+      &::before{
+        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+      }
+    }
+    .custom_input3{
+      &::before{
+        background: url(../../assets/images/screenicon/Group8.png) no-repeat;
+      }
+    }
   }
-
+  .addTeacher{
+      margin-right: 16px;
+    }
+}
+:deep(.ant-form-item-control){
+  flex: 0 0 100%;
+}
+:deep(.ant-radio-group){
+  display: flex;
+}
+.formBox{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  .left,.right{
+    width: 46%;
+  }
+}
+:deep(.ant-form-item-with-help){
+  width:100%;
+}
+:deep(.ant-form-item){
+  margin-bottom: 10px;
+}
+.userinitpassword{
+  .ant-checkbox-wrapper{
+    margin: 0 10px;
+  }
+}
 </style>
