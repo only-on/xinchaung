@@ -242,13 +242,13 @@ interface Istate{
 const columns=[
   {
     title: '题目',
-    dataIndex:"option",
+    dataIndex:"title",
     align:'center',
     width:460,
   },
   {
     title: '类型',
-    dataIndex:"type_name",
+    dataIndex:"type",
     align:'center',
     // width:260,
   },
@@ -336,12 +336,17 @@ export default defineComponent({
     }
     // 各试题正确率
     function CorrectRate(){
-      http.CorrectRate({urlParams: {exam_id: Id},param:{...state.ForumSearch}}).then((res:IBusinessResp)=>{
+      state.list=[]
+      let obj={
+        ...state.ForumSearch,
+        type_id:state.ForumSearch.type_id === undefined ?'':state.ForumSearch.type_id
+      }
+      http.CorrectRate({urlParams: {exam_id: Id},param:{...obj}}).then((res:IBusinessResp)=>{
         state.list=res.data.list
         state.total=res.data.page.totalCount
-        let list=  [{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}]
+        let list=  [{value: 1, label: '单选题'},{value: 2, label: '多选题'},{value: 3, label: '判断题'},{value: 4, label: '填空题'},{value: 5, label: '简答题'}]
         state.list.length?state.list.map((v:any)=>{
-          v.type_name=list[v.type].label
+          // v.type_name=list[v.type].label
           v.correct_rete=`${(v.correct_rete*100).toFixed(0)}%`
         }):''
       })
@@ -353,7 +358,7 @@ export default defineComponent({
         state.exportTotal=res.data.page.totalCount
       })
     }
-    const options = ref<SelectTypes['options']>([{value: 1, label: '选择题'},{value: 2, label: '判断题'},{value: 3, label: '填空题'},{value: 4, label: '简答题'},{value: 5, label: '实操考核题'}])
+    const options = ref<SelectTypes['options']>([{value: 1, label: '单选题'},{value: 2, label: '多选题'},{value: 3, label: '判断题'},{value: 4, label: '填空题'},{value: 5, label: '简答题'}])
     const state:Istate=reactive({
       activeQuestion:0,        // 当前展示的题目详情下标
       scoreDate:{
