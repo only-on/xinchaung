@@ -1,6 +1,6 @@
 <template>
   <div class="resources">
-    <div v-if="role !== '2'" class="resource-top">
+    <div v-if="role != '2'" class="resource-top">
       <span class="choiceFile">
         选择文件:
         <a-upload name="file" :beforeUpload="beforeUpload">
