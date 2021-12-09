@@ -106,7 +106,6 @@ import {createVNode,VNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref
 import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
-import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IforumSearch{
@@ -215,9 +214,10 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+
     const http=(request as any).adminUserManagement
-    const apiName=['pubIndex','myself','attend'] 
-    var tabType:Ref<number>=ref(0)
     var loading:Ref<boolean>=ref(false)
     var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
@@ -234,15 +234,14 @@ export default defineComponent({
           // state.selectedRows = selectedRows;             
         },
     })  
-    var configuration:any=inject('configuration')
-    watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
-      tabType.value=val
-      ForumSearch.username=''
-      ForumSearch.page=1
-      ForumSearch.name=''
-      initData()
-    })
+    // var configuration:any=inject('configuration')
+    // watch(()=>{return configuration.componenttype},(val)=>{
+    //   // console.log(val)
+    //   ForumSearch.username=''
+    //   ForumSearch.page=1
+    //   ForumSearch.name=''
+    //   initData()
+    // })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
@@ -337,31 +336,21 @@ export default defineComponent({
         }
       }
       http.teacherList({param:{...obj}}).then((res:IBusinessResp)=>{
-         loading.value=false
-        let data=res.data.list
-        data.map((v:any)=>{
-          v.genderText=v.gender===2?'女':'男'
-        })
-        list.push(...data)
-        total.value=res.data.page.totalCount
+        if(res){
+          loading.value=false
+          let data=res.data.list
+          data.map((v:any)=>{
+            v.genderText=v.gender===2?'女':'男'
+          })
+          list.push(...data)
+          total.value=res.data.page.totalCount
+        }
         // console.log(list)
       })
     }
-    async function search(){
-        const {query,path}= route
-        let obj:any={
-          title:ForumSearch.username,
-          type:ForumSearch.name
-        }
-        ForumSearch.username?'': delete obj.title
-        ForumSearch.name === undefined ? delete obj.type:''
-        await router.replace({
-              path: path,
-              query: {currentTab:query.currentTab,...obj},
-        })
+    function search(){
         ForumSearch.page=1
         initData()
-      // }
     }
     function delateCard(val:number){
       console.log(val)
@@ -445,7 +434,6 @@ export default defineComponent({
         formState.username=res.data.stu_no
       })
       visible.value=true
-      // router.push('/studentForum/CreatePosts?editId='+val.id)
     }
     async function clearSearch(){
       if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
@@ -468,7 +456,6 @@ export default defineComponent({
     function addTeacher(){
       editId.value=0
       visible.value=true
-      // router.push('/studentForum/CreatePosts')
     }
     function details(id:number){
       let {currentTab}= route.query
@@ -478,27 +465,14 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-      // initData()
+      initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,tabType,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
+    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
   },
 })
 </script>
 
 <style scoped lang="less">
-// .modal-post{
-//   :deep(.ant-modal-header){
-//       border:  1px solid @theme-color;
-//       background: @theme-color;
-//     }
-//   .ant-modal-header{
-//     background: @theme-color;
-//   }
-// }
-    // :deep(.ant-modal-header){
-    //   border:  1px solid @theme-color;
-    //   background: @theme-color;
-    // }
 :deep(.ant-table-pagination.ant-pagination){
   width: 100%;
   text-align: center;

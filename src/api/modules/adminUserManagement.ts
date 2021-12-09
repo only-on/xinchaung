@@ -7,7 +7,7 @@ export default{
   editTeacher:{url:`/teacher/update?id={id}`,method:'POST',dataType: 'json'},
   viewTeacher:{url:`/teacher/view?id={id}`,method:'POST',dataType: 'json'},
 
-  student:{url:`/student/index`,method:'POST',dataType: 'json'},
+  studentList:{url:`/student/index`,method:'POST',dataType: 'json'},
 }
 export interface IAdminUserManagement{
   teacherList:TFHttpSend
@@ -16,5 +16,7 @@ export interface IAdminUserManagement{
   createTeacher:TFHttpSend
   editTeacher:TFHttpSend
   viewTeacher:TFHttpSend
+
+  studentList:TFHttpSend
 }
 export const MODULE_NAME = 'adminUserManagement'

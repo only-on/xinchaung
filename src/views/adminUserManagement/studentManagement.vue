@@ -18,7 +18,10 @@
       <div class="addTeacher">
         <a-button @click="addTeacher()" type="primary">添加教师</a-button>
       </div>
-      <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
+      <div class="addTeacher">
+        <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
+      </div>
+      <a-button @click="BatchDelete()" type="primary" >批量导入</a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
@@ -34,7 +37,7 @@
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @ok="submit" :width="745" class="modal-post">
+    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
       <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <div class="formBox">
           <div class="left">
@@ -42,17 +45,21 @@
               <a-input v-model:value="formState.username" />
             </a-form-item>
             <a-form-item label="密码"  name="password_hash">
-              <a-input v-model:value="formState.password_hash" :disabled="formState.userinitpassword" />
-              <!-- <a-input-password v-model:value="formState.password_hash" :disabled="formState.userinitpassword" :visibilityToggle="false" /> -->
+              <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
+              <a-input-password v-model:value="formState.password_hash" :disabled="InputPassword" :visibilityToggle="false" />
             </a-form-item>
             <a-form-item label="确认密码"  name="repassword">
-              <a-input v-model:value="formState.repassword" :disabled="formState.userinitpassword" />
-              <!-- <a-input-password v-model:value="formState.repassword" :disabled="formState.userinitpassword" :visibilityToggle="false" /> -->
+              <!-- <a-input v-model:value="formState.repassword" :disabled="InputPassword" /> -->
+              <a-input-password v-model:value="formState.repassword" :disabled="InputPassword" :visibilityToggle="false" />
             </a-form-item>
-            <div class="userinitpassword">
+            <div class="userinitpassword" v-if="!editId">
               <span>使用初始密码</span>
               <a-checkbox v-model:checked="formState.userinitpassword"></a-checkbox>
               <span>{{`(账号+${suffix})`}}</span>
+            </div>
+            <div class="userinitpassword" v-if="editId">
+              <a-checkbox v-model:checked="formState.reset"></a-checkbox>
+              <span>重置密码</span>
             </div>
             <a-form-item label="院系"  name="department">
               <a-input v-model:value="formState.department" />
@@ -88,8 +95,8 @@
             </a-form-item>
           </div>
         </div>
-        <a-form-item label="介绍"  name="intrudece">
-          <a-textarea v-model:value="formState.intrudece" placeholder="输入介绍" :rows="4" />
+        <a-form-item label="介绍"  name="introduce">
+          <a-textarea v-model:value="formState.introduce" placeholder="输入介绍" :rows="4" />
         </a-form-item>
       </a-form>
     </a-modal>
@@ -102,7 +109,6 @@ import {createVNode,VNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref
 import { IBusinessResp} from '../../typings/fetch.d';
 import request from '../../api/index'
 import { useRouter ,useRoute } from 'vue-router';
-import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IforumSearch{
@@ -138,7 +144,8 @@ interface IFormState{
   phone:string
   email:string
   status:string
-  intrudece:string
+  introduce:string
+  reset:boolean
 }
 const columns=[
   {
@@ -167,14 +174,8 @@ const columns=[
     // width:160
   },
   {
-    title: '研究方向',
+    title: '年级',
     dataIndex: 'direct',
-    align:'center',
-    // width:260
-  },
-  {
-    title: '主讲课程',
-    dataIndex: 'course',
     align:'center',
     // width:260
   },
@@ -201,7 +202,7 @@ const columns=[
 ]
 
 export default defineComponent({
-  name: 'teacherManagement',
+  name: 'studentManagement',
   components: {
     SmileOutlined,
     MehOutlined,
@@ -210,9 +211,10 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
 
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+
     const http=(request as any).adminUserManagement
-    const apiName=['pubIndex','myself','attend'] 
-    var tabType:Ref<number>=ref(0)
     var loading:Ref<boolean>=ref(false)
     var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
@@ -229,15 +231,6 @@ export default defineComponent({
           // state.selectedRows = selectedRows;             
         },
     })  
-    var configuration:any=inject('configuration')
-    watch(()=>{return configuration.componenttype},(val)=>{
-      // console.log(val)
-      tabType.value=val
-      ForumSearch.username=''
-      ForumSearch.page=1
-      ForumSearch.name=''
-      initData()
-    })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
@@ -265,8 +258,9 @@ export default defineComponent({
       gender:'',
       phone:'',
       email:'',
-      status:'',
-      intrudece:'',
+      status:'10',
+      introduce:'',
+      reset:false
     })
     const rules={
         username: [
@@ -284,7 +278,7 @@ export default defineComponent({
     }
     watch(()=>{return formState.userinitpassword},(val)=>{
       // console.log(val)
-      if(val===true){
+      if(val===true && formState.username){
         formState.password_hash=`${formState.username}${suffix}`
         formState.repassword=`${formState.username}${suffix}`
       }else{
@@ -299,12 +293,28 @@ export default defineComponent({
         formState.repassword=`${formState.username}${suffix}`
       }
     },{immediate:true})
+    watch(()=>{return formState.reset},(val)=>{
+      // console.log(val)
+      if(val===true){
+        formState.password_hash=''
+        formState.repassword=''
+      }
+    },{immediate:true})
+    const InputPassword=computed(()=>{
+      let sign=false
+      if(editId.value){
+        sign=formState.reset?false:true
+      }else{
+        sign=formState.userinitpassword?true:false
+      }
+      return sign
+    })
     function initData(){
-      // console.log(ForumSearch)
+      console.log(route)
       loading.value=true
       list.length=0
       let obj={
-        query:{
+         query:{
           username:ForumSearch.username,
           name:ForumSearch.name,
           department:ForumSearch.department
@@ -314,29 +324,20 @@ export default defineComponent({
           page:ForumSearch.page,
         }
       }
-      http.teacherList({param:{...obj}}).then((res:IBusinessResp)=>{
-         loading.value=false
-        let data=res.data.list
-        data.map((v:any)=>{
-          v.genderText=v.gender===2?'女':'男'
-        })
-        list.push(...data)
-        total.value=res.data.page.totalCount
+      http.studentList({param:{...obj}}).then((res:IBusinessResp)=>{
+        if(res){
+          loading.value=false
+          let data=res.data.list
+          data.map((v:any)=>{
+            v.genderText=v.gender===2?'女':'男'
+          })
+          list.push(...data)
+          total.value=res.data.page.totalCount
+        }
         // console.log(list)
       })
     }
-    async function search(){
-        const {query,path}= route
-        let obj:any={
-          title:ForumSearch.username,
-          type:ForumSearch.name
-        }
-        ForumSearch.username?'': delete obj.title
-        ForumSearch.name === undefined ? delete obj.type:''
-        await router.replace({
-              path: path,
-              query: {currentTab:query.currentTab,...obj},
-        })
+    function search(){
         ForumSearch.page=1
         initData()
       // }
@@ -362,7 +363,7 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({urlParams:{id:state.selectedRowKeys.join(',')}}).then((res:IBusinessResp)=>{
+      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
           message.success('删除成功')
         })
@@ -370,35 +371,45 @@ export default defineComponent({
     function submit(){
       // createTeacher
       formRef.value.validate().then(()=>{
-        const {username,password_hash,repassword,userinitpassword,department,direct,course,name,gender,phone,email,status,intrudece}=formState
-        let obj={
+        const {username,password_hash,repassword,userinitpassword,department,direct,course,name,gender,phone,email,status,introduce}=formState
+        if(password_hash !== repassword){
+          message.warn('密码输入不一致')
+          return
+        }
+        let obj:any={
             Teacher:{
               username:username,
-              password_hash:password_hash,
-              repassword:repassword,
+              email:email,
               userinitpassword:userinitpassword,
             },
             TeacherProfile:{
               department:department,
               direct:direct,
               course:course,
-            name:name,
+              name:name,
               gender:gender,
               phone:phone,
-              email:email,
               status:status,
-              intrudece:intrudece,
+              introduce:introduce,
             }
+        }
+        if((formState.reset && editId.value) || editId.value === 0){
+          obj.Teacher.password_hash=password_hash
+          obj.Teacher.repassword=repassword
         }
         const promise=editId.value?http.editTeacher({urlParams:{id:editId.value},param:{...obj}}):http.createTeacher({param:{...obj}})
         promise.then((res:IBusinessResp)=>{
           initData()
           message.success(editId.value?'编辑成功':'创建成功')
           formRef.value.resetFields()
+          formState.reset=false
           visible.value=false
         })
       })      
       
+    }
+    function cancel(){
+      formRef.value.resetFields()
     }
     function editCard(val:ItdItems){
       editId.value=val.id
@@ -408,11 +419,11 @@ export default defineComponent({
             formState[v]=res.data[v]
           }
         })
+        formState.status=String(res.data.status)
         formState.gender=String(res.data.gender)
         formState.username=res.data.stu_no
       })
       visible.value=true
-      // router.push('/studentForum/CreatePosts?editId='+val.id)
     }
     async function clearSearch(){
       if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
@@ -435,7 +446,6 @@ export default defineComponent({
     function addTeacher(){
       editId.value=0
       visible.value=true
-      // router.push('/studentForum/CreatePosts')
     }
     function details(id:number){
       let {currentTab}= route.query
@@ -445,27 +455,14 @@ export default defineComponent({
       })
     }
     onMounted(()=>{
-      // initData()
+      initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,formRef,formState,rules,tabType,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
+    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
   },
 })
 </script>
 
 <style scoped lang="less">
-// .modal-post{
-//   :deep(.ant-modal-header){
-//       border:  1px solid @theme-color;
-//       background: @theme-color;
-//     }
-//   .ant-modal-header{
-//     background: @theme-color;
-//   }
-// }
-    // :deep(.ant-modal-header){
-    //   border:  1px solid @theme-color;
-    //   background: @theme-color;
-    // }
 :deep(.ant-table-pagination.ant-pagination){
   width: 100%;
   text-align: center;
