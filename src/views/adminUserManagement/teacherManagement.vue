@@ -384,7 +384,7 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{use_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
           message.success('删除成功')
         })
