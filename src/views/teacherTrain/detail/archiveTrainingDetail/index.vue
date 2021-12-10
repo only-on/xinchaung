@@ -108,8 +108,12 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     margin-bottom: 20px;
+    .search {
+      display: flex;
+    }
     .searchInput {
       width: 100px;
+      margin-right: 20px;
     }
     .searchInput:nth-child(3) {
       margin-right: 20px;

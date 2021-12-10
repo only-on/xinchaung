@@ -3,19 +3,19 @@
     <div class="searchParams">
       <div>
         <span class="inputLable">节点名称: </span>
-        <a-select class="select" default-value="lucy" @change="handleChange">
+        <a-select class="select" default-value="" @change="handleChange">
           <a-select-option value="jack"> Jack </a-select-option>
         </a-select>
       </div>
       <div>
         <span class="inputLable">告警类型: </span>
-        <a-select class="select" default-value="lucy" @change="handleChange">
+        <a-select class="select" default-value="" @change="handleChange">
           <a-select-option value="jack"> Jack </a-select-option>
         </a-select>
       </div>
       <div>
         <span class="inputLable"> 告警状态: </span>
-        <a-select class="select" default-value="lucy" @change="handleChange">
+        <a-select class="select" default-value="" @change="handleChange">
           <a-select-option value="jack"> Jack </a-select-option>
         </a-select>
       </div>
@@ -44,6 +44,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
+import request from "src/api/index";
 interface state {
   data: any[];
 }
@@ -77,6 +78,7 @@ export default defineComponent({
   name: "systemAlarm",
   components: {},
   setup: (props, context) => {
+    const http = (request as any).adminSystemManage;
     const state: state = reactive({
       data: [],
     });
@@ -93,8 +95,21 @@ export default defineComponent({
     });
     const methods = {
       handleChange() {},
+
+      getSystemAlarmList() {
+        const fd = new FormData();
+        fd.append("query[type]", "");
+        fd.append("query[state]", "");
+        fd.append("query[begintime]", "");
+        fd.append("query[endtime]", "");
+        http.systemAlarmList({ param: fd }).then((res: any) => {
+          console.log(res);
+        });
+      },
     };
-    onMounted(() => {});
+    onMounted(() => {
+      methods.getSystemAlarmList();
+    });
     return { ...toRefs(state), columns, ...methods };
   },
 });

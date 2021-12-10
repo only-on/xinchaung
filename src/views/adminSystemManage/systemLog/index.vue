@@ -40,6 +40,7 @@
         />
         <span>~</span>
         <a-date-picker
+          @change="handleChange"
           v-model:value="query.endtime"
           placeholder="结束日期"
           valueFormat="YYYY-MM-DD"
@@ -54,7 +55,7 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table :columns="columns" :data-source="data"> </a-table>
+        <a-table :columns="columns" :data-source="data" rowKey="id"> </a-table>
         <template #renderEmpty>
           <div><empty type="tableEmpty"></empty></div>
         </template>
@@ -76,6 +77,7 @@ interface state {
     begintime: string;
     endtime: string;
   };
+  operateType: string[];
 }
 const columns = [
   {
@@ -155,10 +157,8 @@ export default defineComponent({
     });
     const methods = {
       getSystemList() {
-        const formdata = new FormData();
-        // formdata.append()
         state.query.type = state.opertype === undefined ? "" : state.opertype;
-        http.systemLogList({ param: state.query }).then((res: any) => {
+        http.systemLogList({ param: { query: state.query } }).then((res: any) => {
           console.log(res);
           state.data = res.data.list;
         });
@@ -167,14 +167,17 @@ export default defineComponent({
         methods.getSystemList();
       },
       clear() {
-        state.opertype === undefined;
+        state.opertype = undefined;
         state.query.type = "";
         state.query.operation_type = "";
         state.query.ip = "";
         state.query.begintime = "";
         state.query.endtime = "";
+        methods.getSystemList();
       },
-      handleChange() {},
+      handleChange() {
+        methods.getSystemList();
+      },
     };
     onMounted(() => {
       methods.getSystemList();
