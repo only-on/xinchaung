@@ -17,7 +17,7 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive, toRefs, inject } from 'vue'
-import moment from 'moment'
+import moment, {Moment} from 'moment'
 import { MessageApi } from "ant-design-vue/lib/message";
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
@@ -40,8 +40,8 @@ export default defineComponent({
       id: undefined,
       callbackOk: () => {},
     })
-    const startTime = ref()
-    const endTime = ref()
+    const startTime = ref<Moment>()
+    const endTime = ref<Moment>()
 
     const showModal = (option: IOptions) => {
       Object.assign(options, option)

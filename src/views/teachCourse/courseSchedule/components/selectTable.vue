@@ -54,8 +54,8 @@ export default defineComponent({
     const $message: MessageApi = inject("$message")!;
     const http=(request as any).teachCourse
 
-    let name = ref('')
-    let loading = ref(false)
+    let name = ref<string>('')
+    let loading = ref<boolean>(false)
     let dataList = reactive({
       student: [],
       class: []

@@ -187,7 +187,9 @@ export default defineComponent({
         tableList.push(...data)
       })
     }
-    getList()
+    onMounted(() => {
+      getList()
+    })
     function pageChange(page: number) {
       searchForm.pageinfo.index = page
       pageInfo.page = page
@@ -239,16 +241,19 @@ let column = [
     title: '账号',
     dataIndex: 'username',
     align: 'center',
+    width: 110,
   },
   {
     title: '姓名',
     dataIndex: 'name',
     align: 'center',
+    width: 110,
   },
   {
     title: '班级',
     dataIndex: 'classname',
     align: 'center',
+    width: 180,
   },
   {
     title: 'IP',
@@ -259,17 +264,20 @@ let column = [
     title: '虚拟机个数',
     dataIndex: 'num',
     align: 'center',
+    width: 180,
   },
   {
     title: '占用内存',
     dataIndex: 'memory',
     align: 'center',
+    width: 180,
   },
   {
     title: '操作',
     dataIndex: '',
     align: 'center',
     slots: { customRender: 'action' },
+    width: 110,
   },
 ]
 interface ITableList {

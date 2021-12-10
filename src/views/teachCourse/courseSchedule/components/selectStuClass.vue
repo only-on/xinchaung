@@ -7,7 +7,7 @@
     :visible="visible"
     @close="onClose"
   >
-    <a-tabs v-model:activeKey="currentType" style="height: 52px" class="activeClass" @change="change">
+    <a-tabs v-model:activeKey="currentType" class="activeClass" @change="change">
       <a-tab-pane v-for="item in tabsList" :key="item.key" :tab="item.tab" />
     </a-tabs>
     <div v-if="visible">
@@ -88,7 +88,7 @@ export default defineComponent({
     }
   }
 }
-:deep(.ant-tabs) {
+.ant-tabs {
   height: 52px;
 }
 </style>

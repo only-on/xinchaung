@@ -32,7 +32,7 @@
           >
             <div class="dataBox">
               <a-date-picker format="YYYY-MM-DD" disabled :value="momentStartDate()" />
-              <span style="padding: 0 20px">～</span>
+              <span class="division">～</span>
               <a-date-picker v-model:value="form.endDate" format="YYYY-MM-DD" :disabled-date="disabledDate" />
             </div>
           </a-form-item>
@@ -42,13 +42,12 @@
         <div class="title flex_center">
           <h3 class="">排课成员列表</h3>
           <div class="addStudent">
-            <a-button type="primary" @click=";(visible = true), (activeName = 'student'), (selectName = '已选学生')">
+            <a-button type="primary" @click="addStudentOrClass('student')">
               添加学生
             </a-button>
             <a-button
               type="primary"
-              style="margin-left: 10px"
-              @click=";(visible = true), (activeName = 'class'), (selectName = '已选班级')"
+              @click="addStudentOrClass('class')"
             >
               添加班级
             </a-button>
@@ -58,7 +57,6 @@
           <div class="divider-text-right">
             <span class="has-choose-text">
               已选
-              <!-- <span>{{ selectedNumText }}</span> -->
               <span>{{ selectedNumTextNew }}</span>
               人
             </span>
@@ -88,11 +86,10 @@
           </template>
           <div class="schedule-main-content-table">
             <div class="schedule-main-content-table-title">
-              <a-tabs v-model:activeKey="selectName" style="height: 52px" class="selectName">
+              <a-tabs v-model:activeKey="selectName" class="selectName">
                 <a-tab-pane v-for="item in ['已选学生', '已选班级']" :key="item" :tab="item" />
               </a-tabs>
             </div>
-            <!-- <div class="schedule-main-content-table-title">已选班级</div> -->
             <a-table
               v-if="selectName === '已选班级'"
               rowKey="class_id"
@@ -103,18 +100,16 @@
               size="middle"
               :scroll="{ y: 280 }"
             >
-              <template v-slot:action="record">
+              <template v-slot:action="{record}">
                 <a-popconfirm
                   v-if="selectedClassesData.length"
                   title="确定移除吗?"
                   @confirm="() => onDeleteClass(record.class_id)"
                 >
-                  <!-- <a href="javascript:;">移除</a> -->
                   <span class="iconfont icon-yichu"></span>
                 </a-popconfirm>
               </template>
             </a-table>
-            <!-- <div class="schedule-main-content-table-title">已选学生</div> -->
             <a-table
               v-if="selectName === '已选学生'"
               rowKey="stu_id"
@@ -131,7 +126,6 @@
                   title="确定移除吗?"
                   @confirm="() => onDeleteStudent(record.stu_id)"
                 >
-                  <!-- <a href="javascript:;">移除</a> -->
                   <span class="iconfont icon-yichu"></span>
                 </a-popconfirm>
               </template>
@@ -140,15 +134,12 @@
         </a-config-provider>
       </div>
       <a-form-item :wrapper-col="{ span: 6, offset: 10 }">
-        <a-button type="primary" style="margin-left: 10px" @click="handleReset">取消</a-button>
+        <a-button type="primary" @click="handleReset">取消</a-button>
         <a-button type="primary" html-type="submit" @click="handleSubmit">保存</a-button>
       </a-form-item>
     </a-form>
   </div>
-  <select-stu-class 
-    v-model:visible="visible" 
-    v-model:activeName="activeName"
-  ></select-stu-class>
+  <select-stu-class v-model:visible="visible" v-model:activeName="activeName"></select-stu-class>
 </template>
 
 <script lang="ts">
@@ -178,18 +169,12 @@ export default defineComponent({
     // let time: any = route.query.timeQuantum
     let {week, time} = route.query
 
-    let checkDate = ref(false)
-    interface IForm {
-      course_name: string
-      week_recycle: boolean
-      teacher_occupied: boolean
-      endDate: Moment
-    }
+    let checkDate = ref<boolean>(false)
     let form = reactive<IForm>({
       course_name: '',
       week_recycle: false,
       teacher_occupied: true,
-      endDate: moment()
+      endDate: undefined
     })
     let ruleForm:any = ref(null)
     // 选中的学生和班级
@@ -207,9 +192,11 @@ export default defineComponent({
     let leftStuNum = ref(route.query.leftStuNum)
     let selectedNum = ref(0)
     let {id, date} = route.query
-    if (id) {
-      getDetails()
-    }
+    onMounted(() => {
+      if (id) {
+        getDetails()
+      }
+    })
     //获取详情
     function getDetails() {
       selectedClassesData.length = 0
@@ -224,7 +211,7 @@ export default defineComponent({
           startDate = data.start
           serialNumber = data.serial_number
           time = data.peroid_start + '~' + data.peroid_end
-          checkDate.value = data.week_recycle == 1 ? true : false
+          checkDate.value = data.week_recycle === '1' ? true : false
           // selectedNum = data.stu_num
           leftStuNum.value = data.total_num
 
@@ -239,11 +226,11 @@ export default defineComponent({
           selectedIds['student'] = selectedStudentsData.map((item: ITableList) => item.stu_id)
 
           form.course_name = data.course_name
-          form.week_recycle = data.week_recycle == 1 ? true : false
+          form.week_recycle = data.week_recycle === '1' ? true : false
           form.endDate = moment(data.end)
-          form.teacher_occupied = data.teacher_occupied == 1 ? true : false
-          checkDate.value = data.week_recycle == 1 ? true : false
-          teacherOccupied.value = form.teacher_occupied == true ? 1 : 0
+          form.teacher_occupied = data.teacher_occupied === '1' ? true : false
+          checkDate.value = data.week_recycle === '1' ? true : false
+          teacherOccupied.value = form.teacher_occupied ? 1 : 0
         })
     }
     //校验排课学生和班级是否有交集
@@ -295,10 +282,17 @@ export default defineComponent({
     }
     provide('onCrossvalidation', onCrossvalidation)
     provide('selectedIds', selectedIds)
+
+    // 添加学生/班级
+    function addStudentOrClass(type: string) {
+      visible.value = true
+      activeName.value = type
+      selectName.value = type === 'student' ? '已选学生' : '已选班级'
+    }
     // 删除班级
     function onDeleteClass(id: number) {
       selectedClassesData.forEach((v, k) => {
-        if (v.stu_id === id) {
+        if (v.class_id === id) {
           selectedClassesData.splice(k, 1)
         }
       })
@@ -330,7 +324,7 @@ export default defineComponent({
         }
         let param = {
           courseName: form.course_name,
-          endDate: checkDate.value ? form.endDate.format('YYYY-MM-DD') : '',
+          endDate: checkDate.value ? form.endDate?.format('YYYY-MM-DD') : '',
           peroid: serialNumber,
           startDate: startDate,
           teacherOccupied: form.teacher_occupied ? 1 : 0,
@@ -424,6 +418,7 @@ export default defineComponent({
       selectedClassesColumns,
       selectedStudentsColumns,
       onDeleteStudent,
+      addStudentOrClass,
       onDeleteClass,
     }
   },
@@ -504,7 +499,7 @@ interface IForm {
   course_name: string
   week_recycle: boolean
   teacher_occupied: boolean
-  endDate: Moment
+  endDate: Moment | undefined
 }
 </script>
 
@@ -593,6 +588,14 @@ interface IForm {
     .schedule-main-content-table-title {
       color: #333;
       padding: 26px 0 11px 0;
+      .ant-tabs {
+        height: 52px;
+      }
+    }
+  }
+  .choose-date-picker {
+    .division {
+      padding: 0 20px;
     }
   }
 }
