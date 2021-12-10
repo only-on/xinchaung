@@ -16,9 +16,8 @@ export default{
   BatchImport:{url:`/student/importtpl`,method:'POST',dataType: 'formdata'},
 
   classList:{url:`/api/course/classes`,method:'GET'},
-  // creat
   classUserDelete:{url:`api/course/classes/{class_id}`,method:'DELETE'},
-  // studentUserBatchDelete:{url:`/teacher/delall`,method:'POST',dataType:'json'},
+  classUserBatchDelete:{url:`/api/course/admin/classes/multiple-delete`,method:'DELETE',dataType:'json'},
   classCreate:{url:`/api/course/classes`,method:'POST',dataType: 'json'},
   editClass:{url:`/api/course/classes/{class_id}`,method:'PUT',dataType: 'json'},
   // viewStudent:{url:`/student/view?id={id}`,method:'POST',dataType: 'json'},
@@ -51,7 +50,7 @@ export interface IAdminUserManagement{
   classCreate:TFHttpSend
   editClass:TFHttpSend
   classUserDelete:TFHttpSend
-  // classList:TFHttpSend
+  classUserBatchDelete:TFHttpSend
   // classList:TFHttpSend
 
 

@@ -18,7 +18,7 @@
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-        :pagination="{current:ForumSearch.page,pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+        :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #operation="{record}">
@@ -26,8 +26,32 @@
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" :title="editId?'编辑班级':'添加班级'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
-      
+    <a-modal v-model:visible="visible" title="学生选择" :width="1080" class="modal-post" :footer="null">
+      <div class="header">
+        <div class="search">
+          <div class="item custom_input custom_input1">
+            <a-input v-model:value="studentForm.userName" placeholder="请输入账号" />
+          </div>
+          <div  class="item custom_input custom_input2">
+            <a-input v-model:value="studentForm.name" placeholder="请输入姓名"  />
+          </div>
+          <div  class="item custom_input custom_input3">
+            <a-input v-model:value="studentForm.department" placeholder="请输入院系" />
+          </div>
+          <div class="item">
+            <a-button @click="addTeacher()" type="primary">添加</a-button>
+            <a-button type="primary" @click="search()">查询</a-button>
+            <a-button type="primary" @click="clearSearch()">清空</a-button>
+          </div>
+        </div>
+      </div>
+      <a-config-provider :renderEmpty="customizeRenderEmpty">
+        <a-table :columns="StudentColumns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
+          :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+          :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+          class="components-table-demo-nested">
+        </a-table>
+      </a-config-provider>
     </a-modal>
 </template>
 
@@ -42,9 +66,7 @@ import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IforumSearch{
-  students_count:string,
-  name:string,
-  pageSize:number,
+  limit:number,
   page:number
 }
 interface ItdItems{
@@ -119,6 +141,56 @@ const columns=[
     width:200
   }
 ]
+const StudentColumns=[
+  {
+    title: '账号',
+    dataIndex:"username",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '姓名',
+    dataIndex: 'name',
+    align:'center',
+    width:120
+  },
+  {
+    title: '性别',
+    dataIndex:"gender",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '所属院系',
+    dataIndex:"department",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '年级',
+    dataIndex:"grade",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '邮箱',
+    dataIndex:"email",
+    align:'center',
+    width:160,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '电话',
+    dataIndex:"phone",
+    align:'center',
+    width:130,
+    // slots: { customRender: 'title' },
+  },
+]
 
 export default defineComponent({
   name: 'classEdit',
@@ -154,15 +226,20 @@ export default defineComponent({
       if(loading.value){
         return <template></template>
       }else{
-        let type=(ForumSearch.students_count || ForumSearch.name)?'tableSearchEmpty':'tableEmpty'
+        let type='tableEmpty'
         return <empty type={type} />
       }
     }
-    var ForumSearch:IforumSearch=reactive({
+    var studentForm:any=reactive({
       pageSize:10,
       page:1,
-      name:'',
-      students_count:''
+      userName:'',
+      department:'',
+      name:''
+    })
+    var ForumSearch:IforumSearch=reactive({
+      limit:10,
+      page:1,
     })
     var formState:any=reactive({
       name:''
@@ -171,11 +248,12 @@ export default defineComponent({
       // console.log(ForumSearch)
       loading.value=true
       list.length=0
-      http.classBelongingList({urlParams:{class_id:editId.value}}).then((res:IBusinessResp)=>{
+      http.classBelongingList({urlParams:{class_id:editId.value},param:{}}).then((res:IBusinessResp)=>{
         loading.value=false
         let data=res.data.list
         list.push(...data)
         total.value=res.data.page.totalCount
+        // total.value=30
         // console.log(list)
       })
       http.classBelongingDetail({urlParams:{class_id:editId.value}}).then((res:IBusinessResp)=>{
@@ -238,9 +316,6 @@ export default defineComponent({
       })      
       
     }
-    function cancel(){
-      formRef.value.resetFields()
-    }
     function editClassName(){
       // editId.value=val.id
       if(edit.value===false){
@@ -261,11 +336,11 @@ export default defineComponent({
       })
     }
     async function clearSearch(){
-      if(ForumSearch.students_count || ForumSearch.name){
-        ForumSearch.name=''
-        ForumSearch.students_count=''
-        initData()
-      }
+      // if(ForumSearch.students_count || ForumSearch.name){
+      //   ForumSearch.name=''
+      //   ForumSearch.students_count=''
+      //   initData()
+      // }
     }
     function onChangePage(val:number){
       const {query,path}= route
@@ -285,7 +360,7 @@ export default defineComponent({
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,cancel,formRef,formState,edit,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addTeacher};
+    return {...toRefs(state),customizeRenderEmpty,StudentColumns,formRef,formState,edit,list,columns,studentForm,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addTeacher};
   },
 })
 </script>
@@ -341,10 +416,33 @@ export default defineComponent({
         margin: 0 8px;
       }
     } 
+    .custom_input{
+      position: relative;
+      &::before{
+          content: '';
+          position: absolute;
+          left:8px;
+          top:10px;
+          background: url(../../assets/images/screenicon/Group7.png) no-repeat;
+          width: 16px;
+          height: 16px;
+          z-index: 10;
+      }
+    }
+    .custom_input2{
+      &::before{
+        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+      }
+    }
+    .custom_input3{
+      &::before{
+        background: url(../../assets/images/screenicon/Group8.png) no-repeat;
+      }
+    }
   }
   .addTeacher{
-      margin-right: 16px;
-    }
+    margin-right: 16px;
+  }
 }
 :deep(.ant-form-item-control){
   flex: 0 0 100%;

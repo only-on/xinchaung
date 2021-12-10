@@ -19,7 +19,7 @@
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-        :pagination="{current:ForumSearch.page,pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+        :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #operation="{record}">
@@ -50,7 +50,7 @@ import { ColumnProps } from 'ant-design-vue/es/table/interface';
 interface IforumSearch{
   students_count:string,
   name:string,
-  pageSize:number,
+  limit:number,
   page:number
 }
 interface ItdItems{
@@ -132,7 +132,7 @@ export default defineComponent({
       }
     }
     var ForumSearch:IforumSearch=reactive({
-      pageSize:10,
+      limit:10,
       page:1,
       name:'',
       students_count:''
@@ -160,9 +160,9 @@ export default defineComponent({
       http.classList({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
          loading.value=false
         let data=res.data.list
-        data.map((v:any)=>{
-          v.genderText=v.gender===2?'女':'男'
-        })
+        // data.map((v:any)=>{
+        //   v.genderText=v.gender===2?'女':'男'
+        // })
         list.push(...data)
         total.value=res.data.page.totalCount
         // console.log(list)
@@ -205,7 +205,7 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+      http.classUserBatchDelete({param:{class_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
           message.success('删除成功')
         })

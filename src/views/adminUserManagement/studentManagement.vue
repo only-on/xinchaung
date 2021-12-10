@@ -423,12 +423,12 @@ export default defineComponent({
           return
         }
         let obj:any={
-            Teacher:{
+            Student:{
               username:username,
               email:email,
               userinitpassword:userinitpassword,
             },
-            TeacherProfile:{
+            StudentProfile:{
               department:department,
               grade:grade,
               name:name,
@@ -439,8 +439,8 @@ export default defineComponent({
             }
         }
         if((formState.reset && editId.value) || editId.value === 0){
-          obj.Teacher.password_hash=password_hash
-          obj.Teacher.repassword=repassword
+          obj.Student.password_hash=password_hash
+          obj.Student.repassword=repassword
         }
         const promise=editId.value?http.editStudent({urlParams:{id:editId.value},param:{...obj}}):http.studentCreate({param:{...obj}})
         promise.then((res:IBusinessResp)=>{
