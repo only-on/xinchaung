@@ -21,7 +21,7 @@ export default {
     children: [
         {
             path: "",
-            name: "courseList",
+            name: "admincourseList",
             component: () => import("src/views/adminCourse/courseList/index.vue"),
             meta: {
                 title: " ",
@@ -30,7 +30,7 @@ export default {
         },
         {
             path: "courseResult",
-            name: "courseResult",
+            name: "admincourseResult",
             component: () => import("src/views/adminCourse/courseList/courseResult.vue"),
             meta: {
                 title: "成果",
@@ -39,8 +39,17 @@ export default {
         },
         {
             path: "courseDetail",
-            name: "courseDetail",
+            name: "admincourseDetail",
             component: () => import("src/views/adminCourse/courseDetail/courseDetail.vue"),
+            meta: {
+                title: "课程详情",
+                authCode: 'courseResult'
+            },
+        },
+        {
+            path: "evalute",
+            name: "admincourseevalute",
+            component: () => import("src/views/adminCourse/evalute/evalute.vue"),
             meta: {
                 title: "课程详情",
                 authCode: 'courseResult'

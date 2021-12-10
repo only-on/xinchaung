@@ -6,7 +6,9 @@ export default {
     updateArchiveApi:{url:"/api/course/admin/courses/update-archive",method:"PUT", dataType: 'json'},
     deleteCourseApi:{url:"/api/course/admin/courses/destroy",method:"DELETE", dataType: 'json'},
     clearVideosApi:{url:"/api/course/admin/courses/videos",method:"DELETE", dataType: 'json'},
-    lookCourseResultApi:{url:"/api/course/admin/courses/{course_id}/result",method: "GET"}
+    lookCourseResultApi:{url:"/api/course/admin/courses/{course_id}/result",method: "GET"},
+    getInitCourseListApi:{url:"/api/course/admin/courses/initialized",method:"GET"},
+    getArchiveCourseListApi:{url:"/api/course/admin/courses/archived",method:"GET"}
 }
 
 export interface TAdminCourse{
@@ -16,4 +18,6 @@ export interface TAdminCourse{
     deleteCourseApi:TFHttpSend
     clearVideosApi:TFHttpSend
     lookCourseResultApi:TFHttpSend
+    getInitCourseListApi:TFHttpSend
+    getArchiveCourseListApi:TFHttpSend
 }

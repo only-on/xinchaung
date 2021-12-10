@@ -45,3 +45,10 @@ export async function deleteCourseApi(params:{id:number}) {
 export async function saveToCourseApi(params:{courseId:number}) {
     return await courseApi.saveToCourseApi({param:params})
 }
+
+/**
+ * @description 归档
+ */
+export async function setArchiveCourseApi(params:{courseId:number}) {
+    return await courseApi.setArchiveCourseApi({param:params})
+}

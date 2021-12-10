@@ -136,8 +136,7 @@ export default defineComponent({
     function tabChange(key: string) {}
 
     function settingTab() {
-
-      if (![1, 3,2].includes(currentRole)) {
+      if (![1, 3, 2].includes(currentRole)) {
         return [];
       } else {
         if (
@@ -155,12 +154,19 @@ export default defineComponent({
           ];
         }
         if (currentRole == 2) {
-          return [
-            "courseExperimentTab",
-            "courseResourcesTab",
-            "groupInfoTab",
-            "courseMembersTab",
-          ];
+          if (!type) {
+            return [
+              "courseExperimentTab",
+              "courseResourcesTab",
+              "groupInfoTab",
+              "courseMembersTab",
+            ];
+          }else {
+            return [
+              "courseExperimentTab",
+              "courseResourcesTab",
+            ];
+          }
         }
         return [];
       }

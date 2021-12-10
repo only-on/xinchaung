@@ -147,6 +147,7 @@ import {
   copyCourseApi,
   deleteCourseApi,
   saveToCourseApi,
+  setArchiveCourseApi
 } from "./api";
 import { message, Modal } from "ant-design-vue";
 import { useRouter } from "vue-router";
@@ -179,6 +180,10 @@ export default defineComponent({
       });
     }
     function setArchive(id: number) {
+      setArchiveCourseApi({courseId:id}).then((res:any)=>{
+        message.success("操作成果")
+        emit("update");
+      })
     }
     function deleteCourse(id: number) {
       Modal.confirm({
@@ -224,7 +229,6 @@ export default defineComponent({
     // 保存到我的
     function saveToMy() {
       saveToCourseApi({ courseId: data.id }).then((res: any) => {
-        
         message.success("操作成功");
       });
     }

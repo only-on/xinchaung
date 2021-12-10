@@ -484,6 +484,11 @@ export default {
     method: "POST",
     dataType: 'json'
   },
+  setArchiveCourseApi: {
+    url: "/teacher-course/mycourse-archive",
+    method: "POST",
+    dataType: 'json'
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -591,4 +596,5 @@ export interface ITeacherCourseApis {
   scheduleDelete: TFHttpSend
   envMonitoringList: TFHttpSend
   forbiddenUser: TFHttpSend
+  setArchiveCourseApi:TFHttpSend
 }

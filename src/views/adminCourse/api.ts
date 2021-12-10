@@ -50,3 +50,17 @@ export async function clearVideosApi(params:{course_ids:any[]}) {
 export async function lookCourseResultApi(params:{page:number,limit:number},urlParams:{course_id:number}){
     return await courseApi.lookCourseResultApi({param:params,urlParams:urlParams})
 }
+
+/**
+ * @description 获取初始端课程列表
+ */
+export async function getInitCourseListApi(params:{"search[course_name]":string,page:number,limit:number}) {
+    return await courseApi.getInitCourseListApi({param:params})
+}
+
+/**
+ * @description 获取归档课程列表
+ */
+export async function getArchiveCourseListApi(params:{"search[course_name]":string,"search[user_name]":string,"search[archive_time]":string,page:number,limit:number}) {
+    return await courseApi.getArchiveCourseListApi({param:params})
+}
