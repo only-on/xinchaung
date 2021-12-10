@@ -251,7 +251,7 @@ export default defineComponent({
       }
     }
     var studentForm:any=reactive({
-      limit:10,
+      pageSize:10,
       page:1,
       userName:'',
       department:'',
@@ -374,11 +374,25 @@ export default defineComponent({
     function GetStudent(){
       StudentLoading.value=true
       AllStudent.length=0
-      http.AllStudentList({param:{...studentForm}}).then((res:IBusinessResp)=>{
+      let obj={
+         query:{
+          username:studentForm.username,
+          name:studentForm.name,
+          department:studentForm.department
+        },
+        page:{
+          pageSize:studentForm.pageSize,
+          page:studentForm.page,
+        }
+      }
+      http.studentList({param:{...obj}}).then((res:IBusinessResp)=>{
         StudentLoading.value=false
         let data=res.data.list
         AllStudent.push(...data)
         StudentTotal.value=res.data.page.totalCount
+
+        //   需要过滤已经选择的   呆坐。。。。。。。。。
+
       })
     }
     function addStudent(){
@@ -391,8 +405,10 @@ export default defineComponent({
         message.warn('请选择要添加的学生')
         return
       }
-      http.addStudent({param:{user_ids:state.StudentSelectedRowKeys}}).then((res:IBusinessResp)=>{
+      http.editClass({urlParams:{class_id:editId.value},param:{student_ids:state.StudentSelectedRowKeys}}).then((res:IBusinessResp)=>{
+        message.success('添加成功')
         initData()
+        visible.value=false
       })
       // router.push('/studentForum/CreatePosts')
     }

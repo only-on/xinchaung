@@ -28,7 +28,7 @@ export default{
   // api/course/classes/{class_id}
   classBelongingDetail:{url:`/api/course/classes/{class_id}`,method:'GET'},
   classBelongingList:{url:`/api/course/classes/{class_id}/students`,method:'GET'},
-  AllStudentList:{url:`/api/course/classes/{class_id}/students`,method:'POST',dataType: 'json'},
+  // AllStudentList:{url:`/student/index`,method:'POST',dataType: 'json'},
 }
 export interface IAdminUserManagement{
   teacherList:TFHttpSend
@@ -56,7 +56,7 @@ export interface IAdminUserManagement{
 
   classBelongingDetail:TFHttpSend
   classBelongingList:TFHttpSend
-  AllStudentList:TFHttpSend
+  // AllStudentList:TFHttpSend
 
 }
 export const MODULE_NAME = 'adminUserManagement'
