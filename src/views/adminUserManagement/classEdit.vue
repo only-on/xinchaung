@@ -9,11 +9,11 @@
           <a-button type="primary" @click="editClassName">{{!edit?'编辑':'保存'}}</a-button>
         </div>
         <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">添加学生</a-button>
+        <a-button @click="addStudent()" type="primary">添加学生</a-button>
       </div>
       </div>
       <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">批量删除学生</a-button>
+        <a-button @click="BatchDelete()" type="primary">批量删除学生</a-button>
       </div>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
@@ -39,16 +39,16 @@
             <a-input v-model:value="studentForm.department" placeholder="请输入院系" />
           </div>
           <div class="item">
-            <a-button @click="addTeacher()" type="primary">添加</a-button>
+            <a-button @click="addStudent()" type="primary">添加</a-button>
             <a-button type="primary" @click="search()">查询</a-button>
             <a-button type="primary" @click="clearSearch()">清空</a-button>
           </div>
         </div>
       </div>
-      <a-config-provider :renderEmpty="customizeRenderEmpty">
-        <a-table :columns="StudentColumns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
-          :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
-          :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+      <a-config-provider :renderEmpty="StudentCustomizeRenderEmpty">
+        <a-table :columns="StudentColumns" :loading="StudentLoading" :data-source="AllStudent" :bordered="true"  row-key="id"
+          :pagination="{current:studentForm.page,pageSize:studentForm.limit,total:StudentTotal,onChange:StudentOnChangePage,hideOnSinglePage:true}" 
+          :row-selection="{ selectedRowKeys: StudentSelectedRowKeys, onChange: StudentOnSelectChange }"
           class="components-table-demo-nested">
         </a-table>
       </a-config-provider>
@@ -81,6 +81,8 @@ type Key = ColumnProps['key'];
 interface TState{
   selectedRowKeys:Key[];
   onSelectChange: (v:Key[],selectedRows:Key[]) => void;
+  StudentSelectedRowKeys:Key[]
+  StudentOnSelectChange: (v:Key[],selectedRows:Key[]) => void;
 }
 
 const columns=[
@@ -207,9 +209,12 @@ export default defineComponent({
 
     const http=(request as any).adminUserManagement
     var loading:Ref<boolean>=ref(false)
+    var StudentLoading:Ref<boolean>=ref(false)
     var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
+    var AllStudent:any=reactive([])
+    var StudentTotal:Ref<number>=ref(0) 
     var editId:Ref<number>=ref(Number(route.query.editId))
     var edit:Ref<boolean>=ref(false)
     var formRef = ref();
@@ -221,6 +226,13 @@ export default defineComponent({
           state.selectedRowKeys = selectedRowKeys;           
           // state.selectedRows = selectedRows;             
         },
+      StudentSelectedRowKeys:[], 
+      StudentOnSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
+          // console.log('RowKeys changed: ', selectedRowKeys);
+          // console.log('selectedRows: ', selectedRows);
+          state.StudentSelectedRowKeys = selectedRowKeys;           
+          // state.selectedRows = selectedRows;             
+        }, 
     })  
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
@@ -230,8 +242,16 @@ export default defineComponent({
         return <empty type={type} />
       }
     }
+    const StudentCustomizeRenderEmpty=function (): VNode{
+      if(StudentLoading.value){
+        return <template></template>
+      }else{
+        let type='tableEmpty'
+        return <empty type={type} />
+      }
+    }
     var studentForm:any=reactive({
-      pageSize:10,
+      limit:10,
       page:1,
       userName:'',
       department:'',
@@ -260,7 +280,7 @@ export default defineComponent({
         formState.name=res.data.classname
       })
     }
-    async function search(){
+    function search(){
         // const {query,path}= route
         // let obj:any={
         //   title:ForumSearch.students_count,
@@ -272,8 +292,8 @@ export default defineComponent({
         //       path: path,
         //       query: {currentTab:query.currentTab,...obj},
         // })
-        ForumSearch.page=1
-        initData()
+        studentForm.page=1
+        GetStudent()
       // }
     }
     function delateStudent(val:number){
@@ -309,9 +329,7 @@ export default defineComponent({
         const promise=http.classCreate({param:{}})
         promise.then((res:IBusinessResp)=>{
           initData()
-          message.success(editId.value?'编辑成功':'创建成功')
-          formRef.value.resetFields()
-          visible.value=false
+          message.success('创建成功')
         })
       })      
       
@@ -335,32 +353,53 @@ export default defineComponent({
         initData()
       })
     }
-    async function clearSearch(){
-      // if(ForumSearch.students_count || ForumSearch.name){
-      //   ForumSearch.name=''
-      //   ForumSearch.students_count=''
-      //   initData()
-      // }
+    function clearSearch(){
+      if(studentForm.userName || studentForm.department || studentForm.name){
+        studentForm.name=''
+        studentForm.userName=''
+        studentForm.department=''
+        GetStudent()
+      }
     }
     function onChangePage(val:number){
-      const {query,path}= route
       ForumSearch.page=val
       state.selectedRowKeys.length=0
-      router.replace({
-            path: path,
-            query: {...query,page:val},
-      })
       initData()
     }
-    function addTeacher(){
-      editId.value=0
-      visible.value=true
+    function StudentOnChangePage(val:number){
+      studentForm.page=val
+      state.StudentSelectedRowKeys.length=0
+      GetStudent()
+    }
+    function GetStudent(){
+      StudentLoading.value=true
+      AllStudent.length=0
+      http.AllStudentList({param:{...studentForm}}).then((res:IBusinessResp)=>{
+        StudentLoading.value=false
+        let data=res.data.list
+        AllStudent.push(...data)
+        StudentTotal.value=res.data.page.totalCount
+      })
+    }
+    function addStudent(){
+      if(visible.value===false){
+        GetStudent()
+        visible.value=true
+        return
+      }
+      if(!state.StudentSelectedRowKeys.length){
+        message.warn('请选择要添加的学生')
+        return
+      }
+      http.addStudent({param:{user_ids:state.StudentSelectedRowKeys}}).then((res:IBusinessResp)=>{
+        initData()
+      })
       // router.push('/studentForum/CreatePosts')
     }
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,StudentColumns,formRef,formState,edit,list,columns,studentForm,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addTeacher};
+    return {...toRefs(state),customizeRenderEmpty,StudentCustomizeRenderEmpty,StudentColumns,AllStudent,StudentTotal,formRef,formState,edit,list,columns,studentForm,ForumSearch,loading,StudentLoading,total,visible,search,onChangePage,StudentOnChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addStudent};
   },
 })
 </script>
