@@ -12,7 +12,7 @@
         <a-button type="primary" @click="clearParams">清空</a-button>
       </div>
       <div class="search-right">
-        <a-button type="primary">批量删除</a-button>
+        <a-button type="primary" @click="deleteTrain(null)">批量删除</a-button>
       </div>
     </div>
     <a-config-provider>
@@ -28,7 +28,7 @@
           </div>
         </template>
         <template #action="{ record }">
-          <div class="purple" @click="deleteRow(record.id)">删除</div>
+          <div class="purple" @click="deleteTrain(record.id)">删除</div>
         </template>
       </a-table>
       <template #renderEmpty>
@@ -42,6 +42,8 @@ import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from
 import Empty from "src/components/Empty.vue";
 import request from "src/api/index";
 import { useRouter } from "vue-router";
+import { Modal, message } from "ant-design-vue";
+
 interface state {
   data: any[];
   selectedRowKeys: any[];
@@ -120,6 +122,25 @@ export default defineComponent({
       },
       archivingInfo(id: any) {
         router.push({ path: "adminTrain/trainInfo", query: { id: id, currentTab: 3 } });
+      },
+      deleteTrain(id: any) {
+        const deleteArr: any = id ? [id] : state.selectedRowKeys;
+        if (!deleteArr.length) {
+          message.warning("请选择要操作的实训！");
+          return;
+        }
+        Modal.confirm({
+          title: "提示",
+          content: "确定要删除吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http.deleteTrain({ param: { id: deleteArr } }).then((res: any) => {
+              console.log(res);
+              methods.tableList();
+            });
+          },
+        });
       },
     };
     onMounted(() => {

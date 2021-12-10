@@ -11,13 +11,13 @@
         <a-form-item label="实训状态">
           <a-select
             default-value="请选择"
-            v-model:value="params.status"
+            v-model:value="status"
             style="width: 120px"
             @change="handleChange"
           >
-            <a-select-option value="jack"> 未开始 </a-select-option>
-            <a-select-option value="lucy">进行中</a-select-option>
-            <a-select-option value="disabled">已结束</a-select-option>
+            <a-select-option value="1"> 未开始 </a-select-option>
+            <a-select-option value="2">进行中</a-select-option>
+            <a-select-option value="3">已结束</a-select-option>
           </a-select>
         </a-form-item>
         <a-button type="primary" @click="querySearch">查询</a-button>
@@ -25,7 +25,7 @@
       </div>
       <div class="search-right">
         <a-button type="primary" @click="deleteTrain">删除</a-button>
-        <a-button type="primary" @click="clearVideoRecord">删除录像记录</a-button>
+        <a-button type="primary" @click="clearVideoRecord(null)">删除录像记录</a-button>
       </div>
     </div>
     <a-config-provider>
@@ -77,6 +77,7 @@ interface state {
   selectedRowKeys: any[];
   params: any;
   visible: boolean;
+  status: any;
 }
 export default defineComponent({
   name: "teacherTrainInfo",
@@ -120,22 +121,24 @@ export default defineComponent({
     const state: state = reactive({
       data: [],
       selectedRowKeys: [],
+      status: undefined,
       params: {
         name: "",
         teacher: "",
-        status: undefined,
+        state: "",
       },
       visible: false,
     });
     const methods = {
       handleChange(value: any) {
         console.log(value);
+        methods.tableList();
       },
       //   获取表格数据
       tableList() {
+        state.params.state = state.status === undefined ? "" : state.status;
         http.trainList({ param: state.params }).then((res: any) => {
           state.data = res.data.list;
-          // state.data = [{ name: "122", id: "0001" }];
         });
       },
       // 勾选多选框
@@ -149,50 +152,72 @@ export default defineComponent({
       clearAll() {
         state.params.name = "";
         state.params.teacher = "";
-        state.params.status = undefined;
+        state.status = undefined;
         methods.tableList();
       },
       //   确认删除
       handleOk() {
+        http.deleteTrain({ param: { id: state.selectedRowKeys } }).then((res: any) => {
+          console.log(res);
+          methods.tableList();
+        });
         state.visible = false;
       },
       deleteTrain() {
+        console.log(state.selectedRowKeys, "state.selectedRowKeys");
         if (!state.selectedRowKeys.length) {
           message.warning("请选择要操作的实训！");
-        } else {
-          state.visible = true;
+          return;
         }
-        // http.deleteTrain({urlParams:{train:}}).then((res: any) => {
-        //   console.log(res);
-        // });
+        // else {
+        // state.visible = true;
+        Modal.confirm({
+          title: "提示",
+          // icon:,
+          content: "确定要删除吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http
+              .deleteTrain({ param: { id: state.selectedRowKeys } })
+              .then((res: any) => {
+                console.log(res);
+                methods.tableList();
+              });
+          },
+        });
+        // }
       },
       //   删除录像记录
       clearVideoRecord(id: any) {
-        if (id) {
-          console.log("删除录像记录");
-        } else {
-          if (!state.selectedRowKeys.length) {
-            message.warning("请选择要操作的实训！");
-          } else {
-            //   state.visible = true;
-            console.log("删除录像记录");
-          }
+        const deletearr: any = id ? [id] : state.selectedRowKeys;
+        if (!deletearr.length) {
+          message.warning("请选择要操作的实训！");
+          return;
         }
+        Modal.confirm({
+          title: "提示",
+          // icon:,
+          content: "确定要删除吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http.batchReleaseScreen({ param: { id: deletearr } }).then((res: any) => {
+              console.log(res);
+              state.selectedRowKeys = [];
+            });
+          },
+        });
       },
       //   我的实训详情
       lookTrainDetail(id: any) {
         console.log("我的实训详情", id);
-
-        // router.push({
-        //   path: "/teacher/teacherTrain/detail",
-        //   query: { id: id, currentTab: 0 },
-        // });
         router.push({ path: "adminTrain/trainInfo", query: { id: id, currentTab: 0 } });
       },
       //   我的实训查看结果
       lookResult(id: any) {
         console.log("我的实训结果", id);
-        router.push({ path: "adminTrain/trainResult", query: { id: id } });
+        router.push({ path: "adminTrain/trainResult", query: { trainId: id } });
       },
     };
     onMounted(() => {

@@ -131,6 +131,7 @@ export default defineComponent({
       type: Array as PropType<ITableList[]>,
       default: [],
     },
+    role: {},
   },
   emits: ["update:selectedRows", "pageChange"],
   setup(props, { emit }) {
@@ -143,7 +144,7 @@ export default defineComponent({
       },
     });
     const http = (request as ITeacherTrainHttp).teacherTrain;
-    const columns = [
+    const columns1 = [
       {
         title: "学号",
         dataIndex: "username",
@@ -167,21 +168,18 @@ export default defineComponent({
         dataIndex: "achievements",
         key: "achievements",
         slots: { customRender: "achievements" },
-        width: 120,
       },
       {
         title: "操作视频",
         dataIndex: "video",
         key: "video",
         slots: { customRender: "video" },
-        width: 120,
       },
       {
         title: "实训报告",
         dataIndex: "report",
         key: "report",
         slots: { customRender: "report" },
-        width: 120,
       },
       {
         title: "所属班级",
@@ -194,9 +192,9 @@ export default defineComponent({
         dataIndex: "result",
         key: "result",
         slots: { customRender: "result" },
-        width: 120,
       },
     ];
+    const columns = props.role !== "2" ? columns1 : columns1.splice(0, 6);
     // let isShowVideo = ref(false);
     // 操作处理
     const operationHandle = reactive({
