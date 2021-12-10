@@ -4,7 +4,7 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "adminUserManagement",
   component: Layout,
-  name:'UserManagement',
+  // name:'UserManagement',
   meta: {
     title:'用户管理',
     // title: (params?: RouteParams, query?: RouteParams) => {
@@ -49,12 +49,33 @@ export default {
     },
     {
       path: "classManagement",
-      component: () => import("src/views/adminUserManagement/classManagement.vue"),
+      name:'classManagement',
+      component: RouterViews,
       meta: {
         title:'班级管理',
         icon: "",
         authCode: "classManagement",
       },
+      children:[
+        {
+          path: "",
+          component: () => import("src/views/adminUserManagement/classManagement.vue"),
+          meta: {
+            title:'',
+            icon: "",
+            authCode: "classManagement",
+          },
+        },
+        {
+          path: "classEdit",
+          component: () => import("src/views/adminUserManagement/classEdit.vue"),
+          meta: {
+            title:'编辑班级',
+            icon: "",
+            authCode: "classEdit",
+          },
+        },
+      ]
     },
   ]
 }

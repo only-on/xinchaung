@@ -16,28 +16,25 @@
         </div>
       </div>
       <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">添加教师</a-button>
+        <a-button @click="addTeacher()" type="primary">添加学生</a-button>
       </div>
       <div class="addTeacher">
         <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
       </div>
-      <a-button @click="BatchDelete()" type="primary" >批量导入</a-button>
+      <a-button @click="ImportVisible=true" type="primary" >批量导入</a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
         :pagination="{current:ForumSearch.page,pageSize:ForumSearch.pageSize,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
-        <template #title="{record, text }">
-          <a @click="details(record.id)">{{ text }}</a>
-        </template>
         <template #operation="{record}">
           <i class="caozuo iconfont icon-bianji" @click="editCard(record )" title="更新"></i>
           <i class="caozuo iconfont icon-shanchu" @click="delateCard(record.id )" title="删除"></i>
         </template>
       </a-table>
     </a-config-provider>
-    <a-modal v-model:visible="visible" :title="editId?'编辑教师':'添加教师'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
+    <a-modal v-model:visible="visible" :title="editId?'编辑学生':'添加学生'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
       <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <div class="formBox">
           <div class="left">
@@ -64,11 +61,8 @@
             <a-form-item label="院系"  name="department">
               <a-input v-model:value="formState.department" />
             </a-form-item>
-            <a-form-item label="所属技术方向"  name="direct">
-              <a-input v-model:value="formState.direct" />
-            </a-form-item>
-            <a-form-item label="主讲课程"  name="course">
-              <a-input v-model:value="formState.course" />
+            <a-form-item label="年级"  name="grade">
+              <a-input v-model:value="formState.grade" />
             </a-form-item>
           </div>
           <div class="right">
@@ -99,6 +93,35 @@
           <a-textarea v-model:value="formState.introduce" placeholder="输入介绍" :rows="4" />
         </a-form-item>
       </a-form>
+    </a-modal>
+
+    <a-modal v-model:visible="ImportVisible" title="导入" :width="845" class="modal-post">
+      <div class="studentList">
+        <div class="heard">
+          <a-upload :before-upload="fileBeforeUpload" :show-upload-list="false" accept=".xls,.xlsx">
+            <a-button>
+              <span class="icon iconfont icon-upload"></span>
+              导入文件
+            </a-button>
+          </a-upload>
+          <!-- <div>
+            <a-button @click="DownloadTemplate" type="primary">确认导入</a-button>
+          </div> -->
+          <div>
+            <a-button @click="DownloadTemplate" type="link">下载学生模板</a-button>
+            <span class="notes">*注：建议每次导入的数量不要超过500条</span>
+          </div>
+        </div>
+        <div class="list">
+          <div class="title">
+            <span>已导入：{{ImportData.finished}} 条</span>
+            <span>未导入：{{ImportData.unfinished}} 条</span>
+          </div>
+          <a-table :columns="studentColumns" :data-source="ImportData.list" :bordered="true"  row-key="id"
+            class="components-table-demo-nested">
+          </a-table>
+        </div>
+      </div>
     </a-modal>
 </template>
 
@@ -137,8 +160,7 @@ interface IFormState{
   repassword:string
   userinitpassword:boolean
   department:string
-  direct:string
-  course:string
+  grade:string
   name:string
   gender:string
   phone:string
@@ -175,7 +197,7 @@ const columns=[
   },
   {
     title: '年级',
-    dataIndex: 'direct',
+    dataIndex: 'grade',
     align:'center',
     // width:260
   },
@@ -200,6 +222,26 @@ const columns=[
     width:200
   }
 ]
+const studentColumns=[
+  {
+    title: '学号',
+    dataIndex:"stu_no",
+    align:'center',
+    // width:120,
+  },
+  {
+    title: '姓名',
+    dataIndex:"stu_no",
+    align:'center',
+    // width:120,
+  },
+  {
+    title: '导入情况',
+    dataIndex:"stu_no",
+    align:'center',
+    // width:120,
+  },
+]
 
 export default defineComponent({
   name: 'studentManagement',
@@ -217,6 +259,7 @@ export default defineComponent({
     const http=(request as any).adminUserManagement
     var loading:Ref<boolean>=ref(false)
     var visible:Ref<boolean>=ref(false)
+    var ImportVisible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
     var editId:Ref<number>=ref(0)
@@ -230,6 +273,11 @@ export default defineComponent({
           state.selectedRowKeys = selectedRowKeys;           
           // state.selectedRows = selectedRows;             
         },
+    })
+    var ImportData:any=reactive({
+      list:[],
+      finished:0,
+      unfinished:0
     })  
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
@@ -252,8 +300,7 @@ export default defineComponent({
       repassword:'',
       userinitpassword:true,
       department:'',
-      direct:'',
-      course:'',
+      grade:'',
       name:'',
       gender:'',
       phone:'',
@@ -310,7 +357,7 @@ export default defineComponent({
       return sign
     })
     function initData(){
-      console.log(route)
+      // console.log(route)
       loading.value=true
       list.length=0
       let obj={
@@ -351,7 +398,7 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk(){
-          http.teacherUserDelete({urlParams:{id:val}}).then((res:IBusinessResp)=>{
+          http.studentUserDelete({urlParams:{id:val}}).then((res:IBusinessResp)=>{
             initData()
             message.success('删除成功')
           })
@@ -363,15 +410,14 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+      http.studentUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
           message.success('删除成功')
         })
     }
     function submit(){
-      // createTeacher
       formRef.value.validate().then(()=>{
-        const {username,password_hash,repassword,userinitpassword,department,direct,course,name,gender,phone,email,status,introduce}=formState
+        const {username,password_hash,repassword,userinitpassword,department,grade,name,gender,phone,email,status,introduce}=formState
         if(password_hash !== repassword){
           message.warn('密码输入不一致')
           return
@@ -384,8 +430,7 @@ export default defineComponent({
             },
             TeacherProfile:{
               department:department,
-              direct:direct,
-              course:course,
+              grade:grade,
               name:name,
               gender:gender,
               phone:phone,
@@ -397,7 +442,7 @@ export default defineComponent({
           obj.Teacher.password_hash=password_hash
           obj.Teacher.repassword=repassword
         }
-        const promise=editId.value?http.editTeacher({urlParams:{id:editId.value},param:{...obj}}):http.createTeacher({param:{...obj}})
+        const promise=editId.value?http.editStudent({urlParams:{id:editId.value},param:{...obj}}):http.studentCreate({param:{...obj}})
         promise.then((res:IBusinessResp)=>{
           initData()
           message.success(editId.value?'编辑成功':'创建成功')
@@ -413,7 +458,7 @@ export default defineComponent({
     }
     function editCard(val:ItdItems){
       editId.value=val.id
-      http.viewTeacher({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
+      http.viewStudent({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
         Object.keys(res.data).forEach((v:any)=>{
           if(v in formState){
             formState[v]=res.data[v]
@@ -447,17 +492,34 @@ export default defineComponent({
       editId.value=0
       visible.value=true
     }
-    function details(id:number){
-      let {currentTab}= route.query
-      router.push({
-        path:'/studentForum/PostsDetailed',
-        query:{detailId:id,currentTab:currentTab}
+    function fileBeforeUpload(file:any){
+      console.log(file)
+      // return
+      if (file && file.size === 0) {
+        message.warn('文件大小不能为空')
+        return false
+      }
+      // loading.value=true
+      const fd = new FormData()
+      fd.append('file', file)
+      http.BatchImport({param:fd}).then((res:any)=>{
+        ImportData.finished=res.total.finished
+        ImportData.unfinished=res.total.unfinished
+        ImportData.list=res.msg
+        message.success('导入完成')
+        initData()
       })
+    }
+    function DownloadTemplate(){
+      const a = document.createElement("a");
+      a.href = "./public/Student.xlsx";
+      a.download = "学生模板.xlsx";
+      a.click();
     }
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher,details};
+    return {...toRefs(state),ImportVisible,studentColumns,ImportData,fileBeforeUpload,DownloadTemplate,customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher};
   },
 })
 </script>
@@ -552,5 +614,37 @@ export default defineComponent({
   .ant-checkbox-wrapper{
     margin: 0 10px;
   }
+}
+.studentList{
+  min-height: 400px;
+  .heard{
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // justify-content: space-around;
+    .notes{
+      color: red;
+      padding-left: 16px;
+    }
+  }
+  .list{
+    .title{
+      span{
+        margin-right: 50px;
+      }
+    }
+  }
+}
+.ant-upload {
+    button {
+        background: @theme-color;
+        border-radius: 5px;
+        color: #ffffff;
+        .icon-upload{
+            font-size: 12px;
+            padding-right: 6px;
+        }
+    }
 }
 </style>

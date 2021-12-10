@@ -1,21 +1,20 @@
 <template>
     <div class="header" v-layout-bg>
       <div class="search">
-        <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.name" placeholder="请输入班级名称" />
-        </div>
-        <div  class="item custom_input custom_input2">
-          <a-input v-model:value="ForumSearch.students_count" placeholder="请输入学生人数"  />
+        <div>班级：</div>
+        <div class="item ">
+          <a-input v-model:value="formState.name" placeholder="请输入班级名称" :disabled="!edit" />
         </div>
         <div class="item">
-          <a-button type="primary" @click="search()">查询</a-button>
-          <a-button type="primary" @click="clearSearch()">清空</a-button>
+          <a-button type="primary" @click="editClassName">{{!edit?'编辑':'保存'}}</a-button>
         </div>
+        <div class="addTeacher">
+        <a-button @click="addTeacher()" type="primary">添加学生</a-button>
+      </div>
       </div>
       <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">添加班级</a-button>
+        <a-button @click="addTeacher()" type="primary">批量删除学生</a-button>
       </div>
-      <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
@@ -23,17 +22,12 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #operation="{record}">
-          <i class="caozuo iconfont icon-bianji" @click="editCard(record )" title="更新"></i>
-          <i class="caozuo iconfont icon-shanchu" @click="delateCard(record.id )" title="删除"></i>
+          <i class="caozuo iconfont icon-shanchu" @click="delateStudent(record.id )" title="删除"></i>
         </template>
       </a-table>
     </a-config-provider>
     <a-modal v-model:visible="visible" :title="editId?'编辑班级':'添加班级'" @cancel="cancel" @ok="submit" :width="745" class="modal-post">
-      <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
-        <a-form-item label="班级名称"  name="name">
-          <a-input v-model:value="formState.name" />
-        </a-form-item>
-      </a-form>
+      
     </a-modal>
 </template>
 
@@ -66,22 +60,55 @@ interface TState{
   selectedRowKeys:Key[];
   onSelectChange: (v:Key[],selectedRows:Key[]) => void;
 }
-interface IFormState{
-  name:string
-}
+
 const columns=[
   {
-    title: '班级名称',
-    dataIndex:"classname",
+    title: '账号',
+    dataIndex:"username",
     align:'center',
     width:120,
     // slots: { customRender: 'title' },
   },
   {
-    title: '学生人数',
-    dataIndex: 'students_count',
+    title: '姓名',
+    dataIndex: 'name',
     align:'center',
     width:120
+  },
+  {
+    title: '性别',
+    dataIndex:"gender",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '所属院系',
+    dataIndex:"department",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '年级',
+    dataIndex:"grade",
+    align:'center',
+    width:120,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '邮箱',
+    dataIndex:"email",
+    align:'center',
+    width:160,
+    // slots: { customRender: 'title' },
+  },
+  {
+    title: '电话',
+    dataIndex:"phone",
+    align:'center',
+    width:130,
+    // slots: { customRender: 'title' },
   },
   {
     title: '操作',
@@ -94,7 +121,7 @@ const columns=[
 ]
 
 export default defineComponent({
-  name: 'classManagement',
+  name: 'classEdit',
   components: {
     SmileOutlined,
     MehOutlined,
@@ -111,9 +138,9 @@ export default defineComponent({
     var visible:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
-    var editId:Ref<number>=ref(0)
+    var editId:Ref<number>=ref(Number(route.query.editId))
+    var edit:Ref<boolean>=ref(false)
     var formRef = ref();
-    var suffix='1q2w'
     var state:TState=reactive({
       selectedRowKeys:[],
       onSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
@@ -137,35 +164,22 @@ export default defineComponent({
       name:'',
       students_count:''
     })
-    var formState:IFormState=reactive({
-      name:'',
+    var formState:any=reactive({
+      name:''
     })
-    const rules={
-        name: [
-          { required: true, message: '请输入班级名称', trigger: 'blur'},
-          {pattern:/^[a-zA-Z0-9\u4e00-\u9fa5]{3,15}$/,message:'班级名称为字母、数字、汉子，长度为3-15', trigger: 'blur'}
-          // const reg = new RegExp('^[a-zA-Z0-9\u4e00-\u9fa5]+$')
-        ]
-    }
     function initData(){
       // console.log(ForumSearch)
       loading.value=true
       list.length=0
-      // let param={
-      //   'search[students_count]':ForumSearch.students_count,
-      //   'search[name]':ForumSearch.name,
-      //   limit:ForumSearch.pageSize,
-      //   page:ForumSearch.page,
-      // }
-      http.classList({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
-         loading.value=false
+      http.classBelongingList({urlParams:{class_id:editId.value}}).then((res:IBusinessResp)=>{
+        loading.value=false
         let data=res.data.list
-        data.map((v:any)=>{
-          v.genderText=v.gender===2?'女':'男'
-        })
         list.push(...data)
         total.value=res.data.page.totalCount
         // console.log(list)
+      })
+      http.classBelongingDetail({urlParams:{class_id:editId.value}}).then((res:IBusinessResp)=>{
+        formState.name=res.data.classname
       })
     }
     async function search(){
@@ -184,7 +198,7 @@ export default defineComponent({
         initData()
       // }
     }
-    function delateCard(val:number){
+    function delateStudent(val:number){
       console.log(val)
       Modal.confirm({
         title: '确认删除吗？',
@@ -213,8 +227,8 @@ export default defineComponent({
     function submit(){
       // createTeacher
       formRef.value.validate().then(()=>{
-        // console.log(formState)
-        const promise=http.classCreate({param:{...formState}})
+        // const promise=editId.value?http.editClass({urlParams:{id:editId.value},param:{...formState}}):http.classCreate({param:{...formState}})
+        const promise=http.classCreate({param:{}})
         promise.then((res:IBusinessResp)=>{
           initData()
           message.success(editId.value?'编辑成功':'创建成功')
@@ -227,18 +241,24 @@ export default defineComponent({
     function cancel(){
       formRef.value.resetFields()
     }
-    function editCard(val:ItdItems){
-      editId.value=val.id
-      // http.viewTeacher({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
-      //   Object.keys(res.data).forEach((v:any)=>{
-      //     if(v in formState){
-      //       formState[v]=res.data[v]
-      //     }
-      //   })
-      //   formState.name=res.data.stu_no
-      // })
-      // visible.value=true
-      router.push('/admin/adminUserManagement/classManagement/classEdit?editId='+val.id)
+    function editClassName(){
+      // editId.value=val.id
+      if(edit.value===false){
+        edit.value=true
+        return
+      }
+      const reg = new RegExp('^[a-zA-Z0-9\u4e00-\u9fa5]{3,15}$')
+      if(!reg.test(formState.name)){
+        message.warn('班级名称为字母、数字、汉子，长度为3-15')
+        return
+      }
+      let obj={
+        name:formState.name,
+        student_ids:[]
+      }
+      http.editClass({urlParams:{class_id:editId.value},param:{...obj}}).then((res:IBusinessResp)=>{
+        initData()
+      })
     }
     async function clearSearch(){
       if(ForumSearch.students_count || ForumSearch.name){
@@ -265,7 +285,7 @@ export default defineComponent({
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher};
+    return {...toRefs(state),customizeRenderEmpty,cancel,formRef,formState,edit,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addTeacher};
   },
 })
 </script>
@@ -321,29 +341,6 @@ export default defineComponent({
         margin: 0 8px;
       }
     } 
-    .custom_input{
-      position: relative;
-      &::before{
-          content: '';
-          position: absolute;
-          left:8px;
-          top:10px;
-          background: url(../../assets/images/screenicon/Group7.png) no-repeat;
-          width: 16px;
-          height: 16px;
-          z-index: 10;
-      }
-    }
-    .custom_input2{
-      &::before{
-        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-      }
-    }
-    .custom_input3{
-      &::before{
-        background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-      }
-    }
   }
   .addTeacher{
       margin-right: 16px;
