@@ -4,35 +4,84 @@
       <div class="searchLeft">
         <div>
           <span class="inputLable">设备IP: </span>
-          <a-input class="input"></a-input>
+          <a-input
+            @keyup.enter="search"
+            v-model:value="params.ip"
+            class="input"
+          ></a-input>
         </div>
         <div>
           <span class="inputLable"> 设备类型: </span>
-          <a-select class="input" default-value="lucy" @change="handleChange">
-            <a-select-option value="jack"> Jack </a-select-option>
+          <a-select
+            class="select"
+            v-model:value="type"
+            default-value="请选择"
+            @change="handleChange"
+          >
+            <a-select-option
+              v-for="item in types"
+              :key="item.action_type"
+              :value="item.action_type"
+              >{{ item.tag }}
+            </a-select-option>
           </a-select>
         </div>
         <div>
           <span class="inputLable"> 设备状态: </span>
-          <a-select class="input" default-value="lucy" @change="handleChange">
-            <a-select-option value="jack"> Jack </a-select-option>
+          <a-select
+            class="select"
+            v-model:value="status"
+            default-value="请选择"
+            @change="handleChange"
+          >
+            <a-select-option
+              v-for="item in statuses"
+              :key="item.ssh_state"
+              :value="item.ssh_state"
+              >{{ item.tag }}</a-select-option
+            >
           </a-select>
         </div>
         <div>
-          <a-button type="primary">查询</a-button>
+          <a-button type="primary" @click="search">查询</a-button>
         </div>
         <div>
-          <a-button type="primary">清空</a-button>
+          <a-button type="primary" @click="clear">清空</a-button>
         </div>
       </div>
 
       <div>
-        <a-button type="primary">一键关机</a-button>
+        <a-button type="primary" @click="doSimJetSoft">一键关机</a-button>
       </div>
     </div>
     <div>
       <a-config-provider>
-        <a-table :columns="columns" :data-source="data"> </a-table>
+        <a-table :columns="columns" :data-source="data" rowKey="ip">
+          <template #action_type="{ record }">
+            <div>
+              {{ record.action_type === "control" ? "控制节点" : "计算节点" }}
+            </div>
+          </template>
+          <template #ssh_state="{ record }">
+            <div class="ssh_state">
+              <div :class="record.ssh_state === 'up' ? 'on' : 'off'"></div>
+              {{ record.ssh_state === "up" ? "运行" : "关闭" }}
+            </div>
+          </template>
+          <template #action="{ record }">
+            <div v-if="record.ssh_state === 'up'" class="action">
+              <span class="purple" @click="nodeOpera(record.ip, record.node_type, 'stop')"
+                >关机</span
+              >
+              <span
+                class="purple"
+                @click="nodeOpera(record.ip, record.node_type, 'restart')"
+                >重启</span
+              >
+            </div>
+            <div class="action" v-else>--</div>
+          </template>
+        </a-table>
         <template #renderEmpty>
           <div><empty type="tableEmpty"></empty></div>
         </template>
@@ -42,34 +91,65 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
+import request from "src/api/index";
+import { Modal, message } from "ant-design-vue";
+
 interface state {
   data: any[];
+  type: any;
+  status: any;
+  params: {
+    ip: string;
+    type: any;
+    status: any;
+  };
 }
 const columns = [
   {
     title: "设备IP",
-    dataIndex: "name",
+    dataIndex: "ip",
   },
   {
     title: "设备类型",
-    dataIndex: "age",
+    dataIndex: "action_type",
+    slots: { customRender: "action_type" },
   },
   {
     title: "设备状态",
-    dataIndex: "address",
+    dataIndex: "ssh_state",
+    slots: { customRender: "ssh_state" },
   },
   {
     title: "操作",
-    dataIndex: "address",
+    dataIndex: "action",
+    width: 120,
+    align: "center",
+    slots: { customRender: "action" },
   },
 ];
 export default defineComponent({
   name: "deviceManage",
   components: {},
   setup: (props, context) => {
+    const http = (request as any).adminSystemManage;
     const state: state = reactive({
       data: [],
+      type: undefined,
+      status: undefined,
+      params: {
+        ip: "",
+        type: "",
+        status: "",
+      },
     });
+    const types = [
+      { action_type: "control", tag: "控制节点" },
+      { action_type: "slave", tag: "计算节点" },
+    ];
+    const statuses = [
+      { ssh_state: "up", tag: "运行" },
+      { ssh_state: "down", tag: "关闭" },
+    ];
     var updata = inject("updataNav") as Function;
     updata({
       tabs: [],
@@ -82,10 +162,64 @@ export default defineComponent({
       showPageEdit: false,
     });
     const methods = {
-      handleChange() {},
+      getDeviceList() {
+        state.params.type = state.type === undefined ? "" : state.type;
+        state.params.status = state.status === undefined ? "" : state.status;
+        http.systemDeviceList({ param: state.params }).then((res: any) => {
+          console.log(res);
+          state.data = res.data;
+        });
+      },
+      handleChange() {
+        methods.getDeviceList();
+      },
+      search() {
+        methods.getDeviceList();
+      },
+      clear() {
+        state.params.ip = "";
+        state.type = undefined;
+        state.status = undefined;
+        state.params.type = "";
+        state.params.status = "";
+        methods.getDeviceList();
+      },
+
+      doSimJetSoft() {
+        Modal.confirm({
+          title: "提示",
+          content: "确定要关闭服务器吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http.simJetSoft().then((res: any) => {
+              console.log(res);
+            });
+          },
+        });
+      },
+      nodeOpera(ip: any, node_type: any, action: any) {
+        Modal.confirm({
+          title: "提示",
+          content: action === "restart" ? "确定要重启吗？" : "确定要关机吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http
+              .deviceNodeOperation({
+                param: { ip: ip, node_type: node_type, action: action },
+              })
+              .then((res: any) => {
+                methods.getDeviceList();
+              });
+          },
+        });
+      },
     };
-    onMounted(() => {});
-    return { ...toRefs(state), columns, ...methods };
+    onMounted(() => {
+      methods.getDeviceList();
+    });
+    return { ...toRefs(state), columns, ...methods, types, statuses };
   },
 });
 </script>
@@ -106,5 +240,39 @@ export default defineComponent({
   .input {
     width: 165px;
   }
+  .select {
+    width: 120px;
+  }
+}
+.action {
+  display: flex;
+  justify-content: center;
+  > span:nth-child(1) {
+    margin-right: 20px;
+  }
+}
+.purple {
+  color: @theme-color;
+}
+.purple:hover {
+  color: @theme-light-color;
+}
+.on {
+  border-radius: 50px;
+  width: 10px;
+  height: 10px;
+  background: green;
+  display: inline-block;
+  margin-right: 5px;
+  box-shadow: 0 0 5px green;
+}
+.off {
+  border-radius: 50px;
+  width: 10px;
+  height: 10px;
+  background: @normal-color;
+  display: inline-block;
+  margin-right: 5px;
+  box-shadow: 0 0 5px @normal-color;
 }
 </style>
