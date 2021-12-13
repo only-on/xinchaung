@@ -64,3 +64,45 @@ export async function getInitCourseListApi(params:{"search[course_name]":string,
 export async function getArchiveCourseListApi(params:{"search[course_name]":string,"search[user_name]":string,"search[archive_time]":string,page:number,limit:number}) {
     return await courseApi.getArchiveCourseListApi({param:params})
 }
+
+/**
+ * @description 获取职业方向列表
+ */
+export async function getCareerDirectionListApi(params:{"search[name]":string,page:number,limit:number}) {
+    return await courseApi.getCareerDirectionListApi({param:params})
+}
+
+/**
+ * @description 添加职业方向
+ */
+export async function addCareerDirectionApi(params:{name:string}) {
+    return await courseApi.addCareerDirectionApi({param:params})
+}
+
+/**
+ * @description 删除职业方向
+ */
+export async function deleteCareerDirectionApi(params:{direction_id:number}) {
+    return await courseApi.deleteCareerDirectionApi({urlParams:params})
+}
+
+/**
+ * @description 获取课程方向列表
+ */
+ export async function getCourseDirectionListApi(params:{"search[name]":string,page:number,limit:number}) {
+    return await courseApi.getCourseDirectionListApi({param:params})
+}
+
+/**
+ * @description 添加课程方向
+ */
+export async function addCourseDirectionApi(params:{name:string}) {
+    return await courseApi.addCourseDirectionApi({param:params})
+}
+
+/**
+ * @description 删除课程方向
+ */
+export async function deleteCourseDirectionApi(params:{category_id:number}) {
+    return await courseApi.deleteCourseDirectionApi({urlParams:params})
+}

@@ -51,8 +51,26 @@ export default {
             name: "admincourseevalute",
             component: () => import("src/views/adminCourse/evalute/evalute.vue"),
             meta: {
-                title: "课程详情",
+                title: "归档课程分析",
                 authCode: 'courseResult'
+            },
+        },
+        {
+            path: "careerDirection",
+            name: "adminCareerDirection",
+            component: () => import("src/views/adminCourse/careerDirection/careerDirection.vue"),
+            meta: {
+                title: "职业方向",
+                authCode: 'careerDirection'
+            },
+        },
+        {
+            path: "courseDirection",
+            name: "adminCourseDirection",
+            component: () => import("src/views/adminCourse/courseDirection/courseDirection.vue"),
+            meta: {
+                title: "课程方向",
+                authCode: 'courseDirection'
             },
         },
     ]
