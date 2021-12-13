@@ -14,7 +14,8 @@ export default {
     deleteCareerDirectionApi:{url:"/api/course/courses/directions/{direction_id}",method:"DELETE"},
     getCourseDirectionListApi:{url:"/api/course/courses/categories",method:"GET"},
     addCourseDirectionApi:{url:"/api/course/courses/categories",method:"POST",dataType: 'json'},
-    deleteCourseDirectionApi:{url:"/api/course/courses/categories/{category_id}",method:"DELETE"}
+    deleteCourseDirectionApi:{url:"/api/course/courses/categories/{category_id}",method:"DELETE"},
+    deleteVideoLogApi:{url:"/api/course/admin/videos/{video_id}",method:"DELETE"}
 }
 
 export interface TAdminCourse{
@@ -32,4 +33,5 @@ export interface TAdminCourse{
     getCourseDirectionListApi:TFHttpSend
     addCourseDirectionApi:TFHttpSend
     deleteCourseDirectionApi:TFHttpSend
+    deleteVideoLogApi:TFHttpSend
 }

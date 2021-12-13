@@ -40,12 +40,12 @@
         <template #result="{ text }"
           ><span class="a-link" @click="lookResult(text)">查看</span></template
         >
-        <template #action="{ text }">
+        <template #action="{ text,record }">
           <div class="action-table">
             <span class="a-link" @click="clearVideoLog(text)"
               >清除录像记录</span
             >
-            <span class="a-link" @click="toArchive(text)">归档</span>
+            <span class="a-link" v-if="record.state==='已结束'" @click="toArchive(text)">归档</span>
           </div></template
         >
       </a-table>
@@ -86,6 +86,7 @@ const columns = [
   {
     title: "任课教师",
     dataIndex: "user_name",
+    ellipsis: true,
     width: 100,
   },
   {
@@ -104,12 +105,14 @@ const columns = [
   {
     title: "操作记录总大小",
     dataIndex: "record_size",
+    width:150,
     align: "center",
   },
   {
     title: "课程成果",
     dataIndex: "id",
     align: "center",
+    width:100,
     slots: { title: "id", customRender: "result" },
   },
   {

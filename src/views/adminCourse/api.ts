@@ -45,6 +45,13 @@ export async function clearVideosApi(params:{course_ids:any[]}) {
 }
 
 /**
+ * @description 删除课程成果视频
+ */
+export async function deleteVideoLogApi(params:{video_id:number}) {
+    return await courseApi.deleteVideoLogApi({urlParams:params})
+}
+
+/**
  * @description 查看课程成果
  */
 export async function lookCourseResultApi(params:{page:number,limit:number},urlParams:{course_id:number}){

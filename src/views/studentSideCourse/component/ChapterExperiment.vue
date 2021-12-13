@@ -169,7 +169,8 @@ export default defineComponent({
       detail.saveOrEdit = 2
     }
     function study(val:any) {
-      console.log('准备虚拟机环境')
+      console.log('准备虚拟机环境',course_id)
+      let courseId=course_id?course_id:route.query.cousre_id
       // detail.studystr
       let param:IEnvirmentsParam= {
         type: "course",
@@ -185,7 +186,7 @@ export default defineComponent({
               type:param.type,
               opType:param.opType,
               taskId:param.taskId,
-              routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
+              routerQuery: JSON.stringify({detailId:detailId,course_id:courseId})
             }
           })
         }else{
@@ -199,10 +200,10 @@ export default defineComponent({
           //     routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
           //   }
           // })
-          toVmConnect(router,param,{detailId:detailId,course_id:course_id})
+          toVmConnect(router,param,{detailId:detailId,course_id:courseId})
         }
       }else{
-        toVmConnect(router,param,{detailId:detailId,course_id:course_id})
+        toVmConnect(router,param,{detailId:detailId,course_id:courseId})
       }
     }
     function getStudyStatus(type:any) {

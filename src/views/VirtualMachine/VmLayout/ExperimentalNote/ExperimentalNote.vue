@@ -25,15 +25,8 @@ export default defineComponent({
     const route = useRoute();
     let vmQuery = route.query as any;
     const {
-      opType,
-      connection_id,
-      topoinst_uuid,
       taskId,
-      type,
-      topoinst_id,
-      routerQuery,
     }: any = vmQuery;
-    let course_id=""
     const noteContent = ref({
       ops: [],
     });
@@ -43,10 +36,7 @@ export default defineComponent({
 
     // 获取笔记
     function getNoteContent() {
-      if (routerQuery) {
-        course_id=JSON.parse(routerQuery).course_id
-      }
-      noteApi.getNoteApi({param:{course_id:course_id,task_id:taskId}}).then((res)=>{
+      noteApi.getNoteApi({param:{task_id:taskId}}).then((res)=>{
         console.log(res);
         if (res?.data) {
           noteContent.value=JSON.parse(res.data)
@@ -57,10 +47,7 @@ export default defineComponent({
 
     // 提交笔记
     function submitNote() {
-      if (routerQuery) {
-        course_id=JSON.parse(routerQuery).course_id
-      }
-      let obj={content:JSON.stringify(noteContent.value),courseId:course_id,taskId:taskId}
+      let obj={content:JSON.stringify(noteContent.value),taskId:taskId}
 
       noteApi.saveNoteApi({param:{...obj}}).then((res)=>{
         message.success("保存成功")
