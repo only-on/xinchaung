@@ -28,7 +28,8 @@ export default{
   // api/course/classes/{class_id}
   classBelongingDetail:{url:`/api/course/classes/{class_id}`,method:'GET'},
   classBelongingList:{url:`/api/course/classes/{class_id}/students`,method:'GET'},
-  // AllStudentList:{url:`/student/index`,method:'POST',dataType: 'json'},
+  deleteClassStudent:{url:`/api/course/classes/{class_id}/students`,method:'DELETE',dataType:'json'},
+  classStudentList:{url:`/api/course/students`,method:'GET'},
 }
 export interface IAdminUserManagement{
   teacherList:TFHttpSend
@@ -56,7 +57,8 @@ export interface IAdminUserManagement{
 
   classBelongingDetail:TFHttpSend
   classBelongingList:TFHttpSend
-  // AllStudentList:TFHttpSend
+  deleteClassStudent:TFHttpSend
+  classStudentList:TFHttpSend
 
 }
 export const MODULE_NAME = 'adminUserManagement'

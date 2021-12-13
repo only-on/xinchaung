@@ -22,7 +22,7 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #operation="{record}">
-          <i class="caozuo iconfont icon-shanchu" @click="delateStudent(record.id )" title="删除"></i>
+          <i class="caozuo iconfont icon-shanchu" @click="delateStudent(record.id)" title="删除"></i>
         </template>
       </a-table>
     </a-config-provider>
@@ -30,7 +30,7 @@
       <div class="header">
         <div class="search">
           <div class="item custom_input custom_input1">
-            <a-input v-model:value="studentForm.userName" placeholder="请输入账号" />
+            <a-input v-model:value="studentForm.username" placeholder="请输入账号" />
           </div>
           <div  class="item custom_input custom_input2">
             <a-input v-model:value="studentForm.name" placeholder="请输入姓名"  />
@@ -65,9 +65,17 @@ import { useRouter ,useRoute } from 'vue-router';
 import serve from "../../request/getRequest";
 import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
 import { ColumnProps } from 'ant-design-vue/es/table/interface';
+import { log } from 'console';
 interface IforumSearch{
   limit:number,
   page:number
+}
+interface IStudentForm{
+  limit:number,
+  page:number,
+  username:string,
+  department:string,
+  name:string,
 }
 interface ItdItems{
   title:string,
@@ -103,7 +111,7 @@ const columns=[
     title: '性别',
     dataIndex:"gender",
     align:'center',
-    width:120,
+    // width:120,
     // slots: { customRender: 'title' },
   },
   {
@@ -117,21 +125,21 @@ const columns=[
     title: '年级',
     dataIndex:"grade",
     align:'center',
-    width:120,
+    // width:120,
     // slots: { customRender: 'title' },
   },
   {
     title: '邮箱',
     dataIndex:"email",
     align:'center',
-    width:160,
+    width:200,
     // slots: { customRender: 'title' },
   },
   {
     title: '电话',
     dataIndex:"phone",
     align:'center',
-    width:130,
+    width:140,
     // slots: { customRender: 'title' },
   },
   {
@@ -155,13 +163,13 @@ const StudentColumns=[
     title: '姓名',
     dataIndex: 'name',
     align:'center',
-    width:120
+    // width:120
   },
   {
     title: '性别',
     dataIndex:"gender",
     align:'center',
-    width:120,
+    // width:120,
     // slots: { customRender: 'title' },
   },
   {
@@ -182,14 +190,14 @@ const StudentColumns=[
     title: '邮箱',
     dataIndex:"email",
     align:'center',
-    width:160,
+    width:200,
     // slots: { customRender: 'title' },
   },
   {
     title: '电话',
     dataIndex:"phone",
     align:'center',
-    width:130,
+    width:140,
     // slots: { customRender: 'title' },
   },
 ]
@@ -221,10 +229,11 @@ export default defineComponent({
     var state:TState=reactive({
       selectedRowKeys:[],
       onSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
-          // console.log('RowKeys changed: ', selectedRowKeys);
+          console.log('RowKeys changed: ', selectedRowKeys);
           // console.log('selectedRows: ', selectedRows);
           state.selectedRowKeys = selectedRowKeys;           
-          // state.selectedRows = selectedRows;             
+          // state.selectedRows = selectedRows;    
+          // console.log(state);         
         },
       StudentSelectedRowKeys:[], 
       StudentOnSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
@@ -250,10 +259,10 @@ export default defineComponent({
         return <empty type={type} />
       }
     }
-    var studentForm:any=reactive({
-      pageSize:10,
+    var studentForm:IStudentForm=reactive({
+      limit:10,
       page:1,
-      userName:'',
+      username:'',
       department:'',
       name:''
     })
@@ -268,7 +277,7 @@ export default defineComponent({
       // console.log(ForumSearch)
       loading.value=true
       list.length=0
-      http.classBelongingList({urlParams:{class_id:editId.value},param:{}}).then((res:IBusinessResp)=>{
+      http.classBelongingList({urlParams:{class_id:editId.value},param:{...ForumSearch}}).then((res:IBusinessResp)=>{
         loading.value=false
         let data=res.data.list
         list.push(...data)
@@ -296,8 +305,8 @@ export default defineComponent({
         GetStudent()
       // }
     }
-    function delateStudent(val:number){
-      console.log(val)
+    function delateStudent(id:number){
+      // console.log(val)
       Modal.confirm({
         title: '确认删除吗？',
         icon: createVNode(ExclamationCircleOutlined),
@@ -305,34 +314,24 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk(){
-          http.classUserDelete({urlParams:{class_id:val}}).then((res:IBusinessResp)=>{
-            initData()
-            message.success('删除成功')
-          })
+          deleteStudent([id])
         }
       });
+    }
+    function deleteStudent(ids:any){
+      console.log(ids)
+      // return
+      http.deleteClassStudent({urlParams:{class_id:editId.value},param:{student_ids:ids}}).then((res:IBusinessResp)=>{
+          initData()
+          message.success('删除成功')
+        })
     }
     function BatchDelete(){
       if(!state.selectedRowKeys.length){
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
-          initData()
-          message.success('删除成功')
-        })
-    }
-    function submit(){
-      // createTeacher
-      formRef.value.validate().then(()=>{
-        // const promise=editId.value?http.editClass({urlParams:{id:editId.value},param:{...formState}}):http.classCreate({param:{...formState}})
-        const promise=http.classCreate({param:{}})
-        promise.then((res:IBusinessResp)=>{
-          initData()
-          message.success('创建成功')
-        })
-      })      
-      
+      deleteStudent(state.selectedRowKeys)
     }
     function editClassName(){
       // editId.value=val.id
@@ -350,16 +349,18 @@ export default defineComponent({
         student_ids:[]
       }
       http.editClass({urlParams:{class_id:editId.value},param:{...obj}}).then((res:IBusinessResp)=>{
+        message.success('保存成功')
+        edit.value=false
         initData()
       })
     }
     function clearSearch(){
-      if(studentForm.userName || studentForm.department || studentForm.name){
+      // if(studentForm.username || studentForm.department || studentForm.name){
         studentForm.name=''
-        studentForm.userName=''
+        studentForm.username=''
         studentForm.department=''
         GetStudent()
-      }
+      // }
     }
     function onChangePage(val:number){
       ForumSearch.page=val
@@ -375,17 +376,15 @@ export default defineComponent({
       StudentLoading.value=true
       AllStudent.length=0
       let obj={
-         query:{
-          username:studentForm.username,
-          name:studentForm.name,
-          department:studentForm.department
-        },
-        page:{
-          pageSize:studentForm.pageSize,
-          page:studentForm.page,
-        }
+        'search[username]':studentForm.username,
+        'search[name]':studentForm.name,
+        'search[department]':studentForm.department,
+        'search[class_id]':editId.value,
+        limit:studentForm.limit,
+        page:studentForm.page,
       }
-      http.studentList({param:{...obj}}).then((res:IBusinessResp)=>{
+      // class_id:editId.value,
+      http.classStudentList({param:{...obj}}).then((res:IBusinessResp)=>{
         StudentLoading.value=false
         let data=res.data.list
         AllStudent.push(...data)
@@ -415,7 +414,7 @@ export default defineComponent({
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,StudentCustomizeRenderEmpty,StudentColumns,AllStudent,StudentTotal,formRef,formState,edit,list,columns,studentForm,ForumSearch,loading,StudentLoading,total,visible,search,onChangePage,StudentOnChangePage,clearSearch,delateStudent,BatchDelete,submit,editClassName,addStudent};
+    return {...toRefs(state),customizeRenderEmpty,StudentCustomizeRenderEmpty,StudentColumns,AllStudent,StudentTotal,formRef,formState,edit,list,columns,studentForm,ForumSearch,loading,StudentLoading,total,visible,search,onChangePage,StudentOnChangePage,clearSearch,delateStudent,BatchDelete,editClassName,addStudent};
   },
 })
 </script>

@@ -4,9 +4,10 @@ import { LocationQuery, RouteParams } from 'vue-router';
 export default {
   path: "adminUserManagement",
   component: Layout,
-  // name:'UserManagement',
+  name:'UserManagement',
   meta: {
     title:'用户管理',
+    showInBreadcrumb: false,
     // title: (params?: RouteParams, query?: RouteParams) => {
     //   // console.log(query)
     //   const dataDetailMap = {

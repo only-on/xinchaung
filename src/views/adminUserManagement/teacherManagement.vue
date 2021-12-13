@@ -39,7 +39,7 @@
         <div class="formBox">
           <div class="left">
             <a-form-item label="账号"  name="username">
-              <a-input v-model:value="formState.username" />
+              <a-input v-model:value="formState.username" :disabled="editId?true:false" />
             </a-form-item>
             <a-form-item label="密码"  name="password_hash">
               <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
@@ -285,7 +285,8 @@ export default defineComponent({
         gender: [{ required: true, message: '请选择性别', trigger: 'change' }],
         email: [
          {pattern:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,message:'邮箱格式有误', trigger: 'blur'},
-      ],  
+      ],
+      phone:[{pattern:/^(1(3|4|5|6|7|8|9)|9(2|8))\d{9}$/, message: '请输入正确的手机号',trigger: 'blur'}]  
     }
     watch(()=>{return formState.userinitpassword},(val)=>{
       // console.log(val)
@@ -403,6 +404,7 @@ export default defineComponent({
               introduce:introduce,
             }
         }
+        // 编辑时改变了就传  
         if((formState.reset && editId.value) || editId.value === 0){
           obj.Teacher.password_hash=password_hash
           obj.Teacher.repassword=repassword
@@ -436,12 +438,12 @@ export default defineComponent({
       visible.value=true
     }
     async function clearSearch(){
-      if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
+      // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
         ForumSearch.username=''
         ForumSearch.name=''
         ForumSearch.department=''
         initData()
-      }
+      // }
     }
     function onChangePage(val:number){
       const {query,path}= route

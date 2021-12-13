@@ -151,13 +151,15 @@ export default defineComponent({
       // console.log(ForumSearch)
       loading.value=true
       list.length=0
-      // let param={
-      //   'search[students_count]':ForumSearch.students_count,
-      //   'search[name]':ForumSearch.name,
-      //   limit:ForumSearch.pageSize,
-      //   page:ForumSearch.page,
-      // }
-      http.classList({param:{...ForumSearch}}).then((res:IBusinessResp)=>{
+      let param={
+        // 'search[students_count]':ForumSearch.students_count,
+        // 'search[name]':ForumSearch.name,
+        limit:ForumSearch.limit,
+        page:ForumSearch.page,
+      }
+      ForumSearch.students_count?param['search[students_count]']=ForumSearch.students_count:''
+      ForumSearch.name?param['search[name]']=ForumSearch.name:''
+      http.classList({param:{...param}}).then((res:IBusinessResp)=>{
          loading.value=false
         let data=res.data.list
         // data.map((v:any)=>{
@@ -240,12 +242,12 @@ export default defineComponent({
       // visible.value=true
       router.push('/admin/adminUserManagement/classManagement/classEdit?editId='+val.id)
     }
-    async function clearSearch(){
-      if(ForumSearch.students_count || ForumSearch.name){
+    function clearSearch(){
+      // if(ForumSearch.students_count || ForumSearch.name){
         ForumSearch.name=''
         ForumSearch.students_count=''
         initData()
-      }
+      // }
     }
     function onChangePage(val:number){
       const {query,path}= route

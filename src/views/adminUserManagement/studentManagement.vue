@@ -2,7 +2,7 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.username" placeholder="请输入账号" />
+          <a-input v-model:value="ForumSearch.username" placeholder="请输入学号" />
         </div>
         <div  class="item custom_input custom_input2">
           <a-input v-model:value="ForumSearch.name" placeholder="请输入姓名"  />
@@ -15,10 +15,10 @@
           <a-button type="primary" @click="clearSearch()">清空</a-button>
         </div>
       </div>
-      <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">添加学生</a-button>
+      <div class="addStudent">
+        <a-button @click="addStudent()" type="primary">添加学生</a-button>
       </div>
-      <div class="addTeacher">
+      <div class="addStudent">
         <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
       </div>
       <a-button @click="ImportVisible=true" type="primary" >批量导入</a-button>
@@ -38,8 +38,8 @@
       <a-form ref="formRef" :model="formState" :label-col="{span:10}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <div class="formBox">
           <div class="left">
-            <a-form-item label="账号"  name="username">
-              <a-input v-model:value="formState.username" />
+            <a-form-item label="学号"  name="username">
+              <a-input v-model:value="formState.username" :disabled="editId?true:false" />
             </a-form-item>
             <a-form-item label="密码"  name="password_hash">
               <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
@@ -52,7 +52,7 @@
             <div class="userinitpassword" v-if="!editId">
               <span>使用初始密码</span>
               <a-checkbox v-model:checked="formState.userinitpassword"></a-checkbox>
-              <span>{{`(账号+${suffix})`}}</span>
+              <span>{{`(学号+${suffix})`}}</span>
             </div>
             <div class="userinitpassword" v-if="editId">
               <a-checkbox v-model:checked="formState.reset"></a-checkbox>
@@ -95,17 +95,17 @@
       </a-form>
     </a-modal>
 
-    <a-modal v-model:visible="ImportVisible" title="导入" :width="845" class="modal-post">
+    <a-modal v-model:visible="ImportVisible" title="导入" :width="960" class="modal-post" :footer="null">
       <div class="studentList">
         <div class="heard">
           <a-upload :before-upload="fileBeforeUpload" :show-upload-list="false" accept=".xls,.xlsx">
             <a-button>
               <span class="icon iconfont icon-upload"></span>
-              导入文件
+              选择文件
             </a-button>
           </a-upload>
           <!-- <div>
-            <a-button @click="DownloadTemplate" type="primary">确认导入</a-button>
+            <a-button @click="DownloadTemplate" type="primary">导入</a-button>
           </div> -->
           <div>
             <a-button @click="DownloadTemplate" type="link">下载学生模板</a-button>
@@ -117,7 +117,7 @@
             <span>已导入：{{ImportData.finished}} 条</span>
             <span>未导入：{{ImportData.unfinished}} 条</span>
           </div>
-          <a-table :columns="studentColumns" :data-source="ImportData.list" :bordered="true"  row-key="id"
+          <a-table :columns="studentColumns" :data-source="ImportData.list" :bordered="true"  row-key="username"
             class="components-table-demo-nested">
           </a-table>
         </div>
@@ -171,7 +171,7 @@ interface IFormState{
 }
 const columns=[
   {
-    title: '账号',
+    title: '学号',
     dataIndex:"stu_no",
     align:'center',
     width:120,
@@ -225,19 +225,19 @@ const columns=[
 const studentColumns=[
   {
     title: '学号',
-    dataIndex:"stu_no",
+    dataIndex:"username",
     align:'center',
     // width:120,
   },
   {
     title: '姓名',
-    dataIndex:"stu_no",
+    dataIndex:"name",
     align:'center',
     // width:120,
   },
   {
     title: '导入情况',
-    dataIndex:"stu_no",
+    dataIndex:"result",
     align:'center',
     // width:120,
   },
@@ -311,8 +311,8 @@ export default defineComponent({
     })
     const rules={
         username: [
-          { required: true, message: '请输入账号', trigger: 'blur'},
-          {pattern:/^[_a-zA-Z0-9]{1,10}$/,message:'账号应为字母或数字，长度不超过10', trigger: 'blur'}
+          { required: true, message: '请输入学号', trigger: 'blur'},
+          {pattern:/^[_a-zA-Z0-9]{1,10}$/,message:'学号应为字母或数字，长度不超过10', trigger: 'blur'}
           // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
         ],
         password_hash: [{ required: true, message: '请输入密码', trigger: 'blur' }],
@@ -322,6 +322,7 @@ export default defineComponent({
         email: [
          {pattern:/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,message:'邮箱格式有误', trigger: 'blur'},
       ],  
+      phone:[{pattern:/^(1(3|4|5|6|7|8|9)|9(2|8))\d{9}$/, message: '请输入正确的手机号',trigger: 'blur'}]
     }
     watch(()=>{return formState.userinitpassword},(val)=>{
       // console.log(val)
@@ -470,13 +471,13 @@ export default defineComponent({
       })
       visible.value=true
     }
-    async function clearSearch(){
-      if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
+    function clearSearch(){
+      // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
         ForumSearch.username=''
         ForumSearch.name=''
         ForumSearch.department=''
         initData()
-      }
+      // }
     }
     function onChangePage(val:number){
       const {query,path}= route
@@ -488,12 +489,12 @@ export default defineComponent({
       })
       initData()
     }
-    function addTeacher(){
+    function addStudent(){
       editId.value=0
       visible.value=true
     }
     function fileBeforeUpload(file:any){
-      console.log(file)
+      // console.log(file)
       // return
       if (file && file.size === 0) {
         message.warn('文件大小不能为空')
@@ -502,10 +503,10 @@ export default defineComponent({
       // loading.value=true
       const fd = new FormData()
       fd.append('file', file)
-      http.BatchImport({param:fd}).then((res:any)=>{
-        ImportData.finished=res.total.finished
-        ImportData.unfinished=res.total.unfinished
-        ImportData.list=res.msg
+      http.BatchImport({param:fd}).then((res:IBusinessResp)=>{
+        ImportData.finished=res.data.total.finished
+        ImportData.unfinished=res.data.total.unfinished
+        ImportData.list=res.data.msg
         message.success('导入完成')
         initData()
       })
@@ -519,7 +520,7 @@ export default defineComponent({
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),ImportVisible,studentColumns,ImportData,fileBeforeUpload,DownloadTemplate,customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher};
+    return {...toRefs(state),ImportVisible,studentColumns,ImportData,fileBeforeUpload,DownloadTemplate,customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addStudent};
   },
 })
 </script>
@@ -586,7 +587,7 @@ export default defineComponent({
       }
     }
   }
-  .addTeacher{
+  .addStudent{
       margin-right: 16px;
     }
 }
@@ -626,6 +627,7 @@ export default defineComponent({
     .notes{
       color: red;
       padding-left: 16px;
+      font-size: 13px;
     }
   }
   .list{
