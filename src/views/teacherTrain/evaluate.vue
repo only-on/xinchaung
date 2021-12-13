@@ -27,7 +27,7 @@
       :trainId="trainInfo.trainId"
     ></evaluate-table>
     <task-statistic 
-    :trainId="trainInfo.trainId">
+      :trainId="trainInfo.trainId">
     </task-statistic>
   </div>
 </template>

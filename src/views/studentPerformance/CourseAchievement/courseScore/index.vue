@@ -230,7 +230,6 @@ export default defineComponent({
     }
     function viewResults(index: number, j: number, c: any, ifcheck: any) {
       console.log(ifcheck);
-      ifcheck = true;
       console.log(ifcheck);
       if (ifcheck) {
         console.log("展开");

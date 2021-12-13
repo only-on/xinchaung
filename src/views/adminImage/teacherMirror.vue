@@ -23,7 +23,7 @@
         <a-button type="primary" @click="clear">清空</a-button>
       </div>
       <div class="searchRight">
-        <a-button type="primary" @click="deleteImage">批量删除</a-button>
+        <a-button type="primary" @click="deleteImage(null)">批量删除</a-button>
       </div>
     </div>
     <div>
@@ -31,6 +31,7 @@
         <a-table
           :columns="columns"
           :data-source="data"
+          rowKey="id"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         >
           <template #imageType="{ record }">
@@ -122,18 +123,25 @@ export default defineComponent({
       // 勾选多选框
       onSelectChange(selectedRowKeys: any) {
         state.selectedRowKeys = selectedRowKeys;
+        console.log(state.selectedRowKeys, "state.selectedRowKeys");
       },
       deleteImage(id: any) {
+        const deleteId = id ? [id] : state.selectedRowKeys;
+        console.log(deleteId, "要删除的ID");
+        if (!deleteId.length) {
+          message.warning("请选择要删除的镜像！");
+          return;
+        }
         Modal.confirm({
           title: "提示",
           content: "确定要删除吗？",
           okText: "确认",
           cancelText: "取消",
           onOk: () => {
-            // http.deleteTrain({ param: {id:   state.selectedRowKeys} }).then((res: any) => {
-            //   console.log(res);
-            //   methods.tableList();
-            // });
+            http.deleteImage({ param: { id: deleteId } }).then((res: any) => {
+              console.log(res);
+              methods.getImageList();
+            });
           },
         });
       },

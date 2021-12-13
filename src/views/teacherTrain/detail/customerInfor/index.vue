@@ -595,7 +595,7 @@ export default defineComponent({
       content: "";
       width: 12px;
       height: 8px;
-      border: 2px solid white;
+      border: 2px solid @white;
       border-top: transparent;
       border-right: transparent;
       text-align: center;

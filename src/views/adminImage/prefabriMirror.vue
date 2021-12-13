@@ -23,7 +23,7 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table :columns="columns" :data-source="data">
+        <a-table :columns="columns" :data-source="data" rowKey="id">
           <template #imageType="{ record }">
             <div>
               {{ record.classify_id === 1 ? "Windows" : "Linux" }}

@@ -31,7 +31,7 @@
                 <div v-else>--</div>
               </template>
               <template #report="{ record }">
-                <div @click="toLookResult(record.report, 'report')">查看</div>
+                <div @click="toLookResult(record.report.report_html, 'report')">查看</div>
               </template>
               <template #notes="{ record }">
                 <div @click="toLookResult(record.notes, 'note')">查看</div>

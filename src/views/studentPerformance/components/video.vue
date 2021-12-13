@@ -1,7 +1,7 @@
 <template>
   <div class="content">
     <video
-      :src="detailInfo"
+      :src="videoUrl"
       :controls="true"
       webkit-playsinline="true"
       playsinline="true"
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs } from "vue";
+import { defineComponent, reactive, toRefs, watch } from "vue";
 interface Istate {
   videoUrl: string;
 }
@@ -21,12 +21,17 @@ export default defineComponent({
   props: ["detailInfo"],
   setup: (props, context) => {
     const state: Istate = reactive({
-      // videoUrl:
-      //   "localhost:3000/proxyPrefix" +
-      //   "/trainvideo/453850030/ffmpeg14b542ae-566a-11ec-8350-ac1f6b3681fa.mp4",
-      videoUrl:
-        "http://192.168.101.130/trainvideo/453850030/ffmpeg14b542ae-566a-11ec-8350-ac1f6b3681fa.mp4",
+      videoUrl: "",
     });
+    watch(
+      () => props.detailInfo,
+      () => {
+        let development = process.env.NODE_ENV == "development" ? true : false;
+        let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
+        state.videoUrl = baseurl + props.detailInfo;
+      },
+      { immediate: true, deep: true }
+    );
     return { ...toRefs(state) };
   },
 });
