@@ -107,7 +107,7 @@ export default defineComponent({
         url: ''
       }
     }) // 视频类型，初学/重修
-    var examData = reactive([])
+    var examData = reactive<any[]>([])
     const refresh=inject('refresh') as Function
     function handleCancel() {
       modalVisible.value = false
