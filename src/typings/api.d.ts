@@ -24,6 +24,7 @@ import {TAdminSystemSetting} from "src/api/modules/adminSystemSetting"
 import {IAdminUserManagement} from "src/api/modules/adminUserManagement"
 import {IAdminExperimentManage} from 'src/api/modules/adminExperimentManage'
 import {TAdminCourse} from "src/api/modules/adminCourse"
+import {IAdminHome} from "src/api/modules/adminHome"
 
 /**
  * 通用响应类型
@@ -72,4 +73,5 @@ export interface IApiCollection {
     adminUserManagement:IAdminUserManagement
     adminExperimentManage:IAdminExperimentManage
     adminCourse:TAdminCourse
+    adminHome:IAdminHome
 }

@@ -19,7 +19,7 @@ const adminRoutes = {
         authCode: 'admin',
         showInBreadcrumb: false
     },
-    // redirect: '/admin/classical',
+    redirect: '/admin/home',
     children: configRoutes
 };
 export default adminRoutes
