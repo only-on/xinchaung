@@ -302,7 +302,7 @@ export default defineComponent({
       department:'',
       grade:'',
       name:'',
-      gender:'',
+      gender:'1',
       phone:'',
       email:'',
       status:'10',
@@ -466,7 +466,7 @@ export default defineComponent({
           }
         })
         formState.status=String(res.data.status)
-        formState.gender=String(res.data.gender)
+        formState.gender=String(res.data.gender===2?2:1)
         formState.username=res.data.stu_no
       })
       visible.value=true

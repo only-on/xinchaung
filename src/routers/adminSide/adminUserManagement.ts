@@ -42,12 +42,22 @@ export default {
     {
       path: "assistantManagement",
       component: () => import("src/views/adminUserManagement/assistantManagement.vue"),
+      // component: () => import("src/views/teacherAssistant/assistant.vue"),
       meta: {
         title:'助教管理',
         icon: "",
         authCode: "assistantManagement",
       },
     },
+    // {
+    //   path: "assistantManagement2",
+    //   // component: () => import("src/views/teacherAssistant/assistant.vue"),
+    //   meta: {
+    //     title:'助教管理',
+    //     icon: "",
+    //     authCode: "assistantManagement2",
+    //   },
+    // },
     {
       path: "classManagement",
       name:'classManagement',

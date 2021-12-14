@@ -30,10 +30,8 @@ export default {
       children:[
         {
           path:'',
-          // name:'ExperimentList',
-          // component: () => import("src/views/adminExperimentManage/index.vue"),
+          component: () => import("src/views/adminExperimentManage/index.vue"),
           meta: {
-            // title:'章节详情',
             icon: "",
             authCode: "adminExperimentManage",
           },
@@ -56,6 +54,15 @@ export default {
             title:'章节列表',
             icon: "",
             authCode: "ChapterList",
+          },
+        },
+        {
+          path: "ExperimentDetail",
+          name: "ExperimentDetail",
+          component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
+          meta: {
+              title: "实验详情",
+              authCode: 'ExperimentDetail'
           },
         },
       ]

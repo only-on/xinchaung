@@ -159,7 +159,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs } from 'vue'
+import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, computed } from 'vue'
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
@@ -497,6 +497,11 @@ export default defineComponent({
     watch(()=>{return formState.taskData},(val:any)=>{
       // console.log(val)
     },{deep:true})
+    var showEdit=computed(()=>{
+      // v-if="currentTab==='0'"
+      let sign=false
+      return sign
+    })
     onMounted(() => {
       getContentDetail()
     })
