@@ -2,7 +2,7 @@
   <div class="examItem" v-for="(item,index) in examList" :key="index">
     <div class="title">
       <span>{{index + 1}}、 {{item.question}} （）</span>
-      <span>（{{item.default_score}}分）</span>
+      <span>{{item.ordered_answer}}（{{item.origin_score}}分）</span>
     </div>
     <ul class="answer">
       <li v-for="(option, oIndex) in item.options" 
