@@ -17,7 +17,7 @@
         <a-switch checked-children="启用" un-checked-children="禁用" :checked="record.bind_status === '1' ? true: false" @change="changeSwitch(record)"/>
       </template>
       <template #operate="{ record }">
-        <span class="iconfont icon-chakan1" @click="look(record)"></span>
+        <!-- <span class="iconfont icon-chakan1" @click="look(record)"></span> -->
         <span class="iconfont icon-bianji" @click="edit(record)"></span>
         <span class="iconfont icon-shanchu" @click="del(record.id)"></span>
       </template>
@@ -82,10 +82,11 @@ export default defineComponent({
         key: 'username',
         width: 160,
         ellipsis: true,
-        sorter: (a: any, b: any) => {
-          // console.log(a, b);  
-        },
-        sortDirections: ['username', '-username'],
+        // sorter: (a: any, b: any) => {
+        //   // console.log(a, b);  
+        // },
+        // sortDirections: ['username', '-username'],
+        align:'center',
       },
       {
         title: '姓名',
@@ -93,6 +94,7 @@ export default defineComponent({
         key: 'name',
         width: 160,
         ellipsis: true,
+        align:'center',
       },
       {
         title: '性别',
@@ -100,6 +102,7 @@ export default defineComponent({
         key: 'gender',
         width: 80,
         slots: { customRender: 'gender' },
+        align:'center',
       },
       {
         title: '邮箱',
@@ -111,11 +114,13 @@ export default defineComponent({
           
         },
         sortDirections: ['email', '-email'],
+        align:'center',
       },
       {
         title: '电话',
         dataIndex: 'phone',
         key: 'phone',
+        align:'center',
       },
       {
         title: '所属教师',
@@ -123,6 +128,7 @@ export default defineComponent({
         key: 'teacher_name',
         width: 120,
         ellipsis: true,
+        align:'center',
       },
       {
         title: '状态',
@@ -135,6 +141,7 @@ export default defineComponent({
           
         },
         sortDirections: ['bind_status', '-bind_status'],
+        align:'center',
       },
       {
         title: '操作',
@@ -142,6 +149,7 @@ export default defineComponent({
         key: 'operate',
         slots: { customRender: 'operate' },
         width: 120,
+        align:'center',
       },
     ]
     // 编辑
@@ -289,15 +297,15 @@ type ColumnType = {
 <style lang="less" scoped>
 .assistant-table {
   :deep(.ant-table) {
-    font-size: 14px;
+    // font-size: 14px;
   }
   :deep(.ant-table-column-sorters) {
-    .ant-table-column-title {
-      color: @theme-color;
-    }
-    .ant-table-column-sorter {
-      display: none;
-    }
+    // .ant-table-column-title {
+    //   color: @theme-color;
+    // }
+    // .ant-table-column-sorter {
+    //   display: none;
+    // }
   }
   :deep(.ant-table-tbody) {
     .iconfont {

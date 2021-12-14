@@ -1,12 +1,12 @@
 <template>
   <div v-layout-bg>
     <div class="condition">
-      <a-form-item label="帐号">
-        <a-input v-model:value="searchInfo.username" @keyup.enter="query" />
-      </a-form-item>
-      <a-form-item label="姓名">
-        <a-input v-model:value="searchInfo.name" @keyup.enter="query" />
-      </a-form-item>
+      <div class="item custom_input custom_input1">
+        <a-input v-model:value="searchInfo.username" placeholder="请输入账号" @keyup="query()" />
+      </div>
+      <div  class="item custom_input custom_input2">
+        <a-input v-model:value="searchInfo.name" placeholder="请输入姓名" @keyup="query()" />
+      </div>
       <a-button type="primary" @click="query()">查询</a-button>
       <a-button type="primary" @click="clear()">清空</a-button>
       <div class="right">
@@ -223,18 +223,10 @@ export default defineComponent({
   justify-content: flex-start;
   :deep(.ant-form-item) {
     margin-right: 10px;
-    .ant-form-item-control .ant-input, 
-    .ant-form-item-control .ant-select  {
-      width: 165px;
-      .font-size-14();
-    }
-    .ant-form-item-label > label {
-      .font-size-14();
-    }
+    
   }
   :deep(.ant-btn-primary) {
     margin-right: 10px;
-    .font-size-14();
   }
   .right {
     margin-left: auto;
@@ -245,4 +237,36 @@ export default defineComponent({
     }
   }
 }
+.item{
+      display: flex;
+      align-items: center;
+      margin-right: 22px;
+      :deep(.ant-select-selector){
+        width: 240px;
+        height: 35px;
+        padding-left: 30px;
+        align-items: center;
+      }
+      :deep(.ant-input){
+          padding-left: 26px;
+      }
+    }
+.custom_input{
+      position: relative;
+      &::before{
+          content: '';
+          position: absolute;
+          left:8px;
+          top:10px;
+          background: url(../../assets/images/screenicon/Group7.png) no-repeat;
+          width: 16px;
+          height: 16px;
+          z-index: 10;
+      }
+    }
+    .custom_input2{
+      &::before{
+        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+      }
+    }
 </style>
