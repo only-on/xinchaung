@@ -150,7 +150,7 @@ export default {
   },
   showQuestions: {
     url: '/api/v1/question/contents/{content_id}/students/{student_id}/questions',
-    method: 'POST'
+    method: 'GET'
   },
   showVideos: {
     url: '/teacher-course/get-videos',

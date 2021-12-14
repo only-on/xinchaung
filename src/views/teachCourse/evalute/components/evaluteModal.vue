@@ -107,145 +107,7 @@ export default defineComponent({
         url: ''
       }
     }) // 视频类型，初学/重修
-    var examData = reactive([
-      {
-         "id": 17,
-            "question": "测试习题17",
-            "type_id": 1,
-            "level_id": 3,
-            "pool_id": 2,
-            "default_score": 35,
-            "user_id": 105,
-            "created_at": "2021-08-26 18:18:40",
-            "updated_at": "2021-08-26 18:18:40",
-            "relation_id": 2,
-            "type": {
-                "id": 1,
-                "name": "单选题"
-            },
-            "level": {
-                "id": 3,
-                "name": "困难"
-            },
-            "options": [
-                {
-                    "id": 10,
-                    "option": "A"
-                },
-                {
-                    "id": 11,
-                    "option": "B"
-                },
-                {
-                    "id": 12,
-                    "option": "C"
-                },
-                {
-                    "id": 13,
-                    "option": "D"
-                },
-                {
-                    "id": 14,
-                    "option": "E"
-                }
-            ],
-            "answers": [
-                {
-                    "id": 4,
-                    "answer": "12"
-                }
-            ],
-            "student_answer": ["12"],
-      },
-      {
-            "id": 2,
-            "question": "测试习题5",
-            "type_id": 2,
-            "level_id": 2,
-            "pool_id": 2,
-            "default_score": 15,
-            "user_id": 105,
-            "created_at": "2021-08-18 17:58:24",
-            "updated_at": "2021-08-18 17:58:24",
-            "relation_id": 6,
-            "type": {
-                "id": 2,
-                "name": "多选题"
-            },
-            "level": {
-                "id": 2,
-                "name": "中等"
-            },
-            "options": [
-                {
-                    "id": 1,
-                    "option": "A"
-                },
-                {
-                    "id": 2,
-                    "option": "B"
-                },
-                {
-                    "id": 3,
-                    "option": "C"
-                },
-                {
-                    "id": 4,
-                    "option": "D"
-                }
-            ],
-            "answers": [
-                {
-                    "id": 1,
-                    "answer": "1"
-                },
-                {
-                    "id": 2,
-                    "answer": "3"
-                }
-            ],
-            "student_answer": ["1", "2"],
-            "keywords": []
-        },
-        {
-            "id": 18,
-            "question": "测试习题18",
-            "type_id": 3,
-            "level_id": 3,
-            "pool_id": 2,
-            "default_score": 10,
-            "user_id": 105,
-            "created_at": "2021-08-31 16:01:42",
-            "updated_at": "2021-08-31 16:01:42",
-            "relation_id": 12,
-            "type": {
-                "id": 3,
-                "name": "判断题"
-            },
-            "level": {
-                "id": 3,
-                "name": "困难"
-            },
-            "options": [
-                {
-                    "id": 15,
-                    "option": "正确"
-                },
-                {
-                    "id": 16,
-                    "option": "错误"
-                }
-            ],
-            "answers": [
-                {
-                    "id": 5,
-                    "answer": "16"
-                }
-            ],
-            "keywords": [],
-            "student_answer": ['16']
-        },
-    ])
+    var examData = reactive([])
     const refresh=inject('refresh') as Function
     function handleCancel() {
       modalVisible.value = false
@@ -274,13 +136,13 @@ export default defineComponent({
               record_ids: []
             }
             Object.assign(examParams, obj)
-            if (!props.params.quest_record_id.length) {
+            if (props.params.quest_record_id.length) {
               examTabType.first = true
               activeTab.value = 'first'
               examParams.record_ids = props.params.quest_record_id
             }
             // 习题重修
-            if (!props.params.quest_rebuild_record_id.length) {
+            if (props.params.quest_rebuild_record_id.length) {
               examTabType.rebuild = true
               if (!examTabType.first) {
                 activeTab.value = 'rebuild'
