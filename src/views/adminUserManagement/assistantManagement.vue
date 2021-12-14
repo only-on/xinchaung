@@ -13,8 +13,8 @@
         </div>
       </div>
       <div class="addTeacher">
-        <a-button @click="addTeacher()" type="primary">批量禁用</a-button>
-        <a-button @click="addTeacher()" type="primary">添加助教</a-button>
+        <a-button @click="BatchDisable()" type="primary" v-if="!showAdd">批量禁用</a-button>
+        <a-button @click="addTeacher()" type="primary" v-if="showAdd">添加助教</a-button>
       </div>
       <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
     </div>
@@ -24,10 +24,10 @@
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
         class="components-table-demo-nested">
         <template #status="{ record }">
-          <a-switch checked-children="启用" un-checked-children="禁用" :checked="record.bind_status === '1' ? true: false" @change="changeSwitch(record)"/>
+          <a-switch checked-children="启用" un-checked-children="禁用" :checked="record.bind_status === '1' ? true: false" @change="changeSwitch(record)" :disabled="showAdd===true?false:true"/>
         </template>
         <template #operation="{record}">
-          <i class="caozuo iconfont icon-bianji" @click="editCard(record )" title="更新"></i>
+          <i class="caozuo iconfont icon-bianji" @click="editCard(record )" title="更新" v-if="showAdd"></i>
           <i class="caozuo iconfont icon-shanchu" @click="delateCard(record.id )" title="删除"></i>
         </template>
       </a-table>
@@ -143,7 +143,7 @@ const columns=[
     title: '邮箱',
     dataIndex: 'email',
     align:'center',
-    // width:240
+    width:260
   },
   {
     title: '电话',
@@ -187,6 +187,10 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
 
+    const showAdd=computed(()=>{
+      // let sign=false
+      return 3===Number(role)?true:false
+    })
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
@@ -226,7 +230,7 @@ export default defineComponent({
       direct:'',
       course:'',
       name:'',
-      gender:'',
+      gender:'1',
       phone:'',
       email:'',
       status:'10',
@@ -321,7 +325,7 @@ export default defineComponent({
         okText: '确认',
         cancelText: '取消',
         onOk(){
-          http.teacherUserDelete({urlParams:{id:val}}).then((res:IBusinessResp)=>{
+          http.AssistantDelete({urlParams:{id:val}}).then((res:IBusinessResp)=>{
             initData()
             message.success('删除成功')
           })
@@ -333,7 +337,7 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+      http.AssistantBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
           message.success('删除成功')
         })
@@ -341,33 +345,31 @@ export default defineComponent({
     function submit(){
       // createTeacher
       formRef.value.validate().then(()=>{
-        const {username,password_hash,repassword,userinitpassword,direct,course,name,gender,phone,email,status,introduce}=formState
+        const {username,password_hash,repassword,userinitpassword,direct,course,name,gender,phone,email}=formState
         if(password_hash !== repassword){
           message.warn('密码输入不一致')
           return
         }
         let obj:any={
-            Teacher:{
+            Assistant:{
               username:username,
               email:email,
               userinitpassword:userinitpassword,
+              password_hash:password_hash,
+              repassword:repassword
             },
-            TeacherProfile:{
-              direct:direct,
-              course:course,
+            AssistantProfile:{
               name:name,
               gender:gender,
               phone:phone,
-              status:status,
-              introduce:introduce,
             }
         }
         // 编辑时改变了就传  
         if((formState.reset && editId.value) || editId.value === 0){
-          obj.Teacher.password_hash=password_hash
-          obj.Teacher.repassword=repassword
+          obj.Assistant.password_hash=password_hash
+          obj.Assistant.repassword=repassword
         }
-        const promise=editId.value?http.editTeacher({urlParams:{id:editId.value},param:{...obj}}):http.createTeacher({param:{...obj}})
+        const promise=editId.value?http.updateAssistant({urlParams:{id:editId.value},param:{...obj}}):http.addAssistant({param:{...obj}})
         promise.then((res:IBusinessResp)=>{
           initData()
           message.success(editId.value?'编辑成功':'创建成功')
@@ -383,15 +385,15 @@ export default defineComponent({
     }
     function editCard(val:ItdItems){
       editId.value=val.id
-      http.viewTeacher({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
+      http.getAssistantDetail({urlParams:{id:editId.value}}).then((res:IBusinessResp)=>{
         Object.keys(res.data).forEach((v:any)=>{
           if(v in formState){
             formState[v]=res.data[v]
           }
         })
-        formState.status=String(res.data.status)
-        formState.gender=String(res.data.gender)
+        formState.gender=String(res.data.gender===2?2:1)
         formState.username=res.data.stu_no
+        formState.phone=res.data.phone_no
       })
       visible.value=true
     }
@@ -425,10 +427,20 @@ export default defineComponent({
         initData()
       })
     } 
+    function BatchDisable(){
+      if(!state.selectedRowKeys.length){
+        message.warn('请选择要禁用的数据')
+        return
+      }
+      http.AssistantBatchDisable({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+          initData()
+          message.success('操作成功')
+        })
+    }
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),customizeRenderEmpty,suffix,cancel,changeSwitch,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher};
+    return {...toRefs(state),customizeRenderEmpty,suffix,showAdd,BatchDisable,cancel,changeSwitch,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addTeacher};
   },
 })
 </script>

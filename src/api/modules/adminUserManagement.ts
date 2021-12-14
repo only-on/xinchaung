@@ -32,6 +32,12 @@ export default{
   
   assistantList:{url:`/assistant/index`,method:'POST',dataType: 'json'},
   changeStatus: { url: `/assistant/teacher-bind`, method: "POST", dataType: 'json' },
+  addAssistant: { url: `/assistant/create`, method: "POST", dataType: 'json' },
+  updateAssistant: { url: `/assistant/update?id={id}`, method: "POST", dataType: 'json' },
+  getAssistantDetail: { url: `/assistant/view?id={id}`, method: 'GET', dataType: 'json' },
+  AssistantDelete:{url:`/assistant/delete?id={id}`,method:'POST'},
+  AssistantBatchDelete: { url: `/assistant/delall`,method:'POST',dataType:'json' },
+  AssistantBatchDisable: { url: `/assistant/disabled`,method:'POST',dataType:'json' },
 }
 export interface IAdminUserManagement{
   teacherList:TFHttpSend
@@ -66,6 +72,12 @@ export interface IAdminUserManagement{
 
   assistantList:TFHttpSend
   changeStatus:TFHttpSend
+  addAssistant:TFHttpSend
+  updateAssistant:TFHttpSend
+  getAssistantDetail:TFHttpSend
+  AssistantBatchDelete:TFHttpSend
+  AssistantDelete:TFHttpSend
+  AssistantBatchDisable:TFHttpSend
 
 }
 export const MODULE_NAME = 'adminUserManagement'
