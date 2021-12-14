@@ -52,10 +52,10 @@ export default defineComponent({
     ];
     const columnData = [
       { key: "1", scoreItem: "用时得分", score: props.scoredata?.time_score },
-      { key: "2", scoreItem: "习题得分", score: props.scoredata?.score },
+      { key: "2", scoreItem: "习题得分", score: props.scoredata?.question_score },
       { key: "3", scoreItem: "报告得分", score: props.scoredata?.report_score },
       { key: "4", scoreItem: "步骤得分", score: props.scoredata?.auto_score },
-      { key: "5", scoreItem: "总分", score: props.scoredata?.final_score },
+      { key: "5", scoreItem: "总分", score: props.scoredata?.score },
     ];
     const data =
       props.detailShowConfig.indexOf("auto") === -1
@@ -83,12 +83,12 @@ export default defineComponent({
             props.detailShowConfig.indexOf("auto") === -1
               ? [
                   { value: props.scoredata?.time_score, name: "用时得分" },
-                  { value: props.scoredata?.score, name: "习题得分" },
+                  { value: props.scoredata?.question_score, name: "习题得分" },
                   { value: props.scoredata?.report_score, name: "报告得分" },
                 ]
               : [
                   { value: props.scoredata?.time_score, name: "用时得分" },
-                  { value: props.scoredata?.score, name: "习题得分" },
+                  { value: props.scoredata?.question_score, name: "习题得分" },
                   { value: props.scoredata?.report_score, name: "报告得分" },
                   { value: props.scoredata?.auto_score, name: "步骤得分" },
                 ],
