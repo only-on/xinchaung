@@ -2,13 +2,13 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.username" placeholder="请输入账号" />
+          <a-input v-model:value="ForumSearch.username" placeholder="请输入账号" @keyup="search()" />
         </div>
         <div  class="item custom_input custom_input2">
-          <a-input v-model:value="ForumSearch.name" placeholder="请输入姓名"  />
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入姓名" @keyup="search()" />
         </div>
         <div  class="item custom_input custom_input3">
-          <a-input v-model:value="ForumSearch.department" placeholder="请输入院系" />
+          <a-input v-model:value="ForumSearch.department" placeholder="请输入院系" @keyup="search()" />
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>

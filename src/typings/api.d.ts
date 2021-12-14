@@ -23,6 +23,7 @@ import {ITeacherTemplateApis} from "src/api/modules/teacherTemplate"
 import {IDataSet} from "src/api/modules/dataSet"
 import {TAdminSystemSetting} from "src/api/modules/adminSystemSetting"
 import {IAdminUserManagement} from "src/api/modules/adminUserManagement"
+import {IAdminExperimentManage} from 'src/api/modules/adminExperimentManage'
 import {TAdminCourse} from "src/api/modules/adminCourse"
 
 /**
@@ -40,7 +41,7 @@ export interface IApiItem {
     dataType?: TDataType;
 }
 
-export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'teacherForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment' | 'teacherTemplate' | 'dataSet' | 'adminUserManagement'
+export type TAvailableModules = 'classicalAsset' | 'common' | 'statistic' | 'studentExperimental' | 'studentForum' | 'teacherForum' | 'studentCourse' | 'personalInformation' | 'teachCourse' | 'courseTree' | 'teacherCourseAnalysis' | 'teacherTrain' | 'teacherExam' | 'teacherHome' | 'teacherExperiment' | 'teacherTemplate' | 'dataSet' | 'adminUserManagement' | 'adminExperimentManage'
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -71,5 +72,6 @@ export interface IApiCollection {
     dataSet:IDataSet
     adminSystemSetting:TAdminSystemSetting
     adminUserManagement:IAdminUserManagement
+    adminExperimentManage:IAdminExperimentManage
     adminCourse:TAdminCourse
 }
