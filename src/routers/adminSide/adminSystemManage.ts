@@ -12,8 +12,8 @@ export default {
         {
             path: "systemLog",
             name: "",
-            // component: () => import("src/views/adminSystemManage/systemLog/index.vue"),
-            component: () => import("src/views/personalInformation/OperationList.vue"),
+            component: () => import("src/views/adminSystemManage/systemLog/index.vue"),
+            // component: () => import("src/views/personalInformation/OperationList.vue"),
             meta: {
                 title: "系统日志",
                 authCode: ''

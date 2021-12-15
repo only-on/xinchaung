@@ -29,7 +29,7 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
     // 4   个人信息  3 1 2修改密码
-    if(role===1 || role===3){
+    if(role===1 || role===3  || role===2){
       componentName.value='Information'
       updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }else{
