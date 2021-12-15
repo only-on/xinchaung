@@ -345,7 +345,7 @@ export default defineComponent({
     function submit(){
       // createTeacher
       formRef.value.validate().then(()=>{
-        const {username,password_hash,repassword,userinitpassword,direct,course,name,gender,phone,email}=formState
+        const {username,password_hash,repassword,userinitpassword,name,gender,phone,email}=formState
         if(password_hash !== repassword){
           message.warn('密码输入不一致')
           return

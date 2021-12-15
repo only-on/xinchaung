@@ -10,7 +10,7 @@
         </a-form-item>
         <div class="duration">
           <a-form-item label="考试开始时间"  name="started_at" :label-col="{span:8}" :wrapper-col="{span:20}">
-            <a-date-picker v-model:value="formState.started_at" @blur="dateOk" @ok="dateOk" :show-time="{ defaultValue: moment('00:00', 'HH:mm:ss'),minuteStep:5,secondStep:60 }" :disabled-date="disabledDate" :disabled-time="disabledDateTime"  valueFormat="YYYY-MM-DD HH:mm:ss"  format="YYYY-MM-DD HH:mm:ss" />
+            <a-date-picker v-model:value="formState.started_at" @blur="dateOk" @ok="dateOk" :show-time="{defaultValue: moment('00:00', 'HH:mm'),minuteStep:5,secondStep:60 }" :disabled-date="disabledDate" :disabled-time="disabledDateTime"  valueFormat="YYYY-MM-DD HH:mm"  format="YYYY-MM-DD HH:mm" />
           </a-form-item>
           <a-form-item label="考试时长"  name="hour_long" :label-col="{span:6}" :wrapper-col="{span:16}">
             <a-input v-model:value="formState.hour_long" @blur="hourLongChange()" />
@@ -96,13 +96,13 @@
       </div>
       <div>
         <a-button type="primary" @click="addSelect()">添加</a-button>
-        <a-button type="primary" @click="clearFilter()">清空</a-button>
         <a-button type="primary" @click="studentQuery()">查询</a-button>
+        <a-button type="primary" @click="clearFilter()">清空</a-button>
       </div>
     </div>
     <div class="tableBox">
       <a-spin :spinning="loading" size="large" tip="Loading...">
-        <a-table :columns="information===1?selectClassColums:selectStudentColumns" :loading="loading" :data-source="studentList" :bordered="true"  row-key="id"
+        <a-table :columns="information===1?selectClassColums:selectStudentColumns"  :data-source="studentList" :bordered="true"  row-key="id"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
             :pagination="{current:searchClassStudent.page,pageSize:searchClassStudent.limit,total:searchClassStudent.total,onChange:onChangePage,hideOnSinglePage:true,showSizeChanger:true,onShowSizeChange:showSizeChange}" 
             :locale="studentLocale"
@@ -710,6 +710,7 @@ export default defineComponent({
         // disabledMinutes: () => range(0,date.minutes),
         // disabledHours: () => range(0, 24),
         // disabledMinutes: () => range(0,60),
+        disabledSeconds: () => range(0,60),
       };
     }
     onMounted(()=>{

@@ -32,8 +32,8 @@
 <script lang="tsx">
 import {message} from 'ant-design-vue';
 import {createVNode,VNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch, computed} from 'vue'
-import { IBusinessResp} from '../../typings/fetch.d';
-import request from '../../api/index'
+import { IBusinessResp} from 'src/typings/fetch.d';
+import request from 'src/api/index'
 import { useRouter ,useRoute } from 'vue-router';
 import { SmileOutlined, MehOutlined ,ClockCircleOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';

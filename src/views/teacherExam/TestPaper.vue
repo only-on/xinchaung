@@ -173,6 +173,7 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding-left: 20px;
   .item{
   display: flex;
   align-items: center;

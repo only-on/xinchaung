@@ -49,6 +49,7 @@
                   <div>通过比例：{{v.pass_rate}}%</div>
                 </div>
                 <div class="score-num-right" @click="publish(v.id,v.is_publish)">
+                                               <!--下  返回的数据 什么玩意   都有 -->
                   <a-button type="primary" :disabled="!['null',null,2].includes(v.status)" >{{v.is_publish?'撤销发布':'发布考试'}}</a-button>
                 </div>
               </div>
