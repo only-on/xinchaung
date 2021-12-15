@@ -1,16 +1,18 @@
 <template>
-  <div class="examItem" v-for="(item,index) in examList" :key="index">
-    <div class="title">
-      <span>{{index + 1}}、 {{item.question}} （）</span>
-      <span>{{item.ordered_answer}}（{{item.origin_score}}分）</span>
+  <div class="examList scrollbar">
+    <div class="examItem" v-for="(item,index) in examList" :key="index">
+      <div class="title">
+        <span>{{index + 1}}、 {{item.question}} （）</span>
+        <span>{{item.student_score}}（{{item.origin_score}}分）</span>
+      </div>
+      <ul class="answer">
+        <li v-for="(option, oIndex) in item.options" 
+          :key="String(oIndex)" 
+          :class="setColor(option.id, item.answers, item.student_answer)">
+          <span v-if="getItemType(item.id) != 'Judge'">{{setSerial(oIndex)}}.</span> {{option.option}}
+        </li>
+      </ul>
     </div>
-    <ul class="answer">
-      <li v-for="(option, oIndex) in item.options" 
-        :key="String(oIndex)" 
-        :class="setColor(option.id, item.answers, item.student_answer)">
-        <span v-if="getItemType(item.id) != 'Judge'">{{setSerial(oIndex)}}.</span> {{option.option}}
-      </li>
-    </ul>
   </div>
 </template>
 <script lang="ts">
@@ -57,6 +59,10 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
+.examList{
+  max-height: 600px;
+  overflow: auto;
+}
 .examItem{
   font-size: 14px;
   .title{

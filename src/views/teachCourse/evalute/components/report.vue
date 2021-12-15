@@ -1,49 +1,51 @@
 <template>
-  <div class="report">
-    <!-- 离线报告 -->
-    <div id="offline" v-if="showOffline">
-      <iframe v-if="showIframe" :src="reportData.pdf_url" frameborder="0" width="100%" height="500px"></iframe>
-      <div v-else>文档转换中，请稍后查看！</div>
-    </div>
-    <!-- 在线报告 -->
-    <div id="online" v-if="showOnline">
-      <table>
-        <template v-for="(item,index) in reportData.json_content" :key="index">
-          <tr v-if="item.type === 'w1'">
-            <td colspan="6" class="report-title" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
-          </tr>
-          <tr v-if="item.type === 'w2' || item.type === 'w5'">
-            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
-            <td colspan="5" style='word-break: break-all;'>{{item.fields[1].value}}</td>
-          </tr>
-          <tr v-if="item.type === 'w3'">
-            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
-            <td colspan="2" style='word-break: break-all;'>{{item.fields[1].value}}</td>
-            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[2].value}}</td>
-            <td colspan="2" style='word-break: break-all;'>{{item.fields[3].value}}</td>
-          </tr>
-          <template v-if="item.type === 'w4'|| item.type === 'w6'">
-            <tr>
-              <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
+  <div class="reportBox">
+    <div class="report scrollbar">
+      <!-- 离线报告 -->
+      <div id="offline" v-if="showOffline">
+        <iframe v-if="showIframe" :src="reportData.pdf_url" frameborder="0" width="100%" height="500px"></iframe>
+        <div v-else>文档转换中，请稍后查看！</div>
+      </div>
+      <!-- 在线报告 -->
+      <div id="online" v-if="showOnline">
+        <table>
+          <template v-for="(item,index) in reportData.json_content" :key="index">
+            <tr v-if="item.type === 'w1'">
+              <td colspan="6" class="report-title" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
             </tr>
-            <tr>
-              <td colspan="6" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+            <tr v-if="item.type === 'w2' || item.type === 'w5'">
+              <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+              <td colspan="5" style='word-break: break-all;'>{{item.fields[1].value}}</td>
             </tr>
+            <tr v-if="item.type === 'w3'">
+              <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+              <td colspan="2" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+              <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[2].value}}</td>
+              <td colspan="2" style='word-break: break-all;'>{{item.fields[3].value}}</td>
+            </tr>
+            <template v-if="item.type === 'w4'|| item.type === 'w6'">
+              <tr>
+                <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
+              </tr>
+              <tr>
+                <td colspan="6" style='word-break: break-all;'>{{item.fields[1].value}}</td>
+              </tr>
+            </template>
+            <tr v-if="item.type === 'w7'">
+              <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
+              <td class="" colspan="5"><antdv-markdown :preview-only="true"  v-model="item.fields[1].value"/></td>
+            </tr>
+            <template v-if="item.type === 'w8'">
+              <tr>
+                <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
+              </tr>
+              <tr>
+                <td colspan="6"><antdv-markdown :preview-only="true" v-model="item.fields[1].value"/></td>
+              </tr>
+            </template>
           </template>
-          <tr v-if="item.type === 'w7'">
-            <td class="w2 title-text" :align='item.fields[0].align'>{{item.fields[0].value}}</td>
-            <td class="" colspan="5"><antdv-markdown :preview-only="true"  v-model="item.fields[1].value"/></td>
-          </tr>
-          <template v-if="item.type === 'w8'">
-            <tr>
-              <td colspan="6" class="title-text" :align='item.fields[0].align' style='height:30px;'>{{item.fields[0].value}}</td>
-            </tr>
-            <tr>
-              <td colspan="6"><antdv-markdown :preview-only="true" v-model="item.fields[1].value"/></td>
-            </tr>
-          </template>
-        </template>
-      </table>
+        </table>
+      </div>
     </div>
     <div class="annotate" @click="handleAnnotate">
       <i class="iconfont icon-piyue"></i>
@@ -180,18 +182,11 @@ export default defineComponent({
 })
 </script>
 <style lang="less" scoped>
-.report{
+.reportBox{
+  width: 100%;
   position: relative;
+  height: 400px;
   overflow: hidden;
-  #offline{
-    &>div{
-      height: 300px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: @theme-color
-    }
-  }
   .annotate{
     width: 85px;
     height: 50px;
@@ -215,6 +210,20 @@ export default defineComponent({
       flex-direction: column;
       font-size: 14px;
       padding-left: 15px;
+    }
+  }
+}
+.report{
+  position: relative;
+  height: 100%;
+  overflow: auto;
+  #offline{
+    &>div{
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: @theme-color
     }
   }
   :deep(table){
