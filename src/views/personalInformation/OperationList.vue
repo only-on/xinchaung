@@ -5,10 +5,10 @@
             <a-select v-model:value="ForumSearch.type"  placeholder="请选择操作类型" :options="options" />
         </div>
         <div class="item custom_input custom_input_operation_type">
-          <a-input-search v-model:value="ForumSearch.operation_type" placeholder="请输入操作行为" @search="search" />
+          <a-input v-model:value="ForumSearch.operation_type" placeholder="请输入操作行为" @keyup="search" />
         </div>
         <div class="item custom_input custom_input_ip">
-          <a-input-search v-model:value="ForumSearch.ip" placeholder="ip地址" @search="search" />
+          <a-input v-model:value="ForumSearch.ip" placeholder="ip地址" @keyup="search" />
         </div>
         <a-range-picker class="item" v-model:value="ForumSearch.date" valueFormat="YYYY-MM-DD">
           <template #suffixIcon>
@@ -219,7 +219,7 @@ export default defineComponent({
             align-items: center;
           }
           :deep(.ant-input){
-              padding-left: 20px;
+              padding-left: 26px;
           }
         }
         .item:last-child{

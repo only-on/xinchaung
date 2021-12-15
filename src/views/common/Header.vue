@@ -57,8 +57,8 @@ export default defineComponent({
       return role === 3
     })
     const power = computed(() => {
-      // 2 4  个人信息  3 1修改密码
-      return role === 3 || role === 1
+      //  4  个人信息  3 1 2修改密码
+      return role === 3 || role === 1  || role === 2
     })
     // const userName = ref<string>('');
     var userName=computed(()=>{

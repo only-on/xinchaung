@@ -7,6 +7,8 @@
 <script lang="ts">
 import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref} from 'vue'
 import Information from './Information.vue'
+// component: () => import("src/views/adminSystemManage/systemLog/index.vue"),
+// import OperationList from 'src/views/adminSystemManage/systemLog/index.vue'
 import OperationList from './OperationList.vue'
 import {useStore} from "vuex"
 import extStorage from "src/utils/extStorage";
@@ -20,13 +22,13 @@ export default defineComponent({
     const store=useStore()
 
     const componentNames=['OperationList','Information']
-    const tabs=[{name:'操作日志',componenttype:0},{name:'个人信息',componenttype:1}]
+    const tabs=[{name:'操作日志',componenttype:0},{name:'修改密码',componenttype:1}]
     var componentName:Ref<string>=ref('OperationList')
     var configuration:any=inject('configuration')
     var updata=inject('updataNav') as Function
     const { lStorage } = extStorage
     const role = lStorage.get('role')
-    // 2 4  个人信息  3 1修改密码
+    // 4   个人信息  3 1 2修改密码
     if(role===1 || role===3){
       componentName.value='Information'
       updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})

@@ -434,6 +434,7 @@ export default defineComponent({
       }
       http.AssistantBatchDisable({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
           initData()
+          state.selectedRowKeys.length=0
           message.success('操作成功')
         })
     }
