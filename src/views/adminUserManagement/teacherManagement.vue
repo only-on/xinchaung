@@ -234,14 +234,6 @@ export default defineComponent({
           // state.selectedRows = selectedRows;             
         },
     })  
-    // var configuration:any=inject('configuration')
-    // watch(()=>{return configuration.componenttype},(val)=>{
-    //   // console.log(val)
-    //   ForumSearch.username=''
-    //   ForumSearch.page=1
-    //   ForumSearch.name=''
-    //   initData()
-    // })
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
         return <template></template>
