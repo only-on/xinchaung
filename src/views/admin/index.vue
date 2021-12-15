@@ -114,7 +114,7 @@
         <div class="flex-line">
           <div class="w-3">
             <div class="ip-title">CPU({{ nodeIp.controls.cpu_cores }}core)</div>
-            <div class="ip-canvas" ref="controlsCpuEl"></div>
+            <div class="ip-canvas controls-h" ref="controlsCpuEl"></div>
           </div>
           <div class="w-3">
             <div class="ip-title">
@@ -122,7 +122,7 @@
                 nodeIp.controls.mem_total
               }}G)
             </div>
-            <div class="ip-canvas m-30" ref="controlsMemoryEl"></div>
+            <div class="ip-canvas m-30 controls-h" ref="controlsMemoryEl"></div>
           </div>
           <div class="w-4">
             <div class="ip-title">硬盘使用率</div>
@@ -234,7 +234,7 @@
       </div>
       <div class="w-7 bg-white p-22">
         <div class="flex-line">
-          <canvas-title title="控制节点资源状态" />
+          <canvas-title title="计算节点资源状态" />
           <a-select
             class="ip-select"
             v-model:value="currentComputesIp"
@@ -250,7 +250,7 @@
         <div class="flex-line">
           <div class="w-33">
             <div class="ip-title">CPU({{ nodeIp.computes.cpu_cores }}core)</div>
-            <div class="ip-canvas" ref="computesCpuEl"></div>
+            <div class="ip-canvas computes-h" ref="computesCpuEl"></div>
           </div>
           <div class="w-33">
             <div class="ip-title">
@@ -258,15 +258,17 @@
                 nodeIp.computes.mem_total
               }}G)
             </div>
-            <div class="ip-canvas m-30" ref="computesMemoryEl"></div>
+            <div class="ip-canvas m-30 computes-h" ref="computesMemoryEl"></div>
           </div>
           <div class="w-33">
             <div class="ip-title">
-              GPU{{currentGpu.memory?
-                (currentGpu.memory_usage / 1024).toFixed(1) +
-                "/" +
-                (currentGpu.memory / 1024).toFixed(1) +
-                "G":"0"
+              GPU{{
+                currentGpu.memory
+                  ? (currentGpu.memory_usage / 1024).toFixed(1) +
+                    "/" +
+                    (currentGpu.memory / 1024).toFixed(1) +
+                    "G"
+                  : "0"
               }}<a-select v-model:value="currentGpuId" style="width: 80px">
                 <a-select-option
                   v-for="(item, index) in gpuSelectData"
@@ -275,9 +277,74 @@
                 >
               </a-select>
             </div>
-            <div class="ip-canvas m-30" ref="computesGpuEl"></div>
+            <div class="ip-canvas m-30 computes-h" ref="computesGpuEl"></div>
           </div>
         </div>
+        <div class="flex-line compute-progress">
+          <div>磁盘使用率</div>
+          <div>
+            <span
+              >系统(root){{
+                nodeIp.computes.root_disk_used +
+                "/" +
+                nodeIp.computes.root_disk_gb +
+                "G"
+              }}G</span
+            >
+            <div class="disk-use-bg root-bg">
+              <div
+                class="disk-use-num"
+                :style="{
+                  width:
+                    (nodeIp.computes.root_disk_used /
+                      nodeIp.computes.root_disk_gb) *
+                      100 +
+                    '%',
+                }"
+              ></div>
+            </div>
+          </div>
+          <div>
+            <span
+              >openstack(镜像){{
+                nodeIp.computes.kolla_disk_used +
+                "/" +
+                nodeIp.computes.kolla_disk_gb +
+                "G"
+              }}</span
+            >
+            <div class="disk-use-bg openstack-bg">
+              <div
+                class="disk-use-num"
+                :style="{
+                  width:
+                    (nodeIp.computes.kolla_disk_used /
+                      nodeIp.computes.kolla_disk_gb) *
+                      100 +
+                    '%',
+                }"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="flex-line row-3">
+      <div
+        class="line-item"
+        v-for="(val, key) in nodeGraphAllData.master"
+        :key="key.toString()"
+      >
+        <line-cnvas :data="val" type="master" :ip="key" />
+        <!-- <charts-line :data="val"></charts-line> -->
+      </div>
+      <div
+        class="line-item"
+        v-for="(val, key) in nodeGraphAllData.slave"
+        :key="key.toString()"
+      >
+        <line-cnvas :data="val" type="slave" :ip="key" />
+        <!-- <charts-line :data="val"></charts-line> -->
       </div>
     </div>
   </div>
@@ -293,7 +360,12 @@ import {
   Ref,
   watch,
 } from "vue";
-import { getStatisticsApi, getNodeIpControlApi, getGpuInfoApi } from "./api";
+import {
+  getStatisticsApi,
+  getNodeIpControlApi,
+  getGpuInfoApi,
+  getNodeGraphAllApi,
+} from "./api";
 import img1 from "src/assets/images/admin/home/env1.png";
 import img2 from "src/assets/images/admin/home/env-task.png";
 import img3 from "src/assets/images/admin/home/env2.png";
@@ -301,25 +373,31 @@ import img4 from "src/assets/images/admin/home/env3.png";
 import img5 from "src/assets/images/admin/home/env4.png";
 import { pieCanvas, gaugeCanvas } from "./canvas";
 import { theme, image } from "src/utils/theme";
+import lineCanvas from "./lineCanvas.vue";
 const canvasTitle = (props: any, context: any) => {
   return h("div", { class: ["canvas-title"] }, props.title);
 };
 
-type TreactiveData={
-    statisticsData:any,
-      currentControlsIp: "",
-      currentComputesIp: "",
-      currentGpuId: "",
-      nodeIp: {
-        controls: any,
-        computes: any,
-      },
-      gpuSelectData: any[],
-      currentGpu: any,
-}
+type TreactiveData = {
+  statisticsData: any;
+  currentControlsIp: "";
+  currentComputesIp: "";
+  currentGpuId: "";
+  nodeIp: {
+    controls: any;
+    computes: any;
+  };
+  gpuSelectData: any[];
+  currentGpu: any;
+  nodeGraphAllData: {
+    master: any;
+    slave: any;
+  };
+};
 export default defineComponent({
   components: {
     "canvas-title": canvasTitle,
+    "line-cnvas": lineCanvas,
   },
   setup() {
     const peopleEL: Ref<HTMLElement> = ref(null) as any;
@@ -329,7 +407,7 @@ export default defineComponent({
     const computesCpuEl: Ref<HTMLElement> = ref(null) as any;
     const computesMemoryEl: Ref<HTMLElement> = ref(null) as any;
     const computesGpuEl: Ref<HTMLElement> = ref(null) as any;
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       statisticsData: {},
       currentControlsIp: "",
       currentComputesIp: "",
@@ -340,6 +418,10 @@ export default defineComponent({
       },
       gpuSelectData: [],
       currentGpu: {},
+      nodeGraphAllData: {
+        master: {},
+        slave: {},
+      },
     });
     const imgs = { img1, img2, img3, img4, img5 };
     const gauge: {
@@ -383,12 +465,12 @@ export default defineComponent({
       async () => {
         console.log(reactiveData.currentComputesIp);
         setTimeout(async () => {
-            if (gauge.computesCpu) {
-                gauge.computesCpu.dispose();
-            }
-            if (gauge.computesMemory) {
-                gauge.computesMemory.dispose();
-            }
+          if (gauge.computesCpu) {
+            gauge.computesCpu.dispose();
+          }
+          if (gauge.computesMemory) {
+            gauge.computesMemory.dispose();
+          }
           await method.getNodeIpControl(
             reactiveData.currentComputesIp,
             "computes"
@@ -478,10 +560,15 @@ export default defineComponent({
           });
         });
       },
+      getNodeGraphAll() {
+        getNodeGraphAllApi().then((res: any) => {
+          reactiveData.nodeGraphAllData = res.data;
+        });
+      },
     };
     onMounted(async () => {
       method.getGpuInfo();
-
+      method.getNodeGraphAll();
       await method.getStatistics();
       if (Object.keys(reactiveData.statisticsData).length > 0) {
         let newData: any = reactiveData.statisticsData;
@@ -541,7 +628,7 @@ export default defineComponent({
 .admin-home-wrap {
   min-width: 1330px;
   overflow: auto;
-  height: 100%;
+  height: 98%;
   padding: 0 60px;
   margin-top: 20px;
   .a-h-top {
@@ -693,13 +780,18 @@ export default defineComponent({
     height: 100%;
   }
   .ip-canvas {
-    height: 234px;
+    &.controls-h {
+      height: 240px;
+    }
+    &.computes-h {
+      height: 200px;
+    }
   }
   .ip-title {
     font-size: 16px;
     font-weight: 600;
     text-align: center;
-    margin: 10px 0;
+    margin-top: 28px;
   }
   .statistics-item {
     display: flex;
@@ -733,31 +825,56 @@ export default defineComponent({
       display: flex;
       justify-content: space-between;
     }
-    .disk-use-bg {
-      height: 19px;
-      width: 100%;
+  }
+  .disk-use-bg {
+    height: 19px;
+    width: 100%;
+    .disk-use-num {
+      height: 100%;
+      width: 0;
+    }
+    &.root-bg {
+      background-color: #ebf1ff;
       .disk-use-num {
-        height: 100%;
-        width: 0;
+        background-color: #6194ff;
       }
-      &.root-bg {
-        background-color: #ebf1ff;
-        .disk-use-num {
-          background-color: #6194ff;
-        }
+    }
+    &.data-bg {
+      background-color: #ffeaed;
+      .disk-use-num {
+        background-color: #fa6673;
       }
-      &.data-bg {
-        background-color: #ffeaed;
-        .disk-use-num {
-          background-color: #fa6673;
-        }
+    }
+    &.openstack-bg {
+      background-color: #dbf8e1;
+      .disk-use-num {
+        background-color: #36d188;
       }
-      &.openstack-bg {
-        background-color: #dbf8e1;
-        .disk-use-num {
-          background-color: #36d188;
-        }
+    }
+  }
+  .compute-progress {
+    align-items: center;
+    justify-content: space-between;
+    > div {
+      width: 35%;
+      &:first-child {
+        display: flex;
+
+        width: 15%;
       }
+    }
+  }
+  .line-item {
+    width: 50%;
+    // flex-shrink: 0;
+    margin-top: 20px;
+    background-color: @white;
+    padding: 22px;
+    &:nth-child(2n + 1) {
+      margin-right: 20px;
+    }
+    :nth-child(2n + 2) {
+      margin-left: 20px;
     }
   }
 }
