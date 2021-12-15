@@ -387,6 +387,7 @@ export default defineComponent({
                 state.allClassId = [];
               });
           }
+          // 然后添加学生
           const params: any = {
             id: props.trainId,
             student_id: state.addidarr,
@@ -397,6 +398,7 @@ export default defineComponent({
             console.log("再次请求未排课的学生接口");
             methods.getUnselectStu();
             methods.getStudentList();
+            state.addidarr = [];
           });
         } else {
           // 先把学生排课全部删除
@@ -406,10 +408,11 @@ export default defineComponent({
               .deleteScheduleStuMany({ param: { id: state.allStuId } })
               .then((res: any) => {
                 console.log(res);
-                message.success("删除成功");
+                // message.success("删除成功");
                 state.allStuId = [];
               });
           }
+          // 然后添加班级
           const params: any = {
             id: props.trainId,
             class_id: state.addidarr,
@@ -418,6 +421,7 @@ export default defineComponent({
           http.scheduleClass({ param: params }).then((res: any) => {
             methods.getUnselectClass();
             methods.getClassList();
+            state.addidarr = [];
           });
         }
         console.log(state.addidarr, "ids");
