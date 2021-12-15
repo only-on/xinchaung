@@ -38,6 +38,7 @@ import { useRouter ,useRoute } from 'vue-router';
 import { SmileOutlined, MehOutlined ,ClockCircleOutlined} from '@ant-design/icons-vue';
 import { SelectTypes } from 'ant-design-vue/es/select';
 import { Moment } from 'moment';
+import extStorage from "src/utils/extStorage";
 interface IforumSearch{
   operation_type:string;
   ip:string;
@@ -113,6 +114,15 @@ export default defineComponent({
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])
 
+    const { lStorage } = extStorage
+    const role = lStorage.get('role')
+    var updata=inject('updataNav') as Function
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    if(role===2){
+      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    }else{
+      
+    }
     // const value3= ref<Moment[]>([])
     const customizeRenderEmpty =function (): VNode{
       if(loading.value){
