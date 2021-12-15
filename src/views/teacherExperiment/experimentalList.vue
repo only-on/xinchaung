@@ -161,7 +161,7 @@
               </div>
             </div>
           </div>
-          <div v-if="experimentalDataList.length > 0" class="pagination-box">
+          <div v-if="experimentalDataList.length > 10" class="pagination-box">
             <a-pagination
               show-size-changer
               :total="total"

@@ -81,6 +81,7 @@ export default defineComponent({
   components: { empty },
   props: ["value", "name",'limitNumber'],
   setup(props, { emit }) {
+    // console.log(props)
     const $message: MessageApi = inject("$message")!;
     const datasetApi = request.teacherWorkbench;
     const uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
@@ -180,14 +181,15 @@ export default defineComponent({
 
     // 更新选中的数据集数据
     function updateData() {
-      let names: any = [];
+      let names: any =props.name?props.name: [];
       emit("update:value", reactiveData.selected);
-      // console.log(reactiveData.selected);
+      console.log(reactiveData.selected);
       reactiveData.dataSetList.map((item: any) => {
         reactiveData.selected.includes(item.uid)
           ? names.push({ uid: item.uid, name: item.name,amount:item.amount,size:item.size })
           : "";
       });
+      console.log(names);
       emit("update:name", names);
     }
     watch(()=>{return props.value},(val:any)=>{

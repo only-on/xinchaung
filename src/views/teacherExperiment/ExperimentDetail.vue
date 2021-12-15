@@ -514,8 +514,8 @@ export default defineComponent({
   width:@center-width;
   margin: 0 auto;
   // border: 1px solid red;
-  height: 100%;
-  overflow: auto;
+  // height: 100%;
+  // overflow: auto;
 }
 .box{
   width: 100%;
@@ -678,9 +678,11 @@ export default defineComponent({
     .iconfont {
       color: rgba(0,0,0,.45);
       font-size: 14px;
+      width: 100px;
+      display: inline-block;
     }
     .wenjian {
-      margin-right: 50px;
+      // margin-right: 50px;
     }
     .cunchuzhi {
       margin-right: 170px;

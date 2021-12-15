@@ -58,7 +58,7 @@ export default {
         },
         {
           path: "ExperimentDetail",
-          name: "ExperimentDetail",
+          name: "adminExperimentDetail",
           component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
           meta: {
               title: "实验详情",
