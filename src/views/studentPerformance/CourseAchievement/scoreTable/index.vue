@@ -58,7 +58,7 @@
                 ></test-score>
               </template>
             </a-tab-pane>
-            <a-tab-pane key="2" tab="重修得分" force-render>
+            <a-tab-pane v-if="rebuild?.id" key="2" tab="重修得分" force-render>
               <template v-if="activeKey == '2'">
                 <test-score
                   :scoredata="rebuild"

@@ -3,35 +3,40 @@
     <div class="searchParams">
       <div class="searchLeft">
         <div>
-          <span class="inputLable">设备IP: </span>
+          <!-- <span class="inputLable">设备IP: </span> -->
           <a-input
             @keyup.enter="search"
             v-model:value="params.ip"
+            placeholder="IP地址"
             class="input"
+          >
+            <template #prefix>
+              <img src="src/assets/images/screenicon/Group2.png" /> </template
           ></a-input>
         </div>
-        <div>
-          <span class="inputLable"> 设备类型: </span>
+        <div class="item custom_select dev_type">
+          <!-- <span class="inputLable"> 设备类型: </span> -->
           <a-select
             class="select"
             v-model:value="type"
-            default-value="请选择"
+            placeholder="设备类型"
             @change="handleChange"
           >
             <a-select-option
               v-for="item in types"
               :key="item.action_type"
               :value="item.action_type"
-              >{{ item.tag }}
+            >
+              {{ item.tag }}
             </a-select-option>
           </a-select>
         </div>
-        <div>
-          <span class="inputLable"> 设备状态: </span>
+        <div class="item custom_select dev_state">
+          <!-- <span class="inputLable"> 设备状态: </span> -->
           <a-select
             class="select"
             v-model:value="status"
-            default-value="请选择"
+            placeholder="设备状态"
             @change="handleChange"
           >
             <a-select-option
@@ -56,7 +61,16 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table :columns="columns" :data-source="data" rowKey="ip">
+        <a-table
+          :columns="columns"
+          :data-source="data"
+          rowKey="ip"
+          bordered
+          :pagination="{
+            hideOnSinglePage: true,
+          }"
+          :loading="loading"
+        >
           <template #action_type="{ record }">
             <div>
               {{ record.action_type === "control" ? "控制节点" : "计算节点" }}
@@ -98,6 +112,7 @@ interface state {
   data: any[];
   type: any;
   status: any;
+  loading: boolean;
   params: {
     ip: string;
     type: any;
@@ -134,6 +149,7 @@ export default defineComponent({
     const http = (request as any).adminSystemManage;
     const state: state = reactive({
       data: [],
+      loading: false,
       type: undefined,
       status: undefined,
       params: {
@@ -163,10 +179,12 @@ export default defineComponent({
     });
     const methods = {
       getDeviceList() {
+        state.loading = true;
         state.params.type = state.type === undefined ? "" : state.type;
         state.params.status = state.status === undefined ? "" : state.status;
         http.systemDeviceList({ param: state.params }).then((res: any) => {
           console.log(res);
+          state.loading = false;
           state.data = res.data;
         });
       },
@@ -240,9 +258,9 @@ export default defineComponent({
   .input {
     width: 165px;
   }
-  .select {
-    width: 120px;
-  }
+  // .select {
+  //   width: 120px;
+  // }
 }
 .action {
   display: flex;
@@ -274,5 +292,45 @@ export default defineComponent({
   display: inline-block;
   margin-right: 5px;
   box-shadow: 0 0 5px @normal-color;
+}
+.item {
+  display: flex;
+  align-items: center;
+  margin-right: 22px;
+  :deep(.ant-select-selector) {
+    width: 240px;
+    height: 35px;
+    padding-left: 30px;
+    align-items: center;
+  }
+  :deep(.ant-input) {
+    padding-left: 26px;
+  }
+}
+.dev_type {
+  :deep(.ant-select-selector)::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    background: url(src/assets/images/screenicon/Group3.png) no-repeat;
+    width: 15px;
+    height: 15px;
+  }
+}
+.dev_state {
+  :deep(.ant-select-selector)::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 10px;
+    background: url(src/assets/images/screenicon/Group4.png) no-repeat;
+    width: 17px;
+    height: 17px;
+  }
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>
