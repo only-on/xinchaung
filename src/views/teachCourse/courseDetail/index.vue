@@ -1,6 +1,6 @@
 <template>
 <!-- v-layout-bg="{ size: '234px', bg: bg }" -->
-  <div class="">
+  <div class="TeacherCourseDetailBox">
     <div class="heardBox">
       <top></top>
     </div>
@@ -190,6 +190,8 @@ export default defineComponent({
   background-image: url(/src/assets/common/course-detail_bg.jpg);
   background-size: 100% 234px;
   background-repeat: no-repeat;
+  padding-top: 32px;
+  margin-top: -32px;
 }
 .TeacherCourseDetail{
   // height: calc(100% - 24px);
