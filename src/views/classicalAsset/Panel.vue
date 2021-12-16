@@ -53,7 +53,7 @@
       <div class="data" v-else>
         <empty />
       </div>
-      <div class="page" v-if="data?.length > 0">
+      <div class="page" v-if="data?.length > 10">
         <a-pagination
           show-size-changer
           v-model:current="dataPage.current"

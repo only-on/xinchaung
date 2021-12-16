@@ -546,10 +546,10 @@ export default defineComponent({
   width: @center-width;
   background-color: #edf0f5;
   margin: 0 auto;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-  height: 100%;
-  overflow-y: auto;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  // height: 100%;
+  // overflow-y: auto;
   overflow-x: hidden;
   .row{
     margin-right: -11px;

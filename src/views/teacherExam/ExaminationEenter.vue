@@ -77,7 +77,7 @@
           </div>
         </div>
         <Empty v-if="!list.length  && !loading" />
-        <a-pagination v-if="list.length"
+        <a-pagination v-if="totalCount>11"
             v-model:current="Forum.page"
             :pageSize="11"
             :total="totalCount"

@@ -85,6 +85,7 @@ export default defineComponent({
     display: flex;
     flex-direction: column;
     height: 100%;
+    overflow: hidden;
   }
   .main-box{
     flex: 1;
@@ -92,11 +93,14 @@ export default defineComponent({
     // margin-top: 5px;     //遮挡了header阴影
     // margin: 0 auto;
     // max-width: 1330px;
-    height: calc(100% - 87px);     // footer组件失去后 修改此
+    // height: calc(100% - 87px);     // footer组件失去后 修改此
     padding-top: 32px;
     padding-bottom: 32px;
     margin-top: 5px;
     min-height: 750px;
+    overflow: auto;
+    // overflow-y: auto;
+    // overflow-x:hidden;
     .content{
       width: @center-width;
       margin: 0 auto;
@@ -109,25 +113,25 @@ export default defineComponent({
         background: #fff;
         box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
         padding: 40px 50px 80px;
-        height: 100%;
+        min-height: 750px;
         overflow: hidden;
         border-radius: 6px;
         >div{
           height: 100%;
-          overflow: auto;
+          // overflow: auto;
         }
       }
     }
     .customized{
       height: 100%;
-      overflow: hidden;
+      // overflow: hidden;
     }
     #withTop{
       height: calc(100% - 44px); 
     }
     .customizedSon{
        height: 100%;
-      overflow: hidden;
+      // overflow: hidden;
     }
   }
 }

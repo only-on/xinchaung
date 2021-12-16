@@ -33,7 +33,7 @@
             <div>（{{v.data.length}}）</div>
           </div>
         </div>
-        <div class="questionsList setScrollbar">
+        <div class="questionsList">
           <template v-if="activeData.length">
             <div  class="duo">
               <div class="item" v-for="(v,k) in activeData" :key="v">
@@ -332,6 +332,10 @@ export default defineComponent({
       // formRef.value.validate().then(()=>{
       formRef.value.validate().then(()=>{
         console.log('验证过');
+        if(selectedPaperIds.length===0){
+          message.warn('请选择试题')
+          return
+        }
         let obj={
           ...ForumSearch,
           questions:selectedPaperIds,
@@ -432,6 +436,7 @@ export default defineComponent({
     height: calc(100% - 58px);
     overflow: auto;
     display: flex;
+    max-height: 650px;
     .tabs{
       overflow: auto;
       width: 80px;

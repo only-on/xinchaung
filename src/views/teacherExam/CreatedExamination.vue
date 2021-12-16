@@ -104,7 +104,7 @@
       <a-spin :spinning="loading" size="large" tip="Loading...">
         <a-table :columns="information===1?selectClassColums:selectStudentColumns"  :data-source="studentList" :bordered="true"  row-key="id"
             :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange}"
-            :pagination="{current:searchClassStudent.page,pageSize:searchClassStudent.limit,total:searchClassStudent.total,onChange:onChangePage,hideOnSinglePage:true,showSizeChanger:true,onShowSizeChange:showSizeChange}" 
+            :pagination="{current:searchClassStudent.page,pageSize:searchClassStudent.limit,total:searchClassStudent.total,onChange:onChangePage,hideOnSinglePage:(searchClassStudent.total<10?true:false),showSizeChanger:true,onShowSizeChange:showSizeChange}" 
             :locale="studentLocale"
             class="components-table-demo-nested">
         </a-table>

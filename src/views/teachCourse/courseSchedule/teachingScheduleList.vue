@@ -201,7 +201,7 @@ export default defineComponent({
     let router = useRouter()
     let route = useRoute()
     var updata = inject("updataNav") as Function;
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined})
     const $message: MessageApi = inject("$message")!;
     const http=(request as any).teachCourse
     
@@ -501,13 +501,13 @@ export default defineComponent({
 
 <style lang="less" scoped>
   .teaching-schedule {
-    height: 100%;
-    width: @center-width;
-    margin: 0 auto;
+    // height: 100%;
+    // width: @center-width;
+    // margin: 0 auto;
     // display: flex;
     background-color: @white;
     border-radius: @border-radius-default;
-    padding: 29px 37px;
+    // padding: 29px 37px;
     .header {
       display: flex;
       align-items: center;
@@ -613,7 +613,7 @@ export default defineComponent({
       border: 1px solid #EDEDED;
       border-top-left-radius: 10px;
       border-top-right-radius: 10px;
-      overflow: hidden;
+      // overflow: hidden;
       margin-top: 20px;
       .table-th {
         flex-direction: column;
@@ -633,8 +633,8 @@ export default defineComponent({
         }
       }
       .table-main {
-        height: 575px;
-        overflow-y: auto
+        // height: 575px;
+        // overflow-y: auto
       }
       .table-content {
         display: flex;;

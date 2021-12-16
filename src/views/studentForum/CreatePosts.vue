@@ -13,7 +13,7 @@
         </a-form-item>
       </a-form>
       <div class="text">
-        <QuillEditor  v-model="formState.content" :height="'360px'" :uploadPathName="'studentForum'" /> 
+        <QuillEditor  v-model="formState.content" :height="'400px'" :uploadPathName="'studentForum'" /> 
       </div>
       <div class="foot">
         <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
@@ -159,7 +159,7 @@ export default defineComponent({
     // height: 340px;
   }
   .foot{
-    margin: 50px 0;
+    margin-top: 50px;
     width: 100%;
     text-align: center;
   }

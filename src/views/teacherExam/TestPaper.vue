@@ -40,7 +40,7 @@
           </div>
         </div>
         <Empty v-if="!list.length && !loading" />
-        <a-pagination v-if="list.length"
+        <a-pagination v-if="totalCount>11"
             v-model:current="ForumSearch.page"
             :pageSize="ForumSearch.limit"
             :total="totalCount"
