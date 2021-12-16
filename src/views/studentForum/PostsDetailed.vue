@@ -186,9 +186,8 @@ export default defineComponent({
     }
   }
   .postItem{
-    height: 300px;
-    // max-height: 200px;
-    overflow-y: auto;
+    // height: 400px;
+    // overflow-y: auto;
   }
   :deep(.ql-container){
     // text-align: center;

@@ -105,8 +105,8 @@ export default defineComponent({
       width: @center-width;
       margin: 0 auto;
       background: #fff;
-      height: calc(100% - 44px); 
-      min-height: 750px;
+      // height: calc(100% - 44px); 
+      // min-height: 750px;
       border-radius: 6px;
       .content_box{
         width: 100%;
@@ -127,7 +127,7 @@ export default defineComponent({
       // overflow: hidden;
     }
     #withTop{
-      height: calc(100% - 44px); 
+      // height: calc(100% - 44px); 
     }
     .customizedSon{
        height: 100%;

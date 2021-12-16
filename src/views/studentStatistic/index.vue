@@ -247,10 +247,10 @@ export default defineComponent({
 <style lang="less" scoped>
 #statistic{
     width:@center-width;
-    height: 100%;
+    // height: 100%;
     display: flex;
     margin: 0 auto;
-    overflow-y: auto;
+    // overflow-y: auto;
     .box-left{
         width:64.7%;
         display: flex;
