@@ -359,6 +359,7 @@ import {
   ref,
   Ref,
   watch,
+  inject
 } from "vue";
 import {
   getStatisticsApi,
@@ -407,6 +408,10 @@ export default defineComponent({
     const computesCpuEl: Ref<HTMLElement> = ref(null) as any;
     const computesMemoryEl: Ref<HTMLElement> = ref(null) as any;
     const computesGpuEl: Ref<HTMLElement> = ref(null) as any;
+    var updata=inject('updataNav') as Function
+    const tabRef=ref(null)
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:false,backOff:false,showPageEdit:false})
+
     const reactiveData: TreactiveData = reactive({
       statisticsData: {},
       currentControlsIp: "",

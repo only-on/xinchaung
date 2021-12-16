@@ -12,12 +12,12 @@
         <a-select-option value="3">进行中</a-select-option>
         <a-select-option value="1">已结束</a-select-option>
       </a-select>
-      <a-button type="primary" size="small" @click="searchFun">查询</a-button>
-      <a-button type="primary" size="small" @click="clearSearch">清空</a-button>
+      <a-button type="primary" @click="searchFun">查询</a-button>
+      <a-button type="primary" @click="clearSearch">清空</a-button>
       <span class="action-right">
-        <a-button type="primary" size="small" @click="archives">归档</a-button>
-        <a-button type="primary" size="small" @click="deleteData">批量删除</a-button>
-        <a-button type="primary" size="small" @click="clearVideosLog">清楚录像记录</a-button>
+        <a-button type="primary" @click="archives">归档</a-button>
+        <a-button type="primary" @click="deleteData">批量删除</a-button>
+        <a-button type="primary" @click="clearVideosLog">清楚录像记录</a-button>
       </span>
     </div>
     <a-config-provider>
@@ -40,12 +40,17 @@
         <template #result="{ text }"
           ><span class="a-link" @click="lookResult(text)">查看</span></template
         >
-        <template #action="{ text,record }">
+        <template #action="{ text, record }">
           <div class="action-table">
             <span class="a-link" @click="clearVideoLog(text)"
               >清除录像记录</span
             >
-            <span class="a-link" v-if="record.state==='已结束'" @click="toArchive(text)">归档</span>
+            <span
+              class="a-link"
+              v-if="record.state === '已结束'"
+              @click="toArchive(text)"
+              >归档</span
+            >
           </div></template
         >
       </a-table>
@@ -65,17 +70,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, unref,ref,Ref ,computed} from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  unref,
+  ref,
+  Ref,
+  computed,
+} from "vue";
 import {
   getTeacherCourseListApi,
   clearVideoApi,
   updateArchiveApi,
   deleteCourseApi,
-  clearVideosApi
+  clearVideosApi,
 } from "../api";
 import Empty from "src/components/Empty.vue";
 import { message, Modal } from "ant-design-vue";
-import { ColumnProps } from 'ant-design-vue/es/table/interface';
+import { ColumnProps } from "ant-design-vue/es/table/interface";
 import { useRouter } from "vue-router";
 const columns = [
   {
@@ -105,14 +119,14 @@ const columns = [
   {
     title: "操作记录总大小",
     dataIndex: "record_size",
-    width:150,
+    width: 150,
     align: "center",
   },
   {
     title: "课程成果",
     dataIndex: "id",
     align: "center",
-    width:100,
+    width: 100,
     slots: { title: "id", customRender: "result" },
   },
   {
@@ -134,13 +148,13 @@ type TreactiveData = {
   total: number;
   dataList: any[];
 };
-type Key = ColumnProps['key'];
+type Key = ColumnProps["key"];
 export default defineComponent({
   components: {
     empty: Empty,
   },
   setup() {
-      const router=useRouter()
+    const router = useRouter();
     const reactiveData: TreactiveData = reactive({
       search: {
         course_name: "",
@@ -155,7 +169,7 @@ export default defineComponent({
     const selectedRowKeys = ref<Key[]>([]); // Check here to configure the default column
 
     const onSelectChange = (changableRowKeys: Key[]) => {
-      console.log('selectedRowKeys changed: ', changableRowKeys);
+      console.log("selectedRowKeys changed: ", changableRowKeys);
       selectedRowKeys.value = changableRowKeys;
     };
     const rowSelection = computed(() => {
@@ -163,36 +177,6 @@ export default defineComponent({
         selectedRowKeys: unref(selectedRowKeys),
         onChange: onSelectChange,
         hideDefaultSelections: true,
-        selections: [
-          {
-            key: 'odd',
-            text: '选择奇数行',
-            onSelect: (changableRowKeys: Key[]) => {
-              let newSelectedRowKeys = [];
-              newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                if (index % 2 !== 0) {
-                  return false;
-                }
-                return true;
-              });
-              selectedRowKeys.value = newSelectedRowKeys;
-            },
-          },
-          {
-            key: 'even',
-            text: '选择偶数行',
-            onSelect: (changableRowKeys: Key[]) => {
-              let newSelectedRowKeys = [];
-              newSelectedRowKeys = changableRowKeys.filter((key, index) => {
-                if (index % 2 !== 0) {
-                  return true;
-                }
-                return false;
-              });
-              selectedRowKeys.value = newSelectedRowKeys;
-            },
-          },
-        ],
       };
     });
     const method = {
@@ -229,20 +213,20 @@ export default defineComponent({
       toDetail(id: number) {
         console.log(id);
         router.push({
-            path:"/admin/adminCourse/courseDetail",
-            query:{
-                course_id:id
-            }
-        })
+          path: "/admin/adminCourse/courseDetail",
+          query: {
+            course_id: id,
+          },
+        });
       },
       lookResult(id: number) {
         console.log(id);
         router.push({
-            path:"/admin/adminCourse/courseResult",
-            query:{
-                course_id:id
-            }
-        })
+          path: "/admin/adminCourse/courseResult",
+          query: {
+            course_id: id,
+          },
+        });
       },
       clearVideoLog(id: number) {
         console.log(id);
@@ -256,8 +240,8 @@ export default defineComponent({
           },
         });
       },
-      clearVideosLog(){
-          Modal.confirm({
+      clearVideosLog() {
+        Modal.confirm({
           title: "提示",
           content: "确定清除录像吗",
           onOk: () => {
@@ -265,18 +249,18 @@ export default defineComponent({
           },
         });
       },
-      clearVideos(course_ids:any[]){
-          if (course_ids.length===0) {
-              message.warn("请选择要清除录像的数据")
-              return;
-          }
-          clearVideosApi({course_ids:course_ids}).then((res:any)=>{
-              message.success("清除成功")
-              method.getCourseList();
-          })
+      clearVideos(course_ids: any[]) {
+        if (course_ids.length === 0) {
+          message.warn("请选择要清除录像的数据");
+          return;
+        }
+        clearVideosApi({ course_ids: course_ids }).then((res: any) => {
+          message.success("清除成功");
+          method.getCourseList();
+        });
       },
-      archives(){
-          Modal.confirm({
+      archives() {
+        Modal.confirm({
           title: "提示",
           content: "确定归档吗",
           onOk: () => {
@@ -295,34 +279,33 @@ export default defineComponent({
         });
       },
       updateArchive(course_ids: any[]) {
-          if (selectedRowKeys.value.length===0) {
-              message.warn("请选择要归档的数据")
-              return;
-          }
+        if (selectedRowKeys.value.length === 0) {
+          message.warn("请选择要归档的数据");
+          return;
+        }
         updateArchiveApi({ course_ids: course_ids }).then((res: any) => {
           message.success("归档成功");
           method.getCourseList();
         });
       },
-      deleteData(){
-          if (selectedRowKeys.value.length===0) {
-              message.warn("请选择要删除的数据")
-              return;
-          }
-          Modal.confirm({
+      deleteData() {
+        if (selectedRowKeys.value.length === 0) {
+          message.warn("请选择要删除的数据");
+          return;
+        }
+        Modal.confirm({
           title: "提示",
           content: "确定删除吗",
           onOk: () => {
-            method.deleteCourse(selectedRowKeys.value)
+            method.deleteCourse(selectedRowKeys.value);
           },
         });
-          
       },
-      deleteCourse(course_ids:any[]){
-          deleteCourseApi({course_ids:course_ids}).then((res:any)=>{
-              message.success("删除成功")
-              method.getCourseList();
-          })
+      deleteCourse(course_ids: any[]) {
+        deleteCourseApi({ course_ids: course_ids }).then((res: any) => {
+          message.success("删除成功");
+          method.getCourseList();
+        });
       },
       rowKey(row: any) {
         return row.id;
