@@ -32,8 +32,8 @@
                 <div class="card-item-text">{{v.paper_name}}</div>
                 <div class="card-item-text card-item-time">{{v.start_day}}&nbsp;&nbsp;&nbsp;&nbsp;{{v.times}}</div>
                 <div class="card-item-operate">
-                  <i class="iconfont icon-bianji1" @click="edit(v.id)" :class="v.status!==2?'cursorNotAllowed':''"></i>
-                  <i class="iconfont icon-shanchu" @click="delate(v.id)" :class="v.status!==2?'cursorNotAllowed':''"></i>
+                  <i class="iconfont icon-bianji1" @click="v.status===2?edit(v.id):''" :class="v.status!==2?'cursorNotAllowed':''"></i>
+                  <i class="iconfont icon-shanchu" @click="v.status===2?delate(v.id):''" :class="v.status!==2?'cursorNotAllowed':''"></i>
                 </div>
               </div>
               <div class="card-item-content">

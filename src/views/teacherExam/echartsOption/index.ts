@@ -261,11 +261,11 @@ import shicao from '/src/assets/images/teacherExam/shicao.png'
 function renderScoreBar(el: HTMLDivElement, data: Array<any>){
 	// {type_id: 1, type_name: "单选题", avg_score: 0, my_score: 0}
 	// let data=[
-	// 	{avg_score: 2, my_score: 3, type_name: "选择题"},
-	// 	{avg_score: 0, my_score: 0, type_name: "判断题"},
-	// 	{avg_score: 1, my_score: 2, type_name: "填空题"},
-	// 	{avg_score: 0, my_score: 0, type_name: "简答题"},
-	// 	{avg_score: 10, my_score: 8, type_name: "实操考核题"}
+	// 	{avg_score: 2, my_score: 3, type_name: "单选题"},
+	// 	{avg_score: 0, my_score: 0, type_name: "多选题"},
+	// 	{avg_score: 1, my_score: 2, type_name: "判断题"},
+	// 	{avg_score: 0, my_score: 0, type_name: "填空题"},
+	// 	{avg_score: 10, my_score: 8, type_name: "简答题"}
 	// ]
 	//成绩详情柱状图
 	let chartDatas:any = {
@@ -374,11 +374,11 @@ function renderScoreBar(el: HTMLDivElement, data: Array<any>){
 function renderAccuracy(el: HTMLDivElement, datas: Array<any>) {
 	// var AccuracyChart = echarts.init(document.getElementById('accuracy-canvas'));
 	// let datas=[
-	// 	{rate: 0, name: "选择题"},
-	// 	{rate: 0.1, name: "判断题"},
-	// 	{rate: 0.2, name: "填空题"},
-	// 	{rate: 0.3, name: "简答题"},
-	// 	{rate: 0.6, name: "实操考核题"}
+	// 	{rate: 0, name: "单选题"},
+	// 	{rate: 0.1, name: "多选题"},
+	// 	{rate: 0.2, name: "判断题"},
+	// 	{rate: 0.3, name: "填空题"},
+	// 	{rate: 0.6, name: "简答题"}
 	// ]
 	//成绩明细数据温度计图
 	var chartsDatas = datas
