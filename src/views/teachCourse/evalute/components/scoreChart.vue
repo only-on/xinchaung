@@ -20,6 +20,10 @@
             <td>{{ scoreData.report_score }}</td>
           </tr>
           <tr>
+            <td>步骤得分</td>
+            <td>{{ scoreData.auto_score }}</td>
+          </tr>
+          <tr>
             <td>总分</td>
             <td>{{ scoreData.score }}</td>
           </tr>
@@ -42,6 +46,7 @@ interface Idata {
   time_score: any;
   question_score: any;
   report_score: any;
+  auto_score: any;
   auto_accuracy: any;
   question_accuracy: any;
   task_time: any;
@@ -56,6 +61,7 @@ export default defineComponent({
       time_score: 0,
       question_score: 0,
       report_score: 0,
+      auto_score: 0,
       auto_accuracy: 0,
       question_accuracy: 0,
       task_time: 0,
@@ -65,24 +71,33 @@ export default defineComponent({
     function setPie(param: any) {
       let eleChart = (echarts as any).init(document.getElementById(param.ele));
       var option = {
-        color: ["#8955b5", "#EB7E64", "#FFC306"],
-        tooltip: {
-          trigger: "item",
-        },
+        color: ["#8955b5", "#EB7E64", "#FFC306", "#63EDB6"],
         legend: {
           bottom: "20%",
           icon: "circle",
           itemWidth: 10, // 设置宽度
           itemHeight: 10, // 设置高度
           itemGap: 20,
-          data: ["用时得分", "习题得分", "报告得分"],
+          data: param.legend,
         },
         series: [
           {
             type: "pie",
-            radius: [53, 80],
+            radius: [60, 88],
             label: {
-              show: false,
+                show: true,
+                position: 'outside',
+                formatter: function (params:any) {
+                  return '{name|' + params.name + '}\n{value|' + params.value + '}';
+                },
+                rich: {
+                    name: {
+                      padding: [5,0]
+                    },
+                    value: {
+                      align: 'center'
+                    }
+                }
             },
             center: ["50%", "25%"],
             data: param.data,
@@ -105,6 +120,9 @@ export default defineComponent({
         tooltip: {
           trigger: "item",
         },
+        grid: {
+          left: '21%'
+        },
         xAxis: [
           {
             type: "value",
@@ -126,11 +144,11 @@ export default defineComponent({
             splitLine: {
               show: false,
             },
-            axisLabel: {
-              formatter: function (params: any) {
-                return params.substr(0, 2) + "\n" + params.substr(2);
-              },
-            },
+            // axisLabel: {
+            //   formatter: function (params: any) {
+            //     return params.length % 2 === 0 ? params.substr(0, 2) + "\n" + params.substr(2) : params;
+            //   },
+            // },
             data: param.yData,
           },
         ],
@@ -161,8 +179,8 @@ export default defineComponent({
             { value: scoreData.question_score, name: "习题得分" },
             { value: scoreData.report_score, name: "报告得分" },
           ],
+          legend: ["用时得分", "习题得分", "报告得分"]
         };
-        setPie(pie);
         let bar1 = {
           ele: "bar1" + type.value,
           title: "任务用时(分钟)",
@@ -173,10 +191,21 @@ export default defineComponent({
         let bar2 = {
           ele: "bar2" + type.value,
           title: "正确率(%)",
-          yData: ["步骤正确率", "习题正确率"],
-          xData: [scoreData.auto_accuracy, scoreData.question_accuracy],
+          yData: ["习题正确率"],
+          xData: [scoreData.question_accuracy],
           colorList: ["#f0937c", "#EB7E64"]
         };
+        if (props.data[type.value].show.includes('auto')) {
+        // 显示步骤得分
+          pie.data.push({
+            value: scoreData.auto_score, name: "步骤得分"
+          })
+          pie.legend.push('步骤得分')
+          // 步骤正确率
+          bar2.yData = ["步骤正确率", "习题正确率"]
+          bar2.xData = [scoreData.auto_accuracy, scoreData.question_accuracy]
+        }
+        setPie(pie);
         setBar(bar1);
         setBar(bar2);
       }, 600);
@@ -205,7 +234,7 @@ export default defineComponent({
       }
     }
     td {
-      padding: 3px 20px;
+      padding: 5px 20px;
       border: 1px solid #e1dddd;
       text-align: center;
     }

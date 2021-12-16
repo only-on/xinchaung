@@ -6,7 +6,7 @@
       @cancel="handleCancel"
       :maskClosable="false"
       :destroyOnClose="true"
-      :width="modalType == 'evalute' ? 598 : 998"
+      :width="modalType == 'evalute' ? 600 : 1000"
     >
       <template #footer>
         <div  v-if="modalType == 'evalute'">

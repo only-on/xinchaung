@@ -63,7 +63,7 @@
     <a-col :span="12">
       <div class="chart-box">
         <div class="title">知识点错误率</div>
-        <div class="error-rate">
+        <div class="error-rate" v-if="errorKonwledge.length">
           <div class="item" v-for="(item,index) in errorKonwledge" :key="item.id">
             <template v-if="index < 10">
               <span :title="item.knowledge_map_name">{{item.knowledge_map_name}}</span>
@@ -72,17 +72,19 @@
                   '0%': '#be8edb',
                   '100%': '#6855b5',
                 }"
-                :percent="item.error_rate"
+                :format="(percent)=>percent + '%'"
               />
             </template>
           </div>
         </div>
+        <empty :height="255" v-else/>
       </div>
     </a-col>
     <a-col :span="12">
       <div class="chart-box">
         <div class="title">知识图谱</div>
-        <div id="graph"></div>
+        <div id="graph" v-if="showGraph"></div>
+        <empty :height="255" v-else/>
       </div>
     </a-col>
     <a-col :span="24">
@@ -148,6 +150,7 @@ export default defineComponent({
     const errorKonwledge = reactive<Ierror[]>([])
     const score_usedtime = ref<any>({})
     const chartDom = reactive<any>([])
+    const showGraph = ref<boolean>(true)
     var updata=inject('updataNav') as Function
     updata({tabs:[],navPosition:'inside',navType:false,showContent:false,showNav:true, backOff:false,showPageEdit:false})
     const slideChangeTransitionEnd = (swiper:any) => {
@@ -204,6 +207,7 @@ export default defineComponent({
           setChart('scater', scaterOptions(0, score_usedtime.value))
           // 知识图谱
           setChart('graph', graphOptions(handleData(result.knowledge_map)))
+          Object.keys(result.knowledge_map).length ? showGraph.value = true : showGraph.value = false
         }
       })
     }
@@ -235,7 +239,8 @@ export default defineComponent({
       courseCompletion,
       errorKonwledge,
       gradeDistribution,
-      courseLists
+      courseLists,
+      showGraph
     };
   },
 })
@@ -272,8 +277,8 @@ export default defineComponent({
       left: 0;
       &::after{
         content: '';
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         background: url(src/assets/images/teacher-default/left.png) no-repeat;
       }
     }
@@ -281,8 +286,8 @@ export default defineComponent({
       right: 0;
       &::after{
         content: '';
-        width: 60px;
-        height: 60px;
+        width: 64px;
+        height: 64px;
         background: url(src/assets/images/teacher-default/right.png) no-repeat;
       }
     }
