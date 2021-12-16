@@ -95,6 +95,9 @@
       :row-key="rowKey"
     />
   </div>
+  <div v-if="showPanel === 'nodata'">
+    <empty text="未选中章节！"> </empty>
+  </div>
 </template>
 <script lang="ts">
 import { SyncOutlined } from "@ant-design/icons-vue";
@@ -173,6 +176,10 @@ export default defineComponent({
       },
     ];
     onMounted(() => {
+      if (!chapter_id.value) {
+        reactiveData.showPanel="nodata"
+        return
+      }
       getChapterExercise();
       getChapterExerciseAnalysis()
     });

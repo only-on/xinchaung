@@ -176,6 +176,9 @@ export default defineComponent({
       },
     ];
     onMounted(() => {
+      if (!experiment_id.value) {
+        return
+      }
       getChapterExercise();
       getContentExerciseAnalysis()
     });
