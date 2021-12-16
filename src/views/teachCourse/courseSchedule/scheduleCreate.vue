@@ -632,7 +632,7 @@ interface IForm {
   .ant-table-scroll {
     overflow: hidden;
   }
-  &.ant-table-bordered.ant-table-fixed-header .ant-table-scroll .ant-table-header.ant-table-hide-scrollbar .ant-table-thead > tr:only-child > th:last-child {
+  &.ant-table-bordered.ant-table-fixed-header .ant-table-scroll .ant-table-header.ant-table-hide-scrollbar2 .ant-table-thead > tr:only-child > th:last-child {
     border-right: 1px solid #e8e8e8;
   }
   &.ant-table-fixed-header > .ant-table-content > .ant-table-scroll > .ant-table-body {

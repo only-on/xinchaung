@@ -207,6 +207,7 @@ export default defineComponent({
     margin-left: 15px;
     // background: @white;
     border-radius: @border-radius-base;
+    overflow-y: auto;
   }
 }
 </style>

@@ -16,7 +16,7 @@
         ></course-card>
       </div>
 
-      <div class="page-box">
+      <div class="page-box" v-if="totalCount>12">
         <a-pagination
           :default-current="1"
           :default-page-size="12"

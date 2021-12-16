@@ -1,5 +1,5 @@
 <template>
-  <div class="webide-tab-box scrollbar">
+  <div class="webide-tab-box scrollbar2">
     <div class="note-book-tab-top">
       <div>
         <span class="experiment-name">{{ detailInfo.name }}</span>

@@ -1,5 +1,5 @@
 <template>
-  <div class="env-monitoring setScrollbar" v-layout-bg>
+  <div class="env-monitoring setscrollbar2" v-layout-bg>
     <!--检索  -->
     <div class="filtrate-wrap">
       <div class="left">

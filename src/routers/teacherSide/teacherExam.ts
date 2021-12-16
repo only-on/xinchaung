@@ -25,7 +25,7 @@ export default {
         },
         {
             path: "CreateTestPaper",
-            name: "CreateTestPaper",
+            name: "TeacherCreateTestPaper",
             component: () => import("src/views/teacherExam/CreateTestPaper.vue"),
             meta: {
                 // title: "创建试卷",

@@ -1,5 +1,5 @@
 <template>
-  <div class="vnc-tab-box scrollbar" v-if="currentShow === 'experiment'">
+  <div class="vnc-tab-box scrollbar2" v-if="currentShow === 'experiment'">
     <div class="note-book-tab-top">
       <div>
         <span class="experiment-name">{{ detailInfo.name }}</span>
@@ -40,7 +40,7 @@
   </div>
   <div
     v-if="currentShow === 'step'"
-    class="experiment-step-detail-box scrollbar"
+    class="experiment-step-detail-box scrollbar2"
   >
     <div class="step-top-box">
       <div>

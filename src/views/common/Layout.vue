@@ -3,10 +3,10 @@
       <Header></Header>
       <div class="main-box" id="main-box">
         <NavTab @tabSwitch="tabSwitch" v-show="configuration.showNav && configuration.navPosition==='outside'" />
-        <div :class="configuration.showContent?'content':'customized'" :id="(configuration.showNav && configuration.navPosition==='outside')?'withTop':''">
+        <div :class="configuration.showContent?'content':''" :id="(configuration.showNav && configuration.navPosition==='outside')?'withTop':''">
           <NavTab @tabSwitch="tabSwitch" v-show="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
-          <div  :class="configuration.showContent?'content_box':'customizedSon'">
-            <div :class="configuration.showContent?'setScrollbar':'customizedSon'">
+          <div  :class="configuration.showContent?'content_box':''">
+            <div :class="configuration.showContent?'setScrollbar':''" class="">
               <router-view />
             </div>
           </div>
@@ -133,6 +133,9 @@ export default defineComponent({
        height: 100%;
       // overflow: hidden;
     }
+  }
+  .main-box.customPage{
+    overflow: visible;
   }
 }
 </style>

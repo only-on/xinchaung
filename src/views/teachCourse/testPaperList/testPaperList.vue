@@ -69,7 +69,7 @@
           />
         </div>
         <a-table
-          class="stu-list-table scrollbar"
+          class="stu-list-table scrollbar2"
           :row-selection="{
             selectedRowKeys: selectedNoStuRowKeys,
             onChange: onSelectNoStuChange,
@@ -120,7 +120,7 @@
           />
         </div>
         <a-table
-          class="stu-list-table scrollbar"
+          class="stu-list-table scrollbar2"
           :row-selection="{
             selectedRowKeys: selectedStuRowKeys,
             onChange: onSelectStuChange,

@@ -60,7 +60,7 @@
           </div>
         </a-col>
       </a-row>
-      <div class="table-main setScrollbar">
+      <div class="table-main setscrollbar2">
       <div class="table-content">
         <div class="table-time-col">
           <!-- <setting-time-modal ref="settingTime" /> -->

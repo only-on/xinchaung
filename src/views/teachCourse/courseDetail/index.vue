@@ -1,55 +1,57 @@
 <template>
-  <div
-    v-layout-bg="{ size: '234px', bg: bg }"
-    style="height: calc(100% - 24px); width: 1330px; margin: 0 auto"
-  >
-    <top></top>
-    <a-tabs
-      default-active-key="1"
-      @change="tabChange"
-      class="course-detail-tabs"
-      v-model:activeKey="activeKey"
-    >
-      <a-tab-pane
-        key="1"
-        tab="课程实验"
-        v-if="tabs.includes('courseExperimentTab')"
+<!-- v-layout-bg="{ size: '234px', bg: bg }" -->
+  <div class="">
+    <div class="heardBox">
+      <top></top>
+    </div>
+    <div class="TeacherCourseDetail">
+      <a-tabs
+        default-active-key="1"
+        @change="tabChange"
+        class="course-detail-tabs"
+        v-model:activeKey="activeKey"
       >
-        <template v-if="activeKey === '1'">
-          <course-experiment-tab></course-experiment-tab>
-        </template>
-      </a-tab-pane>
-      <a-tab-pane
-        key="2"
-        tab="课程成员"
-        force-render
-        v-if="tabs.includes('courseMembersTab')"
-      >
-        <template v-if="activeKey === '2'">
-          <course-members-tab></course-members-tab>
-        </template>
-      </a-tab-pane>
-      <a-tab-pane
-        key="3"
-        tab="分组信息"
-        force-render
-        v-if="tabs.includes('groupInfoTab')"
-      >
-        <template v-if="activeKey === '3'">
-          <group-info-tab></group-info-tab>
-        </template>
-      </a-tab-pane>
-      <a-tab-pane
-        key="4"
-        tab="课程资源"
-        force-render
-        v-if="tabs.includes('courseResourcesTab')"
-      >
-        <template v-if="activeKey === '4'">
-          <course-resources-tab></course-resources-tab>
-        </template>
-      </a-tab-pane>
-    </a-tabs>
+        <a-tab-pane
+          key="1"
+          tab="课程实验"
+          v-if="tabs.includes('courseExperimentTab')"
+        >
+          <template v-if="activeKey === '1'">
+            <course-experiment-tab></course-experiment-tab>
+          </template>
+        </a-tab-pane>
+        <a-tab-pane
+          key="2"
+          tab="课程成员"
+          force-render
+          v-if="tabs.includes('courseMembersTab')"
+        >
+          <template v-if="activeKey === '2'">
+            <course-members-tab></course-members-tab>
+          </template>
+        </a-tab-pane>
+        <a-tab-pane
+          key="3"
+          tab="分组信息"
+          force-render
+          v-if="tabs.includes('groupInfoTab')"
+        >
+          <template v-if="activeKey === '3'">
+            <group-info-tab></group-info-tab>
+          </template>
+        </a-tab-pane>
+        <a-tab-pane
+          key="4"
+          tab="课程资源"
+          force-render
+          v-if="tabs.includes('courseResourcesTab')"
+        >
+          <template v-if="activeKey === '4'">
+            <course-resources-tab></course-resources-tab>
+          </template>
+        </a-tab-pane>
+      </a-tabs>
+    </div>
   </div>
 </template>
 
@@ -63,6 +65,7 @@ import {
   provide,
   ref,
   watch,
+  onBeforeUnmount
 } from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import top from "./top.vue";
@@ -182,7 +185,29 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
+.heardBox{
+  background-image: url(/src/assets/common/course-detail_bg.jpg);
+  background-size: 100% 234px;
+  background-repeat: no-repeat;
+}
+.TeacherCourseDetail{
+  // height: calc(100% - 24px);
+  // height: 1100px;
+  // overflow: hidden;
+  width: @center-width;
+  margin: 0 auto;
+  // overflow: auto;
+}
+:deep(.ant-tabs.course-detail-tabs){
+  // height:calc(100% - 200px) ;
+  // overflow: auto;
+  // overflow: hidden;
+}
+:deep(.ant-tabs-top-content.ant-tabs-content.ant-tabs-content-animated){
+  // height:calc(100% - 68px) ;
+  // overflow-y: auto;
+}
 .course-detail-tabs {
   height: calc(100% - 200px);
   display: flex;

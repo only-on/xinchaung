@@ -267,6 +267,8 @@ export default defineComponent({
 
 <style lang="less">
 .course-detail-top {
+  width: @center-width;
+  margin: 0 auto;
   height: 205px;
   color: @white;
   display: flex;

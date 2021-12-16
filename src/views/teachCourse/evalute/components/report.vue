@@ -1,6 +1,6 @@
 <template>
   <div class="reportBox">
-    <div class="report scrollbar">
+    <div class="report scrollbar2">
       <!-- 离线报告 -->
       <div id="offline" v-if="showOffline">
         <iframe v-if="showIframe" :src="reportData.pdf_url" frameborder="0" width="100%" height="500px"></iframe>

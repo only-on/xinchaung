@@ -1,5 +1,5 @@
 <template>
-  <div class="examList scrollbar">
+  <div class="examList scrollbar2">
     <div class="examItem" v-for="(item,index) in examList" :key="index">
       <div class="title">
         <span>{{index + 1}}、 {{item.question}} （）</span>
