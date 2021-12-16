@@ -17,7 +17,7 @@ interface Istate {
   videoUrl: string;
 }
 export default defineComponent({
-  name: "CourseAchievement",
+  name: "video",
   props: ["detailInfo"],
   setup: (props, context) => {
     const state: Istate = reactive({

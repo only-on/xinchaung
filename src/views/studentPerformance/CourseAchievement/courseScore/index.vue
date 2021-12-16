@@ -87,7 +87,7 @@
                 <div class="score-table" v-if="itm.experdis">
                   <!-- <a-table :columns="columns" :data-source="data" :bordered='true' :pagination="false">
                                 </a-table> -->
-                  <score-table :id="itm.record_id"></score-table>
+                  <score-table :id="itm?.record_id"></score-table>
                   <!-- hahaha -->
                 </div>
               </li>

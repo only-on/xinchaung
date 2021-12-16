@@ -23,7 +23,7 @@
 import { defineComponent, ref, onMounted, watch } from "vue";
 import XeQuill from "@xianfe/vue3-quill/src/index.vue";
 export default defineComponent({
-  name: "CourseAchievement",
+  name: "note",
   components: { XeQuill },
   props: ["detailInfo"],
   setup: (props, context) => {

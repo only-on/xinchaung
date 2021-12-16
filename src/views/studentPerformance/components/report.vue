@@ -9,7 +9,7 @@ interface Istate {
   reportUrl: string;
 }
 export default defineComponent({
-  name: "CourseAchievement",
+  name: "report",
   props: ["detailInfo"],
   setup: (props, context) => {
     const state: Istate = reactive({
@@ -20,7 +20,7 @@ export default defineComponent({
       () => {
         let development = process.env.NODE_ENV == "development" ? true : false;
         let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
-        state.reportUrl = baseurl + props.detailInfo;
+        state.reportUrl = baseurl + props.detailInfo?.pdf_path;
       },
       { immediate: true, deep: true }
     );
