@@ -20,15 +20,27 @@
         :columns="columns"
         :data-source="data"
         rowKey="id"
+        :pagination="
+          data?.length > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <template #name="{ record }">
-          <div class="purple" @click="archivingInfo(record.id)">
+          <div class="purple a-link" @click="archivingInfo(record.id)">
             {{ record.name }}
           </div>
         </template>
         <template #action="{ record }">
-          <div class="purple" @click="deleteTrain(record.id)">删除</div>
+          <div class="purple a-link" @click="deleteTrain(record.id)">删除</div>
         </template>
       </a-table>
       <template #renderEmpty>
@@ -46,6 +58,8 @@ import { Modal, message } from "ant-design-vue";
 
 interface state {
   data: any[];
+  total: number;
+  loading: boolean;
   selectedRowKeys: any[];
   params: any;
 }
@@ -93,6 +107,8 @@ export default defineComponent({
     ];
     const state: state = reactive({
       data: [],
+      total: 0,
+      loading: false,
       selectedRowKeys: [],
       params: {
         name: "",
@@ -100,9 +116,23 @@ export default defineComponent({
       },
     });
     const methods = {
+      onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        methods.tableList();
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+        methods.tableList();
+      },
       tableList() {
+        state.loading = true;
         http.archiveTrainList({ param: state.params }).then((res: any) => {
           state.data = res.data.list;
+          state.total = res.data.page.totalCount;
+          state.loading = false;
           // state.data = [{ name: "wse" }];
         });
       },
@@ -169,5 +199,9 @@ export default defineComponent({
 }
 .purple:hover {
   color: @theme-light-color;
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>

@@ -10,12 +10,28 @@
       </div>
     </div>
     <a-config-provider>
-      <a-table :columns="columns" :data-source="data" rowKey="id">
+      <a-table
+        :columns="columns"
+        :data-source="data"
+        rowKey="id"
+        :pagination="
+          data?.length > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
+      >
         <template #content="{ record }">
-          <div class="purple" @click="lookContent(record.id)">查看</div>
+          <div class="purple a-link" @click="lookContent(record.id)">查看</div>
         </template>
         <template #resource="{ record }">
-          <div class="purple" @click="lookResource(record.id)">查看</div>
+          <div class="purple a-link" @click="lookResource(record.id)">查看</div>
         </template>
       </a-table>
       <template #renderEmpty>
@@ -31,6 +47,8 @@ import request from "src/api/index";
 import { useRouter } from "vue-router";
 interface state {
   data: any[];
+  total: number;
+  loading: boolean;
   params: any;
 }
 export default defineComponent({
@@ -66,14 +84,30 @@ export default defineComponent({
     ];
     const state: state = reactive({
       data: [],
+      total: 0,
+      loading: false,
       params: {
         name: "",
       },
     });
     const methods = {
+      onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        methods.tableList();
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+        methods.tableList();
+      },
       tableList() {
+        state.loading = true;
         http.builtTrainList({ param: state.params }).then((res: any) => {
+          state.loading = false;
           state.data = res.data.list;
+          state.total = res.data.page.totalCount;
         });
       },
       querySearch() {
@@ -117,5 +151,9 @@ export default defineComponent({
 }
 .purple:hover {
   color: @theme-light-color;
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>

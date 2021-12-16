@@ -31,24 +31,39 @@
     <a-config-provider>
       <a-table
         :columns="columns"
+        :loading="loading"
         :data-source="data"
         rowKey="id"
+        :pagination="
+          data?.length > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
       >
         <template #name="{ record }">
-          <div @click="lookTrainDetail(record.id)" class="purple">
+          <div @click="lookTrainDetail(record.id)" class="purple a-link">
             {{ record.name }}
           </div>
         </template>
         <template #result="{ record }">
-          <div @click="lookResult(record.id)" class="purple">查看</div>
+          <div @click="lookResult(record.id)" class="purple a-link">查看</div>
         </template>
         <template #action="{ record }">
-          <div @click="clearVideoRecord(record.id)" class="purple">清除录像记录</div>
+          <div @click="clearVideoRecord(record.id)" class="purple a-link">
+            清除录像记录
+          </div>
         </template>
       </a-table>
       <template #renderEmpty>
-        <div><empty type="tableEmpty"></empty></div>
+        <div v-if="!loading"><empty type="tableEmpty"></empty></div>
       </template>
     </a-config-provider>
     <a-modal v-model:visible="visible" title="提示" @ok="handleOk">
@@ -74,6 +89,8 @@ import { useRouter } from "vue-router";
 
 interface state {
   data: any[];
+  loading: boolean;
+  total: number;
   selectedRowKeys: any[];
   params: any;
   visible: boolean;
@@ -86,7 +103,11 @@ export default defineComponent({
     const router = useRouter();
     const http = (request as any).adminTrain;
     const columns: any = [
-      { title: "实训名称", dataIndex: "name", slots: { customRender: "name" } },
+      {
+        title: "实训名称",
+        dataIndex: "name",
+        slots: { customRender: "name" },
+      },
       {
         title: "任课教师",
         dataIndex: "creater",
@@ -120,12 +141,16 @@ export default defineComponent({
     ];
     const state: state = reactive({
       data: [],
+      loading: false,
+      total: 0,
       selectedRowKeys: [],
       status: undefined,
       params: {
         name: "",
         teacher: "",
         state: "",
+        limit: 10,
+        page: 1,
       },
       visible: false,
     });
@@ -134,11 +159,25 @@ export default defineComponent({
         console.log(value);
         methods.tableList();
       },
+      onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        methods.tableList();
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+        methods.tableList();
+      },
       //   获取表格数据
       tableList() {
+        state.loading = true;
         state.params.state = state.status === undefined ? "" : state.status;
         http.trainList({ param: state.params }).then((res: any) => {
+          state.loading = false;
           state.data = res.data.list;
+          state.total = res.data.page.totalCount;
         });
       },
       // 勾选多选框

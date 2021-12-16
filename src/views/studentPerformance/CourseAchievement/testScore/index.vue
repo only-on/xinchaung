@@ -62,9 +62,9 @@ export default defineComponent({
         ? columnData.slice(0, 3).concat(columnData.slice(4, 5))
         : columnData;
     var option = ref({
-      tooltip: {
-        trigger: "item",
-      },
+      // tooltip: {
+      //   trigger: "item",
+      // },
       color:
         props.detailShowConfig.indexOf("auto") === -1
           ? ["#8955b5", "#eb7e64", "#f6bd16"]
@@ -74,15 +74,24 @@ export default defineComponent({
         bottom: "bottom",
         icon: "circle",
       },
+      // grid: {
+      //   bottom: "30%",
+      // },
       series: [
         {
           name: "访问来源",
           type: "pie",
-          radius: ["40%", "70%"],
+          radius: ["30%", "50%"],
+          label: {
+            formatter: "{b}{c}",
+          },
           data:
             props.detailShowConfig.indexOf("auto") === -1
               ? [
-                  { value: props.scoredata?.time_score, name: "用时得分" },
+                  {
+                    value: props.scoredata?.time_score,
+                    name: "用时得分",
+                  },
                   { value: props.scoredata?.question_score, name: "习题得分" },
                   { value: props.scoredata?.report_score, name: "报告得分" },
                 ]
@@ -159,18 +168,10 @@ export default defineComponent({
             },
           },
           itemStyle: {
-            //柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
-            // emphasis: {
-            //     borderRadius: 30
-            // },
-
-            // normal: {
-            //柱形图圆角，初始化效果
             borderRadius: [0, 25, 25, 0],
             color: function (params: any) {
               var colorList = ["#CCB5DF", "#8F5EB9"];
               return colorList[params.dataIndex];
-              // }
             },
           },
         },
@@ -211,7 +212,10 @@ export default defineComponent({
       },
       yAxis: {
         type: "category",
-        data: ["习题正确率", "步骤正确率"],
+        data:
+          props.detailShowConfig.indexOf("auto") === -1
+            ? ["习题正确率"]
+            : ["习题正确率", "步骤正确率"],
         axisLable: {
           formatter: (val: any) => {
             var str = "";
@@ -223,16 +227,17 @@ export default defineComponent({
       series: [
         {
           type: "bar",
-          data: [props.scoredata?.question_accuracy, props.scoredata?.auto_accuracy],
+          data:
+            props.detailShowConfig.indexOf("auto") === -1
+              ? [props.scoredata?.question_accuracy]
+              : [props.scoredata?.question_accuracy, props.scoredata?.auto_accuracy],
           barWidth: "40%",
           itemStyle: {
-            // normal: {
             //柱形图圆角，初始化效果
             borderRadius: [0, 25, 25, 0],
             color: function (params: any) {
               var colorList = ["#FFC719", "#EB7E64"];
               return colorList[params.dataIndex];
-              //   }
             },
           },
         },
@@ -290,25 +295,31 @@ export default defineComponent({
 .experScore {
   display: flex;
   justify-content: space-between;
-  padding: 20px 10px;
+  padding: 20px 5px;
+  width: 100%;
   .getScoreItem {
-    width: 174px;
+    width: 23%;
   }
   .pieChart {
-    width: 348px;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
   #pieChart {
-    width: 348px;
-    height: 300px;
+    width: 100%;
+    height: 100%;
   }
   .histogram {
-    width: 350px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     #taskTime {
-      width: 318px;
+      width: 308px;
       height: 200px;
     }
     #correctRate {
-      width: 318px;
+      width: 308px;
       height: 200px;
     }
   }

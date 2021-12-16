@@ -66,4 +66,8 @@ export default defineComponent({
   height: 100%;
   overflow-y: auto;
 }
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
+}
 </style>

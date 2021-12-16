@@ -9,22 +9,15 @@
         >
       </div>
       <div v-if="item.type.id === 1 || 2 || 3" class="answer">
-        <!-- <div
-          v-for="(it, j) in item.options"
-          :class="[
-            ifAnswerTrue(item, it).rightIndex.includes(it.id.toString()) ? 'correct' : '',
-            ifAnswerTrue(item, it).wrongIndex.includes(it.id.toString()) ? 'wrong' : '',
-          ]"
-          :key="j.toString()"
-        >
-          {{ optionItemName[j] }}.{{ it.option }}
-        </div> -->
         <div
           v-for="(it, j) in item.options"
-          :class="[
-            ifAnswerTrue(item, it).rightIndex.includes(it.id.toString()) ? 'correct' : '',
-            ifAnswerTrue(item, it).wrongIndex.includes(it.id.toString()) ? 'wrong' : '',
-          ]"
+          :class="
+            ifAnswerTrue(item, it)
+              ? 'correct'
+              : ifAnswerTrue(item, it) === false
+              ? 'wrong'
+              : ''
+          "
           :key="j.toString()"
         >
           {{ optionItemName[j] }}.{{ it.option }}
@@ -34,26 +27,30 @@
         <div
           v-for="(it, j) in item.answers"
           :key="j.toString()"
-          :class="[
-            ifAnswerTrue(item, it).rightIndex.includes(it.id.toString()) ? 'correct' : '',
-            ifAnswerTrue(item, it).wrongIndex.includes(it.id.toString()) ? 'wrong' : '',
-          ]"
+          :class="
+            ifAnswerTrue(item, it)
+              ? 'correct'
+              : ifAnswerTrue(item, it) === false
+              ? 'wrong'
+              : ''
+          "
         >
           答案{{ Number(j) + 1 }}. {{ it.answer }}
         </div>
-        <div v-if="item.type.id === 5">
-          <div
-            v-for="(it, j) in item.answers"
-            :key="j.toString()"
-            :class="[
-              ifAnswerTrue(item, it).rightIndex.includes(it.id.toString())
-                ? 'correct'
-                : '',
-              ifAnswerTrue(item, it).wrongIndex.includes(it.id.toString()) ? 'wrong' : '',
-            ]"
-          >
-            答案:{{ it.answer }}
-          </div>
+      </div>
+      <div v-if="item.type.id === 5">
+        <div
+          v-for="(it, j) in item.answers"
+          :key="j.toString()"
+          :class="
+            ifAnswerTrue(item, it)
+              ? 'correct'
+              : ifAnswerTrue(item, it) === false
+              ? 'wrong'
+              : ''
+          "
+        >
+          答案:{{ it.answer }}
         </div>
       </div>
     </div>
@@ -63,6 +60,7 @@
 import { defineComponent, reactive, toRefs, watch } from "vue";
 interface Istate {
   data: any[];
+  answerClass: string;
 }
 export default defineComponent({
   name: "exper",
@@ -80,6 +78,7 @@ export default defineComponent({
           ],
         },
       ],
+      answerClass: "",
     });
     const methods = {
       ifAnswerTrue(item: any, it: any) {
@@ -87,7 +86,6 @@ export default defineComponent({
         const rightIndex: any = [];
         const wrongIndex: any = [];
         item.answers.forEach((opt: any) => {
-          console.log(opt, it, "kkkkkkkkk");
           allanswer.push(opt.answer);
           // 所有正确答案
         });
@@ -98,16 +96,11 @@ export default defineComponent({
             wrongIndex.push(it);
           }
         });
-        console.log(rightIndex, wrongIndex, "rightIndex", "wrongIndex");
-        return {
-          rightIndex,
-          wrongIndex,
-        };
-        // if (rightIndex.indexOf(it.id.toString()) !== -1) {
-        //   return true;
-        // } else if (wrongIndex.indexOf(it.id.toString()) !== -1) {
-        //   return false;
-        // }
+        if (rightIndex.indexOf(it.id.toString()) !== -1) {
+          return true;
+        } else if (wrongIndex.indexOf(it.id.toString()) !== -1) {
+          return false;
+        }
       },
     };
     return { ...toRefs(state), optionItemName, ...methods };

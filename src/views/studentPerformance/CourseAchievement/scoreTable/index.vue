@@ -8,7 +8,7 @@
       rowKey="id"
     >
       <template #video="{ record }">
-        <span class="detail" @click="lookResult(record.id, 'video')">详情</span>
+        <span class="detail" @click="lookResult(record.id, 'cvideo')">详情</span>
       </template>
       <template #exper="{ record }">
         <span class="detail" @click="lookResult(record.id, 'exper')">详情</span>
@@ -17,14 +17,17 @@
         <span class="detail" @click="lookResult(record.id, 'report')">详情</span>
       </template>
       <template #rank="{ record }">
-        <div class="scoreStar">
-          <div v-for="item in record?.rank" :key="item">
-            <img class="star" src="src/assets/images/stuAchievement/star-off.png" />
+        <div v-if="record.rank">
+          <div class="scoreStar">
+            <a-rate :value="record?.rank" disabled />
           </div>
         </div>
+        <div v-else>未评价</div>
       </template>
       <template #self_score="{ record }">
-        <span v-if="record.self_score">{{ record.self_score }}</span>
+        <div v-if="record.self_score">
+          <a-rate :value="record?.self_score" disabled />
+        </div>
         <span v-else>未评价</span>
       </template>
       <template #courseDetail="{ record }">
@@ -94,7 +97,7 @@ import testScore from "../testScore/index.vue";
 import request from "../../../../api";
 import exper from "../../components/exper.vue";
 import report from "../../components/report.vue";
-import video from "../../components/video.vue";
+import cvideo from "../../components/video.vue";
 interface Istate {
   start: any;
   rebuild: any;
@@ -112,7 +115,7 @@ export default defineComponent({
     "test-score": testScore,
     exper,
     report,
-    video,
+    cvideo,
   },
   props: ["id"],
   setup: (props, context) => {
@@ -165,6 +168,7 @@ export default defineComponent({
         key: "rank",
         dataIndex: "rank",
         slots: { customRender: "rank" },
+        width: 140,
       },
       {
         title: "成绩明细",
@@ -188,7 +192,7 @@ export default defineComponent({
         { title: "Tab 2", content: "Content of Tab 2", key: "2", scoredata: {} },
       ],
       activeKey: "1",
-      componentName: "",
+      componentName: "exper",
       detailInfo: "",
       title: "",
     });
@@ -229,14 +233,14 @@ export default defineComponent({
           state.detailInfo = res.data;
           const types = {
             exper: "实验习题",
-            video: "操作视频",
+            cvideo: "操作视频",
             report: "实验报告",
           };
           state.title = types[type];
         } else {
           const warningMeaasge = {
             exper: "实验习题为空！",
-            video: "操作视频为空！",
+            cvideo: "操作视频为空！",
             report: "暂无实验报告！",
           };
           message.warning(warningMeaasge[type]);
