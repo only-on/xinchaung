@@ -8,7 +8,7 @@
       >
     </div>
     <div class="header-middle">
-      <menu-bar></menu-bar>
+      <menu-bar :menus="menus"></menu-bar>
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
@@ -38,11 +38,11 @@
 import { defineComponent,reactive,computed,Ref,ref,onMounted,watch } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from '../../api/index'
-import { useRouter } from 'vue-router';
 import { IBusinessResp} from '../../typings/fetch';
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { Modal,message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
+import { useRouter,useRoute } from 'vue-router';
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -60,10 +60,10 @@ export default defineComponent({
       //  4  个人信息  3 1 2修改密码
       return role === 3 || role === 1  || role === 2
     })
-    // const userName = ref<string>('');
-    var userName=computed(()=>{
-      return lStorage.get('name')
-    })
+    const userName = ref<string>('');
+    // var userName=computed(()=>{
+    //   return lStorage.get('name')
+    // })
     // watch(name,(val:any)=>{
     //   console.log(val)
     //   userName.value=val
@@ -91,11 +91,35 @@ export default defineComponent({
       //   console.log(res)
       // })
     }
+    const route = useRoute();
+    var menus:MenuItem[]=reactive([])
+    var activeName:Ref<string>=ref(lStorage.get('menuActiveName') || '')
+    function getMenu(){
+      http.getMenu().then((res:IBusinessResp)=>{
+        if(res){
+          menus.length=0
+          let data=res.data.menus
+          activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].name)
+          menus.push(...data)
+          if(route.path===(data && data.length && data[0].url)){
+            activeName.value=(data && data[0].name)
+          }
+          let user=res.data.user
+          lStorage.set('role',user.role)
+          lStorage.set('name',user.name)
+          lStorage.set('user_id',user.id)
+          lStorage.set("ws_config",JSON.stringify(res.data.websocket_conf))
+          // store.commit('saveMenus', data)
+
+          userName.value=user.name
+        }
+      })
+    }
     onMounted(() => {
-      
+      getMenu()
     });
     
-    return {isOperation,power,userName,loginOut,information,helpMessage,modifyPassword,assistText}
+    return {isOperation,power,userName,loginOut,information,helpMessage,modifyPassword,assistText,menus,activeName}
   },
 });
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper" v-layout-bg>
-    <div class="toolbar setScrollbar">
+    <div class="toolbar ">
       <div class="toolbar-title">报告模板组件</div>
       <div v-for="(item,index) in initialWidgetThumb" :key="index">
         <div class="toolbar-subject">{{item.title}}</div>
@@ -11,7 +11,7 @@
         </drag-gable>
       </div>
     </div>
-    <div class="content setScrollbar">
+    <div class="content ">
       <div class="dnd-space">
         <a-form :model="form" :rules="rules" layout="vertical" ref="formRef">
           <a-form-item label="报告模板名称" name="name">
@@ -34,11 +34,15 @@
           </a-form-item>
         </a-form>
       </div>
-      <div class="operate">
+      <!-- <div class="operate">
         <a-button @click="goBack">{{templateId ? '返回' : '取消'}}</a-button>
         <a-button v-show="!isCheck" type="primary" style="margin-left: 10px" @click="handleSave">保存</a-button>
-      </div>
+      </div> -->
     </div>
+  </div>
+  <div class="operate">
+    <a-button @click="goBack">{{templateId ? '返回' : '取消'}}</a-button>
+    <a-button v-show="!isCheck" type="primary" style="margin-left: 10px" @click="handleSave">保存</a-button>
   </div>
 </template>
 <script lang="ts">
@@ -184,6 +188,7 @@ export default defineComponent({
   flex:1;
   overflow: auto;
   padding-right: 10px;
+  max-height: 806px;
   .dnd-space {
     padding-left: 25px;
     min-height: 800px;

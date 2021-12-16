@@ -161,7 +161,7 @@
               </div>
             </div>
           </div>
-          <div v-if="experimentalDataList.length > 10" class="pagination-box">
+          <div v-if="total > 10" class="pagination-box">
             <a-pagination
               show-size-changer
               :total="total"
@@ -573,18 +573,24 @@ export default defineComponent({
       })
     }
     // 初始化
-    function init() {
+    async function init() {
       getSearchInfo()
-      experimentalTreeList().then(res => {
-        if (route.query.course_index && route.query.chapter_index) {
+      experimentalTreeList().then( async (res) => {
+        if (route.query.course_index && route.query.chapter_index && res) {
           currentCourseIndex.value = Number(route.query.course_index)
 
           currentChapterIndex.value = Number(route.query.chapter_index)
           let Id=taskData[currentCourseIndex.value].children && taskData[currentCourseIndex.value].children[currentChapterIndex.value] && taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
           currentSelectChapter.id = Id
           // console.log(currentCourseIndex, currentChapterIndex)  ExperimentDetaile
-          recoverTreeStatus()
+          // experimentalTreeList().then(()=>{
+          //   console.log(taskData)
+          //   getExperimentList()
+          //   recoverTreeStatus()
+          // })
           getExperimentList()
+          recoverTreeStatus()
+          
         } else {
           if (res) {
             nextTick(()=>{
@@ -716,10 +722,11 @@ export default defineComponent({
     function recoverTreeStatus() {
       if (route.query.course_index && route.query.chapter_index) {
         myTree.value.resetSelect(taskData[currentCourseIndex.value].id)
+        let val=currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
+        // console.log(taskData)
+        // console.log(val)
         myTree.value.resetSelectChapter(
-          taskData[currentCourseIndex.value].children[
-            currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
-          ].id,
+          taskData[currentCourseIndex.value].children[val===-1?0:val].id,
         )
         return 
       }

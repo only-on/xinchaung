@@ -259,6 +259,8 @@ export default defineComponent({
       flex-grow: 1;
       padding: 16px 10px 10px 31px;
       height: calc(100% - 46px);
+      max-height: 900px;
+      overflow: auto;
       .noData{
         .kong{
           height: 70%;

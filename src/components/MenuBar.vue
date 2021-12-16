@@ -1,5 +1,5 @@
 <script lang="tsx">
-import { defineComponent, VNode,reactive,Ref,ref,watch,onMounted} from "vue";
+import { defineComponent, VNode,reactive,Ref,ref,watch,onMounted,PropType} from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { useRouter,useRoute } from 'vue-router';
 import request from 'src/api/index'
@@ -9,11 +9,12 @@ import {useStore} from "vuex"
 export default defineComponent({
   name: "MenuBar",
   props: {
-    // menus: {
-    //   required: false,
-    //   type: Array,
-    //   default: () => [],
-    // },
+    menus: {
+      required: false,
+      type: Array,
+      // type: Array as PropType<MenuItem>,
+      default: () => [],
+    },
   },
   setup(props,context) {
     const router = useRouter();
@@ -64,7 +65,8 @@ export default defineComponent({
         </a-menu-item>
       );
     };
-    var menus:MenuItem[]=reactive([])
+    // var menus:MenuItem[]=reactive([])
+    var menus:any[]=props.menus
     var children: Array<VNode>=reactive([])
     const renderMenu = function (menuData: MenuItem[]) {
       menuData.forEach((item) => {
@@ -109,20 +111,12 @@ export default defineComponent({
           lStorage.set('name',user.name)
           lStorage.set('user_id',user.id)
           lStorage.set("ws_config",JSON.stringify(res.data.websocket_conf))
-          //   现阶段登录在后端    登录状态无法捕捉    分离之后用户信息改存在vuex
           store.commit('saveMenus', data)
         }
       })
     }
     onMounted(() => {
-      // console.log(store.state.Menus)
-      // let Menus=store.state.Menus;
-      // if(!Menus.length){
-      //    getMenu()
-      // }else{
-      //   menus=Menus
-      // }
-      getMenu()
+      // getMenu()
     });
     return () => (renderMenu(menus as MenuItem[]));
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));
