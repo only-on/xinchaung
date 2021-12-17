@@ -14,12 +14,16 @@
           <drag-tree :treeData="treeData" @selectChapter="selectChapter" @selectExperiment="selectExperiment" @editNode="editNode" @deleteNode="deleteNode"></drag-tree>
       </div>
     </div>
-    <div class="course-experiment-right">
+    <div v-if="chapter_id" class="course-experiment-right">
         <chapterDetail v-if="rightTab==='chapterDetail'"/>
         <addChapter v-if="rightTab==='addChapter'"/>
         <addExperiment v-if="rightTab==='addExperiment'"/>
         <experimentDetail v-if="rightTab==='experimentDetail'"/>
     </div>
+    
+    <template v-else>
+      <empty text="暂无数据，请点击左侧自定义章节/添加章节按钮，进行添加章节"></empty>
+    </template>
   </div>
   <a-modal :visible="createChapterVisible" title="添加章节" @cancel="closeCreateChapterModel" @ok="submitCreateChapter">
     <label>章节名称：</label>
@@ -37,6 +41,7 @@ import addChapter from "./addChapter.vue"
 import addExperiment from "./addExperiment.vue"
 import experimentDetail from "./experimentDetail.vue"
 import { message } from "ant-design-vue";
+import empty from "src/components/Empty.vue"
 
 export default defineComponent({
     components:{
@@ -44,7 +49,8 @@ export default defineComponent({
         chapterDetail,
         experimentDetail,
         addChapter,
-        addExperiment
+        addExperiment,
+        empty
     },
   setup() {
       const route=useRoute();
@@ -134,6 +140,7 @@ export default defineComponent({
       function deleteNode(val:any) {
         deleteChapterApi({course_id:course_id,chapter_id:val.id}).then((res:any)=>{
           message.success(res.msg)
+          chapter_id.value=""
           getCourseTree()
           reactiveData.rightTab="chapterDetail"
         })
@@ -150,7 +157,8 @@ export default defineComponent({
           closeCreateChapterModel,
           submitCreateChapter,
           deleteNode,
-          tab
+          tab,
+          chapter_id
       }
   },
 });
