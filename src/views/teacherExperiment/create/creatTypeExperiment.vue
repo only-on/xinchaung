@@ -272,6 +272,7 @@ export default defineComponent({
                 query: {
                   course_index: route.query.course_index,
                   chapter_index: route.query.chapter_index,
+                  chapter_id: route.query.chapter_id,
                 },
               });
             });
@@ -304,6 +305,7 @@ export default defineComponent({
               query: {
                 course_index: route.query.course_index,
                 chapter_index: route.query.chapter_index,
+                chapter_id: route.query.chapter_id,
                 currentTab: 0,
               },
             });

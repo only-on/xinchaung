@@ -237,7 +237,7 @@ export default defineComponent({
     // 当前课程方向索引
     let currentCourseIndex = ref<number>(0)
     // 当前章节索引
-    let currentChapterIndex = ref<number>(-1)
+    let currentChapterIndex = ref<number>(0)
     // 当前章节下面是否有实验
     let isEmptyExperimental = ref<boolean>(false)
     let isEmptyChapter = ref<boolean>(false)
@@ -254,9 +254,7 @@ export default defineComponent({
     // tree
     let treeSelectKeyWord = ref<string>('')
     let taskData = reactive<ITreeList[]>([])
-    let currentSelectChapter = reactive({
-      id: 0
-    })
+    let currentSelectChapterId = ref(0)
     function onTreeSearch() {
       experimentalTreeList()
     }
@@ -273,15 +271,13 @@ export default defineComponent({
         }
         taskData.length = 0
         http.getExpeTreeList({param: {...param}}).then((res: IBusinessResp) => {
-          // console.log(res)
-          if (res && res.status === 1) {
-            let Chapter=(res.data && res.data[0] && res.data[0].children && res.data[0].children[0]) || []
+          if (res) {
+            let Chapter=(res.data && res.data[currentCourseIndex.value] && res.data[currentCourseIndex.value].children && res.data[currentCourseIndex.value].children[currentChapterIndex.value]) || {}
+            res.data[currentCourseIndex.value].children.length ? isEmptyExperimental.value = false : isEmptyExperimental.value = true
             taskData.push(...res.data)
-            currentSelectChapter = Object.assign(currentSelectChapter, Chapter)
-            getExperimentList()
+            currentSelectChapterId.value = Chapter.id
+            // getExperimentList()
             resp(true)
-          } else {
-            reject(false)
           }
         })
       }).catch(err => {
@@ -310,7 +306,7 @@ export default defineComponent({
       } else {
         chapterInfo = Object.assign(chapterInfo, {chapterName: '', chapterId: 0, parent_id: val.data.id})
       }
-      currentChapterIndex.value = val.idx ? val.idx : -1
+      // currentChapterIndex.value = val.idx ? val.idx : 0
     }
     let formRef = ref()
     function handleOk() {
@@ -358,17 +354,19 @@ export default defineComponent({
       visible.value = false
       chapterInfo.chapterName = ''
       chapterInfo.parent_id = 0
-      currentChapterIndex.value = -1
+      currentChapterIndex.value = 0
       formRef.value.resetFields()
     }
     // 打开创建章节弹框
     function addChapter() {
-      currentChapterIndex.value = -1
+      currentChapterIndex.value = 0
       isEditChapter.value = false
       visible.value = true
+      chapterInfo = Object.assign(chapterInfo, {chapterName: '', chapterId: 0, parent_id: currentCourseContent.id})
     }
     // 删除章节
     function delChapter(data: any) {
+      if (data.idx === currentChapterIndex.value) currentChapterIndex.value = 0
       const id = data.data.id
       if (data.data.contents_count > 0) {
         $message.warn('该章节下有实验，不可以删除')
@@ -383,7 +381,7 @@ export default defineComponent({
         onOk() {
           http.deleteChapter({urlParams: {id}}).then((res: IBusinessResp) => {
               $message.success('删除章节成功')
-              getExperimentList()
+              // getExperimentList()
               experimentalTreeList().then((data:any) => {
                 if (data) recoverTreeStatus()
               })
@@ -407,7 +405,7 @@ export default defineComponent({
           experimentalTreeList().then((data:any) => {
             recoverTreeStatus()
           })
-          getExperimentList()
+          // getExperimentList()
       })
     }
     function saveToMyAll(val: any) {
@@ -428,7 +426,7 @@ export default defineComponent({
     })
     function getExperimentList() {
       let param = {
-        category_id: currentSelectChapter.id,
+        category_id: currentSelectChapterId.value,
         init_type: currentTab.value,
         content_type: currentTaskType.value,
         content_level: currentTaskRankType.value,
@@ -534,7 +532,7 @@ export default defineComponent({
           } else {
             $message.success('取消共享成功')
           }
-          getExperimentList()
+          // getExperimentList()
           experimentalTreeList().then((data:any) => {
             if (data) {
               recoverTreeStatus()
@@ -553,7 +551,7 @@ export default defineComponent({
         onOk() {
           http.deleteExperimental({urlParams: {id: data.id}}).then((res: IBusinessResp) => {
               $message.success('删除成功')
-              getExperimentList()
+              // getExperimentList()
               experimentalTreeList().then((data:any) => {
                 if (data) {
                   recoverTreeStatus()
@@ -580,17 +578,12 @@ export default defineComponent({
           currentCourseIndex.value = Number(route.query.course_index)
 
           currentChapterIndex.value = Number(route.query.chapter_index)
-          let Id=taskData[currentCourseIndex.value].children && taskData[currentCourseIndex.value].children[currentChapterIndex.value] && taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
-          currentSelectChapter.id = Id
-          // console.log(currentCourseIndex, currentChapterIndex)  ExperimentDetaile
-          // experimentalTreeList().then(()=>{
-          //   console.log(taskData)
-          //   getExperimentList()
-          //   recoverTreeStatus()
-          // })
-          getExperimentList()
-          recoverTreeStatus()
           
+          currentCourseContent.id = taskData[currentCourseIndex.value].id
+          // let Id=taskData[currentCourseIndex.value].children && taskData[currentCourseIndex.value].children[currentChapterIndex.value] && taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
+          currentSelectChapterId.value = Number(route.query.chapter_id)
+          // console.log(currentCourseIndex, currentChapterIndex)  ExperimentDetaile
+          recoverTreeStatus()
         } else {
           if (res) {
             nextTick(()=>{
@@ -611,7 +604,7 @@ export default defineComponent({
       if (val) {
         if (val.children.length > 0) {
           isEmptyExperimental.value = false
-          currentSelectChapter.id = val.children[0].id
+          currentSelectChapterId.value = val.children[0].id
           myTree.value.active(val.children[0])
           currentSkillInfo.chapter_id = val.children[0].id
           currentSkillInfo.chapter_name = val.children[0].name
@@ -628,7 +621,7 @@ export default defineComponent({
       } else {
         if (taskData[0] && taskData[0].children && taskData[0].children[0]) {
           isEmptyExperimental.value = false
-          currentSelectChapter.id = taskData[0].children[0].id
+          currentSelectChapterId.value = taskData[0].children[0].id
           currentSkillInfo = Object.assign(currentSkillInfo, {
             chapter_id: taskData[0].children[0].id,
             chapter_name: taskData[0].children[0].name,
@@ -694,7 +687,7 @@ export default defineComponent({
     // 选择章节
     function selectTree(data: any) {
       // console.log(data)
-      if (currentSelectChapter.id === data.data.id) {
+      if (currentSelectChapterId.value === data.data.id) {
         return
       } else {
         currentTaskType.value = 0
@@ -707,7 +700,7 @@ export default defineComponent({
       currentSkillInfo.chapter_id = data.data.id
       currentSkillInfo.skill_name = data.parent.name
       currentSkillInfo.chapter_name = data.data.name
-      currentSelectChapter.id = data.data.id
+      currentSelectChapterId.value = data.data.id
       getExperimentList()
     }
     // 打开tree下拉
@@ -715,38 +708,34 @@ export default defineComponent({
       currentCourseIndex.value = index
       currentCourseContent = Object.assign(currentCourseContent, val)
       lastChapterIndex.value = 0
+      currentChapterIndex.value = 0
       // console.log(val, index)
       initExperimental(val)
     }
     // 恢复上次展开的树
     function recoverTreeStatus() {
-      if (route.query.course_index && route.query.chapter_index) {
-        myTree.value.resetSelect(taskData[currentCourseIndex.value].id)
-        let val=currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
-        // console.log(taskData)
-        // console.log(val)
-        myTree.value.resetSelectChapter(
-          taskData[currentCourseIndex.value].children[val===-1?0:val].id,
-        )
-        return 
-      }
+      // if (route.query.course_index && route.query.chapter_index) {
+      //   myTree.value.resetSelect(taskData[currentCourseIndex.value].id)
+      //   myTree.value.resetSelectChapter(currentSelectChapterId.value)
+      //   getExperimentList()
+      //   return 
+      // }
       myTree.value.resetSelect(currentCourseContent.id)
       // console.log(currentCourseContent)
       let index=currentChapterIndex.value !== -1 ? currentChapterIndex.value : lastChapterIndex.value
-      let Id=currentCourseContent.children && currentCourseContent.children[index] && currentCourseContent.children[index].id
-      myTree.value.resetSelectChapter(Id)
+      // let Id=currentCourseContent.children && currentCourseContent.children[index] && currentCourseContent.children[index].id
+      // console.log(currentSelectChapterId.value)
+      myTree.value.resetSelectChapter(currentSelectChapterId.value)
+      getExperimentList()
     }
-    onMounted(() => {
-      
-    })
     function create() {
       // console.log('创建实验')
       router.push({
         path: '/teacher/teacherExperiment/creatExperiment',
         query: {
-          chapter_id: currentSkillInfo.chapter_id,
-          chapter_name: currentSkillInfo.chapter_name,
-          skill_name: currentSkillInfo.skill_name,
+          chapter_id: taskData[currentCourseIndex.value].children[currentChapterIndex.value].id,
+          chapter_name: taskData[currentCourseIndex.value].children[currentChapterIndex.value].name,
+          skill_name: taskData[currentCourseIndex.value].name,
           course_index: currentCourseIndex.value.toString(),
           chapter_index: currentChapterIndex.value.toString(),
         },
