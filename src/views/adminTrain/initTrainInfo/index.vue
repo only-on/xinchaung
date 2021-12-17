@@ -2,9 +2,17 @@
   <div id="initTrainInfo" v-layout-bg>
     <div class="header-search">
       <div class="search-left">
-        <a-form-item label="实训名称">
-          <a-input @keyup.enter="querySearch" v-model:value="params.name" />
-        </a-form-item>
+        <div class="searchInput">
+          <a-input
+            @keyup.enter="querySearch"
+            v-model:value="params.name"
+            placeholder="请输入实训名称"
+            class="input"
+          >
+            <template #prefix>
+              <img src="src/assets/images/screenicon/Group12.png" /> </template
+          ></a-input>
+        </div>
         <a-button type="primary" @click="querySearch">查询</a-button>
         <a-button type="primary" @click="clearAll">清空</a-button>
       </div>
@@ -140,10 +148,10 @@ export default defineComponent({
 .search-left {
   display: flex;
   > div {
-    margin-right: 10px;
+    margin-right: 20px;
   }
   > button {
-    margin-right: 10px;
+    margin-right: 20px;
   }
 }
 .purple {

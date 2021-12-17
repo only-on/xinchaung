@@ -1,14 +1,22 @@
 <template>
   <div class="a-init-course-list-wrap">
     <div class="action-top">
-      <a-input-search
+      <!-- <a-input-search
         v-model:value="params.course_name"
         placeholder="请输入查询关键字"
         size="large"
         @search="onSearch"
         enter-button="查询"
       >
-      </a-input-search>
+      </a-input-search> -->
+      <a-input
+        @keyup.enter="onSearch"
+        v-model:value="params.course_name"
+        placeholder="请输入查询关键字"
+        class="input"
+      >
+        <template #prefix> <span class="iconfont icon-sousuo"></span> </template
+      ></a-input>
     </div>
     <a-config-provider>
       <a-table
@@ -19,10 +27,12 @@
         :rowKey="rowKey"
       >
         <template #result="{ text }"
-          ><span class="a-link" @click="toDetail(text,'experiment')">查看</span></template
+          ><span class="a-link" @click="toDetail(text, 'experiment')"
+            >查看</span
+          ></template
         >
         <template #action="{ text }">
-          <span class="a-link" @click="toDetail(text,'resource')">查看</span>
+          <span class="a-link" @click="toDetail(text, 'resource')">查看</span>
         </template>
       </a-table>
       <template #renderEmpty>
@@ -44,7 +54,7 @@
 import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import { getInitCourseListApi } from "../api";
 import Empty from "src/components/Empty.vue";
-import {useRouter} from "vue-router"
+import { useRouter } from "vue-router";
 const columns = [
   {
     title: "课程名称",
@@ -80,7 +90,7 @@ export default defineComponent({
     empty: Empty,
   },
   setup() {
-    const router=useRouter()
+    const router = useRouter();
     const reactiveData = reactive({
       params: {
         course_name: "",
@@ -116,16 +126,16 @@ export default defineComponent({
         reactiveData.params.limit = pageSize;
         method.getDataList();
       },
-      toDetail(id:number,type:string){
-        console.log(id,type);
+      toDetail(id: number, type: string) {
+        console.log(id, type);
         router.push({
-            path:"/admin/adminCourse/courseDetail",
-            query:{
-                course_id:id,
-                type:type
-            }
-        })
-      }
+          path: "/admin/adminCourse/courseDetail",
+          query: {
+            course_id: id,
+            type: type,
+          },
+        });
+      },
     };
 
     onMounted(() => {
@@ -144,13 +154,19 @@ export default defineComponent({
 .a-init-course-list-wrap {
   .action-top {
     margin-bottom: 30px;
-    .ant-input-search{
+    .ant-input-search {
       width: 600px;
     }
   }
-  .page-box{
+  .page-box {
     text-align: center;
     margin-top: 20px;
+  }
+  .input {
+    width: 314px;
+  }
+  .iconfont {
+    color: rgba(0, 0, 0, 0.25);
   }
 }
 </style>

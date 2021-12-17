@@ -1,17 +1,50 @@
 <template>
   <div class="a-teacher-list-wrap">
     <div class="top-action-wrap">
-      <label> 课程名称： </label>
-      <a-input v-model:value="search.course_name" class="class-name" />
-      <label> 任课教师： </label>
-      <a-input v-model:value="search.user_name" class="class-teacher-name" />
-      <label> 课程状态： </label>
+      <!-- <label> 课程名称： </label>
+      <a-input v-model:value="search.course_name" class="class-name" /> -->
+      <div class="inputSearch">
+        <a-input
+          @keyup.enter="searchFun"
+          v-model:value="search.course_name"
+          placeholder="请输入课程名称"
+          class="input"
+        >
+          <template #prefix>
+            <img src="src/assets/images/screenicon/Group12.png" /> </template
+        ></a-input>
+      </div>
+      <!-- <label> 任课教师： </label>
+      <a-input v-model:value="search.user_name" class="class-teacher-name" /> -->
+      <div class="inputSearch">
+        <a-input
+          @keyup.enter="searchFun"
+          v-model:value="search.user_name"
+          placeholder="请输入教师名称"
+          class="input"
+        >
+          <template #prefix>
+            <img src="src/assets/images/screenicon/Group11.png" /> </template
+        ></a-input>
+      </div>
+      <!-- <label> 课程状态： </label>
       <a-select v-model:value="search.course_state" placeholder="请选择">
         <a-select-option value="">请选择</a-select-option>
         <a-select-option value="2">未开始</a-select-option>
         <a-select-option value="3">进行中</a-select-option>
         <a-select-option value="1">已结束</a-select-option>
-      </a-select>
+      </a-select> -->
+      <div class="item custom_select dev_state">
+        <a-select
+          v-model:value="search.course_state"
+          placeholder="请选择课程状态"
+          @change="searchFun"
+        >
+          <a-select-option value="2">未开始</a-select-option>
+          <a-select-option value="3">进行中</a-select-option>
+          <a-select-option value="1">已结束</a-select-option>
+        </a-select>
+      </div>
       <a-button type="primary" @click="searchFun">查询</a-button>
       <a-button type="primary" @click="clearSearch">清空</a-button>
       <span class="action-right">
@@ -30,25 +63,17 @@
         :rowKey="rowKey"
       >
         <template #course_name="{ text }"
-          ><span
-            :title="text.course_name"
-            class="a-link"
-            @click="toDetail(text.id)"
-            >{{ text.course_name }}</span
-          ></template
+          ><span :title="text.course_name" class="a-link" @click="toDetail(text.id)">{{
+            text.course_name
+          }}</span></template
         >
         <template #result="{ text }"
           ><span class="a-link" @click="lookResult(text)">查看</span></template
         >
         <template #action="{ text, record }">
           <div class="action-table">
-            <span class="a-link" @click="clearVideoLog(text)"
-              >清除录像记录</span
-            >
-            <span
-              class="a-link"
-              v-if="record.state === '已结束'"
-              @click="toArchive(text)"
+            <span class="a-link" @click="clearVideoLog(text)">清除录像记录</span>
+            <span class="a-link" v-if="record.state === '已结束'" @click="toArchive(text)"
               >归档</span
             >
           </div></template
@@ -141,7 +166,7 @@ type TreactiveData = {
   search: {
     course_name: string;
     user_name: string;
-    course_state: string;
+    course_state: string | undefined;
     page: number;
     limit: number;
   };
@@ -159,7 +184,7 @@ export default defineComponent({
       search: {
         course_name: "",
         user_name: "",
-        course_state: "",
+        course_state: undefined,
         page: 1,
         limit: 10,
       },
@@ -349,9 +374,9 @@ export default defineComponent({
         margin-left: 5px;
       }
     }
-    .ant-select {
-      width: 160px;
-    }
+    // .ant-select {
+    //   width: 160px;
+    // }
     .class-name {
       width: 160px;
     }
@@ -370,6 +395,37 @@ export default defineComponent({
   .page-box {
     text-align: center;
     margin-top: 20px;
+  }
+}
+.inputSearch {
+  margin-right: 20px;
+}
+.item {
+  display: flex;
+  align-items: center;
+  margin-right: 22px;
+  .ant-select-selector {
+    width: 240px;
+    height: 35px;
+    padding-left: 30px;
+    align-items: center;
+  }
+  .ant-input {
+    padding-left: 26px;
+  }
+}
+.dev_state {
+  .ant-select-selector::before {
+    content: "";
+    position: absolute;
+    left: 8px;
+    top: 8px;
+    background: url(src/assets/images/screenicon/Group4.png) no-repeat;
+    width: 17px;
+    height: 17px;
+  }
+  .ant-select-single:not(.ant-select-customize-input) .ant-select-selector {
+    padding: 0px 30px;
   }
 }
 </style>

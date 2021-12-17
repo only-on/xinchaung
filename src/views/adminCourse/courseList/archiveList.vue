@@ -1,12 +1,34 @@
 <template>
   <div class="a-archive-course-list-wrap">
     <div class="action-top">
-      <label> 课程名称： </label>
+      <!-- <label> 课程名称： </label>
       <a-input v-model:value="params.course_name" class="class-name" />
       <label> 任课教师： </label>
       <a-input v-model:value="params.user_name" class="class-teacher-name" />
-      <label> 归档时间： </label>
-      <a-date-picker v-model:value="params.archive_time" />
+      <label> 归档时间： </label> -->
+      <div class="searchInput">
+        <a-input
+          @keyup.enter="onSearch"
+          v-model:value="params.course_name"
+          placeholder="请输入课程名称"
+          class="input"
+        >
+          <template #prefix>
+            <img src="src/assets/images/screenicon/Group12.png" /> </template
+        ></a-input>
+      </div>
+      <div class="searchInput">
+        <a-input
+          @keyup.enter="onSearch"
+          v-model:value="params.course_name"
+          placeholder="请输入任课教师"
+          class="input"
+        >
+          <template #prefix>
+            <img src="src/assets/images/screenicon/Group11.png" /> </template
+        ></a-input>
+      </div>
+      <a-date-picker placeholder="请选择归档日期" v-model:value="params.archive_time" />
       <a-button type="primary" @click="onSearch">查询</a-button>
       <a-button type="primary" @click="clearParams">清空</a-button>
       <a-button class="delete-btn" type="primary" @click="deleteData">批量删除</a-button>
@@ -20,9 +42,9 @@
         :rowKey="rowKey"
         :row-selection="rowSelection"
       >
-      <template #course_name="{text}">
-          <span class="a-link" @click="toDetail(text.id)">{{text.course_name}}</span>
-      </template>
+        <template #course_name="{ text }">
+          <span class="a-link" @click="toDetail(text.id)">{{ text.course_name }}</span>
+        </template>
         <template #action="{ text }">
           <div class="table-action">
             <span class="a-link" @click="exportData(text)">导出</span>
@@ -46,22 +68,14 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  onMounted,
-  reactive,
-  toRefs,
-  computed,
-  ref,
-  unref,
-} from "vue";
-import { getArchiveCourseListApi,deleteCourseApi } from "../api";
+import { defineComponent, onMounted, reactive, toRefs, computed, ref, unref } from "vue";
+import { getArchiveCourseListApi, deleteCourseApi } from "../api";
 import Empty from "src/components/Empty.vue";
 import { useRouter } from "vue-router";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
-import moment from "moment"
-import {message,Modal} from "ant-design-vue"
-import fileSaver from "file-saver"
+import moment from "moment";
+import { message, Modal } from "ant-design-vue";
+import fileSaver from "file-saver";
 const columns = [
   {
     title: "课程名称",
@@ -143,7 +157,9 @@ export default defineComponent({
         let params = {
           "search[course_name]": reactiveData.params.course_name,
           "search[user_name]": reactiveData.params.user_name,
-          "search[archive_time]": moment(reactiveData.params.archive_time).format("YYYY-MM-DD"),
+          "search[archive_time]": moment(reactiveData.params.archive_time).format(
+            "YYYY-MM-DD"
+          ),
           page: reactiveData.params.page,
           limit: reactiveData.params.limit,
         };
@@ -165,21 +181,21 @@ export default defineComponent({
         };
         method.getDataList();
       },
-      exportData(id:number){
-          console.log(id);
-          fileSaver.saveAs(
-        "/teacher-course/course-export?course_id=" + id,
-        "课程详情报表.xls"
-      );
+      exportData(id: number) {
+        console.log(id);
+        fileSaver.saveAs(
+          "/teacher-course/course-export?course_id=" + id,
+          "课程详情报表.xls"
+        );
       },
-      deleteRow(id:number){
-          console.log(id);
-          
-          Modal.confirm({
+      deleteRow(id: number) {
+        console.log(id);
+
+        Modal.confirm({
           title: "提示",
           content: "确定删除吗",
           onOk: () => {
-            method.deleteCourse([id])
+            method.deleteCourse([id]);
           },
         });
       },
@@ -200,25 +216,24 @@ export default defineComponent({
           },
         });
       },
-      deleteData(){
-          if (selectedRowKeys.value.length===0) {
-              message.warn("请选择要删除的数据")
-              return;
-          }
-          Modal.confirm({
+      deleteData() {
+        if (selectedRowKeys.value.length === 0) {
+          message.warn("请选择要删除的数据");
+          return;
+        }
+        Modal.confirm({
           title: "提示",
           content: "确定删除吗",
           onOk: () => {
-            method.deleteCourse(selectedRowKeys.value)
+            method.deleteCourse(selectedRowKeys.value);
           },
         });
-          
       },
-      deleteCourse(course_ids:any[]){
-          deleteCourseApi({course_ids:course_ids}).then((res:any)=>{
-              message.success("删除成功")
-              method.getDataList();
-          })
+      deleteCourse(course_ids: any[]) {
+        deleteCourseApi({ course_ids: course_ids }).then((res: any) => {
+          message.success("删除成功");
+          method.getDataList();
+        });
       },
     };
 
@@ -242,15 +257,18 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
-    >input{
-        width: 150px;
-        margin-right: 15px;
+    .searchInput {
+      margin-right: 20px;
     }
-    >button{
-        margin-left: 15px;
-        &.delete-btn{
-            margin-left: auto;
-        }
+    > input {
+      width: 150px;
+      margin-right: 15px;
+    }
+    > button {
+      margin-left: 15px;
+      &.delete-btn {
+        margin-left: auto;
+      }
     }
   }
   .page-box {
