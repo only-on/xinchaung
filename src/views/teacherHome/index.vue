@@ -72,7 +72,7 @@
                   '0%': '#be8edb',
                   '100%': '#6855b5',
                 }"
-                :format="(percent)=>percent + '%'"
+                :format="formatProgress"
               />
             </template>
           </div>
@@ -229,6 +229,9 @@ export default defineComponent({
         })
       });
     })
+    const formatProgress = (percent: any) => {
+      return percent + '%'
+    }
     return {
       slideChangeTransitionEnd,
       setTranslate,
@@ -240,7 +243,8 @@ export default defineComponent({
       errorKonwledge,
       gradeDistribution,
       courseLists,
-      showGraph
+      showGraph,
+      formatProgress
     };
   },
 })
