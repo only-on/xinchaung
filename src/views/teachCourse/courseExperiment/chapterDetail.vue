@@ -236,5 +236,9 @@ export default defineComponent({
     height: 100%;
     overflow-y: auto;
   }
+  .ant-tabs-tabpane{
+    height: 100%;
+    overflow: auto;
+  }
 }
 </style>

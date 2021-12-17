@@ -92,6 +92,7 @@ export default defineComponent({
 <style lang="less">
 .experiment-report-box {
   padding: 15px;
+  overflow-y: auto;
   .action-btn {
     display: flex;
     > button {

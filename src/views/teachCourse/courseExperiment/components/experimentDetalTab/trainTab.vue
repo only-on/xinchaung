@@ -1,5 +1,5 @@
 <template>
-  <div class="vnc-tab-box scrollbar2" v-if="currentShow === 'experiment'">
+  <div class="vnc-tab-box" v-if="currentShow === 'experiment'">
     <div class="note-book-tab-top">
       <div>
         <span class="experiment-name">{{ detailInfo.name }}</span>
@@ -219,6 +219,7 @@ export default defineComponent({
   .step-detail-content {
     flex: 1;
     padding-top: 15px;
+    overflow-y: auto;
   }
   .step-top-box {
     background: linear-gradient(270deg, #d3ddff 0%, #e8f9ff);

@@ -1,103 +1,117 @@
 <template>
-  <div v-if="showPanel === 'loading'" class="prepare-lessons-loading">
-    <SyncOutlined spin />
-  </div>
-  <div v-if="showPanel === 'list'" class="exercise-list-tab">
-    <div class="exercise-list-head">
-      <span>共<i>{{questionCount}}</i>道题</span>
-      <span>共记<i>{{scores}}</i>分</span>
-      <a-button type="primary" v-role="[tab]" @click="openSelectPanel">选择习题</a-button>
+  <div class="experiment-exercise-tab-wrap">
+    <div v-if="showPanel === 'loading'" class="prepare-lessons-loading">
+      <SyncOutlined spin />
     </div>
-    <div class="exercise-list-box">
-      <div
-        class="exercise-list-item"
-        v-for="item in chapterExerciseList"
-        :key="item.id"
-      >
-        <span>
-          <i class="iconfont icon-danxuanxuanzhong"></i>
-          {{ item.question }}
-        </span>
-        <span>
-          <i class="iconfont icon-nandu"></i>
-          {{ item.level_name }}
-        </span>
-        <span>
-          <i class="iconfont icon-fenshu"></i>
-          {{ item.score }}
-        </span>
+    <div v-if="showPanel === 'list'" class="exercise-list-tab">
+      <div class="exercise-list-head">
         <span
-         v-role="[tab]"
-          class="exam-list-detele iconfont icon-shanchu"
-          @click="deleteChapterExercise(item)"
-        ></span>
-      </div>
-    </div>
-  </div>
-  <div v-if="showPanel === 'none'" style="height:100%;background:#fff">
-    <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
-    <div class="action-btn" style="text-align: center;width:100%" v-role="[tab]">
-      <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
-    </div>
-  </div>
-  <div v-if="showPanel === 'select'" class="select-exercise-tab">
-    <div class="select-list-head">
-      <a-select
-        style="width: 200px"
-        v-model:value="pools_id"
-        placeholder="请选择目录"
-        @change="poolsChange"
-      >
-        <a-select-opt-group>
-          <template #label>
-            <span> 共有 </span>
-          </template>
-          <a-select-option
-            v-for="item in publicData"
-            :key="item.id"
-            :value="item.id"
-            >{{ item.name }}</a-select-option
-          >
-        </a-select-opt-group>
-        <a-select-opt-group>
-          <template #label>
-            <span> 私有 </span>
-          </template>
-          <a-select-option
-            v-for="item in selfData"
-            :key="item.id"
-            :value="item.id"
-            >{{ item.name }}</a-select-option
-          >
-        </a-select-opt-group>
-      </a-select>
-      <label>题型：</label>
-      <a-select
-        style="width: 200px"
-        v-model:value="questionTypeId"
-        placeholder="请选择题型"
-        @change="typeChange"
-      >
-        <a-select-option
-          v-for="item in questionTypes"
-          :key="item.id"
-          :value="item.id"
-          >{{ item.name }}</a-select-option
+          >共<i>{{ questionCount }}</i
+          >道题</span
         >
-      </a-select>
-      <div class="btns">
-        <a-button @click="selectExercise" type="primary">选择</a-button>
-        <a-button @click="backList" type="primary">返回</a-button>
+        <span
+          >共记<i>{{ scores }}</i
+          >分</span
+        >
+        <a-button type="primary" v-role="[tab]" @click="openSelectPanel"
+          >选择习题</a-button
+        >
+      </div>
+      <div class="exercise-list-box">
+        <div
+          class="exercise-list-item"
+          v-for="item in chapterExerciseList"
+          :key="item.id"
+        >
+          <span>
+            <i class="iconfont icon-danxuanxuanzhong"></i>
+            {{ item.question }}
+          </span>
+          <span>
+            <i class="iconfont icon-nandu"></i>
+            {{ item.level_name }}
+          </span>
+          <span>
+            <i class="iconfont icon-fenshu"></i>
+            {{ item.score }}
+          </span>
+          <span
+            v-role="[tab]"
+            class="exam-list-detele iconfont icon-shanchu"
+            @click="deleteChapterExercise(item)"
+          ></span>
+        </div>
       </div>
     </div>
+    <div v-if="showPanel === 'none'" style="height: 100%; background: #fff">
+      <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
+      <div
+        class="action-btn"
+        style="text-align: center; width: 100%"
+        v-role="[tab]"
+      >
+        <a-button type="primary" @click="openSelectPanel">选择习题</a-button>
+      </div>
+    </div>
+    <div v-if="showPanel === 'select'" class="select-exercise-tab">
+      <div class="select-list-head">
+        <a-select
+          style="width: 200px"
+          v-model:value="pools_id"
+          placeholder="请选择目录"
+          @change="poolsChange"
+        >
+          <a-select-opt-group>
+            <template #label>
+              <span> 共有 </span>
+            </template>
+            <a-select-option
+              v-for="item in publicData"
+              :key="item.id"
+              :value="item.id"
+              >{{ item.name }}</a-select-option
+            >
+          </a-select-opt-group>
+          <a-select-opt-group>
+            <template #label>
+              <span> 私有 </span>
+            </template>
+            <a-select-option
+              v-for="item in selfData"
+              :key="item.id"
+              :value="item.id"
+              >{{ item.name }}</a-select-option
+            >
+          </a-select-opt-group>
+        </a-select>
+        <label>题型：</label>
+        <a-select
+          style="width: 200px"
+          v-model:value="questionTypeId"
+          placeholder="请选择题型"
+          @change="typeChange"
+        >
+          <a-select-option
+            v-for="item in questionTypes"
+            :key="item.id"
+            :value="item.id"
+            >{{ item.name }}</a-select-option
+          >
+        </a-select>
+        <div class="btns">
+          <a-button @click="selectExercise" type="primary">选择</a-button>
+          <a-button @click="backList" type="primary">返回</a-button>
+        </div>
+      </div>
 
-    <a-table
-      :columns="columns"
-      :data-source="questionList"
-      :row-selection="selectRowSelection"
-      :pagination="false"
-      :row-key="rowKey"
-    />
+      <a-table
+        :columns="columns"
+        :data-source="questionList"
+        :row-selection="selectRowSelection"
+        :pagination="false"
+        :row-key="rowKey"
+      />
+    </div>
   </div>
 </template>
   <script lang="ts">
@@ -119,7 +133,7 @@ import {
   getPoolsExerciseListApi,
   contentAddExerciseApi,
   deleteContentExerciseApi,
-  getContentExerciseAnalysisApi
+  getContentExerciseAnalysisApi,
 } from "../../api";
 import empty from "src/components/Empty.vue";
 import { message, Modal } from "ant-design-vue";
@@ -133,8 +147,8 @@ type TreactiveData = {
   questionList: any[];
   chapterExerciseList: any[];
   selectedIds: number[];
-  questionCount:number
-  scores:number
+  questionCount: number;
+  scores: number;
 };
 export default defineComponent({
   components: {
@@ -154,8 +168,8 @@ export default defineComponent({
       questionList: [],
       chapterExerciseList: [],
       selectedIds: [],
-      questionCount:0,
-      scores:0
+      questionCount: 0,
+      scores: 0,
     });
     const columns = [
       {
@@ -177,10 +191,10 @@ export default defineComponent({
     ];
     onMounted(() => {
       if (!experiment_id.value) {
-        return
+        return;
       }
       getChapterExercise();
-      getContentExerciseAnalysis()
+      getContentExerciseAnalysis();
     });
     const selectedRowKeys = ref<number[]>([]);
     const onSelectChange = (changableRowKeys: number[]) => {
@@ -220,7 +234,7 @@ export default defineComponent({
           res.data.list.forEach((item: any) => {
             reactiveData.selfData.push(item);
           });
-          if (!reactiveData.pools_id&&res.data.list.length > 0) {
+          if (!reactiveData.pools_id && res.data.list.length > 0) {
             reactiveData.pools_id = res.data.list[0].id;
           }
           resolve(res);
@@ -273,10 +287,12 @@ export default defineComponent({
 
     // 获取习题统计
     function getContentExerciseAnalysis() {
-        getContentExerciseAnalysisApi({content_id:experiment_id.value}).then((res:any)=>{
-            reactiveData.questionCount=res.data.question_total
-            reactiveData.scores=res.data.score_total
-        })
+      getContentExerciseAnalysisApi({ content_id: experiment_id.value }).then(
+        (res: any) => {
+          reactiveData.questionCount = res.data.question_total;
+          reactiveData.scores = res.data.score_total;
+        }
+      );
     }
     // 打开选择习题面板
     async function openSelectPanel() {
@@ -302,13 +318,13 @@ export default defineComponent({
         { content_id: experiment_id.value }
       ).then((res: any) => {
         getChapterExercise();
-        getContentExerciseAnalysis()
+        getContentExerciseAnalysis();
       });
     }
     // 返回
     function backList() {
       getChapterExercise();
-      getContentExerciseAnalysis()
+      getContentExerciseAnalysis();
     }
 
     // 删除章节习题
@@ -321,7 +337,7 @@ export default defineComponent({
             (res: any) => {
               message.success(res.msg);
               getChapterExercise();
-              getContentExerciseAnalysis()
+              getContentExerciseAnalysis();
             }
           );
         },
@@ -338,17 +354,21 @@ export default defineComponent({
       selectRowSelection,
       rowKey,
       deleteChapterExercise,
-      tab
+      tab,
     };
   },
 });
 </script>
   
   <style lang="less">
-.exercise-list-tab {
+.experiment-exercise-tab-wrap {
   height: 100%;
+  overflow-y: auto;
   background: @white;
   padding: 15px;
+}
+.exercise-list-tab {
+  height: 100%;
 }
 .prepare-lessons-loading {
   width: 100%;
@@ -364,6 +384,7 @@ export default defineComponent({
   height: 100%;
   .select-list-head {
     display: flex;
+    margin-bottom: 15px;
     > div {
       margin-right: 15px;
     }

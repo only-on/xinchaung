@@ -17,7 +17,7 @@
       <span class="action-right">
         <a-button type="primary" @click="archives">归档</a-button>
         <a-button type="primary" @click="deleteData">批量删除</a-button>
-        <a-button type="primary" @click="clearVideosLog">清楚录像记录</a-button>
+        <a-button type="primary" @click="clearVideosLog">清除录像记录</a-button>
       </span>
     </div>
     <a-config-provider>

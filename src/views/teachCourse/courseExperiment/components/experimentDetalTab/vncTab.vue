@@ -1,5 +1,5 @@
 <template>
-  <div class="train-tab-box scrollbar2" v-if="currentShow === 'experiment'">
+  <div class="train-tab-box" v-if="currentShow === 'experiment'">
     <div class="note-book-tab-top">
       <div>
         <span class="experiment-name">{{ detailInfo.name }}</span>
@@ -162,6 +162,7 @@ export default defineComponent({
   border-radius: 4px;
   box-shadow: 0px 3px 6px 0px undefined;
   padding: 27px 22px;
+  flex-shrink: 0;
   > div {
     &:first-child {
       display: flex;
@@ -205,6 +206,7 @@ export default defineComponent({
 .experiment-detail-box {
   flex: 1;
   background: @white;
+  overflow-y: auto;
   .init-experiment-guide-box {
     min-height: 50%;
   }
@@ -219,6 +221,7 @@ export default defineComponent({
     .step-detail-content{
         flex: 1;
         padding-top: 15px;
+        overflow-y: auto;
     }
   .step-top-box {
     background: linear-gradient(270deg, #d3ddff 0%, #e8f9ff);

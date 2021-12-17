@@ -86,6 +86,7 @@ export default defineComponent({
   .document-box {
     background: @white;
     height: calc(100% - 100px);
+    overflow-y: auto;
     width: 100%;
     border-radius: 4px;
     margin-top: 16px;

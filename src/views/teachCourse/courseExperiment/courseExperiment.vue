@@ -160,7 +160,7 @@ export default defineComponent({
 .course-experiment-box {
   display: flex;
   flex-direction: row;
-  height: 100%;
+  height: 900px;
   .course-experiment-left {
     width: 440px;
     flex-shrink: 0;
