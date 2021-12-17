@@ -52,10 +52,10 @@
           <div>
             <span
               v-if="selected.includes(item.uid)"
-              class="shanchu iconfont icon-shanchu"
+              class="shanchu iconfont icon-yichu"
               @click="remove(item)"
             ></span>
-            <span v-else class="select-btn" @click="select(item)">选择</span>
+            <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span>
           </div>
         </div>
       </template>
@@ -79,7 +79,7 @@ import empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 export default defineComponent({
   components: { empty },
-  props: ["value", "name",'limitNumber'],
+  props: ["value", "names",'limitNumber'],
   setup(props, { emit }) {
     // console.log(props)
     const $message: MessageApi = inject("$message")!;
@@ -93,6 +93,7 @@ export default defineComponent({
       dataSetList: any[];
       selected: any[]; // 已经选择uid
       count: number;
+      names:any[]
     } = reactive({
       params: {
         per_page: 20,
@@ -107,6 +108,7 @@ export default defineComponent({
       dataSetList: [],
       selected: [], // 已经选择uid
       count: 0,
+      names:[]
     });
 
     onMounted(() => {
@@ -114,6 +116,9 @@ export default defineComponent({
         getDataList();
       });
     });
+    watch(()=>props.names,()=>{
+      reactiveData.names=props.names
+    },{deep:true,immediate:true})
     // 获取数据集类型
     function getDataCategory() {
       return new Promise((reslove: any, reject: any) => {
@@ -164,33 +169,31 @@ export default defineComponent({
     function remove(val: any) {
       let i = reactiveData.selected.indexOf(val.uid);
       reactiveData.selected.splice(i, 1);
-      updateData();
+      emit("update:value", reactiveData.selected);
+      reactiveData.names=reactiveData.names.filter((item:any)=>{
+        return val.uid!=item.uid
+      })
+      emit("update:names", reactiveData.names);
     }
 
     // 选择
     function select(val: any) {
+      console.log(val);
+      
       if(limitNumber.value === reactiveData.selected.length){
         $message.warn(`数据集最多可选择${limitNumber.value}个`)
         return
       }
-      reactiveData.selected.includes(val.uid)
-        ? ""
-        : reactiveData.selected.push(val.uid);
-      updateData();
-    }
-
-    // 更新选中的数据集数据
-    function updateData() {
-      let names: any =props.name?props.name: [];
-      emit("update:value", reactiveData.selected);
-      console.log(reactiveData.selected);
-      reactiveData.dataSetList.map((item: any) => {
-        reactiveData.selected.includes(item.uid)
-          ? names.push({ uid: item.uid, name: item.name,amount:item.amount,size:item.size })
-          : "";
-      });
-      console.log(names);
-      emit("update:name", names);
+      
+      if (reactiveData.selected.includes(val.uid)) {
+        return
+      }
+       reactiveData.selected.push(val.uid);
+        emit("update:value", reactiveData.selected);
+        let temp={ uid: val.uid, name: val.name,amount:val.amount,size:val.size }
+        console.log(temp);
+        reactiveData.names.push(temp)
+        emit("update:names", reactiveData.names);
     }
     watch(()=>{return props.value},(val:any)=>{
       reactiveData.selected=val
@@ -216,16 +219,26 @@ export default defineComponent({
   flex-direction: column;
   .data-set-type {
     &.ant-radio-group {
-      border-bottom: 1px solid #cdcdcd;
+      border-bottom: 1px solid rgba(@black,0.15);
+      padding: 0 24px;
     }
+  }
+  input{
+    font-size: @font-size-sm;
   }
   .data-set-tag-box {
     padding-top: 25px;
+    padding-left: 24px;
+    padding-right: 24px;
     .ant-radio-button-wrapper {
       border-radius: 4px;
     }
     .select-keyword {
       margin-top: 25px;
+    }
+    span{
+      font-size: @font-size-sm;
+      color: rgba(@black,0.65);
     }
   }
   .ant-radio-button-wrapper {
@@ -236,21 +249,32 @@ export default defineComponent({
     &:not(:first-child)::before {
       background-color: transparent;
     }
+    &.ant-radio-button-wrapper-checked{
+      color: @white;
+      span{
+        color: @white;
+      }
+    }
   }
   .data-set-base-box {
     // flex: 1;
     height: calc(100% - 150px);
     overflow: auto;
     padding-top: 25px;
+    padding-right: 24px;
+    padding-left: 24px;
     .data-set-item {
       display: flex;
-      padding: 6px 3px;
+      padding: 6px;
       flex-direction: row;
       margin-bottom: 10px;
       background: @white;
       border: 1px solid #cdcdcd;
       border-radius: 6px;
-      box-shadow: 0 3px 6px 0 rgba(187, 156, 214, 0.4);
+      transition: 0.2s;
+      &:hover{
+        box-shadow: 0 3px 6px 0 rgba(@theme-color, 0.4);
+      }
       cursor: pointer;
       > div {
         &:first-child {
@@ -273,8 +297,9 @@ export default defineComponent({
         width: 100%;
         margin-left: 28px;
         h2 {
-          font-size: 14px;
-          color: #050101;
+          font-size: @font-size-sm;
+          color: rgba(@black,0.85);
+          font-weight: 400;
         }
         .tag {
           display: flex;

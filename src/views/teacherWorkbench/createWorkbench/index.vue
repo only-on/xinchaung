@@ -88,8 +88,9 @@
             @click="addDataset"
             v-if="selectedName.length < 3"
             class="add-data-set-btn"
-            ><span class="icon-tianjia iconfont"></span
+            ><span class="icon-tianjia iconfont a-link"></span
           ></a-button>
+          <i class="data-set-hint">最多可选3个数据集</i>
           <div
             class="data-set-item"
             v-for="(it, ind) in selectedName"
@@ -116,7 +117,7 @@
     >
       <select-data-set
         v-model:value="ruleForm.datasets"
-        v-model:name="selectedName"
+        v-model:names="selectedName"
       ></select-data-set>
     </a-drawer>
   </div>
@@ -177,14 +178,14 @@ export default defineComponent({
       disk: [{ required: true, message: "请选择硬盘" }],
       image: [{ required: true, message: "请选择" }],
     };
-    const reactiveData:{
-      ruleForm:any,
-      permanent:boolean,
-      configs:any,
-      images: any,
-      showGPU: boolean,
-      drawerVisible: boolean,
-      selectedName: any[], 
+    const reactiveData: {
+      ruleForm: any;
+      permanent: boolean;
+      configs: any;
+      images: any;
+      showGPU: boolean;
+      drawerVisible: boolean;
+      selectedName: any[];
     } = reactive({
       // form数据
       ruleForm: {
@@ -226,6 +227,13 @@ export default defineComponent({
       () => reactiveData.ruleForm.datasets,
       () => {
         console.log(11111);
+      },
+      { deep: true }
+    );
+    watch(
+      () => reactiveData.selectedName,
+      () => {
+        console.log(2222);
       },
       { deep: true }
     );
@@ -388,21 +396,45 @@ export default defineComponent({
 .create-workbench-box {
   width: 1000px;
   margin: 0 auto;
-  height: 100%;
+  input {
+    border: none;
+    font-size: @font-size-sm;
+    &::placeholder {
+      font-size: @font-size-sm;
+    }
+  }
+  span {
+    font-size: @font-size-sm;
+  }
+  .data-set-hint{
+    font-size: 12px;
+    font-style: normal;
+    color: @normal-color;
+    margin-left: 19px;
+  }
   .create-form {
     height: 100%;
     display: flex;
     flex-wrap: wrap;
+    min-height: 600px;
     .form-left {
       width: 50%;
-      padding-right: 40px;
+      padding-right: 50px;
       .time-item {
         label.ant-form-item-required {
           width: 100%;
         }
+        label[html-for="end_time"] {
+          pointer-events: none;
+        }
+        .time-check-box {
+          pointer-events: all;
+        }
         .start-end-date-box {
           display: flex;
           border: 1px solid #d9d9d9;
+          border-radius: @border-radius-base;
+          height: 32px;
           .and-line {
             position: relative;
             right: 50px;
@@ -410,6 +442,7 @@ export default defineComponent({
           }
           input {
             border: none;
+            font-size: @font-size-sm;
             &:focus {
               box-shadow: none;
             }
@@ -418,6 +451,7 @@ export default defineComponent({
             }
           }
           > .ant-calendar-picker {
+            width: 50%;
             &:nth-child(1) {
               span {
                 display: none;
@@ -454,22 +488,29 @@ export default defineComponent({
       padding-left: 20px;
       .add-data-set-btn {
         width: 100px;
-        font-size: 14px;
+        font-size: @font-size-sm;
         border: 1px solid @theme-color;
       }
       .data-set-item {
         margin-top: 15px;
         padding: 0 10px;
-        border-radius: 4px;
+        border-radius: @border-radius-base;
         display: flex;
         width: 100%;
         justify-content: space-between;
-        border: 1px solid #d9d9d9;
-        color: #d9d9d9;
-
+        border: 1px solid rgba(@black,0.15);
+        background-color: rgba(@black,0.04);
+        line-height: 32px;
+        span{
+          color: rgba(@black,0.65);
+        }
         .icon-shanchu {
-          color: #000000;
+          color: rgba(@black,0.45);
           cursor: pointer;
+          transition: 0.5s;
+          &:hover{
+            color: rgba(@black,0.85);
+          }
         }
       }
     }
@@ -478,7 +519,7 @@ export default defineComponent({
       margin-top: auto;
       text-align: center;
       > button {
-        margin-right: 40px;
+        margin-right: 16px;
       }
     }
   }
@@ -486,6 +527,7 @@ export default defineComponent({
 .select-imag-drawer {
   .ant-drawer-body {
     height: 100%;
+    padding:24px 0;
   }
 }
 </style>
