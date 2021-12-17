@@ -10,8 +10,8 @@
     <iframe
       :src="
         env
-          ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + detailInfo.url
-          : '/frontend/pdfjs-2.5.207/web/viewer.html?file=' + detailInfo.url
+          ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + reportInfo.url
+          : '/frontend/pdfjs-2.5.207/web/viewer.html?file=' + reportInfo.url
       "
       frameborder="0"
     ></iframe>

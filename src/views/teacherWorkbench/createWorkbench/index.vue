@@ -68,20 +68,22 @@
       </div>
       <div class="form-right">
         <a-form-item name="image" label="选择镜像">
-          <a-select
-            v-model:value="ruleForm.image"
-            placeholder="选择镜像"
-            @change="iamgeChange"
-          >
-            <a-select-opt-group v-for="(val, key) in images" :key="key">
-              <template #label>
-                {{ key }}
-              </template>
-              <a-select-option v-for="v in val" :key="v.id" :value="v.id">{{
-                v.name
-              }}</a-select-option>
-            </a-select-opt-group>
-          </a-select>
+          <icon-input :icon="selectIcon">
+              <a-select
+                v-model:value="ruleForm.image"
+                placeholder="选择镜像"
+                @change="iamgeChange"
+              >
+                <a-select-opt-group v-for="(val, key) in images" :key="key">
+                  <template #label>
+                    {{ key }}
+                  </template>
+                  <a-select-option v-for="v in val" :key="v.id" :value="v.id">{{
+                    v.name
+                  }}</a-select-option>
+                </a-select-opt-group>
+              </a-select>
+          </icon-input>
         </a-form-item>
         <a-form-item name="datasets" label="选择数据集">
           <a-button
@@ -141,9 +143,12 @@ import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
+import iconInput from "src/components/aiAnt/iconInput.vue";
+import selectIcon from "src/assets/images/screenicon/Group14.png"
 export default defineComponent({
   components: {
     "select-data-set": selectDataSet,
+    "icon-input": iconInput,
   },
   setup() {
     const router = useRouter();
@@ -387,6 +392,7 @@ export default defineComponent({
       create,
       remove,
       cancel,
+      selectIcon
     };
   },
 });
@@ -406,7 +412,7 @@ export default defineComponent({
   span {
     font-size: @font-size-sm;
   }
-  .data-set-hint{
+  .data-set-hint {
     font-size: 12px;
     font-style: normal;
     color: @normal-color;
@@ -498,18 +504,18 @@ export default defineComponent({
         display: flex;
         width: 100%;
         justify-content: space-between;
-        border: 1px solid rgba(@black,0.15);
-        background-color: rgba(@black,0.04);
+        border: 1px solid rgba(@black, 0.15);
+        background-color: rgba(@black, 0.04);
         line-height: 32px;
-        span{
-          color: rgba(@black,0.65);
+        span {
+          color: rgba(@black, 0.65);
         }
         .icon-shanchu {
-          color: rgba(@black,0.45);
+          color: rgba(@black, 0.45);
           cursor: pointer;
           transition: 0.5s;
-          &:hover{
-            color: rgba(@black,0.85);
+          &:hover {
+            color: rgba(@black, 0.85);
           }
         }
       }
@@ -527,7 +533,7 @@ export default defineComponent({
 .select-imag-drawer {
   .ant-drawer-body {
     height: 100%;
-    padding:24px 0;
+    padding: 24px 0;
   }
 }
 </style>
