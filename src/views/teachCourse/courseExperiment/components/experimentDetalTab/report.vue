@@ -1,15 +1,18 @@
 <template>
   <div class="experiment-report-box">
     <div class="action-btn">
-      <a-button v-role="[tab]" type="primary" @click="openSelectReport">更换实验报告</a-button>
+      <a-button v-role="[tab]" type="primary" @click="openSelectReport"
+        >更换实验报告</a-button
+      >
     </div>
     <report-on-line v-if="reportInfo.type === 'form'"></report-on-line>
 
     <iframe
-      v-if="reportInfo.type === 'file'"
-      :src="`/pdfjs-2.5.207/web/viewer.html?file=${
-        env ? '/proxyPrefix' + reportInfo.pdf_url : reportInfo.pdf_url
-      }`"
+      :src="
+        env
+          ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + detailInfo.url
+          : '/frontend/pdfjs-2.5.207/web/viewer.html?file=' + detailInfo.url
+      "
       frameborder="0"
     ></iframe>
   </div>
@@ -26,23 +29,15 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  inject,
-  onMounted,
-  reactive,
-  toRefs,
-  provide,
-  ref,
-} from "vue";
+import { defineComponent, inject, onMounted, reactive, toRefs, provide, ref } from "vue";
 import { getExperimentReportApi } from "../../api";
 import reportOnLine from "src/components/reportOnLine/reportOnLine.vue";
-import selectReport from "../selectReport.vue"
+import selectReport from "../selectReport.vue";
 
 export default defineComponent({
   components: {
     "report-on-line": reportOnLine,
-    "select-report":selectReport
+    "select-report": selectReport,
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -62,6 +57,7 @@ export default defineComponent({
       body.append("owner_type", "cc_mid");
       body.append("owner_id", experiment_id.value);
       getExperimentReportApi(body).then((res: any) => {
+        console.log("哈哈哈哈哈report");
         reportInfo.value = res.data;
       });
     }
@@ -70,9 +66,9 @@ export default defineComponent({
       reactiveData.reportVisible = true;
     }
     // 关闭实验报告弹窗
-    function closeReportModal(val:any) {
+    function closeReportModal(val: any) {
       reactiveData.reportVisible = false;
-      if (val===true) {
+      if (val === true) {
         getExperimentReport();
       }
     }
@@ -83,7 +79,7 @@ export default defineComponent({
       env,
       openSelectReport,
       closeReportModal,
-      tab
+      tab,
     };
   },
 });

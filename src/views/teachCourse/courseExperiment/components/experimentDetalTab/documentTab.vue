@@ -1,8 +1,8 @@
 <template>
   <div class="document-tab">
     <div class="document-tab-top">
-      <span>Python数字变量定义</span>
-      <span>
+      <span>{{ detailInfo.name }}</span>
+      <span v-role="[tab]">
         是否对学生开放
         <a-switch
           checked-children="开"
@@ -13,23 +13,32 @@
       </span>
     </div>
     <div class="document-box">
-      <iframe
+      <!-- <iframe
       :src="`/pdfjs-2.5.207/web/viewer.html?file=${
         env ? '/proxyPrefix' + detailInfo.url: detailInfo.url
       }`"
       frameborder="0"
-    ></iframe>
+    ></iframe> -->
+      <iframe
+        :src="
+          env
+            ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + detailInfo.url
+            : '/frontend/pdfjs-2.5.207/web/viewer.html?file=' + detailInfo.url
+        "
+        frameborder="0"
+      ></iframe>
     </div>
   </div>
 </template>
-  
-  <script lang="ts">
+
+<script lang="ts">
 import { defineComponent, inject, watch, ref } from "vue";
 import { isDisparkApi } from "../../api";
 
 export default defineComponent({
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
+    const tab: any = inject("tab");
     const detailInfo: any = inject("detailInfo");
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
@@ -45,19 +54,19 @@ export default defineComponent({
       isDisparkApi(
         { is_visible: is_visible.value },
         { course_id: course_id, experiment_id: experiment_id.value }
-      ).then((res: any) => {
-      });
+      ).then((res: any) => {});
     }
     return {
       detailInfo,
       env,
       checkedChange,
       is_visible,
+      tab,
     };
   },
 });
 </script>
-  <style lang="less">
+<style lang="less">
 .document-tab {
   height: 100%;
   .document-tab-top {
@@ -100,4 +109,3 @@ export default defineComponent({
   }
 }
 </style>
-  
