@@ -34,6 +34,9 @@ export default defineComponent({
       // const {page}= route.query
       componentName.value=componentNames[val]
     })
+    let currentTab=Number(route.query.currentTab) || 0
+    componentName.value=componentNames[currentTab]
+    // console.log(currentTab)
     onMounted(()=>{
     
     })

@@ -103,7 +103,7 @@ export default defineComponent({
           list.push(...data)
           total.value=res.data.page.totalCount
         }
-        console.log(list)
+        // console.log(list)
       })
     }
     function search(){

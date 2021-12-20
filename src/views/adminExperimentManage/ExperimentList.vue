@@ -107,7 +107,7 @@ export default defineComponent({
     var configuration:any=inject('configuration')
 
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,showNav:true,backOff:false,showPageEdit:false})
+    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,showNav:true,backOff:false,showPageEdit:false,componenttype:undefined,})
 
     const http=(request as any).adminExperimentManage
     var loading:Ref<boolean>=ref(false)
