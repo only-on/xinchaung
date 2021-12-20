@@ -5,8 +5,9 @@ export default {
     name: "adminSystemManage",
     component: Layout,
     meta: {
-        title: "系统管理",
-        authCode: 'adminTrain'
+        title: "监控",
+        authCode: 'adminTrain',
+        showInBreadcrumb: false,
     },
     children: [
         {
@@ -15,7 +16,8 @@ export default {
             // component: () => import("src/views/adminSystemManage/systemLog/index.vue"),
             component: () => import("src/views/personalInformation/OperationList.vue"),
             meta: {
-                title: "系统日志",
+                // title: "系统日志",
+                title:`监控${'\xa0\xa0'}/${'\xa0\xa0'}系统日志`,
                 authCode: ''
             },
         },
@@ -24,7 +26,8 @@ export default {
             name: "",
             component: () => import("src/views/adminSystemManage/deviceManage/index.vue"),
             meta: {
-                title: "设备管理",
+                // title: "设备管理",
+                title:`监控${'\xa0\xa0'}/${'\xa0\xa0'}设备管理`,
                 authCode: ''
             },
         },
@@ -33,7 +36,8 @@ export default {
             name: "",
             component: () => import("src/views/adminSystemManage/systemAlarm/index.vue"),
             meta: {
-                title: "系统告警",
+                // title: "系统告警",
+                title:`监控${'\xa0\xa0'}/${'\xa0\xa0'}系统告警`,
                 authCode: ''
             },
         },

@@ -9,7 +9,7 @@ export default {
     meta: {
         title: "系统管理",
         authCode: 'systemSetting',
-        showInBreadcrumb: false
+        // showInBreadcrumb: false
     },
     children: [
         {
