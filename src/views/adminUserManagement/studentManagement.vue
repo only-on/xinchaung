@@ -522,8 +522,10 @@ export default defineComponent({
       })
     }
     function DownloadTemplate(){
+      const isDev = process.env.NODE_ENV == "development" ? true : false;
+      let url=isDev?'./public/template/student.xlsx':'./template/student.xlsx'
       const a = document.createElement("a");
-      a.href = "./student.xlsx";
+      a.href = url;
       a.download = "学生模板.xlsx";
       a.click();
     }
