@@ -104,7 +104,6 @@ export default defineComponent({
           limit: reactiveData.params.limit,
         };
         getCareerDirectionListApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.dataList = res.data.list;
           reactiveData.params.page = res.data.page.currentPage;
           reactiveData.params.limit = res.data.page.perPage;
@@ -115,7 +114,6 @@ export default defineComponent({
         return row.id;
       },
       deleteData(id: number) {
-        console.log(id);
         if (!id) {
             return
         }

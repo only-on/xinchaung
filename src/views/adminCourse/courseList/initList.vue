@@ -111,7 +111,6 @@ export default defineComponent({
           limit: reactiveData.params.limit,
         };
         getInitCourseListApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.dataList = res.data.list;
           reactiveData.total = res.data.page.totalCount;
           reactiveData.params.page = res.data.page.currentPage;
@@ -127,7 +126,6 @@ export default defineComponent({
         method.getDataList();
       },
       toDetail(id: number, type: string) {
-        console.log(id, type);
         router.push({
           path: "/admin/adminCourse/courseDetail",
           query: {

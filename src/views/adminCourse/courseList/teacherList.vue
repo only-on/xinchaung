@@ -194,7 +194,6 @@ export default defineComponent({
     const selectedRowKeys = ref<Key[]>([]); // Check here to configure the default column
 
     const onSelectChange = (changableRowKeys: Key[]) => {
-      console.log("selectedRowKeys changed: ", changableRowKeys);
       selectedRowKeys.value = changableRowKeys;
     };
     const rowSelection = computed(() => {
@@ -215,7 +214,6 @@ export default defineComponent({
           limit: reactiveData.search.limit,
         };
         getTeacherCourseListApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.dataList = res.data.list;
           reactiveData.total = res.data.page.totalCount;
           reactiveData.search.page = res.data.page.currentPage;
@@ -236,7 +234,6 @@ export default defineComponent({
         method.getCourseList();
       },
       toDetail(id: number) {
-        console.log(id);
         router.push({
           path: "/admin/adminCourse/courseDetail",
           query: {
@@ -245,7 +242,6 @@ export default defineComponent({
         });
       },
       lookResult(id: number) {
-        console.log(id);
         router.push({
           path: "/admin/adminCourse/courseResult",
           query: {
@@ -254,7 +250,6 @@ export default defineComponent({
         });
       },
       clearVideoLog(id: number) {
-        console.log(id);
         Modal.confirm({
           title: "提示",
           content: "确定清除记录吗",
@@ -294,7 +289,6 @@ export default defineComponent({
         });
       },
       toArchive(id: number) {
-        console.log(id);
         Modal.confirm({
           title: "提示",
           content: "确定归档吗",

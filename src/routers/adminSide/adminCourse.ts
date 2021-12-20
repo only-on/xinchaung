@@ -73,5 +73,13 @@ export default {
                 authCode: 'courseDirection'
             },
         },
+        {
+            path: "schedule",
+            component: () => import("src/views/adminCourse/schedule/schedule.vue"),
+            meta: {
+              title: "排课管理",
+              authCode: 'teachingSchedule'
+            }, 
+          }, 
     ]
 }

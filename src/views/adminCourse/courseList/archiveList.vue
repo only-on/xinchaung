@@ -138,7 +138,6 @@ export default defineComponent({
     const selectedRowKeys = ref<Key[]>([]); // Check here to configure the default column
 
     const onSelectChange = (changableRowKeys: Key[]) => {
-      console.log("selectedRowKeys changed: ", changableRowKeys);
       selectedRowKeys.value = changableRowKeys;
     };
     const rowSelection = computed(() => {
@@ -164,7 +163,6 @@ export default defineComponent({
           limit: reactiveData.params.limit,
         };
         getArchiveCourseListApi(params).then((res: any) => {
-          console.log(res);
           reactiveData.dataList = res.data.list;
           reactiveData.total = res.data.page.totalCount;
           reactiveData.params.page = res.data.page.currentPage;
@@ -182,15 +180,12 @@ export default defineComponent({
         method.getDataList();
       },
       exportData(id: number) {
-        console.log(id);
         fileSaver.saveAs(
           "/teacher-course/course-export?course_id=" + id,
           "课程详情报表.xls"
         );
       },
       deleteRow(id: number) {
-        console.log(id);
-
         Modal.confirm({
           title: "提示",
           content: "确定删除吗",
@@ -208,7 +203,6 @@ export default defineComponent({
         method.getDataList();
       },
       toDetail(id: number) {
-        console.log(id);
         router.push({
           path: "/admin/adminCourse/evalute",
           query: {

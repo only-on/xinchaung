@@ -141,7 +141,6 @@ export default defineComponent({
         lookCourseResultApi(reactiveData.params, {
           course_id: reactiveData.course_id,
         }).then((res: any) => {
-          console.log(res);
           reactiveData.dataList = res.data.list;
           reactiveData.params.page = res.data.page.currentPage;
           reactiveData.params.limit = res.data.page.perPage;
@@ -157,7 +156,6 @@ export default defineComponent({
         method.lookCourseResult();
       },
       actionLog(course_result: string) {
-        console.log(course_result);
         reactiveData.visible = true;
 
         reactiveData.videoName = method.getVideoName(course_result);
@@ -166,7 +164,6 @@ export default defineComponent({
           : course_result;
       },
       clearVideoLog(id: number) {
-        console.log(id);
         if (!id) {
           message.warn("请选择要删除的数据");
           return;
@@ -189,7 +186,6 @@ export default defineComponent({
       },
       getVideoName(name: string) {
         const arr = name.split("/");
-        console.log(arr);
         return arr[arr.length - 1];
       },
     };
