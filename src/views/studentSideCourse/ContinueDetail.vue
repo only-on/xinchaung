@@ -1,5 +1,5 @@
 <template>
-  <div class="course_info" v-layout-bg="{bg,size:'234px'}">
+  <div class="headerBox">
     <div class="header">
       <div class="title">
         <div class="left">
@@ -38,6 +38,9 @@
         <span class="iconfont icon-xiangmu1" @click="Resources" title="课程资源"></span>
       </div>
     </div>
+  </div>
+  <div class="course_info">
+    
     <div class="coursemain">
       <div class="mainLeft setScrollbar">
         <!-- <Drag-tree :tree="tree" /> -->
@@ -87,7 +90,7 @@ export default defineComponent({
     const http=(request as any).studentCourse
     var componentName:Ref<string>=ref('')      // ChapterExperiment   StuChapter type
     var updata=inject('updataNav') as Function
-    updata({showContent:false,tabs:[],navPosition:'outside',navType:false})
+    updata({showContent:false,tabs:[],navPosition:'outside',navType:false,showNav:false})
     
     const route = useRoute();
     var chapter_id:Ref<number>=ref(0)
@@ -162,14 +165,18 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-  .course_info{
-    height:100%;
-    width: @center-width;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: column;
+.headerBox{
+  width: 100%;
+  height: 234px;
+  background-image: url(/src/assets/images/studentcourse/course-detail_bg.jpg);
+    background-size: 100% 234px;
+    background-repeat: no-repeat;
+    margin-top: -32px;
+    padding-top: 60px;
     .header{
       color:@white;
+      width: @center-width;
+      margin: 0 auto;
       .title{
         // margin-bottom: 20px;
         position: relative;
@@ -247,14 +254,24 @@ export default defineComponent({
         }
       }
     }
+}
+  .course_info{
+    height:100%;
+    width: @center-width;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    
+    
     .coursemain{
       background-color: transparent;
       display: flex;
       justify-content: center;
-      padding-top: 44px;
+      padding-top: 20px;
       height: calc(100% - 160px);
+      max-height: 700px;
       // flex: 1;
-      // overflow: auto;
+      overflow: auto;
       .mainLeft{
         width: 378px;
         background-color: #fff;

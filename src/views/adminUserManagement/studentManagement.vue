@@ -411,10 +411,20 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.studentUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
-          initData()
-          message.success('删除成功')
-        })
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.studentUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+            initData()
+            message.success('删除成功')
+          })
+        }
+      });
+      
     }
     function submit(){
       formRef.value.validate().then(()=>{
@@ -513,7 +523,7 @@ export default defineComponent({
     }
     function DownloadTemplate(){
       const a = document.createElement("a");
-      a.href = "./public/Student.xlsx";
+      a.href = "./student.xlsx";
       a.download = "学生模板.xlsx";
       a.click();
     }

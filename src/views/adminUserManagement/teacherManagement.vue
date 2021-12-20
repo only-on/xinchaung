@@ -61,7 +61,7 @@
             <a-form-item label="院系"  name="department">
               <a-input v-model:value="formState.department" />
             </a-form-item>
-            <a-form-item label="所属技术方向"  name="direct">
+            <a-form-item label="研究方向"  name="direct">
               <a-input v-model:value="formState.direct" />
             </a-form-item>
             <a-form-item label="主讲课程"  name="course">
@@ -366,10 +366,20 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
-          initData()
-          message.success('删除成功')
-        })
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.teacherUserBatchDelete({param:{user_ids:state.selectedRowKeys}}).then((res:IBusinessResp)=>{
+            initData()
+            message.success('删除成功')
+          })
+        }
+      });
+      
     }
     function submit(){
       // createTeacher

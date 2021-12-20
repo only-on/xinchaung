@@ -6,7 +6,7 @@ export default {
   component: Layout,
   name:'UserManagement',
   meta: {
-    title:'用户管理',
+    title:'用户',
     showInBreadcrumb: false,
     // title: (params?: RouteParams, query?: RouteParams) => {
     //   // console.log(query)
@@ -25,7 +25,8 @@ export default {
       path: "teacherManagement",
       component: () => import("src/views/adminUserManagement/teacherManagement.vue"),
       meta: {
-        title:'教师管理',
+        // title:'教师管理',
+        title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}教师管理`,
         icon: "",
         authCode: "teacherManagement",
       },
@@ -34,7 +35,8 @@ export default {
       path: "studentManagement",
       component: () => import("src/views/adminUserManagement/studentManagement.vue"),
       meta: {
-        title:'学生管理',
+        // title:'学生管理',
+        title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}学生管理`,
         icon: "",
         authCode: "studentManagement",
       },
@@ -44,7 +46,8 @@ export default {
       component: () => import("src/views/adminUserManagement/assistantManagement.vue"),
       // component: () => import("src/views/teacherAssistant/assistant.vue"),
       meta: {
-        title:'助教管理',
+        // title:'助教管理',
+        title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}助教管理`,
         icon: "",
         authCode: "assistantManagement",
       },
@@ -63,7 +66,8 @@ export default {
       name:'classManagement',
       component: RouterViews,
       meta: {
-        title:'班级管理',
+        // title:'班级管理',
+        title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}班级管理`,
         icon: "",
         authCode: "classManagement",
       },

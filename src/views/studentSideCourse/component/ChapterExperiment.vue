@@ -34,7 +34,7 @@
         </div>
         <!-- 编辑 -->
         <div v-if="saveOrEdit === 2" class="edit">
-          <QuillEditor  v-model="content1"  :uploadPathName="'studentSideCourse'" />
+          <QuillEditor  v-model="content1"  :height="'400px'" :uploadPathName="'studentSideCourse'" />
         </div>
         <!-- 笔记内容为空 -->
         <div v-if="saveOrEdit === 1" class="empty">
@@ -223,29 +223,29 @@ export default defineComponent({
 </script>
 
 <style scoped lang="less">
-.quill{
-      width: 100%;
-    height: calc(100% - 35px);
-    overflow: hidden;
-}
-.edit{
-  width: 100%;
-    height: 100%;
-    overflow: auto;
-}
-:deep(.markdown__editor){
-  height: auto;
-}
-:deep(.demo__emd){
-  width: 100%;
-}
-:deep(.mark__body .mark__editor){
-  min-width: auto;
-  min-height: 360px;
-}
-:deep(.mark__body .mark__preview){
-  min-width: auto;
-}
+// .quill{
+//     width: 100%;
+//     height: calc(100% - 35px);
+//     overflow: hidden;
+// }
+// .edit{
+//   width: 100%;
+//     height: 100%;
+//     overflow: auto;
+// }
+// :deep(.markdown__editor){
+//   height: auto;
+// }
+// :deep(.demo__emd){
+//   width: 100%;
+// }
+// :deep(.mark__body .mark__editor){
+//   min-width: auto;
+//   min-height: 360px;
+// }
+// :deep(.mark__body .mark__preview){
+//   min-width: auto;
+// }
   .experRight {
     background-color: rgba(247,247,247,1);
     height: 100%;
@@ -304,7 +304,8 @@ export default defineComponent({
 
         .exhibation {
             border: 1px solid #ccc;
-            height: 463px;
+            max-height: 516px;
+            // height: 100%;
             padding: 12px 15px;
             overflow-y: auto;
         }

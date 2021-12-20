@@ -60,12 +60,12 @@ interface Ireply{
   content:string
 }
 const columns=[
-  {
-    title: 'ID',
-    dataIndex:"id",
-    align:'center',
-    width:260,
-  },
+  // {
+  //   title: 'ID',
+  //   dataIndex:"id",
+  //   align:'center',
+  //   width:260,
+  // },
   {
     title: '用户名',
     dataIndex: 'user_name',
