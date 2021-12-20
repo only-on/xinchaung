@@ -152,7 +152,6 @@ export default defineComponent({
       reactiveData.isSaveImage = true;
       startTimer();
       getVmBaseInfoApi({ id: reactiveData.id }).then((res: any) => {
-        console.log(res);
         if (res.code === 1) {
           reactiveData.jupyteData.ip = res.data.host_ip;
           reactiveData.jupyteData.port = res.data.note_port;
@@ -222,8 +221,6 @@ export default defineComponent({
 
     // 生成环境
     function create() {
-        console.log(1212);
-        
       reactiveData.saveVisible = true;
     }
     function // 开始执行定时器
@@ -233,7 +230,6 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        console.log(iamgeSaveStatus);
         if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
             if (reactiveData.id === item.id) {
@@ -271,12 +267,10 @@ export default defineComponent({
       frm.id = "iframe";
       frm.frameBorder = "0";
       var kill = await setTimeout(() => {
-        console.log("1");
       }, 10000);
       //这里使用了网上的判断iframe加载完成的代码，谢谢作者。
       if (frm.attachEvent) {
         frm.attachEvent("onload", function () {
-          console.log("加载完成");
           (
             document.getElementById("iframe") as any
           ).contentWindow.location.reload(true);
@@ -289,7 +283,6 @@ export default defineComponent({
           (
             document.getElementById("iframe") as any
           ).contentWindow.location.reload(true);
-          console.log("加载完成");
         };
       }
       (jupyteIframe.value as any).appendChild(frm);

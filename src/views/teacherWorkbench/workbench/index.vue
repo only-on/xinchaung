@@ -74,7 +74,6 @@ export default defineComponent({
     let ws_config=storage.lStorage.get("ws_config")
     let timer: NodeJS.Timer | null = null;
     onBeforeRouteLeave(() => {
-      console.log("离开页面");
       reactiveData.isPoll = false;
       ws.value ? (ws.value as any).close() : "";
       clearInterval(Number(timer));
@@ -156,12 +155,9 @@ export default defineComponent({
         message.warn("请先开启工作台，在重新进入");
         return;
       }
-      console.log(tags, id, status);
       getWorkbenchInfoApi({id:id}).then((res) => {
-        console.log(res);
         if (res?.code === 1) {
           if (tags.indexOf("Notebook") > -1) {
-            console.log("跳转notebook");
             const {href}= router.resolve(
               {
                 path:"/teacher/Workbench/open-jupyte",
@@ -172,7 +168,6 @@ export default defineComponent({
             )
             window.open(href,"_blank")
           } else {
-            console.log("跳转vnc");
             const {href}= router.resolve(
               {
                 path:"/teacher/Workbench/open-vnc",
@@ -200,7 +195,7 @@ export default defineComponent({
       } else {
         openWorkbenchApi(val.id)
           .then((res) => {
-            console.log(res);
+            // console.log(res);
           })
           .catch(() => {
             message.error("开启失败");
@@ -265,7 +260,6 @@ export default defineComponent({
 
     // 清除定时器
     function clearTimer() {
-      console.log(1111111111)
       clearInterval(Number(timer));
     }
     return {

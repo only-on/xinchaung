@@ -78,7 +78,6 @@ export default defineComponent({
     const methods={
         // 有文件输入
         beforeUpload(file:any){
-            console.log(file,'filefile')
             state.file=file
             state.name=file.name
             state.size=file.size
@@ -132,11 +131,9 @@ export default defineComponent({
                     onProgress: function(bytesUploaded, bytesTotal) {
                         var percentage = (bytesUploaded / bytesTotal * 100).toFixed(2)
                         state.percentage=percentage
-                        console.log(bytesUploaded, bytesTotal, percentage + "%")
                     },
                     // 上传完成时调用的函数
                     onSuccess: function() {
-                        console.log("Download %s from %s",state.name,state.size, state.upload.url)
                         context.emit('upload-imageinfo',state.name,state.size,state.upload.url)
                     }
                 })
@@ -160,7 +157,6 @@ export default defineComponent({
         },
         stopUpload(){
             state.upload.abort().then(()=>{
-            console.log('中止上传')
             state.stop=true
             state.recover=false
           })
@@ -169,7 +165,6 @@ export default defineComponent({
             if(state.stop===false){
                  methods.stopUpload()
             }
-            console.log(file,'删除文件')
             state.fileList=[]
             state.file=''
             state.percentage=0

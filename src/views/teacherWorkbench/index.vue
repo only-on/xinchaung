@@ -33,7 +33,6 @@ export default defineComponent({
     updata({tabs:tabs,navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
 
     watch(()=>{return configuration.componenttype},(val)=>{
-      console.log(val,'valvallll')
        componentName.value=componentNames[val]
       if (tabRef.value && (tabRef.value as any).clearTimer) {
            clearInterval(Number((tabRef.value as any).clearTimer()))

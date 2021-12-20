@@ -244,15 +244,7 @@ export default defineComponent({
       });
       extendSess();
     });
-    watch(
-      () => fileList.value,
-      () => {
-        console.log("reactiveData.fileList", fileList.value);
-      },
-      {
-        deep: true,
-      }
-    );
+
     function extendSess() {
       const fun = (sum: string) => {
         extendSessionApi({ num: sum })
@@ -274,7 +266,6 @@ export default defineComponent({
         loading.value = true;
         getVmBaseInfoApi({ id: reactiveData.id as any as number })
           .then((res: any) => {
-            console.log(res);
             loading.value = false;
             reactiveData.vmData = res.data;
             reactiveData.vmOptions.password = "vncpassword";
@@ -290,8 +281,6 @@ export default defineComponent({
       }
     }
     function create() {
-      console.log(121);
-
       reactiveData.saveVisible = true;
     }
     function stop() {
@@ -309,11 +298,7 @@ export default defineComponent({
     }
     // 保存镜像
     function saveImage() {
-      console.log(createForm.value);
-     
       (createForm.value as any).validate().then((valid: any) => {
-        console.log(valid);
-
         if (valid) {
           createImageApi(
             {
@@ -322,7 +307,6 @@ export default defineComponent({
             },
             { id: reactiveData.id as any }
           ).then((res: any) => {
-            console.log(res);
             message.success("保存成功");
             const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
               ? storage.lStorage.get("iamgeSaveStatus")
@@ -352,7 +336,6 @@ export default defineComponent({
     }
     // 上传前
     function beforeUpload(file: any) {
-      console.log(file);
       if (file.size / 1024 / 1024 >= 500) {
         message.warn("上传文件不能超过500MB");
         return false;
@@ -378,22 +361,18 @@ export default defineComponent({
           : "/api/instance/uploads/file",
         body,
         success: (res: any) => {
-          console.log(res);
-
           if (res.code === 1) {
             (fileList.value as any)[i].status = "finish";
             (fileList.value as any)[i].progress = "100%";
             if (res.data.full_url) {
               vmUpload(res.data.full_url);
             }
-            console.log(fileList.value as any);
           }
           (fileList.value as any)[i].upload = "";
           (fileList as any).value.push({});
           (fileList as any).value.pop();
         },
         progress: (e: ProgressEvent) => {
-          console.log(e);
           if (e.total > 0) {
             (fileList as any).value[i].progress = Number(
               Number((e.loaded / e.total) * 100).toFixed(2)
@@ -402,8 +381,6 @@ export default defineComponent({
               (fileList as any).value[i],
               { progress: (fileList as any).value[i].progress }
             );
-            console.log(file.progress);
-            console.log(fileList.value);
             (fileList as any).value.push({});
             (fileList as any).value.pop();
           }
@@ -417,9 +394,6 @@ export default defineComponent({
       });
 
       (fileList as any).value[i].upload.request();
-
-      console.log(fileList.value);
-
       return false;
     }
     // 虚拟机上传
@@ -445,7 +419,6 @@ export default defineComponent({
         var iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
           ? storage.lStorage.get("iamgeSaveStatus")
           : [];
-        console.log(iamgeSaveStatus);
         if (_.some(iamgeSaveStatus, { id: reactiveData.id })) {
           iamgeSaveStatus.forEach((item: any, index: number) => {
             if (reactiveData.id === item.id) {

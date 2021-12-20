@@ -239,7 +239,6 @@ export default defineComponent({
       },
       changeTarget(index: any) {
         state.target = Number(index);
-        console.log(state.target, "state.target");
       },
       change(e: any) {
         if (state.target === 1) {

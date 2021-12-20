@@ -149,14 +149,12 @@ export default defineComponent({
                         is_use_gpu:state.image.tag.indexOf(3)!==-1?1:0,
                     }
                     createMirrorApi(parmas).then((res:any)=>{
-                        console.log(res)
                         methods.cancel()
                     })
                 })
         },
         getConfig(){
             getConfigApi().then((res:any)=>{
-            console.log(res)
             state.config=res.data
             })
         }

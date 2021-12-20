@@ -126,8 +126,6 @@ export default defineComponent({
     const isPoll = ref(false);
     watch(()=>props.content,()=>{
       data.value=props.content
-      console.log(data.value);
-      
     },{deep:true,immediate:true})
 
     watch(()=>props.isPoll,()=>{

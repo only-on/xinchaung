@@ -228,24 +228,9 @@ export default defineComponent({
       init();
     });
 
-    watch(
-      () => reactiveData.ruleForm.datasets,
-      () => {
-        console.log(11111);
-      },
-      { deep: true }
-    );
-    watch(
-      () => reactiveData.selectedName,
-      () => {
-        console.log(2222);
-      },
-      { deep: true }
-    );
     function init() {
       getConfig().then(() => {
         const { cpu, disk, ram } = reactiveData.configs || {};
-        console.log(cpu);
         let cpuKeys: any[] = Object.keys(cpu);
         let ramKeys: any[] = Object.keys(ram);
         let diskKeys: any[] = Object.keys(disk);
@@ -284,7 +269,6 @@ export default defineComponent({
 
     // 镜像选择发生变化时
     function iamgeChange(val: any) {
-      console.log(val);
       let currentImageTemp: any = {};
       outerloop: for (const key in reactiveData.images) {
         if (Object.prototype.hasOwnProperty.call(reactiveData.images, key)) {
@@ -296,7 +280,6 @@ export default defineComponent({
           }
         }
       }
-      console.log(currentImageTemp.tags);
       if (includes(currentImageTemp.tags, 3)) {
         reactiveData.showGPU = true;
         if (currentImageTemp.is_use_gpu === 1) {
@@ -322,7 +305,6 @@ export default defineComponent({
     // 创建
     function create() {
       ruleFormDom.value.validate().then(() => {
-        console.log(reactiveData.ruleForm);
         let params: any = {
           flavor: {},
         };
@@ -351,7 +333,6 @@ export default defineComponent({
         params.flavor.disk = Number(reactiveData.ruleForm.disk);
 
         createWorkbenchApi(params).then((res: any) => {
-          console.log(res);
           message.success("创建成功!");
           router.push({
             path: "/teacher/Workbench",
