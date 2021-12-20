@@ -353,7 +353,6 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      console.log(role, tab.value, " rolejj");
       draggable.value = role === 2 || tab.value === 1 ? false : true;
     });
     watch(

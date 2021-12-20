@@ -9,12 +9,13 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
+  name: "iconInput",
   props: ["icon"],
   setup(props) {
-    const icon:any = props.icon;
-    const styles:any={
-      'background-image':'url('+icon+')'
-    }
+    const icon: any = props.icon;
+    const styles: any = {
+      "background-image": "url(" + icon + ")",
+    };
     return {
       styles,
     };
@@ -45,7 +46,7 @@ export default defineComponent({
     }
   }
   &:deep(.ant-input) {
-      padding-left:28px;
-    }
+    padding-left: 28px;
+  }
 }
 </style>

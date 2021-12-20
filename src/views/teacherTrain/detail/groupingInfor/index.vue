@@ -6,12 +6,7 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table
-          class="groupTable"
-          :columns="columns"
-          :data-source="data"
-          :rowkey="rowkey"
-        >
+        <a-table class="groupTable" :columns="columns" :data-source="data" rowkey="id">
           <template #created_time="{ record }">
             <div>
               {{ record.created_time.split(" ")[0] }}
@@ -84,7 +79,7 @@
 </template>
 <script lang="ts">
 interface Istate {
-  columns: any[];
+  // columns: any[];
   data: any[];
   deletevisible: boolean;
   confirmLoading: boolean;
@@ -116,6 +111,32 @@ export default defineComponent({
   },
   setup(props, context) {
     const http = (request as any).teacherTrain;
+    const role = localStorage.getItem("role");
+    const columns1 = [
+      {
+        title: "小组名称",
+        dataIndex: "name",
+        align: "center",
+      },
+      {
+        title: "小组人数",
+        dataIndex: "num",
+        align: "center",
+      },
+      {
+        title: "创建时间",
+        dataIndex: "created_time",
+        align: "center",
+        slots: { customRender: "created_time" },
+      },
+      {
+        title: "操作",
+        key: "action",
+        align: "center",
+        slots: { customRender: "action" },
+      },
+    ];
+    const columns = role === "2" ? columns1.splice(0, 3) : columns1;
     const state: Istate = reactive({
       deletevisible: false,
       confirmLoading: false,
@@ -135,30 +156,6 @@ export default defineComponent({
       unGroupData: [],
       groupData: [],
       groupType: "class",
-      columns: [
-        {
-          title: "小组名称",
-          dataIndex: "name",
-          align: "center",
-        },
-        {
-          title: "小组人数",
-          dataIndex: "num",
-          align: "center",
-        },
-        {
-          title: "创建时间",
-          dataIndex: "created_time",
-          align: "center",
-          slots: { customRender: "created_time" },
-        },
-        {
-          title: "操作",
-          key: "action",
-          align: "center",
-          slots: { customRender: "action" },
-        },
-      ],
       data: [],
     });
     const methods = {
@@ -316,7 +313,7 @@ export default defineComponent({
     onMounted(() => {
       methods.getGroupList();
     });
-    return { ...toRefs(state), ...methods };
+    return { ...toRefs(state), ...methods, role, columns };
   },
 });
 </script>

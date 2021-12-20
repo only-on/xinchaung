@@ -40,10 +40,7 @@
           </a-table>
           <a-pagination :default-current="6" :total="500" />
         </div>
-        <div
-          v-if="currentShowContent === 'experiment'"
-          class="experiment-content"
-        >
+        <div v-if="currentShowContent === 'experiment'" class="experiment-content">
           <div class="experiment-top">
             <span>已提交：<i>0</i>人</span>
             <span>已评价<i>0</i>人</span>
@@ -85,15 +82,7 @@
 </template>
 
 <script lang="ts">
-import {
-  defineComponent,
-  inject,
-  onMounted,
-  reactive,
-  toRefs,
-  provide,
-  ref,
-} from "vue";
+import { defineComponent, inject, onMounted, reactive, toRefs, provide, ref } from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import top from "./top.vue";
 import storage from "src/utils/extStorage";
@@ -105,8 +94,8 @@ type TreactiveData = {
   activeKey: string;
   treeData: any[];
   chapterParams: {};
-  experimentData:any[]
-  chapterData:any[]
+  experimentData: any[];
+  chapterData: any[];
 };
 export default defineComponent({
   components: {
@@ -128,7 +117,7 @@ export default defineComponent({
     const route = useRoute();
     const currentRole: number = storage.lStorage.get("role");
     const currentTab = route.query.currentTab;
-    const course_id = route.query.course_id as any as number;
+    const course_id = (route.query.course_id as any) as number;
     const type = route.query.type;
     const chapter_id = ref("");
     const experiment_id = ref("");
@@ -195,7 +184,7 @@ export default defineComponent({
       activeKey: "1",
       chapterData: [],
       chapterParams: {},
-      experimentData:[]
+      experimentData: [],
     });
     if (type === "resource") {
       reactiveData.activeKey = "4";
@@ -204,8 +193,7 @@ export default defineComponent({
     onMounted(() => {
       getCourseTree();
     });
-    function tabChange(key: string) {
-    }
+    function tabChange(key: string) {}
     // 获取课程实验树
     function getCourseTree() {
       getCourseTreeApi({ course_id: course_id }).then((res: any) => {
@@ -229,7 +217,7 @@ export default defineComponent({
       selectExperiment,
       currentShowContent,
       chapterColumns,
-      experimentColumns
+      experimentColumns,
     };
   },
 });
@@ -302,9 +290,8 @@ export default defineComponent({
         }
       }
       .experiment-content {
-        
         .experiment-top {
-            padding:0 10px;
+          padding: 0 10px;
           line-height: 50px;
           border-bottom: 1px solid #ddd;
           > span {
@@ -317,29 +304,29 @@ export default defineComponent({
             }
           }
         }
-        .search-box{
-            display: flex;
-            padding:0 10px;
-            margin: 15px 0px;
-            >span{
-                width: 190px;
-                >input{
-                    width: 140px;
-                }
+        .search-box {
+          display: flex;
+          padding: 0 10px;
+          margin: 15px 0px;
+          > span {
+            width: 190px;
+            > input {
+              width: 140px;
             }
-            >button{
-                margin-left: 10px;
+          }
+          > button {
+            margin-left: 10px;
+          }
+          .button-right {
+            margin-left: auto;
+            > button {
+              margin-left: 10px;
             }
-            .button-right{
-                margin-left: auto;
-                >button{
-                    margin-left: 10px;
-                }
-            }
+          }
         }
-        .ant-pagination{
-            margin-top: 15px;
-            text-align: center;
+        .ant-pagination {
+          margin-top: 15px;
+          text-align: center;
         }
       }
     }

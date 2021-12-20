@@ -6,19 +6,19 @@
 
 <script lang="ts">
 import { defineComponent, inject } from "vue";
-import resources from "src/views/teacherTrain/detail/resources/index.vue";
+import Resources from "src/views/teacherTrain/detail/resources/index.vue";
 import storage from "src/utils/extStorage";
 
 export default defineComponent({
   components: {
-    resources,
+    Resources,
   },
   setup() {
     const course_id = inject("course_id");
-    const role=storage.lStorage.get("role")
+    const role = storage.lStorage.get("role");
     return {
       course_id,
-      role
+      role,
     };
   },
 });

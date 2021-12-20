@@ -1,5 +1,5 @@
 <template>
-<!-- v-layout-bg="{ size: '234px', bg: bg }" -->
+  <!-- v-layout-bg="{ size: '234px', bg: bg }" -->
   <div class="TeacherCourseDetailBox">
     <div class="heardBox">
       <top></top>
@@ -11,41 +11,22 @@
         class="course-detail-tabs"
         v-model:activeKey="activeKey"
       >
-        <a-tab-pane
-          key="1"
-          tab="课程实验"
-          v-if="tabs.includes('courseExperimentTab')"
-        >
+        <a-tab-pane key="1" tab="课程实验" v-if="tabs.includes('courseExperimentTab')">
           <template v-if="activeKey === '1'">
             <course-experiment-tab></course-experiment-tab>
           </template>
         </a-tab-pane>
-        <a-tab-pane
-          key="2"
-          tab="课程成员"
-          force-render
-          v-if="tabs.includes('courseMembersTab')"
-        >
+        <a-tab-pane key="2" tab="课程成员" v-if="tabs.includes('courseMembersTab')">
           <template v-if="activeKey === '2'">
             <course-members-tab></course-members-tab>
           </template>
         </a-tab-pane>
-        <a-tab-pane
-          key="3"
-          tab="分组信息"
-          force-render
-          v-if="tabs.includes('groupInfoTab')"
-        >
+        <a-tab-pane key="3" tab="分组信息" v-if="tabs.includes('groupInfoTab')">
           <template v-if="activeKey === '3'">
             <group-info-tab></group-info-tab>
           </template>
         </a-tab-pane>
-        <a-tab-pane
-          key="4"
-          tab="课程资源"
-          force-render
-          v-if="tabs.includes('courseResourcesTab')"
-        >
+        <a-tab-pane key="4" tab="课程资源" v-if="tabs.includes('courseResourcesTab')">
           <template v-if="activeKey === '4'">
             <course-resources-tab></course-resources-tab>
           </template>
@@ -65,7 +46,7 @@ import {
   provide,
   ref,
   watch,
-  onBeforeUnmount
+  onBeforeUnmount,
 } from "vue";
 import bg from "src/assets/common/course-detail_bg.jpg";
 import top from "./top.vue";
@@ -142,10 +123,7 @@ export default defineComponent({
       if (![1, 3, 2].includes(currentRole)) {
         return [];
       } else {
-        if (
-          currentRole == 1 ||
-          (currentRole == 3 && currentTab === "initCourse")
-        ) {
+        if (currentRole == 1 || (currentRole == 3 && currentTab === "initCourse")) {
           return ["courseExperimentTab", "courseResourcesTab"];
         }
         if (currentRole == 3 && currentTab === "myCourse") {
@@ -164,11 +142,8 @@ export default defineComponent({
               "groupInfoTab",
               "courseMembersTab",
             ];
-          }else {
-            return [
-              "courseExperimentTab",
-              "courseResourcesTab",
-            ];
+          } else {
+            return ["courseExperimentTab", "courseResourcesTab"];
           }
         }
         return [];
@@ -186,14 +161,14 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.heardBox{
+.heardBox {
   background-image: url(/src/assets/common/course-detail_bg.jpg);
   background-size: 100% 234px;
   background-repeat: no-repeat;
   padding-top: 32px;
   margin-top: -32px;
 }
-.TeacherCourseDetail{
+.TeacherCourseDetail {
   // height: calc(100% - 24px);
   // height: 1100px;
   // overflow: hidden;
@@ -201,12 +176,12 @@ export default defineComponent({
   margin: 0 auto;
   // overflow: auto;
 }
-:deep(.ant-tabs.course-detail-tabs){
+:deep(.ant-tabs.course-detail-tabs) {
   // height:calc(100% - 200px) ;
   // overflow: auto;
   // overflow: hidden;
 }
-:deep(.ant-tabs-top-content.ant-tabs-content.ant-tabs-content-animated){
+:deep(.ant-tabs-top-content.ant-tabs-content.ant-tabs-content-animated) {
   // height:calc(100% - 68px) ;
   // overflow-y: auto;
 }

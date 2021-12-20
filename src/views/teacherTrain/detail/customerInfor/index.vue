@@ -173,6 +173,7 @@ export default defineComponent({
   setup(props, context) {
     console.log(props.type);
     const http = (request as any).teacherTrain;
+    const role = localStorage.getItem("role");
     const state: Istate = reactive({
       stuUnselectParams: {
         id: props.trainId,
@@ -319,7 +320,8 @@ export default defineComponent({
         state.classStuDeleteid = selectedRows;
       },
       onRadioChange(e: any) {
-        state.columns = e.target.value == 1 ? state.stuColumns : state.classColumns;
+        const columns = e.target.value == 1 ? state.stuColumns : state.classColumns;
+        state.columns = role === "2" ? columns.splice(0, columns.length - 1) : columns;
         state.data = [];
         state.unSelectData = [];
         if (e.target.value == 1) {
@@ -570,11 +572,14 @@ export default defineComponent({
       }
     );
     onMounted(() => {
-      state.columns = state.stuColumns;
+      state.columns =
+        role === "2"
+          ? state.stuColumns.splice(0, state.stuColumns.length - 1)
+          : state.stuColumns;
       // console.log('请求学生接口')
       methods.getStudentList();
     });
-    return { ...toRefs(state), ...methods, rowSelection };
+    return { ...toRefs(state), ...methods, rowSelection, role };
   },
 });
 </script>

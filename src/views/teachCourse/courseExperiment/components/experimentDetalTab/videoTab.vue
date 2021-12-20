@@ -1,8 +1,8 @@
 <template>
   <div class="video-tab">
     <div class="video-tab-top">
-      <span>Python数字变量定义</span>
-      <span>
+      <span>{{ detailInfo.name }}</span>
+      <span v-role>
         是否对学生开放
         <a-switch
           checked-children="开"
@@ -38,14 +38,14 @@ export default defineComponent({
       () => detailInfo,
       () => {
         is_visible.value = detailInfo.value.is_visible === 1 ? true : false;
-      },{deep:true,immediate:true}
+      },
+      { deep: true, immediate: true }
     );
     function checkedChange() {
       isDisparkApi(
         { is_visible: is_visible.value },
         { course_id: course_id, experiment_id: experiment_id.value }
-      ).then((res: any) => {
-      });
+      ).then((res: any) => {});
     }
     return {
       detailInfo,

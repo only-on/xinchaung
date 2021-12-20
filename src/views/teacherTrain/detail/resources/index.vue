@@ -36,7 +36,7 @@
 </template>
 <script lang="ts">
 interface Istate {
-  columns: any[];
+  // columns: any[];
   data: any[];
   file: any;
   name: string;
@@ -52,45 +52,47 @@ import { message } from "ant-design-vue";
 import FileSaver from "file-saver";
 export default defineComponent({
   name: "resources",
-  props: ["propTrainDetailInfo", "trainId", "resource", "type", "role"], // type 判断是否是课程资源
+  props: ["propTrainDetailInfo", "trainId", "resource", "type"], // type 判断是否是课程资源
   components: {
     Empty,
   },
   setup(props, context) {
     const http = (request as any).teacherTrain;
+    const role = localStorage.getItem("role");
+    const columns1 = [
+      {
+        title: "资源名称",
+        dataIndex: "name",
+        ellipsis: true,
+      },
+      {
+        title: "资源说明",
+        dataIndex: "describe",
+        ellipsis: true,
+      },
+      {
+        title: "文件类型",
+        dataIndex: "posfix",
+        ellipsis: true,
+      },
+      {
+        title: "文件大小",
+        dataIndex: "size",
+      },
+      {
+        title: "上传时间",
+        dataIndex: "created_time",
+        align: "center",
+      },
+      {
+        title: "操作",
+        dataIndex: "action",
+        align: "center",
+        slots: { customRender: "action" },
+      },
+    ];
+    const columns = role === "2" ? columns1?.splice(0, 5) : columns1;
     const state: Istate = reactive({
-      columns: [
-        {
-          title: "资源名称",
-          dataIndex: "name",
-          ellipsis: true,
-        },
-        {
-          title: "资源说明",
-          dataIndex: "describe",
-          ellipsis: true,
-        },
-        {
-          title: "文件类型",
-          dataIndex: "posfix",
-          ellipsis: true,
-        },
-        {
-          title: "文件大小",
-          dataIndex: "size",
-        },
-        {
-          title: "上传时间",
-          dataIndex: "created_time",
-          align: "center",
-        },
-        {
-          title: "操作",
-          dataIndex: "action",
-          align: "center",
-          slots: { customRender: "action" },
-        },
-      ],
       data: [],
       file: "",
       name: "",
@@ -202,7 +204,7 @@ export default defineComponent({
         state.data = inject["stepInfoFour"];
       }
     });
-    return { ...toRefs(state), ...methods };
+    return { ...toRefs(state), ...methods, columns, role };
   },
 });
 </script>
