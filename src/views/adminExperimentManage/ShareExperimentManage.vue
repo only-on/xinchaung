@@ -182,7 +182,17 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      DeleteCategory(state.selectedRowKeys)
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          DeleteCategory(state.selectedRowKeys)
+        }
+      });
+      
     }
     async function clearSearch(){
       // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){  ExperimentList
