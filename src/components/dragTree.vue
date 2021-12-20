@@ -353,7 +353,7 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      draggable.value = role === 2 || tab.value === 1 ? false : true;
+      draggable.value = role === 2 || tab?.value === 1 ? false : true;
     });
     watch(
       () => {

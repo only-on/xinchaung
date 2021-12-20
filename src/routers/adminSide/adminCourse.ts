@@ -13,10 +13,9 @@ export default {
                 '1': '内置课程',
                 '2': '归档课程',
             }
-            return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:'课程管理'
-          },
-        authCode: 'adminCourse',
-        showInBreadcrumb: false
+            return (query && query!.currentTab) ? dataDetailMap[query!.currentTab.toString()] : '课程管理'
+        },
+        authCode: 'adminCourse'
     },
     children: [
         {
@@ -77,9 +76,9 @@ export default {
             path: "schedule",
             component: () => import("src/views/adminCourse/schedule/schedule.vue"),
             meta: {
-              title: "排课管理",
-              authCode: 'teachingSchedule'
-            }, 
-          }, 
+                title: "排课管理",
+                authCode: 'teachingSchedule'
+            },
+        },
     ]
 }

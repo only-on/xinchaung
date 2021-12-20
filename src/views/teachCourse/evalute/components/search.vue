@@ -1,27 +1,41 @@
 <template>
   <a-form layout="inline" :form="form">
     <a-form-item>
-      <beforeIcon icon="src/assets/images/screenicon/Group7.png">
-        <template>
-          <a-select v-model:value="form.classId" @change="handleSearch">
-            <a-select-option
-              v-for="(item, index) in options"
-              :key="index"
-              :value="item.id"
-              >{{ item.classname }}</a-select-option
-            >
-          </a-select>
-        </template>
+      <beforeIcon icon="src/assets/images/screenicon/Group8.png">
+        <a-select
+          class="inputWidth"
+          placeholder="请选择班级"
+          v-model:value="form.classId"
+          @change="handleSearch"
+        >
+          <a-select-option
+            v-for="(item, index) in options"
+            :key="index"
+            :value="item.id"
+            >{{ item.classname }}</a-select-option
+          >
+        </a-select>
       </beforeIcon>
     </a-form-item>
-    <a-form-item label="学号">
-      <a-input v-model:value="form.username" @pressEnter="handleSearch"
+    <a-form-item>
+      <!-- label="学号" -->
+      <a-input
+        class="inputWidth"
+        placeholder="请输入学号"
+        v-model:value="form.username"
+        @pressEnter="handleSearch"
         ><template #prefix>
           <img src="src/assets/images/screenicon/Group7.png" /> </template
       ></a-input>
     </a-form-item>
-    <a-form-item label="姓名">
-      <a-input v-model:value="form.name" @pressEnter="handleSearch">
+    <a-form-item>
+      <!-- label="姓名" -->
+      <a-input
+        class="inputWidth"
+        placeholder="请输入姓名"
+        v-model:value="form.name"
+        @pressEnter="handleSearch"
+      >
         <template #prefix>
           <img src="src/assets/images/screenicon/Group6.png" />
         </template>
@@ -41,7 +55,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import dee from "src/components/Empty.vue";
 import beforeIcon from "src/components/aiAnt/beforeIcon.vue";
 interface Iform {
-  classId: number | string;
+  classId: any;
   username: string;
   name: string;
 }
@@ -57,7 +71,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const http = (request as Ihttp).teachCourse;
     const form = reactive<Iform>({
-      classId: "",
+      classId: undefined,
       username: "",
       name: "",
     });
@@ -82,7 +96,7 @@ export default defineComponent({
       emit("search", form);
     }
     function hanldeClear() {
-      form.classId = "";
+      form.classId = undefined;
       form.username = "";
       form.name = "";
       emit("search", form);
@@ -107,5 +121,8 @@ export default defineComponent({
   .ant-btn {
     margin-right: 10px;
   }
+}
+.inputWidth {
+  width: 160px;
 }
 </style>
