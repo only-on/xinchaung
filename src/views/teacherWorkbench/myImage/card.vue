@@ -131,8 +131,8 @@ export default defineComponent({
           display: inline-block;
           width: 32%;
         }
-        >span{
-          margin-right:2%;
+        >span:nth-child(1){
+          margin-right:10%;
         }
         >span:nth-child(3){
           margin-right:0px;
@@ -149,7 +149,7 @@ export default defineComponent({
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       font-size: 12px;
-      color: #0d0811;
+      color: rgba(@black,0.65);
       line-height: 22px;
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -173,6 +173,8 @@ export default defineComponent({
         width: 20%;
         display: flex;
         justify-content:space-between;
+        color: rgba(@black,0.65);
+        cursor: pointer;
         .iconfont:hover{
           color: @theme-color;
         }

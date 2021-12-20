@@ -12,7 +12,7 @@
         <p class="ant-upload-drag-icon">
             <span class="iconfont icon-upload"></span>
         </p>
-        <p class="ant-upload-hint">选择要上传的镜像或将镜像拖拽到此处 仅支持tar和qcow2</p>
+        <p class="ant-upload-hint" style="font-size:14px">选择要上传的镜像或将镜像拖拽到此处 仅支持tar和qcow2</p>
     </a-upload-dragger>
     <a-progress v-if="ifProgress" :percent="percentage" />
     <div v-if="file" class="uploadBtn">

@@ -174,6 +174,7 @@ export default defineComponent({
   width: 1000px;
   margin: 0 auto;
   height: 100%;
+  font-size: 14px;
 //   .uploadBtn{
 //       display: flex;
 //   }
@@ -193,7 +194,7 @@ export default defineComponent({
       margin-top: auto;
       text-align: center;
       > button {
-        margin-right: 40px;
+        margin-right: 16px;
       }
     }
 }

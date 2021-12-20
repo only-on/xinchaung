@@ -137,7 +137,7 @@ export default defineComponent({
     height: 100px;
     .image-name{
         color:white;
-        font-size: 14px;
+        font-size: 16px;
         overflow: hidden;
         text-overflow: ellipsis;
     }
@@ -146,7 +146,7 @@ export default defineComponent({
         color:#ffde00;
     }
     .memory{
-        font-size: 15px;
+        font-size: 12px;
         line-height: 25px;
         color: hsla(0,0%,100%,.5);
     }
@@ -162,9 +162,9 @@ export default defineComponent({
         }
 }
 .image-desc {
-    padding: 14px;
+    padding: 22px 14px 14px 14px;
     font-size: 12px;
-    color: rgba(13,8,17,.55);
+    color: rgba(0,0,0,0.65);
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
     p{
@@ -176,6 +176,11 @@ export default defineComponent({
 }
 .memory{
     display: flex;
+    >div{
+        &:nth-child(1){
+            margin-right: 15px;
+        }
+    }
 }
 .pagination{
     text-align: center;
