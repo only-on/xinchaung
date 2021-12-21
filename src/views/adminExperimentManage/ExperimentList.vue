@@ -10,10 +10,10 @@
     <div class="header">
       <div class="search">
         <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.name" placeholder="请输入实验名称" @keyup="search()" />
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入实验名称" @keyup.enter="search()" />
         </div>
         <div  class="item custom_input custom_input2">
-          <a-input v-model:value="ForumSearch.cnt" placeholder="请输入课时数" @keyup="search()" />
+          <a-input v-model:value="ForumSearch.cnt" placeholder="请输入课时数" @keyup.enter="search()" />
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>

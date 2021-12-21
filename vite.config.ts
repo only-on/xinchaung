@@ -88,12 +88,14 @@ export default defineConfig({
     force: true
   },
   build:{
+    // reportCompressedSize:false,
+    cssCodeSplit:false,
     sourcemap:false,
     brotliSize:false,
     chunkSizeWarningLimit:10000,
     rollupOptions:{
       output:{
-        manualChunks(id){ // 分包
+        manualChunks(id){ 
           if(id.includes('node_modules')){
             return id.toString().split('node_modules/')[1].split('/')[0].toString();
           }

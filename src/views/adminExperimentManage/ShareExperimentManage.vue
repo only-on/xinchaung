@@ -2,10 +2,10 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.name" placeholder="请输入章节" @keyup="search()" />
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入章节" @keyup.enter="search()" />
         </div>
         <div  class="item custom_input custom_input2">
-          <a-input v-model:value="ForumSearch.category" placeholder="请输入所属技术方向" @keyup="search()" />
+          <a-input v-model:value="ForumSearch.category" placeholder="请输入所属技术方向" @keyup.enter="search()" />
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>

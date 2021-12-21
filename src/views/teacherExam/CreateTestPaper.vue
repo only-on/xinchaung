@@ -96,21 +96,22 @@
         <div class="item item4">
           <a-button type="primary" @click="selectQuestionAll">全选（{{QuestionsList && QuestionsList.length}}）</a-button>
         </div>
-        
       </div>
-      <div class="dataList setScrollbar">
-        <div class="list" >
-          <div class="item" v-for="v in QuestionsList" :key="v.id">
-            <div>
-              <span>{{v.question}}</span>
-              <span class="num">（{{v.origin_score}}）</span>
+      <a-spin :spinning="QuestionLoading" size="large" tip="Loading...">
+        <div class="dataList setScrollbar">
+          <div class="list" v-if="QuestionsList.length">
+            <div class="item" v-for="v in QuestionsList" :key="v.id">
+              <div>
+                <span>{{v.question}}</span>
+                <span class="num">（{{v.origin_score}}）</span>
+              </div>
+              <span class="iconfont" :class="selectedPaperIds.includes(v.id)?'icon-yichu1':'icon--tainjia'" @click="selectQuestion(v)"></span>
             </div>
-            <span class="iconfont" :class="selectedPaperIds.includes(v.id)?'icon-yichu1':'icon--tainjia'" @click="selectQuestion(v)"></span>
           </div>
+          <Empty v-if="!QuestionsList.length" text="暂未添加该类型试题！" />
         </div>
-        <Empty v-if="!QuestionsList.length" text="暂未添加该类型试题！" />
-      </div>
-      <a-pagination v-if="QuestionsList.length"
+      </a-spin>  
+      <a-pagination v-if="totalCount>10"
         show-size-changer
         v-model:current="search.page"
         v-model:pageSize="search.limit"
@@ -177,6 +178,7 @@ export default defineComponent({
     var totalCount:Ref<number> =ref(0)
     var option=['A','B','C','D','E','F','G']
     var loading:Ref<boolean> =ref(false)
+    var QuestionLoading:Ref<boolean> =ref(false)
     const visible = ref<boolean>(false);
     var selectedPaperIds:number[]=reactive([])          // 已选择的题目id  description
     const totalScore = ref<number>(0);
@@ -199,6 +201,16 @@ export default defineComponent({
     })
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
+    
+    var emptyObj=computed(()=>{
+      // drawerEmpty   drawerSearchEmpty
+      // search.pool_id     search.level_id     search.name
+      let obj={
+        type:'drawerEmpty',
+        text:''
+      }
+      // QuestionsList.length
+    })
 
     const rules={
         name: [
@@ -254,28 +266,29 @@ export default defineComponent({
         pool_id:search.pool_id?search.pool_id:'',
         level_id:search.level_id?search.level_id:'',
       }
+      QuestionLoading.value=true
       http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
         QuestionsList.length=0
         QuestionsList.push(...res.data.list)
         totalCount.value=res.data.page.totalCount
         visible.value=true
+        QuestionLoading.value=false
       })
     }
     const  openSelectQuestion = () => {
       visible.value=true
-      // return  search.page
-      let obj={
-        ...search,
-        pool_id:search.level_id?search.pool_id:'',
-        level_id:search.level_id?search.level_id:'',
-      }
-      // initData()
-      http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
-        QuestionsList.length=0
-        QuestionsList.push(...res.data.list)
-        totalCount.value=res.data.page.totalCount
+      // let obj={
+      //   ...search,
+      //   pool_id:search.level_id?search.pool_id:'',
+      //   level_id:search.level_id?search.level_id:'',
+      // }
+      // http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
+      //   QuestionsList.length=0
+      //   QuestionsList.push(...res.data.list)
+      //   totalCount.value=res.data.page.totalCount
         
-      })
+      // })
+      getQuestions()
       
     };
     const onShowSizeChange=(current:any,pageSize:any)=>{
@@ -374,7 +387,7 @@ export default defineComponent({
        getPaperDetail(Number(editId))
      }
     })
-    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,activeData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectQuestionAll,answers,selectQuestion,getQuestions,onShowSizeChange,openSelectQuestion,pageChange,visible};
+    return {...toRefs(state),comQuestionList,formRef,totalScore,QuestionsList,loading,QuestionLoading,ForumSearch,search,rules,PaperList,activePaper,option,catalogueOptions,options2,activeData,totalCount,selectedPaperIds,cancel,submit,activeChange,selectQuestionAll,answers,selectQuestion,getQuestions,onShowSizeChange,openSelectQuestion,pageChange,visible};
   },
 })
 </script>
@@ -581,7 +594,7 @@ export default defineComponent({
     overflow: auto;
     .list{
       padding: 0 20px;
-      min-height: 430px;
+      min-height: 500px;
       .item{
         display: flex;
         align-items: center;

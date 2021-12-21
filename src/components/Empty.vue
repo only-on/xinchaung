@@ -3,7 +3,7 @@
     <div class="no-data" :class="emptyType" :style="height?`height:${height}px`:''">
   
     </div>
-    <div class="emptyCon" :class="`${emptyType}2`">{{emptyText}}</div>
+    <div class="emptyCon">{{emptyText}}</div>
   </div>
 </template>
 
@@ -11,7 +11,7 @@
 import { defineComponent,ref, onMounted,computed ,Ref, PropType} from 'vue'
 import {useStore} from "vuex"
 import { useRouter } from 'vue-router';
-type TemptyType= 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty'
+type TEmptyType= 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty' | 'drawerEmpty' | 'drawerSearchEmpty'
 export default defineComponent({
   name: 'Empty',
   components: {
@@ -25,7 +25,7 @@ export default defineComponent({
     },
     type:{
       required: false,
-      type: String as PropType<TemptyType>,
+      type: String as PropType<TEmptyType>,
       default: 'empty',
     },
     height:{
@@ -40,9 +40,11 @@ export default defineComponent({
     var height:Ref<number>=ref(0)
     let defaultText={
       empty:'暂无数据！',
-      searchEmpty:'暂未搜到数据！',
+      searchEmpty:'抱歉，未搜到数据！',
       tableEmpty:'抱歉。该表格暂无数据！',
       tableSearchEmpty:'抱歉。未搜到相关数据！',
+      drawerEmpty:'抱歉，暂无数据！',
+      drawerSearchEmpty:'抱歉。未搜到相关数据！'
     }
     height.value=props.height
     emptyType.value=props.type
@@ -63,10 +65,10 @@ export default defineComponent({
   .searchEmpty{
     background-image: url('src/assets/images/empty/searchEmpty.png');    
   }
-  .tableEmpty{
+  .tableEmpty,.drawerEmpty{
     background-image: url('src/assets/images/empty/tableEmpty.jpg');    
   }
-  .tableSearchEmpty{
+  .tableSearchEmpty,.drawerSearchEmpty{
     background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
   }
   .emptyContent{
@@ -91,25 +93,9 @@ export default defineComponent({
   }
   .emptyCon {
     // margin-top: 20px;
-      font-size: 16px;
+      font-size: 14px;
       width: 100%;
       text-align: center;
+      color:rgba(5, 1, 1,.45);
   }
-  .empty2,.searchEmpty2{
-    color:#050101;
-    // .emptyCon{
-    //   color:#050101;
-    // }
-  }
-  .tableEmpty2,.tableSearchEmpty2{
-    color: rgba(0, 0, 0, 0.25);
-    // color:rgb(5, 1, 1,.45);
-      // font-size: 14px;
-    // .emptyCon{
-    //   color:rgb(5, 1, 1,.45);
-    //   font-size: 14px;
-    // }
-  }
-  
-  
 </style>

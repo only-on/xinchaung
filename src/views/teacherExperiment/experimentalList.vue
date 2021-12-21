@@ -157,7 +157,7 @@
                     </div>
                   </div>
                 </div>
-                <Empty v-if="experimentalDataList.length === 0" />
+                <Empty v-if="experimentalDataList.length === 0" :type="experimentKeyWord!==''?'searchEmpty':'empty'"  />
               </div>
             </div>
           </div>

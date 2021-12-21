@@ -2,7 +2,7 @@
     <div class="header" v-layout-bg>
       <div class="search">
         <div class="item custom_input custom_input1">
-          <a-input v-model:value="ForumSearch.name" placeholder="请输入章节名称" @keyup="search()" />
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入章节名称" @keyup.enter="search()" />
         </div>
         <div class="item">
           <a-button type="primary" @click="search()">查询</a-button>
