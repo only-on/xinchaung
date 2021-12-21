@@ -58,6 +58,7 @@ export default defineComponent({
         }
   }
   .answer-list {
+    display: flex;
     .answer-item {
       display: flex;
       flex-direction: row;

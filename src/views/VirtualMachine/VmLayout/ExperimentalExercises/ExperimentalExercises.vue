@@ -1,6 +1,6 @@
 <template>
   <div class="experimental-exercises">
-    <div v-if="judgeData.length===0">
+    <div v-if="judgeData.length === 0">
       <empty></empty>
     </div>
     <template v-else v-for="(item, index) in judgeData" :key="index">
@@ -22,8 +22,20 @@
         :index="index"
         v-if="item.type_id === 3"
       ></judge>
+      <gap-fillings
+        class="experimental-exercises-item"
+        v-model="judgeData[index]"
+        :index="index"
+        v-if="item.type_id === 4"
+      ></gap-fillings>
+      <short-answer-question
+      class="experimental-exercises-item"
+        v-model="judgeData[index]"
+        :index="index"
+        v-if="item.type_id === 5" 
+      ></short-answer-question>
     </template>
-    <div class="exercise-action" v-if="judgeData.length>0">
+    <div class="exercise-action" v-if="judgeData.length > 0">
       <a-button type="primary" @click="submitAnswer">提交</a-button>
       <!-- <i>您以提交过习题答案</i> -->
     </div>
@@ -42,16 +54,21 @@ import {
 import judge from "src/components/exercises/judge.vue";
 import singleChoice from "src/components/exercises/singleChoice.vue";
 import multipleChoice from "src/components/exercises/multipleChoice.vue";
+import gapFillings from "src/components/exercises/gapFillings.vue";
+import shortAnswerQuestion from "src/components/exercises/shortAnswerQuestion.vue"
 import request from "src/request/getRequest";
 import { useRoute } from "vue-router";
-import empty from "src/components/Empty.vue"
+import empty from "src/components/Empty.vue";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   components: {
     judge,
     "single-choice": singleChoice,
     "multiple-choice": multipleChoice,
-    empty
+    empty,
+    "gap-fillings": gapFillings,
+    "short-answer-question":shortAnswerQuestion
   },
   setup(props) {
     let experApi = request.studentExam;
@@ -186,7 +203,9 @@ export default defineComponent({
         course_student_content_id: course_student_content_id,
         answer: answer,
       };
-      experApi.submitAnswerApi({ param: params });
+      experApi.submitAnswerApi({ param: params }).then(()=>{
+        message.success("提交成功")
+      });
     }
 
     // function getExperimentStatus() {
