@@ -2,7 +2,9 @@
   <div v-layout-bg class="a-career-direction-wrap">
     <div class="a-action-top">
       <label>职业方向：</label>
-      <a-input class="career-direction-name" v-model:value="params.name" />
+      <before-icon :icon="grounp10">
+        <a-input class="career-direction-name" v-model:value="params.name" />
+      </before-icon>
       <a-button type="primary" @click="searchData">查询</a-button>
       <a-button type="primary" @click="clearData">清空</a-button>
       <a-button type="primary" class="add-btn" @click="openAddModal"
@@ -41,24 +43,23 @@
     </div>
   </div>
   <a-modal v-model:visible="visible" title="添加职业方向" @ok="handleOk">
-      <div class="add-career-direction-modal">
-          <label>职业方向：</label>
-          <a-input v-model:value="name"/>
-      </div>
+    <div class="add-career-direction-modal">
+      <label>职业方向：</label>
+      <a-input v-model:value="name" />
+    </div>
   </a-modal>
 </template>
 
 <script lang="ts">
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
+import { defineComponent, inject, onMounted, reactive, toRefs } from "vue";
 import {
-  defineComponent,
-  inject,
-  onMounted,
-  reactive,
-  toRefs,
-} from "vue";
-import { getCareerDirectionListApi,addCareerDirectionApi ,deleteCareerDirectionApi} from "../api";
-
+  getCareerDirectionListApi,
+  addCareerDirectionApi,
+  deleteCareerDirectionApi,
+} from "../api";
+import beforeIcon from "src/components/aiAnt/beforeIcon.vue";
+import grounp10 from "src/assets/images/screenicon/Group10.png";
 const columns = [
   {
     title: "职业方向",
@@ -73,6 +74,9 @@ const columns = [
   },
 ];
 export default defineComponent({
+  components: {
+    "before-icon": beforeIcon,
+  },
   setup() {
     const reactiveData = reactive({
       params: {
@@ -82,8 +86,8 @@ export default defineComponent({
       },
       total: 0,
       dataList: [],
-      visible:false,
-      name:""
+      visible: false,
+      name: "",
     });
     var updata = inject("updataNav") as Function;
     updata({
@@ -114,13 +118,19 @@ export default defineComponent({
         return row.id;
       },
       deleteData(id: number) {
-        if (!id) {
-            return
-        }
-        deleteCareerDirectionApi({direction_id:id}).then((res:any)=>{
-            message.success("删除成功")
-            method.getDataList();
-        })
+        Modal.confirm({
+          title: "提示",
+          content: "确认删除吗",
+          onOk: () => {
+            if (!id) {
+              return;
+            }
+            deleteCareerDirectionApi({ direction_id: id }).then((res: any) => {
+              message.success("删除成功");
+              method.getDataList();
+            });
+          },
+        });
       },
       pageChange(page: number, pageSize: number) {
         reactiveData.params.page = page;
@@ -138,21 +148,21 @@ export default defineComponent({
         reactiveData.params.name = "";
         method.getDataList();
       },
-      openAddModal(){
-          reactiveData.name=""
-          reactiveData.visible=true
+      openAddModal() {
+        reactiveData.name = "";
+        reactiveData.visible = true;
       },
-      handleOk(){
-          if (!reactiveData.name) {
-              message.warn("请输入职业方向名称")
-              return
-          }
-          addCareerDirectionApi({name:reactiveData.name}).then(()=>{
-              message.success("新增成功")
-              method.getDataList();
-              reactiveData.visible=false
-          })
-      }
+      handleOk() {
+        if (!reactiveData.name) {
+          message.warn("请输入职业方向名称");
+          return;
+        }
+        addCareerDirectionApi({ name: reactiveData.name }).then(() => {
+          message.success("新增成功");
+          method.getDataList();
+          reactiveData.visible = false;
+        });
+      },
     };
     onMounted(() => {
       method.getDataList();
@@ -161,6 +171,7 @@ export default defineComponent({
       ...method,
       ...toRefs(reactiveData),
       columns,
+      grounp10,
     };
   },
 });
@@ -187,10 +198,10 @@ export default defineComponent({
     margin-top: 20px;
   }
 }
-.add-career-direction-modal{
-    display: flex;
-    label{
-        flex-shrink: 0;
-    }
+.add-career-direction-modal {
+  display: flex;
+  label {
+    flex-shrink: 0;
+  }
 }
 </style>
