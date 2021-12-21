@@ -383,6 +383,9 @@ export default defineComponent({
         }
       }
     }
+    .course-experiment-box{
+      height: 100%;
+    }
   }
 }
 </style>
