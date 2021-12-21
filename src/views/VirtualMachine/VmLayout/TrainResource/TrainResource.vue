@@ -1,42 +1,56 @@
 <template>
   <div class="train-resource">
-    <a-table
-      :data-source="dataSource"
-      :columns="columns"
-      :rowKey="rowKey"
-      :pagination="false"
-    >
-    <template #name="{text}">
-      <div :title="text">{{text}}</div>
-    </template>
-    <template #describe="{text}">
-      <div :title="text">{{text}}</div>
-    </template>
-      <template #operation="{ text }">
-        <div class="row-action">
-          <span @click="show(text)" class="icon-chakan1 iconfont"></span>
-          <span @click="down(text)" class="icon-download iconfont"></span>
-        </div>
+    <a-config-provider>
+      <a-table
+        :data-source="dataSource"
+        :columns="columns"
+        :rowKey="rowKey"
+        :pagination="false"
+      >
+        <template #name="{ text }">
+          <div :title="text">{{ text }}</div>
+        </template>
+        <template #describe="{ text }">
+          <div :title="text">{{ text }}</div>
+        </template>
+        <template #operation="{ text }">
+          <div class="row-action">
+            <span @click="show(text)" class="icon-chakan1 iconfont"></span>
+            <span @click="down(text)" class="icon-download iconfont"></span>
+          </div>
+        </template>
+      </a-table>
+      <template #renderEmpty>
+        <div><empty type="tableEmpty"></empty></div>
       </template>
-    </a-table>
-    <a-pagination class="page-box" v-if="total!=0" :default-current="param.page" :default-page-size="param.limit" :total="total" @change="pageChange"/>
+    </a-config-provider>
+    <a-pagination
+      class="page-box"
+      v-if="total != 0"
+      :default-current="param.page"
+      :default-page-size="param.limit"
+      :total="total"
+      @change="pageChange"
+    />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted ,ref,reactive,toRefs} from "vue";
-import request from "src/request/getRequest"
+import { defineComponent, onMounted, ref, reactive, toRefs } from "vue";
+import request from "src/request/getRequest";
 import { useRoute } from "vue-router";
-import {downloadUrl} from "src/utils/download"
+import { downloadUrl } from "src/utils/download";
+import empty from "src/components/Empty.vue"
 
 export default defineComponent({
+  components:{
+    empty
+  },
   setup() {
-    const TrainApi=request.vmApi
+    const TrainApi = request.vmApi;
     const route = useRoute();
     let vmQuery = route.query as any;
-    const {
-      taskId,
-    }: any = vmQuery;
+    const { taskId }: any = vmQuery;
     const columns = [
       {
         title: "资源名称",
@@ -58,56 +72,57 @@ export default defineComponent({
         slots: { customRender: "operation" },
       },
     ];
-    const reactiveData=reactive({
-      total:0,
-      param:{
-        id:taskId,
-        limit:20,
-        page:1,
-        name:"",
-        ext:"",
-        type:2
-      }
-    })
-    const dataSource: any =ref([]);
-    onMounted(()=>{
-      getResource()
-    })
-    function  getResource() {
-      dataSource.value=[]
-      TrainApi.getTrainResourceApi({param:reactiveData.param}).then((res)=>{
-        if (res?.data) {
-          dataSource.value=res.data.list
+    const reactiveData = reactive({
+      total: 0,
+      param: {
+        id: taskId,
+        limit: 20,
+        page: 1,
+        name: "",
+        ext: "",
+        type: 2,
+      },
+    });
+    const dataSource: any = ref([]);
+    onMounted(() => {
+      getResource();
+    });
+    function getResource() {
+      dataSource.value = [];
+      TrainApi.getTrainResourceApi({ param: reactiveData.param }).then(
+        (res) => {
+          if (res?.data) {
+            dataSource.value = res.data.list;
+          }
         }
-      })
+      );
     }
-    const rowKey=(row:any)=>{
-        return row.id
-    }
-    function show(val:any){
-        console.log(val);
-        
+    const rowKey = (row: any) => {
+      return row.id;
+    };
+    function show(val: any) {
+      console.log(val);
     }
 
-    function down(val:any){
-      let env=process.env.NODE_ENV==="development"?true:false
-       downloadUrl(env?'/proxyPrefix'+val.url:val.url) 
+    function down(val: any) {
+      let env = process.env.NODE_ENV === "development" ? true : false;
+      downloadUrl(env ? "/proxyPrefix" + val.url : val.url);
     }
-    
+
     // 页码发生变化时
-    function pageChange(page:number, pageSize:number) {
-      reactiveData.param.limit=pageSize
-      reactiveData.param.page=page
-      getResource()
+    function pageChange(page: number, pageSize: number) {
+      reactiveData.param.limit = pageSize;
+      reactiveData.param.page = page;
+      getResource();
     }
-    return { 
-      dataSource, 
+    return {
+      dataSource,
       columns,
-      show ,
+      show,
       down,
       rowKey,
       ...toRefs(reactiveData),
-      pageChange
+      pageChange,
     };
   },
 });
@@ -116,20 +131,20 @@ export default defineComponent({
 <style lang="less">
 .train-resource {
   padding: 15px;
-  .row-action{
-      >span{
-          margin-right: 10px;
-          &:hover{
-              color: @theme-color;
-              cursor: pointer;
-          }
+  .row-action {
+    > span {
+      margin-right: 10px;
+      &:hover {
+        color: @theme-color;
+        cursor: pointer;
       }
+    }
   }
-  .ant-table-row-cell-break-word{
+  .ant-table-row-cell-break-word {
     text-overflow: ellipsis;
     overflow: hidden;
   }
-  .page-box{
+  .page-box {
     text-align: center;
     margin-top: 15px;
   }
