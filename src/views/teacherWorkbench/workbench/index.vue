@@ -1,16 +1,10 @@
 <template>
   <div class="workbench-main">
     <div class="workbench-head">
-      <a-button type="primary" @click="createWorkbench"
-        >创建容器({{ limit }}/5)</a-button
-      >
+      <a-button type="primary" @click="createWorkbench">创建容器({{ limit }}/5)</a-button>
     </div>
     <div class="workbench-list-box" v-if="workbenchDataList.length > 0">
-      <div
-        class="workbench-item"
-        v-for="(item, index) in workbenchDataList"
-        :key="index"
-      >
+      <div class="workbench-item" v-for="(item, index) in workbenchDataList" :key="index">
         <div class="box-border">
           <card
             :content="item"
@@ -42,7 +36,7 @@ import card from "./card.vue";
 import { wsConnect } from "src/request/websocket";
 import { message, Modal } from "ant-design-vue";
 import storage from "src/utils/extStorage";
-import { onBeforeRouteLeave, useRouter} from "vue-router";
+import { onBeforeRouteLeave, useRouter } from "vue-router";
 import empty from "src/components/Empty.vue";
 
 export default defineComponent({
@@ -57,6 +51,7 @@ export default defineComponent({
       workbenchDataList: any[];
       limit: number;
       isPoll: boolean;
+      // opening: boolean;
     } = reactive({
       params: {
         page: 1,
@@ -67,11 +62,12 @@ export default defineComponent({
       workbenchDataList: [],
       limit: 0,
       isPoll: false, // 是否在轮询
+      // opening: false,
     });
 
     const ws = ref(null);
-    let uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
-    let ws_config=storage.lStorage.get("ws_config")
+    let uid = storage.lStorage.get("uid") || storage.lStorage.get("user_id");
+    let ws_config = storage.lStorage.get("ws_config");
     let timer: NodeJS.Timer | null = null;
     onBeforeRouteLeave(() => {
       reactiveData.isPoll = false;
@@ -80,10 +76,9 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      reactiveData.workbenchDataList=[]
-        init();
+      reactiveData.workbenchDataList = [];
+      init();
       connectWs();
-      
     });
 
     async function init() {
@@ -93,7 +88,7 @@ export default defineComponent({
     // 链接websocker
     function connectWs() {
       ws.value = wsConnect({
-        url: "://"+ws_config.host+":"+ws_config.port+"/?uid=" + uid,
+        url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + uid,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");
@@ -144,10 +139,7 @@ export default defineComponent({
       });
     }
     // 进入工作台
-    function enterFun(val: any,index:number) {
-      
-      
-      
+    function enterFun(val: any, index: number) {
       let tags: any[] = val.image.tag;
       let id = val.id;
       let status = val.vm.status;
@@ -155,50 +147,52 @@ export default defineComponent({
         message.warn("请先开启工作台，在重新进入");
         return;
       }
-      getWorkbenchInfoApi({id:id}).then((res) => {
+      getWorkbenchInfoApi({ id: id }).then((res) => {
         if (res?.code === 1) {
           if (tags.indexOf("Notebook") > -1) {
-            const {href}= router.resolve(
-              {
-                path:"/teacher/Workbench/open-jupyte",
-                query:{
-                  id:id
-                }
-              }
-            )
-            window.open(href,"_blank")
+            const { href } = router.resolve({
+              path: "/teacher/Workbench/open-jupyte",
+              query: {
+                id: id,
+              },
+            });
+            window.open(href, "_blank");
           } else {
-            const {href}= router.resolve(
-              {
-                path:"/teacher/Workbench/open-vnc",
-                query:{
-                  id:id
-                }
-              }
-            )
-            window.open(href,"_blank")
+            const { href } = router.resolve({
+              path: "/teacher/Workbench/open-vnc",
+              query: {
+                id: id,
+              },
+            });
+            window.open(href, "_blank");
           }
         }
       });
     }
     // 开启、关闭工作台
     function openOrCloseFun(val: any, ind: number) {
+      console.log(ind, "ind indindind");
       if (!val.vm || val.vm.status === 1) {
         closeWorkbenchApi(val.id)
           .then((res: any) => {
             message.success("关闭成功");
-            reactiveData.workbenchDataList[ind].vm.status = 0
+            reactiveData.workbenchDataList[ind].vm.status = 0;
           })
           .catch((err) => {
             message.error("关闭失败");
           });
       } else {
+        reactiveData.workbenchDataList[ind].opening = true;
         openWorkbenchApi(val.id)
           .then((res) => {
             // console.log(res);
+            reactiveData.workbenchDataList[ind].opening = false;
+            // reactiveData.opening = false;
           })
           .catch(() => {
             message.error("开启失败");
+            // reactiveData.opening = false;
+            reactiveData.workbenchDataList[ind].opening = false;
           });
         getWorkbenchStatus(ind);
       }
@@ -222,7 +216,8 @@ export default defineComponent({
                   reactiveData.workbenchDataList[i].vm.status = 0;
                 }
                 reactiveData.workbenchDataList[index].vm.status = 1;
-                reactiveData.workbenchDataList[index].task_state=workbenchStatus[index].task_state
+                reactiveData.workbenchDataList[index].task_state =
+                  workbenchStatus[index].task_state;
                 reactiveData.isPoll = false;
                 clearInterval(Number(timer));
               }
@@ -240,7 +235,8 @@ export default defineComponent({
                 } else {
                   reactiveData.workbenchDataList[i].vm.status = 1;
                 }
-                reactiveData.workbenchDataList[i].task_state=workbenchStatus[i].task_state
+                reactiveData.workbenchDataList[i].task_state =
+                  workbenchStatus[i].task_state;
               }
               if (isLx) {
                 reactiveData.isPoll = false;
@@ -268,7 +264,7 @@ export default defineComponent({
       deleteFun,
       openOrCloseFun,
       createWorkbench,
-      clearTimer
+      clearTimer,
     };
   },
 });

@@ -2,10 +2,7 @@
   <header class="header-box">
     <div class="header-left">
       <div class="logo"></div>
-      <span
-        class="web-title"
-        >人工智能教学实训系统</span
-      >
+      <span class="web-title">人工智能教学实训系统</span>
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
@@ -13,11 +10,11 @@
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
         <template #content>
-          <p class="assist">{{assistText}}</p>
+          <p class="assist">{{ assistText }}</p>
         </template>
         <div class="help-message" v-if="isOperation" @click="helpMessage">
-          <img src="src/assets/images/reqi_icon.png" alt="">
-          <span>远程协助消息</span>
+          <img :src="handImg" />
+          <span class="remoteAssistance">远程协助消息</span>
         </div>
       </a-popover>
       <a-popover title="" trigger="hover" placement="bottom">
@@ -27,40 +24,43 @@
           <p class="operation" @click="loginOut">退出登录</p>
         </template>
         <div class="user-name">
-          <div class="user-img"></div>
-          <span class="user-name">{{userName}}</span>
+          <!-- <div class="user-img"></div> -->
+          <img :src="userImg" />
+          <span class="user-name">{{ userName }}</span>
         </div>
       </a-popover>
     </div>
   </header>
 </template>
 <script lang="ts">
-import { defineComponent,reactive,computed,Ref,ref,onMounted,watch } from "vue";
+import { defineComponent, reactive, computed, Ref, ref, onMounted, watch } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
-import request from '../../api/index'
-import { IBusinessResp} from '../../typings/fetch';
+import request from "../../api/index";
+import { IBusinessResp } from "../../typings/fetch";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
-import { Modal,message } from 'ant-design-vue';
+import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
-import { useRouter,useRoute } from 'vue-router';
+import { useRouter, useRoute } from "vue-router";
+import handImg from "src/assets/images/reqi_icon.png";
+import userImg from "src/assets/test/teacher_p.png";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
     const router = useRouter();
-    const { lStorage } = extStorage
-    const role = lStorage.get('role')
-    const http=(request as any).common
+    const { lStorage } = extStorage;
+    const role = lStorage.get("role");
+    const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
-      return role === 3
-    })
+      return role === 3;
+    });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码
-      return role === 3 || role === 1  || role === 2
-    })
-    const userName = ref<string>('');
+      return role === 3 || role === 1 || role === 2;
+    });
+    const userName = ref<string>("");
     // var userName=computed(()=>{
     //   return lStorage.get('name')
     // })
@@ -68,58 +68,71 @@ export default defineComponent({
     //   console.log(val)
     //   userName.value=val
     // })
-    function information(){
-      router.push('/personalInformation')
+    function information() {
+      router.push("/personalInformation");
     }
-    function loginOut(){
-      http.loginOut().then((res:IBusinessResp)=>{
+    function loginOut() {
+      http.loginOut().then((res: IBusinessResp) => {
         // console.log(res)
-        lStorage.clean()
+        lStorage.clean();
         // message.success('')
         // window.location.href = 'http://192.168.101.150:85/site/login';
-        let url=`${window.origin}/site/login`
-        console.log(url)
-        window.location.href=url
-      })
+        let url = `${window.origin}/site/login`;
+        console.log(url);
+        window.location.href = url;
+      });
     }
-    function helpMessage(){
-      
-    }
-    function modifyPassword(){
-      router.push('/personalInformation')
+    function helpMessage() {}
+    function modifyPassword() {
+      router.push("/personalInformation");
       // http.resetPassword({param:{}}).then((res:IBusinessResp)=>{
       //   console.log(res)
       // })
     }
     const route = useRoute();
-    var menus:MenuItem[]=reactive([])
-    var activeName:Ref<string>=ref(lStorage.get('menuActiveName') || '')
-    function getMenu(){
-      http.getMenu().then((res:IBusinessResp)=>{
-        if(res){
-          menus.length=0
-          let data=res.data.menus
-          activeName.value=lStorage.get('menuActiveName')?lStorage.get('menuActiveName'):(data && data.length && data[0].name)
-          menus.push(...data)
-          if(route.path===(data && data.length && data[0].url)){
-            activeName.value=(data && data[0].name)
+    var menus: MenuItem[] = reactive([]);
+    var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
+    function getMenu() {
+      http.getMenu().then((res: IBusinessResp) => {
+        if (res) {
+          menus.length = 0;
+          let data = res.data.menus;
+          activeName.value = lStorage.get("menuActiveName")
+            ? lStorage.get("menuActiveName")
+            : data && data.length && data[0].name;
+          menus.push(...data);
+          if (route.path === (data && data.length && data[0].url)) {
+            activeName.value = data && data[0].name;
           }
-          let user=res.data.user
-          lStorage.set('role',user.role)
-          lStorage.set('name',user.name)
-          lStorage.set('user_id',user.id)
-          lStorage.set("ws_config",JSON.stringify(res.data.websocket_conf))
+          let user = res.data.user;
+          lStorage.set("role", user.role);
+          lStorage.set("name", user.name);
+          lStorage.set("user_id", user.id);
+          lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
           // store.commit('saveMenus', data)
 
-          userName.value=user.name
+          userName.value = user.name;
         }
-      })
+      });
     }
     onMounted(() => {
-      getMenu()
+      getMenu();
     });
-    
-    return {isOperation,power,userName,loginOut,information,helpMessage,modifyPassword,assistText,menus,activeName}
+
+    return {
+      isOperation,
+      power,
+      userName,
+      loginOut,
+      information,
+      helpMessage,
+      modifyPassword,
+      assistText,
+      menus,
+      activeName,
+      handImg,
+      userImg,
+    };
   },
 });
 </script>
@@ -135,7 +148,7 @@ export default defineComponent({
   padding: 0 50px;
   background: #fff;
   min-width: 1330px;
-  box-shadow: 0 0 5px #c2aad6;
+  // box-shadow: 0 0 5px #c2aad6;
   > .header-left {
     flex-shrink: 0;
     display: flex;
@@ -146,9 +159,8 @@ export default defineComponent({
       width: 32px;
       height: 32px;
       margin-right: 10px;
-      background:url('../../assets/test/favicon.png') no-repeat center;
+      background: url("../../assets/test/favicon.png") no-repeat center;
       background-size: 100% 100%;
-     
     }
     .web-title {
       color: @theme-color;
@@ -176,40 +188,42 @@ export default defineComponent({
     cursor: pointer;
     .help-message {
       margin-right: 30px;
-      img{
+      img {
         -webkit-filter: brightness(30%); /* Chrome, Safari, Opera */
-        filter: brightness(.3);
+        filter: brightness(0.3);
         margin-right: 7px;
       }
-    }
-    .user-name{
-      display: flex;
-      align-items: center;
-      .user-img{
-        width:28px;
-        height:28px;
-         background:url('src/assets/test/teacher_p.png') no-repeat center;
-         background-size: 100% 100%;
+      .remoteAssistance {
+        font-size: 14px;
       }
-      .user-name{
-        padding:0 6px;
+    }
+    .user-name {
+      // display: flex;
+      // align-items: center;
+      .user-img {
+        width: 28px;
+        height: 28px;
+        background: url("src/assets/test/teacher_p.png") no-repeat center;
+        background-size: 100% 100%;
+      }
+      .user-name {
+        padding: 0 6px;
       }
     }
   }
 }
-.ant-popover-inner-content{
-  .operation{
+.ant-popover-inner-content {
+  .operation {
     min-width: 80px;
     margin-bottom: 0;
-    padding: .5em;
+    padding: 0.5em;
   }
-  .operation:hover{
+  .operation:hover {
     cursor: pointer;
     color: @theme-color;
   }
-  
 }
-.assist{
+.assist {
   color: #857878;
   margin: 5px;
 }

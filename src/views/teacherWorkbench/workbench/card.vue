@@ -11,8 +11,9 @@
                 ? 'font-size:54px'
                 : 'font-size:44px'
             "
-            >{{ timeToArray(data.is_permanent)[0]
-            }}<sub class="time-unit">{{
+          >
+            <span class="howmany-day"> {{ timeToArray(data.is_permanent)[0] }}</span>
+            <sub class="time-unit">{{
               timeToArray(data.is_permanent)[1]
                 ? "/ " + timeToArray(data.is_permanent)[1]
                 : ""
@@ -55,27 +56,29 @@
         <span></span>
         <div class="data-set-right">
           <span class="data-set-title">数据集</span>
-          <span class="data-set-name"
-            >{{
-              data.dataset.length > 0
-                ? data.dataset[0].name
-                : "本工作台无数据集！"
-            }}
+          <span class="data-set-name">
+            <span v-if="data.dataset.length > 0">{{ data.dataset[0].name }}</span>
+            <span class="no-dataset" v-if="data.dataset.length < 0"
+              >本工作台无数据集！</span
+            >
+            <!-- {{ data.dataset.length > 0 ? data.dataset[0].name : "本工作台无数据集！" }} -->
             <a-tooltip
+              v-if="data.dataset && data.dataset.length > 1"
               placement="top"
               overlayClassName="data-set-more-tooltip"
-              v-if="data.dataset && data.dataset.length > 1"
             >
               <template #title>
-                <div class="more-list">
-                  <div v-for="(ct, ci) in data.dataset" :key="ci.toString()">
+                <div class="more-list" v-if="true">
+                  <div
+                    class="title-item"
+                    v-for="(ct, ci) in data.dataset"
+                    :key="ci.toString()"
+                  >
                     {{ ct ? ct.name : "" }}
                   </div>
                 </div>
               </template>
-              <span
-                class="data-set-more icon-gengduo iconfont"
-              ></span> </a-tooltip
+              <span class="data-set-more icon-gengduo iconfont"></span> </a-tooltip
           ></span>
         </div>
       </div>
@@ -90,11 +93,11 @@
       <div
         :class="[
           data.vm
-            ? (data.vm.status === 1 && data.task_state === null
+            ? data.vm.status === 1 && data.task_state === null
               ? ''
-              : (data.vm.status === 1
+              : data.vm.status === 1
               ? 'iconloading no-click'
-              : 'no-click'))
+              : 'no-click'
             : 'no-click',
           isPoll ? 'no-event' : '',
         ]"
@@ -105,7 +108,8 @@
         </span>
       </div>
       <div :class="isPoll ? 'no-event' : ''">
-        <span @click="openOrCloseFun">
+        <span v-if="data.opening" class="icon-loading iconfont">开启中...</span>
+        <span v-else @click="openOrCloseFun">
           <span class="iconfont icon-kaiguanshenx"></span>
           {{ data.vm ? (data.vm.status === 1 ? "关闭" : "开启") : "开启" }}
         </span>
@@ -115,22 +119,29 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,watch,ref,Ref } from "vue";
+import { defineComponent, watch, ref, Ref } from "vue";
 
 export default defineComponent({
-  props: ["content", "index", "isPoll"],
+  props: ["content", "index", "isPoll", "opening"],
   emits: ["openOrCloseFun", "enterFun", "deleteFun"],
   setup(props, { emit }) {
-    const data:Ref<any> = ref([]);
+    const data: Ref<any> = ref([]);
     const index = props.index;
     const isPoll = ref(false);
-    watch(()=>props.content,()=>{
-      data.value=props.content
-    },{deep:true,immediate:true})
+    watch(
+      () => props.content,
+      () => {
+        data.value = props.content;
+      },
+      { deep: true, immediate: true }
+    );
 
-    watch(()=>props.isPoll,()=>{
-      isPoll.value = props.isPoll;
-    })
+    watch(
+      () => props.isPoll,
+      () => {
+        isPoll.value = props.isPoll;
+      }
+    );
     function openOrCloseFun() {
       emit("openOrCloseFun", data.value, index);
     }
@@ -141,7 +152,7 @@ export default defineComponent({
       emit("deleteFun", data.value, index);
     }
     // 处理时间
-    function timeToArray(time: string):number[] {
+    function timeToArray(time: string): number[] {
       return (time as any).split(":");
     }
     return {
@@ -156,13 +167,15 @@ export default defineComponent({
 });
 </script>
 
-
 <style lang="less">
 .workbench-card-box {
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+  background-image: url("src/assets/workbench/fill.png");
+  background-repeat: no-repeat;
+  background-position: right top;
   .workbench-content-box {
     padding: 20px;
     display: flex;
@@ -200,9 +213,13 @@ export default defineComponent({
           font-weight: 500;
           position: relative;
           bottom: 10px;
+          .howmany-day {
+            font-weight: 500;
+          }
           .time-unit {
             font-size: 12px;
             color: #5e66ff;
+            font-weight: 400;
           }
         }
       }
@@ -232,7 +249,8 @@ export default defineComponent({
               }
             }
             td {
-              border: 1px solid #eadff4;
+              // border: 1px solid #eadff4;
+              border: 1px dashed #eadff4;
               height: 50px;
               padding: 0 10px;
               text-align: center;
@@ -300,16 +318,22 @@ export default defineComponent({
         .data-set-name {
           font-size: 14px;
           color: #050101;
+          display: flex;
+          align-items: center;
+          .no-dataset {
+            color: rgba(black, 0.25);
+          }
           .data-set-more {
             margin-left: 5px;
-
-            width: 30px;
+            width: 32px;
             text-align: center;
             display: inline-block;
             border-radius: 8px;
-            height: 12px;
-            line-height: 10px;
+            height: 14px;
+            line-height: 12px;
             border: 1px solid @theme-color;
+            font-size: 24px;
+            color: @theme-color;
             &:hover {
               background-color: @theme-color;
               color: @white;
@@ -355,12 +379,18 @@ export default defineComponent({
     }
   }
 }
+.data-set-more-tooltip.ant-tooltip {
+  max-width: inherit;
+}
 .data-set-more-tooltip {
   .ant-tooltip-inner {
     background: @white;
     .more-list {
       color: grey;
       padding: 0 5px 5px 5px;
+      font-size: 14px;
+      display: flex;
+      flex-wrap: nowrap;
     }
   }
   .ant-tooltip-arrow-content {
@@ -368,5 +398,3 @@ export default defineComponent({
   }
 }
 </style>
-
-

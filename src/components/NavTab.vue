@@ -1,8 +1,13 @@
 <template>
-  <div class="navList" :class="configuration.tabs && configuration.tabs.length?'border_bottom':''">
+  <div
+    class="navList"
+    :class="configuration.tabs && configuration.tabs.length ? 'border_bottom' : ''"
+  >
     <div class="back" v-if="configuration.backOff || configuration.showPageEdit">
       <a-button v-if="configuration.backOff" @click="back" type="primary">返回</a-button>
-      <a-button v-if="configuration.showPageEdit" @click="pageEdit" type="primary">编辑</a-button>
+      <a-button v-if="configuration.showPageEdit" @click="pageEdit" type="primary"
+        >编辑</a-button
+      >
     </div>
     <div class="tab">
       <div
@@ -23,9 +28,18 @@
 
 <script lang="ts">
 // import { number } from "echarts";
-import { defineComponent, ref, onMounted, reactive, Ref, watch ,inject, computed} from "vue";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  watch,
+  inject,
+  computed,
+} from "vue";
 import { useStore } from "vuex";
-import { useRouter ,useRoute } from 'vue-router';
+import { useRouter, useRoute } from "vue-router";
 export declare interface ITab {
   name: string;
   componenttype: number;
@@ -52,62 +66,77 @@ export default defineComponent({
   },
   emits: ["tabSwitch"],
   setup: (props, context) => {
-    var configuration:any=inject('configuration')
+    var configuration: any = inject("configuration");
     const router = useRouter();
     const route = useRoute();
     const tabs = reactive(configuration.tabs) as ITab[];
     const activeName: Ref<string> = ref("");
-    var updata=inject('updataNav') as Function
-      
+    var updata = inject("updataNav") as Function;
+
     async function tabChange(item: ITab) {
       // console.log(item)
-      if(activeName.value!==item.name){
+      if (activeName.value !== item.name) {
         await updateRouter(item.componenttype);
         context.emit("tabSwitch", item.componenttype);
-        updata({...configuration,componenttype:item.componenttype})
+        updata({ ...configuration, componenttype: item.componenttype });
         activeName.value = item.name;
       }
     }
-    function pageEdit(){
-      configuration.pageEdit()
+    function pageEdit() {
+      configuration.pageEdit();
     }
-    async function  updateRouter(val?:number){
-      const {query,path}= route
+    async function updateRouter(val?: number) {
+      const { query, path } = route;
       // console.log(query)
-      let NewQuery={currentTab: val}
+      let NewQuery = { currentTab: val };
       await router.replace({
-            path: path,
-            query:NewQuery,
-      })
+        path: path,
+        query: NewQuery,
+      });
       // console.log(route.query)
     }
-    async function initData(){
-      if(configuration.tabs && configuration.tabs.length){
+    async function initData() {
+      if (configuration.tabs && configuration.tabs.length) {
         // debugger
         // 页面首次进入加currentTab参数    原地刷新则不刷新路由
-        const { currentTab } = route.query
-        const SwitchNumber= currentTab !== undefined ?Number(currentTab):(configuration.componenttype?configuration.componenttype:0)
-        currentTab !== undefined ?'':await updateRouter(SwitchNumber)
+        const { currentTab } = route.query;
+        const SwitchNumber =
+          currentTab !== undefined
+            ? Number(currentTab)
+            : configuration.componenttype
+            ? configuration.componenttype
+            : 0;
+        currentTab !== undefined ? "" : await updateRouter(SwitchNumber);
         //     用户指定了componenttype时使用指定的，否则加componenttype为0
-        const newCurrentTab= route.query.currentTab
-        const newSwitchNumber=newCurrentTab !==undefined ?Number(newCurrentTab):(configuration.componenttype?configuration.componenttype:0)
-        await tabChange(configuration.tabs[newSwitchNumber])
-        configuration.componenttype=newSwitchNumber
-        activeName.value =configuration.tabs[configuration.componenttype].name
+        const newCurrentTab = route.query.currentTab;
+        const newSwitchNumber =
+          newCurrentTab !== undefined
+            ? Number(newCurrentTab)
+            : configuration.componenttype
+            ? configuration.componenttype
+            : 0;
+        await tabChange(configuration.tabs[newSwitchNumber]);
+        configuration.componenttype = newSwitchNumber;
+        activeName.value = configuration.tabs[configuration.componenttype].name;
       }
     }
-    function back(){
-      router.go(-1)
+    function back() {
+      router.go(-1);
     }
     onMounted(() => {
-      initData()
+      initData();
     });
-    watch(()=>{return configuration.componenttype}, (val) => {
-      if(val===undefined){
-        initData()
+    watch(
+      () => {
+        return configuration.componenttype;
+      },
+      (val) => {
+        if (val === undefined) {
+          initData();
+        }
       }
-    });
-    return { activeName, tabChange ,back,pageEdit,configuration};
+    );
+    return { activeName, tabChange, back, pageEdit, configuration };
   },
 });
 </script>
@@ -132,13 +161,13 @@ export default defineComponent({
       text-align: center;
       cursor: pointer;
       &:hover {
-        color: @theme-color;
+        color: @tab-hover;
       }
     }
     .active {
       background: @primary-color;
       color: #fff;
-      transition: all .3s;
+      transition: all 0.3s;
       &:hover {
         color: #fff;
       }
@@ -150,12 +179,12 @@ export default defineComponent({
     align-items: center;
   }
 }
-.border_bottom{
+.border_bottom {
   border-bottom: 1px solid #765e8b;
 }
-.back{
+.back {
   margin-bottom: -16px;
-  .ant-btn-primary{
+  .ant-btn-primary {
     margin-right: 16px;
   }
 }

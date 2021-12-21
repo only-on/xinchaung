@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, ComputedRef,watch } from "vue";
+import { defineComponent, ref, onMounted, computed, ComputedRef, watch } from "vue";
 import { useStore } from "vuex";
 import { useRouter } from "vue-router";
 import { IRouteTuple } from "src/types";
@@ -30,11 +30,9 @@ export default defineComponent({
     const type = ref(props.type);
     const store = useStore();
     const router = useRouter();
-    let breadcrumbArr: ComputedRef<IRouteTuple[]> = computed<IRouteTuple[]>(
-      () => {
-        return store.state.breadcrumb;
-      }
-    );
+    let breadcrumbArr: ComputedRef<IRouteTuple[]> = computed<IRouteTuple[]>(() => {
+      return store.state.breadcrumb;
+    });
     function Jump(v: IRouteTuple) {
       // 不按path跳转，因为path是动态地址，不是具体的地址，以对象的方式跳转
       console.log("[breadcrumb] will jump to: ", v);
@@ -42,17 +40,22 @@ export default defineComponent({
         router.push(v.route);
       }
     }
-    watch(()=>{return props.type},(val:any)=>{
-      type.value=val
-    })
-    
+    watch(
+      () => {
+        return props.type;
+      },
+      (val: any) => {
+        type.value = val;
+      }
+    );
+
     onMounted(() => {});
     return { breadcrumbArr, type, Jump };
   },
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped lang="less">
 .nav {
   display: flex;
   justify-content: flex-end;
@@ -74,6 +77,8 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   align-items: center;
+  font-size: 14px;
+  color: @location-color;
   .allow {
     :deep(.ant-breadcrumb-link) {
       cursor: pointer;
