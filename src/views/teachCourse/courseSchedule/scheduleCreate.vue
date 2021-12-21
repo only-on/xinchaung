@@ -16,9 +16,7 @@
       <a-row>
         <a-col :span="`${checkDate ? 2 : 2}`" class="schedule-header-time-choose">
           <a-form-item name="week_recycle">
-            <a-checkbox :checked="checkDate" @change="handleChangeWeekRecycle">
-              每周循环
-            </a-checkbox>
+            <a-checkbox :checked="checkDate" @change="handleChangeWeekRecycle">每周循环</a-checkbox>
           </a-form-item>
         </a-col>
         <a-col span="22">
@@ -42,29 +40,14 @@
         <div class="title flex_center">
           <h3 class="">排课成员列表</h3>
           <div class="addStudent">
-            <a-button type="primary" @click="addStudentOrClass('student')">
-              添加学生
-            </a-button>
-            <a-button
-              type="primary"
-              @click="addStudentOrClass('class')"
-            >
-              添加班级
-            </a-button>
+            <a-button type="primary" @click="addStudentOrClass('student')">添加学生</a-button>
+            <a-button type="primary" @click="addStudentOrClass('class')">添加班级</a-button>
           </div>
         </div>
         <div class="retain flex_center">
           <div class="divider-text-right">
-            <span class="has-choose-text">
-              已选
-              <span>{{ selectedNumTextNew }}</span>
-              人
-            </span>
-            <span class="choose-text">
-              还可选
-              <span>{{ leftStuNum ? leftNumText : '0' }}</span>
-              人
-            </span>
+            <span class="has-choose-text">已选<span>{{ selectedNumTextNew }}</span>人</span>
+            <span class="choose-text">还可选<span>{{ leftStuNum ? leftNumText : '0' }}</span>人</span>
           </div>
           <a-form-item name="teacher_occupied">
             <a-checkbox
@@ -519,14 +502,14 @@ interface IForm {
     .ant-form-item-label {
       text-align: left;
       & > label {
-        .ft14()
+        // .ft14()
       }
     }
     label {
-      .ft14()
+      // .ft14()
     }
     .ant-input {
-      .ft14()
+      // .ft14()
     }
     .ant-btn {
       margin: 0 8px;

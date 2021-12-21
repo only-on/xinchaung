@@ -578,15 +578,15 @@ export default defineComponent({
         .monitor {
           color: @theme-color;
           background-color: #fff;
-          padding: 0 5px;
+          // padding: 0 5px;
         }
         .monitor:hover {
           color: #fff;
           background-color: @theme-color;
         }
         .addDate {
-          margin-left: 20px;
-          padding: 0 5px;
+          margin-left: 16px;
+          // padding: 0 5px;
         }
       } 
       .change_title {

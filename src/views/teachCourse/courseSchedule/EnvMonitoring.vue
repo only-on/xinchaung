@@ -317,8 +317,9 @@ interface ITableList {
       }
       .select-input-box {
         .ant-select {
-          width: 68px;
-          .font14();
+          width: 72px;
+          text-align: center;
+          // .font14();
         }
         .ant-input {
           width: 142px;
@@ -328,15 +329,15 @@ interface ITableList {
       }
       :deep(.ant-form-item-label > label) {
         font-weight: bold;
-        .font14();
+        // .font14();
       }
       .ant-input {
-        .font14();
+        // .font14();
       }
       .btn-wrap {
         padding-left: 31px;
         .ant-btn {
-          margin-right: 10px;
+          margin: 0 8px;
           &.search {
             border: 1px solid @theme-color;
             color: @theme-color;
@@ -359,7 +360,7 @@ interface ITableList {
       text-align: right;
     }
     .ant-btn {  
-      .font14();
+      // .font14();
     }
   }
   .content-wrap {
@@ -376,7 +377,7 @@ interface ITableList {
   .ant-table-body {
     & > table {
       border-color: #e8e8e8;
-      .font14();
+      // .font14();
     }
     .ant-table-thead tr > th {
       border-color: #e8e8e8;
@@ -388,7 +389,7 @@ interface ITableList {
 }
 :deep(.ant-select-dropdown) {
   .ant-select-item {
-    .font14();
+    // .font14();
   }
 }
 </style>
