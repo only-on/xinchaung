@@ -143,7 +143,7 @@ import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
 import { RuleObject } from "ant-design-vue/es/form/interface";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
-import iconInput from "src/components/aiAnt/iconInput.vue";
+import iconInput from "src/components/aiAnt/beforeIcon.vue";
 import selectIcon from "src/assets/images/screenicon/Group14.png"
 export default defineComponent({
   components: {
