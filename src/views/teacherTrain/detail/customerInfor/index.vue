@@ -16,10 +16,10 @@
           <a-table
             :columns="columns"
             :data-source="data"
-            :row-selection="{
+            :row-selection="role!=='2'?{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange,
-            }"
+            }:undefined"
             rowkey="id"
           >
             <template #username="{ record }">
