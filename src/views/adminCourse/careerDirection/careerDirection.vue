@@ -1,9 +1,8 @@
 <template>
   <div v-layout-bg class="a-career-direction-wrap">
     <div class="a-action-top">
-      <label>职业方向：</label>
       <before-icon :icon="grounp10">
-        <a-input class="career-direction-name" v-model:value="params.name" />
+        <a-input class="career-direction-name" v-model:value="params.name" placeholder="请输入职业方向"/>
       </before-icon>
       <a-button type="primary" @click="searchData">查询</a-button>
       <a-button type="primary" @click="clearData">清空</a-button>
@@ -121,6 +120,8 @@ export default defineComponent({
         Modal.confirm({
           title: "提示",
           content: "确认删除吗",
+          okText:"确认",
+          cancelText:"取消",
           onOk: () => {
             if (!id) {
               return;

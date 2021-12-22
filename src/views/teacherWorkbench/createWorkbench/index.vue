@@ -396,7 +396,7 @@ export default defineComponent({
   .data-set-hint {
     font-size: 12px;
     font-style: normal;
-    color: @normal-color;
+    color: rgba(@black,0.25);
     margin-left: 19px;
   }
   .create-form {
@@ -406,7 +406,7 @@ export default defineComponent({
     min-height: 600px;
     .form-left {
       width: 50%;
-      padding-right: 50px;
+      padding-right: 70px;
       .time-item {
         label.ant-form-item-required {
           width: 100%;
@@ -472,7 +472,7 @@ export default defineComponent({
     }
     .form-right {
       width: 50%;
-      padding-left: 20px;
+      padding-left: 70px;
       .add-data-set-btn {
         width: 100px;
         font-size: @font-size-sm;
