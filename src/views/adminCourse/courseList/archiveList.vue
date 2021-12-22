@@ -20,7 +20,7 @@
       <div class="searchInput">
         <a-input
           @keyup.enter="onSearch"
-          v-model:value="params.course_name"
+          v-model:value="params.user_name"
           placeholder="请输入任课教师"
           class="input"
         >
