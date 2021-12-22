@@ -3,7 +3,7 @@
     <h3 class="title">任务统计</h3>
     <div>
       <a-config-provider>
-        <a-table :rowKey="rowkey" :dataSource="tableList" :columns="columns">
+        <a-table :rowKey="rowkey" :dataSource="tableList" :columns="columns" :pagination="false">
           <template #knowledge="{ record }">
             <div>
               {{ record.knowledge.join() }}
@@ -16,7 +16,7 @@
       </a-config-provider>
     </div>
     <!-- :pagination='false'  -->
-    <div class="page-footer-box">
+    <div v-if="page.total>10" class="page-footer-box">
       <!-- show-quick-jumper  -->
       <a-pagination
         v-model:current="page.page"
@@ -153,6 +153,7 @@ interface IData {
 .task-statistic {
   .title {
     font-size: 20px;
+    margin-top: 20px;
   }
   .page-footer-box {
     margin-top: 28px;

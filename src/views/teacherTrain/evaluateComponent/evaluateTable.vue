@@ -10,7 +10,7 @@
           selectedRows: selectedRows,
           onChange: onSelectChange,
         }"
-        :hideOnSinglePage="true"
+        :pagination="false"
       >
         <!-- rowSelection -->
         <template #username="{ record }">
@@ -73,15 +73,15 @@
     </a-config-provider>
 
     <!-- <Empty v-else/> -->
-    <div class="page-footer-box">
+    <div v-if="total>10" class="page-footer-box">
       <!-- show-quick-jumper  -->
-      <!-- <a-pagination
+      <a-pagination
         v-model:current="page.page" 
         :pageSize="page.pageSize" 
         :total="total" 
         @change="pageChange" 
         :hideOnSinglePage="true"
-      /> -->
+      />
     </div>
   </div>
   <a-modal v-model:visible="visible" title="请输入分数：" @ok="handleOk" :width="420">

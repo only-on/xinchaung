@@ -20,8 +20,8 @@
             <img src="src/assets/images/screenicon/Group8.png" /> </template
         ></a-input>
       </a-form-item>
-      <a-button type="primary" @click="query()">查询</a-button>
-      <a-button type="primary" @click="clear()">清空</a-button>
+      <!-- <a-button type="primary" @click="query()">查询</a-button>
+      <a-button type="primary" @click="clear()">清空</a-button> -->
       <div class="right">
         <a-button type="primary" class="upload" @click="exportResult()"
           >导出成绩</a-button
@@ -282,7 +282,7 @@ interface IData {
   padding: 40px;
   overflow: auto;
   .title {
-    font-size: 20px;
+    font-size: 18px;
   }
   .condition {
     display: flex;
@@ -300,6 +300,10 @@ interface IData {
     }
     :deep(.ant-btn-primary) {
       margin-right: 10px;
+      .font-size-14();
+    }
+    :deep(.ant-btn-primary:nth-last-child(1)) {
+      margin-right:0px;
       .font-size-14();
     }
     .right {

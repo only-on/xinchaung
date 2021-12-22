@@ -1,19 +1,30 @@
 <template>
   <div class="searchResource" v-layout-bg>
     <div class="condition">
-      <a-form-item label="资源名称">
-        <a-input @keyup.enter="query" v-model:value="searchInfo.resourceName" />
+      <a-form-item>
+        <!-- <a-input @keyup.enter="query" v-model:value="searchInfo.resourceName">
+          <template><template
+        </a-input> -->
+         <a-input
+            @keyup.enter="query"
+            v-model:value="searchInfo.resourceName"
+            placeholder="资源名称"
+          >
+            <template #prefix>
+              <img src="src/assets/images/screenicon/Group6.png" /> </template
+          ></a-input>
       </a-form-item>
-      <a-form-item label="资源类型">
-        <a-select v-model:value="searchInfo.resourceType" placeholder="">
-          <a-select-option value="">请选择</a-select-option>
+      <a-form-item >
+        <before-icon :icon="iconimg">
+          <a-select v-model:value="searchInfo.resourceType" placeholder="资源类型">
           <a-select-option v-for="(v, i) in resourceTypeList" :key="i" :value="v">{{
             v
           }}</a-select-option>
         </a-select>
+        </before-icon> 
       </a-form-item>
-      <a-button type="primary" @click="query()">查询</a-button>
-      <a-button type="primary" @click="clear()">清空</a-button>
+      <!-- <a-button type="primary" @click="query()">查询</a-button>
+      <a-button type="primary" @click="clear()">清空</a-button> -->
       <div class="upload-box" v-if="isMyself">
         <a-upload
           :show-upload-list="false"
@@ -22,8 +33,12 @@
           @change="handleChange"
           :before-upload="beforeUpload"
         >
-          <a-input v-model:value="uploadResourceInfo.url" :disabled="true" />
-          <a-button type="primary"> 浏览 </a-button>
+          <a-input-search
+            v-model:value="uploadResourceInfo.url"
+            :disabled="true"
+            style="cursor: pointer;" 
+            enter-button="浏览"
+          />
         </a-upload>
         <a-form-item label="资源说明">
           <a-input v-model:value="uploadResourceInfo.explain" />
@@ -70,6 +85,7 @@
     <div class="page-footer-box">
       <!-- show-size-changer @showSizeChange="onShowSizeChange"-->
       <a-pagination
+       v-if="page.total>10"
         v-model:current="page.page"
         :pageSize="page.pageSize"
         :total="page.total"
@@ -92,7 +108,8 @@ import { Modal } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { useRoute } from "vue-router";
 import FileSaver from "file-saver";
-
+import BeforeIcon from "src/components/aiAnt/beforeIcon.vue";
+import iconimg from 'src/assets/images/screenicon/Group3.png'
 interface Istate {
   params: {
     name: string;
@@ -106,6 +123,7 @@ interface Istate {
 }
 export default defineComponent({
   name:'searchResource',
+  components:{'before-icon':BeforeIcon},
   props: ["trainId", "isMyself"],
   setup(props, context) {
     var updata = inject("updataNav") as Function;
@@ -153,7 +171,7 @@ export default defineComponent({
       ],
       searchInfo: {
         resourceName: "",
-        resourceType: "",
+        resourceType:undefined,
       },
       uploadResourceInfo: {
         url: "",
@@ -213,6 +231,7 @@ export default defineComponent({
       http.getResourceList({ param: state.params }).then((res: any) => {
         console.log(res);
         data.tableList = res.data.list;
+        data.page.total=res.data.page.totalCount
       });
     };
     // 查询
@@ -224,7 +243,7 @@ export default defineComponent({
     // 清空
     const clear = () => {
       data.searchInfo.resourceName = "";
-      data.searchInfo.resourceType = "";
+      data.searchInfo.resourceType =undefined;
     };
     // 下载
     const downLoadResource = (url: string, name: string) => {
@@ -346,12 +365,13 @@ export default defineComponent({
       handleChange,
       beforeUpload,
       uploadResource,
+      iconimg
     };
   },
 });
 interface IsearchInfo {
   resourceName: string;
-  resourceType: string;
+  resourceType:any;
 }
 interface IuploadResourceInfo {
   url: string;
@@ -374,7 +394,7 @@ interface ItableList {
   url: string;
 }
 interface Idata {
-  resourceTypeList: string[];
+  resourceTypeList: any[];
   searchInfo: IsearchInfo;
   uploadResourceInfo: IuploadResourceInfo;
   tableList: ItableList[];
@@ -410,6 +430,7 @@ interface FileInfo {
   .condition {
     display: flex;
     justify-content: flex-start;
+    margin-bottom:16px;
     :deep(.ant-form-item) {
       margin-right: 10px;
       .ant-form-item-control .ant-input,
@@ -434,21 +455,21 @@ interface FileInfo {
       margin-left: auto;
       :deep(.ant-upload) {
         margin-right: 10px;
-        .ant-input {
-          width: 165px;
-          .font-size-14();
+        :deep(.ant-input){
           cursor: pointer;
+          .font-size-14();
         }
         .ant-btn {
           .font-size-14();
         }
       }
       .prompt {
-        color: #f44336;
         position: absolute;
-        bottom: -10px;
         left: 0;
-        font-size: 14px;
+        bottom:-2px;
+        font-size: 12px;
+        color:rgba(@black,0.25);    
+        
       }
     }
   }
@@ -468,6 +489,14 @@ interface FileInfo {
       margin-right: 10px;
       cursor: pointer;
     }
+  }
+  :deep(.ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active){
+    color: @white;
+    background:@theme-color;
+    border-color:@theme-color;
+  }
+  :deep(.ant-input[disabled]){
+    cursor: pointer;
   }
 }
 </style>
