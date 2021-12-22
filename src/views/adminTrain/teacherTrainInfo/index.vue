@@ -69,7 +69,7 @@
         :data-source="data"
         rowKey="id"
         :pagination="
-          data?.length > 10
+          total > 10
             ? {
                 hideOnSinglePage: false,
                 showSizeChanger: true,
