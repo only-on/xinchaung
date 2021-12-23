@@ -26,7 +26,7 @@ export default {
                         5: '备课资料',
                         6: '教学指导'
                     }
-                    const type = params?.type || 3
+                    const type = (params && params.type) || 3
                     return dataMap[type.toString()] || '未知'
                 },
                 authCode: 'classicalAsset',

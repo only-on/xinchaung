@@ -17,7 +17,7 @@
           </div>
         </div>
         <div class="right">
-          <div class="inonBox"  v-if="currentTab==='0'" >
+          <div class="inonBox"  v-if="showEdit===true">
             <i class="iconfont" :class="EditInfo?'icon-baocun':'icon-bianji1'" @click="openInfoModul"></i>
           </div>
         </div>
@@ -34,7 +34,7 @@
             </div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
+            <i class="iconfont" v-if="showEdit===true" :class="EditEnvironment?'icon-baocun':'icon-bianji1'" @click="editEnvironmentInfo"></i>
           </div>
         </div>
         <div class="maxAdd" v-if="EditEnvironment">
@@ -54,7 +54,7 @@
             <div class="title">数据集</div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
+            <i class="iconfont"  v-if="showEdit===true" :class="EditDateSet?'icon-baocun':'icon-bianji1'" @click="editDateSetInfo"></i>
           </div>
         </div>
         <div class="maxAdd" v-if="EditDateSet">
@@ -79,7 +79,7 @@
             <div class="title">实验任务</div>
           </div>
           <div class="right">
-            <i class="iconfont"  v-if="currentTab==='0'"  :class="EditTask?'icon-baocun':'icon-bianji1'" @click="editTaskInfo"></i>
+            <i class="iconfont"  v-if="showEdit===true" :class="EditTask?'icon-baocun':'icon-bianji1'" @click="editTaskInfo"></i>
           </div>
         </div>
         <div class="taskContent" v-if="!EditTask && formState.taskData[0].name">
@@ -94,7 +94,7 @@
             <div class="title">实验指导</div>
           </div>
           <div class="right">
-            <i class="iconfont" v-if="currentTab==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+            <i class="iconfont" v-if="showEdit===true" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
           </div>
         </div>
         <div class="markdownBox">
@@ -108,7 +108,7 @@
             <div class="title">实验步骤</div>
           </div>
           <div class="right">
-            <i class="iconfont" v-if="currentTab==='0'" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
+            <i class="iconfont" v-if="showEdit===true" :class="EditGuidance?'icon-baocun':'icon-bianji1'" @click="editGuideInfo"></i>
           </div>
         </div>
         <div class="ExperimentalSteps">
@@ -174,6 +174,7 @@ import { MessageApi } from "ant-design-vue/lib/message";
 import { UUID } from 'src/utils/uuid'
 import { IimageData } from './experTyping'
 import { RuleObject } from 'ant-design-vue/es/form/interface';
+import extStorage from "src/utils/extStorage";
 interface Istate{
   Subcomponents:string[];
   detail:any;
@@ -223,6 +224,8 @@ export default defineComponent({
   setup(){
     let route = useRoute()
     let router = useRouter()
+    const { lStorage } = extStorage;
+    const role = lStorage.get('role')
     const $message: MessageApi = inject("$message")!;
     const http=(request as any).teacherExperiment
     var updata=inject('updataNav') as Function
@@ -498,14 +501,16 @@ export default defineComponent({
       // console.log(val)
     },{deep:true})
     var showEdit=computed(()=>{
-      // v-if="currentTab==='0'"
       let sign=false
+      if(role===3 && currentTab==='0'){
+        sign=true
+      }
       return sign
     })
     onMounted(() => {
       getContentDetail()
     })
-    return {...toRefs(state),formState,formRef,jupyterUuid,currentTab}
+    return {...toRefs(state),formState,formRef,jupyterUuid,currentTab,showEdit}
   }
 })
 </script>

@@ -89,7 +89,7 @@ export default defineConfig({
   },
   build:{
     // reportCompressedSize:false,
-    cssCodeSplit:false,
+    // cssCodeSplit:false,
     sourcemap:false,
     brotliSize:false,
     chunkSizeWarningLimit:10000,
