@@ -22,7 +22,7 @@ export default defineComponent({
   setup: (props,context) => {
     const route=useRoute();
     const componentNames=['TeacherExperimentManage','BasicsExperimentManage','ShareExperimentManage','TechnicalDirection']
-    const tabs=[{name:'教师实验管理',componenttype:0},{name:'基础实验管理',componenttype:1},{name:'共享实验管理',componenttype:2},{name:'技术方向管理',componenttype:3}]
+    const tabs=[{name:'教师实验管理',componenttype:0},{name:'内置实验管理',componenttype:1},{name:'共享实验管理',componenttype:2},{name:'技术方向管理',componenttype:3}]
     var componentName:Ref<string>=ref('TestPaper')
     
     var configuration:any=inject('configuration')

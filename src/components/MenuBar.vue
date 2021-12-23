@@ -157,6 +157,7 @@ export default defineComponent({
     font-size: @font-size-lg;
     text-align: center;
     cursor: pointer;
+    width: max-content;
     &.active {
       color: @text-color;
     }

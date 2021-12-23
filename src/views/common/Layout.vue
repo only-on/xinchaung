@@ -92,7 +92,7 @@ export default defineComponent({
     background-color: #edf0f5;
     // margin-top: 5px;     //遮挡了header阴影
     // margin: 0 auto;
-    // max-width: 1330px;
+    // max-width: @center-width;
     // height: calc(100% - 87px);     // footer组件失去后 修改此
     padding-top: 32px;
     padding-bottom: 32px;

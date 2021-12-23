@@ -39,7 +39,7 @@ const columns=[
     title: '章节名称',
     dataIndex:"name",
     align:'center',
-    // width:120,
+    // width:100,
   },
   {
     title: '实验数量',

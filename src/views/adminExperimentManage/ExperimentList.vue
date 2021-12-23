@@ -48,7 +48,7 @@ interface IforumSearch{
   page:number
 }
 type Key = ColumnProps['key'];
-const columns=[
+const columns1=[
   {
     title: '实验名称',
     dataIndex:"name",
@@ -93,7 +93,39 @@ const columns=[
     width:240
   }
 ]
-
+const columns2=[
+  {
+    title: '实验名称',
+    dataIndex:"name",
+    align:'center',
+    width:200,
+    slots: { customRender: 'title' },
+  },
+  {
+    title: '课时数',
+    dataIndex: 'class_cnt',
+    align:'center',
+    // width:120
+  },
+  {
+    title: '总内存',
+    dataIndex: 'ram',
+    align:'center',
+    // width:260
+  },
+  {
+    title: '最大内存',
+    dataIndex: 'max_ram',
+    align:'center',
+    // width:160
+  },
+  {
+    title: '总硬盘',
+    dataIndex: 'disk',
+    align:'center',
+    // width:260
+  }
+]
 export default defineComponent({
   name: 'ExperimentList',
   components: {
@@ -188,6 +220,14 @@ export default defineComponent({
         },
       })
     }
+    const columns=computed(()=>{
+      let {currentTab}= route.query
+      if(currentTab === '1'){
+        return columns2
+      }else{
+        return columns1
+      }
+    })
     onMounted(()=>{
       initData()
     })
