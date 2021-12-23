@@ -5,14 +5,14 @@
     </div>
     <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id,trainType)">
       <div class="cardpic">
-        <img src="../../../assets/images/Experimental/train.png" alt="" class="pic-train" v-if="item.is_highconf && trainType !== 2">
+        <img src="../../../assets/images/Experimental/train.png" class="pic-train" v-if="item.is_highconf && trainType !== 2">
         <!-- <img :src="item.url ? item.url: defaultImg" alt=""> -->
-        <img :src="item.url" alt="">
+        <img :src="item.url">
         <span :class="['stateClass', item.status === '已结束' ? 'end' : item.status === '进行中' ? 'onGoing' : 'noStart' ]" v-if="trainType === 0">{{item.status}}</span>
       </div>
       <!-- 我的实训 -->
       <div v-if="trainType === 0">
-        <ul class="cardinfo">
+        <div class="cardinfo">
           <li class="train-title">{{item.name}}</li> 
           <li class="train-time"><span>{{item.start_times}}</span> ~ <span>{{item.end_times}}</span></li>
           <li class="desc-status">
@@ -26,8 +26,8 @@
               <i v-if="item.status === '未开始'" class="iconfont icon-shanchu" title="删除" @click.stop="deleteTrain(item.id, 'Deleted')"></i>
             </span>
           </li>
-        </ul>
-        <ul class="cardfoot cardcount">
+        </div>
+        <div class="cardfoot cardcount">
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
@@ -43,19 +43,19 @@
             学生
             <span>{{item.user_num}}</span>
           </li>
-        </ul>
-        <ul class="cardfoot cardbtn">
+        </div>
+        <div class="cardfoot cardbtn">
           <li @click.stop="evaluate(item.id)">考核</li>
           <li @click.stop="resource(item.id)">资源</li>
           <li @click.stop="virtualEnv(item.id)">环境</li>
-        </ul>
+        </div>
       </div>
       <!-- 内置实训 -->
       <div v-if="trainType === 1" class="init">
-        <ul class="cardinfo">
+        <div class="cardinfo">
           <li class="train-title">{{item.name}}</li>
-        </ul>
-        <ul class="cardfoot1">
+        </div>
+        <div class="cardfoot1">
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
@@ -66,28 +66,28 @@
             课时
             <span>{{item.class_cnt}}</span>
           </li>
-        </ul>
-        <ul class="cardfoot cardbtn">
+        </div>
+        <div class="cardfoot cardbtn">
           <li>内容</li>
           <li @click.stop="resource(item.id)">资源</li>
           <li @click.stop="handleOperate(item.id, 'Complex')">保存到我的</li>
-        </ul>
+        </div>
       </div>
       <!-- 归档实训 -->
       <div v-if="trainType === 2" class="archive">
-        <ul class="cardinfo">
+        <div class="cardinfo">
           <li class="train-title">{{item.name}}</li>
-        </ul>
-        <ul class="cardfoot1">
+        </div>
+        <div class="cardfoot1">
           <li>
             <i class="iconfont icon-renwu"></i>
             归档时间：
             <span>{{item.created_time}}</span>
           </li>
-        </ul>
-        <ul class="cardfoot cardbtn">
+        </div>
+        <div class="cardfoot cardbtn">
           <li>详情</li>
-        </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -235,8 +235,8 @@ export default defineComponent({
   width: 23%;
   // height: 280px;
   border-radius: 10px;
-  box-shadow: 0px 2px 4px 0px rgba(164,36,167,0.14);
-  margin: 0 1% 20px;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.07) ;
+  margin: 0 2% 20px 0px;
   &.mySelfCreate{
     height: 277px;
     border: 1px dashed @theme-color;
@@ -301,21 +301,31 @@ export default defineComponent({
     }
   }
   .cardinfo{
-    padding: 0 14px;
+    height: 100%;
+    // padding: 0 14px;
     font-size: 14px;
     .train-title{
-      line-height: 35px;
       font-size: 16px;
+      line-height: 16px;
       color: #000;
       cursor: pointer;
+      font-weight: 500;
+      margin-top: 8px;
+      margin-bottom: 12px;
+      padding:0 14px;
     }
     .train-time{
       color: #8c8c8c;
-      line-height: 24px;
+      margin-bottom: 12px;
+      padding:0 14px;
     }
     .desc-status{
       display: none;
       color: #8c8c8c;
+      padding: 0 14px;
+      .iconfont:hover{
+        color: @theme-color;
+      }
       i{
         cursor: pointer;
         margin-left: 10px;
@@ -333,8 +343,6 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 40px;
-    margin-bottom: 0;
     li{
       width: 100%;
       text-align: center;
@@ -348,7 +356,7 @@ export default defineComponent({
         content: '';
         position: absolute;
         width: 1px;
-        height: 14px;
+        // height: 14px;
         right: 0;
         top: 6px;
         background-color: #ececec;
@@ -357,34 +365,46 @@ export default defineComponent({
     &.cardbtn{
       background: #fafafa;
       border-radius: 0 0 10px 10px;
+      margin-top: 12px;
+      height:40px;
+      border-top: 1px solid #E9E9E9;
+      box-sizing: border-box;
       li{
         font-size: 14px;
         cursor: pointer;
+        border-right: 1px solid #E9E9E9;
         &:hover{
           color: @theme-color;
         }
       }
+      :nth-last-child(1){
+        border: none;
+      }
       display: none;
     }
   }
+
+
+
   // 内置
   .init{
-    .cardinfo{
-      margin-bottom: 0;
-    }
     .cardbtn{
-      background: #fff;
+      margin-top: 24px;
+      background: #fafafa;
+      box-sizing: border-box;
+      height: 41px;
     }
   }
+
+
+
   // 归档
   .archive{
-    .cardinfo{
-      margin-bottom: 0;
-    }
     .cardbtn{
-      li{
-        color: @theme-color;
-      }
+      margin-top: 24px;
+      background: #fafafa;
+      box-sizing: border-box;
+      height: 40px;
     }
   }
   &:hover{
@@ -394,6 +414,7 @@ export default defineComponent({
     .desc-status{
       display: flex;
       justify-content: space-between;
+      align-items: center;
     }
     & .cardfoot.cardcount{
       display: none;
@@ -410,13 +431,16 @@ export default defineComponent({
   .cardfoot1{
     display: flex;
     padding: 0 14px;
-    line-height: 40px;
-    margin-bottom: 0;
+    margin-top:16px;
+    margin-bottom: 24px;
     li{
       color: #898989;
       margin-right: 20px;
       font-size: 14px;
     }
   }
+}
+.cardBox:hover{
+  box-shadow: 0 7px 7px 0 rgba(0,0,0,0.07)   
 }
 </style>

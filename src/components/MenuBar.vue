@@ -171,4 +171,7 @@ export default defineComponent({
     color: @menu-item-color;
   }
 }
+.ant-dropdown-menu{
+  padding: 0px;
+}
 </style>

@@ -1,12 +1,13 @@
 <template>
   <div class="experimentalList" v-layout-bg>
     <div class="head">
-      <a-input v-model:value="form.name" placeholder="请输入实训名称关键字查询" @pressEnter="handleSearch">
-        <template #prefix>
-          <i class="iconfont icon-sousuo"></i>
-        </template>
-      </a-input>
-      <a-button type="primary" @click="handleSearch">查询</a-button>
+       <a-input-search
+        v-model:value="form.name"
+        placeholder="请输入实训名称关键字查询"
+        style="width: 450px"
+        @search="handleSearch"
+      />
+      <!-- <a-button type="primary" @click="handleSearch">查询</a-button> -->
     </div>
     <div class="content">
       <card-list v-if="listData.length > 0 || trainType === 0" :trainType="trainType" :data="listData" @refresh="refresh"/>
@@ -158,14 +159,14 @@ export default defineComponent({
 .experimentalList{
   .head{
     margin-bottom: 20px;
-    :deep(.ant-input-affix-wrapper){
-      border-radius: 0;
-      width: 400px;
-      i{
-        color: #c7c4c4;
-        font-weight: bold;
-      }
-    }
+    // :deep(.ant-input-affix-wrapper){
+    //   border-radius: 0;
+    //   width: 400px;
+    //   i{
+    //     color: #c7c4c4;
+    //     font-weight: bold;
+    //   }
+    // }
     .ant-btn{
       border-radius: 0;
       height: 35px;
