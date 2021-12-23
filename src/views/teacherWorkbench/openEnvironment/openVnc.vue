@@ -6,7 +6,7 @@
           <a-col :span="6" class="vm-info-list">
             <div>
               <h3 class="list-title">远程连接信息</h3>
-              <a-row>
+              <a-row class="list-row">
                 <a-col :span="12">
                   <span class="vm-list-title">用户名：</span>
                   <span>{{ vmData.ssh_user ? vmData.ssh_user : "" }}</span>
@@ -16,7 +16,7 @@
                   <span>{{ vmData.host_ip ? vmData.host_ip : "" }}</span>
                 </a-col>
               </a-row>
-              <a-row>
+              <a-row class="list-row">
                 <a-col :span="12">
                   <span class="vm-list-title">密码：</span>
                   <span>{{ vmData.ssh_pass ? vmData.ssh_pass : "" }}</span>
@@ -506,7 +506,7 @@ export default defineComponent({
       max-height: 260px;
       overflow: auto;
       .upload-file-item {
-        margin-top: 20px;
+        margin-top:14px;
         .upload-file-base {
           padding: 0 5px;
           display: flex;
@@ -554,16 +554,22 @@ export default defineComponent({
   }
   .list-title {
     color: rgba(0, 0, 0, 0.85);
-    font-weight: 600;
+    font-weight: 500;
+    margin-bottom: 1em;
     font-size: 16px;
+  }
+  .list-row{
+    font-size: 14px;
+    margin-bottom: 14px;  
+    color:rgba(@black,0.25);
   }
   .vm-list-title {
     @extend .list-title;
     font-size: 14px;
   }
-  .dataset-url {
-    padding: 10px 0;
-  }
+  // .dataset-url {
+  //   padding: 10px 0;
+  // }
   .upload-tip {
     background: #fafafa;
     padding: 10px;
@@ -589,6 +595,11 @@ export default defineComponent({
     //   font-size: 15px;
     //   color: #333;
     // }
+  }
+  .text-center{
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
   }
 }
 .ant-modal {

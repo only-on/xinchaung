@@ -174,4 +174,8 @@ export default defineComponent({
 .ant-dropdown-menu{
   padding: 0px;
 }
+:deep(.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title){
+  color: rgba(@black,0.65);
+  font-size: 14px;
+}
 </style>

@@ -96,7 +96,7 @@ export default defineComponent({
     // height: calc(100% - 87px);     // footer组件失去后 修改此
     padding-top: 32px;
     padding-bottom: 32px;
-    margin-top: 5px;
+    // margin-top: 5px;
     min-height: 750px;
     overflow: auto;
     // overflow-y: auto;

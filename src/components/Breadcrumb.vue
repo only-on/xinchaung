@@ -77,7 +77,7 @@ export default defineComponent({
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  font-size: 14px;
+  font-size: 12px;
   color: @location-color;
   .allow {
     :deep(.ant-breadcrumb-link) {
