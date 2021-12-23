@@ -27,7 +27,7 @@ export default defineComponent({
   setup: (props, context) => {
     const componentNames = ["prefabriMirror", "teacherMirror"];
     const tabs = [
-      { name: "预制镜像", componenttype: 0 },
+      { name: "内置镜像", componenttype: 0 },
       { name: "教师镜像", componenttype: 1 },
     ];
     var componentName: Ref<string> = ref("systemSetting");

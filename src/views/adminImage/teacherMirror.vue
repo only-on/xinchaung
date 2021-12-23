@@ -43,6 +43,7 @@
           :data-source="data"
           rowKey="id"
           :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+          :loading="loading"
           :pagination="
           total > 10
             ? {
@@ -87,6 +88,7 @@ import beforeIcon from 'src/components/aiAnt/beforeIcon.vue'
 import iconimg from 'src/assets/images/screenicon/Group3.png'
 interface Istate {
   imageType: any;
+  loading:boolean;
   params: any;
   data: any[];
   total:number;
@@ -132,6 +134,7 @@ export default defineComponent({
     const http = (request as any).adminImage;
     const state: Istate = reactive({
       imageType: undefined,
+      loading:false,
       params: {
         limit:"",
         name: "",
@@ -157,11 +160,13 @@ export default defineComponent({
         methods.getImageList();
       },
       getImageList() {
+        state.loading=true,
         state.params.classify = state.imageType === undefined ? "" : state.imageType;
         http.imageList({ param: state.params }).then((res: any) => {
           console.log(res);
           state.data = res.data.list;
           state.total=res.data.page.totalCount;
+          state.loading=false
         });
       },
       search() {
@@ -226,5 +231,9 @@ export default defineComponent({
 }
 .iconfont {
   color: @theme-color;
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>
