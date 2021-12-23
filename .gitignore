@@ -10,3 +10,4 @@ packages/**
 .dockerignore
 docker-compose.yaml
 Dockerfile
+*zip

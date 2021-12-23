@@ -333,7 +333,6 @@ export default defineComponent({
   }
   .create-course-main {
     padding: 39px 30px;
-    height: 716px;
     .edit-course-base-form {
       .col-2 {
         margin-top: 30px;
