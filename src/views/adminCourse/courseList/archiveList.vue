@@ -57,7 +57,7 @@
       </template>
     </a-config-provider>
     <div class="page-box" v-if="total != 0">
-      <a-pagination
+      <page
         v-model:current="params.page"
         v-model:pageSize="params.limit"
         :total="total"
@@ -71,6 +71,7 @@
 import { defineComponent, onMounted, reactive, toRefs, computed, ref, unref } from "vue";
 import { getArchiveCourseListApi, deleteCourseApi } from "../api";
 import Empty from "src/components/Empty.vue";
+import page from "src/components/page/page.vue"
 import { useRouter } from "vue-router";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import moment from "moment";
@@ -121,6 +122,7 @@ type Key = ColumnProps["key"];
 export default defineComponent({
   components: {
     empty: Empty,
+    page
   },
   setup() {
     const router = useRouter();

@@ -35,7 +35,7 @@ export function pieCanvas(nams: any[], data: any, color: any, el: HTMLElement) {
                 radius: ['38%', '60%'],
                 center: ['50%', '50%'],
                 label: {
-                    formatter: '{b} \n {d}',
+                    formatter: '{b} \n {d}'+'%',
                     position: 'outside',
                     color: '#202735',
                     fontSize: "14",
@@ -95,7 +95,7 @@ export function gaugeCanvas(name: string, data: any, color: string, el: HTMLElem
                     fontWeight: 'bolder',
                     fontSize: 13,
                     color: color,
-                    offsetCenter: ["0", "-40px"]
+                    offsetCenter: ["0", "-20px"]
                 },
                 axisLine: {
                     lineStyle: {

@@ -33,7 +33,7 @@
         </template>
       </a-config-provider>
       <div class="page-box" v-if="total != 0">
-        <a-pagination
+        <page
           v-model:current="params.page"
           v-model:pageSize="params.limit"
           :total="total"
@@ -54,6 +54,7 @@
 import { message, Modal } from "ant-design-vue";
 import { defineComponent, inject, onMounted, reactive, toRefs } from "vue";
 import beforeIcon from "src/components/aiAnt/beforeIcon.vue"
+import page from "src/components/page/page.vue"
 import grounp10 from "src/assets/images/screenicon/Group10.png"
 import {
   getCourseDirectionListApi,
@@ -76,7 +77,8 @@ const columns = [
 ];
 export default defineComponent({
   components:{
-    "before-icon":beforeIcon
+    "before-icon":beforeIcon,
+    page
   },
   setup() {
     const reactiveData = reactive({

@@ -40,7 +40,8 @@
       </template>
     </a-config-provider>
     <div class="page-box" v-if="total != 0">
-      <a-pagination
+      <page
+        :isShowNum="10"
         v-model:current="params.page"
         v-model:pageSize="params.limit"
         :total="total"
@@ -55,6 +56,7 @@ import { defineComponent, onMounted, reactive, toRefs } from "vue";
 import { getInitCourseListApi } from "../api";
 import Empty from "src/components/Empty.vue";
 import { useRouter } from "vue-router";
+import page from "src/components/page/page.vue"
 const columns = [
   {
     title: "课程名称",
@@ -88,6 +90,7 @@ const columns = [
 export default defineComponent({
   components: {
     empty: Empty,
+    page
   },
   setup() {
     const router = useRouter();

@@ -84,7 +84,7 @@
       </template>
     </a-config-provider>
     <div class="page-box" v-if="total != 0">
-      <a-pagination
+      <page
         v-model:current="search.page"
         v-model:pageSize="search.limit"
         :total="total"
@@ -113,6 +113,7 @@ import {
   clearVideosApi,
 } from "../api";
 import Empty from "src/components/Empty.vue";
+import page from "src/components/page/page.vue"
 import { message, Modal } from "ant-design-vue";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import { useRouter } from "vue-router";
@@ -177,6 +178,7 @@ type Key = ColumnProps["key"];
 export default defineComponent({
   components: {
     empty: Empty,
+    page
   },
   setup() {
     const router = useRouter();
