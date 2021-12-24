@@ -269,7 +269,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .knowledgeMap{
-  height: 100%;
+  min-height:750px;
   width: 1300px;
   margin: 0 auto;
   display: flex;
