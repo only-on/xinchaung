@@ -2,10 +2,22 @@
   <div class="archiveTrainingDetail">
     <div class="archiveHeader">
       <div class="search">
-        学号：<a-input class="searchInput" v-model:value="searchInfo.name"></a-input>
-        姓名：<a-input class="searchInput" v-model:value="searchInfo.nick"></a-input>
+        <a-input class="searchInput" placeholder='学号' v-model:value="searchInfo.name">
+           <template #prefix>
+            <img src="src/assets/images/screenicon/Group7.png" />
+            </template>
+        </a-input>
+        <a-input class="searchInput" placeholder='姓名' v-model:value="searchInfo.nick">
+          <template #prefix>
+            <img src="src/assets/images/screenicon/Group6.png" />
+            </template>
+        </a-input>
         <div v-if="role !== '2'">
-          班级：<a-input class="searchInput" v-model:value="searchInfo.class"></a-input>
+          <a-input class="searchInput" placeholder='班级' v-model:value="searchInfo.class">
+            <template #prefix>
+            <img src="src/assets/images/screenicon/Group8.png" />
+            </template>
+          </a-input>
         </div>
         <a-button type="primary" class="search-btn" @click="query">查询</a-button>
         <a-button type="primary" @click="clear">清空</a-button>
@@ -112,7 +124,7 @@ export default defineComponent({
       display: flex;
     }
     .searchInput {
-      width: 100px;
+      width: 190px;
       margin-right: 20px;
     }
     .searchInput:nth-child(3) {
