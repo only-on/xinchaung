@@ -1,5 +1,5 @@
 <template>
-  <div v-layout-bg class="admin-home-wrap">
+  <div v-layout-bg class="admin-home-wrap setScrollbar">
     <div class="a-h-top">
       <div class="a-card-item">
         <div class="a-card-left">
@@ -81,14 +81,14 @@
             </div>
           </div>
           <div class="w-3 statistics-item">
-            <div>系统在线人数</div>
+            <div>系统离线人数</div>
             <div>
               <span>{{ statisticsData.offline_num }}</span>
               <i> / 人</i>
             </div>
           </div>
           <div class="w-3 statistics-item">
-            <div>系统在线人数</div>
+            <div>系统总人数</div>
             <div>
               <span>{{ statisticsData.user_num }}</span>
               <i> / 人</i>
@@ -287,8 +287,7 @@
               >系统(root){{
                 nodeIp.computes.root_disk_used +
                 "/" +
-                nodeIp.computes.root_disk_gb +
-                "G"
+                nodeIp.computes.root_disk_gb
               }}G</span
             >
             <div class="disk-use-bg root-bg">
@@ -296,10 +295,13 @@
                 class="disk-use-num"
                 :style="{
                   width:
+                  !isNaN((nodeIp.computes.root_disk_used /
+                      nodeIp.computes.root_disk_gb) *
+                      100)?
                     (nodeIp.computes.root_disk_used /
                       nodeIp.computes.root_disk_gb) *
                       100 +
-                    '%',
+                    '%':'0%',
                 }"
               ></div>
             </div>
@@ -445,7 +447,6 @@ export default defineComponent({
     watch(
       () => reactiveData.currentControlsIp,
       async () => {
-        console.log(reactiveData.currentControlsIp);
         await method.getNodeIpControl(
           reactiveData.currentControlsIp,
           "controls"
@@ -468,7 +469,6 @@ export default defineComponent({
     watch(
       () => reactiveData.currentComputesIp,
       async () => {
-        console.log(reactiveData.currentComputesIp);
         setTimeout(async () => {
           if (gauge.computesCpu) {
             gauge.computesCpu.dispose();
@@ -480,8 +480,6 @@ export default defineComponent({
             reactiveData.currentComputesIp,
             "computes"
           );
-          console.log(reactiveData.nodeIp);
-
           gauge.computesCpu = gaugeCanvas(
             "使用率",
             (reactiveData.nodeIp as any).computes.cpu_use_rate,
@@ -527,7 +525,6 @@ export default defineComponent({
             reactiveData.currentComputesIp = (
               reactiveData.statisticsData as any
             ).node_ip_list.computes[0];
-            console.log(reactiveData.statisticsData);
             resolve();
           });
         });
@@ -535,10 +532,7 @@ export default defineComponent({
       getNodeIpControl(ip: string, type: string) {
         return new Promise((reslove: any, reject: any) => {
           getNodeIpControlApi(ip).then((res: any) => {
-            console.log(res);
-
             reactiveData.nodeIp[type] = res.data;
-            console.log(reactiveData.nodeIp);
             reslove();
           });
         });
@@ -546,7 +540,6 @@ export default defineComponent({
       getGpuInfo() {
         return new Promise((resolve: any, reject: any) => {
           getGpuInfoApi().then((res: any) => {
-            console.log(res);
             reactiveData.gpuSelectData = res.data.data;
 
             if (reactiveData.gpuSelectData.length > 0) {
@@ -634,8 +627,7 @@ export default defineComponent({
   min-width: 1330px;
   overflow: auto;
   height: 98%;
-  padding: 0 60px;
-  margin-top: 20px;
+  padding: 20px 60px 0px 60px;
   .a-h-top {
     display: flex;
     flex-direction: row;

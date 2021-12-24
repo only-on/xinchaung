@@ -83,14 +83,12 @@
         <div><empty type="tableEmpty"></empty></div>
       </template>
     </a-config-provider>
-    <div class="page-box" v-if="total != 0">
       <page
         v-model:current="search.page"
         v-model:pageSize="search.limit"
         :total="total"
         @change="pageChange"
       />
-    </div>
   </div>
 </template>
 
@@ -387,10 +385,6 @@ export default defineComponent({
         margin-right: 15px;
       }
     }
-  }
-  .page-box {
-    text-align: center;
-    margin-top: 20px;
   }
 }
 .inputSearch {

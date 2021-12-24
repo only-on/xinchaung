@@ -28,7 +28,6 @@ import { getNodeGraphApi } from "./api";
 export default defineComponent({
   props: ["data", "type", "ip"],
   setup(props, { emit }) {
-    console.log(props.data, props.type);
     let type = props.type;
     const lineEl: Ref<HTMLElement> = ref(null) as any;
     const reactiveData = reactive({

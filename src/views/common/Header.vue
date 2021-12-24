@@ -1,8 +1,10 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <div class="logo"></div>
-      <span class="web-title">人工智能教学实训系统</span>
+      <router-link class="a-logo" :to="{path:'/'}">
+        <div class="logo"></div>
+        <span class="web-title">人工智能教学实训系统</span>
+      </router-link>
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
@@ -33,7 +35,15 @@
   </header>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, computed, Ref, ref, onMounted, watch } from "vue";
+import {
+  defineComponent,
+  reactive,
+  computed,
+  Ref,
+  ref,
+  onMounted,
+  watch,
+} from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from "../../api/index";
 import { IBusinessResp } from "../../typings/fetch";
@@ -155,6 +165,9 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
     margin-right: 100px;
+    .a-logo{
+      display: flex;
+    }
     .logo {
       width: 32px;
       height: 32px;

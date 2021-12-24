@@ -1,5 +1,5 @@
 <template>
-  <div v-if="total>isShowNum">
+  <div v-if="total>isShowNum" class="custom-page-box">
     <a-pagination
       v-model:current="current"
       :total="total"
@@ -10,7 +10,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, reactive, toRef, toRefs, watch } from "vue";
+import { defineComponent, reactive, toRefs, watch,PropType } from "vue";
 
 export default defineComponent({
   props: {
@@ -36,7 +36,7 @@ export default defineComponent({
     },
     pageSizeOptions: {
       default: ["10", "20", "30", "40"],
-      type: Number,
+      type: Array as PropType<number|string[]>,
       required: false,
     },
     showSizeChanger: {
@@ -81,3 +81,9 @@ export default defineComponent({
   },
 });
 </script>
+<style lang="less">
+.custom-page-box{
+    text-align: center;
+    margin-top: 20px;
+}
+</style>

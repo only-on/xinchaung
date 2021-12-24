@@ -153,7 +153,6 @@ export function gaugeCanvas(name: string, data: any, color: string, el: HTMLElem
 }
 
 export function lineCnvas(data: any, el: HTMLElement) {
-    console.log(data);
     let colors = ["#6194FF", "#FDCA72", "#9771EB", "#FA6673", "#36D188"];
     let series = []
     let num = 0

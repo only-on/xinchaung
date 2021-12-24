@@ -39,7 +39,6 @@
         <div><empty type="tableEmpty"></empty></div>
       </template>
     </a-config-provider>
-    <div class="page-box" v-if="total != 0">
       <page
         :isShowNum="10"
         v-model:current="params.page"
@@ -47,7 +46,6 @@
         :total="total"
         @change="pageChange"
       />
-    </div>
   </div>
 </template>
 
@@ -158,10 +156,6 @@ export default defineComponent({
     .ant-input-search {
       width: 600px;
     }
-  }
-  .page-box {
-    text-align: center;
-    margin-top: 20px;
   }
   .input {
     width: 314px;
