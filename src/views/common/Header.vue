@@ -1,7 +1,7 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <router-link class="a-logo" :to="{path:'/'}">
+      <router-link class="a-logo" :to="{path:homePath}">
         <div class="logo"></div>
         <span class="web-title">人工智能教学实训系统</span>
       </router-link>
@@ -62,6 +62,23 @@ export default defineComponent({
     const role = lStorage.get("role");
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
+    const homePath=computed(()=>{
+      if (role==3) {
+        return "/teacher" // 教师端首页
+      }
+      if (role==4) {
+        return "/studentStatistic" // 学生端首页
+      }
+      if (role==1) {
+        return "/init-course/init" // 初始端
+      }
+      if (role==2) {
+        return "/admin" // 管理端
+      }
+      if (role==5) {
+        return "" // 助教端
+      }
+    })
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
       return role === 3;
@@ -142,6 +159,7 @@ export default defineComponent({
       activeName,
       handImg,
       userImg,
+      homePath
     };
   },
 });
