@@ -49,9 +49,9 @@
             @change="handleChange"
             style="width: 240px"
           >
-            <a-select-option value="1"> 未开始 </a-select-option>
-            <a-select-option value="2">进行中</a-select-option>
-            <a-select-option value="3">已结束</a-select-option>
+            <a-select-option value="2"> 未开始 </a-select-option>
+            <a-select-option value="3">进行中</a-select-option>
+            <a-select-option value="1">已结束</a-select-option>
           </a-select>
         </div>
         <a-button type="primary" @click="querySearch">查询</a-button>

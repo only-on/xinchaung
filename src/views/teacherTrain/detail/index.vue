@@ -1,5 +1,5 @@
 <template>
-  <div class="editExperimental" v-layout-bg>
+  <div class="editExperimental">
     <train-detail :trainId="trainId" :currentTab="currentTab" :role="role"></train-detail>
   </div>
 </template>
