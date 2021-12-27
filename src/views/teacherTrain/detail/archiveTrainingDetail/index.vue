@@ -2,18 +2,18 @@
   <div class="archiveTrainingDetail">
     <div class="archiveHeader">
       <div class="search">
-        <a-input class="searchInput" placeholder='学号' v-model:value="searchInfo.name">
+        <a-input class="searchInput" placeholder='学号' v-model:value="searchInfo.name" @keyup.enter="query">
            <template #prefix>
             <img src="src/assets/images/screenicon/Group7.png" />
             </template>
         </a-input>
-        <a-input class="searchInput" placeholder='姓名' v-model:value="searchInfo.nick">
+        <a-input class="searchInput" placeholder='姓名' v-model:value="searchInfo.nick" @keyup.enter="query">
           <template #prefix>
             <img src="src/assets/images/screenicon/Group6.png" />
             </template>
         </a-input>
         <div v-if="role !== '2'">
-          <a-input class="searchInput" placeholder='班级' v-model:value="searchInfo.class">
+          <a-input class="searchInput" placeholder='班级' v-model:value="searchInfo.class" @keyup.enter="query">
             <template #prefix>
             <img src="src/assets/images/screenicon/Group8.png" />
             </template>

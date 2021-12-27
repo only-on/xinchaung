@@ -13,35 +13,49 @@
         <div>
           <a-form layout="inline" class="searchContent">
             <div class="stuSearch" v-if="selectvalue === 1">
-              <a-form-item label="学号">
+              <a-form-item>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="studentValue"
-                ></a-input>
+                  placeholder="学号"
+                >
+                 <template #prefix>
+              <img src="src/assets/images/screenicon/Group7.png" /> </template>
+                </a-input>
               </a-form-item>
-              <a-form-item label="姓名">
+              <a-form-item>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="fullName"
-                ></a-input>
+                  placeholder="姓名"
+                >
+               <template #prefix><img src="src/assets/images/screenicon/Group6.png" /> </template>
+                </a-input>
               </a-form-item>
-              <a-form-item label="院系">
+              <a-form-item>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="faculty"
-                ></a-input>
+                  placeholder="院系"
+
+                >
+               <template #prefix><img src="src/assets/images/screenicon/Group8.png" /> </template>
+                </a-input>
               </a-form-item>
             </div>
             <div class="classSearch" v-else>
-              <a-form-item label="班级">
+              <a-form-item>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="classes"
-                ></a-input>
+                  placeholder="班级"
+                >
+               <template #prefix><img src="src/assets/images/screenicon/Group8.png" /> </template>
+                </a-input>
               </a-form-item>
             </div>
             <div class="operateBtn">
@@ -55,7 +69,19 @@
           <a-table
             :columns="columns"
             :loading="unselectLoading"
-            :data-source="unSelectData"
+            :data-source="unSelectData.list"
+            :pagination="
+              unSelectData?.page?.totalCount > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger: true,
+                    total:unSelectData.page.totalCount,
+                    pageSize: params.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "
             :row-selection="{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange,
@@ -98,6 +124,10 @@ interface Istate {
   selectedRows: any[];
   unSelectKeys: any[];
   selectedRowKeys: any[];
+  params:{
+    limit:number,
+    page:number,
+  }
 }
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
 import request from "src/api/index";
@@ -113,6 +143,7 @@ export default defineComponent({
     "isvisible",
     "addids",
     "unSelectData",
+    'tatal',
     "unselectLoading",
   ],
   components: {
@@ -182,6 +213,10 @@ export default defineComponent({
       selectedRows: [],
       unSelectKeys: [],
       selectedRowKeys: [],
+      params:{
+        limit:10,
+        page:1,
+      }
     });
     const rowSelection = {
       //    selectedRowKeys:state.selectedRows,
@@ -197,6 +232,32 @@ export default defineComponent({
       }),
     };
     const methods = {
+       onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        context.emit(
+          "search-inquiry",
+          state.studentValue,
+          state.fullName,
+          state.faculty,
+          state.classes,
+          state.params
+        );
+
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+         context.emit(
+          "search-inquiry",
+           state.studentValue,
+          state.fullName,
+          state.faculty,
+          state.classes,
+          state.params
+        );
+      },
       onSelectChange(selectedRowKeys: any, selectedRows: any) {
         state.selectedRowKeys = selectedRowKeys;
         state.selectedRows = selectedRows;
@@ -256,7 +317,7 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .searchContent {
   display: flex;
   // justify-content:space-between;
@@ -270,5 +331,9 @@ export default defineComponent({
   .clear {
     margin-right: 20px;
   }
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>

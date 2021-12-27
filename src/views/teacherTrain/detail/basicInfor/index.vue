@@ -28,7 +28,7 @@
           </a-form-item>
         </div>
         <a-form-item label="实训指导书">
-          <a-textarea v-model:value="form.guide" style="height: 279px" :disabled="edit" />
+          <a-textarea v-model:value="form.guide" style="height: 290px" :disabled="edit" />
         </a-form-item>
       </a-form>
     </div>

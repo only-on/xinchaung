@@ -330,6 +330,7 @@ export default defineComponent({
         }
         .selectWidth {
           width: 120px;
+          margin-right: 20px;
         }
       }
       .itemdelete {

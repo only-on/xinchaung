@@ -27,10 +27,16 @@
         <div class="status-word">文档转换中，请稍后查看！</div>
       </div>
       <div v-else>
+        <div>
+        </div>
         <iframe
           width="100%"
           height="460px"
-          :src="baseurl + ppt_url"
+          :src="
+          development
+            ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + ppt_url
+            : '/frontend/pdfjs-2.5.207/web/viewer.html?file=' + ppt_url
+          "
           frameborder="0"
         ></iframe>
       </div>
@@ -111,7 +117,8 @@ export default defineComponent({
         formdata.append("courseware", state.url);
         http.savepptModefiy({ param: formdata }).then((res: any) => {
           console.log(res);
-          state.ppt_url = baseurl + res.datas.courseware_html;
+          // state.ppt_url = baseurl + res.datas.courseware_html;
+          state.ppt_url =res.datas.courseware_html;
           context.emit("uploadppt");
         });
         //     const fd=new FormData()
@@ -152,7 +159,7 @@ export default defineComponent({
     onMounted(() => {
       state.ppt_url = props.propTrainDetailInfo.courseware_html;
     });
-    return { ...toRefs(state), ...methods, baseurl, transimg };
+    return { ...toRefs(state), ...methods, baseurl, transimg,development };
   },
 });
 </script>

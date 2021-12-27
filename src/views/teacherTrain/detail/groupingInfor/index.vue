@@ -6,7 +6,18 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table class="groupTable" :columns="columns" :data-source="data" rowkey="id">
+        <a-table class="groupTable" :columns="columns" :data-source="data" rowkey="id"  :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        ">
           <template #created_time="{ record }">
             <div>
               {{ record.created_time.split(" ")[0] }}
@@ -81,6 +92,11 @@
 interface Istate {
   // columns: any[];
   data: any[];
+  total:number;
+  params:{
+    limit:number,
+    page:number
+  };
   deletevisible: boolean;
   confirmLoading: boolean;
   editvisible: boolean;
@@ -157,8 +173,24 @@ export default defineComponent({
       groupData: [],
       groupType: "class",
       data: [],
+      total:0,
+      params:{
+        limit:10,
+        page:1
+      }
     });
     const methods = {
+       onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        methods.getGroupList();
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit=size;
+        methods.getGroupList();
+      },
       // 删除分组确认框
       deleteGroup(id: any) {
         state.deletevisible = true;
@@ -302,11 +334,12 @@ export default defineComponent({
       getGroupList() {
         http
           .groupList({
-            param: { id: props.trainId, type: props.type === "course" ? 1 : 2 },
+            param: { id: props.trainId, type: props.type === "course" ? 1 : 2,page:state.params.page,limit:state.params.limit},
           })
           .then((res: any) => {
             console.log(res);
             state.data = res.data.list;
+            state.total=res.data.page.totalCount;
           });
       },
     };
@@ -359,5 +392,9 @@ export default defineComponent({
   .ant-modal-body {
     min-height: 120px;
   }
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>

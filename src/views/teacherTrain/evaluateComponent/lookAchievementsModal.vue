@@ -30,7 +30,7 @@
               ref="quilldom"
             />
           </div>
-          <div v-else>该任务未提交笔记</div>
+          <div v-else class="note">该任务未提交笔记</div>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -124,5 +124,8 @@ export default defineComponent({
 }
 :deep(.ql-editor:nth-child(1)) {
   border-top: 1px solid #ccc;
+}
+.note{
+  min-height: 200px;
 }
 </style>

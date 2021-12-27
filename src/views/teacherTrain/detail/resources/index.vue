@@ -18,7 +18,18 @@
     </div>
     <div>
       <a-config-provider>
-        <a-table :columns="columns" :data-source="data" rowKey="id">
+        <a-table :columns="columns" :data-source="data" rowKey="id" :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        ">
           <template #action="{ record }">
             <div class="action">
               <span class="spanleft" @click="deleteUploadFile(record.id)">删除</span>
@@ -38,6 +49,11 @@
 interface Istate {
   // columns: any[];
   data: any[];
+  total:number,
+  params:{
+    limit:number,
+    page:number,
+  };
   file: any;
   name: string;
   size: string;
@@ -94,6 +110,11 @@ export default defineComponent({
     const columns = role === "2" ? columns1?.splice(0, 5) : columns1;
     const state: Istate = reactive({
       data: [],
+      total:0,
+      params:{
+        limit:10,
+        page:1,
+      },
       file: "",
       name: "",
       size: "",
@@ -102,6 +123,17 @@ export default defineComponent({
       type: "",
     });
     const methods = {
+      onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+        methods.getResourceList();
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+        methods.getResourceList();
+      },
       beforeUpload(file: any) {
         state.file = file;
         const type = state.file.name.split(".")[state.file.name.split(".").length - 1];
@@ -139,10 +171,13 @@ export default defineComponent({
         const params = {
           type: props.type === "course" ? 1 : 2,
           id: props.trainId,
+          limit:state.params.limit,
+          page:state.params.page,
         };
         http.resourceList({ param: params }).then((res: any) => {
           console.log(res);
           state.data = res.data.list;
+          state.total=res.data.page.totalCount;
           //    context.emit('stepFourInfo',state.data)
           inject["stepInfoFour"] = state.data;
         });
@@ -169,6 +204,10 @@ export default defineComponent({
           .uploadResource({ param: params })
           .then((res: any) => {
             console.log(res);
+            state.name=''
+            state.url=''
+            state.introduce=''
+            message.success("上传成功！")
             methods.getResourceList();
           })
           .catch(() => {
@@ -208,7 +247,7 @@ export default defineComponent({
   },
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .resources {
   margin: 10px;
   .ant-upload-list {
@@ -234,5 +273,9 @@ export default defineComponent({
       margin-right: 5px;
     }
   }
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>

@@ -16,6 +16,18 @@
           <a-table
             :columns="columns"
             :data-source="data"
+            :pagination="
+          total > 10
+            ? {
+                hideOnSinglePage: false,
+                showSizeChanger: true,
+                total: total,
+                pageSize: params.limit,
+                onChange: onChange,
+                onShowSizeChange: onShowSizeChange,
+              }
+            : false
+        "
             :row-selection="role!=='2'?{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange,
@@ -140,6 +152,8 @@ interface Istate {
   classColumns: any[];
   columns: any[];
   data: any[];
+  total:number;
+  params:any,
   isvisible: boolean;
   classInfoColumns: any[];
   classInfoData: any[];
@@ -179,10 +193,14 @@ export default defineComponent({
         id: props.trainId,
         type: props.type === "course" ? 1 : 2,
         withs: "userProfile",
+        limit:10,
+        page:1,
       },
       classUnselectParams: {
         id: props.trainId,
         type: props.type === "course" ? 1 : 2,
+        limit:10,
+        page:1
       },
       allClassId: [],
       allStuId: [],
@@ -290,6 +308,10 @@ export default defineComponent({
       ],
       columns: [],
       data: [],
+      total:0,
+      params:{
+        limit:10,
+      },
       classInfoData: [],
       classInfoVisible: false,
       classInfoLoading: false,
@@ -299,6 +321,7 @@ export default defineComponent({
       selectStuOrClassKeys: [],
       unselectLoading: false,
       selectedRowKeys: [],
+      
     });
     const rowSelection = {
       onChange: (selectedRowKeys1: any, selectedRows1: any) => {
@@ -315,6 +338,25 @@ export default defineComponent({
       },
     };
     const methods = {
+       onChange(page: any, pageSize: any) {
+        state.params.page = page;
+        state.params.limit = pageSize;
+         if (state.value == 1) {
+          methods.getStudentList();
+        } else {
+          methods.getClassList();
+        }
+      },
+      onShowSizeChange(current: any, size: any) {
+        console.log(current, size, "current, size");
+        state.params.page = current;
+        state.params.limit = size;
+         if (state.value == 1) {
+          methods.getStudentList();
+        } else {
+          methods.getClassList();
+        }
+      },
       onSelectChange(selectedRowKeys: any, selectedRows: any) {
         state.selectedRowKeys = selectedRowKeys;
         state.classStuDeleteid = selectedRows;
@@ -497,15 +539,19 @@ export default defineComponent({
         }
       },
       // 未排课查询
-      searchInquiry(studentValue: any, fullName: any, faculty: any, classes: any) {
+      searchInquiry(studentValue: any, fullName: any, faculty: any, classes: any,params:any) {
         console.log(studentValue, fullName, faculty, classes);
         if (state.value === 1) {
           state.stuUnselectParams.nick = fullName;
           state.stuUnselectParams.name = studentValue;
           state.stuUnselectParams.department = faculty;
+          state.stuUnselectParams.limit=params.limit;
+          state.stuUnselectParams.page=params.page;
           methods.getUnselectStu();
         } else {
           state.classUnselectParams.name = classes;
+          state.classUnselectParams.limit=params.limit;
+          state.classUnselectParams.page=params.page;
           methods.getUnselectClass();
         }
       },
@@ -514,7 +560,8 @@ export default defineComponent({
         state.unselectLoading = true;
         http.unSelectStudentGroup({ param: state.stuUnselectParams }).then((res: any) => {
           // state.data=res.data.list
-          state.unSelectData = res.data.list;
+          // state.unSelectData = res.data.list;
+          state.unSelectData = res.data;
           state.unselectLoading = false;
         });
       },
@@ -523,7 +570,8 @@ export default defineComponent({
         state.unselectLoading = true;
         http.unSelectClassGroup({ param: state.classUnselectParams }).then((res: any) => {
           // state.data=res.data.list
-          state.unSelectData = res.data.list;
+          // state.unSelectData = res.data.list;
+          state.unSelectData = res.data;
           state.unselectLoading = false;
         });
       },
@@ -535,11 +583,13 @@ export default defineComponent({
               id: props.trainId,
               type: props.type === "course" ? 1 : 2,
               withs: "userProfile,user",
+              page:state.params.page,limit:state.params.limit
             },
           })
           .then((res: any) => {
             console.log(res);
             state.data = res.data.list;
+            state.total=res.data.page.totalCount;
             state.data.forEach((item: any) => {
               state.allStuId.push(item.id);
             });
@@ -549,11 +599,12 @@ export default defineComponent({
       getClassList() {
         http
           .classGroup({
-            param: { id: props.trainId, type: props.type === "course" ? 1 : 2 },
+            param: { id: props.trainId, type: props.type === "course" ? 1 : 2 ,page:state.params.page,limit:state.params.limit},
           })
           .then((res: any) => {
             console.log(res);
             state.data = res.data.list;
+            state.total=res.data.page.totalCount;
             state.data.forEach((item: any) => {
               state.allClassId.push(item.id);
             });
@@ -579,11 +630,11 @@ export default defineComponent({
       // console.log('请求学生接口')
       methods.getStudentList();
     });
-    return { ...toRefs(state), ...methods, rowSelection, role };
+    return { ...toRefs(state), ...methods, rowSelection, role};
   },
 });
 </script>
-<style lang="less">
+<style lang="less" scoped>
 .customerInfor {
   margin: 10px;
   .radioInfo {
@@ -620,6 +671,7 @@ export default defineComponent({
   .stuAndclass {
     margin-top: 20px;
     .operateBtn {
+      margin-bottom:20px;
       .choice {
         margin-right: 10px;
       }
@@ -631,5 +683,9 @@ export default defineComponent({
       }
     }
   }
+}
+:deep(.ant-table-pagination.ant-pagination) {
+  float: none;
+  text-align: center;
 }
 </style>
