@@ -10,10 +10,10 @@
                     <a-input v-model:value="formState.train_time" />
                   </a-form-item>
                   <div class="time">
-                    <a-form-item label="开始时间" name="start_time">
-                        <a-date-picker class="time" placeholder="开始日期" v-model:value="formState.start_time" :disabled-date="disabledDate" valueFormat='YYYY-MM-DD'/>
+                    <a-form-item class="time_start" label="开始时间" name="start_time">
+                        <a-date-picker  placeholder="开始日期" v-model:value="formState.start_time" :disabled-date="disabledDate" valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
-                    <a-form-item label="结束时间" name="end_time">
+                    <a-form-item class="time_end" label="结束时间" name="end_time">
                         <a-date-picker placeholder="结束日期"  v-model:value="formState.end_time" :disabled-date='disableEndDate' valueFormat='YYYY-MM-DD'/>
                     </a-form-item>
                   </div>
@@ -23,12 +23,13 @@
               </div>
               <div class="right">
                   <a-form-item label="实训指导书"  name="guide" class="guide">
-                      <a-textarea style="height:220px" v-model:value="formState.guide" />
+                      <a-textarea v-model:value="formState.guide" showCount :maxlength="100" />
                   </a-form-item>
                   <a-form-item label="添加实训课件">
                      <a-upload
                         name="file"
                         :multiple="false"
+                        :fileList='fileList'
                         :before-upload="beforeUpload"
                         >
                         <a-button class="addCourseware">
@@ -68,6 +69,7 @@ interface Istate{
   formState:form,
   formRef:any,
   againForm?:form
+  fileList:any[]
 }
 export default defineComponent({
   name: 'CreatePosts',
@@ -99,6 +101,7 @@ export default defineComponent({
           courseware:'',
           train_id:''
         },
+        fileList:[]
      })
      const methods={
       disabledDate(current:any) {
@@ -125,6 +128,7 @@ export default defineComponent({
         http.uploadsFile({param:fd}).then((res:any)=>{
           console.log(res)
           state.formState.courseware=res.data.url
+          state.fileList=[file]
         })
         return false
       },
@@ -193,6 +197,10 @@ export default defineComponent({
       .time{
         display: flex;
         justify-content:space-between;
+        width: 100%;
+        .time_start,.time_end{
+          width:45%;
+        }
       }
     }
     .right{
@@ -216,5 +224,7 @@ export default defineComponent({
     }
   }
 }
-
+:deep(.ant-calendar-picker){
+  width:100%;
+}
 </style>

@@ -37,6 +37,7 @@
       :total="page.total"
       v-model:selectedRows="selectedRows"
       @pageChange="pageChange"
+      @showSizeChange='showSizeChange'
       :trainId="trainInfo.trainId"
     ></evaluate-table>
     <task-statistic :trainId="trainInfo.trainId"> </task-statistic>
@@ -80,7 +81,7 @@ export default defineComponent({
     const data = reactive<IData>({
       searchInfo: {
         id: trainInfo.trainId,
-        limit: 0,
+        limit:0,
         page: 0,
         withs: "user,userProfile",
         name: "",
@@ -97,6 +98,8 @@ export default defineComponent({
     });
     // 获取列表数据
     const getResourceList = () => {
+      data.searchInfo.page=data.page.page
+      data.searchInfo.limit=data.page.pageSize
       http.assessmentList({ param: data.searchInfo }).then((res: any) => {
         console.log(res);
         data.tableList = res.data.list;
@@ -120,6 +123,10 @@ export default defineComponent({
       data.page.page = page;
       getResourceList();
     };
+    const showSizeChange=(pageSize:number)=>{
+      data.page.pageSize=pageSize
+      getResourceList();
+    }
     // 导出成绩
     const exportResult = () => {
       console.log("导出", data.selectedRows);
@@ -229,7 +236,7 @@ export default defineComponent({
       clear,
       exportResult,
       releaseResult,
-      pageChange,
+      pageChange,showSizeChange
     };
   },
 });

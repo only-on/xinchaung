@@ -204,7 +204,7 @@ export default defineComponent({
       },
       allClassId: [],
       allStuId: [],
-      value: 1,
+      value: 0,
       isvisible: false,
       unSelectData: [],
       classStuDeleteid: [],
@@ -623,12 +623,60 @@ export default defineComponent({
       }
     );
     onMounted(() => {
-      state.columns =
-        role === "2"
-          ? state.stuColumns.splice(0, state.stuColumns.length - 1)
-          : state.stuColumns;
-      // console.log('请求学生接口')
-      methods.getStudentList();
+      // state.columns =
+      //   role === "2"
+      //     ? state.stuColumns.splice(0, state.stuColumns.length - 1)
+      //     : state.stuColumns;
+      // // console.log('请求学生接口')
+ 
+        //      state.value=1
+        http.studentGroup({
+            param: {
+              id: props.trainId,
+              type: props.type === "course" ? 1 : 2,
+              withs: "userProfile,user",
+              page:state.params.page,limit:state.params.limit
+            },
+          })
+          .then((res: any) => {
+            state.data = res.data.list;
+            state.total=res.data.page.totalCount;
+            state.data.forEach((item: any) => {
+              state.allStuId.push(item.id);
+            });
+            if(state.total){
+                 state.value=1
+                  state.columns =
+                  role === "2"
+                    ? state.stuColumns.splice(0, state.stuColumns.length - 1)
+                  : state.stuColumns;
+                return 
+            }else{
+               http
+                .classGroup({
+                  param: { id: props.trainId, type: props.type === "course" ? 1 : 2 ,page:state.params.page,limit:state.params.limit},
+                })
+                .then((res: any) => {
+                  console.log(res);
+                  state.data = res.data.list;
+                  state.total=res.data.page.totalCount;
+                  state.data.forEach((item: any) => {
+                    state.allClassId.push(item.id);
+                  });
+                  if(state.total){
+                    state.value=2
+                     state.columns =
+                  role === "2"
+                    ? state.classColumns.splice(0, state.classColumns.length - 1)
+                  : state.classColumns;
+                  return
+                  }else{
+                    state.value=1
+                    methods.getClassList()
+                  }
+                });
+            }
+          }) 
     });
     return { ...toRefs(state), ...methods, rowSelection, role};
   },

@@ -79,8 +79,9 @@
         v-model:current="page.page" 
         :pageSize="page.pageSize" 
         :total="total" 
+        show-size-changer
         @change="pageChange" 
-        :hideOnSinglePage="true"
+        @showSizeChange="showSizeChange"
       />
     </div>
   </div>
@@ -133,7 +134,7 @@ export default defineComponent({
     },
     role: {},
   },
-  emits: ["update:selectedRows", "pageChange"],
+  emits: ["update:selectedRows", "pageChange",'showSizeChange'],
   setup(props, { emit }) {
     const data = reactive<IData>({
       selectedRowKeys: [],
@@ -296,9 +297,10 @@ export default defineComponent({
       emit("pageChange", page);
     };
     // pageSize 变化的回调
-    const onShowSizeChange = (current: number, size: number) => {
+    const showSizeChange = (current: number, size: number) => {
       data.page.page = current;
       data.page.pageSize = size;
+      emit("showSizeChange", size);
     };
     const onSelectChange = (selectedRowKeys: any, selectedRows: any) => {
       console.log(selectedRows, "hhhhhhhhh哈哈哈");
@@ -322,7 +324,7 @@ export default defineComponent({
       ...toRefs(operationHandle),
       columns,
       pageChange,
-      onShowSizeChange,
+      showSizeChange,
       rowkey,
       onSelectChange,
     };

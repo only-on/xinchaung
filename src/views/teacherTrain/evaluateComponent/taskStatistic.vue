@@ -20,10 +20,11 @@
       <!-- show-quick-jumper  -->
       <a-pagination
         v-model:current="page.page"
+        show-size-changer
         :pageSize="page.pageSize"
         :total="page.total"
         @change="pageChange"
-        :hideOnSinglePage="true"
+        @showSizeChange='showSizeChange'
       />
     </div>
   </div>
@@ -58,7 +59,7 @@ export default defineComponent({
       },
     });
     const getTaskStatisticList = () => {
-      http.assessmentStatistic({ param: { id: props.trainId } }).then((res: any) => {
+      http.assessmentStatistic({ param: { id: props.trainId,limit:data.page.pageSize,page:data.page.page} }).then((res: any) => {
         console.log(res, "统计芙蓉如风");
         data.tableList = res.data?.list;
         data.page.total = res.data?.page.totalCount;
@@ -71,6 +72,11 @@ export default defineComponent({
       data.page.pageSize = pageSize;
       getTaskStatisticList();
     };
+    const showSizeChange=(current:number, size:number)=>{
+      data.page.page=current;
+      data.page.pageSize=size;
+      getTaskStatisticList();
+    }
     onMounted(() => {
       getTaskStatisticList();
     });
@@ -80,6 +86,7 @@ export default defineComponent({
       pagination,
       ...toRefs(data),
       pageChange,
+      showSizeChange
     };
   },
 });

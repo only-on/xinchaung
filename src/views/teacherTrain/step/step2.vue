@@ -232,6 +232,7 @@ export default defineComponent({
               width: 70%;
               .ant-form-item{
                   margin-bottom: 0px;
+                  margin-right: 20px;
               }
               .selectWidth{
                   width: 120px;

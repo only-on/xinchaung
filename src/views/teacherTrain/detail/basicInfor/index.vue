@@ -9,16 +9,15 @@
           <a-input v-model:value="form.class_cnt" :disabled="edit"></a-input>
         </a-form-item>
         <div class="time">
-          <a-form-item label="开始时间" name="start_times">
+          <a-form-item label="开始时间" class="time_start" name="start_times">
             <a-date-picker
-              class="time"
               placeholder="开始日期"
               v-model:value="form.start_times"
               valueFormat="YYYY-MM-DD"
               :disabled="edit"
             />
           </a-form-item>
-          <a-form-item label="结束时间" name="end_times">
+          <a-form-item label="结束时间" class="time_end" name="end_times">
             <a-date-picker
               placeholder="结束日期"
               v-model:value="form.end_times"
@@ -141,8 +140,15 @@ export default defineComponent({
   .info-left {
     width: 50%;
     .time {
+      width: 100%;
       display: flex;
       justify-content: space-between;
+      .time_start{
+        width:45%;
+      }
+      .time_end{
+        width:48%;
+      }
     }
   }
   .info-right {
@@ -154,5 +160,8 @@ export default defineComponent({
       margin-bottom: 20px;
     }
   }
+}
+:deep(.ant-calendar-picker){
+  width: 100%;
 }
 </style>

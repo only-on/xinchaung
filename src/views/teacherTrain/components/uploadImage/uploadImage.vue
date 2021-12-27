@@ -231,8 +231,8 @@ export default defineComponent({
   }
   .radio{
     position: absolute;
-    left: 10px;
-    top: 10px;
+    right: 0px;
+    top: 0px;
     .ant-radio-inner{
       width: 20px;
       height: 20px;
@@ -327,8 +327,8 @@ export default defineComponent({
   }
   .radio{
     position: absolute;
-    left:5px;
-    top:5px;
+    right:0px;
+    top:0px;
   }
 }
 </style>
