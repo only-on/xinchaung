@@ -1,5 +1,5 @@
 <template>
-  <div v-layout-bg class="admin-home-wrap setScrollbar">
+  <div class="admin-home-wrap setScrollbar">
     <div class="a-h-top">
       <div class="a-card-item">
         <div class="a-card-left">
