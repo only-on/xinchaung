@@ -339,7 +339,7 @@ export default defineComponent({
           content: '';
           position: absolute;
           left:8px;
-          top:10px;
+          top:8px;
           background: url(../../assets/images/screenicon/Group7.png) no-repeat;
           width: 16px;
           height: 16px;

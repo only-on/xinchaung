@@ -81,13 +81,13 @@ const columns=[
     title: '类型',
     dataIndex: 'type',
     align:'center',
-    // width:100
+    width:100
   },
   {
     title: '发帖人',
     dataIndex: 'creat',
     align:'center',
-    width:120
+    width:100
   },
   {
     title: '最后回复',

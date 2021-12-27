@@ -389,9 +389,6 @@ export default defineComponent({
         let data=res.data.list
         AllStudent.push(...data)
         StudentTotal.value=res.data.page.totalCount
-
-        //   需要过滤已经选择的   呆坐。。。。。。。。。
-
       })
     }
     function addStudent(){
@@ -405,6 +402,7 @@ export default defineComponent({
         return
       }
       http.editClass({urlParams:{class_id:editId.value},param:{student_ids:state.StudentSelectedRowKeys}}).then((res:IBusinessResp)=>{
+        state.StudentSelectedRowKeys.length=0
         message.success('添加成功')
         initData()
         visible.value=false
@@ -476,7 +474,7 @@ export default defineComponent({
           content: '';
           position: absolute;
           left:8px;
-          top:10px;
+          top:8px;
           background: url(../../assets/images/screenicon/Group7.png) no-repeat;
           width: 16px;
           height: 16px;

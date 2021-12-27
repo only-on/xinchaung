@@ -10,7 +10,7 @@
   </div>
 </template>
 
-<style lang="scss">
+<style lang="less">
 .footer-box {
   flex-shrink: 0;
   text-align: center;
