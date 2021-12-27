@@ -63,7 +63,7 @@
       </div>
     </div>
     <div class="flex-line m-t-20">
-      <div class="w-3 bg-white m-l-20 p-22 div-h">
+      <div class="w-3 bg-white m-l-20 p-22 div-h b-r">
         <canvas-title title="在线 / 离线人数比例"></canvas-title>
         <div class="canvas-wrap">
           <div class="legend">
@@ -96,7 +96,7 @@
           </div>
         </div>
       </div>
-      <div class="w-7 bg-white p-22">
+      <div class="w-7 bg-white p-22 b-r">
         <div class="flex-line">
           <canvas-title title="控制节点资源状态" />
           <a-select
@@ -199,7 +199,7 @@
       </div>
     </div>
     <div class="flex-line m-t-20">
-      <div class="w-3 bg-white m-l-20 p-22 div-h">
+      <div class="w-3 bg-white m-l-20 p-22 div-h b-r">
         <canvas-title title="镜像统计"></canvas-title>
         <div class="canvas-wrap">
           <div class="legend">
@@ -232,7 +232,7 @@
           </div>
         </div>
       </div>
-      <div class="w-7 bg-white p-22">
+      <div class="w-7 bg-white p-22 b-r">
         <div class="flex-line">
           <canvas-title title="计算节点资源状态" />
           <a-select
@@ -333,7 +333,7 @@
     </div>
     <div class="flex-line row-3">
       <div
-        class="line-item"
+        class="line-item b-r"
         v-for="(val, key) in nodeGraphAllData.master"
         :key="key.toString()"
       >
@@ -341,7 +341,7 @@
         <!-- <charts-line :data="val"></charts-line> -->
       </div>
       <div
-        class="line-item"
+        class="line-item b-r"
         v-for="(val, key) in nodeGraphAllData.slave"
         :key="key.toString()"
       >
@@ -709,6 +709,9 @@ export default defineComponent({
   }
   .bg-white {
     background-color: @white;
+  }
+  .b-r{
+    border-radius: @border-radius-base;
   }
   .m-l-20 {
     margin-right: 20px;
