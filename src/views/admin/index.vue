@@ -277,7 +277,7 @@
                 >
               </a-select>
             </div>
-            <div class="ip-canvas m-30 computes-h" ref="computesGpuEl"></div>
+            <div class="ip-canvas m-30 computes-h" v-if="isShowGPU" ref="computesGpuEl"></div>
           </div>
         </div>
         <div class="flex-line compute-progress">
@@ -396,6 +396,7 @@ type TreactiveData = {
     master: any;
     slave: any;
   };
+  isShowGPU:boolean
 };
 export default defineComponent({
   components: {
@@ -429,6 +430,7 @@ export default defineComponent({
         master: {},
         slave: {},
       },
+      isShowGPU:false
     });
     const imgs = { img1, img2, img3, img4, img5 };
     const gauge: {
@@ -504,6 +506,7 @@ export default defineComponent({
         reactiveData.gpuSelectData.forEach((item: any, index: number) => {
           if (item.id === reactiveData.currentGpuId) {
             reactiveData.currentGpu = item;
+            // isShowGPU
             gauge.computesGpu = gaugeCanvas(
               "使用率",
               Number(item.gpu_utilization).toFixed(1),
@@ -546,13 +549,15 @@ export default defineComponent({
               reactiveData.currentGpuId = (
                 reactiveData as any
               ).gpuSelectData[0].id;
+              reactiveData.isShowGPU=true
             } else {
-              gauge.computesGpu = gaugeCanvas(
-                "使用率",
-                0,
-                theme.blueColor,
-                computesGpuEl.value
-              );
+              reactiveData.isShowGPU=false
+              // gauge.computesGpu = gaugeCanvas(
+              //   "使用率",
+              //   0,
+              //   theme.blueColor,
+              //   computesGpuEl.value
+              // );
             }
             resolve();
           });
