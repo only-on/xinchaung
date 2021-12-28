@@ -52,7 +52,10 @@ import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import handImg from "src/assets/images/reqi_icon.png";
-import userImg from "src/assets/images/user/teacher_p.png";
+import teacherUserImg from "src/assets/images/user/teacher_p.png";
+import adminUserImg from "src/assets/images/user/admin_p.png";
+import studentUserImg from "src/assets/images/user/student_p.png";
+// admin_p
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -60,6 +63,8 @@ export default defineComponent({
     const router = useRouter();
     const { lStorage } = extStorage;
     const role = lStorage.get("role");
+    const List={1:'',2:adminUserImg,3:teacherUserImg,4:studentUserImg,5:''}
+    const userImg=List[Number(role)]
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const homePath=computed(()=>{
