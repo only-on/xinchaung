@@ -35,7 +35,7 @@
             <a-divider dashed />
             <div class="upload-wrap">
               <a-upload :before-upload="beforeUpload" :show-upload-list="false">
-                <a-button :disabled="loading" type="primary" icon="upload"
+                <a-button :disabled="loading" type="primary"
                   >上传文件</a-button
                 >
               </a-upload>
