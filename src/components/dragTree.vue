@@ -554,7 +554,7 @@ export default defineComponent({
       .iconfont {
         margin-left: 5px;
         font-size: 12px;
-        color: #8955b5;
+        color: @theme-color;
         display: none;
       }
     }

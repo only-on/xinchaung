@@ -1,3 +1,4 @@
+import {theme} from "src/utils/theme"
 let barOption = {
   title: {
 		text: '实验得分比例柱状图',
@@ -16,7 +17,7 @@ let barOption = {
 				name: '用时得分',
 				icon: 'rect',
 				itemStyle: {
-					color: '#8955b5'
+					color: theme.themeColor
 				}
 			},
 			{
@@ -126,7 +127,7 @@ let barOption = {
       barWidth : 30,
       stack: '得分',
 			itemStyle: {
-				color: '#8955b5'
+				color: theme.themeColor
 			}
     },
     {
@@ -168,7 +169,7 @@ let barOption = {
   ]
 };
 let pieOption = {
-	color: ['#8955b5', '#ea775c', '#6d7e9d', '#ffc719', '#63baad', '#e3e6dd'],
+	color: [theme.themeColor, '#ea775c', '#6d7e9d', '#ffc719', '#63baad', '#e3e6dd'],
 	tooltip: {
 		trigger: 'item',
 		// formatter: "{b} <br/>人数占比: {d}%"
@@ -307,7 +308,7 @@ let taskOption = {
 			fontSize: 15
 		}
 	},
-	color:['#8955B5','#E8684A','#FFC40D','#6D7E9D','#2ebec0'],
+	color:[theme.themeColor,'#E8684A','#FFC40D','#6D7E9D','#2ebec0'],
 	tooltip : {
 		trigger: 'axis',
 		formatter: function(params: any) {
@@ -403,7 +404,7 @@ let taskOption = {
 				// normal: {
 				borderRadius: [4, 4, 4, 4],
 				color: function(params: any) {
-					let colorList = ['#8955B5','#efba1c']
+					let colorList = [theme.themeColor,'#efba1c']
 					return colorList[params.dataIndex]
 				}
 				// }
