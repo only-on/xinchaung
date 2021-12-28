@@ -3,6 +3,7 @@
     <div class="classical__card">
       <div class="classical__search-form">
         <div class="classical__search">
+          <!-- {{dataIsPublic}}dataIsPublic -->
           <a-input
             class="classical_search-input"
             v-model:value="searchStr"
@@ -130,6 +131,7 @@ import { useRoute, useRouter } from "vue-router";
 import http from "../../api";
 import Empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
+import messages from "src/i18n/zh_CN";
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
@@ -155,6 +157,7 @@ export default defineComponent({
     // 数据集类型
     // let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
     const dataType = ref(0);
+    const dataIsPublic=ref(1);
     console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
     const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
@@ -171,7 +174,7 @@ export default defineComponent({
           { name: "公有", componenttype: 0 },
           { name: "私有", componenttype: 1 },
         ],
-        componenttype: 1,
+        componenttype:'',
         showContent: false,
         navType: false,
         backOff: false,
@@ -183,16 +186,20 @@ export default defineComponent({
     watch(
       () => configuration.componenttype,
       (newVal: number) => {
+      dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
         getDataSetList();
       }
     );
+    watch(()=>dataType.value,(newVal:number)=>{
+      getDataSetList();
+    })
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1;
     });
-    const dataIsPublic = computed(() => {
-      return configuration.componenttype === 1 ? 1: 0;
-    });
-
+    // const dataIsPublic = computed(() => {
+    //   console.log(configuration.componenttype,'onfiguration.componenttype')
+    //   return configuration.componenttype === 1 ? 1: 0;
+    // });
     const labelCol = { span: 3 };
     const wrapperCol = { span: 21 };
     const handleSearch = (e: Event) => {
@@ -286,8 +293,8 @@ export default defineComponent({
     watch(()=>route.params["type"],(val:any)=>{
       console.log(val,'route.params.type')
       dataType.value=val
-      getDataSetList();
-      upNav()
+      // getDataSetList();
+      // upNav()
     },{
       immediate: true,
       deep:true
@@ -300,6 +307,7 @@ export default defineComponent({
 
     return {
       dataType,
+      dataIsPublic,
       searchStr,
       showDiskUsage,
       createFolderVisible,
