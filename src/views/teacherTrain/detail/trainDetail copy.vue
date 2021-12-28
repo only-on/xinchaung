@@ -199,7 +199,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .top{
-  background-image: url(/src/assets/common/course-detail_bg.jpg);
+  background-image: url(/src/assets/images/studentcourse/course-detail_bg.jpg);
   background-size: 100% 234px;
   background-repeat: no-repeat;
   padding-top: 32px;

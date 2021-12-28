@@ -48,7 +48,7 @@ import {
   watch,
   onBeforeUnmount,
 } from "vue";
-import bg from "src/assets/common/course-detail_bg.jpg";
+import bg from "src/assets/images/studentcourse/course-detail_bg.jpg";
 import top from "./top.vue";
 import storage from "src/utils/extStorage";
 import { useRoute } from "vue-router";
@@ -162,7 +162,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .heardBox {
-  background-image: url(/src/assets/common/course-detail_bg.jpg);
+  background-image: url(/src/assets/images/studentcourse/course-detail_bg.jpg);
   background-size: 100% 234px;
   background-repeat: no-repeat;
   padding-top: 32px;

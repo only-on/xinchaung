@@ -140,7 +140,7 @@ import {
 import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
-import layoutBg from "src/assets/common/layout_bg.jpg"
+import layoutBg from "src/assets/images/common/layout_bg.jpg"
 import {
   onBeforeRouteLeave,
   useRoute,

@@ -83,7 +83,7 @@
 
 <script lang="ts">
 import { defineComponent, inject, onMounted, reactive, toRefs, provide, ref } from "vue";
-import bg from "src/assets/common/course-detail_bg.jpg";
+import bg from "src/assets/images/studentcourse/course-detail_bg.jpg";
 import top from "./top.vue";
 import storage from "src/utils/extStorage";
 import { useRoute } from "vue-router";

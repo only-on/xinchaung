@@ -171,7 +171,7 @@ import {
 } from "src/utils/vncInspect";
 import { wsConnect } from "src/request/websocket";
 import storage from "src/utils/extStorage"
-import layoutBg from "src/assets/common/layout_bg.jpg"
+import layoutBg from "src/assets/images/common/layout_bg.jpg"
 
 export default defineComponent({
   components: {

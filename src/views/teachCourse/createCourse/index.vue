@@ -59,7 +59,7 @@ import {
   provide,
   onMounted,
 } from "vue";
-import bg from "src/assets/common/course-detail_bg.jpg";
+import bg from "src/assets/images/studentcourse/course-detail_bg.jpg";
 import editCourseBase from "src/components/course/editCourseBase.vue";
 import courseExperiment from "../courseExperiment/courseExperiment.vue";
 import customerInfor from "src/views/teacherTrain/detail/customerInfor/index.vue";

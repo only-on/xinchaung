@@ -1,5 +1,5 @@
 import { ObjectDirective } from "vue"
-import bg from "../assets/common/layout_bg.jpg"
+import bg from "../assets/images/common/layout_bg.jpg"
 const layoutBg:ObjectDirective={
     mounted(el:HTMLElement,binging:any){
         const dom=document.getElementById("main-box")
