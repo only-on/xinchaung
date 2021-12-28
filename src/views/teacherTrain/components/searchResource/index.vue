@@ -498,5 +498,11 @@ interface FileInfo {
   :deep(.ant-input[disabled]){
     cursor: pointer;
   }
+  :deep(.ant-select-selector){
+    height: 35px;
+  }
+  :deep(.ant-input-group-addon){
+    background-color: transparent;
+  }
 }
 </style>

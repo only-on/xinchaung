@@ -105,7 +105,7 @@ interface quesType {
 interface exerciseList {
   initial: any;
   type_id?: number;
-  level_id?: number;
+  level_id?: any;
   name?: string;
   include?: string;
   limit?: number;
@@ -267,6 +267,7 @@ export default defineComponent({
       switchExer(key: any) {
         state.selectedId = key;
         state.exerListParams.type_id = key;
+        // state.exerListParams.level_id='';
         state.levelId = "";
         state.searchname = "";
         state.pagination.current = 1;

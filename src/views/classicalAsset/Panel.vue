@@ -28,7 +28,7 @@
             v-show="showDiskUsage"
             class="classical__disk-usage--container"
           ></disk-usage>
-          <a-button type="primary" @click="createFolder">
+          <a-button v-show="showDiskUsage" type="primary" @click="createFolder">
             <template #icon
               ><span class="iconfont icon-tianjia"></span>&nbsp;
             </template>
@@ -190,7 +190,7 @@ export default defineComponent({
       return configuration.componenttype === 1;
     });
     const dataIsPublic = computed(() => {
-      return configuration.componenttype === 1 ? 0 : 1;
+      return configuration.componenttype === 1 ? 1: 0;
     });
 
     const labelCol = { span: 3 };

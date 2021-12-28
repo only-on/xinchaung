@@ -442,7 +442,9 @@ export default defineComponent({
     };
 
     const checkMime = (dataType: number, file: File) => {
-      return fileRequirements[dataType].mime.includes(file.type);
+      console.log(file.name,file.name.split('.'))
+      // return fileRequirements[dataType].mime.includes(file.type);
+      return fileRequirements[dataType].suffix.includes(file.name.split('.')[file.name.split('.').length-1]);
     };
 
     /**
@@ -465,15 +467,16 @@ export default defineComponent({
         );
         return false;
       }
-      if (!checkSize(dataType, file)) {
-        $message.warning(
-          "文件大小不符合要求，要求为：" +
-            fileRequirements[dataType].size / 1024 / 1024 +
-            "MB"
-        );
-        return false;
-      }
+      // if (!checkSize(dataType, file)) {
+      //   $message.warning(
+      //     "文件大小不符合要求，要求为：" +
+      //       fileRequirements[dataType].size / 1024 / 1024 +
+      //       "MB"
+      //   );
+      //   return false;
+      // }
       if (!checkMime(dataType, file)) {
+        console.log(dataType, file)
         $message.warning(
           "文件类型不符合要求，要求为：" +
             fileRequirements[dataType].mime.join("")

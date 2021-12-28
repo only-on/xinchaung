@@ -2,12 +2,12 @@
     <div id='teacherDataExercises' v-layout-bg>
         <div class="conTop">
              <div class="searchInput">
-                <a-input-search class="inputToSearch" v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" placeholder="请输入目录名称关键字查询" />
+                <a-input-search class="inputToSearch" v-model:value='searchValue' @keyup.enter="searchData" @search="searchData" placeholder="请输入题库名称关键字查询" />
             </div>
             <div v-if="type">
-                <a-button type="primary" @click="createExceriseBtn">创建目录</a-button>
+                <a-button type="primary" @click="createExceriseBtn">创建题库</a-button>
             </div>
-             <a-modal class="createExercise" :visible="visible" title="创建目录" width="900px" @cancel="handleCancel" @ok="handleOk">
+             <a-modal class="createExercise" :visible="visible" title="创建题库" width="900px" @cancel="handleCancel" @ok="handleOk">
                 <div class="modal-con">
                     <a-form ref="formRef" :model="form" :rules="rules">
                         

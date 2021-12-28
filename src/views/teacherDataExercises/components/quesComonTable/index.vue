@@ -2,20 +2,27 @@
     <div class="quesComonTable">
         <div class="question-content-operate">
                 <div class="question-search">
-                     <a-form-item label="题目：">
-                         <a-input-search class="search-input" v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" placeholder="请输入目录名称关键字查询" />
+                     <a-form-item>
+                        <a-input class="search-input" v-model:value='searchExercise' @keyup.enter="searchExerData" @search="searchExerData" placeholder="题目">
+                             <template #prefix>
+                             <img src="src/assets/images/screenicon/Group6.png" /> 
+                             </template>
+                        </a-input>
                      </a-form-item>
                      <div class="select">
-                         <a-form-item label="难度：">
-                         <a-select
-                            @change="handleChange"
-                            default-value="——请选择——"
-                            v-model:value="selectLeves"
-                        >
-                            <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
-                            {{item.name}}
-                            </a-select-option>
-                        </a-select>
+                         <a-form-item>
+                             <before-icon :icon="iconDicfult">
+                                  <a-select
+                                    @change="handleChange"
+                                    placeholder="请选择难度"
+                                    v-model:value="selectLeves"
+                                >
+                                    <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
+                                    {{item.name}}
+                                    </a-select-option>
+                                </a-select>
+                                    </before-icon>
+                        
                      </a-form-item>
                      </div>
                 </div>
@@ -181,6 +188,8 @@ import request from "../../../../api";
 import knowledgeModal from '../../../teachCourse/createTestPaper/knowledgeModal.vue'
 import batchImport from '../batchImport.vue'
 import Empty from 'src/components/Empty.vue'
+import beforeIcon    from 'src/components/aiAnt/beforeIcon.vue'
+import iconDicfult from 'src/assets/images/screenicon/Group3.png'
 interface levelType{
     name:string,
     id:number,
@@ -239,7 +248,7 @@ interface ItreeDatalist {
 }
 export default defineComponent({
     name:'quesComonTable',
-    components:{knowledgeModal,batchImport,Empty},
+    components:{knowledgeModal,batchImport,Empty,beforeIcon},
     props:['selectedId','poolid','tabledata','total','initial'],
     setup:(props,context)=>{
         // 删除行还是批量
@@ -318,12 +327,22 @@ export default defineComponent({
                     return record.answers[0].answer 
                 }else{
                     const answer:any=[]
+                    const answerIndex:any=[]
                     record.answers.forEach((it:any) => {
-                        record.options.forEach((item:any) => {
+                        record.options.forEach((item:any,index:any) => {
                             if(it.answer===item.id.toString()){
-                                answer.push(item.option)
+                                console.log(index)
+                                answerIndex.push(index)
+                                // const answersOptions=['A','B','C','D']
+                                // answer.push(item.option)
+                                // answer.push(answersOptions[index])
                             }
                         });
+                    });
+                    const answersOptions=record.type_id===3?['正确','错误']:['A','B','C','D']
+                    answerIndex.sort()
+                    answerIndex.forEach((it:any) => {
+                        answer.push(answersOptions[it])
                     });
                     return answer.join(',')
                 }
@@ -599,19 +618,19 @@ export default defineComponent({
                     }
            switch(newVal){
                   case 1:
-                      state.selectLeves='——请选择——';
+                      state.selectLeves=undefined;
                   return state.createmodal.title='单选题';
                   case 2:
-                      state.selectLeves='——请选择——';
+                      state.selectLeves=undefined;
                   return state.createmodal.title='多选题';
                   case 3:
-                      state.selectLeves='——请选择——';
+                      state.selectLeves=undefined;
                   return state.createmodal.title='判断题';
                   case 4:
-                      state.selectLeves='——请选择——';
+                      state.selectLeves=undefined;
                   return state.createmodal.title='填空题';
                   case 5:
-                      state.selectLeves='——请选择——';
+                      state.selectLeves=undefined;
                   return state.createmodal.title='解答题';
               }
         })
@@ -620,7 +639,7 @@ export default defineComponent({
         onMounted(()=>{
             methods.exerciseLevels()
         })
-        return {...methods,...toRefs(state),rowSelection,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany}
+        return {...methods,...toRefs(state),rowSelection,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany,iconDicfult}
     }
 })
 </script>
@@ -659,7 +678,7 @@ export default defineComponent({
                 border-left:none;
             }
             .select{
-                width:250px;
+                width: 190px;
                 margin-left: 20px;
             }
             .input-search{

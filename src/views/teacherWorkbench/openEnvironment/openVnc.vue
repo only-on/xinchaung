@@ -34,6 +34,7 @@
             </div>
             <a-divider dashed />
             <div class="upload-wrap">
+              <!-- icon="upload" -->
               <a-upload :before-upload="beforeUpload" :show-upload-list="false">
                 <a-button :disabled="loading" type="primary"
                   >上传文件</a-button
@@ -469,6 +470,12 @@ export default defineComponent({
 <style lang="less">
 .vm-environment-drawer {
   z-index: 1111 !important;
+  .ant-btn > span{
+  font-size: 14px;
+  }
+  .ant-btn-primary{
+    box-shadow: none;
+  }
   .ant-drawer-content-wrapper {
     width: 100% !important;
     .ant-drawer-body {
@@ -561,15 +568,16 @@ export default defineComponent({
   .list-row{
     font-size: 14px;
     margin-bottom: 14px;  
-    color:rgba(@black,0.25);
+    color:rgba(@black,0.65);
   }
   .vm-list-title {
     @extend .list-title;
     font-size: 14px;
   }
-  // .dataset-url {
-  //   padding: 10px 0;
-  // }
+  .dataset-url {
+    // padding: 10px 0;
+    color:rgba(@black,0.65);
+  }
   .upload-tip {
     background: #fafafa;
     padding: 10px;
@@ -621,8 +629,5 @@ export default defineComponent({
   top: 40px;
   right: -10px;
 }
-.ant-btn-primary:hover,
-.ant-btn-primary:focus {
-  background-color: @theme-color;
-}
+
 </style>
