@@ -203,16 +203,6 @@ export default defineComponent({
       exerciseDetail() {
         state.initial = router.currentRoute.value.query.initial;
         state.initialIfEdit = state.initial === "0" ? true : false;
-        updata({
-          showContent: true,
-          navType: false,
-          tabs: [],
-          navPosition: "outside",
-          componenttype: 0,
-          backOff: true,
-          showPageEdit: state.initialIfEdit,
-          pageEdit: myFn2,
-        });
         const id: any = router.currentRoute.value.query.id;
         teacherDataExerApi
           .detailExercise({ urlParams: { pool_id: id } })
@@ -270,6 +260,8 @@ export default defineComponent({
         // state.exerListParams.level_id='';
         state.levelId = "";
         state.searchname = "";
+        delete state.exerListParams.level_id
+        delete state.exerListParams.name
         state.pagination.current = 1;
         state.pagination.pageSize = 10;
         methods.exerciseDetailList(state.exerListParams);
@@ -280,7 +272,7 @@ export default defineComponent({
         exerListParams.limit = state.pagination.pageSize;
         exerListParams.page = state.pagination.current;
         teacherDataExerApi
-          .getDetailExerciseList({ urlParams: { pool_id: id }, param: exerListParams })
+          .getDetailExerciseList({ urlParams: { pool_id: id }, param: state.exerListParams })
           .then((res: any) => {
             state.tabledata = res.data.list;
             state.total = res.data.page.totalCount;
