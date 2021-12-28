@@ -101,14 +101,14 @@ export default defineComponent({
     height: 600px;
     .left{
       width: 320px;
-      background: #fff;
+      background: @body-background;
       margin-right: 20px;
       flex-shrink: 0;
       overflow: auto;
     }
     .right{
       flex: 1;
-      background: #fff;
+      background: @body-background;
       overflow: auto;
     }
   }

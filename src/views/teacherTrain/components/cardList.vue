@@ -315,13 +315,13 @@ export default defineComponent({
       padding:0 14px;
     }
     .train-time{
-      color: #8c8c8c;
+      color: @text-color-secondary;
       margin-bottom: 12px;
       padding:0 14px;
     }
     .desc-status{
       display: none;
-      color: #8c8c8c;
+      color: @text-color-secondary;
       padding: 0 14px;
       .iconfont:hover{
         color: @theme-color;

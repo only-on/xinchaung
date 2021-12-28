@@ -302,9 +302,9 @@ export default defineComponent({
         border-radius: 20px;
         text-align: center;
         font-size: 18px;
-        background: #fff;
+        background: @body-background;
         height: 130px;
-        box-shadow: 0 0 15px 2px rgba(122,84,214, 0.84);
+        box-shadow: 0 0 15px 2px @theme-gradient-color;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -320,25 +320,25 @@ export default defineComponent({
   }
   .chart-box{
     width: 100%;
-    background: #fff;
+    background: @body-background;
     padding: 25px;
     height: 400px;
     border-radius: 6px;
     &.completion{
       background: url('src/assets/images/teacher-default/panel-first-bg.png') no-repeat 90% 55%;
-      background-color: #fff;
+      background-color: @body-background;
       &>div:nth-child(2){
         display: flex;
       }
       .statistics{
         padding: 50px 0;
-        color: #807f7f;
+        color: @text-color-secondary;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         span{
           font-size: 40px;
-          color: #000;
+          color: @black;
         }
       }
     }
@@ -370,7 +370,7 @@ export default defineComponent({
         padding: 40px;
         &>div{
           padding: 15px;
-          color: #807f7f;
+          color: @text-color-secondary;
         }
       }
     }
@@ -378,9 +378,9 @@ export default defineComponent({
       span{
         cursor: pointer;
         margin-right: 30px;
-        color: #949494;
+        color: @text-color-secondary;
         &.active{
-          color: #363636
+          color: @text-color;
         }
       }
     }
@@ -406,7 +406,7 @@ export default defineComponent({
           height: 16px !important;
         }
         .ant-progress-text{
-          color: #000
+          color: @black;
         }
       }
     }

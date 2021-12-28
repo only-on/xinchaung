@@ -42,6 +42,7 @@
 <script lang="ts">
 import { defineComponent, onMounted, watch, ref, reactive } from "vue";
 import * as echarts from "echarts";
+import { theme } from 'src/utils/theme';
 interface Idata {
   time_score: any;
   question_score: any;
@@ -56,6 +57,7 @@ interface Idata {
 export default defineComponent({
   props: ["data", "type"],
   setup(props) {
+    var themeColor = ref<string>(theme.themeColor)
     var type = ref<string>(props.type);
     var scoreData = reactive<Idata>({
       time_score: 0,
@@ -71,7 +73,7 @@ export default defineComponent({
     function setPie(param: any) {
       let eleChart = (echarts as any).init(document.getElementById(param.ele));
       var option = {
-        color: ["#8955b5", "#EB7E64", "#FFC306", "#63EDB6"],
+        color: [themeColor, "#FF805D", "#ECB736", "#1AB095"],
         legend: {
           bottom: "20%",
           icon: "circle",
@@ -159,7 +161,6 @@ export default defineComponent({
             itemStyle: {
               borderRadius: [0, 6, 6, 0],
               color: function (params: any) {
-                // var colorList = ["#C9B8D8", "#8955b5"];
                 return param.colorList[params.dataIndex];
               },
             },
@@ -186,14 +187,14 @@ export default defineComponent({
           title: "任务用时(分钟)",
           yData: ["标准用时", "任务用时"],
           xData: [scoreData.task_time, scoreData.used_time],
-          colorList: ["#C9B8D8", "#8955b5"]
+          colorList: ["#C9B8D8", themeColor]
         };
         let bar2 = {
           ele: "bar2" + type.value,
           title: "正确率(%)",
           yData: ["习题正确率"],
           xData: [scoreData.question_accuracy],
-          colorList: ["#f0937c", "#EB7E64"]
+          colorList: ["#f0937c", "#FF805D"]
         };
         if (props.data[type.value].show.includes('auto')) {
         // 显示步骤得分
@@ -224,18 +225,18 @@ export default defineComponent({
     height: 100%;
   }
   .scoreTable {
-    border: 1px solid #e1dddd;
+    border: 1px solid @border-color;
     color: #14191e;
     font-size: 14px;
     tr:first-child {
-      background: #f6f6f7;
+      background: @descriptions-bg;
       td {
         border: none;
       }
     }
     td {
       padding: 5px 20px;
-      border: 1px solid #e1dddd;
+      border: 1px solid @border-color;
       text-align: center;
     }
   }

@@ -394,7 +394,7 @@ export default defineComponent({
             justify-content: space-between;
             padding: 0 13px;
             > p {
-              color: #8c8c8c;
+              color: @text-color-secondary;
               height: 20px;
               line-height: 20px;
               margin-top: 13px;
@@ -460,7 +460,7 @@ export default defineComponent({
           justify-content: space-between;
           .action-head-left {
             > span {
-              color: #8c8c8c;
+              color: @text-color-secondary;
               font-size: 14px;
             }
             .aswitch-guide.ant-switch-checked {

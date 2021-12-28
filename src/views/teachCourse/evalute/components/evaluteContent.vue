@@ -271,12 +271,12 @@ export default defineComponent({
 .evaluteContent{
   .top{
     padding: 15px 20px;
-    color: #8E8C8C;
-    border-bottom: 1px solid #e6e6e6;
+    color: @text-color-secondary;
+    border-bottom: 1px solid @border-color;
     &>span{
       margin-right: 60px;
       &>span{
-        color: #FF9103
+        color: #FF9845;
       }
     }
   }

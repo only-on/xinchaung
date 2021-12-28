@@ -36,6 +36,7 @@ import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 import {MessageApi} from "ant-design-vue/lib/message"
 import {screenshot} from 'src/utils/manipulatePicture'
+import { theme } from 'src/utils/theme'
 interface IpageInfo{
   count: number,
   index: number,
@@ -120,7 +121,7 @@ export default defineComponent({
     const setbgColor = () => {
       let nodeList = document.querySelectorAll('jmnode')
       for (let i =0;i < nodeList.length; i++) {
-        (nodeList[i] as any).style.background = '#8955b5'
+        (nodeList[i] as any).style.background = theme.themeColor
       }
     }
     const handleImg = ()=>{
@@ -289,9 +290,6 @@ export default defineComponent({
     :deep(#jsmind_container){
       width: 100%;
       height: 100%;
-      .jsmind-inner{
-        // .scrollBar();
-      }
       jmnodes.theme-success jmnode{
         background: @theme-color !important;
         &.selected{
@@ -300,7 +298,7 @@ export default defineComponent({
       }
       input{
         color: #000;
-        background: #fff;
+        background:@body-background;
       }
     }
   }
@@ -312,7 +310,7 @@ export default defineComponent({
       padding-left: 18px;
       line-height: 56px;
       background: @theme-color;
-      color: #fff;
+      color: @white;
       font-size: 18px;
     }
     ul{
@@ -342,7 +340,7 @@ export default defineComponent({
     width: 120px;
     padding: 10px 0;
     border-radius: 5px;
-    background: #fff;
+    background:@body-background;
     position: absolute;
     left: 0;
     top: 0;

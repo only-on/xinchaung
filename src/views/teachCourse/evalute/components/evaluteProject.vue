@@ -496,12 +496,12 @@ export default defineComponent({
   }
   .top {
     padding: 15px 20px;
-    color: #8e8c8c;
-    border-bottom: 1px solid #e6e6e6;
+    color: @text-color-secondary;
+    border-bottom: 1px solid @border-color;
     & > span {
       margin-right: 60px;
       & > span {
-        color: #ff9103;
+        color: #FF9845;
       }
     }
   }

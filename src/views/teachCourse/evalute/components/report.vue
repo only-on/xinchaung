@@ -194,14 +194,14 @@ export default defineComponent({
     right: 2%;
     top: 10px;
     cursor: pointer;
-    background: #ff9d00;
+    background: #FF9845;
     border-radius: 8px;
     box-shadow: 0px 4px 14px 0px rgba(255,197,103,0.7);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 2;
-    color: #fff;
+    color: @white;
     i{
       font-size: 32px;
     }
@@ -228,12 +228,12 @@ export default defineComponent({
   }
   :deep(table){
     width: 100%;
-    border: 1px solid #e1dddd;
+    border: 1px solid @border-color;
     color: #14191e;
     td{
       padding: 2px 5px;
       height: 70px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid @border-color;
       color: #777;
     }
     .w2{
