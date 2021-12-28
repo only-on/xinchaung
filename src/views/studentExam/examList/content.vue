@@ -169,7 +169,7 @@ export default defineComponent({
         flex-direction: column;
 
         .exam-card-head {
-          background: linear-gradient(310deg, #6c60e2, #8955b5 92%);
+          background: linear-gradient(310deg, rgba(@theme-gradient-color), rgba(@theme-color,0.92));
           border-radius: @border-radius-base @border-radius-base 0px 0px;
           /* height: 54px; */
           line-height: 44px;

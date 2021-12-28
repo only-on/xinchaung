@@ -4,6 +4,7 @@ import judgementImg from "src/assets/exam/judgement.png"
 import completionImg from "src/assets/exam/completion.png"
 import shortAnswerImg from "src/assets/exam/shortAnswer.png"
 import shicaoImg from "src/assets/exam/shicao.png"
+import {theme} from "src/utils/theme"
 // 成绩详情分布图
 function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
     const my_score:Array<number>=[]
@@ -93,10 +94,10 @@ function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
                 name: '我的成绩',
                 type: 'bar',
                 itemStyle: {
-                    color: "#8955b5",
+                    color: theme.themeColor,
                     normal: {
                         show: true,
-                        color: '#8955b5',
+                        color: theme.themeColor,
                         barBorderRadius: 5
                     }
                 },
@@ -107,7 +108,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
                     position: ['0', '-20'],
                     distance: 5,
                     formatter: '{c}' + '分',
-                    color: "#8955b5"
+                    color: theme.themeColor
                 },
                 data: my_score
             },
@@ -117,7 +118,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
                 itemStyle: {
                     normal: {
                         show: true,
-                        color: '#e3c3fd',
+                        color: theme.nextThemeColor,
                         barBorderRadius: 5
                     }
                 },
@@ -160,7 +161,7 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
             },
             rich: {
                 d: { //箭头
-                    color: '#8955B5',
+                    color: theme.themeColor,
                 },
                 c: {
                     color: '#07a387',
@@ -170,22 +171,22 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
                     width: 20,
                     height: 0,
                     borderWidth: 1,
-                    borderColor: '#8955B5',
+                    borderColor: theme.themeColor,
                     align: 'left'
                 },
             },
             textStyle: {
-                color: '#8955B5',
+                color: theme.themeColor,
             }
         },
         itemStyle: {
             normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: '#8955b5  ' // 0% 处的颜色
+                    color: theme.themeColor // 0% 处的颜色
                 }, {
                     offset: 1,
-                    color: '#8955b5 ' // 100% 处的颜色
+                    color: theme.themeColor // 100% 处的颜色
                 }], false),
                 barBorderRadius: [10, 10, 0, 0],
             }
@@ -201,7 +202,7 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
         barWidth: 28,
         itemStyle: {
             normal: {
-                color: '#e0d4ff',
+                color: theme.nextThemeColor,
                 barBorderRadius: [30, 30, 0, 0],
             }
         },
@@ -218,11 +219,11 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
             normal: {
                 color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{
                     offset: 0,
-                    color: '#8955b5'
+                    color: theme.themeColor
                 },
                 {
                     offset: 1,
-                    color: '#c3c4fd'
+                    color: theme.nextThemeColor
                 }
                 ]),
                 opacity: 1,
@@ -283,7 +284,7 @@ function accuracyEcharts(el: HTMLDivElement, data: any) {
         symbolSize: 60,
         itemStyle: {
             normal: {
-                color: '#c3c4fd',
+                color: theme.nextThemeColor,
                 opacity: 1,
             }
         },

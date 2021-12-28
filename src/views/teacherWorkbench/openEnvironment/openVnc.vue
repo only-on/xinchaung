@@ -623,6 +623,6 @@ export default defineComponent({
 }
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
-  background-color: #8955b5;
+  background-color: @theme-color;
 }
 </style>

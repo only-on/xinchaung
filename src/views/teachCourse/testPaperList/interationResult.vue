@@ -431,12 +431,12 @@ export default defineComponent({
           border-top-right-radius: 0px;
         }
         .textarea:hover + .savebutton {
-          background-color: #bb9cd6;
-          border: 1px solid #8955b5;
+          background-color: @theme-light-color;
+          border: 1px solid @theme-color;
         }
         .textarea:focus + .savebutton {
-          background-color: #bb9cd6;
-          border: 1px solid #8955b5;
+          background-color: @theme-light-color;
+          border: 1px solid @theme-color;
         }
       }
     }

@@ -202,12 +202,12 @@ export default defineComponent({
         .time-text {
           font-size: 12px;
           letter-spacing: 1px;
-          color: #5e66ff;
+          color: @theme-gradient-color;
           margin-top: 10px;
         }
         .time-no {
           font-size: 54px;
-          background: linear-gradient(180deg, #5e66ff, #8955b5);
+          background: linear-gradient(180deg, @theme-gradient-color, @theme-color);
           -webkit-background-clip: text;
           color: transparent;
           font-weight: 500;
