@@ -20,7 +20,7 @@
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
         :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
         :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
-        class="components-table-demo-nested">
+        class="columns">
         <template #operation="{record}">
           <i class="caozuo iconfont icon-shanchu" @click="delateStudent(record.id)" title="删除"></i>
         </template>
@@ -49,7 +49,7 @@
         <a-table :columns="StudentColumns" :loading="StudentLoading" :data-source="AllStudent" :bordered="true"  row-key="id"
           :pagination="{current:studentForm.page,pageSize:studentForm.limit,total:StudentTotal,onChange:StudentOnChangePage,hideOnSinglePage:true}" 
           :row-selection="{ selectedRowKeys: StudentSelectedRowKeys, onChange: StudentOnSelectChange }"
-          class="components-table-demo-nested">
+          class="StudentColumns">
         </a-table>
       </a-config-provider>
     </a-modal>
@@ -323,6 +323,8 @@ export default defineComponent({
       // return
       http.deleteClassStudent({urlParams:{class_id:editId.value},param:{student_ids:ids}}).then((res:IBusinessResp)=>{
           initData()
+          state.selectedRowKeys=[]
+          state.StudentSelectedRowKeys=[]
           message.success('删除成功')
         })
     }
@@ -395,6 +397,8 @@ export default defineComponent({
       if(visible.value===false){
         GetStudent()
         visible.value=true
+        state.selectedRowKeys=[]
+        state.StudentSelectedRowKeys=[]
         return
       }
       if(!state.StudentSelectedRowKeys.length){
@@ -402,7 +406,8 @@ export default defineComponent({
         return
       }
       http.editClass({urlParams:{class_id:editId.value},param:{student_ids:state.StudentSelectedRowKeys}}).then((res:IBusinessResp)=>{
-        state.StudentSelectedRowKeys.length=0
+        state.selectedRowKeys=[]
+        state.StudentSelectedRowKeys=[]
         message.success('添加成功')
         initData()
         visible.value=false

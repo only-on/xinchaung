@@ -21,7 +21,7 @@
       <div class="addStudent">
         <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
       </div>
-      <a-button @click="ImportVisible=true" type="primary" >批量导入</a-button>
+      <a-button @click="ImportStudent()" type="primary" >批量导入</a-button>
     </div>
     <a-config-provider :renderEmpty="customizeRenderEmpty">
       <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
@@ -529,10 +529,16 @@ export default defineComponent({
       a.download = "学生模板.xlsx";
       a.click();
     }
+    function ImportStudent(){
+      ImportData.list.length=0
+      ImportData.finished=0
+      ImportData.unfinished=0
+      ImportVisible.value=true
+    }
     onMounted(()=>{
       initData()
     })
-    return {...toRefs(state),ImportVisible,studentColumns,ImportData,fileBeforeUpload,DownloadTemplate,customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addStudent};
+    return {...toRefs(state),ImportVisible,ImportStudent,studentColumns,ImportData,fileBeforeUpload,DownloadTemplate,customizeRenderEmpty,suffix,cancel,InputPassword,formRef,formState,rules,list,columns,ForumSearch,loading,total,visible,editId,search,onChangePage,clearSearch,delateCard,BatchDelete,submit,editCard,addStudent};
   },
 })
 </script>

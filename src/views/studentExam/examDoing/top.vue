@@ -33,7 +33,7 @@
 import { defineComponent, ref, inject, Ref, watch } from "vue";
 import { useRouter, onBeforeRouteLeave } from "vue-router";
 import { countDown, Itimes } from "src/utils/common";
-import topImages from "src/assets/exam/top-images.png";
+import topImages from "src/assets/images/exam/top-images.png";
 export default defineComponent({
   setup(props,{emit}) {
     const router = useRouter();
@@ -105,7 +105,7 @@ export default defineComponent({
       &.teacher-or-start-status {
         .teacher-icon {
           display: inline-block;
-          background-image: url(/src/assets/exam/teacher.png);
+          background-image: url(/src/assets/images/exam/teacher.png);
           background-size: 100%;
           width: 24px;
           height: 24px;

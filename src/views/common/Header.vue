@@ -52,7 +52,7 @@ import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import handImg from "src/assets/images/reqi_icon.png";
-import userImg from "src/assets/test/teacher_p.png";
+import userImg from "src/assets/images/user/teacher_p.png";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -190,7 +190,7 @@ export default defineComponent({
       width: 32px;
       height: 32px;
       margin-right: 10px;
-      background: url("../../assets/test/favicon.png") no-repeat center;
+      background: url("../../assets/images/user/favicon.png") no-repeat center;
       background-size: 100% 100%;
     }
     .web-title {
@@ -234,7 +234,7 @@ export default defineComponent({
       .user-img {
         width: 28px;
         height: 28px;
-        background: url("src/assets/test/teacher_p.png") no-repeat center;
+        background: url("src/assets/images/user/teacher_p.png") no-repeat center;
         background-size: 100% 100%;
       }
       .user-name {

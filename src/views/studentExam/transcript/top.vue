@@ -41,8 +41,8 @@ import { get } from "http";
 import { computed, defineComponent, ref,WritableComputedRef } from "vue";
 import { useRouter } from "vue-router";
 import {IDetailData} from "../studentExam.type"
-import topImages from "src/assets/exam/top-images.png"
-import stuBgScore from "src/assets/exam/stu-bg-score.jpg"
+import topImages from "src/assets/images/exam/top-images.png"
+import stuBgScore from "src/assets/images/exam/stu-bg-score.jpg"
 
 export default defineComponent({
   props:["data"],

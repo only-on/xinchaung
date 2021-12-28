@@ -445,7 +445,7 @@ export default defineComponent({
     .exam-content-right {
       padding: 50px 10px 50px 0px;
       width: 460px;
-      background-image: url("../../../assets/exam/answer-card.png");
+      background-image: url("../../../assets/images/exam/answer-card.png");
       background-position: center 0px;
       background-repeat: no-repeat;
       background-origin: content-box;

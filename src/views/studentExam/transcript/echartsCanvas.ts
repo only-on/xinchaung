@@ -1,9 +1,9 @@
 import * as echarts from "echarts"
-import choiceImg from "src/assets/exam/choice.png"
-import judgementImg from "src/assets/exam/judgement.png"
-import completionImg from "src/assets/exam/completion.png"
-import shortAnswerImg from "src/assets/exam/shortAnswer.png"
-import shicaoImg from "src/assets/exam/shicao.png"
+import choiceImg from "src/assets/images/exam/choice.png"
+import judgementImg from "src/assets/images/exam/judgement.png"
+import completionImg from "src/assets/images/exam/completion.png"
+import shortAnswerImg from "src/assets/images/exam/shortAnswer.png"
+import shicaoImg from "src/assets/images/exam/shicao.png"
 import {theme} from "src/utils/theme"
 // 成绩详情分布图
 function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {

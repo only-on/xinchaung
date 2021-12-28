@@ -210,7 +210,7 @@ export default defineComponent({
         .exam-card-content {
           flex: 1;
           padding: 24px 16px 16px 16px;
-          background-image: url("../../../assets/exam/exam-img.png");
+          background-image: url("../../../assets/images/exam/exam-img.png");
           background-repeat: no-repeat;
           background-position: 95% center;
           .exam-action-card {
@@ -226,7 +226,7 @@ export default defineComponent({
               font-size: 14px;
               .user-icon {
                 display: inline-block;
-                background-image: url("../../../assets/exam/teacher.png");
+                background-image: url("../../../assets/images/exam/teacher.png");
                 background-size: 100%;
                 width: 24px;
                 height: 24px;

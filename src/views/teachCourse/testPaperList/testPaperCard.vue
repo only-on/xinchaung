@@ -80,7 +80,7 @@ export default defineComponent({
 .test-paper-card {
   .itemTop {
     height: 152px;
-    background-image: url("../../../assets/testPaper/bitmap.png");
+    background-image: url("../../../assets/images/testPaper/bitmap.png");
     background-size: 100% 152px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;

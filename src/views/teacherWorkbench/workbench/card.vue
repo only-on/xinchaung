@@ -173,7 +173,7 @@ export default defineComponent({
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-image: url("src/assets/workbench/fill.png");
+  background-image: url("src/assets/images/workbench/fill.png");
   background-repeat: no-repeat;
   background-position: right top;
   .workbench-content-box {
@@ -191,7 +191,7 @@ export default defineComponent({
       .content-left {
         display: flex;
         flex-direction: column;
-        background-image: url("../../../assets/workbench/time.png");
+        background-image: url("../../../assets/images/workbench/time.png");
         background-size: 100% 100%;
         justify-content: space-between;
         text-align: center;
@@ -275,7 +275,7 @@ export default defineComponent({
       flex-direction: row;
       > span {
         &:nth-child(1) {
-          background: url("../../../assets/workbench/iamge.png");
+          background: url("../../../assets/images/workbench/iamge.png");
           width: 36px;
           height: 36px;
           display: block;
@@ -301,7 +301,7 @@ export default defineComponent({
       margin-top: 20px;
       > span {
         &:nth-child(1) {
-          background: url("../../../assets/workbench/data-set.png");
+          background: url("../../../assets/images/workbench/data-set.png");
           width: 36px;
           height: 36px;
           display: block;

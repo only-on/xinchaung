@@ -26,7 +26,7 @@ export default defineComponent({
   .exam-layout {
     width: 100%;
     height: 100%;
-    background-image: url("../../assets/exam/start-exam.png");
+    background-image: url("../../assets/images/exam/start-exam.png");
     background-position: right bottom;
     background-repeat: no-repeat;
     padding: 50px 100px;

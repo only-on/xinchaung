@@ -40,8 +40,8 @@
 import { defineComponent,onMounted,reactive,toRefs } from 'vue'
 import {getPresetMirror} from "../api"
 import Empty from 'src/components/Empty.vue'
-import  kvmImg from "src/assets/workbench/kvm.png"
-import dockerImg from "src/assets/workbench/docker.png"
+import  kvmImg from "src/assets/images/workbench/kvm.png"
+import dockerImg from "src/assets/images/workbench/docker.png"
 interface IparamsType{
     name:string,
     limit:number,

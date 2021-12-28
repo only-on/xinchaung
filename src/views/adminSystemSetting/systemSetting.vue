@@ -219,7 +219,7 @@ import {
   ref,
 } from "vue";
 
-import noImg from "src/assets/setting/is-authorization.png";
+import noImg from "src/assets/images/setting/is-authorization.png";
 import {
   getAuthorizationInfoApi,
   saveCourseConfigApi,

@@ -54,7 +54,7 @@ import {startedExam} from "../studentExam.model"
 import {TStartedExam} from "../studentExam.type"
 import storage from "src/utils/extStorage"
 import {contrastTime} from "src/utils/common"
-import topImages from "src/assets/exam/top-images.png"
+import topImages from "src/assets/images/exam/top-images.png"
 import moment from "moment"
 
 export default defineComponent({
@@ -136,7 +136,7 @@ export default defineComponent({
       &.teacher-or-start-status {
         .teacher-icon {
           display: inline-block;
-          background-image: url(/src/assets/exam/teacher.png);
+          background-image: url(/src/assets/images/exam/teacher.png);
           background-size: 100%;
           width: 24px;
           height: 24px;
