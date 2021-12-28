@@ -1,7 +1,7 @@
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
   mapList:{
-    url: '/knowledge-map/get-knowledge-map-list',
+    url: '/knowledge-map1/get-knowledge-map-list',
     method: 'POST'
   },
   examMapList:{
@@ -9,15 +9,15 @@ export default {
     method: 'POST'
   },
   getContentlist:{
-    url: '/knowledge-map/get-content-list',
+    url: '/knowledge-map1/get-content-list',
     method: 'POST'
   },
   addKnowledgeMap: {
-    url: '/knowledge-map/add-knowledge-map',
+    url: '/knowledge-map1/add-knowledge-map',
     method: 'POST'
   },
   delKnowledgeMap: {
-    url: '/knowledge-map/delete-knowledge-map',
+    url: '/knowledge-map1/delete-knowledge-map',
     method: 'POST'
   }
 }

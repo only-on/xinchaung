@@ -76,7 +76,7 @@ export default {
     dataType: 'json'
   },
   getKnowledgeList: {
-    url: '/knowledge-map/get-knowledge-map-list',
+    url: '/knowledge-map1/get-knowledge-map-list',
     method: 'GET',
     dataType: 'json'
   },
