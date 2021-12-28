@@ -262,6 +262,37 @@ export default defineComponent({
         })
         const router = useRouter();
         const teacherDataExerApi = (request as any).teacherDataExercises
+        const columns1=[
+                {
+                    title: '题目',
+                    dataIndex: 'question',
+                    key: 'question',
+                    ellipsis:true
+                },
+                {
+                    title: '难度',
+                    dataIndex: 'difficulty',
+                    slots: { customRender:'difficulty'},
+                },
+                {
+                    title: '答案',
+                    dataIndex: 'select-answers',
+                    slots: { customRender:'select-answers'},
+                    ellipsis:true
+                },
+                {
+                    title: '分数',
+                    dataIndex: 'origin_score',
+                    key: 'origin_score',
+                },
+                {
+                    title:'操作',
+                    dataIndex:'operation',
+                    width:100,
+                    align:'center',
+                    slots: { customRender:'operation'},
+                },
+                ]
         const state:State=reactive({
             edit:'',
             searchExercise:'',
@@ -282,39 +313,7 @@ export default defineComponent({
             },
             deleteidArr:[],
             loading:false,
-            columns:[
-                {
-                    title: '题目',
-                    dataIndex: 'question',
-                    key: 'question',
-                    ellipsis:true
-                },
-                {
-                    title: '难度',
-                    width:200,
-                    dataIndex: 'difficulty',
-                    slots: { customRender:'difficulty'},
-                },
-                {
-                    title: '答案',
-                    dataIndex: 'select-answers',
-                    slots: { customRender:'select-answers'},
-                    ellipsis:true
-                },
-                {
-                    title: '分数',
-                    width:100,
-                    dataIndex: 'origin_score',
-                    key: 'origin_score',
-                },
-                {
-                    title:props.initial==='1'?'操作':'',
-                    dataIndex: props.initial==='1'?'operation':'',
-                    width:100,
-                    align:'center',
-                    slots: { customRender: props.initial==='1'?'operation':'' },
-                },
-                ],
+            columns:columns1,
             list:[],
             value:'',
             value1:[],
@@ -634,8 +633,9 @@ export default defineComponent({
                   return state.createmodal.title='解答题';
               }
         })
-        watch(()=>{props.poolid},(newVal)=>{
-        })
+        watch(()=>props.initial,(newVal)=>{
+            state.columns=props.initial==='0'?columns1:columns1.splice(0,columns1.length-1)
+        },{immediate:true,deep:true})
         onMounted(()=>{
             methods.exerciseLevels()
         })
