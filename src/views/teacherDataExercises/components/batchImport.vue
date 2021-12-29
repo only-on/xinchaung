@@ -122,8 +122,8 @@ export default defineComponent({
       }
       function dowmTemplate(){ 
           let development=process.env.NODE_ENV == 'development' ? true : false;
-          let url=development?'http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo':"api/v1/question/questions/import/demo"
-            FileSaver.saveAs(url);
+          let url=development?'http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo':"/api/v1/question/questions/import/demo"
+          FileSaver.saveAs(url);
       }
       
       return {closeModal,beforeUpload,detailExerUpload,dowmTemplate,...toRefs(state)}

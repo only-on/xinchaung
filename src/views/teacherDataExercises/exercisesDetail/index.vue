@@ -64,11 +64,10 @@
         :selectedId="Number(selectedId)"
         :poolid="poolid"
       ></ques-comon-table>
-      <div v-if="total" class="pagination">
+      <div v-if="total>10" class="pagination">
         <a-pagination
           show-size-changer
-          :default-current="pagination.current"
-          :pageSize="pagination.pageSize"
+          :pageSize="exerListParams.limit"
           :total="total"
           @change="changePage"
           @showSizeChange="onShowSizeChange"
@@ -115,10 +114,6 @@ interface fromType {
   name?: string;
   description?: string;
 }
-interface paginationType {
-  current: number;
-  pageSize: number;
-}
 interface stateData {
   rules: any;
   exambasic: examBasic;
@@ -137,7 +132,6 @@ interface stateData {
   initial?: any;
   initialIfEdit: any;
   form: fromType;
-  pagination: paginationType;
   tabs: any[];
 }
 export default defineComponent({
@@ -168,15 +162,15 @@ export default defineComponent({
       levelId: "",
       poolid: 0,
       tabledata: [],
-      exerListParams: { initial: 0, type_id: 1 },
+      exerListParams: { initial: 0, type_id: 1,limit:10,page:1 },
       visible: false,
       initialIfEdit: true,
       initial: 1,
       total: 0,
-      pagination: {
-        current: 1,
-        pageSize: 10,
-      },
+      // pagination: {
+      //   current: 1,
+      //   pageSize: 10,
+      // },
       tabs: [
         { key: 1, tab: "单选题" },
         { key: 2, tab: "多选题" },
@@ -257,20 +251,15 @@ export default defineComponent({
       switchExer(key: any) {
         state.selectedId = key;
         state.exerListParams.type_id = key;
-        // state.exerListParams.level_id='';
         state.levelId = "";
         state.searchname = "";
         delete state.exerListParams.level_id
         delete state.exerListParams.name
-        state.pagination.current = 1;
-        state.pagination.pageSize = 10;
         methods.exerciseDetailList(state.exerListParams);
       },
       exerciseDetailList(exerListParams: exerciseList) {
         const id: any = router.currentRoute.value.query.id;
         exerListParams.include = "answers";
-        exerListParams.limit = state.pagination.pageSize;
-        exerListParams.page = state.pagination.current;
         teacherDataExerApi
           .getDetailExerciseList({ urlParams: { pool_id: id }, param: state.exerListParams })
           .then((res: any) => {
@@ -293,14 +282,14 @@ export default defineComponent({
         console.log(state.searchname, "state.searchname");
         methods.exerciseDetailList(state.exerListParams);
       },
+      // 分页
       changePage(page: any, pageSize: any) {
-        console.log(page, pageSize);
-        state.pagination.current = page;
+        state.exerListParams.page=page
         methods.exerciseDetailList(state.exerListParams);
       },
       onShowSizeChange(current: any, pageSize: any) {
-        console.log(current, pageSize);
-        state.pagination.pageSize = pageSize;
+        state.exerListParams.page=1
+        state.exerListParams.limit=pageSize
         methods.exerciseDetailList(state.exerListParams);
       },
     };
