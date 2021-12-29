@@ -1,7 +1,7 @@
 <template>
   <div class="test-paper-card">
     <div class="itemTop">
-      <div>{{data.name}}</div>
+      <div>{{ data.name }}</div>
       <div class="itemTopSecond">
         <span class="icon-zhangjie iconfont">{{ data.questions_count }}</span>
         <span class="icon-fenshu1 iconfont">{{ data.score_total }}</span>
@@ -10,16 +10,25 @@
       <div>{{ data.updated_at }}</div>
     </div>
     <div class="itemBottom">
-      <span><span class="item-bom-btn" @click="selectStu">选学生</span></span
-      >
+      <span><span class="item-bom-btn" @click="selectStu">选学生</span></span>
       <span>
-        <router-link :to="{path:'/teacher/teacherCourse/result',query:{paper_id:data.id,course_id:course_id}}">查结果</router-link>
+        <router-link
+          :to="{
+            path: '/teacher/teacherCourse/result',
+            query: { paper_id: data.id, course_id: course_id },
+          }"
+          >查结果</router-link
+        >
       </span>
       <a-popover placement="bottom">
         <template v-slot:content>
           <div class="edit">
-            <p class="item-bom-btn" @click="editTest" style="cursor: default">编辑</p>
-            <p class="item-bom-btn" @click="deleteTest" style="cursor: default">删除</p>
+            <p class="item-bom-btn" @click="editTest">
+              编辑
+            </p>
+            <p class="item-bom-btn" @click="deleteTest">
+              删除
+            </p>
           </div>
         </template>
         <span>
@@ -32,33 +41,33 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import {useRoute} from "vue-router"
+import { useRoute } from "vue-router";
 
 export default defineComponent({
   props: ["value"],
-  emits:["selectStu","editTest","deleteTest"],
+  emits: ["selectStu", "editTest", "deleteTest"],
   setup(props, { emit }) {
-    const route=useRoute()
-    const course_id=route.query.course_id
+    const route = useRoute();
+    const course_id = route.query.course_id;
     const data = props.value;
     // 打开选择学生modal
     function selectStu() {
-        emit("selectStu",data.id)
+      emit("selectStu", data.id);
     }
     // 编辑
     function editTest() {
-      emit("editTest",data.id)
+      emit("editTest", data.id);
     }
     // 删除
     function deleteTest() {
-      emit("deleteTest",data.id)
+      emit("deleteTest", data.id);
     }
     return {
       data,
       selectStu,
       editTest,
       deleteTest,
-      course_id
+      course_id,
     };
   },
 });
@@ -75,7 +84,7 @@ export default defineComponent({
   opacity: 1;
   background: #fff;
   border-radius: 7px;
-  box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+  box-shadow: 0px 7px 14px -4px rgba(0,0,0,0.16); 
 }
 .test-paper-card {
   .itemTop {
@@ -137,6 +146,14 @@ export default defineComponent({
       text-align: center;
       color: rgba(5, 1, 1, 0.45);
       cursor: pointer;
+      > span,
+      > a {
+        color: rgba(5, 1, 1, 0.45);
+        &:hover {
+          color: @theme-color;
+        }
+      }
+
       &:last-child {
         border-right: none;
       }

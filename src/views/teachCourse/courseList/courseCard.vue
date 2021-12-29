@@ -2,11 +2,7 @@
   <div class="course-item">
     <div class="course-item-box">
       <div class="cover-box" @click="toDetail('experiment')">
-        <img
-          :src="data.url ? data.url : img1"
-          alt=""
-          class="img"
-        />
+        <img :src="data.url ? data.url : img1" alt="" class="img" />
         <span
           class="curse-status"
           :class="
@@ -105,7 +101,8 @@
       >
         <h2>{{ data.name }}</h2>
         <div class="base-init-action">
-          <span @click="toDetail('experiment')">实验</span><span @click="toDetail('resource')">资源</span
+          <span @click="toDetail('experiment')">实验</span
+          ><span @click="toDetail('resource')">资源</span
           ><span @click="saveToMy">保存到我的</span>
         </div>
         <div class="base-init-show">
@@ -125,7 +122,8 @@
       >
         <h2>{{ data.name }}</h2>
         <div class="base-archived-action">
-          <span @click="toArchiveDetail">详情</span><span @click="downloadExport">导出</span>
+          <span @click="toArchiveDetail">详情</span
+          ><span @click="downloadExport">导出</span>
         </div>
         <div class="archived-time-box">
           <span class="icon-jingli iconfont"></span
@@ -147,12 +145,12 @@ import {
   copyCourseApi,
   deleteCourseApi,
   saveToCourseApi,
-  setArchiveCourseApi
+  setArchiveCourseApi,
 } from "./api";
 import { message, Modal } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import fileSaver from "file-saver";
-import img1 from "src/assets/images/teacher-default/cover.png"
+import img1 from "src/assets/images/teacher-default/cover.png";
 export default defineComponent({
   props: ["courseData", "currentTab", "index"],
   setup(props, { emit }) {
@@ -180,10 +178,10 @@ export default defineComponent({
       });
     }
     function setArchive(id: number) {
-      setArchiveCourseApi({courseId:id}).then((res:any)=>{
-        message.success("操作成果")
+      setArchiveCourseApi({ courseId: id }).then((res: any) => {
+        message.success("操作成果");
         emit("update");
-      })
+      });
     }
     function deleteCourse(id: number) {
       Modal.confirm({
@@ -193,7 +191,7 @@ export default defineComponent({
         cancelText: "取消",
         onOk() {
           deleteCourseApi({ id: id }).then((res: any) => {
-            message.success("删除成功")
+            message.success("删除成功");
           });
         },
       });
@@ -241,23 +239,23 @@ export default defineComponent({
     }
 
     // 跳转详情
-    function toDetail(type:string) {
+    function toDetail(type: string) {
       router.push({
-        path:"/teacher/teacherCourse/detail",
-        query:{
-          course_id:data.id,
-          currentTab:currentTab,
-          type:type
-        }
-      })
+        path: "/teacher/teacherCourse/detail",
+        query: {
+          course_id: data.id,
+          currentTab: currentTab,
+          type: type,
+        },
+      });
     }
     function toArchiveDetail() {
       router.push({
-        path:"/teacher/teacherCourse/evalute",
-        query:{
-          courseId:data.id,
-        }
-      })
+        path: "/teacher/teacherCourse/evalute",
+        query: {
+          courseId: data.id,
+        },
+      });
     }
     // 判断课程进行状态
     function courseStatus(sort: number) {
@@ -287,7 +285,7 @@ export default defineComponent({
       saveToMy,
       toDetail,
       img1,
-      toArchiveDetail
+      toArchiveDetail,
     };
   },
 });
@@ -317,7 +315,7 @@ export default defineComponent({
     .course-item-box {
       background: #fff;
       border-radius: 10px;
-      box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+      box-shadow: 0px 7px 14px -4px rgba(0, 0, 0, 0.16);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -477,6 +475,9 @@ export default defineComponent({
               margin-left: 15px;
               font-size: 14px;
               color: #000;
+              &:hover {
+                color: rgba(@theme-color, 0.9);
+              }
             }
           }
         }
@@ -496,6 +497,9 @@ export default defineComponent({
             border-right: 1px solid #e9e9e9;
             color: #8f8f8f;
             font-size: 14px;
+            &:hover {
+              color: rgba(@theme-color, 0.9);
+            }
           }
           > a {
             &:last-child {
