@@ -537,9 +537,10 @@ export default defineComponent({
     const rules = {
       name: [
         { required: true, message: "请输入实验名称", trigger: "blur" },
+        // pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]{0,20}$/,
         {
-          pattern: /^[a-zA-Z0-9_\u4e00-\u9fa5]{0,20}$/,
-          message: "实验名称只能包含汉字、数字、字母和下划线，名称最长为20字符",
+          max:30,
+          message: "实验名称最长为30个字符",
           trigger: "blur",
         },
       ],

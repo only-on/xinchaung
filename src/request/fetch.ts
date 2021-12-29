@@ -161,9 +161,13 @@ export default function request({
           // router.replace({ path: "/login" }).catch(() => {});
           message.warning(res.msg);
           reject(null)
-          // const url=`${window.origin}/site/login`
-          // console.log(url)
-          // window.location.href=url
+          const env = process.env.NODE_ENV == "development" ? true : false;
+          if(env === false){
+            let url = `${window.origin}/site/login`;
+            console.log(url);
+            window.location.href = url;
+          }
+
         } else {
           let meg='请求出错'
           if(res.message){meg=res.message}

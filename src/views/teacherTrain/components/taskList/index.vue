@@ -98,7 +98,7 @@ export default defineComponent({
       line-height: 30px;
       height: 30px;
       margin-right: 5px;
-      background: #8955b5;
+      background: @theme-color;
     }
     .iconfont {
       color: @theme-color;

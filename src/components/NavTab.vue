@@ -180,7 +180,7 @@ export default defineComponent({
   }
 }
 .border_bottom {
-  border-bottom: 1px solid #765e8b;
+  border-bottom: 1px solid #3E418F;
 }
 .back {
   margin-bottom: -16px;

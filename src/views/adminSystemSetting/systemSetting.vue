@@ -115,7 +115,8 @@
             <div class="form-right">
               <div class="upload-logo-box">
                 <div class="logo-box">
-                  <span class="logo-title">登录</span>
+                  
+                  <!-- <span class="logo-title">登录</span> -->
                   <div class="upload-logo">
                     <a-upload
                       name="avatar"
@@ -124,15 +125,16 @@
                       :show-upload-list="false"
                       :beforeUpload="logUploadBefore"
                     >
-                      <img
+                      <!-- <img
                         v-if="systemBaseInfo.login_logo"
                         :src="
-                          env
-                            ? '/proxyPrefix' + systemBaseInfo.login_logo
-                            : systemBaseInfo.login_logo
+                          env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo
                         "
                         alt="avatar"
-                      />
+                      /> -->
+                      <div 
+                      class="login_logo_bg" 
+                      :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`"></div>
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -140,7 +142,7 @@
                   </div>
                   <i>58x58px</i>
                 </div>
-                <div class="logo-box">
+                <div class="logo-box" v-show="false">
                   <span class="logo-title">顶部-png</span>
                   <div class="upload-logo">
                     <a-upload
@@ -150,7 +152,7 @@
                       :show-upload-list="false"
                       :beforeUpload="topUploadBefore"
                     >
-                      <img
+                      <!-- <img
                         v-if="systemBaseInfo.inner_logo"
                         :src="
                           env
@@ -158,7 +160,8 @@
                             : systemBaseInfo.inner_logo
                         "
                         alt="avatar"
-                      />
+                      /> -->
+                      <div class="login_logo_bg" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.inner_logo: systemBaseInfo.inner_logo});`"></div>
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -168,7 +171,7 @@
                 </div>
                 <div class="logo-hint">支持小于20K的png文件</div>
               </div>
-              <div class="upload-logo-box">
+              <div class="upload-logo-box" v-show="false">
                 <div class="logo-box">
                   <span class="logo-title">标签-ico</span>
                   <div class="upload-logo">
@@ -179,11 +182,12 @@
                       :show-upload-list="false"
                       :beforeUpload="iconUploadBefore"
                     >
-                      <img
+                      <!-- <img
                         v-if="systemBaseInfo.icon"
                         :src="systemBaseInfo.icon"
                         alt="avatar"
-                      />
+                      /> -->
+                      <div class="login_logo_bg" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.icon: systemBaseInfo.icon});`"></div>
                       <div>
                         <span class="icon-huigun iconfont"></span>
                       </div>
@@ -876,12 +880,18 @@ export default defineComponent({
             flex-direction: column;
 
             .login-logo {
-              width: 58px;
-              height: 58px;
+              width: 60px;
+              height: 60px;
+              .login_logo_bg{
+                width: 58px;
+                height: 58px;
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+              }
             }
             .ico-logo {
-              width: 24px;
-              height: 24px;
+              width: 18px;
+              height: 18px;
               .ant-upload-select-picture-card {
                 display: block;
                 width: 100%;
@@ -890,10 +900,16 @@ export default defineComponent({
                 margin: 0;
                 overflow: hidden;
               }
+              .login_logo_bg{
+                width: 16px;
+                height: 16px;
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
+              }
             }
             .top-logo {
-              width: 40px;
-              height: 40px;
+              width: 42px;
+              height: 42px;
               .ant-upload-select-picture-card {
                 display: block;
                 width: 100%;
@@ -901,6 +917,12 @@ export default defineComponent({
                 padding: 0;
                 margin: 0;
                 overflow: hidden;
+              }
+              .login_logo_bg{
+                width: 40px;
+                height: 40px;
+                background-repeat: no-repeat;
+                background-size: 100% 100%;
               }
             }
             > .logo-hint {

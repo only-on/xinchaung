@@ -3,7 +3,7 @@
     <div class="header-left">
       <router-link class="a-logo" :to="{path:homePath}">
         <div class="logo"></div>
-        <span class="web-title">人工智能教学实训系统</span>
+        <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
       </router-link>
     </div>
     <div class="header-middle">

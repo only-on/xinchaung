@@ -403,7 +403,7 @@ export default defineComponent({
 
 <style lang="less">
 // @theme-color: #8955B5;
-@node-icon-color: #bb9cd6;
+@node-icon-color: @theme-tree;
 @high-color: #eab362; // 高配颜色
 @hover-bgcolor: #f1e6f5;
 .course-left-tree {

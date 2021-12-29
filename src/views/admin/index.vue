@@ -454,7 +454,7 @@ export default defineComponent({
         if (!reactiveData.currentControlsIp) {
           return;
         }
-        debugger
+        // debugger
         await method.getNodeIpControl(
           reactiveData.currentControlsIp,
           "controls"

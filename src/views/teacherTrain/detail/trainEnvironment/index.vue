@@ -266,7 +266,7 @@ export default defineComponent({
   //         border-radius: 4px;
   //         overflow: hidden;
   //         .env-wrap-header {
-  //         background: #8955B5;
+  //         background: @theme-color;
   //         text-align: left;
   //         color: #fff;
   //         padding: 3px 10px;
