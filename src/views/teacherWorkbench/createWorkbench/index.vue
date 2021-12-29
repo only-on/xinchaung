@@ -92,7 +92,7 @@
             class="add-data-set-btn"
             ><span class="icon-tianjia iconfont a-link"></span
           ></a-button>
-          <i class="data-set-hint">最多可选3个数据集</i>
+          <i v-if="selectedName.length < 3" class="data-set-hint">最多可选3个数据集</i>
           <div
             class="data-set-item"
             v-for="(it, ind) in selectedName"

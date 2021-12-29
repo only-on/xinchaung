@@ -119,7 +119,6 @@ export default defineComponent({
     const formDom = ref(null);
     const formData:any=ref({})
     watch(()=>props.modelValue,()=>{
-      console.log(props.modelValue)
       formData.value=props.modelValue
       // formData.value.courseDescriptions=props.modelValue.introduce
     },{deep:true,immediate:true})
@@ -129,7 +128,7 @@ export default defineComponent({
 
     const reactiveData: TreactiveData = reactive({
       rules: {
-        name: [{ required: true, message: "课程名称不能为空" }],
+        name: [{ required: true, message: "课程名称不能为空"},{max:30,message: "课程名称长度必须少于30" }],
         course_category_id: [{ required: true, message: "课程方向不能为空" }],
         course_direction_id: [{ required: true, message: "职业方向不能为空" }],
         created_at: [{ required: true, message: "时间不能为空" }],

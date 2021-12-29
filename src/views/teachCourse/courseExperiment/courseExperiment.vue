@@ -25,7 +25,7 @@
         ></drag-tree>
       </div>
     </div>
-    <div v-if="chapter_id" class="course-experiment-right">
+    <div v-if="chapter_id||rightTab === 'addChapter'" class="course-experiment-right">
       <chapterDetail v-if="rightTab === 'chapterDetail'" />
       <addChapter v-if="rightTab === 'addChapter'" />
       <addExperiment v-if="rightTab === 'addExperiment'" />

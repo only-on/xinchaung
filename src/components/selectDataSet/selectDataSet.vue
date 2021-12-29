@@ -81,7 +81,6 @@ export default defineComponent({
   components: { empty },
   props: ["value", "names",'limitNumber'],
   setup(props, { emit }) {
-    // console.log(props)
     const $message: MessageApi = inject("$message")!;
     const datasetApi = request.teacherWorkbench;
     const uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
@@ -133,7 +132,6 @@ export default defineComponent({
       datasetApi
         .getDataSetApi({ param: reactiveData.params })
         .then((res: any) => {
-          // console.log(res);
           reactiveData.dataSetList.push(...res.data);
           reactiveData.count = res.total;
         });
@@ -178,8 +176,6 @@ export default defineComponent({
 
     // 选择
     function select(val: any) {
-      console.log(val);
-      
       if(limitNumber.value === reactiveData.selected.length){
         $message.warn(`数据集最多可选择${limitNumber.value}个`)
         return
@@ -191,7 +187,6 @@ export default defineComponent({
        reactiveData.selected.push(val.uid);
         emit("update:value", reactiveData.selected);
         let temp={ uid: val.uid, name: val.name,amount:val.amount,size:val.size }
-        console.log(temp);
         reactiveData.names.push(temp)
         emit("update:names", reactiveData.names);
     }
