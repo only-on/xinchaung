@@ -325,14 +325,14 @@ export default defineComponent({
 
 <style lang="less">
 .create-course-box {
-  height: calc(100% - 9px);
+  
   display: flex;
   flex-direction: column;
   .create-steps-box {
     margin-top: 7px;
   }
   .create-course-main {
-    padding: 39px 30px;
+    padding: 39px 30px 0px 30px;
     .edit-course-base-form {
       .col-2 {
         margin-top: 30px;
@@ -359,6 +359,7 @@ export default defineComponent({
     .course-experiment-right {
       border-radius: 4px;
       box-shadow: 0px 0px 10px 0px #e1e1e1;
+      min-height: 520px;
     }
     .finish-step-box {
       height: 100%;
@@ -383,7 +384,7 @@ export default defineComponent({
       }
     }
     .course-experiment-box{
-      height: 100%;
+      height: auto;
     }
   }
 }

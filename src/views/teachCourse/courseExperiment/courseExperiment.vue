@@ -8,7 +8,7 @@
         <a-button type="primary" size="small" @click="openAddChapter" v-role="[tab]"
           >+添加章节</a-button
         >
-        <a-button type="primary" size="small" @click="openAddExperiment" v-role="[tab]"
+        <a-button type="primary" :disabled="!chapter_id" size="small" @click="openAddExperiment" v-role="[tab]"
           >+添加实验</a-button
         >
       </div>
