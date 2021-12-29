@@ -133,6 +133,7 @@ import {
   onMounted,
   toRefs,
   Ref,
+  nextTick,
 } from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -148,7 +149,7 @@ import dataSet from "src/components/selectDataSet/selectDataSet.vue";
 import environment from "src/components/teacherExperiment/environment.vue";
 import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
-import { MessageApi } from "ant-design-vue/lib/message";
+import message, { MessageApi } from "ant-design-vue/lib/message";
 import sameScreen from "src/components/teacherExperiment/sameScreen.vue";
 import taskList from "./taskList.vue";
 import envList from "src/components/teacherExperiment/envList.vue";
@@ -428,9 +429,14 @@ export default defineComponent({
     let screenVmInfo: any = reactive([]);
     function pollGetVM(id: number) {
       screenVmInfo.length = 0;
-      clearInterval(timers);
-      screenStatus.value = true;
-      timers = setInterval(() => {
+      // clearInterval(timers);
+      // screenStatus.value = true;
+      getTopoVmInfo(id)
+    }
+
+    // 获取基础信息
+    function getTopoVmInfo(id: number) {
+      return new Promise((resolve: any, reject: any) => {
         http
           .getTopoVmInfo({ urlParams: { id } })
           .then((res: IBusinessResp) => {
@@ -439,16 +445,27 @@ export default defineComponent({
               if (res.data.vms.length > 0) {
                 screenVmInfo.push(...res.data.vms);
                 // this.vncLoading = false
-                clearInterval(timers);
-                sameScreen.value.init();
+                // clearInterval(timers);
+                screenStatus.value = true;
+                nextTick(()=>{
+                  sameScreen.value.init();
+                })
+                
                 // this.screenStatus = true
+              }else{
+                setTimeout(()=>{
+                  getTopoVmInfo(id)
+                },1500)
               }
+            }else{
+              message.warn(res.msg)
             }
+            resolve(res);
           })
           .catch((err: any) => {
             $message.warn(err.message);
           });
-      }, 1500);
+      });
     }
     // 获取同屏数据
     function getGuidData(val: any) {
@@ -458,9 +475,8 @@ export default defineComponent({
     watch(
       () => screenStatus.value,
       (newVal) => {
-        
         if (!screenStatus.value) {
-          clearInterval(timers);
+          // clearInterval(timers);
           return;
           topoinstId != -1
             ? http
