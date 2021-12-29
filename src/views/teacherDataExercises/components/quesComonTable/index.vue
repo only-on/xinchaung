@@ -121,7 +121,7 @@
                             <div v-if="selectedId===4">
                                 <div>
                                     <a-form-item required label="答案">
-                                    <a-input v-model:value="expermodelValue.answers"></a-input>
+                                    <a-input v-model:value="stringAnswer"></a-input>
                                 </a-form-item>
                                 </div>
                                 <div class="check">
@@ -134,12 +134,12 @@
                             <div v-if="selectedId===5">
                                 <div>
                                     <a-form-item required label="答案">
-                                        <a-textarea v-model:value="expermodelValue.answers"></a-textarea>
+                                        <a-textarea v-model:value="stringAnswer"></a-textarea>
                                     </a-form-item>
                                 </div>
                                  <div>
                                     <a-form-item required label="关键字">
-                                        <a-textarea v-model:value='expermodelValue.keyword'></a-textarea>
+                                        <a-textarea v-model:value='stringKeywords'></a-textarea>
                                     </a-form-item>
                                 </div>
                             </div>
@@ -148,7 +148,7 @@
                                     <a-form-item required label="难度">
                                         <a-select
                                             @change="handleChangeLeves"
-                                            v-model:value="expermodelValue.leves"
+                                            v-model:value="expermodelValue.level_id"
                                         >
                                             <a-select-option v-for="item in difficultyLevel" :key="item.id" :value="item.id">
                                             {{item.name}}
@@ -158,7 +158,7 @@
                                 </div>
                                  <div class="score">
                                     <a-form-item required label="分数">
-                                        <a-input v-model:value="expermodelValue.score"></a-input>
+                                        <a-input v-model:value="expermodelValue.origin_score"></a-input>
                                     </a-form-item>
                                 </div>
                             </div>
@@ -183,7 +183,6 @@
                 v-model:visible="answerVisible"
                 :footer="null"
                 title="解答题"
-                @ok="hideModal"
                 >
                 <p>{{rightAnswer}}</p>
             </a-modal>
@@ -216,14 +215,14 @@ interface optionsType{
     index:any,
 }
 interface paramsType{
-    pool_id?:number,
-    question:string,
+    pool_id?:number,//习题目录ID
+    question:string,//习题描述
     type_id?:number,//习题类型id
-    leves?:any,
-    score?:string,//分数
+    level_id?:any,//习题难易程度ID
+    origin_score?:string,//习题默认分数
     ordered_answer?:boolean,//答案是否有序
-    options:any[],//习题选项
-    keyword?:string,//关键字
+    options:any[],//习题选项  单选题多选题判断题题型使用
+    keywords?:any,//关键字
     points?:any[],// 知识点
     answers:any[],
 }
@@ -248,6 +247,9 @@ interface State{
     deleteRowId?:number,
     answerVisible:boolean,
     rightAnswer:any,
+
+    stringAnswer:string,
+    stringKeywords:string,
 }
 interface ItreeData {
   selectedKnowledgeList: ItreeDatalist[]
@@ -319,9 +321,10 @@ export default defineComponent({
             expermodelValue:{
                 question:'',
                 options:[],
-                leves:'',
-                score:'',
-                answers:[]
+                level_id:'',
+                origin_score:'',
+                answers:[],
+                keywords:''
             },
             deleteidArr:[],
             loading:false,
@@ -332,7 +335,10 @@ export default defineComponent({
             question_id:'',
             visibleDelete:false,
             answerVisible:false,
-            rightAnswer:''
+            rightAnswer:'',
+            stringAnswer:'',
+            stringKeywords:''
+
         })
         const methods = {
             answer(record:any){
@@ -344,7 +350,6 @@ export default defineComponent({
                     record.answers.forEach((it:any) => {
                         record.options.forEach((item:any,index:any) => {
                             if(it.answer===item.id.toString()){
-                                console.log(index)
                                 answerIndex.push(index)
                                 // const answersOptions=['A','B','C','D']
                                 // answer.push(item.option)
@@ -374,7 +379,7 @@ export default defineComponent({
              context.emit('selectLeves',state.selectLeves)
             },
             handleChangeLeves(value:any){
-                state.expermodelValue.leves=value
+                state.expermodelValue.level_id=value
             },
             addTestQuestions(){
                 state.edit=false
@@ -394,6 +399,61 @@ export default defineComponent({
             delKnowledge(i: number){
                 knowledgeList.selectedKnowledgeList.splice(i, 1)
             },
+            createExercise(){
+               console.log(state.expermodelValue,state.expermodelValue.type_id===4||state.expermodelValue.type_id===5,'创建')  
+               state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
+               state.expermodelValue.keywords=state.expermodelValue.type_id===5?[state.stringKeywords]:[]
+               state.expermodelValue.answers=
+               state.expermodelValue.type_id===4||state.expermodelValue.type_id===5?[state.stringAnswer]:state.expermodelValue.answers
+               teacherDataExerApi.detailExerCreate({
+                    urlParams:{pool_id:props.poolid}, 
+                    param:state.expermodelValue}).then((res:any)=>{
+                        state.value='',
+                        state.value1=[]
+                        delete state.expermodelValue.ordered_answer
+                        state.expermodelValue={
+                            question:'',
+                            origin_score:'',
+                            options:[],
+                            keywords:'',
+                            answers:[]
+                        }
+                        if(res.code){
+                            message.success('添加成功！')
+                            state.createmodal.visible=false
+                            knowledgeList.selectedKnowledgeList=[]
+                            state.stringKeywords=''
+                            context.emit('finishCreate',true)
+                        }
+                 })
+            },
+            editExercise(){
+            console.log(state.expermodelValue,state.expermodelValue.type_id,'state.expermodelValue')
+               state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
+               state.expermodelValue.keywords=props.selectedId===5?[state.stringKeywords]:[]
+               state.expermodelValue.answers=props.selectedId===4||props.selectedId===5?[state.stringAnswer]:state.expermodelValue.answers
+                teacherDataExerApi.detailExerUpdate({
+                urlParams:{question_id:state.question_id}, 
+                param:state.expermodelValue}).then((res:any)=>{
+                    if(res.code){
+                        message.success('编辑成功！')
+                        state.value='',
+                        state.value1=[],
+                        delete state.expermodelValue.ordered_answer
+                        state.expermodelValue={
+                                question:'',
+                                origin_score:'',
+                                options:[],
+                                keywords:'',
+                                answers:[]
+                            }
+                        state.createmodal.visible=false
+                        knowledgeList.selectedKnowledgeList=[]
+                        state.stringKeywords=''
+                        context.emit('finishCreate',true)   
+                    }
+                })  
+            },
             handleOk(){
                 // 校yan
                 if(!state.expermodelValue.question){
@@ -412,20 +472,20 @@ export default defineComponent({
                         return
                         }
                     }else{
-                         if(!state.expermodelValue.answers.length){
+                         if(!state.stringAnswer){
                         message.warning("答案不能为空")
                         return
                         }
                     }
-                if(!state.expermodelValue.leves){
+                if(!state.expermodelValue.level_id){
                     message.warning("请选择试题难度")
                     return
                 }
-                if(!state.expermodelValue.score){
+                if(!state.expermodelValue.origin_score){
                      message.warning("分数不能为空")
                     return
                 }
-                if(Number(state.expermodelValue.score)<1||Number(state.expermodelValue.score)>100||Number(state.expermodelValue.score)%1 !== 0){
+                if(Number(state.expermodelValue.origin_score)<1||Number(state.expermodelValue.origin_score)>100||Number(state.expermodelValue.origin_score)%1 !== 0){
                     message.warning("分数请输入1-100的整数")
                     return
                 }
@@ -433,64 +493,10 @@ export default defineComponent({
                 if(props.selectedId===3){
                     state.expermodelValue.options=['正确','错误']
                 }
-                state.createmodal.visible=false
-                state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
                 if(state.edit){
-                console.log(state.expermodelValue.answers,'编辑')
-                teacherDataExerApi.detailExerUpdate({
-                urlParams:{question_id:state.question_id}, 
-                param:{
-                question:state.expermodelValue.question,
-                type_id:props.selectedId,
-                level_id:state.expermodelValue.leves,
-                ordered_answer:state.expermodelValue.ordered_answer,
-                origin_score:state.expermodelValue.score,
-                points:state.expermodelValue.points,
-                options:state.expermodelValue.options,
-                keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
-                answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
-                }).then((res:any)=>{
-                    state.value='',
-                    state.value1=[],
-                    state.expermodelValue={
-                        question:'',
-                        leves:'',
-                        score:'',
-                        options:[],
-                        keyword:'',
-                        answers:[]
-                    },
-                    knowledgeList.selectedKnowledgeList=[]
-                    context.emit('finishCreate',true)
-                })  
+                methods.editExercise()
                 }else{
-                console.log(state.expermodelValue.answers,'创建')
-                teacherDataExerApi.detailExerCreate({
-                urlParams:{pool_id:props.poolid}, 
-                param:{
-                question:state.expermodelValue.question,
-                type_id:props.selectedId,
-                level_id:state.expermodelValue.leves,
-                origin_score:state.expermodelValue.score,
-                ordered_answer:state.expermodelValue.ordered_answer,
-                points:state.expermodelValue.points,
-                options:state.expermodelValue.options,
-                keywords:props.selectedId===5?[state.expermodelValue.keyword]:[],
-                answers: typeof(state.expermodelValue.answers)==='string'?[state.expermodelValue.answers]:state.expermodelValue.answers}
-                }).then((res:any)=>{
-                    state.value='',
-                    state.value1=[],
-                    state.expermodelValue={
-                        question:'',
-                        leves:'',
-                        score:'',
-                        options:[],
-                        keyword:'',
-                        answers:[]
-                    },
-                    knowledgeList.selectedKnowledgeList=[]
-                    context.emit('finishCreate',true)
-                })  
+                methods.createExercise()
                 }   
             },
             handleCancel(){
@@ -498,14 +504,14 @@ export default defineComponent({
                 state.value='',
                 state.value1=[],
                 state.expermodelValue={
-                    question:'',
-                    leves:'',
-                    score:'',
-                    options:[],
-                    keyword:'',
-                    answers:[]
-                }
+                            question:'',
+                            origin_score:'',
+                            options:[],
+                            keywords:'',
+                            answers:[]
+                        }
                 knowledgeList.selectedKnowledgeList=[]
+                state.stringKeywords=''
             },
             onJudgeChange(e:any){
                 state.expermodelValue.answers=[e.target.value]
@@ -557,52 +563,60 @@ export default defineComponent({
             },
             //编辑
             editCurrentRow(record:any,edit:any){
-                state.edit=edit
-                state.question_id=record.id
+                state.edit=edit  //显示弹框
+
+                state.question_id=record.id  
                 const options1:any=[]
                 const answer1:any=[]
                 const keywords1:any=[]
                 state.createmodal.visible=true
-                // 单选题 多选题
-                record.options.forEach((item:any)=>{
+                state.expermodelValue={
+                        question:record.question,
+                        level_id:record.level_id,
+                        origin_score:record.origin_score,
+                        // keywords:keywords1,
+                        // answers:answer1,
+                        options:options1,
+                        answers:[],
+                        ordered_answer:record.ordered_answer
+                }
+                // 单选题 多选题 判断题
+                if(record.type_id===1||record.type_id==2||record.type_id===3){
+                    // 选项
+                    record.options.forEach((item:any)=>{
                     options1.push(item.option)
                     })
-                record.answers?.forEach((item:any) => {
-                    answer1.push(item.answer)
-                });
-                    //单选答案回显
+                }
+                //选择判断答案回显
                 record.options.forEach((item:any,index:any)=>{
-                    if(item.id==record.answers[0]?.answer){
-                        return state.value=item.option
-                    }
-                })
-                //多选题答案回显
-                 record.options.forEach((item:any,index:any)=>{
                      record.answers.forEach((it:any,j:any)=>{
-                         if(item.id==it.answer){
-                             state.value1.push(index)
+                         if(item.id.toString()===it.answer){
+                             console.log(item.id,it.answer)
+                             if(record.type_id===1||record.type_id===3){
+                                 state.value=index
+                             }else if(record.type_id===2){
+                                 state.value1.push(index)
+                             }
                          }
                      })
                  })
-                // 判断题答案回显
-                record.options.forEach((item:any,index:any)=>{
-                    if(item.id==record.answers[0].answer){
-                        return state.value=index
-                    }
-                })
+                // 填空 解答答案回显  及 回显时对应的答案
+                if(record.type_id===4||record.type_id===5){
+                    // state.expermodelValue.answers=record.answers[0].answer
+                    state.stringAnswer=record.answers[0].answer
+                }else if(record.type_id===1||record.type_id===3){
+                    state.expermodelValue.answers=[state.value]
+                }else{
+                    state.expermodelValue.answers=state.value1
+                }
+                console.log(state.value1)
                  //关键词
-                record.keywords.forEach((item:any) => {
-                    keywords1.push(item.keyword)
-                })
-                 state.expermodelValue={
-                        question:record.question,
-                        leves:record.level.id,
-                        score:record.origin_score,
-                        options:options1,
-                        keyword:keywords1,
-                        answers:answer1,
-                        ordered_answer:record.ordered_answer
-                    }
+                state.stringKeywords=record.keywords[0].keyword
+                 // 知识点
+                // knowledgeList.selectedKnowledgeList=[record.points.knowledge_names]
+                // record.points.knowledge_names.forEach((item:any,index:any) => {
+                    // knowledgeList.selectedKnowledgeList.push({'text':item[item?.length]})
+                // });
             },
             //查询
             searchExerData(){
@@ -623,19 +637,25 @@ export default defineComponent({
             },
         };
         watch(()=>props.selectedId, (newVal) => {
+          console.log(props.selectedId,newVal,'props.selectedId')
            state.selectLeves=''
            state.searchExercise=''
+           state.stringAnswer=''
            state.expermodelValue={
                         question:'',
-                        leves:'',
-                        score:'',
+                        level_id:'',
+                        origin_score:'',
                         options:[],
-                        keyword:'',
+                        keywords:[],
                         answers:[]
                     }
             const titleArr:string[]=['单选题','多选题','判断题','填空题','解答题']
             state.selectLeves=undefined;
+            state.expermodelValue.type_id=newVal
             return state.createmodal.title=titleArr[newVal-1];
+        },{
+            immediate:true,
+            deep:true
         })
         watch(()=>props.initial,(newVal)=>{
             state.columns=props.initial==='0'?columns1:columns1.splice(0,columns1.length-1)
