@@ -69,8 +69,8 @@
               <span :title="item.knowledge_map_name">{{item.knowledge_map_name}}</span>
               <a-progress
                 :stroke-color="{
-                  '0%': '#be8edb',
-                  '100%': '#6855b5',
+                  '0%': theme.nextThemeColor,
+                  '100%': theme.themeColor,
                 }"
                 :format="formatProgress"
               />
@@ -108,6 +108,7 @@ import { pieOptions, radarOptions, scaterOptions, graphOptions, IpieData } from 
 import request from "src/api/index";
 import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { theme } from 'src/utils/theme'
 const tabs = [
     {
       value: 0,

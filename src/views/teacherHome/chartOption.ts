@@ -1,3 +1,4 @@
+import { theme } from 'src/utils/theme'
 export interface IpieData {
   done: number,
   undone: number
@@ -14,7 +15,7 @@ interface IchildNodes{
 // 课程完成率
 export const pieOptions = (data: IpieData) => {
   let options = {
-    color: ["#7546D5", "#ECE2F4"],
+    color: [theme.themeColor, theme.nextThemeColor],
     series: [
       {
         type: 'pie',
@@ -71,18 +72,18 @@ export const radarOptions = (data: any) => {
       splitArea: {
         areaStyle: {//内区块
           color: 'transparent',
-          shadowColor: 'rgba(0, 0, 0, 0.3)',
+          shadowColor: theme.nextThemeColor,
           shadowBlur: 10
         }
       },
       splitLine: {
         lineStyle: {
-          color: 'rgba(117,70,213,0.7)'
+          color: theme.themeColor
         }
       },
       axisLine: {
         lineStyle: {
-          color: 'rgba(117,70,213,0.7)'  //半径线条
+          color: theme.themeColor  //半径线条
         },
         symbolSize: [0, 1]
       },
@@ -99,7 +100,7 @@ export const radarOptions = (data: any) => {
           name: "成绩分布",
           label: {
             show: true,
-            color: 'rgba(117,70,213,0.7)',
+            color: theme.themeColor,
             // formatter:'{c}人',
             position: 'top',
             formatter: function (params: any) {
@@ -126,13 +127,13 @@ export const radarOptions = (data: any) => {
             }
           },
           itemStyle: {
-            color: 'rgba(117,70,213,0.7)',
+            color: theme.themeColor,
           },
           lineStyle: {
-            color: 'rgba(117,70,213,0.7)',
+            color: theme.themeColor,
           },
           areaStyle: {
-            color: '#ECE2F4',
+            color: theme.nextThemeColor,
           }
         }
       ]
@@ -175,7 +176,7 @@ export const scaterOptions = (type: number, data: any) => {
     })
   });
   let options = {
-    color: ['rgba(117,70,213,0.7)'],
+    color: [theme.themeColor],
     tooltip: {
       position: 'top',
       formatter: function (params: any) {
@@ -207,14 +208,14 @@ export const scaterOptions = (type: number, data: any) => {
       show: Object.keys(data).length <= 7 ? false : true,
       start: 0,
       end: Object.keys(data).length >= 7 ? 30 : 100,
-      backgroundColor: "#d5c5f3", //组件的背景颜色
-      fillerColor: "#9069dc", //选中范围的填充颜色
+      backgroundColor: theme.nextThemeColor, //组件的背景颜色
+      fillerColor: theme.themeColor, //选中范围的填充颜色
       handleSize: 10,//滑动条的 左右2个滑动条的大小
       showDetail: false,
       height: 10,//组件高度
       handleColor: '#fff',//h滑动图标的颜色
       handleStyle: {
-        borderColor: "#56339c",
+        borderColor: theme.themeColor,
         borderWidth: "1",
         shadowBlur: 2,
         background: "#ddd",
@@ -288,10 +289,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
       symbolSize: 50,
       draggable: true,
       itemStyle: {
-        borderColor: 'rgba(117,70,213,0.7)',
+        borderColor: theme.themeColor,
         borderWidth: 6,
         shadowBlur: 20,
-        shadowColor: 'rgba(117,70,213,0.7)',
+        shadowColor: theme.themeColor,
         color: '#000'
       },
       category: 0,
@@ -305,10 +306,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
         symbolSize: 30,
         draggable: true,
         itemStyle: {
-          borderColor: 'rgba(117,70,213,0.7)',
+          borderColor: theme.themeColor,
           borderWidth: 6,
           shadowBlur: 20,
-          shadowColor: 'rgba(117,70,213,0.7)',
+          shadowColor: theme.themeColor,
           color: '#384A67'
         },
         category: 1,
@@ -324,10 +325,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
           symbolSize: 15,
           draggable: true,
           itemStyle: {
-            borderColor: 'rgba(117,70,213,0.7)',
+            borderColor: theme.themeColor,
             borderWidth: 6,
             shadowBlur: 20,
-            shadowColor: 'rgba(117,70,213,0.7)',
+            shadowColor: theme.themeColor,
             color: '#b0ccfe'
           },
           category: 1,

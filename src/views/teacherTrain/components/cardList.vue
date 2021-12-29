@@ -288,11 +288,11 @@ export default defineComponent({
       box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.50);
       &.end{
         background: #373737;
-        color: #8a8a8a;
+        color: @text-color-secondary;
       }
       &.noStart{
         background: @white; 
-        color: #acacac;
+        color: @text-color-secondary;
       }
       &.onGoing{
         background: #60ae34;
@@ -307,7 +307,7 @@ export default defineComponent({
     .train-title{
       font-size: 16px;
       line-height: 16px;
-      color: #000;
+      color: @black;
       cursor: pointer;
       font-weight: 500;
       margin-top: 8px;
@@ -347,7 +347,7 @@ export default defineComponent({
       width: 100%;
       text-align: center;
       position: relative;
-      color: #898989;
+      color: @text-color-secondary;
       font-size: 12px;
       i{
         font-size: 16px;
@@ -363,16 +363,16 @@ export default defineComponent({
       }
     }
     &.cardbtn{
-      background: #fafafa;
+      background: @descriptions-bg;
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
       height:40px;
-      border-top: 1px solid #E9E9E9;
+      border-top: 1px solid @border-color;
       box-sizing: border-box;
       li{
         font-size: 14px;
         cursor: pointer;
-        border-right: 1px solid #E9E9E9;
+        border-right: 1px solid @border-color;
         &:hover{
           color: @theme-color;
         }
@@ -390,7 +390,7 @@ export default defineComponent({
   .init{
     .cardbtn{
       margin-top: 24px;
-      background: #fafafa;
+      background: @descriptions-bg;
       box-sizing: border-box;
       height: 41px;
     }
@@ -402,7 +402,7 @@ export default defineComponent({
   .archive{
     .cardbtn{
       margin-top: 24px;
-      background: #fafafa;
+      background: @descriptions-bg;
       box-sizing: border-box;
       height: 40px;
     }
@@ -434,7 +434,7 @@ export default defineComponent({
     margin-top:16px;
     margin-bottom: 24px;
     li{
-      color: #898989;
+      color: @text-color-secondary;
       margin-right: 20px;
       font-size: 14px;
     }
