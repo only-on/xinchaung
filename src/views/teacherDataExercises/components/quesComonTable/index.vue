@@ -57,9 +57,10 @@
                             </div>
                         </template>
                         <template #select-answers='{record}'>
-                            <div class="select-answers">
+                            <div v-if="record.type_id!==5" class="select-answers">
                                 {{answer(record)}}
                             </div>
+                            <div v-else @click="viewAnswers(record)"><a>查看</a></div>
                         </template>
                     </a-table>
                     <template #renderEmpty>
@@ -177,11 +178,18 @@
                     </div>
                 </a-modal>
             </div>
+            <!-- 解答题答案 -->
+            <a-modal
+                v-model:visible="answerVisible"
+                :footer="null"
+                title="解答题"
+                @ok="hideModal"
+                >
+                <p>{{rightAnswer}}</p>
+            </a-modal>
     </div>
 </template>
 <script lang="ts">
-
-import { message } from 'ant-design-vue';
 import {defineComponent, onMounted, reactive,toRefs,watch,ref,Ref} from 'vue'
 import { useRouter } from 'vue-router';
 import request from "../../../../api";
@@ -190,6 +198,8 @@ import batchImport from '../batchImport.vue'
 import Empty from 'src/components/Empty.vue'
 import beforeIcon    from 'src/components/aiAnt/beforeIcon.vue'
 import iconDicfult from 'src/assets/images/screenicon/Group3.png'
+import { message, Modal } from "ant-design-vue";
+
 interface levelType{
     name:string,
     id:number,
@@ -235,7 +245,9 @@ interface State{
     value1:any[],
     question_id:any,
     visibleDelete:boolean,
-    deleteRowId?:number
+    deleteRowId?:number,
+    answerVisible:boolean,
+    rightAnswer:any,
 }
 interface ItreeData {
   selectedKnowledgeList: ItreeDatalist[]
@@ -318,7 +330,9 @@ export default defineComponent({
             value:'',
             value1:[],
             question_id:'',
-            visibleDelete:false
+            visibleDelete:false,
+            answerVisible:false,
+            rightAnswer:''
         })
         const methods = {
             answer(record:any){
@@ -345,6 +359,10 @@ export default defineComponent({
                     });
                     return answer.join(',')
                 }
+            },
+            viewAnswers(record:any){
+                state.answerVisible=true
+                state.rightAnswer=methods.answer(record) 
             },
          exerciseLevels(){
                 teacherDataExerApi.getDetailExerLevels().then((res:any)=>{
@@ -615,23 +633,9 @@ export default defineComponent({
                         keyword:'',
                         answers:[]
                     }
-           switch(newVal){
-                  case 1:
-                      state.selectLeves=undefined;
-                  return state.createmodal.title='单选题';
-                  case 2:
-                      state.selectLeves=undefined;
-                  return state.createmodal.title='多选题';
-                  case 3:
-                      state.selectLeves=undefined;
-                  return state.createmodal.title='判断题';
-                  case 4:
-                      state.selectLeves=undefined;
-                  return state.createmodal.title='填空题';
-                  case 5:
-                      state.selectLeves=undefined;
-                  return state.createmodal.title='解答题';
-              }
+            const titleArr:string[]=['单选题','多选题','判断题','填空题','解答题']
+            state.selectLeves=undefined;
+            return state.createmodal.title=titleArr[newVal-1];
         })
         watch(()=>props.initial,(newVal)=>{
             state.columns=props.initial==='0'?columns1:columns1.splice(0,columns1.length-1)
