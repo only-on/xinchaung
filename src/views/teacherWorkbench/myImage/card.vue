@@ -71,7 +71,7 @@ export default defineComponent({
     &:nth-child(2) {
       position: absolute;
       top: 0;
-      background: linear-gradient(135deg, #eaddf7, #dee0fb 99%);
+      background: linear-gradient(45deg,@purplebule-5, @blue-4 26%);
       border-radius: 6px;
       transition: 0.5s;
       padding: 14px;
@@ -94,7 +94,7 @@ export default defineComponent({
     .card-top {
       width: 100%;
       height: 84px;
-      background: linear-gradient(135deg, #b17cde, #7a87f5 99%);
+      background: linear-gradient(45deg,@purplebule-5, @blue-4 );
       border-radius: 6px 6px 0px 0px;
       position: relative;
       padding: 14px;
