@@ -51,10 +51,9 @@
               <span class="iconfont" :class="settingIcon(data.data)"></span>
             </template>
             <template #footer>
-              <a-pagination
-                :default-current="params.page"
+              <page
                 v-model:current="params.page"
-                :default-page-size="params.limit"
+                v-model:pageSize="params.limit"
                 :total="totalCount"
                 @change="pageChange"
               />
@@ -105,10 +104,9 @@
               <span class="iconfont icon-shubiao"></span>
             </template>
             <template #footer>
-              <a-pagination
-                :default-current="params.page"
+              <page
                 v-model:current="params.page"
-                :default-page-size="params.limit"
+                v-model:pageSize="params.limit"
                 :total="totalCount"
                 @change="pageChange"
               />
@@ -166,10 +164,9 @@
               <span class="iconfont icon-shipin"></span>
             </template>
             <template #footer>
-              <a-pagination
-                :default-current="params.page"
+              <page
                 v-model:current="params.page"
-                :default-page-size="params.limit"
+                v-model:pageSize="params.limit"
                 :total="totalCount"
                 @change="pageChange"
               />
@@ -227,10 +224,9 @@
               <span class="iconfont icon-wendang"></span>
             </template>
             <template #footer>
-              <a-pagination
-                :default-current="params.page"
+              <page
                 v-model:current="params.page"
-                :default-page-size="params.limit"
+                v-model:pageSize="params.limit"
                 :total="totalCount"
                 @change="pageChange"
               />
@@ -272,7 +268,7 @@ import {
 } from "./api";
 import { message } from "ant-design-vue";
 import uploadDataSetFile from "./components/uploadDataSetFile.vue";
-
+import page from "src/components/page/page.vue"
 type TreactiveData = {
   currentKey: string;
   contentDataList: any[];
@@ -324,6 +320,7 @@ export default defineComponent({
   components: {
     "select-list": selectList,
     "upload-data-set-file": uploadDataSetFile,
+    page
   },
   setup() {
     const course_id = inject("course_id") as number;
@@ -882,10 +879,6 @@ export default defineComponent({
             }
           }
         }
-      }
-      .ant-pagination {
-        margin-top: 15px;
-        text-align: center;
       }
     }
   }

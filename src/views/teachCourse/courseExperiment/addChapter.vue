@@ -34,7 +34,7 @@
               </div>
             </template>
             <template #footer>
-              <a-pagination :default-current="params.page" :default-page-size="params.limit" :total="totalCount" @change="pageChange"/>
+              <page v-model:current="params.page" v-model:pageSize="params.limit" :total="totalCount" @change="pageChange"/>
             </template>
             <template #icon>
               <span class="iconfont icon-zhangjie"></span>
@@ -78,7 +78,7 @@
               </div>
             </template>
             <template #footer>
-              <a-pagination :default-current="params.page" :default-page-size="params.limit" :total="totalCount" @change="pageChange"/>
+              <page v-model:current="params.page" v-model:pageSize="params.limit" :total="totalCount" @change="pageChange"/>
             </template>
             <template #icon>
               <span class="iconfont icon-zhangjie"></span>
@@ -103,6 +103,7 @@ import {
   saveContentToChapterApi,
 } from "./api";
 import { message } from "ant-design-vue";
+import page from "src/components/page/page.vue"
 type TreactiveData = {
   currentKey: string;
   params: {
@@ -125,6 +126,7 @@ export default defineComponent({
   components: {
     "select-list": selectList,
     LoadingOutlined,
+    page
   },
   setup() {
     const course_id = inject("course_id") as number;
@@ -245,7 +247,11 @@ export default defineComponent({
       });
     }
     // 搜索
-    function onSearch() {}
+    function onSearch() {
+      reactiveData.params.page=1
+      reactiveData.params.limit=10
+      getAllChapterList()
+    }
     // 分页发生变化时
     function pageChange(page:number, pageSize:number) {
       reactiveData.params.page=page
@@ -332,10 +338,6 @@ export default defineComponent({
           }
         }
       }
-    }
-    .ant-pagination{
-      text-align: center;
-      margin-top: 15px;
     }
   }
 }

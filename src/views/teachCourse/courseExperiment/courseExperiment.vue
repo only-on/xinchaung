@@ -33,7 +33,7 @@
     </div>
 
     <template v-else>
-      <empty text="暂无数据，请点击左侧自定义章节/添加章节按钮，进行添加章节"></empty>
+      <empty class="emptyContent" text="暂无数据，请点击左侧自定义章节/添加章节按钮，进行添加章节"></empty>
     </template>
   </div>
   <a-modal
@@ -199,6 +199,10 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   height: 900px;
+  .emptyContent{
+    background-color: @white;
+    margin-left: 15px;
+  }
   .course-experiment-left {
     width: 440px;
     flex-shrink: 0;
