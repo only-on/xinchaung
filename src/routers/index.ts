@@ -4,6 +4,8 @@ import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
 import RoutesTeacherSide from './teacherSide'
 import RoutesAdminSide from './adminSide'
+import storage   from "src/utils/extStorage";
+const PathList={1:'',2:'/admin/home',3:'/teacher/home',4:'/studentStatistic',5:''}
 // 登录状态检查
 import { IRouteTuple } from "src/types";
 const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide], ...[RoutesAdminSide]]
@@ -11,7 +13,6 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
-console.log(routes)
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
@@ -28,7 +29,8 @@ router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, n
 
 // 在路由后置守卫中来处理面包屑导航
 router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, failure: NavigationFailure | void) => {
-  const breadcrumbs: IRouteTuple[] = [{ control: { title: '首页', enabled: true }, route: { name: 'index' } }]
+  const role = storage.lStorage.get('role')
+  const breadcrumbs: IRouteTuple[] = [{ control: { title: '首页', enabled: true }, route: PathList[Number(role)] }]
   let processedPath: string[] = []
   // console.log('matched:=',to.matched)
   // console.log('breadcrumbs:前=',breadcrumbs)
@@ -46,7 +48,7 @@ router.afterEach((to: RouteLocationNormalized, from: RouteLocationNormalized, fa
           enabled: routeSegment.path !== to.path // 禁用最后一截路由
         }, route: router.resolve({
           name: routeSegment.name,
-          query: to.query,
+          query:to.query,
           params: to.params,
         }).fullPath
       }

@@ -26,7 +26,6 @@
         </a-button-group>
       </div>
       <div class="center">
-        今天：
         <span>{{ centerTime }}</span>
       </div>
       <div class="right">
@@ -515,8 +514,8 @@ export default defineComponent({
       .change_title1{
         position: relative;
         left: 65px;
-        font-size: 28px;
-        font-weight: 600;
+        font-size: 22px;
+        font-weight: 400;
       }
       .left {
           // float: left;
@@ -590,8 +589,8 @@ export default defineComponent({
         }
       } 
       .change_title {
-        font-size: 28px;
-        font-weight: 600;
+        font-size: 22px;
+        font-weight: 400;
         color: #000;
       }
       .center {
@@ -599,8 +598,8 @@ export default defineComponent({
         // left: 0;
         // right: 0;
         // text-align: center;
-        font-size: 24px;
-        font-weight: 600;
+        font-size: 22px;
+        font-weight: 400;
         color: #000;
         // z-index: 1;
         // pointer-events: none;
@@ -627,8 +626,8 @@ export default defineComponent({
           // padding-right: 10px;
         }
         .table-week-date {
-          font-weight: 900;
-          font-size: 26px;
+          font-weight: 400;
+          font-size: 20px;
           color: #4D4D4D;
         }
       }

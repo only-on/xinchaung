@@ -261,7 +261,7 @@
             <div class="ip-canvas m-30 computes-h" ref="computesMemoryEl"></div>
           </div>
           <div class="w-33">
-            <div class="ip-title">
+            <div class="ip-title" v-if="isShowGPU">
               GPU{{
                 currentGpu.memory
                   ? (currentGpu.memory_usage / 1024).toFixed(1) +
@@ -332,6 +332,7 @@
       </div>
     </div>
     <div class="flex-line row-3">
+      {{nodeGraphAllData.master}}
       <div
         class="line-item b-r"
         v-for="(val, key) in nodeGraphAllData.master"
@@ -361,7 +362,8 @@ import {
   ref,
   Ref,
   watch,
-  inject
+  inject,
+  nextTick
 } from "vue";
 import {
   getStatisticsApi,
@@ -449,6 +451,10 @@ export default defineComponent({
     watch(
       () => reactiveData.currentControlsIp,
       async () => {
+        if (!reactiveData.currentControlsIp) {
+          return;
+        }
+        debugger
         await method.getNodeIpControl(
           reactiveData.currentControlsIp,
           "controls"
@@ -500,10 +506,13 @@ export default defineComponent({
     watch(
       () => reactiveData.currentGpuId,
       async () => {
+        if (!reactiveData.currentGpuId) {
+          return;
+        }
         if (gauge.computesGpu) {
           gauge.computesGpu.dispose();
         }
-        reactiveData.gpuSelectData.forEach((item: any, index: number) => {
+          reactiveData.gpuSelectData.forEach((item: any, index: number) => {
           if (item.id === reactiveData.currentGpuId) {
             reactiveData.currentGpu = item;
             // isShowGPU
@@ -514,7 +523,8 @@ export default defineComponent({
               computesGpuEl.value
             );
           }
-        });
+        })
+        
       }
     );
     const method = {
@@ -546,10 +556,11 @@ export default defineComponent({
             reactiveData.gpuSelectData = res.data.data;
 
             if (reactiveData.gpuSelectData.length > 0) {
+              reactiveData.isShowGPU=true
               reactiveData.currentGpuId = (
                 reactiveData as any
               ).gpuSelectData[0].id;
-              reactiveData.isShowGPU=true
+              
             } else {
               reactiveData.isShowGPU=false
               // gauge.computesGpu = gaugeCanvas(
