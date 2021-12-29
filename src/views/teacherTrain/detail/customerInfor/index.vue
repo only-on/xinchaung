@@ -630,6 +630,7 @@ export default defineComponent({
       // // console.log('请求学生接口')
  
         //      state.value=1
+        state.columns=state.stuColumns
         http.studentGroup({
             param: {
               id: props.trainId,
