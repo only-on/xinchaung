@@ -635,7 +635,7 @@ export default defineComponent({
         })
         watch(()=>props.initial,(newVal)=>{
             state.columns=props.initial==='0'?columns1:columns1.splice(0,columns1.length-1)
-        },{immediate:true,deep:true})
+        },{deep:true})
         onMounted(()=>{
             methods.exerciseLevels()
         })
