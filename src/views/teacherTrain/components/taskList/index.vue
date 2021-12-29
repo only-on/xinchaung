@@ -113,7 +113,7 @@ export default defineComponent({
       text-align: right;
       div {
         border-radius: 50px;
-        background: #8955b5;
+        background: @theme-color;
         width: 5px;
         height: 5px;
         display: inline-block;

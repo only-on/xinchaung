@@ -514,7 +514,7 @@ export default defineComponent({
     }
   }
   .selectbac {
-    background-color: #e4dae8;
+    background-color: @theme-tree-node-bg;
   }
   .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
     background-color: transparent !important;

@@ -164,7 +164,7 @@ export default defineComponent({
         title: '提示',
         content: templateType.value === 'shared' ? '删除此模板的同时将删除“我的模板”中的此报告模板，确定要删除吗？' :'确定删除实验报告模板?删除后不可恢复',
         okText: '确定',
-        okType: 'danger',
+        // okType: 'danger',
         cancelText: '取消',
         onOk() {
           http.deleteTemplate({param: {id: item.id}}).then((res:IBusinessResp) => {
