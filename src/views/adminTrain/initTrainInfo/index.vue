@@ -106,7 +106,7 @@ export default defineComponent({
       },
       onShowSizeChange(current: any, size: any) {
         console.log(current, size, "current, size");
-        state.params.page = current;
+        state.params.page = 1;
         state.params.limit = size;
         methods.tableList();
       },
@@ -119,6 +119,7 @@ export default defineComponent({
         });
       },
       querySearch() {
+        state.params.page = 1;
         methods.tableList();
       },
       clearAll() {

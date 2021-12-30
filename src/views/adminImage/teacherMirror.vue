@@ -155,7 +155,7 @@ export default defineComponent({
       },
       onShowSizeChange(current: any, size: any) {
         console.log(current, size, "current, size");
-        state.params.page = current;
+        state.params.page =1;
         state.params.limit = size;
         methods.getImageList();
       },
@@ -170,6 +170,7 @@ export default defineComponent({
         });
       },
       search() {
+        state.params.page =1;
         methods.getImageList();
       },
       // 勾选多选框

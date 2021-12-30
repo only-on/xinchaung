@@ -230,7 +230,7 @@ export default defineComponent({
       console.log(id,'前往数据')
       router.push({
         name: "classicalAssetContent",
-        params: { type: dataType.value, id: id },
+        params: { type: dataType.value, id: id,powerType:configuration.componenttype },
       });
     };
     const handleNameFocused = (e: FocusEvent) => {

@@ -41,6 +41,7 @@
             />
           </div>
           <a-button
+            v-if="powerType===0?false:true"
             class="classical__data-list-upload"
             type="primary"
             @click="openUploadDialog"
@@ -218,6 +219,7 @@ export default defineComponent({
     const uploadFileList: Ref<any[]> = ref([]);
     // 数据集类型
     let dataType: number = parseInt(route.params.type as string); // 3是课件
+    let powerType:number =parseInt(route.params.powerType as string); //私有还是共有
     let dataId: number = parseInt(route.params.id as string);
 
     const $message: MessageApi = inject("$message")!;
@@ -230,7 +232,7 @@ export default defineComponent({
       showContent: true,
       navPosition: "outside",
       backOff: true,
-      showPageEdit: true,
+      showPageEdit:powerType===0?false:true,
       pageEdit: () => {
         folderInfo.name = originalFolderInfo.name;
         folderInfo.description = originalFolderInfo.description;
@@ -496,6 +498,7 @@ export default defineComponent({
       searchKeyword,
       uploadFileList,
       dataType,
+      powerType,
       dataId,
       labelCol,
       wrapperCol,
