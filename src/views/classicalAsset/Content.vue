@@ -46,7 +46,7 @@
             type="primary"
             @click="openUploadDialog"
           >
-            <span class="iconfont icon-upload" />上传文件111
+            <span class="iconfont icon-upload" />上传文件
           </a-button>
         </div>
         <div class="classical__data-list-content">
@@ -88,7 +88,7 @@
       :data="{ pageType: dataType, dataId: dataId }"
       :multiple="false"
       :before-upload="handleBeforeUpload"
-      :action="process.env.NODE_ENV === 'development'?'/proxyPrefix/dataset/data/upload-file':'/dataset/data/upload-file'"
+      :action="env?'/proxyPrefix/dataset/data/upload-file':'/dataset/data/upload-file'"
       @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
@@ -198,6 +198,8 @@ export default defineComponent({
       name: "",
       description: "",
     });
+
+    const env=process.env.NODE_ENV === 'development'
     const originalFolderInfo = { name: "", description: "" };
 
     const labelCol = { span: 3 };
@@ -492,6 +494,7 @@ export default defineComponent({
     });
     
     return {
+      env,
       uploadVisible,
       detail,
       itemList,
