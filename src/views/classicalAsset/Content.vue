@@ -46,7 +46,7 @@
             type="primary"
             @click="openUploadDialog"
           >
-            <span class="iconfont icon-upload" />上传文件
+            <span class="iconfont icon-upload" />上传文件111
           </a-button>
         </div>
         <div class="classical__data-list-content">
@@ -88,7 +88,7 @@
       :data="{ pageType: dataType, dataId: dataId }"
       :multiple="false"
       :before-upload="handleBeforeUpload"
-      action="/proxyPrefix/dataset/data/upload-file"
+      :action="process.env.NODE_ENV === 'development'?'/proxyPrefix/dataset/data/upload-file':'/dataset/data/upload-file'"
       @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
