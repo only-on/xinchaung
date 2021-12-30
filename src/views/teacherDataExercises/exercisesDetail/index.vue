@@ -126,7 +126,7 @@ interface stateData {
   searchname: string;
   poolid: number;
   tabledata: any[];
-  total?: number;
+  total: number;
   exerListParams: exerciseList;
   visible: boolean;
   initial?: any;
