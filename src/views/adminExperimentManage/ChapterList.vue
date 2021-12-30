@@ -43,7 +43,7 @@ const columns=[
   },
   {
     title: '实验数量',
-    dataIndex: 'childrenNum',
+    dataIndex: 'task_num',
     align:'center',
     // width:260
   },
