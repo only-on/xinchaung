@@ -21,7 +21,7 @@
             <div class="kernel">
               <div class="create-btn card-item-content">
                 <i class="iconfont icon-chuangjian"></i>
-                <span>创建试卷</span>
+                <span>预约考试</span>
               </div>
             </div>
           </div>

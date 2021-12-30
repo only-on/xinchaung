@@ -10,7 +10,7 @@
         </a-form-item>
         <div class="duration">
           <a-form-item label="考试开始时间"  name="started_at" :label-col="{span:8}" :wrapper-col="{span:20}">
-            <a-date-picker v-model:value="formState.started_at" @blur="dateOk" @ok="dateOk" :show-time="{defaultValue: moment('00:00', 'HH:mm'),minuteStep:5,secondStep:60 }" :disabled-date="disabledDate" :disabled-time="disabledDateTime"  valueFormat="YYYY-MM-DD HH:mm"  format="YYYY-MM-DD HH:mm" />
+            <a-date-picker v-model:value="formState.started_at" @blur="dateOk" @ok="dateOk" :show-time="{defaultValue: moment('00:00', 'HH:mm:ss'),minuteStep:1,secondStep:1 }" :disabled-date="disabledDate" :disabled-time="disabledDateTime"  valueFormat="YYYY-MM-DD HH:mm:ss"  format="YYYY-MM-DD HH:mm:ss" />
           </a-form-item>
           <a-form-item label="考试时长"  name="hour_long" :label-col="{span:6}" :wrapper-col="{span:16}">
             <a-input v-model:value="formState.hour_long" @blur="hourLongChange()" />
@@ -484,7 +484,8 @@ export default defineComponent({
             obj[name]=state.send_ids
             // console.log(obj)
             state.formRef.validate().then(()=>{
-              if(state.verificationDate===false){
+              // state.examsDateTesting()
+              if(state.verificationDate === false){
                 message.warn(`请选择合理的考试开始时间`)
                 return
               }
@@ -710,7 +711,7 @@ export default defineComponent({
         // disabledMinutes: () => range(0,date.minutes),
         // disabledHours: () => range(0, 24),
         // disabledMinutes: () => range(0,60),
-        disabledSeconds: () => range(0,60),
+        // disabledSeconds: () => range(0,60),
       };
     }
     onMounted(()=>{
