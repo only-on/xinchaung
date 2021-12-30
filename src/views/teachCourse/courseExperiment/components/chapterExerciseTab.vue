@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showPanel === 'none'">
+    <div v-if="showPanel === 'none'" class="no-exercise-wrap">
       <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
       <div
         class="action-btn"
@@ -55,6 +55,7 @@
     </div>
     <div v-if="showPanel === 'select'" class="select-exercise-tab">
       <div class="select-list-head">
+        <before-icon :icon="group12">
         <a-select
           style="width: 200px"
           v-model:value="pools_id"
@@ -84,7 +85,8 @@
             >
           </a-select-opt-group>
         </a-select>
-        <label>题型：</label>
+        </before-icon>
+       <before-icon :icon="group3">
         <a-select
           style="width: 200px"
           v-model:value="questionTypeId"
@@ -98,12 +100,13 @@
             >{{ item.name }}</a-select-option
           >
         </a-select>
-        <div class="btns" v-role="[tab]" style="width: 100%">
+       </before-icon>
+        <div class="btns" v-role="[tab]">
           <a-button @click="selectExercise" type="primary">选择</a-button>
           <a-button @click="backList" type="primary">返回</a-button>
         </div>
       </div>
-
+    <a-config-provider>
       <a-table
         :columns="columns"
         :data-source="questionList"
@@ -111,8 +114,12 @@
         :pagination="false"
         :row-key="rowKey"
       />
+      <template #renderEmpty>
+        <div><empty type="tableEmpty"></empty></div>
+      </template>
+    </a-config-provider>
     </div>
-    <div v-if="showPanel === 'nodata'">
+    <div v-if="showPanel === 'nodata'" class="no-exercise-wrap">
       <empty text="未选中章节！"> </empty>
     </div>
   </div>
@@ -139,7 +146,9 @@ import {
   getChapterExerciseAnalysisApi,
 } from "../api";
 import empty from "src/components/Empty.vue";
-import { Key } from "readline";
+import beforeIcon from "src/components/aiAnt/beforeIcon.vue"
+import group12 from "src/assets/images/screenicon/Group12.png"
+import group3 from "src/assets/images/screenicon/Group3.png"
 import { message, Modal } from "ant-design-vue";
 type TreactiveData = {
   showPanel: string;
@@ -158,8 +167,10 @@ export default defineComponent({
   components: {
     SyncOutlined,
     empty,
+    "before-icon":beforeIcon
   },
-  setup() {
+  props:['sum'],
+  setup(props,{emit}) {
     const chapter_id: any = inject("chapter_id");
     const tab: any = inject("tab");
     const reactiveData: TreactiveData = reactive({
@@ -296,6 +307,7 @@ export default defineComponent({
         (res: any) => {
           reactiveData.questionCount = res.data.question_total;
           reactiveData.scores = res.data.score_total;
+          emit("update:sum",reactiveData.questionCount)
         }
       );
     }
@@ -361,6 +373,8 @@ export default defineComponent({
       rowKey,
       deleteChapterExercise,
       tab,
+      group12,
+      group3
     };
   },
 });
@@ -370,6 +384,9 @@ export default defineComponent({
 .chapter-exercise-tab-wrap {
   height: 100%;
   overflow-y: auto;
+  .no-exercise-wrap{
+    margin-top: 80px;
+  }
 }
 .exercise-list-tab {
   height: 100%;
@@ -431,20 +448,29 @@ export default defineComponent({
         border: 1px solid @theme-color;
       }
       span {
+        font-size: 14px;
+        
         &:nth-child(1) {
           flex: 1;
+          color: rgba(@black,0.65);
         }
         &:nth-child(2) {
           width: 160px;
           flex-shrink: 0;
+          color: rgba(@black,0.25);
         }
         &:nth-child(3) {
           width: 160px;
           flex-shrink: 0;
+          color: rgba(@black,0.25);
         }
         &:nth-child(4) {
           flex-shrink: 0;
           cursor: pointer;
+          color: rgba(@black,0.65);
+          &:hover{
+            color: @theme-color;
+          }
         }
       }
     }

@@ -27,7 +27,7 @@
               :preview="true"
             />
           </div>
-          <div v-else>
+          <div v-else class="no-data-wrap">
             <empty text="暂无章节概述，可点击下方按钮添加"> </empty>
             <div class="action-btn" v-role="[tab]">
               <a-button
@@ -57,13 +57,15 @@
           <prepare-or-guide :activeKey="activeKey" />
         </template>
       </a-tab-pane>
-      <a-tab-pane key="4" tab="课后习题" force-render
-        >
-        <template v-if="activeKey === '4'">
-          <chapter-exercise-tab/>
-        </template>
-        </a-tab-pane
+      <a-tab-pane
+        key="4"
+        :tab="'课后习题(' + exerciseSum + ')'"
+        force-render
       >
+        <template v-if="activeKey === '4'">
+          <chapter-exercise-tab v-model:sum="exerciseSum" />
+        </template>
+      </a-tab-pane>
     </a-tabs>
   </div>
 </template>
@@ -77,12 +79,17 @@ import {
   watch,
   Ref,
   ref,
+  onMounted,
 } from "vue";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import empty from "src/components/Empty.vue";
-import { getChapterDetailApi, saveChapterIntro } from "./api";
+import {
+  getChapterDetailApi,
+  saveChapterIntro,
+  getChapterExerciseAnalysisApi,
+} from "./api";
 import prepareOrGuide from "./components/prepareOrGuide/prepareOrGuide.vue";
-import chapterExerciseTab from "./components/chapterExerciseTab.vue"
+import chapterExerciseTab from "./components/chapterExerciseTab.vue";
 type TreactiveData = {
   activeKey: string;
   isEditIntro: boolean;
@@ -95,25 +102,28 @@ export default defineComponent({
     "marked-editor": markedEditor,
     empty,
     "prepare-or-guide": prepareOrGuide,
-    "chapter-exercise-tab":chapterExerciseTab
+    "chapter-exercise-tab": chapterExerciseTab,
   },
   setup() {
     const course_id: any = inject("course_id");
     const chapter_id: any = inject("chapter_id");
     const tab: any = inject("tab");
-    const chapterDetailData:Ref<any> = ref({});
+    const chapterDetailData: Ref<any> = ref({});
+    const exerciseSum = ref(0);
     const reactiveData: TreactiveData = reactive({
       activeKey: "1",
       isEditIntro: false,
       chapterIntro: "",
       isNoChapterIntro: true,
     });
-    
+
     watch(
       () => chapter_id,
       () => {
         reactiveData.activeKey = "1";
-          getChapterDetail();
+        exerciseSum.value = 0;
+        getChapterDetail();
+        getChapterExerciseAnalysis();
       },
       { deep: true, immediate: true }
     );
@@ -151,12 +161,21 @@ export default defineComponent({
       reactiveData.chapterIntro = (chapterDetailData.value as any).chapter_des;
     }
 
+    // 获取习题统计
+    function getChapterExerciseAnalysis() {
+      getChapterExerciseAnalysisApi({ chapter_id: chapter_id.value }).then(
+        (res: any) => {
+          exerciseSum.value = res.data.question_total;
+        }
+      );
+    }
     return {
       ...toRefs(reactiveData),
       saveIntro,
       editIntro,
       chapterDetailData,
-      tab
+      tab,
+      exerciseSum,
     };
   },
 });
@@ -169,7 +188,7 @@ export default defineComponent({
   background: @white;
   display: flex;
   flex-direction: column;
- 
+
   .ant-tabs {
     height: calc(100%);
     display: flex;
@@ -236,9 +255,12 @@ export default defineComponent({
     height: 100%;
     overflow-y: auto;
   }
-  .ant-tabs-tabpane{
+  .ant-tabs-tabpane {
     height: 100%;
     overflow: auto;
+  }
+  .no-data-wrap {
+    margin-top: 80px;
   }
 }
 </style>

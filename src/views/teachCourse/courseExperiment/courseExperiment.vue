@@ -33,7 +33,7 @@
     </div>
 
     <template v-else>
-      <empty class="emptyContent" text="暂无数据，请点击左侧自定义章节/添加章节按钮，进行添加章节"></empty>
+      <empty class="emptyContent" text="暂无数据，请先于左侧添加章节"></empty>
     </template>
   </div>
   <a-modal
@@ -201,7 +201,6 @@ export default defineComponent({
   height: 900px;
   .emptyContent{
     background-color: @white;
-    margin-left: 15px;
   }
   .course-experiment-left {
     width: 440px;
@@ -213,7 +212,7 @@ export default defineComponent({
     flex-direction: column;
     overflow: auto;
     .action-top-box {
-      padding: 15px;
+      padding: 24px;
       flex-shrink: 0;
       > button {
         margin-right: 15px;
@@ -235,7 +234,7 @@ export default defineComponent({
         display: inline-block;
         line-height: 13px;
         text-align: center;
-        margin-left: 5px;
+        margin-right: 4px;
       }
     }
     .course-menu-tree {

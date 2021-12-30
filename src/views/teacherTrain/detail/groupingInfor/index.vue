@@ -25,8 +25,8 @@
           </template>
           <template #action="{ record }">
             <div class="action">
-              <span @click="deleteGroup(record.id)">删除</span>
-              <span @click="editGroup(record.name, record.id)">编辑</span>
+              <span @click="deleteGroup(record.id)" class="iconfont icon-shanchu-copy"></span>
+              <span @click="editGroup(record.name, record.id)" class="iconfont icon-bianji"></span>
             </div>
           </template>
         </a-table>

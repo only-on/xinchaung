@@ -87,7 +87,7 @@
                 >
                 </a-input-search>
                 <a-button class="" type="primary" @click="selectContent(false)"
-                  >选择实验</a-button
+                  >选择实训</a-button
                 >
                 <div class="statistics-box">
                   <span
@@ -148,7 +148,7 @@
                     class=""
                     type="primary"
                     @click="selectContent(false)"
-                    >选择实验</a-button
+                    >选择视频</a-button
                   >
                 </div>
 
@@ -208,7 +208,7 @@
                     class=""
                     type="primary"
                     @click="selectContent(false)"
-                    >选择实验</a-button
+                    >选择文档</a-button
                   >
                 </div>
 

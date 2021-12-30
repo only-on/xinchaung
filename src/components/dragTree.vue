@@ -28,11 +28,13 @@
                 v-if="isOperation"
                 @click.stop="editNode(item)"
                 class="icon-bianji1 iconfont"
+                title="编辑"
               ></span>
               <span
                 v-if="isOperation"
                 @click.stop="deleteNode(item)"
                 class="icon-shanchu iconfont"
+                title="移除"
               ></span>
               <span class="open-close-cion icon-shouqi iconfont"></span>
             </span>
@@ -502,6 +504,11 @@ export default defineComponent({
             display: inline-block;
           }
         }
+        .icon-bianji1,.icon-shanchu{
+          &:hover{
+            color: rgba(@theme-color,0.5);
+          }
+        }
       }
     }
     &:hover {
@@ -556,7 +563,9 @@ export default defineComponent({
         font-size: 12px;
         color: @theme-color;
         display: none;
+        
       }
+      
     }
     &:hover {
       .action-cion-box {

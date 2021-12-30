@@ -1,10 +1,10 @@
 <template>
   <div class="upload-data-set-file-box">
-    <label>选择目录</label>
+    <before-icon :icon="group12">
     <a-select
       style="width: 250px"
       v-model:value="dataset_id"
-      placeholder="请选择类型"
+      placeholder="请选择目录"
     >
       <a-select-option
         v-for="(val, key) in selfDataSetList"
@@ -13,6 +13,7 @@
         >{{ val }}</a-select-option
       >
     </a-select>
+    </before-icon>
     <a-upload
       :show-upload-list="false"
       :before-upload="beforeUpload"
@@ -40,6 +41,8 @@ import { defineComponent, onMounted, reactive, toRefs ,watch} from "vue";
 import { getDataSetListApi } from "../api";
 import uploadFile from "src/request/uploadFile";
 import { message } from "ant-design-vue";
+import beforeIcon from "src/components/aiAnt/beforeIcon.vue"
+import group12 from "src/assets/images/screenicon/Group12.png"
 type TreactiveData = {
   selfDataSetList: Record<string, unknown>;
   dataset_id: undefined | string;
@@ -49,6 +52,9 @@ type TreactiveData = {
 };
 
 export default defineComponent({
+  components:{
+    "before-icon":beforeIcon
+  },
   props: ["type","value","dataset_id","accept","fileSize"],
   setup(props,{emit}) {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -150,6 +156,7 @@ export default defineComponent({
       beforeUpload,
       abort,
       remove,
+      group12
     };
   },
 });

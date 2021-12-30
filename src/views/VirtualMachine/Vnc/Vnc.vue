@@ -14,6 +14,7 @@
                   <span class="icon-gongxiang1 iconfont"></span>发送选择内容
                 </a-menu-item>
                 <a-menu-item
+                v-if="opType!='prepare'"
                   key="startRecord"
                   class="action-item"
                   :class="isScreenRecording ? 'disabled' : ''"
@@ -21,6 +22,7 @@
                   <span class="icon-luping iconfont"></span>开始录屏
                 </a-menu-item>
                 <a-menu-item
+                v-if="opType!='prepare'"
                   key="stopRecord"
                   class="action-item"
                   :class="!isScreenRecording ? 'disabled' : ''"
@@ -606,7 +608,8 @@ export default defineComponent({
       reportTemid,
       sshUrl,
       currentInterface,
-      layoutBg
+      layoutBg,
+      opType
     };
   },
 });

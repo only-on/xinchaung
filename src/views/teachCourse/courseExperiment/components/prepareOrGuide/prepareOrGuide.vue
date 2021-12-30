@@ -24,6 +24,7 @@
   </div>
   <div v-if="prepareShowTab === 'select'" class="select-data-set-box">
     <div class="select-head">
+      <before-icon :icon="group12">
       <a-select
         v-model:value="tableParams.dataset_id"
         placeholder="请选择数据集目录"
@@ -41,19 +42,28 @@
           }}</a-select-option>
         </a-select-opt-group>
       </a-select>
+      </before-icon>
+      <before-icon :icon="group6">
       <a-input
         class="p-file-name"
         placeholder="请输入关键字"
         v-model:value="tableParams.file_name"
+        @keyup.enter="searchBtn"
       />
-      <a-button type="primary" @click="searchBtn">查询</a-button>
+      </before-icon>
+      <!-- <a-button type="primary" @click="searchBtn">查询</a-button> -->
       <a-button type="primary" class="back-btn" @click="backBtn">返回</a-button>
     </div>
+    <a-config-provider>
     <a-table :pagination="false" :columns="columns" :dataSource="tableList">
       <template #action="{ text }"
         ><span @click="selectData(text)">选择</span></template
       >
     </a-table>
+    <template #renderEmpty>
+        <div><empty type="tableEmpty"></empty></div>
+      </template>
+    </a-config-provider>
   </div>
   <a-modal
     class="upload-modal"
@@ -93,7 +103,10 @@ import {
 } from "../../api";
 import empty from "src/components/Empty.vue";
 import uploadDataSetFile from "../uploadDataSetFile.vue";
+import beforeIcon from "src/components/aiAnt/beforeIcon.vue"
 import { message } from "ant-design-vue";
+import group12 from "src/assets/images/screenicon/Group12.png"
+import group6 from "src/assets/images/screenicon/Group6.png"
 type TreactiveData = {
   introFile: any[];
   prepareShowTab: string;
@@ -122,6 +135,7 @@ export default defineComponent({
     empty,
     SyncOutlined,
     "upload-data-set-file": uploadDataSetFile,
+    "before-icon":beforeIcon
   },
   props: ["activeKey"],
   setup(props) {
@@ -251,7 +265,18 @@ export default defineComponent({
     }
     // 获取数据集文件列表
     function getDataSetFile() {
-      getDataSetFileApi(reactiveData.tableParams).then((res: any) => {
+      reactiveData.tableParams;
+      let params:any = {
+        course_id: reactiveData.tableParams.course_id,
+        chapter_id: reactiveData.tableParams.chapter_id,
+        dataset_id: reactiveData.tableParams.dataset_id
+          ? reactiveData.tableParams.dataset_id
+          : "",
+        file_name: reactiveData.tableParams.file_name,
+        page: reactiveData.tableParams.page,
+        pageSize: reactiveData.tableParams.pageSize,
+      };
+      getDataSetFileApi(params).then((res: any) => {
         reactiveData.tableList = res.data.list;
       });
     }
@@ -304,12 +329,12 @@ export default defineComponent({
         message.warn("文件上传中，请稍后提交");
         return;
       }
-      const body=new FormData();
-      body.append("items[0][file_name]",fileInfo.value.file_name)
-      body.append("items[0][file_url]",fileInfo.value.file_url)
-      body.append("items[0][suffix]",fileInfo.value.suffix)
-      body.append("items[0][size]",fileInfo.value.size as any)
-      body.append("dataset_id",reactiveData.dataset_id as any)
+      const body = new FormData();
+      body.append("items[0][file_name]", fileInfo.value.file_name);
+      body.append("items[0][file_url]", fileInfo.value.file_url);
+      body.append("items[0][suffix]", fileInfo.value.suffix);
+      body.append("items[0][size]", fileInfo.value.size as any);
+      body.append("dataset_id", reactiveData.dataset_id as any);
       addDataSetFileApi(body).then((res: any) => {
         fileInfo.value = {
           file_name: "",
@@ -318,8 +343,8 @@ export default defineComponent({
           size: 0,
         };
         reactiveData.uploadVisible = false;
-        let item_id=res.data.count[0]
-        selectData({id:item_id})
+        let item_id = res.data.count[0];
+        selectData({ id: item_id });
       });
     }
     // 关闭文件上传弹框
@@ -343,7 +368,9 @@ export default defineComponent({
       fileInfo,
       uploadRef,
       datasetType,
-      tab
+      tab,
+      group12,
+      group6
     };
   },
 });
@@ -391,8 +418,9 @@ export default defineComponent({
     text-align: center;
   }
 }
-.chapter-intro-none{
-  .action-btn{
+.chapter-intro-none {
+  margin-top: 80px;
+  .action-btn {
     width: 100%;
   }
 }

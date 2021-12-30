@@ -39,7 +39,7 @@
         >
       </div>
     </div>
-    <div class="start-train">
+    <div class="start-train" v-if="opType!='prepare'">
       <a-button type="primary" @click="startTrainFun" v-if="!isLookGuide"
         >开始实训</a-button
       >

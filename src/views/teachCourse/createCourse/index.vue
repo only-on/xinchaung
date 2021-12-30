@@ -332,19 +332,34 @@ export default defineComponent({
     margin-top: 7px;
   }
   .create-course-main {
-    padding: 39px 30px 0px 30px;
+    padding: 32px 30px 0px 30px;
     .edit-course-base-form {
       .col-2 {
-        margin-top: 30px;
+        // margin-top: 12px;
         .ant-form-item-control-input-content {
           textarea {
-            min-height: 305px !important;
+            min-height: 250px !important;
           }
         }
       }
       .createuploadImgdiv {
         > div {
-          height: 143px;
+          height: 118px;
+          position: relative;
+          &:not(.uploadDiv)::before{
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            top:0;
+            bottom: 0;
+            background-color: rgba(@black,0.5);
+          }
+          &:hover,&.active{
+            &:not(.uploadDiv)::before{
+              background-color:transparent
+            }
+          }
         }
       }
     }
@@ -352,7 +367,7 @@ export default defineComponent({
       text-align: center;
       margin-top: 50px;
       > button {
-        margin-left: 20px;
+        margin-left: 16px;
       }
     }
     .course-experiment-left,
@@ -368,6 +383,7 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
       flex-direction: column;
+      padding-top: 100px;
       img {
         width: 144px;
         height: 140px;

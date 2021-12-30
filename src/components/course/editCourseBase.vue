@@ -50,12 +50,18 @@
       </a-form-item>
     </div>
     <div :class="type ? 'col-2' : 'col-1'">
-      <a-form-item label="课程介绍">
-        <a-textarea
+      <a-form-item label="课程介绍" name="introduce">
+        <number-input
           v-model:value="formData.introduce"
           placeholder="请输入课程介绍"
-          :auto-size="{ minRows: 7, maxRows: 15 }"
-        />
+          :auto-size="{ minRows: 5, maxRows: 15 }"
+          :maxlength="100"
+        ></number-input>
+        <!-- <a-textarea
+          v-model:value="formData.introduce"
+          placeholder="请输入课程介绍"
+          :auto-size="{ minRows: 5, maxRows: 15 }"
+        /> -->
       </a-form-item>
     </div>
     <div :class="type ? 'col-2' : 'col-1'">
@@ -86,9 +92,10 @@ import {
 } from "vue";
 import storage from "src/utils/extStorage";
 import uploadImage from "./uploadImage.vue";
+import numberInput from "src/components/aiAnt/numberInput.vue"
 import request from "src/api/index";
 import { useRoute } from "vue-router";
-import moment from "moment";
+import moment, { max } from "moment";
 import { ValidateErrorEntity } from "ant-design-vue/es/form/interface";
 
 type TreactiveData = {
@@ -100,6 +107,7 @@ type TreactiveData = {
 export default defineComponent({
   components: {
     "upload-image": uploadImage,
+    "number-input":numberInput
   },
   props: {
     type: {
@@ -122,7 +130,9 @@ export default defineComponent({
       formData.value=props.modelValue
       // formData.value.courseDescriptions=props.modelValue.introduce
     },{deep:true,immediate:true})
-    
+    // watch(()=>formData.value,()=>{
+    //   console.log(formData.value)
+    // },{deep:true})
     const type = props.type;
     const currentRole = storage.lStorage.get("role");
 
@@ -133,6 +143,7 @@ export default defineComponent({
         course_direction_id: [{ required: true, message: "职业方向不能为空" }],
         created_at: [{ required: true, message: "时间不能为空" }],
         end_time: [{ required: true, message: "时间不能为空" }],
+        introduce:[{max:100,message:"课程介绍长度不能超过100字符",trigger:"change"}]
       },
       categoryList: [],
       directionsList: [],
@@ -219,6 +230,7 @@ export default defineComponent({
   justify-content: space-between;
   .col-2 {
     width: 48%;
+    // margin-top:12px;
     &.time-item {
       display: flex;
       justify-content: space-between;
@@ -232,6 +244,13 @@ export default defineComponent({
     margin-left: 0px;
     font-style: normal;
     transform: scale(0.85);
+    color: rgba(@black,0.25);
+  }
+  &.ant-form{
+    .ant-form-item-label{
+      line-height: 1;
+    }
   }
 }
+
 </style>

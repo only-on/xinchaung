@@ -332,7 +332,6 @@
       </div>
     </div>
     <div class="flex-line row-3">
-      {{nodeGraphAllData.master}}
       <div
         class="line-item b-r"
         v-for="(val, key) in nodeGraphAllData.master"

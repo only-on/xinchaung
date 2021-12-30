@@ -12,8 +12,8 @@
       <div class="course-list">
         <div class="crate-card course-item create-box">
           <div class="create-btn" @click="create">
-            <span class="icon-chuangjian iconfont"></span
-            ><span class="create-text">创建课程</span>
+            <img :src="createImg" alt="创建课程">
+            <span class="create-text">创建课程</span>
           </div>
         </div>
         <course-card
@@ -60,7 +60,7 @@ import courseCard from "./courseCard.vue";
 import { getCourseListApi } from "./api";
 import { useRouter } from "vue-router";
 import empty from "src/components/Empty.vue";
-
+import createImg from "src/assets/images/Experimental/createdTrain.png"
 type TreactiveData = {
   directionTag: any[];
   allTag: any | null;
@@ -188,6 +188,7 @@ export default defineComponent({
       init,
       pageChange,
       create,
+      createImg
     };
   },
 });
@@ -220,6 +221,7 @@ export default defineComponent({
         .create-text {
           font-size: 20px;
           color: @theme-color;
+          margin-top: 10px;
         }
       }
     }

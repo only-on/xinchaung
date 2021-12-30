@@ -191,7 +191,7 @@ export default defineComponent({
     }
   }
   .imgdiv{
-    margin-top: 10px;
+    margin-bottom: 10px;
     position: relative;
     img{
       opacity: 1.5;
@@ -273,7 +273,7 @@ export default defineComponent({
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-top:10px;
+    margin-bottom:10px;
     border-radius: 4px;
     position: relative;
 

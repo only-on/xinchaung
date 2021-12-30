@@ -53,14 +53,14 @@
             </template>
             <template #stuaction="{ record }">
               <div class="action">
-                <span class="spanleft" @click="removeStudent(record.id)">移除</span>
+                <span class="spanleft iconfont icon-shanchu" @click="removeStudent(record.id)"></span>
                 <span @click="initPassword(record.id)">初始化密码</span>
               </div>
             </template>
             <template #classaction="{ record }">
               <div class="action">
-                <span class="spanleft" @click="checkClass(record.id)">查看</span>
-                <span @click="deleteClass(record.id)">删除</span>
+                <span class="spanleft iconfont icon-chakan1" @click="checkClass(record.id)"></span>
+                <span @click="deleteClass(record.id)" class="iconfont icon-shanchu"></span>
               </div>
             </template>
           </a-table>
@@ -725,8 +725,10 @@ export default defineComponent({
     }
     .action {
       color: @theme-color;
+      cursor: pointer;
+    
       .spanleft {
-        margin-right: 5px;
+        margin-right: 10px;
       }
     }
   }
