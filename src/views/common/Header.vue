@@ -2,7 +2,7 @@
   <header class="header-box">
     <div class="header-left">
       <router-link class="a-logo" :to="{path:homePath}">
-        <div class="logo"></div>
+        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`"></div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
       </router-link>
     </div>
@@ -55,11 +55,13 @@ import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher_p.png";
 import adminUserImg from "src/assets/images/user/admin_p.png";
 import studentUserImg from "src/assets/images/user/student_p.png";
+import {getSettingSiteApi} from 'src/views/adminSystemSetting/api'
 // admin_p
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
+    const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
     const { lStorage } = extStorage;
     const role = lStorage.get("role");
@@ -142,16 +144,25 @@ export default defineComponent({
           lStorage.set("user_id", user.id);
           lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
           // store.commit('saveMenus', data)
+          const site_settings=res.data.site_settings
+          systemBaseInfo.login_logo = site_settings.login_logo;
+          lStorage.set("login_logo", site_settings.login_logo);
+
 
           userName.value = user.name;
         }
       });
     }
+    var systemBaseInfo:any=reactive({
+      login_logo:''
+    });
     onMounted(() => {
       getMenu();
     });
 
     return {
+      env,
+      systemBaseInfo,
       isOperation,
       power,
       userName,
@@ -195,8 +206,10 @@ export default defineComponent({
       width: 32px;
       height: 32px;
       margin-right: 10px;
-      background: url("../../assets/images/user/favicon.png") no-repeat center;
+      // background: url("../../assets/images/user/favicon.png") no-repeat center;
+      background-repeat: no-repeat;
       background-size: 100% 100%;
+      background-position: center;
     }
     .web-title {
       color: @theme-color;

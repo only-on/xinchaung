@@ -467,7 +467,7 @@ export default defineComponent({
   .ant-input-group-addon{
     .ant-btn{
       background-color: @theme-color;
-      border-color: @hover-color;
+      // border-color: @hover-color;
       color: @white;
       height: 41px;
       width: 100px;
@@ -479,7 +479,7 @@ export default defineComponent({
 .ant-btn.ant-btn-primary {
   height: 41px;
   background-color: @theme-color;
-  border-color: @hover-color;
+  // border-color: @hover-color;
   color: @white;
   padding: 0 20px;
   line-height: 41px;

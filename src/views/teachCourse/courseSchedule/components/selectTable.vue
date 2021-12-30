@@ -222,4 +222,7 @@ interface ISelectedIds {
     }
   }
 }
+.icon-del{
+  color: @theme-color;
+}
 </style>

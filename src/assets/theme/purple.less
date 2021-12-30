@@ -9,7 +9,7 @@
 @html-selector: html;
 // -------- Colors -----------
 @center-width:1330px;
-@theme-scroll:#e3d9ff;
+// @theme-scroll:#e3d9ff;
 // @theme-light-color:#BB9CD6;      //浅色主题色文字
 // @theme-gradient-color:#6c60e2;   // 背景主题渐变色
 // @theme-color: #8955b5;           //  主题色
@@ -17,14 +17,27 @@
 //@theme-tree-node-bg:#e4dae8;
 
 
+//  公共部分  以后不随系统变
+@split-line:#F0F0F0;               //  分割线
+@shadow-color:rgba(0, 0, 0,0.07);  //  卡片阴影
+
+@blue-4:#69C0FF;
+@purpleblue-1:#DEDFFD;
+@purplebule-5:#6C70EA;
+@theme-scroll:@purpleblue-1;
+@geekblue-1:#F0F5FF;
+
+@purplebule-3:#9B9FF7;
 @theme-tree-node-bg:#DEDFFD;
 @theme-tree:#8084EF;
-@theme-light-color:#9B9FF7;      //浅色主题色文字
+@theme-light-color:@purplebule-3;      //浅色主题色文字
 @theme-gradient-color:#6c60e2;   // 背景主题渐变色
 @theme-color: #585CE5;           //  主题色
 
-@blue-4:#69C0FF;
-@purplebule-5:#6C70EA;
+
+
+
+
 
 
 
@@ -930,5 +943,13 @@
 
 .ant-table{
   font-size: 14px;
-  line-height: 1.4715;
+  line-height: 1.1;
+  tr{
+    td{
+      padding: 14px 16px;
+    }
+    th{
+      padding: 14px 16px;
+    }
+  }
 }

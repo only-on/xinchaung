@@ -149,7 +149,7 @@
 .ant-btn.ant-btn-primary {
   height: 41px;
   background-color: @theme-color;
-  border-color: @hover-color;
+  // border-color: @hover-color;
   color: #fff;
   padding: 0 20px;
   line-height: 41px;

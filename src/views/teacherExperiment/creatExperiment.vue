@@ -63,7 +63,7 @@ export default defineComponent({
   background-repeat: no-repeat;
   background-position: center bottom;
 
-  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 6px 0px @shadow-color;
   border-radius: 6px;
 
   > div {
@@ -89,10 +89,10 @@ export default defineComponent({
     > div {
       width: 300px;
       height: 170px;
-      background: linear-gradient(180deg, #f9f0ff, #eaf2ff);
-
+      // background: linear-gradient(180deg, #f9f0ff, #eaf2ff);
+      background:linear-gradient(90deg,@geekblue-1, @purpleblue-1);
       border-radius: 10px;
-      box-shadow: 0px 4px 6px 0px rgba(187, 156, 214, 0.4);
+      box-shadow: 0px 4px 6px 0px @shadow-color;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -110,7 +110,7 @@ export default defineComponent({
     }
 
     > div:hover {
-      border: 1px solid #af82d6;
+      border: 1px solid @purplebule-3;
     }
 
     .vnc-box {
