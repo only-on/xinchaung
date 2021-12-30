@@ -545,8 +545,6 @@ export default defineComponent({
           state.stuUnselectParams.nick = fullName;
           state.stuUnselectParams.name = studentValue;
           state.stuUnselectParams.department = faculty;
-          state.stuUnselectParams.limit=params.limit;
-          state.stuUnselectParams.page=params.page;
           methods.getUnselectStu();
         } else {
           state.classUnselectParams.name = classes;
