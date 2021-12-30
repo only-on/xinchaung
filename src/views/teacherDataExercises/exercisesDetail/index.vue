@@ -15,7 +15,7 @@
         </div>
         <div class="exam-basic-right">
           <watermark-icon
-            :title="exambasic.questions_count"
+            :title="exambasic.questions_count.toString()"
             description="习题个数"
             style="background-color: #5e68da"
           />
@@ -90,7 +90,7 @@ interface examBasic {
   description: string;
   created_at: string;
   updated_at: string;
-  questions_count?: any;
+  questions_count: string;
 }
 interface examType {
   id?: number;
@@ -151,6 +151,7 @@ export default defineComponent({
         description: "",
         created_at: "",
         updated_at: "",
+        questions_count:'0'
       },
       form: {},
       examtype: [],

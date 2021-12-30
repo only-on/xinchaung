@@ -51,11 +51,12 @@ interface State{
 }
 export default defineComponent({
     name:'batchImport',
-    props: {
-    isShowImport: Boolean,
-    poolid:Number,
-    selectedId:Number
-  },
+//     props: {
+//     isShowImport: Boolean,
+//     poolid:String,
+//     selectedId:Number
+//   },
+    props:['isShowImport','poolid','selectedId'],
   setup(props,{emit}){
        const teacherDataExerApi = (request as any).teacherDataExercises
        const state:State=reactive({

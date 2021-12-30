@@ -182,7 +182,7 @@
             <a-modal
                 v-model:visible="answerVisible"
                 :footer="null"
-                title="解答题"
+                title="答案"
                 >
                 <p>{{rightAnswer}}</p>
             </a-modal>
@@ -259,6 +259,7 @@ interface ItreeDatalist {
   text: string
   children?: ItreeDatalist[]
   disabled?: boolean
+  state?:string
 }
 export default defineComponent({
     name:'quesComonTable',
@@ -402,6 +403,7 @@ export default defineComponent({
             createExercise(){
                console.log(state.expermodelValue,state.expermodelValue.type_id===4||state.expermodelValue.type_id===5,'创建')  
                state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
+               console.log(knowledgeList.selectedKnowledgeList,state.expermodelValue.points,'state.expermodelValue.points')
                state.expermodelValue.keywords=state.expermodelValue.type_id===5?[state.stringKeywords]:[]
                state.expermodelValue.answers=
                state.expermodelValue.type_id===4||state.expermodelValue.type_id===5?[state.stringAnswer]:state.expermodelValue.answers
@@ -611,12 +613,15 @@ export default defineComponent({
                 }
                 console.log(state.value1)
                  //关键词
-                state.stringKeywords=record.keywords[0].keyword
+                state.stringKeywords=record.keywords[0]?.keyword
                  // 知识点
-                // knowledgeList.selectedKnowledgeList=[record.points.knowledge_names]
-                // record.points.knowledge_names.forEach((item:any,index:any) => {
-                    // knowledgeList.selectedKnowledgeList.push({'text':item[item?.length]})
-                // });
+                const knownames=record.points.knowledge_name.split(',')
+                
+                console.log(knownames,'knownames')
+                knownames.forEach((item:string,index:any) => {
+                    knowledgeList.selectedKnowledgeList.push({id:record.points.knowledge_ids[index].toString(),text:item,state:'open'})
+                });
+                console.log(knowledgeList.selectedKnowledgeList,'knowledgeList.selectedKnowledgeList end')
             },
             //查询
             searchExerData(){
@@ -649,7 +654,7 @@ export default defineComponent({
                         keywords:[],
                         answers:[]
                     }
-            const titleArr:string[]=['单选题','多选题','判断题','填空题','解答题']
+            const titleArr:string[]=['单选题','多选题','判断题','填空题','简答题']
             state.selectLeves=undefined;
             state.expermodelValue.type_id=newVal
             return state.createmodal.title=titleArr[newVal-1];
