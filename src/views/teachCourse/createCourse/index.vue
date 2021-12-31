@@ -69,6 +69,7 @@ import { getCourseDetailApi } from "../courseDetail/api";
 import { cloneDeep } from "lodash";
 import moment from "moment";
 import finishBg from "src/assets/images/teacherCourse/finishBg.png";
+import defaultCover from "src/assets/images/Experimental/wlkc.png"
 export default defineComponent({
   components: {
     "edit-course-base": editCourseBase,
@@ -145,7 +146,7 @@ export default defineComponent({
             body.append("introduce", baseInfo.introduce);
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
-            body.append("url", baseInfo.url);
+            body.append("url", baseInfo.url?baseInfo.url:defaultCover);
             let params: any = {
               name: baseInfo.name,
               start_time:
@@ -155,7 +156,7 @@ export default defineComponent({
               introduce: baseInfo.introduce,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
-              url: baseInfo.url,
+              url: baseInfo.url?baseInfo.url:defaultCover,
               is_available: 1,
             };
             if (course_id.value) {
@@ -189,7 +190,7 @@ export default defineComponent({
           introduce: baseInfo.introduce,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
-          url: baseInfo.url,
+          url: baseInfo.url?baseInfo.url:defaultCover,
           is_available: 1,
         };
         updateCourseBaseApi(params, { course_id: course_id.value }).then(
@@ -220,7 +221,7 @@ export default defineComponent({
             body.append("introduce", baseInfo.introduce);
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
-            body.append("url", baseInfo.url);
+            body.append("url", baseInfo.url?baseInfo.url:defaultCover);
             let params: any = {
               name: baseInfo.name,
               start_time:
@@ -230,7 +231,7 @@ export default defineComponent({
               introduce: baseInfo.introduce,
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
-              url: baseInfo.url,
+              url: baseInfo.url?baseInfo.url:defaultCover,
             };
             if (course_id.value) {
               updateCourseBaseApi(params, { course_id: course_id.value }).then(
@@ -277,7 +278,7 @@ export default defineComponent({
           introduce: baseInfo.introduce,
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
-          url: baseInfo.url,
+          url: baseInfo.url?baseInfo.url:defaultCover,
           is_available: 1,
         };
         updateCourseBaseApi(params, { course_id: course_id.value }).then(
