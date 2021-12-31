@@ -34,12 +34,20 @@
         controls="true"
         :src="origin + previewFileUrl"
       ></common-video>
-      <iframe
+      <!-- <iframe
         v-else
         id="pdf-iframe"
         :src="'/plugin/PDF/viewer.html?file=' + origin + previewFileUrl"
         style="width: 100%; height: 700px; border: none"
-      ></iframe>
+      ></iframe> -->
+      <iframe
+       v-else
+      :src="`/pdfjs-2.5.207/web/viewer.html?file=${
+        env ? '/proxyPrefix' + previewFileUrl : previewFileUrl
+      }`"
+      frameborder="0"
+      style="width: 100%; height: 700px; border: none"
+    ></iframe>
     </a-modal>
   </div>
 </template>
@@ -86,6 +94,7 @@ export default defineComponent({
   },
   emits: ["removed"],
   setup(props, { emit }) {
+    let env = process.env.NODE_ENV == "development" ? true : false;
     const route = useRoute();
     const confirmRemove = ref(false);
     const previewerVisible: Ref<boolean> = ref(false);
@@ -121,7 +130,8 @@ export default defineComponent({
       handlePreview,
       handleRemove,
       getFileType,
-      iconList
+      iconList,
+      env
     };
   },
 });

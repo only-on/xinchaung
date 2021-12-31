@@ -20,7 +20,7 @@ export default defineComponent({
       () => {
         let development = process.env.NODE_ENV == "development" ? true : false;
         let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
-        state.reportUrl = baseurl + props.detailInfo?.pdf_path;
+        state.reportUrl ='/pdfjs-2.5.207/web/viewer.html?file='+baseurl + props.detailInfo?.pdf_path;
       },
       { immediate: true, deep: true }
     );
