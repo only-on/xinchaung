@@ -175,6 +175,7 @@ export default defineComponent({
   width: @center-width;
   margin: 0 auto;
   // overflow: auto;
+  padding-bottom: 20px;
 }
 :deep(.ant-tabs.course-detail-tabs) {
   // height:calc(100% - 200px) ;

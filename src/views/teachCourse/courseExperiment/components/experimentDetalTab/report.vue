@@ -8,6 +8,7 @@
     <report-on-line v-if="reportInfo.type === 'form'"></report-on-line>
 
     <iframe
+    v-if="reportInfo.type === 'file'"
       :src="
         env
           ? '/pdfjs-2.5.207/web/viewer.html?file=' + '/proxyPrefix' + reportInfo.url

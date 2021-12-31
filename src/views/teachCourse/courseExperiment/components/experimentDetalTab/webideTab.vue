@@ -8,13 +8,13 @@
           <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div>
+      <div v-if="know_points.length>0">
         <span v-for="(item, index) in know_points" :key="index">{{
           item
         }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" @change="keyChange" />
+    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" />
     <template v-if="currentKey === 1">
       <experiment-guide v-model="detailInfo.detail"/>
     </template>
@@ -22,7 +22,7 @@
       <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise />
+      <experiment-exercise v-model:sum="experimentExerciseSum"/>
     </template>
   </div>
 </template>
@@ -51,6 +51,7 @@ export default defineComponent({
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
     const know_points = ref([]);
+    const experimentExerciseSum=ref(0)
     watch(
       () => detailInfo,
       () => {
@@ -72,7 +73,8 @@ export default defineComponent({
       keyChange,
       ...toRefs(reactiveData),
       know_points,
-      currentKey
+      currentKey,
+      experimentExerciseSum
     };
   },
 });
@@ -89,16 +91,20 @@ export default defineComponent({
   border-radius: 4px;
   box-shadow: 0px 3px 6px 0px undefined;
   padding: 27px 22px;
+  font-size: 14px;
+  color: rgba(@black,0.65);
   > div {
     &:first-child {
       display: flex;
       justify-content: space-between;
       flex-direction: row;
+      align-items: center;
       .experiment-name {
         font-size: 22px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+        color: rgba(@black,1);
       }
       .experiment-type-or-class-count {
         flex-shrink: 0;

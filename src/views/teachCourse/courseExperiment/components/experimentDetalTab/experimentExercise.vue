@@ -24,7 +24,7 @@
           :key="item.id"
         >
           <span>
-            <i class="iconfont icon-danxuanxuanzhong"></i>
+            <i class="iconfont" :class="questionTypeIcon[item.type_id].icon"></i>
             {{ item.question }}
           </span>
           <span>
@@ -155,7 +155,8 @@ export default defineComponent({
     SyncOutlined,
     empty,
   },
-  setup() {
+  props:["sum"],
+  setup(props,{emit}) {
     const experiment_id: any = inject("experiment_id");
     const tab: any = inject("tab");
     const reactiveData: TreactiveData = reactive({
@@ -189,6 +190,13 @@ export default defineComponent({
         dataIndex: "origin_score",
       },
     ];
+    const questionTypeIcon={
+      1:{name:"单选题",icon:"icon-danxuanxuanzhong"},
+      2:{name:"多选题",icon:"icon-duoxuan"},
+      3:{name:"判断题",icon:"icon-panduanti"},
+      4:{name:"填空题",icon:"icon-tiankongti"},
+      5:{name:"简答题",icon:"icon-jiandati"}
+    }
     onMounted(() => {
       if (!experiment_id.value) {
         return;
@@ -216,6 +224,7 @@ export default defineComponent({
     // 获取共有章节目录
     function getPublicExercisesMap() {
       return new Promise((resolve, reject) => {
+        reactiveData.publicData=[]
         getExercisesMapApi({ initial: 1, limit: 500 }).then((res: any) => {
           res.data.list.forEach((item: any) => {
             reactiveData.publicData.push(item);
@@ -230,6 +239,7 @@ export default defineComponent({
     // 获取私有章节目录
     function getSelfExercisesMap() {
       return new Promise((resolve, reject) => {
+        reactiveData.selfData=[]
         getExercisesMapApi({ initial: 0, limit: 500 }).then((res: any) => {
           res.data.list.forEach((item: any) => {
             reactiveData.selfData.push(item);
@@ -291,6 +301,7 @@ export default defineComponent({
         (res: any) => {
           reactiveData.questionCount = res.data.question_total;
           reactiveData.scores = res.data.score_total;
+          emit("update:sum",reactiveData.questionCount)
         }
       );
     }
@@ -355,6 +366,7 @@ export default defineComponent({
       rowKey,
       deleteChapterExercise,
       tab,
+      questionTypeIcon
     };
   },
 });

@@ -8,11 +8,11 @@
           <span>课时数：{{detailInfo.class_cnt}}</span>
         </div>
       </div>
-      <div>
+      <div v-if="know_points.length>0">
         <span v-for="(item,index) in know_points" :key="index">{{item}}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" @change="keyChange"/>
+    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange"/>
     <template v-if="currentKey === 1">
       <div class="data-set-box">
         <label>数据集</label>
@@ -31,7 +31,7 @@
       <report/>
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise/>
+      <experiment-exercise v-model:sum="experimentExerciseSum"/>
     </template>
   </div>
 </template>
@@ -51,6 +51,7 @@ export default defineComponent({
       // currentKey: 1,
     });
     const currentKey=ref(1)
+    const experimentExerciseSum = ref(0);
      const detailInfo: any = inject("detailInfo");
     // const course_id = inject("course_id") as number;
     // const experiment_id: any = inject("experiment_id");
@@ -68,7 +69,8 @@ export default defineComponent({
       keyChange,
       ...toRefs(reactiveData),
       know_points,
-      currentKey
+      currentKey,
+      experimentExerciseSum
     };
   },
 });
@@ -90,6 +92,7 @@ export default defineComponent({
         display: flex;
         justify-content: space-between;
         flex-direction: row;
+        align-items: center;
         .experiment-name {
           font-size: 22px;
           overflow: hidden;

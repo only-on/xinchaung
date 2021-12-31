@@ -24,7 +24,7 @@
           :key="item.id"
         >
           <span>
-            <i class="iconfont icon-danxuanxuanzhong"></i>
+            <i class="iconfont" :class="questionTypeIcon[item.type_id].icon"></i>
             {{ item.question }}
           </span>
           <span>
@@ -186,6 +186,13 @@ export default defineComponent({
       questionCount: 0,
       scores: 0,
     });
+    const questionTypeIcon={
+      1:{name:"单选题",icon:"icon-danxuanxuanzhong"},
+      2:{name:"多选题",icon:"icon-duoxuan"},
+      3:{name:"判断题",icon:"icon-panduanti"},
+      4:{name:"填空题",icon:"icon-tiankongti"},
+      5:{name:"简答题",icon:"icon-jiandati"}
+    }
     const columns = [
       {
         title: "题目",
@@ -231,6 +238,7 @@ export default defineComponent({
     });
     // 获取共有章节目录
     function getPublicExercisesMap() {
+      reactiveData.publicData=[]
       return new Promise((resolve, reject) => {
         getExercisesMapApi({ initial: 1, limit: 500 }).then((res: any) => {
           res.data.list.forEach((item: any) => {
@@ -245,6 +253,7 @@ export default defineComponent({
     }
     // 获取私有章节目录
     function getSelfExercisesMap() {
+      reactiveData.selfData=[]
       return new Promise((resolve, reject) => {
         getExercisesMapApi({ initial: 0, limit: 500 }).then((res: any) => {
           res.data.list.forEach((item: any) => {
@@ -374,7 +383,8 @@ export default defineComponent({
       deleteChapterExercise,
       tab,
       group12,
-      group3
+      group3,
+      questionTypeIcon
     };
   },
 });

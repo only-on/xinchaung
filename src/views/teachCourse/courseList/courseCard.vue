@@ -49,8 +49,8 @@
                 <span>实验指导</span>
                 <a-switch
                   v-model:checked="data.is_open"
-                  checked-children="开"
-                  un-checked-children="关"
+                  checked-children="开启"
+                  un-checked-children="关闭"
                   class="aswitch-guide"
                   @change="
                     () => {
@@ -126,7 +126,7 @@
           ><span @click="downloadExport">导出</span>
         </div>
         <div class="archived-time-box">
-          <span class="icon-jingli iconfont"></span
+          <span class="icon-guidangshijian iconfont"></span
           ><span class="time"
             ><span style="margin-right: 8px">归档时间</span>
             {{ data.updated_at }}
@@ -315,13 +315,15 @@ export default defineComponent({
     .course-item-box {
       background: #fff;
       border-radius: 10px;
-      box-shadow: 0px 7px 14px -4px rgba(0, 0, 0, 0.16);
+      box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.07);
       height: 100%;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      border: 1px solid transparent;
+      transition: 0.5s;
       .cover-box {
-        height: 166px;
+        height: 177px;
         width: 100%;
         position: relative;
         flex-shrink: 0;
@@ -395,8 +397,8 @@ export default defineComponent({
               color: @text-color-secondary;
               height: 20px;
               line-height: 20px;
-              margin-top: 13px;
-              margin-bottom: 15px;
+              margin-top: 12px;
+              margin-bottom: 12px;
             }
             .statistics-box {
               display: flex;
@@ -405,7 +407,7 @@ export default defineComponent({
               align-items: center;
               height: 18px;
               line-height: 18px;
-              margin-bottom: 18px;
+              margin-bottom: 16px;
               > div {
                 height: 12px;
                 line-height: 16px;
@@ -451,8 +453,7 @@ export default defineComponent({
         cursor: pointer;
         overflow: hidden;
         .action-head-box {
-          padding: 13px;
-          padding-bottom: 0;
+          padding: 4px 13px 2px 13px;
           display: flex;
           flex-direction: row;
           justify-content: space-between;
@@ -465,7 +466,7 @@ export default defineComponent({
               background-color: #f29b43;
             }
             > button {
-              width: 42px;
+              width: 69px;
               height: 22px;
               margin-left: 10px;
             }
@@ -482,7 +483,7 @@ export default defineComponent({
           }
         }
         .action-footer-box {
-          height: 40px;
+          height: 37px;
           display: flex;
           flex-direction: row;
           background-color: #fafafa;
@@ -498,7 +499,7 @@ export default defineComponent({
             color: #8f8f8f;
             font-size: 14px;
             &:hover {
-              color: rgba(@theme-color, 0.9);
+              color: rgba(@theme-color, 1);
             }
           }
           > a {
@@ -517,14 +518,15 @@ export default defineComponent({
         > h2 {
           color: #000;
           font-size: 16px;
-          font-weight: 700;
-          margin-top: 15px;
+          font-weight: 500;
+          margin-top: 8px;
           padding: 0 15px;
+          margin-bottom: 16px;
         }
         .base-init-show {
           display: flex;
           flex-direction: row;
-          margin-bottom: 22px;
+          margin-bottom: 24px;
           padding-left: 15px;
           .content-total-box {
             padding-right: 16px;
@@ -553,6 +555,7 @@ export default defineComponent({
           background: #fafafa;
           display: none;
           border-top: 1px solid #e9e9e9;
+          font-size: 14px;
           > span {
             width: 33.333333%;
             &:nth-child(1) {
@@ -560,6 +563,9 @@ export default defineComponent({
             }
             &:nth-child(2) {
               border-right: 1px solid #e9e9e9;
+            }
+            &:hover {
+              color: @theme-color;
             }
           }
         }
@@ -585,10 +591,14 @@ export default defineComponent({
           text-align: center;
           background: #fafafa;
           display: none;
+          font-size: 14px;
           > span {
             width: 50%;
             &:nth-child(1) {
               border-right: 1px solid #e9e9e9;
+            }
+            &:hover {
+              color: @theme-color;
             }
           }
         }
@@ -603,6 +613,8 @@ export default defineComponent({
         }
       }
       &:hover {
+        border: 1px solid #c4c3c3;
+        box-shadow: 0 7px 7px 0 rgba(0, 0, 0, 0.07);
         .remove-hover {
           display: none;
         }

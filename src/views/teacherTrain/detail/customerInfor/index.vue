@@ -722,7 +722,7 @@ export default defineComponent({
   .stuAndclass {
     margin-top: 20px;
     .operateBtn {
-      margin-bottom:20px;
+      margin-bottom:16px;
       .choice {
         margin-right: 10px;
       }

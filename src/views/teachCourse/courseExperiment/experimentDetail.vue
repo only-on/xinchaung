@@ -1,24 +1,24 @@
 <template>
   <div class="course-experiment-detail-box">
-    <template v-if="currentContent === 'initNotebook'"><notebook-tab/></template>
-    <template v-if="currentContent === 'initWebide'">
+    <template v-if="currentContent === 'initNotebook'&&updateRight"><notebook-tab/></template>
+    <template v-if="currentContent === 'initWebide'&&updateRight">
       <webide-tab/>
     </template>
-    <template v-if="currentContent === 'initVnc'">
+    <template v-if="currentContent === 'initVnc'&&updateRight">
       <vnc-tab/>
     </template>
-    <template v-if="currentContent === 'teacherVnc'">
+    <template v-if="currentContent === 'teacherVnc'&&updateRight">
       <vnc-tab/>
     </template>
-    <template v-if="currentContent === 'teacherNotebook'"><notebook-tab/></template>
-    <template v-if="currentContent === 'initTrain'">
+    <template v-if="currentContent === 'teacherNotebook'&&updateRight"><notebook-tab/></template>
+    <template v-if="currentContent === 'initTrain'&&updateRight">
       <train-tab/>
     </template>
-    <template v-if="currentContent === 'teacherTrain'"><train-tab/></template>
-    <template v-if="currentContent === 'video'">
+    <template v-if="currentContent === 'teacherTrain'&&updateRight"><train-tab/></template>
+    <template v-if="currentContent === 'video'&&updateRight">
         <video-tab></video-tab>
     </template>
-    <template v-if="currentContent === 'document'">
+    <template v-if="currentContent === 'document'&&updateRight">
         <document-tab></document-tab>
     </template>
     <div v-if="currentContent === undefined">undefined</div>
@@ -56,6 +56,7 @@ type TcurrentContent =
   | undefined;
 type TreactiveData = {
   currentContent: TcurrentContent; // 当前展示的内容类型tab
+  updateRight:boolean
 };
 export default defineComponent({
     components:{
@@ -70,6 +71,7 @@ export default defineComponent({
     const experiment_id: any = inject("experiment_id");
     const reactiveData: TreactiveData = reactive({
       currentContent: undefined,
+      updateRight:true
     });
     const detailInfo:any=ref({})
     provide("detailInfo",detailInfo)
@@ -79,6 +81,10 @@ export default defineComponent({
     watch(
       () => experiment_id,
       () => {
+        reactiveData.updateRight=false
+        setTimeout(()=>{
+          reactiveData.updateRight=true
+        })
         getContentDetail();
       },
       { deep: true, immediate: true }
@@ -131,5 +137,6 @@ export default defineComponent({
 .course-experiment-detail-box{
     width: 100%;
     height: 100%;
+    font-size: 14px;
 }
 </style>

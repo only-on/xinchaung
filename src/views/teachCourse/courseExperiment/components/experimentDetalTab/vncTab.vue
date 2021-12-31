@@ -8,13 +8,13 @@
           <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div>
+      <div v-if="know_points.length>0">
         <span v-for="(item, index) in know_points" :key="index">{{
           item
         }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" @change="keyChange" />
+    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" />
     <template v-if="currentKey === 1">
       <div class="experiment-detail-box">
         <experiment-guide
@@ -35,7 +35,7 @@
       <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise />
+      <experiment-exercise v-model:sum="experimentExerciseSum"/>
     </template>
   </div>
   <div
@@ -96,6 +96,7 @@ export default defineComponent({
     const experiment_id: any = inject("experiment_id");
     const know_points = ref([]);
     const stepKnowPoints = ref([]);
+    const experimentExerciseSum=ref(0)
     watch(
       () => detailInfo,
       () => {
@@ -146,6 +147,7 @@ export default defineComponent({
       lookStepDetail,
       backToDetail,
       stepKnowPoints,
+      experimentExerciseSum
     };
   },
 });
@@ -168,6 +170,7 @@ export default defineComponent({
       display: flex;
       justify-content: space-between;
       flex-direction: row;
+      align-items: center;
       .experiment-name {
         font-size: 22px;
         overflow: hidden;

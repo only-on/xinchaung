@@ -204,9 +204,9 @@ export default defineComponent({
     display: flex;
     flex-wrap: wrap;
     .create-box {
-      border: 1px dashed @theme-color;
-      border-radius: 11px;
-      box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+      // border: 1px dashed @theme-color;
+      // border-radius: 11px;
+      // box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
       .create-btn {
         width: 100%;
         height: 100%;
@@ -214,6 +214,9 @@ export default defineComponent({
         flex-direction: column;
         justify-content: center;
         align-items: center;
+        border: 1px dashed @theme-color;
+        border-radius: 11px;
+        box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
         .icon-chuangjian {
           font-size: 67px;
           color: @theme-color;

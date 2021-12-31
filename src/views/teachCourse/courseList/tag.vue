@@ -41,7 +41,7 @@
       </div>
     </div>
   </div>
-
+  <div class="list-line-hr"></div>
   <div class="category-tag-box">
     <span class="tag-label">职业方向：</span>
     <div class="tag-right">
@@ -211,12 +211,27 @@ export default defineComponent({
 </script>
 
 <style lang="less">
+.direction-tag-box{
+  margin-top: 30px;
+  margin-bottom: 15px;
+  
+}
+.list-line-hr{
+  height: 1px;
+  background: linear-gradient(to right,rgba(@black,0.65),rgba(@black,0.65) 5px,transparent 5px,transparent);
+  background-size: 10px 100%;
+}
+.category-tag-box{
+  margin-top: 15px;
+}
 .direction-tag-box,
 .category-tag-box {
   padding-bottom: 3px;
   display: flex;
-  border-bottom: 1px solid #dddddd;
-  margin-top: 30px;
+  // border-bottom: 1px solid #dddddd;
+  
+  color: rgba(@black,0.65);
+  font-size: 14px;
   .tag-label {
     flex-shrink: 0;
   }
@@ -246,6 +261,7 @@ export default defineComponent({
       &.active {
         color: @white;
         background: @theme-color;
+        border-radius: @border-radius-base;
       }
     }
     &.part {

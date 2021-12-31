@@ -7,52 +7,67 @@
       >报告</span
     >
     <span :class="currentKey === 3 ? 'active' : ''" @click="keyChange(3)"
-      >习题</span
+      >习题({{ experimentExerciseSum }})</span
     >
     <a-button type="primary" v-role="[tab]" @click="prepare">备课</a-button>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, watch, ref ,inject} from "vue";
-import {useRouter,useRoute} from "vue-router"
-import {toVmConnect,IEnvirmentsParam} from "src/utils/vncInspect" // 打开虚拟机
+import { defineComponent, watch, ref, inject, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
+import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
+import { getContentExerciseAnalysisApi } from "../api";
 export default defineComponent({
-  props: ["currentKey"],
+  props: ["currentKey","sum"],
   setup(props, { emit }) {
-      const router=useRouter()
-    const currentKey:any = ref(1);
+    const router = useRouter();
+    const currentKey: any = ref(1);
     const detailInfo: any = inject("detailInfo");
     const experiment_id: any = inject("experiment_id");
     const tab: any = inject("tab");
-    const routeQuery=useRoute().query
+    const routeQuery = useRoute().query;
+    const experimentExerciseSum = ref(0);
+    watch(
+      () => props.sum,
+      () => {
+        experimentExerciseSum.value = props.sum;
+      }
+    );
+    watch(
+      () => experiment_id,
+      () => {
+        emit("update:currentKey",1)
+      },{deep:true}
+    );
     watch(
       () => props.currentKey,
       () => {
         currentKey.value = props.currentKey;
       }
     );
-
-    // 
+    onMounted(()=>{
+      getContentExerciseAnalysis();
+    })
     function prepare() {
-      let param:any= {
+      let param: any = {
         type: "course",
-        opType: 'prepare',
+        opType: "prepare",
         taskId: experiment_id.value,
-      }
-      if (detailInfo.value.task_type.type===4) {
+      };
+      if (detailInfo.value.task_type.type === 4) {
         // webide
-        if (detailInfo.value.task_type.programing_type===1) {
+        if (detailInfo.value.task_type.programing_type === 1) {
           router.push({
-            path:'/vm/ace',
-            query:{
-              type:param.type,
-              opType:param.opType,
-              taskId:param.taskId,
-              routerQuery: JSON.stringify(routeQuery)
-            }
-          })
-        }else{
+            path: "/vm/ace",
+            query: {
+              type: param.type,
+              opType: param.opType,
+              taskId: param.taskId,
+              routerQuery: JSON.stringify(routeQuery),
+            },
+          });
+        } else {
           // note
           //   router.push({
           //   path:'/vm/notebook',
@@ -63,21 +78,30 @@ export default defineComponent({
           //     routerQuery: JSON.stringify({detailId:detailId,course_id:course_id})
           //   }
           // })
-          toVmConnect(router,param,routeQuery)
+          toVmConnect(router, param, routeQuery);
         }
-      }else{
-        toVmConnect(router,param,routeQuery)
+      } else {
+        toVmConnect(router, param, routeQuery);
       }
     }
     function keyChange(key: number) {
-      emit("update:currentKey",key)
+      emit("update:currentKey", key);
       emit("change", key);
+    }
+    // 获取习题统计
+    function getContentExerciseAnalysis() {
+      getContentExerciseAnalysisApi({ content_id: experiment_id.value }).then(
+        (res: any) => {
+          emit("update:sum",res.data.question_total)
+        }
+      );
     }
     return {
       keyChange,
       currentKey,
       prepare,
-      tab
+      tab,
+      experimentExerciseSum,
     };
   },
 });
@@ -91,6 +115,8 @@ export default defineComponent({
   display: flex;
   padding: 0 15px;
   align-items: center;
+  font-size: 14px;
+  color: rgba(@black, 0.45);
   > span {
     margin-right: 50px;
     position: relative;
