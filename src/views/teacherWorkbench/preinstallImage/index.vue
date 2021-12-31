@@ -122,7 +122,7 @@ export default defineComponent({
     height: 240px;
     transition: .5s;
     box-sizing: border-box;
-    box-shadow: 0px 3px 6px 0px rgb(0 0 0 / 5%);
+    box-shadow: 0px 3px 6px 0px @shadow-color;
     margin-right: 14px;
 }
 .image-item:nth-child(4n){
@@ -156,7 +156,7 @@ export default defineComponent({
         bottom: -15px;
         width: 64px;
         height: 64px;
-        box-shadow: 0 4px 6px 0 rgb(0 35 214 / 29%);
+        box-shadow: 0 4px 6px 0 @shadow-color;
         border-radius: 50%;
         overflow: hidden;
         }

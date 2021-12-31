@@ -65,7 +65,7 @@ export default defineComponent({
   height: 100%;
   background: #ffffff;
   border-radius: 6px;
-  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
+  box-shadow: 0px 3px 6px 0px @shadow-color;
   position: relative;
   > div {
     &:nth-child(2) {
@@ -81,6 +81,7 @@ export default defineComponent({
       height: 100%;
       width: 100%;
       transform: rotateY(90deg);
+      // color: rgba(88, 92, 229, 0.2);
     }
   }
   &:hover {
@@ -108,12 +109,13 @@ export default defineComponent({
         color: #ffde00;
       }
       .image-type{
+        color: rgba(@theme-color,.25);
        position: absolute;
       right: 20px;
       bottom: -15px;
       width: 64px;
       height: 64px;
-      box-shadow: 0 4px 6px 0 rgb(0 35 214 / 29%);
+      box-shadow: 0 4px 6px 0 @shadow-color;
       border-radius: 50%;
       overflow: hidden;
       }
@@ -125,7 +127,7 @@ export default defineComponent({
       height: 66px;
       background: @white;
       border-radius: 6px;
-      box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
+      box-shadow: 0px 3px 6px 0px @shadow-color;
       >div{
         >span{
           display: inline-block;
@@ -173,7 +175,7 @@ export default defineComponent({
         width: 20%;
         display: flex;
         justify-content:space-between;
-        color: rgba(@black,0.65);
+        color: rgba(@black,0.45);
         cursor: pointer;
         .iconfont:hover{
           color: @theme-color;

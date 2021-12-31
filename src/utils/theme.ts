@@ -8,8 +8,7 @@ type TThemeColor={
 const theme:TThemeColor={
   // themeColor: '#8955b5',
   themeColor: '#585CE5',
-  
-  nextThemeColor:"#e0d2fe",
+  nextThemeColor:"#585ce533",
   orangeColor:"#ff9c74",
   blueColor:"#73a0fa"
 }

@@ -30,13 +30,13 @@
       <div class="header">
         <div class="search">
           <div class="item custom_input custom_input1">
-            <a-input v-model:value="studentForm.username" placeholder="请输入账号" />
+            <a-input v-model:value="studentForm.username" placeholder="请输入账号" @keyup.enter="search()" />
           </div>
           <div  class="item custom_input custom_input2">
-            <a-input v-model:value="studentForm.name" placeholder="请输入姓名"  />
+            <a-input v-model:value="studentForm.name" placeholder="请输入姓名" @keyup.enter="search()" />
           </div>
           <div  class="item custom_input custom_input3">
-            <a-input v-model:value="studentForm.department" placeholder="请输入院系" />
+            <a-input v-model:value="studentForm.department" placeholder="请输入院系" @keyup.enter="search()" />
           </div>
           <div class="item">
             <a-button @click="addStudent()" type="primary">添加</a-button>
@@ -302,6 +302,7 @@ export default defineComponent({
         //       query: {currentTab:query.currentTab,...obj},
         // })
         studentForm.page=1
+        state.StudentSelectedRowKeys=[]
         GetStudent()
       // }
     }
@@ -333,7 +334,16 @@ export default defineComponent({
         message.warn('请选择要删除的数据')
         return
       }
-      deleteStudent(state.selectedRowKeys)
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          deleteStudent(state.selectedRowKeys)
+        }
+      });
     }
     function editClassName(){
       // editId.value=val.id
@@ -395,7 +405,7 @@ export default defineComponent({
     }
     function addStudent(){
       if(visible.value===false){
-        GetStudent()
+        clearSearch()
         visible.value=true
         state.selectedRowKeys=[]
         state.StudentSelectedRowKeys=[]

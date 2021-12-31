@@ -267,6 +267,7 @@ export default defineComponent({
       -webkit-box-orient: vertical;
       margin-top: 12px;
       margin-bottom: 12px;
+      padding-right: 12px;
     }
   }
   .create-btn {

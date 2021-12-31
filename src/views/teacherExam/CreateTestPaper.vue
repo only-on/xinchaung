@@ -261,6 +261,7 @@ export default defineComponent({
     function getQuestions(){
       //  console.log(search)
       // console.log(typeof search.pool_id);
+      search.page=1
       let obj={
         ...search,
         pool_id:search.pool_id?search.pool_id:'',
