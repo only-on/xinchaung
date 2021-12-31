@@ -9,7 +9,7 @@
       <a-button type="primary" @click="selectFile">选择</a-button>
     </div>
     <iframe
-      :src="`/pdfjs-2.5.207/web/viewer.html?file=${
+      :src="`${env?'':'/frontend'}/pdfjs-2.5.207/web/viewer.html?file=${
         env ? '/proxyPrefix' + introFile[0].file_html : introFile[0].file_html
       }`"
       frameborder="0"
