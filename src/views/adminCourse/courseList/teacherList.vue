@@ -165,7 +165,7 @@ type TreactiveData = {
   search: {
     course_name: string;
     user_name: string;
-    course_state: string | undefined;
+    course_state: string|undefined;
     page: number;
     limit: number;
   };
@@ -184,7 +184,7 @@ export default defineComponent({
       search: {
         course_name: "",
         user_name: "",
-        course_state: undefined,
+        course_state:undefined,
         page: 1,
         limit: 10,
       },
@@ -209,7 +209,7 @@ export default defineComponent({
         let params = {
           "search[course_name]": reactiveData.search.course_name,
           "search[user_name]": reactiveData.search.user_name,
-          "search[course_state]": reactiveData.search.course_state,
+          "search[course_state]": reactiveData.search.course_state===undefined?'':reactiveData.search.course_state,
           page: reactiveData.search.page,
           limit: reactiveData.search.limit,
         };
@@ -227,7 +227,7 @@ export default defineComponent({
         reactiveData.search = {
           course_name: "",
           user_name: "",
-          course_state: "",
+          course_state:undefined,
           page: 1,
           limit: 10,
         };
