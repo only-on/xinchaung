@@ -308,13 +308,13 @@ export default defineComponent({
       }
       &.in-progress {
         background: #60ae34;
-        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
+        box-shadow: 0px 2px 4px 0px @shadow-color;
         color: @white;
       }
       &.finish {
         color: @white;
         background: #989898;
-        box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.2);
+        box-shadow: 0px 2px 4px 0px @shadow-color;
       }
     }
     .icon-fanhui {

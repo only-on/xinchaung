@@ -459,8 +459,8 @@ export default defineComponent({
     > div {
       display: flex;
       flex-direction: row;
-      border-bottom: 1px solid #e6e6e6 !important;
-      height: 45px;
+      // border-bottom: 1px solid #e6e6e6 !important;
+      height: 46px;
       align-items: center;
       box-sizing: content-box;
       .chapter-cion {
@@ -512,6 +512,7 @@ export default defineComponent({
       }
     }
     &:hover {
+      background-color: @theme-light-color;
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -520,13 +521,39 @@ export default defineComponent({
       }
     }
   }
+  
   .selectbac {
-    background-color: @theme-tree-node-bg;
+    background-color: @theme-light-color;
+    position: relative;
+    &::before {
+        position: absolute;
+        content: "";
+        // height: 46px;
+        width: 4px;
+        left:0px;
+        top:0;
+        background: @theme-color;
+    }
+  }
+  .tree-first-title.selectbac{
+    &::before {
+      height: 46px;
+    }
+  }
+  .tree-second-title.selectbac{
+    &::before {
+      height: 40px;
+    }
   }
   .ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
     background-color: transparent !important;
   }
   .tree-second-title {
+    &:hover{
+      background-color: @theme-light-color;
+      // width: 100%!important;
+      // padding: 0!important;
+    }
     padding: 0px 27px 0px 42px;
     > div {
       display: flex;
@@ -587,7 +614,7 @@ export default defineComponent({
     }
   }
   &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {
-    background-color: #fff;
+    // background-color: #fff;
   }
 }
 </style>

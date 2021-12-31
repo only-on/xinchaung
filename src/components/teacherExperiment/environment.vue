@@ -247,10 +247,10 @@ interface Icongig {
       margin-bottom: 16px;
 
       &:hover {
-        background: #fdfaff;
-        border: 1px solid @theme-color;
+        background: rgba(@purpleblue-1,.2);
+        border: 1px solid rgba(@theme-color,.7);
         border-radius: 6px;
-        box-shadow: 0px 3px 6px 0px rgba(15, 11, 19, 0.4);
+        box-shadow: 0px 3px 6px 0px @shadow-color;
         cursor: pointer;
       }
 

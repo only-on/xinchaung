@@ -268,7 +268,7 @@ export default defineComponent({
       border-radius: 6px;
       transition: 0.2s;
       &:hover{
-        box-shadow: 0 3px 6px 0 rgba(@theme-color, 0.4);
+        box-shadow: 0 3px 6px 0 @shadow-color;
       }
       cursor: pointer;
       > div {

@@ -570,7 +570,7 @@ export default defineComponent({
 .box{
   margin-bottom: 20px;
   padding: 20px 40px;
-  box-shadow: 0 0 5px rgb(0 0 0 / 10%);
+  box-shadow: 0 0 5px @shadow-color;
   border-radius: 10px;
 }
 .flexCenter{

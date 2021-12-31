@@ -233,9 +233,9 @@ export default defineComponent({
 }
 .cardBox{
   width: 23%;
-  // height: 280px;
+  // height: 280px;F
   border-radius: 10px;
-  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.07) ;
+  box-shadow: 0 2px 4px 0 @shadow-color;
   margin: 0 2% 20px 0px;
   &.mySelfCreate{
     height: 277px;
@@ -254,7 +254,7 @@ export default defineComponent({
     }
   }
   &:not(.mySelfCreate):hover{
-    box-shadow: 0px 7px 7px 0px rgba(164,36,167,0.22); 
+    box-shadow: 0px 7px 7px 0px @shadow-color; 
   }
   .cardpic{
     width: 100%;
@@ -285,9 +285,9 @@ export default defineComponent({
       top: 20px;
       right: 0;
       border-radius: 12px 0px 0px 12px;
-      box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.50);
+      box-shadow: 0px 2px 4px 0px @shadow-color;
       &.end{
-        background: #373737;
+        background: #8A8A8A;
         color: @text-color-secondary;
       }
       &.noStart{
@@ -441,6 +441,6 @@ export default defineComponent({
   }
 }
 .cardBox:hover{
-  box-shadow: 0 7px 7px 0 rgba(0,0,0,0.07)   
+  box-shadow: 0 7px 7px 0 @shadow-color;
 }
 </style>

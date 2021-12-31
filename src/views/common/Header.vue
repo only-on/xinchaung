@@ -125,6 +125,9 @@ export default defineComponent({
     }
     const route = useRoute();
     var menus: MenuItem[] = reactive([]);
+    var systemBaseInfo:any=reactive({
+      login_logo:''
+    });
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
     function getMenu() {
       http.getMenu().then((res: IBusinessResp) => {
@@ -153,9 +156,6 @@ export default defineComponent({
         }
       });
     }
-    var systemBaseInfo:any=reactive({
-      login_logo:''
-    });
     onMounted(() => {
       getMenu();
     });

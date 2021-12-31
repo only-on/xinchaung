@@ -504,7 +504,7 @@ export default defineComponent({
   border-radius: 6px;
   padding-bottom: 20px;
   background: #fff;
-  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.06);
+  box-shadow: 0px 3px 6px 0px @shadow-color;
   .dataset-detail-base-box {
     display: flex;
     flex-direction: row;
@@ -770,7 +770,7 @@ export default defineComponent({
         background-color: rgb(255, 255, 255, 0.7);
 
         border: 1px solid transparent;
-        box-shadow: 0 2px 0 rgb(0 0 0 / 2%);
+        box-shadow: 0 2px 0 @shadow-color;
       }
 
       .determine:hover {

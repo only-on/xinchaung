@@ -277,7 +277,7 @@ export default defineComponent({
 
                 >div {
                     background: #ffffff;
-                    box-shadow: 0px 0px 40px 0px rgba(162, 207, 242, 0.27);
+                    box-shadow: 0px 0px 40px 0px @shadow-color;
                 }
 
                 .upload-file-item {

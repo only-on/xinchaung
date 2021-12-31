@@ -215,13 +215,13 @@ export default defineComponent({
     border-radius: 10px;
     background-color: #fff;
     border: 1px solid rgba(226, 225, 225, 1);
-    box-shadow: 0px 3px 7px 0px rgb(0 0 0 / 17%);
+    box-shadow: 0px 2px 4px 0px @shadow-color;
     color: #999;
     transition: all .2s;
     overflow: hidden;
   }
   .kernel:hover{
-    box-shadow: 0px 2px 4px 0px rgb(164 36 167 / 14%);
+    box-shadow: 0px 3px 7px 0px @shadow-color;
     transform: translateY(-3px);
     border: 1px solid @theme-color;
   }

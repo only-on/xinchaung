@@ -440,7 +440,7 @@ export default defineComponent({
       opacity: 1;
       background: #fff;
       border-radius: 7px;
-      box-shadow: 0 2px 4px 0 rgb(164 36 167 / 14%);
+      box-shadow: 0 2px 4px 0 @shadow-color;
       border: 1px dashed @theme-color;
       display: flex;
       flex-direction: column;

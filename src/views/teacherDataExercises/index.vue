@@ -331,7 +331,7 @@ export default defineComponent({
 
   &.classical__input--focused {
     border: 1px solid @theme-color;
-    box-shadow: 0 0 0 2px @theme-scroll;
+    box-shadow: 0 0 0 2px @shadow-color;
   }
 }
 </style>

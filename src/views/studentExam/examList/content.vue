@@ -163,7 +163,7 @@ export default defineComponent({
       > div.exam-item-card {
         background: @white;
         height: 100%;
-        box-shadow: 0px 1px 7px 1px #a6a6a6;
+        box-shadow: 0px 1px 7px 1px @shadow-color;
         border-radius: @border-radius-base;
         display: flex;
         flex-direction: column;

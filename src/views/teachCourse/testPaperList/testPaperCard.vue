@@ -84,7 +84,7 @@ export default defineComponent({
   opacity: 1;
   background: #fff;
   border-radius: 7px;
-  box-shadow: 0px 7px 14px -4px rgba(0,0,0,0.16); 
+  box-shadow: 0px 7px 14px -4px @shadow-color;
 }
 .test-paper-card {
   .itemTop {

@@ -187,6 +187,7 @@ interface ITreeList {
             .SecondLevel {
                 height: 42px;
                 position: relative;
+                margin: 2px 0;
 
 
 

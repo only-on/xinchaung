@@ -109,7 +109,7 @@ export default defineComponent({
       width: 40px;
       height: 15px;
       line-height: 15px;
-      background: #f2e5ff;
+      // background: #f2e5ff;
       text-align: right;
       div {
         border-radius: 50px;
@@ -119,6 +119,9 @@ export default defineComponent({
         display: inline-block;
         margin: 2px 4px;
         cursor: pointer;
+      }
+      &:hover{
+        background-color:@purpleblue-1;
       }
     }
     .delete {
