@@ -209,7 +209,7 @@ export default defineComponent({
         let params = {
           "search[course_name]": reactiveData.search.course_name,
           "search[user_name]": reactiveData.search.user_name,
-          "search[course_state]": reactiveData.search.course_state===undefined?'':reactiveData.search.course_state,
+          "search[course_state]": reactiveData.search.course_state?reactiveData.search.course_state:'',
           page: reactiveData.search.page,
           limit: reactiveData.search.limit,
         };
@@ -255,7 +255,8 @@ export default defineComponent({
           content: "确定清除记录吗",
           onOk: () => {
             clearVideoApi({ course_id: id }).then((res: any) => {
-              console.log(res);
+              message.success("清除成功");
+              method.getCourseList();
             });
           },
         });
@@ -298,7 +299,7 @@ export default defineComponent({
         });
       },
       updateArchive(course_ids: any[]) {
-        if (selectedRowKeys.value.length === 0) {
+        if (course_ids.length === 0) {
           message.warn("请选择要归档的数据");
           return;
         }

@@ -21,8 +21,8 @@ export default defineComponent({
 <style lang="less">
 .exam-layout-bg {
   width: 100%;
-  height: 100%;
-  background: linear-gradient(#9a9be7, #c299ea);
+  min-height: 100%;
+  background: linear-gradient(@theme-light-color, @theme-color);
   .exam-layout {
     width: 100%;
     height: 100%;
