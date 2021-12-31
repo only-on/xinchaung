@@ -50,6 +50,7 @@
                 hideOnSinglePage: false,
                 showSizeChanger: true,
                 total: total,
+                current:params.page,
                 pageSize: params.limit,
                 onChange: onChange,
                 onShowSizeChange: onShowSizeChange,

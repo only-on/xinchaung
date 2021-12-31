@@ -22,6 +22,7 @@
                 hideOnSinglePage: false,
                 showSizeChanger: true,
                 total: total,
+                current:params.page,
                 pageSize: params.limit,
                 onChange: onChange,
                 onShowSizeChange: onShowSizeChange,
@@ -53,8 +54,8 @@
             </template>
             <template #stuaction="{ record }">
               <div class="action">
-                <span class="spanleft iconfont icon-shanchu" @click="removeStudent(record.id)"></span>
-                <span @click="initPassword(record.id)">初始化密码</span>
+                <a><span class="spanleft iconfont icon-shanchu" @click="removeStudent(record.id)"></span></a>
+                <a><span @click="initPassword(record.id)">初始化密码</span></a>
               </div>
             </template>
             <template #classaction="{ record }">
@@ -311,6 +312,7 @@ export default defineComponent({
       total:0,
       params:{
         limit:10,
+        page:1
       },
       classInfoData: [],
       classInfoVisible: false,
@@ -349,7 +351,7 @@ export default defineComponent({
       },
       onShowSizeChange(current: any, size: any) {
         console.log(current, size, "current, size");
-        state.params.page = current;
+        state.params.page = 1;
         state.params.limit = size;
          if (state.value == 1) {
           methods.getStudentList();
@@ -545,6 +547,8 @@ export default defineComponent({
           state.stuUnselectParams.nick = fullName;
           state.stuUnselectParams.name = studentValue;
           state.stuUnselectParams.department = faculty;
+          state.stuUnselectParams.page=params.page
+          state.stuUnselectParams.limit=params.limit
           methods.getUnselectStu();
         } else {
           state.classUnselectParams.name = classes;

@@ -23,7 +23,8 @@
               </div>
               <div class="right">
                   <a-form-item label="实训指导书"  name="guide" class="guide">
-                      <a-textarea v-model:value="formState.guide" showCount :maxlength="100" />
+                      <!-- <a-textarea v-model:value="formState.guide" showCount :maxlength="100" /> -->
+                      <number-input v-model:value="formState.guide" showCount :auto-size="{ minRows: 5, maxRows: 15 }" :maxlength="100"></number-input>
                   </a-form-item>
                   <a-form-item label="添加实训课件">
                      <a-upload
@@ -51,6 +52,7 @@
 import { defineComponent,ref, onMounted,reactive,toRefs ,inject,computed} from 'vue'
 import request from 'src/api/index'
 import uploadImage from '../components/uploadImage/uploadImage.vue'
+import numberInput from "src/components/aiAnt/numberInput.vue"
 import { useRouter ,useRoute } from 'vue-router';
 import { message } from 'ant-design-vue'
 import moment from 'moment';
@@ -74,7 +76,8 @@ interface Istate{
 export default defineComponent({
   name: 'CreatePosts',
   components: {
-    uploadImage
+    uploadImage,
+    numberInput
   },
   setup: (props,context) => {
     var updata=inject('updataNav') as Function

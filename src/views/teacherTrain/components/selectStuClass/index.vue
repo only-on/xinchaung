@@ -77,6 +77,7 @@
                     showSizeChanger: true,
                     total:unSelectData.page.totalCount,
                     pageSize: params.limit,
+                    current:params.page,
                     onChange: onChange,
                     onShowSizeChange: onShowSizeChange,
                   }
@@ -243,15 +244,14 @@ export default defineComponent({
           state.classes,
           state.params
         );
-
       },
       onShowSizeChange(current: any, size: any) {
         console.log(current, size, "current, size");
-        state.params.page = current;
+        state.params.page = 1;
         state.params.limit = size;
          context.emit(
           "search-inquiry",
-           state.studentValue,
+          state.studentValue,
           state.fullName,
           state.faculty,
           state.classes,
