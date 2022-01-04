@@ -320,7 +320,7 @@ export default defineComponent({
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      border: 1px solid transparent;
+      // border: 1px solid transparent;
       transition: 0.5s;
       .cover-box {
         height: 177px;
@@ -369,7 +369,6 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         .item-name {
-          height: 22px;
           line-height: 22px;
           font-size: 16px;
           margin-top: 8px;
@@ -393,6 +392,7 @@ export default defineComponent({
             flex-direction: column;
             justify-content: space-between;
             padding: 0 13px;
+            font-size: @font-size-sm;
             > p {
               color: @text-color-secondary;
               height: 20px;
@@ -475,7 +475,7 @@ export default defineComponent({
             > span {
               margin-left: 15px;
               font-size: 14px;
-              color: #000;
+              color: rgba(@black,0.45);
               &:hover {
                 color: rgba(@theme-color, 0.9);
               }
@@ -488,7 +488,10 @@ export default defineComponent({
           flex-direction: row;
           background-color: #fafafa;
           border-top: 1px solid #e9e9e9;
-          margin-top: 7px;
+          margin-top: 6px;
+          border: 1px solid #E9E9E9;
+          border-bottom-left-radius: @border-radius-sm;
+          border-bottom-right-radius: @border-radius-sm;
           > span,
           > a {
             margin: auto 0;
@@ -613,7 +616,7 @@ export default defineComponent({
         }
       }
       &:hover {
-        border: 1px solid #c4c3c3;
+        // border: 1px solid #c4c3c3;
         box-shadow: 0 7px 7px 0 @shadow-color;
         .remove-hover {
           display: none;

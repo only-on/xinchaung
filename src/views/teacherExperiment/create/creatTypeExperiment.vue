@@ -104,7 +104,7 @@
       <div class="data" v-if="selectType === 'data'">
         <data-set
           v-model:value="formState.datasets"
-          v-model:name="formState.selectedName"
+          v-model:names="formState.selectedName"
         ></data-set>
       </div>
       <div class="image" v-if="selectType === 'image'">

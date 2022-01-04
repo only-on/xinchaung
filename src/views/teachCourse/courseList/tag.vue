@@ -218,7 +218,7 @@ export default defineComponent({
 }
 .list-line-hr{
   height: 1px;
-  background: linear-gradient(to right,rgba(@black,0.65),rgba(@black,0.65) 5px,transparent 5px,transparent);
+  background: linear-gradient(to right,rgba(@black,0.6),rgba(@black,0.6) 5px,transparent 5px,transparent);
   background-size: 10px 100%;
 }
 .category-tag-box{
@@ -253,11 +253,11 @@ export default defineComponent({
     > span {
       margin-right: 10px;
       cursor: pointer;
-      padding: 0 5px;
       max-width: 120px;
       overflow: hidden;
-      height: 25px;
+      // height: 25px;
       text-overflow: ellipsis;
+      padding: 5px 10px;
       &.active {
         color: @white;
         background: @theme-color;
