@@ -844,8 +844,8 @@ export default defineComponent({
           display: flex;
           flex-direction: row;
           line-height: 40px;
-          background: #fdfaff;
-          border: 1px solid #ebdbfa;
+          background:rgba(@theme-color,.2);
+          border: 1px solid rgba(@theme-color,.4);
           border-radius: 3px;
           margin-top: 17px;
           padding: 0 20px;
