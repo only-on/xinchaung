@@ -191,7 +191,7 @@ export default {
   updateStudentSelectApi: {
     url: "/classtest/default/edit_student",
     method: "POST",
-    dataType: "formdata"
+    dataType: "json"
   },
   deleteFollowApi: {
     url: "/api/v1/question/papers/{paper_id}",
