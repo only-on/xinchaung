@@ -885,7 +885,7 @@ export default defineComponent({
                 height: 28px;
                 width: 100%;
                 div {
-                  background: @white3e3;
+                  background: @white;
                   border-radius: 4px;
                   line-height: 28px;
                   text-align: center;
