@@ -196,8 +196,18 @@ export default defineComponent({
   .ant-tabs-bar {
     flex-shrink: 0;
   }
+  
   // .ant-tabs-content {
   //   height: 100%;
   // }
 }
+:deep(.ant-tabs-nav){
+    .ant-tabs-tab-active{
+      background: @theme-color !important;
+      color:@white;
+    }
+  }
+  :deep(.ant-tabs-nav-container){
+    border-bottom: 1px solid @border-color;
+  }
 </style>
