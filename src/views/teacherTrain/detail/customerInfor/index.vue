@@ -547,13 +547,13 @@ export default defineComponent({
           state.stuUnselectParams.nick = fullName;
           state.stuUnselectParams.name = studentValue;
           state.stuUnselectParams.department = faculty;
-          state.stuUnselectParams.page=params.page
-          state.stuUnselectParams.limit=params.limit
+          state.stuUnselectParams.page=params?.page
+          state.stuUnselectParams.limit=params?.limit
           methods.getUnselectStu();
         } else {
           state.classUnselectParams.name = classes;
-          state.classUnselectParams.limit=params.limit;
-          state.classUnselectParams.page=params.page;
+          state.classUnselectParams.limit=params?.limit;
+          state.classUnselectParams.page=params?.page;
           methods.getUnselectClass();
         }
       },
