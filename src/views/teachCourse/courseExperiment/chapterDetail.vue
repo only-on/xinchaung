@@ -8,11 +8,10 @@
               <a-button
                 v-if="isEditIntro"
                 type="primary"
-                size="small"
                 @click="saveIntro"
                 >保存</a-button
               >
-              <a-button v-else type="primary" size="small" @click="editIntro"
+              <a-button v-else type="primary" @click="editIntro"
                 >编辑</a-button
               >
             </div>

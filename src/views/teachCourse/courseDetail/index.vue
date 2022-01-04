@@ -176,6 +176,7 @@ export default defineComponent({
   margin: 0 auto;
   // overflow: auto;
   padding-bottom: 20px;
+  margin-top:24px;
 }
 :deep(.ant-tabs.course-detail-tabs) {
   // height:calc(100% - 200px) ;
@@ -205,6 +206,8 @@ export default defineComponent({
     .ant-tabs-tab-active{
       background: @theme-color !important;
       color:@white;
+      border-top-left-radius: @border-radius-base;
+      border-top-right-radius: @border-radius-base;
     }
   }
   :deep(.ant-tabs-nav-container){

@@ -3,14 +3,17 @@
     <div class="course-name-box">
       <span class="course-name"
         >{{ baseInfoData.name }}
-        <i v-if="!baseInfoData.is_init" :class="['course-status', settingCss(baseInfoData.state)]">
+        <i
+          v-if="!baseInfoData.is_init"
+          :class="['course-status', settingCss(baseInfoData.state)]"
+        >
           {{ courseStatus(baseInfoData.state) }}
         </i>
       </span>
       <span class="icon-fanhui iconfont" @click="backToList"></span>
     </div>
     <div class="course-desc">
-      <p :title="baseInfoData.introduce">{{ baseInfoData.introduce }}</p>
+      <div :title="baseInfoData.introduce">{{ baseInfoData.introduce }}</div>
     </div>
     <div class="course-base-info-box">
       <div class="base-left">
@@ -81,7 +84,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, watch, ref,inject } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  watch,
+  ref,
+  inject,
+} from "vue";
 import { getCourseDetailApi, updateCourseBaseApi } from "./api";
 import { useRoute, useRouter } from "vue-router";
 import storage from "src/utils/extStorage";
@@ -118,7 +129,7 @@ export default defineComponent({
     onMounted(() => {
       getCourseDetail();
     });
-    const tab=inject("tab")
+    const tab = inject("tab");
     // watch(
     //   () => currentTab,
     //   () => {
@@ -150,7 +161,7 @@ export default defineComponent({
     function submitEdit() {
       if (Object.keys(checkout.value).length === 0) {
         console.log(formData.value);
-        
+
         const param = {
           name: (formData.value as any).name,
           start_time: moment((formData.value as any).created_at).format(
@@ -284,6 +295,8 @@ export default defineComponent({
         color: @white;
         line-height: 33px;
         letter-spacing: 2px;
+        display: flex;
+        align-items: center;
         i {
           right: 0;
           padding: 3px 10px;
@@ -293,7 +306,7 @@ export default defineComponent({
           vertical-align: text-bottom;
           margin-left: 10px;
           border-radius: 11px;
-          height: 22px;
+          line-height: 13px;
           font-style: normal;
           &.not-start {
             background: @white;
@@ -314,7 +327,7 @@ export default defineComponent({
         }
       }
       &.icon-fanhui {
-        margin-top: 10px;
+        // margin-top: 10px;
         margin-left: auto;
         display: inline-block;
         line-height: 40px;
@@ -323,12 +336,27 @@ export default defineComponent({
         height: 40px;
         background: @theme-color;
         border-radius: 50%;
-        color: @white;
+        color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
+        transition: 0.5s;
         &:hover {
-          background: rgba(@theme-color, 0.8);
+          // background: rgba(@theme-color, 0.8);
+          color: rgba(255, 255, 255, 1);
         }
       }
+    }
+  }
+  .course-desc {
+    font-size: @font-size-sm;
+    max-width: 830px;
+    > div {
+      overflow: hidden;
+      display: -webkit-box; //将对象作为弹性伸缩盒子模型显示;
+      text-overflow: ellipsis; //溢出部分用省略号代替
+      -webkit-line-clamp: 3; //设置文本显示两行
+      -webkit-box-orient: vertical; //从上到下排列子元素;
+      white-space: normal;
+      word-break: break-all;
     }
   }
   .course-base-info-box {
@@ -341,22 +369,44 @@ export default defineComponent({
       flex-direction: row;
       > span {
         padding: 0 50px;
-        border-right: 1px solid rgba(@white, 0.3);
+        // border-right: 1px solid rgba(@white, 0.3);
+        position: relative;
         text-align: center;
+        &::after {
+          content: "";
+          position: absolute;
+          width: 1px;
+          height: 24px;
+          background: rgba(@white, 0.3);
+          top: 50%;
+          right: 0;
+          transform: translateY(-50%);
+        }
         &:nth-child(1) {
           padding-left: 0;
         }
         &:last-child {
           border-right: none;
+          &::after {
+            display: none;
+            content: "";
+            position: absolute;
+            width: 1px;
+            height: 24px;
+            background: rgba(@white, 0.3);
+            top: 50%;
+            right: 0;
+            transform: translateY(-50%);
+          }
         }
         > i {
           font-style: normal;
           display: block;
           &:nth-child(1) {
-            font-size: 14px;
+            font-size: @font-size-sm;
           }
           &:nth-child(2) {
-            font-size: 14px;
+            font-size: 12px;
             color: rgba(@white, 0.65);
           }
         }
@@ -370,13 +420,14 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: #ff8f00;
+        background: @warning-color;
         border-radius: 50%;
         margin-left: 24px;
         color: @white;
+        font-size: @font-size-lg;
         cursor: pointer;
         &:hover {
-          background: rgba(#ff8f00, 0.8);
+          background: rgba(@warning-color, 0.8);
         }
       }
     }

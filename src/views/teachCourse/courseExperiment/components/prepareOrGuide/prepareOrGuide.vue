@@ -1,6 +1,6 @@
 <template>
   <div v-if="prepareShowTab === 'loading'" class="prepare-lessons-loading">
-    <SyncOutlined spin />
+    <a-spin />
   </div>
   <div v-if="prepareShowTab === 'pdf'" class="chapter-intro">
     <div class="action-box" v-role="[tab]">
@@ -82,7 +82,7 @@
   </a-modal>
 </template>
 <script lang="ts">
-import { SyncOutlined } from "@ant-design/icons-vue";
+// import { SyncOutlined } from "@ant-design/icons-vue";
 import {
   defineComponent,
   reactive,
@@ -133,7 +133,7 @@ type TreactiveData = {
 export default defineComponent({
   components: {
     empty,
-    SyncOutlined,
+    // SyncOutlined,
     "upload-data-set-file": uploadDataSetFile,
     "before-icon":beforeIcon
   },

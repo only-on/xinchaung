@@ -2,18 +2,29 @@
   <div class="course-experiment-box">
     <div class="course-experiment-left">
       <div class="action-top-box">
-        <a-button type="primary" size="small" @click="openAddChapterModal" v-role="[tab]"
-          >+自定义章节</a-button
+        <a-button
+          type="primary"
+          @click="openAddChapterModal"
+          v-role="[tab]"
+          ><span class="icon-tianjia iconfont"></span>自定义章节</a-button
         >
-        <a-button type="primary" size="small" @click="openAddChapter" v-role="[tab]"
-          >+添加章节</a-button
+        <a-button
+          type="primary"
+          @click="openAddChapter"
+          v-role="[tab]"
+          ><span class="icon-tianjia iconfont"></span>添加章节</a-button
         >
-        <a-button type="primary" :disabled="!chapter_id" size="small" @click="openAddExperiment" v-role="[tab]"
-          >+添加实验</a-button
+        <a-button
+          type="primary"
+          :disabled="!chapter_id"
+          @click="openAddExperiment"
+          v-role="[tab]"
+          ><span class="icon-tianjia iconfont"></span>添加实验</a-button
         >
       </div>
       <div class="bacGray" v-role="[tab]">
-        <span data-v-d3afaa76="" class="waring-icon">!</span>已添加的实验/章节可以拖动排序
+        <span data-v-d3afaa76="" class="waring-icon">!</span
+        >已添加的实验/章节可以拖动排序
       </div>
       <div class="course-menu-tree">
         <drag-tree
@@ -25,7 +36,10 @@
         ></drag-tree>
       </div>
     </div>
-    <div v-if="chapter_id||rightTab === 'addChapter'" class="course-experiment-right">
+    <div
+      v-if="chapter_id || rightTab === 'addChapter'"
+      class="course-experiment-right"
+    >
       <chapterDetail v-if="rightTab === 'chapterDetail'" />
       <addChapter v-if="rightTab === 'addChapter'" />
       <addExperiment v-if="rightTab === 'addExperiment'" />
@@ -41,6 +55,7 @@
     title="添加章节"
     @cancel="closeCreateChapterModel"
     @ok="submitCreateChapter"
+    class="chapter-add-or-edit-modal"
   >
     <label>章节名称：</label>
     <a-input v-model:value="chapterName" />
@@ -48,7 +63,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, provide, ref, watch } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  provide,
+  ref,
+  watch,
+} from "vue";
 import DragTree from "src/components/dragTree.vue";
 import {
   getCourseTreeApi,
@@ -75,7 +98,7 @@ export default defineComponent({
   },
   setup() {
     const route = useRoute();
-    const course_id = (route.query.course_id as any) as number;
+    const course_id = route.query.course_id as any as number;
     const currentTab = route.query.currentTab;
     const chapter_id = ref("");
     const experiment_id = ref("");
@@ -168,12 +191,14 @@ export default defineComponent({
     }
     // 删除章节或者实验
     function deleteNode(val: any) {
-      deleteChapterApi({ course_id: course_id, chapter_id: val.id }).then((res: any) => {
-        message.success(res.msg);
-        chapter_id.value = "";
-        getCourseTree();
-        reactiveData.rightTab = "chapterDetail";
-      });
+      deleteChapterApi({ course_id: course_id, chapter_id: val.id }).then(
+        (res: any) => {
+          message.success(res.msg);
+          chapter_id.value = "";
+          getCourseTree();
+          reactiveData.rightTab = "chapterDetail";
+        }
+      );
     }
     return {
       selectChapter,
@@ -199,7 +224,7 @@ export default defineComponent({
   display: flex;
   flex-direction: row;
   height: 900px;
-  .emptyContent{
+  .emptyContent {
     background-color: @white;
   }
   .course-experiment-left {
@@ -216,7 +241,12 @@ export default defineComponent({
       flex-shrink: 0;
       > button {
         margin-right: 15px;
-        font-size: 14px;
+        font-size: @font-size-sm;
+        padding:2.4px 13px;
+        >span{
+          font-size: @font-size-sm;
+          margin-right: 5px;
+        }
       }
     }
     .bacGray {
@@ -249,6 +279,16 @@ export default defineComponent({
     // background: @white;
     border-radius: @border-radius-base;
     overflow-y: auto;
+  }
+}
+.chapter-add-or-edit-modal.ant-modal {
+  .ant-modal-body {
+    padding: 14px 24px 30px 24px;
+    label {
+      font-size: @font-size-sm;
+      margin-bottom: 8px;
+      display: block;
+    }
   }
 }
 </style>
