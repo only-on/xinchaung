@@ -128,7 +128,7 @@
         @close="onClose"
       >
         <div class="data" v-if="selectType === 'data'">
-          <data-set v-model:value="formState.datasets" v-model:name="formState.selectedName"></data-set>
+          <data-set v-model:value="formState.datasets" v-model:names="formState.selectedName"></data-set>
         </div>
         <div class="image" v-if="selectType === 'image'">
           <environment v-model="formState.imageDataSelected" :limitNumber="detail.task_type===4?1:3"></environment>
