@@ -281,7 +281,7 @@ export default defineComponent({
     > span {
       &.course-name {
         font-size: 24px;
-        color: #fff;
+        color: @white;
         line-height: 33px;
         letter-spacing: 2px;
         i {

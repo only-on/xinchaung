@@ -395,7 +395,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@hover-color: #7c49a8;
+@hover-color: @theme-color;
 .virtual-env {
   width: 1330px;
   // margin-top: 50px;

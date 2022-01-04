@@ -313,7 +313,7 @@ export default defineComponent({
       padding-left: 15px;
     }
     .course-item-box {
-      background: #fff;
+      background: @white;
       border-radius: 10px;
       box-shadow: 0 2px 4px 0 @shadow-color;
       height: 100%;

@@ -551,7 +551,7 @@ export default defineComponent({
           }
         }
         .change_btn1:hover{
-          color: #fff;
+          color: @white;
           background-color: @theme-color;
         }
         .change_btn {
@@ -565,7 +565,7 @@ export default defineComponent({
           }
         }
         .change_btn:hover {
-          color: #fff;
+          color: @white;
           background-color: @theme-color;
         }
       }
@@ -576,11 +576,11 @@ export default defineComponent({
         }
         .monitor {
           color: @theme-color;
-          background-color: #fff;
+          background-color: @white;
           // padding: 0 5px;
         }
         .monitor:hover {
-          color: #fff;
+          color: @white;
           background-color: @theme-color;
         }
         .addDate {
@@ -654,7 +654,7 @@ export default defineComponent({
               flex-direction: column;
             }
             .course-overdue {
-              background: #fff;
+              background: @white;
               // color: #C7C7C7;
               .overdue-box {
                 padding-top: 16px;
@@ -690,7 +690,7 @@ export default defineComponent({
                 margin: 0 auto;
                 margin-bottom: 10px;
                 .number {
-                  color: #fff;
+                  color: @white;
                   font-size: 14px;
                   font-weight: 600;
 
@@ -706,14 +706,14 @@ export default defineComponent({
                 margin: 0 auto;
                 margin-top: 10px;
                 .number {
-                  color: #fff;
+                  color: @white;
                   font-size: 14px;
                   font-weight: 600;
                 }
               }
             }
             .course-no-data {
-              background: #ffffff;
+              background: @whitefff;
             }
             .teacher-current {
               position: relative;
@@ -727,7 +727,7 @@ export default defineComponent({
                 height: 100%;
                 flex-flow: column;
                 // background: rgba(255, 156, 1, .8);
-                background: #fff;
+                background: @white;
                 color: #ccc;
                 z-index: 1;
                 font-size: 20px;
@@ -737,7 +737,7 @@ export default defineComponent({
                   line-height: 28px;
                   background: @theme-color;
                   border-radius: 4px;
-                  color: #fff;
+                  color: @white;
                   font-size: 14px;
                   width: 90%;
                   margin: 0 auto;
@@ -814,7 +814,7 @@ export default defineComponent({
                   margin: 0 3px;
                   &.end {
                     background: @theme-color;
-                    color: #fff;
+                    color: @white;
                     line-height: 8px;
                     font-size: 22px;
                     overflow: hidden;
@@ -823,7 +823,7 @@ export default defineComponent({
               }
             }
             .course-full {
-              background-image: repeating-linear-gradient(-45deg, #F7F7F7, #F7F7F7 15px, #fff 0, #fff 30px);
+              background-image: repeating-linear-gradient(-45deg, #F7F7F7, #F7F7F7 15px, @white 0, @white 30px);
               color: #C7C7C7;
               font-size: 18px;
               width: 100%;
@@ -853,12 +853,12 @@ export default defineComponent({
                 // background: #FF9D00;
                 width: 100%;
                 height: 100%;
-                background-color: #fff;
+                background-color: @white;
                 display: none;
                 cursor: pointer;
                 position: absolute;
                 &>div {
-                  color: #fff;
+                  color: @white;
                   height: 28px;
                   line-height: 28px;
                   width: 90%;
@@ -885,7 +885,7 @@ export default defineComponent({
                 height: 28px;
                 width: 100%;
                 div {
-                  background: #fff3e3;
+                  background: @white3e3;
                   border-radius: 4px;
                   line-height: 28px;
                   text-align: center;
@@ -936,11 +936,11 @@ export default defineComponent({
             width: 100%;
             height: 100%;
             display: flex;
-            // color: #fff;
+            // color: @white;
             cursor: pointer;
             font-size: 16px;
             // background: @theme-color;
-            background-color: #fff;
+            background-color: @white;
             display: none;
             color: @theme-color;
             &>i:hover {

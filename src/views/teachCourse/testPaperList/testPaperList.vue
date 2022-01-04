@@ -85,7 +85,7 @@
           class="icon iconfont icon-jiantou-copy-copy"
           :class="selectedNoStuRowKeys.length > 0 ? 'selected' : 'no-selected'"
           style="
-            color: #fff;
+            color: @white;
             font-size: 18px;
             line-height: 24px;
             text-align: center;
@@ -96,7 +96,7 @@
           class="iconfont icon-jiantou-copy"
           :class="selectedStuRowKeys.length > 0 ? 'selected' : 'no-selected'"
           style="
-            color: #fff;
+            color: @white;
             font-size: 18px;
             line-height: 24px;
             text-align: center;
@@ -438,7 +438,7 @@ export default defineComponent({
     .create-card {
       box-sizing: border-box;
       opacity: 1;
-      background: #fff;
+      background: @white;
       border-radius: 7px;
       box-shadow: 0 2px 4px 0 @shadow-color;
       border: 1px dashed @theme-color;
