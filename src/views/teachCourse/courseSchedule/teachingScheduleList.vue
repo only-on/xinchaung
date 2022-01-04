@@ -713,7 +713,7 @@ export default defineComponent({
               }
             }
             .course-no-data {
-              background: @whitefff;
+              background: @white;
             }
             .teacher-current {
               position: relative;
