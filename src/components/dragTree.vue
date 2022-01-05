@@ -177,19 +177,19 @@ export default defineComponent({
     };
 
     function getExperimentClassName(type: string | number, typeName: string) {
-      if (type === "1-1" || type === "1-" || type === 1) {
+      if (type === "1-1" || type === "1-") {
         return typeName === "icon" ? "icon-zhuomianshiyan" : "实验";
       }
-      if (type === "1-4") {
-        return typeName === "icon" ? "icon-program" : "实验";
+      if (type === "1-4"  || type === 1) {
+        return typeName === "icon" ? "icon-jiaohushiyan" : "实验";
       }
       if (type === 2) {
         return typeName === "icon" ? "icon-shubiao" : "实训";
       }
-      if (type === 3) {
+      if (type === 3 || type === 6) {
         return typeName === "icon" ? "icon-shipin" : "视频";
       }
-      if (type === 4) {
+      if (type === 4 || type === 7) {
         return typeName === "icon" ? "icon-wendang" : "文档";
       }
     }

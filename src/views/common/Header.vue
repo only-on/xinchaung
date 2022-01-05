@@ -1,10 +1,16 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <router-link class="a-logo" :to="{path:homePath}">
-        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`"></div>
+      <!-- <router-link class="a-logo" :to="{path:homePath}">
+        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
+        </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </router-link>
+      </router-link> -->
+      <div class="a-logo" @click="goHome()">
+        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
+        </div>
+        <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
+      </div>
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
@@ -156,6 +162,29 @@ export default defineComponent({
         }
       });
     }
+    function goHome(){
+      // router.push(`${homePath}`);
+      if (role==3) {
+        // return "/teacher" // 教师端首页
+        router.push("/teacher");
+      }
+      if (role==4) {
+        // return "/studentStatistic" // 学生端首页
+        router.push("/studentStatistic");
+      }
+      if (role==1) {
+        // return "/init-course/init" // 初始端
+        // router.push("/teacher");
+      }
+      if (role==2) {
+        // return "/admin" // 管理端
+        router.push("/admin");
+      }
+      if (role==5) {
+        // return "" // 助教端
+        // router.push("/");
+      }
+    }
     onMounted(() => {
       getMenu();
     });
@@ -175,7 +204,8 @@ export default defineComponent({
       activeName,
       handImg,
       userImg,
-      homePath
+      homePath,
+      goHome
     };
   },
 });
@@ -201,6 +231,7 @@ export default defineComponent({
     margin-right: 100px;
     .a-logo{
       display: flex;
+      cursor: pointer;
     }
     .logo {
       width: 32px;
