@@ -18,7 +18,7 @@
           <li class="desc-status">
             <span @click.stop>
               任务描述状态:
-              <a-switch checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
+              <a-switch class="switch" checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
             </span>
             <span>
               <i class="iconfont icon-fuyong" title="复用" @click.stop="handleOperate(item.id, 'Complex')"></i>
@@ -233,7 +233,7 @@ export default defineComponent({
 }
 .cardBox{
   width: 23%;
-  // height: 280px;F
+  height: 277px;
   border-radius: 10px;
   box-shadow: 0 2px 4px 0 @shadow-color;
   margin: 0 2% 20px 0px;
@@ -384,7 +384,19 @@ export default defineComponent({
     }
   }
 
-
+  .cardcount{
+    li{
+      display: flex;
+      align-items: center;
+      padding:0 14px;
+      .iconfont{
+        margin-right: 3px;
+      }
+    }
+  }
+  .switch{
+    margin-bottom: 3px;
+  }
 
   // 内置
   .init{
