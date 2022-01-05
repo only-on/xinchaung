@@ -57,7 +57,7 @@ export default defineComponent({
 
     })
     function updataNav(val:config){
-      // console.log(val)
+      console.log(val)
       Object.assign(configuration,val)
     }
     provide('configuration',configuration)

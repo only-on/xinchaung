@@ -8,17 +8,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,Ref,inject,watch  } from 'vue'
-import myCourse from './myCourse.vue'
-import initCourse from './initCourse.vue'
-import archiveCourse from "./archiveCourse.vue"
+import { defineComponent,ref, onMounted,Ref,inject,watch,defineAsyncComponent  } from 'vue'
+// import myCourse from './myCourse.vue'
+// import initCourse from './initCourse.vue'
+// import archiveCourse from "./archiveCourse.vue"
 import {useRoute} from "vue-router"
 export default defineComponent({
   name: '',
   components: {
-   myCourse,
-   initCourse,
-   archiveCourse
+   myCourse:defineAsyncComponent(()=>import("./myCourse.vue")),
+  //  myCourse,
+   initCourse:defineAsyncComponent(()=>import("./initCourse.vue")),
+   archiveCourse:defineAsyncComponent(()=>import("./archiveCourse.vue")),
   },
   setup: (props,context) => {
     const route=useRoute()

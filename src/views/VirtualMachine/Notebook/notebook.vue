@@ -44,13 +44,13 @@ export default defineComponent({
       let role = storage.lStorage.get("role");
       let ws_config=storage.lStorage.get("ws_config")
     let navData = role===4?[
-      { name: "实验指导", key: "guide", icon: "icon-zhidao" },
+      // { name: "实验指导", key: "guide", icon: "icon-zhidao" },
       { name: "实验习题", key: "exercises", icon: "icon-xiti1" },
       { name: "实验报告", key: "report", icon: "icon-baogao1" },
       { name: "随堂练习", key: "practice", icon: "icon-biji" },
       { name: "随堂论坛", key: "forum", icon: "icon-luntan1" },
     ]:[
-      { name: "实验指导", key: "guide", icon: "icon-zhidao" },
+      // { name: "实验指导", key: "guide", icon: "icon-zhidao" },
     ];
     let vmQuery = route.query as any;
     const {
@@ -129,12 +129,14 @@ export default defineComponent({
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
         allInfo.value = res.data;
-        console.log(res.data.current.remaining_time);
-
-        use_time.value = res.data.current.remaining_time;
+        if (use_time.value = res.data.current) {
+          use_time.value = res.data.current.remaining_time;
+          reportTemid.value=res?.data.current.id
+        }
+        
         console.log(allInfo);
         taskType.value = res.data.base_info.task_type.type;
-        reportTemid.value=res?.data.current.id
+        
       });
     }
     function back() {

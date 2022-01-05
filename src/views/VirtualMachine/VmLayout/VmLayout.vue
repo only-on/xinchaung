@@ -5,7 +5,7 @@
       <vm-header></vm-header>
     </div>
     <div class="vm-main">
-      <div class="vm-nav">
+      <div class="vm-nav" v-if="vmData.length>0">
         <ul class="vm-nav-list">
           <li class="vm-nav-item" @click="open()">
             <span
@@ -124,7 +124,7 @@ export default defineComponent({
       return props.reportId;
     });
     provide("reportId", reportId);
-    const currentComponent = ref(vmData[0].key);
+    const currentComponent = (vmData as any).length>0?ref(vmData[0].key):"";
     const openStatus = ref(false); // left内容打开状态
 
     const vmWrapEl: Ref<HTMLElement | null> = ref(null);
