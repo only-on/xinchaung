@@ -14,7 +14,7 @@
                   <span class="icon-gongxiang1 iconfont"></span>发送选择内容
                 </a-menu-item>
                 <a-menu-item
-                v-if="opType!='prepare'"
+                  v-if="opType != 'prepare'"
                   key="startRecord"
                   class="action-item"
                   :class="isScreenRecording ? 'disabled' : ''"
@@ -22,7 +22,7 @@
                   <span class="icon-luping iconfont"></span>开始录屏
                 </a-menu-item>
                 <a-menu-item
-                v-if="opType!='prepare'"
+                  v-if="opType != 'prepare'"
                   key="stopRecord"
                   class="action-item"
                   :class="!isScreenRecording ? 'disabled' : ''"
@@ -72,11 +72,7 @@
           </span>
         </div>
       </div>
-      <div
-        v-else
-        class="vm-header-teacher"
-        v-layout-bg="layoutBg"
-      >
+      <div v-else class="vm-header-teacher" v-layout-bg="layoutBg">
         <div class="vm-header-left">
           <a-button type="primary" @click="back">返回</a-button>
           <a-button type="primary">操作</a-button>
@@ -92,12 +88,20 @@
       </div>
     </template>
     <template v-slot:right>
-      <template v-if="currentInterface==='ssh'">
+      <template v-if="currentInterface === 'ssh'">
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <div v-if="!uuidLoading">websocket链接中</div>
-        <div v-else-if="!vncLoadingV" class="vncloading">Loading...</div>
+        <div class="vncloading" v-if="!uuidLoading">
+          <div class="word">
+            <a-spin tip="LOADING..."></a-spin>
+          </div>
+        </div>
+        <div v-else-if="!vncLoadingV" class="vncloading">
+          <div class="word">
+            <a-spin tip="LOADING..."></a-spin>
+          </div>
+        </div>
         <vue-no-vnc
           background="rgb(40,40,40)"
           :options="vmOptions"
@@ -142,7 +146,7 @@ import {
 import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
-import layoutBg from "src/assets/images/common/layout_bg.jpg"
+import layoutBg from "src/assets/images/common/layout_bg.jpg";
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -196,7 +200,7 @@ export default defineComponent({
     let vmQuery = route.query as any;
     const novncEl = ref();
     let role = storage.lStorage.get("role");
-    let ws_config=storage.lStorage.get("ws_config")
+    let ws_config = storage.lStorage.get("ws_config");
     const {
       opType,
       connection_id,
@@ -240,8 +244,8 @@ export default defineComponent({
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
     const sshUrl = ref("");
-    const currentInterface=ref("vnc")
-    const vmCurrentIndex=ref(0)
+    const currentInterface = ref("vnc");
+    const vmCurrentIndex = ref(0);
     let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
       toRefs(reactiveData);
     provide("vmInfoData", vmInfoData);
@@ -253,9 +257,9 @@ export default defineComponent({
     provide("use_time", use_time);
     provide("taskType", taskType);
     provide("sshUrl", sshUrl);
-    provide("currentInterface",currentInterface)
-    provide("taskId",taskId)
-    let ind=0 // 记录是否是刚进页面
+    provide("currentInterface", currentInterface);
+    provide("taskId", taskId);
+    let ind = 0; // 记录是否是刚进页面
     let navData =
       role === 4
         ? type === "course"
@@ -301,7 +305,13 @@ export default defineComponent({
     function initWs() {
       vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
-        url: "://"+ws_config.host+":"+ws_config.port+"/?uid=" + connection_id,
+        url:
+          "://" +
+          ws_config.host +
+          ":" +
+          ws_config.port +
+          "/?uid=" +
+          connection_id,
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
             // message.success("ws关闭成功");
@@ -319,15 +329,27 @@ export default defineComponent({
             console.log(vmInfoData.value);
 
             if (vmInfoData.value.data.vms.length > 0) {
-              if (ind===0&&allInfo.value.base_info&&allInfo.value.base_info.is_webssh===1) {
-                ind++
-                currentInterface.value="ssh"
-                let currentvm:any=vmInfoData.value.data.vms[vmCurrentIndex.value]
+              if (
+                ind === 0 &&
+                allInfo.value.base_info &&
+                allInfo.value.base_info.is_webssh === 1
+              ) {
+                ind++;
+                currentInterface.value = "ssh";
+                let currentvm: any =
+                  vmInfoData.value.data.vms[vmCurrentIndex.value];
                 uuid.value = currentvm.uuid;
-                sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentvm.host_ip+"/"+currentvm.ssh_port
-              }else{
-                currentInterface.value="vnc"
-                settingCurrentVM(vmInfoData.value.data.vms[vmCurrentIndex.value]);
+                sshUrl.value =
+                  getVmConnectSetting.SSHHOST +
+                  ":2222/ssh/host/" +
+                  currentvm.host_ip +
+                  "/" +
+                  currentvm.ssh_port;
+              } else {
+                currentInterface.value = "vnc";
+                settingCurrentVM(
+                  vmInfoData.value.data.vms[vmCurrentIndex.value]
+                );
               }
               uuidLoading.value = true;
             }
@@ -347,7 +369,6 @@ export default defineComponent({
     onMounted(async () => {
       await getVmBase();
       initWs();
-      
 
       // clearInterval(Number(timer));
       // timer = setInterval(() => {
@@ -376,32 +397,32 @@ export default defineComponent({
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
-      return new Promise((resolve:any,reject:any)=>{
+      return new Promise((resolve: any, reject: any) => {
         let params = {
-        opType: opType,
-        type: type,
-        taskId: taskId,
-      };
-      getVmBaseInfo(params).then((res: any) => {
-        console.log(res);
-        allInfo.value = res.data;
-        if (!res.data.current) {
-          resolve()
-          return
-        }
-        
-        console.log(res.data.current.used_time);
-        taskType.value = res.data.base_info.task_type.type;
+          opType: opType,
+          type: type,
+          taskId: taskId,
+        };
+        getVmBaseInfo(params).then((res: any) => {
+          console.log(res);
+          allInfo.value = res.data;
+          if (!res.data.current) {
+            resolve();
+            return;
+          }
 
-        if (!taskType.value) {
-          use_time.value = res.data.current.used_time;
-        } else {
-          use_time.value = res.data.current.remaining_time;
-        }
-        reportTemid.value = res.data.current.id;
-        resolve()
+          console.log(res.data.current.used_time);
+          taskType.value = res.data.base_info.task_type.type;
+
+          if (!taskType.value) {
+            use_time.value = res.data.current.used_time;
+          } else {
+            use_time.value = res.data.current.remaining_time;
+          }
+          reportTemid.value = res.data.current.id;
+          resolve();
+        });
       });
-      })
     }
 
     // 结束脚本入口
@@ -609,7 +630,7 @@ export default defineComponent({
       sshUrl,
       currentInterface,
       layoutBg,
-      opType
+      opType,
     };
   },
 });
@@ -662,13 +683,36 @@ export default defineComponent({
   .vm-content-right {
     .vncloading {
       position: relative;
-      width: 100%;
       height: 100%;
-      background: rgba(#515151, 0.8);
-      color: @white;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      text-align: center;
+       background: radial-gradient(#222922, #000500);
+      .word {
+        bottom: 0;
+        color: #fff;
+        font-size: 2.5em;
+        height: 2.5em;
+        left: 0;
+        line-height: 2.5em;
+        margin: auto;
+        right: 0;
+        position: absolute;
+        text-shadow: 0 0 10px rgba(117, 121, 224, 0.5),
+          0 0 5px rgba(117, 121, 224, 0.5);
+        top: 0;
+      }
+      .overlay {
+        // background-image: linear-gradient(
+        //   transparent 0%,
+        //   rgba(10, 16, 10, 0.5) 50%
+        // );
+        // background-size: 1000px 2px;
+        // bottom: 0;
+        // content: "";
+        // left: 0;
+        // position: absolute;
+        // right: 0;
+        // top: 0;
+      }
     }
   }
 }
