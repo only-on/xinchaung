@@ -238,7 +238,7 @@ export default defineComponent({
   box-shadow: 0 2px 4px 0 @shadow-color;
   margin: 0 2% 20px 0px;
   &.mySelfCreate{
-    // height: 277px;
+    height: 277px;
     border: 1px dashed @theme-color;
     cursor: pointer;
     background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
