@@ -8,7 +8,7 @@
 // An override for the html selector for theme prefixes
 @html-selector: html;
 // -------- Colors -----------
-@center-width:1330px;
+@center-width:1330px;      // var (--center-width)
 // @theme-scroll:#e3d9ff;
 // @theme-light-color:#BB9CD6;      //浅色主题色文字
 // @theme-gradient-color:#6c60e2;   // 背景主题渐变色
@@ -17,22 +17,24 @@
 //@theme-tree-node-bg:#e4dae8;
 
 
-//  公共部分  以后不随系统变
-@split-line:#F0F0F0;               //  分割线
-@shadow-color:rgba(0, 0, 0,0.07);  //  卡片阴影
+//  公共部分  以后不随系统变 
+@split-line:#F0F0F0;               //  分割线 var(--gray-4)
+@shadow-color:rgba(0, 0, 0,0.07);  //  卡片阴影  var(--black-7)
 
-@blue-4:#69C0FF;
-@purpleblue-1:#DEDFFD;
-@purplebule-5:#6C70EA;
-@theme-scroll:@purpleblue-1;
-@geekblue-1:#F0F5FF;
+@blue-4:#69C0FF;       //  var(--blue-4)
+@purpleblue-1:#DEDFFD;    // var(--purpleblue-1)
+@purpleblue-4:#8084EF;    // var(--purpleblue-4)
+@purplebule-5:#6C70EA;    // var(--purpleblue-5)
+@purplebule-6:#585ce5;    // var(--purpleblue-6)
+@theme-scroll:@purpleblue-1;  
+@geekblue-1:#F0F5FF;     // var(--geekblue-1)
 
-@purplebule-3:#9B9FF7;
-@theme-tree-node-bg:#DEDFFD;
-@theme-tree:#8084EF;
+@purplebule-3:#9B9FF7;    // var(--purpleblue-3)
+@theme-tree-node-bg:#DEDFFD;  //  var(--purpleblue-1)
+@theme-tree:@purpleblue-4;
 @theme-light-color:@purplebule-3;      //浅色主题色文字
-@theme-gradient-color:#6c60e2;   // 背景主题渐变色
-@theme-color: #585ce5;           //  主题色
+@theme-gradient-color:#6c60e2;   // 背景主题渐变色  rgba(var(--royalpurple-7),.2)
+@theme-color: @purplebule-6;           //  主题色   var(--purpleblue-6)
 
 
 
