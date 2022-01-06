@@ -122,6 +122,7 @@ interface ITreeDataItem {
   name: string
   sort: number
   type: string
+  content_type?:string
   is_high: boolean
   slots: Isolts
   grouped: number

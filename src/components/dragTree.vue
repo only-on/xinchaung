@@ -101,6 +101,7 @@ interface ITreeDataItem {
   name: string;
   sort: number;
   type: string;
+  content_type?:string;
   is_high?: boolean;
   contents: ITreeDataItem[];
 }
@@ -176,7 +177,7 @@ export default defineComponent({
       visible.value = false;
     };
 
-    function getExperimentClassName(type: string | number,extype:string, typeName: string) {
+    function getExperimentClassName(type: string | number,extype:any, typeName: string) {
       console.log(type,extype,typeName,'type typeName')
       if(type==='course'||type==='extra'||type==='train'){
          if (extype === 'verification'||extype === 'desktop'||extype === 'notebook'||extype === 'wibe') {
@@ -293,6 +294,7 @@ export default defineComponent({
         name: "",
         sort: 0,
         type: "",
+        // content_type:'',
         contents: [],
       };
 
