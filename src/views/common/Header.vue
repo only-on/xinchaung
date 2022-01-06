@@ -6,6 +6,7 @@
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
       </router-link> -->
+      <router-link to="/">测试</router-link>
       <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
@@ -163,6 +164,7 @@ export default defineComponent({
       });
     }
     function goHome(){
+      console.log("回首页")
       // router.push(`${homePath}`);
       if (role==3) {
         // return "/teacher" // 教师端首页
