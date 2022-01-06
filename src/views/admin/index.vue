@@ -277,7 +277,11 @@
                 >
               </a-select>
             </div>
-            <div class="ip-canvas m-30 computes-h" v-if="isShowGPU" ref="computesGpuEl"></div>
+            <div
+              class="ip-canvas m-30 computes-h"
+              v-if="isShowGPU"
+              ref="computesGpuEl"
+            ></div>
           </div>
         </div>
         <div class="flex-line compute-progress">
@@ -294,14 +298,16 @@
               <div
                 class="disk-use-num"
                 :style="{
-                  width:
-                  !isNaN((nodeIp.computes.root_disk_used /
-                      nodeIp.computes.root_disk_gb) *
-                      100)?
+                  width: !isNaN(
                     (nodeIp.computes.root_disk_used /
                       nodeIp.computes.root_disk_gb) *
-                      100 +
-                    '%':'0%',
+                      100
+                  )
+                    ? (nodeIp.computes.root_disk_used /
+                        nodeIp.computes.root_disk_gb) *
+                        100 +
+                      '%'
+                    : '0%',
                 }"
               ></div>
             </div>
@@ -362,7 +368,7 @@ import {
   Ref,
   watch,
   inject,
-  nextTick
+  nextTick,
 } from "vue";
 import {
   getStatisticsApi,
@@ -397,7 +403,7 @@ type TreactiveData = {
     master: any;
     slave: any;
   };
-  isShowGPU:boolean
+  isShowGPU: boolean;
 };
 export default defineComponent({
   components: {
@@ -412,9 +418,18 @@ export default defineComponent({
     const computesCpuEl: Ref<HTMLElement> = ref(null) as any;
     const computesMemoryEl: Ref<HTMLElement> = ref(null) as any;
     const computesGpuEl: Ref<HTMLElement> = ref(null) as any;
-    var updata=inject('updataNav') as Function
-    const tabRef=ref(null)
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined,showNav:false,backOff:false,showPageEdit:false})
+    var updata = inject("updataNav") as Function;
+    const tabRef = ref(null);
+    updata({
+      tabs: [],
+      navPosition: "outside",
+      navType: false,
+      showContent: false,
+      componenttype: undefined,
+      showNav: false,
+      backOff: false,
+      showPageEdit: false,
+    });
 
     const reactiveData: TreactiveData = reactive({
       statisticsData: {},
@@ -431,7 +446,7 @@ export default defineComponent({
         master: {},
         slave: {},
       },
-      isShowGPU:false
+      isShowGPU: false,
     });
     const imgs = { img1, img2, img3, img4, img5 };
     const gauge: {
@@ -458,18 +473,20 @@ export default defineComponent({
           reactiveData.currentControlsIp,
           "controls"
         );
-        gauge.controlsCpu = gaugeCanvas(
-          "使用率",
-          (reactiveData.nodeIp as any).controls.cpu_use_rate,
-          theme.themeColor,
-          controlsCpuEl.value
-        );
-        gauge.controlsMemory = gaugeCanvas(
-          "使用率",
-          (reactiveData.nodeIp as any).controls.cpu_use_rate,
-          theme.orangeColor,
-          controlsMemoryEl.value
-        );
+        if ((reactiveData.nodeIp as any).controls.cpu_use_rate) {
+          gauge.controlsCpu = gaugeCanvas(
+            "使用率",
+            (reactiveData.nodeIp as any).controls.cpu_use_rate,
+            theme.themeColor,
+            controlsCpuEl.value
+          );
+          gauge.controlsMemory = gaugeCanvas(
+            "使用率",
+            (reactiveData.nodeIp as any).controls.cpu_use_rate,
+            theme.orangeColor,
+            controlsMemoryEl.value
+          );
+        }
       }
     );
 
@@ -511,7 +528,7 @@ export default defineComponent({
         if (gauge.computesGpu) {
           gauge.computesGpu.dispose();
         }
-          reactiveData.gpuSelectData.forEach((item: any, index: number) => {
+        reactiveData.gpuSelectData.forEach((item: any, index: number) => {
           if (item.id === reactiveData.currentGpuId) {
             reactiveData.currentGpu = item;
             // isShowGPU
@@ -522,8 +539,7 @@ export default defineComponent({
               computesGpuEl.value
             );
           }
-        })
-        
+        });
       }
     );
     const method = {
@@ -555,13 +571,12 @@ export default defineComponent({
             reactiveData.gpuSelectData = res.data.data;
 
             if (reactiveData.gpuSelectData.length > 0) {
-              reactiveData.isShowGPU=true
+              reactiveData.isShowGPU = true;
               reactiveData.currentGpuId = (
                 reactiveData as any
               ).gpuSelectData[0].id;
-              
             } else {
-              reactiveData.isShowGPU=false
+              reactiveData.isShowGPU = false;
               // gauge.computesGpu = gaugeCanvas(
               //   "使用率",
               //   0,
@@ -720,7 +735,7 @@ export default defineComponent({
   .bg-white {
     background-color: @white;
   }
-  .b-r{
+  .b-r {
     border-radius: @border-radius-base;
   }
   .m-l-20 {

@@ -1,17 +1,17 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <!-- <router-link class="a-logo" :to="{path:homePath}">
+      <router-link class="a-logo" :to="{path:homePath}">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </router-link> -->
-      <router-link to="/">测试</router-link>
-      <div class="a-logo" @click="goHome()">
+      </router-link>
+      <router-link to="">测试</router-link>
+      <!-- <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </div>
+      </div> -->
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
@@ -90,7 +90,7 @@ export default defineComponent({
         return "/admin" // 管理端
       }
       if (role==5) {
-        return "" // 助教端
+        return "/" // 助教端
       }
     })
     const isOperation = computed(() => {
