@@ -13,7 +13,7 @@
     :defaultSelectedKeys="[treeData[0].id]"
   >
     <a-tree-node v-for="item in treeData" :key="item.id">
-      <template v-slot:title>
+      <template v-if="item.contents" v-slot:title>
         <div
           :class="
             selectid === item.id ? 'tree-first-title selectbac' : 'tree-first-title'
@@ -55,11 +55,11 @@
                 <span
                   class="iconfont type-icon"
                   :class="
-                    ct.is_high ? 'icon-jinzhi' : getExperimentClassName(ct.type, 'icon')
+                    ct.is_high ? 'icon-jinzhi' : getExperimentClassName(ct.type,ct.content_type,'icon')
                   "
                 ></span>
                 <span class="type-name">{{
-                  getExperimentClassName(ct.type, "name")
+                  getExperimentClassName(ct.type,ct.content_type,"name")
                 }}</span>
               </span>
               <span :title="ct.name" class="experiment-name">{{ ct.name }}</span>
@@ -176,21 +176,37 @@ export default defineComponent({
       visible.value = false;
     };
 
-    function getExperimentClassName(type: string | number, typeName: string) {
-      if (type === "1-1" || type === "1-") {
+    function getExperimentClassName(type: string | number,extype:string, typeName: string) {
+      console.log(type,extype,typeName,'type typeName')
+      if(type==='course'||type==='extra'||type==='train'){
+         if (extype === 'verification'||extype === 'desktop'||extype === 'notebook'||extype === 'wibe') {
         return typeName === "icon" ? "icon-zhuomianshiyan" : "实验";
-      }
-      if (type === "1-4"  || type === 1) {
-        return typeName === "icon" ? "icon-jiaohushiyan" : "实验";
-      }
-      if (type === 2) {
-        return typeName === "icon" ? "icon-shubiao" : "实训";
-      }
-      if (type === 3 || type === 6) {
-        return typeName === "icon" ? "icon-shipin" : "视频";
-      }
-      if (type === 4 || type === 7) {
-        return typeName === "icon" ? "icon-wendang" : "文档";
+        }
+        if (extype === 'train') {
+          return typeName === "icon" ? "icon-shubiao" : "实训";
+        }
+        if (extype ==='video') {
+          return typeName === "icon" ? "icon-shipin" : "视频";
+        }
+        if (extype ==='pdf') {
+          return typeName === "icon" ? "icon-wendang" : "文档";
+        }
+      }else{
+        if (type === "1-1" || type === "1-") {
+        return typeName === "icon" ? "icon-zhuomianshiyan" : "实验";
+        }
+        if (type === "1-4"  || type === 1) {
+          return typeName === "icon" ? "icon-jiaohushiyan" : "实验";
+        }
+        if (type === 2) {
+          return typeName === "icon" ? "icon-shubiao" : "实训";
+        }
+        if (type === 3 || type === 6) {
+          return typeName === "icon" ? "icon-shipin" : "视频";
+        }
+        if (type === 4 || type === 7) {
+          return typeName === "icon" ? "icon-wendang" : "文档";
+        }
       }
     }
     // 开启拖拽

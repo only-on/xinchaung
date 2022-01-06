@@ -40,11 +40,10 @@
     </div>
   </div>
   <div class="course_info">
-    
     <div class="coursemain">
       <div class="mainLeft setScrollbar">
         <!-- <Drag-tree :tree="tree" /> -->
-        <!-- <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" /> -->
+        <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
       </div>
       <div class="mainRight">
         <!-- <component v-if="type === 1 || type === 2" :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :experimentName="experimentName" /> -->
@@ -116,7 +115,7 @@ export default defineComponent({
     //  http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
      http.coursesInfo({urlParams:{id:DetailId}}).then((res:IBusinessResp)=>{
         let data=res.data
-        let tree=[data.tree]
+        let tree=data.tree
         console.log(tree,'tree')
         tree.length?tree.map((v:any)=>{
           console.log(v,'vvvvvvv')
@@ -135,31 +134,40 @@ export default defineComponent({
       })
     }
     function selectChapter(val:any) {
-      // console.log(val)
+      console.log(val,'valhhhhhhhhhhhhhhhhhhhh hhhhhhhh')
       chapter_id.value=val.id
       componentName.value='StuChapter'
     }
     function selectExperiment(val:any) {
-       console.log(val)
+       console.log(val.content_type,'jjjjjjjjjjjjj  哈哈哈哈哈哈 选择了')
        componentName.value=''
-      //  const dev_base_url=import.meta.env.VITE_APP_BASE_API || ''
-       type.value=val.type
-      if(val.type ===1 || val.type === 2){
-        taskid.value=val.tid
-        experimentName.value=val.name
-        // note_id.value=String(val.notes_id)
-        experimentalId.value=val.id
-        componentName.value='ChapterExperiment'
-      }else if (val.type === 3) {
-        videoUrl.value = `${val.dataset.file_url}`
-      } else if (val.type === 4) {
-        pptUrl.value = `/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`
-        // pptUrl.value = `http://192.168.101.150:80/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`  
-  
-        // pptUrl.value = `proxyPrefix2/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`
-      }
-      
-    }
+      //  type.value=val.type
+      // if(val.type ===1 || val.type === 2){
+      //   taskid.value=val.tid
+      //   experimentName.value=val.name
+      //   experimentalId.value=val.id
+      //   componentName.value='ChapterExperiment'
+      // }else if (val.type === 3) {
+      //   videoUrl.value = `${val.dataset.file_url}`
+      // } else if (val.type === 4) {
+      //   pptUrl.value = `/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.dataset.file_path)}`
+      // }
+      // 1试验
+      // 2实训
+      // 3 视频
+      // 4 pdf
+      // type.value=val.content_type
+      if(val.content_type==='verification'||val.content_type === 'desktop'||val.content_type === 'notebook'||val.content_type === 'webide'||val.content_type === 'train'){
+          // taskid.value=val.tid
+          taskid.value=val.id
+          experimentName.value=val.name
+          experimentalId.value=val.id
+          componentName.value='ChapterExperiment'
+      }else if (val.content_type === 'video') {
+        videoUrl.value = val.url
+      }else if(val.content_type === 'pdf')
+       pptUrl.value = `/v0.1.0/pdfjs-2.5.207/web/viewer.html?file=${encodeURI(val.url)}`
+     }
     function Resources(){
       router.push('/studentSideCourse/Resources?course_id='+course_id)
     }
