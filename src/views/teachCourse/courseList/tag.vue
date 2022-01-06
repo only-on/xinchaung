@@ -34,7 +34,7 @@
           {{ item.name }}
         </span>
       </div>
-      <div class="more-btn" v-if="directionsHeight > 30">
+      <div class="more-btn" v-if="directionsHeight > 40">
         <span @click="directionsShow = !directionsShow"
           >展开<span class="icon-zhankai iconfont"></span
         ></span>
@@ -77,7 +77,7 @@
           {{ item?.name }}
         </span>
       </div>
-      <div class="more-btn" v-if="categoryHeight > 30">
+      <div class="more-btn" v-if="categoryHeight > 40">
         <span @click="openOrClose"
           >展开<span class="icon-zhankai iconfont"></span
         ></span>

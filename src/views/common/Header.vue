@@ -6,7 +6,6 @@
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
       </router-link>
-      <router-link to="">测试</router-link>
       <!-- <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>

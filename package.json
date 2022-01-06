@@ -3,7 +3,7 @@
   "scripts": {
     "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite --host --debug",
     "build": "vue-tsc --noEmit && vite build",
-    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=8192 vite build",
+    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=10240 vite build",
     "serve": "vite preview",
     "prepare": "husky install"
   },
