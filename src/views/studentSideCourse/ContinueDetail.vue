@@ -4,19 +4,19 @@
       <div class="title">
         <div class="left">
           <div>{{info.name}}</div>
-          <span>{{info.course_status}}</span>
+          <span>{{info.state}}</span>
         </div>
         <span class="iconfont icon-fanhui" @click="goBack"></span>
       </div>
       <div class="info">
         <div class="left">
           <div class="item">
-            <span>{{info.chapters}}</span>
+            <span>{{info.chapter_count}}</span>
             <span>章节</span>
           </div>
           <div class="line"></div>
           <div class="item">
-            <span>{{info.contents}}</span>
+            <span>{{info.count}}</span>
             <span>实验</span>
           </div>
           <div class="line"></div>
@@ -31,7 +31,7 @@
           </div>
           <div class="line"></div>
           <div class="item dir">
-            <span>{{info.between_time}}</span>
+            <span>{{info.expire}}</span>
             <span>课程时间</span>
           </div>
         </div>
@@ -44,7 +44,7 @@
     <div class="coursemain">
       <div class="mainLeft setScrollbar">
         <!-- <Drag-tree :tree="tree" /> -->
-        <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" />
+        <!-- <DragTree :treeData="tree" @selectChapter="selectChapter" @selectExperiment="selectExperiment" /> -->
       </div>
       <div class="mainRight">
         <!-- <component v-if="type === 1 || type === 2" :is="componentName" :chapter_id="chapter_id" :experimentalId="experimentalId" :taskid="taskid" :experimentName="experimentName" /> -->
@@ -113,14 +113,21 @@ export default defineComponent({
     })
     function initData(){
      
-     http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
+    //  http.coursesInfo({param:{id:DetailId}}).then((res:IBusinessResp)=>{
+     http.coursesInfo({urlParams:{id:DetailId}}).then((res:IBusinessResp)=>{
         let data=res.data
-        let tree=data.tree
+        let tree=[data.tree]
+        console.log(tree,'tree')
         tree.length?tree.map((v:any)=>{
+          console.log(v,'vvvvvvv')
           v.name=v.chapter_name
-          v.contents=v.task_list
+          // v.contents=v.task_list
+          v.contents=v.children
+          console.log(v.contents,'v.contents')
           v.contents.length?v.contents.map((i:any)=>{
-            i.id=(i.type===1 || i.type===2)?i.tid:i.id
+            console.log(i,'iiiiiiii')
+            // i.id=(i.type===1 || i.type===2)?i.tid:i.id
+            i.id=i.id
           }):''
         }):''
         detail.info=data

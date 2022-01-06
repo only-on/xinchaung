@@ -5,7 +5,8 @@ export default {
   // 学生端-我的课程列表
   getMyCourseList: { url: `/api/operate/operates/my`, method: "GET" },
   courseDirection: { url: `/api/course/courses/categories`, method: "GET" },
-  coursesInfo: { url: `/student-course/start-courses`, method: "GET" },
+  // coursesInfo: { url: `/student-course/start-courses`, method: "GET" },
+  coursesInfo: { url: `/api/operate/operates/study/{id}`, method: "GET" },
   questionsList: { url: `/classic/exercises-student/course-student-questions-list`, method: "GET" },
   submitQuest: { url: `/classic/exercises-student/submit-quest`, method: "POST", dataType: 'json' },
   submitQuesAnswer: { url: `/classic/exercises-student/submit-answer`, method: "POST", dataType: 'json' },
