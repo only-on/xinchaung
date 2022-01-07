@@ -7,7 +7,7 @@
             <div v-if="type">
                 <a-button type="primary" @click="createExceriseBtn">创建题库</a-button>
             </div>
-             <a-modal class="createExercise" :visible="visible" title="创建题库" width="900px" @cancel="handleCancel" @ok="handleOk">
+             <a-modal class="createExercise" :visible="visible" title="创建题库" @cancel="handleCancel" @ok="handleOk">
                 <div class="modal-con">
                     <a-form ref="formRef" :model="form" :rules="rules">
                         
@@ -224,6 +224,9 @@ export default defineComponent({
     function createExcerise(createParams:fromType){
         teacherDataExerApi.createExercise({param:createParams}).then((res:any)=>{
             console.log(res)
+            state.form.name=''
+            state.form.description=''
+            message.success('创建成功！')
             getExerciseList(params)
         })
     }
@@ -323,6 +326,8 @@ export default defineComponent({
 
   :deep(.ant-input-textarea-show-count::after) {
     margin-bottom: 0;
+    font-size: 12px;
+    color:rgba(0, 0, 0, 0.25);
   }
 
   &:hover {

@@ -424,7 +424,8 @@ export default defineComponent({
     }
     .ant-progress-outer{
         width: 90%;
-    }
+    }   
 }
+
 </style>
 

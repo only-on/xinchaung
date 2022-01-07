@@ -591,6 +591,8 @@ export default defineComponent({
 
   :deep(.ant-input-textarea-show-count::after) {
     margin-bottom: 0;
+    font-size: 12px;
+    color:rgba(0, 0, 0, 0.25);
   }
 
   &:hover {
@@ -601,5 +603,14 @@ export default defineComponent({
     border: 1px solid @theme-color;
     box-shadow: 0 0 0 2px @theme-scroll;
   }
+}
+.ant-upload-drag-icon .icon-upload{
+  color: @theme-color;
+}
+.ant-upload-text{
+  font-size: 14px!important;
+}
+.ant-upload-hint{
+  font-size: 12px!important;
 }
 </style>

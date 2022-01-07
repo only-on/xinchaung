@@ -218,6 +218,9 @@ export default defineComponent({
           },
         })
         .then((res) => {
+          $message.success('创建成功！')
+          folderInfo.name=''
+          folderInfo.description=''
           getDataSetList();
         });
       createFolderVisible.value = false;
@@ -396,6 +399,8 @@ export default defineComponent({
 
   :deep(.ant-input-textarea-show-count::after) {
     margin-bottom: 0;
+    font-size: 12px;
+    color:rgba(0, 0, 0, 0.25);
   }
 
   &:hover {
