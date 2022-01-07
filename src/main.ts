@@ -6,7 +6,6 @@ import initProject from 'src/bootstrap/project'
 
 import 'src/themecss/variable.css'
 
-import "src/assets/theme/common.less"
 import 'src/themecss/antdCopy.css'
 import "src/assets/theme/common.less"
 
