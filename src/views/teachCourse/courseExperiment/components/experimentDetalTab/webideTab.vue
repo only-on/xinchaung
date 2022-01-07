@@ -118,8 +118,8 @@ export default defineComponent({
       flex-wrap: wrap;
       margin-top: 20px;
       > span {
-        background: rgba(@theme-color, 0.2);
-        border: 1px solid @theme-color;
+        background: rgba(var(--purpleblue-6), 0.2);
+        border: 1px solid var(--purpleblue-6);
         border-radius: 15px;
         padding: 4px 20px;
         margin: 0 10px;

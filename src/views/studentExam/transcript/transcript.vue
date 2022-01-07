@@ -224,7 +224,7 @@ export default defineComponent({
           cursor: pointer;
           background: #c3cbd9;
           &.truth {
-            background: @theme-color;
+            background: var(--purpleblue-6);
           }
           &.pink {
             background: rgba(251, 118, 122, 1);
@@ -247,7 +247,7 @@ export default defineComponent({
           display: inline-block;
           margin-left: 12px;
           &.bg-truth {
-            background: @theme-color;
+            background: var(--purpleblue-6);
           }
           &.bg-pink {
             background: rgba(251, 118, 122, 1);

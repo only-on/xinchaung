@@ -53,7 +53,7 @@ export default defineComponent({
   .step-item {
     width: 100%;
     // height: 44px;
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
     border-radius: 6px;
     margin-top: 16px;
     padding: 15px;
@@ -61,9 +61,9 @@ export default defineComponent({
     flex-direction: row;
     justify-content: space-between;
     .look-detail-btn{
-        color: @theme-color;
+        color: var(--purpleblue-6);
         &:hover{
-            color: rgba(@theme-color,0.8);
+            color: rgba(var(--purpleblue-6),0.8);
             cursor: pointer;
         }
     }

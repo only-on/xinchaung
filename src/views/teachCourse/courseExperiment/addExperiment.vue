@@ -844,8 +844,8 @@ export default defineComponent({
           display: flex;
           flex-direction: row;
           line-height: 40px;
-          background:rgba(@theme-color,.2);
-          border: 1px solid rgba(@theme-color,.4);
+          background:rgba(var(--purpleblue-6),.2);
+          border: 1px solid rgba(var(--purpleblue-6),.4);
           border-radius: 3px;
           margin-top: 17px;
           padding: 0 20px;
@@ -856,12 +856,12 @@ export default defineComponent({
             > i {
               margin: 0 5px;
               font-style: normal;
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
             &:last-child {
               margin-right: 0;
               margin-left: auto;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               cursor: pointer;
             }
           }
@@ -874,7 +874,7 @@ export default defineComponent({
             .title-name {
               .iconfont {
                 background: unset;
-                color: @theme-color;
+                color: var(--purpleblue-6);
               }
             }
           }

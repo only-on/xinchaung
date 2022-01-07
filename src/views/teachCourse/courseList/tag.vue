@@ -260,7 +260,7 @@ export default defineComponent({
       padding: 5px 10px;
       &.active {
         color: @white;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         border-radius: @border-radius-base;
       }
     }

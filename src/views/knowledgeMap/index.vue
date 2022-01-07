@@ -291,7 +291,7 @@ export default defineComponent({
       width: 100%;
       height: 100%;
       jmnodes.theme-success jmnode{
-        background: @theme-color !important;
+        background: var(--purpleblue-6) !important;
         &.selected{
           background: #f90 !important;
         }
@@ -309,7 +309,7 @@ export default defineComponent({
     .title{
       padding-left: 18px;
       line-height: 56px;
-      background: @theme-color;
+      background: var(--purpleblue-6);
       color: @white;
       font-size: 18px;
     }
@@ -320,7 +320,7 @@ export default defineComponent({
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         border-bottom: 1px solid #C7AEDC;
         &:not(.nodata){
           cursor: pointer;
@@ -333,7 +333,7 @@ export default defineComponent({
     .more{
       cursor: pointer;
       text-align: center;
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   #menu{

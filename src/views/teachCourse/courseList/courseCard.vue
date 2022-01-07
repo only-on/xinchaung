@@ -315,7 +315,7 @@ export default defineComponent({
     .course-item-box {
       background: @white;
       border-radius: 10px;
-      box-shadow: 0 2px 4px 0 @shadow-color;
+      box-shadow: 0 2px 4px 0 var(--black-7);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -353,14 +353,14 @@ export default defineComponent({
 
           &.in-progress {
             background: #60ae34;
-            box-shadow: 0px 2px 4px 0px @shadow-color;
+            box-shadow: 0px 2px 4px 0px var(--black-7);
             color: @white;
           }
 
           &.finish {
             background: #373737;
             color: #8a8a8a;
-            box-shadow: 0px 2px 4px 0px @shadow-color;
+            box-shadow: 0px 2px 4px 0px var(--black-7);
           }
         }
       }
@@ -477,7 +477,7 @@ export default defineComponent({
               font-size: 14px;
               color: rgba(@black,0.45);
               &:hover {
-                color: rgba(@theme-color, 0.9);
+                color: rgba(var(--purpleblue-6), 0.9);
               }
             }
           }
@@ -502,7 +502,7 @@ export default defineComponent({
             color: #8f8f8f;
             font-size: 14px;
             &:hover {
-              color: rgba(@theme-color, 1);
+              color: rgba(var(--purpleblue-6), 1);
             }
           }
           > a {
@@ -568,7 +568,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
           }
         }
@@ -601,7 +601,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
           }
         }
@@ -617,7 +617,7 @@ export default defineComponent({
       }
       &:hover {
         // border: 1px solid #c4c3c3;
-        box-shadow: 0 7px 7px 0 @shadow-color;
+        box-shadow: 0 7px 7px 0 var(--black-7);
         .remove-hover {
           display: none;
         }

@@ -176,7 +176,7 @@ export default defineComponent({
     cursor: pointer;
     transition: border-color 0.3s;
     &:hover {
-      border: 1px dashed @theme-color;
+      border: 1px dashed var(--purpleblue-6);
     }
     > span {
       width: 100%;
@@ -192,7 +192,7 @@ export default defineComponent({
         cursor: pointer;
         .iconfont {
           font-size: 24px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
         .hint-handle-type {
           font-size: 14px;
@@ -212,7 +212,7 @@ export default defineComponent({
           justify-content: space-between;
           &:hover{
               cursor: pointer;
-              color: @theme-color;
+              color: var(--purpleblue-6);
           }
       }
   }

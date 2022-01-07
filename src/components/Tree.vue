@@ -160,7 +160,7 @@ interface ITreeList {
             }
 
             &.active {
-                background: rgba(@theme-color, 0.5);
+                background: rgba(var(--purpleblue-6), 0.5);
 
             }
 
@@ -204,7 +204,7 @@ interface ITreeList {
                     }
 
                     &.active {
-                        background: rgba(@theme-color, 0.8);
+                        background: rgba(var(--purpleblue-6), 0.8);
                         color: #ffffff !important;
 
                         &::before {
@@ -212,7 +212,7 @@ interface ITreeList {
                             content: "";
                             height: 41px;
                             width: 4px;
-                            background: @theme-color;
+                            background: var(--purpleblue-6);
                         }
 
                         div {

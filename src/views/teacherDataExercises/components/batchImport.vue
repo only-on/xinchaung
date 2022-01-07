@@ -150,7 +150,7 @@ export default defineComponent({
     }
 }
 .download{
-    color: @theme-color;
+    color: var(--purpleblue-6);
 }
 .download:hover{
     color:@theme-light-color;

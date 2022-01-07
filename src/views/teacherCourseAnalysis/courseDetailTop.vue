@@ -308,13 +308,13 @@ export default defineComponent({
       }
       &.in-progress {
         background: #60ae34;
-        box-shadow: 0px 2px 4px 0px @shadow-color;
+        box-shadow: 0px 2px 4px 0px var(--black-7);
         color: @white;
       }
       &.finish {
         color: @white;
         background: #989898;
-        box-shadow: 0px 2px 4px 0px @shadow-color;
+        box-shadow: 0px 2px 4px 0px var(--black-7);
       }
     }
     .icon-fanhui {
@@ -324,7 +324,7 @@ export default defineComponent({
       text-align: center;
       width: 40px;
       height: 40px;
-      background: @theme-color;
+      background: var(--purpleblue-6);
       border-radius: 50%;
       color: @white;
       cursor: pointer;

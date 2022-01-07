@@ -516,7 +516,7 @@ export default defineComponent({
 </script>
 <style scoped lang="less">
 .ExperimentDetail{
-  width:@center-width;
+  width:var(--center-width);
   margin: 0 auto;
   // border: 1px solid red;
   // height: 100%;
@@ -534,7 +534,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .data-item .wenjian,.cunchuzhi{
   cursor: auto;
@@ -638,9 +638,9 @@ export default defineComponent({
   .add-btn {
       width: 112px;
       height: 32px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       border-radius: 4px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       .iconfont {
         font-weight: 600;
         font-size: 18px;
@@ -703,7 +703,7 @@ export default defineComponent({
     .item{
       width:46%;
       line-height: 44px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       font-size: 14px;
       color: #050101;
       margin-bottom: 14px;
@@ -721,7 +721,7 @@ export default defineComponent({
 .ExperimentalSteps{
   padding: 40px 30px 40px 0;
   .item{
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
     border-radius: 6px;
     line-height: 44px;
     display: flex;
@@ -733,7 +733,7 @@ export default defineComponent({
       font-size: 14px;
     }
     .detaile{
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
     }
   }

@@ -136,7 +136,7 @@ export default defineComponent({
 }
 
 .slash {
-  // background: rgba(@theme-color, 0.3);
+  // background: rgba(var(--purpleblue-6), 0.3);
   flex-shrink: 0;
   background-color: #E2DFFF;
   border: 1px solid #c2c0f0;

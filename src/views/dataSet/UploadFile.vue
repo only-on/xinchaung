@@ -277,7 +277,7 @@ export default defineComponent({
 
                 >div {
                     background: #ffffff;
-                    box-shadow: 0px 0px 40px 0px @shadow-color;
+                    box-shadow: 0px 0px 40px 0px var(--black-7);
                 }
 
                 .upload-file-item {
@@ -377,12 +377,12 @@ export default defineComponent({
 
                     .ant-progress-status-success {
                         .ant-progress-bg {
-                            background-color: rgba(@theme-color, 1);
+                            background-color: rgba(var(--purpleblue-6), 1);
                         }
                     }
 
                     .ant-progress-bg {
-                        background-color: rgba(@theme-color, 0.4);
+                        background-color: rgba(var(--purpleblue-6), 0.4);
                         height: 4px !important;
                     }
 

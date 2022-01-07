@@ -246,7 +246,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 #statistic{
-    width:@center-width;
+    width:var(--center-width);
     // height: 100%;
     display: flex;
     margin: 0 auto;

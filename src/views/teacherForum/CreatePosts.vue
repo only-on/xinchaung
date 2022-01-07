@@ -115,7 +115,7 @@ export default defineComponent({
   .header{
     display: flex;
     justify-content: space-between;
-    width: @center-width;
+    width: var(--center-width);
     margin: 0 auto;
   }
   

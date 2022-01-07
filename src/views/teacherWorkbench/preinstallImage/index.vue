@@ -122,7 +122,7 @@ export default defineComponent({
     height: 240px;
     transition: .5s;
     box-sizing: border-box;
-    box-shadow: 0px 3px 6px 0px @shadow-color;
+    box-shadow: 0px 3px 6px 0px var(--black-7);
     margin-right: 14px;
 }
 .image-item:nth-child(4n){
@@ -130,7 +130,7 @@ export default defineComponent({
 }
 .image-base {
     flex-shrink: 0;
-    background: linear-gradient(45deg,@purplebule-5, @blue-4 );
+    background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
     border-radius: 4px 4px 0 0;
     position: relative;
     padding: 14px;
@@ -156,7 +156,7 @@ export default defineComponent({
         bottom: -15px;
         width: 64px;
         height: 64px;
-        box-shadow: 0 4px 6px 0 @shadow-color;
+        box-shadow: 0 4px 6px 0 var(--black-7);
         border-radius: 50%;
         overflow: hidden;
         }

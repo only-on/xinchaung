@@ -476,7 +476,7 @@ export default defineComponent({
       .add-data-set-btn {
         width: 100px;
         font-size: @font-size-sm;
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
       }
       .data-set-item {
         margin-top: 15px;

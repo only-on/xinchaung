@@ -802,7 +802,7 @@ export default defineComponent({
               cursor: pointer;
               transition: 0.2s;
               &:hover {
-                color: @theme-color;
+                color: var(--purpleblue-6);
               }
               > i {
                 font-size: 12px;

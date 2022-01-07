@@ -235,11 +235,11 @@ export default defineComponent({
   width: 23%;
   // height: 280px;F
   border-radius: 10px;
-  box-shadow: 0 2px 4px 0 @shadow-color;
+  box-shadow: 0 2px 4px 0 var(--black-7);
   margin: 0 2% 20px 0px;
   &.mySelfCreate{
     height: 277px;
-    border: 1px dashed @theme-color;
+    border: 1px dashed var(--purpleblue-6);
     cursor: pointer;
     background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
     position: relative;
@@ -250,11 +250,11 @@ export default defineComponent({
       left: 0;
       text-align: center;
       font-size: 20px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   &:not(.mySelfCreate):hover{
-    box-shadow: 0px 7px 7px 0px @shadow-color; 
+    box-shadow: 0px 7px 7px 0px var(--black-7); 
   }
   .cardpic{
     width: 100%;
@@ -285,7 +285,7 @@ export default defineComponent({
       top: 20px;
       right: 0;
       border-radius: 12px 0px 0px 12px;
-      box-shadow: 0px 2px 4px 0px @shadow-color;
+      box-shadow: 0px 2px 4px 0px var(--black-7);
       &.end{
         background: #8A8A8A;
         color: @text-color-secondary;
@@ -324,7 +324,7 @@ export default defineComponent({
       color: @text-color-secondary;
       padding: 0 14px;
       .iconfont:hover{
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
       i{
         cursor: pointer;
@@ -374,7 +374,7 @@ export default defineComponent({
         cursor: pointer;
         border-right: 1px solid @border-color;
         &:hover{
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
       }
       :nth-last-child(1){
@@ -441,6 +441,6 @@ export default defineComponent({
   }
 }
 .cardBox:hover{
-  box-shadow: 0 7px 7px 0 @shadow-color;
+  box-shadow: 0 7px 7px 0 var(--black-7);
 }
 </style>

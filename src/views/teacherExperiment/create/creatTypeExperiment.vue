@@ -622,7 +622,7 @@ interface IselectedName {
 
 <style lang="less" scoped>
 .create-wrap {
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   height: 100%;
   background-color: @white;
@@ -636,7 +636,7 @@ interface IselectedName {
     > span {
       display: inline-block;
       width: 850px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       font-size: 16px;
       font-weight: 400;
       text-align: left;
@@ -656,9 +656,9 @@ interface IselectedName {
     .add-btn {
       width: 112px;
       height: 32px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       border-radius: 4px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       .iconfont {
         font-weight: 600;
         font-size: 18px;
@@ -728,7 +728,7 @@ interface IselectedName {
             border: none;
             background: #ffffff;
             height: auto;
-            color: @theme-color;
+            color: var(--purpleblue-6);
             .iconfont {
               margin-right: 8px;
             }
@@ -744,7 +744,7 @@ interface IselectedName {
       }
       .osd-mode {
         margin-left: auto;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         cursor: pointer;
       }
     }

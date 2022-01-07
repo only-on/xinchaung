@@ -534,7 +534,7 @@ export default defineComponent({
             text-overflow: ellipsis;
           }
           &:hover {
-            background: rgba(@theme-color, 0.1);
+            background: rgba(var(--purpleblue-6), 0.1);
             > span:nth-child(3) {
               flex-shrink: 0;
               &.iconshanchu {
@@ -553,7 +553,7 @@ export default defineComponent({
             position: absolute;
             display: inline-block;
             height: 100%;
-            background: rgba(@theme-color, 0.5);
+            background: rgba(var(--purpleblue-6), 0.5);
           }
         }
       }

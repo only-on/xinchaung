@@ -363,7 +363,7 @@ export default defineComponent({
     .action {
       span {
         margin: 0 5px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
       span:hover {
         color: @theme-light-color;

@@ -97,7 +97,7 @@
 </script>
 
 <style lang="less" scoped>
-@hover-color: @theme-color;
+@hover-color: var(--purpleblue-6);
 .ant-modal-content {
   .ant-btn {
     height: 30px;
@@ -106,7 +106,7 @@
     line-height: 1.5;
     border-radius: 3px;
     color: @white;
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     border-color: @hover-color;
   }
   .ant-modal-close-x {
@@ -115,7 +115,7 @@
     line-height: 40px;
   }
   .ant-modal-header {
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     padding: 0;
     height: 40px;
     /* line-height: 40px; */
@@ -148,7 +148,7 @@
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: @theme-color;
+  background-color: var(--purpleblue-6);
   // border-color: @hover-color;
   color: @white;
   padding: 0 20px;

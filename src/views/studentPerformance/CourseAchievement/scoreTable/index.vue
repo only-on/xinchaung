@@ -289,7 +289,7 @@ export default defineComponent({
 }
 .scoreDetailModal {
   .ant-modal-header {
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
   }
   .ant-modal-title {
     color: white;
@@ -305,7 +305,7 @@ export default defineComponent({
     border-left: 1px solid @normal-color;
   }
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
-    border-top: 2px solid @theme-color;
+    border-top: 2px solid var(--purpleblue-6);
   }
 }
 </style>

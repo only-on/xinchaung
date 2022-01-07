@@ -290,7 +290,7 @@ export default defineComponent({
                 font-size: 12px;
             }
             .iconfont {
-                color: @theme-color;
+                color: var(--purpleblue-6);
                 margin-left: 20px;
                 cursor: pointer;
             }

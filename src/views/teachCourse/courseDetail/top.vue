@@ -278,7 +278,7 @@ export default defineComponent({
 
 <style lang="less">
 .course-detail-top {
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   height: 205px;
   color: @white;
@@ -334,13 +334,13 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         border-radius: 50%;
         color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
         transition: 0.5s;
         &:hover {
-          // background: rgba(@theme-color, 0.8);
+          // background: rgba(var(--purpleblue-6), 0.8);
           color: rgba(255, 255, 255, 1);
         }
       }

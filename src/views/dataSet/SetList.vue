@@ -306,7 +306,7 @@ export default defineComponent({
               display: flex;
               flex-direction: column;
               border-radius: 5px;
-              box-shadow: 0px 3px 6px 0px @shadow-color;
+              box-shadow: 0px 3px 6px 0px var(--black-7);
               box-sizing: border-box;
 
               > div:nth-child(1) {
@@ -354,7 +354,7 @@ export default defineComponent({
                       width: 18px;
                       height: 18px;
                       border-radius: 50%;
-                      background: @theme-color;
+                      background: var(--purpleblue-6);
                       display: inline-block;
                       line-height: 18px;
                       text-align: center;
@@ -415,7 +415,7 @@ export default defineComponent({
               > div {
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(131deg, @theme-color 3%, #6b43f1 90%);
+                background: linear-gradient(131deg, var(--purpleblue-6) 3%, #6b43f1 90%);
                 padding: 44px 24px 24px 24px;
                 display: flex;
                 flex-direction: column;
@@ -459,7 +459,7 @@ export default defineComponent({
                       line-height: 18px;
                       padding: 5px;
                       &.more-point {
-                        border: 1px solid @theme-color;
+                        border: 1px solid var(--purpleblue-6);
                         padding: 0 7px;
                         display: inline-block;
                         line-height: 12px;
@@ -471,7 +471,7 @@ export default defineComponent({
                         height: min-content;
                         margin: auto 0;
                         background: #ffffff;
-                        color: @theme-color;
+                        color: var(--purpleblue-6);
                         position: relative;
 
                         .more-tag-box {
@@ -485,7 +485,7 @@ export default defineComponent({
                           // flex-wrap: wrap;
                           display: none;
                           border-radius: 6px;
-                          box-shadow: 0px 3px 6px 0px @shadow-color;
+                          box-shadow: 0px 3px 6px 0px var(--black-7);
                           z-index: 111;
                           flex-shrink: 1;
                           cursor: default;
@@ -505,7 +505,7 @@ export default defineComponent({
                           .more-tag-box {
                             display: flex;
                           }
-                          background: @theme-color;
+                          background: var(--purpleblue-6);
                           color: #ffffff;
                           border: 1px solid transparent;
                         }
@@ -563,7 +563,7 @@ export default defineComponent({
             }
           }
           .card-content:hover .card-look{
-            box-shadow: 0px 0px 11px -4px @shadow-color;
+            box-shadow: 0px 0px 11px -4px var(--black-7);
           }
         }
 

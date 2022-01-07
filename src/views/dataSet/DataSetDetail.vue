@@ -504,7 +504,7 @@ export default defineComponent({
   border-radius: 6px;
   padding-bottom: 20px;
   background: #fff;
-  box-shadow: 0px 3px 6px 0px @shadow-color;
+  box-shadow: 0px 3px 6px 0px var(--black-7);
   .dataset-detail-base-box {
     display: flex;
     flex-direction: row;
@@ -535,7 +535,7 @@ export default defineComponent({
         .dataset-detail-btn {
           .iconfont.icon-fanhui:hover,
           .iconfont.icon-bianji1:hover {
-            background: @theme-color;
+            background: var(--purpleblue-6);
             color: #f7f7f7;
           }
         }
@@ -561,7 +561,7 @@ export default defineComponent({
             text-align: center;
             line-height: 38px;
             border-radius: 50%;
-            color: @theme-color;
+            color: var(--purpleblue-6);
             cursor: pointer;
           }
         }
@@ -594,7 +594,7 @@ export default defineComponent({
           i {
             width: 18px;
             height: 18px;
-            background: @theme-color;
+            background: var(--purpleblue-6);
             display: inline-block;
             border-radius: 50%;
             text-align: center;
@@ -676,13 +676,13 @@ export default defineComponent({
             justify-content: flex-end;
             margin-bottom: 15px;
             span {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
             .iconfont{
               background: #ebeff8;
               width: 38px;
               height: 38px;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               display: inline-block;
               text-align: center;
               line-height: 38px;
@@ -692,7 +692,7 @@ export default defineComponent({
               margin-left: 15px;
               &:hover {
                 color: #f7f7f7;
-                background: @theme-color;
+                background: var(--purpleblue-6);
               }
             }
           }
@@ -703,7 +703,7 @@ export default defineComponent({
             .icon-bianji1.iconfont {
               // margin-right: -40px;
               &:hover {
-                background: @theme-color;
+                background: var(--purpleblue-6);
                 color: #f7f7f7;
               }
             }
@@ -712,7 +712,7 @@ export default defineComponent({
               background: #ebeff8;
               width: 38px;
               height: 38px;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               display: inline-block;
               text-align: center;
               line-height: 38px;
@@ -763,18 +763,18 @@ export default defineComponent({
       }
 
       .determine {
-        background-color: @theme-color;
+        background-color: var(--purpleblue-6);
       }
 
       .close:hover {
         background-color: rgb(255, 255, 255, 0.7);
 
         border: 1px solid transparent;
-        box-shadow: 0 2px 0 @shadow-color;
+        box-shadow: 0 2px 0 var(--black-7);
       }
 
       .determine:hover {
-        background-color: @theme-color;
+        background-color: var(--purpleblue-6);
 
         border: 1px solid transparent;
       }
@@ -891,7 +891,7 @@ export default defineComponent({
                 }
 
                 &.active {
-                    background: @theme-color;
+                    background: var(--purpleblue-6);
                     color: #ffffff;
                 }
             }
@@ -911,8 +911,8 @@ export default defineComponent({
                     text-align: center;
                     width: 100%;
                     line-height: 30px;
-                    color: @theme-color;
-                    border: 1px solid @theme-color;
+                    color: var(--purpleblue-6);
+                    border: 1px solid var(--purpleblue-6);
                     border-radius: 5px;
                     background: #ffffff;
 
@@ -946,13 +946,13 @@ export default defineComponent({
                     border-radius: 4px;
 
                     &.active {
-                        background: @theme-color;
+                        background: var(--purpleblue-6);
                         color: #ffffff;
                     }
                 }
 
                 .custom-label {
-                    color: @theme-color;
+                    color: var(--purpleblue-6);
 
                     >span {
                         vertical-align: revert;
@@ -1014,7 +1014,7 @@ export default defineComponent({
 
             .ant-upload {
                 button {
-                    background: @theme-color;
+                    background: var(--purpleblue-6);
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -1091,12 +1091,12 @@ export default defineComponent({
                                 font-style: normal;
                                 height: 20px;
                                 border-radius: 50%;
-                                border: 1px solid @theme-color;
+                                border: 1px solid var(--purpleblue-6);
 
                                 text-align: center;
                                 line-height: 17px;
                                 font-size: 12px;
-                                color: @theme-color;
+                                color: var(--purpleblue-6);
                                 cursor: pointer;
                             }
 
@@ -1154,12 +1154,12 @@ export default defineComponent({
                     .ant-progress-status-success {
                         .ant-progress-bg {
                             // background-color: rgba($success-color, 1);
-                            background-color: rgba(@theme-color, 1);
+                            background-color: rgba(var(--purpleblue-6), 1);
                         }
                     }
 
                     .ant-progress-bg {
-                        background-color: rgba(@theme-color, 0.4);
+                        background-color: rgba(var(--purpleblue-6), 0.4);
                         height: 4px !important;
                     }
                 }
@@ -1182,7 +1182,7 @@ export default defineComponent({
         .md-upload-box {
             .ant-upload {
                 button {
-                    background: @theme-color;
+                    background: var(--purpleblue-6);
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -1217,12 +1217,12 @@ export default defineComponent({
                             font-style: normal;
                             height: 20px;
                             border-radius: 50%;
-                            border: 1px solid @theme-color;
+                            border: 1px solid var(--purpleblue-6);
 
                             text-align: center;
                             line-height: 17px;
                             font-size: 12px;
-                            color: @theme-color;
+                            color: var(--purpleblue-6);
                             cursor: pointer;
                         }
                     }

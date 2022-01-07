@@ -163,13 +163,13 @@ export default defineComponent({
       > div.exam-item-card {
         background: @white;
         height: 100%;
-        box-shadow: 0px 1px 7px 1px @shadow-color;
+        box-shadow: 0px 1px 7px 1px var(--black-7);
         border-radius: @border-radius-base;
         display: flex;
         flex-direction: column;
 
         .exam-card-head {
-          background: linear-gradient(310deg, rgba(@theme-gradient-color), rgba(@theme-color,0.92));
+          background: linear-gradient(310deg, rgba(rgba(var(--royalpurple-7),.2)), rgba(var(--purpleblue-6),0.92));
           border-radius: @border-radius-base @border-radius-base 0px 0px;
           /* height: 54px; */
           line-height: 44px;
@@ -216,7 +216,7 @@ export default defineComponent({
           .exam-action-card {
             margin-top: 20px;
             > a {
-              color: @theme-color;
+              color: var(--purpleblue-6);
               font-size: 14px;
               margin-left: 20px;
             }

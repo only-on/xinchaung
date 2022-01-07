@@ -89,7 +89,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .evalute{
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   min-height: 750px;
   .top{

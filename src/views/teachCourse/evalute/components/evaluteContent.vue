@@ -303,7 +303,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-items: center;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         margin: 0 30px;
         position: relative;
         &:first-child{

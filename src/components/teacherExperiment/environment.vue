@@ -212,7 +212,7 @@ interface Icongig {
     }
 
     >span.active {
-      background: @theme-color;
+      background: var(--purpleblue-6);
       color: #fff;
       border-radius: 4px;
     }
@@ -247,10 +247,10 @@ interface Icongig {
       margin-bottom: 16px;
 
       &:hover {
-        background: rgba(@purpleblue-1,.2);
-        border: 1px solid rgba(@theme-color,.7);
+        background: rgba(var(--purpleblue-1),.2);
+        border: 1px solid rgba(var(--purpleblue-6),.7);
         border-radius: 6px;
-        box-shadow: 0px 3px 6px 0px @shadow-color;
+        box-shadow: 0px 3px 6px 0px var(--black-7);
         cursor: pointer;
       }
 
@@ -274,7 +274,7 @@ interface Icongig {
         width: 50px;
         flex-shrink: 0;
         text-align: center;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         font-size: 14px;
       }
     }

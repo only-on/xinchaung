@@ -125,14 +125,14 @@ export default defineComponent({
     cursor: pointer;
 
     &.active {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       transition: 0.5s;
       &::after {
         position: absolute;
         content: "";
         width: 100%;
         height: 2px;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         bottom: 0;
         left: 0;
         transition: 0.5s;

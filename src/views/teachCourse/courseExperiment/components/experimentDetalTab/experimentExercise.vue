@@ -418,7 +418,7 @@ export default defineComponent({
       > i {
         margin: 0 5px;
         font-style: normal;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         font-size: 18px;
       }
     }
@@ -437,7 +437,7 @@ export default defineComponent({
       margin: 10px 0;
       transition: 0.5s;
       &:hover {
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
       }
       span {
         &:nth-child(1) {

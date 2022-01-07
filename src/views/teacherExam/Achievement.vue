@@ -543,7 +543,7 @@ export default defineComponent({
 </script>
 <style  scoped lang="less">
 .Achievement{
-  width: @center-width;
+  width: var(--center-width);
   background-color: #edf0f5;
   margin: 0 auto;
   border-top-left-radius: 6px;
@@ -570,7 +570,7 @@ export default defineComponent({
 .box{
   margin-bottom: 20px;
   padding: 20px 40px;
-  box-shadow: 0 0 5px @shadow-color;
+  box-shadow: 0 0 5px var(--black-7);
   border-radius: 10px;
 }
 .flexCenter{
@@ -822,7 +822,7 @@ export default defineComponent({
   }
 }
 .bg-truth {
-  background: @theme-color;
+  background: var(--purpleblue-6);
 }
 
 .bg-pink {
@@ -891,7 +891,7 @@ export default defineComponent({
       color: #de2525;
     }
     .correct{
-      // color:@theme-color;
+      // color:var(--purpleblue-6);
       color: #2288fa;
     }
     .stand-answer{

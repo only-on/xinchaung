@@ -110,7 +110,7 @@ export default defineComponent({
       color: red;
     }
     .clickDownLoad {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
     }
   }

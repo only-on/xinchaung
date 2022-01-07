@@ -217,7 +217,7 @@ export default defineComponent({
   }
 }
 .purple {
-  color: @theme-color;
+  color: var(--purpleblue-6);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

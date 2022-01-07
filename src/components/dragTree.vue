@@ -404,7 +404,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-// @theme-color: #8955B5;
+// var(--purpleblue-6): #8955B5;
 @node-icon-color: @theme-tree;
 @high-color: #eab362; // 高配颜色
 @hover-bgcolor: #f1e6f5;
@@ -468,7 +468,7 @@ export default defineComponent({
         // height: 18px;
         // margin-right: 5px;
         // flex-shrink: 0;
-        // background: @theme-color;
+        // background: var(--purpleblue-6);
         // line-height: 17px;
         // text-align: center;
         // font-size: 10px;
@@ -478,7 +478,7 @@ export default defineComponent({
         height: 18px;
         margin-right: 5px;
         flex-shrink: 0;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         line-height: 18px;
         text-align: center;
         font-size: 12px;
@@ -495,7 +495,7 @@ export default defineComponent({
         .iconfont {
           margin-left: 5px;
           font-size: 14px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           display: none;
           &.open-close-cion {
             width: 14px;
@@ -506,7 +506,7 @@ export default defineComponent({
         }
         .icon-bianji1,.icon-shanchu{
           &:hover{
-            color: rgba(@theme-color,0.5);
+            color: rgba(var(--purpleblue-6),0.5);
           }
         }
       }
@@ -532,7 +532,7 @@ export default defineComponent({
         width: 4px;
         left:0px;
         top:0;
-        background: @theme-color;
+        background: var(--purpleblue-6);
     }
   }
   .tree-first-title.selectbac{
@@ -588,7 +588,7 @@ export default defineComponent({
       .iconfont {
         margin-left: 5px;
         font-size: 12px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         display: none;
         
       }

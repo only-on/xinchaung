@@ -316,13 +316,13 @@ export default defineComponent({
             margin-right: 8px;
           }
           .resource {
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
         }
       }
     }
     .card-score {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   .content-info {
@@ -335,11 +335,11 @@ export default defineComponent({
         height: 46px;
         display: flex;
         justify-content: space-between;
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
         background-color: #fdfaff;
         line-height: 46px;
         padding-left: 30px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         img {
           margin-right: 20px;
         }
@@ -368,7 +368,7 @@ export default defineComponent({
           box-sizing: content-box;
           border-bottom: 1px solid #ddd;
           .task-right {
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
           .cant-check {
             color: #ccc;

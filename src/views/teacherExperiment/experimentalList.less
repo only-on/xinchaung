@@ -1,6 +1,6 @@
 .experimentalList {
     
-    width: @center-width;
+    width: var(--center-width);
     margin: 0 auto;
     height: 100%;
     display: flex;
@@ -35,13 +35,13 @@
             >div:nth-child(1) {
               margin: 0 21px;
               line-height: 35px;
-              border-bottom: 1px solid @split-line;
+              border-bottom: 1px solid var(--gray-4);
             }
 
             .task-icon {
               width: 16px;
               height: 16px;
-              background: @theme-color;
+              background: var(--purpleblue-6);
               border-radius: 50%;
               font-size: 16px;
             }
@@ -55,7 +55,7 @@
             }
 
             &.active {
-              background-color: @purpleblue-1;
+              background-color: var(--purpleblue-1);
               border-bottom: none;
 
             }
@@ -68,16 +68,16 @@
               line-height: 66px;
 
               .add-btn {
-                border: 1px dashed @theme-color;
+                border: 1px dashed var(--purpleblue-6);
                 border-radius: 4px;
                 width: 100%;
                 // margin: 17px 0;
                 font-size: 14px;
-                color: @theme-color;
+                color: var(--purpleblue-6);
 
                 .icon-tianjia {
                   margin-right: 5px;
-                  color: @theme-color;
+                  color: var(--purpleblue-6);
                 }
               }
             }
@@ -86,7 +86,7 @@
               .leverSecond {
                 &.active {
                   background-color: @theme-light-color;
-                  border-left: 4px solid @theme-color;
+                  border-left: 4px solid var(--purpleblue-6);
                 }
 
                 &:hover {
@@ -106,7 +106,7 @@
                     background: @theme-light-color;
 
                     div {
-                      color: @theme-color !important;
+                      color: var(--purpleblue-6) !important;
                     }
 
                     span {
@@ -142,7 +142,7 @@
                   }
 
                   .iconfont {
-                    color: @theme-color;
+                    color: var(--purpleblue-6);
                     // margin-right: 8px;
                     flex-shrink: 0;
                     line-height: 35px;
@@ -242,7 +242,7 @@
           cursor: pointer;
 
           &.active {
-            background: @theme-color;
+            background: var(--purpleblue-6);
             border-radius: 4px;
             padding: 5px 10px;
             color: @white;
@@ -296,7 +296,7 @@
 
             >span {
               margin-left: 10px;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               cursor: pointer;
             }
           }
@@ -306,10 +306,10 @@
           }
 
           &:hover {
-            background: rgba(@purpleblue-1, 0.2);
-            border:1px solid rgba(@theme-color, 0.7);
+            background: rgba(var(--purpleblue-1), 0.2);
+            border:1px solid rgba(var(--purpleblue-6), 0.7);
             border-radius: 6px;
-            box-shadow: 0px 3px 6px 0px @shadow-color;
+            box-shadow: 0px 3px 6px 0px var(--black-7);
             cursor: pointer;
 
             .task-base-info {
@@ -329,7 +329,7 @@
             font-size: 16px;
 
             .iconfont {
-              color: @theme-color;
+              color: var(--purpleblue-6);
               margin-right: 5px;
             }
           }
@@ -414,8 +414,8 @@
 
       button:hover {
         color: @white;
-        background-color: @theme-color;
-        border-color: @theme-color;
+        background-color: var(--purpleblue-6);
+        border-color: var(--purpleblue-6);
       }
 
       button:not(.btn-default) {
@@ -434,7 +434,7 @@
 
   .icon-jsfx:before {
     background-color: #f6ecff;
-    color: @theme-color;
+    color: var(--purpleblue-6);
   }
 
   .iconfont {

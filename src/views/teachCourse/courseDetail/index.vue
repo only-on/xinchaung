@@ -172,7 +172,7 @@ export default defineComponent({
   // height: calc(100% - 24px);
   // height: 1100px;
   // overflow: hidden;
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   // overflow: auto;
   padding-bottom: 20px;
@@ -204,7 +204,7 @@ export default defineComponent({
 }
 :deep(.ant-tabs-nav){
     .ant-tabs-tab-active{
-      background: @theme-color !important;
+      background: var(--purpleblue-6) !important;
       color:@white;
       border-top-left-radius: @border-radius-base;
       border-top-right-radius: @border-radius-base;

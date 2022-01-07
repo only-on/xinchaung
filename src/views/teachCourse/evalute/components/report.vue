@@ -223,7 +223,7 @@ export default defineComponent({
       display: flex;
       justify-content: center;
       align-items: center;
-      color: @theme-color
+      color: var(--purpleblue-6)
     }
   }
   :deep(table){

@@ -279,15 +279,15 @@ export default defineComponent({
       border-radius: 10px;
       background-color: #fff;
       border: 1px solid rgba(226, 225, 225, 1);
-      box-shadow: 0px 3px 7px 0px @shadow-color;
+      box-shadow: 0px 3px 7px 0px var(--black-7);
       color: #999;
       transition: all .2s;
       overflow: hidden;
     }
     .kernel:hover{
-      box-shadow: 0px 2px 4px 0px @shadow-color;
+      box-shadow: 0px 2px 4px 0px var(--black-7);
       transform: translateY(-3px);
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
     }
     .card-item-header{
       background: url('src/assets/images/teacherExam/eaxmBack.png') no-repeat;

@@ -471,7 +471,7 @@ interface ItreeDatalist {
     .btn {
       padding: 4px 8px;
       cursor: pointer;
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
 }
@@ -511,7 +511,7 @@ interface ItreeDatalist {
     padding: 6px 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     margin-right: 12px;
     .iconfont {
       cursor: pointer;

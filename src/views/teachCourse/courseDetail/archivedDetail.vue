@@ -236,7 +236,7 @@ export default defineComponent({
       height: 100%;
       background: @white;
       border-radius: 4px;
-      box-shadow: 0px 3px 6px 0px @shadow-color;
+      box-shadow: 0px 3px 6px 0px var(--black-7);
     }
     .course-experiment-right {
       height: 100%;
@@ -244,7 +244,7 @@ export default defineComponent({
       margin-left: 10px;
       background: @white;
       border-radius: 4px;
-      box-shadow: 0px 3px 6px 0px @shadow-color;
+      box-shadow: 0px 3px 6px 0px var(--black-7);
       padding: 5px;
       .chapter-content {
         border: 1px solid #ddd;

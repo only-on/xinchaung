@@ -193,11 +193,11 @@ export default defineComponent({
     padding: 20px 16px;
   }
   .postModal :deep(.ant-modal-header){
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     color: @white;
   }
   :deep(.postModal .ant-modal-header){
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     color: @white;
   }
   

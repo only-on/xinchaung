@@ -399,11 +399,11 @@ export default defineComponent({
   }
 
   &:hover {
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
   }
 
   &.classical__input--focused {
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
     box-shadow: 0 0 0 2px @theme-scroll;
   }
 }

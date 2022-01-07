@@ -110,7 +110,7 @@ export default defineComponent({
 </script>
 <style scoped lang="less">
 .ExperimentDetail{
-  width:@center-width;
+  width:var(--center-width);
   margin: 0 auto;
   // border: 1px solid red;
   height: 100%;
@@ -163,7 +163,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .base-info{
   padding: 18px 0 12px 32px;

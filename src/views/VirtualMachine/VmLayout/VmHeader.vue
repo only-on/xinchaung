@@ -940,7 +940,7 @@ export default defineComponent({
   .ant-modal-confirm-body {
     .ant-modal-confirm-title {
       padding: 15px;
-      background: @theme-color;
+      background: var(--purpleblue-6);
       font-size: 18px;
       color: @white;
     }

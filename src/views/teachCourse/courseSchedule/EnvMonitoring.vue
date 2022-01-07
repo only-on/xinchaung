@@ -298,7 +298,7 @@ interface ITableList {
 }
 .env-monitoring {
   height: 100%;
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   // display: flex;
   background-color: @white;
@@ -339,8 +339,8 @@ interface ITableList {
         .ant-btn {
           margin: 0 8px;
           &.search {
-            border: 1px solid @theme-color;
-            color: @theme-color;
+            border: 1px solid var(--purpleblue-6);
+            color: var(--purpleblue-6);
           }
         }
       }
@@ -367,7 +367,7 @@ interface ITableList {
     margin-top: 28px;
     .ant-table {
       .iconfont.disable{
-        color: @theme-color;
+        color: var(--purpleblue-6);
         cursor: pointer;
       }
     }

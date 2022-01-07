@@ -699,7 +699,7 @@ export default defineComponent({
     }
     /* 单选选中样式 */
     .ant-radio-checked .ant-radio-inner {
-      background-color: @theme-color;
+      background-color: var(--purpleblue-6);
       border: none;
     }
     .ant-radio-inner::after {
@@ -728,7 +728,7 @@ export default defineComponent({
       }
     }
     .action {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
     
       .spanleft {

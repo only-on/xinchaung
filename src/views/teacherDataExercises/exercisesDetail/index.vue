@@ -322,7 +322,7 @@ export default defineComponent({
       line-height: 24px;
     }
     .edit {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
     .iconfont {
       font-size: 16px;

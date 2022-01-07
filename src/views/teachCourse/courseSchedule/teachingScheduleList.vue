@@ -501,7 +501,7 @@ export default defineComponent({
 <style lang="less" scoped>
   .teaching-schedule {
     // height: 100%;
-    // width: @center-width;
+    // width: var(--center-width);
     // margin: 0 auto;
     // display: flex;
     background-color: @white;
@@ -541,7 +541,7 @@ export default defineComponent({
         }
         .change_btn1{
           left: 65px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           background-color: #e2dfff;
           border-radius: 50%;
           margin: 0 9px;
@@ -552,10 +552,10 @@ export default defineComponent({
         }
         .change_btn1:hover{
           color: @white;
-          background-color: @theme-color;
+          background-color: var(--purpleblue-6);
         }
         .change_btn {
-          color: @theme-color;
+          color: var(--purpleblue-6);
           background-color: #e2dfff;
           border-radius: 50%;
           margin: 0 9px;
@@ -566,7 +566,7 @@ export default defineComponent({
         }
         .change_btn:hover {
           color: @white;
-          background-color: @theme-color;
+          background-color: var(--purpleblue-6);
         }
       }
       .right {
@@ -575,13 +575,13 @@ export default defineComponent({
           text-shadow: none;
         }
         .monitor {
-          color: @theme-color;
+          color: var(--purpleblue-6);
           background-color: @white;
           // padding: 0 5px;
         }
         .monitor:hover {
           color: @white;
-          background-color: @theme-color;
+          background-color: var(--purpleblue-6);
         }
         .addDate {
           margin-left: 16px;
@@ -735,7 +735,7 @@ export default defineComponent({
                 .teacher-operation {
                   height: 28px;
                   line-height: 28px;
-                  background: @theme-color;
+                  background: var(--purpleblue-6);
                   border-radius: 4px;
                   color: @white;
                   font-size: 14px;
@@ -804,8 +804,8 @@ export default defineComponent({
                 position: absolute;
                 bottom: 12px;
                 .teacher-list-name {
-                  border: 1px solid @theme-color;
-                  color: @theme-color;
+                  border: 1px solid var(--purpleblue-6);
+                  color: var(--purpleblue-6);
                   border-radius: 50%;
                   font-size: 14px;
                   width: 24px;
@@ -813,7 +813,7 @@ export default defineComponent({
                   text-align: center;
                   margin: 0 3px;
                   &.end {
-                    background: @theme-color;
+                    background: var(--purpleblue-6);
                     color: @white;
                     line-height: 8px;
                     font-size: 22px;
@@ -835,7 +835,7 @@ export default defineComponent({
               display: flex;
               flex-direction: column;
               text-align: center;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               // padding-bottom: 30px;
               padding-bottom: 0px;
               width: 100%;
@@ -863,7 +863,7 @@ export default defineComponent({
                   line-height: 28px;
                   width: 90%;
                   margin: 0 auto;
-                  background: @theme-color;
+                  background: var(--purpleblue-6);
                   border-radius: 4px;
                 }
               }
@@ -878,7 +878,7 @@ export default defineComponent({
                 background-color: #F5F5F5;
               }
               .course-info-title-active {
-                color: @theme-color;
+                color: var(--purpleblue-6);
                 background-color: #F8EFFF;
               }
               .course-info-reserved {
@@ -939,12 +939,12 @@ export default defineComponent({
             // color: @white;
             cursor: pointer;
             font-size: 16px;
-            // background: @theme-color;
+            // background: var(--purpleblue-6);
             background-color: @white;
             display: none;
-            color: @theme-color;
+            color: var(--purpleblue-6);
             &>i:hover {
-              color: darken(@theme-color, 15);
+              color: darken(var(--purpleblue-6), 15);
             }
             .time-delete {
               padding: 10px 0;

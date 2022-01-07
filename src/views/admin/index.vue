@@ -762,19 +762,19 @@ export default defineComponent({
           content: "";
           width: 8px;
           height: 8px;
-          //   background-color: @theme-color;
+          //   background-color: var(--purpleblue-6);
           border-radius: 50%;
           left: -10px;
           top: 5px;
         }
         &.on-line {
           &::before {
-            background-color: @theme-color;
+            background-color: var(--purpleblue-6);
           }
         }
         &.off-line {
           &::before {
-            background-color: rgba(@theme-color, 0.4);
+            background-color: rgba(var(--purpleblue-6), 0.4);
           }
         }
         &.teacher-image {

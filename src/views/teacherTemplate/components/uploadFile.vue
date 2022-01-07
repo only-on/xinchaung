@@ -75,7 +75,7 @@ export default defineComponent({
 .ant-upload-drag-icon{
   i{
     font-size: 34px;
-    color: @theme-color;
+    color: var(--purpleblue-6);
   }
 }
 </style>

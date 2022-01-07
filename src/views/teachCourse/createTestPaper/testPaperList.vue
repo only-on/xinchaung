@@ -101,7 +101,7 @@ export default defineComponent({
     position: absolute;
     top: -12px;
     right: -60px;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     .iconfont {
       cursor: pointer;
       &:first-child {

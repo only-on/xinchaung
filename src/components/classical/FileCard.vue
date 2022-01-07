@@ -185,7 +185,7 @@ export default defineComponent({
       color: @text-color-secondary;
 
       &:hover {
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
     }
   }

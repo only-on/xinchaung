@@ -492,7 +492,7 @@ interface IForm {
 }
 .schedule-create {
   height: 100%;
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   // display: flex;
   background-color: @white;
@@ -533,8 +533,8 @@ interface IForm {
     }
     .retain {
       padding: 0px 30px;
-      background:rgba(@purpleblue-1, 0.2);
-      border: 1px solid rgba(@theme-color, 0.5);
+      background:rgba(var(--purpleblue-1), 0.2);
+      border: 1px solid rgba(var(--purpleblue-6), 0.5);
       .ant-row {
         margin: 0;
 
@@ -548,13 +548,13 @@ interface IForm {
           padding-right: 20px;
           span {
             font-size: 18px;
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
         }
         .choose-text {
           span {
             font-size: 18px;
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
         }
       }

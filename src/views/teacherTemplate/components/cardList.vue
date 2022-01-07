@@ -173,7 +173,7 @@ export default defineComponent({
       border: 1px dashed rgba(137,85,181,.45);
       &:hover{
         border-color: rgba(137, 85, 181, 0.1);
-        box-shadow: 0 5px 9px 0 @shadow-color;
+        box-shadow: 0 5px 9px 0 var(--black-7);
       }
       .operate-btn{
         height: 50%;
@@ -182,7 +182,7 @@ export default defineComponent({
         justify-content: center;
         align-items: center;
         font-size: 16px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         span{
           margin-right: 10px;
         }
@@ -231,7 +231,7 @@ export default defineComponent({
         vertical-align: middle;
         cursor: pointer;
         &:hover{
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
         &:not(:last-child){
           border-right: 1px solid #ececec;

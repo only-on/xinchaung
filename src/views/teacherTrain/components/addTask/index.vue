@@ -144,7 +144,7 @@ export default defineComponent({
     padding: 6px 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     margin-right: 12px;
     .iconfont {
       cursor: pointer;

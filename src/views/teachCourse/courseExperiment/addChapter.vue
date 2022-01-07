@@ -327,12 +327,12 @@ export default defineComponent({
             > i {
               margin: 0 5px;
               font-style: normal;
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
             &:last-child {
               margin-right: 0;
               margin-left: auto;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               cursor: pointer;
             }
           }

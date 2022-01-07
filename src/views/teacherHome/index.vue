@@ -251,7 +251,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .teacherHome{
-  min-width: @center-width;
+  min-width: var(--center-width);
   overflow: auto;
   height: 100%;
   padding: 0 60px;
@@ -304,7 +304,7 @@ export default defineComponent({
         font-size: 18px;
         background: @body-background;
         height: 130px;
-        box-shadow: 0 0 15px 2px @theme-gradient-color;
+        box-shadow: 0 0 15px 2px rgba(var(--royalpurple-7),.2);
         display: flex;
         justify-content: center;
         align-items: center;

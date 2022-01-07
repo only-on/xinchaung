@@ -56,14 +56,14 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .create-experimental-wrap {
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   height: 100%;
   background-image: url('arc/assets/images/teacherExperiment/bg.png');
   background-repeat: no-repeat;
   background-position: center bottom;
 
-  box-shadow: 0px 3px 6px 0px @shadow-color;
+  box-shadow: 0px 3px 6px 0px var(--black-7);
   border-radius: 6px;
 
   > div {
@@ -90,9 +90,9 @@ export default defineComponent({
       width: 300px;
       height: 170px;
       // background: linear-gradient(180deg, #f9f0ff, #eaf2ff);
-      background:linear-gradient(90deg,@geekblue-1, @purpleblue-1);
+      background:linear-gradient(90deg,var(--geekblue-1), var(--purpleblue-1));
       border-radius: 10px;
-      box-shadow: 0px 4px 6px 0px @shadow-color;
+      box-shadow: 0px 4px 6px 0px var(--black-7);
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -110,7 +110,7 @@ export default defineComponent({
     }
 
     > div:hover {
-      border: 1px solid @purplebule-3;
+      border: 1px solid var(--purpleblue-3);
     }
 
     .vnc-box {

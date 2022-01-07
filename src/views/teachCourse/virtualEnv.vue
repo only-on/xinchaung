@@ -395,7 +395,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@hover-color: @theme-color;
+@hover-color: var(--purpleblue-6);
 .virtual-env {
   width: 1330px;
   // margin-top: 50px;
@@ -412,7 +412,7 @@ export default defineComponent({
       width: 320px;
       max-height: 700px;
       // padding: 0 15px;
-      border-top: 3px solid @theme-color;
+      border-top: 3px solid var(--purpleblue-6);
       box-shadow: 0 0 5px rgb(0 0 0 / 10%);
       overflow-y: auto;
       overflow-x: hidden;
@@ -441,7 +441,7 @@ export default defineComponent({
           height: 600px;
           text-align: center;
           font-size: 30px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           padding-top: 250px;
         }
       }
@@ -466,7 +466,7 @@ export default defineComponent({
   }
   .ant-input-group-addon{
     .ant-btn{
-      background-color: @theme-color;
+      background-color: var(--purpleblue-6);
       // border-color: @hover-color;
       color: @white;
       height: 41px;
@@ -478,7 +478,7 @@ export default defineComponent({
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: @theme-color;
+  background-color: var(--purpleblue-6);
   // border-color: @hover-color;
   color: @white;
   padding: 0 20px;
@@ -498,16 +498,16 @@ export default defineComponent({
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;
-    background: @theme-color;
-    border-color: @theme-color;
+    background: var(--purpleblue-6);
+    border-color: var(--purpleblue-6);
     a {
       color: @white;
     }
   }
   .ant-pagination-item:focus, 
   .ant-pagination-item:hover{
-    background: @theme-color;
-    border-color: @theme-color;
+    background: var(--purpleblue-6);
+    border-color: var(--purpleblue-6);
     transition: all 0.3s;
     a {
       color: @white;
@@ -518,8 +518,8 @@ export default defineComponent({
   .ant-pagination-prev .ant-pagination-item-link:hover,
   .ant-pagination-prev .ant-pagination-item-link:focus {
     color: @white;
-    background: @theme-color; 
-    border-color: @theme-color;
+    background: var(--purpleblue-6); 
+    border-color: var(--purpleblue-6);
     transition: all 0.3s;
   }
   .ant-pagination-disabled:hover,
@@ -530,7 +530,7 @@ export default defineComponent({
   }
   .ant-pagination-options-quick-jumper input:hover,
   .ant-pagination-options-quick-jumper input:focus {
-    border-color: @theme-color;
+    border-color: var(--purpleblue-6);
     box-shadow: 0 0 0 2px rgb(137 85 181 / 30%);
   }
 }
