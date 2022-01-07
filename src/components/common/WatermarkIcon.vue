@@ -40,7 +40,7 @@ export default defineComponent({
   padding: @padding-xs;
   color: #fff;
   position: relative;
-  border-radius: @border-radius-base;
+  border-radius: var(--border-radius-default);
   display: inline-block;
   letter-spacing: 1px;
   overflow: hidden;

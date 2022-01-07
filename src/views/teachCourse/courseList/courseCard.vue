@@ -313,7 +313,7 @@ export default defineComponent({
       padding-left: 15px;
     }
     .course-item-box {
-      background: @white;
+      background: var(--black-100);
       border-radius: 10px;
       box-shadow: 0 2px 4px 0 var(--black-7);
       height: 100%;
@@ -347,14 +347,14 @@ export default defineComponent({
           text-align: center;
           line-height: 1;
           &.not-start {
-            background: @white;
+            background: var(--black-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
             box-shadow: 0px 2px 4px 0px var(--black-7);
-            color: @white;
+            color: var(--black-100);
           }
 
           &.finish {
@@ -392,9 +392,9 @@ export default defineComponent({
             flex-direction: column;
             justify-content: space-between;
             padding: 0 13px;
-            font-size: @font-size-sm;
+            font-size: var(--base-font-size);
             > p {
-              color: @text-color-secondary;
+              color: var(--black-25);
               height: 20px;
               line-height: 20px;
               margin-top: 12px;
@@ -459,7 +459,7 @@ export default defineComponent({
           justify-content: space-between;
           .action-head-left {
             > span {
-              color: @text-color-secondary;
+              color: var(--black-25);
               font-size: 14px;
             }
             .aswitch-guide.ant-switch-checked {
@@ -475,7 +475,7 @@ export default defineComponent({
             > span {
               margin-left: 15px;
               font-size: 14px;
-              color: rgba(@black,0.45);
+              color: var(--black-45);
               &:hover {
                 color: rgba(var(--purpleblue-6), 0.9);
               }
@@ -490,8 +490,8 @@ export default defineComponent({
           border-top: 1px solid #e9e9e9;
           margin-top: 6px;
           border: 1px solid #E9E9E9;
-          border-bottom-left-radius: @border-radius-sm;
-          border-bottom-right-radius: @border-radius-sm;
+          border-bottom-left-radius: var(--base-font-size);
+          border-bottom-right-radius: var(--base-font-size);
           > span,
           > a {
             margin: auto 0;

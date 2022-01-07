@@ -55,7 +55,7 @@ export default defineComponent({
   // https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing
   // 相同块元素之间，在垂直方向上，其margin会叠加，css这样设计的意义在于避免产生双倍边距
   margin: @margin-md 0px;
-  color: @text-color-secondary;
+  color: var(--black-25);
   cursor: pointer;
   transition: all 0.5s ease;
 
@@ -64,8 +64,8 @@ export default defineComponent({
   }
 
   .classical__asset-title {
-    font-size: @font-size-lg;
-    color: @text-color;
+    font-size: var(--font-size-lg);
+    color: var(--black-85);
   }
 
   .classical__asset-right {

@@ -31,7 +31,7 @@
   <style lang="less">
   .step-intro-box {
   min-height: 50%;
-    background: @white;
+    background: var(--black-100);
     padding: 16px 19px;
     .step-intro-title{
         font-size: 16px;

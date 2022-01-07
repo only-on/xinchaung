@@ -130,7 +130,7 @@ export default defineComponent({
     flex-direction: row;
     height: 80px;
     align-items: center;
-    background: @white;
+    background: var(--black-100);
     padding: 0 15px;
     label {
       color: #000000;
@@ -152,7 +152,7 @@ export default defineComponent({
   }
   .experiment-task-box {
     margin-top: 20px;
-    background: @white;
+    background: var(--black-100);
     padding: 15px;
     flex: 1;
     .experiment-task-title {
@@ -178,7 +178,7 @@ export default defineComponent({
   }
   .experiment-report-box{
     flex: 1;
-    background: @white;
+    background: var(--black-100);
   }
 }
 </style>

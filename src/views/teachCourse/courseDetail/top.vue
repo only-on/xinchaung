@@ -281,7 +281,7 @@ export default defineComponent({
   width: var(--center-width);
   margin: 0 auto;
   height: 205px;
-  color: @white;
+  color: var(--black-100);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -292,7 +292,7 @@ export default defineComponent({
     > span {
       &.course-name {
         font-size: 24px;
-        color: @white;
+        color: var(--black-100);
         line-height: 33px;
         letter-spacing: 2px;
         display: flex;
@@ -309,14 +309,14 @@ export default defineComponent({
           line-height: 13px;
           font-style: normal;
           &.not-start {
-            background: @white;
+            background: var(--black-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
             box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
-            color: @white;
+            color: var(--black-100);
           }
 
           &.finish {
@@ -347,7 +347,7 @@ export default defineComponent({
     }
   }
   .course-desc {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     max-width: 830px;
     > div {
       overflow: hidden;
@@ -403,7 +403,7 @@ export default defineComponent({
           font-style: normal;
           display: block;
           &:nth-child(1) {
-            font-size: @font-size-sm;
+            font-size: var(--base-font-size);
           }
           &:nth-child(2) {
             font-size: 12px;
@@ -423,8 +423,8 @@ export default defineComponent({
         background: @warning-color;
         border-radius: 50%;
         margin-left: 24px;
-        color: @white;
-        font-size: @font-size-lg;
+        color: var(--black-100);
+        font-size: var(--font-size-lg);
         cursor: pointer;
         &:hover {
           background: rgba(@warning-color, 0.8);

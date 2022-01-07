@@ -625,7 +625,7 @@ interface IselectedName {
   width: var(--center-width);
   margin: 0 auto;
   height: 100%;
-  background-color: @white;
+  background-color: --black-100);-100)
   overflow-y: scroll;
   .create-nav-head {
     line-height: 58px;

@@ -161,10 +161,10 @@ export default defineComponent({
         padding-left: 20px;
       }
       > div.exam-item-card {
-        background: @white;
+        background: var(--white-100);
         height: 100%;
         box-shadow: 0px 1px 7px 1px var(--black-7);
-        border-radius: @border-radius-base;
+        border-radius: var(--border-radius-default);
         display: flex;
         flex-direction: column;
 

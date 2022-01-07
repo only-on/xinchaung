@@ -568,7 +568,7 @@ export default defineComponent({
   .list-row{
     font-size: 14px;
     margin-bottom: 14px;  
-    color:rgba(@black,0.65);
+    color:var(--black-65);
   }
   .vm-list-title {
     @extend .list-title;
@@ -576,7 +576,7 @@ export default defineComponent({
   }
   .dataset-url {
     // padding: 10px 0;
-    color:rgba(@black,0.65);
+    color:var(--black-65);
   }
   .upload-tip {
     background: #fafafa;

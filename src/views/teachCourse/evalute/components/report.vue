@@ -201,7 +201,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     z-index: 2;
-    color: @white;
+    color: var(--black-100);
     i{
       font-size: 32px;
     }
@@ -228,12 +228,12 @@ export default defineComponent({
   }
   :deep(table){
     width: 100%;
-    border: 1px solid @border-color;
+    border: 1px solid var(--black-15);
     color: #14191e;
     td{
       padding: 2px 5px;
       height: 70px;
-      border: 1px solid @border-color;
+      border: 1px solid var(--black-15);
       color: #777;
     }
     .w2{

@@ -338,8 +338,8 @@ export default defineComponent({
   min-height: 750px;
   width: 1330px;
   padding: 30px;
-  border-radius: @border-radius-base;
-  background: @white;
+  border-radius: var(--border-radius-default);
+  background: var(--white-100);
 
   .classical__card {
     width: 100%;
@@ -383,7 +383,7 @@ export default defineComponent({
 
 .classical__input--count-inner {
   border: 1px solid @border-color-base;
-  border-radius: @border-radius-base;
+  border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
     border: none;

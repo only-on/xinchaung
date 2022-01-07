@@ -631,12 +631,12 @@ export default defineComponent({
   //       }
   //     }
   //     .vm-header-title {
-  //       color: @white;
+  //       color: var(--white-100);
   //     }
   //     .vm-header-right {
   //       .delayed-btn {
   //         background: @warning-color;
-  //         color: @white;
+  //         color: var(--white-100);
   //         border: none;
   //         &:hover {
   //           background: rgba(#faad14, 0.8);
@@ -665,7 +665,7 @@ export default defineComponent({
       width: 100%;
       height: 100%;
       background: rgba(#515151, 0.8);
-      color: @white;
+      color: var(--white-100);
       display: flex;
       justify-content: center;
       align-items: center;

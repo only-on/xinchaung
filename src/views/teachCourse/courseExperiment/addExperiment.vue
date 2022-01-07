@@ -812,7 +812,7 @@ export default defineComponent({
 <style lang="less">
 .add-experiment-tab {
   height: 100%;
-  background: @white;
+  background: var(--black-100);
   padding: 15px;
   .add-experiment-tabs {
     height: 100%;

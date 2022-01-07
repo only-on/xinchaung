@@ -196,7 +196,7 @@ export default defineComponent({
         }
         .hint-handle-type {
           font-size: 14px;
-          color: rgba(@black,0.45);
+          color: var(--black-45);
         }
         .hint-file-type,.hint-file-size {
           font-size: 12px;

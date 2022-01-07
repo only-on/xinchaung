@@ -462,22 +462,22 @@ export default defineComponent({
         
         &:nth-child(1) {
           flex: 1;
-          color: rgba(@black,0.65);
+          color: var(--black-65);
         }
         &:nth-child(2) {
           width: 160px;
           flex-shrink: 0;
-          color: rgba(@black,0.25);
+          color: var(--black-25);
         }
         &:nth-child(3) {
           width: 160px;
           flex-shrink: 0;
-          color: rgba(@black,0.25);
+          color: var(--black-25);
         }
         &:nth-child(4) {
           flex-shrink: 0;
           cursor: pointer;
-          color: rgba(@black,0.65);
+          color: var(--black-65);
           &:hover{
             color: var(--purpleblue-6);
           }

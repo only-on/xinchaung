@@ -83,7 +83,7 @@ export default defineComponent({
     }
   }
   .video-box {
-    background: @white;
+    background: var(--black-100);
     height: calc(100% - 100px);
     width: 100%;
     border-radius: 4px;

@@ -298,7 +298,7 @@ export default defineComponent({
       }
       input{
         color: #000;
-        background:@body-background;
+        background:var(--white-100);
       }
     }
   }
@@ -310,7 +310,7 @@ export default defineComponent({
       padding-left: 18px;
       line-height: 56px;
       background: var(--purpleblue-6);
-      color: @white;
+      color: var(--white-100);
       font-size: 18px;
     }
     ul{
@@ -340,7 +340,7 @@ export default defineComponent({
     width: 120px;
     padding: 10px 0;
     border-radius: 5px;
-    background:@body-background;
+    background:var(--white-100);
     position: absolute;
     left: 0;
     top: 0;

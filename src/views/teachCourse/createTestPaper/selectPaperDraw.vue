@@ -306,7 +306,7 @@ interface Ianswers {
     cursor: pointer;
     &.current-nav {
       font-size: 16px;
-      color: @white;
+      color: var(--black-100);
       background-color: var(--purpleblue-6);
       border-radius: 6px 6px 0px 0px;
     }

@@ -495,7 +495,7 @@ interface IForm {
   width: var(--center-width);
   margin: 0 auto;
   // display: flex;
-  background-color: @white;
+  background-color: --black-100)
   border-radius: @border-radius-default;
   padding: 33px 40px;
   :deep(.ant-form) {

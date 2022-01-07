@@ -142,7 +142,7 @@ export default defineComponent({
   border: 1px solid @border-color-base;
   position: relative;
   display: flex;
-  border-radius: @border-radius-base;
+  border-radius: var(--base-font-size);
   padding: @padding-xs;
   align-items: center;
 
@@ -169,7 +169,7 @@ export default defineComponent({
 
     .description {
       font-size: @font-size-sm - 2px;
-      color: @text-color-secondary;
+      color: var(--black-25);
     }
   }
 
@@ -180,9 +180,9 @@ export default defineComponent({
 
     button,
     a {
-      padding: @padding-xss - 2px;
-      font-size: @font-size-base - 2px;
-      color: @text-color-secondary;
+      padding: var(--padding-xss) - 2px;
+      font-size: @var(--font-size-16) - 2px;
+      color: var(--black-25);
 
       &:hover {
         color: var(--purpleblue-6);

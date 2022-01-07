@@ -218,7 +218,7 @@ export default defineComponent({
 }
 .list-line-hr{
   height: 1px;
-  background: linear-gradient(to right,rgba(@black,0.6),rgba(@black,0.6) 5px,transparent 5px,transparent);
+  background: linear-gradient(to right,var(--black-6),var(--black-6) 5px,transparent 5px,transparent);
   background-size: 10px 100%;
 }
 .category-tag-box{
@@ -230,7 +230,7 @@ export default defineComponent({
   display: flex;
   // border-bottom: 1px solid #dddddd;
   
-  color: rgba(@black,0.65);
+  color:var(--black-65);
   font-size: 14px;
   .tag-label {
     flex-shrink: 0;
@@ -259,9 +259,9 @@ export default defineComponent({
       text-overflow: ellipsis;
       padding: 5px 10px;
       &.active {
-        color: @white;
+        color: var(--black-100);
         background: var(--purpleblue-6);
-        border-radius: @border-radius-base;
+        border-radius: var(--border-radius-default);
       }
     }
     &.part {

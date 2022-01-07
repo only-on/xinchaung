@@ -113,7 +113,7 @@ export default defineComponent({
   }
   .guide-waraing{
     background: #f19100;
-    color: @white;
+    color: --black-100);
     font-size: 12px;
     line-height: 24px;
     text-align: center;

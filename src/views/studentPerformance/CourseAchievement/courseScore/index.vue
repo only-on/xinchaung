@@ -282,7 +282,7 @@ export default defineComponent({
 .courseScoreContent {
   min-height: 750px;
   border-radius: 6px;
-  background-color: @body-background;
+  background-color: var(--white-100);
   margin: 0 auto;
   padding: var(--pading-md) 21px var(--pading-md) @padding-sm;
   .course-info {
@@ -398,7 +398,7 @@ export default defineComponent({
   }
   .ant-table-bordered .ant-table-thead > tr > th,
   .ant-table-bordered .ant-table-tbody > tr > td {
-    border-right: 1px solid @white;
+    border-right: 1px solid var(--white-100);
   }
   .ant-table-thead
     > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
@@ -412,7 +412,7 @@ export default defineComponent({
   .ant-table-tbody
     > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
     > td {
-    background: @white;
+    background: var(--white-100);
   }
   .ant-radio-button-wrapper {
     display: none;

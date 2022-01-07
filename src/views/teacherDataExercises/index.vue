@@ -310,7 +310,7 @@ export default defineComponent({
 }
 .classical__input--count-inner {
   border: 1px solid @border-color-base;
-  border-radius: @border-radius-base;
+  border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
     border: none;

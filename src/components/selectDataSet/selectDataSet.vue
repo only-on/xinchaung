@@ -214,12 +214,12 @@ export default defineComponent({
   flex-direction: column;
   .data-set-type {
     &.ant-radio-group {
-      border-bottom: 1px solid rgba(@black,0.15);
+      border-bottom: 1px solid var(--black-15);
       padding: 0 24px;
     }
   }
   input{
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
   }
   .data-set-tag-box {
     padding-top: 25px;
@@ -232,8 +232,8 @@ export default defineComponent({
       margin-top: 25px;
     }
     span{
-      font-size: @font-size-sm;
-      color: rgba(@black,0.65);
+      font-size: var(--base-font-size);
+      color: var(--black-65);
     }
   }
   .ant-radio-button-wrapper {
@@ -245,9 +245,9 @@ export default defineComponent({
       background-color: transparent;
     }
     &.ant-radio-button-wrapper-checked{
-      color: @white;
+      color: var(--white-100);
       span{
-        color: @white;
+        color: var(--white-100);
       }
     }
   }
@@ -263,7 +263,7 @@ export default defineComponent({
       padding: 6px;
       flex-direction: row;
       margin-bottom: 10px;
-      background: @white;
+      background: var(--white-100);
       border: 1px solid #cdcdcd;
       border-radius: 6px;
       transition: 0.2s;
@@ -292,8 +292,8 @@ export default defineComponent({
         width: 100%;
         margin-left: 28px;
         h2 {
-          font-size: @font-size-sm;
-          color: rgba(@black,0.85);
+          font-size: var(--base-font-size);
+          color: var(--black-85);
           font-weight: 400;
         }
         .tag {

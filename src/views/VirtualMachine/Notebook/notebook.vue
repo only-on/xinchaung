@@ -173,12 +173,12 @@ export default defineComponent({
         }
       }
       .vm-header-title {
-        color: @white;
+        color: --black-100);
       }
       .vm-header-right {
         .delayed-btn {
           background: @warning-color;
-          color: @white;
+          color: --black-100);
           border: none;
           &:hover {
             background: rgba(#faad14, 0.8);

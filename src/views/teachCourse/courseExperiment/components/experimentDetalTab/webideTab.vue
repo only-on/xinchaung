@@ -92,7 +92,7 @@ export default defineComponent({
   box-shadow: 0px 3px 6px 0px undefined;
   padding: 27px 22px;
   font-size: 14px;
-  color: rgba(@black,0.65);
+  color: var(--black-65);
   > div {
     &:first-child {
       display: flex;
@@ -104,7 +104,7 @@ export default defineComponent({
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color: rgba(@black,1);
+        color:var(--black-100);
       }
       .experiment-type-or-class-count {
         flex-shrink: 0;
@@ -133,11 +133,11 @@ export default defineComponent({
 }
 .experiment-report-box {
   flex: 1;
-  background: @white;
+  background: var(--white-100);
 }
 .init-experiment-guide-box {
   flex: 1;
-  background: @white;
+  background: var(--white-100);
   padding: 16px 19px;
   .guide-title{
       font-size: 16px;

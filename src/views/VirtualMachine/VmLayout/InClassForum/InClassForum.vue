@@ -405,7 +405,7 @@ export default defineComponent({
   margin-right: 10px;
   text-align: justify;
   height: calc(100% - 30px);
-  background: @white;
+  background: --black-100);
   .in-class-forum-item {
     margin-top: 25px;
     border: 1px solid #d9d9d9;
@@ -455,13 +455,13 @@ export default defineComponent({
       }
       > .forum-content-header-right {
         color: var(--purpleblue-6);
-        font-size: @font-size-sm;
+        font-size: var(--base-font-size);
         margin-left: 15px;
         flex-shrink: 0;
         cursor: pointer;
         > button {
           margin-right: 15px;
-          font-size: @font-size-sm;
+          font-size: var(--base-font-size);
         }
         > span {
           > i {

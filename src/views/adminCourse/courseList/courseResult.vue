@@ -223,11 +223,11 @@ export default defineComponent({
     flex-shrink: 0;
     padding: 30px 15px;
     .action-log-title {
-      color: @white;
+      color: var(--white-100);
       font-size: 18px;
     }
     .video-item {
-      color: @white;
+      color: var(--white-100);
       background: #194e6f;
       padding: 5px 15px;
       font-size: 12px;

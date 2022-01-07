@@ -209,7 +209,7 @@ export default defineComponent({
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        color: @white;
+        color: --black-100);
         .title{
           text-align: center;
           word-break: break-all;

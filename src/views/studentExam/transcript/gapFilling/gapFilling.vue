@@ -54,12 +54,12 @@ export default defineComponent({
 <style lang="less">
 .gap-filling-box{
   .answer-title {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     color: #838ca5;
   }
   .question-item-box {
     padding-left: 22px;
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     color: #838ca5;
   }
   .student-answer {
@@ -71,15 +71,15 @@ export default defineComponent({
     margin-top: 10px;
   }
   .error-answer {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     color: #de2829;
   }
   .correct-answer {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     color: #2288fa;
   }
   .standard-answer {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     color: #1db98f;
   }
 }

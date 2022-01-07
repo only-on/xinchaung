@@ -203,11 +203,11 @@ export default defineComponent({
 }
 .experiment-report-box {
   flex: 1;
-  background: @white;
+  background: var(--black-100);
 }
 .experiment-detail-box {
   flex: 1;
-  background: @white;
+  background: var(--black-100);
   .init-experiment-guide-box {
     min-height: 50%;
   }

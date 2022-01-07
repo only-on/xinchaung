@@ -153,29 +153,28 @@ export default defineComponent({
   .menu__top-item {
     display: inline-block;
     padding: 0 var(--pading-md);
-    color: @text-color-secondary;
-    font-size: @font-size-lg;
+    color: var(--black-25);
+    font-size: var(--font-size-lg);
     text-align: center;
     cursor: pointer;
     width: max-content;
     &.active {
-      color: @text-color;
+      color: var(--black-85);
     }
   }
 }
 .menu__item {
   span {
-    padding: @padding-xss var(--pading-md);
-    // font-size: @font-size-base;
-    font-size: 14px;
-    color: @menu-item-color;
+    padding: var(--padding-xss) var(--pading-md);
+    font-size: var(--base-font-size);
+    color: var(--black-85);
   }
 }
 .ant-dropdown-menu{
   padding: 0px;
 }
 :deep(.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title){
-  color: rgba(@black,0.65);
-  font-size: 14px;
+  color: var(--black-65);
+  font-size: var(--base-font-size);
 }
 </style>

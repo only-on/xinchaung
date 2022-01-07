@@ -463,7 +463,7 @@ export default defineComponent({
           .question-type-box {
             .question-type-head {
               background: #f0f3f2;
-              font-size: @font-size-sm;
+              font-size: var(--base-font-size);
               line-height: 35px;
               padding: 0 15px;
               display: flex;

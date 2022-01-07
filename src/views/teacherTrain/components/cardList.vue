@@ -288,15 +288,15 @@ export default defineComponent({
       box-shadow: 0px 2px 4px 0px var(--black-7);
       &.end{
         background: #8A8A8A;
-        color: @text-color-secondary;
+        color: var(--black-25);
       }
       &.noStart{
-        background: @white; 
-        color: @text-color-secondary;
+        background: --black-100);-100) 
+        color: var(--black-25);
       }
       &.onGoing{
         background: #60ae34;
-        color: @white;
+        color: --black-100);-100)
       }
     }
   }
@@ -307,7 +307,7 @@ export default defineComponent({
     .train-title{
       font-size: 16px;
       line-height: 16px;
-      color: @black;
+      color: var(--black-100);
       cursor: pointer;
       font-weight: 500;
       margin-top: 8px;
@@ -315,13 +315,13 @@ export default defineComponent({
       padding:0 14px;
     }
     .train-time{
-      color: @text-color-secondary;
+      color: var(--black-25);
       margin-bottom: 12px;
       padding:0 14px;
     }
     .desc-status{
       display: none;
-      color: @text-color-secondary;
+      color: var(--black-25);
       padding: 0 14px;
       .iconfont:hover{
         color: var(--purpleblue-6);
@@ -347,7 +347,7 @@ export default defineComponent({
       width: 100%;
       text-align: center;
       position: relative;
-      color: @text-color-secondary;
+      color: var(--black-25);
       font-size: 12px;
       i{
         font-size: 16px;
@@ -367,12 +367,12 @@ export default defineComponent({
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
       height:40px;
-      border-top: 1px solid @border-color;
+      border-top: 1px solid var(--black-15);
       box-sizing: border-box;
       li{
         font-size: 14px;
         cursor: pointer;
-        border-right: 1px solid @border-color;
+        border-right: 1px solid var(--black-15);
         &:hover{
           color: var(--purpleblue-6);
         }
@@ -434,7 +434,7 @@ export default defineComponent({
     margin-top:16px;
     margin-bottom: 24px;
     li{
-      color: @text-color-secondary;
+      color: var(--black-25);
       margin-right: 20px;
       font-size: 14px;
     }

@@ -234,7 +234,7 @@ export default defineComponent({
     .course-experiment-left {
       width: 324px;
       height: 100%;
-      background: @white;
+      background: var(--black-100);
       border-radius: 4px;
       box-shadow: 0px 3px 6px 0px var(--black-7);
     }
@@ -242,7 +242,7 @@ export default defineComponent({
       height: 100%;
       flex: 1;
       margin-left: 10px;
-      background: @white;
+      background: var(--black-100);
       border-radius: 4px;
       box-shadow: 0px 3px 6px 0px var(--black-7);
       padding: 5px;

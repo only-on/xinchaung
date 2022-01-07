@@ -3,7 +3,7 @@
     颜色
      */
     /* 黑 */
-    --black-0:rgba(0, 0, 0, 0);
+    --black-100:rgba(0, 0, 0, 0);
     --black-0-0-1:rgba(0, 0, 0, 0.001);
     --black-0-1:rgba(0, 0, 0, 0.01);
     --black-0-4:rgba(0, 0, 0, 0.04);
@@ -17,12 +17,13 @@
     --black-0-45:rgba(0, 0, 0, 0.045);
     --black-1:rgba(0, 0, 0, 0.1);
     --black-2:rgba(0, 0, 0, 0.2);
-    --black-6:rgba(0, 0, 0, 0.6);
     --black-5:rgba(0, 0, 0, 0.5);
+    --black-6:rgba(0, 0, 0, 0.6);
     --black-7:rgba(0, 0, 0, 0.7);
     --black-15:rgba(0, 0, 0, 0.15);
     --black-25:rgba(0, 0, 0, 0.25);
     --black-45:rgba(0, 0, 0, 0.45);
+    
     --black-65:rgba(0, 0, 0, 0.65);
     --black-67:rgba(0, 0, 0, 0.67);
     --black-75:rgba(0, 0, 0, 0.75);
@@ -42,13 +43,13 @@
     --gray-8:#595959;
 
     /* 白 */
+    --white-100:rgb(255, 255, 255);
     --white-0-1:rgba(255, 255, 255, 0.01);
     --white-1:rgba(255, 255, 255, 0.1);
     --white-35:rgba(255, 255, 255, 0.35);
     --white-45:rgba(255, 255, 255, 0.45);
     --white-65:rgba(255, 255, 255, 0.65);
     --white-85:rgba(255, 255, 255, 0.85);
-    --white-100:rgb(255, 255, 255);
     --mark-bg:#feffe5;
     --alert-warn:#fffbe6;
     --alert-error:#fff2f0;
@@ -181,5 +182,9 @@
     --royalpurple-7:#3E1DC4;
 
     --pading-md:24px;
+    --padding-xss:4px;
+    --font-size-lg:18px;
+    --font-size-16:16px;
+    --border-radius-default:4px;
     
 }

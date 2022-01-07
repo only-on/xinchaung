@@ -100,7 +100,7 @@ export default defineComponent({
       position: relative;
       padding: 14px;
       .card-title{
-        color: @white;
+        color: var(--black-100);
         font-size: 16px;
         line-height: 35px;
       }
@@ -125,7 +125,7 @@ export default defineComponent({
       padding: 14px;
       font-size: 12px;
       height: 66px;
-      background: @white;
+      background: var(--black-100);
       border-radius: 6px;
       box-shadow: 0px 3px 6px 0px var(--black-7);
       >div{
@@ -151,7 +151,7 @@ export default defineComponent({
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       font-size: 12px;
-      color: rgba(@black,0.65);
+      color: var(--black-65);
       line-height: 22px;
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -175,7 +175,7 @@ export default defineComponent({
         width: 20%;
         display: flex;
         justify-content:space-between;
-        color: rgba(@black,0.45);
+        color: var(--black-45);
         cursor: pointer;
         .iconfont:hover{
           color: var(--purpleblue-6);

@@ -424,7 +424,7 @@ interface FileInfo {
   width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: @white;
+  background-color: --black-100);
   border-radius: 5px;
   padding: 40px;
   .condition {
@@ -468,7 +468,7 @@ interface FileInfo {
         left: 0;
         bottom:-2px;
         font-size: 12px;
-        color:rgba(@black,0.25);    
+        color:var(--black-25);    
         
       }
     }
@@ -491,7 +491,7 @@ interface FileInfo {
     }
   }
   :deep(.ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active){
-    color: @white;
+    color: --black-100);
     background:var(--purpleblue-6);
     border-color:var(--purpleblue-6);
   }

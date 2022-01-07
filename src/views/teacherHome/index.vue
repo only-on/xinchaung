@@ -302,7 +302,7 @@ export default defineComponent({
         border-radius: 20px;
         text-align: center;
         font-size: 18px;
-        background: @body-background;
+        background: var(--white-100);
         height: 130px;
         box-shadow: 0 0 15px 2px rgba(var(--royalpurple-7),.2);
         display: flex;
@@ -320,25 +320,25 @@ export default defineComponent({
   }
   .chart-box{
     width: 100%;
-    background: @body-background;
+    background: var(--white-100);
     padding: 25px;
     height: 400px;
     border-radius: 6px;
     &.completion{
       background: url('src/assets/images/teacher-default/panel-first-bg.png') no-repeat 90% 55%;
-      background-color: @body-background;
+      background-color: var(--white-100);
       &>div:nth-child(2){
         display: flex;
       }
       .statistics{
         padding: 50px 0;
-        color: @text-color-secondary;
+        color: var(--black-25);
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         span{
           font-size: 40px;
-          color: @black;
+          color: var(--black-100);
         }
       }
     }
@@ -370,7 +370,7 @@ export default defineComponent({
         padding: 40px;
         &>div{
           padding: 15px;
-          color: @text-color-secondary;
+          color: var(--black-25);
         }
       }
     }
@@ -378,9 +378,9 @@ export default defineComponent({
       span{
         cursor: pointer;
         margin-right: 30px;
-        color: @text-color-secondary;
+        color: var(--black-25);
         &.active{
-          color: @text-color;
+          color: var(--black-85);
         }
       }
     }
@@ -406,7 +406,7 @@ export default defineComponent({
           height: 16px !important;
         }
         .ant-progress-text{
-          color: @black;
+          color: var(--black-100);
         }
       }
     }

@@ -292,8 +292,8 @@ export default defineComponent({
         cursor: pointer;
         &.active {
           background: var(--purpleblue-6);
-          color: @white;
-          border-radius: @border-radius-base;
+          color: var(--white-100);
+          border-radius: var(--border-radius-default);
         }
       }
     }

@@ -38,7 +38,7 @@ export default defineComponent({
   <style lang="less">
 .detail-step-box {
   min-height: 50%;
-  background: @white;
+  background: var(--black-100);
   
   .line-bg {
     height: 15px;

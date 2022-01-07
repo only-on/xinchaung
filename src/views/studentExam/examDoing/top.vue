@@ -129,7 +129,7 @@ export default defineComponent({
       background: @gold-6;
       border-radius: 20px;
       padding: 5px 10px;
-      color: @white;
+      color: var(--white-100);
       i {
         font-style: normal;
         font-size: 12px;

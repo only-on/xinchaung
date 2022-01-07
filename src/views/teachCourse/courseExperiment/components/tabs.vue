@@ -109,14 +109,14 @@ export default defineComponent({
 
 <style lang="less">
 .experiment-tabs {
-  background: @white;
+  background: var(--black-100);
   margin: 16px 0;
   height: 40px;
   display: flex;
   padding: 0 15px;
   align-items: center;
   font-size: 14px;
-  color: rgba(@black, 0.45);
+  color: var(--black-45);
   > span {
     margin-right: 50px;
     position: relative;

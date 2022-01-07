@@ -174,7 +174,7 @@ export default defineComponent({
     margin-top: -32px;
     padding-top: 60px;
     .header{
-      color:@white;
+      color:var(--white-100);
       width: var(--center-width);
       margin: 0 auto;
       .title{
@@ -188,7 +188,7 @@ export default defineComponent({
       }
       .title .icon-fanhui{
         background-color: var(--purpleblue-6);
-        color: @white;
+        color: var(--white-100);
         font-size: 16px;
         padding: 8px 10px;
         border-radius: 50%;

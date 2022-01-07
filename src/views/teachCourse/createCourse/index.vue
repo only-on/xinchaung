@@ -354,7 +354,7 @@ export default defineComponent({
             right: 0;
             top:0;
             bottom: 0;
-            background-color: rgba(@black,0.5);
+            background-color: var(--black-5);
           }
           &:hover,&.active{
             &:not(.uploadDiv)::before{

@@ -194,11 +194,11 @@ export default defineComponent({
   }
   .postModal :deep(.ant-modal-header){
     background-color: var(--purpleblue-6);
-    color: @white;
+    color: --black-100);
   }
   :deep(.postModal .ant-modal-header){
     background-color: var(--purpleblue-6);
-    color: @white;
+    color: --black-100);
   }
   
 </style>

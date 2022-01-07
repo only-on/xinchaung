@@ -420,7 +420,7 @@ interface IClassesData {
     height: 157px;
   }
   .course-analysis-content {
-    background-color: @white;
+    background-color: --black-100);
     // height: 100%;
     height: 600px;
     overflow-y: scroll;
@@ -499,7 +499,7 @@ interface IClassesData {
             // padding: 6px 8px;
             background: var(--purpleblue-6);
             border-radius: 4px;
-            color: @white;
+            color: --black-100);
           }
         }
       }

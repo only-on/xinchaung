@@ -301,7 +301,7 @@ interface ITableList {
   width: var(--center-width);
   margin: 0 auto;
   // display: flex;
-  background-color: @white;
+  background-color: var(--black-100);
   border-radius: @border-radius-default;
   padding: 29px 37px;
   overflow-y: auto;

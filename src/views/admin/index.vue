@@ -651,10 +651,10 @@ export default defineComponent({
 
     > div {
       width: 20%;
-      background: @white;
+      background: var(--white-100);
       margin: 0 10px;
       height: 114px;
-      border-radius: @border-radius-base;
+      border-radius: var(--border-radius-default);
       box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
       &:first-child {
         margin-left: 0;
@@ -718,10 +718,10 @@ export default defineComponent({
     margin-top: 20px;
   }
   .bg-white {
-    background-color: @white;
+    background-color: var(--white-100);
   }
   .b-r{
-    border-radius: @border-radius-base;
+    border-radius: var(--border-radius-default);
   }
   .m-l-20 {
     margin-right: 20px;
@@ -883,7 +883,7 @@ export default defineComponent({
     width: 50%;
     // flex-shrink: 0;
     margin-top: 20px;
-    background-color: @white;
+    background-color: var(--white-100);
     padding: 22px;
     &:nth-child(2n + 1) {
       margin-right: 20px;

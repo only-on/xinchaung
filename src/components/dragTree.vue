@@ -487,7 +487,7 @@ export default defineComponent({
       }
       .chapter-name {
         width: 100%;
-        color: rgba(@black,0.65);
+        color: var(--black-65);
         font-size: 16px;
       }
       .action-icon-box {
@@ -500,7 +500,7 @@ export default defineComponent({
           &.open-close-cion {
             width: 14px;
             font-size: 14px;
-            color: rgba(@black,0.45);
+            color: var(--black-45);
             display: inline-block;
           }
         }

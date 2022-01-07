@@ -200,7 +200,7 @@ export default defineComponent({
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     cursor: auto;
-    color: @white;
+    color: var(--white-100);
   }
   .mask_end{
     background-color: rgba(0,0,0,9.5);

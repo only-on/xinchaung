@@ -93,7 +93,7 @@ export default defineComponent({
     }
   }
   .document-box {
-    background: @white;
+    background: var(--black-100);
     height: calc(100% - 100px);
     overflow-y: auto;
     width: 100%;

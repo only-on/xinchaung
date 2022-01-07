@@ -904,12 +904,12 @@ export default defineComponent({
         }
       }
       .vm-header-title {
-        color: @white;
+        color: --black-100);
       }
       .vm-header-right {
         .delayed-btn {
           background: @warning-color;
-          color: @white;
+          color: --black-100);
           border: none;
           &:hover {
             background: rgba(#faad14, 0.8);
@@ -942,7 +942,7 @@ export default defineComponent({
       padding: 15px;
       background: var(--purpleblue-6);
       font-size: 18px;
-      color: @white;
+      color: --black-100);
     }
     .ant-modal-confirm-content {
       padding: 15px;

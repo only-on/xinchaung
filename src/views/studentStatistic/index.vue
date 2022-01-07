@@ -261,7 +261,7 @@ export default defineComponent({
         margin-left: 30px;
     }
     .content-title{
-        font-size: @font-size-base;
+        font-size: @var(--font-size-16);
         color: #050101;
         letter-spacing: 1px;
         font-weight: 700;
@@ -298,7 +298,7 @@ export default defineComponent({
                 height: 100%;
                 border-radius: 50%;
                 background: #1290ef;
-                color:@white;
+                color:var(--white-100);
             }
         }
     }
@@ -322,11 +322,11 @@ export default defineComponent({
         padding: 41px 44px;
         box-sizing: border-box;
         .hint{
-            color:@white;
-            font-size: @font-size-base;
+            color:var(--white-100);
+            font-size: @var(--font-size-16);
         }
         .hint-msg{
-             color:@white;
+             color:var(--white-100);
             font-size:32px;
         }
     }
@@ -341,8 +341,8 @@ export default defineComponent({
             width: 60%;
             padding: 14px 0px 14px 30px;
             .top-title{
-            color: @white;
-            font-size: @font-size-base;
+            color: var(--white-100);
+            font-size: @var(--font-size-16);
             letter-spacing: 1px;
             line-height: 50px;
             }
@@ -358,7 +358,7 @@ export default defineComponent({
         border-radius: 8px;
         padding: @padding-lg 30px;
         box-sizing: border-box;
-        background: @white;
+        background: var(--white-100);
          #myChart{
         height:375px;
         }
@@ -367,9 +367,9 @@ export default defineComponent({
           border-radius: 8px;
         padding: @padding-lg 30px;
         box-sizing: border-box;
-        background: @white; 
+        background: var(--white-100); 
        .stu-proess{
-            font-size: @font-size-base;
+            font-size: @var(--font-size-16);
             color: #050101;
             letter-spacing: 1px;
             font-weight: 700;
@@ -430,7 +430,7 @@ export default defineComponent({
            border-radius: 8px;
            padding: 15px 26px 30px 26px;
            box-sizing: border-box;
-           background: @white;
+           background: var(--white-100);
        }
        .left-f3-exper{
              width:49%;
@@ -438,14 +438,14 @@ export default defineComponent({
            border-radius: 8px;
            padding: 15px 26px 30px 26px;
            box-sizing: border-box;
-           background:@white;
+           background:var(--white-100);
        }
     }
     .right-f3{
         border-radius: 8px;
         padding: 15px 26px 30px 26px;
         box-sizing: border-box;
-        background: @white; 
+        background: var(--white-100); 
     }
 }
 </style>

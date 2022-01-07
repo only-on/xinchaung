@@ -205,12 +205,12 @@ export default defineComponent({
 :deep(.ant-tabs-nav){
     .ant-tabs-tab-active{
       background: var(--purpleblue-6) !important;
-      color:@white;
-      border-top-left-radius: @border-radius-base;
-      border-top-right-radius: @border-radius-base;
+      color:var(--black-100);
+      border-top-left-radius: var(--border-radius-default);
+      border-top-right-radius: var(--border-radius-default);
     }
   }
   :deep(.ant-tabs-nav-container){
-    border-bottom: 1px solid @border-color;
+    border-bottom: 1px solid var(--black-15);
   }
 </style>

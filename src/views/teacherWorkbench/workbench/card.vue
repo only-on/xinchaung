@@ -336,7 +336,7 @@ export default defineComponent({
             color: var(--purpleblue-6);
             &:hover {
               background-color: var(--purpleblue-6);
-              color: @white;
+              color: --black-100);
               cursor: pointer;
             }
           }
@@ -355,7 +355,7 @@ export default defineComponent({
       width: 33.3333%;
       text-align: center;
       line-height: 50px;
-      color: @white;
+      color: --black-100);
       cursor: pointer;
     }
     .no-click {
@@ -384,7 +384,7 @@ export default defineComponent({
 }
 .data-set-more-tooltip {
   .ant-tooltip-inner {
-    background: @white;
+    background: --black-100);
     .more-list {
       color: grey;
       padding: 0 5px 5px 5px;
@@ -394,7 +394,7 @@ export default defineComponent({
     }
   }
   .ant-tooltip-arrow-content {
-    background-color: @white;
+    background-color: --black-100);
   }
 }
 </style>
