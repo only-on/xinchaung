@@ -44,8 +44,8 @@ export default defineConfig({
         // modifyVars: {
         //   hack: `true; @import (reference) "${resolve('src/assets/theme/purple.less')}";`,
         // },
-        javascriptEnabled: true, // 想要less的modifyVars生效，这个必须启用
-        additionalData: '@import "src/assets/theme/purple";\n'
+        // javascriptEnabled: true, // 想要less的modifyVars生效，这个必须启用
+        // additionalData: '@import "src/assets/theme/purple";\n'
       }
     }
   },

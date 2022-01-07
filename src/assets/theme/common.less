@@ -1,6 +1,6 @@
 /*公共样式--开始*/
 
-@import url(./purple.less);
+// @import url(./purple.less);
 *{margin: 0;padding: 0;box-sizing: border-box;}
 html, body {
     min-height: 100%;
@@ -89,10 +89,10 @@ textarea {
 // 鼠标移动、移开样式
 span,div,a{
     .theme-active{
-        color: @theme-color;
+        color: var(--purpleblue-6);
         transition: 0.5s;
         &:hover{
-            color:color(~`colorPalette('@{theme-color}', 4) `)
+            color:color(~`colorPalette(var(--purpleblue-6), 4) `)
         }
     }
     
@@ -108,7 +108,7 @@ span,div,a{
     }
     // 滚动条两端的按钮
     &::-webkit-scrollbar-button{
-        background-color:@theme-color;
+        background-color:var(--purpleblue-6);
         width: 10px;
         height: 1px;
     }
@@ -126,11 +126,11 @@ span,div,a{
     &::-webkit-scrollbar-thumb{
         border-radius: 7px;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: @theme-color;
+        background-color: var(--purpleblue-6);
     }
     // 定义右下角汇合处的样式
     &::-webkit-scrollbar-corner{
-        background:@theme-color;
+        background:var(--purpleblue-6);
     }
     // 两个滚动条交汇处用于拖动调整元素大小的小控件
     &::-webkit-resizer{
@@ -152,10 +152,10 @@ span,div,a{
 }
 
 .a-link{
-    color: @theme-color;
+    color: var(--purpleblue-6);
     cursor: pointer;
     &:hover{
-        color:rgba(@theme-color,0.5) 
+        color:rgba(var(--purpleblue-6),0.5) 
     }
 }
 /*统一修一个antd默认样式*/
@@ -187,17 +187,17 @@ span,div,a{
         background: transparent;
         border-bottom:none;
         .ant-modal-title{
-            color: rgba(@black,1);
+            color: rgba(var(--black-0),1);
             font-weight: 400;
             font-size: 16px;
             letter-spacing: 2px;
         }
     }
     .ant-modal-close-x{
-        color: rgba(@black,0.4);
+        color: rgba(var(--black-0),0.4);
         transition: 0.5s;
         &:hover{
-            color: rgba(@black,1);
+            color: rgba(var(--black-0),1);
         }
     }
     .ant-btn{
@@ -226,19 +226,19 @@ span,div,a{
 
 .ant-table-tbody{
     > tr:hover:not(.ant-table-expanded-row) > td,.ant-table-row-hover,.ant-table-row-hover>td{
-        background:rgba(@black,2%)!important;
+        background:rgba(var(--black-0),2%)!important;
     }
 }
 .ant-table-fixed{
     .ant-table-row-hover, .ant-table-row-hover>td{
-    background:rgba(@black,2%)!important;
+    background:rgba(var(--black-0),2%)!important;
     }
 }
 .ant-table-tbody > tr.ant-table-row-selected td{ 
     background-color:rgba(222,223,253,0.50)!important;
 }
 .ant-table-tbody > tr.ant-table-row-selected:hover{ 
-    background-color:#DEDFFD!important;
+    background-color:var(--purpleblue-1)!important;
 }
 
 .ant-steps{
