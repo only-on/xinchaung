@@ -101,6 +101,7 @@
 
     /* 金 */
     --glod-3:#ffe58f;
+    --glod-4:#ffd666;
     --glod-6:#faad14;
     --glod-7:#d48806;
 
@@ -179,6 +180,6 @@
 
     --royalpurple-7:#3E1DC4;
 
-
+    --pading-md:24px;
     
 }

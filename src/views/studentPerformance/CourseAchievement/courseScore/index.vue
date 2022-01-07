@@ -284,7 +284,7 @@ export default defineComponent({
   border-radius: 6px;
   background-color: @body-background;
   margin: 0 auto;
-  padding: @padding-md 21px @padding-md @padding-sm;
+  padding: var(--pading-md) 21px var(--pading-md) @padding-sm;
   .course-info {
     display: flex;
     justify-content: space-between;

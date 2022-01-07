@@ -278,7 +278,7 @@ export default defineComponent({
 </script>
 <style lang="less">
 .detail {
-  color: @primary-color;
+  color: var(--purpleblue-6);
 }
 .scoreStar {
   display: flex;

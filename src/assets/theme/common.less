@@ -1,6 +1,8 @@
 /*公共样式--开始*/
 
 // @import url(./purple.less);
+@import url(src/themecss/variable.css);
+// @import 'src/themecss/variable.css'
 *{margin: 0;padding: 0;box-sizing: border-box;}
 html, body {
     min-height: 100%;
@@ -92,7 +94,8 @@ span,div,a{
         color: var(--purpleblue-6);
         transition: 0.5s;
         &:hover{
-            color:color(~`colorPalette(var(--purpleblue-6), 4) `)
+            color:var(--purpleblue-4);
+            // color:color(~`colorPalette('@{theme-color}', 4) `)
         }
     }
     

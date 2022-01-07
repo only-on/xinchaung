@@ -354,7 +354,7 @@ export default defineComponent({
     }
 
     .classical__search-form {
-      padding: 0px 0px @padding-md 0px;
+      padding: 0px 0px var(--pading-md) 0px;
       display: flex;
       justify-content: space-between;
 

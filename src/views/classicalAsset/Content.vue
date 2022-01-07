@@ -560,7 +560,7 @@ export default defineComponent({
       }
 
       .classical__data-list-content {
-        padding: @padding-md 0px;
+        padding: var(--pading-md) 0px;
 
         .classical__data-list-row {
           width: 100%;

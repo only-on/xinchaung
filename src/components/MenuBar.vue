@@ -152,7 +152,7 @@ export default defineComponent({
   justify-content: space-between;
   .menu__top-item {
     display: inline-block;
-    padding: 0 @padding-md;
+    padding: 0 var(--pading-md);
     color: @text-color-secondary;
     font-size: @font-size-lg;
     text-align: center;
@@ -165,7 +165,7 @@ export default defineComponent({
 }
 .menu__item {
   span {
-    padding: @padding-xss @padding-md;
+    padding: @padding-xss var(--pading-md);
     // font-size: @font-size-base;
     font-size: 14px;
     color: @menu-item-color;
