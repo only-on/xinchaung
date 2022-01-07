@@ -10,6 +10,7 @@ function scoreDetailEcharts(el: HTMLDivElement, data: Array<any>) {
     const my_score:Array<number>=[]
     const average_score:Array<number>=[]
     const xNames:Array<string>=[]
+    console.log(data)
     data.forEach((item)=>{
         my_score.push(item.my_score)
         average_score.push(item.avg_score)

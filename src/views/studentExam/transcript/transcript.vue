@@ -175,7 +175,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   .frist-box {
-    height: calc(55% - 180px);
+    height: 300px;
     display: flex;
     flex-direction: row;
     width: 100%;
