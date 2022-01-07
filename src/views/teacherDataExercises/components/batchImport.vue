@@ -153,7 +153,7 @@ export default defineComponent({
     color: var(--purpleblue-6);
 }
 .download:hover{
-    color:@theme-light-color;
+    color:var(--theme-light-color);
 }
 .importNone{
     margin-top:30px;

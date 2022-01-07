@@ -189,25 +189,25 @@ export default defineComponent({
   .slash-lager {
     width: 27px;
     height: 2px;
-    background: @component-background;
+    background: var(--component-background);
   }
 
   .slash-small {
     width: 8px;
     height: 2px;
-    background: @component-background;
+    background: var(--component-background);
   }
 
   .slash-middle {
     width: 12px;
     height: 2px;
-    background: @component-background;
+    background: var(--component-background);
   }
 
   .slash-block {
     width: 12px;
     height: 10px;
-    background: @component-background;
+    background: var(--component-background);
   }
 }
 }

@@ -223,7 +223,7 @@ export default defineComponent({
   white-space: nowrap;
 }
 .purple:hover {
-  color: @theme-light-color;
+  color: var(--theme-light-color);
 }
 :deep(.ant-table-pagination.ant-pagination) {
   float: none;

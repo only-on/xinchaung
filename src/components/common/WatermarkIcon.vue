@@ -37,7 +37,7 @@ export default defineComponent({
 .wmi__container {
   width: 160px;
   height: 115px;
-  padding: @padding-xs;
+  padding: var(--padding-xs);
   color: #fff;
   position: relative;
   border-radius: var(--border-radius-default);
@@ -65,8 +65,8 @@ export default defineComponent({
 
   .watermark {
     position: absolute;
-    right: @padding-sm;
-    bottom: @padding-sm;
+    right: var(--padding-sm);
+    bottom: var(--padding-sm);
     font-size: 75px;
     opacity: .2;
     height: 80px;

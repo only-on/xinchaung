@@ -155,7 +155,7 @@ export default defineComponent({
     position: relative;
     width: 18%;
     height: 158px;
-    background: @component-background;
+    background: var(--component-background);
     border-radius: 6px;
     box-shadow: 0 3px 4px 0 #eaeaea;
     margin: 0 1% 20px;

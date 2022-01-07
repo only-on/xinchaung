@@ -229,7 +229,7 @@ export default defineComponent({
     color: #14191e;
     font-size: 14px;
     tr:first-child {
-      background: @descriptions-bg;
+      background: var(--descriptions-bg);
       td {
         border: none;
       }

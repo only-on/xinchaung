@@ -420,14 +420,14 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: @warning-color;
+        background: var(--warning-color);
         border-radius: 50%;
         margin-left: 24px;
         color: var(--black-100);
         font-size: var(--font-size-lg);
         cursor: pointer;
         &:hover {
-          background: rgba(@warning-color, 0.8);
+          background: rgba(var(--warning-color), 0.8);
         }
       }
     }

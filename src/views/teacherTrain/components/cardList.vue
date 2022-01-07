@@ -363,7 +363,7 @@ export default defineComponent({
       }
     }
     &.cardbtn{
-      background: @descriptions-bg;
+      background: var(--descriptions-bg);
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
       height:40px;
@@ -390,7 +390,7 @@ export default defineComponent({
   .init{
     .cardbtn{
       margin-top: 24px;
-      background: @descriptions-bg;
+      background: var(--descriptions-bg);
       box-sizing: border-box;
       height: 41px;
     }
@@ -402,7 +402,7 @@ export default defineComponent({
   .archive{
     .cardbtn{
       margin-top: 24px;
-      background: @descriptions-bg;
+      background: var(--descriptions-bg);
       box-sizing: border-box;
       height: 40px;
     }

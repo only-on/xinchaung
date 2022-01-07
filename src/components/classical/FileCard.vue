@@ -139,11 +139,11 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .file__container {
-  border: 1px solid @border-color-base;
+  border: 1px solid var(--border-color-base);
   position: relative;
   display: flex;
   border-radius: var(--base-font-size);
-  padding: @padding-xs;
+  padding: var(--padding-xs);
   align-items: center;
 
   .file__icon {
@@ -158,7 +158,7 @@ export default defineComponent({
 
   .file__info {
     flex: 1;
-    margin-left: @margin-md;
+    margin-left: var(--margin-md);
 
     .title {
       max-width: 220px;
@@ -168,7 +168,7 @@ export default defineComponent({
     }
 
     .description {
-      font-size: @font-size-sm - 2px;
+      font-size: calc(var(--base-font-size)- 2px);
       color: var(--black-25);
     }
   }

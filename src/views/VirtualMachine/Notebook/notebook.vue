@@ -177,7 +177,7 @@ export default defineComponent({
       }
       .vm-header-right {
         .delayed-btn {
-          background: @warning-color;
+          background: var(--warning-color);
           color: --black-100);
           border: none;
           &:hover {
@@ -185,7 +185,7 @@ export default defineComponent({
           }
         }
         .vm-time {
-          color: @warning-color;
+          color: var(--warning-color);
           margin: 0 10px;
           .iconfont {
             margin-right: 3px;

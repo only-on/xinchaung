@@ -374,7 +374,7 @@ interface IData {
   }
   .nosee {
     pointer-events: none;
-    color: @avatar-bg;
+    color: var(--avatar-bg);
   }
   .page-footer-box {
     margin-top: 28px;

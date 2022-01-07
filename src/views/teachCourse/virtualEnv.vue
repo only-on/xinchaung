@@ -395,7 +395,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@hover-color: var(--purpleblue-6);
+var(--border-hover-color): var(--purpleblue-6);
 .virtual-env {
   width: 1330px;
   // margin-top: 50px;
@@ -467,7 +467,7 @@ export default defineComponent({
   .ant-input-group-addon{
     .ant-btn{
       background-color: var(--purpleblue-6);
-      // border-color: @hover-color;
+      // border-color: var(--border-hover-color);
       color: var(--black-100);
       height: 41px;
       width: 100px;
@@ -479,7 +479,7 @@ export default defineComponent({
 .ant-btn.ant-btn-primary {
   height: 41px;
   background-color: var(--purpleblue-6);
-  // border-color: @hover-color;
+  // border-color: var(--border-hover-color);
   color: var(--black-100);
   padding: 0 20px;
   line-height: 41px;
@@ -487,8 +487,8 @@ export default defineComponent({
   float: right;
 }
 .ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
-  background-color: @hover-color;
-  border-color: @hover-color;
+  background-color: var(--border-hover-color);
+  border-color: var(--border-hover-color);
 }
 
 

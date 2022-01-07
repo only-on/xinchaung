@@ -405,9 +405,6 @@ export default defineComponent({
 
 <style lang="less">
 // var(--purpleblue-6): #8955B5;
-@node-icon-color: @theme-tree;
-@high-color: #eab362; // 高配颜色
-@hover-bgcolor: #f1e6f5;
 .course-left-tree {
   li {
     padding: 0px !important;
@@ -419,7 +416,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: @hover-bgcolor;
+      background-color: var(--tree-hover-bgcolor);
     }
   }
   li .ant-tree-node-content-wrapper {
@@ -429,7 +426,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: @hover-bgcolor;
+      background-color: var(--tree-hover-bgcolor);
     }
   }
   li ul {
@@ -512,7 +509,7 @@ export default defineComponent({
       }
     }
     &:hover {
-      background-color: @theme-light-color;
+      background-color: var(--theme-light-color);
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -523,7 +520,7 @@ export default defineComponent({
   }
   
   .selectbac {
-    background-color: @theme-light-color;
+    background-color: var(--theme-light-color);
     position: relative;
     &::before {
         position: absolute;
@@ -550,7 +547,7 @@ export default defineComponent({
   }
   .tree-second-title {
     &:hover{
-      background-color: @theme-light-color;
+      background-color: var(--theme-light-color);
       // width: 100%!important;
       // padding: 0!important;
     }
@@ -564,16 +561,16 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: @node-icon-color;
+          color: var(--theme-tree);
           font-size: 14px;
           &.icon-jinzhi {
-            color: @high-color;
+            color: var(--high-color);
           }
         }
       }
       .type-name {
         font-size: 12px;
-        color: @node-icon-color;
+        color: var(--theme-tree);
         margin-left: 5px;
       }
     }
@@ -606,11 +603,11 @@ export default defineComponent({
   div.height-experiment {
     .experiment-type {
       .type-name {
-        color: @high-color;
+        color: var(--high-color);
       }
     }
     .experiment-name {
-      color: @high-color;
+      color: var(--high-color);
     }
   }
   &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {

@@ -539,7 +539,7 @@ export default defineComponent({
   }
 
   .classical__content--main {
-    margin-top: @margin-lg + 21px;
+    margin-top: var(--margin-lg) + 21px;
 
     .classical__data-list {
       .classical__data-list-header {
@@ -555,7 +555,7 @@ export default defineComponent({
         }
 
         .classical__data-list-upload {
-          margin-left: @margin-md;
+          margin-left: var(--margin-md);
         }
       }
 
@@ -577,7 +577,7 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid @border-color-base;
+  border: 1px solid var(--border-color-base);
   border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
@@ -599,7 +599,7 @@ export default defineComponent({
 
   &.classical__input--focused {
     border: 1px solid var(--purpleblue-6);
-    box-shadow: 0 0 0 2px @theme-scroll;
+    box-shadow: 0 0 0 2px var(--theme-scroll);
   }
 }
 </style>

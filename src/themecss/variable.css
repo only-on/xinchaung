@@ -182,9 +182,42 @@
     --royalpurple-7:#3E1DC4;
 
     --pading-md:24px;
+    --padding-xs:8px;
     --padding-xss:4px;
     --font-size-lg:18px;
     --font-size-16:16px;
     --border-radius-default:4px;
+
+
+    --opacity65-color:rgba(0,0,0,.65);
+    --opacity85-color: rgba(0,0,0,.85);
+    --echart-title-bgcolor: #f7edff;
+    --echart-table-bordercolor:#dcc0f4;
+    --component-background: #fff;
     
+    /*主题色*/
+    --theme-light-color:var(--purplebule-3);
+    --normal-color: #d9d9d9;
+    --theme-scroll:var(--purpleblue-1);
+    --warning-color: var(--glod-6);
+
+    /*关于border*/
+    --border-radius-base:var(--border-radius-default);
+    --border-radius-card:var(--border-radius-default);
+    --border-color-base: hsv(0, 0, 85%);
+    --border-hover-color:#595959;
+
+    /*边距*/
+    --padding-sm:12px;
+    --margin-md:16px;
+    --margin-xss:4px;
+    --margin-lg: 24px;
+
+    /*背景色*/
+    --descriptions-bg: #fafafa;
+    --avatar-bg: #ccc;
+    /*tree颜色*/
+    --theme-tree:#bb9cd6;
+    --tree-hover-bgcolor:#f1e6f5;
+    --high-color:#eab362
 }

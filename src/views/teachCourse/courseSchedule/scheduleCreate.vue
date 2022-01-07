@@ -496,7 +496,7 @@ interface IForm {
   margin: 0 auto;
   // display: flex;
   background-color: --black-100)
-  border-radius: @border-radius-default;
+  border-radius: var(--border-radius-default);
   padding: 33px 40px;
   :deep(.ant-form) {
     .ant-form-item-label {

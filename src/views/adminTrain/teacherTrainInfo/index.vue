@@ -333,7 +333,7 @@ export default defineComponent({
   white-space: nowrap;
 }
 .purple:hover {
-  color: @theme-light-color;
+  color: var(--theme-light-color);
 }
 
 .item {

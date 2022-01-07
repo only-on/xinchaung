@@ -431,11 +431,11 @@ export default defineComponent({
           border-top-right-radius: 0px;
         }
         .textarea:hover + .savebutton {
-          background-color: @theme-light-color;
+          background-color: var(--theme-light-color);
           border: 1px solid var(--purpleblue-6);
         }
         .textarea:focus + .savebutton {
-          background-color: @theme-light-color;
+          background-color: var(--theme-light-color);
           border: 1px solid var(--purpleblue-6);
         }
       }

@@ -505,7 +505,7 @@ export default defineComponent({
     // margin: 0 auto;
     // display: flex;
     background-color: var(--black-100);
-    border-radius: @border-radius-default;
+    border-radius: var(--border-radius-default);
     // padding: 29px 37px;
     .header {
       display: flex;
