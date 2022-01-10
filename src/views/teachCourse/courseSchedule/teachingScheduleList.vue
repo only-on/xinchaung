@@ -504,7 +504,7 @@ export default defineComponent({
     // width: var(--center-width);
     // margin: 0 auto;
     // display: flex;
-    background-color: var(--black-100);
+    background-color: var(--white-100);
     border-radius: var(--border-radius-default);
     // padding: 29px 37px;
     .header {
@@ -551,7 +551,7 @@ export default defineComponent({
           }
         }
         .change_btn1:hover{
-          color: var(--black-100);
+          color: var(--white-100);
           background-color: var(--purpleblue-6);
         }
         .change_btn {
@@ -565,7 +565,7 @@ export default defineComponent({
           }
         }
         .change_btn:hover {
-          color: var(--black-100);
+          color: var(--white-100);
           background-color: var(--purpleblue-6);
         }
       }
@@ -576,11 +576,11 @@ export default defineComponent({
         }
         .monitor {
           color: var(--purpleblue-6);
-          background-color: var(--black-100);
+          background-color: var(--white-100);
           // padding: 0 5px;
         }
         .monitor:hover {
-          color: var(--black-100);
+          color: var(--white-100);
           background-color: var(--purpleblue-6);
         }
         .addDate {
@@ -654,7 +654,7 @@ export default defineComponent({
               flex-direction: column;
             }
             .course-overdue {
-              background: var(--black-100);
+              background: var(--white-100);
               // color: #C7C7C7;
               .overdue-box {
                 padding-top: 16px;
@@ -690,7 +690,7 @@ export default defineComponent({
                 margin: 0 auto;
                 margin-bottom: 10px;
                 .number {
-                  color: var(--black-100);
+                  color: var(--white-100);
                   font-size: 14px;
                   font-weight: 600;
 
@@ -706,14 +706,14 @@ export default defineComponent({
                 margin: 0 auto;
                 margin-top: 10px;
                 .number {
-                  color: var(--black-100);
+                  color: var(--white-100);
                   font-size: 14px;
                   font-weight: 600;
                 }
               }
             }
             .course-no-data {
-              background: var(--black-100);
+              background: var(--white-100);
             }
             .teacher-current {
               position: relative;
@@ -727,7 +727,7 @@ export default defineComponent({
                 height: 100%;
                 flex-flow: column;
                 // background: rgba(255, 156, 1, .8);
-                background: var(--black-100);
+                background: var(--white-100);
                 color: #ccc;
                 z-index: 1;
                 font-size: 20px;
@@ -737,7 +737,7 @@ export default defineComponent({
                   line-height: 28px;
                   background: var(--purpleblue-6);
                   border-radius: 4px;
-                  color: var(--black-100);
+                  color: var(--white-100);
                   font-size: 14px;
                   width: 90%;
                   margin: 0 auto;
@@ -814,7 +814,7 @@ export default defineComponent({
                   margin: 0 3px;
                   &.end {
                     background: var(--purpleblue-6);
-                    color: var(--black-100);
+                    color: var(--white-100);
                     line-height: 8px;
                     font-size: 22px;
                     overflow: hidden;
@@ -853,12 +853,12 @@ export default defineComponent({
                 // background: #FF9D00;
                 width: 100%;
                 height: 100%;
-                background-color: var(--black-100);
+                background-color: var(--white-100);
                 display: none;
                 cursor: pointer;
                 position: absolute;
                 &>div {
-                  color: var(--black-100);
+                  color: var(--white-100);
                   height: 28px;
                   line-height: 28px;
                   width: 90%;
@@ -885,7 +885,7 @@ export default defineComponent({
                 height: 28px;
                 width: 100%;
                 div {
-                  background: var(--black-100);
+                  background: var(--white-100);
                   border-radius: 4px;
                   line-height: 28px;
                   text-align: center;
@@ -936,15 +936,14 @@ export default defineComponent({
             width: 100%;
             height: 100%;
             display: flex;
-            // color: var(--black-100);
             cursor: pointer;
             font-size: 16px;
             // background: var(--purpleblue-6);
-            background-color: var(--black-100);
+            background-color: var(--white-100);
             display: none;
             color: var(--purpleblue-6);
             &>i:hover {
-              color: darken(var(--purpleblue-6), 15);
+              color: rgba(var(--purpleblue-6),.15);
             }
             .time-delete {
               padding: 10px 0;
