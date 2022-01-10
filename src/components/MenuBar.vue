@@ -154,7 +154,7 @@ export default defineComponent({
     display: inline-block;
     padding: 0 var(--pading-md);
     color: var(--black-25);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-18);
     text-align: center;
     cursor: pointer;
     width: max-content;

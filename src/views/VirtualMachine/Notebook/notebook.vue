@@ -173,19 +173,19 @@ export default defineComponent({
         }
       }
       .vm-header-title {
-        color: --black-100);
+        color: var(--black-100);
       }
       .vm-header-right {
         .delayed-btn {
-          background: var(--warning-color);
-          color: --black-100);
+          background: var(--glod-6);
+          color: var(--black-100);
           border: none;
           &:hover {
             background: rgba(#faad14, 0.8);
           }
         }
         .vm-time {
-          color: var(--warning-color);
+          color: var(--glod-6);
           margin: 0 10px;
           .iconfont {
             margin-right: 3px;

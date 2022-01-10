@@ -170,7 +170,7 @@ export default defineComponent({
 
         .exam-card-head {
           background: linear-gradient(310deg, rgba(rgba(var(--royalpurple-7),.2)), rgba(var(--purpleblue-6),0.92));
-          border-radius: var(--border-radius-base) var(--border-radius-base) 0px 0px;
+          border-radius: var(--border-radius-default) var(--border-radius-default) 0px 0px;
           /* height: 54px; */
           line-height: 44px;
           padding: 0 16px;

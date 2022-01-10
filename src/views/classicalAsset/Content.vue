@@ -577,7 +577,7 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid var(--border-color-base);
+  border: 1px solid var(--black-85);
   border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
@@ -599,7 +599,7 @@ export default defineComponent({
 
   &.classical__input--focused {
     border: 1px solid var(--purpleblue-6);
-    box-shadow: 0 0 0 2px var(--theme-scroll);
+    box-shadow: 0 0 0 2px var(--purpleblue-1);
   }
 }
 </style>

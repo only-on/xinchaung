@@ -47,8 +47,8 @@ export default defineComponent({
 </script>
 <style lang="less">
 .classical__asset-folder {
-  border: 1px solid var(--normal-color);
-  border-radius: var(--border-radius-card);
+  border: 1px solid var(--gray-5);
+  border-radius: var(--border-radius-default);
   padding: var(--padding-sm);
   display: flex;
   justify-content: space-between;
@@ -60,11 +60,11 @@ export default defineComponent({
   transition: all 0.5s ease;
 
   &:hover {
-    box-shadow: 0 0 5px 3px var(--border-color-base);
+    box-shadow: 0 0 5px 3px var(--black-7);
   }
 
   .classical__asset-title {
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-18);
     color: var(--black-85);
   }
 

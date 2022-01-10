@@ -111,12 +111,12 @@ export default defineComponent({
 .testTitle {
   color: var(--purpleblue-6);
   padding: 15px;
-  border-bottom: 1px solid var(--normal-color);
+  border-bottom: 1px solid var(--gray-5);
 }
 .test {
   padding: 20px;
   .title {
-    background-color: var(--descriptions-bg);
+    background-color: var(--gray-2);
   }
   .score {
     margin-left: 30px;

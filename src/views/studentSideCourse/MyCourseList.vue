@@ -270,7 +270,7 @@ export default defineComponent({
       align-items: center;
       &>span{
         margin: 0 0 0 20px;
-        color: var(--theme-light-color);
+        color: var(--purplebule-3);
       }
       div>span{
         margin-right: 10px;

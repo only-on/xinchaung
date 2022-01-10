@@ -155,7 +155,7 @@ export default defineComponent({
     position: relative;
     width: 18%;
     height: 158px;
-    background: var(--component-background);
+    background: var(--white-100);
     border-radius: 6px;
     box-shadow: 0 3px 4px 0 #eaeaea;
     margin: 0 1% 20px;
@@ -209,7 +209,7 @@ export default defineComponent({
         flex-direction: column;
         justify-content: space-between;
         align-items: center;
-        color: --black-100);
+        color: var(--black-100);
         .title{
           text-align: center;
           word-break: break-all;

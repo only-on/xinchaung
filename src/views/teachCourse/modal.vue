@@ -97,7 +97,7 @@
 </script>
 
 <style lang="less" scoped>
-var(--border-hover-color): var(--purpleblue-6);
+// var(--gray-8): var(--purpleblue-6);
 .ant-modal-content {
   .ant-btn {
     height: 30px;
@@ -107,7 +107,7 @@ var(--border-hover-color): var(--purpleblue-6);
     border-radius: 3px;
     color: var(--black-100);
     background-color: var(--purpleblue-6);
-    border-color: var(--border-hover-color);
+    border-color: var(--gray-8);
   }
   .ant-modal-close-x {
     height: 40px;
@@ -149,7 +149,7 @@ var(--border-hover-color): var(--purpleblue-6);
 .ant-btn.ant-btn-primary {
   height: 41px;
   background-color: var(--purpleblue-6);
-  // border-color: var(--border-hover-color);
+  // border-color: var(--gray-8);
   color: var(--black-100);
   padding: 0 20px;
   line-height: 41px;
@@ -157,8 +157,8 @@ var(--border-hover-color): var(--purpleblue-6);
   float: right;
 }
 .ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
-  background-color: var(--border-hover-color);
-  border-color: var(--border-hover-color);
+  background-color: var(--gray-8);
+  border-color: var(--gray-8);
 }
 .ant-input-number {
   width: 250px;

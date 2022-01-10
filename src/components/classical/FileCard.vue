@@ -139,7 +139,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .file__container {
-  border: 1px solid var(--border-color-base);
+  border: 1px solid var(--black-85);
   position: relative;
   display: flex;
   border-radius: var(--base-font-size);

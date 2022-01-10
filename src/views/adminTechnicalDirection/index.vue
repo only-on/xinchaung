@@ -143,6 +143,6 @@ export default defineComponent({
   color: var(--purpleblue-6);
 }
 .purple:hover {
-  color: var(--theme-light-color);
+  color: var(--purplebule-3);
 }
 </style>

@@ -291,12 +291,12 @@ export default defineComponent({
         color: var(--black-25);
       }
       &.noStart{
-        background: --black-100);-100) 
+        background: var(--black-100);
         color: var(--black-25);
       }
       &.onGoing{
         background: #60ae34;
-        color: --black-100);-100)
+        color: var(--black-100);
       }
     }
   }
@@ -363,7 +363,7 @@ export default defineComponent({
       }
     }
     &.cardbtn{
-      background: var(--descriptions-bg);
+      background: var(--gray-2);
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
       height:40px;
@@ -390,7 +390,7 @@ export default defineComponent({
   .init{
     .cardbtn{
       margin-top: 24px;
-      background: var(--descriptions-bg);
+      background: var(--gray-2);
       box-sizing: border-box;
       height: 41px;
     }
@@ -402,7 +402,7 @@ export default defineComponent({
   .archive{
     .cardbtn{
       margin-top: 24px;
-      background: var(--descriptions-bg);
+      background: var(--gray-2);
       box-sizing: border-box;
       height: 40px;
     }

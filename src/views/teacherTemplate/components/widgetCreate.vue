@@ -134,7 +134,7 @@ export default defineComponent({
   outline: none;
   font-size: 14px;
   &.focus{
-    background: var(--component-background);
+    background: var(--white-100);
   }
   &::-webkit-input-placeholder{
     color: #ccc;

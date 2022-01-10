@@ -416,7 +416,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: var(--tree-hover-bgcolor);
+      background-color: var(--purpleblue-1);
     }
   }
   li .ant-tree-node-content-wrapper {
@@ -426,7 +426,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: var(--tree-hover-bgcolor);
+      background-color: var(--purpleblue-1);
     }
   }
   li ul {
@@ -509,7 +509,7 @@ export default defineComponent({
       }
     }
     &:hover {
-      background-color: var(--theme-light-color);
+      background-color: var(--purplebule-3);
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -520,7 +520,7 @@ export default defineComponent({
   }
   
   .selectbac {
-    background-color: var(--theme-light-color);
+    background-color: var(--purplebule-3);
     position: relative;
     &::before {
         position: absolute;
@@ -547,7 +547,7 @@ export default defineComponent({
   }
   .tree-second-title {
     &:hover{
-      background-color: var(--theme-light-color);
+      background-color: var(--purplebule-3);
       // width: 100%!important;
       // padding: 0!important;
     }
@@ -561,16 +561,16 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: var(--theme-tree);
+          color: var(--purplebule-3);
           font-size: 14px;
           &.icon-jinzhi {
-            color: var(--high-color);
+            color: var(--orange-4);
           }
         }
       }
       .type-name {
         font-size: 12px;
-        color: var(--theme-tree);
+        color: var(--purplebule-3);
         margin-left: 5px;
       }
     }
@@ -603,11 +603,11 @@ export default defineComponent({
   div.height-experiment {
     .experiment-type {
       .type-name {
-        color: var(--high-color);
+        color: var(--orange-4);
       }
     }
     .experiment-name {
-      color: var(--high-color);
+      color: var(--orange-4);
     }
   }
   &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {

@@ -635,7 +635,7 @@ export default defineComponent({
   //     }
   //     .vm-header-right {
   //       .delayed-btn {
-  //         background: var(--warning-color);
+  //         background: var(--glod-6);
   //         color: var(--white-100);
   //         border: none;
   //         &:hover {
@@ -643,7 +643,7 @@ export default defineComponent({
   //         }
   //       }
   //       .vm-time {
-  //         color: var(--warning-color);
+  //         color: var(--glod-6);
   //         margin: 0 10px;
   //         .iconfont {
   //           margin-right: 3px;

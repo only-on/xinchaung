@@ -195,7 +195,7 @@ interface ITreeList {
 
 
                     &:hover {
-                        background: var(--theme-light-color);
+                        background: var(--purplebule-3);
                         color: #ffffff !important;
 
                         span {

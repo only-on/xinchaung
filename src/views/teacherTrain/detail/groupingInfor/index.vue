@@ -366,7 +366,7 @@ export default defineComponent({
         color: var(--purpleblue-6);
       }
       span:hover {
-        color: var(--theme-light-color);
+        color: var(--purplebule-3);
       }
     }
   }

@@ -433,7 +433,7 @@ interface IClassesData {
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: var(--opacity65-color);
+            color: var(--black-65);
             cursor: pointer;
             &.active {
               border-bottom: 1px solid var(--purpleblue-6);
@@ -446,7 +446,7 @@ interface IClassesData {
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: var(--opacity65-color);
+            color: var(--black-65);
             cursor: pointer;
             &.active {
               color: var(--purpleblue-6);
@@ -456,7 +456,7 @@ interface IClassesData {
         .more {
           flex-shrink: 0;
           margin-left: auto;
-          color: var(--opacity65-color);
+          color: var(--black-65);
           cursor: pointer;
           .iconfont {
             font-size: 12px;
@@ -487,7 +487,7 @@ interface IClassesData {
           flex-wrap: wrap;
           width: 100%;
           span {
-            color: var(--opacity65-color);
+            color: var(--black-65);
             margin: 0 12px;
             cursor: pointer;
           }
@@ -538,7 +538,7 @@ interface IClassesData {
           height: 40px;
           line-height: 40px;
           background: var(--echart-title-bgcolor);
-          border-bottom: 1px solid var(--echart-table-bordercolor);
+          border-bottom: 1px solid var(--purplebule-3);
           color: var(--purpleblue-6);
           font-size: 16px;
           text-align: center;
@@ -556,7 +556,7 @@ interface IClassesData {
         p {
           font-size: 16px;
           font-weight: 500;
-          color: var(--opacity85-color);
+          color: var(--black-85);
           margin: 0;
         }
         .high {
@@ -596,8 +596,8 @@ interface IClassesData {
     width: 20%;
     height: 32px;
     text-align: center;
-    border-top: 1px solid var(--echart-table-bordercolor);
-    border-right: 1px solid var(--echart-table-bordercolor);
+    border-top: 1px solid var(--purplebule-3);
+    border-right: 1px solid var(--purplebule-3);
     line-height: 32px;
     font-size: 16px;
     color: #050101;
@@ -631,7 +631,7 @@ interface IClassesData {
     }
     &:nth-child(2) {
       .ant-col {
-        color: var(--opacity65-color);
+        color: var(--black-65);
       }
     }
      .ant-col {
@@ -644,7 +644,7 @@ interface IClassesData {
 :deep(.ant-tabs-nav) {
   .ant-tabs-tab {
     font-size: 14px;
-    color: var(--opacity65-color);
+    color: var(--black-65);
   }
   .ant-tabs-tab-active {
     color: var(--purpleblue-6);
