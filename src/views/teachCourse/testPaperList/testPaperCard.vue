@@ -82,7 +82,7 @@ export default defineComponent({
   margin-bottom: 20px;
   box-sizing: border-box;
   opacity: 1;
-  background: --black-100)
+  background: var(--black-100);
   border-radius: 7px;
   box-shadow: 0px 7px 14px -4px var(--black-7);
 }
@@ -115,7 +115,7 @@ export default defineComponent({
       &.itemTopSecond {
         span {
           padding: 0 20px;
-          border-right: 1px solid --black-100)
+          border-right: 1px solid var(--black-100);
           font-size: 12px;
         }
         .iconfont {

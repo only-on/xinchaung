@@ -572,7 +572,7 @@ export default defineComponent({
       cursor: pointer;
     }
     .active{
-      color: --black-100);-100)
+      color: var(--black-100);
       background-color: var(--purpleblue-6);
     }
   }

@@ -706,7 +706,7 @@ export default defineComponent({
       content: "";
       width: 12px;
       height: 8px;
-      border: 2px solid --black-100);
+      border: 2px solid var(--black-100);
       border-top: transparent;
       border-right: transparent;
       text-align: center;

@@ -99,7 +99,7 @@ export default defineComponent({
     width: 100%;
     border-radius: 4px;
     margin-top: 16px;
-    box-shadow: 0px 3px 6px 0px undefined;
+    box-shadow: 0px 3px 6px 0px var(--black-7);
     display: flex;
     iframe {
       width: 100%;

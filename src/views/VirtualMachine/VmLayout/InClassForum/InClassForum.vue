@@ -405,7 +405,7 @@ export default defineComponent({
   margin-right: 10px;
   text-align: justify;
   height: calc(100% - 30px);
-  background: --black-100);
+  background: var(--black-100);
   .in-class-forum-item {
     margin-top: 25px;
     border: 1px solid #d9d9d9;

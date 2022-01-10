@@ -284,7 +284,7 @@ interface IData {
   width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: --black-100);-100)
+  background-color: var(--black-100);
   border-radius: 5px;
   padding: 40px;
   overflow: auto;

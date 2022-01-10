@@ -60,11 +60,11 @@ export default defineComponent({
   transition: all 0.5s ease;
 
   &:hover {
-    box-shadow: 0 0 5px 3px var(--black-7);
+    box-shadow: 0 0 5px 3px hsv(0, 0, 85%);;
   }
 
   .classical__asset-title {
-    font-size: var(--font-size-18);
+    font-size: var(--font-size-lg);
     color: var(--black-85);
   }
 

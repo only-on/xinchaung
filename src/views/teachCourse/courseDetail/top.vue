@@ -369,7 +369,6 @@ export default defineComponent({
       flex-direction: row;
       > span {
         padding: 0 50px;
-        // border-right: 1px solid rgba(@white, 0.3);
         position: relative;
         text-align: center;
         &::after {
@@ -377,7 +376,7 @@ export default defineComponent({
           position: absolute;
           width: 1px;
           height: 24px;
-          background: rgba(@white, 0.3);
+          background: rgba(var(--white-100), 0.3);
           top: 50%;
           right: 0;
           transform: translateY(-50%);
@@ -393,7 +392,7 @@ export default defineComponent({
             position: absolute;
             width: 1px;
             height: 24px;
-            background: rgba(@white, 0.3);
+            background: rgba(var(--white-100), 0.3);
             top: 50%;
             right: 0;
             transform: translateY(-50%);
@@ -407,7 +406,7 @@ export default defineComponent({
           }
           &:nth-child(2) {
             font-size: 12px;
-            color: rgba(@white, 0.65);
+            color: rgba(var(--white-100), 0.65);
           }
         }
       }
