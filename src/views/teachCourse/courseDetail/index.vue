@@ -205,7 +205,7 @@ export default defineComponent({
 :deep(.ant-tabs-nav){
     .ant-tabs-tab-active{
       background: var(--purpleblue-6) !important;
-      var(--white-100);
+      color:var(--white-100);
       border-top-left-radius: var(--border-radius-default);
       border-top-right-radius: var(--border-radius-default);
     }
