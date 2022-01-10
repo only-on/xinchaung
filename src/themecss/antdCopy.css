@@ -4239,7 +4239,7 @@ textarea.ant-input {
 .ant-btn:focus {
   color: var(--blue-5);
   background: var(--white-100);
-  border-color: var(--blue-5);
+  border-color: var(--purplebule-5);
 }
 .ant-btn:hover > a:only-child,
 .ant-btn:focus > a:only-child {
@@ -15329,7 +15329,7 @@ span.ant-radio + * {
   margin: 0;
   padding: 0;
   color: var(--black-85);
-  font-size: var(--base-font-size);
+  font-size: var(--font-size-16);
   font-variant: tabular-nums;
   line-height : var(--base-line-height);
   list-style: none;
@@ -15386,7 +15386,7 @@ span.ant-radio + * {
   left: 22%;
   display: table;
   width: 5.71428571px;
-  height: 9.142857var(--base-font-size);
+  height: 9.14285714px;
   border: 2px solid var(--white-100);
   border-top: 0;
   border-left: 0;

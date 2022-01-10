@@ -424,7 +424,7 @@ interface FileInfo {
   width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: var(--black-100);
+  background-color: var(--white-100);
   border-radius: 5px;
   padding: 40px;
   .condition {
