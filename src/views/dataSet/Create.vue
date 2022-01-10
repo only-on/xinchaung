@@ -760,7 +760,7 @@ export default defineComponent({
                 >div {
                     padding-bottom: 10px;
                     background: #ffffff;
-                    box-shadow: 0px 0px 40px 0px var(--black-7);
+                    box-shadow: 0px 0px 40px 0px var(--black-0-7);
                 }
 
                 .progress-item {

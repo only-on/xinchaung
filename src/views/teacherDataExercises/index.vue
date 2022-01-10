@@ -331,7 +331,7 @@ export default defineComponent({
 
   &.classical__input--focused {
     border: 1px solid var(--purpleblue-6);
-    box-shadow: 0 0 0 2px var(--black-7);
+    box-shadow: 0 0 0 2px var(--black-0-7);
   }
 }
 </style>

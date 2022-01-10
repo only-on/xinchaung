@@ -173,7 +173,7 @@ export default defineComponent({
       border: 1px dashed rgba(137,85,181,.45);
       &:hover{
         border-color: rgba(137, 85, 181, 0.1);
-        box-shadow: 0 5px 9px 0 var(--black-7);
+        box-shadow: 0 5px 9px 0 var(--black-0-7);
       }
       .operate-btn{
         height: 50%;

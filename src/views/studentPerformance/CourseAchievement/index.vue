@@ -175,7 +175,7 @@ export default defineComponent({
     margin-bottom: 30px;
     background-color: white;
     position: relative;
-    box-shadow: 0px 2px 4px 0px var(--black-7);
+    box-shadow: 0px 2px 4px 0px var(--black-0-7);
     border-radius: 6px;
     .card-pic {
       height: 166px;

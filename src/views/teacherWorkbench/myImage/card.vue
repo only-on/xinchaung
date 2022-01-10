@@ -65,13 +65,14 @@ export default defineComponent({
   height: 100%;
   background: #ffffff;
   border-radius: 6px;
-  box-shadow: 0px 3px 6px 0px var(--black-7);
+  box-shadow: 0px 3px 6px 0px var(--black-0-7);
   position: relative;
   > div {
     &:nth-child(2) {
       position: absolute;
       top: 0;
-      background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) 26%);
+      // background: linear-gradient(45deg,rgba(var(--purpleblue-5)), rgba(var(--blue-4)) 26%);
+      background: linear-gradient(45deg,#6C70EA, #69C0FF 26%);
       border-radius: 6px;
       transition: 0.5s;
       padding: 14px;
@@ -95,7 +96,8 @@ export default defineComponent({
     .card-top {
       width: 100%;
       height: 84px;
-      background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
+      // background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
+      background: linear-gradient(45deg, #6C70EA, #69C0FF);
       border-radius: 6px 6px 0px 0px;
       position: relative;
       padding: 14px;
@@ -115,7 +117,7 @@ export default defineComponent({
       bottom: -15px;
       width: 64px;
       height: 64px;
-      box-shadow: 0 4px 6px 0 var(--black-7);
+      box-shadow: 0 4px 6px 0 var(--black-0-7);
       border-radius: 50%;
       overflow: hidden;
       }
@@ -125,9 +127,9 @@ export default defineComponent({
       padding: 14px;
       font-size: 12px;
       height: 66px;
-      background: var(--black-100);
+      background: var(--white-100);
       border-radius: 6px;
-      box-shadow: 0px 3px 6px 0px var(--black-7);
+      box-shadow: 0px 3px 6px 0px var(--black-0-7);
       >div{
         >span{
           display: inline-block;

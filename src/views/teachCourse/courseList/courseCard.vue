@@ -313,9 +313,9 @@ export default defineComponent({
       padding-left: 15px;
     }
     .course-item-box {
-      background: var(--black-100);
+      background: var(--white-100);
       border-radius: 10px;
-      box-shadow: 0 2px 4px 0 var(--black-7);
+      box-shadow: 0 2px 4px 0 var(--black-0-7);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -353,14 +353,14 @@ export default defineComponent({
 
           &.in-progress {
             background: #60ae34;
-            box-shadow: 0px 2px 4px 0px var(--black-7);
+            box-shadow: 0px 2px 4px 0px var(--black-0-7);
             color: var(--black-100);
           }
 
           &.finish {
             background: #373737;
             color: #8a8a8a;
-            box-shadow: 0px 2px 4px 0px var(--black-7);
+            box-shadow: 0px 2px 4px 0px var(--black-0-7);
           }
         }
       }
@@ -617,7 +617,7 @@ export default defineComponent({
       }
       &:hover {
         // border: 1px solid #c4c3c3;
-        box-shadow: 0 7px 7px 0 var(--black-7);
+        box-shadow: 0 7px 7px 0 var(--black-0-7);
         .remove-hover {
           display: none;
         }

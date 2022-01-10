@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showPanel === 'none'" style="height: 100%; background: @white">
+    <div v-if="showPanel === 'none'" style="height: 100%; background: #fff">
       <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
       <div
         class="action-btn"

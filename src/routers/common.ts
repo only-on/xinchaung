@@ -2,7 +2,7 @@
 import Layout from "../views/common/Layout.vue";
 import extStorage from "src/utils/extStorage";
 const { lStorage } = extStorage
-const role = lStorage.get('role')
+const role = lStorage.get('role') || 3
 const PathList={1:'',2:'/admin/home',3:'/teacher/home',4:'/studentStatistic',5:''}
 const homePath=PathList[Number(role)]
 export default [

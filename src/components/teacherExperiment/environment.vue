@@ -250,7 +250,7 @@ interface Icongig {
         background: rgba(var(--purpleblue-1),.2);
         border: 1px solid rgba(var(--purpleblue-6),.7);
         border-radius: 6px;
-        box-shadow: 0px 3px 6px 0px var(--black-7);
+        box-shadow: 0px 3px 6px 0px var(--black-0-7);
         cursor: pointer;
       }
 

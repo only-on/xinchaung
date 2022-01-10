@@ -84,7 +84,7 @@ export default defineComponent({
   opacity: 1;
   background: var(--black-100);
   border-radius: 7px;
-  box-shadow: 0px 7px 14px -4px var(--black-7);
+  box-shadow: 0px 7px 14px -4px var(--black-0-7);
 }
 .test-paper-card {
   .itemTop {

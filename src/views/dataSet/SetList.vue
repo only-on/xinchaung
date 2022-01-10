@@ -306,7 +306,7 @@ export default defineComponent({
               display: flex;
               flex-direction: column;
               border-radius: 5px;
-              box-shadow: 0px 3px 6px 0px var(--black-7);
+              box-shadow: 0px 3px 6px 0px var(--black-0-7);
               box-sizing: border-box;
 
               > div:nth-child(1) {
@@ -485,7 +485,7 @@ export default defineComponent({
                           // flex-wrap: wrap;
                           display: none;
                           border-radius: 6px;
-                          box-shadow: 0px 3px 6px 0px var(--black-7);
+                          box-shadow: 0px 3px 6px 0px var(--black-0-7);
                           z-index: 111;
                           flex-shrink: 1;
                           cursor: default;
@@ -563,7 +563,7 @@ export default defineComponent({
             }
           }
           .card-content:hover .card-look{
-            box-shadow: 0px 0px 11px -4px var(--black-7);
+            box-shadow: 0px 0px 11px -4px var(--black-0-7);
           }
         }
 

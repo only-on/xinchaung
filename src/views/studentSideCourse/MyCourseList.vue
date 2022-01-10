@@ -163,7 +163,7 @@ export default defineComponent({
       .main{
         margin: 0 auto;
         width: 285px;
-        box-shadow: 0px 2px 4px 0px var(--black-7);
+        box-shadow: 0px 2px 4px 0px var(--black-0-7);
       }
     }
     .info_hover:hover{

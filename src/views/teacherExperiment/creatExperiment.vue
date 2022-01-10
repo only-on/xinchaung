@@ -63,7 +63,7 @@ export default defineComponent({
   background-repeat: no-repeat;
   background-position: center bottom;
 
-  box-shadow: 0px 3px 6px 0px var(--black-7);
+  box-shadow: 0px 3px 6px 0px var(--black-0-7);
   border-radius: 6px;
 
   > div {
@@ -92,7 +92,7 @@ export default defineComponent({
       // background: linear-gradient(180deg, #f9f0ff, #eaf2ff);
       background:linear-gradient(90deg,var(--geekblue-1), var(--purpleblue-1));
       border-radius: 10px;
-      box-shadow: 0px 4px 6px 0px var(--black-7);
+      box-shadow: 0px 4px 6px 0px var(--black-0-7);
       display: flex;
       flex-direction: column;
       justify-content: center;
