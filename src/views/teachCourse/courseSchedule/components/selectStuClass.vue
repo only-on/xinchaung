@@ -84,7 +84,7 @@ export default defineComponent({
     .ant-tabs-tab-active {
       background: var(--purpleblue-6);
       border-radius: 6px 6px 0 0;
-      color: var(--black-100);
+      color: var(--white-100);
     }
   }
 }

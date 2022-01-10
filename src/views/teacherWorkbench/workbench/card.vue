@@ -336,7 +336,7 @@ export default defineComponent({
             color: var(--purpleblue-6);
             &:hover {
               background-color: var(--purpleblue-6);
-              var(--white-100);
+              color:var(--white-100);
               cursor: pointer;
             }
           }
