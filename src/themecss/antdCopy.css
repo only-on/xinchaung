@@ -4185,7 +4185,7 @@ textarea.ant-input {
   height: 32px;
   padding: 4px 15px;
   font-size: var(--base-font-size);
-  border-radius: 2px;
+  border-radius: 4px;
   color: var(--black-85);
   background: var(--white-100);
   border-color: var(--gray-5);
@@ -9431,7 +9431,7 @@ span.ant-radio + * {
   margin-right: 0;
 }
 .ant-tabs-nav .ant-tabs-tab:hover {
-  color: var(--blue-5);
+  color: var(--purplebule-5);
 }
 .ant-tabs-nav .ant-tabs-tab:active {
   color: var(--blue-7);

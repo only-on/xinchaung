@@ -105,13 +105,13 @@
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px;
-    color: var(--black-100);
+    color: var(--white-100);
     background-color: var(--purpleblue-6);
     border-color: var(--gray-8);
   }
   .ant-modal-close-x {
     height: 40px;
-    color: var(--black-100);
+    color: var(--white-100);
     line-height: 40px;
   }
   .ant-modal-header {
@@ -121,7 +121,6 @@
     /* line-height: 40px; */
     /* font-size: 1.15em; */
     /* font-weight: bold; */
-    /* color: var(--black-100); */
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-color: #f4f4f4;
@@ -129,7 +128,7 @@
       line-height: 40px;
       font-weight: bold;
       padding-left: 15px;
-      color: var(--black-100);
+      color: var(--white-100);
       font-size: 15px;
     }
   }
@@ -150,7 +149,7 @@
   height: 41px;
   background-color: var(--purpleblue-6);
   // border-color: var(--gray-8);
-  color: var(--black-100);
+  color: var(--white-100);
   padding: 0 20px;
   line-height: 41px;
   font-size: 16px;
