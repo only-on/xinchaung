@@ -82,7 +82,7 @@ export default defineComponent({
   margin-bottom: 20px;
   box-sizing: border-box;
   opacity: 1;
-  background: var(--black-100);
+  background: var(--white-100);
   border-radius: 7px;
   box-shadow: 0px 7px 14px -4px var(--black-0-7);
 }

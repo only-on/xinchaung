@@ -259,7 +259,7 @@ export default defineComponent({
       text-overflow: ellipsis;
       padding: 5px 10px;
       &.active {
-        color: var(--black-100);
+        color: var(--white-100);
         background: var(--purpleblue-6);
         border-radius: var(--border-radius-default);
       }

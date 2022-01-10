@@ -405,7 +405,7 @@ export default defineComponent({
     padding: 30px;
     border: 10px;
     border-radius: 10px;
-    background-color: var(--black-100);
+    background-color: var(--white-100);
     box-shadow: 0 0 5px rgb(0 0 0 / 10%);
     display: flex;
     .tree {
@@ -453,7 +453,7 @@ export default defineComponent({
   .ant-input-group{
     .ant-input {
       border-radius: 4px;
-      background: var(--black-100);
+      background: var(--white-100);
       color: #5e5e5e;
       font-size: 15px;
       padding: 8px 5px 8px 30px;
@@ -468,7 +468,7 @@ export default defineComponent({
     .ant-btn{
       background-color: var(--purpleblue-6);
       // border-color: var(--gray-8);
-      color: var(--black-100);
+      color: var(--white-100);
       height: 41px;
       width: 100px;
       font-size: 16px;
@@ -480,7 +480,7 @@ export default defineComponent({
   height: 41px;
   background-color: var(--purpleblue-6);
   // border-color: var(--gray-8);
-  color: var(--black-100);
+  color: var(--white-100);
   padding: 0 20px;
   line-height: 41px;
   font-size: 16px;
@@ -501,7 +501,7 @@ export default defineComponent({
     background: var(--purpleblue-6);
     border-color: var(--purpleblue-6);
     a {
-      color: var(--black-100);
+      color: var(--white-100);
     }
   }
   .ant-pagination-item:focus, 
@@ -510,14 +510,14 @@ export default defineComponent({
     border-color: var(--purpleblue-6);
     transition: all 0.3s;
     a {
-      color: var(--black-100);
+      color: var(--white-100);
     }
   }
   .ant-pagination-next .ant-pagination-item-link:hover,
   .ant-pagination-next .ant-pagination-item-link:focus,
   .ant-pagination-prev .ant-pagination-item-link:hover,
   .ant-pagination-prev .ant-pagination-item-link:focus {
-    color: var(--black-100);
+    color: var(--white-100);
     background: var(--purpleblue-6); 
     border-color: var(--purpleblue-6);
     transition: all 0.3s;
@@ -526,7 +526,7 @@ export default defineComponent({
   .ant-pagination-disabled .ant-pagination-item-link:hover {
     color: rgba(0, 0, 0, 0.25);
     border-color: #d9d9d9;
-    background-color: var(--black-100);
+    background-color: var(--white-100);
   }
   .ant-pagination-options-quick-jumper input:hover,
   .ant-pagination-options-quick-jumper input:focus {

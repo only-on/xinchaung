@@ -347,14 +347,14 @@ export default defineComponent({
           text-align: center;
           line-height: 1;
           &.not-start {
-            background: var(--black-100);
+            background: var(--white-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
             box-shadow: 0px 2px 4px 0px var(--black-0-7);
-            color: var(--black-100);
+            color: var(--white-100);
           }
 
           &.finish {
@@ -502,7 +502,7 @@ export default defineComponent({
             color: #8f8f8f;
             font-size: 14px;
             &:hover {
-              color: rgba(var(--purpleblue-6), 1);
+              color: var(--purpleblue-6);
             }
           }
           > a {

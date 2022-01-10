@@ -438,7 +438,7 @@ export default defineComponent({
     .create-card {
       box-sizing: border-box;
       opacity: 1;
-      background: var(--black-100);
+      background: var(--white-100);
       border-radius: 7px;
       box-shadow: 0 2px 4px 0 var(--black-0-7);
       border: 1px dashed var(--purpleblue-6);
