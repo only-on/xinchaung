@@ -94,12 +94,12 @@
       <template v-else>
         <div class="vncloading" v-if="!uuidLoading">
           <div class="word">
-            <a-spin tip="LOADING..."></a-spin>
+           <img :src="loadingGif" alt="" srcset="">
           </div>
         </div>
         <div v-else-if="!vncLoadingV" class="vncloading">
           <div class="word">
-            <a-spin tip="LOADING..."></a-spin>
+            <img :src="loadingGif" alt="" srcset="">
           </div>
         </div>
         <vue-no-vnc
@@ -147,6 +147,7 @@ import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
 import layoutBg from "src/assets/images/common/layout_bg.jpg";
+import loadingGif from "src/assets/images/vmloading.gif"
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -631,6 +632,7 @@ export default defineComponent({
       currentInterface,
       layoutBg,
       opType,
+      loadingGif
     };
   },
 });
@@ -685,20 +687,19 @@ export default defineComponent({
       position: relative;
       height: 100%;
       text-align: center;
-       background: radial-gradient(#222922, #000500);
+       background: radial-gradient(#010B24, #010B24);
       .word {
         bottom: 0;
         color: #fff;
-        font-size: 2.5em;
-        height: 2.5em;
+        
         left: 0;
-        line-height: 2.5em;
         margin: auto;
         right: 0;
         position: absolute;
-        text-shadow: 0 0 10px rgba(117, 121, 224, 0.5),
-          0 0 5px rgba(117, 121, 224, 0.5);
-        top: 0;
+        // text-shadow: 0 0 10px rgba(117, 121, 224, 0.5),
+        //   0 0 5px rgba(117, 121, 224, 0.5);
+        top: 50%;
+        transform: translateY(-50%);
       }
       .overlay {
         // background-image: linear-gradient(

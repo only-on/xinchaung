@@ -1,8 +1,10 @@
 <template>
   <div v-layout-bg style="height: 100%" class="interation-result-box">
     <div class="interation-result-header">
-      <span>{{ stupaperCount.paper_title }}</span>
-      <div class="returnicon" @click="backPaperList"><span class="iconfont icon-fanhui"></span></div>
+      <span>{{ stupaperCount.testing_name }}</span>
+      <div class="returnicon" @click="backPaperList">
+        <span class="iconfont icon-fanhui"></span>
+      </div>
     </div>
 
     <a-tabs default-active-key="1" @change="tabChange">
@@ -10,31 +12,44 @@
         <a-row class="results-statistical-header">
           <a-col :span="3" align="left">
             已提交{{
-              stupaperCount.submit_count + "/" + submitPeople.totalCount
+              stupaperCount.student_commit_counts +
+              "/" +
+              stupaperCount.student_total_counts
             }}人
           </a-col>
           <a-col :span="3" align="left"
-            >最高得{{ stupaperCount.max_score }}分</a-col
+            >最高得{{ stupaperCount.question_highest_score }}分</a-col
           >
           <a-col :span="3" align="left"
-            >最低得{{ stupaperCount.min_score }}分</a-col
+            >最低得{{ stupaperCount.question_lowest_score }}分</a-col
           >
           <a-col :span="3" align="left"
-            >平均得{{ stupaperCount.average_score }}分</a-col
+            >平均得{{ stupaperCount.question_average_score }}分</a-col
           >
           <a-col :span="12" align="right">
-            共{{ stupaperCount.question_count }}题 总分{{
-              stupaperCount.question_score
+            共{{ stupaperCount.question_total_counts }}题 总分{{
+              stupaperCount.question_total_score
             }}分
           </a-col>
         </a-row>
-        <a-table
-          @change="changePage"
-          :row-key="rowKey"
-          :columns="columns"
-          :data-source="stuData"
-          :pagination="pagination"
-          bordered
+        <a-config-provider>
+          <a-table
+            @change="changePage"
+            :row-key="rowKey"
+            :columns="columns"
+            :data-source="stuData"
+            :pagination="false"
+            bordered
+          />
+          <template #renderEmpty>
+            <div><empty type="tableEmpty"></empty></div>
+          </template>
+        </a-config-provider>
+        <page
+          v-model:current="tabParams.page"
+          v-model:pageSize="tabParams.limit"
+          :total="pagination.total"
+          @change="pageChange"
         />
       </a-tab-pane>
       <a-tab-pane key="2" tab="题目正确率" force-render>
@@ -46,64 +61,107 @@
             :key="index"
           >
             <div class="itemLeft">
-              <div
-                style="
-                  width: 100%;
-                  white-space: pre-wrap;
-                  word-wrap: break-word;
-                  word-break: normal;
-                "
-              >
-                {{ item.question_title }}
-              </div>
-              <!-- <div v-html="item.question_title"></div> -->
-              <div v-if="item.question_type === '0'">
-                <ul v-for="(it, j) in item.option" :key="j.toString()">
-                  <li :class="it.option_code === item.answer ? 'green' : ''">
-                    <span>选项{{ it.option_code }}：</span>
-                    {{ it.content }}
-                    <span
-                      v-if="it.option_code === item.answer"
-                      style="margin-left: 10px"
-                      >(正确答案)</span
-                    >
-                  </li>
-                </ul>
-              </div>
-              <div v-if="item.question_type === '1'">
-                <ul class="green">
-                  答案：
-                  <span
-                    style="margin-right: 10px"
-                    v-for="(it, j) in item.option"
+              <template v-if="item.question">
+                <div
+                  style="
+                    width: 100%;
+                    white-space: pre-wrap;
+                    word-wrap: break-word;
+                    word-break: normal;
+                  "
+                >
+                  {{ item.question.question }}
+                </div>
+                <!-- <div v-html="item.question_title"></div> -->
+                <div v-if="item.question.type_id == 3">
+                  <ul
+                    v-for="(it, j) in item.question.options"
                     :key="j.toString()"
                   >
-                    {{ it.content }}
-                    <span v-if="j !== item.option.length - 1">,</span>
-                  </span>
-                </ul>
-              </div>
+                    <li
+                      :class="
+                        item.question.answers[0] &&
+                        it.id == item.question.answers[0].answer
+                          ? 'green'
+                          : ''
+                      "
+                    >
+                      <span>{{ it.option }}</span>
+                      {{ it.content }}
+                      <span
+                        v-if="
+                          item.question.answers[0] &&
+                          it.id == item.question.answers[0].answer
+                        "
+                        style="margin-left: 10px"
+                        >(正确答案)</span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="item.question.type_id == 1">
+                  <ul>
+                    <li
+                      v-for="(it, j) in item.question.options"
+                      :key="j.toString()"
+                      :class="
+                        item.question.answers[0] &&
+                        it.id == item.question.answers[0].answer
+                          ? 'green'
+                          : ''
+                      "
+                    >
+                      选项{{ toAbc(Number(j) + 1) }}：
+                      {{ it.option }}
+                      <!-- <span v-if="j !== item.option.length - 1">,</span> -->
+                    </li>
+                  </ul>
+                </div>
+                <div v-if="item.question.type_id == 4">
+                  <ul class="green">
+                    答案：
+                    <span
+                      v-for="(it, j) in item.question.answers"
+                      :key="j.toString()"
+                    >
+                      {{ it.answer
+                      }}{{ j !== item.question.answers.length - 1 ? "," : "" }}
+                    </span>
+                  </ul>
+                </div>
+                <div v-if="item.question.type_id == 5">
+                  <div class="green">
+                    答案：<span>
+                      {{ item.question.answers[0].answer }}
+                    </span>
+                  </div>
+                </div>
+                <div v-if="item.question.type_id == 2">
+                  <ul>
+                    <li
+                      v-for="(it, j) in item.question.options"
+                      :key="j.toString()"
+                      :class="getAnswers(item.question.answers).includes(it.id.toString())?'green':''"
+                    >
+                    选项{{ toAbc(Number(j) + 1) }}：
+                      {{ it.option }}
+                    </li>
+                  </ul>
+                </div>
+              </template>
             </div>
             <div class="itemRight">
               <div class="rote">
                 <span class="comment">批注：</span>
                 <span class="accuracy"
-                  >【题目正确率：{{ item.precision + "%" }}】</span
+                  >【题目正确率：{{ item.correct_rate + "%" }}】</span
                 >
               </div>
-              <div
-                class="editcommemts"
-                style="display: flex"
-                :style="
-                  stupaperCount.submit_count === 0
-                    ? { cursor: 'not-allowed' }
-                    : ''
-                "
-              >
+              <div class="editcommemts" style="display: flex">
                 <a-textarea
                   class="textarea scroll-bar-customize"
-                  v-model="item.question_desc"
-                  :disabled="!item.editflag || stupaperCount.submit_count === 0"
+                  v-model:value="item.note"
+                  :disabled="!item.editflag"
                   style="width: 100%; height: 138px; margin-top: 14px"
                 />
                 <div
@@ -112,7 +170,6 @@
                       ? 'okbutton savebutton'
                       : 'okbutton editbutton'
                   "
-                  :style="stupaperCount?.submit_count === 0?'pointer-events:none':''"
                 >
                   <span
                     v-if="item.editflag"
@@ -149,31 +206,42 @@ import {
   reactive,
   toRefs,
 } from "vue";
-import { getDefaultPaperInfoApi, getAchievStatisApi,editQuestionApi } from "./api";
+import {
+  getDefaultPaperInfoApi,
+  getAchievStatisApi,
+  editQuestionApi,
+  getTestPaperAccuracyApi,
+} from "./api";
 import { useRoute } from "vue-router";
 import router from "src/routers";
-type TreactiveData={
-    stupaperCount: any,
-      submitPeople: any,
-      tabParams: {
-        page: number,
-        id: number,
-      },
-      stuData: any[],
-      pagination: {
-        pageSize: number,
-        total: number,
-        current: number,
-      },
-      accuracyData: any[],
-}
+import empty from "src/components/Empty.vue";
+import page from "src/components/page/page.vue";
+import { message } from "ant-design-vue";
+type TreactiveData = {
+  stupaperCount: any;
+  tabParams: {
+    page: number;
+    id: number;
+    limit: number;
+  };
+  stuData: any[];
+  pagination: {
+    pageSize: number;
+    total: number;
+    current: number;
+  };
+  accuracyData: any[];
+};
 export default defineComponent({
   name: "",
-  components: {},
+  components: {
+    empty,
+    page,
+  },
   setup: (props, context) => {
     const route = useRoute();
     const paper_id = route.query.paper_id as any as number;
-    const course_id=route.query.course_id as any as number;
+    const course_id = route.query.course_id as any as number;
     var updata = inject("updataNav") as Function;
 
     updata({
@@ -190,36 +258,36 @@ export default defineComponent({
       {
         title: "姓名",
         align: "left",
-        dataIndex: "username",
-        key: "username",
+        dataIndex: "user_name",
+        key: "user_name",
       },
       {
         title: "班级",
-        dataIndex: "classname",
-        key: "classname",
+        dataIndex: "class_name",
+        key: "class_name",
         align: "left",
       },
       {
         title: "成绩",
-        key: "ps_score",
-        dataIndex: "ps_score",
-        scopedSlots: { customRender: "ps_score" },
+        key: "score",
+        dataIndex: "score",
+        scopedSlots: { customRender: "score" },
         align: "left",
       },
       {
         title: "答错",
-        key: "wrong_count",
-        dataIndex: "wrong_count",
+        key: "question_error_counts",
+        dataIndex: "question_error_counts",
         align: "center",
-        scopedSlots: { customRender: "wrong_count" },
+        scopedSlots: { customRender: "question_error_counts" },
       },
     ];
-    const reactiveData:TreactiveData = reactive({
+    const reactiveData: TreactiveData = reactive({
       stupaperCount: {},
-      submitPeople: {},
       tabParams: {
         page: 1,
         id: paper_id,
+        limit: 15,
       },
       stuData: [],
       pagination: {
@@ -236,9 +304,15 @@ export default defineComponent({
 
     // 获取试卷基本信息
     function getDefaultPaperInfo() {
-      getDefaultPaperInfoApi({ id: paper_id }).then((res: any) => {
+      getDefaultPaperInfoApi({ test_id: paper_id }).then((res: any) => {
         reactiveData.stupaperCount = res.data;
-        reactiveData.accuracyData = res.data.question_list;
+      });
+    }
+    // 获取习题正确率
+    function getTestPaperAccuracy() {
+      getTestPaperAccuracyApi(reactiveData.tabParams.id).then((res: any) => {
+        console.log(res);
+        reactiveData.accuracyData = res.data;
         reactiveData.accuracyData.forEach((item: any) => {
           item.editflag = true;
         });
@@ -246,41 +320,30 @@ export default defineComponent({
     }
     // 修改批注后点击确认
     function confirmModify(titleInfo: any, index: number) {
-      var formdata = new FormData();
-      formdata.append("question_id", titleInfo.question_id);
-      formdata.append("question_title", titleInfo.question_title);
-      formdata.append("question_code", titleInfo.question_code);
-      formdata.append("question_type", titleInfo.question_type);
-      formdata.append("question_score", titleInfo.question_score);
-      formdata.append("question_sort", titleInfo.question_sort);
-      formdata.append("is_sort", titleInfo.is_sort);
-      formdata.append("question_desc", titleInfo.question_desc);
-      titleInfo.option.forEach((it: any, i: any) => {
-        formdata.append(`option[${i}][option_id]`, it.option_id);
-        formdata.append(`option[${i}][option_code]`, it.option_code);
-        formdata.append(`option[${i}][content]`, it.content);
-        formdata.append(`option[${i}][option_score]`, it.option_score);
-        formdata.append(`option[${i}][option_sort]`, it.option_sort);
-      });
-      if (titleInfo.question_type === "1") {
-        titleInfo.answer.forEach((it: any) => {
-          formdata.append("answer[]", it);
-        });
-      } else if (titleInfo.question_type === "0") {
-        formdata.append("answer[]", titleInfo.answer);
+      if (titleInfo.record_id == 0) {
+        message.warn("学生随堂测试未提交");
+        return;
       }
-      formdata.append("precision", titleInfo.precision);
-      formdata.append("course_id", paper_id.toString());
-      editQuestionApi(formdata).then((res:any)=>{
-          (reactiveData.accuracyData[index] as any).editflag = false
-      })
+      editQuestionApi(
+        { note: titleInfo.note },
+        { record_id: titleInfo.record_id }
+      ).then((res: any) => {
+        (reactiveData.accuracyData[index] as any).editflag = false;
+      });
     }
     // 成绩统计
     function getAchievStatis() {
-      getAchievStatisApi(reactiveData.tabParams).then((res: any) => {
-        reactiveData.submitPeople = res.data;
+      getAchievStatisApi(
+        {
+          page: reactiveData.tabParams.page,
+          limit: reactiveData.tabParams.limit,
+        },
+        { test_id: reactiveData.tabParams.id }
+      ).then((res: any) => {
+        console.log(res);
         reactiveData.stuData = res.data.list;
-        reactiveData.pagination.current = res.data.page;
+        reactiveData.tabParams.page = res.data.page.currentPage;
+        reactiveData.tabParams.limit = res.data.page.totalCount;
         reactiveData.pagination.total = res.data.totalCount;
       });
     }
@@ -292,30 +355,48 @@ export default defineComponent({
 
     // tab发生变化时
     function tabChange(key: any) {
-      if (key === '1') {
-        getAchievStatis()
-        getDefaultPaperInfo()
+      if (key === "1") {
+        getAchievStatis();
+        getDefaultPaperInfo();
       } else {
-        getDefaultPaperInfo()
+        // getDefaultPaperInfo();
+        getTestPaperAccuracy();
       }
     }
 
+    // 分页发生变化时
+    function pageChange(page: number, pageSize: number) {
+      reactiveData.tabParams.page = page;
+      reactiveData.tabParams.limit = pageSize;
+    }
     // 编辑
-    function toEdit(titleInfo:any, index:number) {
-        (reactiveData.accuracyData[index] as any).editflag = true
+    function toEdit(titleInfo: any, index: number) {
+      (reactiveData.accuracyData[index] as any).editflag = true;
     }
     // 返回列表
     function backPaperList() {
-        router.push({
-            path:"/teacher/teacherCourse/testPaperList",
-            query:{
-                course_id:course_id
-            }
-        })
+      router.go(-1);
+      // router.push({
+      //     path:"/teacher/teacherCourse/testPaperList",
+      //     query:{
+      //         course_id:course_id
+      //     }
+      // })
     }
-    const rowKey=(record:any)=> {
-        return record.student_id
+    function toAbc(i: number) {
+      return String.fromCharCode(64 + i);
     }
+    // 获取多选题答案
+    function getAnswers(answers: any[]) {
+      let arr: any = [];
+      answers.map((item: any) => {
+        arr.push(item.answer);
+      });
+      return arr;
+    }
+    const rowKey = (record: any) => {
+      return record.student_id;
+    };
     return {
       ...toRefs(reactiveData),
       changePage,
@@ -324,7 +405,10 @@ export default defineComponent({
       confirmModify,
       backPaperList,
       toEdit,
-      rowKey
+      rowKey,
+      pageChange,
+      toAbc,
+      getAnswers,
     };
   },
 });

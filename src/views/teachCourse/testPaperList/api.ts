@@ -38,22 +38,30 @@ export async function deleteFollowApi(urlParams:{paper_id:number}) {
  *  @description 获取随堂测试基本信息
  * @param id 试卷id
  */
-export async function getDefaultPaperInfoApi(params:{id:number}) {
-    return await courseApi.getDefaultPaperInfoApi({param:params})
+export async function getDefaultPaperInfoApi(params:{test_id:number}) {
+    return await courseApi.getDefaultPaperInfoApi({urlParams:params})
 }
 
 /**
  * @description 成绩统计
  */
 
-export async function getAchievStatisApi(params:{page:number,id:number}) {
-    return await courseApi.getAchievStatisApi({param:params})
+export async function getAchievStatisApi(params:{page:number,limit:number},urlParams:{test_id:number}) {
+    return await courseApi.getAchievStatisApi({param:params,urlParams:urlParams})
 }
 
+
+/**
+ * @description 获取正确率
+ */
+
+export async function getTestPaperAccuracyApi(test_id:number) {
+    return await courseApi.getTestPaperAccuracyApi({urlParams:{test_id:test_id}})
+}
 /**
  * @description 更新试题批注
  * @param
  */
-export async function editQuestionApi(params:any) {
-    return await courseApi.editQuestionApi({param:params})
+export async function editQuestionApi(params:any,urlParams:{record_id:number}) {
+    return await courseApi.editQuestionApi({param:params,urlParams:urlParams})
 }

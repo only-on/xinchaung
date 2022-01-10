@@ -258,6 +258,7 @@ export default defineComponent({
       // height: 25px;
       text-overflow: ellipsis;
       padding: 5px 10px;
+      white-space: nowrap;
       &.active {
         color: @white;
         background: @theme-color;

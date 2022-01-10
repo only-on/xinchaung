@@ -198,16 +198,21 @@ export default {
     method: "DELETE",
   },
   getDefaultPaperInfoApi: {
-    url: "/classtest/default/paper_info",
+    url: "/api/v1/question/tests/{test_id}/score-analysis",
     method: "GET"
   },
   getAchievStatisApi: {
-    url: `/classtest/default/student_achievement`,
+    url: `/api/v1/question/tests/{test_id}/scores`,
+    method: "GET"
+  },
+  getTestPaperAccuracyApi:{
+    url:"/api/v1/question/tests/{test_id}/correct-rate",
     method: "GET"
   },
   editQuestionApi: {
-    url: "/classtest/default/edit_question",
-    method: "POST"
+    url: "/api/v1/question/record/{record_id}",
+    method: "PUT",
+    dataType: 'json'
   },
   saveToCourseApi: {
     url: "/teacher-course/save-to-course",
@@ -597,4 +602,5 @@ export interface ITeacherCourseApis {
   envMonitoringList: TFHttpSend
   forbiddenUser: TFHttpSend
   setArchiveCourseApi:TFHttpSend
+  getTestPaperAccuracyApi:TFHttpSend
 }
