@@ -261,7 +261,7 @@ export default defineComponent({
         margin-left: 30px;
     }
     .content-title{
-        font-size: @var(--font-size-16);
+        font-size: var(--font-size-16);
         color: #050101;
         letter-spacing: 1px;
         font-weight: 700;
@@ -323,7 +323,7 @@ export default defineComponent({
         box-sizing: border-box;
         .hint{
             color:var(--white-100);
-            font-size: @var(--font-size-16);
+            font-size: var(--font-size-16);
         }
         .hint-msg{
              color:var(--white-100);
@@ -342,7 +342,7 @@ export default defineComponent({
             padding: 14px 0px 14px 30px;
             .top-title{
             color: var(--white-100);
-            font-size: @var(--font-size-16);
+            font-size: var(--font-size-16);
             letter-spacing: 1px;
             line-height: 50px;
             }
@@ -369,7 +369,7 @@ export default defineComponent({
         box-sizing: border-box;
         background: var(--white-100); 
        .stu-proess{
-            font-size: @var(--font-size-16);
+            font-size: var(--font-size-16);
             color: #050101;
             letter-spacing: 1px;
             font-weight: 700;

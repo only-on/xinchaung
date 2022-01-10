@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 <style lang="less">
      .content-title{
-        font-size: @var(--font-size-16);
+        font-size: var(--font-size-16);
         color: #050101;
         letter-spacing: 1px;
         font-weight: 700;

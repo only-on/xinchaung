@@ -168,7 +168,7 @@ export default defineComponent({
     }
 
     .description {
-      font-size: calc(var(--base-font-size)- 2px);
+      font-size: var(--font-size-16);
       color: var(--black-25);
     }
   }
@@ -180,8 +180,8 @@ export default defineComponent({
 
     button,
     a {
-      padding: var(--padding-xss) - 2px;
-      font-size: @var(--font-size-16) - 2px;
+      padding: 2px;
+      font-size: var(--base-font-size);
       color: var(--black-25);
 
       &:hover {
