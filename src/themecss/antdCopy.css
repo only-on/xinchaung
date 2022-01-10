@@ -4331,8 +4331,8 @@ textarea.ant-input {
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
   color: var(--white-100);
-  background: var(--blue-5);
-  border-color: var(--blue-5);
+  background: var(--purplebule-5);
+  border-color: var(--purplebule-5);
 }
 .ant-btn-primary:hover > a:only-child,
 .ant-btn-primary:focus > a:only-child {
@@ -5677,9 +5677,9 @@ textarea.ant-input {
 }
 .ant-btn-background-ghost.ant-btn-primary:hover,
 .ant-btn-background-ghost.ant-btn-primary:focus {
-  color: var(--blue-5);
+  color: var(--purplebule-5);
   background: transparent;
-  border-color: var(--blue-5);
+  border-color: var(--purplebule-5);
 }
 .ant-btn-background-ghost.ant-btn-primary:hover > a:only-child,
 .ant-btn-background-ghost.ant-btn-primary:focus > a:only-child {

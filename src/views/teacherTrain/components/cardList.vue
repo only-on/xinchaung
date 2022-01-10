@@ -291,12 +291,12 @@ export default defineComponent({
         color: var(--black-25);
       }
       &.noStart{
-        background: var(--black-100);
+        background: var(--white-100);
         color: var(--black-25);
       }
       &.onGoing{
         background: #60ae34;
-        color: var(--black-100);
+        color: var(--white-100);
       }
     }
   }
