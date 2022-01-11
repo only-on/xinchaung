@@ -204,11 +204,11 @@ export default defineComponent({
 }
 .experiment-report-box {
   flex: 1;
-  background: var(--black-100);
+  background: var(--white-100);
 }
 .experiment-detail-box {
   flex: 1;
-  background: var(--black-100);
+  background: var(--white-100);
   overflow-y: auto;
   .init-experiment-guide-box {
     min-height: 50%;

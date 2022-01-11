@@ -225,13 +225,13 @@ export default defineComponent({
   flex-direction: row;
   height: 900px;
   .emptyContent {
-    background-color: var(--black-100);
+    background-color: var(--white-100);
   }
   .course-experiment-left {
     width: 440px;
     flex-shrink: 0;
     height: 100%;
-    background: var(--black-100);
+    background: var(--white-100);
     border-radius: var(--border-radius-default);
     display: flex;
     flex-direction: column;
@@ -276,7 +276,6 @@ export default defineComponent({
     flex: 1;
     width: 200px;
     margin-left: 15px;
-    // background: var(--black-100);
     border-radius: var(--border-radius-default);
     overflow-y: auto;
   }

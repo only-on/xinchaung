@@ -109,7 +109,7 @@ export default defineComponent({
 
 <style lang="less">
 .experiment-tabs {
-  background: var(--black-100);
+  background: var(--white-100);
   margin: 16px 0;
   height: 40px;
   display: flex;

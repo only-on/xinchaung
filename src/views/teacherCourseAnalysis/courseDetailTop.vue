@@ -288,7 +288,7 @@ export default defineComponent({
     align-items: center;
     .name {
       font-size: 24px;
-      color: var(--black-100);
+      color: var(--white-100);
       line-height: 33px;
       letter-spacing: 2px;
     }
@@ -303,16 +303,16 @@ export default defineComponent({
       border-radius: 11px;
       height: 22px;
       &.not-start {
-        background: var(--black-100);
+        background: var(--white-100);
         color: #acacac;
       }
       &.in-progress {
         background: #60ae34;
         box-shadow: 0px 2px 4px 0px var(--black-0-7);
-        color: var(--black-100);
+        color: var(--white-100);
       }
       &.finish {
-        color: var(--black-100);
+        color: var(--white-100);
         background: #989898;
         box-shadow: 0px 2px 4px 0px var(--black-0-7);
       }
@@ -326,7 +326,7 @@ export default defineComponent({
       height: 40px;
       background: var(--purpleblue-6);
       border-radius: 50%;
-      color: var(--black-100);
+      color: var(--white-100);
       cursor: pointer;
     }
   }
@@ -339,7 +339,7 @@ export default defineComponent({
       font-size: 14px;
       font-weight: 400;
       text-align: left;
-      color: var(--black-100);
+      color: var(--white-100);
       line-height: 24px;
       letter-spacing: 1px;
       display: block;
@@ -359,7 +359,7 @@ export default defineComponent({
         text-align: center;
 
         &:nth-child(1) {
-          color: var(--black-100);
+          color: var(--white-100);
           font-size: 14px;
         }
 
@@ -388,7 +388,7 @@ export default defineComponent({
         background: #ff8f00;
         border-radius: 50%;
         margin-left: 24px;
-        color: var(--black-100);
+        color: var(--white-100);
         cursor: pointer;
 
         &:hover {

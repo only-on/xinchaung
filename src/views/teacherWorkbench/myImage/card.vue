@@ -102,7 +102,7 @@ export default defineComponent({
       position: relative;
       padding: 14px;
       .card-title{
-        color: var(--black-100);
+        color: var(--white-100);
         font-size: 16px;
         line-height: 35px;
       }

@@ -281,7 +281,7 @@ export default defineComponent({
   width: var(--center-width);
   margin: 0 auto;
   height: 205px;
-  color: var(--black-100);
+  color: var(--white-100);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -292,7 +292,7 @@ export default defineComponent({
     > span {
       &.course-name {
         font-size: 24px;
-        color: var(--black-100);
+        color: var(--white-100);
         line-height: 33px;
         letter-spacing: 2px;
         display: flex;
@@ -309,14 +309,14 @@ export default defineComponent({
           line-height: 13px;
           font-style: normal;
           &.not-start {
-            background: var(--black-100);
+            background: var(--white-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
             box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
-            color: var(--black-100);
+            color:var(--white-100);
           }
 
           &.finish {
@@ -422,7 +422,7 @@ export default defineComponent({
         background: var(--glod-6);
         border-radius: 50%;
         margin-left: 24px;
-        color: var(--black-100);
+        color: var(--white-100);
         font-size: var(--font-size-18);
         cursor: pointer;
         &:hover {
