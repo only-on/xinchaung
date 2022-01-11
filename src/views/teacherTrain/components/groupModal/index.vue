@@ -252,6 +252,8 @@ export default defineComponent({
       editOk() {
         console.log(state.treeData, "treeData");
         context.emit("editModal", true, state.treeData,props.ifautoGroupEdit);
+        state.treeData=[]
+
       },
       handGroup() {},
       editCancel() {
