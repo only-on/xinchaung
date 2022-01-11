@@ -13,10 +13,10 @@
     </div>
     <div class="file__op">
       <a-button type="text" @click="handlePreview">
-        <font-awesome-icon icon="eye" />
+        <span class="iconfont icon-chakan"></span>
       </a-button>
       <a-button type="text" :href="downloadUrl">
-        <font-awesome-icon icon="download" />
+        <span class="iconfont icon-download"></span>
       </a-button>
       <a-button type="text" @click="handleRemove">
         <span class="iconfont icon-shanchu" />
@@ -143,14 +143,14 @@ export default defineComponent({
   position: relative;
   display: flex;
   border-radius: @border-radius-base;
-  padding: @padding-xs;
+  // padding: @padding-xs;
   align-items: center;
-
+  padding: 14px 16px;
   .file__icon {
     display: flex;
     .iconfont {
-      width: 40px;
-      height: 40px;
+      width:38px;
+      height:38px;
       background-repeat: no-repeat;
       background-size: 100% 100%;
     }

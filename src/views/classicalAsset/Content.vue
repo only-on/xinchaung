@@ -26,7 +26,7 @@
       <div class="more-detail">
         <h3>描述</h3>
         <a-divider style="background-color: #d5d5d5" />
-        <div>{{ detail.description }}</div>
+        <div class="description">{{ detail.description }}</div>
       </div>
       <a-divider style="opacity: 0" />
       <div class="classical__data-list">
@@ -51,16 +51,17 @@
         </div>
         <div class="classical__data-list-content">
           <a-row
-            :gutter="[16, 16]"
             class="classical__data-list-row"
             v-if="itemList.length > 0"
           >
             <a-col
+              class="col"
               :span="8"
               v-for="(item, index) in itemList"
               :key="'dataset-list-item-' + index"
             >
               <file-card
+                class="fileCard"
                 :title="item.file_name"
                 :size="item.size"
                 :preview-url="item.file_html"
@@ -111,7 +112,7 @@
   >
     <a-form :model="folderInfo" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-item label="名称：">
-        <div
+        <!-- <div
           class="classical__input--count-inner"
           :class="{ 'classical__input--focused': nameFocused }"
         >
@@ -125,7 +126,8 @@
             @focus="handleNameFocused"
             @blur="handleNameBlurred"
           />
-        </div>
+        </div> -->
+        <number-input v-model:value="folderInfo.name" showCount style="height:32px" :maxlength="100"></number-input>
       </a-form-item>
       <a-form-item label="描述：">
         <div
@@ -167,6 +169,7 @@ import FileCard from "../../components/classical/FileCard.vue";
 import http from "src/api";
 import Empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
+import numberInput from "src/components/aiAnt/numberInput.vue"
 
 interface FileItem {
   uid: string;
@@ -187,6 +190,7 @@ export default defineComponent({
     FileCard,
     WatermarkIcon,
     Empty,
+    numberInput
   },
   setup(props, { emit }) {
     var route = useRoute();
@@ -540,7 +544,9 @@ export default defineComponent({
 
   .classical__content--main {
     margin-top: @margin-lg + 21px;
-
+    .description{
+      color:rgba(0, 0, 0, 0.65);
+    }
     .classical__data-list {
       .classical__data-list-header {
         display: flex;
@@ -556,16 +562,24 @@ export default defineComponent({
 
         .classical__data-list-upload {
           margin-left: @margin-md;
+          .icon-upload{
+            font-size: 14px;
+            margin-right: 4px;
+          }
         }
       }
 
       .classical__data-list-content {
-        padding: @padding-md 0px;
-
         .classical__data-list-row {
-          width: 100%;
+          // width: 100%;
+          .fileCard{
+            margin-right: 14px;
+            margin-top: 14px;
+          }
+          .col:nth-child(3n) .fileCard{
+            margin-right: 0px;
+          }
         }
-
         .classical__data-list-row--no-data {
           display: flex;
           justify-content: center;

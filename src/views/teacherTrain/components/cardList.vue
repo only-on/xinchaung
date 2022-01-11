@@ -80,7 +80,7 @@
         </div>
         <div class="cardfoot1">
           <li>
-            <i class="iconfont icon-renwu"></i>
+            <i class="icon iconfont icon-guidangshijian"></i>
             归档时间：
             <span>{{item.created_time}}</span>
           </li>
@@ -287,8 +287,8 @@ export default defineComponent({
       border-radius: 12px 0px 0px 12px;
       box-shadow: 0px 2px 4px 0px @shadow-color;
       &.end{
-        background: #8A8A8A;
-        color: @text-color-secondary;
+        background:#373737 ;
+        color:#8A8A8A;
       }
       &.noStart{
         background: @white; 
@@ -366,7 +366,7 @@ export default defineComponent({
       background: @descriptions-bg;
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
-      height:40px;
+      height:41px;
       border-top: 1px solid @border-color;
       box-sizing: border-box;
       li{
