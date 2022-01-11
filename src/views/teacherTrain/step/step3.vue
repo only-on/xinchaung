@@ -31,7 +31,6 @@ import trainingGuide from '../detail/trainingGuide/index.vue'
 import addTask from '../components/addTask/index.vue'
 import taskList from '../components/taskList/index.vue'
 import { useRouter ,useRoute } from 'vue-router';
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue"
 import { message } from 'ant-design-vue';
 const http=(request as any).teacherTrain
 interface Istate{
@@ -42,7 +41,7 @@ interface Istate{
 export default defineComponent({
  name: 'createProgress3',
  props:['trainId'],
-  components: {trainingGuide,AntdvMarkdown,addTask,taskList},
+  components: {trainingGuide,addTask,taskList},
   setup: (props,context) => {
     var updata=inject('updataNav') as Function
     updata({showContent:true,navType:false,tabs:[],navPosition:'outside'})

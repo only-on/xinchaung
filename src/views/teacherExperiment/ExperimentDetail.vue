@@ -163,7 +163,6 @@ import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, compu
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import envList from 'src/components/teacherExperiment/envList.vue'
 import taskList from './create/taskList.vue'
@@ -220,7 +219,7 @@ interface IselectedName {
   size:string
 }
 export default defineComponent({
-  components:{envList,dataSet, environment,sameScreen,taskList,AntdvMarkdown},
+  components:{envList,dataSet, environment,sameScreen,taskList},
   setup(){
     let route = useRoute()
     let router = useRouter()

@@ -81,7 +81,6 @@
 <script lang="ts">
 import {defineComponent,onMounted,Ref,ref,inject,computed,watch,toRef,toRefs,provide} from 'vue'
 import request from "src/request/getRequest";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import OnLine from "./OnLine.vue"
 import empty from "src/components/Empty.vue"
 
@@ -91,7 +90,6 @@ interface experReportParam {
 export default defineComponent({
     name:'experReport',
       components: {
-      'antdv-markdown':AntdvMarkdown,
       "on-line":OnLine,
       empty
   },

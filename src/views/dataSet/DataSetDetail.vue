@@ -201,7 +201,6 @@ import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
 const http=(request as any).dataSet
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import UploadFile from './UploadFile.vue'
 import File  from './File.vue'
 import { getFileType } from 'src/utils/getFileType'
@@ -243,7 +242,6 @@ closeBaseModel:() => void
 export default defineComponent({
   name: '',
   components: {
-    AntdvMarkdown,
     File,
     UploadFile,
     LoadingOutlined

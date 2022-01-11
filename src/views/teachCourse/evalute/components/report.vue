@@ -84,7 +84,6 @@ import { RuleObject } from 'ant-design-vue/es/form/interface';
 import request from "src/api/index";
 import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 interface Iform{
   score: string,
   remark: string
@@ -102,7 +101,6 @@ let checkScore = async (rule: RuleObject, value: string) => {
 };
 export default defineComponent({
   components: {
-    'antdv-markdown':AntdvMarkdown,
   },
   props: ['reportData'],
   setup(props,{emit}) {

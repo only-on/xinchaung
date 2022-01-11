@@ -5,11 +5,9 @@
 </template>
 <script lang="ts">
   import { defineComponent,watch,ref } from 'vue'
-  import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
   export default defineComponent({
     name: 'DemoMarkedEditor',
     components: {
-      AntdvMarkdown
     },
     props:['modelValue','preview'],
     setup(props,{emit}){

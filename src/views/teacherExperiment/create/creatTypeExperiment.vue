@@ -147,7 +147,6 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import dataSet from "src/components/selectDataSet/selectDataSet.vue";
 import environment from "src/components/teacherExperiment/environment.vue";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import message, { MessageApi } from "ant-design-vue/lib/message";
 import sameScreen from "src/components/teacherExperiment/sameScreen.vue";
@@ -170,7 +169,6 @@ export default defineComponent({
   components: {
     dataSet,
     environment,
-    AntdvMarkdown,
     sameScreen,
     taskList,
     envList,

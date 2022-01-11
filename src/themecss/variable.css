@@ -168,6 +168,7 @@
     /* 
     自定义字体
      */
+    --font-size-sm: 12px;
     --base-font-size:14px;
     --font-size-18:18px;
     --font-size-16:16px;
@@ -189,13 +190,22 @@
 
 
     /*边距*/
-    --padding-sm:12px;
     --margin-md:16px;
     --margin-xss:4px;
     --margin-lg: 24px;
 
-    --pading-md:24px;
+    --padding-lg: 24px;
+    --padding-md:24px;
+    --padding-sm:12px;
     --padding-xs:8px;
     --padding-xss:4px;
     --border-radius-default:4px;
+
+    --white: var(--white-100);
+    --black: var(--black-100);
+    --primary-color: var(--purple-6);
+    --primary-6: var(--purple-6);
+    --primary-3: var(--purple-3);
+    --text-color: fade(var(--black), 85%);
+    --border-color-base: hsv(0, 0, 85%);
 }

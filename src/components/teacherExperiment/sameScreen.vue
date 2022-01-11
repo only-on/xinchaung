@@ -50,14 +50,12 @@
 
 <script lang="ts">
 import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType, provide } from 'vue'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 type TvncConnectOption={
   vmOptions:any
 }
 export default defineComponent({
   components: {
-    AntdvMarkdown,
     "vue-no-vnc":VueNoVnc
   },
   props: {

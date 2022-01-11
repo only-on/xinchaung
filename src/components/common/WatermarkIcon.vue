@@ -1,36 +1,36 @@
 <template>
   <div class="wmi__container" :style="style">
-    <span class="wmi__icon iconfont" :class="'icon-' + icon"/>
+    <span class="wmi__icon iconfont" :class="'icon-' + icon" />
     <span class="wmi__title">{{ title }}</span>
     <span class="wmi__description">{{ description }}</span>
-    <span class="watermark iconfont" :class="'icon-' + icon"/>
+    <span class="watermark iconfont" :class="'icon-' + icon" />
   </div>
 </template>
 
 <script lang="ts">
-import {defineComponent, computed} from "vue";
+import { defineComponent, computed } from "vue";
 
 export default defineComponent({
   name: "WatermarkIcon",
   props: {
     icon: {
       type: String,
-      default: 'fuzhi'
+      default: "fuzhi",
     },
     title: {
       type: String,
-      default: '水印图标'
+      default: "水印图标",
     },
     description: {
       type: String,
-      default: '描述信息'
+      default: "描述信息",
     },
     style: {
       type: Object,
-      default: 'background-color: #8955b5'
-    }
+      default: { backgroundColor: "#8955b5" },
+    },
   },
-})
+});
 </script>
 
 <style lang="less" scoped>
@@ -49,7 +49,7 @@ export default defineComponent({
   .wmi__icon {
     font-size: 30px;
     color: #fff;
-    opacity: .8;
+    opacity: 0.8;
   }
 
   .wmi__title {
@@ -58,19 +58,18 @@ export default defineComponent({
   }
 
   .wmi__description {
-    opacity: .7;
+    opacity: 0.7;
     white-space: nowrap;
   }
-
 
   .watermark {
     position: absolute;
     right: var(--padding-sm);
     bottom: var(--padding-sm);
     font-size: 75px;
-    opacity: .2;
+    opacity: 0.2;
     height: 80px;
-    line-height: 80px
+    line-height: 80px;
   }
 }
 </style>

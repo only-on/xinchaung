@@ -356,7 +356,7 @@ export default defineComponent({
     }
     .left-f2{
         border-radius: 8px;
-        padding: @padding-lg 30px;
+        padding: var(--padding-lg) 30px;
         box-sizing: border-box;
         background: var(--white-100);
          #myChart{
@@ -365,7 +365,7 @@ export default defineComponent({
     }
     .right-f2{
           border-radius: 8px;
-        padding: @padding-lg 30px;
+        padding: var(--padding-lg) 30px;
         box-sizing: border-box;
         background: var(--white-100); 
        .stu-proess{
