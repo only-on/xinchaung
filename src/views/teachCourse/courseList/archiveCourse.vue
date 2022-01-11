@@ -5,6 +5,9 @@
       style="width: 450px"
       @search="onSearch"
     />
+    <div v-if="spinning" style="text-align: center;">
+      <a-spin :spinning="spinning"></a-spin>
+    </div>
     <template v-if="courseList.length">
       <div class="course-list">
         <course-card
@@ -51,6 +54,7 @@ type TreactiveData = {
   totalCount: number;
   emptyText: string;
   emptyType: 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty';
+  spinning:boolean
 };
 export default defineComponent({
   components: {
@@ -74,6 +78,7 @@ export default defineComponent({
       totalCount: 0,
       emptyText: "暂无数据。",
       emptyType: "empty",
+      spinning:false
     });
      watch(
       () => reactiveData.params,
@@ -105,9 +110,11 @@ export default defineComponent({
     }
     // 获取课程列表
     function getCourseList() {
+      reactiveData.spinning=true
       getCourseListApi(reactiveData.params).then((res: any) => {
         reactiveData.courseList = res?.data.list;
         reactiveData.totalCount = res?.data.page.totalCount;
+        reactiveData.spinning=false
       });
     }
 

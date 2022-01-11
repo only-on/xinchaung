@@ -6,6 +6,9 @@
       @search="onSearch"
     />
     <tag @tagChange="tagChange"></tag>
+    <div v-if="spinning" style="text-align: center;">
+      <a-spin :spinning="spinning"></a-spin>
+    </div>
     <template v-if="courseList.length > 0">
       <div class="course-list">
         <course-card
@@ -53,6 +56,7 @@ type TreactiveData = {
   totalCount: number;
   emptyText: string;
   emptyType: 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty';
+  spinning:boolean
 };
 export default defineComponent({
   components: {
@@ -77,6 +81,7 @@ export default defineComponent({
       totalCount: 0,
       emptyText: "暂无数据。",
       emptyType: "empty",
+      spinning:false
     });
 
     watch(
@@ -111,9 +116,11 @@ export default defineComponent({
     }
     // 获取课程列表
     function getCourseList() {
+      reactiveData.spinning=true
       getCourseListApi(reactiveData.params).then((res: any) => {
         reactiveData.courseList = res?.data.list;
         reactiveData.totalCount = res?.data.page.totalCount;
+        reactiveData.spinning=false
       });
     }
     // 标签发生变化时

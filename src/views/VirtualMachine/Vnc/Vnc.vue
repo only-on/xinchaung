@@ -203,13 +203,13 @@ export default defineComponent({
     let role = storage.lStorage.get("role");
     let ws_config = storage.lStorage.get("ws_config");
     const {
-      opType,
+      opType,  // 实验学习类型
       connection_id,
       topoinst_uuid,
       taskId,
       type,
       topoinst_id,
-      routerQuery,
+      routerQuery,  // 上一个页面需要参数
     }: TvmQuery = vmQuery;
 
     const step_score_exists: boolean | string = "";
@@ -219,13 +219,13 @@ export default defineComponent({
       vmOptions: any;
       recommendExperimentData: Array<any>;
     }> = reactive({
-      allInfo: {},
-      vmInfoData: {},
+      allInfo: {}, // 所有基本信息
+      vmInfoData: {}, // 虚拟机信息
       vmOptions: {
         password: "", // vncpassword
         wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
       },
-      recommendExperimentData: [],
+      recommendExperimentData: [],  // 推荐实验数据
     });
     const recommendVisible: Ref<boolean> = ref(false);
     // const vmInfoData=ref({})
@@ -245,7 +245,7 @@ export default defineComponent({
     const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
     const sshUrl = ref("");
-    const currentInterface = ref("vnc");
+    const currentInterface = ref("vnc");  // 环境类型ssh、vnc
     const vmCurrentIndex = ref(0);
     let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
       toRefs(reactiveData);
@@ -261,6 +261,7 @@ export default defineComponent({
     provide("currentInterface", currentInterface);
     provide("taskId", taskId);
     let ind = 0; // 记录是否是刚进页面
+    // 左侧导航数据
     let navData =
       role === 4
         ? type === "course"
@@ -299,6 +300,7 @@ export default defineComponent({
       }
     }
 
+    // 初始化websocket
     function initWs() {
       vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({

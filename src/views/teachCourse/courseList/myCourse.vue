@@ -8,6 +8,10 @@
       />
       <tag @tagChange="tagChange"></tag>
     </div>
+    
+    <div v-if="spinning" style="text-align: center;">
+      <a-spin :spinning="spinning"></a-spin>
+    </div>
     <template v-if="courseList.length >0">
       <div class="course-list">
         <div class="crate-card course-item create-box">
@@ -79,6 +83,7 @@ type TreactiveData = {
   totalCount: number;
   emptyText: string;
   emptyType: 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty';
+  spinning:boolean
 };
 export default defineComponent({
   components: {
@@ -108,6 +113,7 @@ export default defineComponent({
       totalCount: 0,
       emptyText: "您还未创建课程，可点击下方按钮进行创建。",
       emptyType: "empty",
+      spinning:true
     });
 
     watch(
@@ -156,9 +162,11 @@ export default defineComponent({
 
     // 获取课程列表
     function getCourseList() {
+      reactiveData.spinning=true
       getCourseListApi(reactiveData.params).then((res) => {
         reactiveData.courseList = res?.data.list;
         reactiveData.totalCount = res?.data.page.totalCount;
+        reactiveData.spinning=false
       });
     }
 
