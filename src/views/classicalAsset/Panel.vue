@@ -382,7 +382,7 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid var(--black-85);
+  border: 1px solid var(--gray-5);
   border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
