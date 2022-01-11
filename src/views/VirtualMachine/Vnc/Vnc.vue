@@ -299,10 +299,6 @@ export default defineComponent({
       }
     }
 
-    // watch(()=>use_time, () => {
-    //   console.log(use_time);
-    // },{deep:true});
-
     function initWs() {
       vncLoadingV.value = false;
       wsVmConnect.value = wsConnect({
@@ -319,16 +315,10 @@ export default defineComponent({
           }
         },
         message: (ev: MessageEvent) => {
-          console.log(ev);
-          console.log(typeof ev.data);
           let regex = /\{.*?\}/g;
 
           if (typeof ev.data === "string" && regex.test(ev.data)) {
-            console.log(vmInfoData.value);
-
             vmInfoData.value = JSON.parse(ev.data);
-            console.log(vmInfoData.value);
-
             if (vmInfoData.value.data.vms.length > 0) {
               if (
                 ind === 0 &&
@@ -359,7 +349,6 @@ export default defineComponent({
       });
     }
     onBeforeRouteLeave(() => {
-      console.log("离开页面");
       (wsVmConnect.value as any).close();
       clearInterval(Number(timer));
     });
@@ -370,31 +359,6 @@ export default defineComponent({
     onMounted(async () => {
       await getVmBase();
       initWs();
-
-      // clearInterval(Number(timer));
-      // timer = setInterval(() => {
-      //   experimentTime!.value = secondToHHMMSS(use_time.value);
-      //   if (taskType === "实训") {
-      //     use_time.value++;
-      //   } else {
-      //     use_time.value--;
-      //     if (use_time.value === 600) {
-      //       Modal.confirm({
-      //         title: "是否延时？",
-      //         okText: "确认",
-      //         onOk: () => {
-      //           delayedTime();
-      //         },
-      //         cancelText: "取消",
-      //         onCancel: () => {},
-      //       });
-      //     }
-      //     if (use_time.value === 0) {
-      //       endVmEnvirment();
-      //       clearInterval(Number(timer));
-      //     }
-      //   }
-      // }, 1000);
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
@@ -405,14 +369,12 @@ export default defineComponent({
           taskId: taskId,
         };
         getVmBaseInfo(params).then((res: any) => {
-          console.log(res);
           allInfo.value = res.data;
           if (!res.data.current) {
             resolve();
             return;
           }
 
-          console.log(res.data.current.used_time);
           taskType.value = res.data.base_info.task_type.type;
 
           if (!taskType.value) {
@@ -437,7 +399,6 @@ export default defineComponent({
 
       setTimeout(() => {
         endExperiment(params).then((res: any) => {
-          console.log(res);
           if (res.data.length > 0) {
             recommendExperimentData.value = res.data;
             recommendVisible.value = true;
@@ -476,8 +437,6 @@ export default defineComponent({
             allInfo.value.base_info.step_score_exists
           ) {
             endVmOperates().then((res: any) => {
-              // recommendVisible.value = true;
-              console.log(res);
               recommendExperimentData.value = res.data;
               endVmEnvirment();
             });
@@ -488,7 +447,6 @@ export default defineComponent({
         },
         cancelText: "取消",
         onCancel: () => {
-          console.log("quxiao1");
           modal.destroy();
         },
       });
@@ -513,7 +471,6 @@ export default defineComponent({
       name: string;
       recommend_type: "content" | "train";
     }) {
-      console.log(val);
       let cloneVal = _.cloneDeep(val);
       let params: IRecommendExperiment = {
         recommendType: cloneVal.recommend_type,
@@ -522,21 +479,6 @@ export default defineComponent({
         taskId: cloneVal.id,
       };
       toStudyRecommendExperiment(router, params, { topoinst_id });
-      // studyRecommendExperiment(params).then((res: any) => {
-      //   console.log(res);
-      //   let routeUrl = router.resolve({
-      //     path: "/vm/vnc",
-
-      //     query: {
-      //       connection_id: res.data.connection_id,
-      //       opType: "recommend",
-      //       type: res.data.type.type,
-      //       taskId: 50227,
-      //       topoinst_uuid: res.data.topoinst_uuid,
-      //     },
-      //   });
-      //   window.open(routeUrl.href, "_blank");
-      // });
     }
 
     // 学生学习推荐实验/实训
@@ -597,7 +539,6 @@ export default defineComponent({
     // 保存进度
     function saveKvm() {
       VmOperatesHandle("saveKvm").then((res) => {
-        console.log(res);
         backTo(router, type, 3, routerQuery);
       });
     }
