@@ -47,25 +47,25 @@ export default defineComponent({
 </script>
 <style lang="less">
 .classical__asset-folder {
-  border: 1px solid @normal-color;
-  border-radius: @border-radius-card;
-  padding: @padding-sm;
+  border: 1px solid var(--gray-5);
+  border-radius: var(--border-radius-default);
+  padding: var(--padding-sm);
   display: flex;
   justify-content: space-between;
   // https://developer.mozilla.org/zh-CN/docs/Web/CSS/CSS_Box_Model/Mastering_margin_collapsing
   // 相同块元素之间，在垂直方向上，其margin会叠加，css这样设计的意义在于避免产生双倍边距
-  margin: @margin-md 0px;
-  color: @text-color-secondary;
+  margin: var(--margin-md) 0px;
+  color: var(--black-25);
   cursor: pointer;
   transition: all 0.5s ease;
 
   &:hover {
-    box-shadow: 0 0 5px 3px @border-color-base;
+    box-shadow: 0 0 5px 3px hsv(0, 0, 85%);;
   }
 
   .classical__asset-title {
-    font-size: @font-size-lg;
-    color: @text-color;
+    font-size: var(--font-size-lg);
+    color: var(--black-85);
   }
 
   .classical__asset-right {
@@ -75,10 +75,10 @@ export default defineComponent({
 
       li {
         display: inline-block;
-        margin-right: @margin-md;
+        margin-right: var(--margin-md);
 
         .classical__asset-item {
-          margin-left: @margin-xss;
+          margin-left: var(--margin-xss);
         }
 
         &:not(:last-child) {

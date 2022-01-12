@@ -140,7 +140,6 @@ export default defineComponent({
 })
 </script>
 <style scoped lang="less">
-  @border-color:#d3d3d3;
   .header{
     display: flex;
     justify-content: space-between;
@@ -158,13 +157,13 @@ export default defineComponent({
     padding-top: 30px;
   }
   .item{
-    border: @border-color solid 1px;
+    border: #d3d3d3 solid 1px;
     min-height: 120px;
     font-size: 15px;
     .topInfo{
       display: flex;
       justify-content: space-between;
-      border-bottom: @border-color solid 1px;
+      border-bottom:#d3d3d3 solid 1px;
       padding: 0 20px;
     }
   }
@@ -193,12 +192,12 @@ export default defineComponent({
     padding: 20px 16px;
   }
   .postModal :deep(.ant-modal-header){
-    background-color: @theme-color;
-    color: @white;
+    background-color: var(--purpleblue-6);
+    color: var(--black-100);
   }
   :deep(.postModal .ant-modal-header){
-    background-color: @theme-color;
-    color: @white;
+    background-color: var(--purpleblue-6);
+    color: var(--black-100);
   }
   
 </style>

@@ -202,12 +202,12 @@ export default defineComponent({
         .time-text {
           font-size: 12px;
           letter-spacing: 1px;
-          color: @theme-gradient-color;
+          color: rgba(var(--royalpurple-7),.2);
           margin-top: 10px;
         }
         .time-no {
           font-size: 54px;
-          background: linear-gradient(180deg, @theme-gradient-color, @theme-color);
+          background: linear-gradient(180deg, rgba(var(--royalpurple-7),.2), var(--purpleblue-6));
           -webkit-background-clip: text;
           color: transparent;
           font-weight: 500;
@@ -331,12 +331,12 @@ export default defineComponent({
             border-radius: 8px;
             height: 14px;
             line-height: 12px;
-            border: 1px solid @theme-color;
+            border: 1px solid var(--purpleblue-6);
             font-size: 24px;
-            color: @theme-color;
+            color: var(--purpleblue-6);
             &:hover {
-              background-color: @theme-color;
-              color: @white;
+              background-color: var(--purpleblue-6);
+              color:var(--white-100);
               cursor: pointer;
             }
           }
@@ -348,14 +348,14 @@ export default defineComponent({
     height: 50px;
     display: flex;
     flex-direction: row;
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     > div {
       width: 33.3333%;
       text-align: center;
       line-height: 50px;
-      color: @white;
+      color: var(--white-100);
       cursor: pointer;
     }
     .no-click {
@@ -384,7 +384,7 @@ export default defineComponent({
 }
 .data-set-more-tooltip {
   .ant-tooltip-inner {
-    background: @white;
+    background: var(--white-100);
     .more-list {
       color: grey;
       padding: 0 5px 5px 5px;
@@ -394,7 +394,7 @@ export default defineComponent({
     }
   }
   .ant-tooltip-arrow-content {
-    background-color: @white;
+    background-color: var(--white-100);
   }
 }
 </style>

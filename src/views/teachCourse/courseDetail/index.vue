@@ -172,7 +172,7 @@ export default defineComponent({
   // height: calc(100% - 24px);
   // height: 1100px;
   // overflow: hidden;
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   // overflow: auto;
   padding-bottom: 20px;
@@ -204,13 +204,13 @@ export default defineComponent({
 }
 :deep(.ant-tabs-nav){
     .ant-tabs-tab-active{
-      background: @theme-color !important;
-      color:@white;
-      border-top-left-radius: @border-radius-base;
-      border-top-right-radius: @border-radius-base;
+      background: var(--purpleblue-6) !important;
+      color:var(--white-100);
+      border-top-left-radius: var(--border-radius-default);
+      border-top-right-radius: var(--border-radius-default);
     }
   }
   :deep(.ant-tabs-nav-container){
-    border-bottom: 1px solid @border-color;
+    border-bottom: 1px solid var(--black-15);
   }
 </style>

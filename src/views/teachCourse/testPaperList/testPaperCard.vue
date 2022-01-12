@@ -82,9 +82,9 @@ export default defineComponent({
   margin-bottom: 20px;
   box-sizing: border-box;
   opacity: 1;
-  background: @white;
+  background: var(--white-100);
   border-radius: 7px;
-  box-shadow: 0px 7px 14px -4px @shadow-color;
+  box-shadow: 0px 7px 14px -4px var(--black-0-7);
 }
 .test-paper-card {
   .itemTop {
@@ -115,7 +115,7 @@ export default defineComponent({
       &.itemTopSecond {
         span {
           padding: 0 20px;
-          border-right: 1px solid @white;
+          border-right: 1px solid var(--black-100);
           font-size: 12px;
         }
         .iconfont {
@@ -150,7 +150,7 @@ export default defineComponent({
       > a {
         color: rgba(5, 1, 1, 0.45);
         &:hover {
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
       }
 
@@ -161,7 +161,7 @@ export default defineComponent({
     .item-bom-btn {
       color: rgba(5, 1, 1, 0.45);
       &:hover {
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
     }
   }
@@ -172,7 +172,7 @@ export default defineComponent({
     margin-bottom: 8px;
     cursor: pointer;
     &:hover {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
 }

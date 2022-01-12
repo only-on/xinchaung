@@ -119,7 +119,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .stu-name {
-  color: @theme-color;
+  color: var(--purpleblue-6);
   font-size: 22px;
   min-height: 25px;
   font-weight: 600;
@@ -151,7 +151,7 @@ export default defineComponent({
     text-align: center;
     top: -165px;
     position: relative;
-    color: @white;
+    color: var(--white-100);
     font-size: 12px;
   }
 }
@@ -160,11 +160,11 @@ export default defineComponent({
   .btn {
     height: 30px;
     font-size: 20px;
-    color: @white;
+    color: var(--white-100);
     padding: 0 13px;
     margin: 0px 2px;
-    background-color: @theme-color;
-    color: @white;
+    background-color: var(--purpleblue-6);
+    color: var(--white-100);
     border: 1px solid transparent;
     border-radius: 3px;
     // opacity: .65;
@@ -201,11 +201,11 @@ export default defineComponent({
   .ant-btn {
     height: 30px;
     font-size: 20px;
-    color: @white;
+    color: var(--white-100);
     padding: 0 13px;
     margin: 0px 2px;
-    background-color: @theme-color;
-    color: @white;
+    background-color: var(--purpleblue-6);
+    color: var(--white-100);
     border: 1px solid transparent;
     border-radius: 3px;
     .anticon {
@@ -216,8 +216,8 @@ export default defineComponent({
   }
   .ant-btn.ant-btn-primary[disabled],
   .ant-btn.ant-btn-primary[disabled]:hover {
-    background-color: @theme-color;
-    color: @white;
+    background-color: var(--purpleblue-6);
+    color: var(--white-100);
     border: 1px solid transparent;
     opacity: .65;
   }
@@ -230,7 +230,7 @@ export default defineComponent({
   .custom-slick-arrow.slick-arrow  {
     width: 0;
     height: 0;
-    // border: 15px solid @theme-color;
+    // border: 15px solid var(--purpleblue-6);
     border: 15px solid #d6c4e5;;
     border-bottom-color: transparent;
     border-top-color: transparent;
@@ -259,7 +259,7 @@ export default defineComponent({
 //   width: 25px;
 //   height: 25px;
 //   font-size: 25px;
-//   color: @white;
+//   color: var(--white-100);
 //   background-color: rgba(31, 45, 61, 0.11);
 //   opacity: 0.3;
 // }
@@ -270,6 +270,6 @@ export default defineComponent({
   opacity: 0.5;
 }
 .ant-carousel :deep(.slick-slide h3) {
-  color: @white;
+  color: var(--white-100);
 }
 </style>

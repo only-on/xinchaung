@@ -177,7 +177,7 @@ export default defineComponent({
         transform: translateY(-50%) translateX(-50%);
         width: 59px;
         height: 59px;
-        background: @white;
+        background: var(--black-100);
         border-radius: 50%;
         // line-height: 59px;
         text-align: center;

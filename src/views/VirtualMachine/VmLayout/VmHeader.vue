@@ -904,19 +904,19 @@ export default defineComponent({
         }
       }
       .vm-header-title {
-        color: @white;
+        color: var(--black-100);
       }
       .vm-header-right {
         .delayed-btn {
-          background: @warning-color;
-          color: @white;
+          background: var(--glod-6);
+          color: var(--black-100);
           border: none;
           &:hover {
             background: rgba(#faad14, 0.8);
           }
         }
         .vm-time {
-          color: @warning-color;
+          color: var(--glod-6);
           margin: 0 10px;
           .iconfont {
             margin-right: 3px;
@@ -940,9 +940,9 @@ export default defineComponent({
   .ant-modal-confirm-body {
     .ant-modal-confirm-title {
       padding: 15px;
-      background: @theme-color;
+      background: var(--purpleblue-6);
       font-size: 18px;
-      color: @white;
+      color: var(--black-100);
     }
     .ant-modal-confirm-content {
       padding: 15px;

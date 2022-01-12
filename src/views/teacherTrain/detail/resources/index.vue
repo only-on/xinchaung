@@ -268,7 +268,7 @@ export default defineComponent({
     }
   }
   .action {
-    color: @theme-color;
+    color: var(--purpleblue-6);
     .spanleft {
       margin-right: 5px;
     }

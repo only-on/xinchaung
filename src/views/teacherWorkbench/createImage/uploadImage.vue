@@ -192,7 +192,7 @@ export default defineComponent({
 .uploadImage{
   .icon-upload{
     font-size: 24px;
-    color: @theme-color;
+    color: var(--purpleblue-6);
   }
     .uploadBtn{
       display: flex;

@@ -431,11 +431,11 @@ export default defineComponent({
       border-radius: 50%;
       line-height: 38px;
       text-align: center;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
       transition: 0.5s;
       &:hover {
-        background: rgba(@theme-color, 0.5);
+        background: rgba(var(--purpleblue-6), 0.5);
         cursor: pointer;
       }
     }
@@ -515,12 +515,12 @@ export default defineComponent({
           border-top-right-radius: 0px;
         }
         .textarea:hover + .savebutton {
-          background-color: @theme-light-color;
-          border: 1px solid @theme-color;
+          background-color: var(--purplebule-3);
+          border: 1px solid var(--purpleblue-6);
         }
         .textarea:focus + .savebutton {
-          background-color: @theme-light-color;
-          border: 1px solid @theme-color;
+          background-color: var(--purplebule-3);
+          border: 1px solid var(--purpleblue-6);
         }
       }
     }

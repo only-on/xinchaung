@@ -225,18 +225,18 @@ export default defineComponent({
     height: 100%;
   }
   .scoreTable {
-    border: 1px solid @border-color;
+    border: 1px solid var(--black-15);
     color: #14191e;
     font-size: 14px;
     tr:first-child {
-      background: @descriptions-bg;
+      background: var(--gray-2);
       td {
         border: none;
       }
     }
     td {
       padding: 5px 20px;
-      border: 1px solid @border-color;
+      border: 1px solid var(--black-15);
       text-align: center;
     }
   }

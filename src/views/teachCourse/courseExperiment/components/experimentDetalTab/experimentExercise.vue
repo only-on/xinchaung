@@ -43,7 +43,7 @@
         </div>
       </div>
     </div>
-    <div v-if="showPanel === 'none'" style="height: 100%; background: @white">
+    <div v-if="showPanel === 'none'" style="height: 100%; background: #fff">
       <empty text="您还没有添加习题，请从数据中心选择习题！"> </empty>
       <div
         class="action-btn"
@@ -376,7 +376,7 @@ export default defineComponent({
 .experiment-exercise-tab-wrap {
   height: 100%;
   overflow-y: auto;
-  background: @white;
+  background: var(--black-100);
   padding: 15px;
 }
 .exercise-list-tab {
@@ -418,7 +418,7 @@ export default defineComponent({
       > i {
         margin: 0 5px;
         font-style: normal;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         font-size: 18px;
       }
     }
@@ -437,7 +437,7 @@ export default defineComponent({
       margin: 10px 0;
       transition: 0.5s;
       &:hover {
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
       }
       span {
         &:nth-child(1) {

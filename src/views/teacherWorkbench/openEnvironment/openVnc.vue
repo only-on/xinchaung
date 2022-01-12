@@ -534,7 +534,7 @@ export default defineComponent({
             text-overflow: ellipsis;
           }
           &:hover {
-            background: rgba(@theme-color, 0.1);
+            background: rgba(var(--purpleblue-6), 0.1);
             > span:nth-child(3) {
               flex-shrink: 0;
               &.iconshanchu {
@@ -553,7 +553,7 @@ export default defineComponent({
             position: absolute;
             display: inline-block;
             height: 100%;
-            background: rgba(@theme-color, 0.5);
+            background: rgba(var(--purpleblue-6), 0.5);
           }
         }
       }
@@ -568,7 +568,7 @@ export default defineComponent({
   .list-row{
     font-size: 14px;
     margin-bottom: 14px;  
-    color:rgba(@black,0.65);
+    color:var(--black-65);
   }
   .vm-list-title {
     @extend .list-title;
@@ -576,7 +576,7 @@ export default defineComponent({
   }
   .dataset-url {
     // padding: 10px 0;
-    color:rgba(@black,0.65);
+    color:var(--black-65);
   }
   .upload-tip {
     background: #fafafa;

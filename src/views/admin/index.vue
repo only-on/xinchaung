@@ -666,10 +666,10 @@ export default defineComponent({
 
     > div {
       width: 20%;
-      background: @white;
+      background: var(--white-100);
       margin: 0 10px;
       height: 114px;
-      border-radius: @border-radius-base;
+      border-radius: var(--border-radius-default);
       box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.05);
       &:first-child {
         margin-left: 0;
@@ -733,10 +733,15 @@ export default defineComponent({
     margin-top: 20px;
   }
   .bg-white {
-    background-color: @white;
+    background-color: var(--white-100);
   }
+<<<<<<< HEAD
   .b-r {
     border-radius: @border-radius-base;
+=======
+  .b-r{
+    border-radius: var(--border-radius-default);
+>>>>>>> ai-gaozhi-css
   }
   .m-l-20 {
     margin-right: 20px;
@@ -777,19 +782,19 @@ export default defineComponent({
           content: "";
           width: 8px;
           height: 8px;
-          //   background-color: @theme-color;
+          //   background-color: var(--purpleblue-6);
           border-radius: 50%;
           left: -10px;
           top: 5px;
         }
         &.on-line {
           &::before {
-            background-color: @theme-color;
+            background-color: var(--purpleblue-6);
           }
         }
         &.off-line {
           &::before {
-            background-color: rgba(@theme-color, 0.4);
+            background-color: rgba(var(--purpleblue-6), 0.4);
           }
         }
         &.teacher-image {
@@ -898,7 +903,7 @@ export default defineComponent({
     width: 50%;
     // flex-shrink: 0;
     margin-top: 20px;
-    background-color: @white;
+    background-color: var(--white-100);
     padding: 22px;
     &:nth-child(2n + 1) {
       margin-right: 20px;

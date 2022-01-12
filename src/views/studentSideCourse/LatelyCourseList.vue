@@ -112,7 +112,7 @@ export default defineComponent({
  }
 .list_content{
   .list_item{
-    border-left: 1px solid @theme-color;
+    border-left: 1px solid var(--purpleblue-6);
     position: relative;
     padding: 0px 100px 16px 24px;
     margin-left: 5px;
@@ -121,11 +121,11 @@ export default defineComponent({
       content: '';
       width: 10px;
       height: 10px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       border-radius: 50%;
       top: 0;
       left: -5px;
-      background-color: @white;
+      background-color: var(--white-100);
     }
     .time{
       color: rgba(5,1,1,0.85);
@@ -161,7 +161,7 @@ export default defineComponent({
       border-top-left-radius: 12px;
       border-bottom-left-radius: 12px;
       cursor: auto;
-      color: @white;
+      color: var(--white-100);
     }
     .mask_end{
       background-color: rgba(0,0,0,9.5);

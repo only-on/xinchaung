@@ -163,7 +163,6 @@ import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs, compu
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import envList from 'src/components/teacherExperiment/envList.vue'
 import taskList from './create/taskList.vue'
@@ -220,7 +219,7 @@ interface IselectedName {
   size:string
 }
 export default defineComponent({
-  components:{envList,dataSet, environment,sameScreen,taskList,AntdvMarkdown},
+  components:{envList,dataSet, environment,sameScreen,taskList},
   setup(){
     let route = useRoute()
     let router = useRouter()
@@ -516,7 +515,7 @@ export default defineComponent({
 </script>
 <style scoped lang="less">
 .ExperimentDetail{
-  width:@center-width;
+  width:var(--center-width);
   margin: 0 auto;
   // border: 1px solid red;
   // height: 100%;
@@ -534,7 +533,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .data-item .wenjian,.cunchuzhi{
   cursor: auto;
@@ -638,9 +637,9 @@ export default defineComponent({
   .add-btn {
       width: 112px;
       height: 32px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       border-radius: 4px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       .iconfont {
         font-weight: 600;
         font-size: 18px;
@@ -703,7 +702,7 @@ export default defineComponent({
     .item{
       width:46%;
       line-height: 44px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       font-size: 14px;
       color: #050101;
       margin-bottom: 14px;
@@ -721,7 +720,7 @@ export default defineComponent({
 .ExperimentalSteps{
   padding: 40px 30px 40px 0;
   .item{
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
     border-radius: 6px;
     line-height: 44px;
     display: flex;
@@ -733,7 +732,7 @@ export default defineComponent({
       font-size: 14px;
     }
     .detaile{
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
     }
   }

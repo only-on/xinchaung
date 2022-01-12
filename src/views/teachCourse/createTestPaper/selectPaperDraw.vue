@@ -306,8 +306,8 @@ interface Ianswers {
     cursor: pointer;
     &.current-nav {
       font-size: 16px;
-      color: @white;
-      background-color: @theme-color;
+      color: var(--black-100);
+      background-color: var(--purpleblue-6);
       border-radius: 6px 6px 0px 0px;
     }
   }
@@ -359,7 +359,7 @@ interface Ianswers {
       }
       .iconfont {
         font-size: 18px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         position: absolute;
         bottom: 3px;
         right: 0;

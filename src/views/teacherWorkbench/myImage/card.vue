@@ -65,13 +65,14 @@ export default defineComponent({
   height: 100%;
   background: #ffffff;
   border-radius: 6px;
-  box-shadow: 0px 3px 6px 0px @shadow-color;
+  box-shadow: 0px 3px 6px 0px var(--black-0-7);
   position: relative;
   > div {
     &:nth-child(2) {
       position: absolute;
       top: 0;
-      background: linear-gradient(45deg,@purplebule-5, @blue-4 26%);
+      // background: linear-gradient(45deg,rgba(var(--purpleblue-5)), rgba(var(--blue-4)) 26%);
+      background: linear-gradient(45deg,#6C70EA, #69C0FF 26%);
       border-radius: 6px;
       transition: 0.5s;
       padding: 14px;
@@ -95,12 +96,13 @@ export default defineComponent({
     .card-top {
       width: 100%;
       height: 84px;
-      background: linear-gradient(45deg,@purplebule-5, @blue-4 );
+      // background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
+      background: linear-gradient(45deg, #6C70EA, #69C0FF);
       border-radius: 6px 6px 0px 0px;
       position: relative;
       padding: 14px;
       .card-title{
-        color: @white;
+        color: var(--white-100);
         font-size: 16px;
         line-height: 35px;
       }
@@ -109,13 +111,13 @@ export default defineComponent({
         color: #ffde00;
       }
       .image-type{
-        color: rgba(@theme-color,.25);
+        color: rgba(var(--purpleblue-6),.25);
        position: absolute;
       right: 20px;
       bottom: -15px;
       width: 64px;
       height: 64px;
-      box-shadow: 0 4px 6px 0 @shadow-color;
+      box-shadow: 0 4px 6px 0 var(--black-0-7);
       border-radius: 50%;
       overflow: hidden;
       }
@@ -125,9 +127,9 @@ export default defineComponent({
       padding: 14px;
       font-size: 12px;
       height: 66px;
-      background: @white;
+      background: var(--white-100);
       border-radius: 6px;
-      box-shadow: 0px 3px 6px 0px @shadow-color;
+      box-shadow: 0px 3px 6px 0px var(--black-0-7);
       >div{
         >span{
           display: inline-block;
@@ -151,7 +153,7 @@ export default defineComponent({
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       font-size: 12px;
-      color: rgba(@black,0.65);
+      color: var(--black-65);
       line-height: 22px;
       -webkit-user-select: text;
       -moz-user-select: text;
@@ -175,10 +177,10 @@ export default defineComponent({
         width: 20%;
         display: flex;
         justify-content:space-between;
-        color: rgba(@black,0.45);
+        color: var(--black-45);
         cursor: pointer;
         .iconfont:hover{
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
       }
     }

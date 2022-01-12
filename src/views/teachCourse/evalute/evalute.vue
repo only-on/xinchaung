@@ -89,7 +89,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .evalute{
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   min-height: 750px;
   .top{
@@ -101,14 +101,14 @@ export default defineComponent({
     height: 600px;
     .left{
       width: 320px;
-      background: @body-background;
+      background: var(--white-100);
       margin-right: 20px;
       flex-shrink: 0;
       overflow: auto;
     }
     .right{
       flex: 1;
-      background: @body-background;
+      background: var(--white-100);
       overflow: auto;
     }
   }

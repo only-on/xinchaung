@@ -385,18 +385,18 @@ export default defineComponent({
   margin: 0 auto;
   input {
     border: none;
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     &::placeholder {
-      font-size: @font-size-sm;
+      font-size: var(--base-font-size);
     }
   }
   span {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
   }
   .data-set-hint {
     font-size: 12px;
     font-style: normal;
-    color: rgba(@black,0.25);
+    color: var(--black-25);
     margin-left: 19px;
   }
   .create-form {
@@ -420,7 +420,7 @@ export default defineComponent({
         .start-end-date-box {
           display: flex;
           border: 1px solid #d9d9d9;
-          border-radius: @border-radius-base;
+          border-radius: var(--border-radius-default);
           height: 32px;
           .and-line {
             position: relative;
@@ -429,7 +429,7 @@ export default defineComponent({
           }
           input {
             border: none;
-            font-size: @font-size-sm;
+            font-size: var(--base-font-size);
             &:focus {
               box-shadow: none;
             }
@@ -475,28 +475,28 @@ export default defineComponent({
       padding-left: 70px;
       .add-data-set-btn {
         width: 100px;
-        font-size: @font-size-sm;
-        border: 1px solid @theme-color;
+        font-size: var(--base-font-size);
+        border: 1px solid var(--purpleblue-6);
       }
       .data-set-item {
         margin-top: 15px;
         padding: 0 10px;
-        border-radius: @border-radius-base;
+        border-radius: var(--border-radius-default);
         display: flex;
         width: 100%;
         justify-content: space-between;
-        border: 1px solid rgba(@black, 0.15);
-        background-color: rgba(@black, 0.04);
+        border: 1px solid var(--black-15);
+        background-color: var(--black-0-4);
         line-height: 32px;
         span {
-          color: rgba(@black, 0.65);
+          color: var(--black-65);
         }
         .icon-shanchu {
-          color: rgba(@black, 0.45);
+          color: var(--black-45);
           cursor: pointer;
           transition: 0.5s;
           &:hover {
-            color: rgba(@black, 0.85);
+            color: var(--black-85);
           }
         }
       }

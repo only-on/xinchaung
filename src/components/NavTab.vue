@@ -161,11 +161,11 @@ export default defineComponent({
       text-align: center;
       cursor: pointer;
       &:hover {
-        color: @tab-hover;
+        color: var(--glod-4);
       }
     }
     .active {
-      background: @primary-color;
+      background: var(--purpleblue-6);
       color: #fff;
       transition: all 0.3s;
       &:hover {

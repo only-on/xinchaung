@@ -242,7 +242,7 @@ export default defineComponent({
     margin-left: 0px;
     font-style: normal;
     transform: scale(0.85);
-    color: rgba(@black,0.25);
+    color: var(--black-25);
   }
   &.ant-form{
     .ant-form-item-label{

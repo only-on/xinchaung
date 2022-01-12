@@ -494,14 +494,14 @@ export default defineComponent({
     width: 24px;
     height: 24px;
     border-radius: 2px;
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     color: white;
   }
   .moveHoverRight {
     width: 24px;
     height: 24px;
     border-radius: 2px;
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     color: white;
     margin-bottom: 20px;
   }
@@ -544,12 +544,12 @@ export default defineComponent({
     .edit {
       margin-left: 10px;
       margin-right: 15px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       display: none;
       margin-left: auto;
     }
     .delete {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       display: none;
     }
     &.tree-title {

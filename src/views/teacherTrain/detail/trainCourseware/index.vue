@@ -180,7 +180,7 @@ export default defineComponent({
       height: 200px;
     }
     .status-word {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       display: flex;
       justify-content: center;
     }

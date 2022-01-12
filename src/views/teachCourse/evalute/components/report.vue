@@ -84,7 +84,6 @@ import { RuleObject } from 'ant-design-vue/es/form/interface';
 import request from "src/api/index";
 import { Ihttp } from "../../typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 interface Iform{
   score: string,
   remark: string
@@ -102,7 +101,6 @@ let checkScore = async (rule: RuleObject, value: string) => {
 };
 export default defineComponent({
   components: {
-    'antdv-markdown':AntdvMarkdown,
   },
   props: ['reportData'],
   setup(props,{emit}) {
@@ -201,7 +199,7 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
     z-index: 2;
-    color: @white;
+    color: var(--black-100);
     i{
       font-size: 32px;
     }
@@ -223,17 +221,17 @@ export default defineComponent({
       display: flex;
       justify-content: center;
       align-items: center;
-      color: @theme-color
+      color: var(--purpleblue-6)
     }
   }
   :deep(table){
     width: 100%;
-    border: 1px solid @border-color;
+    border: 1px solid var(--black-15);
     color: #14191e;
     td{
       padding: 2px 5px;
       height: 70px;
-      border: 1px solid @border-color;
+      border: 1px solid var(--black-15);
       color: #777;
     }
     .w2{

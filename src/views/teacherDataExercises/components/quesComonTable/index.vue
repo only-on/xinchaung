@@ -676,14 +676,14 @@ export default defineComponent({
 .question-content-table{
     .icon-bianji1{
         margin-right:20px;
-        color:@theme-color;
+        color:var(--purpleblue-6);
     }
     .icon-shanchu-copy{
-        color:@theme-color;
+        color:var(--purpleblue-6);
     }
 }
 .ant-table-tbody > tr > td>.iconfont{
-    color:@theme-color;
+    color:var(--purpleblue-6);
 }
 .quesComonTable{
     // .ant-select:not(.ant-select-customize-input) .ant-select-selector{
@@ -773,7 +773,7 @@ export default defineComponent({
     padding: 6px 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     margin-right: 12px;
     .iconfont {
       cursor: pointer;

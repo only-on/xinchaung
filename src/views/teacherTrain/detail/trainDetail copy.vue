@@ -209,7 +209,7 @@ export default defineComponent({
   display: flex;
   width: 100%;
   padding:20px;
-  color:@white;
+  color:var(--black-100);
   .info-left {
     width: 290px;
     margin-right: 10px;
@@ -231,7 +231,7 @@ export default defineComponent({
   }
   .con_detail{
      min-height: 750px;
-    background-color: @white;
+    background-color: var(--black-100);
     padding:15px;
     border-radius: 4px;
   }

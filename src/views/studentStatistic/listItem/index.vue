@@ -46,7 +46,7 @@ export default defineComponent({
 </script>
 <style lang="less">
      .content-title{
-        font-size: @font-size-base;
+        font-size: var(--font-size-16);
         color: #050101;
         letter-spacing: 1px;
         font-weight: 700;
@@ -85,7 +85,7 @@ export default defineComponent({
                 border-radius: 50%;
                 justify-content: center;
                 align-items: center;
-                color:@white;
+                color:var(--black-100);
             }
         }
     }

@@ -113,7 +113,7 @@ export default defineComponent({
           margin-right: 3px;
         }
         .exam-status {
-          color: @gold-6;
+          color: var(--glod-6);
           margin-left: 30px;
         }
       }
@@ -126,10 +126,10 @@ export default defineComponent({
     justify-content: center;
     .count-down-time {
       margin-bottom: 30px;
-      background: @gold-6;
+      background: var(--glod-6);
       border-radius: 20px;
       padding: 5px 10px;
-      color: @white;
+      color: var(--white-100);
       i {
         font-style: normal;
         font-size: 12px;

@@ -300,7 +300,7 @@ export default defineComponent({
   .empty-box{
     padding-top: 100px;
     .emptyCon{
-      color: rgba(@black,0.65);
+      color: var(--black-65);
     }
     
   }

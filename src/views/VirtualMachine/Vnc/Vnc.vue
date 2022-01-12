@@ -597,19 +597,19 @@ export default defineComponent({
   //       }
   //     }
   //     .vm-header-title {
-  //       color: @white;
+  //       color: var(--white-100);
   //     }
   //     .vm-header-right {
   //       .delayed-btn {
-  //         background: @warning-color;
-  //         color: @white;
+  //         background: var(--glod-6);
+  //         color: var(--white-100);
   //         border: none;
   //         &:hover {
   //           background: rgba(#faad14, 0.8);
   //         }
   //       }
   //       .vm-time {
-  //         color: @warning-color;
+  //         color: var(--glod-6);
   //         margin: 0 10px;
   //         .iconfont {
   //           margin-right: 3px;
@@ -629,6 +629,7 @@ export default defineComponent({
     .vncloading {
       position: relative;
       height: 100%;
+<<<<<<< HEAD
       text-align: center;
        background: radial-gradient(#010B24, #010B24);
       .word {
@@ -657,6 +658,13 @@ export default defineComponent({
         // right: 0;
         // top: 0;
       }
+=======
+      background: rgba(#515151, 0.8);
+      color: var(--white-100);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+>>>>>>> ai-gaozhi-css
     }
   }
 }
@@ -669,10 +677,10 @@ export default defineComponent({
 
   .action-item {
     &:hover {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
     &.active {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
     &.disabled {
       color: rgb(196, 196, 196);

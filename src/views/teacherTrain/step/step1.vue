@@ -211,10 +211,10 @@ export default defineComponent({
       .addCourseware{
         width: 112px;
         height:32px;
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
         .icon-tianjia{
           font-size: 18px;
-          color:@theme-color;
+          color:var(--purpleblue-6);
         }
       }
     }

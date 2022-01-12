@@ -59,12 +59,11 @@ interface ItreeDatalist {
   disabled?: boolean
 }
 import { defineComponent,onMounted,inject,reactive,toRefs,ref} from 'vue'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import knowledgeModal from '../../../teachCourse/createTestPaper/knowledgeModal.vue'
 import { message } from 'ant-design-vue';
 export default defineComponent({
     name:'addTask',
-    components:{knowledgeModal,'antdv-markdown':AntdvMarkdown,},
+    components:{knowledgeModal},
     props:['contentList','edit'],
     setup(props,context){
         // 知识点
@@ -144,7 +143,7 @@ export default defineComponent({
     padding: 6px 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     margin-right: 12px;
     .iconfont {
       cursor: pointer;

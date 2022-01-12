@@ -109,14 +109,14 @@ export default defineComponent({
 
 <style lang="less">
 .experiment-tabs {
-  background: @white;
+  background: var(--white-100);
   margin: 16px 0;
   height: 40px;
   display: flex;
   padding: 0 15px;
   align-items: center;
   font-size: 14px;
-  color: rgba(@black, 0.45);
+  color: var(--black-45);
   > span {
     margin-right: 50px;
     position: relative;
@@ -125,14 +125,14 @@ export default defineComponent({
     cursor: pointer;
 
     &.active {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       transition: 0.5s;
       &::after {
         position: absolute;
         content: "";
         width: 100%;
         height: 2px;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         bottom: 0;
         left: 0;
         transition: 0.5s;

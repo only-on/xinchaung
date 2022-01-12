@@ -128,9 +128,9 @@ export default defineComponent({
     margin-top: 30px;
   }
   .select-btn {
-    color: @theme-color;
+    color: var(--purpleblue-6);
     &:hover {
-      color: rgba(@theme-color, 0.8);
+      color: rgba(var(--purpleblue-6), 0.8);
       cursor: pointer;
     }
   }

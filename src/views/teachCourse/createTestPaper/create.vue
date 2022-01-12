@@ -389,10 +389,10 @@ interface IDirectoryList {
 
 <style lang="less" scoped>
 .create-test-paper {
-  width: @center-width;
+  width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: @white;
+  background-color: var(--black-100);
   border-radius: 6px;
   padding: 60px 100px;
   overflow: auto;

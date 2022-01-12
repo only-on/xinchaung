@@ -422,10 +422,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-// @theme-color: #8955B5;
-@node-icon-color: @theme-tree;
-@high-color: #eab362; // 高配颜色
-@hover-bgcolor: #f1e6f5;
+// var(--purpleblue-6): #8955B5;
 .course-left-tree {
   li {
     padding: 0px !important;
@@ -437,7 +434,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: @hover-bgcolor;
+      background-color: var(--purpleblue-1);
     }
   }
   li .ant-tree-node-content-wrapper {
@@ -447,7 +444,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: @hover-bgcolor;
+      background-color: var(--purpleblue-1);
     }
   }
   li ul {
@@ -486,7 +483,7 @@ export default defineComponent({
         // height: 18px;
         // margin-right: 5px;
         // flex-shrink: 0;
-        // background: @theme-color;
+        // background: var(--purpleblue-6);
         // line-height: 17px;
         // text-align: center;
         // font-size: 10px;
@@ -496,7 +493,7 @@ export default defineComponent({
         height: 18px;
         margin-right: 5px;
         flex-shrink: 0;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         line-height: 18px;
         text-align: center;
         font-size: 12px;
@@ -505,7 +502,7 @@ export default defineComponent({
       }
       .chapter-name {
         width: 100%;
-        color: rgba(@black,0.65);
+        color: var(--black-65);
         font-size: 16px;
       }
       .action-icon-box {
@@ -513,24 +510,24 @@ export default defineComponent({
         .iconfont {
           margin-left: 5px;
           font-size: 14px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           display: none;
           &.open-close-cion {
             width: 14px;
             font-size: 14px;
-            color: rgba(@black,0.45);
+            color: var(--black-45);
             display: inline-block;
           }
         }
         .icon-bianji1,.icon-shanchu{
           &:hover{
-            color: rgba(@theme-color,0.5);
+            color: rgba(var(--purpleblue-6),0.5);
           }
         }
       }
     }
     &:hover {
-      background-color: @theme-light-color;
+      background-color: var(--purplebule-3);
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -541,7 +538,7 @@ export default defineComponent({
   }
   
   .selectbac {
-    background-color: @theme-light-color;
+    background-color: var(--purplebule-3);
     position: relative;
     &::before {
         position: absolute;
@@ -550,7 +547,7 @@ export default defineComponent({
         width: 4px;
         left:0px;
         top:0;
-        background: @theme-color;
+        background: var(--purpleblue-6);
     }
   }
   .tree-first-title.selectbac{
@@ -568,7 +565,7 @@ export default defineComponent({
   }
   .tree-second-title {
     &:hover{
-      background-color: @theme-light-color;
+      background-color: var(--purplebule-3);
       // width: 100%!important;
       // padding: 0!important;
     }
@@ -582,16 +579,16 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: @node-icon-color;
+          color: var(--purplebule-3);
           font-size: 14px;
           &.icon-jinzhi {
-            color: @high-color;
+            color: var(--orange-4);
           }
         }
       }
       .type-name {
         font-size: 12px;
-        color: @node-icon-color;
+        color: var(--purplebule-3);
         margin-left: 5px;
       }
     }
@@ -606,7 +603,7 @@ export default defineComponent({
       .iconfont {
         margin-left: 5px;
         font-size: 12px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         display: none;
         
       }
@@ -624,11 +621,11 @@ export default defineComponent({
   div.height-experiment {
     .experiment-type {
       .type-name {
-        color: @high-color;
+        color: var(--orange-4);
       }
     }
     .experiment-name {
-      color: @high-color;
+      color: var(--orange-4);
     }
   }
   &.ant-tree li .ant-tree-node-content-wrapper.ant-tree-node-selected {

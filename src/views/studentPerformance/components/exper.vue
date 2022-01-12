@@ -109,18 +109,18 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .testTitle {
-  color: @theme-color;
+  color: var(--purpleblue-6);
   padding: 15px;
-  border-bottom: 1px solid @normal-color;
+  border-bottom: 1px solid var(--gray-5);
 }
 .test {
   padding: 20px;
   .title {
-    background-color: @descriptions-bg;
+    background-color: var(--gray-2);
   }
   .score {
     margin-left: 30px;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     .origin_score {
       margin-left: 10px;
     }

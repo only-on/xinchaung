@@ -147,7 +147,6 @@ import {
 import { useRoute, useRouter } from "vue-router";
 import dataSet from "src/components/selectDataSet/selectDataSet.vue";
 import environment from "src/components/teacherExperiment/environment.vue";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import message, { MessageApi } from "ant-design-vue/lib/message";
 import sameScreen from "src/components/teacherExperiment/sameScreen.vue";
@@ -170,7 +169,6 @@ export default defineComponent({
   components: {
     dataSet,
     environment,
-    AntdvMarkdown,
     sameScreen,
     taskList,
     envList,
@@ -622,10 +620,10 @@ interface IselectedName {
 
 <style lang="less" scoped>
 .create-wrap {
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   height: 100%;
-  background-color: @white;
+  background-color: var(--black-100);
   overflow-y: scroll;
   .create-nav-head {
     line-height: 58px;
@@ -636,7 +634,7 @@ interface IselectedName {
     > span {
       display: inline-block;
       width: 850px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       font-size: 16px;
       font-weight: 400;
       text-align: left;
@@ -656,9 +654,9 @@ interface IselectedName {
     .add-btn {
       width: 112px;
       height: 32px;
-      border: 1px solid @theme-color;
+      border: 1px solid var(--purpleblue-6);
       border-radius: 4px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       .iconfont {
         font-weight: 600;
         font-size: 18px;
@@ -728,7 +726,7 @@ interface IselectedName {
             border: none;
             background: #ffffff;
             height: auto;
-            color: @theme-color;
+            color: var(--purpleblue-6);
             .iconfont {
               margin-right: 8px;
             }
@@ -744,7 +742,7 @@ interface IselectedName {
       }
       .osd-mode {
         margin-left: auto;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         cursor: pointer;
       }
     }

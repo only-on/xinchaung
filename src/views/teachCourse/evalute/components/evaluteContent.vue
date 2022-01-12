@@ -271,8 +271,8 @@ export default defineComponent({
 .evaluteContent{
   .top{
     padding: 15px 20px;
-    color: @text-color-secondary;
-    border-bottom: 1px solid @border-color;
+    color: var(--black-25);
+    border-bottom: 1px solid var(--black-15);
     &>span{
       margin-right: 60px;
       &>span{
@@ -303,7 +303,7 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         align-items: center;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         margin: 0 30px;
         position: relative;
         &:first-child{

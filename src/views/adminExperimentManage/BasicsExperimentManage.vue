@@ -157,7 +157,7 @@ export default defineComponent({
 }
 .caozuo{
   padding: 0 8px;
-  color: @theme-color;
+  color: var(--purpleblue-6);
   cursor: pointer;
 }
 .header{

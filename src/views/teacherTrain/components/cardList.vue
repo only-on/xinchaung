@@ -235,11 +235,11 @@ export default defineComponent({
   width: 23%;
   // height: 277px;
   border-radius: 10px;
-  box-shadow: 0 2px 4px 0 @shadow-color;
+  box-shadow: 0 2px 4px 0 var(--black-0-7);
   margin: 0 2% 20px 0px;
   &.mySelfCreate{
     height: 277px;
-    border: 1px dashed @theme-color;
+    border: 1px dashed var(--purpleblue-6);
     cursor: pointer;
     background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
     position: relative;
@@ -250,11 +250,11 @@ export default defineComponent({
       left: 0;
       text-align: center;
       font-size: 20px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   &:not(.mySelfCreate):hover{
-    box-shadow: 0px 7px 7px 0px @shadow-color; 
+    box-shadow: 0px 7px 7px 0px var(--black-0-7); 
   }
   .cardpic{
     width: 100%;
@@ -285,18 +285,23 @@ export default defineComponent({
       top: 20px;
       right: 0;
       border-radius: 12px 0px 0px 12px;
-      box-shadow: 0px 2px 4px 0px @shadow-color;
+      box-shadow: 0px 2px 4px 0px var(--black-0-7);
       &.end{
+<<<<<<< HEAD
         background:#373737 ;
         color:#8A8A8A;
+=======
+        background: #8A8A8A;
+        color: var(--black-25);
+>>>>>>> ai-gaozhi-css
       }
       &.noStart{
-        background: @white; 
-        color: @text-color-secondary;
+        background: var(--white-100);
+        color: var(--black-25);
       }
       &.onGoing{
         background: #60ae34;
-        color: @white;
+        color: var(--white-100);
       }
     }
   }
@@ -307,7 +312,7 @@ export default defineComponent({
     .train-title{
       font-size: 16px;
       line-height: 16px;
-      color: @black;
+      color: var(--black-100);
       cursor: pointer;
       font-weight: 500;
       margin-top: 8px;
@@ -315,16 +320,16 @@ export default defineComponent({
       padding:0 14px;
     }
     .train-time{
-      color: @text-color-secondary;
+      color: var(--black-25);
       margin-bottom: 12px;
       padding:0 14px;
     }
     .desc-status{
       display: none;
-      color: @text-color-secondary;
+      color: var(--black-25);
       padding: 0 14px;
       .iconfont:hover{
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
       i{
         cursor: pointer;
@@ -347,7 +352,7 @@ export default defineComponent({
       width: 100%;
       text-align: center;
       position: relative;
-      color: @text-color-secondary;
+      color: var(--black-25);
       font-size: 12px;
       i{
         font-size: 16px;
@@ -363,18 +368,23 @@ export default defineComponent({
       }
     }
     &.cardbtn{
-      background: @descriptions-bg;
+      background: var(--gray-2);
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
+<<<<<<< HEAD
       height:41px;
       border-top: 1px solid @border-color;
+=======
+      height:40px;
+      border-top: 1px solid var(--black-15);
+>>>>>>> ai-gaozhi-css
       box-sizing: border-box;
       li{
         font-size: 14px;
         cursor: pointer;
-        border-right: 1px solid @border-color;
+        border-right: 1px solid var(--black-15);
         &:hover{
-          color: @theme-color;
+          color: var(--purpleblue-6);
         }
       }
       :nth-last-child(1){
@@ -403,7 +413,7 @@ export default defineComponent({
   .init{
     .cardbtn{
       margin-top: 24px;
-      background: @descriptions-bg;
+      background: var(--gray-2);
       box-sizing: border-box;
       height: 41px;
     }
@@ -415,7 +425,7 @@ export default defineComponent({
   .archive{
     .cardbtn{
       margin-top: 24px;
-      background: @descriptions-bg;
+      background: var(--gray-2);
       box-sizing: border-box;
       height: 40px;
     }
@@ -447,13 +457,13 @@ export default defineComponent({
     margin-top:16px;
     margin-bottom: 24px;
     li{
-      color: @text-color-secondary;
+      color: var(--black-25);
       margin-right: 20px;
       font-size: 14px;
     }
   }
 }
 .cardBox:hover{
-  box-shadow: 0 7px 7px 0 @shadow-color;
+  box-shadow: 0 7px 7px 0 var(--black-0-7);
 }
 </style>

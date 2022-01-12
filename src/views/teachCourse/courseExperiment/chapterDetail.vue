@@ -184,7 +184,7 @@ export default defineComponent({
 .chapter-detail-box {
   padding: 15px;
   height: calc(100%);
-  background: @white;
+  background: var(--white-100);
   display: flex;
   flex-direction: column;
 

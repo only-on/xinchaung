@@ -45,7 +45,6 @@ interface Istate {
   addTask: boolean;
 }
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import taskList from "../../components/taskList/index.vue";
 import addTask from "../../components/addTask/index.vue";
 import request from "src/api/index";
@@ -54,7 +53,6 @@ export default defineComponent({
   name: "trainingGuide",
   props: ["propTrainDetailInfo", "trainId", "trainType", "role"],
   components: {
-    "antdv-markdown": AntdvMarkdown,
     "task-list": taskList,
     "add-task": addTask,
   },

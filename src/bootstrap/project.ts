@@ -7,8 +7,7 @@ import router from "../routers";
 import i18n from '../i18n'
 import store from "../store";
 import customDirective from '../directive'
-import {registration as AntdvMarkdownRegistration} from '@xianfe/antdv-markdown/src/index';
-import {initFontAwesome} from "./fontAwesome";
+import { initAntdvMarkdown } from './antdvMarkdown'
 
 export declare interface IAppManager {
     // 安装插件，暂不支持设置options
@@ -53,7 +52,7 @@ export default function initProject(app: App<Element>) {
         }
     })(app)
     appManager.registerComponents({NavTab, Breadcrumb, Empty}).installPlugins(router, i18n, store, customDirective)
-    initAntdv(appManager).installPlugins(...AntdvMarkdownRegistration.plugins).registerComponents(AntdvMarkdownRegistration.components)
-    initFontAwesome(appManager)
+    initAntdv(appManager)
+    initAntdvMarkdown(appManager)
     return app
 }

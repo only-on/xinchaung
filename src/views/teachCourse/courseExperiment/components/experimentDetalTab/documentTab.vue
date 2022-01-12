@@ -93,13 +93,13 @@ export default defineComponent({
     }
   }
   .document-box {
-    background: @white;
+    background: var(--white-100);
     height: calc(100% - 100px);
     overflow-y: auto;
     width: 100%;
     border-radius: 4px;
     margin-top: 16px;
-    box-shadow: 0px 3px 6px 0px undefined;
+    box-shadow: 0px 3px 6px 0px var(--black-0-7);
     display: flex;
     iframe {
       width: 100%;

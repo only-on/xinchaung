@@ -12,21 +12,26 @@
           icon="cipanjiedian"
           :title="detail.itemSize"
           description="文件大小"
-          style="background-color: #2cb6fa"
+          :style="{ backgroundColor: '#2cb6fa' }"
         />
         <watermark-icon
           icon="wenjianshu"
           :title="detail.itemCount"
           description="文件个数"
-          style="background-color: #ffbb3c; margin-left: 25px"
+          :style="{ backgroundColor: '#ffbb3c', marginLeft: '25px' }"
         />
       </div>
     </div>
     <div class="classical__content--main">
       <div class="more-detail">
         <h3>描述</h3>
+<<<<<<< HEAD
         <a-divider style="background-color: #d5d5d5" />
         <div class="description">{{ detail.description }}</div>
+=======
+        <a-divider :style="{ backgroundColor: '#d5d5d5' }" />
+        <div>{{ detail.description }}</div>
+>>>>>>> ai-gaozhi-css
       </div>
       <a-divider style="opacity: 0" />
       <div class="classical__data-list">
@@ -41,7 +46,7 @@
             />
           </div>
           <a-button
-            v-if="powerType===0?false:true"
+            v-if="powerType === 0 ? false : true"
             class="classical__data-list-upload"
             type="primary"
             @click="openUploadDialog"
@@ -89,7 +94,11 @@
       :data="{ pageType: dataType, dataId: dataId }"
       :multiple="false"
       :before-upload="handleBeforeUpload"
-      :action="env?'/proxyPrefix/dataset/data/upload-file':'/dataset/data/upload-file'"
+      :action="
+        env
+          ? '/proxyPrefix/dataset/data/upload-file'
+          : '/dataset/data/upload-file'
+      "
       @change="handleUploadChange"
     >
       <p class="ant-upload-drag-icon">
@@ -160,7 +169,7 @@ import {
   nextTick,
   Ref,
   computed,
-  watch
+  watch,
 } from "vue";
 import { useRoute } from "vue-router";
 import { ILayoutConfiguration } from "../../types";
@@ -203,7 +212,7 @@ export default defineComponent({
       description: "",
     });
 
-    const env=process.env.NODE_ENV === 'development'
+    const env = process.env.NODE_ENV === "development";
     const originalFolderInfo = { name: "", description: "" };
 
     const labelCol = { span: 3 };
@@ -225,7 +234,7 @@ export default defineComponent({
     const uploadFileList: Ref<any[]> = ref([]);
     // 数据集类型
     let dataType: number = parseInt(route.params.type as string); // 3是课件
-    let powerType:number =parseInt(route.params.powerType as string); //私有还是共有
+    let powerType: number = parseInt(route.params.powerType as string); //私有还是共有
     let dataId: number = parseInt(route.params.id as string);
 
     const $message: MessageApi = inject("$message")!;
@@ -238,7 +247,7 @@ export default defineComponent({
       showContent: true,
       navPosition: "outside",
       backOff: true,
-      showPageEdit:powerType===0?false:true,
+      showPageEdit: powerType === 0 ? false : true,
       pageEdit: () => {
         folderInfo.name = originalFolderInfo.name;
         folderInfo.description = originalFolderInfo.description;
@@ -450,9 +459,11 @@ export default defineComponent({
     };
 
     const checkMime = (dataType: number, file: File) => {
-      console.log(file.name,file.name.split('.'))
+      console.log(file.name, file.name.split("."));
       // return fileRequirements[dataType].mime.includes(file.type);
-      return fileRequirements[dataType].suffix.includes(file.name.split('.')[file.name.split('.').length-1]);
+      return fileRequirements[dataType].suffix.includes(
+        file.name.split(".")[file.name.split(".").length - 1]
+      );
     };
 
     /**
@@ -484,7 +495,7 @@ export default defineComponent({
       //   return false;
       // }
       if (!checkMime(dataType, file)) {
-        console.log(dataType, file)
+        console.log(dataType, file);
         $message.warning(
           "文件类型不符合要求，要求为：" +
             fileRequirements[dataType].mime.join("")
@@ -496,7 +507,7 @@ export default defineComponent({
       getDatasetDetail();
       getDatasetItemList();
     });
-    
+
     return {
       env,
       uploadVisible,
@@ -543,10 +554,15 @@ export default defineComponent({
   }
 
   .classical__content--main {
+<<<<<<< HEAD
     margin-top: @margin-lg + 21px;
     .description{
       color:rgba(0, 0, 0, 0.65);
     }
+=======
+    margin-top: calc(var(--margin-lg) + 21px);
+
+>>>>>>> ai-gaozhi-css
     .classical__data-list {
       .classical__data-list-header {
         display: flex;
@@ -561,15 +577,24 @@ export default defineComponent({
         }
 
         .classical__data-list-upload {
+<<<<<<< HEAD
           margin-left: @margin-md;
           .icon-upload{
             font-size: 14px;
             margin-right: 4px;
           }
+=======
+          margin-left: var(--margin-md);
+>>>>>>> ai-gaozhi-css
         }
       }
 
       .classical__data-list-content {
+<<<<<<< HEAD
+=======
+        padding: var(--padding-md) 0px;
+
+>>>>>>> ai-gaozhi-css
         .classical__data-list-row {
           // width: 100%;
           .fileCard{
@@ -591,8 +616,8 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid @border-color-base;
-  border-radius: @border-radius-base;
+  border: 1px solid var(--black-85);
+  border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
     border: none;
@@ -610,12 +635,12 @@ export default defineComponent({
   }
 
   &:hover {
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
   }
 
   &.classical__input--focused {
-    border: 1px solid @theme-color;
-    box-shadow: 0 0 0 2px @theme-scroll;
+    border: 1px solid var(--purpleblue-6);
+    box-shadow: 0 0 0 2px var(--purpleblue-1);
   }
 }
 .ant-upload-drag-icon .icon-upload{

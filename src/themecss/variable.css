@@ -1,0 +1,211 @@
+:root{
+    /* 
+    颜色
+     */
+    /* 黑 */
+    --black-100:rgba(0, 0, 0);
+    --black-0-0-1:rgba(0, 0, 0, 0.001);
+    --black-0-1:rgba(0, 0, 0, 0.01);
+    --black-0-4:rgba(0, 0, 0, 0.04);
+    --black-0-6:rgba(0, 0, 0, 0.06);
+    --black-0-7:rgba(0, 0, 0, 0.07);
+    --black-0-12:rgba(0, 0, 0, 0.012);
+    --black-0-15:rgba(0, 0, 0, 0.015);
+    --black-0-18:rgba(0, 0, 0, 0.018);
+    --black-0-28:rgba(0, 0, 0, 0.028);
+    --black-0-45:rgba(0, 0, 0, 0.045);
+    --black-1:rgba(0, 0, 0, 0.1);
+    --black-2:rgba(0, 0, 0, 0.2);
+    --black-5:rgba(0, 0, 0, 0.5);
+    --black-6:rgba(0, 0, 0, 0.6);
+    --black-7:rgba(0, 0, 0, 0.7);
+    --black-15:rgba(0, 0, 0, 0.15);
+    --black-25:rgba(0, 0, 0, 0.25);
+    --black-45:rgba(0, 0, 0, 0.45);
+    
+    --black-65:rgba(0, 0, 0, 0.65);
+    --black-67:rgba(0, 0, 0, 0.67);
+    --black-75:rgba(0, 0, 0, 0.75);
+    --black-85:rgba(0, 0, 0, 0.85);
+    
+    --ant-menu-sub-bg:#001529;
+    --ant-menu-inline-ant-menu-sub:#000c17;
+    --ant-layout-sider-trigger:#002140;
+    --ant-layout-sider-trigger:#002140;
+
+    /* 中性色板 */
+    --gray-2:#fafafa;
+    --gray-3:#f5f5f5;
+    --gray-4:#f0f0f0;
+    --gray-5:#d9d9d9;
+    --gray-6:#bfbfbf;
+    --gray-8:#595959;
+
+    /* 白 */
+    --white-100:#ffffff;
+    --white-0-1:rgba(255, 255, 255, 0.01);
+    --white-1:rgba(255, 255, 255, 0.1);
+    --white-35:rgba(255, 255, 255, 0.35);
+    --white-45:rgba(255, 255, 255, 0.45);
+    --white-65:rgba(255, 255, 255, 0.65);
+    --white-85:rgba(255, 255, 255, 0.85);
+    --mark-bg:#feffe5;
+    --alert-warn:#fffbe6;
+    --alert-error:#fff2f0;
+    --ccc:#ccc;
+    --aaa:#aaa;
+    --ant-menu-item-active:#fff1f0;
+    --ant-radio-inner-shadow:rgba(24, 144, 255, 0.08);
+    --ant-card-loading-block-bg-2:rgba(207, 216, 220, 0.2);
+    --ant-card-loading-block-bg-4:rgba(207, 216, 220, 0.4);
+    --ant-tag-pink:#fff0f6;
+    --ant-tag-orange:#fff7e6;
+    --ant-tag-volcano:#fff2e8;
+    --ant-tag-yellow:#feffe6;
+    --ant-input-affix-wrapper-focused:rgba(250, 173, 20, 0.2);
+    --has-error-ant-input-affix-wrapper-focused:rgba(255, 77, 79, 0.2);
+    --ant-input-number-handler-active:#f4f4f4;
+    --ant-layout-bg:#f0f2f5;
+    --ant-pagination-item-active:#dbdbdb;
+    --ant-skeleton-avatar:rgba(190, 190, 190, 0.2);
+    --ant-skeleton-paragraph-li:rgba(44, 4, 4, 0.24);
+    --ant-slider-rail:#e1e1e1;
+    --ant-table-filter:#e5e5e5;
+    --ant-table-column-has-sorters:#f2f2f2;
+    --ant-table-expanded-row-hover:#fbfbfb;
+    --ant-typography-code-bg:rgba(150, 150, 150, 0.1);
+    --ant-typography-kbd:rgba(150, 150, 150, 0.06);
+    --ant-typography-border:rgba(100, 100, 100, 0.2);
+
+    /* 拂晓蓝 */
+    --blue-1:#e6f7ff;
+    --blue-2:#bae7ff;
+    --blue-3:#91d5ff;
+    --blue-4:#69c0ff;
+    --blue-5:#40a9ff;
+    --blue-6:#1890ff;
+    --blue-6-2:rgba(var(--blue-6), 0.2);
+    --blue-7:#096dd9;
+
+    --ant-slider-handle-focus:#46a6ff;
+    --ant-slider-dot-active:#8cc8ff;
+
+
+    /* 极光绿 */
+    --green-1:#f6ffed;
+    --green-3:#b7eb8f;
+    --green-6:#52c41a;
+    --green-7:#389e0d;
+    --ant-switch-after:rgba(0, 35, 11, 0.2);
+    --ant-table-row-selected:#dcf4ff;
+
+    /* 金 */
+    --glod-3:#ffe58f;
+    --glod-4:#ffd666;
+    --glod-6:#faad14;
+    --glod-7:#d48806;
+
+    /* 薄暮红 */
+    --red-2:#ffccc7;
+    --red-4:#ff7875;
+    --red-3:#ffa39e;
+    --red-5:#ff4d4f;
+    --red-6:#f5222d;
+    --red-7:#cf1322;
+    --ant-btn-danger-active:#d9595b;
+    --ant-btn-dangerous-active:#d9363e;
+
+    /* 法师洋红 */
+    --magenta-3:#ffadd2;
+    --magenta-6:#eb2f96;
+    --magenta-7:#c41d7f;
+    
+
+    /* 火山 */
+    --volcano-3:#ffbb96;
+    --volcano-6:#fa541c;
+    --volcano-7:#d4380d;
+
+    /* 日暮 */
+    --orange-3:#ffd591;
+    --orange-4:#ffc069;
+    --orange-5:#ffa940;
+    --orange-6:#fa8c16;
+    --orange-7:#d46b08;
+    
+
+    /* 日出 */
+    --yellow-3:#fffb8f;
+    --yellow-5:#ffc53d;
+    --yellow-6:#fadb14;
+    --yellow-7:#d4b106;
+
+    /* 明青 */
+    --cyan-1:#e6fffb;
+    --cyan-3:#87e8de;
+    --cyan-6:#13c2c2;
+    --cyan-7:#08979c;
+
+    /* 青柠 */
+    --lime-1:#fcffe6;
+    --lime-3:#eaff8f;
+    --lime-6:#a0d911;
+    --lime-7:#7cb305;
+
+    /* 极客蓝 */
+    --geekblue-1:#F0F5FF;
+    --geekblue-3:#adc6ff;
+    --geekblue-6:#2f54eb;
+    --geekblue-7:#1d39c4;
+
+    /* 酱紫 */
+    --purple-1:#f9f0ff;
+    --purple-3:#d3adf7;
+    --purple-6:#722ed1;
+    --purple-7:#531dab;
+
+
+    /* 
+    自定义字体
+     */
+    --font-size-sm: 12px;
+    --base-font-size:14px;
+    --font-size-18:18px;
+    --font-size-16:16px;
+    --base-line-height: 1.5715;
+
+
+    /* 自定义颜色部分 */
+    --center-width:1330px;
+
+    --purpleblue-1:#DEDFFD;
+    --purplebule-3:#9B9FF7;
+    --purpleblue-4:#8084EF;
+    --purplebule-5:#6C70EA;
+    --purpleblue-6:#585ce5;
+    --royalpurple-7:#3E1DC4;
+
+    --echart-title-bgcolor: #f7edff;
+
+
+
+    /*边距*/
+    --margin-md:16px;
+    --margin-xss:4px;
+    --margin-lg: 24px;
+
+    --padding-lg: 24px;
+    --padding-md:24px;
+    --padding-sm:12px;
+    --padding-xs:8px;
+    --padding-xss:4px;
+    --border-radius-default:4px;
+
+    --white: var(--white-100);
+    --black: var(--black-100);
+    --primary-color: var(--purple-6);
+    --primary-6: var(--purple-6);
+    --primary-3: var(--purple-3);
+    --text-color: fade(var(--black), 85%);
+    --border-color-base: hsv(0, 0, 85%);
+}

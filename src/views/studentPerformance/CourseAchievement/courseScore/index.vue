@@ -282,9 +282,9 @@ export default defineComponent({
 .courseScoreContent {
   min-height: 750px;
   border-radius: 6px;
-  background-color: @body-background;
+  background-color: var(--white-100);
   margin: 0 auto;
-  padding: @padding-md 21px @padding-md @padding-sm;
+  padding: var(--padding-md) 21px var(--padding-md) var(--padding-sm);
   .course-info {
     display: flex;
     justify-content: space-between;
@@ -316,13 +316,13 @@ export default defineComponent({
             margin-right: 8px;
           }
           .resource {
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
         }
       }
     }
     .card-score {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   .content-info {
@@ -335,11 +335,11 @@ export default defineComponent({
         height: 46px;
         display: flex;
         justify-content: space-between;
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
         background-color: #fdfaff;
         line-height: 46px;
         padding-left: 30px;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         img {
           margin-right: 20px;
         }
@@ -368,7 +368,7 @@ export default defineComponent({
           box-sizing: content-box;
           border-bottom: 1px solid #ddd;
           .task-right {
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
           .cant-check {
             color: #ccc;
@@ -398,7 +398,7 @@ export default defineComponent({
   }
   .ant-table-bordered .ant-table-thead > tr > th,
   .ant-table-bordered .ant-table-tbody > tr > td {
-    border-right: 1px solid @white;
+    border-right: 1px solid var(--white-100);
   }
   .ant-table-thead
     > tr.ant-table-row-hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
@@ -412,7 +412,7 @@ export default defineComponent({
   .ant-table-tbody
     > tr:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected)
     > td {
-    background: @white;
+    background: var(--white-100);
   }
   .ant-radio-button-wrapper {
     display: none;

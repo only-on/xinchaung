@@ -18,6 +18,6 @@ export default defineComponent({
 <style lang="less">
 .arranging-information-wrap{
     height: 100%;
-    background: @white;
+    background: var(--black-100);
 }
 </style>

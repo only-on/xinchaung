@@ -163,7 +163,7 @@ export default defineComponent({
       .main{
         margin: 0 auto;
         width: 285px;
-        box-shadow: 0px 2px 4px 0px @shadow-color;
+        box-shadow: 0px 2px 4px 0px var(--black-0-7);
       }
     }
     .info_hover:hover{
@@ -200,7 +200,7 @@ export default defineComponent({
     border-top-left-radius: 12px;
     border-bottom-left-radius: 12px;
     cursor: auto;
-    color: @white;
+    color: var(--white-100);
   }
   .mask_end{
     background-color: rgba(0,0,0,9.5);
@@ -270,7 +270,7 @@ export default defineComponent({
       align-items: center;
       &>span{
         margin: 0 0 0 20px;
-        color: @theme-light-color;
+        color: var(--purplebule-3);
       }
       div>span{
         margin-right: 10px;

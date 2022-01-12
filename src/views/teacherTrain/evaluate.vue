@@ -281,10 +281,10 @@ interface IData {
   font-size: 14px;
 }
 .evaluate {
-  width: @center-width;
+  width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: @white;
+  background-color: var(--black-100);
   border-radius: 5px;
   padding: 40px;
   overflow: auto;

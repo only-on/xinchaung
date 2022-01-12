@@ -135,7 +135,7 @@ export default defineComponent({
     > span {
       margin-right: 10px;
       &:hover {
-        color: @theme-color;
+        color: var(--purpleblue-6);
         cursor: pointer;
       }
     }

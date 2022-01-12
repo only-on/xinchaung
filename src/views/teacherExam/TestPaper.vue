@@ -215,18 +215,18 @@ export default defineComponent({
     border-radius: 10px;
     background-color: #fff;
     border: 1px solid rgba(226, 225, 225, 1);
-    box-shadow: 0px 2px 4px 0px @shadow-color;
+    box-shadow: 0px 2px 4px 0px var(--black-0-7);
     color: #999;
     transition: all .2s;
     overflow: hidden;
   }
   .kernel:hover{
-    box-shadow: 0px 3px 7px 0px @shadow-color;
+    box-shadow: 0px 3px 7px 0px var(--black-0-7);
     transform: translateY(-3px);
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
   }
   .card-item-heard{
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     height: 32px;
     padding: 0 20px;
     color: #fff;
@@ -246,7 +246,7 @@ export default defineComponent({
       align-items: flex-start;
       padding-right: 36px;
       padding-left: 15px;
-      color: @theme-color;
+      color: var(--purpleblue-6);
       .score-text{
         font-size: 12px;
         padding-top: 12px;

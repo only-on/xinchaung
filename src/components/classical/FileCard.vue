@@ -139,11 +139,16 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .file__container {
-  border: 1px solid @border-color-base;
+  border: 1px solid var(--black-85);
   position: relative;
   display: flex;
+<<<<<<< HEAD
   border-radius: @border-radius-base;
   // padding: @padding-xs;
+=======
+  border-radius: var(--base-font-size);
+  padding: var(--padding-xs);
+>>>>>>> ai-gaozhi-css
   align-items: center;
   padding: 14px 16px;
   .file__icon {
@@ -158,7 +163,7 @@ export default defineComponent({
 
   .file__info {
     flex: 1;
-    margin-left: @margin-md;
+    margin-left: var(--margin-md);
 
     .title {
       max-width: 220px;
@@ -168,8 +173,8 @@ export default defineComponent({
     }
 
     .description {
-      font-size: @font-size-sm - 2px;
-      color: @text-color-secondary;
+      font-size: var(--font-size-16);
+      color: var(--black-25);
     }
   }
 
@@ -180,12 +185,12 @@ export default defineComponent({
 
     button,
     a {
-      padding: @padding-xss - 2px;
-      font-size: @font-size-base - 2px;
-      color: @text-color-secondary;
+      padding: 2px;
+      font-size: var(--base-font-size);
+      color: var(--black-25);
 
       &:hover {
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
     }
   }

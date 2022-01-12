@@ -223,6 +223,6 @@ interface ISelectedIds {
   }
 }
 .icon-del{
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 </style>

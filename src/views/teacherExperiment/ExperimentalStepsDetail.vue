@@ -55,7 +55,6 @@ import { defineComponent, ref, inject, reactive, watch, onMounted, toRefs } from
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { useRoute, useRouter } from 'vue-router'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 // import AntdvMarkdown from 'src/components/editor/markedEditor.vue'
 import envList from 'src/components/teacherExperiment/envList.vue'
 import taskList from './create/taskList.vue'
@@ -75,7 +74,7 @@ interface IformState{
   guide:any
 }
 export default defineComponent({
-  components:{envList,dataSet, environment,sameScreen,taskList,AntdvMarkdown},
+  components:{envList,dataSet, environment,sameScreen,taskList},
   setup(){
     let route = useRoute()
     let router = useRouter()
@@ -110,7 +109,7 @@ export default defineComponent({
 </script>
 <style scoped lang="less">
 .ExperimentDetail{
-  width:@center-width;
+  width:var(--center-width);
   margin: 0 auto;
   // border: 1px solid red;
   height: 100%;
@@ -163,7 +162,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .base-info{
   padding: 18px 0 12px 32px;

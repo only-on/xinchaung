@@ -421,10 +421,10 @@ interface FileInfo {
   font-size: 14px;
 }
 .searchResource {
-  width: @center-width;
+  width: var(--center-width);
   height: 100%;
   margin: 0 auto;
-  background-color: @white;
+  background-color: var(--white-100);
   border-radius: 5px;
   padding: 40px;
   .condition {
@@ -468,7 +468,7 @@ interface FileInfo {
         left: 0;
         bottom:-2px;
         font-size: 12px;
-        color:rgba(@black,0.25);    
+        color:var(--black-25);    
         
       }
     }
@@ -485,15 +485,15 @@ interface FileInfo {
   :deep(.ant-table) .ant-table-tbody > tr > td {
     .font-size-14();
     .iconfont {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       margin-right: 10px;
       cursor: pointer;
     }
   }
   :deep(.ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active){
-    color: @white;
-    background:@theme-color;
-    border-color:@theme-color;
+    color: var(--black-100);
+    background:var(--purpleblue-6);
+    border-color:var(--purpleblue-6);
   }
   :deep(.ant-input[disabled]){
     cursor: pointer;

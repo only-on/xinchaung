@@ -189,8 +189,8 @@ export default defineComponent({
       flex-wrap: wrap;
       margin-top: 20px;
       > span {
-        background: rgba(@theme-color, 0.2);
-        border: 1px solid @theme-color;
+        background: rgba(var(--purpleblue-6), 0.2);
+        border: 1px solid var(--purpleblue-6);
         border-radius: 15px;
         padding: 4px 20px;
         margin: 0 10px;
@@ -204,11 +204,11 @@ export default defineComponent({
 }
 .experiment-report-box {
   flex: 1;
-  background: @white;
+  background: var(--white-100);
 }
 .experiment-detail-box {
   flex: 1;
-  background: @white;
+  background: var(--white-100);
   overflow-y: auto;
   .init-experiment-guide-box {
     min-height: 50%;
@@ -248,9 +248,9 @@ export default defineComponent({
           border-radius: 50%;
           line-height: 38px;
           text-align: center;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           &:hover {
-            color: rgba(@theme-color, 0.8);
+            color: rgba(var(--purpleblue-6), 0.8);
           }
         }
       }
@@ -259,8 +259,8 @@ export default defineComponent({
         flex-wrap: wrap;
         margin-top: 12px;
         > span {
-          background: rgba(@theme-color, 0.2);
-          border: 1px solid @theme-color;
+          background: rgba(var(--purpleblue-6), 0.2);
+          border: 1px solid var(--purpleblue-6);
           border-radius: 15px;
           padding: 4px 20px;
           margin: 0 10px;

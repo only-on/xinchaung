@@ -111,8 +111,8 @@ export default defineComponent({
         flex-wrap: wrap;
         margin-top: 20px;
         > span {
-          background: rgba(@theme-color, 0.2);
-          border: 1px solid @theme-color;
+          background: rgba(var(--purpleblue-6), 0.2);
+          border: 1px solid var(--purpleblue-6);
           border-radius: 15px;
           padding: 4px 20px;
           margin: 0 10px;
@@ -130,7 +130,7 @@ export default defineComponent({
     flex-direction: row;
     height: 80px;
     align-items: center;
-    background: @white;
+    background:var(--white-100);
     padding: 0 15px;
     label {
       color: #000000;
@@ -152,7 +152,7 @@ export default defineComponent({
   }
   .experiment-task-box {
     margin-top: 20px;
-    background: @white;
+    background: var(--white-100);
     padding: 15px;
     flex: 1;
     .experiment-task-title {
@@ -164,7 +164,7 @@ export default defineComponent({
       flex-wrap: wrap;
       justify-content: space-between;
       .experiment-task-item {
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
         border-radius: 6px;
         width: 48%;
         margin-top: 15px;
@@ -178,7 +178,7 @@ export default defineComponent({
   }
   .experiment-report-box{
     flex: 1;
-    background: @white;
+    background: var(--white-100);
   }
 }
 </style>

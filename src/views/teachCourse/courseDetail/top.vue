@@ -278,10 +278,10 @@ export default defineComponent({
 
 <style lang="less">
 .course-detail-top {
-  width: @center-width;
+  width: var(--center-width);
   margin: 0 auto;
   height: 205px;
-  color: @white;
+  color: var(--white-100);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -292,7 +292,7 @@ export default defineComponent({
     > span {
       &.course-name {
         font-size: 24px;
-        color: @white;
+        color: var(--white-100);
         line-height: 33px;
         letter-spacing: 2px;
         display: flex;
@@ -309,14 +309,14 @@ export default defineComponent({
           line-height: 13px;
           font-style: normal;
           &.not-start {
-            background: @white;
+            background: var(--white-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
             box-shadow: 0px 2px 4px 0px rgba(0, 0, 0, 0.5);
-            color: @white;
+            color:var(--white-100);
           }
 
           &.finish {
@@ -334,20 +334,20 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: @theme-color;
+        background: var(--purpleblue-6);
         border-radius: 50%;
         color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
         transition: 0.5s;
         &:hover {
-          // background: rgba(@theme-color, 0.8);
+          // background: rgba(var(--purpleblue-6), 0.8);
           color: rgba(255, 255, 255, 1);
         }
       }
     }
   }
   .course-desc {
-    font-size: @font-size-sm;
+    font-size: var(--base-font-size);
     max-width: 830px;
     > div {
       overflow: hidden;
@@ -369,7 +369,6 @@ export default defineComponent({
       flex-direction: row;
       > span {
         padding: 0 50px;
-        // border-right: 1px solid rgba(@white, 0.3);
         position: relative;
         text-align: center;
         &::after {
@@ -377,7 +376,7 @@ export default defineComponent({
           position: absolute;
           width: 1px;
           height: 24px;
-          background: rgba(@white, 0.3);
+          background: rgba(var(--white-100), 0.3);
           top: 50%;
           right: 0;
           transform: translateY(-50%);
@@ -393,7 +392,7 @@ export default defineComponent({
             position: absolute;
             width: 1px;
             height: 24px;
-            background: rgba(@white, 0.3);
+            background: rgba(var(--white-100), 0.3);
             top: 50%;
             right: 0;
             transform: translateY(-50%);
@@ -403,11 +402,11 @@ export default defineComponent({
           font-style: normal;
           display: block;
           &:nth-child(1) {
-            font-size: @font-size-sm;
+            font-size: var(--base-font-size);
           }
           &:nth-child(2) {
             font-size: 12px;
-            color: rgba(@white, 0.65);
+            color: rgba(var(--white-100), 0.65);
           }
         }
       }
@@ -420,14 +419,14 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: @warning-color;
+        background: var(--glod-6);
         border-radius: 50%;
         margin-left: 24px;
-        color: @white;
-        font-size: @font-size-lg;
+        color: var(--white-100);
+        font-size: var(--font-size-18);
         cursor: pointer;
         &:hover {
-          background: rgba(@warning-color, 0.8);
+          background: rgba(var(--glod-6), 0.8);
         }
       }
     }

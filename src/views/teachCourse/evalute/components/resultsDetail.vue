@@ -41,7 +41,7 @@ export default defineComponent({
       border-radius: 0;
     }
     .ant-tabs-tab-active {
-      border-top: 2px solid @theme-color !important;
+      border-top: 2px solid var(--purpleblue-6) !important;
     }
   }
   .ant-tabs-top-content {

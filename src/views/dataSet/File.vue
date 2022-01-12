@@ -241,13 +241,13 @@ export default defineComponent({
                     text-align: center;
                     line-height: 38px;
                     border-radius: 50%;
-                    color: @theme-color;
+                    color: var(--purpleblue-6);
                     cursor: pointer;
                     // border: 1px solid #d9d9d9;
                     transition: 0.5;
 
                     &:hover {
-                        background: @theme-color;
+                        background: var(--purpleblue-6);
                         color: #f7f7f7;
                     }
                 }
@@ -271,10 +271,10 @@ export default defineComponent({
                         border: 0;
                         span {
                             font-size: 16px;
-                            color: @theme-color;
+                            color: var(--purpleblue-6);
                         }
                         &:hover {
-                            background: @theme-color;
+                            background: var(--purpleblue-6);
                             .icon-shanchu:before {
                                 color: #f7f7f7;;
                             }

@@ -406,12 +406,8 @@ interface IClassesData {
 
 
 <style lang="less" scoped>
-@opacity65-color: rgba(0,0,0,.65);
-@opacity85-color: rgba(0,0,0,.85);
-@echart-title-bgcolor: #f7edff;
-@echart-table-bordercolor: #dcc0f4;
 .course-analysis {
-  width: @center-width;
+  width: var(--center-width);
   height: 100%;
   margin: 0 auto;
   .course-analysis-top {
@@ -420,7 +416,7 @@ interface IClassesData {
     height: 157px;
   }
   .course-analysis-content {
-    background-color: @white;
+    background-color: var(--white-100);
     // height: 100%;
     height: 600px;
     overflow-y: scroll;
@@ -437,10 +433,10 @@ interface IClassesData {
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: @opacity65-color;
+            color: var(--black-65);
             cursor: pointer;
             &.active {
-              border-bottom: 1px solid @theme-color;
+              border-bottom: 1px solid var(--purpleblue-6);
             }
           }
         }
@@ -450,17 +446,17 @@ interface IClassesData {
             padding: 0 10px;
             margin: 0 10px;
             padding-bottom: 5px; 
-            color: @opacity65-color;
+            color: var(--black-65);
             cursor: pointer;
             &.active {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
           }
         }
         .more {
           flex-shrink: 0;
           margin-left: auto;
-          color: @opacity65-color;
+          color: var(--black-65);
           cursor: pointer;
           .iconfont {
             font-size: 12px;
@@ -491,15 +487,15 @@ interface IClassesData {
           flex-wrap: wrap;
           width: 100%;
           span {
-            color: @opacity65-color;
+            color: var(--black-65);
             margin: 0 12px;
             cursor: pointer;
           }
           .active {
             // padding: 6px 8px;
-            background: @theme-color;
+            background: var(--purpleblue-6);
             border-radius: 4px;
-            color: @white;
+            color: var(--white-100);
           }
         }
       }
@@ -518,7 +514,7 @@ interface IClassesData {
           }
         }
         .open-close-btn {
-          color: @theme-color;
+          color: var(--purpleblue-6);
           font-size: 14px;
           margin-top: auto;
           margin-left: 10px;
@@ -541,9 +537,9 @@ interface IClassesData {
         p {
           height: 40px;
           line-height: 40px;
-          background: @echart-title-bgcolor;
-          border-bottom: 1px solid @echart-table-bordercolor;
-          color: @theme-color;
+          background: var(--echart-title-bgcolor);
+          border-bottom: 1px solid var(--purplebule-3);
+          color: var(--purpleblue-6);
           font-size: 16px;
           text-align: center;
         }
@@ -560,7 +556,7 @@ interface IClassesData {
         p {
           font-size: 16px;
           font-weight: 500;
-          color: @opacity85-color;
+          color: var(--black-85);
           margin: 0;
         }
         .high {
@@ -600,8 +596,8 @@ interface IClassesData {
     width: 20%;
     height: 32px;
     text-align: center;
-    border-top: 1px solid @echart-table-bordercolor;
-    border-right: 1px solid @echart-table-bordercolor;
+    border-top: 1px solid var(--purplebule-3);
+    border-right: 1px solid var(--purplebule-3);
     line-height: 32px;
     font-size: 16px;
     color: #050101;
@@ -609,7 +605,7 @@ interface IClassesData {
       border-right: none;
     }
     &:first-child {
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
 }
@@ -620,9 +616,9 @@ interface IClassesData {
   p {
     height: 51px;
     line-height: 51px;
-    background: @echart-title-bgcolor;
+    background: var(--echart-title-bgcolor);
     // border-bottom: 1px solid #dcc0f4;
-    color: @theme-color;
+    color: var(--purpleblue-6);
     font-size: 16px;
     text-align: center;
     margin-bottom: 0;
@@ -630,12 +626,12 @@ interface IClassesData {
   :deep(.ant-row) {
     &:first-child {
       .ant-col {
-        color: @theme-color;
+        color: var(--purpleblue-6);
       }
     }
     &:nth-child(2) {
       .ant-col {
-        color: @opacity65-color;
+        color: var(--black-65);
       }
     }
      .ant-col {
@@ -648,10 +644,10 @@ interface IClassesData {
 :deep(.ant-tabs-nav) {
   .ant-tabs-tab {
     font-size: 14px;
-    color: @opacity65-color;
+    color: var(--black-65);
   }
   .ant-tabs-tab-active {
-    color: @theme-color;
+    color: var(--purpleblue-6);
   }
 }
 :deep(.ant-tabs-bar) {

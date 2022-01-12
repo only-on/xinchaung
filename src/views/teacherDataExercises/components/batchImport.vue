@@ -150,10 +150,10 @@ export default defineComponent({
     }
 }
 .download{
-    color: @theme-color;
+    color: var(--purpleblue-6);
 }
 .download:hover{
-    color:@theme-light-color;
+    color:var(--purplebule-3);
 }
 .importNone{
     margin-top:30px;

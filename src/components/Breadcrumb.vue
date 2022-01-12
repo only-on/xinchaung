@@ -78,7 +78,7 @@ export default defineComponent({
   justify-content: flex-end;
   align-items: center;
   font-size: 12px;
-  color: @location-color;
+  color: var(--black-25);
   .allow {
     :deep(.ant-breadcrumb-link) {
       cursor: pointer;

@@ -32,7 +32,7 @@ export default defineComponent({
 .init-experiment-guide-box {
 //   flex: 1;
     // height: 100%;
-  background: @white;
+  background: var(--black-100);
   padding: 16px 19px;
   .guide-title{
       font-size: 16px;

@@ -136,7 +136,7 @@ export default defineComponent({
 }
 
 .slash {
-  // background: rgba(@theme-color, 0.3);
+  // background: rgba(var(--purpleblue-6), 0.3);
   flex-shrink: 0;
   background-color: #E2DFFF;
   border: 1px solid #c2c0f0;
@@ -189,25 +189,25 @@ export default defineComponent({
   .slash-lager {
     width: 27px;
     height: 2px;
-    background: @component-background;
+    background: var(--white-100);
   }
 
   .slash-small {
     width: 8px;
     height: 2px;
-    background: @component-background;
+    background: var(--white-100);
   }
 
   .slash-middle {
     width: 12px;
     height: 2px;
-    background: @component-background;
+    background: var(--white-100);
   }
 
   .slash-block {
     width: 12px;
     height: 10px;
-    background: @component-background;
+    background: var(--white-100);
   }
 }
 }

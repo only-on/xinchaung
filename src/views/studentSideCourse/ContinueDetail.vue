@@ -189,8 +189,8 @@ export default defineComponent({
     margin-top: -32px;
     padding-top: 60px;
     .header{
-      color:@white;
-      width: @center-width;
+      color:var(--white-100);
+      width: var(--center-width);
       margin: 0 auto;
       .title{
         // margin-bottom: 20px;
@@ -202,8 +202,8 @@ export default defineComponent({
         justify-content: space-between;
       }
       .title .icon-fanhui{
-        background-color: @theme-color;
-        color: @white;
+        background-color: var(--purpleblue-6);
+        color: var(--white-100);
         font-size: 16px;
         padding: 8px 10px;
         border-radius: 50%;
@@ -272,7 +272,7 @@ export default defineComponent({
 }
   .course_info{
     height:100%;
-    width: @center-width;
+    width: var(--center-width);
     margin: 0 auto;
     display: flex;
     flex-direction: column;

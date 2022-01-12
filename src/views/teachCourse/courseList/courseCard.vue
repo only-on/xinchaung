@@ -313,9 +313,9 @@ export default defineComponent({
       padding-left: 15px;
     }
     .course-item-box {
-      background: @white;
+      background: var(--white-100);
       border-radius: 10px;
-      box-shadow: 0 2px 4px 0 @shadow-color;
+      box-shadow: 0 2px 4px 0 var(--black-0-7);
       height: 100%;
       display: flex;
       flex-direction: column;
@@ -347,20 +347,20 @@ export default defineComponent({
           text-align: center;
           line-height: 1;
           &.not-start {
-            background: @white;
+            background: var(--white-100);
             color: #acacac;
           }
 
           &.in-progress {
             background: #60ae34;
-            box-shadow: 0px 2px 4px 0px @shadow-color;
-            color: @white;
+            box-shadow: 0px 2px 4px 0px var(--black-0-7);
+            color: var(--white-100);
           }
 
           &.finish {
             background: #373737;
             color: #8a8a8a;
-            box-shadow: 0px 2px 4px 0px @shadow-color;
+            box-shadow: 0px 2px 4px 0px var(--black-0-7);
           }
         }
       }
@@ -392,9 +392,9 @@ export default defineComponent({
             flex-direction: column;
             justify-content: space-between;
             padding: 0 13px;
-            font-size: @font-size-sm;
+            font-size: var(--base-font-size);
             > p {
-              color: @text-color-secondary;
+              color: var(--black-25);
               height: 20px;
               line-height: 20px;
               margin-top: 12px;
@@ -459,7 +459,7 @@ export default defineComponent({
           justify-content: space-between;
           .action-head-left {
             > span {
-              color: @text-color-secondary;
+              color: var(--black-25);
               font-size: 14px;
             }
             .aswitch-guide.ant-switch-checked {
@@ -475,9 +475,9 @@ export default defineComponent({
             > span {
               margin-left: 15px;
               font-size: 14px;
-              color: rgba(@black,0.45);
+              color: var(--black-45);
               &:hover {
-                color: rgba(@theme-color, 0.9);
+                color: rgba(var(--purpleblue-6), 0.9);
               }
             }
           }
@@ -490,8 +490,8 @@ export default defineComponent({
           border-top: 1px solid #e9e9e9;
           margin-top: 6px;
           border: 1px solid #E9E9E9;
-          border-bottom-left-radius: @border-radius-sm;
-          border-bottom-right-radius: @border-radius-sm;
+          border-bottom-left-radius: var(--base-font-size);
+          border-bottom-right-radius: var(--base-font-size);
           > span,
           > a {
             margin: auto 0;
@@ -502,7 +502,7 @@ export default defineComponent({
             color: #8f8f8f;
             font-size: 14px;
             &:hover {
-              color: rgba(@theme-color, 1);
+              color: var(--purpleblue-6);
             }
           }
           > a {
@@ -568,7 +568,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
           }
         }
@@ -601,7 +601,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
           }
         }
@@ -617,7 +617,7 @@ export default defineComponent({
       }
       &:hover {
         // border: 1px solid #c4c3c3;
-        box-shadow: 0 7px 7px 0 @shadow-color;
+        box-shadow: 0 7px 7px 0 var(--black-0-7);
         .remove-hover {
           display: none;
         }

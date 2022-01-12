@@ -714,11 +714,11 @@ export default defineComponent({
       .vm-header-left {
       }
       .vm-header-title {
-        color: @white;
+        color: var(--black-100);
       }
       .vm-header-right {
         .vm-time {
-          color: @red-6;
+          color: var(--red-6);
           margin: 0 10px;
           .iconfont {
             margin-right: 3px;
@@ -739,7 +739,7 @@ export default defineComponent({
           display: flex;
           justify-content: center;
           align-items: center;
-          color: @white;
+          color: var(--black-100);
         }
         .ace-box {
           display: flex;
@@ -751,7 +751,7 @@ export default defineComponent({
           flex-shrink: 0;
           background: #272822;
           order: 1;
-          color: @white;
+          color: var(--black-100);
           padding: 10px;
           p {
             margin-bottom: 0;
@@ -786,12 +786,12 @@ export default defineComponent({
             display: flex;
             justify-content: center;
             align-items: center;
-            color: @white;
+            color: var(--black-100);
             font-size: 50px;
           }
           .ace-action {
             flex-shrink: 0;
-            color: @white;
+            color: var(--black-100);
             padding-left: 20px;
             line-height: 35px;
             white-space: nowrap;
@@ -802,7 +802,7 @@ export default defineComponent({
               cursor: pointer;
               transition: 0.2s;
               &:hover {
-                color: @theme-color;
+                color: var(--purpleblue-6);
               }
               > i {
                 font-size: 12px;
@@ -818,7 +818,7 @@ export default defineComponent({
             flex-direction: column;
             transition: 0.2s;
             .ace-result-title {
-              color: @white;
+              color: var(--black-100);
               font-size: 12px;
               padding-left: 10px;
               line-height: 35px;

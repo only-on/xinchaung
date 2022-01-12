@@ -157,9 +157,9 @@ export default defineComponent({
   padding: 5px 11px;
 }
 .purple {
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .purple:hover {
-  color: @theme-light-color;
+  color: var(--purplebule-3);
 }
 </style>

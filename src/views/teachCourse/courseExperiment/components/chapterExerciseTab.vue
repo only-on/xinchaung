@@ -436,7 +436,7 @@ export default defineComponent({
       > i {
         margin: 0 5px;
         font-style: normal;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         font-size: 18px;
       }
     }
@@ -455,31 +455,31 @@ export default defineComponent({
       margin: 10px 0;
       transition: 0.5s;
       &:hover {
-        border: 1px solid @theme-color;
+        border: 1px solid var(--purpleblue-6);
       }
       span {
         font-size: 14px;
         
         &:nth-child(1) {
           flex: 1;
-          color: rgba(@black,0.65);
+          color: var(--black-65);
         }
         &:nth-child(2) {
           width: 160px;
           flex-shrink: 0;
-          color: rgba(@black,0.25);
+          color: var(--black-25);
         }
         &:nth-child(3) {
           width: 160px;
           flex-shrink: 0;
-          color: rgba(@black,0.25);
+          color: var(--black-25);
         }
         &:nth-child(4) {
           flex-shrink: 0;
           cursor: pointer;
-          color: rgba(@black,0.65);
+          color: var(--black-65);
           &:hover{
-            color: @theme-color;
+            color: var(--purpleblue-6);
           }
         }
       }

@@ -327,13 +327,13 @@ export default defineComponent({
   }
 }
 .purple {
-  color: @theme-color;
+  color: var(--purpleblue-6);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 .purple:hover {
-  color: @theme-light-color;
+  color: var(--purplebule-3);
 }
 
 .item {

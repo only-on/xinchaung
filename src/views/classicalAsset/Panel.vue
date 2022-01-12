@@ -341,8 +341,8 @@ export default defineComponent({
   min-height: 750px;
   width: 1330px;
   padding: 30px;
-  border-radius: @border-radius-base;
-  background: @white;
+  border-radius: var(--border-radius-default);
+  background: var(--white-100);
 
   .classical__card {
     width: 100%;
@@ -353,11 +353,11 @@ export default defineComponent({
     }
 
     .classical__disk-usage--container {
-      margin-right: @margin-lg;
+      margin-right: var(--margin-lg);
     }
 
     .classical__search-form {
-      padding: 0px 0px @padding-md 0px;
+      padding: 0px 0px var(--padding-md) 0px;
       display: flex;
       justify-content: space-between;
 
@@ -385,8 +385,8 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid @border-color-base;
-  border-radius: @border-radius-base;
+  border: 1px solid var(--gray-5);
+  border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
     border: none;
@@ -404,12 +404,12 @@ export default defineComponent({
   }
 
   &:hover {
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
   }
 
   &.classical__input--focused {
-    border: 1px solid @theme-color;
-    box-shadow: 0 0 0 2px @theme-scroll;
+    border: 1px solid var(--purpleblue-6);
+    box-shadow: 0 0 0 2px var(--purpleblue-1);
   }
 }
 </style>

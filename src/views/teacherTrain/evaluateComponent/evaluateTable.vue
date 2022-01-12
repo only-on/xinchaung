@@ -357,7 +357,7 @@ interface IData {
 
 <style lang="less" scoped>
 .theme-color {
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .evaluate-table {
   .score {
@@ -374,7 +374,7 @@ interface IData {
   }
   .nosee {
     pointer-events: none;
-    color: @avatar-bg;
+    color: var(--ccc);
   }
   .page-footer-box {
     margin-top: 28px;

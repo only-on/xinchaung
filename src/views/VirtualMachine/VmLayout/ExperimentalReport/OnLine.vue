@@ -155,11 +155,10 @@
 </template>
 
 <script lang="ts">
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import { defineComponent, inject } from "vue";
 
 export default defineComponent({
-  components: { "antdv-markdown": AntdvMarkdown },
+  components: {  },
   setup() {
     const reportTemplateData:any = inject("reportTemplateData");
     return {

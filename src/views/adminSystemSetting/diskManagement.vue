@@ -291,9 +291,9 @@ export default defineComponent({
         padding: 10px 15px;
         cursor: pointer;
         &.active {
-          background: @theme-color;
-          color: @white;
-          border-radius: @border-radius-base;
+          background: var(--purpleblue-6);
+          color: var(--white-100);
+          border-radius: var(--border-radius-default);
         }
       }
     }
@@ -313,7 +313,7 @@ export default defineComponent({
       }
     }
     .clear-disk {
-      color: @theme-color;
+      color: var(--purpleblue-6);
       cursor: pointer;
     }
   }

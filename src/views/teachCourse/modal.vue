@@ -97,7 +97,7 @@
 </script>
 
 <style lang="less" scoped>
-@hover-color: @theme-color;
+// var(--gray-8): var(--purpleblue-6);
 .ant-modal-content {
   .ant-btn {
     height: 30px;
@@ -105,23 +105,22 @@
     font-size: 12px;
     line-height: 1.5;
     border-radius: 3px;
-    color: @white;
-    background-color: @theme-color;
-    border-color: @hover-color;
+    color: var(--white-100);
+    background-color: var(--purpleblue-6);
+    border-color: var(--gray-8);
   }
   .ant-modal-close-x {
     height: 40px;
-    color: @white;
+    color: var(--white-100);
     line-height: 40px;
   }
   .ant-modal-header {
-    background-color: @theme-color;
+    background-color: var(--purpleblue-6);
     padding: 0;
     height: 40px;
     /* line-height: 40px; */
     /* font-size: 1.15em; */
     /* font-weight: bold; */
-    /* color: @white; */
     border-top-left-radius: 5px;
     border-top-right-radius: 5px;
     border-bottom-color: #f4f4f4;
@@ -129,7 +128,7 @@
       line-height: 40px;
       font-weight: bold;
       padding-left: 15px;
-      color: @white;
+      color: var(--white-100);
       font-size: 15px;
     }
   }
@@ -148,17 +147,17 @@
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: @theme-color;
-  // border-color: @hover-color;
-  color: @white;
+  background-color: var(--purpleblue-6);
+  // border-color: var(--gray-8);
+  color: var(--white-100);
   padding: 0 20px;
   line-height: 41px;
   font-size: 16px;
   float: right;
 }
 .ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
-  background-color: @hover-color;
-  border-color: @hover-color;
+  background-color: var(--gray-8);
+  border-color: var(--gray-8);
 }
 .ant-input-number {
   width: 250px;

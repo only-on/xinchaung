@@ -396,7 +396,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-@hover-color: @theme-color;
+// var(--gray-8): var(--purpleblue-6);
 .virtual-env {
   width: 1330px;
   // margin-top: 50px;
@@ -406,14 +406,14 @@ export default defineComponent({
     padding: 30px;
     border: 10px;
     border-radius: 10px;
-    background-color: @white;
+    background-color: var(--white-100);
     box-shadow: 0 0 5px rgb(0 0 0 / 10%);
     display: flex;
     .tree {
       width: 320px;
       max-height: 700px;
       // padding: 0 15px;
-      border-top: 3px solid @theme-color;
+      border-top: 3px solid var(--purpleblue-6);
       box-shadow: 0 0 5px rgb(0 0 0 / 10%);
       overflow-y: auto;
       overflow-x: hidden;
@@ -442,7 +442,7 @@ export default defineComponent({
           height: 600px;
           text-align: center;
           font-size: 30px;
-          color: @theme-color;
+          color: var(--purpleblue-6);
           padding-top: 250px;
         }
       }
@@ -454,7 +454,7 @@ export default defineComponent({
   .ant-input-group{
     .ant-input {
       border-radius: 4px;
-      background: @white;
+      background: var(--white-100);
       color: #5e5e5e;
       font-size: 15px;
       padding: 8px 5px 8px 30px;
@@ -467,9 +467,9 @@ export default defineComponent({
   }
   .ant-input-group-addon{
     .ant-btn{
-      background-color: @theme-color;
-      // border-color: @hover-color;
-      color: @white;
+      background-color: var(--purpleblue-6);
+      // border-color: var(--gray-8);
+      color: var(--white-100);
       height: 41px;
       width: 100px;
       font-size: 16px;
@@ -479,17 +479,17 @@ export default defineComponent({
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: @theme-color;
-  // border-color: @hover-color;
-  color: @white;
+  background-color: var(--purpleblue-6);
+  // border-color: var(--gray-8);
+  color: var(--white-100);
   padding: 0 20px;
   line-height: 41px;
   font-size: 16px;
   float: right;
 }
 .ant-btn.ant-btn-primary:hover, .ant-btn.ant-btn-primary:focus {
-  background-color: @hover-color;
-  border-color: @hover-color;
+  background-color: var(--gray-8);
+  border-color: var(--gray-8);
 }
 
 
@@ -499,39 +499,39 @@ export default defineComponent({
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;
-    background: @theme-color;
-    border-color: @theme-color;
+    background: var(--purpleblue-6);
+    border-color: var(--purpleblue-6);
     a {
-      color: @white;
+      color: var(--white-100);
     }
   }
   .ant-pagination-item:focus, 
   .ant-pagination-item:hover{
-    background: @theme-color;
-    border-color: @theme-color;
+    background: var(--purpleblue-6);
+    border-color: var(--purpleblue-6);
     transition: all 0.3s;
     a {
-      color: @white;
+      color: var(--white-100);
     }
   }
   .ant-pagination-next .ant-pagination-item-link:hover,
   .ant-pagination-next .ant-pagination-item-link:focus,
   .ant-pagination-prev .ant-pagination-item-link:hover,
   .ant-pagination-prev .ant-pagination-item-link:focus {
-    color: @white;
-    background: @theme-color; 
-    border-color: @theme-color;
+    color: var(--white-100);
+    background: var(--purpleblue-6); 
+    border-color: var(--purpleblue-6);
     transition: all 0.3s;
   }
   .ant-pagination-disabled:hover,
   .ant-pagination-disabled .ant-pagination-item-link:hover {
     color: rgba(0, 0, 0, 0.25);
     border-color: #d9d9d9;
-    background-color: @white;
+    background-color: var(--white-100);
   }
   .ant-pagination-options-quick-jumper input:hover,
   .ant-pagination-options-quick-jumper input:focus {
-    border-color: @theme-color;
+    border-color: var(--purpleblue-6);
     box-shadow: 0 0 0 2px rgb(137 85 181 / 30%);
   }
 }

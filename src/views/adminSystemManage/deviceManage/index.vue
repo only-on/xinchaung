@@ -270,10 +270,10 @@ export default defineComponent({
   }
 }
 .purple {
-  color: @theme-color;
+  color: var(--purpleblue-6);
 }
 .purple:hover {
-  color: @theme-light-color;
+  color: var(--purplebule-3);
 }
 .on {
   border-radius: 50px;
@@ -288,10 +288,10 @@ export default defineComponent({
   border-radius: 50px;
   width: 10px;
   height: 10px;
-  background: @normal-color;
+  background: var(--gray-5);
   display: inline-block;
   margin-right: 5px;
-  box-shadow: 0 0 5px @normal-color;
+  box-shadow: 0 0 5px var(--gray-5);
 }
 .item {
   display: flex;

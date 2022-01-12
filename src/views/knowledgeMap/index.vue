@@ -291,14 +291,14 @@ export default defineComponent({
       width: 100%;
       height: 100%;
       jmnodes.theme-success jmnode{
-        background: @theme-color !important;
+        background: var(--purpleblue-6) !important;
         &.selected{
           background: #f90 !important;
         }
       }
       input{
         color: #000;
-        background:@body-background;
+        background:var(--white-100);
       }
     }
   }
@@ -309,8 +309,8 @@ export default defineComponent({
     .title{
       padding-left: 18px;
       line-height: 56px;
-      background: @theme-color;
-      color: @white;
+      background: var(--purpleblue-6);
+      color: var(--white-100);
       font-size: 18px;
     }
     ul{
@@ -320,7 +320,7 @@ export default defineComponent({
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
-        color: @theme-color;
+        color: var(--purpleblue-6);
         border-bottom: 1px solid #C7AEDC;
         &:not(.nodata){
           cursor: pointer;
@@ -333,14 +333,14 @@ export default defineComponent({
     .more{
       cursor: pointer;
       text-align: center;
-      color: @theme-color;
+      color: var(--purpleblue-6);
     }
   }
   #menu{
     width: 120px;
     padding: 10px 0;
     border-radius: 5px;
-    background:@body-background;
+    background:var(--white-100);
     position: absolute;
     left: 0;
     top: 0;

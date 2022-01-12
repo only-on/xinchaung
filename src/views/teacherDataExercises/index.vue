@@ -312,8 +312,8 @@ export default defineComponent({
     text-align: center;
 }
 .classical__input--count-inner {
-  border: 1px solid @border-color-base;
-  border-radius: @border-radius-base;
+  border: 1px solid var(--black-85);
+  border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {
     border: none;
@@ -331,12 +331,12 @@ export default defineComponent({
   }
 
   &:hover {
-    border: 1px solid @theme-color;
+    border: 1px solid var(--purpleblue-6);
   }
 
   &.classical__input--focused {
-    border: 1px solid @theme-color;
-    box-shadow: 0 0 0 2px @shadow-color;
+    border: 1px solid var(--purpleblue-6);
+    box-shadow: 0 0 0 2px var(--black-0-7);
   }
 }
 </style>

@@ -282,7 +282,7 @@ export default defineComponent({
 <style lang="less">
 .add-chapter-tab {
   height: 100%;
-  background: @white;
+  background: var(--black-100);
   padding: 15px;
   .add-chapter-tabs {
     height: 100%;
@@ -327,12 +327,12 @@ export default defineComponent({
             > i {
               margin: 0 5px;
               font-style: normal;
-              color: @theme-color;
+              color: var(--purpleblue-6);
             }
             &:last-child {
               margin-right: 0;
               margin-left: auto;
-              color: @theme-color;
+              color: var(--purpleblue-6);
               cursor: pointer;
             }
           }

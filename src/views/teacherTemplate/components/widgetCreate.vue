@@ -71,11 +71,9 @@
 <script lang="ts">
 import { defineComponent, ref, watch,reactive, toRefs,PropType } from 'vue'
 import {deepClone} from '../utils'
-import AntdvMarkdown from "@xianfe/antdv-markdown/src/index.vue";
 import customInput from './customInput.vue'
 export default defineComponent({
   components: {
-    'antdv-markdown':AntdvMarkdown,
     customInput
   },
   props: {
@@ -134,7 +132,7 @@ export default defineComponent({
   outline: none;
   font-size: 14px;
   &.focus{
-    background: @component-background;
+    background: var(--white-100);
   }
   &::-webkit-input-placeholder{
     color: #ccc;
