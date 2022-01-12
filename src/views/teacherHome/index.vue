@@ -108,11 +108,7 @@ import { pieOptions, radarOptions, scaterOptions, graphOptions, IpieData } from 
 import request from "src/api/index";
 import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-<<<<<<< HEAD
 import {theme} from "src/utils/theme"
-=======
-import {theme} from 'src/utils/theme'
->>>>>>> ai-gaozhi-css
 const tabs = [
     {
       value: 0,
