@@ -496,6 +496,7 @@ export default defineComponent({
           console.log(res);
           message.success("删除成功");
           state.classStuDeleteid = [];
+          methods.getClassList();
         });
       },
       // 批量删除

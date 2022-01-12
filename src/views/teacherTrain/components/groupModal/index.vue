@@ -60,10 +60,14 @@
                         class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
                       ></i>
-                      <in-class-forum
+                      <!-- <in-class-forum
                         class="delete icon-shanchu-copy iconfont"
                         @click="deleteTree(index)"
-                      ></in-class-forum>
+                      ></in-class-forum> -->
+                       <i
+                        class="delete icon-shanchu-copy iconfont"
+                        @click="deleteTree(index)"
+                      ></i>
                     </span>
                   </template>
                 </div>
@@ -103,7 +107,7 @@
               v-model:checked="checkAll"
               @change="onCheckAllChange"
             >
-              {{ checkedValues?.length }}/{{ unGroupData?.length }}人
+              {{ checkedValues?.length }}/{{groupType === 'class'?totalStu:unGroupData?.length }}人
             </a-checkbox>
           </div>
           <div class="groupOperate" v-if="!ifautoGroupEdit">
@@ -116,51 +120,62 @@
             ></a-input-search>
             <!-- <a-button type='primary' @click="addGroup">添加分组</a-button> -->
           </div>
-          <!-- 如果按班级排课 -->
-          <div v-if="groupType === 'class'" class="checkGroup">
-            <a-tree
-              checkable
-              v-model:checkedKeys="checkedKeys"
-              @check="check"
-              @expand="expandTree"
-              checkStrictly
-              v-if="flag === true"
-            >
-              <template #switcherIcon>
-                <down-outlined />
-              </template>
-              <a-tree-node
-                :checkable="false"
-                v-for="(val, key) in unGroupData1"
-                :key="key"
-                :title="key"
-              >
-                <a-tree-node
-                  v-for="it in val"
-                  :key="key + '-' + it?.userProfile?.id"
-                  :checkable="true"
-                  :title="it?.userProfile?.name"
+                <!-- 如果按班级排课 -->
+              <div v-if="groupType === 'class'" class="checkGroup">
+                <div v-if="totalStu">
+                  <a-tree
+                  checkable
+                  v-model:checkedKeys="checkedKeys"
+                  @check="check"
+                  @expand="expandTree"
+                  checkStrictly
+                  v-if="flag === true"
                 >
-                </a-tree-node>
-              </a-tree-node>
-            </a-tree>
-          </div>
-          <!-- 如果按学生排课 -->
-          <div v-else class="checkGroup">
-            <a-checkbox-group
-              v-model:value="checkedValues"
-              v-if="flag === true"
-            >
-              <div
-                v-for="(item, index) in unGroupData1"
-                :key="index.toString()"
-              >
-                <a-checkbox :value="item.userProfile.id">
-                  {{ item.userProfile.name }}
-                </a-checkbox>
+                  <template #switcherIcon>
+                    <down-outlined />
+                  </template>
+                  <a-tree-node
+                    :checkable="false"
+                    v-for="(val, key) in unGroupData1"
+                    :key="key"
+                    :title="key"
+                  >
+                    <a-tree-node
+                      v-for="it in val"
+                      :key="key + '-' + it?.userProfile?.id"
+                      :checkable="true"
+                      :title="it?.userProfile?.name"
+                    >
+                    </a-tree-node>
+                  </a-tree-node>
+                </a-tree>
+                </div>
+                <div v-else>
+                  <empty></empty>
+                </div>
               </div>
-            </a-checkbox-group>
-          </div>
+              <!-- 如果按学生排课 -->
+              <div v-else class="checkGroup">
+                <div v-if='unGroupData?.length'>
+                  <a-checkbox-group
+                  v-model:value="checkedValues"
+                  v-if="flag === true"
+                >
+                  <div
+                    v-for="(item, index) in unGroupData1"
+                    :key="index.toString()"
+                  >
+                    <a-checkbox :value="item.userProfile.id">
+                      {{ item.userProfile.name }}
+                    </a-checkbox>
+                  </div>
+                  </a-checkbox-group>
+                </div>
+                <div v-else>
+                  <empty></empty>
+                </div>
+              </div>
+          
         </div>
       </div>
     </a-modal>
@@ -181,7 +196,7 @@ interface Istate {
   treeData: groupItem[];
   replaceFields: any;
   groupname: string;
-  checkedValues: number[];
+  checkedValues: any[];
   groupedKeys: number[];
   selectedKeys: string[];
   indeterminate: boolean;
@@ -193,6 +208,7 @@ interface Istate {
   unGroupData1: any[];
   flag: boolean;
   currentEditData: any;
+  totalStu:any;
 }
 import {
   defineComponent,
@@ -208,6 +224,8 @@ import Empty from "src/components/Empty.vue";
 import { DownOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import transfer from "../transfer/transfer.vue";
+import configRouters from "src/routers/modules";
+import { stat } from "fs/promises";
 export default defineComponent({
   name: "resources",
   props: [
@@ -247,6 +265,7 @@ export default defineComponent({
       flag: true,
       checkedKeys: [],
       currentEditData: "",
+      totalStu:0,
     });
     const methods = {
       editOk() {
@@ -258,16 +277,46 @@ export default defineComponent({
       handGroup() {},
       editCancel() {
         context.emit("editModal", false);
+        state.treeData=[]
       },
       onCheckAllChange(e: any) {
+        console.log(e,'e')
         state.checkedValues = [];
-        props.unGroupData.forEach((item: any, index: any) => {
+        if(props.groupType==='member'){
+          props.unGroupData.forEach((item: any, index: any) => {
           state.checkedValues.push(item.userProfile.id);
         });
         Object.assign(state, {
           checkedValues: e.target.checked ? state.checkedValues : [],
           indeterminate: true,
         });
+        }else{
+          if(e.target.checked){
+              let arrDataId=methods.objToArray()
+              arrDataId.forEach((con:any,x:any)=> {
+                state.checkedValues.push(con.key+'-'+con.item.userProfile.id);
+              });
+              console.log(state.checkedValues,'state.checkedValues')
+              Object.assign(state, {
+              // checkedValues: e.target.checked ? state.checkedValues : [],
+              checkedKeys: e.target.checked ? state.checkedValues : [],
+              indeterminate: true,
+            });
+          }else{
+            state.checkedKeys=[]
+          }
+        }
+      },
+      objToArray(){
+         let unGroupDataKeys=Object.keys(props.unGroupData)
+         let unGroupData=Object.values(props.unGroupData)
+          let arrDataId:any=[]
+          unGroupData.forEach((item:any,index:any)=>{
+            Object.values(item).forEach((it:any,j:any)=>{
+               arrDataId.push({'key':unGroupDataKeys[index],'item':it})
+            })
+          })
+        return arrDataId
       },
       onSearch() {
         console.log(state.groupname);
@@ -276,6 +325,7 @@ export default defineComponent({
       check(checkedKeys: any, e: any) {
         console.log(checkedKeys, e, "hhhh");
         state.checkedValues = checkedKeys.checked;
+        console.log(state.checkedValues,'state.checkedValues')
       },
       expandTree(e: any) {
         console.log(e);
@@ -420,16 +470,30 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
+    watch(()=>state.checkedKeys,(val)=>{
+      console.log(val.length,'valvalval')
+      state.checkAll=val.length===state.totalStu?true:false
+    })
     watch(
       () => props.unGroupData,
       (val: any) => {
+        console.log(props.groupType,'props.groupType')
+        if(props.groupType==='member'){
         state.unGroupData1 = val; 
         if(!props.groupData){
           state.treeData=[]
         }
+        }else{ 
+        state.unGroupData1 = val; 
+        if(!props.groupData){
+          state.treeData=[]
+        }
+          state.totalStu=methods.objToArray().length
+        }
       },
       {
         immediate: true,
+        deep:true
       }
     );
     watch(

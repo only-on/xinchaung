@@ -27,8 +27,6 @@
         <h3>描述</h3>
         <a-divider style="background-color: #d5d5d5" />
         <div class="description">{{ detail.description }}</div>
-        <a-divider :style="{ backgroundColor: '#d5d5d5' }" />
-        <div>{{ detail.description }}</div>
       </div>
       <a-divider style="opacity: 0" />
       <div class="classical__data-list">

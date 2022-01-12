@@ -143,7 +143,6 @@ export default defineComponent({
   position: relative;
   display: flex;
   border-radius: var(--border-radius-default);
-  border-radius: var(--base-font-size);
   padding: var(--padding-xs);
   align-items: center;
   padding: 14px 16px;
@@ -156,7 +155,6 @@ export default defineComponent({
       background-size: 100% 100%;
     }
   }
-
   .file__info {
     flex: 1;
     margin-left: var(--margin-md);
