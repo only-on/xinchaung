@@ -12,7 +12,7 @@
         <empty text="加载失败，请点击下方按钮进行刷新">
             <div>
                 <div><a-spin :spinning="spinning"></a-spin></div>
-                <a-button type="primary">刷新</a-button>
+                <a-button type="primary" @click="checkPdf(pdfUrl)">刷新</a-button>
             </div>
         </empty>
     </div>
@@ -69,7 +69,8 @@ export default defineComponent({
       env,
       pdfUrl,
       isShowPdf,
-      spinning
+      spinning,
+      checkPdf
     };
   },
 });
