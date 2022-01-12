@@ -160,7 +160,7 @@ export default defineComponent({
   color: var(--purpleblue-6);
 }
 .purple:hover {
-  color: var(--purplebule-3);
+  color: var(--purpleblue-3);
 }
 :deep(.ant-table-pagination.ant-pagination) {
   float: none;

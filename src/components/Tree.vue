@@ -118,7 +118,7 @@ export default defineComponent({
     }
     function childrenHeight(num: number) {
       if (prop.currentTab === 0) {
-        return { height: 66 + 42 * num + 'px' }
+        return { height: 78 + 42 * num + 'px' }
       } else {
         return { height: 42 * num + 'px' }
       }
@@ -195,7 +195,7 @@ interface ITreeList {
 
 
                     &:hover {
-                        background: var(--purplebule-3);
+                        background: var(--purpleblue-3);
                         color: #ffffff !important;
 
                         span {

@@ -4239,7 +4239,7 @@ textarea.ant-input {
 .ant-btn:focus {
   color: var(--blue-5);
   background: var(--white-100);
-  border-color: var(--purplebule-5);
+  border-color: var(--purpleblue-5);
 }
 .ant-btn:hover > a:only-child,
 .ant-btn:focus > a:only-child {
@@ -4331,8 +4331,8 @@ textarea.ant-input {
 .ant-btn-primary:hover,
 .ant-btn-primary:focus {
   color: var(--white-100);
-  background: var(--purplebule-5);
-  border-color: var(--purplebule-5);
+  background: var(--purpleblue-5);
+  border-color: var(--purpleblue-5);
 }
 .ant-btn-primary:hover > a:only-child,
 .ant-btn-primary:focus > a:only-child {
@@ -5677,9 +5677,9 @@ textarea.ant-input {
 }
 .ant-btn-background-ghost.ant-btn-primary:hover,
 .ant-btn-background-ghost.ant-btn-primary:focus {
-  color: var(--purplebule-5);
+  color: var(--purpleblue-5);
   background: transparent;
-  border-color: var(--purplebule-5);
+  border-color: var(--purpleblue-5);
 }
 .ant-btn-background-ghost.ant-btn-primary:hover > a:only-child,
 .ant-btn-background-ghost.ant-btn-primary:focus > a:only-child {
@@ -9431,7 +9431,7 @@ span.ant-radio + * {
   margin-right: 0;
 }
 .ant-tabs-nav .ant-tabs-tab:hover {
-  color: var(--purplebule-5);
+  color: var(--purpleblue-5);
 }
 .ant-tabs-nav .ant-tabs-tab:active {
   color: var(--blue-7);

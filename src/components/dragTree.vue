@@ -527,7 +527,7 @@ export default defineComponent({
       }
     }
     &:hover {
-      background-color: var(--purplebule-3);
+      background-color: var(--purpleblue-3);
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -538,7 +538,7 @@ export default defineComponent({
   }
   
   .selectbac {
-    background-color: var(--purplebule-3);
+    background-color: var(--purpleblue-3);
     position: relative;
     &::before {
         position: absolute;
@@ -565,7 +565,7 @@ export default defineComponent({
   }
   .tree-second-title {
     &:hover{
-      background-color: var(--purplebule-3);
+      background-color: var(--purpleblue-2);
       // width: 100%!important;
       // padding: 0!important;
     }
@@ -579,7 +579,7 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: var(--purplebule-3);
+          color: var(--purpleblue-6);
           font-size: 14px;
           &.icon-jinzhi {
             color: var(--orange-4);
@@ -588,7 +588,7 @@ export default defineComponent({
       }
       .type-name {
         font-size: 12px;
-        color: var(--purplebule-3);
+        color: var(--purpleblue-3);
         margin-left: 5px;
       }
     }
@@ -602,7 +602,7 @@ export default defineComponent({
       flex-shrink: 0;
       .iconfont {
         margin-left: 5px;
-        font-size: 12px;
+        font-size: 16px;
         color: var(--purpleblue-6);
         display: none;
         
@@ -614,6 +614,15 @@ export default defineComponent({
         .icon-bianji1,
         .icon-shanchu {
           display: inline-block;
+        }
+      }
+      .experiment-type {
+        .type-icon {
+          // color: var(--white-100);
+          font-size: 14px;
+          &.icon-jinzhi {
+            color: var(--orange-4);
+          }
         }
       }
     }

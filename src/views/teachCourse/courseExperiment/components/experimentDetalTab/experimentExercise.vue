@@ -376,7 +376,7 @@ export default defineComponent({
 .experiment-exercise-tab-wrap {
   height: 100%;
   overflow-y: auto;
-  background: var(--black-100);
+  background: var(--white-100);
   padding: 15px;
 }
 .exercise-list-tab {

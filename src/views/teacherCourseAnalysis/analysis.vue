@@ -538,7 +538,7 @@ interface IClassesData {
           height: 40px;
           line-height: 40px;
           background: var(--echart-title-bgcolor);
-          border-bottom: 1px solid var(--purplebule-3);
+          border-bottom: 1px solid var(--purpleblue-3);
           color: var(--purpleblue-6);
           font-size: 16px;
           text-align: center;
@@ -596,8 +596,8 @@ interface IClassesData {
     width: 20%;
     height: 32px;
     text-align: center;
-    border-top: 1px solid var(--purplebule-3);
-    border-right: 1px solid var(--purplebule-3);
+    border-top: 1px solid var(--purpleblue-3);
+    border-right: 1px solid var(--purpleblue-3);
     line-height: 32px;
     font-size: 16px;
     color: #050101;

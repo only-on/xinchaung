@@ -515,11 +515,11 @@ export default defineComponent({
           border-top-right-radius: 0px;
         }
         .textarea:hover + .savebutton {
-          background-color: var(--purplebule-3);
+          background-color: var(--purpleblue-3);
           border: 1px solid var(--purpleblue-6);
         }
         .textarea:focus + .savebutton {
-          background-color: var(--purplebule-3);
+          background-color: var(--purpleblue-3);
           border: 1px solid var(--purpleblue-6);
         }
       }

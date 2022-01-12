@@ -22,7 +22,7 @@ export default defineComponent({
 .exam-layout-bg {
   width: 100%;
   min-height: 100%;
-  background: linear-gradient(var(--purplebule-3), var(--purpleblue-6));
+  background: linear-gradient(var(--purpleblue-3), var(--purpleblue-6));
   .exam-layout {
     width: 100%;
     height: 100%;
