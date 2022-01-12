@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 2736704 */
-  src: url('iconfont.woff2?t=1639728351059') format('woff2'),
-       url('iconfont.woff?t=1639728351059') format('woff'),
-       url('iconfont.ttf?t=1639728351059') format('truetype');
+  src: url('iconfont.woff2?t=1641955558296') format('woff2'),
+       url('iconfont.woff?t=1641955558296') format('woff'),
+       url('iconfont.ttf?t=1641955558296') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-fenlei:before {
+  content: "\e64a";
+}
+
+.icon-guidangshijian:before {
+  content: "\e649";
+}
+
+.icon-daochu:before {
+  content: "\e672";
+}
+
+.icon-yonghuming:before {
+  content: "\e6b2";
+}
+
+.icon-mima:before {
+  content: "\e6b3";
+}
+
+.icon-jingxiang:before {
+  content: "\e6b1";
 }
 
 .icon-xuanze_check:before {
@@ -269,10 +293,6 @@
   content: "\e661";
 }
 
-.icon-jiaoshi:before {
-  content: "\e612";
-}
-
 .icon-kongshuju:before {
   content: "\e662";
 }
@@ -287,10 +307,6 @@
 
 .icon-wenjianjia:before {
   content: "\e665";
-}
-
-.icon-shicao:before {
-  content: "\e666";
 }
 
 .icon-tiankongti:before {
@@ -335,10 +351,6 @@
 
 .icon-shubiao:before {
   content: "\e606";
-}
-
-.icon-tihuan:before {
-  content: "\e6a9";
 }
 
 .icon-piyue:before {
@@ -493,20 +505,12 @@
   content: "\e624";
 }
 
-.icon-zhuomianshiyan1:before {
-  content: "\e626";
-}
-
 .icon-shouqi1-copy:before {
   content: "\e8da";
 }
 
 .icon-shouqi12-copy:before {
   content: "\e8db";
-}
-
-.icon-biji:before {
-  content: "\e671";
 }
 
 .icon-jiantou-copy:before {
@@ -543,10 +547,6 @@
 
 .icon-right-copy:before {
   content: "\e8df";
-}
-
-.icon-tianjia1:before {
-  content: "\e672";
 }
 
 .icon-jinzhi:before {
@@ -587,10 +587,6 @@
 
 .icon-neicun:before {
   content: "\e67d";
-}
-
-.icon-danxuan1:before {
-  content: "\e67e";
 }
 
 .icon-nandu1:before {
@@ -731,14 +727,6 @@
 
 .icon-xiayi:before {
   content: "\e648";
-}
-
-.icon-wushuju:before {
-  content: "\e649";
-}
-
-.icon-notdata:before {
-  content: "\e64a";
 }
 
 .icon-wenjian:before {

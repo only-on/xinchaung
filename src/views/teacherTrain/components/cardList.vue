@@ -80,7 +80,7 @@
         </div>
         <div class="cardfoot1">
           <li>
-            <i class="icon iconfont icon-guidangshijian"></i>
+            <i class="iconfont icon-guidangshijian"></i>
             归档时间：
             <span>{{item.created_time}}</span>
           </li>

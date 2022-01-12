@@ -54,12 +54,13 @@ export default defineComponent({
 
   .wmi__title {
     display: block;
-    font-size: 22px;
+    font-size: 24px;
   }
 
   .wmi__description {
     opacity: 0.7;
     white-space: nowrap;
+    font-size: 12px;
   }
 
   .watermark {
