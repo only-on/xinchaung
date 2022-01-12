@@ -282,7 +282,7 @@ export default defineComponent({
 <style lang="less">
 .add-chapter-tab {
   height: 100%;
-  background: var(--black-100);
+  background: var(--white-100);
   padding: 15px;
   .add-chapter-tabs {
     height: 100%;
