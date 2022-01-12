@@ -8,12 +8,9 @@
       <a-button type="primary" @click="openUploadModal">上传</a-button>
       <a-button type="primary" @click="selectFile">选择</a-button>
     </div>
-    <iframe
-      :src="`${env?'':'/frontend'}/pdfjs-2.5.207/web/viewer.html?file=${
-        env ? '/proxyPrefix' + introFile[0].file_html : introFile[0].file_html
-      }`"
-      frameborder="0"
-    ></iframe>
+    <pdf
+      :url="introFile[0].file_html"
+    ></pdf>
   </div>
   <div v-if="prepareShowTab === 'none'" class="chapter-intro-none">
     <empty text="暂无数据，可从数据中心选择或本地上传文件"> </empty>
@@ -107,6 +104,7 @@ import beforeIcon from "src/components/aiAnt/beforeIcon.vue"
 import { message } from "ant-design-vue";
 import group12 from "src/assets/images/screenicon/Group12.png"
 import group6 from "src/assets/images/screenicon/Group6.png"
+import pdf from "src/components/pdf/pdf.vue"
 type TreactiveData = {
   introFile: any[];
   prepareShowTab: string;
@@ -135,7 +133,8 @@ export default defineComponent({
     empty,
     // SyncOutlined,
     "upload-data-set-file": uploadDataSetFile,
-    "before-icon":beforeIcon
+    "before-icon":beforeIcon,
+    pdf
   },
   props: ["activeKey"],
   setup(props) {

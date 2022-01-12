@@ -4,6 +4,7 @@
   
     </div>
     <div class="emptyCon">{{emptyText}}</div>
+    <div class="empty-action-box"><slot></slot></div>
   </div>
 </template>
 
@@ -98,5 +99,9 @@ export default defineComponent({
       width: 100%;
       text-align: center;
       color:rgba(5, 1, 1,.45);
+  }
+  .empty-action-box{
+    text-align: center;
+    margin-top: 15px;
   }
 </style>

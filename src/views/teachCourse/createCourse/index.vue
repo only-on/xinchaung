@@ -27,7 +27,7 @@
         </div>
       </template>
       <template v-if="currentStep === 2">
-        <customer-infor :trainId="course_id" />
+        <customer-infor :trainId="course_id" type="course"/>
         <div class="first-step-btn">
           <a-button @click="last">上一步</a-button>
           <a-button type="primary" @click="next">下一步</a-button>
@@ -143,7 +143,7 @@ export default defineComponent({
               "end_time",
               moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
-            body.append("introduce", baseInfo.introduce);
+            body.append("introduce", baseInfo.introduce?baseInfo.introduce:"");
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
             body.append("url", baseInfo.url?baseInfo.url:defaultCover);
@@ -153,7 +153,7 @@ export default defineComponent({
                 moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
               end_time:
                 moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-              introduce: baseInfo.introduce,
+              introduce: baseInfo.introduce?baseInfo.introduce:"",
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url?baseInfo.url:defaultCover,
@@ -187,7 +187,7 @@ export default defineComponent({
             moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
           end_time:
             moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-          introduce: baseInfo.introduce,
+          introduce: baseInfo.introduce?baseInfo.introduce:"",
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url?baseInfo.url:defaultCover,
@@ -218,7 +218,7 @@ export default defineComponent({
               "end_time",
               moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59"
             );
-            body.append("introduce", baseInfo.introduce);
+            body.append("introduce", baseInfo.introduce?baseInfo.introduce:"");
             body.append("course_category_id", baseInfo.course_category_id);
             body.append("course_direction_id", baseInfo.course_direction_id);
             body.append("url", baseInfo.url?baseInfo.url:defaultCover);
@@ -228,7 +228,7 @@ export default defineComponent({
                 moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
               end_time:
                 moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-              introduce: baseInfo.introduce,
+              introduce: baseInfo.introduce?baseInfo.introduce:"",
               course_category_id: baseInfo.course_category_id,
               course_direction_id: baseInfo.course_direction_id,
               url: baseInfo.url?baseInfo.url:defaultCover,
@@ -275,7 +275,7 @@ export default defineComponent({
             moment(baseInfo.created_at).format("YYYY-MM-DD") + " 00:00:00",
           end_time:
             moment(baseInfo.end_time).format("YYYY-MM-DD") + " 23:59:59",
-          introduce: baseInfo.introduce,
+          introduce: baseInfo.introduce?baseInfo.introduce:"",
           course_category_id: baseInfo.course_category_id,
           course_direction_id: baseInfo.course_direction_id,
           url: baseInfo.url?baseInfo.url:defaultCover,
