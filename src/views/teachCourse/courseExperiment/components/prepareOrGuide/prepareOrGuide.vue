@@ -8,9 +8,11 @@
       <a-button type="primary" @click="openUploadModal">上传</a-button>
       <a-button type="primary" @click="selectFile">选择</a-button>
     </div>
-    <pdf
+    <div style="height:calc(100% - 50px)">
+      <pdf
       :url="introFile[0].file_html"
     ></pdf>
+    </div>
   </div>
   <div v-if="prepareShowTab === 'none'" class="chapter-intro-none">
     <empty text="暂无数据，可从数据中心选择或本地上传文件"> </empty>

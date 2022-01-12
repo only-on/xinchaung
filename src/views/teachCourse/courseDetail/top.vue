@@ -154,6 +154,7 @@ export default defineComponent({
     }
     // 打开编辑modal
     function openEditModal() {
+      reactiveData.baseInfoData.introduce=reactiveData.baseInfoData.introduce?reactiveData.baseInfoData.introduce:""
       formData.value = cloneDeep(reactiveData.baseInfoData);
       reactiveData.editVisible = true;
     }
