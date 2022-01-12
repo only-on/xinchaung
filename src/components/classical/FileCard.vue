@@ -142,13 +142,9 @@ export default defineComponent({
   border: 1px solid var(--black-85);
   position: relative;
   display: flex;
-<<<<<<< HEAD
-  border-radius: @border-radius-base;
-  // padding: @padding-xs;
-=======
+  border-radius: var(--border-radius-default);
   border-radius: var(--base-font-size);
   padding: var(--padding-xs);
->>>>>>> ai-gaozhi-css
   align-items: center;
   padding: 14px 16px;
   .file__icon {

@@ -287,13 +287,11 @@ export default defineComponent({
       border-radius: 12px 0px 0px 12px;
       box-shadow: 0px 2px 4px 0px var(--black-0-7);
       &.end{
-<<<<<<< HEAD
         background:#373737 ;
         color:#8A8A8A;
-=======
+
         background: #8A8A8A;
         color: var(--black-25);
->>>>>>> ai-gaozhi-css
       }
       &.noStart{
         background: var(--white-100);
@@ -371,13 +369,11 @@ export default defineComponent({
       background: var(--gray-2);
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
-<<<<<<< HEAD
       height:41px;
-      border-top: 1px solid @border-color;
-=======
+      border-top: 1px solid var(--black-15);
+
       height:40px;
       border-top: 1px solid var(--black-15);
->>>>>>> ai-gaozhi-css
       box-sizing: border-box;
       li{
         font-size: 14px;

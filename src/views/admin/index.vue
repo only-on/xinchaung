@@ -735,13 +735,11 @@ export default defineComponent({
   .bg-white {
     background-color: var(--white-100);
   }
-<<<<<<< HEAD
   .b-r {
-    border-radius: @border-radius-base;
-=======
+    border-radius: var(--border-radius-default);
+
   .b-r{
     border-radius: var(--border-radius-default);
->>>>>>> ai-gaozhi-css
   }
   .m-l-20 {
     margin-right: 20px;
@@ -911,6 +909,7 @@ export default defineComponent({
     :nth-child(2n + 2) {
       margin-left: 20px;
     }
+  }
   }
 }
 </style>

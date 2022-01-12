@@ -25,13 +25,10 @@
     <div class="classical__content--main">
       <div class="more-detail">
         <h3>描述</h3>
-<<<<<<< HEAD
         <a-divider style="background-color: #d5d5d5" />
         <div class="description">{{ detail.description }}</div>
-=======
         <a-divider :style="{ backgroundColor: '#d5d5d5' }" />
         <div>{{ detail.description }}</div>
->>>>>>> ai-gaozhi-css
       </div>
       <a-divider style="opacity: 0" />
       <div class="classical__data-list">
@@ -554,15 +551,11 @@ export default defineComponent({
   }
 
   .classical__content--main {
-<<<<<<< HEAD
-    margin-top: @margin-lg + 21px;
+    margin-top: 45px;
     .description{
       color:rgba(0, 0, 0, 0.65);
     }
-=======
-    margin-top: calc(var(--margin-lg) + 21px);
-
->>>>>>> ai-gaozhi-css
+    margin-top: 45px;
     .classical__data-list {
       .classical__data-list-header {
         display: flex;
@@ -577,24 +570,16 @@ export default defineComponent({
         }
 
         .classical__data-list-upload {
-<<<<<<< HEAD
-          margin-left: @margin-md;
+          margin-left: var(--margin-md);
           .icon-upload{
             font-size: 14px;
             margin-right: 4px;
           }
-=======
           margin-left: var(--margin-md);
->>>>>>> ai-gaozhi-css
         }
       }
-
       .classical__data-list-content {
-<<<<<<< HEAD
-=======
         padding: var(--padding-md) 0px;
-
->>>>>>> ai-gaozhi-css
         .classical__data-list-row {
           // width: 100%;
           .fileCard{
@@ -644,7 +629,7 @@ export default defineComponent({
   }
 }
 .ant-upload-drag-icon .icon-upload{
-  color: @theme-color;
+  color:var(--purpleblue-6);
 }
 .ant-upload-text{
   font-size: 14px!important;

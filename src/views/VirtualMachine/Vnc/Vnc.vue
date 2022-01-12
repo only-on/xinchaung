@@ -629,7 +629,6 @@ export default defineComponent({
     .vncloading {
       position: relative;
       height: 100%;
-<<<<<<< HEAD
       text-align: center;
        background: radial-gradient(#010B24, #010B24);
       .word {
@@ -645,26 +644,25 @@ export default defineComponent({
         top: 50%;
         transform: translateY(-50%);
       }
-      .overlay {
-        // background-image: linear-gradient(
-        //   transparent 0%,
-        //   rgba(10, 16, 10, 0.5) 50%
-        // );
-        // background-size: 1000px 2px;
-        // bottom: 0;
-        // content: "";
-        // left: 0;
-        // position: absolute;
-        // right: 0;
-        // top: 0;
-      }
-=======
+      // .overlay {
+      //   background-image: linear-gradient(
+      //     transparent 0%,
+      //     rgba(10, 16, 10, 0.5) 50%
+      //   );
+      //   background-size: 1000px 2px;
+      //   bottom: 0;
+      //   content: "";
+      //   left: 0;
+      //   position: absolute;
+      //   right: 0;
+      //   top: 0;
+      // }
+
       background: rgba(#515151, 0.8);
       color: var(--white-100);
       display: flex;
       justify-content: center;
       align-items: center;
->>>>>>> ai-gaozhi-css
     }
   }
 }
