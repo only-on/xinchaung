@@ -66,6 +66,7 @@ import numberInput from "src/components/aiAnt/numberInput.vue"
 import { useRouter ,useRoute } from 'vue-router';
 import { message } from 'ant-design-vue'
 import moment from 'moment';
+import { resetSystemSiteApi } from 'src/views/adminSystemSetting/api';
 
 const http=(request as any).teacherTrain
 interface form{
@@ -141,13 +142,19 @@ export default defineComponent({
         fd.append('upload_path','teacherTrain')
         http.uploadsFile({param:fd}).then((res:any)=>{
           console.log(res)
-          state.formState.courseware=res.data.url
-          state.fileList=[file]
+          if(res){
+            state.formState.courseware=res.data.url
+            state.fileList=[file]
+            message.success('上传成功！')
+          }else{
+            message.error('上传失败！')
+          }  
         })
         return false
       },
       removeFile(file:any){
         state.fileList=[]
+        state.formState.courseware=''
         console.log(file,'file')
       },
         onCancel(){
@@ -225,7 +232,6 @@ export default defineComponent({
       width:48%;
       .uploadCourseware{
         margin-top: 10px;
-        display: flex;
       }
       .addCourseware{
         width: 112px;
