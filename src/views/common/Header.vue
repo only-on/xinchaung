@@ -1,16 +1,16 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <router-link class="a-logo" :to="{path:homePath}">
+      <!-- <router-link class="a-logo" :to="{path:homePath}">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </router-link>
-      <!-- <div class="a-logo" @click="goHome()">
+      </router-link> -->
+      <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
         <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </div> -->
+      </div>
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
@@ -135,6 +135,7 @@ export default defineComponent({
       login_logo:''
     });
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
+
     function getMenu() {
       http.getMenu().then((res: IBusinessResp) => {
         if (res) {
@@ -143,6 +144,20 @@ export default defineComponent({
           activeName.value = lStorage.get("menuActiveName")
             ? lStorage.get("menuActiveName")
             : data && data.length && data[0].name;
+          if(data && data.length){
+            data.map((v:any)=>{
+              // console.log(v.children.length)
+              if(v.children.length===0){
+                v.url=`${v.url}?currentTab=0`
+              }else{
+                v.children.map((i:any)=>{
+                  if(i.children.length===0){
+                    i.url=`${i.url}?currentTab=0`
+                  }
+                })
+              }
+            })
+          }
           menus.push(...data);
           if (route.path === (data && data.length && data[0].url)) {
             activeName.value = data && data[0].name;

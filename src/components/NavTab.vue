@@ -13,8 +13,8 @@
       <div
         v-for="v in configuration.tabs"
         :key="v.name"
-        :class="activeName === v.name ? 'active' : ''"
-        @click="activeName !== v.name ? tabChange(v) : ''"
+        :class="ActiveName === v.name ? 'active' : ''"
+        @click="ActiveName !== v.name ? tabChange(v) : ''"
       >
         {{ v.name }}
       </div>
@@ -120,6 +120,15 @@ export default defineComponent({
         activeName.value = configuration.tabs[configuration.componenttype].name;
       }
     }
+    var ActiveName=computed(()=>{
+      let str=''
+      if(activeName.value!==''){
+        str=activeName.value
+      }else{
+        str=configuration.tabs[0].name
+      }
+      return str
+    })
     function back() {
       router.go(-1);
     }
@@ -136,7 +145,7 @@ export default defineComponent({
         }
       }
     );
-    return { activeName, tabChange, back, pageEdit, configuration };
+    return { activeName,ActiveName, tabChange, back, pageEdit, configuration };
   },
 });
 </script>

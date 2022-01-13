@@ -38,9 +38,6 @@ export default defineComponent({
            clearInterval(Number((tabRef.value as any).clearTimer()))
       }
     })
-    watch(()=>{return route.query.currentTab},(val:any)=>{
-        componentName.value=componentNames[val]
-    },{immediate:true})
     onMounted(()=>{
     })
     return {componentName,tabs,tabRef};
