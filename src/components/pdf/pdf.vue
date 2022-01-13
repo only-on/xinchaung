@@ -1,6 +1,5 @@
 <template>
   <div style="width:100%;height:100%">
-     
     <iframe
     v-if="isShowPdf"
     style="width:100%;height:100%"
