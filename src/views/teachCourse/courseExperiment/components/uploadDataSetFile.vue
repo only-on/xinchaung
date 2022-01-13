@@ -104,6 +104,10 @@ export default defineComponent({
       });
     }
     function beforeUpload(file: any) {
+      if (!reactiveData.dataset_id) {
+        message.warn("上传文件时请选择目录")
+        return false;
+      }
       const body = {
         dataset: file,
         pageType: type,

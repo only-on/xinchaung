@@ -401,7 +401,7 @@ export default defineComponent({
       }
     }
     .course-experiment-box{
-      height: auto;
+      height: 600px;
     }
   }
 }
