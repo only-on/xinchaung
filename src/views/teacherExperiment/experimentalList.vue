@@ -587,8 +587,10 @@ export default defineComponent({
         } else {
           if (res) {
             nextTick(()=>{
-              myTree.value.init()
-              initExperimental()
+              if(myTree.value){
+                myTree.value.init()
+                initExperimental()
+              }
             })
           }
         }
@@ -730,6 +732,12 @@ export default defineComponent({
     }
     function create() {
       // console.log('创建实验')
+      // taskData[currentCourseIndex.value].children[currentChapterIndex.value].id
+      let mark=(taskData && taskData[currentCourseIndex.value] && taskData[currentCourseIndex.value].children && taskData[currentCourseIndex.value].children[currentChapterIndex.value].id)
+      if(!mark){
+        $message.warn('请选择实验方向和章节')
+        return
+      }
       router.push({
         path: '/teacher/teacherExperiment/creatExperiment',
         query: {

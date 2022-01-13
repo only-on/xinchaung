@@ -88,6 +88,7 @@ export default defineConfig({
     force: true
   },
   build:{
+    outDir:'ahp_web',
     sourcemap:false,
     brotliSize:false,
     chunkSizeWarningLimit:10000,
