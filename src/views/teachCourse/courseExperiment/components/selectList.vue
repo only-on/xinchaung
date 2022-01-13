@@ -115,7 +115,7 @@ export default defineComponent({
         > span {
           margin-right: 5px;
           background: var(--purpleblue-6);
-          color: var(--black-100);
+          color: var(--white-100);
           border-radius: 50%;
           padding: 2px;
         }
