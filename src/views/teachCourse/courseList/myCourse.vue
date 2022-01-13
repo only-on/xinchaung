@@ -42,7 +42,7 @@
 
     <div v-else>
       <empty :text="emptyText" :type="emptyType" />
-      <div v-if="emptyType==='empty'" style="text-align:center;margin-top:30px">
+      <div style="text-align:center;margin-top:30px">
         <a-button type="primary" @click="create">创建课程</a-button>
       </div>
     </div>
@@ -126,7 +126,7 @@ export default defineComponent({
         ) {
           (reactiveData.emptyType = "searchEmpty");
             (reactiveData.emptyText =
-              "暂未搜到相关数据，可点击下方按钮创建您需要的工作台。");
+              "暂未搜到相关数据，可点击下方按钮创建您需要的课程。");
         }
       },
       { deep: true, immediate: true }
