@@ -60,10 +60,6 @@
                         class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
                       ></i>
-                      <!-- <in-class-forum
-                        class="delete icon-shanchu-copy iconfont"
-                        @click="deleteTree(index)"
-                      ></in-class-forum> -->
                        <i
                         class="delete icon-shanchu-copy iconfont"
                         @click="deleteTree(index)"
@@ -471,7 +467,6 @@ export default defineComponent({
       }
     ),
     watch(()=>state.checkedKeys,(val)=>{
-      console.log(val.length,'valvalval')
       state.checkAll=val.length===state.totalStu?true:false
     })
     watch(

@@ -26,7 +26,8 @@
                       <!-- <a-textarea v-model:value="formState.guide" showCount :maxlength="100" /> -->
                       <number-input v-model:value="formState.guide" showCount :auto-size="{ minRows: 5, maxRows: 15 }" :maxlength="100"></number-input>
                   </a-form-item>
-                  <a-form-item label="添加实训课件">
+                  <div class="uploadCourseware">
+                    <a-form-item label="添加实训课件">
                      <a-upload
                         name="file"
                         :multiple="false"
@@ -37,7 +38,9 @@
                             <span class="icon-tianjia iconfont"></span>
                         </a-button>
                     </a-upload>
-                  </a-form-item>
+                    </a-form-item>
+                    <span class="type_title">支持格式: ppt、pptx、pdf。 </span>
+                  </div>
               </div>
             </div>
         </a-form>
@@ -208,6 +211,12 @@ export default defineComponent({
     }
     .right{
       width:48%;
+      .uploadCourseware{
+        display: flex;
+      }
+      .type_title{
+        color:rgba(0,0,0,0.25)
+      }
       .addCourseware{
         width: 112px;
         height:32px;
