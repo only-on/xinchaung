@@ -29,20 +29,24 @@
                       <!-- <a-textarea v-model:value="formState.guide" showCount :maxlength="100" /> -->
                       <number-input v-model:value="formState.guide" showCount :auto-size="{ minRows: 5, maxRows: 15 }" :maxlength="100"></number-input>
                   </a-form-item>
-                  <div class="uploadCourseware">
-                    <a-form-item label="添加实训课件">
-                     <a-upload
-                        name="file"
+                  <div>
+                    <div><span>添加实训课件</span><span class="type_title">支持格式: ppt、pptx、pdf。 </span></div>
+                    <div class="uploadCourseware">
+                    <a-form-item>
+                      <a-upload
                         :multiple="false"
-                        :fileList='fileList'
+                        accept=".ppt,.pptx,.pdf"
+                        :file-list="fileList"
                         :before-upload="beforeUpload"
-                        >
+                        :remove='removeFile'
+                      >
                         <a-button class="addCourseware">
-                            <span class="icon-tianjia iconfont"></span>
-                        </a-button>
-                    </a-upload>
+                              <span class="icon-tianjia iconfont"></span>
+                          </a-button>
+                      </a-upload>
+                    <!-- <a-progress :percent="50" /> -->
                     </a-form-item>
-                    <span class="type_title">支持格式: ppt、pptx、pdf。 </span>
+                    </div>
                   </div>
               </div>
             </div>
@@ -62,6 +66,7 @@ import numberInput from "src/components/aiAnt/numberInput.vue"
 import { useRouter ,useRoute } from 'vue-router';
 import { message } from 'ant-design-vue'
 import moment from 'moment';
+
 const http=(request as any).teacherTrain
 interface form{
   name:string;
@@ -141,6 +146,10 @@ export default defineComponent({
         })
         return false
       },
+      removeFile(file:any){
+        state.fileList=[]
+        console.log(file,'file')
+      },
         onCancel(){
           router.go(-1)
           inject['stepInfoOne']={}
@@ -215,12 +224,16 @@ export default defineComponent({
     .right{
       width:48%;
       .uploadCourseware{
+        margin-top: 10px;
         display: flex;
       }
       .addCourseware{
         width: 112px;
         height:32px;
         border: 1px solid var(--purpleblue-6);
+        display: flex;
+        justify-content: center;
+        align-items: center;
         .icon-tianjia{
           font-size: 18px;
           color:var(--purpleblue-6);
@@ -236,12 +249,10 @@ export default defineComponent({
     }
   }
 }
-.cover_word{
-  margin-right: 30px;
-}
 .type_title{
         color:rgba(0,0,0,0.25);
-        font-size: 14px;
+        font-size: 12px;
+        margin-left:20px;
       }
 :deep(.ant-calendar-picker){
   width:100%;

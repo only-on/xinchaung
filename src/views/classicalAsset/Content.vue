@@ -3,8 +3,8 @@
     <div class="classical__content--header">
       <div class="left">
         <h2>{{ detail.name }}</h2>
-        <div>
-          创建日期：{{ detail.createdDate }} 最后修改：{{ detail.updatedDate }}
+        <div class="left_time">
+          <span class="create_time">创建日期：{{ detail.createdDate }} </span><span> 最后修改：{{ detail.updatedDate }}</span>
         </div>
       </div>
       <div class="right">
@@ -25,10 +25,10 @@
     <div class="classical__content--main">
       <div class="more-detail">
         <h3>描述</h3>
-        <a-divider style="background-color: #d5d5d5" />
+        <a-divider class="divider_top" style="background-color: #d5d5d5" />
         <div class="description">{{ detail.description }}</div>
       </div>
-      <a-divider style="opacity: 0" />
+      <a-divider class="divider_bottom" style="opacity: 0" />
       <div class="classical__data-list">
         <div class="classical__data-list-header">
           <h3>文件列表</h3>
@@ -545,15 +545,28 @@ export default defineComponent({
 
     .left {
       flex: 1;
+      .left_time{
+        color: rgba(0, 0, 0, 0.25);
+      }
+      .create_time{
+        margin-right:32px;
+      }
     }
   }
 
   .classical__content--main {
-    margin-top: 45px;
+    // margin-top: @margin-lg + 21px;
     .description{
       color:rgba(0, 0, 0, 0.65);
     }
-    margin-top: 45px;
+    .divider_top{
+      margin-top: 12px;
+      margin-bottom: 16px;
+    }
+    .divider_bottom{
+      margin-top: 40px;
+      margin-bottom: 0px;
+    }
     .classical__data-list {
       .classical__data-list-header {
         display: flex;
