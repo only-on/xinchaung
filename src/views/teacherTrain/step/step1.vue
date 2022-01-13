@@ -18,6 +18,9 @@
                     </a-form-item>
                   </div>
                   <div>
+                <div>
+                  <span class="cover_word">实训封面</span><span class="type_title">支持格式：ipg、png,限制尺寸525*300px</span>
+                </div>
                 <upload-image :uploadUrl="formState.url" @img-src='imgSrc' createOrEdit='create'></upload-image>
             </div>
               </div>
@@ -214,9 +217,6 @@ export default defineComponent({
       .uploadCourseware{
         display: flex;
       }
-      .type_title{
-        color:rgba(0,0,0,0.25)
-      }
       .addCourseware{
         width: 112px;
         height:32px;
@@ -236,6 +236,13 @@ export default defineComponent({
     }
   }
 }
+.cover_word{
+  margin-right: 30px;
+}
+.type_title{
+        color:rgba(0,0,0,0.25);
+        font-size: 14px;
+      }
 :deep(.ant-calendar-picker){
   width:100%;
 }
