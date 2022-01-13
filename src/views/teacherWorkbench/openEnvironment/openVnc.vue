@@ -629,5 +629,4 @@ export default defineComponent({
   top: 40px;
   right: -10px;
 }
-
 </style>

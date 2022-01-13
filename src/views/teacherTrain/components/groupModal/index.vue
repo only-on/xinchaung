@@ -122,6 +122,7 @@
                   <a-tree
                   checkable
                   v-model:checkedKeys="checkedKeys"
+                  @select="selectTreeOfClass"
                   @check="check"
                   @expand="expandTree"
                   checkStrictly
@@ -147,7 +148,7 @@
                 </a-tree>
                 </div>
                 <div v-else>
-                  <empty></empty>
+                  <empty text="暂无待排课的学生"></empty>
                 </div>
               </div>
               <!-- 如果按学生排课 -->
@@ -168,7 +169,7 @@
                   </a-checkbox-group>
                 </div>
                 <div v-else>
-                  <empty></empty>
+                  <empty text="暂无待排课的学生"></empty>
                 </div>
               </div>
           
@@ -205,6 +206,8 @@ interface Istate {
   flag: boolean;
   currentEditData: any;
   totalStu:any;
+
+  selectedClass:any;
 }
 import {
   defineComponent,
@@ -222,6 +225,7 @@ import { message } from "ant-design-vue";
 import transfer from "../transfer/transfer.vue";
 import configRouters from "src/routers/modules";
 import { stat } from "fs/promises";
+import { AnyPtrRecord } from "dns";
 export default defineComponent({
   name: "resources",
   props: [
@@ -262,15 +266,15 @@ export default defineComponent({
       checkedKeys: [],
       currentEditData: "",
       totalStu:0,
+
+      selectedClass:''
     });
     const methods = {
       editOk() {
         console.log(state.treeData, "treeData");
         context.emit("editModal", true, state.treeData,props.ifautoGroupEdit);
         state.treeData=[]
-
       },
-      handGroup() {},
       editCancel() {
         context.emit("editModal", false);
         state.treeData=[]
@@ -326,16 +330,11 @@ export default defineComponent({
       expandTree(e: any) {
         console.log(e);
       },
-      //   onChange(checkedValues:any) {
-      //     state.checkedValues=checkedValues
-
-      //     },
       addGroup() {
         if (!state.inputGroupName) {
           message.warning("请输入分组名称");
           return;
         }
-        // state.group.student_list
         const treeItem: any = {
           name: state.inputGroupName,
           student_list: [],
@@ -351,19 +350,25 @@ export default defineComponent({
       selectTree(selectedKeys: any, e: any) {
         state.selectedGroup = selectedKeys[0];
       },
+      selectTreeOfClass(selectedKeys: any, e: any){
+        console.log(selectedKeys,'selectedKeys')
+        state.selectedClass=selectedKeys[0]
+        console.log(state.selectedClass,'state.selectedClass')
+      },
       clickTree(index: any) {
         state.selectedGroup = index;
       },
       leftMove() {
-        console.log("哈哈哈哈");
-
-        // if (props.groupType === "class"){
-
-        // }else{
-        // const checkys: any = [];
         if (props.groupType === "class") {
+        //  console.log('按照班级分组',state.groupedKeys,state.treeData,state.unGroupData1)
+        //  let unGroupDataKeys=Object.keys(state.unGroupData1)
+        //  console.log(unGroupDataKeys.indexOf(state.selectedClass),'选择的班级')
+        //  console.log(state.unGroupData1[state.selectedClass],'state.unGroupData1[state.selectedClass]')
+        if(!state.selectedClass){
+          message.warning("请选择要移回的班级！")
+          return
+        }
           state.groupedKeys.forEach((item: any, index) => {
-            // checkys.push(item.split("-")[1]);
             let treeIndex = Number(item.split("-")[0]);
             let childrenId = Number(item.split("-")[1]);
             let i = state.treeData[treeIndex].student_list.findIndex(
@@ -371,10 +376,14 @@ export default defineComponent({
                 return childrenId == it.userProfile.id;
               }
             );
-            state.unGroupData1[
-              state.treeData[treeIndex].student_list[i].classes.classname
-            ].push(state.treeData[treeIndex].student_list[i]);
-            state.treeData[treeIndex].student_list.splice(i, 1);
+          console.log(i,state.treeData[treeIndex].student_list[i],'i')
+            // state.unGroupData1[
+            //   state.treeData[treeIndex].student_list[i].classes.classname
+            // ].push(state.treeData[treeIndex].student_list[i]);
+            // state.treeData[treeIndex].student_list.splice(i, 1);
+         state.unGroupData1[state.selectedClass].push(state.treeData[treeIndex].student_list[i])
+         state.treeData[treeIndex].student_list.splice(i, 1);
+
           });
           state.flag = false;
           setTimeout(() => {
@@ -397,24 +406,6 @@ export default defineComponent({
           });
           state.groupedKeys = [];
         }
-
-        // console.log(checkys, "checkyscheckyscheckys");
-        // state.unGroupData1 = state.treeData[0].student_list.filter(
-        //   (item: any) => {
-        //     console.log(
-        //       checkys,
-        //       item.userProfile.id.toString(),
-        //       checkys.includes(Number(item.userProfile.id))
-        //     );
-        //     return checkys.includes(item.userProfile.id.toString());
-        //   }
-        // );
-        // state.treeData = state.treeData[0].student_list.filter((item: any) => {
-        //   console.log(item);
-        //   return checkys.includes(!item.userProfile.id.toString());
-        // });
-
-        // }
       },
       rightMove() {
         console.log(state.selectedGroup, "state.selectedGroup");
@@ -500,6 +491,9 @@ export default defineComponent({
         immediate: true,
       }
     );
+    watch(()=>state.groupedKeys,(val:any)=>{
+        console.log(val,'state.groupedKeys')
+    })
     // 编辑学生分组tree标题
     function editTreeTittle(index: number) {
       state.currentEditData = index;

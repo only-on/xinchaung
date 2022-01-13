@@ -252,6 +252,7 @@ export default defineComponent({
       switchExer(key: any) {
         state.selectedId = key;
         state.exerListParams.type_id = key;
+        // state.exerListParams.level_id='';
         state.levelId = "";
         state.searchname = "";
         delete state.exerListParams.level_id
