@@ -195,18 +195,6 @@ export default defineComponent({
       });
     }
     const configuration: ILayoutConfiguration = inject("configuration")!;
-    watch(
-      () => configuration.componenttype,
-      (newVal: number) => {
-      console.log(configuration.componenttype,'configuration.componenttype TAB')
-      dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
-        getDataSetList();
-      }
-    );
-    watch(()=>dataType.value,(newVal:number)=>{
-      upNav()
-      console.log(dataType.value,configuration.componenttype,'dataType.value DATATYPE')
-    })
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1;
     });
@@ -240,7 +228,7 @@ export default defineComponent({
      * @param {number} id 数据集id
      */
     const gotoContent = (id: number) => {
-      console.log(id,'前往数据')
+      // console.log(id,'前往数据')
       router.push({
         name: "classicalAssetContent",
         params: { type: dataType.value, id: id,powerType:configuration.componenttype },
@@ -320,6 +308,24 @@ export default defineComponent({
       immediate: true,
       deep:true
     })
+    watch(()=>dataType.value,(newVal:number)=>{
+      upNav()
+      // console.log(dataType.value,configuration.componenttype,'dataType.value DATATYPE')
+    },{
+      immediate: true,
+      deep:true
+    })
+    watch(
+      () => configuration.componenttype,
+      (newVal: number) => {
+      console.log(configuration.componenttype,'configuration.componenttype TAB')
+      dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
+        getDataSetList();
+      },{
+      immediate: true,
+      deep:true
+    }
+    );
     onMounted(() => {
       getDiskInfo();
     });
