@@ -460,13 +460,13 @@ export default defineComponent({
   .ant-tree-treenode-switcher-open {
     .open-close-cion {
       display: inline-block;
-      transform: rotate(90deg) !important;
+      transform: rotate(179deg) !important;
     }
   }
   .ant-tree-treenode-switcher-close {
     .open-close-cion {
       display: inline-block;
-      transform: rotate(179deg) !important;
+      transform: rotate(90deg) !important;
     }
   }
   .tree-first-title {

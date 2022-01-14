@@ -369,7 +369,6 @@ export default defineComponent({
         display: flex;
         flex-direction: column;
         .item-name {
-          line-height: 22px;
           font-size: 16px;
           margin-top: 8px;
           padding-bottom: 11px;
