@@ -735,9 +735,7 @@ export default defineComponent({
   .bg-white {
     background-color: var(--white-100);
   }
-  .b-r {
-    border-radius: var(--border-radius-default);
-
+ 
   .b-r{
     border-radius: var(--border-radius-default);
   }
@@ -910,6 +908,6 @@ export default defineComponent({
       margin-left: 20px;
     }
   }
-  }
+  
 }
 </style>
