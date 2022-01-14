@@ -3,7 +3,14 @@
     <div class="workbench-head">
       <a-button type="primary" @click="createWorkbench">创建容器({{ limit }}/5)</a-button>
     </div>
-    <div class="workbench-list-box" v-if="workbenchDataList.length > 0">
+    <div v-if="ifTip" class="loading">
+            <a-spin tip="加载中...">
+            <div class="spin-content">
+            </div>
+            </a-spin>
+     </div>
+     <template v-else>
+       <div class="workbench-list-box" v-if="workbenchDataList.length > 0">
       <div class="workbench-item" v-for="(item, index) in workbenchDataList" :key="index">
         <div class="box-border">
           <card
@@ -18,6 +25,8 @@
       </div>
     </div>
     <empty v-else />
+     </template>
+    
   </div>
 </template>
 
@@ -52,6 +61,7 @@ export default defineComponent({
       limit: number;
       isPoll: boolean;
       // opening: boolean;
+      ifTip:boolean
     } = reactive({
       params: {
         page: 1,
@@ -63,6 +73,7 @@ export default defineComponent({
       limit: 0,
       isPoll: false, // 是否在轮询
       // opening: false,
+      ifTip:false
     });
 
     const ws = ref(null);
@@ -105,12 +116,14 @@ export default defineComponent({
 
     // 获取工作台列表
     function getDataList() {
+      reactiveData.ifTip=true
       return new Promise((reslove: any, reject: any) => {
         getWorkbenchApi(reactiveData.params)
           .then((res: any) => {
             reslove(res);
             reactiveData.workbenchDataList = res.data.list;
             reactiveData.limit = res.data.page.totalCount;
+            reactiveData.ifTip=false
           })
           .catch((err) => {
             reject(err);
@@ -273,6 +286,9 @@ export default defineComponent({
 <style lang="less">
 .workbench-main {
   padding: 0 2px;
+  .loading {
+    padding: 245px;
+  }
   .workbench-head {
     display: flex;
     justify-content: end;
