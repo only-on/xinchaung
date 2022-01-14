@@ -379,6 +379,7 @@ export default defineComponent({
      */
     const addItem = () => {
       if (uploadFileList.value.length === 0) {
+          $message.warning("请先选择要上传的文件！")
         return;
       }
       const beAddItems: any[] = [];
@@ -393,6 +394,7 @@ export default defineComponent({
           },
         })
         .then((res) => {
+          uploadFileList.value=[]
           getDatasetItemList();
           uploadVisible.value = false;
         });
