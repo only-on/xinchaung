@@ -44,7 +44,7 @@
                                 <a-textarea
                                 rows="4"
                                 v-model:value='form.description'
-                                :maxlength="500"
+                                :maxlength="50"
                                 placeholder="请输入描述内容"
                                 showCount
                                 class="classical__folder-desc"
