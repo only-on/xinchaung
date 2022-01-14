@@ -18,7 +18,7 @@
       <a-button type="text" :href="downloadUrl">
         <span class="iconfont icon-download"></span>
       </a-button>
-      <a-button type="text" @click="handleRemove">
+      <a-button v-if="powerType===1" type="text" @click="handleRemove">
         <span class="iconfont icon-shanchu" />
       </a-button>
     </div>
@@ -88,6 +88,10 @@ export default defineComponent({
       type: String,
       default: "qita",
     },
+    powerType:{
+      type:Number,
+      default:0,
+    }
   },
   components: {
     CommonVideo

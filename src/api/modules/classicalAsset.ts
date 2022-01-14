@@ -10,7 +10,9 @@ export default {
     datasetAddItem: { url: '/classic/data/add-items', method: 'POST', dataType: 'json' },
     fakeRequest: { url: '/classic/data/{name}', method: 'GET', dataType: 'json' },
     fakeRequestNoUrlParam: { url: '/classic/data/fake', method: 'GET', dataType: 'json' },
-    diskInfo: { url: '/classic/data/get-mount', method: 'GET', dataType: 'json' }
+    diskInfo: { url: '/classic/data/get-mount', method: 'GET', dataType: 'json' },
+    // 删除
+    deleteData:{url:'/classic/data/delete',method: 'POST', dataType: 'json'}
 }
 
 export interface IClassicalAssetApi {
@@ -24,5 +26,6 @@ export interface IClassicalAssetApi {
     fakeRequest: TFHttpSend,
     fakeRequestNoUrlParam: TFHttpSend,
     diskInfo: TFHttpSend,
+    deleteData:TFHttpSend
 }
 

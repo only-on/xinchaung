@@ -69,6 +69,7 @@
                 :id="item.id"
                 :suffix="item.suffix"
                 @removed="handleRemoved"
+                :powerType='powerType'
               />
             </a-col>
           </a-row>

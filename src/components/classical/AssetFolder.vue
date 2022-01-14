@@ -8,7 +8,7 @@
         <li><span class="iconfont icon-shijian"/><span class="classical__asset-item">{{ date }}</span></li>
         <li><span class="iconfont icon-cunchuzhi"/><span class="classical__asset-item">{{ size }}</span></li>
         <li><span class="iconfont icon-wenjian"/><span class="classical__asset-item">{{ count }}</span></li>
-        <li><span class="iconfont icon-shanchu"/></li>
+        <li v-if="powerType===1"><span class="iconfont icon-shanchu" @click.stop="deleteData"/></li>
       </ul>
     </div>
   </div>
@@ -18,7 +18,7 @@ import {defineComponent} from "vue";
 
 export default defineComponent({
   name: "AssetFolder",
-  emits: ["click"],
+  emits: ["click",'deleteItem'],
   props: {
     title: {
       type: String,
@@ -35,13 +35,21 @@ export default defineComponent({
     count: {
       type: String,
       default: ''
+    },
+    powerType:{
+      type:Number,
+      default:0
     }
   },
   setup(props, {emit}) {
     const handleClick = function () {
       emit('click')
     }
-    return {handleClick}
+    const deleteData=function(){
+      console.log('删除')
+      emit('deleteItem',)
+    }
+    return {handleClick,deleteData}
   }
 });
 </script>

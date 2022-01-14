@@ -26,6 +26,7 @@
             placeholder="请输入目录名称关键字查询"
             @keyup.enter="handleSearch"
             @search="handleSearch"
+            v-model:value="searchStr"
           />
         </div>
         <div class="classical_op">
@@ -50,11 +51,13 @@
           :key="'dataset-dir-' + key"
           :title="item.name"
           :date="item.created_at"
+          :powerType='showDiskUsage?1:0'
           :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
           :count="
             (typeof item.item_count !== 'undefined' ? item.item_count : '') +
             '个'
           "
+          @deleteItem='deleteItem(item.id)'
           @click="gotoContent(item.id)"
         />
       </div>
@@ -139,6 +142,7 @@ import http from "../../api";
 import Empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import messages from "src/i18n/zh_CN";
+import { message } from "ant-design-vue";
 
 export default defineComponent({
   name: "ClassicalAssetPanel",
@@ -243,6 +247,12 @@ export default defineComponent({
         params: { type: dataType.value, id: id,powerType:configuration.componenttype },
       });
     };
+    const deleteItem=(id:number)=>{
+        http.classicalAsset.deleteData({param:{id:id}}).then((res:any)=>{
+          message.success("删除成功！")
+          getDataSetList();
+        })
+    };
     const handleNameFocused = (e: FocusEvent) => {
       nameFocused.value = true;
     };
@@ -302,7 +312,8 @@ export default defineComponent({
     };
     watch(()=>route.params["type"],(val:any)=>{
       console.log(val,'route.params.type')
-      dataType.value=val
+      dataType.value=val,
+      searchStr.value=''
       // getDataSetList();
       // upNav()
     },{
@@ -330,6 +341,7 @@ export default defineComponent({
       dataPage,
       diskUsage,
       gotoContent,
+      deleteItem,
       handleSearch,
       createFolder,
       handleCreateFolder,
