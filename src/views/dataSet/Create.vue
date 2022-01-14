@@ -330,12 +330,12 @@ export default defineComponent({
     }
     function defaultCover(){
       // /public/img/default
-      const path = process.env.NODE_ENV == "development" ? '/public/' : '/frontend/';
+      const path = process.env.NODE_ENV === "development" ? '/public/' : '/frontend/';
       if(!state.ForumSearch.cover || state.ForumSearch.cover===''){
         const i=Math.floor(Math.random() * (100 - 1 + 1)) + 1
         var url=i>10?`${path}img/default/${i}.jpg`:`${path}img/default/d${i}.jpg`
         state.ForumSearch.cover=url
-        // console.log(url)
+        console.log(url)
       }
       
     }
