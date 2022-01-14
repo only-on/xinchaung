@@ -53,7 +53,9 @@ export default defineComponent({
 
   .classical__disk-usage--progress {
     line-height: 5px;
-
+    .ant-progress-inner{
+      margin-top: 8px;
+    }
     .ant-progress {
       line-height: 8px;
     }

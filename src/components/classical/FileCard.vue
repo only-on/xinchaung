@@ -4,7 +4,7 @@
       <span class="iconfont" :class="getFileType(title)" :style="`background-image: url(${iconList[getFileType(title)]});`" />
     </div>
     <div class="file__info">
-      <div class="title">
+      <div :title="title" class="title">
         {{ title }}
       </div>
       <div class="description">
@@ -139,7 +139,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .file__container {
-  border: 1px solid var(--purpleblue-6);
+  border: 1px solid var(--black-25);
   position: relative;
   display: flex;
   border-radius: var(--border-radius-default);
@@ -160,7 +160,7 @@ export default defineComponent({
     margin-left: var(--margin-md);
 
     .title {
-      max-width: 220px;
+      max-width:95%;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
@@ -188,5 +188,8 @@ export default defineComponent({
       }
     }
   }
+}
+.file__container:hover{
+  box-shadow:0 2px 5px 0 rgba(0,0,0,0.07);
 }
 </style>

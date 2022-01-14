@@ -2,8 +2,7 @@
   <div class="classical__container" v-layout-bg>
     <div class="classical__card">
       <div class="classical__search-form">
-        <div class="classical__search">
-          <!-- {{dataIsPublic}}dataIsPublic -->
+        <!-- <div class="classical__search">
           <a-input
             class="classical_search-input"
             v-model:value="searchStr"
@@ -20,6 +19,14 @@
               </a-button>
             </template>
           </a-input>
+        </div> -->
+         <div class="searchInput">
+          <a-input-search
+            class="inputStyle"
+            placeholder="请输入目录名称关键字查询"
+            @keyup.enter="handleSearch"
+            @search="handleSearch"
+          />
         </div>
         <div class="classical_op">
           <disk-usage
@@ -371,6 +378,9 @@ export default defineComponent({
 
       .classical_op {
         display: flex;
+        .icon-tianjia{
+          font-size: 14px;
+        }
       }
     }
 
@@ -410,6 +420,12 @@ export default defineComponent({
   &.classical__input--focused {
     border: 1px solid var(--purpleblue-6);
     box-shadow: 0 0 0 2px var(--purpleblue-1);
+  }
+}
+.searchInput {
+  .inputStyle {
+    width: 503px;
+    padding: 8px 5px 8px 10px;
   }
 }
 </style>

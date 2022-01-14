@@ -64,15 +64,21 @@ export default defineComponent({
   }
 
   .classical__asset-title {
-    font-size: var(--font-size-lg);
+    font-size:var(--font-size-16);
     color: var(--black-85);
   }
 
   .classical__asset-right {
+    font-size:var(--font-size-14);
     ul {
       margin: 0;
       padding: 0;
-
+      .iconfont{
+        font-size:var(--font-size-14);
+      }
+      .icon-shanchu:hover{
+        color: var(--purpleblue-6);
+      }
       li {
         display: inline-block;
         margin-right: var(--margin-md);
