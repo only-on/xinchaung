@@ -321,13 +321,23 @@ export default defineComponent({
     function submit() {
       formRef.value.validate().then(() => {
           collectForm()
-          // console.log(state);
-          // console.log('验证过');
+          defaultCover()
           http.create({param:{...state.ForumSearch}}).then((res:any)=>{
             message.success('创建成功')
               router.go(-1)
           })
       })
+    }
+    function defaultCover(){
+      // /public/img/default
+      const path = process.env.NODE_ENV == "development" ? '/public/' : '/frontend/';
+      if(!state.ForumSearch.cover || state.ForumSearch.cover===''){
+        const i=Math.floor(Math.random() * (100 - 1 + 1)) + 1
+        var url=i>10?`${path}img/default/${i}.jpg`:`${path}img/default/d${i}.jpg`
+        state.ForumSearch.cover=url
+        // console.log(url)
+      }
+      
     }
     function fileBeforeUpload(file:any){
       // console.log(file)
@@ -619,7 +629,7 @@ export default defineComponent({
                 }
 
                 &.active {
-                    background: var(--purpleblue-6);
+                    background: @theme-color;
                     color: #ffffff;
                 }
             }
@@ -639,8 +649,8 @@ export default defineComponent({
                     text-align: center;
                     width: 100%;
                     line-height: 30px;
-                    color: var(--purpleblue-6);
-                    border: 1px solid var(--purpleblue-6);
+                    color: @theme-color;
+                    border: 1px solid @theme-color;
                     border-radius: 5px;
                     background: #ffffff;
 
@@ -674,13 +684,13 @@ export default defineComponent({
                     border-radius: 4px;
 
                     &.active {
-                        background: var(--purpleblue-6);
+                        background: @theme-color;
                         color: #ffffff;
                     }
                 }
 
                 .custom-label {
-                    color: var(--purpleblue-6);
+                    color: @theme-color;
 
                     >span {
                         vertical-align: revert;
@@ -742,7 +752,7 @@ export default defineComponent({
 
             .ant-upload {
                 button {
-                    background: var(--purpleblue-6);
+                    background: @theme-color;
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -760,7 +770,7 @@ export default defineComponent({
                 >div {
                     padding-bottom: 10px;
                     background: #ffffff;
-                    box-shadow: 0px 0px 40px 0px var(--black-0-7);
+                    box-shadow: 0px 0px 40px 0px @shadow-color;
                 }
 
                 .progress-item {
@@ -819,12 +829,12 @@ export default defineComponent({
                                 font-style: normal;
                                 height: 20px;
                                 border-radius: 50%;
-                                border: 1px solid var(--purpleblue-6);
+                                border: 1px solid @theme-color;
 
                                 text-align: center;
                                 line-height: 17px;
                                 font-size: 12px;
-                                color: var(--purpleblue-6);
+                                color: @theme-color;
                                 cursor: pointer;
                             }
 
@@ -882,12 +892,12 @@ export default defineComponent({
                     .ant-progress-status-success {
                         .ant-progress-bg {
                             // background-color: rgba($success-color, 1);
-                            background-color: rgba(var(--purpleblue-6), 1);
+                            background-color: rgba(@theme-color, 1);
                         }
                     }
 
                     .ant-progress-bg {
-                        background-color: rgba(var(--purpleblue-6), 0.4);
+                        background-color: rgba(@theme-color, 0.4);
                         height: 4px !important;
                     }
                 }
@@ -910,7 +920,7 @@ export default defineComponent({
         .md-upload-box {
             .ant-upload {
                 button {
-                    background: var(--purpleblue-6);
+                    background: @theme-color;
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -945,12 +955,12 @@ export default defineComponent({
                             font-style: normal;
                             height: 20px;
                             border-radius: 50%;
-                            border: 1px solid var(--purpleblue-6);
+                            border: 1px solid @theme-color;
 
                             text-align: center;
                             line-height: 17px;
                             font-size: 12px;
-                            color: var(--purpleblue-6);
+                            color: @theme-color;
                             cursor: pointer;
                         }
                     }
@@ -992,7 +1002,7 @@ export default defineComponent({
 
         .ant-drawer-body {
             //火狐
-            scrollbar-color: rgba(var(--purpleblue-6), .8) rgba(var(--purpleblue-6), .2);
+            scrollbar-color: rgba(@theme-color, .8) rgba(@theme-color, .2);
             scrollbar-width: thin;
 
             //谷歌
@@ -1005,13 +1015,13 @@ export default defineComponent({
             //滑块
             &::-webkit-scrollbar-thumb {
                 border-radius: 3px;
-                background: rgba(var(--purpleblue-6), .9);
+                background: rgba(@theme-color, .9);
             }
 
             //轨道
             &::-webkit-scrollbar-track {
                 border-radius: 3px;
-                background: rgba(var(--purpleblue-6), .1);
+                background: rgba(@theme-color, .1);
             }
         }
     }
