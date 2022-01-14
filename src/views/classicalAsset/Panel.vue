@@ -169,11 +169,12 @@ export default defineComponent({
     // let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
     const dataType:any = ref(0);
     const dataIsPublic=ref();
-    console.log("[Panel] route.params: ", route.params);
+    // console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
     const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
 
     const $message: MessageApi = inject("$message")!;
+
     const updateNav: (config: ILayoutConfiguration) => void =
       inject("updataNav")!;
     upNav()
@@ -204,8 +205,7 @@ export default defineComponent({
     );
     watch(()=>dataType.value,(newVal:number)=>{
       upNav()
-      console.log(dataType.value,'dataType.value DATATYPE')
-      getDataSetList();
+      console.log(dataType.value,configuration.componenttype,'dataType.value DATATYPE')
     })
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1;
@@ -271,7 +271,9 @@ export default defineComponent({
       pageSize: number = 10,
       name = ""
     ) => {
-      console.log("切换tab请求数据", dataType);
+      // console.log("切换tab请求数据", dataType,configuration.componenttype);
+      // configuration.componenttype===undefined?0:1
+      // console.log("哈哈哈哈哈哈", dataType,configuration.componenttype);
       http.classicalAsset
         .datasetList({
           param: {
@@ -319,7 +321,6 @@ export default defineComponent({
       deep:true
     })
     onMounted(() => {
-      getDataSetList();
       getDiskInfo();
     });
 
