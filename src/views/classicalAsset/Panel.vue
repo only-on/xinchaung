@@ -167,8 +167,8 @@ export default defineComponent({
     const dataPage = reactive({ current: 1, pageSize: 10, total: 1 });
     // 数据集类型
     // let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
-    const dataType = ref(0);
-    const dataIsPublic=ref(1);
+    const dataType:any = ref(0);
+    const dataIsPublic=ref();
     console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
     const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
@@ -185,7 +185,7 @@ export default defineComponent({
           { name: "公有", componenttype: 0 },
           { name: "私有", componenttype: 1 },
         ],
-        componenttype:'',
+        componenttype:undefined,
         showContent: false,
         navType: false,
         backOff: false,
@@ -197,20 +197,19 @@ export default defineComponent({
     watch(
       () => configuration.componenttype,
       (newVal: number) => {
+      console.log(configuration.componenttype,'configuration.componenttype TAB')
       dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
         getDataSetList();
       }
     );
     watch(()=>dataType.value,(newVal:number)=>{
+      upNav()
+      console.log(dataType.value,'dataType.value DATATYPE')
       getDataSetList();
     })
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1;
     });
-    // const dataIsPublic = computed(() => {
-    //   console.log(configuration.componenttype,'onfiguration.componenttype')
-    //   return configuration.componenttype === 1 ? 1: 0;
-    // });
     const labelCol = { span: 3 };
     const wrapperCol = { span: 21 };
     const handleSearch = (e: Event) => {
@@ -272,12 +271,13 @@ export default defineComponent({
       pageSize: number = 10,
       name = ""
     ) => {
-      console.log("[getDataSetList] type: ", dataType);
+      console.log("切换tab请求数据", dataType);
       http.classicalAsset
         .datasetList({
           param: {
             type:dataType.value,
-            is_public: dataIsPublic.value,
+            // is_public: dataIsPublic.value,
+            is_public:configuration.componenttype===1?0:1,
             name: name,
             page: page,
             pageSize: pageSize,
@@ -314,8 +314,6 @@ export default defineComponent({
       console.log(val,'route.params.type')
       dataType.value=val,
       searchStr.value=''
-      // getDataSetList();
-      // upNav()
     },{
       immediate: true,
       deep:true
@@ -323,7 +321,6 @@ export default defineComponent({
     onMounted(() => {
       getDataSetList();
       getDiskInfo();
-
     });
 
     return {
