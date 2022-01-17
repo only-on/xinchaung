@@ -8,7 +8,7 @@
         <div class="info" v-for="v in list" :key="v.id" :class="v.state==='进行中'?'info_hover':''">
           <div class="main">
             <div class="card" @click="keepLearning(v)">
-              <div class="mask" :class="v.state==='已结束'?'mask_end':''">
+              <div class="mask" :class="v.state==='已结束'?'mask_end':(v.state==='未开始'?'not-start':'')">
                 {{v.state}}
               </div>
               <div class="task">学至~{{v.recent_content}}</div>
@@ -190,7 +190,7 @@ export default defineComponent({
   }
   .mask{
     position: absolute;
-    right: 0px;
+    right: 1px;
     top: 20px;
     width:64px;
     height: 24px;
@@ -205,6 +205,10 @@ export default defineComponent({
   .mask_end{
     background-color: rgba(0,0,0,9.5);
     color: rgba(138,138,138,1);
+  }
+  .not-start{
+    background: var(--white-100);
+    color: #acacac;
   }
   .task{
     text-align: left;
