@@ -114,7 +114,7 @@ export default defineComponent({
                     headers: {
                     Authorization: "Bearer ...",
                     // 自定义的header字段，传给后台：存放上传文件的路径
-                    'Copy-Path': '/www/tusd/uploads'
+                    'Project-Path': '/www/tusd/uploads'
                     },
                     // 默认值：Infinity
                     chunkSize: Infinity,
