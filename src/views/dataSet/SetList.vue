@@ -11,7 +11,7 @@
           <a-input-search
             v-model:value="search.keyword"
             placeholder="请输入搜索关键字查询"
-            @search="init"
+            @search="searchData"
           />
         </div>
          <a-button v-if="showNewly" type="primary" @click="create">新建数据集</a-button>
@@ -181,6 +181,10 @@ export default defineComponent({
           // console.log(option)
       })
     }
+    function searchData(){
+      search.page=1
+      init()
+    }
     function init(){
        // console.log(search)
       dataList.length=0
@@ -230,6 +234,7 @@ export default defineComponent({
     })
     watch(()=>{return search.category},(val)=>{
       // console.log(val)
+      search.page=1
       init()
     })
     function FunChinaToPy(name: string) {
@@ -266,8 +271,9 @@ export default defineComponent({
       search.common=Number(currentTab)===1?0:1
       categoryList()
       init()
+      init()
     })
-    return {loading,search,option,init,create,showSearch,showCreate,showNewly,dataList,role,currentTab,totalCount,emptyType,emptyText,FunChinaToPy,dataSetDetail,openDeletePop,pageChange,categoryChange};
+    return {loading,search,option,init,create,showSearch,searchData,showCreate,showNewly,dataList,role,currentTab,totalCount,emptyType,emptyText,FunChinaToPy,dataSetDetail,openDeletePop,pageChange,categoryChange};
   },
 })
 </script>
