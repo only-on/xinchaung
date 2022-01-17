@@ -33,6 +33,7 @@
         </span>
       </div>
       </template>
+      <empty v-else></empty>
     </div>
     <slot name="footer"></slot>
   </div>
@@ -42,8 +43,11 @@
 <script lang="ts">
 import { CheckEvent } from "ant-design-vue/lib/tree/Tree";
 import { defineComponent, watch, reactive, toRefs } from "vue";
-
+import empty from "src/components/Empty.vue"
 export default defineComponent({
+  components:{
+    empty
+  },
   props: ["value", "columns","keys"],
   setup(props, { emit }) {
     const reactiveData = reactive({
