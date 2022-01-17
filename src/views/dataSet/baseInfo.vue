@@ -139,6 +139,7 @@ export default defineComponent({
     const rules={
         name: [
           { required: true, message: '请输入数据集名称', trigger: 'blur'},
+          {max: 20, message: '数据集名称最多20个字符', trigger: 'blur' },
         ],
         categoryText: [{ required: true, message: '请选择数据集类型', trigger: 'change' }],
         fileList: [
