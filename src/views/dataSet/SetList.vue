@@ -194,7 +194,17 @@ export default defineComponent({
       promise.then((res:any)=>{
           if(res){
             loading.value=false
-            dataList.push(...res.data)
+            let data=res.data
+            const env=process.env.NODE_ENV === "development" ? true:false
+            data.map((v:any)=>{
+              if(!env && v.cover.indexOf('/public/img/default/')!==-1){
+                // let str:string=v.cover
+                let str=v.cover.replace('/public/img/default/',"/frontend/img/default/")
+                v.cover=str
+                console.log(v.cover)
+              }
+            })
+            dataList.push(...data)
             totalCount.value=res.total
             // console.log(dataList)
             emptyType.value=(!dataList.length && (search.category || search.keyword))?'searchEmpty':'empty'

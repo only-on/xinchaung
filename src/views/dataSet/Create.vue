@@ -337,7 +337,6 @@ export default defineComponent({
         state.ForumSearch.cover=url
         console.log(url)
       }
-      
     }
     function fileBeforeUpload(file:any){
       // console.log(file)
