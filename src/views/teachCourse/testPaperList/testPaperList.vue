@@ -28,10 +28,11 @@
         ></testpaper-card>
       </div>
       <div class="page-box">
-        <a-pagination
-          :default-current="1"
-          :default-page-size="11"
+        <page
+          v-model:current="params.page"
+          v-model:pageSize="params.limit"
           :total="totalCount"
+          :isShowNum="11"
           @change="pageChange"
         />
       </div>
@@ -148,11 +149,13 @@ import testPaperCard from "./testPaperCard.vue";
 import _ from "lodash";
 import { Modal, message } from "ant-design-vue";
 import empty from "src/components/Empty.vue";
+import page from "src/components/page/page.vue"
 
 export default defineComponent({
   components: {
     "testpaper-card": testPaperCard,
     empty,
+    page
   },
   setup() {
     const route = useRoute();
@@ -231,7 +234,7 @@ export default defineComponent({
     function getTestPaperList() {
       getTestPaperListApi(reactiveData.params).then((res: any) => {
         reactiveData.testPaperList = res.data.list;
-        reactiveData.totalCount = res.data.totalCount;
+        reactiveData.totalCount = res.data.page.totalCount;
       });
     }
     // 查询

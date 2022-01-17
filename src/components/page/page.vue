@@ -2,6 +2,7 @@
   <div v-if="total>isShowNum" class="custom-page-box">
     <a-pagination
       v-model:current="current"
+      v-model:pageSize="pageSize"
       :total="total"
       @change="change"
       @showSizeChange="showSizeChange"
@@ -64,7 +65,6 @@ export default defineComponent({
         },{immediate:true}
       );
     });
-    console.log(reactiveData);
     
     const method = {
       change(page: number, pageSize: number) {
