@@ -320,7 +320,10 @@ export default defineComponent({
       (newVal: number) => {
       console.log(configuration.componenttype,'configuration.componenttype TAB')
       dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
+      if (configuration.componenttype!=undefined ) {
         getDataSetList();
+      }
+        
       },{
       immediate: true,
       deep:true
