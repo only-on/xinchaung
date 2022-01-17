@@ -21,9 +21,9 @@
     </div>
     <div class="tab">
       <div
-        v-for="v in configuration.tabs"
+        v-for="(v,i) in configuration.tabs"
         :key="v.name"
-        :class="ActiveName === v.name ? 'active' : ''"
+        :class="ActiveName === v.name||(!ActiveName&&i==0) ? 'active' : ''"
         @click="ActiveName !== v.name ? tabChange(v) : ''"
       >
         {{ v.name }}
@@ -164,6 +164,18 @@ export default defineComponent({
         deep: true,
       }
     );
+    watch(()=>configuration.tabs,()=>{
+      configuration.tabs.some((item:any)=>{
+        return activeName.value==item.name
+      })?'':activeName.value=''
+      if (configuration.tabs.length>0) {
+        configuration.tabs.map((item: any) => {
+            if (configuration.componenttype == item.componenttype) {
+              activeName.value = item.name;
+            }
+          });
+      }
+    })
     return { activeName, ActiveName, tabChange, back, pageEdit, configuration };
   },
 });

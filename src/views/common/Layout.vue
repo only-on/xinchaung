@@ -65,6 +65,9 @@ export default defineComponent({
     onMounted(()=>{
      
     })
+    // watch(()=>configuration.tabs,()=>{
+    //   console.log(configuration.tabs)
+    // })
     function tabSwitch(val:any){
       // console.log(val)
       configuration.componenttype=val
