@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, watch, Ref, computed } from "vue";
-import XeQuill from "@xianfe/vue3-quill/src/index.vue";
+import {XeQuill} from "@xianfe/vue3-quill";
 import { Delta } from "quill-delta";
 export default defineComponent({
   name: "Quill",

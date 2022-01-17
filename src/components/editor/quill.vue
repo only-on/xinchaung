@@ -20,7 +20,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, watch, PropType, ref, Ref,reactive, toRefs,computed } from "vue";
-import XeQuill from '@xianfe/vue3-quill/src/index.vue'
+import {XeQuill} from '@xianfe/vue3-quill'
 import { Delta } from "quill-delta";
 import { QuillDeltaToHtmlConverter } from "quill-delta-to-html";
 import { isJsonString } from "src/utils/common";

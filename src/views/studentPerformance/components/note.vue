@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 import { defineComponent, ref, onMounted, watch } from "vue";
-import XeQuill from "@xianfe/vue3-quill/src/index.vue";
+import {XeQuill} from "@xianfe/vue3-quill";
 export default defineComponent({
   name: "note",
   components: { XeQuill },

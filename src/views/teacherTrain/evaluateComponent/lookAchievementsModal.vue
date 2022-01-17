@@ -40,7 +40,7 @@
 <script lang="ts">
 import { defineComponent, ref, toRefs, watch, computed, Ref } from "vue";
 // import  XeQuill  from 'src/components/dev/Quill.vue';
-import XeQuill from "@xianfe/vue3-quill/src/index.vue";
+import {XeQuill} from "@xianfe/vue3-quill";
 import { goHtml } from "src/utils/common";
 
 export default defineComponent({
