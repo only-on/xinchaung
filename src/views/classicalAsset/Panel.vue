@@ -64,13 +64,14 @@
       <div class="data" v-else>
         <empty />
       </div>
-      <div class="page" v-if="data?.length > 10">
+      <div class="page" v-if="dataPage.total > 10">
         <a-pagination
           show-size-changer
           v-model:current="dataPage.current"
           :pageSize="dataPage.pageSize"
           :total="dataPage.total"
           @change="handlePageChange"
+          @showSizeChange='showSizeChange'
         />
       </div>
     </div>
@@ -208,6 +209,11 @@ export default defineComponent({
       createFolderVisible.value = true;
     };
     const handleCreateFolder = () => {
+      if(!folderInfo.name){
+        message.warning("名称不能为空！")
+        return
+
+      }
       http.classicalAsset
         .datasetFolderCreate({
           param: {
@@ -260,9 +266,6 @@ export default defineComponent({
       pageSize: number = 10,
       name = ""
     ) => {
-      // console.log("切换tab请求数据", dataType,configuration.componenttype);
-      // configuration.componenttype===undefined?0:1
-      // console.log("哈哈哈哈哈哈", dataType,configuration.componenttype);
       http.classicalAsset
         .datasetList({
           param: {
@@ -270,8 +273,8 @@ export default defineComponent({
             // is_public: dataIsPublic.value,
             is_public:configuration.componenttype===1?0:1,
             name: name,
-            page: page,
-            pageSize: pageSize,
+            page:dataPage.current,
+            pageSize:dataPage.pageSize,
           },
         })
         .then((res) => {
@@ -282,8 +285,8 @@ export default defineComponent({
           // }
           data.value = res?.data.list;
 
-          dataPage.current = res?.data.page.currentPage;
-          dataPage.pageSize = res?.data.page.perPage;
+          // dataPage.current = res?.data.page.currentPage;
+          // dataPage.pageSize = res?.data.page.perPage;
           dataPage.total = res?.data.page.totalCount;
         });
     };
@@ -299,8 +302,14 @@ export default defineComponent({
 
     // 处理翻页
     const handlePageChange = (page: number, pageSize: number) => {
+          dataPage.current=page
       getDataSetList(page, pageSize, searchStr.value);
     };
+    const showSizeChange =(page: number, pageSize: number)=>{
+          dataPage.current=1
+          dataPage.pageSize=pageSize
+      getDataSetList(page, pageSize, searchStr.value);
+    }
     watch(()=>route.params["type"],(val:any)=>{
       console.log(val,'route.params.type')
       dataType.value=val,
@@ -362,6 +371,7 @@ export default defineComponent({
       handleNameBlurred,
       handleDescriptionBlurred,
       handlePageChange,
+      showSizeChange
     };
   },
 });

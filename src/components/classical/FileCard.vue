@@ -34,17 +34,10 @@
         controls="true"
         :src="origin + previewFileUrl"
       ></common-video>
-      <!-- <iframe
-        v-else
-        id="pdf-iframe"
-        :src="'/plugin/PDF/viewer.html?file=' + origin + previewFileUrl"
-        style="width: 100%; height: 700px; border: none"
-      ></iframe> -->
       <iframe
-       v-else
-      :src="`/pdfjs-2.5.207/web/viewer.html?file=${
-        env ? '/proxyPrefix' + previewFileUrl : previewFileUrl
-      }`"
+      v-else
+      :src="`${env ? '' : '/frontend'}/pdfjs-2.5.207/web/viewer.html?file=${
+        env ? '/proxyPrefix' + previewFileUrl : previewFileUrl}`"
       frameborder="0"
       style="width: 100%; height: 700px; border: none"
     ></iframe>
@@ -164,7 +157,7 @@ export default defineComponent({
     margin-left: var(--margin-md);
 
     .title {
-      max-width:95%;
+      max-width:300px;
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;

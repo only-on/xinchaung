@@ -78,6 +78,16 @@
               <empty />
             </a-col>
           </a-row>
+          <div class="pagination" v-if="itemListPage.total>12">
+               <a-pagination
+              v-model:current="itemListPage.current"
+              :pageSize="itemListPage.pageSize"
+              :total="itemListPage.total"
+              @change="handlePageChange"
+            />
+            <!-- show-size-changer
+              @showSizeChange='showSizeChange' -->
+          </div>
         </div>
       </div>
     </div>
@@ -207,7 +217,6 @@ export default defineComponent({
       name: "",
       description: "",
     });
-
     const env = process.env.NODE_ENV === "development";
     const originalFolderInfo = { name: "", description: "" };
 
@@ -223,7 +232,7 @@ export default defineComponent({
       description: "未知",
     });
     // 分页组件数据
-    const itemListPage = reactive({ current: 1, pageSize: 10, total: 1 });
+    const itemListPage = reactive({ current: 1, pageSize: 12, total: 1 });
     // 数据集内部的数据列表
     const itemList = ref([]) as Ref<any[]>;
     const searchKeyword = ref("");
@@ -284,12 +293,15 @@ export default defineComponent({
     };
     const acceptMap = {
       3: ".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation", // 课件
-      4: ".mp4,video/mp4", // 视频
-      5: ".doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 备课资料
-      6: ".doc,docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 教学指导
+      4: ".mp4,.video/mp4", // 视频
+      5: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 备课资料
+      6: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document", // 教学指导
     };
     const accept = computed(() => {
-      return acceptMap[dataType] || acceptMap[3];
+      console.log(dataType,'dataType')
+      // return acceptMap[dataType] || acceptMap[3];
+      console.log(acceptMap[dataType],'acceptMap[dataType]')
+      return acceptMap[dataType];
     });
 
     const supportedSuffixMap = {
@@ -371,6 +383,7 @@ export default defineComponent({
         })
         .then((res) => {
           itemList.value = res?.data.list;
+          itemListPage.total=res?.data.page.totalCount;
         });
     };
 
@@ -501,12 +514,25 @@ export default defineComponent({
         return false;
       }
     };
+     // 处理翻页
+    const handlePageChange = (page: number, pageSize: number) => {
+          itemListPage.current=page
+          getDatasetItemList();
+    };
+    const showSizeChange =(page: number, pageSize: number)=>{
+          itemListPage.current=1
+          itemListPage.pageSize=pageSize
+          getDatasetItemList();
+    }
     onMounted(() => {
       getDatasetDetail();
       getDatasetItemList();
     });
 
     return {
+      itemListPage,
+      handlePageChange,
+      showSizeChange,
       env,
       uploadVisible,
       detail,
@@ -650,5 +676,10 @@ export default defineComponent({
 }
 .ant-upload-hint{
   font-size: 12px!important;
+}
+.pagination{
+  margin-top: 20px;
+  width: 100%;
+  text-align: center;
 }
 </style>

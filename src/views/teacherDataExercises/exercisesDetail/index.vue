@@ -177,7 +177,7 @@ export default defineComponent({
         { key: 2, tab: "多选题" },
         { key: 3, tab: "判断题" },
         { key: 4, tab: "填空题" },
-        { key: 5, tab: "解答题" },
+        { key: 5, tab: "简答题" },
       ],
     });
     updata({
