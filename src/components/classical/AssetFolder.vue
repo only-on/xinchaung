@@ -14,7 +14,7 @@
   </div>
 </template>
 <script lang="ts">
-import {defineComponent} from "vue";
+import {defineComponent,watch} from "vue";
 
 export default defineComponent({
   name: "AssetFolder",
@@ -38,7 +38,7 @@ export default defineComponent({
     },
     powerType:{
       type:Number,
-      default:0
+      default:1
     }
   },
   setup(props, {emit}) {

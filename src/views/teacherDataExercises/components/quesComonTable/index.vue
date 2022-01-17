@@ -401,9 +401,9 @@ export default defineComponent({
                 knowledgeList.selectedKnowledgeList.splice(i, 1)
             },
             createExercise(){
-               console.log(state.expermodelValue,state.expermodelValue.type_id===4||state.expermodelValue.type_id===5,'创建')  
+              
                state.expermodelValue.points= knowledgeList.selectedKnowledgeList.map(v => v.id)
-               console.log(knowledgeList.selectedKnowledgeList,state.expermodelValue.points,'state.expermodelValue.points')
+               
                state.expermodelValue.keywords=state.expermodelValue.type_id===5?[state.stringKeywords]:[]
                state.expermodelValue.answers=
                state.expermodelValue.type_id===4||state.expermodelValue.type_id===5?[state.stringAnswer]:state.expermodelValue.answers
@@ -413,13 +413,19 @@ export default defineComponent({
                         state.value='',
                         state.value1=[]
                         delete state.expermodelValue.ordered_answer
-                        state.expermodelValue={
-                            question:'',
-                            origin_score:'',
-                            options:[],
-                            keywords:'',
-                            answers:[]
-                        }
+                        // state.expermodelValue={
+                        //     question:'',
+                        //     origin_score:'',
+                        //     options:[],
+                        //     keywords:'',
+                        //     answers:[]
+                        // }
+                        state.expermodelValue.question=''
+                        state.expermodelValue.origin_score=''
+                        state.expermodelValue.options=[]
+                        state.expermodelValue.keywords=''
+                        state.expermodelValue.answers=[]
+                        state.expermodelValue.level_id=''
                         if(res.code){
                             message.success('添加成功！')
                             state.createmodal.visible=false
@@ -626,6 +632,9 @@ export default defineComponent({
             //查询
             searchExerData(){
                 context.emit('searchExercise',state.searchExercise)
+            },
+            uploadSuccess(){
+
             }
         }
         const rowSelection = {

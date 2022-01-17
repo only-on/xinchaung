@@ -108,6 +108,8 @@ export default defineComponent({
     const handleRemove = function () {
       $confirm({
         title: "删除文件",
+        okText:'确定',
+        cancelText:'取消',
         content: "文件删除后将无法恢复，确定要删除吗？",
         onOk: () => {
           http.classicalAsset

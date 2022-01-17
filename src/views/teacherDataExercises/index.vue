@@ -25,7 +25,7 @@
                                     placeholder="请输入名称"
                                     v-model:value="form.name"
                                     showCount
-                                    :maxlength="10"
+                                    :maxlength="30"
                                     class="classical__folder-desc"
                                     @focus="handleNameFocused"
                                     @blur="handleNameBlurred"
@@ -58,18 +58,19 @@
             </a-modal>
         </div>
         <component :is="componentName" :componentData='componentData' :searchValue='searchValue' @poolId='getPollId'/>
-         <a-pagination
+        <div v-if="pagination.total>10">
+            <a-pagination
             class="pagination"
             v-model="pagination.current"
             :page-size-options="pagination.pageSizeOptions"
             :total="pagination.total"
-            :hideOnSinglePage='true'
             show-size-changer
             :page-size="pagination.pageSize"
             @change="currentPageChange"
             @showSizeChange="onShowSizeChange"
         >
         </a-pagination>
+        </div>
     </div>
 </template>
 <script lang="ts">
@@ -183,6 +184,7 @@ export default defineComponent({
     // 查询
     function searchData(){
         console.log('查询')
+        params.page=1
         params.name=state.searchValue
         getExerciseList(params)
     }
@@ -194,6 +196,7 @@ export default defineComponent({
     }
     function onShowSizeChange(current:any,pageSize:any){
         console.log(current,pageSize)
+        params.page=1
         state.pagination.pageSize=pageSize
         params.limit=pageSize
         getExerciseList(params)

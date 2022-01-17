@@ -67,6 +67,7 @@
       <div v-if="total>10" class="pagination">
         <a-pagination
           show-size-changer
+          :current="exerListParams.page"
           :pageSize="exerListParams.limit"
           :total="total"
           @change="changePage"
@@ -257,6 +258,7 @@ export default defineComponent({
         state.searchname = "";
         delete state.exerListParams.level_id
         delete state.exerListParams.name
+        state.exerListParams.page=1
         methods.exerciseDetailList(state.exerListParams);
       },
       exerciseDetailList(exerListParams: exerciseList) {
@@ -271,6 +273,7 @@ export default defineComponent({
       },
       finishCreate(val: any) {
         methods.exerciseDetailList(state.exerListParams);
+        methods.exerciseDetail()
       },
       selectLeves(val: any) {
         state.levelId = val;

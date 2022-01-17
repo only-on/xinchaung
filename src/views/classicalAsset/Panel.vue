@@ -46,12 +46,13 @@
         </div>
       </div>
       <div class="data" v-if="data?.length > 0">
+        <!-- :powerType='showDiskUsage?1:0' -->
         <asset-folder
           v-for="(item, key) in data"
           :key="'dataset-dir-' + key"
           :title="item.name"
           :date="item.created_at"
-          :powerType='showDiskUsage?1:0'
+          :powerType='powerType'
           :size="typeof item.item_size !== 'undefined' ? item.item_size : ''"
           :count="
             (typeof item.item_count !== 'undefined' ? item.item_count : '') +
@@ -170,6 +171,8 @@ export default defineComponent({
     // let dataType = route.params["type"] ? route.params["type"] : 3; // 3是课件
     const dataType:any = ref(0);
     const dataIsPublic=ref();
+
+    const powerType=ref(0);
     // console.log("[Panel] route.params: ", route.params);
     // 磁盘利用情况
     const diskUsage = reactive({ available: "0GB", total: "0GB", ratio: 0 });
@@ -337,12 +340,12 @@ export default defineComponent({
       (newVal: number) => {
       console.log(configuration.componenttype,'configuration.componenttype TAB')
       dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
+      powerType.value=configuration.componenttype
         getDataSetList();      
       },{
       immediate: true,
       deep:true
-    }
-    );
+    });
     onMounted(() => {
       getDiskInfo();
     });
@@ -352,6 +355,7 @@ export default defineComponent({
       dataIsPublic,
       searchStr,
       showDiskUsage,
+      powerType,
       createFolderVisible,
       folderInfo,
       labelCol,
