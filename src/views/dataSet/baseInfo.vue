@@ -36,7 +36,7 @@
                 <!-- <div class="ant-upload-text">Upload</div> -->
               </div>
             </a-upload>
-            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel">
+            <a-modal :visible="previewVisible" :footer="null" @cancel="handleCancel" :class="'createdSet'">
               <img alt="example" style="width: 100%" :src="previewImage" />
             </a-modal>
           </div>
