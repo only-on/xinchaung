@@ -3,7 +3,7 @@
     <div v-if="role != '2'" class="resource-top">
       <span class="choiceFile">
         选择文件:
-        <a-upload name="file" :beforeUpload="beforeUpload">
+        <a-upload name="file" accept='.gif,.jpg,.png,.mp4,.xlsx,.xls,.docx,.doc,.rar,.pdf,.ppt,.pptx' :beforeUpload="beforeUpload" :remove='removeFile' v-model:file-list="fileList">
           <a-input style="width: 140px" v-model:value="name"></a-input
           ><a-button type="primary">浏览</a-button>
         </a-upload>
@@ -32,8 +32,8 @@
         ">
           <template #action="{ record }">
             <div class="action">
-              <span class="spanleft" @click="deleteUploadFile(record.id)">删除</span>
-              <span @click="downLoad(record.url, record.name)">下载</span>
+              <span class="spanleft a-link" @click="deleteUploadFile(record.id)">删除</span>
+              <span class="a-link" @click="downLoad(record.url, record.name)">下载</span>
               <!-- <a :href="record.url">下载</a> -->
             </div>
           </template>
@@ -60,6 +60,7 @@ interface Istate {
   introduce: string;
   url: string;
   type: string;
+  fileList:any[]
 }
 import { defineComponent, onMounted, watch, inject, reactive, toRefs, ref } from "vue";
 import request from "src/api/index";
@@ -121,6 +122,7 @@ export default defineComponent({
       introduce: "",
       url: "",
       type: "",
+      fileList:[]
     });
     const methods = {
       onChange(page: any, pageSize: any) {
@@ -155,6 +157,7 @@ export default defineComponent({
           return;
         }
         console.log(file);
+        state.fileList=[file]
         state.name = file.name;
         state.size = file.size;
         state.type = type;
@@ -166,6 +169,13 @@ export default defineComponent({
           state.url = res.data.url;
         });
         return false;
+      },
+       removeFile(file:any){
+         state.file=''
+         state.name = ''
+         state.introduce=''
+        state.fileList=[]
+        console.log(file,'file')
       },
       getResourceList() {
         const params = {
@@ -208,6 +218,8 @@ export default defineComponent({
             state.url=''
             state.introduce=''
             message.success("上传成功！")
+            state.fileList=[]
+            state.file=''
             methods.getResourceList();
           })
           .catch(() => {
@@ -277,5 +289,8 @@ export default defineComponent({
 :deep(.ant-table-pagination.ant-pagination) {
   float: none;
   text-align: center;
+}
+:deep(.ant-upload-list){
+  width: 284px;
 }
 </style>

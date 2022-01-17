@@ -58,7 +58,7 @@
             </a-modal>
         </div>
         <component :is="componentName" :componentData='componentData' :searchValue='searchValue' @poolId='getPollId'/>
-        <div v-if="pagination.total>10">
+        <div v-if="pagination?.total>10">
             <a-pagination
             class="pagination"
             v-model="pagination.current"
@@ -99,7 +99,7 @@ interface paginationType{
      pageSizeOptions:string[],
      current:number,
      pageSize?:number,
-     total?:number,
+     total:number,
 }
 interface paramsType{
     pool_id:string
@@ -145,6 +145,7 @@ export default defineComponent({
             pageSizeOptions:['10', '20', '30', '40', '50'],
             current:1,
             pageSize:10,
+            total:0,
         }
        })
         var type:Ref<any>=ref(0)

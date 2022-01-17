@@ -1,17 +1,21 @@
 <template>
   <div class="trainCourseware">
     <div class="top-btn">
-      <span>
+      <div style="dsplay:flex" v-if="!edit">
         <a-upload
           class="upload"
-          v-if="!edit"
           name="file"
           :multiple="true"
+          accept=".ppt,.pptx,.pdf"
           :beforeUpload="beforeUpload"
+          :change='fileChange'
+          v-model:file-list="fileList"
+          :remove='removeFile'
         >
-          <a-button type="primary">选择文件</a-button>
+          <a-button type="primary">选择文件  </a-button>
         </a-upload>
-      </span>
+        <span class="type_title">支持格式: ppt、pptx、pdf</span> 
+      </div>
       <span v-if="role !== '2'">
         <span v-if="trainType !== '1'">
           <a-button type="primary" v-if="edit" @click="toModify">修改</a-button>
@@ -53,6 +57,7 @@ interface Istate {
   file: string;
   url: string;
   status: boolean;
+  fileList:any[]
 }
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
 import request from "src/api/index";
@@ -74,6 +79,7 @@ export default defineComponent({
       file: "",
       url: "",
       status: false,
+      fileList:[]
     });
     let development = process.env.NODE_ENV == "development" ? true : false;
     let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
@@ -97,19 +103,20 @@ export default defineComponent({
         http
           .trainUploadImage({ param: fd })
           .then((res: any) => {
+            state.fileList=[state.file]
             state.url = res.datas.url;
           })
           .catch((err: any) => {
             message.error(err.error);
           });
-        // const fd=new FormData()
-        // fd.append('uploadFiled',file)
-        // fd.append('upload_path','trainCourseware')
-        // http.uploadsFile({param:fd}).then((res:any)=>{
-        //   console.log(res)
-        //   state.file=res.data.url
-        // })
         return false;
+      },
+      fileChange(file:any,fileList:any,event:any){
+          console.log(file,fileList,event)
+      },
+      removeFile(){
+        state.fileList=[]
+        state.file=" "
       },
       ToSavepptModify() {
         const formdata = new FormData();
@@ -121,13 +128,6 @@ export default defineComponent({
           state.ppt_url =res.datas.courseware_html;
           context.emit("uploadppt");
         });
-        //     const fd=new FormData()
-        //     fd.append('uploadFiled',state.file)
-        //     fd.append('upload_path','trainCourseware')
-        //     http.uploadsFile({param:fd}).then((res:any)=>{
-        //       console.log(res)
-        //       state.file=res.data.url
-        //     })
       },
       pptTransIfOk(url: any) {
         const newurl = baseurl + url;
@@ -169,7 +169,8 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     .upload {
-      display: flex;
+      // display: flex;
+      display: inline;
     }
   }
   .pdtView {
@@ -189,4 +190,8 @@ export default defineComponent({
     width: 450px;
   }
 }
+.type_title{
+        color:rgba(0,0,0,0.25);
+        font-size: 12px;
+      }
 </style>
