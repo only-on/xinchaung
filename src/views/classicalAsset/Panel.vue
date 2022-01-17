@@ -96,7 +96,7 @@
               placeholder="输入名称"
               v-model:value="folderInfo.name"
               showCount
-              :maxlength="10"
+              :maxlength="30"
               class="classical__folder-desc"
               @focus="handleNameFocused"
               @blur="handleNameBlurred"

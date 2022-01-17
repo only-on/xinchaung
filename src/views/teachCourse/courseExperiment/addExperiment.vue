@@ -135,7 +135,7 @@
                     :key="key"
                   >
                     <template #label>{{
-                      key === "public" ? "共有" : "私有"
+                      key === "public" ? "公有" : "私有"
                     }}</template>
                     <a-select-option v-for="(v, k) in val" :value="k" :key="k">
                       {{ v }}
@@ -195,7 +195,7 @@
                     :key="key"
                   >
                     <template #label>{{
-                      key === "public" ? "共有" : "私有"
+                      key === "public" ? "公有" : "私有"
                     }}</template>
                     <a-select-option v-for="(v, k) in val" :value="k" :key="k">
                       {{ v }}

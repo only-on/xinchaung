@@ -121,13 +121,13 @@
   </a-modal>
   <a-modal
     v-model:visible="editContentVisible"
-    title="创建目录"
+    title="编辑目录"
     @ok="handleUpdateFolder"
     class="classical__create"
   >
     <a-form :model="folderInfo" :label-col="labelCol" :wrapper-col="wrapperCol">
       <a-form-item label="名称：">
-        <!-- <div
+        <div
           class="classical__input--count-inner"
           :class="{ 'classical__input--focused': nameFocused }"
         >
@@ -136,13 +136,13 @@
             placeholder="输入名称"
             v-model:value="folderInfo.name"
             showCount
-            :maxlength="10"
+            :maxlength="30"
             class="classical__folder-desc"
             @focus="handleNameFocused"
             @blur="handleNameBlurred"
           />
-        </div> -->
-        <number-input v-model:value="folderInfo.name" showCount style="height:32px" :maxlength="100"></number-input>
+        </div>
+        <!-- <number-input class="classical__folder-desc" v-model:value="folderInfo.name" showCount style="height:32px" :maxlength="30"></number-input> -->
       </a-form-item>
       <a-form-item label="描述：">
         <div
@@ -641,7 +641,7 @@ export default defineComponent({
 }
 
 .classical__input--count-inner {
-  border: 1px solid var(--black-85);
+  border: 1px solid var(--gray-5);
   border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {

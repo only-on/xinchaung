@@ -127,7 +127,7 @@ export default defineComponent({
         const state:state=reactive({
             componentName:'',
             componentNames:['shareExercises','privateExercises'],
-            tabs:[{name:'共有',componenttype:0},{name:'私有',componenttype:1}],
+            tabs:[{name:'公有',componenttype:0},{name:'私有',componenttype:1}],
             searchValue:'',
             componentData:[],
             form:{},
@@ -312,7 +312,7 @@ export default defineComponent({
     text-align: center;
 }
 .classical__input--count-inner {
-  border: 1px solid var(--black-85);
+  border: 1px solid var(--gray-5);
   border-radius: var(--border-radius-default);
 
   :deep(.ant-input) {

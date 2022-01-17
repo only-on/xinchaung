@@ -63,7 +63,7 @@
         >
           <a-select-opt-group>
             <template #label>
-              <span> 共有 </span>
+              <span> 公有 </span>
             </template>
             <a-select-option
               v-for="item in publicData"

@@ -33,7 +33,7 @@
         <a-select-opt-group v-for="(val, key) in datasetList" :key="key">
           <template #label>
             <span>
-              {{ key === "public" ? "共有" : "私有" }}
+              {{ key === "public" ? "公有" : "私有" }}
             </span>
           </template>
           <a-select-option v-for="(v, k) in val" :key="k" :value="k">{{
