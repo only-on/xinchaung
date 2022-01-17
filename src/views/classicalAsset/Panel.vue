@@ -137,7 +137,7 @@ import {
 import AssetFolder from "../../components/classical/AssetFolder.vue";
 import DiskUsage from "../../components/classical/DiskUsage.vue";
 import { ILayoutConfiguration } from "../../types";
-import { useRoute, useRouter } from "vue-router";
+import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import http from "../../api";
 import Empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
@@ -177,7 +177,7 @@ export default defineComponent({
 
     const updateNav: (config: ILayoutConfiguration) => void =
       inject("updataNav")!;
-    upNav()
+    
     function upNav(){
       updateNav({
         showNav: true,
@@ -186,7 +186,7 @@ export default defineComponent({
           { name: "公有", componenttype: 0 },
           { name: "私有", componenttype: 1 },
         ],
-        componenttype:undefined,
+        componenttype:Number((route as any).query["currentTab"]),
         showContent: false,
         navType: false,
         backOff: false,
@@ -195,6 +195,7 @@ export default defineComponent({
       });
     }
     const configuration: ILayoutConfiguration = inject("configuration")!;
+    upNav()
     const showDiskUsage = computed(() => {
       return configuration.componenttype === 1;
     });
@@ -308,6 +309,13 @@ export default defineComponent({
       immediate: true,
       deep:true
     })
+    //  watch(()=>route.query["currentTab"],(val:any)=>{
+    //   console.log(val,'route.query.currentTab')
+    //   configuration.componenttype=val==1?0:1
+    // },{
+    //   immediate: true,
+    //   deep:true
+    // })
     watch(()=>dataType.value,(newVal:number)=>{
       upNav()
       // console.log(dataType.value,configuration.componenttype,'dataType.value DATATYPE')
@@ -320,10 +328,7 @@ export default defineComponent({
       (newVal: number) => {
       console.log(configuration.componenttype,'configuration.componenttype TAB')
       dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
-      if (configuration.componenttype!=undefined ) {
-        getDataSetList();
-      }
-        
+        getDataSetList();      
       },{
       immediate: true,
       deep:true

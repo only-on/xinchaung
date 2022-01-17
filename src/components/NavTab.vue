@@ -1,11 +1,21 @@
 <template>
   <div
     class="navList"
-    :class="configuration.tabs && configuration.tabs.length ? 'border_bottom' : ''"
+    :class="
+      configuration.tabs && configuration.tabs.length ? 'border_bottom' : ''
+    "
   >
-    <div class="back" v-if="configuration.backOff || configuration.showPageEdit">
-      <a-button v-if="configuration.backOff" @click="back" type="primary">返回</a-button>
-      <a-button v-if="configuration.showPageEdit" @click="pageEdit" type="primary"
+    <div
+      class="back"
+      v-if="configuration.backOff || configuration.showPageEdit"
+    >
+      <a-button v-if="configuration.backOff" @click="back" type="primary"
+        >返回</a-button
+      >
+      <a-button
+        v-if="configuration.showPageEdit"
+        @click="pageEdit"
+        type="primary"
         >编辑</a-button
       >
     </div>
@@ -120,15 +130,15 @@ export default defineComponent({
         activeName.value = configuration.tabs[configuration.componenttype].name;
       }
     }
-    var ActiveName=computed(()=>{
-      let str=''
-      if(activeName.value!==''){
-        str=activeName.value
-      }else{
-        str=configuration.tabs[0].name
+    var ActiveName = computed(() => {
+      let str = "";
+      if (activeName.value !== "") {
+        str = activeName.value;
+      } else {
+        str = configuration.tabs[0].name;
       }
-      return str
-    })
+      return str;
+    });
     function back() {
       router.go(-1);
     }
@@ -142,10 +152,19 @@ export default defineComponent({
       (val) => {
         if (val === undefined) {
           initData();
+        } else {
+          configuration.tabs.map((item: any) => {
+            if (configuration.componenttype == item.componenttype) {
+              activeName.value = item.name;
+            }
+          });
         }
+      },
+      {
+        deep: true,
       }
     );
-    return { activeName,ActiveName, tabChange, back, pageEdit, configuration };
+    return { activeName, ActiveName, tabChange, back, pageEdit, configuration };
   },
 });
 </script>
@@ -189,7 +208,7 @@ export default defineComponent({
   }
 }
 .border_bottom {
-  border-bottom: 1px solid #3E418F;
+  border-bottom: 1px solid #3e418f;
 }
 .back {
   margin-bottom: -16px;
