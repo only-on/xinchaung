@@ -29,7 +29,7 @@
                     >包含实验共计<i>{{ contentCount }}</i
                     >个</span
                   >
-                  <span>清空</span>
+                  <span @click="clearSelect">清空</span>
                 </div>
               </div>
             </template>
@@ -73,7 +73,7 @@
                     >包含实验共计<i>{{ contentCount }}</i
                     >个</span
                   >
-                  <span>清空</span>
+                  <span @click="clearSelect">清空</span>
                 </div>
               </div>
             </template>
@@ -178,6 +178,7 @@ export default defineComponent({
       { deep: true }
     );
     function getAllChapterList() {
+      reactiveData.chapterList=[]
       getAllChapterListApi(
         { ...reactiveData.params },
         { course_id: course_id }
@@ -268,12 +269,20 @@ export default defineComponent({
         return item.selected&&keys.includes(item.id)
       }).length,contentCount:i}
     }
+    function clearSelect() {
+      reactiveData.chapterList.map((item:any,index)=>{
+        if (reactiveData.keys.includes(item.id)) {
+          reactiveData.chapterList[index].selected=false
+        }
+      })
+    }
     return {
       columns,
       ...toRefs(reactiveData),
       selectBtn,
       onSearch,
-      pageChange
+      pageChange,
+      clearSelect
     };
   },
 });
