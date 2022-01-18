@@ -207,7 +207,7 @@ export default defineComponent({
         }
         .time-no {
           font-size: 54px;
-          background: linear-gradient(180deg, rgba(var(--royalpurple-7),.2), var(--purpleblue-6));
+          background: linear-gradient(180deg,var(--royalpurple-7), var(--purpleblue-6));
           -webkit-background-clip: text;
           color: transparent;
           font-weight: 500;
