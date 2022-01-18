@@ -3,7 +3,7 @@
     <div v-if="role != '2'" class="resource-top">
       <span class="choiceFile">
         选择文件:
-        <a-upload name="file" accept='.gif,.jpg,.png,.mp4,.xlsx,.xls,.docx,.doc,.rar,.pdf,.ppt,.pptx' :beforeUpload="beforeUpload" :remove='removeFile' v-model:file-list="fileList">
+        <a-upload  :showUploadList='showUploadList' name="file" accept='.gif,.jpg,.png,.mp4,.xlsx,.xls,.docx,.doc,.rar,.pdf,.ppt,.pptx' :beforeUpload="beforeUpload" :remove='removeFile' v-model:file-list="fileList">
           <a-input style="width: 140px" v-model:value="name"></a-input
           ><a-button type="primary">浏览</a-button>
         </a-upload>
@@ -60,7 +60,8 @@ interface Istate {
   introduce: string;
   url: string;
   type: string;
-  fileList:any[]
+  fileList:any[],
+  showUploadList:boolean
 }
 import { defineComponent, onMounted, watch, inject, reactive, toRefs, ref } from "vue";
 import request from "src/api/index";
@@ -122,7 +123,8 @@ export default defineComponent({
       introduce: "",
       url: "",
       type: "",
-      fileList:[]
+      fileList:[],
+      showUploadList:true
     });
     const methods = {
       onChange(page: any, pageSize: any) {
@@ -153,6 +155,8 @@ export default defineComponent({
           type !== "ppt" &&
           type !== "pptx"
         ) {
+          state.showUploadList=false
+          state.file = ''
           message.warning("文件格式不正确！");
           return;
         }
@@ -167,7 +171,12 @@ export default defineComponent({
         http.uploadsFile({ param: fd }).then((res: any) => {
           console.log(res);
           state.url = res.data.url;
-        });
+        })
+        .catch((err: any) => {
+            state.file=''
+            state.showUploadList=false
+            message.error(err.error);
+          });
         return false;
       },
        removeFile(file:any){

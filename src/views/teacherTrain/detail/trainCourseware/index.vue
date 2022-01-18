@@ -1,12 +1,13 @@
 <template>
   <div class="trainCourseware">
     <div class="top-btn">
-      <div style="dsplay:flex" v-if="!edit">
+      <div v-if="!edit">
         <a-upload
           class="upload"
           name="file"
           :multiple="true"
           accept=".ppt,.pptx,.pdf"
+          :showUploadList='showUploadList'
           :beforeUpload="beforeUpload"
           :change='fileChange'
           v-model:file-list="fileList"
@@ -14,7 +15,7 @@
         >
           <a-button type="primary">选择文件  </a-button>
         </a-upload>
-        <span class="type_title">支持格式: ppt、pptx、pdf</span> 
+        <div class="type_title">支持格式: ppt、pptx、pdf</div> 
       </div>
       <span v-if="role !== '2'">
         <span v-if="trainType !== '1'">
@@ -57,7 +58,8 @@ interface Istate {
   file: string;
   url: string;
   status: boolean;
-  fileList:any[]
+  fileList:any[];
+  showUploadList:boolean;
 }
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
 import request from "src/api/index";
@@ -79,7 +81,8 @@ export default defineComponent({
       file: "",
       url: "",
       status: false,
-      fileList:[]
+      fileList:[],
+      showUploadList:true
     });
     let development = process.env.NODE_ENV == "development" ? true : false;
     let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
@@ -93,7 +96,9 @@ export default defineComponent({
         const fileType = file.name.split(".")[file.name.split(".").length - 1];
         const isType = fileType === "ppt" || fileType === "pptx" || fileType === "pdf";
         if (!isType) {
-          message.error("文件格式不正确!");
+          state.file=''
+          state.showUploadList=false
+          message.warning("文件格式不正确!");
           return;
         }
         const fd = new FormData();
@@ -107,6 +112,8 @@ export default defineComponent({
             state.url = res.datas.url;
           })
           .catch((err: any) => {
+            state.file=''
+            state.showUploadList=false
             message.error(err.error);
           });
         return false;
