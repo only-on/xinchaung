@@ -261,19 +261,21 @@ export default defineComponent({
     function getQuestions(){
       //  console.log(search)
       // console.log(typeof search.pool_id);
-      search.page=1
+      // search.page=1
       let obj={
         ...search,
         pool_id:search.pool_id?search.pool_id:'',
         level_id:search.level_id?search.level_id:'',
       }
       QuestionLoading.value=true
+      QuestionsList.length=0
       http.getQuestions({param:{...obj}}).then((res:IBusinessResp)=>{
-        QuestionsList.length=0
-        QuestionsList.push(...res.data.list)
-        totalCount.value=res.data.page.totalCount
-        visible.value=true
-        QuestionLoading.value=false
+        if(res){
+          QuestionsList.push(...res.data.list)
+          totalCount.value=res.data.page.totalCount
+          visible.value=true
+          QuestionLoading.value=false
+        }
       })
     }
     const  openSelectQuestion = () => {
@@ -293,10 +295,12 @@ export default defineComponent({
       
     };
     const onShowSizeChange=(current:any,pageSize:any)=>{
+        search.page=1
         search.limit=pageSize
         getQuestions()
       }
     const pageChange=(current:any,pageSize:any)=>{
+      // console.log(current)
       search.page=current
       getQuestions()
     }
@@ -572,7 +576,7 @@ export default defineComponent({
       cursor: pointer;
     }
     .active{
-      color: var(--black-100);
+      color: var(--white-100);
       background-color: var(--purpleblue-6);
     }
   }
