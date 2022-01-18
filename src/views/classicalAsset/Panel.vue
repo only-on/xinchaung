@@ -240,8 +240,8 @@ export default defineComponent({
     const gotoContent = (id: number) => {
       // console.log(id,'前往数据')
       router.push({
-        name: "classicalAssetContent",
-        params: { type: dataType.value, id: id,powerType:configuration.componenttype },
+        path: "/teacher/classical/list/"+dataType.value+"/content/"+id,
+        query: { type: dataType.value, id: id,powerType:configuration.componenttype },
       });
     };
     const deleteItem=(id:number)=>{

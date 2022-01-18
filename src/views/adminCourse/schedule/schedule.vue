@@ -1,5 +1,7 @@
 <template>
-    <teachingScheduleList></teachingScheduleList>
+    <div> 
+    <teaching-scheduleList></teaching-scheduleList>
+    </div>   
 </template>
 
 <script lang="ts">

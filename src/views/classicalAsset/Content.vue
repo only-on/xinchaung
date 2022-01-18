@@ -238,9 +238,9 @@ export default defineComponent({
     const searchKeyword = ref("");
     const uploadFileList: Ref<any[]> = ref([]);
     // 数据集类型
-    let dataType: number = parseInt(route.params.type as string); // 3是课件
-    let powerType: number = parseInt(route.params.powerType as string); //私有还是共有
-    let dataId: number = parseInt(route.params.id as string);
+    let dataType: number = parseInt(route.query.type as string); // 3是课件
+    let powerType: number = parseInt(route.query.powerType as string); //私有还是共有
+    let dataId: number = parseInt(route.query.id as string);
 
     const $message: MessageApi = inject("$message")!;
     const updateNav: (config: ILayoutConfiguration) => void =
@@ -351,7 +351,7 @@ export default defineComponent({
      */
     const getDatasetDetail = () => {
       http.classicalAsset
-        .datasetDetail({ param: { id: route.params.id } })
+        .datasetDetail({ param: { id: route.query.id } })
         .then((res) => {
           detail.name = res?.data.name;
           detail.createdDate = res?.data.created_at;
@@ -375,7 +375,7 @@ export default defineComponent({
       http.classicalAsset
         .datasetItemList({
           param: {
-            dataset_id: route.params.id,
+            dataset_id: route.query.id,
             file_name: search,
             pageSize: itemListPage.pageSize,
             page: itemListPage.current,
