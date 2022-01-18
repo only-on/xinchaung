@@ -191,7 +191,7 @@ export default defineComponent({
   margin-bottom: 10px;
   .left{
     .box{
-      line-height: 37px;
+      line-height: 30px;
       margin-bottom: 15px;
       .label{
         width: 96px;
@@ -202,6 +202,7 @@ export default defineComponent({
         }
         .name{
           font-weight: bold;
+          min-width: max-content;
         }
       }
     }
