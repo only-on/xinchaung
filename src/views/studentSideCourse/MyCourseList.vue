@@ -236,6 +236,11 @@ export default defineComponent({
       color: #333;
       margin-bottom:10px;
       line-height: 33px;
+      word-break: normal;
+      overflow: hidden;
+      width: 100%;
+      white-space: nowrap;
+      text-overflow: ellipsis;
     }
     .course_mid{
       display: flex;
