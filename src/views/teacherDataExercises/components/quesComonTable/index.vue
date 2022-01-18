@@ -52,8 +52,8 @@
                         </template>
                         <template #operation='{record}'>
                             <div>
-                                <span class="iconfont icon-bianji1" @click="editCurrentRow(record,true)"></span>
-                                <span class="iconfont icon-shanchu-copy" @click="deleteCurrentRow(record.id)"></span>
+                                <span class="iconfont icon-bianji1 a-link" @click="editCurrentRow(record,true)"></span>
+                                <span class="iconfont icon-shanchu-copy a-link" @click="deleteCurrentRow(record.id)"></span>
                             </div>
                         </template>
                         <template #select-answers='{record}'>
