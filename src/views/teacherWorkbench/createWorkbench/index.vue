@@ -8,7 +8,7 @@
       layout="vertical"
     >
       <div class="form-left">
-        <a-form-item has-feedback name="end_time" class="time-item">
+        <a-form-item name="end_time" class="time-item" :extra="false">
           <template #label>
             <div class="time-label">
               <span>容器使用日期</span>
@@ -106,7 +106,7 @@
       </div>
       <div class="form-bottom">
         <a-button @click="cancel">取消</a-button>
-        <a-button type="primary" @click="create">创建</a-button>
+        <a-button type="primary" @click="create" :loading="loading">创建</a-button>
       </div>
     </a-form>
     <a-drawer
@@ -155,7 +155,7 @@ export default defineComponent({
     const dateFormat = "YYYY-MM-DD";
     var updata = inject("updataNav") as Function;
     updata({
-      tabs: false,
+      tabs: [],
       navPosition: "outside",
       navType: false,
       showContent: true,
@@ -164,7 +164,7 @@ export default defineComponent({
       backOff: false,
       showPageEdit: false,
     });
-    let endTimeValidator = async (rule: RuleObject, value: string) => {
+      let endTimeValidator = async (rule: RuleObject, value: string) => {
       if (reactiveData.permanent) {
         return Promise.resolve();
       } else {
@@ -191,6 +191,7 @@ export default defineComponent({
       showGPU: boolean;
       drawerVisible: boolean;
       selectedName: any[];
+      loading:boolean
     } = reactive({
       // form数据
       ruleForm: {
@@ -218,6 +219,7 @@ export default defineComponent({
       showGPU: false,
       drawerVisible: false,
       selectedName: [], // 已经选择的数据集
+      loading:false
     });
     const ruleFormDom = ref();
     // 禁止选择的时间
@@ -331,9 +333,10 @@ export default defineComponent({
         params.flavor.cpu = Number(reactiveData.ruleForm.cpu);
         params.flavor.ram = Number(reactiveData.ruleForm.ram);
         params.flavor.disk = Number(reactiveData.ruleForm.disk);
-
+        reactiveData.loading=true
         createWorkbenchApi(params).then((res: any) => {
           message.success("创建成功!");
+          reactiveData.loading=false
           router.push({
             path: "/teacher/Workbench",
             query: {
