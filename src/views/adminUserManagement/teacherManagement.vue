@@ -393,7 +393,7 @@ export default defineComponent({
             Teacher:{
               username:username,
               email:email,
-              userinitpassword:userinitpassword,
+              userinitpassword:editId.value?false:userinitpassword,    // 编辑时默认false
             },
             TeacherProfile:{
               department:department,

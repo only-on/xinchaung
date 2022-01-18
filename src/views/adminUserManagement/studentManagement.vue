@@ -437,7 +437,7 @@ export default defineComponent({
             Student:{
               username:username,
               email:email,
-              userinitpassword:userinitpassword,
+              userinitpassword:editId.value?false:userinitpassword,    // 编辑时默认false
             },
             StudentProfile:{
               department:department,
