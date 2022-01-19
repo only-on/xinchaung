@@ -1,0 +1,231 @@
+<template>
+  <div
+    class="navList"
+    :class="
+      configuration.tabs && configuration.tabs.length ? 'border_bottom' : ''
+    "
+  >
+    <div
+      class="back"
+      v-if="configuration.backOff || configuration.showPageEdit"
+    >
+      <a-button v-if="configuration.backOff" @click="back" type="primary"
+        >返回</a-button
+      >
+      <a-button
+        v-if="configuration.showPageEdit"
+        @click="pageEdit"
+        type="primary"
+        >编辑</a-button
+      >
+    </div>
+    <div class="tab">
+      <div
+        v-for="(v,i) in configuration.tabs"
+        :key="v.name"
+        :class="ActiveName === v.name||(!ActiveName&&i==0) ? 'active' : ''"
+        @click="ActiveName !== v.name ? tabChange(v) : ''"
+      >
+        {{ v.name }}
+      </div>
+    </div>
+    <div class="nav__tab--middle">
+      <slot></slot>
+    </div>
+    <breadcrumb :type="configuration.navType" />
+  </div>
+</template>
+
+<script lang="ts">
+// import { number } from "echarts";
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  watch,
+  inject,
+  computed,
+} from "vue";
+import { useStore } from "vuex";
+import { useRouter, useRoute } from "vue-router";
+export declare interface ITab {
+  name: string;
+  componenttype: number;
+}
+
+export default defineComponent({
+  name: "NavTab",
+  props: {
+    // tabs: {
+    //   required: true,
+    //   type: Array,
+    //   default: () => [],
+    // },
+    // current: {
+    //   required: false,
+    //   type: Number,
+    //   default: 0,
+    // },
+    // configuration:{
+    //   required: true,
+    //   type: Object,
+    //   default: () => {},
+    // }
+  },
+  emits: ["tabSwitch"],
+  setup: (props, context) => {
+    var configuration: any = inject("configuration");
+    const router = useRouter();
+    const route = useRoute();
+    const tabs = reactive(configuration.tabs) as ITab[];
+    const activeName: Ref<string> = ref("");
+    var updata = inject("updataNav") as Function;
+
+    async function tabChange(item: ITab) {
+      // console.log(item)
+      if (activeName.value !== item.name) {
+        await updateRouter(item.componenttype);
+        context.emit("tabSwitch", item.componenttype);
+        updata({ ...configuration, componenttype: item.componenttype });
+        activeName.value = item.name;
+      }
+    }
+    function pageEdit() {
+      configuration.pageEdit();
+    }
+    async function updateRouter(val?: number) {
+      const { query, path } = route;
+      // console.log(query)
+      let NewQuery = { currentTab: val };
+      await router.replace({
+        path: path,
+        query: NewQuery,
+      });
+      // console.log(route.query)
+    }
+    async function initData() {
+      if (configuration.tabs && configuration.tabs.length) {
+        // debugger
+        // 页面首次进入加currentTab参数    原地刷新则不刷新路由
+        const { currentTab } = route.query;
+        const SwitchNumber =
+          currentTab !== undefined
+            ? Number(currentTab)
+            : configuration.componenttype
+            ? configuration.componenttype
+            : 0;
+        currentTab !== undefined ? "" : await updateRouter(SwitchNumber);
+        //     用户指定了componenttype时使用指定的，否则加componenttype为0
+        const newCurrentTab = route.query.currentTab;
+        const newSwitchNumber =
+          newCurrentTab !== undefined
+            ? Number(newCurrentTab)
+            : configuration.componenttype
+            ? configuration.componenttype
+            : 0;
+        await tabChange(configuration.tabs[newSwitchNumber]);
+        configuration.componenttype = newSwitchNumber;
+        activeName.value = configuration.tabs[configuration.componenttype].name;
+      }
+    }
+    var ActiveName = computed(() => {
+      let str = "";
+      if (activeName.value !== "") {
+        str = activeName.value;
+      } else {
+        str = configuration.tabs[0].name;
+      }
+      return str;
+    });
+    function back() {
+      router.go(-1);
+    }
+    onMounted(() => {
+      initData();
+    });
+    watch(
+      () => {
+        return configuration.componenttype;
+      },
+      (val) => {
+        if (val === undefined) {
+          initData();
+        } else {
+          configuration.tabs.map((item: any) => {
+            if (configuration.componenttype == item.componenttype) {
+              activeName.value = item.name;
+            }
+          });
+        }
+      },
+      {
+        deep: true,
+      }
+    );
+    watch(()=>configuration.tabs,()=>{
+      configuration.tabs.some((item:any)=>{
+        return activeName.value==item.name
+      })?'':activeName.value=''
+      if (configuration.tabs.length>0) {
+        configuration.tabs.map((item: any) => {
+            if (configuration.componenttype == item.componenttype) {
+              activeName.value = item.name;
+            }
+          });
+      }
+    })
+    return { activeName, ActiveName, tabChange, back, pageEdit, configuration };
+  },
+});
+</script>
+
+<style scoped lang="less">
+.navList {
+  width: 1330px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  line-height: 43px;
+  margin-bottom: 20px;
+  .tab {
+    display: flex;
+    div {
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      margin-right: 15px;
+      color: #ffffffb3;
+      font-size: 16px;
+      padding: 0 15px;
+      text-align: center;
+      cursor: pointer;
+      &:hover {
+        color: var(--glod-4);
+      }
+    }
+    .active {
+      background: var(--purpleblue-6);
+      color: #fff;
+      transition: all 0.3s;
+      &:hover {
+        color: #fff;
+      }
+    }
+  }
+  .nav__tab--middle {
+    flex: 1;
+    display: flex;
+    align-items: center;
+  }
+}
+.border_bottom {
+  border-bottom: 1px solid #3e418f;
+}
+.back {
+  margin-bottom: -16px;
+  .ant-btn-primary {
+    margin-right: 16px;
+  }
+}
+</style>

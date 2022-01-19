@@ -1,0 +1,239 @@
+<template>
+  <div class="editExperimental">
+    <div class="top-info top" >
+      <!-- <div class="info-left">
+        <img :src="trainDetailInfo.url" />
+      </div> -->
+      <div class="info-right">
+        <div>
+          <div>{{ trainDetailInfo.name }}</div>
+          <div v-if="role === '2'">任课老师：{{ trainDetailInfo.creater }}</div>
+          <div>课时数：{{ trainDetailInfo.class_cnt }}</div>
+          <div>实验数：{{ trainDetailInfo.task_num }}</div>
+          <div v-if="currentTab !== '1'">
+            实训时间：{{ trainDetailInfo.start_times }}-{{ trainDetailInfo.end_times }}
+          </div>
+        </div>
+        <a-button type="primary" @click="goback"
+          ><span class="iconfont icon-fanhui"></span> 返回</a-button
+        >
+      </div>
+    </div>
+    <div class="content">
+        <div class="con_div" v-if="currentTab === '0' || currentTab === '1'">
+          <div class="tabs">
+            <a-tabs default-active-key="0" @change="callback">
+                <a-tab-pane
+                  v-for="item in componentsNames"
+                  :key="item.key"
+                  :tab="item.textname"
+                ></a-tab-pane>
+              </a-tabs>
+          </div>
+          <div class="con_detail">
+              <component
+                :is="componentName"
+                :propTrainDetailInfo="propTrainDetailInfo"
+                :trainId="trainId"
+                :trainType="currentTab"
+                :role="role"
+                @save-success="saveSuccess"
+                @uploadppt="uploadppt"
+                @selected-envie="selectedEnvie"
+                @selected-envir-delete="selectedEnvirDelete"
+              />
+          </div>
+        </div>
+        <div class="con_div" v-else>
+          <div class="con_detail">
+            <archive-training-detail :trainId="trainId"></archive-training-detail>
+          </div>
+          
+        </div>
+    </div> 
+  </div>
+</template>
+<script lang="ts">
+import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
+import { useRoute } from "vue-router";
+import request from "src/api/index";
+import basicInfo from "./basicInfor/index.vue";
+import trainingGuide from "./trainingGuide/index.vue";
+import trainCourseware from "./trainCourseware/index.vue";
+import trainEnvironment from "./trainEnvironment/index.vue";
+import customerInfor from "./customerInfor/index.vue";
+import groupingInfor from "./groupingInfor/index.vue";
+import resources from "./resources/index.vue";
+import archiveTrainingDetail from "./archiveTrainingDetail/index.vue";
+import defaultImg from "src/assets/images/Experimental/wlkc.png";
+interface State {
+  trainDetailInfo: any;
+  propTrainDetailInfo: any;
+  componentName: string;
+  // trainId: any;
+  // currentTab: any;
+  componentsNames: any[];
+}
+export default defineComponent({
+  name: "editExperimental",
+  props: ["trainId", "currentTab", "role"],
+  components: {
+    basicInfo,
+    trainingGuide,
+    trainCourseware,
+    trainEnvironment,
+    customerInfor,
+    groupingInfor,
+    resources,
+    archiveTrainingDetail,
+  },
+  setup(props, context) {
+    let router = useRoute();
+    const http = (request as any).teacherTrain;
+    var updata = inject("updataNav") as Function;
+    var configuration: any = inject("configuration");
+    updata({
+      tabs: [],
+      navPosition: "",
+      navType:true,
+      showContent:false,
+      showNav: true,
+      backOff: false,
+      showPageEdit: false,
+    });
+    const state: State = reactive({
+      trainDetailInfo: "",
+      propTrainDetailInfo: {},
+      // trainId: "",
+      // currentTab: "",
+      componentsNames: [
+        { key: 0, textname: "基础信息", name: "basicInfo" },
+        { key: 1, textname: "实训指导", name: "trainingGuide" },
+        { key: 2, textname: "实训课件", name: "trainCourseware" },
+        { key: 3, textname: "实训环境", name: "trainEnvironment" },
+        { key: 4, textname: "排课信息", name: "customerInfor" },
+        { key: 5, textname: "分组信息", name: "groupingInfor" },
+        { key: 6, textname: "资源", name: "resources" },
+      ],
+      componentName: "basicInfo",
+    });
+    onMounted(() => {
+      // state.currentTab = router.query.currentTab;
+      // state.trainId = router.query.id;
+      // console.log(router.query.id, state.currentTab);
+      methods.getTrainDetailInfo();
+      if (props.currentTab === "1") {
+        state.componentName = "trainingGuide";
+        state.componentsNames = [
+          { key: 0, textname: "实训指导", name: "trainingGuide" },
+          { key: 1, textname: "实训课件", name: "trainCourseware" },
+          { key: 2, textname: "实训环境", name: "trainEnvironment" },
+        ];
+      }
+      // else if(state.currentTab==='2'){
+      //   stat
+      // }
+    });
+
+    const methods = {
+      getTrainDetailInfo() {
+        http.trainDetailInfo({ urlParams: { train: props.trainId } }).then((res: any) => {
+          state.trainDetailInfo = res.data;
+          state.propTrainDetailInfo = res.data;
+        });
+      },
+      saveSuccess() {
+        console.log("修改成功");
+        methods.getTrainDetailInfo();
+      },
+      uploadppt() {
+        methods.getTrainDetailInfo();
+      },
+      goback() {
+        window.history.go(-1);
+        inject["stepInfoOne"] = {};
+        inject["stepInfoTwo"] = {};
+        inject["stepInfoThree"] = {};
+        inject["stepInfoFour"] = {};
+        inject["stepInfoFive"] = {};
+      },
+      callback(key: any) {
+        state.componentName = state.componentsNames[key].name;
+      },
+      selectedEnvie(value: any) {
+        let flag: boolean = false;
+        state.propTrainDetailInfo.server.forEach((item: any, index: number) => {
+          console.log(item.id, value.id);
+          console.log(item.id === value.id);
+          if (item.id === value.id) {
+            flag = true;
+          }
+        });
+        if (flag) {
+          return;
+        }
+        const item = {
+          id: value.id,
+          image_name: value.image.name,
+          cpu: value.config.cpu_text,
+          disk: value.config.disk_text,
+          ram: value.config.ram_text,
+        };
+        state.propTrainDetailInfo.server?.push(item);
+      },
+      selectedEnvirDelete(value: any) {
+        console.log(value.id, "valueid");
+        let deleteIndex: number = 0;
+        state.propTrainDetailInfo.server.forEach((item: any, index: number) => {
+          console.log(item.id, value.id);
+          if (item.id === value.id) {
+            return (deleteIndex = index);
+          }
+        });
+        state.propTrainDetailInfo.server.splice(deleteIndex, 1);
+      },
+    };
+    return { ...toRefs(state), ...methods, defaultImg };
+  },
+});
+</script>
+<style lang="less" scoped>
+.top{
+  background-image: url(/src/assets/images/studentcourse/course-detail_bg.jpg);
+  background-size: 100% 234px;
+  background-repeat: no-repeat;
+  padding-top: 32px;
+  margin-top: -32px;
+}
+.top-info {
+  display: flex;
+  width: 100%;
+  padding:20px;
+  color:var(--black-100);
+  .info-left {
+    width: 290px;
+    margin-right: 10px;
+    img {
+      width: 290px;
+      height: 164px;
+    }
+  }
+  .info-right {
+    padding-right: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex: 1;
+  }
+}
+.content{
+  .con_div{
+    margin:20px;
+  }
+  .con_detail{
+     min-height: 750px;
+    background-color: var(--black-100);
+    padding:15px;
+    border-radius: 4px;
+  }
+}
+</style>

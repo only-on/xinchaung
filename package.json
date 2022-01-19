@@ -1,0 +1,62 @@
+{
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite --host --debug",
+    "build": "vue-tsc --noEmit && vite build",
+    "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=10240 vite build",
+    "serve": "vite preview",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@novnc/novnc": "^1.2.0",
+    "@types/quill": "^1.3.10",
+    "@xianfe/antdv-markdown": "^1.0.13",
+    "@xianfe/vue3-quill": "^0.1.2",
+    "ace-builds": "^1.4.12",
+    "ant-design-vue": "^2.2.3",
+    "echarts": "^5.1.2",
+    "file-saver": "^2.0.5",
+    "html2canvas": "^1.3.2",
+    "js-wm": "^1.0.9",
+    "jsmind": "^0.4.6",
+    "moment": "^2.29.1",
+    "pupa": "^3.0.0",
+    "quill-delta-to-html": "^0.12.0",
+    "spark-md5": "^3.0.2",
+    "swiper": "^7.0.8",
+    "tus-js-client": "^2.3.0",
+    "vite-raw-plugin": "^1.0.1",
+    "vue": "^3.1.1",
+    "vue-i18n": "^9.1.7",
+    "vue-router": "^4.0.4",
+    "vuedraggable": "^4.1.0",
+    "vuex": "^4.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^12.1.4",
+    "@commitlint/config-angular": "^12.1.4",
+    "@commitlint/config-conventional": "^12.1.4",
+    "@types/file-saver": "^2.0.3",
+    "@types/node": "^16.4.13",
+    "@types/spark-md5": "^3.0.2",
+    "@vitejs/plugin-vue": "^1.2.3",
+    "@vitejs/plugin-vue-jsx": "^1.1.7",
+    "@vue/compiler-sfc": "^3.1.1",
+    "cross-env": "^7.0.3",
+    "husky": "^6.0.0",
+    "less": "^4.1.1",
+    "quill": "^1.3.7",
+    "sass": "^1.35.1",
+    "typescript": "^4.3.2",
+    "vite": "^2.4.4",
+    "vite-plugin-components": "^0.13.2",
+    "vite-plugin-style-import": "^1.0.0",
+    "vue-tsc": "^0.0.24"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not ie <= 8",
+    "since 2015"
+  ]
+}

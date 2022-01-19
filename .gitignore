@@ -1,0 +1,14 @@
+node_modules
+.DS_Store
+dist
+ahp_web
+dist-ssr
+*.local
+packages/**
+*.history
+.idea
+.devcontainer
+.dockerignore
+docker-compose.yaml
+Dockerfile
+*zip

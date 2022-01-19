@@ -1,0 +1,274 @@
+<template>
+  <div class="direction-tag-box">
+    <span class="tag-label">课程方向：</span>
+    <div class="tag-right">
+      <div class="tag" ref="allTag1" v-if="directionsShow">
+        <span
+          :class="!params.directions ? 'active' : ''"
+          @click="params.directions = ''"
+          >全部</span
+        >
+        <span
+          v-for="item in directionTag"
+          :key="item.id"
+          :class="params.directions === item.id ? 'active' : ''"
+          @click="params.directions = item.id"
+          :title="item.name"
+        >
+          {{ item.name }}
+        </span>
+      </div>
+      <div class="tag part" v-else>
+        <span
+          :class="!params.directions ? 'active' : ''"
+          @click="params.directions = ''"
+          >全部</span
+        >
+        <span
+          v-for="item in directionTag"
+          :key="item.id"
+          :class="params.directions === item.id ? 'active' : ''"
+          @click="params.directions = item.id"
+          :title="item.name"
+        >
+          {{ item.name }}
+        </span>
+      </div>
+      <div class="more-btn" v-if="directionsHeight > 40">
+        <span @click="directionsShow = !directionsShow"
+          >展开<span class="icon-zhankai iconfont"></span
+        ></span>
+      </div>
+    </div>
+  </div>
+  <div class="list-line-hr"></div>
+  <div class="category-tag-box">
+    <span class="tag-label">职业方向：</span>
+    <div class="tag-right">
+      <div class="tag" ref="allTag2" v-if="categoryShow">
+        <span
+          :class="!params.category ? 'active' : ''"
+          @click="params.category = ''"
+          >全部</span
+        >
+        <span
+          v-for="item in CategoryTag"
+          :key="item.id"
+          :class="params.category === item.id ? 'active' : ''"
+          @click="params.category = item.id"
+          :title="item.name"
+        >
+          {{ item.name }}
+        </span>
+      </div>
+      <div class="tag part" v-else>
+        <span
+          :class="!params.category ? 'active' : ''"
+          @click="params.category = ''"
+          >全部</span
+        >
+        <span
+          v-for="item in CategoryTag"
+          :key="item.id"
+          :class="params.category === item.id ? 'active' : ''"
+          @click="params.category = item.id"
+          :title="item?.name"
+        >
+          {{ item?.name }}
+        </span>
+      </div>
+      <div class="more-btn" v-if="categoryHeight > 40">
+        <span @click="openOrClose"
+          >展开<span class="icon-zhankai iconfont"></span
+        ></span>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script lang="ts">
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  watch,
+  nextTick,
+  toRefs,
+} from "vue";
+import request from "src/request/getRequest";
+
+type TreactiveData = {
+  directionTag: any[];
+  CategoryTag: any[];
+  allTag1: any | null;
+  allTag2: any | null;
+  directionsShow: boolean;
+  directionsHeight: number;
+  categoryHeight: number;
+  categoryShow: boolean;
+  params: {
+    directions: string;
+    category: string;
+  };
+};
+export default defineComponent({
+  emits: ["tagChange"],
+  setup(props, { emit }) {
+    const courseApi = request.teachCourse;
+    const reactiveData: TreactiveData = reactive({
+      directionTag: [{}],
+      CategoryTag: [],
+      allTag1: null,
+      allTag2: null,
+      directionsShow: true,
+      directionsHeight: 0,
+      categoryHeight: 0,
+      categoryShow: true,
+      params: {
+        directions: "",
+        category: "",
+      },
+    });
+    onMounted(() => {
+      // 课程方向
+      getDirections().then((res: any) => {
+        if (res) {
+          nextTick(() => {
+            setTimeout(() => {
+              reactiveData.directionsHeight = (
+                reactiveData as any
+              ).allTag1.clientHeight;
+              if (reactiveData.directionsHeight > 40) {
+                reactiveData.directionsShow = false;
+              } else {
+                reactiveData.directionsShow = true;
+              }
+            },100);
+          });
+        }
+      });
+      // 职业方向
+      getCategory().then((res) => {
+        if (res) {
+          nextTick(() => {
+            reactiveData.categoryHeight = (
+              reactiveData as any
+            ).allTag2.clientHeight;
+            if (reactiveData.categoryHeight > 40) {
+              reactiveData.categoryShow = false;
+            } else {
+              reactiveData.categoryShow = true;
+            }
+          });
+        }
+      });
+    });
+    watch(
+      () => reactiveData.params,
+      () => {
+        emit("tagChange", reactiveData.params);
+      },
+      { deep: true }
+    );
+
+    // 获取课程方向
+    function getDirections() {
+      return new Promise((resolve: any) => {
+        courseApi.getDirectionsApi({}).then((res) => {
+          if (res?.data.list) {
+            reactiveData.directionTag = res?.data.list;
+          }else{
+            reactiveData.directionTag = res?.data;
+          }
+          resolve(res);
+        });
+      });
+    }
+    // 获取职业方向
+    function getCategory() {
+      return new Promise((resolve: any) => {
+        courseApi.getCategoryApi({}).then((res) => {
+          if (res?.data.list) {
+            reactiveData.CategoryTag = res?.data.list;
+          }else{
+            reactiveData.CategoryTag = res?.data;
+          }
+          
+          resolve(res);
+        });
+      });
+    }
+    // 展开
+    function openOrClose() {
+      reactiveData.categoryShow = !reactiveData.categoryShow;
+    }
+    return {
+      ...toRefs(reactiveData),
+      openOrClose,
+    };
+  },
+});
+</script>
+
+<style lang="less">
+.direction-tag-box{
+  margin-top: 30px;
+  margin-bottom: 15px;
+  
+}
+.list-line-hr{
+  height: 1px;
+  background: linear-gradient(to right,var(--black-6),var(--black-6) 5px,transparent 5px,transparent);
+  background-size: 10px 100%;
+}
+.category-tag-box{
+  margin-top: 15px;
+}
+.direction-tag-box,
+.category-tag-box {
+  padding-bottom: 3px;
+  display: flex;
+  // border-bottom: 1px solid #dddddd;
+  
+  color:var(--black-65);
+  font-size: 14px;
+  .tag-label {
+    flex-shrink: 0;
+  }
+  .tag-right {
+    display: flex;
+    flex-direction: row;
+    .more-btn {
+      flex-shrink: 0;
+      display: flex;
+      > span {
+        margin-top: auto;
+        cursor: pointer;
+      }
+    }
+  }
+  .tag {
+    display: flex;
+    flex-wrap: wrap;
+    > span {
+      margin-right: 10px;
+      cursor: pointer;
+      max-width: 120px;
+      overflow: hidden;
+      // height: 25px;
+      text-overflow: ellipsis;
+      padding: 5px 10px;
+      white-space: nowrap;
+      &.active {
+        color: var(--white-100);
+        background: var(--purpleblue-6);
+        border-radius: var(--border-radius-default);
+      }
+    }
+    &.part {
+      height: 25px;
+      overflow: hidden;
+    }
+  }
+}
+</style>

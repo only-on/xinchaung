@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- <link rel="shortcut icon" href="/favicon.png" type="image/png"> -->
+    <link rel="icon" href="/favicon.png" type="image/png" id="link-png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SimpleAHP  人工智能应用实践平台</title>
+    <link rel="stylesheet" href="./public/iconfont/iconfont.css">
+    <!-- <script src="./public/config.js"></script> -->
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+<script lang="js">
+  const login_logo=localStorage.getItem('login_logo')
+  // const env = process.env.NODE_ENV == "development" ? true : false;
+  // const link_logo=env? '/proxyPrefix' + login_logo: login_logo
+  // if(link_logo){
+  //   let dom=document.querySelector('#link-png')
+  //   dom.href=link_logo
+  //   console.log(dom)
+  // }
+
+  window.apiPrefix=''
+</script>

@@ -1,0 +1,325 @@
+<template>
+    <div class="header" v-layout-bg>
+      <div class="search">
+        <div class="item custom_input custom_input1">
+          <a-input v-model:value="ForumSearch.name" placeholder="请输入章节" @keyup.enter="search()" />
+        </div>
+        <div  class="item custom_input custom_input2">
+          <a-input v-model:value="ForumSearch.category" placeholder="请输入所属技术方向" @keyup.enter="search()" />
+        </div>
+        <div class="item">
+          <a-button type="primary" @click="search()">查询</a-button>
+          <a-button type="primary" @click="clearSearch()">清空</a-button>
+        </div>
+      </div>
+      <div class="addTeacher">
+        <a-button @click="BatchDelete()" type="primary" >批量删除</a-button>
+      </div>
+    </div>
+    <a-config-provider :renderEmpty="customizeRenderEmpty">
+      <a-table :columns="columns" :loading="loading" :data-source="list" :bordered="true"  row-key="id"
+        :pagination="{current:ForumSearch.page,pageSize:ForumSearch.limit,total:total,onChange:onChangePage,hideOnSinglePage:true}" 
+        :row-selection="{ selectedRowKeys: selectedRowKeys, onChange: onSelectChange }"
+        class="components-table-demo-nested">
+        <template #title="{record, text }">
+          <a @click="details(record)">{{ text }}</a>
+        </template>
+        <template #operation="{record}">
+          <i class="caozuo iconfont icon-shanchu" @click="delateCard(record.id )" title="删除"></i>
+        </template>
+      </a-table>
+    </a-config-provider>
+</template>
+
+<script lang="tsx">
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal,message} from 'ant-design-vue';
+import {createVNode,VNode, defineComponent,ref, onMounted,reactive,UnwrapRef,Ref ,toRefs,inject,watch, computed} from 'vue'
+import { IBusinessResp} from '../../typings/fetch.d';
+import request from '../../api/index'
+import { useRouter ,useRoute } from 'vue-router';
+import { SmileOutlined, MehOutlined ,UserOutlined} from '@ant-design/icons-vue';
+import { ColumnProps } from 'ant-design-vue/es/table/interface';
+interface IforumSearch{
+  name:string,
+  category:string,
+  limit:number,
+  page:number
+}
+type Key = ColumnProps['key'];
+interface TState{
+  selectedRowKeys:Key[];
+  onSelectChange: (v:Key[],selectedRows:Key[]) => void;
+}
+const columns=[
+  {
+    title: '章节名称',
+    dataIndex:"name",
+    align:'center',
+    // width:120,
+    slots: { customRender: 'title' },
+  },
+  {
+    title: '所属技术方向',
+    dataIndex: 'parent_name',
+    align:'center',
+    // width:120
+  },
+  {
+    title: '实验数',
+    dataIndex: 'task_num',
+    align:'center',
+    // width:260
+  },
+  {
+    title: '课时数',
+    dataIndex: 'class_cnt',
+    align:'center',
+    // width:160
+  },
+  {
+    title: '所属教师',
+    dataIndex: 'teacherName',
+    align:'center',
+    // width:260
+  },
+  {
+    title: '更新时间',
+    dataIndex: 'updatedTime',
+    align:'center',
+    width:240
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    align:'center',
+    slots: { customRender: 'operation' },
+    fixed:'right',
+    width:200
+  }
+]
+
+export default defineComponent({
+  name: 'ShareExperimentManage',
+  components: {
+    SmileOutlined,
+    MehOutlined,
+  },
+  setup: (props,{emit}) => {
+    const router = useRouter();
+    const route = useRoute();
+
+    const http=(request as any).adminExperimentManage
+    var loading:Ref<boolean>=ref(false)
+    var total:Ref<number>=ref(0)  
+    var list:any[]=reactive([])
+    var state:TState=reactive({
+      selectedRowKeys:[],
+      onSelectChange:(selectedRowKeys:Key[],selectedRows:Key[])=>{      
+          // console.log('RowKeys changed: ', selectedRowKeys);
+          // console.log('selectedRows: ', selectedRows);
+          state.selectedRowKeys = selectedRowKeys;           
+          // state.selectedRows = selectedRows;             
+        },
+    })  
+    const customizeRenderEmpty =function (): VNode{
+      if(loading.value){
+        return <template></template>
+      }else{
+        let type=(ForumSearch.name || ForumSearch.name)?'tableSearchEmpty':'tableEmpty'
+        return <empty type={type} />
+      }
+    }
+    var ForumSearch:IforumSearch=reactive({
+      name:'',
+      limit:10,
+      page:1,
+      category:'',
+    })
+    function initData(){
+      // console.log(ForumSearch)
+      loading.value=true
+      list.length=0
+      http.shareManageList({param:{...ForumSearch,withs:'userProfile'}}).then((res:IBusinessResp)=>{
+        if(res){
+          loading.value=false
+          let data=res.data.list
+          data.map((v:any)=>{
+            v.teacherName=v.userProfile.name
+            v.updatedTime=v.userProfile.updated_time
+          })
+          list.push(...data)
+          total.value=res.data.page.totalCount
+        }
+        // console.log(list)
+      })
+    }
+    function search(){
+        ForumSearch.page=1
+        initData()
+    }
+    function delateCard(val:number){
+      console.log(val)
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          DeleteCategory([val])
+        }
+      });
+    }
+    function DeleteCategory(ids:any){
+      http.deleteCategory({param:{id:ids}}).then((res:IBusinessResp)=>{
+        initData()
+        message.success('删除成功')
+      })
+    }
+    function BatchDelete(){
+      if(!state.selectedRowKeys.length){
+        message.warn('请选择要删除的数据')
+        return
+      }
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          DeleteCategory(state.selectedRowKeys)
+        }
+      });
+      
+    }
+    async function clearSearch(){
+      // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){  ExperimentList
+        ForumSearch.category=''
+        ForumSearch.name=''
+        initData()
+      // }
+    }
+    function onChangePage(val:number){
+      const {query,path}= route
+      ForumSearch.page=val
+      state.selectedRowKeys.length=0
+      router.replace({
+            path: path,
+            query: {...query,page:val},
+      })
+      initData()
+    }
+    function details(val:any){
+      let {currentTab}= route.query
+      router.push({
+        path:'/admin/adminExperimentManage/ExperimentList',
+        query:{
+          category_id:val.id,
+          currentTab:currentTab,
+          chapterName:val.name,
+          direction:val.parent_name,
+        }
+      })
+    }
+    onMounted(()=>{
+      initData()
+    })
+    return {...toRefs(state),customizeRenderEmpty,list,columns,ForumSearch,loading,total,search,onChangePage,clearSearch,delateCard,BatchDelete,details};
+  },
+})
+</script>
+
+<style scoped lang="less">
+:deep(.ant-table-pagination.ant-pagination){
+  width: 100%;
+  text-align: center;
+}
+.caozuo{
+  padding: 0 8px;
+  color: var(--purpleblue-6);
+  cursor: pointer;
+}
+.header{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0px 0 15px ;
+  .search{
+    flex: 1;
+    display: flex;
+    align-items: center;
+    .item{
+      display: flex;
+      align-items: center;
+      margin-right: 22px;
+      :deep(.ant-select-selector){
+        width: 240px;
+        height: 35px;
+        padding-left: 30px;
+        align-items: center;
+      }
+      :deep(.ant-input){
+          padding-left: 26px;
+      }
+    }
+    .item:last-child{
+      .ant-btn{
+        margin: 0 8px;
+      }
+    } 
+    .custom_input{
+      position: relative;
+      &::before{
+          content: '';
+          position: absolute;
+          left:8px;
+          top:8px;
+          background: url(src/assets/images/screenicon/Group12.png) no-repeat;
+          width: 16px;
+          height: 16px;
+          z-index: 10;
+      }
+    }
+    .custom_input2{
+      &::before{
+        background: url(src/assets/images/screenicon/Group10.png) no-repeat;
+      }
+    }
+    .custom_input3{
+      &::before{
+        background: url(src/assets/images/screenicon/Group11.png) no-repeat;
+      }
+    }
+  }
+  .addTeacher{
+      margin-right: 16px;
+    }
+}
+:deep(.ant-form-item-control){
+  flex: 0 0 100%;
+}
+:deep(.ant-radio-group){
+  display: flex;
+}
+.formBox{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  .left,.right{
+    width: 46%;
+  }
+}
+:deep(.ant-form-item-with-help){
+  width:100%;
+}
+:deep(.ant-form-item){
+  margin-bottom: 10px;
+}
+.userinitpassword{
+  .ant-checkbox-wrapper{
+    margin: 0 10px;
+  }
+}
+</style>
