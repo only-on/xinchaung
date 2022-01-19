@@ -258,6 +258,7 @@ export default defineComponent({
           .then((res: any) => {
             console.log(res);
             operationHandle.visible = false;
+            emit('pageChange', data.page.page)
           });
         // http.setExperimentalScore({
         //   param: {
@@ -272,9 +273,9 @@ export default defineComponent({
         //   // emit('pageChange', data.page.page)
         // })
       },
-      editScore: (list: ITableList) => {
+      editScore: (list:any) => {
         operationHandle.visible = true;
-        operationHandle.contentId = list.id;
+        operationHandle.contentId = list.study_record?.id;
         // operationHandle.score = list.score
       },
       // 重置
