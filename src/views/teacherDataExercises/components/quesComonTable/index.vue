@@ -41,7 +41,10 @@
             <div class="question-content-table">
                 <a-config-provider>
                     <a-table
-                    :row-selection="rowSelection"
+                    :row-selection="{
+                    selectedRowKeys: selectedRowKeys,
+                    onChange: onSelectChange,
+                    }"
                     :columns="columns"
                     rowKey="id"
                     :loading="loading" 
@@ -250,6 +253,7 @@ interface State{
 
     stringAnswer:string,
     stringKeywords:string,
+    selectedRowKeys:any[]
 }
 interface ItreeData {
   selectedKnowledgeList: ItreeDatalist[]
@@ -338,10 +342,18 @@ export default defineComponent({
             answerVisible:false,
             rightAnswer:'',
             stringAnswer:'',
-            stringKeywords:''
+            stringKeywords:'',
+            selectedRowKeys:[]
 
         })
         const methods = {
+            onSelectChange(selectedRowKeys: any, selectedRows: any) {
+             state.selectedRowKeys = selectedRowKeys;
+             state.deleteidArr=[]
+             selectedRows.forEach((item:any) => {
+                    state.deleteidArr.push(item?.id)
+                });
+            },
             answer(record:any){
                 if(record.type_id===4||record.type_id===5){
                     return record.answers[0].answer 
@@ -640,26 +652,12 @@ export default defineComponent({
 
             }
         }
-        const rowSelection = {
-            onSelect: (record:any, selected:any, selectedRows:any) => {
-                console.log(record,selected,selectedRows)
-                state.deleteidArr=[]
-                selectedRows.forEach((item:any) => {
-                    state.deleteidArr.push(item?.id)
-                });
-            },
-            onSelectAll: (selected:any, selectedRows:any, changeRows:any) => {
-                state.deleteidArr=[]
-                 selectedRows.forEach((item:any) => {
-                    state.deleteidArr.push(item?.id)
-                });
-            },
-        };
         watch(()=>props.selectedId, (newVal) => {
           console.log(props.selectedId,newVal,'props.selectedId')
            state.selectLeves=''
            state.searchExercise=''
            state.stringAnswer=''
+           state.selectedRowKeys=[]
            state.expermodelValue={
                         question:'',
                         level_id:'',
@@ -682,7 +680,7 @@ export default defineComponent({
         onMounted(()=>{
             methods.exerciseLevels()
         })
-        return {...methods,...toRefs(state),rowSelection,isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany,iconDicfult}
+        return {...methods,...toRefs(state),isShowKnowledge,isShowImport,...toRefs(knowledgeList),deleteRowOrMany,iconDicfult}
     }
 })
 </script>
