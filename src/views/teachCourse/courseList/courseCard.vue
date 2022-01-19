@@ -370,8 +370,6 @@ export default defineComponent({
         flex-direction: column;
         .item-name {
           font-size: 16px;
-          margin-top: 8px;
-          padding-bottom: 11px;
           font-weight: 600;
           padding: 0 13px;
           word-break: normal;
@@ -379,6 +377,8 @@ export default defineComponent({
           width: 100%;
           white-space: nowrap;
           text-overflow: ellipsis;
+          height: 34px;
+          line-height: 34px;
         }
         .base-statistics-box {
           height: 100%;
