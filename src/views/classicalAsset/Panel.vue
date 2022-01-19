@@ -341,6 +341,8 @@ export default defineComponent({
       console.log(configuration.componenttype,'configuration.componenttype TAB')
       dataIsPublic.value=configuration.componenttype == 1 ? 0: 1;
       powerType.value=configuration.componenttype
+      dataPage.current=1
+      dataPage.pageSize=10
         getDataSetList();      
       },{
       immediate: true,
