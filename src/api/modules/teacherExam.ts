@@ -9,6 +9,7 @@ export default{
   getQuestions:{url:`/api/v1/question/papers/questions`,method: "GET"},
   pools:{url:`/api/v1/question/pools`,method: "GET"},
   submitPaper:{url:`/api/v1/question/papers`,method:"POST",dataType:'json'},
+  editPaper:{url:`api/v1/question/papers/{editId}`,method:"PUT",dataType:'json'},
   ExaminationEnter:{url:`/api/v1/question/exams`,method:'GET',},
   examinationDetele:{url:`/api/v1/question/exams/{exam_id}`,method:'delete',},
   publish:{url:`/api/v1/question/exams/{exam_id}/publish`,method:'PUT',},

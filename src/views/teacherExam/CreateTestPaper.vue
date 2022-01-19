@@ -357,12 +357,21 @@ export default defineComponent({
         let obj={
           ...ForumSearch,
           questions:selectedPaperIds,
-         type:'simple',
+          type:'simple',
         }
-        http.submitPaper({param:{...obj}}).then((res:IBusinessResp)=>{
-          message.success(editId?'修改成功':'创建成功')
-          router.go(-1)
-        })
+        // editPaper
+        
+        if(editId){
+          http.editPaper({urlParams: {editId: editId},param:{...obj}}).then((res:IBusinessResp)=>{
+            message.success('修改成功')
+            router.go(-1)
+          })
+        }else{
+          http.submitPaper({param:{...obj}}).then((res:IBusinessResp)=>{
+            message.success('创建成功')
+            router.go(-1)
+          })
+        }
       })
     }
     function getPaperDetail(val:number){
@@ -457,7 +466,8 @@ export default defineComponent({
     max-height: 650px;
     .tabs{
       overflow: auto;
-      width: 80px;
+      min-width: 80px;
+      // min-width: max-content;
       .tab{
         height: 130px;
         display: flex;
@@ -536,6 +546,7 @@ export default defineComponent({
               color: #FF9300;
             }
             i{
+              padding: 0 4px;
               cursor: pointer;
               color: #777777;
             }
