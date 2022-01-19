@@ -426,6 +426,9 @@ export default defineComponent({
                         state.expermodelValue.keywords=''
                         state.expermodelValue.answers=[]
                         state.expermodelValue.level_id=''
+
+                        
+                        state. stringAnswer=''
                         if(res.code){
                             message.success('添加成功！')
                             state.createmodal.visible=false
