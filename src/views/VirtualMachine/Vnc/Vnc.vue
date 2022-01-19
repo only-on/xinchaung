@@ -657,8 +657,6 @@ export default defineComponent({
       //   right: 0;
       //   top: 0;
       // }
-
-      background: rgba(#515151, 0.8);
       color: var(--white-100);
       display: flex;
       justify-content: center;

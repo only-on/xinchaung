@@ -714,7 +714,7 @@ export default defineComponent({
       .vm-header-left {
       }
       .vm-header-title {
-        color: var(--black-100);
+        color: #fff;
       }
       .vm-header-right {
         .vm-time {

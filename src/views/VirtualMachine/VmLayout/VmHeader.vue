@@ -904,12 +904,13 @@ export default defineComponent({
         }
       }
       .vm-header-title {
-        color: var(--black-100);
+        color: #fff;
       }
       .vm-header-right {
         .delayed-btn {
           background: var(--glod-6);
-          color: var(--black-100);
+          // color: var(--black-100);
+          color:#fff;
           border: none;
           &:hover {
             background: rgba(#faad14, 0.8);
