@@ -282,6 +282,8 @@ export default defineComponent({
       },
       searchExercise(val: any) {
         console.log(val, "val");
+        state.exerListParams.page=1
+        state.exerListParams.limit=10
         state.searchname = val;
         state.exerListParams.name = val;
         console.log(state.searchname, "state.searchname");
