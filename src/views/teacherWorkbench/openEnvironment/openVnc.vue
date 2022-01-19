@@ -243,7 +243,7 @@ export default defineComponent({
       nextTick(() => {
         initVm();
       });
-      extendSess();
+      // extendSess();
     });
 
     function extendSess() {

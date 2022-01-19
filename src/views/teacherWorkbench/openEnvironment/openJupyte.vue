@@ -130,7 +130,7 @@ export default defineComponent({
     });
     onMounted(() => {
       init();
-      extendSess();
+      // extendSess();
     });
     onBeforeRouteLeave(() => {
       clearInterval(Number(reactiveData.myTimer));
