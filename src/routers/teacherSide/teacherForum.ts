@@ -10,9 +10,8 @@ export default {
     title: (params?: RouteParams, query?: RouteParams) => {
       // console.log(query)
       const dataDetailMap = {
-          '0': '公共论坛',
-          '1': '我的提问',
-          '2': '我参与的帖子',
+          '0': '论坛广场',
+          '1': '我的帖子',
       }
       return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
     },

@@ -164,6 +164,13 @@
     --purple-6:#722ed1;
     --purple-7:#531dab;
 
+    /* 浅灰 */
+    --lightgray-1: #FCFCFC; 
+    --lightgray-2: #F9F9F9; 
+    --lightgray-3: #F0F0F0; 
+    --lightgray-4: #E2E2E2; 
+    --lightgray-5: #DCDCDC; 
+    --lightgray-6: #DFDFDF; 
 
     /* 
     自定义字体
@@ -176,7 +183,7 @@
 
 
     /* 自定义颜色部分 */
-    --center-width:1330px;
+    --center-width:1200px;
 
     --purpleblue-1:#DEDFFD;
     --purpleblue-2:#BEC0FC;
@@ -187,6 +194,8 @@
     --royalpurple-7:#3E1DC4;
 
     --echart-title-bgcolor: #f7edff;
+
+    --orange-1: #FF9544;
 
 
 

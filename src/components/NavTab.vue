@@ -183,7 +183,7 @@ export default defineComponent({
 
 <style scoped lang="less">
 .navList {
-  width: 1330px;
+  width: var(--center-width);
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
