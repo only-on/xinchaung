@@ -77,6 +77,10 @@ textarea {
     text-align: right;
 }
 
+.pointer {
+	cursor: pointer;
+}
+
 .ellipse {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -261,4 +265,33 @@ span,div,a{
     .ant-empty-description{
         font-size: 14px;
     }
+}
+
+// 标签按钮
+.label-btn {
+	display: inline-block;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 15px;
+    padding: 0 19px;
+    color: var(--black-65);
+    cursor: pointer;
+	&.current {
+		background-color: var(--orangeyellow-1);
+    	color: var(--white-100);
+	}
+}
+
+h3 {
+	font-size: var(--font-size-16);
+    color: #33394b;
+    font-weight: 700;
+}
+.components-title {
+	font-size: var(--font-size-16);
+    color: var(--black-85);
+    padding-bottom: 11px;
+    border-bottom: 1px solid var(--lightgray-4);
+    // line-height: 21px;
+    // letter-spacing: 0.38px;
 }

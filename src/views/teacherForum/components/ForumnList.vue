@@ -1,8 +1,8 @@
 <template>
-	<div class="title">{{item.title}}</div>
-	<div class="content" v-if="!isAllText">
+	<h3 class="title">{{item.title}}</h3>
+	<div class="content" v-if="!item.isAllText">
 		<span class="desc">{{item.desc}}</span>
-		<span class="read-btn" @click="isAllText = true">阅读全文<i class="iconfont icon-zhankai"></i></span>
+		<span class="read-btn pointer" @click="readAllText(item.id)">阅读全文<i class="iconfont icon-zhankai"></i></span>
 	</div>
 	<div class="content" v-html="item.content" v-else></div>
 	<div class="user-info">
@@ -10,7 +10,7 @@
 		<span class="user-name">{{item.userName}}</span>
 		<span class="create-time">{{item.createTime}}</span>
 		<span class="reply-num">{{item.replayNum}}</span>
-		<span class="reply-btn" @click="isReply = !isReply">{{!isReply ? '回应' : '收起回应'}}</span>
+		<span class="reply-btn pointer" @click="isReply = !isReply">{{!isReply ? '回应' : '收起回应'}}</span>
 	</div>
 	<!--回应内容-->
 	<div class="reply-box" v-if="isReply">
@@ -18,50 +18,55 @@
 		<div class="reply-content">
 			<reply-list :child="child"></reply-list>
 			<div class="more">
-				<span>加载更多</span>
+				<span class="pointer">加载更多</span>
 			</div>
 		</div>
 		<div class="comment-box">
 			<a-input v-model:value="replyContent" placeholder="请写下你的评论" />
-			<span @click="submitReply">回应</span>
+			<span class="pointer" @click="submitReply">回应</span>
 		</div>
 	</div>
-	<div class="bottom">
+	<div class="bottom" v-if="item.isAllText">
 		<div class="left">
-			<span>24</span>
-			<span @click="isReply = !isReply">收起回应</span>
+			<span>{{item.replayNum}}</span>
+			<span class="pointer" @click="isReply = !isReply">{{!isReply ? '回应' : '收起回应'}}</span>
 		</div>
-		<div class="right">
-			<span @click="isAllText = false">收起<i class="iconfont icon-zhankai"></i></span>
+		<div class="right pointer">
+			<span @click="item.isAllText = false">收起<i class="iconfont icon-zhankai"></i></span>
 		</div>
 	</div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
-import { useRouter, useRoute } from 'vue-router';
+import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs, PropType } from 'vue'
 import ReplyList from './ReplyList.vue'
+import { IForumnList } from './../forumnTyping.d'
 export default defineComponent({
   name: 'ForumnList',
 	props: {
 		item: {
-			type: Object 
+			type: Object as PropType<IForumnList> 
 		}
 	},
+	emits: ['readAllText'],
 	components:{
 		ReplyList
 	},
 	setup: (props, { emit }) => {
-		let isAllText = ref<boolean>(false)
 		let isReply = ref<boolean>(false)
 		let child = ref<boolean>(true)
 		let replyContent = ref<string>('')
+
+		// 阅读全文
+		function readAllText(i: number) {
+			emit('readAllText', i)
+		}
 		return {
 			...toRefs(props),
-			isAllText,
 			isReply,
 			child,
 			replyContent,
+			readAllText
 		}
 	}
 })
@@ -69,18 +74,14 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .title {
-	font-size: 16px;
-	color: #33394b;
-	font-weight: 700;
 	margin-bottom: 8px;
 }
 .content {
 	color: var(--black-65);
 	line-height: 24px;
 	.read-btn {
-		color: var(--orange-1);
+		color: var(--orangeyellow-1);
 		margin-left: 12px;
-		cursor: pointer;
 		.iconfont {
 			font-size: 14px;
 			margin-left: 6px;
@@ -101,9 +102,8 @@ export default defineComponent({
 		margin: 0 24px;
 	}
 	.reply-btn {
-		color: var(--orange-1);
+		color: var(--orangeyellow-1);
 		margin-left: 3px;
-		cursor: pointer;
 	}
 }
 .reply-box {
@@ -127,8 +127,8 @@ export default defineComponent({
 				line-height: 34px;
 				padding: 0 22px;
 				border-radius: 18px;
-				border: 1px solid var(--orange-1);
-				color: var(--orange-1);
+				border: 1px solid var(--orangeyellow-1);
+				color: var(--orangeyellow-1);
 			}
 		}
 	}
@@ -143,28 +143,40 @@ export default defineComponent({
     	border-radius: 17px;
 		}
 		span {
-			cursor: pointer;
 			margin-left: 16px;
 			line-height: 34px;
 			padding: 0 36px;
 			border-radius: 17px;
-			background: var(--orange-1);
+			background: var(--orangeyellow-1);
 			color: var(--white-100);
 		}
 	}
 }
 .bottom {
-	line-height: 19px;
+	height: 54px;
+	line-height: 54px;
 	display: flex;
+	justify-content: space-between;
 	background: var(--white-100);
 	box-shadow: 0px -2px 4px 0px rgba(0,0,0,0.07); 
+	padding-left: 20px;
+	padding-right: 30px;
+	color: var(--black-45);
+	position: fixed;
+	bottom: 0;
+	width: 830px;
 	.right {
-		color: var(--orange-1);
+		color: var(--orangeyellow-1);
 		margin-left: 12px;
-		cursor: pointer;
 		.iconfont {
 			font-size: 14px;
 			margin-left: 6px;
+		}
+	}
+	.left {
+		span:last-child {
+			color: var(--orangeyellow-1);
+			margin-left: 4px;
 		}
 	}
 }

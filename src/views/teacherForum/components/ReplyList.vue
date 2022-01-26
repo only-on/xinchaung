@@ -14,17 +14,17 @@
 		<div class="reply">
 			<div class="reply-info">看到楼主发的，犹如醍醐灌顶~ 感谢了！</div>
 			<div class="reply-btn">
-				<span @click="isReply = !isReply">回应</span>
+				<span class="pointer" @click="isReply = !isReply">回应</span>
 			</div>
 			<div class="reply-box" v-if="isReply">
 				<a-input v-model:value="replyContent" placeholder="回复 jzjzhd" />
-				<span @click="submitReply">回应</span>
+				<span class="pointer" @click="submitReply">回应</span>
 			</div>
 			<div class="reply-reply" v-if="child">
 				<reply-list></reply-list>
 				<reply-list></reply-list>
 				<div class="reply-all">
-					查看全部7条回应
+					<span class="pointer">查看全部7条回应</span>
 				</div>
 			</div>
 		</div>
@@ -33,7 +33,6 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
-import { useRouter, useRoute } from 'vue-router';
 // import ReplyList from './ReplyList.vue'
 export default defineComponent({
   name: 'ReplyList',
@@ -103,10 +102,7 @@ export default defineComponent({
 	}
 	.reply-btn {
 		line-height: 19px;
-		color: var(--orange-1);
-		span {
-			cursor: pointer;
-		}
+		color: var(--orangeyellow-1);
 	}
 	.reply-box {
 		display: flex;
@@ -117,12 +113,11 @@ export default defineComponent({
     	border-radius: 17px;
 		}
 		span {
-			cursor: pointer;
 			margin-left: 16px;
 			line-height: 34px;
 			padding: 0 36px;
 			border-radius: 17px;
-			background: var(--orange-1);
+			background: var(--orangeyellow-1);
 			color: var(--white-100);
 		}
 	}

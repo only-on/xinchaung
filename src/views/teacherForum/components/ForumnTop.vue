@@ -5,34 +5,32 @@
 				<a-input-search v-model:value="ForumSearch.title" placeholder="请输入搜索关键词" @search="search" />
 			</div>
 			<div class="label-list">
-				<span :class="{'label': true, 'current': item.id === ForumSearch.type}" v-for="item in labelList" :key="item.id" @click="changeLabel(item.id)">{{item.name}}</span>
+				<span class="label-btn" :class="{'current': item.id === ForumSearch.type}" v-for="item in labelList" :key="item.id" @click="changeLabel(item.id)">{{item.name}}</span>
 			</div>
 		</div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
-import { useRouter, useRoute } from 'vue-router';
+import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs, computed } from 'vue'
+import { IForumSearch } from './../forumnTyping.d'
 export default defineComponent({
   name: 'ForumTop',
   components: {
   },
-	props: {
-		type: String
-	},
+	emits: ['search'],
   setup: (props, { emit }) => {
-    const route = useRoute();
 		let ForumSearch = reactive<IForumSearch>({
 			title: '',
 			type: 1
 		})
-		let labelList: Ref = ref(inject('labelList'))
+		let labelList: Ref = computed(() => inject('labelList'))
 		function search() {
-
+			emit('search', ForumSearch)
 		}
 		function changeLabel(val: number) {
 			ForumSearch.type = val
+			emit('search', ForumSearch)
 		}
 
     onMounted(() => {
@@ -47,10 +45,6 @@ export default defineComponent({
 		};
   },
 })
-interface IForumSearch {
-	title: string
-	type: number
-}
 </script>
 
 <style scoped lang="less">
@@ -75,19 +69,6 @@ interface IForumSearch {
 		}
 		.label-list {
 			margin: 2px 0;
-			.label {
-				display: inline-block;
-				height: 30px;
-				line-height: 30px;
-				border-radius: 15px;
-				padding: 0 20px;
-				margin-right: 14px;
-				color: var(--black-65);
-				&.current {
-					background-color: var(--orange-1);
-					color: var(--white-100);
-				}
-			}
 		}
 	}
 }
