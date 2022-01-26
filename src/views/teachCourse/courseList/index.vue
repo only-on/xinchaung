@@ -1,5 +1,6 @@
 <template>
     <div v-layout-bg style="height:100%">
+      <!-- <breadcrumb /> -->
       <!-- <component ref="tabRef" :is="componentName" :currentTab="componentName"/> -->
       <myCourse ref="tabRef" v-if="componentName==='myCourse'" :currentTab="componentName"></myCourse>
       <initCourse ref="tabRef" v-if="componentName==='initCourse'" :currentTab="componentName"></initCourse>

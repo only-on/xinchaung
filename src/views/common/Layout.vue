@@ -1,18 +1,14 @@
 <template>
     <div class="app_content">
-      <Header></Header>
-      <div class="main-box" id="main-box">
-        <NavTab @tabSwitch="tabSwitch" v-show="configuration.showNav && configuration.navPosition==='outside'" />
-        <div :class="configuration.showContent?'content':''" :id="(configuration.showNav && configuration.navPosition==='outside')?'withTop':'customSide'">
-          <NavTab @tabSwitch="tabSwitch" v-show="configuration.showContent && configuration.showNav && configuration.navPosition==='inside'" />
-          <div  :class="configuration.showContent?'content_box':'customContent'">
-            <div :class="configuration.showContent?'setScrollbar':'customContent'">
-              <router-view />
-            </div>
-          </div>
+      <div class="header">
+        <Header></Header>
+        <NavTab @tabSwitch="tabSwitch"/>
+      </div>
+      <div class="main-box" :class="configuration.tabs.length>1?'line':''">
+        <div :class="configuration.showContent?'regulations':'customized'">
+          <router-view />
         </div>
       </div>
-      <!-- <Footer></Footer> -->
     </div>
 </template>
 <script lang="ts">
@@ -46,14 +42,15 @@ export default defineComponent({
     const router = useRouter();
     var configuration:config=reactive({
       showNav:true,                    // 是否需要导航条
-      navPosition:'inside',            //  inside   outside   导航位于内容区   内or外
-      navType:true,                     // 面包屑true未默认灰色    false为白色
       tabs:[],                          // tab切换项 例 [{name:'随堂论坛',componenttype:0}]
       componenttype:undefined,           //  tab选中项   传tabs时需赋值 undefined做初始化，随后navtab组件会改其值为tabs的首项。 可监听configuration.componenttype 回调处理
       showContent:false,                //  是否需要内容区盒子   不需要则 layout只带顶部导航
-      backOff:false,                    // 顶部与面包屑平齐的 返回 按钮
-      showPageEdit:false,               // 顶部与面包屑平齐的 编辑 按钮
-      pageEdit:()=>{}                  // 顶部与面包屑平齐的 编辑 按钮点击回调
+
+      backOff:false,                    // 现已取消
+      showPageEdit:false,               // 现已取消
+      pageEdit:()=>{},                  // 现已取消
+      navPosition:'inside',            //  现已取消
+      navType:true,                     // 现已取消
 
     })
     function updataNav(val:config){
@@ -84,68 +81,35 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 100%;
+  width: 100%;
   .app_content{
     display: flex;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
+    .header{
+      background: #192843;
+    }
   }
   .main-box{
     flex: 1;
-    background-color: #edf0f5;
-    // margin-top: 5px;     //遮挡了header阴影
-    // margin: 0 auto;
-    // max-width: var(--center-width);
-    // height: calc(100% - 87px);     // footer组件失去后 修改此
-    padding-top: 32px;
+    opacity: 0.7;
+    background: #f0f0f0;
+    overflow: hidden;
     padding-bottom: 32px;
-    // margin-top: 5px;
     min-height: 750px;
     overflow: auto;
-    // overflow-y: auto;
-    // overflow-x:hidden;
-    .content{
+    width: 100%;
+    height: 100%;
+    .regulations{
       width: var(--center-width);
       margin: 0 auto;
-      background: #fff;
-      // height: calc(100% - 44px); 
-      // min-height: 750px;
-      border-radius: 6px;
-      .content_box{
-        width: 100%;
-        background: #fff;
-        box-shadow: 0px 0 3px 3px rgb(0 0 0 / 10%);
-        padding: 40px 50px 80px;
-        min-height: 750px;
-        overflow: hidden;
-        border-radius: 6px;
-        >div{
-          height: 100%;
-          // overflow: auto;
-        }
-      }
+      padding-top: 20px;
     }
-    .customContent{
-      height: 100%;
-    }
-    .customized{
-      height: 100%;
-      // overflow: hidden;
-    }
-    #withTop{
-      // height: 100%;
-      // height: calc(100% - 44px); 
-    }
-    #customSide{
-      height: 100%;
-    }
-    .customizedSon{
-       height: 100%;
-      // overflow: hidden;
-    }
+    .customized{}
   }
-  .main-box.customPage{
-    overflow: visible;
+  .line{
+    margin-top: 3px;
   }
 }
 </style>

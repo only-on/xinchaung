@@ -6,7 +6,6 @@ import { resolve } from 'path';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 // @ts-ignore
 import viteRawPlugin from "vite-raw-plugin";
-
 // https://vitejs.dev/config/
 export default defineConfig({
   base:"./",
@@ -82,7 +81,7 @@ export default defineConfig({
         // rewrite: (path) => path.replace(/^\/ws/, '')
       // }
     },
-    port: 3000,
+    port: 3010,
     host: '0.0.0.0',
     open: true,
     force: true

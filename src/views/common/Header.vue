@@ -1,30 +1,16 @@
 <template>
   <header class="header-box">
     <div class="header-left">
-      <!-- <router-link class="a-logo" :to="{path:homePath}">
-        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
-        </div>
-        <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
-      </router-link> -->
       <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
         </div>
-        <span class="web-title">SimpleAHP  人工智能应用实践平台</span>
+        <span class="web-title">SimpleAHP</span>
       </div>
     </div>
     <div class="header-middle">
       <menu-bar :menus="menus"></menu-bar>
     </div>
     <div class="header-right">
-      <a-popover title="" trigger="click" placement="bottom">
-        <template #content>
-          <p class="assist">{{ assistText }}</p>
-        </template>
-        <div class="help-message" v-if="isOperation" @click="helpMessage">
-          <img :src="handImg" />
-          <span class="remoteAssistance">远程协助消息</span>
-        </div>
-      </a-popover>
       <a-popover title="" trigger="hover" placement="bottom">
         <template #content>
           <p class="operation" v-if="!power" @click="information">个人信息</p>
@@ -32,7 +18,6 @@
           <p class="operation" @click="loginOut">退出登录</p>
         </template>
         <div class="user-name">
-          <!-- <div class="user-img"></div> -->
           <img :src="userImg" />
           <span class="user-name">{{ userName }}</span>
         </div>
@@ -229,15 +214,13 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .header-box {
-  height: 60px;
+  height: 55px;
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
-  width: 100%;
   align-items: center;
-  padding: 0 50px;
-  background: #fff;
-  min-width: 1330px;
+  width: var(--center-width);
+  margin: 0 auto;
   // box-shadow: 0 0 5px #c2aad6;
   > .header-left {
     flex-shrink: 0;

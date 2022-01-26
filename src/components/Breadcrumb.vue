@@ -1,5 +1,5 @@
 <template>
-  <a-breadcrumb :class="type ? '' : 'allWhite'">
+  <a-breadcrumb class="allWhite">
     <a-breadcrumb-item
       v-for="(v, i) in breadcrumbArr"
       :key="'breadcrumbs-' + i"
@@ -19,15 +19,15 @@ import { IRouteTuple } from "src/types";
 export default defineComponent({
   name: "Breadcrumb",
   components: {},
-  props: {
-    type: {
-      required: false,
-      type: Boolean,
-      default: true,
-    },
-  },
+  // props: {
+  //   type: {
+  //     required: false,
+  //     type: Boolean,
+  //     default: true,
+  //   },
+  // },
   setup: (props, { emit }) => {
-    const type = ref(props.type);
+    // const type = ref(props.type);
     const store = useStore();
     const router = useRouter();
     let breadcrumbArr: ComputedRef<IRouteTuple[]> = computed<IRouteTuple[]>(() => {
@@ -42,15 +42,15 @@ export default defineComponent({
     }
     watch(
       () => {
-        return props.type;
+        // return props.type;
       },
       (val: any) => {
-        type.value = val;
+        // type.value = val;
       }
     );
 
     onMounted(() => {});
-    return { breadcrumbArr, type, Jump };
+    return { breadcrumbArr, Jump };
   },
 });
 </script>
@@ -75,10 +75,11 @@ export default defineComponent({
 }
 .ant-breadcrumb {
   display: flex;
-  justify-content: flex-end;
+  // justify-content: flex-end;
   align-items: center;
   font-size: 12px;
-  color: var(--black-25);
+  // color: var(--black-25);
+  color: var(--white);
   .allow {
     :deep(.ant-breadcrumb-link) {
       cursor: pointer;

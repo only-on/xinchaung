@@ -1,43 +1,23 @@
 <template>
-  <div
-    class="navList"
-    :class="
-      configuration.tabs && configuration.tabs.length ? 'border_bottom' : ''
-    "
-  >
-    <div
-      class="back"
-      v-if="configuration.backOff || configuration.showPageEdit"
-    >
-      <a-button v-if="configuration.backOff" @click="back" type="primary"
-        >返回</a-button
-      >
-      <a-button
-        v-if="configuration.showPageEdit"
-        @click="pageEdit"
-        type="primary"
-        >编辑</a-button
-      >
+  <div class="navBox" :class="(configuration.showNav || configuration.tabs.length)?'showNavBox':''">
+    <div class="crumbs">
+      <breadcrumb v-show="configuration.showNav" />
     </div>
-    <div class="tab">
-      <div
-        v-for="(v,i) in configuration.tabs"
-        :key="v.name"
-        :class="ActiveName === v.name||(!ActiveName&&i==0) ? 'active' : ''"
-        @click="ActiveName !== v.name ? tabChange(v) : ''"
-      >
-        {{ v.name }}
+    <div class="navList">
+      <div class="tab">
+        <div
+          v-for="(v,i) in configuration.tabs"
+          :key="v.name"
+          :class="ActiveName === v.name || (!ActiveName && i==0 )? (configuration.tabs.length>1?'active activeBor':'active'): ''"
+          @click="ActiveName !== v.name ? tabChange(v) : ''"
+        >
+          {{ v.name }}
+        </div>
       </div>
     </div>
-    <div class="nav__tab--middle">
-      <slot></slot>
-    </div>
-    <breadcrumb :type="configuration.navType" />
   </div>
 </template>
-
 <script lang="ts">
-// import { number } from "echarts";
 import {
   defineComponent,
   ref,
@@ -92,9 +72,6 @@ export default defineComponent({
         activeName.value = item.name;
       }
     }
-    function pageEdit() {
-      configuration.pageEdit();
-    }
     async function updateRouter(val?: number) {
       const { query, path } = route;
       // console.log(query)
@@ -139,9 +116,6 @@ export default defineComponent({
       }
       return str;
     });
-    function back() {
-      router.go(-1);
-    }
     onMounted(() => {
       initData();
     });
@@ -176,28 +150,35 @@ export default defineComponent({
           });
       }
     })
-    return { activeName, ActiveName, tabChange, back, pageEdit, configuration };
+    return { activeName, ActiveName, tabChange, configuration};
   },
 });
 </script>
-
 <style scoped lang="less">
-.navList {
+.navBox{
   width: var(--center-width);
   margin: 0 auto;
   display: flex;
+  flex-direction: column;
+}
+.showNavBox{
+  height: 80px;
+}
+.navList {
+  display: flex;
   justify-content: space-between;
   line-height: 43px;
-  margin-bottom: 20px;
+  margin-bottom: -3px;
+  // margin-bottom: 20px;
   .tab {
     display: flex;
     div {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       margin-right: 15px;
-      color: #ffffffb3;
-      font-size: 16px;
-      padding: 0 15px;
+      color: var(--white-65);
+      font-size: var(--font-size-16);
+      padding-right: 15px;
       text-align: center;
       cursor: pointer;
       &:hover {
@@ -205,12 +186,14 @@ export default defineComponent({
       }
     }
     .active {
-      background: var(--purpleblue-6);
       color: #fff;
       transition: all 0.3s;
       &:hover {
         color: #fff;
       }
+    }
+    .activeBor{
+      border-bottom: 3px solid var(--primary-color);
     }
   }
   .nav__tab--middle {
@@ -219,13 +202,8 @@ export default defineComponent({
     align-items: center;
   }
 }
-.border_bottom {
-  border-bottom: 1px solid #3e418f;
-}
-.back {
-  margin-bottom: -16px;
-  .ant-btn-primary {
-    margin-right: 16px;
-  }
+.crumbs{
+  flex:1;
+  padding-top: 6px;
 }
 </style>

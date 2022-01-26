@@ -191,7 +191,7 @@ export default defineComponent({
           { name: "私有", componenttype: 1 },
         ],
         componenttype:Number((route as any).query["currentTab"]),
-        showContent: false,
+        showContent: true,
         navType: false,
         backOff: false,
         showPageEdit: false,
@@ -386,7 +386,7 @@ export default defineComponent({
 .classical__container {
   margin: 0 auto;
   min-height: 750px;
-  width: 1330px;
+  // width: 1330px;
   padding: 30px;
   border-radius: var(--border-radius-default);
   background: var(--white-100);
