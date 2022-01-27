@@ -77,7 +77,7 @@ export default defineComponent({
       navType: true,
       showContent: false,
       componenttype: undefined,
-      showNav: true,
+      showNav: false,
       backOff: false,
       showPageEdit: false,
     });

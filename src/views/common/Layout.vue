@@ -93,8 +93,7 @@ export default defineComponent({
   }
   .main-box{
     flex: 1;
-    opacity: 0.7;
-    background: #f0f0f0;
+    background: rgba(240, 240, 240,0.7);
     overflow: hidden;
     padding-bottom: 32px;
     min-height: 750px;

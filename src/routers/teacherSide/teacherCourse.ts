@@ -8,11 +8,11 @@ export default {
     title: (params?: RouteParams, query?: RouteParams) => {
       // console.log(query)
       const dataDetailMap = {
-          '0': '我的课程',
+          '0': '课程',
           '1': '内置课程',
           '2': '归档课程',
       }
-      return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:'课程管理'
+      return dataDetailMap[query!.currentTab && query!.currentTab.toString()] || dataDetailMap[0]
     },
     authCode: 'courseList'
   },
