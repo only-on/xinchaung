@@ -287,6 +287,7 @@ export default defineComponent({
       }
       .user-name {
         padding: 0 6px;
+        color:var(--white);
       }
     }
   }

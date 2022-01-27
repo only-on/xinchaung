@@ -5,7 +5,12 @@ import { TAvailableModules } from '../typings/api';
 
 import MyServer from '../request/getRequest'
 
-const files: any = import.meta.globEager("./modules/*.ts")
+const modulesFiles: any = import.meta.globEager("./modules/*.ts")
+const teacherFiles: any = import.meta.globEager("./teacher/*.ts")
+const studentFiles: any = import.meta.globEager("./student/*.ts")
+const adminFiles: any = import.meta.globEager("./admin/*.ts")
+const files:any=Object.assign(modulesFiles,teacherFiles,studentFiles,adminFiles)
+
 for (const key in files) {
     let file_name = key.split('/')[2].split('.')[0]
     let moduleFiles = files[key].default

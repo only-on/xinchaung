@@ -10,7 +10,7 @@ import { ITeacherTrainAps } from 'src/api/modules/teacherTrain'
 import {IstudentExam} from "src/api/modules/studentExam"
 import {IvmApi} from "src/api/modules/vmApi"
 import { ICourseTreeApis } from "src/api/modules/courseTree"
-import { ITeacherCourseApis } from "src/api/modules/teachCourse"
+import { ITeacherCourseApis } from "src/api/teacher/teachCourse"
 import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysis"
 import { ITeacherExamlAps } from "src/api/modules/teacherExam"
 import { ITeacherHome } from "src/api/modules/teacherHome"
