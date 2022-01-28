@@ -56,20 +56,29 @@
           </div>
           <div class="order">{{v.explain}}</div>
           <div class="list" v-for="a in v.list" :key="a" :class="v.openItem?'listHeight':''" v-show="v.openItem">
+
             <div class="itemTit flexCenter">
-              <div class="TitLeft">
+              <div class="TitLeft" @click="ExperimentDetail(a)">
                 <span>{{a.order}}</span>
                 <span>{{a.title}}</span>
               </div>
               <div class="TitRight flexCenter">
-                <a-button class="environment" :loading="false">启动环境</a-button>
-                <span @click="a.openGuidance=!a.openGuidance">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+                <a-button class="environment flexCenter" :loading="a.startup" @click.stop="prepare(a)" v-if="a.type==='experiment'">{{a.startup?'准备中':'启动环境'}}</a-button>
+                <span @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
               </div>
             </div>
-            <div class="itemContentBox textScrollbar">
-              <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''" v-show="a.openGuidance">
+            <div class="itemContentBox textScrollbar" v-show="a.openGuidance">
+              <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''" v-show="a.type==='experiment'">
                 <h4 class="">{{i.title}}</h4>
                 <div class="text">{{i.text}}</div>
+              </div>
+              <div class="video-box" v-show="a.type==='mp4'">
+                <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
+                  您的浏览器不支持 video 标签
+                </video>
+              </div>
+              <div class="pdfBox" v-show="a.type==='pptx'">
+                <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
               </div>
             </div>
           </div>
@@ -81,7 +90,7 @@
       <div class="Ranking">
         <div class="gamePlayer flexCenter" v-for="(v,k) in 10" :key="v">
           <div class="user flexCenter">
-            <div class="rank" :class="[0,1,2].includes(k)?`rank${k+1}`:''">{{k+1}}</div>
+            <div class="rank" :class="k<3?`rank${k+1}`:''">{{k>2?k+1:''}}</div>
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="portrait"></div>
             <div class="name">{{'左卿辞'}}</div>
@@ -117,12 +126,15 @@ import {
 import storage from "src/utils/extStorage";
 import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
+import { IBusinessResp} from 'src/typings/fetch.d';
+import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
+import PdfVue from "src/components/pdf/pdf.vue"
 interface IState{
   chapterList:any[]
 }
 export default defineComponent({
   components: {
-
+    PdfVue
   },
   setup() {
     var updata = inject("updataNav") as Function;
@@ -139,6 +151,9 @@ export default defineComponent({
     const currentTab = route.query.currentTab;
     const course_id = route.query.course_id;
     const type = route.query.type;
+    const routeQuery = useRoute().query;
+    const env = process.env.NODE_ENV == "development" ? true : false;
+    const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
     var state:IState=reactive({
       chapterList:[
         {
@@ -151,6 +166,8 @@ export default defineComponent({
               order:'3-1',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
+              type:'mp4',
               content:[
                 {
                   title:'1、按钮的定义',
@@ -170,6 +187,8 @@ export default defineComponent({
               order:'3-2',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
+              type:'pptx',
               content:[
                 {
                   title:'1、按钮的定义',
@@ -189,6 +208,8 @@ export default defineComponent({
               order:'3-3',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
+              type:'experiment',
               content:[
                 {
                   title:'1、按钮的定义',
@@ -216,6 +237,7 @@ export default defineComponent({
               order:'3-1',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -235,6 +257,7 @@ export default defineComponent({
               order:'3-2',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -254,6 +277,7 @@ export default defineComponent({
               order:'3-3',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -281,6 +305,7 @@ export default defineComponent({
               order:'3-1',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -300,6 +325,7 @@ export default defineComponent({
               order:'3-2',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -319,6 +345,7 @@ export default defineComponent({
               order:'3-3',
               title:'基于入侵检测的告警分析-外网',
               openGuidance:false,
+              startup:false,
               content:[
                 {
                   title:'1、按钮的定义',
@@ -339,18 +366,58 @@ export default defineComponent({
       ]
     })
     function initData(){
+      http.courseDetail().then((res:IBusinessResp)=>{
 
+      })
+    }
+    function prepare(a:any) {
+      a.startup=true
+      // return
+      let param: any = {
+        type: "course",
+        opType: "prepare",
+        // taskId: experiment_id.value,
+        taskId:500152
+      };
+      let task_type={
+        type:4,
+        programing_type:0
+      }
+      if (task_type.type === 4) {
+        // webide
+        if (task_type.programing_type === 1) {
+          router.push({
+            path: "/vm/ace",
+            query: {
+              type: param.type,
+              opType: param.opType,
+              taskId: param.taskId,
+              routerQuery: JSON.stringify(routeQuery),
+            },
+          });
+        } else {
+          toVmConnect(router, param, routeQuery);
+        }
+      } else {
+        toVmConnect(router, param, routeQuery);
+      }
+    }
+    function ExperimentDetail(a:any){
+      // 去实验详情页面
     }
     onMounted(() => {
-      initData()
+      // initData()
     });
     function tabChange(key: string) {}
 
     
 
     return {
+      ...toRefs(state),
+      ExperimentDetail,
       tabChange,
-      ...toRefs(state)
+      prepare,
+      env,detailInfoUrl,
     };
   },
 });
@@ -448,6 +515,7 @@ export default defineComponent({
         margin-bottom: 2rem;
       }
       .chapterList{
+        padding-bottom: 2rem;
         .title{
           justify-content: space-between;
           span{
@@ -468,7 +536,7 @@ export default defineComponent({
             line-height: 40px;
             .TitRight{
               .environment{
-                line-height: 24px;
+                justify-content: center;
                 padding: 0;
                 width: 100px;
                 height: 24px;
@@ -488,8 +556,7 @@ export default defineComponent({
             }
           }
           .itemContentBox{
-            margin-bottom: 2rem;
-            max-height: 400px;
+            max-height: 500px;
             overflow: auto;
             .itemContent{
               transition: all .5s;
@@ -502,6 +569,19 @@ export default defineComponent({
                 color: var(--black-65);
                 margin-bottom: 1.5rem;
               }
+            }
+            .video-box{
+              height: 500px;
+              width: 100%;
+              video{
+                width:100%;
+                height:100%;
+                object-fit: cover;
+              }
+            }
+            .pdfBox{
+              height: 500px;
+              width: 100%;
             }
           }
         }
@@ -532,13 +612,14 @@ export default defineComponent({
             font-size: var(--font-size-sm);
             color: var(--black-45);
             &.rank1{
-              background-image: url();
+              // background-image: url('src/assets/images/empty/empty.png');
+              background-image: url('src/assets/images/teacherCourse/1.png');   
             }
             &.rank2{
-              background-image: url();
+              background-image: url('src/assets/images/teacherCourse/2.png');
             }
             &.rank3{
-              background-image: url();
+              background-image: url('src/assets/images/teacherCourse/3.png');
             }
           }
           .portrait{
@@ -549,7 +630,6 @@ export default defineComponent({
             background-repeat: no-repeat;
             background-size: 100% 100%;
           }
-          
           .name{
             color: var(--black-65);
           }
