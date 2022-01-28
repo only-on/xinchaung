@@ -1,5 +1,8 @@
 <template>
-  <div class="forumn" v-layout-bg >
+  <div class="forumn">
+    <!-- <a-button type="primary" shape="round" size="large">确定</a-button>
+    <a-button type="primary" shape="round" size="middle">确定</a-button>
+    <a-button type="primary" shape="round" size="small">取消</a-button> -->
     <component :is="componentName" :componentName="componentName"/>
   </div>
 </template>
@@ -10,11 +13,13 @@ import ForumSquare from './ForumSquare.vue'
 import MyPosts from './MyPosts.vue'
 import { useRouter, useRoute } from 'vue-router';
 import { ILabel } from './forumnTyping.d'
+import ForumnTop from './components/ForumnTop.vue'
 export default defineComponent({
   name: '',
   components: {
    ForumSquare,
    MyPosts,
+   ForumnTop,
   },
   setup: (props, { emit }) => {
     const route = useRoute();
@@ -24,7 +29,7 @@ export default defineComponent({
     
     var configuration: any = inject('configuration')
     var updata = inject('updataNav') as Function
-    updata({tabs: tabs, navPosition: 'outside', navType: false, showContent: false, componenttype: undefined, showNav: true, backOff: false, showPageEdit: false})
+    updata({tabs: tabs, showContent: false, componenttype: undefined, showNav: true,})
 
     let labelList = reactive<ILabel[]>([])
     provide('labelList', labelList)

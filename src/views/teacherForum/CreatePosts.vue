@@ -1,68 +1,135 @@
 <template>
-   <div class="creatpost"  v-layout-bg>
-      <h1>发帖</h1>
-      <a-form ref="formRef" :model="formState" :label-col="{span:6}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
+  <div class="creatpost">
+    <div class="left">
+      <a-form ref="formRef" :model="formState" :label-col="{span:12}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
         <a-form-item label="帖子名称"  name="name">
-          <a-input v-model:value="formState.title" />
+          <a-input v-model:value="formState.title"  placeholder="请在这里输入帖子标题"/>
         </a-form-item>
-        <a-form-item label="帖子类型"  name="type">
-          <a-select v-model:value="formState.type" placeholder="请选择发帖类型">
-            <a-select-option value="1">求助</a-select-option>
-            <a-select-option value="2">分享</a-select-option>
-          </a-select>
-        </a-form-item>
+        <div class="type">
+          <a-form-item label="帖子类型"  name="type">
+            <a-select v-model:value="formState.type" placeholder="请选择帖子类型">
+              <a-select-option value="1">求助</a-select-option>
+              <a-select-option value="2">分享</a-select-option>
+            </a-select>
+          </a-form-item>
+          <a-form-item label="添加标签"  name="label">
+            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
+            <div class="label-list">
+              <span v-for="(item, index) in labelList" :key="index" class="list">
+                {{ item }}
+                <i class="remove iconfont icon-guanbi" @click="removeLabel(item)"></i>
+              </span>
+              <span class="add-btn pointer" v-show="!isInput" @click="clickLabelBtn"><i class="iconfont icon-tianjia"></i>添加标签</span>
+              <a-input
+                ref="refLabel"
+                @pressEnter="labelSubmit"
+                @blur="labelSubmit"
+                @change="changeLabel"
+                v-show="isInput"
+                v-model:value="labelContent"
+              />
+            </div>
+          </a-form-item>
+        </div>
       </a-form>
       <div class="text">
         <QuillEditor  v-model="formState.content" :height="'400px'" :uploadPathName="'teacherForum'" /> 
       </div>
       <div class="foot">
+        <a-button @click.prevent="cancel">取消</a-button>
         <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
       </div>
+    </div>
+    <div class="right">
+      <!-- 热门标签 -->
+      <hot-label></hot-label>
+      <!-- 热力图 -->
+      <heat-map></heat-map>
+      <!-- 推荐课程 -->
+      <recommend-course></recommend-course>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,toRefs ,inject} from 'vue'
+import { defineComponent,ref, onMounted,reactive,toRefs ,inject, nextTick} from 'vue'
 import request from '../../api/index'
 import { IBusinessResp} from '../../typings/fetch.d';
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 // import { Delta } from "../../typings/quill-delta";
 import  QuillEditor  from "src/components/editor/quill.vue";
-const http=(request as any).teacherForum
+import HotLabel from './components/HotLabel.vue'
+import HeatMap from './components/HeatMap.vue'
+import RecommendCourse from './components/RecommendCourse.vue'
+const http = (request as any).teacherForum
 interface form{
-  title:string,
-  type:string,
-  content:any
+  title: string,
+  type: string | undefined,
+  content: any
 }
 interface Istate{
-  formRef:any,
-  formState:form,
-  rules:any,
+  formRef: any,
+  formState: form,
+  rules: any,
   onSubmit: () => void;
   getDetail: () => void;
-  options:any
+  options: any
 }
 export default defineComponent({
   name: 'CreatePosts',
   components: {
-   QuillEditor
+   QuillEditor,
+   HotLabel,
+   HeatMap,
+   RecommendCourse,
   },
   setup: (props,{emit}) => {
     const router = useRouter();
     const route = useRoute();
-    const {editId}= route.query
-    var updata=inject('updataNav') as Function
-    updata({showContent:true,navType:false,tabs:[],navPosition:'outside',backOff:true})
+    const {editId} = route.query
 
-    const state:Istate=reactive({
-      formRef:'formRef',
-      formState:{
-        title:'',
-        type:'1',
-        content:{}
+    const tabs = [{name: '发帖', componenttype: 0}]
+    var updata = inject('updataNav') as Function
+    updata({tabs: tabs, showContent: true, componenttype: undefined, showNav: true,})
+
+    const refLabel = ref<HTMLElement>(); 
+    let isInput = ref<boolean>()
+    let labelContent = ref<string>('')
+    let labelList = reactive<string[]>([])
+    function clickLabelBtn(){
+      isInput.value = true
+      nextTick(()=>{
+        refLabel.value && refLabel.value.focus()
+      })
+    }
+    function changeLabel() {
+      labelContent.value = labelContent.value?.length > 10 ? labelContent.value.slice(0, 10) : labelContent.value
+    }
+    function labelSubmit() {
+      // console.log(state.customLabelV)
+      if (labelContent.value.trim()) {
+          labelList.push(labelContent.value)
+          labelContent.value = ''
+          isInput.value = false
+        } else {
+          isInput.value = false
+        }
+    }
+    function removeLabel(val: string){
+      let num = labelContent.value.indexOf(val)
+      if(num !== -1){
+        labelList.splice(num,1)
+      }
+    }
+    const state: Istate = reactive({
+      formRef: 'formRef',
+      formState: {
+        title: '',
+        type: undefined,
+        content: {}
       },
-      rules:{
+      rules: {
         title: [
           { required: true, message: '请输入帖子名称', trigger: 'blur'},
           { min: 1, max: 16, message: '名称长度为1-16个字符', trigger: 'blur'},
@@ -70,19 +137,14 @@ export default defineComponent({
         type: [{ required: true, message: '请选择帖子类型', trigger: 'change' }],
         content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
       },
-      options:{
+      options: {
         placeholder: "输入内容...",
         theme: "snow",
       },
-      getDetail:()=>{
-        http.postsDetailed({param:{id:editId}}).then((res:IBusinessResp)=>{
-            // let typePosts={'分享':'1','求助':'2'}
-            state.formState.title=res.data.title
-            state.formState.type=res.data.type==='分享'?'1':'2'
-            state.formState.content=res.data.content
-        })
+      getDetail: ()=>{
+        
       },
-      onSubmit:()=>{
+      onSubmit: ()=>{
         console.log(state.formState)
         // return
         state.formRef.validate().then(() => {
@@ -96,21 +158,88 @@ export default defineComponent({
                 router.go(-1)
             })
         })
+      },
+      cancel: () => {
+
       }
     })
     editId?state.getDetail():''
-    onMounted(()=>{
+    onMounted(() => {
      
     })
-    return { ...toRefs(state),editId};
+    return { 
+      editId,
+      ...toRefs(state),
+      refLabel,
+      isInput,
+      clickLabelBtn,
+      labelContent,
+      labelList,
+      changeLabel,
+      labelSubmit,
+      removeLabel,
+    };
   },
 })
 </script>
 
 <style scoped lang="less">
 .creatpost{
-  height: 100%;
-  overflow: auto;
+  display: flex;
+  justify-content: space-between;
+  .left {
+    width: 830px;
+    .type {
+      display: flex;
+      justify-content: space-between;
+      .ant-form-item {
+        &:first-child {
+          width: 206px;
+          margin-right: 80px;
+        }
+        &:nth-child(2) {
+          flex: 1;
+          .label-list .list {
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            background: var(--white-100);
+            border: 1px solid var(--lightgray-6);
+            border-radius: 13px;
+            // color: var(--orangeyellow-1);
+            padding: 0 18px;
+            margin-right: 8px;
+            .iconfont {
+              font-size: var(--font-size-sm);
+            }
+          }
+          .add-btn {
+            display: inline-block;
+            height: 24px;
+            line-height: 24px;
+            background: var(--white-100);
+            border: 1px solid var(--lightgray-6);
+            border-radius: 13px;
+            color: var(--orangeyellow-1);
+            padding: 0 18px;
+            .iconfont {
+              font-size: var(--font-size-sm);
+              margin-right: 6px;
+            }
+          }
+          .ant-input {
+            width: 112px;
+          }
+        }
+      }
+    }
+  }
+  .right {
+    width: 300px;
+    .hot-label {
+      margin-top: 32px;
+    }
+  }
 }
   .header{
     display: flex;

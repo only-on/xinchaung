@@ -9,7 +9,7 @@
         ></forumn>
       </div>
       <div class="right">
-        <div class="post pointer">发帖</div>
+        <div class="post pointer" @click="createPost">发帖</div>
         <!-- 热门标签 -->
         <hot-label></hot-label>
         <!-- 热力图 -->
@@ -42,6 +42,7 @@ export default defineComponent({
   },
   setup: (props, { emit }) => {
     const route = useRoute();
+    const router = useRouter();
     var forumSearch = reactive<IForumSearch>({
       title: '',
       pageSize: 10,
@@ -90,7 +91,11 @@ export default defineComponent({
       forumSearch.page = page
       initData()
     }
-    
+    // 发帖
+    function createPost() {
+      router.push('/teacher/teacherForum/CreatePosts')
+    }
+
     onMounted(() => {
       initData()
     })
@@ -98,6 +103,7 @@ export default defineComponent({
       forumnList,
       search,
       pageChange,
+      createPost,
     };
   },
 })
