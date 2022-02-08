@@ -116,7 +116,7 @@
       </div>
     </div>
   </div>
-  <a-modal v-model:visible="Visible" title="知识点" :width="1413" class="modal-post" :destroyOnClose="true">
+  <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
     <div id="KnowledgePoints">
 
     </div>
@@ -152,7 +152,7 @@ interface IState{
 }
 export default defineComponent({
   components: {
-    PdfVue
+    PdfVue,
   },
   setup() {
     var updata = inject("updataNav") as Function;

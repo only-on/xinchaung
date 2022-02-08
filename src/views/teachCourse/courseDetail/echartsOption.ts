@@ -1,4 +1,4 @@
-import { Item } from "ant-design-vue/lib/menu";
+
 import * as echarts from "echarts"
 import 'echarts-wordcloud';
 import {theme} from 'src/utils/theme'
@@ -17,7 +17,7 @@ function HotWords(el: HTMLDivElement, data: any){
         height: '80%',
         right: null,
         bottom: null,
-        sizeRange: [12, 60],
+        sizeRange: [12, 40],
         rotationRange: [0, 0],
         rotationStep: 45,
         gridSize: 8,
@@ -80,7 +80,7 @@ function HotWords(el: HTMLDivElement, data: any){
 	chart && chart.setOption(option);
 }
 function Knowledge(el: HTMLDivElement, data2: any){
-  let data={
+  let data=[{
     "name": "节点1",
     "children": [
      {
@@ -130,11 +130,12 @@ function Knowledge(el: HTMLDivElement, data2: any){
        {"name": "节点32-7", "value": 5593},
       ]
      }
-    ]
-   }
-  data.children.forEach(function (datum:any, index:any) {
-    // index % 2 === 0 && (datum.collapsed = true);
-  });
+    ],
+    
+   }]
+  // data.children.forEach(function (datum:any, index:any) {
+  //   // index % 2 === 0 && (datum.collapsed = true);
+  // });
   let option = {
     tooltip: {
       trigger: 'item',
@@ -143,17 +144,17 @@ function Knowledge(el: HTMLDivElement, data2: any){
     series: [
       {
         type: 'tree',
-        data: [data],
+        data: data,
         top: '1%',
         left: '7%',
         bottom: '1%',
         right: '20%',
-        symbolSize: 27,
+        symbolSize: 14,
         label: {
-          position: 'left',
+          position: 'top',
           verticalAlign: 'middle',
-          align: 'right',
-          fontSize: 9
+          align: 'left',
+          fontSize: 12
         },
         leaves: {
           label: {
