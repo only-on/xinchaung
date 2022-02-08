@@ -55,30 +55,31 @@
             <span @click="v.openItem=!v.openItem">{{v.openItem?'收起':'展开'}}</span>
           </div>
           <div class="order">{{v.explain}}</div>
-          <div class="list" v-for="a in v.list" :key="a" :class="v.openItem?'listHeight':''" v-show="v.openItem">
-
-            <div class="itemTit flexCenter">
-              <div class="TitLeft" @click="ExperimentDetail(a)">
-                <span>{{a.order}}</span>
-                <span>{{a.title}}</span>
+          <div class="listBox" v-show="v.openItem">
+            <div class="list" v-for="a in v.list" :key="a" :class="v.openItem?'listHeight':''">
+              <div class="itemTit flexCenter">
+                <div class="TitLeft" @click="ExperimentDetail(a)">
+                  <span>{{a.order}}</span>
+                  <span>{{a.title}}</span>
+                </div>
+                <div class="TitRight flexCenter">
+                  <a-button class="environment flexCenter" :loading="a.startup" @click.stop="prepare(a)" v-if="a.type==='experiment'">{{a.startup?'准备中':'启动环境'}}</a-button>
+                  <span @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+                </div>
               </div>
-              <div class="TitRight flexCenter">
-                <a-button class="environment flexCenter" :loading="a.startup" @click.stop="prepare(a)" v-if="a.type==='experiment'">{{a.startup?'准备中':'启动环境'}}</a-button>
-                <span @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
-              </div>
-            </div>
-            <div class="itemContentBox textScrollbar" v-show="a.openGuidance">
-              <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''" v-show="a.type==='experiment'">
-                <h4 class="">{{i.title}}</h4>
-                <div class="text">{{i.text}}</div>
-              </div>
-              <div class="video-box" v-show="a.type==='mp4'">
-                <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
-                  您的浏览器不支持 video 标签
-                </video>
-              </div>
-              <div class="pdfBox" v-show="a.type==='pptx'">
-                <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
+              <div class="itemContentBox textScrollbar" v-show="a.openGuidance">
+                <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''" v-show="a.type==='experiment'">
+                  <h4 class="">{{i.title}}</h4>
+                  <div class="text">{{i.text}}</div>
+                </div>
+                <div class="video-box" v-if="a.type==='mp4'">
+                  <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
+                    您的浏览器不支持 video 标签
+                  </video>
+                </div>
+                <div class="pdfBox" v-if="a.type==='pptx'">
+                  <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
+                </div>
               </div>
             </div>
           </div>
@@ -99,7 +100,13 @@
         </div>
       </div>
       <h3 class="courseH3">知识点</h3>
-      <div id="graph"></div>
+      
+      <div class="graphBox">
+        <div id="graph"></div>
+        <div class="magnifier" @click="viewAtlas()">
+          <span class="iconfont icon-sousuo"></span>
+        </div>
+      </div>
       <h3 class="courseH3">相关实验</h3>
       <div class="relevant">
         <div class="item" v-for="v in 5" :key="v">
@@ -109,6 +116,14 @@
       </div>
     </div>
   </div>
+  <a-modal v-model:visible="Visible" title="知识点" :width="1413" class="modal-post" :destroyOnClose="true">
+    <div id="KnowledgePoints">
+
+    </div>
+    <template #footer>
+      <span></span>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="ts">
@@ -118,7 +133,9 @@ import {
   onMounted,
   reactive,
   toRefs,
+  nextTick,
   provide,
+  Ref,
   ref,
   watch,
   onBeforeUnmount,
@@ -129,6 +146,7 @@ import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue"
+import { Knowledge,HotWords} from './echartsOption'
 interface IState{
   chapterList:any[]
 }
@@ -405,15 +423,27 @@ export default defineComponent({
     function ExperimentDetail(a:any){
       // 去实验详情页面
     }
+    var Visible:Ref<boolean>=ref(false)
+    function viewAtlas(){
+      Visible.value=true
+      nextTick(()=>{
+        let data={}
+        Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
+      })
+    }
     onMounted(() => {
-      // initData()
+      // initData() HotWords
+      nextTick(()=>{
+        let data={}
+        HotWords(document.getElementById("graph") as HTMLDivElement,data)
+      })
     });
     function tabChange(key: string) {}
 
-    
-
     return {
       ...toRefs(state),
+      Visible,
+      viewAtlas,
       ExperimentDetail,
       tabChange,
       prepare,
@@ -528,8 +558,10 @@ export default defineComponent({
           color: var(--black-25);
           margin-bottom: 2rem;
         }
+        .listBox{
+          transition: all .3s;
+        }
         .list{
-          transition: all .5s;
           .itemTit{
             justify-content: space-between;
             padding-right: 2rem;
@@ -638,11 +670,29 @@ export default defineComponent({
           }
         }
       }
-      #graph{
+      .graphBox{
         width: 100%;
         height: 166px;
-        border: 1px solid red;
         margin-bottom: 2rem;
+        position: relative;
+        #graph{
+          width: 100%;
+          height: 100%;
+          // border: 1px solid red;
+        }
+        .magnifier{
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          width: 30px;
+          height: 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: rgba(0,0,0,0.40);
+          color: #ffffff;
+          cursor: pointer;
+        }
       }
       .relevant{
         .item{
@@ -656,6 +706,13 @@ export default defineComponent({
           }
         }
       }
+    }
+  }
+  .modal-post{
+    #KnowledgePoints{
+      height: 600px;
+      width: 100%;
+      padding: 40px;
     }
   }
 </style>
