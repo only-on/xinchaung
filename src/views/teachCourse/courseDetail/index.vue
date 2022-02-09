@@ -43,8 +43,8 @@
   <div class="courseContent">
     <div class="leftContent content">
        <a-button type="primary" size="large">大号</a-button>
-  <a-button type="primary" size="middle">中号</a-button>
-  <a-button type="primary" size="small">小号</a-button>
+      <a-button type="primary">中号</a-button>
+      <a-button type="primary" size="small">小号</a-button>
       <h3 class="courseH3">课程简介</h3>
       <div class="introduce">Wiki是一种在网络上开放且可供多人协同创作的超文本系统，由美国人沃德·坎宁安于1995年首先开发，这种超文本系统支持面向社群的协作式写作，同时也包括一组支持这种写作。沃德·坎宁安将wiki定义为“一种允许一群用户用简单的描述来创建和连接一组网页的社会计算系统”。 [1] Wiki站点可以有多人（甚至任何访问者）维护，每个人都可以发表自己的意见。</div>
       <div>
