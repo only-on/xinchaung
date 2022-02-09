@@ -84,8 +84,6 @@
     --blue-4:#69c0ff;
     --blue-5:#40a9ff;
     --blue-6:#1890ff;
-    --blue-6-2:rgba(var(--blue-6), 0.2);
-    --blue-7:#096dd9;
 
     --ant-slider-handle-focus:#46a6ff;
     --ant-slider-dot-active:#8cc8ff;
@@ -184,6 +182,7 @@
 
     /* 自定义颜色部分 */
     --center-width:1200px;
+    --echart-title-bgcolor: #f7edff;
 
     --purpleblue-1:#DEDFFD;
     --purpleblue-2:#BEC0FC;
@@ -192,13 +191,18 @@
     --purpleblue-5:#6C70EA;
     --purpleblue-6:#585ce5;
     --royalpurple-7:#3E1DC4;
+    
+    /* 下2需要替换成现主题  --blue-6-2  rgba(var(--blue-6),0.2) */
 
-    --echart-title-bgcolor: #f7edff;
+    --blue-6-2:#1890ff33;  
+    --purpleblue-7:#096dd9;
 
-    --orangeyellow-1: #FE8020;
+    
+
+    /* --orangeyellow-1: #FE8020;
     --orangeyellow-2: #FF9544;
     --orangeyellow-3: #FE8020;
-    --orangeyellow-4: #FF9544;
+    --orangeyellow-4: #FF9544; */
     --orangeyellow-5: #FE8020;
     --orangeyellow-6: #FF9544;
     --brightBtn:#1CB2B3;
@@ -220,6 +224,7 @@
     --white: var(--white-100);
     --black: var(--black-100);
     --primary-color: var(--orangeyellow-6);
+    --primary-7::var(--purpleblue-7);
     --primary-6: var(--primary-color);
     --primary-5: var(--purpleblue-5);
     --primary-4: var(--purpleblue-4);

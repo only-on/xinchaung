@@ -456,6 +456,7 @@ export default defineComponent({
 <style lang="less" scoped>
   .courseH3{
     margin-bottom: 1rem;
+    // color: var(--blue-6-2);
   }
   .courseHeader{
     height: 200px;

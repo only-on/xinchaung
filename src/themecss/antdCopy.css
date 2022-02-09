@@ -164,7 +164,7 @@ a:hover {
   color: var(--blue-5);
 }
 a:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 a:active,
 a:hover {
@@ -4256,9 +4256,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: var(--white-100);
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn:active > a:only-child {
   color: currentColor;
@@ -4350,8 +4350,8 @@ textarea.ant-input {
 }
 .ant-btn-primary:active {
   color: var(--white-100);
-  background: var(--blue-7);
-  border-color: var(--blue-7);
+  background: var(--primary-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-primary:active > a:only-child {
   color: currentColor;
@@ -4452,9 +4452,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-ghost:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-ghost:active > a:only-child {
   color: currentColor;
@@ -4535,9 +4535,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-dashed:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: var(--white-100);
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-dashed:active > a:only-child {
   color: currentColor;
@@ -4702,9 +4702,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-link:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-link:active > a:only-child {
   color: currentColor;
@@ -4821,9 +4821,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-text:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-text:active > a:only-child {
   color: currentColor;
@@ -5109,9 +5109,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-dangerous.ant-btn-link:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-dangerous.ant-btn-link:active > a:only-child {
   color: currentColor;
@@ -5257,9 +5257,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-dangerous.ant-btn-text:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-dangerous.ant-btn-text:active > a:only-child {
   color: currentColor;
@@ -5696,9 +5696,9 @@ textarea.ant-input {
   content: '';
 }
 .ant-btn-background-ghost.ant-btn-primary:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: transparent;
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-btn-background-ghost.ant-btn-primary:active > a:only-child {
   color: currentColor;
@@ -8720,11 +8720,11 @@ span.ant-radio + * {
   background-color: var(--blue-5);
 }
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active {
-  color: var(--blue-7);
-  border-color: var(--blue-7);
+  color: var(--primary-7);
+  border-color: var(--primary-7);
 }
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active::before {
-  background-color: var(--blue-7);
+  background-color: var(--primary-7);
 }
 .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):focus-within {
   box-shadow: 0 0 0 3px var(--ant-radio-inner-shadow);
@@ -8741,8 +8741,8 @@ span.ant-radio + * {
 }
 .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):active {
   color: var(--white-100);
-  background: var(--blue-7);
-  border-color: var(--blue-7);
+  background: var(--primary-7);
+  border-color: var(--primary-7);
 }
 .ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):focus-within {
   box-shadow: 0 0 0 3px var(--ant-radio-inner-shadow);
@@ -9434,7 +9434,7 @@ span.ant-radio + * {
   color: var(--primary-5);
 }
 .ant-tabs-nav .ant-tabs-tab:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 .ant-tabs-nav .ant-tabs-tab .anticon {
   margin-right: 8px;
@@ -16553,8 +16553,8 @@ span.ant-radio + * {
 }
 .ant-calendar .ant-calendar-ok-btn:active {
   color: var(--white-100);
-  background: var(--blue-7);
-  border-color: var(--blue-7);
+  background: var(--primary-7);
+  border-color: var(--primary-7);
 }
 .ant-calendar .ant-calendar-ok-btn:active > a:only-child {
   color: currentColor;
@@ -18335,7 +18335,7 @@ textarea.ant-time-picker-input {
   background-color: var(--primary-color);
 }
 .ant-tag-checkable:active {
-  background-color: var(--blue-7);
+  background-color: var(--primary-7);
 }
 .ant-tag-hidden {
   display: none;
@@ -18441,7 +18441,7 @@ textarea.ant-time-picker-input {
   border-color: var(--green-6);
 }
 .ant-tag-blue {
-  color: var(--blue-7);
+  color: var(--primary-7);
   background: var(--blue-1);
   border-color: var(--blue-3);
 }
@@ -22318,7 +22318,7 @@ textarea.ant-mentions {
   color: var(--blue-5);
 }
 .ant-page-header-back-button:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 .ant-page-header .ant-divider-vertical {
   height: var(--base-font-size);
@@ -24722,7 +24722,7 @@ textarea.ant-mentions {
   color: var(--blue-5);
 }
 .ant-table-filter-dropdown-link:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 .ant-table-filter-dropdown-link.confirm {
   float: left;
@@ -24786,7 +24786,7 @@ textarea.ant-mentions {
   color: var(--blue-5);
 }
 .ant-table-row-expand-icon:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 .ant-table-row-expand-icon:focus,
 .ant-table-row-expand-icon:hover,
@@ -26583,7 +26583,7 @@ a.ant-typography:hover,
 }
 a.ant-typography:active,
 .ant-typography a:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 a.ant-typography:active,
 .ant-typography a:active,
@@ -26669,7 +26669,7 @@ a.ant-typography.ant-typography-disabled:active,
 .ant-typography-expand:active,
 .ant-typography-edit:active,
 .ant-typography-copy:active {
-  color: var(--blue-7);
+  color: var(--primary-7);
 }
 .ant-typography-copy-success,
 .ant-typography-copy-success:hover,
@@ -26857,7 +26857,7 @@ div.ant-typography-edit-content.ant-typography-rtl {
   padding: 16px 0;
 }
 .ant-upload.ant-upload-drag.ant-upload-drag-hover:not(.ant-upload-disabled) {
-  border-color: var(--blue-7);
+  border-color: var(--primary-7);
 }
 .ant-upload.ant-upload-drag.ant-upload-disabled {
   cursor: not-allowed;
