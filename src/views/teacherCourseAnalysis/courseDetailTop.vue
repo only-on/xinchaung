@@ -324,7 +324,7 @@ export default defineComponent({
       text-align: center;
       width: 40px;
       height: 40px;
-      background: var(--purpleblue-6);
+      background: var(--primary-color);
       border-radius: 50%;
       color: var(--white-100);
       cursor: pointer;

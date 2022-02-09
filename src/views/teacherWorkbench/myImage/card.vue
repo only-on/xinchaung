@@ -71,7 +71,7 @@ export default defineComponent({
     &:nth-child(2) {
       position: absolute;
       top: 0;
-      // background: linear-gradient(45deg,rgba(var(--purpleblue-5)), rgba(var(--blue-4)) 26%);
+      // background: linear-gradient(45deg,rgba(var(--primary-5)), rgba(var(--blue-4)) 26%);
       background: linear-gradient(45deg,#6C70EA, #69C0FF 26%);
       border-radius: 6px;
       transition: 0.5s;
@@ -96,7 +96,7 @@ export default defineComponent({
     .card-top {
       width: 100%;
       height: 84px;
-      // background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
+      // background: linear-gradient(45deg,var(--primary-5), var(--blue-4) );
       background: linear-gradient(45deg, #6C70EA, #69C0FF);
       border-radius: 6px 6px 0px 0px;
       position: relative;
@@ -111,7 +111,7 @@ export default defineComponent({
         color: #ffde00;
       }
       .image-type{
-        color: rgba(var(--purpleblue-6),.25);
+        color: rgba(var(--primary-color),.25);
        position: absolute;
       right: 20px;
       bottom: -15px;
@@ -180,7 +180,7 @@ export default defineComponent({
         color: var(--black-45);
         cursor: pointer;
         .iconfont:hover{
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
         }
       }
     }

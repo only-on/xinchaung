@@ -370,7 +370,7 @@ export default defineComponent({
                       width: 18px;
                       height: 18px;
                       border-radius: 50%;
-                      background: var(--purpleblue-6);
+                      background: var(--primary-color);
                       display: inline-block;
                       line-height: 18px;
                       text-align: center;
@@ -431,7 +431,7 @@ export default defineComponent({
               > div {
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(131deg, var(--purpleblue-6) 3%, #6b43f1 90%);
+                background: linear-gradient(131deg, var(--primary-color) 3%, #6b43f1 90%);
                 padding: 44px 24px 24px 24px;
                 display: flex;
                 flex-direction: column;
@@ -475,7 +475,7 @@ export default defineComponent({
                       line-height: 18px;
                       padding: 5px;
                       &.more-point {
-                        border: 1px solid var(--purpleblue-6);
+                        border: 1px solid var(--primary-color);
                         padding: 0 7px;
                         display: inline-block;
                         line-height: 12px;
@@ -487,7 +487,7 @@ export default defineComponent({
                         height: min-content;
                         margin: auto 0;
                         background: #ffffff;
-                        color: var(--purpleblue-6);
+                        color: var(--primary-color);
                         position: relative;
 
                         .more-tag-box {
@@ -521,7 +521,7 @@ export default defineComponent({
                           .more-tag-box {
                             display: flex;
                           }
-                          background: var(--purpleblue-6);
+                          background: var(--primary-color);
                           color: #ffffff;
                           border: 1px solid transparent;
                         }

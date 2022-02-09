@@ -180,7 +180,7 @@ export default defineComponent({
     cursor: pointer;
     transition: border-color 0.3s;
     &:hover {
-      border: 1px dashed var(--purpleblue-6);
+      border: 1px dashed var(--primary-color);
     }
     > span {
       width: 100%;
@@ -196,7 +196,7 @@ export default defineComponent({
         cursor: pointer;
         .iconfont {
           font-size: 24px;
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
         }
         .hint-handle-type {
           font-size: 14px;
@@ -216,7 +216,7 @@ export default defineComponent({
           justify-content: space-between;
           &:hover{
               cursor: pointer;
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
           }
       }
   }

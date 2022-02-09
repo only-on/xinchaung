@@ -53,7 +53,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   margin: 40px 0;
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
   span{
     display: block;
     margin-top: 30px;

@@ -140,7 +140,7 @@ export default defineComponent({
     margin-bottom: 15px;
     .icon-fanhui{
       background-color: #ebeff8;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       font-size: 16px;
       text-align: center;
       line-height: 38px;

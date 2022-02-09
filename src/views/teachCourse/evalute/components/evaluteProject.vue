@@ -538,7 +538,7 @@ export default defineComponent({
     }
     .linkText {
       cursor: pointer;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     :deep(.ant-table-thead > tr > th) {
       padding: 12px;
@@ -547,11 +547,11 @@ export default defineComponent({
       font-size: 14px;
       margin-right: 0;
       .evaluteText {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
       }
       i {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         font-size: 14px;
         margin-left: 2px;
         cursor: pointer;

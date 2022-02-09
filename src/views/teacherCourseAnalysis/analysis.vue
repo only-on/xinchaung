@@ -436,7 +436,7 @@ interface IClassesData {
             color: var(--black-65);
             cursor: pointer;
             &.active {
-              border-bottom: 1px solid var(--purpleblue-6);
+              border-bottom: 1px solid var(--primary-color);
             }
           }
         }
@@ -449,7 +449,7 @@ interface IClassesData {
             color: var(--black-65);
             cursor: pointer;
             &.active {
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
             }
           }
         }
@@ -493,7 +493,7 @@ interface IClassesData {
           }
           .active {
             // padding: 6px 8px;
-            background: var(--purpleblue-6);
+            background: var(--primary-color);
             border-radius: 4px;
             color: var(--white-100);
           }
@@ -514,7 +514,7 @@ interface IClassesData {
           }
         }
         .open-close-btn {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           font-size: 14px;
           margin-top: auto;
           margin-left: 10px;
@@ -538,8 +538,8 @@ interface IClassesData {
           height: 40px;
           line-height: 40px;
           background: var(--echart-title-bgcolor);
-          border-bottom: 1px solid var(--purpleblue-3);
-          color: var(--purpleblue-6);
+          border-bottom: 1px solid var(--primary-3);
+          color: var(--primary-color);
           font-size: 16px;
           text-align: center;
         }
@@ -596,8 +596,8 @@ interface IClassesData {
     width: 20%;
     height: 32px;
     text-align: center;
-    border-top: 1px solid var(--purpleblue-3);
-    border-right: 1px solid var(--purpleblue-3);
+    border-top: 1px solid var(--primary-3);
+    border-right: 1px solid var(--primary-3);
     line-height: 32px;
     font-size: 16px;
     color: #050101;
@@ -605,7 +605,7 @@ interface IClassesData {
       border-right: none;
     }
     &:first-child {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
   }
 }
@@ -618,7 +618,7 @@ interface IClassesData {
     line-height: 51px;
     background: var(--echart-title-bgcolor);
     // border-bottom: 1px solid #dcc0f4;
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     font-size: 16px;
     text-align: center;
     margin-bottom: 0;
@@ -626,7 +626,7 @@ interface IClassesData {
   :deep(.ant-row) {
     &:first-child {
       .ant-col {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
     }
     &:nth-child(2) {
@@ -647,7 +647,7 @@ interface IClassesData {
     color: var(--black-65);
   }
   .ant-tabs-tab-active {
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
   }
 }
 :deep(.ant-tabs-bar) {

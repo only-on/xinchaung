@@ -119,7 +119,7 @@ export default defineComponent({
 
 <style lang="less" scoped>
 .stu-name {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
   font-size: 22px;
   min-height: 25px;
   font-weight: 600;
@@ -163,7 +163,7 @@ export default defineComponent({
     color: var(--white-100);
     padding: 0 13px;
     margin: 0px 2px;
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     color: var(--white-100);
     border: 1px solid transparent;
     border-radius: 3px;
@@ -204,7 +204,7 @@ export default defineComponent({
     color: var(--white-100);
     padding: 0 13px;
     margin: 0px 2px;
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     color: var(--white-100);
     border: 1px solid transparent;
     border-radius: 3px;
@@ -216,7 +216,7 @@ export default defineComponent({
   }
   .ant-btn.ant-btn-primary[disabled],
   .ant-btn.ant-btn-primary[disabled]:hover {
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     color: var(--white-100);
     border: 1px solid transparent;
     opacity: .65;
@@ -230,7 +230,7 @@ export default defineComponent({
   .custom-slick-arrow.slick-arrow  {
     width: 0;
     height: 0;
-    // border: 15px solid var(--purpleblue-6);
+    // border: 15px solid var(--primary-color);
     border: 15px solid #d6c4e5;;
     border-bottom-color: transparent;
     border-top-color: transparent;

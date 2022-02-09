@@ -485,15 +485,15 @@ interface FileInfo {
   :deep(.ant-table) .ant-table-tbody > tr > td {
     .font-size-14();
     .iconfont {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       margin-right: 10px;
       cursor: pointer;
     }
   }
   :deep(.ant-btn-primary[disabled], .ant-btn-primary[disabled]:hover, .ant-btn-primary[disabled]:focus, .ant-btn-primary[disabled]:active){
     color: var(--black-100);
-    background:var(--purpleblue-6);
-    border-color:var(--purpleblue-6);
+    background:var(--primary-color);
+    border-color:var(--primary-color);
   }
   :deep(.ant-input[disabled]){
     cursor: pointer;

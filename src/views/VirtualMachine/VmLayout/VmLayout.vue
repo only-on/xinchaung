@@ -325,7 +325,7 @@ export default defineComponent({
           color: #050101;
           transition: 0.5s;
           &.active {
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
           }
           .iconfont {
             font-size: 22px;
@@ -334,12 +334,12 @@ export default defineComponent({
             font-size: 12px;
           }
           &:hover {
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
             cursor: pointer;
           }
         }
         //   .vm-nav-item:hover{
-        //       color: var(--purpleblue-6);
+        //       color: var(--primary-color);
         //       cursor: pointer;
         //   }
       }

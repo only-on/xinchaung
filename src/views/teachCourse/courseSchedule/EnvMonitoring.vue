@@ -339,8 +339,8 @@ interface ITableList {
         .ant-btn {
           margin: 0 8px;
           &.search {
-            border: 1px solid var(--purpleblue-6);
-            color: var(--purpleblue-6);
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
           }
         }
       }
@@ -367,7 +367,7 @@ interface ITableList {
     margin-top: 28px;
     .ant-table {
       .iconfont.disable{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
       }
     }

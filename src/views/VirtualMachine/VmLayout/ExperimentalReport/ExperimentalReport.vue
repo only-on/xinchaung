@@ -199,11 +199,11 @@ export default defineComponent({
     // background: url();
     .emptypdf-icon {
       font-size: 86px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     .emptypdf-text {
       font-size: 14px;
-      color:var(--purpleblue-6);
+      color:var(--primary-color);
       margin-top: 18px;
     }
   }
@@ -383,7 +383,7 @@ export default defineComponent({
     text-align: right;
     margin-top: 30px;
     .btn{
-      background-color:var(--purpleblue-6);
+      background-color:var(--primary-color);
       color: white;
     }
   }
@@ -411,7 +411,7 @@ export default defineComponent({
     .clickDownLoad{
       display: flex;
       justify-content: center;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     .clickDownLoad:hover{
       color:#a86cdc;

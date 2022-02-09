@@ -202,7 +202,7 @@ export default defineComponent({
         justify-content: space-between;
       }
       .title .icon-fanhui{
-        background-color: var(--purpleblue-6);
+        background-color: var(--primary-color);
         color: var(--white-100);
         font-size: 16px;
         padding: 8px 10px;

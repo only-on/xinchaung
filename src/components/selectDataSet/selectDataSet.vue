@@ -314,7 +314,7 @@ export default defineComponent({
         }
       }
       .select-btn,.shanchu{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
     }
   }

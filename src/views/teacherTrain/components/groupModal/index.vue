@@ -547,14 +547,14 @@ export default defineComponent({
     width: 24px;
     height: 24px;
     border-radius: 2px;
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     color: white;
   }
   .moveHoverRight {
     width: 24px;
     height: 24px;
     border-radius: 2px;
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     color: white;
     margin-bottom: 20px;
   }
@@ -597,12 +597,12 @@ export default defineComponent({
     .edit {
       margin-left: 10px;
       margin-right: 15px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       display: none;
       margin-left: auto;
     }
     .delete {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       display: none;
     }
     &.tree-title {

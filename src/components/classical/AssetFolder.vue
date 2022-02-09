@@ -85,7 +85,7 @@ export default defineComponent({
         font-size:var(--font-size-14);
       }
       .icon-shanchu:hover{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       li {
         display: inline-block;

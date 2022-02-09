@@ -778,19 +778,19 @@ export default defineComponent({
           content: "";
           width: 8px;
           height: 8px;
-          //   background-color: var(--purpleblue-6);
+          //   background-color: var(--primary-color);
           border-radius: 50%;
           left: -10px;
           top: 5px;
         }
         &.on-line {
           &::before {
-            background-color: var(--purpleblue-6);
+            background-color: var(--primary-color);
           }
         }
         &.off-line {
           &::before {
-            background-color: rgba(var(--purpleblue-6), 0.4);
+            background-color: rgba(var(--primary-color), 0.4);
           }
         }
         &.teacher-image {

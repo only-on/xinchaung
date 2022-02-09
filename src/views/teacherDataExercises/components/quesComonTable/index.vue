@@ -688,14 +688,14 @@ export default defineComponent({
 .question-content-table{
     .icon-bianji1{
         margin-right:20px;
-        color:var(--purpleblue-6);
+        color:var(--primary-color);
     }
     .icon-shanchu-copy{
-        color:var(--purpleblue-6);
+        color:var(--primary-color);
     }
 }
 .ant-table-tbody > tr > td>.iconfont{
-    color:var(--purpleblue-6);
+    color:var(--primary-color);
 }
 .quesComonTable{
     // .ant-select:not(.ant-select-customize-input) .ant-select-selector{
@@ -785,7 +785,7 @@ export default defineComponent({
     padding: 6px 12px;
     border-radius: 6px;
     border: 1px solid #ccc;
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     margin-right: 12px;
     .iconfont {
       cursor: pointer;

@@ -107,8 +107,8 @@ export default defineComponent({
       transition: 0.5;
       border-radius: 4px;
       &:hover {
-        border: 1px solid var(--purpleblue-6);
-        box-shadow: 0 3px 6px 0 rgb(var(--purpleblue-6), 0.5);
+        border: 1px solid var(--primary-color);
+        box-shadow: 0 3px 6px 0 rgb(var(--primary-color), 0.5);
       }
       .checked-box {
         flex-shrink: 0;
@@ -118,7 +118,7 @@ export default defineComponent({
         padding-left: 15px;
         > span {
           margin-right: 5px;
-          background: var(--purpleblue-6);
+          background: var(--primary-color);
           color: var(--white-100);
           border-radius: 50%;
           padding: 2px;
@@ -136,7 +136,7 @@ export default defineComponent({
       .select-box {
         flex-shrink: 0;
         cursor: pointer;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         &.active {
           color: #d6d6d6;
           pointer-events: none;

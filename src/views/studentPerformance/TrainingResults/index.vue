@@ -298,19 +298,19 @@ export default defineComponent({
         color: black;
       }
       td:nth-child(2) {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       td:nth-child(2):hover {
         color: #a86cdc;
       }
       td:nth-child(3) {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       td:nth-child(3):hover {
         color: #a86cdc;
       }
       td:nth-child(4) {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       td:nth-child(4):hover {
         color: #a86cdc;

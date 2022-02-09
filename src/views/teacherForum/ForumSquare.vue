@@ -125,7 +125,7 @@ export default defineComponent({
         height: 40px;
         line-height: 40px;
         border-radius: 20px;
-        background-color: var(--orangeyellow-1);
+        background-color: var(--orangeyellow-6);
         color: var(--white-100);
         text-align: center;
         margin-top: 32px;

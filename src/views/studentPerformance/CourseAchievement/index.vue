@@ -230,7 +230,7 @@ export default defineComponent({
           margin-right: 8px;
         }
         .look-score {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           cursor: pointer;
         }
       }

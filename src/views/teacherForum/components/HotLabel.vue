@@ -39,7 +39,7 @@ export default defineComponent({
       margin-right: 16px;
       border: 1px solid var(--lightgray-6);
       border-radius: 12px;
-      color: var(--orangeyellow-1);
+      color: var(--orangeyellow-6);
       letter-spacing: 0.34px;
     }
   }

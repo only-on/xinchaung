@@ -223,10 +223,10 @@ export default defineComponent({
   .kernel:hover{
     box-shadow: 0px 3px 7px 0px var(--black-0-7);
     transform: translateY(-3px);
-    border: 1px solid var(--purpleblue-6);
+    border: 1px solid var(--primary-color);
   }
   .card-item-heard{
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     height: 32px;
     padding: 0 20px;
     color: #fff;
@@ -246,7 +246,7 @@ export default defineComponent({
       align-items: flex-start;
       padding-right: 36px;
       padding-left: 15px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       .score-text{
         font-size: 12px;
         padding-top: 12px;

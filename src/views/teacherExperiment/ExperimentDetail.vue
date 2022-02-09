@@ -533,7 +533,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 .data-item .wenjian,.cunchuzhi{
   cursor: auto;
@@ -637,9 +637,9 @@ export default defineComponent({
   .add-btn {
       width: 112px;
       height: 32px;
-      border: 1px solid var(--purpleblue-6);
+      border: 1px solid var(--primary-color);
       border-radius: 4px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       .iconfont {
         font-weight: 600;
         font-size: 18px;
@@ -702,7 +702,7 @@ export default defineComponent({
     .item{
       width:46%;
       line-height: 44px;
-      border: 1px solid var(--purpleblue-6);
+      border: 1px solid var(--primary-color);
       font-size: 14px;
       color: #050101;
       margin-bottom: 14px;
@@ -720,7 +720,7 @@ export default defineComponent({
 .ExperimentalSteps{
   padding: 40px 30px 40px 0;
   .item{
-    border: 1px solid var(--purpleblue-6);
+    border: 1px solid var(--primary-color);
     border-radius: 6px;
     line-height: 44px;
     display: flex;
@@ -732,7 +732,7 @@ export default defineComponent({
       font-size: 14px;
     }
     .detaile{
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       cursor: pointer;
     }
   }

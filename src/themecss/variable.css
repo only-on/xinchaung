@@ -195,7 +195,12 @@
 
     --echart-title-bgcolor: #f7edff;
 
-    --orangeyellow-1: #FF9544;
+    --orangeyellow-1: #FE8020;
+    --orangeyellow-2: #FF9544;
+    --orangeyellow-3: #FE8020;
+    --orangeyellow-4: #FF9544;
+    --orangeyellow-5: #FE8020;
+    --orangeyellow-6: #FF9544;
     --brightBtn:#1CB2B3;
 
 
@@ -214,9 +219,14 @@
 
     --white: var(--white-100);
     --black: var(--black-100);
-    --primary-color: var(--orangeyellow-1);
-    --primary-6: var(--purpleblue-6);
+    --primary-color: var(--orangeyellow-6);
+    --primary-6: var(--primary-color);
+    --primary-5: var(--purpleblue-5);
+    --primary-4: var(--purpleblue-4);
     --primary-3: var(--purpleblue-3);
+    --primary-2: var(--purpleblue-2);
+    --primary-1: var(--purpleblue-1);
+   
     --text-color: var(var(--black-85));
     --border-color-base: hsv(0, 0, 85%);
 }

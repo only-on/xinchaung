@@ -335,13 +335,13 @@ export default defineComponent({
         text-align: center;
         width: 40px;
         height: 40px;
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         border-radius: 50%;
         color: rgba(255, 255, 255, 0.7);
         cursor: pointer;
         transition: 0.5s;
         &:hover {
-          // background: rgba(var(--purpleblue-6), 0.8);
+          // background: rgba(var(--primary-color), 0.8);
           color: rgba(255, 255, 255, 1);
         }
       }

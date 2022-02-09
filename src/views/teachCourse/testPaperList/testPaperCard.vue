@@ -150,7 +150,7 @@ export default defineComponent({
       > a {
         color: rgba(5, 1, 1, 0.45);
         &:hover {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
         }
       }
 
@@ -161,7 +161,7 @@ export default defineComponent({
     .item-bom-btn {
       color: rgba(5, 1, 1, 0.45);
       &:hover {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
     }
   }
@@ -172,7 +172,7 @@ export default defineComponent({
     margin-bottom: 8px;
     cursor: pointer;
     &:hover {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
   }
 }

@@ -109,7 +109,7 @@ export default defineComponent({
 </script>
 <style lang="less" scoped>
 .testTitle {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
   padding: 15px;
   border-bottom: 1px solid var(--gray-5);
 }
@@ -120,7 +120,7 @@ export default defineComponent({
   }
   .score {
     margin-left: 30px;
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     .origin_score {
       margin-left: 10px;
     }

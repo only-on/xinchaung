@@ -162,7 +162,7 @@ export default defineComponent({
 }
 .iconfont{
   cursor: pointer;
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 .base-info{
   padding: 18px 0 12px 32px;

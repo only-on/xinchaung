@@ -234,7 +234,7 @@ interface ITaskList {
         flex-shrink: 0;
 
         span {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           cursor: pointer;
           font-size: 18px;
         }

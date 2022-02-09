@@ -476,7 +476,7 @@ export default defineComponent({
               font-size: 14px;
               color: var(--black-45);
               &:hover {
-                color: rgba(var(--purpleblue-6), 0.9);
+                color: rgba(var(--primary-color), 0.9);
               }
             }
           }
@@ -501,7 +501,7 @@ export default defineComponent({
             color: #8f8f8f;
             font-size: 14px;
             &:hover {
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
             }
           }
           > a {
@@ -567,7 +567,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
             }
           }
         }
@@ -600,7 +600,7 @@ export default defineComponent({
               border-right: 1px solid #e9e9e9;
             }
             &:hover {
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
             }
           }
         }

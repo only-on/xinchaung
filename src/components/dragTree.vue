@@ -422,7 +422,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-// var(--purpleblue-6): #8955B5;
+// var(--primary-color): #8955B5;
 .course-left-tree {
   li {
     padding: 0px !important;
@@ -434,7 +434,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: var(--purpleblue-1);
+      background-color: var(--primary-1);
     }
   }
   li .ant-tree-node-content-wrapper {
@@ -444,7 +444,7 @@ export default defineComponent({
     color: rgba(0, 0, 0, 0.65);
     font-size: 14px;
     &:hover {
-      background-color: var(--purpleblue-1);
+      background-color: var(--primary-1);
     }
   }
   li ul {
@@ -483,7 +483,7 @@ export default defineComponent({
         // height: 18px;
         // margin-right: 5px;
         // flex-shrink: 0;
-        // background: var(--purpleblue-6);
+        // background: var(--primary-color);
         // line-height: 17px;
         // text-align: center;
         // font-size: 10px;
@@ -493,7 +493,7 @@ export default defineComponent({
         height: 18px;
         margin-right: 5px;
         flex-shrink: 0;
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         line-height: 18px;
         text-align: center;
         font-size: 12px;
@@ -510,7 +510,7 @@ export default defineComponent({
         .iconfont {
           margin-left: 5px;
           font-size: 14px;
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           display: none;
           &.open-close-cion {
             width: 14px;
@@ -521,13 +521,13 @@ export default defineComponent({
         }
         .icon-bianji1,.icon-shanchu{
           &:hover{
-            color: rgba(var(--purpleblue-6),0.5);
+            color: rgba(var(--primary-color),0.5);
           }
         }
       }
     }
     &:hover {
-      background-color: var(--purpleblue-3);
+      background-color: var(--primary-3);
       .action-icon-box {
         .icon-bianji1,
         .icon-shanchu {
@@ -538,7 +538,7 @@ export default defineComponent({
   }
   
   .selectbac {
-    background-color: var(--purpleblue-3);
+    background-color: var(--primary-3);
     position: relative;
     &::before {
         position: absolute;
@@ -547,7 +547,7 @@ export default defineComponent({
         width: 4px;
         left:0px;
         top:0;
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
     }
   }
   .tree-first-title.selectbac{
@@ -565,7 +565,7 @@ export default defineComponent({
   }
   .tree-second-title {
     &:hover{
-      background-color: var(--purpleblue-2);
+      background-color: var(--primary-2);
       // width: 100%!important;
       // padding: 0!important;
     }
@@ -579,7 +579,7 @@ export default defineComponent({
         flex-shrink: 0;
         margin-right: 9px;
         .type-icon {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           font-size: 14px;
           &.icon-jinzhi {
             color: var(--orange-4);
@@ -588,7 +588,7 @@ export default defineComponent({
       }
       .type-name {
         font-size: 12px;
-        color: var(--purpleblue-3);
+        color: var(--primary-3);
         margin-left: 5px;
       }
     }
@@ -603,7 +603,7 @@ export default defineComponent({
       .iconfont {
         margin-left: 5px;
         font-size: 16px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         display: none;
         
       }

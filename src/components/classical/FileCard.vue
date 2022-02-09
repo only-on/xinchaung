@@ -183,7 +183,7 @@ export default defineComponent({
       color: var(--black-25);
 
       &:hover {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
     }
   }

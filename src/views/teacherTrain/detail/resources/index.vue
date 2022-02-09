@@ -289,7 +289,7 @@ export default defineComponent({
     }
   }
   .action {
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     .spanleft {
       margin-right: 5px;
     }

@@ -206,7 +206,7 @@ export default defineComponent({
             background: var(--white-100);
             border: 1px solid var(--lightgray-6);
             border-radius: 13px;
-            // color: var(--orangeyellow-1);
+            // color: var(--orangeyellow-6);
             padding: 0 18px;
             margin-right: 8px;
             .iconfont {
@@ -220,7 +220,7 @@ export default defineComponent({
             background: var(--white-100);
             border: 1px solid var(--lightgray-6);
             border-radius: 13px;
-            color: var(--orangeyellow-1);
+            color: var(--orangeyellow-6);
             padding: 0 18px;
             .iconfont {
               font-size: var(--font-size-sm);

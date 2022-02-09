@@ -479,7 +479,7 @@ export default defineComponent({
       .add-data-set-btn {
         width: 100px;
         font-size: var(--base-font-size);
-        border: 1px solid var(--purpleblue-6);
+        border: 1px solid var(--primary-color);
       }
       .data-set-item {
         margin-top: 15px;

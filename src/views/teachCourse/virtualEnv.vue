@@ -396,7 +396,7 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-// var(--gray-8): var(--purpleblue-6);
+// var(--gray-8): var(--primary-color);
 .virtual-env {
   width: 1330px;
   // margin-top: 50px;
@@ -413,7 +413,7 @@ export default defineComponent({
       width: 320px;
       max-height: 700px;
       // padding: 0 15px;
-      border-top: 3px solid var(--purpleblue-6);
+      border-top: 3px solid var(--primary-color);
       box-shadow: 0 0 5px rgb(0 0 0 / 10%);
       overflow-y: auto;
       overflow-x: hidden;
@@ -442,7 +442,7 @@ export default defineComponent({
           height: 600px;
           text-align: center;
           font-size: 30px;
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           padding-top: 250px;
         }
       }
@@ -467,7 +467,7 @@ export default defineComponent({
   }
   .ant-input-group-addon{
     .ant-btn{
-      background-color: var(--purpleblue-6);
+      background-color: var(--primary-color);
       // border-color: var(--gray-8);
       color: var(--white-100);
       height: 41px;
@@ -479,7 +479,7 @@ export default defineComponent({
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: var(--purpleblue-6);
+  background-color: var(--primary-color);
   // border-color: var(--gray-8);
   color: var(--white-100);
   padding: 0 20px;
@@ -499,16 +499,16 @@ export default defineComponent({
   // margin: 20px 0;
   .ant-pagination-item-active{
     font-weight: 500;
-    background: var(--purpleblue-6);
-    border-color: var(--purpleblue-6);
+    background: var(--primary-color);
+    border-color: var(--primary-color);
     a {
       color: var(--white-100);
     }
   }
   .ant-pagination-item:focus, 
   .ant-pagination-item:hover{
-    background: var(--purpleblue-6);
-    border-color: var(--purpleblue-6);
+    background: var(--primary-color);
+    border-color: var(--primary-color);
     transition: all 0.3s;
     a {
       color: var(--white-100);
@@ -519,8 +519,8 @@ export default defineComponent({
   .ant-pagination-prev .ant-pagination-item-link:hover,
   .ant-pagination-prev .ant-pagination-item-link:focus {
     color: var(--white-100);
-    background: var(--purpleblue-6); 
-    border-color: var(--purpleblue-6);
+    background: var(--primary-color); 
+    border-color: var(--primary-color);
     transition: all 0.3s;
   }
   .ant-pagination-disabled:hover,
@@ -531,7 +531,7 @@ export default defineComponent({
   }
   .ant-pagination-options-quick-jumper input:hover,
   .ant-pagination-options-quick-jumper input:focus {
-    border-color: var(--purpleblue-6);
+    border-color: var(--primary-color);
     box-shadow: 0 0 0 2px rgb(137 85 181 / 30%);
   }
 }

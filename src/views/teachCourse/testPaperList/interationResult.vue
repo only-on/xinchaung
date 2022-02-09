@@ -431,11 +431,11 @@ export default defineComponent({
       border-radius: 50%;
       line-height: 38px;
       text-align: center;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       cursor: pointer;
       transition: 0.5s;
       &:hover {
-        background: rgba(var(--purpleblue-6), 0.5);
+        background: rgba(var(--primary-color), 0.5);
         cursor: pointer;
       }
     }
@@ -515,12 +515,12 @@ export default defineComponent({
           border-top-right-radius: 0px;
         }
         .textarea:hover + .savebutton {
-          background-color: var(--purpleblue-3);
-          border: 1px solid var(--purpleblue-6);
+          background-color: var(--primary-3);
+          border: 1px solid var(--primary-color);
         }
         .textarea:focus + .savebutton {
-          background-color: var(--purpleblue-3);
-          border: 1px solid var(--purpleblue-6);
+          background-color: var(--primary-3);
+          border: 1px solid var(--primary-color);
         }
       }
     }

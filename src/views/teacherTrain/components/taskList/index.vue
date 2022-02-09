@@ -98,10 +98,10 @@ export default defineComponent({
       line-height: 30px;
       height: 30px;
       margin-right: 5px;
-      background: var(--purpleblue-6);
+      background: var(--primary-color);
     }
     .iconfont {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       size: 24px;
     }
     .more-icon {
@@ -113,7 +113,7 @@ export default defineComponent({
       text-align: right;
       div {
         border-radius: 50px;
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         width: 5px;
         height: 5px;
         display: inline-block;
@@ -121,7 +121,7 @@ export default defineComponent({
         cursor: pointer;
       }
       &:hover{
-        background-color:var(--purpleblue-1);
+        background-color:var(--primary-1);
       }
     }
     .delete {

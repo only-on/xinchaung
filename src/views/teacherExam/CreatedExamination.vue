@@ -800,7 +800,7 @@ export default defineComponent({
         color: #28dcb4;
         // background: #f5f5f5;
         // color:  #6ac5ec; 
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
         // border: 2px solid #fac439;
       }

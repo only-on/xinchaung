@@ -822,7 +822,7 @@ export default defineComponent({
   }
 }
 .bg-truth {
-  background: var(--purpleblue-6);
+  background: var(--primary-color);
 }
 
 .bg-pink {
@@ -891,7 +891,7 @@ export default defineComponent({
       color: #de2525;
     }
     .correct{
-      // color:var(--purpleblue-6);
+      // color:var(--primary-color);
       color: #2288fa;
     }
     .stand-answer{

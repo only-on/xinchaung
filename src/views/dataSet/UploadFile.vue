@@ -377,12 +377,12 @@ export default defineComponent({
 
                     .ant-progress-status-success {
                         .ant-progress-bg {
-                            background-color: rgba(var(--purpleblue-6), 1);
+                            background-color: rgba(var(--primary-color), 1);
                         }
                     }
 
                     .ant-progress-bg {
-                        background-color: rgba(var(--purpleblue-6), 0.4);
+                        background-color: rgba(var(--primary-color), 0.4);
                         height: 4px !important;
                     }
 

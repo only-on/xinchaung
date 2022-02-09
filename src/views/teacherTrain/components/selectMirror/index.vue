@@ -131,7 +131,7 @@ export default defineComponent({
         };
         .selectedBtn{
             color: white;
-            background: var(--purpleblue-6);
+            background: var(--primary-color);
         }
     }
     .searchInput{
@@ -145,7 +145,7 @@ export default defineComponent({
         margin-top: 20px;
         .listItem:hover{
             background: #fdfaff;
-            border: 1px solid var(--purpleblue-6);
+            border: 1px solid var(--primary-color);
             border-radius: 4px;
             box-shadow: 0 3px 6px 0 rgb(187 156 214 / 40%);
             cursor: pointer;
@@ -168,7 +168,7 @@ export default defineComponent({
             .selectDelete{
                 width:80px;
                 text-align:center;
-                color: var(--purpleblue-6);
+                color: var(--primary-color);
             }
         }
     }

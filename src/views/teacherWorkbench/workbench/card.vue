@@ -207,7 +207,7 @@ export default defineComponent({
         }
         .time-no {
           font-size: 54px;
-          background: linear-gradient(180deg,var(--royalpurple-7), var(--purpleblue-6));
+          background: linear-gradient(180deg,var(--royalpurple-7), var(--primary-color));
           -webkit-background-clip: text;
           color: transparent;
           font-weight: 500;
@@ -331,11 +331,11 @@ export default defineComponent({
             border-radius: 8px;
             height: 14px;
             line-height: 12px;
-            border: 1px solid var(--purpleblue-6);
+            border: 1px solid var(--primary-color);
             font-size: 24px;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
             &:hover {
-              background-color: var(--purpleblue-6);
+              background-color: var(--primary-color);
               color:var(--white-100);
               cursor: pointer;
             }
@@ -348,7 +348,7 @@ export default defineComponent({
     height: 50px;
     display: flex;
     flex-direction: row;
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     > div {

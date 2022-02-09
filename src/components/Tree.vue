@@ -160,7 +160,7 @@ interface ITreeList {
             }
 
             &.active {
-                background: rgba(var(--purpleblue-6), 0.5);
+                background: rgba(var(--primary-color), 0.5);
 
             }
 
@@ -195,7 +195,7 @@ interface ITreeList {
 
 
                     &:hover {
-                        background: var(--purpleblue-3);
+                        background: var(--primary-3);
                         color: #ffffff !important;
 
                         span {
@@ -204,7 +204,7 @@ interface ITreeList {
                     }
 
                     &.active {
-                        background: rgba(var(--purpleblue-6), 0.8);
+                        background: rgba(var(--primary-color), 0.8);
                         color: #ffffff !important;
 
                         &::before {
@@ -212,7 +212,7 @@ interface ITreeList {
                             content: "";
                             height: 41px;
                             width: 4px;
-                            background: var(--purpleblue-6);
+                            background: var(--primary-color);
                         }
 
                         div {

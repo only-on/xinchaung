@@ -278,7 +278,7 @@ export default defineComponent({
 </script>
 <style lang="less">
 .detail {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 .scoreStar {
   display: flex;
@@ -289,7 +289,7 @@ export default defineComponent({
 }
 .scoreDetailModal {
   .ant-modal-header {
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
   }
   .ant-modal-title {
     color: white;
@@ -305,7 +305,7 @@ export default defineComponent({
     border-left: 1px solid var(--gray-5);
   }
   .ant-tabs.ant-tabs-card .ant-tabs-card-bar .ant-tabs-tab-active {
-    border-top: 2px solid var(--purpleblue-6);
+    border-top: 2px solid var(--primary-color);
   }
 }
 </style>

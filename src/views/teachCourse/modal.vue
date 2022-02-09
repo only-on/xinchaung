@@ -97,7 +97,7 @@
 </script>
 
 <style lang="less" scoped>
-// var(--gray-8): var(--purpleblue-6);
+// var(--gray-8): var(--primary-color);
 .ant-modal-content {
   .ant-btn {
     height: 30px;
@@ -106,7 +106,7 @@
     line-height: 1.5;
     border-radius: 3px;
     color: var(--white-100);
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     border-color: var(--gray-8);
   }
   .ant-modal-close-x {
@@ -115,7 +115,7 @@
     line-height: 40px;
   }
   .ant-modal-header {
-    background-color: var(--purpleblue-6);
+    background-color: var(--primary-color);
     padding: 0;
     height: 40px;
     /* line-height: 40px; */
@@ -147,7 +147,7 @@
 
 .ant-btn.ant-btn-primary {
   height: 41px;
-  background-color: var(--purpleblue-6);
+  background-color: var(--primary-color);
   // border-color: var(--gray-8);
   color: var(--white-100);
   padding: 0 20px;

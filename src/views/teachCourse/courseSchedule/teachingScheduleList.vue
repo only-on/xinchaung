@@ -541,7 +541,7 @@ export default defineComponent({
         }
         .change_btn1{
           left: 65px;
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           background-color: #e2dfff;
           border-radius: 50%;
           margin: 0 9px;
@@ -552,10 +552,10 @@ export default defineComponent({
         }
         .change_btn1:hover{
           color: var(--white-100);
-          background-color: var(--purpleblue-6);
+          background-color: var(--primary-color);
         }
         .change_btn {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           background-color: #e2dfff;
           border-radius: 50%;
           margin: 0 9px;
@@ -566,7 +566,7 @@ export default defineComponent({
         }
         .change_btn:hover {
           color: var(--white-100);
-          background-color: var(--purpleblue-6);
+          background-color: var(--primary-color);
         }
       }
       .right {
@@ -575,13 +575,13 @@ export default defineComponent({
           text-shadow: none;
         }
         .monitor {
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           background-color: var(--white-100);
           // padding: 0 5px;
         }
         .monitor:hover {
           color: var(--white-100);
-          background-color: var(--purpleblue-6);
+          background-color: var(--primary-color);
         }
         .addDate {
           margin-left: 16px;
@@ -735,7 +735,7 @@ export default defineComponent({
                 .teacher-operation {
                   height: 28px;
                   line-height: 28px;
-                  background: var(--purpleblue-6);
+                  background: var(--primary-color);
                   border-radius: 4px;
                   color: var(--white-100);
                   font-size: 14px;
@@ -804,8 +804,8 @@ export default defineComponent({
                 position: absolute;
                 bottom: 12px;
                 .teacher-list-name {
-                  border: 1px solid var(--purpleblue-6);
-                  color: var(--purpleblue-6);
+                  border: 1px solid var(--primary-color);
+                  color: var(--primary-color);
                   border-radius: 50%;
                   font-size: 14px;
                   width: 24px;
@@ -813,7 +813,7 @@ export default defineComponent({
                   text-align: center;
                   margin: 0 3px;
                   &.end {
-                    background: var(--purpleblue-6);
+                    background: var(--primary-color);
                     color: var(--white-100);
                     line-height: 8px;
                     font-size: 22px;
@@ -835,7 +835,7 @@ export default defineComponent({
               display: flex;
               flex-direction: column;
               text-align: center;
-              color: var(--purpleblue-6);
+              color: var(--primary-color);
               // padding-bottom: 30px;
               padding-bottom: 0px;
               width: 100%;
@@ -863,7 +863,7 @@ export default defineComponent({
                   line-height: 28px;
                   width: 90%;
                   margin: 0 auto;
-                  background: var(--purpleblue-6);
+                  background: var(--primary-color);
                   border-radius: 4px;
                 }
               }
@@ -878,7 +878,7 @@ export default defineComponent({
                 background-color: #F5F5F5;
               }
               .course-info-title-active {
-                color: var(--purpleblue-6);
+                color: var(--primary-color);
                 background-color: #F8EFFF;
               }
               .course-info-reserved {
@@ -938,12 +938,12 @@ export default defineComponent({
             display: flex;
             cursor: pointer;
             font-size: 16px;
-            // background: var(--purpleblue-6);
+            // background: var(--primary-color);
             background-color: var(--white-100);
             display: none;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
             &>i:hover {
-              color: rgba(var(--purpleblue-6),.15);
+              color: rgba(var(--primary-color),.15);
             }
             .time-delete {
               padding: 10px 0;

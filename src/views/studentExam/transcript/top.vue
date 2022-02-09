@@ -87,11 +87,11 @@ export default defineComponent({
       }
       .back-btn{
         font-size: 14px;
-        border: 1px solid var(--purpleblue-6);
+        border: 1px solid var(--primary-color);
         margin-left: 30px;
         padding: 5px 15px;
         border-radius: 3px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
       }
     }
@@ -103,7 +103,7 @@ export default defineComponent({
           margin-right: 10px;
           >i{
             font-style: normal;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
             font-size: 20px;
             margin-left: 5px;
           }

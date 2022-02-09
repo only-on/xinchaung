@@ -238,7 +238,7 @@ export default defineComponent({
 }
 .caozuo{
   padding: 0 8px;
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
   cursor: pointer;
 }
 .header{

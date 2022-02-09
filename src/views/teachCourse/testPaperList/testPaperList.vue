@@ -444,13 +444,13 @@ export default defineComponent({
       background: var(--white-100);
       border-radius: 7px;
       box-shadow: 0 2px 4px 0 var(--black-0-7);
-      border: 1px dashed var(--purpleblue-6);
+      border: 1px dashed var(--primary-color);
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
       .create-btn {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
         .iconfont {
           font-size: 70px;
@@ -511,7 +511,7 @@ export default defineComponent({
       height: 30px;
       margin-top: 15px;
       &.selected {
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         pointer-events: all;
         cursor: pointer;
       }

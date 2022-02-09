@@ -157,15 +157,15 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
       .icon-fanhui {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
     }
   }
   .purple {
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
   }
   .purple:hover {
-    color: var(--purpleblue-3);
+    color: var(--primary-3);
   }
 }
 </style>

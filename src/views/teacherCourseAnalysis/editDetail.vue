@@ -364,7 +364,7 @@ export default defineComponent({
       display: inline-block;
       position: relative;
       margin-bottom: 14px;
-      border: 1px dashed var(--purpleblue-6);
+      border: 1px dashed var(--primary-color);
       border-radius: 5px;
     }
     .upload-img {
@@ -395,7 +395,7 @@ export default defineComponent({
       }
       .iconfont {
         display: none;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         cursor: pointer;
         position: absolute;
         bottom: 5px;
@@ -424,11 +424,11 @@ export default defineComponent({
       text-align: center;
       .iconfont {
         font-size: 24px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       p {
         font-size: 14px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         margin-top: 10px;
       }
     }

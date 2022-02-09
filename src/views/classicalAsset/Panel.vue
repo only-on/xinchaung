@@ -454,12 +454,12 @@ export default defineComponent({
   }
 
   &:hover {
-    border: 1px solid var(--purpleblue-6);
+    border: 1px solid var(--primary-color);
   }
 
   &.classical__input--focused {
-    border: 1px solid var(--purpleblue-6);
-    box-shadow: 0 0 0 2px var(--purpleblue-1);
+    border: 1px solid var(--primary-color);
+    box-shadow: 0 0 0 2px var(--primary-1);
   }
 }
 .searchInput {

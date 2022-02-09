@@ -236,13 +236,13 @@ export default defineComponent({
       .addCourseware{
         width: 112px;
         height:32px;
-        border: 1px solid var(--purpleblue-6);
+        border: 1px solid var(--primary-color);
         display: flex;
         justify-content: center;
         align-items: center;
         .icon-tianjia{
           font-size: 18px;
-          color:var(--purpleblue-6);
+          color:var(--primary-color);
         }
       }
     }

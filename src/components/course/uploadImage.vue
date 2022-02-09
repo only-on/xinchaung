@@ -167,7 +167,7 @@ export default defineComponent({
     align-items: center;
     width: 285px;
     height: 164px;
-    border: 1px dashed var(--purpleblue-6);
+    border: 1px dashed var(--primary-color);
     border-radius: 4px;
     position: relative;
     .icon-shanchu-copy{
@@ -279,7 +279,7 @@ export default defineComponent({
 
   }
    .uploadDiv{
-    border: 1px dashed var(--purpleblue-6);
+    border: 1px dashed var(--primary-color);
     >div{
       width: 100%;
       text-align: center;
@@ -302,7 +302,7 @@ export default defineComponent({
     }
     .upload-text{
       text-align: center;
-      color: var(--purpleblue-6);;
+      color: var(--primary-color);;
     }
   }
   

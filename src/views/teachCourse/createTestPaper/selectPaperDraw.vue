@@ -307,7 +307,7 @@ interface Ianswers {
     &.current-nav {
       font-size: 16px;
       color: var(--black-100);
-      background-color: var(--purpleblue-6);
+      background-color: var(--primary-color);
       border-radius: 6px 6px 0px 0px;
     }
   }
@@ -359,7 +359,7 @@ interface Ianswers {
       }
       .iconfont {
         font-size: 18px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         position: absolute;
         bottom: 3px;
         right: 0;

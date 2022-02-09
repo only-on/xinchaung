@@ -252,7 +252,7 @@ export default defineComponent({
     cursor: pointer;
     color: #777777;
     &:first-child:hover{
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     &:last-child:hover{
       color: red;

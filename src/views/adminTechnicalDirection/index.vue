@@ -140,9 +140,9 @@ export default defineComponent({
   padding: 5px 11px;
 }
 .purple {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 .purple:hover {
-  color: var(--purpleblue-3);
+  color: var(--primary-3);
 }
 </style>

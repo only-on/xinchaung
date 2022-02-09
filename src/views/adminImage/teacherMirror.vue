@@ -232,7 +232,7 @@ export default defineComponent({
   }
 }
 .iconfont {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 :deep(.ant-table-pagination.ant-pagination) {
   float: none;

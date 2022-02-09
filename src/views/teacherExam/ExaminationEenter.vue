@@ -287,7 +287,7 @@ export default defineComponent({
     .kernel:hover{
       box-shadow: 0px 2px 4px 0px var(--black-0-7);
       transform: translateY(-3px);
-      border: 1px solid var(--purpleblue-6);
+      border: 1px solid var(--primary-color);
     }
     .card-item-header{
       background: url('src/assets/images/teacherExam/eaxmBack.png') no-repeat;

@@ -95,10 +95,10 @@ textarea {
 // 鼠标移动、移开样式
 span,div,a{
     .theme-active{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         transition: 0.5s;
         &:hover{
-            color:var(--purpleblue-4);
+            color:var(--primary-4);
             // color:color(~`colorPalette('@{theme-color}', 4) `)
         }
     }
@@ -115,7 +115,7 @@ span,div,a{
     }
     // 滚动条两端的按钮
     &::-webkit-scrollbar-button{
-        background-color:var(--purpleblue-6);
+        background-color:var(--primary-color);
         width: 10px;
         height: 1px;
     }
@@ -133,11 +133,11 @@ span,div,a{
     &::-webkit-scrollbar-thumb{
         border-radius: 7px;
         -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: var(--purpleblue-6);
+        background-color: var(--primary-color);
     }
     // 定义右下角汇合处的样式
     &::-webkit-scrollbar-corner{
-        background:var(--purpleblue-6);
+        background:var(--primary-color);
     }
     // 两个滚动条交汇处用于拖动调整元素大小的小控件
     &::-webkit-resizer{
@@ -151,7 +151,7 @@ span,div,a{
     }
     &::-webkit-scrollbar-thumb{
         border-radius: 3px;
-        background: var(--purpleblue-1);
+        background: var(--primary-1);
     }
     &::-webkit-scrollbar{
         width: 8px;
@@ -159,10 +159,10 @@ span,div,a{
 }
 
 .a-link{
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     cursor: pointer;
     &:hover{
-        color:rgba(var(--purpleblue-6),0.5) 
+        color:rgba(var(--primary-color),0.5) 
     }
 }
 /*统一修一个antd默认样式*/
@@ -252,7 +252,7 @@ span,div,a{
     background-color:rgba(222,223,253,0.50)!important;
 }
 .ant-table-tbody > tr.ant-table-row-selected:hover{ 
-    background-color:var(--purpleblue-1)!important;
+    background-color:var(--primary-1)!important;
 }
 
 .ant-steps{
@@ -277,7 +277,7 @@ span,div,a{
     color: var(--black-65);
     cursor: pointer;
 	&.current {
-		background-color: var(--orangeyellow-1);
+		background-color: var(--orangeyellow-6);
     	color: var(--white-100);
 	}
 }

@@ -130,7 +130,7 @@ export default defineComponent({
 }
 .image-base {
     flex-shrink: 0;
-    // background: linear-gradient(45deg,var(--purpleblue-5), var(--blue-4) );
+    // background: linear-gradient(45deg,var(--primary-5), var(--blue-4) );
     background: linear-gradient(45deg, #6C70EA, #69C0FF);
     border-radius: 4px 4px 0 0;
     position: relative;

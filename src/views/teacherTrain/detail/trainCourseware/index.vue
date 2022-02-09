@@ -188,7 +188,7 @@ export default defineComponent({
       height: 200px;
     }
     .status-word {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       display: flex;
       justify-content: center;
     }

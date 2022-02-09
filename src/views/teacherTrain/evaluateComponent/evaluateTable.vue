@@ -358,7 +358,7 @@ interface IData {
 
 <style lang="less" scoped>
 .theme-color {
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
 }
 .evaluate-table {
   .score {

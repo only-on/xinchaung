@@ -550,7 +550,7 @@ export default defineComponent({
 }
 .caozuo{
   padding: 0 8px;
-  color: var(--purpleblue-6);
+  color: var(--primary-color);
   cursor: pointer;
 }
 .header{
@@ -658,7 +658,7 @@ export default defineComponent({
 }
 .ant-upload {
     button {
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         border-radius: 5px;
         color: #ffffff;
         .icon-upload{

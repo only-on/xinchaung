@@ -242,7 +242,7 @@ export default defineComponent({
       background-position: center;
     }
     .web-title {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       font-size: 22px;
     }
   }
@@ -300,7 +300,7 @@ export default defineComponent({
   }
   .operation:hover {
     cursor: pointer;
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
   }
 }
 .assist {

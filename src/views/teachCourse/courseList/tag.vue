@@ -261,7 +261,7 @@ export default defineComponent({
       white-space: nowrap;
       &.active {
         color: var(--white-100);
-        background: var(--purpleblue-6);
+        background: var(--primary-color);
         border-radius: var(--border-radius-default);
       }
     }

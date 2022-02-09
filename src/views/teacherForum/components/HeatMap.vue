@@ -25,7 +25,7 @@ export default defineComponent({
   margin-top: 40px;
   .map-content {
     height: 166px;
-    background-color: var(--purpleblue-3);
+    background-color: var(--primary-3);
     margin-top: 16px;
   }
 }

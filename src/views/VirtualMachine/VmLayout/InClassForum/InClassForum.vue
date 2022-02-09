@@ -454,7 +454,7 @@ export default defineComponent({
         }
       }
       > .forum-content-header-right {
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         font-size: var(--base-font-size);
         margin-left: 15px;
         flex-shrink: 0;
@@ -527,7 +527,7 @@ export default defineComponent({
     right: 0;
     top: -58px;
     font-size: 24px;
-    color: var(--purpleblue-6);
+    color: var(--primary-color);
     cursor: pointer;
   }
   .put-question-head {

@@ -248,12 +248,12 @@ export default defineComponent({
       color: #777;
       margin-bottom: -1px;
       i{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         margin-right: 5px;
       }
     }
     .activePaper{
-      border-bottom: 3px solid var(--purpleblue-6);
+      border-bottom: 3px solid var(--primary-color);
     }
   }
   .questionsList{

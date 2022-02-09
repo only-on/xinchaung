@@ -606,7 +606,7 @@ export default defineComponent({
         &.open-close-btn {
           margin-left: auto;
           font-size: 14px;
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           cursor: pointer;
         }
       }

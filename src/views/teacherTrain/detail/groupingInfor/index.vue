@@ -363,10 +363,10 @@ export default defineComponent({
     .action {
       span {
         margin: 0 5px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       span:hover {
-        color: var(--purpleblue-3);
+        color: var(--primary-3);
       }
     }
   }

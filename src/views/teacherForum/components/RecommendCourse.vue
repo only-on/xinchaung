@@ -48,7 +48,7 @@ export default defineComponent({
       .left {
         width: 70px;
         height: 50px;
-        background-color: var(--purpleblue-3);
+        background-color: var(--primary-3);
         margin-right: 6px;
       }
       .right {

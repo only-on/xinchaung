@@ -533,8 +533,8 @@ interface IForm {
     }
     .retain {
       padding: 0px 30px;
-      background:rgba(var(--purpleblue-1), 0.2);
-      border: 1px solid rgba(var(--purpleblue-6), 0.5);
+      background:rgba(var(--primary-1), 0.2);
+      border: 1px solid rgba(var(--primary-color), 0.5);
       .ant-row {
         margin: 0;
 
@@ -548,13 +548,13 @@ interface IForm {
           padding-right: 20px;
           span {
             font-size: 18px;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
           }
         }
         .choose-text {
           span {
             font-size: 18px;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
           }
         }
       }

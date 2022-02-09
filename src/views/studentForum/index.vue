@@ -296,16 +296,16 @@ export default defineComponent({
 <style scoped lang="less">
 .modal-post{
   :deep(.ant-modal-header){
-      border:  1px solid var(--purpleblue-6);
-      background: var(--purpleblue-6);
+      border:  1px solid var(--primary-color);
+      background: var(--primary-color);
     }
   .ant-modal-header{
-    background: var(--purpleblue-6);
+    background: var(--primary-color);
   }
 }
     :deep(.ant-modal-header){
-      border:  1px solid var(--purpleblue-6);
-      background: var(--purpleblue-6);
+      border:  1px solid var(--primary-color);
+      background: var(--primary-color);
     }
     :deep(.ant-table-pagination.ant-pagination){
       width: 100%;

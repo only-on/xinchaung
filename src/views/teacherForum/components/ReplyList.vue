@@ -102,7 +102,7 @@ export default defineComponent({
 	}
 	.reply-btn {
 		line-height: 19px;
-		color: var(--orangeyellow-1);
+		color: var(--orangeyellow-6);
 	}
 	.reply-box {
 		display: flex;
@@ -117,7 +117,7 @@ export default defineComponent({
 			line-height: 34px;
 			padding: 0 36px;
 			border-radius: 17px;
-			background: var(--orangeyellow-1);
+			background: var(--orangeyellow-6);
 			color: var(--white-100);
 		}
 	}

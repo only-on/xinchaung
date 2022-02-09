@@ -112,7 +112,7 @@ export default defineComponent({
  }
 .list_content{
   .list_item{
-    border-left: 1px solid var(--purpleblue-6);
+    border-left: 1px solid var(--primary-color);
     position: relative;
     padding: 0px 100px 16px 24px;
     margin-left: 5px;
@@ -121,7 +121,7 @@ export default defineComponent({
       content: '';
       width: 10px;
       height: 10px;
-      border: 1px solid var(--purpleblue-6);
+      border: 1px solid var(--primary-color);
       border-radius: 50%;
       top: 0;
       left: -5px;

@@ -125,7 +125,7 @@ export default defineComponent({
         display: block;
         margin-bottom: 16px;
         &.active {
-          color: var(--orangeyellow-1);
+          color: var(--orangeyellow-6);
         }
       }
     }

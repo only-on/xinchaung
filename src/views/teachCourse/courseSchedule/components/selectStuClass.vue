@@ -82,7 +82,7 @@ export default defineComponent({
       transition: all .1s;
     }
     .ant-tabs-tab-active {
-      background: var(--purpleblue-6);
+      background: var(--primary-color);
       border-radius: 6px 6px 0 0;
       color: var(--white-100);
     }

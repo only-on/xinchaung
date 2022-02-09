@@ -239,7 +239,7 @@ export default defineComponent({
   margin: 0 2% 20px 0px;
   &.mySelfCreate{
     height: 277px;
-    border: 1px dashed var(--purpleblue-6);
+    border: 1px dashed var(--primary-color);
     cursor: pointer;
     background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
     position: relative;
@@ -250,7 +250,7 @@ export default defineComponent({
       left: 0;
       text-align: center;
       font-size: 20px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
   }
   &:not(.mySelfCreate):hover{
@@ -327,7 +327,7 @@ export default defineComponent({
       color: var(--black-25);
       padding: 0 14px;
       .iconfont:hover{
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
       }
       i{
         cursor: pointer;
@@ -380,7 +380,7 @@ export default defineComponent({
         cursor: pointer;
         border-right: 1px solid var(--black-15);
         &:hover{
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
         }
       }
       :nth-last-child(1){

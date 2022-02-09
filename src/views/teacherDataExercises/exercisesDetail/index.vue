@@ -328,7 +328,7 @@ export default defineComponent({
       line-height: 24px;
     }
     .edit {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     .iconfont {
       font-size: 16px;

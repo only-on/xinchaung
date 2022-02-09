@@ -72,7 +72,7 @@ export default defineComponent({
     word-break: break-all;
     &>span:last-child{
       margin-left: 20px;
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
   }
   .answer{

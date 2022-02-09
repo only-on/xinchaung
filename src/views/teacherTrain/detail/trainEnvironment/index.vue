@@ -266,7 +266,7 @@ export default defineComponent({
   //         border-radius: 4px;
   //         overflow: hidden;
   //         .env-wrap-header {
-  //         background: var(--purpleblue-6);
+  //         background: var(--primary-color);
   //         text-align: left;
   //         color: #fff;
   //         padding: 3px 10px;
@@ -299,8 +299,8 @@ export default defineComponent({
   //         justify-content: center;
   //         align-items: center;
   //         overflow: hidden;
-  //         color: var(--purpleblue-6);
-  //         border: 1px dashed var(--purpleblue-6);
+  //         color: var(--primary-color);
+  //         border: 1px dashed var(--primary-color);
   //     }
   // }
   .selectMirror {

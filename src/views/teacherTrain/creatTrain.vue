@@ -100,7 +100,7 @@ export default defineComponent({
     }
     :deep(.ant-steps-item-finish),:deep(.ant-steps-item-active){
       .ant-steps-item-title{
-        color:var(--purpleblue-6);
+        color:var(--primary-color);
       }
     }
     :deep(.ant-steps-item-active){

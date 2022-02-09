@@ -221,7 +221,7 @@ export default defineComponent({
       display: flex;
       justify-content: center;
       align-items: center;
-      color: var(--purpleblue-6)
+      color: var(--primary-color)
     }
   }
   :deep(table){

@@ -182,7 +182,7 @@ export default defineComponent({
         justify-content: center;
         align-items: center;
         font-size: 16px;
-        color: var(--purpleblue-6);
+        color: var(--primary-color);
         span{
           margin-right: 10px;
         }
@@ -231,7 +231,7 @@ export default defineComponent({
         vertical-align: middle;
         cursor: pointer;
         &:hover{
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
         }
         &:not(:last-child){
           border-right: 1px solid #ececec;

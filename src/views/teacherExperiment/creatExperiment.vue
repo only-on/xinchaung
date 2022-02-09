@@ -90,7 +90,7 @@ export default defineComponent({
       width: 300px;
       height: 170px;
       // background: linear-gradient(180deg, #f9f0ff, #eaf2ff);
-      background:linear-gradient(90deg,var(--geekblue-1), var(--purpleblue-1));
+      background:linear-gradient(90deg,var(--geekblue-1), var(--primary-1));
       border-radius: 10px;
       box-shadow: 0px 4px 6px 0px var(--black-0-7);
       display: flex;
@@ -110,7 +110,7 @@ export default defineComponent({
     }
 
     > div:hover {
-      border: 1px solid var(--purpleblue-3);
+      border: 1px solid var(--primary-3);
     }
 
     .vnc-box {

@@ -450,7 +450,7 @@ export default defineComponent({
         //  }
          .num{
            font-size: 18px;
-            color: var(--purpleblue-6);
+            color: var(--primary-color);
             padding: 0 6px;
          }
          .num1{
@@ -588,7 +588,7 @@ export default defineComponent({
     }
     .active{
       color: var(--white-100);
-      background-color: var(--purpleblue-6);
+      background-color: var(--primary-color);
     }
   }
   .search{
@@ -620,7 +620,7 @@ export default defineComponent({
           color: red;
         }
         .iconfont{
-          color: var(--purpleblue-6);
+          color: var(--primary-color);
           font-size: 20px;
           cursor: pointer;
           padding: 0 12px;

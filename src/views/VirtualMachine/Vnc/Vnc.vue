@@ -673,10 +673,10 @@ export default defineComponent({
 
   .action-item {
     &:hover {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     &.active {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
     &.disabled {
       color: rgb(196, 196, 196);

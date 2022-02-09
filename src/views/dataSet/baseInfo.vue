@@ -311,7 +311,7 @@ export default defineComponent({
                 }
 
                 &.active {
-                    background: var(--purpleblue-6);
+                    background: var(--primary-color);
                     color: #ffffff;
                 }
             }
@@ -331,8 +331,8 @@ export default defineComponent({
                     text-align: center;
                     width: 100%;
                     line-height: 30px;
-                    color: var(--purpleblue-6);
-                    border: 1px solid var(--purpleblue-6);
+                    color: var(--primary-color);
+                    border: 1px solid var(--primary-color);
                     border-radius: 5px;
                     background: #ffffff;
 
@@ -366,13 +366,13 @@ export default defineComponent({
                     border-radius: 4px;
 
                     &.active {
-                        background: var(--purpleblue-6);
+                        background: var(--primary-color);
                         color: #ffffff;
                     }
                 }
 
                 .custom-label {
-                    color: var(--purpleblue-6);
+                    color: var(--primary-color);
 
                     >span {
                         vertical-align: revert;
@@ -434,7 +434,7 @@ export default defineComponent({
 
             .ant-upload {
                 button {
-                    background: var(--purpleblue-6);
+                    background: var(--primary-color);
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -511,12 +511,12 @@ export default defineComponent({
                                 font-style: normal;
                                 height: 20px;
                                 border-radius: 50%;
-                                border: 1px solid var(--purpleblue-6);
+                                border: 1px solid var(--primary-color);
 
                                 text-align: center;
                                 line-height: 17px;
                                 font-size: 12px;
-                                color: var(--purpleblue-6);
+                                color: var(--primary-color);
                                 cursor: pointer;
                             }
 
@@ -574,12 +574,12 @@ export default defineComponent({
                     .ant-progress-status-success {
                         .ant-progress-bg {
                             // background-color: rgba($success-color, 1);
-                            background-color: rgba(var(--purpleblue-6), 1);
+                            background-color: rgba(var(--primary-color), 1);
                         }
                     }
 
                     .ant-progress-bg {
-                        background-color: rgba(var(--purpleblue-6), 0.4);
+                        background-color: rgba(var(--primary-color), 0.4);
                         height: 4px !important;
                     }
                 }
@@ -602,7 +602,7 @@ export default defineComponent({
         .md-upload-box {
             .ant-upload {
                 button {
-                    background: var(--purpleblue-6);
+                    background: var(--primary-color);
                     border-radius: 5px;
                     color: #ffffff;
                     .icon-upload{
@@ -637,12 +637,12 @@ export default defineComponent({
                             font-style: normal;
                             height: 20px;
                             border-radius: 50%;
-                            border: 1px solid var(--purpleblue-6);
+                            border: 1px solid var(--primary-color);
 
                             text-align: center;
                             line-height: 17px;
                             font-size: 12px;
-                            color: var(--purpleblue-6);
+                            color: var(--primary-color);
                             cursor: pointer;
                         }
                     }
