@@ -191,7 +191,7 @@
     --purpleblue-5:#6C70EA;
     --purpleblue-6:#585ce5;
     --royalpurple-7:#3E1DC4;
-    
+
     /* 下2需要替换成现主题  --blue-6-2  rgba(var(--blue-6),0.2) */
 
     --blue-6-2:#1890ff33;  
@@ -226,7 +226,7 @@
     --primary-color: var(--orangeyellow-6);
     --primary-7::var(--purpleblue-7);
     --primary-6: var(--primary-color);
-    --primary-5: var(--purpleblue-5);
+    --primary-5: var(--orangeyellow-5);
     --primary-4: var(--purpleblue-4);
     --primary-3: var(--purpleblue-3);
     --primary-2: var(--purpleblue-2);
