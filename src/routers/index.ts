@@ -4,15 +4,17 @@ import RouterModule from './modules' // 引入业务逻辑模块
 import RouterCommon from './common' // 引入通用模块
 import RoutesTeacherSide from './teacherSide'
 import RoutesAdminSide from './adminSide'
+import RoutesStudentSide from './studentSide'
 import storage   from "src/utils/extStorage";
 const PathList={1:'',2:'/admin/home',3:'/teacher/home',4:'/studentStatistic',5:''}
 // 登录状态检查
 import { IRouteTuple } from "src/types";
-const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide], ...[RoutesAdminSide]]
+const routes: Array<RouteRecordRaw> = [...RouterModule, ...RouterCommon, ...[RoutesTeacherSide], ...[RoutesAdminSide],...[RoutesStudentSide]]
 const router = createRouter({
   history: createWebHashHistory(),
   routes
 });
+console.log(routes)
 router.beforeEach((to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext) => {
   const isLogged = store.getters.isLogged;
   // 检查是否为公开页面（如登陆页面）
