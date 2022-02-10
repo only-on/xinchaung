@@ -21,7 +21,7 @@ export default {
         {
             path: "",
             // name: "studentPerformance",
-            component: () => import("src/views/studentPerformance/index.vue"),
+            component: () => import("src/views/studentModule/studentPerformance/index.vue"),
             meta: {
                 title: "",
                 authCode: "studentPerformance"
@@ -30,7 +30,7 @@ export default {
         {
             path: "courseScore",
             name: "courseScore",
-            component: () => import("src/views/studentPerformance/CourseAchievement/courseScore/index.vue"),
+            component: () => import("src/views/studentModule/studentPerformance/CourseAchievement/courseScore/index.vue"),
             meta: {
                 title: "课程得分",
                 authCode: ""
@@ -39,7 +39,7 @@ export default {
         {
             path: "courseResources",
             name: "courseResources",
-            component: () => import("src/views/studentPerformance/CourseAchievement/courseResources/index.vue"),
+            component: () => import("src/views/studentModule/studentPerformance/CourseAchievement/courseResources/index.vue"),
             meta: {
                 title: "课程资源",
                 authCode: ""

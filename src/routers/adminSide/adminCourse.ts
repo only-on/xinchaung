@@ -21,7 +21,7 @@ export default {
         {
             path: "",
             name: "admincourseList",
-            component: () => import("src/views/adminCourse/courseList/index.vue"),
+            component: () => import("src/views/adminModule/adminCourse/courseList/index.vue"),
             meta: {
                 title: " ",
                 authCode: 'courseList'
@@ -30,7 +30,7 @@ export default {
         {
             path: "courseResult",
             name: "admincourseResult",
-            component: () => import("src/views/adminCourse/courseList/courseResult.vue"),
+            component: () => import("src/views/adminModule/adminCourse/courseList/courseResult.vue"),
             meta: {
                 title: "成果",
                 authCode: 'courseResult'
@@ -39,7 +39,7 @@ export default {
         {
             path: "courseDetail",
             name: "admincourseDetail",
-            component: () => import("src/views/adminCourse/courseDetail/courseDetail.vue"),
+            component: () => import("src/views/adminModule/adminCourse/courseDetail/courseDetail.vue"),
             meta: {
                 title: "课程详情",
                 authCode: 'courseResult'
@@ -48,7 +48,7 @@ export default {
         {
             path: "evalute",
             name: "admincourseevalute",
-            component: () => import("src/views/adminCourse/evalute/evalute.vue"),
+            component: () => import("src/views/adminModule/adminCourse/evalute/evalute.vue"),
             meta: {
                 title: "归档课程分析",
                 authCode: 'courseResult'
@@ -57,7 +57,7 @@ export default {
         {
             path: "careerDirection",
             name: "adminCareerDirection",
-            component: () => import("src/views/adminCourse/careerDirection/careerDirection.vue"),
+            component: () => import("src/views/adminModule/adminCourse/careerDirection/careerDirection.vue"),
             meta: {
                 title: "职业方向",
                 authCode: 'careerDirection'
@@ -66,7 +66,7 @@ export default {
         {
             path: "courseDirection",
             name: "adminCourseDirection",
-            component: () => import("src/views/adminCourse/courseDirection/courseDirection.vue"),
+            component: () => import("src/views/adminModule/adminCourse/courseDirection/courseDirection.vue"),
             meta: {
                 title: "课程方向",
                 authCode: 'courseDirection'
@@ -74,7 +74,7 @@ export default {
         },
         {
             path: "schedule",
-            component: () => import("src/views/adminCourse/schedule/schedule.vue"),
+            component: () => import("src/views/adminModule/adminCourse/schedule/schedule.vue"),
             meta: {
                 title: "排课管理",
                 authCode: 'teachingSchedule'

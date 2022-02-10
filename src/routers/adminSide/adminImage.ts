@@ -11,7 +11,7 @@ export default {
         {
             path: "",
             name: "",
-            component: () => import("src/views/adminImage/index.vue"),
+            component: () => import("src/views/adminModule/adminImage/index.vue"),
             meta: {
                 title: "",
                 authCode: ''

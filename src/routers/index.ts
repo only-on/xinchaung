@@ -1,6 +1,6 @@
 import { createRouter, createWebHashHistory, NavigationFailure, NavigationGuardNext, RouteLocationNormalized, RouteRecordNormalized, RouteRecordRaw } from "vue-router";
 import store from "../store/index";
-import RouterModule from './modules' // 引入业务逻辑模块
+import RouterModule from './shareModule' // 引入公用逻辑模块
 import RouterCommon from './common' // 引入通用模块
 import RoutesTeacherSide from './teacherSide'
 import RoutesAdminSide from './adminSide'

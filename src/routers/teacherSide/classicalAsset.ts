@@ -35,7 +35,7 @@ export default {
                 {
                     path: '',
                     name: 'classicalAsset1',
-                    component: () => import("src/views/classicalAsset/Panel.vue"),
+                    component: () => import("src/views/teacherModule/classicalAsset/Panel.vue"),
                     meta: {
                         authCode: 'classicalAsset1',
                     }
@@ -43,7 +43,7 @@ export default {
                 {
                     path: "content/:id",
                     name: "classicalAssetContent",
-                    component: () => import("src/views/classicalAsset/Content.vue"),
+                    component: () => import("src/views/teacherModule/classicalAsset/Content.vue"),
                     meta: {
                         title: (params?: RouteParams, query?: LocationQuery) => {
                             const dataDetailMap = {

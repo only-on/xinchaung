@@ -25,7 +25,7 @@ export default {
     children: [
         {
             path: "",
-            component: () => import("src/views/teacherExperiment/experimentalList.vue"),
+            component: () => import("src/views/teacherModule/teacherExperiment/experimentalList.vue"),
             meta: {
                 title: "实验列表",
                 authCode: 'experiment'
@@ -34,7 +34,7 @@ export default {
         {
             path: "creatExperiment",
             name: "creatExperiment",
-            component: () => import("src/views/teacherExperiment/creatExperiment.vue"),
+            component: () => import("src/views/teacherModule/teacherExperiment/creatExperiment.vue"),
             meta: {
                 title: "实验类型",
                 authCode: 'creatExperiment'
@@ -43,7 +43,7 @@ export default {
         {
             path: "creatTypeExperiment",
             name: "creatTypeExperiment",
-            component: () => import("src/views/teacherExperiment/create/creatTypeExperiment.vue"),
+            component: () => import("src/views/teacherModule/teacherExperiment/create/creatTypeExperiment.vue"),
             meta: {
                 // title: "创建实验",
                 title: (params?: RouteParams, query?: RouteParams) => {
@@ -60,7 +60,7 @@ export default {
         {
             path: "ExperimentDetail",
             name: "ExperimentDetail",
-            component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
+            component: () => import("src/views/teacherModule/teacherExperiment/ExperimentDetail.vue"),
             meta: {
                 title: "实验详情",
                 authCode: 'ExperimentDetail'
@@ -68,7 +68,7 @@ export default {
         },
         {
             path: "ExperimentalStepsDetail",
-            component: () => import("src/views/teacherExperiment/ExperimentalStepsDetail.vue"),
+            component: () => import("src/views/teacherModule/teacherExperiment/ExperimentalStepsDetail.vue"),
             meta:{
                 title: "实验步骤详情",
                 authCode: ''

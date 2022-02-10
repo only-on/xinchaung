@@ -30,7 +30,7 @@ export default {
       children:[
         {
           path:'',
-          component: () => import("src/views/adminExperimentManage/index.vue"),
+          component: () => import("src/views/adminModule/adminExperimentManage/index.vue"),
           meta: {
             icon: "",
             authCode: "adminExperimentManage",
@@ -39,7 +39,7 @@ export default {
         {
           path:'ExperimentList',
           name:'ExperimentList',
-          component: () => import("src/views/adminExperimentManage/ExperimentList.vue"),
+          component: () => import("src/views/adminModule/adminExperimentManage/ExperimentList.vue"),
           meta: {
             title:'实验列表',
             icon: "",
@@ -49,7 +49,7 @@ export default {
         {
           path:'ChapterList',
           name:'ChapterList',
-          component: () => import("src/views/adminExperimentManage/ChapterList.vue"),
+          component: () => import("src/views/adminModule/adminExperimentManage/ChapterList.vue"),
           meta: {
             title:'章节列表',
             icon: "",
@@ -59,7 +59,7 @@ export default {
         {
           path: "ExperimentDetail",
           name: "adminExperimentDetail",
-          component: () => import("src/views/teacherExperiment/ExperimentDetail.vue"),
+          component: () => import("src/views/teacherModule/teacherExperiment/ExperimentDetail.vue"),
           meta: {
               title: "实验详情",
               authCode: 'ExperimentDetail'

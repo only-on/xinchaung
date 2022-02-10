@@ -19,7 +19,7 @@ export default {
   children: [
     {
       path: "",
-      component: () => import("src/views/studentForum/index.vue"),
+      component: () => import("src/views/studentModule/studentForum/index.vue"),
       meta: {
         title: "",
         icon: "",
@@ -29,7 +29,7 @@ export default {
     {
       path:'CreatePosts',
       name: "CreatePosts",
-      component: () => import("src/views/studentForum/CreatePosts.vue"),
+      component: () => import("src/views/studentModule/studentForum/CreatePosts.vue"),
       meta: {
         title: "发帖",
       },
@@ -37,7 +37,7 @@ export default {
     {
       path:'PostsDetailed',
       name: "PostsDetailed",
-      component: () => import("src/views/studentForum/PostsDetailed.vue"),
+      component: () => import("src/views/studentModule/studentForum/PostsDetailed.vue"),
       meta: {
         title: "帖子详情",
       },

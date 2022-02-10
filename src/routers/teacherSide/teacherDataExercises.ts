@@ -11,7 +11,7 @@ export default {
     children: [
         {
             path: "",
-            component: () => import("src/views/teacherDataExercises/index.vue"),
+            component: () => import("src/views/teacherModule/teacherDataExercises/index.vue"),
             meta: {
                 title: "",
                 authCode: 'exerciseList'
@@ -19,7 +19,7 @@ export default {
         }, {
             path: '/exercisesDetail',
             name: 'exercisesDetail',
-            component: () => import("src/views/teacherDataExercises/exercisesDetail/index.vue"),
+            component: () => import("src/views/teacherModule/teacherDataExercises/exercisesDetail/index.vue"),
             meta: {
                 title: "习题目录详情",
                 authCode: 'exerciseList'

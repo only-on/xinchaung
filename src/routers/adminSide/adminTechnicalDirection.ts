@@ -11,7 +11,7 @@ export default {
         {
             path: "",
             name: "",
-            component: () => import("src/views/adminTechnicalDirection/index.vue"),
+            component: () => import("src/views/adminModule/adminTechnicalDirection/index.vue"),
             meta: {
                 title: "",
                 authCode: ''
@@ -20,7 +20,7 @@ export default {
         {
             path: "detailsOfExperDir",
             name: "detailsOfExperDir",
-            component: () => import("src/views/adminTechnicalDirection/detailsOfExperDir.vue"),
+            component: () => import("src/views/adminModule/adminTechnicalDirection/detailsOfExperDir.vue"),
             meta: {
                 title: "项目管理",
                 authCode: 'detailsOfExperDir'

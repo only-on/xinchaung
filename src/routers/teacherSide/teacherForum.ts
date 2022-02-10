@@ -20,7 +20,7 @@ export default {
   children: [
     {
       path: "",
-      component: () => import("src/views/teacherForum/index.vue"),
+      component: () => import("src/views/teacherModule/teacherForum/index.vue"),
       meta: {
         icon: "",
         authCode: "forum",
@@ -29,7 +29,7 @@ export default {
     {
       path:'CreatePosts',
       name: "teacherCreatePosts",
-      component: () => import("src/views/teacherForum/CreatePosts.vue"),
+      component: () => import("src/views/teacherModule/teacherForum/CreatePosts.vue"),
       meta: {
         title: "发帖",
       },
@@ -37,7 +37,7 @@ export default {
     {
       path:'PostsDetailed',
       name: "teacherPostsDetailed",
-      component: () => import("src/views/teacherForum/PostsDetailed.vue"),
+      component: () => import("src/views/teacherModule/teacherForum/PostsDetailed.vue"),
       meta: {
         title: "帖子详情",
       },

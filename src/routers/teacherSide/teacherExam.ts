@@ -17,7 +17,7 @@ export default {
     children: [
         {
             path: "",
-            component: () => import("src/views/teacherExam/index.vue"),
+            component: () => import("src/views/teacherModule/teacherExam/index.vue"),
             meta: {
                 title: "",
                 authCode: 'teacherExam'
@@ -26,7 +26,7 @@ export default {
         {
             path: "CreateTestPaper",
             name: "TeacherCreateTestPaper",
-            component: () => import("src/views/teacherExam/CreateTestPaper.vue"),
+            component: () => import("src/views/teacherModule/teacherExam/CreateTestPaper.vue"),
             meta: {
                 // title: "创建试卷",
                 title: (params?: RouteParams, query?: RouteParams) => {
@@ -37,7 +37,7 @@ export default {
         },
         {
             path: "TestPaperDetail",
-            component: () => import("src/views/teacherExam/TestPaperDetail.vue"),
+            component: () => import("src/views/teacherModule/teacherExam/TestPaperDetail.vue"),
             meta: {
                 title: "试卷详情",
                 authCode: 'TestPaperDetail'
@@ -46,7 +46,7 @@ export default {
         {
             path: 'Achievement',
             name: 'Achievement',
-            component: () => import ("src/views/teacherExam/Achievement.vue"),
+            component: () => import ("src/views/teacherModule/teacherExam/Achievement.vue"),
             meta: {
                 title: "成绩统计",
                 authCode: 'Achievement'
@@ -55,7 +55,7 @@ export default {
         {
             path: 'CreatedExamination',
             name: 'CreatedExamination',
-            component: () => import ("src/views/teacherExam/CreatedExamination.vue"),
+            component: () => import ("src/views/teacherModule/teacherExam/CreatedExamination.vue"),
             meta: {
                 title: "预约考试",
                 authCode: 'CreatedExamination'

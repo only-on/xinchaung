@@ -20,7 +20,7 @@ export default {
     {
       path: "",
       name: "",
-      component: () => import("src/views/studentSideCourse/index.vue"),
+      component: () => import("src/views/studentModule/studentSideCourse/index.vue"),
       meta: {
         title: "",
         authCode: "studentSideCourse",
@@ -29,7 +29,7 @@ export default {
     {
       path: "ContinueDetail",
       name: "ContinueDetail",
-      component: () => import("src/views/studentSideCourse/ContinueDetail.vue"),
+      component: () => import("src/views/studentModule/studentSideCourse/ContinueDetail.vue"),
       meta: {
         title: "课程详情",
         authCode: "",
@@ -38,7 +38,7 @@ export default {
     {
       path: "Resources",
       name: "Resources",
-      component: () => import("src/views/studentSideCourse/Resources.vue"),
+      component: () => import("src/views/studentModule/studentSideCourse/Resources.vue"),
       meta: {
         title: "课程资源",
         authCode: "",

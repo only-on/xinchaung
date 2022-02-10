@@ -15,7 +15,7 @@ export default {
         {
             path: "",
             name: "systemSetting",
-            component: () => import("src/views/adminSystemSetting/index.vue"),
+            component: () => import("src/views/adminModule/adminSystemSetting/index.vue"),
             meta: {
                 title: " ",
                 authCode: 'systemSetting'

@@ -23,7 +23,7 @@ export default {
   children: [
     {
       path: "teacherManagement",
-      component: () => import("src/views/adminUserManagement/teacherManagement.vue"),
+      component: () => import("src/views/adminModule/adminUserManagement/teacherManagement.vue"),
       meta: {
         // title:'教师管理',
         title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}教师管理`,
@@ -33,7 +33,7 @@ export default {
     },
     {
       path: "studentManagement",
-      component: () => import("src/views/adminUserManagement/studentManagement.vue"),
+      component: () => import("src/views/adminModule/adminUserManagement/studentManagement.vue"),
       meta: {
         // title:'学生管理',
         title:`用户${'\xa0\xa0'}/${'\xa0\xa0'}学生管理`,
@@ -43,7 +43,7 @@ export default {
     },
     {
       path: "assistantManagement",
-      component: () => import("src/views/adminUserManagement/assistantManagement.vue"),
+      component: () => import("src/views/adminModule/adminUserManagement/assistantManagement.vue"),
       // component: () => import("src/views/teacherAssistant/assistant.vue"),
       meta: {
         // title:'助教管理',
@@ -74,7 +74,7 @@ export default {
       children:[
         {
           path: "",
-          component: () => import("src/views/adminUserManagement/classManagement.vue"),
+          component: () => import("src/views/adminModule/adminUserManagement/classManagement.vue"),
           meta: {
             title:'',
             icon: "",
@@ -83,7 +83,7 @@ export default {
         },
         {
           path: "classEdit",
-          component: () => import("src/views/adminUserManagement/classEdit.vue"),
+          component: () => import("src/views/adminModule/adminUserManagement/classEdit.vue"),
           meta: {
             title:'编辑班级',
             icon: "",

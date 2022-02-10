@@ -11,7 +11,7 @@ export default {
   children: [
     {
       path: "",
-      component: () => import("src/views/admin/index.vue"),
+      component: () => import("src/views/adminModule/admin/index.vue"),
       meta: {
         title: "首页",
         authCode: 'adminHome'

@@ -18,7 +18,7 @@ export default {
   children: [
     {
       path: "",
-      component: () => import("src/views/studentExperimental/index.vue"),
+      component: () => import("src/views/studentModule/studentExperimental/index.vue"),
       meta: {
         title: "",
         icon: "",

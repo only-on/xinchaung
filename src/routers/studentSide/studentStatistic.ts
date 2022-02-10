@@ -12,7 +12,7 @@ export default {
     children: [
         {
             path: "",
-            component: () => import("src/views/studentStatistic/index.vue"),
+            component: () => import("src/views/studentModule/studentStatistic/index.vue"),
             meta: {
                 title: "studentStatistic",
                 authCode: ""

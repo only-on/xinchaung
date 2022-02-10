@@ -20,7 +20,7 @@ export default {
     {
       path:"",
       name:"",
-      component: () => import("src/views/teachCourse/courseList/index.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/courseList/index.vue"),
       meta: {
         title: "课程列表",
         authCode: 'courseList'
@@ -29,7 +29,7 @@ export default {
     {
       path: "virtualEnv",
       name: "virtualEnv",
-      component: () => import("src/views/teachCourse/virtualEnv.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/virtualEnv.vue"),
       meta: {
         title: "环境",
         authCode: 'virtualEnv'
@@ -38,7 +38,7 @@ export default {
     {
       path: "evalute",
       name: "evalute",
-      component: () => import("src/views/teachCourse/evalute/evalute.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/evalute/evalute.vue"),
       meta: {
           title: "评价",
           authCode: 'evalute'
@@ -47,8 +47,8 @@ export default {
     {
       path: "createTestPaper",
       name: "createTestPaper",
-      // component: () => import("src/views/teachCourse/createTestPaper/addMultipleModal.vue"),
-      component: () => import("src/views/teachCourse/createTestPaper/create.vue"),
+      // component: () => import("src/views/teacherModule/teachCourse/createTestPaper/addMultipleModal.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/createTestPaper/create.vue"),
       meta: {
         title: "创建试卷",
         authCode: 'createTestPaper'
@@ -56,7 +56,7 @@ export default {
     },
     {
       path: "knowledgeMap",
-      component: () => import("src/views/knowledgeMap/index.vue"),
+      component: () => import("src/views/teacherModule/knowledgeMap/index.vue"),
       meta: {
         title: "知识图谱",
         authCode: 'knowledgeMap'
@@ -64,7 +64,7 @@ export default {
     },
     {
       path: "testPaperList",
-      component: () => import("src/views/teachCourse/testPaperList/testPaperList.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/testPaperList/testPaperList.vue"),
       meta: {
         title: "随堂测试",
         authCode: 'testPaperList'
@@ -72,7 +72,7 @@ export default {
     },
     {
       path: "result",
-      component: () => import("src/views/teachCourse/testPaperList/interationResult.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/testPaperList/interationResult.vue"),
       meta: {
         title: "测试结果",
         authCode: 'result'
@@ -80,7 +80,7 @@ export default {
     },
     {
       path: "create",
-      component: () => import("src/views/teachCourse/createCourse/index.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/createCourse/index.vue"),
       meta: {
         title: "创建",
         authCode: 'create'
@@ -88,7 +88,7 @@ export default {
     },
     {
       path: "detail",
-      component: () => import("src/views/teachCourse/courseDetail/index.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
       meta: {
         title: "详情",
         authCode: 'detail'
@@ -96,7 +96,7 @@ export default {
     },
     {
       path: "archive-detail",
-      component: () => import("src/views/teachCourse/courseDetail/archivedDetail.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/courseDetail/archivedDetail.vue"),
       meta: {
         title: "归档详情",
         authCode: 'archive-detail'
@@ -105,7 +105,7 @@ export default {
     {
       path: "analysis",
       name: "analysis",
-      component: () => import("src/views/teacherCourseAnalysis/analysis.vue"),
+      component: () => import("src/views/teacherModule/teacherCourseAnalysis/analysis.vue"),
       meta: {
         title: "分析",
         authCode: 'analysis'
@@ -113,7 +113,7 @@ export default {
     },
     {
       path: "teachingSchedule",
-      component: () => import("src/views/teachCourse/courseSchedule/teachingScheduleList.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/courseSchedule/teachingScheduleList.vue"),
       meta: {
         title: "排课管理",
         authCode: 'teachingSchedule'
@@ -122,7 +122,7 @@ export default {
     {
       path: 'scheduleCreate',
       name: 'scheduleCreate',
-      component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
+      component: () => import('src/views/teacherModule/teachCourse/courseSchedule/scheduleCreate.vue'),
       meta: {
         title: "创建排课",
         authCode: 'scheduleCreate'
@@ -131,7 +131,7 @@ export default {
     {
       path: 'scheduleEdit',
       name: 'scheduleEdit',
-      component: () => import('src/views/teachCourse/courseSchedule/scheduleCreate.vue'),
+      component: () => import('src/views/teacherModule/teachCourse/courseSchedule/scheduleCreate.vue'),
       meta: {
         title: "编辑排课",
         authCode: 'scheduleEdit'
@@ -140,7 +140,7 @@ export default {
     {
       path: 'envMonitoring',
       name: 'envMonitoring',
-      component: () => import('src/views/teachCourse/courseSchedule/EnvMonitoring.vue'),
+      component: () => import('src/views/teacherModule/teachCourse/courseSchedule/EnvMonitoring.vue'),
       meta: {
         title: "环境监控",
         authCode: 'envMonitoring'

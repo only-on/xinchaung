@@ -14,7 +14,7 @@ export default {
         {
             path: "",
             name: "",
-            component: () => import("src/views/adminTrain/index.vue"),
+            component: () => import("src/views/adminModule/adminTrain/index.vue"),
             meta: {
                 title: "教师实训信息管理",
                 authCode: ''
@@ -23,7 +23,7 @@ export default {
         {
             path: "trainInfo",
             name: "trainInfo",
-            component: () => import("src/views/adminTrain/adminTrainDetail/index.vue"),
+            component: () => import("src/views/adminModule/adminTrain/adminTrainDetail/index.vue"),
             meta: {
                 title: "实训详情",
                 authCode: 'trainInfo'
@@ -32,7 +32,7 @@ export default {
         {
             path: "trainResult",
             name: "trainResult",
-            component: () => import("src/views/adminTrain/teacherTrainInfo/trainResult/index.vue"),
+            component: () => import("src/views/adminModule/adminTrain/teacherTrainInfo/trainResult/index.vue"),
             meta: {
                 title: "实训成果",
                 authCode: 'trainResult'
@@ -41,7 +41,7 @@ export default {
         {
             path: "initResource",
             name: "initResource",
-            component: () => import("src/views/adminTrain/initTrainInfo/initResource.vue"),
+            component: () => import("src/views/adminModule/adminTrain/initTrainInfo/initResource.vue"),
             meta: {
                 title: "实训资源",
                 authCode: 'initResource'

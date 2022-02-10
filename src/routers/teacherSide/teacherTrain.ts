@@ -20,7 +20,7 @@ export default {
     children: [
         {
             path: "",
-            component: () => import("src/views/teacherTrain/index.vue"),
+            component: () => import("src/views/teacherModule/teacherTrain/index.vue"),
             meta: {
                 title: "我的实训",
                 authCode: 'teacherTrain'
@@ -29,7 +29,7 @@ export default {
         {
             path: "creatTrain",
             name: "creatTrain",
-            component: () => import("src/views/teacherTrain/creatTrain.vue"),
+            component: () => import("src/views/teacherModule/teacherTrain/creatTrain.vue"),
             meta: {
                 title: "创建实训",
                 authCode: 'creatTrain'
@@ -38,7 +38,7 @@ export default {
         {
             path: 'resource',
             name: 'resource',
-            component: () => import("src/views/teacherTrain/resource.vue"),
+            component: () => import("src/views/teacherModule/teacherTrain/resource.vue"),
             meta: {
                 title: "实训资源",
                 authCode: 'resource'
@@ -47,7 +47,7 @@ export default {
         {
             path: 'evaluate',
             name: 'evaluate',
-            component: () => import("src/views/teacherTrain/evaluate.vue"),
+            component: () => import("src/views/teacherModule/teacherTrain/evaluate.vue"),
             meta: {
                 title: "实训考核",
                 authCode: 'evaluate'
@@ -56,7 +56,7 @@ export default {
         {
             path: 'detail',
             name: 'detail',
-            component: () => import("src/views/teacherTrain/detail/index.vue"),
+            component: () => import("src/views/teacherModule/teacherTrain/detail/index.vue"),
             meta: {
                 title: "实训详情",
                 authCode: 'detail'
