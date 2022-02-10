@@ -1,25 +1,50 @@
 <template>
   <div class="creatpost">
     <div class="left">
-      <a-form ref="formRef" :model="formState" :label-col="{span:12}" :wrapper-col="{span:24}" labelAlign="left" :rules="rules">
-        <a-form-item label="帖子名称"  name="name">
-          <a-input v-model:value="formState.title"  placeholder="请在这里输入帖子标题"/>
+      <a-form
+        ref="formRef"
+        :model="formState"
+        :label-col="{ span: 12 }"
+        :wrapper-col="{ span: 24 }"
+        labelAlign="left"
+        :rules="rules"
+      >
+        <a-form-item label="帖子名称" name="name">
+          <a-input
+            v-model:value="formState.title"
+            placeholder="请在这里输入帖子标题"
+          />
         </a-form-item>
         <div class="type">
-          <a-form-item label="帖子类型"  name="type">
-            <a-select v-model:value="formState.type" placeholder="请选择帖子类型">
+          <a-form-item label="帖子类型" name="type">
+            <a-select
+              v-model:value="formState.type"
+              placeholder="请选择帖子类型"
+            >
               <a-select-option value="1">求助</a-select-option>
               <a-select-option value="2">分享</a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="添加标签"  name="label">
+          <a-form-item label="添加标签" name="label">
             <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
             <div class="label-list">
-              <span v-for="(item, index) in labelList" :key="index" class="list">
+              <span
+                v-for="(item, index) in labelList"
+                :key="index"
+                class="list"
+              >
                 {{ item }}
-                <i class="remove iconfont icon-guanbi" @click="removeLabel(item)"></i>
+                <i
+                  class="remove iconfont icon-guanbi"
+                  @click="removeLabel(item)"
+                ></i>
               </span>
-              <span class="add-btn pointer" v-show="!isInput" @click="clickLabelBtn"><i class="iconfont icon-tianjia"></i>添加标签</span>
+              <span
+                class="add-btn pointer"
+                v-show="!isInput"
+                @click="clickLabelBtn"
+                ><i class="iconfont icon-tianjia"></i>添加标签</span
+              >
               <a-input
                 ref="refLabel"
                 @pressEnter="labelSubmit"
@@ -33,11 +58,17 @@
         </div>
       </a-form>
       <div class="text">
-        <QuillEditor  v-model="formState.content" :height="'400px'" :uploadPathName="'teacherForum'" /> 
+        <QuillEditor
+          v-model="formState.content"
+          :height="'400px'"
+          :uploadPathName="'teacherForum'"
+        />
       </div>
       <div class="foot">
         <a-button @click.prevent="cancel">取消</a-button>
-        <a-button type="primary" @click.prevent="onSubmit">{{editId?' 修 改 ':' 保 存 '}}</a-button>
+        <a-button type="primary" @click.prevent="onSubmit">{{
+          editId ? " 修 改 " : " 保 存 "
+        }}</a-button>
       </div>
     </div>
     <div class="right">
@@ -52,122 +83,138 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,reactive,toRefs ,inject, nextTick} from 'vue'
-import request from '../../api/index'
-import { IBusinessResp} from '../../typings/fetch.d';
-import { useRouter ,useRoute } from 'vue-router';
-import { Modal,message } from 'ant-design-vue';
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  toRefs,
+  inject,
+  nextTick,
+} from "vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+import { useRouter, useRoute } from "vue-router";
+import { Modal, message } from "ant-design-vue";
 // import { Delta } from "../../typings/quill-delta";
-import  QuillEditor  from "src/components/editor/quill.vue";
-import HotLabel from './components/HotLabel.vue'
-import HeatMap from './components/HeatMap.vue'
-import RecommendCourse from './components/RecommendCourse.vue'
-const http = (request as any).teacherForum
-interface form{
-  title: string,
-  type: string | undefined,
-  content: any
+import QuillEditor from "src/components/editor/quill.vue";
+import HotLabel from "./components/HotLabel.vue";
+import HeatMap from "./components/HeatMap.vue";
+import RecommendCourse from "./components/RecommendCourse.vue";
+const http = (request as any).teacherForum;
+interface form {
+  title: string;
+  type: string | undefined;
+  content: any;
 }
-interface Istate{
-  formRef: any,
-  formState: form,
-  rules: any,
+interface Istate {
+  formRef: any;
+  formState: form;
+  rules: any;
   onSubmit: () => void;
   getDetail: () => void;
-  options: any
+  options: any;
 }
 export default defineComponent({
-  name: 'CreatePosts',
+  name: "CreatePosts",
   components: {
-   QuillEditor,
-   HotLabel,
-   HeatMap,
-   RecommendCourse,
+    QuillEditor,
+    HotLabel,
+    HeatMap,
+    RecommendCourse,
   },
-  setup: (props,{emit}) => {
+  setup: (props, { emit }) => {
     const router = useRouter();
     const route = useRoute();
-    const {editId} = route.query
+    const { editId } = route.query;
 
-    const tabs = [{name: '发帖', componenttype: 0}]
-    var updata = inject('updataNav') as Function
-    updata({tabs: tabs, showContent: true, componenttype: undefined, showNav: true,})
+    const tabs = [{ name: "发帖", componenttype: 0 }];
+    var updata = inject("updataNav") as Function;
+    updata({
+      tabs: tabs,
+      showContent: true,
+      componenttype: undefined,
+      showNav: true,
+    });
 
-    const refLabel = ref<HTMLElement>(); 
-    let isInput = ref<boolean>()
-    let labelContent = ref<string>('')
-    let labelList = reactive<string[]>([])
-    function clickLabelBtn(){
-      isInput.value = true
-      nextTick(()=>{
-        refLabel.value && refLabel.value.focus()
-      })
+    const refLabel = ref<HTMLElement>();
+    let isInput = ref<boolean>();
+    let labelContent = ref<string>("");
+    let labelList = reactive<string[]>([]);
+    function clickLabelBtn() {
+      isInput.value = true;
+      nextTick(() => {
+        refLabel.value && refLabel.value.focus();
+      });
     }
     function changeLabel() {
-      labelContent.value = labelContent.value?.length > 10 ? labelContent.value.slice(0, 10) : labelContent.value
+      labelContent.value =
+        labelContent.value?.length > 10
+          ? labelContent.value.slice(0, 10)
+          : labelContent.value;
     }
     function labelSubmit() {
       // console.log(state.customLabelV)
       if (labelContent.value.trim()) {
-          labelList.push(labelContent.value)
-          labelContent.value = ''
-          isInput.value = false
-        } else {
-          isInput.value = false
-        }
+        labelList.push(labelContent.value);
+        labelContent.value = "";
+        isInput.value = false;
+      } else {
+        isInput.value = false;
+      }
     }
-    function removeLabel(val: string){
-      let num = labelContent.value.indexOf(val)
-      if(num !== -1){
-        labelList.splice(num,1)
+    function removeLabel(val: string) {
+      let num = labelContent.value.indexOf(val);
+      if (num !== -1) {
+        labelList.splice(num, 1);
       }
     }
     const state: Istate = reactive({
-      formRef: 'formRef',
+      formRef: "formRef",
       formState: {
-        title: '',
+        title: "",
         type: undefined,
-        content: {}
+        content: {},
       },
       rules: {
         title: [
-          { required: true, message: '请输入帖子名称', trigger: 'blur'},
-          { min: 1, max: 16, message: '名称长度为1-16个字符', trigger: 'blur'},
+          { required: true, message: "请输入帖子名称", trigger: "blur" },
+          { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
         ],
-        type: [{ required: true, message: '请选择帖子类型', trigger: 'change' }],
-        content: [{ required: true, message: '请输入帖子内容', trigger: 'blur' }],
+        type: [
+          { required: true, message: "请选择帖子类型", trigger: "change" },
+        ],
+        content: [
+          { required: true, message: "请输入帖子内容", trigger: "blur" },
+        ],
       },
       options: {
         placeholder: "输入内容...",
         theme: "snow",
       },
-      getDetail: ()=>{
-        
-      },
-      onSubmit: ()=>{
-        console.log(state.formState)
+      getDetail: () => {},
+      onSubmit: () => {
+        console.log(state.formState);
         // return
         state.formRef.validate().then(() => {
-            console.log('验证过');
-            let obj={
-              ...state.formState,
-              content:JSON.stringify(state.formState.content)
-            }
-            http.createForum({param:{forum:{...obj}}}).then((res:IBusinessResp)=>{
-              message.success(editId?'修改成功':'发布成功')
-                router.go(-1)
-            })
-        })
+          console.log("验证过");
+          let obj = {
+            ...state.formState,
+            content: JSON.stringify(state.formState.content),
+          };
+          http
+            .createForum({ param: { forum: { ...obj } } })
+            .then((res: IBusinessResp) => {
+              message.success(editId ? "修改成功" : "发布成功");
+              router.go(-1);
+            });
+        });
       },
-      cancel: () => {
-
-      }
-    })
-    editId?state.getDetail():''
-    onMounted(() => {
-     
-    })
-    return { 
+      cancel: () => {},
+    });
+    editId ? state.getDetail() : "";
+    onMounted(() => {});
+    return {
       editId,
       ...toRefs(state),
       refLabel,
@@ -180,11 +227,11 @@ export default defineComponent({
       removeLabel,
     };
   },
-})
+});
 </script>
 
 <style scoped lang="less">
-.creatpost{
+.creatpost {
   display: flex;
   justify-content: space-between;
   .left {
@@ -241,37 +288,34 @@ export default defineComponent({
     }
   }
 }
-  .header{
-    display: flex;
-    justify-content: space-between;
-    width: var(--center-width);
-    margin: 0 auto;
-  }
-  
-    
-  h1{
-    color: #333;
-    font-size: 17px;
-    height: 20px;
-    line-height: 20px;
-    margin: 20px 0 10px 0;
-  }
-  :deep(.ant-form-item-control){
-    flex: 0 0 100%;
-  }
-  
+.header {
+  display: flex;
+  justify-content: space-between;
+  width: var(--center-width);
+  margin: 0 auto;
+}
 
-    :deep(.ql-container){
-      text-align: center;
-      height: calc(100% - 43px);
-    }
-  .text{
-    // height: 340px;
-  }
-  .foot{
-    margin-top: 50px;
-    width: 100%;
-    text-align: center;
-  }
-    
+h1 {
+  color: #333;
+  font-size: 17px;
+  height: 20px;
+  line-height: 20px;
+  margin: 20px 0 10px 0;
+}
+:deep(.ant-form-item-control) {
+  flex: 0 0 100%;
+}
+
+:deep(.ql-container) {
+  text-align: center;
+  height: calc(100% - 43px);
+}
+.text {
+  // height: 340px;
+}
+.foot {
+  margin-top: 50px;
+  width: 100%;
+  text-align: center;
+}
 </style>

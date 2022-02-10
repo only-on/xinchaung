@@ -60,7 +60,7 @@
                         class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
                       ></i>
-                       <i
+                      <i
                         class="delete icon-shanchu-copy iconfont"
                         @click="deleteTree(index)"
                       ></i>
@@ -103,7 +103,9 @@
               v-model:checked="checkAll"
               @change="onCheckAllChange"
             >
-              {{ checkedValues?.length }}/{{groupType === 'class'?totalStu:unGroupData?.length }}人
+              {{ checkedValues?.length }}/{{
+                groupType === "class" ? totalStu : unGroupData?.length
+              }}人
             </a-checkbox>
           </div>
           <div class="groupOperate" v-if="!ifautoGroupEdit">
@@ -116,63 +118,62 @@
             ></a-input-search>
             <!-- <a-button type='primary' @click="addGroup">添加分组</a-button> -->
           </div>
-                <!-- 如果按班级排课 -->
-              <div v-if="groupType === 'class'" class="checkGroup">
-                <div v-if="totalStu">
-                  <a-tree
-                  checkable
-                  v-model:checkedKeys="checkedKeys"
-                  @select="selectTreeOfClass"
-                  @check="check"
-                  @expand="expandTree"
-                  checkStrictly
-                  v-if="flag === true"
+          <!-- 如果按班级排课 -->
+          <div v-if="groupType === 'class'" class="checkGroup">
+            <div v-if="totalStu">
+              <a-tree
+                checkable
+                v-model:checkedKeys="checkedKeys"
+                @select="selectTreeOfClass"
+                @check="check"
+                @expand="expandTree"
+                checkStrictly
+                v-if="flag === true"
+              >
+                <template #switcherIcon>
+                  <down-outlined />
+                </template>
+                <a-tree-node
+                  :checkable="false"
+                  v-for="(val, key) in unGroupData1"
+                  :key="key"
+                  :title="key"
                 >
-                  <template #switcherIcon>
-                    <down-outlined />
-                  </template>
                   <a-tree-node
-                    :checkable="false"
-                    v-for="(val, key) in unGroupData1"
-                    :key="key"
-                    :title="key"
+                    v-for="it in val"
+                    :key="key + '-' + it?.userProfile?.id"
+                    :checkable="true"
+                    :title="it?.userProfile?.name"
                   >
-                    <a-tree-node
-                      v-for="it in val"
-                      :key="key + '-' + it?.userProfile?.id"
-                      :checkable="true"
-                      :title="it?.userProfile?.name"
-                    >
-                    </a-tree-node>
                   </a-tree-node>
-                </a-tree>
-                </div>
-                <div v-else>
-                  <empty text="暂无待排课的学生"></empty>
-                </div>
-              </div>
-              <!-- 如果按学生排课 -->
-              <div v-else class="checkGroup">
-                <div v-if='unGroupData?.length'>
-                  <a-checkbox-group
-                  v-model:value="checkedValues"
-                  v-if="flag === true"
+                </a-tree-node>
+              </a-tree>
+            </div>
+            <div v-else>
+              <empty text="暂无待排课的学生"></empty>
+            </div>
+          </div>
+          <!-- 如果按学生排课 -->
+          <div v-else class="checkGroup">
+            <div v-if="unGroupData?.length">
+              <a-checkbox-group
+                v-model:value="checkedValues"
+                v-if="flag === true"
+              >
+                <div
+                  v-for="(item, index) in unGroupData1"
+                  :key="index.toString()"
                 >
-                  <div
-                    v-for="(item, index) in unGroupData1"
-                    :key="index.toString()"
-                  >
-                    <a-checkbox :value="item.userProfile.id">
-                      {{ item.userProfile.name }}
-                    </a-checkbox>
-                  </div>
-                  </a-checkbox-group>
+                  <a-checkbox :value="item.userProfile.id">
+                    {{ item.userProfile.name }}
+                  </a-checkbox>
                 </div>
-                <div v-else>
-                  <empty text="暂无待排课的学生"></empty>
-                </div>
-              </div>
-          
+              </a-checkbox-group>
+            </div>
+            <div v-else>
+              <empty text="暂无待排课的学生"></empty>
+            </div>
+          </div>
         </div>
       </div>
     </a-modal>
@@ -205,9 +206,9 @@ interface Istate {
   unGroupData1: any[];
   flag: boolean;
   currentEditData: any;
-  totalStu:any;
+  totalStu: any;
 
-  selectedClass:any;
+  selectedClass: any;
 }
 import {
   defineComponent,
@@ -223,7 +224,6 @@ import Empty from "src/components/Empty.vue";
 import { DownOutlined } from "@ant-design/icons-vue";
 import { message } from "ant-design-vue";
 import transfer from "../transfer/transfer.vue";
-import configRouters from "src/routers/modules";
 import { stat } from "fs/promises";
 import { AnyPtrRecord } from "dns";
 export default defineComponent({
@@ -265,58 +265,58 @@ export default defineComponent({
       flag: true,
       checkedKeys: [],
       currentEditData: "",
-      totalStu:0,
+      totalStu: 0,
 
-      selectedClass:''
+      selectedClass: "",
     });
     const methods = {
       editOk() {
         console.log(state.treeData, "treeData");
-        context.emit("editModal", true, state.treeData,props.ifautoGroupEdit);
-        state.treeData=[]
+        context.emit("editModal", true, state.treeData, props.ifautoGroupEdit);
+        state.treeData = [];
       },
       editCancel() {
         context.emit("editModal", false);
-        state.treeData=[]
+        state.treeData = [];
       },
       onCheckAllChange(e: any) {
-        console.log(e,'e')
+        console.log(e, "e");
         state.checkedValues = [];
-        if(props.groupType==='member'){
+        if (props.groupType === "member") {
           props.unGroupData.forEach((item: any, index: any) => {
-          state.checkedValues.push(item.userProfile.id);
-        });
-        Object.assign(state, {
-          checkedValues: e.target.checked ? state.checkedValues : [],
-          indeterminate: true,
-        });
-        }else{
-          if(e.target.checked){
-              let arrDataId=methods.objToArray()
-              arrDataId.forEach((con:any,x:any)=> {
-                state.checkedValues.push(con.key+'-'+con.item.userProfile.id);
-              });
-              console.log(state.checkedValues,'state.checkedValues')
-              Object.assign(state, {
+            state.checkedValues.push(item.userProfile.id);
+          });
+          Object.assign(state, {
+            checkedValues: e.target.checked ? state.checkedValues : [],
+            indeterminate: true,
+          });
+        } else {
+          if (e.target.checked) {
+            let arrDataId = methods.objToArray();
+            arrDataId.forEach((con: any, x: any) => {
+              state.checkedValues.push(con.key + "-" + con.item.userProfile.id);
+            });
+            console.log(state.checkedValues, "state.checkedValues");
+            Object.assign(state, {
               // checkedValues: e.target.checked ? state.checkedValues : [],
               checkedKeys: e.target.checked ? state.checkedValues : [],
               indeterminate: true,
             });
-          }else{
-            state.checkedKeys=[]
+          } else {
+            state.checkedKeys = [];
           }
         }
       },
-      objToArray(){
-         let unGroupDataKeys=Object.keys(props.unGroupData)
-         let unGroupData=Object.values(props.unGroupData)
-          let arrDataId:any=[]
-          unGroupData.forEach((item:any,index:any)=>{
-            Object.values(item).forEach((it:any,j:any)=>{
-               arrDataId.push({'key':unGroupDataKeys[index],'item':it})
-            })
-          })
-        return arrDataId
+      objToArray() {
+        let unGroupDataKeys = Object.keys(props.unGroupData);
+        let unGroupData = Object.values(props.unGroupData);
+        let arrDataId: any = [];
+        unGroupData.forEach((item: any, index: any) => {
+          Object.values(item).forEach((it: any, j: any) => {
+            arrDataId.push({ key: unGroupDataKeys[index], item: it });
+          });
+        });
+        return arrDataId;
       },
       onSearch() {
         console.log(state.groupname);
@@ -325,7 +325,7 @@ export default defineComponent({
       check(checkedKeys: any, e: any) {
         console.log(checkedKeys, e, "hhhh");
         state.checkedValues = checkedKeys.checked;
-        console.log(state.checkedValues,'state.checkedValues')
+        console.log(state.checkedValues, "state.checkedValues");
       },
       expandTree(e: any) {
         console.log(e);
@@ -350,24 +350,24 @@ export default defineComponent({
       selectTree(selectedKeys: any, e: any) {
         state.selectedGroup = selectedKeys[0];
       },
-      selectTreeOfClass(selectedKeys: any, e: any){
-        console.log(selectedKeys,'selectedKeys')
-        state.selectedClass=selectedKeys[0]
-        console.log(state.selectedClass,'state.selectedClass')
+      selectTreeOfClass(selectedKeys: any, e: any) {
+        console.log(selectedKeys, "selectedKeys");
+        state.selectedClass = selectedKeys[0];
+        console.log(state.selectedClass, "state.selectedClass");
       },
       clickTree(index: any) {
         state.selectedGroup = index;
       },
       leftMove() {
         if (props.groupType === "class") {
-        //  console.log('按照班级分组',state.groupedKeys,state.treeData,state.unGroupData1)
-        //  let unGroupDataKeys=Object.keys(state.unGroupData1)
-        //  console.log(unGroupDataKeys.indexOf(state.selectedClass),'选择的班级')
-        //  console.log(state.unGroupData1[state.selectedClass],'state.unGroupData1[state.selectedClass]')
-        if(!state.selectedClass){
-          message.warning("请选择要移回的班级！")
-          return
-        }
+          //  console.log('按照班级分组',state.groupedKeys,state.treeData,state.unGroupData1)
+          //  let unGroupDataKeys=Object.keys(state.unGroupData1)
+          //  console.log(unGroupDataKeys.indexOf(state.selectedClass),'选择的班级')
+          //  console.log(state.unGroupData1[state.selectedClass],'state.unGroupData1[state.selectedClass]')
+          if (!state.selectedClass) {
+            message.warning("请选择要移回的班级！");
+            return;
+          }
           state.groupedKeys.forEach((item: any, index) => {
             let treeIndex = Number(item.split("-")[0]);
             let childrenId = Number(item.split("-")[1]);
@@ -376,14 +376,15 @@ export default defineComponent({
                 return childrenId == it.userProfile.id;
               }
             );
-          console.log(i,state.treeData[treeIndex].student_list[i],'i')
+            console.log(i, state.treeData[treeIndex].student_list[i], "i");
             // state.unGroupData1[
             //   state.treeData[treeIndex].student_list[i].classes.classname
             // ].push(state.treeData[treeIndex].student_list[i]);
             // state.treeData[treeIndex].student_list.splice(i, 1);
-         state.unGroupData1[state.selectedClass].push(state.treeData[treeIndex].student_list[i])
-         state.treeData[treeIndex].student_list.splice(i, 1);
-
+            state.unGroupData1[state.selectedClass].push(
+              state.treeData[treeIndex].student_list[i]
+            );
+            state.treeData[treeIndex].student_list.splice(i, 1);
           });
           state.flag = false;
           setTimeout(() => {
@@ -401,8 +402,8 @@ export default defineComponent({
               }
             );
 
-            state.unGroupData1.push(state.treeData[treeIndex].student_list[i])
-            state.treeData[treeIndex].student_list.splice(i,1)
+            state.unGroupData1.push(state.treeData[treeIndex].student_list[i]);
+            state.treeData[treeIndex].student_list.splice(i, 1);
           });
           state.groupedKeys = [];
         }
@@ -457,29 +458,32 @@ export default defineComponent({
         state.checkAll = val.length === props.unGroupData.length;
       }
     ),
-    watch(()=>state.checkedKeys,(val)=>{
-      state.checkAll=val.length===state.totalStu?true:false
-    })
+      watch(
+        () => state.checkedKeys,
+        (val) => {
+          state.checkAll = val.length === state.totalStu ? true : false;
+        }
+      );
     watch(
       () => props.unGroupData,
       (val: any) => {
-        console.log(props.groupType,'props.groupType')
-        if(props.groupType==='member'){
-        state.unGroupData1 = val; 
-        if(!props.groupData){
-          state.treeData=[]
-        }
-        }else{ 
-        state.unGroupData1 = val; 
-        if(!props.groupData){
-          state.treeData=[]
-        }
-          state.totalStu=methods.objToArray().length
+        console.log(props.groupType, "props.groupType");
+        if (props.groupType === "member") {
+          state.unGroupData1 = val;
+          if (!props.groupData) {
+            state.treeData = [];
+          }
+        } else {
+          state.unGroupData1 = val;
+          if (!props.groupData) {
+            state.treeData = [];
+          }
+          state.totalStu = methods.objToArray().length;
         }
       },
       {
         immediate: true,
-        deep:true
+        deep: true,
       }
     );
     watch(
@@ -491,9 +495,12 @@ export default defineComponent({
         immediate: true,
       }
     );
-    watch(()=>state.groupedKeys,(val:any)=>{
-        console.log(val,'state.groupedKeys')
-    })
+    watch(
+      () => state.groupedKeys,
+      (val: any) => {
+        console.log(val, "state.groupedKeys");
+      }
+    );
     // 编辑学生分组tree标题
     function editTreeTittle(index: number) {
       state.currentEditData = index;

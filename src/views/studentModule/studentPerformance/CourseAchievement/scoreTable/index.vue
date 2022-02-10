@@ -8,13 +8,17 @@
       rowKey="id"
     >
       <template #video="{ record }">
-        <span class="detail" @click="lookResult(record.id, 'cvideo')">详情</span>
+        <span class="detail" @click="lookResult(record.id, 'cvideo')"
+          >详情</span
+        >
       </template>
       <template #exper="{ record }">
         <span class="detail" @click="lookResult(record.id, 'exper')">详情</span>
       </template>
       <template #report="{ record }">
-        <span class="detail" @click="lookResult(record.id, 'report')">详情</span>
+        <span class="detail" @click="lookResult(record.id, 'report')"
+          >详情</span
+        >
       </template>
       <template #rank="{ record }">
         <div v-if="record.rank">
@@ -33,7 +37,13 @@
       <template #courseDetail="{ record }">
         <span
           class="detail"
-          @click="scoreDetails(record.start, record.rebuild, record.detail_show_config)"
+          @click="
+            scoreDetails(
+              record.start,
+              record.rebuild,
+              record.detail_show_config
+            )
+          "
           >成绩明细</span
         >
       </template>
@@ -94,7 +104,7 @@
 import { defineComponent, reactive, ref, Ref, onMounted, toRefs } from "vue";
 import { message } from "ant-design-vue";
 import testScore from "../testScore/index.vue";
-import request from "../../../../api";
+import request from "src/api";
 import exper from "../../components/exper.vue";
 import report from "../../components/report.vue";
 import cvideo from "../../components/video.vue";
@@ -189,7 +199,12 @@ export default defineComponent({
       scordata: {},
       panes: [
         { title: "试验得分", content: testScore, key: "1", scoredata: {} },
-        { title: "Tab 2", content: "Content of Tab 2", key: "2", scoredata: {} },
+        {
+          title: "Tab 2",
+          content: "Content of Tab 2",
+          key: "2",
+          scoredata: {},
+        },
       ],
       activeKey: "1",
       componentName: "exper",
@@ -225,27 +240,29 @@ export default defineComponent({
     //    console.log(targetKey, action)
     // }
     function lookResult(id: any, type: any) {
-      infoRequest.studentResults({ param: { id: id, type: type } }).then((res: any) => {
-        console.log(res);
-        if (res.data) {
-          visableDetail.value = true;
-          state.componentName = type;
-          state.detailInfo = res.data;
-          const types = {
-            exper: "实验习题",
-            cvideo: "操作视频",
-            report: "实验报告",
-          };
-          state.title = types[type];
-        } else {
-          const warningMeaasge = {
-            exper: "实验习题为空！",
-            cvideo: "操作视频为空！",
-            report: "暂无实验报告！",
-          };
-          message.warning(warningMeaasge[type]);
-        }
-      });
+      infoRequest
+        .studentResults({ param: { id: id, type: type } })
+        .then((res: any) => {
+          console.log(res);
+          if (res.data) {
+            visableDetail.value = true;
+            state.componentName = type;
+            state.detailInfo = res.data;
+            const types = {
+              exper: "实验习题",
+              cvideo: "操作视频",
+              report: "实验报告",
+            };
+            state.title = types[type];
+          } else {
+            const warningMeaasge = {
+              exper: "实验习题为空！",
+              cvideo: "操作视频为空！",
+              report: "暂无实验报告！",
+            };
+            message.warning(warningMeaasge[type]);
+          }
+        });
     }
     function detailOk() {
       visableDetail.value = false;

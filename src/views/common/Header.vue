@@ -2,8 +2,14 @@
   <header class="header-box">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
-        <div class="logo" :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`">
-        </div>
+        <div
+          class="logo"
+          :style="`background-image: url(${
+            env
+              ? '/proxyPrefix' + systemBaseInfo.login_logo
+              : systemBaseInfo.login_logo
+          });`"
+        ></div>
         <span class="web-title">SimpleAHP</span>
       </div>
     </div>
@@ -46,7 +52,7 @@ import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher_p.png";
 import adminUserImg from "src/assets/images/user/admin_p.png";
 import studentUserImg from "src/assets/images/user/student_p.png";
-import {getSettingSiteApi} from 'src/views/adminSystemSetting/api'
+import { getSettingSiteApi } from "src/views/adminModule/adminSystemSetting/api";
 // admin_p
 export default defineComponent({
   name: "Header",
@@ -56,27 +62,33 @@ export default defineComponent({
     const router = useRouter();
     const { lStorage } = extStorage;
     const role = lStorage.get("role");
-    const List={1:'',2:adminUserImg,3:teacherUserImg,4:studentUserImg,5:''}
-    const userImg=List[Number(role)]
+    const List = {
+      1: "",
+      2: adminUserImg,
+      3: teacherUserImg,
+      4: studentUserImg,
+      5: "",
+    };
+    const userImg = List[Number(role)];
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
-    const homePath=computed(()=>{
-      if (role==3) {
-        return "/teacher" // 教师端首页
+    const homePath = computed(() => {
+      if (role == 3) {
+        return "/teacher"; // 教师端首页
       }
-      if (role==4) {
-        return "/studentStatistic" // 学生端首页
+      if (role == 4) {
+        return "/studentStatistic"; // 学生端首页
       }
-      if (role==1) {
-        return "/init-course/init" // 初始端
+      if (role == 1) {
+        return "/init-course/init"; // 初始端
       }
-      if (role==2) {
-        return "/admin" // 管理端
+      if (role == 2) {
+        return "/admin"; // 管理端
       }
-      if (role==5) {
-        return "/" // 助教端
+      if (role == 5) {
+        return "/"; // 助教端
       }
-    })
+    });
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
       return role === 3;
@@ -116,8 +128,8 @@ export default defineComponent({
     }
     const route = useRoute();
     var menus: MenuItem[] = reactive([]);
-    var systemBaseInfo:any=reactive({
-      login_logo:''
+    var systemBaseInfo: any = reactive({
+      login_logo: "",
     });
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
@@ -129,19 +141,19 @@ export default defineComponent({
           activeName.value = lStorage.get("menuActiveName")
             ? lStorage.get("menuActiveName")
             : data && data.length && data[0].name;
-          if(data && data.length){
-            data.map((v:any)=>{
+          if (data && data.length) {
+            data.map((v: any) => {
               // console.log(v.children.length)
-              if(v.children.length===0){
-                v.url=`${v.url}?currentTab=0`
-              }else{
-                v.children.map((i:any)=>{
-                  if(i.children.length===0){
-                    i.url=`${i.url}?currentTab=0`
+              if (v.children.length === 0) {
+                v.url = `${v.url}?currentTab=0`;
+              } else {
+                v.children.map((i: any) => {
+                  if (i.children.length === 0) {
+                    i.url = `${i.url}?currentTab=0`;
                   }
-                })
+                });
               }
-            })
+            });
           }
           menus.push(...data);
           if (route.path === (data && data.length && data[0].url)) {
@@ -153,35 +165,34 @@ export default defineComponent({
           lStorage.set("user_id", user.id);
           lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
           // store.commit('saveMenus', data)
-          const site_settings=res.data.site_settings
+          const site_settings = res.data.site_settings;
           systemBaseInfo.login_logo = site_settings.login_logo;
           lStorage.set("login_logo", site_settings.login_logo);
-
 
           userName.value = user.name;
         }
       });
     }
-    function goHome(){
-      console.log("回首页")
+    function goHome() {
+      console.log("回首页");
       // router.push(`${homePath}`);
-      if (role==3) {
+      if (role == 3) {
         // return "/teacher" // 教师端首页
         router.push("/teacher");
       }
-      if (role==4) {
+      if (role == 4) {
         // return "/studentStatistic" // 学生端首页
         router.push("/studentStatistic");
       }
-      if (role==1) {
+      if (role == 1) {
         // return "/init-course/init" // 初始端
         // router.push("/teacher");
       }
-      if (role==2) {
+      if (role == 2) {
         // return "/admin" // 管理端
         router.push("/admin");
       }
-      if (role==5) {
+      if (role == 5) {
         // return "" // 助教端
         // router.push("/");
       }
@@ -206,7 +217,7 @@ export default defineComponent({
       handImg,
       userImg,
       homePath,
-      goHome
+      goHome,
     };
   },
 });
@@ -228,7 +239,7 @@ export default defineComponent({
     flex-direction: row;
     align-items: center;
     margin-right: 100px;
-    .a-logo{
+    .a-logo {
       display: flex;
       cursor: pointer;
     }
@@ -287,7 +298,7 @@ export default defineComponent({
       }
       .user-name {
         padding: 0 6px;
-        color:var(--white);
+        color: var(--white);
       }
     }
   }

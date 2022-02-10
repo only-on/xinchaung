@@ -9,7 +9,11 @@
       />
     </div>
     <div v-if="courseDataList.length" class="content-list">
-      <div class="itemlist" v-for="(item, index) in courseDataList" :key="index">
+      <div
+        class="itemlist"
+        v-for="(item, index) in courseDataList"
+        :key="index"
+      >
         <div class="card-pic">
           <!-- <img src="../../../assets/images/stuAchievement/d3.jpg" alt=""> -->
           <img :src="item.url" alt="" />
@@ -59,7 +63,7 @@
 import { message } from "ant-design-vue";
 import { defineComponent, reactive, toRefs, onMounted, computed } from "vue";
 import { useRouter } from "vue-router";
-import request from "../../../api";
+import request from "src/api";
 import Empty from "src/components/Empty.vue";
 interface CourseType {
   url?: string;
@@ -106,7 +110,10 @@ export default defineComponent({
       (state.params.keyword = value), getData();
     }
     function lookScore(id: any) {
-      router.push({ path: "/studentPerformance/courseScore", query: { id: id } });
+      router.push({
+        path: "/studentPerformance/courseScore",
+        query: { id: id },
+      });
     }
     function getData() {
       state.ifTip = true;

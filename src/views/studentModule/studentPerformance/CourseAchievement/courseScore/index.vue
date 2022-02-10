@@ -28,19 +28,31 @@
         </div>
         <div class="card-score">
           <p class="score">
-            <img src="../../../../assets/images/stuAchievement/icon_score.jpg" alt="" />
+            <img
+              src="../../../../assets/images/stuAchievement/icon_score.jpg"
+              alt=""
+            />
             课程得分：<span>{{ courseDetail.course_score }}</span>
           </p>
           <p class="order">
-            <img src="../../../../assets/images/stuAchievement/icon_order.jpg" alt="" />
+            <img
+              src="../../../../assets/images/stuAchievement/icon_order.jpg"
+              alt=""
+            />
             班级排名： <span>{{ courseDetail.score_rank }}</span>
           </p>
           <p class="hihgest">
-            <img src="../../../../assets/images/stuAchievement/icon_highest.jpg" alt="" />
+            <img
+              src="../../../../assets/images/stuAchievement/icon_highest.jpg"
+              alt=""
+            />
             实验最高分： <span>{{ courseDetail.task_highest_score }}</span>
           </p>
           <p class="lowest">
-            <img src="../../../../assets/images/stuAchievement/icon_lowest.png" alt="" />
+            <img
+              src="../../../../assets/images/stuAchievement/icon_lowest.png"
+              alt=""
+            />
             实验最低分： <span>{{ courseDetail.task_minimum_score }}</span>
           </p>
         </div>
@@ -56,13 +68,17 @@
                 />{{ item.chapter_name }}
               </div>
               <div>
-                <span class="chapterScore">章节得分：{{ item.chapter_score }}</span>
+                <span class="chapterScore"
+                  >章节得分：{{ item.chapter_score }}</span
+                >
                 <span class="stowOrUnfold unfold" @click="expand(index)">
                   <span v-if="item.dis"
-                    ><span class="icon iconfont icon-zhankai2-copy"></span>收起</span
+                    ><span class="icon iconfont icon-zhankai2-copy"></span
+                    >收起</span
                   >
                   <span v-else
-                    ><span class="icon iconfont icon-shouqi-copy"></span>展开</span
+                    ><span class="icon iconfont icon-shouqi-copy"></span
+                    >展开</span
                   >
                 </span>
               </div>
@@ -110,7 +126,7 @@ import {
 } from "vue";
 import scoreTable from "../scoreTable/index.vue";
 import { useRouter } from "vue-router";
-import request from "../../../../api";
+import request from "src/api";
 interface ObjectD {
   name?: string;
   has_result?: string;
@@ -233,8 +249,8 @@ export default defineComponent({
       console.log(ifcheck);
       if (ifcheck) {
         console.log("展开");
-        state.CourseScoreInfo[index].children[j].experdis = !state.CourseScoreInfo[index]
-          .children[j].experdis;
+        state.CourseScoreInfo[index].children[j].experdis =
+          !state.CourseScoreInfo[index].children[j].experdis;
       }
     }
     function getData() {
@@ -254,7 +270,10 @@ export default defineComponent({
     }
     function toCourseResource(id: any) {
       console.log(id);
-      router.push({ path: "/studentPerformance/courseResources", query: { id: id } });
+      router.push({
+        path: "/studentPerformance/courseResources",
+        query: { id: id },
+      });
     }
     onMounted(() => {
       getData();
@@ -329,7 +348,8 @@ export default defineComponent({
     ul {
       //  padding-bottom: 30px;
       margin-bottom: 0px;
-      background: url(../../../../assets/images/stuAchievement/line02.jpg) repeat-y 45px 0;
+      background: url(../../../../assets/images/stuAchievement/line02.jpg)
+        repeat-y 45px 0;
       .courseChapter {
         width: 100%;
         height: 46px;

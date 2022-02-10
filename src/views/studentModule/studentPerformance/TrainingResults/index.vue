@@ -31,7 +31,9 @@
                 <div v-else>--</div>
               </template>
               <template #report="{ record }">
-                <div @click="toLookResult(record.report.report_html, 'report')">查看</div>
+                <div @click="toLookResult(record.report.report_html, 'report')">
+                  查看
+                </div>
               </template>
               <template #notes="{ record }">
                 <div @click="toLookResult(record.notes, 'note')">查看</div>
@@ -83,7 +85,7 @@
 <script lang="ts">
 import { message } from "ant-design-vue";
 import { defineComponent, onMounted, reactive, toRefs, Ref, ref } from "vue";
-import request from "../../../api";
+import request from "src/api";
 import Note from "../components/note.vue";
 import Empty from "src/components/Empty.vue";
 import Exper from "../components/exper.vue";
@@ -182,11 +184,13 @@ export default defineComponent({
       //     }
       //   state.ifTip=false
       // })
-      infoRequest.experimentalResults({ param: state.params }).then((res: any) => {
-        state.ifTip = false;
-        state.traningResult = res.data.list;
-        state.pagingData = res.data.page;
-      });
+      infoRequest
+        .experimentalResults({ param: state.params })
+        .then((res: any) => {
+          state.ifTip = false;
+          state.traningResult = res.data.list;
+          state.pagingData = res.data.page;
+        });
     }
     function startEndTime(time: any) {
       console.log(time);
