@@ -9,7 +9,7 @@
               @click="continueTraining"
               v-if="v.status_name === '进行中'"
             >
-              <img src="../../assets/images/Experimental/tap.png" alt="" />
+              <img src="src/assets/images/Experimental/tap.png" alt="" />
               <span>点击继续实训</span>
             </div>
           </div>

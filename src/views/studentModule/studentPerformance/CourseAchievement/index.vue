@@ -30,7 +30,7 @@
           <div class="check-score">
             <span
               ><img
-                src="../../../assets/images/stuAchievement/teacher.png"
+                src="src/assets/images/stuAchievement/teacher.png"
                 alt=""
                 srcset=""
               />{{ item.user_nick_name }}</span

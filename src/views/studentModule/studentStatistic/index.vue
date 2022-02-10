@@ -36,11 +36,11 @@
         <div class="right-f1-left">
           <div class="top-title">教师综合评价</div>
           <div class="evaluate">
-            <img src="../../assets/images/excellent-no.png" />
+            <img src="src/assets/images/excellent-no.png" />
           </div>
         </div>
         <div class="right-f1-img">
-          <img src="../../assets/images/evaluate-no.png" />
+          <img src="src/assets/images/evaluate-no.png" />
         </div>
       </div>
       <div class="right-f2 f2">
@@ -445,7 +445,7 @@ export default defineComponent({
           .course-state-icon {
             width: 70px;
             height: 48px;
-            background-image: url(../../assets/images/study-state-1.png);
+            background-image: url(src/assets/images/study-state-1.png);
             background-repeat: no-repeat;
           }
         }
@@ -453,7 +453,7 @@ export default defineComponent({
       .proess-con-right {
         width: 50%;
         height: 100%;
-        background-image: url(../../assets/images/person-bg.png);
+        background-image: url(src/assets/images/person-bg.png);
         background-repeat: no-repeat;
       }
     }

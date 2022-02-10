@@ -1,29 +1,76 @@
 <template>
   <div class="cardList">
-    <div class="cardBox mySelfCreate"  v-if="trainType === 0" @click="router.push('/teacher/teacherTrain/creatTrain')">
+    <div
+      class="cardBox mySelfCreate"
+      v-if="trainType === 0"
+      @click="router.push('/teacher/teacherTrain/creatTrain')"
+    >
       <span>新建实训</span>
     </div>
-    <div class="cardBox" v-for="(item,index) in dataList" :key="index.toString()"  @click="editExperimental(item.id,trainType)">
+    <div
+      class="cardBox"
+      v-for="(item, index) in dataList"
+      :key="index.toString()"
+      @click="editExperimental(item.id, trainType)"
+    >
       <div class="cardpic">
-        <img src="../../../assets/images/Experimental/train.png" class="pic-train" v-if="item.is_highconf && trainType !== 2">
+        <img
+          src="src/assets/images/Experimental/train.png"
+          class="pic-train"
+          v-if="item.is_highconf && trainType !== 2"
+        />
         <!-- <img :src="item.url ? item.url: defaultImg" alt=""> -->
-        <img :src="item.url">
-        <span :class="['stateClass', item.status === '已结束' ? 'end' : item.status === '进行中' ? 'onGoing' : 'noStart' ]" v-if="trainType === 0">{{item.status}}</span>
+        <img :src="item.url" />
+        <span
+          :class="[
+            'stateClass',
+            item.status === '已结束'
+              ? 'end'
+              : item.status === '进行中'
+              ? 'onGoing'
+              : 'noStart',
+          ]"
+          v-if="trainType === 0"
+          >{{ item.status }}</span
+        >
       </div>
       <!-- 我的实训 -->
       <div v-if="trainType === 0">
         <div class="cardinfo">
-          <li class="train-title">{{item.name}}</li> 
-          <li class="train-time"><span>{{item.start_times}}</span> ~ <span>{{item.end_times}}</span></li>
+          <li class="train-title">{{ item.name }}</li>
+          <li class="train-time">
+            <span>{{ item.start_times }}</span> ~
+            <span>{{ item.end_times }}</span>
+          </li>
           <li class="desc-status">
             <span @click.stop>
               任务描述状态:
-              <a-switch class="switch" checked-children="开启" un-checked-children="关闭" :checked="item.is_open ? true: false" @change="changeSwitch(item)"/>
+              <a-switch
+                class="switch"
+                checked-children="开启"
+                un-checked-children="关闭"
+                :checked="item.is_open ? true : false"
+                @change="changeSwitch(item)"
+              />
             </span>
             <span>
-              <i class="iconfont icon-fuyong" title="复用" @click.stop="handleOperate(item.id, 'Complex')"></i>
-              <i v-if="item.status === '已结束'" class="iconfont icon-guidang" title="归档" @click.stop="planceOnFile(item.id, 'Archived')"></i>
-              <i v-if="item.status === '未开始'" class="iconfont icon-shanchu" title="删除" @click.stop="deleteTrain(item.id, 'Deleted')"></i>
+              <i
+                class="iconfont icon-fuyong"
+                title="复用"
+                @click.stop="handleOperate(item.id, 'Complex')"
+              ></i>
+              <i
+                v-if="item.status === '已结束'"
+                class="iconfont icon-guidang"
+                title="归档"
+                @click.stop="planceOnFile(item.id, 'Archived')"
+              ></i>
+              <i
+                v-if="item.status === '未开始'"
+                class="iconfont icon-shanchu"
+                title="删除"
+                @click.stop="deleteTrain(item.id, 'Deleted')"
+              ></i>
             </span>
           </li>
         </div>
@@ -31,17 +78,17 @@
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
-            <span>{{item.task_num}}</span>
+            <span>{{ item.task_num }}</span>
           </li>
           <li>
             <i class="iconfont icon-shijian1"></i>
             课时
-            <span>{{item.class_cnt}}</span>
+            <span>{{ item.class_cnt }}</span>
           </li>
           <li>
             <i class="iconfont icon-renshu"></i>
             学生
-            <span>{{item.user_num}}</span>
+            <span>{{ item.user_num }}</span>
           </li>
         </div>
         <div class="cardfoot cardbtn">
@@ -53,18 +100,18 @@
       <!-- 内置实训 -->
       <div v-if="trainType === 1" class="init">
         <div class="cardinfo">
-          <li class="train-title">{{item.name}}</li>
+          <li class="train-title">{{ item.name }}</li>
         </div>
         <div class="cardfoot1">
           <li>
             <i class="iconfont icon-renwu"></i>
             实验
-            <span>{{item.task_num}}</span>
+            <span>{{ item.task_num }}</span>
           </li>
           <li>
             <i class="iconfont icon-shijian1"></i>
             课时
-            <span>{{item.class_cnt}}</span>
+            <span>{{ item.class_cnt }}</span>
           </li>
         </div>
         <div class="cardfoot cardbtn">
@@ -76,13 +123,13 @@
       <!-- 归档实训 -->
       <div v-if="trainType === 2" class="archive">
         <div class="cardinfo">
-          <li class="train-title">{{item.name}}</li>
+          <li class="train-title">{{ item.name }}</li>
         </div>
         <div class="cardfoot1">
           <li>
             <i class="iconfont icon-guidangshijian"></i>
             归档时间：
-            <span>{{item.created_time}}</span>
+            <span>{{ item.created_time }}</span>
           </li>
         </div>
         <div class="cardfoot cardbtn">
@@ -93,73 +140,84 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, ref, watch, toRef, reactive } from 'vue'
-import request from 'src/api/index'
-import { IBusinessResp } from 'src/typings/fetch.d'
-import { ITeacherTrainHttp } from '../typings'
-import { message } from 'ant-design-vue';
-import { useRouter, useRoute, RouteParamsRaw } from 'vue-router'
-import defaultImg from 'src/assets/images/Experimental/wlkc.png'
+import { defineComponent, ref, watch, toRef, reactive } from "vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+import { ITeacherTrainHttp } from "../typings";
+import { message } from "ant-design-vue";
+import { useRouter, useRoute, RouteParamsRaw } from "vue-router";
+import defaultImg from "src/assets/images/Experimental/wlkc.png";
 export default defineComponent({
-  props: ['trainType', 'data'],
-  setup(props,{emit}) {
-    const http=(request as ITeacherTrainHttp).teacherTrain
+  props: ["trainType", "data"],
+  setup(props, { emit }) {
+    const http = (request as ITeacherTrainHttp).teacherTrain;
     const router = useRouter();
     // const route = useRoute();
     // const {currentTab}= route.query
-    var switchVal=ref<boolean>(false)
-    var trainType = ref<number>(props.trainType)
-    var dataList = ref<any>(props.data)
-    watch(()=>props.trainType, (newVal) => {
-      trainType.value = newVal
-    })
+    var switchVal = ref<boolean>(false);
+    var trainType = ref<number>(props.trainType);
+    var dataList = ref<any>(props.data);
+    watch(
+      () => props.trainType,
+      (newVal) => {
+        trainType.value = newVal;
+      }
+    );
 
-    watch(()=>props.data, (newVal) => {
-      dataList.value = newVal
-    })
-    function changeSwitch (item:any) {
-      item.is_open =item.is_open == 1 ? 0 : 1
+    watch(
+      () => props.data,
+      (newVal) => {
+        dataList.value = newVal;
+      }
+    );
+    function changeSwitch(item: any) {
+      item.is_open = item.is_open == 1 ? 0 : 1;
       let params = {
         train_id: item.id,
-        is_open: item.is_open
-      }
-      http.changeStatus({param: params}).then((res:IBusinessResp) => {
-        message.success('操作成功')
+        is_open: item.is_open,
+      };
+      http.changeStatus({ param: params }).then((res: IBusinessResp) => {
+        message.success("操作成功");
         // emit('refresh')
-      })
+      });
     }
-    function handleOperate (id:number, type:string) {
+    function handleOperate(id: number, type: string) {
       // http['train'+type]({param:{train_id: id}}).then((res:IBusinessResp) => {
       //   message.success(res.error ? res.error :'操作成功')
       //   emit('refresh')
       // })
-      http.trainComplex({urlParams:{train:id}}).then((res:IBusinessResp) => {
-        message.success(res.error ? res.error :'操作成功')
-        emit('refresh')
-      })
+      http
+        .trainComplex({ urlParams: { train: id } })
+        .then((res: IBusinessResp) => {
+          message.success(res.error ? res.error : "操作成功");
+          emit("refresh");
+        });
     }
-    function planceOnFile(id:number, type:string){
-      http.fileTrain({param:{id:[id]}}).then((res:any)=>{
-        console.log(res)
-        message.success('实训归档成功！')
-      })
+    function planceOnFile(id: number, type: string) {
+      http.fileTrain({ param: { id: [id] } }).then((res: any) => {
+        console.log(res);
+        message.success("实训归档成功！");
+      });
     }
-    function deleteTrain(id:number, type:string){
-      http.deleteTrain({urlParams:{train:id}}).then((res:any)=>{
-        console.log(res)
-        emit('refresh')
-      })
+    function deleteTrain(id: number, type: string) {
+      http.deleteTrain({ urlParams: { train: id } }).then((res: any) => {
+        console.log(res);
+        emit("refresh");
+      });
     }
-    function editExperimental(id:number,trainType: number){
-      router.push({path:'/teacher/teacherTrain/detail',query:{id:id,currentTab:trainType}})
+    function editExperimental(id: number, trainType: number) {
+      router.push({
+        path: "/teacher/teacherTrain/detail",
+        query: { id: id, currentTab: trainType },
+      });
     }
     // 考核
     // const evaluate = (id: number) => {
     //   router.push('/teacher/teacherTrain/evaluate?trainId=' + id)
     // }
-    function evaluate(id: number){
-      console.log('考核')
-      router.push('/teacher/teacherTrain/evaluate?trainId=' + id)
+    function evaluate(id: number) {
+      console.log("考核");
+      router.push("/teacher/teacherTrain/evaluate?trainId=" + id);
     }
 
     // 资源
@@ -174,16 +232,16 @@ export default defineComponent({
     //     query: param
     //   })
     // }
-    function resource(id: number){
-      console.log('资源')
+    function resource(id: number) {
+      console.log("资源");
       let param = {
         trainType: trainType.value,
-        trainId: id
-      }
+        trainId: id,
+      };
       router.push({
-        path: '/teacher/teacherTrain/resource',
-        query: param
-      })
+        path: "/teacher/teacherTrain/resource",
+        query: param,
+      });
     }
 
     // 环境
@@ -197,16 +255,16 @@ export default defineComponent({
     //     query: param
     //   })
     // }
-    function virtualEnv(id: number){
-      console.log('环境')
+    function virtualEnv(id: number) {
+      console.log("环境");
       let param = {
-        type: 'train',
-        taskId: id
-      }
+        type: "train",
+        taskId: id,
+      };
       router.push({
-        path: '/teacher/teacherCourse/virtualEnv',
-        query: param
-      })
+        path: "/teacher/teacherCourse/virtualEnv",
+        query: param,
+      });
     }
     return {
       switchVal,
@@ -222,28 +280,29 @@ export default defineComponent({
       evaluate,
       virtualEnv,
       resource,
-    }
+    };
   },
-})
+});
 </script>
 <style lang="less" scoped>
-.cardList{
+.cardList {
   display: flex;
   flex-wrap: wrap;
 }
-.cardBox{
+.cardBox {
   width: 23%;
   // height: 277px;
   border-radius: 10px;
   box-shadow: 0 2px 4px 0 var(--black-0-7);
   margin: 0 2% 20px 0px;
-  &.mySelfCreate{
+  &.mySelfCreate {
     height: 277px;
     border: 1px dashed var(--primary-color);
     cursor: pointer;
-    background: url('src/assets/images/Experimental/createdTrain.png') no-repeat 50% 30%;
+    background: url("src/assets/images/Experimental/createdTrain.png") no-repeat
+      50% 30%;
     position: relative;
-    span{
+    span {
       position: absolute;
       top: 70%;
       width: 100%;
@@ -253,30 +312,30 @@ export default defineComponent({
       color: var(--primary-color);
     }
   }
-  &:not(.mySelfCreate):hover{
-    box-shadow: 0px 7px 7px 0px var(--black-0-7); 
+  &:not(.mySelfCreate):hover {
+    box-shadow: 0px 7px 7px 0px var(--black-0-7);
   }
-  .cardpic{
+  .cardpic {
     width: 100%;
     height: 166px;
     overflow: hidden;
     position: relative;
     border-radius: 10px 10px 0 0;
-    .pic-train{
+    .pic-train {
       position: absolute;
       left: 0;
       z-index: 1;
     }
-    img:not(.pic-train){
+    img:not(.pic-train) {
       width: 100%;
       height: 100%;
       cursor: pointer;
       transition: 0.5s;
-      &:hover{
+      &:hover {
         transform: scale(1.5);
       }
     }
-    .stateClass{
+    .stateClass {
       position: absolute;
       width: 64px;
       height: 24px;
@@ -286,28 +345,28 @@ export default defineComponent({
       right: 0;
       border-radius: 12px 0px 0px 12px;
       box-shadow: 0px 2px 4px 0px var(--black-0-7);
-      &.end{
-        background:#373737 ;
-        color:#8A8A8A;
+      &.end {
+        background: #373737;
+        color: #8a8a8a;
 
-        background: #8A8A8A;
+        background: #8a8a8a;
         color: var(--black-25);
       }
-      &.noStart{
+      &.noStart {
         background: var(--white-100);
         color: var(--black-25);
       }
-      &.onGoing{
+      &.onGoing {
         background: #60ae34;
         color: var(--white-100);
       }
     }
   }
-  .cardinfo{
+  .cardinfo {
     height: 100%;
     // padding: 0 14px;
     font-size: 14px;
-    .train-title{
+    .train-title {
       font-size: 16px;
       line-height: 16px;
       color: var(--black-100);
@@ -315,48 +374,48 @@ export default defineComponent({
       font-weight: 500;
       margin-top: 8px;
       margin-bottom: 12px;
-      padding:0 14px;
+      padding: 0 14px;
     }
-    .train-time{
+    .train-time {
       color: var(--black-25);
       margin-bottom: 12px;
-      padding:0 14px;
+      padding: 0 14px;
     }
-    .desc-status{
+    .desc-status {
       display: none;
       color: var(--black-25);
       padding: 0 14px;
-      .iconfont:hover{
+      .iconfont:hover {
         color: var(--primary-color);
       }
-      i{
+      i {
         cursor: pointer;
         margin-left: 10px;
         font-size: 14px;
       }
-      .ant-switch-checked{
-        background: #FF9C00;
+      .ant-switch-checked {
+        background: #ff9c00;
       }
-      .ant-switch{
+      .ant-switch {
         width: 69px;
       }
     }
   }
-  .cardfoot{
+  .cardfoot {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    li{
+    li {
       width: 100%;
       text-align: center;
       position: relative;
       color: var(--black-25);
       font-size: 12px;
-      i{
+      i {
         font-size: 16px;
       }
-      &:not(:last-child)::after{
-        content: '';
+      &:not(:last-child)::after {
+        content: "";
         position: absolute;
         width: 1px;
         // height: 14px;
@@ -365,49 +424,49 @@ export default defineComponent({
         background-color: #ececec;
       }
     }
-    &.cardbtn{
+    &.cardbtn {
       background: var(--gray-2);
       border-radius: 0 0 10px 10px;
       margin-top: 12px;
-      height:41px;
+      height: 41px;
       border-top: 1px solid var(--black-15);
 
-      height:40px;
+      height: 40px;
       border-top: 1px solid var(--black-15);
       box-sizing: border-box;
-      li{
+      li {
         font-size: 14px;
         cursor: pointer;
         border-right: 1px solid var(--black-15);
-        &:hover{
+        &:hover {
           color: var(--primary-color);
         }
       }
-      :nth-last-child(1){
+      :nth-last-child(1) {
         border: none;
       }
       display: none;
     }
   }
 
-  .cardcount{
+  .cardcount {
     margin-bottom: 18px;
-    li{
+    li {
       display: flex;
       align-items: center;
-      padding:0 14px;
-      .iconfont{
+      padding: 0 14px;
+      .iconfont {
         margin-right: 3px;
       }
     }
   }
-  .switch{
+  .switch {
     margin-bottom: 3px;
   }
 
   // 内置
-  .init{
-    .cardbtn{
+  .init {
+    .cardbtn {
       margin-top: 24px;
       background: var(--gray-2);
       box-sizing: border-box;
@@ -415,51 +474,49 @@ export default defineComponent({
     }
   }
 
-
-
   // 归档
-  .archive{
-    .cardbtn{
+  .archive {
+    .cardbtn {
       margin-top: 24px;
       background: var(--gray-2);
       box-sizing: border-box;
       height: 40px;
     }
   }
-  &:hover{
-    .train-time{
+  &:hover {
+    .train-time {
       display: none;
     }
-    .desc-status{
+    .desc-status {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    & .cardfoot.cardcount{
+    & .cardfoot.cardcount {
       display: none;
     }
-    .cardfoot.cardbtn{
+    .cardfoot.cardbtn {
       display: flex;
       justify-content: space-between;
       align-items: center;
     }
-    .cardfoot1{
+    .cardfoot1 {
       display: none;
     }
   }
-  .cardfoot1{
+  .cardfoot1 {
     display: flex;
     padding: 0 14px;
-    margin-top:16px;
+    margin-top: 16px;
     margin-bottom: 24px;
-    li{
+    li {
       color: var(--black-25);
       margin-right: 20px;
       font-size: 14px;
     }
   }
 }
-.cardBox:hover{
+.cardBox:hover {
   box-shadow: 0 7px 7px 0 var(--black-0-7);
 }
 </style>

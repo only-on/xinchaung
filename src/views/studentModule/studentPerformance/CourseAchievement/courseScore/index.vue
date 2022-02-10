@@ -14,7 +14,7 @@
               <p>课程状态：{{ courseDetail.state }}</p>
               <p>
                 <img
-                  src="../../../../assets/images/stuAchievement/teacher.png"
+                  src="src/assets/images/stuAchievement/teacher.png"
                   alt=""
                   srcset=""
                 />
@@ -28,29 +28,23 @@
         </div>
         <div class="card-score">
           <p class="score">
-            <img
-              src="../../../../assets/images/stuAchievement/icon_score.jpg"
-              alt=""
-            />
+            <img src="src/assets/images/stuAchievement/icon_score.jpg" alt="" />
             课程得分：<span>{{ courseDetail.course_score }}</span>
           </p>
           <p class="order">
-            <img
-              src="../../../../assets/images/stuAchievement/icon_order.jpg"
-              alt=""
-            />
+            <img src="src/assets/images/stuAchievement/icon_order.jpg" alt="" />
             班级排名： <span>{{ courseDetail.score_rank }}</span>
           </p>
           <p class="hihgest">
             <img
-              src="../../../../assets/images/stuAchievement/icon_highest.jpg"
+              src="src/assets/images/stuAchievement/icon_highest.jpg"
               alt=""
             />
             实验最高分： <span>{{ courseDetail.task_highest_score }}</span>
           </p>
           <p class="lowest">
             <img
-              src="../../../../assets/images/stuAchievement/icon_lowest.png"
+              src="src/assets/images/stuAchievement/icon_lowest.png"
               alt=""
             />
             实验最低分： <span>{{ courseDetail.task_minimum_score }}</span>
@@ -63,7 +57,7 @@
             <div class="courseChapter">
               <div>
                 <img
-                  src="../../../../assets/images/stuAchievement/project_icon.png"
+                  src="src/assets/images/stuAchievement/project_icon.png"
                   alt=""
                 />{{ item.chapter_name }}
               </div>

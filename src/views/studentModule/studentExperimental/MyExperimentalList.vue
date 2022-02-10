@@ -9,7 +9,7 @@
               @click="startTraining"
               v-if="v.status === '进行中'"
             >
-              <img src="../../assets/images/Experimental/tap.png" alt="" />
+              <img src="src/assets/images/Experimental/tap.png" alt="" />
               <span>点击开始实训</span>
             </div>
           </div>
@@ -153,7 +153,7 @@ export default defineComponent({
       position: absolute;
       width: 100%;
       height: 100%;
-      // background: url('../../assets/images/Experimental/cover5.png') no-repeat center 100%/100%;
+      // background: url('src/assets/images/Experimental/cover5.png') no-repeat center 100%/100%;
       img {
         width: 100%;
         height: 100%;
