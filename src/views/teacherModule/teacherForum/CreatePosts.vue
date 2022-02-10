@@ -212,6 +212,7 @@ export default defineComponent({
       },
       cancel: () => {},
     });
+    function cancel() {}
     editId ? state.getDetail() : "";
     onMounted(() => {});
     return {
@@ -225,6 +226,7 @@ export default defineComponent({
       changeLabel,
       labelSubmit,
       removeLabel,
+      cancel,
     };
   },
 });
