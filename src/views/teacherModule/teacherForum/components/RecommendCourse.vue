@@ -4,11 +4,11 @@
     <div class="course-list">
       <div class="list" v-for="item in courseList" :key="item.id">
         <div class="left">
-          <img :src="item.src" alt="" srcset="">
+          <img :src="item.src" alt="" srcset="" />
         </div>
         <div class="right">
-          <span class="name">{{item.name}}</span>
-          <span class="study_num">{{item.num}}人在学</span>
+          <span class="name">{{ item.name }}</span>
+          <span class="study_num">{{ item.num }}人在学</span>
         </div>
       </div>
     </div>
@@ -16,24 +16,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
-import { useRouter, useRoute } from 'vue-router';
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  inject,
+  watch,
+  toRefs,
+} from "vue";
+import { useRouter, useRoute } from "vue-router";
 export default defineComponent({
-  name: 'RecommendCourse',
-	props: {},
+  name: "RecommendCourse",
   setup: (props, { emit }) => {
     let courseList = reactive([
-      {id: 1, name: 'Python3 机器学习', num: 124, src: ''},
-      {id: 1, name: 'Python3 机器学习', num: 124, src: ''},
-      {id: 1, name: 'Python3 机器学习', num: 124, src: ''},
-      {id: 1, name: 'Python3 机器学习', num: 124, src: ''},
-      {id: 1, name: 'Python3 机器学习', num: 124, src: ''},
-    ])
+      { id: 1, name: "Python3 机器学习", num: 124, src: "" },
+      { id: 1, name: "Python3 机器学习", num: 124, src: "" },
+      { id: 1, name: "Python3 机器学习", num: 124, src: "" },
+      { id: 1, name: "Python3 机器学习", num: 124, src: "" },
+      { id: 1, name: "Python3 机器学习", num: 124, src: "" },
+    ]);
     return {
-      courseList
-    }
-  }
-})
+      courseList,
+    };
+  },
+});
 </script>
 
 <style scoped lang="less">

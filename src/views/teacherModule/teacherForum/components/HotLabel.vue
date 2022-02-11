@@ -2,28 +2,38 @@
   <div class="hot-label">
     <div class="components-title">热门标签</div>
     <div class="label-list">
-      <span class="list" v-for="list in labelList" :key="list.id">{{list.name}}</span>
+      <span class="list" v-for="list in labelList" :key="list.id">{{
+        list.name
+      }}</span>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  inject,
+  watch,
+  toRefs,
+} from "vue";
 export default defineComponent({
-  name: 'HotLabel',
-	props: {},
+  name: "HotLabel",
   setup: (props, { emit }) => {
     let labelList = reactive([
-      {id: 1, name: 'Bootstrap'},
-      {id: 2, name: 'C++基础'},
-      {id: 3, name: 'Java'},
-      {id: 4, name: '大学计算机基础'},
-    ])
+      { id: 1, name: "Bootstrap" },
+      { id: 2, name: "C++基础" },
+      { id: 3, name: "Java" },
+      { id: 4, name: "大学计算机基础" },
+    ]);
     return {
-      labelList
-    }
-  }
-})
+      labelList,
+    };
+  },
+});
 </script>
 
 <style scoped lang="less">

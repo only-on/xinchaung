@@ -1,18 +1,19 @@
 {
+  "name": "test3",
+  "private": true,
   "version": "0.0.0",
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS=--max-old-space-size=4096 vite --host --debug",
+    "dev": "cross-env vite --host --debug",
     "build": "vue-tsc --noEmit && vite build",
     "build:prod": "cross-env NODE_OPTIONS=--max-old-space-size=10240 vite build",
-    "serve": "vite preview",
-    "prepare": "husky install"
+    "preview": "vite preview --port 8080"
   },
   "dependencies": {
     "@novnc/novnc": "^1.2.0",
     "@types/quill": "^1.3.10",
     "@xianfe/antdv-markdown": "^1.0.13",
     "@xianfe/vue3-quill": "^0.1.2",
-    "ace-builds": "^1.4.12",
+    "ace-builds": "^1.4.14",
     "ant-design-vue": "^2.2.3",
     "echarts": "^5.1.2",
     "echarts-wordcloud": "^2.0.0",
@@ -27,7 +28,7 @@
     "swiper": "^7.0.8",
     "tus-js-client": "^2.3.0",
     "vite-raw-plugin": "^1.0.1",
-    "vue": "^3.1.1",
+    "vue": "^3.2.25",
     "vue-i18n": "^9.1.7",
     "vue-router": "^4.0.4",
     "vuedraggable": "^4.1.0",
@@ -40,18 +41,18 @@
     "@types/file-saver": "^2.0.3",
     "@types/node": "^16.4.13",
     "@types/spark-md5": "^3.0.2",
-    "@vitejs/plugin-vue": "^1.2.3",
+    "@vitejs/plugin-vue": "^2.2.0",
     "@vitejs/plugin-vue-jsx": "^1.1.7",
-    "@vue/compiler-sfc": "^3.1.1",
+    "@vue/compiler-sfc": "^3.2.30",
     "cross-env": "^7.0.3",
     "husky": "^6.0.0",
     "less": "^4.1.1",
     "pretty-quick": "^3.1.3",
     "quill": "^1.3.7",
     "sass": "^1.35.1",
-    "typescript": "^4.3.2",
-    "vite": "^2.4.4",
-    "vue-tsc": "^0.0.24"
+    "typescript": "^4.5.4",
+    "vite": "^2.8.0",
+    "vue-tsc": "^0.29.8"
   },
   "browserslist": [
     "> 1%",

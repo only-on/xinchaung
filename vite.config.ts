@@ -1,30 +1,12 @@
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-// import styleImport from 'vite-plugin-style-import'
-import { resolve } from 'path';
-// import ViteComponents, { AntDesignVueResolver } from 'vite-plugin-components';
-import vueJsx from '@vitejs/plugin-vue-jsx';
-// @ts-ignore
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import { resolve } from "path";
+import vueJsx from "@vitejs/plugin-vue-jsx";
 import viteRawPlugin from "vite-raw-plugin";
-// https://vitejs.dev/config/
 export default defineConfig({
-  base:"./",
+  base: "./",
   plugins: [
     vue(),
-    // ViteComponents({
-    //   // 有效的组件后缀
-    //   extensions: ['vue'],
-    //   // 对自动导入的组件实施TypeScript支持，需要vscode安装Volar插件
-    //   globalComponentsDeclaration: true,
-    //   // 自动导入组件
-    //   // https://www.npmjs.com/package/vite-plugin-components
-    //   // https://2x.antdv.com/docs/vue/introduce-cn
-    //   // https://github.com/antfu/vite-plugin-components/blob/main/src/resolvers/antdv.ts
-    //   customComponentResolvers: [AntDesignVueResolver({
-    //     importStyle: 'less' // 导入less文件，以便后面的less modifyVars可以生效
-    //   })],
-    // }),
-    // https://www.npmjs.com/package/@vitejs/plugin-vue-jsx
     vueJsx(),
     viteRawPlugin({
       fileRegex: /\.md$/,
@@ -32,45 +14,33 @@ export default defineConfig({
   ],
   css: {
     preprocessorOptions: {
-      scss: {
-        // 发送给css预处理器的配置项，这里配置了一个全局样式，这个动作是prepend，往前加
-        // additionalData: `@import "element-plus/packages/theme-chalk/src/base.scss";`
-      },
-      less: {
-        // 通过less modifyVars来定制主题，可以使用less变量对象的方式来修改，但这里没有
-        // https://2x.antdv.com/docs/vue/customize-theme-cn
-        // https://github.com/vitejs/vite/issues/1107
-        // modifyVars: {
-        //   hack: `true; @import (reference) "${resolve('src/assets/theme/purple.less')}";`,
-        // },
-        // javascriptEnabled: true, // 想要less的modifyVars生效，这个必须启用
-        // additionalData: '@import "src/assets/theme/purple";\n'
-      }
-    }
+      scss: {},
+      less: {},
+    },
   },
   resolve: {
     // rollup的别名配置：https://github.com/rollup/plugins/tree/master/packages/alias#entries
     alias: [
-      { find: /^~/, replacement: '' },
-      { find: /^src/, replacement: resolve(__dirname, './src') },
-      { find: /^packages/, replacement: resolve(__dirname, './packages') },
-      { find: /^vue-i18n$/, replacement: 'vue-i18n/dist/vue-i18n.cjs.js' },
+      { find: /^~/, replacement: "" },
+      { find: /^src/, replacement: resolve(__dirname, "./src") },
+      { find: /^packages/, replacement: resolve(__dirname, "./packages") },
+      { find: /^vue-i18n$/, replacement: "vue-i18n/dist/vue-i18n.cjs.js" },
     ],
   },
   server: {
     proxy: {
-      '/proxyPrefix': {
-        target: 'http://192.168.101.130',
+      "/proxyPrefix": {
+        target: "http://192.168.101.130",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
+        rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
       },
-      '/dmc': {
-        target: 'http://192.168.101.130',
+      "/dmc": {
+        target: "http://192.168.101.130",
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
-      '/uploadfiles': {
-        target: 'http://192.168.101.130',
+      "/uploadfiles": {
+        target: "http://192.168.101.130",
         changeOrigin: true,
         // rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
       },
@@ -78,27 +48,30 @@ export default defineConfig({
       //   target: 'ws://192.168.101.130',
       //   changeOrigin: true,
       //   ws: true,
-        // rewrite: (path) => path.replace(/^\/ws/, '')
+      // rewrite: (path) => path.replace(/^\/ws/, '')
       // }
     },
     port: 3010,
-    host: '0.0.0.0',
+    host: "0.0.0.0",
     open: true,
-    force: true
+    force: true,
   },
-  build:{
-    // outDir:'ahp_web',
-    sourcemap:false,
-    brotliSize:false,
-    chunkSizeWarningLimit:10000,
-    rollupOptions:{
-      output:{
-        manualChunks(id){ 
-          if(id.includes('node_modules')){
-            return id.toString().split('node_modules/')[1].split('/')[0].toString();
+  build: {
+    sourcemap: false,
+    brotliSize: false,
+    chunkSizeWarningLimit: 10000,
+    rollupOptions: {
+      output: {
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            return id
+              .toString()
+              .split("node_modules/")[1]
+              .split("/")[0]
+              .toString();
           }
-        }
-      }
-    }
-  }
-})
+        },
+      },
+    },
+  },
+});

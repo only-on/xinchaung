@@ -8,21 +8,21 @@
           <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div v-if="know_points.length>0">
+      <div v-if="know_points.length > 0">
         <span v-for="(item, index) in know_points" :key="index">{{
           item
         }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" />
+    <!-- <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" /> -->
     <template v-if="currentKey === 1">
-      <experiment-guide v-model="detailInfo.detail"/>
+      <experiment-guide v-model="detailInfo.detail" />
     </template>
     <template v-if="currentKey === 2">
       <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise v-model:sum="experimentExerciseSum"/>
+      <experiment-exercise v-model:sum="experimentExerciseSum" />
     </template>
   </div>
 </template>
@@ -33,25 +33,25 @@ import tabs from "../tabs.vue";
 import report from "./report.vue";
 import experimentExercise from "./experimentExercise.vue";
 
-import experimentGuide from "./experimentGuides.vue"
+import experimentGuide from "./experimentGuides.vue";
 export default defineComponent({
   components: {
     tabs,
     report,
     "experiment-exercise": experimentExercise,
-   
-    "experiment-guide":experimentGuide
+
+    "experiment-guide": experimentGuide,
   },
   setup() {
     const reactiveData = reactive({
-    //   currentKey: 1,
+      //   currentKey: 1,
     });
-    const currentKey =ref(1)
+    const currentKey = ref(1);
     const detailInfo: any = inject("detailInfo");
     const course_id = inject("course_id") as number;
     const experiment_id: any = inject("experiment_id");
     const know_points = ref([]);
-    const experimentExerciseSum=ref(0)
+    const experimentExerciseSum = ref(0);
     watch(
       () => detailInfo,
       () => {
@@ -74,7 +74,7 @@ export default defineComponent({
       ...toRefs(reactiveData),
       know_points,
       currentKey,
-      experimentExerciseSum
+      experimentExerciseSum,
     };
   },
 });
@@ -104,7 +104,7 @@ export default defineComponent({
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        color:var(--black-100);
+        color: var(--black-100);
       }
       .experiment-type-or-class-count {
         flex-shrink: 0;
@@ -139,9 +139,9 @@ export default defineComponent({
   flex: 1;
   background: var(--white-100);
   padding: 16px 19px;
-  .guide-title{
-      font-size: 16px;
-      font-weight: 600;
+  .guide-title {
+    font-size: 16px;
+    font-weight: 600;
   }
   .mark__container {
     // height: 100%;
@@ -154,4 +154,3 @@ export default defineComponent({
   }
 }
 </style>
-

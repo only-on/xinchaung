@@ -8,13 +8,13 @@
           <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div v-if="know_points.length>0">
+      <div v-if="know_points.length > 0">
         <span v-for="(item, index) in know_points" :key="index">{{
           item
         }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" />
+    <!-- <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" /> -->
     <template v-if="currentKey === 1">
       <div class="experiment-detail-box">
         <experiment-guide
@@ -35,7 +35,7 @@
       <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise v-model:sum="experimentExerciseSum"/>
+      <experiment-exercise v-model:sum="experimentExerciseSum" />
     </template>
   </div>
   <div
@@ -96,7 +96,7 @@ export default defineComponent({
     const experiment_id: any = inject("experiment_id");
     const know_points = ref([]);
     const stepKnowPoints = ref([]);
-    const experimentExerciseSum=ref(0)
+    const experimentExerciseSum = ref(0);
     watch(
       () => detailInfo,
       () => {
@@ -147,7 +147,7 @@ export default defineComponent({
       lookStepDetail,
       backToDetail,
       stepKnowPoints,
-      experimentExerciseSum
+      experimentExerciseSum,
     };
   },
 });
@@ -218,14 +218,14 @@ export default defineComponent({
   }
 }
 .experiment-step-detail-box {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    .step-detail-content{
-        flex: 1;
-        padding-top: 15px;
-        overflow-y: auto;
-    }
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  .step-detail-content {
+    flex: 1;
+    padding-top: 15px;
+    overflow-y: auto;
+  }
   .step-top-box {
     background: linear-gradient(270deg, #d3ddff 0%, #e8f9ff);
     border-radius: 4px;
@@ -274,4 +274,3 @@ export default defineComponent({
   }
 }
 </style>
-

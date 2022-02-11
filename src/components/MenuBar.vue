@@ -1,3 +1,29 @@
+<template>
+  <div class="nav__menu">
+    <!-- <div class="menu__top-item ant-dropdown-trigger" v-for="v in menus" :key="v">
+      <a-dropdown>
+        <div></div>
+      </a-dropdown>
+    </div> -->
+    {{ activeName }}
+    <a-dropdown v-for="v in menus" :key="v">
+      <div
+        class="menu__top-item ant-dropdown-trigger"
+        :class="v.name === activeName ? 'active' : ''"
+        @click="!v.children.length ? select('Parent', v) : ''"
+      >
+        {{ v.name }}
+      </div>
+      <template #overlay>
+        <a-menu class="menu__group">
+          <a-menu-item v-for="i in v.children" :key="i" class="menu__item">
+            <div @click="select('Children', i)">{{ i.name }}</div>
+          </a-menu-item>
+        </a-menu>
+      </template>
+    </a-dropdown>
+  </div>
+</template>
 <script lang="tsx">
 import {
   defineComponent,
@@ -26,6 +52,7 @@ export default defineComponent({
     },
   },
   setup(props, context) {
+    const renderFlag: Ref<boolean> = ref(true);
     const router = useRouter();
     const route = useRoute();
     const { lStorage } = extStorage;
@@ -94,6 +121,7 @@ export default defineComponent({
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
     function select(level: string, val: MenuItem) {
+      // console.log(val)
       console.log("to：path：" + val.url);
       router.replace(String(val.url));
       if (level === "Parent") {
@@ -138,8 +166,10 @@ export default defineComponent({
     }
     onMounted(() => {
       // getMenu()
+      // renderMenu(menus as MenuItem[])
     });
-    return () => renderMenu(menus as MenuItem[]);
+    return { menus, select, activeName };
+    // return () => renderMenu(menus as MenuItem[]);
     // return () => (renderMenu(FakeMenu.data as MenuItem[]));
   },
   components: {},
@@ -173,10 +203,10 @@ export default defineComponent({
     color: var(--white-45);
   }
 }
-.ant-dropdown-menu{
+.ant-dropdown-menu {
   padding: 0px;
 }
-:deep(.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title){
+:deep(.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title) {
   color: var(--black-65);
   font-size: var(--base-font-size);
 }

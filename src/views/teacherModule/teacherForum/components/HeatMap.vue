@@ -1,23 +1,27 @@
 <template>
   <div class="heat-map">
     <div class="components-title">热力图</div>
-    <div class="map-content">
-      
-    </div>
+    <div class="map-content"></div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, toRefs } from 'vue'
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  inject,
+  watch,
+  toRefs,
+} from "vue";
 export default defineComponent({
-  name: 'HeatMap',
-	props: {},
+  name: "HeatMap",
   setup: (props, { emit }) => {
-    return {
-      
-    }
-  }
-})
+    return {};
+  },
+});
 </script>
 
 <style scoped lang="less">

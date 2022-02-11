@@ -8,13 +8,13 @@
           <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div v-if="know_points.length>0">
+      <div v-if="know_points.length > 0">
         <span v-for="(item, index) in know_points" :key="index">{{
           item
         }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" />
+    <!-- <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange" /> -->
     <template v-if="currentKey === 1">
       <div class="experiment-detail-box">
         <experiment-guide
@@ -35,7 +35,7 @@
       <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise v-model:sum="experimentExerciseSum"/>
+      <experiment-exercise v-model:sum="experimentExerciseSum" />
     </template>
   </div>
   <div
@@ -59,8 +59,8 @@
     </div>
   </div>
 </template>
-  
-  <script lang="ts">
+
+<script lang="ts">
 import { defineComponent, reactive, toRefs, inject, watch, ref } from "vue";
 import tabs from "../tabs.vue";
 import report from "./report.vue";
@@ -96,7 +96,7 @@ export default defineComponent({
     const experiment_id: any = inject("experiment_id");
     const know_points = ref([]);
     const stepKnowPoints = ref([]);
-    const experimentExerciseSum=ref(0)
+    const experimentExerciseSum = ref(0);
     watch(
       () => detailInfo,
       () => {
@@ -117,10 +117,12 @@ export default defineComponent({
         if (
           reactiveData.stepDetail &&
           reactiveData.stepDetail.steps &&
-          reactiveData.stepDetail.steps.length>0
+          reactiveData.stepDetail.steps.length > 0
         ) {
           stepKnowPoints.value =
-            reactiveData.stepDetail.steps[0].knowledge_id.knowledge_name.split(",");
+            reactiveData.stepDetail.steps[0].knowledge_id.knowledge_name.split(
+              ","
+            );
         }
       },
       { deep: true }
@@ -147,13 +149,13 @@ export default defineComponent({
       lookStepDetail,
       backToDetail,
       stepKnowPoints,
-      experimentExerciseSum
+      experimentExerciseSum,
     };
   },
 });
 </script>
-  
-  <style lang="less">
+
+<style lang="less">
 .vnc-tab-box {
   height: 100%;
   display: flex;
@@ -272,5 +274,3 @@ export default defineComponent({
   }
 }
 </style>
-  
-  

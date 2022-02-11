@@ -134,16 +134,18 @@
                     v-for="(val, key) in datasetList"
                     :key="key"
                   >
-                    <template #label>{{
+                    <!-- <template #label>{{
                       key === "public" ? "公有" : "私有"
-                    }}</template>
+                    }}</template> -->
                     <a-select-option v-for="(v, k) in val" :value="k" :key="k">
                       {{ v }}
                     </a-select-option>
                   </a-select-opt-group>
                 </a-select>
                 <div class="select-right">
-                  <a-button type="primary" @click="openUploadModal(4)">上传</a-button>
+                  <a-button type="primary" @click="openUploadModal(4)"
+                    >上传</a-button
+                  >
                   <a-button
                     class=""
                     type="primary"
@@ -194,16 +196,18 @@
                     v-for="(val, key) in datasetList"
                     :key="key"
                   >
-                    <template #label>{{
+                    <!-- <template #label>{{
                       key === "public" ? "公有" : "私有"
-                    }}</template>
+                    }}</template> -->
                     <a-select-option v-for="(v, k) in val" :value="k" :key="k">
                       {{ v }}
                     </a-select-option>
                   </a-select-opt-group>
                 </a-select>
                 <div class="select-right">
-                  <a-button type="primary" @click="openUploadModal(3)">上传</a-button>
+                  <a-button type="primary" @click="openUploadModal(3)"
+                    >上传</a-button
+                  >
                   <a-button
                     class=""
                     type="primary"
@@ -254,7 +258,7 @@
   </a-modal>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, inject, watch,ref } from "vue";
+import { defineComponent, reactive, toRefs, inject, watch, ref } from "vue";
 import selectList from "./components/selectList.vue";
 import {
   getAllChapterListApi,
@@ -264,11 +268,11 @@ import {
   getDocumentsListApi,
   saveContentToChapterApi,
   getDataSetCatalogApi,
-  addDataSetFileApi
+  addDataSetFileApi,
 } from "./api";
 import { message } from "ant-design-vue";
 import uploadDataSetFile from "./components/uploadDataSetFile.vue";
-import page from "src/components/page/page.vue"
+import page from "src/components/page/page.vue";
 type TreactiveData = {
   currentKey: string;
   contentDataList: any[];
@@ -312,15 +316,15 @@ type TreactiveData = {
     suffix: string;
     size: number;
   };
-  dataset_id:number
-  accept:string
-  fileSize:string
+  dataset_id: number;
+  accept: string;
+  fileSize: string;
 };
 export default defineComponent({
   components: {
     "select-list": selectList,
     "upload-data-set-file": uploadDataSetFile,
-    page
+    page,
   },
   setup() {
     const course_id = inject("course_id") as number;
@@ -369,11 +373,11 @@ export default defineComponent({
         suffix: "",
         size: 0,
       },
-      dataset_id:-1,
-      accept:"",
-      fileSize:""
+      dataset_id: -1,
+      accept: "",
+      fileSize: "",
     });
-    const uploadRef=ref(null)
+    const uploadRef = ref(null);
     const initData = {
       "0": {
         init: () => {
@@ -754,12 +758,12 @@ export default defineComponent({
         message.warn("文件上传中，请稍后提交");
         return;
       }
-      const body=new FormData();
-      body.append("items[0][file_name]",reactiveData.fileInfo.file_name)
-      body.append("items[0][file_url]",reactiveData.fileInfo.file_url)
-      body.append("items[0][suffix]",reactiveData.fileInfo.suffix)
-      body.append("items[0][size]",reactiveData.fileInfo.size as any)
-      body.append("dataset_id",reactiveData.dataset_id as any)
+      const body = new FormData();
+      body.append("items[0][file_name]", reactiveData.fileInfo.file_name);
+      body.append("items[0][file_url]", reactiveData.fileInfo.file_url);
+      body.append("items[0][suffix]", reactiveData.fileInfo.suffix);
+      body.append("items[0][size]", reactiveData.fileInfo.size as any);
+      body.append("dataset_id", reactiveData.dataset_id as any);
       addDataSetFileApi(body).then((res: any) => {
         reactiveData.fileInfo = {
           file_name: "",
@@ -768,26 +772,26 @@ export default defineComponent({
           size: 0,
         };
         reactiveData.uploadVisible = false;
-        let item_id=res.data.count[0]
-        selectContent(item_id)
+        let item_id = res.data.count[0];
+        selectContent(item_id);
       });
     }
     // 打开上传modal
-    function openUploadModal(val:number) {
-      reactiveData.datasetType=val
-      if (reactiveData.datasetType===4) {
-        reactiveData.accept=".mp4"
-        reactiveData.fileSize="500m"
+    function openUploadModal(val: number) {
+      reactiveData.datasetType = val;
+      if (reactiveData.datasetType === 4) {
+        reactiveData.accept = ".mp4";
+        reactiveData.fileSize = "500m";
       }
-      if (reactiveData.datasetType===3) {
-        reactiveData.accept=".ppt,.pptx"
-        reactiveData.fileSize=""
+      if (reactiveData.datasetType === 3) {
+        reactiveData.accept = ".ppt,.pptx";
+        reactiveData.fileSize = "";
       }
-      reactiveData.uploadVisible=true
+      reactiveData.uploadVisible = true;
     }
     // 关闭上传modal
     function closeUploadModal() {
-      reactiveData.uploadVisible=false
+      reactiveData.uploadVisible = false;
     }
     return {
       ...toRefs(reactiveData),
@@ -803,7 +807,7 @@ export default defineComponent({
       submitFileToDataset,
       uploadRef,
       openUploadModal,
-      closeUploadModal
+      closeUploadModal,
     };
   },
 });
@@ -818,7 +822,7 @@ export default defineComponent({
     height: 100%;
     > .ant-tabs-top-content {
       height: calc(100% - 58px);
-      >.ant-tabs-tabpane{
+      > .ant-tabs-tabpane {
         height: calc(100% - 28px);
       }
       .select-list-head {
@@ -844,8 +848,8 @@ export default defineComponent({
           display: flex;
           flex-direction: row;
           line-height: 40px;
-          background:rgba(var(--primary-color),.2);
-          border: 1px solid rgba(var(--primary-color),.4);
+          background: rgba(var(--primary-color), 0.2);
+          border: 1px solid rgba(var(--primary-color), 0.4);
           border-radius: 3px;
           margin-top: 17px;
           padding: 0 20px;

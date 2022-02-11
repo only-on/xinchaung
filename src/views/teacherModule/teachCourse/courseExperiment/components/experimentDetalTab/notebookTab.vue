@@ -2,65 +2,81 @@
   <div class="note-book-tab-box">
     <div class="note-book-tab-top">
       <div>
-        <span class="experiment-name">{{detailInfo.name}}</span>
+        <span class="experiment-name">{{ detailInfo.name }}</span>
         <div class="experiment-type-or-class-count">
-          <span>类型{{detailInfo.task_type.name}}</span>
-          <span>课时数：{{detailInfo.class_cnt}}</span>
+          <span>类型{{ detailInfo.task_type.name }}</span>
+          <span>课时数：{{ detailInfo.class_cnt }}</span>
         </div>
       </div>
-      <div v-if="know_points.length>0">
-        <span v-for="(item,index) in know_points" :key="index">{{item}}</span>
+      <div v-if="know_points.length > 0">
+        <span v-for="(item, index) in know_points" :key="index">{{
+          item
+        }}</span>
       </div>
     </div>
-    <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange"/>
+    <!-- <tabs v-model:currentKey="currentKey" v-model:sum="experimentExerciseSum" @change="keyChange"/> -->
     <template v-if="currentKey === 1">
       <div class="data-set-box">
         <label>数据集</label>
-        <span v-for="item in detailInfo.datasets" :key="item.uid">{{item.name}}</span>
+        <span v-for="item in detailInfo.datasets" :key="item.uid">{{
+          item.name
+        }}</span>
       </div>
       <div class="experiment-task-box">
         <div class="experiment-task-title">试验任务</div>
         <div class="experiment-task-list">
-          <div class="experiment-task-item" v-for="item in detailInfo.files" :key="item.id">
-            {{item.file_name}}
+          <div
+            class="experiment-task-item"
+            v-for="item in detailInfo.files"
+            :key="item.id"
+          >
+            {{ item.file_name }}
           </div>
         </div>
       </div>
     </template>
     <template v-if="currentKey === 2">
-      <report/>
+      <report />
     </template>
     <template v-if="currentKey === 3">
-      <experiment-exercise v-model:sum="experimentExerciseSum"/>
+      <experiment-exercise v-model:sum="experimentExerciseSum" />
     </template>
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs,inject,watch,ref } from "vue";
-import report from "./report.vue"
-import experimentExercise from "./experimentExercise.vue"
-import tabs from "../tabs.vue"
+import { defineComponent, reactive, toRefs, inject, watch, ref } from "vue";
+import report from "./report.vue";
+import experimentExercise from "./experimentExercise.vue";
+import tabs from "../tabs.vue";
 export default defineComponent({
-  components:{
+  components: {
     report,
-    "experiment-exercise":experimentExercise,
-    tabs
+    "experiment-exercise": experimentExercise,
+    tabs,
   },
   setup() {
     const reactiveData = reactive({
       // currentKey: 1,
     });
-    const currentKey=ref(1)
+    const currentKey = ref(1);
     const experimentExerciseSum = ref(0);
-     const detailInfo: any = inject("detailInfo");
+    const detailInfo: any = inject("detailInfo");
     // const course_id = inject("course_id") as number;
     // const experiment_id: any = inject("experiment_id");
-    const know_points=ref([])
-    watch(()=>detailInfo,()=>{
-      if (detailInfo.value.know_point&&detailInfo.value.know_point.knowledge_name) {
-        know_points.value=detailInfo.value.know_point.knowledge_name.split(",")
-      }
-    },{deep:true,immediate:true})
+    const know_points = ref([]);
+    watch(
+      () => detailInfo,
+      () => {
+        if (
+          detailInfo.value.know_point &&
+          detailInfo.value.know_point.knowledge_name
+        ) {
+          know_points.value =
+            detailInfo.value.know_point.knowledge_name.split(",");
+        }
+      },
+      { deep: true, immediate: true }
+    );
     function keyChange(key: number) {
       currentKey.value = key;
     }
@@ -70,12 +86,11 @@ export default defineComponent({
       ...toRefs(reactiveData),
       know_points,
       currentKey,
-      experimentExerciseSum
+      experimentExerciseSum,
     };
   },
 });
 </script>
-
 
 <style lang="less">
 .note-book-tab-box {
@@ -124,13 +139,13 @@ export default defineComponent({
       }
     }
   }
-  
+
   .data-set-box {
     display: flex;
     flex-direction: row;
     height: 80px;
     align-items: center;
-    background:var(--white-100);
+    background: var(--white-100);
     padding: 0 15px;
     label {
       color: #000000;
@@ -176,7 +191,7 @@ export default defineComponent({
       }
     }
   }
-  .experiment-report-box{
+  .experiment-report-box {
     flex: 1;
     background: var(--white-100);
   }
