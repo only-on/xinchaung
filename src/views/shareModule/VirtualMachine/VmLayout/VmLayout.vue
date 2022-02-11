@@ -1,18 +1,11 @@
-
 <template>
   <div class="vm-layout">
     <div class="vm-header">
       <vm-header></vm-header>
     </div>
     <div class="vm-main">
-      <div class="vm-nav" v-if="vmData.length>0">
+      <div class="vm-nav" v-if="vmData.length > 0">
         <ul class="vm-nav-list">
-          <li class="vm-nav-item" @click="open()">
-            <span
-              class="iconfont"
-              :class="openStatus ? 'icon-shouqi1-copy' : 'icon-shouqi12-copy'"
-            ></span>
-          </li>
           <li
             class="vm-nav-item"
             :class="currentNavKey === item.key ? 'active' : ''"
@@ -24,23 +17,54 @@
             <span class="nav-title">{{ item.name }}</span>
           </li>
         </ul>
-      </div>
-      <div class="vm-content" ref="vmWrapEl">
         <div
           class="vm-content-left"
           ref="leftEl"
           :style="{ width: openStatus ? leftWidth + 'px' : '0px' }"
           v-if="isLeftContentShowType === 'line'"
         >
-          <div class="vm-content-box">
-            <div class="warn-hint">
+          <div class="vm-content-box" v-if="!contentShow">
+            <!-- <div class="warn-hint">
               <span class="iconfont icon-warn"></span
               >该课件仅用于人工智能教学，请勿用于其他用途。
-            </div>
+            </div> -->
             <component :is="currentComponent"></component>
           </div>
           <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
+          <div class="shouqi pointer" @click="open()"></div>
         </div>
+        <div class="forumn" v-if="openStatus">
+          <div class="forumn-input" v-if="!isShowForumn">
+            <a-input @focus="isShowForumn = true" placeholder="说点什么" />
+          </div>
+          <div class="forumn-create" v-if="isShowForumn">
+            <span class="close pointer" @click="isShowForumn = false"
+              ><span class="iconfont icon-guanbi"></span
+            ></span>
+            <a-form ref="formRef" :model="formState" labelAlign="left">
+              <a-form-item label="帖子名称" name="name">
+                <a-input
+                  v-model:value="formState.title"
+                  placeholder="请在这里输入帖子标题"
+                />
+              </a-form-item>
+              <a-form-item>
+                <QuillEditor
+                  v-model="formState.content"
+                  :height="'200px'"
+                  :uploadPathName="'teacherForum'"
+                />
+              </a-form-item>
+              <a-form-item class="btn">
+                <a-button type="primary" @click.prevent="onSubmit"
+                  >发布</a-button
+                >
+              </a-form-item>
+            </a-form>
+          </div>
+        </div>
+      </div>
+      <div class="vm-content" ref="vmWrapEl">
         <div
           class="vm-content-right"
           ref="rightEl"
@@ -51,11 +75,14 @@
       </div>
     </div>
   </div>
+  <a-modal v-model:visible="contentShow" :width="1000" :footer="false">
+    <component :is="currentComponent"></component>
+  </a-modal>
   <a-drawer
     title="Basic Drawer"
     placement="left"
     :closable="false"
-    :visible="drawerVisible"
+    v-model:visible="drawerVisible"
     @close="drawerClose"
     :style="{ left: drawerVisible ? '70px' : '0px' }"
     width="600px"
@@ -85,7 +112,7 @@ import {
   toRefs,
 } from "vue";
 import VM from "./VM/VM.vue";
-import ExperimentalGuide from "./ExperimentalGuide/ExperimentalGuide.vue";
+import ExperimentalGuide from "./ExperimentalGuide/Guide.vue";
 import ExperimentalExercises from "./ExperimentalExercises/ExperimentalExercises.vue";
 import ExperimentalReport from "./ExperimentalReport/ExperimentalReport.vue";
 import InClassPractice from "./InClassPractice/ClassPractice.vue";
@@ -95,7 +122,8 @@ import ExperimentalNote from "./ExperimentalNote/ExperimentalNote.vue";
 import TrainCourseware from "./TrainCourseware/TrainCoursewar.vue";
 import TrainResource from "./TrainResource/TrainResource.vue";
 import TrainNote from "./TrainNote/TrainNote.vue";
-import TrainReport from "./TrainReport/TrainReport.vue"
+import TrainReport from "./TrainReport/TrainReport.vue";
+import QuillEditor from "src/components/editor/quill.vue";
 
 interface Vm {
   key: string;
@@ -114,8 +142,9 @@ export default defineComponent({
     "experimental-note": ExperimentalNote,
     "train-courseware": TrainCourseware,
     "train-resource": TrainResource,
-    "train-note":TrainNote,
-    "train-report":TrainReport
+    "train-note": TrainNote,
+    "train-report": TrainReport,
+    QuillEditor,
   },
   props: ["VmData", "reportId", "isLeftContentShowType"],
   setup(props, { emit }) {
@@ -124,7 +153,9 @@ export default defineComponent({
       return props.reportId;
     });
     provide("reportId", reportId);
-    const currentComponent = (vmData as any).length>0?ref(vmData[0].key):"";
+    const currentComponent =
+      (vmData as any).length > 0 ? ref(vmData[0].key) : "";
+    // currentComponent.value = setCurrentComponent(currentComponent.value)
     const openStatus = ref(false); // left内容打开状态
 
     const vmWrapEl: Ref<HTMLElement | null> = ref(null);
@@ -135,7 +166,7 @@ export default defineComponent({
     const rightWidth: Ref<number> = ref(0); // 右侧宽度
     let mouseStart: number = 0; // 鼠标开始移动位置
     let isMove: boolean = false; // 当前是否可以拖动标识
-    let currentNavKey: Ref<string> = ref("VM");
+    let currentNavKey: Ref<string> = ref("");
     const isLeftContentShowType = props.isLeftContentShowType;
     const drawerVisible = ref(false);
     // 自定义事件
@@ -183,20 +214,33 @@ export default defineComponent({
           return "in-class-forum";
         case "experimental-note":
           return "experimental-note";
-          case "train-note":
+        case "train-note":
           return "train-note";
         case "courseware":
           return "train-courseware";
         case "resource":
           return "train-resource";
         case "train-report":
-          return "train-report"
+          return "train-report";
         default:
           return currentComponent.value;
       }
     }
     // 左边菜单点击事件
     function open(key?: string) {
+      console.log(key);
+      if (key == "report") {
+        contentShow.value = true;
+        openStatus.value = false;
+        drawerVisible.value = false;
+        rightWidth.value =
+          vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
+        window.dispatchEvent(eventCustom);
+        currentComponent.value = setCurrentComponent(key);
+        return;
+      } else {
+        contentShow.value = false;
+      }
       if (isLeftContentShowType === "line") {
         // 当为关闭状态时，从新设置值
         vmWrapWidth.value = window.innerWidth - 70;
@@ -217,7 +261,12 @@ export default defineComponent({
         return;
       }
       if (isLeftContentShowType === "float") {
-        drawerVisible.value = true;
+        if (!key) {
+          drawerVisible.value = !drawerVisible.value;
+        } else {
+          drawerVisible.value = true;
+        }
+
         if (currentNavKey.value === key) {
           return;
         }
@@ -273,6 +322,18 @@ export default defineComponent({
     function drawerClose() {
       drawerVisible.value = false;
     }
+
+    // 论坛
+    let isShowForumn = ref<boolean>(false);
+    let formState = reactive({
+      title: "",
+      content: "",
+    });
+    // 发帖
+    function onSubmit() {}
+
+    //
+    const contentShow = ref(false); // 1 正常左侧显示，2 弹框显示
     return {
       openStatus,
       open,
@@ -290,11 +351,14 @@ export default defineComponent({
       isLeftContentShowType,
       drawerVisible,
       drawerClose,
+      isShowForumn,
+      formState,
+      onSubmit,
+      contentShow,
     };
   },
 });
 </script>
-
 
 <style lang="less">
 .vm-layout {
@@ -304,7 +368,7 @@ export default defineComponent({
   overflow: hidden;
   .vm-header {
     height: 70px;
-    background: #2c2e45;
+    background: #192843;
     flex-shrink: 0;
   }
   .vm-main {
@@ -312,26 +376,33 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     .vm-nav {
-      width: 70px;
-      background: #e2e2e2;
-      flex-shrink: 0;
+      display: flex;
+      position: relative;
       .vm-nav-list {
-        padding-top: 20px;
+        // padding-top: 20px;
+        color: var(--black-65);
+        width: 74px;
+        background: var(--lightgray-2);
+        flex-shrink: 0;
         .vm-nav-item {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          margin-bottom: 32px;
-          color: #050101;
+          // display: flex;
+          // flex-direction: column;
+          // align-items: center;
+          // margin-bottom: 32px;
+          // color: #050101;
           transition: 0.5s;
+          height: 43px;
+          line-height: 19px;
+          padding: 12px 14px;
           &.active {
             color: var(--primary-color);
           }
           .iconfont {
-            font-size: 22px;
+            font-size: var(--base-font-size);
+            margin-right: 4px;
           }
           .nav-title {
-            font-size: 12px;
+            // font-size: 12px;
           }
           &:hover {
             color: var(--primary-color);
@@ -343,11 +414,6 @@ export default defineComponent({
         //       cursor: pointer;
         //   }
       }
-    }
-    .vm-content {
-      flex: 1;
-      display: flex;
-      flex-direction: row;
       .vm-content-left {
         position: relative;
         width: 434px;
@@ -358,6 +424,7 @@ export default defineComponent({
         white-space: nowrap;
         text-overflow: ellipsis;
         transition: 0.5s;
+        background-color: var(--white-100);
         .vm-content-box {
           width: 100%;
           .warn-hint {
@@ -386,7 +453,65 @@ export default defineComponent({
             // transform: scaleX(1);
           }
         }
+        .shouqi {
+          height: 159px;
+          width: 10px;
+          background: #e9e9e9;
+          border-radius: 4px 0px 0px 4px;
+          position: absolute;
+          right: 6px;
+          top: 50%;
+          margin-top: -80px;
+          &::before {
+            content: "";
+            display: inline-block;
+            width: 0;
+            height: 0;
+            border: 4px solid rgba(0, 0, 0, 0.45);
+            border-top-color: transparent;
+            border-left-color: transparent;
+            border-bottom-color: transparent;
+            position: absolute;
+            top: 50%;
+            margin-top: -2px;
+            right: 3px;
+          }
+        }
       }
+      .forumn {
+        width: 100%;
+        position: absolute;
+        bottom: 0;
+        background-color: var(--white-100);
+        box-shadow: 0px -3px 6px 0px rgba(0, 0, 0, 0.14);
+        .forumn-input {
+          padding: 18px 42px 18px 37px;
+        }
+        .forumn-create {
+          padding: 20px 30px;
+          position: relative;
+          .ant-form {
+            .btn {
+              margin-bottom: 0;
+              text-align: right;
+            }
+            .ant-input {
+              width: 340px;
+            }
+          }
+          .close {
+            position: absolute;
+            top: 13px;
+            right: 13px;
+            color: var(--black-45);
+          }
+        }
+      }
+    }
+    .vm-content {
+      flex: 1;
+      display: flex;
+      flex-direction: row;
       .vm-content-right {
         width: 100%;
         overflow: hidden;
