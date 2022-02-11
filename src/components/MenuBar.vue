@@ -1,11 +1,5 @@
 <template>
   <div class="nav__menu">
-    <!-- <div class="menu__top-item ant-dropdown-trigger" v-for="v in menus" :key="v">
-      <a-dropdown>
-        <div></div>
-      </a-dropdown>
-    </div> -->
-    {{ activeName }}
     <a-dropdown v-for="v in menus" :key="v">
       <div
         class="menu__top-item ant-dropdown-trigger"
