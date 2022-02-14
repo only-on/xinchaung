@@ -102,7 +102,7 @@ export default defineComponent({
   color: var(--black-65);
   line-height: 24px;
   .read-btn {
-    color: var(--orangeyellow-6);
+    color: var(--primary-color);
     margin-left: 12px;
     .iconfont {
       font-size: 14px;
@@ -124,7 +124,7 @@ export default defineComponent({
     margin: 0 24px;
   }
   .reply-btn {
-    color: var(--orangeyellow-6);
+    color: var(--primary-color);
     margin-left: 3px;
   }
 }
@@ -149,8 +149,8 @@ export default defineComponent({
         line-height: 34px;
         padding: 0 22px;
         border-radius: 18px;
-        border: 1px solid var(--orangeyellow-6);
-        color: var(--orangeyellow-6);
+        border: 1px solid var(--primary-color);
+        color: var(--primary-color);
       }
     }
   }
@@ -169,7 +169,7 @@ export default defineComponent({
       line-height: 34px;
       padding: 0 36px;
       border-radius: 17px;
-      background: var(--orangeyellow-6);
+      background: var(--primary-color);
       color: var(--white-100);
     }
   }
@@ -188,7 +188,7 @@ export default defineComponent({
   bottom: 0;
   width: 830px;
   .right {
-    color: var(--orangeyellow-6);
+    color: var(--primary-color);
     margin-left: 12px;
     .iconfont {
       font-size: 14px;
@@ -197,7 +197,7 @@ export default defineComponent({
   }
   .left {
     span:last-child {
-      color: var(--orangeyellow-6);
+      color: var(--primary-color);
       margin-left: 4px;
     }
   }

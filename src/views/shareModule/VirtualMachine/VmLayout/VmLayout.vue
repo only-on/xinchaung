@@ -526,19 +526,6 @@ interface IFormState {
     }
   }
 }
-.vm-content-box {
-  width: 100%;
-  .warn-hint {
-    color: #ff3e00;
-    text-align: center;
-    font-size: 12px;
-    line-height: 25px;
-    background: #fff8f8;
-    > .iconfont {
-      margin-right: 5px;
-    }
-  }
-}
 .content-drawer {
   .ant-drawer-header {
     display: none;
