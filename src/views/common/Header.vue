@@ -138,6 +138,35 @@ export default defineComponent({
         if (res) {
           menus.length = 0;
           let data = res.data.menus;
+          let center = {
+            icon: "",
+            id: 170,
+            name: "实验中心",
+            parent_id: 0,
+            sort: 3,
+            url: "",
+            children: [
+              {
+                children: [],
+                icon: "",
+                id: 1148,
+                name: "实验资源库",
+                parent_id: 161,
+                sort: 1,
+                url: "/teacher/teacherExperimentResourcePool",
+              },
+              {
+                children: [],
+                icon: "",
+                id: 1149,
+                name: "镜像资源库",
+                parent_id: 161,
+                sort: 2,
+                url: "/teacher/teacherImageResourcePool",
+              },
+            ],
+          };
+          data.push(center);
           activeName.value = lStorage.get("menuActiveName")
             ? lStorage.get("menuActiveName")
             : data && data.length && data[0].name;
