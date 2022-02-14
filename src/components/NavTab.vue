@@ -25,22 +25,6 @@
           {{ v.name }}
         </div>
       </div>
-      <div class="add flexCenter">
-        <a-input-search class="greenSearch" placeholder="请输入关键字查询" />
-        <a-dropdown>
-          <span class="addCircular iconfont icon-tianjia"></span>
-          <template #overlay>
-            <a-menu class="menu__group">
-              <a-menu-item>
-                <div @click="">本地上传</div>
-              </a-menu-item>
-              <a-menu-item>
-                <div @click="">在线制作</div>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
     </div>
   </div>
 </template>
@@ -228,12 +212,6 @@ export default defineComponent({
     .activeBor {
       border-bottom: 3px solid var(--primary-color);
     }
-  }
-  .add {
-    display: none;
-    position: absolute;
-    right: 0;
-    top: 14px;
   }
   .nav__tab--middle {
     flex: 1;
