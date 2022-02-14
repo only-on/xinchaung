@@ -5,26 +5,31 @@
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <div class="vncloading" v-if="!uuidLoading || !vncLoadingV">
-          <!-- <div class="word">
+        <!-- <div class="vncloading" v-if="!uuidLoading || !vncLoadingV">
+          <div class="word">
            <img :src="loadingGif" alt="" srcset="">
            <div class="loading">
              <span>虚拟机加载中，请稍后...</span>
            </div>
-          </div> -->
-        </div>
+          </div>
+        </div> -->
         <!-- <div v-else-if="!vncLoadingV" class="vncloading">
           <div class="word">
             <img :src="loadingGif" alt="" srcset="">
           </div>
         </div> -->
-        <vue-no-vnc
-          background="rgb(40,40,40)"
-          :options="vmOptions"
-          refName="refName"
-          ref="novncEl"
-          @clipboard="clipboard"
-        />
+        <div class="vnc-box">
+          <vue-no-vnc
+            background="rgb(40,40,40)"
+            :options="vmOptions"
+            refName="refName"
+            ref="novncEl"
+            @clipboard="clipboard"
+          />
+        </div>
+        <div class="tab-btn pointer" @click="showChange">
+          点击切换为{{ currentInterface === "ssh" ? "VNC" : "SSH链接" }}
+        </div>
       </template>
     </template>
   </layout>
@@ -301,6 +306,49 @@ export default defineComponent({
     function clipboard(message: CustomEvent) {
       console.log(message);
     }
+
+    // vnc和ssh切换
+    function showChange() {
+      console.log(vmInfoData.value.data.vms);
+      let currentvm = vmInfoData.value.data.vms[vmCurrentIndex.value];
+      let cureentIp = location.protocol + "//" + location.hostname;
+
+      console.log(cureentIp);
+      if (currentInterface.value === "vnc") {
+        currentInterface.value = "ssh";
+        sshUrl.value =
+          getVmConnectSetting.SSHHOST +
+          ":2222/ssh/host/" +
+          currentvm.host_ip +
+          "/" +
+          currentvm.ssh_port;
+      }
+      if (currentInterface.value === "ssh") {
+        currentInterface.value = "vnc";
+        if (currentvm.switch === 1) {
+          vmOptions.value.password = getVmConnectSetting.VNCPASS;
+          vmOptions.value.wsUrl =
+            getVmConnectSetting.VNCPROTOC +
+            "://" +
+            currentvm.host_ip +
+            ":" +
+            getVmConnectSetting.VNCPORT +
+            "/websockify?vm_uuid=" +
+            currentvm.uuid;
+        } else {
+          let param = {
+            action: "switch2Vnc",
+            params: {
+              type: type,
+              opType: opType,
+              uuid: uuid.value,
+              taskId: taskId,
+            },
+          };
+          // vmApi.switchInterfaceApi({param:{...param}})
+        }
+      }
+    }
     return {
       novncEl,
       data,
@@ -314,6 +362,7 @@ export default defineComponent({
       currentInterface,
       opType,
       loadingGif,
+      showChange,
     };
   },
 });
@@ -351,25 +400,16 @@ export default defineComponent({
       justify-content: center;
       align-items: center;
     }
-  }
-}
-.action-handle-dropdown {
-  .iconfont {
-    margin-right: 15px;
-    width: 15px;
-    display: inline-block;
-  }
-
-  .action-item {
-    &:hover {
-      color: var(--primary-color);
+    .vnc-box {
+      height: calc(100% - 46px);
+      background: radial-gradient(#010b24, #010b24);
     }
-    &.active {
-      color: var(--primary-color);
-    }
-    &.disabled {
-      color: rgb(196, 196, 196);
-      pointer-events: none;
+    .tab-btn {
+      height: 46px;
+      line-height: 46px;
+      background-color: var(--black-100);
+      color: var(--white-100);
+      text-align: center;
     }
   }
 }
