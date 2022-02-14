@@ -1,107 +1,23 @@
 <template>
   <layout :VmData="data" :reportId="reportTemid" isLeftContentShowType="line">
-    <template v-slot:header>
-      <div class="vm-header-student" v-if="roleType">
-        <div class="vm-header-left">
-          <a-button type="primary" @click="back">返回</a-button>
-          <a-dropdown class="">
-            <template #overlay>
-              <a-menu @click="handleMenuClick" class="action-handle-dropdown">
-                <a-menu-item key="revertVm" class="action-item">
-                  <span class="icon-fasong iconfont"></span>发送Ctrl+Alt+Del
-                </a-menu-item>
-                <a-menu-item key="sendSelectContent" class="action-item">
-                  <span class="icon-gongxiang1 iconfont"></span>发送选择内容
-                </a-menu-item>
-                <a-menu-item
-                  v-if="opType != 'prepare'"
-                  key="startRecord"
-                  class="action-item"
-                  :class="isScreenRecording ? 'disabled' : ''"
-                >
-                  <span class="icon-luping iconfont"></span>开始录屏
-                </a-menu-item>
-                <a-menu-item
-                  v-if="opType != 'prepare'"
-                  key="stopRecord"
-                  class="action-item"
-                  :class="!isScreenRecording ? 'disabled' : ''"
-                >
-                  <span class="icon-luping iconfont"></span>结束录屏
-                </a-menu-item>
-                <a-menu-item key="resetVm" class="action-item">
-                  <span class="icon-zhongzhi iconfont"></span>重置
-                </a-menu-item>
-                <a-menu-item key="closeVm" class="action-item">
-                  <span class="icon-kaiguanshenx iconfont"></span>关机
-                </a-menu-item>
-              </a-menu>
-            </template>
-            <a-button type="primary">
-              操作
-              <span
-                class="icon-zhankai iconfont"
-                style="margin-left: 5px"
-              ></span
-            ></a-button>
-          </a-dropdown>
-        </div>
-
-        <div class="vm-header-title">实验名称</div>
-        <div class="vm-header-right">
-          <span class="vm-time">
-            <span class="icon-shijian1 iconfont"></span>
-            <span
-              >实验剩余时间:
-              {{
-                experimentTime?.h +
-                "时" +
-                experimentTime?.m +
-                "分" +
-                experimentTime?.s +
-                "秒"
-              }}</span
-            >
-          </span>
-          <a-button class="delayed-btn" @click="delayedTime">延时</a-button>
-          <span class="vm-action-box">
-            <a-button type="primary" @click="saveKvm">保存进度</a-button>
-            <a-button type="danger" @click="finishExperiment"
-              >结束实验</a-button
-            >
-          </span>
-        </div>
-      </div>
-      <div v-else class="vm-header-teacher" v-layout-bg="layoutBg">
-        <div class="vm-header-left">
-          <a-button type="primary" @click="back">返回</a-button>
-          <a-button type="primary">操作</a-button>
-        </div>
-        <div class="vm-header-title">{{ allInfo?.base_info?.name }}</div>
-        <div class="vm-header-right">
-          <span class="vm-action-box">
-            <a-button type="danger" @click="finishExperiment"
-              >结束备课</a-button
-            >
-          </span>
-        </div>
-      </div>
-    </template>
     <template v-slot:right>
       <template v-if="currentInterface === 'ssh'">
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <div class="vncloading" v-if="!uuidLoading">
-          <div class="word">
+        <div class="vncloading" v-if="!uuidLoading || !vncLoadingV">
+          <!-- <div class="word">
            <img :src="loadingGif" alt="" srcset="">
-          </div>
+           <div class="loading">
+             <span>虚拟机加载中，请稍后...</span>
+           </div>
+          </div> -->
         </div>
-        <div v-else-if="!vncLoadingV" class="vncloading">
+        <!-- <div v-else-if="!vncLoadingV" class="vncloading">
           <div class="word">
             <img :src="loadingGif" alt="" srcset="">
           </div>
-        </div>
+        </div> -->
         <vue-no-vnc
           background="rgb(40,40,40)"
           :options="vmOptions"
@@ -112,24 +28,6 @@
       </template>
     </template>
   </layout>
-  <!-- <a-modal
-    :visible="recommendVisible"
-    title="推荐实验"
-    @cancel="closeRecommend"
-    @ok="okRecommend"
-  >
-    <div>
-      <ul>
-        <li
-          v-for="(item, index) in recommendExperimentData"
-          :key="index"
-          @click="recommend(item)"
-        >
-          {{ item.name }}
-        </li>
-      </ul>
-    </div>
-  </a-modal> -->
 </template>
 
 <script lang="ts">
@@ -146,8 +44,7 @@ import {
 import _ from "lodash";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/VmLayout.vue";
-import layoutBg from "src/assets/images/common/layout_bg.jpg";
-import loadingGif from "src/assets/images/vmloading.gif"
+import loadingGif from "src/assets/images/vmloading.gif";
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -190,11 +87,19 @@ type TvmQuery = {
   routerQuery: string;
 };
 export default defineComponent({
+  name: "vnc",
   components: {
     layout,
     "vue-no-vnc": VueNoVnc,
   },
   setup(props, { emit }) {
+    // connection_id=131_206
+    // opType=continue
+    // type=course
+    // taskId=500136
+    // topoinst_uuid=315bdc23-4c6e-40d1-aa40-2283946ed9ae
+    // topoinst_id=206
+    // routerQuery={"detailId":"4808","course_id":"500073"}
     var reportTemid: Ref<any> = ref(0);
     const route = useRoute();
     const router = useRouter();
@@ -203,16 +108,15 @@ export default defineComponent({
     let role = storage.lStorage.get("role");
     let ws_config = storage.lStorage.get("ws_config");
     const {
-      opType,  // 实验学习类型
-      connection_id,
-      topoinst_uuid,
-      taskId,
-      type,
+      opType, // 实验学习类型
+      connection_id, // 用户id_环境id
+      taskId, // 实验id
+      type, // 是实验还是课程
       topoinst_id,
-      routerQuery,  // 上一个页面需要参数
+      topoinst_uuid,
+      routerQuery, // 上一个页面需要参数
     }: TvmQuery = vmQuery;
 
-    const step_score_exists: boolean | string = "";
     const reactiveData: UnwrapNestedRefs<{
       allInfo: any;
       vmInfoData: any;
@@ -225,27 +129,18 @@ export default defineComponent({
         password: "", // vncpassword
         wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
       },
-      recommendExperimentData: [],  // 推荐实验数据
+      recommendExperimentData: [], // 推荐实验数据
     });
-    const recommendVisible: Ref<boolean> = ref(false);
-    // const vmInfoData=ref({})
+
     let vncLoadingV = ref(true);
     let uuidLoading = ref(false);
     const use_time: Ref<number> = ref(900);
-    let experimentTime: Ref<any> = ref({
-      h: 0,
-      m: 0,
-      s: 0,
-    });
     let uuid = ref("");
-    let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
-    let taskType = ref(""); // 实验类型
-    const isScreenRecording = ref(false);
+    let taskType = ref("11"); // 实验类型  true是实验 false是实训
     provide("vncLoading", vncLoadingV);
-    const roleType = ref(true);
     const wsVmConnect = ref(); // ws实例
     const sshUrl = ref("");
-    const currentInterface = ref("vnc");  // 环境类型ssh、vnc
+    const currentInterface = ref("vnc"); // 环境类型ssh、vnc
     const vmCurrentIndex = ref(0);
     let { vmInfoData, vmOptions, allInfo, recommendExperimentData } =
       toRefs(reactiveData);
@@ -291,14 +186,13 @@ export default defineComponent({
             { name: "虚拟机", key: "vm", icon: "icon-xuniji" },
             { name: "实验指导", key: "guide", icon: "icon-zhidao" },
           ];
+    navData = [
+      { name: "指导", key: "guide", icon: "icon-zhidao" },
+      { name: "笔记", key: "experimental-note", icon: "icon-biji" },
+      { name: "报告", key: "report", icon: "icon-baogao" },
+      { name: "问答", key: "forum", icon: "icon-wenda" },
+    ];
     const data = reactive(navData);
-    function back() {
-      if (opType === "test" || opType === "prepare") {
-        endVmEnvirment();
-      } else {
-        backTo(router, type, 3, routerQuery);
-      }
-    }
 
     // 初始化websocket
     function initWs() {
@@ -352,7 +246,6 @@ export default defineComponent({
     }
     onBeforeRouteLeave(() => {
       (wsVmConnect.value as any).close();
-      clearInterval(Number(timer));
     });
 
     onBeforeRouteUpdate(() => {
@@ -390,69 +283,6 @@ export default defineComponent({
       });
     }
 
-    // 结束脚本入口
-    function endVmEnvirment() {
-      let params = {
-        opType: opType,
-        type: type,
-        taskId: taskId,
-        topoinst_id: topoinst_id,
-      };
-
-      setTimeout(() => {
-        endExperiment(params).then((res: any) => {
-          if (res.data.length > 0) {
-            recommendExperimentData.value = res.data;
-            recommendVisible.value = true;
-          }
-          message.success("结束成功");
-          backTo(router, type, 3, routerQuery);
-        });
-      }, 3000);
-    }
-    // 结束实验
-    async function endVmOperates() {
-      let param: IStopOperatesParam = {
-        type: type,
-        taskId: taskId,
-        opType: opType,
-        action: "recommend",
-        topoinst_id: topoinst_uuid,
-      };
-      return await endOperates(param);
-    }
-
-    // 结束实验
-    function finishExperiment() {
-      let modal = Modal.confirm({
-        title: "确认结束实验吗？",
-        okText: "确认",
-        onOk: () => {
-          if (opType === "recommend") {
-            endVmEnvirment();
-            return;
-          }
-          if (
-            allInfo &&
-            allInfo.value &&
-            allInfo.value.base_info &&
-            allInfo.value.base_info.step_score_exists
-          ) {
-            endVmOperates().then((res: any) => {
-              recommendExperimentData.value = res.data;
-              endVmEnvirment();
-            });
-          } else {
-            endVmEnvirment();
-          }
-          modal.destroy();
-        },
-        cancelText: "取消",
-        onCancel: () => {
-          modal.destroy();
-        },
-      });
-    }
     // 设置当前虚拟机信息
     function settingCurrentVM(data: any) {
       reactiveData.vmOptions.password = getVmConnectSetting.VNCPASS;
@@ -467,196 +297,55 @@ export default defineComponent({
       uuid.value = data.uuid;
     }
 
-    // 推荐实验
-    function recommend(val: {
-      id: number;
-      name: string;
-      recommend_type: "content" | "train";
-    }) {
-      let cloneVal = _.cloneDeep(val);
-      let params: IRecommendExperiment = {
-        recommendType: cloneVal.recommend_type,
-        opType: "recommend",
-        type: type,
-        taskId: cloneVal.id,
-      };
-      toStudyRecommendExperiment(router, params, { topoinst_id });
-    }
-
-    // 学生学习推荐实验/实训
-    // async function studyRecommendExperiment(params: IRecommendExperiment) {
-    //   return await recommendExperiment(params);
-    // }
-
-    // 关闭推荐modal
-    function closeRecommend() {
-      recommendVisible.value = false;
-    }
-    // 确认推荐modal
-    function okRecommend() {
-      recommendVisible.value = false;
-    }
-
-    // 操作虚拟机
-    function VmOperatesHandle(actionType: IAction) {
-      let params: IOperatesHandle = {
-        action: actionType,
-        params: {
-          type: type,
-          opType: opType,
-          uuid: uuid.value,
-          taskId: taskId,
-        },
-      };
-      return new Promise((resolve: any, reject: any) => {
-        operatesHandle(params)
-          .then((res) => {
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
-      }).catch();
-    }
-    // 操作虚拟机
-    function handleMenuClick(downEvent: any) {
-      let key = downEvent.key;
-      if (key === "sendSelectContent") {
-        novncEl.value.sendSelectContent(copyText);
-        return;
-      }
-      VmOperatesHandle(key).then((res) => {
-        console.log(res);
-        message.success("操作成功");
-      });
-    }
-
-    // 延时
-    function delayedTime() {
-      VmOperatesHandle("delay").then((res) => {
-        console.log(res);
-      });
-    }
-
-    // 保存进度
-    function saveKvm() {
-      VmOperatesHandle("saveKvm").then((res) => {
-        backTo(router, type, 3, routerQuery);
-      });
-    }
-
     // 选中内容发送变化时
     function clipboard(message: CustomEvent) {
       console.log(message);
     }
     return {
       novncEl,
-      roleType,
-      back,
       data,
       provide,
       vncLoadingV,
       uuidLoading,
       ...toRefs(reactiveData),
-      finishExperiment,
-      recommendVisible,
-      recommend,
-      closeRecommend,
-      okRecommend,
-      experimentTime,
-      VmOperatesHandle,
-      handleMenuClick,
-      delayedTime,
-      saveKvm,
       clipboard,
-      isScreenRecording,
       reportTemid,
       sshUrl,
       currentInterface,
-      layoutBg,
       opType,
-      loadingGif
+      loadingGif,
     };
   },
 });
 </script>
 <style lang="less">
 .vm-layout {
-  // .vm-header {
-  //   .vm-header-student,
-  //   .vm-header-teacher {
-  //     display: flex;
-  //     flex-direction: row;
-  //     justify-content: space-between;
-  //     align-items: center;
-  //     height: 100%;
-  //     padding: 0 43px;
-  //     .vm-header-left {
-  //       > button {
-  //         margin-right: 20px;
-  //       }
-  //     }
-  //     .vm-header-title {
-  //       color: var(--white-100);
-  //     }
-  //     .vm-header-right {
-  //       .delayed-btn {
-  //         background: var(--glod-6);
-  //         color: var(--white-100);
-  //         border: none;
-  //         &:hover {
-  //           background: rgba(#faad14, 0.8);
-  //         }
-  //       }
-  //       .vm-time {
-  //         color: var(--glod-6);
-  //         margin: 0 10px;
-  //         .iconfont {
-  //           margin-right: 3px;
-  //           font-size: 12px;
-  //         }
-  //       }
-  //       .vm-action-box {
-  //         margin-left: 25px;
-  //         > button {
-  //           margin-left: 20px;
-  //         }
-  //       }
-  //     }
-  //   }
-  // }
   .vm-content-right {
     .vncloading {
-      position: relative;
+      // position: relative;
       height: 100%;
       text-align: center;
-       background: radial-gradient(#010B24, #010B24);
+      background: radial-gradient(#010b24, #010b24);
       .word {
+        width: 100%;
+        height: 100%;
         bottom: 0;
         color: #fff;
-        
         left: 0;
         margin: auto;
         right: 0;
         position: absolute;
         // text-shadow: 0 0 10px rgba(117, 121, 224, 0.5),
         //   0 0 5px rgba(117, 121, 224, 0.5);
-        top: 50%;
-        transform: translateY(-50%);
+        // top: 50%;
+        // transform: translateY(-50%);
+        background-color: var(--black-2);
+        .loading {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+        }
       }
-      // .overlay {
-      //   background-image: linear-gradient(
-      //     transparent 0%,
-      //     rgba(10, 16, 10, 0.5) 50%
-      //   );
-      //   background-size: 1000px 2px;
-      //   bottom: 0;
-      //   content: "";
-      //   left: 0;
-      //   position: absolute;
-      //   right: 0;
-      //   top: 0;
-      // }
       color: var(--white-100);
       display: flex;
       justify-content: center;

@@ -24,10 +24,10 @@
           v-if="isLeftContentShowType === 'line'"
         >
           <div class="vm-content-box" v-if="!contentShow">
-            <!-- <div class="warn-hint">
+            <div class="warn-hint">
               <span class="iconfont icon-warn"></span
               >该课件仅用于人工智能教学，请勿用于其他用途。
-            </div> -->
+            </div>
             <component :is="currentComponent"></component>
           </div>
           <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
@@ -124,6 +124,7 @@ import TrainResource from "./TrainResource/TrainResource.vue";
 import TrainNote from "./TrainNote/TrainNote.vue";
 import TrainReport from "./TrainReport/TrainReport.vue";
 import QuillEditor from "src/components/editor/quill.vue";
+import { Delta } from "quill-delta";
 
 interface Vm {
   key: string;
@@ -325,9 +326,11 @@ export default defineComponent({
 
     // 论坛
     let isShowForumn = ref<boolean>(false);
-    let formState = reactive({
+    let formState = reactive<IFormState>({
       title: "",
-      content: "",
+      content: {
+        ops: [],
+      },
     });
     // 发帖
     function onSubmit() {}
@@ -358,6 +361,10 @@ export default defineComponent({
     };
   },
 });
+interface IFormState {
+  title: string;
+  content: Delta;
+}
 </script>
 
 <style lang="less">
