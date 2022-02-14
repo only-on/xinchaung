@@ -3,331 +3,387 @@
 // @import url(./purple.less);
 @import url(src/themecss/variable.css);
 // @import 'src/themecss/variable.css'
-*{margin: 0;padding: 0;box-sizing: border-box;}
-html, body {
-    min-height: 100%;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
-h1, h2, h3, h4, h5, h6{font-weight:normal;margin: 0;}
-ul,li{
-    list-style: none;
+html,
+body {
+  min-height: 100%;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: normal;
+  margin: 0;
+}
+ul,
+li {
+  list-style: none;
 }
 a {
-    text-decoration: none;
-    color: #232323;
+  text-decoration: none;
+  color: #232323;
 }
 body {
-    font-family: "Microsoft YaHei";
-    font-size:14px;
-    color:#333;
+  font-family: "Microsoft YaHei";
+  font-size: 14px;
+  color: #333;
 }
 
 img {
-    border: none;
-    vertical-align: middle;
+  border: none;
+  vertical-align: middle;
 }
-
-
 
 table {
-    border-collapse: collapse;
-    table-layout: fixed;
+  border-collapse: collapse;
+  table-layout: fixed;
 }
 
-input, textarea {
-    outline: none;
-    border: none;
+input,
+textarea {
+  outline: none;
+  border: none;
 }
 
 textarea {
-    resize: none;
-    overflow: auto;
+  resize: none;
+  overflow: auto;
 }
 
 .clearfix {
-    zoom: 1;
+  zoom: 1;
 }
 
 .clearfix:after {
-    content: ".";
-    width: 0;
-    height: 0;
-    visibility: hidden;
-    display: block;
-    clear: both;
-    overflow:hidden;
+  content: ".";
+  width: 0;
+  height: 0;
+  visibility: hidden;
+  display: block;
+  clear: both;
+  overflow: hidden;
 }
 
 .fl {
-    float: left
+  float: left;
 }
 
 .fr {
-    float: right
+  float: right;
 }
 
 .tl {
-    text-align: left;
+  text-align: left;
 }
 
 .tc {
-    text-align: center
+  text-align: center;
 }
 
 .tr {
-    text-align: right;
+  text-align: right;
 }
 
 .pointer {
-	cursor: pointer;
+  cursor: pointer;
 }
 
 .ellipse {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
-.inline{
-    display: inline-block;
-    *display: inline;
-    *zoom: 1;
+.inline {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
 }
 
 // 鼠标移动、移开样式
-span,div,a{
-    .theme-active{
-        color: var(--primary-color);
-        transition: 0.5s;
-        &:hover{
-            color:var(--primary-4);
-            // color:color(~`colorPalette('@{theme-color}', 4) `)
-        }
-    }
-    
-}
-
-.scrollbar{
-    overflow: auto;
-    // 滚动条整体部分
-    &::-webkit-scrollbar{
-        width:10px;
-        height: 10px;
-        background:rgb(241, 241, 241)
-    }
-    // 滚动条两端的按钮
-    &::-webkit-scrollbar-button{
-        background-color:var(--primary-color);
-        width: 10px;
-        height: 1px;
-    }
-    // 外层轨道
-    &::-webkit-scrollbar-track{
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: #f9d6ff;
-        border-radius: 3px;
-    }
-    // 内层轨道
-    &::-webkit-scrollbar-track-piece{
-
-    }
-    // 滚动条里面可以拖动的那部分
-    &::-webkit-scrollbar-thumb{
-        border-radius: 7px;
-        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,.3);
-        background-color: var(--primary-color);
-    }
-    // 定义右下角汇合处的样式
-    &::-webkit-scrollbar-corner{
-        background:var(--primary-color);
-    }
-    // 两个滚动条交汇处用于拖动调整元素大小的小控件
-    &::-webkit-resizer{
-        
-    }
-}
-.setScrollbar{
-    &::-webkit-scrollbar{
-        width:0px;
-        height: 8px;
-    }
-    &::-webkit-scrollbar-thumb{
-        border-radius: 3px;
-        background: var(--primary-1);
-    }
-    &::-webkit-scrollbar{
-        width: 8px;
-    }
-}
-
-.a-link{
+span,
+div,
+a {
+  .theme-active {
     color: var(--primary-color);
-    cursor: pointer;
-    &:hover{
-        color:rgba(var(--primary-color),0.5) 
+    transition: 0.5s;
+    &:hover {
+      color: var(--primary-4);
+      // color:color(~`colorPalette('@{theme-color}', 4) `)
     }
+  }
+}
+
+.scrollbar {
+  overflow: auto;
+  // 滚动条整体部分
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+    background: rgb(241, 241, 241);
+  }
+  // 滚动条两端的按钮
+  &::-webkit-scrollbar-button {
+    background-color: var(--primary-color);
+    width: 10px;
+    height: 1px;
+  }
+  // 外层轨道
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: #f9d6ff;
+    border-radius: 3px;
+  }
+  // 内层轨道
+  &::-webkit-scrollbar-track-piece {
+  }
+  // 滚动条里面可以拖动的那部分
+  &::-webkit-scrollbar-thumb {
+    border-radius: 7px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background-color: var(--primary-color);
+  }
+  // 定义右下角汇合处的样式
+  &::-webkit-scrollbar-corner {
+    background: var(--primary-color);
+  }
+  // 两个滚动条交汇处用于拖动调整元素大小的小控件
+  &::-webkit-resizer {
+  }
+}
+.setScrollbar {
+  &::-webkit-scrollbar {
+    width: 0px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: var(--primary-1);
+  }
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+}
+
+.a-link {
+  color: var(--primary-color);
+  cursor: pointer;
+  &:hover {
+    color: rgba(var(--primary-color), 0.5);
+  }
 }
 /*统一修一个antd默认样式*/
-#app{
-    .ant-btn{
-        font-size: 14px;
-        box-shadow: none;
-        text-shadow: none;
-        height: 34px;
-        border-radius: 17px;
-        padding: 4px 27px;
-      }
-      .ant-btn-primary{
-        //   height: 34px;
-        //   border-radius: 17px;
-        //   padding: 4px 27px;
-      }
-      .ant-btn-lg{
-        width: 170px;
-        height: 40px;
-        border-radius: 20px;
-      }
-      .ant-btn-sm {
-        height: 24px;
-        border-radius: 12px;
-        padding: 0 24px;
-      }
-      .ant-input{
-        font-size: 14px;
-      }
-      .ant-form-item-label{
-        label{
-            font-size: 14px;
-        }
-      }
-      .ant-select{
-          font-size: 14px;
-      }
-      .ant-checkbox-group{
-        label{
-            font-size: 14px;
-        }
-      }
-}
-.ant-modal-root{
-    .ant-modal-header{
-        background: transparent;
-        border-bottom:none;
-        .ant-modal-title{
-            color: rgba(var(--black-100),1);
-            font-weight: 400;
-            font-size: 16px;
-            letter-spacing: 2px;
-        }
+#app {
+  .ant-btn {
+    font-size: 14px;
+    box-shadow: none;
+    text-shadow: none;
+    height: 34px;
+    border-radius: 17px;
+    padding: 4px 27px;
+  }
+  .ant-btn-primary {
+    //   height: 34px;
+    //   border-radius: 17px;
+    //   padding: 4px 27px;
+  }
+  .ant-btn-lg {
+    width: 170px;
+    height: 40px;
+    border-radius: 20px;
+  }
+  .ant-btn-sm {
+    height: 24px;
+    border-radius: 12px;
+    padding: 0 24px;
+  }
+  .ant-input {
+    font-size: 14px;
+  }
+  .ant-form-item-label {
+    label {
+      font-size: 14px;
     }
-    .createdSet{
-        .ant-modal-close-x{
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-        }
+  }
+  .ant-select {
+    font-size: 14px;
+  }
+  .ant-checkbox-group {
+    label {
+      font-size: 14px;
     }
-    .ant-modal-close-x{
-        color: rgba(var(--black-100),0.4);
-        transition: 0.5s;
-        &:hover{
-            color: rgba(var(--black-100),1);
-        }
+  }
+}
+.ant-modal-root {
+  .ant-modal-header {
+    background: transparent;
+    border-bottom: none;
+    .ant-modal-title {
+      color: rgba(var(--black-100), 1);
+      font-weight: 400;
+      font-size: 16px;
+      letter-spacing: 2px;
     }
-    .ant-btn{
-        font-size: 14px;
-        box-shadow: none;
-        text-shadow: none;
-      }
-      .ant-input{
-        font-size: 14px;
-      }
-      .ant-form-item-label{
-        label{
-            font-size: 14px;
-        }
-      }
-      .ant-select{
-          font-size: 14px;
-      }
-      .ant-checkbox-group{
-        label{
-            font-size: 14px;
-        }
-      }
-}
-
-
-.ant-table-tbody{
-    > tr:hover:not(.ant-table-expanded-row) > td,.ant-table-row-hover,.ant-table-row-hover>td{
-        background:rgba(var(--black-100),2%)!important;
+  }
+  .createdSet {
+    .ant-modal-close-x {
+      width: 30px;
+      height: 30px;
+      line-height: 30px;
     }
-}
-.ant-table-fixed{
-    .ant-table-row-hover, .ant-table-row-hover>td{
-    background:rgba(var(--black-100),2%)!important;
+  }
+  .ant-modal-close-x {
+    color: rgba(var(--black-100), 0.4);
+    transition: 0.5s;
+    &:hover {
+      color: rgba(var(--black-100), 1);
     }
-}
-.ant-table-tbody > tr.ant-table-row-selected td{ 
-    background-color:rgba(222,223,253,0.50)!important;
-}
-.ant-table-tbody > tr.ant-table-row-selected:hover{ 
-    background-color:var(--primary-1)!important;
+  }
+  .ant-btn {
+    font-size: 14px;
+    box-shadow: none;
+    text-shadow: none;
+  }
+  .ant-input {
+    font-size: 14px;
+  }
+  .ant-form-item-label {
+    label {
+      font-size: 14px;
+    }
+  }
+  .ant-select {
+    font-size: 14px;
+  }
+  .ant-checkbox-group {
+    label {
+      font-size: 14px;
+    }
+  }
 }
 
-.ant-steps{
-    .ant-steps-item-title{
-        font-size: 16px;
-    }
+.ant-table-tbody {
+  > tr:hover:not(.ant-table-expanded-row) > td,
+  .ant-table-row-hover,
+  .ant-table-row-hover > td {
+    background: rgba(var(--black-100), 2%) !important;
+  }
+}
+.ant-table-fixed {
+  .ant-table-row-hover,
+  .ant-table-row-hover > td {
+    background: rgba(var(--black-100), 2%) !important;
+  }
+}
+.ant-table-tbody > tr.ant-table-row-selected td {
+  background-color: rgba(222, 223, 253, 0.5) !important;
+}
+.ant-table-tbody > tr.ant-table-row-selected:hover {
+  background-color: var(--primary-1) !important;
 }
 
-.ant-select-dropdown{
-    .ant-empty-description{
-        font-size: 14px;
-    }
+.ant-steps {
+  .ant-steps-item-title {
+    font-size: 16px;
+  }
+}
+
+.ant-select-dropdown {
+  .ant-empty-description {
+    font-size: 14px;
+  }
 }
 
 // 标签按钮
 .label-btn {
-	display: inline-block;
-    height: 30px;
-    line-height: 30px;
-    border-radius: 15px;
-    padding: 0 19px;
-    color: var(--black-65);
-    cursor: pointer;
-	&.current {
-		background-color: var(--orangeyellow-6);
-    	color: var(--white-100);
-	}
+  display: inline-block;
+  height: 30px;
+  line-height: 30px;
+  border-radius: 15px;
+  padding: 0 19px;
+  color: var(--black-65);
+  cursor: pointer;
+  &.current {
+    background-color: var(--primary-color);
+    color: var(--white-100);
+  }
 }
 
 h3 {
-	font-size: var(--font-size-16);
-    color: #33394b;
-    font-weight: 700;
-    // margin-bottom: 1rem;
+  font-size: var(--font-size-16);
+  color: #33394b;
+  font-weight: 700;
+  // margin-bottom: 1rem;
 }
 .components-title {
-	font-size: var(--font-size-16);
-    color: var(--black-85);
-    padding-bottom: 11px;
-    border-bottom: 1px solid var(--lightgray-4);
-    // line-height: 21px;
-    // letter-spacing: 0.38px;
+  font-size: var(--font-size-16);
+  color: var(--black-85);
+  padding-bottom: 11px;
+  border-bottom: 1px solid var(--lightgray-4);
+  // line-height: 21px;
+  // letter-spacing: 0.38px;
 }
-.flexCenter{
-    display: flex;
-    align-items: center;
+.flexCenter {
+  display: flex;
+  align-items: center;
 }
-.textScrollbar{
-    &::-webkit-scrollbar{
-        width:0px;
-        height: 8px;
+.addCircular {
+  width: 50px;
+  height: 50px;
+  background: var(--primary-color);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--white);
+  font-size: 20px;
+  margin-left: 20px;
+}
+.greenSearch {
+  width: 240px;
+  height: 50px;
+  background: var(--brightBtn);
+  border-radius: 25px;
+  color: var(--white);
+  padding: 4px 16px;
+  border: none;
+  .ant-input {
+    background: var(--brightBtn);
+  }
+  .ant-input::-webkit-input-placeholder {
+    color: var(--white);
+  }
+  .ant-input:-moz-placeholder {
+    color: var(--white);
+  }
+  .ant-input::-moz-placeholder {
+    color: var(--white);
+  }
+  .ant-input:-ms-input-placeholder {
+    color: var(--white);
+  }
+  .ant-input-suffix {
+    font-size: 20px;
+    .ant-input-search-icon {
+      color: #fff;
     }
-    &::-webkit-scrollbar-thumb{
-        border-radius: 3px;
-        background: #d8d8d8;;
-    }
-    &::-webkit-scrollbar{
-        width: 6px;
-    }
+  }
+}
+.textScrollbar {
+  &::-webkit-scrollbar {
+    width: 0px;
+    height: 8px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    background: #d8d8d8;
+  }
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
 }

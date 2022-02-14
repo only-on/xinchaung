@@ -137,34 +137,9 @@ export default defineComponent({
       lStorage.set("menuActiveName", val);
     });
     const http = (request as any).common;
-    function getMenu() {
-      http.getMenu().then((res: IBusinessResp) => {
-        if (res) {
-          menus.length = 0;
-          let data = res.data.menus;
-          activeName.value = lStorage.get("menuActiveName")
-            ? lStorage.get("menuActiveName")
-            : data && data.length && data[0].name;
-          menus.push(...data);
-          if (route.path === (data && data.length && data[0].url)) {
-            activeName.value = data && data[0].name;
-          }
-          let user = res.data.user;
-          lStorage.set("role", user.role);
-          lStorage.set("name", user.name);
-          lStorage.set("user_id", user.id);
-          lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
-          store.commit("saveMenus", data);
-        }
-      });
-    }
-    onMounted(() => {
-      // getMenu()
-      // renderMenu(menus as MenuItem[])
-    });
+
+    onMounted(() => {});
     return { menus, select, activeName };
-    // return () => renderMenu(menus as MenuItem[]);
-    // return () => (renderMenu(FakeMenu.data as MenuItem[]));
   },
   components: {},
 });

@@ -6,6 +6,41 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "7193674",
+      "name": "返回",
+      "font_class": "fanhui1",
+      "unicode": "e72e",
+      "unicode_decimal": 59182
+    },
+    {
+      "icon_id": "5809455",
+      "name": "返回",
+      "font_class": "fanhui",
+      "unicode": "e6c9",
+      "unicode_decimal": 59081
+    },
+    {
+      "icon_id": "13352433",
+      "name": "编 辑",
+      "font_class": "bianji1",
+      "unicode": "e603",
+      "unicode_decimal": 58883
+    },
+    {
+      "icon_id": "14680921",
+      "name": "icon-curriculum",
+      "font_class": "curriculum",
+      "unicode": "e612",
+      "unicode_decimal": 58898
+    },
+    {
+      "icon_id": "23730063",
+      "name": "添加",
+      "font_class": "tianjia",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
       "icon_id": "13679917",
       "name": "shouqi",
       "font_class": "shouqi",

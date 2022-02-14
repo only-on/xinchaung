@@ -1,18 +1,45 @@
 <template>
-  <div class="navBox" :class="(configuration.showNav || configuration.tabs.length)?'showNavBox':''">
+  <div
+    class="navBox"
+    :class="
+      configuration.showNav || configuration.tabs.length ? 'showNavBox' : ''
+    "
+  >
     <div class="crumbs">
       <breadcrumb v-show="configuration.showNav" />
     </div>
     <div class="navList">
       <div class="tab">
         <div
-          v-for="(v,i) in configuration.tabs"
+          v-for="(v, i) in configuration.tabs"
           :key="v.name"
-          :class="ActiveName === v.name || (!ActiveName && i==0 )? (configuration.tabs.length>1?'active activeBor':'active'): ''"
+          :class="
+            ActiveName === v.name || (!ActiveName && i == 0)
+              ? configuration.tabs.length > 1
+                ? 'active activeBor'
+                : 'active'
+              : ''
+          "
           @click="ActiveName !== v.name ? tabChange(v) : ''"
         >
           {{ v.name }}
         </div>
+      </div>
+      <div class="add flexCenter">
+        <a-input-search class="greenSearch" placeholder="请输入关键字查询" />
+        <a-dropdown>
+          <span class="addCircular iconfont icon-tianjia"></span>
+          <template #overlay>
+            <a-menu class="menu__group">
+              <a-menu-item>
+                <div @click="">本地上传</div>
+              </a-menu-item>
+              <a-menu-item>
+                <div @click="">在线制作</div>
+              </a-menu-item>
+            </a-menu>
+          </template>
+        </a-dropdown>
       </div>
     </div>
   </div>
@@ -138,30 +165,35 @@ export default defineComponent({
         deep: true,
       }
     );
-    watch(()=>configuration.tabs,()=>{
-      configuration.tabs.some((item:any)=>{
-        return activeName.value==item.name
-      })?'':activeName.value=''
-      if (configuration.tabs.length>0) {
-        configuration.tabs.map((item: any) => {
+    watch(
+      () => configuration.tabs,
+      () => {
+        configuration.tabs.some((item: any) => {
+          return activeName.value == item.name;
+        })
+          ? ""
+          : (activeName.value = "");
+        if (configuration.tabs.length > 0) {
+          configuration.tabs.map((item: any) => {
             if (configuration.componenttype == item.componenttype) {
               activeName.value = item.name;
             }
           });
+        }
       }
-    })
-    return { activeName, ActiveName, tabChange, configuration};
+    );
+    return { activeName, ActiveName, tabChange, configuration };
   },
 });
 </script>
 <style scoped lang="less">
-.navBox{
+.navBox {
   width: var(--center-width);
   margin: 0 auto;
   display: flex;
   flex-direction: column;
 }
-.showNavBox{
+.showNavBox {
   height: 80px;
 }
 .navList {
@@ -169,6 +201,7 @@ export default defineComponent({
   justify-content: space-between;
   line-height: 43px;
   margin-bottom: -3px;
+  position: relative;
   // margin-bottom: 20px;
   .tab {
     display: flex;
@@ -192,9 +225,15 @@ export default defineComponent({
         color: #fff;
       }
     }
-    .activeBor{
+    .activeBor {
       border-bottom: 3px solid var(--primary-color);
     }
+  }
+  .add {
+    display: none;
+    position: absolute;
+    right: 0;
+    top: 14px;
   }
   .nav__tab--middle {
     flex: 1;
@@ -202,8 +241,8 @@ export default defineComponent({
     align-items: center;
   }
 }
-.crumbs{
-  flex:1;
+.crumbs {
+  flex: 1;
   padding-top: 6px;
 }
 </style>
