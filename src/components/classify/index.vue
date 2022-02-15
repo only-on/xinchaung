@@ -55,9 +55,13 @@ props.list && props.list.length
     })
   : "";
 
+const emit = defineEmits<{
+  (e: "change", obj: any): void;
+}>();
 const change = (v: any, i: any) => {
   v.value = i.value;
   labelObj[v.keyName] = i.value;
+  emit("change", labelObj);
 };
 
 defineExpose({

@@ -24,7 +24,7 @@
       </div>
     </div>
   </div>
-  <classify ref="classifyV" :list="classifyList"></classify>
+  <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
       <div class="item">
@@ -94,7 +94,6 @@ updata({
 /**
  * 标签操作
  */
-const classifyV = ref();
 const classifyList: any = reactive([
   {
     title: "镜像属性",
@@ -119,8 +118,14 @@ const classifyList: any = reactive([
     ],
   },
 ]);
-const labelSearch = computed(() => {
-  return classifyV.value && classifyV.value.labelObj;
+const classifyChange = (obj: any) => {
+  Object.assign(labelSearch, obj);
+  // console.log(labelSearch)
+  searchFn();
+};
+const labelSearch = reactive({
+  type: 0,
+  label: 0,
 });
 
 const search: any = reactive({
@@ -128,10 +133,10 @@ const search: any = reactive({
 });
 const searchFn = () => {
   let obj = {
-    ...labelSearch.value,
+    ...labelSearch,
     ...search,
   };
-  console.log(obj);
+  // console.log(obj);
   initData();
 };
 /**
