@@ -26,5 +26,17 @@ export default {
         authCode: "teacherImageResourcePool",
       },
     },
+    {
+      path: "localCreated",
+      name: "localCreated",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherImageResourcePool/localCreated.vue"
+        ),
+      meta: {
+        title: "本地上传",
+      },
+    },
+    // localCreated
   ],
 };

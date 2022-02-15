@@ -13,7 +13,7 @@
           <template #overlay>
             <a-menu class="menu__group">
               <a-menu-item>
-                <div @click="select()">本地上传</div>
+                <div @click="localCreated()">本地上传</div>
               </a-menu-item>
               <a-menu-item>
                 <div @click="select()">在线制作</div>
@@ -135,9 +135,11 @@ const search: any = reactive({
   key: "",
 });
 const searchFn = () => {
+  fromData.page = 1;
   let obj = {
     ...labelSearch,
     ...search,
+    ...fromData,
   };
   // console.log(obj);
   initData();
@@ -146,6 +148,9 @@ const searchFn = () => {
  * 添加
  */
 const select = () => {};
+const localCreated = () => {
+  router.push("/teacher/teacherImageResourcePool/localCreated");
+};
 const initData = () => {
   loading.value = true;
   // http.getList()
@@ -155,7 +160,7 @@ const initData = () => {
  * 列表
  */
 const fromData: any = reactive({
-  limit: 10,
+  limit: 6,
   page: 1,
 });
 var list: any[] = reactive([]);

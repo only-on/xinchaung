@@ -226,6 +226,8 @@
   --primary-2: var(--purpleblue-2);
   --primary-1: var(--purpleblue-1);
 
+  --primary-atn-hover: var(--blue-5);
+
   --text-color: var(var(--black-85));
   --border-color-base: hsv(0, 0, 85%);
 }
