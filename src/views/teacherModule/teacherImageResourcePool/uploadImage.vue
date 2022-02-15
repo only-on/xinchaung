@@ -220,7 +220,7 @@ export default defineComponent({
   }
   .upload {
     .ant-upload.ant-upload-drag .ant-upload-btn {
-      padding: 40px;
+      //   padding: 40px;
     }
   }
 }

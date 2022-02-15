@@ -1,27 +1,14 @@
 <template>
-  <div v-layout-bg class="create-image-box">
+  <div class="create-image-box">
     <a-form layout="vertical" ref="formRef" :model="image" :rules="rules">
-      <a-form-item label="镜像文件" required>
+      <a-form-item label="镜像文件" name="fileName">
         <upload-image @upload-imageinfo="uploadImageinfo"></upload-image>
-        <!-- action="/api/instance/uploads/file"
-                resumeAction='/api/instance/uploads/chunk' 
-                deleteAction="/api/instance/uploads/delete"
-                mergedAction="/api/instance/uploads/merge" -->
       </a-form-item>
       <div class="create-img-middle">
         <div>
           <a-form-item label="镜像名称" name="name">
             <a-input class="form-input" v-model:value="image.name"></a-input>
           </a-form-item>
-          <a-form-item label="镜像类型" required>
-            <a-input
-              class="form-input"
-              disabled
-              v-model:value="image.imageType"
-            ></a-input>
-          </a-form-item>
-        </div>
-        <div>
           <a-form-item label="系统类型" name="classify_id">
             <a-select
               class="form-input"
@@ -37,15 +24,52 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="镜像标签" name="tag">
-            <a-checkbox-group v-model:value="image.tag" @change="onChange">
+        </div>
+        <div>
+          <a-form-item label="镜像类型" required>
+            <a-input
+              class="form-input"
+              disabled
+              v-model:value="image.imageType"
+            ></a-input>
+            <!-- 是通过上传的文件获取的文件类型 -->
+          </a-form-item>
+          <a-form-item label="添加标签" name="tag">
+            <!-- <a-checkbox-group v-model:value="image.tag" @change="onChange">
               <a-checkbox
                 v-for="(item, index) in config.tags"
                 :key="index.toString()"
                 :value="Number(index)"
                 >{{ item }}</a-checkbox
               >
-            </a-checkbox-group>
+            </a-checkbox-group> -->
+            <div class="label-list">
+              <span
+                v-for="(item, index) in image.tag"
+                :key="index"
+                class="active"
+              >
+                {{ item }}
+                <i
+                  class="remove iconfont icon-guanbi"
+                  @click="removeLabel(item)"
+                ></i>
+              </span>
+              <span class="edit-box" v-if="image.tag && image.tag.length < 3">
+                <span @click="clickCustomLabel" v-show="!openCustom">
+                  <span class="iconfont iconbiaoqian"></span>
+                  + 自定义标签
+                </span>
+                <a-input
+                  ref="refCustomLabel"
+                  @pressEnter="customFinish"
+                  @blur="customFinish"
+                  @change="changeLabel"
+                  v-show="openCustom"
+                  v-model:value="state.customLabelV"
+                />
+              </span>
+            </div>
           </a-form-item>
         </div>
       </div>
@@ -54,6 +78,7 @@
           placeholder="镜像描述"
           class="ant-input-desc"
           v-model:value="image.desc"
+          :auto-size="{ minRows: 6, maxRows: 8 }"
         ></a-textarea>
       </a-form-item>
     </a-form>
@@ -71,7 +96,9 @@ import {
   reactive,
   toRefs,
   onMounted,
+  nextTick,
 } from "vue";
+import { RuleObject } from "ant-design-vue/es/form/interface";
 import { createMirrorApi, getConfigApi } from "./api";
 import { includes } from "lodash";
 import { message } from "ant-design-vue";
@@ -90,14 +117,41 @@ interface ImageType {
 interface IState {
   config: any;
   formRef: any;
+  customLabelV: any;
 }
 const router = useRouter();
 var updata = inject("updataNav") as Function;
+updata({
+  tabs: [{ name: "创建镜像", componenttype: 0 }],
+  showContent: true,
+  componenttype: undefined,
+  showNav: true,
+});
 const rules = {
-  name: [{ required: true, message: "请输入镜像名称" }],
+  fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
+  name: [
+    { required: true, message: "请输入镜像名称", trigger: "blur" },
+    { validator: fileListValidator },
+  ],
   classify_id: [{ required: true, message: "请选择系统类型" }],
-  tag: [{ required: true, message: "请选择镜像标签" }],
+  tag: [
+    { required: true, message: "请选择镜像标签" },
+    { validator: fileListValidator, message: "请选择镜像标签" },
+  ],
 };
+async function fileListValidator(rule: RuleObject, value: string) {
+  // console.log(image.tag.length)
+  console.log(image);
+  nextTick(() => {
+    // console.log(image.tag.length)
+    console.log(image);
+  });
+  if (image.tag.length === 0) {
+    return Promise.reject("请选择镜像标签");
+  } else {
+    return Promise.resolve();
+  }
+}
 const image: ImageType = reactive({
   name: "",
   imageType: "",
@@ -110,33 +164,48 @@ const image: ImageType = reactive({
 const config: any = reactive({});
 const state: IState = reactive({
   formRef: "formRef",
+  customLabelV: "",
   config: {},
 });
-updata({
-  tabs: [{ name: "创建镜像", componenttype: 0 }],
-  showContent: true,
-  componenttype: undefined,
-  showNav: true,
-});
+var openCustom: Ref<boolean> = ref(false);
+const refCustomLabel = ref<HTMLElement>();
+function removeLabel(val: any) {
+  let num = image.tag.indexOf(val);
+  if (num !== -1) {
+    image.tag.splice(num, 1);
+  }
+}
+function clickCustomLabel() {
+  openCustom.value = true;
+  nextTick(() => {
+    refCustomLabel.value && refCustomLabel.value.focus();
+  });
+}
+function customFinish() {
+  // console.log(state.customLabelV)
+  if (state.customLabelV.trim()) {
+    image.tag.push(state.customLabelV);
+    // image.tag=['555']
+    state.customLabelV = "";
+    openCustom.value = false;
+  } else {
+    openCustom.value = false;
+  }
+}
+function changeLabel() {
+  // console.log(val)
+  // console.log(state.customLabelV)
+  state.customLabelV =
+    state.customLabelV.length > 10
+      ? state.customLabelV.slice(0, 10)
+      : state.customLabelV;
+}
 const uploadImageinfo = (name: any, size: any, url: any) => {
   image.fileName = name;
   image.fileSize = size;
   image.imageType =
     image.fileName.split(".")[image.fileName.split(".").length - 1];
   image.classify_id = image.imageType === "qcow2" ? 2 : 1;
-};
-const onChange = (tag: any) => {
-  if (tag[tag.length - 1] === 1) {
-    const index = tag.indexOf(2);
-    if (index !== -1) {
-      tag.splice(index, 1);
-    }
-  } else if (tag[tag.length - 1] === 2) {
-    const index = tag.indexOf(1);
-    if (index !== -1) {
-      tag.splice(index, 1);
-    }
-  }
 };
 const cancel = () => {
   console.log("取消");
@@ -212,6 +281,66 @@ onMounted(() => {
     width: 45%;
     .form-input {
       width: 100%;
+    }
+  }
+}
+
+.label-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > span {
+    margin: 0px 5px 0px 0px;
+    padding: 5px 15px;
+    background: #ebebeb;
+    margin-bottom: 5px;
+    position: relative;
+    border-radius: 5px;
+    margin-right: 10px;
+
+    > .remove {
+      position: absolute;
+      font-size: 12px;
+      background: red;
+      width: 14px;
+      height: 14px;
+      top: -5px;
+      right: -5px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 14px;
+      cursor: pointer;
+    }
+
+    &.active {
+      background: var(--primary-color);
+      color: #ffffff;
+    }
+  }
+
+  .edit-box {
+    margin: 0px 5px 0px 0px;
+    padding: 0px 0px;
+    background: #ebebeb;
+    margin-bottom: 5px;
+    position: relative;
+    width: 120px;
+    cursor: pointer;
+
+    > span {
+      // padding: 0px 15px;
+      display: block;
+      text-align: center;
+      width: 100%;
+      line-height: 30px;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      background: #ffffff;
+
+      &:hover {
+        background: #f8efff;
+      }
     }
   }
 }
