@@ -179,6 +179,10 @@ a {
 }
 /*统一修一个antd默认样式*/
 #app {
+  .ant-pagination {
+    width: 100%;
+    text-align: center;
+  }
   .ant-btn {
     font-size: 14px;
     box-shadow: none;
@@ -327,6 +331,21 @@ h3 {
   border-bottom: 1px solid var(--lightgray-4);
   // line-height: 21px;
   // letter-spacing: 0.38px;
+}
+.single-ellipsis {
+  word-break: normal;
+  overflow: hidden;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.ellipsis {
+  overflow: hidden;
+  word-wrap: break-word;
+  display: -webkit-box;
+  text-overflow: ellipsis;
+  -webkit-box-orient: vertical;
+  // -webkit-line-clamp: 3;  自定义
 }
 .flexCenter {
   display: flex;

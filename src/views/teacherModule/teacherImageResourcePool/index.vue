@@ -27,31 +27,34 @@
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item">
+      <div class="item flexCenter" v-for="(v, k) in 6" :key="v">
         <div class="left">
-          <div class="img">
+          <div class="img" :class="k % 2 === 0 ? 'KVMImg' : ''">
             <div class="type">镜像类型：KVM</div>
             <div class="type">架构信息：X86</div>
           </div>
-          <div>内置镜像</div>
+          <div class="Belonging" :class="k % 2 === 0 ? 'myImg' : ''">
+            内置镜像
+          </div>
         </div>
         <div class="right">
           <div class="name">镜像名称</div>
-          <div class="labels">
-            <span>标签1</span><span>标签1</span><span>标签1</span>
+          <div class="labels flexCenter">
+            <span class="ellipsis">镜像标签1</span><span>标签1</span
+            ><span>标签1</span>
           </div>
-          <div class="text">
+          <div class="text ellipsis">
             在 UI
-            设计中，如何完美的避开问题、把按钮设计的更好，是每个设计师需要深思的问题。按钮设计的好坏，将直接关系着用户引流、触发行动、产品转化率等至关重要的问题。
+            设计中，如何完美的避开问题、把按钮设计的更好，是每个设计师需要深思的问题。按钮设计的好坏，将直接关系着用户引流、触发行动、产品转化率等至关重要的问题。把按钮设计的更好，是每个设计师需要深思的问题。按钮设计的好坏，将直接关系着用户引流、触发行动
           </div>
-          <div class="caoZuo">
+          <div class="caoZuo flexCenter">
             <span>复制</span><span>删除</span><span>编辑</span>
           </div>
         </div>
       </div>
-      <Empty v-if="!list.length && !loading" />
+      <!-- <Empty v-if="!list.length && !loading" /> -->
       <a-pagination
-        v-if="totalCount > 11"
+        v-if="totalCount > 6"
         v-model:current="fromData.page"
         :pageSize="fromData.limit"
         :total="totalCount"
@@ -144,7 +147,9 @@ const searchFn = () => {
  */
 const select = () => {};
 const initData = () => {
+  loading.value = true;
   // http.getList()
+  loading.value = false;
 };
 /**
  * 列表
@@ -155,7 +160,7 @@ const fromData: any = reactive({
 });
 var list: any[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
-var totalCount: Ref<number> = ref(0);
+var totalCount: Ref<number> = ref(7);
 const pageChange = async (current: any, pageSize: any) => {
   fromData.page = current;
   const { query, path } = route;
@@ -189,5 +194,81 @@ onMounted(() => {
   }
 }
 .mainBox {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  .item {
+    width: 580px;
+    height: 200px;
+    margin-bottom: 2rem;
+    .left {
+      .img {
+        border-radius: 14px 0px 0px 0px;
+        height: 176px;
+        width: 140px;
+        background: url("src/assets/images/cover2.png") no-repeat;
+        background-size: 100% 100%;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: end;
+        .type {
+          width: 100%;
+          text-align: center;
+          color: var(--white);
+          margin-bottom: 6px;
+        }
+      }
+      .KVMImg {
+        background: url("src/assets/images/bg1.jpg") no-repeat;
+        background-size: 100% 100%;
+      }
+      .Belonging {
+        height: 24px;
+        background: rgba(0, 0, 0, 0.25);
+        border-radius: 0px 0px 0px 14px;
+        text-align: center;
+        color: var(--white-65);
+      }
+      .myImg {
+        color: var(--white-70);
+      }
+    }
+    .right {
+      padding: 16px;
+      .name {
+        color: var(--black-85);
+        font-size: var(--font-size-16);
+        letter-spacing: 1.6px;
+      }
+      .labels {
+        margin: 10px 0;
+        span {
+          display: inline-block;
+          width: 92px;
+          height: 24px;
+          line-height: 24px;
+          text-align: center;
+          color: var(--brightBtn);
+        }
+      }
+      .text {
+        height: 67px;
+        line-height: 24px;
+        letter-spacing: 0.98px;
+        color: var(--black-65);
+        -webkit-line-clamp: 3;
+      }
+      .caoZuo {
+        height: 44px;
+        justify-content: end;
+        span {
+          // display: none;
+          color: var(--primary-color);
+          cursor: pointer;
+          padding: 0 16px;
+        }
+      }
+    }
+  }
 }
 </style>
