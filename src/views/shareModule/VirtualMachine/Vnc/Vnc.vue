@@ -18,18 +18,13 @@
             <img :src="loadingGif" alt="" srcset="">
           </div>
         </div> -->
-        <div class="vnc-box">
-          <vue-no-vnc
-            background="rgb(40,40,40)"
-            :options="vmOptions"
-            refName="refName"
-            ref="novncEl"
-            @clipboard="clipboard"
-          />
-        </div>
-        <div class="tab-btn pointer" @click="showChange">
-          点击切换为{{ currentInterface === "ssh" ? "VNC" : "SSH链接" }}
-        </div>
+        <vue-no-vnc
+          background="rgb(40,40,40)"
+          :options="vmOptions"
+          refName="refName"
+          ref="novncEl"
+          @clipboard="clipboard"
+        />
       </template>
     </template>
   </layout>
@@ -112,7 +107,7 @@ export default defineComponent({
     const novncEl = ref();
     let role = storage.lStorage.get("role");
     let ws_config = storage.lStorage.get("ws_config");
-    const {
+    let {
       opType, // 实验学习类型
       connection_id, // 用户id_环境id
       taskId, // 实验id
@@ -160,6 +155,8 @@ export default defineComponent({
     provide("sshUrl", sshUrl);
     provide("currentInterface", currentInterface);
     provide("taskId", taskId);
+    provide("isConnect", ref(true));
+    provide("initVnc", initVnc);
     let ind = 0; // 记录是否是刚进页面
     // 左侧导航数据
     let navData =
@@ -307,48 +304,23 @@ export default defineComponent({
       console.log(message);
     }
 
-    // vnc和ssh切换
-    function showChange() {
-      console.log(vmInfoData.value.data.vms);
-      let currentvm = vmInfoData.value.data.vms[vmCurrentIndex.value];
-      let cureentIp = location.protocol + "//" + location.hostname;
-
-      console.log(cureentIp);
-      if (currentInterface.value === "vnc") {
-        currentInterface.value = "ssh";
-        sshUrl.value =
-          getVmConnectSetting.SSHHOST +
-          ":2222/ssh/host/" +
-          currentvm.host_ip +
-          "/" +
-          currentvm.ssh_port;
-      }
-      if (currentInterface.value === "ssh") {
-        currentInterface.value = "vnc";
-        if (currentvm.switch === 1) {
-          vmOptions.value.password = getVmConnectSetting.VNCPASS;
-          vmOptions.value.wsUrl =
-            getVmConnectSetting.VNCPROTOC +
-            "://" +
-            currentvm.host_ip +
-            ":" +
-            getVmConnectSetting.VNCPORT +
-            "/websockify?vm_uuid=" +
-            currentvm.uuid;
-        } else {
-          let param = {
-            action: "switch2Vnc",
-            params: {
-              type: type,
-              opType: opType,
-              uuid: uuid.value,
-              taskId: taskId,
-            },
-          };
-          // vmApi.switchInterfaceApi({param:{...param}})
-        }
+    // 切换实验
+    async function ExperimentChange(id: number) {
+      console.log(id);
+      taskId = id;
+      // await getVmBase();
+      // initWs();
+    }
+    provide("ExperimentChange", ExperimentChange);
+    // 开启虚拟机
+    function initVnc() {
+      console.log(novncEl.value);
+      if (novncEl.value) {
+        novncEl.value.connectVnc();
+        console.log(novncEl.value);
       }
     }
+
     return {
       novncEl,
       data,
@@ -362,7 +334,7 @@ export default defineComponent({
       currentInterface,
       opType,
       loadingGif,
-      showChange,
+      ExperimentChange,
     };
   },
 });
