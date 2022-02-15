@@ -30,7 +30,7 @@
       <span class="pointer" @click="submitReply">回应</span>
     </div>
   </div>
-  <div class="bottom" v-if="item.isAllText">
+  <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
     <div class="left">
       <span>{{ item.replayNum }}</span>
       <span class="pointer" @click="isReply = !isReply">{{
@@ -82,6 +82,8 @@ export default defineComponent({
     }
     // 回应
     function submitReply() {}
+
+    const bottomStyle: any = inject("bottomStyle");
     return {
       ...toRefs(props),
       isReply,
@@ -89,6 +91,7 @@ export default defineComponent({
       replyContent,
       readAllText,
       submitReply,
+      bottomStyle,
     };
   },
 });

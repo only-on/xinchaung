@@ -29,6 +29,7 @@ import {
   Ref,
   inject,
   watch,
+  provide,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
@@ -100,6 +101,13 @@ export default defineComponent({
       initData();
     }
 
+    // 点击展开全文 底部收起样式
+    let bottomStyle = reactive({
+      bottom: "0px",
+      width: "1044px",
+    });
+    provide("bottomStyle", bottomStyle);
+
     onMounted(() => {
       initData();
     });
@@ -113,6 +121,7 @@ export default defineComponent({
         { id: 1, name: "我参与的帖子" },
       ],
       tabChange,
+      bottomStyle,
     };
   },
 });

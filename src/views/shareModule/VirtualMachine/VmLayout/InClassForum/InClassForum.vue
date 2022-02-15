@@ -148,7 +148,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .in-class-forum-box {
   white-space: normal;
   padding: 10px;

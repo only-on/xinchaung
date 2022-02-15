@@ -255,6 +255,7 @@ export default defineComponent({
           currentComponent.value = setCurrentComponent(key);
         } else {
           openStatus.value = !openStatus.value;
+          bottomStyle.display = "none";
         }
         rightWidth.value =
           vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
@@ -299,6 +300,9 @@ export default defineComponent({
 
     // 左右比例发生变化时
     function changeWidth(event: MouseEvent) {
+      if (leftWidth.value === 200) {
+        return;
+      }
       // 可以改变比例
       if (isMove && event.button === 0) {
         (leftEl as any).value.style.transition = "none";
@@ -337,6 +341,18 @@ export default defineComponent({
 
     //
     const contentShow = ref(false); // 1 正常左侧显示，2 弹框显示
+
+    // 问答 点击展开全文 底部收起样式
+    let bottomStyle = reactive({
+      bottom: "70px",
+      width: "403px",
+      background: "rgba(252, 252, 252, 0.8)",
+      display: "flex",
+    });
+    provide("bottomStyle", bottomStyle);
+    watch(leftWidth, () => {
+      bottomStyle.width = leftWidth.value - 40 + "px";
+    });
     return {
       openStatus,
       open,
@@ -358,6 +374,7 @@ export default defineComponent({
       formState,
       onSubmit,
       contentShow,
+      bottomStyle,
     };
   },
 });
