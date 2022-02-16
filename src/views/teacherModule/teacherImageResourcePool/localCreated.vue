@@ -35,14 +35,6 @@
             <!-- 是通过上传的文件获取的文件类型 -->
           </a-form-item>
           <a-form-item label="添加标签" name="tag">
-            <!-- <a-checkbox-group v-model:value="image.tag" @change="onChange">
-              <a-checkbox
-                v-for="(item, index) in config.tags"
-                :key="index.toString()"
-                :value="Number(index)"
-                >{{ item }}</a-checkbox
-              >
-            </a-checkbox-group> -->
             <div class="label-list">
               <span
                 v-for="(item, index) in image.tag"
@@ -69,6 +61,18 @@
                   v-model:value="state.customLabelV"
                 />
               </span>
+            </div>
+            <div class="recommend" v-if="showTag">
+              <div class="tit">或从推荐中选择</div>
+              <div class="tagBox">
+                <div v-for="v in 10" :key="v">
+                  <span
+                    @click="addTag(v)"
+                    :class="image.tag.includes(v) ? 'act' : ''"
+                    >默认标签1</span
+                  >
+                </div>
+              </div>
             </div>
           </a-form-item>
         </div>
@@ -116,7 +120,6 @@ interface ImageType {
 }
 interface IState {
   config: any;
-  formRef: any;
   customLabelV: any;
 }
 const router = useRouter();
@@ -129,25 +132,18 @@ updata({
 });
 const rules = {
   fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
-  name: [
-    { required: true, message: "请输入镜像名称", trigger: "blur" },
-    { validator: fileListValidator },
-  ],
+  name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
   classify_id: [{ required: true, message: "请选择系统类型" }],
   tag: [
-    { required: true, message: "请选择镜像标签" },
-    { validator: fileListValidator, message: "请选择镜像标签" },
+    // { required: true, message: "请选择镜像标签1",trigger: "change"},
+    // { validator: fileListValidator, message: "请选择镜像标签2"},
   ],
 };
-async function fileListValidator(rule: RuleObject, value: string) {
-  // console.log(image.tag.length)
+async function fileListValidator() {
   console.log(image);
-  nextTick(() => {
-    // console.log(image.tag.length)
-    console.log(image);
-  });
   if (image.tag.length === 0) {
-    return Promise.reject("请选择镜像标签");
+    message.warn("请选择镜像标签");
+    return Promise.reject();
   } else {
     return Promise.resolve();
   }
@@ -163,10 +159,11 @@ const image: ImageType = reactive({
 });
 const config: any = reactive({});
 const state: IState = reactive({
-  formRef: "formRef",
   customLabelV: "",
   config: {},
 });
+const formRef = ref();
+var showTag: Ref<boolean> = ref(false);
 var openCustom: Ref<boolean> = ref(false);
 const refCustomLabel = ref<HTMLElement>();
 function removeLabel(val: any) {
@@ -176,13 +173,13 @@ function removeLabel(val: any) {
   }
 }
 function clickCustomLabel() {
+  showTag.value = true;
   openCustom.value = true;
   nextTick(() => {
     refCustomLabel.value && refCustomLabel.value.focus();
   });
 }
 function customFinish() {
-  // console.log(state.customLabelV)
   if (state.customLabelV.trim()) {
     image.tag.push(state.customLabelV);
     // image.tag=['555']
@@ -190,6 +187,13 @@ function customFinish() {
     openCustom.value = false;
   } else {
     openCustom.value = false;
+  }
+}
+function addTag(val: any) {
+  if (image.tag.length < 3) {
+    image.tag.push(val);
+  } else {
+    message.warn("最多添加3个标签");
   }
 }
 function changeLabel() {
@@ -218,7 +222,11 @@ const cancel = () => {
 };
 const create = () => {
   console.log("提交");
-  state.formRef.validate().then(() => {
+  // console.log(formRef.value)
+  // fileListValidator()
+  // return
+  formRef.value.validate().then(() => {
+    fileListValidator();
     const parmas = {
       name: image.name,
       file_path: "/www/tusd/uploads/" + image.fileName,
@@ -340,6 +348,33 @@ onMounted(() => {
 
       &:hover {
         background: #f8efff;
+      }
+    }
+  }
+}
+.recommend {
+  color: var(--black-65);
+  margin-top: 1rem;
+  .tagBox {
+    display: flex;
+    flex-wrap: wrap;
+    div {
+      text-align: center;
+      cursor: pointer;
+      width: 25%;
+      padding: 6px 0;
+      span {
+        background: #ebebeb;
+        border: 1px solid #dfdfdf;
+        border-radius: 11px;
+        font-size: 12px;
+        color: var(--black-65);
+        padding: 2px 7px;
+      }
+      .act {
+        background: var(--primary-color);
+        color: #fff;
+        // color: var(--primary-color);
       }
     }
   }

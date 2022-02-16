@@ -37,6 +37,17 @@ export default {
         title: "本地上传",
       },
     },
-    // localCreated
+    {
+      path: "OnlineMake",
+      name: "OnlineMake",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherImageResourcePool/OnlineMake.vue"
+        ),
+      meta: {
+        title: "在线制作",
+      },
+    },
+    // localCreated   OnlineMake
   ],
 };
