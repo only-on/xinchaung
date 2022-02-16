@@ -539,6 +539,7 @@ interface IFormState {
       .vm-content-right {
         width: 100%;
         overflow: hidden;
+        background: rgb(40, 40, 40);
       }
     }
   }

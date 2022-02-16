@@ -1,18 +1,19 @@
 <template>
   <layout :VmData="data" :reportId="reportTemid" isLeftContentShowType="line">
-    <template v-slot:right>
+    <template v-slot:right
+      >{{ sshUrl }}
       <template v-if="currentInterface === 'ssh'">
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <!-- <div class="vncloading" v-if="!uuidLoading || !vncLoadingV">
+        <div class="vncloading" v-if="!uuidLoading || !vncLoadingV">
           <div class="word">
-           <img :src="loadingGif" alt="" srcset="">
-           <div class="loading">
-             <span>虚拟机加载中，请稍后...</span>
-           </div>
+            <div class="loading">
+              <img :src="loadingGif" alt="" srcset="" />
+              <span>虚拟机加载中，请稍后...</span>
+            </div>
           </div>
-        </div> -->
+        </div>
         <!-- <div v-else-if="!vncLoadingV" class="vncloading">
           <div class="word">
             <img :src="loadingGif" alt="" srcset="">
@@ -199,6 +200,7 @@ export default defineComponent({
     // 初始化websocket
     function initWs() {
       vncLoadingV.value = false;
+      connection_id = "100_273";
       wsVmConnect.value = wsConnect({
         url:
           "://" +
@@ -259,6 +261,9 @@ export default defineComponent({
     });
     // 获取虚拟机基本信息pageinfo
     function getVmBase() {
+      opType = "help";
+      type = "course";
+      taskId = 500569;
       return new Promise((resolve: any, reject: any) => {
         let params = {
           opType: opType,
@@ -365,6 +370,9 @@ export default defineComponent({
           position: absolute;
           top: 50%;
           left: 50%;
+          img {
+            margin-right: 8px;
+          }
         }
       }
       color: var(--white-100);

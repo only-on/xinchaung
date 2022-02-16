@@ -332,47 +332,47 @@ export default defineComponent({
     }
     // vnc和ssh切换
     function showChange() {
-      // console.log(vmInfoData.value.data.vms);
-      // let currentvm = vmInfoData.value.data.vms[vmCurrentIndex.value];
-      // let cureentIp = location.protocol + "//" + location.hostname;
+      console.log(vmInfoData.value.data.vms);
+      let currentvm = vmInfoData.value.data.vms[vmCurrentIndex.value];
+      let cureentIp = location.protocol + "//" + location.hostname;
 
       // console.log(cureentIp);
       if (currentInterface.value === "vnc") {
         currentInterface.value = "ssh";
         console.log(currentInterface.value);
-        // sshUrl.value =
-        //   getVmConnectSetting.SSHHOST +
-        //   ":2222/ssh/host/" +
-        //   currentvm.host_ip +
-        //   "/" +
-        //   currentvm.ssh_port;
+        sshUrl.value =
+          getVmConnectSetting.SSHHOST +
+          ":2222/ssh/host/" +
+          currentvm.host_ip +
+          "/" +
+          currentvm.ssh_port;
         return;
       }
       if (currentInterface.value === "ssh") {
         currentInterface.value = "vnc";
         console.log(currentInterface.value);
-        // if (currentvm.switch === 1) {
-        //   vmOptions.value.password = getVmConnectSetting.VNCPASS;
-        //   vmOptions.value.wsUrl =
-        //     getVmConnectSetting.VNCPROTOC +
-        //     "://" +
-        //     currentvm.host_ip +
-        //     ":" +
-        //     getVmConnectSetting.VNCPORT +
-        //     "/websockify?vm_uuid=" +
-        //     currentvm.uuid;
-        // } else {
-        //   let param = {
-        //     action: "switch2Vnc",
-        //     params: {
-        //       type: type,
-        //       opType: opType,
-        //       uuid: uuid.value,
-        //       taskId: taskId,
-        //     },
-        //   };
-        // vmApi.switchInterfaceApi({param:{...param}})
-        // }
+        if (currentvm.switch === 1) {
+          vmOptions.value.password = getVmConnectSetting.VNCPASS;
+          vmOptions.value.wsUrl =
+            getVmConnectSetting.VNCPROTOC +
+            "://" +
+            currentvm.host_ip +
+            ":" +
+            getVmConnectSetting.VNCPORT +
+            "/websockify?vm_uuid=" +
+            currentvm.uuid;
+        } else {
+          let param = {
+            action: "switch2Vnc",
+            params: {
+              type: type,
+              opType: opType,
+              uuid: uuid.value,
+              taskId: taskId,
+            },
+          };
+          // vmApi.switchInterfaceApi({param:{...param}})
+        }
       }
     }
     // 延时
@@ -468,6 +468,7 @@ export default defineComponent({
     // 请求老师远程协助
     function remoteAssist() {
       console.log("请求老师远程协助");
+      assistanceVisible.value = true;
     }
 
     // 操作虚拟机
