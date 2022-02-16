@@ -16,7 +16,7 @@
                 <div @click="localCreated()">本地上传</div>
               </a-menu-item>
               <a-menu-item>
-                <div @click="select()">在线制作</div>
+                <div @click="OnlineMake()">在线制作</div>
               </a-menu-item>
             </a-menu>
           </template>
@@ -147,14 +147,19 @@ const searchFn = () => {
 /**
  * 添加
  */
-const select = () => {};
+const OnlineMake = () => {
+  router.push("/teacher/teacherImageResourcePool/OnlineMake");
+};
 const localCreated = () => {
   router.push("/teacher/teacherImageResourcePool/localCreated");
+  // OnlineMake
 };
 const initData = () => {
   loading.value = true;
-  // http.getList()
-  loading.value = false;
+  http.getList().then((res: IBusinessResp) => {
+    // list.push(...res.data);
+    loading.value = false;
+  });
 };
 /**
  * 列表

@@ -73,21 +73,14 @@ export default defineComponent({
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const homePath = computed(() => {
-      if (role == 3) {
-        return "/teacher"; // 教师端首页
-      }
-      if (role == 4) {
-        return "/studentStatistic"; // 学生端首页
-      }
-      if (role == 1) {
-        return "/init-course/init"; // 初始端
-      }
-      if (role == 2) {
-        return "/admin"; // 管理端
-      }
-      if (role == 5) {
-        return "/"; // 助教端
-      }
+      let obj = {
+        1: "/init-course/init", // 初始端
+        2: "/admin", // 管理端
+        3: "/teacher", // 教师端首页
+        4: "/studentStatistic", // 学生端首页
+        5: "/teacher", // 助教端
+      };
+      return obj[role];
     });
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
