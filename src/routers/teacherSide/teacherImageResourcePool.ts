@@ -48,6 +48,17 @@ export default {
         title: "在线制作",
       },
     },
-    // localCreated   OnlineMake
+    {
+      path: "createWorkbench",
+      name: "createWorkbench",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherImageResourcePool/createWorkbench.vue"
+        ),
+      meta: {
+        title: "创建容器",
+      },
+    },
+    // localCreated   OnlineMake createWorkbench
   ],
 };

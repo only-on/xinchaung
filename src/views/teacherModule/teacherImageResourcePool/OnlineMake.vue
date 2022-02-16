@@ -97,7 +97,7 @@ updata({
 });
 
 const OnlineAdd = () => {
-  // router.push("/teacher/teacherImageResourcePool/OnlineMake");
+  router.push("/teacher/teacherImageResourcePool/createWorkbench");
 };
 const getClass = (k: number) => {
   let minArr = [2, 5, 8, 11];

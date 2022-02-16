@@ -25,25 +25,10 @@ const http = (request as any).teacherImageResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "在线镜像制作台", componenttype: 0 }],
+  tabs: [{ name: "创建容器", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
 });
-defineProps<{
-  // 采用ts专有声明，无默认值
-  msg: string;
-  num?: number;
-}>();
-
-// 采用ts专有声明，有默认值
-interface Props {
-  msg?: string;
-  labels?: string[];
-}
-// const props = withDefaults(defineProps<Props>(), {
-//   msg: "hello",
-//   labels: () => ["one", "two"],
-// });
 </script>
 <style scoped lang="less"></style>
