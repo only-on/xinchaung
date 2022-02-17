@@ -3,68 +3,88 @@
     <!-- <a-button type="primary" shape="round" size="large">确定</a-button>
     <a-button type="primary" shape="round" size="middle">确定</a-button>
     <a-button type="primary" shape="round" size="small">取消</a-button> -->
-    <component :is="componentName" :componentName="componentName"/>
+    <component :is="componentName" :componentName="componentName" />
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, Ref, inject, watch, provide } from 'vue'
-import ForumSquare from './ForumSquare.vue'
-import MyPosts from './MyPosts.vue'
-import { useRouter, useRoute } from 'vue-router';
-import { ILabel } from './forumnTyping.d'
-import ForumnTop from './components/ForumnTop.vue'
+import {
+  defineComponent,
+  ref,
+  onMounted,
+  reactive,
+  Ref,
+  inject,
+  watch,
+  provide,
+} from "vue";
+import ForumSquare from "./ForumSquare.vue";
+import MyPosts from "./MyPosts.vue";
+import { useRouter, useRoute } from "vue-router";
+import { ILabel } from "./forumnTyping.d";
+import ForumnTop from "./components/ForumnTop.vue";
 export default defineComponent({
-  name: '',
+  name: "",
   components: {
-   ForumSquare,
-   MyPosts,
-   ForumnTop,
+    ForumSquare,
+    MyPosts,
+    ForumnTop,
   },
   setup: (props, { emit }) => {
     const route = useRoute();
-    const componentNames = ['ForumSquare', 'MyPosts']
-    const tabs = [{name: '论坛广场', componenttype: 0}, {name: '我的帖子' , componenttype: 1}]
-    var componentName: Ref<string> = ref('ForumSquare') 
-    
-    var configuration: any = inject('configuration')
-    var updata = inject('updataNav') as Function
-    updata({tabs: tabs, showContent: false, componenttype: undefined, showNav: true,})
+    const componentNames = ["ForumSquare", "MyPosts"];
+    const tabs = [
+      { name: "论坛广场", componenttype: 0 },
+      { name: "我的帖子", componenttype: 1 },
+    ];
+    var componentName: Ref<string> = ref("ForumSquare");
 
-    let labelList = reactive<ILabel[]>([])
-    provide('labelList', labelList)
+    var configuration: any = inject("configuration");
+    var updata = inject("updataNav") as Function;
+    updata({
+      tabs: tabs,
+      showContent: false,
+      componenttype: undefined,
+      showNav: true,
+    });
 
-    watch(()=>{ return configuration.componenttype}, (val) => {
-      console.log(val)
-      // const {page}= route.query
-      componentName.value = componentNames[val]
-      
-      labelList.length = 0
-      let list: ILabel[] = []
-      if (val === 0) {
-        list = [
-          {name: 'WIKI', id: 1},
-          {name: '热门', id: 2},
-          {name: '最新', id: 3},
-          {name: '求助', id: 4},
-          {name: '分享', id: 5},
-          {name: '公告', id: 6},
-        ]
-      } else if (val === 1 ) {
-        list = [
-          {name: 'WIKI', id: 1},
-          {name: '求助', id: 4},
-          {name: '分享', id: 5},
-        ]
+    let labelList = reactive<ILabel[]>([]);
+    provide("labelList", labelList);
+
+    watch(
+      () => {
+        return configuration.componenttype;
+      },
+      (val) => {
+        console.log(val);
+        // const {page}= route.query
+        componentName.value = componentNames[val];
+
+        labelList.length = 0;
+        let list: ILabel[] = [];
+        if (val === 0) {
+          list = [
+            { name: "WIKI", value: 1 },
+            { name: "热门", value: 2 },
+            { name: "最新", value: 3 },
+            { name: "求助", value: 4 },
+            { name: "分享", value: 5 },
+            { name: "公告", value: 6 },
+          ];
+        } else if (val === 1) {
+          list = [
+            { name: "WIKI", value: 1 },
+            { name: "求助", value: 4 },
+            { name: "分享", value: 5 },
+          ];
+        }
+        labelList.push(...list);
       }
-      labelList.push(...list)
-    })
-    onMounted(() => {
-    
-    })
-    return {componentName, tabs, labelList};
+    );
+    onMounted(() => {});
+    return { componentName, tabs, labelList };
   },
-})
+});
 </script>
 
 <style scoped lang="less">

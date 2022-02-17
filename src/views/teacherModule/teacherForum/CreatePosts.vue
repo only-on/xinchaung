@@ -56,20 +56,19 @@
             </div>
           </a-form-item>
         </div>
+        <a-form-item>
+          <div class="text">
+            <QuillEditor
+              v-model="formState.content"
+              :height="'400px'"
+              :uploadPathName="'teacherForum'"
+            />
+          </div>
+        </a-form-item>
+        <a-form-item>
+          <Submit @submit="onSubmit" @cancel="cancel"></Submit>
+        </a-form-item>
       </a-form>
-      <div class="text">
-        <QuillEditor
-          v-model="formState.content"
-          :height="'400px'"
-          :uploadPathName="'teacherForum'"
-        />
-      </div>
-      <div class="foot">
-        <a-button @click.prevent="cancel">取消</a-button>
-        <a-button type="primary" @click.prevent="onSubmit">{{
-          editId ? " 修 改 " : " 保 存 "
-        }}</a-button>
-      </div>
     </div>
     <div class="right">
       <!-- 热门标签 -->
@@ -101,6 +100,7 @@ import QuillEditor from "src/components/editor/quill.vue";
 import HotLabel from "./components/HotLabel.vue";
 import HeatMap from "./components/HeatMap.vue";
 import RecommendCourse from "./components/RecommendCourse.vue";
+import Submit from "src/components/submit/index.vue";
 const http = (request as any).teacherForum;
 interface form {
   title: string;
@@ -122,6 +122,7 @@ export default defineComponent({
     HotLabel,
     HeatMap,
     RecommendCourse,
+    Submit,
   },
   setup: (props, { emit }) => {
     const router = useRouter();
@@ -212,7 +213,9 @@ export default defineComponent({
       },
       cancel: () => {},
     });
-    function cancel() {}
+    function cancel() {
+      console.log(111);
+    }
     editId ? state.getDetail() : "";
     onMounted(() => {});
     return {
