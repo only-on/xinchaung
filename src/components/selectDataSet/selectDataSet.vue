@@ -52,10 +52,14 @@
           <div>
             <span
               v-if="selected.includes(item.uid)"
-              class="shanchu iconfont icon-yichu"
+              class="shanchu iconfont icon-yichu1"
               @click="remove(item)"
             ></span>
-            <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span>
+            <span
+              v-else
+              class="select-btn icon-xuanze_check iconfont"
+              @click="select(item)"
+            ></span>
           </div>
         </div>
       </template>
@@ -72,27 +76,36 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs,watch,Ref,ref,inject } from "vue";
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  watch,
+  Ref,
+  ref,
+  inject,
+} from "vue";
 import request from "src/request/getRequest";
 import storage from "src/utils/extStorage";
 import empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 export default defineComponent({
   components: { empty },
-  props: ["value", "names",'limitNumber'],
+  props: ["value", "names", "limitNumber"],
   setup(props, { emit }) {
     const $message: MessageApi = inject("$message")!;
     const datasetApi = request.teacherWorkbench;
-    const uid = storage.lStorage.get("uid")||storage.lStorage.get("user_id");
+    const uid = storage.lStorage.get("uid") || storage.lStorage.get("user_id");
     const limitNumber: Ref<number> = ref(3);
-    props.limitNumber?limitNumber.value=props.limitNumber:''
+    props.limitNumber ? (limitNumber.value = props.limitNumber) : "";
     const reactiveData: {
       params: any;
       category: any[];
       dataSetList: any[];
       selected: any[]; // 已经选择uid
       count: number;
-      names:any[]
+      names: any[];
     } = reactive({
       params: {
         per_page: 20,
@@ -107,7 +120,7 @@ export default defineComponent({
       dataSetList: [],
       selected: [], // 已经选择uid
       count: 0,
-      names:[]
+      names: [],
     });
 
     onMounted(() => {
@@ -115,9 +128,13 @@ export default defineComponent({
         getDataList();
       });
     });
-    watch(()=>props.names,()=>{
-      reactiveData.names=props.names
-    },{deep:true,immediate:true})
+    watch(
+      () => props.names,
+      () => {
+        reactiveData.names = props.names;
+      },
+      { deep: true, immediate: true }
+    );
     // 获取数据集类型
     function getDataCategory() {
       return new Promise((reslove: any, reject: any) => {
@@ -168,31 +185,42 @@ export default defineComponent({
       let i = reactiveData.selected.indexOf(val.uid);
       reactiveData.selected.splice(i, 1);
       emit("update:value", reactiveData.selected);
-      reactiveData.names=reactiveData.names.filter((item:any)=>{
-        return val.uid!=item.uid
-      })
+      reactiveData.names = reactiveData.names.filter((item: any) => {
+        return val.uid != item.uid;
+      });
       emit("update:names", reactiveData.names);
     }
 
     // 选择
     function select(val: any) {
-      if(limitNumber.value === reactiveData.selected.length){
-        $message.warn(`数据集最多可选择${limitNumber.value}个`)
-        return
+      if (limitNumber.value === reactiveData.selected.length) {
+        $message.warn(`数据集最多可选择${limitNumber.value}个`);
+        return;
       }
-      
+
       if (reactiveData.selected.includes(val.uid)) {
-        return
+        return;
       }
-       reactiveData.selected.push(val.uid);
-        emit("update:value", reactiveData.selected);
-        let temp={ uid: val.uid, name: val.name,amount:val.amount,size:val.size }
-        reactiveData.names.push(temp)
-        emit("update:names", reactiveData.names);
+      reactiveData.selected.push(val.uid);
+      emit("update:value", reactiveData.selected);
+      let temp = {
+        uid: val.uid,
+        name: val.name,
+        amount: val.amount,
+        size: val.size,
+      };
+      reactiveData.names.push(temp);
+      emit("update:names", reactiveData.names);
     }
-    watch(()=>{return props.value},(val:any)=>{
-      reactiveData.selected=val
-    },{deep:true,immediate:true})
+    watch(
+      () => {
+        return props.value;
+      },
+      (val: any) => {
+        reactiveData.selected = val;
+      },
+      { deep: true, immediate: true }
+    );
     return {
       ...toRefs(reactiveData),
       onSearch,
@@ -218,7 +246,7 @@ export default defineComponent({
       padding: 0 24px;
     }
   }
-  input{
+  input {
     font-size: var(--base-font-size);
   }
   .data-set-tag-box {
@@ -231,7 +259,7 @@ export default defineComponent({
     .select-keyword {
       margin-top: 25px;
     }
-    span{
+    span {
       font-size: var(--base-font-size);
       color: var(--black-65);
     }
@@ -244,9 +272,9 @@ export default defineComponent({
     &:not(:first-child)::before {
       background-color: transparent;
     }
-    &.ant-radio-button-wrapper-checked{
+    &.ant-radio-button-wrapper-checked {
       color: var(--white-100);
-      span{
+      span {
         color: var(--white-100);
       }
     }
@@ -267,7 +295,7 @@ export default defineComponent({
       border: 1px solid #cdcdcd;
       border-radius: 6px;
       transition: 0.2s;
-      &:hover{
+      &:hover {
         box-shadow: 0 3px 6px 0 var(--black-0-7);
       }
       cursor: pointer;
@@ -313,7 +341,8 @@ export default defineComponent({
           }
         }
       }
-      .select-btn,.shanchu{
+      .select-btn,
+      .shanchu {
         color: var(--primary-color);
       }
     }
