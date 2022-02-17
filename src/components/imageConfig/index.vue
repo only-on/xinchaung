@@ -39,7 +39,7 @@
 import { reactive, ref, Ref } from "vue";
 // 采用ts专有声明，有默认值
 interface Props {
-  configs: any[]; //  数组对象或者 纯  string[]   都行
+  configs: any[];
 }
 /***
  * 参考参数
