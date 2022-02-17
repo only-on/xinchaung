@@ -29,65 +29,20 @@
             </a-select>
           </iconInput>
         </a-form-item>
-        <div>参数设置</div>
-        <a-form-item name="cpu" label="CPU">
-          <a-radio-group
-            v-model:value="reactiveData.ruleForm.cpu"
-            button-style="solid"
-          >
-            <a-radio-button
-              v-for="(it, key) in reactiveData.configs.cpu"
-              :key="key"
-              :value="key"
-              >{{ it }}核</a-radio-button
-            >
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item name="ram" label="内存">
-          <a-radio-group
-            v-model:value="reactiveData.ruleForm.ram"
-            button-style="solid"
-          >
-            <a-radio-button
-              v-for="(it, key) in reactiveData.configs.ram"
-              :key="key"
-              :value="key"
-              >{{ it }}</a-radio-button
-            >
-          </a-radio-group>
-        </a-form-item>
-        <a-form-item name="disk" label="硬盘">
-          <a-radio-group
-            v-model:value="reactiveData.ruleForm.disk"
-            button-style="solid"
-          >
-            <a-radio-button
-              v-for="(it, key) in reactiveData.configs.disk"
-              :key="key"
-              :value="key"
-              >{{ it }}</a-radio-button
-            >
-          </a-radio-group>
-        </a-form-item>
-        <div>
-          <label v-if="reactiveData.showGPU">
-            <a-checkbox v-model:checked="reactiveData.ruleForm.openGPU"
-              >启动GPU</a-checkbox
-            >
-          </label>
-        </div>
+        <div class="configs">镜像配置</div>
+        <imageConfig :configs="configs" @change="configChange"></imageConfig>
       </div>
       <div class="form-right">
         <a-form-item name="end_time" class="time-item" :extra="false">
           <template #label>
             <div class="time-label">
               <span>容器使用日期</span>
-              <div class="time-check-box">
+              <!-- <div class="time-check-box">
                 <a-checkbox
                   v-model:checked="reactiveData.permanent"
                 ></a-checkbox>
                 永久有效
-              </div>
+              </div> -->
             </div>
           </template>
           <div class="start-end-date-box">
@@ -140,6 +95,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import imageConfig from "src/components/imageConfig/index.vue";
 import labelDisplay from "src/components/labelDisplay/index.vue";
 import Submit from "src/components/submit/index.vue";
 import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
@@ -198,6 +154,7 @@ var reactiveData: any = reactive({
     cpu: {},
     disk: {},
     ram: {},
+    gpu: false,
   },
   images: {
     notebook: [],
@@ -350,6 +307,46 @@ function getConfig() {
     }
   });
 }
+const configs: any = reactive([
+  {
+    name: "内存",
+    data: [2, 4, 6, 8],
+    unit: "GB",
+    value: 4,
+    type: "select",
+    key: "ram",
+  },
+  {
+    name: "CPU",
+    data: [1, 2, 3, 4],
+    unit: "GB",
+    value: 3,
+    type: "select",
+    key: "cpu",
+  },
+  {
+    name: "硬盘",
+    data: [30, 40, 50, 100],
+    unit: "GB",
+    value: 40,
+    type: "select",
+    key: "disk",
+  },
+  {
+    name: "GPU",
+    data: [
+      { name: "是", value: true },
+      { name: "否", value: false },
+    ],
+    value: false,
+    type: "radio",
+    key: "gpu",
+  },
+]);
+const configChange = (val: any) => {
+  // console.log(val)
+  reactiveData.configs = val;
+};
 onMounted(() => {
   getConfig();
 });
@@ -415,6 +412,9 @@ onMounted(() => {
           }
         }
       }
+    }
+    .configs {
+      margin-bottom: 1rem;
     }
     .form-right {
       width: 50%;

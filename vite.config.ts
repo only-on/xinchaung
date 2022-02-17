@@ -75,7 +75,7 @@ export default defineConfig({
     },
   },
 });
-
+// "pretty-quick": "^3.1.3",
 // "husky": {
 //   "hooks": {
 //     "pre-commit": "pretty-quick --staged"

@@ -34,7 +34,6 @@ const remove = (val: any, k: number) => {
     emit("remove", val, k);
   }
 };
-console.log(props.labels);
 var list: any = computed(() => {
   var arr: any = [];
   props.labels.length
