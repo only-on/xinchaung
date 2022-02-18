@@ -218,10 +218,5 @@ export default defineComponent({
       margin-right: 10px;
     }
   }
-  .upload {
-    .ant-upload.ant-upload-drag .ant-upload-btn {
-      //   padding: 40px;
-    }
-  }
 }
 </style>

@@ -1,6 +1,7 @@
 <template>
-  <div v-layout-bg class="create-workbench-box">
+  <div class="create-workbench-box">
     <a-form
+      v-show="!AddedSuccessfully"
       ref="ruleFormDom"
       :model="reactiveData.ruleForm"
       :rules="rules"
@@ -13,7 +14,7 @@
             <a-select
               v-model:value="reactiveData.ruleForm.image"
               placeholder="选择镜像"
-              @change="iamgeChange"
+              @change="imageChange"
             >
               <a-select-opt-group
                 v-for="(val, key) in reactiveData.images"
@@ -30,7 +31,11 @@
           </iconInput>
         </a-form-item>
         <div class="configs">镜像配置</div>
-        <imageConfig :configs="configs" @change="configChange"></imageConfig>
+        <ImageConfig
+          v-if="!AddedSuccessfully"
+          :configs="configs"
+          @change="configChange"
+        ></ImageConfig>
       </div>
       <div class="form-right">
         <a-form-item name="end_time" class="time-item" :extra="false">
@@ -79,6 +84,17 @@
       </div>
       <Submit @submit="create" @cancel="cancel"></Submit>
     </a-form>
+    <div v-show="AddedSuccessfully" class="ContinueAdding">
+      <div class="img"></div>
+      <div class="succTit">自定义镜像创建成功</div>
+      <div class="text">
+        该镜像已存放置镜像列表，可点击下方按钮返回查看或继续添加
+      </div>
+      <div class="sub">
+        <a-button @click="ContinueAdding">继续添加</a-button>
+        <a-button type="primary" @click="cancel">返回列表</a-button>
+      </div>
+    </div>
     <a-drawer
       class="select-imag-drawer"
       :closable="false"
@@ -95,26 +111,13 @@
   </div>
 </template>
 <script lang="ts" setup>
-import imageConfig from "src/components/imageConfig/index.vue";
+import ImageConfig from "src/components/imageConfig/index.vue";
 import labelDisplay from "src/components/labelDisplay/index.vue";
 import Submit from "src/components/submit/index.vue";
 import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
 import selectIcon from "src/assets/images/screenicon/Group14.png";
 import iconInput from "src/components/aiAnt/beforeIcon.vue";
-import {
-  defineComponent,
-  ref,
-  onMounted,
-  reactive,
-  Ref,
-  inject,
-  computed,
-  toRefs,
-  watch,
-  defineExpose,
-  defineProps,
-  withDefaults,
-} from "vue";
+import { ref, onMounted, reactive, Ref, inject, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -134,9 +137,7 @@ updata({
   showNav: true,
 });
 const dateFormat = "YYYY-MM-DD";
-// const ruleForm:any=reactive({
-
-// })
+var AddedSuccessfully: Ref<boolean> = ref(false);
 var reactiveData: any = reactive({
   ruleForm: {
     start_time: moment(new Date(), dateFormat),
@@ -188,7 +189,7 @@ let rules = {
   image: [{ required: true, message: "请选择" }],
 };
 // 镜像选择发生变化时
-function iamgeChange(val: any) {
+function imageChange(val: any) {
   let currentImageTemp: any = {};
   outerloop: for (const key in reactiveData.images) {
     if (Object.prototype.hasOwnProperty.call(reactiveData.images, key)) {
@@ -212,9 +213,21 @@ function iamgeChange(val: any) {
   //   reactiveData.ruleForm.openGPU = false;
   // }
 }
+const ContinueAdding = () => {
+  configs[0].value = 2;
+  configs[1].value = 1;
+  configs[2].value = 30;
+  configs[3].value = false;
+  ruleFormDom.value.resetFields();
+  reactiveData.selectedName = [];
+  reactiveData.ruleForm.datasets = [];
+  AddedSuccessfully.value = false;
+};
 const ruleFormDom = ref();
 // 创建
 function create() {
+  AddedSuccessfully.value = true;
+  return;
   ruleFormDom.value.validate().then(() => {
     let params: any = {
       flavor: {},
@@ -246,12 +259,13 @@ function create() {
     createWorkbenchApi(params).then((res: any) => {
       message.success("创建成功!");
       reactiveData.loading = false;
-      router.push({
-        path: "/teacher/Workbench",
-        query: {
-          currentTab: 0,
-        },
-      });
+      router.go(-1);
+      // router.push({
+      //   path: "/teacher/teacherImageResourcePool/OnlineMake",
+      //   query: {
+      //     currentTab: 0,
+      //   },
+      // });
     });
   });
 }
@@ -263,7 +277,7 @@ function closeDrawer() {
 function cancel() {
   router.go(-1);
   // router.push({
-  //   path: "/teacher/Workbench",
+  //   path: "/teacher/teacherImageResourcePool/OnlineMake",
   //   query: {
   //     currentTab: 0,
   //   },
@@ -307,12 +321,13 @@ function getConfig() {
     }
   });
 }
-const configs: any = reactive([
+// 选了镜像之后
+var configs: any = reactive([
   {
     name: "内存",
     data: [2, 4, 6, 8],
     unit: "GB",
-    value: 4,
+    value: 2,
     type: "select",
     key: "ram",
   },
@@ -320,7 +335,7 @@ const configs: any = reactive([
     name: "CPU",
     data: [1, 2, 3, 4],
     unit: "GB",
-    value: 3,
+    value: 1,
     type: "select",
     key: "cpu",
   },
@@ -328,7 +343,7 @@ const configs: any = reactive([
     name: "硬盘",
     data: [30, 40, 50, 100],
     unit: "GB",
-    value: 40,
+    value: 30,
     type: "select",
     key: "disk",
   },
@@ -343,6 +358,7 @@ const configs: any = reactive([
     key: "gpu",
   },
 ]);
+// const configs=arr
 const configChange = (val: any) => {
   // console.log(val)
   reactiveData.configs = val;
@@ -487,6 +503,35 @@ onMounted(() => {
   .ant-drawer-body {
     height: 100%;
     padding: 24px 0;
+  }
+}
+.ContinueAdding {
+  margin-top: 100px;
+  div {
+    width: 100%;
+    margin: 0 auto;
+    text-align: center;
+  }
+  .img {
+    width: 94px;
+    height: 94px;
+    background: url("src/assets/images/cover2.png") no-repeat;
+    background-size: 100% 100%;
+  }
+  .succTit {
+    font-size: 24px;
+    color: var(--black-85);
+    margin-top: 2rem;
+  }
+  .text {
+    padding-top: 0.5rem;
+    color: var(--black-45);
+  }
+  .sub {
+    margin-top: 2rem;
+    .ant-btn {
+      margin: 0 1rem;
+    }
   }
 }
 </style>

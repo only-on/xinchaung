@@ -160,9 +160,9 @@ export default defineComponent({
             ],
           };
           data.push(center);
-          activeName.value = lStorage.get("menuActiveName")
-            ? lStorage.get("menuActiveName")
-            : data && data.length && data[0].name;
+          // activeName.value = lStorage.get("menuActiveName")
+          //   ? lStorage.get("menuActiveName")
+          //   : data && data.length && data[0].name;
           if (data && data.length) {
             data.map((v: any) => {
               // console.log(v.children.length)
