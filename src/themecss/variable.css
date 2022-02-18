@@ -175,6 +175,7 @@
   --base-font-size: 14px;
   --font-size-18: 18px;
   --font-size-20: 20px;
+  --font-size-24: 24px;
   --font-size-16: 16px;
   --base-line-height: 1.5715;
 
@@ -190,6 +191,10 @@
   --purpleblue-6: #585ce5;
   --royalpurple-7: #3e1dc4;
 
+  --levelcolor-1: #0fae54;
+  --levelcolor-2: #319dff;
+  --levelcolor-3: #6d6dff;
+
   /* 下2需要替换成现主题  --blue-6-2  rgba(var(--blue-6),0.2) */
 
   --blue-6-2: #1890ff33;
@@ -201,6 +206,8 @@
     --orangeyellow-4: #FF9544; */
   --orangeyellow-5: #fe8020;
   --orangeyellow-6: #ff9544;
+  --orangeyellow-7: rgb(255, 110, 0, 0.14);
+
   --brightBtn: #1cb2b3;
 
   /*边距*/

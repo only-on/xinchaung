@@ -91,7 +91,7 @@ updata({
   ],
   showContent: true,
   componenttype: undefined,
-  showNav: false,
+  showNav: true,
 });
 const currentTab = ref<number>(0);
 watch(
@@ -236,6 +236,7 @@ const delet = (v: number) => {
 };
 const detail = (v: number) => {
   console.log(v);
+  router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
 };
 
 let typeList = {

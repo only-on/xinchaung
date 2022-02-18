@@ -28,5 +28,16 @@ export default {
         authCode: "teacherExperimentResourcePool",
       },
     },
+    {
+      path: "experimentDetail",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"
+        ),
+      meta: {
+        icon: "",
+        authCode: "teacherExperimentResourcePool",
+      },
+    },
   ],
 };
