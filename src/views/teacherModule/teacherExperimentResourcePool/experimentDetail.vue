@@ -31,11 +31,9 @@
         <span class="user-name">TEACHERNAME</span>
       </div>
     </div>
-    <div class="detail-content">
-      <div></div>
-    </div>
+    <div class="detail-content"></div>
   </div>
-  <!-- <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal> -->
+  <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -54,7 +52,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-// import addToCourseModal from './addToCourseModal.vue'
+import addToCourseModal from "./components/addToCourseModal.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -75,6 +73,7 @@ const handleClick = () => {
 const reportTemplate = () => {
   // isShowReport.value = true
 };
+
 onMounted(() => {
   // initData();
 });
@@ -204,7 +203,7 @@ onMounted(() => {
     }
   }
   .detail-content {
-    margin-bottom: 16px;
+    margin-top: 16px;
     background-color: var(--white-100);
     border: 1px solid var(--lightgray-3);
     padding: 0 24px;
