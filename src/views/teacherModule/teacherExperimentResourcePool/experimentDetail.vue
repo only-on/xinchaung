@@ -31,7 +31,13 @@
         <span class="user-name">TEACHERNAME</span>
       </div>
     </div>
-    <div class="detail-content"></div>
+    <div class="detail-content">
+      <!-- <experiment-guide></experiment-guide> -->
+      <!-- <video-detail></video-detail> -->
+      <!-- <file-detail></file-detail> -->
+      <!-- <task-detail></task-detail>  -->
+      <component :is="experimentDetail.type"></component>
+    </div>
   </div>
   <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
 </template>
@@ -51,8 +57,12 @@ import {
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-import { Modal, message } from "ant-design-vue";
-import addToCourseModal from "./components/addToCourseModal.vue";
+import { Modal, message } from "ant-design-vue"; //
+import addToCourseModal from "./component/addToCourseModal.vue";
+import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
+import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
+import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/fileDetail.vue";
+import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -73,6 +83,20 @@ const handleClick = () => {
 const reportTemplate = () => {
   // isShowReport.value = true
 };
+
+let experimentDetail = reactive({
+  type: taskDetail,
+});
+
+// setTimeout(() => {
+//   experimentDetail.type = videoDetail
+// }, 10000)
+// setTimeout(() => {
+//   experimentDetail.type = fileDetail
+// }, 20000)
+// setTimeout(() => {
+//   experimentDetail.type = taskDetail
+// }, 30000)
 
 onMounted(() => {
   // initData();
