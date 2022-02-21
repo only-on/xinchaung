@@ -36,7 +36,7 @@
         >
           {{ v.type_obj.name }}
         </div>
-        <div class="exper-name pointer" @click="detail(v)">{{ v.name }}</div>
+        <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
         <div class="class-time">推荐课时 1</div>
         <div class="user-info" v-if="currentTab === 0">
           <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
@@ -188,12 +188,48 @@ const initData = () => {
   // http.getList()
   experimentList.push(
     ...[
-      { id: 1, name: "基于入侵检测的告警分析", type: 1, type_obj: {} },
-      { id: 2, name: "基于入侵检测的告警分析", type: 2, type_obj: {} },
-      { id: 3, name: "基于入侵检测的告警分析", type: 3, type_obj: {} },
-      { id: 4, name: "基于入侵检测的告警分析", type: 4, type_obj: {} },
-      { id: 5, name: "基于入侵检测的告警分析", type: 5, type_obj: {} },
-      { id: 6, name: "基于入侵检测的告警分析", type: 1, type_obj: {} },
+      {
+        id: 1,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 1,
+        type_obj: {},
+      },
+      {
+        id: 2,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 2,
+        type_obj: {},
+      },
+      {
+        id: 3,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 3,
+        type_obj: {},
+      },
+      {
+        id: 4,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 4,
+        type_obj: {},
+      },
+      {
+        id: 5,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 5,
+        type_obj: {},
+      },
+      {
+        id: 6,
+        name: "基于入侵检测的告警分析",
+        class_cnt: 2,
+        type: 1,
+        type_obj: {},
+      },
     ]
   );
   experimentList.forEach((v) => {
@@ -234,9 +270,16 @@ const share = (v: number) => {
 const delet = (v: number) => {
   console.log(v);
 };
-const detail = (v: number) => {
-  console.log(v);
-  router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+const detail = (id: number) => {
+  console.log(id);
+  // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+  router.push({
+    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+    query: {
+      id,
+      currentTab: currentTab.value,
+    },
+  });
 };
 
 let typeList = {

@@ -1,71 +1,152 @@
 <template>
-  <div class="title-box" :class="{ show: isShow }">
-    <span class="task-num">任务一</span>
-    <span class="task-name" v-if="!isShow">任务名称</span>
+  <div class="title-box" :class="{ show: props.taskList.idAdd }">
+    <span class="task-num">任务{{ NumberToChinese(props.index) }}</span>
+    <span class="task-name" v-if="!props.taskList.idAdd">任务名称</span>
     <div class="operate">
       <span class="pointer delet">删除</span>
-      <span class="pointer" @click="isShow = !isShow">{{
-        isShow ? "收起" : "展开"
-      }}</span>
+      <span
+        class="pointer"
+        @click="props.taskList.idAdd = !props.taskList.idAdd"
+        >{{ props.taskList.idAdd ? "收起" : "展开" }}</span
+      >
     </div>
   </div>
   <a-form
     class="task-form"
     ref="formRef"
-    :model="formState"
+    :model="props.taskList"
     labelAlign="left"
     :rules="rules"
     layout="vertical"
-    v-if="isShow"
+    v-if="props.taskList.idAdd"
   >
     <a-form-item label="任务名称" name="name" required>
       <a-input
-        v-model:value="formState.name"
+        v-model:value="props.taskList.name"
         placeholder="请在这里输入任务名称"
+        :disabled="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务描述" name="type" required>
-      <div class="form-upload">
-        <a-button type="primary" shape="round" size="small">上传文档</a-button>
+    <a-form-item label="任务描述" name="describe" required>
+      <div class="form-upload" v-if="!props.preview">
+        <a-upload
+          name="file"
+          :show-upload-list="false"
+          accept=".md"
+          :multiple="false"
+          :before-upload="beforeUpload"
+        >
+          <a-button type="primary" shape="round" size="small"
+            >上传文档</a-button
+          >
+        </a-upload>
       </div>
-      <marked-editor v-model="formState.describe" :preview="preview" />
+      <marked-editor
+        v-model="props.taskList.describe"
+        :preview="props.preview"
+        :image-upload-url="uploadUrl"
+      />
     </a-form-item>
-    <a-form-item label="任务步骤" name="type" required>
+    <a-form-item label="任务步骤" name="step" required>
       <div class="form-switch">
         状态
-        <a-switch v-model:checked="formState.checked" />
+        <a-switch
+          v-model:checked="props.taskList.checked"
+          :disabled="props.preview"
+        />
       </div>
-      <div class="form-upload">
+      <div class="form-upload" v-if="!props.preview">
         <a-button type="primary" shape="round" size="small">上传文档</a-button>
       </div>
-      <marked-editor v-model="formState.step" :preview="preview" />
+      <marked-editor
+        v-model="props.taskList.step"
+        :preview="props.preview"
+        :image-upload-url="uploadUrl"
+      />
     </a-form-item>
   </a-form>
 </template>
 
-<script lang="ts" setup>
-import { ref, reactive } from "vue";
+<script lang="ts" setup="props">
+import { ref, reactive, inject } from "vue";
+import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
+const $message: MessageApi = inject("$message")!;
+const dev_base_url = import.meta.env.VITE_APP_BASE_API || "";
+var uploadUrl = `${dev_base_url}/api/content/vnc/upload_mkfile`;
+console.log(uploadUrl);
 const isShow = ref<boolean>(false);
-const preview = ref<boolean>(false);
+// const preview = ref<boolean>(false);
 const formState = reactive({
   name: "",
   describe: "",
   step: "",
   checked: false,
 });
-const describeValidator = () => {
-  console.log(formState);
-};
 const rules = {
   name: [
     { required: true, message: "请输入帖子名称", trigger: "blur" },
     // { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
   ],
-  describe: [
-    // {validator: describeValidator, trigger: "blur"}
-  ],
 };
+const props = withDefaults(defineProps<Props>(), {
+  preview: true,
+  taskList: {},
+  index: 0,
+});
+// const emit = defineEmits<{
+//   (e: "change", obj: any): void;
+// }>();
+const beforeUpload = (file: any, fileList: any) => {
+  // console.log(file, fileList)
+  let arr = file.name.split(".");
+  if (arr[arr.length - 1] !== "md") {
+    $message.warn("请上传markdown");
+    return;
+  }
+  const fs = new FormData();
+  fs.append("jupyter_file", file);
+  // fs.append('taskfile_subdir', props.jupyterUuid)
+  props.taskList.describe = "66";
+};
+interface Props {
+  preview: boolean;
+  taskList: ItaskList;
+  index: number;
+}
+interface ItaskList {
+  name: string;
+  describe: string;
+  step: string;
+  checked: boolean;
+  idAdd: boolean;
+}
+function NumberToChinese(num: any) {
+  console.log(num);
+  var chnNumChar = [
+    "一",
+    "二",
+    "三",
+    "四",
+    "五",
+    "六",
+    "七",
+    "八",
+    "九",
+    "十",
+    "十一",
+    "十二",
+    "十三",
+    "十四",
+    "十五",
+    "十六",
+    "十七",
+    "十八",
+    "十九",
+    "二十",
+  ];
+  return chnNumChar[num] ? chnNumChar[num] : "更多";
+}
 </script>
 
 <style lang="less" scoped>

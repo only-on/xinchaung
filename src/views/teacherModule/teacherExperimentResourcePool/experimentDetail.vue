@@ -4,10 +4,12 @@
       <div class="crumbs">
         <breadcrumb />
       </div>
-      <div class="tech-direction">技术方向：数据挖掘</div>
+      <div class="tech-direction">
+        技术方向：{{ experimentDetail.direction }}
+      </div>
       <div class="name-type flexCenter">
         <div class="left">
-          <span class="name">基于入侵检测的告警分析-外网</span>
+          <span class="name">{{ experimentDetail.name }}</span>
           <span class="type">Jupyter</span>
         </div>
         <div class="right">
@@ -65,7 +67,7 @@ import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/co
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
+const { id } = route.query;
 const http = (request as any).teacherImageResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -84,9 +86,32 @@ const reportTemplate = () => {
   // isShowReport.value = true
 };
 
-let experimentDetail = reactive({
+let experimentDetail = reactive<IExperimentDetail>({
+  id: 500096,
+  name: "hello",
+  direction: "",
+  complexity: "1",
+  knowledge_maps: ["知识点1", "知识点2", "知识点3"],
+  class_hour: 2,
+  username: "test",
   type: taskDetail,
+  lab_proc: "实验指导",
 });
+const getExperimentDetail = () => {
+  console.log(id);
+  let obj = {
+    id: 500096,
+    name: "hello",
+    direction: "数据挖掘",
+    complexity: "1",
+    knowledge_maps: ["知识点1", "知识点2", "知识点3"],
+    class_hour: 2,
+    username: "test",
+    type: taskDetail,
+    lab_proc: "实验指导",
+  };
+  Object.assign(experimentDetail, obj);
+};
 
 // setTimeout(() => {
 //   experimentDetail.type = videoDetail
@@ -99,8 +124,19 @@ let experimentDetail = reactive({
 // }, 30000)
 
 onMounted(() => {
-  // initData();
+  getExperimentDetail();
 });
+interface IExperimentDetail {
+  id: number;
+  name: string;
+  direction: string;
+  complexity: string;
+  knowledge_maps: string[];
+  class_hour: 2;
+  username: string;
+  type: any;
+  lab_proc: string;
+}
 </script>
 <style scoped lang="less">
 .experiment-detail {
