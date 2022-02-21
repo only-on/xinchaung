@@ -29,6 +29,18 @@ export default {
       },
     },
     {
+      path: "CreateExperiment",
+      name: "CreateExperiment",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherExperimentResourcePool/CreateExperiment.vue"
+        ),
+      meta: {
+        icon: "",
+        authCode: "CreateExperiment",
+      },
+    },
+    {
       path: "experimentDetail",
       component: () =>
         import(

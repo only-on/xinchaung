@@ -102,7 +102,7 @@ router.afterEach(
         processedPath.push(routeSegment.path);
       }
     });
-    // console.log('breadcrumbs:=',breadcrumbs)
+    console.log("breadcrumbs:=", breadcrumbs);
     // console.log('processedPath:=',processedPath)
     store.commit("saveBreadcrumb", breadcrumbs);
   }
