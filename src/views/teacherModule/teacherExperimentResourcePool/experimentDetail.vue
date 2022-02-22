@@ -55,6 +55,7 @@ import {
   toRefs,
   watch,
   defineExpose,
+  markRaw,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -94,7 +95,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   knowledge_maps: ["知识点1", "知识点2", "知识点3"],
   class_hour: 2,
   username: "test",
-  type: taskDetail,
+  type: markRaw(taskDetail),
   lab_proc: "实验指导",
 });
 const getExperimentDetail = () => {
@@ -107,7 +108,7 @@ const getExperimentDetail = () => {
     knowledge_maps: ["知识点1", "知识点2", "知识点3"],
     class_hour: 2,
     username: "test",
-    type: taskDetail,
+    type: markRaw(fileDetail),
     lab_proc: "实验指导",
   };
   Object.assign(experimentDetail, obj);
