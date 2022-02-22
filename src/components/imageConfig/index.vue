@@ -1,6 +1,6 @@
 <template>
   <div class="labelList flexCenter">
-    <div class="item" v-for="(v, k) in props.configs" :key="v">
+    <div class="item" v-for="v in configs" :key="v">
       <div class="name">{{ v.name }}</div>
       <template v-if="v.type === 'select'" class="flexCenter">
         <div class="node">
@@ -8,6 +8,7 @@
             <div
               class="circle"
               v-for="(i, idx) in v.data"
+              :key="i"
               @click="selectNode(v, i)"
               :class="getClass(i, idx, v)"
             ></div>
@@ -16,6 +17,7 @@
             <div
               class="num"
               v-for="(i, idx) in v.data"
+              :key="i"
               :class="idx <= v.data.length - 2 ? 'numW' : ''"
             >
               {{ i }}{{ v.unit }}
@@ -29,44 +31,96 @@
           v-model:value="v.value"
           @change="change(v.key, v.value)"
         >
-          <a-radio :value="a.value" v-for="a in v.data">{{ a.name }}</a-radio>
+          <a-radio :value="a.value" v-for="a in v.data" :key="a">{{
+            a.name
+          }}</a-radio>
         </a-radio-group>
       </template>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref, Ref } from "vue";
+import { reactive, ref, Ref, onMounted } from "vue";
 // 采用ts专有声明，有默认值
 interface Props {
-  configs: any[];
+  // defaultConfig: {
+  //   ram:number,
+  //   cpu:number,
+  //   ram:number,
+  //   ram:number,
+  // };
+  defaultConfig: any;
 }
 /***
  * 参考参数
  * key 为父组件参数的键   子组件按此值返回
  */
 
-// const configs:any=reactive([
-//   {name:'内存',data:[2,4,6,8],unit:'GB',value:4,type:'select',key:'ram'},
-//   {name:'CPU',data:[1,2,3,4],unit:'GB',value:3,type:'select',key:'cpu'},
-//   {name:'硬盘',data:[30,40,50,100],unit:'GB',value:40,type:'select',key:'disk'},
-//   {name:'GPU',data:[{name:'是',value:true},{name:'否',value:false}],value:false,type:'radio',key:'gpu'},
-// ])
+const configs: any = reactive([
+  {
+    name: "内存",
+    data: [2, 4, 6, 8],
+    unit: "GB",
+    value: 4,
+    type: "select",
+    key: "ram",
+  },
+  {
+    name: "CPU",
+    data: [1, 2, 3, 4],
+    unit: "GB",
+    value: 2,
+    type: "select",
+    key: "cpu",
+  },
+  {
+    name: "硬盘",
+    data: [30, 40, 50, 100],
+    unit: "GB",
+    value: 50,
+    type: "select",
+    key: "disk",
+  },
+  {
+    name: "GPU",
+    data: [
+      { name: "是", value: true },
+      { name: "否", value: false },
+    ],
+    value: false,
+    type: "radio",
+    key: "gpu",
+  },
+]);
 const props = withDefaults(defineProps<Props>(), {
-  configs: () => [],
+  defaultConfig: () => {},
+});
+configs.map((v: any) => {
+  let arr = Object.keys(props.defaultConfig);
+  if (
+    arr &&
+    arr.length &&
+    arr.includes(v.key) &&
+    props.defaultConfig[v.key] !== ""
+  ) {
+    // console.log(props.defaultConfig[v.key])
+    v.value = props.defaultConfig[v.key];
+  }
 });
 
 const emit = defineEmits<{
   (e: "change", val: any): void;
 }>();
 const params: any = reactive({});
-if (props.configs.length) {
-  props.configs.forEach((v: any) => {
-    params[v.key] = v.value;
-  });
-}
+// if (props.configs.length) {
+configs.forEach((v: any) => {
+  params[v.key] = v.value;
+});
+// }
+onMounted(() => {
+  emit("change", params);
+});
 
-emit("change", params);
 const selectNode = (v: any, i: any) => {
   v.value = i;
   params[v.key] = v.value;
@@ -76,6 +130,7 @@ const change = (key: string, value: boolean) => {
   params[key] = value;
   emit("change", params);
 };
+
 const getClass = (i: any, idx: number, v: any) => {
   let str = "";
   if (idx < v.data.length - 1) {

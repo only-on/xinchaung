@@ -33,7 +33,6 @@
         <div class="configs">镜像配置</div>
         <ImageConfig
           v-if="!AddedSuccessfully"
-          :configs="configs"
           @change="configChange"
         ></ImageConfig>
       </div>
@@ -214,10 +213,10 @@ function imageChange(val: any) {
   // }
 }
 const ContinueAdding = () => {
-  configs[0].value = 2;
-  configs[1].value = 1;
-  configs[2].value = 30;
-  configs[3].value = false;
+  // configs[0].value = 2;
+  // configs[1].value = 1;
+  // configs[2].value = 30;
+  // configs[3].value = false;
   ruleFormDom.value.resetFields();
   reactiveData.selectedName = [];
   reactiveData.ruleForm.datasets = [];
@@ -321,44 +320,6 @@ function getConfig() {
     }
   });
 }
-// 选了镜像之后
-var configs: any = reactive([
-  {
-    name: "内存",
-    data: [2, 4, 6, 8],
-    unit: "GB",
-    value: 2,
-    type: "select",
-    key: "ram",
-  },
-  {
-    name: "CPU",
-    data: [1, 2, 3, 4],
-    unit: "GB",
-    value: 1,
-    type: "select",
-    key: "cpu",
-  },
-  {
-    name: "硬盘",
-    data: [30, 40, 50, 100],
-    unit: "GB",
-    value: 30,
-    type: "select",
-    key: "disk",
-  },
-  {
-    name: "GPU",
-    data: [
-      { name: "是", value: true },
-      { name: "否", value: false },
-    ],
-    value: false,
-    type: "radio",
-    key: "gpu",
-  },
-]);
-// const configs=arr
 const configChange = (val: any) => {
   // console.log(val)
   reactiveData.configs = val;
@@ -515,7 +476,8 @@ onMounted(() => {
   .img {
     width: 94px;
     height: 94px;
-    background: url("src/assets/images/cover2.png") no-repeat;
+    background: url("src/assets/images/teacherImageResourcePool/success.png")
+      no-repeat;
     background-size: 100% 100%;
   }
   .succTit {

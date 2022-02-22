@@ -36,6 +36,7 @@ export default {
           "src/views/teacherModule/teacherExperimentResourcePool/CreateExperiment.vue"
         ),
       meta: {
+        title: "新建实验",
         icon: "",
         authCode: "CreateExperiment",
       },

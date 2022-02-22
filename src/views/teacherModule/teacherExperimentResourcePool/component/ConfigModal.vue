@@ -1,32 +1,23 @@
 <template>
   <div class="title">镜像选择</div>
   <a-select
-    v-model:value="imageList"
+    v-model:value="reactiveData.imageName"
     placeholder="请选择需要的镜像"
     style="width: 100%; max-width: 476px"
+    @change="imageChange"
   >
-    <a-select-option value="shanghai">Zone one</a-select-option>
-    <a-select-option value="beijing">Zone two</a-select-option>
+    <a-select-option :value="'环境1'">环境1</a-select-option>
+    <a-select-option :value="'环境2'">环境2</a-select-option>
   </a-select>
   <div class="configs">镜像配置</div>
-  <ImageConfig :configs="configs" @change="configChange"></ImageConfig>
+  <ImageConfig
+    @change="configChange"
+    :defaultConfig="reactiveData.configs"
+  ></ImageConfig>
 </template>
 <script lang="ts" setup>
 import ImageConfig from "src/components/imageConfig/index.vue";
-import {
-  defineComponent,
-  ref,
-  onMounted,
-  reactive,
-  Ref,
-  inject,
-  computed,
-  toRefs,
-  watch,
-  defineExpose,
-  defineProps,
-  withDefaults,
-} from "vue";
+import { onMounted, reactive, Ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -34,62 +25,52 @@ import { Modal, message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherImageResourcePool;
-const configs: any = reactive([
-  {
-    name: "内存",
-    data: [2, 4, 6, 8],
-    unit: "GB",
-    value: 2,
-    type: "select",
-    key: "ram",
-  },
-  {
-    name: "CPU",
-    data: [1, 2, 3, 4],
-    unit: "GB",
-    value: 1,
-    type: "select",
-    key: "cpu",
-  },
-  {
-    name: "硬盘",
-    data: [30, 40, 50, 100],
-    unit: "GB",
-    value: 30,
-    type: "select",
-    key: "disk",
-  },
-  {
-    name: "GPU",
-    data: [
-      { name: "是", value: true },
-      { name: "否", value: false },
-    ],
-    value: false,
-    type: "radio",
-    key: "gpu",
-  },
-]);
+
 const reactiveData: any = reactive({
   configs: {
-    cpu: {},
-    disk: {},
-    ram: {},
+    cpu: "",
+    disk: "",
+    ram: "",
     gpu: false,
   },
+  imageName: "环境1",
 });
-const imageList: any = reactive([]);
+
+interface Props {
+  defaultConfig: any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  defaultConfig: () => {},
+});
+if (props.defaultConfig.configs && props.defaultConfig.imageName) {
+  reactiveData.imageName = props.defaultConfig.imageName;
+  reactiveData.configs = props.defaultConfig.configs;
+}
+const list: any = reactive([]);
+
+const emit = defineEmits<{
+  (e: "selectedImage", val: any): void;
+}>();
 
 const configChange = (val: any) => {
-  // console.log(val)
   reactiveData.configs = val;
+  emit("selectedImage", reactiveData);
 };
+
+const imageChange = () => {
+  emit("selectedImage", reactiveData);
+};
+
 const initData = () => {
+  list.length = 0;
   http.getList().then((res: IBusinessResp) => {
     // list.push(...res.data);
+    // reactiveData.imageName=list[0].name
+    emit("selectedImage", reactiveData);
   });
 };
 onMounted(() => {
+  // console.log(2222222)
   // initData();
 });
 </script>

@@ -1,36 +1,47 @@
 <template>
   <h3>实验环境</h3>
-  <div>
-    <ConfigModal></ConfigModal>
+  <div v-if="props.type">
+    <ConfigModal @selectedImage="selectedImage"></ConfigModal>
   </div>
-  <div class="selectList flexCenter">
-    <div class="add item flexCenter" @click.stop="visible = true">
+  <div class="selectList flexCenter" v-else>
+    <div
+      class="add item flexCenter"
+      @click.stop="selectList.length >= 3 ? '' : (visible = true)"
+      :class="selectList.length >= 3 ? 'not-allowed' : ''"
+    >
       <div class="tianjia">
         <span class="iconfont icon-tianjia"></span>
         <span>添加实验环境</span>
       </div>
       <div class="limit">最多添加三个环境</div>
     </div>
-    <div class="item" v-for="v in 3" :key="v">
+    <div class="item" v-for="(v, idx) in selectList" :key="v">
       <div class="single-ellipsis">
-        镜像名称需单行隐藏镜像名称需单行隐藏镜像名称需单行隐藏
+        {{ v.imageName }}
       </div>
       <div class="content">
         <div class="info flexCenter">
-          <span>内存：{{ "4" }}GB</span>
-          <span>cpu：{{ "4" }}GB</span>
-          <span>硬盘：{{ "4" }}GB</span>
-          <span>GPU：否</span>
+          <span>内存：{{ v.configs.ram }}GB</span>
+          <span>cpu：{{ v.configs.cpu }}GB</span>
+          <span>硬盘：{{ v.configs.disk }}GB</span>
+          <span>GPU：{{ v.configs.gpu ? "是" : "否" }}</span>
         </div>
         <div class="caozuo">
-          <span class="iconfont icon-bianji1"></span>
-          <span class="iconfont icon-shanchu"></span>
+          <span class="iconfont icon-bianji1" @click.stop="edit(v, idx)"></span>
+          <span class="iconfont icon-shanchu" @click.stop="Delete(idx)"></span>
         </div>
       </div>
     </div>
   </div>
-  <a-modal v-model:visible="visible" title="设置实验环境" @ok="handleOk">
-    <ConfigModal></ConfigModal>
+  <a-modal
+    v-model:visible="visible"
+    title="设置实验环境"
+    :destroyOnClose="true"
+  >
+    <ConfigModal
+      @selectedImage="selectedImage"
+      :defaultConfig="defaultConfig"
+    ></ConfigModal>
     <template #footer>
       <Submit @submit="handleOk" @cancel="cancel"></Submit>
     </template>
@@ -113,13 +124,61 @@ const reactiveData: any = reactive({
 });
 const imageList: any = reactive([]);
 var visible: Ref<boolean> = ref(false);
+const selectList: any = reactive([]);
+const currentImage: any = reactive({
+  configs: {
+    cpu: "",
+    disk: "",
+    ram: "",
+    gpu: false,
+  },
+  imageName: "",
+});
+const defaultConfig: any = {
+  configs: {},
+  imageName: "",
+  editIdx: "",
+};
 const configChange = (val: any) => {
   // console.log(val)
   reactiveData.configs = val;
 };
-const handleOk = () => {};
-const cancel = () => {
+const handleOk = () => {
+  var obj = {
+    configs: { ...currentImage.configs },
+    imageName: currentImage.imageName,
+  };
+  if (defaultConfig.editIdx === "") {
+    selectList.push(obj);
+  } else {
+    selectList[defaultConfig.editIdx] = obj;
+  }
+
+  currentImage.configs = { cpu: "", disk: "", ram: "", gpu: false };
+  currentImage.imageName = "";
+
   visible.value = false;
+  // modal.destroy()
+};
+const cancel = () => {
+  defaultConfig.configs = { cpu: "", disk: "", ram: "", gpu: false };
+  defaultConfig.imageName = "";
+  defaultConfig.editIdx = "";
+  visible.value = false;
+};
+const edit = (val: any, k: number) => {
+  visible.value = true;
+  defaultConfig.configs = val.configs;
+  defaultConfig.imageName = val.imageName;
+  defaultConfig.editIdx = k;
+};
+const Delete = (k: number) => {
+  selectList.splice(k, 1);
+};
+const selectedImage = (val: any) => {
+  // console.log('已选择好的配置=》',val)
+  currentImage.imageName = val.imageName;
+  currentImage.configs = val.configs;
 };
 const initData = () => {
   http.getList().then((res: IBusinessResp) => {
@@ -187,6 +246,9 @@ h3 {
       font-size: 12px;
       padding-top: 10px;
     }
+  }
+  .not-allowed {
+    cursor: not-allowed;
   }
 }
 </style>
