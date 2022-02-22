@@ -94,7 +94,11 @@ export default defineComponent({
       // console.log(route.query)
     }
     async function initData() {
-      if (configuration.tabs && configuration.tabs.length) {
+      if (
+        configuration.tabs &&
+        configuration.tabs.length &&
+        configuration.tabs.length > 1
+      ) {
         // debugger
         // 页面首次进入加currentTab参数    原地刷新则不刷新路由
         const { currentTab } = route.query;

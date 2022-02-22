@@ -260,7 +260,11 @@ const ExperimentTypeList = reactive([
  */
 const handleMenuClick = ({ key }: { key: string }) => {
   console.log(key);
-  router.push("/teacher/teacherImageResourcePool/localCreated");
+  // router.push("/teacher/teacherExperimentResourcePool/CreateExperiment?key="+key);
+  router.push({
+    path: "/teacher/teacherExperimentResourcePool/CreateExperiment",
+    query: { key },
+  });
 };
 const isMouseOver = ref<boolean>(false);
 

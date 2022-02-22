@@ -182,7 +182,7 @@ const pageChange = async (current: any, pageSize: any) => {
 };
 
 onMounted(() => {
-  initData();
+  // initData();
 });
 </script>
 <style scoped lang="less">
