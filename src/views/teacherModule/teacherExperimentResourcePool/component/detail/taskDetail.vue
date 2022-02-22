@@ -12,7 +12,11 @@
     </div>
   </div>
   <div class="experiment-content">
-    <div class="task-list" v-for="(v, i) in taskData.taskList" :key="v">
+    <div
+      class="task-list"
+      v-for="(v, i) in taskData.taskList"
+      :key="v.name + i"
+    >
       <task-list :preview="preview" :taskList="v" :index="i">{{ i }}</task-list>
     </div>
     <Submit @submit="onSubmit" @cancel="cancel"></Submit>
@@ -31,15 +35,28 @@ const route = useRoute();
 const { id } = route.query;
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>("aa");
-const taskData = reactive({
+interface ItaskList {
+  id?: number;
+  name: string;
+  describe: string;
+  step: string;
+  checked: boolean;
+  isAdd?: boolean;
+}
+interface ItaskData {
+  taskList: ItaskList[];
+}
+const taskData = reactive<ItaskData>({
   taskList: [
     {
+      id: 1,
       name: "1",
       describe: "1",
       step: "1",
       checked: true,
     },
     {
+      id: 2,
       name: "2",
       describe: "2",
       step: "2",
@@ -53,7 +70,7 @@ const addTask = () => {
     describe: "",
     step: "",
     checked: false,
-    idAdd: true,
+    isAdd: true,
   });
 };
 const onSubmit = () => {

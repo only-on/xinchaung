@@ -1,13 +1,13 @@
 <template>
-  <div class="title-box" :class="{ show: props.taskList.idAdd }">
-    <span class="task-num">任务{{ NumberToChinese(props.index) }}</span>
-    <span class="task-name" v-if="!props.taskList.idAdd">任务名称</span>
+  <div class="title-box" :class="{ show: props.taskList.isAdd }">
+    <span class="task-num">任务{{ NoToCh(props.index + 1) }}</span>
+    <span class="task-name" v-if="!props.taskList.isAdd">任务名称</span>
     <div class="operate">
       <span class="pointer delet">删除</span>
       <span
         class="pointer"
-        @click="props.taskList.idAdd = !props.taskList.idAdd"
-        >{{ props.taskList.idAdd ? "收起" : "展开" }}</span
+        @click="props.taskList.isAdd = !props.taskList.isAdd"
+        >{{ props.taskList.isAdd ? "收起" : "展开" }}</span
       >
     </div>
   </div>
@@ -18,7 +18,7 @@
     labelAlign="left"
     :rules="rules"
     layout="vertical"
-    v-if="props.taskList.idAdd"
+    v-if="props.taskList.isAdd"
   >
     <a-form-item label="任务名称" name="name" required>
       <a-input
@@ -71,6 +71,7 @@
 import { ref, reactive, inject } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
+import { NoToCh } from "src/utils/common";
 const $message: MessageApi = inject("$message")!;
 const dev_base_url = import.meta.env.VITE_APP_BASE_API || "";
 var uploadUrl = `${dev_base_url}/api/content/vnc/upload_mkfile`;
@@ -89,11 +90,7 @@ const rules = {
     // { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
   ],
 };
-const props = withDefaults(defineProps<Props>(), {
-  preview: true,
-  taskList: {},
-  index: 0,
-});
+const props = defineProps<Props>();
 // const emit = defineEmits<{
 //   (e: "change", obj: any): void;
 // }>();
@@ -119,33 +116,7 @@ interface ItaskList {
   describe: string;
   step: string;
   checked: boolean;
-  idAdd: boolean;
-}
-function NumberToChinese(num: any) {
-  console.log(num);
-  var chnNumChar = [
-    "一",
-    "二",
-    "三",
-    "四",
-    "五",
-    "六",
-    "七",
-    "八",
-    "九",
-    "十",
-    "十一",
-    "十二",
-    "十三",
-    "十四",
-    "十五",
-    "十六",
-    "十七",
-    "十八",
-    "十九",
-    "二十",
-  ];
-  return chnNumChar[num] ? chnNumChar[num] : "更多";
+  isAdd?: boolean;
 }
 </script>
 
