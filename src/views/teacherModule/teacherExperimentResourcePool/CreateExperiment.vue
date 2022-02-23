@@ -84,21 +84,16 @@
           </a-select>
         </a-form-item>
         <a-form-item label="实验报告" name="report">
-          <a-upload
-            accept=".doc,.docx"
-            :file-list="formState.report"
-            :before-upload="beforeUpload"
-            :remove="fileRemove"
-          >
-            <a-button> 选择</a-button>
-          </a-upload>
+          <a-button type="primary" @click="selectReport()">选 择</a-button>
           <div class="data-set-hint">支持单个doc或docx格式文件上传</div>
         </a-form-item>
       </div>
     </div>
-
     <div class="configuration">
       <Environment :type="formState.single"></Environment>
+    </div>
+    <div>
+      <h3>实验指导</h3>
     </div>
     <Submit @submit="create" @cancel="cancel"></Submit>
   </a-form>
@@ -115,6 +110,70 @@
       v-model:names="formState.selectedName"
     ></select-data-set>
   </a-drawer>
+  <a-modal
+    v-model:visible="reportVisible"
+    title="设置实验实验报告模板"
+    class="report"
+    :width="640"
+  >
+    <div class="top flexCenter">
+      <div class="TemplateTit flexCenter">
+        <span
+          :class="reportActive === 1 ? 'reportActive' : ''"
+          @click="reportTab(1)"
+          >选择模板</span
+        >
+        <span
+          :class="reportActive === 2 ? 'reportActive' : ''"
+          @click="reportTab(2)"
+          >上传模板</span
+        >
+      </div>
+      <div class="online">在线制作</div>
+    </div>
+    <div class="content textScrollbar">
+      <div v-if="reportActive === 1" class="contentLeft">
+        <a-radio-group
+          v-model:value="formState.report.id"
+          class="reportList flexCenter"
+        >
+          <a-radio
+            :value="v"
+            class="item flexCenter"
+            v-for="v in TemplateList"
+            :key="v"
+          >
+            <div class="flexCenter">
+              <div class="nameBox flexCenter">
+                <span class="prefix">【系统默认】</span>
+                <span class="name single-ellipsis"
+                  >实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称</span
+                >
+              </div>
+              <div class="caozuo">
+                <span>删除</span>
+                <span>下载</span>
+                <!-- <span>编辑</span> -->
+              </div>
+            </div>
+          </a-radio>
+        </a-radio-group>
+      </div>
+      <div v-if="reportActive === 2" class="contentRight">
+        <a-upload
+          accept=".doc,.docx"
+          :file-list="formState.reportUploadList"
+          :before-upload="beforeUpload"
+          :remove="fileRemove"
+        >
+          <a-button type="primary"> 上传文件</a-button>
+        </a-upload>
+      </div>
+    </div>
+    <template #footer>
+      <Submit @submit="reportHandleOk" @cancel="reportCancel"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import Submit from "src/components/submit/index.vue";
@@ -162,6 +221,8 @@ updata({
   showNav: true,
 });
 var isShowKnowledge = ref<boolean>(false);
+var reportVisible = ref<boolean>(false);
+var reportActive = ref<number>(1);
 interface FileItem {
   uid: string;
   name?: string;
@@ -178,8 +239,9 @@ const formState: any = reactive({
   name: "",
   difficulty: 2,
   selectedKnowledgeList: [],
-  report: [],
+  report: {},
   single: false,
+  reportUploadList: [],
 });
 const rules = {
   name: [
@@ -242,27 +304,27 @@ function remove(val: any, index: number) {
   formState.selectedName.splice(index, 1);
 }
 function beforeUpload(file: any) {
-  // console.log(file)
-  formState.report[0] = {
+  console.log(file);
+  formState.reportUploadList[0] = {
     uid: "-1",
     name: "",
     status: "uploading",
     url: "",
     file: file,
   };
-  formState.report[0].name = file.name;
-  formState.report[0].status = "done";
+  formState.reportUploadList[0].name = file.name;
+  formState.reportUploadList[0].status = "done";
   return;
   const fs = new FormData();
   fs.append("file", file);
   http.uploadTaskFile({ param: fs }).then((res: any) => {
-    // report.status = true      status: 'done',
-    formState.report[0].url = res.data;
+    // reportUploadList.status = true      status: 'done',
+    formState.reportUploadList[0].url = res.data;
   });
 }
 function fileRemove(file: any) {
   // console.log(file)
-  formState.report = [];
+  formState.reportUploadList = [];
 }
 function create() {
   formRef.value.validate().then(() => {
@@ -275,6 +337,29 @@ function create() {
 function cancel() {
   router.go(-1);
 }
+const reportHandleOk = () => {};
+const reportCancel = () => {
+  reportVisible.value = false;
+};
+
+const selectReport = () => {
+  reportVisible.value = true;
+  getTemplateList();
+};
+const reportTab = (val: number) => {
+  reportActive.value = val;
+  if (val === 1) {
+    getTemplateList();
+  }
+};
+const TemplateList: any = reactive([1, 2, 3, 4, 5, 6]);
+const getTemplateList = () => {
+  // TemplateList.length=0
+  // http.getTemplateList().then((res: IBusinessResp) => {
+  //   // TemplateList.push(...res.data);
+  // });
+};
+// reportCancel
 </script>
 <style scoped lang="less">
 h3 {
@@ -320,6 +405,70 @@ h3 {
   .active {
     color: var(--primary-color);
     border-color: var(--primary-color);
+  }
+}
+.report {
+  .top {
+    justify-content: space-between;
+    margin-bottom: 10px;
+    .online {
+      cursor: pointer;
+      color: var(--primary-color);
+    }
+    .TemplateTit {
+      span {
+        cursor: pointer;
+        padding: 2px 6px;
+        border: 3px solid transparent;
+      }
+      .reportActive {
+        border-bottom: 3px solid var(--primary-color);
+      }
+    }
+  }
+  .content {
+    max-height: 200px;
+    overflow-y: auto;
+    height: 200px;
+    .contentLeft {
+      .reportList {
+        flex-wrap: wrap;
+        .item {
+          width: 100%;
+          height: 40px;
+          .nameBox {
+            width: 440px;
+            .prefix {
+              color: var(--brightBtn);
+            }
+            .name:hover {
+              color: var(--brightBtn);
+            }
+          }
+          .caozuo {
+            width: 112px;
+            span {
+              display: none;
+              padding: 0 14px;
+              color: var(--primary-color);
+              cursor: pointer;
+            }
+          }
+        }
+        .item:hover {
+          background: #f5f5f5;
+          // background: var(--brightBtn);
+          .caozuo {
+            span {
+              display: inline-block;
+            }
+          }
+        }
+      }
+    }
+    .contentRight {
+      padding: 20px;
+    }
   }
 }
 </style>
