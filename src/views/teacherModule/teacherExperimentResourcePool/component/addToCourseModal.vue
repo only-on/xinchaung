@@ -13,13 +13,21 @@
     >
       <!-- <template #icon><carry-out-outlined /></template> -->
       <a-tree-node v-for="list in courseList" :key="list.id" :title="list.name">
-        <template #icon><span class="iconfont icon-bangzhu"></span></template>
+        <template #icon>
+          <svg class="icon svg-icon" aria-hidden="true">
+            <use xlink:href="#icon-kecheng1"></use>
+          </svg>
+        </template>
         <a-tree-node
           v-for="item in list.content"
           :title="item.name"
           :key="item.id"
         >
-          <template #icon><span class="iconfont icon-ceping"></span></template>
+          <template #icon>
+            <svg class="icon svg-icon" aria-hidden="true">
+              <use xlink:href="#icon-zhangjie"></use>
+            </svg>
+          </template>
           <template #switcherIcon></template>
         </a-tree-node>
       </a-tree-node>
