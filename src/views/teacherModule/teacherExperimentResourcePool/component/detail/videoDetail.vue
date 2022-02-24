@@ -31,6 +31,7 @@
       v-if="videoUrl"
     ></video>
   </div>
+  <!-- 选择视频抽屉 -->
   <a-drawer
     class="video-drawer"
     width="640"
@@ -40,8 +41,13 @@
     :visible="visible"
     @close="onClose"
   >
-    <select-file @selectVideoHandle="selectVideoHandle"></select-file>
+    <select-file
+      @selectFileHandle="selectFileHandle"
+      @getFileList="getFileList"
+      :fileList="fileList"
+    ></select-file>
   </a-drawer>
+  <!-- 上传视频弹窗 -->
   <upload-file-modal
     :type="'video'"
     v-model:visibleUpload="visibleUpload"
@@ -50,10 +56,13 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from "vue";
+import { ref, inject, reactive } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const courseApi = request.teachCourse;
 const $message: MessageApi = inject("$message")!;
 const videoUrl = ref("");
 // 上传视频
@@ -77,6 +86,12 @@ const beforeUpload = (file: any, fileList: any) => {
 const selectVideoClick = () => {
   console.log("选择视频");
   visible.value = true;
+  getFileList({
+    type: undefined,
+    name: "",
+    page: 1,
+    pageSize: 10,
+  });
 };
 // 移除视频
 const deletVideo = () => {
@@ -90,9 +105,56 @@ const onClose = () => {
   console.log("drawer");
   visible.value = false;
 };
-const selectVideoHandle = (v: any) => {
+const selectFileHandle = (v: any) => {
   console.log(v);
   visible.value = false;
+};
+// 获取视频列表
+interface IFileList {
+  id: number;
+  file_name: string;
+  size: string;
+  isSelected: boolean;
+  type: string;
+}
+const fileList = reactive<IFileList[]>([]);
+const getFileList = (searchInfo: any) => {
+  let param = {
+    course_id: 1,
+    chapter_id: 1,
+    dataset_id: searchInfo.type,
+    file_name: searchInfo.name,
+    page: searchInfo.page,
+    pageSize: searchInfo.pageSize,
+  };
+  courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
+    console.log(res);
+  });
+  fileList.push(
+    ...[
+      {
+        id: 1,
+        file_name: "shipin1",
+        size: "110kb",
+        isSelected: false,
+        type: "mp4",
+      },
+      {
+        id: 2,
+        file_name: "视频2",
+        size: "120kb",
+        isSelected: true,
+        type: "mp4",
+      },
+      {
+        id: 3,
+        file_name: "shipin3",
+        size: "130kb",
+        isSelected: false,
+        type: "mp4",
+      },
+    ]
+  );
 };
 
 // 上传视频

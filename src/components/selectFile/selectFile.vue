@@ -3,7 +3,7 @@
     <div class="search-info">
       <a-select
         v-model:value="searchInfo.type"
-        placeholder="请选择视频目录"
+        placeholder="请选择目录"
         @change="datasetChange"
         style="width: 240px; margin-right: 16px"
       >
@@ -28,12 +28,16 @@
     <div class="video-content">
       <div
         class="video-list"
-        v-for="list in videoList"
+        v-for="list in props.fileList"
         :key="list.id"
         :class="{ selected: list.isSelected }"
       >
         <div class="file-name">
-          <img src="" alt="" srcset="" />
+          <img
+            :src="'src/assets/images/file/' + list.type + '.png'"
+            alt=""
+            srcset=""
+          />
           <span>{{ list.file_name }}</span>
         </div>
         <div class="file-size">{{ list.size }}</div>
@@ -50,6 +54,7 @@
         v-model:current="searchInfo.page"
         :total="searchInfo.total"
         :pageSize="searchInfo.pageSize"
+        @change="pageChange"
       />
     </div>
   </div>
@@ -76,9 +81,15 @@ const searchInfo = reactive<ISearchInfo>({
 });
 const onSearch = () => {
   console.log(searchInfo);
+  emit("getFileList", searchInfo);
 };
 const datasetChange = () => {
   console.log(searchInfo);
+  emit("getFileList", searchInfo);
+};
+const pageChange = (page: number, pageSize: number) => {
+  console.log(searchInfo);
+  emit("getFileList", searchInfo);
 };
 // 获取视频列表
 interface IVideoList {
@@ -130,8 +141,15 @@ onMounted(async () => {
   getVideoList();
 });
 
+interface Props {
+  fileList: any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  fileList: () => [],
+});
 const emit = defineEmits<{
   (e: "selectVideoHandle", obj: any): void;
+  (e: "getFileList", obj: any): void;
 }>();
 // 选择
 const selectVideoHandle = (v: any) => {

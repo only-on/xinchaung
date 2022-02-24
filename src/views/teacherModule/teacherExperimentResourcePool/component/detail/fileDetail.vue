@@ -6,7 +6,7 @@
         <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
         <a-button type="primary" @click="uploadFile">上传文档</a-button>
       </span>
-      <a-button type="primary" v-if="!fileUrl" @click="selectFile"
+      <a-button type="primary" v-if="!fileUrl" @click="selectFileClick"
         >选择文档</a-button
       >
       <a-button type="primary" v-if="fileUrl" @click="deleteFile"
@@ -22,6 +22,23 @@
       <Submit @submit="onSubmit" @cancel="cancel" v-if="isMarked"></Submit>
     </div>
   </div>
+  <!-- 选择文档抽屉 -->
+  <a-drawer
+    class="video-drawer"
+    width="640"
+    placement="right"
+    :title="'选择文档'"
+    :closable="true"
+    :visible="visible"
+    @close="onClose"
+  >
+    <select-file
+      @selectFileHandle="selectFileHandle"
+      @getFileList="getFileList"
+      :fileList="fileList"
+    ></select-file>
+  </a-drawer>
+  <!-- 上传文档 -->
   <upload-file-modal
     :type="'file'"
     v-model:visibleUpload="visibleUpload"
@@ -30,12 +47,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from "vue";
+import { ref, inject, reactive } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
+import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const courseApi = request.teachCourse;
 
 const $message: MessageApi = inject("$message")!;
 const isMarked = ref<boolean>(true);
@@ -66,9 +87,89 @@ const uploadSuccess = () => {
   console.log("上传成功");
 };
 // 选择文件
-const selectFile = () => {
+const selectFileClick = () => {
   console.log("选择文件");
-}; // 移除文件
+  visible.value = true;
+  getFileList({
+    type: undefined,
+    name: "",
+    page: 1,
+    pageSize: 10,
+  });
+};
+const visible = ref<boolean>(false);
+const onClose = () => {
+  console.log("drawer");
+  visible.value = false;
+};
+const selectFileHandle = (v: any) => {
+  console.log(v);
+  visible.value = false;
+};
+// 获取文档列表
+interface IFileList {
+  id: number;
+  file_name: string;
+  size: string;
+  isSelected: boolean;
+  type: string;
+}
+const fileList = reactive<IFileList[]>([]);
+const getFileList = (searchInfo: any) => {
+  let param = {
+    course_id: 1,
+    chapter_id: 1,
+    dataset_id: searchInfo.type,
+    file_name: searchInfo.name,
+    page: searchInfo.page,
+    pageSize: searchInfo.pageSize,
+  };
+  courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
+    console.log(res);
+  });
+  // 支持单个md、doc、docx、pdf格式文件上传
+  fileList.push(
+    ...[
+      {
+        id: 1,
+        file_name: "111.md",
+        size: "110kb",
+        isSelected: false,
+        type: "md",
+      },
+      {
+        id: 2,
+        file_name: "222.pdf",
+        size: "120kb",
+        isSelected: true,
+        type: "pdf",
+      },
+      {
+        id: 3,
+        file_name: "333.doc",
+        size: "130kb",
+        isSelected: false,
+        type: "word",
+      },
+      {
+        id: 4,
+        file_name: "444.docx",
+        size: "140kb",
+        isSelected: false,
+        type: "word",
+      },
+      {
+        id: 5,
+        file_name: "555.docx",
+        size: "150kb",
+        isSelected: false,
+        type: "word",
+      },
+    ]
+  );
+};
+
+// 移除文件
 const deleteFile = () => {
   console.log("移除文件");
   fileUrl.value = "";
