@@ -63,9 +63,14 @@ export default defineComponent({
 });
 </script>
 <style lang="less" scoped>
-.demo__container {
+:deep(code) {
+  white-space: normal;
+  word-break: break-all;
+}
+:deep(.mark__container) {
   width: 100%;
   height: 100%;
   margin: 0 auto;
+  border: 1px solid var(--gray-5);
 }
 </style>
