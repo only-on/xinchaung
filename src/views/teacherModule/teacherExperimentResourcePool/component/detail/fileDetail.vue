@@ -4,15 +4,7 @@
     <div class="operate-btns">
       <span v-if="!fileUrl">
         <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
-        <a-upload
-          name="file"
-          :show-upload-list="false"
-          accept="md, doc, docx, pd"
-          :multiple="false"
-          :before-upload="beforeUpload"
-        >
-          <a-button type="primary">上传文档</a-button>
-        </a-upload>
+        <a-button type="primary" @click="uploadFile">上传文档</a-button>
       </span>
       <a-button type="primary" v-if="!fileUrl" @click="selectFile"
         >选择文档</a-button
@@ -23,12 +15,18 @@
     </div>
   </div>
   <div class="experiment-content">
-    <iframe :src="fileUrl" width="100%" v-if="fileUrl"></iframe>
+    <!-- <iframe :src="fileUrl" width="100%" v-if="fileUrl"></iframe> -->
+    <PdfVue :url="fileUrl" v-if="fileUrl" />
     <div v-else>
       <marked-editor v-model:value="experimentContent" :preview="preview" />
       <Submit @submit="onSubmit" @cancel="cancel" v-if="isMarked"></Submit>
     </div>
   </div>
+  <upload-file-modal
+    :type="'file'"
+    v-model:visibleUpload="visibleUpload"
+    @uploadSuccess="uploadSuccess"
+  ></upload-file-modal>
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +34,8 @@ import { ref, inject } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
+import PdfVue from "src/components/pdf/pdf.vue";
+import uploadFileModal from "./../uploadFileModal.vue";
 
 const $message: MessageApi = inject("$message")!;
 const isMarked = ref<boolean>(true);
@@ -44,7 +44,6 @@ const fileUrl = ref<string>("111");
 const preview = ref<boolean>(false);
 const experimentContent = ref<any>("aa");
 
-// 上传文件
 const beforeUpload = (file: any, fileList: any) => {
   // console.log(file, fileList)
   let arr = file.name.split(".");
@@ -57,6 +56,14 @@ const beforeUpload = (file: any, fileList: any) => {
   // fs.append('taskfile_subdir', props.jupyterUuid)
   // props.taskList.describe = "66";
   fileUrl.value = "111";
+};
+// 上传文件
+const uploadFile = () => {
+  visibleUpload.value = true;
+};
+const visibleUpload = ref<boolean>(false);
+const uploadSuccess = () => {
+  console.log("上传成功");
 };
 // 选择文件
 const selectFile = () => {

@@ -5,17 +5,17 @@
       <span class="tips" v-if="!videoUrl"
         >支持单个500M以内的MP4格式文件上传</span
       >
-      <a-upload
+      <!-- <a-upload
         name="file"
         :show-upload-list="false"
         accept=".mp4"
         :multiple="false"
         :before-upload="beforeUpload"
         v-if="!videoUrl"
-      >
-        <a-button type="primary">上传视频</a-button>
-      </a-upload>
-      <a-button type="primary" @click="selectVideo" v-if="!videoUrl"
+      > -->
+      <a-button type="primary" @click="uploadVideo">上传视频</a-button>
+      <!-- </a-upload> -->
+      <a-button type="primary" @click="selectVideoClick" v-if="!videoUrl"
         >选择视频</a-button
       >
       <a-button type="primary" @click="deletVideo" v-if="videoUrl"
@@ -31,14 +31,35 @@
       v-if="videoUrl"
     ></video>
   </div>
+  <a-drawer
+    class="video-drawer"
+    width="640"
+    placement="right"
+    :title="'选择视频'"
+    :closable="true"
+    :visible="visible"
+    @close="onClose"
+  >
+    <select-file @selectVideoHandle="selectVideoHandle"></select-file>
+  </a-drawer>
+  <upload-file-modal
+    :type="'video'"
+    v-model:visibleUpload="visibleUpload"
+    @uploadSuccess="uploadSuccess"
+  ></upload-file-modal>
 </template>
 
 <script lang="ts" setup>
 import { ref, inject } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
+import selectFile from "src/components/selectFile/selectFile.vue";
+import uploadFileModal from "./../uploadFileModal.vue";
 const $message: MessageApi = inject("$message")!;
 const videoUrl = ref("");
 // 上传视频
+const uploadVideo = () => {
+  visibleUpload.value = true;
+};
 const beforeUpload = (file: any, fileList: any) => {
   // console.log(file, fileList)
   let arr = file.name.split(".");
@@ -53,13 +74,31 @@ const beforeUpload = (file: any, fileList: any) => {
   videoUrl.value = "111";
 };
 // 选择视频
-const selectVideo = () => {
+const selectVideoClick = () => {
   console.log("选择视频");
+  visible.value = true;
 };
 // 移除视频
 const deletVideo = () => {
   console.log("移除视频");
   videoUrl.value = "";
+};
+
+// 选择视频
+const visible = ref<boolean>(false);
+const onClose = () => {
+  console.log("drawer");
+  visible.value = false;
+};
+const selectVideoHandle = (v: any) => {
+  console.log(v);
+  visible.value = false;
+};
+
+// 上传视频
+const visibleUpload = ref<boolean>(false);
+const uploadSuccess = () => {
+  console.log("上传成功");
 };
 </script>
 
