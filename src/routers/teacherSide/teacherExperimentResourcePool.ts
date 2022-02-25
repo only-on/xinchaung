@@ -48,8 +48,21 @@ export default {
           "src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"
         ),
       meta: {
+        title: "实验详情",
         icon: "",
-        authCode: "teacherExperimentResourcePool",
+        authCode: "experimentDetail",
+      },
+    },
+    {
+      path: "experimentReportTemplate",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherExperimentResourcePool/experimentReportTemplate.vue"
+        ),
+      meta: {
+        title: "报告模板预览",
+        icon: "",
+        authCode: "experimentReportTemplate",
       },
     },
   ],
