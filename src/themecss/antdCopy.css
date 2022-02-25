@@ -28624,11 +28624,11 @@ div.ant-typography-edit-content.ant-typography-rtl {
 }
 .ant-upload.ant-upload-drag p.ant-upload-text {
   margin: 0 0 4px;
-  color: var(--black-85);
+  color: rgb(5, 1, 1, 0.45);
   font-size: 16px;
 }
 .ant-upload.ant-upload-drag p.ant-upload-hint {
-  color: var(--black-45);
+  color: var(--black-25);
   font-size: var(--base-font-size);
 }
 .ant-upload.ant-upload-drag .anticon-plus {

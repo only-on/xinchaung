@@ -49,7 +49,7 @@ interface Props {
   //   ram:number,
   //   ram:number,
   // };
-  defaultConfig: any;
+  defaultConfig?: any;
 }
 /***
  * 参考参数
@@ -96,7 +96,7 @@ const props = withDefaults(defineProps<Props>(), {
   defaultConfig: () => {},
 });
 configs.map((v: any) => {
-  let arr = Object.keys(props.defaultConfig);
+  let arr = props.defaultConfig ? Object.keys(props.defaultConfig) : [];
   if (
     arr &&
     arr.length &&

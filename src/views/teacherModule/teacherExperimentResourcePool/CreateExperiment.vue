@@ -84,14 +84,30 @@
           </a-select>
         </a-form-item>
         <a-form-item label="实验报告" name="report">
-          <a-button type="primary" @click="selectReport()">选 择</a-button>
+          <div class="reportBox flexCenter">
+            <a-button
+              type="primary"
+              @click="selectReport()"
+              :disabled="formState.report.name ? true : false"
+              >选 择</a-button
+            >
+            <div class="reportName flexCenter" v-if="formState.report.name">
+              <span>{{ formState.report.name }}</span>
+              <span
+                class="iconfont icon-shanchu"
+                @click="delSelectedReport()"
+              ></span>
+            </div>
+          </div>
           <div class="data-set-hint">支持单个doc或docx格式文件上传</div>
         </a-form-item>
       </div>
     </div>
+    <!-- 实验环境配置 -->
     <div class="configuration">
       <Environment :type="formState.single"></Environment>
     </div>
+    <!-- 桌面实验  实验指导 -->
     <div class="zhuomian">
       <div class="guide">
         <div class="guide-top flexCenter">
@@ -105,7 +121,7 @@
             >
               <a-button type="primary"> 上传文档 </a-button>
             </a-upload>
-            <i class="hint">仅支持md文件</i>
+            <i class="data-set-hint">仅支持md文件</i>
           </div>
           <div class="osd-mode">
             <span @click="openScreen"> 进入同屏模式 </span>
@@ -114,6 +130,7 @@
       </div>
       <MarkedEditor v-model="formState.guide" class="markdown__editor" />
     </div>
+    <!-- jupyter实验   实验指导 ipynb -->
     <div class="jupyter">
       <h3>实验指导</h3>
       <div class="jupyterBox">
@@ -130,6 +147,7 @@
         <div class="data-set-hint">仅选择ipynb文件</div>
       </div>
     </div>
+    <!-- 任务制实验 实验指导任务选择 -->
     <div class="TaskSystem">
       <div class="top flexCenter">
         <h3>实验指导</h3>
@@ -208,11 +226,62 @@
         </div>
       </div>
     </div>
+    <!-- 文档实验  实验指导文件 -->
+    <div class="docxBox">
+      <div class="docTop flexCenter">
+        <h3>实验指导</h3>
+        <div class="docTopRight flexCenter docx">
+          <span class="data-set-hint">仅支持单个md、doc、docx、pdf文件</span>
+          <!-- <a-upload class="upload" :showUploadList="false" :before-upload="docBeforeUpload" accept=".md,doc,.docx">
+            <a-button type="primary" @click="upDocx()"> 上传文档 </a-button>
+          </a-upload> -->
+          <a-button type="primary" @click="upDocx(1)"> 上传文档 </a-button>
+          <a-button type="primary" @click="selectDocx(1)"> 选择文档 </a-button>
+        </div>
+      </div>
+      <div v-if="formState.document.type === 'md'">
+        <MarkedEditor
+          v-model="formState.document.mdValue"
+          class="markdown__editor"
+        />
+      </div>
+      <div v-if="formState.document.type === 'pdf'">
+        <PdfVue
+          :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"
+        />
+        <!-- <PdfVue :url="formState.document.pdf" /> -->
+      </div>
+    </div>
+    <!-- 视频实验  实验指导文件 -->
+    <div class="docxBox">
+      <div class="docTop flexCenter">
+        <h3>实验指导</h3>
+        <div class="docTopRight flexCenter">
+          <span class="data-set-hint">仅支持单个MP4文件上传</span>
+          <!-- <a-upload class="upload" :showUploadList="false" :before-upload="docBeforeUpload" accept=".mp4">
+            <a-button type="primary"  @click="upDocx()"> 上传视频 </a-button>
+          </a-upload> -->
+          <a-button type="primary" @click="upDocx(2)"> 上传视频 </a-button>
+          <a-button type="primary" @click="selectDocx(2)"> 选择视频 </a-button>
+        </div>
+      </div>
+      <div v-if="formState.videoObj.url" class="video-box">
+        <!-- <video :src="env ? '/proxyPrefix' + formState.videoObj.url : formState.videoObj.url" :controls="true"> 您的浏览器不支持 video 标签</video> -->
+        <video
+          :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"
+          :controls="true"
+        >
+          您的浏览器不支持 video 标签
+        </video>
+      </div>
+    </div>
     <div class="submitBox">
       <Submit @submit="create" @cancel="cancel"></Submit>
     </div>
   </a-form>
+  <!-- 选择数据集 -->
   <a-drawer
+    title="选择数据集"
     class="select-imag-drawer"
     :closable="false"
     placement="right"
@@ -225,6 +294,7 @@
       v-model:names="formState.selectedName"
     ></select-data-set>
   </a-drawer>
+  <!-- 选择 和 设置实验实验报告模板 -->
   <a-modal
     v-model:visible="reportVisible"
     title="设置实验实验报告模板"
@@ -248,12 +318,11 @@
     </div>
     <div class="content textScrollbar">
       <div v-if="reportActive === 1" class="contentLeft">
-        <!-- formState.report.id -->
         <div class="reportList flexCenter">
           <div class="item flexCenter" v-for="v in TemplateList" :key="v">
             <div
               class="eyeBox flexCenter"
-              :class="v === formState.report.id ? 'activeEye' : ''"
+              :class="v === activeTemplateItem.id ? 'activeEye' : ''"
               @click="selectTemplate(v)"
             >
               <div class="eye"></div>
@@ -278,7 +347,7 @@
         <a-upload
           accept=".doc,.docx"
           :file-list="formState.reportUploadList"
-          :before-upload="beforeUpload"
+          :before-upload="beforeUploadReport"
           :remove="fileRemove"
         >
           <a-button type="primary"> 上传文件</a-button>
@@ -289,6 +358,7 @@
       <Submit @submit="reportHandleOk" @cancel="reportCancel"></Submit>
     </template>
   </a-modal>
+  <!-- 在线制作 预览  编辑实验模板 -->
   <a-modal
     v-model:visible="reportTemplate"
     :title="reportTitle"
@@ -308,6 +378,116 @@
       <span></span>
     </template>
   </a-modal>
+  <!-- 上传文档 文件 弹窗 -->
+  <a-modal
+    v-model:visible="upDocVisible"
+    :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
+    class="uploadImage"
+    :width="640"
+  >
+    <a-select
+      style="width: 400px; margin-bottom: 3rem"
+      v-model:value="upDoc.catalogue"
+      :placeholder="`请选择${docOrMp4Type === 1 ? '文档' : '视频'}目录`"
+      :options="catalogueOptions"
+    ></a-select>
+    <a-upload-dragger
+      name="file"
+      :multiple="true"
+      :before-upload="docBeforeUpload"
+      :remove="remove"
+      :fileList="upDoc.docFileList"
+      accept=".md,.doc,.docx,.pdf"
+      class="upload"
+    >
+      <p class="ant-upload-drag-icon">
+        <span class="iconfont icon-upload"></span>
+      </p>
+      <p class="ant-upload-text">选择要上传的文件或将文件拖拽到此处</p>
+      <p class="ant-upload-hint" v-if="docOrMp4Type === 1">
+        支持单个md、doc、docx、pdf格式文件上传
+      </p>
+      <p class="ant-upload-hint" v-if="docOrMp4Type === 2">
+        支持单个MP4格式文件上传 且文件小于500M
+      </p>
+    </a-upload-dragger>
+    <template #footer>
+      <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()"></Submit>
+    </template>
+  </a-modal>
+  <!-- 选择文档视频 文件 抽屉 -->
+  <a-drawer
+    :title="docOrMp4Type === 1 ? '选择文档' : '选择视频'"
+    class="select-docOrMp4-drawer"
+    :closable="false"
+    placement="right"
+    :visible="docOrMp4Drawer.visible"
+    width="640"
+    @close="closeDrawerDoc"
+  >
+    <div class="search flexCenter">
+      <div class="item custom_select">
+        <a-select
+          style="width: 260px"
+          v-model:value="docOrMp4Drawer.catalogueId"
+          :placeholder="`请选择${docOrMp4Type === 1 ? '文档' : '视频'}目录`"
+          :options="catalogueOptions"
+          @change="searchDocOrMp4List"
+        ></a-select>
+      </div>
+      <div class="item custom_input">
+        <a-input-search
+          v-model:value="docOrMp4Drawer.keyword"
+          placeholder="请输入搜索关键字"
+          @search="searchDocOrMp4List"
+        />
+      </div>
+    </div>
+    <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
+      <div class="dataList setScrollbar">
+        <div class="list" v-if="docOrMp4Drawer.list.length">
+          <div
+            class="item"
+            v-for="v in 10"
+            :key="v"
+            :class="docOrMp4Drawer.activeFile.id === v ? 'active' : ''"
+          >
+            <div class="flexCenter left">
+              <!-- :style="`background-image: url(${iconList[getFileType(v.url)]});`"  根据文件类型显示  doc  md pdf  的不同图标-->
+              <span
+                class="fileIcon"
+                v-if="docOrMp4Type === 1"
+                :style="`background-image: url(${iconList['ppt']});`"
+              ></span>
+              <span
+                class="fileIcon"
+                v-if="docOrMp4Type === 2"
+                :style="`background-image: url(${iconList['mp4']});`"
+              ></span>
+              <span class="quName single-ellipsis">{{
+                "视频名称视频名称视频名称视频名称视频名称视频名称视频名称"
+              }}</span>
+            </div>
+            <div class="flexCenter right">
+              <span> {{ "2" }}M </span>
+              <span class="iconfont" @click="selectDocOrMp4File(v)">
+                {{ docOrMp4Drawer.activeFile.id === v ? "取消" : "选择" }}
+              </span>
+            </div>
+          </div>
+        </div>
+        <Empty v-if="!docOrMp4Drawer.list.length" text="暂无文件" />
+      </div>
+    </a-spin>
+    <a-pagination
+      v-if="docOrMp4Drawer.totalCount > 10"
+      show-size-changer
+      v-model:current="docOrMp4Drawer.page"
+      v-model:pageSize="docOrMp4Drawer.limit"
+      :total="docOrMp4Drawer.totalCount"
+      @change="pageChange"
+    />
+  </a-drawer>
   <!-- 同屏模式 -->
   <SameScreen
     ref="sameScreen"
@@ -317,6 +497,9 @@
   ></SameScreen>
 </template>
 <script lang="ts" setup>
+import { getFileType } from "src/utils/getFileType";
+import iconList from "src/utils/iconList";
+import { SelectTypes } from "ant-design-vue/es/select";
 import SameScreen from "src/components/teacherExperiment/sameScreen.vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
@@ -385,11 +568,20 @@ const formState: any = reactive({
   name: "",
   difficulty: 2,
   selectedKnowledgeList: [],
-  report: { id: 2 },
+  report: { id: 2, name: "" },
   single: false,
   reportUploadList: [],
   guide: "",
   ipynbList: [],
+  document: {
+    //已确认的文档实验信息
+    type: "md",
+    pdf: "",
+    mdValue: "",
+  },
+  videoObj: {
+    url: "",
+  },
 });
 const rules = {
   name: [
@@ -451,7 +643,7 @@ function remove(val: any, index: number) {
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
-function beforeUpload(file: any) {
+function beforeUploadReport(file: any) {
   console.log(file);
   formState.reportUploadList[0] = {
     uid: "-1",
@@ -486,17 +678,41 @@ function create() {
 function cancel() {
   router.go(-1);
 }
-const reportHandleOk = () => {};
+const reportHandleOk = () => {
+  if (reportActive.value == 2) {
+    let v = formState.reportUploadList[0];
+    // formState.reportUploadList
+    // formState.report.id = v.id;
+    formState.report.name = v.name;
+  } else {
+    formState.report.name = activeTemplateItem.name;
+    formState.report.id = activeTemplateItem.id;
+    // activeTemplateItem
+  }
+  reportVisible.value = false;
+};
 const reportCancel = () => {
   reportVisible.value = false;
 };
+var activeTemplateItem: any = reactive({
+  id: 0,
+  name: "",
+});
 const selectTemplate = (val: any) => {
   formState.report.id = val;
+  activeTemplateItem.id = val;
+  activeTemplateItem.name = `报告名称${val}`;
 };
 const selectReport = () => {
   reportVisible.value = true;
   getTemplateList();
 };
+function delSelectedReport() {
+  formState.report.id = 0;
+  formState.report.name = "";
+  activeTemplateItem.id = 0;
+  activeTemplateItem.name = "";
+}
 const reportTab = (val: number) => {
   reportActive.value = val;
   if (val === 1) {
@@ -749,6 +965,124 @@ const readFile = (file: any) => {
     };
   });
 };
+
+// 文档实验
+var upDoc: any = reactive({
+  catalogue: 1,
+  catalogueList: [],
+  docFileList: [],
+  nowDocument: {
+    // 正在上传  未确认的文档
+    type: "md",
+    pdf: "",
+    mdValue: "",
+  },
+});
+var upDocVisible = ref<boolean>(false);
+const docBeforeUpload = async (file: any) => {
+  // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
+  const suffix = (file && file.name).split(".")[1];
+  if (suffix !== "md" && docOrMp4Type.value === 1) {
+    upDoc.nowDocument.type = "md";
+    const text = await readFile(file);
+    formState.document.mdValue = text;
+  } else {
+    upDoc.nowDocument.type = "pdf";
+    const fs = new FormData();
+    fs.append("file", file);
+    http.uploadDocFile({ param: fs }).then((res: any) => {
+      // upDoc.nowDocument.pdf=res.data.url
+    });
+  }
+};
+
+const upDocx = (n: number) => {
+  docOrMp4Type.value = n;
+  getCatalogue();
+  upDocVisible.value = true;
+};
+const docOrMp4Type = ref<number>(1);
+const docOrMp4Drawer: any = reactive({
+  visible: false,
+  list: [{ name: "", id: 2 }],
+  page: 1,
+  limit: 10,
+  totalCount: 20,
+  loading: false,
+  catalogueId: 1, // 目录列表第一个
+  keyword: "",
+  activeFile: {}, //  选择或上传的文档、视频
+});
+// 目录  视频和文档公用字段   弹窗和抽屉共用
+const catalogueOptions = ref<SelectTypes["options"]>([
+  { label: "公有", options: [{ label: "共有1", value: 1 }] },
+  { label: "私有", options: [{ label: "私有1", value: 2 }] },
+]);
+// 获取文档目录
+const getCatalogue = () => {
+  // http.getCatalogueList().then((res: IBusinessResp) => {
+  //   upDoc.catalogueList.push(...res.data);
+  //   interface IOptions {
+  //     value: string;
+  //     label: string;
+  //   }
+  //   let data = res.data.list;
+  //   // console.log('[获取题库目录] ', data);
+  //   catalogueOptions.value![0].options.length = 0;
+  //   catalogueOptions.value![1].options.length = 0;
+  //   data.forEach((v: any) => {
+  //     let obj: IOptions = { value: v.id, label: v.name };
+  //     if (v.initial === 1) {
+  //       catalogueOptions.value![0].options.push(obj);
+  //     } else {
+  //       catalogueOptions.value![1].options.push(obj);
+  //     }
+  //   });
+  // })
+};
+// 获取文档、视频  列表
+const getDocOrMp4List = () => {
+  // docOrMp4Drawer.loading=true
+  // docOrMp4Drawer.list.length=0
+  // http.getDocOrMp4List().then((res: IBusinessResp) => {
+  //   docOrMp4Drawer.loading=false
+  //   docOrMp4Drawer.list.push(...res.data);
+  // });
+};
+const searchDocOrMp4List = () => {
+  docOrMp4Drawer.page = 1;
+  getDocOrMp4List();
+};
+const pageChange = (current: any) => {
+  docOrMp4Drawer.page = current;
+  getDocOrMp4List();
+};
+const selectDocx = (n: number) => {
+  getCatalogue();
+  getDocOrMp4List();
+  docOrMp4Type.value = n;
+  docOrMp4Drawer.visible = true;
+};
+const closeDrawerDoc = () => {
+  docOrMp4Drawer.visible = false;
+};
+const cancelUpDoc = () => {
+  upDocVisible.value = false;
+};
+// 选择系统内置文档或者视频
+const selectDocOrMp4File = (val: any) => {
+  docOrMp4Drawer.activeFile = { ...val };
+};
+const confirmDoc = () => {
+  formState.document = {
+    ...upDoc.nowDocument,
+  };
+  upDocVisible.value = false;
+};
+
+//  视频实验
+const env = process.env.NODE_ENV == "development" ? true : false;
+const detailInfoUrl = "/professor/classic/video/112/22/1523425771.mp4";
 </script>
 <style scoped lang="less">
 h3 {
@@ -780,6 +1114,17 @@ h3 {
   .left,
   .right {
     width: 50%;
+  }
+  .right {
+    .reportBox {
+      justify-content: space-between;
+      .reportName {
+        .iconfont {
+          margin-left: 1rem;
+          cursor: pointer;
+        }
+      }
+    }
   }
 }
 .difficulty {
@@ -904,12 +1249,6 @@ h3 {
         }
       }
     }
-    .hint {
-      font-style: normal;
-      color: rgba(0, 0, 0, 0.2);
-      font-size: 12px;
-      line-height: 24px;
-    }
     .osd-mode {
       margin-left: auto;
       color: var(--brightBtn);
@@ -986,6 +1325,97 @@ h3 {
       }
     }
   }
+}
+.docxBox {
+  padding-top: 2rem;
+  .docTop {
+    justify-content: space-between;
+  }
+  .docTopRight {
+    width: 33%;
+    justify-content: space-between;
+    .data-set-hint {
+      margin: 0;
+    }
+  }
+  .docx {
+    width: 38%;
+  }
+  .video-box {
+    height: 500px;
+    width: 100%;
+    padding: 2rem;
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  }
+}
+.uploadImage {
+  .icon-upload {
+    font-size: 24px;
+    color: var(--primary-color);
+  }
+}
+.select-docOrMp4-drawer {
+  .search {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .item {
+      width: 260px;
+    }
+  }
+  .dataList {
+    height: calc(100% - 175px);
+    overflow: auto;
+    .list {
+      // padding: 0 20px;
+      min-height: 500px;
+      .item {
+        display: flex;
+        align-items: center;
+        line-height: 54px;
+        background: rgba(0, 0, 0, 0.02);
+        margin-bottom: 16px;
+        padding: 0 1rem;
+        .left {
+          width: 55%;
+        }
+        .right {
+          width: 45%;
+          justify-content: space-between;
+        }
+        .quName {
+          // word-break: break-all;
+          max-width: 180px;
+        }
+        .fileIcon {
+          width: 32px;
+          height: 32px;
+          background-size: 100%;
+          margin-right: 1rem;
+        }
+        .iconfont {
+          color: var(--primary-color);
+          // font-size: 20px;
+          cursor: pointer;
+          // padding: 0 12px;
+        }
+      }
+      .item:hover {
+        background: #fffbf6;
+      }
+      .active {
+        background: #fffbf6;
+        border: 1px solid #ffcaa1;
+      }
+    }
+  }
+}
+.ant-pagination {
+  text-align: center;
 }
 .submitBox {
   margin-top: 2rem;
