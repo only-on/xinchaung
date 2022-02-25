@@ -1,28 +1,10 @@
 <template>
-  <div class="reference">
-    <div class="addBox">
-      <div class="add flexCenter fr">
-        <a-input-search
-          class="greenSearch"
-          :class="{ mouseover: isMouseOver }"
-          v-model:value="search.key"
-          @search="searchFn"
-          @mouseover="isMouseOver = true"
-          @mouseout="isMouseOver = false"
-        />
-        <a-dropdown v-if="currentTab === 1">
-          <span class="addCircular iconfont icon-tianjia"></span>
-          <template #overlay>
-            <a-menu @click="handleMenuClick" class="menu__group">
-              <a-menu-item v-for="item in ExperimentTypeList" :key="item.key">
-                <div>{{ item.name }}</div>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
-    </div>
-  </div>
+  <search-add
+    @searchFn="searchFn"
+    @handleMenuClick="handleMenuClick"
+    :TypeList="ExperimentTypeList"
+    :isShowAdd="isShowAdd"
+  ></search-add>
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
@@ -62,6 +44,7 @@
 </template>
 <script lang="ts" setup>
 import classify from "src/components/classify/index.vue";
+import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import {
   defineComponent,
   ref,
@@ -94,6 +77,7 @@ updata({
   showNav: true,
 });
 const currentTab = ref<number>(0);
+const isShowAdd = ref<boolean>(true);
 watch(
   () => {
     return configuration.componenttype;
@@ -102,6 +86,7 @@ watch(
     console.log(val);
     currentTab.value = val;
     initData();
+    isShowAdd.value = currentTab.value === 1;
   }
 );
 
@@ -150,7 +135,7 @@ const classifyList: any = reactive([
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
   // console.log(labelSearch)
-  searchFn();
+  // searchFn();
 };
 const labelSearch = reactive({
   type: 0,
@@ -161,7 +146,9 @@ const labelSearch = reactive({
 const search: any = reactive({
   key: "",
 });
-const searchFn = () => {
+const searchFn = (key: string) => {
+  console.log(key);
+  search.key = key;
   fromData.page = 1;
   let obj = {
     ...labelSearch,
@@ -266,7 +253,6 @@ const handleMenuClick = ({ key }: { key: string }) => {
     query: { key },
   });
 };
-const isMouseOver = ref<boolean>(false);
 
 const share = (v: number) => {
   console.log(v);
@@ -323,61 +309,6 @@ onMounted(() => {
 });
 </script>
 <style scoped lang="less">
-.reference {
-  position: fixed;
-  width: 100%;
-  top: 110px;
-  left: 0;
-  height: 0px;
-  z-index: 1;
-  .addBox {
-    width: var(--center-width);
-    margin: 0 auto;
-    height: 0px;
-    .add {
-      // justify-content: end;
-      .ant-input-search {
-        color: #fff;
-        width: auto;
-        border-radius: 25px;
-        min-width: 35px;
-        height: 50px;
-        line-height: 50px;
-        position: relative;
-        overflow: hidden;
-        padding: 0;
-        padding-right: 15px;
-        box-sizing: content-box;
-        &.mouseover {
-          :deep(.ant-input) {
-            padding-left: 20px;
-            width: 150px;
-          }
-        }
-        :deep(.ant-input) {
-          display: inline-block;
-          background: 0 0;
-          border: none;
-          color: var(--white-100);
-          // padding-left: 20px;
-          line-height: 50px;
-          height: 50px;
-          box-sizing: border-box;
-          vertical-align: 4px;
-          font-size: var(--font-size-16);
-          width: 10px;
-          transition: all 0.3s ease-in-out;
-        }
-        .ant-input-affix-wrapper .ant-input-suffix {
-          margin-left: 0;
-        }
-      }
-      .addCircular {
-        margin-left: 20px;
-      }
-    }
-  }
-}
 .mainBox {
   flex-wrap: wrap;
   justify-content: space-between;

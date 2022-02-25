@@ -13,8 +13,8 @@
           <span class="type">Jupyter</span>
         </div>
         <div class="right">
-          <span class="pointer" @click="handleClick">{{
-            true ? "添加到课程" : "编辑基本信息"
+          <span class="pointer" @click="handleClick()">{{
+            !currentTab ? "添加到课程" : "编辑基本信息"
           }}</span>
           <span class="pointer">启动环境</span>
         </div>
@@ -68,7 +68,7 @@ import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/co
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
 const router = useRouter();
 const route = useRoute();
-const { id } = route.query;
+const { id, currentTab } = route.query;
 const http = (request as any).teacherImageResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -85,6 +85,10 @@ const handleClick = () => {
 };
 const reportTemplate = () => {
   // isShowReport.value = true
+  router.push({
+    path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
+    query: { templateId: "22" },
+  });
 };
 
 let experimentDetail = reactive<IExperimentDetail>({

@@ -87,4 +87,12 @@ let courseList = ref([
 let defaultExpandedKeys = reactive([1]);
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less">
+.ant-tree {
+  .ant-tree-iconEle .icon {
+    width: 16px;
+    height: 16px;
+    margin-bottom: -2px;
+  }
+}
+</style>
