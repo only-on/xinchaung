@@ -204,7 +204,6 @@
                 <span class="status">状态</span
                 ><a-switch
                   class="switch"
-                  size="midile"
                   :checked="v.disabled"
                   @change="v.disabled = !v.disabled"
                 />
@@ -295,89 +294,12 @@
     ></select-data-set>
   </a-drawer>
   <!-- 选择 和 设置实验实验报告模板 -->
-  <a-modal
-    v-model:visible="reportVisible"
-    title="设置实验实验报告模板"
-    class="report"
-    :width="640"
-  >
-    <div class="top flexCenter">
-      <div class="TemplateTit flexCenter">
-        <span
-          :class="reportActive === 1 ? 'reportActive' : ''"
-          @click="reportTab(1)"
-          >选择模板</span
-        >
-        <span
-          :class="reportActive === 2 ? 'reportActive' : ''"
-          @click="reportTab(2)"
-          >上传模板</span
-        >
-      </div>
-      <div class="online" @click="viewTemplate(3)">在线制作</div>
-    </div>
-    <div class="content textScrollbar">
-      <div v-if="reportActive === 1" class="contentLeft">
-        <div class="reportList flexCenter">
-          <div class="item flexCenter" v-for="v in TemplateList" :key="v">
-            <div
-              class="eyeBox flexCenter"
-              :class="v === activeTemplateItem.id ? 'activeEye' : ''"
-              @click="selectTemplate(v)"
-            >
-              <div class="eye"></div>
-            </div>
-            <div class="nameBox flexCenter">
-              <span class="prefix">【系统默认】</span>
-              <span
-                class="name single-ellipsis"
-                @click.stop="viewTemplate(2, v)"
-                >实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称</span
-              >
-            </div>
-            <div class="caozuo">
-              <span @click.stop="handleDelete(v)">删除</span>
-              <!-- <span @click.stop="Download(v)">下载</span> -->
-              <span @click="viewTemplate(0, v)">编辑</span>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div v-if="reportActive === 2" class="contentRight">
-        <a-upload
-          accept=".doc,.docx"
-          :file-list="formState.reportUploadList"
-          :before-upload="beforeUploadReport"
-          :remove="fileRemove"
-        >
-          <a-button type="primary"> 上传文件</a-button>
-        </a-upload>
-      </div>
-    </div>
-    <template #footer>
-      <Submit @submit="reportHandleOk" @cancel="reportCancel"></Submit>
-    </template>
-  </a-modal>
-  <!-- 在线制作 预览  编辑实验模板 -->
-  <a-modal
-    v-model:visible="reportTemplate"
-    :title="reportTitle"
-    class="report"
-    :width="1080"
-    @cancel="cancelTemplate(1)"
-  >
-    <CreateTemplate
-      @cancelTemplate="cancelTemplate"
-      :id="TemplateEditId"
-      :type="TemplateViewType"
-    ></CreateTemplate>
-    <div class="pdfBox" v-if="pdfUrl">
-      <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
-    </div>
-    <template #footer>
-      <span></span>
-    </template>
-  </a-modal>
+
+  <SelectReport
+    :visible="reportVisible"
+    @reportCancel="reportCancel"
+  ></SelectReport>
+
   <!-- 上传文档 文件 弹窗 -->
   <a-modal
     v-model:visible="upDocVisible"
@@ -503,12 +425,12 @@ import { SelectTypes } from "ant-design-vue/es/select";
 import SameScreen from "src/components/teacherExperiment/sameScreen.vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
-import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
 import Submit from "src/components/submit/index.vue";
 import knowledgeModal from "src/views/teacherModule/teachCourse/createTestPaper/knowledgeModal.vue";
 import LabelDisplay from "src/components/labelDisplay/index.vue";
 import selectDataSet from "src/components/selectDataSet/selectDataSet.vue";
 import Environment from "./component/Environment.vue";
+import SelectReport from "./component/selectReport.vue";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import _ from "lodash";
 import { UUID } from "src/utils/uuid";
@@ -549,9 +471,6 @@ updata({
   showNav: true,
 });
 var isShowKnowledge = ref<boolean>(false);
-var reportVisible = ref<boolean>(false);
-var reportTemplate = ref<boolean>(false);
-var reportActive = ref<number>(1);
 interface FileItem {
   uid: string;
   name?: string;
@@ -643,30 +562,7 @@ function remove(val: any, index: number) {
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
-function beforeUploadReport(file: any) {
-  console.log(file);
-  formState.reportUploadList[0] = {
-    uid: "-1",
-    name: "",
-    status: "uploading",
-    url: "",
-    file: file,
-  };
-  formState.reportUploadList[0].name = file.name;
-  formState.reportUploadList[0].status = "done";
-  return;
-  const fs = new FormData();
-  fs.append("file", file);
-  http.uploadTaskFile({ param: fs }).then((res: any) => {
-    // reportUploadList.status = true      status: 'done',
-    formState.reportUploadList[0].url = res.data;
-  });
-}
 
-function fileRemove(file: any) {
-  // console.log(file)
-  formState.reportUploadList = [];
-}
 function create() {
   formRef.value.validate().then(() => {
     http.create().then((res: IBusinessResp) => {
@@ -678,78 +574,7 @@ function create() {
 function cancel() {
   router.go(-1);
 }
-const reportHandleOk = () => {
-  if (reportActive.value == 2) {
-    let v = formState.reportUploadList[0];
-    // formState.reportUploadList
-    // formState.report.id = v.id;
-    formState.report.name = v.name;
-  } else {
-    formState.report.name = activeTemplateItem.name;
-    formState.report.id = activeTemplateItem.id;
-    // activeTemplateItem
-  }
-  reportVisible.value = false;
-};
-const reportCancel = () => {
-  reportVisible.value = false;
-};
-var activeTemplateItem: any = reactive({
-  id: 0,
-  name: "",
-});
-const selectTemplate = (val: any) => {
-  formState.report.id = val;
-  activeTemplateItem.id = val;
-  activeTemplateItem.name = `报告名称${val}`;
-};
-const selectReport = () => {
-  reportVisible.value = true;
-  getTemplateList();
-};
-function delSelectedReport() {
-  formState.report.id = 0;
-  formState.report.name = "";
-  activeTemplateItem.id = 0;
-  activeTemplateItem.name = "";
-}
-const reportTab = (val: number) => {
-  reportActive.value = val;
-  if (val === 1) {
-    getTemplateList();
-  }
-};
-const TemplateList: any = reactive([1, 2, 3, 4, 5, 6]);
-const getTemplateList = () => {
-  // TemplateList.length=0
-  // http.getTemplateList().then((res: IBusinessResp) => {
-  //   // TemplateList.push(...res.data);
-  // });
-};
-const TemplateEditId = ref<number>(0);
-const TemplateViewType = ref<string>("");
-var reportTitle = ref<string>("");
-var pdfUrl = ref<string>("");
-const viewTemplate = (n: number, val?: any) => {
-  // 3在线制作 2预览离线  1预览在线   0编辑在线
-  reportTemplate.value = true;
-  if (n === 3) {
-    reportTitle.value = "在线制作报告模板";
-  }
-  if (n === 2) {
-    TemplateEditId.value = val.id;
-    reportTitle.value = "离线报告模板";
-    pdfUrl.value = val.url;
-  }
-  if (n === 1) {
-    TemplateViewType.value = "view";
-    reportTitle.value = "在线报告模板";
-  }
-  if (n === 0) {
-    TemplateEditId.value = val.id;
-    reportTitle.value = "在线报告模板编辑";
-  }
-};
+
 const Download = (item: any) => {
   const a: any = document.createElement("a");
   a.href = item.word_path;
@@ -758,32 +583,24 @@ const Download = (item: any) => {
   a.click();
   document.body.removeChild(a);
 };
-// 删除模板
-const handleDelete = (item: any) => {
-  $confirm({
-    title: "提示",
-    content: "确定删除实验报告模板?删除后不可恢复",
-    okText: "确定",
-    cancelText: "取消",
-    onOk() {
-      // http.deleteTemplate({param: {id: item.id}}).then((res:IBusinessResp) => {
-      //   message.success(`实验报告模板：${item.name}, 删除成功！`)
-      //   getTemplateList()
-      // })
-    },
-  });
-};
 
-const cancelTemplate = (val: number) => {
-  if (val === 2) {
-    getTemplateList();
-  }
-  reportTemplate.value = false;
-  TemplateEditId.value = 0;
-  TemplateViewType.value = "";
-  pdfUrl.value = "";
+var reportVisible = ref<boolean>(false);
+var activeTemplateItem: any = reactive({
+  id: 0,
+  name: "",
+});
+const selectReport = () => {
+  reportVisible.value = true;
 };
-
+function delSelectedReport() {
+  formState.report.id = 0;
+  formState.report.name = "";
+  activeTemplateItem.id = 0;
+  activeTemplateItem.name = "";
+}
+const reportCancel = () => {
+  reportVisible.value = false;
+};
 // 同屏vm连接信息
 let screenVmInfo: any = reactive([]);
 let screenStatus = ref<boolean>(false);
@@ -1141,104 +958,7 @@ h3 {
     border-color: var(--primary-color);
   }
 }
-.report {
-  .top {
-    justify-content: space-between;
-    margin-bottom: 10px;
-    .online {
-      cursor: pointer;
-      color: var(--primary-color);
-    }
-    .TemplateTit {
-      span {
-        cursor: pointer;
-        padding: 2px 6px;
-        border: 3px solid transparent;
-      }
-      .reportActive {
-        border-bottom: 3px solid var(--primary-color);
-      }
-    }
-  }
-  .content {
-    max-height: 200px;
-    overflow-y: auto;
-    height: 200px;
-    .contentLeft {
-      .reportList {
-        flex-wrap: wrap;
-        .item {
-          width: 100%;
-          height: 40px;
-          justify-content: space-between;
-          .eyeBox {
-            width: 14px;
-            height: 14px;
-            background: #ffffff;
-            border: 1px solid rgba(0, 0, 0, 0.45);
-            border-radius: 50%;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            margin: 0 12px;
-            .eye {
-              width: 8px;
-              height: 8px;
-              // background: var(--primary-color);
-              border-radius: 50%;
-            }
-          }
-          .eyeBox:hover {
-            border: 1px solid var(--primary-color);
-          }
-          .activeEye {
-            .eye {
-              background: var(--primary-color);
-            }
-          }
-          .nameBox {
-            width: 445px;
-            .prefix {
-              color: var(--brightBtn);
-            }
-            .name {
-              max-width: 360px;
-              cursor: pointer;
-            }
-            .name:hover {
-              color: var(--brightBtn);
-            }
-          }
-          .caozuo {
-            width: 96px;
-            span {
-              display: none;
-              padding: 0 10px;
-              color: var(--primary-color);
-              cursor: pointer;
-            }
-          }
-        }
-        .item:hover {
-          background: #f5f5f5;
-          // background: var(--brightBtn);
-          .caozuo {
-            span {
-              display: inline-block;
-            }
-          }
-        }
-      }
-    }
-    .contentRight {
-      padding: 20px;
-    }
-  }
-  .pdfBox {
-    width: 100%;
-    height: 500px;
-  }
-}
+
 .zhuomian {
   .guide-top {
     display: flex;
@@ -1332,7 +1052,7 @@ h3 {
     justify-content: space-between;
   }
   .docTopRight {
-    width: 33%;
+    width: 32.5%;
     justify-content: space-between;
     .data-set-hint {
       margin: 0;
