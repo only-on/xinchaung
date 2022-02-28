@@ -49,7 +49,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const emit = defineEmits<{
   (e: "searchFn", key: string): void;
-  (e: "handleMenuClick", obj: any): void;
+  (e: "handleMenuClick", obj: IList): void;
 }>();
 </script>
 

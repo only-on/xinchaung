@@ -56,6 +56,7 @@ import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { readFile } from "src/utils/common";
 const courseApi = request.teachCourse;
 
 const $message: MessageApi = inject("$message")!;
@@ -65,17 +66,9 @@ const fileUrl = ref<string>("111");
 const preview = ref<boolean>(false);
 const experimentContent = ref<any>("aa");
 
-const beforeUpload = (file: any, fileList: any) => {
-  // console.log(file, fileList)
-  let arr = file.name.split(".");
-  // if (arr[arr.length - 1] !== "mp4") {
-  //   $message.warn("请上传md、doc、docx、pdf格式文件");
-  //   // return;
-  // }
-  const fs = new FormData();
-  fs.append("jupyter_file", file);
-  // fs.append('taskfile_subdir', props.jupyterUuid)
-  // props.taskList.describe = "66";
+const beforeUpload = async (file: any, fileList: any) => {
+  const text = await readFile(file);
+  experimentContent.value = text;
   fileUrl.value = "111";
 };
 // 上传文件

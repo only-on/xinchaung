@@ -30,23 +30,15 @@ import { ref, inject } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
+import { readFile } from "src/utils/common";
 
 const $message: MessageApi = inject("$message")!;
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>("aa");
 // 上传文件
-const beforeUpload = (file: any, fileList: any) => {
-  // console.log(file, fileList)
-  let arr = file.name.split(".");
-  if (arr[arr.length - 1] !== "md") {
-    $message.warn("请上传markdown文件");
-    // return;
-  }
-  const fs = new FormData();
-  fs.append("jupyter_file", file);
-  // fs.append('taskfile_subdir', props.jupyterUuid)
-  // props.taskList.describe = "66";
-  // videoUrl.value = '111'
+const beforeUpload = async (file: any, fileList: any) => {
+  const text = await readFile(file);
+  experimentContent.value = text;
 };
 const onSubmit = () => {};
 const cancel = () => {};

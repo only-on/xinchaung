@@ -1,11 +1,11 @@
 <template>
   <div class="experiment-detail">
-    <div class="top">
+    <div class="top" :class="{ public: Number(currentTab) === 0 }">
       <div class="crumbs">
         <breadcrumb />
       </div>
       <div class="tech-direction">
-        技术方向：{{ experimentDetail.direction }}
+        技术方向：{{ experimentDetail.direction }}{{ currentTab }}
       </div>
       <div class="name-type flexCenter">
         <div class="left">
@@ -14,7 +14,7 @@
         </div>
         <div class="right">
           <span class="pointer" @click="handleClick()">{{
-            !currentTab ? "添加到课程" : "编辑基本信息"
+            Number(currentTab) === 0 ? "添加到课程" : "编辑基本信息"
           }}</span>
           <span class="pointer">启动环境</span>
         </div>
@@ -28,7 +28,7 @@
           <span>报告模板</span>
         </span>
       </div>
-      <div class="user-info">
+      <div class="user-info" v-if="Number(currentTab) === 0">
         <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
         <span class="user-name">TEACHERNAME</span>
       </div>
@@ -148,9 +148,16 @@ interface IExperimentDetail {
   width: var(--center-width);
   margin: 0 auto;
   .top {
-    height: 200px;
+    height: 170px;
     background-color: #12223a;
+    background: url("src/assets/images/teacherExperimentResourcePool/base_info_bg.png")
+      center no-repeat;
+    // background-size: 100% 200px;
     padding: 0 14px;
+    &.public {
+      height: 200px;
+      background-size: 100% 200px;
+    }
     .crumbs {
       padding-top: 14px;
       :deep(.allWhite span) {

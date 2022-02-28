@@ -56,7 +56,17 @@
         />
       </div>
       <div class="form-upload" v-if="!props.preview">
-        <a-button type="primary" shape="round" size="small">上传文档</a-button>
+        <a-upload
+          name="file"
+          :show-upload-list="false"
+          accept=".md"
+          :multiple="false"
+          :before-upload="stepbeforeUpload"
+        >
+          <a-button type="primary" shape="round" size="small"
+            >上传文档</a-button
+          >
+        </a-upload>
       </div>
       <marked-editor
         v-model="props.taskList.step"
@@ -72,6 +82,7 @@ import { ref, reactive, inject } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { NoToCh } from "src/utils/common";
+import { readFile } from "src/utils/common";
 const $message: MessageApi = inject("$message")!;
 const dev_base_url = import.meta.env.VITE_APP_BASE_API || "";
 var uploadUrl = `${dev_base_url}/api/content/vnc/upload_mkfile`;
@@ -94,17 +105,13 @@ const props = defineProps<Props>();
 // const emit = defineEmits<{
 //   (e: "change", obj: any): void;
 // }>();
-const beforeUpload = (file: any, fileList: any) => {
-  // console.log(file, fileList)
-  let arr = file.name.split(".");
-  if (arr[arr.length - 1] !== "md") {
-    $message.warn("请上传markdown");
-    return;
-  }
-  const fs = new FormData();
-  fs.append("jupyter_file", file);
-  // fs.append('taskfile_subdir', props.jupyterUuid)
-  props.taskList.describe = "66";
+const beforeUpload = async (file: any, fileList: any) => {
+  const text = await readFile(file);
+  props.taskList.describe = text;
+};
+const stepbeforeUpload = async (file: any, fileList: any) => {
+  const text = await readFile(file);
+  props.taskList.step = text;
 };
 interface Props {
   preview: boolean;
@@ -113,8 +120,8 @@ interface Props {
 }
 interface ItaskList {
   name: string;
-  describe: string;
-  step: string;
+  describe: any;
+  step: any;
   checked: boolean;
   isAdd?: boolean;
 }
