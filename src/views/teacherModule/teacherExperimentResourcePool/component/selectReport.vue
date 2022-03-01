@@ -5,6 +5,7 @@
     title="设置实验实验报告模板"
     class="report"
     :width="640"
+    @cancel="reportCancel"
   >
     <div class="top flexCenter">
       <div class="TemplateTit flexCenter">
@@ -65,6 +66,7 @@
   </a-modal>
   <!-- 在线制作 预览  编辑实验模板 -->
   <a-modal
+    v-if="reportTemplate"
     v-model:visible="reportTemplate"
     :title="reportTitle"
     class="report"
@@ -75,6 +77,7 @@
       @cancelTemplate="cancelTemplate"
       :id="TemplateEditId"
       :type="TemplateViewType"
+      @viewTemplate="viewTemplate"
     ></CreateTemplate>
     <div class="pdfBox" v-if="pdfUrl">
       <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
@@ -103,10 +106,13 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
+// export default defineComponent({
+// setup() {
 const $confirm: ModalFunc = inject("$confirm")!;
 const http = (request as any).teacherImageResourcePool;
 const emit = defineEmits<{
   (e: "reportCancel"): void;
+  (e: "reportOk", val: any): void;
 }>();
 
 // 采用ts专有声明，有默认值
@@ -159,6 +165,7 @@ const viewTemplate = (n: number, val?: any) => {
     reportTitle.value = "在线报告模板";
   }
   if (n === 0) {
+    TemplateViewType.value = "edit";
     TemplateEditId.value = val.id;
     reportTitle.value = "在线报告模板编辑";
   }
@@ -229,7 +236,9 @@ const reportHandleOk = () => {
     formState.report.id = activeTemplateItem.id;
     // activeTemplateItem
   }
+  console.log(activeTemplateItem);
   emit("reportCancel");
+  emit("reportOk", activeTemplateItem);
 };
 const reportCancel = () => {
   emit("reportCancel");
@@ -243,6 +252,13 @@ const cancelTemplate = (val: number) => {
   TemplateViewType.value = "";
   pdfUrl.value = "";
 };
+//   return {
+//     reportCancel,
+//     reportActive,
+//     reportTab
+//   }
+// }
+// })
 </script>
 <style scoped lang="less">
 .report {

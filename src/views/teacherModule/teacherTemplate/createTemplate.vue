@@ -1,13 +1,13 @@
 <template>
-  <div class="wrapper" v-layout-bg>
-    <div class="toolbar">
+  <div class="wrapper">
+    <div class="toolbar" v-if="props.type !== 'view'">
       <div class="toolbar-title">报告模板组件</div>
       <div v-for="(item, index) in initialWidgetThumb" :key="index">
         <div class="toolbar-subject">{{ item.title }}</div>
         <drag-gable
           class="toolbar-widget"
           v-model="item.widget"
-          :disabled="isCheck"
+          :disabled="props.type === 'view'"
           :sort="false"
           group="table"
           @end="handleDragEnd"
@@ -25,7 +25,7 @@
           <a-form-item label="报告模板名称" name="name">
             <a-input
               v-model:value="form.name"
-              :disabled="isCheck"
+              :disabled="props.type === 'view'"
               placeholder="请输入报告模板名称"
             />
           </a-form-item>
@@ -43,7 +43,7 @@
                   :type="element.type"
                   v-model:fields="element.fields"
                 >
-                  <template #toolbar v-if="!isCheck">
+                  <template #toolbar v-if="props.type !== 'view'">
                     <div class="actions">
                       {{ element.id }}
                       <i class="actions-drag iconfont icon-yidong"></i>
@@ -68,13 +68,42 @@
   <div class="operate">
     <a-button @click="goBack(1)">{{ templateId ? "返回" : "取消" }}</a-button>
     <a-button
-      v-show="!isCheck"
+      v-show="props.type !== 'view' && !props.detailView"
       type="primary"
       style="margin-left: 10px"
       @click="handleSave"
-      >保存</a-button
+      >保存并设置为模板</a-button
+    >
+    <!-- 详情页查看报告模板 -->
+    <!-- <a-button
+      v-if="props.detailView"
+      type="primary"
+      style="margin-left: 10px"
+      @click="replaceReport"
+      >更换报告</a-button
+    > -->
+    <!-- 报告模板列表查看 -->
+    <a-button
+      v-if="props.type === 'view'"
+      type="primary"
+      style="margin-left: 10px"
+      @click="editReport"
+      >编辑</a-button
+    >
+    <a-button
+      v-if="props.type === 'view'"
+      type="primary"
+      style="margin-left: 10px"
+      @click="settingReport"
+      >设置为报告模板</a-button
     >
   </div>
+  <!-- 更换报告模板 -->
+  <!-- <SelectReport
+    v-if="reportVisible"
+    :visible="reportVisible"
+    @reportCancel="reportCancel"
+  ></SelectReport> -->
 </template>
 <script lang="ts" setup>
 import { defineComponent, inject, onMounted, reactive, ref } from "vue";
@@ -88,12 +117,28 @@ import dragGable from "vuedraggable";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ITeacherTemplateHttp, Iform, WidgetModel } from "./templateTyping";
+// import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 // export default defineComponent({
 // components: {
 //   widgetThumb,
 //   widgetCreate,
 //   dragGable,
 // },
+// props: {
+//   type: {
+//     type: String,
+//     default: ""
+//   },
+//   id: {
+//     type: Number,
+//     default: 0
+//   },
+//   detailView: {
+//     type: Boolean,
+//     default: false
+//   }
+// },
+// emits: ["cancelTemplate", "viewTemplate"],
 // setup() {
 const http = (request as ITeacherTemplateHttp).teacherTemplate;
 const $message: MessageApi = inject("$message")!;
@@ -103,10 +148,12 @@ const formRef = ref<any>(null);
 interface Props {
   type?: string;
   id?: number;
+  detailView?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   type: "",
   id: 0,
+  detailView: false,
 });
 const templateId = ref<any>("");
 var isCheck = ref<boolean>(false);
@@ -194,6 +241,7 @@ const handleSave = () => {
 };
 const emit = defineEmits<{
   (e: "cancelTemplate", val: number): void;
+  (e: "viewTemplate", i: number, v: any): void;
 }>();
 const goBack = (val: number) => {
   emit("cancelTemplate", val);
@@ -205,6 +253,25 @@ const goBack = (val: number) => {
 };
 // },
 // })
+
+// 更换报告
+const reportVisible = ref<boolean>(false);
+const replaceReport = () => {
+  reportVisible.value = true;
+};
+const reportCancel = () => {
+  reportVisible.value = false;
+};
+// 编辑
+const editReport = () => {
+  emit("viewTemplate", 0, { id: 1 });
+  console.log("editReport");
+};
+// 设置为模板
+const settingReport = () => {
+  console.log("settingReport");
+  emit("cancelTemplate", 0);
+};
 </script>
 <style lang="less" scoped>
 .wrapper {
@@ -221,7 +288,6 @@ const goBack = (val: number) => {
   .dnd-space {
     padding-left: 25px;
     min-height: 800px;
-    border-left: 1px solid #e4e4e4;
   }
   table {
     width: 100%;
@@ -238,6 +304,7 @@ const goBack = (val: number) => {
   box-sizing: border-box;
   padding-right: 25px;
   overflow: auto;
+  border-right: 1px solid #e4e4e4;
   &-title {
     font-size: 16px;
     font-family: Microsoft YaHei, Microsoft YaHei-Regular;
@@ -268,12 +335,12 @@ const goBack = (val: number) => {
 }
 
 .actions {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+  // display: flex;
+  // flex-direction: column;
+  // justify-content: center;
+  // align-items: center;
   position: absolute;
-  right: 0;
+  left: 8px;
   top: 0;
   i {
     font-size: 14px;
@@ -285,6 +352,12 @@ const goBack = (val: number) => {
     &:last-child:hover {
       color: red;
     }
+    &.actions-drag {
+      margin-right: 4px;
+    }
   }
+}
+:deep(.toolCol) {
+  width: 31px;
 }
 </style>
