@@ -1,13 +1,13 @@
 <template>
   <div class="wrapper">
-    <div class="toolbar" v-if="props.type !== 'view'">
+    <div class="toolbar" v-if="!isCheck">
       <div class="toolbar-title">报告模板组件</div>
       <div v-for="(item, index) in initialWidgetThumb" :key="index">
         <div class="toolbar-subject">{{ item.title }}</div>
         <drag-gable
           class="toolbar-widget"
           v-model="item.widget"
-          :disabled="props.type === 'view'"
+          :disabled="isCheck"
           :sort="false"
           group="table"
           @end="handleDragEnd"
@@ -25,7 +25,7 @@
           <a-form-item label="报告模板名称" name="name">
             <a-input
               v-model:value="form.name"
-              :disabled="props.type === 'view'"
+              :disabled="isCheck"
               placeholder="请输入报告模板名称"
             />
           </a-form-item>
@@ -43,7 +43,7 @@
                   :type="element.type"
                   v-model:fields="element.fields"
                 >
-                  <template #toolbar v-if="props.type !== 'view'">
+                  <template #toolbar v-if="!isCheck">
                     <div class="actions">
                       {{ element.id }}
                       <i class="actions-drag iconfont icon-yidong"></i>
@@ -68,7 +68,7 @@
   <div class="operate">
     <a-button @click="goBack(1)">{{ templateId ? "返回" : "取消" }}</a-button>
     <a-button
-      v-show="props.type !== 'view' && !props.detailView"
+      v-show="!isCheck"
       type="primary"
       style="margin-left: 10px"
       @click="handleSave"
@@ -84,14 +84,14 @@
     > -->
     <!-- 报告模板列表查看 -->
     <a-button
-      v-if="props.type === 'view'"
+      v-if="isCheck"
       type="primary"
       style="margin-left: 10px"
       @click="editReport"
       >编辑</a-button
     >
     <a-button
-      v-if="props.type === 'view'"
+      v-if="isCheck"
       type="primary"
       style="margin-left: 10px"
       @click="settingReport"
@@ -106,7 +106,14 @@
   ></SelectReport> -->
 </template>
 <script lang="ts" setup>
-import { defineComponent, inject, onMounted, reactive, ref } from "vue";
+import {
+  defineComponent,
+  inject,
+  onMounted,
+  reactive,
+  ref,
+  computed,
+} from "vue";
 import { initialWidgetThumb, deepClone } from "./utils";
 import widgetThumb from "./components/widgetThumb.vue";
 import widgetCreate from "./components/widgetCreate.vue";
@@ -156,7 +163,9 @@ const props = withDefaults(defineProps<Props>(), {
   detailView: false,
 });
 const templateId = ref<any>("");
-var isCheck = ref<boolean>(false);
+const isCheck = computed(() => {
+  return props.type && props.type === "view";
+});
 var form = reactive<any>({
   name: "",
 });
@@ -176,7 +185,7 @@ var dataList = reactive<any[]>([
 onMounted(() => {
   templateId.value = props.id !== 0 ? props.id : "";
   if (props.type && props.type === "view") {
-    isCheck.value = true;
+    // isCheck.value = true;
   }
   if (templateId.value) {
     getDetail();

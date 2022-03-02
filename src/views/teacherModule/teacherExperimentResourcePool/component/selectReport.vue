@@ -37,9 +37,10 @@
               <span class="prefix">【系统默认】</span>
               <span
                 class="name single-ellipsis"
-                @click.stop="viewTemplate(2, v)"
+                @click.stop="viewTemplate(1, v)"
                 >实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称</span
               >
+              <!-- @click.stop="viewTemplate(2, v)" 离线-->
             </div>
             <div class="caozuo">
               <span @click.stop="handleDelete(v)">删除</span>
@@ -153,9 +154,11 @@ const viewTemplate = (n: number, val?: any) => {
   // 3在线制作 2预览离线  1预览在线   0编辑在线
   reportTemplate.value = true;
   if (n === 3) {
+    TemplateViewType.value = "create";
     reportTitle.value = "在线制作报告模板";
   }
   if (n === 2) {
+    TemplateViewType.value = "";
     TemplateEditId.value = val.id;
     reportTitle.value = "离线报告模板";
     pdfUrl.value = val.url;

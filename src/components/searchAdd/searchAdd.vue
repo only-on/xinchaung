@@ -8,6 +8,7 @@
             :class="{ mouseover: isMouseOver }"
             v-model:value="searchKey"
             @search="searchFn"
+            placeholder="请输入关键词查询"
           />
         </div>
         <a-dropdown v-if="props.isShowAdd">
@@ -81,7 +82,7 @@ const emit = defineEmits<{
         box-sizing: content-box;
         &.mouseover {
           :deep(.ant-input) {
-            padding-left: 15px;
+            padding-left: 20px;
             width: 190px;
           }
         }

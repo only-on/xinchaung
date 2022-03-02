@@ -88,7 +88,7 @@ export const initAntdv: TFInitApp = function (appManager: IAppManager) {
   appManager.app.provide("$message", message);
   const confirm = Modal.confirm;
   // {icon: createVNode(ExclamationCircleOutlined)}
-  confirm.icon = createVNode(ExclamationCircleOutlined);
+  // confirm.icon = createVNode(ExclamationCircleOutlined);
   appManager.app.provide("$confirm", Modal.confirm);
   return appManager;
 };

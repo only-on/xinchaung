@@ -133,14 +133,11 @@ const getDetail = () => {
 const backGo = () => {
   router.go(-1);
 };
+
+const reportVisible = ref<boolean>(false);
 const reportOk = (val: any) => {
   console.log(val);
 };
-
-const cancelTemplate = () => {
-  router.go(-1);
-};
-const reportVisible = ref<boolean>(false);
 const reportCancel = () => {
   reportVisible.value = false;
 };

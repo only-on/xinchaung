@@ -1,60 +1,84 @@
 <template>
   <div class="course-info">
     <div class="name-box">
-      <span class="name">{{data.name}}</span>
+      <span class="name">{{ data.name }}</span>
       <!-- <span class="status in-progress">进行中</span -->
-      <span class="status" 
-      :class="{'not-start': data.state === 2, 'in-progress': data.state === 3, 'finish': data.state !== 3 && data.state !== 2}"
-      >{{courseStatus(data.state)}}
+      <span
+        class="status"
+        :class="{
+          'not-start': data.state === 2,
+          'in-progress': data.state === 3,
+          finish: data.state !== 3 && data.state !== 2,
+        }"
+        >{{ courseStatus(data.state) }}
       </span>
       <span class="icon-fanhui iconfont" @click="goBack()"></span>
     </div>
     <div class="desc-box">
-      <span class="desc" :title="data.introduce">{{data.introduce}}</span>
+      <span class="desc" :title="data.introduce">{{ data.introduce }}</span>
     </div>
     <div class="statistics">
       <div class="statistics-info chapter-box">
-        <span>{{data.chapter_total}}</span>
+        <span>{{ data.chapter_total }}</span>
         <span>章节</span>
       </div>
       <div class="statistics-info experiment-box">
-        <span>{{data.content_total}}</span>
+        <span>{{ data.content_total }}</span>
         <span>实验</span>
       </div>
       <div class="statistics-info type-box">
-        <span>{{data.category ? data.category.name: ''}}</span>
+        <span>{{ data.category ? data.category.name : "" }}</span>
         <span>课程方向</span>
       </div>
       <div class="statistics-info job-box">
-        <span>{{data.direction ? data.direction.name: ''}}</span>
+        <span>{{ data.direction ? data.direction.name : "" }}</span>
         <span>职业方向</span>
       </div>
       <div class="statistics-info time">
-        <span> 
-          {{data.start_time ? data.start_time.split(' ')[0] : ''}} - 
-          {{data.end_time ? data.end_time.split(' ')[0] : ''}}
+        <span>
+          {{ data.start_time ? data.start_time.split(" ")[0] : "" }} -
+          {{ data.end_time ? data.end_time.split(" ")[0] : "" }}
         </span>
         <span>课程时间</span>
       </div>
       <div class="operation-box" v-show="showOperate">
-        <span class="icon-mobandaishezhi iconfont" title="选择报告模板" @click="openReportModal()"></span>
-        <span class="icon-bianji1 iconfont" title="编辑" @click="detailVisible =true"></span>
+        <span
+          class="icon-mobandaishezhi iconfont"
+          title="选择报告模板"
+          @click="openReportModal()"
+        ></span>
+        <span
+          class="icon-bianji1 iconfont"
+          title="编辑"
+          @click="detailVisible = true"
+        ></span>
       </div>
     </div>
   </div>
-  <a-modal class="report-modal" title="选择实验报告" :footer="null" :visible="reportVisible" @cancel="reportVisible = false">
+  <a-modal
+    class="report-modal"
+    title="选择实验报告"
+    :footer="null"
+    :visible="reportVisible"
+    @cancel="reportVisible = false"
+  >
     <div class="search-top-box">
-      <a-input-search v-model="name" placeholder="请输入查询关键字" style="width: 300px" @search="onSearch" />
+      <a-input-search
+        v-model="name"
+        placeholder="请输入查询关键字"
+        style="width: 300px"
+        @search="onSearch"
+      />
     </div>
-    <a-table 
+    <a-table
       :rowKey="rowkey"
-      :dataSource="reportList" 
-      :columns="columns" 
+      :dataSource="reportList"
+      :columns="columns"
       :bordered="true"
       :pagination="false"
     >
       <template #type="{ record }">
-        <span>{{ record.type === 'form' ? '在线报告' : '离线报告' }}</span>
+        <span>{{ record.type === "form" ? "在线报告" : "离线报告" }}</span>
       </template>
       <template #operation="{ record }">
         <a @click="selectReport(record.id)">选择</a>
@@ -70,38 +94,56 @@
       />
     </div>
   </a-modal>
-    <edit-detail :detail="data" :courseId="courseInfo.courseId" v-if="detailVisible" :detailVisible="detailVisible" @cancelDetail="cancelDetail"></edit-detail>
+  <edit-detail
+    :detail="data"
+    :courseId="courseInfo.courseId"
+    v-if="detailVisible"
+    :detailVisible="detailVisible"
+    @cancelDetail="cancelDetail"
+  ></edit-detail>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive, toRefs, ref, PropType } from 'vue'
-import request from 'src/api/index'
-import { IBusinessResp } from 'src/typings/fetch.d'
-import { ICourseAnalysisHttp, ICourseInfo, ITreeData, ITreeDataItem } from './typings'
-import editDetail from './editDetail.vue'
-import { useRouter, useRoute } from 'vue-router'
+import {
+  defineComponent,
+  onMounted,
+  reactive,
+  toRefs,
+  ref,
+  PropType,
+} from "vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+import {
+  ICourseAnalysisHttp,
+  ICourseInfo,
+  ITreeData,
+  ITreeDataItem,
+} from "./typings";
+import editDetail from "./editDetail.vue";
+import { useRouter, useRoute } from "vue-router";
 interface IreportList {
-  type: string
-  name: string
+  type: string;
+  name: string;
 }
 interface IDataSource {
-  reportList: IreportList[],
-  pageSize: number
-  total: number
-  page: number
-  name: string
+  reportList: IreportList[];
+  pageSize: number;
+  total: number;
+  page: number;
+  name: string;
 }
 
 export default defineComponent({
-  components: {editDetail},
+  components: { editDetail },
   props: {
     courseInfo: {
       type: Object as PropType<ICourseInfo>,
-      default: {}
+      default: {},
     },
     showOperate: {
-      default: true
-    }
+      default: true,
+    },
   },
   setup(props) {
     // let courseInfo = reactive<ICourseInfo>({
@@ -109,153 +151,159 @@ export default defineComponent({
     //   courseType: 1,
     //   courseId: 501703,
     // })
-    const router = useRouter()
-    const route = useRoute()
-    const http=(request as ICourseAnalysisHttp).teacherCourseAnalysis
+    const router = useRouter();
+    const route = useRoute();
+    const http = (request as ICourseAnalysisHttp).teacherCourseAnalysis;
 
     let courseDetail = reactive({
       data: {
-        name: '',
+        name: "",
         state: 0,
-        introduce: '',
+        introduce: "",
         content_total: 0,
         chapter_total: 0,
-        category: {name: ''},
-        direction: {name: ''},
-        start_time: '',
-        end_time: '',
+        category: { name: "" },
+        direction: { name: "" },
+        start_time: "",
+        end_time: "",
         course_category_id: 0,
         course_direction_id: 0,
-        desc: '', 
-        url: ''
-      }
-    })
+        desc: "",
+        url: "",
+      },
+    });
     function getCourseDetail() {
-      http.getCourseDetail({
-        urlParams: {
-          courseId: props.courseInfo.courseId
-        }
-      }).then((res: IBusinessResp) => {
-        console.log(res.data)
-        courseDetail.data = res.data
-      })
+      http
+        .getCourseDetail({
+          urlParams: {
+            courseId: props.courseInfo.courseId,
+          },
+        })
+        .then((res: IBusinessResp) => {
+          console.log(res.data);
+          courseDetail.data = res.data;
+        });
     }
     // 判断课程进行状态
     function courseStatus(sort: number) {
       if (sort === 1) {
-        return '已结束' // 未开始
+        return "已结束"; // 未开始
       } else if (sort === 2) {
-        return '未开始' // 已结束
+        return "未开始"; // 已结束
       } else if (sort === 3) {
-        return '进行中' // 进行中
+        return "进行中"; // 进行中
       } else {
-        return '未知'
+        return "未知";
       }
     }
 
-    let reportVisible = ref(false)
+    let reportVisible = ref(false);
     let dataSource = reactive<IDataSource>({
       reportList: [],
       total: 0,
       pageSize: 10,
       page: 1,
-      name: ''
-    })
+      name: "",
+    });
     // 选择实验报告
     function openReportModal() {
-      console.log(111)
-      reportVisible.value = true
-      getReportTemplate()
+      console.log(111);
+      reportVisible.value = true;
+      getReportTemplate();
     }
-    function getReportTemplate () {
-      http.getReportTemplate({
-        param: {
-          name: dataSource.name,
-          page: dataSource.page,
-          pageSize: dataSource.pageSize
-        }
-      }).then((res: IBusinessResp) => {
-        console.log(res)
-        dataSource.reportList = res.data.list
-        dataSource.total = res.data.page.totalCount
-        dataSource.pageSize = res.data.page.perPage
-      })
+    function getReportTemplate() {
+      http
+        .getReportTemplate({
+          param: {
+            name: dataSource.name,
+            page: dataSource.page,
+            pageSize: dataSource.pageSize,
+          },
+        })
+        .then((res: IBusinessResp) => {
+          console.log(res);
+          dataSource.reportList = res.data.list;
+          dataSource.total = res.data.page.totalCount;
+          dataSource.pageSize = res.data.page.perPage;
+        });
     }
     let columns = [
       {
-        title: '模板名称',
-        dataIndex: 'name',
-        key: 'name',
+        title: "模板名称",
+        dataIndex: "name",
+        key: "name",
       },
       {
-        title: '模板类型',
-        dataIndex: 'type',
-        key: 'type',
-        slots: { customRender: 'type' },
+        title: "模板类型",
+        dataIndex: "type",
+        key: "type",
+        slots: { customRender: "type" },
       },
       {
-        title: '操作',
-        dataIndex: 'operation',
-        key: 'operation',
-        slots: { customRender: 'operation' },
+        title: "操作",
+        dataIndex: "operation",
+        key: "operation",
+        slots: { customRender: "operation" },
       },
-    ]
+    ];
     function selectReport(id: number) {
-      console.log(222, id)
-      http.saveReportTemplate({
-        param: {
-          owner_type: props.courseInfo.type,
-          owner_id: props.courseInfo.courseId,
-          template_id: id
-        }
-      }).then((res: IBusinessResp) => {
-        console.log(res)
-        reportVisible.value = false
-      })
+      console.log(222, id);
+      http
+        .saveReportTemplate({
+          param: {
+            owner_type: props.courseInfo.type,
+            owner_id: props.courseInfo.courseId,
+            template_id: id,
+          },
+        })
+        .then((res: IBusinessResp) => {
+          console.log(res);
+          reportVisible.value = false;
+        });
     }
     // 页码发生变化时
     function pageChange(page: number, pageSize: number) {
-      dataSource.page = page
-      dataSource.pageSize = pageSize
-      getReportTemplate()
+      dataSource.page = page;
+      dataSource.pageSize = pageSize;
+      getReportTemplate();
     }
     // pageSize 变化的回调
     function onShowSizeChange(current: number, size: number) {
-      console.log(current, size)
-      dataSource.page = current
-      dataSource.pageSize = size
-      getReportTemplate()
+      console.log(current, size);
+      dataSource.page = current;
+      dataSource.pageSize = size;
+      getReportTemplate();
     }
 
     function onSearch(val: string) {
-      dataSource.name = val
-      getReportTemplate()
+      dataSource.name = val;
+      getReportTemplate();
     }
     function rowkey(record: {}, index: number) {
-      return index
+      return index;
     }
 
     function submitHandle() {
-      console.log(courseDetail.data)
+      console.log(courseDetail.data);
     }
 
     // 编辑
-    let detailVisible = ref(false)
+    let detailVisible = ref(false);
     function cancelDetail(data: any) {
       if (data) {
-        getCourseDetail()
+        getCourseDetail();
       }
-      detailVisible.value = false
+      detailVisible.value = false;
     }
 
     // 返回
     function goBack() {
-      window.history.go(-1)
+      window.history.go(-1);
       // router.push('/teacher/teacherCourse/virtualEnv')
     }
     onMounted(() => {
-      getCourseDetail()
-    })
+      getCourseDetail();
+    });
     return {
       ...toRefs(props),
       ...toRefs(courseDetail),
@@ -273,11 +321,10 @@ export default defineComponent({
       submitHandle,
       cancelDetail,
       goBack,
-    }
+    };
   },
-})
+});
 </script>
-
 
 <style lang="less" scoped>
 .course-info {
@@ -372,12 +419,12 @@ export default defineComponent({
         padding-left: 0;
       }
       &.time {
-        Padding-right: 0;
+        padding-right: 0;
         border-right: none;
       }
     }
     .operation-box {
-    margin-left: auto;
+      margin-left: auto;
 
       > span {
         display: inline-block;

@@ -443,12 +443,12 @@ import {
   inject,
   nextTick,
 } from "vue";
-const $confirm: ModalFunc = inject("$confirm")!;
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { resolve } from "path/posix";
+const $confirm: ModalFunc = inject("$confirm")!;
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
