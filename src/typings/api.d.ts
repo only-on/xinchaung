@@ -27,6 +27,7 @@ import { TAdminCourse } from "src/api/modules/adminCourse";
 import { IAdminHome } from "src/api/modules/adminHome";
 
 import { ITeacherExperimentResourcePool } from "src/api/teacher/teacherExperimentResourcePool";
+import { ITeacherMaterialResource } from "src/api/teacher/teacherMaterialResource";
 
 /**
  * 通用响应类型
@@ -63,7 +64,8 @@ export type TAvailableModules =
   | "dataSet"
   | "adminUserManagement"
   | "adminExperimentManage"
-  | "teacherExperimentResourcePool";
+  | "teacherExperimentResourcePool"
+  | "teacherMaterialResource";
 
 // API方法类型定义，每次新增api时，需要扩充此interface，按照模块、api的层级来扩充
 export interface IApiCollection {
@@ -97,4 +99,5 @@ export interface IApiCollection {
   adminCourse: TAdminCourse;
   adminHome: IAdminHome;
   teacherExperimentResourcePool: ITeacherExperimentResourcePool;
+  teacherMaterialResource: ITeacherMaterialResource;
 }
