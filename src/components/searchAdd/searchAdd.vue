@@ -11,7 +11,7 @@
             placeholder="请输入关键词查询"
           />
         </div>
-        <a-dropdown v-if="props.isShowAdd">
+        <a-dropdown v-if="props.isShowAdd && props.TypeList.length">
           <span class="addCircular iconfont icon-tianjia"></span>
           <template #overlay>
             <a-menu @click="handleMenuClick" class="menu__group">
@@ -21,6 +21,11 @@
             </a-menu>
           </template>
         </a-dropdown>
+        <span
+          v-else-if="props.isShowAdd && !props.TypeList.length"
+          @click="handleMenuClick"
+          class="addCircular iconfont icon-tianjia"
+        ></span>
       </div>
     </div>
   </div>
@@ -41,8 +46,8 @@ interface IList {
   key: string;
 }
 interface Props {
-  TypeList: IList[];
-  isShowAdd: boolean;
+  TypeList?: IList[];
+  isShowAdd?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   TypeList: () => [],
