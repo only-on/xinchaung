@@ -246,7 +246,6 @@ const ExperimentTypeList = reactive([
  * 添加
  */
 const handleMenuClick = ({ key }: { key: string }) => {
-  console.log(key);
   // router.push("/teacher/teacherExperimentResourcePool/CreateExperiment?key="+key);
   router.push({
     path: "/teacher/teacherExperimentResourcePool/CreateExperiment",

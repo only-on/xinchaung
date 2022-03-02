@@ -1,29 +1,10 @@
 <template>
-  <div class="reference">
-    <div class="addBox">
-      <div class="add flexCenter">
-        <a-input-search
-          class="greenSearch"
-          v-model:value="search.key"
-          placeholder="请输入关键字查询"
-          @search="searchFn"
-        />
-        <a-dropdown>
-          <span class="addCircular iconfont icon-tianjia"></span>
-          <template #overlay>
-            <a-menu class="menu__group">
-              <a-menu-item>
-                <div @click="localCreated()">本地上传</div>
-              </a-menu-item>
-              <a-menu-item>
-                <div @click="OnlineMake()">在线制作</div>
-              </a-menu-item>
-            </a-menu>
-          </template>
-        </a-dropdown>
-      </div>
-    </div>
-  </div>
+  <search-add
+    @searchFn="searchFn"
+    @handleMenuClick="handleMenuClick"
+    :TypeList="ExperimentTypeList"
+    :isShowAdd="true"
+  ></search-add>
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
@@ -65,6 +46,7 @@
 </template>
 <script lang="ts" setup>
 import classify from "src/components/classify/index.vue";
+import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import {
   defineComponent,
   ref,
@@ -93,7 +75,18 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-
+const ExperimentTypeList = reactive([
+  { name: "本地上传", key: "local" },
+  { name: "在线制作", key: "Online" },
+]);
+const handleMenuClick = (val: any) => {
+  // console.log(val);
+  if (val.key === "local") {
+    router.push("/teacher/teacherImageResourcePool/localCreated");
+  } else {
+    router.push("/teacher/teacherImageResourcePool/OnlineMake");
+  }
+};
 /**
  * 标签操作
  */
@@ -124,7 +117,7 @@ const classifyList: any = reactive([
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
   // console.log(labelSearch)
-  searchFn();
+  searchFn(search.key);
 };
 const labelSearch = reactive({
   type: 0,
@@ -134,8 +127,9 @@ const labelSearch = reactive({
 const search: any = reactive({
   key: "",
 });
-const searchFn = () => {
+const searchFn = (key: string) => {
   fromData.page = 1;
+  search.key = key;
   let obj = {
     ...labelSearch,
     ...search,
@@ -147,13 +141,7 @@ const searchFn = () => {
 /**
  * 添加
  */
-const OnlineMake = () => {
-  router.push("/teacher/teacherImageResourcePool/OnlineMake");
-};
-const localCreated = () => {
-  router.push("/teacher/teacherImageResourcePool/localCreated");
-  // OnlineMake
-};
+
 const initData = () => {
   loading.value = true;
   http.getList().then((res: IBusinessResp) => {
