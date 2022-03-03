@@ -43,7 +43,7 @@
               >
               <!-- @click.stop="viewTemplate(2, v)" 离线-->
             </div>
-            <div class="caozuo">
+            <div class="handle">
               <span @click.stop="handleDelete(v)">删除</span>
               <!-- <span @click.stop="Download(v)">下载</span> -->
               <span @click="viewTemplate(0, v)">编辑</span>
@@ -324,7 +324,7 @@ const cancelTemplate = (val: number) => {
               color: var(--brightBtn);
             }
           }
-          .caozuo {
+          .handle {
             width: 96px;
             span {
               display: none;
@@ -337,7 +337,7 @@ const cancelTemplate = (val: number) => {
         .item:hover {
           background: #f5f5f5;
           // background: var(--brightBtn);
-          .caozuo {
+          .handle {
             span {
               display: inline-block;
             }

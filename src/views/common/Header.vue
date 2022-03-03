@@ -159,14 +159,23 @@ export default defineComponent({
               },
             ],
           };
+          let material = {
+            id: 170,
+            name: "素材资源",
+            parent_id: 0,
+            sort: 3,
+            url: "/teacher/teacherMaterialResource",
+            children: [],
+          };
           data.push(center);
+          data.push(material);
           // activeName.value = lStorage.get("menuActiveName")
           //   ? lStorage.get("menuActiveName")
           //   : data && data.length && data[0].name;
           if (data && data.length) {
             data.map((v: any) => {
               // console.log(v.children.length)
-              if (v.children.length === 0) {
+              if (v.children && v.children.length === 0) {
                 v.url = `${v.url}?currentTab=0`;
               } else {
                 v.children.map((i: any) => {

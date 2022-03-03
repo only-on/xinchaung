@@ -74,7 +74,7 @@ updata({
   ],
   showContent: true,
   componenttype: undefined,
-  showNav: true,
+  showNav: false,
 });
 const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
