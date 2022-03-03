@@ -26,5 +26,17 @@ export default {
         authCode: "teacherMaterialResource",
       },
     },
+    {
+      path: "createMaterial",
+      component: () =>
+        import(
+          "src/views/teacherModule/teacherMaterialResource/createMaterial.vue"
+        ),
+      meta: {
+        title: "创建素材",
+        icon: "",
+        authCode: "createMaterial",
+      },
+    },
   ],
 };

@@ -96,11 +96,10 @@ const searchFn = (key: string) => {
 };
 const handleMenuClick = ({ key }: { key: string }) => {
   console.log(key);
-  // router.push("/teacher/teacherExperimentResourcePool/CreateExperiment?key="+key);
-  // router.push({
-  //   path: "/teacher/teacherExperimentResourcePool/CreateExperiment",
-  //   query: { key },
-  // });
+  router.push({
+    path: "/teacher/teacherMaterialResource/createMaterial",
+    query: { key },
+  });
 };
 const materialTypeList = reactive([
   { name: "数据集", key: "dataSet" },
