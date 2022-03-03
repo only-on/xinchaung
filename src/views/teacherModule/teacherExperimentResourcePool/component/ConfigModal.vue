@@ -1,5 +1,6 @@
 <template>
   <div class="title">镜像选择</div>
+  <!-- <a-select style="width: 100%; max-width: 476px" v-model:value="reactiveData.imageName"  placeholder="请选择需要的镜像" :options="options" @change="imageChange"></a-select> -->
   <a-select
     v-model:value="reactiveData.imageName"
     placeholder="请选择需要的镜像"
@@ -17,10 +18,11 @@
 </template>
 <script lang="ts" setup>
 import ImageConfig from "src/components/imageConfig/index.vue";
-import { onMounted, reactive, Ref } from "vue";
+import { onMounted, reactive, Ref, ref } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { SelectTypes } from "ant-design-vue/es/select";
 import { Modal, message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
@@ -46,8 +48,7 @@ if (props.defaultConfig.configs && props.defaultConfig.imageName) {
   reactiveData.imageName = props.defaultConfig.imageName;
   reactiveData.configs = props.defaultConfig.configs;
 }
-const list: any = reactive([]);
-
+var options = ref<SelectTypes["options"]>([]);
 const emit = defineEmits<{
   (e: "selectedImage", val: any): void;
 }>();
@@ -62,9 +63,16 @@ const imageChange = () => {
 };
 
 const initData = () => {
-  list.length = 0;
+  // options.length = 0;
   http.getList().then((res: IBusinessResp) => {
     // list.push(...res.data);
+    // data.length?data.map((v:any)=>{
+    //       v.value=v.id
+    //       v.label=v.name
+    //     }):'';
+    // options.value.push(...data)
+
+    // 每次打开配置默认值都一样   下面代码不需要
     // reactiveData.imageName=list[0].name
     emit("selectedImage", reactiveData);
   });

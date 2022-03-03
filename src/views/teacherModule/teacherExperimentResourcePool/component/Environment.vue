@@ -1,7 +1,10 @@
 <template>
   <h3>实验环境</h3>
   <div v-if="props.type">
-    <ConfigModal @selectedImage="selectedImage"></ConfigModal>
+    <ConfigModal
+      @selectedImage="selectedImage"
+      :defaultConfig="defaultConfig"
+    ></ConfigModal>
   </div>
   <div class="selectList flexCenter" v-else>
     <div
@@ -139,10 +142,10 @@ const defaultConfig: any = {
   imageName: "",
   editIdx: "",
 };
-const configChange = (val: any) => {
-  // console.log(val)
-  reactiveData.configs = val;
-};
+
+const emit = defineEmits<{
+  (e: "handleOk", val: any): void;
+}>();
 const handleOk = () => {
   var obj = {
     configs: { ...currentImage.configs },
@@ -156,8 +159,8 @@ const handleOk = () => {
 
   currentImage.configs = { cpu: "", disk: "", ram: "", gpu: false };
   currentImage.imageName = "";
-
   visible.value = false;
+  emit("handleOk", selectList);
   // modal.destroy()
 };
 const cancel = () => {
@@ -179,6 +182,9 @@ const selectedImage = (val: any) => {
   // console.log('已选择好的配置=》',val)
   currentImage.imageName = val.imageName;
   currentImage.configs = val.configs;
+  if (props.type) {
+    emit("handleOk", [currentImage]);
+  }
 };
 const initData = () => {
   http.getList().then((res: IBusinessResp) => {

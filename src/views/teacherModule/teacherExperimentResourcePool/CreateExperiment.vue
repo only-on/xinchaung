@@ -85,12 +85,8 @@
         </a-form-item>
         <a-form-item label="实验报告" name="report">
           <div class="reportBox flexCenter">
-            <a-button
-              type="primary"
-              @click="selectReport()"
-              :disabled="formState.report.name ? true : false"
-              >选 择</a-button
-            >
+            <!-- :disabled="formState.report.name ? true : false" -->
+            <a-button type="primary" @click="selectReport()">选 择</a-button>
             <div class="reportName flexCenter" v-if="formState.report.name">
               <span>{{ formState.report.name }}</span>
               <span
@@ -104,11 +100,14 @@
       </div>
     </div>
     <!-- 实验环境配置 -->
-    <div class="configuration">
-      <Environment :type="formState.single"></Environment>
+    <div class="configuration" v-if="componentsList.includes('configuration')">
+      <Environment
+        :type="formState.single"
+        @handleOk="ConfirmConfiguration"
+      ></Environment>
     </div>
     <!-- 桌面实验  实验指导 -->
-    <div class="zhuomian">
+    <div class="zhuomian" v-if="componentsList.includes('zhuomian')">
       <div class="guide">
         <div class="guide-top flexCenter">
           <h3>实验指导</h3>
@@ -131,7 +130,7 @@
       <MarkedEditor v-model="formState.guide" class="markdown__editor" />
     </div>
     <!-- jupyter实验   实验指导 ipynb -->
-    <div class="jupyter">
+    <div class="jupyter" v-if="componentsList.includes('jupyter')">
       <h3>实验指导</h3>
       <div class="jupyterBox">
         <div class="uploadBox">
@@ -148,7 +147,7 @@
       </div>
     </div>
     <!-- 任务制实验 实验指导任务选择 -->
-    <div class="TaskSystem">
+    <div class="TaskSystem" v-if="componentsList.includes('task')">
       <div class="top flexCenter">
         <h3>实验指导</h3>
         <a-button
@@ -226,7 +225,7 @@
       </div>
     </div>
     <!-- 文档实验  实验指导文件 -->
-    <div class="docxBox">
+    <div class="docxBox" v-if="componentsList.includes('text')">
       <div class="docTop flexCenter">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter docx">
@@ -252,7 +251,7 @@
       </div>
     </div>
     <!-- 视频实验  实验指导文件 -->
-    <div class="docxBox">
+    <div class="docxBox" v-if="componentsList.includes('video')">
       <div class="docTop flexCenter">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter">
@@ -296,8 +295,10 @@
   <!-- 选择 和 设置实验实验报告模板 -->
 
   <SelectReport
-    :visible="reportVisible"
+    v-if="reportVisible"
+    :selectedReport="formState.report"
     @reportCancel="reportCancel"
+    @reportOk="reportOk"
   ></SelectReport>
 
   <!-- 上传文档 文件 弹窗 -->
@@ -454,16 +455,32 @@ const route = useRoute();
 const { editId } = route.query;
 const http = (request as any).teacherImageResourcePool;
 const ExperimentTypeList = reactive({
-  desktop: "桌面实验",
-  Jupyter: "Jupyter实验",
-  task: "任务制实验",
-  text: "文档实验",
-  video: "视频实验",
+  desktop: {
+    title: "桌面实验",
+    assembly: ["configuration", "", "zhuomian"],
+  },
+  Jupyter: {
+    title: "Jupyter实验",
+    assembly: ["configuration", "jupyter"],
+  },
+  task: {
+    title: "任务制实验",
+    assembly: ["configuration", "task"],
+  },
+  text: {
+    title: "文档实验",
+    assembly: ["text"],
+  },
+  video: {
+    title: "视频实验",
+    assembly: ["video"],
+  },
 });
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const createType = String(route.query.key);
-const name = `创建${ExperimentTypeList[createType]}`;
+const name = `创建${ExperimentTypeList[createType].title}`;
+const componentsList = ExperimentTypeList[createType].assembly;
 updata({
   tabs: [{ name: name, componenttype: 0 }],
   showContent: true,
@@ -487,8 +504,9 @@ const formState: any = reactive({
   name: "",
   difficulty: 2,
   selectedKnowledgeList: [],
-  report: { id: 2, name: "" },
-  single: false,
+  report: { id: 0, name: "" },
+  imageConfigs: [],
+  single: createType === "Jupyter" ? true : false, // 桌面 任务制多环境配置      jupyter 单环境
   reportUploadList: [],
   guide: "",
   ipynbList: [],
@@ -585,21 +603,21 @@ const Download = (item: any) => {
 };
 
 var reportVisible = ref<boolean>(false);
-var activeTemplateItem: any = reactive({
-  id: 0,
-  name: "",
-});
+
 const selectReport = () => {
   reportVisible.value = true;
 };
 function delSelectedReport() {
   formState.report.id = 0;
   formState.report.name = "";
-  activeTemplateItem.id = 0;
-  activeTemplateItem.name = "";
 }
 const reportCancel = () => {
   reportVisible.value = false;
+};
+const reportOk = (val: any) => {
+  // console.log(val)
+  formState.report.id = val.id;
+  formState.report.name = val.name;
 };
 // 同屏vm连接信息
 let screenVmInfo: any = reactive([]);
@@ -614,7 +632,6 @@ let screenParam: any = reactive({
 let sameScreen = ref();
 let oldImageDataSelected: any = "";
 let topoinstId = -1;
-// reportCancel
 function pollGetVM(id: number) {
   screenVmInfo.length = 0;
   // clearInterval(timers);
@@ -702,6 +719,10 @@ function getTopoVmInfo(id: number) {
     });
   });
 }
+const ConfirmConfiguration = (val: any) => {
+  // console.log(val)
+  formState.imageConfigs = val;
+};
 const TaskItem = {
   name: "",
   describe: "",

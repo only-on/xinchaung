@@ -117,22 +117,18 @@ const classifyList: any = reactive([
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
   // console.log(labelSearch)
-  searchFn(search.key);
+  searchFn(fromData.key);
 };
 const labelSearch = reactive({
   type: 0,
   label: 0,
 });
 
-const search: any = reactive({
-  key: "",
-});
 const searchFn = (key: string) => {
   fromData.page = 1;
-  search.key = key;
+  fromData.keyWord = key;
   let obj = {
     ...labelSearch,
-    ...search,
     ...fromData,
   };
   // console.log(obj);
@@ -155,16 +151,17 @@ const initData = () => {
 const fromData: any = reactive({
   limit: 6,
   page: 1,
+  keyWord: "",
 });
 var list: any[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(7);
-const pageChange = async (current: any, pageSize: any) => {
-  fromData.page = current;
+const pageChange = async (pageNumber: number) => {
+  fromData.page = pageNumber;
   const { query, path } = route;
   await router.replace({
     path: path,
-    query: { ...query, page: current },
+    query: { ...query, page: pageNumber },
   });
   initData();
 };

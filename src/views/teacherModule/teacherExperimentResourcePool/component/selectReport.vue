@@ -1,7 +1,8 @@
 <template>
   <!-- 选择 和 设置实验实验报告模板 -->
   <a-modal
-    v-model:visible="props.visible"
+    :destroyOnClose="true"
+    v-model:visible="reportVisible"
     title="设置实验实验报告模板"
     class="report"
     :width="640"
@@ -68,6 +69,7 @@
   <!-- 在线制作 预览  编辑实验模板 -->
   <a-modal
     v-if="reportTemplate"
+    :destroyOnClose="true"
     v-model:visible="reportTemplate"
     :title="reportTitle"
     class="report"
@@ -118,14 +120,14 @@ const emit = defineEmits<{
 
 // 采用ts专有声明，有默认值
 interface Props {
-  visible: boolean;
-  // labels?: string[];
+  selectedReport?: any;
 }
-const props = withDefaults(defineProps<Props>(), {
-  visible: false,
-  // labels: () => ["one", "two"],
-});
 
+const props = withDefaults(defineProps<Props>(), {
+  selectedReport: { id: 0, name: "" },
+});
+var reportVisible = ref<boolean>(true);
+// console.log(props.visible)
 var reportTemplate = ref<boolean>(false);
 var reportActive = ref<number>(1);
 const TemplateList: any = reactive([1, 2, 3, 4, 5, 6]);
@@ -134,7 +136,7 @@ const TemplateViewType = ref<string>("");
 var reportTitle = ref<string>("");
 var pdfUrl = ref<string>("");
 var formState: any = reactive({
-  report: {},
+  // report: {},
   reportUploadList: [],
 });
 const reportTab = (val: number) => {
@@ -177,18 +179,15 @@ var activeTemplateItem: any = reactive({
   id: 0,
   name: "",
 });
+if (props.selectedReport) {
+  activeTemplateItem.id = props.selectedReport.id;
+  activeTemplateItem.name = props.selectedReport.name;
+}
 const selectTemplate = (val: any) => {
-  formState.report.id = val;
   activeTemplateItem.id = val;
   activeTemplateItem.name = `报告名称${val}`;
 };
 
-function delSelectedReport() {
-  formState.report.id = 0;
-  formState.report.name = "";
-  activeTemplateItem.id = 0;
-  activeTemplateItem.name = "";
-}
 // 删除模板
 const handleDelete = (item: any) => {
   $confirm({
@@ -229,21 +228,21 @@ function fileRemove(file: any) {
 }
 const reportHandleOk = () => {
   // 返回选择的对象即可
+  let active = {};
   if (reportActive.value == 2) {
     let v = formState.reportUploadList[0];
-    // formState.reportUploadList
-    // formState.report.id = v.id;
-    formState.report.name = v.name;
+    active = { id: v.id, name: v.name };
   } else {
-    formState.report.name = activeTemplateItem.name;
-    formState.report.id = activeTemplateItem.id;
-    // activeTemplateItem
+    active = activeTemplateItem;
   }
-  console.log(activeTemplateItem);
+  // console.log(activeTemplateItem);
+  emit("reportOk", active);
   emit("reportCancel");
-  emit("reportOk", activeTemplateItem);
 };
 const reportCancel = () => {
+  // activeTemplateItem.id = 0;
+  // activeTemplateItem.name = "";
+  reportVisible.value = false;
   emit("reportCancel");
 };
 const cancelTemplate = (val: number) => {
@@ -255,13 +254,6 @@ const cancelTemplate = (val: number) => {
   TemplateViewType.value = "";
   pdfUrl.value = "";
 };
-//   return {
-//     reportCancel,
-//     reportActive,
-//     reportTab
-//   }
-// }
-// })
 </script>
 <style scoped lang="less">
 .report {
