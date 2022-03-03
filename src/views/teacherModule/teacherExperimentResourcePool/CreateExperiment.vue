@@ -294,9 +294,7 @@
   </a-drawer>
   <!-- 选择 和 设置实验实验报告模板 -->
 
-  <SelectReport
-    v-if="reportVisible"
-    :selectedReport="formState.report"
+  <SelectReport v-if="reportVisible" :selectedReport="formState.report"
     @reportCancel="reportCancel"
     @reportOk="reportOk"
   ></SelectReport>
