@@ -9,6 +9,7 @@ import rar from 'src/assets/images/file/rar.png'
 import txt from 'src/assets/images/file/txt.png'
 import xls from 'src/assets/images/file/xls.png'
 import zip from 'src/assets/images/file/zip.png'
+import py from 'src/assets/images/file/py.jpg'
 
 const iconList={
   'csv':csv,
@@ -22,9 +23,10 @@ const iconList={
   'txt':txt,
   'excel':xls,
   'zip':zip,
+  'py':py,
 }
 
-const icon=[csv,word,md,mp4,other,pdf,ppt,rar,txt,xls,zip]
+const icon=[csv,word,md,mp4,other,pdf,ppt,rar,txt,xls,zip,py]
 
 export{
   icon

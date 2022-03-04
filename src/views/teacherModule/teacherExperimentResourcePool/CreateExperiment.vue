@@ -451,7 +451,7 @@ const $confirm: ModalFunc = inject("$confirm")!;
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teacherExperimentResourcePool;
 const ExperimentTypeList = reactive({
   desktop: {
     title: "桌面实验",

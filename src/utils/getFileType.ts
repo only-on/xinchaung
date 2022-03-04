@@ -51,7 +51,7 @@ export const getFileType = (fileName: string) => {
     return 'pdf'
   }
   // 匹配 压缩包
-  const rarList = ['rar']
+  const rarList = ['rar','tar']
   result = rarList.find(item => item === suffix)
   if (result) {
     return 'rar'
@@ -73,6 +73,12 @@ export const getFileType = (fileName: string) => {
   result = mp4List.find(item => item === suffix)
   if (result) {
     return 'mp4'
+  }
+  // 匹配 python
+  const pyList = ['py']
+  result = pyList.find(item => item === suffix)
+  if (result) {
+    return 'py'
   }
   // 其他 文件类型
   return 'other'

@@ -27,6 +27,7 @@
         v-for="(list, k) in materialList"
         :key="list.uid"
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
+        @click="detail(list.uid)"
       >
         <div class="item-top">
           <img :src="list.cover" alt="" />
@@ -85,7 +86,7 @@ updata({
   ],
   showContent: true,
   componenttype: undefined,
-  showNav: true,
+  showNav: false,
 });
 
 // 搜索
@@ -157,7 +158,13 @@ const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
-
+const detail=(id:any)=>{
+  // let 
+  router.push({
+    path:'/teacher/teacherMaterialResource/ResourceDetail',
+    query:{currentTab:currentTab.value,editId:id}
+  })
+}
 const currentTab = ref<number>(0);
 watch(
   () => {

@@ -34,7 +34,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-console.log(routes);
+// console.log(routes);
 router.beforeEach(
   (
     to: RouteLocationNormalized,
@@ -102,7 +102,7 @@ router.afterEach(
         processedPath.push(routeSegment.path);
       }
     });
-    console.log("breadcrumbs:=", breadcrumbs);
+    // console.log("breadcrumbs:=", breadcrumbs);
     // console.log('processedPath:=',processedPath)
     store.commit("saveBreadcrumb", breadcrumbs);
   }
