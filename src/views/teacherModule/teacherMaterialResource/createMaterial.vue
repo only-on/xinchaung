@@ -2,21 +2,14 @@
   <div class="create-material">
     <a-form :layout="'vertical'" :model="formState" :rules="rules">
       <div class="baseinfo">
-        <h3 class="title">数据集基本信息</h3>
+        <h3 class="title">{{createMaterialType.subname}}基本信息</h3>
         <div class="baseinfo-content">
           <div class="left">
-            <a-form-item label="数据集名称" name="name" required>
-              <a-input
-                v-model:value="formState.name"
-                placeholder="请在这里输入数据集名称"
-              />
+            <a-form-item :label="createMaterialType.subname+'名称'" name="name" required>
+              <a-input v-model:value="formState.name" :placeholder="'请在这里输入'+createMaterialType.subname+'名称'" />
             </a-form-item>
-            <a-form-item label="数据集描述" name="description">
-              <a-textarea
-                v-model:value="formState.description"
-                :auto-size="{ minRows: 3, maxRows: 5 }"
-                placeholder="请在这里输入描述文字"
-              />
+            <a-form-item :label="createMaterialType.subname+'描述'" name="description">
+              <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 3, maxRows: 5 }" placeholder="请在这里输入描述文字" />
             </a-form-item>
             <a-form-item label="添加标签" name="label">
               <div class="label-list">
@@ -31,10 +24,7 @@
                     @click="removeLabel(item)"
                   ></i>
                 </span>
-                <span
-                  class="edit-box"
-                  v-if="formState.labels && formState.labels.length < 3"
-                >
+                <span class="edit-box" v-if="formState.labels && formState.labels.length < 3">
                   <span @click="clickCustomLabel" v-show="!openCustom">
                     <span class="iconfont iconbiaoqian"></span>
                     + 添加标签
@@ -51,29 +41,20 @@
               </div>
               <div class="recommend" v-if="showTag">
                 <div class="tit">或从推荐中选择</div>
-                <span
-                  class="iconfont icon-guanbi"
-                  @click="showTag = false"
-                ></span>
+                <span class="iconfont icon-guanbi" @click="showTag = false"></span>
                 <div class="tagBox">
-                  <span
-                    v-for="v in 10"
-                    :key="v"
+                  <span 
+                    v-for="v in 10" :key="v"
                     @click="addTag(v)"
                     :class="formState.labels.includes(String(v)) ? 'act' : ''"
-                    >{{ v }}{{ v }}{{ v }}</span
+                    >{{v}}{{v}}{{v}}</span
                   >
                 </div>
               </div>
             </a-form-item>
           </div>
           <div class="right">
-            <a-form-item
-              label="可见范围"
-              name="range"
-              required
-              class="visible-range"
-            >
+            <a-form-item label="可见范围" name="range" required class="visible-range">
               <a-select v-model:value="formState.range">
                 <a-select-option :value="'0'">
                   <span class="name">公开</span>
@@ -85,7 +66,8 @@
                 </a-select-option>
               </a-select>
             </a-form-item>
-            <a-form-item label="封面图">
+            <a-form-item label="封面图" class="cover">
+              <img v-if="formState.src" :src="formState.src" alt="" srcset="">
               <a-upload
                 v-model:file-list="fileList"
                 list-type="picture"
@@ -94,17 +76,8 @@
                 :before-upload="beforeUpload"
               >
                 <div class="upload">
-                  <img
-                    v-if="formState.src"
-                    :src="formState.src"
-                    alt=""
-                    srcset=""
-                  />
-                  <div v-else class="cover">
-                    <img
-                      src="src/assets/images/teacherMaterialResource/cover.png"
-                      alt=""
-                    />
+                  <div class="cover">
+                    <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
                   </div>
                   <loading-outlined v-if="loading"></loading-outlined>
                 </div>
@@ -114,12 +87,14 @@
         </div>
       </div>
       <div class="fileupload">
-        <h3 class="title">数据文件上传</h3>
+        <h3 class="title">{{createType === 'dataSet' ? '数据' : ''}}文件上传</h3> 
         <div class="upload-content">
-          <a-form-item label="数据集">
-            <div class="upload"></div>
+          <a-form-item :label="createType === 'dataSet' ? '数据集' : ''">
+            <div class="upload">
+              <upload-file :uploadType="createMaterialType.uploadFileType" :fileList="formState.fileList"></upload-file>
+            </div>
           </a-form-item>
-          <a-form-item label="说明">
+          <a-form-item label="说明" v-if="createType === 'dataSet'">
             <div class="explain">
               <a-upload
                 :before-upload="MdFileBeforeUpload"
@@ -130,7 +105,7 @@
                 <span class="tips">仅支持md文件</span>
               </a-upload>
               <div class="md-info" v-if="explainMdName">
-                <span class="name">{{ explainMdName }}</span>
+                <span class="name">{{explainMdName}}</span>
                 <span class="iconfont icon-close" @click="RemoveMdFile"></span>
               </div>
             </div>
@@ -138,16 +113,19 @@
         </div>
       </div>
     </a-form>
+    <Submit @submit="submit" @cancel="cancel"></Submit>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, Ref, nextTick } from "vue";
+import { ref, reactive, inject, Ref, nextTick } from 'vue'
 import { useRouter, useRoute } from "vue-router";
 import { MessageApi } from "ant-design-vue/lib/message";
-import { LoadingOutlined } from "@ant-design/icons-vue";
+import { LoadingOutlined } from '@ant-design/icons-vue';
 import { getFileType } from "src/utils/getFileType";
+import uploadFile from './components/uploadFile.vue'
 import request from "src/api/index";
+import Submit from "src/components/submit/index.vue";
 const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
 const router = useRouter();
@@ -156,54 +134,56 @@ var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const createType = String(route.query.key);
 const materialTypeList = reactive({
-  dataSet: "数据集",
-  videoDirectory: "视频目录",
-  coursewareDirectory: "课件目录",
-  lessonDirectory: "备课资料目录",
-  guidanceDirectory: "教学指导目录",
+  'dataSet': {name: "数据集", subname: '数据集', uploadFileType: ''},
+  'videoDirectory': {name: "视频目录", subname: '目录', uploadFileType: 'mp4，支持文件大小500MB以内'},
+  'coursewareDirectory': {name: "课件目录", subname: '目录', uploadFileType: 'ppt、pptx、pdf'},
+  'lessonDirectory': {name: "备课资料目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
+  'guidanceDirectory': {name: "教学指导目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
 });
-const name = `创建${materialTypeList[createType]}`;
+const createMaterialType = materialTypeList[createType];
 updata({
-  tabs: [{ name: name, componenttype: 0 }],
+  tabs: [{ name: `创建${createMaterialType.name}`, componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
 });
 
 interface IFormState {
-  name: string;
-  description: string;
-  range: string;
-  src: string;
-  labels: string[];
+  name: string
+  description: string
+  range: string
+  src: string
+  labels: string[]
+  fileList: any
 }
 const formState = reactive<IFormState>({
-  name: "",
-  description: "",
-  range: "0",
-  src: "",
+  name: '',
+  description: '',
+  range: '0',
+  src: '',
   labels: [],
-});
+  fileList: {}
+})
 const rules = {
   name: [{ required: true, message: "请输入名称", trigger: "blur" }],
 };
 // 上传封面图
-const fileList: Ref<any> = ref([]);
-const loading = ref<boolean>(false);
-const beforeUpload = (file: any) => {
+const fileList:Ref<any>=ref([])
+const loading = ref<boolean>(false)
+const beforeUpload = (file:any) => {
   // console.log(file)
-  const isJpgOrPng = ["image/jpeg", "image/png"].includes(file.type);
+  const isJpgOrPng = ['image/jpeg','image/png'].includes(file.type)
   if (!isJpgOrPng) {
-    $message.warn("图片类型不正确");
-    return false;
+    $message.warn('图片类型不正确')
+    return false
   }
-  loading.value = true;
-  const fd = new FormData();
-  fd.append("upload_file", file);
-  http.upLoadCover({ param: fd }).then((res: any) => {
-    loading.value = false;
-    console.log(res);
-    formState.src = res.data.path;
+  loading.value = true
+  const fd = new FormData()
+  fd.append('upload_file', file)
+  http.upLoadCover({param:fd}).then((res:any)=>{
+    loading.value = false
+    console.log(res)
+    formState.src = res.data.path
     // let data = res.data;
     // let obj = [
     //   {
@@ -214,14 +194,14 @@ const beforeUpload = (file: any) => {
     //   },
     // ];
     // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
-  });
+  })
   // formState.src = "src/assets/images/cover2.png"
-};
+}
 // 添加标签
 const openCustom: Ref<boolean> = ref(false);
 const showTag: Ref<boolean> = ref(false);
-const customLabelV = ref<string>("");
-const refCustomLabel = ref();
+const customLabelV = ref<string>('')
+const refCustomLabel = ref()
 function clickCustomLabel() {
   showTag.value = true;
   openCustom.value = true;
@@ -259,17 +239,17 @@ function addTag(val: any) {
 }
 
 // 上传说明
-const explainMdName = ref<string>("");
+const explainMdName = ref<string>('')
 const MdFileBeforeUpload = (file: any) => {
   if (getFileType(file.name) !== "md") {
     $message.warn("请上传md文件");
-    return;
+    return
   }
   const fd = new FormData();
   fd.append("upload_file", file);
   http.uploadExplain({ param: fd }).then((res: any) => {
-    console.log(res);
-    explainMdName.value = res.data.name;
+    console.log(res)
+    explainMdName.value  = res.data.name
     // state.ForumSearch.doc_name = res.data.name;
     // var reader = new FileReader();
     // reader.readAsText(file, "utf-8");
@@ -280,10 +260,18 @@ const MdFileBeforeUpload = (file: any) => {
     //   }
     // };
   });
-};
+}
 const RemoveMdFile = () => {
-  explainMdName.value = "";
-};
+  explainMdName.value = ''
+}
+
+// 创建
+const submit = () => {
+  console.log(formState)
+}
+const cancel = () => {
+  router.go(-1)
+}
 </script>
 
 <style lang="less" scoped>
@@ -312,6 +300,14 @@ const RemoveMdFile = () => {
             width: 300px;
           }
         }
+        .cover {
+          img {
+            width: 162px;
+            height: 90px;
+            border-radius: 17px;
+            margin-right: 16px;
+          }
+        }
         .upload {
           width: 162px;
           height: 90px;
@@ -324,6 +320,7 @@ const RemoveMdFile = () => {
           }
           .cover {
             text-align: center;
+            cursor: pointer;
             img {
               width: 70px;
             }
@@ -365,6 +362,12 @@ const RemoveMdFile = () => {
           }
         }
       }
+    }
+  }
+  .footer {
+    text-align: center;
+    .ant-btn-primary {
+      margin-left: 16px;
     }
   }
 }
@@ -433,7 +436,7 @@ const RemoveMdFile = () => {
   margin-top: 1rem;
   background: var(--white-100);
   border-radius: 10px;
-  box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
+  box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
   padding: 0 10px;
   position: absolute;
   .iconfont {
@@ -477,7 +480,7 @@ const RemoveMdFile = () => {
   display: flex;
   flex-direction: column;
   .tips {
-    color: rgba(51, 57, 75, 0.25);
+    color: rgba(51,57,75,0.25);
     font-size: var(--font-size-sm);
   }
 }
