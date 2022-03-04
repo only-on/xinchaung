@@ -15,16 +15,7 @@
 </template>
 <script lang="ts" setup>
 import {
-  defineComponent,
-  ref,
-  onMounted,
   reactive,
-  Ref,
-  inject,
-  computed,
-  toRefs,
-  watch,
-  defineExpose,
   defineProps,
   withDefaults,
 } from "vue";
@@ -46,7 +37,7 @@ const activeItem:any=reactive({
   fileItem:{},
 })
 const select=(val:any)=>{
-  console.log(val.name)
+  console.log('1',val.name)
   if(val.children && val.children.length){
     val.show=!val.show
   }else{
@@ -55,6 +46,7 @@ const select=(val:any)=>{
   }
 }
 const itemFile=(val:any)=>{
+  console.log('2',val.name)
   if(val.children && val.children.length){
     val.show=!val.show
   }else{

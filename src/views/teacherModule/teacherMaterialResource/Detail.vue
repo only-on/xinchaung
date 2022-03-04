@@ -69,7 +69,7 @@
         <div v-if="activeTab==='文件列表'" class="fileBox">
           <div class="left">
             <div class="custom_input">
-              <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字" @search="searchFile"/>
+              <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
             <div class="file textScrollbar">
               <FileList :FileList="searchFileList" @selectFile="selectFile" />
@@ -87,10 +87,21 @@
                   </div>
                 </div>
               </div>
-              <a-button type="primary" class="edit_bt" size="small"> 下 载 </a-button>
+              <a-button type="primary" class="edit_bt" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
             </div>
             <div class="fileView">
-              <h2>文件内容</h2>
+              <!-- <h2>文件内容</h2> -->
+              <div v-if="getFileType(state.fileItem.name) === 'md'">
+                <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
+              </div>
+              <div v-if="getFileType(state.fileItem.name) === 'mp4'">
+                <video :src="env ? '/proxyPrefix' + state.fileItem.url : state.fileItem.url" :controls="true"> 您的浏览器不支持 video 标签</video>
+              </div>
+              <div v-if="getFileType(state.fileItem.name) === 'pdf'">
+                <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/>
+                <!-- <PdfVue :url="state.fileItem.pdf" /> -->
+              </div>
+              
             </div>
           </div>
         </div>
@@ -110,6 +121,7 @@ import {
   toRefs,
   watch,
 } from "vue";
+import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
 import iconList from 'src/utils/iconList'
 import { getFileType } from 'src/utils/getFileType'
@@ -118,6 +130,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
+const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
 const {currentTab, editId } = route.query;
@@ -260,9 +273,15 @@ const selectFile=(val:any)=>{
   // console.log(val)
   state.fileItem=val
 }
-const searchFile=()=>{
-  //   state.fileKeyWord
-  // 获取文件
+const downLoadFile=(val:any)=>{
+  console.log(val)
+  // const a: any = document.createElement("a");
+  // a.href = val.path;
+  // a.download = val.name;
+  // document.body.appendChild(a);
+  // a.click();
+  // document.body.removeChild(a);
+  // window.URL.revokeObjectURL(a.href);
 }
 // 初始化数据
 const initData = () => {
@@ -394,6 +413,7 @@ onMounted(() => {
         padding-top: 20px;
         display: flex;
         .left{
+          width: 24%;
           .custom_input{
             margin-bottom: 20px;
           }
