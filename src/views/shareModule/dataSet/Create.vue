@@ -129,7 +129,7 @@
                   >
                     <div class="progress-item">
                       <span class="img" :class="getFileType(value.name)">
-                        <img :src="iconList[getFileType(value.name)]" alt="" />
+                        <img :src="getFileTypeIcon(value.name)" alt="" />
                       </span>
                       <span class="">
                         <span class="item-top">
@@ -212,12 +212,11 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter, useRoute } from "vue-router";
 import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
-import { getFileType } from "src/utils/getFileType";
+import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import { PlusOutlined, LoadingOutlined } from "@ant-design/icons-vue";
 import Upload from "src/utils/MoreUpload";
 import { UUID } from "src/utils/uuid";
 import { RuleObject } from "ant-design-vue/es/form/interface";
-import iconList from "src/utils/iconList";
 const http = (request as any).dataSet;
 interface IForumSearch {
   creator: number;
@@ -590,7 +589,7 @@ export default defineComponent({
     });
     return {
       ...toRefs(state),
-      iconList,
+      getFileTypeIcon,
       handlePreview,
       handleChange,
       rules,

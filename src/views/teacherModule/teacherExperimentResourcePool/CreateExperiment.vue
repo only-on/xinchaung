@@ -374,7 +374,7 @@
             :class="docOrMp4Drawer.activeFile.id === v ? 'active' : ''"
           >
             <div class="flexCenter left">
-              <!-- :style="`background-image: url(${iconList[getFileType(v.url)]});`"  根据文件类型显示  doc  md pdf  的不同图标-->
+              <!-- :style="`background-image: url(${getFileTypeIcon(v.url)});`"  根据文件类型显示  doc  md pdf  的不同图标-->
               <span
                 class="fileIcon"
                 v-if="docOrMp4Type === 1"
@@ -418,7 +418,7 @@
   ></SameScreen>
 </template>
 <script lang="ts" setup>
-import { getFileType } from "src/utils/getFileType";
+import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import iconList from "src/utils/iconList";
 import { SelectTypes } from "ant-design-vue/es/select";
 import SameScreen from "src/components/teacherExperiment/sameScreen.vue";

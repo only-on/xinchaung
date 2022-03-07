@@ -29,8 +29,7 @@
           <div class="upload-file-list scroll-bar-customize">
             <div v-for="(value, key, index) in form.uploadFileList" :key="index">
               <div class="upload-file-item">
-                <span class="img" :class="getFileType(value.name)" :style="`background-image: url(${iconList[getFileType(value.name)]});`">
-                  <!-- <img :src="iconList[getFileType(value.name)]" alt=""> -->
+                <span class="img" :class="getFileType(value.name)" :style="`background-image: url(${getFileTypeIcon(value.name)});`">
                 </span>
                 <div>
                   <div class="info">
@@ -60,8 +59,7 @@ import {useStore} from "vuex"
 import extStorage from "src/utils/extStorage";
 import request from 'src/api/index'
 const http=(request as any).dataSet
-import { getFileType,getFileSuffix } from 'src/utils/getFileType'
-import iconList from 'src/utils/iconList'
+import { getFileType,getFileSuffix,getFileTypeIcon } from 'src/utils/getFileType'
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import { Modal,message } from 'ant-design-vue';
@@ -209,7 +207,7 @@ export default defineComponent({
     onMounted(()=>{
      
     })
-    return {props,iconList,getFileType,closeUpload,closeUploadOk,beforeUpload,handleChange,form,ChunkStatus,beReady,Unfinished,deleteFile,removeFile,size};
+    return {props,getFileTypeIcon,getFileType,closeUpload,closeUploadOk,beforeUpload,handleChange,form,ChunkStatus,beReady,Unfinished,deleteFile,removeFile,size};
   },
 })
 </script>

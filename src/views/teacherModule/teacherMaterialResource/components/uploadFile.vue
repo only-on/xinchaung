@@ -30,7 +30,7 @@
           :key="value"
         >
           <div class="img" :class="getFileType(value.name)">
-            <img :src="iconList[getFileType(value.name)]" alt="" />
+            <img :src="getFileTypeIcon(value.name)" alt="" />
           </div>
           <div class="right">
             <div class="item-top">
@@ -64,10 +64,9 @@
 <script lang="ts" setup>
 import { ref, reactive, inject } from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
-import { getFileType } from "src/utils/getFileType";
+import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
-import iconList from "src/utils/iconList";
 const $message: MessageApi = inject("$message")!;
 interface Props {
   uploadType: string

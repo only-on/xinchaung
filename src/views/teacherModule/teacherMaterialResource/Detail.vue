@@ -44,7 +44,7 @@
         <div class="tab flexCenter">
           <span v-for="v in tabs" :key="v" class="item" :class="(activeTab === v && tabs.length>1)?'active':''" @click="clickTab(v)">
             {{v}}
-            <span v-if="v === '文件列表'">({{24}})</span>
+            <span v-if="v === '文件列表'">({{searchFileList && searchFileList.length}})</span>
           </span>
         </div>
         <div class="right">
@@ -78,7 +78,7 @@
           <div class="right">
             <div class="fileItem flexCenter">
               <div class="flexCenter">
-                <div class="img" :style="`background-image: url(${iconList[getFileType(state.fileItem.name)]});`"> </div>
+                <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.name)});`"> </div>
                 <div class="fileInfo">
                   <div class="fileName">{{state.fileItem.name}}</div>
                   <div class="info">
@@ -123,8 +123,7 @@ import {
 } from "vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
-import iconList from 'src/utils/iconList'
-import { getFileType } from 'src/utils/getFileType'
+import { getFileType,getFileTypeIcon } from 'src/utils/getFileType'
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";

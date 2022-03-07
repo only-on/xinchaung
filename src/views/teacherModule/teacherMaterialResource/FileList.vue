@@ -1,15 +1,15 @@
 <template>
   <div class="Category flexCenter" v-for="v in props.FileList" :key="v.name" :class="v.name === props.activeItem.fileItem.name?'CategoryActive':''">
-    <div class="upper"  @click="select(v)">
+    <div class="upper"  @click="selectFile(v)">
       <div class="iconBox">
         <CaretDownOutlined v-if="v.children && v.children.length && v.show"/>
-        <CaretRightOutlined v-if="v.children && v.children.length && !v.show" />
+        <CaretRightOutlined v-if="v.children && v.children.length && !v.show"/>
       </div>
-      <span class="itemImg" :style="`background-image: url(${iconList[getFileType(v.name)]});`"></span>
+      <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.name)});`"></span>
       <span class="name single-ellipsis">{{v.name}}</span>
     </div>
-    <div class="flexCenter level" v-if="v.children && v.children.length && v.show" >
-      <FileList :FileList="v.children" @selectFile="itemFile"  :activeItem="props.activeItem" />
+    <div class="flexCenter level" v-if="v.children && v.children.length && v.show">
+      <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>
     </div>
   </div>
 </template>
@@ -19,11 +19,9 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
-import iconList from 'src/utils/iconList'
-import { getFileType } from 'src/utils/getFileType'
+import { getFileTypeIcon } from 'src/utils/getFileType'
 import {CaretDownOutlined,CaretRightOutlined} from '@ant-design/icons-vue';
 
-// 采用ts专有声明，有默认值
 interface Props {
   FileList: any[];
   activeItem: any
@@ -35,23 +33,13 @@ const props = withDefaults(defineProps<Props>(), {
   FileList: () => [],
   activeItem: {}
 });
-const select=(val:any)=>{
-  console.log('1',val.name)
+const selectFile=(val:any)=>{
+  // console.log('1',val.name)
   if(val.children && val.children.length){
     val.show=!val.show
   }else{
     props.activeItem.fileItem=val
     emit('selectFile',val)
-  }
-}
-const itemFile=(val:any)=>{
-  console.log('2',val.name)
-  if(val.children && val.children.length){
-    val.show=!val.show
-  }else{
-    props.activeItem.fileItem=val
-    emit('selectFile',val)
-    // select(val)
   }
 }
 </script>

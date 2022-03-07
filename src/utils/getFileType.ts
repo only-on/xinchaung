@@ -96,3 +96,9 @@ export const getFileSuffix = (fileName: string) => {
   }
   return suffix
 }
+
+//  获取文档类型对应的图标
+import iconList from 'src/utils/iconList'
+export const getFileTypeIcon = (fileName: string) => {
+  return iconList[getFileType(fileName)]
+}

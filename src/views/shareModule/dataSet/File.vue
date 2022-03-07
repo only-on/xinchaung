@@ -16,7 +16,7 @@
           @click="selectFile(item,index)"
           :title="item.name"
         >
-          <span class="img" :class="getFileType(item.name)" :style="`background-image: url(${iconList[getFileType(item.name)]});`"></span>
+          <span class="img" :class="getFileType(item.name)" :style="`background-image: url(${getFileTypeIcon(item.name)});`"></span>
           <span class="fileName">{{ item.name }}</span>
         </li>
       </ul>
@@ -24,7 +24,7 @@
     <div class="file-content-box">
       <div class="file-detail-box" v-if="fileActive">
         <div>
-          <span class="img" :style="`background-image: url(${iconList[getFileType(fileActive.name)]});`"></span>
+          <span class="img" :style="`background-image: url(${getFileTypeIcon(fileActive.name)});`"></span>
           <span class="file-name">{{ fileActive.name }}</span>
           <span @click="download" class="icon-download iconfont"></span>
           <span class="delete-cion" v-if="uid === creator && fileList && fileList.length > 0">
@@ -47,12 +47,11 @@ import { defineComponent,ref, onMounted,reactive, toRefs,watch ,inject,Ref,compu
 import SetList from './SetList.vue'
 import {useStore} from "vuex"
 import extStorage from "src/utils/extStorage";
-import { getFileType } from 'src/utils/getFileType'
+import { getFileType,getFileTypeIcon } from 'src/utils/getFileType'
 import { useRouter ,useRoute } from 'vue-router';
 import { Modal,message } from 'ant-design-vue';
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import request from 'src/api/index'
-import iconList from 'src/utils/iconList'
 const http=(request as any).dataSet
 export default defineComponent({
   name: '',
@@ -122,7 +121,7 @@ export default defineComponent({
      const {user_id}=route.query
      uid.value=Number(user_id)
     })
-    return {iconList,getFileType,uid,creator,openUpload,props,fileActive,selectFile,download,openDeleteFile};
+    return {getFileTypeIcon,getFileType,uid,creator,openUpload,props,fileActive,selectFile,download,openDeleteFile};
   },
 })
 </script>
