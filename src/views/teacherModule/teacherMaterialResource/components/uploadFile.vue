@@ -115,7 +115,6 @@ function chunkFun(
   }
 }
 function startUploadFun(v: any, file_name: string, file_size: number) {
-  debugger
   Object.assign(props.fileList, {
     [v]: {
       name: file_name,

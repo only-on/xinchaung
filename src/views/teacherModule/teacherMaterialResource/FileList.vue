@@ -1,5 +1,5 @@
 <template>
-  <div class="Category flexCenter" v-for="v in props.FileList" :key="v.name" :class="v.name === activeItem.fileItem.name?'CategoryActive':''">
+  <div class="Category flexCenter" v-for="v in props.FileList" :key="v.name" :class="v.name === props.activeItem.fileItem.name?'CategoryActive':''">
     <div class="upper"  @click="select(v)">
       <div class="iconBox">
         <CaretDownOutlined v-if="v.children && v.children.length && v.show"/>
@@ -9,7 +9,7 @@
       <span class="name single-ellipsis">{{v.name}}</span>
     </div>
     <div class="flexCenter level" v-if="v.children && v.children.length && v.show" >
-      <FileList :FileList="v.children" @selectFile="itemFile" />
+      <FileList :FileList="v.children" @selectFile="itemFile"  :activeItem="props.activeItem" />
     </div>
   </div>
 </template>
@@ -26,22 +26,21 @@ import {CaretDownOutlined,CaretRightOutlined} from '@ant-design/icons-vue';
 // 采用ts专有声明，有默认值
 interface Props {
   FileList: any[];
+  activeItem: any
 }
 const emit = defineEmits<{
   (e: "selectFile", val: any): void;
 }>();
 const props = withDefaults(defineProps<Props>(), {
   FileList: () => [],
+  activeItem: {}
 });
-const activeItem:any=reactive({
-  fileItem:{},
-})
 const select=(val:any)=>{
   console.log('1',val.name)
   if(val.children && val.children.length){
     val.show=!val.show
   }else{
-    activeItem.fileItem=val
+    props.activeItem.fileItem=val
     emit('selectFile',val)
   }
 }
@@ -50,7 +49,7 @@ const itemFile=(val:any)=>{
   if(val.children && val.children.length){
     val.show=!val.show
   }else{
-    activeItem.fileItem=val
+    props.activeItem.fileItem=val
     emit('selectFile',val)
     // select(val)
   }

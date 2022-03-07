@@ -72,7 +72,7 @@
               <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
             <div class="file textScrollbar">
-              <FileList :FileList="searchFileList" @selectFile="selectFile" />
+              <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="activeItem" />
             </div>
           </div>
           <div class="right">
@@ -143,6 +143,9 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
+const activeItem:any=reactive({
+  fileItem:{},
+})
 // 采用ts专有声明，有默认值
 interface Props {
   msg?: string;
