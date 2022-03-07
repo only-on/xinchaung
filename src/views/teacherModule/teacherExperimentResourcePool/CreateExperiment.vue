@@ -418,7 +418,7 @@
   ></SameScreen>
 </template>
 <script lang="ts" setup>
-import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
+import { getFileType,getFileTypeIcon,readFile } from "src/utils/getFileType";
 import iconList from "src/utils/iconList";
 import { SelectTypes } from "ant-design-vue/es/select";
 import SameScreen from "src/components/teacherExperiment/sameScreen.vue";
@@ -784,22 +784,6 @@ const TaskMdTaskStep = (num: number, key: string) => {
   activeTaskMd.idx = num;
   activeTaskMd.key = key;
   // console.log(num)
-};
-const readFile = (file: any) => {
-  return new Promise((resolve: any, reject: any) => {
-    const suffix = (file && file.name).split(".")[1];
-    if (suffix !== "md") {
-      message.warn("请上传 .md 格式文件");
-      return false;
-    }
-    const reader = new FileReader();
-    reader.readAsText(file, "utf-8");
-    reader.onload = () => {
-      if (reader.result) {
-        resolve(reader.result);
-      }
-    };
-  });
 };
 
 // 文档实验

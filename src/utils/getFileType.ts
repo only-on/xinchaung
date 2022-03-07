@@ -102,3 +102,23 @@ import iconList from 'src/utils/iconList'
 export const getFileTypeIcon = (fileName: string) => {
   return iconList[getFileType(fileName)]
 }
+
+//  读取文件
+import {message } from "ant-design-vue";
+
+export const readFile = (file: any,format:string = 'md') => {
+  return new Promise((resolve: any, reject: any) => {
+    const suffix = (file && file.name).split(".")[1];
+    if (suffix !== format) {
+      message.warn(`请上传 .${format}格式文件`)
+      return false;
+    }
+    const reader = new FileReader();
+    reader.readAsText(file, "utf-8");
+    reader.onload = () => {
+      if (reader.result) {
+        resolve(reader.result);
+      }
+    };
+  });
+}

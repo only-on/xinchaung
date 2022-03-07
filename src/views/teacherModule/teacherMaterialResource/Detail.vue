@@ -53,7 +53,7 @@
           </template>
           <template v-if="currentTab === '1' && activeTab==='说明文档' && showEditMd">
           <span class="data-set-hint">仅支持单个md格式文件上传</span>
-            <a-upload class="upload" :showUploadList="false" :before-upload="readFile" accept=".md">
+            <a-upload class="upload" :showUploadList="false" :before-upload="readMdFile" accept=".md">
               <a-button type="primary" class="edit_bt"> 上 传 </a-button>
             </a-upload>
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
@@ -123,7 +123,7 @@ import {
 } from "vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
-import { getFileType,getFileTypeIcon } from 'src/utils/getFileType'
+import { getFileType,getFileTypeIcon,readFile } from 'src/utils/getFileType'
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -234,22 +234,11 @@ const editMark=()=>{
   showEditMd.value=true
 }
 // 本地读取文件
-const readFile = (file: any) => {
-  const suffix = (file && file.name).split(".")[1];
-  if (suffix !== "md") {
-    message.warn("请上传 .md 格式文件");
-    return false;
-  }
-  const reader = new FileReader();
-  reader.readAsText(file, "utf-8");
-  reader.onload = () => {
-    if (reader.result) {
-      previewMark.value=false
-      state.document.file=file
-      state.document.content=reader.result
-      // resolve(reader.result);
-    }
-  };
+const readMdFile = async (file: any) => {
+  const content=await readFile(file)
+  previewMark.value=false
+  state.document.file=file
+  state.document.content=content
 };
 const docUpload = () => {
   let file=state.document.file
