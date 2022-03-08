@@ -214,6 +214,7 @@ defineExpose({
     }
   }
   .cover {
+    height: 100%;
     img {
       width: 162px;
       height: 90px;
