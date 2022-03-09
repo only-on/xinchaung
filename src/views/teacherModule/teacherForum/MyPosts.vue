@@ -1,6 +1,6 @@
 <template>
   <div class="my-posts">
-    <forumn-top @search="search"></forumn-top>
+    <forumn-top @search="search" :tagList="tagList"></forumn-top>
     <div class="forumn-content">
       <div class="left">
         <span
@@ -35,7 +35,10 @@ import { useRouter, useRoute } from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
 import Forumn from "./components/Forumn.vue";
 import { goHtml } from "src/utils/common";
-import { IForumSearch, IForumnList } from "./forumnTyping.d";
+import { IForumSearch, IForumnList, ITagList } from "./forumnTyping.d";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumSquare",
   components: {
@@ -62,10 +65,10 @@ export default defineComponent({
           desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
           content:
             "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-          userName: "小黄帽菇凉",
-          userAvatar: "",
+          user_name: "小黄帽菇凉",
+          avatar: "",
           createTime: "2022/01/21",
-          replayNum: 24,
+          views: 24,
           isAllText: false,
         },
         {
@@ -74,10 +77,10 @@ export default defineComponent({
           desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
           content:
             "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-          userName: "小黄帽菇凉",
-          userAvatar: "",
+          user_name: "小黄帽菇凉",
+          avatar: "",
           createTime: "2022/01/21",
-          replayNum: 222,
+          views: 222,
           isAllText: false,
         },
       ];
@@ -99,6 +102,30 @@ export default defineComponent({
     function tabChange(id: number) {
       currentTab.value = id;
       initData();
+      id === 0 ? getTagsList({self: 1}) : (id === 1 ? getTagsList({}) : '')
+    }
+    // 常驻类型
+    let tagList = reactive<ITagList[]>([])
+    const getTagsList = (param: any) => {
+      tagList.length = 0
+      http.getForumTags({param}).then((res: IBusinessResp) => {
+        console.log(res)
+      }).catch(() => {
+        let arr = [
+          { name: "WIKI", id: 1 },
+          { name: "热门", id: 2 },
+          { name: "最新", id: 3 },
+          { name: "求助", id: 4 },
+          { name: "分享", id: 5 },
+          { name: "公告", id: 6 },
+        ];
+        let arr1 = [
+          { name: "WIKI", id: 1 },
+          { name: "求助", id: 4 },
+          { name: "分享", id: 5 },
+        ]
+        param.self === 1 ? tagList.push(...arr1) : tagList.push(...arr)
+      })
     }
 
     // 点击展开全文 底部收起样式
@@ -109,6 +136,7 @@ export default defineComponent({
     provide("bottomStyle", bottomStyle);
 
     onMounted(() => {
+      getTagsList({self: 1})
       initData();
     });
     return {
@@ -122,6 +150,7 @@ export default defineComponent({
       ],
       tabChange,
       bottomStyle,
+      tagList,
     };
   },
 });

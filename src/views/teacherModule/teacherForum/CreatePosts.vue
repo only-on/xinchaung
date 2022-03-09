@@ -9,7 +9,7 @@
         labelAlign="left"
         :rules="rules"
       >
-        <a-form-item label="帖子名称" name="name">
+        <a-form-item label="帖子名称" name="title">
           <a-input
             v-model:value="formState.title"
             placeholder="请在这里输入帖子标题"
@@ -29,7 +29,7 @@
             <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
             <div class="label-list">
               <span
-                v-for="(item, index) in labelList"
+                v-for="(item, index) in formState.label_name"
                 :key="index"
                 class="list"
               >
@@ -81,7 +81,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
   defineComponent,
   ref,
@@ -89,150 +89,135 @@ import {
   reactive,
   toRefs,
   inject,
+  provide,
   nextTick,
 } from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter, useRoute } from "vue-router";
 import { Modal, message } from "ant-design-vue";
-// import { Delta } from "../../typings/quill-delta";
+import { Delta } from "quill-delta";
 import QuillEditor from "src/components/editor/quill.vue";
 import HotLabel from "./components/HotLabel.vue";
 import HeatMap from "./components/HeatMap.vue";
 import RecommendCourse from "./components/RecommendCourse.vue";
 import Submit from "src/components/submit/index.vue";
+import { ILabelList } from "./forumnTyping.d";
 const http = (request as any).teacherForum;
-interface form {
+interface IFormState {
   title: string;
   type: string | undefined;
-  content: any;
+  content: Delta;
+  label_name: string[]
 }
-interface Istate {
-  formRef: any;
-  formState: form;
-  rules: any;
-  onSubmit: () => void;
-  getDetail: () => void;
-  options: any;
-}
-export default defineComponent({
-  name: "CreatePosts",
-  components: {
-    QuillEditor,
-    HotLabel,
-    HeatMap,
-    RecommendCourse,
-    Submit,
-  },
-  setup: (props, { emit }) => {
-    const router = useRouter();
-    const route = useRoute();
-    const { editId } = route.query;
+const router = useRouter();
+const route = useRoute();
+const { editId } = route.query;
 
-    const tabs = [{ name: "发帖", componenttype: 0 }];
-    var updata = inject("updataNav") as Function;
-    updata({
-      tabs: tabs,
-      showContent: true,
-      componenttype: undefined,
-      showNav: true,
-    });
-
-    const refLabel = ref<HTMLElement>();
-    let isInput = ref<boolean>();
-    let labelContent = ref<string>("");
-    let labelList = reactive<string[]>([]);
-    function clickLabelBtn() {
-      isInput.value = true;
-      nextTick(() => {
-        refLabel.value && refLabel.value.focus();
-      });
-    }
-    function changeLabel() {
-      labelContent.value =
-        labelContent.value?.length > 10
-          ? labelContent.value.slice(0, 10)
-          : labelContent.value;
-    }
-    function labelSubmit() {
-      // console.log(state.customLabelV)
-      if (labelContent.value.trim()) {
-        labelList.push(labelContent.value);
-        labelContent.value = "";
-        isInput.value = false;
-      } else {
-        isInput.value = false;
-      }
-    }
-    function removeLabel(val: string) {
-      let num = labelContent.value.indexOf(val);
-      if (num !== -1) {
-        labelList.splice(num, 1);
-      }
-    }
-    const state: Istate = reactive({
-      formRef: "formRef",
-      formState: {
-        title: "",
-        type: undefined,
-        content: {},
-      },
-      rules: {
-        title: [
-          { required: true, message: "请输入帖子名称", trigger: "blur" },
-          { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
-        ],
-        type: [
-          { required: true, message: "请选择帖子类型", trigger: "change" },
-        ],
-        content: [
-          { required: true, message: "请输入帖子内容", trigger: "blur" },
-        ],
-      },
-      options: {
-        placeholder: "输入内容...",
-        theme: "snow",
-      },
-      getDetail: () => {},
-      onSubmit: () => {
-        console.log(state.formState);
-        // return
-        state.formRef.validate().then(() => {
-          console.log("验证过");
-          let obj = {
-            ...state.formState,
-            content: JSON.stringify(state.formState.content),
-          };
-          http
-            .createForum({ param: { forum: { ...obj } } })
-            .then((res: IBusinessResp) => {
-              message.success(editId ? "修改成功" : "发布成功");
-              router.go(-1);
-            });
-        });
-      },
-      cancel: () => {},
-    });
-    function cancel() {
-      console.log(111);
-    }
-    editId ? state.getDetail() : "";
-    onMounted(() => {});
-    return {
-      editId,
-      ...toRefs(state),
-      refLabel,
-      isInput,
-      clickLabelBtn,
-      labelContent,
-      labelList,
-      changeLabel,
-      labelSubmit,
-      removeLabel,
-      cancel,
-    };
-  },
+const tabs = [{ name: "发帖", componenttype: 0 }];
+var updata = inject("updataNav") as Function;
+updata({
+  tabs: tabs,
+  showContent: true,
+  componenttype: undefined,
+  showNav: true,
 });
+
+// 自定义标签
+const refLabel = ref<HTMLElement>();
+let isInput = ref<boolean>();
+let labelContent = ref<string>("");
+function clickLabelBtn() {
+  isInput.value = true;
+  nextTick(() => {
+    refLabel.value && refLabel.value.focus();
+  });
+}
+function changeLabel() {
+  labelContent.value =
+    labelContent.value?.length > 10
+      ? labelContent.value.slice(0, 10)
+      : labelContent.value;
+}
+function labelSubmit() {
+  // console.log(state.customLabelV)
+  if (labelContent.value.trim()) {
+    formState.label_name.push(labelContent.value);
+    labelContent.value = "";
+    isInput.value = false;
+  } else {
+    isInput.value = false;
+  }
+}
+function removeLabel(val: string) {
+  let num = labelContent.value.indexOf(val);
+  if (num !== -1) {
+    formState.label_name.splice(num, 1);
+  }
+}
+
+const rules = {
+  title: [
+    { required: true, message: "请输入帖子名称", trigger: "change" },
+    { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
+  ],
+  type: [
+    { required: true, message: "请选择帖子类型", trigger: "change" },
+  ],
+  content: [
+    { required: true, message: "请输入帖子内容", trigger: "blur" },
+  ],
+}
+const formRef = ref()
+const formState = reactive<IFormState>({
+  title: "",
+  type: undefined,
+  content: {
+    ops: [],
+  },
+  label_name: []
+})
+const onSubmit = () => {
+  console.log(formState);
+  // return
+  formRef.value.validate().then(() => {
+    console.log("验证过");
+    let obj = {
+      ...formState,
+      content: JSON.stringify(formState.content),
+    };
+    http
+      .createForum({ param: { ...obj } })
+      .then((res: IBusinessResp) => {
+        message.success(editId ? "修改成功" : "发布成功");
+        router.go(-1);
+      });
+  });
+}
+const getDetail = () => {}
+const cancel = () => {
+  router.go(-1);
+}
+onMounted(() => {
+  getHotLabels()
+  editId ? getDetail() : "";
+});
+// 热门标签
+const hotLabelList = reactive<ILabelList[]>([])
+provide("hotLabelList", hotLabelList)
+const getHotLabels = () => {
+  http.getHotLabels().then((res: IBusinessResp) => {
+    console.log(res)
+  }).catch(() => {
+    let arr = [
+      {id: 1, name: 'bootstrap', count: 1},
+      {id: 2, name: 'C++基础', count: 2},
+      {id: 3, name: 'Jave', count: 3},
+      {id: 4, name: '大学计算机基础', count: 4},
+    ]
+    hotLabelList.push(...arr)
+  })
+}
 </script>
 
 <style scoped lang="less">

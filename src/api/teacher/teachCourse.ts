@@ -504,7 +504,9 @@ export default {
     url: `/api/course/courses/{course_id}/contents/tree`,
     method: "PUT",
     dataType: 'json'
-  }
+  },
+  // 热门课程推荐
+  hotCourseRecommend:{ url: `/api/course/courses/hot/recommend`, method: "GET",},
 }
 
 export interface ITeacherCourseApis {
@@ -617,4 +619,5 @@ export interface ITeacherCourseApis {
   getTestPaperAccuracyApi:TFHttpSend
   chapterSortApi:TFHttpSend
   experimentSortApi:TFHttpSend
+  hotCourseRecommend: TFHttpSend
 }

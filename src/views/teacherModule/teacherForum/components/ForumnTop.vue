@@ -27,8 +27,9 @@ import {
   watch,
   toRefs,
   computed,
+  PropType,
 } from "vue";
-import { IForumSearch } from "./../forumnTyping.d";
+import { IForumSearch, ITagList } from "./../forumnTyping.d";
 import classify from "src/components/classify/index.vue";
 export default defineComponent({
   name: "ForumTop",
@@ -36,6 +37,11 @@ export default defineComponent({
     classify,
   },
   emits: ["search"],
+  props: {
+    tagList: {
+      type: Array as PropType<ITagList[]>
+    }
+  },
   setup: (props, { emit }) => {
     let ForumSearch = reactive<IForumSearch>({
       title: "",
@@ -48,6 +54,7 @@ export default defineComponent({
         value: 1,
         keyName: "type",
         data: labelList.value,
+        // data: props.tagList,
       },
     ]);
     function search() {
@@ -58,7 +65,7 @@ export default defineComponent({
       emit("search", ForumSearch);
     }
     const classifyChange = (obj: any) => {
-      ForumSearch.type = obj.value;
+      ForumSearch.type = obj.type;
       emit("search", ForumSearch);
     };
 

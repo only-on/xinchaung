@@ -8,10 +8,10 @@
   </div>
   <div class="content" v-html="item.content" v-else></div>
   <div class="user-info">
-    <img :src="item.userAvatar" alt="" />
-    <span class="user-name">{{ item.userName }}</span>
+    <img :src="item.avatar" alt="" />
+    <span class="user-name">{{ item.user_name }}</span>
     <span class="create-time">{{ item.createTime }}</span>
-    <span class="reply-num">{{ item.replayNum }}</span>
+    <span class="reply-num">{{ item.views }}</span>
     <span class="reply-btn pointer" @click="isReply = !isReply">{{
       !isReply ? "回应" : "收起回应"
     }}</span>
@@ -32,7 +32,7 @@
   </div>
   <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
     <div class="left">
-      <span>{{ item.replayNum }}</span>
+      <span>{{ item.views }}</span>
       <span class="pointer" @click="isReply = !isReply">{{
         !isReply ? "回应" : "收起回应"
       }}</span>

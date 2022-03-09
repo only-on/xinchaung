@@ -9,13 +9,23 @@ export interface IForumnList {
   title: string;
   desc: string;
   content: string;
-  userName: string;
-  userAvatar: string;
+  user_name: string;
+  avatar: string;
   createTime: string;
-  replayNum: number;
+  views: number;
   isAllText: boolean;
 }
 export interface ILabel {
   value: number;
   name: string;
+}
+
+export interface ILabelList {
+  id: number
+  name: string
+  count: number
+}
+export interface ITagList {
+  id: number
+  name: string
 }

@@ -2,7 +2,7 @@
   <div class="hot-label">
     <div class="components-title">热门标签</div>
     <div class="label-list">
-      <span class="list" v-for="list in labelList" :key="list.id">{{
+      <span class="list" v-for="list in hotLabelList" :key="list.id">{{
         list.name
       }}</span>
     </div>
@@ -20,9 +20,11 @@ import {
   watch,
   toRefs,
 } from "vue";
+import { ILabelList } from "./../forumnTyping.d";
 export default defineComponent({
   name: "HotLabel",
   setup: (props, { emit }) => {
+    let hotLabelList: ILabelList[] = inject('hotLabelList') as any
     let labelList = reactive([
       { id: 1, name: "Bootstrap" },
       { id: 2, name: "C++基础" },
@@ -30,7 +32,7 @@ export default defineComponent({
       { id: 4, name: "大学计算机基础" },
     ]);
     return {
-      labelList,
+      hotLabelList
     };
   },
 });

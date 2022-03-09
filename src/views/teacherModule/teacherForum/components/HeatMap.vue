@@ -16,10 +16,12 @@ import {
   watch,
   toRefs,
 } from "vue";
+import { ILabelList } from "./../forumnTyping.d";
 export default defineComponent({
   name: "HeatMap",
   setup: (props, { emit }) => {
-    return {};
+    let hotLabelList: ILabelList[] = inject('hotLabelList') as any
+    return {hotLabelList};
   },
 });
 </script>
