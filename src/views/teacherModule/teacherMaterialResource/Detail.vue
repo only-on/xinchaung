@@ -34,7 +34,7 @@
       </div>
       <div class="header_right">
         <div v-if="true"> 
-          <a-button type="primary" class="edit_bt"> 编辑</a-button>
+          <a-button type="primary" class="brightBtn"> 编辑</a-button>
           <a-button type="primary" class="delete"> 删除</a-button>
         </div>
       </div>
@@ -54,11 +54,11 @@
           <template v-if="currentTab === '1' && activeTab==='说明文档' && showEditMd">
           <span class="data-set-hint">仅支持单个md格式文件上传</span>
             <a-upload class="upload" :showUploadList="false" :before-upload="readMdFile" accept=".md">
-              <a-button type="primary" class="edit_bt"> 上 传 </a-button>
+              <a-button type="primary" class="brightBtn"> 上 传 </a-button>
             </a-upload>
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
-          <a-button type="primary" v-if="activeTab==='文件列表'" class="edit_bt"> 下载全部</a-button>
+          <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn"> 下载全部</a-button>
           <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class=""> 上传文件</a-button>
         </div>
       </div>
@@ -72,7 +72,7 @@
               <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
             <div class="file textScrollbar">
-              <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="activeItem" />
+              <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="state" />
             </div>
           </div>
           <div class="right">
@@ -87,7 +87,7 @@
                   </div>
                 </div>
               </div>
-              <a-button type="primary" class="edit_bt" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
+              <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
             </div>
             <div class="fileView">
               <!-- <h2>文件内容</h2> -->
@@ -142,9 +142,7 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
-const activeItem:any=reactive({
-  fileItem:{},
-})
+
 // 采用ts专有声明，有默认值
 interface Props {
   msg?: string;
@@ -211,6 +209,9 @@ const state:any=reactive({
   fileItem:{ name: "ms.txt",},
   fileKeyWord:'',  //  搜索文件列表关键词
 })
+const activeItem:any=reactive({
+  fileItem:{},
+})
 var activeKey: Ref<number> = ref(1);
 
 var isDataSet: Ref<boolean> = ref(true);
@@ -262,6 +263,7 @@ const searchFileList=computed(()=>{
 // 
 const selectFile=(val:any)=>{
   // console.log(val)
+  activeItem.fileItem=val
   state.fileItem=val
 }
 const downLoadFile=(val:any)=>{
@@ -287,10 +289,6 @@ onMounted(() => {
 <style scoped lang="less">
 .markdown__editor {
   height: 400px;
-}
-.edit_bt{
-  background-color: var(--brightBtn);
-  border-color: var(--brightBtn);
 }
 
 .detail{
@@ -354,10 +352,6 @@ onMounted(() => {
       display: flex;
       flex-direction: column;
       width: 88px;
-      .edit{
-        background-color: var(--brightBtn);
-        border-color: var(--brightBtn);
-      }
       .delete{
         margin-top: 1rem;
       }

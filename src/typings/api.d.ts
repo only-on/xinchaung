@@ -28,6 +28,7 @@ import { IAdminHome } from "src/api/modules/adminHome";
 
 import { ITeacherExperimentResourcePool } from "src/api/teacher/teacherExperimentResourcePool";
 import { ITeacherMaterialResource } from "src/api/teacher/teacherMaterialResource";
+import {ITeacherImageResourcePool} from 'src/api/teacher/teacherImageResourcePool'
 
 /**
  * 通用响应类型
@@ -100,4 +101,5 @@ export interface IApiCollection {
   adminHome: IAdminHome;
   teacherExperimentResourcePool: ITeacherExperimentResourcePool;
   teacherMaterialResource: ITeacherMaterialResource;
+  teacherImageResourcePool:ITeacherImageResourcePool
 }

@@ -2,14 +2,14 @@
   <div class="Category flexCenter" v-for="v in props.FileList" :key="v.name" :class="v.name === props.activeItem.fileItem.name?'CategoryActive':''">
     <div class="upper"  @click="selectFile(v)">
       <div class="iconBox">
-        <CaretDownOutlined v-if="v.children && v.children.length && v.show"/>
-        <CaretRightOutlined v-if="v.children && v.children.length && !v.show"/>
+        <CaretDownOutlined v-show="v.children && v.children.length && v.show"/>
+        <CaretRightOutlined v-show="v.children && v.children.length && !v.show"/>
       </div>
       <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.name)});`"></span>
       <span class="name single-ellipsis">{{v.name}}</span>
     </div>
     <div class="flexCenter level" v-if="v.children && v.children.length && v.show">
-      <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>
+      <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem" />
     </div>
   </div>
 </template>

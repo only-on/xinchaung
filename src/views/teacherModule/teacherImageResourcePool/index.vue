@@ -8,32 +8,32 @@
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item flexCenter" v-for="(v, k) in 6" :key="v">
+      <div class="item flexCenter" v-for="(v, k) in list" :key="v" :class="v.is_init?'':'operable'">
         <div class="left">
-          <div class="img" :class="k % 2 === 0 ? 'KVMImg' : ''">
-            <div class="type">镜像类型：KVM</div>
-            <div class="type">架构信息：X86</div>
+          <div class="img" :class="v.is_init? '' : 'KVMImg'">
+            <div class="type">镜像类型：{{v.ostypes}}</div>
+            <div class="type">架构信息：{{v.architecture}}</div>
           </div>
-          <div class="Belonging" :class="k % 2 === 0 ? 'myImg' : ''">
-            内置镜像
+          <div class="Belonging" :class="v.is_init ? '' : 'myImg'">
+            {{v.is_init?'内置镜像':'我的镜像'}}
           </div>
         </div>
-        <div class="right">
-          <div class="name">镜像名称</div>
+        <div class="right" >
+          <div class="name">{{v.name}}</div>
           <div class="labels flexCenter">
-            <span class="ellipsis">镜像标签1</span><span>标签1</span
-            ><span>标签1</span>
+            <span class="ellipsis" v-for="i in v.tags" :key="i">{{i}}</span>
           </div>
           <div class="text ellipsis">
-            在 UI
-            设计中，如何完美的避开问题、把按钮设计的更好，是每个设计师需要深思的问题。按钮设计的好坏，将直接关系着用户引流、触发行动、产品转化率等至关重要的问题。把按钮设计的更好，是每个设计师需要深思的问题。按钮设计的好坏，将直接关系着用户引流、触发行动
+           {{v.description?v.description:'该镜像暂无描述'}}
           </div>
           <div class="caoZuo flexCenter">
-            <span>复制</span><span>删除</span><span>编辑</span>
+            <span v-if="!v.is_init" @click="copy(v)">复制</span>
+            <span v-if="!v.is_init" @click="strike(v)">删除</span>
+            <span v-if="!v.is_init" @click="edit(v)">编辑</span>
           </div>
         </div>
       </div>
-      <!-- <Empty v-if="!list.length && !loading" /> -->
+      <Empty v-if="!list.length && !loading" />
       <a-pagination
         v-if="totalCount > 6"
         v-model:current="fromData.page"
@@ -43,22 +43,97 @@
       />
     </div>
   </a-spin>
+
+  <!-- 编辑镜像 -->
+    <a-modal title="编辑镜像" width="850px" :visible="visible" @cancel="handleCancel" class="editImage">
+      <div>
+        <a-form layout="vertical">
+          <div class="row">
+            <a-form-item required label="镜像名称">
+              <a-input class="form-input" v-model:value="imageData.name"></a-input>
+            </a-form-item>
+            <a-form-item required label="系统类型">
+              <a-select
+                class="form-input"
+                v-model:value="imageData.classify"
+                placeholder="请选择系统类型"
+              >
+                <a-select-option
+                  :value="item"
+                  v-for="(item, index) in ['Windows','Linux']"
+                  :key="item"
+                >
+                  {{ item }}
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+          </div>
+          <a-form-item label="添加标签" name="tag">
+            <div class="label-list">
+              <span v-for="(item, index) in imageData.tags" :key="index" class="active">
+                {{ item }}
+                <i class="remove iconfont icon-guanbi" @click="removeLabel(item)" ></i>
+              </span>
+              <span class="edit-box" v-if="imageData.tags && imageData.tags.length < 3">
+                <span @click="clickCustomLabel" v-show="!openCustom">
+                  <span class="iconfont iconbiaoqian"></span>
+                  + 自定义标签
+                </span>
+                <a-input
+                  ref="refCustomLabel"
+                  @pressEnter="customFinish"
+                  @blur="customFinish"
+                  @change="changeLabel"
+                  v-show="openCustom"
+                  v-model:value="imageData.customLabelV"
+                />
+              </span>
+            </div>
+            <div class="recommend" v-if="showTag">
+              <div class="tit">或从推荐中选择</div>
+              <div class="tagBox">
+                <div v-for="v in 10" :key="v">
+                  <span
+                    @click="addTag(v)"
+                    :class="imageData.tags.includes(v) ? 'act' : ''"
+                    >默认标签1</span
+                  >
+                </div>
+              </div>
+            </div>
+          </a-form-item>
+          <a-form-item label="描述">
+            <a-textarea
+              placeholder="镜像描述"
+              v-model:value="imageData.description"
+              class="ant-input-desc"
+            ></a-textarea>
+          </a-form-item>
+        </a-form>
+      </div>
+      <template #footer>
+        <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
+      </template>
+    </a-modal>
 </template>
 <script lang="ts" setup>
+import Submit from "src/components/submit/index.vue";
 import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import {
-  defineComponent,
+  createVNode,
   ref,
   onMounted,
   reactive,
   Ref,
   inject,
+  nextTick,
   computed,
   toRefs,
   watch,
   defineExpose,
 } from "vue";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -93,22 +168,22 @@ const handleMenuClick = (val: any) => {
 const classifyList: any = reactive([
   {
     title: "镜像属性",
-    value: 0,
-    keyName: "type",
+    value: "",
+    keyName: "is_init",
     data: [
-      { name: "全部", value: 0 },
+      { name: "全部", value: "" },
       { name: "内置镜像", value: 1 },
-      { name: "我的镜像", value: 2 },
+      { name: "我的镜像", value: 0 },
     ],
   },
   {
     title: "镜像标签",
-    value: 0,
-    keyName: "label",
+    value: "",
+    keyName: "tags",
     data: [
-      { name: "全部", value: 0 },
-      { name: "数据标注", value: 1 },
-      { name: "目标监测", value: 2 },
+      { name: "全部", value:"" },
+      { name: "数据标注", value: "数据标注"},
+      { name: "目标监测", value: "目标监测" },
       { name: "数据标注", value: 3 },
       { name: "目标监测", value: 4 },
     ],
@@ -116,17 +191,17 @@ const classifyList: any = reactive([
 ]);
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
-  // console.log(labelSearch)
-  searchFn(fromData.key);
+  console.log(labelSearch)
+  searchFn(fromData.name);
 };
 const labelSearch = reactive({
-  type: 0,
-  label: 0,
+  is_init: '',
+  tags: '',
 });
 
 const searchFn = (key: string) => {
   fromData.page = 1;
-  fromData.keyWord = key;
+  fromData.name = key;
   let obj = {
     ...labelSearch,
     ...fromData,
@@ -134,28 +209,18 @@ const searchFn = (key: string) => {
   // console.log(obj);
   initData();
 };
-/**
- * 添加
- */
 
-const initData = () => {
-  loading.value = true;
-  http.getList().then((res: IBusinessResp) => {
-    // list.push(...res.data);
-    loading.value = false;
-  });
-};
 /**
  * 列表
  */
 const fromData: any = reactive({
   limit: 6,
   page: 1,
-  keyWord: "",
+  name: "",
 });
 var list: any[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
-var totalCount: Ref<number> = ref(7);
+var totalCount: Ref<number> = ref(0);
 const pageChange = async (pageNumber: number) => {
   fromData.page = pageNumber;
   const { query, path } = route;
@@ -165,10 +230,120 @@ const pageChange = async (pageNumber: number) => {
   });
   initData();
 };
+const initData = () => {
+  loading.value = true;
+  list.length=0
+  let obj={
+    ...fromData,
+    ...labelSearch
+  }
+  http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
+    // console.log(res.data)
+    list.push(...res.data.list);
+    totalCount.value=res.data.page.totalCount
+    loading.value = false;
+  });
+};
 
+const strike=(val:any)=>{
+  Modal.confirm({
+    title: '确认删除吗？',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '删除后不可恢复',
+    okText: '确认',
+    cancelText: '取消',
+    onOk(){
+        http.deleteImg({urlParams: {imageID: val.id}}).then((res:IBusinessResp)=>{
+          message.success('删除成功')
+          initData()
+      })
+    }
+  });
+}
+const copy=(val:any)=>{
+  http.imgCopy({urlParams: {imageID: val.id}}).then((res:IBusinessResp)=>{
+        message.success('复制成功')
+        initData()
+    })
+}
+// 编辑 
+var imageData:any=reactive({
+  id:'',
+  tags:[],
+  customLabelV:'',
+  name:'',
+  classify:'',
+  description:''
+})
+var visible: Ref<boolean> = ref(false);
+const edit=(val:any)=>{
+  imageData.id=val.id
+  imageData.tags=val.tags
+  // imageData.classify=val.classify       // 字段未返
+  imageData.name=val.name
+  imageData.description=val.description
+
+  visible.value=true
+}
+const handleCancel=()=>{
+  visible.value=false
+}
+const handleOk=()=> {
+  // state.visible = false;
+  let params: any = {
+    ...imageData,
+    tags:JSON.stringify(imageData.tags)
+  };
+  http.editMyImage({param:{...params},urlParams:{imageID:imageData.id}}).then((res: any) => {
+    visible.value=false
+    initData();
+  });
+}
+var showTag: Ref<boolean> = ref(false);
+var openCustom: Ref<boolean> = ref(false);
+const refCustomLabel = ref<HTMLElement>();
+function removeLabel(val: any) {
+  let num = imageData.tags.indexOf(val);
+  if (num !== -1) {
+    imageData.tags.splice(num, 1);
+  }
+}
+function clickCustomLabel() {
+  showTag.value = true;
+  openCustom.value = true;
+  nextTick(() => {
+    refCustomLabel.value && refCustomLabel.value.focus();
+  });
+}
+function customFinish() {
+  if (imageData.customLabelV.trim()) {
+    imageData.tags.push(imageData.customLabelV);
+    // image.tag=['555']
+    imageData.customLabelV = "";
+    openCustom.value = false;
+  } else {
+    openCustom.value = false;
+  }
+}
+function addTag(val: any) {
+  if (imageData.tags.length < 3) {
+    imageData.tags.push(val);
+  } else {
+    message.warn("最多添加3个标签");
+  }
+}
+function changeLabel() {
+  // console.log(val)
+  // console.log(state.customLabelV)
+  imageData.customLabelV =
+    imageData.customLabelV.length > 10
+      ? imageData.customLabelV.slice(0, 10)
+      : imageData.customLabelV;
+}
 onMounted(() => {
-  // initData();
+  initData();
 });
+
 </script>
 <style scoped lang="less">
 .reference {
@@ -200,7 +375,7 @@ onMounted(() => {
         border-radius: 14px 0px 0px 0px;
         height: 176px;
         width: 140px;
-        background: url("src/assets/images/cover2.png") no-repeat;
+        background: url("src/assets/images/teacherImageResourcePool/img1.jpg") no-repeat;
         background-size: 100% 100%;
 
         display: flex;
@@ -214,7 +389,7 @@ onMounted(() => {
         }
       }
       .KVMImg {
-        background: url("src/assets/images/bg1.jpg") no-repeat;
+        background: url("src/assets/images/teacherImageResourcePool/img2.jpg") no-repeat;
         background-size: 100% 100%;
       }
       .Belonging {
@@ -229,14 +404,16 @@ onMounted(() => {
       }
     }
     .right {
-      padding: 16px;
+      padding: 20px 16px 0;
+      flex: 1;
+      height: 100%;
       .name {
         color: var(--black-85);
         font-size: var(--font-size-16);
         letter-spacing: 1.6px;
       }
       .labels {
-        margin: 10px 0;
+        padding: 8px 0;
         span {
           display: inline-block;
           width: 92px;
@@ -262,6 +439,113 @@ onMounted(() => {
           cursor: pointer;
           padding: 0 16px;
         }
+      }
+    }
+    
+  }
+  .operable:hover{
+    cursor: pointer;
+    box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+    border-radius: 14px 0px 0px 14px;
+  }
+}
+.editImage {
+  .row {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    .ant-form-item {
+      width: 48%;
+    }
+  }
+  .ant-input-desc {
+    min-height: 115px;
+    max-height: 136px;
+  }
+}
+.label-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  > span {
+    margin: 0px 5px 0px 0px;
+    padding: 5px 15px;
+    background: #ebebeb;
+    margin-bottom: 5px;
+    position: relative;
+    border-radius: 5px;
+    margin-right: 10px;
+
+    > .remove {
+      position: absolute;
+      font-size: 12px;
+      background: red;
+      width: 14px;
+      height: 14px;
+      top: -5px;
+      right: -5px;
+      border-radius: 50%;
+      text-align: center;
+      line-height: 14px;
+      cursor: pointer;
+    }
+
+    &.active {
+      background: var(--primary-color);
+      color: #ffffff;
+    }
+  }
+
+  .edit-box {
+    margin: 0px 5px 0px 0px;
+    padding: 0px 0px;
+    background: #ebebeb;
+    margin-bottom: 5px;
+    position: relative;
+    width: 120px;
+    cursor: pointer;
+
+    > span {
+      // padding: 0px 15px;
+      display: block;
+      text-align: center;
+      width: 100%;
+      line-height: 30px;
+      color: var(--primary-color);
+      border: 1px solid var(--primary-color);
+      border-radius: 5px;
+      background: #ffffff;
+
+      &:hover {
+        background: #f8efff;
+      }
+    }
+  }
+}
+.recommend {
+  color: var(--black-65);
+  margin-top: 1rem;
+  .tagBox {
+    width: 60%;
+    display: flex;
+    flex-wrap: wrap;
+    div {
+      text-align: center;
+      cursor: pointer;
+      width: 25%;
+      padding: 6px 0;
+      span {
+        background: #ebebeb;
+        border: 1px solid #dfdfdf;
+        border-radius: 11px;
+        font-size: 12px;
+        color: var(--black-65);
+        padding: 2px 7px;
+      }
+      .act {
+        background: var(--primary-color);
+        color: #fff;
+        // color: var(--primary-color);
       }
     }
   }
