@@ -33,8 +33,8 @@
         </div>
       </div>
       <div class="header_right">
-        <div v-if="true"> 
-          <a-button type="primary" class="brightBtn"> 编辑</a-button>
+        <div v-if="currentTab === '1'"> 
+          <a-button type="primary" class="brightBtn" @click="edit"> 编辑</a-button>
           <a-button type="primary" class="delete"> 删除</a-button>
         </div>
       </div>
@@ -108,6 +108,13 @@
       </div>
     </div>
   </div>
+  
+  <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
+    <BaseInfo  ref="baseInfoRef" :materialType="'数据集'" class="con" />
+    <template #footer>
+        <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
+      </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -121,6 +128,8 @@ import {
   toRefs,
   watch,
 } from "vue";
+import Submit from "src/components/submit/index.vue";
+import BaseInfo from './components/baseInfo.vue'
 import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
 import { getFileType,getFileTypeIcon,readFile } from 'src/utils/getFileType'
@@ -275,6 +284,33 @@ const downLoadFile=(val:any)=>{
   // a.click();
   // document.body.removeChild(a);
   // window.URL.revokeObjectURL(a.href);
+}
+var visible: Ref<boolean> = ref(false);
+const edit=()=>{
+  visible.value=true
+}
+const handleCancel=()=>{
+  visible.value=false
+}
+const baseInfoRef = ref()
+const submit = async() => {
+  await baseInfoRef.value.fromValidate()
+  let obj={}
+  Object.assign(obj, baseInfoRef.value.formState)
+  // formRef.value.validate().then(() => {
+  //   console.log(formState) 
+  // })
+}
+const handleOk=async()=> {
+  // state.visible = false;
+  let params: any = {};
+  await baseInfoRef.value.fromValidate()
+  Object.assign(params, baseInfoRef.value.formState)
+
+  http.editMyImage({param:{...params},urlParams:{imageID:''}}).then((res: any) => {
+    visible.value=false
+    initData();
+  });
 }
 // 初始化数据
 const initData = () => {

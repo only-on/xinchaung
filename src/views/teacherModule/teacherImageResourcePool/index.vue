@@ -261,7 +261,11 @@ const strike=(val:any)=>{
   });
 }
 const copy=(val:any)=>{
-  http.imgCopy({urlParams: {imageID: val.id}}).then((res:IBusinessResp)=>{
+  let data={
+    name:val.name,
+    description:val.description
+  }
+  http.imgCopy({urlParams: {imageID: val.id},param:{...data}}).then((res:IBusinessResp)=>{
         message.success('复制成功')
         initData()
     })
@@ -446,7 +450,7 @@ onMounted(() => {
   .operable:hover{
     cursor: pointer;
     box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
-    border-radius: 14px 0px 0px 14px;
+    border-radius: 14px 0px 14px 14px;
   }
 }
 .editImage {

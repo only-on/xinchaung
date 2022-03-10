@@ -255,7 +255,7 @@ function create() {
     params.flavor.ram = Number(reactiveData.ruleForm.ram);
     params.flavor.disk = Number(reactiveData.ruleForm.disk);
     reactiveData.loading = true;
-    createWorkbenchApi(params).then((res: any) => {
+    http.createWorkbenchApi(params).then((res: any) => {
       message.success("创建成功!");
       reactiveData.loading = false;
       router.go(-1);
