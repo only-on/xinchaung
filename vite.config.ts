@@ -30,20 +30,19 @@ export default defineConfig({
   server: {
     proxy: {
       "/proxyPrefix": {
-        target: "http://192.168.101.130",
+        target: "http://192.168.101.221:83",
+        // target: "http://192.168.101.130",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
       },
-      "/dmc": {
-        target: "http://192.168.101.130",
-        changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
-      },
-      "/uploadfiles": {
-        target: "http://192.168.101.130",
-        changeOrigin: true,
-        // rewrite: (path) => path.replace(/^\/proxyPrefix/, '')
-      },
+      // "/dmc": {
+      //   target: "http://192.168.101.130",
+      //   changeOrigin: true,
+      // },         
+      // "/uploadfiles": {
+      //   target: "http://192.168.101.130",
+      //   changeOrigin: true,
+      // },
       // '/ws': {
       //   target: 'ws://192.168.101.130',
       //   changeOrigin: true,

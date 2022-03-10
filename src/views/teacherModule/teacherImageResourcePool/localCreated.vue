@@ -16,8 +16,8 @@
               placeholder="请选择系统类型"
             >
               <a-select-option
-                :value="Number(index)"
-                v-for="(item, index) in config.image_classify"
+                :value="item"
+                v-for="(item, index) in ['Windows','Linux']"
                 :key="index.toString()"
               >
                 {{ item }}
@@ -102,13 +102,12 @@ import {
   onMounted,
   nextTick,
 } from "vue";
-import { RuleObject } from "ant-design-vue/es/form/interface";
-import { createMirrorApi, getConfigApi } from "./api";
-import { includes } from "lodash";
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import uploadImage from "./uploadImage.vue";
 import Submit from "src/components/submit/index.vue";
+import request from "src/api/index";
+const http = (request as any).teacherImageResourcePool;
 interface ImageType {
   name: string;
   imageType: any;
@@ -239,13 +238,13 @@ const create = () => {
       ssh_pass: " ",
       is_use_gpu: image.tag.indexOf(3) !== -1 ? 1 : 0,
     };
-    createMirrorApi(parmas).then((res: any) => {
+    http.createMirrorApi(parmas).then((res: any) => {
       cancel();
     });
   });
 };
 const getConfig = () => {
-  getConfigApi().then((res: any) => {
+  http.getConfigApi().then((res: any) => {
     state.config = res.data;
   });
 };

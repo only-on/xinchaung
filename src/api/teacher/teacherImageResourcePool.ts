@@ -10,6 +10,8 @@ export default {
   GenerateImage:{ url: `/api/env/workbenchs/image/{imageID}`, method: "GET" },
   deleteWorkbenchApi: { url: `/api/env/workbenchs/{imageID}`, method: "DELETE" },
   getWorkbenchInfoApi:{ url: `/api/env/workbenchs/info/{imageID}`, method: "GET" },
+
+  createMirrorApi: { url: `/api/env/images`, method: "POST" },
 };
 
 export interface ITeacherImageResourcePool {

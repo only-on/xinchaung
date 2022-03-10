@@ -120,7 +120,45 @@ export default defineComponent({
       // })
     }
     const route = useRoute();
-    var menus: MenuItem[] = reactive([]);
+    var menus: any[] = reactive([]);
+    let center = {
+      icon: "",
+      id: 170,
+      name: "实验中心",
+      parent_id: 0,
+      sort: 3,
+      url: "",
+      children: [
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "实验资源库",
+          parent_id: 161,
+          sort: 1,
+          url: "/teacher/teacherExperimentResourcePool",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1149,
+          name: "镜像资源库",
+          parent_id: 161,
+          sort: 2,
+          url: "/teacher/teacherImageResourcePool",
+        },
+      ],
+    };
+    let material = {
+      id: 170,
+      name: "素材资源",
+      parent_id: 0,
+      sort: 3,
+      url: "/teacher/teacherMaterialResource",
+      children: [],
+    };
+    menus.push(center);
+    menus.push(material);
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });
@@ -229,7 +267,7 @@ export default defineComponent({
       }
     }
     onMounted(() => {
-      getMenu();
+      // getMenu();
     });
 
     return {
