@@ -9,7 +9,7 @@
   <!-- <div class="content" v-html="item.content"></div> -->
   <div class="user-info">
     <img :src="item.avatar" alt="" />
-    <span class="user-name">{{ item.user_name }}</span>
+    <span class="user-name">{{ item.user.username }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
     <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
     <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
