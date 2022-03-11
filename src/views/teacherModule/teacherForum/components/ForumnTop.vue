@@ -39,7 +39,8 @@ export default defineComponent({
   emits: ["search"],
   props: {
     tagList: {
-      type: Array as PropType<ITagList[]>
+      type: Array as PropType<ITagList[]>,
+      default: [{name: ''}]
     }
   },
   setup: (props, { emit }) => {
@@ -51,12 +52,16 @@ export default defineComponent({
     let classifyList = reactive([
       {
         title: "",
-        value: 1,
-        keyName: "type",
-        data: labelList.value,
-        // data: props.tagList,
+        value: props.tagList[0]?props.tagList[0].name:'',
+        keyName: "label",
+        // data: labelList.value,
+        data: props.tagList,
       },
     ]);
+    watch(props.tagList, (val) => {
+      console.log(val)
+      val.length ? classifyList[0].value = val[0].name : ''
+    })
     function search() {
       emit("search", ForumSearch);
     }

@@ -1,33 +1,33 @@
 <template>
   <h3 class="title">{{ item.title }}</h3>
-  <div class="content" v-if="!item.isAllText">
-    <span class="desc">{{ item.desc }}</span>
-    <span class="read-btn pointer" @click="readAllText(item.id)"
+  <div class="content">
+    <span class="desc" v-html="item.content"></span>
+    <span class="read-btn pointer"  v-if="!item.isAllText" @click="readAllText(item.id)"
       >阅读全文<i class="iconfont icon-zhankai"></i
     ></span>
   </div>
-  <div class="content" v-html="item.content" v-else></div>
+  <!-- <div class="content" v-html="item.content"></div> -->
   <div class="user-info">
     <img :src="item.avatar" alt="" />
     <span class="user-name">{{ item.user_name }}</span>
     <span class="create-time">{{ item.createTime }}</span>
-    <span class="reply-num">{{ item.views }}</span>
-    <span class="reply-btn pointer" @click="isReply = !isReply">{{
+    <span class="reply-num">{{ item.reply_number_count }}</span>
+    <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
       !isReply ? "回应" : "收起回应"
     }}</span>
   </div>
   <!--回应内容-->
   <div class="reply-box" v-if="isReply">
-    <div class="reply-total">回应区 （522条）</div>
+    <div class="reply-total">回应区 （{{item.reply_number_count}}条）</div>
     <div class="reply-content">
-      <reply-list :child="child"></reply-list>
-      <div class="more">
+      <reply-list :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
+      <div class="more" v-if="totalReply !== replyList.length" @click="clickLoadingMore(item.id)">
         <span class="pointer">加载更多</span>
       </div>
     </div>
     <div class="comment-box">
       <a-input v-model:value="replyContent" placeholder="请写下你的评论" />
-      <span class="pointer" @click="submitReply">回应</span>
+      <span class="pointer" @click="submitReply(item.id)">回应</span>
     </div>
   </div>
   <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
@@ -58,7 +58,10 @@ import {
   PropType,
 } from "vue";
 import ReplyList from "./ReplyList.vue";
-import { IForumnList } from "./../forumnTyping.d";
+import { IForumnList, IReplyList } from "./../forumnTyping.d";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumnList",
   props: {
@@ -81,7 +84,56 @@ export default defineComponent({
       emit("readAllText", i);
     }
     // 回应
-    function submitReply() {}
+    function submitReply(id: number) {
+      let param = {
+        content: replyContent.value,
+        id
+      }
+      http.replyForum({param}).then((res: IBusinessResp) => {
+        console.log(res)
+        replyContent.value = ''
+        getReplyList(id)
+      })
+    }
+
+    // 回应内容
+    let replyList = reactive<IReplyList[]>([])
+    const totalReply = ref(0)
+    function getReplyList(id: number) {
+      let param = {
+        id: 10,
+        reply_id: 0
+      }
+      http.getReplyList({urlParams: {id}}).then((res: IBusinessResp) => {
+        console.log(res)
+        const { data, num } = res.data
+        data.forEach((v: IForumnList) => {
+          v.user_name = v.user_name ? v.user_name : '回帖1'
+          v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
+        })
+        replyList.push(...data)
+        totalReply.value = num
+      }).catch(() => {
+        let arr = [
+          {"id": 1,"content": "<p>看到楼主发的，犹如醍醐灌顶~ 感谢了！</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "张三", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+          {"id": 2,"content": "<p>testets222222222</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "sfasdf", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+          {"id": 3,"content": "<p>testets3333333</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "asfahjg", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+        ]
+        replyList.push(...arr)
+      })
+    }
+    onMounted(() => {
+      // getReplyList()
+    })
+    // 展开一级回复
+    const clickFirstReply = (id: number) => {
+      replyList.length = 0
+      isReply.value = !isReply.value
+      getReplyList(id)
+    }
+    const clickLoadingMore = (id: number) => {
+      getReplyList(id)
+    }
 
     const bottomStyle: any = inject("bottomStyle");
     return {
@@ -92,6 +144,10 @@ export default defineComponent({
       readAllText,
       submitReply,
       bottomStyle,
+      replyList,
+      clickFirstReply,
+      clickLoadingMore,
+      totalReply,
     };
   },
 });

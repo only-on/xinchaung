@@ -13,6 +13,7 @@ export interface IForumnList {
   avatar: string;
   createTime: string;
   views: number;
+  reply_number_count: number
   isAllText: boolean;
 }
 export interface ILabel {
@@ -26,6 +27,20 @@ export interface ILabelList {
   count: number
 }
 export interface ITagList {
-  id: number
+  id?: number
   name: string
+  value?: string
+}
+export interface IReplyList {
+  id: number
+  content: string
+  user_id: number
+  level: number
+  pid: number
+  forum_id: number
+  user_name: string
+  avatar: string
+  created_at: number
+  updated_at: number
+  deleted_at: null
 }

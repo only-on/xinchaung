@@ -6,7 +6,7 @@
   </div>
   <div class="forumn-pagination">
     <a-pagination
-      :total="pageInfo.total"
+      :total="total"
       :current="pageInfo.page"
       :pageSize="pageInfo.pageSize"
       @change="pageChange"
@@ -54,6 +54,10 @@ export default defineComponent({
       type: Array as PropType<IForumnList[]>,
       default: [],
     },
+    total: {
+      type: Number,
+      default: 0
+    }
   },
   emits: ["pageChange"],
   setup: (props, { emit }) => {

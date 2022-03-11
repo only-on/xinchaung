@@ -14,7 +14,9 @@
         </span>
       </div>
       <div class="right">
-        <forumn :forumnList="forumnList" @pageChange="pageChange"></forumn>
+        <a-spin :spinning="loading" size="large" tip="Loading...">
+        <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
+        </a-spin>
       </div>
     </div>
   </div>
@@ -54,37 +56,61 @@ export default defineComponent({
       page: 1,
       type: 1,
     });
+    const loading = ref(false)
     let forumnList = reactive<IForumnList[]>([]);
+    const total = ref(0)
     function initData() {
       console.log({ ...forumSearch, tabType: currentTab.value });
+      loading.value = true
       // 获取帖子列表
-      let obj = [
-        {
-          id: 1,
-          title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
-          desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
-          content:
-            "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-          user_name: "小黄帽菇凉",
-          avatar: "",
-          createTime: "2022/01/21",
-          views: 24,
-          isAllText: false,
-        },
-        {
-          id: 2,
-          title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
-          desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
-          content:
-            "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-          user_name: "小黄帽菇凉",
-          avatar: "",
-          createTime: "2022/01/21",
-          views: 222,
-          isAllText: false,
-        },
-      ];
-      forumnList.push(...obj);
+      const param = {
+        page: forumSearch.page,
+        limit: forumSearch.pageSize,
+        type: forumSearch.type,
+        keyword: forumSearch.title
+      }
+      http.getForumList({param}).then((res: IBusinessResp) => {
+        console.log(res)
+        loading.value = false
+        forumnList.length = 0
+        const { list, page } = res.data
+        list.forEach((v: IForumnList) => {
+          v.content = goHtml(v.content)
+          v.user_name = v.user_name ? v.user_name : '用户名'
+          v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
+        })
+        forumnList.push(...list)
+        total.value = page.totalCount
+      })
+      // let obj = [
+      //   {
+      //     id: 1,
+      //     title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
+      //     desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
+      //     content:
+      //       "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
+      //     user_name: "小黄帽菇凉",
+      //     avatar: "",
+      //     createTime: "2022/01/21",
+      //     views: 24,
+      //     reply_number_count: 2,
+      //     isAllText: false,
+      //   },
+      //   {
+      //     id: 2,
+      //     title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
+      //     desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
+      //     content:
+      //       "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
+      //     user_name: "小黄帽菇凉",
+      //     avatar: "",
+      //     createTime: "2022/01/21",
+      //     views: 222,
+      //     reply_number_count: 2,
+      //     isAllText: false,
+      //   },
+      // ];
+      // forumnList.push(...obj);
     }
     function search(params: IForumSearch) {
       console.log(params);
@@ -107,24 +133,15 @@ export default defineComponent({
     // 常驻类型
     let tagList = reactive<ITagList[]>([])
     const getTagsList = (param: any) => {
+      console.log(param)
       tagList.length = 0
       http.getForumTags({param}).then((res: IBusinessResp) => {
         console.log(res)
-      }).catch(() => {
-        let arr = [
-          { name: "WIKI", id: 1 },
-          { name: "热门", id: 2 },
-          { name: "最新", id: 3 },
-          { name: "求助", id: 4 },
-          { name: "分享", id: 5 },
-          { name: "公告", id: 6 },
-        ];
-        let arr1 = [
-          { name: "WIKI", id: 1 },
-          { name: "求助", id: 4 },
-          { name: "分享", id: 5 },
-        ]
-        param.self === 1 ? tagList.push(...arr1) : tagList.push(...arr)
+        const { data } = res
+        data.forEach((v: ITagList) => {
+          v.value = v.name
+        })
+        tagList.push(...data)
       })
     }
 
@@ -151,6 +168,8 @@ export default defineComponent({
       tabChange,
       bottomStyle,
       tagList,
+      total,
+      loading,
     };
   },
 });

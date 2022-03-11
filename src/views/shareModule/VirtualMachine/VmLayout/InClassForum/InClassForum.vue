@@ -65,6 +65,7 @@ interface IForumnList {
   avatar: string;
   createTime: string;
   views: number;
+  reply_number_count: number;
   isAllText: boolean;
 }
 export default defineComponent({

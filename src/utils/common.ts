@@ -232,6 +232,24 @@ const readFile = (file: any) => {
     };
   });
 };
+
+//补0操作1
+const getzf = (num: any) => {
+  if(parseInt(num) < 10){
+      num = '0'+num;
+  }
+  return num;
+}  
+const dateFormat = (str: any) => {
+  let oDate = new Date(str),
+  oYear = oDate.getFullYear(),
+  oMonth = oDate.getMonth()+1,
+  oDay = oDate.getDate(),
+  hour = oDate.getHours(),
+  min = oDate.getMinutes(),
+  sec = oDate.getSeconds()
+  return oYear+ "-" + getzf(oMonth) + "-" + getzf(oDay) + ' ' + getzf(hour) + ":" + getzf(min) + ":" + getzf(sec);
+}
 export {
   numToAbc,
   getCorrectAnswer,
@@ -245,4 +263,5 @@ export {
   NoToCh,
   urlSearch,
   readFile,
+  dateFormat,
 };
