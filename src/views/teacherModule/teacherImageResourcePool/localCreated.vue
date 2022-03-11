@@ -17,7 +17,7 @@
             >
               <a-select-option
                 :value="item"
-                v-for="(item, index) in ['Windows','Linux']"
+                v-for="(item, index) in image.image_classify"
                 :key="index.toString()"
               >
                 {{ item }}
@@ -107,6 +107,7 @@ import { useRouter } from "vue-router";
 import uploadImage from "./uploadImage.vue";
 import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
+import { json } from "stream/consumers";
 const http = (request as any).teacherImageResourcePool;
 interface ImageType {
   name: string;
@@ -116,6 +117,7 @@ interface ImageType {
   desc: any;
   fileName: any;
   fileSize: any;
+  image_classify:any
 }
 interface IState {
   config: any;
@@ -130,7 +132,7 @@ updata({
   showNav: true,
 });
 const rules = {
-  fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
+  // fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
   name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
   classify_id: [{ required: true, message: "请选择系统类型" }],
   tag: [
@@ -155,6 +157,7 @@ const image: ImageType = reactive({
   desc: "",
   fileSize: "",
   fileName: "",
+  image_classify:[]
 });
 const config: any = reactive({});
 const state: IState = reactive({
@@ -228,28 +231,32 @@ const create = () => {
   formRef.value.validate().then(() => {
     fileListValidator();
     const parmas = {
+      ostype: "docker" ,  
       name: image.name,
-      file_path: "/www/tusd/uploads/" + image.fileName,
-      file_size: image.fileSize,
+      // file_path: "/www/tusd/uploads/" + image.fileName,
+      // file_size: image.fileSize,
       classify_id: image.classify_id,
-      tag: image.tag,
+      tag: JSON.stringify(image.tag),
       description: image.desc,
-      ssh_user: " ",
-      ssh_pass: " ",
+      // ssh_user: " ",
+      // ssh_pass: " ",
       is_use_gpu: image.tag.indexOf(3) !== -1 ? 1 : 0,
     };
-    http.createMirrorApi(parmas).then((res: any) => {
+    console.log(parmas);
+    http.createMirrorApi({param:{...parmas}}).then((res: any) => {
+      message.success('创建成功')
       cancel();
     });
   });
 };
-const getConfig = () => {
+function getConfig() {
   http.getConfigApi().then((res: any) => {
-    state.config = res.data;
+    const { image_classify} = res.data;
+    image.image_classify=image_classify
   });
-};
+}
 onMounted(() => {
-  //  methods.getConfig()
+ getConfig()
 });
 </script>
 

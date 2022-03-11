@@ -16,27 +16,28 @@
           <!-- imgType 四种-->
           <div class="top flexCenter">
             <div class="left">
-              <div class="tit">{{v.image.name}}</div>
-              <div class="text single-ellipsis">镜像描述文字需省略</div>
+              <div class="tit">{{v.image && v.image.name}}</div>
+              <div class="text single-ellipsis">{{v.image && v.image.description}}</div>
               <div class="parameter flexCenter">
                 <div class="item">
                   <span>内存</span>
-                  <span>{{v.flavor.ram_text}}</span>
+                  <span>{{v.flavor && v.flavor.ram_text}}</span>
                 </div>
                 <div class="item">
                   <span>CPU</span>
-                  <span>{{v.flavor.cpu_text}}</span>
+                  <span>{{v.flavor && v.flavor.cpu_text}}</span>
                 </div>
                 <div class="item">
                   <span>硬盘</span>
-                  <span>{{v.flavor.disk_text}}</span>
+                  <span>{{v.flavor && v.flavor.disk_text}}</span>
                 </div>
                 <div class="item">
                   <span>GPU</span>
                   <span>{{v.use_gpu_text}}</span>
                 </div>
               </div>
-              <div class="name single-ellipsis">{{v.dataset[0].name}}</div>
+              <!-- <div class="name single-ellipsis">{{v.dataset[0]}}</div> -->
+              <div class="name single-ellipsis">数据集名称</div>
               <div
                 class="miaoshu single-ellipsis"
                 title="数据集描述数据集描述数据集描述数据集描述数据集描述"
@@ -48,7 +49,7 @@
               <div class="time">存活倒计时</div>
               <div class="flexCenter">
                 <div class="tian">{{v.is_permanent}}</div>
-                <!-- 天 -->
+                小时
               </div>
             </div>
           </div>
@@ -59,6 +60,7 @@
           </div>
         </div>
       </div>
+      <Empty v-if="!list.length && !loading" />
     </div>
   </a-spin>
 </template>
@@ -179,6 +181,9 @@ const initData = () => {
   loading.value = true;
   list.length=0
   http.getWorkBenchList().then((res: IBusinessResp) => {
+    // let arr=['docker-Linux','kvm-Linux','kvm-windows','KVM-ARM']
+    // ostype  classify
+    // let data=res.data.list
     list.push(...res.data.list);
     loading.value = false;
   });

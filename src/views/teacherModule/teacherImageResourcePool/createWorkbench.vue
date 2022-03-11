@@ -163,7 +163,7 @@ var reactiveData: any = reactive({
   showGPU: false,
   drawerVisible: false,
   selectedName: [], // 已经选择的数据集
-  loading: false,
+  // loading: false,
 });
 function disabledDate(current: any) {
   return current && current < moment().endOf("day");
@@ -225,46 +225,29 @@ const ContinueAdding = () => {
 const ruleFormDom = ref();
 // 创建
 function create() {
-  AddedSuccessfully.value = true;
-  return;
+  // AddedSuccessfully.value = true;
+  // return;
   ruleFormDom.value.validate().then(() => {
     let params: any = {
-      flavor: {},
+      flavor: {
+        // ...reactiveData.configs,
+        cpu:reactiveData.configs.cpu,
+        disk:reactiveData.configs.disk,
+        ram:reactiveData.configs.ram*1024
+      },
+      dataset_id :reactiveData.ruleForm.datasets,
+      start_time:moment(reactiveData.ruleForm.start_time).format("yyyy-MM-DD") + " 00:00:00",
+      end_time:moment(reactiveData.ruleForm.end_time).format("yyyy-MM-DD") +" 23:59:00",
+      image_id:reactiveData.ruleForm.image,  //reactiveData.ruleForm.image
+      use_gpu:reactiveData.configs.gpu?1:0
     };
-    params.dataset_id = reactiveData.ruleForm.datasets;
-    if (reactiveData.permanent) {
-      params.is_permanent = 1;
-      params.start_time = null;
-      params.end_time = null;
-    } else {
-      params.start_time =
-        moment(reactiveData.ruleForm.start_time).format("yyyy-MM-DD") +
-        " 00:00:00";
-      params.end_time =
-        moment(reactiveData.ruleForm.end_time).format("yyyy-MM-DD") +
-        " 23:59:00";
-    }
-    if (reactiveData.showGPU) {
-      params.use_gpu = reactiveData.ruleForm.openGPU ? 1 : 0;
-    } else {
-      params.use_gpu = 0;
-    }
-
-    params.image_id = reactiveData.ruleForm.image;
-    params.flavor.cpu = Number(reactiveData.ruleForm.cpu);
-    params.flavor.ram = Number(reactiveData.ruleForm.ram);
-    params.flavor.disk = Number(reactiveData.ruleForm.disk);
-    reactiveData.loading = true;
-    http.createWorkbenchApi(params).then((res: any) => {
+    console.log(params)
+    // reactiveData.loading = true;
+    http.createWorkbenchApi({param:{...params}}).then((res: any) => {
       message.success("创建成功!");
-      reactiveData.loading = false;
-      router.go(-1);
-      // router.push({
-      //   path: "/teacher/teacherImageResourcePool/OnlineMake",
-      //   query: {
-      //     currentTab: 0,
-      //   },
-      // });
+      AddedSuccessfully.value = true;
+      // reactiveData.loading = false;
+      // router.go(-1);
     });
   });
 }
@@ -290,34 +273,10 @@ function remove(val: any, index: number) {
 }
 
 function getConfig() {
-  getConfigApi().then((res: any) => {
+  http.getConfigApi().then((res: any) => {
     const { base_image, image_configs } = res.data;
     reactiveData.configs = image_configs;
     reactiveData.images = base_image;
-    const { cpu, disk, ram } = reactiveData.configs || {};
-    let cpuKeys: any[] = Object.keys(cpu);
-    let ramKeys: any[] = Object.keys(ram);
-    let diskKeys: any[] = Object.keys(disk);
-    for (let i = 0; i < cpuKeys.length; i++) {
-      if (i === 0) {
-        reactiveData.ruleForm.cpu = cpuKeys[i];
-        continue;
-      }
-    }
-
-    for (let i = 0; i < ramKeys.length; i++) {
-      if (i === 0) {
-        reactiveData.ruleForm.ram = ramKeys[i];
-        continue;
-      }
-    }
-
-    for (let i = 0; i < diskKeys.length; i++) {
-      if (i === 0) {
-        reactiveData.ruleForm.disk = diskKeys[i];
-        continue;
-      }
-    }
   });
 }
 const configChange = (val: any) => {

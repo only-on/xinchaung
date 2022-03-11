@@ -60,7 +60,7 @@
               >
                 <a-select-option
                   :value="item"
-                  v-for="(item, index) in ['Windows','Linux']"
+                  v-for="(item, index) in imageData.image_classify"
                   :key="item"
                 >
                   {{ item }}
@@ -202,6 +202,7 @@ const labelSearch = reactive({
 const searchFn = (key: string) => {
   fromData.page = 1;
   fromData.name = key;
+  totalCount.value=0
   let obj = {
     ...labelSearch,
     ...fromData,
@@ -281,9 +282,10 @@ var imageData:any=reactive({
 })
 var visible: Ref<boolean> = ref(false);
 const edit=(val:any)=>{
+  imageData.ostype= "docker" ,  
   imageData.id=val.id
   imageData.tags=val.tags
-  // imageData.classify=val.classify       // 字段未返
+  imageData.classify=val.classify?val.classify:'windows'       // 字段未返
   imageData.name=val.name
   imageData.description=val.description
 
@@ -296,9 +298,11 @@ const handleOk=()=> {
   // state.visible = false;
   let params: any = {
     ...imageData,
+    classify_id:imageData.classify,  // 后续改掉
     tags:JSON.stringify(imageData.tags)
   };
   http.editMyImage({param:{...params},urlParams:{imageID:imageData.id}}).then((res: any) => {
+    message.success('编辑成功')
     visible.value=false
     initData();
   });
@@ -344,8 +348,15 @@ function changeLabel() {
       ? imageData.customLabelV.slice(0, 10)
       : imageData.customLabelV;
 }
+function getConfig() {
+  http.getConfigApi().then((res: any) => {
+    const { image_classify} = res.data;
+    imageData.image_classify=image_classify
+  });
+}
 onMounted(() => {
   initData();
+  getConfig()
 });
 
 </script>
