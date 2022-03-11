@@ -46,7 +46,7 @@ export default defineComponent({
   setup: (props, { emit }) => {
     let ForumSearch = reactive<IForumSearch>({
       title: "",
-      type: 1,
+      type: '',
     });
     let labelList: Ref = computed(() => inject("labelList"));
     let classifyList = reactive([
@@ -61,16 +61,19 @@ export default defineComponent({
     watch(props.tagList, (val) => {
       console.log(val)
       val.length ? classifyList[0].value = val[0].name : ''
+      ForumSearch.type = val.length ? classifyList[0].value = val[0].name : '';
+      emit("search", ForumSearch);
     })
     function search() {
       emit("search", ForumSearch);
     }
-    function changeLabel(val: number) {
-      ForumSearch.type = val;
-      emit("search", ForumSearch);
-    }
+    // function changeLabel(val: number) {
+    //   ForumSearch.type = val;
+    //   emit("search", ForumSearch);
+    // }
     const classifyChange = (obj: any) => {
-      ForumSearch.type = obj.type;
+      console.log(obj)
+      ForumSearch.type = obj.label;
       emit("search", ForumSearch);
     };
 
@@ -80,7 +83,7 @@ export default defineComponent({
       ForumSearch,
       search,
       labelList,
-      changeLabel,
+      // changeLabel,
       classifyList,
       classifyChange,
     };

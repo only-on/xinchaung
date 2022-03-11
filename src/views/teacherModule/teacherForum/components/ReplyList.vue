@@ -13,30 +13,38 @@
     </div>
     <div class="reply">
       <div class="reply-info" v-html="list.content"></div>
-      <div class="reply-btn">
+      <div class="reply-btn" v-if="!list.pid">
         <span class="pointer" @click="isReply = !isReply">回应</span>
-        <span class="pointer view" @click="clickViewReply(list)">查看回复</span>
+        <span 
+          class="pointer view" 
+          @click="clickViewReply(list)" 
+          v-if="!list.pid"
+          :class="{'no': !list.second_reply_number_count}"
+        >
+          <span class="reply-num" v-if="!viewReply">{{list.second_reply_number_count}}</span>
+           {{!viewReply ? '查看回应' : '收起回应'}}
+        </span>
       </div>
       <div class="reply-box" v-if="isReply">
         <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user_name" />
         <span class="pointer" @click="submitReply(list)">回应</span>
         <!-- <a-button type="primary">回应</a-button> -->
       </div>
+      <a-spin :spinning="loading" tip="Loading...">
       <div class="reply-reply" v-if="viewReply">
-        <!--  tip="Loading..." -->
-        <a-spin :spinning="loading" size="large" tip="Loading...">
+        <!--  tip="Loading... size="large"" -->
         <reply-list 
           v-for="item in replyList" 
           :key="item.id" 
           :list="item" 
           :replyUserName="list.user_name"
         ></reply-list>
-        </a-spin>
         <!-- <reply-list></reply-list> -->
-        <div class="reply-all" v-if="totalReply !== replyList.length" @click="clickLoadingMore(list)">
-          <span class="pointer">查看全部7条回应</span>
+        <div class="reply-all" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(list)">
+          <span class="pointer">加载更多回应</span>
         </div>
       </div>
+      </a-spin>
     </div>
   </div>
 </template>
@@ -87,52 +95,62 @@ export default defineComponent({
       let param = {
         content: replyContent.value,
         id: list.forum_id,
-        reply_id: list.id
+        pid: list.id
       }
       http.replyForum({param}).then((res: IBusinessResp) => {
         console.log(res)
+        isReply.value = false
         replyContent.value = ''
+        replyList.length = 0
+        page.value = 1
         getReplyList(list.forum_id,  list.id)
+        props.list.second_reply_number_count ++
       })
     }
 
     // 回应内容
     let replyList = reactive<IReplyList[]>([])
+    const page = ref(1)
     const loading = ref(false)
     const totalReply = ref(0)
     function getReplyList(id: number, pid: number) {
       loading.value = true
       let param = {
-        reply_id: pid
+        page: page.value,
+        pid
       }
       http.getReplyList({urlParams: {id}, param}).then((res: IBusinessResp) => {
         console.log(res)
         loading.value = false
-        const { data, num } = res.data
-        totalReply.value = num
-        data.forEach((v: IForumnList) => {
-          v.user_name = v.user_name ? v.user_name : '回帖2'
+        const { list, page } = res.data
+        totalReply.value = page.totalCount
+        list.data.forEach((v: IReplyList) => {
+          v.user_name = v.user_name ? v.user_name : '用户名'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
-        replyList.push(...data)
+        replyList.push(...list.data)
       }).catch(() => {
-        let arr = [
-          {"id": 1,"content": "<p>看到楼主发的，犹如醍醐灌顶~ 感谢了！</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "张三", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-          {"id": 2,"content": "<p>testets222222222</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "sfasdf", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-          {"id": 3,"content": "<p>testets3333333</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "asfahjg", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        ]
-        replyList.push(...arr)
+        // let arr = [
+        //   {"id": 1,"content": "<p>看到楼主发的，犹如醍醐灌顶~ 感谢了！</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "张三", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+        //   {"id": 2,"content": "<p>testets222222222</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "sfasdf", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+        //   {"id": 3,"content": "<p>testets3333333</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "asfahjg", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
+        // ]
+        // replyList.push(...arr)
       })
     }
 
     // 查看回复
     const viewReply = ref(false)
-    function clickViewReply(list: {id: number, forum_id: number}) {
-      viewReply.value = true
-      getReplyList(list.forum_id,  list.id)
+    function clickViewReply(list: IReplyList) {
+      if (!list.second_reply_number_count) return
+      viewReply.value = !viewReply.value
+      replyList.length = 0
+      page.value = 1
+      viewReply.value ? getReplyList(list.forum_id,  list.id) : ''
     }
     // 加载更多
     const clickLoadingMore = (list: {id: number, forum_id: number}) => {
+      page.value ++
       getReplyList(list.forum_id,  list.id)
     }
     onMounted(() => {
@@ -166,7 +184,7 @@ export default defineComponent({
   }
   &:hover {
     .reply-btn .view {
-      display: inline-block;
+      // display: inline-block;
     }
   }
 }
@@ -204,6 +222,13 @@ export default defineComponent({
     .view {
       margin-left: 16px;
       // display: none;
+      &.no {
+        color: var(--black-45);
+        cursor: default;
+      }
+    }
+    .reply-num {
+      color: var(--black-45);
     }
   }
   .reply-box {
@@ -232,5 +257,8 @@ export default defineComponent({
       color: var(--black-65);
     }
   }
+}
+.ant-spin-nested-loading {
+  min-height: 80px;
 }
 </style>

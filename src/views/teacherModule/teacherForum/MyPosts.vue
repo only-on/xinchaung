@@ -54,7 +54,7 @@ export default defineComponent({
       title: "",
       pageSize: 10,
       page: 1,
-      type: 1,
+      type: '',
     });
     const loading = ref(false)
     let forumnList = reactive<IForumnList[]>([]);
@@ -67,9 +67,9 @@ export default defineComponent({
         page: forumSearch.page,
         limit: forumSearch.pageSize,
         type: forumSearch.type,
-        keyword: forumSearch.title
+        // keyword: forumSearch.title
       }
-      http.getForumList({param}).then((res: IBusinessResp) => {
+      http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
         console.log(res)
         loading.value = false
         forumnList.length = 0
@@ -154,7 +154,7 @@ export default defineComponent({
 
     onMounted(() => {
       getTagsList({self: 1})
-      initData();
+      // initData();
     });
     return {
       currentTab,

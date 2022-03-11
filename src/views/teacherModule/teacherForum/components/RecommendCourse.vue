@@ -55,7 +55,15 @@ export default defineComponent({
       })
     }
     onMounted(() => {
-      getRecommendList()
+      // getRecommendList()
+      let arr = [
+        { id: 1, name: "Python3 机器学习1", learned_count: 124, url: "" },
+        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
+        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
+        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
+        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
+      ]
+      courseList.push(...arr)
     })
     return {
       courseList,

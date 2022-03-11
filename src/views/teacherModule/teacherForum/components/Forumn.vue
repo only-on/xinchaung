@@ -4,7 +4,7 @@
       <forumn-list :item="item" @readAllText="readAllText"></forumn-list>
     </div>
   </div>
-  <div class="forumn-pagination">
+  <div class="forumn-pagination" v-if="total">
     <a-pagination
       :total="total"
       :current="pageInfo.page"

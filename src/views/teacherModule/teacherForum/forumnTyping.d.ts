@@ -1,6 +1,6 @@
 export interface IForumSearch {
   title: string;
-  type: number;
+  type: string;
   page?: number;
   pageSize?: number;
 }
@@ -11,7 +11,7 @@ export interface IForumnList {
   content: string;
   user_name: string;
   avatar: string;
-  createTime: string;
+  created_at: number;
   views: number;
   reply_number_count: number
   isAllText: boolean;
@@ -40,6 +40,7 @@ export interface IReplyList {
   forum_id: number
   user_name: string
   avatar: string
+  second_reply_number_count: number
   created_at: number
   updated_at: number
   deleted_at: null

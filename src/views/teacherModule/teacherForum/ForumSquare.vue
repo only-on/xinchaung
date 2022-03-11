@@ -58,7 +58,7 @@ export default defineComponent({
       title: "",
       pageSize: 10,
       page: 1,
-      type: 1,
+      type: '',
     });
     const loading = ref(false)
     const total = ref(0)
@@ -70,10 +70,10 @@ export default defineComponent({
         page: forumSearch.page,
         limit: forumSearch.pageSize,
         type: forumSearch.type,
-        keyword: forumSearch.title
+        // keyword: forumSearch.title
       }
       // 获取帖子列表
-      http.getForumList({param}).then((res: IBusinessResp) => {
+      http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
         console.log(res)
         loading.value = false
         const { list, page } = res.data
@@ -135,7 +135,7 @@ export default defineComponent({
 
     onMounted(() => {
       getTagsList()
-      initData();
+      // initData();
       getHotLabels()
     });
     // 常驻类型
@@ -156,15 +156,7 @@ export default defineComponent({
     provide("hotLabelList", hotLabelList)
     const getHotLabels = () => {
       http.getHotLabels().then((res: IBusinessResp) => {
-        console.log(res)
-      }).catch(() => {
-        let arr = [
-          {id: 1, name: 'bootstrap', count: 1},
-          {id: 2, name: 'C++基础', count: 2},
-          {id: 3, name: 'Jave', count: 3},
-          {id: 4, name: '大学计算机基础', count: 4},
-        ]
-        hotLabelList.push(...arr)
+        hotLabelList.push(...res.data)
       })
     }
 

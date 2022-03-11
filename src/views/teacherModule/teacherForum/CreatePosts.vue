@@ -21,8 +21,8 @@
               v-model:value="formState.type"
               placeholder="请选择帖子类型"
             >
-              <a-select-option value="1">求助</a-select-option>
-              <a-select-option value="2">分享</a-select-option>
+              <a-select-option :value="item.name" v-for="item in tagList" :key="item.name">{{item.name}}</a-select-option>
+              <!-- <a-select-option value="2">分享</a-select-option> -->
             </a-select>
           </a-form-item>
           <a-form-item label="添加标签" name="label">
@@ -56,7 +56,7 @@
             </div>
           </a-form-item>
         </div>
-        <a-form-item>
+        <a-form-item name="content">
           <div class="text">
             <QuillEditor
               v-model="formState.content"
@@ -102,7 +102,8 @@ import HotLabel from "./components/HotLabel.vue";
 import HeatMap from "./components/HeatMap.vue";
 import RecommendCourse from "./components/RecommendCourse.vue";
 import Submit from "src/components/submit/index.vue";
-import { ILabelList } from "./forumnTyping.d";
+import { goHtml } from "src/utils/common";
+import { ILabelList, ITagList } from "./forumnTyping.d";
 const http = (request as any).teacherForum;
 interface IFormState {
   title: string;
@@ -156,6 +157,14 @@ function removeLabel(val: string) {
   }
 }
 
+const contentValidator = (rule: any, value: Delta) => {
+  console.log(goHtml(JSON.stringify(value)))
+  if (value.ops && value.ops.length) {
+    return Promise.resolve();
+  } else {
+    return Promise.reject("请输入帖子内容");
+  }
+}
 const rules = {
   title: [
     { required: true, message: "请输入帖子名称", trigger: "change" },
@@ -165,7 +174,8 @@ const rules = {
     { required: true, message: "请选择帖子类型", trigger: "change" },
   ],
   content: [
-    { required: true, message: "请输入帖子内容", trigger: "blur" },
+    // { required: true, message: "请输入帖子内容", trigger: "blur" },
+    { validator: contentValidator, message: "请输入帖子内容" },
   ],
 }
 const formRef = ref()
@@ -201,21 +211,29 @@ const cancel = () => {
 onMounted(() => {
   getHotLabels()
   editId ? getDetail() : "";
+  getTagsList({self: 1})
 });
 // 热门标签
 const hotLabelList = reactive<ILabelList[]>([])
 provide("hotLabelList", hotLabelList)
 const getHotLabels = () => {
   http.getHotLabels().then((res: IBusinessResp) => {
+    hotLabelList.push(...res.data)
+  })
+}
+
+// 常驻类型
+let tagList = reactive<ITagList[]>([])
+const getTagsList = (param: any) => {
+  console.log(param)
+  tagList.length = 0
+  http.getForumTags({param}).then((res: IBusinessResp) => {
     console.log(res)
-  }).catch(() => {
-    let arr = [
-      {id: 1, name: 'bootstrap', count: 1},
-      {id: 2, name: 'C++基础', count: 2},
-      {id: 3, name: 'Jave', count: 3},
-      {id: 4, name: '大学计算机基础', count: 4},
-    ]
-    hotLabelList.push(...arr)
+    const { data } = res
+    data.forEach((v: ITagList) => {
+      v.value = v.name
+    })
+    tagList.push(...data)
   })
 }
 </script>

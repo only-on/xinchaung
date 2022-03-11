@@ -25,12 +25,12 @@ export default defineComponent({
   name: "HotLabel",
   setup: (props, { emit }) => {
     let hotLabelList: ILabelList[] = inject('hotLabelList') as any
-    let labelList = reactive([
-      { id: 1, name: "Bootstrap" },
-      { id: 2, name: "C++基础" },
-      { id: 3, name: "Java" },
-      { id: 4, name: "大学计算机基础" },
-    ]);
+    // let labelList = reactive([
+    //   { id: 1, name: "Bootstrap" },
+    //   { id: 2, name: "C++基础" },
+    //   { id: 3, name: "Java" },
+    //   { id: 4, name: "大学计算机基础" },
+    // ]);
     return {
       hotLabelList
     };
@@ -53,6 +53,7 @@ export default defineComponent({
       border-radius: 12px;
       color: var(--primary-color);
       letter-spacing: 0.34px;
+      background-color: var(--white);
     }
   }
 }

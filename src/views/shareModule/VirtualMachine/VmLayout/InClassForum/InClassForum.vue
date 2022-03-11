@@ -63,7 +63,7 @@ interface IForumnList {
   content: string;
   user_name: string;
   avatar: string;
-  createTime: string;
+  created_at: number;
   views: number;
   reply_number_count: number;
   isAllText: boolean;

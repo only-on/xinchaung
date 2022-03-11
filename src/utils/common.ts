@@ -249,6 +249,13 @@ const dateFormat = (str: any) => {
   min = oDate.getMinutes(),
   sec = oDate.getSeconds()
   return oYear+ "-" + getzf(oMonth) + "-" + getzf(oDay) + ' ' + getzf(hour) + ":" + getzf(min) + ":" + getzf(sec);
+} 
+const dateFormat1 = (str: any) => {
+  let oDate = new Date(str),
+  oYear = oDate.getFullYear(),
+  oMonth = oDate.getMonth()+1,
+  oDay = oDate.getDate()
+  return oYear+ "/" + getzf(oMonth) + "/" + getzf(oDay);
 }
 export {
   numToAbc,
@@ -264,4 +271,5 @@ export {
   urlSearch,
   readFile,
   dateFormat,
+  dateFormat1,
 };
