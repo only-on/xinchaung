@@ -121,6 +121,15 @@ export default defineComponent({
     }
     const route = useRoute();
     var menus: any[] = reactive([]);
+    let forum={
+      children: [],
+      icon: "",
+      id: 169,
+      name: "论坛",
+      parent_id: 0,
+      sort: 9,
+      url: "/teacher/teacherForum",
+    }
     let center = {
       icon: "",
       id: 170,
@@ -157,6 +166,7 @@ export default defineComponent({
       url: "/teacher/teacherMaterialResource",
       children: [],
     };
+    menus.push(forum);
     menus.push(center);
     menus.push(material);
     var systemBaseInfo: any = reactive({

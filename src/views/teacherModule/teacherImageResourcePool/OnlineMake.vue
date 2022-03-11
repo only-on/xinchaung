@@ -214,6 +214,7 @@ onMounted(() => {
 .mainBox {
   flex-wrap: wrap;
   margin-top: 1rem;
+  min-height: 200px;
   .imageBox {
     width: 33.33%;
     margin-bottom: 1rem;

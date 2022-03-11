@@ -182,10 +182,6 @@ const classifyList: any = reactive([
     keyName: "tags",
     data: [
       { name: "全部", value:"" },
-      { name: "数据标注", value: "数据标注"},
-      { name: "目标监测", value: "目标监测" },
-      { name: "数据标注", value: 3 },
-      { name: "目标监测", value: 4 },
     ],
   },
 ]);
@@ -354,9 +350,19 @@ function getConfig() {
     imageData.image_classify=image_classify
   });
 }
+function getImgTag() {
+  http.getImgTag().then((res: any) => {
+    let  data= res.data;
+    data.forEach((v:any) => {
+      classifyList[1].data.push({name:v.name,value:v.name})
+    });
+    // classifyList
+  });
+}
 onMounted(() => {
   initData();
   getConfig()
+  getImgTag()
 });
 
 </script>
@@ -381,6 +387,7 @@ onMounted(() => {
 .mainBox {
   flex-wrap: wrap;
   justify-content: space-between;
+  min-height: 200px;
   .item {
     width: 580px;
     height: 200px;
