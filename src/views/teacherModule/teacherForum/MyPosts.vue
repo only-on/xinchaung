@@ -50,6 +50,10 @@ export default defineComponent({
   setup: (props, { emit }) => {
     const route = useRoute();
     let currentTab = ref<number>(0);
+    const httpList = {
+      0: 'getForumList',
+      1: 'getAttendList'
+    }
     let forumSearch = reactive<IForumSearch>({
       title: "",
       pageSize: 10,
@@ -69,7 +73,7 @@ export default defineComponent({
         type: forumSearch.type,
         // keyword: forumSearch.title
       }
-      http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
+      http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
         console.log(res)
         loading.value = false
         forumnList.length = 0

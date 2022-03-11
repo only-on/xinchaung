@@ -4,6 +4,10 @@ export interface IForumSearch {
   page?: number;
   pageSize?: number;
 }
+interface IUser {
+  id: number
+  username: string
+}
 export interface IForumnList {
   id: number;
   title: string;
@@ -15,6 +19,7 @@ export interface IForumnList {
   views: number;
   reply_number_count: number
   isAllText: boolean;
+  user: IUser
 }
 export interface ILabel {
   value: number;

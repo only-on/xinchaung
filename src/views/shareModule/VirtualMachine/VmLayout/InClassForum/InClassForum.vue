@@ -50,23 +50,12 @@ import {
 import request from "src/request/getRequest";
 import empty from "src/components/Empty.vue";
 import Forumn from "src/views/teacherModule/teacherForum/components/Forumn.vue";
+import { IForumnList } from "src/views/teacherModule/teacherForum/forumnTyping.d"
 interface Iparams {
   title: string;
   type: string;
   pageSize: number;
   page: number;
-}
-interface IForumnList {
-  id: number;
-  title: string;
-  desc: string;
-  content: string;
-  user_name: string;
-  avatar: string;
-  created_at: number;
-  views: number;
-  reply_number_count: number;
-  isAllText: boolean;
 }
 export default defineComponent({
   components: {
