@@ -1,7 +1,7 @@
 import { TFHttpSend } from "./getRequest";
 import { TDataType } from "./fetch";
 import { IForumAps } from "src/api/modules/studentForum";
-import { ITeacherForum } from "src/api/modules/teacherForum";
+import { ITeacherForum } from "src/api/teacher/teacherForum";
 import { IStudentCourseAps } from "src/api/modules/studentCourse";
 import { ICommonAps } from "src/api/modules/common";
 import { IPersonalInformationlAps } from "src/api/modules/personalInformation";
