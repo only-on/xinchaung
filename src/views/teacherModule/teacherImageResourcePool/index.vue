@@ -11,7 +11,7 @@
       <div class="item flexCenter" v-for="(v, k) in list" :key="v" :class="v.is_init?'':'operable'">
         <div class="left">
           <div class="img" :class="v.is_init? '' : 'KVMImg'">
-            <div class="type">镜像类型：{{v.ostypes}}</div>
+            <div class="type">镜像类型：{{v.ostype}}</div>
             <div class="type">架构信息：{{v.architecture}}</div>
           </div>
           <div class="Belonging" :class="v.is_init ? '' : 'myImg'">
@@ -55,7 +55,7 @@
             <a-form-item required label="系统类型">
               <a-select
                 class="form-input"
-                v-model:value="imageData.classify"
+                v-model:value="imageData.classify_id"
                 placeholder="请选择系统类型"
               >
                 <a-select-option
@@ -92,11 +92,11 @@
             <div class="recommend" v-if="showTag">
               <div class="tit">或从推荐中选择</div>
               <div class="tagBox">
-                <div v-for="v in 10" :key="v">
+                <div v-for="v in recommend" :key="v">
                   <span
-                    @click="addTag(v)"
-                    :class="imageData.tags.includes(v) ? 'act' : ''"
-                    >默认标签1</span
+                    @click="addTag(v.value)"
+                    :class="imageData.tags.includes(v.value) ? 'act' : ''"
+                    >{{v.value}}</span
                   >
                 </div>
               </div>
@@ -118,7 +118,7 @@
 </template>
 <script lang="ts" setup>
 import Submit from "src/components/submit/index.vue";
-import classify from "src/components/classify/index.vue";
+import Classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import {
   createVNode,
@@ -230,6 +230,7 @@ const pageChange = async (pageNumber: number) => {
 const initData = () => {
   loading.value = true;
   list.length=0
+  totalCount.value=0
   let obj={
     ...fromData,
     ...labelSearch
@@ -273,7 +274,7 @@ var imageData:any=reactive({
   tags:[],
   customLabelV:'',
   name:'',
-  classify:'',
+  classify_id:'',
   description:''
 })
 var visible: Ref<boolean> = ref(false);
@@ -281,7 +282,7 @@ const edit=(val:any)=>{
   imageData.ostype= "docker" ,  
   imageData.id=val.id
   imageData.tags=val.tags
-  imageData.classify=val.classify?val.classify:'windows'       // 字段未返
+  imageData.classify_id=val.classify      
   imageData.name=val.name
   imageData.description=val.description
 
@@ -294,8 +295,6 @@ const handleOk=()=> {
   // state.visible = false;
   let params: any = {
     ...imageData,
-    classify_id:imageData.classify,  // 后续改掉
-    tags:JSON.stringify(imageData.tags)
   };
   http.editMyImage({param:{...params},urlParams:{imageID:imageData.id}}).then((res: any) => {
     message.success('编辑成功')
@@ -350,11 +349,13 @@ function getConfig() {
     imageData.image_classify=image_classify
   });
 }
+const recommend:any=reactive([])
 function getImgTag() {
   http.getImgTag().then((res: any) => {
     let  data= res.data;
     data.forEach((v:any) => {
       classifyList[1].data.push({name:v.name,value:v.name})
+      recommend.push({name:v.name,value:v.name})
     });
     // classifyList
   });

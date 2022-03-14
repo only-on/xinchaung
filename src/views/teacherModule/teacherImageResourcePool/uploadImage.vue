@@ -151,7 +151,7 @@ export default defineComponent({
               "upload-imageinfo",
               state.name,
               state.size,
-              FileConfig.ProjectPath + name + "." + type
+              FileConfig.ProjectPath+ "/" + name + "." + type
             );
           },
         });

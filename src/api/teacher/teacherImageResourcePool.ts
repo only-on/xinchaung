@@ -5,7 +5,7 @@ export default {
   imagesList: { url: `/api/env/images`, method: "GET" },
   imgCopy: { url: `/api/env/images/copy/{imageID}`, method: "POST" },
   deleteImg: { url: `/api/env/images/{imageID}`, method: "DELETE" },
-  editMyImage: { url: `/api/env/images/{imageID}`, method: "put" },
+  editMyImage: { url: `/api/env/images/{imageID}`, method: "put" ,dataType: 'json'},
   getWorkBenchList: { url: `/api/env/workbenchs`, method: "GET" },
   createWorkbenchApi:{ url: `/api/env/workbenchs`, method: "POST" ,dataType: 'json'},
   GenerateImage:{ url: `/api/env/workbenchs/image/{imageID}`, method: "POST" ,dataType: 'json'},

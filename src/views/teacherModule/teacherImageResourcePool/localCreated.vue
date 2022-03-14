@@ -144,7 +144,7 @@ const rules = {
   ],
 };
 async function fileListValidator() {
-  console.log(image);
+  // console.log(image);
   if (image.tag.length === 0) {
     message.warn("请选择镜像标签");
     return Promise.reject();
@@ -218,16 +218,14 @@ const uploadImageinfo = (name: any, size: any, url: any) => {
   image.file_path=url
   image.fileName = name;
   image.fileSize = size;
-  image.imageType = image.fileName.split(".")[
-          image.fileName.split(".").length - 1
-        ];
+  image.imageType = image.fileName.split(".")[ image.fileName.split(".").length - 1];
   image.fileName.split(".")[image.fileName.split(".").length - 1];
   // image.classify_id = image.imageType === "qcow2" ? image.image_classify[2].name : image.image_classify[1].name;
   // console.log(image)
   // tusFileUpload(file)
 };
 const cancel = () => {
-  console.log("取消");
+  // console.log("取消");
   router.go(-1)
   // router.push({
   //   path: "/teacher/Workbench",
@@ -237,7 +235,7 @@ const cancel = () => {
   // });
 };
 const create = () => {
-  console.log("提交");
+  // console.log("提交");
   // console.log(formRef.value)
   // fileListValidator()
   // return
@@ -249,7 +247,7 @@ const create = () => {
       file_path: image.file_path,
       file_size: image.fileSize,
       classify_id: image.classify_id,
-      tag: image.tag,
+      tags: image.tag,
       description: image.desc,
       // ssh_user: " ",
       // ssh_pass: " ",
