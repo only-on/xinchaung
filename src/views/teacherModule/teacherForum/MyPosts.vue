@@ -15,7 +15,7 @@
       </div>
       <div class="right">
         <a-spin :spinning="loading" size="large" tip="Loading...">
-        <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
+        <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
         </a-spin>
       </div>
     </div>
@@ -40,6 +40,7 @@ import { goHtml } from "src/utils/common";
 import { IForumSearch, IForumnList, ITagList } from "./forumnTyping.d";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { removeHtmlTag, fixHtml} from 'src/utils/htmlLabel'
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumSquare",
@@ -80,6 +81,7 @@ export default defineComponent({
         const { list, page } = res.data
         list.forEach((v: IForumnList) => {
           v.content = goHtml(v.content)
+          v.desc = fixHtml(removeHtmlTag(v.content).substr(0, 200))
           v.user_name = v.user_name ? v.user_name : '用户名'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
@@ -91,6 +93,7 @@ export default defineComponent({
       console.log(params);
       forumSearch.title = params.title;
       forumSearch.type = params.type;
+      forumSearch.page = 1
       initData();
     }
     // 页码变化
@@ -145,6 +148,7 @@ export default defineComponent({
       tagList,
       total,
       loading,
+      forumSearch,
     };
   },
 });

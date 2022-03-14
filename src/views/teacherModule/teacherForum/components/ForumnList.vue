@@ -1,12 +1,13 @@
 <template>
   <h3 class="title">{{ item.title }}</h3>
-  <div class="content">
-    <span class="desc" v-html="item.content"></span>
-    <span class="read-btn pointer"  v-if="!item.isAllText" @click="readAllText(item.id)"
+  <div class="content" v-if="!item.isAllText">
+    <span class="desc" v-html="item.desc"></span>
+    <span>...</span>
+    <span class="read-btn pointer" @click="readAllText(item.id)"
       >阅读全文<i class="iconfont icon-zhankai"></i
     ></span>
   </div>
-  <!-- <div class="content" v-html="item.content"></div> -->
+  <div class="content" v-else v-html="item.content"></div>
   <div class="user-info">
     <img :src="item.avatar" alt="" />
     <span class="user-name">{{ item.user.username }}</span>
@@ -168,6 +169,7 @@ export default defineComponent({
   .read-btn {
     color: var(--primary-color);
     margin-left: 12px;
+    white-space: nowrap;
     .iconfont {
       font-size: 14px;
       margin-left: 6px;
