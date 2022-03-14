@@ -59,9 +59,9 @@ export default defineComponent({
       },
     ]);
     watch(props.tagList, (val) => {
-      console.log(val)
-      val.length ? classifyList[0].value = val[0].name : ''
-      ForumSearch.type = val.length ? classifyList[0].value = val[0].name : '';
+      if (!val.length) return
+      val.length ? classifyList[0].value = val[0].name : '';
+      ForumSearch.type = val.length ? val[0].name : '';
       emit("search", ForumSearch);
     })
     function search() {

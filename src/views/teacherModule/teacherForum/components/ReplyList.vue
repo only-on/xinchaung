@@ -3,7 +3,7 @@
     <div class="user-info">
       <div class="left">
         <img :src="list.avatar" alt="" />
-        <span class="user-name">{{list.user_name}}</span>
+        <span class="user-name">{{list.user ? list.user.username : 'abc'}}</span>
         <span class="rep" v-if="replyUserName">回应</span>
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
       </div>
@@ -37,7 +37,7 @@
           v-for="item in replyList" 
           :key="item.id" 
           :list="item" 
-          :replyUserName="list.user_name"
+          :replyUserName="list.user.username"
         ></reply-list>
         <!-- <reply-list></reply-list> -->
         <div class="reply-all" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(list)">

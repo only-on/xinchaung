@@ -50,4 +50,5 @@ export interface IReplyList {
   created_at: number
   updated_at: number
   deleted_at: null
+  user: IUser
 }

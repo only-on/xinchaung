@@ -105,7 +105,7 @@ export default defineComponent({
     //
     function tabChange(id: number) {
       currentTab.value = id;
-      initData();
+      // initData();
       id === 0 ? getTagsList({self: 1}) : (id === 1 ? getTagsList({}) : '')
     }
     // 常驻类型
