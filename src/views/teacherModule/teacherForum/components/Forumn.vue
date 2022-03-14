@@ -7,8 +7,8 @@
   <div class="forumn-pagination" v-if="total">
     <a-pagination
       :total="total"
-      :current="pageInfo.page"
-      :pageSize="pageInfo.pageSize"
+      :current="forumSearch.page"
+      :pageSize="forumSearch.pageSize"
       @change="pageChange"
     >
       <!-- <template #itemRender="{ page, type, originalElement }">
@@ -34,7 +34,7 @@ import {
   PropType,
 } from "vue";
 import ForumnList from "./ForumnList.vue";
-import { IForumnList } from "./../forumnTyping.d";
+import { IForumnList, IForumSearch } from "./../forumnTyping.d";
 // function renderVNode(
 //   _: any,
 //   { attrs: { vnode } }: { attrs: { vnode: VNode } }
@@ -57,6 +57,10 @@ export default defineComponent({
     total: {
       type: Number,
       default: 0
+    },
+    forumSearch: {
+      type: Object as PropType<IForumSearch>,
+      default: {}
     }
   },
   emits: ["pageChange"],
