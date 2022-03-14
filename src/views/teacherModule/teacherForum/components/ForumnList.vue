@@ -120,13 +120,6 @@ export default defineComponent({
         })
         replyList.push(...list.data)
         totalReply.value = page.totalCount
-      }).catch(() => {
-        // let arr = [
-        //   {"id": 1,"content": "<p>看到楼主发的，犹如醍醐灌顶~ 感谢了！</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "张三", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        //   {"id": 2,"content": "<p>testets222222222</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "sfasdf", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        //   {"id": 3,"content": "<p>testets3333333</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "asfahjg", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        // ]
-        // replyList.push(...arr)
       })
     }
     onMounted(() => {

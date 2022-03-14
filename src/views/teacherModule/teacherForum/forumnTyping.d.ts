@@ -7,6 +7,7 @@ export interface IForumSearch {
 interface IUser {
   id: number
   username: string
+  avatar: string
 }
 export interface IForumnList {
   id: number;

@@ -8,7 +8,7 @@
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
       </div>
       <div class="right">
-        <span>{{dateFormat(list.created_at * 1000)}}</span>
+        <span>{{getTimer(list.created_at * 1000)}}</span>
       </div>
     </div>
     <div class="reply">
@@ -32,7 +32,7 @@
       </div>
       <a-spin :spinning="loading" tip="Loading...">
       <div class="reply-reply" v-if="viewReply">
-        <!--  tip="Loading... size="large"" -->
+        <!--  tip="Loading..." size="large" -->
         <reply-list 
           v-for="item in replyList" 
           :key="item.id" 
@@ -63,7 +63,7 @@ import {
 } from "vue";
 import { IForumnList, IReplyList } from "./../forumnTyping.d";
 // import ReplyList from './ReplyList.vue'
-import { dateFormat } from 'src/utils/common'
+import { dateFormat, getTimer } from 'src/utils/common'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 const http = (request as any).teacherForum;
@@ -166,6 +166,7 @@ export default defineComponent({
       clickViewReply,
       loading,
       dateFormat,
+      getTimer,
       totalReply,
       clickLoadingMore,
     };
