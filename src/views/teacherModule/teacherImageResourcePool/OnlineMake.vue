@@ -55,7 +55,8 @@
           </div>
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
-            <a-button type="text" @click="enterFun(v)">进入</a-button>
+            <!-- <a-button type="text" :loading="v.generateLoad" @click="enterFun(v)">进入</a-button> -->
+            <a-button :type="v.status?'link':'text'" :loading="v.status"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
             <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
           </div>
         </div>
@@ -114,17 +115,20 @@ const getClass = (k: number) => {
   }
   return str;
 };
-var generateLoad: Ref<boolean> = ref(false);
+
 const enterFun = (val: any) => {
-  let tags: any[] = val.image.tag;
+  let tags: any[] = val.image.tags;
   let id = val.id;
-  let status = val.vm.status;
-  if (status === 0) {
-    message.warn("请先开启工作台，在重新进入");
-    return;
-  }
-  http.getWorkbenchInfoApi({urlParams:{imageID:val.id}}).then((res: any) => {
-    if (res?.code === 1) {
+  val.status=true
+  // let status = val.vm.status;
+
+  // if (status === 0) {
+  //   message.warn("请先开启工作台，在重新进入");
+  //   return;
+  // }
+  // {urlParams:{imageID:val.id}}
+ getWorkbenchInfoApi({id:val.id}).then((res: any) => {
+      val.status=false
       if (tags.indexOf("Notebook") > -1) {
         const { href } = router.resolve({
           path: "/teacher/Workbench/open-jupyte",
@@ -142,7 +146,6 @@ const enterFun = (val: any) => {
         });
         window.open(href, "_blank");
       }
-    }
   });
 };
 const deleteFun = (val: any) => {
@@ -167,6 +170,7 @@ const GenerateImage = (val: any) => {
   }
   val.generateLoad=true
   http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
+    message.success("生成成功");
    val.generateLoad=false
   });
 };
@@ -182,6 +186,7 @@ const initData = () => {
     let data=res.data.list
     data.map((v:any)=>{
       v.generateLoad=false
+      v.status=false
     })
     list.push(...data);
     loading.value = false;
