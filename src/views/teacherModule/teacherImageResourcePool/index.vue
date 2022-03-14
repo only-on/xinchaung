@@ -59,11 +59,11 @@
                 placeholder="请选择系统类型"
               >
                 <a-select-option
-                  :value="item"
+                  :value="item.name"
                   v-for="(item, index) in imageData.image_classify"
                   :key="item"
                 >
-                  {{ item }}
+                  {{ item.name }}
                 </a-select-option>
               </a-select>
             </a-form-item>

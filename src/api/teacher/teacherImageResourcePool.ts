@@ -8,13 +8,15 @@ export default {
   editMyImage: { url: `/api/env/images/{imageID}`, method: "put" },
   getWorkBenchList: { url: `/api/env/workbenchs`, method: "GET" },
   createWorkbenchApi:{ url: `/api/env/workbenchs`, method: "POST" ,dataType: 'json'},
-  GenerateImage:{ url: `/api/env/workbenchs/image/{imageID}`, method: "GET" },
+  GenerateImage:{ url: `/api/env/workbenchs/image/{imageID}`, method: "POST" ,dataType: 'json'},
   deleteWorkbenchApi: { url: `/api/env/workbenchs/{imageID}`, method: "DELETE" },
   getWorkbenchInfoApi:{ url: `/api/env/workbenchs/info/{imageID}`, method: "GET" },
 
-  createMirrorApi: { url: `/api/env/images`, method: "POST" },
+  createMirrorApi: { url: `/api/env/images`, method: "POST",dataType: 'json' },
 
-  getImgTag:{ url: `/api/category/镜像标签/tags`, method: "GET"}
+  getImgTag:{ url: `/api/category/镜像标签/tags`, method: "GET"},
+
+  getFileConfig:{ url: `/api/config/public-config`, method: "GET"}
 };
 
 export interface ITeacherImageResourcePool {
@@ -27,6 +29,8 @@ export interface ITeacherImageResourcePool {
   deleteWorkbenchApi:TFHttpSend
 
   getImgTag:TFHttpSend
+
+  getFileConfig:TFHttpSend
 }
 
 export const MODULE_NAME = "teacherImageResourcePool";

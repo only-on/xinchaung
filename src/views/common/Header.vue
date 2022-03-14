@@ -166,9 +166,9 @@ export default defineComponent({
       url: "/teacher/teacherMaterialResource",
       children: [],
     };
-    menus.push(forum);
     menus.push(center);
     menus.push(material);
+    menus.push(forum);
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });

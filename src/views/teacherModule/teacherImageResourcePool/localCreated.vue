@@ -2,7 +2,7 @@
   <div class="create-image-box">
     <a-form layout="vertical" ref="formRef" :model="image" :rules="rules">
       <a-form-item label="镜像文件" name="fileName">
-        <upload-image @upload-imageinfo="uploadImageinfo"></upload-image>
+        <upload-image @upload-imageinfo="uploadImageinfo" @upload-percentage="uploadPercentage"></upload-image>
       </a-form-item>
       <div class="create-img-middle">
         <div>
@@ -16,11 +16,11 @@
               placeholder="请选择系统类型"
             >
               <a-select-option
-                :value="item"
+                :value="item.name"
                 v-for="(item, index) in image.image_classify"
                 :key="index.toString()"
               >
-                {{ item }}
+                {{ item.name }}
               </a-select-option>
             </a-select>
           </a-form-item>
@@ -65,11 +65,11 @@
             <div class="recommend" v-if="showTag">
               <div class="tit">或从推荐中选择</div>
               <div class="tagBox">
-                <div v-for="v in 10" :key="v">
+                <div v-for="v in recommend" :key="v">
                   <span
-                    @click="addTag(v)"
-                    :class="image.tag.includes(v) ? 'act' : ''"
-                    >默认标签1</span
+                    @click="addTag(v.value)"
+                    :class="image.tag.includes(v.value) ? 'act' : ''"
+                    >{{v.value}}</span
                   >
                 </div>
               </div>
@@ -102,22 +102,25 @@ import {
   onMounted,
   nextTick,
 } from "vue";
+import tusFileUpload from 'src/utils/tusFileUpload'
 import { message } from "ant-design-vue";
 import { useRouter } from "vue-router";
 import uploadImage from "./uploadImage.vue";
 import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
-import { json } from "stream/consumers";
 const http = (request as any).teacherImageResourcePool;
+
 interface ImageType {
   name: string;
   imageType: any;
   classify_id: any;
   tag: any;
   desc: any;
-  fileName: any;
+  file_path:string
+  fileName: string;
   fileSize: any;
   image_classify:any
+  percent:number
 }
 interface IState {
   config: any;
@@ -132,12 +135,12 @@ updata({
   showNav: true,
 });
 const rules = {
-  // fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
+  fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
   name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
   classify_id: [{ required: true, message: "请选择系统类型" }],
   tag: [
-    // { required: true, message: "请选择镜像标签1",trigger: "change"},
-    // { validator: fileListValidator, message: "请选择镜像标签2"},
+    // { required: true, message: "请选择镜像标签",trigger: "blur"},
+    { validator: fileListValidator, message: "请选择镜像标签"},
   ],
 };
 async function fileListValidator() {
@@ -155,11 +158,12 @@ const image: ImageType = reactive({
   classify_id: undefined,
   tag: [],
   desc: "",
+  file_path:'',
   fileSize: "",
   fileName: "",
-  image_classify:[]
+  image_classify:[],
+  percent:0
 });
-const config: any = reactive({});
 const state: IState = reactive({
   customLabelV: "",
   config: {},
@@ -206,12 +210,21 @@ function changeLabel() {
       ? state.customLabelV.slice(0, 10)
       : state.customLabelV;
 }
+const uploadPercentage=(percent:number)=>{
+  image.percent=percent
+}
 const uploadImageinfo = (name: any, size: any, url: any) => {
+  // console.log(file)
+  image.file_path=url
   image.fileName = name;
   image.fileSize = size;
-  image.imageType =
-    image.fileName.split(".")[image.fileName.split(".").length - 1];
-  image.classify_id = image.imageType === "qcow2" ? 2 : 1;
+  image.imageType = image.fileName.split(".")[
+          image.fileName.split(".").length - 1
+        ];
+  image.fileName.split(".")[image.fileName.split(".").length - 1];
+  // image.classify_id = image.imageType === "qcow2" ? image.image_classify[2].name : image.image_classify[1].name;
+  // console.log(image)
+  // tusFileUpload(file)
 };
 const cancel = () => {
   console.log("取消");
@@ -233,10 +246,10 @@ const create = () => {
     const parmas = {
       ostype: "docker" ,  
       name: image.name,
-      // file_path: "/www/tusd/uploads/" + image.fileName,
-      // file_size: image.fileSize,
+      file_path: image.file_path,
+      file_size: image.fileSize,
       classify_id: image.classify_id,
-      tag: JSON.stringify(image.tag),
+      tag: image.tag,
       description: image.desc,
       // ssh_user: " ",
       // ssh_pass: " ",
@@ -255,8 +268,19 @@ function getConfig() {
     image.image_classify=image_classify
   });
 }
+const recommend:any=reactive([])
+function getImgTag() {
+  http.getImgTag().then((res: any) => {
+    let  data= res.data;
+    data.forEach((v:any) => {
+      recommend.push({name:v.name,value:v.name})
+    });
+    // classifyList
+  });
+}
 onMounted(() => {
  getConfig()
+ getImgTag()
 });
 </script>
 

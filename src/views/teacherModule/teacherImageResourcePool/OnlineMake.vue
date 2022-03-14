@@ -56,7 +56,7 @@
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button type="text" @click="enterFun(v)">进入</a-button>
-            <a-button :type="generateLoad?'link':'text'" :loading="generateLoad"  @click="GenerateImage(v)">{{generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
+            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
           </div>
         </div>
       </div>
@@ -153,25 +153,21 @@ const deleteFun = (val: any) => {
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.deleteWorkbenchApi(val.id).then((res: any) => {
-        if (res.code === 1) {
-          message.success("删除成功！");
+      http.deleteWorkbenchApi({urlParams: {imageID: val.id}}).then((res: any) => {
+        message.success("删除成功");
           initData();
-        } else {
-          message.warning(res.msg);
-        }
       });
     },
   });
 };
 const GenerateImage = (val: any) => {
   let obj={
-    name:val.name,
-    description:val.description
+    name:val.image.name,
+    description:val.image.description
   }
-  generateLoad.value=true
-  http.GenerateImage({urlParams:{imageID:val.id}}).then((res: IBusinessResp) => {
-   generateLoad.value=false
+  val.generateLoad=true
+  http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
+   val.generateLoad=false
   });
 };
 
@@ -183,8 +179,11 @@ const initData = () => {
   http.getWorkBenchList().then((res: IBusinessResp) => {
     // let arr=['docker-Linux','kvm-Linux','kvm-windows','KVM-ARM']
     // ostype  classify
-    // let data=res.data.list
-    list.push(...res.data.list);
+    let data=res.data.list
+    data.map((v:any)=>{
+      v.generateLoad=false
+    })
+    list.push(...data);
     loading.value = false;
   });
 };
