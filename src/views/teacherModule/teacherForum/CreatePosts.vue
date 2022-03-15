@@ -141,7 +141,6 @@ function changeLabel() {
       : labelContent.value;
 }
 function labelSubmit() {
-  // console.log(state.customLabelV)
   if (labelContent.value.trim()) {
     formState.label_name.push(labelContent.value);
     labelContent.value = "";
@@ -158,7 +157,6 @@ function removeLabel(val: string) {
 }
 
 const contentValidator = (rule: any, value: Delta) => {
-  console.log(goHtml(JSON.stringify(value)))
   if (value.ops && value.ops.length) {
     return Promise.resolve();
   } else {
@@ -188,10 +186,8 @@ const formState = reactive<IFormState>({
   label_name: []
 })
 const onSubmit = () => {
-  console.log(formState);
   // return
   formRef.value.validate().then(() => {
-    console.log("验证过");
     let obj = {
       ...formState,
       content: JSON.stringify(formState.content),
@@ -225,10 +221,8 @@ const getHotLabels = () => {
 // 常驻类型
 let tagList = reactive<ITagList[]>([])
 const getTagsList = (param: any) => {
-  console.log(param)
   tagList.length = 0
   http.getForumTags({param}).then((res: IBusinessResp) => {
-    console.log(res)
     const { data } = res
     data.forEach((v: ITagList) => {
       v.value = v.name

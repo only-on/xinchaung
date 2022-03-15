@@ -71,7 +71,6 @@ export default defineComponent({
       total: 100,
     });
     function pageChange(page: number) {
-      console.log(page);
       pageInfo.page = page;
       emit("pageChange", page);
     }

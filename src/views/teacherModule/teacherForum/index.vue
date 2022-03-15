@@ -48,41 +48,16 @@ export default defineComponent({
       showNav: true,
     });
 
-    let labelList = reactive<ILabel[]>([]);
-    provide("labelList", labelList);
-
     watch(
       () => {
         return configuration.componenttype;
       },
       (val) => {
-        console.log(val);
-        // const {page}= route.query
         componentName.value = componentNames[val];
-
-        labelList.length = 0;
-        let list: ILabel[] = [];
-        if (val === 0) {
-          list = [
-            { name: "WIKI", value: 1 },
-            { name: "热门", value: 2 },
-            { name: "最新", value: 3 },
-            { name: "求助", value: 4 },
-            { name: "分享", value: 5 },
-            { name: "公告", value: 6 },
-          ];
-        } else if (val === 1) {
-          list = [
-            { name: "WIKI", value: 1 },
-            { name: "求助", value: 4 },
-            { name: "分享", value: 5 },
-          ];
-        }
-        labelList.push(...list);
       }
     );
     onMounted(() => {});
-    return { componentName, tabs, labelList };
+    return { componentName, tabs };
   },
 });
 </script>

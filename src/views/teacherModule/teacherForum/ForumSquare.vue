@@ -66,7 +66,6 @@ export default defineComponent({
     const total = ref(0)
     let forumnList = reactive<IForumnList[]>([]);
     function initData() {
-      console.log({ ...forumSearch });
       loading.value = true
       const param = {
         page: forumSearch.page,
@@ -76,7 +75,6 @@ export default defineComponent({
       }
       // 获取帖子列表
       http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
-        console.log(res)
         loading.value = false
         const { list, page } = res.data
         forumnList.length = 0
@@ -86,13 +84,11 @@ export default defineComponent({
           v.user_name = v.user_name ? v.user_name : '用户名'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
-        console.log(list)
         forumnList.push(...list)
         total.value = page.totalCount
       })
     }
     function search(params: IForumSearch) {
-      console.log(params);
       forumSearch.title = params.title;
       forumSearch.type = params.type;
       forumSearch.page = 1
@@ -100,7 +96,6 @@ export default defineComponent({
     }
     // 页码变化
     function pageChange(page: number) {
-      console.log(page);
       forumSearch.page = page;
       initData();
     }
@@ -120,7 +115,6 @@ export default defineComponent({
     let tagList = reactive<ITagList[]>([])
     const getTagsList = () => {
       http.getForumTags().then((res: IBusinessResp) => {
-        console.log(res)
         const { data } = res
         data.forEach((v: ITagList) => {
           v.value = v.name

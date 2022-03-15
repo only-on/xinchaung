@@ -94,7 +94,6 @@ export default defineComponent({
         id
       }
       http.replyForum({param}).then((res: IBusinessResp) => {
-        console.log(res)
         replyContent.value = ''
         replyList.length = 0
         getReplyList(id)
@@ -112,7 +111,6 @@ export default defineComponent({
         page: page.value,
       }
       http.getReplyList({urlParams: {id}, param}).then((res: IBusinessResp) => {
-        console.log(res)
         loading.value = false
         const { list, page } = res.data
         list.data.forEach((v: IForumnList) => {

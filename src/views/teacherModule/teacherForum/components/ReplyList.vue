@@ -91,14 +91,12 @@ export default defineComponent({
     let isReply = ref<boolean>(false);
 
     function submitReply(list: {id: number, forum_id: number}) {
-      console.log(replyContent.value);
       let param = {
         content: replyContent.value,
         id: list.forum_id,
         pid: list.id
       }
       http.replyForum({param}).then((res: IBusinessResp) => {
-        console.log(res)
         isReply.value = false
         replyContent.value = ''
         replyList.length = 0
@@ -120,7 +118,6 @@ export default defineComponent({
         pid
       }
       http.getReplyList({urlParams: {id}, param}).then((res: IBusinessResp) => {
-        console.log(res)
         loading.value = false
         const { list, page } = res.data
         totalReply.value = page.totalCount
@@ -129,13 +126,6 @@ export default defineComponent({
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
         replyList.push(...list.data)
-      }).catch(() => {
-        // let arr = [
-        //   {"id": 1,"content": "<p>看到楼主发的，犹如醍醐灌顶~ 感谢了！</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "张三", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        //   {"id": 2,"content": "<p>testets222222222</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "sfasdf", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        //   {"id": 3,"content": "<p>testets3333333</p>","user_id": 1,"level": 0,"pid": 0,"forum_id": 1,"user_name": "asfahjg", "avatar": "/www/path/1.png","created_at": 1642744562,"updated_at": 1642744562,"deleted_at": null},
-        // ]
-        // replyList.push(...arr)
       })
     }
 
