@@ -111,7 +111,6 @@ export default defineComponent({
     // 常驻类型
     let tagList = reactive<ITagList[]>([])
     const getTagsList = (param: any) => {
-      console.log(param)
       tagList.length = 0
       http.getForumTags({param}).then((res: IBusinessResp) => {
         console.log(res)
@@ -120,6 +119,8 @@ export default defineComponent({
           v.value = v.name
         })
         tagList.push(...data)
+        forumSearch.type = data[0].name
+        initData()
       })
     }
 

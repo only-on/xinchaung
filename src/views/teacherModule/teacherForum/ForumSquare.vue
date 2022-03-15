@@ -54,6 +54,7 @@ export default defineComponent({
   setup: (props, { emit }) => {
     const route = useRoute();
     const router = useRouter();
+    let {currentTab} = route.query
     const http = (request as any).teacherForum;
     var forumSearch = reactive<IForumSearch>({
       title: "",
@@ -109,9 +110,11 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      getTagsList()
-      // initData();
-      getHotLabels()
+      if (currentTab === '0') {
+        getTagsList()
+        // initData();
+        getHotLabels()
+      }
     });
     // 常驻类型
     let tagList = reactive<ITagList[]>([])
@@ -123,6 +126,8 @@ export default defineComponent({
           v.value = v.name
         })
         tagList.push(...data)
+        forumSearch.type = data[0].name
+        initData();
       })
     }
     

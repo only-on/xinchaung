@@ -62,7 +62,7 @@ export default defineComponent({
       if (!val.length) return
       val.length ? classifyList[0].value = val[0].name : '';
       ForumSearch.type = val.length ? val[0].name : '';
-      emit("search", ForumSearch);
+      // emit("search", ForumSearch);
     })
     function search() {
       emit("search", ForumSearch);
