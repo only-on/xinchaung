@@ -136,10 +136,12 @@ const currentImage: any = reactive({
     gpu: false,
   },
   imageName: "",
+  image_id:'',
 });
 const defaultConfig: any = {
   configs: {},
   imageName: "",
+  image_id:'',
   editIdx: "",
 };
 
@@ -150,6 +152,7 @@ const handleOk = () => {
   var obj = {
     configs: { ...currentImage.configs },
     imageName: currentImage.imageName,
+    image_id:currentImage.image_id,
   };
   if (defaultConfig.editIdx === "") {
     selectList.push(obj);
@@ -159,6 +162,7 @@ const handleOk = () => {
 
   currentImage.configs = { cpu: "", disk: "", ram: "", gpu: false };
   currentImage.imageName = "";
+  currentImage.image_id = ''
   visible.value = false;
   emit("handleOk", selectList);
   // modal.destroy()
@@ -166,12 +170,14 @@ const handleOk = () => {
 const cancel = () => {
   defaultConfig.configs = { cpu: "", disk: "", ram: "", gpu: false };
   defaultConfig.imageName = "";
+  defaultConfig.image_id='',
   defaultConfig.editIdx = "";
   visible.value = false;
 };
 const edit = (val: any, k: number) => {
   visible.value = true;
   defaultConfig.configs = val.configs;
+  defaultConfig.image_id = val.image_id
   defaultConfig.imageName = val.imageName;
   defaultConfig.editIdx = k;
 };
@@ -180,6 +186,7 @@ const Delete = (k: number) => {
 };
 const selectedImage = (val: any) => {
   // console.log('已选择好的配置=》',val)
+  currentImage.image_id = val.image_id
   currentImage.imageName = val.imageName;
   currentImage.configs = val.configs;
   if (props.type) {

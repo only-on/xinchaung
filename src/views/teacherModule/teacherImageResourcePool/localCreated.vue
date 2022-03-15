@@ -140,7 +140,7 @@ const rules = {
   classify_id: [{ required: true, message: "请选择系统类型" }],
   tag: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    { validator: fileListValidator, message: "请选择镜像标签"},
+    // { validator: fileListValidator, message: "请选择镜像标签"},
   ],
 };
 async function fileListValidator() {

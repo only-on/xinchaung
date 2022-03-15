@@ -199,7 +199,8 @@ export default defineComponent({
       margin-right: 15px;
       color: var(--white-65);
       font-size: var(--font-size-16);
-      padding-right: 15px;
+      // padding-right: 15px;
+      padding:0 8px;
       text-align: center;
       cursor: pointer;
       &:hover {

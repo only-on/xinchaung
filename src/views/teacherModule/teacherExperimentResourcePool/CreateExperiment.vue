@@ -13,21 +13,21 @@
         <a-form-item label="实验名称" name="name">
           <a-input v-model:value="formState.name" />
         </a-form-item>
-        <a-form-item label="实验难度" name="difficulty">
-          <div class="difficulty flexCenter">
+        <a-form-item label="实验难度" name="complexity">
+          <div class="complexity flexCenter">
             <span
-              @click="formState.difficulty = 1"
-              :class="formState.difficulty === 1 ? 'active' : ''"
+              @click="formState.complexity = 1"
+              :class="formState.complexity === 1 ? 'active' : ''"
               >初级</span
             >
             <span
-              @click="formState.difficulty = 2"
-              :class="formState.difficulty === 2 ? 'active' : ''"
+              @click="formState.complexity = 2"
+              :class="formState.complexity === 2 ? 'active' : ''"
               >中级</span
             >
             <span
-              @click="formState.difficulty = 3"
-              :class="formState.difficulty === 3 ? 'active' : ''"
+              @click="formState.complexity = 3"
+              :class="formState.complexity === 3 ? 'active' : ''"
               >高级</span
             >
           </div>
@@ -71,14 +71,21 @@
         </a-form-item>
       </div>
       <div class="right">
-        <a-form-item label="课时" name="class_cnt">
-          <a-input v-model:value="formState.class_cnt" />
+        <a-form-item label="课时" name="class_hour">
+          <a-input v-model:value="formState.class_hour" />
         </a-form-item>
-        <a-form-item label="所属技术方向" name="region">
+        <a-form-item label="所属技术方向" name="direction">
           <a-select
-            v-model:value="formState.region"
+            v-model:value="formState.direction"
             placeholder="请选择技术方向"
           >
+            <!-- <a-select-option
+                :value="item.name"
+                v-for="(item, index) in directionList"
+                :key="index.toString()"
+              >
+                {{ item.name }}
+              </a-select-option> -->
             <a-select-option value="shanghai">Zone one</a-select-option>
             <a-select-option value="beijing">Zone two</a-select-option>
           </a-select>
@@ -454,22 +461,27 @@ const { editId } = route.query;
 const http = (request as any).teacherExperimentResourcePool;
 const ExperimentTypeList = reactive({
   desktop: {
+    type:1,
     title: "桌面实验",
     assembly: ["configuration", "", "zhuomian"],
   },
   Jupyter: {
+    type:2,
     title: "Jupyter实验",
     assembly: ["configuration", "jupyter"],
   },
   task: {
+    type:3,
     title: "任务制实验",
     assembly: ["configuration", "task"],
   },
   text: {
+    type:4,
     title: "文档实验",
     assembly: ["text"],
   },
   video: {
+    type:5,
     title: "视频实验",
     assembly: ["video"],
   },
@@ -479,6 +491,7 @@ var updata = inject("updataNav") as Function;
 const createType = String(route.query.key);
 const name = `创建${ExperimentTypeList[createType].title}`;
 const componentsList = ExperimentTypeList[createType].assembly;
+const createTypeNumber=ExperimentTypeList[createType].type;
 updata({
   tabs: [{ name: name, componenttype: 0 }],
   showContent: true,
@@ -498,9 +511,10 @@ const formState: any = reactive({
   drawerVisible: false,
   datasets: [],
   selectedName: [],
-  class_cnt: 2,
+  class_hour: 2,
   name: "",
-  difficulty: 2,
+  complexity: 2,
+  direction:1,
   selectedKnowledgeList: [],
   report: { id: 0, name: "" },
   imageConfigs: [],
@@ -523,7 +537,7 @@ const rules = {
     { required: true, message: "请输入实验名称", trigger: "blur" },
     { max: 30, message: "实验名称最长为30个字符", trigger: "blur" },
   ],
-  class_cnt: [
+  class_hour: [
     { required: true, message: "" },
     { validator: classCutValidator, trigger: "blur" },
   ],
@@ -545,7 +559,7 @@ async function classCutValidator(rule: any, value: string) {
     return Promise.reject("请输入课时数");
   }
   const reg = new RegExp("^([1-9]|[1][0-6])$");
-  if (!reg.test(String(formState.class_cnt))) {
+  if (!reg.test(String(formState.class_hour))) {
     return Promise.reject("课时数为1~16之间整数");
   }
 }
@@ -581,7 +595,16 @@ function remove(val: any, index: number) {
 
 function create() {
   formRef.value.validate().then(() => {
-    http.create().then((res: IBusinessResp) => {
+    let obj={
+      type:createTypeNumber,  // 
+      name:formState.name,
+      complexity:formState.complexity,
+      direction:formState.direction,
+      class_hour:formState.class_hour,
+      ds:formState.datasets,
+      knowledge:formState.selectedKnowledgeList
+    }
+    http.create({param:{...obj}}).then((res: IBusinessResp) => {
       // list.push(...res.data);
     });
   });
@@ -591,14 +614,6 @@ function cancel() {
   router.go(-1);
 }
 
-const Download = (item: any) => {
-  const a: any = document.createElement("a");
-  a.href = item.word_path;
-  a.download = item.file_name;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-};
 
 var reportVisible = ref<boolean>(false);
 
@@ -718,7 +733,7 @@ function getTopoVmInfo(id: number) {
   });
 }
 const ConfirmConfiguration = (val: any) => {
-  // console.log(val)
+  console.log(val)
   formState.imageConfigs = val;
 };
 const TaskItem = {
@@ -903,6 +918,21 @@ const confirmDoc = () => {
 //  视频实验
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl = "/professor/classic/video/112/22/1523425771.mp4";
+
+// 
+const directionList:any=reactive([])
+
+function getDirection() {
+  directionList.length=0
+  http.getDirection().then((res: any) => {
+    const data= res.data;
+    directionList.push()
+  });
+}
+onMounted(()=>{
+  // getDirection()
+})
+
 </script>
 <style scoped lang="less">
 h3 {
@@ -947,7 +977,7 @@ h3 {
     }
   }
 }
-.difficulty {
+.complexity {
   span {
     line-height: 34px;
     width: 100px;

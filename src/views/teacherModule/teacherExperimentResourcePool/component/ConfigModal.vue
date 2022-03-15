@@ -1,14 +1,14 @@
 <template>
   <div class="title">镜像选择</div>
-  <!-- <a-select style="width: 100%; max-width: 476px" v-model:value="reactiveData.imageName"  placeholder="请选择需要的镜像" :options="options" @change="imageChange"></a-select> -->
+  <!-- <a-select style="width: 100%; max-width: 476px" v-model:value="reactiveData.image_id"  placeholder="请选择需要的镜像" :options="options" @change="imageChange"></a-select> -->
   <a-select
-    v-model:value="reactiveData.imageName"
+    v-model:value="reactiveData.image_id"
     placeholder="请选择需要的镜像"
     style="width: 100%; max-width: 476px"
     @change="imageChange"
   >
-    <a-select-option :value="'环境1'">环境1</a-select-option>
-    <a-select-option :value="'环境2'">环境2</a-select-option>
+    <a-select-option :value="1">环境1</a-select-option>
+    <a-select-option :value="2">环境2</a-select-option>
   </a-select>
   <div class="configs">镜像配置</div>
   <ImageConfig
@@ -24,8 +24,6 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { SelectTypes } from "ant-design-vue/es/select";
 import { Modal, message } from "ant-design-vue";
-const router = useRouter();
-const route = useRoute();
 const http = (request as any).teacherImageResourcePool;
 
 const reactiveData: any = reactive({
@@ -36,6 +34,7 @@ const reactiveData: any = reactive({
     gpu: false,
   },
   imageName: "环境1",
+  image_id:1,
 });
 
 interface Props {
@@ -44,8 +43,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   defaultConfig: () => {},
 });
-if (props.defaultConfig.configs && props.defaultConfig.imageName) {
+if (props.defaultConfig.configs && props.defaultConfig.image_id) {
   reactiveData.imageName = props.defaultConfig.imageName;
+  reactiveData.image_id = props.defaultConfig.image_id;
   reactiveData.configs = props.defaultConfig.configs;
 }
 var options = ref<SelectTypes["options"]>([]);
@@ -73,7 +73,7 @@ const initData = () => {
     // options.value.push(...data)
 
     // 每次打开配置默认值都一样   下面代码不需要
-    // reactiveData.imageName=list[0].name
+    // reactiveData.image_id=list[0].name
     emit("selectedImage", reactiveData);
   });
 };

@@ -36,9 +36,7 @@
             <div class="upload-wrap">
               <!-- icon="upload" -->
               <a-upload :before-upload="beforeUpload" :show-upload-list="false">
-                <a-button :disabled="loading" type="primary"
-                  >上传文件</a-button
-                >
+                <a-button :disabled="loading" type="primary">上传文件</a-button>
               </a-upload>
               <div class="upload-file-list">
                 <div
@@ -51,9 +49,7 @@
                     <span
                       >{{ item.name
                       }}{{
-                        item.status === "loading"
-                          ? "(" + item.progress + ")"
-                          : ""
+                        item.status === "loading" ? "(" + item.progress + "%)" : ""
                       }}</span
                     >
                     <span
@@ -63,13 +59,17 @@
                     ></span>
                   </div>
                   <div
-                    class="progress-box"
                     v-if="item.progress && item.progress !== '100%'"
+                    class="progress-box"
                   >
-                    <span
-                      class="upload-progress-bar"
-                      :style="{ width: item.progress }"
-                    ></span>
+                    <div
+                      :class="
+                        item.progress == '100%'
+                          ? 'upload-progress-bar successbar'
+                          : 'upload-progress-bar'
+                      "
+                      :style="{ width: item.progress + '%' }"
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -79,16 +79,11 @@
               <div class="upload-desc">
                 仅允许同时上传一个大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
               </div>
-              <div class="upload-path">
-                Linux：{{ vmData.base_upload_path }}
-              </div>
+              <div class="upload-path">Linux：{{ vmData.base_upload_path }}</div>
             </div>
             <div class="text-center">
               <a-space>
-                <a-button
-                  :disabled="loading || !isSaveImage"
-                  type="primary"
-                  @click="stop"
+                <a-button :disabled="loading || !isSaveImage" type="primary" @click="stop"
                   >停止环境</a-button
                 >
                 <a-button
@@ -147,7 +142,7 @@ import {
   nextTick,
   provide,
   watch,
-  Ref
+  Ref,
 } from "vue";
 import {
   getVmBaseInfoApi,
@@ -163,25 +158,25 @@ import _ from "lodash";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import uploadFile from "src/request/uploadFile";
 
-type TreactiveData={
-      test: number,
-      id: number | any,
-      saveVisible: boolean,
-      createFormData: {
-        name: string,
-        description: string,
-      },
-      vmData: any,
-      isSaveImage: boolean,
-      timer: null|NodeJS.Timer,
-      myTimer: null|NodeJS.Timer,
-      vmOptions: {
-        userName:string,
-        password: string, // vncpassword
-        wsUrl: string, // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
-      },
-      upload: null|any,
-}
+type TreactiveData = {
+  test: number;
+  id: number | any;
+  saveVisible: boolean;
+  createFormData: {
+    name: string;
+    description: string;
+  };
+  vmData: any;
+  isSaveImage: boolean;
+  timer: null | NodeJS.Timer;
+  myTimer: null | NodeJS.Timer;
+  vmOptions: {
+    userName: string;
+    password: string; // vncpassword
+    wsUrl: string; // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
+  };
+  upload: null | any;
+};
 
 export default defineComponent({
   components: {
@@ -215,11 +210,11 @@ export default defineComponent({
         },
       ],
     };
-    const createForm:any = ref(null);
-    const loading:Ref<boolean> = ref(false);
-    const vncLoading:Ref<boolean> = ref(false);
-    const fileList:Ref<any> = ref([]);
-    const reactiveData:TreactiveData = reactive({
+    const createForm: any = ref(null);
+    const loading: Ref<boolean> = ref(false);
+    const vncLoading: Ref<boolean> = ref(false);
+    const fileList: Ref<any> = ref([]);
+    const reactiveData: TreactiveData = reactive({
       test: 2,
       id: route.query.id,
       saveVisible: false,
@@ -232,7 +227,7 @@ export default defineComponent({
       timer: null,
       myTimer: null,
       vmOptions: {
-        userName:"",
+        userName: "",
         password: "", // vncpassword
         wsUrl: "", // "ws://192.168.101.150:8888/websockify?vm_uuid=c417fb05-c2f4-4cc9-9791-ecac23c448c5"
       },
@@ -265,16 +260,13 @@ export default defineComponent({
       startTimer();
       if (reactiveData.id) {
         loading.value = true;
-        getVmBaseInfoApi({ id: reactiveData.id as any as number })
+        getVmBaseInfoApi({ id: (reactiveData.id as any) as number })
           .then((res: any) => {
             loading.value = false;
             reactiveData.vmData = res.data;
             reactiveData.vmOptions.password = "vncpassword";
             reactiveData.vmOptions.wsUrl =
-              "ws://" +
-              res.data.base_ip +
-              ":8888/websockify?vm_uuid=" +
-              res.data.uuid;
+              "ws://" + res.data.base_ip + ":8888/websockify?vm_uuid=" + res.data.uuid;
           })
           .catch((err) => {
             message.error(err);
@@ -288,7 +280,8 @@ export default defineComponent({
       stopImageApi({ id: reactiveData.id as any }).then((res: any) => {
         message.success("环境停止成功");
         router.push({
-          path: "/teacher/Workbench/?currentTab=0",
+          // path: "/teacher/Workbench/?currentTab=0",
+          path:'/teacher/teacherImageResourcePool/OnlineMake'
         });
       });
     }
@@ -324,10 +317,7 @@ export default defineComponent({
                 beginIime: new Date(),
               });
             }
-            storage.lStorage.set(
-              "iamgeSaveStatus",
-              JSON.stringify(iamgeSaveStatus)
-            );
+            storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
             reactiveData.isSaveImage = false;
             startTimer();
             cancel();
@@ -378,10 +368,9 @@ export default defineComponent({
             (fileList as any).value[i].progress = Number(
               Number((e.loaded / e.total) * 100).toFixed(2)
             );
-            (fileList as any).value[i] = Object.assign(
-              (fileList as any).value[i],
-              { progress: (fileList as any).value[i].progress }
-            );
+            (fileList as any).value[i] = Object.assign((fileList as any).value[i], {
+              progress: (fileList as any).value[i].progress,
+            });
             (fileList as any).value.push({});
             (fileList as any).value.pop();
           }
@@ -399,11 +388,9 @@ export default defineComponent({
     }
     // 虚拟机上传
     function vmUpload(path: string) {
-      vmUploadApi({ file_path: path }, { id: reactiveData.id as any }).then(
-        (res) => {
-          console.log(res);
-        }
-      );
+      vmUploadApi({ file_path: path }, { id: reactiveData.id as any }).then((res) => {
+        console.log(res);
+      });
     }
 
     // 移除文件
@@ -425,16 +412,12 @@ export default defineComponent({
             if (reactiveData.id === item.id) {
               // 10分钟秒数
               /* eslint-disable */
-              var time =
-                new Date().getTime() - new Date(item.beginIime).getTime();
+              var time = new Date().getTime() - new Date(item.beginIime).getTime();
               if (time / 1000 / 60 > 10) {
                 reactiveData.isSaveImage = true;
                 iamgeSaveStatus.splice(index, 1);
 
-                storage.lStorage.set(
-                  "iamgeSaveStatus",
-                  JSON.stringify(iamgeSaveStatus)
-                );
+                storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
                 clearInterval(reactiveData.timer as any);
               } else {
                 reactiveData.isSaveImage = false;
@@ -466,14 +449,13 @@ export default defineComponent({
 });
 </script>
 
-
 <style lang="less">
 .vm-environment-drawer {
   z-index: 1111 !important;
-  .ant-btn > span{
-  font-size: 14px;
+  .ant-btn > span {
+    font-size: 14px;
   }
-  .ant-btn-primary{
+  .ant-btn-primary {
     box-shadow: none;
   }
   .ant-drawer-content-wrapper {
@@ -513,7 +495,7 @@ export default defineComponent({
       max-height: 260px;
       overflow: auto;
       .upload-file-item {
-        margin-top:14px;
+        margin-top: 14px;
         .upload-file-base {
           padding: 0 5px;
           display: flex;
@@ -534,7 +516,7 @@ export default defineComponent({
             text-overflow: ellipsis;
           }
           &:hover {
-            background: rgba(var(--primary-color), 0.1);
+            background: rgba(var(--purpleblue-6), 0.1);
             > span:nth-child(3) {
               flex-shrink: 0;
               &.iconshanchu {
@@ -553,7 +535,11 @@ export default defineComponent({
             position: absolute;
             display: inline-block;
             height: 100%;
-            background: rgba(var(--primary-color), 0.5);
+            background: var(--purpleblue-6);
+            border-radius: 3px;
+          }
+          .successbar {
+            background: var(--green-6);
           }
         }
       }
@@ -565,10 +551,10 @@ export default defineComponent({
     margin-bottom: 1em;
     font-size: 16px;
   }
-  .list-row{
+  .list-row {
     font-size: 14px;
-    margin-bottom: 14px;  
-    color:var(--black-65);
+    margin-bottom: 14px;
+    color: var(--black-65);
   }
   .vm-list-title {
     @extend .list-title;
@@ -576,7 +562,7 @@ export default defineComponent({
   }
   .dataset-url {
     // padding: 10px 0;
-    color:var(--black-65);
+    color: var(--black-65);
   }
   .upload-tip {
     background: #fafafa;
@@ -604,7 +590,7 @@ export default defineComponent({
     //   color: #333;
     // }
   }
-  .text-center{
+  .text-center {
     margin-top: 40px;
     display: flex;
     justify-content: center;

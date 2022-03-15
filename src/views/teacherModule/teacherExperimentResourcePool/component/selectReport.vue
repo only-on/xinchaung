@@ -29,24 +29,22 @@
           <div class="item flexCenter" v-for="v in TemplateList" :key="v">
             <div
               class="eyeBox flexCenter"
-              :class="v === activeTemplateItem.id ? 'activeEye' : ''"
-              @click="selectTemplate(v)"
-            >
+              :class="v.id === activeTemplateItem.id ? 'activeEye' : ''"
+              @click="selectTemplate(v)">
               <div class="eye"></div>
             </div>
             <div class="nameBox flexCenter">
-              <span class="prefix">【系统默认】</span>
+              <span class="prefix">{{v.typeText}}</span>
               <span
                 class="name single-ellipsis"
                 @click.stop="viewTemplate(1, v)"
-                >实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称实验报告名称</span
-              >
+                >{{v.name}}</span>
               <!-- @click.stop="viewTemplate(2, v)" 离线-->
             </div>
             <div class="handle">
-              <span @click.stop="handleDelete(v)">删除</span>
-              <!-- <span @click.stop="Download(v)">下载</span> -->
-              <span @click="viewTemplate(0, v)">编辑</span>
+              <span v-if="v.type !== 0" @click.stop="handleDelete(v)">删除</span>
+              <span v-if="v.type === 2" @click.stop="Download(v)">下载</span>
+              <span v-if="v.type === 1"  @click="viewTemplate(0, v)">编辑</span>
             </div>
           </div>
         </div>
@@ -67,8 +65,7 @@
     </template>
   </a-modal>
   <!-- 在线制作 预览  编辑实验模板 -->
-  <a-modal
-    v-if="reportTemplate"
+  <a-modal v-if="reportTemplate"
     :destroyOnClose="true"
     v-model:visible="reportTemplate"
     :title="reportTitle"
@@ -112,7 +109,7 @@ import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 // export default defineComponent({
 // setup() {
 const $confirm: ModalFunc = inject("$confirm")!;
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teacherExperimentResourcePool;
 const emit = defineEmits<{
   (e: "reportCancel"): void;
   (e: "reportOk", val: any): void;
@@ -146,10 +143,33 @@ const reportTab = (val: number) => {
   }
 };
 const getTemplateList = () => {
-  // TemplateList.length=0
-  // http.getTemplateList().then((res: IBusinessResp) => {
-  //   // TemplateList.push(...res.data);
-  // });
+  TemplateList.length=0
+  http.getTemplateList().then((res: IBusinessResp) => {
+    let list=res.data.list
+    // type=0 系统  1在线 2离线
+    list.map((v:any)=>{
+      if(v.is_init === 1){
+        v.type=0
+      }else{
+        v.type=v.word_path?1:2
+      }
+      v.typeText=`【${['系统默认','在线','离线'][v.type]}】`
+    })
+    TemplateList.push(...list);
+  });
+};
+
+onMounted(()=>{
+  getTemplateList()
+})
+
+const Download = (item: any) => {
+  const a: any = document.createElement("a");
+  a.href = item.word_path;
+  a.download = item.file_name;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
 };
 
 const viewTemplate = (n: number, val?: any) => {
@@ -184,8 +204,8 @@ if (props.selectedReport) {
   activeTemplateItem.name = props.selectedReport.name;
 }
 const selectTemplate = (val: any) => {
-  activeTemplateItem.id = val;
-  activeTemplateItem.name = `报告名称${val}`;
+  activeTemplateItem.id = val.id;
+  activeTemplateItem.name = `${val.name}`;
 };
 
 // 删除模板
@@ -196,10 +216,10 @@ const handleDelete = (item: any) => {
     okText: "确定",
     cancelText: "取消",
     onOk() {
-      // http.deleteTemplate({param: {id: item.id}}).then((res:IBusinessResp) => {
-      //   message.success(`实验报告模板：${item.name}, 删除成功！`)
-      //   getTemplateList()
-      // })
+      http.deleteTemplate({param: {id: item.id}}).then((res:IBusinessResp) => {
+        message.success(`实验报告模板：${item.name}, 删除成功！`)
+        getTemplateList()
+      })
     },
   });
 };
@@ -212,14 +232,24 @@ function beforeUploadReport(file: any) {
     url: "",
     file: file,
   };
-  formState.reportUploadList[0].name = file.name;
-  formState.reportUploadList[0].status = "done";
-  return;
+  // formState.reportUploadList[0].name = file.name;
+  // formState.reportUploadList[0].status = "done";
+  // return;
   const fs = new FormData();
   fs.append("file", file);
-  http.uploadTaskFile({ param: fs }).then((res: any) => {
+  http.upLoadExperimentReport({ param: fs }).then((res: any) => {
     // reportUploadList.status = true      status: 'done',
-    formState.reportUploadList[0].url = res.data;
+    let data = res.data
+    message.success("上传成功");
+    // formState.reportUploadList[0].url = res.data;
+      formState.reportUploadList[0] = {
+      uid: data.id,
+      id:data.id,
+      name: data.name,
+      status: "done",
+      url:data.word_path,
+      file: file,
+    };
   });
 }
 function fileRemove(file: any) {
