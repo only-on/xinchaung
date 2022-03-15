@@ -44,9 +44,9 @@ function removeHtmlTag(html: string) {
   // 自闭合标签，除了img
   const patternSelfCloseTag = /<(?!img)\w+[^>]*?\/>/g;
   // 起始标签，除了strong和b，目前无法妥善处理带有属性的b标签
-  const patternStartTag = /<(?!strong)(?!b)(?!span)\w+[^>]*?>/g;
+  const patternStartTag = /<(?!strong)(?!span)\w+[^>]*?>/g;
   // 结束标签，除了strong和b
-  const patternEndTag = /<\/(?!strong)(?!b)(?!span)(\w+)>/g;
+  const patternEndTag = /<\/(?!strong)(?!span)(\w+)>/g;
   html = html
     .replace(patternSelfCloseTag, "")
     .replace(patternStartTag, "")

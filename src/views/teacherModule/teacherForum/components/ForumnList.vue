@@ -163,7 +163,7 @@ export default defineComponent({
 }
 .content {
   color: var(--black-65);
-  line-height: 24px;
+  // line-height: 24px;
   .read-btn {
     color: var(--primary-color);
     margin-left: 12px;
