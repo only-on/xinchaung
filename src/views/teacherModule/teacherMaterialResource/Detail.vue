@@ -110,7 +110,7 @@
   </div>
   
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo  ref="baseInfoRef" :materialType="'数据集'" class="con" />
+    <BaseInfo  ref="baseInfoRef" :materialType="'数据集'" class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>

@@ -45,16 +45,17 @@ export default defineConfig({
         target: "http://192.168.101.130",
         changeOrigin: true,
       },         
-      // "/uploadfiles": {
-      //   target: "http://192.168.101.130",
-      //   changeOrigin: true,
-      // },
-      // '/ws': {
-      //   target: 'ws://192.168.101.130',
-      //   changeOrigin: true,
-      //   ws: true,
-      // rewrite: (path) => path.replace(/^\/ws/, '')
-      // }
+      "/knowledge-map1": {
+        target: "http://192.168.101.130",
+        changeOrigin: true,
+      },
+      '/ws': {
+        target: "ws://192.168.101.221:84",
+        // target: 'ws://192.168.101.130',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (path) => path.replace(/^\/ws/, '')
+      }
     },
     port: 3010,
     host: "0.0.0.0",

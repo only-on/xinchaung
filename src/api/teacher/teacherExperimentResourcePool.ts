@@ -1,8 +1,19 @@
 import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
-  getTemplateList: { url: `/report/template/mine`, method: "POST" },
+  //创建实验
+  create:{ url: `/api/experiment/create`, method: "POST" ,dataType: 'json'},
+  getTemplateList:{ url: `/api/xinchuang/report/templates`, method: "GET"},
+
+
   upLoadTemple: { url: `/report/template/upload`, method: "POST" },
+
+
+  upLoadExperimentReport:{ url: `/api/xinchuang/report/templates/import-template`, method: "POST",dataType: 'formdata'},
+
+
+  // 删除实验报告模板
+  deleteTemplate:{ url: `/api/xinchuang/report/template/delete`, method: "POST" ,dataType: 'json'},
 
   // 同屏
   getSameScreenInfo: {
@@ -30,8 +41,13 @@ export default {
 };
 
 export interface ITeacherExperimentResourcePool {
+  create:TFHttpSend
+
   getTemplateList: TFHttpSend;
-  upLoadTemple: TFHttpSend;
+  upLoadTemple:TFHttpSend;
+
+  upLoadExperimentReport:TFHttpSend
+  deleteTemplate:TFHttpSend;
 
   getSameScreenInfo: TFHttpSend;
   getTopoVmInfo: TFHttpSend;

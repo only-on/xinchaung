@@ -101,6 +101,10 @@ updata({
 });
 
 const OnlineAdd = () => {
+  if(list && list.length >= 5 ){
+    message.warning("最多存在5个容器")
+    return 
+  }
   router.push("/teacher/teacherImageResourcePool/createWorkbench");
 };
 const getClass = (k: number) => {
@@ -181,7 +185,7 @@ const initData = () => {
   loading.value = true;
   list.length=0
   http.getWorkBenchList().then((res: IBusinessResp) => {
-    // let arr=['docker-Linux','kvm-Linux','kvm-windows','KVM-ARM']
+    // let arr=['docker-Linux','kvm-Linux','kvm-windows','KVM-ARM-欧拉']
     // ostype  classify
     let data=res.data.list
     data.map((v:any)=>{
