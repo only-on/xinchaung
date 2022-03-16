@@ -80,8 +80,8 @@ export default defineComponent({
         forumnList.length = 0
         list.forEach((v: IForumnList) => {
           v.content = goHtml(v.content)
+          fixHtml(removeHtmlTag(v.content).substr(0, 200))
           v.desc = fixHtml(removeHtmlTag(v.content).substr(0, 200))
-          v.user_name = v.user_name ? v.user_name : '用户名'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
         forumnList.push(...list)
@@ -105,13 +105,17 @@ export default defineComponent({
     }
 
     onMounted(() => {
-      if (currentTab === '0') {
+      if (currentTab === '0' || !currentTab) {
         getTagsList()
         // initData();
         getHotLabels()
       }
     });
     // 常驻类型
+    const tags = [
+      {id: 0, name: '热门', value: '热门'},
+      {id: -1, name: '最新', value: '最新'}
+    ]
     let tagList = reactive<ITagList[]>([])
     const getTagsList = () => {
       http.getForumTags().then((res: IBusinessResp) => {
@@ -119,6 +123,7 @@ export default defineComponent({
         data.forEach((v: ITagList) => {
           v.value = v.name
         })
+        data.splice(1, 0, ...tags)
         tagList.push(...data)
         forumSearch.type = data[0].name
         initData();

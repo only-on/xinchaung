@@ -122,7 +122,6 @@ export default defineComponent({
         const { list, page } = res.data
         totalReply.value = page.totalCount
         list.data.forEach((v: IReplyList) => {
-          v.user_name = v.user_name ? v.user_name : '用户名'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
         replyList.push(...list.data)

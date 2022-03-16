@@ -118,7 +118,7 @@ export default defineComponent({
         fd.append('upload_path', props.uploadPathName)
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
-          let html= `<video src="${res.data.url}" alt="">`
+          let html= `<video src="${res.data.url}">`
           insertHtml(html);
           loading.value=false
         })

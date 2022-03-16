@@ -114,7 +114,6 @@ export default defineComponent({
         loading.value = false
         const { list, page } = res.data
         list.data.forEach((v: IForumnList) => {
-          v.user_name = v.user_name ? v.user_name : 'mdhgkasbva'
           v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
         })
         replyList.push(...list.data)
@@ -164,6 +163,9 @@ export default defineComponent({
 .content {
   color: var(--black-65);
   // line-height: 24px;
+  .desc {
+    word-break: break-all;
+  }
   .read-btn {
     color: var(--primary-color);
     margin-left: 12px;
