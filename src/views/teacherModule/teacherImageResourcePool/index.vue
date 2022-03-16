@@ -11,31 +11,37 @@
       <div class="item flexCenter" v-for="(v, k) in list" :key="v" :class="v.is_init?'':'operable'">
         <div class="left">
           <div class="img" :class="v.is_init? '' : 'KVMImg'">
-            <div class="type">镜像类型：{{v.ostype}}</div>
-            <div class="type">架构信息：{{v.architecture}}</div>
-          </div>
-          <div class="Belonging" :class="v.is_init ? '' : 'myImg'">
-            {{v.is_init?'内置镜像':'我的镜像'}}
+            <div class="imgType" v-if="v.is_init">{{'内置'}}</div>
           </div>
         </div>
         <div class="right" >
           <div class="name">{{v.name}}</div>
-          <div class="labels flexCenter">
-            <span class="ellipsis" v-for="i in v.tags" :key="i">{{i}}</span>
-          </div>
-          <div class="text ellipsis">
-           {{v.description?v.description:'该镜像暂无描述'}}
-          </div>
-          <div class="caoZuo flexCenter">
-            <span v-if="!v.is_init" @click="copy(v)">复制</span>
-            <span v-if="!v.is_init" @click="strike(v)">删除</span>
-            <span v-if="!v.is_init" @click="edit(v)">编辑</span>
+          <div class="change">
+            <div class="FrontDisplay">
+              <div class="information flexCenter">
+                <span>类型：{{v.ostype}}</span>
+                <span>信息：{{'X86'}}</span>
+              </div>
+              <div class="labels flexCenter">
+                <span class="ellipsis" v-for="i in v.tags" :key="i">{{i}}</span>
+              </div>
+            </div>
+            <div class="PostDisplay">
+              <div class="text ellipsis">
+              {{v.description?v.description:'该镜像暂无描述'}}
+              </div>
+              <div class="caoZuo flexCenter" v-if="!v.is_init">
+                <!-- <span v-if="!v.is_init" @click="copy(v)">复制</span> -->
+                <span v-if="!v.is_init" @click="strike(v)">删除</span>
+                <span v-if="!v.is_init" @click="edit(v)">编辑</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <Empty v-if="!list.length && !loading" />
       <a-pagination
-        v-if="totalCount > 6"
+        v-if="totalCount > 12"
         v-model:current="fromData.page"
         :pageSize="fromData.limit"
         :total="totalCount"
@@ -211,7 +217,7 @@ const searchFn = (key: string) => {
  * 列表
  */
 const fromData: any = reactive({
-  limit: 6,
+  limit: 12,
   page: 1,
   name: "",
 });
@@ -387,28 +393,44 @@ onMounted(() => {
 }
 .mainBox {
   flex-wrap: wrap;
-  justify-content: space-between;
+  // justify-content: space-between;
   min-height: 200px;
   .item {
-    width: 580px;
-    height: 200px;
-    margin-bottom: 2rem;
+    // width: 580px;
+    // height: 200px;
+    width: 384px;
+    height: 120px;
+    margin-bottom:24px;
     .left {
       .img {
-        border-radius: 14px 0px 0px 0px;
-        height: 176px;
-        width: 140px;
+        border-radius: 13px 0px 0px 13px;
+        height: 120px;
+        width: 120px;
         background: url("src/assets/images/teacherImageResourcePool/img1.jpg") no-repeat;
         background-size: 100% 100%;
 
         display: flex;
         flex-direction: column;
         justify-content: end;
+        position: relative;
         .type {
           width: 100%;
           text-align: center;
           color: var(--white);
           margin-bottom: 6px;
+        }
+        .imgType{
+          width: 44px;
+          height: 20px;
+          opacity: 0.44;
+          background: var(--black);
+          border-radius: 13px 0px 13px 0px;
+          color: var(--white-65);
+          text-align: center;
+          font-size: var(--font-size-sm);
+          position: absolute;
+          top: 0;
+          left: 0;
         }
       }
       .KVMImg {
@@ -427,7 +449,7 @@ onMounted(() => {
       }
     }
     .right {
-      padding: 20px 16px 0;
+      padding: 9px 10px 0;
       flex: 1;
       height: 100%;
       .name {
@@ -435,8 +457,15 @@ onMounted(() => {
         font-size: var(--font-size-16);
         letter-spacing: 1.6px;
       }
+      .information{
+        color: var(--black-45);
+        height: 40px;
+        span:nth-child(1){
+          margin-right: 24px;
+        }
+      }
       .labels {
-        padding: 8px 0;
+        height: 40px;
         span {
           display: inline-block;
           width: 92px;
@@ -447,24 +476,42 @@ onMounted(() => {
         }
       }
       .text {
-        height: 67px;
-        line-height: 24px;
-        letter-spacing: 0.98px;
-        color: var(--black-65);
-        -webkit-line-clamp: 3;
+        height: 41px;
+        line-height: 22px;
+        color: var(--black-45);
+        -webkit-line-clamp: 2;
+        letter-spacing: 0.34px;
+        margin-top: 9px;
       }
       .caoZuo {
-        height: 44px;
+        height: 30px;
         justify-content: end;
         span {
           // display: none;
-          color: var(--primary-color);
+          color: var(--brightBtn);
           cursor: pointer;
-          padding: 0 16px;
+          padding: 0 10px;
         }
+      }
+      .change:hover{
+        .FrontDisplay{
+          display: none;
+        }
+        .PostDisplay{
+          display: block;
+        }
+      }
+      .FrontDisplay{
+        display: block;
+      }
+      .PostDisplay{
+        display: none;
       }
     }
     
+  }
+  .item:nth-child(3n -1){
+    margin: 0 24px 24px;
   }
   .operable:hover{
     cursor: pointer;

@@ -37,7 +37,7 @@
               <span class="prefix">{{v.typeText}}</span>
               <span
                 class="name single-ellipsis"
-                @click.stop="viewTemplate(1, v)"
+                @click.stop="viewTemplate(v.type === 2?2:1, v)"
                 >{{v.name}}</span>
               <!-- @click.stop="viewTemplate(2, v)" 离线-->
             </div>
@@ -65,23 +65,11 @@
     </template>
   </a-modal>
   <!-- 在线制作 预览  编辑实验模板 -->
-  <a-modal v-if="reportTemplate"
-    :destroyOnClose="true"
-    v-model:visible="reportTemplate"
-    :title="reportTitle"
-    class="report"
-    :width="1080"
-    @cancel="cancelTemplate(1)"
-  >
-    <CreateTemplate
-      @cancelTemplate="cancelTemplate"
-      :id="TemplateEditId"
-      :type="TemplateViewType"
-      @viewTemplate="viewTemplate"
-    ></CreateTemplate>
+  <a-modal v-if="reportTemplate" :destroyOnClose="true" v-model:visible="reportTemplate" :title="reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
     <div class="pdfBox" v-if="pdfUrl">
       <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
     </div>
+    <CreateTemplate v-else @cancelTemplate="cancelTemplate" :id="TemplateEditId" :type="TemplateViewType" @viewTemplate="viewTemplate"></CreateTemplate>
     <template #footer>
       <span></span>
     </template>
@@ -98,6 +86,7 @@ import {
   computed,
   toRefs,
 } from "vue";
+import { downloadUrl } from "src/utils/download";
 import Submit from "src/components/submit/index.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
@@ -151,7 +140,7 @@ const getTemplateList = () => {
       if(v.is_init === 1){
         v.type=0
       }else{
-        v.type=v.word_path?1:2
+        v.type=v.word_path === '' ? 1:2
       }
       v.typeText=`【${['系统默认','在线','离线'][v.type]}】`
     })
@@ -164,16 +153,19 @@ onMounted(()=>{
 })
 
 const Download = (item: any) => {
-  const a: any = document.createElement("a");
-  a.href = item.word_path;
-  a.download = item.file_name;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
+  // const a: any = document.createElement("a");
+  // a.href = item.word_path;
+  // a.download = item.name;
+  // document.body.appendChild(a);
+  // a.click();
+  // document.body.removeChild(a);
+  downloadUrl(item.word_path,item.name)
 };
 
 const viewTemplate = (n: number, val?: any) => {
   // 3在线制作 2预览离线  1预览在线   0编辑在线
+  console.log(n)
+  pdfUrl.value=''
   reportTemplate.value = true;
   if (n === 3) {
     TemplateViewType.value = "create";
@@ -183,9 +175,10 @@ const viewTemplate = (n: number, val?: any) => {
     TemplateViewType.value = "";
     TemplateEditId.value = val.id;
     reportTitle.value = "离线报告模板";
-    pdfUrl.value = val.url;
+    pdfUrl.value = val.pdf_path;
   }
   if (n === 1) {
+    TemplateEditId.value = val.id;
     TemplateViewType.value = "view";
     reportTitle.value = "在线报告模板";
   }
@@ -216,7 +209,7 @@ const handleDelete = (item: any) => {
     okText: "确定",
     cancelText: "取消",
     onOk() {
-      http.deleteTemplate({param: {id: item.id}}).then((res:IBusinessResp) => {
+      http.deleteTemplate({urlParams: {id: item.id}}).then((res:IBusinessResp) => {
         message.success(`实验报告模板：${item.name}, 删除成功！`)
         getTemplateList()
       })
@@ -225,13 +218,13 @@ const handleDelete = (item: any) => {
 };
 function beforeUploadReport(file: any) {
   console.log(file);
-  formState.reportUploadList[0] = {
-    uid: "-1",
-    name: "",
-    status: "uploading",
-    url: "",
-    file: file,
-  };
+  // formState.reportUploadList[0] = {
+  //   uid: "-1",
+  //   name: "",
+  //   status: "uploading",
+  //   url: "",
+  //   file: file,
+  // };
   // formState.reportUploadList[0].name = file.name;
   // formState.reportUploadList[0].status = "done";
   // return;
@@ -239,9 +232,10 @@ function beforeUploadReport(file: any) {
   fs.append("file", file);
   http.upLoadExperimentReport({ param: fs }).then((res: any) => {
     // reportUploadList.status = true      status: 'done',
-    let data = res.data
-    message.success("上传成功");
-    // formState.reportUploadList[0].url = res.data;
+      let data = res.data
+      message.success("上传成功");
+      activeTemplateItem.id = data.id;
+      activeTemplateItem.name = data.name;
       formState.reportUploadList[0] = {
       uid: data.id,
       id:data.id,

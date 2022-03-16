@@ -233,7 +233,7 @@ function create() {
         // ...reactiveData.configs,
         cpu:reactiveData.configs.cpu,
         disk:reactiveData.configs.disk,
-        ram:reactiveData.configs.ram*1024
+        ram:reactiveData.configs.ram
       },
       dataset_id :reactiveData.ruleForm.datasets,
       start_time:moment(reactiveData.ruleForm.start_time).format("yyyy-MM-DD") + " 00:00:00",
@@ -275,12 +275,12 @@ function remove(val: any, index: number) {
 function getConfig() {
   http.getConfigApi().then((res: any) => {
     const { base_image, image_configs } = res.data;
-    reactiveData.configs = image_configs;
+    // reactiveData.configs = image_configs;
     reactiveData.images = base_image;
   });
 }
 const configChange = (val: any) => {
-  // console.log(val)
+  console.log(val)
   reactiveData.configs = val;
 };
 onMounted(() => {

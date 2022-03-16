@@ -16,18 +16,18 @@
         <a-form-item label="实验难度" name="complexity">
           <div class="complexity flexCenter">
             <span
-              @click="formState.complexity = 1"
-              :class="formState.complexity === 1 ? 'active' : ''"
+              @click="formState.level = 1"
+              :class="formState.level === 1 ? 'active' : ''"
               >初级</span
             >
             <span
-              @click="formState.complexity = 2"
-              :class="formState.complexity === 2 ? 'active' : ''"
+              @click="formState.level = 2"
+              :class="formState.level === 2 ? 'active' : ''"
               >中级</span
             >
             <span
-              @click="formState.complexity = 3"
-              :class="formState.complexity === 3 ? 'active' : ''"
+              @click="formState.level = 3"
+              :class="formState.level === 3 ? 'active' : ''"
               >高级</span
             >
           </div>
@@ -79,15 +79,11 @@
             v-model:value="formState.direction"
             placeholder="请选择技术方向"
           >
-            <!-- <a-select-option
-                :value="item.name"
-                v-for="(item, index) in directionList"
-                :key="index.toString()"
-              >
+            <a-select-option :value="item.id" v-for="(item, index) in directionList" :key="index.toString()">
                 {{ item.name }}
-              </a-select-option> -->
-            <a-select-option value="shanghai">Zone one</a-select-option>
-            <a-select-option value="beijing">Zone two</a-select-option>
+              </a-select-option>
+            <!-- <a-select-option value="shanghai">Zone one</a-select-option>
+            <a-select-option value="beijing">Zone two</a-select-option> -->
           </a-select>
         </a-form-item>
         <a-form-item label="实验报告" name="report">
@@ -464,26 +460,31 @@ const ExperimentTypeList = reactive({
     type:1,
     title: "桌面实验",
     assembly: ["configuration", "", "zhuomian"],
+    method:'createVnc'
   },
   Jupyter: {
     type:2,
     title: "Jupyter实验",
     assembly: ["configuration", "jupyter"],
+    method:'createJupyter'
   },
   task: {
     type:3,
     title: "任务制实验",
     assembly: ["configuration", "task"],
+    method:'createTask'
   },
   text: {
     type:4,
     title: "文档实验",
     assembly: ["text"],
+    method:'createText'
   },
   video: {
     type:5,
     title: "视频实验",
     assembly: ["video"],
+    method:'createVideo'
   },
 });
 var configuration: any = inject("configuration");
@@ -492,6 +493,7 @@ const createType = String(route.query.key);
 const name = `创建${ExperimentTypeList[createType].title}`;
 const componentsList = ExperimentTypeList[createType].assembly;
 const createTypeNumber=ExperimentTypeList[createType].type;
+const createMethod=ExperimentTypeList[createType].method;
 updata({
   tabs: [{ name: name, componenttype: 0 }],
   showContent: true,
@@ -513,8 +515,8 @@ const formState: any = reactive({
   selectedName: [],
   class_hour: 2,
   name: "",
-  complexity: 2,
-  direction:1,
+  level: 2,
+  direction:'',
   selectedKnowledgeList: [],
   report: { id: 0, name: "" },
   imageConfigs: [],
@@ -595,18 +597,34 @@ function remove(val: any, index: number) {
 
 function create() {
   formRef.value.validate().then(() => {
-    let obj={
+    // let 
+    let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
+      pre.indexOf(cur.id) === -1 && pre.push(cur.id);
+      return pre
+    }, [])
+    let param={
       type:createTypeNumber,  // 
       name:formState.name,
-      complexity:formState.complexity,
+      level:formState.level,
       direction:formState.direction,
       class_hour:formState.class_hour,
       ds:formState.datasets,
-      knowledge:formState.selectedKnowledgeList
+      knowledge:selectedKnowledgeIds,
+      guide:formState.guide,
+      report:formState.report.id,
+      container:formState.imageConfigs
     }
-    http.create({param:{...obj}}).then((res: IBusinessResp) => {
-      // list.push(...res.data);
-    });
+    console.log(param)
+    // return
+    http[createMethod]({param:{...param}}).then((res: IBusinessResp)=>{
+      message.success('创建成功')
+      cancel()
+    })
+    // http.create({param:{...obj}}).then((res: IBusinessResp) => {
+    //   message.success('创建成功')
+    //   cancel()
+    //   // list.push(...res.data);
+    // });
   });
 }
 // 取消
@@ -687,9 +705,6 @@ function openScreen() {
           // this.screenStatus = true
         }
       })
-      .catch((err) => {
-        // $message.warn(err.message);
-      });
   }
 }
 function getTopoBaseInfo() {
@@ -733,8 +748,19 @@ function getTopoVmInfo(id: number) {
   });
 }
 const ConfirmConfiguration = (val: any) => {
-  console.log(val)
-  formState.imageConfigs = val;
+  // console.log(val)
+  let arr:any=[]
+  val.forEach((v:any) => {
+    // console.log(v)
+    const {ram,cpu,disk}=v.flavor
+    let obj={
+      image:v.image_id,
+      is_use_gpu:v.flavor.gpu,
+      flavor:{ram,cpu,disk}
+    }
+    arr.push(obj)
+  });
+  formState.imageConfigs = arr;
 };
 const TaskItem = {
   name: "",
@@ -926,11 +952,11 @@ function getDirection() {
   directionList.length=0
   http.getDirection().then((res: any) => {
     const data= res.data;
-    directionList.push()
+    directionList.push(...data)
   });
 }
 onMounted(()=>{
-  // getDirection()
+  getDirection()
 })
 
 </script>

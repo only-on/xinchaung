@@ -2,6 +2,7 @@
   <h3>实验环境</h3>
   <div v-if="props.type">
     <ConfigModal
+      :imageList="imageList"
       @selectedImage="selectedImage"
       :defaultConfig="defaultConfig"
     ></ConfigModal>
@@ -24,10 +25,10 @@
       </div>
       <div class="content">
         <div class="info flexCenter">
-          <span>内存：{{ v.configs.ram }}GB</span>
-          <span>cpu：{{ v.configs.cpu }}GB</span>
-          <span>硬盘：{{ v.configs.disk }}GB</span>
-          <span>GPU：{{ v.configs.gpu ? "是" : "否" }}</span>
+          <span>内存：{{ v.flavor.ram }}GB</span>
+          <span>cpu：{{ v.flavor.cpu }}GB</span>
+          <span>硬盘：{{ v.flavor.disk }}GB</span>
+          <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
         </div>
         <div class="caozuo">
           <span class="iconfont icon-bianji1" @click.stop="edit(v, idx)"></span>
@@ -42,11 +43,12 @@
     :destroyOnClose="true"
   >
     <ConfigModal
+    :imageList="imageList"
       @selectedImage="selectedImage"
       :defaultConfig="defaultConfig"
     ></ConfigModal>
     <template #footer>
-      <Submit @submit="handleOk" @cancel="cancel"></Submit>
+      <Submit @submit="handleOk" @cancel="cancel" :loading="loading"></Submit>
     </template>
   </a-modal>
 </template>
@@ -60,11 +62,6 @@ import {
   onMounted,
   reactive,
   Ref,
-  inject,
-  computed,
-  toRefs,
-  watch,
-  defineExpose,
   defineProps,
   withDefaults,
 } from "vue";
@@ -76,7 +73,7 @@ const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherImageResourcePool;
 interface Props {
-  type: boolean;
+  type: boolean;     // true单环境    false 多环境
 }
 const props = withDefaults(defineProps<Props>(), {
   type: false,
@@ -118,18 +115,17 @@ const configs: any = reactive([
   },
 ]);
 const reactiveData: any = reactive({
-  configs: {
+  flavor: {
     cpu: {},
     disk: {},
     ram: {},
     gpu: false,
   },
 });
-const imageList: any = reactive([]);
 var visible: Ref<boolean> = ref(false);
 const selectList: any = reactive([]);
 const currentImage: any = reactive({
-  configs: {
+  flavor: {
     cpu: "",
     disk: "",
     ram: "",
@@ -139,7 +135,7 @@ const currentImage: any = reactive({
   image_id:'',
 });
 const defaultConfig: any = {
-  configs: {},
+  flavor: {},
   imageName: "",
   image_id:'',
   editIdx: "",
@@ -150,7 +146,7 @@ const emit = defineEmits<{
 }>();
 const handleOk = () => {
   var obj = {
-    configs: { ...currentImage.configs },
+    flavor: { ...currentImage.flavor },
     imageName: currentImage.imageName,
     image_id:currentImage.image_id,
   };
@@ -160,15 +156,16 @@ const handleOk = () => {
     selectList[defaultConfig.editIdx] = obj;
   }
 
-  currentImage.configs = { cpu: "", disk: "", ram: "", gpu: false };
+  currentImage.flavor = { cpu: "", disk: "", ram: "", gpu: false };
   currentImage.imageName = "";
   currentImage.image_id = ''
   visible.value = false;
+  // console.log(selectList)
   emit("handleOk", selectList);
   // modal.destroy()
 };
 const cancel = () => {
-  defaultConfig.configs = { cpu: "", disk: "", ram: "", gpu: false };
+  defaultConfig.flavor = { cpu: "", disk: "", ram: "", gpu: false };
   defaultConfig.imageName = "";
   defaultConfig.image_id='',
   defaultConfig.editIdx = "";
@@ -176,9 +173,10 @@ const cancel = () => {
 };
 const edit = (val: any, k: number) => {
   visible.value = true;
-  defaultConfig.configs = val.configs;
-  defaultConfig.image_id = val.image_id
-  defaultConfig.imageName = val.imageName;
+  const {flavor,image_id,imageName}=val
+  defaultConfig.flavor = flavor;
+  defaultConfig.image_id = image_id
+  defaultConfig.imageName =imageName;
   defaultConfig.editIdx = k;
 };
 const Delete = (k: number) => {
@@ -186,20 +184,31 @@ const Delete = (k: number) => {
 };
 const selectedImage = (val: any) => {
   // console.log('已选择好的配置=》',val)
-  currentImage.image_id = val.image_id
-  currentImage.imageName = val.imageName;
-  currentImage.configs = val.configs;
+  const {flavor,image_id,imageName}=val
+  currentImage.image_id =image_id
+  currentImage.imageName = imageName;
+  currentImage.flavor =flavor;
   if (props.type) {
     emit("handleOk", [currentImage]);
   }
 };
+const imageList:any=reactive([])
+var loading: Ref<boolean> = ref(false);
 const initData = () => {
-  http.getList().then((res: IBusinessResp) => {
-    // list.push(...res.data);
+  loading.value=true
+  imageList.length=0
+  let obj={
+    page:1,
+    limit:99999
+  }
+  http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
+    const data= res.data.list;
+    imageList.push(...data)
+    loading.value=false
   });
 };
 onMounted(() => {
-  // initData();
+  initData();
 });
 </script>
 <style scoped lang="less">

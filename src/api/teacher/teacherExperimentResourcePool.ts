@@ -2,18 +2,25 @@ import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
   //创建实验
-  create:{ url: `/api/experiment/create`, method: "POST" ,dataType: 'json'},
+  // 桌面
+  createVnc:{ url: `/api/xinchuang/content/vnc/create_vnc`, method: "POST" ,dataType: 'json'},
+  // Jupyter实验
+  createJupyter:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  // 任务制实验
+  createTask:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  // 文档实验
+  createText:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  // 视频实验
+  createVideo:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  
   getTemplateList:{ url: `/api/xinchuang/report/templates`, method: "GET"},
-
-
-  upLoadTemple: { url: `/report/template/upload`, method: "POST" },
-
 
   upLoadExperimentReport:{ url: `/api/xinchuang/report/templates/import-template`, method: "POST",dataType: 'formdata'},
 
-
+  // 实验技术方向
+  getDirection: { url: `/api/category/技术方向/tags`, method: "GET" },
   // 删除实验报告模板
-  deleteTemplate:{ url: `/api/xinchuang/report/template/delete`, method: "POST" ,dataType: 'json'},
+  deleteTemplate:{ url: `/api/xinchuang/report/templates/{id}`, method: "DELETE" ,},
 
   // 同屏
   getSameScreenInfo: {
@@ -41,11 +48,15 @@ export default {
 };
 
 export interface ITeacherExperimentResourcePool {
-  create:TFHttpSend
+  // create:TFHttpSend
+  createVnc:TFHttpSend
+  createJupyter:TFHttpSend
+  createTask:TFHttpSend
+  createText:TFHttpSend
+  createVideo:TFHttpSend
 
   getTemplateList: TFHttpSend;
-  upLoadTemple:TFHttpSend;
-
+  getDirection: TFHttpSend;
   upLoadExperimentReport:TFHttpSend
   deleteTemplate:TFHttpSend;
 

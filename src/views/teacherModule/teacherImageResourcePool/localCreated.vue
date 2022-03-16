@@ -242,11 +242,12 @@ const create = () => {
   formRef.value.validate().then(() => {
     fileListValidator();
     const parmas = {
-      ostype: "docker" ,  
+      // ostype: "docker" ,  
+      classify_id: "docker" ,  // tar docter   kvm
       name: image.name,
       file_path: image.file_path,
       file_size: image.fileSize,
-      classify_id: image.classify_id,
+      ostype: image.classify_id,
       tags: image.tag,
       description: image.desc,
       // ssh_user: " ",

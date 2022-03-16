@@ -1,20 +1,12 @@
 <template>
-  <div class="title">镜像选择</div>
-  <!-- <a-select style="width: 100%; max-width: 476px" v-model:value="reactiveData.image_id"  placeholder="请选择需要的镜像" :options="options" @change="imageChange"></a-select> -->
-  <a-select
-    v-model:value="reactiveData.image_id"
-    placeholder="请选择需要的镜像"
-    style="width: 100%; max-width: 476px"
-    @change="imageChange"
-  >
-    <a-select-option :value="1">环境1</a-select-option>
-    <a-select-option :value="2">环境2</a-select-option>
-  </a-select>
-  <div class="configs">镜像配置</div>
-  <ImageConfig
-    @change="configChange"
-    :defaultConfig="reactiveData.configs"
-  ></ImageConfig>
+    <div class="title">镜像选择</div>
+    <a-select v-model:value="reactiveData.image_id" placeholder="请选择需要的镜像" style="width: 100%; max-width: 476px" @change="imageChange">
+      <a-select-option :value="item.id" v-for="(item, index) in props.imageList" :key="item.name">
+        {{ item.name }}
+      </a-select-option>
+    </a-select>
+    <div class="configs">镜像配置</div>
+    <ImageConfig @change="configChange" :defaultConfig="reactiveData.flavor" ></ImageConfig>
 </template>
 <script lang="ts" setup>
 import ImageConfig from "src/components/imageConfig/index.vue";
@@ -27,58 +19,53 @@ import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherImageResourcePool;
 
 const reactiveData: any = reactive({
-  configs: {
+  flavor: {
     cpu: "",
     disk: "",
     ram: "",
     gpu: false,
   },
-  imageName: "环境1",
-  image_id:1,
+  imageName: '',
+  image_id:'',
 });
 
 interface Props {
   defaultConfig: any;
+  imageList:any
 }
 const props = withDefaults(defineProps<Props>(), {
   defaultConfig: () => {},
+  imageList: ()=> [],
 });
-if (props.defaultConfig.configs && props.defaultConfig.image_id) {
-  reactiveData.imageName = props.defaultConfig.imageName;
-  reactiveData.image_id = props.defaultConfig.image_id;
-  reactiveData.configs = props.defaultConfig.configs;
-}
-var options = ref<SelectTypes["options"]>([]);
+
 const emit = defineEmits<{
   (e: "selectedImage", val: any): void;
 }>();
+if(props.imageList && props.imageList.length){
+  let val=props.imageList[0]
+    reactiveData.image_id=val.id
+    reactiveData.imageName=val.name
+    emit("selectedImage", reactiveData);
+}
+if (props.defaultConfig.flavor && props.defaultConfig.image_id) {
+  reactiveData.imageName = props.defaultConfig.imageName;
+  reactiveData.image_id = props.defaultConfig.image_id;
+  reactiveData.flavor = props.defaultConfig.flavor;
+}
+
 
 const configChange = (val: any) => {
-  reactiveData.configs = val;
+  // console.log(val)
+  reactiveData.flavor = val;
   emit("selectedImage", reactiveData);
 };
 
-const imageChange = () => {
+const imageChange = (val:any) => {
+  // console.log(val)
+  // reactiveData.imageName=
   emit("selectedImage", reactiveData);
-};
-
-const initData = () => {
-  // options.length = 0;
-  http.getList().then((res: IBusinessResp) => {
-    // list.push(...res.data);
-    // data.length?data.map((v:any)=>{
-    //       v.value=v.id
-    //       v.label=v.name
-    //     }):'';
-    // options.value.push(...data)
-
-    // 每次打开配置默认值都一样   下面代码不需要
-    // reactiveData.image_id=list[0].name
-    emit("selectedImage", reactiveData);
-  });
 };
 onMounted(() => {
-  // console.log(2222222)
   // initData();
 });
 </script>

@@ -9,8 +9,8 @@
               class="circle"
               v-for="(i, idx) in v.data"
               :key="i"
-              @click="selectNode(v, i)"
-              :class="getClass(i, idx, v)"
+              @click="selectNode(v, i.value)"
+              :class="getClass(i.value, idx, v)"
             ></div>
           </div>
           <div class="numBox flexCenter">
@@ -20,7 +20,7 @@
               :key="i"
               :class="idx <= v.data.length - 2 ? 'numW' : ''"
             >
-              {{ i }}{{ v.unit }}
+              {{ i.label }}{{ v.unit }}
             </div>
           </div>
         </div>
@@ -41,6 +41,8 @@
 </template>
 <script lang="ts" setup>
 import { reactive, ref, Ref, onMounted } from "vue";
+import request from "src/api/index";
+const http = (request as any).teacherImageResourcePool;
 // 采用ts专有声明，有默认值
 interface Props {
   // defaultConfig: {
@@ -59,15 +61,21 @@ interface Props {
 const configs: any = reactive([
   {
     name: "内存",
-    data: [2, 4, 6, 8],
+    // data: [2, 4, 6, 8],
+    data:[
+      {label:2,value:2048},{label:4,value:4096},{label:6,value:6144},{label:8,value:8192},
+    ],
     unit: "GB",
-    value: 4,
+    value: 4096,
     type: "select",
     key: "ram",
   },
   {
     name: "CPU",
-    data: [1, 2, 3, 4],
+    // data: [1, 2, 3, 4],
+    data:[
+      {label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},
+    ],
     unit: "GB",
     value: 2,
     type: "select",
@@ -75,7 +83,10 @@ const configs: any = reactive([
   },
   {
     name: "硬盘",
-    data: [30, 40, 50, 100],
+    // data: [30, 40, 50, 100],
+    data:[
+      {label:30,value:30},{label:40,value:40},{label:50,value:50}
+    ],
     unit: "GB",
     value: 50,
     type: "select",
@@ -97,12 +108,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 configs.map((v: any) => {
   let arr = props.defaultConfig ? Object.keys(props.defaultConfig) : [];
-  if (
-    arr &&
-    arr.length &&
-    arr.includes(v.key) &&
-    props.defaultConfig[v.key] !== ""
-  ) {
+  if (arr && arr.length && arr.includes(v.key) && props.defaultConfig[v.key] !== "") {
     // console.log(props.defaultConfig[v.key])
     v.value = props.defaultConfig[v.key];
   }
@@ -117,10 +123,6 @@ configs.forEach((v: any) => {
   params[v.key] = v.value;
 });
 // }
-onMounted(() => {
-  emit("change", params);
-});
-
 const selectNode = (v: any, i: any) => {
   v.value = i;
   params[v.key] = v.value;
@@ -144,7 +146,18 @@ const getClass = (i: any, idx: number, v: any) => {
     str += " front";
   }
   return str;
+}
+
+const initData = () => {
+  http.getConfigApi().then((res: any) => {
+    const {image_configs} =res.data
+    
+  });
 };
+onMounted(() => {
+  emit("change", params);
+  // initData()
+});
 </script>
 <style scoped lang="less">
 .labelList {

@@ -169,8 +169,11 @@ const deleteFun = (val: any) => {
 };
 const GenerateImage = (val: any) => {
   let obj={
-    name:val.image.name,
-    description:val.image.description
+    // name:val.image.name,
+    // description:val.image.description
+
+    name:'',
+    description:''
   }
   val.generateLoad=true
   http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {

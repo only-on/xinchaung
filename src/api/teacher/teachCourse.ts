@@ -77,9 +77,9 @@ export default {
     dataType: 'json'
   },
   getKnowledgeList: {
-    url: '/knowledge-map1/get-knowledge-map-list',
+    // url: '/knowledge-map1/get-knowledge-map-list',
+    url:'/api/xinchuang/content/knowledges/index',
     method: 'GET',
-    dataType: 'json'
   },
   createPaper: {
     url: '/api/v1/question/papers',

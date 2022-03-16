@@ -347,9 +347,10 @@ export default defineComponent({
       };
 
       (fileList as any).value[i].upload = new uploadFile({
-        url: env
-          ? "/proxyPrefix/api/instance/uploads/file"
-          : "/api/instance/uploads/file",
+        // url: env
+        //   ? "/proxyPrefix/api/instance/uploads/file"
+        //   : "/api/instance/uploads/file",
+        url:'/api/instance/uploads/file',
         body,
         success: (res: any) => {
           if (res.code === 1) {

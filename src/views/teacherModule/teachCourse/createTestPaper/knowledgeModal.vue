@@ -58,7 +58,8 @@ export default defineComponent({
     const getKnowledgeList = () => {
       http.getKnowledgeList({param: {type: 'tree'}})
         .then((res: IBusinessResp) => {
-          let {list} = res.data
+          let list= res.data.data
+          // console.log(list)
           data.treeData = [{
             children: list.children,
             id: list.id,
@@ -67,6 +68,7 @@ export default defineComponent({
           }]
         })
         .catch((error:any)=>{
+          // console.log(error)
            data.treeData = [{
             children: error.data.children,
             id: error.data.id,

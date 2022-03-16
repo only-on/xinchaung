@@ -192,9 +192,8 @@ onMounted(() => {
   }
 });
 const getDetail = () => {
-  dataList.length = 0;
-  http
-    .viewTemplate({ param: { id: templateId.value } })
+  dataList.length = 0;  // {urlParams: {id: templateId.value}}
+  http.viewTemplate({urlParams: {id: templateId.value}})
     .then((res: IBusinessResp) => {
       if (res && res.data) {
         let result = res.data;
@@ -229,15 +228,16 @@ const handleSave = () => {
       delete item.idx;
       return item;
     });
-    let params: Iform = {
+    let params:any= {
+      type:'form',
       name: form.name.trim(),
       json_content: json_content,
       html_content: document.getElementsByClassName("tableDom")[0].outerHTML,
     };
     if (templateId.value) {
       params.id = templateId.value;
-      http.updateTemplate({ param: params }).then((res: IBusinessResp) => {
-        $message.success("报告模板修改成功！");
+      http.updateTemplate({ param: params,urlParams:{id:params.id}}).then((res: IBusinessResp) => {
+        $message.success("报告模板编辑成功！");
         goBack(2);
       });
     } else {
