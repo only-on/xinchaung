@@ -29,14 +29,13 @@ export default defineConfig({
   },
   server: {
     proxy: {
-      // "/proxyPrefix": {
-      //   // target: "http://192.168.101.130",
-      //   target: "http://192.168.101.221:84",
-      //   // target: "http://xinchuang.local/",
-      //   changeOrigin: true,
-      //   rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
-        
-      // },
+      "/proxyPrefix": {
+        // target: "http://192.168.101.130",
+        target: "http://192.168.101.221:84",
+        // target: "http://xinchuang.local/",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
+      },
       "/api": {
         target: "http://192.168.101.221:84",
         changeOrigin: true,

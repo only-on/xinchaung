@@ -71,8 +71,8 @@
         </a-form-item>
       </div>
       <div class="right">
-        <a-form-item label="课时" name="class_hour">
-          <a-input v-model:value="formState.class_hour" />
+        <a-form-item label="课时" name="class_cnt">
+          <a-input v-model:value="formState.class_cnt" />
         </a-form-item>
         <a-form-item label="所属技术方向" name="direction">
           <a-select
@@ -513,7 +513,7 @@ const formState: any = reactive({
   drawerVisible: false,
   datasets: [],
   selectedName: [],
-  class_hour: 2,
+  class_cnt: 2,
   name: "",
   level: 2,
   direction:'',
@@ -539,7 +539,7 @@ const rules = {
     { required: true, message: "请输入实验名称", trigger: "blur" },
     { max: 30, message: "实验名称最长为30个字符", trigger: "blur" },
   ],
-  class_hour: [
+  class_cnt: [
     { required: true, message: "" },
     { validator: classCutValidator, trigger: "blur" },
   ],
@@ -561,7 +561,7 @@ async function classCutValidator(rule: any, value: string) {
     return Promise.reject("请输入课时数");
   }
   const reg = new RegExp("^([1-9]|[1][0-6])$");
-  if (!reg.test(String(formState.class_hour))) {
+  if (!reg.test(String(formState.class_cnt))) {
     return Promise.reject("课时数为1~16之间整数");
   }
 }
@@ -607,16 +607,27 @@ function create() {
       name:formState.name,
       level:formState.level,
       direction:formState.direction,
-      class_hour:formState.class_hour,
+      class_cnt:formState.class_cnt,
       ds:formState.datasets,
       knowledge:selectedKnowledgeIds,
-      guide:formState.guide,
       report:formState.report.id,
       container:formState.imageConfigs
     }
+    const {type,file_name,file_url,suffix,size,sort}=formState.ipynbList[0]
+    let parameter=[
+      {
+        guide:formState.guide,
+      },
+      {
+        jupyter_tasks:{type,file_name,file_url,suffix,size,sort}
+      },
+
+    ]
+    let obj=parameter[createTypeNumber-1]
+    //  createTypeNumber
     console.log(param)
     // return
-    http[createMethod]({param:{...param}}).then((res: IBusinessResp)=>{
+    http[createMethod]({param:{...param,...obj}}).then((res: IBusinessResp)=>{
       message.success('创建成功')
       cancel()
     })
@@ -790,19 +801,34 @@ let jupyterUuid: any = ref(UUID.uuid4());
 function beforeUploadIpynb(file: any) {
   let arr = file.name.split(".");
   if (arr[arr.length - 1] !== "ipynb") {
-    message.warn("请上传jupyter");
+    message.warn("请上传jupyter文件");
     return;
   }
-  formState.ipynbList[0].status = false;
-  formState.ipynbList[0].name = file.name;
+  // formState.ipynbList[0]={}
+  console.log(file)
+  let obj={
+    id: 1,
+    suffix:'ipynb',
+    uid: file.uid,
+    type:1,
+    status: "uploading",// uploading 
+    sort:0,
+    file_name:file.name,
+    name:file.name,
+    file_url:'',
+    size:'',
+  }
+  // return false
   const fs = new FormData();
   fs.append("jupyter_file", file);
-  fs.append("taskfile_subdir", jupyterUuid);
-  // console.log(fs)
   // return
   http.uploadTaskFile({ param: fs }).then((res: any) => {
-    formState.ipynbList[0].status = true;
-    formState.ipynbList[0].data = res.data;
+    message.success('上传成功');
+    let data=res.data
+    obj.status = "done",
+    obj.file_url = data.url;
+    obj.size = data.size;
+    formState.ipynbList[0]=obj
   });
 }
 const IpynbFileRemove = () => {

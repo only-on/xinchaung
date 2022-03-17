@@ -1,7 +1,7 @@
 <template>
     <div class="title">镜像选择</div>
     <a-select v-model:value="reactiveData.image_id" placeholder="请选择需要的镜像" style="width: 100%; max-width: 476px" @change="imageChange">
-      <a-select-option :value="item.id" v-for="(item, index) in props.imageList" :key="item.name">
+      <a-select-option :value="item.id" v-for="(item, index) in props.imageList" :key="item.id">
         {{ item.name }}
       </a-select-option>
     </a-select>

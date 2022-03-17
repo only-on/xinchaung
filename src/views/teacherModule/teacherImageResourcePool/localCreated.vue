@@ -9,10 +9,10 @@
           <a-form-item label="镜像名称" name="name">
             <a-input class="form-input" v-model:value="image.name"></a-input>
           </a-form-item>
-          <a-form-item label="系统类型" name="classify_id">
+          <a-form-item label="系统类型" name="ostype">
             <a-select
               class="form-input"
-              v-model:value="image.classify_id"
+              v-model:value="image.ostype"
               placeholder="请选择系统类型"
             >
               <a-select-option
@@ -30,7 +30,7 @@
             <a-input
               class="form-input"
               disabled
-              v-model:value="image.imageType"
+              v-model:value="image.classify_id"
             ></a-input>
             <!-- 是通过上传的文件获取的文件类型 -->
           </a-form-item>
@@ -112,8 +112,9 @@ const http = (request as any).teacherImageResourcePool;
 
 interface ImageType {
   name: string;
+  ostype: any;
   imageType: any;
-  classify_id: any;
+  classify_id: string;
   tag: any;
   desc: any;
   file_path:string
@@ -155,7 +156,8 @@ async function fileListValidator() {
 const image: ImageType = reactive({
   name: "",
   imageType: "",
-  classify_id: undefined,
+  ostype : undefined,
+  classify_id:'',
   tag: [],
   desc: "",
   file_path:'',
@@ -220,9 +222,10 @@ const uploadImageinfo = (name: any, size: any, url: any) => {
   image.fileSize = size;
   image.imageType = image.fileName.split(".")[ image.fileName.split(".").length - 1];
   image.fileName.split(".")[image.fileName.split(".").length - 1];
-  // image.classify_id = image.imageType === "qcow2" ? image.image_classify[2].name : image.image_classify[1].name;
+  image.classify_id=image.imageType === "qcow2" ? 'kvm':'docker'
+  // image.ostype = image.imageType === "qcow2" ? image.image_classify[2].name : image.image_classify[1].name;
   // console.log(image)
-  // tusFileUpload(file)
+  // tusFileUpload(file)  
 };
 const cancel = () => {
   // console.log("取消");
@@ -242,12 +245,12 @@ const create = () => {
   formRef.value.validate().then(() => {
     fileListValidator();
     const parmas = {
-      // ostype: "docker" ,  
-      classify_id: "docker" ,  // tar docter   kvm
+      // ostype: "docker" , 
+      classify_id: image.classify_id,
+      ostype: image.ostype,
       name: image.name,
       file_path: image.file_path,
       file_size: image.fileSize,
-      ostype: image.classify_id,
       tags: image.tag,
       description: image.desc,
       // ssh_user: " ",

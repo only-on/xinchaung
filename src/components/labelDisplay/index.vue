@@ -6,7 +6,7 @@
       v-for="(v, k) in list"
       :key="v"
     >
-      <span class="name">{{ v.name ? v.name : v.text }}</span>
+      <span class="name single-ellipsis">{{ v.name ? v.name : v.text }}</span>
       <span class="iconfont icon-guanbi" @click="remove(v, k)"></span>
     </div>
   </div>

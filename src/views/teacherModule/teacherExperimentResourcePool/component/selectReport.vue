@@ -67,7 +67,7 @@
   <!-- 在线制作 预览  编辑实验模板 -->
   <a-modal v-if="reportTemplate" :destroyOnClose="true" v-model:visible="reportTemplate" :title="reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
     <div class="pdfBox" v-if="pdfUrl">
-      <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" />
+      <PdfVue :url="pdfUrl" />
     </div>
     <CreateTemplate v-else @cancelTemplate="cancelTemplate" :id="TemplateEditId" :type="TemplateViewType" @viewTemplate="viewTemplate"></CreateTemplate>
     <template #footer>
@@ -161,8 +161,9 @@ const Download = (item: any) => {
   // document.body.removeChild(a);
   downloadUrl(item.word_path,item.name)
 };
-
+  const env = process.env.NODE_ENV == "development" ? true : false;
 const viewTemplate = (n: number, val?: any) => {
+  
   // 3在线制作 2预览离线  1预览在线   0编辑在线
   console.log(n)
   pdfUrl.value=''
@@ -217,16 +218,16 @@ const handleDelete = (item: any) => {
   });
 };
 function beforeUploadReport(file: any) {
-  console.log(file);
-  // formState.reportUploadList[0] = {
-  //   uid: "-1",
-  //   name: "",
-  //   status: "uploading",
-  //   url: "",
-  //   file: file,
-  // };
-  // formState.reportUploadList[0].name = file.name;
-  // formState.reportUploadList[0].status = "done";
+  // console.log(file);
+  //  formState.reportUploadList[0] = {
+  //     uid: file.uid,
+  //     id:1,
+  //     name: file.name,
+  //     status: "done",
+  //     url:'',
+  //     file: file,
+  //   };
+    //  console.log(formState.reportUploadList)
   // return;
   const fs = new FormData();
   fs.append("file", file);
@@ -244,6 +245,7 @@ function beforeUploadReport(file: any) {
       url:data.word_path,
       file: file,
     };
+    console.log(formState.reportUploadList)
   });
 }
 function fileRemove(file: any) {

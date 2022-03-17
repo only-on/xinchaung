@@ -7,6 +7,12 @@
         env ? '/proxyPrefix' + pdfUrl : pdfUrl}`"
       frameborder="0"
     ></iframe>
+    <!-- <iframe
+    v-if="isShowPdf"
+    style="width:100%;height:100%"
+      :src="`${env ? '' : '/frontend'}/pdfjs-2.5.207/web/viewer.html?file=${pdfUrl}`"
+      frameborder="0"
+    ></iframe> -->
     <div v-else>
         <empty text="加载失败，请点击下方按钮进行刷新">
             <div>
@@ -46,6 +52,7 @@ export default defineComponent({
         spinning.value=true
         clearTimeout(Number(timer))
         fetch(env ? '/proxyPrefix' + url : url).then(res=>{
+        // fetch(url).then(res=>{
             console.log(res);
             if (res.status==200) {
                 isShowPdf.value=true

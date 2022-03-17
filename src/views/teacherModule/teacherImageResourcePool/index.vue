@@ -10,20 +10,23 @@
     <div class="flexCenter mainBox">
       <div class="item flexCenter" v-for="(v, k) in list" :key="v" :class="v.is_init?'':'operable'">
         <div class="left">
-          <div class="img" :class="v.is_init? '' : 'KVMImg'">
+          <div class="img" :style="`background-image: url(src/assets/images/teacherImageResourcePool/${v.ostype}.png)`">
             <div class="imgType" v-if="v.is_init">{{'内置'}}</div>
           </div>
         </div>
         <div class="right" >
-          <div class="name">{{v.name}}</div>
+          <div class="name single-ellipsis">{{v.name}}</div>
           <div class="change">
             <div class="FrontDisplay">
               <div class="information flexCenter">
-                <span>类型：{{v.ostype}}</span>
+                <!-- <span>类型：{{v.ostype}}</span> -->
                 <span>信息：{{'X86'}}</span>
               </div>
-              <div class="labels flexCenter">
-                <span class="ellipsis" v-for="i in v.tags" :key="i">{{i}}</span>
+              <div class="labels flexCenter ">
+                <template v-for="(i,n) in v.tags" :key="i">
+                  <span class="single-ellipsis">{{i}}</span>
+                  <span>&nbsp;&nbsp;{{`${(n !== (v.tags && v.tags.length-1))?'/':''}`}}&nbsp;&nbsp;</span>
+                </template>
               </div>
             </div>
             <div class="PostDisplay">
@@ -406,7 +409,8 @@ onMounted(() => {
         border-radius: 13px 0px 0px 13px;
         height: 120px;
         width: 120px;
-        background: url("src/assets/images/teacherImageResourcePool/img1.jpg") no-repeat;
+        background: url("src/assets/images/teacherImageResourcePool/docker.png");
+        background-repeat: no-repeat;
         background-size: 100% 100%;
 
         display: flex;
@@ -433,10 +437,6 @@ onMounted(() => {
           left: 0;
         }
       }
-      .KVMImg {
-        background: url("src/assets/images/teacherImageResourcePool/img2.jpg") no-repeat;
-        background-size: 100% 100%;
-      }
       .Belonging {
         height: 24px;
         background: rgba(0, 0, 0, 0.25);
@@ -456,6 +456,7 @@ onMounted(() => {
         color: var(--black-85);
         font-size: var(--font-size-16);
         letter-spacing: 1.6px;
+        max-width: 240px;
       }
       .information{
         color: var(--black-45);
@@ -466,13 +467,16 @@ onMounted(() => {
       }
       .labels {
         height: 40px;
-        span {
+        color: var(--primary-color);
+        .single-ellipsis {
           display: inline-block;
-          width: 92px;
+          width: max-content;
+          max-width: 82px;
           height: 24px;
           line-height: 24px;
           text-align: center;
-          color: var(--brightBtn);
+          // color: var(--brightBtn);
+          // color: var(--primary-color);
         }
       }
       .text {
