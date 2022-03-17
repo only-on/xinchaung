@@ -109,7 +109,7 @@ export default defineComponent({
     function tabChange(id: number) {
       currentTab.value = id;
       // initData();
-      id === 0 ? getTagsList({self: 1}) : (id === 1 ? getTagsList({}) : '')
+      id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
     }
     // 常驻类型
     const tags = [
@@ -139,7 +139,7 @@ export default defineComponent({
     provide("bottomStyle", bottomStyle);
 
     onMounted(() => {
-      getTagsList({self: 1})
+      getTagsList({scene: 'private'})
       // initData();
     });
     return {

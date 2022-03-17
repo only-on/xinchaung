@@ -207,7 +207,7 @@ const cancel = () => {
 onMounted(() => {
   getHotLabels()
   editId ? getDetail() : "";
-  getTagsList({self: 1})
+  getTagsList({scene: 'private'})
 });
 // 热门标签
 const hotLabelList = reactive<ILabelList[]>([])

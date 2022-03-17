@@ -27,12 +27,14 @@
             style="width: 90%; max-width: 314px"
             @search="onSearch"
           />
+          <a-spin :spinning="loading" size="large" tip="Loading...">
           <div v-if="forumnList.length > 0">
             <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
           </div>
           <div v-else>
             <empty></empty>
           </div>
+          </a-spin>
         </div>
       </a-tab-pane>
     </a-tabs>
