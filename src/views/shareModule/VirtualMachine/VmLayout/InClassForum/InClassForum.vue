@@ -9,12 +9,14 @@
             style="width: 90%; max-width: 314px"
             @search="onSearch"
           />
+          <a-spin :spinning="loading" size="large" tip="Loading...">
           <div v-if="forumnList.length > 0">
             <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
           </div>
           <div v-else>
             <empty></empty>
           </div>
+          </a-spin>
         </div>
       </a-tab-pane>
       <a-tab-pane key="1" tab="我的帖子">
@@ -88,6 +90,7 @@ export default defineComponent({
     function getForumnList() {
       // 获取帖子列表
       loading.value = true
+      forumnList.length = 0
       console.log(forumSearch)
       const param = {
         page: forumSearch.page,
@@ -99,7 +102,6 @@ export default defineComponent({
       http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
         loading.value = false
         const { list, page } = res.data
-        forumnList.length = 0
         list.forEach((v: IForumnList) => {
           v.content = goHtml(v.content)
           fixHtml(removeHtmlTag(v.content).substr(0, 200))
@@ -109,33 +111,6 @@ export default defineComponent({
         forumnList.push(...list)
         total.value = page.totalCount
       })
-      // let obj = [
-      //   {
-      //     id: 1,
-      //     title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
-      //     desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
-      //     content:
-      //       "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-      //     userName: "小黄帽菇凉",
-      //     userAvatar: "",
-      //     createTime: "2022/01/21",
-      //     replayNum: 24,
-      //     isAllText: false,
-      //   },
-      //   {
-      //     id: 2,
-      //     title: "个人2021读过的值得分享的历史相关书籍的汇总（非新书）",
-      //     desc: "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...",
-      //     content:
-      //       "[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的<b>[Treasures from the Oxus] [北美洲] [安第斯文明特展：探寻印加帝国的起源] [萨珊朝伊朗] [罗马史研究入门] [探寻史前欧洲文明] [民主的古代先祖][民主的古代先祖] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [INCAS AND THEIR ANCESTORS:THE ARCHAEOLOGY OF PERU] [中国考古学] [民主的古代先祖] [A History of the Ancient Near East, ca. 3000-323 BC] [东南亚大陆早期文化] [中国考古学] [最早的...</b>",
-      //     userName: "小黄帽菇凉",
-      //     userAvatar: "",
-      //     createTime: "2022/01/21",
-      //     replayNum: 222,
-      //     isAllText: false,
-      //   },
-      // ];
-      // forumnList.push(...obj);
     }
 
     function tabChange(key: string) {
@@ -161,6 +136,7 @@ export default defineComponent({
       tabChange,
       pageChange,
       total,
+      loading,
     };
   },
 });

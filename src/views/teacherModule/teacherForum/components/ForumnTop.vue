@@ -72,6 +72,7 @@ export default defineComponent({
     //   emit("search", ForumSearch);
     // }
     const classifyChange = (obj: any) => {
+      ForumSearch.title = ''
       ForumSearch.type = obj.label;
       emit("search", ForumSearch);
     };

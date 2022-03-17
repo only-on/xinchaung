@@ -70,10 +70,17 @@ export default defineComponent({
       const param = {
         page: forumSearch.page,
         limit: forumSearch.pageSize,
-        type: forumSearch.type,
+        // type: forumSearch.type,
         // keyword: forumSearch.title
       }
-      currentTab.value ? '' : Object.assign(param, {self: 1})
+      // order=2 最新 1 热门
+      currentTab.value ? 
+        (forumSearch.type === 'hot' ? 
+          Object.assign(param, {order: 1}) : 
+          (forumSearch.type === 'new'? 
+            Object.assign(param, {order: 2}) : 
+            Object.assign(param, {type: forumSearch.type}))) : 
+        Object.assign(param, {self: 1, type: forumSearch.type})
       http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
         loading.value = false
         forumnList.length = 0
@@ -106,8 +113,8 @@ export default defineComponent({
     }
     // 常驻类型
     const tags = [
-      {id: 0, name: '热门', value: '热门'},
-      {id: -1, name: '最新', value: '最新'}
+      {id: 0, name: '热门', value: 'hot'},
+      {id: -1, name: '最新', value: 'new'}
     ]
     let tagList = reactive<ITagList[]>([])
     const getTagsList = (param: any) => {
