@@ -7,11 +7,11 @@ export default {
   // Jupyter实验
   createJupyter:{ url: `/api/xinchuang/content/jupyter/create_jupyter`, method: "POST" ,dataType: 'json'},
   // 任务制实验
-  createTask:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  createTask:{ url: `/api/xinchuang/content/taskstep/create`, method: "POST" ,dataType: 'json'},
   // 文档实验
-  createText:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  createText:{ url: `/api/xinchuang/content/create`, method: "POST" ,dataType: 'json'},
   // 视频实验
-  createVideo:{ url: `/api/xinchuang/content/create_vnc`, method: "POST" ,dataType: 'json'},
+  createVideo:{ url: `/api/xinchuang/content/create`, method: "POST" ,dataType: 'json'},
   
   getTemplateList:{ url: `/api/xinchuang/report/templates`, method: "GET"},
 
@@ -45,6 +45,13 @@ export default {
     method: "POST",
     dataType: "formdata",
   },
+
+  //  文档 视频列表
+  DocList:{ url: `/api/xinchaung/content/document/list`, method: "GET"},
+  Mp4List:{ url: `/api/xinchaung/content/video/list`, method: "GET"},
+  // 上传文档 视频
+  uploadDocFile:{url:`/api/xinchuang/content/document/upload_file`,method: "POST",dataType: "formdata"},
+  uploadMp4File:{url:`/api/xinchuang/content/video/upload_file`,method: "POST",dataType: "formdata"},
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -65,6 +72,12 @@ export interface ITeacherExperimentResourcePool {
   deleteTopo: TFHttpSend;
 
   uploadTaskFile: TFHttpSend;
+
+  DocList: TFHttpSend;
+  Mp4List: TFHttpSend;
+
+  uploadDocFile: TFHttpSend;
+  uploadMp4File: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";

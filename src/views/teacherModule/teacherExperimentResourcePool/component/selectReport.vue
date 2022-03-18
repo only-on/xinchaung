@@ -353,7 +353,7 @@ const cancelTemplate = (val: number) => {
           .handle {
             width: 96px;
             span {
-              display: none;
+              // display: none;
               padding: 0 10px;
               color: var(--primary-color);
               cursor: pointer;

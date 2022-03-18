@@ -233,24 +233,16 @@
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter docx">
           <span class="data-set-hint">仅支持单个md、doc、docx、pdf文件</span>
-          <!-- <a-upload class="upload" :showUploadList="false" :before-upload="docBeforeUpload" accept=".md,doc,.docx">
-            <a-button type="primary" @click="upDocx()"> 上传文档 </a-button>
-          </a-upload> -->
           <a-button type="primary" @click="upDocx(1)"> 上传文档 </a-button>
           <a-button type="primary" @click="selectDocx(1)"> 选择文档 </a-button>
         </div>
       </div>
       <div v-if="formState.document.type === 'md'">
-        <MarkedEditor
-          v-model="formState.document.mdValue"
-          class="markdown__editor"
-        />
+        <MarkedEditor v-model="formState.document.mdValue" class="markdown__editor" />
       </div>
-      <div v-if="formState.document.type === 'pdf'">
-        <PdfVue
-          :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"
-        />
-        <!-- <PdfVue :url="formState.document.pdf" /> -->
+      <div v-if="formState.document.type === 'pdf'" class="pdfBox">
+        <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
+        <PdfVue :url="formState.document.pdf" />
       </div>
     </div>
     <!-- 视频实验  实验指导文件 -->
@@ -266,12 +258,9 @@
           <a-button type="primary" @click="selectDocx(2)"> 选择视频 </a-button>
         </div>
       </div>
-      <div v-if="formState.videoObj.url" class="video-box">
-        <!-- <video :src="env ? '/proxyPrefix' + formState.videoObj.url : formState.videoObj.url" :controls="true"> 您的浏览器不支持 video 标签</video> -->
-        <video
-          :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"
-          :controls="true"
-        >
+      <div v-if="formState.document.videoUrl" class="video-box">
+        <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
+        <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
           您的浏览器不支持 video 标签
         </video>
       </div>
@@ -302,26 +291,22 @@
     @reportOk="reportOk"
   ></SelectReport>
 
-  <!-- 上传文档 文件 弹窗 -->
-  <a-modal
-    v-model:visible="upDocVisible"
-    :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
-    class="uploadImage"
-    :width="640"
-  >
-    <a-select
+  <!-- 上传文档 视频 文件 弹窗 -->
+  <a-modal v-model:visible="upDocVisible" :destroyOnClose="true" :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
+    class="uploadImage" :width="640">
+    <!-- <a-select
       style="width: 400px; margin-bottom: 3rem"
       v-model:value="upDoc.catalogue"
       :placeholder="`请选择${docOrMp4Type === 1 ? '文档' : '视频'}目录`"
       :options="catalogueOptions"
-    ></a-select>
+    ></a-select> -->
     <a-upload-dragger
       name="file"
-      :multiple="true"
+      @change="handleChange"
       :before-upload="docBeforeUpload"
-      :remove="remove"
-      :fileList="upDoc.docFileList"
-      accept=".md,.doc,.docx,.pdf"
+      :remove="removeDocMp4"
+      v-model:fileList="upDoc.docFileList"
+      :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
     >
       <p class="ant-upload-drag-icon">
@@ -336,7 +321,7 @@
       </p>
     </a-upload-dragger>
     <template #footer>
-      <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()"></Submit>
+      <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
   </a-modal>
   <!-- 选择文档视频 文件 抽屉 -->
@@ -530,9 +515,6 @@ const formState: any = reactive({
     pdf: "",
     mdValue: "",
   },
-  videoObj: {
-    url: "",
-  },
 });
 const rules = {
   name: [
@@ -543,18 +525,6 @@ const rules = {
     { required: true, message: "" },
     { validator: classCutValidator, trigger: "blur" },
   ],
-  imageDataSelected: [
-    { required: true, message: "" },
-    { validator: imageDataSelectedValidator, message: "请选择实验环境" },
-  ],
-  taskData: [
-    { required: true, message: "" },
-    { validator: taskDataValidator, message: "请选择实验任务" },
-  ],
-  Environment: [
-    { required: true, message: "" },
-    { validator: taskDataValidator, message: "请选择实验任务" },
-  ],
 };
 async function classCutValidator(rule: any, value: string) {
   if (!value) {
@@ -563,18 +533,6 @@ async function classCutValidator(rule: any, value: string) {
   const reg = new RegExp("^([1-9]|[1][0-6])$");
   if (!reg.test(String(formState.class_cnt))) {
     return Promise.reject("课时数为1~16之间整数");
-  }
-}
-async function imageDataSelectedValidator(rule: any, value: string) {
-  if (formState.imageDataSelected.length === 0) {
-    return Promise.reject("请选择实验环境");
-  } else {
-    return Promise.resolve();
-  }
-}
-async function taskDataValidator(rule: any, value: string) {
-  if (formState.taskData.length <= 1 && formState.taskData[0].name === "") {
-    return Promise.reject("请选择实验任务");
   }
 }
 const closeDrawer = () => {
@@ -613,7 +571,8 @@ function create() {
       report:formState.report.id,
       container:formState.imageConfigs
     }
-    const {type,file_name,file_url,suffix,size,sort}=formState.ipynbList[0]
+    const fileObj:any=createTypeNumber == 2 ? formState.ipynbList[0]:upDoc.docFileList[0]     // 是视频和文档公用一个 文件对象
+    const {type,file_name,file_url,suffix,size,sort}=fileObj
     let parameter=[
       {
         guide:formState.guide,
@@ -621,11 +580,19 @@ function create() {
       {
         jupyter_tasks:{type,file_name,file_url,suffix,size,sort}
       },
-
+      {
+        lab:[{}]
+      },
+      {
+        document_file:{type,file_name,file_url,suffix,size,sort}
+      },
+      {
+        video_file:{type,file_name,file_url,suffix,size,sort}
+      }
     ]
     let obj=parameter[createTypeNumber-1]
     //  createTypeNumber
-    console.log(param)
+    console.log(obj)
     // return
     http[createMethod]({param:{...param,...obj}}).then((res: IBusinessResp)=>{
       message.success('创建成功')
@@ -810,7 +777,7 @@ function beforeUploadIpynb(file: any) {
     id: 1,
     suffix:'ipynb',
     uid: file.uid,
-    type:1,
+    type:2,
     status: "uploading",// uploading 
     sort:0,
     file_name:file.name,
@@ -857,35 +824,77 @@ const TaskMdTaskStep = (num: number, key: string) => {
 var upDoc: any = reactive({
   catalogue: 1,
   catalogueList: [],
-  docFileList: [],
+  docFileList: [
+    {
+      status: "uploading",
+    }
+  ],
   nowDocument: {
     // 正在上传  未确认的文档
     type: "md",
     pdf: "",
     mdValue: "",
+    videoUrl:'',
   },
 });
 var upDocVisible = ref<boolean>(false);
+
+const handleChange=(info: any)=>{
+  console.log(info)
+  info.file.status='uploading'
+}
 const docBeforeUpload = async (file: any) => {
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   const suffix = (file && file.name).split(".")[1];
-  if (suffix !== "md" && docOrMp4Type.value === 1) {
+  if (suffix === "md" && docOrMp4Type.value === 1) {
+    formState.document.type= 'md'
     upDoc.nowDocument.type = "md";
     const text = await readFile(file);
     formState.document.mdValue = text;
+    upDocVisible.value = false;
   } else {
+    // 文档非md 类型
     upDoc.nowDocument.type = "pdf";
     const fs = new FormData();
+    let obj:any={
+      uid: file.uid,
+      name: file.name,
+      status: "uploading",
+    }
+    upDoc.docFileList[0]=obj
     fs.append("file", file);
-    http.uploadDocFile({ param: fs }).then((res: any) => {
-      // upDoc.nowDocument.pdf=res.data.url
+    let arr =['uploadDocFile','uploadMp4File']
+    http[arr[docOrMp4Type.value-1]]({ param: fs }).then((res: any) => {
+      let data =res.data
+      if(docOrMp4Type.value === 1){
+        upDoc.nowDocument.pdf=data.url
+      }else{
+        upDoc.nowDocument.videoUrl=data.url
+      }
+      obj={
+        uid: file.uid,
+        id:1,
+        name: data.file_name,
+        status: "done",
+        url:data.url,
+        type:3,
+        file_name:data.file_name,
+        file_url:data.url,
+        suffix:'docx',
+        size:data.size,
+        sort:0,
+        response:''
+      }
+      upDoc.docFileList[0]=obj
     });
   }
 };
-
+const removeDocMp4=()=>{
+  upDoc.docFileList=[]
+}
 const upDocx = (n: number) => {
+  upDoc.docFileList.length=0
   docOrMp4Type.value = n;
-  getCatalogue();
   upDocVisible.value = true;
 };
 const docOrMp4Type = ref<number>(1);
@@ -931,7 +940,8 @@ const getCatalogue = () => {
 const getDocOrMp4List = () => {
   // docOrMp4Drawer.loading=true
   // docOrMp4Drawer.list.length=0
-  // http.getDocOrMp4List().then((res: IBusinessResp) => {
+  const pro=docOrMp4Type.value===1?http.DocList():http.Mp4List()
+  // pro.then((res: IBusinessResp) => {
   //   docOrMp4Drawer.loading=false
   //   docOrMp4Drawer.list.push(...res.data);
   // });
@@ -945,7 +955,6 @@ const pageChange = (current: any) => {
   getDocOrMp4List();
 };
 const selectDocx = (n: number) => {
-  getCatalogue();
   getDocOrMp4List();
   docOrMp4Type.value = n;
   docOrMp4Drawer.visible = true;
@@ -983,6 +992,9 @@ function getDirection() {
 }
 onMounted(()=>{
   getDirection()
+  if([4,5].includes(createTypeNumber)){
+    // getCatalogue()
+  }
 })
 
 </script>
@@ -1135,6 +1147,11 @@ h3 {
   padding-top: 2rem;
   .docTop {
     justify-content: space-between;
+  }
+  .pdfBox{
+    width: 100%;
+    height: 500px;
+    margin-top: 24px;
   }
   .docTopRight {
     width: 32.5%;

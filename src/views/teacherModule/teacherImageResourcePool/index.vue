@@ -64,7 +64,7 @@
             <a-form-item required label="系统类型">
               <a-select
                 class="form-input"
-                v-model:value="imageData.classify_id"
+                v-model:value="imageData.ostype"
                 placeholder="请选择系统类型"
               >
                 <a-select-option
@@ -288,7 +288,8 @@ var imageData:any=reactive({
 })
 var visible: Ref<boolean> = ref(false);
 const edit=(val:any)=>{
-  imageData.ostype= "docker" ,  
+  console.log(val) // ostype
+  imageData.ostype= val.ostype,  
   imageData.id=val.id
   imageData.tags=val.tags
   imageData.classify_id=val.classify      
