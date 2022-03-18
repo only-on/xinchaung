@@ -52,6 +52,9 @@ export default {
   // 上传文档 视频
   uploadDocFile:{url:`/api/xinchuang/content/document/upload_file`,method: "POST",dataType: "formdata"},
   uploadMp4File:{url:`/api/xinchuang/content/video/upload_file`,method: "POST",dataType: "formdata"},
+
+  // 实验列表
+  getExperimentList: { url: `/api/xinchuang/content/list`, method: "GET" },
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -78,6 +81,8 @@ export interface ITeacherExperimentResourcePool {
 
   uploadDocFile: TFHttpSend;
   uploadMp4File: TFHttpSend;
+
+  getExperimentList: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";

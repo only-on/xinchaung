@@ -44,7 +44,6 @@
       <marked-editor
         v-model="props.taskList.describe"
         :preview="props.preview"
-        :image-upload-url="uploadUrl"
       />
     </a-form-item>
     <a-form-item label="任务步骤" name="step" required>
@@ -71,7 +70,6 @@
       <marked-editor
         v-model="props.taskList.step"
         :preview="props.preview"
-        :image-upload-url="uploadUrl"
       />
     </a-form-item>
   </a-form>

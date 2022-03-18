@@ -19,8 +19,8 @@
     >
       <task-list :preview="preview" :taskList="v" :index="i">{{ i }}</task-list>
     </div>
-    <Submit @submit="onSubmit" @cancel="cancel"></Submit>
   </div>
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
 </template>
 
 <script lang="ts" setup>
@@ -101,12 +101,12 @@ const cancel = () => {
 }
 .experiment-content {
   // margin-top: 16px;
-  padding: 0 24px;
+  padding: 0 23px;
   .task-list {
     margin-top: 24px;
   }
-  .submit {
-    margin-top: 16px;
-  }
+}
+.submit {
+  margin-top: 16px;
 }
 </style>
