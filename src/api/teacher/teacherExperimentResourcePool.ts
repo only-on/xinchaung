@@ -9,12 +9,12 @@ export default {
   // 任务制实验
   createTask:{ url: `/api/xinchuang/content/taskstep/create`, method: "POST" ,dataType: 'json'},
   // 文档实验
-  createText:{ url: `/api/xinchuang/content/create`, method: "POST" ,dataType: 'json'},
+  createText:{ url: `/api/xinchuang/content/document/create`, method: "POST" ,dataType: 'json'},
   // 视频实验
-  createVideo:{ url: `/api/xinchuang/content/create`, method: "POST" ,dataType: 'json'},
-  
+  createVideo:{ url: `/api/xinchuang/content/video/create`, method: "POST" ,dataType: 'json'},
+                    //    /api/xinchuang/report/templates
   getTemplateList:{ url: `/api/xinchuang/report/templates`, method: "GET"},
-
+                        // /api/xinchuang/report/templates
   upLoadExperimentReport:{ url: `/api/xinchuang/report/templates/import-template`, method: "POST",dataType: 'formdata'},
 
   // 实验技术方向

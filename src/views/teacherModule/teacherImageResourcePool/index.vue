@@ -193,6 +193,14 @@ const classifyList: any = reactive([
       { name: "全部", value:"" },
     ],
   },
+  {
+    title: "镜像类型",
+    value: "",
+    keyName: "ostype",
+    data: [
+      { name: "全部", value:"" },
+    ],
+  },
 ]);
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
@@ -202,16 +210,13 @@ const classifyChange = (obj: any) => {
 const labelSearch = reactive({
   is_init: '',
   tags: '',
+  ostype:'',
 });
 
 const searchFn = (key: string) => {
   fromData.page = 1;
   fromData.name = key;
   totalCount.value=0
-  let obj = {
-    ...labelSearch,
-    ...fromData,
-  };
   // console.log(obj);
   initData();
 };
@@ -240,9 +245,12 @@ const initData = () => {
   loading.value = true;
   list.length=0
   totalCount.value=0
+  // const tag=[labelSearch.tags,labelSearch.ostype].join(',')
+  const tag=`${labelSearch.tags}${(labelSearch.tags && labelSearch.ostype)?',':''}${labelSearch.ostype}`
   let obj={
     ...fromData,
-    ...labelSearch
+    is_init:labelSearch.is_init,
+    tags:tag
   }
   http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
     // console.log(res.data)
@@ -357,6 +365,10 @@ function getConfig() {
   http.getConfigApi().then((res: any) => {
     const { image_classify} = res.data;
     imageData.image_classify=image_classify
+    image_classify.forEach((v:any) => {
+      classifyList[2].data.push({name:v.name,value:v.name})
+    });
+    // classifyList[1].data.push({name:v.name,value:v.name})
   });
 }
 const recommend:any=reactive([])

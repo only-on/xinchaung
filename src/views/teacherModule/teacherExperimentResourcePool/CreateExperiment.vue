@@ -185,8 +185,8 @@
           <div class="taskStep">
             <div class="taskStepBox flexCenter">
               <div class="stepBox"><span class="star">*</span>任务描述</div>
-              <!-- <a-button type="primary" size="small" @click="selectTaskMd(v,'describe')">上传文档</a-button> -->
-              <div @click="TaskMdTaskStep(k, 'describe')">
+              <!-- <a-button type="primary" size="small" @click="selectTaskMd(v,'description')">上传文档</a-button> -->
+              <div @click="TaskMdTaskStep(k, 'description')">
                 <a-upload
                   class="upload"
                   :showUploadList="false"
@@ -197,21 +197,21 @@
                 </a-upload>
               </div>
             </div>
-            <MarkedEditor v-model="v.describe" class="markdown__editor" />
+            <MarkedEditor v-model="v.description" class="markdown__editor" />
           </div>
-          <div class="taskDescribe">
+          <div class="taskDescription">
             <div class="statusBox flexCenter">
               <div>
                 <span class="star">*</span>任务步骤
                 <span class="status">状态</span
                 ><a-switch
                   class="switch"
-                  :checked="v.disabled"
-                  @change="v.disabled = !v.disabled"
+                  :checked="v.state"
+                  @change="v.state = !v.state"
                 />
               </div>
-              <!-- <a-button type="primary" size="small" @click="selectTaskMd(v,'taskStep')">上传文档</a-button> -->
-              <div @click="TaskMdTaskStep(k, 'taskStep')">
+              <!-- <a-button type="primary" size="small" @click="selectTaskMd(v,'detail')">上传文档</a-button> -->
+              <div @click="TaskMdTaskStep(k, 'detail')">
                 <a-upload
                   class="upload"
                   :showUploadList="false"
@@ -222,7 +222,7 @@
                 </a-upload>
               </div>
             </div>
-            <MarkedEditor v-model="v.taskStep" class="markdown__editor" />
+            <MarkedEditor v-model="v.detail" class="markdown__editor" />
           </div>
         </div>
       </div>
@@ -554,6 +554,8 @@ function remove(val: any, index: number) {
 }
 
 function create() {
+  console.log(TaskLIst)
+  // return
   formRef.value.validate().then(() => {
     // let 
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
@@ -575,13 +577,12 @@ function create() {
     const {type,file_name,file_url,suffix,size,sort}=fileObj
     let parameter=[
       {
-        guide:formState.guide,
-      },
+        guide:formState.guide,},
       {
         jupyter_tasks:{type,file_name,file_url,suffix,size,sort}
       },
       {
-        lab:[{}]
+        tasks:TaskLIst
       },
       {
         document_file:{type,file_name,file_url,suffix,size,sort}
@@ -648,6 +649,8 @@ function pollGetVM(id: number) {
   getTopoVmInfo(id);
 }
 function openScreen() {
+  message.warn("接口暂未调试");
+  return
   screenParam.container = [];
   screenParam.dataset_id = [];
   formState.selectedName.forEach((item: any) => {
@@ -740,21 +743,14 @@ const ConfirmConfiguration = (val: any) => {
   });
   formState.imageConfigs = arr;
 };
-const TaskItem = {
-  name: "",
-  describe: "",
-  taskStep: "",
-  disabled: false,
-  open: true,
-};
 //   任务制实验
 var TaskLIst: any = reactive([]);
 const addTask = () => {
   TaskLIst.push({
     name: "",
-    describe: "",
-    taskStep: "",
-    disabled: false,
+    description: "",
+    detail: "",
+    state: false,
     open: true,
   });
 };
@@ -1122,7 +1118,7 @@ h3 {
           margin-top: 5px;
         }
       }
-      .taskDescribe {
+      .taskDescription {
         .statusBox {
           padding: 1rem 2rem 0;
           justify-content: space-between;

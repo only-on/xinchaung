@@ -143,6 +143,7 @@ const enterFun = (val: any) => {
         window.open(href, "_blank");
       } else {
         const { href } = router.resolve({
+          // path: "/teacher/Workbench/open-jupyte",
           path: "/teacher/Workbench/open-vnc",
           query: {
             id: id,
@@ -150,7 +151,9 @@ const enterFun = (val: any) => {
         });
         window.open(href, "_blank");
       }
-  });
+  }).catch(() => {
+    val.status=false
+  })
 };
 const deleteFun = (val: any) => {
   Modal.confirm({
@@ -179,7 +182,10 @@ const GenerateImage = (val: any) => {
   http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
     message.success("生成成功");
    val.generateLoad=false
-  });
+  })
+  .catch(() => {
+    val.generateLoad=false
+  })
 };
 
 var loading: Ref<boolean> = ref(false);

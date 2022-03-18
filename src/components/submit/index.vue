@@ -1,6 +1,6 @@
 <template>
   <div class="submit">
-    <a-button @click="close" :loading="props.loading">取消</a-button>
+    <a-button @click="close">取消</a-button>
     <a-button type="primary" @click="submit" :loading="props.loading">确定</a-button>
   </div>
 </template>

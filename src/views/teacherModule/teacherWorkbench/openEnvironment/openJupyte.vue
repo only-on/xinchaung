@@ -99,7 +99,7 @@ export default defineComponent({
       }
     };
     const rules = {
-      name: [{ validator: nameValidator, trigger: "change" }],
+      // name: [{ validator: nameValidator, trigger: "change" }],
       description: [
         {
           required: false,
