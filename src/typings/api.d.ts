@@ -18,7 +18,7 @@ import { IClassicalAssetApi } from "../api/modules/classicalAsset";
 import { IKnowledgeMap } from "src/api/modules/knowledgeMap";
 import { IteacherWorkbench } from "src/api/modules/teacherWorkbench";
 import { ITeacherExperAps } from "src/api/modules/teacherExperiment";
-import { ITeacherTemplateApis } from "src/api/modules/teacherTemplate";
+import { ITeacherTemplateApis } from "src/api/teacher/teacherTemplate";
 import { IDataSet } from "src/api/modules/dataSet";
 import { TAdminSystemSetting } from "src/api/modules/adminSystemSetting";
 import { IAdminUserManagement } from "src/api/modules/adminUserManagement";

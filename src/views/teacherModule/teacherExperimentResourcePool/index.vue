@@ -18,24 +18,24 @@
         >
           {{ v.type_obj.name }}
         </div>
-        <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
-        <div class="class-time">推荐课时 1</div>
+        <div class="exper-name pointer" @click="detail(v.id)">{{ v.title }}</div>
+        <div class="class-time">推荐课时 {{v.class_hour}}</div>
         <div class="user-info" v-if="currentTab === 0">
           <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
-          <span class="user-name">内置实验</span>
+          <span class="user-name">{{v.username}}</span>
         </div>
         <div class="operate" v-if="currentTab === 1">
-          <span class="share pointer" @click.stop="share(v)">{{
+          <span class="share pointer" @click.stop="share(v.id)">{{
             k === 0 ? "共享" : "取消共享"
           }}</span>
-          <span class="delete pointer" @click.stop="delet(v)">删除</span>
+          <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
         </div>
       </div>
       <!-- <Empty v-if="!list.length && !loading" /> -->
       <a-pagination
         v-if="totalCount > 6"
-        v-model:current="fromData.page"
-        :pageSize="fromData.limit"
+        v-model:current="searchInfo.page"
+        :pageSize="searchInfo.limit"
         :total="totalCount"
         @change="pageChange"
       />
@@ -64,7 +64,8 @@ import { Modal, message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teacherExperimentResourcePool;
+console.log(http)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -83,8 +84,16 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    console.log(val);
+    console.log(val, 1);
     currentTab.value = val;
+    searchInfo.keyword = ''
+    searchInfo.page = 1
+    searchInfo.direction = 0
+    searchInfo.type = 0
+    searchInfo.complexity = 0
+    classifyList.forEach((v: any) => {
+      v.value = 0
+    })
     initData();
     isShowAdd.value = currentTab.value === 1;
   }
@@ -100,9 +109,9 @@ const classifyList: any = reactive([
     keyName: "direction",
     data: [
       { name: "全部", value: 0 },
-      { name: "数据采集", value: 1 },
-      { name: "数据挖掘", value: 2 },
-      { name: "自动化处理", value: 3 },
+      // { name: "数据采集", value: 1 },
+      // { name: "数据挖掘", value: 2 },
+      // { name: "自动化处理", value: 3 },
     ],
   },
   {
@@ -112,9 +121,9 @@ const classifyList: any = reactive([
     data: [
       { name: "全部", value: 0 },
       { name: "桌面实验", value: 1 },
-      { name: "命令行实验", value: 2 },
+      // { name: "命令行实验", value: 2 },
       { name: "Jupyter实验", value: 3 },
-      { name: "IDE实验", value: 4 },
+      // { name: "IDE实验", value: 4 },
       { name: "任务制实验", value: 5 },
       { name: "文档实验", value: 6 },
       { name: "视频实验", value: 7 },
@@ -123,7 +132,7 @@ const classifyList: any = reactive([
   {
     title: "实验难度",
     value: 0,
-    keyName: "level",
+    keyName: "complexity",
     data: [
       { name: "全部", value: 0 },
       { name: "初级", value: 1 },
@@ -134,99 +143,127 @@ const classifyList: any = reactive([
 ]);
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
-  // console.log(labelSearch)
-  // searchFn();
+  Object.assign(searchInfo, obj)
+  searchInfo.page = 1;
+  initData();
 };
 const labelSearch = reactive({
   type: 0,
   direction: 0,
-  level: 0,
-});
-
-const search: any = reactive({
-  key: "",
+  complexity: 0,
 });
 const searchFn = (key: string) => {
   console.log(key);
-  search.key = key;
-  fromData.page = 1;
-  let obj = {
-    ...labelSearch,
-    ...search,
-    ...fromData,
-  };
-  // console.log(obj);
+  searchInfo.keyword = key;
+  searchInfo.page = 1;
   initData();
 };
 
 /**
  * 列表
  */
-const fromData: any = reactive({
+interface ISearchInfo {
+  keyword: string
+  limit: number
+  page: number
+  type: number
+  direction: number
+  complexity: number
+}
+const searchInfo = reactive<ISearchInfo>({
+  keyword: '',
   limit: 6,
   page: 1,
+  type: 0,
+  direction: 0,
+  complexity: 0,
 });
-var experimentList: any[] = reactive([]);
+interface IExperimentList {
+  id: number
+  title: string
+  type: number
+  class_hour: number
+  username: string
+  type_obj?: any
+}
+var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(7);
-
 const initData = () => {
+  console.log(labelSearch)
+  // const param = {
+    // direction: labelSearch.direction,				// 技术方向 1.数据采集 2.数据挖掘 3.自动化处理
+    // type: labelSearch.type ,					// 实验类型
+    // complexity: labelSearch.level,				// 实验难度
+    // keyword: "搜索关键词",			// 搜索框内容
+    // myexper:true,				// 我的实验
+  // }
+  const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
   loading.value = true;
-  // http.getList()
-  experimentList.push(
-    ...[
-      {
-        id: 1,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 1,
-        type_obj: {},
-      },
-      {
-        id: 2,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 2,
-        type_obj: {},
-      },
-      {
-        id: 3,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 3,
-        type_obj: {},
-      },
-      {
-        id: 4,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 4,
-        type_obj: {},
-      },
-      {
-        id: 5,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 5,
-        type_obj: {},
-      },
-      {
-        id: 6,
-        name: "基于入侵检测的告警分析",
-        class_cnt: 2,
-        type: 1,
-        type_obj: {},
-      },
+  experimentList.length = 0
+  // http.getExperimentList().then((res: IBusinessResp) => {
+  http.getExperimentList({param}).then((res: {data: IExperimentList[], page: {totalCount: number}}) => {
+    console.log(res)
+    const { data, page }  = res
+    totalCount.value = page.totalCount
+  }).catch(() => {
+    const arr = [
+      {id: 1, title: "实验标题", type: 1, class_hour:1, username:"test/内置"}
     ]
-  );
-  experimentList.forEach((v) => {
-    v.type_obj = Object.assign({}, typeList[v.type]);
-  });
-  console.log(experimentList);
-  loading.value = false;
+    experimentList.push(...arr)
+    experimentList.push(
+      ...[
+        {
+          id: 1,
+          title: "基于入侵检测的告警分析",
+          class_hour: 2,
+          type: 1,
+          type_obj: {},
+          username:"test"
+        },
+        {
+          id: 2,
+          title: "基于入侵检测的告警分析",
+          class_hour: 2,
+          type: 2,
+          type_obj: {},
+          username:"test"
+        },
+        {
+          id: 3,
+          title: "基于入侵检测的告警分析",
+          class_hour: 2,
+          type: 3,
+          type_obj: {},
+          username:"test"
+        },
+        {
+          id: 4,
+          title: "基于入侵检测的告警分析",
+          class_hour: 2,
+          type: 4,
+          type_obj: {},
+          username:"test"
+        },
+        {
+          id: 5,
+          title: "基于入侵检测的告警分析",
+          class_hour: 2,
+          type: 5,
+          type_obj: {},
+          username:"test"
+        },
+      ]
+    );
+    experimentList.forEach((v) => {
+      v.type_obj = Object.assign({}, typeList[v.type]);
+    });
+    console.log(experimentList);
+    loading.value = false;
+  })
 };
 const pageChange = async (current: any, pageSize: any) => {
-  fromData.page = current;
+  searchInfo.page = current;
   const { query, path } = route;
   await router.replace({
     path: path,
@@ -305,7 +342,21 @@ let typeList = {
 };
 onMounted(() => {
   // initData();
+  // 获取技术方向列表
+  getDirection()
 });
+
+const getDirection = () => {
+  http.getDirection().then((res: IBusinessResp) => {
+    console.log(res)
+    const data = res.data
+    data.forEach((v: any) => {
+      v.value = v.id
+    })
+    console.log(data)
+    classifyList[0].data.push(...data)
+  })
+}
 </script>
 <style scoped lang="less">
 .mainBox {

@@ -20,13 +20,13 @@
     </div>
   </div>
   <div class="experiment-content">
-    <marked-editor v-model:value="experimentContent" :preview="preview" />
+    <marked-editor v-model="props.detail" :preview="preview" />
     <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, inject } from "vue";
+import { ref, inject, PropType } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -34,13 +34,27 @@ import { readFile } from "src/utils/common";
 
 const $message: MessageApi = inject("$message")!;
 const preview = ref<boolean>(true);
-const experimentContent = ref<any>("aa");
+const props = defineProps({
+  detail: {
+    type: String,
+    require: true
+  }
+})
+let experimentContent = ref<any>(props.detail || '');
+interface IDetail {
+  lab_proc: string
+}
+interface Props {
+  detail: IDetail
+}
 // 上传文件
 const beforeUpload = async (file: any, fileList: any) => {
-  const text = await readFile(file);
+  const text = await readFile(file) || '';
   experimentContent.value = text;
 };
-const onSubmit = () => {};
+const onSubmit = () => {
+  console.log(experimentContent.value)
+};
 const cancel = () => {};
 </script>
 

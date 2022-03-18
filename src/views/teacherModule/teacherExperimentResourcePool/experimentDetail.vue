@@ -38,7 +38,7 @@
       <!-- <video-detail></video-detail> -->
       <!-- <file-detail></file-detail> -->
       <!-- <task-detail></task-detail>  -->
-      <component :is="experimentDetail.type"></component>
+      <component :is="experimentDetail.type" :detail="experimentDetail.lab_proc"></component>
     </div>
   </div>
   <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
@@ -63,6 +63,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue"; //
 import addToCourseModal from "./component/addToCourseModal.vue";
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
+import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
 import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
 import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/fileDetail.vue";
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
@@ -99,7 +100,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   knowledge_maps: ["知识点1", "知识点2", "知识点3"],
   class_hour: 2,
   username: "test",
-  type: markRaw(taskDetail),
+  type: markRaw(experimentGuide),
   lab_proc: "实验指导",
 });
 const getExperimentDetail = () => {
@@ -112,14 +113,14 @@ const getExperimentDetail = () => {
     knowledge_maps: ["知识点1", "知识点2", "知识点3"],
     class_hour: 2,
     username: "test",
-    type: markRaw(fileDetail),
+    type: markRaw(experimentGuide),
     lab_proc: "实验指导",
   };
   Object.assign(experimentDetail, obj);
 };
 
 // setTimeout(() => {
-//   experimentDetail.type = videoDetail
+//   experimentDetail.type = videoDetail jupyterDetail
 // }, 10000)
 // setTimeout(() => {
 //   experimentDetail.type = fileDetail

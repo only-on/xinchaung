@@ -41,29 +41,14 @@ export default defineComponent({
     }
     let courseList = reactive<ICourseList[]>([]);
     const getRecommendList = () => {
+      courseList.length = 0
       http.hotCourseRecommend().then((res: IBusinessResp) => {
-        console.log(res)
-      }).catch(() => {
-        let arr = [
-          { id: 1, name: "Python3 机器学习1", learned_count: 124, url: "" },
-          { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-          { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-          { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-          { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-        ]
-        courseList.push(...arr)
+        const data = res.data
+        courseList.push(...data)
       })
     }
     onMounted(() => {
-      // getRecommendList()
-      let arr = [
-        { id: 1, name: "Python3 机器学习1", learned_count: 124, url: "" },
-        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-        { id: 1, name: "Python3 机器学习", learned_count: 124, url: "" },
-      ]
-      courseList.push(...arr)
+      getRecommendList()
     })
     return {
       courseList,
@@ -86,6 +71,10 @@ export default defineComponent({
         height: 50px;
         background-color: var(--primary-3);
         margin-right: 6px;
+        img {
+          width: 100%;
+          height: 100%;
+        }
       }
       .right {
         flex: 1;
