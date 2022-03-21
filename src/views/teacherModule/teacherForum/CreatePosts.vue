@@ -289,6 +289,13 @@ const getTagsList = (param: any) => {
       margin-top: 32px;
     }
   }
+  .quill-editor-wrap {
+    :deep(.quill-editor) {
+      .ql-tooltip {
+        left: 12px!important;
+      }
+    }
+  }
 }
 .header {
   display: flex;

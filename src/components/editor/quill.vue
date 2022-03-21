@@ -118,8 +118,8 @@ export default defineComponent({
         fd.append('upload_path', props.uploadPathName)
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
-          let html= `<video src="${res.data.url}">`
-          insertHtml(html);
+          let html= `<iframe src="${res.data.url}"></iframe>`
+          insertHtml(res.data.url, 'video');
           loading.value=false
         })
     }
@@ -135,7 +135,7 @@ export default defineComponent({
         fd.append('default_name', '1')
         await http.uploadsFile({param:fd}).then((res:IBusinessResp)=>{
           let html= `<img src="${res.data.url}" alt="">`
-           insertHtml(html);
+           insertHtml(res.data.url, 'image');
            loading.value=false
         })
     }
@@ -199,12 +199,13 @@ export default defineComponent({
     }
 
     // 插入html
-    function  insertHtml(htmlString:string) {
+    function  insertHtml(htmlString:string, type: string) {
       // console.log(quillDom.value);
       const rang=props.rang?props.rang:temporaryRang.value;
       // (quillDom.value as any).clipboard.dangerouslyPasteHTML(props.rang,htmlString,'api') 
       // console.log(rang);
-      (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'user')
+      // (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'user')
+      (quillDom.value as any).getQuill().insertEmbed(rang, type, htmlString);
     }
     return {
       options,
