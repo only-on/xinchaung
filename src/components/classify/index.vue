@@ -6,7 +6,7 @@
         v-for="i in v.data"
         :key="i.name"
         class="label-btn"
-        :class="i.value === v.value ? 'current' : ''"
+        :class="(i.name && i.value === v.value) ? 'current' : ''"
         @click="change(v, i)"
       >
         {{ i.name }}

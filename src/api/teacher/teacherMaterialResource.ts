@@ -12,12 +12,19 @@ export default {
     method: "POST",
     dataType: "formdata",
   },
+
+  // 详情
+  getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
+  getDetailFile:{url:`/api/resource/data/{editId}/files`,method: "GET",},
 };
 
 export interface ITeacherMaterialResource {
   dataSets: TFHttpSend;
   uploadExplain: TFHttpSend;
   upLoadCover: TFHttpSend;
+
+  getDetail: TFHttpSend;
+  getDetailFile: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";

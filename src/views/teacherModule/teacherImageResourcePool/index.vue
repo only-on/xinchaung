@@ -23,10 +23,10 @@
                 <!-- <span>类型：{{v.ostype}}</span> -->
                 <span>信息：{{'X86'}}</span>
               </div>
-              <div class="labels flexCenter ">
+              <div class="labels flexCenter" :class="(v.tags && v.tags.length)?'labelsBg':''">
                 <template v-for="(i,n) in v.tags" :key="i">
                   <span class="single-ellipsis">{{i}}</span>
-                  <span>&nbsp;&nbsp;{{`${(n !== (v.tags && v.tags.length-1))?'/':''}`}}&nbsp;&nbsp;</span>
+                  <span>&nbsp;&nbsp;{{`${(n !== (v.tags && v.tags.length-1) && i)?'/':''}`}}&nbsp;&nbsp;</span>
                 </template>
               </div>
             </div>
@@ -490,7 +490,6 @@ onMounted(() => {
         // height: 40px;
         margin-top: 8px;
         color: var(--primary-color);
-        background: rgba(255,149,68,0.07);
         .single-ellipsis {
           display: inline-block;
           width: max-content;
@@ -501,6 +500,9 @@ onMounted(() => {
           // color: var(--brightBtn);
           // color: var(--primary-color);
         }
+      }
+      .labelsBg{
+        background: rgba(255,149,68,0.07);
       }
       .text {
         height: 41px;

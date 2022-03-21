@@ -108,7 +108,6 @@
       </div>
     </div>
   </div>
-  
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
     <BaseInfo  ref="baseInfoRef" :materialType="'数据集'" class="con"/>
     <template #footer>
@@ -314,12 +313,20 @@ const handleOk=async()=> {
 }
 // 初始化数据
 const initData = () => {
-  http.getDetail().then((res: IBusinessResp) => {
-    // state.detail
+  http.getDetail({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+    state.detail={
+      ...res.data
+    }
+  })
+};
+const getDetailFile = () => {
+  http.getDetailFile({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+    //state.fileList
   })
 };
 onMounted(() => {
   // initData();
+  // getDetailFile()
 });
 </script>
 <style scoped lang="less">

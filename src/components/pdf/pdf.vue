@@ -3,7 +3,7 @@
     <iframe
     v-if="isShowPdf"
     style="width:100%;height:100%"
-      :src="`${env ? '' : '/frontend'}/pdfjs-2.5.207/web/viewer.html?file=${
+      :src="`${env ? '' : ''}/pdfjs-2.5.207/web/viewer.html?file=${
         env ? '/proxyPrefix' + pdfUrl : pdfUrl}`"
       frameborder="0"
     ></iframe>
