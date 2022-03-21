@@ -8,7 +8,7 @@
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item flexCenter" v-for="(v, k) in experimentList" :key="v.id">
+      <div class="item flexCenter" v-for="(v) in experimentList" :key="v.id">
         <div
           class="exper-type"
           :style="{
@@ -18,22 +18,24 @@
         >
           {{ v.type_obj.name }}
         </div>
-        <div class="exper-name pointer" @click="detail(v.id)">{{ v.title }}</div>
-        <div class="class-time">推荐课时 {{v.class_hour}}</div>
-        <div class="user-info" v-if="currentTab === 0">
+        <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
+        <div class="class-time">推荐课时 {{v.class_cnt}}</div>
+        <div class="user-info" v-if="currentTab === 1">
+          <!-- is_init :1 就是内置数据 -->
           <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
-          <span class="user-name">{{v.username}}</span>
+          <span class="user-name">{{v.is_init === 1 ? '内置实验' : v.user.username}}</span>
         </div>
-        <div class="operate" v-if="currentTab === 1">
-          <span class="share pointer" @click.stop="share(v.id)">{{
-            k === 0 ? "共享" : "取消共享"
+        <div class="operate" v-if="currentTab === 0">
+          <!-- is_share:1 就是共享数据 -->
+          <span class="share pointer" @click.stop="share(v.id, v.is_share)">{{
+            v.is_share === 1 ? "取消共享" : "共享"
           }}</span>
           <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
         </div>
       </div>
       <!-- <Empty v-if="!list.length && !loading" /> -->
+        <!-- v-if="totalCount > 1" -->
       <a-pagination
-        v-if="totalCount > 6"
         v-model:current="searchInfo.page"
         :pageSize="searchInfo.limit"
         :total="totalCount"
@@ -61,6 +63,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
+import { getTypeList } from './config'
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -77,7 +80,7 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-const currentTab = ref<number>(0);
+const currentTab = ref<number>(1);
 const isShowAdd = ref<boolean>(true);
 watch(
   () => {
@@ -85,17 +88,17 @@ watch(
   },
   (val) => {
     console.log(val, 1);
-    currentTab.value = val;
-    searchInfo.keyword = ''
+    currentTab.value = val === 1 ? 0 : 1;
+    searchInfo.init_type = currentTab.value
     searchInfo.page = 1
-    searchInfo.direction = 0
-    searchInfo.type = 0
-    searchInfo.complexity = 0
+    searchInfo.content_direction = 0
+    searchInfo.content_type = 0
+    searchInfo.content_level = 0
     classifyList.forEach((v: any) => {
       v.value = 0
     })
     initData();
-    isShowAdd.value = currentTab.value === 1;
+    isShowAdd.value = currentTab.value === 0;
   }
 );
 
@@ -106,7 +109,7 @@ const classifyList: any = reactive([
   {
     title: "技术方向",
     value: 0,
-    keyName: "direction",
+    keyName: "content_direction",
     data: [
       { name: "全部", value: 0 },
       // { name: "数据采集", value: 1 },
@@ -117,22 +120,22 @@ const classifyList: any = reactive([
   {
     title: "实验类型",
     value: 0,
-    keyName: "type",
+    keyName: "content_type",
     data: [
       { name: "全部", value: 0 },
       { name: "桌面实验", value: 1 },
-      // { name: "命令行实验", value: 2 },
-      { name: "Jupyter实验", value: 3 },
-      // { name: "IDE实验", value: 4 },
-      { name: "任务制实验", value: 5 },
-      { name: "文档实验", value: 6 },
-      { name: "视频实验", value: 7 },
+      { name: "命令行实验", value: 7 },
+      { name: "Jupyter实验", value: 2 },
+      { name: "IDE实验", value: 6 },
+      { name: "任务制实验", value: 3 },
+      { name: "文档实验", value: 4 },
+      { name: "视频实验", value: 5 },
     ],
   },
   {
     title: "实验难度",
     value: 0,
-    keyName: "complexity",
+    keyName: "content_level",
     data: [
       { name: "全部", value: 0 },
       { name: "初级", value: 1 },
@@ -154,7 +157,7 @@ const labelSearch = reactive({
 });
 const searchFn = (key: string) => {
   console.log(key);
-  searchInfo.keyword = key;
+  searchInfo.name = key;
   searchInfo.page = 1;
   initData();
 };
@@ -163,32 +166,39 @@ const searchFn = (key: string) => {
  * 列表
  */
 interface ISearchInfo {
-  keyword: string
+  init_type: number
+  name: string
   limit: number
   page: number
-  type: number
-  direction: number
-  complexity: number
+  content_type?: number
+  content_direction?: number
+  content_level?: number
 }
 const searchInfo = reactive<ISearchInfo>({
-  keyword: '',
-  limit: 6,
+  init_type: 0,
+  name: '',
+  limit: 10,
   page: 1,
-  type: 0,
-  direction: 0,
-  complexity: 0,
+  content_type: 0,
+  content_direction: 0,
+  content_level: 0,
 });
+interface Iuser {
+  username: string
+}
 interface IExperimentList {
   id: number
-  title: string
-  type: number
-  class_hour: number
-  username: string
+  name: string
+  task_type: number
+  class_cnt: number
+  is_init: number
+  user: Iuser
+  is_share: number
   type_obj?: any
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
-var totalCount: Ref<number> = ref(7);
+var totalCount: Ref<number> = ref(0);
 const initData = () => {
   console.log(labelSearch)
   // const param = {
@@ -198,68 +208,22 @@ const initData = () => {
     // keyword: "搜索关键词",			// 搜索框内容
     // myexper:true,				// 我的实验
   // }
-  const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
+  // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
+  const param: ISearchInfo = Object.assign({}, {...searchInfo})
+  param.content_direction ? '' : delete param.content_direction
+  param.content_level ? '' : delete param.content_level
+  param.content_type ? '' : delete param.content_type
   loading.value = true;
   experimentList.length = 0
-  // http.getExperimentList().then((res: IBusinessResp) => {
-  http.getExperimentList({param}).then((res: {data: IExperimentList[], page: {totalCount: number}}) => {
-    console.log(res)
-    const { data, page }  = res
-    totalCount.value = page.totalCount
-  }).catch(() => {
-    const arr = [
-      {id: 1, title: "实验标题", type: 1, class_hour:1, username:"test/内置"}
-    ]
-    experimentList.push(...arr)
-    experimentList.push(
-      ...[
-        {
-          id: 1,
-          title: "基于入侵检测的告警分析",
-          class_hour: 2,
-          type: 1,
-          type_obj: {},
-          username:"test"
-        },
-        {
-          id: 2,
-          title: "基于入侵检测的告警分析",
-          class_hour: 2,
-          type: 2,
-          type_obj: {},
-          username:"test"
-        },
-        {
-          id: 3,
-          title: "基于入侵检测的告警分析",
-          class_hour: 2,
-          type: 3,
-          type_obj: {},
-          username:"test"
-        },
-        {
-          id: 4,
-          title: "基于入侵检测的告警分析",
-          class_hour: 2,
-          type: 4,
-          type_obj: {},
-          username:"test"
-        },
-        {
-          id: 5,
-          title: "基于入侵检测的告警分析",
-          class_hour: 2,
-          type: 5,
-          type_obj: {},
-          username:"test"
-        },
-      ]
-    );
-    experimentList.forEach((v) => {
-      v.type_obj = Object.assign({}, typeList[v.type]);
+  http.getExperimentList({param}).then((res: IBusinessResp) => {
+    if (!res) return
+    loading.value = false
+    const { list, page }  = res.data
+    list.forEach((v: IExperimentList) => {
+      v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
-    console.log(experimentList);
-    loading.value = false;
+    experimentList.push(...list)
+    totalCount.value = page.totalCount
   })
 };
 const pageChange = async (current: any, pageSize: any) => {
@@ -290,8 +254,18 @@ const handleMenuClick = ({ key }: { key: string }) => {
   });
 };
 
-const share = (v: number) => {
-  console.log(v);
+const share = (id: number, is_share: number) => {
+  console.log(id, is_share);
+  // is_share:1 就是共享数据
+  // 传0 开启共享 传1代表关闭共享
+  const param = {
+    share_type: is_share,
+    id
+  }
+  http.experimentShare({param}).then((res: IBusinessResp) => {
+    console.log(res)
+    initData()
+  })
 };
 const delet = (v: number) => {
   console.log(v);
@@ -308,52 +282,18 @@ const detail = (id: number) => {
   });
 };
 
-let typeList = {
-  1: {
-    name: "桌面",
-    color: "#ff9544",
-    backgroundColor:
-      "linear-gradient(90deg,rgba(255,149,68,0.14), rgba(255,199,156,0.14) 36%, rgba(255,255,255,0.14))",
-  },
-  2: {
-    name: "命令行",
-    color: "#1cb2b3",
-    backgroundColor:
-      "linear-gradient(90deg,rgba(28,178,179,0.14), rgba(85,218,219,0.14) 36%, rgba(255,255,255,0.14))",
-  },
-  3: {
-    name: "Jupyter",
-    color: "#3094EF",
-    backgroundColor:
-      "linear-gradient(90deg,rgba(48,148,239,0.14), rgba(93,178,255,0.14) 36%, rgba(255,255,255,0.14))",
-  },
-  4: {
-    name: "IDE",
-    color: "#06B434",
-    backgroundColor:
-      "linear-gradient(90deg,rgba(28,179,53,0.14), rgba(110,227,141,0.14) 36%, rgba(255,255,255,0.14))",
-  },
-  5: {
-    name: "步骤",
-    color: "#834CE4",
-    backgroundColor:
-      "linear-gradient(90deg,rgba(111,48,239,0.14), rgba(162,124,228,0.14) 36%, rgba(255,255,255,0.14))",
-  },
-};
 onMounted(() => {
-  // initData();
+  initData();
   // 获取技术方向列表
   getDirection()
 });
 
 const getDirection = () => {
   http.getDirection().then((res: IBusinessResp) => {
-    console.log(res)
     const data = res.data
     data.forEach((v: any) => {
       v.value = v.id
     })
-    console.log(data)
     classifyList[0].data.push(...data)
   })
 }

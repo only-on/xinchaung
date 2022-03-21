@@ -54,7 +54,9 @@ export default {
   uploadMp4File:{url:`/api/xinchuang/content/video/upload_file`,method: "POST",dataType: "formdata"},
 
   // 实验列表
-  getExperimentList: { url: `/api/xinchuang/content/list`, method: "GET" },
+  getExperimentList: { url: `/api/xinchuang/content/content`, method: "GET" },
+  getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
+  experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json"  }
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -83,6 +85,8 @@ export interface ITeacherExperimentResourcePool {
   uploadMp4File: TFHttpSend;
 
   getExperimentList: TFHttpSend;
+  getExperimentDetail: TFHttpSend;
+  experimentShare: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";
