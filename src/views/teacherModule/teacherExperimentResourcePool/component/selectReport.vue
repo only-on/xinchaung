@@ -247,6 +247,7 @@ function beforeUploadReport(file: any) {
     };
     console.log(formState.reportUploadList)
   });
+  return false
 }
 function fileRemove(file: any) {
   // console.log(file)

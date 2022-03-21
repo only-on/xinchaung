@@ -415,9 +415,11 @@ onMounted(() => {
   .item {
     // width: 580px;
     // height: 200px;
+    border-radius: 14px 0px 14px 14px;
     width: 384px;
     height: 120px;
     margin-bottom:24px;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
     .left {
       .img {
         border-radius: 13px 0px 0px 13px;
@@ -485,8 +487,10 @@ onMounted(() => {
         }
       }
       .labels {
-        height: 40px;
+        // height: 40px;
+        margin-top: 8px;
         color: var(--primary-color);
+        background: rgba(255,149,68,0.07);
         .single-ellipsis {
           display: inline-block;
           width: max-content;

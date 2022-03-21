@@ -1,12 +1,5 @@
 <template>
-  <a-form
-    :model="formState"
-    ref="formRef"
-    layout="vertical"
-    :label-col="{ span: 10 }"
-    :wrapperCol="{ span: 20 }"
-    :rules="rules"
-  >
+  <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
     <h3>实验基本信息</h3>
     <div class="create-middle">
       <div class="left">
@@ -52,7 +45,7 @@
             v-model:selectedList="formState.selectedKnowledgeList"
           ></knowledge-modal>
         </a-form-item>
-        <a-form-item name="datasets" label="数据集">
+        <a-form-item name="datasets" label="数据集" v-if="componentsList.includes('setData')">
           <div class="datasets-box flexCenter">
             <a-button
               type="primary"
@@ -301,11 +294,9 @@
       :options="catalogueOptions"
     ></a-select> -->
     <a-upload-dragger
-      name="file"
-      @change="handleChange"
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
-      v-model:fileList="upDoc.docFileList"
+      :fileList="upDoc.docFileList"
       :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
     >
@@ -444,19 +435,19 @@ const ExperimentTypeList = reactive({
   desktop: {
     type:1,
     title: "桌面实验",
-    assembly: ["configuration", "", "zhuomian"],
+    assembly: ["configuration", "", "zhuomian",'setData'],
     method:'createVnc'
   },
   Jupyter: {
     type:2,
     title: "Jupyter实验",
-    assembly: ["configuration", "jupyter"],
+    assembly: ["configuration", "jupyter",'setData'],
     method:'createJupyter'
   },
   task: {
     type:3,
     title: "任务制实验",
-    assembly: ["configuration", "task"],
+    assembly: ["configuration", "task",'setData'],
     method:'createTask'
   },
   text: {
@@ -554,7 +545,7 @@ function remove(val: any, index: number) {
 }
 
 function create() {
-  console.log(TaskLIst)
+  // console.log(TaskLIst)
   // return
   formRef.value.validate().then(() => {
     // let 
@@ -573,7 +564,8 @@ function create() {
       report:formState.report.id,
       container:formState.imageConfigs
     }
-    const fileObj:any=createTypeNumber == 2 ? formState.ipynbList[0]:upDoc.docFileList[0]     // 是视频和文档公用一个 文件对象
+    const fileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:upDoc.docFileList[0]     // 是视频和文档公用一个 文件对象
+    console.log(fileObj)
     const {type,file_name,file_url,suffix,size,sort}=fileObj
     let parameter=[
       {
@@ -836,28 +828,40 @@ var upDoc: any = reactive({
 var upDocVisible = ref<boolean>(false);
 
 const handleChange=(info: any)=>{
-  console.log(info)
-  info.file.status='uploading'
+  // console.log(info)
+  // info.file.status='uploading'
 }
-const docBeforeUpload = async (file: any) => {
+const docBeforeUpload =  (file: any) => {
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
-  const suffix = (file && file.name).split(".")[1];
-  if (suffix === "md" && docOrMp4Type.value === 1) {
+  // console.log(file)
+  const postfix = (file && file.name).split(".")[1];
+  let obj:any={
+    uid: file.uid,
+    name: file.name,
+    status: "uploading",
+    type:docOrMp4Type.value === 1?3:4,
+    id:1,
+    url:'',
+    file_name:file.name,
+    file_url:'',
+    suffix:docOrMp4Type.value === 1?'docx':'mp4', // mp4
+    size:file.size,
+    sort:0,
+    response:''
+  }
+   upDoc.docFileList[0]=obj
+  if (postfix === "md" && docOrMp4Type.value === 1) {
     formState.document.type= 'md'
     upDoc.nowDocument.type = "md";
-    const text = await readFile(file);
-    formState.document.mdValue = text;
-    upDocVisible.value = false;
+    // const text = await readFile(file);
+    readFile(file).then((text:any)=>{
+      formState.document.mdValue = text;
+      upDocVisible.value = false;
+    })
   } else {
     // 文档非md 类型
     upDoc.nowDocument.type = "pdf";
     const fs = new FormData();
-    let obj:any={
-      uid: file.uid,
-      name: file.name,
-      status: "uploading",
-    }
-    upDoc.docFileList[0]=obj
     fs.append("file", file);
     let arr =['uploadDocFile','uploadMp4File']
     http[arr[docOrMp4Type.value-1]]({ param: fs }).then((res: any) => {
@@ -867,23 +871,15 @@ const docBeforeUpload = async (file: any) => {
       }else{
         upDoc.nowDocument.videoUrl=data.url
       }
-      obj={
-        uid: file.uid,
-        id:1,
-        name: data.file_name,
-        status: "done",
-        url:data.url,
-        type:3,
-        file_name:data.file_name,
-        file_url:data.url,
-        suffix:'docx',
-        size:data.size,
-        sort:0,
-        response:''
-      }
-      upDoc.docFileList[0]=obj
-    });
+      upDoc.docFileList[0].url=data.url
+      upDoc.docFileList[0].file_url=data.url,
+      upDoc.docFileList[0].status="done"
+      // upDoc.docFileList[0]=obj
+    }).catch((err:any) => {
+      message.error(err)
+    })
   }
+  return false
 };
 const removeDocMp4=()=>{
   upDoc.docFileList=[]
