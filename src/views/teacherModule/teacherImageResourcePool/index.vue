@@ -10,7 +10,8 @@
     <div class="flexCenter mainBox">
       <div class="item flexCenter" v-for="(v, k) in list" :key="v" :class="v.is_init?'':'operable'">
         <div class="left">
-          <div class="img" :style="`background-image: url(src/assets/images/teacherImageResourcePool/${v.ostype}.png)`">
+          <!-- :style="`background-image: url(src/assets/images/teacherImageResourcePool/${v.ostype}.png)`" -->
+          <div class="img" :class="v.ostype">
             <div class="imgType" v-if="v.is_init">{{'内置'}}</div>
           </div>
         </div>
@@ -425,17 +426,10 @@ onMounted(() => {
         background: url("src/assets/images/teacherImageResourcePool/docker.png");
         background-repeat: no-repeat;
         background-size: 100% 100%;
-
         display: flex;
         flex-direction: column;
         justify-content: end;
         position: relative;
-        .type {
-          width: 100%;
-          text-align: center;
-          color: var(--white);
-          margin-bottom: 6px;
-        }
         .imgType{
           width: 44px;
           height: 20px;
@@ -449,6 +443,18 @@ onMounted(() => {
           top: 0;
           left: 0;
         }
+      }
+      .ARM{
+        background-image:url('src/assets/images/teacherImageResourcePool/ARM.png');
+      }
+      .docker{
+        background-image:url('src/assets/images/teacherImageResourcePool/docker.png');
+      }
+      .KVM-Linux{
+        background-image:url('src/assets/images/teacherImageResourcePool/KVM-Linux.png');
+      }
+      .KVM-Windows{
+        background-image:url('src/assets/images/teacherImageResourcePool/KVM-Windows.png');
       }
       .Belonging {
         height: 24px;
