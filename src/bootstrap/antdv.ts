@@ -85,10 +85,9 @@ export const initAntdv: TFInitApp = function (appManager: IAppManager) {
   // https://www.jianshu.com/p/408846ea7241
   // 尤大推荐通过provide来处理全局属性
   // 为了区分避免bug，app对象上的全局属性必须以$开头
+  appManager.app.config.unwrapInjectedRef = true
   appManager.app.provide("$message", message);
   const confirm = Modal.confirm;
-  // {icon: createVNode(ExclamationCircleOutlined)}
-  // confirm.icon = createVNode(ExclamationCircleOutlined);
   appManager.app.provide("$confirm", Modal.confirm);
   return appManager;
 };

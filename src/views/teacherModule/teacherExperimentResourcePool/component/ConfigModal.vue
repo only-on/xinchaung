@@ -62,7 +62,13 @@ const configChange = (val: any) => {
 
 const imageChange = (val:any) => {
   // console.log(val)
-  // reactiveData.imageName=
+  var item=props.imageList.filter((item:any) => {
+    return val === item.id
+  });
+  // console.log(item)
+  reactiveData.image_id=val
+  reactiveData.imageName=item[0].name
+  console.log(reactiveData)
   emit("selectedImage", reactiveData);
 };
 onMounted(() => {

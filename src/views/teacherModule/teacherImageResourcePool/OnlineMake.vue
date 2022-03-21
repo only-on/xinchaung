@@ -14,7 +14,7 @@
       <div class="imageBox" v-for="(v, k) in list" :key="v" :class="getClass(k)">
         <div class="image">
           <!-- imgType 四种-->
-          <div class="top flexCenter">
+          <div class="top flexCenter" :class="v.image && v.image.ostype">
             <div class="left">
               <div class="tit">{{v.image && v.image.name}}</div>
               <div class="text single-ellipsis">{{v.image && v.image.description}}</div>
@@ -253,8 +253,9 @@ onMounted(() => {
       padding: 1rem;
       height: 180px;
       border-radius: 14px 14px 0 0;
-      background: url("src/assets/images/teacherImageResourcePool/kVM-Linux.jpg") no-repeat;
+      background-image: url("src/assets/images/teacherImageResourcePool/kVM-Linux.jpg");
       background-size: 100% 100%;
+      background-repeat: no-repeat;
       .left {
         width: 70%;
         .tit {
@@ -292,6 +293,19 @@ onMounted(() => {
         }
       }
     }
+    .Docker-Linux{
+      background-image:url('src/assets/images/teacherImageResourcePool/ARM.png');
+    }
+    .KVM-ARM{
+      background-image:url('src/assets/images/teacherImageResourcePool/docker.png');
+    }
+    .kVM-Linux{
+      background-image:url('src/assets/images/teacherImageResourcePool/KVM-Linux.png');
+    }
+    .KVM-windows{
+      background-image:url('src/assets/images/teacherImageResourcePool/KVM-Windows.png');
+    }
+
     .caoZuo {
       height: 44px;
       justify-content: space-around;

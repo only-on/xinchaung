@@ -18,7 +18,7 @@
             >
               <a-select-opt-group
                 v-for="(val, key) in reactiveData.images"
-                :key="key"
+                :key="val"
               >
                 <template #label>
                   {{ key }}
@@ -274,7 +274,7 @@ function remove(val: any, index: number) {
 
 function getConfig() {
   http.getConfigApi().then((res: any) => {
-    const { base_image, image_configs } = res.data;
+    const { base_image } = res.data;
     // reactiveData.configs = image_configs;
     reactiveData.images = base_image;
   });
