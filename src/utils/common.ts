@@ -291,6 +291,23 @@ const getTimer = (stringTime: any) => {
       result = "刚刚";
   return result;
 }
+
+function bytesToSize(bytes: number) {
+  if (bytes === 0) return '0B';
+  let k = 1024;
+  const sizes = ['B','KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+  const i = Math.floor(Math.log(bytes) / Math.log(k));
+  let num = (bytes / Math.pow(k, i)).toFixed(2);
+
+  // let index = num.indexOf(".");                    //获取小数点处的索引
+  // let dou = num.substr(index + 1 ,2)            //获取小数点后两位的值
+  // if(dou == "00"){                                //判断后两位是否为00，如果是则删除00                
+  //   num = num.substring(0, index)
+  // }
+
+  return num + ' ' + sizes[i];
+}
+
 export {
   numToAbc,
   getCorrectAnswer,
@@ -307,4 +324,5 @@ export {
   dateFormat,
   dateFormat1,
   getTimer,
+  bytesToSize,
 };

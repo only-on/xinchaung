@@ -25,41 +25,41 @@
       <div
         class="item flexCenter"
         v-for="(list, k) in materialList"
-        :key="list.uid"
+        :key="list.id"
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
-        @click="detail(list.uid)"
+        @click="detail(list.id)"
       >
         <div class="item-top">
           <img :src="list.cover" alt="" />
           <div class="labels">
-            <span v-for="(v, index) in list.labels" :key="v.uid">{{
-              v.name + (index !== list.labels.length - 1 ? " / " : "")
+            <span v-for="(v, index) in list.tags" :key="index">{{
+              v + (index !== list.tags.length - 1 ? " / " : "")
             }}</span>
           </div>
         </div>
         <div class="item-content">
           <div class="item-name single-ellipsis">{{ list.name }}</div>
           <div class="item-desc">
-            <span class="type">{{ list.categorys[0].name }}</span>
+            <span class="type">{{ list.type_name }}</span>
             <span class="desc single-ellipsis">{{ list.description }}</span>
           </div>
           <div class="user-num">
-            <div class="user" v-if="list.common">
+            <div class="user" v-if="currentTab === 0">
               <img src="" alt="" srcset="" />
-              <span class="name">系统内置</span>
+              <span class="name">{{list.username}}</span>
             </div>
             <div class="num-size">
-              <span class="num">数量 {{ list.amount }}</span>
-              <span class="size">大小 {{ list.size }}</span>
+              <span class="num">数量 {{ list.item_count }}</span>
+              <span class="size">大小 {{ bytesToSize(list.item_size) }}</span>
             </div>
           </div>
         </div>
       </div>
       <!-- <Empty v-if="!list.length && !loading" /> -->
       <a-pagination
-        v-if="pageTotal > 6"
+        v-if="pageTotal > 8"
         v-model:current="pageInfo.page"
-        :pageSize="pageInfo.pageSize"
+        :pageSize="pageInfo.limit"
         :total="pageTotal"
         @change="pageChange"
       />
@@ -67,13 +67,14 @@
   </a-spin>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, inject, watch } from "vue";
+import { ref, reactive, inject, watch, onMounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
+import { bytesToSize } from "src/utils/common"
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherMaterialResource;
@@ -110,48 +111,10 @@ const materialTypeList = reactive([
   { name: "教学指导目录", key: "guidanceDirectory" },
 ]);
 
-// 标签
-const classifyList: any = reactive([
-  {
-    title: "类型",
-    value: 0,
-    keyName: "type",
-    data: [
-      { name: "全部", value: 0 },
-      { name: "数据集", value: "dataSet" },
-      { name: "视频", value: "videoDirectory" },
-      { name: "课件", value: "coursewareDirectory" },
-      { name: "备课资料", value: "lessonDirectory" },
-      { name: "教学指导", value: "guidanceDirectory" },
-    ],
-  },
-  {
-    title: "标签",
-    value: 0,
-    keyName: "label",
-    data: [
-      { name: "全部", value: 0 },
-      { name: "大数据", value: 1 },
-      { name: "人工智能", value: 2 },
-      { name: "计算机视觉", value: 3 },
-      { name: "机器学习", value: 4 },
-    ],
-  },
-]);
-const classifyChange = (obj: any) => {
-  Object.assign(labelSearch, obj);
-  // console.log(labelSearch)
-  // searchFn();
-};
-const labelSearch = reactive({
-  type: 0,
-  label: 0,
-});
-
 const loading = ref<boolean>(false);
 const pageInfo = reactive({
   page: 1,
-  pageSize: 12,
+  limit: 80,
 });
 const pageTotal = ref<number>(0);
 const pageChange = (page: number) => {
@@ -182,32 +145,104 @@ interface ILabel {
   name: string;
 }
 interface IMaterialList {
-  uid: string;
-  cover: string;
-  labels: ILabel[];
-  name: string;
-  description: string;
-  common: number;
-  categorys: ILabel[];
-  amount: number;
-  size: string;
+  id: number
+  name: string
+  type: number
+  description: string
+  tags: string[]
+  item_size: number
+  item_count: string
+  is_public: number
+  cover: string
+  type_name: string
+  username: string
+  user: Iuser
+}
+interface Iuser {
+  username: string
 }
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
+  console.log(currentTab.value, '1', labelSearch.type, 0)
+  materialList.length = 0
   const param = {
-    keyword: searchKey.value,
-    common: currentTab.value,
-    user_id: 100,
+    name: searchKey.value,
+    is_public: currentTab.value ? 0 : 1,
+    tags: !labelSearch.type ? 
+      (!labelSearch.label ? '' : labelSearch.label) : 
+      (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label),
     ...pageInfo,
   };
   console.log(param);
   http.dataSets({ param }).then((res: any) => {
     console.log(res);
-    const { data, total } = res;
-    materialList.push(...data);
-    pageTotal.value = total;
+    const { list, page } = res.data;
+    // list.forEach((v: IMaterialList) => {
+    //   v.item_size = (Number(v.item_size) / 1024 / 1024).toFixed(2) + 'kb'
+    // })
+    materialList.push(...list);
+    pageTotal.value = page.totalCount;
   });
 };
+onMounted(() => {
+  if (!Number(route.query.currentTab)) {
+    currentTab.value = 0
+    configuration.componenttype = 0
+  } else {
+    currentTab.value = 1
+    configuration.componenttype = 1
+  }
+  getLabelsList()
+  getTypeList()
+})
+
+// 标签
+const classifyList: any = reactive([
+  {
+    title: "类型",
+    value: 0,
+    keyName: "type",
+    data: [
+      { name: "全部", value: 0 },
+    ],
+  },
+  {
+    title: "标签",
+    value: 0,
+    keyName: "label",
+    data: [
+      { name: "全部", value: 0 },
+    ],
+  },
+]);
+const classifyChange = (obj: any) => {
+  Object.assign(labelSearch, obj);
+  console.log(labelSearch)
+  // searchFn();
+  initData()
+};
+const labelSearch = reactive({
+  type: 0,
+  label: 0,
+});
+const getLabelsList = () => {
+  http.getLabelsList().then((res: IBusinessResp) => {
+    const data = res.data
+    data.forEach((v: any) => {
+      v.value = v.name
+    })
+    classifyList[1].data.push(...data)
+  })
+}
+const getTypeList = () => {
+  http.getTypeList().then((res: IBusinessResp) => {
+    const data = res.data
+    data.forEach((v: any) => {
+      v.value = v.name
+    })
+    classifyList[0].data.push(...data)
+  })
+}
 </script>
 
 <style lang="less" scoped>

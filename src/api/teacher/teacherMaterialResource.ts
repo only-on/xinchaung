@@ -1,17 +1,9 @@
 import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
-  dataSets: { url: `/dmc/v1.0/datasets`, method: "GET" },
-  uploadExplain: {
-    url: `/dmc/v1.0/upload_doc`,
-    method: "POST",
-    dataType: "formdata",
-  },
-  upLoadCover: {
-    url: `/dmc/v1.0/upload_image`,
-    method: "POST",
-    dataType: "formdata",
-  },
+  dataSets: { url: `/api/resource/data`, method: "GET" },
+  getTypeList: { url: `/api/category/素材类型/tags`, method: "GET" },
+  getLabelsList: { url: `/api/category/素材标签/tags`, method: "GET" },
 
   // 详情
   getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
@@ -20,8 +12,8 @@ export default {
 
 export interface ITeacherMaterialResource {
   dataSets: TFHttpSend;
-  uploadExplain: TFHttpSend;
-  upLoadCover: TFHttpSend;
+  getTypeList: TFHttpSend;
+  getLabelsList: TFHttpSend;
 
   getDetail: TFHttpSend;
   getDetailFile: TFHttpSend;

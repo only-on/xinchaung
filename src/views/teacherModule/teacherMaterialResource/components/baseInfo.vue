@@ -7,10 +7,10 @@
     <a-form-item :label="props.materialType+'描述'" name="description">
       <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 3, maxRows: 5 }" placeholder="请在这里输入描述文字" />
     </a-form-item>
-    <a-form-item label="添加标签" name="label">
+    <a-form-item label="添加标签" name="tags">
       <div class="label-list">
         <span
-          v-for="(item, index) in formState.labels"
+          v-for="(item, index) in formState.tags"
           :key="index"
           class="active"
         >
@@ -20,7 +20,7 @@
             @click="removeLabel(item)"
           ></i>
         </span>
-        <span class="edit-box" v-if="formState.labels && formState.labels.length < 3">
+        <span class="edit-box" v-if="formState.tags && formState.tags.length < 3">
           <span @click="clickCustomLabel" v-show="!openCustom">
             <span class="iconfont iconbiaoqian"></span>
             + 添加标签
@@ -40,36 +40,38 @@
         <span class="iconfont icon-guanbi" @click="showTag = false"></span>
         <div class="tagBox">
           <span 
-            v-for="v in 10" :key="v"
+            v-for="v in commonLabelsList" :key="v.id"
             @click="addTag(v)"
-            :class="formState.labels.includes(String(v)) ? 'act' : ''"
-            >{{v}}{{v}}{{v}}</span
+            :class="formState.tags.includes(v.name) ? 'act' : ''"
+            >{{v.name}}</span
           >
         </div>
       </div>
     </a-form-item>
   </div>
   <div class="right">
-    <a-form-item label="可见范围" name="range" required class="visible-range">
-      <a-select v-model:value="formState.range">
-        <a-select-option :value="'0'">
+    <a-form-item label="可见范围" name="is_public" required class="visible-range">
+      <a-select v-model:value="formState.is_public">
+        <!-- 1-公开，0-私有 -->
+        <a-select-option value="1">
           <span class="name">公开</span>
           <span class="tips">所有人可见</span>
         </a-select-option>
-        <a-select-option :value="'1'">
+        <a-select-option value="0">
           <span class="name">私有</span>
           <span class="tips">仅自己可见</span>
         </a-select-option>
       </a-select>
     </a-form-item>
     <a-form-item label="封面图" class="cover">
-      <img v-if="formState.src" :src="formState.src" alt="" srcset="">
+      <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
       <a-upload
         v-model:file-list="fileList"
         list-type="picture"
         class="uploader"
         :show-upload-list="false"
         :before-upload="beforeUpload"
+        @change="handleChange"
       >
         <div class="upload">
           <div class="cover">
@@ -84,8 +86,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, Ref, nextTick, inject } from 'vue'
+import { ref, reactive, Ref, nextTick, inject, onMounted } from 'vue'
 import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { LoadingOutlined } from '@ant-design/icons-vue';
 const http = (request as any).teacherMaterialResource;
@@ -98,34 +101,38 @@ const props = defineProps({
 interface IFormState {
   name: string
   description: string
-  range: string
-  src: string
-  labels: string[]
+  is_public: string
+  tags: string[]
+  // src: string
+  cover: any
 }
 const formState = reactive<IFormState>({
   name: '',
   description: '',
-  range: '0',
-  src: '',
-  labels: []
+  is_public: '0',
+  // src: '',
+  tags: [],
+  cover: ''
 })
 // 上传封面图
 const fileList:Ref<any>=ref([])
 const loading = ref<boolean>(false)
 const beforeUpload = (file:any) => {
-  // console.log(file)
+  console.log(file)
   const isJpgOrPng = ['image/jpeg','image/png'].includes(file.type)
   if (!isJpgOrPng) {
     $message.warn('图片类型不正确')
     return false
   }
   loading.value = true
-  const fd = new FormData()
-  fd.append('upload_file', file)
-  http.upLoadCover({param:fd}).then((res:any)=>{
-    loading.value = false
-    console.log(res)
-    formState.src = res.data.path
+  formState.cover = file
+  // formState.src = file
+  // const fd = new FormData()
+  // fd.append('upload_file', file)
+  // http.upLoadCover({param:fd}).then((res:any)=>{
+  //   loading.value = false
+  //   console.log(res)
+  //   formState.src = res.data.path
     // let data = res.data;
     // let obj = [
     //   {
@@ -136,9 +143,51 @@ const beforeUpload = (file:any) => {
     //   },
     // ];
     // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
-  })
+  // })
   // formState.src = "src/assets/images/cover2.png"
 }
+function getBase64(img: Blob, callback: (base64Url: string) => void) {
+  const reader = new FileReader();
+  reader.addEventListener('load', () => callback(reader.result as string));
+  reader.readAsDataURL(img);
+}
+interface FileItem {
+  uid: string;
+  name?: string;
+  status?: string;
+  response?: string;
+  url?: string;
+  type?: string;
+  size: number;
+  originFileObj: any;
+}
+interface FileInfo {
+  file: FileItem;
+  fileList: FileItem[];
+}
+const imageUrl = ref('')
+const handleChange = (info: FileInfo) => {
+  console.log(info)
+  getBase64(info.file.originFileObj, (base64Url: string) => {
+    imageUrl.value = base64Url;
+    loading.value = false;
+  });
+  if (info.file.status === 'uploading') {
+    loading.value = true;
+    return;
+  }
+  if (info.file.status === 'done') {
+    // Get this url from response in real world.
+    getBase64(info.file.originFileObj, (base64Url: string) => {
+      imageUrl.value = base64Url;
+      loading.value = false;
+    });
+  }
+  // if (info.file.status === 'error') {
+  //   loading.value = false;
+  //   $message.error('upload error');
+  // }
+};
 // 添加标签
 const openCustom: Ref<boolean> = ref(false);
 const showTag: Ref<boolean> = ref(false);
@@ -152,14 +201,14 @@ function clickCustomLabel() {
   });
 }
 function removeLabel(val: string) {
-  let num = formState.labels.indexOf(val);
+  let num = formState.tags.indexOf(val);
   if (num !== -1) {
-    formState.labels.splice(num, 1);
+    formState.tags.splice(num, 1);
   }
 }
 function customFinish() {
   if (customLabelV.value.trim()) {
-    formState.labels.push(customLabelV.value);
+    formState.tags.push(customLabelV.value);
     customLabelV.value = "";
     openCustom.value = false;
   } else {
@@ -173,8 +222,8 @@ function changeLabel() {
       : customLabelV.value;
 }
 function addTag(val: any) {
-  if (formState.labels.length < 3) {
-    formState.labels.push(val);
+  if (formState.tags.length < 3) {
+    formState.tags.push(val.name);
   } else {
     $message.warn("最多添加3个标签");
   }
@@ -199,6 +248,17 @@ const fromValidate = () => {
 defineExpose({
   formState,
   fromValidate
+})
+const commonLabelsList: any = reactive([])
+const getLabelsList = () => {
+  commonLabelsList.length = 0
+  http.getLabelsList().then((res: IBusinessResp) => {
+    const data = res.data
+    commonLabelsList.push(...data)
+  })
+}
+onMounted(() => {
+  getLabelsList()
 })
 </script>
 
