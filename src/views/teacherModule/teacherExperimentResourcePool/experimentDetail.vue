@@ -1,16 +1,19 @@
 <template>
   <div class="experiment-detail">
-    <div class="top" :class="{ public: Number(currentTab) === 0 }">
+    <div class="top" :class="{ public: Number(currentTab) === 1 }">
       <div class="crumbs">
         <breadcrumb />
       </div>
       <div class="tech-direction">
-        技术方向：{{ experimentDetail.direction }}{{ currentTab }}
+        技术方向：{{ directionName }}
       </div>
       <div class="name-type flexCenter">
         <div class="left">
           <span class="name">{{ experimentDetail.name }}</span>
-          <span class="type">Jupyter</span>
+          <span class="type" :style="{
+            color: getTypeList('-90deg')[experimentDetail.task_type].color,
+            background: getTypeList('-90deg')[experimentDetail.task_type].backgroundColor,
+          }">{{getTypeList('-90deg')[experimentDetail.task_type].name}}</span>
         </div>
         <div class="right">
           <span class="pointer" @click="handleClick()">{{
@@ -20,15 +23,19 @@
         </div>
       </div>
       <div class="info">
-        <span class="level level1">中级</span>
-        <span class="knowledge">知识点1 / 知识点2 / 知识点3</span>
-        <span class="class-num">课时 3</span>
+        <span class="level" :class="['level' + experimentDetail.level]">{{levelList[experimentDetail.level]}}</span>
+        <span class="knowledge">
+          <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
+              v + (index !== experimentDetail.konwledge_map.length - 1 ? " / " : "")
+            }}</span>
+        </span>
+        <span class="class-num">课时 {{experimentDetail.class_cnt}}</span>
         <span class="report pointer" @click="reportTemplate">
           <span class="iconfont icon-fuzhiniantie"></span>
           <span>报告模板</span>
         </span>
       </div>
-      <div class="user-info" v-if="Number(currentTab) === 0">
+      <div class="user-info" v-if="Number(currentTab) === 1">
         <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
         <span class="user-name">TEACHERNAME</span>
       </div>
@@ -38,7 +45,7 @@
       <!-- <video-detail></video-detail> -->
       <!-- <file-detail></file-detail> -->
       <!-- <task-detail></task-detail>  -->
-      <component :is="experimentDetail.type" :detail="experimentDetail.lab_proc"></component>
+      <component :is="components[experimentDetail.task_type]" :detail="experimentDetail"></component>
     </div>
   </div>
   <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
@@ -62,15 +69,17 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue"; //
 import addToCourseModal from "./component/addToCourseModal.vue";
+import { getTypeList } from './config'
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
 import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
 import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/fileDetail.vue";
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
+const components = ['', experimentGuide, jupyterDetail, taskDetail, fileDetail, videoDetail]
 const router = useRouter();
 const route = useRoute();
 const { id, currentTab } = route.query;
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teacherExperimentResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -93,30 +102,22 @@ const reportTemplate = () => {
 };
 
 let experimentDetail = reactive<IExperimentDetail>({
-  id: 500096,
-  name: "hello",
-  direction: "",
-  complexity: "1",
-  knowledge_maps: ["知识点1", "知识点2", "知识点3"],
-  class_hour: 2,
-  username: "test",
-  type: markRaw(experimentGuide),
+  id: 1,
+  is_init: 0,
+  name: '111',
+  task_type: 1,
+  class_cnt: 2,
+  level: '2',
+  direction: '',
+  complexity: '2',
+  konwledge_map: [],
+  username: '2',
   lab_proc: "实验指导",
 });
 const getExperimentDetail = () => {
-  console.log(id);
-  let obj = {
-    id: 500096,
-    name: "hello",
-    direction: "数据挖掘",
-    complexity: "1",
-    knowledge_maps: ["知识点1", "知识点2", "知识点3"],
-    class_hour: 2,
-    username: "test",
-    type: markRaw(experimentGuide),
-    lab_proc: "实验指导",
-  };
-  Object.assign(experimentDetail, obj);
+  http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
+    Object.assign(experimentDetail, res.data);
+  })
 };
 
 // setTimeout(() => {
@@ -131,16 +132,33 @@ const getExperimentDetail = () => {
 
 onMounted(() => {
   getExperimentDetail();
+  getDirection()
 });
+const directionList: any = reactive([])
+const getDirection = () => {
+  directionList.length = 0
+  http.getDirection().then((res: IBusinessResp) => {
+    const data = res.data
+    directionList.push(...data)
+  })
+}
+const directionName = computed(() => {
+  return directionList.filter((v: {id: number, name: string}) => {
+    return v.id === Number(experimentDetail.direction)
+  })[0]?.name
+})
+const levelList = {'1': '中级', '2': '高级', '3': '高级'}
 interface IExperimentDetail {
   id: number;
+  is_init: number
   name: string;
+  task_type: number;
+  class_cnt: number;
+  level: string
   direction: string;
   complexity: string;
-  knowledge_maps: string[];
-  class_hour: 2;
+  konwledge_map: string[];
   username: string;
-  type: any;
   lab_proc: string;
 }
 </script>
@@ -191,7 +209,8 @@ interface IExperimentDetail {
           rgba(93, 178, 255, 0.14) 36%,
           rgba(19, 51, 85, 0.14)
         );
-        border-radius: 0px 16px 16px 0px;
+        // border-radius: 0px 16px 16px 0px;
+        border-radius: 16px;
         text-align: center;
       }
       .right {

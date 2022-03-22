@@ -34,8 +34,9 @@
         </div>
       </div>
       <!-- <Empty v-if="!list.length && !loading" /> -->
-        <!-- v-if="totalCount > 1" -->
-      <a-pagination
+        <!-- -->
+      <a-pagination 
+        v-if="totalCount > 10"
         v-model:current="searchInfo.page"
         :pageSize="searchInfo.limit"
         :total="totalCount"
@@ -68,7 +69,6 @@ const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
 const http = (request as any).teacherExperimentResourcePool;
-console.log(http)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -80,15 +80,14 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-const currentTab = ref<number>(1);
+const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
 watch(
   () => {
     return configuration.componenttype;
   },
   (val) => {
-    console.log(val, 1);
-    currentTab.value = val === 1 ? 0 : 1;
+    currentTab.value = val ? 0 : 1;
     searchInfo.init_type = currentTab.value
     searchInfo.page = 1
     searchInfo.content_direction = 0
@@ -156,7 +155,6 @@ const labelSearch = reactive({
   complexity: 0,
 });
 const searchFn = (key: string) => {
-  console.log(key);
   searchInfo.name = key;
   searchInfo.page = 1;
   initData();
@@ -200,7 +198,6 @@ var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(0);
 const initData = () => {
-  console.log(labelSearch)
   // const param = {
     // direction: labelSearch.direction,				// 技术方向 1.数据采集 2.数据挖掘 3.自动化处理
     // type: labelSearch.type ,					// 实验类型
@@ -216,8 +213,8 @@ const initData = () => {
   loading.value = true;
   experimentList.length = 0
   http.getExperimentList({param}).then((res: IBusinessResp) => {
-    if (!res) return
     loading.value = false
+    if (!res) return
     const { list, page }  = res.data
     list.forEach((v: IExperimentList) => {
       v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
@@ -255,7 +252,6 @@ const handleMenuClick = ({ key }: { key: string }) => {
 };
 
 const share = (id: number, is_share: number) => {
-  console.log(id, is_share);
   // is_share:1 就是共享数据
   // 传0 开启共享 传1代表关闭共享
   const param = {
@@ -263,7 +259,6 @@ const share = (id: number, is_share: number) => {
     id
   }
   http.experimentShare({param}).then((res: IBusinessResp) => {
-    console.log(res)
     initData()
   })
 };
@@ -271,7 +266,6 @@ const delet = (v: number) => {
   console.log(v);
 };
 const detail = (id: number) => {
-  console.log(id);
   // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentDetail",
@@ -283,6 +277,15 @@ const detail = (id: number) => {
 };
 
 onMounted(() => {
+  if (!Number(route.query.currentTab)) {
+    currentTab.value = 1
+    configuration.componenttype = 0
+  } else {
+    currentTab.value = 0
+    configuration.componenttype = 1
+  }
+  searchInfo.init_type = currentTab.value
+  
   initData();
   // 获取技术方向列表
   getDirection()

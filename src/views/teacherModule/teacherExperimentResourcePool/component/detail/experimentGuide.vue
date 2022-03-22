@@ -20,7 +20,7 @@
     </div>
   </div>
   <div class="experiment-content">
-    <marked-editor v-model="props.detail" :preview="preview" />
+    <marked-editor v-model="props.detail.guide" :preview="preview" />
     <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
   </div>
 </template>
@@ -31,31 +31,51 @@ import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
 import { readFile } from "src/utils/common";
+import { useRouter, useRoute } from "vue-router";
+import { IBusinessResp } from "src/typings/fetch";
+import request from "src/api/index";
 
+const router = useRouter();
+const route = useRoute();
+const http = (request as any).teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
 const preview = ref<boolean>(true);
-const props = defineProps({
+const props: Props = defineProps({
   detail: {
-    type: String,
-    require: true
+    type: Object as PropType<IDetail>,
+    require: true,
+    default: {
+      guide: ''
+    }
   }
 })
-let experimentContent = ref<any>(props.detail || '');
+let experimentContent = ref<any>(props.detail.guide || '');
 interface IDetail {
-  lab_proc: string
+  id: number
+  guide: string
 }
 interface Props {
   detail: IDetail
 }
 // 上传文件
 const beforeUpload = async (file: any, fileList: any) => {
-  const text = await readFile(file) || '';
-  experimentContent.value = text;
+  const text: any = await readFile(file) || '';
+  props.detail.guide = text;
 };
 const onSubmit = () => {
-  console.log(experimentContent.value)
+  console.log(props.detail.guide, props.detail.id)
+  http.editExperimentGuide({
+    urlParams: {id: props.detail.id},
+    param: {
+      direct_data: props.detail.guide
+    }
+  }).then((res: IBusinessResp) => {
+    console.log(res)
+  })
 };
-const cancel = () => {};
+const cancel = () => {
+  router.go(-1)
+};
 </script>
 
 <style lang="less" scoped>

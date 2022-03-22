@@ -55,8 +55,9 @@ export default {
 
   // 实验列表
   getExperimentList: { url: `/api/xinchuang/content/content`, method: "GET" },
+  experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json" },
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
-  experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json"  }
+  editExperimentGuide: { url: `/api/xinchaung/content/edit/{id}/direct`, method: "PUT", dataType: "json" }
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -85,8 +86,9 @@ export interface ITeacherExperimentResourcePool {
   uploadMp4File: TFHttpSend;
 
   getExperimentList: TFHttpSend;
-  getExperimentDetail: TFHttpSend;
   experimentShare: TFHttpSend;
+  getExperimentDetail: TFHttpSend;
+  editExperimentGuide: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";
