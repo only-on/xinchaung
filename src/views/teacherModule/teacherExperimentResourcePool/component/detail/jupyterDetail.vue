@@ -15,12 +15,12 @@
     </div>
   </div>
   <div class="experiment-content">
-
+    {{props.detail.content_task_files[0].file_url}}
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive } from "vue";
+import { ref, inject, reactive, PropType } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import Submit from "src/components/submit/index.vue";
 import request from "src/api/index";
@@ -28,18 +28,63 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/getFileType";
 const $message: MessageApi = inject("$message")!;
 const http = request.teacherExperimentResourcePool;
+interface Ifiles {
+  id: number
+  file_name: string
+  file_url: string
+}
+interface IDetail {
+  id: number
+  content_task_files: any[]
+}
+interface Props {
+  detail: IDetail
+}
+const props: Props = defineProps({
+  detail: {
+    type: Object as PropType<IDetail>,
+    require: true,
+    default: {
+      id: 0,
+      content_task_files: []
+    }
+  }
+})
 
 const beforeUpload = async (file: any, fileList: any) => {
+  console.log(props.detail.content_task_files[0])
   // const text = await readFile(file, 'ipynb');
   const suffix = (file && file.name).split(".")[1];
   if (suffix !== 'ipynb') {
     $message.warn(`请上传 .ipynb格式文件`)
     return false;
   }
+  let fd = new FormData()
+  fd.append('jupyter_file', file)
+  http.uploadJuptyFile({param: fd}).then((res: IBusinessResp) => {
+    const { data } = res
+    console.log(data)
+    const param = {
+      "guidebooks": [
+        {
+          file_name: data.file_name,
+          file_url: data.file_path,
+          size: data.size,
+          sort: 0,
+          suffix: data.suffix,
+          type: 1 // 实验指导文件类型
+        }
+     ]
+    }
+    http.updateJupyterGuide({urlParams: {content_id: props.detail.content_task_files[0].content_id}, param})
+    .then((res: IBusinessResp) => {
+      console.log(res)
+      props.detail.content_task_files[0] = Object.assign(props.detail.content_task_files[0], data, {file_url: data.url})
+    })
+  })
+  return false
 };
 
-const onSubmit = () => {};
-const cancel = () => {};
 </script>
 
 <style lang="less" scoped>

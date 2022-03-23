@@ -53,7 +53,7 @@ const courseApi = request.teachCourse;
 const env = process.env.NODE_ENV == "development" ? true : false;
 
 onMounted(() => {
-  getDirectoryList();
+  // getDirectoryList();
 });
 // 获取数据集列表
 interface ISelfDirectoryList {

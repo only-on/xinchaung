@@ -7,16 +7,7 @@
         @change="datasetChange"
         style="width: 240px; margin-right: 16px"
       >
-        <a-select-opt-group v-for="(val, key) in videoDirectoryList" :key="key">
-          <template #label>
-            <span>
-              {{ key === "public" ? "公有" : "私有" }}
-            </span>
-          </template>
-          <a-select-option v-for="(v, k) in val" :key="k" :value="k">{{
-            v
-          }}</a-select-option>
-        </a-select-opt-group>
+        <a-select-option v-for="v in videoDirectoryList" :value="v.name" :key="v.id">{{v.name}}</a-select-option>
       </a-select>
       <a-input-search
         v-model:value="searchInfo.name"
@@ -64,7 +55,7 @@
 import { ref, reactive, onMounted } from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
-const courseApi = request.teachCourse;
+const http = request.teacherMaterialResource;
 interface ISearchInfo {
   name: string;
   type: number | undefined;
@@ -121,31 +112,25 @@ const getVideoList = () => {
 };
 
 // 获取视频目录列表
+const videoDirectoryList = reactive<IVideoDirectoryList>([]);
 const getVideoDirectory = () => {
-  courseApi
-    .getDataSetListApi({ param: { ...searchInfo } })
-    .then((res: IBusinessResp | null) => {
-      console.log(res);
-    });
-  videoDirectoryList.public = {
-    1: "公1",
-    2: "公2",
-  };
-  videoDirectoryList.self = {
-    3: "私1",
-    4: "私2",
-  };
+  // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导
+  http.getSelectResourceList({urlParams: {typeID: props.type}}).then((res: IBusinessResp) => {
+    videoDirectoryList.push(...res.data.private)
+  });
 };
 onMounted(async () => {
   await getVideoDirectory();
-  getVideoList();
+  // getVideoList();
 });
 
 interface Props {
   fileList: any;
+  type: number
 }
 const props = withDefaults(defineProps<Props>(), {
   fileList: () => [],
+  type: 0
 });
 const emit = defineEmits<{
   (e: "selectVideoHandle", obj: any): void;
@@ -160,13 +145,9 @@ interface IDirectoryList {
   [key: number]: string;
 }
 interface IVideoDirectoryList {
-  public: IDirectoryList;
-  self: IDirectoryList;
+  id: number
+  name: string
 }
-const videoDirectoryList = reactive<IVideoDirectoryList>({
-  public: {},
-  self: {},
-});
 </script>
 
 <style lang="less" scoped>

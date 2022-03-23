@@ -2,23 +2,23 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span class="tips" v-if="!videoUrl"
-        >支持单个500M以内的MP4格式文件上传</span
-      >
-      <!-- <a-upload
-        name="file"
-        :show-upload-list="false"
-        accept=".mp4"
-        :multiple="false"
-        :before-upload="beforeUpload"
-        v-if="!videoUrl"
-      > -->
-      <a-button type="primary" @click="uploadVideo">上传视频</a-button>
-      <!-- </a-upload> -->
-      <a-button type="primary" @click="selectVideoClick" v-if="!videoUrl"
-        >选择视频</a-button
-      >
-      <a-button type="primary" @click="deletVideo" v-if="videoUrl"
+      <span v-if="!props.detail.content_task_files[0].file_url">
+        <span class="tips" v-if="!videoUrl"
+          >支持单个500M以内的MP4格式文件上传</span
+        >
+        <!-- <a-upload
+          name="file"
+          :show-upload-list="false"
+          accept=".mp4"
+          :multiple="false"
+          :before-upload="beforeUpload"
+          v-if="!videoUrl"
+        > -->
+        <a-button type="primary" @click="uploadVideo">上传视频</a-button>
+        <!-- </a-upload> -->
+        <a-button type="primary" @click="selectVideoClick">选择视频</a-button>
+      </span>
+      <a-button type="primary" @click="deletVideo" v-else
         >移除</a-button
       >
     </div>
@@ -27,8 +27,8 @@
     <video
       style="width: 100%; height: 650px"
       controls="true"
-      :src="videoUrl"
-      v-if="videoUrl"
+      :src="props.detail.content_task_files[0].file_url"
+      v-if="props.detail.content_task_files[0].file_url"
     ></video>
   </div>
   <!-- 选择视频抽屉 -->
@@ -45,6 +45,7 @@
       @selectFileHandle="selectFileHandle"
       @getFileList="getFileList"
       :fileList="fileList"
+      :type="4"
     ></select-file>
   </a-drawer>
   <!-- 上传视频弹窗 -->
@@ -56,14 +57,38 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive } from "vue";
+import { ref, inject, reactive, PropType } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 const courseApi = request.teachCourse;
+const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
+interface Ifiles {
+  id: number
+  file_name: string
+  file_url: string
+}
+interface IDetail {
+  id: number
+  content_task_files: Ifiles[]
+}
+interface Props {
+  detail: IDetail
+}
+const props: Props = defineProps({
+  detail: {
+    type: Object as PropType<IDetail>,
+    require: true,
+    default: {
+      id: 0,
+      content_task_files: []
+    }
+  }
+})
+
 const videoUrl = ref("");
 // 上传视频
 const uploadVideo = () => {
@@ -86,17 +111,22 @@ const beforeUpload = (file: any, fileList: any) => {
 const selectVideoClick = () => {
   console.log("选择视频");
   visible.value = true;
-  getFileList({
-    type: undefined,
-    name: "",
-    page: 1,
-    pageSize: 10,
-  });
+  // getFileList({
+  //   type: undefined,
+  //   name: "",
+  //   page: 1,
+  //   pageSize: 10,
+  // });
 };
 // 移除视频
 const deletVideo = () => {
   console.log("移除视频");
-  videoUrl.value = "";
+  http.deleteVideo({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
+  .then((res: IBusinessResp) => {
+    console.log(res)
+    videoUrl.value = "";
+    props.detail.content_task_files[0].file_url = ''
+  })
 };
 
 // 选择视频

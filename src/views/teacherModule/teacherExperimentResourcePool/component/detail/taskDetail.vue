@@ -14,17 +14,17 @@
   <div class="experiment-content">
     <div
       class="task-list"
-      v-for="(v, i) in taskData.taskList"
-      :key="v.name + i"
+      v-for="(v, i) in props.detail.task_steps"
+      :key="v.content_id"
     >
-      <task-list :preview="preview" :taskList="v" :index="i">{{ i }}</task-list>
+      <task-list :preview="preview" :taskList="v" :index="i" @delet="delet"></task-list>
     </div>
   </div>
   <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { ref, reactive, PropType } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -34,7 +34,32 @@ const router = useRouter();
 const route = useRoute();
 const { id } = route.query;
 const preview = ref<boolean>(true);
-const experimentContent = ref<any>("aa");
+
+interface Ifiles {
+  content_id: number
+  name: string
+  detail: string
+  summary: string
+  state: number
+}
+interface IDetail {
+  id: number
+  task_steps: Ifiles[]
+}
+interface Props {
+  detail: IDetail
+}
+const props: Props = defineProps({
+  detail: {
+    type: Object as PropType<IDetail>,
+    require: true,
+    default: {
+      id: 0,
+      task_steps: []
+    }
+  }
+})
+
 interface ItaskList {
   id?: number;
   name: string;
@@ -65,16 +90,19 @@ const taskData = reactive<ItaskData>({
   ],
 });
 const addTask = () => {
-  taskData.taskList.push({
-    name: "",
-    describe: "",
-    step: "",
-    checked: false,
-    isAdd: true,
+  props.detail.task_steps.push({
+    content_id: 0,
+    name: '',
+    detail: '',
+    summary: '',
+    state: 0,
   });
 };
+const delet = (i: number) => {
+  props.detail.task_steps.splice(i, 1)
+}
 const onSubmit = () => {
-  console.log(taskData.taskList);
+  console.log( props.detail.task_steps);
 };
 const cancel = () => {
   router.go(-1);

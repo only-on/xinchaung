@@ -1,9 +1,9 @@
 <template>
   <div class="title-box" :class="{ show: props.taskList.isAdd }">
     <span class="task-num">任务{{ NoToCh(props.index + 1) }}</span>
-    <span class="task-name" v-if="!props.taskList.isAdd">任务名称</span>
+    <span class="task-name" v-if="!props.taskList.isAdd">{{props.taskList.name}}</span>
     <div class="operate">
-      <span class="pointer delet">删除</span>
+      <span class="pointer delet" @click="delet">删除</span>
       <span
         class="pointer"
         @click="props.taskList.isAdd = !props.taskList.isAdd"
@@ -27,7 +27,7 @@
         :disabled="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务描述" name="describe" required>
+    <a-form-item label="任务描述" name="detail" required>
       <div class="form-upload" v-if="!props.preview">
         <a-upload
           name="file"
@@ -42,15 +42,15 @@
         </a-upload>
       </div>
       <marked-editor
-        v-model="props.taskList.describe"
+        v-model="props.taskList.detail"
         :preview="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务步骤" name="step" required>
+    <a-form-item label="任务步骤" name="summary" required>
       <div class="form-switch">
         状态
         <a-switch
-          v-model:checked="props.taskList.checked"
+          v-model:checked="props.taskList.state"
           :disabled="props.preview"
         />
       </div>
@@ -68,7 +68,7 @@
         </a-upload>
       </div>
       <marked-editor
-        v-model="props.taskList.step"
+        v-model="props.taskList.summary"
         :preview="props.preview"
       />
     </a-form-item>
@@ -100,17 +100,20 @@ const rules = {
   ],
 };
 const props = defineProps<Props>();
-// const emit = defineEmits<{
-//   (e: "change", obj: any): void;
-// }>();
+const emit = defineEmits<{
+  (e: "delet", i: number): void;
+}>();
 const beforeUpload = async (file: any, fileList: any) => {
   const text = await readFile(file);
-  props.taskList.describe = text;
+  props.taskList.detail = text;
 };
 const stepbeforeUpload = async (file: any, fileList: any) => {
   const text = await readFile(file);
-  props.taskList.step = text;
+  props.taskList.summary = text;
 };
+const delet = () => {
+  emit('delet', props.index)
+}
 interface Props {
   preview: boolean;
   taskList: ItaskList;
@@ -118,9 +121,9 @@ interface Props {
 }
 interface ItaskList {
   name: string;
-  describe: any;
-  step: any;
-  checked: boolean;
+  detail: any;
+  summary: any;
+  state: number;
   isAdd?: boolean;
 }
 </script>

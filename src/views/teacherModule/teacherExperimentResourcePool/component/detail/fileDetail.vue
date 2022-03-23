@@ -2,11 +2,11 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span v-if="!fileUrl">
+      <span>
         <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
         <a-button type="primary" @click="uploadFile">上传文档</a-button>
       </span>
-      <a-button type="primary" v-if="!fileUrl" @click="selectFileClick"
+      <a-button type="primary" @click="selectFileClick"
         >选择文档</a-button
       >
       <a-button type="primary" v-if="fileUrl" @click="deleteFile"
@@ -16,8 +16,8 @@
   </div>
   <div class="experiment-content">
     <!-- <iframe :src="fileUrl" width="100%" v-if="fileUrl"></iframe> -->
-    <PdfVue :url="fileUrl" v-if="fileUrl" />
-    <div v-else>
+    <PdfVue :url="props.detail.content_task_files[0].file_url" v-if="props.detail.content_task_files[0].suffix === 'pdf'" />
+    <div v-if="props.detail.content_task_files[0].suffix === 'md'">
       <marked-editor v-model:value="experimentContent" :preview="preview" />
       <Submit @submit="onSubmit" @cancel="cancel" v-if="isMarked"></Submit>
     </div>
@@ -36,6 +36,7 @@
       @selectFileHandle="selectFileHandle"
       @getFileList="getFileList"
       :fileList="fileList"
+      :type="4"
     ></select-file>
   </a-drawer>
   <!-- 上传文档 -->
@@ -47,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive } from "vue";
+import { ref, inject, reactive, PropType } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -58,8 +59,33 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/common";
 const courseApi = request.teachCourse;
-
+const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
+
+interface Ifiles {
+  id: number
+  file_name: string
+  file_url: string
+  suffix: string
+}
+interface IDetail {
+  id: number
+  content_task_files: Ifiles[]
+}
+interface Props {
+  detail: IDetail
+}
+const props: Props = defineProps({
+  detail: {
+    type: Object as PropType<IDetail>,
+    require: true,
+    default: {
+      id: 0,
+      content_task_files: []
+    }
+  }
+})
+
 const isMarked = ref<boolean>(true);
 const fileUrl = ref<string>("111");
 
@@ -117,9 +143,9 @@ const getFileList = (searchInfo: any) => {
     page: searchInfo.page,
     pageSize: searchInfo.pageSize,
   };
-  courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
-    console.log(res);
-  });
+  // courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
+  //   console.log(res);
+  // });
   // 支持单个md、doc、docx、pdf格式文件上传
   fileList.push(
     ...[
@@ -165,7 +191,11 @@ const getFileList = (searchInfo: any) => {
 // 移除文件
 const deleteFile = () => {
   console.log("移除文件");
-  fileUrl.value = "";
+  http.deleteDocument({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
+  .then((res: IBusinessResp) => {
+    console.log(res)
+    fileUrl.value = "";
+  })
 };
 const onSubmit = () => {};
 const cancel = () => {};

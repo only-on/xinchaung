@@ -57,7 +57,11 @@ export default {
   getExperimentList: { url: `/api/xinchuang/content/content`, method: "GET" },
   experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json" },
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
-  editExperimentGuide: { url: `/api/xinchaung/content/edit/{id}/direct`, method: "PUT", dataType: "json" }
+  uploadJuptyFile: { url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`, method: "POST",dataType: "formdata" },
+  updateJupyterGuide: { url: `/api/xinchuang/content/jupyter/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
+  deleteDocument: { url: `/api/xinchuang/content/document/contents/{content_id}/guidebook`, method: "DELETE" },
+  deleteVideo: { url: `/api/xinchuang/content/video/contents/{content_id}/guidebook`, method: "DELETE"},
+  editExperimentGuide: { url: `/api/xinchaung/content/edit/{id}/direct`, method: "PUT", dataType: "json" },
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -88,6 +92,10 @@ export interface ITeacherExperimentResourcePool {
   getExperimentList: TFHttpSend;
   experimentShare: TFHttpSend;
   getExperimentDetail: TFHttpSend;
+  uploadJuptyFile: TFHttpSend;
+  updateJupyterGuide: TFHttpSend;
+  deleteDocument: TFHttpSend;
+  deleteVideo: TFHttpSend;
   editExperimentGuide: TFHttpSend;
 }
 
