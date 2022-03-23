@@ -114,7 +114,7 @@ const materialTypeList = reactive([
 const loading = ref<boolean>(false);
 const pageInfo = reactive({
   page: 1,
-  limit: 80,
+  limit: 8,
 });
 const pageTotal = ref<number>(0);
 const pageChange = (page: number) => {

@@ -48,6 +48,7 @@ import { RuleObject } from "ant-design-vue/es/form/interface";
 import baseInfo from './components/baseInfo.vue'
 import uploadFile from './components/uploadFile.vue'
 import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
 import Submit from "src/components/submit/index.vue";
 const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
@@ -56,12 +57,14 @@ const route = useRoute();
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const createType = String(route.query.key);
+
+// 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
 const materialTypeList = reactive({
-  'dataSet': {name: "数据集", subname: '数据集', uploadFileType: ''},
-  'videoDirectory': {name: "视频目录", subname: '目录', uploadFileType: 'mp4，支持文件大小500MB以内'},
-  'coursewareDirectory': {name: "课件目录", subname: '目录', uploadFileType: 'ppt、pptx、pdf'},
-  'lessonDirectory': {name: "备课资料目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
-  'guidanceDirectory': {name: "教学指导目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
+  'dataSet': {id: 1, name: "数据集", subname: '数据集', uploadFileType: ''},
+  'videoDirectory': {id: 4, name: "视频目录", subname: '目录', uploadFileType: 'mp4，支持文件大小500MB以内'},
+  'coursewareDirectory': {id: 3, name: "课件目录", subname: '目录', uploadFileType: 'ppt、pptx、pdf'},
+  'lessonDirectory': {id: 5, name: "备课资料目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
+  'guidanceDirectory': {id: 6, name: "教学指导目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
 });
 const createMaterialType = materialTypeList[createType];
 updata({
@@ -142,8 +145,20 @@ const baseInfoRef = ref()
 const submit = async() => {
   await baseInfoRef.value.fromValidate()
   Object.assign(formState, baseInfoRef.value.formState)
-  formRef.value.validate().then(() => {
-    console.log(formState) 
+  // formRef.value.validate().then(() => {
+  //   console.log(formState) 
+  // })
+  const baseInfo = baseInfoRef.value.formState
+  const fd = new FormData()
+  fd.append('name', baseInfo.name)
+  fd.append('description', baseInfo.description)
+  fd.append('tags', baseInfo.tags)
+  fd.append('is_public', baseInfo.is_public)
+  fd.append('cover', baseInfo.cover)
+  fd.append('type', createMaterialType.id)
+  http.create({param: fd}).then((res: IBusinessResp) => {
+    console.log(res)
+    router.go(-1)
   })
 }
 const cancel = () => {
