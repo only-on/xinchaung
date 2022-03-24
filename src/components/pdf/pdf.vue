@@ -51,8 +51,8 @@ export default defineComponent({
         }
         spinning.value=true
         clearTimeout(Number(timer))
-        fetch(env ? '/proxyPrefix' + url : url).then(res=>{
-        // fetch(url).then(res=>{
+        // fetch(env ? '/proxyPrefix' + url : url).then(res=>{
+        fetch(url).then(res=>{
             console.log(res);
             if (res.status==200) {
                 isShowPdf.value=true
@@ -60,9 +60,10 @@ export default defineComponent({
             }else{
                 isShowPdf.value=false
                 // message.warn("加载失败")
-                timer=setTimeout(()=>{
-                    checkPdf(url)
-                },2000)
+                
+                // timer=setTimeout(()=>{
+                //     checkPdf(url)
+                // },2000)
             }
             spinning.value=true
         })

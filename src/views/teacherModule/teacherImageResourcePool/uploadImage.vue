@@ -131,7 +131,7 @@ export default defineComponent({
           },
           // 出现错误时调用的可选函数。该参数将是一个 Error 实例，其中包含有关所涉及请求​​的附加信息。
           onError: function (error) {
-            console.log("Failed because: " + error);
+            message.warning("Failed because: " + error);
           },
           // 获取进度信息时调用该函数
           onProgress: function (bytesUploaded, bytesTotal) {
@@ -166,6 +166,7 @@ export default defineComponent({
           // Start the upload
           state.upload.start();
         });
+        return false
       },
       recoveryUpload() {
         state.upload.start().then(() => {

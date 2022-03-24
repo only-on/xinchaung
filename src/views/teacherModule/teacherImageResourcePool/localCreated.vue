@@ -141,7 +141,7 @@ const rules = {
   classify_id: [{ required: true, message: "请选择系统类型" }],
   tag: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    // { validator: fileListValidator, message: "请选择镜像标签"},
+    { validator: fileListValidator,},
   ],
 };
 async function fileListValidator() {
@@ -149,7 +149,14 @@ async function fileListValidator() {
   if (image.tag.length === 0) {
     message.warn("请选择镜像标签");
     return Promise.reject();
-  } else {
+  } else if(!(image.tag.includes('vnc') || image.tag.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需至少选择一个");
+    return Promise.reject();
+  }else if((image.tag.includes('vnc') && image.tag.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需只需任选其一");
+    return Promise.reject();
+  }
+  else {
     return Promise.resolve();
   }
 }
@@ -243,7 +250,9 @@ const create = () => {
   // fileListValidator()
   // return
   formRef.value.validate().then(() => {
-    fileListValidator();
+    // fileListValidator().then((res)=>{
+    //   console.log(res)
+    // })
     const parmas = {
       // ostype: "docker" , 
       classify_id: image.classify_id,
@@ -272,12 +281,14 @@ function getConfig() {
 }
 const recommend:any=reactive([])
 function getImgTag() {
+  recommend.length=0
   http.getImgTag().then((res: any) => {
     let  data= res.data;
+    let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+    recommend.push(...arr)
     data.forEach((v:any) => {
       recommend.push({name:v.name,value:v.name})
     });
-    // classifyList
   });
 }
 onMounted(() => {

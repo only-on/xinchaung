@@ -234,7 +234,6 @@
         <MarkedEditor v-model="formState.document.mdValue" class="markdown__editor" />
       </div>
       <div v-if="formState.document.type === 'pdf'" class="pdfBox">
-        <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
         <PdfVue :url="formState.document.pdf" />
       </div>
     </div>
@@ -244,18 +243,16 @@
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter">
           <span class="data-set-hint">仅支持单个MP4文件上传</span>
-          <!-- <a-upload class="upload" :showUploadList="false" :before-upload="docBeforeUpload" accept=".mp4">
-            <a-button type="primary"  @click="upDocx()"> 上传视频 </a-button>
-          </a-upload> -->
           <a-button type="primary" @click="upDocx(2)"> 上传视频 </a-button>
           <a-button type="primary" @click="selectDocx(2)"> 选择视频 </a-button>
         </div>
       </div>
       <div v-if="formState.document.videoUrl" class="video-box">
+      <video :src="formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video>
         <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
-        <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
+        <!-- <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
           您的浏览器不支持 video 标签
-        </video>
+        </video> -->
       </div>
     </div>
     <div class="submitBox">
@@ -285,14 +282,14 @@
   ></SelectReport>
 
   <!-- 上传文档 视频 文件 弹窗 -->
-  <a-modal v-model:visible="upDocVisible" :destroyOnClose="true" :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
+  <a-modal v-model:visible="upDocVisible"  :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
     class="uploadImage" :width="640">
-    <!-- <a-select
+    <a-select
       style="width: 400px; margin-bottom: 3rem"
       v-model:value="upDoc.catalogue"
       :placeholder="`请选择${docOrMp4Type === 1 ? '文档' : '视频'}目录`"
       :options="catalogueOptions"
-    ></a-select> -->
+    ></a-select>
     <a-upload-dragger
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
@@ -337,7 +334,7 @@
       </div>
       <div class="item custom_input">
         <a-input-search
-          v-model:value="docOrMp4Drawer.keyword"
+          v-model:value="docOrMp4Drawer.file_name"
           placeholder="请输入搜索关键字"
           @search="searchDocOrMp4List"
         />
@@ -348,9 +345,9 @@
         <div class="list" v-if="docOrMp4Drawer.list.length">
           <div
             class="item"
-            v-for="v in 10"
+            v-for="v in docOrMp4Drawer.list"
             :key="v"
-            :class="docOrMp4Drawer.activeFile.id === v ? 'active' : ''"
+            :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''"
           >
             <div class="flexCenter left">
               <!-- :style="`background-image: url(${getFileTypeIcon(v.url)});`"  根据文件类型显示  doc  md pdf  的不同图标-->
@@ -364,14 +361,12 @@
                 v-if="docOrMp4Type === 2"
                 :style="`background-image: url(${iconList['mp4']});`"
               ></span>
-              <span class="quName single-ellipsis">{{
-                "视频名称视频名称视频名称视频名称视频名称视频名称视频名称"
-              }}</span>
+              <span class="quName single-ellipsis">{{v.file_name}}</span>
             </div>
             <div class="flexCenter right">
-              <span> {{ "2" }}M </span>
+              <span> {{ (v.size / 1024 / 1024).toFixed(2) }}M </span>
               <span class="iconfont" @click="selectDocOrMp4File(v)">
-                {{ docOrMp4Drawer.activeFile.id === v ? "取消" : "选择" }}
+                {{ docOrMp4Drawer.activeFile.id === v.id ? "取消" : "选择" }}
               </span>
             </div>
           </div>
@@ -412,6 +407,7 @@ import SelectReport from "./component/selectReport.vue";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import _ from "lodash";
 import { UUID } from "src/utils/uuid";
+import tusFileUpload from 'src/utils/tusFileUpload'
 import {
   defineComponent,
   ref,
@@ -501,10 +497,10 @@ const formState: any = reactive({
   guide: "",
   ipynbList: [],
   document: {
-    //已确认的文档实验信息
     type: "md",
     pdf: "",
     mdValue: "",
+    videoUrl:''
   },
 });
 const rules = {
@@ -553,7 +549,7 @@ function create() {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
     }, [])
-    let param={
+    const param={
       type:createTypeNumber,  // 
       name:formState.name,
       level:formState.level,
@@ -564,9 +560,15 @@ function create() {
       report:formState.report.id,
       container:formState.imageConfigs
     }
-    const fileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:upDoc.docFileList[0]     // 是视频和文档公用一个 文件对象
-    console.log(fileObj)
-    const {type,file_name,file_url,suffix,size,sort}=fileObj
+    const docMp4File=(upDoc.docFileList.length && upDoc.docFileList[0])?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
+    const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}    // 是视频和文档公用一个 文件对象
+    const docMp4FileObj:any={
+      // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
+      file_path:docMp4File.file_url
+    }
+    docOrMp4Drawer.activeFile.file_url ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
+    console.log(ipynbFileObj)
+    const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj
     let parameter=[
       {
         guide:formState.guide,},
@@ -577,10 +579,10 @@ function create() {
         tasks:TaskLIst
       },
       {
-        document_file:{type,file_name,file_url,suffix,size,sort}
+        document_file:{...docMp4FileObj}
       },
       {
-        video_file:{type,file_name,file_url,suffix,size,sort}
+        video_file:{...docMp4FileObj}
       }
     ]
     let obj=parameter[createTypeNumber-1]
@@ -602,7 +604,6 @@ function create() {
 function cancel() {
   router.go(-1);
 }
-
 
 var reportVisible = ref<boolean>(false);
 
@@ -760,7 +761,7 @@ function beforeUploadIpynb(file: any) {
     return;
   }
   // formState.ipynbList[0]={}
-  console.log(file)
+  // console.log(file)
   let obj={
     id: 1,
     suffix:'ipynb',
@@ -810,13 +811,8 @@ const TaskMdTaskStep = (num: number, key: string) => {
 
 // 文档实验
 var upDoc: any = reactive({
-  catalogue: 1,
-  catalogueList: [],
-  docFileList: [
-    {
-      status: "uploading",
-    }
-  ],
+  catalogue: '',
+  docFileList: [],
   nowDocument: {
     // 正在上传  未确认的文档
     type: "md",
@@ -827,78 +823,68 @@ var upDoc: any = reactive({
 });
 var upDocVisible = ref<boolean>(false);
 
-const handleChange=(info: any)=>{
-  // console.log(info)
-  // info.file.status='uploading'
-}
-const docBeforeUpload =  (file: any) => {
+const docBeforeUpload =(file: any) => {
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
   const postfix = (file && file.name).split(".")[1];
   let obj:any={
-    uid: file.uid,
-    name: file.name,
-    status: "uploading",
-    type:docOrMp4Type.value === 1?3:4,
-    id:1,
-    url:'',
-    file_name:file.name,
+    uid: file.uid,    // ant  渲染的key
     file_url:'',
-    suffix:docOrMp4Type.value === 1?'docx':'mp4', // mp4
-    size:file.size,
-    sort:0,
-    response:''
   }
-   upDoc.docFileList[0]=obj
-  if (postfix === "md" && docOrMp4Type.value === 1) {
-    formState.document.type= 'md'
-    upDoc.nowDocument.type = "md";
-    // const text = await readFile(file);
-    readFile(file).then((text:any)=>{
-      formState.document.mdValue = text;
-      upDocVisible.value = false;
-    })
-  } else {
-    // 文档非md 类型
+  upDoc.docFileList[0]=obj
+  if(postfix === "md" && docOrMp4Type.value === 1){
+     upDoc.nowDocument.type = "md";
+  }else{
     upDoc.nowDocument.type = "pdf";
-    const fs = new FormData();
-    fs.append("file", file);
-    let arr =['uploadDocFile','uploadMp4File']
-    http[arr[docOrMp4Type.value-1]]({ param: fs }).then((res: any) => {
-      let data =res.data
-      if(docOrMp4Type.value === 1){
-        upDoc.nowDocument.pdf=data.url
-      }else{
-        upDoc.nowDocument.videoUrl=data.url
-      }
-      upDoc.docFileList[0].url=data.url
-      upDoc.docFileList[0].file_url=data.url,
-      upDoc.docFileList[0].status="done"
-      // upDoc.docFileList[0]=obj
-    }).catch((err:any) => {
-      message.error(err)
+  }
+  if (postfix === "md" && docOrMp4Type.value === 1){
+    readFile(file).then((text:any)=>{
+      // formState.document.mdValue = text;
+      upDoc.nowDocument.mdValue = text;
     })
   }
+
+  let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
+  let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
+  tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
+  docOrMp4Drawer.activeFile={}
+ 
+  /**const fs = new FormData();
+  fs.append("file", file);
+  let arr =['uploadDocFile','uploadMp4File']
+  http[arr[docOrMp4Type.value-1]]({ param: fs }).then((res: any) => {
+    let data =res.data
+    if(docOrMp4Type.value === 1){
+      upDoc.nowDocument.pdf=data.url
+    }else{
+      upDoc.nowDocument.videoUrl=data.url
+    }
+    upDoc.docFileList[0].url=data.url
+    upDoc.docFileList[0].file_url=data.url,
+    upDoc.docFileList[0].status="done"
+    // upDoc.docFileList[0]=obj
+  }) */
   return false
 };
 const removeDocMp4=()=>{
+  upDoc.nowDocument.mdValue=''
   upDoc.docFileList=[]
 }
 const upDocx = (n: number) => {
-  upDoc.docFileList.length=0
+  // upDoc.docFileList.length=0
   docOrMp4Type.value = n;
   upDocVisible.value = true;
 };
-const docOrMp4Type = ref<number>(1);
+const docOrMp4Type = ref<number>(createTypeNumber === 4?1:2);
 const docOrMp4Drawer: any = reactive({
   visible: false,
-  list: [{ name: "", id: 2 }],
+  list: [],
   page: 1,
   limit: 10,
   totalCount: 20,
   loading: false,
-  catalogueId: 1, // 目录列表第一个
-  keyword: "",
+  catalogueId: '', // 目录列表第一个
+  file_name: "",
   activeFile: {}, //  选择或上传的文档、视频
 });
 // 目录  视频和文档公用字段   弹窗和抽屉共用
@@ -908,35 +894,48 @@ const catalogueOptions = ref<SelectTypes["options"]>([
 ]);
 // 获取文档目录
 const getCatalogue = () => {
-  // http.getCatalogueList().then((res: IBusinessResp) => {
-  //   upDoc.catalogueList.push(...res.data);
-  //   interface IOptions {
-  //     value: string;
-  //     label: string;
-  //   }
-  //   let data = res.data.list;
-  //   // console.log('[获取题库目录] ', data);
-  //   catalogueOptions.value![0].options.length = 0;
-  //   catalogueOptions.value![1].options.length = 0;
-  //   data.forEach((v: any) => {
-  //     let obj: IOptions = { value: v.id, label: v.name };
-  //     if (v.initial === 1) {
-  //       catalogueOptions.value![0].options.push(obj);
-  //     } else {
-  //       catalogueOptions.value![1].options.push(obj);
-  //     }
-  //   });
-  // })
+  let type=docOrMp4Type.value === 1?3:4
+  http.getCatalogueList({urlParams:{typeId:type}}).then((res: IBusinessResp) => {
+    interface IOptions {
+      value: string;
+      label: string;
+    }
+    let data = res.data;
+    // console.log('[获取题库目录] ', data);
+    catalogueOptions.value![0].options.length = 0;
+    catalogueOptions.value![1].options.length = 0;
+    (data.private && data.private.length)?data.private.forEach((v: any) => {
+      let obj: IOptions = { value: v.id, label: v.name };
+      catalogueOptions.value![1].options.push(obj);
+    }):'';
+    (data.public && data.public.length)?data.public.forEach((v: any) => {
+      let obj: IOptions = { value: v.id, label: v.name };
+      catalogueOptions.value![0].options.push(obj);
+    }):'';
+    if(data.private && data.private.length){
+      docOrMp4Drawer.catalogueId=data.private[0].id
+      upDoc.catalogue=data.private[0].id
+    }
+    if(data.public && data.public.length){
+      docOrMp4Drawer.catalogueId=data.public[0].id
+      upDoc.catalogue=data.public[0].id
+    }
+    // docOrMp4Drawer.catalogueId   upDoc.catalogue  默认第一个
+  })
 };
 // 获取文档、视频  列表
 const getDocOrMp4List = () => {
-  // docOrMp4Drawer.loading=true
-  // docOrMp4Drawer.list.length=0
-  const pro=docOrMp4Type.value===1?http.DocList():http.Mp4List()
-  // pro.then((res: IBusinessResp) => {
-  //   docOrMp4Drawer.loading=false
-  //   docOrMp4Drawer.list.push(...res.data);
-  // });
+  const {file_name,page,limit}=docOrMp4Drawer
+  let params:any={file_name,page,limit}
+  docOrMp4Drawer.loading=true
+  docOrMp4Drawer.list.length=0
+ http.getFileList({param:{...params},urlParams:{dataId:docOrMp4Drawer.catalogueId}}).then((res: IBusinessResp) => {
+    docOrMp4Drawer.loading=false
+    const {list,page}=res.data
+    docOrMp4Drawer.list.push(...list);
+    docOrMp4Drawer.totalCount=page.totalCount
+    // console.log(docOrMp4Drawer.list)
+  });
 };
 const searchDocOrMp4List = () => {
   docOrMp4Drawer.page = 1;
@@ -959,12 +958,36 @@ const cancelUpDoc = () => {
 };
 // 选择系统内置文档或者视频
 const selectDocOrMp4File = (val: any) => {
-  docOrMp4Drawer.activeFile = { ...val };
+  upDoc.docFileList.length=0
+  docOrMp4Drawer.activeFile = { ...val};
+  if(docOrMp4Type.value === 1){
+    formState.document.type = val.suffix === 'md' ?'md':'pdf'
+    // formState.document.pdf = formState.document.type === 'md' ? '' : val.file_html
+    formState.document.pdf = formState.document.type === 'md' ? '' : `http://192.168.101.221:1080/files${val.file_html}`
+    formState.document.mdValue =formState.document.type === 'md' ? val.mdText : ''
+  }else{
+    formState.document.videoUrl=val.file_url
+  }
 };
 const confirmDoc = () => {
+  // console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].file_url)
+  if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
+    if( upDoc.docFileList[0].suffix !== 'md'){
+      upDoc.nowDocument.mdValue=''
+      // upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
+      upDoc.nowDocument.pdf=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
+    }else{
+      upDoc.nowDocument.pdf=''
+    }
+  }else if(upDoc.docFileList && upDoc.docFileList.length && docOrMp4Type.value === 2){
+    // upDoc.nowDocument.videoUrl=data.url
+      // upDoc.nowDocument.videoUrl=upDoc.docFileList[0].file_url
+      upDoc.nowDocument.videoUrl=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
+  }
   formState.document = {
     ...upDoc.nowDocument,
   };
+  // console.log(formState.document)
   upDocVisible.value = false;
 };
 
@@ -985,7 +1008,8 @@ function getDirection() {
 onMounted(()=>{
   getDirection()
   if([4,5].includes(createTypeNumber)){
-    // getCatalogue()
+    getCatalogue()
+    tusFileUpload.init()
   }
 })
 

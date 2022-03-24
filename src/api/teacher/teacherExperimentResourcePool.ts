@@ -46,12 +46,17 @@ export default {
     dataType: "formdata",
   },
 
-  //  文档 视频列表
-  DocList:{ url: `/api/xinchaung/content/document/list`, method: "GET"},
-  Mp4List:{ url: `/api/xinchaung/content/video/list`, method: "GET"},
+    //  文档 视频列表  /api/resource/data/{id}/files
+  // DocList:{ url: `/api/xinchaung/content/document/list`, method: "GET"},
+  // Mp4List:{ url: `/api/xinchaung/content/video/list`, method: "GET"},
+  // 实验选择资源 文档或视频
+  getFileList:{ url: `/api/resource/data/{dataId}/files`, method: "GET"},
   // 上传文档 视频
   uploadDocFile:{url:`/api/xinchuang/content/document/upload_file`,method: "POST",dataType: "formdata"},
   uploadMp4File:{url:`/api/xinchuang/content/video/upload_file`,method: "POST",dataType: "formdata"},
+
+  //  获取文件目录
+  getCatalogueList:{url:`/api/resource/data/select/type/{typeId}`, method: "GET"},
 
   // 实验列表
   getExperimentList: { url: `/api/xinchuang/content/content`, method: "GET" },
@@ -85,6 +90,8 @@ export interface ITeacherExperimentResourcePool {
 
   DocList: TFHttpSend;
   Mp4List: TFHttpSend;
+  getFileList: TFHttpSend;
+  getCatalogueList: TFHttpSend;
 
   uploadDocFile: TFHttpSend;
   uploadMp4File: TFHttpSend;
