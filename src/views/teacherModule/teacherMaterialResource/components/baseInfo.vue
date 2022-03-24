@@ -94,18 +94,18 @@ import { LoadingOutlined } from '@ant-design/icons-vue';
 const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
 
-// const props = defineProps({
-//   materialType: String,
-//   editInfo?:{}
-// })
-interface Props {
-  materialType: String;
-  editInfo?:any
-}
-const props = withDefaults(defineProps<Props>(), {
-  // materialType: '',
-  // imageList: ()=> [],
-});
+const props = defineProps({
+  materialType: String,
+  editInfo:{}
+})
+// interface Props {
+//   materialType: String;
+//   editInfo?:any
+// }
+// const props = withDefaults(defineProps<Props>(), {
+//   materialType: '数据集',
+//   editInfo: ()=> {},
+// });
 interface IFormState {
   name: string
   description: string

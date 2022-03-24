@@ -973,6 +973,8 @@ const selectDocOrMp4File = (val: any) => {
     formState.document.videoUrl=val.file_url
   }
 };
+//  视频实验
+const env = process.env.NODE_ENV == "development" ? true : false;
 const confirmDoc = () => {
   console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0])
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
@@ -987,7 +989,7 @@ const confirmDoc = () => {
     // upDoc.nowDocument.videoUrl=data.url
       // upDoc.nowDocument.videoUrl=upDoc.docFileList[0].file_url
       // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4     // tusdUpName
-      upDoc.nowDocument.videoUrl=`/proxyPrefix/video${upDoc.docFileList[0].tusdUpName}`
+      upDoc.nowDocument.videoUrl=`${env?'/proxyPrefix':''}/video${upDoc.docFileList[0].tusdUpName}`
       // upDoc.nowDocument.videoUrl=`http://192.168.101.221:84/video${upDoc.docFileList[0].tusdUpName}`
       // upDoc.nowDocument.videoUrl=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
   }
@@ -998,8 +1000,6 @@ const confirmDoc = () => {
   upDocVisible.value = false;
 };
 
-//  视频实验
-const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl = "/professor/classic/video/112/22/1523425771.mp4";
 
 // 

@@ -1,7 +1,8 @@
 <template>
   <div class="detail">
     <div class="header">
-      <div class="img" :style="`background-image: url(${state.detail.cover});`">
+      <div class="img flexCenter" :style="`background-image: url(${state.detail.cover});`">
+      {{state.detail.cover?'':'封面不存在'}}
       </div>
       <div class="header_mid">
         <div class="title flexCenter">
@@ -350,6 +351,7 @@ onMounted(() => {
       height: 150px;
       background: url("src/assets/images/cover2.png") no-repeat;
       background-size: 100% 100%;
+      justify-content: center;
     }
     .header_mid{
       // flex: 1;
