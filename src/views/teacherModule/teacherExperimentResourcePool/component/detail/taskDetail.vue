@@ -29,7 +29,9 @@ import { useRouter, useRoute } from "vue-router";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
 import taskList from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskList.vue";
-
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+const http = request.teacherExperimentResourcePool;
 const router = useRouter();
 const route = useRoute();
 const { id } = route.query;
@@ -103,6 +105,19 @@ const delet = (i: number) => {
 }
 const onSubmit = () => {
   console.log( props.detail.task_steps);
+  const tasks = []
+  props.detail.task_steps.forEach(v => {
+    tasks.push({
+      "name": v.name,
+      "summary": v.summary,
+      "detail": v.detail,
+      "state": v.state // (非必填 默认开启)
+    })
+  })
+  http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: IBusinessResp) => {
+    console.log(res)
+    router.go(-1);
+  })
 };
 const cancel = () => {
   router.go(-1);

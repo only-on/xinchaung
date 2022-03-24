@@ -21,6 +21,8 @@ export default {
   getDirection: { url: `/api/category/技术方向/tags`, method: "GET" },
   // 删除实验报告模板
   deleteTemplate:{ url: `/api/xinchuang/report/templates/{id}`, method: "DELETE" ,},
+  // 实验报告模板详情
+  detailTemplate:{ url: `/api/xinchuang/report/templates/{id}`, method: "GET" ,},
 
   // 同屏
   getSameScreenInfo: {
@@ -64,6 +66,7 @@ export default {
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
   uploadJuptyFile: { url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`, method: "POST",dataType: "formdata" },
   updateJupyterGuide: { url: `/api/xinchuang/content/jupyter/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
+  updateTaskGuide: { url: ` /api/xinchuang/content/task/contents/{content_id}/tasks`, method: "POST", dataType: "json" },
   deleteDocument: { url: `/api/xinchuang/content/document/contents/{content_id}/guidebook`, method: "DELETE" },
   deleteVideo: { url: `/api/xinchuang/content/video/contents/{content_id}/guidebook`, method: "DELETE"},
   editExperimentGuide: { url: `/api/xinchaung/content/edit/{id}/direct`, method: "PUT", dataType: "json" },
@@ -81,6 +84,7 @@ export interface ITeacherExperimentResourcePool {
   getDirection: TFHttpSend;
   upLoadExperimentReport:TFHttpSend
   deleteTemplate:TFHttpSend;
+  detailTemplate:TFHttpSend;
 
   getSameScreenInfo: TFHttpSend;
   getTopoVmInfo: TFHttpSend;
@@ -101,6 +105,7 @@ export interface ITeacherExperimentResourcePool {
   getExperimentDetail: TFHttpSend;
   uploadJuptyFile: TFHttpSend;
   updateJupyterGuide: TFHttpSend;
+  updateTaskGuide
   deleteDocument: TFHttpSend;
   deleteVideo: TFHttpSend;
   editExperimentGuide: TFHttpSend;
