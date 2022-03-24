@@ -105,7 +105,7 @@ export interface ITeacherExperimentResourcePool {
   getExperimentDetail: TFHttpSend;
   uploadJuptyFile: TFHttpSend;
   updateJupyterGuide: TFHttpSend;
-  updateTaskGuide
+  updateTaskGuide: TFHttpSend;
   deleteDocument: TFHttpSend;
   deleteVideo: TFHttpSend;
   editExperimentGuide: TFHttpSend;

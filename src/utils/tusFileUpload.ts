@@ -33,11 +33,15 @@ const tusFileUpload={
       size:'',       文件大小
     }
      */
-    state.file = file;
-    state.name = file.name;
-    state.size = file.size;
-    const type = state.name.split(".")[state.name.split(".").length - 1];
-    if (!state.file) {
+    const type = file.name.split(".")[file.name.split(".").length - 1];
+    data.percent= 0;
+    data.name= file.name;
+    data.size= file.size;
+    data.suffix=type
+    data.status= "uploading",
+    data.UpState={}
+    
+    if (!file) {
       message.warning("请先上传文件！");
       return;
     }
@@ -50,12 +54,6 @@ const tusFileUpload={
       message.warning(`只能上传${accept.join('、')}类型文件`);
       return;
     }
-    data.percent= 0;
-    data.name= file.name;
-    data.size= file.size;
-    data.suffix=type
-    data.status= "uploading",
-    data.UpState={}
     // 创建一个tus实例
     data.UpState.upload = new tus.Upload(file, {
       // tus服务器的上传URL
@@ -83,8 +81,8 @@ const tusFileUpload={
       // 获取进度信息时调用该函数
       onProgress: function (bytesUploaded, bytesTotal) {
         var percent = ((bytesUploaded / bytesTotal) * 100).toFixed(2);
-        state.percent = Number(percent);
-        data.percent=state.percent
+        // state.percent = Number(percent);
+        data.percent=Number(percent);
       },
       // 上传完成时调用的函数
       onSuccess: function () {
@@ -111,6 +109,7 @@ const tusFileUpload={
     return false
   },
   remove(data: any) {
+    // data  同onUpload()  方法里的data
     data.UpState.upload.abort();
     state={}
   },

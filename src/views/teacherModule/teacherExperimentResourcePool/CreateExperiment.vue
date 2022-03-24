@@ -823,7 +823,6 @@ var upDoc: any = reactive({
   },
 });
 var upDocVisible = ref<boolean>(false);
-
 const docBeforeUpload =(file: any) => {
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
