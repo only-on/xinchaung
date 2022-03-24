@@ -111,7 +111,7 @@ const tusFileUpload={
   remove(data: any) {
     // data  同onUpload()  方法里的data
     data.UpState.upload.abort();
-    state={}
+    data.UpState={}
   },
 }
 
