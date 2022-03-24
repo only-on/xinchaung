@@ -870,6 +870,9 @@ const docBeforeUpload =(file: any) => {
 };
 const removeDocMp4=()=>{
   upDoc.nowDocument.mdValue=''
+  if(upDoc.docFileList[0].status !== "done"){
+    tusFileUpload.remove(upDoc.docFileList[0])
+  }
   upDoc.docFileList=[]
 }
 const upDocx = (n: number) => {
@@ -972,7 +975,7 @@ const selectDocOrMp4File = (val: any) => {
   }
 };
 const confirmDoc = () => {
-  // console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].file_url)
+  // console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0])
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
     if( upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''

@@ -55,8 +55,9 @@ const tusFileUpload={
     data.size= file.size;
     data.suffix=type
     data.status= "uploading",
+    data.UpState={}
     // 创建一个tus实例
-    state.upload = new tus.Upload(state.file, {
+    data.UpState.upload = new tus.Upload(file, {
       // tus服务器的上传URL
       // endpoint: env ? "http://192.168.101.221:1080/files/" : "/tusd/files/",
       endpoint:FileConfig.tusd_url,
@@ -72,7 +73,7 @@ const tusFileUpload={
       chunkSize: 5242880,
       // 附加元数据。当(且仅当)创建新的上传时，将传递给服务器。可以用于文件名，文件类型
       metadata: {
-        filename: state.file.name,
+        filename: file.name,
         filetype: type,
       },
       // 出现错误时调用的可选函数。该参数将是一个 Error 实例，其中包含有关所涉及请求​​的附加信息。
@@ -87,29 +88,30 @@ const tusFileUpload={
       },
       // 上传完成时调用的函数
       onSuccess: function () {
-        // console.log(state.upload, state.upload.url, "state.upload state.upload");
-        const name = state.upload.url.split("/")[
-          state.upload.url.split("/").length - 1
+        // console.log(data.UpState.upload, data.UpState.upload.url, "data.UpState.upload data.UpState.upload");
+        const name = data.UpState.upload.url.split("/")[
+          data.UpState.upload.url.split("/").length - 1
         ];
-        const type = state.name.split(".")[state.name.split(".").length - 1];
+        const type = file.name.split(".")[file.name.split(".").length - 1];
         const file_url=`${FileConfig[directory]}/${name}.${type}`
         // console.log(`${FileConfig[directory]}/${name}.${type}`)
         data.file_url=file_url
         data.status="done"
+        // data.UpState={}
       },
     });
     // 检查是否有以前的上传，继续上传。
-    state.upload.findPreviousUploads().then(function (previousUploads: any) {
+    data.UpState.upload.findPreviousUploads().then(function (previousUploads: any) {
       // 找到以前的上传，选择第一次上传的。
       if (previousUploads.length) {
-        state.upload.resumeFromPreviousUpload(previousUploads[0]);
+        data.UpState.upload.resumeFromPreviousUpload(previousUploads[0]);
       }
-      state.upload.start();
+      data.UpState.upload.start();
     });
     return false
   },
-  remove(file: any) {
-    state.upload.abort();
+  remove(data: any) {
+    data.UpState.upload.abort();
     state={}
   },
 }
