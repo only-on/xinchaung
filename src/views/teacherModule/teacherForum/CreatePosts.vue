@@ -35,7 +35,7 @@
               >
                 {{ item }}
                 <i
-                  class="remove iconfont icon-guanbi"
+                  class="remove iconfont icon-guanbi pointer"
                   @click="removeLabel(item)"
                 ></i>
               </span>
@@ -150,7 +150,7 @@ function labelSubmit() {
   }
 }
 function removeLabel(val: string) {
-  let num = labelContent.value.indexOf(val);
+  let num = formState.label_name.indexOf(val);
   if (num !== -1) {
     formState.label_name.splice(num, 1);
   }

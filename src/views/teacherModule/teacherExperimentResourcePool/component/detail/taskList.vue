@@ -3,7 +3,7 @@
     <span class="task-num">任务{{ NoToCh(props.index + 1) }}</span>
     <span class="task-name" v-if="!props.taskList.isAdd">{{props.taskList.name}}</span>
     <div class="operate">
-      <span class="pointer delet" @click="delet">删除</span>
+      <span class="pointer delet" @click="delet" v-if="!props.preview">删除</span>
       <span
         class="pointer"
         @click="props.taskList.isAdd = !props.taskList.isAdd"
@@ -95,7 +95,7 @@ const formState = reactive({
 });
 const rules = {
   name: [
-    { required: true, message: "请输入帖子名称", trigger: "blur" },
+    { required: true, message: "请输入任务名称", trigger: "blur" },
     // { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
   ],
 };

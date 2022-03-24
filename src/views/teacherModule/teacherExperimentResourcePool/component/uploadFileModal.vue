@@ -13,10 +13,10 @@
         placeholder="请选择目录"
       >
         <a-select-option
-          v-for="(val, key) in selfDirectoryList"
-          :value="key"
-          :key="key"
-          >{{ val }}
+          v-for="(val) in videoDirectoryList"
+          :value="val.id"
+          :key="val.id"
+          >{{ val.name }}
         </a-select-option>
       </a-select>
       <a-upload
@@ -50,26 +50,24 @@ import uploadFile from "src/request/uploadFile";
 import { message } from "ant-design-vue";
 import request from "src/api/index";
 const courseApi = request.teachCourse;
+const http = request.teacherMaterialResource;
 const env = process.env.NODE_ENV == "development" ? true : false;
 
 onMounted(() => {
-  // getDirectoryList();
+  getVideoDirectory()
 });
-// 获取数据集列表
-interface ISelfDirectoryList {
-  [key: number]: string;
+// 获取视频/文档目录列表
+interface IVideoDirectoryList {
+  id: number
+  name: string
 }
-let selfDirectoryList = reactive<ISelfDirectoryList>({
-  1: "私1",
-});
-function getDirectoryList() {
-  // { type: type, name: "" }
-  courseApi.getDataSetListApi({}).then((res: any) => {
-    console.log(res);
+const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
+const getVideoDirectory = () => {
+  // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导
+  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:6}}).then((res: any) => {
+    videoDirectoryList.push(...res.data.private)
   });
-  let obj = { 1: "hello", 2: "world", 3: "hello world" };
-  Object.assign(selfDirectoryList, obj);
-}
+};
 
 let dataset_id = ref<number | undefined>();
 let upload: any = reactive({});
@@ -77,6 +75,7 @@ let uploadFileList: any = reactive({});
 let progress = ref(0);
 
 function beforeUpload(file: any) {
+  console.log(dataset_id.value)
   if (!dataset_id.value) {
     message.warn("上传文件时请选择目录");
     return false;

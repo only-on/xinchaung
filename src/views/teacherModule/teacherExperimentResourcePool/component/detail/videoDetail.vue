@@ -45,7 +45,7 @@
       @selectFileHandle="selectFileHandle"
       @getFileList="getFileList"
       :fileList="fileList"
-      :type="4"
+      :type="'video'"
     ></select-file>
   </a-drawer>
   <!-- 上传视频弹窗 -->
@@ -70,6 +70,7 @@ interface Ifiles {
   id: number
   file_name: string
   file_url: string
+  content_id: string
 }
 interface IDetail {
   id: number
@@ -122,7 +123,7 @@ const selectVideoClick = () => {
 const deletVideo = () => {
   console.log("移除视频");
   http.deleteVideo({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
-  .then((res: IBusinessResp) => {
+  .then((res: any) => {
     console.log(res)
     videoUrl.value = "";
     props.detail.content_task_files[0].file_url = ''

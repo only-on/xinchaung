@@ -43,7 +43,7 @@ import { WidgetModel } from "src/views/teacherModule/teacherTemplate/templateTyp
 
 const router = useRouter();
 const route = useRoute();
-const http = (request as any).teacherTemplate;
+const http = (request as any).teacherExperimentResourcePool;
 const templateId = Number(route.query.templateId);
 console.log(templateId);
 var updata = inject("updataNav") as Function;
@@ -70,11 +70,11 @@ var dataList = reactive<any[]>([
 const reportName = ref<string>("");
 const getDetail = () => {
   dataList.length = 0;
-  http
-    .viewTemplate({ param: { id: templateId } })
+  http.detailTemplate({ urlParams: { id: templateId } })
     .then((res: IBusinessResp) => {
+      console.log(res.data)
       if (res && res.data) {
-        let result = res.data;
+        const result = res.data;
         reportName.value = result.name;
         Object.assign(dataList, result.json_content);
         // 增加唯一标识， 否则拖拽排序时input的value值会被影响

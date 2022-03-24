@@ -5,12 +5,13 @@
       :before-upload="fileBeforeUpload"
       :show-upload-list="false"
       class="upload"
+      :accept="currentType.accept"
     >
       <div class="left">
         <div class="prompt">
           <div class="iconfont icon-upload"></div>
           <div class="con">选择要上传的文件或将文件拖拽到此处</div>
-          <div class="tips" v-if="props.uploadType">支持文件格式：{{props.uploadType}}</div>
+          <div class="tips" v-if="props.type!==1">支持文件格式：{{currentType.uploadFileType}}{{props.type===4?'，支持文件大小500MB以内':''}}</div>
         </div>
       </div>
     </a-upload>
@@ -62,26 +63,63 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject } from 'vue'
+import { ref, reactive, inject, onMounted } from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
+import tusFileUpload from 'src/utils/tusFileUpload'
 const $message: MessageApi = inject("$message")!;
 interface Props {
-  uploadType: string
+  type: number
   fileList: any
 }
 const props = withDefaults(defineProps<Props>(), {
-  uploadType: '',
+  type: 1,
   fileList: {}
 });
+// type 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
+const typeInfo = reactive({
+  1: {id: 1, name: "数据集",accept: '', uploadFileType: ''},
+  4: {id: 4, name: "视频目录", accept: '.mp4', uploadFileType: 'mp4'},
+  3: {id: 3, name: "课件目录", accept: '.ppt,.pptx,.pdf', uploadFileType: 'ppt、pptx、pdf'},
+  5: {id: 5, name: "备课资料目录", accept: '.pdf,.doc,.docx', uploadFileType: 'pdf、doc、docx'},
+  6: {id: 6, name: "教学指导目录", accept: '.pdf,.doc,.docx', uploadFileType: 'pdf、doc、docx'},
+});
+const currentType = reactive(typeInfo[props.type])
 const uploadFileUuid = ref(UUID.uuid4());
 const ChunkStatus: any = reactive({});
+const uploadFileList: any = reactive([])
+let sign = 0
 function fileBeforeUpload(file: any) {
-  // console.log(file)
+  console.log(file)
   if (file && file.size === 0) {
     $message.warn("文件大小不能为空");
+    return false;
+  }
+  if (props.type !== 1) {
+    let obj = {
+      data: {},
+      file,
+    }
+    uploadFileList.push(obj)
+    Object.assign(props.fileList, {
+      [sign]: {
+        name: file.name,
+        status: "start",
+        progress: 0,
+        files: [],
+        data: {},
+        open: false,
+        size: file.size,
+      },
+    });
+    console.log(props.fileList)
+    const accept = currentType.uploadFileType.split('、')
+    const tusdDirKey = props.type !== 4 ? 'document_path' : 'video_path';
+    console.log(accept)
+    tusFileUpload.onUpload(file, tusdDirKey, accept, props.fileList[sign])
+    sign ++
     return false;
   }
   Upload({
@@ -168,13 +206,19 @@ function deleteFile(file: any, key: any) {
   delete props.fileList[key];
 }
 function removeFile(file: any, index: any) {
+  delete props.fileList[index];
+  if (props.type !== 1) { // 不是数据集
+    if(props.fileList[index] !== "done"){
+      tusFileUpload.remove(props.fileList[index])
+    }
+    return 
+  }
   file.files.forEach((item: any) => {
     if (item.xhr) {
       // console.log(item)
       item.xhr.abort();
     }
   });
-  delete props.fileList[index];
 }
 function size(size:any){
   let num=Number(size)
@@ -185,6 +229,9 @@ function size(size:any){
     return (num / 1024 / 1024).toFixed(2) + 'Mb'
   }
 }
+onMounted(() => {
+  tusFileUpload.init()
+})
 </script>
 
 

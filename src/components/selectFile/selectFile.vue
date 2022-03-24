@@ -99,9 +99,9 @@ const getVideoList = () => {
     page: searchInfo.page,
     pageSize: searchInfo.pageSize,
   };
-  courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
-    console.log(res);
-  });
+  // courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
+  //   console.log(res);
+  // });
   videoList.push(
     ...[
       { id: 1, file_name: "shipin1", size: "110kb", isSelected: false },
@@ -111,11 +111,11 @@ const getVideoList = () => {
   );
 };
 
-// 获取视频目录列表
-const videoDirectoryList = reactive<IVideoDirectoryList>([]);
+// 获取视频/文档目录列表
+const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
 const getVideoDirectory = () => {
   // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导
-  http.getSelectResourceList({urlParams: {typeID: props.type}}).then((res: IBusinessResp) => {
+  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:6}}).then((res: any) => {
     videoDirectoryList.push(...res.data.private)
   });
 };
@@ -126,11 +126,11 @@ onMounted(async () => {
 
 interface Props {
   fileList: any;
-  type: number
+  type: string
 }
 const props = withDefaults(defineProps<Props>(), {
   fileList: () => [],
-  type: 0
+  type: 'video'
 });
 const emit = defineEmits<{
   (e: "selectVideoHandle", obj: any): void;

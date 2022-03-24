@@ -36,7 +36,7 @@
       @selectFileHandle="selectFileHandle"
       @getFileList="getFileList"
       :fileList="fileList"
-      :type="4"
+      :type="'document'"
     ></select-file>
   </a-drawer>
   <!-- 上传文档 -->
@@ -67,6 +67,7 @@ interface Ifiles {
   file_name: string
   file_url: string
   suffix: string
+  content_id: number
 }
 interface IDetail {
   id: number
@@ -192,7 +193,7 @@ const getFileList = (searchInfo: any) => {
 const deleteFile = () => {
   console.log("移除文件");
   http.deleteDocument({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
-  .then((res: IBusinessResp) => {
+  .then((res: any) => {
     console.log(res)
     fileUrl.value = "";
   })

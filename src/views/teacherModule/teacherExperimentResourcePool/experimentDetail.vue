@@ -17,7 +17,7 @@
         </div>
         <div class="right">
           <span class="pointer" @click="handleClick()">{{
-            Number(currentTab) === 0 ? "添加到课程" : "编辑基本信息"
+            Number(currentTab) === 1 ? "添加到课程" : "编辑基本信息"
           }}</span>
           <span class="pointer">启动环境</span>
         </div>

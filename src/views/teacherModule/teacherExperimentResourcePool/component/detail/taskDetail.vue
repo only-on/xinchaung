@@ -105,7 +105,7 @@ const delet = (i: number) => {
 }
 const onSubmit = () => {
   console.log( props.detail.task_steps);
-  const tasks = []
+  const tasks: any = []
   props.detail.task_steps.forEach(v => {
     tasks.push({
       "name": v.name,
@@ -114,7 +114,7 @@ const onSubmit = () => {
       "state": v.state // (非必填 默认开启)
     })
   })
-  http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: IBusinessResp) => {
+  http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: any) => {
     console.log(res)
     router.go(-1);
   })

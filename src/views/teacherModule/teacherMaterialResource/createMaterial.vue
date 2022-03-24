@@ -12,7 +12,7 @@
         <div class="upload-content">
           <a-form-item :label="createType === 'dataSet' ? '数据集' : ''" name="fileList">
             <div class="upload">
-              <upload-file :uploadType="createMaterialType.uploadFileType" :fileList="formState.fileList"></upload-file>
+              <upload-file :type="createMaterialType.id" :fileList="formState.fileList"></upload-file>
             </div>
           </a-form-item>
           <a-form-item label="说明" v-if="createType === 'dataSet'">
@@ -61,7 +61,7 @@ const createType = String(route.query.key);
 // 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
 const materialTypeList = reactive({
   'dataSet': {id: 1, name: "数据集", subname: '数据集', uploadFileType: ''},
-  'videoDirectory': {id: 4, name: "视频目录", subname: '目录', uploadFileType: 'mp4，支持文件大小500MB以内'},
+  'videoDirectory': {id: 4, name: "视频目录", subname: '目录', uploadFileType: 'mp4'},
   'coursewareDirectory': {id: 3, name: "课件目录", subname: '目录', uploadFileType: 'ppt、pptx、pdf'},
   'lessonDirectory': {id: 5, name: "备课资料目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
   'guidanceDirectory': {id: 6, name: "教学指导目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
@@ -143,6 +143,7 @@ const RemoveMdFile = () => {
 const formRef = ref()
 const baseInfoRef = ref()
 const submit = async() => {
+  console.log(formState.fileList)
   await baseInfoRef.value.fromValidate()
   Object.assign(formState, baseInfoRef.value.formState)
   // formRef.value.validate().then(() => {
@@ -156,9 +157,19 @@ const submit = async() => {
   fd.append('is_public', baseInfo.is_public)
   fd.append('cover', baseInfo.cover)
   fd.append('type', createMaterialType.id)
-  baseInfo.tags.forEach((v, k) => {
+  baseInfo.tags.forEach((v: string, k: number) => {
     fd.append(`tags[${k}]`, v)
   })
+  // formState.fileList.forEach((v, k) => {
+  //   fd.append(`items[${k}]`, {
+  //     "file_name": v.name,
+	// 		"file_url": v.file_url,
+	// 		"suffix": v.suffix,
+	// 		"size": v.size
+  //   })
+  // })
+  console.log(fd)
+  return
   http.create({param: fd}).then((res: IBusinessResp) => {
     console.log(res)
     router.go(-1)
