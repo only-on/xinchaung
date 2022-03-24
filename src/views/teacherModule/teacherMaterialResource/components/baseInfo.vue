@@ -94,10 +94,18 @@ import { LoadingOutlined } from '@ant-design/icons-vue';
 const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
 
-const props = defineProps({
-  materialType: String
-})
-
+// const props = defineProps({
+//   materialType: String,
+//   editInfo?:{}
+// })
+interface Props {
+  materialType: String;
+  editInfo?:any
+}
+const props = withDefaults(defineProps<Props>(), {
+  // materialType: '',
+  // imageList: ()=> [],
+});
 interface IFormState {
   name: string
   description: string
@@ -114,6 +122,9 @@ const formState = reactive<IFormState>({
   tags: [],
   cover: ''
 })
+if(props.editInfo !== {}){
+  console.log(props.editInfo)
+}
 // 上传封面图
 const fileList:Ref<any>=ref([])
 const loading = ref<boolean>(false)

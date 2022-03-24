@@ -8,7 +8,7 @@ export default {
   getSelectResourceList: { url: `/api/resource/data/select/type/{typeID}`, method: "GET" },
   getMountInfo: { url: `/api/resource/get-mount-info`, method: "GET" },
 
-  // 详情
+  // 详情  
   getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
   getDetailFile:{url:`/api/resource/data/{editId}/files`,method: "GET",},
 };

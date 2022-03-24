@@ -1,40 +1,39 @@
 <template>
   <div class="detail">
     <div class="header">
-      <div class="img">
-        <!-- :style="`background-image: url(${detail.url});`" -->
+      <div class="img" :style="`background-image: url(${state.detail.cover});`">
       </div>
       <div class="header_mid">
         <div class="title flexCenter">
-          <div class="sign">数据集</div>
-          <div class="titText single-ellipsis">python数据分析与机器学习实战</div>
+          <div class="sign">{{state.detail.type_name}}</div>
+          <div class="titText single-ellipsis">{{state.detail.name}}</div>
         </div>
         <div class="describe ellipsis">
-          这幅春联之所以能够流传下来，是因为它的预言。孟昶是后蜀的末代皇帝，这幅对联题自宋太祖赵匡胤灭蜀的前一年。宋朝建立后，真的在每年农历二月十六日设置了“长春节”，庆贺宋太祖的诞辰。
+          {{state.detail.description}}
         </div>
         <div class="labels flexCenter">
-          <span v-for="v in 3" :key="v">
-            {{'标签1'}}
+          <span v-for="v in state.detail.tags" :key="v">
+            {{v}}
           </span>
         </div>
         <div class="info flexCenter">
           <div class="item">
             <span>数量</span>
-            <span>20</span>
+            <span>{{state.detail.item_count}}</span>
           </div>
           <div class="item">
             <span>大小</span>
-            <span>123M</span>
+            <span>{{state.detail.item_size}}</span>
           </div>
           <div class="item">
             <span>创建日期</span>
-            <span>2020/02/17</span>
+            <span>{{state.detail.created_at}}</span>
           </div>
         </div>
       </div>
       <div class="header_right">
         <div v-if="currentTab === '1'"> 
-          <a-button type="primary" class="brightBtn" @click="edit"> 编辑</a-button>
+          <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
           <a-button type="primary" class="delete"> 删除</a-button>
         </div>
       </div>
@@ -74,6 +73,7 @@
             <div class="file textScrollbar">
               <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="state" />
             </div>
+            <div>加载更多</div>
           </div>
           <div class="right">
             <div class="fileItem flexCenter">
@@ -109,7 +109,7 @@
     </div>
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo  ref="baseInfoRef" :materialType="'数据集'" class="con"/>
+    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" :editInfo="{}" class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>
@@ -231,7 +231,7 @@ const tabs=computed(()=>{
     return ['文件列表']
   }
 })
-const activeTab: Ref<string> = ref(isDataSet.value?'说明文档':'文件列表');
+const activeTab: Ref<string> = ref('');
 const clickTab=(v:string)=>{
   activeTab.value=v
 }
@@ -317,6 +317,8 @@ const initData = () => {
     state.detail={
       ...res.data
     }
+    isDataSet.value=res.data.type_name === '数据集' ? true :false
+    activeTab.value =isDataSet.value?'说明文档':'文件列表'
   })
 };
 const getDetailFile = () => {
@@ -325,8 +327,8 @@ const getDetailFile = () => {
   })
 };
 onMounted(() => {
-  // initData();
-  // getDetailFile()
+  initData();
+  getDetailFile()
 });
 </script>
 <style scoped lang="less">
@@ -354,7 +356,7 @@ onMounted(() => {
       width: 770px;
       padding-left: 24px;
       .sign{
-        width: 50px;
+        width: 64px;
         height: 20px;
         background: #ff6554;
         border-radius: 2px;
@@ -371,11 +373,12 @@ onMounted(() => {
       }
       .describe{
         color: var(--black-45);
-        // height: 44px;
+        height: 48px;
         line-height: 24px;
         -webkit-line-clamp: 2;
       }
       .labels{
+        height: 46px;
         span{
           color: var(--brightBtn);
           padding: 12px;

@@ -41,7 +41,8 @@ export default defineConfig({
         changeOrigin: true,
       },   
       "/dmc": {
-        target: "http://192.168.101.130",
+        // target: "http://192.168.101.130",
+        target: "http://192.168.101.221:84",
         changeOrigin: true,
       },
       "/uploadfiles": {
