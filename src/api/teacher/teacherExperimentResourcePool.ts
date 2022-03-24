@@ -63,6 +63,7 @@ export default {
   // 实验列表
   getExperimentList: { url: `/api/xinchuang/content/content`, method: "GET" },
   experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json" },
+  deleteExperiment: { url: `/api/xinchuang/content/content/{id}`, method: "DELETE"},
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
   uploadJuptyFile: { url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`, method: "POST",dataType: "formdata" },
   updateJupyterGuide: { url: `/api/xinchuang/content/jupyter/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
@@ -102,6 +103,7 @@ export interface ITeacherExperimentResourcePool {
 
   getExperimentList: TFHttpSend;
   experimentShare: TFHttpSend;
+  deleteExperiment: TFHttpSend;
   getExperimentDetail: TFHttpSend;
   uploadJuptyFile: TFHttpSend;
   updateJupyterGuide: TFHttpSend;

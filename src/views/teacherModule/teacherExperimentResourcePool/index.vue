@@ -59,12 +59,14 @@ import {
   toRefs,
   watch,
   defineExpose,
+  createVNode,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { getTypeList } from './config'
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -262,8 +264,19 @@ const share = (id: number, is_share: number) => {
     initData()
   })
 };
-const delet = (v: number) => {
-  console.log(v);
+const delet = (id: number) => {
+  Modal.confirm({
+    title: "确定要删除这个实验吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.deleteExperiment({urlParams: {id}}).then(() => {
+        initData();
+      })
+    },
+  });
 };
 const detail = (id: number) => {
   // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
