@@ -152,10 +152,13 @@ const submit = async() => {
   const fd = new FormData()
   fd.append('name', baseInfo.name)
   fd.append('description', baseInfo.description)
-  fd.append('tags', baseInfo.tags)
+  // fd.append('tags[0]', baseInfo.tags[0])
   fd.append('is_public', baseInfo.is_public)
   fd.append('cover', baseInfo.cover)
   fd.append('type', createMaterialType.id)
+  baseInfo.tags.forEach((v, k) => {
+    fd.append(`tags[${k}]`, v)
+  })
   http.create({param: fd}).then((res: IBusinessResp) => {
     console.log(res)
     router.go(-1)

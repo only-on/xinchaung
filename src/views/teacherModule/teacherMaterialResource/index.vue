@@ -12,12 +12,14 @@
         <div class="text">
           <div class="left">剩余可用磁盘</div>
           <div class="right">
-            <span class="usable">30GB可用</span>
-            <span class="total">共100GB</span>
+            <!-- <span class="usable">30GB可用</span>
+            <span class="total">共100GB</span> -->
+            <span class="usable">{{mountInfo.un_used}}可用</span>
+            <span class="total">共{{mountInfo.total}}</span>
           </div>
         </div>
         <div class="progress">
-          <div class="progress-inner" :style="{ width: '80%' }"></div>
+          <div class="progress-inner" :style="{ width: mountInfo.used_accuracy }"></div>
         </div>
       </div>
     </div>
@@ -194,7 +196,24 @@ onMounted(() => {
   }
   getLabelsList()
   getTypeList()
+  getMountInfo()
 })
+
+// 获取挂载分区信息
+const mountInfo = reactive({
+  "mounted_on": "/professor", // 分区挂载目录
+  "total": "100GB", //  总大小
+  "un_used": "50GB", // 未使用
+  "used": "411MB", // 已使用
+  "used_accuracy": "50%" // 使用率
+
+})
+const getMountInfo = () => {
+  http.getMountInfo().then((res: IBusinessResp) => {
+    console.log(res)
+    Object.assign(mountInfo, res.data)
+  })
+}
 
 // 标签
 const classifyList: any = reactive([
