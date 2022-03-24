@@ -14,6 +14,7 @@ const FileConfig:any={
   
 }
 const tusFileUpload={
+  //   在组件onMounted 先调一次init   获取tusd上传的参数
   init:()=>{
     http.getFileConfig().then((res:any)=>{
       Object.assign(FileConfig,res.data)
@@ -21,7 +22,8 @@ const tusFileUpload={
   },
   onUpload:(file:any,directory:string,accept:string[],data:any)=> {
     /**
-     * 文件  目录名key 文件类型如['md','doc','docx','pdf']    
+     * file:文件  directory:tusd上传目录名key accept：允许的文件类型如['md','doc','docx','pdf']
+     *     
       data:{    //  给父组件响应式数据添加/修改以下属性
       file_url:'',  上传至tusd 的文件地址
       suffix:'',    文件类型
@@ -48,7 +50,6 @@ const tusFileUpload={
       message.warning(`只能上传${accept.join('、')}类型文件`);
       return;
     }
-    // data.name= file.name;   
     data.percent= 0;
     data.name= file.name;
     data.size= file.size;

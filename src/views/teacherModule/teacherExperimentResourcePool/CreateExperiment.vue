@@ -293,6 +293,7 @@
     <a-upload-dragger
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
+      :multiple="true"
       :fileList="upDoc.docFileList"
       :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
@@ -567,7 +568,7 @@ function create() {
       file_path:docMp4File.file_url
     }
     docOrMp4Drawer.activeFile.file_url ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
-    console.log(ipynbFileObj)
+    // console.log(ipynbFileObj)
     const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj
     let parameter=[
       {
@@ -587,7 +588,7 @@ function create() {
     ]
     let obj=parameter[createTypeNumber-1]
     //  createTypeNumber
-    console.log(obj)
+    // console.log(obj)
     // return
     http[createMethod]({param:{...param,...obj}}).then((res: IBusinessResp)=>{
       message.success('创建成功')
@@ -824,6 +825,7 @@ var upDoc: any = reactive({
 var upDocVisible = ref<boolean>(false);
 
 const docBeforeUpload =(file: any) => {
+  console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
   const postfix = (file && file.name).split(".")[1];
