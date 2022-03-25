@@ -13,6 +13,7 @@ var state: any = {
 const FileConfig:any={
   
 }
+const env = process.env.NODE_ENV == "development" ? true : false;
 const tusFileUpload={
   //   在组件onMounted 先调一次init   获取tusd上传的参数
   init:()=>{
@@ -94,7 +95,7 @@ const tusFileUpload={
         const file_url=`${FileConfig[directory]}/${name}.${type}`
         // console.log(`${FileConfig[directory]}/${name}.${type}`)
         if(type === 'mp4'){
-          data.tusdUpName=`/${name}.${type}`
+          data.tusdVideoUrl=`${env?'/proxyPrefix':''}/video/${name}.${type}`
         }
         data.file_url=file_url
         data.status="done"

@@ -980,10 +980,8 @@ const confirmDoc = () => {
       upDoc.nowDocument.pdf=''
     }
   }else if(upDoc.docFileList && upDoc.docFileList.length && docOrMp4Type.value === 2){
-    // upDoc.nowDocument.videoUrl=data.url
-      // upDoc.nowDocument.videoUrl=upDoc.docFileList[0].file_url
       // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4     
-      upDoc.nowDocument.videoUrl=`${env?'/proxyPrefix':''}/video${upDoc.docFileList[0].tusdUpName}`
+      upDoc.nowDocument.videoUrl=upDoc.docFileList[0].tusdVideoUrl
   }
   formState.document = {
     ...upDoc.nowDocument,
