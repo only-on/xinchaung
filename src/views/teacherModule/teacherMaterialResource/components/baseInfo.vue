@@ -86,7 +86,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, Ref, nextTick, inject, onMounted } from 'vue'
+import { ref, reactive, Ref, nextTick, inject, onMounted ,PropType} from 'vue'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
@@ -96,16 +96,12 @@ const $message: MessageApi = inject("$message")!;
 
 const props = defineProps({
   materialType: String,
-  editInfo:{}
+  editInfo: {
+    type: Object as PropType<any>,
+    require: false,
+    default: {}
+  }
 })
-// interface Props {
-//   materialType: String;
-//   editInfo?:any
-// }
-// const props = withDefaults(defineProps<Props>(), {
-//   materialType: '数据集',
-//   editInfo: ()=> {},
-// });
 interface IFormState {
   name: string
   description: string
@@ -122,8 +118,15 @@ const formState = reactive<IFormState>({
   tags: [],
   cover: ''
 })
-if(props.editInfo !== {}){
-  console.log(props.editInfo)
+const imageUrl = ref('')
+if(Object.keys(props.editInfo).length){
+  let arr=Object.keys(props.editInfo)
+  arr.forEach((key:string)=>{
+    formState[key]=props.editInfo[key]
+    formState.is_public=formState.is_public?'1':'0'
+    imageUrl.value=props.editInfo.cover
+    // formState[key]?formState[key]=props.editInfo[key]:''
+  })
 }
 // 上传封面图
 const fileList:Ref<any>=ref([])
@@ -176,7 +179,6 @@ interface FileInfo {
   file: FileItem;
   fileList: FileItem[];
 }
-const imageUrl = ref('')
 const handleChange = (info: FileInfo) => {
   console.log(info)
   getBase64(info.file.originFileObj, (base64Url: string) => {

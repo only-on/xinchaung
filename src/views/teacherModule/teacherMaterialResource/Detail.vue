@@ -35,7 +35,7 @@
       <div class="header_right">
         <div v-if="currentTab === '1'"> 
           <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
-          <a-button type="primary" class="delete"> 删除</a-button>
+          <a-button type="primary" class="delete" @click="deleteImages()"> 删除</a-button>
         </div>
       </div>
     </div>
@@ -110,7 +110,8 @@
     </div>
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" :editInfo="{}" class="con"/>
+    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" 
+    :editInfo="{name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover}" class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>
@@ -127,6 +128,7 @@ import {
   computed,
   toRefs,
   watch,
+  createVNode
 } from "vue";
 import Submit from "src/components/submit/index.vue";
 import BaseInfo from './components/baseInfo.vue'
@@ -138,6 +140,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -289,6 +292,24 @@ var visible: Ref<boolean> = ref(false);
 const edit=()=>{
   visible.value=true
 }
+const deleteImages=()=>{
+  
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.deleteImages({urlParams:{editId:editId}}).then((res: any) => {
+        message.success({duration:1,content:'删除成功'})
+        setTimeout(()=>{
+          router.go(-1);
+        },1000)
+      });
+    },
+  });
+}
 const handleCancel=()=>{
   visible.value=false
 }
@@ -306,9 +327,15 @@ const handleOk=async()=> {
   let params: any = {};
   await baseInfoRef.value.fromValidate()
   Object.assign(params, baseInfoRef.value.formState)
-
-  http.editMyImage({param:{...params},urlParams:{imageID:''}}).then((res: any) => {
+  const fd = new FormData()
+  fd.append('name', params.name)
+  fd.append('description', params.description)
+  fd.append('tags', JSON.stringify(params.tags))
+  fd.append('is_public', params.is_public)
+  fd.append('cover', JSON.stringify(params.cover))
+  http.editMyImage({param:fd,urlParams:{editId:editId}}).then((res: any) => {
     visible.value=false
+    message.success('编辑成功')
     initData();
   });
 }
