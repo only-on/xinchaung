@@ -2,7 +2,7 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span v-if="!props.detail.content_task_files[0].file_url">
+      <span v-if="!props.detail.content_task_files.length||!props.detail.content_task_files[0].content_id">
         <span class="tips" v-if="!videoUrl"
           >支持单个500M以内的MP4格式文件上传</span
         >
@@ -28,9 +28,10 @@
       style="width: 100%; height: 650px"
       controls="true"
       :src="props.detail.content_task_files[0].file_url"
-      v-if="props.detail.content_task_files[0].file_url"
+      v-if="props.detail.content_task_files.length&&props.detail.content_task_files[0].file_url"
     ></video>
   </div>
+  <!-- <Submit @submit="onSubmit" @cancel="cancel"></Submit> -->
   <!-- 选择视频抽屉 -->
   <a-drawer
     class="video-drawer"
@@ -46,10 +47,12 @@
       @getFileList="getFileList"
       :fileList="fileList"
       :type="'video'"
+      :selectId="selectId"
     ></select-file>
   </a-drawer>
   <!-- 上传视频弹窗 -->
   <upload-file-modal
+    v-if="visibleUpload"
     :type="'video'"
     v-model:visibleUpload="visibleUpload"
     @uploadSuccess="uploadSuccess"
@@ -63,6 +66,9 @@ import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { useRouter, useRoute } from "vue-router";
+import Submit from "src/components/submit/index.vue";
+const router = useRouter();
 const courseApi = request.teachCourse;
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
@@ -121,7 +127,7 @@ const selectVideoClick = () => {
 };
 // 移除视频
 const deletVideo = () => {
-  console.log("移除视频");
+  console.log("移除视频",props.detail.content_task_files[0]);
   http.deleteVideo({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
   .then((res: any) => {
     console.log(res)
@@ -136,8 +142,11 @@ const onClose = () => {
   console.log("drawer");
   visible.value = false;
 };
+let selectId = ref(0)
 const selectFileHandle = (v: any) => {
-  console.log(v);
+  selectId.value = v.id
+  console.log(v, props.detail.content_task_files);
+  props.detail.content_task_files.push(v)
   visible.value = false;
 };
 // 获取视频列表
@@ -146,46 +155,36 @@ interface IFileList {
   file_name: string;
   size: string;
   isSelected: boolean;
-  type: string;
+  suffix: string;
 }
 const fileList = reactive<IFileList[]>([]);
-const getFileList = (searchInfo: any) => {
-  let param = {
-    course_id: 1,
-    chapter_id: 1,
-    dataset_id: searchInfo.type,
-    file_name: searchInfo.name,
+const searchInfo = reactive({
+  name: '',
+  page: 1,
+  limit: 10
+})
+// 获取文档、视频  列表
+interface Iparam {
+  dataId: number
+  file_name: string
+  page: number
+  limit: number
+}
+const getFileList = (searchInfo: Iparam) => {
+  let params = {
+    file_name: searchInfo.file_name,
     page: searchInfo.page,
-    pageSize: searchInfo.pageSize,
+    pageSize: searchInfo.limit,
   };
-  courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
-    console.log(res);
+  // loading=true
+  fileList.length=0
+  http.getFileList({param:{...params},urlParams:{dataId:searchInfo.dataId}}).then((res: any) => {
+    // loading=false
+    const {list,page}=res.data
+    fileList.push(...list);
+    // totalCount=page.totalCount
+    // console.log(docOrMp4Drawer.list)
   });
-  fileList.push(
-    ...[
-      {
-        id: 1,
-        file_name: "shipin1",
-        size: "110kb",
-        isSelected: false,
-        type: "mp4",
-      },
-      {
-        id: 2,
-        file_name: "视频2",
-        size: "120kb",
-        isSelected: true,
-        type: "mp4",
-      },
-      {
-        id: 3,
-        file_name: "shipin3",
-        size: "130kb",
-        isSelected: false,
-        type: "mp4",
-      },
-    ]
-  );
 };
 
 // 上传视频
@@ -193,14 +192,23 @@ const visibleUpload = ref<boolean>(false);
 const uploadSuccess = (uploadFileList: any, id: any) => {
   console.log("上传成功");
   http.updateVideoGuide({
-    param: {
+    param: {video_file:{
       "file_path": uploadFileList.file_url,			// 文档实验-文件
 	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
-    },
+    }},
     urlParams: {content_id: props.detail.id}
   }).then((res: any) => {
     console.log(res)
+    $message.success("更新成功")
+    router.go(-1)
   })
+};
+
+const onSubmit = () => {
+  // router.go(-1)
+};
+const cancel = () => {
+  router.go(-1)
 };
 </script>
 

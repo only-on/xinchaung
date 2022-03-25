@@ -58,6 +58,9 @@ import uploadFileModal from "./../uploadFileModal.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/common";
+import { useRouter, useRoute } from "vue-router";
+const router = useRouter();
+const route = useRoute();
 const courseApi = request.teachCourse;
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
@@ -105,15 +108,16 @@ const uploadFile = () => {
 const visibleUpload = ref<boolean>(false);
 const uploadSuccess = (uploadFileList: any, id: any) => {
   console.log(uploadFileList, props.detail.content_task_files)
-  props.detail.content_task_files.push(uploadFileList)
   http.updateDocumentGuide({
-    param: {
+    param: {document_file: {
       "file_path": uploadFileList.file_url,			// 文档实验-文件
 	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
-    },
+    }},
     urlParams: {content_id: props.detail.id}
   }).then((res: any) => {
-    console.log(res)
+    props.detail.content_task_files.push(uploadFileList)
+    $message.success("更新成功")
+    router.go(-1)
   })
 };
 // 选择文件
@@ -205,7 +209,7 @@ const deleteFile = () => {
   http.deleteDocument({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
   .then((res: any) => {
     console.log(res)
-    fileUrl.value = "";
+    props.detail.content_task_files = [];
   })
 };
 const onSubmit = () => {};

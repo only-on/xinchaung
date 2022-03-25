@@ -2,15 +2,15 @@
   <div class="select-video">
     <div class="search-info">
       <a-select
-        v-model:value="searchInfo.type"
+        v-model:value="searchInfo.dataId"
         placeholder="请选择目录"
         @change="datasetChange"
         style="width: 240px; margin-right: 16px"
       >
-        <a-select-option v-for="v in videoDirectoryList" :value="v.name" :key="v.id">{{v.name}}</a-select-option>
+        <a-select-option v-for="v in videoDirectoryList" :value="v.id" :key="v.id">{{v.name}}</a-select-option>
       </a-select>
       <a-input-search
-        v-model:value="searchInfo.name"
+        v-model:value="searchInfo.file_name"
         placeholder="请输入要搜索的关键字"
         style="width: 240px"
         @search="onSearch"
@@ -21,19 +21,19 @@
         class="video-list"
         v-for="list in props.fileList"
         :key="list.id"
-        :class="{ selected: list.isSelected }"
+        :class="{ selected: list.id === props.selectId }"
       >
-        <div class="file-name">
+        <div class="file-name single-ellipsis">
           <img
-            :src="'src/assets/images/file/' + list.type + '.png'"
+            :src="iconList[list.suffix]"
             alt=""
             srcset=""
           />
           <span>{{ list.file_name }}</span>
         </div>
-        <div class="file-size">{{ list.size }}</div>
+        <div class="file-size">{{ bytesToSize(list.size) }}</div>
         <div class="operate pointer">
-          <span v-if="!list.isSelected" @click="selectVideoHandle(list)"
+          <span v-if="list.id !== props.selectId" @click="selectFileHandle(list)"
             >选择</span
           >
           <span v-else>取消</span>
@@ -43,8 +43,8 @@
     <div class="pagination">
       <a-pagination
         v-model:current="searchInfo.page"
-        :total="searchInfo.total"
-        :pageSize="searchInfo.pageSize"
+        :total="10"
+        :pageSize="searchInfo.limit"
         @change="pageChange"
       />
     </div>
@@ -55,20 +55,20 @@
 import { ref, reactive, onMounted } from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { bytesToSize } from "src/utils/common"
+import iconList from "src/utils/iconList";
 const http = request.teacherMaterialResource;
 interface ISearchInfo {
-  name: string;
-  type: number | undefined;
-  page: number;
-  pageSize: number;
-  total: number;
+  dataId: number
+  file_name: string
+  page: number
+  limit: number
 }
 const searchInfo = reactive<ISearchInfo>({
-  name: "",
-  type: undefined,
+  dataId: 0,
+  file_name: '',
   page: 1,
-  pageSize: 10,
-  total: 15,
+  limit: 10,
 });
 const onSearch = () => {
   console.log(searchInfo);
@@ -88,28 +88,8 @@ interface IVideoList {
   file_name: string;
   size: string;
   isSelected: boolean;
+  suffix: string
 }
-const videoList = reactive<IVideoList[]>([]);
-const getVideoList = () => {
-  let param = {
-    course_id: 1,
-    chapter_id: 1,
-    dataset_id: searchInfo.type,
-    file_name: searchInfo.name,
-    page: searchInfo.page,
-    pageSize: searchInfo.pageSize,
-  };
-  // courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
-  //   console.log(res);
-  // });
-  videoList.push(
-    ...[
-      { id: 1, file_name: "shipin1", size: "110kb", isSelected: false },
-      { id: 2, file_name: "视频2", size: "120kb", isSelected: true },
-      { id: 3, file_name: "shipin3", size: "130kb", isSelected: false },
-    ]
-  );
-};
 
 // 获取视频/文档目录列表
 const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
@@ -117,6 +97,8 @@ const getVideoDirectory = () => {
   // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导
   http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:6}}).then((res: any) => {
     videoDirectoryList.push(...res.data.private)
+    searchInfo.dataId = videoDirectoryList[0].id
+    emit("getFileList", searchInfo);
   });
 };
 onMounted(async () => {
@@ -126,19 +108,21 @@ onMounted(async () => {
 
 interface Props {
   fileList: any;
-  type: string
+  type: string,
+  selectId: number
 }
 const props = withDefaults(defineProps<Props>(), {
   fileList: () => [],
-  type: 'video'
+  type: 'video',
+  selectId: 0
 });
 const emit = defineEmits<{
-  (e: "selectVideoHandle", obj: any): void;
+  (e: "selectFileHandle", obj: any): void;
   (e: "getFileList", obj: any): void;
 }>();
 // 选择
-const selectVideoHandle = (v: any) => {
-  emit("selectVideoHandle", v);
+const selectFileHandle = (v: any) => {
+  emit("selectFileHandle", v);
 };
 
 interface IDirectoryList {
@@ -176,6 +160,7 @@ interface IVideoDirectoryList {
       }
       .file-name {
         flex: 1;
+        padding-right: 16px;
         img {
           width: 32px;
           height: 32px;
