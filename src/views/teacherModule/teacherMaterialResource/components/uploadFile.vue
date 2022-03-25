@@ -80,7 +80,7 @@ const $message: MessageApi = inject("$message")!;
 interface Props {
   type: number
   fileList: any
-  complete:any
+  complete?:any
 }
 var props = withDefaults(defineProps<Props>(),{
   type: 1,
