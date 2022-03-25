@@ -2,19 +2,19 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span>
+      <span v-if="!props.detail.content_task_files.length">
         <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
         <a-button type="primary" @click="uploadFile">上传文档</a-button>
       </span>
-      <a-button type="primary" @click="selectFileClick"
+      <a-button type="primary" @click="selectFileClick" v-if="!props.detail.content_task_files.length"
         >选择文档</a-button
       >
-      <a-button type="primary" v-if="fileUrl" @click="deleteFile"
+      <a-button type="primary" v-if="props.detail.content_task_files.length&&props.detail.content_task_files[0].content_id" @click="deleteFile"
         >移除</a-button
       >
     </div>
   </div>
-  <div class="experiment-content">
+  <div class="experiment-content" v-if="props.detail.content_task_files[0]">
     <!-- <iframe :src="fileUrl" width="100%" v-if="fileUrl"></iframe> -->
     <PdfVue :url="props.detail.content_task_files[0].file_url" v-if="props.detail.content_task_files[0].suffix === 'pdf'" />
     <div v-if="props.detail.content_task_files[0].suffix === 'md'">
@@ -86,7 +86,7 @@ const props: Props = defineProps({
     }
   }
 })
-
+console.log(props.detail.content_task_files[0])
 const isMarked = ref<boolean>(true);
 const fileUrl = ref<string>("111");
 
@@ -103,8 +103,18 @@ const uploadFile = () => {
   visibleUpload.value = true;
 };
 const visibleUpload = ref<boolean>(false);
-const uploadSuccess = () => {
-  console.log("上传成功");
+const uploadSuccess = (uploadFileList: any, id: any) => {
+  console.log(uploadFileList, props.detail.content_task_files)
+  props.detail.content_task_files.push(uploadFileList)
+  http.updateDocumentGuide({
+    param: {
+      "file_path": uploadFileList.file_url,			// 文档实验-文件
+	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
+    },
+    urlParams: {content_id: props.detail.id}
+  }).then((res: any) => {
+    console.log(res)
+  })
 };
 // 选择文件
 const selectFileClick = () => {

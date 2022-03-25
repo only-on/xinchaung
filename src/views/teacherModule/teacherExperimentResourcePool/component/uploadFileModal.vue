@@ -22,7 +22,7 @@
       <a-upload
         :show-upload-list="false"
         :before-upload="beforeUpload"
-        :accept="'.mp4'"
+        :accept="props.type === 'video' ? '.mp4' : '.md,.doc,.docx,.pdf'"
         :remove="remove"
       >
         <div class="upload-box">
@@ -33,12 +33,12 @@
           <p class="hint-file-type">{{ tips }}</p>
         </div>
       </a-upload>
-      <div v-if="uploadFileList.file_name" class="progress-box">
+      <div v-if="uploadFileList.name" class="progress-box">
         <div class="file-base-info">
-          <span>文件名称：{{ uploadFileList.file_name }}</span
-          ><span class="icon-shanchu-copy iconfont" @click="remove"></span>
+          <span>文件名称：{{ uploadFileList.name }}</span
+          ><span class="icon-shanchu iconfont" @click="remove"></span>
         </div>
-        <a-progress :percent="progress" />
+        <a-progress :percent="uploadFileList.percent" />
       </div>
     </div>
   </a-modal>
@@ -49,17 +49,32 @@ import { defineComponent, onMounted, reactive, toRefs, watch, ref } from "vue";
 import uploadFile from "src/request/uploadFile";
 import { message } from "ant-design-vue";
 import request from "src/api/index";
+import tusFileUpload from 'src/utils/tusFileUpload'
 const courseApi = request.teachCourse;
 const http = request.teacherMaterialResource;
+const httpExp = request.teacherExperimentResourcePool;
 const env = process.env.NODE_ENV == "development" ? true : false;
 
 onMounted(() => {
   getVideoDirectory()
+  tusFileUpload.init()
 });
 // 获取视频/文档目录列表
 interface IVideoDirectoryList {
   id: number
   name: string
+}
+const props = withDefaults(defineProps<Props>(), {
+  visibleUpload: false,
+  type: "",
+});
+const emit = defineEmits<{
+  (e: "update:visibleUpload", visible: boolean): void;
+  (e: "uploadSuccess", file: any, id: any): void;
+}>();
+interface Props {
+  visibleUpload: boolean;
+  type: string;
 }
 const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
 const getVideoDirectory = () => {
@@ -80,45 +95,16 @@ function beforeUpload(file: any) {
     message.warn("上传文件时请选择目录");
     return false;
   }
-  const body = {
-    dataset: file,
-    pageType: 1,
-    dataId: dataset_id.value,
-  };
-
-  (uploadFileList as any).file_name = file.name;
-  upload = new uploadFile({
-    url: env
-      ? "/proxyPrefix/dataset/data/upload-file"
-      : "/dataset/data/upload-file",
-    body,
-    success: (res: any) => {
-      if (res.status === 1) {
-        Object.assign(uploadFileList, res.data);
-      } else {
-        message.error("上传失败");
-      }
-      upload = "";
-    },
-    progress: (e: ProgressEvent) => {
-      if (e.total > 0) {
-        progress.value = Number(Number((e.loaded / e.total) * 100).toFixed(2));
-      }
-    },
-    abort: (xhr: XMLHttpRequest) => {
-      console.log("终止上传成功", xhr);
-    },
-    error: (err) => {
-      console.log(err);
-    },
-  });
-  upload.request();
+  const accept = props.type === 'file' ? ['md','doc','docx','pdf'] : ['mp4']
+  const tusdDirKey = props.type === 'file' ? 'document_path' : 'video_path';
+  tusFileUpload.onUpload(file,tusdDirKey, accept , uploadFileList)
+  console.log(uploadFileList)
   return false;
 }
 // 终止上传
 function abort() {
-  if (upload) {
-    upload.abortUpload();
+  if(uploadFileList.status !== "done"){
+    tusFileUpload.remove(uploadFileList)
   }
 }
 // 移除
@@ -128,41 +114,11 @@ function remove() {
   progress.value = 0;
 }
 function uploadvideoOk() {
-  if (upload) {
-    message.warn("文件上传中，请稍后提交");
-    return;
-  }
-  const body = new FormData();
-  body.append("items[0][file_name]", uploadFileList.file_name);
-  body.append("items[0][file_url]", uploadFileList.file_url);
-  body.append("items[0][suffix]", uploadFileList.suffix);
-  body.append("items[0][size]", uploadFileList.size as any);
-  body.append("dataset_id", dataset_id as any);
-  courseApi.addDataSetFileApi({}).then((res: any) => {
-    uploadFileList = {
-      file_name: "",
-      file_url: "",
-      suffix: "",
-      size: 0,
-    };
-    cancel();
-    emit("uploadSuccess");
-  });
+  emit("uploadSuccess", uploadFileList, dataset_id.value);
+  emit("update:visibleUpload", false);
 }
 function cancel() {
   emit("update:visibleUpload", false);
-}
-const props = withDefaults(defineProps<Props>(), {
-  visibleUpload: false,
-  type: "",
-});
-const emit = defineEmits<{
-  (e: "update:visibleUpload", visible: boolean): void;
-  (e: "uploadSuccess"): void;
-}>();
-interface Props {
-  visibleUpload: boolean;
-  type: string;
 }
 console.log(props.type);
 let type = "";
