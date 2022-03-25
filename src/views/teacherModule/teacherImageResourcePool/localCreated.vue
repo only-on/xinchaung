@@ -205,10 +205,10 @@ function customFinish() {
   }
 }
 function addTag(val: any) {
-  if (image.tag.length < 3) {
+  if (image.tag.length < 3 && image.tag.includes(val) === false) {
     image.tag.push(val);
   } else {
-    message.warn("最多添加3个标签");
+    image.tag.length >= 3 ? message.warn("最多添加3个标签"):''
   }
 }
 function changeLabel() {

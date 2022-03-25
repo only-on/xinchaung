@@ -277,7 +277,7 @@ const docUpload = () => {
 const searchFileList=computed(()=>{
   let arr=[]
   if(state.fileList && state.fileList.length && state.fileKeyWord){
-    arr=state.fileList.filter((item:any) => {return item.name.indexOf(state.fileKeyWord)!==-1 });
+    arr=state.fileList.filter((item:any) => {return item.file_name.indexOf(state.fileKeyWord)!==-1 });
   }else{
     arr=state.fileList
   }
@@ -406,6 +406,7 @@ const SaveFile=()=>{
     http.SaveFile({param:{items},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
       //   要添加loading
       message.success('上传成功')
+      AddFileLObj.AddFileList={}
       getDetailFile()
       addFileVisible.value=false
     })
