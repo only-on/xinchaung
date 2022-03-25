@@ -65,12 +65,14 @@ export default {
   experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json" },
   deleteExperiment: { url: `/api/xinchuang/content/content/{id}`, method: "DELETE"},
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
+  updateVncGuide: { url: `/api/xinchuang/content/vnc/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
   uploadJuptyFile: { url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`, method: "POST",dataType: "formdata" },
   updateJupyterGuide: { url: `/api/xinchuang/content/jupyter/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
   updateTaskGuide: { url: ` /api/xinchuang/content/task/contents/{content_id}/tasks`, method: "POST", dataType: "json" },
-  deleteDocument: { url: `/api/xinchuang/content/document/contents/{content_id}/guidebook`, method: "DELETE" },
-  deleteVideo: { url: `/api/xinchuang/content/video/contents/{content_id}/guidebook`, method: "DELETE"},
-  editExperimentGuide: { url: `/api/xinchaung/content/edit/{id}/direct`, method: "PUT", dataType: "json" },
+  deleteDocument: { url: `/api/xinchuang/content/document/remove/{content_id}`, method: "DELETE" },
+  updateDocumentGuide: { url: `/api/xinchuang/content/document/{content_id}/guidebook`, method: "PUT", dataType: "json" },
+  deleteVideo: { url: `/api/xinchuang/content/video/remove/{content_id}`, method: "DELETE"},
+  updateVideoGuide: { url: `/api/xinchuang/content/video/{content_id}/guidebook`, method: "PUT", dataType: "json" },
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -105,12 +107,14 @@ export interface ITeacherExperimentResourcePool {
   experimentShare: TFHttpSend;
   deleteExperiment: TFHttpSend;
   getExperimentDetail: TFHttpSend;
+  updateVncGuide: TFHttpSend;
   uploadJuptyFile: TFHttpSend;
   updateJupyterGuide: TFHttpSend;
   updateTaskGuide: TFHttpSend;
   deleteDocument: TFHttpSend;
+  updateDocumentGuide: TFHttpSend;
   deleteVideo: TFHttpSend;
-  editExperimentGuide: TFHttpSend;
+  updateVideoGuide: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";
