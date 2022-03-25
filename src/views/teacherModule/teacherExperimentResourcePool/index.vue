@@ -23,7 +23,7 @@
         <div class="user-info" v-if="currentTab === 1">
           <!-- is_init :1 就是内置数据 -->
           <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
-          <span class="user-name">{{v.is_init === 1 ? '内置实验' : v.user.username}}</span>
+          <span class="user-name" v-if="v.user">{{v.is_init === 1 ? '内置实验' : v.user.username}}</span>
         </div>
         <div class="operate" v-if="currentTab === 0">
           <!-- is_share:1 就是共享数据 -->
