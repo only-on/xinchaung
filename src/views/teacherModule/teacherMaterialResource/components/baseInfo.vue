@@ -384,6 +384,7 @@ onMounted(() => {
   box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
   padding: 0 10px;
   position: absolute;
+  z-index: 9;
   .iconfont {
     position: absolute;
     top: 6px;

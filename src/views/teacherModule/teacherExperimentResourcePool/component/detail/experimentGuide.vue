@@ -63,14 +63,13 @@ const beforeUpload = async (file: any, fileList: any) => {
   props.detail.guide = text;
 };
 const onSubmit = () => {
-  console.log(props.detail.guide, props.detail.id)
-  http.editExperimentGuide({
-    urlParams: {id: props.detail.id},
+  http.updateVncGuide({
+    urlParams: {content_id: props.detail.id},
     param: {
-      direct_data: props.detail.guide
+      guide: props.detail.guide
     }
   }).then((res: IBusinessResp) => {
-    console.log(res)
+    router.go(-1)
   })
 };
 const cancel = () => {

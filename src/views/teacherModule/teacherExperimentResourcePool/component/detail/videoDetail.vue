@@ -190,8 +190,17 @@ const getFileList = (searchInfo: any) => {
 
 // 上传视频
 const visibleUpload = ref<boolean>(false);
-const uploadSuccess = () => {
+const uploadSuccess = (uploadFileList: any, id: any) => {
   console.log("上传成功");
+  http.updateVideoGuide({
+    param: {
+      "file_path": uploadFileList.file_url,			// 文档实验-文件
+	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
+    },
+    urlParams: {content_id: props.detail.id}
+  }).then((res: any) => {
+    console.log(res)
+  })
 };
 </script>
 

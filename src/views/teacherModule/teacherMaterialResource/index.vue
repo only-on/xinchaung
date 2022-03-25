@@ -138,6 +138,12 @@ watch(
   (val) => {
     console.log(val);
     currentTab.value = val;
+    pageInfo.page = 1
+    // searchKey.value = ''
+    labelSearch.label = 0
+    labelSearch.type = 0
+    classifyList[0].value = 0
+    classifyList[1].value = 0
     initData();
   }
 );
@@ -214,7 +220,6 @@ const getMountInfo = () => {
     Object.assign(mountInfo, res.data)
   })
 }
-
 // 标签
 const classifyList: any = reactive([
   {
