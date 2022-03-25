@@ -313,77 +313,7 @@
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
   </a-modal>
-  <!-- 选择文档视频 文件 抽屉 -->
-  <a-drawer
-    :title="docOrMp4Type === 1 ? '选择文档' : '选择视频'"
-    class="select-docOrMp4-drawer"
-    :closable="false"
-    placement="right"
-    :visible="docOrMp4Drawer.visible"
-    width="640"
-    @close="closeDrawerDoc"
-  >
-    <div class="search flexCenter">
-      <div class="item custom_select">
-        <a-select
-          style="width: 260px"
-          v-model:value="docOrMp4Drawer.catalogueId"
-          :placeholder="`请选择${docOrMp4Type === 1 ? '文档' : '视频'}目录`"
-          :options="catalogueOptions"
-          @change="searchDocOrMp4List"
-        ></a-select>
-      </div>
-      <div class="item custom_input">
-        <a-input-search
-          v-model:value="docOrMp4Drawer.file_name"
-          placeholder="请输入搜索关键字"
-          @search="searchDocOrMp4List"
-        />
-      </div>
-    </div>
-    <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
-      <div class="dataList setScrollbar">
-        <div class="list" v-if="docOrMp4Drawer.list.length">
-          <div
-            class="item"
-            v-for="v in docOrMp4Drawer.list"
-            :key="v"
-            :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''"
-          >
-            <div class="flexCenter left">
-              <!-- :style="`background-image: url(${getFileTypeIcon(v.url)});`"  根据文件类型显示  doc  md pdf  的不同图标-->
-              <span
-                class="fileIcon"
-                v-if="docOrMp4Type === 1"
-                :style="`background-image: url(${iconList['ppt']});`"
-              ></span>
-              <span
-                class="fileIcon"
-                v-if="docOrMp4Type === 2"
-                :style="`background-image: url(${iconList['mp4']});`"
-              ></span>
-              <span class="quName single-ellipsis">{{v.file_name}}</span>
-            </div>
-            <div class="flexCenter right">
-              <span> {{ bytesToSize(v.size)}} </span>
-              <span class="iconfont" @click="selectDocOrMp4File(v)">
-                {{ docOrMp4Drawer.activeFile.id === v.id ? "取消" : "选择" }}
-              </span>
-            </div>
-          </div>
-        </div>
-        <Empty v-if="!docOrMp4Drawer.list.length" text="暂无文件" />
-      </div>
-    </a-spin>
-    <a-pagination
-      v-if="docOrMp4Drawer.totalCount > 10"
-      show-size-changer
-      v-model:current="docOrMp4Drawer.page"
-      v-model:pageSize="docOrMp4Drawer.limit"
-      :total="docOrMp4Drawer.totalCount"
-      @change="pageChange"
-    />
-  </a-drawer>
+  <SelectDocOrMp4 v-if="docOrMp4Drawer.visible" :activeFile="docOrMp4Drawer.activeFile" :visible="docOrMp4Drawer.visible" :docOrMp4Type="docOrMp4Type" @selectDocOrMp4File="selectDocOrMp4File" @closeDrawerDoc="closeDrawerDoc" />
   <!-- 同屏模式 -->
   <SameScreen
     ref="sameScreen"
@@ -410,6 +340,7 @@ import _ from "lodash";
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
+import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 import {
   defineComponent,
   ref,
@@ -877,13 +808,6 @@ const upDocx = (n: number) => {
 const docOrMp4Type = ref<number>(createTypeNumber === 4?1:2);
 const docOrMp4Drawer: any = reactive({
   visible: false,
-  list: [],
-  page: 1,
-  limit: 10,
-  totalCount: 20,
-  loading: false,
-  catalogueId: '', // 目录列表第一个
-  file_name: "",
   activeFile: {}, //  选择或上传的文档、视频
 });
 // 目录  视频和文档公用字段   弹窗和抽屉共用
@@ -912,40 +836,16 @@ const getCatalogue = () => {
       catalogueOptions.value![0].options.push(obj);
     }):'';
     if(data.private && data.private.length){
-      docOrMp4Drawer.catalogueId=data.private[0].id
       upDoc.catalogue=data.private[0].id
     }
     if(data.public && data.public.length){
-      docOrMp4Drawer.catalogueId=data.public[0].id
       upDoc.catalogue=data.public[0].id
     }
-    // docOrMp4Drawer.catalogueId   upDoc.catalogue  默认第一个
+    //  upDoc.catalogue  默认第一个
   })
 };
-// 获取文档、视频  列表
-const getDocOrMp4List = () => {
-  const {file_name,page,limit}=docOrMp4Drawer
-  let params:any={file_name,page,limit}
-  docOrMp4Drawer.loading=true
-  docOrMp4Drawer.list.length=0
- http.getFileList({param:{...params},urlParams:{dataId:docOrMp4Drawer.catalogueId}}).then((res: IBusinessResp) => {
-    docOrMp4Drawer.loading=false
-    const {list,page}=res.data
-    docOrMp4Drawer.list.push(...list);
-    docOrMp4Drawer.totalCount=page.totalCount
-    // console.log(docOrMp4Drawer.list)
-  });
-};
-const searchDocOrMp4List = () => {
-  docOrMp4Drawer.page = 1;
-  getDocOrMp4List();
-};
-const pageChange = (current: any) => {
-  docOrMp4Drawer.page = current;
-  getDocOrMp4List();
-};
+
 const selectDocx = (n: number) => {
-  getDocOrMp4List();
   docOrMp4Type.value = n;
   docOrMp4Drawer.visible = true;
 };
@@ -1192,65 +1092,6 @@ h3 {
     font-size: 24px;
     color: var(--primary-color);
   }
-}
-.select-docOrMp4-drawer {
-  .search {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    margin-bottom: 20px;
-    .item {
-      width: 260px;
-    }
-  }
-  .dataList {
-    height: calc(100% - 175px);
-    overflow: auto;
-    .list {
-      // padding: 0 20px;
-      min-height: 500px;
-      .item {
-        display: flex;
-        align-items: center;
-        line-height: 54px;
-        background: rgba(0, 0, 0, 0.02);
-        margin-bottom: 16px;
-        padding: 0 1rem;
-        .left {
-          width: 55%;
-        }
-        .right {
-          width: 45%;
-          justify-content: space-between;
-        }
-        .quName {
-          // word-break: break-all;
-          max-width: 180px;
-        }
-        .fileIcon {
-          width: 32px;
-          height: 32px;
-          background-size: 100%;
-          margin-right: 1rem;
-        }
-        .iconfont {
-          color: var(--primary-color);
-          // font-size: 20px;
-          cursor: pointer;
-          // padding: 0 12px;
-        }
-      }
-      .item:hover {
-        background: #fffbf6;
-      }
-      .active {
-        background: #fffbf6;
-        border: 1px solid #ffcaa1;
-      }
-    }
-  }
-}
-.ant-pagination {
-  text-align: center;
 }
 .submitBox {
   margin-top: 2rem;
