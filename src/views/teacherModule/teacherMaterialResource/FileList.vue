@@ -1,16 +1,19 @@
 <template>
-  <div class="Category flexCenter" v-for="v in props.FileList" :key="v.name" :class="v.name === props.activeItem.fileItem.name?'CategoryActive':''">
+  <div class="Category flexCenter" v-for="v in props.FileList" :key="v.file_name" :class="v.file_name === props.activeItem.fileItem.file_name?'CategoryActive':''">
     <div class="upper"  @click="selectFile(v)">
       <div class="iconBox">
         <CaretDownOutlined v-show="v.children && v.children.length && v.show"/>
         <CaretRightOutlined v-show="v.children && v.children.length && !v.show"/>
       </div>
-      <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.name)});`"></span>
-      <span class="name single-ellipsis">{{v.name}}</span>
+      <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
+      <span class="name single-ellipsis">{{v.file_name}}</span>
     </div>
     <div class="flexCenter level" v-if="v.children && v.children.length && v.show">
-      <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem" />
+      <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>
     </div>
+  </div>
+  <div v-if="!props.FileList.length">
+    <Empty :text="'暂无文件'" />
   </div>
 </template>
 <script lang="ts" setup>

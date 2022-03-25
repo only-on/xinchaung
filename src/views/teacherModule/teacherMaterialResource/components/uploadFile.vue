@@ -24,9 +24,9 @@
           >
         </div>
       </div>
-      <div class="progress-box textScrollbar">
+      <div class="percent-box textScrollbar">
         <div 
-          class="progress-item" 
+          class="percent-item" 
           v-for="(value, key) in props.fileList"
           :key="value"
         >
@@ -49,12 +49,12 @@
                 @click="removeFile(value, key)"
               ></span>
             </div>
-            <div class="file-size">{{ size(value.size/value.progress/100) }}</div>
-            <div class="file-progress">
-              <div class="inner" :style="{width: value.progress+'%'}"></div>
+            <div class="file-size">{{ fileSize(value.size/value.percent/100) }}</div>
+            <div class="file-percent">
+              <div class="inner" :style="{width: value.percent+'%'}"></div>
             </div>
-            <!-- <div class="file-size" v-if="value.progress === '100'">{{ value.data.size }}</div>
-            <div v-if="value.progress === '100'"><a-progress :percent="value.progress" /></div> -->
+            <!-- <div class="file-size" v-if="value.percent === '100'">{{ value.data.size }}</div>
+            <div v-if="value.percent === '100'"><a-percent :percent="value.percent" /></div> -->
           </div>
         </div>
       </div>
@@ -63,9 +63,9 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, onMounted } from 'vue'
+import { ref, reactive, inject, onMounted,watch ,Ref} from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
-import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
+import { getFileType,getFileTypeIcon,fileSize } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
@@ -73,10 +73,14 @@ const $message: MessageApi = inject("$message")!;
 interface Props {
   type: number
   fileList: any
+  complete:any
 }
-const props = withDefaults(defineProps<Props>(), {
+var props = withDefaults(defineProps<Props>(),{
   type: 1,
-  fileList: {}
+  fileList: {},
+  complete:{
+    complete:false  // 所有文件是否全部上传完成
+  }
 });
 // type 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
 const typeInfo = reactive({
@@ -92,9 +96,9 @@ const ChunkStatus: any = reactive({});
 const uploadFileList: any = reactive([])
 let sign = 0
 function fileBeforeUpload(file: any) {
-  console.log(file)
+  // console.log(file)
   if (file && file.size === 0) {
-    $message.warn("文件大小不能为空");
+    $message.warn(`${file.name}文件大小不能为空`); 
     return false;
   }
   if (props.type !== 1) {
@@ -107,17 +111,17 @@ function fileBeforeUpload(file: any) {
       [sign]: {
         name: file.name,
         status: "start",
-        progress: 0,
+        percent: 0,
         files: [],
         data: {},
         open: false,
         size: file.size,
       },
     });
-    console.log(props.fileList)
+    // console.log(props.fileList)
     const accept = currentType.uploadFileType.split('、')
     const tusdDirKey = props.type !== 4 ? 'document_path' : 'video_path';
-    console.log(accept)
+    // console.log(accept)
     tusFileUpload.onUpload(file, tusdDirKey, accept, props.fileList[sign])
     sign ++
     return false;
@@ -138,6 +142,17 @@ function fileBeforeUpload(file: any) {
   });
   return false;
 }
+
+// var complete:Ref<boolean> = ref(false);   // 所有文件是否全部上传完成
+watch(()=>{ return props.fileList},(val:any)=>{
+  props.complete.complete=false
+  Object.values(props.fileList).forEach((v:any)=>{
+    if(v.status !== 'done'){
+      props.complete.complete=true
+    }
+  })
+},{deep:true})
+
 function chunkFun(
   name: string,
   chunks: number,
@@ -156,7 +171,7 @@ function startUploadFun(v: any, file_name: string, file_size: number) {
     [v]: {
       name: file_name,
       status: "start",
-      progress: 0,
+      percent: 0,
       files: [],
       data: {},
       open: false,
@@ -175,23 +190,23 @@ function processFun(e: any, v: any, length: number) {
       : (props.fileList[v.fileMd5].files[v.index] = {}),
     {
       xhr: v.xhr,
-      progress: Number(((e.loaded / e.total) * 100).toFixed(2)),
+      percent: Number(((e.loaded / e.total) * 100).toFixed(2)),
       upload_status: e.loaded > e.total ? "loading" : "end",
     }
   );
-  let progress = 0;
+  let percent = 0;
   props.fileList[v.fileMd5].files.forEach((item: any) => {
-    progress += item.progress;
+    percent += item.percent;
   });
 
-  props.fileList[v.fileMd5].progress =
-    Number((progress / length).toFixed(2)) !== 100
-      ? Number((progress / length).toFixed(2))
+  props.fileList[v.fileMd5].percent =
+    Number((percent / length).toFixed(2)) !== 100
+      ? Number((percent / length).toFixed(2))
       : 99;
 }
 function endUploadFun(v: any, d: any) {
   props.fileList[v].status = "end";
-  props.fileList[v].progress = 100;
+  props.fileList[v].percent = 100;
   props.fileList[v].data = d;
 }
 function deleteFile(file: any, key: any) {
@@ -219,15 +234,6 @@ function removeFile(file: any, index: any) {
       item.xhr.abort();
     }
   });
-}
-function size(size:any){
-  let num=Number(size)
-  console.log(num)
-  if (num < 1024 * 1024) {
-    return (num / 1024).toFixed(2) + 'kb'
-  } else {
-    return (num / 1024 / 1024).toFixed(2) + 'Mb'
-  }
 }
 onMounted(() => {
   tusFileUpload.init()
@@ -283,9 +289,9 @@ onMounted(() => {
     overflow: auto;
     margin-right: 24px;
     padding-right: 24px;
-    .progress-box {
+    .percent-box {
       // height: 100%;
-      .progress-item {
+      .percent-item {
         display: flex;
         flex-direction: row;
         margin-bottom: 32px;
@@ -329,7 +335,7 @@ onMounted(() => {
             height: 16px;
             line-height: 16px;
           }
-          .file-progress {
+          .file-percent {
             width: 100%;
             height: 4px;
             border-radius: 2px;

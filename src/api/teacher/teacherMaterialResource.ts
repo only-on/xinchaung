@@ -10,9 +10,12 @@ export default {
 
   // 详情   
   getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
-  getDetailFile:{url:`/api/resource/data/{editId}/files`,method: "GET",},
+  getDetailFile:{url:`/api/resource/data/{editId}/files`,method: "GET"},
   editMyImage:{url:`/api/resource/data/{editId}`,method: "PUT",dataType: 'formdata'},
   deleteImages:{url:`/api/resource/data/{editId}`,method: "DELETE",},
+  SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
+  downLoadFile: { url: `/api/resource/data/files/{fileId}/download`, method: "GET" },
+  downLoadAll: { url: `/api/resource/data/{editId}/files-download`, method: "GET" },
 };
 
 export interface ITeacherMaterialResource {
@@ -27,6 +30,9 @@ export interface ITeacherMaterialResource {
   getDetailFile: TFHttpSend;
   editMyImage: TFHttpSend;
   deleteImages: TFHttpSend;
+  SaveFile: TFHttpSend;
+  downLoadFile: TFHttpSend;
+  downLoadAll: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";

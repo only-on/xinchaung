@@ -58,7 +58,7 @@
             </a-upload>
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
-          <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn"> 下载全部</a-button>
+          <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn" :disabled="state.fileList.length?false:true" @click="downLoadAll()"> 下载全部</a-button>
           <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class="" @click="addFile()"> 上传文件</a-button>
         </div>
       </div>
@@ -74,17 +74,17 @@
             <div class="file textScrollbar">
               <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="state" />
             </div>
-            <div>加载更多</div>
+            <!-- <div>加载更多</div> -->
           </div>
           <div class="right">
-            <div class="fileItem flexCenter">
+            <div class="fileItem flexCenter" v-if="state.fileItem.id">
               <div class="flexCenter">
-                <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.name)});`"> </div>
+                <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.file_name)});`"> </div>
                 <div class="fileInfo">
-                  <div class="fileName">{{state.fileItem.name}}</div>
+                  <div class="fileName">{{state.fileItem.file_name}}</div>
                   <div class="info">
-                    <span>2M</span>
-                    <span>2020/12/02/17</span>
+                    <span>{{bytesToSize(state.fileItem.size)}}</span>
+                    <span>{{state.fileItem.created_at}}</span>
                   </div>
                 </div>
               </div>
@@ -92,15 +92,15 @@
             </div>
             <div class="fileView">
               <!-- <h2>文件内容</h2> -->
-              <div v-if="getFileType(state.fileItem.name) === 'md'">
+              <div v-if="state.fileItem.suffix === 'md'">
                 <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
               </div>
-              <div v-if="getFileType(state.fileItem.name) === 'mp4'">
-                <video :src="env ? '/proxyPrefix' + state.fileItem.url : state.fileItem.url" :controls="true"> 您的浏览器不支持 video 标签</video>
+              <div v-if="state.fileItem.suffix === 'mp4'">
+                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true"> 您的浏览器不支持 video 标签</video>
               </div>
-              <div v-if="getFileType(state.fileItem.name) === 'pdf'">
-                <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/>
-                <!-- <PdfVue :url="state.fileItem.pdf" /> -->
+              <div v-if="state.fileItem.suffix === 'pdf'">
+                <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
+                <PdfVue :url="state.fileItem.file_html" />
               </div>
               
             </div>
@@ -117,12 +117,12 @@
       </template>
   </a-modal>
   <!-- 上传文件 弹窗 -->
-  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="840">
+  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900">
     <div>
-      <upload-file :type="state.detail.type" :fileList="AddFileList" />
+      <upload-file ref="uploadFileRef" :type="state.detail.type" :fileList="AddFileLObj.AddFileList" :complete="AddFileLObj" />
     </div>
     <template #footer>
-      <Submit @submit="SaveFile()" @cancel="canceAddFile()" :loading="false"></Submit>
+      <Submit @submit="SaveFile()" @cancel="cancelAddFile()" :loading="AddFileLObj.complete"></Submit>
     </template>
   </a-modal>
 </template>
@@ -143,7 +143,8 @@ import Submit from "src/components/submit/index.vue";
 import BaseInfo from './components/baseInfo.vue'
 import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
-import { getFileType,getFileTypeIcon,readFile } from 'src/utils/getFileType'
+import { getFileType,getFileTypeIcon,readFile,fileSize } from 'src/utils/getFileType'
+import { bytesToSize } from "src/utils/common"
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -228,7 +229,7 @@ const state:any=reactive({
     {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test4.tar", size: "0.4 KB"},
     {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "course4.txt", size: "0.4 KB"},
   ],
-  fileItem:{ name: "ms.txt",},
+  fileItem:{},
   fileKeyWord:'',  //  搜索文件列表关键词
 })
 const activeItem:any=reactive({
@@ -297,6 +298,17 @@ const downLoadFile=(val:any)=>{
   // a.click();
   // document.body.removeChild(a);
   // window.URL.revokeObjectURL(a.href);
+
+  http.downLoadFile({urlParams:{fileId:val.id}}).then((res: IBusinessResp) => {
+      message.success('下载成功')
+      // getDetailFile()
+    })
+}
+const downLoadAll=()=>{
+  http.downLoadAll({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+      message.success('下载成功')
+      // getDetailFile()
+    })
 }
 var visible: Ref<boolean> = ref(false);
 const edit=()=>{
@@ -359,23 +371,51 @@ const initData = () => {
   })
 };
 const getDetailFile = () => {
-  http.getDetailFile({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
-    //state.fileList
+  let obj={
+    file_name:'',
+    page:1,
+    limit:9999,
+  }
+  state.fileList.length=0
+  http.getDetailFile({param:{...obj},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+    const {list,page}=res.data
+    list.length?selectFile(list[0]):''
+    state.fileList.push(...list)
   })
 };
 
 //  上传文件
 var addFileVisible: Ref<boolean> = ref(false);
-var AddFileList:any=reactive([])
-
+const uploadFileRef = ref()
+const AddFileLObj:any=reactive({
+  complete:false,
+  AddFileList:{}
+})
 const addFile=()=>{
   addFileVisible.value=true
 }
 const SaveFile=()=>{
-
+  console.log(AddFileLObj.AddFileList)
+  const list=Object.values(AddFileLObj.AddFileList)
+  if(list.length){
+    let items:any=[]
+    list.forEach((v:any)=>{
+      var {name,file_url,suffix,size}=v
+      items.push({file_name:name,file_url,suffix,size})
+    })
+    http.SaveFile({param:{items},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+      //   要添加loading
+      message.success('上传成功')
+      getDetailFile()
+      addFileVisible.value=false
+    })
+  }else{
+     addFileVisible.value=false
+  }
 }
-const canceAddFile=()=>{
-
+const cancelAddFile=()=>{
+  addFileVisible.value=false
+  AddFileLObj.AddFileList={}
 }
 onMounted(() => {
   initData();
