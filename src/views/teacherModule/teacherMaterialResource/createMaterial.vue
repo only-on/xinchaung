@@ -153,23 +153,24 @@ const submit = async() => {
   const fd = new FormData()
   fd.append('name', baseInfo.name)
   fd.append('description', baseInfo.description)
-  // fd.append('tags[0]', baseInfo.tags[0])
+  fd.append('tags', JSON.stringify(baseInfo.tags))
   fd.append('is_public', baseInfo.is_public)
   fd.append('cover', baseInfo.cover)
   fd.append('type', createMaterialType.id)
-  baseInfo.tags.forEach((v: string, k: number) => {
-    fd.append(`tags[${k}]`, v)
+  if (createMaterialType.id === 1) {
+    
+    return
+  }
+  let arr: any = []
+  Object.keys(formState.fileList).forEach((k: string) => {
+    arr.push({
+      "file_name": formState.fileList[k].name,
+			"file_url": formState.fileList[k].file_url,
+			"suffix": formState.fileList[k].suffix,
+			"size": formState.fileList[k].size
+    })
   })
-  // formState.fileList.forEach((v, k) => {
-  //   fd.append(`items[${k}]`, {
-  //     "file_name": v.name,
-	// 		"file_url": v.file_url,
-	// 		"suffix": v.suffix,
-	// 		"size": v.size
-  //   })
-  // })
-  console.log(fd)
-  return
+  fd.append('items', JSON.stringify(arr))
   http.create({param: fd}).then((res: IBusinessResp) => {
     console.log(res)
     router.go(-1)

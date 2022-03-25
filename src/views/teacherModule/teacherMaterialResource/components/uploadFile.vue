@@ -38,20 +38,22 @@
               <span>{{ value.name }}</span>
               <span
                 class="deleteicon"
-                v-if="value.status !== 'end'"
+                v-if="value.status !== 'end'&&props.type===1 || value.status !== 'done'&&props.type!==1"
                 @click="deleteFile(value, key)"
               >
                 <i class="icon-close iconfont"></i>
               </span>
               <span
-                v-if="value.status === 'end'"
+                v-if="value.status === 'end'&&props.type===1 || value.status === 'done'&&props.type!==1"
                 class="icon-shanchu iconfont"
                 @click="removeFile(value, key)"
               ></span>
             </div>
-            <div class="file-size">{{ size(value.size/value.progress/100) }}</div>
+            <div class="file-size" v-if="props.type === 1">{{ size(value.size/value.progress/100) }}</div>
+            <div class="file-size" v-else>{{ bytesToSize(value.size) }}</div>
             <div class="file-progress">
-              <div class="inner" :style="{width: value.progress+'%'}"></div>
+              <div class="inner" v-if="props.type === 1" :style="{width: value.progress+'%'}"></div>
+              <div class="inner" v-else :style="{width: value.percent+'%'}"></div>
             </div>
             <!-- <div class="file-size" v-if="value.progress === '100'">{{ value.data.size }}</div>
             <div v-if="value.progress === '100'"><a-progress :percent="value.progress" /></div> -->
@@ -69,6 +71,7 @@ import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
+import { bytesToSize } from "src/utils/common"
 const $message: MessageApi = inject("$message")!;
 interface Props {
   type: number
@@ -195,7 +198,11 @@ function endUploadFun(v: any, d: any) {
   props.fileList[v].data = d;
 }
 function deleteFile(file: any, key: any) {
-  if (file.files.length > 0) {
+  if (props.type !== 1) { // 不是数据集
+    if(props.fileList[key] !== "done"){
+      tusFileUpload.remove(props.fileList[key])
+    }
+  } else {
     file.files.forEach((item: any) => {
       if (item.xhr) {
         // console.log(item)
@@ -206,19 +213,13 @@ function deleteFile(file: any, key: any) {
   delete props.fileList[key];
 }
 function removeFile(file: any, index: any) {
-  delete props.fileList[index];
-  if (props.type !== 1) { // 不是数据集
-    if(props.fileList[index] !== "done"){
-      tusFileUpload.remove(props.fileList[index])
-    }
-    return 
-  }
   file.files.forEach((item: any) => {
     if (item.xhr) {
       // console.log(item)
       item.xhr.abort();
     }
   });
+  delete props.fileList[index];
 }
 function size(size:any){
   let num=Number(size)
