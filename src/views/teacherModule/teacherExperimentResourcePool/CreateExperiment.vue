@@ -365,7 +365,7 @@
               <span class="quName single-ellipsis">{{v.file_name}}</span>
             </div>
             <div class="flexCenter right">
-              <span> {{ (v.size / 1024 / 1024).toFixed(2) }}M </span>
+              <span> {{ bytesToSize(v.size)}} </span>
               <span class="iconfont" @click="selectDocOrMp4File(v)">
                 {{ docOrMp4Drawer.activeFile.id === v.id ? "取消" : "选择" }}
               </span>
@@ -409,6 +409,7 @@ import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import _ from "lodash";
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
+import { bytesToSize } from "src/utils/common"
 import {
   defineComponent,
   ref,
@@ -955,27 +956,26 @@ const cancelUpDoc = () => {
   upDocVisible.value = false;
 };
 // 选择系统内置文档或者视频
+const env = process.env.NODE_ENV == "development" ? true : false;
 const selectDocOrMp4File = (val: any) => {
   upDoc.docFileList.length=0
   docOrMp4Drawer.activeFile = { ...val};
   if(docOrMp4Type.value === 1){
     formState.document.type = val.suffix === 'md' ?'md':'pdf'
-    // formState.document.pdf = formState.document.type === 'md' ? '' : val.file_html
-    formState.document.pdf = formState.document.type === 'md' ? '' : `http://192.168.101.221:1080/files${val.file_html}`
+    formState.document.pdf = formState.document.type === 'md' ? '' : val.file_url
     formState.document.mdValue =formState.document.type === 'md' ? val.mdText : ''
   }else{
     formState.document.videoUrl=val.file_url
   }
 };
 //  视频实验
-const env = process.env.NODE_ENV == "development" ? true : false;
 const confirmDoc = () => {
   console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0])
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
-    if( upDoc.docFileList[0].suffix !== 'md'){
+    if(upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''
-      // upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
-      upDoc.nowDocument.pdf=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
+      upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
+      // upDoc.nowDocument.pdf=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
     }else{
       upDoc.nowDocument.pdf=''
     }
