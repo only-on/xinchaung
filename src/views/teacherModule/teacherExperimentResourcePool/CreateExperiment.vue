@@ -561,13 +561,19 @@ function create() {
       report:formState.report.id,
       container:formState.imageConfigs
     }
-    const docMp4File=(upDoc.docFileList.length && upDoc.docFileList[0])?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
+    const docMp4File=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}    // 是视频和文档公用一个 文件对象
     const docMp4FileObj:any={
       // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
-      file_path:docMp4File.file_url
+      // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
     }
-    docOrMp4Drawer.activeFile.file_url ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
+    if(docMp4File.suffix === 'md'){
+      docMp4FileObj.guide=formState.document.mdValue
+    }else{
+      docMp4FileObj.file_path=docMp4File.file_url
+    }
+    console.log(docMp4File);
+    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md') ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
     // console.log(ipynbFileObj)
     const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj
     let parameter=[
@@ -831,6 +837,7 @@ const docBeforeUpload =(file: any) => {
   let obj:any={
     uid: file.uid,    // ant  渲染的key
     file_url:'',
+    name:file.name
   }
   upDoc.docFileList[0]=obj
   if(postfix === "md" && docOrMp4Type.value === 1){
@@ -842,29 +849,16 @@ const docBeforeUpload =(file: any) => {
     readFile(file).then((text:any)=>{
       // formState.document.mdValue = text;
       upDoc.nowDocument.mdValue = text;
+      upDoc.docFileList[0].percent=100
+      upDoc.docFileList[0].status="done"
+      upDoc.docFileList[0].suffix='md'
     })
+  }else{
+    let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
+    let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
+    tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
   }
-
-  let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
-  let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
-  tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
   docOrMp4Drawer.activeFile={}
- 
-  /**const fs = new FormData();
-  fs.append("file", file);
-  let arr =['uploadDocFile','uploadMp4File']
-  http[arr[docOrMp4Type.value-1]]({ param: fs }).then((res: any) => {
-    let data =res.data
-    if(docOrMp4Type.value === 1){
-      upDoc.nowDocument.pdf=data.url
-    }else{
-      upDoc.nowDocument.videoUrl=data.url
-    }
-    upDoc.docFileList[0].url=data.url
-    upDoc.docFileList[0].file_url=data.url,
-    upDoc.docFileList[0].status="done"
-    // upDoc.docFileList[0]=obj
-  }) */
   return false
 };
 const removeDocMp4=()=>{

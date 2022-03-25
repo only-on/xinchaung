@@ -82,6 +82,15 @@ export default defineComponent({
     const methods = {
       // 有文件输入
       beforeUpload(file: any) {
+        if (!file) {
+          message.warning("请先上传文件！");
+          return;
+        }
+        const type = file.name.split(".")[file.name.split(".").length - 1];
+        if (type !== "tar" && type !== "qcow2") {
+          message.warning("只能上传.tar和.qcow2的文件");
+          return;
+        }
         state.file = file;
         state.name = file.name;
         state.size = file.size;
@@ -100,10 +109,6 @@ export default defineComponent({
         var reg = new RegExp("[\\u4E00-\\u9FFF]+", "g");
         if (reg.test(state.name)) {
           message.warning("文件名不能包含汉字!");
-          return;
-        }
-        if (type !== "tar" && type !== "qcow2") {
-          message.warning("只能上传.tar和.qcow2的文件");
           return;
         }
         state.uploadFile = true;
