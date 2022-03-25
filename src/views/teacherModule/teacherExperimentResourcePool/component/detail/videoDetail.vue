@@ -2,20 +2,9 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span v-if="!props.detail.content_task_files.length||!props.detail.content_task_files[0].content_id">
-        <span class="tips" v-if="!videoUrl"
-          >支持单个500M以内的MP4格式文件上传</span
-        >
-        <!-- <a-upload
-          name="file"
-          :show-upload-list="false"
-          accept=".mp4"
-          :multiple="false"
-          :before-upload="beforeUpload"
-          v-if="!videoUrl"
-        > -->
+      <span v-if="!fileInfo.content_id">
+        <span class="tips">支持单个500M以内的MP4格式文件上传</span>
         <a-button type="primary" @click="uploadVideo">上传视频</a-button>
-        <!-- </a-upload> -->
         <a-button type="primary" @click="selectVideoClick">选择视频</a-button>
       </span>
       <a-button type="primary" @click="deletVideo" v-else
@@ -27,11 +16,11 @@
     <video
       style="width: 100%; height: 650px"
       controls="true"
-      :src="props.detail.content_task_files[0].file_url"
-      v-if="props.detail.content_task_files.length&&props.detail.content_task_files[0].file_url"
+      :src="fileInfo.tusdVideoUrl"
+      v-if="fileInfo.tusdVideoUrl"
     ></video>
   </div>
-  <!-- <Submit @submit="onSubmit" @cancel="cancel"></Submit> -->
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.content_id && fileInfo.tusdVideoUrl"></Submit>
   <!-- 选择视频抽屉 -->
   <a-drawer
     class="video-drawer"
@@ -52,7 +41,6 @@
   </a-drawer>
   <!-- 上传视频弹窗 -->
   <upload-file-modal
-    v-if="visibleUpload"
     :type="'video'"
     v-model:visibleUpload="visibleUpload"
     @uploadSuccess="uploadSuccess"
@@ -95,60 +83,46 @@ const props: Props = defineProps({
     }
   }
 })
+const fileInfo = props.detail.content_task_files.length ? 
+  Object.assign(props.detail.content_task_files[0], {tusdVideoUrl:props.detail.content_task_files[0].file_url}) : {
+    content_id: 0,
+    tusdVideoUrl: ''
+  }
 
-const videoUrl = ref("");
+
 // 上传视频
 const uploadVideo = () => {
   visibleUpload.value = true;
 };
-const beforeUpload = (file: any, fileList: any) => {
-  // console.log(file, fileList)
-  let arr = file.name.split(".");
-  if (arr[arr.length - 1] !== "mp4") {
-    $message.warn("请上传mp4");
-    // return;
-  }
-  const fs = new FormData();
-  fs.append("jupyter_file", file);
-  // fs.append('taskfile_subdir', props.jupyterUuid)
-  // props.taskList.describe = "66";
-  videoUrl.value = "111";
-};
+
 // 选择视频
 const selectVideoClick = () => {
-  console.log("选择视频");
   visible.value = true;
-  // getFileList({
-  //   type: undefined,
-  //   name: "",
-  //   page: 1,
-  //   pageSize: 10,
-  // });
 };
 // 移除视频
 const deletVideo = () => {
-  console.log("移除视频",props.detail.content_task_files[0]);
-  http.deleteVideo({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
+  console.log("移除视频",fileInfo);
+  http.deleteVideo({urlParams: {content_id: fileInfo.content_id}})
   .then((res: any) => {
     console.log(res)
-    videoUrl.value = "";
-    props.detail.content_task_files[0].file_url = ''
+    fileInfo.content_id = 0
+    fileInfo.tusdVideoUrl = ''
   })
 };
 
 // 选择视频
 const visible = ref<boolean>(false);
 const onClose = () => {
-  console.log("drawer");
   visible.value = false;
 };
 let selectId = ref(0)
 const selectFileHandle = (v: any) => {
   selectId.value = v.id
   console.log(v, props.detail.content_task_files);
-  props.detail.content_task_files.push(v)
+  fileInfo.tusdVideoUrl = v.file_url
   visible.value = false;
 };
+
 // 获取视频列表
 interface IFileList {
   id: number;
@@ -189,23 +163,37 @@ const getFileList = (searchInfo: Iparam) => {
 
 // 上传视频
 const visibleUpload = ref<boolean>(false);
+let dataId = 0
 const uploadSuccess = (uploadFileList: any, id: any) => {
-  console.log("上传成功");
+  console.log("上传成功", uploadFileList);
+  dataId = id
+  fileInfo.tusdVideoUrl = uploadFileList.tusdVideoUrl
+  // http.updateVideoGuide({
+  //   param: {video_file:{
+  //     "file_path": uploadFileList.file_url,			// 文档实验-文件
+	//     "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
+  //   }},
+  //   urlParams: {content_id: props.detail.id}
+  // }).then((res: any) => {
+  //   console.log(res)
+  //   $message.success("更新成功")
+  //   router.go(-1)
+  // })
+};
+
+const onSubmit = () => {
+  const file = {
+    "file_path": fileInfo.tusdVideoUrl,// 文档实验-文件
+  }
+  dataId ? Object.assign(file, {"directory_id": dataId}) : ''
   http.updateVideoGuide({
-    param: {video_file:{
-      "file_path": uploadFileList.file_url,			// 文档实验-文件
-	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
-    }},
+    param: {video_file:file},
     urlParams: {content_id: props.detail.id}
   }).then((res: any) => {
     console.log(res)
     $message.success("更新成功")
     router.go(-1)
   })
-};
-
-const onSubmit = () => {
-  // router.go(-1)
 };
 const cancel = () => {
   router.go(-1)
