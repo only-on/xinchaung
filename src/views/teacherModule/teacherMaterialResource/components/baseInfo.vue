@@ -138,7 +138,6 @@ const beforeUpload = (file:any) => {
     $message.warn('图片类型不正确')
     return false
   }
-  loading.value = true
   formState.cover = file
   // formState.src = file
   // const fd = new FormData()
@@ -159,6 +158,7 @@ const beforeUpload = (file:any) => {
     // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
   // })
   // formState.src = "src/assets/images/cover2.png"
+  // return false
 }
 function getBase64(img: Blob, callback: (base64Url: string) => void) {
   const reader = new FileReader();
@@ -181,6 +181,7 @@ interface FileInfo {
 }
 const handleChange = (info: FileInfo) => {
   console.log(info)
+    loading.value = true
   getBase64(info.file.originFileObj, (base64Url: string) => {
     imageUrl.value = base64Url;
     loading.value = false;
@@ -200,6 +201,7 @@ const handleChange = (info: FileInfo) => {
   //   loading.value = false;
   //   $message.error('upload error');
   // }
+  // return false
 };
 // 添加标签
 const openCustom: Ref<boolean> = ref(false);

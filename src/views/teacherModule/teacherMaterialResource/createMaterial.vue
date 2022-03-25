@@ -208,7 +208,7 @@ const cancel = () => {
     .upload-content {
       margin-top: 16px;
       .upload {
-        height: 254px;
+        height: 400px;
       }
       .explain {
         padding-bottom: 24px;

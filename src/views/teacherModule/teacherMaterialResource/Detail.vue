@@ -59,7 +59,7 @@
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
           <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn"> 下载全部</a-button>
-          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class=""> 上传文件</a-button>
+          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class="" @click="addFile()"> 上传文件</a-button>
         </div>
       </div>
       <div class="content">
@@ -116,6 +116,15 @@
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>
   </a-modal>
+  <!-- 上传文件 弹窗 -->
+  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="840">
+    <div>
+      <upload-file :type="state.detail.type" :fileList="AddFileList" />
+    </div>
+    <template #footer>
+      <Submit @submit="SaveFile()" @cancel="canceAddFile()" :loading="false"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -141,6 +150,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import uploadFile from './components/uploadFile.vue'
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -293,7 +303,6 @@ const edit=()=>{
   visible.value=true
 }
 const deleteImages=()=>{
-  
   Modal.confirm({
     title: "确认删除吗？",
     icon: createVNode(ExclamationCircleOutlined),
@@ -332,7 +341,7 @@ const handleOk=async()=> {
   fd.append('description', params.description)
   fd.append('tags', JSON.stringify(params.tags))
   fd.append('is_public', params.is_public)
-  fd.append('cover', JSON.stringify(params.cover))
+  fd.append('cover', params.cover)
   http.editMyImage({param:fd,urlParams:{editId:editId}}).then((res: any) => {
     visible.value=false
     message.success('编辑成功')
@@ -354,6 +363,20 @@ const getDetailFile = () => {
     //state.fileList
   })
 };
+
+//  上传文件
+var addFileVisible: Ref<boolean> = ref(false);
+var AddFileList:any=reactive([])
+
+const addFile=()=>{
+  addFileVisible.value=true
+}
+const SaveFile=()=>{
+
+}
+const canceAddFile=()=>{
+
+}
 onMounted(() => {
   initData();
   getDetailFile()

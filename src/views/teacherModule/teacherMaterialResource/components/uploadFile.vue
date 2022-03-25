@@ -15,7 +15,7 @@
         </div>
       </div>
     </a-upload>
-    <div class="right scroll-bar-customize">
+    <div class="rightBox textScrollbar">
       <div class="chunk-list">
         <div v-for="(v, k, i) in ChunkStatus" :key="i">
           <span>文件名称：{{ v.name }}</span>
@@ -24,7 +24,7 @@
           >
         </div>
       </div>
-      <div class="progress-box">
+      <div class="progress-box textScrollbar">
         <div 
           class="progress-item" 
           v-for="(value, key) in props.fileList"
@@ -237,9 +237,11 @@ onMounted(() => {
 
 <style lang="less" scoped>
 .upload-file {
-  height: 100%;
+  // height: 100%;
   display: flex;
   justify-content: space-between;
+  height: 400px;
+  overflow: auto;
   .upload {
     width: 400px;
     margin-right: 30px;
@@ -275,13 +277,14 @@ onMounted(() => {
       }
     }
   }
-  .right {
+  .rightBox {
     flex: 1;
-    // height: 100%;
-    // overflow: auto;
+    height: 100%;
+    overflow: auto;
     margin-right: 24px;
     padding-right: 24px;
     .progress-box {
+      // height: 100%;
       .progress-item {
         display: flex;
         flex-direction: row;
