@@ -59,7 +59,7 @@ export default {
         {
           path: "ExperimentDetail",
           name: "adminExperimentDetail",
-          component: () => import("src/views/teacherModule/teacherExperiment/ExperimentDetail.vue"),
+          // component: () => import("src/views/teacherModule/teacherExperiment/ExperimentDetail.vue"),
           meta: {
               title: "实验详情",
               authCode: 'ExperimentDetail'
