@@ -1091,14 +1091,17 @@ h3 {
     margin-top: 24px;
   }
   .docTopRight {
-    width: 32.5%;
+    // width: 32.5%;
     justify-content: space-between;
     .data-set-hint {
-      margin: 0;
+      margin-right: 1rem;
+    }
+    .ant-btn{
+      margin-right: 8px;
     }
   }
   .docx {
-    width: 38%;
+    // width: 38%;
   }
   .video-box {
     height: 500px;
