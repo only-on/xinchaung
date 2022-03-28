@@ -48,7 +48,7 @@
                 v-if="props.docOrMp4Type === 2"
                 :style="`background-image: url(${iconList['mp4']});`"
               ></span>
-              <span class="quName single-ellipsis">{{v.file_name}}</span>
+              <span class="quName single_ellipsis">{{v.file_name}}</span>
             </div>
             <div class="flexCenter right">
               <span> {{ bytesToSize(v.size)}} </span>

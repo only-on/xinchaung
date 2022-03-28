@@ -101,7 +101,7 @@ let sign = 0
 function fileBeforeUpload(file: any) {
   // console.log(file)
   if (file && file.size === 0) {
-    $message.warn("文件大小不能为空");
+    $message.warn(`${file.name}文件大小不能为空`);
     return false;
   }
   if (props.type !== 1) {

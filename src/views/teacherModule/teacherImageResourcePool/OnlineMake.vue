@@ -17,7 +17,7 @@
           <div class="top flexCenter" :class="v.image && v.image.ostype">
             <div class="left">
               <div class="tit">{{v.image && v.image.name}}</div>
-              <div class="text single-ellipsis">{{v.image && v.image.description}}</div>
+              <div class="text single_ellipsis">{{v.image && v.image.description}}</div>
               <div class="parameter flexCenter">
                 <div class="item">
                   <span>内存</span>
@@ -36,10 +36,10 @@
                   <span>{{v.use_gpu_text}}</span>
                 </div>
               </div>
-              <!-- <div class="name single-ellipsis">{{v.dataset[0]}}</div> -->
-              <div class="name single-ellipsis">数据集名称</div>
+              <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
+              <div class="name single_ellipsis">数据集名称</div>
               <div
-                class="miaoshu single-ellipsis"
+                class="miaoshu single_ellipsis"
                 title="数据集描述数据集描述数据集描述数据集描述数据集描述"
               >
                 数据集描述数据集描述数据集描述数据集描述数据集描述

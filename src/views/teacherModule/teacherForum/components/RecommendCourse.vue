@@ -1,6 +1,6 @@
 <template>
   <div class="recommend-course">
-    <div class="components-title">推荐课程</div>
+    <div class="components_title">推荐课程</div>
     <div class="course-list">
       <div class="list" v-for="item in courseList" :key="item.id">
         <div class="left">

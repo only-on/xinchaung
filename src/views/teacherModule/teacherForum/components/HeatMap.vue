@@ -1,6 +1,6 @@
 <template>
   <div class="heat-map">
-    <div class="components-title">热力图</div>
+    <div class="components_title">热力图</div>
     <div class="map-content"></div>
   </div>
 </template>

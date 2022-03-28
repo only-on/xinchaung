@@ -1,11 +1,14 @@
 <template>
+  <div v-show="loading">
+
+  </div>
   <h3>实验环境</h3>
   <div v-if="props.type">
     <ConfigModal
       :imageList="imageList"
       @selectedImage="selectedImage"
       :defaultConfig="defaultConfig"
-    ></ConfigModal>
+    />
   </div>
   <div class="selectList flexCenter" v-else>
     <div
@@ -20,7 +23,7 @@
       <div class="limit">最多添加三个环境</div>
     </div>
     <div class="item" v-for="(v, idx) in selectList" :key="v">
-      <div class="single-ellipsis">
+      <div class="single_ellipsis">
         {{ v.imageName }}
       </div>
       <div class="content">
@@ -46,7 +49,7 @@
     :imageList="imageList"
       @selectedImage="selectedImage"
       :defaultConfig="defaultConfig"
-    ></ConfigModal>
+    />
     <template #footer>
       <Submit @submit="handleOk" @cancel="cancel" :loading="loading"></Submit>
     </template>
@@ -74,9 +77,11 @@ const route = useRoute();
 const http = (request as any).teacherImageResourcePool;
 interface Props {
   type: boolean;     // true单环境    false 多环境
+  imageType:string      //  筛选镜像类型
 }
 const props = withDefaults(defineProps<Props>(), {
   type: false,
+  imageType:'vnc' 
 });
 const configs: any = reactive([
   {
@@ -199,7 +204,8 @@ const initData = () => {
   imageList.length=0
   let obj={
     page:1,
-    limit:99999
+    limit:99999,
+    tags:[props.imageType]
   }
   http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
     const data= res.data.list;
@@ -229,7 +235,7 @@ h3 {
     border-radius: 10px;
     margin-right: 1rem;
     padding: 10px;
-    .single-ellipsis {
+    .single_ellipsis {
       color: var(--black-85);
     }
     .content {

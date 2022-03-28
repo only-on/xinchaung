@@ -26,7 +26,7 @@
       />
     </span>
   </div>
-  <div class="recommend" v-if="showTag">
+  <div class="recommend" v-if="showTag && props.recommend.length">
     <div class="tit">或从推荐中选择</div>
     <div class="tagBox">
       <div v-for="v in props.recommend" :key="v">
@@ -50,7 +50,7 @@ import {
 import { message } from "ant-design-vue";
 interface Props {
   tag: any;
-  recommend:any;
+  recommend?:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   tag: () => [],

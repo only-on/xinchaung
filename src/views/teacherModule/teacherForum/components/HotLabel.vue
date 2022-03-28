@@ -1,6 +1,6 @@
 <template>
   <div class="hot-label">
-    <div class="components-title">热门标签</div>
+    <div class="components_title">热门标签</div>
     <div class="label-list">
       <span v-for="list in hotLabelList" :key="list.id">
       <!-- <span class="list">{{list.name}}</span> -->

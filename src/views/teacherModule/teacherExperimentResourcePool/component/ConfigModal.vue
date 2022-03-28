@@ -6,17 +6,11 @@
       </a-select-option>
     </a-select>
     <div class="configs">镜像配置</div>
-    <ImageConfig @change="configChange" :defaultConfig="reactiveData.flavor" ></ImageConfig>
+    <ImageConfig @change="configChange" :defaultConfig="reactiveData.flavor" />
 </template>
 <script lang="ts" setup>
 import ImageConfig from "src/components/imageConfig/index.vue";
-import { onMounted, reactive, Ref, ref } from "vue";
-import { useRouter, useRoute } from "vue-router";
-import request from "src/api/index";
-import { IBusinessResp } from "src/typings/fetch.d";
-import { SelectTypes } from "ant-design-vue/es/select";
-import { Modal, message } from "ant-design-vue";
-const http = (request as any).teacherImageResourcePool;
+import { onMounted, reactive, Ref, ref ,watch} from "vue";
 
 const reactiveData: any = reactive({
   flavor: {
@@ -47,6 +41,7 @@ if(props.imageList && props.imageList.length){
     reactiveData.imageName=val.name
     emit("selectedImage", reactiveData);
 }
+
 if (props.defaultConfig.flavor && props.defaultConfig.image_id) {
   reactiveData.imageName = props.defaultConfig.imageName;
   reactiveData.image_id = props.defaultConfig.image_id;

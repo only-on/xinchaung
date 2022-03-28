@@ -23,7 +23,7 @@
         :key="list.id"
         :class="{ selected: list.id === props.selectId }"
       >
-        <div class="file-name single-ellipsis">
+        <div class="file-name single_ellipsis">
           <img
             :src="iconList[list.suffix]"
             alt=""

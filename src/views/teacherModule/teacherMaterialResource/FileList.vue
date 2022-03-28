@@ -6,7 +6,7 @@
         <CaretRightOutlined v-show="v.children && v.children.length && !v.show"/>
       </div>
       <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
-      <span class="name single-ellipsis">{{v.file_name}}</span>
+      <span class="name single_ellipsis">{{v.file_name}}</span>
     </div>
     <div class="flexCenter level" v-if="v.children && v.children.length && v.show">
       <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>

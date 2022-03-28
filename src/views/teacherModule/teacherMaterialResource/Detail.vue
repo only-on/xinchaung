@@ -7,7 +7,7 @@
       <div class="header_mid">
         <div class="title flexCenter">
           <div class="sign">{{state.detail.type_name}}</div>
-          <div class="titText single-ellipsis">{{state.detail.name}}</div>
+          <div class="titText single_ellipsis">{{state.detail.name}}</div>
         </div>
         <div class="describe ellipsis">
           {{state.detail.description}}
@@ -89,7 +89,7 @@
                 </div>
               </div>
               <div class="flexCenter caozuo">
-                <a-button type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
+                <a-button v-if="currentTab === '1'" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
                 <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
               </div>
             </div>

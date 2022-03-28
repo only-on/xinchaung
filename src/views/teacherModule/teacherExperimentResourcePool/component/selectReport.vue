@@ -36,7 +36,7 @@
             <div class="nameBox flexCenter">
               <span class="prefix">{{v.typeText}}</span>
               <span
-                class="name single-ellipsis"
+                class="name single_ellipsis"
                 @click.stop="viewTemplate(v.type === 2?2:1, v)"
                 >{{v.name}}</span>
               <!-- @click.stop="viewTemplate(2, v)" 离线-->

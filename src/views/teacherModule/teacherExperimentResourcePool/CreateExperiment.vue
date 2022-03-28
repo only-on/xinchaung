@@ -26,7 +26,7 @@
           </div>
         </a-form-item>
         <a-form-item name="datasets" label="知识点">
-          <div class="datasets-box flexCenter">
+          <div class="Knowledge">
             <a-button
               type="primary"
               @click="isShowKnowledge = true"
@@ -45,22 +45,10 @@
             v-model:selectedList="formState.selectedKnowledgeList"
           ></knowledge-modal>
         </a-form-item>
-        <a-form-item name="datasets" label="数据集" v-if="componentsList.includes('setData')">
-          <div class="datasets-box flexCenter">
-            <a-button
-              type="primary"
-              @click="formState.drawerVisible = true"
-              :disabled="formState.selectedName.length >= 3"
-              class="add-data-set-btn"
-            >
-              选择</a-button
-            >
-            <LabelDisplay
-              :labels="formState.selectedName"
-              @remove="remove"
-            ></LabelDisplay>
-          </div>
-          <div class="data-set-hint">最多可选3个数据集</div>
+        <a-form-item label="添加标签" name="tag">
+          <div>
+              <LabelList :tag="formState.tag" :recommend="formState.recommend" />
+            </div>
         </a-form-item>
       </div>
       <div class="right">
@@ -83,15 +71,31 @@
           <div class="reportBox flexCenter">
             <!-- :disabled="formState.report.name ? true : false" -->
             <a-button type="primary" @click="selectReport()">选 择</a-button>
-            <div class="reportName flexCenter" v-if="formState.report.name">
-              <span>{{ formState.report.name }}</span>
-              <span
-                class="iconfont icon-shanchu"
-                @click="delSelectedReport()"
-              ></span>
-            </div>
+            <div class="data-set-hint">支持单个doc或docx格式文件上传</div>
           </div>
-          <div class="data-set-hint">支持单个doc或docx格式文件上传</div>
+          <div class="reportName flexCenter" v-if="formState.report.name">
+            <span class="iconfont icon-fujian"></span>
+            <span class="name single_ellipsis">{{ formState.report.name }}</span>
+            <span
+              class="iconfont icon-shanchu"
+              @click="delSelectedReport()"
+            ></span>
+          </div>
+          
+        </a-form-item>
+        <a-form-item name="datasets" label="数据集" v-if="componentsList.includes('setData')">
+          <div class="datasets-box flexCenter">
+            <a-button
+              type="primary"
+              @click="formState.drawerVisible = true"
+              :disabled="formState.selectedName.length >= 3"
+              class="add-data-set-btn"
+            >
+              选择</a-button
+            >
+            <div class="data-set-hint">最多可选3个数据集</div>
+          </div>
+          <LabelDisplay :labels="formState.selectedName" @remove="remove"></LabelDisplay>
         </a-form-item>
       </div>
     </div>
@@ -100,7 +104,8 @@
       <Environment
         :type="formState.single"
         @handleOk="ConfirmConfiguration"
-      ></Environment>
+        :imageType="createTypeNumber === 2 ? 'jupyter':'vnc'"
+      />
     </div>
     <!-- 桌面实验  实验指导 -->
     <div class="zhuomian" v-if="componentsList.includes('zhuomian')">
@@ -119,7 +124,7 @@
             <i class="data-set-hint">仅支持md文件</i>
           </div>
           <div class="osd-mode">
-            <span @click="openScreen"> 进入同屏模式 </span>
+            <span @click="openScreen()"> 进入同屏模式 </span>
           </div>
         </div>
       </div>
@@ -341,6 +346,7 @@ import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
+import LabelList from 'src/components/LabelList.vue'
 import {
   defineComponent,
   ref,
@@ -392,7 +398,6 @@ const ExperimentTypeList = reactive({
     method:'createVideo'
   },
 });
-var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const createType = String(route.query.key);
 const name = `创建${ExperimentTypeList[createType].title}`;
@@ -415,6 +420,8 @@ interface FileItem {
 }
 const formRef = ref();
 const formState: any = reactive({
+  tag:[],
+  recommend:[],
   drawerVisible: false,
   datasets: [],
   selectedName: [],
@@ -483,6 +490,7 @@ function create() {
       return pre
     }, [])
     const param={
+      tag:formState.tag,
       type:createTypeNumber,  // 
       name:formState.name,
       level:formState.level,
@@ -917,20 +925,27 @@ h3 {
   padding-left: 2rem;
 }
 .datasets-box {
+   margin-bottom: 1rem;
   .ant-btn {
-    margin-right: 1rem;
+    // margin-right: 1rem;
   }
   .add-data-set-btn {
     width: 100px;
     font-size: var(--base-font-size);
     border: 1px solid var(--primary-color);
+    // margin-bottom: 1rem;
+  }
+}
+.Knowledge{
+  .ant-btn {
+    margin-bottom: 1rem;
   }
 }
 .data-set-hint {
   font-size: 12px;
   font-style: normal;
   color: var(--black-25);
-  margin-top: 1rem;
+  margin-left: 1rem;
 }
 .configuration {
   padding: 2rem;
@@ -945,12 +960,20 @@ h3 {
   }
   .right {
     .reportBox {
-      justify-content: space-between;
-      .reportName {
-        .iconfont {
-          margin-left: 1rem;
-          cursor: pointer;
-        }
+      // justify-content: space-between;
+    }
+    .reportName {
+      margin-top: 1rem;
+      color: var(--black-85);
+      .icon-shanchu {
+        margin-left: 1rem;
+        cursor: pointer;
+      }
+      .icon-fujian{
+        padding: 0 4px;     
+      }
+      .name{
+        max-width: 300px;
       }
     }
   }
