@@ -63,7 +63,7 @@ import Tree from "src/components/Tree.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
 import { useRoute, useRouter } from "vue-router";
-import { IimageData } from "src/views/teacherModule/teacherExperiment/experTyping";
+// import { IimageData } from "src/views/teacherModule/teacherExperiment/experTyping";
 export default defineComponent({
   components: {
     Tree,
@@ -85,7 +85,6 @@ export default defineComponent({
       pageCount: 0,
     });
     let loading = ref<boolean>(false);
-    // let imageData = reactive<IimageData[]>([])
     let imageData = reactive<any[]>([]);
     // 获取镜像
     function getMeImage(isMore: boolean) {
@@ -104,7 +103,7 @@ export default defineComponent({
         // if (res.code === 1) {
         loading.value = false;
         let { list, page } = res.data;
-        list.map((v: IimageData) => {
+        list.map((v: any) => {
           v.isSelect = false;
           v.flavor = {
             cpu: 1,
@@ -114,7 +113,7 @@ export default defineComponent({
           v.is_use_gpuNumber = 0; //   替代 is_use_gpu  是布尔值无法做下拉选项的数据类型
           v.showSelectGpu =
             v.tag && v.tag.length && v.tag.includes("GPU") ? true : false;
-          props.modelValue?.forEach((i: IimageData) => {
+          props.modelValue?.forEach((i: any) => {
             if (v.id === i.id) v.isSelect = true;
           });
           // console.log( )
@@ -148,7 +147,7 @@ export default defineComponent({
       let arr = props.modelValue;
       emit(
         "update:modelValue",
-        arr?.filter((v: IimageData) => v.id !== imageData[i].id)
+        arr?.filter((v: any) => v.id !== imageData[i].id)
       );
     }
     // 获取配置
@@ -174,9 +173,9 @@ export default defineComponent({
     //   () => props.modelValue,
     //   (newVal) => {
     //     console.log(newVal)
-    //     imageData.forEach((v: IimageData) => {
+    //     imageData.forEach((v: any) => {
     //       v.isSelect = false
-    //       newVal?.forEach((vv: IimageData) => {
+    //       newVal?.forEach((vv: any) => {
     //         if (v.id === vv.id) v.isSelect = true
     //       })
     //     })

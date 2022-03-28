@@ -68,14 +68,14 @@ import {
   nextTick,
   PropType,
 } from "vue";
-import { IimageData } from "src/views/teacherModule/teacherExperiment/experTyping";
+// import { IimageData } from "src/views/teacherModule/teacherExperiment/experTyping";
 import request from "src/api/index";
 export default defineComponent({
   name: "",
   components: {},
   props: {
     envData: {
-      type: Array as PropType<IimageData[]>,
+      type: Array as PropType<any[]>,
       default: [],
     },
     edit: {
