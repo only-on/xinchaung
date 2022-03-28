@@ -14,7 +14,6 @@ export default {
   editMyImage:{url:`/api/resource/data/{editId}`,method: "PUT",dataType: 'formdata'},
   deleteImages:{url:`/api/resource/data/{editId}`,method: "DELETE",},
   SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
-  downLoadFile: { url: `/api/resource/data/files/{fileId}/download`, method: "GET" },
   downLoadAll: { url: `/api/resource/data/{editId}/files-download`, method: "GET" },
 };
 
@@ -31,7 +30,6 @@ export interface ITeacherMaterialResource {
   editMyImage: TFHttpSend;
   deleteImages: TFHttpSend;
   SaveFile: TFHttpSend;
-  downLoadFile: TFHttpSend;
   downLoadAll: TFHttpSend;
 }
 

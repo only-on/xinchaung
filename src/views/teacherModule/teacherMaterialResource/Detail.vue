@@ -98,11 +98,10 @@
               <div v-if="state.fileItem.suffix === 'mp4'">
                 <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true"> 您的浏览器不支持 video 标签</video>
               </div>
-              <div v-if="state.fileItem.suffix === 'pdf'">
+              <div v-if="state.fileItem.suffix === 'pdf'" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
                 <PdfVue :url="state.fileItem.file_html" />
               </div>
-              
             </div>
           </div>
         </div>
@@ -152,6 +151,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import uploadFile from './components/uploadFile.vue'
+import { downloadUrl } from "src/utils/download";
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -290,24 +290,22 @@ const selectFile=(val:any)=>{
   state.fileItem=val
 }
 const downLoadFile=(val:any)=>{
-  console.log(val)
-  // const a: any = document.createElement("a");
-  // a.href = val.path;
-  // a.download = val.name;
-  // document.body.appendChild(a);
-  // a.click();
-  // document.body.removeChild(a);
-  // window.URL.revokeObjectURL(a.href);
-
-  http.downLoadFile({urlParams:{fileId:val.id}}).then((res: IBusinessResp) => {
-      message.success('下载成功')
-      // getDetailFile()
-    })
+  // console.log(val)
+  let url=`${env?'/proxyPrefix':''}${val.file_url}`
+  downloadUrl(url,val.file_name)
 }
 const downLoadAll=()=>{
+  const a: any = document.createElement("a");
+  a.href = `/api/resource/data/${editId}/files-download`;
+  // a.download = `${state.detail.name}全部文件`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(a.href);
+  return 
   http.downLoadAll({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+    //  也可以下载成功   不能选择文件夹
       message.success('下载成功')
-      // getDetailFile()
     })
 }
 var visible: Ref<boolean> = ref(false);
@@ -576,6 +574,10 @@ onMounted(() => {
           }
           .fileView{
             padding-top: 2rem;
+            height: 460px;
+            .pdfBox{
+              height: 100%;
+            }
           }
         }
       }

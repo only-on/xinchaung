@@ -118,7 +118,7 @@ const docOrMp4Drawer: any = reactive({
 
 watch(()=>{return props.visible},(val:boolean)=>{
   docOrMp4Drawer.visible=props.visible
-  console.log(val)
+  // console.log(val)
 },{immediate:true})
 docOrMp4Drawer.activeFile={ ...props.activeFile}
 // 目录  视频和文档公用字段   弹窗和抽屉共用
