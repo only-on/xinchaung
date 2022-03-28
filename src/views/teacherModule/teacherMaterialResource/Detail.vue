@@ -341,14 +341,7 @@ const handleCancel=()=>{
   visible.value=false
 }
 const baseInfoRef = ref()
-const submit = async() => {
-  await baseInfoRef.value.fromValidate()
-  let obj={}
-  Object.assign(obj, baseInfoRef.value.formState)
-  // formRef.value.validate().then(() => {
-  //   console.log(formState) 
-  // })
-}
+
 const handleOk=async()=> {
   // state.visible = false;
   let params: any = {};

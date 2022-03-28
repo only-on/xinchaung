@@ -11,7 +11,7 @@ export default {
   // 详情   
   getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
   getDetailFile:{url:`/api/resource/data/{editId}/files`,method: "GET"},
-  editMyImage:{url:`/api/resource/data/{editId}`,method: "PUT",dataType: 'formdata'},
+  editMyImage:{url:`/api/resource/data/{editId}`,method: "POST",dataType: 'formdata'},
   deleteImages:{url:`/api/resource/data/{editId}`,method: "DELETE",},
   SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
   deleteFile: { url: `/api/resource/data/{editId}/files/{fileId}`, method: "DELETE" },
