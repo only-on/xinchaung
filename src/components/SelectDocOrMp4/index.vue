@@ -80,6 +80,7 @@ import {
   reactive,
   defineProps,
   withDefaults,
+  watch
 } from "vue";
 import iconList from "src/utils/iconList";
 import { bytesToSize } from "src/utils/common"
@@ -114,7 +115,11 @@ const docOrMp4Drawer: any = reactive({
   file_name: "",
   activeFile: {}, //  选择或上传的文档、视频
 });
-docOrMp4Drawer.visible=props.visible
+
+watch(()=>{return props.visible},(val:boolean)=>{
+  docOrMp4Drawer.visible=props.visible
+  console.log(val)
+},{immediate:true})
 docOrMp4Drawer.activeFile={ ...props.activeFile}
 // 目录  视频和文档公用字段   弹窗和抽屉共用
 const catalogueOptions = ref<SelectTypes["options"]>([
@@ -143,11 +148,9 @@ const getCatalogue = () => {
     }):'';
     if(data.private && data.private.length){
       docOrMp4Drawer.catalogueId=data.private[0].id
-      // upDoc.catalogue=data.private[0].id
     }
     if(data.public && data.public.length){
       docOrMp4Drawer.catalogueId=data.public[0].id
-      // upDoc.catalogue=data.public[0].id
     }
     getDocOrMp4List()
     // docOrMp4Drawer.catalogueId   upDoc.catalogue  默认第一个
@@ -168,20 +171,10 @@ const getDocOrMp4List = () => {
   });
 };
 const closeDrawerDoc = () => {
-  // docOrMp4Drawer.visible = false;
   emit("closeDrawerDoc");
 };
 const selectDocOrMp4File = (val: any) => {
-  // upDoc.docFileList.length=0
   docOrMp4Drawer.activeFile = { ...val};
-  // if(docOrMp4Type.value === 1){
-  //   formState.document.type = val.suffix === 'md' ?'md':'pdf'
-  //   formState.document.pdf = formState.document.type === 'md' ? '' : val.file_url
-  //   formState.document.mdValue =formState.document.type === 'md' ? val.mdText : ''
-  // }else{
-  //   formState.document.videoUrl=val.file_url
-  // }
-  // selectDocOrMp4File
   emit("selectDocOrMp4File", val);
 };
 const searchDocOrMp4List = () => {

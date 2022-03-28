@@ -313,7 +313,7 @@
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
   </a-modal>
-  <SelectDocOrMp4 v-if="docOrMp4Drawer.visible" :activeFile="docOrMp4Drawer.activeFile" :visible="docOrMp4Drawer.visible" :docOrMp4Type="docOrMp4Type" @selectDocOrMp4File="selectDocOrMp4File" @closeDrawerDoc="closeDrawerDoc" />
+  <SelectDocOrMp4 :activeFile="docOrMp4Drawer.activeFile" :visible="docOrMp4Drawer.visible" :docOrMp4Type="docOrMp4Type" @selectDocOrMp4File="selectDocOrMp4File" @closeDrawerDoc="closeDrawerDoc" />
   <!-- 同屏模式 -->
   <SameScreen
     ref="sameScreen"
@@ -823,8 +823,9 @@ const getCatalogue = () => {
       value: string;
       label: string;
     }
+    // console.log(res)
     let data = res.data;
-    // console.log('[获取题库目录] ', data);
+    console.log('[获取题库目录] ', data);
     catalogueOptions.value![0].options.length = 0;
     catalogueOptions.value![1].options.length = 0;
     (data.private && data.private.length)?data.private.forEach((v: any) => {
