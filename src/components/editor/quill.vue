@@ -206,6 +206,7 @@ export default defineComponent({
       // console.log(rang);
       // (quillDom.value as any).getQuill().clipboard.dangerouslyPasteHTML(rang,htmlString,'user')
       (quillDom.value as any).getQuill().insertEmbed(rang, type, htmlString);
+      emit("update:modelValue", (quillDom.value as any).getQuill().getContents());
     }
     return {
       options,

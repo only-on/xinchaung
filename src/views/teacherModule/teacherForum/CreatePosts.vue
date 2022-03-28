@@ -136,8 +136,8 @@ function clickLabelBtn() {
 }
 function changeLabel() {
   labelContent.value =
-    labelContent.value?.length > 10
-      ? labelContent.value.slice(0, 10)
+    labelContent.value?.length > 20
+      ? labelContent.value.slice(0, 20)
       : labelContent.value;
 }
 function labelSubmit() {
