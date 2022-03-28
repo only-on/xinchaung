@@ -65,7 +65,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, onMounted } from 'vue'
+import { ref, reactive, inject, onMounted ,watch} from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
@@ -76,10 +76,14 @@ const $message: MessageApi = inject("$message")!;
 interface Props {
   type: number
   fileList: any
+  complete?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   type: 1,
-  fileList: {}
+  fileList: {},
+  complete:{
+    complete:false
+  }
 });
 // type 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
 const typeInfo = reactive({
@@ -95,7 +99,7 @@ const ChunkStatus: any = reactive({});
 const uploadFileList: any = reactive([])
 let sign = 0
 function fileBeforeUpload(file: any) {
-  console.log(file)
+  // console.log(file)
   if (file && file.size === 0) {
     $message.warn("文件大小不能为空");
     return false;
@@ -117,10 +121,10 @@ function fileBeforeUpload(file: any) {
         size: file.size,
       },
     });
-    console.log(props.fileList)
+    // console.log(props.fileList)
     const accept = currentType.uploadFileType.split('、')
     const tusdDirKey = props.type !== 4 ? 'document_path' : 'video_path';
-    console.log(accept)
+    // console.log(accept)
     tusFileUpload.onUpload(file, tusdDirKey, accept, props.fileList[sign])
     sign ++
     return false;
@@ -141,6 +145,16 @@ function fileBeforeUpload(file: any) {
   });
   return false;
 }
+watch(()=>{return props.fileList},(val:any)=>{
+  const arr=Object.values(props.fileList)
+  // console.log(arr)
+  props.complete.complete=false
+  arr.length?arr.forEach((v:any)=>{
+    if(v.status !== 'done'){
+      props.complete.complete=true
+    }
+  }):''
+},{deep:true})
 function chunkFun(
   name: string,
   chunks: number,
