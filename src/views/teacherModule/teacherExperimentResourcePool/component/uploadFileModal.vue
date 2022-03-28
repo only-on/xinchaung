@@ -50,6 +50,7 @@ import uploadFile from "src/request/uploadFile";
 import { message } from "ant-design-vue";
 import request from "src/api/index";
 import tusFileUpload from 'src/utils/tusFileUpload'
+import { readFile } from "src/utils/getFileType";
 const courseApi = request.teachCourse;
 const http = request.teacherMaterialResource;
 const httpExp = request.teacherExperimentResourcePool;
@@ -89,11 +90,19 @@ let upload: any = reactive({});
 let uploadFileList: any = reactive({});
 let progress = ref(0);
 
-function beforeUpload(file: any) {
-  console.log(dataset_id.value)
+async function beforeUpload(file: any) {
+  console.log(dataset_id.value, file)
   if (!dataset_id.value) {
     message.warn("上传文件时请选择目录");
     return false;
+  }
+  const arr = file.name.split('.')
+  const suffix = arr[arr.length-1]
+  if (suffix === 'md') {
+    const text = await readFile(file);
+    emit("uploadSuccess", text, suffix);
+    emit("update:visibleUpload", false);
+    return false
   }
   const accept = props.type === 'file' ? ['md','doc','docx','pdf'] : ['mp4']
   const tusdDirKey = props.type === 'file' ? 'document_path' : 'video_path';

@@ -2,43 +2,33 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns">
-      <span v-if="!props.detail.content_task_files.length">
-        <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
-        <a-button type="primary" @click="uploadFile">上传文档</a-button>
-      </span>
-      <a-button type="primary" @click="selectFileClick" v-if="!props.detail.content_task_files.length"
-        >选择文档</a-button
-      >
-      <a-button type="primary" v-if="props.detail.content_task_files.length&&props.detail.content_task_files[0].content_id" @click="deleteFile"
+      <a-button type="primary" v-if="props.detail.content_task_files.length || props.detail.guide" @click="deleteFile"
         >移除</a-button
       >
+      <span v-else>
+        <span class="tips">支持单个md、doc、docx、pdf格式文件上传</span>
+        <a-button type="primary" @click="uploadFile">上传文档</a-button>
+        <a-button type="primary" @click="selectFileClick"
+          >选择文档</a-button
+        >
+      </span>
     </div>
   </div>
-  <div class="experiment-content" v-if="props.detail.content_task_files[0]">
-    <!-- <iframe :src="fileUrl" width="100%" v-if="fileUrl"></iframe> -->
-    <PdfVue :url="props.detail.content_task_files[0].file_url" v-if="props.detail.content_task_files[0].suffix === 'pdf'" />
-    <div v-if="props.detail.content_task_files[0].suffix === 'md'">
-      <marked-editor v-model:value="experimentContent" :preview="preview" />
-      <Submit @submit="onSubmit" @cancel="cancel" v-if="isMarked"></Submit>
+  <div class="experiment-content">
+    <div v-if="activeFile.suffix === 'md'">
+      <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
+    <PdfVue :url="activeFile.file_url" v-else />
+    <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
   </div>
   <!-- 选择文档抽屉 -->
-  <a-drawer
-    class="video-drawer"
-    width="640"
-    placement="right"
-    :title="'选择文档'"
-    :closable="true"
-    :visible="visible"
-    @close="onClose"
-  >
-    <select-file
-      @selectFileHandle="selectFileHandle"
-      @getFileList="getFileList"
-      :fileList="fileList"
-      :type="'document'"
-    ></select-file>
-  </a-drawer>
+  <SelectDocOrMp4 
+    :activeFile="activeFile" 
+    :visible="visible" 
+    :docOrMp4Type="1" 
+    @selectDocOrMp4File="selectDocOrMp4File" 
+    @closeDrawerDoc="closeDrawerDoc" 
+  />
   <!-- 上传文档 -->
   <upload-file-modal
     :type="'file'"
@@ -59,9 +49,9 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/common";
 import { useRouter, useRoute } from "vue-router";
+import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 const router = useRouter();
 const route = useRoute();
-const courseApi = request.teachCourse;
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
 
@@ -75,6 +65,7 @@ interface Ifiles {
 interface IDetail {
   id: number
   content_task_files: Ifiles[]
+  guide: string
 }
 interface Props {
   detail: IDetail
@@ -85,134 +76,95 @@ const props: Props = defineProps({
     require: true,
     default: {
       id: 0,
-      content_task_files: []
+      content_task_files: [],
+      guide: ''
     }
   }
 })
-console.log(props.detail.content_task_files[0])
-const isMarked = ref<boolean>(true);
-const fileUrl = ref<string>("111");
 
-const preview = ref<boolean>(false);
-const experimentContent = ref<any>("aa");
+const preview = ref<boolean>(true);
+const experimentContent = ref<any>(props.detail.guide);
+let activeFile = reactive({
+  suffix: 'md',
+  file_url: ''
+})
+if (props.detail.content_task_files.length) {
+  Object.assign(activeFile, props.detail.content_task_files[0])
+} else {
+  activeFile.suffix = 'md'
+}
 
-const beforeUpload = async (file: any, fileList: any) => {
-  const text = await readFile(file);
-  experimentContent.value = text;
-  fileUrl.value = "111";
-};
 // 上传文件
 const uploadFile = () => {
   visibleUpload.value = true;
 };
 const visibleUpload = ref<boolean>(false);
+const directoryId = ref(0)
 const uploadSuccess = (uploadFileList: any, id: any) => {
-  console.log(uploadFileList, props.detail.content_task_files)
-  http.updateDocumentGuide({
-    param: {document_file: {
-      "file_path": uploadFileList.file_url,			// 文档实验-文件
-	    "directory_id": id // 实验指导 如果是选择的文件请求的时候不需要传此参数
-    }},
-    urlParams: {content_id: props.detail.id}
-  }).then((res: any) => {
-    props.detail.content_task_files.push(uploadFileList)
-    $message.success("更新成功")
-    router.go(-1)
-  })
+  if (id === 'md') {
+    // props.detail.guide = uploadFileList
+    experimentContent.value = uploadFileList
+    preview.value = false
+    activeFile.suffix = 'md'
+    return
+  }
+  Object.assign(activeFile, uploadFileList)
+  directoryId.value = id
 };
+
 // 选择文件
-const selectFileClick = () => {
-  console.log("选择文件");
-  visible.value = true;
-  getFileList({
-    type: undefined,
-    name: "",
-    page: 1,
-    pageSize: 10,
-  });
-};
 const visible = ref<boolean>(false);
-const onClose = () => {
-  console.log("drawer");
+const selectDocOrMp4File = (val: any) => {
+  Object.assign(activeFile, val)
+  // fetch('/proxyPrefix'+val.file_url, {responseType: 'text/plain;charset=utf-8', headers: {'Content-Type': 'text/plain;charset=utf-8'}}).then(res => {
+  //   console.log(res)
+  // })
+};
+const closeDrawerDoc = () => {
   visible.value = false;
 };
-const selectFileHandle = (v: any) => {
-  console.log(v);
-  visible.value = false;
-};
-// 获取文档列表
-interface IFileList {
-  id: number;
-  file_name: string;
-  size: string;
-  isSelected: boolean;
-  type: string;
-}
-const fileList = reactive<IFileList[]>([]);
-const getFileList = (searchInfo: any) => {
-  let param = {
-    course_id: 1,
-    chapter_id: 1,
-    dataset_id: searchInfo.type,
-    file_name: searchInfo.name,
-    page: searchInfo.page,
-    pageSize: searchInfo.pageSize,
-  };
-  // courseApi.getDataSetFileApi({ param }).then((res: IBusinessResp | null) => {
-  //   console.log(res);
-  // });
-  // 支持单个md、doc、docx、pdf格式文件上传
-  fileList.push(
-    ...[
-      {
-        id: 1,
-        file_name: "111.md",
-        size: "110kb",
-        isSelected: false,
-        type: "md",
-      },
-      {
-        id: 2,
-        file_name: "222.pdf",
-        size: "120kb",
-        isSelected: true,
-        type: "pdf",
-      },
-      {
-        id: 3,
-        file_name: "333.doc",
-        size: "130kb",
-        isSelected: false,
-        type: "word",
-      },
-      {
-        id: 4,
-        file_name: "444.docx",
-        size: "140kb",
-        isSelected: false,
-        type: "word",
-      },
-      {
-        id: 5,
-        file_name: "555.docx",
-        size: "150kb",
-        isSelected: false,
-        type: "word",
-      },
-    ]
-  );
+const selectFileClick = () => {
+  visible.value = true;
 };
 
 // 移除文件
 const deleteFile = () => {
-  console.log("移除文件");
+  preview.value = false
+  if (props.detail.guide) {
+    props.detail.guide = ''
+    experimentContent.value = ''
+    return 
+  }
   http.deleteDocument({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
   .then((res: any) => {
-    console.log(res)
     props.detail.content_task_files = [];
+    props.detail.guide = ''
+    experimentContent.value = ''
+    activeFile.file_url = ''
+    activeFile.suffix = 'md'
   })
 };
-const onSubmit = () => {};
+
+const onSubmit = () => {
+  const param = {}
+  if (activeFile.suffix === 'md' || experimentContent.value) {
+    Object.assign(param, {guide: experimentContent.value})
+  } else {
+    Object.assign(param, {
+      document_file: {
+        "file_path": activeFile.file_url,			// 文档实验-文件
+        "directory_id": directoryId.value // 实验指导 如果是选择的文件请求的时候不需要传此参数
+      }
+    })
+  }
+  http.updateDocumentGuide({
+    urlParams: {content_id: props.detail.id},
+    param,
+  }).then((res: any) => {
+    $message.success("更新成功")
+    router.go(-1)
+  })
+};
 const cancel = () => {};
 </script>
 
@@ -238,6 +190,7 @@ const cancel = () => {};
 }
 .experiment-content {
   margin-top: 16px;
+  height: 592px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }
