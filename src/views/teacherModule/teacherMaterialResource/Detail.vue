@@ -294,6 +294,7 @@ const selectFile=(val:any)=>{
 const deleteFile=(val:any)=>{
   http.deleteFile({urlParams:{editId:editId,fileId:val.id}}).then((res: IBusinessResp) => {
       message.success('删除成功')
+      getDetailFile()
     })
 }
 const downLoadFile=(val:any)=>{
