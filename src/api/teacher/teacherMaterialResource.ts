@@ -14,6 +14,7 @@ export default {
   editMyImage:{url:`/api/resource/data/{editId}`,method: "PUT",dataType: 'formdata'},
   deleteImages:{url:`/api/resource/data/{editId}`,method: "DELETE",},
   SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
+  deleteFile: { url: `/api/resource/data/{editId}/files/{fileId}`, method: "DELETE" },
   downLoadAll: { url: `/api/resource/data/{editId}/files-download`, method: "GET" },
 };
 

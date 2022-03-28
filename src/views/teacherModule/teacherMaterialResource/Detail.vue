@@ -88,9 +88,12 @@
                   </div>
                 </div>
               </div>
-              <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
+              <div class="flexCenter caozuo">
+                <a-button type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
+                <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
+              </div>
             </div>
-            <div class="fileView">
+            <div class="fileView" v-show="state.fileItem.id">
               <!-- <h2>文件内容</h2> -->
               <div v-if="state.fileItem.suffix === 'md'">
                 <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
@@ -101,6 +104,9 @@
               <div v-if="state.fileItem.suffix === 'pdf'" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
                 <PdfVue :url="state.fileItem.file_html" />
+              </div>
+              <div v-if="['md','mp4','pdf'].includes(state.fileItem.suffix) === false">
+                <Empty type="filePreview"  />
               </div>
             </div>
           </div>
@@ -232,9 +238,6 @@ const state:any=reactive({
   fileItem:{},
   fileKeyWord:'',  //  搜索文件列表关键词
 })
-const activeItem:any=reactive({
-  fileItem:{},
-})
 var activeKey: Ref<number> = ref(1);
 
 var isDataSet: Ref<boolean> = ref(true);
@@ -285,9 +288,13 @@ const searchFileList=computed(()=>{
 })
 // 
 const selectFile=(val:any)=>{
-  // console.log(val)
-  activeItem.fileItem=val
+  // console.log(val) 
   state.fileItem=val
+}
+const deleteFile=(val:any)=>{
+  http.deleteFile({urlParams:{editId:editId,fileId:val.id}}).then((res: IBusinessResp) => {
+      message.success('删除成功')
+    })
 }
 const downLoadFile=(val:any)=>{
   // console.log(val)
@@ -569,6 +576,11 @@ onMounted(() => {
                 span{
                   margin-right: 1rem;
                 }
+              }
+            }
+            .caozuo{
+              .brightBtn{
+                margin-left: 1rem;
               }
             }
           }

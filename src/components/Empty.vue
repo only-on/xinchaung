@@ -45,7 +45,8 @@ export default defineComponent({
       tableEmpty:'抱歉。该表格暂无数据！',
       tableSearchEmpty:'抱歉。未搜到相关数据！',
       drawerEmpty:'抱歉，暂无数据！',
-      drawerSearchEmpty:'抱歉。未搜到相关数据！'
+      drawerSearchEmpty:'抱歉。未搜到相关数据！',
+      filePreview:'抱歉，改文件暂不支持预览，建议下载查看'
     }
     height.value=props.height
     emptyType.value=props.type
@@ -71,6 +72,9 @@ export default defineComponent({
   }
   .tableSearchEmpty,.drawerSearchEmpty{
     background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
+  }
+  .filePreview{
+    background-image: url('src/assets/images/empty/file.png'); 
   }
   .emptyContent{
     width: 100%;
