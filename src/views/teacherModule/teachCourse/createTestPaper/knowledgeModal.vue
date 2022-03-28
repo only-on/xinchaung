@@ -1,12 +1,14 @@
 <template>
 <a-modal 
+  okText="保存"
+  cancelText="关闭"
   :visible="isShow" 
   title="选择知识点" 
   @ok="handleOk"
   @cancel="handleCancel"
   :width="600"
 >
-  <div class="prompt">*最多选择3个知识点！</div>
+  <div class="prompt">最多选择3个知识点</div>
   <div class="tree">
     <a-tree
       v-if="treeData.length"
@@ -140,15 +142,16 @@ interface ItreeData {
 
 <style lang="less" scoped>
 .tree {
-  height: 660px;
+  height: 600px;
   overflow: auto;
 }
 .prompt {
   position: absolute;
   top: 18px;
   left: 116px;
-  color: blue;
+  // color: blue;
   font-size: 14px;
+  color: var(--primary-color);
 }
 // :deep(.ant-tree li span.ant-tree-switcher.ant-tree-switcher_open .ant-tree-switcher-icon) {
 //   display: none;

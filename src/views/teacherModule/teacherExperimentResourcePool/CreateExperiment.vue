@@ -27,14 +27,17 @@
         </a-form-item>
         <a-form-item name="datasets" label="知识点">
           <div class="Knowledge">
-            <a-button
-              type="primary"
-              @click="isShowKnowledge = true"
-              :disabled="formState.selectedKnowledgeList.length >= 3"
-              class="add-data-set-btn"
-            >
-              选择</a-button
-            >
+            <div class="flexCenter">
+              <a-button
+                type="primary"
+                @click="isShowKnowledge = true"
+                :disabled="formState.selectedKnowledgeList.length >= 3"
+                class="add-data-set-btn"
+              >
+                选择</a-button
+              >
+              <div class="data-set-hint">最多添加3个知识点</div>
+            </div>
             <LabelDisplay
               :labels="formState.selectedKnowledgeList"
               @remove="removeKnowledge"
