@@ -1,5 +1,5 @@
 <template>
-  <div class="Category flexCenter" v-for="v in props.FileList" :key="v.file_name" :class="v.file_name === props.activeItem.fileItem.file_name?'CategoryActive':''">
+  <div class="Category flexCenter" v-for="v in totalList" :key="v.file_name" :class="v.id === props.activeItem.fileItem.id?'CategoryActive':''">
     <div class="upper"  @click="selectFile(v)">
       <div class="iconBox">
         <CaretDownOutlined v-show="v.children && v.children.length && v.show"/>
@@ -12,12 +12,16 @@
       <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>
     </div>
   </div>
+  <div class="more" v-if="currentPage !==PageCount && props.FileList.length" @click="changePage()">加载更多</div>
   <div v-if="!props.FileList.length">
     <Empty :text="'暂无文件'" />
   </div>
 </template>
 <script lang="ts" setup>
 import {
+  ref,
+  Ref,
+  computed,
   reactive,
   defineProps,
   withDefaults,
@@ -36,6 +40,33 @@ const props = withDefaults(defineProps<Props>(), {
   FileList: () => [],
   activeItem: {}
 });
+
+const List:any=reactive([])
+var currentPage: Ref<number> = ref(1);
+var PageCount: Ref<number> = ref(1);
+var limit: Ref<number> = ref(9);
+
+if(props.FileList.length){
+  PageCount.value=Math.ceil(props.FileList.length / limit.value)
+  List.push(...props.FileList)
+}
+var totalList:any=computed(()=>{
+  let arr:any=[]
+  let curLength=currentPage.value * limit.value
+  let length=curLength > List.length ? List.length : curLength
+  // console.log(length-1)
+  List.forEach((v:any,k:number)=>{
+    if(k <= length-1){
+      arr.push(v)
+    }
+  })
+  return arr
+})
+
+const changePage=()=>{
+  currentPage.value = currentPage.value < PageCount.value ? currentPage.value += 1 :PageCount.value
+}
+
 const selectFile=(val:any)=>{
   // console.log('1',val.name)
   if(val.children && val.children.length){
@@ -87,5 +118,11 @@ const selectFile=(val:any)=>{
   width: 100%;
   align-items: normal;
   padding-left: 20px;
+}
+.more{
+  text-align: center;
+  color: var(--black-65);
+  line-height: 40px;
+  cursor: pointer;
 }
 </style>
