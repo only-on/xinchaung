@@ -57,7 +57,7 @@
           </div>
         </div>
       </div>
-      <!-- <Empty v-if="!list.length && !loading" /> -->
+      <Empty v-if="!materialList.length && !loading" />
       <a-pagination
         v-if="pageTotal > 8"
         v-model:current="pageInfo.page"
@@ -96,6 +96,7 @@ updata({
 const searchKey = ref<string>("");
 const searchFn = (key: string) => {
   searchKey.value = key;
+  pageInfo.page = 1
   initData();
 };
 const handleMenuClick = ({ key }: { key: string }) => {
@@ -242,6 +243,7 @@ const classifyList: any = reactive([
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
   console.log(labelSearch)
+  pageInfo.page = 1
   // searchFn();
   initData()
 };

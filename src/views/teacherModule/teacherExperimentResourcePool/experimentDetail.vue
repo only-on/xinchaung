@@ -16,23 +16,40 @@
           }">{{getTypeList('-90deg')[experimentDetail.task_type].name}}</span>
         </div>
         <div class="right">
-          <span class="pointer" @click="handleClick()">{{
-            Number(currentTab) === 1 ? "添加到课程" : "编辑基本信息"
-          }}</span>
+          <span class="pointer" @click="addToCourse()">添加到课程</span>
           <span class="pointer">启动环境</span>
         </div>
       </div>
       <div class="info">
         <span class="level" :class="['level' + experimentDetail.level]">{{levelList[experimentDetail.level]}}</span>
-        <span class="knowledge">
-          <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
-              v + (index !== experimentDetail.konwledge_map.length - 1 ? " / " : "")
-            }}</span>
-        </span>
-        <span class="class-num">课时 {{experimentDetail.class_cnt}}</span>
+        <a-tooltip placement="top" :color="theme.cyanColor">
+          <template #title>
+            <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
+          </template>
+          <span class="knowledge">
+            <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
+                v + (index !== experimentDetail.konwledge_map.length - 1 ? " · &nbsp;" : "")
+              }}</span>
+          </span>
+        </a-tooltip>
+        <a-tooltip placement="top" :color="theme.themeColor">
+          <template #title>
+            <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
+          </template>
+          <span class="labels">
+            <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
+                v + (index !== experimentDetail.konwledge_map.length - 1 ? " / &nbsp; " : "")
+              }}</span>
+          </span>
+        </a-tooltip>
+        <span class="class-num">推荐课时 {{experimentDetail.class_cnt}}</span>
         <span class="report pointer" @click="reportTemplate">
           <span class="iconfont icon-fuzhiniantie"></span>
-          <span>报告模板</span>
+          <span>查看报告模板</span>
+        </span>
+        <span class="edit pointer" @click="editBaseInfo" v-if="Number(currentTab) === 0">
+          <span class="iconfont icon-fuzhiniantie"></span>
+          <span>编辑基本信息</span>
         </span>
       </div>
       <div class="user-info" v-if="Number(currentTab) === 1">
@@ -48,7 +65,16 @@
       <component :is="components[experimentDetail.task_type]" :detail="experimentDetail"></component>
     </div>
   </div>
+  <!-- 添加到课程 -->
   <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
+  <!-- 编辑基本信息 -->
+  <a-modal
+    :visible="baseInfoModal"
+    title="编辑基本信息"
+    @ok="handleOk"
+    @cancel="handleCancel"
+  >
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -70,6 +96,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue"; //
 import addToCourseModal from "./component/addToCourseModal.vue";
 import { getTypeList } from './config'
+import { theme } from "src/utils/theme"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
 import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
@@ -89,10 +116,12 @@ updata({
   showNav: false,
 });
 
+// 添加到课程
 const isShowModal = ref<boolean>(false);
-const handleClick = () => {
+const addToCourse = () => {
   isShowModal.value = true;
 };
+// 报告模板
 const reportTemplate = () => {
   // isShowReport.value = true
   router.push({
@@ -100,6 +129,17 @@ const reportTemplate = () => {
     query: { templateId: "22" },
   });
 };
+// 编辑基本信息
+const baseInfoModal = ref(false)
+const editBaseInfo = () => {
+  baseInfoModal.value = true
+}
+const handleOk = () => {
+  baseInfoModal.value = false
+}
+const handleCancel = () => {
+  baseInfoModal.value = false
+}
 
 let experimentDetail = reactive<IExperimentDetail>({
   id: 1,
@@ -168,7 +208,6 @@ interface IExperimentDetail {
   margin: 0 auto;
   .top {
     height: 170px;
-    background-color: #12223a;
     background: url("src/assets/images/teacherExperimentResourcePool/base_info_bg.png")
       center no-repeat;
     // background-size: 100% 200px;
@@ -257,20 +296,28 @@ interface IExperimentDetail {
         }
       }
       .knowledge {
+        color: var(--cyan-100);
+        background: var(--cyan-24);
+        // border: 1px solid var(--primary-color);
+        border-radius: 11px;
+        padding: 0 20px;
+        margin-right: 16px;
+      }
+      .labels {
         color: var(--primary-color);
-        background: var(--orangeyellow-7);
-        border: 1px solid var(--primary-color);
+        background: var(--orangeyellow-6-24);
+        // border: 1px solid var(--primary-color);
         border-radius: 11px;
         padding: 0 20px;
         margin-right: 16px;
       }
       .class-num {
       }
-      .report {
+      .report, .edit {
         color: var(--primary-color);
         position: absolute;
         top: 0;
-        right: 60px;
+        right: 36px;
         font-size: 14px;
         padding-bottom: 1px;
         border-bottom: 1px solid var(--primary-color);
@@ -278,6 +325,11 @@ interface IExperimentDetail {
           vertical-align: middle;
           margin-right: 4px;
         }
+      }
+      .edit {
+        color: var(--cyan-100);
+        border-bottom: 1px solid var(--cyan-100);
+        right: 222px;
       }
     }
     .user-info {

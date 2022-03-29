@@ -8,7 +8,7 @@
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item flexCenter" v-for="(v) in experimentList" :key="v.id">
+      <div class="item flexCenter" :class="{self: currentTab === 0}" v-for="(v) in experimentList" :key="v.id">
         <div
           class="exper-type"
           :style="{
@@ -32,8 +32,18 @@
           }}</span>
           <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
         </div>
+        <a-tooltip placement="top">
+          <template #title>
+            <div>实验标签1</div>
+            <div>实验标签2</div>
+            <div>实验标签3</div>
+          </template>
+          <div class="label pointer">
+            <span class="labels single-ellipsis">实验标签1 / 实验标签2 / 实验标签3</span>
+          </div>
+        </a-tooltip>
       </div>
-      <!-- <Empty v-if="!list.length && !loading" /> -->
+      <Empty v-if="!experimentList.length && !loading" />
         <!-- -->
       <a-pagination 
         v-if="totalCount > 10"
@@ -325,12 +335,22 @@ const getDirection = () => {
     margin-bottom: 24px;
     border-radius: 32px;
     background: var(--white-65);
+    padding-right: 40px;
+    &.self:hover {
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+      .label {
+        display: none;
+      }
+      .operate {
+        display: inline-block;
+      }
+    }
     .exper-type {
       width: 64px;
       text-align: center;
       margin-right: 16px;
       border-radius: 32px 0px 0px 32px;
-      color: #1cb2b3;
+      color: var(--brightBtn);
       background: linear-gradient(
         90deg,
         rgba(28, 178, 179, 0.14),
@@ -339,13 +359,16 @@ const getDirection = () => {
       );
     }
     .exper-name {
-      width: 800px;
+      // width: 800px;
       color: var(--black-85);
       font-size: var(--font-size-16);
+      flex: 1;
+      padding-right: 14px;
     }
     .class-time {
+      width: 120px;
       color: var(--black-45);
-      flex: 1;
+      // flex: 1;
     }
     .user-info {
       width: 188px;
@@ -361,11 +384,28 @@ const getDirection = () => {
       }
     }
     .operate {
+      width: 233px;
       color: var(--primary-color);
-      margin-right: 43px;
+      // margin-right: 43px;
+      display: none;
+      text-align: right;
+      padding-right: 30px;
       .share {
         margin-right: 24px;
       }
+    }
+    .label {
+      width: 233px;
+      height: 24px;
+      line-height: 24px;
+    }
+    .labels {
+      max-width: 233px;
+      padding: 0 14px;
+      background: rgba(255,149,68,0.07);
+      border-radius: 2px;
+      color: rgba(255,149,68,0.85);
+      font-size: var(--font-size-sm);
     }
   }
 }

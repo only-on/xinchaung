@@ -207,9 +207,12 @@
     --orangeyellow-4: #FF9544; */
   --orangeyellow-5: #fe8020;
   --orangeyellow-6: #ff9544;
+  --orangeyellow-6-24: rgba(255,149,68, 0.24);
   --orangeyellow-7: rgb(255, 110, 0, 0.14);
 
   --brightBtn: #1cb2b3;
+  --cyan-100: rgba(0, 203, 194, 1);
+  --cyan-24: rgba(0, 203, 194, .24);
 
   /*边距*/
   --margin-md: 16px;

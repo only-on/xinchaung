@@ -48,7 +48,7 @@ const props = withDefaults(defineProps<Props>(), {
   list: () => [],
 });
 
-const labelObj: any = reactive({});
+let labelObj: any = reactive({});
 props.list && props.list.length
   ? props.list.forEach((v: ILabelData) => {
       labelObj[v.keyName] = v.value;
@@ -63,6 +63,12 @@ const change = (v: any, i: any) => {
   labelObj[v.keyName] = i.value;
   emit("change", labelObj);
 };
+
+watch(() => props.list, (val) => {
+  labelObj = {}
+}, {
+  deep: true
+})
 
 defineExpose({
   labelObj,
