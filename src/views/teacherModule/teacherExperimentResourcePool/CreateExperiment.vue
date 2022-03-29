@@ -48,9 +48,9 @@
             v-model:selectedList="formState.selectedKnowledgeList"
           ></knowledge-modal>
         </a-form-item>
-        <a-form-item label="添加标签" name="tag">
+        <a-form-item label="添加标签" name="tags">
           <div>
-              <LabelList :tag="formState.tag" :recommend="formState.recommend" />
+              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
             </div>
         </a-form-item>
       </div>
@@ -63,7 +63,7 @@
             v-model:value="formState.direction"
             placeholder="请选择技术方向"
           >
-            <a-select-option :value="item.id" v-for="(item, index) in directionList" :key="index.toString()">
+            <a-select-option :value="item.name" v-for="(item, index) in directionList" :key="index.toString()">
                 {{ item.name }}
               </a-select-option>
             <!-- <a-select-option value="shanghai">Zone one</a-select-option>
@@ -423,7 +423,7 @@ interface FileItem {
 }
 const formRef = ref();
 const formState: any = reactive({
-  tag:[],
+  tags:[],
   recommend:[],
   drawerVisible: false,
   datasets: [],
@@ -493,7 +493,7 @@ function create() {
       return pre
     }, [])
     const param={
-      tag:formState.tag,
+      tags:formState.tags,
       type:createTypeNumber,  // 
       name:formState.name,
       level:formState.level,
