@@ -161,7 +161,7 @@ const getDocOrMp4List = () => {
   const {file_name,page,limit}=docOrMp4Drawer
   let params:any={file_name,page,limit}
   let obj={
-    tags:props.docOrMp4Type === 1? '文档' : '视频',
+    tags:props.docOrMp4Type === 1? '实验文档' : '视频',
     is_public:is_public.value,
     name:file_name,
     page,

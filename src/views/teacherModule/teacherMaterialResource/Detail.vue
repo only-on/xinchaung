@@ -71,7 +71,7 @@
             <div class="custom_input">
               <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
-            <div class="file textScrollbar">
+            <div class="file textScrollbar" v-if="state.fileList.length">
               <FileList :FileList="state.fileKeyWord ? searchFileList : state.fileList" @selectFile="selectFile" :activeItem="state" />
             </div>
             <!-- <div>加载更多</div>  -->
