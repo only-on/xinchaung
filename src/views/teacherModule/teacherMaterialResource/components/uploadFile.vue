@@ -92,6 +92,7 @@ const typeInfo = reactive({
   3: {id: 3, name: "课件目录", accept: '.ppt,.pptx,.pdf', uploadFileType: 'ppt、pptx、pdf'},
   5: {id: 5, name: "备课资料目录", accept: '.pdf,.doc,.docx', uploadFileType: 'pdf、doc、docx'},
   6: {id: 6, name: "教学指导目录", accept: '.pdf,.doc,.docx', uploadFileType: 'pdf、doc、docx'},
+  7: {id: 7, name: "实验文档目录", accept: '.pdf,.doc,.docx,.md', uploadFileType: 'pdf、doc、docx、md'},
 });
 const currentType = reactive(typeInfo[props.type])
 const uploadFileUuid = ref(UUID.uuid4());

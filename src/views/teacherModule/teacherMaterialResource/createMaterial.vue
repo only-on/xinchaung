@@ -65,6 +65,7 @@ const materialTypeList = reactive({
   'coursewareDirectory': {id: 3, name: "课件目录", subname: '目录', uploadFileType: 'ppt、pptx、pdf'},
   'lessonDirectory': {id: 5, name: "备课资料目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
   'guidanceDirectory': {id: 6, name: "教学指导目录", subname: '目录', uploadFileType: 'pdf、doc、docx'},
+  'documentDirectory': {id: 7, name: "实验文档目录", subname: '目录', uploadFileType: 'pdf、doc、docx、md'},
 });
 const createMaterialType = materialTypeList[createType];
 updata({
