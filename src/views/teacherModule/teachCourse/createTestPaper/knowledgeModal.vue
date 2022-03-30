@@ -79,7 +79,7 @@ export default defineComponent({
           }]
         })
     }
-    let checkedNodes: ItreeData[] = []
+    let checkedNodes: ItreeData[] = props.selectedList
     const onCheck = (key: string[], e: any) => {
       let arr = e.checkedNodes
       if (arr.length) {

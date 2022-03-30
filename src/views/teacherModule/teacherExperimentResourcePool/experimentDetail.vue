@@ -48,7 +48,7 @@
           <span>查看报告模板</span>
         </span>
         <span class="edit pointer" @click="editBaseInfo" v-if="Number(currentTab) === 0">
-          <span class="iconfont icon-fuzhiniantie"></span>
+          <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
       </div>
@@ -73,7 +73,10 @@
     title="编辑基本信息"
     @ok="handleOk"
     @cancel="handleCancel"
+    :width="900"
+    :footer="null"
   >
+    <base-info :detail="experimentDetail" @handleOk="handleOk" @handleCancel="handleCancel"></base-info>
   </a-modal>
 </template>
 <script lang="ts" setup>
@@ -97,6 +100,7 @@ import { Modal, message } from "ant-design-vue"; //
 import addToCourseModal from "./component/addToCourseModal.vue";
 import { getTypeList } from './config'
 import { theme } from "src/utils/theme"
+import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
 import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
@@ -136,6 +140,7 @@ const editBaseInfo = () => {
 }
 const handleOk = () => {
   baseInfoModal.value = false
+  getExperimentDetail();
 }
 const handleCancel = () => {
   baseInfoModal.value = false

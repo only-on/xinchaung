@@ -41,6 +41,9 @@
         <a-progress :percent="uploadFileList.percent" />
       </div>
     </div>
+    <template #footer>
+      <Submit @submit="uploadvideoOk()" @cancel="cancel()" :loading="uploadFileList.status !== 'done'?true:false"></Submit>
+    </template>
   </a-modal>
 </template>
 
@@ -51,6 +54,7 @@ import { message } from "ant-design-vue";
 import request from "src/api/index";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { readFile } from "src/utils/getFileType";
+import Submit from "src/components/submit/index.vue"
 const courseApi = request.teachCourse;
 const http = request.teacherMaterialResource;
 const httpExp = request.teacherExperimentResourcePool;
@@ -87,8 +91,11 @@ const getVideoDirectory = () => {
 
 let dataset_id = ref<number | undefined>();
 let upload: any = reactive({});
-let uploadFileList: any = reactive({});
-let progress = ref(0);
+let uploadFileList: any = reactive({
+  status: 'done',
+  name: '',
+  percent: 0
+});
 
 async function beforeUpload(file: any) {
   console.log(dataset_id.value, file)
@@ -119,8 +126,8 @@ function abort() {
 // 移除
 function remove() {
   abort();
-  Object.assign(uploadFileList, {});
-  progress.value = 0;
+  uploadFileList.name = ''
+  uploadFileList.percent = 0
 }
 function uploadvideoOk() {
   emit("uploadSuccess", uploadFileList, dataset_id.value);
