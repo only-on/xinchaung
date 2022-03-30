@@ -271,7 +271,7 @@
   <a-drawer
     title="选择数据集"
     class="select-imag-drawer"
-    :closable="false"
+    :closable="true"
     placement="right"
     :visible="formState.drawerVisible"
     width="640"

@@ -4,22 +4,13 @@
     :title="props.docOrMp4Type === 1 ? '选择文档' : '选择视频'"
     class="select-docOrMp4-drawer"
     :destroyOnClose="true"
-    :closable="false"
+    :closable="true"
     placement="right"
     :visible="docOrMp4Drawer.visible"
     width="640"
     @close="closeDrawerDoc"
   >
     <div class="search flexCenter">
-      <!-- <div class="item custom_select">
-        <a-select
-          style="width: 260px"
-          v-model:value="docOrMp4Drawer.catalogueId"
-          :placeholder="`请选择${props.docOrMp4Type === 1 ? '文档' : '视频'}目录`"
-          :options="catalogueOptions"
-          @change="searchDocOrMp4List"
-        ></a-select>
-      </div> -->
       <div class="flexCenter classifyTabs">
         <span :class="is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
         <span :class="is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
@@ -36,12 +27,12 @@
       <div class="dataList setScrollbar">
         <div class="list" v-if="docOrMp4Drawer.list.length">
           <div class="item" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
-            <div class="flexCenter itemInfo" :class="(v.show && 5)?'openInformation':''">
+            <div class="flexCenter itemInfo" :class="(v.show && v.fileList.length)?'openInformation':''">
               <div class="flexCenter left">
               <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
-              <div class="docBg"></div>
+              <div class="docBg" :style="`background-image: url(${v.cover});`"></div>
               <div class="info">
-                <div class="quName single_ellipsis">{{v.file_name}}</div>
+                <div class="quName single_ellipsis">{{v.name}}</div>
                 <div class="information">
                   <div class="portrait flexCenter">
                     <div class="flexCenter imgBox" v-if="is_public === 1">
@@ -49,16 +40,16 @@
                       <span class="text">系统内置</span>
                     </div>
                     <div class="tags flexCenter">
-                      <span>素材标签1/</span>
+                      <span>{{`${v.tags.join('/')}`}}</span>
                     </div>
                     <div class="numSize">
                       <div class="text">
                         <span>数量</span>
-                        <span>20</span>
+                        <span>{{v.item_count}}</span>
                       </div>
                       <div class="text">
                         <span>大小</span>
-                        <span>{{ bytesToSize(v.size)}}</span>
+                        <span>{{ bytesToSize(v.item_size)}}</span>
                       </div>
                     </div>
                   </div>
@@ -67,24 +58,28 @@
               </div>
               <div class="flexCenter right">
                 <!-- <span> {{ bytesToSize(v.size)}} </span> -->
-                <span class="iconfont" @click="v.show = ! v.show">
+                <span class="iconfont" @click="v.item_count?getDetailFile(v):''" :class="v.item_count?'':'iconFontDis'">
                   {{ v.show ? "收起" : "展开" }}
                 </span>
               </div>
             </div>
             <!-- 是否有文件列表 -->
-            <div class="fileList" v-if="v.show && 5" :class="(v.show && 5)?'openFile':''">
-              <div v-for="i in [{id:1,name:'文件1'},{id:2,name:'文件2'},{id:3,name:'文件3'},]" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''">
-                <div class="flexCenter">
-                  <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span>
-                  <!-- <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span> -->
-                  <span>文件名称</span>
+            <div class="fileList" v-if="v.show && v.fileList.length" :class="(v.show && v.fileList.length)?'openFile':''">
+              <a-spin :spinning="v.loading" size="large" tip="Loading...">
+                <div v-for="i in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''">
+                  <div class="flexCenter fileLeft">
+                    <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span>
+                    <!-- <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span> -->
+                    <span class="single_ellipsis">{{i.file_name}}</span>
+                  </div>
+                  <div class="flexCenter fileRight">
+                    <span>{{bytesToSize(i.size)}}</span>
+                    <span class="select"  @click="selectDocOrMp4File(i)">
+                      {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
+                    </span>
+                  </div>
                 </div>
-                <span>2M</span>
-                <span class="select"  @click="selectDocOrMp4File(i)">
-                  {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
-                </span>
-              </div>
+              </a-spin>  
             </div>
           </div>
         </div>
@@ -120,7 +115,7 @@ import { SelectTypes } from "ant-design-vue/es/select";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-const http = (request as any).teacherExperimentResourcePool;
+const http = (request as any).teacherMaterialResource;
 // 采用ts专有声明，有默认值
 interface Props {
   docOrMp4Type: number;
@@ -141,7 +136,7 @@ const docOrMp4Drawer: any = reactive({
   list: [],
   page: 1,
   limit: 10,
-  totalCount: 20,
+  totalCount: 0,
   loading: false,
   catalogueId: '', // 目录列表第一个
   file_name: "",
@@ -153,59 +148,34 @@ watch(()=>{return props.visible},(val:boolean)=>{
   // console.log(val)
 },{immediate:true})
 docOrMp4Drawer.activeFile={ ...props.activeFile}
-// 目录  视频和文档公用字段   弹窗和抽屉共用
-const catalogueOptions = ref<SelectTypes["options"]>([
-  { label: "公有", options: [{ label: "共有1", value: 1 }] },
-  { label: "私有", options: [{ label: "私有1", value: 2 }] },
-]);
-// 获取文档目录
-const getCatalogue = () => {
-  let type=props.docOrMp4Type === 1?3:4
-  http.getCatalogueList({urlParams:{typeId:type}}).then((res: IBusinessResp) => {
-    interface IOptions {
-      value: string;
-      label: string;
-    }
-    let data = res.data;
-    // console.log('[获取题库目录] ', data);
-    catalogueOptions.value![0].options.length = 0;
-    catalogueOptions.value![1].options.length = 0;
-    (data.private && data.private.length)?data.private.forEach((v: any) => {
-      let obj: IOptions = { value: v.id, label: v.name };
-      catalogueOptions.value![1].options.push(obj);
-    }):'';
-    (data.public && data.public.length)?data.public.forEach((v: any) => {
-      let obj: IOptions = { value: v.id, label: v.name };
-      catalogueOptions.value![0].options.push(obj);
-    }):'';
-    if(data.private && data.private.length){
-      docOrMp4Drawer.catalogueId=data.private[0].id
-    }
-    if(data.public && data.public.length){
-      docOrMp4Drawer.catalogueId=data.public[0].id
-    }
-    getDocOrMp4List()
-    // docOrMp4Drawer.catalogueId   upDoc.catalogue  默认第一个
-  })
-};
+
 
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v
+  getDocOrMp4List()
 }
 
 // 获取文档、视频  列表
 const getDocOrMp4List = () => {
   const {file_name,page,limit}=docOrMp4Drawer
   let params:any={file_name,page,limit}
+  let obj={
+    tags:props.docOrMp4Type === 1? '文档' : '视频',
+    is_public:is_public.value,
+    name:file_name,
+    page,
+    limit
+  }
   docOrMp4Drawer.loading=true
   docOrMp4Drawer.list.length=0
- http.getFileList({param:{...params},urlParams:{dataId:docOrMp4Drawer.catalogueId}}).then((res: IBusinessResp) => {
+ http.dataSets({param:{...obj}}).then((res: IBusinessResp) => {
     docOrMp4Drawer.loading=false
     const {list,page}=res.data
     list.map((v:any)=>{
       v.show=false
-      v.fileList=[1,2,3,4,5]
+      v.loading=false
+      v.fileList=[]
     })
     docOrMp4Drawer.list.push(...list);
     docOrMp4Drawer.totalCount=page.totalCount
@@ -227,8 +197,27 @@ const pageChange = (current: any) => {
   docOrMp4Drawer.page = current;
   getDocOrMp4List();
 };
+const getDetailFile = (val:any) => {
+  val.show = !val.show
+  if(val.show === false){ // && val.fileList.length
+    return
+  }
+  let obj={
+    file_name:'',
+    page:1,
+    limit:9999,
+  }
+  val.loading=true
+  val.fileList.length=0
+  http.getDetailFile({param:{...obj},urlParams:{editId:val.id}}).then((res: IBusinessResp) => {
+    const {list,page}=res.data
+    // list.length?selectFile(list[0]):''
+    val.loading=false
+    val.fileList.push(...list)
+  })
+};
 onMounted(()=>{
-  getCatalogue()
+  getDocOrMp4List();
 })
 </script>
 <style scoped lang="less">
@@ -323,15 +312,24 @@ onMounted(()=>{
         .openInformation{
           padding-bottom: 1rem;
           margin-bottom: 1rem;
-          border: 1px dashed rgba(112,112,112,0.15);
+          border-bottom: 1px dashed rgba(112,112,112,0.15);
         }
         .fileList{
           .fileItem{
             height: 40px;
-            justify-content: space-between;
             background: rgba(0,0,0,0.04);
             margin-bottom: 20px;
             color:#808080 ;
+            .fileLeft{
+              // width: 50%;
+              .single_ellipsis{
+                width: 240px;
+              }
+            }
+            .fileRight{
+              justify-content: space-between;
+              flex: 1;
+            }
             .select{
               width: 60px;
               text-align: center;
@@ -341,7 +339,7 @@ onMounted(()=>{
             }
           }
           .fileItem:hover{
-            background: #ffeed8;
+            background: rgb(255, 238, 217,.24);
           }
           .activeFileItem{
             background: #fffbf6;
@@ -359,9 +357,14 @@ onMounted(()=>{
         }
         .iconfont {
           color: var(--primary-color);
+          display: none;
           // font-size: 20px;
           // cursor: pointer;
           // padding: 0 12px;
+        }
+        .iconFontDis{
+          color: var(--black-45);
+          cursor: no-drop;
         }
       }
       .item:hover {
@@ -375,6 +378,9 @@ onMounted(()=>{
           display: block;
           // display: flex;
           // opacity: 1;
+        }
+        .iconfont{
+          display: block;
         }
       }
       .active {

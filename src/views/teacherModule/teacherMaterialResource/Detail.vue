@@ -72,9 +72,9 @@
               <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
             <div class="file textScrollbar">
-              <FileList :FileList="searchFileList" @selectFile="selectFile" :activeItem="state" />
+              <FileList :FileList="state.fileKeyWord ? searchFileList : state.fileList" @selectFile="selectFile" :activeItem="state" />
             </div>
-            <!-- <div>加载更多</div> -->
+            <!-- <div>加载更多</div>  -->
           </div>
           <div class="right">
             <div class="fileItem flexCenter" v-if="state.fileItem.id">
@@ -99,7 +99,7 @@
                 <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
               </div>
               <div v-if="state.fileItem.suffix === 'mp4'">
-                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true"> 您的浏览器不支持 video 标签</video>
+                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>
               </div>
               <div v-if="state.fileItem.suffix === 'pdf'" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
@@ -583,6 +583,11 @@ onMounted(() => {
             height: 460px;
             .pdfBox{
               height: 100%;
+            }
+            .video{
+              width: 100%;
+              height: 450px;
+              object-fit: fill;
             }
           }
         }

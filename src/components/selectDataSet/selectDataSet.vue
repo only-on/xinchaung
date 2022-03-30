@@ -1,6 +1,6 @@
 <template>
   <div class="data-set-box">
-    <a-radio-group
+    <!-- <a-radio-group
       class="data-set-type"
       v-model:value="params.common"
       button-style="solid"
@@ -8,22 +8,9 @@
     >
       <a-radio-button :value="1">公共数据集</a-radio-button>
       <a-radio-button :value="0">我的数据集</a-radio-button>
-    </a-radio-group>
-    <div class="data-set-tag-box">
-      类型：
-      <a-radio-group
-        v-model:value="params.category"
-        button-style="solid"
-        @change="tagChange"
-      >
-        <a-radio-button value="">全部</a-radio-button>
-        <a-radio-button
-          v-for="(it, ind) in category"
-          :key="ind"
-          :value="it.uid"
-          >{{ it.name }}</a-radio-button
-        >
-      </a-radio-group>
+    </a-radio-group> -->
+    <!-- <div class="data-set-tag-box">
+      类型
       <a-input-search
         class="select-keyword"
         placeholder="请输入关键字查询"
@@ -31,6 +18,19 @@
         style="width: 300px"
         @search="onSearch"
       />
+    </div> -->
+    <div class="search flexCenter">
+      <div class="flexCenter classifyTabs">
+        <span :class="params.is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
+        <span :class="params.is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
+      </div>
+      <div class="item custom_input">
+        <a-input-search
+          v-model:value="params.keyword"
+          placeholder="请输入搜索关键字"
+          @search="getDataList"
+        />
+      </div>
     </div>
     <div class="data-set-base-box setScrollbar">
       <template v-if="dataSetList.length > 0">
@@ -115,6 +115,7 @@ export default defineComponent({
         keyword: "",
         common: 1,
         user_id: uid,
+        is_public:1
       },
       category: [],
       dataSetList: [],
@@ -124,9 +125,7 @@ export default defineComponent({
     });
 
     onMounted(() => {
-      getDataCategory().then(() => {
-        getDataList();
-      });
+      getDataList();
     });
     watch(
       () => props.names,
@@ -135,15 +134,6 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     );
-    // 获取数据集类型
-    function getDataCategory() {
-      return new Promise((reslove: any, reject: any) => {
-        datasetApi.getDatacategoryApi({}).then((res: any) => {
-          reactiveData.category = res.data;
-          reslove();
-        });
-      });
-    }
     // 获取数据集列表
     function getDataList() {
       datasetApi
@@ -221,8 +211,13 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     );
+    const changeTab=(v:number)=>{
+      reactiveData.params.is_public=v
+    }
     return {
       ...toRefs(reactiveData),
+      changeTab,
+      getDataList,
       onSearch,
       dataSetChange,
       tagChange,
@@ -351,6 +346,14 @@ export default defineComponent({
     text-align: center;
     cursor: pointer;
     color: #878787;
+  }
+}
+.search {
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  .item {
+    width: 260px;
   }
 }
 </style>
