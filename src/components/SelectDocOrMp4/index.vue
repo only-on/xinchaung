@@ -257,7 +257,7 @@ onMounted(()=>{
               // margin-left: 6px;
             }
             .info{
-              padding-left: 10px;
+              padding-left: 1rem;
               
             }
           }
@@ -272,11 +272,13 @@ onMounted(()=>{
             margin-bottom: 6px;
           }
           .information{
+            // height: 30px;
             .text{
               color: var(--black-45);
               font-size: var(--font-size-sm);
             }
             .portrait{
+              line-height: 22px;
               .imgBox{
                 width: 100px;
               }

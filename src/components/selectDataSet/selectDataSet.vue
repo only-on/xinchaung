@@ -21,8 +21,8 @@
     </div> -->
     <div class="search flexCenter">
       <div class="flexCenter classifyTabs">
-        <span :class="params.is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
-        <span :class="params.is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
+        <span :class="params.common === 1? 'active':''" @click="changeTab(1)">公开素材</span>
+        <span :class="params.common === 0? 'active':''" @click="changeTab(0)">私有素材</span>
       </div>
       <div class="item custom_input">
         <a-input-search
@@ -38,28 +38,33 @@
           <div><img :src="item.cover" alt="" /></div>
           <div class="data-base-info">
             <h2>{{ item.name }}</h2>
-            <div class="tag">
-              <div>
-                <i class="iconfont icon-wenjianjia"></i
-                ><span>{{ item.amount }}</span>
-              </div>
-              <div>
-                <i class="iconfont icon-cunchuzhi"></i
-                ><span>{{ item.size }}</span>
-              </div>
+            <div class="information2">
+              <div class="portrait flexCenter">
+                <div class="flexCenter imgBox" v-if="params.common === 1">
+                  <span class="img"></span>
+                  <span class="text">系统内置</span>
+                </div>
+                <div class="tags flexCenter">
+                  <span>{{`${item.tags.join('/')}`}}</span>
+                </div>
+                <div class="numSize">
+                  <div class="text">
+                    <span>数量</span>
+                    <span>{{item.amount}}</span>
+                  </div>
+                  <div class="text">
+                    <span>大小</span>
+                    <span>{{ item.size}}</span>
+                  </div>
+                </div>
             </div>
           </div>
-          <div>
-            <span
-              v-if="selected.includes(item.uid)"
-              class="shanchu iconfont icon-yichu1"
-              @click="remove(item)"
-            ></span>
-            <span
-              v-else
-              class="select-btn icon-xuanze_check iconfont"
-              @click="select(item)"
-            ></span>
+          </div>
+          <div class="caozuo">
+            <!-- <span v-if="selected.includes(item.uid)" class="shanchu iconfont icon-yichu1" @click="remove(item)"></span>
+            <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span> -->
+            <span v-if="selected.includes(item.uid)" class="iconfont" @click="remove(item)">取消</span>
+            <span v-else class="select-btn iconfont" @click="select(item)">选择</span>
           </div>
         </div>
       </template>
@@ -90,6 +95,7 @@ import request from "src/request/getRequest";
 import storage from "src/utils/extStorage";
 import empty from "src/components/Empty.vue";
 import { MessageApi } from "ant-design-vue/lib/message";
+import { bytesToSize } from "src/utils/common"
 export default defineComponent({
   components: { empty },
   props: ["value", "names", "limitNumber"],
@@ -136,10 +142,18 @@ export default defineComponent({
     );
     // 获取数据集列表
     function getDataList() {
+      reactiveData.dataSetList.length=0
       datasetApi
         .getDataSetApi({ param: reactiveData.params })
         .then((res: any) => {
-          reactiveData.dataSetList.push(...res.data);
+          let data=res.data
+          data.length?data.map((v:any)=>{
+            v.tags=[]
+            v.labels.length?v.labels.forEach((i:any)=>{
+              v.tags.push(i.name)
+            }):''
+          }):''
+          reactiveData.dataSetList.push(...data);
           reactiveData.count = res.total;
         });
     }
@@ -212,7 +226,9 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
     const changeTab=(v:number)=>{
-      reactiveData.params.is_public=v
+      reactiveData.params.page = 1;
+      reactiveData.params.common=v
+      getDataList()
     }
     return {
       ...toRefs(reactiveData),
@@ -224,6 +240,7 @@ export default defineComponent({
       lookMore,
       remove,
       select,
+      bytesToSize
     };
   },
 });
@@ -278,26 +295,38 @@ export default defineComponent({
     // flex: 1;
     height: calc(100% - 150px);
     overflow: auto;
-    padding-top: 25px;
-    padding-right: 24px;
-    padding-left: 24px;
+    // padding-top: 25px;
+    // padding-right: 24px;
+    // padding-left: 24px;
     .data-set-item {
       display: flex;
       padding: 6px;
       flex-direction: row;
-      margin-bottom: 10px;
+      margin-bottom: 20px;
       background: var(--white-100);
       border: 1px solid #cdcdcd;
-      border-radius: 6px;
+      border-radius: 10px;
       transition: 0.2s;
       &:hover {
-        box-shadow: 0 3px 6px 0 var(--black-0-7);
+        // box-shadow: 0 3px 6px 0 var(--black-0-7);
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+        .caozuo{
+          .iconfont{
+            display: block;
+          }
+        }
+        .tags{
+          display: none;
+        }
+        .numSize{
+          display: block;
+        }
       }
       cursor: pointer;
       > div {
         &:first-child {
-          width: 52px;
-          height: 52px;
+          width: 94px;
+          height: 50px;
           border-radius: 4px;
           flex-shrink: 0;
           > img {
@@ -309,20 +338,25 @@ export default defineComponent({
           width: 40px;
           margin: auto;
           flex-shrink: 0;
+          .iconfont{
+            color: var(--primary-color);
+            display: none;
+          }
         }
       }
       .data-base-info {
         width: 100%;
-        margin-left: 28px;
+        margin-left: 1rem;
         h2 {
           font-size: var(--base-font-size);
           color: var(--black-85);
           font-weight: 400;
+          margin-bottom: 6px;
         }
         .tag {
           display: flex;
           flex-direction: row;
-          margin-top: 8px;
+          // margin-top: 8px;
           > div {
             margin-right: 30px;
             > .iconfont {
@@ -333,6 +367,24 @@ export default defineComponent({
               color: rgba(5, 1, 1, 0.45);
               margin-left: 6px;
             }
+          }
+        }
+        .imgBox{
+          width: 100px;
+          .img{
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-image: url('src/assets/images/teacherExperimentResourcePool/base_info_bg.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+            margin-right: 6px;
+          }
+        }
+        .tags{
+          span{
+            color: var(--primary-color);
+            font-size: var(--font-size-sm);
           }
         }
       }
@@ -354,6 +406,45 @@ export default defineComponent({
   margin-bottom: 20px;
   .item {
     width: 260px;
+  }
+}
+.information2{
+  // padding-top: 10px;
+  .text{
+    color: var(--black-45);
+    font-size: var(--font-size-sm);
+  }
+  .portrait{
+    line-height: 22px;
+    .imgBox{
+      width: 100px;
+    }
+    .img{
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-image: url('src/assets/images/teacherExperimentResourcePool/base_info_bg.png');
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      margin-right: 6px;
+    }
+    .tags{
+      span{
+        color: var(--primary-color);
+        font-size: var(--font-size-sm);
+      }
+    }
+  }
+  .numSize{
+    display: none;
+    // opacity: 0;
+    .text{
+      display: inline-block;
+      margin-right: 2rem;
+      span{
+        margin-right: 4px;
+      }
+    }
   }
 }
 </style>
