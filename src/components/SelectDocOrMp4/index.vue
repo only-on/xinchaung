@@ -3,6 +3,7 @@
     <a-drawer
     :title="props.docOrMp4Type === 1 ? '选择文档' : '选择视频'"
     class="select-docOrMp4-drawer"
+    :destroyOnClose="true"
     :closable="false"
     placement="right"
     :visible="docOrMp4Drawer.visible"
@@ -10,7 +11,7 @@
     @close="closeDrawerDoc"
   >
     <div class="search flexCenter">
-      <div class="item custom_select">
+      <!-- <div class="item custom_select">
         <a-select
           style="width: 260px"
           v-model:value="docOrMp4Drawer.catalogueId"
@@ -18,6 +19,10 @@
           :options="catalogueOptions"
           @change="searchDocOrMp4List"
         ></a-select>
+      </div> -->
+      <div class="flexCenter classifyTabs">
+        <span :class="is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
+        <span :class="is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
       </div>
       <div class="item custom_input">
         <a-input-search
@@ -30,31 +35,56 @@
     <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
       <div class="dataList setScrollbar">
         <div class="list" v-if="docOrMp4Drawer.list.length">
-          <div
-            class="item"
-            v-for="v in docOrMp4Drawer.list"
-            :key="v"
-            :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''"
-          >
-            <div class="flexCenter left">
-              <!-- :style="`background-image: url(${getFileTypeIcon(v.url)});`"  根据文件类型显示  doc  md pdf  的不同图标-->
-              <span
-                class="fileIcon"
-                v-if="props.docOrMp4Type === 1"
-                :style="`background-image: url(${iconList['ppt']});`"
-              ></span>
-              <span
-                class="fileIcon"
-                v-if="props.docOrMp4Type === 2"
-                :style="`background-image: url(${iconList['mp4']});`"
-              ></span>
-              <span class="quName single_ellipsis">{{v.file_name}}</span>
+          <div class="item" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
+            <div class="flexCenter itemInfo" :class="(v.show && 5)?'openInformation':''">
+              <div class="flexCenter left">
+              <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
+              <div class="docBg"></div>
+              <div class="info">
+                <div class="quName single_ellipsis">{{v.file_name}}</div>
+                <div class="information">
+                  <div class="portrait flexCenter">
+                    <div class="flexCenter imgBox" v-if="is_public === 1">
+                      <span class="img"></span>
+                      <span class="text">系统内置</span>
+                    </div>
+                    <div class="tags flexCenter">
+                      <span>素材标签1/</span>
+                    </div>
+                    <div class="numSize">
+                      <div class="text">
+                        <span>数量</span>
+                        <span>20</span>
+                      </div>
+                      <div class="text">
+                        <span>大小</span>
+                        <span>{{ bytesToSize(v.size)}}</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              </div>
+              <div class="flexCenter right">
+                <!-- <span> {{ bytesToSize(v.size)}} </span> -->
+                <span class="iconfont" @click="v.show = ! v.show">
+                  {{ v.show ? "收起" : "展开" }}
+                </span>
+              </div>
             </div>
-            <div class="flexCenter right">
-              <span> {{ bytesToSize(v.size)}} </span>
-              <span class="iconfont" @click="selectDocOrMp4File(v)">
-                {{ docOrMp4Drawer.activeFile.id === v.id ? "取消" : "选择" }}
-              </span>
+            <!-- 是否有文件列表 -->
+            <div class="fileList" v-if="v.show && 5" :class="(v.show && 5)?'openFile':''">
+              <div v-for="i in [{id:1,name:'文件1'},{id:2,name:'文件2'},{id:3,name:'文件3'},]" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''">
+                <div class="flexCenter">
+                  <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span>
+                  <!-- <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span> -->
+                  <span>文件名称</span>
+                </div>
+                <span>2M</span>
+                <span class="select"  @click="selectDocOrMp4File(i)">
+                  {{ docOrMp4Drawer.activeFile.id === i.id ? "取消" : "选择" }}
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -75,6 +105,7 @@
 <script lang="ts" setup>
 
 import {
+  Ref,
   ref,
   onMounted,
   reactive,
@@ -82,6 +113,7 @@ import {
   withDefaults,
   watch
 } from "vue";
+import { getFileTypeIcon } from 'src/utils/getFileType'
 import iconList from "src/utils/iconList";
 import { bytesToSize } from "src/utils/common"
 import { SelectTypes } from "ant-design-vue/es/select";
@@ -156,6 +188,12 @@ const getCatalogue = () => {
     // docOrMp4Drawer.catalogueId   upDoc.catalogue  默认第一个
   })
 };
+
+var is_public:Ref<number>=ref(1)
+const changeTab=(v:number)=>{
+  is_public.value=v
+}
+
 // 获取文档、视频  列表
 const getDocOrMp4List = () => {
   const {file_name,page,limit}=docOrMp4Drawer
@@ -165,6 +203,10 @@ const getDocOrMp4List = () => {
  http.getFileList({param:{...params},urlParams:{dataId:docOrMp4Drawer.catalogueId}}).then((res: IBusinessResp) => {
     docOrMp4Drawer.loading=false
     const {list,page}=res.data
+    list.map((v:any)=>{
+      v.show=false
+      v.fileList=[1,2,3,4,5]
+    })
     docOrMp4Drawer.list.push(...list);
     docOrMp4Drawer.totalCount=page.totalCount
     // console.log(docOrMp4Drawer.list)
@@ -206,38 +248,134 @@ onMounted(()=>{
       // padding: 0 20px;
       min-height: 500px;
       .item {
-        display: flex;
-        align-items: center;
-        line-height: 54px;
-        background: rgba(0, 0, 0, 0.02);
-        margin-bottom: 16px;
-        padding: 0 1rem;
-        .left {
-          width: 55%;
-        }
-        .right {
-          width: 45%;
+        border: 1px solid rgba(0,0,0,0.15);
+        border-radius: 10px;
+        margin-bottom: 20px;
+        padding: 6px;
+        .itemInfo{
+          // height: 64px;
           justify-content: space-between;
+          .left {
+            // width: 55%;
+            .docBg{
+              width: 94px;
+              height: 50px;
+              // background: rgba(0,0,0,0.00);
+              background-image: url('src/assets/images/teacherExperimentResourcePool/base_info_bg.png');
+              background-size: 100% 100%;
+              background-repeat: no-repeat;
+              border-radius: 6px;
+              // margin-left: 6px;
+            }
+            .info{
+              padding-left: 10px;
+              
+            }
+          }
+          .right {
+            width: 60px;
+            justify-content: center;
+          }
+          .quName {
+            // word-break: break-all;
+            max-width: 400px;
+            color: var(--black-85);
+            margin-bottom: 6px;
+          }
+          .information{
+            .text{
+              color: var(--black-45);
+              font-size: var(--font-size-sm);
+            }
+            .portrait{
+              .imgBox{
+                width: 100px;
+              }
+              .img{
+                width: 16px;
+                height: 16px;
+                border-radius: 50%;
+                background-image: url('src/assets/images/teacherExperimentResourcePool/base_info_bg.png');
+                background-size: 100% 100%;
+                background-repeat: no-repeat;
+                margin-right: 6px;
+              }
+              .tags{
+                span{
+                  color: var(--primary-color);
+                  font-size: var(--font-size-sm);
+                }
+              }
+            }
+            .numSize{
+              display: none;
+              // opacity: 0;
+              .text{
+                display: inline-block;
+                margin-right: 2rem;
+                span{
+                  margin-right: 4px;
+                }
+              }
+            }
+          }
         }
-        .quName {
-          // word-break: break-all;
-          max-width: 180px;
+        .openInformation{
+          padding-bottom: 1rem;
+          margin-bottom: 1rem;
+          border: 1px dashed rgba(112,112,112,0.15);
+        }
+        .fileList{
+          .fileItem{
+            height: 40px;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.04);
+            margin-bottom: 20px;
+            color:#808080 ;
+            .select{
+              width: 60px;
+              text-align: center;
+              cursor: pointer;
+              color: var(--primary-color);
+              // justify-content: center;
+            }
+          }
+          .fileItem:hover{
+            background: #ffeed8;
+          }
+          .activeFileItem{
+            background: #fffbf6;
+            border: 1px solid #ffcaa1;
+          }
+        }
+        .openFile{
+          // margin: 1rem 0;
         }
         .fileIcon {
-          width: 32px;
-          height: 32px;
+          width: 20px;
+          height: 24px;
           background-size: 100%;
-          margin-right: 1rem;
+          margin: 0  1rem;
         }
         .iconfont {
           color: var(--primary-color);
           // font-size: 20px;
-          cursor: pointer;
+          // cursor: pointer;
           // padding: 0 12px;
         }
       }
       .item:hover {
-        background: #fffbf6;
+        // background: #fffbf6;
+        cursor: pointer;
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.16); 
+        .tags{
+          display: none;
+        }
+        .itemInfo .information .numSize{
+          display: block;
+          // display: flex;
+          // opacity: 1;
+        }
       }
       .active {
         background: #fffbf6;
