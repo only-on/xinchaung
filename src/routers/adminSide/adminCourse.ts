@@ -48,7 +48,7 @@ export default {
         {
             path: "evalute",
             name: "admincourseevalute",
-            component: () => import("src/views/adminModule/adminCourse/evalute/evalute.vue"),
+            // component: () => import("src/views/adminModule/adminCourse/evalute/evalute.vue"),
             meta: {
                 title: "归档课程分析",
                 authCode: 'courseResult'

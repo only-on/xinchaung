@@ -9,7 +9,7 @@ export default {
         {
           path:"",
           name:"",
-          component: () => import("src/views/teacherModule/teachCourse/courseDetail/components/correct.vue"),
+          // component: () => import("src/views/teacherModule/teachCourse/courseDetail/components/correct.vue"),
           meta: {
             title: "评阅",
             authCode: 'correct'

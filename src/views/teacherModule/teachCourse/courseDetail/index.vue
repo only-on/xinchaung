@@ -146,7 +146,8 @@ import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue"
-import { Knowledge,HotWords} from './echartsOption'
+// import { Knowledge,HotWords} from './echartsOption'
+
 interface IState{
   chapterList:any[]
 }
@@ -431,14 +432,14 @@ export default defineComponent({
       Visible.value=true
       nextTick(()=>{
         let data={}
-        Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
+        // Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
       })
     }
     onMounted(() => {
       // initData() HotWords
       nextTick(()=>{
         let data={}
-        HotWords(document.getElementById("graph") as HTMLDivElement,data)
+        // HotWords(document.getElementById("graph") as HTMLDivElement,data)
       })
     });
     function tabChange(key: string) {}

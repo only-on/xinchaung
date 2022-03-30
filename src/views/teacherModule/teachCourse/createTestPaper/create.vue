@@ -158,21 +158,27 @@ export default defineComponent({
         message.warning("请填写测试卷名称");
         return;
       }
+      if (formSate.paperLists.length == 0) {
+        message.warning("试卷至少添加一个习题");
+        return;
+      }
       if (paper_id) {
         examApi1
           .updatePaperBaseApi({
             param: { name: formSate.testName },
-            urlParams:{
-              paper_id: paper_id
-            }
+            urlParams: {
+              paper_id: paper_id,
+            },
           })
           .then((res: any) => {
-            router.push({
-              path: "/teacher/teacherCourse/testPaperList",
-              query: {
-                course_id: course_id,
-              },
-            });
+            setTimeout(()=>{
+              router.push({
+                path: "/teacher/teacherCourse/testPaperList",
+                query: {
+                  course_id: course_id,
+                },
+              });
+            },500)
           });
 
         return;
@@ -188,12 +194,14 @@ export default defineComponent({
         })
         .then((res: IBusinessResp) => {
           relationQuest(res.data.id);
-          router.push({
-            path: "/teacher/teacherCourse/testPaperList",
-            query: {
-              course_id: course_id,
-            },
-          });
+          setTimeout(()=>{
+            router.push({
+              path: "/teacher/teacherCourse/testPaperList",
+              query: {
+                course_id: course_id,
+              },
+            });
+          },500)
         });
     };
     // 关联习题
@@ -241,8 +249,7 @@ export default defineComponent({
             course_id: course_id,
           },
         })
-        .then((res: IBusinessResp) => {
-        });
+        .then((res: IBusinessResp) => {});
     };
     // 习题类型和难易类型
     let typeList = reactive<IpaperType>({
@@ -256,18 +263,16 @@ export default defineComponent({
       privateList: [],
     });
     const getCCatalogueList = () => {
-      http
-        .getCatalogueList({ param: { limit: 100 } })
-        .then((res: IBusinessResp) => {
-          let commonList: ICPDirectoryList[] = [];
-          let privateList: ICPDirectoryList[] = [];
-          res.data.list.map((v: any) => {
-            v.initial === 0 ? privateList.push(v) : commonList.push(v);
-          });
-          directoryList.commonList = commonList;
-          directoryList.privateList = privateList;
-          // getPCatalogueList()
+      http.getCatalogueList({ param: { limit: 100 } }).then((res: IBusinessResp) => {
+        let commonList: ICPDirectoryList[] = [];
+        let privateList: ICPDirectoryList[] = [];
+        res.data.list.map((v: any) => {
+          v.initial === 0 ? privateList.push(v) : commonList.push(v);
         });
+        directoryList.commonList = commonList;
+        directoryList.privateList = privateList;
+        // getPCatalogueList()
+      });
     };
     const getPCatalogueList = () => {
       http
@@ -286,7 +291,8 @@ export default defineComponent({
       });
       // 获取习题难易程度列表
       http.getLevelList().then((res: IBusinessResp) => {
-        typeList.levelType = res.data;
+        typeList.levelType.push({ id: "", name: "全部" });
+        typeList.levelType.push(...res.data);
       });
     });
     // 取消
@@ -334,8 +340,7 @@ export default defineComponent({
           urlParams: { entity_type: "test", entity_id: paper_id },
           param: { questions: [val.id] },
         })
-        .then((res: any) => {
-        });
+        .then((res: any) => {});
     }
     // 添加
     function add(val: any) {
@@ -406,9 +411,9 @@ interface IDirectoryList {
       }
     }
     :deep(.ant-btn-primary) {
-      margin-top: 35px;
+      margin-top: 29px;
       &.add {
-        margin-right: 14px;
+        margin-right: 8px;
       }
     }
   }

@@ -27,7 +27,7 @@ interface Ianswers {
   id: number
   answer: number
 }
-export interface IPaperList{
+export interface IPaperList {
   type: number
   directory: string
   desc: string
@@ -47,7 +47,7 @@ interface IteachCourse {
   addCatalogue: Function
   getLevelList: Function
   getPaperTypeList: Function
-  getQuestionList: Function 
+  getQuestionList: Function
   createQuestion: Function
   getKnowledgeList: Function
   createPaper: Function
@@ -58,7 +58,7 @@ export interface Ihttp {
   teachCourse: IteachCourse,
 }
 interface IType {
-  id: number
+  id: number | string
   name: string
 }
 export interface IpaperType {
