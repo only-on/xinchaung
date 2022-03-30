@@ -6,6 +6,97 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "20999446",
+      "name": "注意",
+      "font_class": "zhuyi",
+      "unicode": "e60a",
+      "unicode_decimal": 58890
+    },
+    {
+      "icon_id": "199749",
+      "name": "题目",
+      "font_class": "timu",
+      "unicode": "e690",
+      "unicode_decimal": 59024
+    },
+    {
+      "icon_id": "2742657",
+      "name": "设置",
+      "font_class": "shezhi",
+      "unicode": "e675",
+      "unicode_decimal": 58997
+    },
+    {
+      "icon_id": "8095128",
+      "name": "考试",
+      "font_class": "kaoshi",
+      "unicode": "e630",
+      "unicode_decimal": 58928
+    },
+    {
+      "icon_id": "1122",
+      "name": "剪切文件",
+      "font_class": "jianqiewenjian",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "10289730",
+      "name": "展开",
+      "font_class": "icon_function_zhankai",
+      "unicode": "e891",
+      "unicode_decimal": 59537
+    },
+    {
+      "icon_id": "11874500",
+      "name": "视频",
+      "font_class": "shipin",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    },
+    {
+      "icon_id": "11893491",
+      "name": "编辑",
+      "font_class": "bianji",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "12054764",
+      "name": "集体备课",
+      "font_class": "jitibeike",
+      "unicode": "e615",
+      "unicode_decimal": 58901
+    },
+    {
+      "icon_id": "12097339",
+      "name": "创建",
+      "font_class": "chuangjian",
+      "unicode": "e887",
+      "unicode_decimal": 59527
+    },
+    {
+      "icon_id": "19110483",
+      "name": "icon_icon_习题_s",
+      "font_class": "icon_icon_xiti_s",
+      "unicode": "e624",
+      "unicode_decimal": 58916
+    },
+    {
+      "icon_id": "19920337",
+      "name": "文章章节",
+      "font_class": "wenzhangzhangjie",
+      "unicode": "e627",
+      "unicode_decimal": 58919
+    },
+    {
+      "icon_id": "27875057",
+      "name": "实操",
+      "font_class": "shicao",
+      "unicode": "e6ef",
+      "unicode_decimal": 59119
+    },
+    {
       "icon_id": "4512042",
       "name": "移动",
       "font_class": "yidong",
