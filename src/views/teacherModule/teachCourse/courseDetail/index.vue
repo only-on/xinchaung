@@ -78,6 +78,14 @@
   </div>
   <div>
     <!-- 每个tab对应的组件 -->
+    <!--课程章节-->
+    <courseChapter v-if="state.activeTab.value=='1'"></courseChapter> 
+
+    <courseExperiment v-if="state.activeTab.value=='2'"></courseExperiment>
+    <popQuiz v-if="state.activeTab.value=='3'"></popQuiz>
+    <performanceReview v-if="state.activeTab.value=='4'"></performanceReview>
+    <studentAnalysis v-if="state.activeTab.value=='5'"></studentAnalysis>
+    <memberManagement v-if="state.activeTab.value=='6'"></memberManagement>
   </div>
 
   <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
@@ -112,6 +120,15 @@ import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue"
 import DetailHeader from '../component/common/DetailHeader.vue'
 import { Knowledge,HotWords} from './echartsOption'
+
+// 内容去tab
+import courseChapter from "./courseChapter.vue"
+import courseExperiment from "./courseExperiment.vue"
+import popQuiz from "./popQuiz.vue"
+import performanceReview from "./performanceReview.vue"
+import studentAnalysis from "./studentAnalysis.vue"
+import memberManagement from "./memberManagement.vue"
+
 interface IState{
   chapterList:any[]
   activeTab:any
@@ -344,6 +361,7 @@ var state:IState=reactive({
   ],
   activeTab:{}
 })
+state.activeTab=detailTabs[0]
 function initData(){
   http.courseDetail().then((res:IBusinessResp)=>{
 
