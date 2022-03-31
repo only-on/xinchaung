@@ -200,6 +200,7 @@ export default defineComponent({
       color: var(--white-65);
       font-size: var(--font-size-16);
       // padding-right: 15px;
+      border-bottom: 3px solid transparent;
       padding:0 8px;
       text-align: center;
       cursor: pointer;

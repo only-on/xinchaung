@@ -166,8 +166,55 @@ export default defineComponent({
       url: "/teacher/teacherMaterialResource",
       children: [],
     };
+    let teacherCourse={
+      icon: "",
+      id: 180,
+      name: "教学过程",
+      parent_id: 0,
+      sort: 3,
+      url: "",
+      children:[
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "我的教学",
+          parent_id: 161,
+          sort: 1,
+          url: "/teacher/teacherCourse?currentTab=0",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "公开课程",
+          parent_id: 161,
+          sort: 1,
+          url: "/teacher/teacherCourse?currentTab=1",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "课程安排",
+          parent_id: 161,
+          sort: 1,
+          url: "",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "教学质量",
+          parent_id: 161,
+          sort: 1,
+          url: "",
+        }
+      ]
+    }
     menus.push(center);
     menus.push(material);
+    menus.push(teacherCourse);
     menus.push(forum);
     var systemBaseInfo: any = reactive({
       login_logo: "",

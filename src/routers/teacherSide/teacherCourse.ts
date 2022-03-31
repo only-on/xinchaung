@@ -5,15 +5,16 @@ export default {
   component: Layout,
   name:'teacherCourse',
   meta: {
-    title: (params?: RouteParams, query?: RouteParams) => {
-      // console.log(query)
-      const dataDetailMap = {
-          '0': '课程',
-          '1': '内置课程',
-          '2': '归档课程',
-      }
-      return dataDetailMap[query!.currentTab && query!.currentTab.toString()] || dataDetailMap[0]
-    },
+    // title: (params?: RouteParams, query?: RouteParams) => {
+    //   // console.log(query)
+    //   const dataDetailMap = {
+    //       '0': '课程',
+    //       '1': '内置课程',
+    //       '2': '归档课程',
+    //   }
+    //   return dataDetailMap[query!.currentTab && query!.currentTab.toString()] || dataDetailMap[0]
+    // },
+    title:'课程',
     authCode: 'courseList'
   },
   children: [
@@ -87,13 +88,24 @@ export default {
       },
     },
     {
-      path: "detail",
-      // component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
+      path: "PublicDetail",
+      name:'公开课程详情',
+      component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
       meta: {
         title: "详情",
-        authCode: 'detail'
+        authCode: 'PublicDetail'
       },
     },
+    {
+      path: "PrivateDetail",
+      name:'我的课程详情',
+      component: () => import("src/views/teacherModule/teachCourse/courseDetail/private.vue"),
+      meta: {
+        title: "详情",
+        authCode: 'PrivateDetail'
+      },
+    },
+
     {
       path: "archive-detail",
       // component: () => import("src/views/teacherModule/teachCourse/courseDetail/archivedDetail.vue"),
