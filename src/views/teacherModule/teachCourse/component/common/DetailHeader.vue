@@ -56,7 +56,10 @@
         </div>
       </div>
       <div class="rightBox">
-
+        <div class="flexCenter caozuo" v-if="currentTab && Number(currentTab) === 0">
+          <a-button class="brightBtn" type="primary" @click="setup()"> 设 置 </a-button>
+          <a-button type="primary"  @click="edit()"> 编 辑 </a-button>
+        </div>
       </div>
     </div>
     <div class="courseDetailTab flexCenter">
@@ -85,8 +88,12 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
+import extStorage from "src/utils/extStorage";
 const router = useRouter();
 const route = useRoute();
+const { currentTab,course_id } = route.query;
+const { lStorage } = extStorage;
+const role = lStorage.get("role");
 const http = (request as any).teacherImageResourcePool;
 interface Props {
   info: any;
@@ -113,6 +120,12 @@ const selectTab=(v:any)=>{
   activeTab.name=v.name,
   activeTab.value=v.value
   emit("selectTab", v);
+}
+const setup=()=>{
+  
+}
+const edit=()=>{
+
 }
 </script>
 <style scoped lang="less">

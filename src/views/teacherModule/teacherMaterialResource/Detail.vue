@@ -44,7 +44,7 @@
         <div class="tab flexCenter">
           <span v-for="v in tabs" :key="v" class="item" :class="(activeTab === v && tabs.length>1)?'active':''" @click="clickTab(v)">
             {{v}}
-            <span v-if="v === '文件列表'">({{searchFileList && searchFileList.length}})</span>
+            <span v-if="v === '文件列表'">({{state.fileList && state.fileList.length}})</span>
           </span>
         </div>
         <div class="right">
@@ -66,15 +66,14 @@
         <div v-if="activeTab==='说明文档'">
           <MarkedEditor v-model="state.document.content" class="markdown__editor" :preview="previewMark" />
         </div>
-        <div v-if="activeTab==='文件列表'" class="fileBox">
+        <div v-show="activeTab==='文件列表'" class="fileBox">
           <div class="left">
             <div class="custom_input">
               <a-input-search v-model:value="state.fileKeyWord" placeholder="请输入搜索关键字"/>
             </div>
-            <div class="file textScrollbar" v-if="state.fileList.length">
-              <FileList :FileList="state.fileKeyWord ? searchFileList : state.fileList" @selectFile="selectFile" :activeItem="state" />
+            <div class="file textScrollbar">
+              <FileList :FileList="state.fileKeyWord?searchFileList:state.fileList" @selectFile="selectFile" :activeItem="state" />
             </div>
-            <!-- <div>加载更多</div>  -->
           </div>
           <div class="right">
             <div class="fileItem flexCenter" v-if="state.fileItem.id">
@@ -98,15 +97,16 @@
               <div v-if="state.fileItem.suffix === 'md'">
                 <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
               </div>
-              <div v-if="state.fileItem.suffix === 'mp4'">
+              <div v-else-if="state.fileItem.suffix === 'mp4'">
                 <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>
               </div>
-              <div v-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
+              <div v-else-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
                 <PdfVue :url="state.fileItem.file_html" />
               </div>
-              <div v-else="['md','mp4','pdf'].includes(state.fileItem.suffix) === false">
-                <Empty type="filePreview"  />
+              <!-- ="['md','mp4','pdf'].includes(state.fileItem.suffix) === false" -->
+              <div v-else>
+                <Empty type="filePreview"/>
               </div>
             </div>
           </div>
@@ -188,53 +188,7 @@ const state:any=reactive({
     file:'',       // 上传的md  原文件
     content:'1、vue是否能升级，升级后ant-design-vue是否正常，升级后私包使用是否正常\r\n2'     // markdown 数据
   },
-  fileList:[
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test.py", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test.tar", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "course.txt", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "文件夹1", size: "0.4 KB",show:false,
-      children:[
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "文件夹1-1", size: "0.4 KB",show:false,
-        children:[
-          {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test1-1-3.py", size: "0.4 KB",
-
-          },
-          {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "文件夹1-1-3", size: "0.4 KB",show:false,
-          children:[
-            {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test1-1-3-4.py", size: "0.4 KB"},
-            {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test1-1-3-4.doc", size: "0.4 KB"},
-          ]
-          },
-        ]
-        },
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test1-2.py", size: "0.4 KB"},
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test1-2.tar", size: "0.4 KB"},
-      ]
-    },
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test2.py", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test2-2.tar", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "course2.txt", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "文件夹2", size: "0.4 KB",show:false,
-      children:[
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "ms2-2.txt", size: "0.4 KB"},
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test2-2.py", size: "0.4 KB"},
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test2-2.tar", size: "0.4 KB"},
-      ]
-    },
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test3.py", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test3.tar", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "course3.txt", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "文件夹3", size: "0.4 KB",show:false,
-      children:[
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "ms3-3.txt", size: "0.4 KB"},
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test3-3.py", size: "0.4 KB"},
-        {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test3-3.tar", size: "0.4 KB"},
-      ]
-    },
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test4.py", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "test4.tar", size: "0.4 KB"},
-    {uid: "e7771e6a776c11ec9b9e0242ac110004", name: "course4.txt", size: "0.4 KB"},
-  ],
+  fileList:[],
   fileItem:{},
   fileKeyWord:'',  //  搜索文件列表关键词
 })
@@ -284,6 +238,7 @@ const searchFileList=computed(()=>{
   }else{
     arr=state.fileList
   }
+  console.log(arr)
   return arr
 })
 // 

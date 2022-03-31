@@ -25,7 +25,7 @@
 </template>
 <script lang="ts">
 import * as echarts from "echarts";
-import { options } from "src/views/teacherModule/teachCourse/evalute/components/public";
+// import { options } from "src/views/teacherModule/teachCourse/evalute/components/public";
 import { defineComponent, onMounted, ref, watch } from "vue";
 export default defineComponent({
   name: "experScore",

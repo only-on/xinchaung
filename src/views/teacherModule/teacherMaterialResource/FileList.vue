@@ -41,25 +41,26 @@ const props = withDefaults(defineProps<Props>(), {
   activeItem: {}
 });
 
-const List:any=reactive([])
+// const List:any=reactive([])
 var currentPage: Ref<number> = ref(1);
 var PageCount: Ref<number> = ref(1);
 var limit: Ref<number> = ref(9);
 
-if(props.FileList.length){
-  PageCount.value=Math.ceil(props.FileList.length / limit.value)
-  List.push(...props.FileList)
-}
+// if(props.FileList.length){
+//   PageCount.value=Math.ceil(props.FileList.length / limit.value)
+//   List.push(...props.FileList)
+// }
 var totalList:any=computed(()=>{
   let arr:any=[]
   let curLength=currentPage.value * limit.value
-  let length=curLength > List.length ? List.length : curLength
+  let length=curLength > props.FileList.length ? props.FileList.length : curLength
   // console.log(length-1)
-  List.forEach((v:any,k:number)=>{
+  props.FileList.forEach((v:any,k:number)=>{
     if(k <= length-1){
       arr.push(v)
     }
   })
+  console.log('totalList:'+arr)
   return arr
 })
 

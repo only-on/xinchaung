@@ -76,6 +76,10 @@
       </div>
     </div>
   </div>
+  <div>
+
+  </div>
+  
   <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
     <div id="KnowledgePoints">
 
@@ -110,6 +114,7 @@ import DetailHeader from '../component/common/DetailHeader.vue'
 import { Knowledge,HotWords} from './echartsOption'
 interface IState{
   chapterList:any[]
+  activeTab:any
 }
 var updata = inject("updataNav") as Function;
 updata({
@@ -127,7 +132,6 @@ const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { currentTab,course_id } = route.query;
 const detailTabs=[{name:'课程章节',value:'1'},{name:'课程实验管理',value:'2'},{name:'随堂测试',value:'3'},{name:'成绩评阅',value:'4'},{name:'学情分析',value:'5'},{name:'成员管理',value:'6'},]
-
 var state:IState=reactive({
   chapterList:[
     {
@@ -337,7 +341,8 @@ var state:IState=reactive({
         },
       ]
     },
-  ]
+  ],
+  activeTab:{}
 })
 function initData(){
   http.courseDetail().then((res:IBusinessResp)=>{
@@ -393,6 +398,7 @@ function viewAtlas(){
 
 const selectTab=(val:any)=>{
   console.log(val)
+  state.activeTab={...val}
 }
 onMounted(() => {
   // initData() HotWords
