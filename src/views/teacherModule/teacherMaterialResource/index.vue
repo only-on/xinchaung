@@ -47,7 +47,7 @@
           </div>
           <div class="user-num">
             <div class="user" v-if="currentTab === 0">
-              <img src="" alt="" srcset="" />
+              <img :src="list.avatar" alt="" srcset="" />
               <span class="name">{{list.username}}</span>
             </div>
             <div class="num-size">
@@ -168,6 +168,7 @@ interface IMaterialList {
   type_name: string
   username: string
   user: Iuser
+  avatar: string
 }
 interface Iuser {
   username: string
@@ -193,6 +194,8 @@ const initData = () => {
         v.item_size = v.size
         v.tags = v.labels.map((v: any) => v.name)
         v.type_name = '数据集'
+        v.username = v.username ? v.username : 'teach'
+        v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/teacher_p.png'
       })
       materialList.push(...data);
       pageTotal.value = total;
@@ -208,6 +211,7 @@ const initData = () => {
     ...pageInfo,
   };
   http.dataSets({ param }).then((res: any) => {
+    if (!res) return
     const { list, page } = res.data;
     list.forEach((v: any) => {
       v.item_size = bytesToSize(v.item_size)
@@ -365,7 +369,7 @@ const getTypeList = () => {
         img {
           width: 20px;
           height: 20px;
-          background-color: pink;
+          // background-color: pink;
           margin-right: 4px;
         }
       }

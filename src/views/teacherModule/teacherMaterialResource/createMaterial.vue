@@ -12,7 +12,7 @@
         <div class="upload-content">
           <a-form-item :label="createType === 'dataSet' ? '数据集' : ''" name="fileList">
             <div class="upload">
-              <upload-file :type="createMaterialType.id" :fileList="formState.fileList"></upload-file>
+              <upload-file :type="createMaterialType.id" :fileList="formState.fileList" :complete="uploadComplete"></upload-file>
             </div>
           </a-form-item>
           <a-form-item label="说明" v-if="createType === 'dataSet'">
@@ -34,7 +34,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete"></Submit>
   </div>
 </template>
 
@@ -129,6 +129,9 @@ async function fileListValidator(rule: RuleObject, value: string) {
   }
 }
 
+const uploadComplete: any = reactive({
+  complete: false
+})
 // 上传说明
 const MdFileBeforeUpload = async (file: any) => {
   if (getFileType(file.name) !== "md") {
@@ -183,11 +186,12 @@ const submit = async() => {
     baseInfo.tags.forEach((v: string, k: number) => {
       fd.append(`tags[${k}]`, v)
     })
-    Object.keys(formState.fileList).forEach((k: string) => {
-      fd.append(`items[${k}][file_name]`, formState.fileList[k].name)
-      fd.append(`items[${k}][file_url]`, formState.fileList[k].file_url)
-      fd.append(`items[${k}][suffix]`, formState.fileList[k].suffix)
-      fd.append(`items[${k}][size]`, formState.fileList[k].size)
+    Object.keys(formState.fileList).forEach((k: string, i, v) => {
+      if (formState.fileList[k].status="done") return
+      fd.append(`items[${i}][file_name]`, formState.fileList[k].name)
+      fd.append(`items[${i}][file_url]`, formState.fileList[k].file_url)
+      fd.append(`items[${i}][suffix]`, formState.fileList[k].suffix)
+      fd.append(`items[${i}][size]`, formState.fileList[k].size)
     })
     http.create({param: fd}).then((res: IBusinessResp) => {
       console.log(res)
