@@ -31,7 +31,7 @@ import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
-const http = (request as any).teacherExperimentResourcePool;
+const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -68,8 +68,8 @@ const searchInfo = reactive<ISearchInfo>({
 });
 watch(() => { return configuration.componenttype; },
   (val) => {
-    // console.log(val)
-    currentTab.value = val ? 0 : 1;
+    console.log(val)
+    currentTab.value = val ;
     searchInfo.init_type = currentTab.value
     searchInfo.page = 1
     searchInfo.content_direction = 0
@@ -78,8 +78,9 @@ watch(() => { return configuration.componenttype; },
     classifyList.forEach((v: any) => {
       v.value = 0
     })
-    initData();
-    isShowAdd.value = currentTab.value === 0;
+    // initData();
+    isShowAdd.value = val == 1;
+    console.log(isShowAdd.value)
   }
 );
 /**
@@ -170,7 +171,7 @@ const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
   Object.assign(searchInfo, obj)
   searchInfo.page = 1;
-  initData();
+  // initData();
 };
 const courseDetail=(n:number)=>{
   if(n === 1){
@@ -181,15 +182,15 @@ const courseDetail=(n:number)=>{
 }
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
-    currentTab.value = 1
+    currentTab.value = 0
     configuration.componenttype = 0
   } else {
-    currentTab.value = 0
+    currentTab.value = 1
     configuration.componenttype = 1
   }
   searchInfo.init_type = currentTab.value
   
-  initData();
+  // initData();
 });
 </script>
 <style scoped lang="less">
