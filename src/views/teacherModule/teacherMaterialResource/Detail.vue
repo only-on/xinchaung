@@ -101,7 +101,7 @@
               <div v-if="state.fileItem.suffix === 'mp4'">
                 <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>
               </div>
-              <div v-if="state.fileItem.suffix === 'pdf'" class="pdfBox">
+              <div v-if="state.fileItem.file_html" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
                 <PdfVue :url="state.fileItem.file_html" />
               </div>

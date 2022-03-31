@@ -170,6 +170,14 @@ export default defineComponent({
         }
       }
     );
+    watch(()=>{
+      //  route
+      const { query, path } = route;
+      return query.currentTab?query.currentTab:query
+      },(val)=>{
+      // console.log(val)
+      updata({ ...configuration, componenttype:val });
+    },{deep:true})
     return { activeName, ActiveName, tabChange, configuration };
   },
 });

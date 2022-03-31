@@ -68,6 +68,7 @@ const searchInfo = reactive<ISearchInfo>({
 });
 watch(() => { return configuration.componenttype; },
   (val) => {
+    // console.log(val)
     currentTab.value = val ? 0 : 1;
     searchInfo.init_type = currentTab.value
     searchInfo.page = 1
