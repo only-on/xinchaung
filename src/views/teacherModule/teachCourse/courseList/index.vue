@@ -4,8 +4,9 @@
   <div>
     列表
   </div>
-  <h2 @click="courseDetail(1)">公开课程详情入口</h2>
-  <h2 @click="courseDetail(2)">我的教学课程详情入口</h2>
+  <h2 @click="courseDetail(1)">课程详情入口</h2>
+  <!-- <h2 @click="courseDetail(1)">公开课程详情入口</h2>
+  <h2 @click="courseDetail(2)">我的教学课程详情入口</h2> -->
 </template>
 
 <script lang="ts" setup>
@@ -80,7 +81,7 @@ watch(() => { return configuration.componenttype; },
     })
     // initData();
     isShowAdd.value = val == 1;
-    console.log(isShowAdd.value)
+    // console.log(isShowAdd.value)
   }
 );
 /**
@@ -175,7 +176,11 @@ const classifyChange = (obj: any) => {
 };
 const courseDetail=(n:number)=>{
   if(n === 1){
-    router.push({ path: "/teacher/teacherCourse/PublicDetail"});
+    // router.push({ path: "/teacher/teacherCourse/PublicDetail"});
+    router.push({
+    path: "/teacher/teacherCourse/PublicDetail",
+    query: { currentTab:currentTab.value },
+  });
   }else{
     router.push({ path: "/teacher/teacherCourse/PrivateDetail"});
   }

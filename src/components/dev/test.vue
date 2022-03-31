@@ -30,20 +30,18 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
-defineProps<{
-  // 采用ts专有声明，无默认值
-  msg: string;
-  num?: number;
-}>();
-
-// 采用ts专有声明，有默认值
-interface Props {
-  msg?: string;
-  labels?: string[];
-}
+// interface Props {
+//   defaultConfig: any;
+//   imageList:string
+// }
 // const props = withDefaults(defineProps<Props>(), {
-//   msg: "hello",
-//   labels: () => ["one", "two"],
+//   defaultConfig: () => {},
+//   imageList:'',
 // });
+
+// const emit = defineEmits<{
+//   (e: "selectedImage", val: any): void;
+// }>();
+
 </script>
 <style scoped lang="less"></style>
