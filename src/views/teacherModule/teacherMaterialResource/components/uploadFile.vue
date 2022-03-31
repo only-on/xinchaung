@@ -49,8 +49,8 @@
                 @click="removeFile(value, key)"
               ></span>
             </div>
-            <div class="file-size" v-if="props.type === 1">{{ size(value.size/value.progress/100) }}</div>
-            <div class="file-size" v-else>{{ bytesToSize(value.size) }}</div>
+            <!-- <div class="file-size" v-if="props.type === 1">{{ size(value.size/value.progress/100) }}</div> -->
+            <div class="file-size">{{ bytesToSize(value.size) }}</div>
             <div class="file-progress">
               <div class="inner" v-if="props.type === 1" :style="{width: value.progress+'%'}"></div>
               <div class="inner" v-else :style="{width: value.percent+'%'}"></div>

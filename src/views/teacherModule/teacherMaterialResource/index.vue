@@ -52,7 +52,7 @@
             </div>
             <div class="num-size">
               <span class="num">数量 {{ list.item_count }}</span>
-              <span class="size">大小 {{ bytesToSize(list.item_size) }}</span>
+              <span class="size">大小 {{ list.item_size }}</span>
             </div>
           </div>
         </div>
@@ -77,9 +77,11 @@ import { Modal, message } from "ant-design-vue";
 import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import { bytesToSize } from "src/utils/common"
+import extStorage from "src/utils/extStorage";
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherMaterialResource;
+const datasetHttp = (request as any).dataSet;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -91,6 +93,7 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
+const { lStorage } = extStorage;
 
 // 搜索
 const searchKey = ref<string>("");
@@ -100,7 +103,6 @@ const searchFn = (key: string) => {
   initData();
 };
 const handleMenuClick = ({ key }: { key: string }) => {
-  console.log(key);
   router.push({
     path: "/teacher/teacherMaterialResource/createMaterial",
     query: { key },
@@ -138,7 +140,6 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    console.log(val);
     currentTab.value = val;
     pageInfo.page = 1
     // searchKey.value = ''
@@ -173,8 +174,31 @@ interface Iuser {
 }
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
-  console.log(currentTab.value, '1', labelSearch.type, 0)
   materialList.length = 0
+  if (labelSearch.type === '数据集') {
+    const param = {
+      category: '',
+      page: pageInfo.page,
+      per_page: pageInfo.limit,
+      keyword: searchKey.value,
+      common: currentTab.value ? 0 : 1,
+      user_id: lStorage.get("user_id") || 100,
+      label: labelSearch.label ? labelSearch.label : ''
+    }
+    datasetHttp.dataSets({ param }).then((res: any) => {
+      const { data, total} = res
+      data.forEach((v: any) => {
+        v.id = v.uid
+        v.item_count = v.amount
+        v.item_size = v.size
+        v.tags = v.labels.map((v: any) => v.name)
+        v.type_name = '数据集'
+      })
+      materialList.push(...data);
+      pageTotal.value = total;
+    })
+    return
+  }
   const param = {
     name: searchKey.value,
     is_public: currentTab.value ? 0 : 1,
@@ -183,13 +207,11 @@ const initData = () => {
       (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label),
     ...pageInfo,
   };
-  console.log(param);
   http.dataSets({ param }).then((res: any) => {
-    console.log(res);
     const { list, page } = res.data;
-    // list.forEach((v: IMaterialList) => {
-    //   v.item_size = (Number(v.item_size) / 1024 / 1024).toFixed(2) + 'kb'
-    // })
+    list.forEach((v: any) => {
+      v.item_size = bytesToSize(v.item_size)
+    })
     materialList.push(...list);
     pageTotal.value = page.totalCount;
   });
@@ -218,7 +240,6 @@ const mountInfo = reactive({
 })
 const getMountInfo = () => {
   http.getMountInfo().then((res: IBusinessResp) => {
-    console.log(res)
     Object.assign(mountInfo, res.data)
   })
 }
@@ -243,12 +264,11 @@ const classifyList: any = reactive([
 ]);
 const classifyChange = (obj: any) => {
   Object.assign(labelSearch, obj);
-  console.log(labelSearch)
   pageInfo.page = 1
   // searchFn();
   initData()
 };
-const labelSearch = reactive({
+const labelSearch: {type: any, label: any} = reactive({
   type: 0,
   label: 0,
 });

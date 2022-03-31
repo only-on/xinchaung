@@ -3,7 +3,7 @@
     <div class="baseinfo">
       <h3 class="title">{{createMaterialType.subname}}基本信息</h3>
       <div class="baseinfo-content">
-        <base-info ref="baseInfoRef" :materialType="createMaterialType.subname" class="con"></base-info>
+        <base-info ref="baseInfoRef" :materialType="createMaterialType.subname" class="create"></base-info>
       </div>
     </div>
     <a-form :layout="'vertical'" :model="formState" :rules="rules" ref="formRef">
@@ -25,8 +25,8 @@
                 <a-button type="primary">上传说明</a-button>
                 <span class="tips">仅支持md文件</span>
               </a-upload>
-              <div class="md-info" v-if="explainMdName">
-                <span class="name">{{explainMdName}}</span>
+              <div class="md-info" v-if="formState.doc_name">
+                <span class="name">{{formState.doc_name}}</span>
                 <span class="iconfont icon-close" @click="RemoveMdFile"></span>
               </div>
             </div>
@@ -50,7 +50,10 @@ import uploadFile from './components/uploadFile.vue'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import Submit from "src/components/submit/index.vue";
+import extStorage from "src/utils/extStorage";
+import { readFile } from "src/utils/common";
 const http = (request as any).teacherMaterialResource;
+const datasetHttp = (request as any).dataSet;
 const $message: MessageApi = inject("$message")!;
 const router = useRouter();
 const route = useRoute();
@@ -76,20 +79,33 @@ updata({
 });
 
 interface IFormState {
+  creator: number
+  role: number
   name: string
   description: string
   range: string
   src: string
-  labels: string[]
+  tags: string[]
   fileList: any
+  categoryText: string
+  is_public: any
+  documents: string
+  doc_name: string
 }
+const { lStorage } = extStorage;
 const formState = reactive<IFormState>({
+  creator: Number(lStorage.get("user_id")) || 100,
+  role: Number(lStorage.get("role")) || 3,
   name: '',
   description: '',
   range: '0',
   src: '',
-  labels: [],
-  fileList: {}
+  tags: [],
+  fileList: {},
+  categoryText: '',
+  is_public: '',
+  documents: '',
+  doc_name: ''
 })
 // const rules = {
 //   name: [{ required: true, message: "请输入名称", trigger: "blur" }],
@@ -114,17 +130,18 @@ async function fileListValidator(rule: RuleObject, value: string) {
 }
 
 // 上传说明
-const explainMdName = ref<string>('')
-const MdFileBeforeUpload = (file: any) => {
+const MdFileBeforeUpload = async (file: any) => {
   if (getFileType(file.name) !== "md") {
     $message.warn("请上传md文件");
     return
   }
-  const fd = new FormData();
-  fd.append("upload_file", file);
-  http.uploadExplain({ param: fd }).then((res: any) => {
-    console.log(res)
-    explainMdName.value  = res.data.name
+  const text: any = await readFile(file) || '';
+  formState.documents = text;
+  formState.doc_name = file.name;
+  // const fd = new FormData();
+  // fd.append("upload_file", file);
+  // http.uploadExplain({ param: fd }).then((res: any) => {
+  //   console.log(res)
     // state.ForumSearch.doc_name = res.data.name;
     // var reader = new FileReader();
     // reader.readAsText(file, "utf-8");
@@ -134,10 +151,11 @@ const MdFileBeforeUpload = (file: any) => {
     //     state.ForumSearch.documents = reader.result.toString();
     //   }
     // };
-  });
+  // });
 }
 const RemoveMdFile = () => {
-  explainMdName.value = ''
+  formState.documents = ''
+  formState.doc_name = ''
 }
 
 // 创建
@@ -147,34 +165,69 @@ const submit = async() => {
   console.log(formState.fileList)
   await baseInfoRef.value.fromValidate()
   Object.assign(formState, baseInfoRef.value.formState)
-  // formRef.value.validate().then(() => {
-  //   console.log(formState) 
-  // })
-  const baseInfo = baseInfoRef.value.formState
-  const fd = new FormData()
-  fd.append('name', baseInfo.name)
-  fd.append('description', baseInfo.description)
-  // fd.append('tags', baseInfo.tags)
-  fd.append('is_public', baseInfo.is_public)
-  fd.append('cover', baseInfo.cover)
-  fd.append('type', createMaterialType.id)
-  if (createMaterialType.id === 1) {
-    
-    return
+  formRef.value.validate().then(() => {
+    const baseInfo = baseInfoRef.value.formState
+    console.log(formState, baseInfo) 
+    if (createMaterialType.id === 1) {
+      console.log(formState)
+      createDataSet()
+      return
+    }
+    const fd = new FormData()
+    fd.append('name', baseInfo.name)
+    fd.append('description', baseInfo.description)
+    // fd.append('tags', baseInfo.tags)
+    fd.append('is_public', baseInfo.is_public)
+    fd.append('cover', baseInfo.cover)
+    fd.append('type', createMaterialType.id)
+    baseInfo.tags.forEach((v: string, k: number) => {
+      fd.append(`tags[${k}]`, v)
+    })
+    Object.keys(formState.fileList).forEach((k: string) => {
+      fd.append(`items[${k}][file_name]`, formState.fileList[k].name)
+      fd.append(`items[${k}][file_url]`, formState.fileList[k].file_url)
+      fd.append(`items[${k}][suffix]`, formState.fileList[k].suffix)
+      fd.append(`items[${k}][size]`, formState.fileList[k].size)
+    })
+    http.create({param: fd}).then((res: IBusinessResp) => {
+      console.log(res)
+      router.go(-1)
+    })
+  })
+}
+const createDataSet = () => {
+  console.log(formState)
+  const file = []
+  for (const key in formState.fileList) {
+    if (
+      Object.prototype.hasOwnProperty.call(formState.fileList, key)
+    ) {
+      if (formState.fileList[key].status === "end") {
+        file.push({
+          uid: formState.fileList[key].data.uid,
+          path: formState.fileList[key].data.path,
+        });
+      }
+    }
   }
-  baseInfo.tags.forEach((v: string, k: number) => {
-    fd.append(`tags[${k}]`, v)
-  })
-  Object.keys(formState.fileList).forEach((k: string) => {
-    fd.append(`items[${k}][file_name]`, formState.fileList[k].name)
-    fd.append(`items[${k}][file_url]`, formState.fileList[k].file_url)
-    fd.append(`items[${k}][suffix]`, formState.fileList[k].suffix)
-    fd.append(`items[${k}][size]`, formState.fileList[k].size)
-  })
-  http.create({param: fd}).then((res: IBusinessResp) => {
-    console.log(res)
-    router.go(-1)
-  })
+  const param = {
+    creator: formState.creator,
+    role: formState.role,
+    name: formState.name,
+    description: formState.description,
+    common: Number(formState.is_public),
+    category: [formState.categoryText],
+    label: formState.tags,
+    cover: formState.src,
+    file,
+    doc_name: formState.doc_name,
+    documents: formState.documents,
+  }
+  console.log(param)
+  datasetHttp.create({ param }).then((res: any) => {
+    $message.success("创建成功");
+    router.go(-1);
+  });
 }
 const cancel = () => {
   router.go(-1)
@@ -198,8 +251,8 @@ const cancel = () => {
       // justify-content: space-between;
       padding-top: 16px;
       .con {
-        display: flex;
-        justify-content: space-between;
+        // display: flex;
+        // justify-content: space-between;
       }
     }
   }

@@ -1,5 +1,6 @@
 <template>
 <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="baseInfoFormRef">
+  <div class="info">
   <div class="left">
     <a-form-item :label="props.materialType+'名称'" name="name" required>
       <a-input v-model:value="formState.name" :placeholder="'请在这里输入'+props.materialType+'名称'" />
@@ -7,7 +8,57 @@
     <a-form-item :label="props.materialType+'描述'" name="description">
       <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 3, maxRows: 5 }" placeholder="请在这里输入描述文字" />
     </a-form-item>
-    <a-form-item label="添加标签" name="tags">
+  </div>
+  <div class="right">
+    <a-form-item label="可见范围" name="is_public" required class="visible-range">
+      <a-select v-model:value="formState.is_public">
+        <!-- 1-公开，0-私有 -->
+        <a-select-option value="1">
+          <span class="name">公开</span>
+          <span class="tips">所有人可见</span>
+        </a-select-option>
+        <a-select-option value="0">
+          <span class="name">私有</span>
+          <span class="tips">仅自己可见</span>
+        </a-select-option>
+      </a-select>
+    </a-form-item>
+    <a-form-item label="封面图" class="cover">
+      <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
+      <a-upload
+        v-model:file-list="fileList"
+        list-type="picture"
+        class="uploader"
+        :show-upload-list="false"
+        :before-upload="beforeUpload"
+        @change="handleChange"
+      >
+        <div class="upload">
+          <div class="cover">
+            <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
+          </div>
+          <loading-outlined v-if="loading"></loading-outlined>
+        </div>
+      </a-upload>
+    </a-form-item>
+  </div>
+  </div>
+  <div class="type">  
+    <a-form-item class="left" label="选择类型" name="categoryText" v-if="props.materialType === '数据集'">
+      <a-radio-group
+        name="radioGroup"
+        v-model:value="formState.categoryText"
+      >
+        <a-radio
+          v-for="(item, index) in navList"
+          :value="item.name"
+          :key="index"
+        >
+          {{ item.name }}
+        </a-radio>
+      </a-radio-group>
+    </a-form-item>
+    <a-form-item class="right" label="添加标签" name="tags">
       <div class="label-list">
         <span
           v-for="(item, index) in formState.tags"
@@ -49,39 +100,6 @@
       </div>
     </a-form-item>
   </div>
-  <div class="right">
-    <a-form-item label="可见范围" name="is_public" required class="visible-range">
-      <a-select v-model:value="formState.is_public">
-        <!-- 1-公开，0-私有 -->
-        <a-select-option value="1">
-          <span class="name">公开</span>
-          <span class="tips">所有人可见</span>
-        </a-select-option>
-        <a-select-option value="0">
-          <span class="name">私有</span>
-          <span class="tips">仅自己可见</span>
-        </a-select-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item label="封面图" class="cover">
-      <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-      <a-upload
-        v-model:file-list="fileList"
-        list-type="picture"
-        class="uploader"
-        :show-upload-list="false"
-        :before-upload="beforeUpload"
-        @change="handleChange"
-      >
-        <div class="upload">
-          <div class="cover">
-            <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
-          </div>
-          <loading-outlined v-if="loading"></loading-outlined>
-        </div>
-      </a-upload>
-    </a-form-item>
-  </div>
 </a-form>
 </template>
 
@@ -92,6 +110,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { LoadingOutlined } from '@ant-design/icons-vue';
 const http = (request as any).teacherMaterialResource;
+const datasetHttp = (request as any).dataSet;
 const $message: MessageApi = inject("$message")!;
 
 const props = defineProps({
@@ -107,16 +126,18 @@ interface IFormState {
   description: string
   is_public: string
   tags: string[]
-  // src: string
-  cover: any
+  src: string
+  cover: any,
+  categoryText: string
 }
 const formState = reactive<IFormState>({
   name: '',
   description: '',
   is_public: '0',
-  // src: '',
+  src: '',
   tags: [],
-  cover: ''
+  cover: '',
+  categoryText: ''
 })
 const imageUrl = ref('')
 if(Object.keys(props.editInfo).length){
@@ -138,27 +159,27 @@ const beforeUpload = (file:any) => {
     $message.warn('图片类型不正确')
     return false
   }
+  if (props.materialType === '数据集') {
+    const fd = new FormData()
+    fd.append('upload_file', file)
+    datasetHttp.upLoadCover({param:fd}).then((res:any)=>{
+      loading.value = false
+      console.log(res)
+      formState.src = res.data.path
+      let data = res.data;
+      let obj = [
+        {
+          uid: "-1",
+          name: data.name,
+          status: "",
+          url: data.path,
+        },
+      ];
+      // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
+    })
+    return
+  }
   formState.cover = file
-  // formState.src = file
-  // const fd = new FormData()
-  // fd.append('upload_file', file)
-  // http.upLoadCover({param:fd}).then((res:any)=>{
-  //   loading.value = false
-  //   console.log(res)
-  //   formState.src = res.data.path
-    // let data = res.data;
-    // let obj = [
-    //   {
-    //     uid: "-1",
-    //     name: data.name,
-    //     status: "",
-    //     url: data.path,
-    //   },
-    // ];
-    // (state.ForumSearch.cover = data.path), (coverFileList.value = obj);
-  // })
-  // formState.src = "src/assets/images/cover2.png"
-  // return false
 }
 function getBase64(img: Blob, callback: (base64Url: string) => void) {
   const reader = new FileReader();
@@ -249,6 +270,9 @@ const rules = {
     { required: true, message: `请输入${props.materialType}名称`, trigger: "blur" },
     { max: 20, message: `${props.materialType}名称最多20个字符`, trigger: "blur" },
   ],
+  categoryText: [
+    { required: true, message: "请选择数据集类型", trigger: "change" },
+  ],
 }
 // let baseInfoFormRef = ref<HTMLElement | null>(null)
 let baseInfoFormRef = ref()
@@ -274,10 +298,28 @@ const getLabelsList = () => {
 }
 onMounted(() => {
   getLabelsList()
+  props.materialType === '数据集'?getNavList():''
 })
+
+
+// 获取选择类型列表
+const navList = reactive<{name: string}[]>([])
+const getNavList = () => {
+  navList.length = 0
+  datasetHttp.categoryList().then((res: IBusinessResp) => {
+    console.log(res)
+    navList.push(...res.data)
+  })
+}
 </script>
 
 <style lang="less" scoped>
+.create {
+  .info, .type {
+    display: flex;
+    justify-content: space-between;
+  }
+}
 .left {
   width: 570px;
 }
