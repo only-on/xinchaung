@@ -17,6 +17,7 @@ import moment from 'moment';
 import 'moment/dist/locale/zh-cn';
 moment.locale('zh-cn');
 
+window.XC_ROLE=1
 const app = createApp(App);
 initProject(app)
 
