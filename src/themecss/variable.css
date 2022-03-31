@@ -41,6 +41,7 @@
   --gray-5: #d9d9d9;
   --gray-6: #bfbfbf;
   --gray-8: #595959;
+  --gray-7:#e7e7e7;
 
   /* 白 */
   --white-100: #ffffff;
@@ -168,6 +169,9 @@
   --lightgray-4: #e2e2e2;
   --lightgray-5: #dcdcdc;
   --lightgray-6: #dfdfdf;
+  
+  /* 绿色 */
+  --green-1:#00bb6b;
 
   /* 
     自定义字体

@@ -10,7 +10,7 @@ export default {
         {
             path: "",
             name: "",
-            // component: () => import("src/views/teacherModule/teachCourse/inClassTest/index.vue"),
+            component: () => import("src/views/teacherModule/teachCourse/InClassTest/index.vue"),
             meta: {
                 title: "",
                 authCode: ''
