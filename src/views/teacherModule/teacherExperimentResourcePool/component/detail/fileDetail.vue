@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns">
+    <div class="operate-btns" v-if="currentTab === '0'">
       <a-button type="primary" v-if="props.detail.content_task_files.length || props.detail.guide" @click="deleteFile"
         >移除</a-button
       >
@@ -52,6 +52,7 @@ import { useRouter, useRoute } from "vue-router";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 const router = useRouter();
 const route = useRoute();
+const { currentTab }  = route.query
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
 
@@ -129,14 +130,14 @@ const selectFileClick = () => {
 
 // 移除文件
 const deleteFile = () => {
-  preview.value = false
-  if (props.detail.guide) {
-    props.detail.guide = ''
-    experimentContent.value = ''
-    return 
-  }
-  http.deleteDocument({urlParams: {content_id: props.detail.content_task_files[0].content_id}})
+  // if (props.detail.guide) {
+  //   props.detail.guide = ''
+  //   experimentContent.value = ''
+  //   return 
+  // }
+  http.deleteDocument({urlParams: {content_id: props.detail.id}})
   .then((res: any) => {
+    preview.value = false
     props.detail.content_task_files = [];
     props.detail.guide = ''
     experimentContent.value = ''

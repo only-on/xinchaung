@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns">
+    <div class="operate-btns" v-if="currentTab === '0'">
       <a-button type="primary" @click="preview = false" v-if="preview"
         >编辑</a-button
       >
@@ -24,17 +24,19 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, PropType } from "vue";
+import { ref, reactive, PropType, inject } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
 import taskList from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskList.vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { MessageApi } from "ant-design-vue/lib/message";
+const $message: MessageApi = inject("$message")!;
 const http = request.teacherExperimentResourcePool;
 const router = useRouter();
 const route = useRoute();
-const { id } = route.query;
+const { id, currentTab } = route.query;
 const preview = ref<boolean>(true);
 
 interface Ifiles {
@@ -92,6 +94,10 @@ const taskData = reactive<ItaskData>({
   ],
 });
 const addTask = () => {
+  if (props.detail.task_steps.length >= 3) {
+    $message.warn("最多添加3个任务")
+    return
+  }
   props.detail.task_steps.push({
     content_id: 0,
     name: '',
