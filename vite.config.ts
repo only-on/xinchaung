@@ -37,9 +37,13 @@ export default defineConfig({
         rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
       },
       "/api": {
-        target: "http://192.168.101.221:84",
+        target: "http://192.168.101.130",
         changeOrigin: true,
-      },   
+      },
+      "/timetable": {
+        target: "http://192.168.101.130",
+        changeOrigin: true,
+      },    
       "/dmc": {
         // target: "http://192.168.101.130",
         target: "http://192.168.101.221:84",

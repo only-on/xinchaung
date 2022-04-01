@@ -199,7 +199,7 @@ export default defineComponent({
           name: "课程安排",
           parent_id: 161,
           sort: 1,
-          url: "",
+          url: "/teacher/coursePlan",
         },
         {
           children: [],
