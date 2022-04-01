@@ -1,7 +1,7 @@
 <template>
   <div class="correct-wrap">
     <div class="left">tree</div>
-    <div class="right">
+    <div class="correct-right right">
       <div class="top">
         <div class="t-left">
           <span>提交情况：<i class="surplus">10</i>/100</span>
@@ -78,14 +78,15 @@
           </template>
           
         </a-table>
-        <a-pagination :total="500" class="page-wrap">
+        
+      </div>
+      <a-pagination :total="500" class="page-wrap">
           <template #itemRender="{ page, type, originalElement }">
             <a v-if="type === 'prev'">上一页</a>
             <a v-else-if="type === 'next'">下一页</a>
             <renderVNode v-else :vnode="originalElement"></renderVNode>
           </template>
         </a-pagination>
-      </div>
     </div>
   </div>
     <reviewWeight v-if="weightVisible" v-model:weightVisible="weightVisible" :type="type"></reviewWeight>
@@ -273,6 +274,12 @@ onMounted(() => {});
     margin-right: 16px;
     height: 100%;
   }
+  .correct-right{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+  }
   .right {
     flex: 1;
     padding: 26px 24px;
@@ -308,10 +315,11 @@ onMounted(() => {});
     :deep(.ant-pagination-item){
         border: none;
     }
-    .page-wrap{
-        margin-top: 34px;
-    }
+    
   }
+  .page-wrap{
+        margin-top: auto;
+    }
   .correct-table {
     :deep(.ant-table-thead > tr > th),
     :deep(.ant-table-tbody > tr > td) {
