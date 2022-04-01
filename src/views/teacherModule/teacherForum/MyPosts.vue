@@ -15,7 +15,8 @@
       </div>
       <div class="right">
         <a-spin :spinning="loading" size="large" tip="Loading...">
-        <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
+          <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
+          <Empty v-if="!forumnList.length && !loading" />
         </a-spin>
       </div>
     </div>

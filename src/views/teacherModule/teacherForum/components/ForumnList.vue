@@ -16,6 +16,7 @@
     <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
       !isReply ? "回应" : "收起回应"
     }}</span>
+    <!-- <span class="delet pointer" v-if="item.can_delete" @click="deleteForum(item.id)">删除</span> -->
   </div>
   <!--回应内容-->
   <div class="reply-box" v-if="isReply">
@@ -60,6 +61,7 @@ import {
   toRefs,
   PropType,
 } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import ReplyList from "./ReplyList.vue";
 import { dateFormat1 } from 'src/utils/common'
 import { IForumnList, IReplyList } from "./../forumnTyping.d";
@@ -79,6 +81,9 @@ export default defineComponent({
     ReplyList,
   },
   setup: (props, { emit }) => {
+    const route = useRoute();
+    const router = useRouter();
+    let {currentTab} = route.query
     let isReply = ref<boolean>(false);
     let child = ref<boolean>(true);
     let replyContent = ref<string>("");
@@ -130,6 +135,12 @@ export default defineComponent({
       isReply.value = !isReply.value
       getReplyList(id)
     }
+
+    // 删除帖子
+    const deleteForum = (id: number) => {
+      console.log(id)
+    }
+
     const page = ref(1)
     const clickLoadingMore = (id: number) => {
       page.value ++
@@ -151,6 +162,7 @@ export default defineComponent({
       totalReply,
       dateFormat1,
       loading,
+      deleteForum,
     };
   },
 });
@@ -189,9 +201,12 @@ export default defineComponent({
   .create-time {
     margin: 0 24px;
   }
-  .reply-btn {
+  .reply-btn, .delet {
     color: var(--primary-color);
     margin-left: 3px;
+  }
+  .delet {
+    margin-left: 24px;
   }
 }
 .reply-box {

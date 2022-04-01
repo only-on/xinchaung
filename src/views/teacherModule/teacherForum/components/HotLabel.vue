@@ -1,7 +1,7 @@
 <template>
   <div class="hot-label">
     <div class="components_title">热门标签</div>
-    <div class="label-list">
+    <div class="hotlabel-list">
       <span v-for="list in hotLabelList" :key="list.id">
       <!-- <span class="list">{{list.name}}</span> -->
         <a-tooltip placement="top">
@@ -41,7 +41,7 @@ export default defineComponent({
 <style scoped lang="less">
 .hot-label {
   margin-top: 40px;
-  .label-list {
+  .hotlabel-list {
     .list {
       display: inline-block;
       max-width: 98px;

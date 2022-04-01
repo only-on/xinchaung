@@ -3,7 +3,7 @@
     <div class="user-info">
       <div class="left">
         <img :src="list.avatar" alt="" />
-        <span class="user-name">{{list.user.username}}</span>
+        <span class="user-name">{{list.user?.username}}</span>
         <span class="rep" v-if="replyUserName">回应</span>
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
       </div>
@@ -26,7 +26,7 @@
         </span>
       </div>
       <div class="reply-box" v-if="isReply">
-        <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user.username" />
+        <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user?.username" />
         <span class="pointer" @click="submitReply(list)">回应</span>
         <!-- <a-button type="primary">回应</a-button> -->
       </div>
@@ -37,7 +37,7 @@
           v-for="item in replyList" 
           :key="item.id" 
           :list="item" 
-          :replyUserName="list.user.username"
+          :replyUserName="list.user?.username"
         ></reply-list>
         <!-- <reply-list></reply-list> -->
         <div class="reply-all" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(list)">
