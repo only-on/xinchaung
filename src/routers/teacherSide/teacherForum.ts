@@ -34,13 +34,5 @@ export default {
         title: "发帖",
       },
     },
-    {
-      path:'PostsDetailed',
-      name: "teacherPostsDetailed",
-      component: () => import("src/views/teacherModule/teacherForum/PostsDetailed.vue"),
-      meta: {
-        title: "帖子详情",
-      },
-    }
   ]
 }
