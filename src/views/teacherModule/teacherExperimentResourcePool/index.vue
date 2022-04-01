@@ -115,8 +115,8 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    currentTab.value = val ? 0 : 1;
-    searchInfo.init_type = currentTab.value
+    currentTab.value = Number(val) ? 0 : 1;
+    // searchInfo.init_type = currentTab.value
     searchInfo.page = 1
     searchInfo.content_direction = 0
     searchInfo.content_type = 0
@@ -235,6 +235,7 @@ const initData = () => {
     // myexper:true,				// 我的实验
   // }
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
+  searchInfo.init_type = currentTab.value
   const param: ISearchInfo = Object.assign({}, {...searchInfo})
   param.content_direction ? '' : delete param.content_direction
   param.content_level ? '' : delete param.content_level
@@ -324,7 +325,7 @@ onMounted(() => {
     currentTab.value = 0
     configuration.componenttype = 1
   }
-  searchInfo.init_type = currentTab.value
+  // searchInfo.init_type = currentTab.value
   
   initData();
   // 获取技术方向列表

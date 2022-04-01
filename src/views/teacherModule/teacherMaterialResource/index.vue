@@ -140,7 +140,7 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    currentTab.value = val;
+    currentTab.value = Number(val);
     pageInfo.page = 1
     // searchKey.value = ''
     labelSearch.label = 0
