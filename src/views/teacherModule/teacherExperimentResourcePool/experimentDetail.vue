@@ -34,11 +34,11 @@
         </a-tooltip>
         <a-tooltip placement="top" :color="theme.themeColor">
           <template #title>
-            <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
+            <div v-for="(v, index) in experimentDetail.tag" :key="index">{{v.name}}</div>
           </template>
           <span class="labels">
-            <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
-                v + (index !== experimentDetail.konwledge_map.length - 1 ? " / &nbsp; " : "")
+            <span v-for="(v, index) in experimentDetail.tag" :key="index">{{
+                v.name + (index !== experimentDetail.konwledge_map.length - 1 ? " /&nbsp;" : "")
               }}</span>
           </span>
         </a-tooltip>
@@ -158,6 +158,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   konwledge_map: [],
   username: '2',
   lab_proc: "实验指导",
+  tag: []
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -205,6 +206,7 @@ interface IExperimentDetail {
   konwledge_map: string[];
   username: string;
   lab_proc: string;
+  tag: any[]
 }
 </script>
 <style scoped lang="less">

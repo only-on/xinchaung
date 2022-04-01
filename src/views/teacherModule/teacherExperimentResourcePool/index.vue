@@ -34,12 +34,14 @@
         </div>
         <a-tooltip placement="top">
           <template #title>
-            <div>实验标签1</div>
-            <div>实验标签2</div>
-            <div>实验标签3</div>
+            <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
           </template>
           <div class="label pointer">
-            <span class="labels single-ellipsis">实验标签1 / 实验标签2 / 实验标签3</span>
+            <span class="labels single-ellipsis">
+              <span v-for="(list, index) in v.tag" :key="index">{{
+                  list.name + (index !== v.tag.length - 1 ? " / &nbsp; " : "")
+                }}</span>
+            </span>
           </div>
         </a-tooltip>
       </div>
@@ -205,6 +207,7 @@ interface IExperimentList {
   user: Iuser
   is_share: number
   type_obj?: any
+  tag: any[]
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
