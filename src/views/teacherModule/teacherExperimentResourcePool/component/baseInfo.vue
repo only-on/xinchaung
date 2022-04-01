@@ -62,7 +62,7 @@
             v-model:value="formState.direction"
             placeholder="请选择技术方向"
           >
-            <a-select-option :value="item.id" v-for="(item, index) in directionList" :key="index.toString()">
+            <a-select-option :value="item.name" v-for="(item, index) in directionList" :key="index.toString()">
               {{ item.name }}
             </a-select-option>
           </a-select>
@@ -205,7 +205,7 @@ const createMethod = currentTypeInfo.method;
 var isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
 const formState = reactive({...props.detail})
-formState.direction = Number(formState.direction)
+formState.direction = formState.direction
 let arr:any = []
 formState.know_point ? formState.know_point.split(',').forEach((v: number, k: number) => {
   arr.push({

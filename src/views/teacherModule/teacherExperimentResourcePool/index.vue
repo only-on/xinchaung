@@ -32,7 +32,7 @@
           }}</span>
           <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
         </div>
-        <a-tooltip placement="top">
+        <!-- <a-tooltip placement="top">
           <template #title>
             <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
           </template>
@@ -43,7 +43,21 @@
                 }}</span>
             </span>
           </div>
-        </a-tooltip>
+        </a-tooltip> -->
+        <div class="label pointer">
+          <a-tooltip placement="top">
+            <template #title>
+              <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
+            </template>
+            <div style="width: max-content;">
+              <span class="labels single-ellipsis">
+                <span v-for="(list, index) in v.tag" :key="index">{{
+                    list.name + (index !== v.tag.length - 1 ? " / &nbsp; " : "")
+                  }}</span>
+              </span>
+            </div>
+          </a-tooltip>
+        </div>
       </div>
       <Empty v-if="!experimentList.length && !loading" />
         <!-- -->

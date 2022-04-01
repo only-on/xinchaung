@@ -836,7 +836,7 @@ const getCatalogue = () => {
     }
     // console.log(res)
     let data = res.data;
-    console.log('[获取题库目录] ', data);
+    // console.log('[获取题库目录] ', data);
     catalogueOptions.value![0].options.length = 0;
     catalogueOptions.value![1].options.length = 0;
     (data.private && data.private.length)?data.private.forEach((v: any) => {

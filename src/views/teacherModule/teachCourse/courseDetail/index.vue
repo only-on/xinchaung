@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-  <div>
+  <div class="courseContent">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
     <courseChapter v-if="state.activeTab.value=='1'"></courseChapter> 
@@ -435,7 +435,10 @@ function tabChange(key: string) {}
     margin-bottom: 1rem;
     // color: var(--blue-6-2);
   }
-  
+  .courseContent{
+    width: var(--center-width);
+    margin: 0 auto;
+  }
   .courseContent{
     width: var(--center-width);
     margin: 0 auto;
