@@ -76,7 +76,7 @@
       </div>
     </div>
   </div>
-  <div class="courseContent">
+  <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
     <courseChapter v-if="state.activeTab.value=='1'"></courseChapter> 
@@ -122,12 +122,12 @@ import DetailHeader from '../component/common/DetailHeader.vue'
 import { Knowledge,HotWords} from './echartsOption'
 
 // 内容去tab
-import courseChapter from "./courseChapter.vue"
-import courseExperiment from "./courseExperiment.vue"
-import popQuiz from "./popQuiz.vue"
-import performanceReview from "./performanceReview.vue"
-import studentAnalysis from "./studentAnalysis.vue"
-import memberManagement from "./memberManagement.vue"
+import courseChapter from "./courseChapter.vue"   // 课程章节
+import courseExperiment from "./courseExperiment.vue" // 课程实验
+import popQuiz from "./popQuiz.vue" // 随堂测试
+import performanceReview from "./performanceReview.vue" // 成绩评阅
+import studentAnalysis from "./studentAnalysis.vue" // 学情分析
+import memberManagement from "./memberManagement.vue" // 成员管理
 
 interface IState{
   chapterList:any[]
@@ -626,5 +626,9 @@ function tabChange(key: string) {}
       width: 100%;
       padding: 40px;
     }
+  }
+  .tab-course-content{
+    width: var(--center-width);
+    margin: 24.5px auto;
   }
 </style>

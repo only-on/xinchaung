@@ -32,6 +32,9 @@
           <template #customCodeTitle>
             代码<i class="statistics">40%</i>
           </template>
+          <template #customExercisesTitle>
+            习题
+          </template>
           <template #reference="{ text }">
             <span class="table-a-link" @click="clickFun('video', text)"
               >录屏</span
@@ -73,6 +76,7 @@
               >
             </template>
           </template>
+          
         </a-table>
         <a-pagination :total="500" class="page-wrap">
           <template #itemRender="{ page, type, originalElement }">
@@ -87,6 +91,7 @@
     <reviewWeight v-if="weightVisible" v-model:weightVisible="weightVisible" :type="type"></reviewWeight>
     <ratingScores :isEdit="isEdit" v-if="scoreVisible" v-model:visible="scoreVisible" v-model:data="rowData"></ratingScores>
     <reportModal :isEdit="isEdit" v-if="reportVisible" v-model:visible="reportVisible" v-model:data="rowData"></reportModal>
+    <codeReview v-if="codeVisible" v-model:visible="codeVisible" v-model:data="rowData"></codeReview>
 </template>
 
 <script lang="ts" setup>
@@ -94,13 +99,15 @@ import { ref, toRefs, onMounted ,Ref} from "vue";
 import reviewWeight from "./reviewWeight.vue" // 一键评阅弹窗
 import ratingScores from "./ratingScores.vue" // 评分弹窗
 import reportModal from "./report.vue"  // 批阅报告弹框
+import codeReview from "./codeReview.vue" // 代码评阅
 
-let type=0 // 0 实操 1 视频文档
+let type=2 // 0 实操 1 视频文档 2 习题
 
 // 控制弹窗显示隐藏visible
 const weightVisible=ref(false)
 const scoreVisible=ref(false)
 const reportVisible=ref(false)
+const codeVisible=ref(false)
 
 // 是否是编辑状态
 const isEdit=ref(false)
@@ -111,6 +118,7 @@ const columns:Ref<any> = ref([
   {
     title: "序号",
     width: 49,
+    algin:"center",
     customRender: ({ text, record, index }: any) => {
       return index +1;
     },
@@ -172,6 +180,15 @@ if (type==1) {
     columns.value[5].children.splice(2,1)
     columns.value.splice(6,1)
 }
+if (type==2) {
+  let temp={
+        dataIndex: "exercises",
+        slots: { title: "customExercisesTitle", customRender: "exercises" },
+        width: 74,
+      }
+  columns.value[5].children=[temp]
+  columns.value.splice(6,1)
+}
 // table数据
 const tabelData = ref([
   {
@@ -189,6 +206,7 @@ const tabelData = ref([
     isQuiz: true,
     isCode: true,
     isScore: true,
+    exercises:100
   },
   {
     id: 2,
@@ -205,6 +223,7 @@ const tabelData = ref([
     isQuiz: false,
     isCode: false,
     isScore: false,
+    exercises:99
   },
 ]);
 
@@ -229,6 +248,9 @@ function clickFun(type: string, val: number) {
   }
   if (['updateReport','report'].includes(type)) {
     reportVisible.value=true
+  }
+  if (['updateCode','code'].includes(type)) {
+    codeVisible.value=true
   }
 }
 onMounted(() => {});

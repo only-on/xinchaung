@@ -1,11 +1,12 @@
 <template>
   <div>
-    成绩评阅
+    <performanceReview></performanceReview>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref} from "vue";
+import performanceReview from "./components/performanceReview/index.vue"
 
 </script>
 
