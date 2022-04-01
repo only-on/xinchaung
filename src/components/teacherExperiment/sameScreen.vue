@@ -168,7 +168,7 @@ interface IVmInfo {
   left: 0;
   right: 0;
   background: #040515;
-  z-index: 1111;
+  z-index: 999;
   display: flex;
   flex-direction: row;
 
