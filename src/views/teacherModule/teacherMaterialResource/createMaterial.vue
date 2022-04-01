@@ -34,7 +34,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete&&createMaterialType.id!==1"></Submit>
   </div>
 </template>
 
@@ -85,6 +85,7 @@ interface IFormState {
   description: string
   range: string
   src: string
+  cover: string
   tags: string[]
   fileList: any
   categoryText: string
@@ -100,6 +101,7 @@ const formState = reactive<IFormState>({
   description: '',
   range: '0',
   src: '',
+  cover: '',
   tags: [],
   fileList: {},
   categoryText: '',
@@ -165,42 +167,37 @@ const RemoveMdFile = () => {
 const formRef = ref()
 const baseInfoRef = ref()
 const submit = async() => {
-  console.log(formState.fileList)
   await baseInfoRef.value.fromValidate()
   Object.assign(formState, baseInfoRef.value.formState)
   formRef.value.validate().then(() => {
     const baseInfo = baseInfoRef.value.formState
-    console.log(formState, baseInfo) 
     if (createMaterialType.id === 1) {
-      console.log(formState)
       createDataSet()
       return
     }
     const fd = new FormData()
-    fd.append('name', baseInfo.name)
-    fd.append('description', baseInfo.description)
-    // fd.append('tags', baseInfo.tags)
-    fd.append('is_public', baseInfo.is_public)
-    fd.append('cover', baseInfo.cover)
+    fd.append('name', formState.name)
+    fd.append('description', formState.description)
+    // fd.append('tags', formState.tags)
+    fd.append('is_public', formState.is_public)
+    fd.append('cover', formState.cover)
     fd.append('type', createMaterialType.id)
-    baseInfo.tags.forEach((v: string, k: number) => {
+    formState.tags.forEach((v: string, k: number) => {
       fd.append(`tags[${k}]`, v)
     })
     Object.keys(formState.fileList).forEach((k: string, i, v) => {
-      if (formState.fileList[k].status="done") return
+      if (formState.fileList[k].status!=="done") return
       fd.append(`items[${i}][file_name]`, formState.fileList[k].name)
       fd.append(`items[${i}][file_url]`, formState.fileList[k].file_url)
       fd.append(`items[${i}][suffix]`, formState.fileList[k].suffix)
       fd.append(`items[${i}][size]`, formState.fileList[k].size)
     })
     http.create({param: fd}).then((res: IBusinessResp) => {
-      console.log(res)
       router.go(-1)
     })
   })
 }
 const createDataSet = () => {
-  console.log(formState)
   const file = []
   for (const key in formState.fileList) {
     if (
@@ -227,7 +224,6 @@ const createDataSet = () => {
     doc_name: formState.doc_name,
     documents: formState.documents,
   }
-  console.log(param)
   datasetHttp.create({ param }).then((res: any) => {
     $message.success("创建成功");
     router.go(-1);
