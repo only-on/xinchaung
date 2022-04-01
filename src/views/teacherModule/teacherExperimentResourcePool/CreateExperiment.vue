@@ -592,19 +592,19 @@ function pollGetVM(id: number) {
   getTopoVmInfo(id);
 }
 function openScreen() {
-  message.warn("接口暂未调试");
-  return
+  // message.warn("接口暂未调试");
+  // return
   screenParam.container = [];
   screenParam.dataset_id = [];
   formState.selectedName.forEach((item: any) => {
     screenParam.dataset_id.push(item.uid);
   });
-  formState.imageDataSelected.forEach((item: any) => {
+  formState.imageConfigs.forEach((item: any) => {
     screenParam.container.push({
-      image: item.id,
-      flavor: item.flavor,
-      is_use_gpu: item.is_use_gpu,
-    });
+      "image": item.image,
+      "is_use_gpu": item.is_use_gpu,
+      "flavor": item.flavor
+    })
   });
   if (screenParam.container.length <= 0) {
     message.warn("请选择镜像");
@@ -613,7 +613,7 @@ function openScreen() {
   console.log(sameScreen.value);
   sameScreen.value.detail = formState.guide;
   // screenStatus.value = true
-  if (_.isEqual(oldImageDataSelected, formState.imageDataSelected)) {
+  if (_.isEqual(oldImageDataSelected, formState.imageConfigs)) {
     pollGetVM(topoinstId);
   } else {
     getTopoBaseInfo()
@@ -623,7 +623,7 @@ function openScreen() {
           if (res.data?.topo?.id) {
             screenParam.topo_id = res.data.topo.id;
           }
-          oldImageDataSelected = _.cloneDeep(formState.imageDataSelected);
+          oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
           topoinstId = res.data.topoinst.topoinst_id;
           pollGetVM(res.data.topoinst.topoinst_id);
           // this.screenStatus = true

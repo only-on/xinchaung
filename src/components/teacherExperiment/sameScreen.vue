@@ -3,7 +3,7 @@
     <div class="same-screen-left">
       <div class="md-top">
         <a-button type="primary" @click="quitScreen">
-          <span class="icontuichu iconfont"></span>
+          <span class="icon-tuichu-copy iconfont"></span>
           退出同屏
         </a-button>
         <span class="hint">或按[ESC]可退出同屏模式</span>
@@ -22,7 +22,7 @@
           </a-select>
         </div>
         <div class="vm-base-center">
-          <span>远程连接信息</span>
+          <span class="font-size-16">远程连接信息</span>
           <span>用户名：{{ currentVmInfo.ssh_user }}</span>
           <span>密码：{{ currentVmInfo.ssh_pass }}</span>
           <span>
@@ -33,7 +33,10 @@
             }}
           </span>
         </div>
-        <div class="vm-base-right">数据集目录：/simpledata</div>
+        <div class="vm-base-right">
+          <span class="font-size-16">数据集目录：</span>
+          <span>/simpledata</span>
+        </div>
       </div>
       <div class="vm-box">
         <vue-no-vnc
@@ -180,10 +183,15 @@ interface IVmInfo {
       background: #ececec;
       line-height: 54px;
       padding-left: 23px;
+      .ant-btn {
+        .iconfont {
+          margin-right: 4px;
+        }
+      }
 
       .hint {
         margin-left: 23px;
-        color: #A499AE;
+        color: var(--brightBtn);
       }
     }
 
@@ -213,6 +221,23 @@ interface IVmInfo {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+      .vm-base-left {
+        .ant-select {
+          border: 1px solid var(--cyan-100);
+          color: var(--cyan-100);
+          :deep(.ant-select-selector) {
+            border: 1px solid var(--cyan-100);
+            color: var(--cyan-100);
+            background: rgba(0, 0, 0, 0);
+          }
+          &.ant-select-open :deep(.ant-select-selection-item) {
+            color: var(--cyan-100);
+          }
+          :deep(.ant-select-arrow) {
+            color: var(--cyan-100);
+          }
+        }
+      }
       .vm-base-center {
         color: #ffffff;
         span {
@@ -234,5 +259,8 @@ interface IVmInfo {
       background-repeat: no-repeat;
     }
   }
+}
+.font-size-16 {
+  font-size: var(--font-size-16);
 }
 </style>
