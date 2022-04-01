@@ -191,6 +191,8 @@ const searchDocOrMp4List = () => {
 };
 watch(()=>{ return props.tags},(val:any)=>{
   // console.log(val)
+  docOrMp4Drawer.page = 1;
+  docOrMp4Drawer.file_name = '';
   getSourceMaterial();
 })
 onMounted(()=>{

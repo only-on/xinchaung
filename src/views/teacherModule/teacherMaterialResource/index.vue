@@ -29,7 +29,7 @@
         v-for="(list, k) in materialList"
         :key="list.id"
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
-        @click="detail(list.id)"
+        @click="detail(list)"
       >
         <div class="item-top">
           <img :src="list.cover" alt="" />
@@ -127,12 +127,26 @@ const pageChange = (page: number) => {
   pageInfo.page = page;
   initData();
 };
-const detail=(id:any)=>{
-  // let 
-  router.push({
-    path:'/teacher/teacherMaterialResource/ResourceDetail',
-    query:{currentTab:currentTab.value,editId:id}
-  })
+const detail=(val:any)=>{
+  let query:any={
+    currentTab:currentTab.value,
+    editId:labelSearch.type === '数据集'?val.uid:val.id,
+    type:val.type_name,
+    cardType:labelSearch.type === '数据集'?'setData':'other',
+    user_id:labelSearch.type === '数据集'?val.creator:'', 
+  }
+  if(labelSearch.type === '数据集'){
+    router.push({
+      path:'/teacher/teacherMaterialResource/setDataDetail',
+      query:{...query}
+    })
+  }else{
+    router.push({
+      path:'/teacher/teacherMaterialResource/ResourceDetail',
+      query:{...query}
+    })
+  }
+  
 }
 const currentTab = ref<number>(0);
 watch(

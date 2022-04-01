@@ -56,5 +56,22 @@ export default {
         },
       },
     },
+    {
+      path: "setDataDetail",
+      name:'setDataDetail',
+      component: () =>
+        import("src/views/teacherModule/teacherMaterialResource/setDataDetail.vue"),
+      meta: {
+        authCode: "setDataDetail",
+        // title: "数据集详情",
+        title: (params?: RouteParams, query?: RouteParams) => {
+          const dataDetailMap = {
+              '0': '公有素材',
+              '1': '私有素材',
+          }
+          return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
+        },
+      },
+    },
   ],
 };

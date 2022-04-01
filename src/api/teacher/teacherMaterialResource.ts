@@ -16,6 +16,16 @@ export default {
   SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
   deleteFile: { url: `/api/resource/data/{editId}/files/{fileId}`, method: "DELETE" },
   downLoadAll: { url: `/api/resource/data/{editId}/files-download`, method: "GET" },
+
+
+  //  数据集部分单独
+  detailed:{url:`/dmc/v1.0/dataset`,method:'GET'},
+  getDataFileList:{url:`/dmc/v1.0/datafile`,method:'GET'},
+  deleteDataSet:{url:`/dmc/v1.0/dataset?{deleteParam}`,method:'DELETE'},
+  editInfo:{url:`/dmc/v1.0/dataset`,method:'PATCH',dataType: 'json'},
+  editDoc:{url:`/dmc/v1.0/update_doc`,method:'PATCH',dataType: 'json'},
+  download:{url:`/dmc/v1.0/download`,method:'GET'},
+  deleteItemFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
 };
 
 export interface ITeacherMaterialResource {
@@ -32,6 +42,14 @@ export interface ITeacherMaterialResource {
   deleteImages: TFHttpSend;
   SaveFile: TFHttpSend;
   downLoadAll: TFHttpSend;
+
+  detailed: TFHttpSend;
+  getDataFileList: TFHttpSend;
+  deleteDataSet: TFHttpSend;
+  editInfo: TFHttpSend;
+  editDoc: TFHttpSend;
+  download: TFHttpSend;
+  deleteItemFile: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";

@@ -82,7 +82,7 @@
                 <div class="fileInfo">
                   <div class="fileName">{{state.fileItem.file_name}}</div>
                   <div class="info">
-                    <span>{{bytesToSize(state.fileItem.size)}}</span>
+                    <span>{{state.fileItem.sizeString?state.fileItem.sizeString:bytesToSize(state.fileItem.size)}}</span>
                     <span>{{state.fileItem.created_at}}</span>
                   </div>
                 </div>
@@ -116,7 +116,14 @@
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
     <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" 
-    :editInfo="{name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover}" class="con"/>
+    :editInfo="{name:state.detail.name,
+      description:state.detail.description,
+      tags:state.detail.tags,
+      is_public:state.detail.is_public,
+      cover:state.detail.cover,
+      categoryText:state.detail.categoryText
+      }"
+     class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>
@@ -212,24 +219,31 @@ const previewMark: Ref<boolean> = ref(true);
 const showEditMd: Ref<boolean> = ref(false);
 const editMark=()=>{
   // 保存markdown 接口
-  // previewMark.value=false
+  previewMark.value=false
   showEditMd.value=true
 }
 // 本地读取文件
-const readMdFile = async (file: any) => {
-  const content=await readFile(file)
-  previewMark.value=false
-  state.document.file=file
-  state.document.content=content
+const readMdFile = (file: any) => {
+ readFile(file).then((text:any)=>{
+    previewMark.value=false
+    state.document.file=file
+    state.document.content=text
+    return false
+  })
+  
 };
 const docUpload = () => {
-  let file=state.document.file
-  const fs = new FormData();
-    fs.append("file", file);
-    http.uploadDocFile({ param: fs }).then((res: any) => {
-      previewMark.value=true
-      // 请求数据集详情接口
-    });
+  // let data=
+  let data:any={
+    data_id:editId,
+    content:state.document.content,
+ }
+  http.editDoc({param:{...data}}).then((res:any)=>{
+    previewMark.value=true
+    showEditMd.value=false
+    message.success('保存成功')
+    detailed()
+  })
 };
 //  文件列表操作
 const searchFileList=computed(()=>{
@@ -248,29 +262,28 @@ const selectFile=(val:any)=>{
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
-  http.deleteFile({urlParams:{editId:editId,fileId:val.id}}).then((res: IBusinessResp) => {
-      message.success('删除成功')
-      getDetailFile()
-    })
+  const deleteParam = {
+  file_id: val.uid,
+  file_name: val.name,
+}
+http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
+  message.success('删除成功')
+  getDataFileList()
+})
 }
 const downLoadFile=(val:any)=>{
-  // console.log(val)
-  let url=`${env?'/proxyPrefix':''}${val.file_url}`
-  downloadUrl(url,val.file_name)
+  http.download({param:{data_id:editId,file_id:val.uid}}).then((res:any)=>{
+    let {download_path,name}=res.data
+    let url=`${env?'/proxyPrefix':''}${download_path}`
+    downloadUrl(url,name)
+  })
 }
 const downLoadAll=()=>{
-  const a: any = document.createElement("a");
-  a.href = `/api/resource/data/${editId}/files-download`;
-  // a.download = `${state.detail.name}全部文件`;
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  window.URL.revokeObjectURL(a.href);
-  return 
-  http.downLoadAll({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
-    //  也可以下载成功   不能选择文件夹
-      message.success('下载成功')
-    })
+  http.download({param:{data_id:editId}}).then((res:any)=>{
+    let {download_path,name}=res.data
+    let url=`${env?'/proxyPrefix':''}${download_path}`
+    downloadUrl(url,name)
+  })
 }
 var visible: Ref<boolean> = ref(false);
 const edit=()=>{
@@ -284,12 +297,13 @@ const deleteImages=()=>{
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.deleteImages({urlParams:{editId:editId}}).then((res: any) => {
-        message.success({duration:1,content:'删除成功'})
-        setTimeout(()=>{
-          router.go(-1);
-        },1000)
-      });
+    let deleteParam = `data_id=${state.detail.uid}&data_name=${state.detail.name}`;
+      http.deleteDataSet({ urlParams: { deleteParam: deleteParam } }).then((res: IBusinessResp) => {
+          message.success({duration:1,content:'删除成功'})
+          setTimeout(()=>{
+            router.go(-1);
+          },1000)
+        });
     },
   });
 }
@@ -299,51 +313,27 @@ const handleCancel=()=>{
 const baseInfoRef = ref()
 
 const handleOk=async()=> {
-  // state.visible = false;
   let params: any = {};
   await baseInfoRef.value.fromValidate()
   Object.assign(params, baseInfoRef.value.formState)
-  const fd = new FormData()
-  fd.append('name', params.name)
-  fd.append('description', params.description)
-  fd.append('tags', JSON.stringify(params.tags))
-  fd.append('is_public', params.is_public)
-  fd.append('cover', params.cover)
-  http.editMyImage({param:fd,urlParams:{editId:editId}}).then((res: any) => {
+ let ForumSearch:any={
+   category: [params.categoryText],
+    user_id:user_id,
+    data_id:editId,
+    common: Number(params.is_public),
+    name:params.name,
+    description:params.description,
+    cover: params.src,
+    label: params.tags,
+    doc_name:'',
+    documents:state.document.content,
+ }
+  http.editInfo({param:{...ForumSearch}}).then((res:any)=>{
+    message.success('修改成功')
+    detailed()
     visible.value=false
-    message.success('编辑成功')
-    initData();
-  });
+  })
 }
-// 初始化数据
-const initData = () => {
-  http.getDetail({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
-    state.detail={
-      ...res.data
-    }
-    isDataSet.value=res.data.type_name === '数据集' ? true :false
-    activeTab.value =isDataSet.value?'说明文档':'文件列表'
-  })
-};
-const getDetailFile = () => {
-  let obj={
-    file_name:'',
-    page:1,
-    limit:9999,
-  }
-  state.fileList.length=0
-  http.getDetailFile({param:{...obj},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
-    const {list,page}=res.data
-    if(list.length){
-      list.map((v:any)=>{
-       v.show=false
-      })
-      selectFile(list[0])
-      state.fileList.push(...list)
-    }
-  })
-};
-
 //  上传文件
 var addFileVisible: Ref<boolean> = ref(false);
 const uploadFileRef = ref()
@@ -367,7 +357,7 @@ const SaveFile=()=>{
       //   要添加loading
       message.success('上传成功')
       AddFileLObj.AddFileList={}
-      getDetailFile()
+      // getDetailFile()
       addFileVisible.value=false
     })
   }else{
@@ -378,9 +368,53 @@ const cancelAddFile=()=>{
   addFileVisible.value=false
   AddFileLObj.AddFileList={}
 }
+
+//   数据集部分单独
+function detailed(){
+  let common=Number(currentTab)===0?1:0
+  http.detailed({param:{data_id:editId,common:common,user_id:user_id}}).then((res:any)=>{
+    state.detail={
+      ...res.data
+    }
+    //common
+    state.detail.is_public=res.data.common
+    state.detail.categoryText=res.data.categorys[0].name
+    state.detail.item_count=res.data.amount
+    state.detail.item_size=res.data.size
+    state.detail.type_name='数据集'
+    state.document.content=res.data.documents
+    state.detail.tags=[]
+    if(res.data.labels && res.data.labels.length){
+      res.data.labels.forEach((v:any)=>{
+        state.detail.tags.push(v.name)
+      })
+    }
+    // name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover
+    isDataSet.value=true
+    activeTab.value ='说明文档'
+  })
+}
+function getDataFileList() {
+  state.fileList.length=0
+  http.getDataFileList({param:{ data_id:editId }}).then((res:any) => {
+    const list=res.data
+    list.length?selectFile(list[0]):''
+    if(list.length){
+      list.map((v:any)=>{
+        v.suffix=''     //  v.suffix=v.class  //现在没有预览地址  字段置空
+        v.id=v.uid
+        v.file_name=v.name
+        v.sizeString=v.size
+      })
+      selectFile(list[0])
+      state.fileList.push(...list)
+    }
+    console.log(list)
+  })
+}
 onMounted(() => {
-  initData();
-  getDetailFile()
+  detailed()
+  getDataFileList()
 });
 </script>
 <style scoped lang="less">
