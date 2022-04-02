@@ -333,6 +333,13 @@ const handleOk=async()=> {
     detailed()
     visible.value=false
   })
+  if(ForumSearch.common !== oldCommon.value){
+    let obj:any={
+      data_id:editId,
+      user_id:user_id,
+    }
+    ForumSearch.common === 1 ? http.toPublic({param:{...obj}}) :http.toPrivate({param:{...obj}})
+  }
 }
 //  上传文件
 var addFileVisible: Ref<boolean> = ref(false);
@@ -368,7 +375,7 @@ const cancelAddFile=()=>{
   addFileVisible.value=false
   AddFileLObj.AddFileList={}
 }
-
+var oldCommon: Ref<number> = ref(0);
 //   数据集部分单独
 function detailed(){
   let common=Number(currentTab)===0?1:0
@@ -392,6 +399,8 @@ function detailed(){
     // name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover
     isDataSet.value=true
     activeTab.value ='说明文档'
+
+    oldCommon.value=res.data.common
   })
 }
 function getDataFileList() {
