@@ -50,9 +50,9 @@
               <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
             </template>
             <div style="width: max-content;">
-              <span class="labels single-ellipsis">
+              <span class="labels single_ellipsis">
                 <span v-for="(list, index) in v.tag" :key="index">{{
-                    list.name + (index !== v.tag.length - 1 ? " / &nbsp; " : "")
+                    list.name + (index !== v.tag.length - 1 ? "&nbsp;/&nbsp;" : "")
                   }}</span>
               </span>
             </div>
@@ -418,12 +418,13 @@ const getDirection = () => {
       line-height: 24px;
     }
     .labels {
+      display: inline-block;
       max-width: 233px;
-      padding: 0 14px;
-      background: rgba(255,149,68,0.07);
       border-radius: 2px;
       color: rgba(255,149,68,0.85);
       font-size: var(--font-size-sm);
+      padding: 0 14px;
+      background: rgba(255,149,68,0.07);
     }
   }
 }

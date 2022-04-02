@@ -72,9 +72,9 @@
             <a-button type="primary" @click="selectReport()">选 择</a-button>
             <div class="data-set-hint">支持单个doc或docx格式文件上传</div>
           </div>
-          <div class="reportName flexCenter" v-if="formState.content_template.name">
+          <div class="reportName flexCenter" v-if="formState.report.name">
             <span class="iconfont icon-fujian"></span>
-            <span class="name single_ellipsis">{{ formState.content_template.name }}</span>
+            <span class="name single_ellipsis">{{ formState.report.name }}</span>
             <span
               class="iconfont icon-shanchu"
               @click="delSelectedReport()"
@@ -202,7 +202,7 @@ Object.keys(ExperimentTypeList).forEach((k: string) => {
 const componentsList = currentTypeInfo.assembly;
 const createTypeNumber = props.detail.task_type;
 const createMethod = currentTypeInfo.method;
-var isShowKnowledge = ref<boolean>(false);
+const isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
 const formState = reactive({...props.detail})
 formState.direction = formState.direction
@@ -214,10 +214,14 @@ formState.know_point ? formState.know_point.split(',').forEach((v: number, k: nu
   })
 }) : ''
 formState.know_point = arr
-formState.tags = []
-// formState.content_template = {id: 0, name: ''}
+formState.tags = formState.tag.map((v : any) => v.name)
+formState.report = {id: formState.content_template.template_id, name: formState.content_template.name}
 formState.selectedName = []
 formState.datasets = []
+formState.dataset.forEach((v: any) => {
+  formState.selectedName.push(v.name)
+  formState.datasets.push(v.uid)
+})
 // console.log(formState)
 const rules = {
   name: [
@@ -265,20 +269,20 @@ function create() {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
     }, [])
-    const param={
-      id: formState.id,
+    const param = {
+      // id: formState.id,
       name: formState.name,
       direction: formState.direction,
       class_cnt: formState.class_cnt,
-      level: formState.level,
-      know_point: selectedKnowledgeIds,
-      report: formState.content_template.id,
-      tags:formState.tags,
-      ds:formState.datasets,
+      level: Number(formState.level),
+      knowledge: selectedKnowledgeIds,
+      report: formState.report.id,
+      tags: formState.tags,
+      dataset_ids: formState.datasets,
     }
     // console.log(param)
     // return
-    http.updateBaseInfo({param}).then((res: IBusinessResp)=>{
+    http.updateBaseInfo({urlParams: {id: formState.id}, param}).then((res: IBusinessResp)=>{
       message.success('编辑基本信息成功')
       cancel()
       emit("handleOk")
@@ -295,16 +299,16 @@ const selectReport = () => {
   reportVisible.value = true;
 };
 function delSelectedReport() {
-  formState.content_template.id = 0;
-  formState.content_template.name = "";
+  formState.report.id = 0;
+  formState.report.name = "";
 }
 const reportCancel = () => {
   reportVisible.value = false;
 };
 const reportOk = (val: any) => {
   // console.log(val)
-  formState.content_template.id = val.id;
-  formState.content_template.name = val.name;
+  formState.report.id = val.id;
+  formState.report.name = val.name;
 };
 
 // 

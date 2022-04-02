@@ -5,7 +5,7 @@
         <breadcrumb />
       </div>
       <div class="tech-direction">
-        技术方向：{{ directionName }}
+        技术方向：{{ experimentDetail.direction }}
       </div>
       <div class="name-type flexCenter">
         <div class="left">
@@ -26,7 +26,7 @@
           <template #title>
             <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
           </template>
-          <span class="knowledge">
+          <span class="knowledge pointer">
             <span v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{
                 v + (index !== experimentDetail.konwledge_map.length - 1 ? " · &nbsp;" : "")
               }}</span>
@@ -36,9 +36,9 @@
           <template #title>
             <div v-for="(v, index) in experimentDetail.tag" :key="index">{{v.name}}</div>
           </template>
-          <span class="labels">
+          <span class="labels pointer">
             <span v-for="(v, index) in experimentDetail.tag" :key="index">{{
-                v.name + (index !== experimentDetail.konwledge_map.length - 1 ? " /&nbsp;" : "")
+                v.name + (index !== experimentDetail.tag.length - 1 ? " /&nbsp;" : "")
               }}</span>
           </span>
         </a-tooltip>
@@ -285,10 +285,8 @@ interface IExperimentDetail {
       color: var(--white-100);
       font-size: var(--font-size-sm);
       position: relative;
-      span {
-        display: inline-block;
-      }
       .level {
+        display: inline-block;
         padding: 0 20px;
         border-radius: 10px;
         margin-right: 8px;
@@ -302,21 +300,24 @@ interface IExperimentDetail {
           background-color: var(--levelcolor-3);
         }
       }
-      .knowledge {
-        color: var(--cyan-100);
-        background: var(--cyan-24);
-        // border: 1px solid var(--primary-color);
-        border-radius: 11px;
-        padding: 0 20px;
-        margin-right: 16px;
-      }
-      .labels {
+      .labels, .knowledge {
+        display: inline-block;
+        max-width: 200px;
         color: var(--primary-color);
         background: var(--orangeyellow-6-24);
         // border: 1px solid var(--primary-color);
         border-radius: 11px;
-        padding: 0 20px;
+        padding: 0 14px;
         margin-right: 16px;
+        vertical-align: bottom;
+        word-break: normal;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .knowledge {
+        color: var(--cyan-100);
+        background: var(--cyan-24);
       }
       .class-num {
       }

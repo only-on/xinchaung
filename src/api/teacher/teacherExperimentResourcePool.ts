@@ -65,7 +65,7 @@ export default {
   experimentShare: { url: `/api/xinchuang/content/content/share`, method: "POST", dataType: "json" },
   deleteExperiment: { url: `/api/xinchuang/content/content/{id}`, method: "DELETE"},
   getExperimentDetail: { url: `/api/xinchuang/content/content/{id}`, method: "GET" },
-  updateBaseInfo: { url: `/api/xinchuang/content/content/save_base`, method: "POST", dataType: "json" },
+  updateBaseInfo: { url: `/api/xinchuang/content/content/save_base/{id}`, method: "POST", dataType: "json" },
   updateVncGuide: { url: `/api/xinchuang/content/vnc/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
   uploadJuptyFile: { url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`, method: "POST",dataType: "formdata" },
   updateJupyterGuide: { url: `/api/xinchuang/content/jupyter/contents/{content_id}/guidebook`, method: "PUT", dataType: "json" },
