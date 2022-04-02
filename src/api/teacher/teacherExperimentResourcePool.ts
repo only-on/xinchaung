@@ -43,7 +43,8 @@ export default {
 
   // 上传任务
   uploadTaskFile: {
-    url: `/api/xinchuang/content/jupyter/upload_taskfile`,
+    // url: `/api/xinchuang/content/jupyter/upload_taskfile`,
+    url: `/api/xinchuang/content/jupyter/contents/guidebook/upload`,
     method: "POST",
     dataType: "formdata",
   },
