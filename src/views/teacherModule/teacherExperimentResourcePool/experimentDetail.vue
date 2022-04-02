@@ -106,7 +106,8 @@ import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool
 import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/videoDetail.vue";
 import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/fileDetail.vue";
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
-const components = ['', experimentGuide, jupyterDetail, taskDetail, fileDetail, videoDetail]
+// 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
+const components = ['', experimentGuide, '', '', jupyterDetail, taskDetail, videoDetail, fileDetail]
 const router = useRouter();
 const route = useRoute();
 const { id, currentTab } = route.query;
