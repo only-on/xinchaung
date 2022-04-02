@@ -7,7 +7,7 @@
           placeholder="请选择月份"
           format="YYYY年MM月"
           :allowClear="false"
-          v-model:value="month"
+          v-model:value="weekTime"
           @change="monthChange"
         >
           <template #suffixIcon>
@@ -17,9 +17,9 @@
           </template>
         </a-month-picker>
         <div class="week-picker">
-          <span class="left-btn">&lt;</span>
+          <span @click="pre" class="left-btn">&lt;</span>
           <span class="week">{{ changeWeek }}</span>
-          <span class="right-btn">></span>
+          <span @click="next" class="right-btn">></span>
         </div>
       </div>
 
@@ -27,8 +27,8 @@
         {{ moment(new Date()).format("YYYY年MM月DD日") }}
         {{ tableWeekName[new Date().getDay() - 1] }}
       </div>
-      <a-button class="top-right" type="primary"
-        >环境管理{{ new Date(month).getFullYear() }}</a-button
+      <a-button class="top-right" type="primary" @click="toEnvironmental"
+        >环境管理</a-button
       >
     </div>
     <div class="table">
@@ -53,9 +53,9 @@
             <span
               class="table-week-name"
               :class="
-                currentDate.getFullYear() == new Date(month).getFullYear() &&
-                currentDate.getMonth() == new Date(month).getMonth() &&
-                index == new Date(month).getDay()
+                currentDate.getFullYear() == new Date(weekTime).getFullYear() &&
+                currentDate.getMonth() == new Date(weekTime).getMonth() &&
+                toDayList(index) ==moment(currentDate).format('MM.DD')
                   ? 'active'
                   : ''
               "
@@ -305,7 +305,6 @@ updata({
 
 const dayTimes: Ref<any[]> = ref([]);
 // top数据
-const month: Ref<any> = ref(moment(new Date(), "YYYY-MM"));
 // 初始表头数据
 const tableWeekName: string[] = ["周一", "周二", "周三", "周四", "周五", "周六", "周日"];
 const dateArr: string[] = [
@@ -332,7 +331,7 @@ const dateArr: string[] = [
 ];
 
 const settingTimeModalRef = ref();
-const weekTime = ref(moment());
+const weekTime:Ref<any> = ref(moment(new Date(), "YYYY-MM"));
 const isNewData: Ref<any> = ref(false);
 let toDayTime = ref(moment());
 const currentDate = new Date();
@@ -379,6 +378,22 @@ function getTimeTable(data: string) {
 }
 function monthChange(date: Moment, dateString: string[]) {
   console.log(date, dateString);
+  // const date = moment(weekTime.value.add(-1, "M"));
+      // weekTime.value = date;
+      getTimeTable(weekTime.value.format("YYYY-MM-DD"));
+}
+
+// 上一周
+function pre() {
+      const date = moment(weekTime.value.add(-1, "w"));
+      weekTime.value = date;
+      getTimeTable(date.format("YYYY-MM-DD"));
+}
+// 下一周
+function next() {
+    const date = moment(weekTime.value.add(1, "w"));
+      weekTime.value = date;
+      getTimeTable(date.format("YYYY-MM-DD"));
 }
 // 编辑时间
 function openSettingTimeModal(index: number) {
@@ -489,6 +504,13 @@ function cancelScheduleConfirm(id: number) {
 function toDayList(index: number) {
   return weekTime.value.isoWeekday(index + 1).format("MM.DD");
 }
+
+// 跳转环境管理页面
+function toEnvironmental() {
+  router.push({
+    path:"/teacher/coursePlan/environmental"
+  })
+}
 // 处理权限
 function roleName() {
   // const role = localStorage.getItem('role')
@@ -564,9 +586,11 @@ onMounted(() => {
   margin-left: 16px;
   .left-btn {
     margin-left: 15px;
+    cursor: pointer;
   }
   .right-btn {
     margin-right: 15px;
+    cursor: pointer;
   }
 }
 .table {
