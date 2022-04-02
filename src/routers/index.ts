@@ -17,7 +17,7 @@ import storage from "src/utils/extStorage";
 const PathList = {
   1: "",
   2: "/admin/home",
-  3: "/teacher/home",
+  3: "/teacher/teacherExperimentResourcePool",
   4: "/studentStatistic",
   5: "",
 };
