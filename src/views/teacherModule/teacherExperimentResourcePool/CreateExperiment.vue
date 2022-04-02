@@ -487,7 +487,10 @@ function create() {
   // console.log(TaskLIst)
   // return
   formRef.value.validate().then(() => {
-    // let 
+    if(createTypeNumber === 2 && formState.ipynbList.length === 0){
+      message.warning('请选择实验指导')
+      return
+    }
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
