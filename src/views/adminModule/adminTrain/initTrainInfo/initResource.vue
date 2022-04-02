@@ -1,14 +1,14 @@
 <template>
   <div class="initResource" v-layout-bg>
     <div>deededdeededed</div>
-    <search-resource :trainId="trainId" :isMyself="isMyself"></search-resource>
+    <!-- <search-resource :trainId="trainId" :isMyself="isMyself"></search-resource> -->
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, toRefs, createVNode, inject, onMounted } from "vue";
 import { useRoute } from "vue-router";
-import searchResource from "src/views/teacherModule/teacherTrain/components/searchResource/index.vue";
+// import searchResource from "src/views/teacherModule/teacherTrain/components/searchResource/index.vue";
 
 interface Istate {
   trainId: any;
@@ -17,7 +17,7 @@ interface Istate {
 export default defineComponent({
   name: "initResource",
   components: {
-    searchResource,
+    // searchResource,
   },
   setup() {
     let route = useRoute();

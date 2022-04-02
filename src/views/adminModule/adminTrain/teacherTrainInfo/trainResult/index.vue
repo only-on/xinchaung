@@ -1,6 +1,6 @@
 <template>
   <div class="trainResult" v-layout-bg>
-    <archive-training-detail :trainId="trainId" role="2"></archive-training-detail>
+    <!-- <archive-training-detail :trainId="trainId" role="2"></archive-training-detail> -->
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent, reactive, toRefs, createVNode, inject, onMounted } from "vue";
 import request from "src/api/index";
 import { useRoute } from "vue-router";
-import archiveTrainingDetail from "src/views/teacherModule/teacherTrain/detail/archiveTrainingDetail/index.vue";
+// import archiveTrainingDetail from "src/views/teacherModule/teacherTrain/detail/archiveTrainingDetail/index.vue";
 
 interface Istate {
   trainId: any;
@@ -17,7 +17,7 @@ interface Istate {
 export default defineComponent({
   name: "trainResult",
   components: {
-    archiveTrainingDetail,
+    // archiveTrainingDetail,
   },
   setup() {
     let route = useRoute();

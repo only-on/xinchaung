@@ -385,6 +385,7 @@ function detailed(){
       ...res.data
     }
     //common
+    
     state.detail.is_public=String(res.data.common)
     state.detail.categoryText=res.data.categorys[0].name
     state.detail.item_count=res.data.amount

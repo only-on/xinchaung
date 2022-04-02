@@ -1,12 +1,12 @@
 <template>
-  <div>隋唐测试</div>
+  <div>
+    <inClassTest></inClassTest>
+  </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted ,Ref} from "vue";
-
+import inClassTest from "src/views/teacherModule/teachCourse/InClassTest/index.vue";
+import { ref, toRefs, onMounted, Ref } from "vue";
 </script>
 
-<style lang="less" scope>
-
-</style>
+<style lang="less" scope></style>
