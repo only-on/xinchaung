@@ -129,9 +129,10 @@ const addToCourse = () => {
 // 报告模板
 const reportTemplate = () => {
   // isShowReport.value = true
+  const templateId = experimentDetail.content_template?experimentDetail.content_template.template_id : ''
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
-    query: { templateId: "22" },
+    query: { templateId: templateId },
   });
 };
 // 编辑基本信息
@@ -159,7 +160,8 @@ let experimentDetail = reactive<IExperimentDetail>({
   konwledge_map: [],
   username: '2',
   lab_proc: "实验指导",
-  tag: []
+  tag: [],
+  content_template: {},
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -208,6 +210,7 @@ interface IExperimentDetail {
   username: string;
   lab_proc: string;
   tag: any[]
+  content_template: any
 }
 </script>
 <style scoped lang="less">

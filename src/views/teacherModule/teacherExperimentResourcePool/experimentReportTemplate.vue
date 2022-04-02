@@ -1,6 +1,6 @@
 <template>
   <div class="report-template">
-    <div class="report-template-name">实验报告模板名称</div>
+    <div class="report-template-name">{{reportName}}</div>
     <div class="report-template-content">
       <drag-gable
         :list="dataList"
@@ -23,7 +23,8 @@
     </div>
     <SelectReport
       v-if="reportVisible"
-      :visible="reportVisible"
+      :visible="reportVisible" 
+      :selectedReport="reportInfo"
       @reportCancel="reportCancel"
       @reportOk="reportOk"
     ></SelectReport>
@@ -44,8 +45,7 @@ import { WidgetModel } from "src/views/teacherModule/teacherTemplate/templateTyp
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
-const templateId = Number(route.query.templateId);
-console.log(templateId);
+let templateId = Number(route.query.templateId);
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "报告模板预览", componenttype: 0 }],
@@ -55,13 +55,16 @@ updata({
 });
 onMounted(() => {
   // templateId.value = route.query.templateId
-  console.log(templateId);
+  // console.log(templateId);
   if (templateId) {
     getDetail();
   }
 });
 
-var dataList = reactive<any[]>([
+const reportInfo = reactive({
+  id: templateId
+})
+const dataList = reactive<any[]>([
   {
     ...deepClone(widgetDataModel.w1),
     idx: 0,
@@ -72,7 +75,6 @@ const getDetail = () => {
   dataList.length = 0;
   http.detailTemplate({ urlParams: { id: templateId } })
     .then((res: IBusinessResp) => {
-      console.log(res.data)
       if (res && res.data) {
         const result = res.data;
         reportName.value = result.name;
@@ -83,52 +85,6 @@ const getDetail = () => {
         });
       }
     })
-    .catch(() => {
-      console.log("err");
-      reportName.value = "我的实验";
-      const json_content = [
-        {
-          toolbar: true,
-          type: "w1",
-          fields: [
-            {
-              align: "left",
-              colspan: 4,
-              name: "w1_tt_1",
-              placeholder: "题目描述",
-              readonly: false,
-              value: "111",
-            },
-          ],
-        },
-        {
-          toolbar: true,
-          type: "w8",
-          fields: [
-            {
-              align: "left",
-              name: "w8_st_1",
-              placeholder: "题目描述",
-              readonly: false,
-              value: "111",
-            },
-            {
-              align: "left",
-              name: "w8_ct_1",
-              placeholder: "答案",
-              readonly: false,
-              value:
-                "222!![2.jpg](/proxyPrefix/uploadfiles/md/2021-11-25/2sEqfvYdwkFuYDQHtjRJnUvZz973fikFUcz9QgxR.jpg)",
-            },
-          ],
-        },
-      ];
-      Object.assign(dataList, json_content);
-      // 增加唯一标识， 否则拖拽排序时input的value值会被影响
-      dataList.forEach((item: WidgetModel, index: number) => {
-        item.idx = index;
-      });
-    });
 };
 const backGo = () => {
   router.go(-1);
@@ -136,7 +92,10 @@ const backGo = () => {
 
 const reportVisible = ref<boolean>(false);
 const reportOk = (val: any) => {
-  console.log(val);
+  // console.log(val);
+  templateId = val.id
+  reportInfo.id = val.id
+  getDetail()
 };
 const reportCancel = () => {
   reportVisible.value = false;
