@@ -40,69 +40,63 @@
         <testList @deleteQues="deleteQues"></testList>
       </div>
     </div>
-    <a-modal
-      :width="700"
-      :cancelText="state.cancelText"
-      :okText="state.okText"
-      :title="state.modalTitle"
-      :visible="state.visible"
-      :okButtonProps="state.okButtonProps"
-      :confirm-loading="state.confirmLoading"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <component :is="componentName.value" />
-      <achievementStatis v-if="componentName == 'achievementStatis'"></achievementStatis>
-      <choiceques v-if="componentName == 'choiceques'"></choiceques>
-      <explainques v-if="componentName == 'explainques'"></explainques>
-    </a-modal>
+    <achievementStatis
+      v-if="componentName == 'achievementStatis'"
+      :modalVisable="state.visible"
+      @updateVisable="updateVisable"
+    ></achievementStatis>
+    <choiceques
+      ref="choiceChild"
+      v-if="componentName == 'choiceques'"
+      :modalVisable="state.visible"
+      @updateVisable="updateVisable"
+    ></choiceques>
+    <explainques
+      ref="explainques"
+      v-if="componentName == 'explainques'"
+      :modalVisable="state.visible"
+      @updateVisable="updateVisable"
+    ></explainques>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, ref, toRef, inject, PropType, reactive, toRefs } from "vue";
+import {
+  defineComponent,
+  ref,
+  toRef,
+  inject,
+  PropType,
+  reactive,
+  toRefs,
+  nextTick,
+} from "vue";
+import { Modal, message } from "ant-design-vue";
 import testList from "./testList/index.vue";
 import achievementStatis from "./achievementStatis/index.vue";
 import choiceques from "./choiceques/index.vue";
 import explainques from "./explainques/index.vue";
 interface Istate {
   visible: boolean;
-  confirmLoading: boolean;
-  modalTitle: string;
-  cancelText: string;
-  okText: string;
-  okButtonProps: any;
 }
 const state: Istate = reactive({
   visible: false,
-  confirmLoading: false,
-  modalTitle: "",
-  cancelText: "取消",
-  okText: "确定",
-  okButtonProps: { style: { display: "inlineblock" } },
 });
 const componentName: any = ref("");
+const choiceChild: any = ref("choiceChild");
 // 出题弹框
 function selectTuestion(type: any) {
   console.log(type);
-  state.modalTitle = type == "ques" ? "出题-选择题" : "出题-问答题";
   state.visible = true;
-  state.okButtonProps = { style: { display: "inlineblock" } };
   componentName.value = type == "ques" ? "choiceques" : "explainques";
 }
 //成绩统计弹框
 function scoreStatistic() {
-  state.modalTitle = "成绩统计";
   state.visible = true;
-  state.cancelText = "关闭";
-  state.okButtonProps = { style: { display: "none" } };
   componentName.value = "achievementStatis";
 }
-function handleOk() {
-  state.visible = false;
-}
-function handleCancel() {
-  state.visible = false;
+function updateVisable(value: any) {
+  state.visible = value;
 }
 function deleteQues(id: any) {
   console.log(id);
@@ -121,10 +115,10 @@ function deleteQues(id: any) {
   background: var(--white-100);
 }
 .tree {
-  width: 40%;
+  width: 470px;
 }
 .test {
-  width: 58%;
+  width: 714px;
   padding: 24px;
   .inTestHeader {
     display: flex;

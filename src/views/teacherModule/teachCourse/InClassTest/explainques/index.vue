@@ -1,23 +1,84 @@
 <template>
   <div>
-    <div class="modal-content">
-      <a-form layout="vertical">
-        <a-form-item required label="题目描述">
-          <a-textarea></a-textarea>
-        </a-form-item>
-        <a-form-item required label="答案">
-          <a-textarea></a-textarea>
-        </a-form-item>
-        <a-form-item required label="关键词">
-          <a-textarea></a-textarea>
-        </a-form-item>
-        <a-form-item required label="分数">
-          <a-input></a-input>
-        </a-form-item>
-      </a-form>
-    </div>
+    <a-modal
+      :width="700"
+      cancelText="取消"
+      okText="发送"
+      title="出题-问答题"
+      :visible="props.modalVisable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <div class="modal-content">
+        <a-form ref="formRef" layout="vertical" :model="formState" :rules="rules">
+          <a-form-item label="题目描述" name="titleDescription">
+            <a-textarea v-model:value="formState.titleDescription"></a-textarea>
+          </a-form-item>
+          <a-form-item label="答案" name="textanswer">
+            <a-textarea v-model:value="formState.textanswer"></a-textarea>
+          </a-form-item>
+          <a-form-item label="关键词" name="keyWords">
+            <a-textarea v-model:value="formState.keyWords"></a-textarea>
+          </a-form-item>
+          <a-form-item label="分数" name="score">
+            <a-input v-model:value="formState.score"></a-input>
+          </a-form-item>
+        </a-form>
+      </div>
+    </a-modal>
   </div>
 </template>
+<script lang="ts" setup>
+import {
+  defineComponent,
+  ref,
+  toRef,
+  inject,
+  PropType,
+  reactive,
+  toRefs,
+  defineExpose,
+} from "vue";
+import { Modal, message } from "ant-design-vue";
+const rules: any = ref("");
+rules.value = {
+  titleDescription: [{ required: true, message: "请输入题目描述" }],
+  textanswer: [{ required: true, message: "请输入答案" }],
+  keyWords: [{ required: true, message: "请输入关键词" }],
+  score: [{ required: true, message: "请输入分数" }],
+};
+interface Istate {
+  visible: boolean;
+}
+const state: Istate = reactive({
+  visible: false,
+});
+const formState: any = reactive({
+  titleDescription: "",
+  textanswer: "",
+  keyWords: "",
+  score: "",
+});
+interface Props {
+  modalVisable: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+  modalVisable: false,
+});
+const formRef = ref();
+const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
+function updateVisable() {
+  emit("updateVisable", false);
+}
+function handleOk() {
+  formRef.value.validate().then(() => {
+    updateVisable();
+  });
+}
+function handleCancel() {
+  updateVisable();
+}
+</script>
 <style lang="less" scoped>
 .radio_group {
   width: 100%;

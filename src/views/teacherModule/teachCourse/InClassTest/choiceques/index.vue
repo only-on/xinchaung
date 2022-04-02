@@ -1,63 +1,140 @@
 <template>
   <div>
-    <div class="modal-content">
-      <a-form layout="vertical">
-        <a-form-item required label="题目描述">
-          <a-textarea></a-textarea>
-        </a-form-item>
-        <div>
-          <a-radio-group class="radio_group">
-            <a-checkbox-group name="checkboxgroup">
-              <div class="option">
-                <div class="option-item">
-                  <a-form-item required :label="'选项A'">
-                    <a-input></a-input>
-                  </a-form-item>
+    <a-modal
+      :width="700"
+      cancelText="取消"
+      okText="发送"
+      title="出题—选择题"
+      :visible="props.modalVisable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+    >
+      <div class="modal-content">
+        <a-form ref="formRef" layout="vertical" :model="formState" :rules="rules">
+          <a-form-item label="题目描述" name="titleDescription">
+            <a-textarea v-model:value="formState.titleDescription"></a-textarea>
+          </a-form-item>
+          <div>
+            <a-radio-group
+              class="radio_group"
+              v-model="formState.answer"
+              @change="onChange"
+            >
+              <a-checkbox-group name="checkboxgroup">
+                <div class="option">
+                  <div class="option-item">
+                    <a-form-item :label="'选项A'" name="optionA">
+                      <a-input v-model:value="formState.optionA"></a-input>
+                    </a-form-item>
+                  </div>
+                  <div class="setAnswer">
+                    <a-radio :value="1">设为答案</a-radio>
+                  </div>
                 </div>
-                <div class="setAnswer">
-                  <a-radio>设为答案</a-radio>
+                <div class="option">
+                  <div class="option-item">
+                    <a-form-item :label="'选项B'" name="optionB">
+                      <a-input v-model:value="formState.optionB"></a-input>
+                    </a-form-item>
+                  </div>
+                  <div class="setAnswer">
+                    <a-radio :value="2">设为答案</a-radio>
+                  </div>
                 </div>
-              </div>
-              <div class="option">
-                <div class="option-item">
-                  <a-form-item required :label="'选项B'">
-                    <a-input></a-input>
-                  </a-form-item>
+                <div class="option">
+                  <div class="option-item">
+                    <a-form-item :label="'选项C'" name="optionC">
+                      <a-input v-model:value="formState.optionC"></a-input>
+                    </a-form-item>
+                  </div>
+                  <div class="setAnswer">
+                    <a-radio :value="3">设为答案</a-radio>
+                  </div>
                 </div>
-                <div class="setAnswer">
-                  <a-radio>设为答案</a-radio>
+                <div class="option">
+                  <div class="option-item">
+                    <a-form-item required :label="'选项D'" name="optionD">
+                      <a-input v-model:value="formState.optionD"></a-input>
+                    </a-form-item>
+                  </div>
+                  <div class="setAnswer">
+                    <a-radio :value="4">设为答案</a-radio>
+                  </div>
                 </div>
-              </div>
-              <div class="option">
-                <div class="option-item">
-                  <a-form-item required :label="'选项C'">
-                    <a-input></a-input>
-                  </a-form-item>
-                </div>
-                <div class="setAnswer">
-                  <a-radio>设为答案</a-radio>
-                </div>
-              </div>
-              <div class="option">
-                <div class="option-item">
-                  <a-form-item required :label="'选项D'">
-                    <a-input></a-input>
-                  </a-form-item>
-                </div>
-                <div class="setAnswer">
-                  <a-radio>设为答案</a-radio>
-                </div>
-              </div>
-            </a-checkbox-group>
-          </a-radio-group>
-        </div>
-        <a-form-item required label="分数">
-          <a-input></a-input>
-        </a-form-item>
-      </a-form>
-    </div>
+              </a-checkbox-group>
+            </a-radio-group>
+          </div>
+          <a-form-item label="分数" name="score">
+            <a-input v-model:value="formState.score"></a-input>
+          </a-form-item>
+        </a-form>
+      </div>
+    </a-modal>
   </div>
 </template>
+<script lang="ts" setup>
+import {
+  defineComponent,
+  ref,
+  toRef,
+  inject,
+  PropType,
+  reactive,
+  toRefs,
+  defineExpose,
+} from "vue";
+import { Modal, message } from "ant-design-vue";
+const rules: any = ref("");
+rules.value = {
+  titleDescription: [{ required: true, message: "请输入题目描述" }],
+  optionA: [{ required: true, message: "请输入选项A内容" }],
+  optionB: [{ required: true, message: "请输入选项B内容" }],
+  optionC: [{ required: true, message: "请输入选项C内容" }],
+  optionD: [{ required: true, message: "请输入选项D内容" }],
+  score: [{ required: true, message: "请输入选项D内容" }],
+};
+interface Istate {
+  visible: boolean;
+}
+const state: Istate = reactive({
+  visible: false,
+});
+const formState: any = reactive({
+  titleDescription: "",
+  optionA: "",
+  optionB: "",
+  optionC: "",
+  optionD: "",
+  answer: "",
+  score: "",
+});
+interface Props {
+  modalVisable: boolean;
+}
+const props = withDefaults(defineProps<Props>(), {
+  modalVisable: false,
+});
+const formRef = ref<any>("null");
+const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
+function updateVisable() {
+  emit("updateVisable", false);
+}
+function handleOk() {
+  formRef.value.validate().then(() => {
+    updateVisable();
+  });
+}
+function handleCancel() {
+  updateVisable();
+}
+function onChange(e: any) {
+  console.log(e.target.value);
+}
+function verifiyInfor() {
+  formRef.value.validate();
+}
+defineExpose({ verifiyInfor });
+</script>
 <style lang="less" scoped>
 .radio_group {
   width: 100%;
