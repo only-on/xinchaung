@@ -336,7 +336,7 @@ const getDirection = () => {
   http.getDirection().then((res: IBusinessResp) => {
     const data = res.data
     data.forEach((v: any) => {
-      v.value = v.id
+      v.value = v.name
     })
     classifyList[0].data.push(...data)
   })
