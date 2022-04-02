@@ -194,7 +194,7 @@ const directionName = computed(() => {
     return v.id === Number(experimentDetail.direction)
   })[0]?.name
 })
-const levelList = {'1': '中级', '2': '高级', '3': '高级'}
+const levelList = {'1': '初级', '2': '中级', '3': '高级'}
 interface IExperimentDetail {
   id: number;
   is_init: number

@@ -162,25 +162,25 @@ const ExperimentTypeList = reactive({
     method:'createVnc'
   },
   Jupyter: {
-    type:2,
+    type:4,
     title: "Jupyter实验",
     assembly: ["configuration", "jupyter",'setData'],
     method:'createJupyter'
   },
   task: {
-    type:3,
+    type:5,
     title: "任务制实验",
     assembly: ["configuration", "task",'setData'],
     method:'createTask'
   },
   text: {
-    type:4,
+    type:7,
     title: "文档实验",
     assembly: ["text"],
     method:'createText'
   },
   video: {
-    type:5,
+    type:6,
     title: "视频实验",
     assembly: ["video"],
     method:'createVideo'
