@@ -213,6 +213,7 @@ function batchDisabled() {
     align-items: center;
   }
   :deep(.ant-input) {
+      width: 180px;
   }
   .m-l {
     margin-left: 16px;

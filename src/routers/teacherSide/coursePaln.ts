@@ -22,5 +22,13 @@ export default {
         authCode: "environmental",
       },
     },
+    {
+      path: "createCoursePlan",
+      component: () => import("src/views/teacherModule/teachCourse/coursePlan/createCoursePlan.vue"),
+      meta: {
+        icon: "",
+        authCode: "createCoursePlan",
+      },
+    },
   ]
 }

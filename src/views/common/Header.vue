@@ -323,6 +323,7 @@ export default defineComponent({
         // router.push("/");
       }
     }
+    window.XC_ROLE=2
     onMounted(() => {
       // getMenu();
     });
