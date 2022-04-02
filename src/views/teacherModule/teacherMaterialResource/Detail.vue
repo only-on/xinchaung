@@ -306,7 +306,10 @@ const handleOk=async()=> {
   const fd = new FormData()
   fd.append('name', params.name)
   fd.append('description', params.description)
-  fd.append('tags', JSON.stringify(params.tags))
+  // fd.append('tags', JSON.stringify(params.tags))
+  params.tags.forEach((v: string, k: number) => {
+      fd.append(`tags[${k}]`, v)
+    })
   fd.append('is_public', params.is_public)
   fd.append('cover', params.cover)
   http.editMyImage({param:fd,urlParams:{editId:editId}}).then((res: any) => {
@@ -321,6 +324,7 @@ const initData = () => {
     state.detail={
       ...res.data
     }
+    state.detail.is_public=state.detail.is_public?'1':'0'
     isDataSet.value=res.data.type_name === '数据集' ? true :false
     activeTab.value =isDataSet.value?'说明文档':'文件列表'
   })

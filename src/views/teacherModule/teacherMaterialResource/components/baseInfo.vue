@@ -144,10 +144,11 @@ if(Object.keys(props.editInfo).length){
   let arr=Object.keys(props.editInfo)
   arr.forEach((key:string)=>{
     formState[key]=props.editInfo[key]
-    formState.is_public=formState.is_public?'1':'0'
+    // formState.is_public=formState.is_public?'1':'0'
     imageUrl.value=props.editInfo.cover
     // formState[key]?formState[key]=props.editInfo[key]:''
   })
+  // console.log(formState)
 }
 // 上传封面图
 const fileList:Ref<any>=ref([])
