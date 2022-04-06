@@ -118,7 +118,7 @@ import codeReview from "./codeReview.vue"; // 代码评阅
 import tree from "../../../component/tree/simpleTree.vue";
 import {cloneDeep} from "lodash"
 
-let type = 0; // 0 实操 1 视频文档 2 习题
+let type = ref(0); // 0 实操 1 视频文档 2 习题
 
 // 控制弹窗显示隐藏visible
 const weightVisible = ref(false);
@@ -267,11 +267,11 @@ function clickFun(type: string, val: number) {
 function select(type1: string) {
   console.log(type1);
   if (type1=='sc') {
-    type=0
+    type.value=0
   }else if (type1=='wd') {
-    type=1
+    type.value=1
   }else{
-    type=2
+    type.value=2
   }
   updateTableHeader()
 }
@@ -281,14 +281,14 @@ function updateTableHeader() {
   const temp=cloneDeep(oldColumns)
   // 当是视频文档类实验时，去掉列 代码、评分参考// 0 实操 1 视频文档 2 习题
 
-  if (type==0) {
+  if (type.value==0) {
     temp[5].children.splice(3, 1);
   }
-  if (type == 1) {
+  if (type.value == 1) {
     temp[5].children.splice(2, 2);
     temp.splice(6, 1);
   }
-  if (type == 2) {
+  if (type.value == 2) {
     
     temp[5].children.splice(0,3);
     temp.splice(6, 1);
