@@ -97,6 +97,9 @@ const tusFileUpload={
         if(type === 'mp4'){
           data.tusdVideoUrl=`${env?'/proxyPrefix':''}/video/${name}.${type}`
         }
+        if(type === 'pdf'){
+          data.tusdDocumentUrl=`/document/${name}.${type}`
+        }
         data.file_url=file_url
         data.status="done"
         // data.UpState={}

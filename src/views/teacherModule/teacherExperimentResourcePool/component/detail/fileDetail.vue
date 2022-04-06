@@ -18,7 +18,7 @@
     <div v-if="activeFile.suffix === 'md'">
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
-    <PdfVue :url="activeFile.file_url" v-else />
+    <PdfVue :url="activeFile.pdf_url" v-else />
   </div>
   <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
@@ -87,7 +87,8 @@ const preview = ref<boolean>(true);
 const experimentContent = ref<any>(props.detail.guide);
 let activeFile = reactive({
   suffix: 'md',
-  file_url: ''
+  file_url: '',
+  pdf_url: ''
 })
 if (props.detail.content_task_files.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
@@ -109,7 +110,13 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
     activeFile.suffix = 'md'
     return
   }
+  // console.log(uploadFileList)
   Object.assign(activeFile, uploadFileList)
+  if (uploadFileList.suffix === 'pdf') {
+    activeFile.pdf_url = uploadFileList.tusdDocumentUrl
+  } else {
+    activeFile.pdf_url = uploadFileList.file_url
+  }
   directoryId.value = id
 };
 
@@ -191,7 +198,7 @@ const cancel = () => {};
 }
 .experiment-content {
   margin-top: 16px;
-  height: 520px;
+  height: 563px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }

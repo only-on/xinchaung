@@ -114,6 +114,7 @@ const beforeUpload = async (file: any, fileList: any) => {
   }
 }
 .experiment-content {
+  height: 592px;
   margin-top: 16px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
