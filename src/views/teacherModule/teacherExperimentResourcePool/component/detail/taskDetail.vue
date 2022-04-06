@@ -45,6 +45,7 @@ interface Ifiles {
   detail: string
   summary: string
   state: number
+  isAdd: boolean
 }
 interface IDetail {
   id: number
@@ -104,6 +105,7 @@ const addTask = () => {
     detail: '',
     summary: '',
     state: 0,
+    isAdd: true,
   });
 };
 const delet = (i: number) => {

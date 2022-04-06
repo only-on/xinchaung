@@ -19,8 +19,8 @@
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
     <PdfVue :url="activeFile.file_url" v-else />
-    <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
   </div>
+  <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -38,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive, PropType } from "vue";
+import { ref, inject, reactive, PropType, onMounted } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -191,7 +191,7 @@ const cancel = () => {};
 }
 .experiment-content {
   margin-top: 16px;
-  height: 592px;
+  height: 520px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }

@@ -82,9 +82,9 @@ import markedEditor from "src/components/editor/markedEditor.vue";
 import { NoToCh } from "src/utils/common";
 import { readFile } from "src/utils/common";
 const $message: MessageApi = inject("$message")!;
-const dev_base_url = import.meta.env.VITE_APP_BASE_API || "";
-var uploadUrl = `${dev_base_url}/api/content/vnc/upload_mkfile`;
-console.log(uploadUrl);
+// const dev_base_url = import.meta.env.VITE_APP_BASE_API || "";
+// var uploadUrl = `${dev_base_url}/api/content/vnc/upload_mkfile`;
+// console.log(uploadUrl);
 const isShow = ref<boolean>(false);
 // const preview = ref<boolean>(false);
 const formState = reactive({
@@ -103,6 +103,7 @@ const props = defineProps<Props>();
 const emit = defineEmits<{
   (e: "delet", i: number): void;
 }>();
+props.taskList.state = props.taskList.state ? true : false
 const beforeUpload = async (file: any, fileList: any) => {
   const text = await readFile(file);
   props.taskList.detail = text;
@@ -123,7 +124,7 @@ interface ItaskList {
   name: string;
   detail: any;
   summary: any;
-  state: number;
+  state: any;
   isAdd?: boolean;
 }
 </script>

@@ -97,6 +97,9 @@ onMounted(() => {
       return pre+cur.count
     }, 0)
     hotLabelList.forEach((v: any, k: number) => {
+      if ((i) % 4 === 0) {
+        i = 0
+      }
       data.push({
         "name": v.name ? v.name : v.id,
         "value": v.count,
@@ -111,9 +114,6 @@ onMounted(() => {
         }
       })
       i++
-      if ((k) % 4 === 0) {
-        i = 0
-      }
     })
     option.series[0].data = data
     Echart()
