@@ -123,13 +123,3 @@ export const readFile = (file: any,format:string = 'md') => {
   });
 }
 
-// 
-export const fileSize = (size: any) => {
-  let num=Number(size)
-  // console.log(num)
-  if (num < 1024 * 1024) {
-    return (num / 1024).toFixed(2) + 'kb'
-  } else {
-    return (num / 1024 / 1024).toFixed(2) + 'Mb'
-  }
-}

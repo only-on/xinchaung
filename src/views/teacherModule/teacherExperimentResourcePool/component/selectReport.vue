@@ -95,6 +95,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ModalFunc } from "ant-design-vue/lib/modal/Modal";
+import {getFileSuffix} from 'src/utils/getFileType'
 // export default defineComponent({
 // setup() {
 const $confirm: ModalFunc = inject("$confirm")!;
@@ -159,7 +160,9 @@ const Download = (item: any) => {
   // document.body.appendChild(a);
   // a.click();
   // document.body.removeChild(a);
-  downloadUrl(item.word_path,item.name)
+  // console.log(getFileSuffix(item.word_path))
+  const name=`${item.name}.${getFileSuffix(item.word_path)}`
+  downloadUrl(item.word_path,name)
 };
   const env = process.env.NODE_ENV == "development" ? true : false;
 const viewTemplate = (n: number, val?: any) => {
