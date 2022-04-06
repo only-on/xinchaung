@@ -596,7 +596,7 @@ function createTeachingSchedule(
 // 编辑预约
 function editTeachingSchedule(id: number, date: string) {
   router.push({
-    path: `/teacher/teacherCourse/scheduleEdit`,
+    path: `/teacher/coursePlan/createCoursePlan?`,
     query: { id, date },
   });
 }
