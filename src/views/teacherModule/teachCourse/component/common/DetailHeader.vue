@@ -164,6 +164,7 @@ const edit=()=>{
           background: var(--primary-color);
           border-radius: 4px;
           text-align: center;
+          margin-left: 10px;
         }
         .endState{
           background: #98a4b9;

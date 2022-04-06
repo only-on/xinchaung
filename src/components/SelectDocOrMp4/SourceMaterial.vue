@@ -302,6 +302,7 @@ onMounted(()=>{
             .fileRight{
               justify-content: space-between;
               flex: 1;
+              padding-left: 2rem;
             }
             .select{
               width: 60px;

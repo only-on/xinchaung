@@ -1,53 +1,105 @@
 <template>
-  <div class="courseContent">
-    <div class="leftContent content">
-      <h3 class="courseH3">课程简介</h3>
-      <div class="introduce">Wiki是一种在网络上开放且可供多人协同创作的超文本系统，由美国人沃德·坎宁安于1995年首先开发，这种超文本系统支持面向社群的协作式写作，同时也包括一组支持这种写作。沃德·坎宁安将wiki定义为“一种允许一群用户用简单的描述来创建和连接一组网页的社会计算系统”。 [1] Wiki站点可以有多人（甚至任何访问者）维护，每个人都可以发表自己的意见。</div>
-      <div>
-        <h3 class="courseH3">章节目录</h3>
-        <div class="myChart">
-          <ChapterList :Editable="true" />
+  <div class="chapterList" v-for="(v,k) in state.chapterList" :key="k">
+    <div class="title flexCenter">
+      <div class="flexCenter titleBox">
+        <div class="titleItem">{{v.title}}</div>
+        <div class="titleItem">{{v.name}}</div>
+      </div>
+      <div class="titleBoxLeft flexCenter">
+        <div class="operation flexCenter" v-if="props.Editable">
+          <span class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
+          <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
+          <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+        </div>
+        <span @click="v.openItem=!v.openItem" class="collect">{{v.openItem?'收起':'展开'}}</span>
+      </div>
+    </div>
+    <div class="listBox" v-show="v.openItem">
+      <div class="list" v-for="a in v.list" :key="a" :class="v.openItem?'listHeight':''">
+        <div class="itemTit flexCenter" @click.stop="selectExperiment(a)" :class="state.activeTab.title === a.title?'ActiveItem':''">
+          <div class="TitLeft flexCenter">
+            <div class="experimentType">
+              <span :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
+            </div>
+            <span v-if="a.order === '3-1'" class="order">{{`【${'教辅'}】`}}&nbsp;</span>
+            <span v-if="a.order !== '3-1'">{{a.order}}&nbsp;</span>
+            <span class="ItemExperimentTitle">{{a.title}}</span>
+          </div>
+          <div class="TitRight">
+            <div v-if="!props.Editable">
+              <!-- 准备完成变为 开始  按钮 -->
+              <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
+              <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
+              <span class="view" @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+            </div>
+            <div v-if="props.Editable">
+              <div class="operation flexCenter">
+                <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)"></span>
+                <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(a)"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="experimentGuide" v-if="a.openGuidance">
+          <div v-if="a.type==='experiment'" class="experiment">
+            <div class="itemContentBox textScrollbar">
+              <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''">
+                <h4 class="">{{i.title}}</h4>
+                <div class="text">{{i.text}}</div>
+              </div>
+            </div>
+          </div>
+          <div class="video-box" v-if="a.type==='mp4'">
+            <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
+              您的浏览器不支持 video 标签
+            </video>
+          </div>
+          <div class="pdfBox" v-if="a.type==='pptx'">
+            <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
+          </div>
         </div>
       </div>
     </div>
-    <!-- rightContent 公开课详情 和学生端详情 -->
-    <div class="rightContent">
-      <Ranking :rank="[]"></Ranking>
-      <graph :knowledge="[]" :words="[]"></graph>
-      <relevantExpert :list="[]"></relevantExpert>
-    </div>
   </div>
-  
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted ,Ref,reactive,nextTick} from "vue";
+import { ref, toRefs, onMounted ,Ref,reactive} from "vue";
+import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import { useRoute ,useRouter} from "vue-router";
-import request from 'src/api/index'
-import { Knowledge,HotWords} from './echartsOption'
-import Ranking from './components/Chapter/Ranking.vue'
-import graph from './components/Chapter/graph.vue'
-import relevantExpert from './components/Chapter/relevantExpert.vue'
-import ChapterList from './components/Chapter/ChapterList.vue'
+import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 const route = useRoute();
 const router = useRouter();
-const http=(request as any).teachCourse
-
+const routeQuery = useRoute().query;
+const env = process.env.NODE_ENV == "development" ? true : false;
+const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
+interface Props {
+  Editable:boolean
+  // knowledge: any;
+  // words:any
+}
+const props = withDefaults(defineProps<Props>(), {
+  // knowledge: ()=> [],  //  
+  // words: ()=> [],      // 
+  Editable:false          // 是否可编辑
+});
+const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
 
 var state:any=reactive({
   chapterList:[
     {
       title:'第一章',
       name:'课程介绍',
-      explain:'本章节主要介绍课程目标，课程大纲，相关知识点及学习建议。',
+      // explain:'本章节主要介绍课程目标，课程大纲，相关知识点及学习建议。',
       openItem:false,
       list:[
         {
           order:'3-1',
-          title:'基于入侵检测的告警分析-外网',
+          title:'基于入侵检测的告警分析-外网1',
           openGuidance:false,
           startup:false,
           type:'mp4',
+          task_type:1,
           content:[
             {
               title:'1、按钮的定义',
@@ -65,10 +117,11 @@ var state:any=reactive({
         },
         {
           order:'3-2',
-          title:'基于入侵检测的告警分析-外网',
+          title:'基于入侵检测的告警分析-外网2',
           openGuidance:false,
           startup:false,
           type:'pptx',
+          task_type:2,
           content:[
             {
               title:'1、按钮的定义',
@@ -86,10 +139,11 @@ var state:any=reactive({
         },
         {
           order:'3-3',
-          title:'基于入侵检测的告警分析-外网',
+          title:'基于入侵检测的告警分析-外网3',
           openGuidance:false,
           startup:false,
           type:'experiment',
+          task_type:3,
           content:[
             {
               title:'1、按钮的定义',
@@ -118,6 +172,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:4,
           content:[
             {
               title:'1、按钮的定义',
@@ -138,6 +193,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:5,
           content:[
             {
               title:'1、按钮的定义',
@@ -158,6 +214,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:6,
           content:[
             {
               title:'1、按钮的定义',
@@ -186,6 +243,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:7,
           content:[
             {
               title:'1、按钮的定义',
@@ -206,6 +264,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:8,
           content:[
             {
               title:'1、按钮的定义',
@@ -226,6 +285,7 @@ var state:any=reactive({
           title:'基于入侵检测的告警分析-外网',
           openGuidance:false,
           startup:false,
+          task_type:9,
           content:[
             {
               title:'1、按钮的定义',
@@ -246,56 +306,224 @@ var state:any=reactive({
   ],
   activeTab:{}
 })
+const emit = defineEmits<{
+  (e: "selectExperiment", val: any): void;
 
-onMounted(() => {
+  (e: "establishChapter", val: any): void;
+  (e: "editChapter", val: any): void;
+  (e: "deleteChapter", val: any): void;
+
+  (e: "editExperiment", val: any): void;
+  (e: "deleteExperiment", val: any): void;
+  
+}>();
+state.chapterList.forEach((v: any) => {
+  v.list.forEach((i:any)=>{
+    i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
+  })
   
 });
+  // 选中章节下实验
+function selectExperiment(v:any){
+  state.activeTab=v
+  emit('selectExperiment',v)
+}
+function prepare(a:any) {
+  a.startup=true
+  // return
+  let param: any = {
+    type: "course",
+    opType: "prepare",
+    // taskId: experiment_id.value,
+    taskId:500152
+  };
+  let task_type={
+    type:4,
+    programing_type:0
+  }
+  if (task_type.type === 4) {
+    // webide
+    if (task_type.programing_type === 1) {
+      router.push({
+        path: "/vm/ace",
+        query: {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          routerQuery: JSON.stringify(routeQuery),
+        },
+      });
+    } else {
+      toVmConnect(router, param, routeQuery);
+    }
+  } else {
+    toVmConnect(router, param, routeQuery);
+  }
+}
+function ViewExperiment(){
+  // 去实验详情页面
+}
+// 创建章节
+const establishChapter=(v:any)=>{
+  emit('establishChapter',v)
+}
+// 编辑章节
+const editChapter=(v:any)=>{
+  emit('editChapter',v)
+}
+// 删除章节
+const deleteChapter=(v:any)=>{
+  emit('deleteChapter',v)
+}
+
+// 编辑章节下实验
+const editExperiment=(v:any)=>{
+  emit('editExperiment',v)
+}
+// 删除章节下实验
+const deleteExperiment=(v:any)=>{
+  emit('deleteExperiment',v)
+}
 </script>
 
 <style lang="less" scope>
- .courseH3{
-    margin-bottom: 1rem;
-    // color: var(--blue-6-2);
-  }
-  .courseContent{
-    width: var(--center-width);
-    margin: 0 auto;
-  }
-  .courseContent{
-    width: var(--center-width);
-    margin: 0 auto;
-    display: flex;
-    .content{
-      padding: 20px;
-    }
-    .leftContent{
-      // width: 70%;
-      flex: 1;
-      padding-top: 40px;
-      .introduce{
-        font-weight: 400;
-        color: var(--black-65);
-        line-height: 24px;
-        margin-bottom: 2rem;
+  .chapterList{
+    // padding-bottom: 2rem;
+    .title{
+      justify-content: space-between;
+      height: 46px;
+      border-bottom: 1px dashed #e8e8e8;
+      &:hover{
+        background: #fff7e6;
+        cursor: pointer;
       }
-      
+      .titleItem{
+        color: var(--black-85);
+        margin-right: 1rem;
+      }
+      .collect{
+        color: var(--primary-color);
+        cursor: pointer;
+      }
+      .operation{
+        display: none;
+      }
+      &:hover{
+        .operation{
+          display: flex;
+        }
+      }
     }
-    .rightContent{
-      // width: 30%;
-      width: 240px;
-      margin-bottom: 2rem;
-      margin-left: 50px;
-      padding-top: 20px;
-      
-      
-      
+    .listBox{
+      transition: all .3s;
+      padding: 1rem 0;
+    }
+    .list{
+      .itemTit{
+        justify-content: space-between;
+        height: 40px;
+        padding: 0 8px;
+        .TitLeft{
+          .experimentType{
+            color: #1CB2B3;
+            width: 60px;
+            justify-content: center;
+            span{
+              // height: 24px;
+              // line-height: 24px;
+              padding: 4px 6px;
+              border-radius: 10px;
+            }
+          }
+          .order{
+            color: #1CB2B3;
+          }
+          .ItemExperimentTitle{
+            color: var(--black-65);
+          }
+        }
+        .TitRight{
+          .environment{
+            justify-content: center;
+            padding: 0;
+            width: 100px;
+            height: 24px;
+            background-color:var(--brightBtn);
+            color: var(--white);
+            border-radius: 12px;
+            &:hover{
+              background-color:var(--brightBtn);
+              border: 1px solid transparent;
+            }
+          }
+          .view{
+            color: var(--primary-color);
+            margin-left: 24px;
+            cursor: pointer;
+          }
+        }
+        .operation{
+          display: none;
+        }
+        &:hover{
+          background: #fff7e6;
+          cursor: pointer;
+          .operation{
+            display: flex;
+          }
+        }
+      }
+      .ActiveItem{
+        background: #fff7e6;
+        .TitLeft .ItemExperimentTitle{
+          color: var(--primary-color);
+        }
+      }
+      .experimentGuide{
+        // max-height: 500px;
+        // overflow: auto;
+        .experiment{
+          border: 1px solid rgba(0,0,0,0.15);
+          padding: 20px 10px 20px 30px;
+          .itemContentBox{
+            overflow: auto;
+            max-height: 420px;
+          }
+          .itemContent{
+            transition: all .5s;
+            h4{
+              margin-bottom: 1rem;
+            }
+            .text{
+              height: 100%;
+              white-space: pre-wrap;
+              color: var(--black-65);
+              margin-bottom: 1.5rem;
+            }
+          }
+        }
+        .video-box{
+          height: 500px;
+          width: 100%;
+          video{
+            width:100%;
+            height:100%;
+            object-fit: cover;
+          }
+        }
+        .pdfBox{
+          height: 500px;
+          width: 100%;
+        }
+      }
     }
   }
-  .modal-post{
-    #KnowledgePoints{
-      height: 600px;
-      width: 100%;
-      padding: 40px;
+  .operation{
+    margin: 0 1rem;
+    .iconfont{
+      color: #1CB2B3;
+      cursor: pointer;
+      padding: 0 6px;
     }
   }
 </style>
