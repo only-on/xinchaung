@@ -173,7 +173,10 @@ const onSubmit = () => {
     router.go(-1)
   })
 };
-const cancel = () => {};
+const cancel = () => {
+  router.go(-1)
+};
+
 </script>
 
 <style lang="less" scoped>
