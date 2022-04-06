@@ -21,9 +21,11 @@
                   <span>{{a.order}}</span>
                   <span>{{a.title}}</span>
                 </div>
-                <div class="TitRight flexCenter">
-                  <a-button class="environment flexCenter" :loading="a.startup" @click.stop="prepare(a)" v-if="a.type==='experiment'">{{a.startup?'准备中':'启动环境'}}</a-button>
-                  <span @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+                <div class="TitRight">
+                  <!-- 准备完成 为  开始  按钮 -->
+                  <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
+                  <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
+                  <span class="view" @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
                 </div>
               </div>
               <div class="itemContentBox textScrollbar" v-show="a.openGuidance">
@@ -47,31 +49,11 @@
     </div>
     <div class="rightContent">
       <Ranking :rank="[]"></Ranking>
-      <h3 class="courseH3">知识点</h3>
-      
-      <div class="graphBox">
-        <div id="graph"></div>
-        <div class="magnifier" @click="viewAtlas()">
-          <span class="iconfont icon-sousuo"></span>
-        </div>
-      </div>
-      <h3 class="courseH3">相关实验</h3>
-      <div class="relevant">
-        <div class="item" v-for="v in 5" :key="v">
-          <div class="text">{{'基于入侵检测的告警分析-外网'}}</div>
-          <div class="number">{{'127人学过'}}</div>
-        </div>
-      </div>
+      <graph :knowledge="[]" :words="[]"></graph>
+      <relevantExpert :list="[]"></relevantExpert>
     </div>
   </div>
-  <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
-    <div id="KnowledgePoints">
-
-    </div>
-    <template #footer>
-      <span></span>
-    </template>
-  </a-modal>
+  
 </template>
 
 <script lang="ts" setup>
@@ -81,6 +63,8 @@ import request from 'src/api/index'
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import { Knowledge,HotWords} from './echartsOption'
 import Ranking from './components/Chapter/Ranking.vue'
+import graph from './components/Chapter/graph.vue'
+import relevantExpert from './components/Chapter/relevantExpert.vue'
 const route = useRoute();
 const router = useRouter();
 const http=(request as any).teachCourse
@@ -303,14 +287,6 @@ var state:any=reactive({
 function ExperimentDetail(a:any){
   // 去实验详情页面
 }
-var Visible:Ref<boolean>=ref(false)
-function viewAtlas(){
-  Visible.value=true
-  nextTick(()=>{
-    let data={}
-    Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
-  })
-}
 function prepare(a:any) {
   a.startup=true
   // return
@@ -347,11 +323,7 @@ function ViewExperiment(){
   // 去实验详情页面
 }
 onMounted(() => {
-  // initData() HotWords
-  nextTick(()=>{
-    let data={}
-    HotWords(document.getElementById("graph") as HTMLDivElement,data)
-  })
+  
 });
 </script>
 
@@ -401,7 +373,6 @@ onMounted(() => {
         .list{
           .itemTit{
             justify-content: space-between;
-            padding-right: 2rem;
             line-height: 40px;
             .TitRight{
               .environment{
@@ -417,7 +388,7 @@ onMounted(() => {
                   border: 1px solid transparent;
                 }
               }
-              span{
+              .view{
                 color: var(--primary-color);
                 margin-left: 24px;
                 cursor: pointer;
@@ -463,42 +434,8 @@ onMounted(() => {
       margin-left: 50px;
       padding-top: 20px;
       
-      .graphBox{
-        width: 100%;
-        height: 166px;
-        margin-bottom: 2rem;
-        position: relative;
-        #graph{
-          width: 100%;
-          height: 100%;
-          // border: 1px solid red;
-        }
-        .magnifier{
-          position: absolute;
-          right: 0;
-          bottom: 0;
-          width: 30px;
-          height: 30px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: rgba(0,0,0,0.40);
-          color: #ffffff;
-          cursor: pointer;
-        }
-      }
-      .relevant{
-        .item{
-          margin-bottom: 1rem;
-          .text{
-            color: var(--primary-color);
-            letter-spacing: 0.34px;
-          }
-          .number{
-            color: var(--black-45);
-          }
-        }
-      }
+      
+      
     }
   }
   .modal-post{

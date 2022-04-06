@@ -155,7 +155,7 @@ import Submit from "src/components/submit/index.vue";
 import BaseInfo from './components/baseInfo.vue'
 import PdfVue from "src/components/pdf/pdf.vue";
 import FileList from "./FileList.vue";
-import { getFileType,getFileTypeIcon,readFile,fileSize } from 'src/utils/getFileType'
+import { getFileType,getFileTypeIcon,readFile } from 'src/utils/getFileType'
 import { bytesToSize } from "src/utils/common"
 import MarkedEditor from "src/components/editor/markedEditor.vue";
 import { useRouter, useRoute } from "vue-router";

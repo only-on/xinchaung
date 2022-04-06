@@ -3,12 +3,12 @@
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
-    <courseChapter v-if="state.activeTab.value === '1'"></courseChapter> 
-    <courseExperiment v-if="state.activeTab.value=='2'"></courseExperiment>
-    <popQuiz v-if="state.activeTab.value=='3'"></popQuiz>
-    <performanceReview v-if="state.activeTab.value=='4'"></performanceReview>
-    <studentAnalysis v-if="state.activeTab.value=='5'"></studentAnalysis>
-    <memberManagement v-if="state.activeTab.value=='6'"></memberManagement>
+    <courseChapter v-if="state.activeTab.value === 'courseChapter'" />
+    <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
+    <popQuiz v-if="state.activeTab.value=='popQuiz'" />
+    <performanceReview v-if="state.activeTab.value=='performanceReview'" />
+    <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
+    <memberManagement v-if="state.activeTab.value=='memberManagement'" />
 
   </div>
 </template>
@@ -59,7 +59,13 @@ const http=(request as any).teachCourse
 const currentRole: number = storage.lStorage.get("role");
 const routeQuery = useRoute().query;
 const { currentTab,course_id } = route.query;
-const detailTabs=[{name:'课程章节',value:'1'},{name:'课程实验管理',value:'2'},{name:'随堂测试',value:'3'},{name:'成绩评阅',value:'4'},{name:'学情分析',value:'5'},{name:'成员管理',value:'6'},]
+const detailTabs=[
+  {name:'课程章节',value:'courseChapter'},
+  {name:'课程实验管理',value:'courseExperiment'},
+  {name:'随堂测试',value:'popQuiz'},
+  {name:'成绩评阅',value:'performanceReview'},
+  {name:'学情分析',value:'studentAnalysis'},
+  {name:'成员管理',value:'memberManagement'},]
 var state:IState=reactive({
   activeTab:{}
 })
