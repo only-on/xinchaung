@@ -27,6 +27,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/getFileType";
 import { useRouter, useRoute } from "vue-router";
+const router = useRouter()
 const route = useRoute();
 const { currentTab }  = route.query
 const $message: MessageApi = inject("$message")!;
@@ -57,7 +58,7 @@ const props: Props = defineProps({
 })
 
 const beforeUpload = async (file: any, fileList: any) => {
-  console.log(props.detail.content_task_files[0])
+  // console.log(props.detail.content_task_files[0])
   // const text = await readFile(file, 'ipynb');
   const suffix = (file && file.name).split(".")[1];
   if (suffix !== 'ipynb') {
@@ -68,7 +69,7 @@ const beforeUpload = async (file: any, fileList: any) => {
   fd.append('jupyter_file', file)
   http.uploadJuptyFile({param: fd}).then((res: any) => {
     const { data } = res
-    console.log(data)
+    // console.log(data)
     const param = {
       "guidebooks": [
         {
@@ -83,7 +84,7 @@ const beforeUpload = async (file: any, fileList: any) => {
     }
     http.updateJupyterGuide({urlParams: {content_id: props.detail.content_task_files[0].content_id}, param})
     .then((res: any) => {
-      console.log(res)
+      router.go(-1)
       props.detail.content_task_files[0] = Object.assign(props.detail.content_task_files[0], data, {file_url: data.url})
     })
   })
