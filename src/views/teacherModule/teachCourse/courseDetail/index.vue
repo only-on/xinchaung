@@ -4,10 +4,15 @@
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
     <courseChapter v-if="state.activeTab.value === 'courseChapter'" />
+    <!-- 课程实验管理 -->
     <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
+    <!-- 随堂测试 -->
     <popQuiz v-if="state.activeTab.value=='popQuiz'" />
+    <!-- 成绩评阅 -->
     <performanceReview v-if="state.activeTab.value=='performanceReview'" />
+    <!-- 学情分析 -->
     <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
+    <!-- 成员管理 -->
     <memberManagement v-if="state.activeTab.value=='memberManagement'" />
 
   </div>
