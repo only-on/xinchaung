@@ -1,6 +1,8 @@
 <template>
   <div class="correct-wrap">
-    <div class="left">tree</div>
+    <div class="left">
+      <tree @select="select"></tree>
+    </div>
     <div class="correct-right right">
       <div class="top">
         <div class="t-left">
@@ -23,105 +25,119 @@
           row-key="id"
           :pagination="false"
         >
-          <template #customReportTitle>
-            报告<i class="statistics">40%</i>
-          </template>
-          <template #customQuizTitle>
-            随测<i class="statistics">40%</i>
-          </template>
-          <template #customCodeTitle>
-            代码<i class="statistics">40%</i>
-          </template>
-          <template #customExercisesTitle>
-            习题
-          </template>
+          <template #customReportTitle> 报告<i class="statistics">40%</i> </template>
+          <template #customQuizTitle> 随测<i class="statistics">40%</i> </template>
+          <template #customCodeTitle> 代码<i class="statistics">40%</i> </template>
+          <template #customExercisesTitle> 习题 </template>
           <template #reference="{ text }">
-            <span class="table-a-link" @click="clickFun('video', text)"
-              >录屏</span
-            >
+            <span class="table-a-link" @click="clickFun('video', text)">录屏</span>
           </template>
           <template #report="{ text, record }">
             <template v-if="record.isReport">
               <span
-                >{{ text }}<i @click="clickFun('updateReport', text)" class="edit-btn iconfont icon-bianji1"></i
+                >{{ text
+                }}<i
+                  @click="clickFun('updateReport', text)"
+                  class="edit-btn iconfont icon-bianji1"
+                ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('report', text)"
-                >评阅</span
-              >
+              <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
             </template>
           </template>
           <template #code="{ text, record }">
             <template v-if="record.isReport">
               <span
-                >{{ text }}<i @click="clickFun('updateCode', text)" class="edit-btn iconfont icon-bianji1"></i
+                >{{ text
+                }}<i
+                  @click="clickFun('updateCode', text)"
+                  class="edit-btn iconfont icon-bianji1"
+                ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('code', text)"
-                >评阅</span
-              >
+              <span class="table-a-link" @click="clickFun('code', text)">评阅</span>
             </template>
           </template>
           <template #score="{ text, record }">
             <template v-if="record.isScore">
               <span
-                >{{ text }}<i @click="clickFun('updateScore', text)" class="edit-btn iconfont icon-bianji1"></i
+                >{{ text
+                }}<i
+                  @click="clickFun('updateScore', text)"
+                  class="edit-btn iconfont icon-bianji1"
+                ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('score', text)"
-                >评分</span
-              >
+              <span class="table-a-link" @click="clickFun('score', text)">评分</span>
             </template>
           </template>
-          
         </a-table>
-        
       </div>
       <a-pagination :total="500" class="page-wrap">
-          <template #itemRender="{ page, type, originalElement }">
-            <a v-if="type === 'prev'">上一页</a>
-            <a v-else-if="type === 'next'">下一页</a>
-            <renderVNode v-else :vnode="originalElement"></renderVNode>
-          </template>
-        </a-pagination>
+        <template #itemRender="{ page, type, originalElement }">
+          <a v-if="type === 'prev'">上一页</a>
+          <a v-else-if="type === 'next'">下一页</a>
+          <renderVNode v-else :vnode="originalElement"></renderVNode>
+        </template>
+      </a-pagination>
     </div>
   </div>
-    <reviewWeight v-if="weightVisible" v-model:weightVisible="weightVisible" :type="type"></reviewWeight>
-    <ratingScores :isEdit="isEdit" v-if="scoreVisible" v-model:visible="scoreVisible" v-model:data="rowData"></ratingScores>
-    <reportModal :isEdit="isEdit" v-if="reportVisible" v-model:visible="reportVisible" v-model:data="rowData"></reportModal>
-    <codeReview v-if="codeVisible" v-model:visible="codeVisible" v-model:data="rowData"></codeReview>
+  <reviewWeight
+    v-if="weightVisible"
+    v-model:weightVisible="weightVisible"
+    :type="type"
+  ></reviewWeight>
+  <ratingScores
+    :isEdit="isEdit"
+    v-if="scoreVisible"
+    v-model:visible="scoreVisible"
+    v-model:data="rowData"
+  ></ratingScores>
+  <reportModal
+    :isEdit="isEdit"
+    v-if="reportVisible"
+    v-model:visible="reportVisible"
+    v-model:data="rowData"
+  ></reportModal>
+  <codeReview
+    v-if="codeVisible"
+    v-model:visible="codeVisible"
+    v-model:data="rowData"
+  ></codeReview>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted ,Ref} from "vue";
-import reviewWeight from "./reviewWeight.vue" // 一键评阅弹窗
-import ratingScores from "./ratingScores.vue" // 评分弹窗
-import reportModal from "./report.vue"  // 批阅报告弹框
-import codeReview from "./codeReview.vue" // 代码评阅
+import { ref, toRefs, onMounted, Ref } from "vue";
+import reviewWeight from "./reviewWeight.vue"; // 一键评阅弹窗
+import ratingScores from "./ratingScores.vue"; // 评分弹窗
+import reportModal from "./report.vue"; // 批阅报告弹框
+import codeReview from "./codeReview.vue"; // 代码评阅
+import tree from "../../../component/tree/simpleTree.vue";
+import {cloneDeep} from "lodash"
 
-let type=2 // 0 实操 1 视频文档 2 习题
+let type = 0; // 0 实操 1 视频文档 2 习题
 
 // 控制弹窗显示隐藏visible
-const weightVisible=ref(false)
-const scoreVisible=ref(false)
-const reportVisible=ref(false)
-const codeVisible=ref(false)
+const weightVisible = ref(false);
+const scoreVisible = ref(false);
+const reportVisible = ref(false);
+const codeVisible = ref(false);
 
 // 是否是编辑状态
-const isEdit=ref(false)
+const isEdit = ref(false);
 // 当前行数据
-const rowData=ref({})
+const rowData = ref({});
 // table头信息
-const columns:Ref<any> = ref([
+const oldColumns:any[]= [
   {
     title: "序号",
     width: 49,
-    algin:"center",
+    algin: "center",
     customRender: ({ text, record, index }: any) => {
-      return index +1;
+      return index + 1;
     },
   },
   {
@@ -159,12 +175,17 @@ const columns:Ref<any> = ref([
         slots: { title: "customCodeTitle", customRender: "code" },
         width: 74,
       },
+      {
+        dataIndex: "exercises",
+        slots: { title: "customExercisesTitle", customRender: "exercises" },
+        width: 74,
+      },
     ],
   },
   {
     title: "评分参考",
     dataIndex: "reference",
-    width: 73,
+    width: 75,
     slots: { customRender: "reference" },
   },
   {
@@ -173,23 +194,10 @@ const columns:Ref<any> = ref([
     width: 65,
     slots: { customRender: "score" },
   },
-]);
+];
+const  columns:Ref<any>=ref([])
 console.log(type);
 
-// 当是视频文档类实验时，去掉列 代码、评分参考
-if (type==1) {
-    columns.value[5].children.splice(2,1)
-    columns.value.splice(6,1)
-}
-if (type==2) {
-  let temp={
-        dataIndex: "exercises",
-        slots: { title: "customExercisesTitle", customRender: "exercises" },
-        width: 74,
-      }
-  columns.value[5].children=[temp]
-  columns.value.splice(6,1)
-}
 // table数据
 const tabelData = ref([
   {
@@ -207,7 +215,7 @@ const tabelData = ref([
     isQuiz: true,
     isCode: true,
     isScore: true,
-    exercises:100
+    exercises: 100,
   },
   {
     id: 2,
@@ -224,39 +232,72 @@ const tabelData = ref([
     isQuiz: false,
     isCode: false,
     isScore: false,
-    exercises:99
+    exercises: 99,
   },
 ]);
 
 // 分页渲染dom
-function renderVNode(_:any, { attrs: { vnode } }:any) {
+function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
 }
 // 打开一键评阅modal
 function autoWeight() {
-    weightVisible.value=true
+  weightVisible.value = true;
 }
 // table操作
 function clickFun(type: string, val: number) {
   console.log(val);
-  if (type.indexOf('update')!=-1) {
-    isEdit.value=true
-  }else{
-    isEdit.value=false
+  if (type.indexOf("update") != -1) {
+    isEdit.value = true;
+  } else {
+    isEdit.value = false;
   }
-  if (['updateScore','score'].includes(type)) {
-    scoreVisible.value=true
+  if (["updateScore", "score"].includes(type)) {
+    scoreVisible.value = true;
   }
-  if (['updateReport','report'].includes(type)) {
-    reportVisible.value=true
+  if (["updateReport", "report"].includes(type)) {
+    reportVisible.value = true;
   }
-  if (['updateCode','code'].includes(type)) {
-    codeVisible.value=true
+  if (["updateCode", "code"].includes(type)) {
+    codeVisible.value = true;
   }
 }
-onMounted(() => {});
 
+// 选择tree章节
+function select(type1: string) {
+  console.log(type1);
+  if (type1=='sc') {
+    type=0
+  }else if (type1=='wd') {
+    type=1
+  }else{
+    type=2
+  }
+  updateTableHeader()
+}
 
+// 更新table 表头
+function updateTableHeader() {
+  const temp=cloneDeep(oldColumns)
+  // 当是视频文档类实验时，去掉列 代码、评分参考// 0 实操 1 视频文档 2 习题
+
+  if (type==0) {
+    temp[5].children.splice(3, 1);
+  }
+  if (type == 1) {
+    temp[5].children.splice(2, 2);
+    temp.splice(6, 1);
+  }
+  if (type == 2) {
+    
+    temp[5].children.splice(0,3);
+    temp.splice(6, 1);
+  }
+  columns.value=temp
+}
+onMounted(() => {
+  updateTableHeader()
+});
 </script>
 
 <style lang="less" scoped>
@@ -274,7 +315,7 @@ onMounted(() => {});
     margin-right: 16px;
     height: 100%;
   }
-  .correct-right{
+  .correct-right {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -312,14 +353,13 @@ onMounted(() => {});
   }
   .c-table {
     margin-top: 24px;
-    :deep(.ant-pagination-item){
-        border: none;
+    :deep(.ant-pagination-item) {
+      border: none;
     }
-    
   }
-  .page-wrap{
-        margin-top: auto;
-    }
+  .page-wrap {
+    margin-top: auto;
+  }
   .correct-table {
     :deep(.ant-table-thead > tr > th),
     :deep(.ant-table-tbody > tr > td) {
