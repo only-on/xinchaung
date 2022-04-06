@@ -333,14 +333,14 @@ const handleOk=async()=> {
     detailed()
     visible.value=false
   })
-  if(ForumSearch.common !== oldCommon.value){
-    console.log(ForumSearch.common)
-    let obj:any={
-      data_id:editId,
-      user_id:user_id,
-    }
-    ForumSearch.common === 1 ? http.toPublic({param:{...obj}}) :http.toPrivate({param:{...obj}})
-  }
+  // if(ForumSearch.common !== oldCommon.value){
+  //   console.log(ForumSearch.common)
+  //   let obj:any={
+  //     data_id:editId,
+  //     user_id:user_id,
+  //   }
+  //   ForumSearch.common === 1 ? http.toPublic({param:{...obj}}) :http.toPrivate({param:{...obj}})
+  // }
 }
 //  上传文件
 var addFileVisible: Ref<boolean> = ref(false);

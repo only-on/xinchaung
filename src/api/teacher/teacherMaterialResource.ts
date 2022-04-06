@@ -26,8 +26,8 @@ export default {
   editDoc:{url:`/dmc/v1.0/update_doc`,method:'PATCH',dataType: 'json'},
   download:{url:`/dmc/v1.0/download`,method:'GET'},
   deleteItemFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
-  toPublic:{url:`/dmc/v1.0/to/public`,method:'POST',dataType: 'json'},
-  toPrivate:{url:`/dmc/v1.0/to/private`,method:'POST',dataType: 'json'},
+  // toPublic:{url:`/dmc/v1.0/to/public`,method:'POST',dataType: 'json'},
+  // toPrivate:{url:`/dmc/v1.0/to/private`,method:'POST',dataType: 'json'},
 };
 
 export interface ITeacherMaterialResource {
@@ -52,8 +52,8 @@ export interface ITeacherMaterialResource {
   editDoc: TFHttpSend;
   download: TFHttpSend;
   deleteItemFile: TFHttpSend;
-  toPublic: TFHttpSend;
-  toPrivate: TFHttpSend;
+  // toPublic: TFHttpSend;
+  // toPrivate: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";
