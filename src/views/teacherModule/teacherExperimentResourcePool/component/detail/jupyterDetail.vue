@@ -15,7 +15,7 @@
     </div>
   </div>
   <div class="experiment-content">
-    {{props.detail.content_task_files[0].file_url}}
+    <iframe :src="props.detail.guide" frameborder="0" style="width:100%;height:100%"></iframe>
   </div>
 </template>
 
@@ -38,7 +38,8 @@ interface Ifiles {
 }
 interface IDetail {
   id: number
-  content_task_files: any[]
+  content_task_files: any[],
+  guide: ''
 }
 interface Props {
   detail: IDetail
@@ -49,7 +50,8 @@ const props: Props = defineProps({
     require: true,
     default: {
       id: 0,
-      content_task_files: []
+      content_task_files: [],
+      guide: ''
     }
   }
 })

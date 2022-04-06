@@ -132,7 +132,7 @@ const reportTemplate = () => {
   const templateId = experimentDetail.content_template?experimentDetail.content_template.template_id : ''
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
-    query: { templateId: templateId },
+    query: { templateId: templateId, id:  experimentDetail.id},
   });
 };
 // 编辑基本信息

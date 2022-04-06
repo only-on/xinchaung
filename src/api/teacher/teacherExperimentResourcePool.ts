@@ -75,6 +75,7 @@ export default {
   updateDocumentGuide: { url: `/api/xinchuang/content/document/{content_id}/guidebook`, method: "PUT", dataType: "json" },
   deleteVideo: { url: `/api/xinchuang/content/video/remove/{content_id}`, method: "DELETE"},
   updateVideoGuide: { url: `/api/xinchuang/content/video/{content_id}/guidebook`, method: "PUT", dataType: "json" },
+  updateReport: { url: `/api/xinchuang/content/content/update_report/{id}`, method: "POST", dataType: "json" },
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -118,6 +119,7 @@ export interface ITeacherExperimentResourcePool {
   updateDocumentGuide: TFHttpSend;
   deleteVideo: TFHttpSend;
   updateVideoGuide: TFHttpSend;
+  updateReport: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";

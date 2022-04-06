@@ -23,7 +23,6 @@
     </div>
     <SelectReport
       v-if="reportVisible"
-      :visible="reportVisible" 
       :selectedReport="reportInfo"
       @reportCancel="reportCancel"
       @reportOk="reportOk"
@@ -45,7 +44,7 @@ import { WidgetModel } from "src/views/teacherModule/teacherTemplate/templateTyp
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
-let templateId = Number(route.query.templateId);
+let {templateId, id} = route.query;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "报告模板预览", componenttype: 0 }],
@@ -93,9 +92,11 @@ const backGo = () => {
 const reportVisible = ref<boolean>(false);
 const reportOk = (val: any) => {
   // console.log(val);
-  templateId = val.id
-  reportInfo.id = val.id
-  getDetail()
+  http.updateReport({urlParams: {id}, param: {report: val.id}}).then((res: IBusinessResp) => {
+    templateId = val.id
+    reportInfo.id = val.id
+    getDetail()
+  })
 };
 const reportCancel = () => {
   reportVisible.value = false;
