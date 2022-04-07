@@ -4,12 +4,12 @@
       <div class="LeftBox">
         <breadcrumb />
         <div class="termOfValidity">
-          <span>2022 / 02 /23 - 2022 / 02 /24</span>
+          <span v-if="isShowCourseDetail">2022 / 02 /23 - 2022 / 02 /24</span>
         </div>
         <div class="titleBox flexCenter">
           <div class="title">玩转组件库搭建流程</div>
           <!-- class = endState -->
-          <div class="state">进行中</div>
+          <div class="state" v-if="isShowCourseDetail">进行中</div>
         </div>
         <div class="info">
           <div class="details flexCenter">
@@ -31,20 +31,20 @@
             </div>
             <div class="item">
               <span>职业方向</span>
-              <span class="num num2">深度学发是发是</span>
+              <span class="num" :class="isShowCourseDetail?'num2':''">深度学发是发是</span>
             </div>
-            <div class="item">
+            <div class="item" v-if="isShowCourseDetail">
               <span>实验成绩</span>
               <span class="num num2">100分</span>
             </div>
-            <div class="item">
+            <div class="item" v-if="isShowCourseDetail">
               <span>实验时长</span>
               <span class="num">30分钟</span>
             </div>
           </div>
           <div class="user flexCenter">
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
-            <div class="name flexCenter">
+            <div class="name flexCenter" v-if="currentTab && Number(currentTab) === 1">
               <div class="chart"></div>
               <div class="userName">教师名字</div>
             </div>
@@ -56,9 +56,12 @@
         </div>
       </div>
       <div class="rightBox">
-        <div class="flexCenter caozuo" v-if="currentTab && Number(currentTab) === 0">
-          <a-button class="brightBtn" type="primary" @click="setup()"> 设 置 </a-button>
-          <a-button type="primary"  @click="edit()"> 编 辑 </a-button>
+        <div class="flexCenter caozuo" v-if="currentTab && Number(currentTab) === 0 && role === 3">
+          <a-button class="brightBtn" type="primary" @click="setup()">设置</a-button>
+          <a-button type="primary"  @click="edit()">编辑</a-button>
+        </div>
+        <div v-if="role === 4">
+          学习累计用时
         </div>
       </div>
     </div>
@@ -68,6 +71,7 @@
       </div>
     </div>
   </div>
+  
 </template>
 <script lang="ts" setup>
 import {
@@ -84,6 +88,7 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -93,7 +98,7 @@ const router = useRouter();
 const route = useRoute();
 const { currentTab,course_id } = route.query;
 const { lStorage } = extStorage;
-const role = lStorage.get("role");
+const role = Number(lStorage.get("role"));
 const http = (request as any).teacherImageResourcePool;
 interface Props {
   info: any;
@@ -106,6 +111,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   (e: "selectTab", val: any): void;
+  (e: "setupCourse"): void;
+  (e: "editCourse"): void;
 }>();
 var activeTab:any=reactive({
   name:'',
@@ -121,12 +128,21 @@ const selectTab=(v:any)=>{
   activeTab.value=v.value
   emit("selectTab", v);
 }
+const isShowCourseDetail=computed(()=>{
+  let flag=false
+  if((currentTab && Number(currentTab) === 0) || role === 4){
+    flag=true
+  }
+  return flag
+})
+
 const setup=()=>{
-  
+  emit("setupCourse")
 }
 const edit=()=>{
-
+  emit("editCourse")
 }
+// 
 </script>
 <style scoped lang="less">
 
@@ -229,6 +245,11 @@ const edit=()=>{
     }
     .rightBox{
       flex: 1;
+      .caozuo{
+        .brightBtn{
+          margin-right: 1rem;
+        }
+      }
     }
   }
   .courseDetailTab{

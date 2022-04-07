@@ -1,47 +1,47 @@
 <template>
 <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="baseInfoFormRef">
   <div class="info">
-  <div class="left">
-    <a-form-item :label="props.materialType+'名称'" name="name" required>
-      <a-input v-model:value="formState.name" :placeholder="'请在这里输入'+props.materialType+'名称'" />
-    </a-form-item>
-    <a-form-item :label="props.materialType+'描述'" name="description">
-      <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 3, maxRows: 5 }" placeholder="请在这里输入描述文字" />
-    </a-form-item>
-  </div>
-  <div class="right">
-    <a-form-item label="可见范围" name="is_public" required class="visible-range">
-      <a-select v-model:value="formState.is_public">
-        <!-- 1-公开，0-私有 -->
-        <a-select-option value="1">
-          <span class="name">公开</span>
-          <span class="tips">所有人可见</span>
-        </a-select-option>
-        <a-select-option value="0">
-          <span class="name">私有</span>
-          <span class="tips">仅自己可见</span>
-        </a-select-option>
-      </a-select>
-    </a-form-item>
-    <a-form-item label="封面图" class="cover">
-      <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-      <a-upload
-        v-model:file-list="fileList"
-        list-type="picture"
-        class="uploader"
-        :show-upload-list="false"
-        :before-upload="beforeUpload"
-        @change="handleChange"
-      >
-        <div class="upload">
-          <div class="cover">
-            <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
+    <div class="left">
+      <a-form-item :label="props.materialType+'名称'" name="name" required>
+        <a-input v-model:value="formState.name" :placeholder="'请在这里输入'+props.materialType+'名称'" />
+      </a-form-item>
+      <a-form-item :label="props.materialType+'描述'" name="description">
+        <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 3, maxRows: 5 }" placeholder="请在这里输入描述文字" />
+      </a-form-item>
+    </div>
+    <div class="right">
+      <a-form-item label="可见范围" name="is_public" required class="visible-range">
+        <a-select v-model:value="formState.is_public">
+          <!-- 1-公开，0-私有 -->
+          <a-select-option value="1">
+            <span class="name">公开</span>
+            <span class="tips">所有人可见</span>
+          </a-select-option>
+          <a-select-option value="0">
+            <span class="name">私有</span>
+            <span class="tips">仅自己可见</span>
+          </a-select-option>
+        </a-select>
+      </a-form-item>
+      <a-form-item label="封面图" class="cover">
+        <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
+        <a-upload
+          v-model:file-list="fileList"
+          list-type="picture"
+          class="uploader"
+          :show-upload-list="false"
+          :before-upload="beforeUpload"
+          @change="handleChange"
+        >
+          <div class="upload">
+            <div class="cover">
+              <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
+            </div>
+            <loading-outlined v-if="loading"></loading-outlined>
           </div>
-          <loading-outlined v-if="loading"></loading-outlined>
-        </div>
-      </a-upload>
-    </a-form-item>
-  </div>
+        </a-upload>
+      </a-form-item>
+    </div>
   </div>
   <div class="type">  
     <a-form-item class="left" label="选择类型" name="categoryText" v-if="props.materialType === '数据集'">
