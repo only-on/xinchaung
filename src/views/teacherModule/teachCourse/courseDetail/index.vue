@@ -271,8 +271,8 @@ const reportCancel = () => {
 };
 const reportOk = (val: any) => {
   console.log(val)
-  // setupForm.reportObj.id = val.id;
-  // setupForm.reportObj.name = val.name;
+  setupForm.reportObj.id = val.id;
+  setupForm.reportObj.name = val.name;
 };
 const SaveSetup=()=>{
   // SetupLoading.value=true
@@ -305,7 +305,7 @@ onMounted(() => {
     .box{
       padding: 1rem;
       .item{
-        height: 40px;
+        height: 46px;
         justify-content: space-between;
       }
     }

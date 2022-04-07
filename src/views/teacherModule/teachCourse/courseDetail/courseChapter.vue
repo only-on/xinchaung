@@ -6,7 +6,7 @@
       <div>
         <h3 class="courseH3">章节目录</h3>
         <div class="myChapter">
-          <ChapterList :Editable="true" />
+          <ChapterList :Editable="'canEdit'" />
         </div>
       </div>
     </div>

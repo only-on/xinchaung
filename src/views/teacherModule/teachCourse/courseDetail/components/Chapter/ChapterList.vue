@@ -6,7 +6,7 @@
         <div class="titleItem">{{v.name}}</div>
       </div>
       <div class="titleBoxLeft flexCenter">
-        <div class="operation flexCenter" v-if="props.Editable">
+        <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
           <span class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
           <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
           <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
@@ -23,16 +23,16 @@
             </div>
             <span v-if="a.order === '3-1'" class="order">{{`【${'教辅'}】`}}&nbsp;</span>
             <span v-if="a.order !== '3-1'">{{a.order}}&nbsp;</span>
-            <span class="ItemExperimentTitle">{{a.title}}</span>
+            <span class="ItemExperimentTitle single_ellipsis">{{a.title}}</span>
           </div>
           <div class="TitRight">
-            <div v-if="!props.Editable">
+            <div v-if="props.Editable === 'canStudy'">
               <!-- 准备完成变为 开始  按钮 -->
               <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
               <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
               <span class="view" @click.stop="a.openGuidance=!a.openGuidance" @click="ViewExperiment">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
             </div>
-            <div v-if="props.Editable">
+            <div v-if="props.Editable === 'canEdit'">
               <div class="operation flexCenter">
                 <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)"></span>
                 <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(a)"></span>
@@ -74,14 +74,14 @@ const routeQuery = useRoute().query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
-  Editable:boolean
+  Editable:string
   // knowledge: any;
   // words:any
 }
 const props = withDefaults(defineProps<Props>(), {
   // knowledge: ()=> [],  //  
   // words: ()=> [],      // 
-  Editable:false          // 是否可编辑
+  Editable:'readOnly'          //readOnly canStudy canEdit 是否可编辑
 });
 const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
 
@@ -424,6 +424,7 @@ const deleteExperiment=(v:any)=>{
         height: 40px;
         padding: 0 8px;
         .TitLeft{
+          flex-grow: 1;
           .experimentType{
             color: #1CB2B3;
             width: 60px;
@@ -439,6 +440,7 @@ const deleteExperiment=(v:any)=>{
             color: #1CB2B3;
           }
           .ItemExperimentTitle{
+            max-width: 50%;
             color: var(--black-65);
           }
         }
