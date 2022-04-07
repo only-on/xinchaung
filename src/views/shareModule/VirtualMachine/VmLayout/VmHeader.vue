@@ -22,8 +22,21 @@
           </div>
         </div>
       </div>
+      <div class="class-test">
+        <span>随堂测试</span>
+        <span>({{!classTestTotal ? 0 : testNum+'/'+classTestTotal}})</span>
+        <i class="sign"></i>
+      </div>
     </div>
     <div class="right-box">
+      <div class="ip-list">
+        <a-select class="ip-select" v-model:value="hostIp" @change="ipChange">
+          <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.uuid">
+            <span class="ip-name">{{ item.ip }}</span>
+            <span class="vm-state" :class="item.state ? 'open' : 'close'">{{item.state ? '开' : '关'}}</span>
+          </a-select-option>
+        </a-select>
+      </div>
       <div class="delayed">
         <span>
           {{
@@ -254,6 +267,29 @@ export default defineComponent({
       clearInterval(Number(timer));
       times();
     });
+    // 随堂测试
+    const classTestTotal = ref<number>(5)
+    const testNum = ref<number>(0)
+    // ip
+    const screenInfo = reactive([
+      {ip: '192.168.101.100', uuid: 'shfqoCNXZVB', state: 1},
+      {ip: '192.168.101.101', uuid: 'shfqoCNXZVB1', state: 1},
+      {ip: '192.168.101.102', uuid: 'shfqoCNXZVB2', state: 0},
+    ])
+    const hostIp = ref(screenInfo[0].uuid)
+    function ipChange(val: string) {
+      // vncLoading.value=false
+      // if (currentVmInfo.uuid === val) {
+      //   return
+      // }
+      // props.screenInfo.forEach((item: any) => {
+      //   if (item.uuid === val) {
+      //     currentVmInfo = Object.assign(currentVmInfo, item)
+      //     vncConnectOption.vmOptions.wsUrl="ws://"+item.base_ip+":8888/websockify?vm_uuid="+item.uuid
+      //     // ;(this.$refs as any).vnc.startNoVnc()
+      //   }
+      // })
+    }
     let currentTaskId = ref<number>(0);
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     let experimentTime: Ref<any> = ref({
@@ -695,6 +731,11 @@ export default defineComponent({
       assistanceQuestion,
       okAssistance,
       closeAssistance,
+      hostIp,
+      ipChange,
+      screenInfo,
+      classTestTotal,
+      testNum,
     };
   },
 });
@@ -735,7 +776,9 @@ let courseList = [
     color: var(--white-100);
     padding: 22px 0;
     position: relative;
+    display: flex;
     .selected {
+      width: 460px;
       height: 26px;
       line-height: 26px;
       font-size: var(--font-size-20);
@@ -770,12 +813,52 @@ let courseList = [
         }
       }
     }
+    .class-test {
+      position: relative;
+      .sign {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #FF0000;
+        position: absolute;
+        top: 1px;
+        right: -6px;
+      }
+    }
   }
   .right-box {
     padding: 25px 0;
     display: flex;
     height: 70px;
     line-height: 20px;
+    .ip-list {
+      padding: 0 20px;
+      // border-left: 1px solid #2c3a54;
+      .ant-select {
+        // border: 1px solid var(--cyan-100);
+        color: var(--cyan-100);
+        margin-top: -3px;
+        :deep(.ant-select-selector) {
+          border: 1px solid var(--cyan-100);
+          border-radius: 10px;
+          color: var(--cyan-100);
+          background: rgba(0, 0, 0, 0);
+          width: 200px;
+          height: 24px;
+          line-height: 24px;
+          .ant-select-selection-item {
+            line-height: 22px;
+          }
+        }
+        &.ant-select-open :deep(.ant-select-selection-item) {
+          color: var(--cyan-100);
+        }
+        :deep(.ant-select-arrow) {
+          color: var(--cyan-100);
+        }
+      }
+    }
     .delayed,
     .tool,
     .switch,
@@ -784,7 +867,7 @@ let courseList = [
       border-left: 1px solid #2c3a54;
     }
     .delayed {
-      border: none;
+      // border: none;
       color: var(--primary-color);
       span:last-child {
         height: 20px;
@@ -874,5 +957,31 @@ let courseList = [
 }
 .ant-drawer-header {
   display: none;
+}
+
+
+.ant-select-dropdown {
+  .ant-select-item {
+    .ip-name {
+
+    }
+    .vm-state {
+      display: inline-block;
+      width: 24px;
+      height: 18px;
+      line-height: 18px;
+      text-align: center;
+      background: var(--cyan-100);
+      border-radius: 2px;
+      margin-left: 10px;
+      color: var(--white);
+      &.open {
+        background: var(--cyan-100);
+      }
+      &.close {
+        background: var(--black-45);
+      }
+    }
+  }
 }
 </style>
