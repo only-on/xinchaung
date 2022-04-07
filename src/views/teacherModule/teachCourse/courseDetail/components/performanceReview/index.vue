@@ -1,7 +1,9 @@
 <template>
   <div class="correct-wrap">
     <div class="left">
-      <tree @select="select"></tree>
+      <chapterTree @selectExperiment="selectExperiment">
+       
+      </chapterTree>
     </div>
     <div class="correct-right right">
       <div class="top">
@@ -115,8 +117,8 @@ import reviewWeight from "./reviewWeight.vue"; // 一键评阅弹窗
 import ratingScores from "./ratingScores.vue"; // 评分弹窗
 import reportModal from "./report.vue"; // 批阅报告弹框
 import codeReview from "./codeReview.vue"; // 代码评阅
-import tree from "../../../component/tree/simpleTree.vue";
 import {cloneDeep} from "lodash"
+import chapterTree from "../Chapter/ChapterList.vue"
 
 let type = ref(0); // 0 实操 1 视频文档 2 习题
 
@@ -244,6 +246,7 @@ function renderVNode(_: any, { attrs: { vnode } }: any) {
 function autoWeight() {
   weightVisible.value = true;
 }
+
 // table操作
 function clickFun(type: string, val: number) {
   console.log(val);
@@ -264,6 +267,10 @@ function clickFun(type: string, val: number) {
 }
 
 // 选择tree章节
+function selectExperiment(val:any) {
+  console.log(val);
+  
+}
 function select(type1: string) {
   console.log(type1);
   if (type1=='sc') {
