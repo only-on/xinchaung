@@ -1,15 +1,17 @@
 <template>
   <div class="chapterList" v-for="(v,k) in state.chapterList" :key="k">
     <div class="title flexCenter">
-      <div class="flexCenter titleBox">
-        <div class="titleItem">{{v.title}}</div>
-        <div class="titleItem">{{v.name}}</div>
+      <div class="flexCenter titleBox" :class="props.Editable === 'canEdit'?'':'noEdit'">
+        <div class="titleItem titleItem1">{{v.title}}</div>
+        <div class="titleItem titleItem2 single_ellipsis">{{v.name}}</div>
       </div>
-      <div class="titleBoxLeft flexCenter">
+      <div class="titleBoxRight flexCenter">
         <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-          <span class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
-          <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
-          <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+          <!-- <template > -->
+            <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
+            <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
+            <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+          <!-- </template> -->
         </div>
         <span @click="v.openItem=!v.openItem" class="collect">{{v.openItem?'收起':'展开'}}</span>
       </div>
@@ -89,7 +91,7 @@ var state:any=reactive({
   chapterList:[
     {
       title:'第一章',
-      name:'课程介绍',
+      name:'课程介绍本章节主要介绍课程目标，课程大纲，相关知识点及学习建议。',
       // explain:'本章节主要介绍课程目标，课程大纲，相关知识点及学习建议。',
       openItem:false,
       list:[
@@ -397,20 +399,41 @@ const deleteExperiment=(v:any)=>{
         background: #fff7e6;
         cursor: pointer;
       }
-      .titleItem{
-        color: var(--black-85);
-        margin-right: 1rem;
+      .titleBox{
+        width: calc(100% - 140px);
+        // flex-grow: 1;
+        .titleItem{
+          color: var(--black-85);
+          // margin-right: 1rem;
+        }
+        .titleItem1{
+          width: 60px;
+        }
+        .titleItem2{
+          // max-width: 50%;
+        }
       }
-      .collect{
-        color: var(--primary-color);
-        cursor: pointer;
+      .noEdit{
+         width: calc(100% - 30px);
       }
-      .operation{
-        display: none;
+      .titleBoxRight{
+        .collect{
+          color: var(--primary-color);
+          cursor: pointer;
+          width: 28px;
+        }
+        .operation{
+          width: 84px;
+          span{
+            display: none;
+          }
+        }
       }
       &:hover{
         .operation{
-          display: flex;
+          span{
+            display: flex;
+          }
         }
       }
     }
@@ -440,8 +463,9 @@ const deleteExperiment=(v:any)=>{
             color: #1CB2B3;
           }
           .ItemExperimentTitle{
-            max-width: 50%;
+            // max-width: 50%;
             color: var(--black-65);
+            flex: 1;
           }
         }
         .TitRight{
@@ -465,7 +489,7 @@ const deleteExperiment=(v:any)=>{
           }
         }
         .operation{
-          display: none;
+          // display: none;
         }
         &:hover{
           background: #fff7e6;

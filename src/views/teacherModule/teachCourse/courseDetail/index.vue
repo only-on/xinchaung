@@ -97,30 +97,34 @@
 
   <!-- 课程设置 -->
   <a-modal v-model:visible="setupVisible"  :title="`设置`" class="setupVisible" :width="490">
+    <div class="tips flexCenter">
+      <span class="iconfont icon-zhuyi"></span>
+      <span>关闭后对学生不展示该内容</span>
+    </div>
     <div class="box">
       <div class="item flexCenter">
-        <span>实验指导是否显示</span>
+        <span>实验指导（VNC、Jupyter、IDE、命令行）是否显示</span>
         <a-switch v-model:checked="setupForm.guide" />
       </div>
       <div class="item flexCenter">
         <span>课件是否显示</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.courseWare" />
       </div>
       <div class="item flexCenter">
         <span>备课资料是否显示</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.prepare" />
       </div>
       <div class="item flexCenter">
         <span>教学指导是否显示</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.teachingGuidance" />
       </div>
       <div class="item flexCenter">
         <span>任务制实验步骤</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.taskSteps" />
       </div>
       <div class="item flexCenter">
         <span>实验报告是否显示</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.report" />
       </div>
       <div class="item flexCenter">
         <span>更换实验报告</span>
@@ -302,10 +306,14 @@ onMounted(() => {
     }
   }
   .setupVisible{
+    .tips{
+      padding: 0 1rem;
+      font-size: 12px;
+    }
     .box{
-      padding: 1rem;
+      padding:1rem;
       .item{
-        height: 46px;
+        height: 44px;
         justify-content: space-between;
       }
     }
