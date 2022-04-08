@@ -17,7 +17,7 @@
         </div>
         <div class="right">
           <span class="pointer" @click="addToCourse()">添加到课程</span>
-          <span class="pointer">启动环境</span>
+          <a-button class="123" type="primary" size="large" :loading="openVncState" @click="openVnc">{{openVncState ? '准备中...' : '启动环境'}}</a-button>
         </div>
       </div>
       <div class="info">
@@ -100,6 +100,8 @@ import { Modal, message } from "ant-design-vue"; //
 import addToCourseModal from "./component/addToCourseModal.vue";
 import { getTypeList } from './config'
 import { theme } from "src/utils/theme"
+import { useStore } from "vuex"
+import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
@@ -110,6 +112,8 @@ import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/co
 const components = ['', experimentGuide, '', '', jupyterDetail, taskDetail, videoDetail, fileDetail]
 const router = useRouter();
 const route = useRoute();
+const store = useStore()
+const routeQuery = route.query
 const { id, currentTab } = route.query;
 const http = (request as any).teacherExperimentResourcePool;
 var configuration: any = inject("configuration");
@@ -126,6 +130,45 @@ const isShowModal = ref<boolean>(false);
 const addToCourse = () => {
   isShowModal.value = true;
 };
+// 开启环境
+const openVncState = ref(false)
+const openVnc = () => {
+  openVncState.value = true
+  const param: any = {
+    type: "content",  // 实验
+    opType: "prepare",
+    taskId: 500012,
+  };
+  // 文档视频实验
+  if (experimentDetail.task_type === 6 || experimentDetail.task_type === 7) {
+    router.push({
+      path: "/vm/documentOrVideo",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+      },
+    });
+    return
+  }
+  if (experimentDetail.task_type === 3 && experimentDetail.programing_type === 1) {
+    // webide
+    router.push({
+      path: "/vm/ace",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+      },
+    });
+    return
+  }
+  toVmConnect(router, param, routeQuery).then((res: any) => {
+    openVncState.value = false
+  })
+}
 // 报告模板
 const reportTemplate = () => {
   // isShowReport.value = true
@@ -151,7 +194,7 @@ const handleCancel = () => {
 let experimentDetail = reactive<IExperimentDetail>({
   id: 1,
   is_init: 0,
-  name: '111',
+  name: '',
   task_type: 1,
   class_cnt: 2,
   level: '2',
@@ -162,6 +205,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   lab_proc: "实验指导",
   tag: [],
   content_template: {},
+  programing_type: 0,
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -211,6 +255,7 @@ interface IExperimentDetail {
   lab_proc: string;
   tag: any[]
   content_template: any
+  programing_type: number
 }
 </script>
 <style scoped lang="less">
@@ -267,12 +312,12 @@ interface IExperimentDetail {
         color: var(--white-100);
         span {
           display: inline-block;
-          width: 170px;
+          width: 140px;
           height: 40px;
           line-height: 40px;
           border-radius: 20px;
           text-align: center;
-          margin-left: 16px;
+          margin: 0 16px;
           &:first-child {
             background-color: var(--brightBtn);
           }
@@ -329,7 +374,7 @@ interface IExperimentDetail {
         color: var(--primary-color);
         position: absolute;
         top: 0;
-        right: 36px;
+        right: 18px;
         font-size: 14px;
         padding-bottom: 1px;
         border-bottom: 1px solid var(--primary-color);
@@ -341,7 +386,7 @@ interface IExperimentDetail {
       .edit {
         color: var(--cyan-100);
         border-bottom: 1px solid var(--cyan-100);
-        right: 222px;
+        right: 175px;
       }
     }
     .user-info {

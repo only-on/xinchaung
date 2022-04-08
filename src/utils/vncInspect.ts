@@ -294,32 +294,35 @@ async function toVmConnect(
 ) {
   console.log(param);
 
-  const createEnvirments: any = await openVm(param);
-  console.log(createEnvirments, JSON.stringify(routerQuery));
-  let url = "";
-  console.log(createEnvirments.data.data.type);
+  return new Promise(async (resolve: any, reject: any) => {
+    const createEnvirments: any = await openVm(param);
+    console.log(createEnvirments, JSON.stringify(routerQuery));
+    let url = "";
+    console.log(createEnvirments.data.data.type);
 
-  if (createEnvirments.data.data.type.taskType === "notebook") {
-    url = "/vm/notebook";
-  } else {
-    url = "/vm/vnc";
-  }
-  console.log(url);
+    if (createEnvirments.data.data.type.taskType === "notebook") {
+      url = "/vm/notebook";
+    } else {
+      url = "/vm/vnc";
+    }
+    console.log(url);
 
-  if (createEnvirments.data.data.connection_id) {
-    router.push({
-      path: url,
-      query: {
-        connection_id: createEnvirments.data.data.connection_id,
-        opType: createEnvirments.query.opType,
-        type: createEnvirments.query.type,
-        taskId: createEnvirments.query.taskId,
-        topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
-        topoinst_id: createEnvirments.data.data.topoinst_id,
-        routerQuery: JSON.stringify(routerQuery),
-      },
-    });
-  }
+    if (createEnvirments.data.data.connection_id) {
+      resolve()
+      router.push({
+        path: url,
+        query: {
+          connection_id: createEnvirments.data.data.connection_id,
+          opType: createEnvirments.query.opType,
+          type: createEnvirments.query.type,
+          taskId: createEnvirments.query.taskId,
+          topoinst_uuid: createEnvirments.data.data.topoinst_uuid,
+          topoinst_id: createEnvirments.data.data.topoinst_id,
+          routerQuery: JSON.stringify(routerQuery),
+        },
+      });
+    }
+  })
 }
 
 // 推荐学习实验跳转
