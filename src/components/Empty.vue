@@ -68,10 +68,10 @@ export default defineComponent({
     background-image: url('src/assets/images/empty/searchEmpty.png');    
   }
   .tableEmpty,.drawerEmpty{
-    background-image: url('src/assets/images/empty/tableEmpty.jpg');    
+    background-image: url('src/assets/images/empty/tableEmpty.png');    
   }
   .tableSearchEmpty,.drawerSearchEmpty{
-    background-image: url('src/assets/images/empty/tableSearchEmpty.jpg');    
+    background-image: url('src/assets/images/empty/tableSearchEmpty.png');    
   }
   .filePreview{
     background-image: url('src/assets/images/empty/file.png'); 

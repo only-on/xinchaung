@@ -1,6 +1,6 @@
 <template>
   <div class="courseHeader">
-    <div class="infoBox flexCenter">
+    <div class="infoBox">
       <div class="LeftBox">
         <breadcrumb />
         <div class="termOfValidity">
@@ -56,12 +56,36 @@
         </div>
       </div>
       <div class="rightBox">
-        <div class="flexCenter caozuo" v-if="currentTab && Number(currentTab) === 0 && role === 3">
+        <!-- 教师端我的教学 -->
+        <div v-if="currentTab && Number(currentTab) === 0 && role === 3" class="flexCenter caozuo">
           <a-button class="brightBtn" type="primary" @click="setup()">设置</a-button>
           <a-button type="primary"  @click="edit()">编辑</a-button>
         </div>
-        <div v-if="role === 4">
-          学习累计用时
+        <!-- 学生端 -->
+        <div class="student flexCenter" v-if="role === 4">
+          <div class="timeUse ">
+            <div class="date">
+              <div class="item1">
+                <span>123</span>小时
+                <span>45</span>分钟
+              </div>
+              <div class="item2">学习累计用时</div>
+            </div>
+            <div class="ratio">
+              <div class="item3">
+                <span>11</span>
+                <span>/21</span>
+              </div>
+              <div class="item4">
+                <div class="progress-inner" :style="{ width: '50%' }"></div>
+              </div>
+              <div class="item5">
+                <span>课程完成率</span>
+                <span>52%</span>
+              </div>
+            </div>
+          </div>
+          <div class="img"></div>
         </div>
       </div>
     </div>
@@ -154,10 +178,12 @@ const edit=()=>{
   .infoBox{
     width: var(--center-width);
     margin: 0 auto;
+    // padding : 14px 0;
+    display: flex;
 
     .LeftBox{
-     padding : 14px 0;
      width: 940px;
+     padding : 14px 0;
       .termOfValidity{
         color: #37E6AE;
         font-size: 12px;
@@ -250,6 +276,57 @@ const edit=()=>{
           margin-right: 1rem;
         }
       }
+      .student{
+        justify-content: end;
+        height: 100%;
+        align-items: end;
+        .timeUse{
+          // flex-direction: column;
+          margin-bottom: 14px;
+          .date{
+            margin-bottom: 20px;
+            font-size: 12px;
+            .item1{
+              color: #FFBA49;
+              span{
+                font-size: 20px;
+              }
+            }
+          }
+          .ratio{
+            font-size: 12px;
+            .item3{
+              span:nth-child(1){
+                font-size: 20px;
+                color: #00CBC2;
+              }
+            }
+            .item4{
+              width: 150px;
+              height: 6px;
+              background: rgba(255, 255, 255,.2);
+              border-radius: 3px;
+              .progress-inner{
+                height: 100%;
+                background: #00CBC2;
+                border-radius: 2px;
+              }
+            }
+            .item5{
+              span:nth-child(2){
+                color: #00CBC2;
+              }
+            }
+          }
+
+        }
+        .img{
+          width: 121px;
+          height: 139px;
+          background: url('src/assets/images/teacherCourse/courseHeader.jpg') no-repeat;
+          background-size: 100% 100%;
+        }
+      }
     }
   }
   .courseDetailTab{
@@ -257,6 +334,7 @@ const edit=()=>{
     margin: 0 auto;
     .tabBox{
       // height: 70px;
+      width: 100%;
       padding-top: 34px;
       border-top: 1px dashed rgba(255,255,255,0.24);
       span{

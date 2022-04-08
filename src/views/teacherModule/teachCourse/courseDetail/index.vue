@@ -200,6 +200,10 @@ const detailTabs=[
   {name:'成绩评阅',value:'performanceReview'},
   {name:'学情分析',value:'studentAnalysis'},
   {name:'成员管理',value:'memberManagement'},]
+const  studentDetailTabs=[
+  {name:'课程内容',value:'courseChapter'},
+  {name:'课程成绩',value:'courseExperiment'},
+]
 var state:IState=reactive({
   activeTab:{}
 })

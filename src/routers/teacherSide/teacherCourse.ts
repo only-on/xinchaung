@@ -97,16 +97,6 @@ export default {
       },
     },
     {
-      path: "PrivateDetail",
-      name:'我的课程详情',
-      component: () => import("src/views/teacherModule/teachCourse/courseDetail/private.vue"),
-      meta: {
-        title: "详情",
-        authCode: 'PrivateDetail'
-      },
-    },
-
-    {
       path: "archive-detail",
       // component: () => import("src/views/teacherModule/teachCourse/courseDetail/archivedDetail.vue"),
       meta: {

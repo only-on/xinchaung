@@ -175,15 +175,15 @@ const classifyChange = (obj: any) => {
   // initData();
 };
 const courseDetail=(n:number)=>{
-  if(n === 1){
-    // router.push({ path: "/teacher/teacherCourse/PublicDetail"});
-    router.push({
-    path: "/teacher/teacherCourse/PublicDetail",
-    query: { currentTab:currentTab.value },
-  });
-  }else{
-    router.push({ path: "/teacher/teacherCourse/PrivateDetail"});
-  }
+  router.push({ path: "/teacher/teacherCourse/PublicDetail"});
+  // if(n === 1){
+  //   router.push({
+  //   path: "/teacher/teacherCourse/PublicDetail",
+  //   query: { currentTab:currentTab.value },
+  // });
+  // }else{
+  //   router.push({ path: "/teacher/teacherCourse/PrivateDetail"});
+  // }
 }
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
