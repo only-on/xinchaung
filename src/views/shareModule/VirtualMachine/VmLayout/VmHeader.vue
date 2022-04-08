@@ -6,29 +6,14 @@
         @click="isShowExperiment = !isShowExperiment"
       >
         <span class="name">3-4 基于入侵检测的告警分析-外网</span>
-        <span class="iconfont icon-zhankai"></span>
       </div>
-      <div class="select-list scrollbar" v-if="isShowExperiment">
-        <div class="list" v-for="item in courseList" :key="item.id">
-          <div class="course-desc">{{ item.name }}</div>
-          <div
-            class="experiment pointer"
-            v-for="list in item.experimentList"
-            :key="list.id"
-            :class="{ current: list.id === currentTaskId }"
-            @click="ExperimentChange(list.id)"
-          >
-            {{ list.name }}
-          </div>
-        </div>
-      </div>
-      <div class="class-test">
+      <div class="class-test pointer" @click="classTestVisible = true">
         <span>随堂测试</span>
         <span>({{!classTestTotal ? 0 : testNum+'/'+classTestTotal}})</span>
         <i class="sign"></i>
       </div>
     </div>
-    <div class="right-box">
+    <div class="right-box" v-if="taskType !==6 && taskType !== 7">
       <div class="ip-list">
         <a-select class="ip-select" v-model:value="hostIp" @change="ipChange">
           <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.uuid">
@@ -184,6 +169,36 @@
       ></a-textarea>
     </div>
   </a-modal>
+  <!-- 随堂测试 -->
+  <a-modal
+    class="vm-class-test-modal"
+    title="随堂测试"
+    :visible="classTestVisible"
+    :width="700"
+    @cancel="classTestVisible = false"
+    @ok="okClassTest"
+  >
+    <div class="choice">
+      <div class="subject">配置Hadoop时，JAVA_HOME包含在哪一个配置文件中？</div>
+      <a-radio-group class="answer-list" v-model:value="choiceAnswer">
+        <div v-for="(item,index) in choiceOptions" :key="item.id" class="list">
+          <a-radio :disabled="false" class="answer-item" :value="item.id" >{{numToAbc(Number(index)+1)}}、{{item.option}}</a-radio>
+        </div>
+      </a-radio-group>
+      <div class="right-answer">正确答案A</div>
+    </div>
+    <div class="answer">
+      <div class="subject">配置Hadoop时，JAVA_HOME包含在哪一个配置文件中？配置Hadoop时，JAVA_HOME包 含在哪一个配置文件中？</div>
+      <a-textarea v-model:value="answer"></a-textarea>
+      <div class="right-answer">正确答案：表单内容需先易后难，避免用户从一开始就产生逃避的想法，需根据内容的关联性 循序渐进的引导用户完成。</div>
+      <div class="keyword">关键字：表单 , 先难后易 , 避免 , 引导 , 完成</div>
+    </div>
+    <template #footer>
+      <a-button key="back" @click="classTestVisible = false">关闭</a-button>
+      <a-button key="submit" type="primary" :loading="false" @click="okClassTest">提交</a-button>
+      <a-button key="submit" type="primary" :loading="false" @click="okClassTest">实验随测记录</a-button>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="tsx">
@@ -206,7 +221,7 @@ import { getVmConnectSetting } from "src/utils/seeting";
 import request from "src/request/getRequest";
 import { copyText } from "src/utils/copySelect";
 import storage from "src/utils/extStorage";
-import { isJsonString } from "src/utils/common";
+import { isJsonString, numToAbc } from "src/utils/common";
 import {
   endOperates,
   endExperiment,
@@ -264,12 +279,20 @@ export default defineComponent({
     const isConnect: any = inject("isConnect");
 
     onMounted(() => {
-      clearInterval(Number(timer));
-      times();
+      if (taskType.value !==6 && taskType.value !== 7) {
+        clearInterval(Number(timer));
+        times();
+      }
     });
     // 随堂测试
     const classTestTotal = ref<number>(5)
     const testNum = ref<number>(0)
+    const classTestVisible = ref<boolean>(false)
+    const okClassTest = () => {
+      
+    }
+    const choiceAnswer = ref<number>(1)
+    const answer = ref<string>('')
     // ip
     const screenInfo = reactive([
       {ip: '192.168.101.100', uuid: 'shfqoCNXZVB', state: 1},
@@ -736,6 +759,18 @@ export default defineComponent({
       screenInfo,
       classTestTotal,
       testNum,
+      okClassTest,
+      classTestVisible,
+      numToAbc,
+      choiceOptions: [
+        {id: 1, option: 'hadoop-default.xml'},
+        {id: 2, option: 'hadoop-env.sh'},
+        {id: 3, option: 'hadoop-site.xml'},
+        {id: 4, option: 'configurations.xh'},
+      ],
+      choiceAnswer,
+      answer,
+      taskType,
     };
   },
 });
@@ -784,33 +819,6 @@ let courseList = [
       font-size: var(--font-size-20);
       .name {
         padding: 0 10px;
-      }
-    }
-    .select-list {
-      width: 389px;
-      height: 381px;
-      background: #192843;
-      padding: 0 28px;
-      position: absolute;
-      left: 0;
-      top: 72px;
-      z-index: 1;
-      overflow-y: auto;
-      .list {
-        margin-top: 16px;
-        .course-desc {
-          height: 16px;
-          line-height: 16px;
-          color: var(--white-45);
-          font-size: var(--font-size-sm);
-        }
-        .experiment {
-          height: 35px;
-          line-height: 35px;
-          &.current {
-            color: var(--primary-color);
-          }
-        }
       }
     }
     .class-test {
@@ -980,6 +988,37 @@ let courseList = [
       }
       &.close {
         background: var(--black-45);
+      }
+    }
+  }
+}
+
+.vm-class-test-modal {
+  .ant-modal-body {
+    padding: 10px 40px;
+    .subject {
+      padding: 8px 12px;
+      background: #f4f4f4;
+    }
+    .right-answer, .keyword {
+      margin-left: 12px;
+      color: var(--brightBtn);
+      padding: 8px 0;
+    }
+    .choice {
+      .answer-list {
+        padding-left: 12px;
+        .list {
+          padding: 8px 0;
+        }
+      }
+    }
+    .answer {
+      .keyword {
+        padding: 0;
+      }
+      .ant-input {
+        margin: 8px 0;
       }
     }
   }
