@@ -52,6 +52,15 @@ export default{
                 title:"webmsg",
                 authCode:""
             },
+        },
+        {
+            path:"documentOrVideo",
+            name:"documentOrVideo",
+            component:()=>import("src/views/shareModule/VirtualMachine/documentOrVideo/documentOrVideo.vue"),
+            meta:{
+                title:"documentOrVideo",
+                authCode:""
+            },
         }
     ]
 }
