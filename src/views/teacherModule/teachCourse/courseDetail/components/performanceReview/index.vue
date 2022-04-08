@@ -1,6 +1,6 @@
 <template>
   <div class="correct-wrap">
-    <div class="left">
+    <div class="c-d-left">
       <chapterTree @selectExperiment="selectExperiment">
        
       </chapterTree>
@@ -313,14 +313,31 @@ onMounted(() => {
   height: 767px;
   width: var(--center-width);
   margin: 0 auto;
-  .left,
+.c-d-left{
+  padding-top: 24px;
+  width: 300px;
+  margin-right: 16px;
+  height: 100%;
+  background: white;
+  :deep(.chapterList){
+    .title{
+      padding: 0 24px;
+    }
+    .list{
+      .itemTit{
+        padding: 0 26px;
+      }
+    }
+  }
+}
+.left,
   .right {
     background: white;
   }
   .left {
-    width: 300px;
-    margin-right: 16px;
-    height: 100%;
+    // width: 300px;
+    // margin-right: 16px;
+    // height: 100%;
   }
   .correct-right {
     display: flex;
