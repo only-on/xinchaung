@@ -79,7 +79,8 @@ const props: Props = defineProps({
 const fileInfo = props.detail.content_task_files.length ? 
   Object.assign(props.detail.content_task_files[0], {tusdVideoUrl:props.detail.content_task_files[0].file_url}) : {
     content_id: 0,
-    tusdVideoUrl: ''
+    tusdVideoUrl: '',
+    file_url: ''
   }
 
 
@@ -100,6 +101,7 @@ const selectVideoClick = () => {
   visible.value = true;
 };
 const selectDocOrMp4File = (val: any) => {
+  // console.log(val)
   Object.assign(activeFile, val)
   fileInfo.tusdVideoUrl = val.file_url
   activeFile.id = val.id
@@ -115,13 +117,15 @@ const uploadVideo = () => {
 };
 let dataId = 0
 const uploadSuccess = (uploadFileList: any, id: any) => {
+  // console.log(uploadFileList)
   dataId = id
   fileInfo.tusdVideoUrl = uploadFileList.tusdVideoUrl
+  fileInfo.file_url = uploadFileList.file_url
 };
 
 const onSubmit = () => {
   const file = {
-    "file_path": fileInfo.tusdVideoUrl,// 文档实验-文件
+    "file_path": fileInfo.file_url,// 文档实验-文件
   }
   dataId ? Object.assign(file, {"directory_id": dataId}) : ''
   http.updateVideoGuide({

@@ -83,8 +83,8 @@ interface Props {
 }
 const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
 const getVideoDirectory = () => {
-  // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导
-  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:6}}).then((res: any) => {
+  // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导 7: 文档实验
+  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:7}}).then((res: any) => {
     videoDirectoryList.push(...res.data.private)
   });
 };
