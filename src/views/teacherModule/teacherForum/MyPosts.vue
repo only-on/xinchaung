@@ -2,16 +2,19 @@
   <div class="my-posts">
     <forumn-top @search="search" :tagList="tagList"></forumn-top>
     <div class="forumn-content">
-      <div class="tabs">
-        <span
-          class="pointer"
-          :class="{ active: currentTab === item.id }"
-          @click="tabChange(item.id)"
-          v-for="item in tabs"
-          :key="item.id"
-        >
-          {{ item.name }}
-        </span>
+      <div class="top">
+        <div class="tabs">
+          <span
+            class="pointer"
+            :class="{ active: currentTab === item.id }"
+            @click="tabChange(item.id)"
+            v-for="item in tabs"
+            :key="item.id"
+          >
+            {{ item.name }}
+          </span>
+        </div>
+        <div class="create-post pointer" @click="createPost">发帖</div>
       </div>
       <div class="right">
         <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -50,11 +53,15 @@ export default defineComponent({
     Forumn,
   },
   setup: (props, { emit }) => {
-    const route = useRoute();
+    const router = useRouter();
     let currentTab = ref<number>(0);
     const httpList = {
       0: 'getForumList',
       1: 'getAttendList'
+    }
+    // 发帖
+    function createPost() {
+      router.push("/teacher/teacherForum/CreatePosts");
     }
     let forumSearch = reactive<IForumSearch>({
       title: "",
@@ -158,6 +165,7 @@ export default defineComponent({
       total,
       loading,
       forumSearch,
+      createPost,
     };
   },
 });
@@ -168,15 +176,26 @@ export default defineComponent({
   .forumn-content {
     width: var(--center-width);
     margin: 0 auto;
-    // display: flex;
-    // justify-content: space-between;
+    .top {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 24px;
+      .create-post {
+        width: 140px;
+        height: 34px;
+        line-height: 34px;
+        border-radius: 18px;
+        color: var(--white);
+        text-align: center;
+        background: var(--primary-color);
+      }
+    }
     .tabs {
       // width: 270px;
       height: 30px;
       line-height: 30px;
       background-color: var(--white);
       // border-radius: 16px;
-      margin-top: 24px;
       span {
         display: inline-block;
         // margin-bottom: 16px;
