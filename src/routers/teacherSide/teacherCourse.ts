@@ -89,12 +89,28 @@ export default {
     },
     {
       path: "PublicDetail",
-      name:'公开课程详情',
+      name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
       meta: {
         title: "详情",
         authCode: 'PublicDetail'
       },
+    },
+    {
+      path: "open-vnc",
+      component: () => import("src/views/teacherModule/teachCourse/openEnvironment/openVnc.vue"),
+      meta: {
+          title: "镜像",
+          authCode: 'open-vnc'
+      },
+    },
+    {
+        path: "open-jupyte",
+        component: () => import("src/views/teacherModule/teachCourse/openEnvironment/openJupyte.vue"),
+        meta: {
+            title: "镜像",
+            authCode: 'open-jupyte'
+        },
     },
     {
       path: "archive-detail",

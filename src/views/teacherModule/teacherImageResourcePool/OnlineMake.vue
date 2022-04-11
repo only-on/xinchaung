@@ -135,7 +135,7 @@ const enterFun = (val: any) => {
       val.status=false
       if (tags.indexOf("Notebook") > -1) {
         const { href } = router.resolve({
-          path: "/teacher/Workbench/open-jupyte",
+          path: "/teacher/teacherCourse/open-jupyte",
           query: {
             id: id,
           },
@@ -143,8 +143,7 @@ const enterFun = (val: any) => {
         window.open(href, "_blank");
       } else {
         const { href } = router.resolve({
-          // path: "/teacher/Workbench/open-jupyte",
-          path: "/teacher/Workbench/open-vnc",
+          path: "/teacher/teacherCourse/open-vnc",
           query: {
             id: id,
           },

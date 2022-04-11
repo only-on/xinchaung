@@ -413,6 +413,11 @@ const getTitLeftClass=()=>{
 function selectExperiment(v:any){
   state.activeTab=v
   emit('selectExperiment',v)
+  // pdf 视频 跳页面展示
+  // const { href } = router.resolve({
+  //   path: "/teacher/Workbench/open-jupyte",
+  // });
+  // window.open(href, "_blank");
 }
 function prepare(a:any) {
   a.startup=true

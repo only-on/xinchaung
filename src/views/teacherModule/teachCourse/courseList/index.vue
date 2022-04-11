@@ -1,12 +1,51 @@
 <template>
   <search-add @searchFn="searchFn" @handleMenuClick="handleMenuClick" :isShowAdd="isShowAdd"></search-add>
-  <classify :list="classifyList" @change="classifyChange"></classify>
+  <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <div>
-    列表
+    列表{{currentTab}}
   </div>
   <h2 @click="courseDetail(1)">课程详情入口</h2>
   <!-- <h2 @click="courseDetail(1)">公开课程详情入口</h2>
   <h2 @click="courseDetail(2)">我的教学课程详情入口</h2> -->
+  <a-spin :spinning="loading" size="large" tip="Loading...">
+    <div class="flexCenter mainBox">
+      <div class="item" v-for="(v, k) in 11" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
+        <div class="cover">
+          <div class="top flexCenter">
+            <div>未开始</div>
+            <div class="flexCenter">
+              <span>user</span>
+              <span>系统内置</span>
+            </div>
+          </div>
+          <div class="tabBox">
+            <span>标签1/标签2/</span>
+              <!-- <span>{{`${info.tags.join('/')}`}}</span> -->
+          </div>
+        </div>
+        <div class="flexCenter">
+          <a-button type="text">复用</a-button>
+          <a-button type="text">删除</a-button>
+        </div>
+        <div class="info">
+          <div>数据分析与机器学习实战</div>
+          <div>
+            <span>实验：20</span>
+            <span>课时：20</span>
+          </div>
+          <div>2020/03/14 - 2021/05/16</div>
+        </div>
+      </div>
+      <Empty v-if="!courseList.length && !loading" />
+      <a-pagination
+        v-if="totalCount > 12"
+        v-model:current="searchInfo.page"
+        :pageSize="searchInfo.limit"
+        :total="totalCount"
+        @change="pageChange"
+      />
+    </div>
+  </a-spin>
 </template>
 
 <script lang="ts" setup>
@@ -31,7 +70,7 @@ import { Modal, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter();
 const route = useRoute();
-const { editId } = route.query;
+// const { currentTab,course_id } = route.query;
 const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -49,11 +88,8 @@ interface ISearchInfo {
   name: string
   limit: number
   page: number
-  content_type?: number
-  content_direction?: number
-  content_level?: number
 }
-var courseList: any[] = reactive([]);
+var courseList: any[] = reactive([{id:1}]);
 var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(0);
 const currentTab = ref<number>(0);
@@ -63,30 +99,28 @@ const searchInfo = reactive<ISearchInfo>({
   name: '',
   limit: 10,
   page: 1,
-  content_type: 0,
-  content_direction: 0,
-  content_level: 0,
 });
 watch(() => { return configuration.componenttype; },
   (val) => {
-    console.log(val)
+    // console.log(val)
     currentTab.value = val ;
     searchInfo.init_type = currentTab.value
     searchInfo.page = 1
-    searchInfo.content_direction = 0
-    searchInfo.content_type = 0
-    searchInfo.content_level = 0
+    // searchInfo.content_direction = 0
+    // searchInfo.content_type = 0
+    // searchInfo.content_level = 0
     classifyList.forEach((v: any) => {
       v.value = 0
     })
-    // initData();
-    isShowAdd.value = val == 1;
+    initData();
+    isShowAdd.value = val === 0;
     // console.log(isShowAdd.value)
   }
 );
 /**
  * 标签操作
  */
+// let list1=
 const classifyList: any = reactive([
   {
     title: "课程状态",
@@ -116,24 +150,51 @@ const classifyList: any = reactive([
     ],
   },
 ]);
+const publicClassifyList: any = reactive([
+  {
+    title: "课程方向",
+    value: 0,
+    keyName: "CourseDirection",
+    data: [
+      { name: "全部", value: 0 },
+      { name: "机器学习", value: 1 },
+      { name: "深度学习", value: 2 },
+      { name: "计算机学习", value: 3 },
+    ],
+  },
+  {
+    title: "职业方向",
+    value: 0,
+    keyName: "CareerDirection",
+    data: [
+      { name: "全部", value: 0 },
+      { name: "大数据工程师", value: 1 },
+      { name: "深度学习训练师", value: 2 },
+      { name: "视觉工程师", value: 3 },
+    ],
+  },
+]);
+const labelSearch = reactive({
+  direction: 0,
+  complexity: 0,
+  CourseDirection:0,
+  CareerDirection:0
+});
+const classifyChange = (obj: any) => {
+  Object.assign(labelSearch, obj);
+  searchInfo.page = 1;
+  initData();
+};
 const searchFn = (key: string) => {
   searchInfo.name = key;
   searchInfo.page = 1;
   initData();
 };
 const initData = () => {
-  // const param = {
-    // direction: labelSearch.direction,				// 技术方向 1.数据采集 2.数据挖掘 3.自动化处理
-    // type: labelSearch.type ,					// 实验类型
-    // complexity: labelSearch.level,				// 实验难度
-    // keyword: "搜索关键词",			// 搜索框内容
-    // myexper:true,				// 我的实验
-  // }
+  return
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
   const param: ISearchInfo = Object.assign({}, {...searchInfo})
-  param.content_direction ? '' : delete param.content_direction
-  param.content_level ? '' : delete param.content_level
-  param.content_type ? '' : delete param.content_type
+ 
   loading.value = true;
   courseList.length = 0
   http.getExperimentList({param}).then((res: IBusinessResp) => {
@@ -163,17 +224,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
     query: { key },
   });
 };
-const labelSearch = reactive({
-  type: 0,
-  direction: 0,
-  complexity: 0,
-});
-const classifyChange = (obj: any) => {
-  Object.assign(labelSearch, obj);
-  Object.assign(searchInfo, obj)
-  searchInfo.page = 1;
-  // initData();
-};
+
 const courseDetail=(n:number)=>{
   router.push({ path: "/teacher/teacherCourse/PublicDetail"});
   // if(n === 1){
@@ -195,9 +246,19 @@ onMounted(() => {
   }
   searchInfo.init_type = currentTab.value
   
-  // initData();
+  initData();
 });
 </script>
 <style scoped lang="less">
-
+  .mainBox{
+    flex-wrap: wrap;
+    .item{
+      width: 282px;
+      flex-direction: column;
+      margin-bottom: 2rem;
+    }
+    .midItem{
+      margin: 0 18px;
+    }
+  }
 </style>

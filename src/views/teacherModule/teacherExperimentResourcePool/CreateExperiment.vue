@@ -242,7 +242,11 @@
         <MarkedEditor v-model="formState.document.mdValue" class="markdown__editor" />
       </div>
       <div v-if="formState.document.type === 'pdf'" class="pdfBox">
-        <PdfVue :url="formState.document.pdf" />
+        <!-- <PdfVue :url="formState.document.pdf" /> -->
+        <div class="selectFile">
+          <span>{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
+          <span class="iconfont icon-shanchu" @click.stop="removeDocMp4"></span>
+        </div>
       </div>
     </div>
     <!-- 视频实验  实验指导文件 -->
@@ -1095,6 +1099,15 @@ h3 {
     width: 100%;
     height: 500px;
     margin-top: 24px;
+    .selectFile{
+      padding-left: 2rem;
+      justify-content: space-between;
+      // width: 40%;
+      .iconfont{
+        margin-left: 3rem;
+        cursor: pointer;
+      }
+    }
   }
   .docTopRight {
     // width: 32.5%;
