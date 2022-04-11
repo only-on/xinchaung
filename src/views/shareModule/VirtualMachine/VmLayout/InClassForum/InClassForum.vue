@@ -98,6 +98,7 @@ export default defineComponent({
         page: forumSearch.page,
         limit: forumSearch.pageSize,
         // keyword: forumSearch.title
+        type: '求助'
       }
       forumSearch.type === '1' ? Object.assign(param, {self: 1}) : ''
       // 获取帖子列表

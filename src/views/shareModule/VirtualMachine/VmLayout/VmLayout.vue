@@ -125,6 +125,9 @@ import TrainNote from "./TrainNote/TrainNote.vue";
 import TrainReport from "./TrainReport/TrainReport.vue";
 import QuillEditor from "src/components/editor/quill.vue";
 import { Delta } from "quill-delta";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+import { Modal, message } from "ant-design-vue";
 
 interface Vm {
   key: string;
@@ -149,6 +152,7 @@ export default defineComponent({
   },
   props: ["VmData", "reportId", "isLeftContentShowType"],
   setup(props, { emit }) {
+    const http = (request as any).teacherForum;
     const vmData: Ref<Array<Vm>> = reactive(props.VmData);
     var reportId: any = computed(() => {
       return props.reportId;
@@ -337,7 +341,18 @@ export default defineComponent({
       },
     });
     // 发帖
-    function onSubmit() {}
+    function onSubmit() {
+      const param = {
+        type: '求助', 
+        label_name: [],
+        title: formState.title,
+        content: JSON.stringify(formState.content),
+      }
+      http.createForum({ param }).then((res: IBusinessResp) => {
+        message.success("发布成功");
+        isShowForumn.value = false
+      });
+    }
 
     //
     const contentShow = ref(false); // 1 正常左侧显示，2 弹框显示
