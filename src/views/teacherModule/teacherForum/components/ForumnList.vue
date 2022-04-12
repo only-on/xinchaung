@@ -16,7 +16,7 @@
     <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
       !isReply ? "回应" : "收起回应"
     }}</span>
-    <!-- <span class="delet pointer" v-if="item.can_delete" @click="deleteForum(item.id)">删除</span> -->
+    <span class="delet pointer" v-if="item.can_delete" @click="deleteForum(item.id)">删除</span>
   </div>
   <!--回应内容-->
   <div class="reply-box" v-if="isReply">

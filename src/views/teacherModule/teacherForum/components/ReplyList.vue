@@ -13,7 +13,8 @@
     </div>
     <div class="reply">
       <div class="reply-info" v-html="list.content"></div>
-      <div class="reply-btn" v-if="!list.pid">
+      <div class="reply-btn">
+        <span v-if="!list.pid">
         <span class="pointer" @click="isReply = !isReply">回应</span>
         <span 
           class="pointer view" 
@@ -24,6 +25,8 @@
           <span class="reply-num" v-if="!viewReply">{{list.second_reply_number_count}}</span>
            {{!viewReply ? '查看回应' : '收起回应'}}
         </span>
+        </span>
+        <span class="delet pointer" v-if="list.can_delete" @click="deleteReply(list.id)">删除</span>
       </div>
       <div class="reply-box" v-if="isReply">
         <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user?.username" />
@@ -142,6 +145,10 @@ export default defineComponent({
       page.value ++
       getReplyList(list.forum_id,  list.id)
     }
+    // 删除
+    const deleteReply = (id: number) => {
+      console.log(id)
+    }
     onMounted(() => {
       // getReplyList()
     })
@@ -158,6 +165,7 @@ export default defineComponent({
       getTimer,
       totalReply,
       clickLoadingMore,
+      deleteReply,
     };
   },
 });
@@ -210,7 +218,7 @@ export default defineComponent({
     line-height: 19px;
     color: var(--primary-color);
     .view {
-      margin-left: 16px;
+      margin: 0 16px;
       // display: none;
       &.no {
         color: var(--black-45);
