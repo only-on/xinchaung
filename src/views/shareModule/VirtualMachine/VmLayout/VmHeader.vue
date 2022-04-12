@@ -3,11 +3,10 @@
     <div class="left-box">
       <div
         class="selected pointer"
-        @click="isShowExperiment = !isShowExperiment"
       >
-        <span class="name">3-4 基于入侵检测的告警分析-外网</span>
+        <span class="name">3-4 基于入侵检测的告警分析-外网{{roleName}}</span>
       </div>
-      <div class="class-test pointer" @click="classTestVisible = true">
+      <div class="class-test pointer" @click="classTestVisible = true" v-if="roleName === 'student'">
         <span>随堂测试</span>
         <span>({{!classTestTotal ? 0 : testNum+'/'+classTestTotal}})</span>
         <i class="sign"></i>
@@ -15,14 +14,14 @@
     </div>
     <div class="right-box" v-if="taskType !==6 && taskType !== 7">
       <div class="ip-list">
-        <a-select class="ip-select" v-model:value="hostIp" @change="ipChange">
-          <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.uuid">
-            <span class="ip-name">{{ item.ip }}</span>
-            <span class="vm-state" :class="item.state ? 'open' : 'close'">{{item.state ? '开' : '关'}}</span>
+        <a-select class="ip-select" v-model:value="vmCurrentIndex" @change="ipChange">
+          <a-select-option v-for="(item, index) in vms" :key="index" :value="index">
+            <span class="ip-name">{{ item.host_ip }}</span>
+            <span class="vm-state" :class="item.status==='ACTIVE' ? 'open' : 'close'">{{item.status==='ACTIVE' ? '开' : '关'}}</span>
           </a-select-option>
         </a-select>
       </div>
-      <div class="delayed">
+      <div class="delayed" v-if="roleName === 'student'">
         <span>
           {{
             experimentTime?.h +
@@ -34,14 +33,14 @@
         </span>
         <span class="pointer" @click="delayedTime">延时</span>
       </div>
-      <div class="vnc-change pointer" @click="showChange">
+      <div class="vnc-change pointer" @click="showChange"  v-if="allInfo?.base_info?.is_webssh === 1">
         切换为{{ currentInterface === "ssh" ? "VNC" : "SSH" }}
       </div>
       <div class="tool pointer" @click="visible = !visible">
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
       </div>
-      <div class="switch pointer" @click="closeVm">
+      <div class="switch pointer" @click="finishExperiment">
         <span class="iconfont icon-guanbi1"></span>
       </div>
     </div>
@@ -74,39 +73,40 @@
           <ul>
             <li>
               <span class="iconfont icon-neicun"></span>
-              <span>内存：2G</span>
+              <span>内存：{{currentvm.ram}}G</span>
             </li>
             <li>
               <span class="iconfont icon-CPU"></span>
-              <span>CPU：2核</span>
+              <span>CPU：{{currentvm.cpu}}核</span>
             </li>
             <li>
               <span class="iconfont icon-xianka"></span>
-              <span>GPU：2核</span>
+              <span>GPU：{{currentvm.use_gpu ? '是' : '否'}}</span>
             </li>
             <li>
               <span class="iconfont icon-yingpan"></span>
-              <span>硬盘：30G</span>
+              <span>硬盘：{{currentvm.disk}}G</span>
             </li>
           </ul>
         </div>
         <div class="user">
           <ul>
-            <li>
+            <li class="ellipse">
               <span class="iconfont icon-yonghuming"></span>
-              <span>用户名：root</span>
+              <span>用户名：{{currentvm.name}}</span>
             </li>
             <li>
               <span class="iconfont icon-mima"></span>
-              <span>密码：sshpassword</span>
+              <span>密码：vncpassword</span>
             </li>
             <li>
               <span class="iconfont icon-IP"></span>
-              <span>IP：192.168.101.154</span>
+              <span>IP：{{currentvm.host_ip}}</span>
             </li>
             <li>
               <span class="iconfont icon-duankou"></span>
-              <span>SSH端口：23706</span>
+              <span>{{currentvm.classify === "Linux" ? 'ssh' : 'rdp'}}端口：{{
+              currentvm.classify === "Linux" ? currentvm.ssh_port : currentvm.rdp_port}}</span>
             </li>
           </ul>
         </div>
@@ -263,7 +263,6 @@ export default defineComponent({
     console.log("opType", opType);
     let role = storage.lStorage.get("role");
 
-    const isShowExperiment = ref<boolean>(false);
     const visible = ref<boolean>(false);
     const novncEl: any = inject("novncEl");
     const uuid: any = inject("uuid");
@@ -277,12 +276,34 @@ export default defineComponent({
     const currentInterface: any = inject("currentInterface");
     const vncLoading: any = inject("vncLoading");
     const isConnect: any = inject("isConnect");
+    const vms: any = ref([]);
+    const currentvm:any=inject("currentvm",{})
+    const roleName = ref("none");
+    roleName.value = 
+      role === 3 || role === 5 ? 'teacher':
+      role === 4 ? 'student' : 'none'
+    watch(
+      () => vmInfoData.value,
+      () => {
+        if (vmInfoData.value.data && vmInfoData.value.data.vms) {
+          vms.value = vmInfoData.value.data.vms;
+        }
+      },
+      { immediate: true }
+    );
 
     onMounted(() => {
-      if (taskType.value !==6 && taskType.value !== 7) {
+      if (taskType.value !==6 && taskType.value !== 7 && role === 4) {
         clearInterval(Number(timer));
         times();
       }
+      nextTick(() => {
+        document.addEventListener('keyup', (e: any) => {
+          if (e.keyCode === 27) {
+            isFullScreen.value = false
+          }
+        })
+      })
     });
     // 随堂测试
     const classTestTotal = ref<number>(5)
@@ -293,14 +314,12 @@ export default defineComponent({
     }
     const choiceAnswer = ref<number>(1)
     const answer = ref<string>('')
-    // ip
-    const screenInfo = reactive([
-      {ip: '192.168.101.100', uuid: 'shfqoCNXZVB', state: 1},
-      {ip: '192.168.101.101', uuid: 'shfqoCNXZVB1', state: 1},
-      {ip: '192.168.101.102', uuid: 'shfqoCNXZVB2', state: 0},
-    ])
-    const hostIp = ref(screenInfo[0].uuid)
-    function ipChange(val: string) {
+
+    function ipChange(val: number) {
+      console.log(vmCurrentIndex.value)
+      console.log(val)
+      // vmCurrentIndex.value = val
+      settingCurrentVM(vmInfoData.value.data.vms[val])
       // vncLoading.value=false
       // if (currentVmInfo.uuid === val) {
       //   return
@@ -313,6 +332,20 @@ export default defineComponent({
       //   }
       // })
     }
+    function settingCurrentVM(data: any) {
+      currentvm.value=data
+      vmOptions.value.password = getVmConnectSetting.VNCPASS;
+      vmOptions.value.wsUrl =
+        getVmConnectSetting.VNCPROTOC +
+        "://" +
+        data.base_ip +
+        ":" +
+        getVmConnectSetting.VNCPORT +
+        "/websockify?vm_uuid=" +
+        data.uuid;
+        
+    }
+
     let currentTaskId = ref<number>(0);
     let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
     let experimentTime: Ref<any> = ref({
@@ -377,17 +410,6 @@ export default defineComponent({
           use_time.value--;
         }
       }, 1000);
-    }
-    // 切换实验
-    var ExperimentalChange = inject("ExperimentChange") as Function;
-    function ExperimentChange(id: number) {
-      currentTaskId.value = id;
-      isShowExperiment.value = false;
-      ExperimentalChange(id);
-      // router.replace({
-      //   path: path,
-      //   query: { ...vmQuery, taskId: currentTaskId },
-      // });
     }
     // vnc和ssh切换
     function showChange() {
@@ -485,7 +507,7 @@ export default defineComponent({
     function download() {}
     // 复制 / 粘贴
     function copyPaste() {
-      novncEl.value.sendCtrlAltDel(); // 复制
+      // novncEl.value.sendCtrlAltDel(); // 还原
       novncEl.value.sendSelectContent(copyText); // 粘贴
       return;
     }
@@ -529,6 +551,12 @@ export default defineComponent({
       console.log("请求老师远程协助");
       assistanceVisible.value = true;
     }
+    // 全屏
+    const isFullScreen: any = inject('isFullScreen')
+    const fullScreen = () => {
+      visible.value = false
+      isFullScreen.value = true
+    }
 
     // 操作虚拟机
     function VmOperatesHandle(actionType: IAction) {
@@ -552,6 +580,55 @@ export default defineComponent({
           });
       }).catch();
     }
+    // 结束实验
+    async function endVmOperates() {
+      let param: any = {
+        type: type,
+        taskId: taskId,
+        opType: opType,
+        action: "recommend",
+        topoinst_id: topoinst_uuid,
+      };
+      return await endOperates(param);
+    }
+    function finishExperiment() {
+      let modal = Modal.confirm({
+        title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
+        okText: "确认",
+        onOk: async () => {
+          await finishTest()
+          modal.destroy();
+        },
+        cancelText: "取消",
+        onCancel: () => {
+          modal.destroy();
+        },
+      });
+    }
+    // 检查脚本并结束实验
+    async function finishTest() {
+      if (isScreenRecording.value) {
+            await startEndRecord();
+          }
+          if (["recommend", "prepare", "help"].includes(opType)) {
+            endVmEnvirment();
+            return;
+          }
+          if (
+            allInfo &&
+            allInfo.value &&
+            allInfo.value.base_info &&
+            allInfo.value.base_info.step_score_exists
+          ) {
+            endVmOperates().then((res: any) => {
+              // evaluateVisible.value = true;
+              // recommendExperimentData.value = res.data;
+              endVmEnvirment();
+            });
+          } else {
+            endVmEnvirment();
+          }
+    }
     // 结束脚本入口
     function endVmEnvirment() {
       let params: any = null;
@@ -571,74 +648,44 @@ export default defineComponent({
         };
       }
 
-      // setTimeout(() => {
-      //   endExperiment(params).then((res: any) => {
-      //     console.log(res);
-      //     if (res.data.length > 0) {
-      //       recommendExperimentData.value = res.data;
-      //       recommendVisible.value = true;
-      //     }
-      //     message.success("结束成功");
-      //     backTo(router, type, 3, routerQuery);
-      //   });
-      // }, 3000);
+      setTimeout(() => {
+        endExperiment(params).then((res: any) => {
+          console.log(res);
+          // if (res.data.length > 0) {
+          //   recommendExperimentData.value = res.data;
+          //   recommendVisible.value = true;
+          // }
+          message.success("结束成功");
+          backTo(router, type, 3, routerQuery);
+        });
+      }, 3000);
       console.log("结束脚本入口");
     }
     // 切换抽屉时动画结束后的回调
     function afterVisibleChange(bool: boolean) {
       console.log("visible", bool);
     }
-    const toolList = [
-      {
-        icon: "icon-quanping",
-        name: "开启 / 全屏",
-      },
-      {
-        icon: "icon-baocun",
-        name: "保存进度",
-        function: saveKvm,
-      },
-      {
-        icon: "icon-guanbi1",
-        name: "关机",
-        function: closeVm,
-      },
-      {
-        icon: "icon-zhongzhi",
-        name: "重置",
-        function: resetVm,
-      },
-      {
-        icon: "icon-shangchuan",
-        name: "上传文件",
-        function: upload,
-      },
-      {
-        icon: "icon-xiazai",
-        name: "下载文件",
-        function: download,
-      },
-      {
-        icon: "icon-fuzhiniantie",
-        name: "复制 / 粘贴",
-        function: copyPaste,
-      },
-      {
-        icon: "icon-kaishijieshuluzhi",
-        name: "开始 / 结束录制",
-        function: startEndRecord,
-      },
-      {
-        icon: "icon-gongxiangzhuomian",
-        name: "桌面共享",
-        function: shareDesktop,
-      },
-      {
-        icon: "icon-yuanchengxiezhu",
-        name: "请求老师远程协助",
-        function: remoteAssist,
-      },
-    ];
+    const toolData = (role === 3 || role === 5)?
+      [
+        { icon: "icon-quanping", name: "开启 / 全屏", function: fullScreen },
+        { icon: "icon-guanbi1", name: "关机", function: closeVm, },
+        { icon: "icon-zhongzhi", name: "重置", function: resetVm, },
+        // 复制 / 粘贴
+        { icon: "icon-fuzhiniantie", name: "选中粘贴", function: copyPaste, },
+      ]:
+      [
+        { icon: "icon-quanping", name: "开启 / 全屏", },
+        { icon: "icon-baocun", name: "保存进度", function: saveKvm, },
+        { icon: "icon-guanbi1", name: "关机", function: closeVm, },
+        { icon: "icon-zhongzhi", name: "重置", function: resetVm, },
+        { icon: "icon-shangchuan", name: "上传文件", function: upload, },
+        { icon: "icon-xiazai", name: "下载文件", function: download, },
+        { icon: "icon-fuzhiniantie", name: "选中粘贴", function: copyPaste, },
+        { icon: "icon-kaishijieshuluzhi", name: `${isScreenRecording.value?'结束':'开始'}录制`, function: startEndRecord, },
+        { icon: "icon-gongxiangzhuomian", name: "桌面共享", function: shareDesktop, },
+        { icon: "icon-yuanchengxiezhu", name: "请求老师远程协助", function: remoteAssist, },
+      ];
+    const toolList = reactive(toolData)
 
     // 保存进度 modal
     const progressVisible = ref(false);
@@ -727,13 +774,11 @@ export default defineComponent({
       assistanceQuestion.value = "";
     }
     return {
-      isShowExperiment,
       visible,
       afterVisibleChange,
       toolList,
       showChange,
       currentInterface,
-      ExperimentChange,
       delayedTime,
       currentTaskId,
       isScreenRecording,
@@ -754,9 +799,8 @@ export default defineComponent({
       assistanceQuestion,
       okAssistance,
       closeAssistance,
-      hostIp,
+      // hostIp,
       ipChange,
-      screenInfo,
       classTestTotal,
       testNum,
       okClassTest,
@@ -771,6 +815,12 @@ export default defineComponent({
       choiceAnswer,
       answer,
       taskType,
+      vmCurrentIndex,
+      vms,
+      currentvm,
+      roleName,
+      allInfo,
+      finishExperiment,
     };
   },
 });

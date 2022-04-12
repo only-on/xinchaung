@@ -2,6 +2,7 @@ import { RESP_AUTH_FAILURE, RESP_SUCCESS } from 'src/api/index';
 import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from 'src/typings/fetch';
 import store from "src/store/index";
 import { message } from 'ant-design-vue';
+import ls from "src/utils/extStorage"
 // import { useRouter,useRoute } from 'vue-router';
 // const router = useRouter();
 // 检查是否为对象
@@ -120,6 +121,8 @@ export default function request({
     "Cache-Control": cache,
     "Content-Type": sendContentType,
     'Authorization': store.state.adminInfo.token as string || '',
+    // student teacher admin init assistant
+    'Login-Role': ls.lStorage.get("username") || 'teacher',
     ...headers,
   };
   // 如果Content-Type不存在，删除Content-Type

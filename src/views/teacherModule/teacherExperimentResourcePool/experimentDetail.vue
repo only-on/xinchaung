@@ -137,7 +137,7 @@ const openVnc = () => {
   const param: any = {
     type: "content",  // 实验
     opType: "prepare",
-    taskId: 500012,
+    taskId: experimentDetail.id,
   };
   // 文档视频实验
   if (experimentDetail.task_type === 6 || experimentDetail.task_type === 7) {

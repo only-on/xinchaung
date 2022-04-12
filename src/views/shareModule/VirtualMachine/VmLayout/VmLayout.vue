@@ -64,7 +64,7 @@
           </div>
         </div>
       </div>
-      <div class="vm-content" ref="vmWrapEl">
+      <div class="vm-content" :class="isFullScreen?'full-screen':''" ref="vmWrapEl">
         <div
           class="vm-content-right"
           ref="rightEl"
@@ -235,6 +235,7 @@ export default defineComponent({
     function open(key?: string) {
       console.log(key);
       if (key == "report") {
+        currentNavKey.value = key
         contentShow.value = true;
         openStatus.value = false;
         drawerVisible.value = false;
@@ -368,6 +369,10 @@ export default defineComponent({
     watch(leftWidth, () => {
       bottomStyle.width = leftWidth.value - 40 + "px";
     });
+
+    // 全屏
+    const isFullScreen = ref(false)
+    provide('isFullScreen', isFullScreen)
     return {
       openStatus,
       open,
@@ -390,6 +395,7 @@ export default defineComponent({
       onSubmit,
       contentShow,
       bottomStyle,
+      isFullScreen,
     };
   },
 });
@@ -551,6 +557,16 @@ interface IFormState {
       flex: 1;
       display: flex;
       flex-direction: row;
+      &.full-screen {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        .vm-content-right {
+          width: 100%!important;
+        }
+      }
       .vm-content-right {
         width: 100%;
         overflow: hidden;
