@@ -91,7 +91,7 @@ rules.value = {
   optionB: [{ required: true, message: "请输入选项B内容" }],
   optionC: [{ required: true, message: "请输入选项C内容" }],
   optionD: [{ required: true, message: "请输入选项D内容" }],
-  score: [{ required: true, message: "请输入选项D内容" }],
+  score: [{ required: true, message: "请输入分数" }],
 };
 interface Istate {
   visible: boolean;
@@ -118,6 +118,16 @@ const formRef = ref<any>("null");
 const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
 function updateVisable() {
   emit("updateVisable", false);
+  clearInputContent();
+}
+function clearInputContent() {
+  formState.titleDescription = "";
+  formState.optionA = "";
+  formState.optionB = "";
+  formState.optionC = "";
+  formState.optionD = "";
+  formState.answer = "";
+  formState.score = "";
 }
 function handleOk() {
   formRef.value.validate().then(() => {

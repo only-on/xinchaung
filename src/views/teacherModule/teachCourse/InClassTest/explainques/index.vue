@@ -65,10 +65,17 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
 });
-const formRef = ref();
+const formRef = ref<any>("null");
 const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
 function updateVisable() {
   emit("updateVisable", false);
+  clearInputContent();
+}
+function clearInputContent() {
+  formState.titleDescription = "";
+  formState.textanswer = "";
+  formState.keyWords = "";
+  formState.score = "";
 }
 function handleOk() {
   formRef.value.validate().then(() => {

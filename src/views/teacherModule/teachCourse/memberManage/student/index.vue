@@ -53,7 +53,7 @@
       @cancel="handleCancel"
     >
       <div>
-        <addstudent></addstudent>
+        <addstudent @updateSelectStuVisable="updateSelectStuVisable"></addstudent>
       </div>
     </a-modal>
   </div>
@@ -140,6 +140,10 @@ function handleOk() {
   modalVisable.value = false;
 }
 function handleCancel() {
+  modalVisable.value = false;
+}
+function updateSelectStuVisable(value: any) {
+  console.log(value, "value");
   modalVisable.value = false;
 }
 </script>

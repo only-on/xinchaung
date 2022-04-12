@@ -1,6 +1,8 @@
 <template>
   <div id="inClassTest">
-    <div class="tree"></div>
+    <div class="tree">
+      <chapterTree @selectExperiment="selectExperiment"> </chapterTree>
+    </div>
     <div class="test">
       <div class="inTestHeader">
         <div class="inclass-header-left">
@@ -46,13 +48,11 @@
       @updateVisable="updateVisable"
     ></achievementStatis>
     <choiceques
-      ref="choiceChild"
       v-if="componentName == 'choiceques'"
       :modalVisable="state.visible"
       @updateVisable="updateVisable"
     ></choiceques>
     <explainques
-      ref="explainques"
       v-if="componentName == 'explainques'"
       :modalVisable="state.visible"
       @updateVisable="updateVisable"
@@ -76,6 +76,7 @@ import testList from "./testList/index.vue";
 import achievementStatis from "./achievementStatis/index.vue";
 import choiceques from "./choiceques/index.vue";
 import explainques from "./explainques/index.vue";
+import chapterTree from "../courseDetail/components/Chapter/ChapterList.vue";
 interface Istate {
   visible: boolean;
 }
@@ -83,12 +84,20 @@ const state: Istate = reactive({
   visible: false,
 });
 const componentName: any = ref("");
-const choiceChild: any = ref("choiceChild");
 // 出题弹框
 function selectTuestion(type: any) {
   console.log(type);
+
+  // componentName.value = type === "ques" ? "choiceques" : "explainques";
+  if (type === "answer") {
+    state.visible = true;
+    // componentName.value = "achievementStatis";
+    componentName.value = "explainques";
+  }
+  if (type === "ques") {
+    componentName.value = "choiceques";
+  }
   state.visible = true;
-  componentName.value = type == "ques" ? "choiceques" : "explainques";
 }
 //成绩统计弹框
 function scoreStatistic() {
@@ -96,10 +105,15 @@ function scoreStatistic() {
   componentName.value = "achievementStatis";
 }
 function updateVisable(value: any) {
+  console.log(value, "value");
   state.visible = value;
 }
 function deleteQues(id: any) {
   console.log(id);
+}
+// 选择tree章节
+function selectExperiment(val: any) {
+  console.log(val);
 }
 </script>
 <style lang="less" scoped>
@@ -110,6 +124,8 @@ function deleteQues(id: any) {
 .tree,
 .test {
   height: 714px;
+  overflow-y: auto;
+  padding: 20px;
   border-radius: 10px;
   box-shadow: 0 2px 4px 0 var(--black-0-7);
   background: var(--white-100);

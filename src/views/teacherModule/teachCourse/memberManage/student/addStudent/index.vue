@@ -15,7 +15,9 @@
         </a-form>
       </div>
       <div class="header-right">
-        <a-button type="primary" class="brightBtn">批量导入</a-button>
+        <a-button type="primary" class="brightBtn" @click="batchImport"
+          >批量导入</a-button
+        >
       </div>
     </div>
     <a-table
@@ -40,15 +42,32 @@
       }"
     >
     </a-table>
+    <a-modal
+      :width="540"
+      cancelText="返回"
+      :visible="modalVisable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      :okButtonProps="okButtonProps"
+    >
+      <template #title>
+        <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
+      </template>
+      <div>
+        <batchImportStu></batchImportStu>
+      </div>
+    </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, reactive } from "vue";
-
+import batchImportStu from "../batchImportStudent/index.vue";
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
+const okButtonProps: any = ref("");
+okButtonProps.value = { style: { display: "none" } };
 columns.value = [
   {
     title: "账号",
@@ -96,6 +115,8 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any): void }>();
+
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
@@ -104,6 +125,16 @@ function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
+}
+function batchImport() {
+  modalVisable.value = true;
+  emit("updateSelectStuVisable", false);
+}
+function handleOk() {
+  modalVisable.value = false;
+}
+function handleCancel() {
+  modalVisable.value = false;
 }
 </script>
 
@@ -114,5 +145,8 @@ function onSelectChange(selectedRowKeys: any) {
     justify-content: space-between;
     margin-bottom: 20px;
   }
+}
+.icon-fanhui1 {
+  color: var(--primary-color);
 }
 </style>
