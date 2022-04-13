@@ -8,6 +8,7 @@ export default {
   create: { url: `/api/resource/data`, method: "POST" ,dataType: 'formdata' },
   getSelectResourceList: { url: `/api/resource/data/select/type/{typeID}`, method: "GET" },
   getMountInfo: { url: `/api/resource/get-mount-info`, method: "GET" },
+  createDatasets: { url: `/api/resource/datasets`, method: "POST" ,dataType: 'json' },
 
   // 详情   
   getDetail:{url:`/api/resource/data/{editId}`,method: "GET",},
@@ -42,6 +43,7 @@ export interface ITeacherMaterialResource {
   create: TFHttpSend;
   getSelectResourceList: TFHttpSend;
   getMountInfo: TFHttpSend;
+  createDatasets: TFHttpSend;
 
   getDetail: TFHttpSend;
   getDetailFile: TFHttpSend;
