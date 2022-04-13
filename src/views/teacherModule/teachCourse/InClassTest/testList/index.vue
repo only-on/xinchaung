@@ -54,7 +54,9 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref, toRef, inject, PropType, reactive, toRefs } from "vue";
+import { defineComponent, ref, toRef, inject, reactive, toRefs, onMounted } from "vue";
+import request from 'src/api/index'
+const http = (request as any).teacherInclassTest;
 const itemValue: any = ref("");
 itemValue.value = {
   id: "198",
@@ -72,6 +74,14 @@ function deleteQues(id: any) {
   console.log(id);
   emit("deleteQues", id);
 }
+function getListData(){
+  http.inClasstestList({urlParams:{content_id:50000}}).then((res:any)=>{
+    console.log(res,'jjjjjjjjjjjjjjj')
+  })
+}
+onMounted(()=>{
+  getListData()
+})
 </script>
 <style lang="less" scoped>
 .testlistItem {
