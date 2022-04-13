@@ -7,9 +7,12 @@
     :footer="false"
     :destroyOnClose="true"
     :maskClosable="false"
+    :width="800"
   >
     <div class="report-wrap">
-      <div class="report-template">报告模板</div>
+      <div class="report-template">
+        <onLineReport></onLineReport>
+      </div>
       <div class="action-footer">
         <label><i>*</i>评分</label>
         <a-input placeholder="0~100" v-model:value="data.score"></a-input>
@@ -21,6 +24,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
+import onLineReport from "src/components/report/onlineReport.vue"
 
 // props传值
 const props = defineProps({
