@@ -22,7 +22,7 @@
     <span :class="tags === '课件'? 'active':''" @click="changeTab('课件')">课件</span>
   </div>
   <SourceMaterial v-if="selectNum === 2" :activeFile="docOrMp4Drawer.activeFile" :tags="tags" @selectSourceMaterialFile="selectSourceMaterialFile"/>
-  <Experiments v-if="selectNum === 1" :selectList="docOrMp4Drawer.selectList" @preservation="preservation()" />
+  <Experiments v-if="selectNum === 1" :selectList="docOrMp4Drawer.selectList" @preservation="preservation" />
   </a-drawer>
   </div>
 </template>

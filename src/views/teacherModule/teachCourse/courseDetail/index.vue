@@ -47,8 +47,8 @@
           </a-form-item>
           <a-form-item label="添加标签" name="tags">
             <div>
-                <LabelList :tag="formState.tags" :recommend="formState.recommend" />
-              </div>
+              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
+            </div>
           </a-form-item>
           <a-form-item label="封面图" class="cover">
             <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
@@ -156,7 +156,7 @@ import {
   watch,
   onBeforeUnmount,
 } from "vue";
-
+import { Modal, message } from "ant-design-vue";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 import { SmileOutlined } from '@ant-design/icons-vue';
 import Submit from "src/components/submit/index.vue";
@@ -218,6 +218,7 @@ const selectTab=(val:any)=>{
   state.activeTab={...val}
 }
 // 编辑课程信息
+const formRef = ref();
 var editVisible: Ref<boolean> = ref(false);
 const editLoading = ref<boolean>(false)
 const courseDirection:any=reactive([])

@@ -18,10 +18,10 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref,nextTick} from "vue";
-import { Knowledge,HotWords} from '../../echartsOption';
+import { Knowledge,HotWords} from './echartsOption';
 interface Props {
-  knowledge: any;
-  words:any
+  knowledge?: any;
+  words?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   knowledge: ()=> [],  //  知识点

@@ -237,7 +237,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
   // router.push("/teacher/teacherExperimentResourcePool/CreateExperiment?key="+key);
   router.push({
     path: "/teacher/teacherCourse/CreateCourse",
-    // query: { key },
+    query: { currentTab:0}
   });
 };
 

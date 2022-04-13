@@ -7,8 +7,8 @@
 <script lang="ts" setup>
 interface Props {
   loading?: boolean;
-  okText?:'',
-  cancelText?:''
+  okText?:string,
+  cancelText?:string
 }
 const props = withDefaults(defineProps<Props>(),{
   loading: false,

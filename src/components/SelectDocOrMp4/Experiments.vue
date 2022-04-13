@@ -96,7 +96,6 @@ if(props.selectList.length){
     docOrMp4Drawer.selectListIds.push(v.id)
   })
 }
-docOrMp4Drawer.activeFile={ ...props.activeFile}
 
 const classNum=computed(()=>{
   let num=0
@@ -137,7 +136,7 @@ const getExperiments = () => {
     docOrMp4Drawer.loading = false
     // if (!res) return
     const { list, page }  = res.data
-    list.map((v: IExperimentList) => {
+    list.map((v: any) => {
       v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     docOrMp4Drawer.list.push(...list)

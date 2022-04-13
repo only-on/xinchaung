@@ -57,7 +57,7 @@ import {
   createImageApi,
   stopImageApi,
   extendSessionApi,
-} from "../api";
+} from "./api";
 import _ from "lodash";
 import storage from "src/utils/extStorage";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
