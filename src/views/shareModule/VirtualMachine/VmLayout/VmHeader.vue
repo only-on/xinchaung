@@ -1,6 +1,10 @@
 <template>
   <div class="vm-header-box">
     <div class="left-box">
+      <div class="back pointer" @click="back">
+        <span class="iconfont icon-fanhui1"></span>
+        <span>返回</span>
+      </div>
       <div
         class="selected pointer"
       >
@@ -773,6 +777,34 @@ export default defineComponent({
       assistanceVisible.value = false;
       assistanceQuestion.value = "";
     }
+
+    // 返回
+    const ws: any = inject("ws");
+    let historyLength=history.length
+    function back() {
+      Modal.confirm({
+        title: "提示",
+        content: "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {
+          if (ws && allInfo.value?.current?.is_teamed == 1) {
+            ws.value.leave(topoinst_id + "_room");
+          }
+          if (opType === "test" || opType === "prepare") {
+            endVmEnvirment();
+          } else {
+            // if (allInfo.value?.base_info?.task_type.type==4&&allInfo.value?.base_info?.task_type.programing_type==0) {
+              router.go(historyLength-history.length-1)
+            // }else{
+              // router.go(-1)
+            // }
+            // backTo(router, type, 3, routerQuery);
+          }
+        },
+        onCancel: () => {},
+      });
+    }
     return {
       visible,
       afterVisibleChange,
@@ -821,6 +853,7 @@ export default defineComponent({
       roleName,
       allInfo,
       finishExperiment,
+      back,
     };
   },
 });
@@ -854,9 +887,16 @@ let courseList = [
 <style lang="less" scoped>
 .vm-header-box {
   display: flex;
-  margin-left: 62px;
+  // margin-left: 62px;
   margin-right: 50px;
   justify-content: space-between;
+  .back {
+    margin: 0 15px;
+    color: var(--white-65);
+    .iconfont {
+      margin-right: 4px;
+    }
+  }
   .left-box {
     color: var(--white-100);
     padding: 22px 0;
