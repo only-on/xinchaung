@@ -1,6 +1,6 @@
 <template>
-  <div v-show="isConnect" class="novnc-wrap" ref="refName"></div>
-  <div v-show="!isConnect" class="close-vm-bg">
+  <div v-show="isClose" class="novnc-wrap" ref="refName"></div>
+  <div v-show="!isClose" class="close-vm-bg">
     <img :src="closevmImg" alt="" srcset="" width="324" height="68">
   </div>
 </template>
@@ -50,22 +50,22 @@ export default defineComponent({
   },
   setup(props, context) {
     let rfb: any = ref(null);
-    let vncLoading:Ref<boolean>|undefined=inject("vncLoading")
+    let loading:Ref<boolean>|undefined=inject("loading")
     const refName=ref(props.refName)
-    let isConnect:Ref<boolean>|undefined=inject("isConnect",ref(true))
+    let isClose:Ref<boolean>|undefined=inject("isClose",ref(true))
     
     // 连接断开
     function disconnect(msg: any) {
-      if(!isConnect!.value) return;
+      if(!isClose!.value) return;
       setTimeout(() => {
         if (msg.detail.clean) {
           // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
-          // vncLoading!.value=false
+          // loading!.value=false
           connectVnc();
         } else {
           //这里做不可重新连接的一些操作
           // console.log("链接失败,重新链接中-------" + props.options?.wsUrl);
-          // vncLoading!.value=false
+          // loading!.value=false
           connectVnc();
         }
       },2000);
@@ -74,7 +74,7 @@ export default defineComponent({
     function success(msg: any) {
       // console.log(msg);
       // console.log("连接成功");
-        setTimeout(()=>{vncLoading!.value=true},5000)
+        setTimeout(()=>{loading!.value=true},5000)
     }
 
     function securityfailure(msg: any) {
@@ -95,9 +95,9 @@ export default defineComponent({
       if (refName.value) {
           (refName.value as any).innerHTML=""
       }
-      // vncLoading!.value=false
-      isConnect!.value=true
-      // vncLoading!.value=false
+      // loading!.value=false
+      isClose!.value=true
+      // loading!.value=false
       // 实例化rfb
       if (!refName.value)  return;
       rfb.value = new RFB(refName.value, props.options?.wsUrl, {
@@ -139,8 +139,8 @@ export default defineComponent({
       connectVnc();
     });
     onBeforeRouteLeave(()=>{
-      console.log(isConnect)
-      isConnect!.value=false
+      console.log(isClose)
+      isClose!.value=false
     })
     // 监听prop属性变化时，执行
     watch(
@@ -153,7 +153,7 @@ export default defineComponent({
       { deep: true }
     );
 
-    return { connectVnc,sendDisconnect, rfb,vncLoading,sendSelectContent ,refName,sendCtrlAltDel,isConnect,closevmImg};
+    return { connectVnc,sendDisconnect, rfb,loading,sendSelectContent ,refName,sendCtrlAltDel,isClose,closevmImg};
   },
 });
 </script>

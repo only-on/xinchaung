@@ -20,7 +20,7 @@ export default{
         {
             path:"vnc",
             name:"vnc",
-            component:()=>import("src/views/shareModule/VirtualMachine/Vnc/Vnc.vue"),
+            component:()=>import("src/views/shareModule/VirtualMachine/index.vue"),
             meta:{
                 title:"vnc",
                 authCode:""

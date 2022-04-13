@@ -557,6 +557,7 @@ interface IFormState {
       flex: 1;
       display: flex;
       flex-direction: row;
+      background: #2c2e45;
       &.full-screen {
         position: fixed;
         top: 0;
