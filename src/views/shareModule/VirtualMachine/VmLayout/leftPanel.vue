@@ -50,13 +50,18 @@ watch(
 );
 
 function open(key:string) {
-    console.log(key);
     lastKey.value=key
     if (currentNavKey.value!=key) {
         contentShow.value=true
-        leftWidth.value=400
-        rightWidth.value=window.innerWidth - leftWidth.value
+        if (leftWidth.value==70) {
+            leftWidth.value=400
+            rightWidth.value=window.innerWidth - leftWidth.value
+            currentNavKey.value=key
+        }else{
+            
+        }
         currentNavKey.value=key
+        
     }else{
          contentShow.value=false
          leftWidth.value=70

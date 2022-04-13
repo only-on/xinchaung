@@ -6,7 +6,7 @@
         <span>返回</span>
       </div>
       <div class="selected pointer">
-        <span class="name">{{ baseInfo?.base_info.name }}</span>
+        <span class="name">{{ baseInfo?.base_info?.name }}</span>
       </div>
       <div class="class-test pointer" @click="classTestVisible = true" v-if="role == 4">
         <span>随堂测试</span>

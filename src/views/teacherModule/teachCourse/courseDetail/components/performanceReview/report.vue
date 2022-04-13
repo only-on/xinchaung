@@ -11,7 +11,8 @@
   >
     <div class="report-wrap">
       <div class="report-template">
-        <onLineReport></onLineReport>
+        <!-- <onLineReport></onLineReport> -->
+        report
       </div>
       <div class="action-footer">
         <label><i>*</i>评分</label>
