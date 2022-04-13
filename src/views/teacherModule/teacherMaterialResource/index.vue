@@ -25,7 +25,7 @@
     </div>
     <div class="mainBox">
       <div
-        class="item flexCenter"
+        class="item flexCenter pointer"
         v-for="(list, k) in materialList"
         :key="list.id"
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
@@ -190,40 +190,36 @@ interface Iuser {
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
   materialList.length = 0
-  if (labelSearch.type === '数据集') {
-    const param = {
-      category: '',
-      page: pageInfo.page,
-      per_page: pageInfo.limit,
-      keyword: searchKey.value,
-      common: currentTab.value ? 0 : 1,
-      user_id: lStorage.get("user_id") || 100,
-      label: labelSearch.label ? labelSearch.label : ''
-    }
-    datasetHttp.dataSets({ param }).then((res: any) => {
-      const { data, total} = res
-      data.forEach((v: any) => {
-        v.id = v.uid
-        v.item_count = v.amount
-        v.item_size = v.size
-        v.tags = v.labels.map((v: any) => v.name)
-        v.type_name = '数据集'
-        v.username = v.username ? v.username : 'teach'
-        v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/teacher_p.png'
-      })
-      materialList.push(...data);
-      pageTotal.value = total;
-    })
-    return
-  }
+    
   const param = {
     name: searchKey.value,
-    is_public: currentTab.value ? 0 : 1,
+    is_public: currentTab.value ? 0 : 1,  // 1公开 0私有
     tags: !labelSearch.type ? 
       (!labelSearch.label ? '' : labelSearch.label) : 
       (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label),
     ...pageInfo,
   };
+  if (labelSearch.type === '数据集') {
+    http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
+      // console.log(Object.values(res.data.list))
+      http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
+        // console.log(res)
+        const { data, total} = res
+        data.forEach((v: any) => {
+          v.id = v.uid
+          v.item_count = v.amount
+          v.item_size = v.size
+          v.tags = v.labels?.map((v: any) => v.name)
+          v.type_name = '数据集'
+          v.username = v.username ? v.username : 'teach'
+          v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
+        })
+        materialList.push(...data);
+        pageTotal.value = total;
+      })
+    })
+    return
+  }
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;

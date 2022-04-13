@@ -299,11 +299,13 @@ const deleteImages=()=>{
     onOk() {
     let deleteParam = `data_id=${state.detail.uid}&data_name=${state.detail.name}`;
       http.deleteDataSet({ urlParams: { deleteParam: deleteParam } }).then((res: IBusinessResp) => {
+        http.deletDataset({ urlParams: { datasetID: editId } }).then((res: IBusinessResp) => {
           message.success({duration:1,content:'删除成功'})
           setTimeout(()=>{
             router.go(-1);
           },1000)
         });
+      });
     },
   });
 }
@@ -329,9 +331,17 @@ const handleOk=async()=> {
     documents:state.document.content,
  }
   http.editInfo({param:{...ForumSearch}}).then((res:any)=>{
-    message.success('修改成功')
-    detailed()
-    visible.value=false
+    const  param = {
+      name: params.name,
+      tags: params.tags,
+      slab_uid: editId,
+      is_public: Number(params.is_public)
+    }
+    http.updateDataset({urlParams: {datasetID: editId}, param}).then((res: any) => {
+      message.success('修改成功')
+      detailed()
+      visible.value=false
+    })
   })
   // if(ForumSearch.common !== oldCommon.value){
   //   console.log(ForumSearch.common)

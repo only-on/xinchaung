@@ -225,8 +225,18 @@ const createDataSet = () => {
     documents: formState.documents,
   }
   datasetHttp.create({ param }).then((res: any) => {
-    $message.success("创建成功");
-    router.go(-1);
+    const fd = new FormData()
+    fd.append('name', formState.name)
+    fd.append('is_public', formState.is_public)
+    fd.append('type', createMaterialType.id)
+    fd.append('slab_uid', res.data.uid)
+    formState.tags.forEach((v: string, k: number) => {
+      fd.append(`tags[${k}]`, v)
+    })
+    http.create({param: fd}).then((res: IBusinessResp) => {
+      $message.success("创建成功");
+      router.go(-1);
+    })
   });
 }
 const cancel = () => {

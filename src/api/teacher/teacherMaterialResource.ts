@@ -2,6 +2,7 @@ import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
   dataSets: { url: `/api/resource/data`, method: "GET" },
+  getDatasetsUidList: { url: `/api/resource/datasets`, method: "GET" },
   getTypeList: { url: `/api/category/素材类型/tags`, method: "GET" },
   getLabelsList: { url: `/api/category/素材标签/tags`, method: "GET" },
   create: { url: `/api/resource/data`, method: "POST" ,dataType: 'formdata' },
@@ -16,6 +17,8 @@ export default {
   SaveFile:{url:`/api/resource/data/{editId}/files`,method: "POST",dataType: 'json'},
   deleteFile: { url: `/api/resource/data/{editId}/files/{fileId}`, method: "DELETE" },
   downLoadAll: { url: `/api/resource/data/{editId}/files-download`, method: "GET" },
+  updateDataset: { url: `/api/resource/datasets/{datasetID}`, method: 'PUT', dataType: 'json'},
+  deletDataset: { url: `/api/resource/datasets/{datasetID}`, method: "DELETE" },
 
 
   //  数据集部分单独
@@ -28,10 +31,12 @@ export default {
   deleteItemFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
   // toPublic:{url:`/dmc/v1.0/to/public`,method:'POST',dataType: 'json'},
   // toPrivate:{url:`/dmc/v1.0/to/private`,method:'POST',dataType: 'json'},
+  getDataSetsList: { url: `/dmc/v1.0/dataset_lists`, method: 'POST', dataType: 'json' }
 };
 
 export interface ITeacherMaterialResource {
   dataSets: TFHttpSend;
+  getDatasetsUidList: TFHttpSend;
   getTypeList: TFHttpSend;
   getLabelsList: TFHttpSend;
   create: TFHttpSend;
@@ -44,6 +49,8 @@ export interface ITeacherMaterialResource {
   deleteImages: TFHttpSend;
   SaveFile: TFHttpSend;
   downLoadAll: TFHttpSend;
+  updateDataset: TFHttpSend;
+  deletDataset: TFHttpSend;
 
   detailed: TFHttpSend;
   getDataFileList: TFHttpSend;
@@ -54,6 +61,7 @@ export interface ITeacherMaterialResource {
   deleteItemFile: TFHttpSend;
   // toPublic: TFHttpSend;
   // toPrivate: TFHttpSend;
+  getDataSetsList: TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";
