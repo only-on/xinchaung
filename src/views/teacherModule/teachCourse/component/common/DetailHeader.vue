@@ -272,6 +272,7 @@ const edit=()=>{
     .rightBox{
       flex: 1;
       .caozuo{
+        margin-top: 4rem;
         .brightBtn{
           margin-right: 1rem;
         }

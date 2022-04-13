@@ -78,13 +78,14 @@ const routeQuery = useRoute().query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
-  Editable:string
+  chapterList?:any
+  Editable?:string
   // knowledge: any;
   // words:any
 }
 const props = withDefaults(defineProps<Props>(), {
   // knowledge: ()=> [],  //  
-  // words: ()=> [],      // 
+  chapterList: ()=> [],      // 
   Editable:'readOnly'          //readOnly canStudy canEdit 是否可编辑
 });
 const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
@@ -455,11 +456,11 @@ function ViewExperiment(a:any){
   a.openGuidance=!a.openGuidance
   // a.type 如果是pdf 或者MP4 新开页面播放
 }
-// 创建章节
+// 编辑章节下素材、实验列表
 const establishChapter=(v:any)=>{
   emit('establishChapter',v)
 }
-// 编辑章节
+// 编辑章节名称
 const editChapter=(v:any)=>{
   emit('editChapter',v)
 }
@@ -468,7 +469,7 @@ const deleteChapter=(v:any)=>{
   emit('deleteChapter',v)
 }
 
-// 编辑章节下实验
+// 编辑章节下实验名称
 const editExperiment=(v:any)=>{
   emit('editExperiment',v)
 }

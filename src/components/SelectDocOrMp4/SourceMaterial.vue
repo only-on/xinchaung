@@ -200,6 +200,14 @@ onMounted(()=>{
 })
 </script>
 <style scoped lang="less">
+.search {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .item {
+      width: 260px;
+    }
+  }
 .dataList {
     height: calc(100% - 175px);
     overflow: auto;

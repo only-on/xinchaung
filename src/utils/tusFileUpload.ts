@@ -69,7 +69,8 @@ const tusFileUpload={
         "Project-Path": FileConfig[directory],
       },
       // 默认值：Infinity
-      chunkSize: 5242880,
+      // chunkSize: 5242880,
+      chunkSize: 0,
       // 附加元数据。当(且仅当)创建新的上传时，将传递给服务器。可以用于文件名，文件类型
       metadata: {
         filename: file.name,

@@ -121,6 +121,7 @@ export default defineComponent({
     }
     const route = useRoute();
     var menus: any[] = reactive([]);
+     //论坛
     let forum={
       children: [],
       icon: "",
@@ -130,6 +131,7 @@ export default defineComponent({
       sort: 9,
       url: "/teacher/teacherForum",
     }
+    // 实验中心
     let center = {
       icon: "",
       id: 170,
@@ -158,6 +160,7 @@ export default defineComponent({
         },
       ],
     };
+    // 素材资源
     let material = {
       id: 170,
       name: "素材资源",
@@ -166,6 +169,7 @@ export default defineComponent({
       url: "/teacher/teacherMaterialResource",
       children: [],
     };
+    // 课程
     let teacherCourse={
       icon: "",
       id: 180,
@@ -212,10 +216,32 @@ export default defineComponent({
         }
       ]
     }
+    //教学资源管理
+    let TeachingResourceManagement={
+       icon: "",
+      id: 175,
+      name: "教学资源管理",
+      parent_id: 0,
+      sort: 5,
+      url: "",
+      children: [
+        {
+          children: [],
+          icon: "",
+          id: 1148,
+          name: "方向规划",
+          parent_id: 162,
+          sort: 1,
+          url: "/admin/TeachingResourceManagement/DirectionPlanning",
+        },
+      ],
+    }
     menus.push(center);
     menus.push(material);
     menus.push(teacherCourse);
     menus.push(forum);
+    menus.push(TeachingResourceManagement);
+    
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });

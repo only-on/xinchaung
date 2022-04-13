@@ -1,15 +1,19 @@
 <template>
   <div class="submit">
-    <a-button @click="close">取消</a-button>
-    <a-button type="primary" @click="submit" :loading="props.loading">确定</a-button>
+    <a-button @click="close">{{props.cancelText}}</a-button>
+    <a-button type="primary" @click="submit" :loading="props.loading">{{props.okText}}</a-button>
   </div>
 </template>
 <script lang="ts" setup>
 interface Props {
   loading?: boolean;
+  okText?:'',
+  cancelText?:''
 }
 const props = withDefaults(defineProps<Props>(),{
-  loading: false
+  loading: false,
+  okText:'确定',
+  cancelText:'取消'
 });
 const emit = defineEmits<{
   (e: "submit"): void;

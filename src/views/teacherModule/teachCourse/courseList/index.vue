@@ -34,10 +34,6 @@
           </div>
           <div class="createDate flexCenter" v-if="currentTab === 0">
             <span>2020/03/14 - 2021/05/16</span>
-            <div class="analysis flexCenter">
-              <span>学情分析</span>
-              <span></span>
-            </div>
           </div>
         </div>
       </div>
@@ -59,8 +55,7 @@
       <span>{{activeCourse.name}}</span>
     </div>
     <template #footer>
-      <a-button @click="cancel()">取消</a-button>
-      <a-button type="primary" @click="Save()">下载</a-button>
+      <Submit @submit="Save" @cancel="cancel" :okText="'下载'"></Submit>
     </template>
   </a-modal>
 </template>
@@ -92,7 +87,6 @@ import { downloadUrl } from "src/utils/download";
 const router = useRouter();
 const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();
-// const { currentTab,course_id } = route.query;
 const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -243,12 +237,15 @@ const handleMenuClick = ({ key }: { key: string }) => {
   // router.push("/teacher/teacherExperimentResourcePool/CreateExperiment?key="+key);
   router.push({
     path: "/teacher/teacherCourse/CreateCourse",
-    query: { key },
+    // query: { key },
   });
 };
 
 const courseDetail=()=>{
-  router.push({ path: "/teacher/teacherCourse/PublicDetail"});
+  router.push({ 
+    path: "/teacher/teacherCourse/PublicDetail",
+    query: { currentTab:currentTab.value }
+    });
   // if(n === 1){
   //   router.push({
   //   path: "/teacher/teacherCourse/PublicDetail",
@@ -415,9 +412,6 @@ onMounted(() => {
           line-height: 44px;
           color: var(--black-45);
           justify-content: space-between;
-          .analysis{
-            color: var(--primary-color);
-          }
         }
       }
     }

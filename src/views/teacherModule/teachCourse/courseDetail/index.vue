@@ -18,7 +18,7 @@
 
   <!-- 编辑课程基本信息 弹窗 -->
   <a-modal v-model:visible="editVisible"  :title="`编辑课程基本信息`" class="editVisible" :width="900">
-    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="baseInfoFormRef">
+    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
       <div class="info">
         <div class="left">
           <a-form-item label="课程名称" name="name">
@@ -242,6 +242,12 @@ const rules = {
 }
 const Save=()=>{
   // editLoading.value=true
+  // formRef.value.validate().then(()=>{
+  //   http.editCourse({param:{...formState}}).then((res: IBusinessResp)=>{
+  //     message.success('编辑成功')
+  //     editVisible.value=false
+  //   })
+  // })
 }
 const cancel=()=>{
   editVisible.value=false
@@ -283,7 +289,10 @@ const reportOk = (val: any) => {
   setupForm.reportObj.name = val.name;
 };
 const SaveSetup=()=>{
-  // SetupLoading.value=true
+  // http.editChart({param:{...formState}}).then((res: IBusinessResp)=>{
+  //   message.success('操作成功')
+  //   setupVisible.value=false
+  // })
 }
 const cancelSetup=()=>{
   setupVisible.value=false
