@@ -410,6 +410,18 @@ function secondToHHMMSS(time_s: number) {
   };
 }
 
+async function evaluateApi(params: {
+  "action": "score",
+  "params": {
+    "type": string,
+    "opType": string,
+    "taskId": number,
+    "score": number
+  }
+}) {
+  return await vmApi.evaluateApi({ param: params })
+}
+
 /**
  * @description 结束实验跳转
  * @param type 课程：course、实训：train
@@ -478,4 +490,5 @@ export {
   backTo,
   operatesHandle,
   stepAction,
+  evaluateApi
 };

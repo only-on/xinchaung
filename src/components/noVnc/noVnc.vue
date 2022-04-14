@@ -1,6 +1,6 @@
 <template>
-  <div v-show="isClose" class="novnc-wrap" ref="refName"></div>
-  <div v-show="!isClose" class="close-vm-bg">
+  <div v-show="!isClose" class="novnc-wrap" ref="refName"></div>
+  <div v-show="isClose" class="close-vm-bg">
     <img :src="closevmImg" alt="" srcset="" width="324" height="68">
   </div>
 </template>
@@ -52,11 +52,11 @@ export default defineComponent({
     let rfb: any = ref(null);
     let loading:Ref<boolean>|undefined=inject("loading")
     const refName=ref(props.refName)
-    let isClose:Ref<boolean>|undefined=inject("isClose",ref(true))
+    let isClose:Ref<boolean>|undefined=inject("isClose",ref(false))
     
     // 连接断开
     function disconnect(msg: any) {
-      if(!isClose!.value) return;
+      if(isClose!.value) return;
       setTimeout(() => {
         if (msg.detail.clean) {
           // 根据 断开信息的msg.detail.clean 来判断是否可以重新连接
@@ -73,8 +73,8 @@ export default defineComponent({
     // 连接成功
     function success(msg: any) {
       // console.log(msg);
-      // console.log("连接成功");
-        setTimeout(()=>{loading!.value=true},5000)
+      console.log("连接成功");
+        setTimeout(()=>{loading!.value=false},5000)
     }
 
     function securityfailure(msg: any) {
@@ -96,7 +96,7 @@ export default defineComponent({
           (refName.value as any).innerHTML=""
       }
       // loading!.value=false
-      isClose!.value=true
+      // isClose!.value=true
       // loading!.value=false
       // 实例化rfb
       if (!refName.value)  return;

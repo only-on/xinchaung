@@ -1,8 +1,8 @@
 import Wmc from "js-wm"
 
 
-let conn:any
-    
+let conn: any
+
 function getQueryString(name: string) {
     let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
     let r = window.location.search.substr(1).match(reg);
@@ -10,8 +10,8 @@ function getQueryString(name: string) {
     return null;
 }
 
-function wsConnect(options:any) {
-    
+function wsConnect(options: any) {
+    console.log(options)
     let schema = 'ws'
     if (getQueryString('wss')) {
         schema = 'wss'
@@ -21,35 +21,41 @@ function wsConnect(options:any) {
         conn = Wmc({
             url: schema + options.url,
             // 设置open事件处理器
-            open: (ev:Event) => {
+            open: (ev: Event) => {
                 console.log('[open]', ev)
+                if (options.open) {
+                    options.open(ev)
+                }
             },
             // 设置close事件处理器
-            close: (ev:CloseEvent) => {
+            close: (ev: CloseEvent) => {
                 console.log('[close]', ev)
-                options.close(ev)
+                if (options.close) {
+                    options.close(ev)
+                }
             },
             // 设置error事件处理器
-            error: (ev:Event) => {
+            error: (ev: Event) => {
                 console.log('[error]', ev)
-                setTimeout(() => {
-                    wsConnect(options) 
-                }, 200);
-                
+                // setTimeout(() => {
+                //     wsConnect(options) 
+                // }, 200);
+
             },
             // 设置message事件处理器
-            message: (ev:MessageEvent) => {
-                console.log('[message]', ev)
+            message: (ev: MessageEvent) => {
+                // console.log('[message]', ev)
                 if (options.message) {
                     options.message(ev)
                 }
-               
+
             }
         })
-    } catch (e:any) {
+    } catch (e: any) {
         console.error(e)
         throw new Error(e)
     }
+    console.log("conn", conn)
     return conn
 }
 
@@ -57,27 +63,27 @@ function disconnect() {
     // 断开连接
     conn.close()
 }
-function joinRoom(roomId:string) {
+function joinRoom(roomId: string) {
     // 加入房间
     conn.join(roomId)
 }
 
-function leaveRoom(roomId:string) {
+function leaveRoom(roomId: string) {
     // 离开房间
     conn.leave(roomId)
 }
 
-function register(userId:string) {
+function register(userId: string) {
     // 自注册身份标识
     conn.register(userId)
 }
 
-function sendToTarget(target:string, targetType:string, targetContent:string) {
+function sendToTarget(target: string, targetType: string, targetContent: string) {
     // 点对点发送消息
     conn.send(target, targetType, targetContent)
 }
 
-function broadcast(message:string) {
+function broadcast(message: string) {
     // 发送广播
     conn.broadcast(message)
 }

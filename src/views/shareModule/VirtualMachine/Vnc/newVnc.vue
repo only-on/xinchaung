@@ -14,26 +14,41 @@
             </div>
           </div>
         </div>
-        <vue-no-vnc
-          background="rgb(40,40,40)"
-          :options="currentOption"
-          refName="refName"
-          ref="novncEl"
-          @clipboard="clipboard"
-        />
+        <div class="vm-right-wrap" id="vncDom" :class="loading ? 'is-none' : ''">
+          <vue-no-vnc
+            background="rgb(40,40,40)"
+            :options="currentOption"
+            refName="refName"
+            ref="novncEl"
+            @clipboard="clipboard"
+          />
+        </div>
       </template>
     </template>
   </layout>
+  <!--禁用modal-->
+  <disableStudent 
+    v-if="disableVisable"
+    v-model:visable="disableVisable" 
+    :data="disableData" 
+    @save="saveKvm" 
+    :type="type" 
+    :uuid="currentUuid"
+    :taskId="taskId"
+    :opType="opType"
+    :current="baseInfo?.current"
+  ></disableStudent>
 </template>
 
 <script lang="ts" setup>
-import {inject,ref,onMounted} from "vue"
+import { inject, ref, onMounted,nextTick } from "vue";
 import loadingGif from "src/assets/images/vmloading.gif";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
-import layout from "../VmLayout/newLayout.vue"
-import {
-  getVmBaseInfo,
-  } from "src/utils/vncInspect";
+import disableStudent from "../component/disableStudent.vue"
+import layout from "../VmLayout/newLayout.vue";
+import { message,Modal } from "ant-design-vue";
+import { wsConnect } from "src/request/websocket";
+import { getVmBaseInfo } from "src/utils/vncInspect";
 
 import {
   onBeforeRouteLeave,
@@ -44,54 +59,311 @@ import {
   onBeforeRouteUpdate,
 } from "vue-router";
 
-const route= useRoute()
-const {opType,type,taskId}=route.query
-const currentOption=inject("currentOption",ref({password:"", wsUrl:"", userName:""}))
-const loading=inject("loading",ref(true))
-const sshUrl=inject("sshUrl",ref(""))
-const currentInterface=inject("currentInterface",ref('vnc'))
-const baseInfo=inject("baseInfo",ref({}))
-const taskType:any=inject("taskType")
-const use_time:any=inject("use_time")
- const navData = [
-      { name: "指导", key: "guide", icon: "icon-zhidao" },
-      { name: "笔记", key: "experimental-note", icon: "icon-biji" },
-      { name: "报告", key: "report", icon: "icon-baogao" },
-      { name: "问答", key: "forum", icon: "icon-wenda" },
-    ];
-function clipboard() {
-    
-}
+import storage from "src/utils/extStorage";
+import { getVmConnectSetting } from "src/utils/seeting";
+
+let ws_config = storage.lStorage.get("ws_config");
+let role = storage.lStorage.get("role");
+const route = useRoute();
+const router=useRouter()
+const { opType, type, taskId, topoinst_id, connection_id } = route.query;
+const currentOption = inject(
+  "currentOption",
+  ref({ password: "", wsUrl: "", userName: "" })
+);
+const loading = inject("loading", ref(true));
+const sshUrl = inject("sshUrl", ref(""));
+const currentInterface = inject("currentInterface", ref("vnc"));
+const baseInfo: any = inject("baseInfo", ref({}));
+const taskType: any = inject("taskType");
+const use_time: any = inject("use_time");
+const ws: any = inject("ws");
+const vmsInfo: any = inject("vmsInfo");
+const currentVm: any = inject("currentVm");
+const isClose: any = inject("isClose");
+const currentVmIndex: any = inject("currentVmIndex");
+const currentUuid: any = inject("currentUuid");
+const currentClickIndex: any = inject("currentClickIndex");
+const novncEl: any = inject("novncEl");
+const initVnc: any = inject("initVnc");
+const evaluateData:any=inject("evaluateData")
+const evaluateVisible:any=inject("evaluateVisible")
+const initEvaluate:any=inject("initEvaluate")
+
+const disableVisable:any=ref(false)
+const disableData:any=ref({})
+const navData = [
+  { name: "指导", key: "guide", icon: "icon-zhidao" },
+  { name: "笔记", key: "experimental-note", icon: "icon-biji" },
+  { name: "报告", key: "report", icon: "icon-baogao" },
+  { name: "问答", key: "forum", icon: "icon-wenda" },
+];
+let ind = 0;
+
+let isCurrentPage = true;  // 是否是当前页面
+let timerout:NodeJS.Timeout|null=null
+function clipboard() {}
 // 获取虚拟机基本信息pageinfo
-    function getVmBase() {
-      return new Promise((resolve: any, reject: any) => {
-        let params:any = {
-          opType: opType,
-          type: type,
-          taskId: taskId,
-        };
-        getVmBaseInfo(params).then((res: any) => {
-          baseInfo.value = res.data;
-          if (!res.data.current) {
-            resolve();
-            return;
+function getVmBase() {
+  loading.value = true;
+  return new Promise((resolve: any, reject: any) => {
+    let params: any = {
+      opType: opType,
+      type: type,
+      taskId: taskId,
+    };
+    getVmBaseInfo(params).then((res: any) => {
+      baseInfo.value = res.data;
+      if (!res.data.current) {
+        resolve();
+        return;
+      }
+
+      taskType.value = res.data.base_info.task_type.type;
+
+      if (!taskType.value) {
+        use_time.value = res.data.current.used_time;
+      } else {
+        use_time.value = res.data.current.remaining_time;
+      }
+      resolve();
+    });
+  });
+}
+
+function initWs() {
+  if (ws.value) {
+    ws.value.leave(topoinst_id + "_room");
+  }
+  clearTimeout(Number(timerout));
+  ws.value = wsConnect({
+    url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
+    open: () => {
+      if (baseInfo.value && baseInfo.value?.current) {
+        console.log(11111);
+        
+        ws.value.join(topoinst_id + "_room");
+      }
+      if (opType == "help") {
+        ws.value.join(topoinst_id + "_room");
+      }
+    },
+    close: (ev: CloseEvent) => {
+      if (ev.type === "close") {
+            if (isCurrentPage) {
+              if (!ws.value.isReset()) {
+                Modal.confirm({
+                  title: "提示",
+                  content: "改页面已在其他浏览器存在，是否替换",
+                  okText: "是",
+                  cancelText: "否",
+                  class: "reset-ws-modal",
+                  onOk: () => {
+                    ws.value.refresh();
+                    initWs();
+                    initVnc.value();
+                  },
+                });
+              } else {
+                timerout = setTimeout(() => {
+                  initWs();
+                }, 300);
+              }
+            }
+            // message.success("ws关闭成功");
           }
+    },
+    message: (ev: MessageEvent) => {
+      let regex = /\{.*?\}/g;
+      if (typeof ev.data === "string" && regex.test(ev.data)) {
+        let wsJsonData = JSON.parse(ev.data);
+        console.log(wsJsonData);
+        if (wsJsonData.type == "base_vminfo") {
+          vmsInfo.value = wsJsonData.data;
+          if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
+            if (
+              ind === 0 &&
+              baseInfo.value.base_info &&
+              baseInfo.value.base_info.is_webssh === 1 &&
+              ((role == 4 &&
+                baseInfo.value.current &&
+                baseInfo.value.current.is_switch == 0) ||
+                role == 3)
+            ) {
+              ind++;
+              currentInterface.value = "ssh";
+              currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
+              currentUuid.value = currentVm.value.uuid;
+              setTimeout(() => {
+                sshUrl.value =
+                  getVmConnectSetting.SSHHOST +
+                  ":2222/ssh/host/" +
+                  currentVm.value.host_ip +
+                  "/" +
+                  currentVm.value.ssh_port;
+              }, 2000);
+              setTimeout(() => {
+                loading.value = false;
+                if (currentVm.value.status == "ACTIVE") {
+                  isClose.value = false;
+                }
+              }, 1500);
+            } else {
+              if (
+                currentInterface.value == "ssh" ||
+                (wsJsonData.data.vms[currentVmIndex.value].status == "ACTIVE"&&isClose.value==false)
+              ) {
+              } else {
+                currentInterface.value = "vnc";
+                if (wsJsonData.data.vms[currentVmIndex.value].status == "SHUTOFF") {
+                  loading.value=false
+                  isClose.value=true
+                  return;
+                }
+                
+                settingCurrentVM(wsJsonData.data.vms[currentVmIndex.value]);
 
-          taskType.value = res.data.base_info.task_type.type;
+                if (
+                  wsJsonData.data.vms[currentVmIndex.value] &&
+                  wsJsonData.data.vms[currentVmIndex.value].status == "ACTIVE"
+                ) {
+                  isClose.value = false;
+                  if (currentClickIndex.value == currentVmIndex.value) {
+                    loading.value = false;
+                  }
 
-          if (!taskType.value) {
-            use_time.value = res.data.current.used_time;
+                  initVnc.value();
+                } else {
+                  isClose.value = false;
+                }
+              }
+            }
+          }
+        } else if (wsJsonData.type == "success") {
+          if (wsJsonData.data?.message) {
+            message.warn(wsJsonData.data.message);
           } else {
-            use_time.value = res.data.current.remaining_time;
+            if (typeof wsJsonData.data == "string") {
+              message.warn(wsJsonData.data);
+            }
           }
-          resolve();
-        });
-      });
-    }
+        } else if (wsJsonData.type == "error") {
+          if (wsJsonData.data?.message) {
+            message.warn(wsJsonData.data.message);
+          } else {
+            message.warn(wsJsonData.data);
+          }
+        }else if (wsJsonData.type=="message") {
+              if (typeof(wsJsonData.data)=="string") {
+                    message.warn(wsJsonData.data)
+                    if (wsJsonData.data == '分组成员正在重置虚机') {
+                      // isConnect.value=true
+                      // vncLoadingV.value=false
+                    }
+                  }
+            }else if (wsJsonData.type=="return_message") {
+              if (Object.keys(wsJsonData).length>0) {
+                if (wsJsonData.data?.msg) {
+                  message.warn(wsJsonData.data.msg)
+                }else{
+                  message.warn(wsJsonData.data)
+                }
+              }
+              if (!["train"].includes(type as any)) {
+                if (layout.value) {
+                  // 自评推荐
+                  evaluateVisible.value=true
+                  evaluateData.value = wsJsonData.data;
+                
+                  nextTick(()=>{
+                    initEvaluate()
+                  })
+                  sendDisconnect();
+                  isClose.value=true
+                }
+              }else{
+                router.go(-1)
+              }
+            }else if (wsJsonData.type=="recommends") {
+              // 推荐
+              // recommendExperimentData.value = wsJsonData.data;
+              // recommendVisible.value = true;
+            }else if (wsJsonData.type=="help") {
+              
+            }else if (wsJsonData.type=="delay") {
+              use_time.value = wsJsonData.data.remaining_time
+            }else if (wsJsonData.type=="manual-disable") {
+              // 禁用学生
+              disableVisable.value=true
+              disableData.value=wsJsonData.data
+            }else if (wsJsonData.type=="switch_success") {
+              message.success("切换成功")
+              currentInterface.value = "vnc";
+               baseInfo.value = wsJsonData;
+                  settingCurrentVM(
+                    wsJsonData.data.vms[currentVmIndex.value]
+                  );
+                  loading.value=false
+                  initVnc.value()
+            }else if (wsJsonData.type=="save_return_message") {
+              if (Object.keys(wsJsonData).length>0) {
+                if (wsJsonData.data?.msg) {
+                  message.warn(wsJsonData.data.msg)
+                }else{
+                  message.warn(wsJsonData.data)
+                }
+              }
+              router.go(-1)
+            }
+      }
+    },
+  });
+}
 
-    onMounted(() => {
-        getVmBase()
-    })
+// saveKvm
+function saveKvm() {
+  
+}
+// 设置当前虚拟机信息
+function settingCurrentVM(data: any) {
+  currentVm.value = data;
+  currentOption.value.password = getVmConnectSetting.VNCPASS;
+  currentOption.value.wsUrl =
+    getVmConnectSetting.VNCPROTOC +
+    "://" +
+    data.base_ip +
+    ":" +
+    getVmConnectSetting.VNCPORT +
+    "/websockify?vm_uuid=" +
+    data.uuid;
+  currentUuid.value = data.uuid;
+}
+
+// 关闭ws
+    function closeWs() {
+      (ws.value as any).close();
+    }
+// 开启虚拟机
+initVnc.value = () => {
+  if (novncEl.value) {
+    novncEl.value.connectVnc();
+  }
+};
+ // 断开虚拟机 
+    function sendDisconnect() {
+       if (novncEl.value) {
+        novncEl.value.sendDisconnect();
+      }
+    }
+    onBeforeRouteLeave(() => {
+      isCurrentPage = false;
+      clearTimeout(Number(timerout));
+      closeWs();
+    });
+onMounted(async () => {
+  await getVmBase();
+  initWs();
+});
 </script>
 <style lang="less">
 .vm-layout {
@@ -145,5 +417,11 @@ function clipboard() {
 #sshIframe {
   width: 100%;
   height: 100%;
+}
+.vm-right-wrap {
+  height: 100%;
+}
+.is-none {
+  display: none;
 }
 </style>
