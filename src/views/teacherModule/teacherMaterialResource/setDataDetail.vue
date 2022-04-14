@@ -325,7 +325,7 @@ const handleOk=async()=> {
     common: Number(params.is_public),
     name:params.name,
     description:params.description,
-    cover: params.src,
+    cover: params.cover,
     label: params.tags,
     doc_name:'',
     documents:state.document.content,

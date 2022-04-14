@@ -24,7 +24,8 @@
         </a-select>
       </a-form-item>
       <a-form-item label="封面图" class="cover">
-        <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
+        <upload-cover :coverUrl="formState" :isUpload="props.materialType === '数据集'" @uploadCoverHandle="uploadCoverHandle"></upload-cover>
+        <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
         <a-upload
           v-model:file-list="fileList"
           list-type="picture"
@@ -39,7 +40,7 @@
             </div>
             <loading-outlined v-if="loading"></loading-outlined>
           </div>
-        </a-upload>
+        </a-upload> -->
       </a-form-item>
     </div>
   </div>
@@ -109,6 +110,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { LoadingOutlined } from '@ant-design/icons-vue';
+import uploadCover from "src/components/uploadCover/index.vue"
 const http = (request as any).teacherMaterialResource;
 const datasetHttp = (request as any).dataSet;
 const $message: MessageApi = inject("$message")!;
@@ -151,6 +153,15 @@ if(Object.keys(props.editInfo).length){
   // console.log(formState)
 }
 // 上传封面图
+const uploadCoverHandle = (file: any) => {
+  const fd = new FormData()
+  fd.append('upload_file', file)
+  datasetHttp.upLoadCover({param:fd}).then((res:any)=>{
+    loading.value = false
+    console.log(res)
+    formState.cover = res.data.path
+  })
+}
 const fileList:Ref<any>=ref([])
 const loading = ref<boolean>(false)
 const beforeUpload = (file:any) => {
@@ -166,7 +177,7 @@ const beforeUpload = (file:any) => {
     datasetHttp.upLoadCover({param:fd}).then((res:any)=>{
       loading.value = false
       console.log(res)
-      formState.src = res.data.path
+      formState.cover = res.data.path
       let data = res.data;
       let obj = [
         {

@@ -219,7 +219,7 @@ const createDataSet = () => {
     common: Number(formState.is_public),
     category: [formState.categoryText],
     label: formState.tags,
-    cover: formState.src,
+    cover: formState.cover,
     file,
     doc_name: formState.doc_name,
     documents: formState.documents,
