@@ -6,6 +6,20 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "8989214",
+      "name": "警告",
+      "font_class": "jinggao",
+      "unicode": "e604",
+      "unicode_decimal": 58884
+    },
+    {
+      "icon_id": "1125571",
+      "name": "发送",
+      "font_class": "fasong",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
       "icon_id": "14153374",
       "name": "添加",
       "font_class": "-tainjia",

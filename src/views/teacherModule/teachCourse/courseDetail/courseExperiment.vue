@@ -1,9 +1,10 @@
 <template>
-  <div>课程实验管理</div>
+  <environment-manage></environment-manage>
 </template>
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref} from "vue";
+import environmentManage from "src/views/teacherModule/teachCourse/environmentManage/index.vue"
 
 </script>
 

@@ -215,6 +215,8 @@
   --orangeyellow-7: rgb(255, 110, 0, 0.14);
 
   --brightBtn: #1cb2b3;
+  --brightBtn-14: rgba(28,178,179,0.14);
+  --brightBtn-25: rgba(28,178,179,0.25);
   --cyan-100: rgba(0, 203, 194, 1);
   --cyan-24: rgba(0, 203, 194, .24);
 
