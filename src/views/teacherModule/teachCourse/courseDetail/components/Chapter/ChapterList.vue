@@ -1,5 +1,5 @@
 <template>
-  <div class="chapterList" v-for="(v,k) in state.chapterList" :key="k">
+  <div class="chapterList" v-for="(v,k) in props.chapterList" :key="k">
     <div class="title flexCenter" @click.stop="v.openItem=!v.openItem">
       <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
         <div class="titleItem titleItem1">{{v.title}}</div>
@@ -78,8 +78,8 @@ const routeQuery = useRoute().query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
-  chapterList?:any
-  Editable?:string
+  chapterList:any
+  Editable:string
   // knowledge: any;
   // words:any
 }

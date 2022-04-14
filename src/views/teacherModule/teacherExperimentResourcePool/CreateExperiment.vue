@@ -894,7 +894,6 @@ const confirmDoc = () => {
     if(upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''
       upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
-      // upDoc.nowDocument.pdf=`http://192.168.101.221:1080/files${upDoc.docFileList[0].file_url}`
     }else{
       upDoc.nowDocument.pdf=''
     }

@@ -87,8 +87,12 @@ watch(()=>{return props.visible},(val:boolean)=>{
 },{immediate:true})
 
 const preservation=(val:any)=>{
-  docOrMp4Drawer.selectList={...val}
-  // emit("closeDrawerDoc");
+  // docOrMp4Drawer.selectList={...val}
+  let obj={
+    type:selectNum.value,
+    list:val
+  }
+  emit("selectDocOrMp4File",obj);
 }
 
 const closeDrawerDoc = () => {

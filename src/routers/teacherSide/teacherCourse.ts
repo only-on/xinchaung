@@ -30,7 +30,7 @@ export default {
     {
       path:"CreateCourse",
       name:"CreateCourse",
-      component: () => import("src/views/teacherModule/teachCourse/CreateCourse/index.vue"),
+      component: () => import("src/views/teacherModule/teachCourse/createCourse/index.vue"),
       meta: {
         title: "创建课程",
         authCode: 'CreateCourse'

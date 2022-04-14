@@ -156,7 +156,7 @@ const searchDocOrMp4List = () => {
   getExperiments();
 };
 const Reselection=()=>{
-  emit('preservation',docOrMp4Drawer.selectList)
+  emit('preservation',docOrMp4Drawer.selectListIds)
 }
 // watch(()=>{ return props.tags},(val:any)=>{
 //   // console.log(val)

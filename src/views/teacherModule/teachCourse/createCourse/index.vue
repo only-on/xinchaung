@@ -18,15 +18,15 @@
                 <a-input v-model:value="formState.name" placeholder="请输入课程名称" />
               </a-form-item>
               <a-form-item label="起始时间" name="date">
-                <a-range-picker @change="dateChange">
+                <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss" :disabledDate="disabledDate">
                   <template #suffixIcon>
                     <SmileOutlined />
                   </template>
                 </a-range-picker>
               </a-form-item>
-              <a-form-item label="课程方向" name="direction">
-                <a-select v-model:value="formState.direction" placeholder="请选择课程方向">
-                  <a-select-option :value="item.name" v-for="(item, index) in courseDirection" :key="item.name">
+              <a-form-item label="课程方向" name="category">
+                <a-select v-model:value="formState.category" placeholder="请选择课程方向">
+                  <a-select-option :value="item.name" v-for="(item, index) in courseCategory" :key="item.name">
                       {{ item.name }}
                     </a-select-option>
                 </a-select>
@@ -40,19 +40,11 @@
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
                 <div>
-                    <LabelList :tag="formState.tags" :recommend="formState.recommend" />
+                    <LabelList :tag="formState.tags" />
                   </div>
               </a-form-item>
               <a-form-item label="封面图" class="cover">
-                <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-                <a-upload v-model:file-list="fileList" list-type="picture" class="uploader" :show-upload-list="false" :before-upload="beforeUpload" @change="handleChange">
-                  <div class="upload">
-                    <div class="cover">
-                      <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
-                    </div>
-                    <loading-outlined v-if="coverLoading"></loading-outlined>
-                  </div>
-                </a-upload> -->
+                <uploadCover :coverUrl="formState" :isUpload="true" @uploadCoverHandle="uploadCoverHandle" />
               </a-form-item>
             </div>
             <div class="right">
@@ -68,29 +60,26 @@
                   </a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item label="课时" name="name">
-                <a-input v-model:value="formState.name" placeholder="请输入课时" />
+              <a-form-item label="课时" name="class_total">
+                <a-input v-model:value="formState.class_total" placeholder="请输入课时" />
               </a-form-item>
-              <a-form-item label="实验时长" name="name">
-                <a-input v-model:value="formState.name" placeholder="请输入实验时长" />
+              <a-form-item label="实验时长" name="content_duration">
+                <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />
               </a-form-item>
-              <a-form-item label="实验时长" name="name">
-                <a-input v-model:value="formState.name" placeholder="请输入实验时长" />
-              </a-form-item>
-              <a-form-item label="课程简介" name="name">
-                <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
+              <a-form-item label="课程简介" name="introduce">
+                <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
               </a-form-item>
             </div>
           </div>
         </a-form>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
-          <a-button type="primary" @click="next(1)">下一步</a-button>
+          <a-button type="primary" @click="next(1)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'下一步'}`}}</a-button>
         </div>
       </template>
       <template v-if="currentStep === 1">
         <div class="info2">
-          <SetupChapter />
+          <SetupChapter :Editable="'canEdit'" :courseId="courseId" />
         </div>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
@@ -100,10 +89,7 @@
       </template>
       <template v-if="currentStep === 2">
         <div class="info3">
-          <div class="caozuo">
-            <a-button type="primary" @click="last(0)">添加学生</a-button>
-            <a-button type="primary" @click="last(0)">删除学生</a-button>
-          </div>
+          <customerInfor />
         </div>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
@@ -113,11 +99,15 @@
       </template>
       <template v-if="currentStep === 3">
         <div class="info4">
-          创建完成
+          <div class="img"></div>
+          <div class="succTit">课程已创建成功</div>
+          <div class="text">
+            该课程已存放置我的教学课程列表，可点击下方按钮查看课程或继续添加
+          </div>
         </div>
         <div class="first-step-btn">
-          <a-button @click="cancel">继续添加</a-button>
-          <a-button type="primary" @click="">查看详情</a-button>
+          <a-button @click="goAdd()">继续添加</a-button>
+          <a-button type="primary" @click="cancel()">查看课程</a-button>
         </div>
       </template>
     </div>
@@ -132,10 +122,17 @@ import { Modal, message } from "ant-design-vue";
 import LabelList from 'src/components/LabelList.vue'
 import { SmileOutlined } from '@ant-design/icons-vue';
 import SetupChapter from '../courseDetail/components/Chapter/SetupChapter.vue'
+import { ColumnProps } from "ant-design-vue/es/table/interface";
+import customerInfor from "./stup3/index.vue";
+import Submit from "src/components/submit/index.vue";
+import moment, { Moment } from 'moment';
+import uploadCover from "src/components/uploadCover/index.vue"
+type Key = ColumnProps["key"];
 const router = useRouter();
 const route = useRoute();
+
 const { editId } = route.query;  
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -145,31 +142,70 @@ updata({
   showNav: true,
 });
 
-var currentStep:Ref<number>=ref(0)
+var currentStep:Ref<number>=ref(1)
+var stup1Loading:Ref<boolean>=ref(false)
 const last=(val:number)=>{
   currentStep.value=val
 }
 const next=(val:number)=>{
-  if(val === 1){
-    // formRef.value.validate()
+  // currentStep.value=val
+  // return
+  if(val === 3){
+    formState.is_available=1
   }
-  currentStep.value=val
+  if(val === 1){
+    formRef.value.validate().then(()=>{
+      stup1Loading.value=true
+      http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
+        const {data}=res
+        stup1Loading.value=false
+        currentStep.value=val
+        courseId.value=data.id
+      })
+    })
+  }else{
+    currentStep.value=val
+  }
 }
 const cancel=()=>{
   router.go(-1)
 }
 //  步骤一
+var courseId:Ref<number>=ref(500002)
 const formRef = ref();
-const courseDirection:any=reactive([])
+const courseCategory:any=reactive([])
 const vocationDirection:any=reactive([])
+
+// interface IFormState{
+//   is_available:boolean, 
+//   name: string, 
+//   url: string, 
+//   introduce:string,
+//   date: Moment[];
+//   start_time: "" | Moment;
+//   end_time: "" | Moment;
+//   category:string,  
+//   direction: string, 
+//   is_public: number, 
+//   class_total:number, 
+//   tags: string[],   
+//   content_duration: number | string ,
+// }
 const formState = reactive<any>({
-  name: '',
-  description: '',
-  is_public: 0,
-  src: '',
-  tags: [],
-  cover: '',
-  categoryText: ''
+  is_available:0, // 课程创建第一步的时候，这个字段传0，课程创建最后一步 传1
+  cover:'',
+  name: '', // 课程名称
+  url: '', // 课程封面
+  introduce:'',// 课程介绍
+  date:null, // 日期区间
+  start_time:'',
+  end_time:'',
+  category:'',  // "深度学习", // 课程方向
+  direction: '', // "大数据工程师", // 职业方向
+  is_public: 0,  // 0-私有, 1-公开    
+  class_total:2, // 课时
+  tags: [],   // ["大数据","人工智能"], // 标签
+  content_duration: '',// 实验时长
 })
 const rules = {
   name: [
@@ -180,11 +216,50 @@ const rules = {
     { required: true, message: "请选择数据集类型", trigger: "change" },
   ],
 }
-const dateChange=()=>{
-  
+const disabledDate=(current: Moment)=>{
+  return current && current <= moment().endOf('day').subtract(1, "days");
+}
+const dateChange=(val:any)=>{
+  // console.log(val)
+  formState.start_time=val[0],
+  formState.end_time=val[1]
+  // console.log(formState)
+}
+const uploadCoverHandle=(file:any)=>{
+  const fd = new FormData()
+  fd.append('file', file)
+  http.courseCoverUpload({param:fd}).then((res:any)=>{
+    formState.url = res.data.path
+  })
 }
 
-// 步骤2
+
+
+// 步骤二
+
+// 步骤三
+
+// 步骤四
+const goAdd=()=>{
+  router.replace({
+    path: "/teacher/teacherCourse/create",
+  });
+  setTimeout(() => {
+    location.reload();
+  });
+}
+onMounted(()=>{
+  http.courseCategory().then((res:IBusinessResp)=>{
+    const {data}=res
+    courseCategory.push(...data)
+    formState.category=courseCategory[0].name
+  })
+  http.vocationDirection().then((res:IBusinessResp)=>{
+    const {data}=res
+    vocationDirection.push(...data)
+    formState.direction=vocationDirection[0].name
+  })
+})
 
 </script>
 <style scoped lang="less">
@@ -195,7 +270,7 @@ const dateChange=()=>{
   }
   .create-course-main{
     .info{
-      padding: 60px;
+      padding: 60px 60px 0;
       display: flex;
       justify-content: space-between;
       .left,.right{
@@ -205,9 +280,33 @@ const dateChange=()=>{
     .info2{
       padding-top: 20px;
     }
+    .info4{
+      div {
+        width: 100%;
+        margin: 0 auto;
+        text-align: center;
+      }
+      .img {
+        width: 94px;
+        height: 94px;
+        background: url("src/assets/images/teacherImageResourcePool/success.png")
+          no-repeat;
+        background-size: 100% 100%;
+      }
+      .succTit {
+        font-size: 24px;
+        color: var(--black-85);
+        margin-top: 2rem;
+      }
+      .text {
+        padding-top: 0.5rem;
+        color: var(--black-45);
+      }
+    }
   }
 }
 .first-step-btn{
+  margin-top: 2rem;
   text-align:center;
   .ant-btn{
     margin:0 1rem;
