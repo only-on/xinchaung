@@ -34,12 +34,13 @@ import {
   ref,
   toRef,
   inject,
-  PropType,
   reactive,
   toRefs,
   defineExpose,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
+import request from 'src/api/index'
+const http = (request as any).teacherInclassTest;
 const rules: any = ref("");
 rules.value = {
   titleDescription: [{ required: true, message: "请输入题目描述" }],
@@ -66,9 +67,9 @@ const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
 });
 const formRef = ref<any>("null");
-const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
-function updateVisable() {
-  emit("updateVisable", false);
+const emit = defineEmits<{ (e: "updateVisable", val: any,addok:any): void }>();
+function updateVisable(addok:any) {
+  emit("updateVisable", false,addok);
   clearInputContent();
 }
 function clearInputContent() {
@@ -77,13 +78,27 @@ function clearInputContent() {
   formState.keyWords = "";
   formState.score = "";
 }
+function sendExplainQues(){
+  const params:any={
+    question: formState.titleDescription,
+    type_id: 5,
+    level_id:1,
+    origin_score: formState.score,
+    keywords:[formState.keyWords],
+    answers:[formState.textanswer]
+
+  }
+  http.addques({urlParams:{content_id:500001},param:params}).then((res:any)=>{
+    updateVisable(true)
+  })
+}
 function handleOk() {
   formRef.value.validate().then(() => {
-    updateVisable();
+    sendExplainQues()
   });
 }
 function handleCancel() {
-  updateVisable();
+  updateVisable(false);
 }
 </script>
 <style lang="less" scoped>

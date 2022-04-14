@@ -26,7 +26,9 @@
   </a-modal>
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref, toRef, inject, PropType, reactive, toRefs } from "vue";
+import { defineComponent, ref, toRef, inject, reactive, toRefs, onMounted } from "vue";
+import request from 'src/api/index'
+const http = (request as any).teacherInclassTest;
 const columns: any = ref("");
 const data: any = ref("");
 columns.value = [
@@ -61,9 +63,9 @@ const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
 });
 const formRef = ref<any>("null");
-const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
+const emit = defineEmits<{ (e: "updateVisable", val: any,val1:any): void }>();
 function updateVisable() {
-  emit("updateVisable", false);
+  emit("updateVisable", false,false);
 }
 const okButtonProps: any = ref("");
 okButtonProps.value = { style: { display: "none" } };
@@ -73,6 +75,14 @@ function handleOk() {
 function handleCancel() {
   updateVisable();
 }
+function getStatisticGrands(){
+  http.achiStatistics({urlParams:{content_id:500001}}).then((res:any)=>{
+      data.value=res.data.list;
+  })
+}
+onMounted(()=>{
+  getStatisticGrands()
+})
 </script>
 <style lang="less" scoped>
 .achievement {

@@ -39,7 +39,7 @@
         </div>
       </div>
       <div class="testList">
-        <testList @deleteQues="deleteQues"></testList>
+        <testList @deleteQues="deleteQues" :datalist='datalist'></testList>
       </div>
     </div>
     <achievementStatis
@@ -66,10 +66,10 @@ import {
   ref,
   toRef,
   inject,
-  PropType,
   reactive,
   toRefs,
   nextTick,
+onMounted,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
 import testList from "./testList/index.vue";
@@ -77,12 +77,15 @@ import achievementStatis from "./achievementStatis/index.vue";
 import choiceques from "./choiceques/index.vue";
 import explainques from "./explainques/index.vue";
 import chapterTree from "../courseDetail/components/Chapter/ChapterList.vue";
+import request from 'src/api/index'
+const http = (request as any).teacherInclassTest;
 interface Istate {
   visible: boolean;
 }
 const state: Istate = reactive({
   visible: false,
 });
+const datalist:any=ref('')
 const componentName: any = ref("");
 // 出题弹框
 function selectTuestion(type: any) {
@@ -104,9 +107,12 @@ function scoreStatistic() {
   state.visible = true;
   componentName.value = "achievementStatis";
 }
-function updateVisable(value: any) {
+function updateVisable(value: any,addok:any) {
   console.log(value, "value");
   state.visible = value;
+  if(addok){
+    inclassTestList()
+  }
 }
 function deleteQues(id: any) {
   console.log(id);
@@ -115,6 +121,15 @@ function deleteQues(id: any) {
 function selectExperiment(val: any) {
   console.log(val);
 }
+function inclassTestList(){
+  http.inClasstestList({urlParams:{content_id:500001}}).then((res:any)=>{
+    console.log(res,'jjjjjjjjjjjjjjj')
+    datalist.value=res.data.list
+  })
+}
+onMounted(()=>{
+  inclassTestList()
+})
 </script>
 <style lang="less" scoped>
 #inClassTest {

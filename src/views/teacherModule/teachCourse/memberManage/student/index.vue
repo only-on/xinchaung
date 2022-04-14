@@ -17,11 +17,12 @@
         />
       </div>
       <div class="header-right">
-        <a-button type="primary">移除学生</a-button>
+        <a-button type="primary" @click="delteteManyStu">移除学生</a-button>
         <a-button class="brightBtn" type="primary" @click="addStudent">添加学生</a-button>
       </div>
     </div>
     <a-table
+    rowKey='id'
       :columns="columns"
       :data-source="data"
       :pagination="
@@ -42,27 +43,23 @@
         onChange: onSelectChange,
       }"
     >
-    </a-table>
-    <a-modal
-      :width="1200"
-      cancelText="取消"
-      okText="确定"
-      title="添加学生"
-      :visible="modalVisable"
-      @ok="handleOk"
-      @cancel="handleCancel"
-    >
-      <div>
-        <addstudent @updateSelectStuVisable="updateSelectStuVisable"></addstudent>
+    <template #action='{record}'>
+      <div class="action">
+        <span class='delete' @click="deleteStu(record.id)">删除</span>
+        <span @click="initPassward">初始化密码</span>
       </div>
-    </a-modal>
+    </template>
+    </a-table>
+    <addstudent :visable='visable' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, reactive } from "vue";
+import { ref, toRefs, onMounted,reactive } from "vue";
 import addstudent from "./addStudent/index.vue";
-
+import request from 'src/api/index'
+const http = (request as any).teacherMemberManage;
 const option: any = ref();
+const visable:any=ref(false);
 option.value = [
   { id: "", name: "全部" },
   { id: 1, name: "班级1" },
@@ -75,18 +72,18 @@ const modalVisable: any = ref(false);
 columns.value = [
   {
     title: "账号",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user.username",
+    key: "user.username",
   },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "userProfile.name",
+    key: "userProfile.name",
   },
   {
     title: "性别",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "userProfile.gender",
+    key: "userProfile.gender",
   },
   {
     title: "班级",
@@ -100,30 +97,38 @@ columns.value = [
   },
   {
     title: "学院",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "userProfile.department",
+    key: "userProfile.department",
   },
   {
     title: "邮箱",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user.email",
+    key: "user.email",
   },
   {
     title: "电话",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "userProfile.phone",
+    key: "userProfile.phone",
+    width:120,
   },
   {
     title: "操作",
     key: "action",
-    scopedSlots: { customRender: "action" },
+    slots: { customRender: "action" },
+    width:140,
   },
 ];
 const tableData: any = reactive({
   total: 0,
   page: 1,
   limit: 10,
+  selectedRowKeys:[]
 });
+const tableParams:any=reactive({
+  id:50404,
+  student_id:[],
+  type:1
+})
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
@@ -132,9 +137,10 @@ function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
+  tableData.selectedRowKeys=selectedRowKeys
 }
 function addStudent() {
-  modalVisable.value = true;
+  visable.value=true;
 }
 function handleOk() {
   modalVisable.value = false;
@@ -142,10 +148,43 @@ function handleOk() {
 function handleCancel() {
   modalVisable.value = false;
 }
-function updateSelectStuVisable(value: any) {
-  console.log(value, "value");
-  modalVisable.value = false;
+function updateSelectStuVisable(value: any,studentids:any) {
+  visable.value = false;
+  if(value==='ok'){
+    tableParams.student_id=studentids
+    addStuToCourse()
+  }
 }
+function getcoursestudent(){
+  http.coursestudentlist({param:{type:1,id:50404,withs:'userProfile,user'}}).then((res:any)=>{
+    data.value=res.data.list
+  })
+}
+function addStuToCourse(){
+  http.addStudentToCourse({param:tableParams}).then((res:any)=>{
+    console.log(res)
+    getcoursestudent()
+  })
+}
+function deleteteStudent(id:any) {
+    http.deleteStudentCourse({param:{id:id}}).then((res:any)=>{
+      console.log(res)
+      getcoursestudent()
+    })
+}
+function deleteStu(id:any){
+  deleteteStudent([id])
+}
+// 批量删除
+function delteteManyStu(){
+  deleteteStudent(tableData.selectedRowKeys)
+}
+function initPassward(){
+
+}
+onMounted(()=>{
+  getcoursestudent()
+})
 </script>
 
 <style lang="less" scoped>
@@ -171,6 +210,15 @@ function updateSelectStuVisable(value: any) {
         margin-left: 20px;
       }
     }
+  }
+}
+.action{
+  color: var(--primary-color);
+  >span:hover{
+    cursor: pointer;
+  }
+  .delete{
+    margin-right:10px;
   }
 }
 </style>

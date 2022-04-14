@@ -1,19 +1,28 @@
 <template>
-  <div class="testlistItem">
-    <div class="testlistItemCon">
+  <div>
+    <div class="testlistItem" v-for="itemValue in datalist">
+      <div class="testlistItemCon">
       <div class="itemLeft">
         <div>
           <p class="quesTitle">
-            {{ itemValue.title }}
+            {{ itemValue.question }}
             <span class="score">({{ itemValue.score }}分)</span>
           </p>
           <div
-            v-for="item in itemValue.answer"
+          v-if="itemValue.type_id==2"
+            v-for="(item,index) in itemValue.options"
             :key="item.id"
-            :class="['itemcon', item.id == 3 ? 'right' : 'wrong']"
+            :class="['itemcon',ifCorrect(itemValue.answer,item.id) ? 'right' : 'wrong']"
+            
           >
-            <span class="option">选项{{ item.id }}:</span>
-            <span>{{ item.name }}</span>
+            <span class="option">选项{{optionsNames[index] }}:</span>
+            <span>{{ item.option }}</span>
+          </div>
+          <div
+          v-if="itemValue.type_id==5"
+          >
+            <span class="answer right">答案:</span>
+            <span class="right">{{itemValue.answer[0].answer}}</span>
           </div>
         </div>
       </div>
@@ -22,7 +31,7 @@
           <a-progress
             class="pie-circle-inner"
             type="circle"
-            :percent="75"
+            :percent="itemValue.correct_rate"
             strokeColor="#FF9544"
             :width="70"
             :showInfo="false"
@@ -32,7 +41,7 @@
           <a-progress
             class="pie-circle"
             type="circle"
-            :percent="55"
+            :percent="itemValue.submission_rate"
             strokeColor="#00CBC2"
             :width="120"
             :showInfo="false"
@@ -42,15 +51,15 @@
         </div>
 
         <div class="rate">
-          <div class="correctRate">正确率：70%</div>
-          <div class="submitRate">提交率：40%</div>
+          <div class="correctRate">正确率 <span>{{itemValue.correct_rate}}</span> %</div>
+          <div class="submitRate">提交率：<span>{{itemValue.submission_rate}}</span>%</div>
         </div>
       </div>
-    </div>
-
-    <div class="delete" @click="deleteQues(itemValue.id)">
+      <div class="delete" @click="deleteQues(itemValue.id)">
       <span class="icon iconfont icon-shanchu"></span>
     </div>
+    </div> 
+    </div> 
   </div>
 </template>
 <script lang="ts" setup>
@@ -58,44 +67,43 @@ import { defineComponent, ref, toRef, inject, reactive, toRefs, onMounted } from
 import request from 'src/api/index'
 const http = (request as any).teacherInclassTest;
 const itemValue: any = ref("");
-itemValue.value = {
-  id: "198",
-  title:
-    "声意形置实我集还图路而表党场争行四取至全严土适准山月新才变天将自先产除积四九色是明起龙合基整厂标心公阶。真解即天劳龙对化三是效可象上强步任更做线百收样前住圆理机信造即史带件想置别它",
-  score: 10,
-  answer: [
-    { id: 1, name: "好设计是诚实的" },
-    { id: 2, name: "改变别人之前，先改变自己" },
-    { id: 3, name: "不怕输才会赢" },
-  ],
-};
+interface Props {
+  datalist: any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  datalist: () => {},
+})
+const optionsNames:any=ref(['A','B','C','D'])
 const emit = defineEmits<{ (e: "deleteQues", val: any): void }>();
 function deleteQues(id: any) {
   console.log(id);
   emit("deleteQues", id);
 }
-function getListData(){
-  http.inClasstestList({urlParams:{content_id:50000}}).then((res:any)=>{
-    console.log(res,'jjjjjjjjjjjjjjj')
-  })
-}
-onMounted(()=>{
-  getListData()
-})
+function ifCorrect(answers:any,id:any){
+  const correctAnswer:any=[];
+  answers.forEach((e:any) => {
+    correctAnswer.push(Number(e.answer))
+  });
+  if(correctAnswer.includes(id)){
+    return true}}
 </script>
 <style lang="less" scoped>
 .testlistItem {
   background: rgba(0, 0, 0, 0.04);
   width: 100%;
   display: flex;
+  margin-bottom: 20px;
+  >div{
+    width: 100%;
+  }
   .testlistItemCon {
-    width: 99%;
-    padding: 20px;
+    width:100%;
     display: flex;
     justify-content: space-between;
   }
   .itemLeft {
     width: 80%;
+    padding: 20px;
     .quesTitle {
       margin-bottom: 16px;
       .score {
@@ -109,6 +117,12 @@ onMounted(()=>{
         margin-right: 10px;
       }
     }
+    .answer{
+        margin-right: 10px;
+      }
+      .correct{
+        color: var(--cyan-100);
+      }
     .itemcon:nth-last-child(1) {
       margin-bottom: 0;
     }
@@ -122,6 +136,7 @@ onMounted(()=>{
   .itemRight {
     width: 19%;
     display: flex;
+    padding: 20px;
     flex-direction: column;
     justify-content: space-between;
     align-items: center;

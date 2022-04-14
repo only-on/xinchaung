@@ -15,12 +15,9 @@
             <a-textarea v-model:value="formState.titleDescription"></a-textarea>
           </a-form-item>
           <div>
-            <a-radio-group
-              class="radio_group"
-              v-model="formState.answer"
-              @change="onChange"
-            >
-              <a-checkbox-group name="checkboxgroup">
+              <a-checkbox-group name="checkboxgroup" class="radio_group"
+              v-model:value="formState.answer"
+              @change="onChange">
                 <div class="option">
                   <div class="option-item">
                     <a-form-item :label="'选项A'" name="optionA">
@@ -28,7 +25,7 @@
                     </a-form-item>
                   </div>
                   <div class="setAnswer">
-                    <a-radio :value="1">设为答案</a-radio>
+                    <a-checkbox :value="0">设为答案</a-checkbox> 
                   </div>
                 </div>
                 <div class="option">
@@ -38,7 +35,7 @@
                     </a-form-item>
                   </div>
                   <div class="setAnswer">
-                    <a-radio :value="2">设为答案</a-radio>
+                    <a-checkbox :value="1">设为答案</a-checkbox>
                   </div>
                 </div>
                 <div class="option">
@@ -48,7 +45,7 @@
                     </a-form-item>
                   </div>
                   <div class="setAnswer">
-                    <a-radio :value="3">设为答案</a-radio>
+                    <a-checkbox :value="2">设为答案</a-checkbox>
                   </div>
                 </div>
                 <div class="option">
@@ -58,11 +55,10 @@
                     </a-form-item>
                   </div>
                   <div class="setAnswer">
-                    <a-radio :value="4">设为答案</a-radio>
+                    <a-checkbox :value="3">设为答案</a-checkbox>
                   </div>
                 </div>
               </a-checkbox-group>
-            </a-radio-group>
           </div>
           <a-form-item label="分数" name="score">
             <a-input v-model:value="formState.score"></a-input>
@@ -78,12 +74,13 @@ import {
   ref,
   toRef,
   inject,
-  PropType,
   reactive,
   toRefs,
   defineExpose,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
+import request from 'src/api/index'
+const http = (request as any).teacherInclassTest;
 const rules: any = ref("");
 rules.value = {
   titleDescription: [{ required: true, message: "请输入题目描述" }],
@@ -115,9 +112,9 @@ const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
 });
 const formRef = ref<any>("null");
-const emit = defineEmits<{ (e: "updateVisable", val: any): void }>();
-function updateVisable() {
-  emit("updateVisable", false);
+const emit = defineEmits<{ (e: "updateVisable", val: any,addok:any): void }>();
+function updateVisable(addok:any) {
+  emit("updateVisable", false,addok);
   clearInputContent();
 }
 function clearInputContent() {
@@ -129,13 +126,27 @@ function clearInputContent() {
   formState.answer = "";
   formState.score = "";
 }
+function sendChoiceQues(){
+  const params:any={
+    question: formState.titleDescription,
+    type_id:5,
+    level_id:1,
+    origin_score: formState.score,
+    options: [formState.optionA,formState.optionB,formState.optionC,formState.optionD],
+    answers:formState.answer
+
+  }
+  http.addques({urlParams:{content_id:500001},param:params}).then((res:any)=>{
+    updateVisable(true)
+  })
+}
 function handleOk() {
   formRef.value.validate().then(() => {
-    updateVisable();
+    sendChoiceQues()
   });
 }
 function handleCancel() {
-  updateVisable();
+  updateVisable(false);
 }
 function onChange(e: any) {
   console.log(e.target.value);

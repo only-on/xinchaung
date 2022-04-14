@@ -1,14 +1,29 @@
 <template>
   <div class="addstudent">
-    <div class="header">
+    <a-modal
+      :width="1200"
+      cancelText="取消"
+      okText="确定"
+      title="添加学生"
+      :visible="visable"
+      @ok="handleOkSelect"
+      @cancel="handleCancelSelect"
+    >
+      <div>
+        <div class="headerselect">
       <div class="header-left">
         <a-form layout="inline">
           <a-form-item label="姓名">
             <a-input></a-input>
           </a-form-item>
-          <a-form-item label="班级">
-            <a-input></a-input>
-          </a-form-item>
+          <div class="header-left-select">
+          <span class="lableclass">班级</span>
+          <a-select default-value="全部" style="width: 224px" @change="handleChange">
+            <a-select-option v-for="item in option" :key="item.id"
+              >{{ item.name }}
+            </a-select-option>
+          </a-select>
+        </div>
           <a-form-item label="专业">
             <a-input></a-input>
           </a-form-item>
@@ -23,6 +38,7 @@
     <a-table
       :columns="columns"
       :data-source="data"
+      rowKey='id'
       :pagination="
         tableData.total > 10
           ? {
@@ -42,6 +58,8 @@
       }"
     >
     </a-table>
+      </div>
+    </a-modal>
     <a-modal
       :width="540"
       cancelText="返回"
@@ -61,8 +79,25 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, reactive } from "vue";
+import { ref, toRefs, onMounted,reactive } from "vue";
 import batchImportStu from "../batchImportStudent/index.vue";
+import request from 'src/api/index'
+const http = (request as any).teacherMemberManage;
+interface Props {
+  type: any;
+  visable:any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  type: () => {},
+  visable:()=>{}
+})
+const option: any = ref();
+option.value = [
+  { id: "", name: "全部" },
+  { id: 1, name: "班级1" },
+  { id: 2, name: "班级2" },
+  { id: 3, name: "班级3" },
+];
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
@@ -71,18 +106,18 @@ okButtonProps.value = { style: { display: "none" } };
 columns.value = [
   {
     title: "账号",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.name",
+    key: "user_profile.name",
   },
   {
     title: "性别",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.gender",
+    key: "user_profile.gender",
   },
   {
     title: "班级",
@@ -96,18 +131,18 @@ columns.value = [
   },
   {
     title: "学院",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.department",
+    key: "user_profile.department",
   },
   {
     title: "邮箱",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "email",
+    key: "email",
   },
   {
     title: "电话",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.phone",
+    key: "user_profile.phone",
   },
 ];
 const tableData: any = reactive({
@@ -115,8 +150,7 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
-const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any): void }>();
-
+const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
@@ -125,10 +159,11 @@ function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
+  tableData.selectedRowKeys=selectedRowKeys
 }
 function batchImport() {
   modalVisable.value = true;
-  emit("updateSelectStuVisable", false);
+  emit("updateSelectStuVisable", 'cancel',[]);
 }
 function handleOk() {
   modalVisable.value = false;
@@ -136,9 +171,46 @@ function handleOk() {
 function handleCancel() {
   modalVisable.value = false;
 }
+function handleOkSelect(){
+  emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
+}
+function handleCancelSelect(){
+  emit("updateSelectStuVisable", 'cancel',[]);
+
+}
+function getallstudent(){
+  http.allstudentlist({param:{type:props.type,id:0,withs:'userProfile'}}).then((res:any)=>{
+    data.value=res.data.list
+  })
+}
+onMounted(()=>{
+  getallstudent()
+})
 </script>
 
 <style lang="less" scoped>
+.headerselect {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+    .header-left {
+      display: flex;
+      :deep(.ant-select-selector) {
+        height: 34px;
+      }
+      .header-left-select {
+        margin-right: 20px;
+        .lableclass {
+          margin-right: 10px;
+        }
+      }
+    }
+    .header-right {
+      .brightBtn {
+        margin-left: 20px;
+      }
+    }
+  }
 .addstudent {
   .header {
     display: flex;
