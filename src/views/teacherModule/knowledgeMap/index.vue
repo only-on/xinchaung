@@ -64,7 +64,10 @@ const knowledgeMap = {
   2: 'examMapList'
 }
 export default defineComponent({
-  setup() {
+  props: {
+    tabsName :[String, Number]
+  },
+  setup(props) {
     const http = (request as Ihttp).knowledgeMap
     const $message:MessageApi = inject('$message')!
     const router = useRouter()
@@ -74,7 +77,7 @@ export default defineComponent({
     const showEdit = ref<boolean>(true)
     const isShow = ref<boolean>(false)
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:true,showContent:false,showNav:true, backOff:false,showPageEdit:false})
+    updata({tabs:[{ name: props.tabsName, componenttype: 0 }],navPosition:'outside',navType:true,showContent:true,showNav:true, backOff:false,showPageEdit:false})
     const mapData = reactive<ImapData>({
       data: [],
       meta: {},
@@ -263,7 +266,8 @@ export default defineComponent({
       contentList,
       showMenu,
       showEdit,
-      isShow
+      isShow,
+      props
     }
   },
 })
