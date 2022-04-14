@@ -34,7 +34,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, reactive } from "vue";
+import { ref, toRefs, onMounted, reactive } from "vue";
 import student from "./student/index.vue";
 import group from "./group/index.vue";
 import assistant from "./assistant/index.vue";

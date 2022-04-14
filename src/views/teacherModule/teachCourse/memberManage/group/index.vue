@@ -2,7 +2,7 @@
   <div class="group">
     <div class="header">
       <a-button class="btn1" type="primary" @click="autoGroup">自动分组</a-button>
-      <a-button type="primary">手动分组</a-button>
+      <a-button type="primary" @click="handGroup">手动分组</a-button>
     </div>
     <a-table
       :columns="columns"
@@ -23,7 +23,7 @@
     >
     </a-table>
     <a-modal
-      :width="540"
+      :width="groupType=='auto'?540:900"
       cancelText="取消"
       okText="分组"
       :visible="modalVisable"
@@ -31,31 +31,22 @@
       @cancel="handleCancel"
       title="学生分组"
     >
-      <div>
-        <span>分组方式</span>
-        <a-select
-          class="select"
-          v-model:value="selectValue"
-          style="width: 120px"
-          @focus="focus"
-          @change="handleChange"
-        >
-          <a-select-option value="jack">小组人数</a-select-option>
-          <a-select-option value="lucy">小组数</a-select-option>
-        </a-select>
-        <a-input v-model:value="number" style="width: 265px" />
-      </div>
+        <autoGroupCom v-if="groupType=='auto'"></autoGroupCom>
+        <handGroupCom v-if="groupType=='hand'"></handGroupCom>
     </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, reactive } from "vue";
+import { ref, toRefs, onMounted,reactive } from "vue";
+import handGroupCom from './handGroupCom/index.vue'
+import autoGroupCom from './autoGroupCom/index.vue'
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
 const selectValue: any = ref("");
 const number: any = ref("");
+const groupType:any=ref('');
 columns.value = [
   {
     title: "小组名称",
@@ -95,6 +86,11 @@ function onSearch(value: any) {
 function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function autoGroup() {
+  groupType.value='auto';
+  modalVisable.value = true;
+}
+function handGroup(){
+  groupType.value='hand';
   modalVisable.value = true;
 }
 function handleOk() {
