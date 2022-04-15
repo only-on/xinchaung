@@ -139,7 +139,7 @@ const selectStuClassFn=()=>{
 }
 const cancelSelectStu=()=>{
   isVisible.value=false
-  initData()
+  // initData()
 }
 type Key = ColumnProps["key"];
 interface IStudentData{

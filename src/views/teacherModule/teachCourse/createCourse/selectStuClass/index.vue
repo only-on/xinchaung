@@ -293,7 +293,8 @@ export default defineComponent({
         }
          http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
           message.success("保存成功");
-          context.emit("cancelSelectStu", "ok");
+          context.emit("cancelSelectStu");
+          context.emit("init");
         })
       },
       clearAll() {

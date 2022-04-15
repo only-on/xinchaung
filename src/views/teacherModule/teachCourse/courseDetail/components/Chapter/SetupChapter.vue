@@ -11,6 +11,7 @@
           :chapterList="ChaptersTreeList"
           :Editable="props.Editable"
           @deleteChapter="deleteChapter"
+          @deleteExperiment="deleteExperiment"
           @editExperiment="editExperiment"
           @editChapter="editChapter"
           @selectExperiment="selectExperiment" 
@@ -18,12 +19,11 @@
       </div>
     </div>
     <div class="chartTerrRight" v-if="currentTab === '0'" :class="state.activeExperimentObj.id?'':'flexCenter'">
-      
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
           <h3 class="courseh3">实验指导</h3>
-          <a-button type="primary" @click="Reselection()">重新选择</a-button>
-          <div class="reports flexCenter">
+          <a-button type="primary" @click="Reselection()" v-if="state.activeExperimentObj.TeachingAids">重新选择</a-button>
+          <div class="reports flexCenter" v-if="!state.activeExperimentObj.TeachingAids">
             <div class="report flexCenter" @click="viewReport">
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
@@ -53,7 +53,7 @@
           </div>
         </div>
       </template>
-      <Empty v-else :text="'暂无实验'" />
+      <Empty v-else :text="'暂无数据'" />
     </div>
   </div>
 
@@ -331,7 +331,7 @@ var state:any=reactive({
     type:1,     // 1新建章节 2编辑章节  3编辑素材  4编辑实验名称
     typeName:'章节'         
   },   // 章节树当前选中的实验类别
-  activeExperimentObj:{
+  activeExperimentObj:{      // 章节树当前选中的 实验
     id:0,
   }
 })
@@ -360,14 +360,25 @@ const closeDrawerDoc = () => {
 const selectFile=(val:any)=>{
   console.log(val)
   editChartVisible.value = false;
-  let obj={
-    type:val.type,    // 1实验  2教辅
-    content_ids:val.list
+  
+  let  Pro=null
+  if(val.type===1){   // 1实验  2教辅
+    let obj={
+      type:val.type,    
+      content_ids:val.list
+    }
+    Pro = http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}})
+  }else{
+    let obj={
+      item_id:[val.item.id]
+    }
+    Pro = http.addCoursesChapterAids({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}})
   }
-  http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}}).then((res: any) => {
+  Pro.then((res: any) => {
     message.success("操作成功");
     getChaptersTree()
   });
+  
 }
 // 选中的实验 、素材
 var activeExperiment:any=reactive({
@@ -401,9 +412,14 @@ const editChapter=(val:any)=>{
 const editExperiment=(val:any)=>{
   console.log('编辑实验名称',val)
   // 区分是否是素材
-  state.activeExperiment.title='编辑实验名称'
-  state.activeExperiment.type=4
-  state.activeExperiment.typeName='实验'
+  // 3编辑素材  4编辑实验名称
+  state.activeExperiment.title=val.TeachingAids?'编辑教辅名称':'编辑实验名称'
+  state.activeExperiment.type=val.TeachingAids?3:4
+  state.activeExperiment.typeName=val.TeachingAids?'教辅':'实验'
+  if(state.activeExperiment.type === 4){
+    activeChapterId.value=val.id
+    formState.name=val.name
+  }
   Visible.value=true
 }
 //  删除章节
@@ -424,6 +440,42 @@ const deleteChapter=(val:any)=>{
     },
   });
 }
+// 删除实验
+const deleteExperiment=(val:any)=>{
+  console.log('删除实验',val)
+  // return 
+  // activeChapterId.value=val.v.id
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      let  Pro=null
+      if(!val.a.TeachingAids){   // TeachingAids教辅    非-实验 
+        Pro = http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.a.id}})
+      }else{
+        Pro = http.DeleteChapterAids({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value,itemId:val.a.id}})
+      }
+      Pro.then((res: any) => {
+        message.success("删除成功");
+        getChaptersTree()
+      });;
+    },
+  });
+}
+//  编辑章节名称   实验名称公用
+const EditCreateChapterName=(id:number)=>{
+  formRef.value.validate().then(()=>{ 
+      http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId,chapterId:id}}).then((res: IBusinessResp)=>{
+        message.success('操作成功')
+        formState.name=''
+        Visible.value=false
+        getChaptersTree()
+    })
+  })
+}
 const Save=()=>{
   // Visible.value=false
   // state.activeExperiment.type=1   编辑 章节 素材 实验名称  区分
@@ -438,15 +490,8 @@ const Save=()=>{
       })
     })
   }
-  if(state.activeExperiment.type === 2){
-    formRef.value.validate().then(()=>{ 
-        http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId,chapterId:activeChapterId.value}}).then((res: IBusinessResp)=>{
-          message.success('操作成功')
-          formState.name=''
-          Visible.value=false
-          getChaptersTree()
-      })
-    })
+  if(state.activeExperiment.type === 2 || state.activeExperiment.type === 4){  // 1新建章节 2编辑章节  3编辑素材  4编辑实验名称
+    EditCreateChapterName(activeChapterId.value)
   }
 }
 const cancel=()=>{

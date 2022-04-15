@@ -14,11 +14,19 @@ export default {
   createChapter:{ url: `/api/course/courses/{courseId}/chapters`, method: "POST",dataType: "json"},
   // 编辑章节名称  
   EditCreateChapterName:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}`, method: "put",dataType: "json"},
+  //                            api/course/courses/500073/chapters/500136
   // 删除章节  
   DeleteCourseChapter:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}`, method: "DELETE",dataType: "json"},
 
   // 保存/更新实验到章节  
   addCoursesChapter:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/content`, method: "POST",dataType: "json"},
+  // 保存教辅资料到章节
+  addCoursesChapterAids:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/dataset`, method: "POST",dataType: "json"},
+  // 删除章节下实验   
+  // DeleteCourseChapterContent:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}`, method: "DELETE",dataType: "json"},
+  // 删除章节下教辅
+  DeleteChapterAids:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/dataset/{itemId}`, method: "DELETE",dataType: "json"},
+
 
   //  创建课程选择的学生列表  
   getCourseStudent:{ url: `/api/arrange/students/search`, method: "GET",dataType: "json"},
@@ -27,9 +35,9 @@ export default {
   // 保存学生到课程
   saveCourseStudentt:{ url: `/api/arrange/students`, method: "POST",dataType: "json"},
 
-  deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },//删除学生排课
+  deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },//删除课程下学生
   resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
-  deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },//批量删除学生排课
+  deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },//批量删除课程下学生
 
   // 课程封面上传
   courseCoverUpload:{ url: `/api/course/courses/upload`, method: "POST",dataType: "formdata"},
@@ -59,14 +67,6 @@ export interface ITeacherCourseApis {
   getCourseStudent:TFHttpSend
   getAllCourseStudent:TFHttpSend
   saveCourseStudentt:TFHttpSend
-
-
-
-
-
-
-
-
   getKnowledgeList:TFHttpSend
 
   hotCourseRecommend:TFHttpSend

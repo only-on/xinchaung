@@ -142,7 +142,7 @@ updata({
   showNav: true,
 });
 
-var currentStep:Ref<number>=ref(1)
+var currentStep:Ref<number>=ref(2)
 var stup1Loading:Ref<boolean>=ref(false)
 const last=(val:number)=>{
   currentStep.value=val

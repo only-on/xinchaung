@@ -100,7 +100,11 @@ const closeDrawerDoc = () => {
 };
 const selectSourceMaterialFile=(val:any)=>{
   console.log(val)
-  emit("selectDocOrMp4File", val);
+  let obj={
+    type:2,
+    item:val
+  }
+  emit("selectDocOrMp4File", obj);
 }
 </script>
 <style scoped lang="less">
