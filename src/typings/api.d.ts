@@ -1,11 +1,8 @@
 import { TFHttpSend } from "./getRequest";
 import { TDataType } from "./fetch";
-import { IForumAps } from "src/api/modules/studentForum";
 import { ITeacherForum } from "src/api/teacher/teacherForum";
-import { IStudentCourseAps } from "src/api/modules/studentCourse";
 import { ICommonAps } from "src/api/modules/common";
 import { IPersonalInformationlAps } from "src/api/modules/personalInformation";
-import { IStudentExperimentalAps } from "src/api/modules/studentExperimental";
 import { ITeacherTrainAps } from "src/api/modules/teacherTrain";
 import { IstudentExam } from "src/api/modules/studentExam";
 import { IvmApi } from "src/api/modules/vmApi";
@@ -49,10 +46,7 @@ export type TAvailableModules =
   | "classicalAsset"
   | "common"
   | "statistic"
-  | "studentExperimental"
-  | "studentForum"
   | "teacherForum"
-  | "studentCourse"
   | "personalInformation"
   | "teachCourse"
   | "courseTree"
@@ -77,10 +71,7 @@ export interface IApiCollection {
     getInfo: TFHttpSend;
   };
   personalInformation: IPersonalInformationlAps;
-  studentExperimental: IStudentExperimentalAps;
-  studentForum: IForumAps;
   teacherForum: ITeacherForum;
-  studentCourse: IStudentCourseAps;
   teachCourse: ITeacherCourseApis;
   studentExam: IstudentExam;
   vmApi: IvmApi;
