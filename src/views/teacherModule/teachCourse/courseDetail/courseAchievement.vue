@@ -10,7 +10,13 @@
       </div>
     </div>
 
-    <a-table :columns="columns" :data-source="data" bordered size="middle">
+    <a-table
+      :columns="columns"
+      :data-source="tableData"
+      bordered
+      size="middle"
+      :pagination="false"
+    >
       <template #check="{ text }">
         <span class="table-a-link" @click="clickFun('video', text)">录屏</span>
         <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
@@ -22,6 +28,14 @@
       <template></template>
       <template></template>
     </a-table>
+
+    <a-pagination :total="500" class="page-wrap">
+      <template #itemRender="{ page, type, originalElement }">
+        <a v-if="type === 'prev'">上一页</a>
+        <a v-else-if="type === 'next'">下一页</a>
+        <renderVNode v-else :vnode="originalElement"></renderVNode>
+      </template>
+    </a-pagination>
 
     <div class="footer">
       <div class="footer-left">
@@ -53,27 +67,32 @@
 import { log } from "console";
 import * as echarts from "echarts";
 import { ref, toRefs, onMounted, Ref } from "vue";
+import request from "src/api/index";
+const http = (request as any).studentScore;
 const columns = [
   {
     title: "实验名称",
     width: 280,
-    dataIndex: "examname",
-    key: "examname",
+    dataIndex: "content_name",
+    key: "content_name",
   },
   {
     title: "开启时间",
     width: 130,
-    dataIndex: "timestart",
+    dataIndex: "start_time",
+    key: "start_time",
   },
   {
     title: "学习时长",
     width: 100,
-    dataIndex: "timelong",
+    dataIndex: "used_time",
+    key: "used_time",
   },
   {
     title: "完成时间",
     width: 130,
-    dataIndex: "timeend",
+    dataIndex: "finish_time",
+    key: "finish_time",
   },
   {
     title: "评分项",
@@ -81,17 +100,20 @@ const columns = [
       {
         title: "实验报告",
         width: 90,
-        dataIndex: "examreport",
+        dataIndex: "report_score",
+        key: "report_score",
       },
       {
         title: "随堂测试",
         width: 90,
-        dataIndex: "examtest",
+        dataIndex: "question_score",
+        key: "question_score",
       },
       {
         title: "自动评分",
         width: 90,
-        dataIndex: "examcoding",
+        dataIndex: "auto_score",
+        key: "auto_score",
       },
     ],
   },
@@ -104,23 +126,28 @@ const columns = [
   {
     title: "最终成绩",
     width: 75,
-    dataIndex: "final",
+    dataIndex: "score",
+    key: "score",
   },
 ];
-const data = [...Array(5)].map((_, i) => ({
-  key: i,
-  examname: "人工智能直通车Python3教程及综",
-  timestart: "2022/03/24 15:42",
-  timelong: "40分钟57秒",
-  timeend: "2022/03/24 15:42",
-  examreport: "100",
-  examtest: "100",
-  examcoding: "--",
-  // check: ".",
-  final: "100",
-}));
+// table数据
+const data = ref([
+  {
+    key: 0,
+    content_name: "人工智能直通车Python3教程及综",
+    start_time: "2022/03/24 15:42",
+    used_time: "40分钟57秒",
+    finish_time: "2022/03/24 15:42",
+    report_score: "100",
+    question_score: "100",
+    auto_score: "--",
+    // check: ".",
+    score: "100",
+  },
+]);
+const tableData = ref([]);
 var option = {
-  color: ["#eb7f65", "#ffc82a"],
+  color: ["#FF9544"],
   grid: {
     left: 1,
     top: 40,
@@ -130,79 +157,81 @@ var option = {
   },
   xAxis: {
     type: "category",
-    name: "学生位置",
+    boundaryGap: false,
+    name: "实验",
     nameTextStyle: {
       color: "#333333",
-    },
-    axisLable: {
-      formatter: (val: any) => {
-        var str = "";
-        str = val;
-        return str;
-      },
     },
     axisLine: {
       lineStyle: {
         color: "#ccc",
       },
     },
+    axisTick: {
+      show: false,
+    },
+    data: ["实验名称", "实验名称", "实验名称", "实验名称"],
   },
   yAxis: {
-    type: "category",
+    type: "value",
     name: "学习效率",
     nameTextStyle: {
       color: "#333333",
     },
-    data: [1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5],
     textStyle: {
       color: "black",
-    },
-    axisLable: {
-      formatter: (val: any) => {
-        var str = "";
-        str = val.substring(0, 2) + " " + "\n" + val.substring(2, 6);
-        return str;
-      },
     },
     axisLine: {
       lineStyle: {
         color: "#ccc",
       },
     },
+    axisLabel: {
+      formatter: "{value}",
+    },
   },
   series: [
     {
-      type: "bar",
-      data: [],
-      barWidth: "40%",
-      itemStyle: {
-        //柱形图圆角，初始化效果
-        borderRadius: [0, 25, 25, 0],
-        color: "pink",
+      name: "Highest",
+      type: "line",
+      symbol: "circle",
+      symbolSize: 10,
+      data: [3, 3, 2, 3.5],
+      markLine: {
+        data: [
+          {
+            type: "average",
+            name: "Avg",
+            label: {
+              position: "end", // 表现内容展示的位置
+              formatter: "平均线", // 标线展示的内容
+              color: "#1CB2B3", // 展示内容颜色
+              fontSize: 14,
+            },
+            lineStyle: {
+              type: "solid",
+              color: "#1CB2B3",
+            },
+          },
+        ],
+        symbol: ["none", "none"],
       },
     },
   ],
 };
+// 分页渲染dom
+function renderVNode(_: any, { attrs: { vnode } }: any) {
+  return vnode;
+}
 // table操作
 function clickFun(type: string, val: number) {
   console.log(val);
-  // if (type.indexOf("update") != -1) {
-  //   isEdit.value = true;
-  // } else {
-  //   isEdit.value = false;
-  // }
-  // if (["updateScore", "score"].includes(type)) {
-  //   scoreVisible.value = true;
-  // }
   if (["updateReport", "video"].includes(type)) {
-    console.log('录屏click');
+    console.log("录屏click");
   }
   if (["updateReport", "report"].includes(type)) {
-    console.log('评阅click');
+    console.log("评阅click");
   }
-  // if (["updateCode", "code"].includes(type)) {
-  //   codeVisible.value = true;
-  // }
 }
 // 学习效率
 function drawCharts() {
@@ -212,14 +241,22 @@ function drawCharts() {
   myChart.setOption(option);
   return myChart;
 }
+// 获取成绩列表
+function getallScoreList() {
+  http.allScoreList({ param: { course_id: 500004 } }).then((res: any) => {
+    // console.log("allScoreList成功！！！");
+    tableData.value = res.data.all.data;
+  });
+}
 onMounted(() => {
   drawCharts();
+  getallScoreList();
 });
 </script>
 
 <style lang="less" scope>
 .courseExperiment {
-  padding: var(--padding-lg) 40px;
+  padding: var(--padding-lg) var(--padding-lg);
   background-color: var(--white-100);
   .table-header {
     display: flex;
@@ -246,6 +283,9 @@ onMounted(() => {
       padding-right: var(--font-size-16);
     }
   }
+  .page-wrap {
+    margin: var(--margin-lg) 0 var(--margin-lg) 0;
+  }
   .footer {
     display: flex;
     justify-content: space-between;
@@ -268,7 +308,7 @@ onMounted(() => {
         display: flex;
         left: 66px;
         top: 62px;
-        font-size: 16px;
+        font-size: var(--font-size-16);
         font-weight: 400;
         color: var(--orangeyellow-6);
         // background-color: blue;
