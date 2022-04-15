@@ -1,5 +1,19 @@
 <template>{{taskType}}
   <layout :navData="navData">
+    <template v-slot:header>
+      <div class="d-v-header-wrap">
+        <div class="d-v-left">
+          <span class="icon-zuojiantou iconfont" @click="black"></span>
+          <span class="test-name">{{baseInfo?.base_info?.name}}</span>
+          <div class="test-btn-wrap">
+            <span>随堂测试(0/7)</span>
+          </div>
+        </div>
+        <div class="d-v-right" @click="finish">
+          <span class="icon-guanbi1 iconfont"></span>
+        </div>
+      </div>
+    </template>
     <template v-slot:right>
       <div class="document-or-video-wrap">
         <video
@@ -18,14 +32,9 @@
 import {
   reactive,
   ref,
-  Ref,
-  provide,
-  watch,
   onMounted,
-  toRefs,
   inject
 } from "vue";
-import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import layout from "../VmLayout/newLayout.vue";
 import {
   useRoute,
@@ -38,6 +47,7 @@ import {
   TStudyType,
 } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue";
+import { message } from "ant-design-vue";
 
 type TvmQuery = {
   opType: TopType;
@@ -70,7 +80,6 @@ const navData = [
   { name: "报告", key: "report", icon: "icon-baogao" },
   { name: "问答", key: "forum", icon: "icon-wenda" },
 ];
-const data = reactive(navData);
 
 onMounted(async () => {
   await getVmBase();
@@ -98,6 +107,16 @@ function getVmBase() {
     });
   });
 }
+
+// 返回
+function black() {
+  router.go(-1)
+}
+
+// 结束实验
+function finish() {
+  message.success("结束实验成功")
+}
 </script>
 <style lang="less" scoped>
 .document-or-video-wrap{
@@ -106,5 +125,33 @@ function getVmBase() {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+.d-v-header-wrap{
+  height: 70px;
+    background: #2c2e45;
+    flex-shrink: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+    padding: 0 20px 0px 28px;
+    .d-v-left{
+      display: flex;
+      flex-direction: row;
+      .icon-zuojiantou{
+        cursor: pointer;
+      }
+      .test-btn-wrap{
+        margin-left: 184px;
+        cursor: pointer;
+      }
+    }
+    .test-name{
+      margin-left: 5px;
+    }
+    .d-v-right{
+      color: red;
+      cursor: pointer;
+    }
 }
 </style>

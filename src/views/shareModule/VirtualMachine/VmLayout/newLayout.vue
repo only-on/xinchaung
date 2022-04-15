@@ -1,7 +1,10 @@
 <template>
   <div class="vm-layout">
     <div class="vm-header">
+    <slot name="header">
       <vm-header></vm-header>
+    </slot>
+      
     </div>
     <div class="vm-main">
       <div
