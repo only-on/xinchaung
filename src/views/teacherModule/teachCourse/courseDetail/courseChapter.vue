@@ -3,7 +3,7 @@
     <div class="leftContent content">
       <h3 class="courseH3">课程简介</h3>
       <div class="introduce">Wiki是一种在网络上开放且可供多人协同创作的超文本系统，由美国人沃德·坎宁安于1995年首先开发，这种超文本系统支持面向社群的协作式写作，同时也包括一组支持这种写作。沃德·坎宁安将wiki定义为“一种允许一群用户用简单的描述来创建和连接一组网页的社会计算系统”。 [1] Wiki站点可以有多人（甚至任何访问者）维护，每个人都可以发表自己的意见。</div>
-      <SetupChapter :Editable="(currentTab === '0' && role === 3)?'canEdit':'canStudy'" :chapterList="courseDetail.chapterList" />
+      <SetupChapter :Editable="(currentTab === '0' && role === 3)?'canEdit':'canStudy'" :courseId="500002" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent" v-if="role === 4 || (currentTab === '1' && role === 3)">
@@ -42,7 +42,7 @@ const rules = {
   ],
 }
 interface Props {
-  courseDetail:any
+  courseDetail?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   
@@ -115,87 +115,6 @@ onMounted(() => {
       height: 600px;
       width: 100%;
       padding: 40px;
-    }
-  }
-  .chartTerr{
-    display: flex;
-    
-    .chartTerrLeft{
-      width: 470px;
-      // flex: 1;
-      // padding: 10px;
-      .title{
-        padding: 10px;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-      }
-      .myChapter{
-        // padding: 10px;
-        min-height:500px;
-        max-height: 700px;
-        overflow: auto;
-      }
-    }
-    .chartTerrLeft2{
-      width: 914px;
-    }
-    .chartTerrRight{
-      // width: 674px;
-      margin-right: 16px;
-      flex: 1;
-      padding:10px 22px 22px;
-      .title{
-        justify-content: space-between;
-        .report{
-          color: var(--primary-color);
-          cursor: pointer;
-        }
-        .Lesson{
-          cursor: pointer;
-          color: var(--brightBtn);
-        }
-      }
-      .pdfBox{
-        height: 630px;
-      }
-      .experimentGuide{
-        // max-height: 500px;
-        // overflow: auto;
-        .experiment{
-          border: 1px solid rgba(0,0,0,0.15);
-          padding: 20px 10px 20px 30px;
-          .itemContentBox{
-            overflow: auto;
-            max-height: 420px;
-          }
-          .itemContent{
-            transition: all .5s;
-            h4{
-              margin-bottom: 1rem;
-            }
-            .text{
-              height: 100%;
-              white-space: pre-wrap;
-              color: var(--black-65);
-              margin-bottom: 1.5rem;
-            }
-          }
-        }
-        .video-box{
-          height: 500px;
-          width: 100%;
-          video{
-            width:100%;
-            height:100%;
-            object-fit: cover;
-          }
-        }
-        .pdfBox{
-          height: 500px;
-          width: 100%;
-        }
-      }
-      
     }
   }
 </style>
