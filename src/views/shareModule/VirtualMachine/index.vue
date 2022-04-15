@@ -1,5 +1,7 @@
 <template>
-  <vnc></vnc>
+  <vnc v-if="false"></vnc>
+  <jupyter v-if="false"></jupyter>
+  <webide v-if="true"></webide>
   <!--自评、推荐-->
   <a-modal
     :visible="evaluateVisible"
@@ -60,6 +62,8 @@
 <script lang="ts" setup>
 import { ref, provide, watch, Ref, nextTick,onMounted } from "vue";
 import vnc from "./Vnc/newVnc.vue";
+import jupyter from "./jupyter/jupyter.vue";
+import webide from "./webide/webide.vue";
 import { message } from "ant-design-vue";
 import evaluateTopBg from "src/assets/images/vm/self-rating.jpg";
 import { useRoute, useRouter } from "vue-router";
@@ -86,7 +90,7 @@ const startValue: Ref<number> = ref(0); // 自评打分
 const evaluateData: any = ref({}); // 自评数据
 const histogramEchart1: any = ref(null);
 
-let historyLength = history.length;
+let historyLength = history.length; // 记录路由跳转次数
 
 provide("baseInfo", baseInfo); // pageinfo接口获取的基本数据
 provide("vmsInfo", ref({})); // 存储vms虚拟机数据

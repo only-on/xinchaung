@@ -1,5 +1,5 @@
 <template>
-  <layout :navData="navData" isLeftContentShowType="line">
+  <layout :navData="navData">
     <template v-slot:right
       >{{ sshUrl }}
       <template v-if="currentInterface === 'ssh'">
