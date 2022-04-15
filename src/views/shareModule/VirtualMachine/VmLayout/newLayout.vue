@@ -118,6 +118,7 @@ onMounted(() => {
   .vm-main {
     height: calc(100% - 70px);
     display: flex;
+    overflow-y:hidden ;
   }
   .vm-content {
     height: 100%;

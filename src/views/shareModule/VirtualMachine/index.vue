@@ -1,7 +1,8 @@
 <template>
   <vnc v-if="false"></vnc>
   <jupyter v-if="false"></jupyter>
-  <webide v-if="true"></webide>
+  <webide v-if="false"></webide>
+  <documentOrVideo v-if="true"></documentOrVideo>
   <!--自评、推荐-->
   <a-modal
     :visible="evaluateVisible"
@@ -64,6 +65,7 @@ import { ref, provide, watch, Ref, nextTick,onMounted } from "vue";
 import vnc from "./Vnc/newVnc.vue";
 import jupyter from "./jupyter/jupyter.vue";
 import webide from "./webide/webide.vue";
+import documentOrVideo from "./documentOrVideo/documentOrVideo.vue";
 import { message } from "ant-design-vue";
 import evaluateTopBg from "src/assets/images/vm/self-rating.jpg";
 import { useRoute, useRouter } from "vue-router";
