@@ -16,7 +16,7 @@
     <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
       !isReply ? "回应" : "收起回应"
     }}</span>
-    <span class="delet pointer" v-if="item.can_delete" @click="deleteForum(item.id)">删除</span>
+    <span class="delet pointer" v-if="item.is_del" @click="delet(item.id)">删除</span>
   </div>
   <!--回应内容-->
   <div class="reply-box" v-if="isReply">
@@ -60,6 +60,8 @@ import {
   watch,
   toRefs,
   PropType,
+  createVNode,
+  provide,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ReplyList from "./ReplyList.vue";
@@ -67,6 +69,8 @@ import { dateFormat1 } from 'src/utils/common'
 import { IForumnList, IReplyList } from "./../forumnTyping.d";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumnList",
@@ -112,6 +116,7 @@ export default defineComponent({
     const totalReply = ref(0)
     function getReplyList(id: number) {
       loading.value = true
+      replyList.length = 0
       let param = {
         page: page.value,
       }
@@ -137,9 +142,15 @@ export default defineComponent({
     }
 
     // 删除帖子
-    const deleteForum = (id: number) => {
-      console.log(id)
+    const deleteForum: any = inject("deleteForum")
+    const delet = (id: number) => {
+      deleteForum(id)
     }
+    // 删除一级回复
+    const deleteReply = (id: number) => {
+      getReplyList(id)
+    }
+    provide("deleteReply", deleteReply)
 
     const page = ref(1)
     const clickLoadingMore = (id: number) => {
@@ -162,7 +173,8 @@ export default defineComponent({
       totalReply,
       dateFormat1,
       loading,
-      deleteForum,
+      delet,
+      deleteReply,
     };
   },
 });

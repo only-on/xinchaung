@@ -39,7 +39,11 @@ export default {
   getKnowledgeList: {
     url:'/api/xinchuang/content/knowledges/index',
     method: 'GET',
-  }
+  },
+
+  // 热门课程推荐
+  hotCourseRecommend:{ url: `/api/course/courses/hot/recommend`, method: "GET",},
+
 }
 
 export interface ITeacherCourseApis {
@@ -64,4 +68,6 @@ export interface ITeacherCourseApis {
 
 
   getKnowledgeList:TFHttpSend
+
+  hotCourseRecommend:TFHttpSend
 }

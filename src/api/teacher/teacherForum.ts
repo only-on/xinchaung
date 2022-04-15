@@ -8,6 +8,8 @@ export default {
   getForumTags: {url: `/api/category/帖子类型/tags`, method: "GET"},
   getReplyList: {url: `/api/forum/{id}/reply/list`, method: "GET"},
   replyForum: {url: `/api/forum/reply`, method: "POST",dataType: 'json'},
+  deleteForum: {url: `/api/forum/forum/{id}`, method: "DELETE"},
+  deleteReply: {url: `/api/forum/Reply/{id}`, method: "DELETE"},
 }
 
 export interface ITeacherForum {
@@ -18,6 +20,8 @@ export interface ITeacherForum {
   getReplyList: TFHttpSend;
   replyForum: TFHttpSend;
   getAttendList: TFHttpSend;
+  deleteForum: TFHttpSend;
+  deleteReply: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherForum'

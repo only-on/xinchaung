@@ -26,7 +26,7 @@
            {{!viewReply ? '查看回应' : '收起回应'}}
         </span>
         </span>
-        <span class="delet pointer" v-if="list.can_delete" @click="deleteReply(list.id)">删除</span>
+        <span class="delet pointer" v-if="list.is_del" @click="deleteReply(list.id, list.pid, list.forum_id)">删除</span>
       </div>
       <div class="reply-box" v-if="isReply">
         <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user?.username" />
@@ -63,12 +63,15 @@ import {
   watch,
   toRefs,
   PropType,
+  createVNode,
 } from "vue";
 import { IForumnList, IReplyList } from "./../forumnTyping.d";
 // import ReplyList from './ReplyList.vue'
 import { dateFormat, getTimer } from 'src/utils/common'
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ReplyList",
@@ -93,6 +96,7 @@ export default defineComponent({
     let replyContent = ref<string>("");
     let isReply = ref<boolean>(false);
 
+    let replyList = reactive<IReplyList[]>([])
     function submitReply(list: {id: number, forum_id: number}) {
       let param = {
         content: replyContent.value,
@@ -110,11 +114,11 @@ export default defineComponent({
     }
 
     // 回应内容
-    let replyList = reactive<IReplyList[]>([])
     const page = ref(1)
     const loading = ref(false)
     const totalReply = ref(0)
     function getReplyList(id: number, pid: number) {
+      replyList.length = 0
       loading.value = true
       let param = {
         page: page.value,
@@ -145,9 +149,29 @@ export default defineComponent({
       page.value ++
       getReplyList(list.forum_id,  list.id)
     }
+
     // 删除
-    const deleteReply = (id: number) => {
-      console.log(id)
+    const deleteFirstReply: any = inject("deleteReply")
+    const deleteReply = (id: number, pid: number, forum_id: number) => {
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.deleteReply({urlParams: {id}}).then((res:IBusinessResp)=>{
+            message.success('删除成功')
+            if (pid) {
+              // emit("deleteSecondReply", forum_id, pid)
+              // deleteSecondReply(forum_id, pid)
+              deleteFirstReply(forum_id)
+            } else {
+              deleteFirstReply(forum_id)
+            }
+          })
+        }
+      });
     }
     onMounted(() => {
       // getReplyList()

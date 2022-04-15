@@ -36,6 +36,7 @@ import {
   inject,
   watch,
   provide,
+  createVNode,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
@@ -45,6 +46,8 @@ import { IForumSearch, IForumnList, ITagList } from "./forumnTyping.d";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { removeHtmlTag, fixHtml} from 'src/utils/htmlLabel'
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumSquare",
@@ -138,6 +141,25 @@ export default defineComponent({
         initData()
       })
     }
+
+    // 删除帖子
+    const deleteForum = (id: number) => {
+      Modal.confirm({
+        title: '确认删除吗？',
+        icon: createVNode(ExclamationCircleOutlined),
+        content: '删除后不可恢复',
+        okText: '确认',
+        cancelText: '取消',
+        onOk(){
+          http.deleteForum({urlParams: {id}}).then((res:IBusinessResp)=>{
+            message.success('删除成功')
+            initData()
+          })
+        }
+      });
+    }
+    provide("deleteForum", deleteForum)
+
 
     // 点击展开全文 底部收起样式
     let bottomStyle = reactive({
