@@ -5,18 +5,17 @@
         <h3 class="courseh3">章节目录</h3>
         <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && role === 3)">新建章节</a-button>
       </div>
-      <a-spin :spinning="chartLoading" size="large" tip="Loading...">
-        <div class="myChapter textScrollbar">
-          <ChapterList 
-            :chapterList="ChaptersTreeList"
-            :Editable="props.Editable"
-            @deleteChapter="deleteChapter"
-            @editExperiment="editExperiment"
-            @editChapter="editChapter"
-            @selectExperiment="selectExperiment" 
-            @establishChapter="establishChapter" />
-        </div>
-      </a-spin>
+      <div class="myChapter textScrollbar">
+        <ChapterList 
+          :chartLoading="chartLoading"
+          :chapterList="ChaptersTreeList"
+          :Editable="props.Editable"
+          @deleteChapter="deleteChapter"
+          @editExperiment="editExperiment"
+          @editChapter="editChapter"
+          @selectExperiment="selectExperiment" 
+          @establishChapter="establishChapter" />
+      </div>
     </div>
     <div class="chartTerrRight" v-if="currentTab === '0'" :class="state.activeExperimentObj.id?'':'flexCenter'">
       
@@ -54,7 +53,7 @@
           </div>
         </div>
       </template>
-      <Empty v-else :text="'暂无章节'" />
+      <Empty v-else :text="'暂无实验'" />
     </div>
   </div>
 
@@ -85,6 +84,7 @@ import ChapterList from './ChapterList.vue'
 import extStorage from "src/utils/extStorage";
 import { Modal, message } from "ant-design-vue";
 import Empty from "src/components/Empty.vue";
+import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { lStorage } = extStorage;
@@ -364,7 +364,7 @@ const selectFile=(val:any)=>{
     type:val.type,    // 1实验  2教辅
     content_ids:val.list
   }
-  http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:activeChapterId},param:{...obj}}).then((res: any) => {
+  http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}}).then((res: any) => {
     message.success("操作成功");
     getChaptersTree()
   });
@@ -377,6 +377,7 @@ var activeExperiment:any=reactive({
 const selectExperiment=(val:any)=>{
   console.log(val)
   state.activeExperimentObj={...val}
+  // 获取实验详情
   
 }
 //  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
@@ -416,9 +417,9 @@ const deleteChapter=(val:any)=>{
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.deleteTeacherCourse({urlParams: {imageID: val.id}}).then((res: any) => {
+      http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.id}}).then((res: any) => {
         message.success("删除成功");
-          initData();
+          getChaptersTree()
       });
     },
   });
@@ -427,7 +428,7 @@ const Save=()=>{
   // Visible.value=false
   // state.activeExperiment.type=1   编辑 章节 素材 实验名称  区分
   
-  if(state.activeExperiment.type=1){ // 新建章节
+  if(state.activeExperiment.type === 1){ // 新建章节
     formRef.value.validate().then(()=>{ 
         http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId}}).then((res: IBusinessResp)=>{
           message.success('操作成功')
@@ -437,7 +438,7 @@ const Save=()=>{
       })
     })
   }
-  if(state.activeExperiment.type=2){
+  if(state.activeExperiment.type === 2){
     formRef.value.validate().then(()=>{ 
         http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId,chapterId:activeChapterId.value}}).then((res: IBusinessResp)=>{
           message.success('操作成功')

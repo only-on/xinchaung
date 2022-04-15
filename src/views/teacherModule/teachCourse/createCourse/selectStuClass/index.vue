@@ -1,6 +1,7 @@
 <template>
   <div class="selectStuClass">
     <a-modal
+      :destroyOnClose="true"
       width="1000px"
       :title="'学生选择'"
       :visible="isVisible"
@@ -59,9 +60,9 @@
           <a-table
             :columns="columns"
             :loading="unselectLoading"
-            :data-source="unSelectData.list"
+            :data-source="studentData.list"
             :pagination="
-              unSelectData?.page?.totalCount > 10
+              studentData.totalCount > 10
                 ? {
                     hideOnSinglePage: false,
                     showSizeChanger: true,
@@ -122,6 +123,7 @@ interface Istate {
     limit: number;
     page: number;
   };
+  studentData:any
 }
 import { defineComponent, onMounted, inject, reactive, toRefs, ref, watch } from "vue";
 import request from "src/api/index";
@@ -136,17 +138,18 @@ export default defineComponent({
     "unSelectData",
     "tatal",
     "unselectLoading",
+    'courseId'
   ],
   components: {
     Submit,
   },
   setup(props, context) {
-    const http = (request as any).teacherTrain;
+    const http = (request as any).teachCourse;
     const state: Istate = reactive({
       confirmLoading: false,
       columns: [
         {
-          title: "账号",
+          title: "学号",
           dataIndex: "username",
           align: "left",
           ellipsis: true,
@@ -207,6 +210,15 @@ export default defineComponent({
         limit: 10,
         page: 1,
       },
+      studentData:{
+        page:1,
+        limit:10,
+        selectedRowKeys:[],
+        StuDeleteid:[],
+        list:[],
+        total:0,
+        loading:false,
+      }
     });
     const rowSelection = {
       //    selectedRowKeys:state.selectedRows,
@@ -260,11 +272,11 @@ export default defineComponent({
         defaultChecked: record.selected,
       }),
       handleOk() {
-        context.emit("ifSelect", "ok");
+        context.emit("cancelSelectStu");
       },
       handleCancel() {
         methods.clearAll();
-        context.emit("ifSelect", "cancel");
+        context.emit("cancelSelectStu");
       },
       rowkey(record: {}, index: number) {
         return index;
@@ -272,12 +284,21 @@ export default defineComponent({
       addittion() {
         //   添加
         console.log(state.selectedRows, "选中的数据");
-        context.emit(
-          "selected-rows",
-          state.selectedRows,
-          state.selectedRowKeys
-        );
-        state.selectedRowKeys = [];
+        // context.emit(
+        //   "selected-rows",
+        //   state.selectedRows,
+        //   state.selectedRowKeys
+        // );
+        // state.selectedRowKeys = [];
+        let obj={
+          id:props.courseId,
+          student_id:state.selectedRows,
+          type:1,
+        }
+         http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
+          message.success("保存成功");
+          context.emit("cancelSelectStu", "ok");
+        })
       },
       clearAll() {
         state.studentValue = "";
@@ -307,7 +328,23 @@ export default defineComponent({
         );
       },
     };
-    onMounted(() => {});
+    const initData=()=>{
+      let obj={
+        type:1,
+        id:props.courseId,
+        page:state.studentData.page,
+        limit:state.studentData.limit,
+      }
+      state.studentData.list.length=0
+      http.getAllCourseStudent({param:{...obj}}).then((res:any)=>{
+        let {list,page}=res.data
+        state.studentData.total=page.totalCount
+        state.studentData.list.push(...list)
+      })
+    }
+    onMounted(() => {
+      initData()
+    });
     return { ...toRefs(state), ...methods, rowSelection };
   },
 });

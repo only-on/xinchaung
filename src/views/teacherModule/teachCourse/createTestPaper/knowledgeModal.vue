@@ -31,7 +31,6 @@
 import { defineComponent, ref, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
-import { Ihttp } from './typings'
 import { message } from 'ant-design-vue'
 export default defineComponent({
   name: 'knowledge',
@@ -53,7 +52,7 @@ export default defineComponent({
       key: 'id'
     };
     let checkedKeys = ref<string[]>([])
-    const http = (request as Ihttp).teachCourse
+    const http = (request as any).teachCourse
     let data = reactive<Idata>({
       treeData: []
     })

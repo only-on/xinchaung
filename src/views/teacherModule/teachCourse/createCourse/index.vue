@@ -89,7 +89,7 @@
       </template>
       <template v-if="currentStep === 2">
         <div class="info3">
-          <customerInfor />
+          <customerInfor :courseId="courseId" />
         </div>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
@@ -142,7 +142,7 @@ updata({
   showNav: true,
 });
 
-var currentStep:Ref<number>=ref(1)
+var currentStep:Ref<number>=ref(2)
 var stup1Loading:Ref<boolean>=ref(false)
 const last=(val:number)=>{
   currentStep.value=val
