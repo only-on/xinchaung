@@ -22,18 +22,8 @@
       "
     >
     </a-table>
-    <a-modal
-      :width="groupType=='auto'?540:900"
-      cancelText="取消"
-      okText="分组"
-      :visible="modalVisable"
-      @ok="handleOk"
-      @cancel="handleCancel"
-      title="学生分组"
-    >
-        <autoGroupCom v-if="groupType=='auto'"></autoGroupCom>
-        <handGroupCom v-if="groupType=='hand'"></handGroupCom>
-    </a-modal>
+    <autoGroupCom v-if="groupType=='auto'" :visable='modalVisable' @updateVisable='updateVisable'></autoGroupCom>
+    <handGroupCom v-if="groupType=='hand'" :visable='modalVisable' @updateVisable='updateVisable'></handGroupCom>
   </div>
 </template>
 
@@ -41,6 +31,8 @@
 import { ref, toRefs, onMounted,reactive } from "vue";
 import handGroupCom from './handGroupCom/index.vue'
 import autoGroupCom from './autoGroupCom/index.vue'
+import request from 'src/api/index'
+const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
@@ -50,13 +42,13 @@ const groupType:any=ref('');
 columns.value = [
   {
     title: "小组名称",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "小组人数",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "num",
+    key: "num",
   },
   {
     title: "姓名",
@@ -74,6 +66,12 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const groupListParams:any=reactive({
+    id:500274,
+    type:1,
+    page:1,
+    limit:10,
+})
 function focus() {
   console.log("focus");
 }
@@ -93,12 +91,27 @@ function handGroup(){
   groupType.value='hand';
   modalVisable.value = true;
 }
-function handleOk() {
+function updateVisable(val:any,groupok:any){
   modalVisable.value = false;
+  if(groupok){
+    getGroupList()
+  }
 }
-function handleCancel() {
-  modalVisable.value = false;
+// 获取分组列表
+function getGroupList() {
+        http
+          .grouplist({
+            param: groupListParams
+          })
+          .then((res: any) => {
+            console.log(res);
+            data.value = res.data.list;
+            // state.total = res?.data.page.totalCount;
+          });
 }
+onMounted(()=>{
+  getGroupList()
+})
 </script>
 
 <style lang="less" scoped>

@@ -11,14 +11,14 @@
     <div class="achievement">
       <div class="header">
         <div class="headerLeft">
-          <span>已提交<span class="number">20</span>/40人</span>
-          <span>最高得<span class="number">100</span>分</span>
-          <span>最低得<span class="number">90</span>分</span>
-          <span>平均得<span class="number">95</span>分</span>
+          <span>已提交<span class="number">{{statis.student_submitted_count}}</span>/{{statis.students_count}}人</span>
+          <span>最高得<span class="number">{{statis.max_score}}</span>分</span>
+          <span>最低得<span class="number">{{statis.min_score}}</span>分</span>
+          <span>平均得<span class="number">{{statis.avg_score}}</span>分</span>
         </div>
         <div class="headerRight">
-          <span>共 <span class="number">4</span>题</span>
-          <span>总分 <span class="number">100</span>分</span>
+          <span>共 <span class="number">{{statis.questions_count}}</span>题</span>
+          <span>总分 <span class="number">{{statis.scores}}</span>分</span>
         </div>
       </div>
       <a-table :columns="columns" :data-source="data"> </a-table>
@@ -31,26 +31,28 @@ import request from 'src/api/index'
 const http = (request as any).teacherInclassTest;
 const columns: any = ref("");
 const data: any = ref("");
+const statis:any=ref('')
 columns.value = [
-  { title: "学号", dataIndex: "name", key: "name" },
+  { title: "学号", dataIndex: "username", key: "username" },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "班级",
-    dataIndex: "address",
-    key: "address",
+    dataIndex: "classname",
+    key: "classname",
   },
   {
     title: "成绩",
-    key: "tags",
-    dataIndex: "tags",
+    key: "score_total",
+    dataIndex: "score_total",
   },
   {
     title: "答错",
-    key: "action",
+    key: "wrong_answers_number",
+    dataIndex: "wrong_answers_number",
   },
 ];
 
@@ -76,12 +78,18 @@ function handleCancel() {
   updateVisable();
 }
 function getStatisticGrands(){
-  http.achiStatistics({urlParams:{content_id:500001}}).then((res:any)=>{
-      data.value=res.data.list;
+  http.achiveStatistics({urlParams:{content_id:500001}}).then((res:any)=>{
+    statis.value=res.data;
+  })
+}
+function getAchiveList(){
+  http.achivelist({urlParams:{content_id:500001}}).then((res:any)=>{
+    data.value=res.data.list
   })
 }
 onMounted(()=>{
   getStatisticGrands()
+  getAchiveList()
 })
 </script>
 <style lang="less" scoped>

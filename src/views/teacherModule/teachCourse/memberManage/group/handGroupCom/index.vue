@@ -1,126 +1,199 @@
 <template>
   <div>
-    <a-transfer
-      class="tree-transfer"
-      :data-source="dataSource"
-      :target-keys="targetKeys"
-      :render="render"
-      :show-select-all="false"
-      @change="onChange"
-      :showSearch='true'
+    <a-modal
+      :width="900"
+      cancelText="取消"
+      okText="分组"
+      :visible="visable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      title="学生分组"
     >
-    <!-- onItemSelect -->
-      <template #children="{ direction, selectedKeys }">
-        <a-tree
-          v-if="direction === 'left'"
-          blockNode
-          checkable
-          checkStrictly
-          defaultExpandAll
-          :checkedKeys="[...selectedKeys, ...targetKeys]"
-          :treeData="treeData"
-        />
-      </template>
-    </a-transfer>
+    <div class="editCon">
+        <div class="hasGroup">
+          <div class="title">分组列表</div>
+          <div class="createInpt">
+              <a-input v-model:value="groupName">
+                <template #addonAfter>
+                  <div class="createBtn">创建</div>
+                </template>
+              </a-input>
+          </div>
+            <a-tree
+            checkable
+            @select="selectTree"
+            v-model:checkedKeys="groupedKeys"
+            v-if="flag === true"
+          >
+            <template #switcherIcon>
+              <down-outlined />
+            </template>
+            <a-tree-node
+              :checkable="false"
+              v-for="(item, index) in treeData"
+              :key="index"
+            >
+              <template #title>
+                <div class="tree-title title">
+                  <template v-if="currentEditData === index">
+                    <a-input
+                      class="name inputname"
+                      v-model:value="item.name"
+                      @blur="titleBlurs"
+                    ></a-input>
+                  </template>
+                  <template v-else>
+                    <span class="name"
+                      >{{ item.name }}
+                      <i
+                        class="edit icon-bianji1 iconfont"
+                        @click="editTreeTittle(index)"
+                      ></i>
+                      <i
+                        v-if="!ifautoGroupEdit"
+                        class="delete icon-shanchu-copy iconfont"
+                        @click="deleteTree(index)"
+                      ></i>
+                    </span>
+                  </template>
+                </div>
+              </template>
+              <a-tree-node
+                :checkable="true"
+                v-for="it in item?.student_list"
+                :key="index + '-' + it?.userProfile?.id"
+                :title="it?.userProfile?.name"
+              >
+              </a-tree-node>
+            </a-tree-node>
+            </a-tree>
+        </div>
+        <div class="middle">
+          <div class="transferBox">
+            <li class="left">
+            <span class="icon iconfont icon-youjiantou"></span>
+          </li>
+          
+          <li class="right">
+            <span class="icon iconfont icon-zuojiantou"></span>
+          </li>
+          </div>
+        </div>
+        <div class="unGroup">
+          <div class="title">学生列表</div>
+          <div>
+            <a-input-search
+              v-model:value="searchvalue"
+              placeholder="请输入搜索关键字"
+              @search="onSearch"
+            />
+          </div>
+        </div>
+      </div>
+    </a-modal>
+    
   </div>
 </template>
-<script lang="ts">
-  //  @check="
-  //           (_, props) => {
-  //             onChecked(_, props, [...selectedKeys, ...targetKeys], onItemSelect);
-  //           }
-  //         "
-  //         @select="
-  //           (_, props) => {
-  //             onChecked(_, props, [...selectedKeys, ...targetKeys], onItemSelect);
-  //           }
-  //         "
-import { CheckEvent } from 'ant-design-vue/es/tree/Tree';
+<script lang="ts" setup>
 import { computed, defineComponent, ref } from 'vue';
-interface Iprops{
+import { DownOutlined } from "@ant-design/icons-vue";
+
+interface Props {
+      visable:any;
+}
+const props = withDefaults(defineProps<Props>(), {
+      visable:()=>{}
+})
+const groupName:any=ref('')
+const searchvalue:any=ref('')
+const groupedKeys:any=ref({})
+const ifautoGroupEdit:any=ref('')
+const flag:any=ref(true)
+const currentEditData:any=ref('')
+const treeData:any=ref('')
+treeData.value=[{ id:505,
+  name:'小组2',
+  student_list:[
+    {userProfile:{id:1616,name:'stu1234'}}
+  ]
+}]
+const emit = defineEmits<{ (e: "updateVisable", val: any,groupok:any): void }>();
+function handleOk(){
+  emit("updateVisable",'false',true);
+}
+function handleCancel(){
+  emit("updateVisable",'false',false);
+}
+function onSearch() {
   
 }
-interface TreeDataItem {
-  key: string;
-  title: string;
-  disabled?: boolean;
-  children?: TreeDataItem[];
+function selectTree(){
+
 }
-const tData: TreeDataItem[] = [
-  { key: '0-0', title: '0-0' },
-  {
-    key: '0-1',
-    title: '0-1',
-    children: [
-      { key: '0-1-0', title: '0-1-0' },
-      { key: '0-1-1', title: '0-1-1' },
-    ],
-  },
-  { key: '0-2', title: '0-3' },
-];
+function editTreeTittle(index:any){
 
-const transferDataSource: TreeDataItem[] = [];
-function flatten(list: TreeDataItem[] = []) {
-  list.forEach(item => {
-    transferDataSource.push(item);
-    flatten(item.children);
-  });
 }
-flatten(JSON.parse(JSON.stringify(tData)));
+function deleteTree(index:any){
 
-function isChecked(selectedKeys: string[], eventKey: string) {
-  return selectedKeys.indexOf(eventKey) !== -1;
 }
+function titleBlurs(){
 
-function handleTreeData(data: TreeDataItem[], targetKeys: string[] = []): TreeDataItem[] {
-  data.forEach(item => {
-    item['disabled'] = targetKeys.includes(item.key);
-    if (item.children) {
-      handleTreeData(item.children, targetKeys);
-    }
-  });
-  return data;
 }
-function render(item:any){
-  return item.title
-}
-
-export default defineComponent({
-  setup() {
-    const targetKeys = ref<string[]>([]);
-
-    const dataSource = ref<TreeDataItem[]>(transferDataSource);
-
-    const treeData = computed<TreeDataItem[]>(() => {
-      return handleTreeData(tData, targetKeys.value);
-    });
-
-    const onChange = (keys: string[]) => {
-      targetKeys.value = keys;
-    };
-    const onChecked = (
-      _: Record<string, string[]>,
-      e: CheckEvent,
-      checkedKeys: string[],
-      onItemSelect: (n: any, c: boolean) => void,
-    ) => {
-      const { eventKey } = e.node;
-      onItemSelect(eventKey, !isChecked(checkedKeys, eventKey));
-    };
-    return {
-      targetKeys,
-      dataSource,
-      treeData,
-      onChange,
-      onChecked,
-      render
-    };
-  },
-});
 </script>
-<style scoped>
-.tree-transfer .ant-transfer-list:first-child {
-  width: 50%;
-  flex: none;
+<style lang="less" scoped>
+.editCon{
+  display: flex;
+  justify-content: space-between;
+}
+.middle{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  .left,.right{
+    width: 24px;
+    height: 24px;
+    background-color: var(--primary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    .iconfont{
+      color: var(--white-100);
+    }
+  }
+  .left{
+    margin-bottom: 20px;
+  }
+}
+.hasGroup{
+  width: 390px;
+  height: 542px;
+  border: 1px solid var(--gray-5);
+  padding: 15px;
+  .createInpt{
+    width: 100%;
+    display: flex;
+    .createBtn{
+      width:73px;
+      height: 30px;
+      color: var(--white-100); 
+      background-color: var(--primary-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-left: none;
+    }
+  }
+}
+.unGroup{
+  width: 400px;
+  height: 542px;
+  border: 1px solid var(--gray-5);
+  padding: 15px;
+}
+.title{
+  margin-bottom: 15px;
+}
+:deep(.ant-input-group-addon){
+  padding: 0px;
 }
 </style>

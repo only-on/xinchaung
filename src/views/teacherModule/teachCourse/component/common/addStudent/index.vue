@@ -24,15 +24,20 @@
             </a-select-option>
           </a-select>
         </div>
-          <a-form-item label="专业">
-            <a-input></a-input>
-          </a-form-item>
+        <div class="header-left-select">
+          <span class="lableclass">专业</span>
+          <a-select default-value="全部" style="width: 224px" @change="handleChange">
+            <a-select-option v-for="item in option" :key="item.id"
+              >{{ item.name }}
+            </a-select-option>
+          </a-select>
+        </div>
         </a-form>
       </div>
       <div class="header-right">
-        <a-button type="primary" class="brightBtn" @click="batchImport"
+        <!-- <a-button type="primary" class="brightBtn" @click="batchImport"
           >批量导入</a-button
-        >
+        > -->
       </div>
     </div>
     <a-table
@@ -60,27 +65,11 @@
     </a-table>
       </div>
     </a-modal>
-    <a-modal
-      :width="540"
-      cancelText="返回"
-      :visible="modalVisable"
-      @ok="handleOk"
-      @cancel="handleCancel"
-      :okButtonProps="okButtonProps"
-    >
-      <template #title>
-        <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
-      </template>
-      <div>
-        <batchImportStu></batchImportStu>
-      </div>
-    </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,reactive } from "vue";
-import batchImportStu from "../batchImportStudent/index.vue";
 import request from 'src/api/index'
 const http = (request as any).teacherMemberManage;
 interface Props {
@@ -101,8 +90,6 @@ option.value = [
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
-const okButtonProps: any = ref("");
-okButtonProps.value = { style: { display: "none" } };
 columns.value = [
   {
     title: "账号",
@@ -173,10 +160,11 @@ function handleCancel() {
 }
 function handleOkSelect(){
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
+  tableData.selectedRowKeys=[]
 }
 function handleCancelSelect(){
   emit("updateSelectStuVisable", 'cancel',[]);
-
+  tableData.selectedRowKeys=[]
 }
 function getallstudent(){
   http.allstudentlist({param:{type:props.type,id:0,withs:'userProfile'}}).then((res:any)=>{

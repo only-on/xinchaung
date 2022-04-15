@@ -5,6 +5,8 @@ export default {
   addStudentToCourse:{url: '/api/arrange/students', method: "POST"},//添加学生到课程
   deleteStudentCourse:{url:'/api/arrange/students/delete',method:"POST",dataType: 'json'},//删除课程里学生
   // initializationPassword:{url:'teacher-train/reset-student-pwd',method:''}//初始化密码
+  grouplist:{url:'/api/arrange/groups',method:'GET'},
+  automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
 }
 
 export interface ITeacherTrainAps {
@@ -13,6 +15,8 @@ export interface ITeacherTrainAps {
     addStudentToCourse:TFHttpSend
     deleteStudentCourse:TFHttpSend
     // initializationPassword:TFHttpSend
+    grouplist:TFHttpSend
+    automaticGroup:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherMemberManage'

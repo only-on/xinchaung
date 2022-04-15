@@ -18,6 +18,9 @@
       </div>
       <div class="header-right">
         <a-button type="primary" @click="delteteManyStu">移除学生</a-button>
+        <a-button type="primary" class="brightBtn" @click="batchImport"
+          >批量导入</a-button
+        >
         <a-button class="brightBtn" type="primary" @click="addStudent">添加学生</a-button>
       </div>
     </div>
@@ -52,12 +55,30 @@
     </a-table>
     <addstudent :visable='visable' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
   </div>
+  <a-modal
+      :width="540"
+      cancelText="返回"
+      :visible="modalVisable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      :okButtonProps="okButtonProps"
+    >
+      <template #title>
+        <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
+      </template>
+      <div>
+        <batchImportStu></batchImportStu>
+      </div>
+    </a-modal>
 </template>
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,reactive } from "vue";
-import addstudent from "./addStudent/index.vue";
+import addstudent from "src/views/teacherModule/teachCourse/component/common/addStudent/index.vue";
+import batchImportStu from "./batchImportStudent/index.vue";
 import request from 'src/api/index'
 const http = (request as any).teacherMemberManage;
+const okButtonProps: any = ref("");
+okButtonProps.value = { style: { display: "none" } };
 const option: any = ref();
 const visable:any=ref(false);
 option.value = [
@@ -171,6 +192,10 @@ function deleteteStudent(id:any) {
       console.log(res)
       getcoursestudent()
     })
+}
+function batchImport() {
+  modalVisable.value = true;
+  // emit("updateSelectStuVisable", 'cancel',[]);
 }
 function deleteStu(id:any){
   deleteteStudent([id])

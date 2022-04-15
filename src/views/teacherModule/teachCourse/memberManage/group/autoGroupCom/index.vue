@@ -1,5 +1,15 @@
 <template>
     <div class="autogroup">
+      <a-modal
+      :width="groupType=='auto'?540:900"
+      cancelText="取消"
+      okText="分组"
+      :visible="visable"
+      @ok="handleOk"
+      @cancel="handleCancel"
+      title="学生分组"
+    >
+        <div>
           <span>分组方式</span>
           <a-select
             class="select"
@@ -8,22 +18,32 @@
             @focus="focus"
             @change="handleChange"
           >
-            <a-select-option value="jack">小组人数</a-select-option>
-            <a-select-option value="lucy">小组数</a-select-option>
+            <a-select-option value="group_people_num">小组人数</a-select-option>
+            <a-select-option value="group_num">小组数</a-select-option>
           </a-select>
           <a-input v-model:value="number" style="width: 265px" />
         </div>
+    </a-modal>   
+    </div>
   </template>
   <script lang="ts" setup>
     import { ref, toRefs, onMounted,reactive } from "vue";
     import handGroupCom from './handGroupCom/index.vue'
     import autoGroupCom from './autoGroupCom/index.vue'
+    import { Modal, message } from "ant-design-vue";
+    import request from 'src/api/index'
+    const http = (request as any).teacherMemberManage;
     const columns: any = ref();
     const data: any = ref([]);
-    const modalVisable: any = ref(false);
     const selectValue: any = ref("");
     const number: any = ref("");
     const groupType:any=ref('');
+    interface Props {
+      visable:any;
+    }
+    const props = withDefaults(defineProps<Props>(), {
+      visable:()=>{}
+    })
     columns.value = [
       {
         title: "小组名称",
@@ -64,17 +84,36 @@
     function onShowSizeChange(current: any, size: any) {}
     function autoGroup() {
       groupType.value='auto';
-      modalVisable.value = true;
     }
     function handGroup(){
       groupType.value='hand';
-      modalVisable.value = true;
     }
+    const emit = defineEmits<{ (e: "updateVisable", val: any,groupok:any): void }>();
     function handleOk() {
-      modalVisable.value = false;
+      if (!number.value) {
+          message.warning("人数或小组数不能为空！");
+          return;
+        }
+        if (number.value < 1) {
+          message.warning("请输入大于0的整数！");
+          return;
+        }
+        if (!Number.isInteger(Number(number.value))) {
+          message.warning("请输入大于0的整数！");
+          return;
+        }
+        const params = {
+          id:500274,
+          type:1,
+          number:number.value,
+          group_type:selectValue.value,
+        };
+        http.automaticGroup({ param: params }).then((res: any) => {
+          emit("updateVisable",'false',true);
+        });
     }
     function handleCancel() {
-      modalVisable.value = false;
+      emit("updateVisable",'false',false);
     }
     </script>
   <style lang="less" scoped>

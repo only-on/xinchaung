@@ -3,12 +3,14 @@ export default {
 
     inClasstestList: { url: 'api/v1/xinchuang/question/contents/{content_id}/questions', method: "GET" },//随堂测试列表
     addques:{url:'api/v1/xinchuang/question/contents/{content_id}/questions',method:'POST',dataType: 'json'},//新增习题
-    achiStatistics:{url:'api/v1/xinchuang/question/contents/{content_id}/scored-analysis',method:'GET'}
+    achiveStatistics:{url:'api/v1/xinchuang/question/contents/{content_id}/scored-analysis',method:'GET'},//随测统计
+    achivelist:{url:'api/v1/xinchuang/question/contents/{content_id}/student-scores',method:'GET'},//成绩列表
 }
 export interface IStudentCourseAps {
     inClasstestList:TFHttpSend
     addques:TFHttpSend
     achiStatistics:TFHttpSend
+    achivelist:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherInclassTest'
