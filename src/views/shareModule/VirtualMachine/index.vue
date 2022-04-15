@@ -1,8 +1,8 @@
 <template>
-  <vnc v-if="false"></vnc>
+  <vnc v-if="true"></vnc>
   <jupyter v-if="false"></jupyter>
   <webide v-if="false"></webide>
-  <documentOrVideo v-if="true"></documentOrVideo>
+  <!-- <documentOrVideo v-if="true"></documentOrVideo> -->
   <!--自评、推荐-->
   <a-modal
     :visible="evaluateVisible"
