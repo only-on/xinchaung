@@ -160,13 +160,14 @@ var total:Ref<number>=ref(0)
 const removeStudent=(id: any) =>{
   http.deleteScheduleStu({ urlParams: { id: id } }).then((res: any) => {
     message.success("移除成功");
-    // methods.getStudentList();
+    initData()
   });
 }
  // 初始化
 const initPassword=(id: any) =>{
   http.resetPassWord({ param: { schedule_id: id } }).then((res: any) => {
     message.success("重置密码成功！");
+    
   });
 }
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {

@@ -227,11 +227,7 @@ export default defineComponent({
       },
       onSelectAll: (selected: any, selectedRows: any, changeRows: any) => {
         state.selectedRows = selectedRows;
-      },
-      getCheckboxProps: (record: any) => ({
-        // disabled: record.selected||record.number==0,
-        // defaultChecked:record.selected||record.number==0
-      }),
+      }
     };
     const methods = {
       onChange(page: any, pageSize: any) {
