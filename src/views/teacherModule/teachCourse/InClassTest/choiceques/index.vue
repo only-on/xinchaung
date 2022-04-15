@@ -129,7 +129,7 @@ function clearInputContent() {
 function sendChoiceQues(){
   const params:any={
     question: formState.titleDescription,
-    type_id:5,
+    type_id:2,
     level_id:1,
     origin_score: formState.score,
     options: [formState.optionA,formState.optionB,formState.optionC,formState.optionD],
