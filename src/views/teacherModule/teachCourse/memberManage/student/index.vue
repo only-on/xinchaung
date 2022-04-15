@@ -76,6 +76,7 @@ import { ref, toRefs, onMounted,reactive } from "vue";
 import addstudent from "src/views/teacherModule/teachCourse/component/common/addStudent/index.vue";
 import batchImportStu from "./batchImportStudent/index.vue";
 import request from 'src/api/index'
+import { message,Modal } from "ant-design-vue";
 const http = (request as any).teacherMemberManage;
 const okButtonProps: any = ref("");
 okButtonProps.value = { style: { display: "none" } };
@@ -188,10 +189,20 @@ function addStuToCourse(){
   })
 }
 function deleteteStudent(id:any) {
-    http.deleteStudentCourse({param:{id:id}}).then((res:any)=>{
-      console.log(res)
-      getcoursestudent()
-    })
+        Modal.confirm({
+            title: "确认删除吗？",
+            content: "删除后不可恢复",
+            okText: "确认",
+            cancelText: "取消",
+            onOk() {
+              http.deleteStudentCourse({param:{id:id}}).then((res:any)=>{
+                if(res.code){
+                  tableData.selectedRowKeys=[]
+                  getcoursestudent()
+                }
+          })
+      }
+  })    
 }
 function batchImport() {
   modalVisable.value = true;
@@ -202,6 +213,10 @@ function deleteStu(id:any){
 }
 // 批量删除
 function delteteManyStu(){
+  if(!tableData.selectedRowKeys?.length){
+    message.warning('请至少选择一条记录！')
+    return
+  }
   deleteteStudent(tableData.selectedRowKeys)
 }
 function initPassward(){

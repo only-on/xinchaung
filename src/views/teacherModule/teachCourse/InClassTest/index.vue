@@ -1,21 +1,29 @@
 <template>
   <div id="inClassTest">
     <div class="tree">
-      <chapterTree @selectExperiment="selectExperiment"> </chapterTree>
+      <!-- <chapterTree
+          :chartLoading="chartLoading"
+          :chapterList="ChaptersTreeList"
+          :Editable="props.Editable"
+          @deleteChapter="deleteChapter"
+          @editExperiment="editExperiment"
+          @editChapter="editChapter"
+          @selectExperiment="selectExperiment" 
+          @establishChapter="establishChapter" /> -->
     </div>
     <div class="test">
       <div class="inTestHeader">
         <div class="inclass-header-left">
           <span
             >共发布
-            <span class="number">3</span>
+            <span class="number">{{statisTic.all_type_count}}</span>
             道题</span
           >
           <span>
-            <span class="number">2</span>
+            <span class="number">{{statisTic.choice_type_count}}</span>
             道选择题</span
           >
-          <span><span class="number">1</span> 道问答题</span>
+          <span><span class="number">{{statisTic.questioning_type_count}}</span> 道问答题</span>
         </div>
         <div class="inclass-header-right">
           <span class="statistic" @click="scoreStatistic">
@@ -86,6 +94,7 @@ const state: Istate = reactive({
   visible: false,
 });
 const datalist:any=ref('')
+const statisTic:any=ref('')
 const componentName: any = ref("");
 // 出题弹框
 function selectTuestion(type: any) {
@@ -115,7 +124,9 @@ function updateVisable(value: any,addok:any) {
   }
 }
 function deleteQues(id: any) {
-  console.log(id);
+  http.deleteInclassTestItem({urlParams:{question_id:id}}).then((res:any)=>{
+    inclassTestList()
+  })
 }
 // 选择tree章节
 function selectExperiment(val: any) {
@@ -123,8 +134,8 @@ function selectExperiment(val: any) {
 }
 function inclassTestList(){
   http.inClasstestList({urlParams:{content_id:500001}}).then((res:any)=>{
-    console.log(res,'jjjjjjjjjjjjjjj')
     datalist.value=res.data.list
+    statisTic.value=res.data.analysis
   })
 }
 onMounted(()=>{
