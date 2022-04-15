@@ -22,8 +22,8 @@
         }}</span
       >
     </div>
-    <div class="right-box" v-if="taskType !== 6 && taskType !== 7">
-      <div class="ip-list">
+    <div class="right-box" >
+      <div class="ip-list" v-if="roleArry.includes('switchVm')">
         <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
@@ -37,7 +37,7 @@
           </a-select-option>
         </a-select>
       </div>
-      <div class="delayed" v-if="role == 4">
+      <div class="delayed" v-if="roleArry.includes('delayed')">
         <span>
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
@@ -50,7 +50,7 @@
       >
         切换为{{ currentInterface === "ssh" ? "VNC" : "SSH" }}
       </div>
-      <div class="tool pointer" @click="visible = !visible">
+      <div class="tool pointer" v-if="roleArry.includes('tools')" @click="visible = !visible">
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
       </div>
@@ -76,21 +76,23 @@
             :key="index"
             @click="list.function"
           >
-            <template v-if="list.key == 'colseOrStart'">
+            <template v-if="list.key == 'colseOrStart'&&roleArry.includes('closeOrStart')">
               <span class="iconfont" :class="list.icon"></span>
               <span v-if="vmsInfo && vmsInfo?.vms">{{
                 vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
               }}</span>
             </template>
-            <template v-else-if="list.key == 'record'">
+            <template v-else-if="list.key == 'record'&&roleArry.includes('record')">
               <span class="iconfont" :class="list.icon"></span>
               <span>
                 {{ isScreenRecording ? "结束" : "开始" }}录屏
               </span>
             </template>
             <template v-else>
+            <template v-if="roleArry.includes(list.key as any)">
               <span class="iconfont" :class="list.icon"></span>
               <span>{{ list.name }}</span>
+              </template>
             </template>
           </li>
         </ul>
@@ -232,6 +234,8 @@ import {
   IAction,
   toStudyRecommendExperiment,
 } from "src/utils/vncInspect";
+import getMenuRole,{menuTypeArr} from "../menuRole";
+
 
 const route = useRoute();
 const router = useRouter();
@@ -339,6 +343,9 @@ const toolData =
         },
       ];
 const toolList = toolData;
+
+const roleArry:menuTypeArr=['recommend','test'].includes(opType as any)?getMenuRole(role as any,'vnc',opType as any) as any:getMenuRole(role as any,'vnc') as any
+console.log(roleArry);
 
 watch(
   () => vmsInfo,
