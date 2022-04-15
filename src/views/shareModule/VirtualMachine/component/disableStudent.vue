@@ -64,24 +64,10 @@ export default defineComponent({
           });
         }
       }
-      //   VmOperatesHandle("saveKvm").then((res) => {
-      //     (request as any).common.loginOut().then((res: any) => {
-      //       // console.log(res)
-      //       extStorage.lStorage.clean();
-      //       // message.success('')
-      //       // window.location.href = 'http://192.168.101.150:85/site/login';
-      //       let url = `${window.origin}/site/login`;
-      //       console.log(url);
-      //       window.location.href = url;
-      //     });
-      //   });
     }
     function loginOut() {
       (request as any).common.loginOut().then((res: any) => {
-        // console.log(res)
         extStorage.lStorage.clean();
-        // message.success('')
-        // window.location.href = 'http://192.168.101.150:85/site/login';
         let url = `${window.origin}/site/login`;
         console.log(url);
         window.location.href = url;
