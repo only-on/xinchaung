@@ -212,7 +212,7 @@ export default defineComponent({
           name: "教学质量",
           parent_id: 161,
           sort: 1,
-          url: "",
+          url: "/teacher/teachingQuality",
         }
       ]
     }
