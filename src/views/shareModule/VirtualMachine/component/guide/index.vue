@@ -1,6 +1,6 @@
 <template>
   <div class="experimental-guide-tab">
-     <!-- taskType 5任务制实验 -->
+    <!-- taskType 5任务制实验 -->
     <task-guide v-if="taskType === 5"></task-guide>
     <test-guide v-else></test-guide>
   </div>
@@ -26,7 +26,7 @@ const {
 }: any = vmQuery;
 console.log(opType, taskId, type, topoinst_id);
 let taskType: any = inject("taskType");
-taskType = 5
+taskType = 5;
 </script>
 
 <style lang="less">
@@ -41,12 +41,12 @@ taskType = 5
     flex-direction: column;
     // justify-content: space-between;
     > .start-train {
-        margin-left: auto;
-        margin-top: 35px;
-        >button{
-          margin-left: 10px;
-        }
+      margin-left: auto;
+      margin-top: 35px;
+      > button {
+        margin-left: 10px;
       }
+    }
   }
   .experimental-step-title {
     display: flex;
@@ -77,13 +77,15 @@ taskType = 5
     min-width: auto;
     overflow: hidden;
   }
-  .guide-waraing{
-    background: #f19100;
-    color: var(--black-100);
+  .guide-waraing {
+    // background: #f19100;
+    // color: var(--black-100);
+    background: var(--orangeyellow-6-24);
+    color: var(--orangeyellow-6);
     font-size: 12px;
     line-height: 24px;
     text-align: center;
-    >span{
+    > span {
       margin-right: 5px;
       font-size: 12px;
     }
