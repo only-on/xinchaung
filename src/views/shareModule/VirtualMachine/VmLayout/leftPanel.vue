@@ -18,6 +18,7 @@
     <note v-if="lastKey == 'experimental-note'"></note>
     <report v-if="lastKey == 'report'"></report>
     <questionsAndAnswers v-if="lastKey == 'forum'"></questionsAndAnswers>
+    <create-post></create-post>
   </div>
 </template>
 
@@ -27,6 +28,7 @@ import guide from "../component/guide/index.vue";
 import note from "../component/note/index.vue";
 import report from "../component/report/index.vue";
 import questionsAndAnswers from "../component/questionsAndAnswers/index.vue";
+import createPost from "src/views/shareModule/VirtualMachine/component/createPost.vue";
 
 const leftWidth: Ref<any> = inject("leftWidth", ref(70));
 const rightWidth: Ref<any> = inject("rightWidth", ref(window.innerWidth - 70));
@@ -94,6 +96,7 @@ function open(key: string) {
     word-spacing: normal;
     word-break: break-all;
     white-space: normal;
+    position: relative;
   }
 }
 </style>
