@@ -19,6 +19,8 @@
                 </template>
               </a-input>
           </div>
+          <div>
+          </div>
             <a-tree
             checkable
             @select="selectTree"
@@ -88,6 +90,8 @@
               placeholder="请输入搜索关键字"
               @search="onSearch"
             />
+          </div>
+          <div>
           </div>
           <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
             <div v-for="(item, index) in unGroupData" :key="index.toString()">
@@ -202,21 +206,24 @@ function toLeft(){
 }
 //把分组的学生移回
 function toRight(){
+  const allstuids:any=[]
     console.log(treeData.value,groupedKeys.value,'groupedKeys')
     groupedKeys.value.forEach((item:any) => {
         const i=item.split('-')[0] //treeData里的第几个数据
         const id=item.split('-')[1]  //学生id
+        allstuids.push(id)
         console.log(treeData.value[i].student_list,'gggg')
         const j=treeData.value[i].student_list.filter((it:any)=>{
           console.log(id,it)
           return it.userProfile.id==id;
         })
-        console.log(j)
-        // unGroupData.value.push(j) 
-        // removerRightStu.push(j)
-    })  
+        j.forEach((item:any,index:any)=> {
+          unGroupData.value.push(item) 
+          treeData.value[i].student_list.splice(index,1)
+        });
+        console.log(allstuids,'allstuids')
+    }) 
 }
-
 function ifselect(keys:any){
   if(keys?.length){
     return 'hover'
