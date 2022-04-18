@@ -8,52 +8,87 @@
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange" :dots="false">
       <template #prevArrow>
-        <div class="custom-slick-arrow" :class="current === 0?'first':''">
+        <div class="custom-slick-arrow" :class="current === 0 ? 'first' : ''">
           <span class="iconfont icon-zuojiantou"></span>
         </div>
       </template>
       <template #nextArrow>
-        <div class="custom-slick-arrow" :class="current === list.vms.vms.length-1?'last':''">
+        <div
+          class="custom-slick-arrow"
+          :class="current === list.vms.vms.length - 1 ? 'last' : ''"
+        >
           <span class="iconfont icon-youjiantou"></span>
         </div>
       </template>
       <div
         v-for="v in list.vms.vms"
         :key="v.uuid"
-        :class="{ active: v.status === 'ACTIVE', noactive: v.status !== 'ACTIVE' }"
+        :class="{
+          active: v.status === 'ACTIVE',
+          noactive: v.status !== 'ACTIVE',
+        }"
       ></div>
     </a-carousel>
-    <div class="kvm-info" :class="currentStatus ? '' : 'close'" v-if="list.vms.vms.length > 0">
+    <div
+      class="kvm-info"
+      :class="currentStatus ? '' : 'close'"
+      v-if="list.vms.vms.length > 0"
+    >
       <p class="kvm-status">
-        虚机状态：<span>{{
-          currentStatus ? "开启" : "关闭"
-        }}</span>
+        虚机状态：<span>{{ currentStatus ? "开启" : "关闭" }}</span>
       </p>
       <p class="operation-status">
         操作状态：<span>{{
-          list.online && list.vms.vms[current].uuid === list.current ? "繁忙" : "空闲"
+          list.online && list.vms.vms[current].uuid === list.current
+            ? "繁忙"
+            : "空闲"
         }}</span>
       </p>
     </div>
     <div class="mask" @click="jumpHandle(list)"></div>
   </div>
   <div class="btns" v-if="list.vms.vms.length > 0">
-    <span class="btn vm-open pointer" @click="btnClick(0)" :class="currentStatus ? 'isOpen' : ''">开机</span>
-    <span class="btn vm-close pointer" @click="btnClick(1)" :class="currentStatus ? '' : 'isOpen'">关机</span>
-    <span class="btn vm-revert pointer" @click="btnClick(2)" :class="currentStatus ? '' : 'isOpen'">重启</span>
-    <span class="btn vm-reset pointer" @click="btnClick(3)" :class="currentStatus ? '' : 'isOpen'">重置</span>
+    <span
+      class="btn vm-open pointer"
+      @click="btnClick(0)"
+      :class="currentStatus ? 'isOpen' : ''"
+      >开机</span
+    >
+    <span
+      class="btn vm-close pointer"
+      @click="btnClick(1)"
+      :class="currentStatus ? '' : 'isOpen'"
+      >关机</span
+    >
+    <span
+      class="btn vm-revert pointer"
+      @click="btnClick(2)"
+      :class="currentStatus ? '' : 'isOpen'"
+      >重启</span
+    >
+    <span
+      class="btn vm-reset pointer"
+      @click="btnClick(3)"
+      :class="currentStatus ? '' : 'isOpen'"
+      >重置</span
+    >
   </div>
 </template>
 
 <script lang="ts" setup>
-import { PlayCircleOutlined, PoweroffOutlined, ReloadOutlined, SyncOutlined  } from '@ant-design/icons-vue';
-import request from 'src/api/index'
-import { message } from 'ant-design-vue'
-import { defineComponent, ref, toRefs, PropType, inject, computed } from 'vue'
-import { IBusinessResp } from 'src/typings/fetch'
-import { useRouter, useRoute } from 'vue-router'
-import ls from "src/utils/extStorage"
-import {operatesHandle} from "src/utils/vncInspect"
+import {
+  PlayCircleOutlined,
+  PoweroffOutlined,
+  ReloadOutlined,
+  SyncOutlined,
+} from "@ant-design/icons-vue";
+import request from "src/api/index";
+import { message } from "ant-design-vue";
+import { defineComponent, ref, toRefs, PropType, inject, computed } from "vue";
+import { IBusinessResp } from "src/typings/fetch";
+import { useRouter, useRoute } from "vue-router";
+import ls from "src/utils/extStorage";
+import { operatesHandle } from "src/utils/vncInspect";
 interface Ivms {
   uuid: string;
   // atype: string
@@ -75,7 +110,7 @@ const courseInfo = inject("courseInfo") as any;
 const type = route.query.type;
 const http = (request as any).teachCourse;
 interface Props {
-  list: any
+  list: any;
 }
 const props = withDefaults(defineProps<Props>(), {
   list: () => {},
@@ -88,31 +123,33 @@ function beforeChange(from: Function, to: number) {
   current.value = to;
 }
 // 开启是true
-const currentStatus = computed(() => props.list.vms.vms[current.value].status === 'ACTIVE')
-let apiList = ['vmOpen', 'vmClose', 'vmRevert', 'vmReset']
-let vmStatus={
-  0:"startVm",
-  1:"closeVm",
-  2:"revertVm",
-  3:"resetVm"
-}
-console.log(props.list.vms.vms[current.value])
+const currentStatus = computed(
+  () => props.list.vms.vms[current.value].status === "ACTIVE"
+);
+let apiList = ["vmOpen", "vmClose", "vmRevert", "vmReset"];
+let vmStatus = {
+  0: "startVm",
+  1: "closeVm",
+  2: "revertVm",
+  3: "resetVm",
+};
+console.log(props.list.vms.vms[current.value]);
 let params = {
   // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
   uuid: props.list.vms.vms[current.value]?.uuid,
-  atype: courseInfo.type
-}
+  atype: courseInfo.type,
+};
 function btnClick(v: any) {
-  let param:any={
-    action:vmStatus[v],
-    params:{
-      uuid:props.list.vms.vms[current.value]?.uuid,
-    }
-  }
-  operatesHandle(param).then((res:any)=>{
+  let param: any = {
+    action: vmStatus[v],
+    params: {
+      uuid: props.list.vms.vms[current.value]?.uuid,
+    },
+  };
+  operatesHandle(param).then((res: any) => {
     console.log(res);
-    emit('getList')
-  })
+    emit("getList");
+  });
 }
 
 function jumpHandle(list: any) {
@@ -153,7 +190,6 @@ function jumpHandle(list: any) {
   display: flex;
   justify-content: space-between;
   .stu-name {
-
   }
   .stu-id {
     width: 110px;
@@ -182,7 +218,7 @@ function jumpHandle(list: any) {
 .btns {
   // text-align: center;
   height: 40px;
-  background-color: rgba(28,178,179,0.14);
+  background-color: rgba(28, 178, 179, 0.14);
   .btn {
     display: inline-block;
     height: 19px;
@@ -190,12 +226,12 @@ function jumpHandle(list: any) {
     padding: 0 25px;
     margin: 10px 0;
     border-right: 1px solid var(--brightBtn-25);
-    color: rgba(0,120,121,1);
+    color: rgba(0, 120, 121, 1);
     &:last-child {
       border-right: 0;
     }
     &.isOpen {
-      color: rgba(0,120,121,0.25);
+      color: rgba(0, 120, 121, 0.25);
     }
   }
   .btn.disabled {
@@ -215,13 +251,14 @@ function jumpHandle(list: any) {
   }
   .active {
     background: url(src/assets/images/vm/kvm-computer-open.png) center no-repeat;
-    height: 150px;
-    background-size: 90%;
+    height: 132px;
+    // background-size: 90%;
   }
   .noactive {
-    background: url(src/assets/images/vm/kvm-computer-close.png) center no-repeat;
-    height: 150px;
-    background-size: 90%;
+    background: url(src/assets/images/vm/kvm-computer-close.png) center
+      no-repeat;
+    height: 132px;
+    // background-size: 90%;
   }
 }
 
@@ -238,7 +275,8 @@ function jumpHandle(list: any) {
     &.slick-prev {
       left: 0;
     }
-    &.last, &.first {
+    &.last,
+    &.first {
       opacity: 0.25;
     }
     .iconfont {
