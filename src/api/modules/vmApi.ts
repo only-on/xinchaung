@@ -47,7 +47,9 @@ export default {
     // 上传实训报告
     uploadTrainReportApi:{url:"/student-train/uploadreport",method:"POST",dataType:"formdata"},
     // 学生自评
-    evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"}
+    evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"},
+    // 随堂测试
+    getQuestionListApi:{url:"api/v1/xinchuang/question/contents/{content_id}/questions",methods:"GET",dataType:"json"}
 }
 
 // 
@@ -83,6 +85,7 @@ export interface IvmApi {
     switchInterfaceApi:TFHttpSend
     uploadTrainReportApi:TFHttpSend
     evaluateApi:TFHttpSend
+    getQuestionListApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

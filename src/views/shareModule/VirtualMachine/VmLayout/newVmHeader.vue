@@ -8,9 +8,9 @@
       <div class="selected pointer">
         <span class="name">{{ baseInfo?.base_info?.name }}</span>
       </div>
-      <div class="class-test pointer" @click="classTestVisible = true" v-if="role == 4">
+      <div class="class-test pointer" @click="openQuizModal" v-if="role == 4">
         <span>随堂测试</span>
-        <span>({{ !classTestTotal ? 0 : testNum + "/" + classTestTotal }})</span>
+        <span>({{ answerNum + "/" + oldQuizPaperList.length }})</span>
         <i class="sign"></i>
       </div>
     </div>
@@ -22,7 +22,7 @@
         }}</span
       >
     </div>
-    <div class="right-box" >
+    <div class="right-box">
       <div class="ip-list" v-if="roleArry.includes('switchVm')">
         <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
           <a-select-option
@@ -50,7 +50,11 @@
       >
         切换为{{ currentInterface === "ssh" ? "VNC" : "SSH" }}
       </div>
-      <div class="tool pointer" v-if="roleArry.includes('tools')" @click="visible = !visible">
+      <div
+        class="tool pointer"
+        v-if="roleArry.includes('tools')"
+        @click="visible = !visible"
+      >
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
       </div>
@@ -70,31 +74,34 @@
     >
       <div class="vm-operate">
         <ul>
-          <li
-            class="pointer"
-            v-for="(list, index) in toolList"
-            :key="index"
-            @click="list.function"
-          >
-            <template v-if="list.key == 'colseOrStart'&&roleArry.includes('closeOrStart')">
+          <template v-for="(list, index) in toolList" :key="index">
+            <li
+              class="pointer"
+              @click="list.function"
+              v-if="list.key == 'colseOrStart'&&roleArry.includes(list.key as any)"
+            >
               <span class="iconfont" :class="list.icon"></span>
               <span v-if="vmsInfo && vmsInfo?.vms">{{
                 vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
               }}</span>
-            </template>
-            <template v-else-if="list.key == 'record'&&roleArry.includes('record')">
+            </li>
+            <li
+              class="pointer"
+              @click="list.function"
+              v-else-if="list.key == 'record'&&roleArry.includes(list.key as any)"
+            >
               <span class="iconfont" :class="list.icon"></span>
-              <span>
-                {{ isScreenRecording ? "结束" : "开始" }}录屏
-              </span>
-            </template>
-            <template v-else>
-            <template v-if="roleArry.includes(list.key as any)">
+              <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
+            </li>
+            <li
+              class="pointer"
+              @click="list.function"
+              v-if="roleArry.includes(list.key as any)"
+            >
               <span class="iconfont" :class="list.icon"></span>
               <span>{{ list.name }}</span>
-              </template>
-            </template>
-          </li>
+            </li>
+          </template>
         </ul>
       </div>
       <div class="vm-info">
@@ -182,7 +189,7 @@
     <template #title>共享桌面</template>
     <div>
       <p>复制以下链接发给朋友，邀请他远程协助，与你共同完成实验</p>
-      <a-input v-model:value="tempVmUrl" ref="codeRef"/>
+      <a-input v-model:value="tempVmUrl" ref="codeRef" />
       <a-button @click="selectUrl" type="primary" style="margin-top: 10px"
         >选中链接</a-button
       >
@@ -207,16 +214,79 @@
     </div>
   </a-modal>
   <!--倒计时为0时，提示框-->
-  <a-modal :visible="delayVisiable" title="提示" cancelText="结束" okText="延时" class="delay-end-modal" @cancel="finishTest"
-    @ok="delayedTime">
+  <a-modal
+    v-model:visible="delayVisiable"
+    title="提示"
+    cancelText="结束"
+    okText="延时"
+    class="delay-end-modal"
+    @cancel="finishTest"
+    @ok="delayedTime"
+  >
     <div class="hint-delay-info">
-      实验时间已到，您可以选择结束实验或通过延时继续进行实验！<span class="down-time-60s">{{delayTime}}</span>s后自动结束实验！;
+      实验时间已到，您可以选择结束实验或通过延时继续进行实验！<span
+        class="down-time-60s"
+        >{{ delayTime }}</span
+      >s后自动结束实验！;
+    </div>
+  </a-modal>
+  <a-modal
+    v-model:visible="quizVisiable"
+    title="随堂测试"
+    cancelText="取消"
+    okText="提交"
+    class="quiz-modal"
+    @cancel="cancelQuiz"
+    @ok="submitQuiz"
+  >
+    <div>
+      <template v-if="currentShowType == 0">
+        <div v-if="quizPaperList[currentQuizIndex]">
+          <template v-if="quizPaperList[currentQuizIndex].type_id == 2">
+            <div class="choice-title">{{ quizPaperList[currentQuizIndex].question }}</div>
+            <a-checkbox-group
+              v-model:value="quizPaperList[currentQuizIndex].student_answer"
+              style="width: 100%"
+            >
+              <div
+                v-for="(item, index) in quizPaperList[currentQuizIndex].options"
+                :key="item.id"
+              >
+                <a-checkbox :value="item.id"
+                  ><i>{{ numToAbc(index + 1) }}、</i>{{ item.option }}</a-checkbox
+                >
+              </div>
+            </a-checkbox-group>
+          </template>
+          <template v-if="quizPaperList[currentQuizIndex].type_id == 5">
+          jiandanti
+            <!-- <simpleQuestion
+              v-model:value="quizPaperList[currentQuizIndex]"
+            ></simpleQuestion> -->
+          </template>
+        </div>
+      </template>
+      <template v-if="[1, 2].includes(currentShowType)">
+        <div>
+          <div v-if="currentShowType == 2">
+            <span>共<i>3</i>题</span><span>总分<i>100</i>分</span
+            ><span>得分<i>90</i>分</span>
+          </div>
+        </div>
+      </template>
+      <div>
+        <template v-if="currentShowType==0">
+          <div>
+            <a-button>取消</a-button>
+          </div>
+        </template>
+      </div>
     </div>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, inject, Ref, onMounted, watch,nextTick } from "vue";
+import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import numberInput from "src/components/aiAnt/numberInput.vue";
 import { message, Modal } from "ant-design-vue";
@@ -225,6 +295,7 @@ import { isJsonString } from "src/utils/common";
 import { copyText } from "src/utils/copySelect";
 import request from "src/request/getRequest";
 import { getVmConnectSetting } from "src/utils/seeting";
+import { numToAbc } from "src/utils/common";
 import {
   endOperates,
   endExperiment,
@@ -234,13 +305,13 @@ import {
   IAction,
   toStudyRecommendExperiment,
 } from "src/utils/vncInspect";
-import getMenuRole,{menuTypeArr} from "../menuRole";
-
+import getMenuRole, { menuTypeArr } from "../menuRole";
+import { cloneDeep } from "lodash";
 
 const route = useRoute();
 const router = useRouter();
 const vmApi = request.vmApi;
-const { type, opType, taskId,topoinst_id,topoinst_uuid } = route.query;
+const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 
 // inject接收块
 const taskType: any = inject("taskType");
@@ -256,10 +327,10 @@ const loading: any = inject("loading");
 const isClose: any = inject("isClose");
 const initVnc: any = inject("initVnc");
 const novncEl: any = inject("novncEl");
-const currentOption:any=inject("currentOption")
-const evaluateData:any=inject("evaluateData")
-const evaluateVisible:any=inject("evaluateVisible")
-const initEvaluate:any=inject("initEvaluate")
+const currentOption: any = inject("currentOption");
+const evaluateData: any = inject("evaluateData");
+const evaluateVisible: any = inject("evaluateVisible");
+const initEvaluate: any = inject("initEvaluate");
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -272,18 +343,34 @@ const saveExperimentData: Ref<{
   train: [],
 });
 
-const shareVisible:Ref<boolean>=ref(false)
-const tempVmUrl:Ref<string>=ref("")
-const codeRef:any=ref(null)
+const shareVisible: Ref<boolean> = ref(false);
+const tempVmUrl: Ref<string> = ref("");
+const codeRef: any = ref(null);
 
-const assistanceVisible:Ref<boolean>=ref(false)
-const assistanceQuestion:Ref<string>=ref("")
+const assistanceVisible: Ref<boolean> = ref(false);
+const assistanceQuestion: Ref<string> = ref("");
 let role = 4;
-const classTestVisible = ref(false);
 const visible = ref(false);
 
-const delayVisiable=ref(false)
-const delayTime=ref(60) // 实验时间结束，延时提示框倒计时
+// 随堂测试
+const quizVisiable = ref(false);
+const oldQuizPaperList: Ref<any> = ref([]); // 原始数据
+const quizPaperList: Ref<any> = ref([]);
+const currentQuizIndex: Ref<number> = ref(0);
+const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
+
+const answerNum = computed(() => {
+  let num = 0;
+  oldQuizPaperList.value.forEach((item: any) => {
+    if (item.student_answer.length > 0) {
+      num++;
+    }
+  });
+  return num;
+});
+
+const delayVisiable = ref(false);
+const delayTime = ref(60); // 实验时间结束，延时提示框倒计时
 let delayTimer: NodeJS.Timer | null = null; // 延时倒计时
 // 随堂测试
 const classTestTotal = ref<number>(5);
@@ -305,7 +392,7 @@ let videoTime = ref(0); // 录屏计时总秒数
 let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
 
 // 非响应式
-let historyLength=history.length
+let historyLength = history.length;
 const toolData =
   role == 3 || role == 5
     ? [
@@ -344,7 +431,9 @@ const toolData =
       ];
 const toolList = toolData;
 
-const roleArry:menuTypeArr=['recommend','test'].includes(opType as any)?getMenuRole(role as any,'vnc',opType as any) as any:getMenuRole(role as any,'vnc') as any
+const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
+  ? (getMenuRole(role as any, "vnc", opType as any) as any)
+  : (getMenuRole(role as any, "vnc") as any);
 console.log(roleArry);
 
 watch(
@@ -356,6 +445,552 @@ watch(
     deep: true,
   }
 );
+
+// 获取随堂测试习题·
+function getQuestionList() {
+  oldQuizPaperList.value = [
+    {
+      id: 545,
+      question: "创建多选2",
+      type_id: 2,
+      level_id: 3,
+      pool_id: 87,
+      origin_score: 2,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1734,
+      student_answer: ["1", "2"],
+      note: "",
+      points: {
+        knowledge_name: "node2,node3",
+        knowledge_names: [
+          ["大数据", "node", "node2"],
+          ["大数据", "node", "node3"],
+        ],
+        knowledge_ids: [50002, 50003],
+      },
+      type: {
+        id: 2,
+        name: "多选题",
+      },
+      level: {
+        id: 3,
+        name: "困难",
+      },
+      options: [
+        {
+          id: 1723,
+          option: "无所谓",
+        },
+        {
+          id: 1724,
+          option: "税务师我说unnuuunu",
+        },
+        {
+          id: 1725,
+          option: "是我swsswsw",
+        },
+        {
+          id: 1726,
+          option: "上午我说我说",
+        },
+      ],
+      keywords: [],
+      answers: [
+        {
+          id: 690,
+          answer: "1723",
+        },
+        {
+          id: 691,
+          answer: "1724",
+        },
+        {
+          id: 692,
+          answer: "1725",
+        },
+        {
+          id: 693,
+          answer: "1726",
+        },
+      ],
+    },
+    {
+      id: 542,
+      question: "dedehuedhdeudeudehu",
+      type_id: 2,
+      level_id: 1,
+      pool_id: 87,
+      origin_score: 2,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1735,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "node2,node3",
+        knowledge_names: [
+          ["大数据", "node", "node2"],
+          ["大数据", "node", "node3"],
+        ],
+        knowledge_ids: [50003, 50002],
+      },
+      type: {
+        id: 2,
+        name: "多选题",
+      },
+      level: {
+        id: 1,
+        name: "简单",
+      },
+      options: [
+        {
+          id: 1575,
+          option: "ededde",
+        },
+        {
+          id: 1576,
+          option: "dddededededeed",
+        },
+        {
+          id: 1577,
+          option: "dedede",
+        },
+        {
+          id: 1578,
+          option: "hufrhrf",
+        },
+      ],
+      keywords: [],
+      answers: [
+        {
+          id: 650,
+          answer: "1578",
+        },
+        {
+          id: 651,
+          answer: "1577",
+        },
+      ],
+    },
+    {
+      id: 509,
+      question: "多选题222",
+      type_id: 2,
+      level_id: 1,
+      pool_id: 87,
+      origin_score: 2,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1736,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "",
+        knowledge_names: [],
+      },
+      type: {
+        id: 2,
+        name: "多选题",
+      },
+      level: {
+        id: 1,
+        name: "简单",
+      },
+      options: [
+        {
+          id: 1453,
+          option: "w w w",
+        },
+        {
+          id: 1454,
+          option: "呜呜呜呜呜",
+        },
+        {
+          id: 1455,
+          option: "www我",
+        },
+        {
+          id: 1456,
+          option: "让反反复复",
+        },
+      ],
+      keywords: [],
+      answers: [
+        {
+          id: 609,
+          answer: "1454",
+        },
+        {
+          id: 610,
+          answer: "1453",
+        },
+        {
+          id: 611,
+          answer: "1455",
+        },
+      ],
+    },
+    {
+      id: 508,
+      question: "多选题测试111",
+      type_id: 2,
+      level_id: 1,
+      pool_id: 87,
+      origin_score: 1,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1737,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "",
+        knowledge_names: [],
+      },
+      type: {
+        id: 2,
+        name: "多选题",
+      },
+      level: {
+        id: 1,
+        name: "简单",
+      },
+      options: [
+        {
+          id: 1449,
+          option: "兑现1",
+        },
+        {
+          id: 1450,
+          option: "多虚啊2",
+        },
+        {
+          id: 1451,
+          option: "多选3",
+        },
+        {
+          id: 1452,
+          option: "多选4",
+        },
+      ],
+      keywords: [],
+      answers: [
+        {
+          id: 606,
+          answer: "1449",
+        },
+        {
+          id: 607,
+          answer: "1450",
+        },
+        {
+          id: 608,
+          answer: "1452",
+        },
+      ],
+    },
+    {
+      id: 575,
+      question: "ggyyyyyyyyygy",
+      type_id: 5,
+      level_id: 3,
+      pool_id: 87,
+      origin_score: 5,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1738,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "node2,node3",
+        knowledge_names: [
+          ["大数据", "node", "node2"],
+          ["大数据", "node", "node3"],
+        ],
+        knowledge_ids: [50002, 50003],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 3,
+        name: "困难",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 474,
+          keyword: "gyyyyy",
+        },
+      ],
+      answers: [
+        {
+          id: 747,
+          answer: "fttttttttt",
+        },
+      ],
+    },
+    {
+      id: 566,
+      question: "解答题知识点",
+      type_id: 5,
+      level_id: 2,
+      pool_id: 87,
+      origin_score: 3,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1739,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "node2,node3,111",
+        knowledge_names: [
+          ["大数据", "node", "node2"],
+          ["大数据", "node", "node3"],
+          ["大数据", "node", "node1", "df", "111"],
+        ],
+        knowledge_ids: [50002, 50003, 50005],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 2,
+        name: "中等",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 471,
+          keyword: "的的额度",
+        },
+      ],
+      answers: [
+        {
+          id: 736,
+          answer: "的的的",
+        },
+      ],
+    },
+    {
+      id: 564,
+      question: "rfrffrfrrffhuhfhfhaa叫啊叫姐姐哈哈哈哈哈哈哈哈哈",
+      type_id: 5,
+      level_id: 2,
+      pool_id: 87,
+      origin_score: 31,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1740,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "node2,node3",
+        knowledge_names: [
+          ["大数据", "node", "node2"],
+          ["大数据", "node", "node3"],
+        ],
+        knowledge_ids: [50003, 50002],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 2,
+        name: "中等",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 470,
+          keyword: "edededede",
+        },
+      ],
+      answers: [
+        {
+          id: 735,
+          answer: "哈哈哈dededededxssxsx",
+        },
+      ],
+    },
+    {
+      id: 562,
+      question: "rfrffrrfffrfrfrrfrfrffrrffr",
+      type_id: 5,
+      level_id: 2,
+      pool_id: 87,
+      origin_score: 5,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1741,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "",
+        knowledge_names: [],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 2,
+        name: "中等",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 464,
+          keyword: "rffrfr",
+        },
+      ],
+      answers: [
+        {
+          id: 726,
+          answer: "rffrfrfrffr",
+        },
+      ],
+    },
+    {
+      id: 555,
+      question: "解答题哈哈哈啊哈哈wswguuuguuggugugu",
+      type_id: 5,
+      level_id: 3,
+      pool_id: 87,
+      origin_score: 41,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1742,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "111,ddddd",
+        knowledge_names: [
+          ["大数据", "node", "node1", "df", "111"],
+          ["大数据", "node", "node1", "df", "ddddd"],
+        ],
+        knowledge_ids: [50006, 50005],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 3,
+        name: "困难",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 465,
+          keyword: "ededdeeddeed",
+        },
+      ],
+      answers: [
+        {
+          id: 727,
+          answer: "dedddededed33333",
+        },
+      ],
+    },
+    {
+      id: 523,
+      question: "ssswwsswdede",
+      type_id: 5,
+      level_id: 1,
+      pool_id: 87,
+      origin_score: 1,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1743,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "",
+        knowledge_names: [],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 1,
+        name: "简单",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 466,
+          keyword: "啊uuu",
+        },
+      ],
+      answers: [
+        {
+          id: 728,
+          answer:
+            "huedh哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊de",
+        },
+      ],
+    },
+    {
+      id: 522,
+      question: "解答题",
+      type_id: 5,
+      level_id: 1,
+      pool_id: 87,
+      origin_score: 1,
+      ordered_answer: 0,
+      user_id: 100,
+      relation_id: 1744,
+      student_answer: [],
+      note: "",
+      points: {
+        knowledge_name: "111,ddddd",
+        knowledge_names: [
+          ["大数据", "node", "node1", "df", "111"],
+          ["大数据", "node", "node1", "df", "ddddd"],
+        ],
+        knowledge_ids: [50005, 50006],
+      },
+      type: {
+        id: 5,
+        name: "简答题",
+      },
+      level: {
+        id: 1,
+        name: "简单",
+      },
+      options: [],
+      keywords: [
+        {
+          id: 475,
+          keyword: "dedede",
+        },
+      ],
+      answers: [
+        {
+          id: 748,
+          answer: "话 hu hu f h vu g别别扭扭河南女孩发染发烦人烦人烦人烦人染发111",
+        },
+      ],
+    },
+  ];
+  console.log(oldQuizPaperList.value.length);
+
+  let param = {
+    page: 1,
+    limit: "all",
+  };
+  vmApi
+    .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
+    .then((res: any) => {
+      console.log(res);
+      oldQuizPaperList.value = res.data;
+    });
+}
 function back() {}
 
 // 下拉选择虚拟机
@@ -363,7 +998,7 @@ async function switchVm() {
   currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
   currentUuid.value = currentVm.value.uuid;
   if (isScreenRecording.value) {
-      await startEndRecord()
+    await startEndRecord();
   }
   if (currentVm.value.status == "SHUTOFF") {
     if (
@@ -378,7 +1013,7 @@ async function switchVm() {
         await VmOperatesHandle("startVm");
         vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
         loading.value = true;
-        settingCurrentVM()
+        settingCurrentVM();
         initVnc.value();
       }
     }
@@ -386,7 +1021,7 @@ async function switchVm() {
     loading.value = true;
     await VmOperatesHandle("startVm");
     vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-    settingCurrentVM()
+    settingCurrentVM();
     initVnc.value();
   }
 }
@@ -407,95 +1042,95 @@ function showChange() {}
 // 结束实验
 function finishExperiment() {
   let modal = Modal.confirm({
-        title: `确认结束${opType === "help" ? "演示" : role === 4 ? '实验' : "备课"}吗？`,
-        okText: "确认",
-        onOk: async () => {
-          await finishTest()
-          modal.destroy();
-        },
-        cancelText: "取消",
-        onCancel: () => {
-          modal.destroy();
-        },
-      });
+    title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
+    okText: "确认",
+    onOk: async () => {
+      await finishTest();
+      modal.destroy();
+    },
+    cancelText: "取消",
+    onCancel: () => {
+      modal.destroy();
+    },
+  });
 }
 
 // 检查脚本并结束实验
-    async function finishTest() {
-      if (isScreenRecording.value) {
-            await startEndRecord();
-          }
-          if (["recommend", "prepare", "help"].includes(opType as any)) {
-            endVmEnvirment();
-            return;
-          }
-          if (
-            baseInfo &&
-            baseInfo.value &&
-            baseInfo.value.base_info &&
-            baseInfo.value.base_info.step_score_exists
-          ) {
-            endVmOperates().then((res: any) => {
-              // evaluateVisible.value = true;
-              // recommendExperimentData.value = res.data;
-              endVmEnvirment();
-            });
-          } else {
-            endVmEnvirment();
-          }
-    }
+async function finishTest() {
+  if (isScreenRecording.value) {
+    await startEndRecord();
+  }
+  if (["recommend", "prepare", "help"].includes(opType as any)) {
+    endVmEnvirment();
+    return;
+  }
+  if (
+    baseInfo &&
+    baseInfo.value &&
+    baseInfo.value.base_info &&
+    baseInfo.value.base_info.step_score_exists
+  ) {
+    endVmOperates().then((res: any) => {
+      // evaluateVisible.value = true;
+      // recommendExperimentData.value = res.data;
+      endVmEnvirment();
+    });
+  } else {
+    endVmEnvirment();
+  }
+}
 // 结束脚本入口
-    function endVmEnvirment() {
-      let params: any = null;
-      if (role === 4) {
-        params = {
-          opType: opType,
-          type: type,
-          taskId: taskId,
-          topoinst_id: topoinst_id,
-        };
-      }
-      if (role === 3||role === 5) {
-        params = {
-          opType: opType,
-          type: type,
-          taskId: taskId,
-        };
-      }
+function endVmEnvirment() {
+  let params: any = null;
+  if (role === 4) {
+    params = {
+      opType: opType,
+      type: type,
+      taskId: taskId,
+      topoinst_id: topoinst_id,
+    };
+  }
+  if (role === 3 || role === 5) {
+    params = {
+      opType: opType,
+      type: type,
+      taskId: taskId,
+    };
+  }
 
-      setTimeout(() => {
-        endExperiment(params).then((res: any) => {
-          if (
-            role == 4 &&
-            !["recommend", "test", "help"].includes(opType as any) &&
-            !["train"].includes(type as any)
-          ) {
-            // 自评推荐写在此处
-            evaluateData.value = res.data;
-            evaluateVisible.value = true;
-            nextTick(() => {
-            //   histogramCharts(evaluateData.value)
-              initEvaluate()
-            });
-          } else {
-            // backTo(router, type, 3, routerQuery);
-            router.go(historyLength-history.length-1)
-          }
-          // message.success("结束成功");
+  setTimeout(() => {
+    endExperiment(params).then((res: any) => {
+      if (
+        role == 4 &&
+        !["recommend", "test", "help"].includes(opType as any) &&
+        !["train"].includes(type as any)
+      ) {
+        // 自评推荐写在此处
+        evaluateData.value = res.data;
+        evaluateVisible.value = true;
+        nextTick(() => {
+          //   histogramCharts(evaluateData.value)
+          initEvaluate();
         });
-      }, 3000);
-    }
-    // 结束实验
-    async function endVmOperates() {
-      let param: any = {
-        type: type,
-        taskId: taskId,
-        opType: opType,
-        action: "recommend",
-        topoinst_id: topoinst_uuid,
-      };
-      return await endOperates(param);
-    }
+      } else {
+        // backTo(router, type, 3, routerQuery);
+        router.go(historyLength - history.length - 1);
+      }
+      // message.success("结束成功");
+    });
+  }, 3000);
+}
+// 结束实验
+async function endVmOperates() {
+  let param: any = {
+    type: type,
+    taskId: taskId,
+    opType: opType,
+    action: "recommend",
+    topoinst_id: topoinst_uuid,
+  };
+  return await endOperates(param);
+}
 // 切换抽屉时动画结束后的回调
 function afterVisibleChange(bool: boolean) {
   console.log("visible", bool);
@@ -520,7 +1155,7 @@ function colseOrStart() {
 // 关机
 async function closeVm() {
   if (isScreenRecording.value) {
-      await startEndRecord()
+    await startEndRecord();
   }
   await VmOperatesHandle("closeVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "SHUTOFF";
@@ -542,7 +1177,7 @@ async function startVm() {
 // 重置
 async function resetVm() {
   if (isScreenRecording.value) {
-      await startEndRecord()
+    await startEndRecord();
   }
   await VmOperatesHandle("resetVm");
   loading.value = true;
@@ -593,19 +1228,19 @@ async function startEndRecord() {
   console.log("开始录屏");
   if (isScreenRecording.value) {
     // 结束录屏
-    const res:any= await VmOperatesHandle("stopRecord");
-    if (res.status==0) {
+    const res: any = await VmOperatesHandle("stopRecord");
+    if (res.status == 0) {
       return;
     }
     isScreenRecording.value = false;
     videoTime.value = 0;
     clearInterval(Number(viodeTimer));
     videoTimeText.value = secondToHHMMSS(Number(videoTime.value));
-    message.success("结束录屏成功")
+    message.success("结束录屏成功");
   } else {
     // 开始录屏
-    const res:any= await VmOperatesHandle("startRecord");
-    if (res.status==0) {
+    const res: any = await VmOperatesHandle("startRecord");
+    if (res.status == 0) {
       return;
     }
     isScreenRecording.value = true;
@@ -614,27 +1249,29 @@ async function startEndRecord() {
       videoTime.value++;
       videoTimeText.value = secondToHHMMSS(Number(videoTime.value));
     }, 1000);
-    message.success("开始录屏")
+    message.success("开始录屏");
   }
 }
 
 function shareDesktop() {
   Modal.confirm({
-    title:"消息提示",
-    content:"确认共享桌面吗？",
-    okText:"是",
-    cancelText:"否",
-    onOk:()=>{
-      tempVmUrl.value=""
-      shareVisible.value=true
-      let env=process.env.NODE_ENV==="development"?true:false
-      tempVmUrl.value=`${window.location.protocol}//${window.location.host}${env?'/#/':'/frontend/#/'}vm/vm?wsUrl=${currentOption.value.wsUrl}`
+    title: "消息提示",
+    content: "确认共享桌面吗？",
+    okText: "是",
+    cancelText: "否",
+    onOk: () => {
+      tempVmUrl.value = "";
+      shareVisible.value = true;
+      let env = process.env.NODE_ENV === "development" ? true : false;
+      tempVmUrl.value = `${window.location.protocol}//${window.location.host}${
+        env ? "/#/" : "/frontend/#/"
+      }vm/vm?wsUrl=${currentOption.value.wsUrl}`;
     },
-  })
+  });
 }
 
 function remoteAssist() {
-  assistanceQuestion.value=""
+  assistanceQuestion.value = "";
   assistanceVisible.value = true;
 }
 
@@ -662,16 +1299,16 @@ function times() {
 
       if (use_time.value === 0) {
         clearInterval(Number(timer));
-            delayTime.value=60
-            delayVisiable.value=true
+        delayTime.value = 60;
+        delayVisiable.value = true;
+        clearInterval(Number(delayTimer));
+        delayTimer = setInterval(() => {
+          delayTime.value--;
+          if (delayTime.value == 0) {
             clearInterval(Number(delayTimer));
-            delayTimer=setInterval(()=>{
-              delayTime.value--
-              if (delayTime.value==0) {
-                clearInterval(Number(delayTimer));
-                finishTest();
-              }
-            },1000)
+            finishTest();
+          }
+        }, 1000);
       }
       if (use_time.value < 0) {
         use_time.value = 0;
@@ -744,69 +1381,86 @@ function okProgress() {
 function progressChange() {}
 
 // 关闭共享桌面modal
-function closeShreModal(){
-  shareVisible.value=false
+function closeShreModal() {
+  shareVisible.value = false;
 }
 
 // 选中链接
-    function selectUrl(e:any) {
-      e.preventDefault();
-        (codeRef.value as any).select();
-        document.execCommand("Copy"); //
-    }
+function selectUrl(e: any) {
+  e.preventDefault();
+  (codeRef.value as any).select();
+  document.execCommand("Copy"); //
+}
 
-    // 关闭协助modal
-    function closeAssistance() {
-      assistanceVisible.value = false;
-      assistanceQuestion.value = "";
-    }
-    // 发送协助信息
-    function okAssistance() {
-      if (assistanceQuestion.value.length === 0) {
-        message.warn("请输入请求协助内容");
-        return;
-      }
-      if (assistanceQuestion.value.length>=30) {
-        message.warn("请将你的问题用少于30个字来描述");
-        return;
-      }
-      let param = {
-        action: "question",
-        params: {
-          type: type,
-          opType: opType,
-          taskId: taskId,
-          question: assistanceQuestion.value,
-        },
-      };
-      vmApi.studentQuestionApi({ param: { ...param } }).then((res) => {
-        assistanceVisible.value = false;
-        message.success("请求发送成功");
-      });
-    }
+// 关闭协助modal
+function closeAssistance() {
+  assistanceVisible.value = false;
+  assistanceQuestion.value = "";
+}
+// 发送协助信息
+function okAssistance() {
+  if (assistanceQuestion.value.length === 0) {
+    message.warn("请输入请求协助内容");
+    return;
+  }
+  if (assistanceQuestion.value.length >= 30) {
+    message.warn("请将你的问题用少于30个字来描述");
+    return;
+  }
+  let param = {
+    action: "question",
+    params: {
+      type: type,
+      opType: opType,
+      taskId: taskId,
+      question: assistanceQuestion.value,
+    },
+  };
+  vmApi.studentQuestionApi({ param: { ...param } }).then((res) => {
+    assistanceVisible.value = false;
+    message.success("请求发送成功");
+  });
+}
 
-    function settingCurrentVM() {
-      currentOption.value.password = getVmConnectSetting.VNCPASS;
-      currentOption.value.wsUrl =
-        getVmConnectSetting.VNCPROTOC +
-        "://" +
-        currentVm.value.base_ip +
-        ":" +
-        getVmConnectSetting.VNCPORT +
-        "/websockify?vm_uuid=" +
-        currentVm.value.uuid;
-        
-    }
-    //  // 绘制自评
-    // function histogramCharts(data:any) {
-    //   isClose.value=true
-    //   try {
-    //     histogram(histogramEchart1, data);
-    //   } catch (error) {
-    //     histogram(histogramEchart1, data);
-    //   }
-    // }
+function settingCurrentVM() {
+  currentOption.value.password = getVmConnectSetting.VNCPASS;
+  currentOption.value.wsUrl =
+    getVmConnectSetting.VNCPROTOC +
+    "://" +
+    currentVm.value.base_ip +
+    ":" +
+    getVmConnectSetting.VNCPORT +
+    "/websockify?vm_uuid=" +
+    currentVm.value.uuid;
+}
+//  // 绘制自评
+// function histogramCharts(data:any) {
+//   isClose.value=true
+//   try {
+//     histogram(histogramEchart1, data);
+//   } catch (error) {
+//     histogram(histogramEchart1, data);
+//   }
+// }
+
+//
+// 打开随堂测试
+function openQuizModal() {
+  quizVisiable.value = true;
+  quizPaperList.value = cloneDeep(oldQuizPaperList.value);
+  if (quizPaperList.value.length == answerNum.value) {
+    currentShowType.value = 1;
+  } else {
+    currentShowType.value = 0;
+  }
+}
+// 提交
+function submitQuiz() {}
+
+// 取消随堂测试
+function cancelQuiz() {}
 onMounted(() => {
+  getQuestionList();
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
@@ -821,17 +1475,20 @@ onMounted(() => {
     clearInterval(Number(delayTimer));
   });
 
-  // function test(){
-  //   evaluateVisible.value = true;
-  //   initEvaluate()
-  // }
+// function test(){
+//   evaluateVisible.value = true;
+//   initEvaluate()
+// }
 </script>
 
 <style lang="less" scoped>
-.delay-end-modal{
-  .hint-delay-info{
+i {
+  font-style: normal;
+}
+.delay-end-modal {
+  .hint-delay-info {
     // text-indent: 2em;
-    .down-time-60s{
+    .down-time-60s {
       color: red;
     }
   }
@@ -880,12 +1537,12 @@ onMounted(() => {
       }
     }
   }
-  .center-box{
+  .center-box {
     flex-shrink: 0;
     line-height: 70px;
-    .video-time{
+    .video-time {
       height: 35px;
-      color: #FFBA49;
+      color: #ffba49;
     }
   }
   .right-box {

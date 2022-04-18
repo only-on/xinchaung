@@ -92,11 +92,15 @@ export type menuTypeArr=['guide','note','report','question','switchVm','delayed'
 
 function getMenuRole(role:4|3,type:taskType,studyType?:studyType) {
     console.log(role,type);
-    
-    if (studyType) {
-        return menuRole.studyType[studyType][type]
+    if ([3,4].includes(role)) {
+        if (studyType) {
+            return menuRole.studyType[studyType][type]
+        }else{
+            return menuRole[type][role]
+        }
     }else{
-        return menuRole[type][role]
+        return []
     }
+    
 }
 export default getMenuRole
