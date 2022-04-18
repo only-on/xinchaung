@@ -1,6 +1,9 @@
 import { TFHttpSend } from "src/typings/getRequest";
 
 export default {
+  // 课程列表
+  
+  getCourseListt:{ url: `/api/course/courses`, method: "GET"},
   // 创建课程相关
   createCourseBaseApi: {  url: "/api/course/courses", method: "POST", dataType: "json"},
   // 获取课程方向  职业方向
@@ -34,10 +37,12 @@ export default {
   getAllCourseStudent:{ url: `/api/arrange/students`, method: "GET",dataType: "json"},
   // 保存学生到课程
   saveCourseStudentt:{ url: `/api/arrange/students`, method: "POST",dataType: "json"},
-
-  deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },//删除课程下学生
-  resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
-  deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },//批量删除课程下学生
+  // 新建课程  已选择学生移除
+  deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },
+  // 新建课程 已选择学生初始化密码
+  resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },
+  //新建课程批量删除课程下学生
+  deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },
 
   // 课程封面上传
   courseCoverUpload:{ url: `/api/course/courses/upload`, method: "POST",dataType: "formdata"},

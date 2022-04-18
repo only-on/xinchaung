@@ -168,7 +168,7 @@ export default defineComponent({
         },
         {
           title: "班级",
-          dataIndex: "username",
+          dataIndex: "class",
           align: "left",
           ellipsis: true,
         },
@@ -279,7 +279,7 @@ export default defineComponent({
       },
       addittion() {
         //   添加
-        console.log(state.selectedRows, "选中的数据");
+        console.log(state.selectedRowKeys, "选中的数据");
         // context.emit(
         //   "selected-rows",
         //   state.selectedRows,
@@ -288,7 +288,7 @@ export default defineComponent({
         // state.selectedRowKeys = [];
         let obj={
           id:props.courseId,
-          student_id:state.selectedRows,
+          student_id:state.selectedRowKeys,
           type:1,
         }
          http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
@@ -331,6 +331,7 @@ export default defineComponent({
         id:props.courseId,
         page:state.studentData.page,
         limit:state.studentData.limit,
+        withs:'userProfile,user'
       }
       state.studentData.list.length=0
       http.getAllCourseStudent({param:{...obj}}).then((res:any)=>{

@@ -3,59 +3,52 @@
     <div class="stuAndclass">
       <div class="operateBtn">
         <a-button type="primary" class="choice" @click="selectStuClassFn()">添加学生</a-button>
-        <a-button type="primary" @click="deleteMany()">删除学生</a-button>
+        <a-button type="primary" @click="deleteScheduleStuMany()">删除学生</a-button>
       </div>
       <div>
         <a-config-provider>
           <a-table
-            :columns="stuColumns"
+            :columns="columns"
             :data-source="studentData.list"
             :pagination="
               total > 10
                 ? {
                     hideOnSinglePage: false,
                     total: total,
-                    current: studentData.page,
                     pageSize: studentData.limit,
+                    current: studentData.page,
                     onChange: onChange,
                   }
                 : false
             "
-            :row-selection="{ selectedRowKeys: studentData.selectedRowKeys, onChange: onSelectChange, } " rowkey="id"
+            :row-selection="{
+              selectedRowKeys: studentData.selectedRowKeys,
+              onChange: onSelectChange,
+            }"
+            rowKey="id"
           >
             <template #username="{ record }">
-              <div>
-                {{ record.user.username }}
-              </div>
+              <div>{{ record.user?.username }}</div>
             </template>
             <template #name="{ record }">
               <div>{{ record.userProfile?.name }}</div>
             </template>
-            <template #department="{ record }">
-              <div>{{ record.userProfile?.department }}</div>
-            </template>
             <template #gender="{ record }">
               <div>{{ record.userProfile?.gender }}</div>
+            </template>
+            <template #department="{ record }">
+              <div>{{ record.userProfile?.department }}</div>
             </template>
             <template #phone="{ record }">
               <div>{{ record.userProfile?.phone }}</div>
             </template>
+            <template #email="{ record }">
+              <div>{{ record.user?.email }}</div>
+            </template>
             <template #stuaction="{ record }">
               <div class="action">
-                <a
-                  ><span
-                    class="spanleft iconfont icon-shanchu"
-                    @click="removeStudent(record.id)"
-                    title="删除"
-                  ></span
-                ></a>
-                <a
-                  ><span
-                    @click="initPassword(record.id)"
-                    class="icon-mimachushihuaicon iconfont"
-                    title="初始化密码"
-                  ></span
-                ></a>
+                <span class="spanleft iconfont" @click.stop="removeStudent(record.id)">删除</span>
+                <span class="spanleft iconfont" @click.stop="initPassword(record.id)">初始化密码</span>
               </div>
             </template>
           </a-table>
@@ -68,9 +61,16 @@
         <selectStuClass v-if="isVisible"
           :courseId="props.courseId"
           :isVisible="isVisible"
+          @init="initData"
           @cancelSelectStu="cancelSelectStu"
         />
       </div>
+      <!-- <template #stuaction="{ record }">
+              <div class="action">
+                <span class="spanleft iconfont" @click.stop="removeStudent(record.id)">删除</span>
+                <span class="spanleft iconfont" @click.stop="initPassword(record.id)">初始化密码</span>
+              </div>
+            </template> -->
     </div>
   </div>
 </template>
@@ -88,7 +88,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   courseId:0
 });
-const stuColumns= [
+const columns= [
         {
           title: "学号",
           dataIndex: "username",
@@ -103,22 +103,35 @@ const stuColumns= [
           slots: { customRender: "name" },
         },
         {
-          title: "所属院系",
-          dataIndex: "userProfile.department",
-          ellipsis: true,
-          // slots: { customRender: "department" },
-        },
-        {
           title: "性别",
           dataIndex: "gender",
           slots: { customRender: "gender" },
-          width:80,
+          width: 80,
+        },
+        {
+          title: "班级",
+          dataIndex: "user_id",
+          align: "left",
+          ellipsis: true,
+        },
+        {
+          title: "专业",
+          dataIndex: "user_id",
+          align: "left",
+          ellipsis: true,
+        },
+        {
+          title: "学院",
+          dataIndex: "department",
+          ellipsis: true,
+          slots: { customRender: "department" },
         },
         {
           title: "邮箱",
-          dataIndex: "user.email",
+          dataIndex: "email",
           align: "center",
           ellipsis: true,
+          slots: { customRender: "email" },
         },
         {
           title: "电话",
@@ -131,6 +144,7 @@ const stuColumns= [
           dataIndex: "stuaction",
           align: "center",
           slots: { customRender: "stuaction" },
+          width:200
         },
       ]
 var isVisible:Ref<boolean>=ref(false)
@@ -143,7 +157,7 @@ const cancelSelectStu=()=>{
 }
 type Key = ColumnProps["key"];
 interface IStudentData{
-  selectedRowKeys: Key[];
+  selectedRowKeys: any[];
   list:any[],
   page:number,
   limit:number
@@ -152,14 +166,14 @@ var studentData:IStudentData=reactive({
   page:1,
   limit:10,
   selectedRowKeys:[],
-  StuDeleteid:[],
+  // StuDeleteid:[],
   list:[]
 })
 var total:Ref<number>=ref(0)
  // 学生排课移除
 const removeStudent=(id: any) =>{
   http.deleteScheduleStu({ urlParams: { id: id } }).then((res: any) => {
-    message.success("移除成功");
+    message.success("删除成功");
     initData()
   });
 }
@@ -167,15 +181,18 @@ const removeStudent=(id: any) =>{
 const initPassword=(id: any) =>{
   http.resetPassWord({ param: { schedule_id: id } }).then((res: any) => {
     message.success("重置密码成功！");
-    
+    initData()
   });
 }
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   studentData.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
-const deleteMany=()=>{
-
+const deleteScheduleStuMany=()=>{
+  http.deleteScheduleStuMany({ param:{id:studentData.selectedRowKeys}}).then((res: any) => {
+    message.success("删除成功！");
+    initData()
+  });
 }
 
 const onChange=(page: any, pageSize: any)=> {
@@ -188,11 +205,15 @@ function initData(){
     id:props.courseId,
     page:studentData.page,
     limit:studentData.limit,
+    withs:'userProfile,user'
   }
   studentData.list.length=0
   http.getCourseStudent({param:{...obj}}).then((res:any)=>{
     let {list,page}=res.data
     total.value=page.totalCount
+    // list.map((v:any)=>{
+      
+    // })
     studentData.list.push(...list)
   })
 }       
@@ -212,12 +233,14 @@ onMounted(()=>{
       }
     }
     .action {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
       cursor: pointer;
-
-      .spanleft {
-        margin-right: 10px;
+      span{
+        margin: 0 10px;
       }
+      // .spanleft {
+      //   margin-right: 10px;
+      // }
     }
   }
 }

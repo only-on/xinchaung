@@ -173,9 +173,9 @@ const publicClassifyList: any = reactive([
     keyName: "CourseDirection",
     data: [
       { name: "全部", value: 0 },
-      { name: "机器学习", value: 1 },
-      { name: "深度学习", value: 2 },
-      { name: "计算机学习", value: 3 },
+      // { name: "机器学习", value: 1 },
+      // { name: "深度学习", value: 2 },
+      // { name: "计算机学习", value: 3 },
     ],
   },
   {
@@ -184,9 +184,9 @@ const publicClassifyList: any = reactive([
     keyName: "CareerDirection",
     data: [
       { name: "全部", value: 0 },
-      { name: "大数据工程师", value: 1 },
-      { name: "深度学习训练师", value: 2 },
-      { name: "视觉工程师", value: 3 },
+      // { name: "大数据工程师", value: 1 },
+      // { name: "深度学习训练师", value: 2 },
+      // { name: "视觉工程师", value: 3 },
     ],
   },
 ]);
@@ -207,13 +207,13 @@ const searchFn = (key: string) => {
   initData();
 };
 const initData = () => {
-  return
+  // return
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
-  const param: ISearchInfo = Object.assign({}, {...searchInfo})
+  const param: ISearchInfo = Object.assign({...labelSearch}, {...searchInfo})
  
   loading.value = true;
   courseList.length = 0
-  http.getExperimentList({param}).then((res: IBusinessResp) => {
+  http.getCourseListt({param}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page }  = res.data
@@ -299,7 +299,20 @@ onMounted(() => {
     configuration.componenttype = 1
   }
   searchInfo.init_type = currentTab.value
-  
+  http.courseCategory().then((res:IBusinessResp)=>{
+    const {data}=res
+    data.map((v:any)=>{
+      v.value=v.id
+    })
+    publicClassifyList[0].data.push(...data)
+  })
+  http.vocationDirection().then((res:IBusinessResp)=>{
+    const {data}=res
+    data.map((v:any)=>{
+      v.value=v.id
+    })
+    publicClassifyList[1].data.push(...data)
+  })
   initData();
 });
 </script>

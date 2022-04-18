@@ -94,7 +94,7 @@
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
           <a-button type="primary" @click="last(1)">上一步</a-button>
-          <a-button type="primary" @click="next(3)">下一步</a-button>
+          <a-button type="primary" @click="next(3)" :loading="stup1Loading">保存</a-button>
         </div>
       </template>
       <template v-if="currentStep === 3">
@@ -150,17 +150,20 @@ const last=(val:number)=>{
 const next=(val:number)=>{
   // currentStep.value=val
   // return
-  if(val === 3){
-    formState.is_available=1
-  }
-  if(val === 1){
+  // if(val === 3){
+  //   formState.is_available=1
+  // }
+  if(val === 1 || val === 3){
     formRef.value.validate().then(()=>{
+      formState.is_available=val === 3?1:0
       stup1Loading.value=true
       http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
         const {data}=res
         stup1Loading.value=false
         currentStep.value=val
         courseId.value=data.id
+      }).catch((err:any)=>{
+        stup1Loading.value=false
       })
     })
   }else{
@@ -171,7 +174,7 @@ const cancel=()=>{
   router.go(-1)
 }
 //  步骤一
-var courseId:Ref<number>=ref(500002)
+var courseId:Ref<number>=ref(0)
 const formRef = ref();
 const courseCategory:any=reactive([])
 const vocationDirection:any=reactive([])
@@ -242,7 +245,7 @@ const uploadCoverHandle=(file:any)=>{
 // 步骤四
 const goAdd=()=>{
   router.replace({
-    path: "/teacher/teacherCourse/create",
+    path: "/teacher/teacherCourse/CreateCourse?currentTab=0",
   });
   setTimeout(() => {
     location.reload();
@@ -265,9 +268,6 @@ onMounted(()=>{
 <style scoped lang="less">
 .create-course-box{
   padding:40px;
-  .create-steps-box {
-
-  }
   .create-course-main{
     .info{
       padding: 60px 60px 0;
