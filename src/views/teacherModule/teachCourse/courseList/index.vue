@@ -100,7 +100,7 @@ updata({
   showNav: false,
 });
 interface ISearchInfo {
-  init_type: number
+  is_public: number
   name: string
   limit: number
   page: number
@@ -110,8 +110,8 @@ var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(0);
 const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
-const searchInfo = reactive<ISearchInfo>({
-  init_type: 0,
+const searchInfo = reactive<ISearchInfo>({ 
+  is_public: 0,
   name: '',
   limit: 10,
   page: 1,
@@ -120,7 +120,7 @@ watch(() => { return configuration.componenttype; },
   (val) => {
     // console.log(val)
     currentTab.value = val ;
-    searchInfo.init_type = currentTab.value
+    searchInfo.is_public = currentTab.value
     searchInfo.page = 1
     // searchInfo.content_direction = 0
     // searchInfo.content_type = 0
@@ -141,28 +141,27 @@ const classifyList: any = reactive([
   {
     title: "课程状态",
     value: 0,
-    keyName: "content_type",
+    keyName: "state",
     data: [
       { name: "全部", value: 0 },
-      { name: "未开始", value: 1 },
-      { name: "进行中", value: 2 },
-      { name: "已结束", value: 3 },
+      { name: "未开始", value: 2 },
+      { name: "进行中", value: 3 },
+      { name: "已结束", value: 1 },
     ],
   },
   {
     title: "开课年份",
     value: 0,
-    keyName: "content_level",
+    keyName: "year",
     data: [
       { name: "全部", value: 0 },
       { name: "2022年", value: 1 },
       { name: "2021年", value: 2 },
-      { name: "2020年", value: 3 },
-      { name: "2019年", value: 4 },
-      { name: "2018年", value: 5 },
-      { name: "2017年", value: 6 },
-      { name: "近5-10年", value: 7 },
-      { name: "10年以前", value: 8 },
+      { name: "2019年", value: 3 },
+      { name: "2018年", value: 4 },
+      { name: "2017年", value: 5 },
+      { name: "近5-10年", value: 6 },
+      { name: "10年以前", value: 7 },
     ],
   },
 ]);
@@ -183,16 +182,16 @@ const publicClassifyList: any = reactive([
     value: 0,
     keyName: "CareerDirection",
     data: [
-      { name: "全部", value: 0 },
+      { name: "全部", value:0},
       // { name: "大数据工程师", value: 1 },
       // { name: "深度学习训练师", value: 2 },
       // { name: "视觉工程师", value: 3 },
     ],
   },
 ]);
-const labelSearch = reactive({
-  direction: 0,
-  complexity: 0,
+const labelSearch:any = reactive({
+  state: 0,
+  year: 0,
   CourseDirection:0,
   CareerDirection:0
 });
@@ -209,8 +208,14 @@ const searchFn = (key: string) => {
 const initData = () => {
   // return
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
-  const param: ISearchInfo = Object.assign({...labelSearch}, {...searchInfo})
- 
+  // const param: ISearchInfo = Object.assign({...labelSearch}, {...searchInfo})
+  const param:any={
+    ...searchInfo,
+    type:1,
+    state:labelSearch.state?labelSearch.state:'',
+    year:labelSearch.year?labelSearch.year:'',
+    // tags:[labelSearch.CourseDirection,labelSearch.CareerDirection].join(',')
+  }
   loading.value = true;
   courseList.length = 0
   http.getCourseListt({param}).then((res: IBusinessResp) => {
@@ -298,18 +303,18 @@ onMounted(() => {
     currentTab.value = 1
     configuration.componenttype = 1
   }
-  searchInfo.init_type = currentTab.value
+  searchInfo.is_public = currentTab.value
   http.courseCategory().then((res:IBusinessResp)=>{
     const {data}=res
     data.map((v:any)=>{
-      v.value=v.id
+      v.value=v.name
     })
     publicClassifyList[0].data.push(...data)
   })
   http.vocationDirection().then((res:IBusinessResp)=>{
     const {data}=res
     data.map((v:any)=>{
-      v.value=v.id
+      v.value=v.name
     })
     publicClassifyList[1].data.push(...data)
   })

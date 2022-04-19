@@ -90,14 +90,6 @@ export default {
       },
     },
     {
-      path: "create",
-      // component: () => import("src/views/teacherModule/teachCourse/createCourse/index.vue"),
-      meta: {
-        title: "创建",
-        authCode: 'create'
-      },
-    },
-    {
       path: "PublicDetail",
       name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),

@@ -105,25 +105,29 @@ var state:any=reactive({
 })
 const list=computed(()=>{
   let obj={5:'备课资料',6:'教学指导',3:'课件'}
-  let data=props.chapterList
+  let data=props.chapterList?props.chapterList:[]
   // let state.activeTab
-  data.map((v: any) => {
+  data.length?data.map((v: any) => {
     v.openItem=false
-    v.resource.forEach((i:any)=>{
+    v.list=[]
+    v.resource.lenght?v.resource.forEach((i:any)=>{
       i.TeachingAids=true
       i.TeachingAidsName=obj[i.type]
       i.name=i.file_name
-    })
-    v.contents.forEach((i:any)=>{
+      v.list.push(i)
+    }):''
+    v.contents.length?v.contents.forEach((i:any)=>{
       i.TeachingAids=false
       i.task_type=i.type
       i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
-    })
-    v.list=concat(v.resource,v.contents)
+      v.list.push(i)
+    }):''
+    // v.list=concat(v.resource,v.contents)
+    console.log(v.list)
     if(state.activeTab.chapterId === v.id){
       v.openItem=true
     }
-  });
+  }):[]
   return data
 })
 const emit = defineEmits<{
