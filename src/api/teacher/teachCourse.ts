@@ -47,7 +47,8 @@ export default {
   // 课程封面上传
   courseCoverUpload:{ url: `/api/course/courses/upload`, method: "POST",dataType: "formdata"},
 
-
+  // 课程详情
+  courseDetail:{ url: `/api/course/courses/{courseId}`, method: "GET",dataType: "json"},
   // 知识点
   getKnowledgeList: {
     url:'/api/xinchuang/content/knowledges/index',

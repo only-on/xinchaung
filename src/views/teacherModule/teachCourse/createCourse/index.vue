@@ -142,7 +142,7 @@ updata({
   showNav: true,
 });
 
-var currentStep:Ref<number>=ref(2)
+var currentStep:Ref<number>=ref(0)
 var stup1Loading:Ref<boolean>=ref(false)
 const last=(val:number)=>{
   currentStep.value=val
@@ -150,12 +150,22 @@ const last=(val:number)=>{
 const next=(val:number)=>{
   // currentStep.value=val
   // return
-  // if(val === 3){
-  //   formState.is_available=1
-  // }
-  if(val === 1 || val === 3){
+  if(val === 3){
+    formState.is_available=1
+    stup1Loading.value=true
+    http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
+      const {data}=res
+      stup1Loading.value=false
+      currentStep.value=val
+      courseId.value=data.id
+    }).catch((err:any)=>{
+      stup1Loading.value=false
+    })
+    return 
+  }
+  if(val === 1){
     formRef.value.validate().then(()=>{
-      formState.is_available=val === 3?1:0
+      formState.is_available=0
       stup1Loading.value=true
       http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
         const {data}=res
@@ -166,9 +176,9 @@ const next=(val:number)=>{
         stup1Loading.value=false
       })
     })
-  }else{
-    currentStep.value=val
+    return 
   }
+  currentStep.value=val
 }
 const cancel=()=>{
   router.go(-1)

@@ -1,9 +1,9 @@
 <template>
-  <DetailHeader :info="{}" :tabs="Number(currentTab)===0?detailTabs:[]" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
+  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:[]" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
-    <courseChapter v-if="state.activeTab.value === 'courseChapter'" />
+    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseId="courseId" :courseDetail="state.courseDetail" />
     <!-- 课程实验管理 -->
     <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
     <!-- 随堂测试 -->
@@ -182,6 +182,7 @@ import courseAchievement from "./courseAchievement.vue" // 课程成绩
 
 interface IState{
   activeTab:any
+  courseDetail:any
 }
 var updata = inject("updataNav") as Function;
 updata({
@@ -195,7 +196,7 @@ const router = useRouter();
 const http=(request as any).teachCourse
 const currentRole: number = storage.lStorage.get("role");
 const routeQuery = useRoute().query;
-const { currentTab,course_id } = route.query;
+const { currentTab,courseId } = route.query;
 const detailTabs=[
   {name:'课程章节',value:'courseChapter'},
   {name:'课程实验管理',value:'courseExperiment'},
@@ -208,12 +209,13 @@ const  studentDetailTabs=[
   {name:'课程成绩',value:'courseAchievement'},
 ]
 var state:IState=reactive({
-  activeTab:{}
+  activeTab:{},
+  courseDetail:{}
 })
 state.activeTab=detailTabs[0]
 function initData(){
-  http.courseDetail().then((res:IBusinessResp)=>{
-
+  http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
+    state.courseDetail=res.data
   })
 }
 const selectTab=(val:any)=>{
@@ -302,7 +304,7 @@ const cancelSetup=()=>{
   setupVisible.value=false
 }
 onMounted(() => {
-  // initData() HotWords
+  initData()
 });
 
 </script>

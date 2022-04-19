@@ -222,6 +222,7 @@ const handleAdd = () => {
   const newData = {
     key: `${count.value}`,
     name: `Edward King ${count.value}`,
+    id:'',
   };
   dataSource.value.push(newData);
   edit(`${count.value}`);

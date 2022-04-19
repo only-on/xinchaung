@@ -3,11 +3,11 @@
   <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item" v-for="(v, k) in 11" @click="courseDetail()" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
+      <div class="item" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
         <div class="coverBox">
           <div class="cover">
             <div class="top flexCenter">
-              <div v-if="currentTab === 0" class="state state-ing">未开始</div>
+              <div v-if="currentTab === 0" class="state state-ing">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
               <div v-if="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
                 <span class="img"></span>
@@ -26,14 +26,14 @@
           </div>
         </div>
         <div class="info">
-          <div class="name">数据分析与机器学习实战</div>
+          <div class="name">{{v.name}}</div>
           <div class="date">
-            <span>实验:20</span>
-            <span>课时:20</span>
-            <span>学生:199</span>
+            <span>实验:{{v.content_total}}</span>
+            <span>课时:{{v.class_total}}</span>
+            <span>学生:{{v.student_total}}</span>
           </div>
-          <div class="createDate flexCenter" v-if="currentTab === 0">
-            <span>2020/03/14 - 2021/05/16</span>
+          <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
+            <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
           </div>
         </div>
       </div>
@@ -241,10 +241,10 @@ const handleMenuClick = ({ key }: { key: string }) => {
   });
 };
 
-const courseDetail=()=>{
+const courseDetail=(val:any)=>{
   router.push({ 
     path: "/teacher/teacherCourse/PublicDetail",
-    query: { currentTab:currentTab.value }
+    query: { currentTab:currentTab.value,courseId:val.id }
     });
   // if(n === 1){
   //   router.push({
