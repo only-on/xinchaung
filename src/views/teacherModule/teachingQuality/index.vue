@@ -47,6 +47,7 @@
                    <div class="name">高频易错点梳理图</div>
                    <div class="tit">以桑基图展示所选课程中错误率最高的10个知识点与实验、习题之间的关系</div>
                </div>
+               <div id="highFrequencyErrorProne"></div>
            </div>
         </div>
     </div>
@@ -60,7 +61,7 @@ import {
   inject
 } from "vue";
 import * as echarts from 'echarts';
-import {option,option1,option2,option3,option4}  from './echartOption';
+import {option,option1,option2,option3,option4,option5}  from './echartOption';
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -77,6 +78,7 @@ onMounted(()=>{
     var chartDom2:any = document.getElementById('knowledgePointErrorRate');
     var chartDom3:any = document.getElementById('scoreDistribution');
     var chartDom4:any = document.getElementById('knowledgeGraph');
+    var chartDom5:any = document.getElementById('highFrequencyErrorProne');
     
 
     var myChart = echarts.init(chartDom);
@@ -84,11 +86,13 @@ onMounted(()=>{
     var myChart2 = echarts.init(chartDom2);
     var myChart3 = echarts.init(chartDom3);
     var myChart4 = echarts.init(chartDom4);
+    var myChart5= echarts.init(chartDom5);
     option && myChart.setOption(option);
     option1 && myChart1.setOption(option1);
     option2 && myChart2.setOption(option2);
     option3 && myChart3.setOption(option3);
     option4 && myChart4.setOption(option4);
+    option5 && myChart5.setOption(option5);
 })
 </script>
 <style lang="less" scoped>
@@ -129,7 +133,7 @@ onMounted(()=>{
             color: var(--black-45);
         }
     }
-#courseAchieve,#capabilityAnalysis,#knowledgePointErrorRate,#scoreDistribution,#knowledgeGraph{
+#courseAchieve,#capabilityAnalysis,#knowledgePointErrorRate,#scoreDistribution,#knowledgeGraph,#highFrequencyErrorProne{
     width:100%;
     height: 400px;
 }
