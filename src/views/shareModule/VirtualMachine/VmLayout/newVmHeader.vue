@@ -23,7 +23,7 @@
       >
     </div>
     <div class="right-box">
-      <div class="ip-list" v-if="roleArry.includes('switchVm')">
+      <div class="ip-list" :class="roleArry.includes('switchVm')?'':'none-event'" >
         <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
@@ -37,7 +37,7 @@
           </a-select-option>
         </a-select>
       </div>
-      <div class="delayed" v-if="roleArry.includes('delayed')">
+      <div class="delayed" :class="roleArry.includes('delayed')?'':'none-event'">
         <span>
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
@@ -53,6 +53,7 @@
       <div
         class="tool pointer"
         v-if="roleArry.includes('tools')"
+        
         @click="visible = !visible"
       >
         <span class="iconfont icon-gongjuxiang"></span>
@@ -78,7 +79,8 @@
             <li
               class="pointer"
               @click="list.function"
-              v-if="list.key == 'colseOrStart'&&roleArry.includes(list.key as any)"
+              v-if="list.key == 'colseOrStart'"
+              :class="roleArry.includes(list.key as any)?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
               <span v-if="vmsInfo && vmsInfo?.vms">{{
@@ -88,15 +90,17 @@
             <li
               class="pointer"
               @click="list.function"
-              v-else-if="list.key == 'record'&&roleArry.includes(list.key as any)"
+              v-if="list.key == 'record'"
+              :class="roleArry.includes(list.key as any)?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
+              v-else-if="list.name&&!['record','colseOrStart'].includes(list.key)"
               class="pointer"
               @click="list.function"
-              v-if="roleArry.includes(list.key as any)"
+              :class="roleArry.includes(list.key as any)?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
               <span>{{ list.name }}</span>
@@ -1731,5 +1735,10 @@ i {
       }
     }
   }
+}
+.none-event{
+  pointer-events: none;
+  cursor: not-allowed;
+  color: #5c5c5c;
 }
 </style>
