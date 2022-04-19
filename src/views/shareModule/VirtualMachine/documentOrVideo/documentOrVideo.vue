@@ -1,51 +1,26 @@
-<template>{{taskType}}
+<template>
+  {{ taskType }}
   <layout :navData="navData">
-    <template v-slot:header>
-      <div class="d-v-header-wrap">
-        <div class="d-v-left">
-          <span class="icon-zuojiantou iconfont" @click="black"></span>
-          <span class="test-name">{{baseInfo?.base_info?.name}}</span>
-          <div class="test-btn-wrap">
-            <span>随堂测试(0/7)</span>
-          </div>
-        </div>
-        <div class="d-v-right" @click="finish">
-          <span class="icon-guanbi1 iconfont"></span>
-        </div>
-      </div>
-    </template>
     <template v-slot:right>
-      <div class="document-or-video-wrap">
+      <div class="document-or-video-wrap" v-if="taskType">
         <video
-        style="width: 100%; height: 650px"
-        controls="true"
-        :src="'111'"
-        v-if="false"
-      ></video>
-      <PdfVue :url="111" v-else />
+          style="width: 100%; height: 650px"
+          controls="true"
+          :src="'111'"
+          v-if="false"
+        ></video>
+        <PdfVue :url="111" v-else />
       </div>
     </template>
   </layout>
 </template>
 
 <script lang="ts" setup>
-import {
-  reactive,
-  ref,
-  onMounted,
-  inject
-} from "vue";
+import { reactive, ref, onMounted, inject } from "vue";
 import layout from "../VmLayout/newLayout.vue";
-import {
-  useRoute,
-  useRouter,
-} from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import storage from "src/utils/extStorage";
-import {
-  getVmBaseInfo,
-  TopType,
-  TStudyType,
-} from "src/utils/vncInspect";
+import { getVmBaseInfo, TopType, TStudyType } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { message } from "ant-design-vue";
 
@@ -68,7 +43,6 @@ let {
   taskId, // 实验id
   type, // 是实验还是课程
 }: TvmQuery = vmQuery;
-
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const taskType: any = inject("taskType");
@@ -110,48 +84,48 @@ function getVmBase() {
 
 // 返回
 function black() {
-  router.go(-1)
+  router.go(-1);
 }
 
 // 结束实验
 function finish() {
-  message.success("结束实验成功")
+  message.success("结束实验成功");
 }
 </script>
 <style lang="less" scoped>
-.document-or-video-wrap{
+.document-or-video-wrap {
   height: 100%;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
 }
-.d-v-header-wrap{
+.d-v-header-wrap {
   height: 70px;
-    background: #2c2e45;
-    flex-shrink: 0;
+  background: #2c2e45;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: #fff;
+  padding: 0 20px 0px 28px;
+  .d-v-left {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: #fff;
-    padding: 0 20px 0px 28px;
-    .d-v-left{
-      display: flex;
-      flex-direction: row;
-      .icon-zuojiantou{
-        cursor: pointer;
-      }
-      .test-btn-wrap{
-        margin-left: 184px;
-        cursor: pointer;
-      }
-    }
-    .test-name{
-      margin-left: 5px;
-    }
-    .d-v-right{
-      color: red;
+    flex-direction: row;
+    .icon-zuojiantou {
       cursor: pointer;
     }
+    .test-btn-wrap {
+      margin-left: 184px;
+      cursor: pointer;
+    }
+  }
+  .test-name {
+    margin-left: 5px;
+  }
+  .d-v-right {
+    color: red;
+    cursor: pointer;
+  }
 }
 </style>

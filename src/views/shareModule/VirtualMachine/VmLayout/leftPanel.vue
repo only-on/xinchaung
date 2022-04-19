@@ -8,16 +8,18 @@
         :key="index.toString()"
         @click="open(item.key)"
       >
-        <span class="iconfont" :class="item.icon"></span>
-        <span class="nav-title">{{ item.name }}</span>
+        <div v-if="roleArry.includes(item.key as any)">
+          <span class="iconfont" :class="item.icon"></span>
+          <span class="nav-title">{{ item.name }}</span>
+        </div>
       </li>
     </ul>
   </div>
   <div class="leftContent" v-if="contentShow">
     <guide v-if="lastKey == 'guide'"></guide>
-    <note v-if="lastKey == 'experimental-note'"></note>
+    <note v-if="lastKey == 'note'"></note>
     <report v-if="lastKey == 'report'"></report>
-    <questionsAndAnswers v-if="lastKey == 'forum'"></questionsAndAnswers>
+    <questionsAndAnswers v-if="lastKey == 'question'"></questionsAndAnswers>
     <create-post></create-post>
   </div>
 </template>
@@ -29,14 +31,24 @@ import note from "../component/note/index.vue";
 import report from "../component/report/index.vue";
 import questionsAndAnswers from "../component/questionsAndAnswers/index.vue";
 import createPost from "src/views/shareModule/VirtualMachine/component/createPost.vue";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
+import getMenuRole, { menuTypeArr } from "../menuRole";
+import storage from "src/utils/extStorage";
+
+const route = useRoute();
+const router = useRouter();
+
+const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+
+let role = storage.lStorage.get("role");
 
 const leftWidth: Ref<any> = inject("leftWidth", ref(70));
 const rightWidth: Ref<any> = inject("rightWidth", ref(window.innerWidth - 70));
 const navData = [
   { name: "指导", key: "guide", icon: "icon-zhidao" },
-  { name: "笔记", key: "experimental-note", icon: "icon-biji" },
+  { name: "笔记", key: "note", icon: "icon-biji" },
   { name: "报告", key: "report", icon: "icon-baogao" },
-  { name: "问答", key: "forum", icon: "icon-wenda" },
+  { name: "问答", key: "question", icon: "icon-wenda" },
 ];
 const currentNavKey = ref("");
 let lastKey = ref(navData[0].key);
@@ -50,6 +62,10 @@ watch(
     deep: true,
   }
 );
+const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
+  ? (getMenuRole(role as any, "vnc", opType as any) as any)
+  : (getMenuRole(role as any, "vnc") as any);
+console.log(roleArry.includes("note"));
 
 function open(key: string) {
   lastKey.value = key;

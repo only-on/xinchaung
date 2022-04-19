@@ -1,7 +1,7 @@
 <template>
   <div class="experimental-guide-tab">
     <!-- taskType 5任务制实验 -->
-    <task-guide v-if="taskType === 5"></task-guide>
+    <task-guide v-if="Number(taskType) === 5"></task-guide>
     <test-guide v-else></test-guide>
   </div>
 </template>
@@ -26,7 +26,7 @@ const {
 }: any = vmQuery;
 console.log(opType, taskId, type, topoinst_id);
 let taskType: any = inject("taskType");
-taskType = 5;
+console.log(taskType.value);
 </script>
 
 <style lang="less">

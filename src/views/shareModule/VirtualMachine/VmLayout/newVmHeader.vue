@@ -433,12 +433,15 @@ import {
 } from "src/utils/vncInspect";
 import getMenuRole, { menuTypeArr } from "../menuRole";
 import { cloneDeep } from "lodash";
+import storage from "src/utils/extStorage";
 
 const route = useRoute();
 const router = useRouter();
 const vmApi = request.vmApi;
 const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+
+let role = storage.lStorage.get("role");
 
 // inject接收块
 const taskType: any = inject("taskType");
@@ -477,7 +480,7 @@ const codeRef: any = ref(null);
 
 const assistanceVisible: Ref<boolean> = ref(false);
 const assistanceQuestion: Ref<string> = ref("");
-let role = 4;
+
 const visible = ref(false);
 
 // 随堂测试
