@@ -57,7 +57,7 @@ option = {
       }
     }
   },
-  color:['#FFC33DFF','#FF9544FF','#00CBC2FF','#6993FEFF'],
+  color:['#FF9544','#00CBC2','#6993FE','#FFC33D'],
   legend: {
     x:leftPanelVue,
     icon:'circle',
@@ -89,8 +89,7 @@ option = {
       type: 'line',
       stack: 'Total',
       areaStyle: {
-        //   color:'#FFC33DFF',
-        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'rgba(255,149,68,.2)'},{offset:1,color:'rgba(255,149,68,0)'}]),
+        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#ff954433'},{offset:1,color:'#ff954400'}]),
       },
       emphasis: {
         focus: 'series'
@@ -102,8 +101,7 @@ option = {
       type: 'line',
       stack: 'Total',
       areaStyle: {
-        // color:'#FF9544FF',
-        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#00cbc2'},{offset:1,color:'#00cbc2'}]),
+        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#00cbc233'},{offset:1,color:'#00cbc200'}]),
       },
       emphasis: {
         focus: 'series'
@@ -115,7 +113,7 @@ option = {
       type: 'line',
       stack: 'Total',
       areaStyle: {
-        color:'#00CBC2FF'
+        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#6993fe33'},{offset:1,color:'#6993fe00'}]),
       },
       emphasis: {
         focus: 'series'
@@ -127,7 +125,7 @@ option = {
       type: 'line',
       stack: 'Total',
       areaStyle: {
-        color:'#6993FEFF',
+        color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#fac85866'},{offset:1,color:'#fac85800'}]),
       },
       emphasis: {
         focus: 'series'

@@ -107,9 +107,11 @@ const formState: any = reactive({
 });
 interface Props {
   modalVisable: boolean;
+  experitId:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
+  experitId:''
 });
 const formRef = ref<any>("null");
 const emit = defineEmits<{ (e: "updateVisable", val: any,addok:any): void }>();
@@ -136,7 +138,7 @@ function sendChoiceQues(){
     answers:formState.answer
 
   }
-  http.addques({urlParams:{content_id:500001},param:params}).then((res:any)=>{
+  http.addques({urlParams:{content_id:props.experitId},param:params}).then((res:any)=>{
     updateVisable(true)
   })
 }

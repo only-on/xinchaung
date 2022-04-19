@@ -1,15 +1,14 @@
 <template>
   <div id="inClassTest">
     <div class="tree">
-      <!-- <chapterTree
+      <chapterTree
           :chartLoading="chartLoading"
           :chapterList="ChaptersTreeList"
-          :Editable="props.Editable"
           @deleteChapter="deleteChapter"
           @editExperiment="editExperiment"
           @editChapter="editChapter"
           @selectExperiment="selectExperiment" 
-          @establishChapter="establishChapter" /> -->
+          @establishChapter="establishChapter" />
     </div>
     <div class="test">
       <div class="inTestHeader">
@@ -53,11 +52,13 @@
     <achievementStatis
       v-if="componentName == 'achievementStatis'"
       :modalVisable="state.visible"
+      :experitId='experitId'
       @updateVisable="updateVisable"
     ></achievementStatis>
     <choiceques
       v-if="componentName == 'choiceques'"
       :modalVisable="state.visible"
+      :experitId='experitId'
       @updateVisable="updateVisable"
     ></choiceques>
     <explainques
@@ -80,6 +81,7 @@ import {
 onMounted,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
+import { useRouter ,useRoute } from 'vue-router';
 import testList from "./testList/index.vue";
 import achievementStatis from "./achievementStatis/index.vue";
 import choiceques from "./choiceques/index.vue";
@@ -87,6 +89,10 @@ import explainques from "./explainques/index.vue";
 import chapterTree from "../courseDetail/components/Chapter/ChapterList.vue";
 import request from 'src/api/index'
 const http = (request as any).teacherInclassTest;
+const http1=(request as any).teachCourse;
+const route=useRoute()
+const courseId:any=route.query.courseId  //章节id
+const experitId:any=ref('')  //实验id
 interface Istate {
   visible: boolean;
 }
@@ -96,6 +102,11 @@ const state: Istate = reactive({
 const datalist:any=ref('')
 const statisTic:any=ref('')
 const componentName: any = ref("");
+
+
+const chartLoading:any=ref(false)
+const ChaptersTreeList:any=ref([])
+const Editable:any=ref(false)
 // 出题弹框
 function selectTuestion(type: any) {
   console.log(type);
@@ -131,15 +142,35 @@ function deleteQues(id: any) {
 // 选择tree章节
 function selectExperiment(val: any) {
   console.log(val);
+  experitId.value=val.id
+  inclassTestList()
 }
 function inclassTestList(){
-  http.inClasstestList({urlParams:{content_id:500001}}).then((res:any)=>{
+  http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:10}}).then((res:any)=>{
     datalist.value=res.data.list
     statisTic.value=res.data.analysis
   })
 }
+function deleteChapter(){
+
+}
+function editExperiment(){
+
+}
+function editChapter(){
+
+}
+function establishChapter(){
+
+}
+function getChapterList(){
+  http1.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
+    console.log(res)
+    ChaptersTreeList.value=res.data
+  })
+}
 onMounted(()=>{
-  inclassTestList()
+  getChapterList()
 })
 </script>
 <style lang="less" scoped>

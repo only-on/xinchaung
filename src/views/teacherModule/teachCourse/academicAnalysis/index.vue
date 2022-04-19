@@ -1,7 +1,10 @@
 <template>
     <div class="academicAnalysis">
        <div class="tree">
-
+        <chapterTree
+          :chartLoading="chartLoading"
+          :chapterList="ChaptersTreeList"
+         />
        </div>
        <div class="analy-right">
             <div>
@@ -53,6 +56,15 @@
 <script lang="ts" setup>
 import distributionOfResults from './distributionOfResults/index.vue'
 import { ref, toRefs, onMounted,reactive} from "vue";
+import chapterTree from "../courseDetail/components/Chapter/ChapterList.vue";
+import { useRouter ,useRoute } from 'vue-router';
+import request from 'src/api/index'
+const http1=(request as any).teachCourse;
+const route=useRoute()
+const courseId:any=route.query.courseId
+const chartLoading:any=ref(false)
+const ChaptersTreeList:any=ref([])
+const Editable:any=ref(false)
 const option: any = ref();
 option.value = [
   { id: "", name: "全部" },
@@ -109,6 +121,15 @@ function onChange(){
 function onShowSizeChange(){
 
 }
+function getChapterList(){
+  http1.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
+    console.log(res)
+    ChaptersTreeList.value=res.data
+  })
+}
+onMounted(()=>{
+  getChapterList()
+})
 </script>
 <style lang="less" scoped>
 .academicAnalysis{

@@ -17,6 +17,24 @@
            </div>
        </div>
        <div class="banner-2">
+            <swiper
+                :modules="modules"
+                navigation
+                loop
+                centeredSlides
+                watchSlidesProgress
+                :slides-per-view="5"
+                :space-between="33"
+                :slideToClickedSlide="true"
+                @slideChange="slideChangeTransitionEnd"
+                @slideChangeTransitionEnd="slideChangeTransitionEnd"
+                @setTranslate="setTranslate"
+            >
+                <swiper-slide>Slide 1</swiper-slide>
+                <swiper-slide>Slide 2</swiper-slide>
+                <swiper-slide>Slide 3</swiper-slide>
+                <swiper-slide>Slide 4</swiper-slide>
+            </swiper>
        </div>
        <div class="echarts-3">
             <div class="left">
@@ -61,6 +79,8 @@ import {
   inject
 } from "vue";
 import * as echarts from 'echarts';
+import { Swiper, SwiperSlide } from "swiper/vue";
+import "swiper/css";
 import {option,option1,option2,option3,option4,option5}  from './echartOption';
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -72,6 +92,13 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
+const modules:any=ref('')
+function slideChangeTransitionEnd(){
+
+}
+function setTranslate(){
+
+}
 onMounted(()=>{
     var chartDom:any = document.getElementById('courseAchieve');
     var chartDom1:any = document.getElementById('capabilityAnalysis');
