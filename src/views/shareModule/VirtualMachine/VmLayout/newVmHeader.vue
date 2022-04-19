@@ -23,7 +23,7 @@
       >
     </div>
     <div class="right-box">
-      <div class="ip-list" :class="roleArry.includes('switchVm')?'':'none-event'" >
+      <div class="ip-list" :class="roleArry.includes('switchVm') ? '' : 'none-event'">
         <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
@@ -37,7 +37,7 @@
           </a-select-option>
         </a-select>
       </div>
-      <div class="delayed" :class="roleArry.includes('delayed')?'':'none-event'">
+      <div class="delayed" :class="roleArry.includes('delayed') ? '' : 'none-event'">
         <span>
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
@@ -53,7 +53,6 @@
       <div
         class="tool pointer"
         v-if="roleArry.includes('tools')"
-        
         @click="visible = !visible"
       >
         <span class="iconfont icon-gongjuxiang"></span>
@@ -97,7 +96,7 @@
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
-              v-else-if="list.name&&!['record','colseOrStart'].includes(list.key)"
+              v-else-if="list.name && !['record', 'colseOrStart'].includes(list.key)"
               class="pointer"
               @click="list.function"
               :class="roleArry.includes(list.key as any)?'':'none-event'"
@@ -242,19 +241,25 @@
     class="quiz-modal"
     @cancel="cancelQuiz"
     @ok="submitQuiz"
+    :footer="false"
+    :maskClosable="false"
   >
-    <div>
+    <div class="quiz-modal-body">
       <template v-if="currentShowType == 0">
         <div v-if="quizPaperList[currentQuizIndex]">
           <template v-if="quizPaperList[currentQuizIndex].type_id == 2">
-            <div class="choice-title">{{ quizPaperList[currentQuizIndex].question }}</div>
+            <div class="choice-title black-004 question-title">
+              {{ quizPaperList[currentQuizIndex].question }}<i class="score">(10分)</i>
+            </div>
             <a-checkbox-group
+              class="question-options-wrap"
               v-model:value="quizPaperList[currentQuizIndex].student_answer"
               style="width: 100%"
             >
               <div
                 v-for="(item, index) in quizPaperList[currentQuizIndex].options"
                 :key="item.id"
+                class="options-item"
               >
                 <a-checkbox :value="item.id"
                   ><i>{{ numToAbc(index + 1) }}、</i>{{ item.option }}</a-checkbox
@@ -263,10 +268,15 @@
             </a-checkbox-group>
           </template>
           <template v-if="quizPaperList[currentQuizIndex].type_id == 5">
-          jiandanti
-            <!-- <simpleQuestion
-              v-model:value="quizPaperList[currentQuizIndex]"
-            ></simpleQuestion> -->
+            <div class="choice-title black-004 question-title">
+              {{ quizPaperList[currentQuizIndex].question }}<i class="score">(10分)</i>
+            </div>
+            <div class="question-options-wrap">
+              <a-textarea
+                v-model:value="quizPaperList[currentQuizIndex].student_answer[0]"
+                :auto-size="{ minRows: 2, maxRows: 5 }"
+              />
+            </div>
           </template>
         </div>
       </template>
@@ -276,12 +286,72 @@
             <span>共<i>3</i>题</span><span>总分<i>100</i>分</span
             ><span>得分<i>90</i>分</span>
           </div>
+          <div v-for="item in quizPaperList" :key="item.id">
+            <template v-if="item.type_id == 2">
+              <div class="choice-title black-004 question-title">
+                {{ item.question }}<i class="score">(10分)</i>
+              </div>
+              <a-checkbox-group
+                class="question-options-wrap"
+                :value="item.student_answer"
+                style="width: 100%"
+              >
+                <div v-for="(it, ind) in item.options" :key="it.id" class="options-item">
+                  <a-checkbox :value="Number(it.id)"
+                    ><i>{{ numToAbc(ind + 1) }}、</i>{{ it.option }}</a-checkbox
+                  >
+                </div>
+              </a-checkbox-group>
+              <div class="right-answer">正确答案：{{ getChoiceAnswer(item) }}</div>
+            </template>
+            <template v-if="item.type_id == 5">
+              <div class="choice-title black-004 question-title">
+                {{ item.question }}<i class="score">(10分)</i>
+              </div>
+              <div class="question-options-wrap">
+                <a-textarea
+                  :value="item.student_answer[0]"
+                  :auto-size="{ minRows: 2, maxRows: 5 }"
+                  :disabled="true"
+                />
+              </div>
+              <div class="right-answer">
+                  正确答案：{{item.answers[0]?.answer}}
+              </div>
+              <div class="right-answer">
+                  关键字：{{getKeyword(item)}}
+              </div>
+            </template>
+          </div>
         </div>
       </template>
-      <div>
-        <template v-if="currentShowType==0">
+      <div class="quiz-footer">
+        <template v-if="currentShowType == 0">
           <div>
-            <a-button>取消</a-button>
+            <a-button type="default" @click="cancelQuiz">取消</a-button>
+            <a-button type="primary" v-if="currentQuizIndex != 0" @click="last"
+              >上一题</a-button
+            >
+            <a-button
+              type="primary"
+              v-if="currentQuizIndex != quizPaperList.length - 1"
+              @click="next"
+              >下一题</a-button
+            >
+            <a-button
+              type="primary"
+              v-if="currentQuizIndex == quizPaperList.length - 1"
+              @click="submitQuiz"
+              >提交</a-button
+            >
+          </div>
+        </template>
+        <template v-else>
+          <div>
+            <a-button type="default" @click="cancelQuiz">关闭</a-button>
+            <a-button type="primary" v-if="currentShowType == 1" @click="lookRecord"
+              >实验随测记录</a-button
+            >
           </div>
         </template>
       </div>
@@ -315,6 +385,7 @@ import { cloneDeep } from "lodash";
 const route = useRoute();
 const router = useRouter();
 const vmApi = request.vmApi;
+const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 
 // inject接收块
@@ -463,7 +534,7 @@ function getQuestionList() {
       ordered_answer: 0,
       user_id: 100,
       relation_id: 1734,
-      student_answer: ["1", "2"],
+      student_answer: [1723, 1725],
       note: "",
       points: {
         knowledge_name: "node2,node3",
@@ -1452,17 +1523,77 @@ function settingCurrentVM() {
 function openQuizModal() {
   quizVisiable.value = true;
   quizPaperList.value = cloneDeep(oldQuizPaperList.value);
+  currentQuizIndex.value = 0;
   if (quizPaperList.value.length == answerNum.value) {
     currentShowType.value = 1;
   } else {
-    currentShowType.value = 0;
+    currentShowType.value = 1;
   }
 }
 // 提交
-function submitQuiz() {}
+function submitQuiz() {
+  console.log(quizPaperList.value);
+  let params: any = {
+    answer: [],
+  };
+  for (let i = 0; i < quizPaperList.value.length; i++) {
+    let answer = {
+      relation_id: quizPaperList.value[i].relation_id,
+      answers: quizPaperList.value[i].student_answer,
+    };
+    params.answer.push(answer);
+  }
+  examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
+    message.success("提交成功");
+    getQuestionList();
+  });
+}
 
 // 取消随堂测试
-function cancelQuiz() {}
+function cancelQuiz() {
+  quizVisiable.value = false;
+}
+
+// 上一题
+function last() {
+  currentQuizIndex.value--;
+}
+
+// 下一题
+function next() {
+  currentQuizIndex.value++;
+}
+
+// 实验随测记录
+function lookRecord() {
+  currentShowType.value = 2;
+}
+// 获取多选题答案
+function getChoiceAnswer(val: any) {
+  const newAnswerArry = val.answers.flatMap((item: any) => {
+    return Number(item.answer);
+  });
+  let answer = "";
+  console.log(newAnswerArry);
+
+  val.options.forEach((item: any, index: number) => {
+    console.log(item);
+
+    if (newAnswerArry.includes(Number(item.id))) {
+      answer += numToAbc(index + 1) + " ";
+    }
+  });
+  return answer;
+}
+
+// 获取关键字
+function getKeyword(val:any) {
+  var keywords=val.keywords.flatMap((item:any)=>{
+    return item.keyword
+  })
+  return keywords.join(" , ")
+}
+// f
 onMounted(() => {
   getQuestionList();
   clearInterval(Number(viodeTimer));
@@ -1736,9 +1867,48 @@ i {
     }
   }
 }
-.none-event{
+.none-event {
   pointer-events: none;
   cursor: not-allowed;
   color: #5c5c5c;
+}
+.quiz-modal {
+  .ant-modal-body {
+    padding-top: 0;
+  }
+  .quiz-modal-body {
+    max-height: 600px;
+    overflow-y: auto;
+  }
+  .black-004 {
+    background: var(--black-0-4);
+  }
+  .question-title {
+    line-height: 35px;
+    padding-left: 12px;
+    .score {
+      color: var(--primary-color);
+      margin-left: 5px;
+    }
+  }
+  .question-options-wrap {
+    padding: 12px 12px 0 12px;
+    .options-item {
+      line-height: 35px;
+      font-size: 14px;
+    }
+  }
+  .quiz-footer {
+    text-align: center;
+    margin-top: 40px;
+    button {
+      margin-left: 15px;
+    }
+  }
+  .right-answer {
+    margin-bottom: 20px;
+    padding-left: 12px;
+    color: var(--green-7);
+  }
 }
 </style>
