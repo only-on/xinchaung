@@ -1,72 +1,74 @@
 <template>
-  <a-spin :spinning="props.chartLoading" size="large" tip="Loading...">
-    <div class="chapterList" v-for="(v,k) in list" :key="v.id">
-      <div class="title flexCenter" @click.stop="v.openItem=!v.openItem">
-        <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
-          <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
-          <div class="titleItem titleItem2 single_ellipsis">{{v.name}}</div>
-        </div>
-        <div class="titleBoxRight flexCenter">
-          <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-            <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
-            <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
-            <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+  <div class="chapterListBox flexCenter">
+    <a-spin :spinning="props.chartLoading" size="large" tip="Loading...">
+      <div class="chapterList" v-for="(v,k) in list" :key="v.id">
+        <div class="title flexCenter" @click.stop="v.openItem=!v.openItem">
+          <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
+            <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
+            <div class="titleItem titleItem2 single_ellipsis">{{v.name}}</div>
           </div>
-          <span class="collect">{{v.openItem?'收起':'展开'}}</span>
-        </div>
-      </div>
-      <div class="listBox" v-if="v.openItem">
-        <div class="list" v-for="(a,i) in v.list" :key="a">
-          <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeTab.id === a.id?'ActiveItem':''">
-            <div class="TitLeft flexCenter" :class="getTitLeftClass()">
-              <div class="experimentType">
-                <span v-if="!a.TeachingAids" :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
-                <span v-if="a.TeachingAids">教辅</span>
-              </div>
-              <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
-                <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
-                <span v-if="!a.TeachingAids">{{`${k+1}-${i+1}`}}&nbsp;&nbsp;</span>
-                <span class="ItemExperimentTitle">{{a.name}}</span>
-              </div>
+          <div class="titleBoxRight flexCenter">
+            <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
+              <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
+              <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
+              <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
             </div>
-            <div class="TitRight">
-              <div v-if="props.Editable === 'canStudy'">
-                <!-- 准备完成变为 开始  按钮 -->
-                <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
-                <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
-                <span class="view" @click.stop="ViewExperiment(a)">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
-              </div>
-              <!-- <div v-if="props.Editable === 'canEdit'">
-                
-              </div> -->
-              <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
-                <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
-              </div>
-            </div>
+            <span class="collect">{{v.openItem?'收起':'展开'}}</span>
           </div>
-          <div class="experimentGuide" v-if="a.openGuidance">
-            <div v-if="a.type==='experiment'" class="experiment">
-              <div class="itemContentBox textScrollbar">
-                <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''">
-                  <h4 class="">{{i.title}}</h4>
-                  <div class="text">{{i.text}}</div>
+        </div>
+        <div class="listBox" v-if="v.openItem">
+          <div class="list" v-for="(a,i) in v.list" :key="a">
+            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeTab.id === a.id?'ActiveItem':''">
+              <div class="TitLeft flexCenter" :class="getTitLeftClass()">
+                <div class="experimentType">
+                  <span v-if="!a.TeachingAids" :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
+                  <span v-if="a.TeachingAids">教辅</span>
+                </div>
+                <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
+                  <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
+                  <span v-if="!a.TeachingAids">{{`${k+1}-${i+1}`}}&nbsp;&nbsp;</span>
+                  <span class="ItemExperimentTitle">{{a.name}}</span>
+                </div>
+              </div>
+              <div class="TitRight">
+                <div v-if="props.Editable === 'canStudy'">
+                  <!-- 准备完成变为 开始  按钮 -->
+                  <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
+                  <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
+                  <span class="view" @click.stop="ViewExperiment(a)">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+                </div>
+                <!-- <div v-if="props.Editable === 'canEdit'">
+                  
+                </div> -->
+                <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
+                  <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
+                  <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
                 </div>
               </div>
             </div>
-            <div class="video-box" v-if="a.type==='mp4'">
-              <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
-                您的浏览器不支持 video 标签
-              </video>
-            </div>
-            <div class="pdfBox" v-if="a.type==='pptx'">
-              <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
+            <div class="experimentGuide" v-if="a.openGuidance">
+              <div v-if="a.type==='experiment'" class="experiment">
+                <div class="itemContentBox textScrollbar">
+                  <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''">
+                    <h4 class="">{{i.title}}</h4>
+                    <div class="text">{{i.text}}</div>
+                  </div>
+                </div>
+              </div>
+              <div class="video-box" v-if="a.type==='mp4'">
+                <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
+                  您的浏览器不支持 video 标签
+                </video>
+              </div>
+              <div class="pdfBox" v-if="a.type==='pptx'">
+                <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </a-spin>
+    </a-spin>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -110,19 +112,20 @@ const list=computed(()=>{
   data.length?data.map((v: any) => {
     v.openItem=false
     v.list=[]
+    v.resource=v.resource.lenght?v.resource.lenght:[]
     v.resource.lenght?v.resource.forEach((i:any)=>{
       i.TeachingAids=true
       i.TeachingAidsName=obj[i.type]
       i.name=i.file_name
-      v.list.push(i)
+      // v.list.push(i)
     }):''
     v.contents.length?v.contents.forEach((i:any)=>{
       i.TeachingAids=false
       i.task_type=i.type
       i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
-      v.list.push(i)
+      // v.list.push(i)
     }):''
-    // v.list=concat(v.resource,v.contents)
+    v.list=concat(v.resource,v.contents)
     console.log(v.list)
     if(state.activeTab.chapterId === v.id){
       v.openItem=true
@@ -230,6 +233,10 @@ const deleteExperiment=(v:any,a:any)=>{
 </script>
 
 <style lang="less" scope>
+  .chapterListBox{
+    min-height: 300px;
+    justify-content: center;
+  }
   .chapterList{
     // padding-bottom: 2rem;
     .title{

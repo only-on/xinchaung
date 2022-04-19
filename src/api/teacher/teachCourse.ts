@@ -49,6 +49,12 @@ export default {
 
   // 课程详情
   courseDetail:{ url: `/api/course/courses/{courseId}`, method: "GET",dataType: "json"},
+
+  // 删除课程
+  deleteCourseItem: { url: '/api/course/courses/{courseId}', method: "DELETE" },
+  // 课程复用
+  // multiplexing: { url: '/api/course/courses/{course_id}/replicate', method: "PUT" }, // 现在的复用是编辑
+  
   // 知识点
   getKnowledgeList: {
     url:'/api/xinchuang/content/knowledges/index',

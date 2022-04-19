@@ -4,34 +4,34 @@
       <div class="LeftBox">
         <breadcrumb />
         <div class="termOfValidity">
-          <span v-if="isShowCourseDetail">2022 / 02 /23 - 2022 / 02 /24</span>
+          <span v-if="isShowCourseDetail && info.start_time && info.end_time">{{info.start_time.split(' ')[0]}} - {{info.end_time.split(' ')[0]}}</span>
         </div>
         <div class="titleBox flexCenter">
-          <div class="title">玩转组件库搭建流程</div>
+          <div class="title">{{info.name}}</div>
           <!-- class = endState -->
-          <div class="state" v-if="isShowCourseDetail">进行中</div>
+          <div class="state" v-if="isShowCourseDetail">{{`${['已结束','未开始','进行中'][info.state-1]}`}}</div>
         </div>
         <div class="info">
           <div class="details flexCenter">
             <div class="item">
               <span>章节</span>
-              <span class="num num2">4</span>
+              <span class="num num2">{{info.chapter_total}}</span>
             </div>
             <div class="item">
               <span>实验</span>
-              <span class="num num2">22</span>
+              <span class="num num2">{{info.content_total}}</span>
             </div>
             <div class="item">
               <span>课时</span>
-              <span class="num num2">12</span>
+              <span class="num num2">{{info.class_total}}</span>
             </div>
             <div class="item">
               <span>课程方向</span>
-              <span class="num num2">深度学是发是</span>
+              <span class="num num2">{{info.category}}</span>
             </div>
             <div class="item">
               <span>职业方向</span>
-              <span class="num" :class="isShowCourseDetail?'num2':''">深度学发是发是</span>
+              <span class="num" :class="isShowCourseDetail?'num2':''">{{info.direction}}</span>
             </div>
             <div class="item" v-if="isShowCourseDetail">
               <span>实验成绩</span>
@@ -46,7 +46,7 @@
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="name flexCenter" v-if="currentTab && Number(currentTab) === 1">
               <div class="chart"></div>
-              <div class="userName">教师名字</div>
+              <div class="userName">{{info.user_name}}</div>
             </div>
             <div class="tags">
               <span>标签1/标签2/</span>
