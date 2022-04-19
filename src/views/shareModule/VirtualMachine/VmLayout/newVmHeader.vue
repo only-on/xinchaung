@@ -1527,7 +1527,7 @@ function openQuizModal() {
   if (quizPaperList.value.length == answerNum.value) {
     currentShowType.value = 1;
   } else {
-    currentShowType.value = 1;
+    currentShowType.value = 0;
   }
 }
 // 提交
@@ -1543,6 +1543,7 @@ function submitQuiz() {
     };
     params.answer.push(answer);
   }
+  currentShowType.value=1
   examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
     message.success("提交成功");
     getQuestionList();
