@@ -27,15 +27,15 @@
           row-key="id"
           :pagination="false"
         >
-          <template #customReportTitle> 报告<i class="statistics">40%</i> </template>
-          <template #customQuizTitle> 随测<i class="statistics">40%</i> </template>
-          <template #customCodeTitle> 代码<i class="statistics">40%</i> </template>
+          <template #customReportTitle> 报告</template>
+          <template #customQuizTitle> 随测</template>
+          <template #customAutoTitle> 自动评分</template>
           <template #customExercisesTitle> 习题 </template>
           <template #reference="{ text }">
             <span class="table-a-link" @click="clickFun('video', text)">录屏</span>
           </template>
           <template #report="{ text, record }">
-            <template v-if="record.isReport">
+            <template v-if="record.report_score!=null">
               <span
                 >{{ text
                 }}<i
@@ -48,8 +48,22 @@
               <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
             </template>
           </template>
-          <template #code="{ text, record }">
-            <template v-if="record.isReport">
+          <template #question="{ text, record }">
+            <template v-if="record.question_score!=null">
+              <span
+                >{{ text
+                }}<i
+                  @click="clickFun('updateReport', text)"
+                  class="edit-btn iconfont icon-bianji1"
+                ></i
+              ></span>
+            </template>
+            <template v-else>
+              <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
+            </template>
+          </template>
+          <template #autoScore="{ text, record }">
+            <template v-if="record.auto_score!=null">
               <span
                 >{{ text
                 }}<i
@@ -78,12 +92,12 @@
           </template>
         </a-table>
       </div>
-      <a-pagination :total="500" class="page-wrap">
-        <template #itemRender="{ page, type, originalElement }">
+      <a-pagination :total="total" v-model:current="params.page" v-model:pageSize="params.limit" class="page-wrap" @change="pageChange">
+        <!-- <template #itemRender="{ page, type, originalElement }">
           <a v-if="type === 'prev'">上一页</a>
           <a v-else-if="type === 'next'">下一页</a>
           <renderVNode v-else :vnode="originalElement"></renderVNode>
-        </template>
+        </template> -->
       </a-pagination>
     </div>
   </div>
@@ -119,7 +133,10 @@ import reportModal from "./report.vue"; // 批阅报告弹框
 import codeReview from "./codeReview.vue"; // 代码评阅
 import {cloneDeep} from "lodash"
 import chapterTree from "../Chapter/ChapterList.vue"
+import request from "src/api/index"
 
+
+const scoreApi=request.teachCourse
 let type = ref(0); // 0 实操 1 视频文档 2 习题
 
 // 控制弹窗显示隐藏visible
@@ -128,6 +145,14 @@ const scoreVisible = ref(false);
 const reportVisible = ref(false);
 const codeVisible = ref(false);
 
+// 查看列表参数
+const params=ref({
+  taskId:501770,
+  limit:10,
+  page:1
+})
+
+const total:Ref<number>=ref(0)
 // 是否是编辑状态
 const isEdit = ref(false);
 // 当前行数据
@@ -144,7 +169,7 @@ const oldColumns:any[]= [
   },
   {
     title: "学号",
-    dataIndex: "schoolCode",
+    dataIndex: "username",
   },
   {
     title: "姓名",
@@ -153,35 +178,35 @@ const oldColumns:any[]= [
   },
   {
     title: "班级",
-    dataIndex: "className",
+    dataIndex: "classname",
   },
   {
     title: "花费时间",
-    dataIndex: "expenditure",
+    dataIndex: "used_time",
   },
   {
     title: "评分项",
     children: [
       {
-        dataIndex: "report",
+        dataIndex: "report_score",
         slots: { title: "customReportTitle", customRender: "report" },
         width: 74,
       },
       {
-        dataIndex: "quiz",
-        slots: { title: "customQuizTitle", customRender: "quiz" },
+        dataIndex: "question_score",
+        slots: { title: "customQuizTitle", customRender: "question" },
         width: 74,
       },
       {
-        dataIndex: "code",
-        slots: { title: "customCodeTitle", customRender: "code" },
+        dataIndex: "auto_score",
+        slots: { title: "customAutoTitle", customRender: "autoScore" },
         width: 74,
       },
-      {
-        dataIndex: "exercises",
-        slots: { title: "customExercisesTitle", customRender: "exercises" },
-        width: 74,
-      },
+      // {
+      //   dataIndex: "exercises",
+      //   slots: { title: "customExercisesTitle", customRender: "exercises" },
+      //   width: 74,
+      // },
     ],
   },
   {
@@ -201,43 +226,23 @@ const  columns:Ref<any>=ref([])
 console.log(type);
 
 // table数据
-const tabelData = ref([
-  {
-    id: 1,
-    schoolCode: "code1",
-    name: "文和",
-    className: "wenhe2班",
-    expenditure: "120分钟",
-    report: 10,
-    quiz: 10,
-    code: 10,
-    reference: 10,
-    score: 100,
-    isReport: true,
-    isQuiz: true,
-    isCode: true,
-    isScore: true,
-    exercises: 100,
-  },
-  {
-    id: 2,
-    schoolCode: "code1",
-    name: "文和",
-    className: "wenhe2班",
-    expenditure: "120分钟",
-    report: 10,
-    quiz: 10,
-    code: 10,
-    reference: 10,
-    score: 100,
-    isReport: false,
-    isQuiz: false,
-    isCode: false,
-    isScore: false,
-    exercises: 99,
-  },
-]);
+const tabelData = ref([]);
 
+// 获取数据
+function getTeacherEvaluates() {
+  scoreApi.getTeacherEvaluatesApi({param:params.value}).then((res:any)=>{
+    console.log(res);
+    tabelData.value=res.data.list
+    total.value=res.data.page.totalCount
+    updateTableHeader(res.data.show)
+  })
+}
+
+// 分页发生变化
+function pageChange(page:number,pageSize:number){
+  console.log(page,pageSize);
+  getTeacherEvaluates()
+}
 // 分页渲染dom
 function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
@@ -271,39 +276,63 @@ function selectExperiment(val:any) {
   console.log(val);
   
 }
-function select(type1: string) {
-  console.log(type1);
-  if (type1=='sc') {
-    type.value=0
-  }else if (type1=='wd') {
-    type.value=1
-  }else{
-    type.value=2
-  }
-  updateTableHeader()
-}
 
 // 更新table 表头
-function updateTableHeader() {
+function updateTableHeader(val:any[]) {
   const temp=cloneDeep(oldColumns)
   // 当是视频文档类实验时，去掉列 代码、评分参考// 0 实操 1 视频文档 2 习题
-
-  if (type.value==0) {
-    temp[5].children.splice(3, 1);
-  }
-  if (type.value == 1) {
-    temp[5].children.splice(2, 2);
-    temp.splice(6, 1);
-  }
-  if (type.value == 2) {
+  console.log(val);
+  console.log(temp);
+  
+  console.log(temp[5].children);
+  if (!val.includes('report')) {
     
-    temp[5].children.splice(0,3);
-    temp.splice(6, 1);
+    let i =temp[5].children.findIndex((item:any)=>{
+      return item.dataIndex=="report_score"
+    })
+    console.log(i);
+    temp[5].children.splice(i, 1);
   }
+  if (!val.includes("question")) {
+    console.log(temp[5].children);
+    let i =temp[5].children.findIndex((item:any)=>{
+      return item.dataIndex=="question_score"
+    })
+    console.log(i);
+    temp[5].children.splice(i, 1);
+  }
+  if (!val.includes("auto")) {
+    console.log(temp[5].children);
+    let i =temp[5].children.findIndex((item:any)=>{
+      return item.dataIndex=="auto_score"
+    })
+    console.log(i);
+    temp[5].children.splice(i, 1);
+  }
+  if (!val.includes("video")) {
+    let i =temp.findIndex((item:any)=>{
+      return item.dataIndex=="reference"
+    })
+    console.log(i);
+    temp.splice(i, 1);
+  }
+  // if (type.value==0) {
+  //   temp[5].children.splice(3, 1);
+  // }
+  // if (type.value == 1) {
+  //   temp[5].children.splice(2, 2);
+  //   temp.splice(6, 1);
+  // }
+  // if (type.value == 2) {
+    
+  //   temp[5].children.splice(0,3);
+  //   temp.splice(6, 1);
+  // }
   columns.value=temp
 }
 onMounted(() => {
-  updateTableHeader()
+  
+  getTeacherEvaluates()
 });
 </script>
 

@@ -64,6 +64,11 @@ export default {
   // 热门课程推荐
   hotCourseRecommend:{ url: `/api/course/courses/hot/recommend`, method: "GET",},
 
+  // 教师评价-成绩列表
+  getTeacherEvaluatesApi: {
+    url:'/api/operate/teacherEvaluates',
+    method: 'GET',
+  },
 }
 
 export interface ITeacherCourseApis {
@@ -82,4 +87,5 @@ export interface ITeacherCourseApis {
   getKnowledgeList:TFHttpSend
 
   hotCourseRecommend:TFHttpSend
+  getTeacherEvaluatesApi:TFHttpSend
 }
