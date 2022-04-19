@@ -90,12 +90,12 @@ export default {
       },
     },
     {
-      path: "PublicDetail",
+      path: "Detail",
       name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
       meta: {
         title: "详情",
-        authCode: 'PublicDetail'
+        authCode: 'Detail'
       },
     },
     {

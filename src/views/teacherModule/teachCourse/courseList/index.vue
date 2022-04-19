@@ -84,6 +84,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { downloadUrl } from "src/utils/download";
+import { string } from "vue-types";
 const router = useRouter();
 const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();
@@ -214,7 +215,14 @@ const initData = () => {
     type:1,
     state:labelSearch.state?labelSearch.state:'',
     year:labelSearch.year?labelSearch.year:'',
-    // tags:[labelSearch.CourseDirection,labelSearch.CareerDirection].join(',')
+    tags:''
+  }
+  if(searchInfo.is_public === 1){
+    // param.tags=[]
+    let arr=[]
+    labelSearch.CourseDirection?arr.push(labelSearch.CourseDirection):''
+    labelSearch.CareerDirection?arr.push(labelSearch.CareerDirection):''
+    param.tags=arr.join(',')
   }
   loading.value = true;
   courseList.length = 0
@@ -248,7 +256,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
 
 const courseDetail=(val:any)=>{
   router.push({ 
-    path: "/teacher/teacherCourse/PublicDetail",
+    path: "/teacher/teacherCourse/Detail",
     query: { currentTab:currentTab.value,courseId:val.id }
     });
   // if(n === 1){
