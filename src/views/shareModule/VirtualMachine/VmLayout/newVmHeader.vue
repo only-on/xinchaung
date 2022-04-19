@@ -1,11 +1,12 @@
 <template>
   <div class="vm-header-box">
     <div class="left-box">
-      <div class="back pointer" @click="back">
+      <!--<div class="back pointer" @click="back">
         <span class="iconfont icon-fanhui1"></span>
         <span>返回</span>
-      </div>
-      <div class="selected pointer">
+      </div>-->
+      <div class="selected">
+        <span class="iconfont icon-zuojiantou pointer" @click="back"></span>
         <span class="name">{{ baseInfo?.base_info?.name }}</span>
       </div>
       <div class="class-test pointer" @click="openQuizModal" v-if="role == 4">
@@ -18,28 +19,51 @@
       <span v-if="isScreenRecording" class="video-time"
         >录制时间:
         {{
-          videoTimeText?.h + "时" + videoTimeText?.m + "分" + videoTimeText?.s + "秒"
+          videoTimeText?.h +
+          "时" +
+          videoTimeText?.m +
+          "分" +
+          videoTimeText?.s +
+          "秒"
         }}</span
       >
     </div>
     <div class="right-box">
-      <div class="ip-list" :class="roleArry.includes('switchVm') ? '' : 'none-event'">
-        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
+      <div
+        class="ip-list"
+        :class="roleArry.includes('switchVm') ? '' : 'none-event'"
+      >
+        <a-select
+          class="ip-select"
+          v-model:value="currentVmIndex"
+          @change="switchVm"
+        >
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
             :key="index"
             :value="index"
           >
             <span class="ip-name">{{ item.host_ip }}</span>
-            <span class="vm-state" :class="item.status === 'ACTIVE' ? 'open' : 'close'">{{
-              item.status === "ACTIVE" ? "开" : "关"
-            }}</span>
+            <span
+              class="vm-state"
+              :class="item.status === 'ACTIVE' ? 'open' : 'close'"
+              >{{ item.status === "ACTIVE" ? "开" : "关" }}</span
+            >
           </a-select-option>
         </a-select>
       </div>
-      <div class="delayed" :class="roleArry.includes('delayed') ? '' : 'none-event'">
+      <div
+        class="delayed"
+        :class="roleArry.includes('delayed') ? '' : 'none-event'"
+      >
         <span>
-          {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
+          {{
+            experimentTime?.h +
+            ":" +
+            experimentTime?.m +
+            ":" +
+            experimentTime?.s
+          }}
         </span>
         <span class="pointer" @click="delayedTime">延时</span>
       </div>
@@ -83,7 +107,9 @@
             >
               <span class="iconfont" :class="list.icon"></span>
               <span v-if="vmsInfo && vmsInfo?.vms">{{
-                vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
+                vmsInfo?.vms[currentVmIndex].status == "ACTIVE"
+                  ? "关机"
+                  : "开机"
               }}</span>
             </li>
             <li
@@ -96,7 +122,9 @@
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
-              v-else-if="list.name && !['record', 'colseOrStart'].includes(list.key)"
+              v-else-if="
+                list.name && !['record', 'colseOrStart'].includes(list.key)
+              "
               class="pointer"
               @click="list.function"
               :class="roleArry.includes(list.key as any)?'':'none-event'"
@@ -168,7 +196,10 @@
   >
     <template #title>选择需要替换的实验记录</template>
     <div>
-      <a-radio-group @change="progressChange" v-model:value="selectProgressData">
+      <a-radio-group
+        @change="progressChange"
+        v-model:value="selectProgressData"
+      >
         <div v-for="(key, val) in saveExperimentData" :key="val.toString()">
           <div v-for="item in saveExperimentData[val]" :key="item.id">
             <a-radio
@@ -249,7 +280,8 @@
         <div v-if="quizPaperList[currentQuizIndex]">
           <template v-if="quizPaperList[currentQuizIndex].type_id == 2">
             <div class="choice-title black-004 question-title">
-              {{ quizPaperList[currentQuizIndex].question }}<i class="score">(10分)</i>
+              {{ quizPaperList[currentQuizIndex].question
+              }}<i class="score">(10分)</i>
             </div>
             <a-checkbox-group
               class="question-options-wrap"
@@ -262,18 +294,22 @@
                 class="options-item"
               >
                 <a-checkbox :value="item.id"
-                  ><i>{{ numToAbc(index + 1) }}、</i>{{ item.option }}</a-checkbox
+                  ><i>{{ numToAbc(index + 1) }}、</i
+                  >{{ item.option }}</a-checkbox
                 >
               </div>
             </a-checkbox-group>
           </template>
           <template v-if="quizPaperList[currentQuizIndex].type_id == 5">
             <div class="choice-title black-004 question-title">
-              {{ quizPaperList[currentQuizIndex].question }}<i class="score">(10分)</i>
+              {{ quizPaperList[currentQuizIndex].question
+              }}<i class="score">(10分)</i>
             </div>
             <div class="question-options-wrap">
               <a-textarea
-                v-model:value="quizPaperList[currentQuizIndex].student_answer[0]"
+                v-model:value="
+                  quizPaperList[currentQuizIndex].student_answer[0]
+                "
                 :auto-size="{ minRows: 2, maxRows: 5 }"
               />
             </div>
@@ -296,13 +332,19 @@
                 :value="item.student_answer"
                 style="width: 100%"
               >
-                <div v-for="(it, ind) in item.options" :key="it.id" class="options-item">
+                <div
+                  v-for="(it, ind) in item.options"
+                  :key="it.id"
+                  class="options-item"
+                >
                   <a-checkbox :value="Number(it.id)"
                     ><i>{{ numToAbc(ind + 1) }}、</i>{{ it.option }}</a-checkbox
                   >
                 </div>
               </a-checkbox-group>
-              <div class="right-answer">正确答案：{{ getChoiceAnswer(item) }}</div>
+              <div class="right-answer">
+                正确答案：{{ getChoiceAnswer(item) }}
+              </div>
             </template>
             <template v-if="item.type_id == 5">
               <div class="choice-title black-004 question-title">
@@ -316,11 +358,9 @@
                 />
               </div>
               <div class="right-answer">
-                  正确答案：{{item.answers[0]?.answer}}
+                正确答案：{{ item.answers[0]?.answer }}
               </div>
-              <div class="right-answer">
-                  关键字：{{getKeyword(item)}}
-              </div>
+              <div class="right-answer">关键字：{{ getKeyword(item) }}</div>
             </template>
           </div>
         </div>
@@ -349,7 +389,10 @@
         <template v-else>
           <div>
             <a-button type="default" @click="cancelQuiz">关闭</a-button>
-            <a-button type="primary" v-if="currentShowType == 1" @click="lookRecord"
+            <a-button
+              type="primary"
+              v-if="currentShowType == 1"
+              @click="lookRecord"
               >实验随测记录</a-button
             >
           </div>
@@ -360,7 +403,16 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed } from "vue";
+import {
+  ref,
+  defineProps,
+  inject,
+  Ref,
+  onMounted,
+  watch,
+  nextTick,
+  computed,
+} from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import numberInput from "src/components/aiAnt/numberInput.vue";
 import { message, Modal } from "ant-design-vue";
@@ -406,6 +458,7 @@ const currentOption: any = inject("currentOption");
 const evaluateData: any = inject("evaluateData");
 const evaluateVisible: any = inject("evaluateVisible");
 const initEvaluate: any = inject("initEvaluate");
+const ws: any = inject("ws");
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -471,20 +524,75 @@ let historyLength = history.length;
 const toolData =
   role == 3 || role == 5
     ? [
-        { icon: "icon-quanping", name: "开启 / 全屏", function: fullScreen, key: "full" },
-        { icon: "icon-guanbi1", name: "", function: colseOrStart, key: "colseOrStart" },
-        { icon: "icon-zhongzhi", name: "重置", function: resetVm, key: "reset" },
+        {
+          icon: "icon-quanping",
+          name: "开启 / 全屏",
+          function: fullScreen,
+          key: "full",
+        },
+        {
+          icon: "icon-guanbi1",
+          name: "",
+          function: colseOrStart,
+          key: "colseOrStart",
+        },
+        {
+          icon: "icon-zhongzhi",
+          name: "重置",
+          function: resetVm,
+          key: "reset",
+        },
         // 复制 / 粘贴
-        { icon: "icon-fuzhiniantie", name: "选中粘贴", function: copyPaste, key: "cpoy" },
+        {
+          icon: "icon-fuzhiniantie",
+          name: "选中粘贴",
+          function: copyPaste,
+          key: "cpoy",
+        },
       ]
     : [
-        { icon: "icon-quanping", name: "开启 / 全屏", function: fullScreen, key: "full" },
-        { icon: "icon-baocun", name: "保存进度", function: saveKvm, key: "save" },
-        { icon: "icon-guanbi1", name: "", function: colseOrStart, key: "colseOrStart" },
-        { icon: "icon-zhongzhi", name: "重置", function: resetVm, key: "reset" },
-        { icon: "icon-shangchuan", name: "上传文件", function: upload, key: "upload" },
-        { icon: "icon-xiazai", name: "下载文件", function: download, key: "download" },
-        { icon: "icon-fuzhiniantie", name: "选中粘贴", function: copyPaste, key: "copy" },
+        {
+          icon: "icon-quanping",
+          name: "开启 / 全屏",
+          function: fullScreen,
+          key: "full",
+        },
+        {
+          icon: "icon-baocun",
+          name: "保存进度",
+          function: saveKvm,
+          key: "save",
+        },
+        {
+          icon: "icon-guanbi1",
+          name: "",
+          function: colseOrStart,
+          key: "colseOrStart",
+        },
+        {
+          icon: "icon-zhongzhi",
+          name: "重置",
+          function: resetVm,
+          key: "reset",
+        },
+        {
+          icon: "icon-shangchuan",
+          name: "上传文件",
+          function: upload,
+          key: "upload",
+        },
+        {
+          icon: "icon-xiazai",
+          name: "下载文件",
+          function: download,
+          key: "download",
+        },
+        {
+          icon: "icon-fuzhiniantie",
+          name: "选中粘贴",
+          function: copyPaste,
+          key: "copy",
+        },
         {
           icon: "icon-kaishijieshuluzhi",
           name: `录制`,
@@ -1048,7 +1156,8 @@ function getQuestionList() {
       answers: [
         {
           id: 748,
-          answer: "话 hu hu f h vu g别别扭扭河南女孩发染发烦人烦人烦人烦人染发111",
+          answer:
+            "话 hu hu f h vu g别别扭扭河南女孩发染发烦人烦人烦人烦人染发111",
         },
       ],
     },
@@ -1066,7 +1175,33 @@ function getQuestionList() {
       oldQuizPaperList.value = res.data;
     });
 }
-function back() {}
+function back() {
+  Modal.confirm({
+    title: "提示",
+    content:
+      "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+    okText: "确定",
+    cancelText: "取消",
+    onOk: () => {
+      if (ws && allInfo.value?.current?.is_teamed == 1) {
+        ws.value.leave(topoinst_id + "_room");
+      }
+      if (opType === "test" || opType === "prepare") {
+        endVmEnvirment();
+      } else {
+        // if (allInfo.value?.base_info?.task_type.type==4&&allInfo.value?.base_info?.task_type.programing_type==0) {
+        router.go(historyLength - history.length - 1);
+        // }else{
+        // router.go(-1)
+        // }
+        // backTo(router, type, 3, routerQuery);
+      }
+    },
+    onCancel: () => {
+      router.go(historyLength - history.length - 1);
+    },
+  });
+}
 
 // 下拉选择虚拟机
 async function switchVm() {
@@ -1117,7 +1252,9 @@ function showChange() {}
 // 结束实验
 function finishExperiment() {
   let modal = Modal.confirm({
-    title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
+    title: `确认结束${
+      opType === "help" ? "演示" : role === 4 ? "实验" : "备课"
+    }吗？`,
     okText: "确认",
     onOk: async () => {
       await finishTest();
@@ -1543,7 +1680,7 @@ function submitQuiz() {
     };
     params.answer.push(answer);
   }
-  currentShowType.value=1
+  currentShowType.value = 1;
   examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
     message.success("提交成功");
     getQuestionList();
@@ -1588,11 +1725,11 @@ function getChoiceAnswer(val: any) {
 }
 
 // 获取关键字
-function getKeyword(val:any) {
-  var keywords=val.keywords.flatMap((item:any)=>{
-    return item.keyword
-  })
-  return keywords.join(" , ")
+function getKeyword(val: any) {
+  var keywords = val.keywords.flatMap((item: any) => {
+    return item.keyword;
+  });
+  return keywords.join(" , ");
 }
 // f
 onMounted(() => {
@@ -1654,8 +1791,13 @@ i {
       height: 26px;
       line-height: 26px;
       font-size: var(--font-size-20);
+      margin-left: 24px;
       .name {
         padding: 0 10px;
+      }
+      .iconfont {
+        font-size: 20px;
+        vertical-align: middle;
       }
     }
     .class-test {
