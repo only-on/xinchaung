@@ -1183,7 +1183,7 @@ function back() {
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
-      if (ws && allInfo.value?.current?.is_teamed == 1) {
+      if (ws && baseInfo.value?.current?.is_teamed == 1) {
         ws.value.leave(topoinst_id + "_room");
       }
       if (opType === "test" || opType === "prepare") {
