@@ -29,19 +29,25 @@ interface Props {
   isUpload?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
-  coverUrl: '',
-  isUpload: false,
+  coverUrl: {cover: ''},        // 具有cover属性的响应式对象
+  isUpload: false,  // 是否需要上传接口
 });
 const emit = defineEmits<{
-  (e: "uploadCoverHandle", obj: any): void;
+  (e: "uploadCoverHandle", obj: any): void;  // 上传文件的回调
 }>();
 
 const imageUrl = ref(props.coverUrl.cover)
+// console.log(imageUrl.value instanceof Blob)
+if (imageUrl.value instanceof Blob) {
+  getBase64(imageUrl.value, (base64Url: string) => {
+    imageUrl.value = base64Url;
+  });
+}
 // 上传封面图
 const fileList:Ref<any>=ref([])
 const loading = ref<boolean>(false)
 const beforeUpload = (file:any) => {
-  console.log(file)
+  // console.log(file)
   const isJpgOrPng = ['image/jpeg','image/png'].includes(file.type)
   if (!isJpgOrPng) {
     $message.warn('图片类型不正确')
@@ -52,6 +58,7 @@ const beforeUpload = (file:any) => {
     emit("uploadCoverHandle", file)
     // return
   }
+  return false
 }
 
 interface FileItem {
@@ -69,15 +76,15 @@ interface FileInfo {
   fileList: FileItem[];
 }
 
-function getBase64(img: Blob, callback: (base64Url: string) => void) {
+function getBase64(img: any, callback: (base64Url: string) => void) {
   const reader = new FileReader();
   reader.addEventListener('load', () => callback(reader.result as string));
   reader.readAsDataURL(img);
 }
 const handleChange = (info: FileInfo) => {
-  console.log(info)
+  // console.log(info)
   loading.value = true
-  getBase64(info.file.originFileObj, (base64Url: string) => {
+  getBase64(info.file, (base64Url: string) => {
     imageUrl.value = base64Url;
     loading.value = false;
   });
@@ -87,7 +94,7 @@ const handleChange = (info: FileInfo) => {
   }
   if (info.file.status === 'done') {
     // Get this url from response in real world.
-    getBase64(info.file.originFileObj, (base64Url: string) => {
+    getBase64(info.file, (base64Url: string) => {
       imageUrl.value = base64Url;
       loading.value = false;
     });
