@@ -146,8 +146,10 @@ var currentStep:Ref<number>=ref(0)
 var stup1Loading:Ref<boolean>=ref(false)
 const last=(val:number)=>{
   currentStep.value=val
+  console.log(formState)
 }
 const next=(val:number)=>{
+  console.log(formState)
   // currentStep.value=val
   // return
   if(val === 3){
@@ -204,7 +206,7 @@ const vocationDirection:any=reactive([])
 //   tags: string[],   
 //   content_duration: number | string ,
 // }
-const formState = reactive<any>({
+const formState:any = reactive({
   is_available:0, // 课程创建第一步的时候，这个字段传0，课程创建最后一步 传1
   cover:'',
   name: '', // 课程名称
@@ -242,7 +244,7 @@ const uploadCoverHandle=(file:any)=>{
   const fd = new FormData()
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
-    formState.url = res.data.path
+    formState.url = res.data.url
   })
 }
 

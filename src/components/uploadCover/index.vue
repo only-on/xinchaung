@@ -47,11 +47,11 @@ const beforeUpload = (file:any) => {
     $message.warn('图片类型不正确')
     return false
   }
+  props.coverUrl.cover = file
   if (props.isUpload) {
     emit("uploadCoverHandle", file)
-    return
+    // return
   }
-  props.coverUrl.cover = file
 }
 
 interface FileItem {
@@ -75,6 +75,7 @@ function getBase64(img: Blob, callback: (base64Url: string) => void) {
   reader.readAsDataURL(img);
 }
 const handleChange = (info: FileInfo) => {
+  console.log(info)
   loading.value = true
   getBase64(info.file.originFileObj, (base64Url: string) => {
     imageUrl.value = base64Url;
