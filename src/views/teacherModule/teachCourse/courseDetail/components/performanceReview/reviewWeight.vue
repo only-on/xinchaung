@@ -9,21 +9,23 @@
   >
     <div class="review-weight-wrap">
       <div class="weight-content">
-        <label>实验报告</label
-        ><a-input
-          v-model:value="fromData.report"
-          @change="dataChange"
-        ></a-input>
-        <i>+</i>
-        <label>随堂测试</label><a-input 
-          v-model:value="fromData.test"
-          @change="dataChange"></a-input>
-        <template v-if="type == 0">
+        <template v-if="weightData.show.includes('report')">
+          <label>实验报告</label
+          ><a-input v-model:value="weightData.calc.report" @change="dataChange"></a-input>
           <i>+</i>
-          <label>实验代码</label><a-input
-            v-model:value="fromData.code"
-          @change="dataChange"
+        </template>
+        <template v-if="weightData.show.includes('question')">
+          <label>随堂测试</label
+          ><a-input
+            v-model:value="weightData.calc.question"
+            @change="dataChange"
           ></a-input>
+          <template v-if="type == 0"> </template>
+          <template v-if="weightData.show.includes('auto')">
+            <i>+</i>
+            <label>自动评分</label
+            ><a-input v-model:value="weightData.calc.auto" @change="dataChange"></a-input>
+          </template>
         </template>
       </div>
       <p class="hint" v-if="exceed">权重总和超过已超过100%，无法提交！</p>
@@ -38,31 +40,34 @@
 
 <script lang="ts" setup>
 import { defineProps, defineEmits, reactive, onMounted, ref, nextTick } from "vue";
-import {message} from "ant-design-vue"
+import { message } from "ant-design-vue";
 const props = defineProps({
-  type: Number,   // 0 实操类实验 1 视频文档类实验
-  weightVisible: { // 弹框显示隐藏
+  type: Number, // 0 实操类实验 1 视频文档类实验
+  weightVisible: {
+    // 弹框显示隐藏
     type: Boolean,
     require: false,
     default: false,
   },
+  weightData: {
+    default: {
+      calc: { report: 0, question: 0, auto: 0 },
+      show: ["report", "question", "auto"],
+    },
+  },
 });
 
 console.log(window.XC_ROLE);
+console.log(props.weightData.calc);
+let auto = props.weightData.calc.auto ? props.weightData.calc.auto : 0;
+let question = props.weightData.calc.question ? props.weightData.calc.question : 0;
+let report = props.weightData.calc.report ? props.weightData.calc.report : 0;
+let sum = auto + question + report;
+console.log(sum);
 
-const fromData: {
-  report: number | string;
-  test: number | string;
-  code: number | string;
-} = reactive({
-  report: "",
-  test:"",
-  code:""
-});
-
-const exceed=ref(false)
+const exceed = ref(false);
 // 获取父组件方法
-const emit = defineEmits(["update:weightVisible"]);
+const emit = defineEmits(["update:weightVisible", "apply", "submit"]);
 // 关闭弹窗
 function colseModal() {
   emit("update:weightVisible", false);
@@ -70,61 +75,66 @@ function colseModal() {
 
 // input数据发生变化时执行
 function dataChange(e: InputEvent) {
+  sum = 0;
   if ((e.target as any).value) {
-    verifyNumber((e.target as any).value)
+    verifyNumber((e.target as any).value);
   }
-  let report:string=fromData.report?fromData.report as any:0
-  let test:string=fromData.test?fromData.test as any:0
-  let code:string=fromData.code?fromData.code as any:0
-  if (report&&report.indexOf("%")!=-1) {
-    report=report.substring(0,report.length-1)
-  }
-  if (test&&test.indexOf("%")!=-1) {
-    test=test.substring(0,test.length-1)
-  }
-  if (code&&code.indexOf("%")!=-1) {
-    code=code.substring(0,code.length-1)
-  }
-  
-  if (props.type==0) {
-    if (Number(report)+Number(test)+Number(code)>100) {
-     exceed.value=true
-    }else{
-      exceed.value=false
+  props.weightData.show.forEach((item: any) => {
+    let v: any = "0%";
+    if (props.weightData.calc[item]) {
+      v = props.weightData.calc[item];
     }
-  }else{
-    if (Number(report)+Number(test)) {
-     exceed.value=true
-    }else{
-      exceed.value=false
+    console.log(v);
+
+    if (v.toString().indexOf("%") != -1) {
+      v = v.substring(0, v.length - 1);
     }
+    sum += Number(v);
+  });
+
+  if (sum > 100) {
+    exceed.value = true;
+  } else {
+    exceed.value = false;
   }
 }
 
 // 校验
-function verifyNumber(val:string) {
-  if (!(/^\d+\.?\d*\%?$/.test(val))) {
-    message.warn("请输入数字")
-    return false
-  }else{
-    return true
+function verifyNumber(val: string) {
+  if (!/^\d+\.?\d*\%?$/.test(val)) {
+    message.warn("请输入数字");
+    return false;
+  } else {
+    return true;
   }
 }
 
 // 应用到本课程
 function apply() {
-  console.log("apply");
+  if (!exceed.value) {
+    if (sum == 100) {
+      emit("apply");
+    } else {
+      message.warn("权重比例加起来必须是100");
+    }
+  } else {
+    message.warning("权重总和超过已超过100%，无法应用！");
+  }
 }
 // 取消
 function cancel() {
-  emit("update:weightVisible",false)
+  emit("update:weightVisible", false);
 }
 // 提交
 function submit() {
   if (!exceed.value) {
-    console.log("pass");
-  }else{
-    message.warning("权重总和超过已超过100%，无法提交！")
+    if (sum == 100) {
+      emit("submit");
+    } else {
+      message.warn("权重比例加起来必须是100");
+    }
+  } else {
+    message.warning("权重总和超过已超过100%，无法提交！");
   }
 }
 onMounted(() => {

@@ -46,7 +46,7 @@ const props=defineProps({
     }
 })
 // emit方法
-const emit=defineEmits(["update:visible",'update:data'])
+const emit=defineEmits(["update:visible",'update:data','submit'])
 
 const scoreValidator= async(rule: RuleObject, value: any)=>{
     if (value=="") {
@@ -73,7 +73,7 @@ function submit(){
     formRef.value
         .validate().then(()=>{
             console.log("pass");
-            
+            emit("submit")
         }).catch((err:any)=>{
             console.log(err);
             

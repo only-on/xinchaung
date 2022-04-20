@@ -1,21 +1,22 @@
 <template>
   <div class="correct-wrap">
     <div class="c-d-left">
-      <chapterTree @selectExperiment="selectExperiment">
-       
-      </chapterTree>
+      <chapterTree
+          :chartLoading="chartLoading"
+          :chapterList="ChaptersTreeList"
+          @selectExperiment="selectExperiment" />
     </div>
     <div class="correct-right right">
       <div class="top">
         <div class="t-left">
-          <span>提交情况：<i class="surplus">10</i>/100</span>
-          <span> 评阅情况：<i class="surplus">10</i>/100 </span>
+          <span>提交情况：<i class="surplus">{{staticInfo?.submited?staticInfo.submited:0}}</i>/{{total}}</span>
+          <span> 评阅情况：<i class="surplus">{{staticInfo?.ranked?staticInfo.ranked:0}}</i>/{{total}} </span>
         </div>
         <div class="t-right">
-          <a-button type="primary" size="" @click="autoWeight"
-            >一键评阅<i class="icon-yidong iconfont"></i
+          <a-button type="primary" size="" @click="autoReview"
+            >一键评阅<i @click.stop="autoWeight" class="icon-shezhi iconfont"></i
           ></a-button>
-          <a-button type="primary" size="">导出成绩</a-button>
+          <a-button type="primary" size="" @click="exportScore">导出成绩</a-button>
         </div>
       </div>
       <div class="c-table">
@@ -24,70 +25,65 @@
           :columns="columns"
           bordered
           :data-source="tabelData"
-          row-key="id"
+          row-key="user_id"
           :pagination="false"
         >
           <template #customReportTitle> 报告</template>
           <template #customQuizTitle> 随测</template>
           <template #customAutoTitle> 自动评分</template>
           <template #customExercisesTitle> 习题 </template>
-          <template #reference="{ text }">
-            <span class="table-a-link" @click="clickFun('video', text)">录屏</span>
+          <template #reference="{ text,record,index }">
+            <span class="table-a-link" @click="clickFun('video', record,index)">录屏</span>
           </template>
-          <template #report="{ text, record }">
+          <template #report="{ text, record ,index}">
             <template v-if="record.report_score!=null">
               <span
                 >{{ text
                 }}<i
-                  @click="clickFun('updateReport', text)"
+                  @click="clickFun('updateReport', record,index)"
                   class="edit-btn iconfont icon-bianji1"
                 ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
+              <span class="table-a-link" @click="clickFun('report', record,index)">评阅</span>
             </template>
           </template>
-          <template #question="{ text, record }">
+          <template #question="{ text, record,index }">
             <template v-if="record.question_score!=null">
-              <span
-                >{{ text
-                }}<i
-                  @click="clickFun('updateReport', text)"
-                  class="edit-btn iconfont icon-bianji1"
-                ></i
-              ></span>
+              <span>{{ text }}</span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
+              <div style="text-align: center;">--</div>
             </template>
           </template>
-          <template #autoScore="{ text, record }">
-            <template v-if="record.auto_score!=null">
+          <template #autoScore="{ text, record,index }">
+          <span>{{text}}</span>
+            <!-- <template v-if="record.auto_score!=null">
               <span
                 >{{ text
                 }}<i
-                  @click="clickFun('updateCode', text)"
+                  @click="clickFun('updateCode', record,index)"
                   class="edit-btn iconfont icon-bianji1"
                 ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('code', text)">评阅</span>
-            </template>
+              <span class="table-a-link" @click="clickFun('code', record,index)">评阅</span>
+            </template> -->
           </template>
-          <template #score="{ text, record }">
-            <template v-if="record.isScore">
+          <template #score="{ text, record ,index}">
+            <template v-if="record.final_score!=null">
               <span
                 >{{ text
                 }}<i
-                  @click="clickFun('updateScore', text)"
+                  @click="clickFun('updateScore', record,index)"
                   class="edit-btn iconfont icon-bianji1"
                 ></i
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('score', text)">评分</span>
+              <span class="table-a-link" @click="clickFun('score', record,index)">评分</span>
             </template>
           </template>
         </a-table>
@@ -101,40 +97,56 @@
       </a-pagination>
     </div>
   </div>
+
+  <!--一键评阅-->
   <reviewWeight
     v-if="weightVisible"
     v-model:weightVisible="weightVisible"
+    v-model:weightData="weightData"
     :type="type"
+    @apply="apply"
+    @submit="submitWeight"
   ></reviewWeight>
   <ratingScores
     :isEdit="isEdit"
     v-if="scoreVisible"
     v-model:visible="scoreVisible"
-    v-model:data="rowData"
+    v-model:data="scoreData"
+    @submit="submitScore"
   ></ratingScores>
   <reportModal
     :isEdit="isEdit"
     v-if="reportVisible"
     v-model:visible="reportVisible"
-    v-model:data="rowData"
+    v-model:data="reportData"
   ></reportModal>
-  <codeReview
+  <!-- <codeReview
     v-if="codeVisible"
     v-model:visible="codeVisible"
     v-model:data="rowData"
-  ></codeReview>
+  ></codeReview> -->
+  <videoView
+    v-if="videoVisible"
+    v-model:visible="videoVisible"
+    v-model:url="videoUrl"
+  ></videoView>
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref } from "vue";
+import { ref, toRefs, onMounted, Ref,watch } from "vue";
 import reviewWeight from "./reviewWeight.vue"; // 一键评阅弹窗
 import ratingScores from "./ratingScores.vue"; // 评分弹窗
 import reportModal from "./report.vue"; // 批阅报告弹框
-import codeReview from "./codeReview.vue"; // 代码评阅
+// import codeReview from "./codeReview.vue"; // 代码评阅
+import videoView from "./videoView.vue"
 import {cloneDeep} from "lodash"
 import chapterTree from "../Chapter/ChapterList.vue"
 import request from "src/api/index"
+import { useRouter ,useRoute } from 'vue-router';
+import { message } from "ant-design-vue";
 
+const route=useRoute()
+const courseId:any=route.query.courseId  //章节id
 
 const scoreApi=request.teachCourse
 let type = ref(0); // 0 实操 1 视频文档 2 习题
@@ -144,19 +156,42 @@ const weightVisible = ref(false);
 const scoreVisible = ref(false);
 const reportVisible = ref(false);
 const codeVisible = ref(false);
+const videoVisible=ref(false)
 
 // 查看列表参数
 const params=ref({
-  taskId:501770,
   limit:10,
   page:1
 })
 
+const chartLoading:any=ref(false)
+const ChaptersTreeList:any=ref([])
+const experitId:any=ref('')  //实验id
+
+
+// 权重数据
+const weightData:Ref<any>=ref({})
+
+// 成绩数据
+const scoreData:Ref<any>=ref({})
+
+// 报告数据
+const reportData:Ref<any>=ref({})
+// 当前操作行
+let currentRow:any=""
 const total:Ref<number>=ref(0)
 // 是否是编辑状态
 const isEdit = ref(false);
+// 当前学习id
+let currentStudyId:any=""
 // 当前行数据
 const rowData = ref({});
+
+// 头部统计
+const staticInfo:Ref<any>=ref({})
+
+// 评分参考视频url地址
+const videoUrl:Ref<any>=ref("")
 // table头信息
 const oldColumns:any[]= [
   {
@@ -217,7 +252,8 @@ const oldColumns:any[]= [
   },
   {
     title: "成绩",
-    dataIndex: "score",
+    dataIndex: "final_score",
+    key:"final_score",
     width: 65,
     slots: { customRender: "score" },
   },
@@ -228,16 +264,34 @@ console.log(type);
 // table数据
 const tabelData = ref([]);
 
+
+watch(() => scoreData.value,()=>{
+  console.log(scoreData.value);
+  
+},{deep:true})
 // 获取数据
 function getTeacherEvaluates() {
+  Object.assign(params.value,{taskId:experitId.value})
   scoreApi.getTeacherEvaluatesApi({param:params.value}).then((res:any)=>{
     console.log(res);
     tabelData.value=res.data.list
     total.value=res.data.page.totalCount
+    staticInfo.value=res.data.statistics;
     updateTableHeader(res.data.show)
   })
 }
 
+function getChapterList(){
+  scoreApi.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
+    console.log(res)
+    ChaptersTreeList.value=res.data
+    for (let i = 0; i < ChaptersTreeList.value.length; i++) {
+      if (ChaptersTreeList.value[i]&&ChaptersTreeList.value[i].contents.length>0) {
+        selectExperiment(ChaptersTreeList.value[i].contents[0])
+      }
+    }
+  })
+}
 // 分页发生变化
 function pageChange(page:number,pageSize:number){
   console.log(page,pageSize);
@@ -248,33 +302,143 @@ function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
 }
 // 打开一键评阅modal
-function autoWeight() {
+async function autoWeight() {
+  
+  await getWeight(experitId.value)
   weightVisible.value = true;
 }
 
+// 获取评阅权重数据
+async function getWeight(taskId:any) {
+  await scoreApi.getWeightApi({urlParams:{taskId:taskId}}).then((res:any)=>{
+    weightData.value=res.data
+  })
+}
+
+// 应用到本课程
+function apply() {
+  scoreApi.applyWeightApi({param:{
+    auto:weightData.value.calc.auto,
+    report:weightData.value.calc.report,
+    question:weightData.value.calc.question,
+  },urlParams:{taskId:experitId.value}}).then((res:any)=>{
+    message.success(res.msg)
+    weightVisible.value=false
+  })
+}
+
+// 保存权重
+function submitWeight() {
+   scoreApi.saveWeightApi({param:{
+    auto:weightData.value.calc.auto,
+    report:weightData.value.calc.report,
+    question:weightData.value.calc.question,
+  },urlParams:{taskId:experitId.value}}).then((res:any)=>{
+    message.success(res.msg)
+    weightVisible.value=false
+  })
+}
+
+// 一键评分
+function autoReview() {
+  scoreApi.autoReviewApi({urlParams:{taskId:experitId.value}}).then((res:any)=>{
+    message.success(res.msg)
+  })
+}
 // table操作
-function clickFun(type: string, val: number) {
-  console.log(val);
-  if (type.indexOf("update") != -1) {
-    isEdit.value = true;
-  } else {
-    isEdit.value = false;
-  }
+function clickFun(type: string, val: any,index:number) {
+  console.log(val,index);
+  currentRow=index
+  // if (type.indexOf("update") != -1) {
+  //   isEdit.value = true;
+  // } else {
+  //   isEdit.value = false;
+  // }
   if (["updateScore", "score"].includes(type)) {
-    scoreVisible.value = true;
+    setScore(type,val.course_student_content_id)
+    
   }
   if (["updateReport", "report"].includes(type)) {
-    reportVisible.value = true;
+    reportReview(type,val.course_student_content_id)
   }
   if (["updateCode", "code"].includes(type)) {
     codeVisible.value = true;
   }
+  if (type=='video') {
+    scoreRefer(val.course_student_content_id)
+  }
 }
 
+// 评分成绩
+async function setScore(type:string,studyId:number) {
+  await getScore(type,studyId)
+  currentStudyId=studyId
+  scoreVisible.value = true;
+}
+
+// 获取评分成绩
+async function getScore(type:string,studyId:number) {
+  if (type=='score') {
+    isEdit.value=false
+  }else{
+    isEdit.value=true
+    await scoreApi.getScoreApi({urlParams:{id:studyId}}).then((res:any)=>{
+    console.log(res);
+    scoreData.value=res.data
+  })
+  }
+}
+
+// 提交成绩评分
+function submitScore() {
+  if (scoreData.value.score>100) {
+    message.warn("分数不能大于100")
+    return;
+  }
+  scoreApi.setScoreApi({urlParams:{id:currentStudyId},param:scoreData.value}).then((res:any)=>{
+    (tabelData as any).value[currentRow].final_score=res.data.score;
+    scoreVisible.value=false
+  })
+}
+
+// 导出成绩
+function exportScore() {
+  scoreApi.exportScoreApi({param:{ids:[]}}).then((res:any)=>{
+    console.log(res);
+    
+  })
+}
+
+// 操作报告评阅
+async function reportReview(type:string,studyId:number) {
+  if (type=='report') {
+    isEdit.value=false
+  }else{
+    isEdit.value=true
+  }
+  const res:any= await getReportOrVideo(studyId,'report')
+  reportData.value=res
+  reportVisible.value=true
+}
+
+// 评分参考
+async function scoreRefer(studyId:number){
+  const res:any= await getReportOrVideo(studyId,'video')
+  console.log(res);
+  videoUrl.value=res
+  videoVisible.value=true
+}
+// 获取报告、视频 
+async function getReportOrVideo(studyId:number,type:'video'|'report') {
+  return await scoreApi.getCourseExperimentReportVideoApi({param:{id:studyId,type:type}}).then((res:any)=>{
+    return res.data
+  })
+} 
 // 选择tree章节
 function selectExperiment(val:any) {
   console.log(val);
-  
+  experitId.value=val.id
+  getTeacherEvaluates()
 }
 
 // 更新table 表头
@@ -331,8 +495,7 @@ function updateTableHeader(val:any[]) {
   columns.value=temp
 }
 onMounted(() => {
-  
-  getTeacherEvaluates()
+  getChapterList()
 });
 </script>
 

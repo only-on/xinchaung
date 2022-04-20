@@ -71,6 +71,25 @@ export default {
     url:'/api/operate/teacherEvaluates',
     method: 'GET',
   },
+
+  // 评阅权重展示
+  getWeightApi:{url:"/api/operate/teacherEvaluates/proportion/{taskId}",method:"GET"},
+  // 权重保存
+  saveWeightApi:{url:"/api/operate/teacherEvaluates/setting/{taskId}",method:"POST",dataType: "json"},
+  // 权重应用到课程
+  applyWeightApi:{url:"/api/operate/teacherEvaluates/resuse/{taskId}",method:"POST",dataType: "json"},
+  // 一键评分
+  autoReviewApi:{url:"/api/operate/teacherEvaluates/review/{taskId}",method:"POST"},
+  // 获取学习记录打分
+  getScoreApi:{url:"/api/operate/teacherEvaluates/score/{id}",method:"GET"},
+  // 手动打分
+  setScoreApi:{url:"/api/operate/teacherEvaluates/{id}",method:"PUT",dataType:"json"},
+  // 获取课程实验报告、录屏
+  getCourseExperimentReportVideoApi:{url:"/api/operate/teacherEvaluates/show",method:"GET"},
+  // 成绩导出
+  exportScoreApi:{url:"/api/operate/teacherEvaluates/export",method:"POST",dataType:"json"},
+  // 报告评分
+  setReportScoreApi:{url:"/report/record/teacher-update",method:"PUT",dataType:"json"}
 }
 
 export interface ITeacherCourseApis {
@@ -91,4 +110,13 @@ export interface ITeacherCourseApis {
   hotCourseRecommend:TFHttpSend
   getTeacherEvaluatesApi:TFHttpSend
   UploadCourse:TFHttpSend
+  getWeightApi:TFHttpSend
+  saveWeightApi:TFHttpSend
+  applyWeightApi:TFHttpSend
+  autoReviewApi:TFHttpSend
+  getScoreApi:TFHttpSend
+  getCourseExperimentReportVideoApi:TFHttpSend
+  setScoreApi:TFHttpSend
+  exportScoreApi:TFHttpSend
+  setReportScoreApi:TFHttpSend
 }

@@ -1,23 +1,31 @@
 <template>
   <a-modal
-    class="report-modal"
-    title="批阅实验报告"
-    v-model:visible="reportVisible"
+    class="video-modal"
+    title="评分参考视频"
+    v-model:visible="visible"
     @cancel="colseModal"
     :footer="false"
     :destroyOnClose="true"
     :maskClosable="false"
-    :width="800"
+    :width="1000"
   >
-    <div class="report-wrap">
-      <div class="report-template">
-        <!-- <onLineReport></onLineReport> -->
-        <div v-html="data.html_content"></div>
+    <div class="code-wrap">
+      <div class="video-template">
+        <video
+          :src="url"
+          :controls="true"
+          class="video-js vjs-big-play-centered vjs-fluid"
+          webkit-playsinline="true"
+          playsinline="true"
+          x-webkit-airplay="allow"
+          x5-playsinline
+          style="width: 100%;"
+          :autoplay="true"
+          ref="video"
+        ></video>
       </div>
       <div class="action-footer">
-        <label><i>*</i>评分</label>
-        <a-input placeholder="0~100" v-model:value="data.score"></a-input>
-        <a-button type="primary" @click="submit">提交</a-button>
+        <a-button type="primary" @click="colseModal">关闭</a-button>
       </div>
     </div>
   </a-modal>
@@ -25,41 +33,32 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
-import onLineReport from "src/components/report/onlineReport.vue"
 
 // props传值
 const props = defineProps({
-  reportVisible: {
+  visible: {
     // 弹窗显示隐藏
     default: false,
     type: Boolean,
   },
-  data: {
+  url: {
     // 数据
     type: Object as any,
-    default: {},
-  },
-  isEdit: {
-    type: Boolean,
-    default: false,
+    default: "",
   },
 });
 
 // emit方法
-const emit = defineEmits(["update:visible", "update:data"]);
+const emit = defineEmits(["update:visible", "update:url"]);
 
 // 关闭弹窗
 function colseModal() {
   emit("update:visible", false);
 }
-// 提交
-function submit() {
-  console.log("submit");
-}
 </script>
 
 <style lang="less">
-.report-modal {
+.video-modal {
   .action-footer {
     display: flex;
     justify-content: center;
@@ -81,10 +80,10 @@ function submit() {
     }
   }
   // :deep(.report-modal){
- .ant-modal-body {
+  .ant-modal-body {
     padding: 0;
-    .report-template{
-      padding:0 40px 0 40px;
+    .video-template {
+      padding: 0 20px 0 20px;
     }
   }
   // }
