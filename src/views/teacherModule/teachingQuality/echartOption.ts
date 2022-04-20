@@ -9,7 +9,7 @@ let option:any= {
       }
     },
     legend: {
-      data: ['Precipitation', 'Temperature']
+      data: ['成绩平均分', '成绩最高分']
     },
     xAxis: [
       {
@@ -23,29 +23,48 @@ let option:any= {
     yAxis: [
       {
         type: 'value',
-        name: 'Precipitation',
+        name: '',
         min: 0,
         max: 250,
         interval: 50,
         axisLabel: {
-          formatter: '{value} ml'
+          formatter: '{value}'
         }
       },
       {
         type: 'value',
-        name: 'Temperature',
+        name: '',
         min: 0,
         max: 25,
         interval: 5,
         axisLabel: {
-          formatter: '{value} °C'
+          formatter: ''
         }
       }
     ],
+    dataZoom: [
+      {
+        type: 'slider',
+        show:true,
+        xAxisIndex: 0,
+        bottom:30,
+        filterMode: 'none',
+        height:10,
+      },
+    ],
     series: [
       {
-        name: 'Precipitation',
+        name: '成绩平均分',
         type: 'bar',
+        color:'#00CBC2',
+        barWidth:10,
+        itemStyle: {
+          //柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
+          normal: {
+           //柱形图圆角，初始化效果
+           barBorderRadius: [5, 5, 5, 5],
+          }
+         },
         tooltip: {
           valueFormatter: function (value:any) {
             return value + ' ml';
@@ -56,8 +75,9 @@ let option:any= {
         ]
       },
       {
-        name: 'Temperature',
+        name: '成绩最高分',
         type: 'line',
+        color:'#FF9544',
         yAxisIndex: 1,
         tooltip: {
           valueFormatter: function (value:any) {
@@ -73,14 +93,14 @@ let option1:any = {
       text: ''
     },
     legend: {
-      data: ['Allocated Budget', 'Actual Spending']
+      data: []
     },
     radar: {
       // shape: 'circle',
       indicator: [
-        { name: 'Sales', max: 6500 },
-        { name: 'Administration', max: 16000 },
-        { name: 'Information Technology', max: 30000 },
+        { name: '课程1', max: 6500 },
+        { name: '课程2', max: 16000 },
+        { name: '看echnology', max: 30000 },
         { name: 'Customer Support', max: 38000 },
         { name: 'Development', max: 52000 },
         { name: 'Marketing', max: 25000 }
@@ -90,11 +110,8 @@ let option1:any = {
       {
         name: 'Budget vs spending',
         type: 'radar',
+        color:'#FF9544',
         data: [
-          {
-            value: [4200, 3000, 20000, 35000, 50000, 18000],
-            name: 'Allocated Budget'
-          },
           {
             value: [5000, 14000, 28000, 26000, 42000, 21000],
             name: 'Actual Spending'

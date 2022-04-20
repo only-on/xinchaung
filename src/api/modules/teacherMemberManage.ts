@@ -19,7 +19,7 @@ export default {
   deleteAssistant:{url:'/api/yii/assistant/delall',method:'POST',dataType: 'json'}
 }
 
-export interface ITeacherTrainAps {
+export interface IteacherMemberManage {
     allstudentlist:TFHttpSend
     coursestudentlist:TFHttpSend
     addStudentToCourse:TFHttpSend

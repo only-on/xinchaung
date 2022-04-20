@@ -3,9 +3,9 @@
        <div class="statistic">
            实验成绩分布图
            <span class="score">
-               <span class="max">(最高分:{{}}</span>
-               <span class="min">最低分:{{}}</span>
-               <span class="average">平均分:{{}})</span>
+               <span class="max">(最高分:{{statisData?.maxScore}}</span>
+               <span class="min">最低分:{{statisData?.minScore}}</span>
+               <span class="average">平均分:{{statisData?.avgScore}})</span>
            </span>
        </div>
        <div class="chart">
@@ -16,20 +16,20 @@
                 <div class="title">
                     实验报告提交率
                 </div>
-                <Progress type="circle" :percent='75' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
+                <Progress type="circle" :percent='statisData?.ExperimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
             </div>
             <div class='pie-item'>
                 <div class="title">
                     随测正确率
                 </div>
-                <Progress type="circle" :percent='75' :width='100' :strokeWidth='10' strokeColor='#f6bc3a' />
+                <Progress type="circle" :percent='statisData?.inClassTestAccuracyRate' :width='100' :strokeWidth='10' strokeColor='#f6bc3a' />
             </div>
             </div>
             <div class='pie-item'>
                 <div class="title">
                     自动评分率
                 </div>
-                <Progress type="circle" :percent='75' :width='100' :strokeWidth='10' strokeColor='#6791fb' />
+                <Progress type="circle" :percent='statisData?.automaticScoringCorrectRate' :width='100' :strokeWidth='10' strokeColor='#6791fb' />
             </div>
         </div>
        </div>
@@ -42,7 +42,12 @@ import { Progress } from 'ant-design-vue';
 import { onMounted } from '@vue/runtime-core';
 import leftPanelVue from 'src/views/shareModule/VirtualMachine/VmLayout/leftPanel.vue';
 
-
+interface Props {
+  statisData:any
+}
+const props = withDefaults(defineProps<Props>(), {
+  statisData: () => {},
+})
 var option:any={};
 option = {
   title: {

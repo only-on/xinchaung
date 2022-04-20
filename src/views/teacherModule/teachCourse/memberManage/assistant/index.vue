@@ -285,6 +285,7 @@ function submit(){
   http.addAssistanter({param:params}).then((res:any)=>{
       if(res.code){
         visible.value=false;
+        getAssistantList()
       }
   })
 }

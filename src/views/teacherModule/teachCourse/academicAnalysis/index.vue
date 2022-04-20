@@ -4,11 +4,12 @@
         <chapterTree
           :chartLoading="chartLoading"
           :chapterList="ChaptersTreeList"
+          @selectExperiment="selectExperiment" 
          />
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults></distributionOfResults>
+                <distributionOfResults :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -21,7 +22,7 @@
                                 <a-select-option v-for="item in option" :key="item.id"
                                 >{{ item.name }}
                                 </a-select-option>
-                    </a-select>
+                            </a-select>
                     </div>
                 </div>
                 <a-table
@@ -59,6 +60,7 @@ import { ref, toRefs, onMounted,reactive} from "vue";
 import chapterTree from "../courseDetail/components/Chapter/ChapterList.vue";
 import { useRouter ,useRoute } from 'vue-router';
 import request from 'src/api/index'
+const http=(request as any).teacherAcademicAnalysis;
 const http1=(request as any).teachCourse;
 const route=useRoute()
 const courseId:any=route.query.courseId
@@ -66,6 +68,7 @@ const chartLoading:any=ref(false)
 const ChaptersTreeList:any=ref([])
 const Editable:any=ref(false)
 const option: any = ref();
+const experitId:any=ref('')
 option.value = [
   { id: "", name: "全部" },
   { id: 1, name: "班级1" },
@@ -75,6 +78,7 @@ option.value = [
 
 const columns: any = ref();
 const data: any = ref([]);
+const statisData:any=ref()
 const tableData: any = reactive({
   total: 0,
   page: 1,
@@ -126,6 +130,41 @@ function getChapterList(){
     console.log(res)
     ChaptersTreeList.value=res.data
   })
+}
+function getStugrandsList(){
+  http.stuGrandsList({urlParams:{content_id:experitId.value}}).then((res:any)=>{
+    if(res.code==1){
+      data.value=res.data.list
+    }
+  })
+}
+function getStuStatis(){
+  statisData.value={
+        minScore: 10,//最低分
+        avgScore: 50,//平均分
+        maxScore: 100,//最高分
+        "distributionOfScores": {//区间成绩人数分布
+            "0 ~ 60": 10,
+            "60 ~ 70": 30,
+            "70 ~ 80": 60,
+            "80 ~ 90": 20,
+            "90 ~ 100": 10
+        },
+        "ExperimentalReportSubmissionRate": 50,//实验报告提交率
+        "inClassTestAccuracyRate": 45,//随测正确率
+        "automaticScoringCorrectRate": 37 //自动评测正确率
+    }
+    // http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
+    //   if(res.code==1){
+    //     // statisData.value=res.data
+    //   }
+    // })
+}
+function selectExperiment(val: any) {
+  console.log(val);
+  experitId.value=val.id
+  getStuStatis()
+  getStugrandsList()
 }
 onMounted(()=>{
   getChapterList()
