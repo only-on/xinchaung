@@ -16,6 +16,7 @@ export interface IEnvirmentsParam {
   type: TStudyType;
   opType: TopType;
   taskId: any;
+  experType: number
 }
 
 export interface IStopOperatesParam extends IEnvirmentsParam {
@@ -297,14 +298,13 @@ async function toVmConnect(
   return new Promise(async (resolve: any, reject: any) => {
     const createEnvirments: any = await openVm(param);
     console.log(createEnvirments, JSON.stringify(routerQuery));
-    let url = "";
+    let url = "/vm";
     console.log(createEnvirments.data.data.type);
-
-    if (createEnvirments.data.data.type.taskType === "notebook") {
-      url = "/vm/notebook";
-    } else {
-      url = "/vm/vnc";
-    }
+    // if (createEnvirments.data.data.type.taskType === "notebook") {
+    //   url = "/vm/notebook";
+    // } else {
+    //   url = "/vm/vnc";
+    // }
     console.log(url);
 
     if (createEnvirments.data.data.connection_id) {
@@ -312,6 +312,7 @@ async function toVmConnect(
       router.push({
         path: url,
         query: {
+          experType: param.experType,
           connection_id: createEnvirments.data.data.connection_id,
           opType: createEnvirments.query.opType,
           type: createEnvirments.query.type,

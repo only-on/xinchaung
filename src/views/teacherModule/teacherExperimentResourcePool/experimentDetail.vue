@@ -138,16 +138,18 @@ const openVnc = () => {
     type: "content",  // 实验
     opType: "prepare",
     taskId: experimentDetail.id,
+    experType: experimentDetail.task_type
   };
   // 文档视频实验
   if (experimentDetail.task_type === 6 || experimentDetail.task_type === 7) {
     router.push({
-      path: "/vm/documentOrVideo",
+      path: "/vm",
       query: {
         type: param.type,
         opType: param.opType,
         taskId: param.taskId,
         routerQuery: JSON.stringify(routeQuery),
+        experType: experimentDetail.task_type
       },
     });
     return
@@ -155,12 +157,13 @@ const openVnc = () => {
   if (experimentDetail.task_type === 3 && experimentDetail.programing_type === 1) {
     // webide
     router.push({
-      path: "/vm/ace",
+      path: "/vm",
       query: {
         type: param.type,
         opType: param.opType,
         taskId: param.taskId,
         routerQuery: JSON.stringify(routeQuery),
+        experType: experimentDetail.task_type
       },
     });
     return

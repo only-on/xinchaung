@@ -9,6 +9,14 @@ export default {
   },
   children: [
     {
+      path: "",
+      component: () => import("src/views/shareModule/VirtualMachine/index.vue"),
+      meta: {
+        title: "vm",
+        authCode: "",
+      },
+    },
+    {
       path: "ace",
       name: "ace",
       component: () =>

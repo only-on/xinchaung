@@ -1,9 +1,10 @@
 <template>
-  <vnc v-if="true"></vnc>
+  <!-- <vnc v-if="true"></vnc>
   <jupyter v-if="false"></jupyter>
-  <webide v-if="false"></webide>
+  <webide v-if="false"></webide> -->
   <!-- <documentOrVideo v-if="true"></documentOrVideo> -->
   <!--自评、推荐-->
+  <component :is="componentList[experType]"></component>
   <a-modal
     :visible="evaluateVisible"
     :title="'推荐实验'"
@@ -84,7 +85,10 @@ import {
 
 const route = useRoute();
 const router = useRouter();
-const { type, opType, taskId, topoinst_id } = route.query;
+const { type, opType, taskId, topoinst_id, experType } = route.query;
+console.log(experType)
+// 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
+const componentList = ['', vnc, webide, webide, jupyter, vnc, documentOrVideo, documentOrVideo]
 
 const evaluateVisible: Ref<boolean> = ref(false); // 控制自评、推荐显示隐藏
 const baseInfo: any = ref({}); // pageinfo接口获取的基本数据
