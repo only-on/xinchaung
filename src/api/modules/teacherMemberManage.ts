@@ -7,6 +7,11 @@ export default {
   // initializationPassword:{url:'teacher-train/reset-student-pwd',method:''}//初始化密码
   grouplist:{url:'/api/arrange/groups',method:'GET'},
   automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
+  deleteGroup:{url:'/api/arrange/groups/{group}',method:'DELETE'}, //删除分组
+  unGroupstuList:{url:'/api/arrange/groups/search',method:'GET'} ,  //获取未分组学生
+  handGroup:{url:'/api/arrange/groups',method:'POST',dataType: 'json'},//手动分组
+  groupNumberList:{url:'/api/arrange/groups/{group}',method:'GET'},//分组详情
+  editGroup:{url:'/api/arrange/groups/{group}',method:'PUT',dataType: 'json'} //编辑分组
 }
 
 export interface ITeacherTrainAps {
@@ -17,6 +22,11 @@ export interface ITeacherTrainAps {
     // initializationPassword:TFHttpSend
     grouplist:TFHttpSend
     automaticGroup:TFHttpSend
+    deleteGroup:TFHttpSend
+    unGroupstuList:TFHttpSend
+    handGroup:TFHttpSend
+    groupNumberList:TFHttpSend
+    editGroup:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherMemberManage'

@@ -21,9 +21,15 @@
           : false
       "
     >
+    <template #action='{record}'>
+      <div class="action">
+        <span class='delete' @click="deleteGroup(record.id)">删除</span>
+        <span @click="editGroup(record.id,record.name)">编辑</span>
+      </div>
+    </template>
     </a-table>
     <autoGroupCom v-if="groupType=='auto'" :visable='modalVisable' @updateVisable='updateVisable'></autoGroupCom>
-    <handGroupCom v-if="groupType=='hand'" :visable='modalVisable' @updateVisable='updateVisable'></handGroupCom>
+    <handGroupCom v-if="groupType=='hand'" :ifedit='ifedit' :editGroupname='editGroupname' :group_id='group_id' :visable='modalVisable' @updateVisable='updateVisable'></handGroupCom>
   </div>
 </template>
 
@@ -32,13 +38,19 @@ import { ref, toRefs, onMounted,reactive } from "vue";
 import handGroupCom from './handGroupCom/index.vue'
 import autoGroupCom from './autoGroupCom/index.vue'
 import request from 'src/api/index'
+import { useRouter ,useRoute } from 'vue-router';
 const http = (request as any).teacherMemberManage;
+const route=useRoute()
+const courseId:any=route.query.courseId  //章节id
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
 const selectValue: any = ref("");
 const number: any = ref("");
 const groupType:any=ref('');
+const ifedit:any=ref('false');
+const group_id:any=ref('')
+const editGroupname:any=ref('')
 columns.value = [
   {
     title: "小组名称",
@@ -52,13 +64,14 @@ columns.value = [
   },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "members",
+    key: "members",
   },
   {
     title: "操作",
     key: "action",
-    scopedSlots: { customRender: "action" },
+    slots: { customRender: "action" },
+    width:140,
   },
 ];
 const tableData: any = reactive({
@@ -67,7 +80,7 @@ const tableData: any = reactive({
   limit: 10,
 });
 const groupListParams:any=reactive({
-    id:500274,
+    id:courseId,
     type:1,
     page:1,
     limit:10,
@@ -90,12 +103,29 @@ function autoGroup() {
 function handGroup(){
   groupType.value='hand';
   modalVisable.value = true;
+  ifedit.value=false;
+  group_id.value=''
+  editGroupname.value=''
 }
 function updateVisable(val:any,groupok:any){
   modalVisable.value = false;
   if(groupok){
     getGroupList()
   }
+}
+function deleteGroup(id:any){
+    http.deleteGroup({urlParams:{group:id}}).then((res:any)=>{
+      if(res.code){
+        getGroupList()
+      }
+    })
+}
+function editGroup(id:any,name:any){
+  groupType.value='hand';
+  modalVisable.value = true;
+  ifedit.value=true;
+  group_id.value=id
+  editGroupname.value=name
 }
 // 获取分组列表
 function getGroupList() {
@@ -125,4 +155,11 @@ onMounted(()=>{
   margin-left: 10px;
   margin-right: 4px;
 }
+.action{
+  color: var(--primary-color);
+  .delete{
+  margin-right: 20px;
+  }
+}
+
 </style>

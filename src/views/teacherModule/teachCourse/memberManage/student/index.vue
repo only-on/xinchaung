@@ -2,19 +2,30 @@
   <div class="student">
     <div class="header">
       <div class="header-left">
-        <div class="header-left-select">
-          <span class="lableclass">班级</span>
-          <a-select default-value="全部" style="width: 224px" @change="handleChange">
-            <a-select-option v-for="item in option" :key="item.id"
-              >{{ item.name }}
-            </a-select-option>
-          </a-select>
-        </div>
-        <a-input-search
+        <div class="input">
+          <span class="lableclass">姓名</span>
+          <a-input-search
           placeholder="请输入搜索关键字"
-          style="width: 254px"
+          style="width:180px"
           @search="onSearch"
         />
+        </div>
+        <div class="input">
+          <span class="lableclass">班级</span>
+          <a-input-search
+          placeholder="请输入搜索关键字"
+          style="width:180px"
+          @search="onSearch"
+        />
+        </div>
+        <div class="input">
+          <span class="lableclass">年级</span>
+          <a-input-search
+          placeholder="请输入搜索关键字"
+          style="width:180px"
+          @search="onSearch"
+        />
+        </div>
       </div>
       <div class="header-right">
         <a-button type="primary" @click="delteteManyStu">移除学生</a-button>
@@ -53,7 +64,7 @@
       </div>
     </template>
     </a-table>
-    <addstudent :visable='visable' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
+    <addstudent :visable='visable' :courseId='courseId' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
   </div>
   <a-modal
       :width="540"
@@ -77,7 +88,10 @@ import addstudent from "src/views/teacherModule/teachCourse/component/common/add
 import batchImportStu from "./batchImportStudent/index.vue";
 import request from 'src/api/index'
 import { message,Modal } from "ant-design-vue";
+import { useRouter ,useRoute } from 'vue-router';
 const http = (request as any).teacherMemberManage;
+const route=useRoute()
+const courseId:any=route.query.courseId  //章节id
 const okButtonProps: any = ref("");
 okButtonProps.value = { style: { display: "none" } };
 const option: any = ref();
@@ -147,7 +161,7 @@ const tableData: any = reactive({
   selectedRowKeys:[]
 });
 const tableParams:any=reactive({
-  id:50404,
+  id:courseId,
   student_id:[],
   type:1
 })
@@ -172,13 +186,14 @@ function handleCancel() {
 }
 function updateSelectStuVisable(value: any,studentids:any) {
   visable.value = false;
+  console.log(value,'value')
   if(value==='ok'){
     tableParams.student_id=studentids
     addStuToCourse()
   }
 }
 function getcoursestudent(){
-  http.coursestudentlist({param:{type:1,id:50404,withs:'userProfile,user'}}).then((res:any)=>{
+  http.coursestudentlist({param:{type:1,id:courseId,withs:'userProfile,user'}}).then((res:any)=>{
     data.value=res.data.list
   })
 }
@@ -238,7 +253,7 @@ onMounted(()=>{
       :deep(.ant-select-selector) {
         height: 34px;
       }
-      .header-left-select {
+      .input {
         margin-right: 20px;
         .lableclass {
           margin-right: 10px;

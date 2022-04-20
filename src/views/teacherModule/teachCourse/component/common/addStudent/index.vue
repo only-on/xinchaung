@@ -69,16 +69,18 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted,reactive } from "vue";
+import { ref, toRefs, onMounted,reactive,watch } from "vue";
 import request from 'src/api/index'
 const http = (request as any).teacherMemberManage;
 interface Props {
   type: any;
   visable:any;
+  courseId:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   type: () => {},
-  visable:()=>{}
+  visable:()=>{},
+  courseId:()=>{}
 })
 const option: any = ref();
 option.value = [
@@ -167,12 +169,21 @@ function handleCancelSelect(){
   tableData.selectedRowKeys=[]
 }
 function getallstudent(){
-  http.allstudentlist({param:{type:props.type,id:0,withs:'userProfile'}}).then((res:any)=>{
+  http.allstudentlist({param:{type:props.type,id:props.courseId,withs:'userProfile'}}).then((res:any)=>{
     data.value=res.data.list
   })
 }
+watch(
+      () =>props.visable,
+      () => {
+        if(props.visable){
+          getallstudent()
+        }
+      },
+      { deep: true, immediate: true }
+);
 onMounted(()=>{
-  getallstudent()
+  // getallstudent()
 })
 </script>
 

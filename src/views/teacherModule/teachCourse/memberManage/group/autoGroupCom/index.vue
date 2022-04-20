@@ -31,8 +31,11 @@
     import handGroupCom from './handGroupCom/index.vue'
     import autoGroupCom from './autoGroupCom/index.vue'
     import { Modal, message } from "ant-design-vue";
+    import { useRouter ,useRoute } from 'vue-router';
     import request from 'src/api/index'
     const http = (request as any).teacherMemberManage;
+    const route=useRoute()
+    const courseId:any=route.query.courseId  //章节id
     const columns: any = ref();
     const data: any = ref([]);
     const selectValue: any = ref("");
@@ -103,7 +106,7 @@
           return;
         }
         const params = {
-          id:500274,
+          id:courseId,
           type:1,
           number:number.value,
           group_type:selectValue.value,

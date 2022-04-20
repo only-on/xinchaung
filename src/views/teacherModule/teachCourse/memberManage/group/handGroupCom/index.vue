@@ -48,10 +48,10 @@
                   <template v-else>
                     <span class="name"
                       >{{ item.name }}
-                      <i
+                      <!-- <i
                         class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
-                      ></i>
+                      ></i> -->
                       <i
                         v-if="!ifautoGroupEdit"
                         class="delete icon-shanchu-copy iconfont"
@@ -64,7 +64,7 @@
               <a-tree-node
                 :checkable="true"
                 v-for="it in item?.student_list"
-                :key="index+ '-' + it?.userProfile?.id"
+                :key="index + '-' + it?.userProfile?.id"
                 :title="it?.userProfile?.name"
               >
               </a-tree-node>
@@ -107,15 +107,26 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, onMounted, ref ,watch} from 'vue';
 import { DownOutlined } from "@ant-design/icons-vue";
 import {message} from 'ant-design-vue'
-
+import request from 'src/api/index'
+import { useRouter ,useRoute } from 'vue-router';
+const http = (request as any).teacherMemberManage;
+const route=useRoute()
+const courseId:any=route.query.courseId  //章节id
 interface Props {
       visable:any;
+      ifedit:any;
+      group_id:any;
+      editGroupname:any
+      
 }
 const props = withDefaults(defineProps<Props>(), {
-      visable:()=>{}
+      visable:()=>{},
+      ifedit:()=>{},
+      group_id:()=>{},
+      editGroupname:()=>{}
 })
 const groupName:any=ref('')
 const searchvalue:any=ref('')
@@ -123,38 +134,71 @@ const groupedKeys:any=ref([])
 const ifautoGroupEdit:any=ref('')
 const flag:any=ref(true)
 const currentEditData:any=ref('')
-const treeData:any=ref('')
+const treeData:any=ref([])
 const unGroupData:any=ref([])
 const checkedValues:any=ref([])
 const selectedGroup:any=ref('')//选中的分组
-treeData.value=[{ id:505,
-  name:'小组2',
-  index:0,
-  student_list:[
-    {userProfile:{id:1616,name:'stu1234'}}
-  ]
-},{ id:506,
-  name:'小组3',
-  index:1,
-  student_list:[
-    {userProfile:{id:1617,name:'stu1236'}}
-  ]
-}]
-unGroupData.value=[
-  {userProfile:{id:1618,name:'stu1'}},
-  {userProfile:{id:1619,name:'stu2'}},
-  {userProfile:{id:1620,name:'stu3'}},
-  {userProfile:{id:1621,name:'stu4'}},
-]
+// treeData.value=[{ id:505,
+//   name:'小组2',
+//   index:0,
+//   student_list:[
+//     {userProfile:{id:1616,name:'stu1234'}}
+//   ]
+// },{ id:506,
+//   name:'小组3',
+//   index:1,
+//   student_list:[
+//     {userProfile:{id:1617,name:'stu1236'}}
+//   ]
+// }]
+// unGroupData.value=[
+//   {userProfile:{id:1618,name:'stu1'}},
+//   {userProfile:{id:1619,name:'stu2'}},
+//   {userProfile:{id:1620,name:'stu3'}},
+//   {userProfile:{id:1621,name:'stu4'}},
+// ]
+function toDoKey(index:any,it:any){
+  return index + '-' + it?.userProfile?.id;
+}
 const emit = defineEmits<{ (e: "updateVisable", val: any,groupok:any): void }>();
 function handleOk(){
-  emit("updateVisable",'false',true);
+  console.log(treeData.value)
+  if(props.ifedit){
+    const params:any={
+    name:'',
+    members:[]
+  }
+  treeData.value.forEach((item:any) => {
+      params.name=item.name;
+      item.student_list.forEach((it: any) => {
+              params.members.push(it.id);
+      });
+  });
+      http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
+        if(res.code){
+        emit("updateVisable",'false',true);
+      }
+    })
+  }else{
+    const groups:any=[]
+    treeData.value.forEach((item:any,index:any)=> {
+      groups.push({name:item.name,members:[]})
+      item.student_list.forEach((it:any)=>{
+        groups[index].members.push(it.id)
+      })
+    });
+    http.handGroup({param:{id:courseId,type:1,groups:groups}}).then((res:any)=>{
+      if(res.code){
+        emit("updateVisable",'false',true);
+      }
+    })
+  }
 }
 function handleCancel(){
   emit("updateVisable",'false',false);
 }
 function createGroup(){
-  const newGroupData={name:groupName.value}
+  const newGroupData={name:groupName.value,student_list:[]}
   treeData.value.push(newGroupData)
   groupName.value=''
 }
@@ -192,9 +236,9 @@ function toLeft(){
   const selectstu:any=unGroupData.value.filter((item:any)=>{
       return checkedValues.value.includes(item.userProfile.id)
   })
-  console.log(checkedValues.value,'checkedValues.value',selectstu,'selectstu')
+  console.log(checkedValues.value,'checkedValues.value',selectstu,'selectstu',selectedGroup.value,'selectedGroup.value')
   selectstu.forEach((item:any)=> {
-    console.log(item,'item')
+    console.log(item,'item',treeData.value)
     treeData.value[selectedGroup.value].student_list.push(item)
     console.log(treeData.value[selectedGroup.value],'treeData.value')
   });
@@ -229,6 +273,38 @@ function ifselect(keys:any){
     return 'hover'
   }
 }
+function getUngroupStu(){
+   http.unGroupstuList({param:{id:courseId,type:1}}).then((res:any)=>{
+      if(res.code){
+        unGroupData.value=res.data.data
+      }
+   })
+}
+function groupNumberList(){
+  http.groupNumberList({urlParams:{group:props.group_id}}).then((res:any)=>{
+    if(res.code){
+      treeData.value=[{id:props.group_id,name:props.editGroupname,student_list:res.data.list}]
+    }
+  })
+}
+watch(
+      () =>props.visable,
+      () => {
+        if(props.visable){
+          console.log(props.ifedit,'props.ifedit')
+          if(props.ifedit){
+            groupNumberList()
+            getUngroupStu()
+          }else{
+            getUngroupStu()
+          }
+        }
+      },
+      { deep: true, immediate: true }
+);
+onMounted(()=>{
+  // getUngroupStu()
+})
 </script>
 <style lang="less" scoped>
 .editCon{
