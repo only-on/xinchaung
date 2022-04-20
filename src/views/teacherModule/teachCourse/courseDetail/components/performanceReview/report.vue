@@ -25,7 +25,8 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
-import onLineReport from "src/components/report/onlineReport.vue"
+// import onLineReport from "src/components/report/onlineReport.vue"
+import { message } from "ant-design-vue";
 
 // props传值
 const props = defineProps({
@@ -46,7 +47,7 @@ const props = defineProps({
 });
 
 // emit方法
-const emit = defineEmits(["update:visible", "update:data"]);
+const emit = defineEmits(["update:visible", "update:data",'submit']);
 
 // 关闭弹窗
 function colseModal() {
@@ -55,6 +56,16 @@ function colseModal() {
 // 提交
 function submit() {
   console.log("submit");
+  if (isNaN(props.data.score)) {
+    message.warn("非法分数")
+    return;
+  }
+
+  if (props.data.score>100) {
+    message.warn("请输入小于或者等于100")
+    return;
+  }
+  emit("submit")
 }
 </script>
 

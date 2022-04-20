@@ -87,9 +87,9 @@ export default {
   // 获取课程实验报告、录屏
   getCourseExperimentReportVideoApi:{url:"/api/operate/teacherEvaluates/show",method:"GET"},
   // 成绩导出
-  exportScoreApi:{url:"/api/operate/teacherEvaluates/export",method:"POST",dataType:"json"},
+  exportScoreApi:{url:"/api/operate/teacherEvaluates/export/{taskId}",method:"POST",dataType:"json"},
   // 报告评分
-  setReportScoreApi:{url:"/report/record/teacher-update",method:"PUT",dataType:"json"}
+  setReportScoreApi:{url:"/api/yii/report/record/teacher-update",method:"POST",dataType:"formdata"}
 }
 
 export interface ITeacherCourseApis {

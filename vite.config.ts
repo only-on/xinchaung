@@ -41,6 +41,11 @@ export default defineConfig({
         target: "http://192.168.101.221:84",
         changeOrigin: true,
       },
+      // "/report": {
+      //   // target: "http://192.168.101.130",
+      //   target: "http://192.168.101.221:84",
+      //   changeOrigin: true,
+      // },
       "/timetable": {
         target: "http://192.168.101.130",
         changeOrigin: true,

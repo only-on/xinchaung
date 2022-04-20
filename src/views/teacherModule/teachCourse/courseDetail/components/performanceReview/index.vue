@@ -13,8 +13,8 @@
           <span> 评阅情况：<i class="surplus">{{staticInfo?.ranked?staticInfo.ranked:0}}</i>/{{total}} </span>
         </div>
         <div class="t-right">
-          <a-button type="primary" size="" @click="autoReview"
-            >一键评阅<i @click.stop="autoWeight" class="icon-shezhi iconfont"></i
+          <a-button type="primary" class="auto-preview-btn" size="" @click="autoReview"
+            ><span class="preview-btn" title="一键评阅">一键评阅</span><i title="设置权重" @click.stop="autoWeight" class="icon-shezhi iconfont setting-btn"></i
           ></a-button>
           <a-button type="primary" size="" @click="exportScore">导出成绩</a-button>
         </div>
@@ -119,6 +119,7 @@
     v-if="reportVisible"
     v-model:visible="reportVisible"
     v-model:data="reportData"
+    @submit="submitReport"
   ></reportModal>
   <!-- <codeReview
     v-if="codeVisible"
@@ -144,6 +145,9 @@ import chapterTree from "../Chapter/ChapterList.vue"
 import request from "src/api/index"
 import { useRouter ,useRoute } from 'vue-router';
 import { message } from "ant-design-vue";
+import {saveAs} from "file-saver"
+
+
 
 const route=useRoute()
 const courseId:any=route.query.courseId  //章节id
@@ -403,9 +407,10 @@ function submitScore() {
 
 // 导出成绩
 function exportScore() {
-  scoreApi.exportScoreApi({param:{ids:[]}}).then((res:any)=>{
+  scoreApi.exportScoreApi({param:{ids:[]},urlParams:{taskId:experitId.value}}).then((res:any)=>{
     console.log(res);
-    
+    let urlArry=res.data.split("/")
+    saveAs(res.data, urlArry[urlArry.length-1]);
   })
 }
 
@@ -434,6 +439,19 @@ async function getReportOrVideo(studyId:number,type:'video'|'report') {
     return res.data
   })
 } 
+
+// 提交报告评阅
+function submitReport(){
+  console.log(reportData.value);
+  const body= new FormData()
+  body.append('csc_id', experitId.value)
+  body.append('score', reportData.value.score)
+  scoreApi.setReportScoreApi({param:body}).then((res:any)=>{
+    console.log(res);
+    (tabelData as any).value[currentRow].report_score=res.data.score
+    reportVisible.value=false
+  })
+}
 // 选择tree章节
 function selectExperiment(val:any) {
   console.log(val);
@@ -560,9 +578,9 @@ onMounted(() => {
     }
   }
   .t-right {
-    .iconfont {
-      margin-left: 20px;
-    }
+    // .iconfont {
+    //   margin-left: 20px;
+    // }
     button {
       margin-left: 10px;
     }
@@ -594,6 +612,33 @@ onMounted(() => {
     margin-left: 4px;
     color: var(--brightBtn);
     cursor: pointer;
+  }
+  button.auto-preview-btn{
+    padding: 0 !important;
+    .preview-btn{
+      padding: 0 10px 0 27px;
+      background: var(--primary-6);
+      height: 100%;
+      line-height: 33.99px;
+      border-top-left-radius: 17px;
+      border-bottom-left-radius: 17px;
+      display: inline-block;
+      &:hover{
+        background: var(--primary-5);
+      }
+    }
+    .setting-btn{
+      padding: 0 27px 0 10px;
+      background: var(--primary-6);
+      line-height: 33.99px;
+       border-top-right-radius: 17px;
+      border-bottom-right-radius: 17px;
+      height: 100%;
+      display: inline-block;
+      &:hover{
+        background: var(--primary-5);
+      }
+    }
   }
 }
 </style>
