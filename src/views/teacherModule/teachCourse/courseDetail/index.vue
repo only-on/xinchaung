@@ -212,7 +212,7 @@ var state:IState=reactive({
   activeTab:{},
   courseDetail:{}
 })
-state.activeTab=detailTabs[3]
+state.activeTab=detailTabs[0]
 function initData(){
   http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
     state.courseDetail=res.data
