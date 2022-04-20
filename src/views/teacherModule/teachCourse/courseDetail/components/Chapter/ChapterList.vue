@@ -1,5 +1,5 @@
 <template>
-  <div class="chapterListBox flexCenter">
+  <div class="chapterListBox">
     <a-spin :spinning="props.chartLoading" size="large" tip="Loading...">
       <div class="chapterList" v-for="(v,k) in list" :key="v.id">
         <div class="title flexCenter" @click.stop="v.openItem=!v.openItem">
@@ -21,8 +21,8 @@
             <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeTab.id === a.id?'ActiveItem':''">
               <div class="TitLeft flexCenter" :class="getTitLeftClass()">
                 <div class="experimentType">
-                  <span v-if="!a.TeachingAids" :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
                   <span v-if="a.TeachingAids">教辅</span>
+                  <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
                 </div>
                 <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
                   <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
@@ -112,8 +112,8 @@ const list=computed(()=>{
   data.length?data.map((v: any) => {
     v.openItem=false
     v.list=[]
-    v.resource=v.resource.lenght?v.resource.lenght:[]
-    v.resource.lenght?v.resource.forEach((i:any)=>{
+    // v.resource=v.resource.length?v.resource:[]
+    v.resource.length?v.resource.forEach((i:any)=>{
       i.TeachingAids=true
       i.TeachingAidsName=obj[i.type]
       i.name=i.file_name
@@ -235,9 +235,11 @@ const deleteExperiment=(v:any,a:any)=>{
 <style lang="less" scope>
   .chapterListBox{
     min-height: 300px;
-    justify-content: center;
+    text-align: center;
+    // justify-content: center;
   }
   .chapterList{
+    text-align: left;
     // padding-bottom: 2rem;
     .title{
       justify-content: space-between;

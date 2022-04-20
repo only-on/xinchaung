@@ -3,7 +3,7 @@
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
-    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseId="courseId" :courseDetail="state.courseDetail" />
+    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseDetail="state.courseDetail" />
     <!-- 课程实验管理 -->
     <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
     <!-- 随堂测试 -->
@@ -27,20 +27,20 @@
             <a-input v-model:value="formState.name" placeholder="请输入课程名称" />
           </a-form-item>
           <a-form-item label="起始时间" name="date">
-            <a-range-picker @change="editCourse">
+            <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss" :disabledDate="disabledDate">
               <template #suffixIcon>
                 <SmileOutlined />
               </template>
             </a-range-picker>
           </a-form-item>
-           <a-form-item label="所属技术方向" name="direction">
-            <a-select v-model:value="formState.direction" placeholder="请选择课程方向">
+           <a-form-item label="课程方向" name="category">
+            <a-select v-model:value="formState.category" placeholder="请选择课程方向">
               <a-select-option :value="item.name" v-for="(item, index) in courseDirection" :key="item.name">
                   {{ item.name }}
                 </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="所属技术方向" name="direction">
+          <a-form-item label="职业方向" name="direction">
             <a-select v-model:value="formState.direction" placeholder="请选择职业方向">
               <a-select-option :value="item.name" v-for="(item, index) in vocationDirection" :key="item.name">
                   {{ item.name }}
@@ -53,15 +53,7 @@
             </div>
           </a-form-item>
           <a-form-item label="封面图" class="cover">
-            <!-- <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
-            <a-upload v-model:file-list="fileList" list-type="picture" class="uploader" :show-upload-list="false" :before-upload="beforeUpload" @change="handleChange">
-              <div class="upload">
-                <div class="cover">
-                  <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
-                </div>
-                <loading-outlined v-if="coverLoading"></loading-outlined>
-              </div>
-            </a-upload> -->
+            <uploadCover :coverUrl="formState" :isUpload="true" @uploadCoverHandle="uploadCoverHandle" />
           </a-form-item>
         </div>
         <div class="right">
@@ -77,17 +69,14 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="课时" name="name">
-            <a-input v-model:value="formState.name" placeholder="请输入课时" />
+          <a-form-item label="课时" name="class_total">
+            <a-input v-model:value="formState.class_total" placeholder="请输入课时" />
           </a-form-item>
-          <a-form-item label="实验报告成绩" name="name">
-            <a-input v-model:value="formState.name" placeholder="请输入实验报告成绩" />
+          <a-form-item label="实验时长" name="content_duration">
+            <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />
           </a-form-item>
-          <a-form-item label="实验时长" name="name">
-            <a-input v-model:value="formState.name" placeholder="请输入实验时长" />
-          </a-form-item>
-          <a-form-item label="课程简介" name="name">
-             <a-textarea v-model:value="formState.description" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
+          <a-form-item label="课程简介" name="introduce">
+             <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
           </a-form-item>
         </div>
       </div>
@@ -170,6 +159,7 @@ import { IBusinessResp} from 'src/typings/fetch.d';
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue"
 import DetailHeader from '../component/common/DetailHeader.vue'
+import uploadCover from "src/components/uploadCover/index.vue"
 
 // 内容去tab
 import courseChapter from "./courseChapter.vue"   // 课程章节
@@ -179,7 +169,7 @@ import performanceReview from "./performanceReview.vue" // 成绩评阅
 import studentAnalysis from "./studentAnalysis.vue" // 学情分析
 import memberManagement from "./memberManagement.vue" // 成员管理
 import courseAchievement from "./courseAchievement.vue" // 课程成绩
-
+import moment, { Moment } from 'moment';
 interface IState{
   activeTab:any
   courseDetail:any
@@ -229,13 +219,20 @@ const editLoading = ref<boolean>(false)
 const courseDirection:any=reactive([])
 const vocationDirection:any=reactive([])
 const formState = reactive<any>({
-  name: '',
-  description: '',
-  is_public: 0,
-  src: '',
-  tags: [],
-  cover: '',
-  categoryText: ''
+  is_available:1, // 课程创建第一步的时候，这个字段传0，课程创建最后一步 传1
+  cover:'',// 封面原文件
+  name: '', // 课程名称
+  url: '', // 课程封面
+  introduce:'',// 课程介绍
+  date:null, // 日期区间
+  start_time:'',
+  end_time:'',
+  category:'',  // "深度学习", // 课程方向
+  direction: '', // "大数据工程师", // 职业方向
+  is_public: 0,  // 0-私有, 1-公开    
+  class_total:2, // 课时
+  tags: [],   // ["大数据","人工智能"], // 标签
+  content_duration: '',// 实验时长
 })
 const rules = {
   name: [
@@ -247,20 +244,45 @@ const rules = {
   ],
 }
 const Save=()=>{
-  // editLoading.value=true
-  // formRef.value.validate().then(()=>{
-  //   http.editCourse({param:{...formState}}).then((res: IBusinessResp)=>{
-  //     message.success('编辑成功')
-  //     editVisible.value=false
-  //   })
-  // })
+  editLoading.value=true
+  formRef.value.validate().then(()=>{
+    http.UploadCourse({param:{...formState}}).then((res: IBusinessResp)=>{
+      message.success('编辑成功')
+      editLoading.value=false
+      editVisible.value=false
+    })
+  })
 }
 const cancel=()=>{
   editVisible.value=false
 }
 const editCourse=()=>{
-  // console.log('编辑');
+  http.courseCategory().then((res:IBusinessResp)=>{
+    const {data}=res  
+    courseDirection.push(...data)
+  })
+  http.vocationDirection().then((res:IBusinessResp)=>{
+    const {data}=res
+    vocationDirection.push(...data)
+  })
+  const {name,url,is_public,category,direction,introduce,tags,class_total,content_duration,start_time,end_time}=state.courseDetail
+  formState.date=[start_time,end_time]
+  formState.start_time=start_time
+  formState.end_time=end_time
+  formState.cover=state.courseDetail.url
+  formState.introduce=introduce
+
+  formState.name=name
+  formState.url=url
+  formState.is_public=is_public
+  formState.category=category
+  formState.direction=direction
+  formState.tags=tags
+  formState.class_total=class_total
+  formState.content_duration=content_duration
+
   editVisible.value=true
+
 }
 
 
@@ -302,6 +324,22 @@ const SaveSetup=()=>{
 }
 const cancelSetup=()=>{
   setupVisible.value=false
+}
+const disabledDate=(current: Moment)=>{
+  return current && current <= moment().endOf('day').subtract(1, "days");
+}
+const dateChange=(val:any)=>{
+  // console.log(val)
+  formState.start_time=val[0],
+  formState.end_time=val[1]
+  // console.log(formState)
+}
+const uploadCoverHandle=(file:any)=>{
+  const fd = new FormData()
+  fd.append('file', file)
+  http.courseCoverUpload({param:fd}).then((res:any)=>{
+    formState.url = res.data.url
+  })
 }
 onMounted(() => {
   initData()

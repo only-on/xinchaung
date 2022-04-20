@@ -208,10 +208,10 @@ const vocationDirection:any=reactive([])
 // }
 const formState:any = reactive({
   is_available:0, // 课程创建第一步的时候，这个字段传0，课程创建最后一步 传1
-  cover:'',
+  cover:'',    // 未上传前 封面原文件    后url
   name: '', // 课程名称
   url: '', // 课程封面
-  introduce:'',// 课程介绍
+  introduce:'',// 课程简介
   date:null, // 日期区间
   start_time:'',
   end_time:'',
@@ -235,7 +235,7 @@ const disabledDate=(current: Moment)=>{
   return current && current <= moment().endOf('day').subtract(1, "days");
 }
 const dateChange=(val:any)=>{
-  // console.log(val)
+  console.log(val)
   formState.start_time=val[0],
   formState.end_time=val[1]
   // console.log(formState)
@@ -245,6 +245,7 @@ const uploadCoverHandle=(file:any)=>{
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
     formState.url = res.data.url
+    formState.cover = res.data.url
   })
 }
 

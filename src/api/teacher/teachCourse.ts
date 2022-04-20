@@ -54,6 +54,8 @@ export default {
   deleteCourseItem: { url: '/api/course/courses/{courseId}', method: "DELETE" },
   // 课程复用
   // multiplexing: { url: '/api/course/courses/{course_id}/replicate', method: "PUT" }, // 现在的复用是编辑
+  //  更新课程基本信息
+  UploadCourse:{ url: `/api/course/courses/{courseId}`, method: "put",dataType: "json"},
   
   // 知识点
   getKnowledgeList: {
@@ -88,4 +90,5 @@ export interface ITeacherCourseApis {
 
   hotCourseRecommend:TFHttpSend
   getTeacherEvaluatesApi:TFHttpSend
+  UploadCourse:TFHttpSend
 }
