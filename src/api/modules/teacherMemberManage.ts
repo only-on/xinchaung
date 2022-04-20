@@ -11,7 +11,12 @@ export default {
   unGroupstuList:{url:'/api/arrange/groups/search',method:'GET'} ,  //获取未分组学生
   handGroup:{url:'/api/arrange/groups',method:'POST',dataType: 'json'},//手动分组
   groupNumberList:{url:'/api/arrange/groups/{group}',method:'GET'},//分组详情
-  editGroup:{url:'/api/arrange/groups/{group}',method:'PUT',dataType: 'json'} //编辑分组
+  editGroup:{url:'/api/arrange/groups/{group}',method:'PUT',dataType: 'json'}, //编辑分组
+
+  // 助教
+  assistantList:{url:'/api/yii/assistant/index',method:'POST',dataType: 'json'},
+  addAssistanter:{url:'/api/yii/assistant/create',method:'POST',dataType: 'json'},
+  deleteAssistant:{url:'/api/yii/assistant/delall',method:'POST',dataType: 'json'}
 }
 
 export interface ITeacherTrainAps {
@@ -27,6 +32,9 @@ export interface ITeacherTrainAps {
     handGroup:TFHttpSend
     groupNumberList:TFHttpSend
     editGroup:TFHttpSend
+    assistantList:TFHttpSend
+    addAssistanter:TFHttpSend
+    deleteAssistant:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherMemberManage'

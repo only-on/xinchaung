@@ -91,7 +91,7 @@ import { message,Modal } from "ant-design-vue";
 import { useRouter ,useRoute } from 'vue-router';
 const http = (request as any).teacherMemberManage;
 const route=useRoute()
-const courseId:any=route.query.courseId  //章节id
+const courseId:any=route.query.courseId  //课程id
 const okButtonProps: any = ref("");
 okButtonProps.value = { style: { display: "none" } };
 const option: any = ref();

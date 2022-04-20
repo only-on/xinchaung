@@ -12,7 +12,7 @@
         </a-form>
       </div>
       <div class="header-right">
-        <a-button type="primary">移除助教</a-button>
+        <a-button type="primary" @click="BatchDelete">移除助教</a-button>
         <a-button type="primary" class="brightBtn right-btn1" @click="addHelp">添加助教</a-button>
       </div>
     </div>
@@ -37,6 +37,26 @@
         onChange: onSelectChange,
       }"
     >
+    <template #status="{ record }">
+        <a-switch
+          checked-children="启用"
+          un-checked-children="禁用"
+          :checked="record.bind_status === '1' ? true : false"
+          @change="changeSwitch(record)"
+        />
+      </template>
+      <template #action="{ record }">
+        <i
+          class="caozuo iconfont icon-bianji"
+          @click="editCard(record)"
+          title="更新"
+        ></i>
+        <i
+          class="caozuo iconfont icon-shanchu"
+          @click="delateCard(record.id)"
+          title="删除"
+        ></i>
+      </template>
     </a-table>
     <a-modal v-model:visible="visible" title='添加助教' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
       <a-form ref="formRef" :model="formState" layout="vertical" :rules="rules">
@@ -60,10 +80,10 @@
               <a-input v-model:value="formState.phone" />
             </a-form-item>
             <a-form-item label="密码"  name="password_hash">
-              <a-input-password v-model:value="formState.password_hash"  :visibilityToggle="false" />
+              <a-input-password v-model:value="formState.password_hash" :disabled="formState.userinitpassword"  :visibilityToggle="false" />
             </a-form-item>
             <a-form-item label="确认密码"  name="repassword">
-              <a-input-password v-model:value="formState.repassword"  :visibilityToggle="false" />
+              <a-input-password v-model:value="formState.repassword" :disabled="formState.userinitpassword"  :visibilityToggle="false" />
             </a-form-item>
             <div class="userinitpassword">
               <span>使用初始密码</span>
@@ -80,7 +100,12 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, reactive } from "vue";
-
+import request from 'src/api/index'
+import { message,Modal } from "ant-design-vue";
+import { useRouter ,useRoute } from 'vue-router';
+const http = (request as any).teacherMemberManage;
+const route=useRoute()
+const courseId:any=route.query.courseId  //课程id
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
@@ -88,38 +113,43 @@ const visible:any=ref(false)
 columns.value = [
   {
     title: "账号",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "性别",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "gender",
+    key: "gender",
   },
   {
     title: "邮箱",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "email",
+    key: "email",
   },
   {
     title: "电话",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "phone",
+    key: "phone",
   },
   {
     title: "所属教师",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "teacher_name",
+    key: "teacher_name",
+  },
+  {
+    title: "状态",
+    key: "status",
+    slots: { customRender: "status" },
   },
   {
     title: "操作",
     key: "action",
-    scopedSlots: { customRender: "action" },
+    slots: { customRender: "action" },
   },
 ];
 const tableData: any = reactive({
@@ -127,6 +157,7 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const editId:any=ref('')
 var formState:any=reactive({
       username:'',
       password_hash:'',
@@ -172,9 +203,111 @@ function addHelp(){
 function cancel(){
   visible.value=false;
 }
-function submit(){
-  visible.value=false;
+function changeSwitch(item: any) {
+      item.bind_status = item.bind_status === "1" ? "0" : "1";
+      let params = {
+        aid: item.id,
+        state: item.bind_status === "1" ? true : false,
+      };
+      http.changeStatus({ param: params }).then((res:any) => {
+        message.success("操作成功");
+        getAssistantList()
+      });
+ }
+ function editCard(val:any) {
+      editId.value = val.id;
+      http
+        .getAssistantDetail({ urlParams: { id: editId.value } })
+        .then((res:any) => {
+          Object.keys(res.data).forEach((v: any) => {
+            if (v in formState) {
+              formState[v] = res.data[v];
+            }
+          });
+          formState.gender = String(res.data.gender === 2 ? 2 : 1);
+          formState.username = res.data.stu_no;
+          formState.phone = res.data.phone_no;
+        });
+      visible.value = true;
 }
+function delateCard(val: number) {
+      console.log(val);
+      Modal.confirm({
+        title: "确认删除吗？",
+        icon: '',
+        content: "删除后不可恢复",
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          http
+            .AssistantBatchDelete({ param: { user_ids: [val] } })
+            .then((res:any) => {
+              getAssistantList()
+              message.success("删除成功");
+            });
+        },
+      });
+    }
+    function BatchDelete() {
+      if (!tableData.selectedRowKeys.length) {
+        message.warn("请选择要删除的数据");
+        return;
+      }
+      Modal.confirm({
+        title: "确认删除吗？",
+        content: "删除后不可恢复",
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          http
+            .AssistantBatchDelete({ param: { user_ids:tableData.selectedRowKeys} })
+            .then((res:any) => {
+              getAssistantList()
+              message.success("删除成功");
+            });
+        },
+      });
+}
+function submit(){
+  const params={
+    Assistant:{
+      username:formState.username,
+      email:formState.email,
+      password_hash:formState.password_hash,
+      userinitpassword:formState.userinitpassword,
+    },
+    AssistantProfile:{
+      name:formState.name,
+      gender:formState.gender,
+      phone:formState.phone
+    }
+  }
+  http.addAssistanter({param:params}).then((res:any)=>{
+      if(res.code){
+        visible.value=false;
+      }
+  })
+}
+function getAssistantList(){
+  let obj = {
+        query: {
+          username:'',
+          name:'',
+        },
+        page: {
+          pageSize:10,
+          page:1,
+        },
+      };
+  http.assistantList({param:obj}).then((res:any)=>{
+      if(res.code==1){
+        data.value=res.data.list
+      }
+  })
+}
+onMounted(()=>{
+  getAssistantList()
+})
 </script>
 
 <style lang="less" scoped>
