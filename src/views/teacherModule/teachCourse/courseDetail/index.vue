@@ -204,8 +204,10 @@ var state:IState=reactive({
 })
 state.activeTab=detailTabs[0]
 function initData(){
+  editLoading.value=true
   http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
     state.courseDetail=res.data
+    editLoading.value=false
   })
 }
 const selectTab=(val:any)=>{
@@ -246,8 +248,9 @@ const rules = {
 const Save=()=>{
   editLoading.value=true
   formRef.value.validate().then(()=>{
-    http.UploadCourse({param:{...formState}}).then((res: IBusinessResp)=>{
+    http.UploadCourse({param:{...formState},urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
       message.success('编辑成功')
+      initData()
       editLoading.value=false
       editVisible.value=false
     })
@@ -257,6 +260,9 @@ const cancel=()=>{
   editVisible.value=false
 }
 const editCourse=()=>{
+  if(editLoading.value === true){
+    return
+  }
   http.courseCategory().then((res:IBusinessResp)=>{
     const {data}=res  
     courseDirection.push(...data)

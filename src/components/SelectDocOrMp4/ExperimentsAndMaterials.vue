@@ -46,6 +46,7 @@ import { Modal, message } from "ant-design-vue";
 import SourceMaterial from './SourceMaterial.vue'
 import Experiments from './Experiments.vue'
 const http = (request as any).teacherMaterialResource;
+var selectNum:Ref<number>=ref(1)
 // 采用ts专有声明，有默认值
 interface Props {
   visible: boolean;
@@ -76,7 +77,7 @@ var tags:Ref<string>=ref('教学指导')
 const changeTab=(v:string)=>{
   tags.value=v
 }
-var selectNum:Ref<number>=ref(1)
+
 const selectType=(v:number)=>{
   selectNum.value=v
 }

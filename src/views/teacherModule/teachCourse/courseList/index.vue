@@ -21,8 +21,8 @@
           </div>
           <div class="flexCenter Projection">
             <span class="text" @click.stop="multiplexing(v)">复用</span>
-            <span class="text" v-if="currentTab === 0" @click.stop="deleteFun(v)">删除</span>
-            <span class="text" v-if="currentTab === 0" @click.stop="archives(v)">学情归档</span>
+            <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
+            <span class="text" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span>
           </div>
         </div>
         <div class="info">
@@ -278,12 +278,16 @@ const deleteFun = (val: any) => {
     onOk() {
       http.deleteCourseItem({urlParams: {courseId: val.id}}).then((res: any) => {
         message.success("删除成功"); //
-          initData();
+        initData();
       });
     },
   });
 };
 const multiplexing=(val: any)=>{
+  router.push({ 
+    path: "/teacher/teacherCourse/courseCreate",
+    query: { currentTab:currentTab.value,courseId:val.id,EditId:val.id}
+    });
   // http.deleteCourseItem({urlParams: {courseId: val.id}}).then((res: any) => {
   //   message.success("删除成功"); //
   //     initData();

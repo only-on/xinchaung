@@ -1,27 +1,23 @@
 <template>
   <div class="chartTerr">
     <div class="chartTerrLeft" :class="((currentTab === '1' && role === 3) || role === 4)?'chartTerrLeft2':''">
-      <div class="title flexCenter">
+      <!-- <div class="title flexCenter">
         <h3 class="courseh3">章节目录</h3>
         <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && role === 3)">新建章节</a-button>
-      </div>
+      </div> -->
       <div class="myChapter textScrollbar">
-        <ChapterList 
-          :chartLoading="chartLoading"
-          :chapterList="ChaptersTreeList"
+        <ChapterList
+          :courseId="props.courseId"
           :Editable="props.Editable"
-          @deleteChapter="deleteChapter"
-          @deleteExperiment="deleteExperiment"
-          @editExperiment="editExperiment"
-          @editChapter="editChapter"
+          @selectChaptert="selectChaptert"
           @selectExperiment="selectExperiment" 
-          @establishChapter="establishChapter" />
+           />
       </div>
     </div>
     <div class="chartTerrRight" v-if="currentTab === '0'" :class="state.activeExperimentObj.id?'':'flexCenter'">
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
-          <h3 class="courseh3">实验指导</h3>
+          <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
           <a-button type="primary" @click="Reselection()" v-if="state.activeExperimentObj.TeachingAids">重新选择</a-button>
           <div class="reports flexCenter" v-if="!state.activeExperimentObj.TeachingAids">
             <div class="report flexCenter" @click="viewReport">
@@ -35,41 +31,30 @@
           </div>
         </div>
         <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
-          <div v-if="state.activeExperiment.type==='experiment'" class="experiment">
-            <div class="itemContentBox textScrollbar">
+          <div v-if="!state.activeExperimentObj.TeachingAids" class="experiment">
+            <div class="itemContentBox textScrollbar">实验指导
               <div class="itemContent" v-for="i in state.activeExperiment.content" :key="i" :class="state.activeExperiment.openGuidance?'itemContentHeight':''">
                 <h4 class="">{{i.title}}</h4>
                 <div class="text">{{i.text}}</div>
               </div>
             </div>
           </div>
-          <div class="video-box" v-if="state.activeExperiment.type==='mp4'">
-            <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
-              您的浏览器不支持 video 标签
-            </video>
+          <div v-if="state.activeExperimentObj.TeachingAids">
+            <div class="video-box" v-if="state.activeExperimentObj.suffix==='mp4'">
+              <video :src="env ? '/proxyPrefix' + state.activeExperimentObj.file_url : state.activeExperimentObj.file_url" :controls="true">
+                您的浏览器不支持 video 标签
+              </video>
+            </div>
+            <div class="pdfBox" v-if="['doc','docx','ppt','pptx','pdf'].includes(state.activeExperimentObj.suffix)">
+              <PdfVue :url="state.activeExperimentObj.file_html" />
+            </div>
           </div>
-          <div class="pdfBox" v-if="state.activeExperiment.type==='pptx'">
-            <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
-          </div>
+          
         </div>
       </template>
-      <Empty v-else :text="'暂无数据'" />
+      <Empty v-else :text="'暂未选择实验'" />
     </div>
   </div>
-
-  <a-modal v-model:visible="Visible"  :title="state.activeExperiment.title" class="setupVisible" :width="500">
-    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item :label="`${state.activeExperiment.typeName}名称`" name="name">
-        <a-input v-model:value="formState.name" :placeholder="`请输入${state.activeExperiment.typeName}名称`" />
-      </a-form-item>
-    </a-form>
-    <template #footer>
-      <Submit @submit="Save" @cancel="cancel"></Submit>
-    </template>
-  </a-modal>
-
-  <!-- 选择实验或者素材 -->
-  <ExperimentsAndMaterials :visible="editChartVisible" @closeDrawerDoc="closeDrawerDoc" @selectDocOrMp4File="selectFile" />
 </template>
 
 <script lang="ts" setup>
@@ -84,6 +69,7 @@ import ChapterList from './ChapterList.vue'
 import extStorage from "src/utils/extStorage";
 import { Modal, message } from "ant-design-vue";
 import Empty from "src/components/Empty.vue";
+import PdfVue from "src/components/pdf/pdf.vue";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
@@ -106,15 +92,6 @@ const props = withDefaults(defineProps<Props>(), {
   courseId:0
 });
 const http=(request as any).teachCourse
-const rules = {
-  name: [
-    { required: true, message: `请输入名称`, trigger: "blur" },
-    { max: 30, message: `名称最多30个字符`, trigger: "blur" },
-  ],
-}
-const formState=reactive<any>({
-  name:''
-})
 var state:any=reactive({
   chapterList:[
     {
@@ -333,12 +310,12 @@ var state:any=reactive({
   },   // 章节树当前选中的实验类别
   activeExperimentObj:{      // 章节树当前选中的 实验
     id:0,
-  }
+  },
+  activeChapter:{},   // 当前操作的章节
 })
 /**
 章节树操作
  */
-var chartLoading: Ref<boolean> = ref(false);
 var ExperimentsAndMaterialsObj=reactive<any>({
   activeExperiments:{},
   activeMaterials:[]
@@ -347,43 +324,6 @@ var editChartVisible: Ref<boolean> = ref(false);
 // 新建章节
 var Visible: Ref<boolean> = ref(false);
 const formRef = ref();
-const createChart=()=>{
-  state.activeExperiment.title='新建章节'
-  state.activeExperiment.type=1
-  state.activeExperiment.typeName='章节'
-  Visible.value=true
-}
-const closeDrawerDoc = () => {
-  // 调保存到章节的接口
-  editChartVisible.value = false;
-};
-const selectFile=(val:any)=>{
-  console.log(val)
-  editChartVisible.value = false;
-  
-  let  Pro=null
-  if(val.type===1){   // 1实验  2教辅
-    let obj={
-      type:val.type,    
-      content_ids:val.list
-    }
-    Pro = http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}})
-  }else{
-    let obj={
-      item_id:[val.item.id]
-    }
-    Pro = http.addCoursesChapterAids({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value},param:{...obj}})
-  }
-  Pro.then((res: any) => {
-    message.success("操作成功");
-    getChaptersTree()
-  });
-  
-}
-// 选中的实验 、素材
-var activeExperiment:any=reactive({
-
-})
 // 选中章节下实验
 const selectExperiment=(val:any)=>{
   console.log(val)
@@ -391,152 +331,25 @@ const selectExperiment=(val:any)=>{
   // 获取实验详情
   
 }
-//  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
-const activeChapterId:Ref<number>=ref(0)
-const establishChapter=(val:any)=>{
-  console.log('添加实验列表',val)
-  activeChapterId.value=val.id
-  editChartVisible.value=true
-}
-//  编辑章节名称
-const editChapter=(val:any)=>{
-  console.log('编辑章节名称',val)
-  activeChapterId.value=val.id
-  formState.name=val.name
-  state.activeExperiment.title='编辑章节名称'
-  state.activeExperiment.type=2
-  state.activeExperiment.typeName='章节'
-  Visible.value=true
-}
-//  编辑实验名称
-const editExperiment=(val:any)=>{
-  console.log('编辑实验名称',val)
-  // 区分是否是素材
-  // 3编辑素材  4编辑实验名称
-  state.activeExperiment.title=val.TeachingAids?'编辑教辅名称':'编辑实验名称'
-  state.activeExperiment.type=val.TeachingAids?3:4
-  state.activeExperiment.typeName=val.TeachingAids?'教辅':'实验'
-  if(state.activeExperiment.type === 4){
-    activeChapterId.value=val.id
-    formState.name=val.name
-  }
-  Visible.value=true
-}
-//  删除章节
-const deleteChapter=(val:any)=>{
-  console.log('删除章节章节',val)
-  activeChapterId.value=val.id
-  Modal.confirm({
-    title: "确认删除吗？",
-    icon: createVNode(ExclamationCircleOutlined),
-    content: "删除后不可恢复",
-    okText: "确认",
-    cancelText: "取消",
-    onOk() {
-      http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.id}}).then((res: any) => {
-        message.success("删除成功");
-          getChaptersTree()
-      });
-    },
-  });
-}
-// 删除实验
-const deleteExperiment=(val:any)=>{
-  console.log('删除实验',val)
-  // return 
-  // activeChapterId.value=val.v.id
-  Modal.confirm({
-    title: "确认删除吗？",
-    icon: createVNode(ExclamationCircleOutlined),
-    content: "删除后不可恢复",
-    okText: "确认",
-    cancelText: "取消",
-    onOk() {
-      let  Pro=null
-      if(!val.a.TeachingAids){   // TeachingAids教辅    非-实验 
-        Pro = http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.a.id}})
-      }else{
-        Pro = http.DeleteChapterAids({urlParams: {courseId:props.courseId,chapterId:activeChapterId.value,itemId:val.a.id}})
-      }
-      Pro.then((res: any) => {
-        message.success("删除成功");
-        getChaptersTree()
-      });;
-    },
-  });
-}
-//  编辑章节名称   实验名称公用
-const EditCreateChapterName=(id:number)=>{
-  formRef.value.validate().then(()=>{ 
-      http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId,chapterId:id}}).then((res: IBusinessResp)=>{
-        message.success('操作成功')
-        formState.name=''
-        Visible.value=false
-        getChaptersTree()
-    })
-  })
-}
-const Save=()=>{
-  // Visible.value=false
-  // state.activeExperiment.type=1   编辑 章节 素材 实验名称  区分
-  
-  if(state.activeExperiment.type === 1){ // 新建章节
-    formRef.value.validate().then(()=>{ 
-        http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId}}).then((res: IBusinessResp)=>{
-          message.success('操作成功')
-          formState.name=''
-          Visible.value=false
-          getChaptersTree()
-      })
-    })
-  }
-  if(state.activeExperiment.type === 2 || state.activeExperiment.type === 4){  // 1新建章节 2编辑章节  3编辑素材  4编辑实验名称
-    EditCreateChapterName(activeChapterId.value)
-  }
-}
-const cancel=()=>{
-  formRef.value.resetFields()
-  Visible.value=false
-}
 // 重新选择章节教辅
 const Reselection=()=>{
-  Visible.value=true
+  // Visible.value=true
+  editChartVisible.value=true
 }
-//
+//  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
+const activeChapterId:Ref<number>=ref(0)
+const selectChaptert=(val:any)=>{
+  console.log('选中的章节',val)
+  ExperimentsAndMaterialsObj.activeExperiments={...val.contents}
+  state.activeChapter={...val}
+  activeChapterId.value=val.id
+}
 const viewReport=()=>{
   Visible.value=false
 }
-const initData = () => {
-  return
-  // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
-  // const param: ISearchInfo = Object.assign({}, {...searchInfo})
-  // loading.value = true;
-  // courseList.length = 0
-  // http.getExperimentList({param}).then((res: IBusinessResp) => {
-  //   loading.value = false
-  //   if (!res) return
-  //   const { list, page }  = res.data
-  //   list.forEach((v: any) => {
-  //     // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
-  //   });
-  //   courseList.push(...list)
-  //   totalCount.value = page.totalCount
-  // })
-};
-var ChaptersTreeList:any=reactive([])
-const getChaptersTree=()=>{
-  chartLoading.value=true
-  ChaptersTreeList.length=0
-  http.getChaptersTree({urlParams:{courseId:props.courseId}}).then((res:IBusinessResp)=>{
-    const {data}=res
-    chartLoading.value=false
-    ChaptersTreeList.push(...data)
-  })
-}
+
 onMounted(() => {
-  getChaptersTree()
-  // 获取课程详情
-  //  获取章节树
+
 });
 </script>
 
@@ -548,11 +361,11 @@ onMounted(() => {
       width: 470px;
       // flex: 1;
       // padding: 10px;
-      .title{
-        padding: 10px;
-        justify-content: space-between;
-        margin-bottom: 1rem;
-      }
+      // .title{
+      //   padding: 10px;
+      //   justify-content: space-between;
+      //   // margin-bottom: 1rem;
+      // }
       .myChapter{
         // padding: 10px;
         min-height:500px;
