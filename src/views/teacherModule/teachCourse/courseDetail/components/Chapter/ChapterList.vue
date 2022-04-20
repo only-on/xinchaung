@@ -302,14 +302,13 @@ function ViewExperiment(a:any){
 }
 // 编辑章节下素材、实验列表
 const establishChapter=(v:any)=>{
-  state.activeTab.chapterId=v.id
-  // selectChaptert(v)
+  selectChaptert(v)
   editChartVisible.value=true
   emit('establishChapter',v)
 }
 // 编辑章节名称
 const editChapter=(val:any)=>{
-  // selectChaptert(v)
+  selectChaptert(val)
   console.log('编辑章节名称',val)
   state.activeTab.chapterId=val.id
   formState.name=val.name
@@ -317,11 +316,11 @@ const editChapter=(val:any)=>{
   state.activeExperiment.type=2
   state.activeExperiment.typeName='章节'
   Visible.value=true
-  emit('editChapter',val)
+  // emit('editChapter',val)
 }
 // 删除章节
 const deleteChapter=(val:any)=>{
-  // selectChaptert(v)
+  selectChaptert(val)
   state.activeTab.chapterId=val.id
   Modal.confirm({
     title: "确认删除吗？",
@@ -336,7 +335,7 @@ const deleteChapter=(val:any)=>{
       });
     },
   });
-  emit('deleteChapter',val)
+  // emit('deleteChapter',val)
 }
 
 // 编辑章节下实验名称
@@ -354,7 +353,7 @@ const editExperiment=(val:any)=>{
     formState.name=val.name
   }
   Visible.value=true 
-  emit('editExperiment',val)
+  // emit('editExperiment',val)
 }
 // 删除章节下实验
 const deleteExperiment=(v:any,a:any)=>{
@@ -384,7 +383,7 @@ const deleteExperiment=(v:any,a:any)=>{
       });;
     },
   });
-  emit('deleteExperiment',obj)
+  // emit('deleteExperiment',obj)
 }
 var chartLoading: Ref<boolean> = ref(false);
 var ChaptersTreeList:any=reactive([])
