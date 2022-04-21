@@ -19,7 +19,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, Ref, ref, inject } from 'vue'
+import { defineComponent, Ref, ref, inject ,watch} from 'vue'
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { MessageApi } from "ant-design-vue/lib/message";
 const $message: MessageApi = inject("$message")!;
@@ -35,14 +35,18 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "uploadCoverHandle", obj: any): void;  // 上传文件的回调
 }>();
+const imageUrl = ref('')
+watch(()=>{return props.coverUrl.cover},(val:any)=>{
+  console.log(val)
+  imageUrl.value = val
+  // console.log(props.coverUrl)
+  if ((imageUrl.value as any) instanceof Blob) {
+    getBase64(imageUrl.value, (base64Url: string) => {
+      imageUrl.value = base64Url;
+    });
+  }
+},{immediate:true})
 
-const imageUrl = ref(props.coverUrl.cover)
-// console.log(imageUrl.value instanceof Blob)
-if (imageUrl.value instanceof Blob) {
-  getBase64(imageUrl.value, (base64Url: string) => {
-    imageUrl.value = base64Url;
-  });
-}
 // 上传封面图
 const fileList:Ref<any>=ref([])
 const loading = ref<boolean>(false)

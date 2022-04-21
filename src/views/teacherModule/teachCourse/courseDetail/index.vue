@@ -299,7 +299,7 @@ const editCourse=()=>{
   formState.date=[start_time,end_time]
   formState.start_time=start_time
   formState.end_time=end_time
-  formState.cover=state.courseDetail.url
+  formState.cover=url
   formState.introduce=introduce
 
   formState.name=name
