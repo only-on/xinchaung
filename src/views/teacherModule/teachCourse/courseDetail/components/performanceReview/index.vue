@@ -244,7 +244,7 @@ const oldColumns: any[] = [
   {
     title: "姓名",
     dataIndex: "name",
-    width: 65,
+    width: 90,
   },
   {
     title: "班级",
@@ -502,8 +502,10 @@ function submitReport() {
 // 选择tree章节
 function selectExperiment(val: any) {
   console.log(val);
-  experitId.value = val.id;
-  getTeacherEvaluates();
+  if (!experitId.value||!experitId.value==val.id) {
+    experitId.value = val.id;
+    getTeacherEvaluates();
+  }
 }
 
 // 更新table 表头
