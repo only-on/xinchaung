@@ -76,12 +76,6 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  PlayCircleOutlined,
-  PoweroffOutlined,
-  ReloadOutlined,
-  SyncOutlined,
-} from "@ant-design/icons-vue";
 import request from "src/api/index";
 import { message } from "ant-design-vue";
 import { defineComponent, ref, toRefs, PropType, inject, computed } from "vue";
@@ -106,7 +100,6 @@ interface Ilist {
 }
 const router = useRouter();
 const route = useRoute();
-const courseInfo = inject("courseInfo") as any;
 const type = route.query.type;
 const http = (request as any).teachCourse;
 interface Props {
@@ -122,7 +115,8 @@ let current = ref(0);
 function beforeChange(from: Function, to: number) {
   current.value = to;
 }
-// 开启是true
+
+// 当前环境状态 开启是true
 const currentStatus = computed(
   () => props.list.vms.vms[current.value].status === "ACTIVE"
 );
@@ -137,7 +131,7 @@ console.log(props.list.vms.vms[current.value]);
 let params = {
   // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
   uuid: props.list.vms.vms[current.value]?.uuid,
-  atype: courseInfo.type,
+  atype: '0',
 };
 function btnClick(v: any) {
   let param: any = {

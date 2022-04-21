@@ -91,7 +91,12 @@ export default {
   // 成绩导出
   exportScoreApi:{url:"/api/operate/teacherEvaluates/export/{taskId}",method:"POST",dataType:"json"},
   // 报告评分
-  setReportScoreApi:{url:"/api/yii/report/record/teacher-update",method:"POST",dataType:"formdata"}
+  setReportScoreApi:{url:"/api/yii/report/record/teacher-update",method:"POST",dataType:"formdata"},
+
+  // 课程 环境管理
+  getCourseEnvirment: {url: `/api/operate/preCreates/list`, method:"GET" },
+  getOpenEnvirmentLimit: {url: `/api/operate/preCreates/list`, method:"GET" },
+  openEnvirment: {url: `/api/operate/preCreates/create`, method:"POST", dataType:"json" },
 }
 
 export interface ITeacherCourseApis {
@@ -121,4 +126,8 @@ export interface ITeacherCourseApis {
   setScoreApi:TFHttpSend
   exportScoreApi:TFHttpSend
   setReportScoreApi:TFHttpSend
+
+  getCourseEnvirmentList: TFHttpSend
+  getOpenEnvirmentLimit: TFHttpSend
+  openEnvirment: TFHttpSend
 }
