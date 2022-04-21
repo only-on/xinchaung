@@ -49,7 +49,7 @@
           </a-form-item>
           <a-form-item label="添加标签" name="tags">
             <div>
-              <LabelList :tag="formState.tags" :recommend="formState.recommend" />
+              <LabelList :tag="formState.tags" />
             </div>
           </a-form-item>
           <a-form-item label="封面图" class="cover">
@@ -266,6 +266,8 @@ const rules = {
   ],
 }
 const Save=()=>{
+  console.log(formState)
+  // return
   editLoading.value=true
   formRef.value.validate().then(()=>{
     http.UploadCourse({param:{...formState},urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
@@ -293,7 +295,7 @@ const editCourse=()=>{
     const {data}=res
     vocationDirection.push(...data)
   })
-  const {name,url,is_public,category,direction,introduce,tags,class_total,content_duration,start_time,end_time}=state.courseDetail
+  const {name,url,is_public,category,direction,introduce,tag,class_total,content_duration,start_time,end_time}=state.courseDetail
   formState.date=[start_time,end_time]
   formState.start_time=start_time
   formState.end_time=end_time
@@ -305,7 +307,7 @@ const editCourse=()=>{
   formState.is_public=is_public
   formState.category=category
   formState.direction=direction
-  formState.tags=tags
+  formState.tags=tag
   formState.class_total=class_total
   formState.content_duration=content_duration
 

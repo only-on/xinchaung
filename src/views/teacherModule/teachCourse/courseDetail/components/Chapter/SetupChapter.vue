@@ -1,12 +1,9 @@
 <template>
   <div class="chartTerr">
     <div class="chartTerrLeft" :class="((currentTab === '1' && role === 3) || role === 4)?'chartTerrLeft2':''">
-      <!-- <div class="title flexCenter">
-        <h3 class="courseh3">章节目录</h3>
-        <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && role === 3)">新建章节</a-button>
-      </div> -->
       <div class="myChapter textScrollbar">
         <ChapterList
+          :courseId="props.courseId"
           :Editable="props.Editable"
           @selectChaptert="selectChaptert"
           @selectExperiment="selectExperiment" 
@@ -29,27 +26,13 @@
             </div>
           </div>
         </div>
-        <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
-          <div v-if="!state.activeExperimentObj.TeachingAids" class="experiment">
-            <div class="itemContentBox textScrollbar">实验指导
-              <div class="itemContent" v-for="i in state.activeExperiment.content" :key="i" :class="state.activeExperiment.openGuidance?'itemContentHeight':''">
-                <h4 class="">{{i.title}}</h4>
-                <div class="text">{{i.text}}</div>
-              </div>
-            </div>
+        <a-spin :spinning="experimentGuideLoading" size="large" tip="Loading...">
+          <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
+            <!-- 实验指导展示  chartLoading-->
+            {{`${state.activeExperimentObj.type}`}}
+            <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
           </div>
-          <div v-if="state.activeExperimentObj.TeachingAids">
-            <div class="video-box" v-if="state.activeExperimentObj.suffix==='mp4'">
-              <video :src="env ? '/proxyPrefix' + state.activeExperimentObj.file_url : state.activeExperimentObj.file_url" :controls="true">
-                您的浏览器不支持 video 标签
-              </video>
-            </div>
-            <div class="pdfBox" v-if="['doc','docx','ppt','pptx','pdf'].includes(state.activeExperimentObj.suffix)">
-              <PdfVue :url="state.activeExperimentObj.file_html" />
-            </div>
-          </div>
-          
-        </div>
+        </a-spin>
       </template>
       <Empty v-else :text="'暂未选择实验'" />
     </div>
@@ -64,6 +47,7 @@ import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
 import ExperimentsAndMaterials from 'src/components/SelectDocOrMp4/ExperimentsAndMaterials.vue'
 import Submit from "src/components/submit/index.vue";
+import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import ChapterList from './ChapterList.vue'
 import extStorage from "src/utils/extStorage";
 import { Modal, message } from "ant-design-vue";
@@ -328,8 +312,21 @@ const selectExperiment=(val:any)=>{
   console.log(val)
   state.activeExperimentObj={...val}
   // 获取实验详情
+  if(!val.TeachingAids){
+    // getExperimentGuide(val.id)
+  }
   
 }
+const getExperimentGuide=(id:number)=>{
+  experimentGuideLoading.value=true
+  http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
+    experimentGuideLoading.value=false
+    const {data}=res  
+    // state.activeExperimentObj.Newguidance=res.data
+    // courseDirection.push(...data)
+  })
+}
+const experimentGuideLoading: Ref<boolean> = ref(false);
 // 重新选择章节教辅
 const Reselection=()=>{
   // Visible.value=true
@@ -379,7 +376,7 @@ onMounted(() => {
       // width: 674px;
       margin-right: 16px;
       flex: 1;
-      padding:10px 22px 22px;
+      padding:10px 22px 22px 30px;
       .title{
         justify-content: space-between;
         .report{
@@ -392,45 +389,15 @@ onMounted(() => {
           color: var(--brightBtn);
         }
       }
-      .pdfBox{
-        height: 630px;
-      }
+      // .pdfBox{
+      //   height: 630px;
+      // }
       .experimentGuide{
+        height: 630px;
+        // border: 1px solid rgba(0,0,0,0.15);
+        padding: 10px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
-        .experiment{
-          border: 1px solid rgba(0,0,0,0.15);
-          padding: 20px 10px 20px 30px;
-          .itemContentBox{
-            overflow: auto;
-            max-height: 420px;
-          }
-          .itemContent{
-            transition: all .5s;
-            h4{
-              margin-bottom: 1rem;
-            }
-            .text{
-              height: 100%;
-              white-space: pre-wrap;
-              color: var(--black-65);
-              margin-bottom: 1.5rem;
-            }
-          }
-        }
-        .video-box{
-          height: 500px;
-          width: 100%;
-          video{
-            width:100%;
-            height:100%;
-            object-fit: cover;
-          }
-        }
-        .pdfBox{
-          height: 500px;
-          width: 100%;
-        }
       }
       
     }

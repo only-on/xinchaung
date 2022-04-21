@@ -5,18 +5,18 @@
     <div class="flexCenter mainBox">
       <div class="item" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
         <div class="coverBox">
-          <div class="cover">
+          <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
             <div class="top flexCenter">
               <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
               <div v-if="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
                 <span class="img"></span>
-                <span>系统内置</span>
+                <span class="userName">{{v.is_init?'系统内置':'教师'}}</span>
               </div>
             </div>
             <div class="tabBox">
-              <span>标签1/标签2/</span>
-                <!-- <span>{{`${info.tags.join('/')}`}}</span> -->
+              <!-- <span>标签1/标签2/</span> -->
+                <span>{{(v.tags && v.tags.length)?`${v.tags.join('/')}`:''}}</span>
             </div>
           </div>
           <div class="flexCenter Projection">
@@ -388,6 +388,10 @@ onMounted(() => {
                 background-size: 100% 100%;
                 background-repeat: no-repeat;
                 margin: 0 6px;
+              }
+              .userName{
+                flex:1;
+                text-align: center;
               }
             }
           }
