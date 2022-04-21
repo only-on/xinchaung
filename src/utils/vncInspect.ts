@@ -16,7 +16,7 @@ export interface IEnvirmentsParam {
   type: TStudyType;
   opType: TopType;
   taskId: any;
-  experType: number
+  experType?: any
 }
 
 export interface IStopOperatesParam extends IEnvirmentsParam {
