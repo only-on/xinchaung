@@ -121,8 +121,7 @@ export default function request({
     "Cache-Control": cache,
     "Content-Type": sendContentType,
     'Authorization': store.state.adminInfo.token as string || '',
-    // student teacher admin init assistant
-    'Login-Role': ls.lStorage.get("username") || 'teacher',
+    'Login-Role': ls.lStorage.get("username") || 'teacher',// student teacher admin init assistant
     ...headers,
   };
   // 如果Content-Type不存在，删除Content-Type

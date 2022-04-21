@@ -396,7 +396,8 @@ const getChaptersTree=()=>{
     let obj={5:'备课资料',6:'教学指导',3:'课件'}
     if(data.length){
       let item:any=data[0]
-      data.forEach((v:any)=>{
+      let index:number=0
+      data.forEach((v:any,k:number)=>{
         v.openItem=false
         v.list=[]
         v.resource.length?v.resource.forEach((i:any)=>{
@@ -414,6 +415,7 @@ const getChaptersTree=()=>{
         v.list=v.list.concat(v.resource,v.contents)
         if(state.activeTab.chapterId && state.activeTab.chapterId === v.id){
           item={...v}
+          index=k
         }
       })
       // console.log(item)
@@ -421,7 +423,7 @@ const getChaptersTree=()=>{
       if(item.list.length){
         selectExperiment(item.list[0],item)
       }
-      data[0].openItem=true
+      data[index].openItem=true
     }
     console.log(data)
     ChaptersTreeList.push(...data)

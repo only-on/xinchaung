@@ -56,6 +56,8 @@ export default {
   // multiplexing: { url: '/api/course/courses/{course_id}/replicate', method: "PUT" }, // 现在的复用是编辑
   //  更新课程基本信息
   UploadCourse:{ url: `/api/course/courses/{courseId}`, method: "put",dataType: "json"},
+  // 课程设置  
+  CourseSteup:{ url: `/api/course/courses/{courseId}/setting`, method: "put",dataType: "json"},
   
   // 知识点
   getKnowledgeList: {

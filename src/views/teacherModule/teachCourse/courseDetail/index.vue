@@ -87,7 +87,7 @@
   </a-modal>
 
   <!-- 课程设置 -->
-  <a-modal v-model:visible="setupVisible"  :title="`设置`" class="setupVisible" :width="490">
+  <a-modal v-model:visible="setupVisible"  :title="`学生端显示内容设置`" class="setupVisible" :width="490">
     <div class="tips flexCenter">
       <span class="iconfont icon-zhuyi"></span>
       <span>关闭后对学生不展示该内容</span>
@@ -95,27 +95,27 @@
     <div class="box">
       <div class="item flexCenter">
         <span>实验指导（VNC、Jupyter、IDE、命令行）是否显示</span>
-        <a-switch v-model:checked="setupForm.guide" />
+        <a-switch v-model:checked="setupForm.is_show_content_guidance" />
       </div>
       <div class="item flexCenter">
         <span>课件是否显示</span>
-        <a-switch v-model:checked="setupForm.courseWare" />
+        <a-switch v-model:checked="setupForm.is_show_courseware" />
       </div>
       <div class="item flexCenter">
         <span>备课资料是否显示</span>
-        <a-switch v-model:checked="setupForm.prepare" />
+        <a-switch v-model:checked="setupForm.is_show_preparation" />
       </div>
       <div class="item flexCenter">
         <span>教学指导是否显示</span>
-        <a-switch v-model:checked="setupForm.teachingGuidance" />
+        <a-switch v-model:checked="setupForm.is_show_teaching_guidance" />
       </div>
       <div class="item flexCenter">
         <span>任务制实验步骤</span>
-        <a-switch v-model:checked="setupForm.taskSteps" />
+        <a-switch v-model:checked="setupForm.is_show_task_step" />
       </div>
       <div class="item flexCenter">
         <span>实验报告是否显示</span>
-        <a-switch v-model:checked="setupForm.report" />
+        <a-switch v-model:checked="setupForm.is_show_content_report" />
       </div>
       <div class="item flexCenter">
         <span>更换实验报告</span>
@@ -250,6 +250,7 @@ const Save=()=>{
   formRef.value.validate().then(()=>{
     http.UploadCourse({param:{...formState},urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
       message.success('编辑成功')
+      formRef.value.resetFields()
       initData()
       editLoading.value=false
       editVisible.value=false
@@ -257,6 +258,7 @@ const Save=()=>{
   })
 }
 const cancel=()=>{
+  formRef.value.resetFields()
   editVisible.value=false
 }
 const editCourse=()=>{
@@ -296,12 +298,12 @@ const editCourse=()=>{
 var setupVisible: Ref<boolean> = ref(false);
 const SetupLoading = ref<boolean>(false)
 const setupForm:any=reactive({
-  guide:false,
-  courseWare:false,
-  prepare:false,
-  teachingGuidance:false,
-  taskSteps:false,
-  report:false,
+  is_show_content_guidance:true,
+  is_show_courseware:true,
+  is_show_preparation:true,
+  is_show_teaching_guidance:true,
+  is_show_task_step:true,
+  is_show_content_report:true,
   reportObj:{
     id:0,
     name:''
@@ -323,10 +325,20 @@ const reportOk = (val: any) => {
   setupForm.reportObj.name = val.name;
 };
 const SaveSetup=()=>{
-  // http.editChart({param:{...formState}}).then((res: IBusinessResp)=>{
-  //   message.success('操作成功')
-  //   setupVisible.value=false
-  // })
+  let obj:any={
+    is_show_content_guidance:setupForm.is_show_content_guidance?1:0,
+    is_show_courseware:setupForm.is_show_content_guidance?1:0,
+    is_show_preparation:setupForm.is_show_content_guidance?1:0,
+    is_show_teaching_guidance:setupForm.is_show_content_guidance?1:0,
+    is_show_task_step:setupForm.is_show_content_guidance?1:0,
+    is_show_content_report:setupForm.is_show_content_guidance?1:0,
+    template_id:setupForm.reportObj.id?setupForm.reportObj.id:''
+  }
+  setupForm.reportObj.id?obj.template_id=setupForm.reportObj.id:''
+  http.CourseSteup({urlParams: {courseId: courseId},param:{...obj}}).then((res: IBusinessResp)=>{
+    message.success('操作成功')
+    setupVisible.value=false
+  })
 }
 const cancelSetup=()=>{
   setupVisible.value=false
