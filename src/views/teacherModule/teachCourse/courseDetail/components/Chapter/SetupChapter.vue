@@ -20,7 +20,7 @@
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
-            <div class="Lesson flexCenter" @click="viewReport">
+            <div class="Lesson flexCenter" @click="lessonPreparation">
               <span class="iconfont icon-jitibeike"></span>
               <span>开始备课</span>
             </div>
@@ -339,6 +339,9 @@ const Reselection=()=>{
 
 const viewReport=()=>{
   Visible.value=false
+}
+const lessonPreparation=()=>{
+  
 }
 
 onMounted(() => {
