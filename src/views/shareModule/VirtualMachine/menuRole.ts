@@ -23,19 +23,19 @@
 const menuRole= {
     vnc:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     cmd:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     task:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     webide:{
         4:['guide','note','report','question','delayed','end'],
@@ -104,3 +104,17 @@ function getMenuRole(role:4|3,type:taskType,studyType?:studyType) {
     
 }
 export default getMenuRole
+
+
+/**
+ * @description 实验类型
+ * @param 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
+ */
+export const experimentTypeList = {
+    1: { name: 'vnc' },
+    2: { name: 'webide' },
+    4: { name: 'jupyter' },
+    5: { name: 'task' },
+    6: { name: 'video' },
+    7: { name: 'document' },
+}

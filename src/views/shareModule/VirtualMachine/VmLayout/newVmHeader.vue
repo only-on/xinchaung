@@ -31,7 +31,8 @@
     <div class="right-box">
       <div
         class="ip-list"
-        :class="roleArry.includes('switchVm') ? '' : 'none-event'"
+        :class="loading ? 'none-event':''"
+        v-if="roleArry.includes('switchVm')"
       >
         <a-select
           class="ip-select"
@@ -54,7 +55,8 @@
       </div>
       <div
         class="delayed"
-        :class="roleArry.includes('delayed') ? '' : 'none-event'"
+        :class="loading ? 'none-event':''"
+        v-if="roleArry.includes('delayed')"
       >
         <span>
           {{
@@ -69,6 +71,7 @@
       </div>
       <div
         class="vnc-change pointer"
+        :class="loading ? 'none-event':''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1"
       >
@@ -76,13 +79,14 @@
       </div>
       <div
         class="tool pointer"
+        :class="loading ? 'none-event':''"
         v-if="roleArry.includes('tools')"
         @click="visible = !visible"
       >
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
       </div>
-      <div class="switch pointer" @click="finishExperiment">
+      <div class="switch pointer" :class="loading ? 'none-event':''" @click="finishExperiment">
         <span class="iconfont icon-guanbi1"></span>
       </div>
     </div>
@@ -431,7 +435,7 @@ import {
   IAction,
   toStudyRecommendExperiment,
 } from "src/utils/vncInspect";
-import getMenuRole, { menuTypeArr } from "../menuRole";
+import getMenuRole, { menuTypeArr, experimentTypeList } from "../menuRole";
 import { cloneDeep } from "lodash";
 import storage from "src/utils/extStorage";
 
@@ -440,6 +444,7 @@ const router = useRouter();
 const vmApi = request.vmApi;
 const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+const experType = Number(route.query.experType)
 
 let role = storage.lStorage.get("role");
 
@@ -589,8 +594,8 @@ const toolData = [
 const toolList = toolData;
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
-  ? (getMenuRole(role as any, "vnc", opType as any) as any)
-  : (getMenuRole(role as any, "vnc") as any);
+  ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
+  : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 console.log(roleArry);
 
 watch(
@@ -1172,7 +1177,7 @@ function back() {
       }
     },
     onCancel: () => {
-      router.go(historyLength - history.length - 1);
+      // router.go(historyLength - history.length - 1);
     },
   });
 }
@@ -1231,6 +1236,11 @@ function finishExperiment() {
     }吗？`,
     okText: "确认",
     onOk: async () => {
+      // 文档视频实验
+      if (experType === 6 || experType === 7) {
+        router.go(historyLength - history.length - 1);
+        return
+      }
       await finishTest();
       modal.destroy();
     },
@@ -1374,6 +1384,7 @@ async function resetVm() {
 function copyPaste() {
   console.log("选择发送");
   novncEl.value.sendSelectContent(copyText);
+  visible.value = false
 }
 
 // 保存进度

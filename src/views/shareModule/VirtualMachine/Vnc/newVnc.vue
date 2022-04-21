@@ -216,6 +216,7 @@ function initWs() {
               } else {
                 currentInterface.value = "vnc";
                 if (wsJsonData.data.vms[currentVmIndex.value].status == "SHUTOFF") {
+                  currentUuid.value = wsJsonData.data.vms[currentVmIndex.value].uuid;
                   loading.value=false
                   isClose.value=true
                   return;
@@ -261,60 +262,60 @@ function initWs() {
                       // vncLoadingV.value=false
                     }
                   }
-            }else if (wsJsonData.type=="return_message") {
-              if (Object.keys(wsJsonData).length>0) {
-                if (wsJsonData.data?.msg) {
-                  message.warn(wsJsonData.data.msg)
-                }else{
-                  message.warn(wsJsonData.data)
-                }
-              }
-              if (!["train"].includes(type as any)) {
-                if (layout.value) {
-                  // 自评推荐
-                  evaluateVisible.value=true
-                  evaluateData.value = wsJsonData.data;
-                
-                  nextTick(()=>{
-                    initEvaluate()
-                  })
-                  sendDisconnect();
-                  isClose.value=true
-                }
-              }else{
-                router.go(-1)
-              }
-            }else if (wsJsonData.type=="recommends") {
-              // 推荐
-              // recommendExperimentData.value = wsJsonData.data;
-              // recommendVisible.value = true;
-            }else if (wsJsonData.type=="help") {
-              
-            }else if (wsJsonData.type=="delay") {
-              use_time.value = wsJsonData.data.remaining_time
-            }else if (wsJsonData.type=="manual-disable") {
-              // 禁用学生
-              disableVisable.value=true
-              disableData.value=wsJsonData.data
-            }else if (wsJsonData.type=="switch_success") {
-              message.success("切换成功")
-              currentInterface.value = "vnc";
-               baseInfo.value = wsJsonData;
-                  settingCurrentVM(
-                    wsJsonData.data.vms[currentVmIndex.value]
-                  );
-                  loading.value=false
-                  initVnc.value()
-            }else if (wsJsonData.type=="save_return_message") {
-              if (Object.keys(wsJsonData).length>0) {
-                if (wsJsonData.data?.msg) {
-                  message.warn(wsJsonData.data.msg)
-                }else{
-                  message.warn(wsJsonData.data)
-                }
-              }
-              router.go(-1)
+        }else if (wsJsonData.type=="return_message") {
+          if (Object.keys(wsJsonData).length>0) {
+            if (wsJsonData.data?.msg) {
+              message.warn(wsJsonData.data.msg)
+            }else{
+              message.warn(wsJsonData.data)
             }
+          }
+          if (!["train"].includes(type as any)) {
+            if (layout.value) {
+              // 自评推荐
+              evaluateVisible.value=true
+              evaluateData.value = wsJsonData.data;
+            
+              nextTick(()=>{
+                initEvaluate()
+              })
+              sendDisconnect();
+              isClose.value=true
+            }
+          }else{
+            router.go(-1)
+          }
+        }else if (wsJsonData.type=="recommends") {
+          // 推荐
+          // recommendExperimentData.value = wsJsonData.data;
+          // recommendVisible.value = true;
+        }else if (wsJsonData.type=="help") {
+          
+        }else if (wsJsonData.type=="delay") {
+          use_time.value = wsJsonData.data.remaining_time
+        }else if (wsJsonData.type=="manual-disable") {
+          // 禁用学生
+          disableVisable.value=true
+          disableData.value=wsJsonData.data
+        }else if (wsJsonData.type=="switch_success") {
+          message.success("切换成功")
+          currentInterface.value = "vnc";
+            baseInfo.value = wsJsonData;
+              settingCurrentVM(
+                wsJsonData.data.vms[currentVmIndex.value]
+              );
+              loading.value=false
+              initVnc.value()
+        }else if (wsJsonData.type=="save_return_message") {
+          if (Object.keys(wsJsonData).length>0) {
+            if (wsJsonData.data?.msg) {
+              message.warn(wsJsonData.data.msg)
+            }else{
+              message.warn(wsJsonData.data)
+            }
+          }
+          router.go(-1)
+        }
       }
     },
   });

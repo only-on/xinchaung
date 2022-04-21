@@ -1,7 +1,7 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right>
-        <iframe
+      <iframe
         :src="'http://' + noteUrl"
         frameborder="0"
         style="width: 100%; height: 100%"
@@ -70,12 +70,11 @@ function getVmBase() {
     };
     getVmBaseInfo(params).then((res: any) => {
       baseInfo.value = res.data;
+      taskType.value = res.data.base_info.task_type.type;
       if (!res.data.current) {
         resolve();
         return;
       }
-
-      taskType.value = res.data.base_info.task_type.type;
 
       if (!taskType.value) {
         use_time.value = res.data.current.used_time;
@@ -138,6 +137,7 @@ function initWs() {
             currentVm.value = JSON.parse(ev.data).data.vms[0];
             currentUuid.value = currentVm.value.uuid;
             noteUrl.value = currentVm.value.host_ip + ":" + currentVm.value.note_port;
+            loading.value = false
           }
         } else if (wsJsonData.type == "success") {
           if (wsJsonData.data?.message) {
