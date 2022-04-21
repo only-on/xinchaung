@@ -112,19 +112,17 @@ const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
-const { currentTab,course_id } = route.query;
+const { currentTab,courseId } = route.query;
 const routeQuery = useRoute().query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
-  courseId:number
-  Editable:string
+  Editable?:string
   // knowledge: any;
   // words:any
 }
 const props = withDefaults(defineProps<Props>(), {
-  courseId:0,
-  Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑
+  Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑  可编辑  可学习  只展示
 });
 // const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
 var editChartVisible: Ref<boolean> = ref(false);
@@ -187,12 +185,12 @@ const selectFile=(val:any)=>{
       type:val.type,    
       content_ids:val.list
     }
-    Pro = http.addCoursesChapter({urlParams: {courseId:props.courseId,chapterId:state.activeTab.chapterId},param:{...obj}})
+    Pro = http.addCoursesChapter({urlParams: {courseId:courseId,chapterId:state.activeTab.chapterId},param:{...obj}})
   }else{
     let obj={
       item_id:[val.item.id]
     }
-    Pro = http.addCoursesChapterAids({urlParams: {courseId:props.courseId,chapterId:state.activeTab.chapterId},param:{...obj}})
+    Pro = http.addCoursesChapterAids({urlParams: {courseId:courseId,chapterId:state.activeTab.chapterId},param:{...obj}})
   }
   Pro.then((res: any) => {
     message.success("操作成功");
@@ -219,7 +217,7 @@ const createChart=()=>{
 //  编辑章节名称   实验名称公用
 const EditCreateChapterName=(id:number)=>{
   formRef.value.validate().then(()=>{ 
-      http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId,chapterId:id}}).then((res: any)=>{
+      http.EditCreateChapterName({param:{chapter_name:formState.name},urlParams:{courseId:courseId,chapterId:id}}).then((res: any)=>{
         message.success('操作成功')
         formState.name=''
         Visible.value=false
@@ -230,7 +228,7 @@ const EditCreateChapterName=(id:number)=>{
 const Save=()=>{
   if(state.activeExperiment.type === 1){ // 新建章节
     formRef.value.validate().then(()=>{ 
-        http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId}}).then((res: any)=>{
+        http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:courseId}}).then((res: any)=>{
           message.success('操作成功')
           formState.name=''
           Visible.value=false
@@ -329,7 +327,7 @@ const deleteChapter=(val:any)=>{
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.id}}).then((res: any) => {
+      http.DeleteCourseChapter({urlParams: {courseId:courseId,chapterId:val.id}}).then((res: any) => {
         message.success("删除成功");
           getChaptersTree()
       });
@@ -373,9 +371,9 @@ const deleteExperiment=(v:any,a:any)=>{
     onOk() {
       let  Pro=null
       if(!a.TeachingAids){   // TeachingAids教辅    非-实验 
-        Pro = http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:a.id}})
+        Pro = http.DeleteCourseChapter({urlParams: {courseId:courseId,chapterId:a.id}})
       }else{
-        Pro = http.DeleteChapterAids({urlParams: {courseId:props.courseId,chapterId:v.id,itemId:a.id}})
+        Pro = http.DeleteChapterAids({urlParams: {courseId:courseId,chapterId:v.id,itemId:a.id}})
       }
       Pro.then((res: any) => {
         message.success("删除成功");
@@ -390,7 +388,7 @@ var ChaptersTreeList:any=reactive([])
 const getChaptersTree=()=>{
   chartLoading.value=true
   ChaptersTreeList.length=0
-  http.getChaptersTree({urlParams:{courseId:props.courseId}}).then((res:any)=>{
+  http.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
     const {data}=res
     chartLoading.value=false
     let obj={5:'备课资料',6:'教学指导',3:'课件'}

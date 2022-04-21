@@ -7,7 +7,6 @@
       </div> -->
       <div class="myChapter textScrollbar">
         <ChapterList
-          :courseId="props.courseId"
           :Editable="props.Editable"
           @selectChaptert="selectChaptert"
           @selectExperiment="selectExperiment" 
