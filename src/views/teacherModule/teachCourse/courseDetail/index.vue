@@ -93,29 +93,49 @@
       <span>关闭后对学生不展示该内容</span>
     </div>
     <div class="box">
+      <!-- <a-form :layout="'horizontal'" :model="steupFormState" ref="steupFormRef" :labelCol="{span:20}" :wrapperCol="{ span: 4 }" :labelAlign="'left'">
+        <a-form-item label="实验指导（VNC、Jupyter、IDE、命令行）是否显示" name="is_show_content_guidance">
+          <a-switch v-model:checked="steupFormState.is_show_content_guidance" />
+        </a-form-item>
+        <a-form-item label="课件是否显示" name="is_show_courseware">
+          <a-switch v-model:checked="steupFormState.is_show_courseware" />
+        </a-form-item>
+        <a-form-item label="备课资料是否显示" name="is_show_preparation">
+          <a-switch v-model:checked="steupFormState.is_show_preparation" />
+        </a-form-item>
+        <a-form-item label="教学指导是否显示" name="is_show_teaching_guidance">
+          <a-switch v-model:checked="steupFormState.is_show_teaching_guidance" />
+        </a-form-item>
+        <a-form-item label="任务制实验步骤" name="is_show_task_step">
+          <a-switch v-model:checked="steupFormState.is_show_task_step" />
+        </a-form-item>
+        <a-form-item label="实验报告是否显示" name="is_show_content_report">
+          <a-switch v-model:checked="steupFormState.is_show_content_report" />
+        </a-form-item>
+      </a-form> -->
       <div class="item flexCenter">
         <span>实验指导（VNC、Jupyter、IDE、命令行）是否显示</span>
-        <a-switch v-model:checked="setupForm.is_show_content_guidance" />
+        <a-switch v-model:checked="steupFormState.is_show_content_guidance" />
       </div>
       <div class="item flexCenter">
         <span>课件是否显示</span>
-        <a-switch v-model:checked="setupForm.is_show_courseware" />
+        <a-switch v-model:checked="steupFormState.is_show_courseware" />
       </div>
       <div class="item flexCenter">
         <span>备课资料是否显示</span>
-        <a-switch v-model:checked="setupForm.is_show_preparation" />
+        <a-switch v-model:checked="steupFormState.is_show_preparation" />
       </div>
       <div class="item flexCenter">
         <span>教学指导是否显示</span>
-        <a-switch v-model:checked="setupForm.is_show_teaching_guidance" />
+        <a-switch v-model:checked="steupFormState.is_show_teaching_guidance" />
       </div>
       <div class="item flexCenter">
         <span>任务制实验步骤</span>
-        <a-switch v-model:checked="setupForm.is_show_task_step" />
+        <a-switch v-model:checked="steupFormState.is_show_task_step" />
       </div>
       <div class="item flexCenter">
         <span>实验报告是否显示</span>
-        <a-switch v-model:checked="setupForm.is_show_content_report" />
+        <a-switch v-model:checked="steupFormState.is_show_content_report" />
       </div>
       <div class="item flexCenter">
         <span>更换实验报告</span>
@@ -128,7 +148,7 @@
   </a-modal>
 
   <!-- 选择 和 设置实验实验报告模板 -->
-  <SelectReport v-if="reportVisible" :selectedReport="setupForm.reportObj"
+  <SelectReport v-if="reportVisible" :selectedReport="steupFormState.reportObj"
     @reportCancel="reportCancel"
     @reportOk="reportOk"
   ></SelectReport>
@@ -295,9 +315,10 @@ const editCourse=()=>{
 
 
 //  设置课程
+const steupFormRef = ref();
 var setupVisible: Ref<boolean> = ref(false);
 const SetupLoading = ref<boolean>(false)
-const setupForm:any=reactive({
+const steupFormState:any=reactive({
   is_show_content_guidance:true,
   is_show_courseware:true,
   is_show_preparation:true,
@@ -321,22 +342,23 @@ const reportCancel = () => {
 };
 const reportOk = (val: any) => {
   console.log(val)
-  setupForm.reportObj.id = val.id;
-  setupForm.reportObj.name = val.name;
+  steupFormState.reportObj.id = val.id;
+  steupFormState.reportObj.name = val.name;
 };
 const SaveSetup=()=>{
   let obj:any={
-    is_show_content_guidance:setupForm.is_show_content_guidance?1:0,
-    is_show_courseware:setupForm.is_show_content_guidance?1:0,
-    is_show_preparation:setupForm.is_show_content_guidance?1:0,
-    is_show_teaching_guidance:setupForm.is_show_content_guidance?1:0,
-    is_show_task_step:setupForm.is_show_content_guidance?1:0,
-    is_show_content_report:setupForm.is_show_content_guidance?1:0,
-    template_id:setupForm.reportObj.id?setupForm.reportObj.id:''
+    is_show_content_guidance:steupFormState.is_show_content_guidance?1:0,
+    is_show_courseware:steupFormState.is_show_courseware?1:0,
+    is_show_preparation:steupFormState.is_show_preparation?1:0,
+    is_show_teaching_guidance:steupFormState.is_show_teaching_guidance?1:0,
+    is_show_task_step:steupFormState.is_show_task_step?1:0,
+    is_show_content_report:steupFormState.is_show_content_report?1:0,
+    template_id:steupFormState.reportObj.id?steupFormState.reportObj.id:''
   }
-  setupForm.reportObj.id?obj.template_id=setupForm.reportObj.id:''
+  steupFormState.reportObj.id?obj.template_id=steupFormState.reportObj.id:''
   http.CourseSteup({urlParams: {courseId: courseId},param:{...obj}}).then((res: IBusinessResp)=>{
     message.success('操作成功')
+    getCourseSetup()
     setupVisible.value=false
   })
 }
@@ -359,8 +381,20 @@ const uploadCoverHandle=(file:any)=>{
     formState.url = res.data.url
   })
 }
+const getCourseSetup=()=>{
+  http.getCourseSetup({urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
+    let data=res.data
+    steupFormState.is_show_content_guidance=data.is_show_content_guidance?true:false
+    steupFormState.is_show_courseware=data.is_show_courseware?true:false
+    steupFormState.is_show_preparation=data.is_show_preparation?true:false
+    steupFormState.is_show_teaching_guidance=data.is_show_teaching_guidance?true:false
+    steupFormState.is_show_task_step=data.is_show_task_step?true:false
+    steupFormState.is_show_content_report=data.is_show_content_report?true:false
+  })
+}
 onMounted(() => {
   initData()
+  getCourseSetup()
 });
 
 </script>

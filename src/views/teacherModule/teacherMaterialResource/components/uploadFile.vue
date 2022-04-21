@@ -151,7 +151,8 @@ watch(()=>{return props.fileList},(val:any)=>{
   // console.log(arr)
   props.complete.complete=false
   arr.length?arr.forEach((v:any)=>{
-    if(v.status !== 'done'){
+    let str=props.type===1?'end':'done'
+    if(v.status !== str){
       props.complete.complete=true
     }
   }):''
@@ -235,15 +236,6 @@ function removeFile(file: any, index: any) {
     }
   });
   delete props.fileList[index];
-}
-function size(size:any){
-  let num=Number(size)
-  console.log(num)
-  if (num < 1024 * 1024) {
-    return (num / 1024).toFixed(2) + 'kb'
-  } else {
-    return (num / 1024 / 1024).toFixed(2) + 'Mb'
-  }
 }
 onMounted(() => {
   tusFileUpload.init()

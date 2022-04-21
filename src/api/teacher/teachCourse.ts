@@ -49,6 +49,9 @@ export default {
 
   // 课程详情
   courseDetail:{ url: `/api/course/courses/{courseId}`, method: "GET",dataType: "json"},
+  // 课程复用  
+  multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},
+  
 
   // 删除课程
   deleteCourseItem: { url: '/api/course/courses/{courseId}', method: "DELETE" },
@@ -58,6 +61,8 @@ export default {
   UploadCourse:{ url: `/api/course/courses/{courseId}`, method: "put",dataType: "json"},
   // 课程设置  
   CourseSteup:{ url: `/api/course/courses/{courseId}/setting`, method: "put",dataType: "json"},
+  // 获取课程设置
+  getCourseSetup:{ url: `/api/course/courses/{courseId}/setting`, method: "GET",dataType: "json"},
   
   // 知识点
   getKnowledgeList: {

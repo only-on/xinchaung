@@ -7,7 +7,7 @@
         <div class="coverBox">
           <div class="cover">
             <div class="top flexCenter">
-              <div v-if="currentTab === 0" class="state state-ing">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
+              <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
               <div v-if="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
                 <span class="img"></span>
@@ -285,14 +285,10 @@ const deleteFun = (val: any) => {
 };
 const multiplexing=(val: any)=>{
   router.push({ 
-    path: "/teacher/teacherCourse/courseCreate",
-    query: { currentTab:currentTab.value,courseId:val.id,EditId:val.id}
+    path: "/teacher/teacherCourse/CreateCourse",
+    query: { currentTab:currentTab.value,EditId:val.id}
     });
-  // http.deleteCourseItem({urlParams: {courseId: val.id}}).then((res: any) => {
-  //   message.success("删除成功"); //
-  //     initData();
-  // });
-  // router.push({ path: "/teacher/teacherCourse/courseCreate"});    //  courseCreate
+  // router.push({ path: "/teacher/teacherCourse/CreateCourse"});    //  courseCreate
 }
 // 归档
 var Visible: Ref<boolean> = ref(false);
@@ -372,8 +368,10 @@ onMounted(() => {
               background-color: rgba(0, 0, 0,.5);
               color: var(--white-70);
               padding: 3px 14px;
+              // opacity: .5;
               &.state-ing{
                 color: #37E6AE;
+                // opacity: 1;
               }
             }
             .user{

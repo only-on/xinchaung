@@ -131,7 +131,7 @@ type Key = ColumnProps["key"];
 const router = useRouter();
 const route = useRoute();
 
-const { editId } = route.query;  
+const { EditId ,currentTab} = route.query;  
 const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -152,6 +152,28 @@ const next=(val:number)=>{
   console.log(formState)
   // currentStep.value=val
   // return
+  if(val === 1){
+    formRef.value.validate().then(()=>{
+      formState.is_available=0
+      stup1Loading.value=true
+      http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
+        const {data}=res
+        stup1Loading.value=false
+        currentStep.value=val
+        courseId.value=data.id
+        router.replace({
+          path: "/teacher/teacherCourse/CreateCourse",
+          query: { currentTab:currentTab,courseId:data.id}
+        });
+        setTimeout(() => {
+          currentStep.value=val
+        }, 10);
+      }).catch((err:any)=>{
+        stup1Loading.value=false
+      })
+    })
+    return 
+  }
   if(val === 3){
     formState.is_available=1
     stup1Loading.value=true
@@ -162,21 +184,6 @@ const next=(val:number)=>{
       courseId.value=data.id
     }).catch((err:any)=>{
       stup1Loading.value=false
-    })
-    return 
-  }
-  if(val === 1){
-    formRef.value.validate().then(()=>{
-      formState.is_available=0
-      stup1Loading.value=true
-      http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
-        const {data}=res
-        stup1Loading.value=false
-        currentStep.value=val
-        courseId.value=data.id
-      }).catch((err:any)=>{
-        stup1Loading.value=false
-      })
     })
     return 
   }
@@ -264,17 +271,32 @@ const goAdd=()=>{
     location.reload();
   });
 }
-onMounted(()=>{
-  http.courseCategory().then((res:IBusinessResp)=>{
+// 课程复用和获取详情
+const multiplexing=()=>{
+  http.multiplexing({urlParams: {courseId: EditId}}).then((res: IBusinessResp)=>{
+    
+  })
+}
+const courseDetail=()=>{
+  http.courseDetail({urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
+    
+  })
+}
+onMounted(async ()=>{
+  await http.courseCategory().then((res:IBusinessResp)=>{
     const {data}=res
     courseCategory.push(...data)
     formState.category=courseCategory[0].name
   })
-  http.vocationDirection().then((res:IBusinessResp)=>{
+  await http.vocationDirection().then((res:IBusinessResp)=>{
     const {data}=res
     vocationDirection.push(...data)
     formState.direction=vocationDirection[0].name
   })
+  if(EditId){
+    // 复用 multiplexing  courseDetail
+    multiplexing()
+  }
 })
 
 </script>

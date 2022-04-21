@@ -428,7 +428,9 @@ const getChaptersTree=()=>{
   })
 }
 onMounted(() => {
-  getChaptersTree()
+  if(courseId){
+    getChaptersTree()
+  }
 });
 </script>
 
