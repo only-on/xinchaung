@@ -18,10 +18,24 @@
   <div class="leftContent" v-if="contentShow">
     <guide v-if="lastKey == 'guide'"></guide>
     <note v-if="lastKey == 'note'"></note>
-    <report v-if="lastKey == 'report'"></report>
+    <!-- <report v-if="lastKey == 'report'"></report> -->
     <questionsAndAnswers v-if="lastKey == 'question'"></questionsAndAnswers>
     <create-post></create-post>
+    <div class="shouqi pointer" @click="open()"></div>
   </div>
+  <a-modal
+    v-model:visible="contentModal"
+    :width="1000"
+    :footer="false"
+    :maskClosable="false"
+    title=""
+  >
+    <component
+      :is="componentList[lastKey]"
+      ref="leftContentEl"
+      v-model:visible="contentShow"
+    ></component>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -50,6 +64,7 @@ const navData = [
   { name: "报告", key: "report", icon: "icon-baogao" },
   { name: "问答", key: "question", icon: "icon-wenda" },
 ];
+const componentList = {report}
 const currentNavKey = ref("");
 let lastKey = ref(navData[0].key);
 const contentShow = ref(false);
@@ -67,8 +82,23 @@ const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   : (getMenuRole(role as any, "vnc") as any);
 console.log(roleArry.includes("note"));
 
-function open(key: string) {
+const contentModal = ref(false)  // 报告modal
+function open(key?: string) {
+  if (!key || currentNavKey.value === key) {
+    contentShow.value = false
+    leftWidth.value = 70;
+    rightWidth.value = window.innerWidth - leftWidth.value;
+    currentNavKey.value = "";
+    return
+  }
   lastKey.value = key;
+  if (key === 'report') {
+    contentShow.value = false
+    contentModal.value = true
+    leftWidth.value = 70;
+    rightWidth.value = window.innerWidth - leftWidth.value;
+    return
+  }
   if (currentNavKey.value != key) {
     contentShow.value = true;
     if (leftWidth.value == 70) {
@@ -78,11 +108,6 @@ function open(key: string) {
     } else {
     }
     currentNavKey.value = key;
-  } else {
-    contentShow.value = false;
-    leftWidth.value = 70;
-    rightWidth.value = window.innerWidth - leftWidth.value;
-    currentNavKey.value = "";
   }
 }
 </script>
@@ -113,6 +138,30 @@ function open(key: string) {
     word-break: break-all;
     white-space: normal;
     position: relative;
+    .shouqi {
+      height: 159px;
+      width: 10px;
+      background: #e9e9e9;
+      border-radius: 4px 0px 0px 4px;
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      margin-top: -80px;
+      &::before {
+        content: "";
+        display: inline-block;
+        width: 0;
+        height: 0;
+        border: 4px solid rgba(0, 0, 0, 0.45);
+        border-top-color: transparent;
+        border-left-color: transparent;
+        border-bottom-color: transparent;
+        position: absolute;
+        top: 50%;
+        margin-top: -2px;
+        right: 3px;
+      }
+    }
   }
 }
 </style>

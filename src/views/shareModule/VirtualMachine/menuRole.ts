@@ -22,20 +22,20 @@
  */
 const menuRole= {
     vnc:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
     },
     ssh:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
     },
     cmd:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
     },
     task:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
     },
     webide:{
         4:['guide','note','report','question','delayed','end'],
@@ -55,20 +55,20 @@ const menuRole= {
     },
     studyType:{
         test:{
-            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
             webide:['guide','question','end'],
             jupyter:['guide','question','end'],
             document:['guide','question','end'],
             video:['guide','question','end'],
         },
         recommend:{
-            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
-            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','cpoy','record','share','end','tools'],
+            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
+            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','end','tools'],
             webide:['guide','question','end'],
             jupyter:['guide','question','end'],
             document:['guide','question','end'],
@@ -81,7 +81,7 @@ type taskType="vnc"|"ssh"|"cmd"|"task"|"webide"|"jupyter"|"document"|"video"
 
 type studyType="test"|"recommend"
 
-export type menuTypeArr=['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','cpoy','record','share','help','end','tools']
+export type menuTypeArr=['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools']
 
 /**
  * @description 获取具有权限的按钮

@@ -102,7 +102,7 @@
             <li
               class="pointer"
               @click="list.function"
-              v-if="list.key == 'colseOrStart'"
+              v-if="list.key == 'closeOrStart'"
               :class="roleArry.includes(list.key as any)?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
@@ -123,7 +123,7 @@
             </li>
             <li
               v-else-if="
-                list.name && !['record', 'colseOrStart'].includes(list.key)
+                list.name && !['record', 'closeOrStart'].includes(list.key)
               "
               class="pointer"
               @click="list.function"
@@ -524,97 +524,68 @@ let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
 
 // 非响应式
 let historyLength = history.length;
-const toolData =
-  role == 3 || role == 5
-    ? [
-        {
-          icon: "icon-quanping",
-          name: "开启 / 全屏",
-          function: fullScreen,
-          key: "full",
-        },
-        {
-          icon: "icon-guanbi1",
-          name: "",
-          function: colseOrStart,
-          key: "colseOrStart",
-        },
-        {
-          icon: "icon-zhongzhi",
-          name: "重置",
-          function: resetVm,
-          key: "reset",
-        },
-        // 复制 / 粘贴
-        {
-          icon: "icon-fuzhiniantie",
-          name: "选中粘贴",
-          function: copyPaste,
-          key: "cpoy",
-        },
-      ]
-    : [
-        {
-          icon: "icon-quanping",
-          name: "开启 / 全屏",
-          function: fullScreen,
-          key: "full",
-        },
-        {
-          icon: "icon-baocun",
-          name: "保存进度",
-          function: saveKvm,
-          key: "save",
-        },
-        {
-          icon: "icon-guanbi1",
-          name: "",
-          function: colseOrStart,
-          key: "colseOrStart",
-        },
-        {
-          icon: "icon-zhongzhi",
-          name: "重置",
-          function: resetVm,
-          key: "reset",
-        },
-        {
-          icon: "icon-shangchuan",
-          name: "上传文件",
-          function: upload,
-          key: "upload",
-        },
-        {
-          icon: "icon-xiazai",
-          name: "下载文件",
-          function: download,
-          key: "download",
-        },
-        {
-          icon: "icon-fuzhiniantie",
-          name: "选中粘贴",
-          function: copyPaste,
-          key: "copy",
-        },
-        {
-          icon: "icon-kaishijieshuluzhi",
-          name: `录制`,
-          function: startEndRecord,
-          key: "record",
-        },
-        {
-          icon: "icon-gongxiangzhuomian",
-          name: "桌面共享",
-          function: shareDesktop,
-          key: "share",
-        },
-        {
-          icon: "icon-yuanchengxiezhu",
-          name: "请求老师远程协助",
-          function: remoteAssist,
-          key: "help",
-        },
-      ];
+const toolData = [
+  {
+    icon: "icon-quanping",
+    name: "开启 / 全屏",
+    function: fullScreen,
+    key: "full",
+  },
+  {
+    icon: "icon-baocun",
+    name: "保存进度",
+    function: saveKvm,
+    key: "save",
+  },
+  {
+    icon: "icon-guanbi1",
+    name: "",
+    function: colseOrStart,
+    key: "closeOrStart",
+  },
+  {
+    icon: "icon-zhongzhi",
+    name: "重置",
+    function: resetVm,
+    key: "reset",
+  },
+  {
+    icon: "icon-shangchuan",
+    name: "上传文件",
+    function: upload,
+    key: "upload",
+  },
+  {
+    icon: "icon-xiazai",
+    name: "下载文件",
+    function: download,
+    key: "down",
+  },
+  {
+    icon: "icon-fuzhiniantie",
+    name: "选中粘贴",
+    function: copyPaste,
+    key: "copy",
+  },
+  {
+    icon: "icon-kaishijieshuluzhi",
+    name: `录制`,
+    function: startEndRecord,
+    key: "record",
+  },
+  {
+    icon: "icon-gongxiangzhuomian",
+    name: "桌面共享",
+    function: shareDesktop,
+    key: "share",
+  },
+  {
+    icon: "icon-yuanchengxiezhu",
+    name: "请求老师远程协助",
+    function: remoteAssist,
+    key: "help",
+  },
+];
 const toolList = toolData;
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)

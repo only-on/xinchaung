@@ -218,6 +218,7 @@ export default defineComponent({
     const opType = querys.opType;
     const taskId = querys.taskId;
     const routerQuery = querys.routerQuery;
+    const experType = querys.experType
     let topoinst_id = "";
     let topoinst_uuid = "";
     // const taskId = 534341;
@@ -578,6 +579,7 @@ export default defineComponent({
         type: type,
         taskId: taskId,
         topoinst_id: topoinst_id,
+        experType
       };
 
       setTimeout(() => {

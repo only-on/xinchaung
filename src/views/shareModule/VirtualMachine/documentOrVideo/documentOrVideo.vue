@@ -32,6 +32,7 @@ type TvmQuery = {
   type: TStudyType;
   topoinst_id: string;
   routerQuery: string;
+  experType: number
 };
 const route = useRoute();
 const router = useRouter();
@@ -42,6 +43,7 @@ let {
   opType, // 实验学习类型
   taskId, // 实验id
   type, // 是实验还是课程
+  experType,
 }: TvmQuery = vmQuery;
 
 const baseInfo: any = inject("baseInfo", ref({}));
@@ -68,6 +70,7 @@ function getVmBase() {
       opType: opType,
       type: type,
       taskId: taskId,
+      experType
     };
     getVmBaseInfo(params).then((res: any) => {
       baseInfo.value = res.data;

@@ -52,6 +52,7 @@ import {
   nextTick,
   createVNode,
   provide,
+  inject,
 } from "vue";
 import empty from "src/components/Empty.vue";
 import Forumn from "src/views/teacherModule/teacherForum/components/Forumn.vue";
@@ -138,6 +139,15 @@ const deleteForum = (id: number) => {
   });
 }
 provide("deleteForum", deleteForum)
+
+const leftWidth: Ref<number> = inject("leftWidth", ref(70));
+console.log(leftWidth.value)
+// 点击展开全文 底部收起样式
+let bottomStyle = reactive({
+  bottom: "80px",
+  width: (Number(leftWidth.value)-70-20)+"px",
+});
+provide("bottomStyle", bottomStyle);
 
 onMounted(() => {
   getForumnList();

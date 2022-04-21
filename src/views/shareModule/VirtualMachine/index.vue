@@ -85,7 +85,8 @@ import {
 
 const route = useRoute();
 const router = useRouter();
-const { type, opType, taskId, topoinst_id, experType } = route.query;
+const { type, opType, taskId, topoinst_id } = route.query;
+const experType = Number(route.query.experType)
 console.log(experType)
 // 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
 const componentList = ['', vnc, webide, webide, jupyter, vnc, documentOrVideo, documentOrVideo]

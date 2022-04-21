@@ -17,7 +17,7 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, toRefs } from "vue";
 import { createExamples } from "src/utils/enterVmFront";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute} from "vue-router";
 import { wsConnect, disconnect } from "src/request/websocket";
 import { openVm, IEnvirmentsParam,toVmConnect } from "src/utils/vncInspect";
 
@@ -27,11 +27,14 @@ type TReactiveData = {
 export default defineComponent({
   setup() {
     const router = useRouter();
+    const route = useRoute();
+    const experType = Number(route.query.experType)
     const reactiveData: TReactiveData = reactive({
       param: {
         type: "train",
         opType: "start",
         taskId: 50227,
+        experType
       },
     });
     const connect = ref({});

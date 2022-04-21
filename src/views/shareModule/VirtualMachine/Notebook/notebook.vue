@@ -61,6 +61,7 @@ export default defineComponent({
       type,
       topoinst_id,
       routerQuery,
+      experType,
     }: any = vmQuery;
     const data = reactive(navData);
     const wsVmConnect = ref(null);
@@ -125,6 +126,7 @@ export default defineComponent({
         type: type,
         opType: opType,
         taskId: taskId,
+        experType
       };
       getVmBaseInfo(params).then((res: any) => {
         console.log(res);
