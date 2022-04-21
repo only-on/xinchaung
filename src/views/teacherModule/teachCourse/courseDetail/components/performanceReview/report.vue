@@ -1,7 +1,7 @@
 <template>
   <a-modal
     class="report-modal"
-    title="批阅实验报告"
+    :title="isEdit?'编辑批阅实验报告':'批阅实验报告'"
     v-model:visible="reportVisible"
     @cancel="colseModal"
     :footer="false"
@@ -11,8 +11,8 @@
   >
     <div class="report-wrap">
       <div class="report-template">
-        <!-- <onLineReport></onLineReport> -->
-        <div v-html="data.html_content"></div>
+        <onlinePreview :content="data.json_content"></onlinePreview>
+        <!-- <div v-html="data.html_content"></div> -->
       </div>
       <div class="action-footer">
         <label><i>*</i>评分</label>
@@ -25,7 +25,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
-// import onLineReport from "src/components/report/onlineReport.vue"
+import onlinePreview from "src/components/report/onlinePreview.vue"
 import { message } from "ant-design-vue";
 
 // props传值
@@ -48,7 +48,6 @@ const props = defineProps({
 
 // emit方法
 const emit = defineEmits(["update:visible", "update:data",'submit']);
-
 // 关闭弹窗
 function colseModal() {
   emit("update:visible", false);
@@ -78,6 +77,7 @@ function submit() {
     box-shadow: 0px -3px 6px 0px var(--black-15);
     height: 70px;
     align-items: center;
+    margin-top: 20px;
     i {
       font-style: normal;
       margin-right: 2px;
@@ -96,6 +96,8 @@ function submit() {
     padding: 0;
     .report-template{
       padding:0 40px 0 40px;
+      max-height: 700px;
+      overflow-y: auto;
     }
   }
   // }
