@@ -303,19 +303,24 @@ var ExperimentsAndMaterialsObj=reactive<any>({
   activeExperiments:{},
   activeMaterials:[]
 })
-var editChartVisible: Ref<boolean> = ref(false);
 // 新建章节
 var Visible: Ref<boolean> = ref(false);
-const formRef = ref();
+//  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
+const activeChapterId:Ref<number>=ref(0)
+const selectChaptert=(val:any)=>{
+  console.log('选中的章节',val)
+  ExperimentsAndMaterialsObj.activeExperiments={...val.contents}
+  state.activeChapter={...val}
+  activeChapterId.value=val.id
+}
 // 选中章节下实验
 const selectExperiment=(val:any)=>{
   console.log(val)
   state.activeExperimentObj={...val}
   // 获取实验详情
   if(!val.TeachingAids){
-    // getExperimentGuide(val.id)
+    getExperimentGuide(val.id)
   }
-  
 }
 const getExperimentGuide=(id:number)=>{
   experimentGuideLoading.value=true
@@ -330,16 +335,8 @@ const experimentGuideLoading: Ref<boolean> = ref(false);
 // 重新选择章节教辅
 const Reselection=()=>{
   // Visible.value=true
-  editChartVisible.value=true
 }
-//  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
-const activeChapterId:Ref<number>=ref(0)
-const selectChaptert=(val:any)=>{
-  console.log('选中的章节',val)
-  ExperimentsAndMaterialsObj.activeExperiments={...val.contents}
-  state.activeChapter={...val}
-  activeChapterId.value=val.id
-}
+
 const viewReport=()=>{
   Visible.value=false
 }

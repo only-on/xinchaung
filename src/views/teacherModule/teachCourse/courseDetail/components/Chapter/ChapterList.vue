@@ -118,7 +118,7 @@ const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
   Editable?:string
-  courseId:number  
+  courseId?:number  
   // knowledge: any;
   // words:any
 }
@@ -147,8 +147,8 @@ var state:any=reactive({
 })
 // 已选的实验和教辅资源
 var ExperimentsAndMaterialsObj=reactive<any>({
-  activeExperiments:{},
-  activeMaterials:[]
+  activeExperiments:[],
+  activeMaterials:{}
 })
 
 const emit = defineEmits<{
@@ -252,6 +252,7 @@ const selectChaptert=(val:any)=>{
   console.log('章节',val)
   // val.openItem=!val.openItem
   state.activeTab.chapterId=val.id
+  ExperimentsAndMaterialsObj.activeExperiments=val.contents
   emit('selectChaptert',val)
 }
   // 选中章节下实验

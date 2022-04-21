@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div v-if="docOrMp4Drawer.visible">
     <a-drawer
-    class="ExperimentsAndMaterials"
-    :destroyOnClose="true"
-    :closable="false"
-    placement="right"
-    :visible="docOrMp4Drawer.visible"
-    width="640"
-    @close="closeDrawerDoc"
+      class="ExperimentsAndMaterials"
+      :destroyOnClose="true"
+      :closable="false"
+      placement="right"
+      :visible="true"
+      width="640"
+      @close="closeDrawerDoc"
   >
   <div class="select flexCenter">
     <div class="flexCenter type">
@@ -58,6 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectList: () => [],
   activeFile: () => {},
 });
+console.log(props)
 const emit = defineEmits<{
   (e: "selectDocOrMp4File", val: any): void;
   (e: "closeDrawerDoc"): void;

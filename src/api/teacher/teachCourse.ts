@@ -24,7 +24,7 @@ export default {
   // 保存/更新实验到章节  
   addCoursesChapter:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/content`, method: "POST",dataType: "json"},
   // 获取章节的实验指导 /api/course/contents/{实验ID}/guidance
-  getExperimentGuide:{ url: `/api/course/courses/{experimentId}`, method: "GET"},
+  getExperimentGuide:{ url: `/api/course/contents/{experimentId}/guidance`, method: "GET"},
   // 保存教辅资料到章节
   addCoursesChapterAids:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/dataset`, method: "POST",dataType: "json"},
   // 删除章节下实验   
