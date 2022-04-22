@@ -298,6 +298,8 @@ const tabelData = ref([]);
 
 // 获取数据
 function getTeacherEvaluates() {
+  tabelData.value=[]
+  total.value=0
   Object.assign(params.value, { taskId: experitId.value });
   scoreApi.getTeacherEvaluatesApi({ param: params.value }).then((res: any) => {
     tabelData.value = res.data.list;
@@ -471,7 +473,7 @@ function submitReport() {
 }
 // 选择tree章节
 function selectExperiment(val: any) {
-  if (!experitId.value||!experitId.value==val.id) {
+  if (!experitId.value||experitId.value!=val.id) {
     experitId.value = val.id;
     getTeacherEvaluates();
   }
