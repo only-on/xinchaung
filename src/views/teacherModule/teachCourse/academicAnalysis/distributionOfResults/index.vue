@@ -9,7 +9,7 @@
            </span>
        </div>
        <div class="chart">
-        <div id="line-chart"></div>
+        <div :id="lineChart" class="line-chart"></div>
         <div id="pie-chart">
             <div class="pie-chart-row">
                 <div class='pie-item'>
@@ -38,9 +38,10 @@
 <script lang="ts" setup>
 import distributionOfResults from './distributionOfResults/index.vue'
 import * as echarts from 'echarts';
+import { ref, toRefs, onMounted,reactive} from "vue";
 import { Progress } from 'ant-design-vue';
-import { onMounted } from '@vue/runtime-core';
 import leftPanelVue from 'src/views/shareModule/VirtualMachine/VmLayout/leftPanel.vue';
+import { watch } from 'fs';
 
 interface Props {
   statisData:any
@@ -48,8 +49,10 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   statisData: () => {},
 })
-var option:any={};
-option = {
+var lineChart:any=ref('')
+lineChart.value='line-chart'+Math.random()
+var option:any=ref('');
+option.value = {
   title: {
     text: ''
   },
@@ -111,7 +114,7 @@ option = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.ExperimentalReportDistributionOfScores
+      data:props.statisData?.experimentalReportDistributionOfScores
     },
     {
       name: '自动评分',
@@ -123,7 +126,7 @@ option = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.automaticScoringCorrectRate
+      data:props.statisData?.automaticScoringDistributionOfScores
     },
     {
       name: '随测',
@@ -140,9 +143,9 @@ option = {
   ]
 };
 onMounted(()=>{
-    var chartDom:any = document.getElementById('line-chart');
+    var chartDom:any = document.getElementById(lineChart.value);
     var myChart = echarts.init(chartDom);
-    option && myChart.setOption(option);
+    myChart.setOption(option.value);
 })
 
 </script>
@@ -157,7 +160,7 @@ onMounted(()=>{
     .chart{
         display: flex;
     }
-    #line-chart{
+    .line-chart{
         width: 500px;
         height: 300px;
     }

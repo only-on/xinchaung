@@ -10,7 +10,7 @@
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData" :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -27,7 +27,7 @@
                     </div>
                 </div>
                 <a-table
-    rowKey='id'
+      rowKey='username'
       :columns="columns"
       :data-source="data"
       :pagination="
@@ -87,34 +87,34 @@ const tableData: any = reactive({
 });
 columns.value = [
   {
-    title: "学好",
-    dataIndex: "user.username",
-    key: "user.username",
+    title: "学号",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "userProfile.name",
-    key: "userProfile.name",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "班级",
-    dataIndex: "userProfile.gender",
-    key: "userProfile.gender",
+    dataIndex: "className",
+    key: "className",
   },
   {
     title: "成绩",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "score",
+    key: "score",
   },
   {
     title: "自动评分得分",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "automaticScore",
+    key: "automaticScore",
   },
   {
     title: "报告得分",
-    dataIndex: "score",
-    key: "score",
+    dataIndex: "reportScore",
+    key: "reportScore",
   },
 ];
 function handleChange(){
@@ -140,21 +140,6 @@ function getStugrandsList(){
   })
 }
 function getStuStatis(){
-  // statisData.value={
-  //       minScore: 10,//最低分
-  //       avgScore: 50,//平均分
-  //       maxScore: 100,//最高分
-  //       "distributionOfScores": {//区间成绩人数分布
-  //           "0 ~ 60": 10,
-  //           "60 ~ 70": 30,
-  //           "70 ~ 80": 60,
-  //           "80 ~ 90": 20,
-  //           "90 ~ 100": 10
-  //       },
-  //       "ExperimentalReportSubmissionRate": 50,//实验报告提交率
-  //       "inClassTestAccuracyRate": 45,//随测正确率
-  //       "automaticScoringCorrectRate": 37 //自动评测正确率
-  //   }
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
       if(res.code==1){
         statisData.value=res.data

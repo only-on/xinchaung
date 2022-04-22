@@ -4,10 +4,10 @@
       <div class="header-left">
         <a-form layout="inline">
           <a-form-item label="账号">
-            <a-input></a-input>
+            <a-input v-model:value='params.username'  @keyup.enter="onSearch"></a-input>
           </a-form-item>
           <a-form-item label="姓名">
-            <a-input></a-input>
+            <a-input v-model:value='params.name'  @keyup.enter="onSearch"></a-input>
           </a-form-item>
         </a-form>
       </div>
@@ -19,6 +19,7 @@
     <a-table
       :columns="columns"
       :data-source="data"
+      rowKey='id'
       :pagination="
         tableData.total > 10
           ? {
@@ -33,7 +34,7 @@
           : false
       "
       :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
+        selectedRowKeys:tableData.selectedRowKeys,
         onChange: onSelectChange,
       }"
     >
@@ -46,16 +47,11 @@
         />
       </template>
       <template #action="{ record }">
-        <i
-          class="caozuo iconfont icon-bianji"
-          @click="editCard(record)"
-          title="更新"
-        ></i>
-        <i
-          class="caozuo iconfont icon-shanchu"
-          @click="delateCard(record.id)"
-          title="删除"
-        ></i>
+        <div class="action">
+          <span class="delete" @click="delateCard(record.id)">删除</span>
+          <span class="caozuo" @click="editCard(record)"
+          title="更新">编辑</span>
+        </div>  
       </template>
     </a-table>
     <a-modal v-model:visible="visible" title='添加助教' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
@@ -110,6 +106,7 @@ const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
 const visible:any=ref(false)
+const formRef:any=ref('formRef')
 columns.value = [
   {
     title: "账号",
@@ -156,7 +153,13 @@ const tableData: any = reactive({
   total: 0,
   page: 1,
   limit: 10,
+  selectedRowKeys:[]
 });
+const tableSelectedRowKeys:any=ref()
+const params:any=reactive({
+  username:'',
+  name:''
+})
 const editId:any=ref('')
 var formState:any=reactive({
       username:'',
@@ -189,13 +192,10 @@ var formState:any=reactive({
       phone:[{pattern:/^(1(3|4|5|6|7|8|9)|9(2|8))\d{9}$/, message: '请输入正确的手机号',trigger: 'blur'}]  
     }
 function handleChange() {}
-function onSearch(value: any) {
-  console.log(value);
-}
 function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function onSelectChange(selectedRowKeys: any) {
-  console.log(selectedRowKeys);
+  tableData.selectedRowKeys=selectedRowKeys
 }
 function addHelp(){
   visible.value=true;
@@ -269,7 +269,12 @@ function delateCard(val: number) {
       });
 }
 function submit(){
-  const params={
+  formRef.value.validate().then(()=>{
+    if (formState.password_hash !== formState.repassword) {
+          message.warn("密码输入不一致");
+          return;
+        }
+    const params={
     Assistant:{
       username:formState.username,
       email:formState.email,
@@ -282,18 +287,32 @@ function submit(){
       phone:formState.phone
     }
   }
-  http.addAssistanter({param:params}).then((res:any)=>{
+  if(editId.value){
+    http.updateAssistant({ urlParams: { id: editId.value }, param:params}).then((res:any)=>{
+      if(res){
+        visible.value=false;
+        editId.value=''
+        getAssistantList()
+      }
+    })
+  }else{
+    http.addAssistanter({param:params}).then((res:any)=>{
       if(res){
         visible.value=false;
         getAssistantList()
       }
   })
+  }
+  })
+}
+function onSearch(){
+  getAssistantList()
 }
 function getAssistantList(){
   let obj = {
         query: {
-          username:'',
-          name:'',
+          username:params.username,
+          name:params.name,
         },
         page: {
           pageSize:10,
@@ -341,6 +360,17 @@ onMounted(()=>{
   }
   .ant-form-item{
     margin-bottom: 0px;
+  }
+}
+
+
+.action{
+  color: var(--primary-color);
+  >span:hover{
+    cursor: pointer;
+  }
+  .delete{
+    margin-right:10px;
   }
 }
 </style>

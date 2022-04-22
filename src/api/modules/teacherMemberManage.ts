@@ -16,7 +16,11 @@ export default {
   // 助教
   assistantList:{url:'/api/yii/assistant/index',method:'POST',dataType: 'json'},
   addAssistanter:{url:'/api/yii/assistant/create',method:'POST',dataType: 'json'},
-  deleteAssistant:{url:'/api/yii/assistant/delall',method:'POST',dataType: 'json'}
+  deleteAssistant:{url:'/api/yii/assistant/delall',method:'POST',dataType: 'json'},
+  AssistantBatchDelete: { url:`/api/yii/assistant/delall`, method: 'POST', dataType: 'json' },
+  changeStatus: { url: `/api/yii/assistant/teacher-bind`, method: "POST", dataType: 'json' },
+  getAssistantDetail: { url: `/api/yii/assistant/view?id={id}`, method: 'GET', dataType: 'json' },
+  updateAssistant: { url: `/api/yii/assistant/update?id={id}`, method: "POST", dataType: 'json' },
 }
 
 export interface IteacherMemberManage {
@@ -35,6 +39,9 @@ export interface IteacherMemberManage {
     assistantList:TFHttpSend
     addAssistanter:TFHttpSend
     deleteAssistant:TFHttpSend
+    AssistantBatchDelete:TFHttpSend
+    changeStatus:TFHttpSend
+    getAssistantDetail:TFHttpSend
 }
 
 export const MODULE_NAME = 'teacherMemberManage'
