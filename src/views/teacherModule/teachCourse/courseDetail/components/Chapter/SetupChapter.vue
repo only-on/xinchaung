@@ -115,7 +115,7 @@ const selectExperiment=(val:any)=>{
   state.activeExperimentObj={...val}
   // 获取实验详情
   if(!val.TeachingAids){
-    getExperimentGuide(val.id)
+    getExperimentGuide(val.content_id)
   }
 }
 const getExperimentGuide=(id:number)=>{
@@ -123,7 +123,7 @@ const getExperimentGuide=(id:number)=>{
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     experimentGuideLoading.value=false
     const {data}=res  
-    // state.activeExperimentObj.Newguidance=res.data
+    state.activeExperimentObj.Newguidance=res.data
     // courseDirection.push(...data)
   })
 }

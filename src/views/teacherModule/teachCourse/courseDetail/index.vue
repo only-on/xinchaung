@@ -204,7 +204,7 @@ updata({
 const route = useRoute();
 const router = useRouter();
 const http=(request as any).teachCourse
-const currentRole: number = storage.lStorage.get("role");
+const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
 const { currentTab,courseId } = route.query;
 const detailTabs=[
@@ -396,7 +396,9 @@ const getCourseSetup=()=>{
 }
 onMounted(() => {
   initData()
-  getCourseSetup()
+  if(Number(currentTab)===0 && role === 3){
+    getCourseSetup()
+  }
 });
 
 </script>

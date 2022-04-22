@@ -61,6 +61,7 @@
           </div>
         </div>
       </div>
+      <Empty v-if="!ChaptersTreeList.length" :text="'暂无章节'" />
     </a-spin>
   </div>
   <!-- 编辑章节的实验名称 -->
@@ -167,7 +168,7 @@ const getTitLeftClass=()=>{
   return str
 }
 watch(()=>{return props.ExternalOpen},(val)=>{
-  console.log(val)
+  // console.log(val)
   if(val === true){
     establishChapter(state.activeChapter)
     emit('closeExternalOpen')
@@ -421,7 +422,12 @@ const getChaptersTree=()=>{
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
           // v.list.push(i)
         }):''
-        v.list=v.list.concat(v.resource,v.contents)
+        // v.list=v.list.concat(v.resource,v.contents)
+        if(props.Editable === 'readOnly'){ //Editable:'readOnly',  
+          v.list=v.list.concat(v.contents)
+        }else{
+          v.list=v.list.concat(v.resource,v.contents)
+        }
         if(state.activeTab.chapterId && state.activeTab.chapterId === v.id){
           item={...v}
           index=k

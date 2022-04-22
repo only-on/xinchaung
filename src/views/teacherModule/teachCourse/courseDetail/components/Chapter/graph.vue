@@ -19,13 +19,15 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref,nextTick} from "vue";
 import { Knowledge,HotWords} from './echartsOption';
+import request from 'src/api/index'
+const http=(request as any).teachCourse
 interface Props {
-  knowledge?: any;
-  words?:any
+  courseId: number;
 }
 const props = withDefaults(defineProps<Props>(), {
-  knowledge: ()=> [],  //  知识点
-  words: ()=> [],      // 热词
+  // knowledge: ()=> [],  //  知识点
+  // words: ()=> [],      // 热词
+  courseId: 0,
 });
 var Visible:Ref<boolean>=ref(false)
 function viewAtlas(){
@@ -35,12 +37,20 @@ function viewAtlas(){
     Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
   })
 }
+const courseknowledge=()=>{
+  // list.length=0
+  http.courseknowledge({urlParams: {courseId:props.courseId}}).then((res: any) => {
+    const {data}=res.data
+    // list.push(...data)
+  });
+}
 onMounted(() => {
-  // initData() HotWords
+  // initData() HotWords  courseknowledge
   nextTick(()=>{
     let data={}
     HotWords(document.getElementById("graph") as HTMLDivElement,data)
   })
+  courseknowledge()
 });
 </script>
 

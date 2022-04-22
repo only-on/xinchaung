@@ -7,9 +7,9 @@
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent" v-if="role === 4 || (currentTab === '1' && role === 3)">
-      <Ranking v-if="role === 4" :rank="[]"></Ranking>
-      <graph :knowledge="[]" :words="[]"></graph>
-      <relevantExpert :list="[]"></relevantExpert>
+      <Ranking v-if="role === 4" :rank="[]" />
+      <graph :courseId="Number(courseId)" />
+      <relevantExpert :courseId="Number(courseId)" />
     </div>
   </div>
 </template>
@@ -65,16 +65,9 @@ const initData = () => {
   //   totalCount.value = page.totalCount
   // })
 };
-const courseExperimentRecommend=()=>{
-  http.courseExperimentRecommend({urlParams: {courseId:courseId}}).then((res: any) => {
-       
 
-  });
-}
 onMounted(() => {
-  if(Number(currentTab) === 1){
-    courseExperimentRecommend()
-  }
+
 });
 </script>
 

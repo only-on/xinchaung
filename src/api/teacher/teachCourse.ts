@@ -53,6 +53,8 @@ export default {
   courseDetail:{ url: `/api/course/courses/{courseId}`, method: "GET",dataType: "json"},
   // 课程相关实验推荐
   courseExperimentRecommend:{ url: `/api/course/courses/{courseId}/contents/recommend`, method: "GET"},
+  // 当前课程知识点
+  courseknowledge:{ url: `/api/course/courses/{courseId}/knowledge-points`, method: "GET"},
   
   // 课程复用  
   multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},
