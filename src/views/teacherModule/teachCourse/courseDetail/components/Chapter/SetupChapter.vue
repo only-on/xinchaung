@@ -24,7 +24,7 @@
             </div>
             <div class="Lesson flexCenter" @click="lessonPreparation">
               <span class="iconfont icon-jitibeike"></span>
-              <span>开始备课</span>
+              <span>{{openVncState ? '准备中...' : '开始备课'}}</span>
             </div>
           </div>
         </div>
@@ -56,12 +56,14 @@ import { Modal, message } from "ant-design-vue";
 import Empty from "src/components/Empty.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
+import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
+const routeQuery = route.query
 const { currentTab,course_id } = route.query;
 interface Props {
   // chapterList:any
@@ -135,8 +137,52 @@ const Reselection=()=>{
 const viewReport=()=>{
   Visible.value=false
 }
+
+// 开始备课
+const openVncState = ref(false)
 const lessonPreparation=()=>{
-  
+  if (openVncState.value) return
+  console.log(state.activeExperimentObj)
+  const {id, task_type} = state.activeExperimentObj
+  openVncState.value = true
+  const param: any = {
+    type: "course",  // 实验
+    opType: "prepare",
+    taskId: id,
+    experType: task_type
+  };
+  // 文档视频实验
+  if (task_type === 6 || task_type === 7) {
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
+  }
+  // if (task_type === 3 && programing_type === 1) {
+  if (task_type === 3) {
+    // webide
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
+  }
+  toVmConnect(router, param, routeQuery).then((res: any) => {
+    openVncState.value = false
+  })
 }
 
 onMounted(() => {

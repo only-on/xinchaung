@@ -66,7 +66,7 @@ let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
 const route = useRoute();
 const router=useRouter()
-const { opType, type, taskId, topoinst_id, connection_id } = route.query;
+const { opType, type, taskId, topoinst_id, connection_id, experType } = route.query;
 const currentOption = inject(
   "currentOption",
   ref({ password: "", wsUrl: "", userName: "" })
@@ -114,12 +114,12 @@ function getVmBase() {
     };
     getVmBaseInfo(params).then((res: any) => {
       baseInfo.value = res.data;
+
+      taskType.value = res.data.base_info.task_type.type;
       if (!res.data.current) {
         resolve();
         return;
       }
-
-      taskType.value = res.data.base_info.task_type.type;
 
       if (!taskType.value) {
         use_time.value = res.data.current.used_time;
@@ -332,7 +332,7 @@ function settingCurrentVM(data: any) {
   currentOption.value.wsUrl =
     getVmConnectSetting.VNCPROTOC +
     "://" +
-    data.base_ip +
+    data.host_ip +
     ":" +
     getVmConnectSetting.VNCPORT +
     "/websockify?vm_uuid=" +
