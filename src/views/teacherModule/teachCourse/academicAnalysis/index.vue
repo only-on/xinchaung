@@ -8,9 +8,10 @@
          /> -->
          <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
        </div>
+       <!-- v-if="statisData" -->
        <div class="analy-right">
             <div>
-                <distributionOfResults v-if="statisData" :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData"  :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -80,6 +81,18 @@ option.value = [
 const columns: any = ref();
 const data: any = ref([]);
 const statisData:any=ref()
+statisData.value={
+          maxScore:0,
+          statisData:0,
+          avgScore:0,
+          ExperimentalReportSubmissionRate:'',
+          inClassTestAccuracyRate:'',
+          automaticScoringCorrectRate:'',
+          finalScoreDistributionOfScores:[],
+          experimentalReportDistributionOfScores:[],
+          automaticScoringDistributionOfScores:[],
+          inClassTestDistributionOfScores:[]
+        }
 const tableData: any = reactive({
   total: 0,
   page: 1,

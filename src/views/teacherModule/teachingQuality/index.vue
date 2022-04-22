@@ -13,7 +13,16 @@
                    <span class="text-name">岗位能力分析</span>
                    <span class="tit">岗位对应的课程成绩分布情况</span>
                </div>
-               <div id="capabilityAnalysis"></div>
+               <a-tabs
+                :tab-position="mode"
+                :style="{ height: '45px' }"
+                @prevClick="callback"
+                @nextClick="callback"
+                v-model:activeKey="activeKey"
+                >
+                    <a-tab-pane v-for="i in 30" :key="i" :tab="`Tab-${i}`"></a-tab-pane>
+                </a-tabs>
+                <div id="capabilityAnalysis"></div>
            </div>
        </div>
        <div class="banner-2">
@@ -92,7 +101,12 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-const modules:any=ref('')
+const mode = ref('top');
+const activeKey = ref('1');
+function callback(val: string){
+    console.log(val);
+};
+const modules:any=ref([])
 function slideChangeTransitionEnd(){
 
 }

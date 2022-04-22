@@ -96,7 +96,9 @@ let option1:any = {
       data: ['']
     },
     radar: {
-      // shape: 'circle',
+    center: ["55%", "43%"],
+    radius: ["0%", "60%"],
+      nameGap:15,
       indicator: [
         { name: '课程1', max: 6500 },
         { name: '课程2', max: 16000 },
@@ -112,7 +114,6 @@ let option1:any = {
         }
       }
     },
-
     series: [
       {
         name: '',
@@ -129,6 +130,7 @@ let option1:any = {
     ]
   };
 let option2:any = {
+    color:['#FF9A56','#33D0DB','#718CF3','#FF7B7B','#FFCE2B','#FF9A56'],
     series: [
       {
         type: 'treemap',
@@ -163,29 +165,16 @@ let option2:any = {
               }
             ]
           }
-        ]
+        ],
+        top:'10',
+        bottom:'70',
+        breadcrumb: {
+          show: false
+        }
       }
     ]
   };
   let option3:any = {
-    title: [
-      {
-        text: 'Michelson-Morley Experiment',
-        left: 'center'
-      },
-      {
-        text: 'upper: Q3 + 1.5 * IQR \nlower: Q1 - 1.5 * IQR',
-        borderColor: '#999',
-        borderWidth: 1,
-        textStyle: {
-          fontWeight: 'normal',
-          fontSize: 14,
-          lineHeight: 20
-        },
-        left: '10%',
-        top: '90%'
-      }
-    ],
     dataset: [
       {
         // prettier-ignore
@@ -215,9 +204,10 @@ let option2:any = {
       }
     },
     grid: {
+      top:'5%',
       left: '10%',
       right: '10%',
-      bottom: '15%'
+      bottom: '30%'
     },
     xAxis: {
       type: 'category',
@@ -230,9 +220,19 @@ let option2:any = {
         show: false
       }
     },
+    dataZoom: [
+      {
+        type: 'slider',
+        show:true,
+        xAxisIndex: 0,
+        top:'80%',
+        filterMode: 'none',
+        height:10,
+      },
+    ],
     yAxis: {
       type: 'value',
-      name: 'km/s minus 299,000',
+      name: '',
       splitArea: {
         show: true
       }
@@ -240,11 +240,13 @@ let option2:any = {
     series: [
       {
         name: 'boxplot',
+        color:'#FF9544',
         type: 'boxplot',
         datasetIndex: 1
       },
       {
         name: 'outlier',
+        color:'#1CB2B3',
         type: 'scatter',
         datasetIndex: 2
       }
@@ -2007,16 +2009,9 @@ let option4:any = {
       left: 'right'
     },
     tooltip: {},
-    legend: [
-      {
-        // selectedMode: 'single',
-        data: graph.categories.map(function (a:any) {
-          return a.name;
-        })
-      }
-    ],
     animationDuration: 1500,
     animationEasingUpdate: 'quinticInOut',
+    color:['#6AC8F4','#FFB354','#FF9A56','#00CBC2','#FF7B7B'],
     series: [
       {
         name: 'Les Miserables',
@@ -2039,14 +2034,23 @@ let option4:any = {
           lineStyle: {
             width: 10
           }
-        }
+        },
+        bottom: '15%',
+        left: '5%',
+        top: '5%',
+        right: '10%',
       }
     ]
   };
 
 let option5:any= {
+  color:['#FF9A56','#33D0DB','#718CF3','#FF7B7B','#FFCE2B','#FF9A56'],
     series: {
       type: 'sankey',
+      bottom: '15%',
+      left: '5%',
+      top: '5%',
+      right: '10%',
       layout: 'none',
       emphasis: {
         focus: 'adjacency'
@@ -2102,7 +2106,11 @@ let option5:any= {
           target: 'c',
           value: 2
         }
-      ]
+      ],
+      lineStyle: {
+        color: 'source',
+        curveness: 0.5
+      },
     }
   };
   export {option,option1,option2,option3,option4,option5}
