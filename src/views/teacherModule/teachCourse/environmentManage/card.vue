@@ -156,10 +156,10 @@ function jumpHandle(list: any) {
         console.log(res);
         // openVm({type:"course",opType:"help",taskId:list.taskId})
         router.push({
-          path: "/vm/vnc",
+          path: "/vm",
           query: {
             opType: "help",
-            type: type,
+            type: "course",
             taskId: list.taskId,
             connection_id: ls.lStorage.get("user_id") + "_" + list.id,
           },

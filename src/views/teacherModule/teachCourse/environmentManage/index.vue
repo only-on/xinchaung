@@ -2,8 +2,7 @@
   <div class="env-manage">
     <div class="tree">
       <chapter-tree 
-        :chartLoading="chartLoading"
-        :chapterList="ChaptersTreeList"
+        :courseId="Number(courseId)"
         @selectExperiment="selectExperiment"
       > 
       </chapter-tree>
@@ -23,18 +22,18 @@
           <a-button type="primary" @click="visible = true">开启实验环境</a-button>
         </div>
       </div>
+      <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="env-lists">
-        <a-spin :spinning="loading" size="large" tip="Loading...">
         <!-- envListState.data -->
         <div class="env-list" v-for="v in envList" :key="v.id">
           <card :list="v" @getList="getList"></card>
         </div>
-        </a-spin>
         <!-- <Empty v-if="!envListState.data.length && !envListState.loading" /> -->
         <!-- <div v-if="!envListState.data.length && !envListState.loading" class="nodata">
           {{ noDataPrompt }}
         </div> -->
       </div>
+      </a-spin>
       <a-pagination
         v-model:current="searchInfo.page"
         :pageSize="searchInfo.limit"
@@ -90,7 +89,7 @@ let timer: NodeJS.Timer | null = null;
 const searchInfo: any = reactive({
   total: 0,
   page: 1,
-  limit: 10,
+  limit: 4,
   keyword: '',
   taskId: 0,
   type: 'course'
@@ -145,12 +144,14 @@ function getList() {
   http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IResponseData) => {
     loading.value = false;
     if (res && res.status) {
-      // let { data, page } = res.datas.data;
-      envListState.data = res.data.list;
-      console.log("envListState", envListState);
+      let { list, page } = res.data;
+      envList.push(...list);
+      console.log("envList", envList);
+      searchInfo.page = page.currentPage
+      searchInfo.total = page.totalCount
       if (envListState.data.length > 0) {
-        let isVms = envListState.data.some((item: any) => {
-          return item.vms.vms.length > 0;
+        let isVms = envList.some((item: any) => {
+          return item.vms?.vms?.length > 0;
         });
         if (isVms) {
           message.success({ content: "请求成功!", duration: 2 });
@@ -224,6 +225,7 @@ function handleOk(num: number) {
   };
   http.openEnvirment({ param: limitParams }).then((res: IBusinessResp) => {
     if (res && res.status) {
+      visible.value = false
       getList();
       message.success({ content: "请求成功!", duration: 2 });
     }
