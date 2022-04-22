@@ -271,35 +271,31 @@ function selectExperiment(a:any,v:any){
 }
 function prepare(a:any) {
   a.startup=2
-  // return
-  let param: any = {
-    type: "course",
+  const {id, task_type} = a
+  const param: any = {
+    type: "course",  // 实验
     opType: "prepare",
-    // taskId: experiment_id.value,
-    taskId:500152
+    taskId: id,
+    experType: task_type
   };
-  let task_type={
-    type:4,
-    programing_type:0
+  // 文档视频实验
+  if (task_type === 6 || task_type === 7 || task_type === 3) {
+    
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
   }
-  if (task_type.type === 4) {
-    // webide
-    if (task_type.programing_type === 1) {
-      router.push({
-        path: "/vm/ace",
-        query: {
-          type: param.type,
-          opType: param.opType,
-          taskId: param.taskId,
-          routerQuery: JSON.stringify(routeQuery),
-        },
-      });
-    } else {
-      toVmConnect(router, param, routeQuery);
-    }
-  } else {
-    toVmConnect(router, param, routeQuery);
-  }
+  toVmConnect(router, param, routeQuery).then((res: any) => {
+    a.startup=3
+  })
 }
 function ViewExperiment(a:any,v:any){
   a.openGuidance=!a.openGuidance
