@@ -34,11 +34,9 @@ onMounted(() => {
     // 获取笔记
     function getNoteContent() {
       noteApi.getNoteApi({ param: { task_id: taskId } }).then((res) => {
-        console.log(res);
         if (res?.data) {
           noteContent.value = JSON.parse(res.data);
         }
-        console.log(noteContent.value.ops);
       });
     }
 

@@ -68,20 +68,10 @@ const componentList = {report}
 const currentNavKey = ref("");
 let lastKey = ref(navData[0].key);
 const contentShow = ref(false);
-watch(
-  () => leftWidth,
-  () => {
-    console.log(leftWidth.value);
-  },
-  {
-    deep: true,
-  }
-);
+
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, "vnc", opType as any) as any)
   : (getMenuRole(role as any, "vnc") as any);
-console.log(roleArry.includes("note"));
-
 const contentModal = ref(false)  // 报告modal
 function open(key?: string) {
   if (!key || currentNavKey.value === key) {

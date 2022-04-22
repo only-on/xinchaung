@@ -140,8 +140,6 @@ function initWs() {
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
     open: () => {
       if (baseInfo.value && baseInfo.value?.current) {
-        console.log(11111);
-        
         ws.value.join(topoinst_id + "_room");
       }
       if (opType == "help") {
@@ -177,7 +175,6 @@ function initWs() {
       let regex = /\{.*?\}/g;
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
-        console.log(wsJsonData);
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {

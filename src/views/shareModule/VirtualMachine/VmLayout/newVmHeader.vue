@@ -590,17 +590,6 @@ const toolList = toolData;
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
-console.log(roleArry);
-
-watch(
-  () => vmsInfo,
-  () => {
-    console.log(vmsInfo.value);
-  },
-  {
-    deep: true,
-  }
-);
 
 // 获取随堂测试习题·
 async function getQuestionList(needs_answer: boolean = false) {
@@ -612,7 +601,6 @@ async function getQuestionList(needs_answer: boolean = false) {
   return vmApi
     .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
     .then((res: any) => {
-      console.log(res);
       oldQuizPaperList.value = res.data;
       return res.data;
     });
@@ -800,10 +788,9 @@ function fullScreen() {
 // 关机
 function colseOrStart() {
   if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
-    console.log("关机");
+   
     closeVm();
   } else {
-    console.log("开机");
     startVm();
   }
 }
@@ -815,15 +802,12 @@ async function closeVm() {
   }
   await VmOperatesHandle("closeVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "SHUTOFF";
-  console.log(vmsInfo.value.vms);
-
   isClose.value = true;
 
   message.success("操作成功");
 }
 // 开机
 async function startVm() {
-  console.log("开机");
   await VmOperatesHandle("startVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
   isClose.value = false;
@@ -842,7 +826,6 @@ async function resetVm() {
 
 // 选中粘贴
 function copyPaste() {
-  console.log("选择发送");
   novncEl.value.sendSelectContent(copyText);
   visible.value = false;
 }
@@ -882,7 +865,6 @@ function upload() {}
 function download() {}
 
 async function startEndRecord() {
-  console.log("开始录屏");
   if (isScreenRecording.value) {
     // 结束录屏
     const res: any = await VmOperatesHandle("stopRecord");
@@ -1129,7 +1111,6 @@ async function openQuizModal() {
 }
 // 提交
 function submitQuiz() {
-  console.log(quizPaperList.value);
   let params: any = {
     answer: [],
   };
@@ -1180,11 +1161,8 @@ function getChoiceAnswer(val: any) {
       })
     : [];
   let answer = "";
-  console.log(newAnswerArry);
 
   val.options.forEach((item: any, index: number) => {
-    console.log(item);
-
     if (newAnswerArry.includes(Number(item.id))) {
       answer += numToAbc(index + 1) + " ";
     }

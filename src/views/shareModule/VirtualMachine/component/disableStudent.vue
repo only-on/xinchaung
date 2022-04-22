@@ -31,7 +31,6 @@ export default defineComponent({
   props: ["visable", "data", "opType", "type", "uuid", "taskId", "current"],
   emits: ["update:visable"],
   setup(props, { emit }) {
-    console.log(props.data);
     const time = ref(30);
     let timer: any = null;
     onMounted(() => {
@@ -52,7 +51,6 @@ export default defineComponent({
       loginOut();
     }
     function ok() {
-      console.log(props.current);
       if (props.current && props.current.is_teamed == 1) {
         loginOut();
       } else {
@@ -69,7 +67,6 @@ export default defineComponent({
       (request as any).common.loginOut().then((res: any) => {
         extStorage.lStorage.clean();
         let url = `${window.origin}/site/login`;
-        console.log(url);
         window.location.href = url;
       });
     }
