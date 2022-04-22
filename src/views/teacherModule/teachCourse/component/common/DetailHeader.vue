@@ -228,6 +228,9 @@ const edit=()=>{
             border-radius: 50%;
             background-color: #ffffff;
             background-size: 100% 100%;
+            background-image: url('src/assets/images/user/teacher.png');
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
           }
           .userName{
             margin: 0 20px 0 6px;

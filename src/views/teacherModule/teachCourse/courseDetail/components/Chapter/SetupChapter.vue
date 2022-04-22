@@ -18,7 +18,7 @@
           <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
           <a-button type="primary" @click="Reselection()" v-if="state.activeExperimentObj.TeachingAids">重新选择</a-button>
           <div class="reports flexCenter" v-if="!state.activeExperimentObj.TeachingAids">
-            <div class="report flexCenter" @click="viewReport">
+            <div class="report flexCenter" @click="viewReport()">
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
@@ -41,6 +41,18 @@
       <Empty v-else :text="'暂未选择实验'" />
     </div>
   </div>
+
+  <!-- 课程设置 -->
+  <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
+    <div class="box" v-if="state.activeExperimentObj.id && !experimentGuideLoading">
+      <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
+      <onlinePreview :content="state.activeExperimentObj.Newguidance.content_template.json_content" />
+    </div>
+    <template #footer>
+      <!-- <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit> -->
+      <span></span>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -55,9 +67,10 @@ import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import ChapterList from './ChapterList.vue'
 import extStorage from "src/utils/extStorage";
 import { Modal, message } from "ant-design-vue";
-import Empty from "src/components/Empty.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
+import onlinePreview from "src/components/report/onlinePreview.vue"
+import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
@@ -102,7 +115,6 @@ var ExperimentsAndMaterialsObj=reactive<any>({
   activeMaterials:[]
 })
 // 新建章节
-var Visible: Ref<boolean> = ref(false);
 //  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
 const activeChapterId:Ref<number>=ref(0)
 const selectChaptert=(val:any)=>{
@@ -124,9 +136,8 @@ const getExperimentGuide=(id:number)=>{
   experimentGuideLoading.value=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     const {data}=res  
-    state.activeExperimentObj.Newguidance=res.data
+    state.activeExperimentObj.Newguidance=data
     experimentGuideLoading.value=false
-    // courseDirection.push(...data)
   })
 }
 const experimentGuideLoading: Ref<boolean> = ref(false);
@@ -135,10 +146,15 @@ var ExternalOpen: Ref<boolean> = ref(false);
 const Reselection=()=>{
   ExternalOpen.value=!ExternalOpen.value
 }
+var TemplatePreview: Ref<boolean> = ref(false);
 
 const viewReport=()=>{
-  Visible.value=false
+  TemplatePreview.value=true
 }
+const cancelViewReport=()=>{
+  TemplatePreview.value=false
+}
+
 
 // 开始备课
 const openVncState = ref(false)

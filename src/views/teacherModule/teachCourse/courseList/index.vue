@@ -10,7 +10,7 @@
               <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
               <div v-if="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
-                <span class="img"></span>
+                <span class="img" :class="v.is_init?'initImg':''"></span>
                 <span class="userName">{{v.is_init?'系统内置':v.user_name}}</span>
               </div>
             </div>
@@ -359,7 +359,7 @@ onMounted(() => {
           height: 100%;
           background-size: 100% 100%;
           background-repeat: no-repeat;
-          background-image: url(src/assets/images/teacherCourse/courseHeader.jpg);
+          background-image: url(src/assets/images/teacherCourse/defaultCover.jpg);
           .top{
             border-radius: 6px 0px 6px 0px;
             // opacity: .5;
@@ -384,10 +384,13 @@ onMounted(() => {
                 height: 20px;
                 border-radius: 50%;
                 // src/assets/images/admin/home/env3.png
-                background-image: url('src/assets/images/admin/home/env3.png');
+                background-image: url('src/assets/images/user/teacher.png');
                 background-size: 100% 100%;
                 background-repeat: no-repeat;
                 margin: 0 6px;
+                &.initImg{
+                  background-image: url('src/assets/images/admin/home/env3.png');
+                }
               }
               .userName{
                 flex:1;

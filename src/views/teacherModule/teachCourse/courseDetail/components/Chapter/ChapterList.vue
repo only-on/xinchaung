@@ -44,9 +44,6 @@
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
-                <!-- <div v-if="props.Editable === 'canEdit'">
-                  
-                </div> -->
                 <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
                   <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
                   <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
@@ -55,8 +52,13 @@
             </div>
             <div class="experimentGuide" v-if="a.openGuidance">
               <!-- 实验指导展示  chartLoading-->
-              {{`${state.activeExperimentObj.type}`}}
-              <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
+              <!-- {{`${state.activeExperimentObj.type}`}}
+              <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" /> -->
+              <a-spin  :spinning="experimentGuideLoading" size="large" tip="Loading...">
+                <template v-if="state.activeExperimentObj.Newguidance">
+                  <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
+                </template>
+              </a-spin>
             </div>
           </div>
         </div>
@@ -291,11 +293,23 @@ function prepare(a:any) {
   }
 }
 function ViewExperiment(a:any,v:any){
+  console.log(a)
   a.openGuidance=!a.openGuidance
   // a.type 如果是pdf 或者MP4 新开页面播放
-  if(!a.openGuidance){
+  if(a.openGuidance){
     selectExperiment(a,v)
+    getExperimentGuide(a.content_id)
   }
+}
+const experimentGuideLoading: Ref<boolean> = ref(false);
+const getExperimentGuide=(id:number)=>{
+  experimentGuideLoading.value=true
+  http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:any)=>{
+    console.log(res)
+    const {data}=res  
+    state.activeExperimentObj.Newguidance=data
+    experimentGuideLoading.value=false
+  })
 }
 // 编辑章节下素材、实验列表
 const establishChapter=(v:any)=>{

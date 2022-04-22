@@ -422,6 +422,7 @@ onMounted(() => {
     .tips{
       padding: 0 1rem;
       font-size: 12px;
+      background: linear-gradient(90deg,rgba(0,0,0,0.04), rgba(84,84,84,0.04));
     }
     .box{
       padding:1rem;
