@@ -97,7 +97,7 @@
               :class="roleArry.includes(list.key as any)?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
-              <span v-if="vmsInfo && vmsInfo?.vms">{{
+              <span v-if="vmsInfo && vmsInfo?.vms && vmsInfo?.vms.length">{{
                 vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
               }}</span>
             </li>
@@ -902,9 +902,7 @@ function shareDesktop() {
       tempVmUrl.value = "";
       shareVisible.value = true;
       let env = process.env.NODE_ENV === "development" ? true : false;
-      tempVmUrl.value = `${window.location.protocol}//${window.location.host}${
-        env ? "/#/" : "/frontend/#/"
-      }vm/vm?wsUrl=${currentOption.value.wsUrl}`;
+      tempVmUrl.value = `${window.location.protocol}//${window.location.host}/#/vm/vm?wsUrl=${currentOption.value.wsUrl}`;
     },
   });
 }
