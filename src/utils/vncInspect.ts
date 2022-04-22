@@ -371,7 +371,6 @@ function goToVm(
     query: {...paramVm, routerQuery: JSON.stringify(routerQuery)}
   })
   paramVm = {}
-  console.log(paramVm)
 }
 
 // 推荐学习实验跳转

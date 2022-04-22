@@ -202,7 +202,7 @@ const selectExperiment = (val: any) => {
 onMounted(() => {
   getChapterList()
   // getList()
-  // getLimit();
+  getLimit();
   // let timer = setInterval(() => {
   //   clearInterval(timer)
   //   getLimit()
@@ -214,8 +214,8 @@ const openEnvNum = ref()
 const limit = ref(100);
 const visible = ref(false)
 function getLimit() {
-  http.preLimit().then((res: IBusinessResp) => {
-    limit.value = res.data;
+  http.maxLimit().then((res: IBusinessResp) => {
+    limit.value = res.data.limit;
     // limit.value = 10
   });
 }
@@ -231,6 +231,7 @@ function handleOk(num: number) {
     if (res && res.status) {
       visible.value = false
       getList();
+      openEnvNum.value = 0
       message.success({ content: "请求成功!", duration: 2 });
     }
   });

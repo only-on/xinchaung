@@ -284,6 +284,8 @@ function prepare(a:any) {
     };
     prepareEnv(param).then(() =>{
       a.startup=3
+    }).catch(() => {
+      a.startup=1
     })
     return
   }
