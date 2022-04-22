@@ -24,7 +24,7 @@
         </div>
         <div class="listBox" v-if="v.openItem">
           <div class="list" v-for="(a,i) in v.list" :key="a">
-            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeTab.item.id === a.id?'ActiveItem':''">
+            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
               <div class="TitLeft flexCenter" :class="getTitLeftClass()">
                 <div class="experimentType">
                   <span v-if="a.TeachingAids">教辅</span>
@@ -261,7 +261,6 @@ const selectChaptert=(val:any)=>{
 }
   // 选中章节下实验
 function selectExperiment(a:any,v:any){
-  state.activeTab.item=a
   state.activeTab.chapterId=v.idv
   state.activeExperimentObj={...a}
   emit('selectExperiment',a)
@@ -272,6 +271,7 @@ function selectExperiment(a:any,v:any){
   // window.open(href, "_blank");
 }
 function prepare(a:any) {
+  state.activeExperimentObj={...a}
   // 准备环境
   if (a.startup === 1) {
     a.startup=2
@@ -296,6 +296,7 @@ function prepare(a:any) {
 }
 function ViewExperiment(a:any,v:any){
   console.log(a)
+  state.activeExperimentObj={...a}
   a.openGuidance=!a.openGuidance
   // a.type 如果是pdf 或者MP4 新开页面播放
   if(a.openGuidance){
