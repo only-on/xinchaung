@@ -19,59 +19,42 @@
       <span v-if="isScreenRecording" class="video-time"
         >录制时间:
         {{
-          videoTimeText?.h +
-          "时" +
-          videoTimeText?.m +
-          "分" +
-          videoTimeText?.s +
-          "秒"
+          videoTimeText?.h + "时" + videoTimeText?.m + "分" + videoTimeText?.s + "秒"
         }}</span
       >
     </div>
     <div class="right-box">
       <div
         class="ip-list"
-        :class="loading ? 'none-event':''"
+        :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('switchVm')"
       >
-        <a-select
-          class="ip-select"
-          v-model:value="currentVmIndex"
-          @change="switchVm"
-        >
+        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
             :key="index"
             :value="index"
           >
             <span class="ip-name">{{ item.host_ip }}</span>
-            <span
-              class="vm-state"
-              :class="item.status === 'ACTIVE' ? 'open' : 'close'"
-              >{{ item.status === "ACTIVE" ? "开" : "关" }}</span
-            >
+            <span class="vm-state" :class="item.status === 'ACTIVE' ? 'open' : 'close'">{{
+              item.status === "ACTIVE" ? "开" : "关"
+            }}</span>
           </a-select-option>
         </a-select>
       </div>
       <div
         class="delayed"
-        :class="loading ? 'none-event':''"
+        :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('delayed')"
       >
         <span>
-          {{
-            experimentTime?.h +
-            ":" +
-            experimentTime?.m +
-            ":" +
-            experimentTime?.s
-          }}
+          {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
         <span class="pointer" @click="delayedTime">延时</span>
       </div>
       <div
         class="vnc-change pointer"
-        :class="loading ? 'none-event':''"
+        :class="loading ? 'none-event' : ''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1"
       >
@@ -79,14 +62,18 @@
       </div>
       <div
         class="tool pointer"
-        :class="loading ? 'none-event':''"
+        :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('tools')"
         @click="visible = !visible"
       >
         <span class="iconfont icon-gongjuxiang"></span>
         <span>工具箱</span>
       </div>
-      <div class="switch pointer" :class="loading ? 'none-event':''" @click="finishExperiment">
+      <div
+        class="switch pointer"
+        :class="loading ? 'none-event' : ''"
+        @click="finishExperiment"
+      >
         <span class="iconfont icon-guanbi1"></span>
       </div>
     </div>
@@ -111,9 +98,7 @@
             >
               <span class="iconfont" :class="list.icon"></span>
               <span v-if="vmsInfo && vmsInfo?.vms">{{
-                vmsInfo?.vms[currentVmIndex].status == "ACTIVE"
-                  ? "关机"
-                  : "开机"
+                vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
               }}</span>
             </li>
             <li
@@ -126,9 +111,7 @@
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
-              v-else-if="
-                list.name && !['record', 'closeOrStart'].includes(list.key)
-              "
+              v-else-if="list.name && !['record', 'closeOrStart'].includes(list.key)"
               class="pointer"
               @click="list.function"
               :class="roleArry.includes(list.key as any)?'':'none-event'"
@@ -200,10 +183,7 @@
   >
     <template #title>选择需要替换的实验记录</template>
     <div>
-      <a-radio-group
-        @change="progressChange"
-        v-model:value="selectProgressData"
-      >
+      <a-radio-group @change="progressChange" v-model:value="selectProgressData">
         <div v-for="(key, val) in saveExperimentData" :key="val.toString()">
           <div v-for="item in saveExperimentData[val]" :key="item.id">
             <a-radio
@@ -285,7 +265,7 @@
           <template v-if="quizPaperList[currentQuizIndex].type_id == 2">
             <div class="choice-title black-004 question-title">
               {{ quizPaperList[currentQuizIndex].question
-              }}<i class="score">(10分)</i>
+              }}<i class="score">({{ quizPaperList[currentQuizIndex].score }}分)</i>
             </div>
             <a-checkbox-group
               class="question-options-wrap"
@@ -298,8 +278,7 @@
                 class="options-item"
               >
                 <a-checkbox :value="item.id"
-                  ><i>{{ numToAbc(index + 1) }}、</i
-                  >{{ item.option }}</a-checkbox
+                  ><i>{{ numToAbc(index + 1) }}、</i>{{ item.option }}</a-checkbox
                 >
               </div>
             </a-checkbox-group>
@@ -307,13 +286,11 @@
           <template v-if="quizPaperList[currentQuizIndex].type_id == 5">
             <div class="choice-title black-004 question-title">
               {{ quizPaperList[currentQuizIndex].question
-              }}<i class="score">(10分)</i>
+              }}<i class="score">({{ quizPaperList[currentQuizIndex].score }}分)</i>
             </div>
             <div class="question-options-wrap">
               <a-textarea
-                v-model:value="
-                  quizPaperList[currentQuizIndex].student_answer[0]
-                "
+                v-model:value="quizPaperList[currentQuizIndex].student_answer[0]"
                 :auto-size="{ minRows: 2, maxRows: 5 }"
               />
             </div>
@@ -322,49 +299,56 @@
       </template>
       <template v-if="[1, 2].includes(currentShowType)">
         <div>
-          <div v-if="currentShowType == 2">
-            <span>共<i>3</i>题</span><span>总分<i>100</i>分</span
-            ><span>得分<i>90</i>分</span>
+          <div v-if="currentShowType == 2" class="static-box">
+            <span>共<i>{{oldQuizPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
+            ><span>得分<i class="goal">{{goalNum}}</i>分</span>
           </div>
           <div v-for="item in quizPaperList" :key="item.id">
             <template v-if="item.type_id == 2">
-              <div class="choice-title black-004 question-title">
-                {{ item.question }}<i class="score">(10分)</i>
+              <div
+                class="choice-title black-004 question-title"
+                :class="
+                  item.answer_is_right == true || item.answer_is_right == 1
+                    ? 'correct-answer'
+                    : 'error-answer'
+                "
+              >
+                {{ item.question }}<i class="score">(({{ item.score }}分)</i>
               </div>
               <a-checkbox-group
                 class="question-options-wrap"
                 :value="item.student_answer"
                 style="width: 100%"
               >
-                <div
-                  v-for="(it, ind) in item.options"
-                  :key="it.id"
-                  class="options-item"
-                >
+                <div v-for="(it, ind) in item.options" :key="it.id" class="options-item">
                   <a-checkbox :value="Number(it.id)"
                     ><i>{{ numToAbc(ind + 1) }}、</i>{{ it.option }}</a-checkbox
                   >
                 </div>
               </a-checkbox-group>
-              <div class="right-answer">
-                正确答案：{{ getChoiceAnswer(item) }}
-              </div>
+              <div class="right-answer">正确答案：{{ getChoiceAnswer(item) }}</div>
             </template>
             <template v-if="item.type_id == 5">
-              <div class="choice-title black-004 question-title">
-                {{ item.question }}<i class="score">(10分)</i>
+              <div
+                class="choice-title black-004 question-title"
+                :class="
+                  item.answer_is_right == true || item.answer_is_right == 1
+                    ? 'correct-answer'
+                    : 'error-answer'
+                "
+              >
+                {{ item.question }}<i class="score">({{ item.score }}分)</i>
               </div>
               <div class="question-options-wrap">
                 <a-textarea
+                  v-if="item.student_answer && item.student_answer[0]"
                   :value="item.student_answer[0]"
                   :auto-size="{ minRows: 2, maxRows: 5 }"
                   :disabled="true"
                 />
               </div>
-              <div class="right-answer">
-                正确答案：{{ item.answers[0]?.answer }}
-              </div>
-              <div class="right-answer">关键字：{{ getKeyword(item) }}</div>
+              <div class="right-answer">正确答案：{{ item.answer[0]?.answer }}</div>
+              <div class="right-answer" v-if="item">关键字：{{ getKeyword(item) }}</div>
             </template>
           </div>
         </div>
@@ -393,10 +377,7 @@
         <template v-else>
           <div>
             <a-button type="default" @click="cancelQuiz">关闭</a-button>
-            <a-button
-              type="primary"
-              v-if="currentShowType == 1"
-              @click="lookRecord"
+            <a-button type="primary" v-if="currentShowType == 1" @click="lookRecord"
               >实验随测记录</a-button
             >
           </div>
@@ -407,16 +388,7 @@
 </template>
 
 <script lang="ts" setup>
-import {
-  ref,
-  defineProps,
-  inject,
-  Ref,
-  onMounted,
-  watch,
-  nextTick,
-  computed,
-} from "vue";
+import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import numberInput from "src/components/aiAnt/numberInput.vue";
 import { message, Modal } from "ant-design-vue";
@@ -444,7 +416,7 @@ const router = useRouter();
 const vmApi = request.vmApi;
 const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
-const experType = Number(route.query.experType)
+const experType = Number(route.query.experType);
 
 let role = storage.lStorage.get("role");
 
@@ -498,8 +470,28 @@ const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测�
 const answerNum = computed(() => {
   let num = 0;
   oldQuizPaperList.value.forEach((item: any) => {
-    if (item.student_answer.length > 0) {
+    if (item.student_answer) {
       num++;
+    }
+  });
+  return num;
+});
+
+const goalNum = computed(() => {
+  let num = 0;
+  oldQuizPaperList.value.forEach((item: any) => {
+    if (item.student_score) {
+      num+=item.student_score;
+    }
+  });
+  return num;
+});
+
+const totalPoints  = computed(() => {
+  let num = 0;
+  oldQuizPaperList.value.forEach((item: any) => {
+    if (item.score) {
+      num+=item.score;
     }
   });
   return num;
@@ -529,6 +521,8 @@ let timer: NodeJS.Timer | null = null; // 实验剩余时间计时器
 
 // 非响应式
 let historyLength = history.length;
+let currentQuestionIds: any[] = []; // 存储当前答题的习题id
+
 const toolData = [
   {
     icon: "icon-quanping",
@@ -609,556 +603,24 @@ watch(
 );
 
 // 获取随堂测试习题·
-function getQuestionList() {
-  oldQuizPaperList.value = [
-    {
-      id: 545,
-      question: "创建多选2",
-      type_id: 2,
-      level_id: 3,
-      pool_id: 87,
-      origin_score: 2,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1734,
-      student_answer: [1723, 1725],
-      note: "",
-      points: {
-        knowledge_name: "node2,node3",
-        knowledge_names: [
-          ["大数据", "node", "node2"],
-          ["大数据", "node", "node3"],
-        ],
-        knowledge_ids: [50002, 50003],
-      },
-      type: {
-        id: 2,
-        name: "多选题",
-      },
-      level: {
-        id: 3,
-        name: "困难",
-      },
-      options: [
-        {
-          id: 1723,
-          option: "无所谓",
-        },
-        {
-          id: 1724,
-          option: "税务师我说unnuuunu",
-        },
-        {
-          id: 1725,
-          option: "是我swsswsw",
-        },
-        {
-          id: 1726,
-          option: "上午我说我说",
-        },
-      ],
-      keywords: [],
-      answers: [
-        {
-          id: 690,
-          answer: "1723",
-        },
-        {
-          id: 691,
-          answer: "1724",
-        },
-        {
-          id: 692,
-          answer: "1725",
-        },
-        {
-          id: 693,
-          answer: "1726",
-        },
-      ],
-    },
-    {
-      id: 542,
-      question: "dedehuedhdeudeudehu",
-      type_id: 2,
-      level_id: 1,
-      pool_id: 87,
-      origin_score: 2,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1735,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "node2,node3",
-        knowledge_names: [
-          ["大数据", "node", "node2"],
-          ["大数据", "node", "node3"],
-        ],
-        knowledge_ids: [50003, 50002],
-      },
-      type: {
-        id: 2,
-        name: "多选题",
-      },
-      level: {
-        id: 1,
-        name: "简单",
-      },
-      options: [
-        {
-          id: 1575,
-          option: "ededde",
-        },
-        {
-          id: 1576,
-          option: "dddededededeed",
-        },
-        {
-          id: 1577,
-          option: "dedede",
-        },
-        {
-          id: 1578,
-          option: "hufrhrf",
-        },
-      ],
-      keywords: [],
-      answers: [
-        {
-          id: 650,
-          answer: "1578",
-        },
-        {
-          id: 651,
-          answer: "1577",
-        },
-      ],
-    },
-    {
-      id: 509,
-      question: "多选题222",
-      type_id: 2,
-      level_id: 1,
-      pool_id: 87,
-      origin_score: 2,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1736,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "",
-        knowledge_names: [],
-      },
-      type: {
-        id: 2,
-        name: "多选题",
-      },
-      level: {
-        id: 1,
-        name: "简单",
-      },
-      options: [
-        {
-          id: 1453,
-          option: "w w w",
-        },
-        {
-          id: 1454,
-          option: "呜呜呜呜呜",
-        },
-        {
-          id: 1455,
-          option: "www我",
-        },
-        {
-          id: 1456,
-          option: "让反反复复",
-        },
-      ],
-      keywords: [],
-      answers: [
-        {
-          id: 609,
-          answer: "1454",
-        },
-        {
-          id: 610,
-          answer: "1453",
-        },
-        {
-          id: 611,
-          answer: "1455",
-        },
-      ],
-    },
-    {
-      id: 508,
-      question: "多选题测试111",
-      type_id: 2,
-      level_id: 1,
-      pool_id: 87,
-      origin_score: 1,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1737,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "",
-        knowledge_names: [],
-      },
-      type: {
-        id: 2,
-        name: "多选题",
-      },
-      level: {
-        id: 1,
-        name: "简单",
-      },
-      options: [
-        {
-          id: 1449,
-          option: "兑现1",
-        },
-        {
-          id: 1450,
-          option: "多虚啊2",
-        },
-        {
-          id: 1451,
-          option: "多选3",
-        },
-        {
-          id: 1452,
-          option: "多选4",
-        },
-      ],
-      keywords: [],
-      answers: [
-        {
-          id: 606,
-          answer: "1449",
-        },
-        {
-          id: 607,
-          answer: "1450",
-        },
-        {
-          id: 608,
-          answer: "1452",
-        },
-      ],
-    },
-    {
-      id: 575,
-      question: "ggyyyyyyyyygy",
-      type_id: 5,
-      level_id: 3,
-      pool_id: 87,
-      origin_score: 5,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1738,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "node2,node3",
-        knowledge_names: [
-          ["大数据", "node", "node2"],
-          ["大数据", "node", "node3"],
-        ],
-        knowledge_ids: [50002, 50003],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 3,
-        name: "困难",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 474,
-          keyword: "gyyyyy",
-        },
-      ],
-      answers: [
-        {
-          id: 747,
-          answer: "fttttttttt",
-        },
-      ],
-    },
-    {
-      id: 566,
-      question: "解答题知识点",
-      type_id: 5,
-      level_id: 2,
-      pool_id: 87,
-      origin_score: 3,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1739,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "node2,node3,111",
-        knowledge_names: [
-          ["大数据", "node", "node2"],
-          ["大数据", "node", "node3"],
-          ["大数据", "node", "node1", "df", "111"],
-        ],
-        knowledge_ids: [50002, 50003, 50005],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 2,
-        name: "中等",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 471,
-          keyword: "的的额度",
-        },
-      ],
-      answers: [
-        {
-          id: 736,
-          answer: "的的的",
-        },
-      ],
-    },
-    {
-      id: 564,
-      question: "rfrffrfrrffhuhfhfhaa叫啊叫姐姐哈哈哈哈哈哈哈哈哈",
-      type_id: 5,
-      level_id: 2,
-      pool_id: 87,
-      origin_score: 31,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1740,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "node2,node3",
-        knowledge_names: [
-          ["大数据", "node", "node2"],
-          ["大数据", "node", "node3"],
-        ],
-        knowledge_ids: [50003, 50002],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 2,
-        name: "中等",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 470,
-          keyword: "edededede",
-        },
-      ],
-      answers: [
-        {
-          id: 735,
-          answer: "哈哈哈dededededxssxsx",
-        },
-      ],
-    },
-    {
-      id: 562,
-      question: "rfrffrrfffrfrfrrfrfrffrrffr",
-      type_id: 5,
-      level_id: 2,
-      pool_id: 87,
-      origin_score: 5,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1741,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "",
-        knowledge_names: [],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 2,
-        name: "中等",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 464,
-          keyword: "rffrfr",
-        },
-      ],
-      answers: [
-        {
-          id: 726,
-          answer: "rffrfrfrffr",
-        },
-      ],
-    },
-    {
-      id: 555,
-      question: "解答题哈哈哈啊哈哈wswguuuguuggugugu",
-      type_id: 5,
-      level_id: 3,
-      pool_id: 87,
-      origin_score: 41,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1742,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "111,ddddd",
-        knowledge_names: [
-          ["大数据", "node", "node1", "df", "111"],
-          ["大数据", "node", "node1", "df", "ddddd"],
-        ],
-        knowledge_ids: [50006, 50005],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 3,
-        name: "困难",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 465,
-          keyword: "ededdeeddeed",
-        },
-      ],
-      answers: [
-        {
-          id: 727,
-          answer: "dedddededed33333",
-        },
-      ],
-    },
-    {
-      id: 523,
-      question: "ssswwsswdede",
-      type_id: 5,
-      level_id: 1,
-      pool_id: 87,
-      origin_score: 1,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1743,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "",
-        knowledge_names: [],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 1,
-        name: "简单",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 466,
-          keyword: "啊uuu",
-        },
-      ],
-      answers: [
-        {
-          id: 728,
-          answer:
-            "huedh哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈哈啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊阿啊de",
-        },
-      ],
-    },
-    {
-      id: 522,
-      question: "解答题",
-      type_id: 5,
-      level_id: 1,
-      pool_id: 87,
-      origin_score: 1,
-      ordered_answer: 0,
-      user_id: 100,
-      relation_id: 1744,
-      student_answer: [],
-      note: "",
-      points: {
-        knowledge_name: "111,ddddd",
-        knowledge_names: [
-          ["大数据", "node", "node1", "df", "111"],
-          ["大数据", "node", "node1", "df", "ddddd"],
-        ],
-        knowledge_ids: [50005, 50006],
-      },
-      type: {
-        id: 5,
-        name: "简答题",
-      },
-      level: {
-        id: 1,
-        name: "简单",
-      },
-      options: [],
-      keywords: [
-        {
-          id: 475,
-          keyword: "dedede",
-        },
-      ],
-      answers: [
-        {
-          id: 748,
-          answer:
-            "话 hu hu f h vu g别别扭扭河南女孩发染发烦人烦人烦人烦人染发111",
-        },
-      ],
-    },
-  ];
-  console.log(oldQuizPaperList.value.length);
-
+async function getQuestionList(needs_answer: boolean = false) {
   let param = {
     page: 1,
     limit: "all",
+    needs_answer: needs_answer,
   };
-  vmApi
+  return vmApi
     .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
     .then((res: any) => {
       console.log(res);
       oldQuizPaperList.value = res.data;
+      return res.data;
     });
 }
 function back() {
   Modal.confirm({
     title: "提示",
-    content:
-      "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+    content: "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
@@ -1231,15 +693,13 @@ function showChange() {}
 // 结束实验
 function finishExperiment() {
   let modal = Modal.confirm({
-    title: `确认结束${
-      opType === "help" ? "演示" : role === 4 ? "实验" : "备课"
-    }吗？`,
+    title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
     okText: "确认",
     onOk: async () => {
       // 文档视频实验
       if (experType === 6 || experType === 7) {
         router.go(historyLength - history.length - 1);
-        return
+        return;
       }
       await finishTest();
       modal.destroy();
@@ -1384,7 +844,7 @@ async function resetVm() {
 function copyPaste() {
   console.log("选择发送");
   novncEl.value.sendSelectContent(copyText);
-  visible.value = false
+  visible.value = false;
 }
 
 // 保存进度
@@ -1642,15 +1102,30 @@ function settingCurrentVM() {
 
 //
 // 打开随堂测试
-function openQuizModal() {
-  quizVisiable.value = true;
-  quizPaperList.value = cloneDeep(oldQuizPaperList.value);
-  currentQuizIndex.value = 0;
-  if (quizPaperList.value.length == answerNum.value) {
+async function openQuizModal() {
+  if (oldQuizPaperList.value.length == answerNum.value) {
+    
+    await getQuestionList(true);
+    quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
   } else {
+    await getQuestionList(false);
+    currentQuestionIds = [];
+    let tempData: any[] = cloneDeep(oldQuizPaperList.value);
+    tempData = tempData.filter((item: any) => {
+      return !item.student_answer;
+    });
+    for (let i = 0; i < tempData.length; i++) {
+      currentQuestionIds.push(tempData[i].id);
+      if (!tempData[i].student_answer) {
+        tempData[i].student_answer = [];
+      }
+    }
+    quizPaperList.value = tempData;
+    currentQuizIndex.value = 0;
     currentShowType.value = 0;
   }
+  quizVisiable.value = true;
 }
 // 提交
 function submitQuiz() {
@@ -1665,10 +1140,15 @@ function submitQuiz() {
     };
     params.answer.push(answer);
   }
-  currentShowType.value = 1;
+
   examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
     message.success("提交成功");
-    getQuestionList();
+    let questionTemp: any[] = await getQuestionList(true);
+    quizPaperList.value = questionTemp.filter((item: any) => {
+      return currentQuestionIds.includes(item.id);
+    });
+    currentShowType.value = 1;
+    currentQuestionIds=[]
   });
 }
 
@@ -1690,12 +1170,15 @@ function next() {
 // 实验随测记录
 function lookRecord() {
   currentShowType.value = 2;
+  quizPaperList.value = cloneDeep(oldQuizPaperList.value);
 }
 // 获取多选题答案
 function getChoiceAnswer(val: any) {
-  const newAnswerArry = val.answers.flatMap((item: any) => {
-    return Number(item.answer);
-  });
+  const newAnswerArry = val.answer
+    ? val.answer.flatMap((item: any) => {
+        return Number(item.answer);
+      })
+    : [];
   let answer = "";
   console.log(newAnswerArry);
 
@@ -1711,14 +1194,16 @@ function getChoiceAnswer(val: any) {
 
 // 获取关键字
 function getKeyword(val: any) {
-  var keywords = val.keywords.flatMap((item: any) => {
-    return item.keyword;
-  });
+  var keywords = val.keywords
+    ? val.keywords.flatMap((item: any) => {
+        return item.keyword;
+      })
+    : [];
   return keywords.join(" , ");
 }
 // f
 onMounted(() => {
-  getQuestionList();
+  getQuestionList(false);
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
@@ -2037,6 +1522,27 @@ i {
     margin-bottom: 20px;
     padding-left: 12px;
     color: var(--green-7);
+  }
+  .correct-answer {
+    background: var(--cyan-1);
+  }
+  .error-answer {
+    background: var(--alert-error);
+  }
+}
+.static-box{
+  margin-bottom: 8px;
+  color: var(--black-45);
+  span{
+    margin-right: 20px;
+    i{
+      margin: 0 5px;
+      font-style: normal;
+      color: var(--primary-color);
+      &.goal{
+        color: var(--green-7);
+      }
+    }
   }
 }
 </style>

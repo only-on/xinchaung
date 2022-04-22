@@ -450,13 +450,21 @@ function submitScore() {
 
 // 导出成绩
 function exportScore() {
-  scoreApi
-    .exportScoreApi({ param: { ids: [] }, urlParams: { taskId: experitId.value } })
-    .then((res: any) => {
-      console.log(res);
-      let urlArry = res.data.split("/");
-      saveAs(res.data, urlArry[urlArry.length - 1]);
-    });
+  let aLink=document.createElement('a')
+  aLink.href="/api/operate/teacherExports/export?ids=&id="+experitId.value
+  aLink.download=""
+  aLink.click()
+  // scoreApi
+  //   .exportScoreApi({ param: { ids: '',id:experitId.value }})
+  //   .then((res: any) => {
+  //     console.log(res);
+  //     let urlArry = res.data.split("/");
+  //     saveAs(res.data, urlArry[urlArry.length - 1]);
+  //   }).catch(err=>{
+  //     console.log(err);
+  //       var blob = new Blob([err], {type: "text/plain;charset=utf-8"});
+  //       saveAs(blob, "urlArry[urlArry.length - 1]");
+  //   });
 }
 
 // 操作报告评阅
