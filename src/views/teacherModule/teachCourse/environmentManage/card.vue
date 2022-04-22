@@ -104,9 +104,11 @@ const type = route.query.type;
 const http = (request as any).teachCourse;
 interface Props {
   list: any;
+  currentExperiment: any
 }
 const props = withDefaults(defineProps<Props>(), {
   list: () => {},
+  currentExperiment: () => {}
 });
 const emit = defineEmits<{
   (e: "getList"): void;
@@ -162,6 +164,7 @@ function jumpHandle(list: any) {
             type: "course",
             taskId: list.taskId,
             connection_id: ls.lStorage.get("user_id") + "_" + list.id,
+            experType: props.currentExperiment.type
           },
         }); // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
         // router.push({

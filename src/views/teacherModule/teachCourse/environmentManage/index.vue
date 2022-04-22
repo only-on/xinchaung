@@ -26,7 +26,7 @@
       <div class="env-lists">
         <!-- envListState.data -->
         <div class="env-list" v-for="v in envList" :key="v.id">
-          <card :list="v" @getList="getList"></card>
+          <card :list="v" @getList="getList" :currentExperiment="currentExperiment"></card>
         </div>
         <!-- <Empty v-if="!envListState.data.length && !envListState.loading" /> -->
         <!-- <div v-if="!envListState.data.length && !envListState.loading" class="nodata">
@@ -75,6 +75,7 @@ import {
   provide,
   inject,
   onBeforeMount,
+  onUnmounted
 } from "vue";
 import { message } from "ant-design-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -174,6 +175,9 @@ const onChangePage = (page: number) => {
 onBeforeMount(() => {
   clearTimeout(Number(timer));
 });
+onUnmounted(() => {
+  clearTimeout(Number(timer));
+})
 
 // 章节实验树
 const ChaptersTreeList: any = reactive([])

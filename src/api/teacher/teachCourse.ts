@@ -109,7 +109,7 @@ export default {
   getCourseEnvirment: {url: `/api/operate/preCreates/list`, method:"GET" },
   getOpenEnvirmentLimit: {url: `/api/operate/preCreates/list`, method:"GET" },
   openEnvirment: {url: `/api/operate/preCreates/create`, method:"POST", dataType:"json" },
-  canAccessVm: {url: '/teacher-course/can-access-vm', method: 'POST', dataType: 'json'},
+  canAccessVm: {url: '/api/operate/envirments/can-access-vm', method: 'POST', dataType: 'json'},
 }
 
 export interface ITeacherCourseApis {
