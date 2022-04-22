@@ -106,6 +106,7 @@ const routeQuery = useRoute().query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
+  ExternalOpen?:boolean
   Editable?:string
   courseId?:number  
   // knowledge: any;
@@ -114,6 +115,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   courseId:0,                 // 课程id
   Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑  可编辑  可学习  只展示
+  ExternalOpen:false,         // 父组件打开教辅选择抽屉
 });
 // const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
 var editChartVisible: Ref<boolean> = ref(false);
@@ -133,6 +135,7 @@ var state:any=reactive({
   activeExperimentObj:{      // 章节树当前选中的 实验
     id:0,
   },
+  activeChapter:{}     // 当前章节
 })
 // 已选的实验和教辅资源
 var ExperimentsAndMaterialsObj=reactive<any>({
@@ -150,7 +153,8 @@ const emit = defineEmits<{
 
   (e: "editExperiment", val: any): void;
   (e: "deleteExperiment", val: any): void;
-  
+
+  (e: "closeExternalOpen"): void;
 }>();
 const getTitLeftClass=()=>{
   let str=''
@@ -162,6 +166,13 @@ const getTitLeftClass=()=>{
   }
   return str
 }
+watch(()=>{return props.ExternalOpen},(val)=>{
+  console.log(val)
+  if(val === true){
+    establishChapter(state.activeChapter)
+    emit('closeExternalOpen')
+  }
+},{immediate:true})
 const closeDrawerDoc = () => {
   // 调保存到章节的接口
   editChartVisible.value = false;
@@ -240,6 +251,7 @@ const cancel=()=>{
 const selectChaptert=(val:any)=>{
   // console.log('章节',val)
   // val.openItem=!val.openItem
+  state.activeChapter={...val}
   state.activeTab.chapterId=val.id
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
   emit('selectChaptert',val)
