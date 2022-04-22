@@ -326,6 +326,54 @@ async function toVmConnect(
   })
 }
 
+// 准备环境
+let paramVm: any = {}
+async function prepareEnv(param: IEnvirmentsParam,) {
+  return new Promise(async (resolve: any, reject: any) => {
+    
+    // 视频、文档、webide
+    if (param.experType === 6 || param.experType === 7 || param.experType === 3) {
+      resolve()
+      Object.assign(paramVm, 
+        {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          experType: param.experType
+        }
+      );
+      return 
+    }
+    const createExamplesInfo: any = await openVm(param);
+    if (createExamplesInfo.data.data.connection_id) {
+      resolve()
+      Object.assign(paramVm, 
+        {
+          experType: param.experType,
+          connection_id: createExamplesInfo.data.data.connection_id,
+          opType: createExamplesInfo.query.opType,
+          type: createExamplesInfo.query.type,
+          taskId: createExamplesInfo.query.taskId,
+          topoinst_uuid: createExamplesInfo.data.data.topoinst_uuid,
+          topoinst_id: createExamplesInfo.data.data.topoinst_id,
+        }
+      );
+    }
+  })
+}
+// 进入虚拟机页面
+function goToVm(
+  router: any,
+  routerQuery: any,
+) {
+  router.push({
+    path: "/vm",
+    query: {...paramVm, routerQuery: JSON.stringify(routerQuery)}
+  })
+  paramVm = {}
+  console.log(paramVm)
+}
+
 // 推荐学习实验跳转
 async function toStudyRecommendExperiment(
   router: any,
@@ -491,5 +539,7 @@ export {
   backTo,
   operatesHandle,
   stepAction,
-  evaluateApi
+  evaluateApi,
+  prepareEnv,
+  goToVm,
 };
