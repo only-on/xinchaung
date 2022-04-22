@@ -181,7 +181,7 @@ import { message } from "ant-design-vue";
 import { saveAs } from "file-saver";
 
 const route = useRoute();
-const courseId: any = route.query.courseId; //章节id
+const courseId: any = Number(route.query.courseId); //章节id
 
 const scoreApi = request.teachCourse;
 
