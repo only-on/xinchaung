@@ -4,26 +4,29 @@
       <div class="header-left">
         <div class="input">
           <span class="lableclass">姓名</span>
-          <a-input-search
+          <a-input
           placeholder="请输入搜索关键字"
           style="width:180px"
-          @search="onSearch"
+          @keyup.enter="onSearch"
+          v-model:value='params.nick'
         />
         </div>
         <div class="input">
           <span class="lableclass">班级</span>
-          <a-input-search
+          <a-input
           placeholder="请输入搜索关键字"
+          v-model:value='params.class'
           style="width:180px"
-          @search="onSearch"
+          @keyup.enter="onSearch"
         />
         </div>
         <div class="input">
           <span class="lableclass">年级</span>
-          <a-input-search
+          <a-input
           placeholder="请输入搜索关键字"
+          v-model:value='params.grade'
           style="width:180px"
-          @search="onSearch"
+          @keyup.enter="onSearch"
         />
         </div>
       </div>
@@ -105,6 +108,8 @@ option.value = [
 const columns: any = ref();
 const data: any = ref([]);
 const modalVisable: any = ref(false);
+
+const nick:any=ref('')
 columns.value = [
   {
     title: "账号",
@@ -165,9 +170,19 @@ const tableParams:any=reactive({
   student_id:[],
   type:1
 })
+const params:any=reactive({
+  type:1,
+  id:courseId,
+  withs:'userProfile,user',
+  nick:'',
+  grade:'',
+  class:'',
+  page: 1,
+  limit: 10
+})
 function handleChange() {}
 function onSearch(value: any) {
-  console.log(value);
+  getcoursestudent()
 }
 function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
@@ -193,7 +208,7 @@ function updateSelectStuVisable(value: any,studentids:any) {
   }
 }
 function getcoursestudent(){
-  http.coursestudentlist({param:{type:1,id:courseId,withs:'userProfile,user'}}).then((res:any)=>{
+  http.coursestudentlist({param:params}).then((res:any)=>{
     data.value=res.data.list
   })
 }

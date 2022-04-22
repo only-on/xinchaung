@@ -1,11 +1,12 @@
 <template>
     <div class="academicAnalysis">
        <div class="tree">
-        <chapterTree
+        <!-- <chapterTree
           :chartLoading="chartLoading"
           :chapterList="ChaptersTreeList"
           @selectExperiment="selectExperiment" 
-         />
+         /> -->
+         <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
        </div>
        <div class="analy-right">
             <div>
@@ -167,7 +168,7 @@ function selectExperiment(val: any) {
   getStugrandsList()
 }
 onMounted(()=>{
-  getChapterList()
+  // getChapterList()
 })
 </script>
 <style lang="less" scoped>

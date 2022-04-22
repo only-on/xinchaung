@@ -93,7 +93,7 @@ let option1:any = {
       text: ''
     },
     legend: {
-      data: []
+      data: ['']
     },
     radar: {
       // shape: 'circle',
@@ -104,17 +104,25 @@ let option1:any = {
         { name: 'Customer Support', max: 38000 },
         { name: 'Development', max: 52000 },
         { name: 'Marketing', max: 25000 }
-      ]
+      ],
+      splitArea:{
+        show:true,
+        areaStyle:{
+          // color:['#FF9544','']
+        }
+      }
     },
+
     series: [
       {
-        name: 'Budget vs spending',
+        name: '',
         type: 'radar',
         color:'#FF9544',
+        backgroundColor:'red',
         data: [
           {
             value: [5000, 14000, 28000, 26000, 42000, 21000],
-            name: 'Actual Spending'
+            name: '111'
           }
         ]
       }

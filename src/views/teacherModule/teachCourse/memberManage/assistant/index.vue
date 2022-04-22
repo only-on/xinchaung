@@ -283,7 +283,7 @@ function submit(){
     }
   }
   http.addAssistanter({param:params}).then((res:any)=>{
-      if(res.code){
+      if(res){
         visible.value=false;
         getAssistantList()
       }
@@ -301,7 +301,7 @@ function getAssistantList(){
         },
       };
   http.assistantList({param:obj}).then((res:any)=>{
-      if(res.code==1){
+      if(res.status==1){
         data.value=res.data.list
       }
   })

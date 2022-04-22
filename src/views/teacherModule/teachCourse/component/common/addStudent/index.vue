@@ -14,24 +14,17 @@
       <div class="header-left">
         <a-form layout="inline">
           <a-form-item label="姓名">
-            <a-input></a-input>
+            <a-input v-model:value='params.nick' @keyup.enter="onSearch"></a-input>
           </a-form-item>
-          <div class="header-left-select">
-          <span class="lableclass">班级</span>
-          <a-select default-value="全部" style="width: 224px" @change="handleChange">
-            <a-select-option v-for="item in option" :key="item.id"
-              >{{ item.name }}
-            </a-select-option>
-          </a-select>
-        </div>
-        <div class="header-left-select">
-          <span class="lableclass">专业</span>
-          <a-select default-value="全部" style="width: 224px" @change="handleChange">
-            <a-select-option v-for="item in option" :key="item.id"
-              >{{ item.name }}
-            </a-select-option>
-          </a-select>
-        </div>
+          <a-form-item label="班级">
+            <a-input v-model:value='params.class' @keyup.enter="onSearch"></a-input>
+          </a-form-item>
+          <a-form-item label="年级">
+            <a-input v-model:value='params.grade' @keyup.enter="onSearch"></a-input>
+          </a-form-item>
+          <a-form-item label="专业">
+            <a-input v-model:value='params.direct' @keyup.enter="onSearch"></a-input>
+          </a-form-item>
         </a-form>
       </div>
       <div class="header-right">
@@ -139,13 +132,30 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const params:any=reactive({
+  type:props.type,
+  id:props.courseId,
+  withs:'userProfile',
+  nick:'',
+  grade:'',
+  direct:'',
+  class:'',
+  page:1,
+  limit:10,
+});
 const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
+  getallstudent()
 }
-function onChange(page: any, pageSize: any) {}
-function onShowSizeChange(current: any, size: any) {}
+function onChange(page: any, pageSize: any) {
+  params.page=page;
+}
+function onShowSizeChange(current: any, size: any) {
+  params.page=1;
+  params.limit=size;
+}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
   tableData.selectedRowKeys=selectedRowKeys
@@ -169,7 +179,7 @@ function handleCancelSelect(){
   tableData.selectedRowKeys=[]
 }
 function getallstudent(){
-  http.allstudentlist({param:{type:props.type,id:props.courseId,withs:'userProfile'}}).then((res:any)=>{
+  http.allstudentlist({param:params}).then((res:any)=>{
     data.value=res.data.list
   })
 }

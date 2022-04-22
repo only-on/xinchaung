@@ -1,14 +1,15 @@
 <template>
   <div id="inClassTest">
     <div class="tree">
-      <chapterTree
+      <!-- <chapterTree
           :chartLoading="chartLoading"
           :chapterList="ChaptersTreeList"
           @deleteChapter="deleteChapter"
           @editExperiment="editExperiment"
           @editChapter="editChapter"
           @selectExperiment="selectExperiment" 
-          @establishChapter="establishChapter" />
+          @establishChapter="establishChapter" /> -->
+          <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
     </div>
     <div class="test">
       <div class="inTestHeader">
@@ -170,7 +171,7 @@ function getChapterList(){
   })
 }
 onMounted(()=>{
-  getChapterList()
+  // getChapterList()
 })
 </script>
 <style lang="less" scoped>
