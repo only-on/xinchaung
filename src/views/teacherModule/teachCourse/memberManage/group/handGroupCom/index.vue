@@ -203,7 +203,7 @@ function createGroup(){
   groupName.value=''
 }
 function onSearch() {
-  
+  getUngroupStu()
 }
 //选择要把学生放进的分组
 function selectTree(selectedKeys:any,e:any){
@@ -274,7 +274,7 @@ function ifselect(keys:any){
   }
 }
 function getUngroupStu(){
-   http.unGroupstuList({param:{id:courseId,type:1}}).then((res:any)=>{
+   http.unGroupstuList({param:{id:courseId,type:1,name:searchvalue.value}}).then((res:any)=>{
       if(res.code){
         unGroupData.value=res.data.data
       }

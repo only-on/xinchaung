@@ -140,26 +140,26 @@ function getStugrandsList(){
   })
 }
 function getStuStatis(){
-  statisData.value={
-        minScore: 10,//最低分
-        avgScore: 50,//平均分
-        maxScore: 100,//最高分
-        "distributionOfScores": {//区间成绩人数分布
-            "0 ~ 60": 10,
-            "60 ~ 70": 30,
-            "70 ~ 80": 60,
-            "80 ~ 90": 20,
-            "90 ~ 100": 10
-        },
-        "ExperimentalReportSubmissionRate": 50,//实验报告提交率
-        "inClassTestAccuracyRate": 45,//随测正确率
-        "automaticScoringCorrectRate": 37 //自动评测正确率
-    }
-    // http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
-    //   if(res.code==1){
-    //     // statisData.value=res.data
-    //   }
-    // })
+  // statisData.value={
+  //       minScore: 10,//最低分
+  //       avgScore: 50,//平均分
+  //       maxScore: 100,//最高分
+  //       "distributionOfScores": {//区间成绩人数分布
+  //           "0 ~ 60": 10,
+  //           "60 ~ 70": 30,
+  //           "70 ~ 80": 60,
+  //           "80 ~ 90": 20,
+  //           "90 ~ 100": 10
+  //       },
+  //       "ExperimentalReportSubmissionRate": 50,//实验报告提交率
+  //       "inClassTestAccuracyRate": 45,//随测正确率
+  //       "automaticScoringCorrectRate": 37 //自动评测正确率
+  //   }
+    http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
+      if(res.code==1){
+        statisData.value=res.data
+      }
+    })
 }
 function selectExperiment(val: any) {
   console.log(val);

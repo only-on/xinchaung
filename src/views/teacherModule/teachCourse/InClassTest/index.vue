@@ -65,6 +65,7 @@
     <explainques
       v-if="componentName == 'explainques'"
       :modalVisable="state.visible"
+      :experitId='experitId'
       @updateVisable="updateVisable"
     ></explainques>
   </div>

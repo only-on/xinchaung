@@ -53,6 +53,7 @@
       :row-selection="{
         selectedRowKeys: tableData.selectedRowKeys,
         onChange: onSelectChange,
+        getCheckboxProps: getCheckboxProps,
       }"
     >
     </a-table>
@@ -144,6 +145,12 @@ const params:any=reactive({
   limit:10,
 });
 const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
+function getCheckboxProps(record: any) {
+  return {
+    disabled: record.selected,
+    defaultChecked: record.selected,
+  };
+}
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);

@@ -57,12 +57,13 @@ columns.value = [
 ];
 
 data.value = [];
-
 interface Props {
   modalVisable: boolean;
+  experitId:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   modalVisable: false,
+  experitId:''
 });
 const formRef = ref<any>("null");
 const emit = defineEmits<{ (e: "updateVisable", val: any,val1:any): void }>();
@@ -78,12 +79,12 @@ function handleCancel() {
   updateVisable();
 }
 function getStatisticGrands(){
-  http.achiveStatistics({urlParams:{content_id:500001}}).then((res:any)=>{
+  http.achiveStatistics({urlParams:{content_id:props.experitId}}).then((res:any)=>{
     statis.value=res.data;
   })
 }
 function getAchiveList(){
-  http.achivelist({urlParams:{content_id:500001}}).then((res:any)=>{
+  http.achivelist({urlParams:{content_id:props.experitId}}).then((res:any)=>{
     data.value=res.data.list
   })
 }
