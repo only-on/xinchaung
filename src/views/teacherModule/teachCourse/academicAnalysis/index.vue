@@ -19,12 +19,9 @@
                             成绩详情
                         </div>
                         <div class="header-select">
-                            <span class="lableclass">班级</span>
-                            <a-select default-value="全部" style="width: 224px" @change="handleChange">
-                                <a-select-option v-for="item in option" :key="item.id"
-                                >{{ item.name }}
-                                </a-select-option>
-                            </a-select>
+                          <a-form-item label="班级">
+                            <a-input v-model:value='className'  @keyup.enter="onSearch"></a-input>
+                          </a-form-item>
                     </div>
                 </div>
                 <a-table
@@ -71,6 +68,7 @@ const ChaptersTreeList:any=ref([])
 const Editable:any=ref(false)
 const option: any = ref();
 const experitId:any=ref('')
+const className:any=ref('')
 option.value = [
   { id: "", name: "全部" },
   { id: 1, name: "班级1" },
@@ -146,15 +144,18 @@ function getChapterList(){
   })
 }
 function getStugrandsList(){
-  http.stuGrandsList({urlParams:{content_id:experitId.value}}).then((res:any)=>{
+  http.stuGrandsList({urlParams:{content_id:experitId.value},param:{className:className.value}}).then((res:any)=>{
     if(res.code==1){
       data.value=res.data.list
     }
   })
 }
+function onSearch(){
+  getStugrandsList()
+}
 function getStuStatis(){
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
-      if(res.code==1){
+      if(res.code&&res.data?.length!==0){
         statisData.value=res.data
       }
     })
@@ -197,5 +198,8 @@ onMounted(()=>{
        .lableclass{
            margin-right: 10px;
        }
+   }
+   .header-select{
+     display: flex;
    }
 </style>
