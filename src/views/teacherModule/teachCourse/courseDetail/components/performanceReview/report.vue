@@ -54,7 +54,6 @@ function colseModal() {
 }
 // 提交
 function submit() {
-  console.log("submit");
   if (isNaN(props.data.score)) {
     message.warn("非法分数")
     return;

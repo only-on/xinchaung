@@ -69,14 +69,11 @@ function colseModal() {
 
 // 确认
 function submit(){
-    console.log("submnit");
     formRef.value
         .validate().then(()=>{
-            console.log("pass");
             emit("submit")
         }).catch((err:any)=>{
             console.log(err);
-            
         })
 }
 

@@ -56,14 +56,10 @@ const props = defineProps({
     },
   },
 });
-
-console.log(window.XC_ROLE);
-console.log(props.weightData.calc);
 let auto = props.weightData.calc.auto ? props.weightData.calc.auto : 0;
 let question = props.weightData.calc.question ? props.weightData.calc.question : 0;
 let report = props.weightData.calc.report ? props.weightData.calc.report : 0;
 let sum = auto + question + report;
-console.log(sum);
 
 const exceed = ref(false);
 // 获取父组件方法
@@ -84,7 +80,6 @@ function dataChange(e: InputEvent) {
     if (props.weightData.calc[item]) {
       v = props.weightData.calc[item];
     }
-    console.log(v);
 
     if (v.toString().indexOf("%") != -1) {
       v = v.substring(0, v.length - 1);

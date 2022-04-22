@@ -137,7 +137,6 @@
     v-if="weightVisible"
     v-model:weightVisible="weightVisible"
     v-model:weightData="weightData"
-    :type="type"
     @apply="apply"
     @submit="submitWeight"
   ></reviewWeight>
@@ -185,7 +184,6 @@ const route = useRoute();
 const courseId: any = route.query.courseId; //章节id
 
 const scoreApi = request.teachCourse;
-let type = ref(0); // 0 实操 1 视频文档 2 习题
 
 // 控制弹窗显示隐藏visible
 const weightVisible = ref(false);
@@ -294,23 +292,14 @@ const oldColumns: any[] = [
   },
 ];
 const columns: Ref<any> = ref([]);
-console.log(type);
 
 // table数据
 const tabelData = ref([]);
 
-watch(
-  () => scoreData.value,
-  () => {
-    console.log(scoreData.value);
-  },
-  { deep: true }
-);
 // 获取数据
 function getTeacherEvaluates() {
   Object.assign(params.value, { taskId: experitId.value });
   scoreApi.getTeacherEvaluatesApi({ param: params.value }).then((res: any) => {
-    console.log(res);
     tabelData.value = res.data.list;
     total.value = res.data.page.totalCount;
     staticInfo.value = res.data.statistics;
@@ -318,20 +307,9 @@ function getTeacherEvaluates() {
   });
 }
 
-function getChapterList() {
-  scoreApi.getChaptersTree({ urlParams: { courseId: courseId } }).then((res: any) => {
-    console.log(res);
-    ChaptersTreeList.value = res.data;
-    for (let i = 0; i < ChaptersTreeList.value.length; i++) {
-      if (ChaptersTreeList.value[i] && ChaptersTreeList.value[i].contents.length > 0) {
-        selectExperiment(ChaptersTreeList.value[i].contents[0]);
-      }
-    }
-  });
-}
+
 // 分页发生变化
 function pageChange(page: number, pageSize: number) {
-  console.log(page, pageSize);
   getTeacherEvaluates();
 }
 // 分页渲染dom
@@ -393,7 +371,6 @@ function autoReview() {
 }
 // table操作
 function clickFun(type: string, val: any, index: number) {
-  console.log(val, index);
   currentRow = index;
   // if (type.indexOf("update") != -1) {
   //   isEdit.value = true;
@@ -428,7 +405,6 @@ async function getScore(type: string, studyId: number) {
   } else {
     isEdit.value = true;
     await scoreApi.getScoreApi({ urlParams: { id: studyId } }).then((res: any) => {
-      console.log(res);
       scoreData.value = res.data;
     });
   }
@@ -454,17 +430,6 @@ function exportScore() {
   aLink.href="/api/operate/teacherExports/export?ids=&id="+experitId.value
   aLink.download=""
   aLink.click()
-  // scoreApi
-  //   .exportScoreApi({ param: { ids: '',id:experitId.value }})
-  //   .then((res: any) => {
-  //     console.log(res);
-  //     let urlArry = res.data.split("/");
-  //     saveAs(res.data, urlArry[urlArry.length - 1]);
-  //   }).catch(err=>{
-  //     console.log(err);
-  //       var blob = new Blob([err], {type: "text/plain;charset=utf-8"});
-  //       saveAs(blob, "urlArry[urlArry.length - 1]");
-  //   });
 }
 
 // 操作报告评阅
@@ -482,7 +447,6 @@ async function reportReview(type: string, studyId: number) {
 // 评分参考
 async function scoreRefer(studyId: number) {
   const res: any = await getReportOrVideo(studyId, "video");
-  console.log(res);
   videoUrl.value = res;
   videoVisible.value = true;
 }
@@ -497,19 +461,16 @@ async function getReportOrVideo(studyId: number, type: "video" | "report") {
 
 // 提交报告评阅
 function submitReport() {
-  console.log(reportData.value);
   const body = new FormData();
   body.append("csc_id", experitId.value);
   body.append("score", reportData.value.score);
   scoreApi.setReportScoreApi({ param: body }).then((res: any) => {
-    console.log(res);
     (tabelData as any).value[currentRow].report_score = res.data.score;
     reportVisible.value = false;
   });
 }
 // 选择tree章节
 function selectExperiment(val: any) {
-  console.log(val);
   if (!experitId.value||!experitId.value==val.id) {
     experitId.value = val.id;
     getTeacherEvaluates();
@@ -520,38 +481,28 @@ function selectExperiment(val: any) {
 function updateTableHeader(val: any[]) {
   const temp = cloneDeep(oldColumns);
   // 当是视频文档类实验时，去掉列 代码、评分参考// 0 实操 1 视频文档 2 习题
-  console.log(val);
-  console.log(temp);
-
-  console.log(temp[5].children);
   if (!val.includes("report")) {
     let i = temp[5].children.findIndex((item: any) => {
       return item.dataIndex == "report_score";
     });
-    console.log(i);
     temp[5].children.splice(i, 1);
   }
   if (!val.includes("question")) {
-    console.log(temp[5].children);
     let i = temp[5].children.findIndex((item: any) => {
       return item.dataIndex == "question_score";
     });
-    console.log(i);
     temp[5].children.splice(i, 1);
   }
   if (!val.includes("auto")) {
-    console.log(temp[5].children);
     let i = temp[5].children.findIndex((item: any) => {
       return item.dataIndex == "auto_score";
     });
-    console.log(i);
     temp[5].children.splice(i, 1);
   }
   if (!val.includes("video")) {
     let i = temp.findIndex((item: any) => {
       return item.dataIndex == "reference";
     });
-    console.log(i);
     temp.splice(i, 1);
   }
   // if (type.value==0) {
@@ -569,7 +520,7 @@ function updateTableHeader(val: any[]) {
   columns.value = temp;
 }
 onMounted(() => {
-  getChapterList();
+
 });
 </script>
 
