@@ -65,9 +65,16 @@ const initData = () => {
   //   totalCount.value = page.totalCount
   // })
 };
+const courseExperimentRecommend=()=>{
+  http.courseExperimentRecommend({urlParams: {courseId:courseId}}).then((res: any) => {
+       
+
+  });
+}
 onMounted(() => {
-  // 获取课程详情
-  //  获取章节树
+  if(Number(currentTab) === 1){
+    courseExperimentRecommend()
+  }
 });
 </script>
 

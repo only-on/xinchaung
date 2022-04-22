@@ -38,10 +38,11 @@
               </div>
               <div class="TitRight">
                 <div v-if="props.Editable === 'canStudy'">
-                  <!-- 准备完成变为 开始  按钮 -->
-                  <a-button v-if="a.type==='experiment'" type="primary" class="brightBtn" size="small" :loading="a.startup" @click.stop="prepare(a)">{{a.startup?'准备中':'开始学习'}}</a-button>
+                  <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
+                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2" 
+                  @click.stop="prepare(a)">{{`${['开始学习','准备中...','进入'][a.startup-1]}`}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
-                  <span class="view" @click.stop="ViewExperiment(a)">{{`${a.openGuidance?'收起':'查看'}`}}指导</span>
+                  <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
                 <!-- <div v-if="props.Editable === 'canEdit'">
                   
@@ -53,22 +54,9 @@
               </div>
             </div>
             <div class="experimentGuide" v-if="a.openGuidance">
-              <div v-if="a.type==='experiment'" class="experiment">
-                <div class="itemContentBox textScrollbar">
-                  <div class="itemContent" v-for="i in a.content" :key="i" :class="a.openGuidance?'itemContentHeight':''">
-                    <h4 class="">{{i.title}}</h4>
-                    <div class="text">{{i.text}}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="video-box" v-if="a.type==='mp4'">
-                <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl" :controls="true">
-                  您的浏览器不支持 video 标签
-                </video>
-              </div>
-              <div class="pdfBox" v-if="a.type==='pptx'">
-                <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'" /> -->
-              </div>
+              <!-- 实验指导展示  chartLoading-->
+              {{`${state.activeExperimentObj.type}`}}
+              <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
             </div>
           </div>
         </div>
@@ -100,6 +88,7 @@
 import { ref, toRefs, onMounted ,Ref,reactive,watch,computed,nextTick,createVNode} from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import Submit from "src/components/submit/index.vue";
+import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import { Modal, message } from "ant-design-vue";
 import ExperimentsAndMaterials from 'src/components/SelectDocOrMp4/ExperimentsAndMaterials.vue'
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
@@ -249,7 +238,7 @@ const cancel=()=>{
 }
 // 选中章节
 const selectChaptert=(val:any)=>{
-  console.log('章节',val)
+  // console.log('章节',val)
   // val.openItem=!val.openItem
   state.activeTab.chapterId=val.id
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
@@ -258,7 +247,8 @@ const selectChaptert=(val:any)=>{
   // 选中章节下实验
 function selectExperiment(a:any,v:any){
   state.activeTab.item=a
-  state.activeTab.chapterId=v.id
+  state.activeTab.chapterId=v.idv
+  state.activeExperimentObj={...a}
   emit('selectExperiment',a)
   // pdf 视频 跳页面展示
   // const { href } = router.resolve({
@@ -267,7 +257,7 @@ function selectExperiment(a:any,v:any){
   // window.open(href, "_blank");
 }
 function prepare(a:any) {
-  a.startup=true
+  a.startup=2
   // return
   let param: any = {
     type: "course",
@@ -298,9 +288,12 @@ function prepare(a:any) {
     toVmConnect(router, param, routeQuery);
   }
 }
-function ViewExperiment(a:any){
+function ViewExperiment(a:any,v:any){
   a.openGuidance=!a.openGuidance
   // a.type 如果是pdf 或者MP4 新开页面播放
+  if(!a.openGuidance){
+    selectExperiment(a,v)
+  }
 }
 // 编辑章节下素材、实验列表
 const establishChapter=(v:any)=>{
@@ -409,6 +402,8 @@ const getChaptersTree=()=>{
           // v.list.push(i)
         }):''
         v.contents.length?v.contents.forEach((i:any)=>{
+          i.startup=1     // 公开  加载开始学习  1未开始学习  2准备中   3准备完成 待进入
+          i.openGuidance=false //公开 加载实验指导
           i.TeachingAids=false
           i.task_type=i.type
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
@@ -427,7 +422,7 @@ const getChaptersTree=()=>{
       }
       data[index].openItem=true
     }
-    console.log(data)
+    // console.log(data)
     ChaptersTreeList.push(...data)
   })
 }
@@ -455,6 +450,7 @@ onMounted(() => {
       justify-content: space-between;
       height: 46px;
       border-bottom: 1px dashed #e8e8e8;
+      padding: 0 8px;
       &:hover{
         background: #fff7e6;
         cursor: pointer;

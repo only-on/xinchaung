@@ -39,7 +39,7 @@
             </div>
             <div class="item" v-if="isShowCourseDetail">
               <span>实验时长</span>
-              <span class="num">30分钟</span>
+              <span class="num">{{info.content_duration}}分钟</span>
             </div>
           </div>
           <div class="user flexCenter">
@@ -49,8 +49,8 @@
               <div class="userName">{{info.user_name}}</div>
             </div>
             <div class="tags">
-              <span>标签1/标签2/</span>
-              <!-- <span>{{`${props.info.tags.join('/')}`}}</span> -->
+              <!-- <span>标签1/标签2/</span> -->
+              <span>{{(info.tags && info.tags.length)?`${info.tags.join('/')}`:''}}</span>
             </div>
           </div>
         </div>

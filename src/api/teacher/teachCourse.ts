@@ -23,8 +23,8 @@ export default {
 
   // 保存/更新实验到章节  
   addCoursesChapter:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/content`, method: "POST",dataType: "json"},
-  // 获取章节的实验指导 /api/course/contents/{实验ID}/guidance
-  getExperimentGuide:{ url: `/api/course/contents/{experimentId}/guidance`, method: "GET"},
+  // 获取章节的实验指导  使用的实验详情接口
+  getExperimentGuide:{ url: `/api/xinchuang/content/content/{experimentId}`, method: "GET" },
   // 保存教辅资料到章节
   addCoursesChapterAids:{ url: `/api/course/courses/{courseId}/chapters/{chapterId}/dataset`, method: "POST",dataType: "json"},
   // 删除章节下实验   
@@ -51,6 +51,9 @@ export default {
 
   // 课程详情
   courseDetail:{ url: `/api/course/courses/{courseId}`, method: "GET",dataType: "json"},
+  // 课程相关实验推荐
+  courseExperimentRecommend:{ url: `/api/course/courses/{courseId}/contents/recommend`, method: "GET"},
+  
   // 课程复用  
   multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},
   

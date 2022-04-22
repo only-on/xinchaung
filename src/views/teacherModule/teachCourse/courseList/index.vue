@@ -11,7 +11,7 @@
               <div v-if="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
                 <span class="img"></span>
-                <span class="userName">{{v.is_init?'系统内置':'教师'}}</span>
+                <span class="userName">{{v.is_init?'系统内置':v.user_name}}</span>
               </div>
             </div>
             <div class="tabBox">
