@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectList: () => [],
   activeFile: () => {},
 });
-console.log(props)
+// console.log(props)
 const emit = defineEmits<{
   (e: "selectDocOrMp4File", val: any): void;
   (e: "closeDrawerDoc"): void;
