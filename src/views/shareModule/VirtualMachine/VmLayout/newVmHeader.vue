@@ -1203,12 +1203,13 @@ function getKeyword(val: any) {
 }
 // f
 onMounted(() => {
-  getQuestionList(false);
+  
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
   if (taskType.value !== 6 && taskType.value !== 7 && role === 4) {
     times();
+    getQuestionList(false);
   }
 }),
   onBeforeRouteLeave(() => {
