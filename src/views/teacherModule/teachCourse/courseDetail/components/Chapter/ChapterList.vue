@@ -61,7 +61,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!ChaptersTreeList.length" :text="'暂无章节'" />
+      <Empty v-if="!ChaptersTreeList.length && !chartLoading" :text="'暂无章节'" />
     </a-spin>
   </div>
   <!-- 编辑章节的实验名称 -->

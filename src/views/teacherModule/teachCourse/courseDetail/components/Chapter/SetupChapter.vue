@@ -31,8 +31,10 @@
         <a-spin :spinning="experimentGuideLoading" size="large" tip="Loading...">
           <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
             <!-- 实验指导展示  chartLoading-->
-            {{`${state.activeExperimentObj.type}`}}
-            <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
+            <!-- {{`实验类型：${state.activeExperimentObj.type}`}} -->
+            <template v-if="state.activeExperimentObj.Newguidance">
+              <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
+            </template>
           </div>
         </a-spin>
       </template>
@@ -121,9 +123,9 @@ const selectExperiment=(val:any)=>{
 const getExperimentGuide=(id:number)=>{
   experimentGuideLoading.value=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
-    experimentGuideLoading.value=false
     const {data}=res  
     state.activeExperimentObj.Newguidance=res.data
+    experimentGuideLoading.value=false
     // courseDirection.push(...data)
   })
 }
