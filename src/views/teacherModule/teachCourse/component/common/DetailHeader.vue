@@ -50,7 +50,7 @@
             </div>
             <div class="tags">
               <!-- <span>标签1/标签2/</span> -->
-              <span>{{(info.tags && info.tags.length)?`${info.tags.join('/')}`:''}}</span>
+              <span>{{(info.tag && info.tag.length)?`${info.tag.join(' / ')}`:''}}</span>
             </div>
           </div>
         </div>

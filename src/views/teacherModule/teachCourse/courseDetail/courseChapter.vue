@@ -1,8 +1,10 @@
 <template>
   <div class="courseContent">
     <div class="leftContent content">
-      <h3 class="courseH3">课程简介</h3>
-      <div class="introduce">{{props.courseDetail.introduce}}</div>
+      <div class="introduceBox">
+        <h3 class="courseH3">课程简介</h3>
+        <div class="introduce">{{props.courseDetail.introduce}}</div>
+      </div>
       <SetupChapter :Editable="(currentTab === '0' && role === 3)?'canEdit':'canStudy'" :courseId="Number(courseId)" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
@@ -84,13 +86,18 @@ onMounted(() => {
     width: var(--center-width);
     margin: 0 auto;
     display: flex;
+    
     .content{
       padding: 20px;
     }
     .leftContent{
+      background-color: #fff;
       // width: 70%;
       flex: 1;
       padding-top: 40px;
+      .introduceBox{
+        
+      }
       .introduce{
         font-weight: 400;
         color: var(--black-65);

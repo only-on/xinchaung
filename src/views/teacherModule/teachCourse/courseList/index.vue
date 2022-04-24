@@ -16,7 +16,7 @@
             </div>
             <div class="tabBox">
               <!-- <span>标签1/标签2/</span> -->
-                <span>{{(v.tags && v.tags.length)?`${v.tags.join('/')}`:''}}</span>
+                <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
             </div>
           </div>
           <div class="flexCenter Projection">

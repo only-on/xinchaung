@@ -106,7 +106,8 @@ export default defineComponent({
   }
   .main-box {
     flex: 1;
-    background: rgba(240, 240, 240, 0.7);
+    background: #fafafb;
+    // background: rgba(240, 240, 240, 0.7);
     overflow: hidden;
     padding-bottom: 32px;
     min-height: 750px;
@@ -116,7 +117,9 @@ export default defineComponent({
     .regulations {
       width: var(--center-width);
       margin: 0 auto;
-      padding-top: 20px;
+      // padding-top: 20px;
+      margin-top: 20px;
+      background-color: #fff;
     }
     .customized {
     }

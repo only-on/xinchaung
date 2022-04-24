@@ -99,6 +99,7 @@ import { useRoute ,useRouter} from "vue-router";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import request from 'src/api/index'
 import extStorage from "src/utils/extStorage";
+import { IBusinessResp } from "src/typings/fetch.d";
 const http=(request as any).teachCourse
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
@@ -298,7 +299,6 @@ function ViewExperiment(a:any,v:any){
   console.log(a)
   state.activeExperimentObj={...a}
   a.openGuidance=!a.openGuidance
-  // a.type 如果是pdf 或者MP4 新开页面播放
   if(a.openGuidance){
     selectExperiment(a,v)
     getExperimentGuide(a.content_id)
@@ -307,7 +307,7 @@ function ViewExperiment(a:any,v:any){
 const experimentGuideLoading: Ref<boolean> = ref(false);
 const getExperimentGuide=(id:number)=>{
   experimentGuideLoading.value=true
-  http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:any)=>{
+  http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     console.log(res)
     const {data}=res  
     state.activeExperimentObj.Newguidance=data

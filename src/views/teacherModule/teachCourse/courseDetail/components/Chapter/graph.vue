@@ -1,5 +1,5 @@
 <template>
-  <h3 class="courseH3">知识点</h3>
+  <h3 class="graphTit">知识点</h3>
   <div class="graphBox">
     <div id="graph"></div>
     <div class="magnifier" @click="viewAtlas()">
@@ -55,9 +55,12 @@ onMounted(() => {
 </script>
 
 <style lang="less" scope>
-  .courseH3{
-    margin-bottom: 1rem;
+  .graphTit{
+    // margin-bottom: 1rem;
     // color: var(--blue-6-2);
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #dcdcdc;
   }
   .graphBox{
     width: 100%;

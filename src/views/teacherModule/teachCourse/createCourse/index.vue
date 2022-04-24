@@ -79,7 +79,7 @@
       </template>
       <template v-if="currentStep === 1">
         <div class="info2">
-          <SetupChapter :Editable="'canEdit'" :courseId="courseId" />
+          <SetupChapter :Editable="'canEdit'" :courseId="courseId" :create="true" />
         </div>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>

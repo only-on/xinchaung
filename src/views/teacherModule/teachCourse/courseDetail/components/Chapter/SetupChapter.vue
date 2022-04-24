@@ -22,7 +22,7 @@
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
-            <div class="Lesson flexCenter" @click="lessonPreparation">
+            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create">
               <span class="iconfont icon-jitibeike"></span>
               <span>{{openVncState ? '准备中...' : '开始备课'}}</span>
             </div>
@@ -44,7 +44,7 @@
 
   <!-- 课程设置 -->
   <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
-    <div class="box" v-if="state.activeExperimentObj.id && !experimentGuideLoading">
+    <div class="box" v-if="state.activeExperimentObj.id && !state.activeExperimentObj.TeachingAids && !experimentGuideLoading && state.activeExperimentObj.Newguidance">
       <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
       <onlinePreview :content="state.activeExperimentObj.Newguidance.content_template.json_content" />
     </div>
@@ -82,7 +82,8 @@ const routeQuery = route.query
 const { currentTab,course_id } = route.query;
 interface Props {
   // chapterList:any
-  Editable:string
+  create?:boolean
+  Editable?:string
   courseId:number
   // knowledge: any;
   // words:any
@@ -90,6 +91,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   // knowledge: ()=> [],  //  
   // chapterList: ()=> [],      // 
+  create:false,
   Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑
   courseId:0
 });

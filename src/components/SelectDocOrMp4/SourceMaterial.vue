@@ -16,7 +16,7 @@
     <div class="dataList setScrollbar">
       <div class="list" v-if="docOrMp4Drawer.list.length">
         <div class="item" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
-          <div class="flexCenter itemInfo" :class="(v.show && v.fileList.length)?'openInformation':''">
+          <div class="flexCenter itemInfo" :class="(v.show && v.fileList.length)?'openInformation':''"  @click="v.item_count?getDetailFile(v):''">
             <div class="flexCenter left">
             <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
             <div class="docBg" :style="`background-image: url(${v.cover});`"></div>
@@ -48,7 +48,7 @@
             </div>
             <div class="flexCenter right">
               <!-- <span> {{ bytesToSize(v.size)}} </span> -->
-              <span class="iconfont" @click="v.item_count?getDetailFile(v):''" :class="v.item_count?'':'iconFontDis'">
+              <span class="iconfont" :class="v.item_count?'':'iconFontDis'">
                 {{ v.show ? "收起" : "展开" }}
               </span>
             </div>
