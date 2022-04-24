@@ -120,9 +120,9 @@ function selectTuestion(type: any) {
     componentName.value = "explainques";
   }
   if (type === "ques") {
+    state.visible = true;
     componentName.value = "choiceques";
   }
-  state.visible = true;
 }
 //成绩统计弹框
 function scoreStatistic() {
@@ -148,7 +148,7 @@ function selectExperiment(val: any) {
   inclassTestList()
 }
 function inclassTestList(){
-  http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:10}}).then((res:any)=>{
+  http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:10,needs_answer:true}}).then((res:any)=>{
     datalist.value=res.data.list
     statisTic.value=res.data.analysis
   })

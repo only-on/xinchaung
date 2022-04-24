@@ -54,11 +54,11 @@
         </div>  
       </template>
     </a-table>
-    <a-modal v-model:visible="visible" title='添加助教' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
+    <a-modal v-model:visible="visible" :title='editId?"编辑助教":"添加助教"' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
       <a-form ref="formRef" :model="formState" layout="vertical" :rules="rules">
         <div class="formBox">
             <a-form-item label="账号"  name="username">
-              <a-input v-model:value="formState.username" />
+              <a-input v-model:value="formState.username" :disabled='editId' />
             </a-form-item>
             <a-form-item label="姓名"  name="name">
               <a-input v-model:value="formState.name" />
@@ -269,6 +269,10 @@ function delateCard(val: number) {
       });
 }
 function submit(){
+  if(formState.userinitpassword){
+    formState.password_hash=formState.username+'1q2w'
+    formState.repassword=formState.username+'1q2w'
+  }
   formRef.value.validate().then(()=>{
     if (formState.password_hash !== formState.repassword) {
           message.warn("密码输入不一致");

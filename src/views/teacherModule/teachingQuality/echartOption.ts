@@ -2003,8 +2003,8 @@ let option2:any = {
  });
 let option4:any = {
     title: {
-      text: 'Les Miserables',
-      subtext: 'Default layout',
+      text: '',
+      subtext: '',
       top: 'bottom',
       left: 'right'
     },
@@ -2014,7 +2014,7 @@ let option4:any = {
     color:['#6AC8F4','#FFB354','#FF9A56','#00CBC2','#FF7B7B'],
     series: [
       {
-        name: 'Les Miserables',
+        name: '',
         type: 'graph',
         layout: 'none',
         data: graph.nodes,

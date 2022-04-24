@@ -11,7 +11,7 @@
     >
     <div class="editCon">
         <div class="hasGroup">
-          <div class="title">分组列表</div>
+          <div class="title">分组列表({{treeData.length}})</div>
           <div class="createInpt">
               <a-input v-model:value="groupName">
                 <template #addonAfter>
@@ -83,7 +83,15 @@
           </div>
         </div>
         <div class="unGroup">
-          <div class="title">学生列表</div>
+          <div class="title">学生列表
+            <a-checkbox
+              :indeterminate="indeterminate"
+              v-model:checked="checkAll"
+              @change="onCheckAllChange"
+            >
+            {{checkedValues.length}}/{{unGroupData.length}}
+            </a-checkbox>
+            </div>
           <div class="searchvalue">
             <a-input-search
               v-model:value="searchvalue"
@@ -138,25 +146,19 @@ const treeData:any=ref([])
 const unGroupData:any=ref([])
 const checkedValues:any=ref([])
 const selectedGroup:any=ref('')//选中的分组
-// treeData.value=[{ id:505,
-//   name:'小组2',
-//   index:0,
-//   student_list:[
-//     {userProfile:{id:1616,name:'stu1234'}}
-//   ]
-// },{ id:506,
-//   name:'小组3',
-//   index:1,
-//   student_list:[
-//     {userProfile:{id:1617,name:'stu1236'}}
-//   ]
-// }]
-// unGroupData.value=[
-//   {userProfile:{id:1618,name:'stu1'}},
-//   {userProfile:{id:1619,name:'stu2'}},
-//   {userProfile:{id:1620,name:'stu3'}},
-//   {userProfile:{id:1621,name:'stu4'}},
-// ]
+const checkAll:any=ref(false)
+const indeterminate:any=ref(false)
+const allStuIdsValues:any=ref([])
+function onCheckAllChange(e:any){
+  checkedValues.value=[]
+  console.log(e)
+  unGroupData.value.forEach((item: any, index: any) => {
+    checkedValues.value.push(item.userProfile.id);
+  });
+  checkedValues.value=e.target.checked ?checkedValues.value : []
+  // indeterminate.value=e.target.checked ?true:false
+  checkAll.value=e.target.checked ?true:false
+}
 function toDoKey(index:any,it:any){
   return index + '-' + it?.userProfile?.id;
 }
@@ -177,6 +179,8 @@ function handleOk(){
       http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
         if(res.code){
         emit("updateVisable",'false',true);
+        treeData.value=[]
+        unGroupData.value=[]
       }
     })
   }else{
@@ -196,6 +200,8 @@ function handleOk(){
 }
 function handleCancel(){
   emit("updateVisable",'false',false);
+  treeData.value=[]
+  unGroupData.value=[]
 }
 function createGroup(){
   const newGroupData={name:groupName.value,student_list:[]}
@@ -288,9 +294,18 @@ function groupNumberList(){
   })
 }
 watch(
+      () => checkedValues.value,
+      val => {
+        indeterminate.value = !!val.length && val.length < unGroupData.value.length;
+        checkAll.value = val.length === unGroupData.value.length;
+      },
+)
+watch(
       () =>props.visable,
       () => {
         if(props.visable){
+          treeData.value=[]
+          unGroupData.value=[]
           console.log(props.ifedit,'props.ifedit')
           if(props.ifedit){
             groupNumberList()

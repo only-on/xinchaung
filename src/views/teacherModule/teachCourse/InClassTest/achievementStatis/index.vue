@@ -21,7 +21,20 @@
           <span>总分 <span class="number">{{statis.scores}}</span>分</span>
         </div>
       </div>
-      <a-table :columns="columns" :data-source="data"> </a-table>
+      <a-table :columns="columns" :data-source="data" 
+      :pagination="
+        tableData.total > 10
+          ? {
+              hideOnSinglePage: false,
+              showSizeChanger: true,
+              total: tableData.total,
+              current: tableData.page,
+              pageSize: tableData.limit,
+              onChange: onChange,
+              onShowSizeChange: onShowSizeChange,
+            }
+          : false
+      "> </a-table>
     </div>
   </a-modal>
 </template>
@@ -32,6 +45,12 @@ const http = (request as any).teacherInclassTest;
 const columns: any = ref("");
 const data: any = ref("");
 const statis:any=ref('')
+const tableData: any = reactive({
+  total: 0,
+  page: 1,
+  limit: 10,
+  selectedRowKeys:[]
+});
 columns.value = [
   { title: "学号", dataIndex: "username", key: "username" },
   {
@@ -88,6 +107,8 @@ function getAchiveList(){
     data.value=res.data.list
   })
 }
+function onChange(page: any, pageSize: any) {}
+function onShowSizeChange(current: any, size: any) {}
 onMounted(()=>{
   getStatisticGrands()
   getAchiveList()
