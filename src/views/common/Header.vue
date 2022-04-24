@@ -106,7 +106,6 @@ export default defineComponent({
         // console.log(res)
         lStorage.clean();
         // message.success('')
-        // window.location.href = 'http://192.168.101.150:85/site/login';
         let url = `${window.origin}#/login`;
         console.log(url);
         window.location.href = url;

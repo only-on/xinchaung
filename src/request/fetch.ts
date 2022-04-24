@@ -165,7 +165,7 @@ export default function request({
           reject(null)
           const env = process.env.NODE_ENV == "development" ? true : false;
           if(env === false){
-            let url = `${window.origin}/site/login`;
+            let url = `${window.origin}/#/login`;
             console.log(url);
             window.location.href = url;
           }

@@ -66,7 +66,7 @@ export default defineComponent({
     function loginOut() {
       (request as any).common.loginOut().then((res: any) => {
         extStorage.lStorage.clean();
-        let url = `${window.origin}/site/login`;
+        let url = `${window.origin}/#/login`;
         window.location.href = url;
       });
     }
