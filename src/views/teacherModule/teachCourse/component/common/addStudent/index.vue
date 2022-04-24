@@ -43,8 +43,8 @@
               hideOnSinglePage: false,
               showSizeChanger: true,
               total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
+              current: params.page,
+              pageSize: params.limit,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -130,8 +130,7 @@ columns.value = [
 ];
 const tableData: any = reactive({
   total: 0,
-  page: 1,
-  limit: 10,
+  selectedRowKeys:[]
 });
 const params:any=reactive({
   type:props.type,
@@ -154,14 +153,17 @@ function getCheckboxProps(record: any) {
 function handleChange() {}
 function onSearch(value: any) {
   console.log(value);
+  params.page=1
   getallstudent()
 }
 function onChange(page: any, pageSize: any) {
   params.page=page;
+  getallstudent()
 }
 function onShowSizeChange(current: any, size: any) {
   params.page=1;
   params.limit=size;
+  getallstudent()
 }
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
@@ -188,6 +190,7 @@ function handleCancelSelect(){
 function getallstudent(){
   http.allstudentlist({param:params}).then((res:any)=>{
     data.value=res.data.list
+    tableData.total=res.data.page.totalCount
   })
 }
 watch(

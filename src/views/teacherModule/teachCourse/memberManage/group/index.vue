@@ -13,8 +13,8 @@
               hideOnSinglePage: false,
               showSizeChanger: true,
               total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
+              current: groupListParams.page,
+              pageSize:groupListParams.limit,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -75,9 +75,7 @@ columns.value = [
   },
 ];
 const tableData: any = reactive({
-  total: 0,
-  page: 1,
-  limit: 10,
+  total: 0
 });
 const groupListParams:any=reactive({
     id:courseId,
@@ -93,9 +91,18 @@ function handleChange(value: string) {
 }
 function onSearch(value: any) {
   console.log(value);
+  groupListParams.page=1
+  getGroupList()
 }
-function onChange(page: any, pageSize: any) {}
-function onShowSizeChange(current: any, size: any) {}
+function onChange(page: any, pageSize: any) {
+  groupListParams.page=page
+  getGroupList()
+}
+function onShowSizeChange(current: any, size: any) {
+  groupListParams.page=1
+  groupListParams.limit=size
+  getGroupList()
+}
 function autoGroup() {
   groupType.value='auto';
   modalVisable.value = true;
@@ -136,7 +143,7 @@ function getGroupList() {
           .then((res: any) => {
             console.log(res);
             data.value = res.data.list;
-            // state.total = res?.data.page.totalCount;
+            tableData.total = res?.data.page.totalCount;
           });
 }
 onMounted(()=>{

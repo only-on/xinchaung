@@ -3,6 +3,7 @@ export default {
   allstudentlist: { url: '/api/arrange/students', method: "GET" },//待选的学生列表 
   coursestudentlist:{url: '/api/arrange/students/search', method: "GET"},//课程已经选择的学生
   addStudentToCourse:{url: '/api/arrange/students', method: "POST"},//添加学生到课程
+  importStu:{url:'/api/arrange/students/import',method: "POST", dataType: 'formdata'},//导入学生
   deleteStudentCourse:{url:'/api/arrange/students/delete',method:"POST",dataType: 'json'},//删除课程里学生
   // initializationPassword:{url:'teacher-train/reset-student-pwd',method:''}//初始化密码
   grouplist:{url:'/api/arrange/groups',method:'GET'},
@@ -27,6 +28,7 @@ export interface IteacherMemberManage {
     allstudentlist:TFHttpSend
     coursestudentlist:TFHttpSend
     addStudentToCourse:TFHttpSend
+    importStu:TFHttpSend
     deleteStudentCourse:TFHttpSend
     // initializationPassword:TFHttpSend
     grouplist:TFHttpSend

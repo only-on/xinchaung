@@ -1,14 +1,8 @@
 <template>
     <div class="academicAnalysis">
        <div class="tree">
-        <!-- <chapterTree
-          :chartLoading="chartLoading"
-          :chapterList="ChaptersTreeList"
-          @selectExperiment="selectExperiment" 
-         /> -->
          <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
        </div>
-       <!-- v-if="statisData" -->
        <div class="analy-right">
             <div>
                 <distributionOfResults v-if="statisData"  :statisData='statisData'></distributionOfResults>
@@ -42,12 +36,6 @@
           : false
       "
     >
-    <!-- <template #action='{record}'>
-      <div class="action">
-        <span class='delete' @click="deleteStu(record.id)">删除</span>
-        <span @click="initPassward">初始化密码</span>
-      </div>
-    </template> -->
     </a-table>
             </div> 
        </div>
@@ -128,29 +116,26 @@ columns.value = [
     key: "reportScore",
   },
 ];
-function handleChange(){
 
+function onChange(page: any, pageSize: any) {
+  tableData.page=page
+  getStugrandsList()
 }
-function onChange(){
-
-}
-function onShowSizeChange(){
-
-}
-function getChapterList(){
-  http1.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
-    console.log(res)
-    ChaptersTreeList.value=res.data
-  })
+function onShowSizeChange(current: any, size: any) {
+  tableData.page=1
+  tableData.limit=size
+  getStugrandsList()
 }
 function getStugrandsList(){
-  http.stuGrandsList({urlParams:{content_id:experitId.value},param:{className:className.value}}).then((res:any)=>{
+  http.stuGrandsList({urlParams:{content_id:experitId.value},param:{className:className.value,limit:tableData.limit,page:tableData.page}}).then((res:any)=>{
     if(res.code==1){
       data.value=res.data.list
+      tableData.total=res.data.page.totalCount
     }
   })
 }
 function onSearch(){
+  tableData.page=1
   getStugrandsList()
 }
 function getStuStatis(){
@@ -166,9 +151,6 @@ function selectExperiment(val: any) {
   getStuStatis()
   getStugrandsList()
 }
-onMounted(()=>{
-  // getChapterList()
-})
 </script>
 <style lang="less" scoped>
 .academicAnalysis{

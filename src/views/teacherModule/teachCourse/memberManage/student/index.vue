@@ -182,9 +182,14 @@ const params:any=reactive({
 })
 function handleChange() {}
 function onSearch(value: any) {
+  tableData.page=1
   getcoursestudent()
 }
-function onChange(page: any, pageSize: any) {}
+function onChange(page: any, pageSize: any) {
+  tableData.page=1
+  tableData.limit=pageSize
+  getcoursestudent()
+}
 function onShowSizeChange(current: any, size: any) {}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
@@ -208,8 +213,9 @@ function updateSelectStuVisable(value: any,studentids:any) {
   }
 }
 function getcoursestudent(){
-  http.coursestudentlist({param:params}).then((res:any)=>{
+  http.coursestudentlist({param:params,limit:tableData.limit,page:tableData.page}).then((res:any)=>{
     data.value=res.data.list
+    tableData.total=res.data.page.totalCount
   })
 }
 function addStuToCourse(){

@@ -1,14 +1,6 @@
 <template>
   <div id="inClassTest">
     <div class="tree">
-      <!-- <chapterTree
-          :chartLoading="chartLoading"
-          :chapterList="ChaptersTreeList"
-          @deleteChapter="deleteChapter"
-          @editExperiment="editExperiment"
-          @editChapter="editChapter"
-          @selectExperiment="selectExperiment" 
-          @establishChapter="establishChapter" /> -->
           <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
     </div>
     <div class="test">
@@ -148,32 +140,11 @@ function selectExperiment(val: any) {
   inclassTestList()
 }
 function inclassTestList(){
-  http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:10,needs_answer:true}}).then((res:any)=>{
+  http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:100,needs_answer:true}}).then((res:any)=>{
     datalist.value=res.data.list
     statisTic.value=res.data.analysis
   })
 }
-function deleteChapter(){
-
-}
-function editExperiment(){
-
-}
-function editChapter(){
-
-}
-function establishChapter(){
-
-}
-function getChapterList(){
-  http1.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any)=>{
-    console.log(res)
-    ChaptersTreeList.value=res.data
-  })
-}
-onMounted(()=>{
-  // getChapterList()
-})
 </script>
 <style lang="less" scoped>
 #inClassTest {

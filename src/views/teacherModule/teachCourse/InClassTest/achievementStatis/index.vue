@@ -34,7 +34,16 @@
               onShowSizeChange: onShowSizeChange,
             }
           : false
-      "> </a-table>
+      "> 
+      <template #score_total='{record}'>
+            <span v-if="record.score_total=='null'">--</span>
+            <span v-else>{{record.score_total}}</span>
+        </template>
+         <template #wrong_answers_number='{record}'>
+            <span v-if="record.wrong_answers_number=='null'">--</span>
+            <span v-else>{{record.wrong_answers_number}}</span>
+        </template>
+      </a-table>
     </div>
   </a-modal>
 </template>
@@ -67,11 +76,13 @@ columns.value = [
     title: "成绩",
     key: "score_total",
     dataIndex: "score_total",
+    slots: { customRender: "score_total" },
   },
   {
     title: "答错",
     key: "wrong_answers_number",
     dataIndex: "wrong_answers_number",
+    slots: { customRender: "wrong_answers_number" },
   },
 ];
 
@@ -103,12 +114,20 @@ function getStatisticGrands(){
   })
 }
 function getAchiveList(){
-  http.achivelist({urlParams:{content_id:props.experitId}}).then((res:any)=>{
+  http.achivelist({urlParams:{content_id:props.experitId},param:{limit:tableData.limit,page:tableData.page}}).then((res:any)=>{
     data.value=res.data.list
+    tableData.total=res.data.page.totalCount
   })
 }
-function onChange(page: any, pageSize: any) {}
-function onShowSizeChange(current: any, size: any) {}
+function onChange(page: any, pageSize: any) {
+  tableData.page=page
+  getAchiveList()
+}
+function onShowSizeChange(current: any, size: any) {
+  tableData.page=1
+  tableData.limit=size
+  getAchiveList()
+}
 onMounted(()=>{
   getStatisticGrands()
   getAchiveList()

@@ -191,9 +191,15 @@ var formState:any=reactive({
       ],
       phone:[{pattern:/^(1(3|4|5|6|7|8|9)|9(2|8))\d{9}$/, message: '请输入正确的手机号',trigger: 'blur'}]  
     }
-function handleChange() {}
-function onChange(page: any, pageSize: any) {}
-function onShowSizeChange(current: any, size: any) {}
+function onChange(page: any, pageSize: any) {
+  tableData.page=page
+  getAssistantList()
+}
+function onShowSizeChange(current: any, size: any) {
+  tableData.page=1
+  tableData.limit=size
+  getAssistantList()
+}
 function onSelectChange(selectedRowKeys: any) {
   tableData.selectedRowKeys=selectedRowKeys
 }
@@ -310,6 +316,7 @@ function submit(){
   })
 }
 function onSearch(){
+  tableData.page=1
   getAssistantList()
 }
 function getAssistantList(){
@@ -319,13 +326,14 @@ function getAssistantList(){
           name:params.name,
         },
         page: {
-          pageSize:10,
-          page:1,
+          pageSize:tableData.limit,
+          page:tableData.page,
         },
       };
   http.assistantList({param:obj}).then((res:any)=>{
       if(res.status==1){
         data.value=res.data.list
+        tableData.total=res.data.page.totalCount
       }
   })
 }

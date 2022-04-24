@@ -1,7 +1,16 @@
 <template>
   <div id="batchImportStu">
     <div class="batchTop">
-      <a-button type="primary">选择文件</a-button>
+     
+      <a-upload
+          name="file"
+          :multiple="true"
+          :show-upload-list="false"
+          accept=".xlsx"
+          :customRequest="beforeUpload"
+        >
+        <a-button type="primary">选择文件</a-button>
+        </a-upload>
       <span>
         <span class="downTemplate">下载学生模板</span>
         <span class="title">*建议每次导入的数量不要超过500条</span>
@@ -38,6 +47,9 @@ import { ref, toRefs, onMounted, reactive } from "vue";
 import student from "./student/index.vue";
 import group from "./group/index.vue";
 import assistant from "./assistant/index.vue";
+import request from 'src/api/index'
+import { message,Modal } from "ant-design-vue";
+const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
 columns.value = [
@@ -62,6 +74,16 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+function beforeUpload(file:any){
+  console.log(file)
+  const fd = new FormData()
+  fd.append('file',file.file)
+ http.importStu({param:fd}).then((res:any)=>{
+      if(res.code){
+        message.warning('导入成功')
+      }
+ })
+}
 function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function callback() {}
