@@ -130,7 +130,7 @@ const selectExperiment=(val:any)=>{
   console.log(val)
   state.activeExperimentObj={...val}
   // 获取实验详情
-  if(!val.TeachingAids){
+  if(!val.TeachingAids && currentTab === '0'){
     getExperimentGuide(val.content_id)
   }
 }

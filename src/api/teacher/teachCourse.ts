@@ -42,7 +42,7 @@ export default {
   // 新建课程  已选择学生移除
   deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },
   // 新建课程 已选择学生初始化密码
-  resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },
+  resetPassWord: { url: 'api/course/courses/reset-student-password/{studentId}', method: "put" },
   //新建课程批量删除课程下学生
   deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },
 

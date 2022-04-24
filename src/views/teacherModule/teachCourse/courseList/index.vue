@@ -114,7 +114,7 @@ const isShowAdd = ref<boolean>(true);
 const searchInfo = reactive<ISearchInfo>({ 
   is_public: 0,
   name: '',
-  limit: 10,
+  limit: 12,
   page: 1,
 });
 watch(() => { return configuration.componenttype; },

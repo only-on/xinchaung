@@ -51,11 +51,10 @@
               </div>
             </div>
             <div class="experimentGuide" v-if="a.openGuidance">
-              <!-- 实验指导展示  chartLoading-->
-              <!-- {{`${state.activeExperimentObj.type}`}}
-              <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" /> -->
-              <a-spin  :spinning="experimentGuideLoading" size="large" tip="Loading...">
-                <template v-if="state.activeExperimentObj.Newguidance">
+              <!-- 实验指导展示  chartLoading -->
+              <!-- {{`${state.activeExperimentObj.type}`}} -->
+              <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading...">
+                <template v-if="!a.experimentGuideLoading">
                   <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
                 </template>
               </a-spin>
@@ -300,18 +299,22 @@ function ViewExperiment(a:any,v:any){
   state.activeExperimentObj={...a}
   a.openGuidance=!a.openGuidance
   if(a.openGuidance){
-    selectExperiment(a,v)
-    getExperimentGuide(a.content_id)
+    if(!a.TeachingAids){
+      selectExperiment(a,v)
+      getExperimentGuide(a.content_id,a)
+    }else{
+      console.log('教辅')
+    }
   }
 }
-const experimentGuideLoading: Ref<boolean> = ref(false);
-const getExperimentGuide=(id:number)=>{
-  experimentGuideLoading.value=true
+// const experimentGuideLoading: Ref<boolean> = ref(false);
+const getExperimentGuide=(id:number,a:any)=>{
+  a.experimentGuideLoading=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
-    console.log(res)
+    // console.log(res)
     const {data}=res  
     state.activeExperimentObj.Newguidance=data
-    experimentGuideLoading.value=false
+    a.experimentGuideLoading=false
   })
 }
 // 编辑章节下素材、实验列表
@@ -422,7 +425,8 @@ const getChaptersTree=()=>{
         }):''
         v.contents.length?v.contents.forEach((i:any)=>{
           i.startup=1     // 公开  加载开始学习  1未开始学习  2准备中   3准备完成 待进入
-          i.openGuidance=false //公开 加载实验指导
+          i.openGuidance=false //公开 展开实验指导
+          i.experimentGuideLoading=false  // 公开课程加载实验指导
           i.TeachingAids=false
           i.task_type=i.type
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);

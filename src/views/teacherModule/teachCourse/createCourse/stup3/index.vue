@@ -179,7 +179,7 @@ const removeStudent=(id: any) =>{
 }
  // 初始化
 const initPassword=(id: any) =>{
-  http.resetPassWord({ param: { schedule_id: id } }).then((res: any) => {
+  http.resetPassWord({ urlParams: { studentId: id } }).then((res: any) => {
     message.success("重置密码成功！");
     initData()
   });
