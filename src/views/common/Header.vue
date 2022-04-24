@@ -107,7 +107,7 @@ export default defineComponent({
         lStorage.clean();
         // message.success('')
         // window.location.href = 'http://192.168.101.150:85/site/login';
-        let url = `${window.origin}/site/login`;
+        let url = `${window.origin}#/login`;
         console.log(url);
         window.location.href = url;
       });
@@ -370,7 +370,7 @@ export default defineComponent({
       }
       if (role == 4) {
         // return "/studentStatistic" // 学生端首页
-        router.push("/studentStatistic");
+        router.push("/student");
       }
       if (role == 1) {
         // return "/init-course/init" // 初始端

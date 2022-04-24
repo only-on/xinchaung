@@ -19,7 +19,7 @@ const teacherRoutes = {
         authCode: 'student',
         showInBreadcrumb: false
     },
-    redirect: '/studentStatistic',
+    redirect: '/student/statistics',
     children: configRoutes
 };
 export default teacherRoutes

@@ -19,7 +19,7 @@ const teacherRoutes = {
         authCode: 'teacher',
         showInBreadcrumb: false
     },
-    redirect: '/teacher/home',
+    redirect: '/teacher/teacherExperimentResourcePool',
     children: configRoutes
 };
 export default teacherRoutes
