@@ -18,6 +18,7 @@
                 :style="{ height: '45px' }"
                 @prevClick="callback"
                 @nextClick="callback"
+                @change='callback'
                 v-model:activeKey="activeKey"
                 >
                     <a-tab-pane v-for="i in 30" :key="i" :tab="`Tab-${i}`"></a-tab-pane>
@@ -107,6 +108,7 @@ const mode = ref('top');
 const activeKey = ref('1');
 function callback(val: string){
     console.log(val);
+    drawAnalysis()
 };
 const modules:any=ref([])
 function slideChangeTransitionEnd(){
@@ -115,27 +117,22 @@ function slideChangeTransitionEnd(){
 function setTranslate(){
 
 }
-onMounted(()=>{
-    var chartDom:any = document.getElementById('courseAchieve');
-    var chartDom1:any = document.getElementById('capabilityAnalysis');
-    var chartDom2:any = document.getElementById('knowledgePointErrorRate');
-    var chartDom3:any = document.getElementById('scoreDistribution');
-    var chartDom4:any = document.getElementById('knowledgeGraph');
-    var chartDom5:any = document.getElementById('highFrequencyErrorProne');
-    
-
+function drawAnalysis(){
+    setChartOption('capabilityAnalysis',option1)
+}
+function setChartOption(id:any,option:any){
+    document.getElementById(id)?.removeAttribute("_echarts_instance_");
+    var chartDom:any=document.getElementById(id)
     var myChart = echarts.init(chartDom);
-    var myChart1 = echarts.init(chartDom1);
-    var myChart2 = echarts.init(chartDom2);
-    var myChart3 = echarts.init(chartDom3);
-    var myChart4 = echarts.init(chartDom4);
-    var myChart5= echarts.init(chartDom5);
     option && myChart.setOption(option);
-    option1 && myChart1.setOption(option1);
-    option2 && myChart2.setOption(option2);
-    option3 && myChart3.setOption(option3);
-    option4 && myChart4.setOption(option4);
-    option5 && myChart5.setOption(option5);
+}
+onMounted(()=>{
+    drawAnalysis()
+    setChartOption('courseAchieve',option)
+    setChartOption('knowledgePointErrorRate',option2)
+    setChartOption('scoreDistribution',option3)
+    setChartOption('knowledgeGraph',option4)
+    setChartOption('highFrequencyErrorProne',option5)
 })
 </script>
 <style lang="less" scoped>

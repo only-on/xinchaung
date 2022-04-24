@@ -39,6 +39,11 @@
         : false
     "
   >
+          <template #success='record'>
+            <div>
+              {{record.success?'导入成功':'导入失败'}}
+            </div>
+          </template>
   </a-table>
 </template>
 
@@ -55,19 +60,20 @@ const data: any = ref([]);
 columns.value = [
   {
     title: "账号",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "username",
+    key: "username",
   },
   {
     title: "姓名",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "name",
+    key: "name",
   },
   {
     title: "导入情况",
-    dataIndex: "age",
-    key: "age",
-  },
+    dataIndex: "success",
+    key: "success",
+    slots: { customRender: "success" },
+  }
 ];
 const tableData: any = reactive({
   total: 0,
@@ -80,7 +86,8 @@ function beforeUpload(file:any){
   fd.append('file',file.file)
  http.importStu({param:fd}).then((res:any)=>{
       if(res.code){
-        message.warning('导入成功')
+        // message.warning('导入成功')
+        data.value=res.data
       }
  })
 }
