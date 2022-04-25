@@ -162,13 +162,15 @@ export default function request({
           // store.commit("logout");
           // router.replace({ path: "/login" }).catch(() => {});
           message.warning(res.msg);
+          let loginUrl = `${window.origin}/#/login`;
           reject(null)
-          const env = process.env.NODE_ENV == "development" ? true : false;
-          if(env === false){
-            let url = `${window.origin}/#/login`;
-            console.log(url);
-            window.location.href = url;
-          }
+          setTimeout(() => {
+            window.location.href = loginUrl
+          }, 500);
+          // const env = process.env.NODE_ENV == "development" ? true : false;
+          // if(env === false){
+          //   window.location.href = loginUrl;
+          // }
 
         } else {
           let meg='请求出错'

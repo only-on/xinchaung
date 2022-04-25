@@ -107,7 +107,6 @@ export default defineComponent({
         lStorage.clean();
         // message.success('')
         let url = `${window.origin}#/login`;
-        console.log(url);
         window.location.href = url;
       });
     }
