@@ -119,7 +119,7 @@ export default defineComponent({
       margin: 0 auto;
       // padding-top: 20px;
       margin-top: 20px;
-      background-color: #fff;
+      // background-color: #fff;
     }
     .customized {
     }

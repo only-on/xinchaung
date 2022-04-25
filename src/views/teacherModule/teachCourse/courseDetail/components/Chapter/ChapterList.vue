@@ -448,12 +448,11 @@ const getChaptersTree=()=>{
             v.list.push(i)
           }
         }):''
-        // v.list=v.list.concat(v.resource,v.contents)
-        if(props.Editable === 'readOnly'){ //Editable:'readOnly',  
-          // v.list=v.list.concat(v.contents)
-        }else{
-          // v.list=v.list.concat(v.resource,v.contents)
-        }
+        // if(props.Editable === 'readOnly'){ //Editable:'readOnly',  
+        //   v.list=v.list.concat(v.contents)
+        // }else{
+        //   v.list=v.list.concat(v.resource,v.contents)
+        // }
         if(state.activeTab.chapterId && state.activeTab.chapterId === v.id){
           item={...v}
           index=k

@@ -167,7 +167,7 @@ export default defineComponent({
       url: "/teacher/teacherMaterialResource",
       children: [],
     };
-    // 课程
+    // 教师课程
     let teacherCourse={
       icon: "",
       id: 180,
@@ -270,12 +270,24 @@ export default defineComponent({
         },
       ],
     }
-    menus.push(center);
-    menus.push(material);
-    menus.push(teacherCourse);
-    menus.push(forum);
-    menus.push(TeachingResourceManagement);
-    
+    //  学生课程
+    let studentCourse={
+      icon: "",
+      id: 188,
+      name: "学生课程",
+      parent_id: 0,
+      sort: 88,
+      url: "/student/studentCourse",
+      children: [],
+    }
+    // menus.push(center);
+    // menus.push(material);
+    // menus.push(teacherCourse);
+    // menus.push(forum);
+    // menus.push(TeachingResourceManagement);
+    // menus.push(studentCourse);
+    let arr=role===4?[forum,studentCourse]:[center,material,teacherCourse,forum,TeachingResourceManagement]
+    menus.push(...arr)
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });

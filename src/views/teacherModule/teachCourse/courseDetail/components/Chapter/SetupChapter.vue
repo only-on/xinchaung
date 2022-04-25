@@ -12,7 +12,7 @@
            />
       </div>
     </div>
-    <div class="chartTerrRight" v-if="currentTab === '0'" :class="state.activeExperimentObj.id?'':'flexCenter'">
+    <div class="chartTerrRight" v-if="currentTab === '0' && role === 3" :class="state.activeExperimentObj.id?'':'flexCenter'">
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
           <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
@@ -232,7 +232,7 @@ onMounted(() => {
       }
     }
     .chartTerrLeft2{
-      width: 914px;
+      width: 874px;
     }
     .chartTerrRight{
       // width: 674px;
