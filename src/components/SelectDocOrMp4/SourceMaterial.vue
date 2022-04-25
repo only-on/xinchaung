@@ -127,6 +127,7 @@ const docOrMp4Drawer: any = reactive({
   file_name: "",
   activeFile: {}, //  选择或上传的文档、视频
 });
+console.log(props.activeFile)
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v

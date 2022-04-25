@@ -74,7 +74,9 @@ interface Props {
 const props = withDefaults(defineProps<Props>(),{
   selectList: () => [],
 });
+// if(props.selectList && props.selectList.length){
 
+// }
 const emit = defineEmits<{
   (e: "selectSourceMaterialFile", val: any): void;
   (e: "preservation", val: any): void;
@@ -90,13 +92,14 @@ const docOrMp4Drawer: any = reactive({
   selectList:[],   // 选择的实验
   selectListIds:[]  // 实验ids
 });
+// console.log(props.selectList)
 if(props.selectList.length){
   props.selectList.forEach((v:any)=>{
     docOrMp4Drawer.selectList.push(v)
-    docOrMp4Drawer.selectListIds.push(v.id)
+    docOrMp4Drawer.selectListIds.push(v.content_id)
   })
 }
-
+// console.log(docOrMp4Drawer)
 const classNum=computed(()=>{
   let num=0
   if(docOrMp4Drawer.selectList.length){

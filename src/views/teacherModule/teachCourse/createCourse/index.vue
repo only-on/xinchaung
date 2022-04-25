@@ -75,6 +75,7 @@
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
           <a-button type="primary" @click="next(1)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'下一步'}`}}</a-button>
+          <a-button type="primary" v-if="EditId" @click="next(4)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'保存'}`}}</a-button>
         </div>
       </template>
       <template v-if="currentStep === 1">
@@ -85,6 +86,7 @@
           <a-button @click="cancel">取消</a-button>
           <a-button type="primary" @click="last(0)">上一步</a-button>
           <a-button type="primary" @click="next(2)">下一步</a-button>
+          <a-button type="primary" v-if="EditId" @click="next(4)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'保存'}`}}</a-button>
         </div>
       </template>
       <template v-if="currentStep === 2">
@@ -220,12 +222,16 @@ const multiplexingCourse=(val:number)=>{
     })
     return 
   }
-  if(val===3){
+  if(val===3 || val === 4){
       formState.is_available=1
       stup1Loading.value=true
       http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
         const {data}=res
         stup1Loading.value=false
+        if(val === 4){
+          cancel()
+          return
+        }
         currentStep.value=val
         courseId.value=data.id
       }).catch((err:any)=>{

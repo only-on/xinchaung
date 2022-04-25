@@ -256,7 +256,12 @@ const selectChaptert=(val:any)=>{
   // val.openItem=!val.openItem
   state.activeChapter={...val}
   state.activeTab.chapterId=val.id
+  // let ExperimentIds:any=[]
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
+  // val.contents.forEach((v:any)=>{
+  //   ExperimentIds.push(v.content_id)
+  // })
+  // ExperimentsAndMaterialsObj.activeExperiments=ExperimentIds
   emit('selectChaptert',val)
 }
   // 选中章节下实验

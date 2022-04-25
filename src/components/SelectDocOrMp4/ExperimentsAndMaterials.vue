@@ -21,8 +21,8 @@
     <span :class="tags === '备课资料'? 'active':''" @click="changeTab('备课资料')">备课资料</span>
     <span :class="tags === '课件'? 'active':''" @click="changeTab('课件')">课件</span>
   </div>
-  <SourceMaterial v-if="selectNum === 2" :activeFile="docOrMp4Drawer.activeFile" :tags="tags" @selectSourceMaterialFile="selectSourceMaterialFile"/>
-  <Experiments v-if="selectNum === 1" :selectList="docOrMp4Drawer.selectList" @preservation="preservation" />
+  <SourceMaterial v-if="selectNum === 2" :activeFile="props.activeFile" :tags="tags" @selectSourceMaterialFile="selectSourceMaterialFile"/>
+  <Experiments v-if="selectNum === 1" :selectList="props.selectList" @preservation="preservation" />
   </a-drawer>
   </div>
 </template>
@@ -58,7 +58,7 @@ const props = withDefaults(defineProps<Props>(), {
   selectList: () => [],
   activeFile: () => {},
 });
-// console.log(props)
+
 const emit = defineEmits<{
   (e: "selectDocOrMp4File", val: any): void;
   (e: "closeDrawerDoc"): void;
@@ -68,10 +68,19 @@ const docOrMp4Drawer: any = reactive({
   activeFile: {}, //  选择的素材
   selectList:[]   //  选择的实验
 });
+// const {selectList}=props
+console.log(props)
+if(props.selectList.length){
+  props.selectList.forEach((v:any)=>{
+    docOrMp4Drawer.selectList.push(v)
+    // docOrMp4Drawer.selectListIds.push(v.content_id)
+  })
+  docOrMp4Drawer.activeFile=props.activeFile
+}
+// docOrMp4Drawer.activeFile={ ...props.activeFile}
+// docOrMp4Drawer.selectList.push(...props.selectList)
 
-docOrMp4Drawer.activeFile={ ...props.activeFile}
-docOrMp4Drawer.selectList={ ...props.selectList}
-
+console.log(docOrMp4Drawer)
 
 var tags:Ref<string>=ref('教学指导')
 

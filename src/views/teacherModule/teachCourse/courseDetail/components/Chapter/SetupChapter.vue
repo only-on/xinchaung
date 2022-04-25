@@ -32,7 +32,7 @@
           <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
             <!-- 实验指导展示  chartLoading-->
             <!-- {{`实验类型：${state.activeExperimentObj.type}`}} -->
-            <template v-if="state.activeExperimentObj.Newguidance">
+            <template v-if="state.activeExperimentObj.TeachingAids?true:state.activeExperimentObj.Newguidance">
               <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
             </template>
           </div>
@@ -135,6 +135,7 @@ const selectExperiment=(val:any)=>{
   }
 }
 const getExperimentGuide=(id:number)=>{
+  state.activeExperimentObj.Newguidance={}
   experimentGuideLoading.value=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     const {data}=res  
