@@ -29,6 +29,15 @@
             <div class="createDate flexCenter" v-if="v.start_time && v.end_time">
               <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
             </div>
+            <div class="progress flexCenter">
+              <div class="left flexCenter">
+                <span class="yixue">已学</span>
+                <a-progress title="已学习30" :percent="30" />
+              </div>
+              <div>
+                <span class="viewAchievement" v-if="v.state!==2">查看成绩</span>
+              </div>
+            </div>
           </div>
         </div>
         <Empty v-if="!courseList.length && !loading" />
@@ -188,10 +197,10 @@ const initData = () => {
 const pageChange = async (current: any, pageSize: any) => {
   searchInfo.page = current;
   const { query, path } = route;
-  await router.replace({
-    path: path,
-    query: { ...query, page: current },
-  });
+  // await router.replace({
+  //   path: path,
+  //   query: { ...query, page: current },
+  // });
   initData();
 };
 const courseDetail=(val:any)=>{
@@ -265,6 +274,7 @@ onMounted(() => {
       margin-bottom: 2rem;
       box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07); 
       border-radius: 6px;
+      background-color: #fff;
       .coverBox{
          position: relative;
         //  cursor: pointer;
@@ -350,6 +360,16 @@ onMounted(() => {
           line-height: 44px;
           color: var(--black-45);
           justify-content: space-between;
+        }
+        .progress{
+          justify-content: space-between;
+          height: 40px;
+          .left{
+            width: 65%;
+            .yixue{
+              width:36px;
+            }
+          }
         }
       }
     }

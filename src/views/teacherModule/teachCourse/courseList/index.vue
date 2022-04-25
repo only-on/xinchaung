@@ -7,8 +7,8 @@
         <div class="coverBox">
           <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
             <div class="top flexCenter">
-              <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
-              <div v-if="currentTab === 1" class="flexCenter user">
+              <div v-show="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
+              <div v-show="currentTab === 1" class="flexCenter user">
               <!-- :style="`background-image: url(${v.avatar});`" -->
                 <span class="img" :class="v.is_init?'initImg':''"></span>
                 <span class="userName">{{v.is_init?'系统内置':v.user_name}}</span>
@@ -120,7 +120,7 @@ const searchInfo = reactive<ISearchInfo>({
 watch(() => { return configuration.componenttype; },
   (val) => {
     // console.log(val)
-    currentTab.value = val ;
+    currentTab.value = val;
     searchInfo.is_public = currentTab.value
     searchInfo.page = 1
     // searchInfo.content_direction = 0
@@ -240,10 +240,10 @@ const initData = () => {
 const pageChange = async (current: any, pageSize: any) => {
   searchInfo.page = current;
   const { query, path } = route;
-  await router.replace({
-    path: path,
-    query: { ...query, page: current },
-  });
+  // await router.replace({
+  //   path: path,
+  //   query: { ...query, page: current },
+  // });
   initData();
 };
 const handleMenuClick = ({ key }: { key: string }) => {
@@ -344,6 +344,7 @@ onMounted(() => {
       margin-bottom: 2rem;
       box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07); 
       border-radius: 6px;
+      background-color: #fff;
       .coverBox{
          position: relative;
         //  cursor: pointer;
