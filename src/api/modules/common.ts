@@ -24,6 +24,13 @@ export default {
     getConfigs: {url: `/api/env/images/config`, method: 'GET'},
     // 镜像列表
     getMeImage: {url: `/api/env/images`, method: 'GET'},
+    // 是否需要验证码
+    doesNeedCaptcha: { url: `/api/yii/site/does-need-captcha`, method: 'GET' },
+    // 刷新验证码
+    refreshCaptcha: { url: `/api/yii/site/captcha`, method: 'GET'},
+    // 获取在线用户信息
+    onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'}
+
 }
 export interface ICommonAps {
     getMenu: TFHttpSend
@@ -32,6 +39,9 @@ export interface ICommonAps {
     getConfigs: TFHttpSend
     getMeImage: TFHttpSend
     login: TFHttpSend
+    doesNeedCaptcha: TFHttpSend
+    refreshCaptcha: TFHttpSend
+    onlineUserInfo: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",
