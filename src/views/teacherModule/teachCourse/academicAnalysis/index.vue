@@ -1,7 +1,7 @@
 <template>
     <div class="academicAnalysis">
        <div class="tree">
-         <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
+         <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
        </div>
        <div class="analy-right">
             <div>
