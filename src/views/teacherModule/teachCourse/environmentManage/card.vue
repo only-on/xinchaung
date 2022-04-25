@@ -83,21 +83,7 @@ import { IBusinessResp } from "src/typings/fetch";
 import { useRouter, useRoute } from "vue-router";
 import ls from "src/utils/extStorage";
 import { operatesHandle } from "src/utils/vncInspect";
-interface Ivms {
-  uuid: string;
-  // atype: string
-  status: string;
-}
-interface Ilist {
-  id: number;
-  username: string;
-  student_id: string;
-  online: number;
-  number: string;
-  current: string;
-  // vms: Ivms[];
-  vms: any;
-}
+
 const router = useRouter();
 const route = useRoute();
 const type = route.query.type;
@@ -122,19 +108,14 @@ function beforeChange(from: Function, to: number) {
 const currentStatus = computed(
   () => props.list.vms.vms[current.value].status === "ACTIVE"
 );
-let apiList = ["vmOpen", "vmClose", "vmRevert", "vmReset"];
+
 let vmStatus = {
   0: "startVm",
   1: "closeVm",
   2: "revertVm",
   3: "resetVm",
 };
-console.log(props.list.vms.vms[current.value]);
-let params = {
-  // uuid: 'e81c9056-91c6-4695-8188-a815f28ba34a', // props.list.vms[current].uuid
-  uuid: props.list.vms.vms[current.value]?.uuid,
-  atype: '0',
-};
+
 function btnClick(v: any) {
   let param: any = {
     action: vmStatus[v],
@@ -143,7 +124,7 @@ function btnClick(v: any) {
     },
   };
   operatesHandle(param).then((res: any) => {
-    console.log(res);
+    // console.log(res);
     emit("getList");
   });
 }
@@ -155,7 +136,7 @@ function jumpHandle(list: any) {
     })
     .then((res: IBusinessResp) => {
       if (res.status) {
-        console.log(res);
+        // console.log(res);
         // openVm({type:"course",opType:"help",taskId:list.taskId})
         router.push({
           path: "/vm",

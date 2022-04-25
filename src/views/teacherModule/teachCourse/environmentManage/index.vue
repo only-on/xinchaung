@@ -24,7 +24,7 @@
         </div>
       </div>
       <a-spin :spinning="loading" size="large" tip="Loading...">
-      <div class="env-lists">
+      <div class="env-lists" v-if="envList.length">
         <!-- envListState.data -->
         <div class="env-list" v-for="v in envList" :key="v.id">
           <card :list="v" @getList="getList" :currentExperiment="currentExperiment"></card>
@@ -34,6 +34,7 @@
           {{ noDataPrompt }}
         </div> -->
       </div>
+      <Empty v-else />
       </a-spin>
       <a-pagination
         v-model:current="searchInfo.page"
@@ -81,6 +82,7 @@ import {
 import { message } from "ant-design-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter ,useRoute } from 'vue-router';
+import Empty from "src/components/Empty.vue";
 const { t } = useI18n();
 const route = useRoute()
 const http = (request as any).teachCourse;
@@ -98,73 +100,34 @@ const searchInfo: any = reactive({
 })
 const envList: any = reactive([])
 const loading = ref(false)
-const envListState = reactive<IListState>({
-  data: [
-    {
-      username: '钱学森',
-      id: 1,
-      student_id: 'xfhd',
-      online: 0,
-      number: '123456789',
-      current: '0',
-      vms: {uuid: 'ajuywefvJeuoqiw', vms: [{status: 'ACTIVE', uuid: 'jhfalkwefbHJgsdkasdf'},{status: '', uuid: 'kajshiwejcnbxvf'}]}
-    },
-    {
-      username: '钱学森',
-      id: 2,
-      student_id: 'xfhd',
-      online: 0,
-      number: '123456789',
-      current: '0',
-      vms: {uuid: 'ajuywefvJeuoqiw', vms: [{status: '', uuid: 'jhfalkwefbHJgsdkasdf'}]}
-    },
-    {
-      username: '钱学森',
-      id: 3,
-      student_id: 'xfhd',
-      online: 0,
-      number: '123456789',
-      current: '0',
-      vms: {uuid: 'ajuywefvJeuoqiw', vms: [{status: 'ACTIVE', uuid: 'jhfalkwefbHJgsdkasdf'}]}
-    },
-  ],
-});
-envList.push(...envListState.data)
 
 // 查询
 const onSearch = () => {
   getList();
 }
 
-// let noDataPrompt = ref('')
-let noDataPrompt = ref("请选择");
 function getList() {
   clearTimeout(Number(timer));
   envList.length = 0;
   loading.value = true;
-  console.log(searchInfo, "searchInfo");
-  http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IResponseData) => {
+  // console.log(searchInfo, "searchInfo");
+  http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IBusinessResp) => {
     loading.value = false;
-    if (res && res.status) {
-      let { list, page } = res.data;
-      envList.push(...list);
-      console.log("envList", envList);
-      searchInfo.page = page.currentPage
-      searchInfo.total = page.totalCount
-      if (envListState.data.length > 0) {
-        let isVms = envList.some((item: any) => {
-          return item.vms?.vms?.length > 0;
-        });
-        if (isVms) {
-          message.success({ content: "请求成功!", duration: 2 });
-        } else {
-          timer = setTimeout(() => {
-            getList();
-          }, 1500);
-        }
-      }
-      else {
-        noDataPrompt.value = "暂无数据";
+    let { list, page } = res.data;
+    envList.push(...list);
+    // console.log("envList", envList);
+    searchInfo.page = page.currentPage
+    searchInfo.total = page.totalCount
+    if (envList.length > 0) {
+      let isVms = envList.some((item: any) => {
+        return item.vms?.vms?.length > 0;
+      });
+      if (isVms) {
+        message.success({ content: "请求成功!", duration: 2 });
+      } else {
+        timer = setTimeout(() => {
+          getList();
+        }, 1500);
       }
     }
   });
@@ -173,20 +136,10 @@ const onChangePage = (page: number) => {
   searchInfo.page = page;
   getList();
 };
-onBeforeMount(() => {
-  clearTimeout(Number(timer));
-});
-onUnmounted(() => {
-  clearTimeout(Number(timer));
-})
-
-// 章节实验树
-const ChaptersTreeList: any = reactive([])
-const chartLoading = ref(false)
 
 // 选择实验
 const selectExperiment = (val: any) => {
-  console.log(val)
+  // console.log(val)
   Object.assign(currentExperiment, val)
   searchInfo.taskId = val.id
   getList();
@@ -200,6 +153,10 @@ onMounted(() => {
   //   getLimit()
   // }, 60000)
 });
+
+onUnmounted(() => {
+  clearTimeout(Number(timer));
+})
 
 // 开启实验环境
 const openEnvNum = ref()
@@ -227,81 +184,6 @@ function handleOk(num: number) {
       message.success({ content: "请求成功!", duration: 2 });
     }
   });
-}
-
-
-interface Ipage {
-  totals?: number;
-  pageSize: number;
-  currPage: number;
-  keyWord?: string;
-}
-interface Iparams {
-  taskId?: number;
-  type?: string;
-  keyword?: string;
-  courseId?: number;
-  page: number;
-  limit: number;
-  grouped?: number;
-}
-// interface INode extends Pick<Iparams, 'taskId' | 'type' | 'name' | 'courseId' | 'grouped' >{}
-interface INode {
-  taskId: number;
-  type: string;
-  grouped: number;
-  isHigh: boolean;
-}
-
-interface Ivms {
-  uuid: string;
-  status?: string;
-  vms?: Ivms[]
-}
-interface Iuser {
-  username: string;
-  id: number;
-  student_id: string;
-  online: number;
-  number: string;
-  current: string;
-  vms: Ivms;
-}
-
-interface IListState {
-  data: Iuser[];
-}
-
-interface IselectTreeNode {
-  taskId: number;
-  type: string;
-  name: string;
-  courseId: number;
-  grouped: number;
-}
-interface IResponseData {
-  status: number;
-  msg: string;
-  data: any;
-  error: any;
-  datas: any;
-}
-interface Isolts {
-  icon: string;
-}
-interface ITreeDataItem {
-  id: number;
-  name: string;
-  sort: number;
-  type: string;
-  content_type?: string;
-  is_high: boolean;
-  slots: Isolts;
-  grouped: number;
-  contents: ITreeDataItem[];
-}
-interface ITreeData {
-  data: ITreeDataItem[];
 }
 </script>
 
