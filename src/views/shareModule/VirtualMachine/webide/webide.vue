@@ -18,10 +18,10 @@
         </div>
         <div class="ace-right">
           <div class="ace-action">
-            <span @click="saveFileData"><i class="iconfont icon-baocun"></i>保存</span>
-            <span @click="openBackupModal"><i class="iconfont icon-beifen"></i>备份</span>
+            <span @click="saveFileData"><i class="iconfont icon-baocun1"></i>保存</span>
+            <span @click="openBackupModal"><i class="iconfont icon-shangchuanbeifen"></i>备份</span>
             <span
-              ><i class="iconfont icon-huigun"></i>
+              ><i class="iconfont icon-zhongzhi1"></i>
               <a-popover trigger="click" class="roll-back-popover">
                 <template v-slot:title class="111">
                   <div class="roll-back-item" @click="rollBack('')">回到初始版本</div>
@@ -521,7 +521,7 @@ function runCode() {
 function saveKvm() {}
 // 关闭ws
 function closeWs() {
-  (ws.value as any).close();
+  (ws.value as any)?.close();
 }
 onBeforeRouteLeave(() => {
   isCurrentPage = false;

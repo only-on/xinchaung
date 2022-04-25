@@ -6,6 +6,69 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "15625593",
+      "name": "上传",
+      "font_class": "shangchuanbeifen",
+      "unicode": "e629",
+      "unicode_decimal": 58921
+    },
+    {
+      "icon_id": "6915771",
+      "name": "运行",
+      "font_class": "yunhang",
+      "unicode": "e616",
+      "unicode_decimal": 58902
+    },
+    {
+      "icon_id": "7417074",
+      "name": "保存",
+      "font_class": "baocun1",
+      "unicode": "e606",
+      "unicode_decimal": 58886
+    },
+    {
+      "icon_id": "7738373",
+      "name": "重置",
+      "font_class": "zhongzhi1",
+      "unicode": "e60b",
+      "unicode_decimal": 58891
+    },
+    {
+      "icon_id": "4347599",
+      "name": "icon_使用文档",
+      "font_class": "icon_shiyongwendang",
+      "unicode": "eb91",
+      "unicode_decimal": 60305
+    },
+    {
+      "icon_id": "4860316",
+      "name": "资料",
+      "font_class": "ziliao",
+      "unicode": "e689",
+      "unicode_decimal": 59017
+    },
+    {
+      "icon_id": "20763992",
+      "name": "数据指导",
+      "font_class": "shujuzhidao",
+      "unicode": "e65d",
+      "unicode_decimal": 58973
+    },
+    {
+      "icon_id": "26197928",
+      "name": "标记",
+      "font_class": "biaoji",
+      "unicode": "e69a",
+      "unicode_decimal": 59034
+    },
+    {
+      "icon_id": "16365866",
+      "name": "教学课件",
+      "font_class": "jiaoxuekejian",
+      "unicode": "e696",
+      "unicode_decimal": 59030
+    },
+    {
       "icon_id": "8989214",
       "name": "警告",
       "font_class": "jinggao",
