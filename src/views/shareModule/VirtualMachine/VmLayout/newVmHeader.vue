@@ -385,10 +385,42 @@
       </div>
     </div>
   </a-modal>
+  <!-- 上传文件 -->
+  <a-modal
+    class="vm-file-upload"
+    title="文件上传"
+    :visible="uploadVisible"
+    :width="700"
+    @cancel="uploadVisible = false"
+    @ok="okUploadFile"
+  >
+    <a-upload-dragger
+      :before-upload="beforeUpload"
+      :remove="remove"
+      :multiple="true"
+      :fileList="uploadFile.fileList"
+      :accept="'.'"
+      class="upload"
+    >
+      <p class="ant-upload-drag-icon">
+        <span class="iconfont icon-upload"></span>
+      </p>
+      <p class="ant-upload-text">点击上传图标，选择要上传的文件或将文件拖拽到此</p>
+      <p class="ant-upload-hint">
+        (单个文件最味限制为20MB)
+      </p>
+      <p class="ant-upload-dir">
+        默认存放目录路径为"C:/Windows/AppReadiness/userfiles"
+      </p>
+    </a-upload-dragger>
+    <template #footer>
+      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="false"></Submit>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed } from "vue";
+import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed, createVNode } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import numberInput from "src/components/aiAnt/numberInput.vue";
 import { message, Modal } from "ant-design-vue";
@@ -398,6 +430,7 @@ import { copyText } from "src/utils/copySelect";
 import request from "src/request/getRequest";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { numToAbc } from "src/utils/common";
+import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import {
   endOperates,
   endExperiment,
@@ -410,6 +443,8 @@ import {
 import getMenuRole, { menuTypeArr, experimentTypeList } from "../menuRole";
 import { cloneDeep } from "lodash";
 import storage from "src/utils/extStorage";
+import tusFileUpload from 'src/utils/tusFileUpload'
+import Submit from "src/components/submit/index.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -439,6 +474,7 @@ const evaluateData: any = inject("evaluateData");
 const evaluateVisible: any = inject("evaluateVisible");
 const initEvaluate: any = inject("initEvaluate");
 const ws: any = inject("ws");
+const sshUrl: any = inject("sshUrl")
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -676,7 +712,33 @@ function delayedTime() {
 }
 
 // 切换webssh、vnc
-function showChange() {}
+function showChange() {
+  // currentvm.value=baseInfo.value.data.vms[vmCurrentIndex.value]
+  let cureentIp = location.protocol+"//"+location.hostname
+  loading.value=false
+  if (currentInterface.value==="vnc") {
+    currentInterface.value="ssh"
+    sshUrl.value=""
+    setTimeout(()=>{
+      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+      loading.vaue=true
+    },2000)
+    return
+  }
+  if (currentInterface.value==="ssh") {
+    currentInterface.value="vnc"
+    let param={
+      action:"switch2Vnc",
+      params:{
+        type:type,
+        opType:opType,
+        uuid:currentUuid.value,
+        taskId:taskId
+      }
+    }
+    vmApi.switchInterfaceApi({param:{...param}})
+  }
+}
 
 // 结束实验
 function finishExperiment() {
@@ -860,9 +922,25 @@ function saveKvm() {
   });
 }
 
-function upload() {}
+function upload() {
+  uploadVisible.value = true
+}
 
-function download() {}
+function download() {
+  Modal.confirm({
+    width: 540,
+    title: () => '文件下载',
+    icon: () => createVNode(ExclamationCircleOutlined),
+    content: () => createVNode('div', {}, '文件下载功能:将"C:/Windows/AppReadiness/userfiles"目录进行打包 并下载（限制？？M以内）'),
+    onOk() {
+      console.log('OK');
+    },
+    onCancel() {
+      console.log('Cancel');
+    },
+    class: 'vm-download',
+  });
+}
 
 async function startEndRecord() {
   if (isScreenRecording.value) {
@@ -1199,6 +1277,32 @@ onMounted(() => {
 //   evaluateVisible.value = true;
 //   initEvaluate()
 // }
+// 文件上传
+const uploadVisible = ref(false)
+const uploadFile: any = ref({
+  fileList: []
+})
+const okUploadFile = () => {
+  
+}
+const beforeUpload = (file: any) => {
+  const postfix = (file && file.name).split(".")[1];
+  let obj:any={
+    uid: file.uid,    
+    file_url:'',
+    name:file.name
+  }
+  uploadFile.fileList[0] = obj
+  let accept = ['.']
+  let tusdDirKey = 'document_path'
+  tusFileUpload.onUpload(file, tusdDirKey, accept, uploadFile.fileList[0])
+}
+const remove = () => {
+  if(uploadFile.fileList[0].status !== "done"){
+    uploadFile.tusFileUpload.remove(uploadFile.fileList[0])
+  }
+  uploadFile.fileList = []
+}
 </script>
 
 <style lang="less" scoped>
@@ -1518,6 +1622,34 @@ i {
       color: var(--primary-color);
       &.goal{
         color: var(--green-7);
+      }
+    }
+  }
+}
+
+.vm-file-upload {
+  .ant-modal-body {
+    padding: 40px;
+  }
+  .ant-upload {
+    height: 170px;
+    background: var(--white);
+    border-radius: 4px;
+    .ant-upload-drag-container {
+      color: var(--black-45);
+      .ant-upload-drag-icon {
+        margin-bottom: 0px;
+        color: var(--primary-color);
+        .iconfont { 
+          font-size: var(--font-size-24);
+        }
+      }
+      .ant-upload-text, .ant-upload-dir {
+        font-size: var(--font-size-16);
+      }
+      .ant-upload-hint {
+        color: var(--black-25);
+        margin-bottom: 14px;
       }
     }
   }
