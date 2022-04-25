@@ -11,8 +11,8 @@
   >
   <div class="select flexCenter">
     <div class="flexCenter type">
-      <span @click="selectType(1)" :class="selectNum === 1?'active':''">实 验</span>
-      <span @click="selectType(2)" :class="selectNum === 2?'active':''">备课资料</span>
+      <span @click="selectType(1)" :class="selectNum === 1?'active':''"> 实 验 </span>
+      <span @click="selectType(2)" :class="selectNum === 2?'active':''"> 教 辅 </span>
     </div>
     <span class="iconfont icon-guanbi" @click="closeDrawerDoc"></span>
   </div>

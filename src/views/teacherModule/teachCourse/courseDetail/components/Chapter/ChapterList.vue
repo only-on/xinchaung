@@ -112,6 +112,7 @@ interface Props {
   ExternalOpen?:boolean
   Editable?:string
   courseId?:number  
+  Environment?:boolean
   // knowledge: any;
   // words:any
 }
@@ -119,6 +120,7 @@ const props = withDefaults(defineProps<Props>(), {
   courseId:0,                 // 课程id
   Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑  可编辑  可学习  只展示
   ExternalOpen:false,         // 父组件打开教辅选择抽屉
+  Environment:false       // 只筛选有环境的实验，去除文档和视频类型
 });
 // const ExperimentTypeList=['desktop','Jupyter','task','text','video','command','IDE']
 var editChartVisible: Ref<boolean> = ref(false);
@@ -426,6 +428,9 @@ const getChaptersTree=()=>{
           i.TeachingAids=true   // TeachingAids是教辅
           i.TeachingAidsName=obj[i.type]
           i.name=i.file_name
+          if(props.Editable !== 'readOnly'){
+            v.list.push(i)
+          }
           // v.list.push(i)
         }):''
         v.contents.length?v.contents.forEach((i:any)=>{
@@ -435,13 +440,19 @@ const getChaptersTree=()=>{
           i.TeachingAids=false
           i.task_type=i.type
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
-          // v.list.push(i)
+          if(props.Environment){
+            if(i.type!==6 && i.type!==7){
+              v.list.push(i)
+            }
+          }else{
+            v.list.push(i)
+          }
         }):''
         // v.list=v.list.concat(v.resource,v.contents)
         if(props.Editable === 'readOnly'){ //Editable:'readOnly',  
-          v.list=v.list.concat(v.contents)
+          // v.list=v.list.concat(v.contents)
         }else{
-          v.list=v.list.concat(v.resource,v.contents)
+          // v.list=v.list.concat(v.resource,v.contents)
         }
         if(state.activeTab.chapterId && state.activeTab.chapterId === v.id){
           item={...v}

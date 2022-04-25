@@ -35,10 +35,12 @@ export default defineComponent({
     const pdfUrl = ref("");
     const isShowPdf = ref(false);
     const spinning = ref(false);
+    var frequency = ref<number>(0);
     let timer: NodeJS.Timeout | null = null;
     watch(
       () => props.url,
       () => {
+        frequency.value=0
         clearTimeout(Number(timer));
         if (/(http|https):\/\/\S*/.test(props.url)) {
           pdfUrl.value = props.url;
@@ -52,6 +54,12 @@ export default defineComponent({
     );
 
     function checkPdf(url: string) {
+      frequency.value+=1
+      // console.log(frequency.value)
+      if(frequency.value === 6){
+        clearTimeout(Number(timer));
+        return
+      }
       if (!url) {
         clearTimeout(Number(timer));
         return;

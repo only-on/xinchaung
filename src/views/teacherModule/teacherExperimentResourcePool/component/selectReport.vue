@@ -195,6 +195,7 @@ const viewTemplate = (n: number, val?: any) => {
 var activeTemplateItem: any = reactive({
   id: 0,
   name: "",
+  typeText:''
 });
 if (props.selectedReport) {
   activeTemplateItem.id = props.selectedReport.id;
@@ -203,6 +204,7 @@ if (props.selectedReport) {
 const selectTemplate = (val: any) => {
   activeTemplateItem.id = val.id;
   activeTemplateItem.name = `${val.name}`;
+  activeTemplateItem.typeText=val.typeText
 };
 
 // 删除模板
@@ -261,7 +263,7 @@ const reportHandleOk = () => {
   let active = {};
   if (reportActive.value == 2) {
     let v = formState.reportUploadList[0];
-    active = { id: v.id, name: v.name };
+    active = { id: v.id, name: v.name,typeText:v.typeText };
   } else {
     active = activeTemplateItem;
   }

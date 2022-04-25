@@ -141,6 +141,10 @@
         <span>更换实验报告</span>
         <a-button type="primary" @click="changeReport()" size="small"> 选择 </a-button>
       </div>
+      <div v-if="steupFormState.reportObj.id" class="item report">
+        <span class="type">{{`【${steupFormState.reportObj.typeText}】`}}</span>
+        <span>{{`${steupFormState.reportObj.name}`}}</span>
+      </div>
     </div>
     <template #footer>
       <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit>
@@ -344,8 +348,9 @@ const reportCancel = () => {
 };
 const reportOk = (val: any) => {
   console.log(val)
-  steupFormState.reportObj.id = val.id;
-  steupFormState.reportObj.name = val.name;
+  steupFormState.reportObj={...val}
+  // steupFormState.reportObj.id = val.id;
+  // steupFormState.reportObj.name = val.name;
 };
 const SaveSetup=()=>{
   let obj:any={
@@ -392,6 +397,15 @@ const getCourseSetup=()=>{
     steupFormState.is_show_teaching_guidance=data.is_show_teaching_guidance?true:false
     steupFormState.is_show_task_step=data.is_show_task_step?true:false
     steupFormState.is_show_content_report=data.is_show_content_report?true:false
+    if(data.report_template){
+      if(data.report_template.is_init === 1){
+        data.report_template.typeText='系统默认'
+      }else{
+        data.report_template.typeText=data.report_template.word_path === ''?'在线':'离线'
+      }
+      steupFormState.reportObj={...data.report_template}
+    }
+    console.log(steupFormState)
   })
 }
 onMounted(() => {
@@ -429,6 +443,12 @@ onMounted(() => {
       .item{
         height: 44px;
         justify-content: space-between;
+      }
+      .report {
+        line-height: 44px;
+        .type{
+          color: var(--brightBtn);
+        }
       }
     }
   }

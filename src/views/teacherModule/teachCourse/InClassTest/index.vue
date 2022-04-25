@@ -1,7 +1,7 @@
 <template>
   <div id="inClassTest">
     <div class="tree">
-          <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
+          <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
     </div>
     <div class="test">
       <div class="inTestHeader">

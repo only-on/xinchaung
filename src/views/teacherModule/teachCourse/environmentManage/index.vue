@@ -2,6 +2,7 @@
   <div class="env-manage">
     <div class="tree">
       <chapter-tree 
+        :Environment="true"
         :courseId="Number(courseId)"
         @selectExperiment="selectExperiment"
       > 
@@ -182,15 +183,7 @@ onUnmounted(() => {
 // 章节实验树
 const ChaptersTreeList: any = reactive([])
 const chartLoading = ref(false)
-function getChapterList() {
-  chartLoading.value = true
-  ChaptersTreeList.length = 0
-  http.getChaptersTree({urlParams:{courseId:courseId}}).then((res:any) => {
-    const {data} = res
-    chartLoading.value = false
-    ChaptersTreeList.push(...data)
-  })
-}
+
 // 选择实验
 const selectExperiment = (val: any) => {
   console.log(val)
@@ -200,7 +193,6 @@ const selectExperiment = (val: any) => {
 }
 
 onMounted(() => {
-  getChapterList()
   // getList()
   getLimit();
   // let timer = setInterval(() => {
