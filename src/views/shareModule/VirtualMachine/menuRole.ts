@@ -23,19 +23,19 @@
 const menuRole= {
     vnc:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     cmd:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     task:{
         4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','save','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     webide:{
         4:['guide','note','report','question','delayed','end'],

@@ -648,6 +648,10 @@ function back() {
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
+      if (experType === 6 || experType === 7) {
+        router.go(historyLength - history.length - 1);
+        return
+      }
       if (ws && baseInfo.value?.current?.is_teamed == 1) {
         ws.value.leave(topoinst_id + "_room");
       }

@@ -52,7 +52,7 @@ import storage from "src/utils/extStorage";
 const route = useRoute();
 const router = useRouter();
 
-const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+const { type, opType, taskId, topoinst_id, topoinst_uuid, experType } = route.query;
 
 let role = storage.lStorage.get("role");
 
@@ -74,7 +74,16 @@ const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   : (getMenuRole(role as any, "vnc") as any);
 const contentModal = ref(false)  // 报告modal
 function open(key?: string) {
-  if (!key || currentNavKey.value === key) {
+  // 视频文档 
+  if (key === 'guide' && (Number(experType) === 6 || Number(experType) === 7)) {
+    contentShow.value = false
+    leftWidth.value = 70;
+    rightWidth.value = window.innerWidth - leftWidth.value;
+    currentNavKey.value = key;
+    lastKey.value = key;
+    return
+  }
+  if (!key || currentNavKey.value === key) {   // 收起
     contentShow.value = false
     leftWidth.value = 70;
     rightWidth.value = window.innerWidth - leftWidth.value;

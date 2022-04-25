@@ -1,15 +1,20 @@
 <template>
-  {{ taskType }}
   <layout :navData="navData">
     <template v-slot:right>
-      <div class="document-or-video-wrap" v-if="taskType">
+      <div class="video-wrap" v-if="taskType == 6">
         <video
           style="width: 100%; height: 650px"
           controls="true"
-          :src="'111'"
-          v-if="false"
+          :src="env ? '/proxyPrefix'+baseInfo.base_info.content_task_files[0].file_url : baseInfo.base_info.content_task_files[0].file_url"
         ></video>
-        <PdfVue :url="111" v-else />
+      </div>
+      <div class="document-wrap setScrollbar" v-else-if="taskType == 7">
+        <marked-editor
+          v-if="baseInfo && baseInfo.base_info.guide"
+          v-model="baseInfo.base_info.guide"
+          :preview="true"
+        />
+        <PdfVue :url="baseInfo.base_info.content_task_files[0].file_url" v-else/>
       </div>
     </template>
   </layout>
@@ -23,6 +28,10 @@ import storage from "src/utils/extStorage";
 import { getVmBaseInfo, TopType, TStudyType } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { message } from "ant-design-vue";
+import request from "src/api/index";
+import markedEditor from "src/components/editor/markedEditor.vue";
+const http = (request as any).teacherExperimentResourcePool;
+const env = process.env.NODE_ENV == "development" ? true : false;
 
 type TvmQuery = {
   opType: TopType;
@@ -58,7 +67,8 @@ const navData = [
 ];
 
 onMounted(async () => {
-  await getVmBase();
+  getExperimentDetail()
+  // await getVmBase();
 });
 // 获取实验基本信息pageinfo
 function getVmBase() {
@@ -94,41 +104,35 @@ function black() {
 function finish() {
   message.success("结束实验成功");
 }
+
+// 实验详情
+let experimentDetail = reactive<any>({
+  id: 1,
+  is_init: 0,
+  name: '',
+  task_type: 1,
+  class_cnt: 2,
+  level: '2',
+  direction: '',
+  complexity: '2',
+  konwledge_map: [],
+  username: '2',
+  lab_proc: "实验指导",
+  tag: [],
+  content_template: {},
+  programing_type: 0,
+});
+const getExperimentDetail = () => {
+  http.getExperimentDetail({urlParams: {id: taskId}}).then((res: any) => { 
+    Object.assign(experimentDetail, res.data);
+    baseInfo.value.base_info = res.data;
+    taskType.value = res.data.task_type;
+  })
+};
 </script>
 <style lang="less" scoped>
-.document-or-video-wrap {
+.document-wrap, .video-wrap {
   height: 100%;
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.d-v-header-wrap {
-  height: 70px;
-  background: #2c2e45;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: #fff;
-  padding: 0 20px 0px 28px;
-  .d-v-left {
-    display: flex;
-    flex-direction: row;
-    .icon-zuojiantou {
-      cursor: pointer;
-    }
-    .test-btn-wrap {
-      margin-left: 184px;
-      cursor: pointer;
-    }
-  }
-  .test-name {
-    margin-left: 5px;
-  }
-  .d-v-right {
-    color: red;
-    cursor: pointer;
-  }
+  overflow: auto;
 }
 </style>
