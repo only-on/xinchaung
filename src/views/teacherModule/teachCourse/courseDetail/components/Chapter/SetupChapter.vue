@@ -29,10 +29,10 @@
           </div>
         </div>
         <a-spin :spinning="experimentGuideLoading" size="large" tip="Loading...">
-          <div class="pdfBox experimentGuide" v-if="(currentTab === '0' && role === 3)">
+          <div class="pdfBox experimentGuide">
             <!-- 实验指导展示  chartLoading-->
             <!-- {{`实验类型：${state.activeExperimentObj.type}`}} -->
-            <template v-if="state.activeExperimentObj.TeachingAids?true:state.activeExperimentObj.Newguidance">
+            <template v-if="!experimentGuideLoading">
               <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
             </template>
           </div>
@@ -42,11 +42,12 @@
     </div>
   </div>
 
-  <!-- 课程设置 -->
+  <!-- 模板预览 -->
   <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
-    <div class="box" v-if="state.activeExperimentObj.id && !state.activeExperimentObj.TeachingAids && !experimentGuideLoading && state.activeExperimentObj.Newguidance">
+    <div class="box" v-if="TemplatePreview">
       <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
-      <onlinePreview :content="state.activeExperimentObj.Newguidance.content_template.json_content" />
+      <!-- <onlinePreview :content="state.activeExperimentObj.Newguidance.content_template.json_content" /> -->
+      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template.template_id" :type="'view'" />
     </div>
     <template #footer>
       <!-- <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit> -->
@@ -70,6 +71,8 @@ import { Modal, message } from "ant-design-vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import onlinePreview from "src/components/report/onlinePreview.vue"
+import viewTemplate from "src/components/report/viewTemplate.vue"
+
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
 const env = process.env.NODE_ENV == "development" ? true : false;
@@ -129,6 +132,7 @@ const selectChaptert=(val:any)=>{
 const selectExperiment=(val:any)=>{
   console.log(val)
   state.activeExperimentObj={...val}
+  experimentGuideLoading.value=false
   // 获取实验详情
   if(!val.TeachingAids && currentTab === '0' && role===3){
     // 教师端我的教学  才在右边展示实验指导
@@ -136,11 +140,15 @@ const selectExperiment=(val:any)=>{
   }
 }
 const getExperimentGuide=(id:number)=>{
-  state.activeExperimentObj.Newguidance={}
   experimentGuideLoading.value=true
+  state.activeExperimentObj.Newguidance={}
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     const {data}=res  
     state.activeExperimentObj.Newguidance=data
+    if(data.task_type === 6){
+      state.activeExperimentObj.Newguidance=data.content_task_files?data.content_task_files[0]:''
+    }
+    console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false
   })
 }
@@ -257,6 +265,7 @@ onMounted(() => {
       // }
       .experimentGuide{
         height: 630px;
+        overflow: auto;
         // border: 1px solid rgba(0,0,0,0.15);
         padding: 10px 10px 20px 0px;
         // max-height: 500px;
