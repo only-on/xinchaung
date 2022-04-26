@@ -214,7 +214,7 @@ export default defineComponent({
       stopImageApi({ id: reactiveData.id as any }).then((res: any) => {
         message.success("环境停止成功");
         router.push({
-          path: "/teacher/Workbench/?currentTab=0",
+          path: "/teacher/teacherImageResourcePool/OnlineMake",
         });
       });
     }

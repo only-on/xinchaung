@@ -162,12 +162,6 @@ const uploadImageinfo = (name: any, size: any, url: any) => {
 const cancel = () => {
   // console.log("取消");
   router.go(-1)
-  // router.push({
-  //   path: "/teacher/Workbench",
-  //   query: {
-  //     currentTab: 1,
-  //   },
-  // });
 };
 const create = () => {
   // console.log("提交");
