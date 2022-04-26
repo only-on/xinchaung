@@ -27,6 +27,24 @@ export default {
                 title:`系统授权`,
                 authCode: ''
             },
+        },
+        {
+            path: "personalization",
+            name: "",
+            component: () => import("src/views/adminModule/systemMaintenance/personalization/index.vue"),
+            meta: {
+                title:`系统授权`,
+                authCode: ''
+            },
+        },
+        {
+            path: "userloginInformation",
+            name: "",
+            component: () => import("src/views/adminModule/systemMaintenance/userloginInformation/index.vue"),
+            meta: {
+                title:`系统授权`,
+                authCode: ''
+            },
         }
     ]
 }

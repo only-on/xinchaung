@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="personalizaation">
         个性化设置    
     </div>
 </template>
@@ -17,7 +17,7 @@ import { Console } from "console";
     var updata = inject("updataNav") as Function;
     updata({
       tabs: [
-        { name: "磁盘管理", componenttype: 0 }
+        { name: "个性化设置", componenttype: 0 }
       ],
       showContent: true,
       componenttype: undefined,
