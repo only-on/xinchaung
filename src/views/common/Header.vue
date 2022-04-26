@@ -77,7 +77,7 @@ export default defineComponent({
         1: "/init-course/init", // 初始端
         2: "/admin", // 管理端
         3: "/teacher", // 教师端首页
-        4: "/studentStatistic", // 学生端首页
+        4: "/student", // 学生端首页
         5: "/teacher", // 助教端
       };
       return obj[role];
@@ -379,7 +379,6 @@ export default defineComponent({
         router.push("/teacher");
       }
       if (role == 4) {
-        // return "/studentStatistic" // 学生端首页
         router.push("/student");
       }
       if (role == 1) {

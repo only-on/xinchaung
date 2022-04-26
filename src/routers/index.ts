@@ -18,7 +18,7 @@ const PathList = {
   1: "",
   2: "/admin/home",
   3: "/teacher/teacherExperimentResourcePool",
-  4: "/studentStatistic",
+  4: "/student",
   5: "",
 };
 // 登录状态检查
