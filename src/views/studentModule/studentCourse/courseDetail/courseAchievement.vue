@@ -69,6 +69,9 @@ import * as echarts from "echarts";
 import { ref, toRefs, onMounted, Ref } from "vue";
 import request from "src/api/index";
 const http = (request as any).studentScore;
+import { useRouter ,useRoute } from 'vue-router';
+const route=useRoute()
+const courseId:any=route.query.courseId  //课程id
 const columns = [
   {
     title: "实验名称",
@@ -235,6 +238,7 @@ function clickFun(type: string, val: number) {
 }
 // 学习效率
 function drawCharts() {
+  document.getElementById('graphicStatistics')?.removeAttribute("_echarts_instance_");
   var myChart = (echarts as any).init(
     document.getElementById("graphicStatistics")
   );
@@ -243,7 +247,7 @@ function drawCharts() {
 }
 // 获取成绩列表
 function getallScoreList() {
-  http.allScoreList({ param: { course_id: 500004 } }).then((res: any) => {
+  http.allScoreList({ param: { course_id: courseId} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.data;
   });
@@ -302,7 +306,9 @@ onMounted(() => {
       position: relative;
       width: 447px;
       opacity: 0.73;
-      background: linear-gradient(167deg, #dae3fe 0%, #e9effd 100%);
+      background:url(src/assets/images/learning-efficiency.png);
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
       .stu-info {
         position: absolute;
         display: flex;
