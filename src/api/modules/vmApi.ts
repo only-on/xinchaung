@@ -49,11 +49,13 @@ export default {
     uploadTrainReportApi:{url:"/student-train/uploadreport",method:"POST",dataType:"formdata"},
 
     // 学生自评
-    evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"}
+    evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"},
+    getQuestionListApi:{url:"",method:"POST",dataType:"json"},
 }
 
 // 
 export interface IvmApi {
+    getQuestionListApi: TFHttpSend
     createExamples: TFHttpSend
     envirmentsExists: TFHttpSend
     cleanEnvirments: TFHttpSend
