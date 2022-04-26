@@ -18,7 +18,7 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default {
     getMenu: { url: '/api/system/menus', method: 'GET'},
     login: { url: `/api/yii/site/jwt-login`, method: "POST", dataType: "json" },
-    loginOut:{url:`/site/logout1`,method:'POST',},
+    loginOut:{url:`/api/yii/site/logout1`,method:'POST',},
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
      // 镜像全部配置项
     getConfigs: {url: `/api/env/images/config`, method: 'GET'},
@@ -30,14 +30,15 @@ export default {
     refreshCaptcha: { url: `/api/yii/site/captcha`, method: 'GET'},
     // 获取在线用户信息
     onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'}
+
 }
 export interface ICommonAps {
     getMenu: TFHttpSend
-    login: TFHttpSend
     loginOut: TFHttpSend
     uploadsFile: TFHttpSend
     getConfigs: TFHttpSend
     getMeImage: TFHttpSend
+    login: TFHttpSend
     doesNeedCaptcha: TFHttpSend
     refreshCaptcha: TFHttpSend
     onlineUserInfo: TFHttpSend
