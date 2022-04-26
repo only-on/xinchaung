@@ -4,7 +4,7 @@ import { ITeacherForum } from "src/api/teacher/teacherForum";
 import { ICommonAps } from "src/api/modules/common";
 import { IPersonalInformationlAps } from "src/api/modules/personalInformation";
 import { ITeacherTrainAps } from "src/api/modules/teacherTrain";
-import { IstudentExam } from "src/api/modules/studentExam";
+import { IStudentCourse } from "src/api/student/studentCourse";
 import { IvmApi } from "src/api/modules/vmApi";
 import { ICourseTreeApis } from "src/api/modules/courseTree";
 import { ITeacherCourseApis } from "src/api/teacher/teachCourse";
@@ -43,6 +43,7 @@ export interface IApiItem {
 }
 
 export type TAvailableModules =
+    'studentCourse'
   | "classicalAsset"
   | "common"
   | "statistic"
@@ -67,13 +68,10 @@ export interface IApiCollection {
   // 这是api层下的模块名
   classicalAsset: IClassicalAssetApi;
   common: ICommonAps;
-  statistic: {
-    getInfo: TFHttpSend;
-  };
   personalInformation: IPersonalInformationlAps;
   teacherForum: ITeacherForum;
   teachCourse: ITeacherCourseApis;
-  studentExam: IstudentExam;
+  studentCourse: IStudentCourse;
   vmApi: IvmApi;
   courseTree: ICourseTreeApis;
   teacherCourseAnalysis: ITeacherCourseAnalysisApis;

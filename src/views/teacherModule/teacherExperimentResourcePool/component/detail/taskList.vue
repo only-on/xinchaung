@@ -143,12 +143,13 @@ interface ItaskList {
   }
   .task-num {
     margin-right: 24px;
-    padding-left: 6px;
+    padding-left: 8px;
   }
   .task-name {
     flex: 1;
   }
   .operate {
+    padding-right: 8px;
     span {
       margin-left: 16px;
       color: var(--primary-color);

@@ -50,24 +50,6 @@ const props = withDefaults(defineProps<Props>(), {
   
   courseDetail: ()=> {},      // 
 });
-const initData = () => {
-  return
-  // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
-  // const param: ISearchInfo = Object.assign({}, {...searchInfo})
-  // loading.value = true;
-  // courseList.length = 0
-  // http.getExperimentList({param}).then((res: IBusinessResp) => {
-  //   loading.value = false
-  //   if (!res) return
-  //   const { list, page }  = res.data
-  //   list.forEach((v: any) => {
-  //     // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
-  //   });
-  //   courseList.push(...list)
-  //   totalCount.value = page.totalCount
-  // })
-};
-
 onMounted(() => {
 
 });

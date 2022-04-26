@@ -51,9 +51,7 @@
               </div>
             </div>
             <div class="experimentGuide" v-if="a.openGuidance">
-              <!-- 实验指导展示  chartLoading -->
-              <!-- {{`${state.activeExperimentObj.type}`}} -->
-              <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading...">
+              <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading..." class="experimentGuideContnet">
                 <template v-if="!a.experimentGuideLoading">
                   <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
                 </template>
@@ -615,40 +613,14 @@ onMounted(() => {
         }
       }
       .experimentGuide{
-        // max-height: 500px;
-        // overflow: auto;
-        .experiment{
-          border: 1px solid rgba(0,0,0,0.15);
-          padding: 20px 10px 20px 30px;
-          .itemContentBox{
-            overflow: auto;
-            max-height: 420px;
-          }
-          .itemContent{
-            transition: all .5s;
-            h4{
-              margin-bottom: 1rem;
-            }
-            .text{
-              height: 100%;
-              white-space: pre-wrap;
-              color: var(--black-65);
-              margin-bottom: 1.5rem;
-            }
-          }
+        height: 400px;
+        max-height: 500px;
+        overflow: auto;
+        :deep(.ant-spin-nested-loading){
+          height: 100%;
         }
-        .video-box{
-          height: 500px;
-          width: 100%;
-          video{
-            width:100%;
-            height:100%;
-            object-fit: cover;
-          }
-        }
-        .pdfBox{
-          height: 500px;
-          width: 100%;
+        :deep(.ant-spin-container){
+          height: 100%;
         }
       }
     }

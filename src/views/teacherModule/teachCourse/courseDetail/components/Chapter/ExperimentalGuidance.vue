@@ -1,5 +1,5 @@
 <template>
-  <div v-if="!props.activeExperimentObj.TeachingAids">
+  <template v-if="!props.activeExperimentObj.TeachingAids">
     <!-- 桌面实验 -->
     <template v-if="props.activeExperimentObj.type===1">
       <MarkedEditor v-model="props.activeExperimentObj.Newguidance.guide" class="markdown__editor" :preview="true" />
@@ -29,8 +29,8 @@
       </div>
       <PdfVue v-else  :url="props.activeExperimentObj.Newguidance.content_task_files[0].pdf_url" />
     </template>
-  </div>
-  <div v-if="props.activeExperimentObj.TeachingAids">
+  </template>
+  <template v-if="props.activeExperimentObj.TeachingAids">
     <!-- 教辅 -->
     <div class="video-box" v-if="props.activeExperimentObj.suffix==='mp4'">
       <video :src="env ? '/proxyPrefix' + props.activeExperimentObj.file_url : props.activeExperimentObj.file_url" :controls="true">
@@ -40,7 +40,7 @@
     <div class="pdfBox" v-if="['doc','docx','ppt','pptx','pdf'].includes(props.activeExperimentObj.suffix)">
       <PdfVue :url="props.activeExperimentObj.file_html" />
     </div>
-  </div>
+  </template>
 </template>
 <script lang="ts" setup>
 import {
@@ -70,6 +70,9 @@ const props = withDefaults(defineProps<Props>(), {
 
 </script>
 <style scoped lang="less">
+.ExperimentalGuidance{
+  height:100%
+}
 .markdown__editor{
   height: 400px;
   padding: 1rem 2rem 0;

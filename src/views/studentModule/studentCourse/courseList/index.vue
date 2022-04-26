@@ -21,7 +21,7 @@
             <div class="date flexCenter">
               <div class="flexCenter user">
                 <div class="img" :class="v.is_init?'initImg':''"></div>
-                <div class="userName">{{v.user_name}}</div>
+                <div class="userName">{{v.teacher}}</div>
               </div>
               <span>实验:{{v.content_total}}</span>
               <span>课时:{{v.class_total}}</span>
@@ -32,7 +32,7 @@
             <div class="progress flexCenter">
               <div class="left flexCenter">
                 <span class="yixue">已学</span>
-                <a-progress title="已学习30" :percent="30" />
+                <a-progress :title="`已学习${v.progress}`" :percent="v.progress" />
               </div>
               <div>
                 <span class="viewAchievement" v-if="v.state!==2">查看成绩</span>
@@ -91,7 +91,7 @@ import { string } from "vue-types";
 const router = useRouter();
 const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();
-const http = (request as any).teachCourse;
+const http = (request as any).studentCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -103,7 +103,6 @@ updata({
   showNav: false,
 });
 interface ISearchInfo {
-  is_public: number
   name: string
   limit: number
   page: number
@@ -113,7 +112,6 @@ var loading: Ref<boolean> = ref(false);
 var totalCount: Ref<number> = ref(0);
 const currentTab = ref<number>(0);
 const searchInfo = reactive<ISearchInfo>({ 
-  is_public: 0,
   name: '',
   limit: 12,
   page: 1,
@@ -122,7 +120,6 @@ watch(() => { return configuration.componenttype; },
   (val) => {
     // console.log(val)
     currentTab.value = val ;
-    searchInfo.is_public = currentTab.value
     searchInfo.page = 1
     // searchInfo.content_direction = 0
     // searchInfo.content_type = 0
@@ -171,19 +168,10 @@ const initData = () => {
     ...searchInfo,
     type:1,
     state:labelSearch.state?labelSearch.state:'',
-    year:labelSearch.year?labelSearch.year:'',
-    tags:''
-  }
-  if(searchInfo.is_public === 1){
-    // param.tags=[]
-    let arr=[]
-    labelSearch.CourseDirection?arr.push(labelSearch.CourseDirection):''
-    labelSearch.CareerDirection?arr.push(labelSearch.CareerDirection):''
-    param.tags=arr.join(',')
   }
   loading.value = true;
   courseList.length = 0
-  http.getCourseListt({param}).then((res: IBusinessResp) => {
+  http.getCourseList({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page }  = res.data
@@ -242,7 +230,6 @@ onMounted(() => {
     currentTab.value = 1
     configuration.componenttype = 1
   }
-  // searchInfo.is_public = currentTab.value
   // http.courseCategory().then((res:IBusinessResp)=>{
   //   const {data}=res
   //   data.map((v:any)=>{
