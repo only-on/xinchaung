@@ -2,7 +2,7 @@
   <tr>
     <template v-if="type === 'w1' || type === 'w2' || type === 'w3'">
       <td v-for="(field,index) in fields" :key="index" class="baseCol" :align="field.align" :colspan="type === 'w1'? 4: field.colspan">
-        <customInput :field="field" @change="handleCustom($event,index)"/>
+        <customInput :field="field" :readonly="true" @change="handleCustom($event,index)"/>
         </td>
         <td class="toolCol">
           <slot name="toolbar"/>
@@ -11,7 +11,7 @@
     <template v-if="type === 'w4'">
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index" >
-          <customInput :field="field" @change="handleCustom($event,index)"/>
+          <customInput :field="field" :readonly="true" @change="handleCustom($event,index)"/>
         </template>
       </td>
       <td class="toolCol">
@@ -21,10 +21,10 @@
     <template v-if="type === 'w5'">
       <template v-for="(field,index) in fields" :key="index">
         <td v-show="index === 0" class="baseCol" :align="field.align">
-          <customInput :field="field" @change="handleCustom($event,index)"/>
+          <customInput :field="field" :readonly="true" @change="handleCustom($event,index)"/>
         </td>
         <td v-show="index === 1" class="baseCol" colspan="3">
-          <customInput type="textarea" :field="field" @change="handleCustom($event,index)"/>
+          <customInput type="textarea" :readonly="true" :field="field" @change="handleCustom($event,index)"/>
         </td>
       </template>
       <td class="toolCol">
@@ -34,8 +34,8 @@
     <template v-if="type === 'w6'">
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index">
-          <customInput v-show="index === 0" :field="field" @change="handleCustom($event,index)"/>
-          <customInput v-show="index === 1" type="textarea" :field="field" @change="handleCustom($event,index)"/>
+          <customInput v-show="index === 0" :readonly="true" :field="field" @change="handleCustom($event,index)"/>
+          <customInput v-show="index === 1" :readonly="true" type="textarea" :field="field" @change="handleCustom($event,index)"/>
         </template>
       </td>
       <td class="toolCol">
@@ -45,10 +45,11 @@
     <template v-if="type === 'w7'">
       <template v-for="(field,index) in fields" :key="index">
         <td v-show="index === 0" class="baseCol" :align="field.align">
-          <customInput :field="field" @change="handleCustom($event,index)"/>
+          <customInput :field="field" :readonly="true" @change="handleCustom($event,index)"/>
         </td>
         <td v-show="index === 1" class="baseCol" colspan="3">
-          <antdv-markdown v-model="field.value" :image-upload-url="uploadUrl"/>
+          <!-- <antdv-markdown v-model="field.value" :image-upload-url="uploadUrl"/> -->
+          <MarkedEditor v-model="field.value" class="markdown__editor" :preview="true" />
         </td>
       </template>
       <td class="toolCol">
@@ -58,8 +59,9 @@
     <template v-if="type === 'w8'">
       <td class="baseCol" colspan="4">
         <template v-for="(field,index) in fields" :key="index">
-          <customInput v-show="index === 0" :field="field" @change="handleCustom($event,index)" class="borderInput"/>
-          <antdv-markdown v-show="index === 1" v-model="field.value" :image-upload-url="uploadUrl"/>
+          <customInput v-show="index === 0" :field="field"  :readonly="true" @change="handleCustom($event,index)" class="borderInput"/>
+          <!-- <antdv-markdown v-show="index === 1" v-model="field.value" :image-upload-url="uploadUrl"/> -->
+          <MarkedEditor  v-show="index === 1" v-model="field.value" class="markdown__editor" :preview="true" />
         </template>
       </td>
       <td class="toolCol">
@@ -72,9 +74,11 @@
 import { defineComponent, ref, watch,reactive, toRefs,PropType } from 'vue'
 import {deepClone} from '../utils'
 import customInput from './customInput.vue'
+import MarkedEditor from "src/components/editor/markedEditor.vue";
 export default defineComponent({
   components: {
-    customInput
+    customInput,
+    MarkedEditor
   },
   props: {
     type: {

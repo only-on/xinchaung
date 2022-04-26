@@ -1,6 +1,6 @@
 <template>
-    <input v-if="type ==='input'" :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/>
-    <textarea  v-else :value="field.value" :readonly="field.readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/> 
+    <input v-if="type ==='input'" :value="field.value" :disabled="readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/>
+    <textarea  v-else :value="field.value" :disabled="readonly" :placeholder="field.placeholder" class="baseStyle" @input="handleChange($event)"/> 
 </template>
 <script lang="ts">
 import { defineComponent, reactive, watch, ref } from 'vue'
@@ -15,12 +15,17 @@ export default defineComponent({
     type: {
       type: String,
       default: 'input'
-    }
+    },
+    readonly: {
+      type: Boolean,
+      default: false
+    },
   },
   emits: ['change'],
   setup(props,{emit}) {
     var field = reactive<any>(deepClone(props.field))
     var type = ref<any>(props.type)
+    var readonly=ref<any>(props.readonly)
     watch(()=>props.field, newVal => {
       Object.assign(field, deepClone(newVal))
     })

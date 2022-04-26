@@ -146,7 +146,7 @@ const getExperimentGuide=(id:number)=>{
     const {data}=res  
     state.activeExperimentObj.Newguidance=data
     if(data.task_type === 6){
-      state.activeExperimentObj.Newguidance=data.content_task_files?data.content_task_files[0]:''
+      state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
     }
     console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false

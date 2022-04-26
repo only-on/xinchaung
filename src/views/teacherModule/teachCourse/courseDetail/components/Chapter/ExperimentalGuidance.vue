@@ -17,7 +17,7 @@
     <template v-if="props.activeExperimentObj.type===6">
       视频
       <div class="video-box">
-        <video v-if="props.activeExperimentObj.Newguidance.content_id" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" :controls="true">
+        <video v-if="props.activeExperimentObj.Newguidance.id" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" :controls="true">
           您的浏览器不支持 video 标签
         </video>
       </div>
