@@ -17,22 +17,30 @@ export interface FakeMenu {
 import { TFHttpSend } from "src/typings/getRequest";
 export default {
     getMenu: { url: '/api/system/menus', method: 'GET'},
+    login: { url: `/api/yii/site/jwt-login`, method: "POST", dataType: "json" },
     loginOut:{url:`/site/logout1`,method:'POST',},
     uploadsFile:{url:`/api/instance/uploads/file`,method:'POST',dataType: "formdata"},       // 公用文件上传
      // 镜像全部配置项
     getConfigs: {url: `/api/env/images/config`, method: 'GET'},
     // 镜像列表
     getMeImage: {url: `/api/env/images`, method: 'GET'},
-    refreshCaptcha:{url: ``, method: 'GET'},
-    doesNeedCaptcha:{url: ``, method: 'GET'},
-    onlineUserInfo:{url: ``, method: 'GET'},
+    // 是否需要验证码
+    doesNeedCaptcha: { url: `/api/yii/site/does-need-captcha`, method: 'GET' },
+    // 刷新验证码
+    refreshCaptcha: { url: `/api/yii/site/captcha`, method: 'GET'},
+    // 获取在线用户信息
+    onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'}
 }
 export interface ICommonAps {
     getMenu: TFHttpSend
+    login: TFHttpSend
     loginOut: TFHttpSend
     uploadsFile: TFHttpSend
     getConfigs: TFHttpSend
     getMeImage: TFHttpSend
+    doesNeedCaptcha: TFHttpSend
+    refreshCaptcha: TFHttpSend
+    onlineUserInfo: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

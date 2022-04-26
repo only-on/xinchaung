@@ -14,6 +14,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
 const http = (request as any).common;
+console.log(http)
 const { lStorage } = extStorage;
 const router = useRouter();
 

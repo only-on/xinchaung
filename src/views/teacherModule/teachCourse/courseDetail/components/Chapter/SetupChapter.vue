@@ -46,8 +46,7 @@
   <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
     <div class="box" v-if="TemplatePreview">
       <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
-      <!-- <onlinePreview :content="state.activeExperimentObj.Newguidance.content_template.json_content" /> -->
-      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template.template_id" :type="'view'" />
+      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template.template_id" />
     </div>
     <template #footer>
       <!-- <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit> -->
@@ -58,19 +57,14 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref,reactive,nextTick,createVNode} from "vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
-import ExperimentsAndMaterials from 'src/components/SelectDocOrMp4/ExperimentsAndMaterials.vue'
 import Submit from "src/components/submit/index.vue";
 import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import ChapterList from './ChapterList.vue'
 import extStorage from "src/utils/extStorage";
 import { Modal, message } from "ant-design-vue";
-import PdfVue from "src/components/pdf/pdf.vue";
-import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
-import onlinePreview from "src/components/report/onlinePreview.vue"
 import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
