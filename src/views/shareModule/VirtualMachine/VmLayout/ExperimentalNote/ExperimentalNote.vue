@@ -36,7 +36,7 @@ export default defineComponent({
 
     // 获取笔记
     function getNoteContent() {
-      noteApi.getNoteApi({param:{task_id:taskId}}).then((res)=>{
+      noteApi.getNoteApi({param:{task_id:taskId}}).then((res:any)=>{
         console.log(res);
         if (res?.data) {
           noteContent.value=JSON.parse(res.data)
@@ -49,7 +49,7 @@ export default defineComponent({
     function submitNote() {
       let obj={content:JSON.stringify(noteContent.value),taskId:taskId}
 
-      noteApi.saveNoteApi({param:{...obj}}).then((res)=>{
+      noteApi.saveNoteApi({param:{...obj}}).then((res:any)=>{
         message.success("保存成功")
         
       }).catch(err=>{

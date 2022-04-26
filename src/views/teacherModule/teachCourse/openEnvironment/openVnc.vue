@@ -247,7 +247,7 @@ export default defineComponent({
       const fun = (sum: string) => {
         extendSessionApi({ num: sum })
           .then()
-          .catch((err) => {
+          .catch((err:any) => {
             console.error(err);
           });
       };
@@ -274,7 +274,7 @@ export default defineComponent({
               }
               
           })
-          .catch((err) => {
+          .catch((err:any) => {
             message.error(err);
           });
       }
@@ -393,7 +393,7 @@ export default defineComponent({
     }
     // 虚拟机上传
     function vmUpload(path: string) {
-      vmUploadApi({ file_path: path }, { id: reactiveData.id as any }).then((res) => {
+      vmUploadApi({ file_path: path }, { id: reactiveData.id as any }).then((res:any) => {
         console.log(res);
       });
     }

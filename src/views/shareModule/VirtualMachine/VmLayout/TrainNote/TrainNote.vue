@@ -68,7 +68,7 @@ export default defineComponent({
             trainId: taskId,
           },
         })
-        .then((res) => {
+        .then((res:any) => {
           console.log(res);
           notes.value = res?.data;
           noteContent.value = getNoteContent();
@@ -117,13 +117,13 @@ export default defineComponent({
         };
         noteApi
           .saveTrainNoteApi({ param: { ...obj } })
-          .then((res) => {
+          .then((res:any) => {
             (notes as any).value[currentIndex.value].content = JSON.stringify(
               noteContent.value
             );
             resolve(true);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(false);
           });
       });

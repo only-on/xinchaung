@@ -494,7 +494,7 @@ export default defineComponent({
     }
     // 关机
     function closeVm() {
-      VmOperatesHandle("closeVm").then((res) => {
+      VmOperatesHandle("closeVm").then((res:any) => {
         console.log(res);
         message.success("操作成功");
         console.log(isConnect);
@@ -576,10 +576,10 @@ export default defineComponent({
           },
         };
         operatesHandle(params)
-          .then((res) => {
+          .then((res:any) => {
             resolve(res);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
@@ -722,7 +722,7 @@ export default defineComponent({
             progressVisible.value = false;
           }
         })
-        .catch((err) => {
+        .catch((err:any) => {
           console.log(err);
         });
     }
@@ -766,7 +766,7 @@ export default defineComponent({
           question: assistanceQuestion.value,
         },
       };
-      vmApi.studentQuestionApi({ param: { ...param } }).then((res) => {
+      vmApi.studentQuestionApi({ param: { ...param } }).then((res:any) => {
         console.log(res);
         assistanceVisible.value = false;
         message.success("请求发送成功");

@@ -169,7 +169,7 @@ const create = () => {
   // fileListValidator()
   // return
   formRef.value.validate().then(async () => {
-    // fileListValidator().then((res)=>{
+    // fileListValidator().then((res:any)=>{
     //   console.log(res)
     // })
     const val= await fileListValidator()

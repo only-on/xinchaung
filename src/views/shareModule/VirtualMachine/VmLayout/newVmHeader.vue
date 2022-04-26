@@ -449,7 +449,7 @@ import Submit from "src/components/submit/index.vue";
 const route = useRoute();
 const router = useRouter();
 const vmApi = request.vmApi;
-const examApi = request.studentExam;
+// const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 const experType = Number(route.query.experType);
 
@@ -1050,10 +1050,10 @@ function VmOperatesHandle(actionType: any) {
       },
     };
     operatesHandle(params)
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   }).catch();
@@ -1091,7 +1091,7 @@ function okProgress() {
         progressVisible.value = false;
       }
     })
-    .catch((err) => {
+    .catch((err:any) => {
       console.log(err);
     });
 }
@@ -1135,7 +1135,7 @@ function okAssistance() {
       question: assistanceQuestion.value,
     },
   };
-  vmApi.studentQuestionApi({ param: { ...param } }).then((res) => {
+  vmApi.studentQuestionApi({ param: { ...param } }).then((res:any) => {
     assistanceVisible.value = false;
     message.success("请求发送成功");
   });
@@ -1202,15 +1202,15 @@ function submitQuiz() {
     params.answer.push(answer);
   }
 
-  examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
-    message.success("提交成功");
-    let questionTemp: any[] = await getQuestionList(true);
-    quizPaperList.value = questionTemp.filter((item: any) => {
-      return currentQuestionIds.includes(item.id);
-    });
-    currentShowType.value = 1;
-    currentQuestionIds=[]
-  });
+  // examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
+  //   message.success("提交成功");
+  //   let questionTemp: any[] = await getQuestionList(true);
+  //   quizPaperList.value = questionTemp.filter((item: any) => {
+  //     return currentQuestionIds.includes(item.id);
+  //   });
+  //   currentShowType.value = 1;
+  //   currentQuestionIds=[]
+  // });
 }
 
 // 取消随堂测试

@@ -17,9 +17,9 @@ export type TgetWorkbench = {
  */
 export function getWorkbenchApi(params: TgetWorkbench) {
     return new Promise((resolve: any, reject: any) => {
-        workbenchApi.getWorkbenchsApi({ param: params }).then((res) => {
+        workbenchApi.getWorkbenchsApi({ param: params }).then((res:any) => {
             resolve(res)
-        }).catch(err => {
+        }).catch((err:any) => {
             reject(err)
         })
     })

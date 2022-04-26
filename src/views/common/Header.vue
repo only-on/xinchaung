@@ -52,8 +52,6 @@ import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher_p.png";
 import adminUserImg from "src/assets/images/user/admin_p.png";
 import studentUserImg from "src/assets/images/user/student_p.png";
-import { getSettingSiteApi } from "src/views/adminModule/adminSystemSetting/api";
-// admin_p
 export default defineComponent({
   name: "Header",
   components: { MenuBar },

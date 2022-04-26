@@ -68,7 +68,7 @@ export default defineComponent({
     tabsName :[String, Number]
   },
   setup(props) {
-    const http = (request as Ihttp).knowledgeMap
+    const http = (request as any).knowledgeMap
     const $message:MessageApi = inject('$message')!
     const router = useRouter()
     var jm = ref<any>(null)

@@ -57,7 +57,7 @@ export default defineComponent({
         if (!props.type) {
           loginOut();
         } else {
-          VmOperatesHandle("saveKvm").then((res) => {
+          VmOperatesHandle("saveKvm").then((res:any) => {
             loginOut();
           });
         }
@@ -83,10 +83,10 @@ export default defineComponent({
       };
       return new Promise((resolve: any, reject: any) => {
         operatesHandle(params)
-          .then((res) => {
+          .then((res:any) => {
             resolve(res);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();

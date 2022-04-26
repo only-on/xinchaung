@@ -109,7 +109,7 @@ function getUrlParam(name: string): string | null {
 }
 //离线模板内容
 function experReport(params: experReportParam) {
-  vmApi.experimentalReport({ param: params }).then((res) => {
+  vmApi.experimentalReport({ param: params }).then((res:any) => {
     reportTemplateData.value = res?.data;
   });
 }
@@ -151,7 +151,7 @@ function submitOfflineReport() {
   );
   let htmltable: any = document.querySelector("#onlineReportTableEditable");
   formData.append("html_content", htmltable.outerHTML);
-  vmApi.updateTemplateReport({ param: formData }).then((res) => {
+  vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     // reportTemplateData.value= res?.data
     experReport({ csc_id: reportId.value });
   });
@@ -166,7 +166,7 @@ function handleUpload() {
   formData.append("file", fileList.value[0]);
   formData.append("id", reportTemplateData.value.templatable_id);
   formData.append("csc_id", reportId.value);
-  vmApi.updateTemplateReport({ param: formData }).then((res) => {
+  vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     reportTemplateData.value = res?.data;
   });
 }

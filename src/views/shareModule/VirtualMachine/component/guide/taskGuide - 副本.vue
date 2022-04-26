@@ -118,7 +118,7 @@ function lookStep() {
         task_step_id: steps.value.id,
         see_current_step: 1,
       };
-      stepAction(params).then((res) => {
+      stepAction(params).then((res:any) => {
         let i = findIndex(allInfo.value.current_step, {
           task_step_id: steps.value.id,
         });

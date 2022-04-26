@@ -139,7 +139,7 @@ export default defineComponent({
       const fun = (sum: string) => {
         extendSessionApi({ num: sum })
           .then()
-          .catch((err) => {
+          .catch((err:any) => {
             console.error(err);
           });
       };

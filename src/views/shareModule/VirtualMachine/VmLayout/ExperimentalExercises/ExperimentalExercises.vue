@@ -71,7 +71,7 @@ export default defineComponent({
     "short-answer-question":shortAnswerQuestion
   },
   setup(props) {
-    let experApi = request.studentExam;
+    // let experApi = request.studentExam;
     const route = useRoute();
 
     let taskId = route.query.taskId;
@@ -182,10 +182,10 @@ export default defineComponent({
         entity_type: "content",
         entity_id: taskId,
       };
-      experApi.getQuestionsListApi({ urlParams: params }).then((res) => {
-        console.log(res);
-        reactiveData.judgeData = res?.data;
-      });
+      // experApi.getQuestionsListApi({ urlParams: params }).then((res:any) => {
+      //   console.log(res);
+      //   reactiveData.judgeData = res?.data;
+      // });
     }
 
     function submitAnswer() {
@@ -203,9 +203,9 @@ export default defineComponent({
         course_student_content_id: course_student_content_id,
         answer: answer,
       };
-      experApi.submitAnswerApi({ param: params }).then(()=>{
-        message.success("提交成功")
-      });
+      // experApi.submitAnswerApi({ param: params }).then(()=>{
+      //   message.success("提交成功")
+      // });
     }
 
     // function getExperimentStatus() {
@@ -222,7 +222,7 @@ export default defineComponent({
     //         }else{
     //           resolve(false)
     //         }
-    //       }).catch((err)=>{
+    //       }).catch((err:any)=>{
     //         reject(err)
     //       });
     //   });

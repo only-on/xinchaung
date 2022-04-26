@@ -1,7 +1,8 @@
 <script lang="ts" setup>
 import { ref, reactive } from "vue";
 import { useRouter } from "vue-router";
-import http from "src/api";
+// import http from "src/api";
+
 import extStorage from "src/utils/extStorage";
 import {
   UserOutlined,
@@ -11,7 +12,8 @@ import {
 import { ValidateErrorEntity } from "ant-design-vue/es/form/interface";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import { IBusinessResp } from "../../typings/fetch";
-
+import request from "src/api/index";
+const http = (request as any).common;
 const { lStorage } = extStorage;
 const router = useRouter();
 
@@ -61,18 +63,18 @@ const refForm = ref();
 
 // 刷新验证码
 const refreshCaptcha = () => {
-  http.common
+  http
     .refreshCaptcha({ param: { refresh: 1, _: new Date().getTime() } })
-    .then((res) => {
+    .then((res:any) => {
       captchaUrl.value = res!.data.url;
     })
-    .catch((error) => {
+    .catch((error:any) => {
       console.log("refresh captcha error: ", error);
     });
 };
 
 // 检查是否需要显示验证码
-http.common.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
+http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
   needCaptcha.value = res!.data.need_verify;
   if (needCaptcha.value) {
     captchaUrl.value = "/api/yii/site/captcha?v=" + res!.data.v;
@@ -80,7 +82,7 @@ http.common.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 });
 
 // 获取在线用户数信息
-http.common.onlineUserInfo({}).then((res: IBusinessResp | null) => {
+http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   onlineUserInfo.value = res!.data.online_info;
 });
 
@@ -96,7 +98,7 @@ const login = () => {
       if (needCaptcha.value) {
         param["verifyCode"] = formState.captcha;
       }
-      http.common
+      http
         .login({
           param: param,
         })
@@ -113,7 +115,7 @@ const login = () => {
           }
           submitLoading.value = false;
         })
-        .catch((res) => {
+        .catch((res:any) => {
           console.error("login failed: ", res);
           if (res.data.need_verify) {
             needCaptcha.value = true;

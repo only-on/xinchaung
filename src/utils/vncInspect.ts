@@ -86,7 +86,7 @@ function openVm(params: IEnvirmentsParam) {
                 try {
                   cleanEnvirments(result.msg.topoinst_id).then(() => {
                     resourceInspect().then(() => {
-                      createExamples(params).then((res) => {
+                      createExamples(params).then((res:any) => {
                         console.log(res);
 
                         resolve({
@@ -112,7 +112,7 @@ function openVm(params: IEnvirmentsParam) {
           }
         }
       })
-      .catch((err) => {
+      .catch((err:any) => {
         console.log(err);
       });
   });
@@ -135,7 +135,7 @@ function envirmentsInspect(params: IEnvirmentsParam) {
           reject(res);
         }
       })
-      .catch((res) => {
+      .catch((res:any) => {
         if (res.status === 0) {
           resolve(res);
         } else {
@@ -164,7 +164,7 @@ function cleanEnvirments(topoinst_id: string) {
           reject(res);
         }
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -189,7 +189,7 @@ function resourceInspect() {
           reject(res);
         }
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -213,7 +213,7 @@ function createExamples(params: IEnvirmentsParam) {
           reject(res);
         }
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -227,10 +227,10 @@ function getVmBaseInfo(params: IEnvirmentsParam) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .getVmBaseInfo({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -244,10 +244,10 @@ function endOperates(params: IStopOperatesParam) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .endOperates({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -261,10 +261,10 @@ function endExperiment(params: IEnvirmentsParam) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .endExperiment({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -278,10 +278,10 @@ function recommendExperiment(params: IRecommendExperiment) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .recommendExperiment({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -411,10 +411,10 @@ function stepAction(params: any) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .stepActionApi({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   });
@@ -427,13 +427,13 @@ function operatesHandle(params: IOperatesHandle) {
   return new Promise((resolve: any, reject: any) => {
     vmApi
       .operatesHandle({ param: params })
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
-  }).catch((err) => {
+  }).catch((err:any) => {
     console.log(err);
   });
 }

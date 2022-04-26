@@ -302,13 +302,13 @@ function createTopo() {
   };
   return new Promise((resolve: any, reject: any) => {
     createTopoApi(params)
-      .then((res) => {
+      .then((res:any) => {
         console.log(res);
         connection_id = res?.data.connection_id;
         topoinst_id = res?.data.topoinst_id;
         resolve(res?.data);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   }).catch();
@@ -339,11 +339,11 @@ function getVersionListData() {
   };
   return new Promise((resolve: any, reject: any) => {
     getVersionList(params)
-      .then((res) => {
+      .then((res:any) => {
         console.log(res);
         resolve(res?.data);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   }).catch();
@@ -365,7 +365,7 @@ function getFileListData() {
         file_id = fileListData.value[currentIndex.value].file_id;
         resolve(res.data);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   }).catch();
@@ -380,10 +380,10 @@ function createVersionData() {
   };
   return new Promise((resolve: any, reject: any) => {
     createVersion(params)
-      .then((res) => {
+      .then((res:any) => {
         resolve(res);
       })
-      .catch((err) => {
+      .catch((err:any) => {
         reject(err);
       });
   }).catch();
@@ -398,7 +398,7 @@ function getCurrentSWitchFile() {
     file_id: file_id,
   };
 
-  switchFile(params).then((res) => {
+  switchFile(params).then((res:any) => {
     console.log(res);
     content.value = res?.data.file_content;
     detailLoading.value = true;
@@ -442,7 +442,7 @@ function switchVersion(v_id: number, is_return: number) {
     is_return: is_return,
   };
   return new Promise((resolve: any, reject: any) => {
-    switchVersionApi(params).then((res) => {
+    switchVersionApi(params).then((res:any) => {
       fileListData.value = res?.data.file_list;
       version_id.value = res?.data.version_id;
       if (fileListData.value.length > 0) {
@@ -515,7 +515,7 @@ function runCode() {
         runResult.value = res.data.output;
       }
     })
-    .catch((res) => {});
+    .catch((res:any) => {});
 }
 // saveKvm
 function saveKvm() {}

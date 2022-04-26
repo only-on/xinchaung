@@ -66,7 +66,7 @@ export default defineComponent({
       }
       spinning.value = true;
       clearTimeout(Number(timer));
-      fetch(url).then((res) => {
+      fetch(url).then((res:any) => {
         if (res.status == 200) {
           isShowPdf.value = true;
           clearTimeout(Number(timer));

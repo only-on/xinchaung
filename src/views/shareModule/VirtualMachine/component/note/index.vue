@@ -33,7 +33,7 @@ onMounted(() => {
 
     // 获取笔记
     function getNoteContent() {
-      noteApi.getNoteApi({ param: { task_id: taskId } }).then((res) => {
+      noteApi.getNoteApi({ param: { task_id: taskId } }).then((res:any) => {
         if (res?.data) {
           noteContent.value = JSON.parse(res.data);
         }
@@ -46,10 +46,10 @@ onMounted(() => {
 
       noteApi
         .saveNoteApi({ param: { ...obj } })
-        .then((res) => {
+        .then((res:any) => {
           message.success("保存成功");
         })
-        .catch((err) => {
+        .catch((err:any) => {
           console.log(err);
         });
     }

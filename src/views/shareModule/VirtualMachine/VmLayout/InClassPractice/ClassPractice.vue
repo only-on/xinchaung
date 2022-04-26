@@ -62,7 +62,7 @@ export default defineComponent({
     empty
   },
   setup() {
-    const examApi = request.studentExam;
+    // const examApi = request.studentExam;
     let route = useRoute();
     let course_id = JSON.parse(route.query.routerQuery as any).course_id;
     const paper = [
@@ -470,10 +470,10 @@ export default defineComponent({
     });
     // 获取试卷列表
     function getStudentExamPaper() {
-      examApi.getExamListApi({ param: paperParams }).then((res: any) => {
-        console.log(res);
-        reactiveData.data = res.data.list;
-      });
+      // examApi.getExamListApi({ param: paperParams }).then((res: any) => {
+      //   console.log(res);
+      //   reactiveData.data = res.data.list;
+      // });
     }
     // 获取习题列表
     function getQuestionsList(entity_id: number) {
@@ -482,19 +482,19 @@ export default defineComponent({
         entity_type: "test",
       };
       return new Promise((resolve: any, reject: any) => {
-        examApi
-          .getQuestionsListApi({
-            param: { include: "answers" },
-            urlParams: params,
-          })
-          .then((res) => {
-            console.log(res);
-            resolve(res?.data);
-          })
-          .catch((err) => {
-            reject(err);
-          })
-          .catch();
+        // examApi
+        //   .getQuestionsListApi({
+        //     param: { include: "answers" },
+        //     urlParams: params,
+        //   })
+        //   .then((res:any) => {
+        //     console.log(res);
+        //     resolve(res?.data);
+        //   })
+        //   .catch((err:any) => {
+        //     reject(err);
+        //   })
+        //   .catch();
       });
     }
     async function openOrClose(i: number, id: number) {
@@ -530,9 +530,9 @@ export default defineComponent({
       }
       console.log(params);
 
-      examApi.submitAnswerApi({ param: params }).then((res: any) => {
-        console.log(res);
-      });
+      // examApi.submitAnswerApi({ param: params }).then((res: any) => {
+      //   console.log(res);
+      // });
     }
 
     function getExperimentStatus(entity_id: number) {
@@ -541,18 +541,18 @@ export default defineComponent({
           entity_id: entity_id,
           entity_type: "test",
         };
-        examApi
-          .getExperimentStatusApi({ urlParams: params })
-          .then((res: any) => {
-            if (res.data && res.data.has_submit_answer) {
-              resolve(res.data.has_submit_answer);
-            } else {
-              resolve(false);
-            }
-          })
-          .catch((err) => {
-            reject(err);
-          });
+        // examApi
+        //   .getExperimentStatusApi({ urlParams: params })
+        //   .then((res: any) => {
+        //     if (res.data && res.data.has_submit_answer) {
+        //       resolve(res.data.has_submit_answer);
+        //     } else {
+        //       resolve(false);
+        //     }
+        //   })
+        //   .catch((err:any) => {
+        //     reject(err);
+        //   });
       });
     }
 

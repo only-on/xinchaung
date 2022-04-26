@@ -346,14 +346,14 @@ export default defineComponent({
       };
       return new Promise((resolve: any, reject: any) => {
         createTopoApi(params)
-          .then((res) => {
+          .then((res:any) => {
             console.log(res);
             connection_id = res?.data.connection_id;
             topoinst_id = res?.data.topoinst_id;
             topoinst_uuid = res?.data.topoinst_uuid;
             resolve(res?.data);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
@@ -384,11 +384,11 @@ export default defineComponent({
       };
       return new Promise((resolve: any, reject: any) => {
         getVersionList(params)
-          .then((res) => {
+          .then((res:any) => {
             console.log(res);
             resolve(res?.data);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
@@ -411,7 +411,7 @@ export default defineComponent({
               reactiveData.fileListData[reactiveData.currentIndex].file_id;
             resolve(res.data);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
@@ -427,10 +427,10 @@ export default defineComponent({
       };
       return new Promise((resolve: any, reject: any) => {
         createVersion(params)
-          .then((res) => {
+          .then((res:any) => {
             resolve(res);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
@@ -446,7 +446,7 @@ export default defineComponent({
         file_id: file_id,
       };
 
-      switchFile(params).then((res) => {
+      switchFile(params).then((res:any) => {
         console.log(res);
         content.value = res?.data.file_content;
         detailLoading.value=true
@@ -489,7 +489,7 @@ export default defineComponent({
         is_return: is_return,
       };
       return new Promise((resolve: any, reject: any) => {
-        switchVersionApi(params).then((res) => {
+        switchVersionApi(params).then((res:any) => {
           reactiveData.fileListData = res?.data.file_list;
           version_id.value = res?.data.version_id;
           if (reactiveData.fileListData.length > 0) {
@@ -563,7 +563,7 @@ export default defineComponent({
             runResult.value = res.msg;
           }
         })
-        .catch((res) => {
+        .catch((res:any) => {
           if (res?.data) {
             runResult.value = res.data;
           } else {
@@ -655,10 +655,10 @@ export default defineComponent({
       };
       return new Promise((resolve: any, reject: any) => {
         operatesHandle(params)
-          .then((res) => {
+          .then((res:any) => {
             resolve(res);
           })
-          .catch((err) => {
+          .catch((err:any) => {
             reject(err);
           });
       }).catch();
