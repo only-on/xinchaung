@@ -18,6 +18,15 @@ export default {
                 title:`磁盘管理`,
                 authCode: ''
             },
+        },
+        {
+            path: "systemAuthorization",
+            name: "",
+            component: () => import("src/views/adminModule/systemMaintenance/systemAuthorization/index.vue"),
+            meta: {
+                title:`系统授权`,
+                authCode: ''
+            },
         }
     ]
 }
