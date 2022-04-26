@@ -326,9 +326,45 @@ async function toVmConnect(
   })
 }
 
+// 连接环境
+import { wsConnect } from "src/request/websocket";
+import storage from "src/utils/extStorage";
+const uid = Number(storage.lStorage.get("uid"));
+const connection_id = uid+'_0'
+let ws_config = storage.lStorage.get("ws_config");
+const connectEnv = () => {
+  return new Promise(async (resolve: any, reject: any) => {
+    setTimeout(() => {
+      resolve()
+    }, 10000)
+    wsConnect({
+      url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
+      close: (ev: CloseEvent) => {
+        console.log(ev)
+        if (ev.type === "close") {
+
+        }
+      },
+      message: (ev: MessageEvent) => {
+        let regex = /\{.*?\}/g;
+        if (typeof ev.data === "string" && regex.test(ev.data)) {
+          let wsJsonData = JSON.parse(ev.data);
+          console.log(wsJsonData)
+          if (wsJsonData.type==="base_vminfo"&&wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
+            resolve()
+          }
+        }
+      }
+    })
+  })
+}
 // 准备环境
 let paramVm: any = {}
-async function prepareEnv(param: IEnvirmentsParam,) {
+async function prepareEnv(
+  param: IEnvirmentsParam,
+  router?: any,
+  routerQuery?: any
+) {
   return new Promise(async (resolve: any, reject: any) => {
     
     // 视频、文档、webide
@@ -342,8 +378,10 @@ async function prepareEnv(param: IEnvirmentsParam,) {
           experType: param.experType
         }
       );
+      // goToVm( router, routerQuery )
       return 
     }
+    // await connectEnv()
     const createExamplesInfo: any = await openVm(param);
     if (createExamplesInfo.data.data.connection_id) {
       resolve()
@@ -541,4 +579,5 @@ export {
   evaluateApi,
   prepareEnv,
   goToVm,
+  connectEnv,
 };

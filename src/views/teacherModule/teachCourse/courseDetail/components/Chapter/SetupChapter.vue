@@ -22,9 +22,9 @@
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
-            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create">
+            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2 || !(is_connect||currentState===1) ? 'none-event':''">
               <span class="iconfont icon-jitibeike"></span>
-              <span>{{openVncState ? '准备中...' : '开始备课'}}</span>
+              <span>{{currentState===1?'开始备课':currentState===2||!is_connect?'准备中...':'进入'}}</span>
             </div>
           </div>
         </div>
@@ -68,7 +68,7 @@ import { Modal, message } from "ant-design-vue";
 import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
-import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { lStorage } = extStorage;
@@ -163,54 +163,45 @@ const cancelViewReport=()=>{
 
 
 // 开始备课
-const openVncState = ref(false)
+// 1未开始学习  2准备中   3准备完成 待进入
+const currentState = ref(1)
+const is_connect = ref(false)  // 当前ws是否连接成功
 const lessonPreparation=()=>{
-  if (openVncState.value) return
-  console.log(state.activeExperimentObj)
+  if (currentState.value === 3) {
+    goToVm(router, routeQuery)
+    return
+  }
   const {id, task_type} = state.activeExperimentObj
-  openVncState.value = true
   const param: any = {
     type: "course",  // 实验
     opType: "prepare",
     taskId: id,
     experType: task_type
   };
-  // 文档视频实验
-  if (task_type === 6 || task_type === 7) {
-    router.push({
-      path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: task_type
-      },
-    });
+  if (task_type === 6 || task_type === 7 || task_type === 3) {
+    is_connect.value = true
+  } else {
+    is_connect.value = false
+  }
+  // 准备环境
+  if (currentState.value === 1) {
+    currentState.value = 2
+    prepareEnv(param).then(() =>{
+      currentState.value = 3
+    }).catch(() => {
+      currentState.value = 1
+    })
     return
   }
-  // if (task_type === 3 && programing_type === 1) {
-  if (task_type === 3) {
-    // webide
-    router.push({
-      path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: task_type
-      },
-    });
-    return
-  }
-  toVmConnect(router, param, routeQuery).then((res: any) => {
-    openVncState.value = false
-  })
 }
 
 onMounted(() => {
-
+  if(Number(currentTab) === 0) {
+    connectEnv().then(() => {
+      console.log('********************')
+      is_connect.value = true
+    })
+  }
 });
 </script>
 
@@ -252,6 +243,12 @@ onMounted(() => {
           margin-left: 2rem;
           cursor: pointer;
           color: var(--brightBtn);
+          &.none-event {
+            pointer-events: none;
+            cursor: not-allowed;
+            // color: #5c5c5c;
+            opacity: 0.6;
+          }
         }
       }
       // .pdfBox{

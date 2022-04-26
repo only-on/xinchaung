@@ -39,8 +39,9 @@
               <div class="TitRight">
                 <div v-if="props.Editable === 'canStudy'">
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
-                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2" 
-                  @click.stop="prepare(a)">{{`${['开始学习','准备中...','进入'][a.startup-1]}`}}</a-button>
+                  <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
+                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2 || !(is_connect||a.startup===1)" 
+                  @click.stop="prepare(a)">{{a.startup===1?'开始学习':a.startup===2||!is_connect?'准备中...':'进入'}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
@@ -91,7 +92,7 @@ import Submit from "src/components/submit/index.vue";
 import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import { Modal, message } from "ant-design-vue";
 import ExperimentsAndMaterials from 'src/components/SelectDocOrMp4/ExperimentsAndMaterials.vue'
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, } from "src/utils/vncInspect";
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect";
 import { useRoute ,useRouter} from "vue-router";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import request from 'src/api/index'
@@ -275,28 +276,41 @@ function selectExperiment(a:any,v:any){
   // });
   // window.open(href, "_blank");
 }
+
+//
+const is_connect = ref(false)
 function prepare(a:any) {
+  if (a.startup === 3) {
+    goToVm(router, routeQuery)
+    return
+  }
+  ChaptersTreeList.forEach((v: any) => {
+    v.list.forEach((vv: any) => {
+      vv.startup = 1
+    });
+  });
   state.activeExperimentObj={...a}
+  const {id, task_type} = a
+  const param: any = {
+    type: "course",  // 实验
+    opType: "prepare",
+    taskId: id,
+    experType: task_type
+  };
+  if (task_type === 6 || task_type === 7 || task_type === 3) {
+    is_connect.value = true
+  } else {
+    is_connect.value = false
+  }
   // 准备环境
   if (a.startup === 1) {
     a.startup=2
-    const {id, task_type} = a
-    const param: any = {
-      type: "course",  // 实验
-      opType: "prepare",
-      taskId: id,
-      experType: task_type
-    };
     prepareEnv(param).then(() =>{
       a.startup=3
     }).catch(() => {
       a.startup=1
     })
     return
-  }
-  // 进入环境
-  if (a.startup === 3) {
-    goToVm(router, routeQuery)
   }
 }
 function ViewExperiment(a:any,v:any){
@@ -470,6 +484,12 @@ const getChaptersTree=()=>{
 onMounted(() => {
   if(props.courseId){
     getChaptersTree()
+  }
+  if(Number(currentTab) === 1) {
+    connectEnv().then(() => {
+      console.log('********************')
+      is_connect.value = true
+    })
   }
 });
 </script>

@@ -360,6 +360,7 @@ export default defineComponent({
           lStorage.set("name", user.name);
           lStorage.set("user_id", user.id);
           lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
+          lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
           // store.commit('saveMenus', data)
           const site_settings = res.data.site_settings;
           systemBaseInfo.login_logo = site_settings.login_logo;
