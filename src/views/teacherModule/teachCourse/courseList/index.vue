@@ -123,6 +123,7 @@ watch(() => { return configuration.componenttype; },
     currentTab.value = val;
     searchInfo.is_public = currentTab.value
     searchInfo.page = 1
+    totalCount.value=0
     // searchInfo.content_direction = 0
     // searchInfo.content_type = 0
     // searchInfo.content_level = 0

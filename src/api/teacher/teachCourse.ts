@@ -55,6 +55,8 @@ export default {
   courseExperimentRecommend:{ url: `/api/course/courses/{courseId}/contents/recommend`, method: "GET"},
   // 当前课程知识点
   courseknowledge:{ url: `/api/course/courses/{courseId}/knowledge-points`, method: "GET"},
+  // 学习进度排行榜
+  courseRankList:{ url: `/api/course/courses/{courseId}/study/leaderboard`, method: "GET"},
   
   // 课程复用  
   multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},

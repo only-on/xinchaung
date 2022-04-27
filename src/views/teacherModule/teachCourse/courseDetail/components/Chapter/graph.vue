@@ -3,7 +3,7 @@
   <div class="graphBox">
     <div id="graph"></div>
     <div class="magnifier" @click="viewAtlas()">
-      <span class="iconfont icon-sousuo"></span>
+      <span class="iconfont iconsousuo"></span>
     </div>
   </div>
   <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref,nextTick} from "vue";
-import { Knowledge,HotWords} from './echartsOption';
+import { Knowledge,HotWords,Knowledge2} from './echartsOption';
 import request from 'src/api/index'
 const http=(request as any).teachCourse
 interface Props {
@@ -40,17 +40,19 @@ function viewAtlas(){
 const courseknowledge=()=>{
   // list.length=0
   http.courseknowledge({urlParams: {courseId:props.courseId}}).then((res: any) => {
-    const {data}=res.data
+    const {data}=res
     // list.push(...data)
   });
 }
 onMounted(() => {
+  console.log(props.courseId)
   // initData() HotWords  courseknowledge
+  courseknowledge()
   nextTick(()=>{
     let data={}
+    // Knowledge2('graph',data)
     HotWords(document.getElementById("graph") as HTMLDivElement,data)
   })
-  courseknowledge()
 });
 </script>
 

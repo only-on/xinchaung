@@ -35,7 +35,7 @@
             </div>
             <div class="item" v-if="isShowCourseDetail">
               <span>实验成绩</span>
-              <span class="num num2">100分</span>
+              <span class="num num2">{{info.content_score}}分</span>
             </div>
             <div class="item" v-if="isShowCourseDetail">
               <span>实验时长</span>

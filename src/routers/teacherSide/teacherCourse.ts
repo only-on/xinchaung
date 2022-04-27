@@ -36,57 +36,12 @@ export default {
         authCode: 'CreateCourse'
       },
     },
-    
-    {
-      path: "virtualEnv",
-      name: "virtualEnv",
-      // component: () => import("src/views/teacherModule/teachCourse/virtualEnv.vue"),
-      meta: {
-        title: "环境",
-        authCode: 'virtualEnv'
-      },
-    },
-    {
-      path: "evalute",
-      name: "evalute",
-      // component: () => import("src/views/teacherModule/teachCourse/evalute/evalute.vue"),
-      meta: {
-          title: "评价",
-          authCode: 'evalute'
-      },
-    },
-    {
-      path: "createTestPaper",
-      name: "createTestPaper",
-      // component: () => import("src/views/teacherModule/teachCourse/createTestPaper/addMultipleModal.vue"),
-      // component: () => import("src/views/teacherModule/teachCourse/createTestPaper/create.vue"),
-      meta: {
-        title: "创建试卷",
-        authCode: 'createTestPaper'
-      },
-    },
     {
       path: "knowledgeMap",
       // component: () => import("src/views/teacherModule/knowledgeMap/index.vue"),
       meta: {
         title: "知识图谱",
         authCode: 'knowledgeMap'
-      },
-    },
-    {
-      path: "testPaperList",
-      // component: () => import("src/views/teacherModule/teachCourse/testPaperList/testPaperList.vue"),
-      meta: {
-        title: "随堂测试",
-        authCode: 'testPaperList'
-      },
-    },
-    {
-      path: "result",
-      // component: () => import("src/views/teacherModule/teachCourse/testPaperList/interationResult.vue"),
-      meta: {
-        title: "测试结果",
-        authCode: 'result'
       },
     },
     {
@@ -113,58 +68,6 @@ export default {
             title: "镜像",
             authCode: 'open-jupyte'
         },
-    },
-    {
-      path: "archive-detail",
-      // component: () => import("src/views/teacherModule/teachCourse/courseDetail/archivedDetail.vue"),
-      meta: {
-        title: "归档详情",
-        authCode: 'archive-detail'
-      },
-    },
-    {
-      path: "analysis",
-      name: "analysis",
-      // component: () => import("src/views/teacherModule/teacherCourseAnalysis/analysis.vue"),
-      meta: {
-        title: "分析",
-        authCode: 'analysis'
-      },
-    },
-    {
-      path: "teachingSchedule",
-      // component: () => import("src/views/teacherModule/teachCourse/courseSchedule/teachingScheduleList.vue"),
-      meta: {
-        title: "排课管理",
-        authCode: 'teachingSchedule'
-      }, 
     }, 
-    {
-      path: 'scheduleCreate',
-      name: 'scheduleCreate',
-      // component: () => import('src/views/teacherModule/teachCourse/courseSchedule/scheduleCreate.vue'),
-      meta: {
-        title: "创建排课",
-        authCode: 'scheduleCreate'
-      },
-    },
-    {
-      path: 'scheduleEdit',
-      name: 'scheduleEdit',
-      // component: () => import('src/views/teacherModule/teachCourse/courseSchedule/scheduleCreate.vue'),
-      meta: {
-        title: "编辑排课",
-        authCode: 'scheduleEdit'
-      },
-    },
-    {
-      path: 'envMonitoring',
-      name: 'envMonitoring',
-      // component: () => import('src/views/teacherModule/teachCourse/courseSchedule/EnvMonitoring.vue'),
-      meta: {
-        title: "环境监控",
-        authCode: 'envMonitoring'
-      },
-    },
   ]
 }

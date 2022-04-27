@@ -27,12 +27,13 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   courseId: 0,  
 });
-const list:any=reactive([])
+var list:any=reactive([])
 const courseExperimentRecommend=()=>{
   list.length=0
   http.courseExperimentRecommend({urlParams: {courseId:props.courseId}}).then((res: any) => {
     const {data}=res
     list.push(...data)
+    console.log(data)
   });
 }
 // /teacher/teacherExperimentResourcePool/experimentDetail?id=500043&currentTab=0

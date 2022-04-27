@@ -9,7 +9,7 @@
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent">
-      <Ranking v-if="role === 4" :rank="[]" />
+      <Ranking v-if="role === 4" :courseId="Number(courseId)" />
       <graph :courseId="Number(courseId)" />
       <relevantExpert :courseId="Number(courseId)" />
     </div>
