@@ -303,7 +303,7 @@ function prepare(a:any) {
   const {id, task_type} = a
   const param: any = {
     type: "course",  // 实验
-    opType: "prepare",
+    opType: role === 3 ? "prepare" : 'start',
     taskId: id,
     experType: task_type
   };
