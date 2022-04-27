@@ -14,7 +14,6 @@ import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
 const http = (request as any).common;
-console.log(http)
 const { lStorage } = extStorage;
 const router = useRouter();
 
@@ -30,7 +29,6 @@ const formState: UnwrapNestedRefs<FormState> = reactive({
   captcha: undefined,
 });
 const submitLoading = ref(false);
-const year = new Date().getFullYear();
 const needCaptcha = ref(false);
 const captchaUrl = ref("");
 const onlineUserInfo = ref("--/--");
@@ -44,7 +42,6 @@ const rules = {
       message: "请输入验证码",
       trigger: "blur",
       asyncValidator: (rule: any, value: string) => {
-        console.log("validating captcha...");
         return new Promise((resolve, reject) => {
           if (!needCaptcha.value) {
             resolve(true);
@@ -66,10 +63,10 @@ const refForm = ref();
 const refreshCaptcha = () => {
   http
     .refreshCaptcha({ param: { refresh: 1, _: new Date().getTime() } })
-    .then((res:any) => {
+    .then((res: any) => {
       captchaUrl.value = res!.data.url;
     })
-    .catch((error:any) => {
+    .catch((error: any) => {
       console.log("refresh captcha error: ", error);
     });
 };
@@ -116,10 +113,11 @@ const login = () => {
           }
           submitLoading.value = false;
         })
-        .catch((res:any) => {
+        .catch((res: any) => {
           console.error("login failed: ", res);
           if (res.data.need_verify) {
             needCaptcha.value = true;
+            captchaUrl.value = "/api/yii/site/captcha?refresh=1";
           }
           submitLoading.value = false;
         });
@@ -137,11 +135,12 @@ const login = () => {
     </div>
     <div class="main">
       <div class="banner">
-        <h1>XinChuang Banner is here.</h1>
+        <img src="/img/default/login-banner.png"/>
       </div>
       <div class="login-box">
         <div class="logo">
-          <h1>XinChuang</h1>
+          <img src="/img/default/login-logo.png" />
+          <h1>欢迎登录信创平台</h1>
         </div>
         <div class="form">
           <a-form
@@ -151,31 +150,31 @@ const login = () => {
             :label-col="{ span: 0 }"
             :wrapper-col="{ span: 24 }"
           >
-            <a-form-item name="username">
+            <a-form-item class="login-item" name="username">
               <a-input
                 class="login-input"
-                placeholder="用户名"
+                placeholder="请输入您的账号"
                 v-model:value="formState.username"
                 @keyup.enter="login"
               >
                 <template #prefix>
-                  <user-outlined />
+                  <span class="iconfont icon-yonghuming1"></span>
                 </template>
               </a-input>
             </a-form-item>
-            <a-form-item name="password">
+            <a-form-item class="login-item" name="password">
               <a-input-password
                 class="login-input"
-                placeholder="密码"
+                placeholder="请输入您的密码"
                 v-model:value="formState.password"
                 @keyup.enter="login"
               >
                 <template #prefix>
-                  <lock-outlined />
+                  <span class="iconfont icon-mima1"></span>
                 </template>
               </a-input-password>
             </a-form-item>
-            <a-form-item name="captcha" v-show="needCaptcha">
+            <a-form-item class="login-item" name="captcha" v-show="needCaptcha">
               <a-input
                 class="login-input captcha"
                 placeholder="验证码"
@@ -188,19 +187,21 @@ const login = () => {
               </a-input>
               <img class="captcha" :src="captchaUrl" @click="refreshCaptcha" />
             </a-form-item>
-            <a-form-item :wrapper-col="{ span: 24, offset: 0 }">
-              <a-button type="primary" @click="login" :loading="submitLoading"
+            <a-form-item
+              class="login-item"
+              :wrapper-col="{ span: 24, offset: 0 }"
+            >
+              <a-button
+                class="login-button"
+                type="primary"
+                @click="login"
+                :loading="submitLoading"
                 >登录
               </a-button>
             </a-form-item>
           </a-form>
         </div>
       </div>
-    </div>
-    <div class="footer">
-      <p class="copyright">
-        版权|北京西普阳光科技股份有限公司版权所有© {{ year }}
-      </p>
     </div>
   </div>
 </template>
@@ -210,7 +211,8 @@ const login = () => {
   height: 100%;
   display: flex;
   flex-direction: column;
-  position: relative; 
+  position: relative;
+  background: linear-gradient(315deg, #1f227d 0%, #141c65 39%, #00113b);
 
   .online-info {
     position: absolute;
@@ -229,18 +231,23 @@ const login = () => {
     width: 100%;
     height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: space-around;
     align-items: center;
 
     .banner {
-      width: 740px;
+      width: 871px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
     }
 
     .login-box {
       background: #f7f7f7;
+      width: 540px;
       min-height: 300px;
-      border-radius: 22px;
-      box-shadow: 0px 2px 8px var(--primary-5);
+      border-radius: 13px;
+      box-shadow: 0 3.26px 11.42px 0 rgba(0, 0, 0, 0.14);
       padding: 50px;
 
       .logo {
@@ -252,11 +259,65 @@ const login = () => {
       }
 
       .form {
+        margin-top: 36px;
         width: 438px;
+        :deep(.ant-input-affix-wrapper) {
+          background-color: #f0f3f6;
+          input {
+            background-color: #f0f3f6;
+            color: #b4b6b8;
+            font-size: 20px !important;
+            &::-webkit-input-placeholder {
+              /* WebKit, Blink, Edge */
+              font-size: 20px;
+            }
+            &:-moz-placeholder {
+              /* Mozilla Firefox 4 to 18 */
+              font-size: 20px;
+            }
+            &::-moz-placeholder {
+              /* Mozilla Firefox 19+ */
+              font-size: 20px;
+            }
+            &:-ms-input-placeholder {
+              /* Internet Explorer 10-11 */
+              font-size: 20px;
+            }
+          }
+        }
 
+        .login-item {
+          :deep(.ant-form-item-control-input-content) {
+            display: flex;
+            align-items: center;
+          }
+          :deep(.ant-form-item-explain-error) {
+            margin: 2.5px 0;
+          }
+        }
         .login-input {
-          border-radius: 22px;
-          height: 45px;
+          border-radius: 4px !important;
+          height: 64px !important;
+
+          :deep(.ant-input-prefix) {
+            color: #b4b6b8;
+            margin: 0 14px;
+            .iconfont {
+              font-size: 20px;
+            }
+            span[role="img"] {
+              font-size: 20px;
+            }
+          }
+
+          :deep(.ant-input-suffix) {
+            color: #b4b6b8;
+            margin: 0 14px;
+            font-size: 20px;
+            .ant-input-password-icon {
+              color: #b4b6b8;
+            }
+          }
 
           &:focus {
             border-color: var(--primary-5);
@@ -278,6 +339,20 @@ const login = () => {
         }
         img.captcha {
           height: 45px;
+        }
+        .login-button {
+          width: 100%;
+          height: 64px !important;
+          background: linear-gradient(
+            90deg,
+            #f5c05b,
+            #faa94f 35%,
+            #fd9a46 71%,
+            #ff9544
+          );
+          border-radius: 4px !important;
+          color: #fff;
+          font-size: 24px !important;
         }
       }
     }
