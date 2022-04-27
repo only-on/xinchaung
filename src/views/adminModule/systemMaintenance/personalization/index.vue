@@ -33,9 +33,15 @@
       </div>
       <div class="themeStyle">
         <div class="tit">主题风格</div>
+        <chooseStyle titleInfo='建议尺寸1920X268px' type='color' :data='colordata'></chooseStyle>
       </div> 
       <div class="loginScreen">
         <div class="tit">系统登录界面</div>
+        <chooseStyle titleInfo='尺寸1920X1080px' type='img' :data='imgdata'></chooseStyle>
+      </div>
+      <div class="bottomBtn">
+        <a-button type='primary'>保存</a-button>
+        <a-button type='primary' class="brightBtn">设置初始化</a-button>
       </div>
     </div>
 </template>
@@ -47,6 +53,10 @@
       reactive,
       inject
     } from "vue";
+    import loginImg1 from 'src/assets/images/admin/systemmain/login1.png'
+    import loginImg2 from 'src/assets/images/admin/systemmain/login1.png'
+    import loginImg3 from 'src/assets/images/admin/systemmain/login1.png'
+    import chooseStyle from './chooseStyle/index.vue'
     const env = process.env.NODE_ENV == "development" ? true : false;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
@@ -59,6 +69,8 @@
       showNav:true,
     });
     const systemName:any=ref('')
+    const colordata:any=ref(['#000000','#659BFE','#C665FE'])
+    const imgdata:any=ref([loginImg1,loginImg2,loginImg3])
     const systemBaseInfo:any=reactive({
       login_logo:''
     })
@@ -70,6 +82,9 @@
     }
 </script>
 <style lang="less" scoped>
+.personalization{
+  width:100%;
+}
   .upload-logo-box {
           .logo-size{
             color: rgba(0, 0, 0, 0.25);
@@ -89,4 +104,26 @@
             background-size: 100% 100%;
           }  
         }
+        .tit{
+            font-size: 16px;
+          }
+        .themeStyle{
+          margin-bottom: 20px;
+          margin-top: 20px;
+        }
+        .bottomBtn{
+          width: 100%;
+          display: flex;
+          margin-top: 40px;
+          justify-content:center;
+        }
+        .brightBtn{
+          margin-left: 10px;
+        }
+        :deep(.ant-upload.ant-upload-select-picture-card){
+        width: 60px;
+        height: 60px;
+        margin-right: 0px;
+        margin-bottom: 0px;
+       }
 </style>
