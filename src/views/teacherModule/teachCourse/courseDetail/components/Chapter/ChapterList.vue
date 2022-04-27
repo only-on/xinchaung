@@ -40,8 +40,8 @@
                 <div v-if="props.Editable === 'canStudy'">
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
-                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2 || !(isWsConnect||a.startup===1)" 
-                  @click.stop="prepare(a)">{{a.startup===1?'开始学习':a.startup===2||!isWsConnect?'准备中...':'进入'}}</a-button>
+                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)" 
+                  @click.stop="prepare(a)">{{a.startup===1?'开始学习':!isWsConnect?'准备中...':'进入'}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
@@ -287,19 +287,13 @@ function selectExperiment(a:any,v:any){
   // window.open(href, "_blank");
 }
 
-//
-const is_connect = ref(false)
+// 备课 开始学习
 function prepare(a:any) {
-  if (a.startup === 3) {
+  if (a.startup === 2) {
     goToVm(router, routeQuery)
     return
   }
-  ChaptersTreeList.forEach((v: any) => {
-    v.list.forEach((vv: any) => {
-      vv.startup = 1
-    });
-  });
-  state.activeExperimentObj={...a}
+
   const {id, task_type} = a
   const param: any = {
     type: "course",  // 实验
@@ -307,16 +301,22 @@ function prepare(a:any) {
     taskId: id,
     experType: task_type
   };
-  if (task_type === 6 || task_type === 7 || task_type === 3) {
-    isWsConnect.value = true
-  } else {
-    isWsConnect.value = false
-  }
   // 准备环境
   if (a.startup === 1) {
-    a.startup=2
+    // a.startup=2
     prepareEnv(param).then(() =>{
-      a.startup=3
+      if (task_type === 6 || task_type === 7 || task_type === 3) {
+        isWsConnect.value = true
+      } else {
+        isWsConnect.value = false
+      }
+      ChaptersTreeList.forEach((v: any) => {
+        v.list.forEach((vv: any) => {
+          vv.startup = 1
+        });
+      });
+      a.startup=2
+      state.activeExperimentObj={...a}
     }).catch(() => {
       a.startup=1
     })

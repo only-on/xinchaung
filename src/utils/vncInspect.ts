@@ -91,6 +91,7 @@ function openVm(params: IEnvirmentsParam) {
   
               },
               onCancel() {
+                reject()
                 console.log("关闭");
                 modal.destroy()
               }
@@ -389,7 +390,8 @@ async function prepareEnv(
       return 
     }
     // await connectEnv()
-    const createExamplesInfo: any = await openVm(param);
+    // const createExamplesInfo: any = await openVm(param);
+    await openVm(param).then((createExamplesInfo: any) => {
     if (createExamplesInfo.data.data.connection_id) {
       resolve()
       Object.assign(paramVm, 
@@ -404,6 +406,9 @@ async function prepareEnv(
         }
       );
     }
+    }).catch(() => {
+      reject()
+    })
   })
 }
 // 进入虚拟机页面
