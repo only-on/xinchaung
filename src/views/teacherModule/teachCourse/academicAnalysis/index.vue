@@ -71,9 +71,9 @@ statisData.value={
           maxScore:0,
           statisData:0,
           avgScore:0,
-          ExperimentalReportSubmissionRate:'',
-          inClassTestAccuracyRate:'',
-          automaticScoringCorrectRate:'',
+          ExperimentalReportSubmissionRate:0,
+          inClassTestAccuracyRate:0,
+          automaticScoringCorrectRate:0,
           finalScoreDistributionOfScores:[],
           experimentalReportDistributionOfScores:[],
           automaticScoringDistributionOfScores:[],
@@ -130,7 +130,7 @@ function getStugrandsList(){
   http.stuGrandsList({urlParams:{content_id:experitId.value},param:{className:className.value,limit:tableData.limit,page:tableData.page}}).then((res:any)=>{
     if(res.code==1){
       data.value=res.data.list
-      tableData.total=res.data.page.totalCount
+      tableData.total=res.data.page?.totalCount
     }
   })
 }

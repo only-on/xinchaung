@@ -244,76 +244,18 @@
       }
       function getData() {
         console.log("获取数据", myChartid.value);
-       
-        state.staticInfo={
-            courseGrade:[
-            {name: "内置课程2", value: 10},
-            {name: "若华0125测试_资源", value: 10},
-            {name: "测试课程11", value: 15},
-            {name: "test1", value: 2},
-            {name: "可成册四", value: 15}
-            ],
-            userProfile: {
-                classes_id: 0,
-                course: "",
-                created_at: "2022-01-06 13:40:28",
-                deleted_at: 0,
-                department: "",
-                direct: "",
-                gender: 1,
-                grade: "",
-                id: 809,
-                introduce: "",
-                name: "411",
-                phone: "",
-                status: 10,
-                updated_at: "2022-01-06 13:40:28",
-                user_id: 811,
-            },
-            weakKnowledges:[
-            {id: 50005, knowledge_map_name: "111", pid: 50004, create_time: "2021-12-28 14:39:35"},
-            {id: 50003, knowledge_map_name: "node3", pid: 50000, create_time: "2021-11-26 14:43:08"},
-            {id: 50002, knowledge_map_name: "node2", pid: 50000, create_time: "2021-11-26 14:43:02"},
-            {id: 50006, knowledge_map_name: "ddddd", pid: 50004, create_time: "2021-12-28 14:40:22"},
-            ],
-            weakCourseContents:[
-            {knowledge_map_id: "50005", content_id: "500202", name: "yyds", max_csc_id: "560"},
-            {knowledge_map_id: "50005", content_id: "500195", name: "shiyanbaogao", max_csc_id: "422"},
-            {knowledge_map_id: "50005", content_id: "500152", name: "gg1", max_csc_id: "421"},
-            {knowledge_map_id: "50003", content_id: "500009", name: "init_step_20211130", max_csc_id: "563"},
-            {knowledge_map_id: "50003", content_id: "500006", name: "advance_20211127", max_csc_id: "561"},
-            ],
-            jobDirections:[
-            {id: 500012, name: "测试ssds4测试", parent_id: 0, created_at: 1645089710, deleted_at: 0},
-            {id: 500011, name: "测试52656+5s", parent_id: 0, created_at: 1645089705, deleted_at: 0},
-            {id: 500002, name: "职业方向3", parent_id: 0, created_at: 1637636508, deleted_at: 0},
-            ],
-            courseProgress:{
-            created_at: 1650831301,
-            finished_content_count: 17,
-            id: 6,
-            last_content_id: 564,
-            left_content_count: 61,
-            total_course_count: 13,
-            updated_at: 1650831301,
-            user_id: 811
-            },
-            avgRank: 2   
-          }
-          state.staticInfo.courseGrade?.forEach((item:any) => {
+        const infoRequest = (request as any).index;
+        infoRequest.getInfo().then((res: any) => {
+          state.staticInfo = res.data;
+            state.staticInfo.courseGrade?.forEach((item:any) => {
             console.log(item,'item')
             courseGrandEcharName.value.push(item.name);
             courseGrandEcharValue.value.push(item.value);
           });
-          courseGrandEcharName.value=['内置课程','弱化测试','测试课程11','test1','可成册四']
-        console.log(courseGrandEcharName.value)
-        // const infoRequest = (request as any).index;
-        // infoRequest.getInfo().then((res: any) => {
-        //   state.staticInfo = res.data;
-        //   let courseEchar: any = DrawEchar();
-        //   courseEchar.setOption(courseOption);
-        // });
-        // var myChart: any = (echarts as any).init(document.getElementById(myChartid.value));
+          let courseEchar: any = DrawEchar();
+          courseEchar.setOption(courseOption);
+        });
+        var myChart: any = (echarts as any).init(document.getElementById(myChartid.value));
         let courseEchar: any = DrawEchar();
         courseEchar.setOption(courseOption);
         provide("staticInfo", "state.staticInfo");
