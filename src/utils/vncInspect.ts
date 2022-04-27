@@ -62,54 +62,58 @@ function openVm(params: IEnvirmentsParam) {
         console.log(result);
 
         if (result.status === 1) {
-          resourceInspect().then(() => {
-            createExamples(params).then((res: any) => {
-              console.log(res);
-
-              resolve({
-                data: res,
-                query: {
-                  opType: params.opType,
-                  type: res.data.type.type,
-                  taskId: params.taskId,
-                },
-              });
-            });
-          });
-        } else {
-          if (result.msg.topoinst_id) {
+          if (result.msg && result.msg.topoinst_id) {
             const modal = Modal.confirm({
-              title: "是否清除多余的环境",
+              title: "开启新环境，将删除未保存的环境，确定要开启吗？",
               cancelText: "取消",
               okText: "确定",
               onOk() {
                 try {
                   cleanEnvirments(result.msg.topoinst_id).then(() => {
                     resourceInspect().then(() => {
-                      createExamples(params).then((res:any) => {
+                      createExamples(params).then((res) => {
                         console.log(res);
-
+  
                         resolve({
-                          data: res,
-                          query: {
+                          data: res, query: {
                             opType: params.opType,
                             type: params.type,
                             taskId: params.taskId,
-                          },
+                          }
                         });
-                      });
-                    });
-                  });
+                      })
+                    })
+                  })
                 } catch (error) {
                   console.log(error);
                 }
+  
+  
               },
               onCancel() {
                 console.log("关闭");
-                modal.destroy();
-              },
-            });
+                modal.destroy()
+              }
+            })
+  
+          } else {
+            resourceInspect().then(() => {
+              createExamples(params).then((res: any) => {
+                console.log(res);
+  
+                resolve({
+                  data: res, query: {
+                    opType: params.opType,
+                    type: res.data.type.type,
+                    taskId: params.taskId,
+                  }
+                });
+              })
+            })
           }
+  
+        } else {
+  
         }
       })
       .catch((err:any) => {
@@ -329,14 +333,16 @@ async function toVmConnect(
 // 连接环境
 import { wsConnect } from "src/request/websocket";
 import storage from "src/utils/extStorage";
+import { useStore } from "vuex";
+import { useRoute } from "vue-router";
 const uid = Number(storage.lStorage.get("uid"));
 const connection_id = uid+'_0'
 let ws_config = storage.lStorage.get("ws_config");
 const connectEnv = () => {
+  const store = useStore()
+  console.log(store)
+  console.log(useRoute())
   return new Promise(async (resolve: any, reject: any) => {
-    setTimeout(() => {
-      resolve()
-    }, 10000)
     wsConnect({
       url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
       close: (ev: CloseEvent) => {
@@ -352,6 +358,7 @@ const connectEnv = () => {
           console.log(wsJsonData)
           if (wsJsonData.type==="base_vminfo"&&wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
             resolve()
+            store.commit('setIsWsConnect', true)
           }
         }
       }
@@ -408,7 +415,9 @@ function goToVm(
     path: "/vm",
     query: {...paramVm, routerQuery: JSON.stringify(routerQuery)}
   })
-  paramVm = {}
+  setTimeout(() => {
+    paramVm = {}
+  }, 3000)
 }
 
 // 推荐学习实验跳转

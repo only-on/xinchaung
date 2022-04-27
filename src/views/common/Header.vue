@@ -396,6 +396,7 @@ export default defineComponent({
     window.XC_ROLE=2
     onMounted(() => {
       // getMenu();
+      lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
     });
 
     return {

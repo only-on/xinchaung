@@ -40,8 +40,8 @@
                 <div v-if="props.Editable === 'canStudy'">
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
-                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2 || !(is_connect||a.startup===1)" 
-                  @click.stop="prepare(a)">{{a.startup===1?'开始学习':a.startup===2||!is_connect?'准备中...':'进入'}}</a-button>
+                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="a.startup===2 || !(isWsConnect||a.startup===1)" 
+                  @click.stop="prepare(a)">{{a.startup===1?'开始学习':a.startup===2||!isWsConnect?'准备中...':'进入'}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
@@ -98,6 +98,16 @@ import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePo
 import request from 'src/api/index'
 import extStorage from "src/utils/extStorage";
 import { IBusinessResp } from "src/typings/fetch.d";
+import { useStore } from "vuex";
+const store = useStore()
+let isWsConnect = computed({
+  get: () => {
+    return store.state.isWsConnect
+  },
+  set: val => {
+    store.commit("setIsWsConnect",val)
+  }
+})
 const http=(request as any).teachCourse
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
@@ -298,9 +308,9 @@ function prepare(a:any) {
     experType: task_type
   };
   if (task_type === 6 || task_type === 7 || task_type === 3) {
-    is_connect.value = true
+    isWsConnect.value = true
   } else {
-    is_connect.value = false
+    isWsConnect.value = false
   }
   // 准备环境
   if (a.startup === 1) {
@@ -488,7 +498,7 @@ onMounted(() => {
   if(Number(currentTab) === 1) {
     connectEnv().then(() => {
       console.log('********************')
-      is_connect.value = true
+      // isWsConnect.value = true
     })
   }
 });

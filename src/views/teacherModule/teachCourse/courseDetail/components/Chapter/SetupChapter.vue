@@ -22,9 +22,9 @@
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
-            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2 || !(is_connect||currentState===1) ? 'none-event':''">
+            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2 || !(isWsConnect||currentState===1) ? 'none-event':''">
               <span class="iconfont icon-jitibeike"></span>
-              <span>{{currentState===1?'开始备课':currentState===2||!is_connect?'准备中...':'进入'}}</span>
+              <span>{{currentState===1?'开始备课':currentState===2||!isWsConnect?'准备中...':'进入'}}</span>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted ,Ref,reactive,nextTick,createVNode} from "vue";
+import { ref, toRefs, onMounted ,Ref,reactive,nextTick, createVNode, computed} from "vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
@@ -69,6 +69,17 @@ import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
 import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+
+import { useStore } from "vuex";
+const store = useStore()
+let isWsConnect = computed({
+  get: () => {
+    return store.state.isWsConnect
+  },
+  set: val => {
+    store.commit("setIsWsConnect",val)
+  }
+})
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { lStorage } = extStorage;
@@ -179,9 +190,9 @@ const lessonPreparation=()=>{
     experType: task_type
   };
   if (task_type === 6 || task_type === 7 || task_type === 3) {
-    is_connect.value = true
+    isWsConnect.value = true
   } else {
-    is_connect.value = false
+    isWsConnect.value = false
   }
   // 准备环境
   if (currentState.value === 1) {
@@ -199,7 +210,7 @@ onMounted(() => {
   if(Number(currentTab) === 0) {
     connectEnv().then(() => {
       console.log('********************')
-      is_connect.value = true
+      // is_connect.value = true
     })
   }
 });

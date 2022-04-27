@@ -5,7 +5,8 @@
         <video
           style="width: 100%; height: 650px"
           controls="true"
-          :src="env ? '/proxyPrefix'+baseInfo.base_info.content_task_files[0].file_url : baseInfo.base_info.content_task_files[0].file_url"
+          v-if="baseInfo.base_info.files.length"
+          :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.content_task_files[0].file_url"
         ></video>
       </div>
       <div class="document-wrap setScrollbar" v-else-if="taskType == 7">
@@ -14,7 +15,7 @@
           v-model="baseInfo.base_info.guide"
           :preview="true"
         />
-        <PdfVue :url="baseInfo.base_info.content_task_files[0].file_url" v-else/>
+        <PdfVue :url="baseInfo.base_info.files[0].file_url" v-else/>
       </div>
     </template>
   </layout>
@@ -67,14 +68,14 @@ const navData = [
 ];
 
 onMounted(async () => {
-  getExperimentDetail()
-  // await getVmBase();
+  // getExperimentDetail()
+  await getVmBase();
 });
 // 获取实验基本信息pageinfo
 function getVmBase() {
-  opType = "help";
-  type = "course";
-  taskId = 500569;
+  // opType = "help";
+  // type = "course";
+  // taskId = 500569;
   return new Promise((resolve: any, reject: any) => {
     let params = {
       opType: opType,
@@ -84,10 +85,10 @@ function getVmBase() {
     };
     getVmBaseInfo(params).then((res: any) => {
       baseInfo.value = res.data;
-      if (!res.data.current) {
-        resolve();
-        return;
-      }
+      // if (!res.data.current) {
+      //   resolve();
+      //   return;
+      // }
 
       taskType.value = res.data.base_info.task_type.type;
       resolve();

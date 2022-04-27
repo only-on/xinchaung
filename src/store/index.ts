@@ -21,6 +21,7 @@ const clearStore = (keys:any) =>
      Menus:[],
      breadcrumb,
      aaa:'798',
+     isWsConnect: false,
   },
   getters: {
     isLogged() {
@@ -44,6 +45,9 @@ const clearStore = (keys:any) =>
     },
     saveMenus(state, Menus){
       state.Menus = Menus;
+    },
+    setIsWsConnect(state, val) {
+      state.isWsConnect = val
     }
   },
   actions: {
