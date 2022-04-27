@@ -96,7 +96,7 @@ const tusFileUpload={
         const file_url=`${FileConfig[directory]}/${name}.${type}`
         // console.log(`${FileConfig[directory]}/${name}.${type}`)
         if(type === 'mp4'){
-          data.tusdVideoUrl=`${env?'/proxyPrefix':''}/video/${name}.${type}`
+          data.tusdVideoUrl=`${env?'/proxyPrefix':''}/xinchuang-video/${name}.${type}`
         }
         if(type === 'pdf'){
           data.tusdDocumentUrl=`/document/${name}.${type}`

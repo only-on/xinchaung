@@ -18,7 +18,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted ,Ref,nextTick} from "vue";
-import { Knowledge,HotWords,Knowledge2} from './echartsOption';
+import { Knowledge,HotWords,Knowledge3} from './echartsOption';
 import request from 'src/api/index'
 const http=(request as any).teachCourse
 interface Props {
@@ -34,7 +34,8 @@ function viewAtlas(){
   Visible.value=true
   nextTick(()=>{
     let data={}
-    Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
+    // Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
+    Knowledge3('KnowledgePoints',[])
   })
 }
 const courseknowledge=()=>{
@@ -50,8 +51,8 @@ onMounted(() => {
   courseknowledge()
   nextTick(()=>{
     let data={}
-    // Knowledge2('graph',data)
-    HotWords(document.getElementById("graph") as HTMLDivElement,data)
+    Knowledge3('graph',[])
+    // HotWords(document.getElementById("graph") as HTMLDivElement,data)
   })
 });
 </script>

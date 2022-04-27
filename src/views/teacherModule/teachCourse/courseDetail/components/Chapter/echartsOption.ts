@@ -485,8 +485,8 @@ function Knowledge2(id: any, data2: any){
 
 
 
-let data={
-  "parentNode": "fsf",
+let data3={
+  "parentNode": "若华测试学生关联002",
   "childNodes": [
       {
           "type": "1",
@@ -537,14 +537,14 @@ function setTagData(knowledge_map: any) {
     {
       name: knowledge_map.parentNode,
       id: knowledge_map.parentNode,
-      symbolSize: 50,
+      symbolSize: 2,
       draggable: true,
       itemStyle: {
         borderColor: theme.themeColor,
-        borderWidth: 6,
-        shadowBlur: 20,
+        // borderWidth: 6,
+        shadowBlur: 10,
         shadowColor: theme.themeColor,
-        color: '#000'
+        // color: '#000'
       },
       category: 0,
     }
@@ -554,14 +554,14 @@ function setTagData(knowledge_map: any) {
       data.push({
         name: item.contentvia.name,
         id: item.contentvia.id,
-        symbolSize: 30,
-        draggable: true,
+        symbolSize: 2,
+        // draggable: true,
         itemStyle: {
           borderColor: theme.themeColor,
-          borderWidth: 6,
-          shadowBlur: 20,
+          // borderWidth: 6,
+          shadowBlur: 10,
           shadowColor: theme.themeColor,
-          color: '#384A67'
+          // color: '#384A67'
         },
         category: 1,
       })
@@ -573,14 +573,14 @@ function setTagData(knowledge_map: any) {
         data.push({
           name: knowledage.knowledgeMap.knowledge_map_name,
           id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
-          symbolSize: 15,
-          draggable: true,
+          symbolSize: 2,
+          // draggable: true,
           itemStyle: {
             borderColor: theme.themeColor,
-            borderWidth: 6,
-            shadowBlur: 20,
+            // borderWidth: 6,
+            shadowBlur: 10,
             shadowColor: theme.themeColor,
-            color: '#b0ccfe'
+            // color: '#b0ccfe'
           },
           category: 1,
         })
@@ -618,7 +618,7 @@ export const graphOptions = (data: any) => {
         data: datas.data,
         links: datas.links,
         lineStyle: {
-          width: 5,
+          width: 2,
           curveness: 0
         },
         categories: [
@@ -631,7 +631,13 @@ export const graphOptions = (data: any) => {
   }
   return options
 }
-
+function Knowledge3(id: any, data: any){
+  let option:any=graphOptions(data3)
+  document.getElementById(id)?.removeAttribute("_echarts_instance_");
+  var chartDom:any=document.getElementById(id)
+  const chart = echarts.init(chartDom)
+  chart && chart.setOption(option);
+}
 
 
 
@@ -641,5 +647,6 @@ export const graphOptions = (data: any) => {
 export {
   Knowledge,
   HotWords,
-  Knowledge2
+  Knowledge2,
+  Knowledge3
 }
