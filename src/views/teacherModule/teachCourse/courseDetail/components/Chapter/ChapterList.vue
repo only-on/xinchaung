@@ -297,18 +297,20 @@ function prepare(a:any, i: number) {
   }
 
   isWsConnect.value = false
-  const {id, task_type} = a
+  const { id } = a
+  const task_type = a.is_webssh ? 2 : a.is_webide ? 2 : a.task_type
   const param: any = {
     type: "course",  // 实验
     opType: role === 3 ? "prepare" : 'start',
     taskId: id,
-    experType: a.is_webide ? 3 : task_type
+    experType: task_type
   };
   // 准备环境
   if (a.startup === 1) {
     // a.startup=2
     prepareEnv(param).then(() =>{
-      if (task_type === 6 || task_type === 7 || a.is_webide) {
+      // 视频 文档 webide
+      if (task_type === 6 || task_type === 7 || task_type === 3) {
         isWsConnect.value = true
       } else {
         // isWsConnect.value = false

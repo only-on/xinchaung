@@ -88,8 +88,8 @@ const router = useRouter();
 const { type, opType, taskId, topoinst_id } = route.query;
 const experType = Number(route.query.experType)
 console.log(experType)
-// 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
-const componentList = ['', vnc, webide, webide, jupyter, vnc, documentOrVideo, documentOrVideo]
+// 1 vnc 2 命令行 3：ide  4:jupyter 5:任务制 6:视频 7:文档
+const componentList = ['', vnc, vnc, webide, jupyter, vnc, documentOrVideo, documentOrVideo]
 
 const evaluateVisible: Ref<boolean> = ref(false); // 控制自评、推荐显示隐藏
 const baseInfo: any = ref({}); // pageinfo接口获取的基本数据

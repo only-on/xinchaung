@@ -135,5 +135,8 @@ const getExperimentDetail = () => {
 .document-wrap, .video-wrap {
   height: 100%;
   overflow: auto;
+  .demo__container {
+    height: 100%;
+  }
 }
 </style>
