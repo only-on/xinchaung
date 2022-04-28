@@ -48,10 +48,10 @@ updata({
 });
 const route = useRoute();
 const router = useRouter();
-const http=(request as any).teachCourse
+const http=(request as any).studentCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
-const { currentTab,courseId } = route.query;
+const { currentTab,courseId ,course_student_id} = route.query;
 const  studentDetailTabs=[
   {name:'课程内容',value:'courseChapter'},
   {name:'课程成绩',value:'courseAchievement'},
@@ -62,7 +62,7 @@ var state:IState=reactive({
 })
 state.activeTab=studentDetailTabs[0]
 function initData(){
-  http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
+  http.courseDetail({urlParams:{courseId:course_student_id}}).then((res:IBusinessResp)=>{
     state.courseDetail=res.data
   })
 }

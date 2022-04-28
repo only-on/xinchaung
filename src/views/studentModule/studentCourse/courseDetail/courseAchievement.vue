@@ -68,8 +68,8 @@ import { log } from "console";
 import * as echarts from "echarts";
 import { ref, toRefs, onMounted} from "vue";
 import request from "src/api/index";
-const http = (request as any).studentScore;
 import { useRouter ,useRoute } from 'vue-router';
+const http = (request as any).studentScore;
 const route=useRoute()
 const courseId:any=route.query.courseId  //课程id
 const columns = [

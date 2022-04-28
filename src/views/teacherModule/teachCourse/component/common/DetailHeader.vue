@@ -74,7 +74,7 @@
             <div class="ratio">
               <div class="item3">
                 <span>11</span>
-                <span>/21</span>
+                <span>/{{info.content_total}}</span>
               </div>
               <div class="item4">
                 <div class="progress-inner" :style="{ width: '50%' }"></div>

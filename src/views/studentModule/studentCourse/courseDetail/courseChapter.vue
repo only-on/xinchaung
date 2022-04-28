@@ -36,7 +36,7 @@ const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
 const { currentTab,courseId } = route.query;
-const http=(request as any).teachCourse
+const http=(request as any).studentCourse
 const rules = {
   name: [
     { required: true, message: `请输入名称`, trigger: "blur" },
