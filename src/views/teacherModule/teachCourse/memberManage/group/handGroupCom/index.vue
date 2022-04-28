@@ -49,7 +49,7 @@
                     <span class="name"
                       >{{ item.name }}
                       <!-- <i
-                        class="edit iconbianji1 iconfont"
+                        class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
                       ></i> -->
                       <i

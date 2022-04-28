@@ -15,9 +15,9 @@
           </div>
           <div class="titleBoxRight flexCenter">
             <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-              <span  class="iconfont iconchuangjian" @click.stop="establishChapter(v)"></span>
-              <span class="iconfont iconbianji1"  @click.stop="editChapter(v)"></span>
-              <span class="iconfont iconshanchu-copy"  @click.stop="deleteChapter(v)"></span>
+              <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
+              <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
+              <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
             </div>
             <span class="collect">{{v.openItem?'收起':'展开'}}</span>
           </div>
@@ -46,8 +46,8 @@
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
                 <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                  <span class="iconfont iconbianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
-                  <span class="iconfont iconshanchu-copy" @click.stop="deleteExperiment(v,a)"></span>
+                  <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
+                  <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
                 </div>
               </div>
             </div>

@@ -8,7 +8,7 @@
             <span>{{ dataSetInfo.name }}</span>
           </h2>
           <div class="dataset-detail-btn">
-            <span class="iconfont iconbianji1" @click="editBase" v-if="dataSetInfo.creator === creator"></span>
+            <span class="iconfont icon-bianji1" @click="editBase" v-if="dataSetInfo.creator === creator"></span>
             <span class="iconfont icon-fanhui" @click="back"></span>
           </div>
         </div>
@@ -71,7 +71,7 @@
 
           <div v-else class="edit-md">
             <div class="action" v-if="dataSetInfo.documents && dataSetInfo.creator === creator">
-              <span @click="editMd" class="iconbianji1 iconfont"></span>
+              <span @click="editMd" class="icon-bianji1 iconfont"></span>
             </div>
             <div class="explain" v-if="dataSetInfo.documents">
               <antdv-markdown v-model="dataSetInfo.documents"  :preview-only="true" class="markdown__editor"/>
@@ -532,7 +532,7 @@ export default defineComponent({
 
         .dataset-detail-btn {
           .iconfont.icon-fanhui:hover,
-          .iconfont.iconbianji1:hover {
+          .iconfont.icon-bianji1:hover {
             background: var(--primary-color);
             color: #f7f7f7;
           }
@@ -698,7 +698,7 @@ export default defineComponent({
           .action {
             text-align: right;
             padding: 0 10px;
-            .iconbianji1.iconfont {
+            .icon-bianji1.iconfont {
               // margin-right: -40px;
               &:hover {
                 background: var(--primary-color);

@@ -2,7 +2,7 @@
   <div class="cardList">
     <div class="cardBox mySelfCreate" v-if="type === 'mine' && getRole() == 3">
       <div class="operate-btn" @click="handleCreate">
-        <span class="iconfont iconchuangjian1"></span>
+        <span class="iconfont icon-chuangjian1"></span>
         创建在线模板
       </div>
       <div class="operate-btn" @click="handleUpload">

@@ -3,7 +3,7 @@
     <div class="addBox">
       <div class="add flexCenter">
         <span
-          class="addCircular iconfont icontianjia"
+          class="addCircular iconfont icon-tianjia"
           @click="OnlineAdd"
         ></span>
       </div>

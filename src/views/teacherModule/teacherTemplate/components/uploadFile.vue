@@ -9,7 +9,7 @@
         :file-list="fileList"
         @change="onChange">
         <p class="ant-upload-drag-icon">
-          <i class="iconfont iconchuangjian"></i>
+          <i class="iconfont icon-chuangjian"></i>
         </p>
         <p class="ant-upload-text">点击这里选择实验报告模板</p>
         <p class="ant-upload-hint">支持单个doc或docx格式文件的上传</p>

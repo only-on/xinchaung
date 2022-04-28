@@ -80,7 +80,7 @@
           <template #operation="{ record }">
             <div>
               <span
-                class="iconfont iconbianji1 a-link"
+                class="iconfont icon-bianji1 a-link"
                 @click="editCurrentRow(record, true)"
               ></span>
               <span
@@ -823,7 +823,7 @@ export default defineComponent({
 </script>
 <style lang="less">
 .question-content-table {
-  .iconbianji1 {
+  .icon-bianji1 {
     margin-right: 20px;
     color: var(--primary-color);
   }

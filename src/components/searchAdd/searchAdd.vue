@@ -12,7 +12,7 @@
           />
         </div>
         <a-dropdown v-if="props.isShowAdd && props.TypeList.length">
-          <span class="addCircular iconfont icontianjia"></span>
+          <span class="addCircular iconfont icon-tianjia"></span>
           <template #overlay>
             <a-menu @click="handleMenuClick" class="menu__group">
               <a-menu-item v-for="item in props.TypeList" :key="item.key">
@@ -24,7 +24,7 @@
         <span
           v-else-if="props.isShowAdd && !props.TypeList.length"
           @click="handleMenuClick"
-          class="addCircular iconfont icontianjia"
+          class="addCircular iconfont icon-tianjia"
         ></span>
       </div>
     </div>
