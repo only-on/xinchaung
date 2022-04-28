@@ -112,7 +112,8 @@ export default getMenuRole
  */
 export const experimentTypeList = {
     1: { name: 'vnc' },
-    2: { name: 'webide' },
+    2: { name: 'ssh' },
+    3: { name: 'webide' },
     4: { name: 'jupyter' },
     5: { name: 'task' },
     6: { name: 'video' },

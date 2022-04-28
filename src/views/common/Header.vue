@@ -23,7 +23,7 @@
             {{ assistText }}
           </template>
           <template v-else>
-            <div class="help-question-warp">
+            <div class="help-question-warp setScrollbar">
               <div
                 v-for="(item, index) in helpInfoList"
                 class="help-item"
@@ -32,7 +32,7 @@
               >
                 <div class="help-base-info">
                   <span>{{ item.user }}</span>
-                  <span>{{ item.created_at }}</span>
+                  <span class="time">{{ item.created_at }}</span>
                 </div>
                 <p class="assist" :title="item.question">
                   {{ item.question }}
@@ -42,8 +42,8 @@
           </template>
         </template>
         <div class="help-message" v-if="isOperation" @click="helpMessage">
-          <img :src="handImg" />
-          <span class="remoteAssistance">远程协助消息</span>
+          <span class="iconfont icon-jushou"></span>
+          <span class="remoteAssistance">远程求助</span>
           <div class="red-point" v-if="helpInfoList.length > 0">
             <span class="dot"> </span>
             <span class="pulse"> </span>
@@ -362,7 +362,7 @@ export default defineComponent({
     });
     
     let longWs: any = null
-    const helpInfoList: Ref<any> = ref([{a: 111}])
+    const helpInfoList: Ref<any> = ref([])
     const isRead: Ref<boolean> = ref(false)
     provide('helpInfoList', helpInfoList)
     provide('isRead', isRead)
@@ -406,6 +406,12 @@ export default defineComponent({
               console.log(helpInfoList.value)
             } else if(data.type==="base_vminfo"&&data.data.vms && data.data.vms.length > 0) {
               store.commit('setIsWsConnect', true)
+            } else if(data.type === 'error') {
+              if (data.data?.message) {
+                message.warn(data.data.message);
+              } else {
+                message.warn(data.data);
+              }
             }
           }
         }
@@ -536,13 +542,19 @@ export default defineComponent({
     align-items: center;
     cursor: pointer;
     .help-message {
-      color: var(--white-45);
-      margin-right: 30px;
+      color: var(--white-75);
+      margin-right: 53px;
       position: relative;
       img {
         -webkit-filter: brightness(30%); /* Chrome, Safari, Opera */
         filter: brightness(0.3);
         margin-right: 7px;
+      }
+      .iconfont {
+        color: var(--white-75);
+        margin-right: 5px;
+        font-size: 18px;
+        vertical-align: middle;
       }
       .remoteAssistance {
         font-size: 14px;
@@ -596,12 +608,11 @@ export default defineComponent({
     color: var(--primary-color);
   }
 }
-.assist {
-  color: #857878;
-  margin: 5px;
-}
 .help-question-warp {
-  width: 300px;
+  width: 255px;
+  max-height: 292px;
+  overflow: auto;
+  padding: 0 8px;
   .help-item {
     display: flex;
     flex-direction: row;
@@ -614,9 +625,8 @@ export default defineComponent({
     }
   }
   .help-item:hover {
-    background-color: var(--gray-3);
     .assist {
-      color: var(--purpleblue-6);
+      color: var(--primary-color);
     }
   }
   .help-base-info {
@@ -626,6 +636,10 @@ export default defineComponent({
     justify-content: space-between;
     width: 100%;
     color: var(--black-45);
+    font-size: var(--font-size-sm);
+    .time {
+      color: var(--black-25);
+    }
   }
   p {
     white-space: nowrap;
@@ -633,6 +647,8 @@ export default defineComponent({
     overflow-x: hidden;
     cursor: pointer;
     width: 100%;
+    color: var(--black-65);
+    margin-bottom: 0;
   }
 }
 </style>
