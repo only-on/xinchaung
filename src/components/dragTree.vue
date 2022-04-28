@@ -27,7 +27,7 @@
               <span
                 v-if="isOperation"
                 @click.stop="editNode(item)"
-                class="icon-bianji1 iconfont"
+                class="iconbianji1 iconfont"
                 title="编辑"
               ></span>
               <span
@@ -64,7 +64,7 @@
               </span>
               <span :title="ct.name" class="experiment-name">{{ ct.name }}</span>
               <div class="action-cion-box" v-if="isOperation">
-                <span @click.stop="editNode(ct)" class="icon-bianji1 iconfont"></span>
+                <span @click.stop="editNode(ct)" class="iconbianji1 iconfont"></span>
                 <span @click.stop="deleteNode(ct)" class="icon-shanchu iconfont"></span>
               </div>
             </div>
@@ -519,7 +519,7 @@ export default defineComponent({
             display: inline-block;
           }
         }
-        .icon-bianji1,.icon-shanchu{
+        .iconbianji1,.icon-shanchu{
           &:hover{
             color: rgba(var(--primary-color),0.5);
           }
@@ -529,7 +529,7 @@ export default defineComponent({
     &:hover {
       background-color: var(--primary-3);
       .action-icon-box {
-        .icon-bianji1,
+        .iconbianji1,
         .icon-shanchu {
           display: inline-block;
         }
@@ -611,7 +611,7 @@ export default defineComponent({
     }
     &:hover {
       .action-cion-box {
-        .icon-bianji1,
+        .iconbianji1,
         .icon-shanchu {
           display: inline-block;
         }

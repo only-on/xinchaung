@@ -15,9 +15,9 @@
           </div>
           <div class="titleBoxRight flexCenter">
             <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-              <span  class="iconfont icon-chuangjian" @click.stop="establishChapter(v)"></span>
-              <span class="iconfont icon-bianji1"  @click.stop="editChapter(v)"></span>
-              <span class="iconfont icon-shanchu"  @click.stop="deleteChapter(v)"></span>
+              <span  class="iconfont iconchuangjian" @click.stop="establishChapter(v)"></span>
+              <span class="iconfont iconbianji1"  @click.stop="editChapter(v)"></span>
+              <span class="iconfont iconshanchu-copy"  @click.stop="deleteChapter(v)"></span>
             </div>
             <span class="collect">{{v.openItem?'收起':'展开'}}</span>
           </div>
@@ -46,8 +46,8 @@
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
                 </div>
                 <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
-                  <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
-                  <span class="iconfont icon-shanchu" @click.stop="deleteExperiment(v,a)"></span>
+                  <span class="iconfont iconbianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
+                  <span class="iconfont iconshanchu-copy" @click.stop="deleteExperiment(v,a)"></span>
                 </div>
               </div>
             </div>
@@ -331,7 +331,6 @@ function prepare(a:any, i: number) {
 }
 function ViewExperiment(a:any,v:any){
   console.log(a)
-  state.activeExperimentObj={...a}
   a.openGuidance=!a.openGuidance
   if(a.openGuidance){
     if(!a.TeachingAids){
@@ -339,6 +338,7 @@ function ViewExperiment(a:any,v:any){
       getExperimentGuide(a.content_id,a)
     }else{
       console.log('教辅')
+      state.activeExperimentObj={...a}
     }
   }
 }
@@ -349,6 +349,12 @@ const getExperimentGuide=(id:number,a:any)=>{
     // console.log(res)
     const {data}=res  
     state.activeExperimentObj.Newguidance=data
+    if(data.task_type === 6){
+      state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+    }
+    if(data.task_type === 7){
+      // state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+    }
     a.experimentGuideLoading=false
   })
 }

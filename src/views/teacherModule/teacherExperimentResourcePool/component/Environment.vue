@@ -34,7 +34,7 @@
           <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
         </div>
         <div class="caozuo">
-          <span class="iconfont icon-bianji1" @click.stop="edit(v, idx)"></span>
+          <span class="iconfont iconbianji1" @click.stop="edit(v, idx)"></span>
           <span class="iconfont icon-shanchu" @click.stop="Delete(idx)"></span>
         </div>
       </div>

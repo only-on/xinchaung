@@ -65,7 +65,7 @@
                 >{{ text
                 }}<i
                   @click="clickFun('updateReport', record, index)"
-                  class="edit-btn iconfont icon-bianji1"
+                  class="edit-btn iconfont iconbianji1"
                 ></i
               ></span>
             </template>
@@ -90,7 +90,7 @@
                 >{{ text
                 }}<i
                   @click="clickFun('updateCode', record,index)"
-                  class="edit-btn iconfont icon-bianji1"
+                  class="edit-btn iconfont iconbianji1"
                 ></i
               ></span>
             </template>
@@ -104,7 +104,7 @@
                 >{{ text
                 }}<i
                   @click="clickFun('updateScore', record, index)"
-                  class="edit-btn iconfont icon-bianji1"
+                  class="edit-btn iconfont iconbianji1"
                 ></i
               ></span>
             </template>
