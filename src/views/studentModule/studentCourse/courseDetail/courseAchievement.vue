@@ -5,8 +5,8 @@
         <h3>成绩详情</h3>
       </div>
       <div class="table-header-right">
-        <div>实验最高分：100分</div>
-        <div>实验最低分：90分</div>
+        <div>实验最高分：{{allData?.max_min_score?.max_score?allData?.max_min_score?.max_score:'--'}}分</div>
+        <div>实验最低分：{{allData?.max_min_score?.min_score?allData?.minx_min_score?.max_score:'--'}}分</div>
       </div>
     </div>
 
@@ -18,8 +18,8 @@
       :pagination="false"
     >
       <template #check="{ text }">
-        <span class="table-a-link" @click="clickFun('video', text)">录屏</span>
-        <span class="table-a-link" @click="clickFun('report', text)">评阅</span>
+        <span :class="text?.report_url?'table-a-link':'no-link'" @click="clickFun('video', text)">录屏</span>
+        <span :class="text?.report_url?'table-a-link':'no-link'" @click="clickFun('report', text)">评阅</span>
       </template>
       <template></template>
       <template></template>
@@ -29,7 +29,7 @@
       <template></template>
     </a-table>
 
-    <a-pagination :total="500" class="page-wrap">
+    <a-pagination :total="allData?.all?.total" class="page-wrap" @onChange='onChangePage' :hideOnSinglePage='true'>
       <template #itemRender="{ page, type, originalElement }">
         <a v-if="type === 'prev'">上一页</a>
         <a v-else-if="type === 'next'">下一页</a>
@@ -66,7 +66,7 @@
 <script lang="ts" setup>
 import { log } from "console";
 import * as echarts from "echarts";
-import { ref, toRefs, onMounted, Ref } from "vue";
+import { ref, toRefs, onMounted} from "vue";
 import request from "src/api/index";
 const http = (request as any).studentScore;
 import { useRouter ,useRoute } from 'vue-router';
@@ -81,7 +81,7 @@ const columns = [
   },
   {
     title: "开启时间",
-    width: 130,
+    width: 200,
     dataIndex: "start_time",
     key: "start_time",
   },
@@ -149,6 +149,7 @@ const data = ref([
   },
 ]);
 const tableData = ref([]);
+const allData:any=ref({})
 var option = {
   color: ["#FF9544"],
   grid: {
@@ -250,7 +251,11 @@ function getallScoreList() {
   http.allScoreList({ param: { course_id: courseId} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.data;
+    allData.value=res.data
   });
+}
+function onChangePage(page:any){
+
 }
 onMounted(() => {
   drawCharts();
@@ -285,6 +290,12 @@ onMounted(() => {
   .ant-table-wrapper {
     .table-a-link {
       padding-right: var(--font-size-16);
+      cursor: pointer;
+    }
+    .no-link{
+      padding-right: var(--font-size-16);
+      color:var(--black-45);
+      cursor:not-allowed;
     }
   }
   .page-wrap {
