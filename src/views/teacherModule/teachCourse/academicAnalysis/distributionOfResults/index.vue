@@ -95,7 +95,6 @@ option.value = {
     {
       name: '最终成绩',
       type: 'line',
-      stack: 'Total',
       areaStyle: {
         color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#ff954433'},{offset:1,color:'#ff954400'}]),
       },
@@ -107,7 +106,6 @@ option.value = {
     {
       name: '实验报告',
       type: 'line',
-      stack: 'Total',
       areaStyle: {
         color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#00cbc233'},{offset:1,color:'#00cbc200'}]),
       },
@@ -119,7 +117,6 @@ option.value = {
     {
       name: '自动评分',
       type: 'line',
-      stack: 'Total',
       areaStyle: {
         color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#6993fe33'},{offset:1,color:'#6993fe00'}]),
       },
@@ -131,7 +128,6 @@ option.value = {
     {
       name: '随测',
       type: 'line',
-      stack: 'Total',
       areaStyle: {
         color:new echarts.graphic.LinearGradient(0, 0, 0,1,[{offset:0,color:'#fac85866'},{offset:1,color:'#fac85800'}]),
       },
