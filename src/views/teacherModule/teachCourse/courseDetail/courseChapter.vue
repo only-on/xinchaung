@@ -99,11 +99,4 @@ onMounted(() => {
       
     }
   }
-  .modal-post{
-    #KnowledgePoints{
-      height: 600px;
-      width: 100%;
-      padding: 40px;
-    }
-  }
 </style>

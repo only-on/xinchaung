@@ -6,7 +6,7 @@
       <span class="iconfont iconsousuo"></span>
     </div>
   </div>
-  <a-modal v-model:visible="Visible" title="知识点" :width="1330" class="modal-post" :destroyOnClose="true">
+  <a-modal v-model:visible="Visible" title="知识点" :width="1200" class="modal-post" :destroyOnClose="true">
     <div id="KnowledgePoints">
 
     </div>
@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted ,Ref,nextTick} from "vue";
+import { ref, toRefs, onMounted ,Ref,nextTick, reactive} from "vue";
 import { Knowledge,HotWords,Knowledge3} from './echartsOption';
 import request from 'src/api/index'
 const http=(request as any).teachCourse
@@ -30,30 +30,27 @@ const props = withDefaults(defineProps<Props>(), {
   courseId: 0,
 });
 var Visible:Ref<boolean>=ref(false)
+var chartData:any=reactive({})
 function viewAtlas(){
   Visible.value=true
   nextTick(()=>{
-    let data={}
-    // Knowledge(document.getElementById("KnowledgePoints") as HTMLDivElement,data)
-    Knowledge3('KnowledgePoints',[])
+    Knowledge3('KnowledgePoints',chartData,50)
   })
 }
 const courseknowledge=()=>{
   // list.length=0
   http.courseknowledge({urlParams: {courseId:props.courseId}}).then((res: any) => {
     const {data}=res
+    chartData={...data}
     // list.push(...data)
+    nextTick(()=>{
+      Knowledge3('graph',chartData,50)
+    })
   });
 }
 onMounted(() => {
-  console.log(props.courseId)
-  // initData() HotWords  courseknowledge
+  // console.log(props.courseId)
   courseknowledge()
-  nextTick(()=>{
-    let data={}
-    Knowledge3('graph',[])
-    // HotWords(document.getElementById("graph") as HTMLDivElement,data)
-  })
 });
 </script>
 
@@ -87,6 +84,13 @@ onMounted(() => {
       background: rgba(0,0,0,0.40);
       color: #ffffff;
       cursor: pointer;
+    }
+  }
+  .modal-post{
+    #KnowledgePoints{
+      height: 800px;
+      width: 100%;
+      padding: 40px;
     }
   }
 </style>

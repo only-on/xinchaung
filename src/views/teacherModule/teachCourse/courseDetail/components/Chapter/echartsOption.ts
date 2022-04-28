@@ -481,53 +481,142 @@ function Knowledge2(id: any, data2: any){
   chart && chart.setOption(option);
 }
 
-
-
-
-
-let data3={
-  "parentNode": "若华测试学生关联002",
+let data2={
+  "parentNode": "我的课程添加课程15",
   "childNodes": [
-      {
-          "type": "1",
-          "content_id": "500006",
-          "contentvia": {
-              "knowledages": [],
-              "id": "500006",
-              "name": "advance_20211127"
-          }
-      },
-      {
-          "type": "1",
-          "content_id": "500009",
-          "contentvia": {
-              "knowledages": [],
-              "id": "500009",
-              "name": "init_step_20211130"
-          }
-      },
-      {
-          "type": "1",
-          "content_id": "500016",
-          "contentvia": {
-              "knowledages": [],
-              "id": "500016",
-              "name": "1451"
-          }
-      },
-      {
-          "type": "1",
-          "content_id": "500098",
-          "contentvia": {
-              "knowledages": [],
-              "id": "500098",
-              "name": "webide1"
-          }
+    {
+      "type": 1,
+      "content_id": 500032,
+      "contentvia": {
+        "knowledages": [],
+        "id": 500032,
+        "name": "vncvnc"
       }
+    },
+    {
+      "type": 1,
+      "content_id": 500033,
+      "contentvia": {
+        "knowledages": [],
+        "id": 500033,
+        "name": "tasktask"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500048,
+      "contentvia": {
+        "knowledages": [],
+        "id": 500048,
+        "name": "document1234567890"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500052,
+      "contentvia": {
+        "knowledages": [
+          {
+            "id": 1,
+            "knowledge_map_id": 50006,
+            "relate_id": 500052,
+            "knowledge_map": {
+              "id": 50006,
+              "knowledge_map_name": "ddddd"
+            }
+          }
+        ],
+        "id": 500052,
+        "name": "lmm测试jupyter实验"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500058,
+      "contentvia": {
+        "knowledages": [
+          {
+            "id": 2,
+            "knowledge_map_id": 50009,
+            "relate_id": 500058,
+            "knowledge_map": {
+              "id": 50009,
+              "knowledge_map_name": "四级"
+            }
+          },
+          {
+            "id": 3,
+            "knowledge_map_id": 50005,
+            "relate_id": 500058,
+            "knowledge_map": {
+              "id": 50005,
+              "knowledge_map_name": "111"
+            }
+          }
+        ],
+        "id": 500058,
+        "name": "video1234567890"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500085,
+      "contentvia": {
+        "knowledages": [
+          {
+            "id": 4,
+            "knowledge_map_id": 50002,
+            "relate_id": 500085,
+            "knowledge_map": {
+              "id": 50002,
+              "knowledge_map_name": "node2"
+            }
+          },
+          {
+            "id": 5,
+            "knowledge_map_id": 50005,
+            "relate_id": 500085,
+            "knowledge_map": {
+              "id": 50005,
+              "knowledge_map_name": "111"
+            }
+          },
+          {
+            "id": 6,
+            "knowledge_map_id": 50006,
+            "relate_id": 500085,
+            "knowledge_map": {
+              "id": 50006,
+              "knowledge_map_name": "ddddd"
+            }
+          }
+        ],
+        "id": 500085,
+        "name": "测试视频实验"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500078,
+      "contentvia": {
+        "knowledages": [],
+        "id": 500078,
+        "name": "文档实验1"
+      }
+    },
+    {
+      "type": 1,
+      "content_id": 500082,
+      "contentvia": {
+        "knowledages": [],
+        "id": 500082,
+        "name": "jupyter实验"
+      }
+    }
   ]
 }
 
-function setTagData(knowledge_map: any) {
+function setTagData(knowledge_map: any,size:number) {
   let links: any[] = []
   let data: any[] = []
   if (Object.keys(knowledge_map).length == 0) {
@@ -536,32 +625,40 @@ function setTagData(knowledge_map: any) {
   data.push(
     {
       name: knowledge_map.parentNode,
-      id: knowledge_map.parentNode,
-      symbolSize: 2,
+      id: String(knowledge_map.parentNode),
+      symbolSize: size,
       draggable: true,
       itemStyle: {
-        borderColor: theme.themeColor,
+        // borderColor: theme.themeColor,
         // borderWidth: 6,
-        shadowBlur: 10,
-        shadowColor: theme.themeColor,
-        // color: '#000'
+        // shadowBlur: 10,
+        // shadowColor: theme.themeColor,
+        color: '#FF9544'
+        // color: function () {
+        //   // Random color        橙 #FF9544    绿 #1CB2B3    蓝紫  #758AEE
+        //   let arr=['#FF9544','#1CB2B3','#758AEE']
+        //   return arr[Math.round(Math.random() * 2)]
+        // }
       },
       category: 0,
     }
   )
   knowledge_map.childNodes.forEach((item: any) => {
+    item.content_id=String(item.content_id)
     if (item.contentvia) {
+      item.contentvia.id=String(item.contentvia.id)
       data.push({
         name: item.contentvia.name,
-        id: item.contentvia.id,
-        symbolSize: 2,
-        // draggable: true,
+        id: String(item.contentvia.id),
+        symbolSize: size,
+        draggable: true,
         itemStyle: {
-          borderColor: theme.themeColor,
+          // borderColor: theme.themeColor,
           // borderWidth: 6,
-          shadowBlur: 10,
-          shadowColor: theme.themeColor,
-          // color: '#384A67'
+          // shadowBlur: 10,
+          // shadowColor: theme.themeColor,
+          color: '#1CB2B3 '
+          // color: 'red'
         },
         category: 1,
       })
@@ -569,32 +666,35 @@ function setTagData(knowledge_map: any) {
         source: knowledge_map.parentNode,
         target: item.contentvia.id,
       })
-      item.contentvia.knowledages.forEach((knowledage: any) => {
+      item.contentvia.knowledages.length?item.contentvia.knowledages.forEach((knowledage: any) => {
+        const {knowledge_map_name,id}=knowledage.knowledge_map
         data.push({
-          name: knowledage.knowledgeMap.knowledge_map_name,
-          id: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
-          symbolSize: 2,
-          // draggable: true,
+          name: knowledge_map_name,
+          id: String(item.contentvia.id + "->" +id),
+          symbolSize: size,
+          draggable: true,
           itemStyle: {
-            borderColor: theme.themeColor,
+            // borderColor: theme.themeColor,
             // borderWidth: 6,
-            shadowBlur: 10,
-            shadowColor: theme.themeColor,
-            // color: '#b0ccfe'
+            // shadowBlur: 10,
+            // shadowColor: theme.themeColor,
+            color: '#758AEE'
+            // color: 'red'
           },
           category: 1,
         })
         links.push({
           source: item.contentvia.id,
-          target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+          target: item.contentvia.id + "->" + id,
         })
-      })
+      }):''
     }
   })
   return { data, links}
 }
-export const graphOptions = (data: any) => {
-  let datas = setTagData(data)
+export const graphOptions = (data: any,size:number) => {
+  let datas = setTagData(data,size)
+  console.log(data)
   let options = {
     tooltip: {
       formatter: function (val: any) {
@@ -631,8 +731,8 @@ export const graphOptions = (data: any) => {
   }
   return options
 }
-function Knowledge3(id: any, data: any){
-  let option:any=graphOptions(data3)
+function Knowledge3(id: any, data: any,size:number){
+  let option:any=graphOptions(data,size)
   document.getElementById(id)?.removeAttribute("_echarts_instance_");
   var chartDom:any=document.getElementById(id)
   const chart = echarts.init(chartDom)
