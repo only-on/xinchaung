@@ -83,9 +83,9 @@ import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import handImg from "src/assets/images/reqi_icon.png";
-import teacherUserImg from "src/assets/images/user/teacher_p.png";
-import adminUserImg from "src/assets/images/user/admin_p.png";
-import studentUserImg from "src/assets/images/user/student_p.png";
+import teacherUserImg from "src/assets/images/user/teacher.png";
+import adminUserImg from "src/assets/images/user/admin.png";
+import studentUserImg from "src/assets/images/user/student.png";
 import { wsConnect } from "src/request/websocket";
 import { useStore } from "vuex";
 import { createExamples } from "src/utils/vncInspect";
@@ -125,24 +125,14 @@ export default defineComponent({
       //  4  个人信息  3 1 2修改密码
       return role === 3 || role === 1 || role === 2;
     });
-    const userName = ref<string>("");
-    // var userName=computed(()=>{
-    //   return lStorage.get('name')
-    // })
-    // watch(name,(val:any)=>{
-    //   console.log(val)
-    //   userName.value=val
-    // })
+    const userName = ref<string>(lStorage.get("username"));
     function information() {
       router.push("/personalInformation");
     }
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
-        // console.log(res)
         lStorage.clean();
-        // message.success('')
-        let url = `${window.origin}#/login`;
-        window.location.href = url;
+        router.replace({ path: "/login" }).catch(() => {});
       });
     }
     function helpMessage() {}
@@ -315,101 +305,17 @@ export default defineComponent({
       url: "/student/studentCourse",
       children: [],
     }
-    // menus.push(center);
-    // menus.push(material);
-    // menus.push(teacherCourse);
-    // menus.push(forum);
-    // menus.push(TeachingResourceManagement);
-    // menus.push(studentCourse);
-    let arr=role===4?[forum,studentCourse]:[center,material,teacherCourse,forum]
-    if(role===2){
-      arr=[TeachingResourceManagement]
-    }
+    let arr:any={
+      1:[],
+      2:[TeachingResourceManagement],
+      3:[center,material,teacherCourse,forum],
+      4:[forum,studentCourse]
+    }[role]
     menus.push(...arr)
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
-
-    function getMenu() {
-      http.getMenu().then((res: IBusinessResp) => {
-        if (res) {
-          menus.length = 0;
-          let data = res.data.menus;
-          let center = {
-            icon: "",
-            id: 170,
-            name: "实验中心",
-            parent_id: 0,
-            sort: 3,
-            url: "",
-            children: [
-              {
-                children: [],
-                icon: "",
-                id: 1148,
-                name: "实验资源库",
-                parent_id: 161,
-                sort: 1,
-                url: "/teacher/teacherExperimentResourcePool",
-              },
-              {
-                children: [],
-                icon: "",
-                id: 1149,
-                name: "镜像资源库",
-                parent_id: 161,
-                sort: 2,
-                url: "/teacher/teacherImageResourcePool",
-              },
-            ],
-          };
-          let material = {
-            id: 170,
-            name: "素材资源",
-            parent_id: 0,
-            sort: 3,
-            url: "/teacher/teacherMaterialResource",
-            children: [],
-          };
-          data.push(center);
-          data.push(material);
-          // activeName.value = lStorage.get("menuActiveName")
-          //   ? lStorage.get("menuActiveName")
-          //   : data && data.length && data[0].name;
-          if (data && data.length) {
-            data.map((v: any) => {
-              // console.log(v.children.length)
-              if (v.children && v.children.length === 0) {
-                v.url = `${v.url}?currentTab=0`;
-              } else {
-                v.children.map((i: any) => {
-                  if (i.children.length === 0) {
-                    i.url = `${i.url}?currentTab=0`;
-                  }
-                });
-              }
-            });
-          }
-          menus.push(...data);
-          if (route.path === (data && data.length && data[0].url)) {
-            activeName.value = data && data[0].name;
-          }
-          let user = res.data.user;
-          lStorage.set("role", user.role);
-          lStorage.set("name", user.name);
-          lStorage.set("user_id", user.id);
-          lStorage.set("ws_config", JSON.stringify(res.data.websocket_conf));
-          lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
-          // store.commit('saveMenus', data)
-          const site_settings = res.data.site_settings;
-          systemBaseInfo.login_logo = site_settings.login_logo;
-          lStorage.set("login_logo", site_settings.login_logo);
-
-          userName.value = user.name;
-        }
-      });
-    }
     function goHome() {
       console.log("回首页");
       // router.push(`${homePath}`);
@@ -435,7 +341,6 @@ export default defineComponent({
     }
     window.XC_ROLE=2
     onMounted(() => {
-      // getMenu();
       lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
       console.log(lStorage.get("role"), lStorage.get("uid"))
       if (role === 3 || role === 4) {

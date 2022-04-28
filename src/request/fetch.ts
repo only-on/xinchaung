@@ -3,8 +3,8 @@ import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHe
 import store from "src/store/index";
 import { message } from 'ant-design-vue';
 import ls from "src/utils/extStorage"
-// import { useRouter,useRoute } from 'vue-router';
-// const router = useRouter();
+import { useRouter,useRoute } from 'vue-router';
+const router = useRouter();
 // 检查是否为对象
 function isObject(value: any) {
   return Object.prototype.toString.call(value) === "[object Object]";
@@ -159,19 +159,9 @@ export default function request({
           // message.success('成功');
           resolve(res);
         } else if (res.code === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
-          // store.commit("logout");
-          // router.replace({ path: "/login" }).catch(() => {});
+          store.commit("logout");
           message.warning(res.msg);
-          let loginUrl = `${window.origin}/#/login`;
-          reject(null)
-          setTimeout(() => {
-            window.location.href = loginUrl
-          }, 500);
-          // const env = process.env.NODE_ENV == "development" ? true : false;
-          // if(env === false){
-          //   window.location.href = loginUrl;
-          // }
-
+          router.replace({ path: "/login" }).catch(() => {});
         } else {
           let meg='请求出错'
           if(res.message){meg=res.message}

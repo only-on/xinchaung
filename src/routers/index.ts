@@ -34,7 +34,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-// console.log(routes);
+console.log(routes);
 router.beforeEach(
   (
     to: RouteLocationNormalized,
