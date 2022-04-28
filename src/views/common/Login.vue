@@ -117,7 +117,7 @@ const login = () => {
           console.error("login failed: ", res);
           if (res.data.need_verify) {
             needCaptcha.value = true;
-            captchaUrl.value = "/api/yii/site/captcha?refresh=1";
+            captchaUrl.value = "/api/yii/site/captcha?v=" + new Date().getTime();
           }
           submitLoading.value = false;
         });
