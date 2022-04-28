@@ -28,8 +28,7 @@
       <template></template>
       <template></template>
     </a-table>
-
-    <a-pagination :total="allData?.all?.total" class="page-wrap" @onChange='onChangePage' :hideOnSinglePage='true'>
+    <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
       <template #itemRender="{ page, type, originalElement }">
         <a v-if="type === 'prev'">上一页</a>
         <a v-else-if="type === 'next'">下一页</a>
@@ -143,7 +142,7 @@ const data = ref([
   },
 ]);
 const tableData = ref([]);
-const page:any=ref(1)
+const datapage:any=ref('')
 const allData:any=ref({})
 var option = {
   color: ["#FF9544"],
@@ -243,14 +242,17 @@ function drawCharts() {
 }
 // 获取成绩列表
 function getallScoreList() {
-  http.allScoreList({ param: { course_id: courseId,page:page.value} }).then((res: any) => {
+  console.log('111111')
+  http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:10} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.list;
     allData.value=res.data
   });
 }
 function onChangePage(page:any){
-    page.value=page
+  console.log(page)
+  datapage.value=page
+    getallScoreList()
 }
 onMounted(() => {
   drawCharts();
