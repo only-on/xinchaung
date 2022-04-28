@@ -39,7 +39,7 @@
 
     <div class="footer">
       <div class="footer-left">
-        <div>图形统计</div>
+        <div class="statisTit">图形统计</div>
         <div class="graphic-statistics" id="graphicStatistics"></div>
       </div>
 
@@ -75,46 +75,42 @@ const courseId:any=route.query.courseId  //课程id
 const columns = [
   {
     title: "实验名称",
-    width: 280,
     dataIndex: "content_name",
     key: "content_name",
+    width:180,
   },
   {
     title: "开启时间",
-    width: 200,
     dataIndex: "start_time",
     key: "start_time",
+    width:180,
   },
   {
     title: "学习时长",
-    width: 100,
     dataIndex: "used_time",
     key: "used_time",
   },
   {
     title: "完成时间",
-    width: 130,
     dataIndex: "finish_time",
     key: "finish_time",
+    width:180,
   },
   {
     title: "评分项",
     children: [
       {
         title: "实验报告",
-        width: 90,
         dataIndex: "report_score",
         key: "report_score",
       },
       {
         title: "随堂测试",
-        width: 90,
         dataIndex: "question_score",
         key: "question_score",
       },
       {
         title: "自动评分",
-        width: 90,
         dataIndex: "auto_score",
         key: "auto_score",
       },
@@ -122,13 +118,11 @@ const columns = [
   },
   {
     title: "查看",
-    width: 110,
     dataIndex: "check",
-    slots: { customRender: "check" },
+    slots: { customRender: "check" }
   },
   {
     title: "最终成绩",
-    width: 75,
     dataIndex: "score",
     key: "score",
   },
@@ -149,6 +143,7 @@ const data = ref([
   },
 ]);
 const tableData = ref([]);
+const page:any=ref(1)
 const allData:any=ref({})
 var option = {
   color: ["#FF9544"],
@@ -248,14 +243,14 @@ function drawCharts() {
 }
 // 获取成绩列表
 function getallScoreList() {
-  http.allScoreList({ param: { course_id: courseId} }).then((res: any) => {
+  http.allScoreList({ param: { course_id: courseId,page:page.value} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
-    tableData.value = res.data.all.data;
+    tableData.value = res.data.all.list;
     allData.value=res.data
   });
 }
 function onChangePage(page:any){
-
+    page.value=page
 }
 onMounted(() => {
   drawCharts();
@@ -289,13 +284,17 @@ onMounted(() => {
   }
   .ant-table-wrapper {
     .table-a-link {
-      padding-right: var(--font-size-16);
       cursor: pointer;
     }
+    .table-a-link:nth-last-child(1){
+      margin-left: var(--font-size-16);
+    }
     .no-link{
-      padding-right: var(--font-size-16);
       color:var(--black-45);
       cursor:not-allowed;
+    }
+    .no-link:nth-last-child(1){
+      margin-left: var(--font-size-16);
     }
   }
   .page-wrap {
@@ -307,6 +306,10 @@ onMounted(() => {
     height: 300px;
     .footer-left {
       font-size: var(--font-size-16);
+      .statisTit{
+        margin-top: 20px;
+        font-weight: 400;
+      }
       .graphic-statistics {
         width: 600px;
         height: 100%;
@@ -320,6 +323,7 @@ onMounted(() => {
       background:url(src/assets/images/learning-efficiency.png);
       background-repeat: no-repeat;
       background-size: 100% 100%;
+      margin-top: 40px;
       .stu-info {
         position: absolute;
         display: flex;

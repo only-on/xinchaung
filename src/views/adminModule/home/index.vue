@@ -28,11 +28,18 @@
         </div>
         <div class="activity">
             <div class="activity-left">
-                <div>
+                <div class="flexTitle">
                     <div class="title-bac">
                     用户活跃度 
                     </div>
-                    <div></div>
+                    <div>
+                        <a-radio-group v-model:value="value1" button-style="solid">
+                            <a-radio-button value="a">昨日</a-radio-button>
+                            <a-radio-button value="b">今日</a-radio-button>
+                            <a-radio-button value="c">最近7日</a-radio-button>
+                        </a-radio-group>
+                        <a-date-picker class="pickDay" v-model:value="value2" />
+                    </div>
                 </div>
                 <div id='activity-echats'></div>
             </div>
@@ -61,8 +68,21 @@
         </div>
         <div class="serverNode">
             <div class="serverNode-left">
-                <div class="title-bac">
-                  服务器节点状态
+                <div class="flexTitle">
+                    <div class="title-bac">服务器节点状态</div>
+                    <div>评级:<span class="status">良好</span></div>
+                    <div>
+                        <a-select
+                            v-model:value="value"
+                            label-in-value
+                            style="width: 170px"
+                            :options="options"
+                            @change="handleChange"
+                            class="select-input"
+                        >
+                        </a-select>
+                        <span class="ifRun">运行</span>
+                    </div>
                 </div>
                 <div class="node">
                     <div class="node-left">
@@ -76,19 +96,43 @@
                         </div>
                     </div>
                     <div class="node-right">
-                        <div>
+                        <div class="infoalerm">
                             信息警告：
                         </div>
                         <div>
-                            cpu使用率：
+                            <div class="warningItem" v-for='(item,i) in warningMessage' key="i">
+                                <span>
+                                    {{item.title}}:
+                                </span>
+                                <span>
+                                    {{item.percent}}%
+                                </span>
+                                <span>
+                                    等级:
+                                </span>
+                                <span :class="item.grade=='低风险'?'low':(item.grade=='中风险'?'middle':'high')">
+                                    {{item.grade}}
+                                </span>
+                                <span>
+                                    去维护 >
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="serverNode-right">
-                <div>
+                <div class="flexTitle">
                     <div class="title-bac">
                     资源历史使用概览
+                    </div>
+                    <div>
+                        <a-radio-group v-model:value="value1" button-style="solid">
+                            <a-radio-button value="a">昨日</a-radio-button>
+                            <a-radio-button value="b">今日</a-radio-button>
+                            <a-radio-button value="c">最近7日</a-radio-button>
+                        </a-radio-group>
+                        <a-date-picker class="pickDay" v-model:value="value2" />
                     </div>
                 </div>
                 <div id="resource_echarts">
@@ -97,11 +141,28 @@
             </div>
         </div>
         <div class="bottomInfo">
-            <div class="productinfo"></div>
-            <div class="quickEntrance"></div>
+            <div class="productinfo">
+                <div class="infoName">产品信息</div>
+                <div class='infoCon'>
+                    <div class="name" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                </div>
+            </div>
+            <div class="quickEntrance">
+                <div class="infoName">快捷入口</div>
+                <div class='infoCon'>
+                    <div class="name" v-for="(item,i) in enterInfo" :key="i">{{item.name}}</div>
+                </div>
+            </div>
         </div>
         <div class="aboutXiPu">
-
+            <div class="aboutLeft">
+                <div class="aboutItem" v-for="(item,i) in aboutData" :key="i">
+                    {{item.name}}
+                </div>
+            </div>
+            <div class="aboutRight">
+                Copyright © 2022 simpleedu.com.cn保留所有权利 京ICP备15049788号-7
+            </div>
         </div>
     </div>
 </template>
@@ -118,7 +179,25 @@
     import img4 from 'src/assets/images/admin/home/4.png'
     import img5 from 'src/assets/images/admin/home/5.png'
     import img6 from 'src/assets/images/admin/home/6.png'
-
+    const value:any=ref()
+    const options:any = ref([
+      {
+        value: '192.168.112',
+        label: '192.168.112',
+      },
+      {
+        value: '192.168.224',
+        label: '192.168.224',
+      }
+    ])
+    const warningMessage:any=ref([
+        {title:'CPU使用率',percent:89,grade:'低风险',link:''},
+        {title:'内存使用率',percent:89,grade:'低风险',link:''},
+        {title:'GPU使用率',percent:89,grade:'中风险',link:''},
+        {title:'硬盘使用率',percent:80,grade:'高风险',link:''}
+    ])
+    const value1:any=ref('a')
+    const value2:any=ref('')
     const enterNumber1:any=ref([])
     const enterNumber2:any=ref([])
     enterNumber1.value=[
@@ -157,6 +236,39 @@
         link:''
         }
     ]
+    const productInfo:any=ref([])
+    const enterInfo:any=ref([])
+    const aboutData:any=ref([])
+    productInfo.value=[
+        {name:'产品名称'},
+        {name:'版本信息'},
+        {name:'实施时间息'},
+        {name:'售后联系方式'},
+        {name:'人工只能平台'},
+        {name:'4.1.10'},
+        {name:'2022/03/17 17:34:00'},
+        {name:'14567855671'},
+    ]
+    enterInfo.value=[
+        {name:'课程安排'},
+        {name:'产品授权'},
+        {name:'方向规划'},
+        {name:'个性化设置'},
+        {name:'运行环境清理'},
+        {name:'用户登录信息'},
+        {name:'磁盘管理'},
+        {name:'平台设置'},
+    ]
+    aboutData.value=[
+        {name:'了解西普'},
+        {name:'西普科技'},
+        {name:'联系我们'},
+        {name:'招贤纳士'},
+        {name:'关注西普科技'},
+    ]
+    function handleChange(value:any){
+        console.log(value)
+    }
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
     function drawEcharts(id:any,option:any){
         document.getElementById(id)?.removeAttribute("_echarts_instance_");
@@ -243,6 +355,29 @@
         padding: 20px;
     }
 }
+.flexTitle{
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            .status{
+                display: inline-block;
+                width:70px;
+                height: 27px;
+                text-align: center;
+                line-height: 27px;
+                background-color:#DBFCF3;
+                color: #07A15E;
+                border-radius: 13.5px;
+                margin-left: 10px;
+            }
+            .ifRun{
+                color:var(--primary-color);
+                margin-left: 10px;
+            }
+            :deep(.ant-select-selector){
+                border-radius: 20px;
+            }
+        }
 .platformResources{
     margin-top: 20px;
     height: 360px;
@@ -270,11 +405,12 @@
     width: 100%;
     height:70px;
     background-color:#131F34;
+    display: flex;
 }
 
 #activity-echats,#resource_echarts{
     width: 100%;
-    height:100%;
+    height:90%;
 }
 .plate{
     width: 100%;
@@ -300,12 +436,12 @@
 }
 .node{
     display: flex;
-    justify-content: center;
+    justify-content:space-between;
     width: 100%;
     height: 100%;
     .node-left{
         width: 49%;
-        height: 100%;
+        height:90%;
         .node-left-top{
             display: flex;
             width: 100%;
@@ -319,11 +455,102 @@
     }
     .node-right{
         width: 49%;
-        height: 100%;
+        height:90%;
+        .infoalerm{
+            margin-bottom: 20px;
+        }
+        .warningItem{
+            margin-bottom: 20px;
+            background-color: #FFFBF6;
+            border-radius: 14px;
+            height: 34px;
+            line-height: 34px;
+            >span{
+                margin-left:4px;
+            }
+            >span:nth-last-child(1){
+                color: var(--primary-color);
+            }
+            .low{
+                color:#00cbc2;
+            }
+            .middle{
+                color: var(--primary-color);
+            }
+            .high{
+                color: red;
+            }
+        }
     }
 }
 #node1,#node2,#node3,#node4{
     width: 50%;
     height: 100%;
+}
+
+.bottomInfo{
+    display: flex;
+    >div{
+        width: 50%;
+        padding: 20px;
+    }
+    .infoName{
+        font-size: 18px;
+    color: var(--white-100);
+    margin-bottom: 30px;
+    }
+    .infoCon{
+        display: flex;
+        flex-wrap: wrap;
+        .name{
+            // width: 150px;
+            color:#7E8085;
+            margin-right:40px;
+            margin-bottom: 20px;
+        }
+    }
+}
+.aboutLeft{
+    display: flex;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+.aboutRight{
+    display: flex;
+    width: 50%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    color: #576078;
+}
+.aboutItem{
+    font-size:16px;
+    color:var(--white-100);
+    margin-right:30px;
+}
+:deep(.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover){
+    background:var(--primary-color);
+    border-color: var(--primary-color);
+}
+:deep(.ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover::before){
+    background-color: var(--primary-color);
+}
+:deep(.ant-radio-button-wrapper:last-child){
+    border-top-right-radius:20px;
+    border-bottom-right-radius:20px;
+}
+:deep(.ant-radio-button-wrapper:first-child){
+    border-top-left-radius:20px;
+    border-bottom-left-radius:20px;
+}
+:deep(.ant-calendar-picker-input.ant-input){
+    border-radius: 20px;
+}
+.pickDay{
+    margin-left: 10px;
+    width: 120px;
 }
 </style>

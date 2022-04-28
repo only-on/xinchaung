@@ -225,23 +225,26 @@ function dashboardService(data:any,color:any){
     color:color,
     series: [
       {
+        name: "Indicator",
         type: 'gauge',
         startAngle:205,
         endAngle:-25,
+        radicus:'10%',
         progress: {
           show: true,
-          width:20
+          width:10
         },
         pointer: {
         show: true,
         showAbove:false,
-        width:1,
         offsetCenter: [0,0],
-        length: "52%"
+        width:2,
+        length: "49%",
+        icon:'src/assets/images/admin/home/enter1.png'
         },
         axisLine: {
           lineStyle: {
-            width: 18
+            width: 10
           }
         },
         axisTick: {
@@ -272,19 +275,26 @@ function dashboardService(data:any,color:any){
           }
         },
         title: {
-          show: false
+          show: true,
+          offsetCenter: [0,"40%"],
+          color: "black", 
+          fontSize: 20, 
         },
         detail: {
           valueAnimation:false,
-          fontSize:10,
-          offsetCenter: [0, '0%'],
+          fontSize:16,
+          fontWeight:400,
+          color:'#999',
+          offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            return ''
+            return value+'G'
           }
         },
+        // return params[0].name + '<br>收缩压 : '+params[0].data +' mmHg'+ '<br>舒张压 : '+params[1].data +' mmHg'
         data: [
           {
-            value: 70
+            value:23,
+            name:"GPU"
           }
         ]
       }
