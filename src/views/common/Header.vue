@@ -305,11 +305,21 @@ export default defineComponent({
       url: "/student/studentCourse",
       children: [],
     }
+    // 学生首页
+    let statistics={
+      icon: "",
+      id: 189,
+      name: "首页",
+      parent_id: 0,
+      sort: 89,
+      url: "/student/statistics",
+      children: [],
+    }
     let arr:any={
       1:[],
       2:[TeachingResourceManagement],
       3:[center,material,teacherCourse,forum],
-      4:[forum,studentCourse]
+      4:[statistics,forum,studentCourse]
     }[role]
     menus.push(...arr)
     var systemBaseInfo: any = reactive({

@@ -18,7 +18,7 @@ const PathList = {
   1: "",
   2: "/admin/home",
   3: "/teacher/teacherExperimentResourcePool",
-  4: "/student",
+  4: "/student/statistics",
   5: "",
 };
 // 登录状态检查
@@ -34,7 +34,7 @@ const router = createRouter({
   history: createWebHashHistory(),
   routes,
 });
-console.log(routes);
+// console.log(routes);
 router.beforeEach(
   (
     to: RouteLocationNormalized,
