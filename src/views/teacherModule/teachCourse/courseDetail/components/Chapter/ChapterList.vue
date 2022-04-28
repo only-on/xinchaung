@@ -40,7 +40,7 @@
                 <div v-if="props.Editable === 'canStudy'">
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
-                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i" 
+                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
@@ -292,19 +292,21 @@ let currentClickIndex = ref(-1)
 function prepare(a:any, i: number) {
   currentClickIndex.value = i
   if (a.startup === 2) {
+    a.startup = 3
     goToVm(router, routeQuery)
     return
   }
 
   isWsConnect.value = false
   const { id } = a
-  const task_type = a.is_webssh ? 2 : a.is_webide ? 2 : a.task_type
+  const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
     opType: role === 3 ? "prepare" : 'start',
     taskId: id,
     experType: task_type
   };
+  console.log(task_type)
   // 准备环境
   if (a.startup === 1) {
     // a.startup=2
