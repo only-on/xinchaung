@@ -321,7 +321,10 @@ export default defineComponent({
     // menus.push(forum);
     // menus.push(TeachingResourceManagement);
     // menus.push(studentCourse);
-    let arr=role===4?[forum,studentCourse]:[center,material,teacherCourse,forum,TeachingResourceManagement]
+    let arr=role===4?[forum,studentCourse]:[center,material,teacherCourse,forum]
+    if(role===2){
+      arr=[TeachingResourceManagement]
+    }
     menus.push(...arr)
     var systemBaseInfo: any = reactive({
       login_logo: "",

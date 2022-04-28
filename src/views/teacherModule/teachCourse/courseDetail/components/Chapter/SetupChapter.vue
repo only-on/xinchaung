@@ -128,14 +128,14 @@ var ExperimentsAndMaterialsObj=reactive<any>({
 //  编辑章节下素材、实验列表     保存/更新实验|实训|视频|文档到章节
 const activeChapterId:Ref<number>=ref(0)
 const selectChaptert=(val:any)=>{
-  console.log('选中的章节',val)
+  // console.log('选中的章节',val)
   ExperimentsAndMaterialsObj.activeExperiments={...val.contents}
   state.activeChapter={...val}
   activeChapterId.value=val.id
 }
 // 选中章节下实验
 const selectExperiment=(val:any)=>{
-  console.log(val)
+  // console.log(val)
   state.activeExperimentObj={...val}
   experimentGuideLoading.value=false
   // 获取实验详情

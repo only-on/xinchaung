@@ -694,7 +694,7 @@ function setTagData(knowledge_map: any,size:number) {
 }
 export const graphOptions = (data: any,size:number) => {
   let datas = setTagData(data,size)
-  console.log(data)
+  // console.log(data)
   let options = {
     tooltip: {
       formatter: function (val: any) {

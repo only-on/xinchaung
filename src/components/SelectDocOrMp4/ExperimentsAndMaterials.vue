@@ -80,7 +80,7 @@ if(props.selectList.length){
 // docOrMp4Drawer.activeFile={ ...props.activeFile}
 // docOrMp4Drawer.selectList.push(...props.selectList)
 
-console.log(docOrMp4Drawer)
+// console.log(docOrMp4Drawer)
 
 var tags:Ref<string>=ref('教学指导')
 

@@ -33,7 +33,7 @@ const courseExperimentRecommend=()=>{
   http.courseExperimentRecommend({urlParams: {courseId:props.courseId}}).then((res: any) => {
     const {data}=res
     list.push(...data)
-    console.log(data)
+    // console.log(data)
   });
 }
 // /teacher/teacherExperimentResourcePool/experimentDetail?id=500043&currentTab=0
