@@ -207,12 +207,12 @@ const lessonPreparation=()=>{
 }
 
 onMounted(() => {
-  if(Number(currentTab) === 0) {
-    connectEnv().then(() => {
-      console.log('********************')
-      // is_connect.value = true
-    })
-  }
+  // if(Number(currentTab) === 0) {
+  //   connectEnv().then(() => {
+  //     console.log('********************')
+  //     // is_connect.value = true
+  //   })
+  // }
 });
 </script>
 

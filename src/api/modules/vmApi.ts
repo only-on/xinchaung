@@ -51,6 +51,10 @@ export default {
     // 学生自评
     evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"},
     getQuestionListApi:{url:"",method:"POST",dataType:"json"},
+
+    // 远程协助消息
+    getHelpFinfoApi:{ url: '/api/operate/teacherResults/questions', method: 'GET' },
+    updateReadStatusApi:{url:"/api/operate/operates/handle",method:"POST",dataType: 'json'},
 }
 
 // 
@@ -88,6 +92,8 @@ export interface IvmApi {
     switchInterfaceApi:TFHttpSend
     uploadTrainReportApi:TFHttpSend
     evaluateApi:TFHttpSend
+    getHelpFinfoApi:TFHttpSend
+    updateReadStatusApi:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

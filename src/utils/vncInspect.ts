@@ -594,4 +594,5 @@ export {
   prepareEnv,
   goToVm,
   connectEnv,
+  createExamples,
 };

@@ -495,12 +495,12 @@ onMounted(() => {
   if(props.courseId){
     getChaptersTree()
   }
-  if(Number(currentTab) === 1) {
-    connectEnv().then(() => {
-      console.log('********************')
-      // isWsConnect.value = true
-    })
-  }
+  // if(Number(currentTab) === 1) {
+  //   connectEnv().then(() => {
+  //     console.log('********************')
+  //     // isWsConnect.value = true
+  //   })
+  // }
 });
 </script>
 

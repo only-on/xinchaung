@@ -17,6 +17,39 @@
       <menu-bar :menus="menus"></menu-bar>
     </div>
     <div class="header-right">
+      <a-popover title="" trigger="click" placement="bottom">
+        <template #content>
+          <template v-if="helpInfoList.length == 0">
+            {{ assistText }}
+          </template>
+          <template v-else>
+            <div class="help-question-warp">
+              <div
+                v-for="(item, index) in helpInfoList"
+                class="help-item"
+                @click="toHelp(item, index)"
+                :key="item.id"
+              >
+                <div class="help-base-info">
+                  <span>{{ item.user }}</span>
+                  <span>{{ item.created_at }}</span>
+                </div>
+                <p class="assist" :title="item.question">
+                  {{ item.question }}
+                </p>
+              </div>
+            </div>
+          </template>
+        </template>
+        <div class="help-message" v-if="isOperation" @click="helpMessage">
+          <img :src="handImg" />
+          <span class="remoteAssistance">远程协助消息</span>
+          <div class="red-point" v-if="helpInfoList.length > 0">
+            <span class="dot"> </span>
+            <span class="pulse"> </span>
+          </div>
+        </div>
+      </a-popover>
       <a-popover title="" trigger="hover" placement="bottom">
         <template #content>
           <p class="operation" v-if="!power" @click="information">个人信息</p>
@@ -40,6 +73,7 @@ import {
   ref,
   onMounted,
   watch,
+  provide,
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from "../../api/index";
@@ -52,6 +86,9 @@ import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher_p.png";
 import adminUserImg from "src/assets/images/user/admin_p.png";
 import studentUserImg from "src/assets/images/user/student_p.png";
+import { wsConnect } from "src/request/websocket";
+import { useStore } from "vuex";
+import { createExamples } from "src/utils/vncInspect";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -397,7 +434,111 @@ export default defineComponent({
     onMounted(() => {
       // getMenu();
       lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
+      console.log(lStorage.get("role"), lStorage.get("uid"))
+      if (role === 3 || role === 4) {
+        initWs()
+      }
+      if (role === 3) {
+        getHelpFinfo()
+      }
     });
+    
+    let longWs: any = null
+    const helpInfoList: Ref<any> = ref([{a: 111}])
+    const isRead: Ref<boolean> = ref(false)
+    provide('helpInfoList', helpInfoList)
+    provide('isRead', isRead)
+    function initWs() {
+      let ws_config = lStorage.get("ws_config")
+      let user_id = lStorage.get("user_id");
+      const uid = lStorage.get("uid")
+      const store = useStore()
+      console.log(user_id,longWs)
+      longWs = wsConnect({
+        url:
+          "://" +
+          ws_config.host +
+          ":" +
+          ws_config.port +
+          "/?uid=" +
+          uid+'_0',
+        open: () => {
+          if (longWs && role === 3) {
+            longWs.join(uid+"_teacher" + "_room");
+          }
+        },
+        close: (ev: CloseEvent) => {
+          if (ev.type === "close") {
+            console.log(longWs);
+            console.log(
+              "wsVmConnect.value.isReset",
+              longWs.isReset()
+            );
+          }
+        },
+        message: (ev: MessageEvent) => {
+          let regex = /\{.*?\}/g;
+
+          if (typeof ev.data === "string" && regex.test(ev.data)) {
+            let data = JSON.parse(ev.data);
+            console.log(data)
+            if (data.type === "help") {
+              helpInfoList.value.unshift(data.data)
+              isRead.value = true
+              console.log(helpInfoList.value)
+            } else if(data.type==="base_vminfo"&&data.data.vms && data.data.vms.length > 0) {
+              store.commit('setIsWsConnect', true)
+            }
+          }
+        }
+      })
+    }
+
+    const vmApi = request.vmApi
+    function getHelpFinfo() {
+      helpInfoList.value.length -= 0
+      vmApi.getHelpFinfoApi({}).then((res: any) => {
+        console.log(res);
+        helpInfoList.value.push(...res.data.list)
+        if (helpInfoList.value.length>0) {
+          isRead.value=true
+        }
+      })
+    }
+
+    function toHelp(val: any, index: any) {
+      let params: any = {
+        opType: "help",
+        study_id: val.study_id,
+      };
+      vmApi
+        .updateReadStatusApi({
+          param: {
+            action: "read",
+            params: {
+              id: val.id,
+            },
+          },
+        })
+        .then(() => {
+          helpInfoList.value.splice(index, 1);
+        });
+      createExamples(params).then((res: any) => {
+        if (res.status == 1) {
+          router.push({
+            path: "/vm/vnc",
+            query: {
+              connection_id: res.data.connection_id,
+              opType: "help",
+              type: val.study_type,
+              taskId: val.taskId,
+              topoinst_uuid: res.data.topoinst_uuid,
+              topoinst_id: res.data.topoinst_id,
+            },
+          });
+        }
+      });
+    }
 
     return {
       env,
@@ -416,6 +557,8 @@ export default defineComponent({
       userImg,
       homePath,
       goHome,
+      helpInfoList,
+      toHelp,
     };
   },
 });
@@ -475,7 +618,9 @@ export default defineComponent({
     align-items: center;
     cursor: pointer;
     .help-message {
+      color: var(--white-45);
       margin-right: 30px;
+      position: relative;
       img {
         -webkit-filter: brightness(30%); /* Chrome, Safari, Opera */
         filter: brightness(0.3);
@@ -483,6 +628,27 @@ export default defineComponent({
       }
       .remoteAssistance {
         font-size: 14px;
+      }
+      .red-point {
+        background: red;
+        width: 8px;
+        height: 8px;
+        display: block;
+        border-radius: 50%;
+        position: absolute;
+        right: -10px;
+        top: 5px;
+      }
+      .dot {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+
+        -webkit-border-radius: 20px;
+        -moz-border-radius: 20px;
+        border: 2px solid red;
+        border-radius: 50%;
+        z-index: 2;
       }
     }
     .user-name {
@@ -515,5 +681,40 @@ export default defineComponent({
 .assist {
   color: #857878;
   margin: 5px;
+}
+.help-question-warp {
+  width: 300px;
+  .help-item {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px dashed var(--black-15);
+    padding-top: 10px;
+    padding-bottom: 10px;
+    &:last-child {
+      border-bottom: none;
+    }
+  }
+  .help-item:hover {
+    background-color: var(--gray-3);
+    .assist {
+      color: var(--purpleblue-6);
+    }
+  }
+  .help-base-info {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 100%;
+    color: var(--black-45);
+  }
+  p {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow-x: hidden;
+    cursor: pointer;
+    width: 100%;
+  }
 }
 </style>
