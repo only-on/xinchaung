@@ -12,7 +12,7 @@
       <div class="class-test pointer" @click="openQuizModal" v-if="role == 4">
         <span>随堂测试</span>
         <span>({{ answerNum + "/" + oldQuizPaperList.length }})</span>
-        <i class="sign"></i>
+        <i class="sign" v-if="answerNum"></i>
       </div>
     </div>
     <div class="center-box">
@@ -751,10 +751,10 @@ function finishExperiment() {
     okText: "确认",
     onOk: async () => {
       // 文档视频实验
-      if (experType === 6 || experType === 7) {
-        router.go(historyLength - history.length - 1);
-        return;
-      }
+      // if (experType === 6 || experType === 7) {
+      //   router.go(historyLength - history.length - 1);
+      //   return;
+      // }
       await finishTest();
       modal.destroy();
     },
@@ -1265,7 +1265,7 @@ onMounted(() => {
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
-  if (taskType.value !== 6 && taskType.value !== 7 && role === 4) {
+  if (experType !== 6 && experType !== 7 && role === 4) {
     times();
     getQuestionList(false);
   }

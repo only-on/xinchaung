@@ -81,7 +81,7 @@ import { IBusinessResp } from "../../typings/fetch";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher.png";
 import adminUserImg from "src/assets/images/user/admin.png";
@@ -463,7 +463,9 @@ export default defineComponent({
         }
       });
     }
-
+    onBeforeRouteLeave(()=>{
+      longWs?.close()
+    })
     return {
       env,
       systemBaseInfo,

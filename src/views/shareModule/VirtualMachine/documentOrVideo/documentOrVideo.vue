@@ -31,6 +31,17 @@ import PdfVue from "src/components/pdf/pdf.vue";
 import { message } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
+import {
+  getTaskInfo,
+  getVersionList,
+  getFileList,
+  createVersion,
+  switchFile,
+  saveFile,
+  switchVersionApi,
+  runCodeApi,
+  createTopoApi,
+} from "src/utils/webideInspect";
 const http = (request as any).teacherExperimentResourcePool;
 const env = process.env.NODE_ENV == "development" ? true : false;
 
@@ -68,9 +79,31 @@ const navData = [
 ];
 
 onMounted(async () => {
-  // getExperimentDetail()
+  await createTopo()
   await getVmBase();
 });
+// 创建实例
+function createTopo() {
+  console.log(12121);
+
+  let params: any = {
+    type: type,
+    opType: opType,
+    taskId: taskId,
+  };
+  return new Promise((resolve: any, reject: any) => {
+    createTopoApi(params)
+      .then((res:any) => {
+        console.log(res);
+        // connection_id = res?.data.connection_id;
+        // topoinst_id = res?.data.topoinst_id;
+        resolve(res?.data);
+      })
+      .catch((err:any) => {
+        reject(err);
+      });
+  }).catch();
+}
 // 获取实验基本信息pageinfo
 function getVmBase() {
   // opType = "help";
@@ -105,31 +138,6 @@ function black() {
 function finish() {
   message.success("结束实验成功");
 }
-
-// 实验详情
-let experimentDetail = reactive<any>({
-  id: 1,
-  is_init: 0,
-  name: '',
-  task_type: 1,
-  class_cnt: 2,
-  level: '2',
-  direction: '',
-  complexity: '2',
-  konwledge_map: [],
-  username: '2',
-  lab_proc: "实验指导",
-  tag: [],
-  content_template: {},
-  programing_type: 0,
-});
-const getExperimentDetail = () => {
-  http.getExperimentDetail({urlParams: {id: taskId}}).then((res: any) => { 
-    Object.assign(experimentDetail, res.data);
-    baseInfo.value.base_info = res.data;
-    taskType.value = res.data.task_type;
-  })
-};
 </script>
 <style lang="less" scoped>
 .document-wrap, .video-wrap {

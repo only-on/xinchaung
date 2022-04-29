@@ -50,7 +50,8 @@ export default {
 
     // 学生自评
     evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"},
-    getQuestionListApi:{url:"",method:"POST",dataType:"json"},
+     // 随堂测试
+     getQuestionListApi:{url:"api/v1/xinchuang/question/contents/{content_id}/questions",methods:"GET",dataType:"json"},
 
     // 远程协助消息
     getHelpFinfoApi:{ url: '/api/operate/teacherResults/questions', method: 'GET' },

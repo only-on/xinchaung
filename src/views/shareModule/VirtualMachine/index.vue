@@ -5,8 +5,9 @@
   <!-- <documentOrVideo v-if="true"></documentOrVideo> -->
   <!--自评、推荐-->
   <component :is="componentList[experType]"></component>
+  <!-- :visible="evaluateVisible" -->
   <a-modal
-    :visible="evaluateVisible"
+    :visible="false"
     :title="'推荐实验'"
     class="evaluate-modal"
     :closable="false"
