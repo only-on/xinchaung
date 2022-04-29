@@ -69,7 +69,7 @@ const docOrMp4Drawer: any = reactive({
   selectList:[]   //  选择的实验
 });
 // const {selectList}=props
-console.log(props)
+// console.log(props)
 if(props.selectList.length){
   props.selectList.forEach((v:any)=>{
     docOrMp4Drawer.selectList.push(v)

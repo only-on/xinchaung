@@ -260,14 +260,6 @@ const courseDetail=(val:any)=>{
     path: "/teacher/teacherCourse/Detail",
     query: { currentTab:currentTab.value,courseId:val.id }
     });
-  // if(n === 1){
-  //   router.push({
-  //   path: "/teacher/teacherCourse/PublicDetail",
-  //   query: { currentTab:currentTab.value },
-  // });
-  // }else{
-  //   router.push({ path: "/teacher/teacherCourse/PrivateDetail"});
-  // }
 }
 const deleteFun = (val: any) => {
   Modal.confirm({

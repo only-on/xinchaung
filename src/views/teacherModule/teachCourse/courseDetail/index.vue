@@ -226,7 +226,6 @@ var state:IState=reactive({
   activeTab:{},
   courseDetail:{}
 })
-state.activeTab=detailTabs[0]
 function initData(){
   editLoading.value=true
   http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{

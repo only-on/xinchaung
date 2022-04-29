@@ -46,7 +46,7 @@
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="name flexCenter" v-if="(Number(currentTab) === 1 && role===3) || role===4">
               <div class="chart"></div>
-              <div class="userName">{{info.user_name?info.user_name:info.teacher}}</div>
+              <div class="userName">{{role===3?info.user_name:info.teacher}}</div>
             </div>
             <div class="tags">
               <!-- <span>标签1/标签2/</span> -->
@@ -74,7 +74,7 @@
             </div>
             <div class="ratio">
               <div class="item3">
-                <span>11</span>
+                <span>{{info.learned_content_total}}</span>
                 <span>/{{info.content_total}}</span>
               </div>
               <div class="item4">
@@ -128,10 +128,12 @@ const http = (request as any).teacherImageResourcePool;
 interface Props {
   info: any;
   tabs?:any
+  activeTabOrder?:number
 }
 const props = withDefaults(defineProps<Props>(), {
   info: () => {},
   tabs:() => [],  // [{name:'课程章节',value:1}] 可自定义value   父组件需要什么值判断   选中tab之后 返回item 和value 值
+  activeTabOrder:0      // 默认选中第几个tab  传tab 数组的下标。
 });
 
 const emit = defineEmits<{
@@ -143,16 +145,23 @@ var activeTab:any=reactive({
   name:'',
   value:''
 })
-if(props.tabs && props.tabs.length){
-  var {name,value}=props.tabs[0]
-  activeTab.name=name,
-  activeTab.value=value
-}
 const selectTab=(v:any)=>{
   activeTab.name=v.name,
   activeTab.value=v.value
   emit("selectTab", v);
 }
+if(props.tabs && props.tabs.length){
+  var {name,value}=props.tabs[0]
+  activeTab.name=name,
+  activeTab.value=value
+  if(props.activeTabOrder && props.activeTabOrder <= props.tabs.length){
+    selectTab(props.tabs[props.activeTabOrder])
+  }else{
+    selectTab(props.tabs[0])
+  }
+}
+
+
 const isShowCourseDetail=computed(()=>{
   let flag=false
   if((currentTab && Number(currentTab) === 0) && role === 3){

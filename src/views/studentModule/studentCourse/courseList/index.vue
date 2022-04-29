@@ -34,7 +34,7 @@
                 <span class="yixue">已学</span>
                 <a-progress :title="`已学习${v.progress}`" :percent="v.progress" />
               </div>
-              <div>
+              <div @click.stop="viewAchievement(v)">
                 <span class="viewAchievement" v-if="v.state!==2">查看成绩</span>
               </div>
             </div>
@@ -196,14 +196,17 @@ const courseDetail=(val:any)=>{
     path: "/student/studentCourse/Detail",
     query: { currentTab:currentTab.value,courseId:val.id,course_student_id:val.course_student_id }
     });
-  // if(n === 1){
-  //   router.push({
-  //   path: "/teacher/teacherCourse/PublicDetail",
-  //   query: { currentTab:currentTab.value },
-  // });
-  // }else{
-  //   router.push({ path: "/teacher/teacherCourse/PrivateDetail"});
-  // }
+}
+const viewAchievement=(val:any)=>{
+  router.push({ 
+    path: "/student/studentCourse/Detail",
+    query: { 
+      currentTab:currentTab.value,
+      courseId:val.id,
+      course_student_id:val.course_student_id,
+      studentDetailTab:'courseAchievement'
+      }
+    });
 }
 // 归档
 var Visible: Ref<boolean> = ref(false);
