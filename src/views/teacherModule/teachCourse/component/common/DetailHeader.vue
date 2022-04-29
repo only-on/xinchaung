@@ -46,7 +46,7 @@
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="name flexCenter" v-if="(Number(currentTab) === 1 && role===3) || role===4">
               <div class="chart"></div>
-              <div class="userName">{{role===3?info.user_name:info.teacher}}</div>
+              <div class="userName">{{info.user_name}}</div>
             </div>
             <div class="tags">
               <!-- <span>标签1/标签2/</span> -->
