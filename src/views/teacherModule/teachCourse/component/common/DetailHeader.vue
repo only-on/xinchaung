@@ -66,8 +66,9 @@
           <div class="timeUse ">
             <div class="date">
               <div class="item1">
-                <span>123</span>小时
-                <span>45</span>分钟
+                <!-- <span>123</span>小时
+                <span>45</span>分钟 -->
+                <span>{{info.used_time}}</span>
               </div>
               <div class="item2">学习累计用时</div>
             </div>
@@ -81,7 +82,7 @@
               </div>
               <div class="item5">
                 <span>课程完成率</span>
-                <span>52%</span>
+                <span>{{info.progress}}%</span>
               </div>
             </div>
           </div>
@@ -154,7 +155,7 @@ const selectTab=(v:any)=>{
 }
 const isShowCourseDetail=computed(()=>{
   let flag=false
-  if((currentTab && Number(currentTab) === 0) || role === 4){
+  if((currentTab && Number(currentTab) === 0) && role === 3){
     flag=true
   }
   return flag

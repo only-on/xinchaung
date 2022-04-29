@@ -72,8 +72,8 @@ const selectTab=(val:any)=>{
 }
 
 onMounted(() => {
+  console.log(course_student_id)
   initData()
-
 });
 
 </script>
