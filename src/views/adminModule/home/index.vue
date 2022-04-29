@@ -120,6 +120,17 @@
                         </div>
                     </div>
                 </div>
+                <div class="nodeOperation">
+                    <div>
+                        关机 <span class="icon iconfont icon-kaiguanshenx"></span>
+                    </div>
+                    <div>
+                        重启 <span class="icon iconfont icon-loading"></span>
+                    </div>
+                    <div>
+                        一键关闭 <span class="icon iconfont icon-guanbi"></span>
+                    </div>
+                </div>
             </div>
             <div class="serverNode-right">
                 <div class="flexTitle">
@@ -392,7 +403,16 @@
         width: 49%;
         height: 359px;
         background-color: var(--white-100);
-        padding: 20px;
+        // padding: 20px;
+    }
+}
+.serverNode-right{
+    padding: 20px;
+}
+.serverNode-left{
+    .flexTitle{
+        padding:20px;
+        padding-bottom: 0px;
     }
 }
 .bottomInfo{
@@ -438,10 +458,13 @@
     display: flex;
     justify-content:space-between;
     width: 100%;
-    height: 100%;
+    height:70%;
+    padding: 20px;
+    padding-top: 0px;
+    padding-bottom: 0px;
     .node-left{
         width: 49%;
-        height:90%;
+        height:100%;
         .node-left-top{
             display: flex;
             width: 100%;
@@ -455,7 +478,7 @@
     }
     .node-right{
         width: 49%;
-        height:90%;
+        height:100%;
         .infoalerm{
             margin-bottom: 20px;
         }
@@ -481,6 +504,30 @@
                 color: red;
             }
         }
+    }
+}
+.nodeOperation{
+    display: flex;
+    height: 40px;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid #DFDFDF;
+    padding-left: 50px;
+    padding-right: 50px;
+    width: 100%;
+    >div{
+        padding-right: 30px;
+        padding-left: 30px;
+        width:33.3%;
+        text-align: center;
+    }
+    >div:nth-child(1){
+        border-right: 1px solid #DFDFDF;
+        
+    }
+    >div:nth-child(2){
+        border-right: 1px solid #DFDFDF;
+        
     }
 }
 #node1,#node2,#node3,#node4{

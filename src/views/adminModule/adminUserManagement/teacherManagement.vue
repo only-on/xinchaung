@@ -1,43 +1,40 @@
 <template>
-  <div class="header" v-layout-bg>
+  <div class="header">
     <div class="search">
-      <div class="item custom_input custom_input1">
+      <div class="item custom_input custom_input3">
+        <span style="width:50px">学院</span>
         <a-input
-          v-model:value="ForumSearch.username"
-          placeholder="请输入账号"
+          v-model:value="ForumSearch.department"
+          placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
       </div>
       <div class="item custom_input custom_input2">
+        <span style="width:50px">教师</span>
         <a-input
           v-model:value="ForumSearch.name"
-          placeholder="请输入姓名"
+          placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
       </div>
-      <div class="item custom_input custom_input3">
-        <a-input
-          v-model:value="ForumSearch.department"
-          placeholder="请输入院系"
-          @keyup.enter="search()"
-        />
-      </div>
-      <div class="item">
+      
+      <!-- <div class="item">
         <a-button type="primary" @click="search()">查询</a-button>
         <a-button type="primary" @click="clearSearch()">清空</a-button>
-      </div>
+      </div> -->
     </div>
-    <div class="addTeacher">
-      <a-button @click="addTeacher()" type="primary">添加教师</a-button>
-    </div>
-    <a-button @click="BatchDelete()" type="primary">批量删除</a-button>
+   
+      <!-- <a-button @click="addTeacher()" type="primary">添加教师</a-button> -->
+      <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
+      <a-button class="addTeacher" @click="batchImport()" type="primary">批量重置密码</a-button>
+      <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
   </div>
-  <a-config-provider :renderEmpty="customizeRenderEmpty">
+  <a-config-provider>
+    <!-- :renderEmpty="customizeRenderEmpty" -->
     <a-table
       :columns="columns"
       :loading="loading"
       :data-source="list"
-      :bordered="true"
       row-key="id"
       :pagination="{
         current: ForumSearch.page,
@@ -47,7 +44,7 @@
         hideOnSinglePage: true,
       }"
       :row-selection="{
-        selectedRowKeys: selectedRowKeys,
+        selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
       }"
       class="components-table-demo-nested"
@@ -165,24 +162,22 @@
   </a-modal>
 </template>
 
-<script lang="tsx">
+<script lang="ts" setup>
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { Modal, message } from "ant-design-vue";
 import {
   createVNode,
-  VNode,
   defineComponent,
   ref,
   onMounted,
   reactive,
-  UnwrapRef,
-  Ref,
   toRefs,
   inject,
   watch,
   computed,
 } from "vue";
-import { IBusinessResp } from "src/typings/fetch.d";
+import empty from "src/components/Empty.vue";
+import IBusinessResp from "src/typings/fetch.d";
 import request from "src/api/index";
 import { useRouter, useRoute } from "vue-router";
 import {
@@ -190,7 +185,7 @@ import {
   MehOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
+import  ColumnProps  from "ant-design-vue/es/table/interface";
 interface IforumSearch {
   username: string;
   department: string;
@@ -206,10 +201,8 @@ interface ItdItems {
   reply: string;
   id: number;
 }
-type Key = ColumnProps["key"];
 interface TState {
-  selectedRowKeys: Key[];
-  onSelectChange: (v: Key[], selectedRows: Key[]) => void;
+  selectedRowKeys: any[]
 }
 interface IFormState {
   username: string;
@@ -286,57 +279,41 @@ const columns = [
     width: 200,
   },
 ];
-
-export default defineComponent({
-  name: "teacherManagement",
-  components: {
-    SmileOutlined,
-    MehOutlined,
-  },
-  setup: (props, { emit }) => {
     const router = useRouter();
     const route = useRoute();
 
     var updata = inject("updataNav") as Function;
     updata({
-      tabs: [],
-      navPosition: "outside",
-      navType: false,
+      tabs: [
+        { name: "教师管理", componenttype: 0 }
+      ],
       showContent: true,
       componenttype: undefined,
-      showNav: true,
-      backOff: false,
-      showPageEdit: false,
+      showNav:true,
     });
 
     const http = (request as any).adminUserManagement;
-    var loading: Ref<boolean> = ref(false);
-    var visible: Ref<boolean> = ref(false);
-    var total: Ref<number> = ref(0);
+    var loading:any = ref(false);
+    var visible:any = ref(false);
+    var total:any = ref(0);
     var list: ItdItems[] = reactive([]);
-    var editId: Ref<number> = ref(0);
+    var editId:any= ref(0);
     var formRef = ref();
     var suffix = "1q2w";
     var state: TState = reactive({
-      selectedRowKeys: [],
-      onSelectChange: (selectedRowKeys: Key[], selectedRows: Key[]) => {
-        // console.log('RowKeys changed: ', selectedRowKeys);
-        // console.log('selectedRows: ', selectedRows);
-        state.selectedRowKeys = selectedRowKeys;
-        // state.selectedRows = selectedRows;
-      },
+      selectedRowKeys: []
     });
-    const customizeRenderEmpty = function (): VNode {
-      if (loading.value) {
-        return <template></template>;
-      } else {
-        let type =
-          ForumSearch.username || ForumSearch.name
-            ? "tableSearchEmpty"
-            : "tableEmpty";
-        return <empty type={type} />;
-      }
-    };
+    // const customizeRenderEmpty = function (){
+    //   if (loading.value) {
+    //     return <template></template>;
+    //   } else {
+    //     let type =
+    //       ForumSearch.username || ForumSearch.name
+    //         ? "tableSearchEmpty"
+    //         : "tableEmpty";
+    //     return <empty type={type} />;
+    //   }
+    // };
     var ForumSearch: IforumSearch = reactive({
       username: "",
       pageSize: 10,
@@ -445,6 +422,12 @@ export default defineComponent({
       }
       return sign;
     });
+    function  onSelectChange(selectedRowKeys:any, selectedRows:any){
+        // console.log('RowKeys changed: ', selectedRowKeys);
+        // console.log('selectedRows: ', selectedRows);
+        state.selectedRowKeys = selectedRowKeys
+        // state.selectedRows = selectedRows;
+      }
     function initData() {
       // console.log(ForumSearch)
       loading.value = true;
@@ -460,7 +443,7 @@ export default defineComponent({
           page: ForumSearch.page,
         },
       };
-      http.teacherList({ param: { ...obj } }).then((res: IBusinessResp) => {
+      http.teacherList({ param: { ...obj } }).then((res:any) => {
         if (res) {
           loading.value = false;
           let data = res.data.list;
@@ -488,12 +471,15 @@ export default defineComponent({
         onOk() {
           http
             .teacherUserDelete({ urlParams: { id: val } })
-            .then((res: IBusinessResp) => {
+            .then((res:any) => {
               initData();
               message.success("删除成功");
             });
         },
       });
+    }
+    function batchImport(){
+
     }
     function BatchDelete() {
       if (!state.selectedRowKeys.length) {
@@ -511,7 +497,7 @@ export default defineComponent({
             .teacherUserBatchDelete({
               param: { user_ids: state.selectedRowKeys },
             })
-            .then((res: IBusinessResp) => {
+            .then((res:any) => {
               initData();
               message.success("删除成功");
             });
@@ -568,7 +554,7 @@ export default defineComponent({
               param: { ...obj },
             })
           : http.createTeacher({ param: { ...obj } });
-        promise.then((res: IBusinessResp) => {
+        promise.then((res:any) => {
           initData();
           message.success(editId.value ? "编辑成功" : "创建成功");
           formRef.value.resetFields();
@@ -584,7 +570,7 @@ export default defineComponent({
       editId.value = val.id;
       http
         .viewTeacher({ urlParams: { id: editId.value } })
-        .then((res: IBusinessResp) => {
+        .then((res:any) => {
           Object.keys(res.data).forEach((v: any) => {
             if (v in formState) {
               formState[v] = res.data[v];
@@ -626,36 +612,8 @@ export default defineComponent({
       });
     }
     onMounted(() => {
-      initData();
-    });
-    return {
-      ...toRefs(state),
-      customizeRenderEmpty,
-      suffix,
-      cancel,
-      InputPassword,
-      formRef,
-      formState,
-      rules,
-      list,
-      columns,
-      ForumSearch,
-      loading,
-      total,
-      visible,
-      editId,
-      search,
-      onChangePage,
-      clearSearch,
-      delateCard,
-      BatchDelete,
-      submit,
-      editCard,
-      addTeacher,
-      details,
-    };
-  },
-});
+      // initData();
+    })
 </script>
 
 <style scoped lang="less">
@@ -744,6 +702,9 @@ export default defineComponent({
 }
 :deep(.ant-form-item) {
   margin-bottom: 10px;
+}
+:deep(.ant-input){
+  border-radius:20px;
 }
 .userinitpassword {
   .ant-checkbox-wrapper {

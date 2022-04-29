@@ -1,21 +1,50 @@
 <template>
   <div class="header" v-layout-bg>
     <div class="search">
-      <div class="item custom_input custom_input1">
+      <!-- <div class="item custom_input custom_input1">
         <a-input
           v-model:value="ForumSearch.username"
           placeholder="请输入学号"
           @keyup.enter="search()"
         />
-      </div>
+      </div> -->
       <div class="item custom_input custom_input2">
+        <span style="width:50px">姓名</span>
         <a-input
+          style="width:224px"
           v-model:value="ForumSearch.name"
-          placeholder="请输入姓名"
+          placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
       </div>
-      <div class="item custom_input custom_input3">
+      <div class="item custom_input custom_input2">
+        <span style="width:50px">专业</span>
+        <a-input
+          style="width:224px"
+          v-model:value="ForumSearch.name"
+          placeholder="请输入搜索关键词"
+          @keyup.enter="search()"
+        />
+      </div>
+      <div class="item custom_input custom_input2">
+        <span style="width:50px">班级</span>
+        <a-input
+          style="width:224px"
+          v-model:value="ForumSearch.name"
+          placeholder="请输入搜索关键词"
+          @keyup.enter="search()"
+        />
+      </div>
+      <div class="item custom_input custom_input2">
+        <span style="width:50px">年级</span>
+        <a-input
+        style="width:224px"
+          v-model:value="ForumSearch.name"
+          placeholder="请输入搜索关键词"
+          @keyup.enter="search()"
+        />
+      </div>
+      <!-- <div class="item custom_input custom_input3">
         <a-input
           v-model:value="ForumSearch.department"
           placeholder="请输入院系"
@@ -25,22 +54,21 @@
       <div class="item">
         <a-button type="primary" @click="search()">查询</a-button>
         <a-button type="primary" @click="clearSearch()">清空</a-button>
-      </div>
+      </div> -->
     </div>
-    <div class="addStudent">
-      <a-button @click="addStudent()" type="primary">添加学生</a-button>
+    <div class="header-btn">
+      <a-button class="addStudent" @click="createStu()" type="primary">创建学生</a-button>
+      <a-button class="brightBtn addStudent" @click="ImportStudent()" type="primary">批量导入</a-button>
+      <a-button class="addStudent" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
+      <a-button class="brightBtn addStudent" @click="BatchDelete()" type="primary">批量删除</a-button>
     </div>
-    <div class="addStudent">
-      <a-button @click="BatchDelete()" type="primary">批量删除</a-button>
-    </div>
-    <a-button @click="ImportStudent()" type="primary">批量导入</a-button>
   </div>
-  <a-config-provider :renderEmpty="customizeRenderEmpty">
+  <a-config-provider>
+    <!-- :renderEmpty="customizeRenderEmpty" -->
     <a-table
       :columns="columns"
       :loading="loading"
       :data-source="list"
-      :bordered="true"
       row-key="id"
       :pagination="{
         current: ForumSearch.page,
@@ -50,7 +78,7 @@
         hideOnSinglePage: true,
       }"
       :row-selection="{
-        selectedRowKeys: selectedRowKeys,
+        selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
       }"
       class="components-table-demo-nested"
@@ -208,24 +236,20 @@
   </a-modal>
 </template>
 
-<script lang="tsx">
+<script lang="ts" setup>
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { Modal, message } from "ant-design-vue";
 import {
   createVNode,
-  VNode,
   defineComponent,
   ref,
   onMounted,
   reactive,
-  UnwrapRef,
-  Ref,
   toRefs,
   inject,
   watch,
   computed,
 } from "vue";
-import { IBusinessResp } from "src/typings/fetch.d";
 import request from "src/api/index";
 import { useRouter, useRoute } from "vue-router";
 import {
@@ -233,7 +257,6 @@ import {
   MehOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-import { ColumnProps } from "ant-design-vue/es/table/interface";
 interface IforumSearch {
   username: string;
   department: string;
@@ -249,10 +272,8 @@ interface ItdItems {
   reply: string;
   id: number;
 }
-type Key = ColumnProps["key"];
 interface TState {
-  selectedRowKeys: Key[];
-  onSelectChange: (v: Key[], selectedRows: Key[]) => void;
+  selectedRowKeys:any[]
 }
 interface IFormState {
   username: string;
@@ -342,63 +363,47 @@ const studentColumns = [
     // width:120,
   },
 ];
-
-export default defineComponent({
-  name: "studentManagement",
-  components: {
-    SmileOutlined,
-    MehOutlined,
-  },
-  setup: (props, { emit }) => {
     const router = useRouter();
     const route = useRoute();
 
     var updata = inject("updataNav") as Function;
     updata({
-      tabs: [],
-      navPosition: "outside",
-      navType: false,
+      tabs: [
+        { name: "学生管理", componenttype: 0 }
+      ],
       showContent: true,
       componenttype: undefined,
-      showNav: true,
-      backOff: false,
-      showPageEdit: false,
+      showNav:true,
     });
 
     const http = (request as any).adminUserManagement;
-    var loading: Ref<boolean> = ref(false);
-    var visible: Ref<boolean> = ref(false);
-    var ImportVisible: Ref<boolean> = ref(false);
-    var total: Ref<number> = ref(0);
+    var loading:any= ref(false);
+    var visible:any = ref(false);
+    var ImportVisible:any = ref(false);
+    var total:any= ref(0);
     var list: ItdItems[] = reactive([]);
-    var editId: Ref<number> = ref(0);
+    var editId:any = ref(0);
     var formRef = ref();
     var suffix = "1q2w";
     var state: TState = reactive({
-      selectedRowKeys: [],
-      onSelectChange: (selectedRowKeys: Key[], selectedRows: Key[]) => {
-        // console.log('RowKeys changed: ', selectedRowKeys);
-        // console.log('selectedRows: ', selectedRows);
-        state.selectedRowKeys = selectedRowKeys;
-        // state.selectedRows = selectedRows;
-      },
+      selectedRowKeys: []
     });
     var ImportData: any = reactive({
       list: [],
       finished: 0,
       unfinished: 0,
     });
-    const customizeRenderEmpty = function (): VNode {
-      if (loading.value) {
-        return <template></template>;
-      } else {
-        let type =
-          ForumSearch.username || ForumSearch.name
-            ? "tableSearchEmpty"
-            : "tableEmpty";
-        return <empty type={type} />;
-      }
-    };
+    // const customizeRenderEmpty = function (): VNode {
+    //   if (loading.value) {
+    //     return <template></template>;
+    //   } else {
+    //     let type =
+    //       ForumSearch.username || ForumSearch.name
+    //         ? "tableSearchEmpty"
+    //         : "tableEmpty";
+    //     return <empty type={type} />;
+    //   }
+    // };
     var ForumSearch: IforumSearch = reactive({
       username: "",
       pageSize: 10,
@@ -521,7 +526,7 @@ export default defineComponent({
           page: ForumSearch.page,
         },
       };
-      http.studentList({ param: { ...obj } }).then((res: IBusinessResp) => {
+      http.studentList({ param: { ...obj } }).then((res:any) => {
         if (res) {
           loading.value = false;
           let data = res.data.list;
@@ -539,6 +544,9 @@ export default defineComponent({
       initData();
       // }
     }
+    function  onSelectChange(selectedRowKeys:any[], selectedRows:any[]) {
+        state.selectedRowKeys = selectedRowKeys;
+      }
     function delateCard(val: number) {
       console.log(val);
       Modal.confirm({
@@ -550,12 +558,18 @@ export default defineComponent({
         onOk() {
           http
             .studentUserDelete({ urlParams: { id: val } })
-            .then((res: IBusinessResp) => {
+            .then((res:any) => {
               initData();
               message.success("删除成功");
             });
         },
       });
+    }
+    function createStu(){
+
+    }
+    function batchResetPassword(){
+
     }
     function BatchDelete() {
       if (!state.selectedRowKeys.length) {
@@ -573,7 +587,7 @@ export default defineComponent({
             .studentUserBatchDelete({
               param: { user_ids: state.selectedRowKeys },
             })
-            .then((res: IBusinessResp) => {
+            .then((res:any) => {
               initData();
               message.success("删除成功");
             });
@@ -626,7 +640,7 @@ export default defineComponent({
               param: { ...obj },
             })
           : http.studentCreate({ param: { ...obj } });
-        promise.then((res: IBusinessResp) => {
+        promise.then((res:any) => {
           initData();
           message.success(editId.value ? "编辑成功" : "创建成功");
           formRef.value.resetFields();
@@ -642,7 +656,7 @@ export default defineComponent({
       editId.value = val.id;
       http
         .viewStudent({ urlParams: { id: editId.value } })
-        .then((res: IBusinessResp) => {
+        .then((res:any) => {
           Object.keys(res.data).forEach((v: any) => {
             if (v in formState) {
               formState[v] = res.data[v];
@@ -686,7 +700,7 @@ export default defineComponent({
       // loading.value=true
       const fd = new FormData();
       fd.append("file", file);
-      http.BatchImport({ param: fd }).then((res: IBusinessResp) => {
+      http.BatchImport({ param: fd }).then((res:any) => {
         ImportData.finished = res.data.total.finished;
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
@@ -711,41 +725,8 @@ export default defineComponent({
       ImportVisible.value = true;
     }
     onMounted(() => {
-      initData();
+      // initData();
     });
-    return {
-      ...toRefs(state),
-      ImportVisible,
-      ImportStudent,
-      studentColumns,
-      ImportData,
-      fileBeforeUpload,
-      DownloadTemplate,
-      customizeRenderEmpty,
-      suffix,
-      cancel,
-      InputPassword,
-      formRef,
-      formState,
-      rules,
-      list,
-      columns,
-      ForumSearch,
-      loading,
-      total,
-      visible,
-      editId,
-      search,
-      onChangePage,
-      clearSearch,
-      delateCard,
-      BatchDelete,
-      submit,
-      editCard,
-      addStudent,
-    };
-  },
-});
 </script>
 
 <style scoped lang="less">
@@ -759,10 +740,10 @@ export default defineComponent({
   cursor: pointer;
 }
 .header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0px 0 15px;
+  // display: flex;
+  // align-items: center;
+  // justify-content: space-between;
+  // padding: 0px 0 15px;
   .search {
     flex: 1;
     display: flex;
@@ -810,6 +791,11 @@ export default defineComponent({
       }
     }
   }
+
+  .header-btn{
+    margin-top: 20px;
+    text-align: right;
+  }
   .addStudent {
     margin-right: 16px;
   }
@@ -834,6 +820,9 @@ export default defineComponent({
 }
 :deep(.ant-form-item) {
   margin-bottom: 10px;
+}
+:deep(.ant-input){
+  border-radius:20px;
 }
 .userinitpassword {
   .ant-checkbox-wrapper {
