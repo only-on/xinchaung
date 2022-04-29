@@ -64,7 +64,6 @@
     </div>
   </div>
   <a-config-provider>
-    <!-- :renderEmpty="customizeRenderEmpty" -->
     <a-table
       :columns="columns"
       :loading="loading"
@@ -97,143 +96,6 @@
       </template>
     </a-table>
   </a-config-provider>
-  <a-modal
-    v-model:visible="visible"
-    :title="editId ? '编辑学生' : '添加学生'"
-    @cancel="cancel"
-    @ok="submit"
-    :width="745"
-    class="modal-post"
-  >
-    <a-form
-      ref="formRef"
-      :model="formState"
-      :label-col="{ span: 10 }"
-      :wrapper-col="{ span: 24 }"
-      labelAlign="left"
-      :rules="rules"
-    >
-      <div class="formBox">
-        <div class="left">
-          <a-form-item label="学号" name="username">
-            <a-input
-              v-model:value="formState.username"
-              :disabled="editId ? true : false"
-            />
-          </a-form-item>
-          <a-form-item label="密码" name="password_hash">
-            <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
-            <a-input-password
-              v-model:value="formState.password_hash"
-              :disabled="InputPassword"
-              :visibilityToggle="false"
-            />
-          </a-form-item>
-          <a-form-item label="确认密码" name="repassword">
-            <!-- <a-input v-model:value="formState.repassword" :disabled="InputPassword" /> -->
-            <a-input-password
-              v-model:value="formState.repassword"
-              :disabled="InputPassword"
-              :visibilityToggle="false"
-            />
-          </a-form-item>
-          <div class="userinitpassword" v-if="!editId">
-            <span>使用初始密码</span>
-            <a-checkbox
-              v-model:checked="formState.userinitpassword"
-            ></a-checkbox>
-            <span>{{ `(学号+${suffix})` }}</span>
-          </div>
-          <div class="userinitpassword" v-if="editId">
-            <a-checkbox v-model:checked="formState.reset"></a-checkbox>
-            <span>重置密码</span>
-          </div>
-          <a-form-item label="院系" name="department">
-            <a-input v-model:value="formState.department" />
-          </a-form-item>
-          <a-form-item label="年级" name="grade">
-            <a-input v-model:value="formState.grade" />
-          </a-form-item>
-        </div>
-        <div class="right">
-          <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
-          </a-form-item>
-          <a-form-item label="性别" name="gender">
-            <a-select v-model:value="formState.gender" placeholder="请选择">
-              <a-select-option value="1">男</a-select-option>
-              <a-select-option value="2">女</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="电话" name="phone">
-            <a-input v-model:value="formState.phone" />
-          </a-form-item>
-          <a-form-item label="邮箱" name="email">
-            <a-input v-model:value="formState.email" />
-          </a-form-item>
-          <a-form-item label="状态" name="status">
-            <a-select v-model:value="formState.status" placeholder="请选择">
-              <a-select-option value="10">开启</a-select-option>
-              <a-select-option value="1">关闭</a-select-option>
-            </a-select>
-          </a-form-item>
-        </div>
-      </div>
-      <a-form-item label="介绍" name="introduce">
-        <a-textarea
-          v-model:value="formState.introduce"
-          placeholder="输入介绍"
-          :rows="4"
-        />
-      </a-form-item>
-    </a-form>
-  </a-modal>
-
-  <a-modal
-    v-model:visible="ImportVisible"
-    title="导入"
-    :width="960"
-    class="modal-post"
-    :footer="null"
-  >
-    <div class="studentList">
-      <div class="heard">
-        <a-upload
-          :before-upload="fileBeforeUpload"
-          :show-upload-list="false"
-          accept=".xls,.xlsx"
-        >
-          <a-button>
-            <span class="icon iconfont icon-upload"></span>
-            选择文件
-          </a-button>
-        </a-upload>
-        <!-- <div>
-            <a-button @click="DownloadTemplate" type="primary">导入</a-button>
-          </div> -->
-        <div>
-          <a-button @click="DownloadTemplate" type="link"
-            >下载学生模板</a-button
-          >
-          <span class="notes">*注：建议每次导入的数量不要超过500条</span>
-        </div>
-      </div>
-      <div class="list">
-        <div class="title">
-          <span>已导入：{{ ImportData.finished }} 条</span>
-          <span>未导入：{{ ImportData.unfinished }} 条</span>
-        </div>
-        <a-table
-          :columns="studentColumns"
-          :data-source="ImportData.list"
-          :bordered="true"
-          row-key="username"
-          class="components-table-demo-nested"
-        >
-        </a-table>
-      </div>
-    </div>
-  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -257,46 +119,12 @@ import {
   MehOutlined,
   UserOutlined,
 } from "@ant-design/icons-vue";
-interface IforumSearch {
-  username: string;
-  department: string;
-  name: string;
-  pageSize: number;
-  page: number;
-}
-interface ItdItems {
-  title: string;
-  type: string;
-  creat: string;
-  replyViews: string;
-  reply: string;
-  id: number;
-}
-interface TState {
-  selectedRowKeys:any[]
-}
-interface IFormState {
-  username: string;
-  password_hash: string;
-  repassword: string;
-  userinitpassword: boolean;
-  department: string;
-  grade: string;
-  name: string;
-  gender: string;
-  phone: string;
-  email: string;
-  status: string;
-  introduce: string;
-  reset: boolean;
-}
 const columns = [
   {
     title: "学号",
     dataIndex: "stu_no",
     align: "center",
     width: 120,
-    // slots: { customRender: 'title' },
   },
   {
     title: "姓名",
@@ -308,31 +136,26 @@ const columns = [
     title: "性别",
     dataIndex: "genderText",
     align: "center",
-    // width:260
   },
   {
     title: "所属院系",
     dataIndex: "department",
     align: "center",
-    // width:160
   },
   {
     title: "年级",
     dataIndex: "grade",
-    align: "center",
-    // width:260
+    align: "center"
   },
   {
     title: "邮箱",
     dataIndex: "email",
-    align: "center",
-    width: 200,
+    align: "center"
   },
   {
     title: "电话",
     dataIndex: "phone",
-    align: "center",
-    width: 140,
+    align: "center"
   },
   {
     title: "操作",
@@ -341,26 +164,6 @@ const columns = [
     slots: { customRender: "operation" },
     fixed: "right",
     width: 200,
-  },
-];
-const studentColumns = [
-  {
-    title: "学号",
-    dataIndex: "username",
-    align: "center",
-    // width:120,
-  },
-  {
-    title: "姓名",
-    dataIndex: "name",
-    align: "center",
-    // width:120,
-  },
-  {
-    title: "导入情况",
-    dataIndex: "result",
-    align: "center",
-    // width:120,
   },
 ];
     const router = useRouter();
@@ -377,144 +180,20 @@ const studentColumns = [
     });
 
     const http = (request as any).adminUserManagement;
-    var loading:any= ref(false);
-    var visible:any = ref(false);
-    var ImportVisible:any = ref(false);
-    var total:any= ref(0);
-    var list: ItdItems[] = reactive([]);
-    var editId:any = ref(0);
-    var formRef = ref();
-    var suffix = "1q2w";
-    var state: TState = reactive({
-      selectedRowKeys: []
-    });
-    var ImportData: any = reactive({
-      list: [],
-      finished: 0,
-      unfinished: 0,
-    });
-    // const customizeRenderEmpty = function (): VNode {
-    //   if (loading.value) {
-    //     return <template></template>;
-    //   } else {
-    //     let type =
-    //       ForumSearch.username || ForumSearch.name
-    //         ? "tableSearchEmpty"
-    //         : "tableEmpty";
-    //     return <empty type={type} />;
-    //   }
-    // };
-    var ForumSearch: IforumSearch = reactive({
+    var ForumSearch: any = reactive({
       username: "",
       pageSize: 10,
       page: 1,
       name: "",
       department: "",
     });
-    var formState: IFormState = reactive({
-      username: "",
-      password_hash: "",
-      repassword: "",
-      userinitpassword: true,
-      department: "",
-      grade: "",
-      name: "",
-      gender: "1",
-      phone: "",
-      email: "",
-      status: "10",
-      introduce: "",
-      reset: false,
-    });
-    const rules = {
-      username: [
-        { required: true, message: "请输入学号", trigger: "blur" },
-        {
-          pattern: /^[_a-zA-Z0-9]{1,10}$/,
-          message: "学号应为字母或数字，长度不超过10",
-          trigger: "blur",
-        },
-        // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
-      ],
-      password_hash: [
-        { required: true, message: "请输入密码", trigger: "blur" },
-      ],
-      repassword: [
-        { required: true, message: "请输入确认密码", trigger: "blur" },
-      ],
-      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
-      email: [
-        {
-          pattern:
-            /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
-          message: "邮箱格式有误",
-          trigger: "blur",
-        },
-      ],
-      phone: [
-        {
-          pattern: /^(1(3|4|5|6|7|8|9)|9(2|8))\d{9}$/,
-          message: "请输入正确的手机号",
-          trigger: "blur",
-        },
-      ],
-    };
-    watch(
-      () => {
-        return formState.userinitpassword;
-      },
-      (val) => {
-        // console.log(val)
-        if (val === true && formState.username) {
-          formState.password_hash = `${formState.username}${suffix}`;
-          formState.repassword = `${formState.username}${suffix}`;
-        } else {
-          formState.password_hash = "";
-          formState.repassword = "";
-        }
-      },
-      { immediate: true }
-    );
-    watch(
-      () => {
-        return formState.username;
-      },
-      (val) => {
-        // console.log(val)
-        if (val && formState.userinitpassword === true) {
-          formState.password_hash = `${formState.username}${suffix}`;
-          formState.repassword = `${formState.username}${suffix}`;
-        }
-      },
-      { immediate: true }
-    );
-    watch(
-      () => {
-        return formState.reset;
-      },
-      (val) => {
-        // console.log(val)
-        if (val === true) {
-          formState.password_hash = "";
-          formState.repassword = "";
-        }
-      },
-      { immediate: true }
-    );
-    const InputPassword = computed(() => {
-      let sign = false;
-      if (editId.value) {
-        sign = formState.reset ? false : true;
-      } else {
-        sign = formState.userinitpassword ? true : false;
-      }
-      return sign;
-    });
+    const loading:any=ref(false)
+    const list:any=ref([])
+    const total:any=ref(0)
+    const state:any=reactive({
+      selectedRowKeys:[]
+    })
     function initData() {
-      // console.log(route)
-      loading.value = true;
-      list.length = 0;
       let obj = {
         query: {
           username: ForumSearch.username,
@@ -528,21 +207,19 @@ const studentColumns = [
       };
       http.studentList({ param: { ...obj } }).then((res:any) => {
         if (res) {
-          loading.value = false;
           let data = res.data.list;
           data.map((v: any) => {
             v.genderText = v.gender === 2 ? "女" : "男";
           });
-          list.push(...data);
-          total.value = res.data.page.totalCount;
+          // list.push(...data);
+          // total.value = res.data.page.totalCount;
         }
         // console.log(list)
       });
     }
     function search() {
       ForumSearch.page = 1;
-      initData();
-      // }
+      // initData();
     }
     function  onSelectChange(selectedRowKeys:any[], selectedRows:any[]) {
         state.selectedRowKeys = selectedRowKeys;
@@ -594,92 +271,32 @@ const studentColumns = [
         },
       });
     }
-    function submit() {
-      formRef.value.validate().then(() => {
-        const {
-          username,
-          password_hash,
-          repassword,
-          userinitpassword,
-          department,
-          grade,
-          name,
-          gender,
-          phone,
-          email,
-          status,
-          introduce,
-        } = formState;
-        if (password_hash !== repassword) {
-          message.warn("密码输入不一致");
-          return;
-        }
-        let obj: any = {
-          Student: {
-            username: username,
-            email: email,
-            userinitpassword: editId.value ? false : userinitpassword, // 编辑时默认false
-          },
-          StudentProfile: {
-            department: department,
-            grade: grade,
-            name: name,
-            gender: gender,
-            phone: phone,
-            status: status,
-            introduce: introduce,
-          },
-        };
-        if ((formState.reset && editId.value) || editId.value === 0) {
-          obj.Student.password_hash = password_hash;
-          obj.Student.repassword = repassword;
-        }
-        const promise = editId.value
-          ? http.editStudent({
-              urlParams: { id: editId.value },
-              param: { ...obj },
-            })
-          : http.studentCreate({ param: { ...obj } });
-        promise.then((res:any) => {
-          initData();
-          message.success(editId.value ? "编辑成功" : "创建成功");
-          formRef.value.resetFields();
-          formState.reset = false;
-          visible.value = false;
-        });
-      });
-    }
-    function cancel() {
-      formRef.value.resetFields();
-    }
-    function editCard(val: ItdItems) {
-      editId.value = val.id;
-      http
-        .viewStudent({ urlParams: { id: editId.value } })
-        .then((res:any) => {
-          Object.keys(res.data).forEach((v: any) => {
-            if (v in formState) {
-              formState[v] = res.data[v];
-            }
-          });
-          formState.status = String(res.data.status);
-          formState.gender = String(res.data.gender === 2 ? 2 : 1);
-          formState.username = res.data.stu_no;
-        });
-      visible.value = true;
+    function editCard(val:any) {
+      // editId.value = val.id;
+      // http
+      //   .viewStudent({ urlParams: { id: editId.value } })
+      //   .then((res:any) => {
+      //     Object.keys(res.data).forEach((v: any) => {
+      //       if (v in formState) {
+      //         formState[v] = res.data[v];
+      //       }
+      //     });
+      //     formState.status = String(res.data.status);
+      //     formState.gender = String(res.data.gender === 2 ? 2 : 1);
+      //     formState.username = res.data.stu_no;
+      //   });
+      // visible.value = true;
     }
     function clearSearch() {
-      // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){
       ForumSearch.username = "";
       ForumSearch.name = "";
       ForumSearch.department = "";
       initData();
-      // }
     }
     function onChangePage(val: number) {
       const { query, path } = route;
       ForumSearch.page = val;
-      state.selectedRowKeys.length = 0;
+      // state.selectedRowKeys.length = 0;
       router.replace({
         path: path,
         query: { ...query, page: val },
@@ -687,42 +304,38 @@ const studentColumns = [
       initData();
     }
     function addStudent() {
-      editId.value = 0;
-      visible.value = true;
     }
     function fileBeforeUpload(file: any) {
-      // console.log(file)
-      // return
-      if (file && file.size === 0) {
-        message.warn("文件大小不能为空");
-        return false;
-      }
-      // loading.value=true
-      const fd = new FormData();
-      fd.append("file", file);
-      http.BatchImport({ param: fd }).then((res:any) => {
-        ImportData.finished = res.data.total.finished;
-        ImportData.unfinished = res.data.total.unfinished;
-        ImportData.list = res.data.msg;
-        message.success("导入完成");
-        initData();
-      });
-    }
-    function DownloadTemplate() {
-      const isDev = process.env.NODE_ENV == "development" ? true : false;
-      let url = isDev
-        ? "./public/template/student.xlsx"
-        : "./template/student.xlsx";
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "学生模板.xlsx";
-      a.click();
+    //   if (file && file.size === 0) {
+    //     message.warn("文件大小不能为空");
+    //     return false;
+    //   }
+    //   // loading.value=true
+    //   const fd = new FormData();
+    //   fd.append("file", file);
+    //   http.BatchImport({ param: fd }).then((res:any) => {
+    //     ImportData.finished = res.data.total.finished;
+    //     ImportData.unfinished = res.data.total.unfinished;
+    //     ImportData.list = res.data.msg;
+    //     message.success("导入完成");
+    //     initData();
+    //   });
+    // }
+    // function DownloadTemplate() {
+    //   const isDev = process.env.NODE_ENV == "development" ? true : false;
+    //   let url = isDev
+    //     ? "./public/template/student.xlsx"
+    //     : "./template/student.xlsx";
+    //   const a = document.createElement("a");
+    //   a.href = url;
+    //   a.download = "学生模板.xlsx";
+    //   a.click();
     }
     function ImportStudent() {
-      ImportData.list.length = 0;
-      ImportData.finished = 0;
-      ImportData.unfinished = 0;
-      ImportVisible.value = true;
+      // ImportData.list.length = 0;
+      // ImportData.finished = 0;
+      // ImportData.unfinished = 0;
+      // ImportVisible.value = true;
     }
     onMounted(() => {
       // initData();
@@ -740,10 +353,6 @@ const studentColumns = [
   cursor: pointer;
 }
 .header {
-  // display: flex;
-  // align-items: center;
-  // justify-content: space-between;
-  // padding: 0px 0 15px;
   .search {
     flex: 1;
     display: flex;
@@ -805,15 +414,6 @@ const studentColumns = [
 }
 :deep(.ant-radio-group) {
   display: flex;
-}
-.formBox {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  .left,
-  .right {
-    width: 46%;
-  }
 }
 :deep(.ant-form-item-with-help) {
   width: 100%;

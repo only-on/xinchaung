@@ -20,6 +20,15 @@ export default {
       },
     },
     {
+      path: "createTeacher",
+      component: () => import("src/views/adminModule/adminUserManagement/createTeacher.vue"),
+      meta: {
+        title:'创建教师',
+        icon: "",
+        authCode: "createTeacher",
+      },
+    },
+    {
       path: "studentManagement",
       component: () => import("src/views/adminModule/adminUserManagement/studentManagement.vue"),
       meta: {
@@ -27,6 +36,15 @@ export default {
         icon: "",
         authCode: "studentManagement",
       },
-    }
+    },
+    {
+      path: "createStudent",
+      component: () => import("src/views/adminModule/adminUserManagement/createStudent.vue"),
+      meta: {
+        title:'创建学生',
+        icon: "",
+        authCode: "createStudent",
+      },
+    },
   ]
 }

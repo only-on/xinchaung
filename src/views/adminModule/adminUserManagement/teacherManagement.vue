@@ -17,20 +17,12 @@
           @keyup.enter="search()"
         />
       </div>
-      
-      <!-- <div class="item">
-        <a-button type="primary" @click="search()">查询</a-button>
-        <a-button type="primary" @click="clearSearch()">清空</a-button>
-      </div> -->
     </div>
-   
-      <!-- <a-button @click="addTeacher()" type="primary">添加教师</a-button> -->
       <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
       <a-button class="addTeacher" @click="batchImport()" type="primary">批量重置密码</a-button>
       <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
   </div>
   <a-config-provider>
-    <!-- :renderEmpty="customizeRenderEmpty" -->
     <a-table
       :columns="columns"
       :loading="loading"
@@ -91,7 +83,6 @@
             />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
-            <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
             <a-input-password
               v-model:value="formState.password_hash"
               :disabled="InputPassword"
@@ -99,7 +90,6 @@
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
-            <!-- <a-input v-model:value="formState.repassword" :disabled="InputPassword" /> -->
             <a-input-password
               v-model:value="formState.repassword"
               :disabled="InputPassword"
@@ -237,26 +227,22 @@ const columns = [
   {
     title: "性别",
     dataIndex: "genderText",
-    align: "center",
-    // width:260
+    align: "center"
   },
   {
     title: "所属院系",
     dataIndex: "department",
-    align: "center",
-    // width:160
+    align: "center"
   },
   {
     title: "研究方向",
     dataIndex: "direct",
-    align: "center",
-    // width:260
+    align: "center"
   },
   {
     title: "主讲课程",
     dataIndex: "course",
-    align: "center",
-    // width:260
+    align: "center"
   },
   {
     title: "邮箱",
@@ -303,17 +289,6 @@ const columns = [
     var state: TState = reactive({
       selectedRowKeys: []
     });
-    // const customizeRenderEmpty = function (){
-    //   if (loading.value) {
-    //     return <template></template>;
-    //   } else {
-    //     let type =
-    //       ForumSearch.username || ForumSearch.name
-    //         ? "tableSearchEmpty"
-    //         : "tableEmpty";
-    //     return <empty type={type} />;
-    //   }
-    // };
     var ForumSearch: IforumSearch = reactive({
       username: "",
       pageSize: 10,
@@ -423,13 +398,9 @@ const columns = [
       return sign;
     });
     function  onSelectChange(selectedRowKeys:any, selectedRows:any){
-        // console.log('RowKeys changed: ', selectedRowKeys);
-        // console.log('selectedRows: ', selectedRows);
         state.selectedRowKeys = selectedRowKeys
-        // state.selectedRows = selectedRows;
       }
     function initData() {
-      // console.log(ForumSearch)
       loading.value = true;
       list.length = 0;
       let obj = {
@@ -453,7 +424,6 @@ const columns = [
           list.push(...data);
           total.value = res.data.page.totalCount;
         }
-        // console.log(list)
       });
     }
     function search() {
@@ -505,7 +475,6 @@ const columns = [
       });
     }
     function submit() {
-      // createTeacher
       formRef.value.validate().then(() => {
         const {
           username,
