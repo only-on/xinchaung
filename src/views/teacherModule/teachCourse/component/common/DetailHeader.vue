@@ -9,7 +9,7 @@
         <div class="titleBox flexCenter">
           <div class="title">{{info.name}}</div>
           <!-- class = endState -->
-          <div class="state" v-if="isShowCourseDetail">{{`${['已结束','未开始','进行中'][info.state-1]}`}}</div>
+          <div class="state" v-if="isShowState">{{`${['已结束','未开始','进行中'][info.state-1]}`}}</div>
         </div>
         <div class="info">
           <div class="details flexCenter">
@@ -46,7 +46,7 @@
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="name flexCenter" v-if="(Number(currentTab) === 1 && role===3) || role===4">
               <div class="chart"></div>
-              <div class="userName">{{info.user_name}}</div>
+              <div class="userName">{{info.user_name?info.user_name:info.teacher}}</div>
             </div>
             <div class="tags">
               <!-- <span>标签1/标签2/</span> -->
@@ -156,6 +156,13 @@ const selectTab=(v:any)=>{
 const isShowCourseDetail=computed(()=>{
   let flag=false
   if((currentTab && Number(currentTab) === 0) && role === 3){
+    flag=true
+  }
+  return flag
+})
+const isShowState=computed(()=>{
+  let flag=false
+  if((role === 3 && Number(currentTab) === 0) || role === 4){
     flag=true
   }
   return flag

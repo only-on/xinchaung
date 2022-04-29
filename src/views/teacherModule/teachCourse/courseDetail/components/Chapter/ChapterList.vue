@@ -43,7 +43,7 @@
                   <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
-                  <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'教辅':'指导'}`}}</span>
+                  <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}</span>
                 </div>
                 <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
                   <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
@@ -109,6 +109,7 @@ let isWsConnect = computed({
   }
 })
 const http=(request as any).teachCourse
+const studentHttp=(request as any).studentCourse
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
@@ -334,13 +335,14 @@ function prepare(a:any, i: number) {
 function ViewExperiment(a:any,v:any){
   console.log(a)
   a.openGuidance=!a.openGuidance
+  state.activeExperimentObj={...a}
   if(a.openGuidance){
     if(!a.TeachingAids){
       selectExperiment(a,v)
       getExperimentGuide(a.content_id,a)
     }else{
       console.log('教辅')
-      state.activeExperimentObj={...a}
+      a.experimentGuideLoading=false
     }
   }
 }
@@ -353,9 +355,6 @@ const getExperimentGuide=(id:number,a:any)=>{
     state.activeExperimentObj.Newguidance=data
     if(data.task_type === 6){
       state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
-    }
-    if(data.task_type === 7){
-      // state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
     }
     a.experimentGuideLoading=false
   })
@@ -445,15 +444,8 @@ const deleteExperiment=(v:any,a:any)=>{
   });
   // emit('deleteExperiment',obj)
 }
-var chartLoading: Ref<boolean> = ref(false);
-var ChaptersTreeList:any=reactive([])
-const getChaptersTree=()=>{
-  chartLoading.value=true
-  ChaptersTreeList.length=0
-  http.getChaptersTree({urlParams:{courseId:props.courseId}}).then((res:any)=>{
-    const {data}=res
-    chartLoading.value=false
-    let obj={5:'备课资料',6:'教学指导',3:'课件'}
+const ProcessingData=(data:any)=>{
+  let obj={5:'备课资料',6:'教学指导',3:'课件'}
     if(data.length){
       let item:any=data[0]
       let index:number=0
@@ -501,13 +493,34 @@ const getChaptersTree=()=>{
       }
       data[index].openItem=true
     }
-    // console.log(data)
     ChaptersTreeList.push(...data)
+}
+var chartLoading: Ref<boolean> = ref(false);
+var ChaptersTreeList:any=reactive([])
+const getChaptersTree=()=>{
+  chartLoading.value=true
+  ChaptersTreeList.length=0
+  http.getChaptersTree({urlParams:{courseId:props.courseId}}).then((res:any)=>{
+    const {data}=res
+    chartLoading.value=false
+    ProcessingData(data)
+  })
+}
+function StudentChaptersTree(course_student_id:number){
+  studentHttp.StudentChaptersTree({urlParams:{course_student_id:course_student_id}}).then((res:IBusinessResp)=>{
+    const {data}=res
+    ProcessingData(data)
   })
 }
 onMounted(() => {
-  if(props.courseId){
+  if(props.courseId && role === 3){
     getChaptersTree()
+  }
+  if(role === 4){
+    const { course_student_id} = route.query;
+    // console.log(course_student_id)
+    StudentChaptersTree(Number(course_student_id))
+    // studentHttp
   }
   // if(Number(currentTab) === 1) {
   //   connectEnv().then(() => {

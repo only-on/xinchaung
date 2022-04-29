@@ -2,9 +2,11 @@ import { RESP_AUTH_FAILURE, RESP_SUCCESS } from 'src/api/index';
 import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from 'src/typings/fetch';
 import store from "src/store/index";
 import { message } from 'ant-design-vue';
-import ls from "src/utils/extStorage"
-import { useRouter,useRoute } from 'vue-router';
+import extStorage from "src/utils/extStorage";
+import { useRouter, useRoute } from "vue-router";
+const { lStorage } = extStorage;
 const router = useRouter();
+
 // 检查是否为对象
 function isObject(value: any) {
   return Object.prototype.toString.call(value) === "[object Object]";
@@ -157,9 +159,19 @@ export default function request({
         // console.log(res);
         if (res.code === RESP_SUCCESS || res.code === 200 || res.status === 1) {
           // message.success('成功');
+
+          // setTimeout(()=>{
+          //   // message.warning('超时');
+          //   // console.log(router)
+          //   // let url = `${window.origin}/login`;
+          //   // console.log(url);
+          //   // window.location.href = url;
+          //   // router.replace({ path: "/login" }).catch(() => {});
+          // },3000)
           resolve(res);
         } else if (res.code === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
-          store.commit("logout");
+          // store.commit("logout");
+          lStorage.clean();
           message.warning(res.msg);
           router.replace({ path: "/login" }).catch(() => {});
         } else {

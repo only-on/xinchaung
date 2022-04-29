@@ -52,7 +52,8 @@ onMounted(() => {
       justify-content: space-between;
       line-height: 50px;
       .user{
-        width: 50%;
+        // width: 50%;
+        flex:1;
         justify-content: space-between;
       }
       .rank{
@@ -86,8 +87,10 @@ onMounted(() => {
       }
       .name{
         color: var(--black-65);
+        width: 70px;
       }
       .progress{
+        width: 100px;
         color: var(--black-45);
       }
     }
