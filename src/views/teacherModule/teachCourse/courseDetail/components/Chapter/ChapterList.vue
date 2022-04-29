@@ -42,6 +42,7 @@
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
                   <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
+                  <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}</span>
                 </div>
@@ -332,6 +333,36 @@ function prepare(a:any, i: number) {
     return
   }
 }
+// 重修
+const rebuild = (a: any) => {
+  const { id } = a
+  const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
+  const param: any = {
+    type: "course",  // 实验
+    opType: "rebuild",
+    taskId: id,
+    experType: task_type
+  };
+  // 文档视频实验
+  if (task_type === 6 || task_type === 7 || task_type === 3) {
+    
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
+  }
+  toVmConnect(router, param, routeQuery).then((res: any) => {
+    // a.startup=3
+  })
+}
+
 function ViewExperiment(a:any,v:any){
   console.log(a)
   a.openGuidance=!a.openGuidance

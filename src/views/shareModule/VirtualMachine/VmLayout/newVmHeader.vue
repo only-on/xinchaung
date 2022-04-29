@@ -12,7 +12,7 @@
       <div class="class-test pointer" @click="openQuizModal" v-if="role == 4">
         <span>随堂测试</span>
         <span>({{ answerNum + "/" + oldQuizPaperList.length }})</span>
-        <i class="sign" v-if="answerNum"></i>
+        <i class="sign" v-if="answerNum !== oldQuizPaperList.length"></i>
       </div>
     </div>
     <div class="center-box">
@@ -248,6 +248,7 @@
       >s后自动结束实验！;
     </div>
   </a-modal>
+  <!-- 随堂测试 -->
   <a-modal
     v-model:visible="quizVisiable"
     title="随堂测试"
@@ -1202,15 +1203,15 @@ function submitQuiz() {
     params.answer.push(answer);
   }
 
-  // examApi.submitAnswerApi({ param: params }).then(async (res: any) => {
-  //   message.success("提交成功");
-  //   let questionTemp: any[] = await getQuestionList(true);
-  //   quizPaperList.value = questionTemp.filter((item: any) => {
-  //     return currentQuestionIds.includes(item.id);
-  //   });
-  //   currentShowType.value = 1;
-  //   currentQuestionIds=[]
-  // });
+  vmApi.submitAnswerApi({ param: params }).then(async (res: any) => {
+    message.success("提交成功");
+    let questionTemp: any[] = await getQuestionList(true);
+    quizPaperList.value = questionTemp.filter((item: any) => {
+      return currentQuestionIds.includes(item.id);
+    });
+    currentShowType.value = 1;
+    currentQuestionIds=[]
+  });
 }
 
 // 取消随堂测试
