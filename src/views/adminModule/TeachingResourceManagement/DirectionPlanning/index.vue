@@ -70,7 +70,6 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import logicDiagram from "src/views/teacherModule/knowledgeMap/index.vue";
-import { any } from "vue-types";
 import { CheckOutlined, EditOutlined } from "@ant-design/icons-vue";
 import { cloneDeep } from "lodash";
 const router = useRouter();

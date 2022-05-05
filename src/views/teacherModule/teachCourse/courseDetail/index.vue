@@ -133,10 +133,10 @@
         <span>任务制实验步骤</span>
         <a-switch v-model:checked="steupFormState.is_show_task_step" />
       </div>
-      <div class="item flexCenter">
+      <!-- <div class="item flexCenter">
         <span>实验报告是否显示</span>
         <a-switch v-model:checked="steupFormState.is_show_content_report" />
-      </div>
+      </div> -->
       <div class="item flexCenter">
         <span>更换实验报告</span>
         <a-button type="primary" @click="changeReport()" size="small"> 选择 </a-button>

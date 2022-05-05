@@ -29,11 +29,7 @@
       <template></template>
     </a-table>
     <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
-      <template #itemRender="{ page, type, originalElement }">
-        <a v-if="type === 'prev'">上一页</a>
-        <a v-else-if="type === 'next'">下一页</a>
-        <renderVNode v-else :vnode="originalElement"></renderVNode>
-      </template>
+      
     </a-pagination>
 
     <div class="footer">
