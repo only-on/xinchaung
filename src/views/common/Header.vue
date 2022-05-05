@@ -96,7 +96,7 @@ export default defineComponent({
     const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
     const { lStorage } = extStorage;
-    const role = lStorage.get("role");
+    const role = lStorage.get("role") || 3;
     const List = {
       1: "",
       2: adminUserImg,
@@ -447,21 +447,21 @@ export default defineComponent({
         .then(() => {
           helpInfoList.value.splice(index, 1);
         });
-      createExamples(params).then((res: any) => {
-        if (res.status == 1) {
-          router.push({
-            path: "/vm/vnc",
-            query: {
-              connection_id: res.data.connection_id,
-              opType: "help",
-              type: val.study_type,
-              taskId: val.taskId,
-              topoinst_uuid: res.data.topoinst_uuid,
-              topoinst_id: res.data.topoinst_id,
-            },
-          });
-        }
-      });
+      // createExamples(params).then((res: any) => {
+      //   if (res.status == 1) {
+      //     router.push({
+      //       path: "/vm/vnc",
+      //       query: {
+      //         connection_id: res.data.connection_id,
+      //         opType: "help",
+      //         type: val.study_type,
+      //         taskId: val.taskId,
+      //         topoinst_uuid: res.data.topoinst_uuid,
+      //         topoinst_id: res.data.topoinst_id,
+      //       },
+      //     });
+      //   }
+      // });
     }
     onBeforeRouteLeave(()=>{
       longWs?.close()

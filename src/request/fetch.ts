@@ -4,7 +4,6 @@ import store from "src/store/index";
 import { message } from 'ant-design-vue';
 import extStorage from "src/utils/extStorage";
 import router from "src/routers";
-console.log(router)
 const { lStorage } = extStorage;
 
 // 检查是否为对象
@@ -160,7 +159,6 @@ export default function request({
         if (res.code === RESP_SUCCESS || res.code === 200 || res.status === 1) {
           resolve(res);
         } else if (res.code === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
-          store.commit("logout");
           lStorage.clean();
           message.warning(res.msg);
           router.replace({ path: "/login" }).catch(() => {});

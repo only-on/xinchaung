@@ -1,6 +1,10 @@
-import request from "src/request/getRequest";
 import { message, Modal } from "ant-design-vue";
-const vmApi = request.vmApi;
+// import request from "src/request/getRequest";
+// const vmApi = request.vmApi;
+
+
+import request from 'src/api/index'
+const vmApi=(request as any).vmApi
 
 export type TStudyType = "course" | "train"; // 学习类别：course:课程实验/实训；train:实训
 export type TopType =
