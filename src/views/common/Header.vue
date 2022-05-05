@@ -435,20 +435,19 @@ export default defineComponent({
         opType: "help",
         study_id: val.study_id,
       };
-      vmApi
-        .updateReadStatusApi({
-          param: {
-            action: "read",
-            params: {
-              id: val.id,
-            },
+      vmApi.updateReadStatusApi({
+        param: {
+          action: "read",
+          params: {
+            id: val.id,
           },
-        })
-        .then(() => {
-          helpInfoList.value.splice(index, 1);
-        });
-      createExamples(params).then((res: any) => {
-        if (res.status == 1) {
+        },
+      })
+      .then(() => {
+        helpInfoList.value.splice(index, 1);
+      });
+      vmApi.createExamples({ param: params }).then((res: any) => {
+        if (res.status === 1) {
           router.push({
             path: "/vm/vnc",
             query: {
@@ -461,7 +460,7 @@ export default defineComponent({
             },
           });
         }
-      });
+      })
     }
     onBeforeRouteLeave(()=>{
       longWs?.close()
