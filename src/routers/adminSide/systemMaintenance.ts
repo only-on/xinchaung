@@ -12,7 +12,7 @@ export default {
     children: [
         {
             path: "diskManagement",
-            name: "",
+            name: "diskManagement",
             component: () => import("src/views/adminModule/systemMaintenance/diskManagement/index.vue"),
             meta: {
                 title:`磁盘管理`,
@@ -21,7 +21,7 @@ export default {
         },
         {
             path: "systemAuthorization",
-            name: "",
+            name: "systemAuthorization",
             component: () => import("src/views/adminModule/systemMaintenance/systemAuthorization/index.vue"),
             meta: {
                 title:`系统授权`,
@@ -30,19 +30,19 @@ export default {
         },
         {
             path: "personalization",
-            name: "",
+            name: "personalization",
             component: () => import("src/views/adminModule/systemMaintenance/personalization/index.vue"),
             meta: {
-                title:`系统授权`,
+                title:`个性化设置`,
                 authCode: ''
             },
         },
         {
             path: "userloginInformation",
-            name: "",
+            name: "userloginInformation",
             component: () => import("src/views/adminModule/systemMaintenance/userloginInformation/index.vue"),
             meta: {
-                title:`系统授权`,
+                title:`用户登录信息`,
                 authCode: ''
             },
         }

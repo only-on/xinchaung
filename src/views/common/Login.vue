@@ -105,11 +105,11 @@ const login = () => {
           lStorage.set("uid", res!.data.uid);
           lStorage.set("username", res!.data.username);
           if (res!.data.role === 2) {
-            router.push("/admin");
+            router.replace("/admin");
           } else if (res!.data.role === 3) {
-            router.push("/teacher");
+            router.replace("/teacher");
           } else if (res!.data.role === 4) {
-            router.push("/student");
+            router.replace("/student");
           }
           submitLoading.value = false;
         })

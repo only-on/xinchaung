@@ -239,9 +239,19 @@ export default defineComponent({
         }
       ]
     }
-    //教学资源管理
+    // 管理端首页
+    let adminHome={
+      icon: "",
+      id: 119,
+      name: "首页",
+      parent_id: 0,
+      sort: 89,
+      url: "/admin/home",
+      children: [],
+    }
+    //管理端 教学资源管理
     let TeachingResourceManagement={
-       icon: "",
+      icon: "",
       id: 175,
       name: "教学资源管理",
       parent_id: 0,
@@ -295,6 +305,102 @@ export default defineComponent({
         },
       ],
     }
+    // 管理端系统维护
+    let systemMaintenance={
+      icon: "",
+      id: 135,
+      name: "系统维护",
+      parent_id: 0,
+      sort: 5,
+      url: "",
+      children:[
+        {
+          children: [],
+          icon: "",
+          id: 1135,
+          name: "磁盘管理",
+          parent_id: 131,
+          sort: 1,
+          url: "/admin/systemMaintenance/diskManagement",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1136,
+          name: "系统授权",
+          parent_id: 132,
+          sort: 1,
+          url: "/admin/systemMaintenance/systemAuthorization",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1137,
+          name: "个性化设置",
+          parent_id: 133,
+          sort: 1,
+          url: "/admin/systemMaintenance/personalization",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1138,
+          name: "用户登录信息",
+          parent_id: 162,
+          sort: 1,
+          url: "/admin/systemMaintenance/userloginInformation",
+        },
+      ]
+    }
+    // 管理管交流预约
+    let adminForum={
+      children: [],
+      icon: "",
+      id: 169,
+      name: "交流预约",
+      parent_id: 0,
+      sort: 9,
+      url: "/teacher/teacherForum",
+    }
+    //管理端用户管理
+    let adminUserManagement={
+      icon: "",
+      id: 135,
+      name: "用户管理",
+      parent_id: 0,
+      sort: 5,
+      url: "",
+      children:[
+        {
+          children: [],
+          icon: "",
+          id: 1135,
+          name: "教师管理",
+          parent_id: 131,
+          sort: 1,
+          url: "/admin/adminUserManagement/teacherManagement",
+        },
+        {
+          children: [],
+          icon: "",
+          id: 1135,
+          name: "学生管理",
+          parent_id: 131,
+          sort: 1,
+          url: "/admin/adminUserManagement/studentManagement",
+        },
+      ]
+    }
+    //管理管资源预约-排课
+    let coursePlan={
+      icon: "",
+      id: 135,
+      name: "资源预约",
+      parent_id: 0,
+      sort: 5,
+      url: "/teacher/coursePlan",
+      children: [],
+    }
     //  学生课程
     let studentCourse={
       icon: "",
@@ -317,7 +423,7 @@ export default defineComponent({
     }
     let arr:any={
       1:[],
-      2:[TeachingResourceManagement],
+      2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,adminForum],
       3:[center,material,teacherCourse,forum],
       4:[statistics,forum,studentCourse]
     }[role]
