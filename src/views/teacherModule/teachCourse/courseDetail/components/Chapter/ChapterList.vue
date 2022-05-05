@@ -38,9 +38,15 @@
               </div>
               <div class="TitRight">
                 <div v-if="props.Editable === 'canStudy'">
+                  <!-- <span v-if="a.studys">{{a.studys[0].status}}---{{a.studys[0].topoinst_id}}</span> -->
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
-                  <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
+                  <!-- <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
+                  @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
+                  <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
+                  <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
+                  <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
+                  <a-button v-else-if="a.studys" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
@@ -333,13 +339,13 @@ function prepare(a:any, i: number) {
     return
   }
 }
-// 重修
-const rebuild = (a: any) => {
+// 进入
+const openVm = (a: any, opType: string) => {
   const { id } = a
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: "rebuild",
+    opType: opType,
     taskId: id,
     experType: task_type
   };

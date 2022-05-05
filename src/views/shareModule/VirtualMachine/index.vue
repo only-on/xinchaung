@@ -110,7 +110,7 @@ provide("novncEl", ref(null)); // novnc的Vue实例
 provide("currentUuid", ref("")); // 当前uuid
 provide("use_time", ref(0)); // 使用时间
 provide("taskType", ref("")); // 当前实验类型
-provide("sshUrl", ""); // ssh 实验url
+provide("sshUrl", ref("")); // ssh 实验url
 provide("currentInterface", ref("vnc")); // 当前是webssh链接还是vnc链接，值：vnc、ssh
 provide("initVnc", ref(null)); // 初始换虚拟机链接
 provide("ws", ref(null)); // 当前ws实例

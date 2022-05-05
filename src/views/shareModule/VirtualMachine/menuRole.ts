@@ -108,7 +108,7 @@ export default getMenuRole
 
 /**
  * @description 实验类型
- * @param 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
+ * @param 1:vnc 2:命令行 3:webide   4:jupyter 5:任务制 6:视频 7:文档
  */
 export const experimentTypeList = {
     1: { name: 'vnc' },

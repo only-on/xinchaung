@@ -11,7 +11,7 @@ export const getVmConnectSetting:VmConnectSetting={
     VNCPASS:'vncpassword',
     VNCPORT:"8888",
     VNCPROTOC:'ws',
-    SSHHOST:isDev?'http://192.168.101.150':location.protocol+"//"+location.hostname
+    SSHHOST:isDev?'http://192.168.101.221':location.protocol+"//"+location.hostname
 }
 
 export default {

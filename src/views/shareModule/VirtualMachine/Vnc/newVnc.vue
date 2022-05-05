@@ -1,7 +1,7 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right
-      >{{ sshUrl }}
+      >
       <template v-if="currentInterface === 'ssh'">
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
@@ -192,6 +192,7 @@ function initWs() {
               currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
               currentUuid.value = currentVm.value.uuid;
               setTimeout(() => {
+                console.log(sshUrl)
                 sshUrl.value =
                   getVmConnectSetting.SSHHOST +
                   ":2222/ssh/host/" +
@@ -297,7 +298,7 @@ function initWs() {
         }else if (wsJsonData.type=="switch_success") {
           message.success("切换成功")
           currentInterface.value = "vnc";
-            baseInfo.value = wsJsonData;
+            vmsInfo.value = wsJsonData;
               settingCurrentVM(
                 wsJsonData.data.vms[currentVmIndex.value]
               );
