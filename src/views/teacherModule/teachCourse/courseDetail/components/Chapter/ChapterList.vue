@@ -550,6 +550,7 @@ function StudentChaptersTree(course_student_id:number){
   })
 }
 onMounted(() => {
+  console.log(props.courseId)
   if(props.courseId && role === 3){
     getChaptersTree()
   }
