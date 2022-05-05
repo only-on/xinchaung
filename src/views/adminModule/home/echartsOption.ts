@@ -161,7 +161,7 @@ function dashboardResource(data:any,color:any){
         showAbove:false,
         width:8,
         offsetCenter: [-3, -24],
-        length: "20%"
+        length: "14%"
         },
         axisLine: {
           lineStyle: {
@@ -200,18 +200,27 @@ function dashboardResource(data:any,color:any){
           }
         },
         title: {
-          show: false
+          show:true,
+          offsetCenter: [0, "-10%"],
+          fontSize:14
         },
         detail: {
           valueAnimation: true,
           fontSize:10,
-          offsetCenter: [0, '0%'],
-          formatter:function (value:any) {
-            return '剩余'+`\n`+value+'G'
+          fontWeight: "bolder",
+          offsetCenter: [0, '20%'],
+          // formatter:function (value:any) {
+          //   return `${value}G`
+          // },
+          formatter: "{value}G",
+          rich: {
+            "<style_name>": {
+              align: "left"
+            }
           }
         },
         data: [
-          {
+          { name:'剩余',
             value: 70
           }
         ]
@@ -287,7 +296,7 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            return value+'G'
+            return value+'G/'+100+'G'
           }
         },
         // return params[0].name + '<br>收缩压 : '+params[0].data +' mmHg'+ '<br>舒张压 : '+params[1].data +' mmHg'

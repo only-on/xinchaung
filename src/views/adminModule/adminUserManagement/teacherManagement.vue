@@ -18,6 +18,7 @@
         />
       </div>
     </div>
+    <a-button class="addTeacher" @click="createteacher()" type="primary">创建教师</a-button>
       <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
       <a-button class="addTeacher" @click="batchImport()" type="primary">批量重置密码</a-button>
       <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
@@ -550,6 +551,9 @@ const columns = [
           formState.username = res.data.stu_no;
         });
       visible.value = true;
+    }
+    function createteacher(){
+      router.push({path: '/admin/adminUserManagement/createTeacher'});
     }
     async function clearSearch() {
       // if(ForumSearch.username || ForumSearch.name || ForumSearch.department){

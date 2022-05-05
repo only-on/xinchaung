@@ -60,7 +60,7 @@
       </div>
         </a-form>
         <div class="bottomBtn">
-            <a-button class="cancel">取消</a-button>
+            <a-button class="cancel" @click="cancelSave">取消</a-button>
             <a-button type='primary' @click="saveInformation">保存</a-button>
         </div>
     </div>
@@ -80,6 +80,8 @@
     } from "vue";
     import request from "src/api/index";
     import { useRouter, useRoute } from "vue-router";
+    const router = useRouter();
+    const route = useRoute();
      var updata = inject("updataNav") as Function;
         updata({
           tabs: [
@@ -158,10 +160,14 @@
         .then(() => {
           console.log('values', formState);
           message.success('验证成功！')
+          router.push({path: '/admin/adminUserManagement/teacherManagement'});
         })
         .catch((error:any) => {
           console.log('error', error);
         });
+    }
+    function cancelSave(){
+        router.push({path: '/admin/adminUserManagement/teacherManagement'});
     }
     </script>
 

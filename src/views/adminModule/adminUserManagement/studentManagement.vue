@@ -243,7 +243,7 @@ const columns = [
       });
     }
     function createStu(){
-
+      router.push({path: '/admin/adminUserManagement/createStudent'});
     }
     function batchResetPassword(){
 

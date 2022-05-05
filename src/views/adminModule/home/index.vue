@@ -59,10 +59,22 @@
             <div class="plate">
                 <div class="plateLeft"></div>
                 <div class="plateRight">
-                    <div id="plate1"></div>
-                    <div id="plate2"></div>
-                    <div id="plate3"></div>
-                    <div id="plate4"></div>
+                    <div>
+                        <div id="plate1"></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                    </div>
+                    <div>
+                        <div id="plate2"></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                    </div>
+                    <div>
+                        <div id="plate3"></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                    </div>
+                   <div>
+                        <div id="plate4"></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                   </div>   
                 </div>
             </div>
         </div>
@@ -449,10 +461,28 @@
     height: 100%;
     display: flex;
     padding-right: 100px;
+    .labelCon{
+       font-size: 18px; 
+       font-weight: bold;
+    }
+    .contentCon{
+        font-size: 16px;
+        margin-left: 10px;
+    }
+    >div{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        // background-color: yellow;
+    }
 }
 #plate1,#plate2,#plate3,#plate4{
-    width: 25%;
-    height: 100%;
+    width:100%;
+    height:60%;
+    // background-color: aqua;
 }
 .node{
     display: flex;
