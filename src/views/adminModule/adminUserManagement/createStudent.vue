@@ -42,14 +42,14 @@
           </a-form-item>
         </div>
         <div class="right">
-          <a-form-item label="班级" name="grade">
-            <a-input v-model:value="formState.grade" />
+          <a-form-item label="班级" name="class">
+            <a-input v-model:value="formState.class" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
             <a-input v-model:value="formState.grade" />
           </a-form-item>
-          <a-form-item label="专业" name="grade">
-            <a-input v-model:value="formState.grade" />
+          <a-form-item label="专业" name="major">
+            <a-input v-model:value="formState.major" />
           </a-form-item>
            <a-form-item label="学院" name="department">
             <a-input v-model:value="formState.department" />
@@ -63,6 +63,10 @@
         </div>
       </div>
     </a-form>
+      <div class="bottomBtn">
+            <a-button class="cancel">取消</a-button>
+            <a-button type='primary' @click="saveInformation">保存</a-button>
+      </div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -89,14 +93,15 @@ import { useRouter, useRoute } from "vue-router";
       componenttype: undefined,
       showNav:true,
     });
+    const formRef:any=ref()
     var editId:any = ref(0);
     const InputPassword = computed(() => {
       let sign = false;
-      if (editId.value) {
-        sign = formState.reset ? false : true;
-      } else {
-        sign = formState.userinitpassword ? true : false;
-      }
+      // if (editId.value) {
+      //   sign = formState.reset ? false : true;
+      // } else {
+      //   sign = formState.userinitpassword ? true : false;
+      // }
       return sign;
     });
     var formState:any= reactive({
@@ -107,7 +112,7 @@ import { useRouter, useRoute } from "vue-router";
       department: "",
       grade: "",
       name: "",
-      gender: "1",
+      gender:1,
       phone: "",
       email: "",
       status: "10",
@@ -132,6 +137,9 @@ import { useRouter, useRoute } from "vue-router";
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
       gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      class: [{ required: true, message: "请输入班级", trigger: "blur" }],
+      grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
+      major: [{ required: true, message: "请输入年级", trigger: "blur" }],
       email: [
         {
           pattern:
@@ -148,6 +156,17 @@ import { useRouter, useRoute } from "vue-router";
         },
       ],
     };
+    function saveInformation(){
+      formRef.value
+        .validate()
+        .then(() => {
+          console.log('values', formState);
+          message.success('验证成功！')
+        })
+        .catch((error:any) => {
+          console.log('error', error);
+        });
+    }
 </script>
 <style lang="less" scoped>
 .formBox {
@@ -162,4 +181,14 @@ import { useRouter, useRoute } from "vue-router";
 .createStudent {
     margin:100px;
 }
+.bottomBtn{
+        margin-top: 40px;
+        text-align: center;
+        .cancel{
+            margin-right: 20px;
+        }
+    }
+:deep(.ant-input){
+        border-radius: 20px;
+    }
 </style>

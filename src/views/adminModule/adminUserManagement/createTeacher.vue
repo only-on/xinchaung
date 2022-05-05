@@ -1,14 +1,14 @@
 <template>
         <div class="createStudent">
         <a-form
-      ref="formRef"
-      :model="formState"
-      :label-col="{ span: 10 }"
-      :wrapper-col="{ span: 24 }"
-      labelAlign="left"
-      :rules="rules"
-      layout='vertical'
-    >
+        ref="formRef"
+        :model="formState"
+        :label-col="{ span: 10 }"
+        :wrapper-col="{ span: 24 }"
+        labelAlign="left"
+        :rules="rules"
+        layout='vertical'
+        >
       <div class="formBox">
         <div class="left">
           <a-form-item label="账号" name="username">
@@ -34,10 +34,9 @@
               :visibilityToggle="false"
             />
           </a-form-item>
-          <a-form-item label="职称" name="username">
+          <a-form-item label="职称" name="professionalTitle">
             <a-input
-              v-model:value="formState.username"
-              :disabled="editId ? true : false"
+              v-model:value="formState.professionalTitle"
             />
           </a-form-item>
         </div>
@@ -59,7 +58,11 @@
           </a-form-item>
         </div>
       </div>
-    </a-form>
+        </a-form>
+        <div class="bottomBtn">
+            <a-button class="cancel">取消</a-button>
+            <a-button type='primary' @click="saveInformation">保存</a-button>
+        </div>
     </div>
 </template>
 <script lang="ts" setup>
@@ -90,45 +93,48 @@
       username: "",
       password_hash: "",
       repassword: "",
+      professionalTitle:'',
       userinitpassword: true,
       department: "",
       grade: "",
       name: "",
-      gender: "1",
+      gender: 1,
       phone: "",
       email: "",
       status: "10",
       introduce: "",
       reset: false,
     });
+    const formRef:any=ref()
     var editId:any = ref(0);
     const InputPassword = computed(() => {
       let sign = false;
-      if (editId.value) {
-        sign = formState.reset ? false : true;
-      } else {
-        sign = formState.userinitpassword ? true : false;
-      }
+    //   if (editId.value) {
+    //     sign = formState.reset ? false : true;
+    //   } else {
+    //     sign = formState.userinitpassword ? true : false;
+    //   }
       return sign;
     });
     const rules = {
       username: [
-        { required: true, message: "请输入学号", trigger: "blur" },
-        {
-          pattern: /^[_a-zA-Z0-9]{1,10}$/,
-          message: "学号应为字母或数字，长度不超过10",
-          trigger: "blur",
-        },
+        { required: true, message: "请输入账号", trigger: "blur" },
+        // {
+        //   pattern: /^[_a-zA-Z0-9]{1,10}$/,
+        //   message: "学号应为字母或数字，长度不超过10",
+        //   trigger: "blur",
+        // },
         // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
       ],
+      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
       password_hash: [
         { required: true, message: "请输入密码", trigger: "blur" },
       ],
       repassword: [
         { required: true, message: "请输入确认密码", trigger: "blur" },
       ],
-      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      professionalTitle:[{ required: true, message: "请输入职称", trigger: "blur" }],
+      department: [{ required: true, message: "请输入学院", trigger: "blur" }],
       email: [
         {
           pattern:
@@ -145,6 +151,18 @@
         },
       ],
     };
+
+    function saveInformation(){
+        formRef.value
+        .validate()
+        .then(() => {
+          console.log('values', formState);
+          message.success('验证成功！')
+        })
+        .catch((error:any) => {
+          console.log('error', error);
+        });
+    }
     </script>
 
 <style lang="less" scoped>
@@ -159,5 +177,15 @@
     }
     .createStudent {
         margin:100px;
+    }
+    .bottomBtn{
+        margin-top: 40px;
+        text-align: center;
+        .cancel{
+            margin-right: 20px;
+        }
+    }
+    :deep(.ant-input){
+        border-radius: 20px;
     }
     </style>
