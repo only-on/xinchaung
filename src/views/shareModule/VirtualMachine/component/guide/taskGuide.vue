@@ -9,19 +9,19 @@
       <a-button
         type="primary"
         size="small"
-        v-if="!currentTask.state"
+        v-if="!isLookStep&&!currentTask.state"
         @click="lookStep"
         >查看步骤</a-button
       >
     </div>
     <div class="content" :class="currentTask.state ? 'show-step' : ''">
-      <marked-editor v-model="currentTask.detail" :preview="preview" />
+      <marked-editor v-model="currentTask.summary" :preview="preview" />
     </div>
   </div>
-  <div class="step-content" v-if="currentTask.state">
+  <div class="step-content" v-if="isLookStep&&currentTask.state">
     <div class="title">任务步骤</div>
     <div class="content" :class="currentTask.state ? 'show-step' : ''">
-      <marked-editor v-model="currentTask.summary" :preview="preview" />
+      <marked-editor v-model="currentTask.detail" :preview="preview" />
     </div>
   </div>
   <div class="btns">
@@ -42,7 +42,7 @@
 </template>
 
 <script lang="ts" setup>
-import { defineComponent, inject, ref, computed, reactive } from "vue";
+import { defineComponent, inject, ref, computed, reactive, watch } from "vue";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { Modal } from "ant-design-vue";
 import { stepAction } from "src/utils/vncInspect";
@@ -65,40 +65,52 @@ console.log(opType, taskId, type, topoinst_id);
 
 const preview = true;
 const currentTaskIndex: any = ref(0); // 当前任务索引
-let allInfo: any = inject("allInfo");
-const taskList: any = reactive([
-  {
-    detail:
-      "dasdasd\nfhfhkfhh^hkghk^**fdfghdfghdfh# dfgb xdgsdsdg**\n++fghdfghdfghd++~~dfghsertgvsdfg~~",
-    id: 50000,
-    name: "task1",
-    state: 0,
-    summary: "task1",
-  },
-  {
-    detail:
-      "dasdasd\nfhfhkfhh^hkghk^**fdfghdfghdfh# dfgb xdgsdsdg**\n++fghdfghdfghd++~~dfghsertgvsdfg~~dasdasd\nfhfhkfhh^hkghk^**fdfghdfghdfh# dfgb xdgsdsdg**\n++fghdfghdfghd++~~dfghsertgvsdfg~~dasdasd\nfhfhkfhh^hkghk^**fdfghdfghdfh# dfgb xdgsdsdg**\n++fghdfghdfghd++~~dfghsertgvsdfg~~",
-    id: 50001,
-    name: "task2",
-    state: 0,
-    summary: "task2",
-  },
-]);
+const isLookStep = ref(0);
+let baseInfo: any = inject("baseInfo");
+const taskList: any = reactive([]);
 const currentTask: any = ref({});
-Object.assign(currentTask.value, taskList[currentTaskIndex.value]);
+// Object.assign(currentTask.value, taskList[currentTaskIndex.value]);
 console.log(currentTask.value, taskList[currentTaskIndex.value]);
 const steps: any = ref({});
 
 // 上一个任务
-const preTask = () => {
+const preTask = async () => {
+  await submitStepAction()
   currentTaskIndex.value--;
-  Object.assign(currentTask.value, taskList[currentTaskIndex.value]);
+  currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
+  getStepStatus(currentTask.value.id)
 };
 // 下一个任务
-const nextTask = () => {
+const nextTask = async () => {
+  console.log(baseInfo.value.base_info.step)
+  await submitStepAction()
   currentTaskIndex.value++;
-  Object.assign(currentTask.value, taskList[currentTaskIndex.value]);
+  currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
+  console.log(taskList)
+  getStepStatus(currentTask.value.id)
 };
+function submitStepAction() {
+  return new Promise((resolve:any,rejects:any)=>{
+    let params = {
+      opType: opType,
+      type: type,
+      taskId: taskId,
+      action: "stepScore",
+      topoinst_id: topoinst_id,
+      task_step_id: currentTask.value.id,
+      see_current_step: 0,
+    };
+    stepAction(params).then((res:any) => {
+      resolve()
+    });
+  })
+}
+// 获取当前步骤状态
+function getStepStatus(stepId: any) {
+  let i = findIndex(baseInfo.value.current_step, { task_step_id: stepId });
+  isLookStep.value =
+    i != -1 ? baseInfo.value.current_step[i].is_see_step : 0;
+}
 
 // 查看步骤
 function lookStep() {
@@ -108,30 +120,34 @@ function lookStep() {
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
-      currentTask.value.state = 1;
+      // currentTask.value.state = 1;
       let params = {
         opType: opType,
         type: type,
         taskId: taskId,
         action: "stepScore",
         topoinst_id: topoinst_id,
-        task_step_id: steps.value.id,
+        task_step_id: currentTask.value.id,
         see_current_step: 1,
       };
       stepAction(params).then((res:any) => {
-        let i = findIndex(allInfo.value.current_step, {
+        let i = findIndex(baseInfo.value.current_step, {
           task_step_id: steps.value.id,
         });
+        currentTask.value.state = 1;
+        isLookStep.value = 1
         if (i != -1) {
-          allInfo.value.current_step[i].is_see_step = 1;
-          currentTask.value.state = 1;
+          baseInfo.value.current_step[i].is_see_step = 1;
         } else {
-          allInfo.value.current_step.push({
+          baseInfo.value.current_step.push({
             task_step_id: steps.value.id,
             is_see_step: 1,
           });
-          currentTask.value.state = 1;
+          // currentTask.value.state = 1;
         }
+      }).catch(() => {
+        currentTask.value.state = 1;
+        isLookStep.value = 1
       });
     },
     onCancel: () => {
@@ -139,6 +155,18 @@ function lookStep() {
     },
   });
 }
+watch(
+  () => baseInfo.value.base_info,
+  () => {
+    console.log(baseInfo.value.base_info);
+    if (baseInfo.value.base_info) {
+      taskList.length = 0
+      currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
+      taskList.push(...baseInfo.value.base_info.step)
+    }
+  },
+  { deep: true, immediate: true }
+);
 </script>
 
 <style lang="less" scoped>
