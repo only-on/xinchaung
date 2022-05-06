@@ -8,7 +8,7 @@ import { ITeacherForum } from "src/api/teacher/teacherForum";
 import { ICommonAps } from "src/api/modules/common";
 import { ITeacherCourseApis } from "src/api/teacher/teachCourse";
 import { IStudentCourse } from "src/api/student/studentCourse";
-
+import { ITeachingResourceManagement } from "src/api/admin/TeachingResourceManagement";
 // import { IPersonalInformationlAps } from "src/api/modules/personalInformation";
 // import { ITeacherTrainAps } from "src/api/modules/teacherTrain";
 // import { ICourseTreeApis } from "src/api/modules/courseTree";
@@ -92,4 +92,6 @@ export interface IApiCollection {
   teacherExperimentResourcePool: ITeacherExperimentResourcePool;
   teacherMaterialResource: ITeacherMaterialResource;
   teacherImageResourcePool:ITeacherImageResourcePool
+
+  TeachingResourceManagement:ITeachingResourceManagement
 }

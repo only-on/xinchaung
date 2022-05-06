@@ -1,35 +1,35 @@
 <template>
   <div class="courseManagement">
     <div class="Statistics flexCenter">
-      <div class="item"></div>
+      <div class="item">{{analysisObj}}</div>
       <div class="item item2">
         <h3 class="statisticalTitle">镜像类型</h3>
         <div class="progressBox flexCenter">
           <div class="progressItem progressItem1">
             <div class="text flexCenter">
               <span class="iconfont icon-cpu"></span>
-              <span class="num">79</span>
+              <span class="num">{{analysisObj.armImagesCount}}</span>
             </div>
             <div class="type">ARM</div>
           </div>
           <div class="progressItem progressItem2">
             <div class="text flexCenter">
               <span class="iconfont icon-docker"></span>
-              <span class="num">23</span>
+              <span class="num">{{analysisObj.dockerImagesCount}}</span>
             </div>
             <div class="type">Docker</div>
           </div>
           <div class="progressItem progressItem3">
             <div class="text flexCenter">
               <span class="iconfont icon-linux"></span>
-              <span class="num">145</span>
+              <span class="num">{{analysisObj.kvmLinuxImagesCount}}</span>
             </div>
             <div class="type">KVM-Linux</div>
           </div>
           <div class="progressItem progressItem4">
             <div class="text flexCenter">
               <span class="iconfont icon-windows"></span>
-              <span class="num">89</span>
+              <span class="num">{{analysisObj.kvmWindowImagesCount}}</span>
             </div>
             <div class="type">KVM-Windows</div>
           </div>
@@ -40,7 +40,7 @@
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">32%</span>
-            <span class="left2">300/1024</span>
+            <span class="left2">{{analysisObj.imageUsedDisk}}/1024</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
@@ -58,22 +58,24 @@
         <div class="left flexCenter">
           <div class="item">
             <span>镜像名称：</span>
-            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" />
+            <a-input v-model:value="searchInfo.imageName" placeholder="请输入关键字搜索" />
           </div>
           <div  class="item">
             <span>镜像所属：</span>
-            <a-select v-model:value="searchInfo.is_public" placeholder="请选择镜像所属">
+            <a-input v-model:value="searchInfo.imageGroup" placeholder="请输入镜像所属" />
+            <!-- <a-select v-model:value="searchInfo.imageGroup" placeholder="请选择镜像所属">
               <a-select-option :value="1">内置镜像</a-select-option>
               <a-select-option :value="0">教师镜像</a-select-option>
-            </a-select>
+            </a-select> -->
           </div>
           <div class="item">
             <span>镜像类型：</span>
-            <a-select v-model:value="searchInfo.state" placeholder="请选择镜像类型">
-              <a-select-option :value="0">ARM</a-select-option>
-              <a-select-option :value="2">Docker</a-select-option>
-              <a-select-option :value="3">KVM-Linux</a-select-option>
-              <a-select-option :value="1">KVM-Windows</a-select-option>
+            <a-select v-model:value="searchInfo.imageType" placeholder="请选择镜像类型">
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option value="ARM">ARM</a-select-option>
+              <a-select-option value="Docker">Docker</a-select-option>
+              <a-select-option value="KVM-Linux">KVM-Linux</a-select-option>
+              <a-select-option value="KVM-Windows">KVM-Windows</a-select-option>
             </a-select>
           </div>
         </div>
@@ -88,11 +90,8 @@
               :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #state="{ record }">
-                <div>{{`${['已结束','未开始','进行中'][record.state-1]}`  }}</div>
-              </template>
-              <template #is_public="{ record }">
-                <div>{{ record.is_public===1?'公开课程':'私有课程' }}</div>
+              <template #imageTags="{ record }">
+                <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
               </template>
             </a-table>
             <template #renderEmpty>
@@ -110,7 +109,7 @@ import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
-const httpTeachCourse = (request as any).teachCourse;
+const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "课程管理", componenttype: 0 }],
@@ -121,65 +120,70 @@ updata({
 const columns= [
         {
           title: "镜像名称",
-          dataIndex: "name",
+          dataIndex: "imageName",
           align: "left",
           ellipsis: true,
         },
         {
           title: "镜像所属",
-          dataIndex: "is_public",
+          dataIndex: "imageGroup",
           align: "center",
-          slots: { customRender: "is_public" },
         },
         {
           title: "镜像类型",
-          dataIndex: "user_name",
+          dataIndex: "imageType",
           align: "center",
         },
         {
           title: "镜像大小",
-          dataIndex: "state",
+          dataIndex: "imageSize",
           align: "center",
-          slots: { customRender: "state" },
         },
         {
           title: "镜像标签",
-          dataIndex: "content_total",
+          dataIndex: "imageTags",
           align: "center",
+          ellipsis: true,
+          slots: { customRender: "imageTags" },
         },
         {
           title: "镜像描述",
-          dataIndex: "class_total",
+          dataIndex: "imageDescription",
           align: "center",
+          ellipsis: true,
         },
       ]
 var searchInfo:any=reactive({
-  name:'',
-  is_public:1,
-  state:0,
-
+  imageName:'',
+  imageGroup:'',
+  imageType:'',
   page:1,
   limit:10,
-  selectedRowKeys:[]
+  selectedRowKeys:[],
+  analysis:{}
 })
 var loading: Ref<boolean> = ref(false);
 var courseList: any[] = reactive([{id:1}]);
 var totalCount: Ref<number> = ref(0);
+var analysisObj:any=reactive({})
 const initData = () => {
   const param:any={
-    ...searchInfo,
-    type:1,
-    // state:labelSearch.state?labelSearch.state:'',
+    'search[imageName]':searchInfo.imageName,
+    'search[imageGroup]':searchInfo.imageGroup,
+    'search[imageType]':searchInfo.imageType,
+    page:searchInfo.page,
+    limit:searchInfo.limit
   }
   loading.value = true;
   courseList.length = 0
-  httpTeachCourse.getCourseList({param:{...param}}).then((res: IBusinessResp) => {
+  http.list({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
-    const { list, page }  = res.data
+    const { list, page,analysis }  = res.data
     list.forEach((v: any) => {
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
+    Object.assign(analysisObj,analysis)
     courseList.push(...list)
     totalCount.value = page.totalCount
   })
@@ -216,6 +220,7 @@ onMounted(() => {
       width:590px;
       .progressBox{
         justify-content: space-between;
+        margin-top: 24px;
         .progressItem{
           width: 130px;
           height: 85px;
