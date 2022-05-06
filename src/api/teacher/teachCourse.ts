@@ -113,6 +113,9 @@ export default {
   openEnvirment: {url: `/api/operate/preCreates/create`, method:"POST", dataType:"json" },
   canAccessVm: {url: '/api/operate/envirments/can-access-vm', method: 'POST', dataType: 'json'},
   maxLimit: {url: `/api/operate/preCreates/max-limit`, method:"GET" },
+
+  // 课程树
+  coursesChaptersTree: { url: `  /api/course/courses/chapters/tree`, method: "GET" },
 }
 
 export interface ITeacherCourseApis {
@@ -148,4 +151,5 @@ export interface ITeacherCourseApis {
   openEnvirment: TFHttpSend
   canAccessVm: TFHttpSend
   maxLimit: TFHttpSend
+  coursesChaptersTree: TFHttpSend
 }

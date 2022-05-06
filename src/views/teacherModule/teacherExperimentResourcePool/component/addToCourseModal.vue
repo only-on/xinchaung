@@ -12,16 +12,18 @@
       @select="onSelect"
     >
       <!-- <template #icon><carry-out-outlined /></template> -->
-      <a-tree-node v-for="list in courseList" :key="list.id" :title="list.name">
+      <a-tree-node v-for="list in courseList" :key="list.id" :title="list.name" :courseId="list.id">
         <template #icon>
           <svg class="icon svg-icon" aria-hidden="true">
             <use xlink:href="#icon-kecheng1"></use>
           </svg>
         </template>
         <a-tree-node
-          v-for="item in list.content"
-          :title="item.name"
-          :key="item.id"
+          v-for="item in list.chapters"
+          :title="item.chapter_name"
+          :key="item.chapter_id"
+          :courseId="item.course_id"
+          :chapterId="item.chapter_id"
         >
           <template #icon>
             <svg class="icon svg-icon" aria-hidden="true">
@@ -48,47 +50,57 @@ import {
 } from "vue";
 import { SelectEvent } from "ant-design-vue/es/tree/Tree";
 import { CarryOutOutlined, FormOutlined } from "@ant-design/icons-vue";
+import { IBusinessResp } from "src/typings/fetch.d";
+import request from "src/api/index";
+import { Modal, message } from "ant-design-vue"; //
+const http = (request as any).teachCourse;
 const props = withDefaults(defineProps<{ isShow: boolean }>(), {
   isShow: false,
 });
 const emit = defineEmits<{
   (e: "update:isShow", isShow: boolean): void;
 }>();
+const selectNode: any = ref({})
 
-const handleOk = () => {};
+const handleOk = () => {
+  if (!selectNode.value.chapterId) {
+    message.warn("请选择课程下的章节！")
+    return
+  }
+  http.addCoursesChapter({
+    urlParams: {
+      courseId: selectNode.value.courseId,
+      chapterId: selectNode.value.chapterId
+    }
+  }).then((res: IBusinessResp) => {
+    message.success("添加成功！")
+    emit("update:isShow", false);
+  })
+};
 const handleCancel = () => {
   emit("update:isShow", false);
 };
 
 const onSelect = (selectedKeys: string[], info: SelectEvent) => {
-  console.log("selected", selectedKeys, info);
+  // console.log("selected", selectedKeys, info);
+  selectNode.value = info.selectedNodes.length ? info.selectedNodes[0].props : {}
 };
-let courseList = ref([
-  { id: 1, name: "课程1", content: [{ id: 11, name: "章节11" }] },
-  {
-    id: 2,
-    name: "课程2",
-    content: [
-      { id: 21, name: "章节21" },
-      { id: 22, name: "章节22" },
-      { id: 23, name: "章节23" },
-    ],
-  },
-  {
-    id: 3,
-    name: "课程3",
-    content: [
-      { id: 31, name: "章节31" },
-      { id: 32, name: "章节32" },
-      { id: 33, name: "章节33" },
-    ],
-  },
-]);
+let courseList: any = ref([]);
 let defaultExpandedKeys = reactive([1]);
+const getCourseChaptersTree = () => {
+  http.coursesChaptersTree().then((res: IBusinessResp) => {
+    courseList.value = res.data
+  })
+}
+onMounted(() => {
+  getCourseChaptersTree()
+})
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .ant-tree {
+  max-height: 500px;
+  overflow: auto;
   .ant-tree-iconEle .icon {
     width: 16px;
     height: 16px;
