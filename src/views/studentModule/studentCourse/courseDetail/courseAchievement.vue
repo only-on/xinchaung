@@ -16,17 +16,47 @@
       bordered
       size="middle"
       :pagination="false"
+      rowKey='content_name'
     >
-      <template #check="{ text }">
-        <span :class="text?.report_url?'table-a-link':'no-link'" @click="clickFun('video', text)">录屏</span>
-        <span :class="text?.report_url?'table-a-link':'no-link'" @click="clickFun('report', text)">评阅</span>
+      <template #check="{ record }">
+        <span :class="record?.video?'table-a-link':'no-link'" @click="record?.video?clickFun(record.video, 'video'):''">录屏</span>
+        <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
       </template>
-      <template></template>
-      <template></template>
-      <template></template>
-      <template></template>
-      <template></template>
-      <template></template>
+      <template #report_score='{record}'>
+        <span :class="record?.report_score?'table-a-link':'no-link'" v-if="record?.report_score">
+          {{record?.report_score}}
+        </span>
+        <span class='no-link' v-else-if="!record?.report_score&&record?.report?.length">
+          未评分
+        </span>
+        <span class='no-link' v-else>
+          未提交
+        </span>
+      </template>
+      <template #question_score='{record}'>
+        <span class='no-link' v-if="record?.question_score==null">
+          未提交
+        </span>
+        <span class='table-a-link' v-else @click="clickFun(record.exper, 'exper')">
+          {{record?.question_score}}
+        </span>
+      </template>
+      <template #auto_score='{record}'>
+        <span class='no-link' v-if="record?.auto_score==null">
+          待评分
+        </span>
+        <span v-else>
+          {{record?.auto_score}}
+        </span>
+      </template>
+      <template #score='{record}'>
+        <span v-if="record?.score==null">
+          --
+        </span>
+        <span v-else>
+          {{record?.score}}
+        </span>
+      </template>
     </a-table>
     <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
       
@@ -55,15 +85,32 @@
         </div>
       </div>
     </div>
+    <a-modal
+        :title="modaldata.title"
+        :footer="null"
+        :visible="modaldata.visableDetail"
+        @ok="detailOk"
+        @cancel="detailCancel"
+        width="1000px"
+      >
+        <div>
+          <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
+          <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
+          <report v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
+        </div>
+      </a-modal>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { log } from "console";
 import * as echarts from "echarts";
-import { ref, toRefs, onMounted} from "vue";
+import { ref, toRefs, onMounted,reactive} from "vue";
 import request from "src/api/index";
 import { useRouter ,useRoute } from 'vue-router';
+import exper from "../courseDetail/components/exper.vue";
+import report from "../courseDetail/components/report.vue";
+import cvideo from "../courseDetail/components/video.vue";
 const http = (request as any).studentScore;
 const route=useRoute()
 const courseId:any=route.query.courseId  //课程id
@@ -83,6 +130,7 @@ const columns = [
   {
     title: "学习时长",
     dataIndex: "used_time",
+    width:'150',
     key: "used_time",
   },
   {
@@ -98,16 +146,20 @@ const columns = [
         title: "实验报告",
         dataIndex: "report_score",
         key: "report_score",
+        slots: { customRender: "report_score" }
+        // report为空为未提交 report-score为空 未评分
       },
       {
         title: "随堂测试",
         dataIndex: "question_score",
         key: "question_score",
+        slots: { customRender: "question_score" }
       },
       {
         title: "自动评分",
         dataIndex: "auto_score",
         key: "auto_score",
+        slots: { customRender: "auto_score" }
       },
     ],
   },
@@ -120,6 +172,7 @@ const columns = [
     title: "最终成绩",
     dataIndex: "score",
     key: "score",
+    slots: { customRender: "score" }
   },
 ];
 // table数据
@@ -140,6 +193,9 @@ const data = ref([
 const tableData = ref([]);
 const datapage:any=ref('')
 const allData:any=ref({})
+const modaldata:any=reactive({
+
+})
 var option = {
   color: ["#FF9544"],
   grid: {
@@ -218,14 +274,33 @@ function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
 }
 // table操作
-function clickFun(type: string, val: number) {
-  console.log(val);
-  if (["updateReport", "video"].includes(type)) {
-    console.log("录屏click");
-  }
-  if (["updateReport", "report"].includes(type)) {
-    console.log("评阅click");
-  }
+function clickFun(resultData: any, type: any, report?: any) {
+  // console.log(val);
+  // if (["updateReport", "video"].includes(type)) {
+  //   console.log("录屏click");
+  // }
+  // if (["updateReport", "report"].includes(type)) {
+  //   console.log("评阅click");
+  // }
+  // function lookResult(resultData: any, type: any, report?: any) {
+    modaldata.componentName = type === "video" ? "cvideo" : type;
+    
+      const types = {
+        exper: "习题",
+        video: "操作视频",
+        report: "报告",
+        remark:'评语'
+      };
+      modaldata.title = types[type];
+      modaldata.detailInfo = resultData;
+      modaldata.baseInfo = report;
+      modaldata.visableDetail = true;
+}
+function detailOk(){
+  modaldata.visableDetail= false;
+}
+function detailCancel(){
+  modaldata.visableDetail= false;
 }
 // 学习效率
 function drawCharts() {
@@ -239,6 +314,7 @@ function drawCharts() {
 // 获取成绩列表
 function getallScoreList() {
   console.log('111111')
+  // courseId
   http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:10} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.list;
@@ -283,6 +359,7 @@ onMounted(() => {
   .ant-table-wrapper {
     .table-a-link {
       cursor: pointer;
+      color: var(--primary-color);
     }
     .table-a-link:nth-last-child(1){
       margin-left: var(--font-size-16);
