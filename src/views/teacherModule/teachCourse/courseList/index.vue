@@ -227,7 +227,7 @@ const initData = () => {
   }
   loading.value = true;
   courseList.length = 0
-  http.getCourseListt({param}).then((res: IBusinessResp) => {
+  http.getCourseList({param}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page }  = res.data

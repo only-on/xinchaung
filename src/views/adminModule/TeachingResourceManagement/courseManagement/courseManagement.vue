@@ -68,9 +68,10 @@
           <div class="item">
             <span>课程状态：</span>
             <a-select v-model:value="searchInfo.state" placeholder="请选择课程状态">
-              <a-select-option :value="1">未开始</a-select-option>
-              <a-select-option :value="2">进行中</a-select-option>
-              <a-select-option :value="3">已结束</a-select-option>
+              <a-select-option :value="0">全部</a-select-option>
+              <a-select-option :value="2">未开始</a-select-option>
+              <a-select-option :value="3">进行中</a-select-option>
+              <a-select-option :value="1">已结束</a-select-option>
             </a-select>
           </div>
         </div>
@@ -79,13 +80,36 @@
           <a-button type="primary" class="brightBtn"> 批量清楚录屏 </a-button>
         </div>
       </div>
-      
+      <div class="tableContent">
+        <a-spin :spinning="loading" size="large" tip="Loading...">
+          <a-config-provider>
+            <a-table :columns="columns" :data-source="courseList"
+              :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
+              :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
+              rowKey="id">
+              <template #state="{ record }">
+                <div>{{`${['已结束','未开始','进行中'][record.state-1]}`  }}</div>
+              </template>
+              <template #is_public="{ record }">
+                <div>{{ record.is_public===1?'公开课程':'私有课程' }}</div>
+              </template>
+            </a-table>
+            <template #renderEmpty>
+              <div><Empty type="tableEmpty" /></div>
+            </template>
+          </a-config-provider>
+        </a-spin>
+      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch.d";
+import { ColumnProps } from "ant-design-vue/es/table/interface";
+const httpTeachCourse = (request as any).teachCourse;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "课程管理", componenttype: 0 }],
@@ -93,11 +117,91 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
+const columns= [
+        {
+          title: "课程名称",
+          dataIndex: "name",
+          align: "left",
+          ellipsis: true,
+        },
+        {
+          title: "课程属性",
+          dataIndex: "is_public",
+          align: "center",
+          slots: { customRender: "is_public" },
+        },
+        {
+          title: "课程所属",
+          dataIndex: "user_name",
+          align: "center",
+        },
+        {
+          title: "课程状态",
+          dataIndex: "state",
+          align: "center",
+          slots: { customRender: "state" },
+        },
+        {
+          title: "实验数",
+          dataIndex: "content_total",
+          align: "center",
+        },
+        {
+          title: "课时",
+          dataIndex: "class_total",
+          align: "center",
+        },
+        {
+          title: "操作记录大小",
+          dataIndex: "email",
+          align: "center",
+          ellipsis: true,
+        },
+      ]
 var searchInfo:any=reactive({
   name:'',
   is_public:1,
-  state:2
+  state:0,
+
+  page:1,
+  limit:10,
+  selectedRowKeys:[]
 })
+var loading: Ref<boolean> = ref(false);
+var courseList: any[] = reactive([{id:1}]);
+var totalCount: Ref<number> = ref(0);
+const initData = () => {
+  const param:any={
+    ...searchInfo,
+    type:1,
+    // state:labelSearch.state?labelSearch.state:'',
+  }
+  loading.value = true;
+  courseList.length = 0
+  httpTeachCourse.getCourseList({param:{...param}}).then((res: IBusinessResp) => {
+    loading.value = false
+    if (!res) return
+    const { list, page }  = res.data
+    list.forEach((v: any) => {
+      // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
+    });
+    courseList.push(...list)
+    totalCount.value = page.totalCount
+  })
+};
+
+const onChange=(page: any, pageSize: any)=> {
+  searchInfo.page=page
+  initData()
+}
+type Key = ColumnProps["key"];
+const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+  searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
+  // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+}
+onMounted(() => {
+  initData()
+});
 </script>
 
 <style lang="less" scoped>
@@ -200,5 +304,9 @@ var searchInfo:any=reactive({
         }
       }
     }
+    .tableContent{
+      margin-top: 2rem;
+    }
+
   }
 </style>

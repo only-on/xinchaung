@@ -3,7 +3,7 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default {
   // 课程列表
   
-  getCourseListt:{ url: `/api/course/courses`, method: "GET"},
+  getCourseList:{ url: `/api/course/courses`, method: "GET"},
   // 创建课程相关
   createCourseBaseApi: {  url: "/api/course/courses", method: "POST", dataType: "json"},
   // 获取课程方向  职业方向
