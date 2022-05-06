@@ -22,6 +22,7 @@ const clearStore = (keys:any) =>
      breadcrumb,
      aaa:'798',
      isWsConnect: false,
+     connectStatus: 0,   // 0失败 1 连接中 2 成功
   },
   getters: {
     isLogged() {
@@ -48,7 +49,10 @@ const clearStore = (keys:any) =>
     },
     setIsWsConnect(state, val) {
       state.isWsConnect = val
-    }
+    },
+    setConnectStatus(state, val) {
+      state.connectStatus = val
+    },
   },
   actions: {
     

@@ -364,6 +364,7 @@ const connectEnv = () => {
           if (wsJsonData.type==="base_vminfo"&&wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
             resolve()
             store.commit('setIsWsConnect', true)
+            store.commit('setConnectStatus', 2)
           }
         }
       }

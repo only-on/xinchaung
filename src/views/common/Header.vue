@@ -512,11 +512,16 @@ export default defineComponent({
               console.log(helpInfoList.value)
             } else if(data.type==="base_vminfo"&&data.data.vms && data.data.vms.length > 0) {
               store.commit('setIsWsConnect', true)
+              store.commit('setConnectStatus', 2)
             } else if(data.type === 'error') {
               if (data.data?.message) {
                 message.warn(data.data.message);
+                store.commit('setIsConnectFail', false)
+                store.commit('setConnectStatus', 0)
               } else {
                 message.warn(data.data);
+                store.commit('setIsWsConnect', false)
+                store.commit('setConnectStatus', 0)
               }
             }
           }

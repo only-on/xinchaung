@@ -38,16 +38,17 @@
               </div>
               <div class="TitRight">
                 <div v-if="props.Editable === 'canStudy'">
-                  <!-- <span v-if="a.studys">{{a.studys[0].status}}---{{a.studys[0].topoinst_id}}</span> -->
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
                   <!-- <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
-                  <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                  <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
-                  <a-button v-else-if="a.studys" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
-                  @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
+                  <span v-if="!a.TeachingAids">
+                    <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
+                    <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
+                    <a-button v-else type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
+                    @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
+                  </span>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
                   <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}</span>
@@ -113,6 +114,14 @@ let isWsConnect = computed({
   },
   set: val => {
     store.commit("setIsWsConnect",val)
+  }
+})
+let connectStatus = computed({
+  get: () => {
+    return store.state.connectStatus
+  },
+  set: val => {
+    store.commit('setConnectStatus', val)
   }
 })
 const http=(request as any).teachCourse
@@ -299,10 +308,12 @@ function selectExperiment(a:any,v:any){
 let currentClickIndex = ref(-1)
 function prepare(a:any, i: number) {
   currentClickIndex.value = i
-  if (a.startup === 2) {
+  if (a.startup === 2 && connectStatus.value===2) {
     a.startup = 3
     goToVm(router, routeQuery)
     return
+  } else {
+    a.startup = 1
   }
 
   isWsConnect.value = false
@@ -319,8 +330,10 @@ function prepare(a:any, i: number) {
   if (a.startup === 1) {
     // a.startup=2
     prepareEnv(param).then(() =>{
+      connectStatus.value = 1
       // 视频 文档 webide
       if (task_type === 6 || task_type === 7 || task_type === 3) {
+        connectStatus.value = 2
         isWsConnect.value = true
       } else {
         // isWsConnect.value = false
@@ -334,6 +347,7 @@ function prepare(a:any, i: number) {
       state.activeExperimentObj={...a}
     }).catch(() => {
       a.startup=1
+      connectStatus.value = 0
       isWsConnect.value = false
     })
     return

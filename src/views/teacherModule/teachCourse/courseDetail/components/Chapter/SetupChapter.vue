@@ -80,6 +80,14 @@ let isWsConnect = computed({
     store.commit("setIsWsConnect",val)
   }
 })
+let connectStatus = computed({
+  get: () => {
+    return store.state.connectStatus
+  },
+  set: val => {
+    store.commit('setConnectStatus', val)
+  }
+})
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 const { lStorage } = extStorage;
