@@ -1,9 +1,12 @@
 import { TFHttpSend } from "src/typings/getRequest";
 export default{
    //  管理镜像列表
-   list:{url:`/api/env/admin/images`,method:'get',dataType: 'json'},
+   imageslist:{url:`/api/env/admin/images`,method:'get',dataType: 'json'},
+   //  课程列表
+   courselist:{url:`/api/course/admin/courses/list`,method:'get',dataType: 'json'},
 }
 export interface ITeachingResourceManagement{
-    list:TFHttpSend
+    imageslist:TFHttpSend
+    courselist:TFHttpSend
 }
 export const MODULE_NAME = 'TeachingResourceManagement'

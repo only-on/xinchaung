@@ -176,7 +176,7 @@ const initData = () => {
   }
   loading.value = true;
   courseList.length = 0
-  http.list({param:{...param}}).then((res: IBusinessResp) => {
+  http.imageslist({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page,analysis }  = res.data

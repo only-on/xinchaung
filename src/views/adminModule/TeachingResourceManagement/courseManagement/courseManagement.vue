@@ -37,14 +37,14 @@
         <h3 class="statisticalTitle">录像占用</h3>
         <div class="flexCenter proportion">
           <div class="left flexCenter">
-            <span class="left1">32%</span>
-            <span class="left2">300/1024</span>
+            <span class="left1">{{analysisObj.diskRatio}}%</span>
+            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
               <template #format="percent">
-                <div class="right1">磁盘总量</div>
-                <div class="right2">1024G</div>
+                <div class="right1">镜像总量</div>
+                <div class="right2">{{analysisObj.allTotalDisk}}G</div>
               </template>
             </a-progress>
           </div>
@@ -56,18 +56,18 @@
         <div class="left flexCenter">
           <div class="item">
             <span>课程名称：</span>
-            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" />
+            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" />
           </div>
           <div  class="item">
             <span>课程属性：</span>
-            <a-select v-model:value="searchInfo.is_public" placeholder="请选择课程属性">
+            <a-select v-model:value="searchInfo.courseAttribute" placeholder="请选择课程属性">
               <a-select-option :value="1">公开课程</a-select-option>
               <a-select-option :value="0">教师课程</a-select-option>
             </a-select>
           </div>
           <div class="item">
             <span>课程状态：</span>
-            <a-select v-model:value="searchInfo.state" placeholder="请选择课程状态">
+            <a-select v-model:value="searchInfo.courseState" placeholder="请选择课程状态">
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="2">未开始</a-select-option>
               <a-select-option :value="3">进行中</a-select-option>
@@ -109,7 +109,7 @@ import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
-const httpTeachCourse = (request as any).teachCourse;
+const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "课程管理", componenttype: 0 }],
@@ -159,9 +159,9 @@ const columns= [
         },
       ]
 var searchInfo:any=reactive({
-  name:'',
-  is_public:1,
-  state:0,
+  courseName:'',
+  courseAttribute:1,
+  courseState:0,
 
   page:1,
   limit:10,
@@ -170,21 +170,25 @@ var searchInfo:any=reactive({
 var loading: Ref<boolean> = ref(false);
 var courseList: any[] = reactive([{id:1}]);
 var totalCount: Ref<number> = ref(0);
+var analysisObj:any=reactive({})
 const initData = () => {
   const param:any={
-    ...searchInfo,
-    type:1,
-    // state:labelSearch.state?labelSearch.state:'',
+    'search[courseName]':searchInfo.courseName,
+    'search[courseAttribute]':searchInfo.courseAttribute,
+    'search[courseState]':searchInfo.courseState,
+    page:searchInfo.page,
+    limit:searchInfo.limit
   }
   loading.value = true;
   courseList.length = 0
-  httpTeachCourse.getCourseList({param:{...param}}).then((res: IBusinessResp) => {
+  http.courselist({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
-    const { list, page }  = res.data
+    const { list, page,analysis }  = res.data
     list.forEach((v: any) => {
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
+    Object.assign(analysisObj,analysis)
     courseList.push(...list)
     totalCount.value = page.totalCount
   })
@@ -200,7 +204,7 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
 onMounted(() => {
-  initData()
+  // initData()
 });
 </script>
 
