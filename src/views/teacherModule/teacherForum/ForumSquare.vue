@@ -8,7 +8,7 @@
           <Empty v-if="!forumnList.length && !loading" />
         </a-spin>
       </div>
-      <div class="right">
+      <div class="right" v-if="role !== 2">
         <div class="post pointer" @click="createPost">发帖</div>
         <!-- 热门标签 -->
         <hot-label></hot-label>
@@ -46,6 +46,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { removeHtmlTag, fixHtml} from 'src/utils/htmlLabel'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from "ant-design-vue";
+import extStorage from "src/utils/extStorage";
 export default defineComponent({
   name: "ForumSquare",
   components: {
@@ -60,6 +61,8 @@ export default defineComponent({
     const router = useRouter();
     let {currentTab} = route.query
     const http = (request as any).teacherForum;
+    const { lStorage } = extStorage;
+    const role = lStorage.get("role") || 3;
     var forumSearch = reactive<IForumSearch>({
       title: "",
       pageSize: 10,
@@ -135,7 +138,7 @@ export default defineComponent({
       if (currentTab === '0' || !currentTab) {
         getTagsList()
         // initData();
-        getHotLabels()
+        role === 2 ? '' : getHotLabels()
       }
     });
     // 常驻类型
@@ -181,6 +184,7 @@ export default defineComponent({
       total,
       loading,
       forumSearch,
+      role,
     };
   },
 });
@@ -194,10 +198,12 @@ export default defineComponent({
     display: flex;
     justify-content: space-between;
     .left {
-      width: 830px;
+      // width: 830px;
+      width: 100%;
     }
     .right {
       width: 300px;
+      margin-left: 70px;
       .post {
         height: 40px;
         line-height: 40px;

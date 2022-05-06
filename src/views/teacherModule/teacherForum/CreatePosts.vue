@@ -9,14 +9,14 @@
         labelAlign="left"
         :rules="rules"
       >
-        <a-form-item label="帖子名称" name="title">
+        <a-form-item :label="role !== 2 ? '帖子名称':'公告名称'" name="title">
           <a-input
             v-model:value="formState.title"
             placeholder="请在这里输入帖子标题"
           />
         </a-form-item>
         <div class="type">
-          <a-form-item label="帖子类型" name="type">
+          <a-form-item label="帖子类型" name="type" v-if="role !== 2">
             <a-select
               v-model:value="formState.type"
               placeholder="请选择帖子类型"
@@ -70,7 +70,7 @@
         </a-form-item>
       </a-form>
     </div>
-    <div class="right">
+    <div class="right" v-if="role !== 2">
       <!-- 热门标签 -->
       <hot-label></hot-label>
       <!-- 热力图 -->
@@ -104,6 +104,9 @@ import RecommendCourse from "./components/RecommendCourse.vue";
 import Submit from "src/components/submit/index.vue";
 import { goHtml } from "src/utils/common";
 import { ILabelList, ITagList } from "./forumnTyping.d";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = lStorage.get("role") || 3;
 const http = (request as any).teacherForum;
 interface IFormState {
   title: string;
@@ -115,7 +118,7 @@ const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
 
-const tabs = [{ name: "发帖", componenttype: 0 }];
+const tabs = [{ name: role !== 2 ? "发帖" : '发布公告', componenttype: 0 }];
 var updata = inject("updataNav") as Function;
 updata({
   tabs: tabs,
@@ -188,6 +191,7 @@ const formState = reactive<IFormState>({
 const onSubmit = () => {
   // return
   formRef.value.validate().then(() => {
+    role === 2 ? formState.type = '公告' : ''
     let obj = {
       ...formState,
       content: JSON.stringify(formState.content),

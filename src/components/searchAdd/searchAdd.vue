@@ -2,7 +2,7 @@
   <div class="reference">
     <div class="addBox">
       <div class="add flexCenter fr">
-        <div @mouseover="isMouseOver = true" @mouseout="isMouseOver = false">
+        <div @mouseover="isMouseOver = true" @mouseout="isMouseOver = false" v-if="props.isShowSearch">
           <a-input-search
             class="greenSearch"
             :class="{ mouseover: isMouseOver }"
@@ -48,10 +48,12 @@ interface IList {
 interface Props {
   TypeList?: IList[];
   isShowAdd?: boolean;
+  isShowSearch?: boolean
 }
 const props = withDefaults(defineProps<Props>(), {
   TypeList: () => [],
   isShowAdd: true,
+  isShowSearch: true
 });
 const emit = defineEmits<{
   (e: "searchFn", key: string): void;

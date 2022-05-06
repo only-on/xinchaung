@@ -1,5 +1,12 @@
 <template>
   <div class="forumn">
+    <search-add
+      v-if="role === 2"
+      @handleMenuClick="handleMenuClick"
+      :TypeList="ExperimentTypeList"
+      :isShowAdd="true"
+      :isShowSearch="false"
+    ></search-add>
     <!-- <a-button type="primary" shape="round" size="large">确定</a-button>
     <a-button type="primary" shape="round" size="middle">确定</a-button>
     <a-button type="primary" shape="round" size="small">取消</a-button> -->
@@ -23,20 +30,27 @@ import MyPosts from "./MyPosts.vue";
 import { useRouter, useRoute } from "vue-router";
 import { ILabel } from "./forumnTyping.d";
 import ForumnTop from "./components/ForumnTop.vue";
+import extStorage from "src/utils/extStorage";
+import searchAdd from "src/components/searchAdd/searchAdd.vue";
 export default defineComponent({
   name: "",
   components: {
     ForumSquare,
     MyPosts,
     ForumnTop,
+    searchAdd,
   },
   setup: (props, { emit }) => {
     const route = useRoute();
-    const componentNames = ["ForumSquare", "MyPosts"];
+    const router = useRouter();
+    const componentNames = ["ForumSquare", "MyPosts", "MyPosts"];
+    const { lStorage } = extStorage;
+    const role = lStorage.get("role") || 3;
     const tabs = [
       { name: "论坛广场", componenttype: 0 },
-      { name: "我的帖子", componenttype: 1 },
+      // { name: "我的帖子", componenttype: 1 },
     ];
+    role === 2 ? tabs.push({ name: "帖子管理", componenttype: 2 }):tabs.push({ name: "我的帖子", componenttype: 1 })
     var componentName: Ref<string> = ref("ForumSquare");
 
     var configuration: any = inject("configuration");
@@ -57,7 +71,13 @@ export default defineComponent({
       }
     );
     onMounted(() => {});
-    return { componentName, tabs };
+    const ExperimentTypeList = reactive([
+      { name: "发布公告", key: "desktop" }
+    ])
+    const handleMenuClick = ({ key }: { key: string }) => {
+      router.push("/teacher/teacherForum/CreatePosts");
+    };
+    return { componentName, tabs, ExperimentTypeList, handleMenuClick, role };
   },
 });
 </script>
