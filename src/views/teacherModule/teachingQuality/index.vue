@@ -88,12 +88,14 @@ import {
   ref,
   onMounted,
   reactive,
-  inject
+  inject,
+  nextTick
 } from "vue";
 import * as echarts from 'echarts';
 import { Swiper, SwiperSlide } from "swiper/vue";
 import "swiper/css";
-import {option,option1,option2,option3,option4,option5}  from './echartOption';
+import {option,option1,option2,option3,setOption4,option5}  from './echartOption';
+import {Knowledge3} from 'src/views/teacherModule/teachCourse/courseDetail/components/Chapter/echartsOption';
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -104,6 +106,8 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
+import request from 'src/api/index'
+const http=(request as any).teachCourse
 const mode = ref('top');
 const activeKey = ref('1');
 function callback(val: string){
@@ -126,12 +130,25 @@ function setChartOption(id:any,option:any){
     var myChart = echarts.init(chartDom);
     option && myChart.setOption(option);
 }
+const chartData:any=ref({})
+function getKnoledgeData(){
+    http.courseknowledge({urlParams: {courseId:500229}}).then((res: any) => {
+    const {data}=res
+    chartData.value={...data}
+    // list.push(...data)
+    nextTick(()=>{
+    //   Knowledge3('knowledgeGraph',chartData.value,50)
+      setChartOption('knowledgeGraph',setOption4(chartData.value))
+    })
+  });
+}
 onMounted(()=>{
     drawAnalysis()
     setChartOption('courseAchieve',option)
     setChartOption('knowledgePointErrorRate',option2)
     setChartOption('scoreDistribution',option3)
-    setChartOption('knowledgeGraph',option4)
+    setChartOption('knowledgeGraph',setOption4({}))
+    getKnoledgeData()
     setChartOption('highFrequencyErrorProne',option5)
 })
 </script>

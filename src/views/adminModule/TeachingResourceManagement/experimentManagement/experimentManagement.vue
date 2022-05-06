@@ -87,20 +87,33 @@ onMounted(()=>{
 }
 .statistic{
   width: 100%;
-  height:180px;
+  height:220px;
   display: flex;
   justify-content: space-between;
 }
 #experStatistic{
     width:285px;
     height:100%;
+    background-color: var(--white);
+    padding: 20px;
+    border-radius: 10px;
   }
 #experType{
   width:519px;
   height: 100%;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
 }
 #KnowledgePoints{
   width:356px;
   height:100%;
+  background-color: var(--white);
+  padding: 20px;
+  border-radius: 10px;
+}
+.tabsTable{
+  background-color: var(--white);
+  margin-top: 20px;
 }
 </style>
