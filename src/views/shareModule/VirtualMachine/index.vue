@@ -7,7 +7,7 @@
   <component :is="componentList[experType]"></component>
   <!-- :visible="evaluateVisible" -->
   <a-modal
-    :visible="false"
+    :visible="evaluateVisible"
     :title="'推荐实验'"
     class="evaluate-modal"
     :closable="false"

@@ -147,6 +147,7 @@ function submitOfflineReport() {
   formData.append("html_content", htmltable.outerHTML);
   vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     // reportTemplateData.value= res?.data
+    emit("update:visible", false)
     experReport({ csc_id: baseInfo.value.current.id });
   });
 }
