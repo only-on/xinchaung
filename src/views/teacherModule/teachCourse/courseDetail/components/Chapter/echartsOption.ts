@@ -643,10 +643,10 @@ function setTagData(knowledge_map: any,size:number) {
       category: 0,
     }
   )
-  knowledge_map.childNodes.forEach((item: any) => {
+  knowledge_map.childNodes.forEach((item: any,k:number) => {
     item.content_id=String(item.content_id)
     if (item.contentvia) {
-      item.contentvia.id=String(item.contentvia.id)
+      item.contentvia.id=String(item.contentvia.id)+k
       data.push({
         name: item.contentvia.name,
         id: String(item.contentvia.id),

@@ -51,7 +51,9 @@
                   </span>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
-                  <span class="view" @click.stop="ViewExperiment(a,v)">{{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}</span>
+                  <span class="view" @click.stop="ViewExperiment(a,v)" v-if="a.power">
+                    {{`${a.openGuidance?'收起':'查看'}${a.TeachingAids?'文档':'指导'}`}}
+                  </span>
                 </div>
                 <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
                   <span class="iconfont icon-bianji1" @click.stop="editExperiment(a)" v-if="!a.TeachingAids"></span>
@@ -496,7 +498,7 @@ const deleteExperiment=(v:any,a:any)=>{
   // emit('deleteExperiment',obj)
 }
 const ProcessingData=(data:any)=>{
-  let obj={5:'备课资料',6:'教学指导',3:'课件'}
+    let obj={5:'备课资料',6:'教学指导',3:'课件'}
     if(data.length){
       let item:any=data[0]
       let index:number=0
@@ -504,15 +506,16 @@ const ProcessingData=(data:any)=>{
         v.openItem=false
         v.list=[]
         v.resource.length?v.resource.forEach((i:any)=>{
+          i.power=true
           i.TeachingAids=true   // TeachingAids是教辅
           i.TeachingAidsName=obj[i.type]
           i.name=i.file_name
           if(props.Editable !== 'readOnly'){
             v.list.push(i)
           }
-          // v.list.push(i)
         }):''
         v.contents.length?v.contents.forEach((i:any)=>{
+          i.power=true
           i.startup=1     // 公开  加载开始学习  1未开始学习  2准备中   3准备完成 待进入
           i.openGuidance=false //公开 展开实验指导
           i.experimentGuideLoading=false  // 公开课程加载实验指导
@@ -527,14 +530,29 @@ const ProcessingData=(data:any)=>{
             v.list.push(i)
           }
         }):''
-        // if(props.Editable === 'readOnly'){ //Editable:'readOnly',  
-        //   v.list=v.list.concat(v.contents)
-        // }else{
-        //   v.list=v.list.concat(v.resource,v.contents)
-        // }
         if(state.activeTab.chapterId && state.activeTab.chapterId === v.id){
           item={...v}
           index=k
+        }
+        // 学生端是否展示实验指导
+        if(role === 4){
+          v.list.length?v.list.forEach((i:any)=>{
+            //  教辅的展示 教师端设置后  后端已经过滤
+            if(!i.TeachingAids){
+              if([1,2,3,4].includes(i.task_type)){
+                // console.log(i.type_obj.name+'实验指导')
+                i.power=v.course_setting['is_show_content_guidance']===1?true:false 
+              }
+              if(i.task_type === 5){
+                // console.log(i.type_obj.name+'任务制')
+                i.power=v.course_setting['is_show_task_step']===1?true:false 
+              }
+              if([6,7].includes(i.task_type)){
+                // console.log(i.type_obj.name+'文档视频')
+                i.power=true
+              }
+            }
+          }):''
         }
       })
       // console.log(item)
@@ -557,11 +575,26 @@ const getChaptersTree=()=>{
     ProcessingData(data)
   })
 }
+var course_setting:any=reactive({})
 function StudentChaptersTree(course_student_id:number){
   studentHttp.StudentChaptersTree({urlParams:{course_student_id:course_student_id}}).then((res:IBusinessResp)=>{
     const {data}=res
+    course_setting=data.length?{...data[0].course_setting}:{}
     ProcessingData(data)
+    console.log(course_setting)
   })
+}
+const power=(v:any,a:any)=>{
+  return true
+  // if(role !== 4){
+  //   return true
+  // }
+  // if(a.TeachingAids){
+  //   // 教辅
+  //   if(a.type===5){
+
+  //   }
+  // }
 }
 onMounted(() => {
   // console.log(props.courseId)
@@ -572,7 +605,6 @@ onMounted(() => {
     const { course_student_id} = route.query;
     // console.log(course_student_id)
     StudentChaptersTree(Number(course_student_id))
-    // studentHttp
   }
   // if(Number(currentTab) === 1) {
   //   connectEnv().then(() => {

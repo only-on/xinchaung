@@ -189,6 +189,9 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
 const deleteScheduleStuMany=()=>{
+  if(!studentData.selectedRowKeys.length){
+    return
+  }
   http.deleteScheduleStuMany({ param:{id:studentData.selectedRowKeys}}).then((res: any) => {
     message.success("删除成功！");
     initData()

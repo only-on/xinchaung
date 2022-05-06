@@ -61,39 +61,29 @@
             :columns="columns"
             :loading="unselectLoading"
             :data-source="studentData.list"
-            :pagination="
-              studentData.totalCount > 10
-                ? {
+            :pagination="{
                     hideOnSinglePage: false,
-                    showSizeChanger: true,
-                    total: unSelectData.page.totalCount,
-                    pageSize: params.limit,
-                    current: params.page,
+                    showSizeChanger: false,
+                    total:studentData.total,
+                    pageSize: studentData.limit,
+                    current: studentData.page,
                     onChange: onChange,
                     onShowSizeChange: onShowSizeChange,
-                  }
-                : false
-            "
+                  }"
             :row-selection="{
               selectedRowKeys: selectedRowKeys,
               onChange: onSelectChange,
               getCheckboxProps: getCheckboxProps,
             }"
             rowKey="id"
-            :scroll="unSelectData?.list?.length>10?{ y: 560 }:{}"
+            :scroll="studentData.list.length>10?{ y: 560 }:{}"
           >
-            <template #name="{ record }">
+            <!-- <template #name="{ record }">
               <div>{{ record.user_profile?.name }}</div>
             </template>
             <template #department="{ record }">
               <div>{{ record.user_profile?.department }}</div>
-            </template>
-            <template #gender="{ record }">
-              <div>{{ record.user_profile?.gender }}</div>
-            </template>
-            <template #phone="{ record }">
-              <div>{{ record.user_profile?.phone }}</div>
-            </template>
+            </template> -->
           </a-table>
           <template #renderEmpty>
             <div><empty type="tableEmpty"></empty></div>
@@ -156,25 +146,25 @@ export default defineComponent({
         },
         {
           title: "姓名",
-          dataIndex: "name",
+          dataIndex: "user_profile.name",
           ellipsis: true,
-          slots: { customRender: "name" },
+          // slots: { customRender: "name" },
         },
         {
           title: "性别",
-          dataIndex: "gender",
-          slots: { customRender: "gender" },
+          dataIndex: "user_profile.gender",
+          // slots: { customRender: "gender" },
           width: 80,
         },
         {
           title: "班级",
-          dataIndex: "class",
+          dataIndex: "user_profile.grade",
           align: "left",
           ellipsis: true,
         },
         {
           title: "专业",
-          dataIndex: "username",
+          dataIndex: "user_profile.department",
           align: "left",
           ellipsis: true,
         },
@@ -193,9 +183,9 @@ export default defineComponent({
         },
         {
           title: "电话",
-          dataIndex: "phone",
+          dataIndex: "user_profile.phone",
           ellipsis: true,
-          slots: { customRender: "phone" },
+          // slots: { customRender: "phone" },
         },
       ],
       data: [],
@@ -231,33 +221,13 @@ export default defineComponent({
     };
     const methods = {
       onChange(page: any, pageSize: any) {
-        state.params.page = page;
-        state.params.limit = pageSize;
-        context.emit(
-          "search-inquiry",
-          state.studentValue,
-          state.fullName,
-          state.faculty,
-          state.classes,
-          state.params,
-          state.params.page,
-          state.params.limit
-        );
+        state.studentData.page = page;
+        // state.studentData.limit = pageSize;
+        initData()
       },
       onShowSizeChange(current: any, size: any) {
         console.log(current, size, "current, size");
-        state.params.page = 1;
-        state.params.limit = size;
-        context.emit(
-          "search-inquiry",
-          state.studentValue,
-          state.fullName,
-          state.faculty,
-          state.classes,
-          state.params,
-          state.params.page,
-          state.params.limit
-        );
+        state.studentData.page = 1;
       },
       onSelectChange(selectedRowKeys: any, selectedRows: any) {
         state.selectedRowKeys = selectedRowKeys;
@@ -302,27 +272,10 @@ export default defineComponent({
         state.fullName = "";
         state.faculty = "";
         state.classes = "";
-        context.emit(
-          "search-inquiry",
-          state.studentValue,
-          state.fullName,
-          state.faculty,
-          state.classes,
-          state.params,
-          state.params.page,
-          state.params.limit
-        );
       },
       inquiry() {
-        state.params.page = 1;
+        state.studentData.page = 1;
         console.log(state.studentValue, state.fullName, state.faculty, state.classes);
-        context.emit(
-          "search-inquiry",
-          state.studentValue,
-          state.fullName,
-          state.faculty,
-          state.classes
-        );
       },
     };
     const initData=()=>{

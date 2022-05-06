@@ -159,7 +159,7 @@ const next=(val:number)=>{
     multiplexingCourse(val)
     return
   }
-  if(val === 1){
+  if(val === 1 && courseId.value === 0){
     formRef.value.validate().then(()=>{
       formState.is_available=0
       stup1Loading.value=true
