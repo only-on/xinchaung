@@ -1,7 +1,7 @@
 <template>
   <div class="courseManagement">
     <div class="Statistics flexCenter">
-      <div class="item">{{analysisObj}}</div>
+      <div class="item"></div>
       <div class="item item2">
         <h3 class="statisticalTitle">镜像类型</h3>
         <div class="progressBox flexCenter">
@@ -39,14 +39,14 @@
         <h3 class="statisticalTitle">镜像占用</h3>
         <div class="flexCenter proportion">
           <div class="left flexCenter">
-            <span class="left1">32%</span>
-            <span class="left2">{{analysisObj.imageUsedDisk}}/1024</span>
+            <span class="left1">{{analysisObj.diskRatio}}%</span>
+            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
               <template #format="percent">
                 <div class="right1">镜像总量</div>
-                <div class="right2">1024G</div>
+                <div class="right2">{{analysisObj.allTotalDisk}}G</div>
               </template>
             </a-progress>
           </div>
