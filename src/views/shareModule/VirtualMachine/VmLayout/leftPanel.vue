@@ -24,7 +24,7 @@
     <div class="shouqi pointer" @click="open()"></div>
   </div>
   <a-modal
-    v-model:visible="contentModal"
+    v-model:visible="visible"
     :width="1000"
     :footer="false"
     :maskClosable="false"
@@ -36,6 +36,8 @@
       v-model:visible="contentShow"
     ></component>
   </a-modal>
+  <!-- 报告弹框 -->
+  <report v-model:visible="contentModal" v-if="contentModal"></report>
 </template>
 
 <script lang="ts" setup>
@@ -73,6 +75,7 @@ const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, "vnc", opType as any) as any)
   : (getMenuRole(role as any, "vnc") as any);
 const contentModal = ref(false)  // 报告modal
+const visible = ref(false)  // 报告modal
 function open(key?: string) {
   // 视频文档 
   if (key === 'guide' && (Number(experType) === 6 || Number(experType) === 7)) {

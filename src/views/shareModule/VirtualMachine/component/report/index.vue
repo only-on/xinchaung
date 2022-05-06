@@ -1,61 +1,53 @@
 <template>
+<a-modal
+  v-model:visible="props.visible"
+  :width="reportTemplateData && reportTemplateData.template_type === 'form'? 1200 : 540"
+  title="实验报告"
+  @ok="handleOk"
+  @cancel="cancel"
+>
   <div class="report-content" v-if="reportTemplateData">
     <!-- 在线报告 -->
-    <div
-      v-if="reportTemplateData && reportTemplateData.template_type === 'form'"
-    >
+    <div v-if="reportTemplateData && reportTemplateData.template_type === 'form'">
       <on-line />
-      <div v-if="reportTemplateData.can_student_update" class="bottom">
-        <a-button class="btn" type="parmary" @click="submitOfflineReport"
-          >提交报告</a-button
-        >
-      </div>
+      <!-- <div v-if="reportTemplateData.can_student_update" class="bottom">
+        <a-button class="btn" type="parmary" @click="submitOfflineReport" >提交报告</a-button>
+      </div> -->
     </div>
 
     <!-- 离线报告 -->
-    <div
-      class="offlineReport"
-      v-if="reportTemplateData && reportTemplateData.template_type === 'file'"
-    >
+    <div class="offlineReport" v-if="reportTemplateData && reportTemplateData.template_type === 'file'">
       <!-- src="/src/assets/sss.pdf"> -->
       <iframe
         class="iframe"
-        v-if="
-          reportTemplateData.pdf_url && !reportTemplateData.can_student_update
-        "
+        v-if="reportTemplateData.pdf_url && !reportTemplateData.can_student_update"
         :src="reportTemplateData.pdf_url"
       >
       </iframe>
-      <div
-        v-if="
-          !reportTemplateData.pdf_url && reportTemplateData.can_student_update
-        "
-      >
-        <div class="uploadReport">
-          <span>报告文件：</span>
-          <a-upload :file-list="fileList" :before-upload="beforeUpload">
-            <a-button> <a-icon type="upload" />选择</a-button>
+      <div class="uploadReport" v-if="!reportTemplateData.pdf_url && reportTemplateData.can_student_update">
+        <div>实验报告</div>
+        <div>
+          <a-upload :showUploadList="false" class="upload-btn" :file-list="fileList" :before-upload="beforeUpload">
+            <a-button type="primary">上传文件</a-button>
           </a-upload>
-          <a-button
-            type="primary"
-            style="margin-left: 16px"
-            @click="handleUpload"
+          <span
+            class="clickDownLoad pointer"
+            @click="
+              downLoadExperReport(
+                reportTemplateData.report_word_url.replace(/\\/g, '/'),
+                reportTemplateData.filename
+              )
+            "
           >
-            <a-icon type="upload" />
-            上传
-          </a-button>
+            实验报告模板
+          </span>
         </div>
-        <div class="uploadOnece">实验报告只能上传一次</div>
-        <div
-          class="clickDownLoad"
-          @click="
-            downLoadExperReport(
-              reportTemplateData.report_word_url.replace(/\\/g, '/'),
-              reportTemplateData.filename
-            )
-          "
-        >
-          点击下载实验报告模板
+        <div class="file-list" v-if="fileList.length">
+          <div class="file">
+            <div class="type"><img :src="iconList['word']" alt="" srcset=""></div>
+            <div class="name single_ellipsis">{{fileList[0].name}}</div>
+            <div class="pointer" @click="move"><span class="iconfont icon-shanchu"></span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -63,6 +55,7 @@
   <div v-else>
     <empty />
   </div>
+</a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -80,6 +73,8 @@ import {
 import request from "src/request/getRequest";
 import OnLine from "./OnLine.vue";
 import empty from "src/components/Empty.vue";
+import iconList from "src/utils/iconList";
+// import { renderMarkdown } from  '@xianfe/antdv-markdown';
 
 interface experReportParam {
   csc_id: any;
@@ -99,6 +94,12 @@ watch(
   },
   { deep: true }
 );
+const props = withDefaults(defineProps<{visible: boolean}>(), {
+  visible: false,
+});
+const emit = defineEmits<{
+  (e: "update:visible", key: boolean): void;
+}>()
 // 从地址栏获取id
 function getUrlParam(name: string): string | null {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -117,56 +118,49 @@ function experReport(params: experReportParam) {
 function submitOfflineReport() {
   var formData: any = new FormData();
   formData.append("id", reportTemplateData.value.templatable_id);
-  formData.append("csc_id", reportId.value);
-  reportTemplateData.value.json_content.forEach(
-    (element: any, i: number) => {
-      formData.append(`json_content[` + [i] + `][type]`, element.type);
-      formData.append(`json_content` + [i] + `[toolbar]`, element.toolbar);
-      element.fields.forEach((item: any, j: any) => {
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][name]`,
-          item.name
-        );
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][value]`,
-          item.value
-        );
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][placeholder]`,
-          item.placeholder
-        );
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][readonly]`,
-          item.readonly
-        );
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][align]`,
-          item.align
-        );
-        formData.append(
-          `json_content[` + [i] + `][fields][` + [j] + `][colspan]`,
-          item.colspan
-        );
-      });
-    }
-  );
+  formData.append("csc_id", baseInfo.value.current.id);
+  reportTemplateData.value.json_content.forEach((element:any,i:number) => {
+          formData.append(`json_content[`+[i]+`][type]`,element.type);
+          formData.append(`json_content`+[i]+`[toolbar]`,element.toolbar);
+          // json_view_content
+          formData.append(`json_view_content[`+[i]+`][type]`,element.type);
+          formData.append(`json_view_content`+[i]+`[toolbar]`,element.toolbar);
+          element.fields.forEach((item:any,j:any)=>{
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][name]`,item.name);
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][value]`,item.value);
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][placeholder]`,item.placeholder);
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][readonly]`,item.readonly);
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][align]`,item.align);
+            formData.append(`json_content[`+[i]+`][fields][`+[j]+`][colspan]`,item.colspan);
+
+            // json_view_content
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][name]`,item.name);
+            // @ts-ignore
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][value]`,item.value);
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][placeholder]`,item.placeholder);
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][readonly]`,item.readonly);
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][align]`,item.align);
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][colspan]`,item.colspan);
+          })
+       });
   let htmltable: any = document.querySelector("#onlineReportTableEditable");
   formData.append("html_content", htmltable.outerHTML);
   vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     // reportTemplateData.value= res?.data
-    experReport({ csc_id: reportId.value });
+    experReport({ csc_id: baseInfo.value.current.id });
   });
 }
 function beforeUpload(file: any) {
   console.log(file);
-  fileList.value = [...fileList.value, file];
+  fileList.value = [file];
+  // fileList.value = [...fileList.value, file];
   return false;
 }
 function handleUpload() {
   let formData: any = new FormData();
   formData.append("file", fileList.value[0]);
   formData.append("id", reportTemplateData.value.templatable_id);
-  formData.append("csc_id", reportId.value);
+  formData.append("csc_id", baseInfo.value.current.id);
   vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     reportTemplateData.value = res?.data;
   });
@@ -198,6 +192,19 @@ function downLoadExperReport(fileurl: any, filename: any) {
       (navigator as any).msSaveBlob(blob, fileName);
     }
   });
+}
+const cancel = () => {
+  emit('update:visible', false)
+}
+const handleOk = () => {
+  if (reportTemplateData.value && reportTemplateData.value.template_type === 'form') {
+    submitOfflineReport()
+  } else if (reportTemplateData.value && reportTemplateData.value.template_type === 'file') {
+    handleUpload()
+  }
+}
+const move = () => {
+  fileList.value.length = 0
 }
 onMounted(() => {
   //获取实验模板信息
@@ -415,24 +422,33 @@ onMounted(() => {
   }
   .uploadReport {
     width: 100%;
-    height: 100px;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
-  .uploadOnece {
-    width: 100%;
-    color: red;
-    display: flex;
-    justify-content: center;
-  }
-  .clickDownLoad {
-    display: flex;
-    justify-content: center;
-    color: var(--primary-color);
-  }
-  .clickDownLoad:hover {
-    color: #a86cdc;
+    // height: 100px;
+    .upload-btn {
+      display: inline-block;
+      margin-right: 10px;
+      margin-top: 6px;
+    }
+    .clickDownLoad {
+      color: var(--primary-color);
+      border-bottom: 1px solid var(--primary-color);
+    }
+    .file-list {
+      margin-top: 12px;
+      .file {
+        border: 1px solid #ddd;
+        height: 64px;
+        line-height: 64px;
+        display: flex;
+        padding: 0 15px 0 12px;
+        .type {
+          margin-right: 12px;
+        }
+        .name {
+          flex: 1;
+          padding-right: 8px;
+        }
+      }
+    }
   }
 }
 </style>

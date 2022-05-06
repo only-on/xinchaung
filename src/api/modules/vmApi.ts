@@ -26,7 +26,7 @@ export default {
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
     // 实验报告
     experimentalReport: { url: "/api/yii/report/record/create", method: 'POST' },
-    updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'json' },
+    updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
     updateOnlineTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
     // 提交步骤/查看答案
     stepActionApi: { url: "/api/operate/operates/step", method: 'POST' },
