@@ -112,7 +112,7 @@ import { ColumnProps } from "ant-design-vue/es/table/interface";
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "课程管理", componenttype: 0 }],
+  tabs: [{ name: "镜像管理", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
