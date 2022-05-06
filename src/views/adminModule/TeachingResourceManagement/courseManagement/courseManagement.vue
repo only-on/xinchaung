@@ -62,7 +62,7 @@
             <span>课程属性：</span>
             <a-select v-model:value="searchInfo.is_public" placeholder="请选择课程属性">
               <a-select-option :value="1">公开课程</a-select-option>
-              <a-select-option :value="0">我的课程</a-select-option>
+              <a-select-option :value="0">教师课程</a-select-option>
             </a-select>
           </div>
           <div class="item">

@@ -6,6 +6,34 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "29481517",
+      "name": "windows",
+      "font_class": "windows",
+      "unicode": "e661",
+      "unicode_decimal": 58977
+    },
+    {
+      "icon_id": "29481518",
+      "name": "cpu",
+      "font_class": "cpu",
+      "unicode": "e662",
+      "unicode_decimal": 58978
+    },
+    {
+      "icon_id": "29481519",
+      "name": "docker",
+      "font_class": "docker",
+      "unicode": "e663",
+      "unicode_decimal": 58979
+    },
+    {
+      "icon_id": "29481520",
+      "name": "linux",
+      "font_class": "linux",
+      "unicode": "e664",
+      "unicode_decimal": 58980
+    },
+    {
       "icon_id": "17284885",
       "name": "举手",
       "font_class": "jushou",
