@@ -48,7 +48,7 @@
     </div>
   </a-spin>
 
-  <a-modal v-model:visible="Visible"  :title="`课程归档`" class="setupVisible" :width="490">
+  <!-- <a-modal v-model:visible="Visible"  :title="`课程归档`" class="setupVisible" :width="490">
     <div class="title">课程已归档并为您导出了该课程归档数据文件</div>
     <div class="file">
       <span class="img" :style="`background-image: url(${getFileTypeIcon(activeCourse.name)});`"></span>
@@ -57,7 +57,47 @@
     <template #footer>
       <Submit @submit="Save" @cancel="cancel" :okText="'下载'"></Submit>
     </template>
-  </a-modal>
+  </a-modal> -->
+  <a-drawer :title="'课程归档文件下载'" class="setupVisible" :destroyOnClose="true" :visible="Visible" width="640" @close="cancel">
+    <div class="fileList">
+      <div class="file flexCenter">
+        <div class="flexCenter">
+          <span class="img" :style="`background-image: url(${getFileTypeIcon(activeCourse.name)});`"></span>
+          <span>{{activeCourse.name}}</span>
+        </div>
+        <a-button type="link" @click="Save(2)">下载</a-button>
+      </div>
+      <div class="file flexCenter">
+        <div class="flexCenter">
+          <span class="img" :style="`background-image: url(${getFileTypeIcon(activeCourse.name)});`"></span>
+          <span>{{activeCourse.name}}</span>
+        </div>
+        <a-button type="link" @click="Save(2)">下载</a-button>
+      </div>
+      <div class="file flexCenter">
+        <div class="title">学生录屏</div>
+        <a-button type="link" @click="Save(2)">批量下载</a-button>
+      </div>  
+    </div>
+    <div class="tableContent">
+      <a-spin :spinning="RecordingScreen.loading" size="large" tip="Loading...">
+        <a-config-provider>
+          <a-table :columns="columns" :data-source="RecordingScreen.list"
+            :pagination="{ hideOnSinglePage: false, total: RecordingScreen.total, pageSize:10,current: RecordingScreen.page, onChange: onChange}"
+            :row-selection="{ selectedRowKeys: RecordingScreen.selectedRowKeys, onChange: onSelectChange,}"
+            rowKey="id">
+
+            <template #operation="{ record }">
+              <a-button type="link" @click="Save(record)">下载</a-button>
+            </template>
+          </a-table>
+          <template #renderEmpty>
+            <div><Empty type="tableEmpty" /></div>
+          </template>
+        </a-config-provider>
+      </a-spin>
+    </div>
+  </a-drawer>
 </template>
 
 <script lang="ts" setup>
@@ -292,13 +332,56 @@ const archives=(val: any)=>{
   Visible.value=true
   // activeCourse.name=val.name
 }
-const Save=()=>{
+const Save=(val:any)=>{
   // let url=`${env?'/proxyPrefix':''}${activeCourse.file_url}`
   // downloadUrl(url,activeCourse.name)
   Visible.value=false
 }
 const cancel=()=>{
   Visible.value=false
+}
+// 课程归档
+const columns=[
+  {
+    title: "实验名称",
+    dataIndex: "name",
+    align: "center",
+  },
+  {
+    title: "操作",
+    dataIndex: "operation",
+    align: "center",
+    slots: { customRender: "operation" },
+  },
+]
+const RecordingScreen:any=reactive({
+  loading:false,
+  limit:10,
+  page:1,
+  total:0,
+  list:[{name:'test'}]
+})
+const GetRecordingScreen=()=>{
+  return
+  let obj={
+    ...RecordingScreen
+  }
+  RecordingScreen.list.length=0
+  RecordingScreen.loading=true
+  http.getAllCourseStudent({param:{...obj}}).then((res:any)=>{
+    let {list,page}=res.data
+    RecordingScreen.total=page.totalCount
+    RecordingScreen.list.push(...list)
+    RecordingScreen.loading=false
+  })
+}
+const onSelectChange=(selectedRowKeys: any, selectedRows: any)=> {
+  RecordingScreen.selectedRowKeys = selectedRowKeys;
+  // RecordingScreen.selectedRows = selectedRows;
+}
+const onChange=(page: any, pageSize: any)=> {
+  RecordingScreen.page = page;
+  GetRecordingScreen()
 }
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
@@ -454,22 +537,23 @@ onMounted(() => {
   }
   .setupVisible{
     color: var(--black-65);
-    .title{
-      padding-bottom: 24px;
-    }
-    .file{
-      display: flex;
-      align-items: center;
-      .img{
-        width: 32px;
-        height: 32px;
-        background-size: 100% 100%;
-        background-repeat: no-repeat;
-        margin-right: 10px;
+    .fileList{
+      .file{
+        justify-content: space-between;
+        border-bottom: 1px dashed rgba(0,0,0,0.14);
+        padding: 12px 0;
+        .img{
+          width: 32px;
+          height: 32px;
+          background-size: 100% 100%;
+          background-repeat: no-repeat;
+          margin-right: 10px;
+        }
+        .title{
+          color: rgba(0,0,0,0.85);
+          font-size: 16px;
+        }
       }
-    }
-    .ant-btn{
-      margin:  0 1rem;
-    }
+    } 
   }
 </style>
