@@ -88,7 +88,8 @@ const vmApi = request.vmApi;
 var reportTemplateData: Ref<any> = ref(0);
 provide("reportTemplateData", reportTemplateData);
 var templateId: Ref<any> = ref();
-var reportId: any = inject("reportId");
+const baseInfo: any = inject("baseInfo")
+const reportId: any = ref(baseInfo?.current?.id || 0);
 console.log(reportId, "reportId");
 const fileList: Ref<any> = ref([]);
 watch(
@@ -201,7 +202,8 @@ function downLoadExperReport(fileurl: any, filename: any) {
 onMounted(() => {
   //获取实验模板信息
   // experReport({csc_id:reportId.value})
-  reportId ? experReport({ csc_id: reportId.value }) : "";
+  console.log(baseInfo.value?.current?.id)
+  baseInfo.value?.current?.id ? experReport({ csc_id: baseInfo.value.current.id }) : "";
 });
 </script>
 <style lang="less" scoped>

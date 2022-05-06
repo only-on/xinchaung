@@ -25,15 +25,15 @@ export default {
     runCodeApi: { url: "/api/operate/crypts/run", method: 'POST' },
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
     // 实验报告
-    experimentalReport: { url: "/report/record/create", method: 'POST' },
-    updateTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'json' },
-    updateOnlineTemplateReport: { url: '/report/record/student-update', method: 'POST', dataType: 'formdata' },
+    experimentalReport: { url: "/api/yii/report/record/create", method: 'POST' },
+    updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'json' },
+    updateOnlineTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
     // 提交步骤/查看答案
     stepActionApi: { url: "/api/operate/operates/step", method: 'POST' },
 
     // 课程笔记
-    getNoteApi:{url: "/student-course/note", method: 'GET'},  // 
-    saveNoteApi:{url:"/student-course/setnote", method: 'POST', dataType: 'json'}, // 课程
+    getNoteApi:{url: "/api/yii/student-course/note", method: 'GET'},  // 
+    saveNoteApi:{url:"/api/yii/student-course/setnote", method: 'POST', dataType: 'json'}, // 课程
 
     // 实训笔记
     getTrainNoteApi:{url: "/student-train/note", method: 'GET'},  // 
