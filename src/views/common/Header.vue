@@ -292,7 +292,7 @@ export default defineComponent({
           name: "素材资源管理",
           parent_id: 162,
           sort: 1,
-          url: "/admin/TeachingResourceManagement/courseManagement",
+          url: "/admin/TeachingResourceManagement/resourcesManagement",
         },
         {
           children: [],

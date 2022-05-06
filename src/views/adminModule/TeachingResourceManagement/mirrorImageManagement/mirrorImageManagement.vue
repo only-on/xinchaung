@@ -12,6 +12,27 @@
             </div>
             <div class="type">ARM</div>
           </div>
+          <div class="progressItem progressItem2">
+            <div class="text flexCenter">
+              <span class="iconfont icon-docker"></span>
+              <span class="num">23</span>
+            </div>
+            <div class="type">Docker</div>
+          </div>
+          <div class="progressItem progressItem3">
+            <div class="text flexCenter">
+              <span class="iconfont icon-linux"></span>
+              <span class="num">145</span>
+            </div>
+            <div class="type">KVM-Linux</div>
+          </div>
+          <div class="progressItem progressItem4">
+            <div class="text flexCenter">
+              <span class="iconfont icon-windows"></span>
+              <span class="num">89</span>
+            </div>
+            <div class="type">KVM-Windows</div>
+          </div>
         </div>
       </div>
       <div class="item item4">
@@ -202,14 +223,19 @@ onMounted(() => {
           padding: 12px;
           .text{
             justify-content: space-between;
-            .img{
-
+            .iconfont{
+              font-size: 26px;
             }
             .num{
               font-size: 28px;
               color: #3a3b43;
               font-weight: 400;
             }
+          }
+          .type{
+            font-size: 12px;
+            color:#363D5F;
+            text-align: right;
           }
         }
         .progressItem1{
