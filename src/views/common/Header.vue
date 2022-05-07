@@ -562,7 +562,8 @@ export default defineComponent({
       vmApi.createExamples({ param: params }).then((res: any) => {
         if (res.status === 1) {
           router.push({
-            path: "/vm/vnc",
+            // path: "/vm/vnc",
+            path: "/vm",
             query: {
               connection_id: res.data.connection_id,
               opType: "help",
@@ -570,6 +571,7 @@ export default defineComponent({
               taskId: val.taskId,
               topoinst_uuid: res.data.topoinst_uuid,
               topoinst_id: res.data.topoinst_id,
+              experType: 1
             },
           });
         }
