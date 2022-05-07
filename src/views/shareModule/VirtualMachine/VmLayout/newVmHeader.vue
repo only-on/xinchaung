@@ -1260,15 +1260,20 @@ function getKeyword(val: any) {
     : [];
   return keywords.join(" , ");
 }
+let questionTimer: NodeJS.Timer | null = null;
 // f
 onMounted(() => {
   
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
+  clearInterval(Number(questionTimer));
   if (experType !== 6 && experType !== 7 && role === 4) {
     times();
     getQuestionList(false);
+    questionTimer = setInterval(() => {
+      getQuestionList(false);
+    }, 3000)
   }
 }),
   onBeforeRouteLeave(() => {
@@ -1276,6 +1281,7 @@ onMounted(() => {
     clearInterval(Number(timer));
     clearInterval(Number(viodeTimer));
     clearInterval(Number(delayTimer));
+    clearInterval(Number(questionTimer));
   });
 
 // function test(){
