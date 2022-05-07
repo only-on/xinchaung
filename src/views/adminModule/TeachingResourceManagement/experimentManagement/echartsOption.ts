@@ -2,6 +2,7 @@ import * as echarts from "echarts"
 import 'echarts-wordcloud';
 const colorList = ['#fe9956', ' #fed755', '#32d0db', '#708cf3']
 function HotWords(id:any, data: any){
+  console.log(id,data)
     const option = {
         // 图表标题
         title: {
@@ -67,7 +68,7 @@ function HotWords(id:any, data: any){
     document.getElementById(id)?.removeAttribute("_echarts_instance_");
     var chartDom:any=document.getElementById(id)
     const chart = echarts.init(chartDom)
-      chart && chart.setOption(option);
+    chart && chart.setOption(option);
   }
 function echartsPie(id:any,data:any){
     const option={
@@ -141,8 +142,8 @@ function echartsPie(id:any,data:any){
            show: false
          },
          data: [
-           { value: 1048, name: '私有实验' },
-           { value: 735, name: '公开实验' }
+           { value:data.privateContentsCount, name: '私有实验' },
+           { value:data.publicContentsCount, name: '公开实验' }
          ]
        }
      ]
@@ -168,7 +169,8 @@ function echartsBar(id:any,data:any){
     },
     xAxis: {
       type: 'category',
-      data: ['视频实验', '桌面实验', '文档实验', '任务制实验', '命令行实验', 'IDE实验', 'Jupyter实验'],
+      // data: ['视频实验', '桌面实验', '文档实验', '任务制实验', '命令行实验', 'IDE实验', 'Jupyter实验'],
+      data:data.names,
       axisLabel: {
         interval:0,//横轴信息全部显示
         // rotate: 60,//60度角倾斜显示
@@ -181,7 +183,8 @@ function echartsBar(id:any,data:any){
     },
     series: [
       {
-        data: [120, 200, 150, 80, 70, 110, 130],
+        // data: [120, 200, 150, 80, 70, 110, 130],
+        data:data.numbers,
         type: 'bar',
         barWidth:21,
         itemStyle: {

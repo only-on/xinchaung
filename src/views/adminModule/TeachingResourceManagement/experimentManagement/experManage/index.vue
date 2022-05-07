@@ -15,7 +15,7 @@
         <span style="width:50px">实验类型</span>
         <a-input
           style="width:224px"
-          v-model:value="ForumSearch.name"
+          v-model:value="ForumSearch.type"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -24,7 +24,7 @@
         <span style="width:50px">实验属性</span>
         <a-input
           style="width:224px"
-          v-model:value="ForumSearch.name"
+          v-model:value="ForumSearch.nnn"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -67,6 +67,12 @@
     const ForumSearch:any=reactive({
         name:''
     })
+    interface Props {
+      data: any[]; 
+    }
+    const props = withDefaults(defineProps<Props>(), {
+      data: () => [],
+    });
     const columns = [
         {
           title: '实验名称',
@@ -94,7 +100,6 @@
           dataIndex: 'address',
         },
       ];
-    const data:any=ref([]) 
     const tableData:any=reactive({})
     const params:any=reactive({})
     function search(){
