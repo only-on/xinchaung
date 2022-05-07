@@ -5,31 +5,31 @@
       <div class="item item2">
         <h3 class="statisticalTitle">课程状态</h3>
         <div class="progressItem">
-          <a-progress :percent="30" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.pendingCourseCount)" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">未开始课程</span>
-            <span class="num">120</span>
+            <span class="num">{{analysisObj.pendingCourseCount}}</span>
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="30" :status="'success'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.progressingCourseCount)" :status="'success'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">进行中课程</span>
-            <span class="num">96</span>
+            <span class="num">{{analysisObj.progressingCourseCount}}</span>
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="30" :strokeColor="'#86A7FF'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.closingCourseCount)" :strokeColor="'#86A7FF'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">结束课程</span>
-            <span class="num">80</span>
+            <span class="num">{{analysisObj.closingCourseCount}}</span>
           </div>
         </div>
       </div>
       <div class="item item3">
         <h3 class="statisticalTitle">正在开设课程</h3>
         <div class="started">
-          <div class="num">846</div>
+          <div class="num">{{analysisObj.allCourseCount}}</div>
           <div class="img"></div>
         </div>
       </div>
@@ -38,7 +38,7 @@
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
-            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
+            <span class="left2">{{analysisObj.videoUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
@@ -60,15 +60,16 @@
           </div>
           <div  class="item">
             <span>课程属性：</span>
-            <a-select v-model:value="searchInfo.courseAttribute" placeholder="请选择课程属性">
+            <a-select v-model:value="searchInfo.courseAttribute" placeholder="请选择课程属性" @change="courseAttributechange">
+              <a-select-option value="">全部</a-select-option>
               <a-select-option :value="1">公开课程</a-select-option>
               <a-select-option :value="0">教师课程</a-select-option>
             </a-select>
           </div>
           <div class="item">
             <span>课程状态：</span>
-            <a-select v-model:value="searchInfo.courseState" placeholder="请选择课程状态">
-              <a-select-option :value="0">全部</a-select-option>
+            <a-select v-model:value="searchInfo.courseState" placeholder="请选择课程状态" @change="courseStatechange">
+              <a-select-option value="">全部</a-select-option>
               <a-select-option :value="2">未开始</a-select-option>
               <a-select-option :value="3">进行中</a-select-option>
               <a-select-option :value="1">已结束</a-select-option>
@@ -87,15 +88,15 @@
               :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #state="{ record }">
-                <div>{{`${['已结束','未开始','进行中'][record.state-1]}`  }}</div>
+              <template #courseState="{ record }">
+                <div :class="{'进行中':'in','未开始':'nostarted','已结束':''}[record.courseState]">{{record.courseState}}</div>
               </template>
-              <template #is_public="{ record }">
-                <div>{{ record.is_public===1?'公开课程':'私有课程' }}</div>
+              <template #courseName="{ record }">
+                <div class="courseName">{{record.courseName}}</div>
               </template>
             </a-table>
             <template #renderEmpty>
-              <div><Empty type="tableEmpty" /></div>
+              <div v-if="!loading"><Empty type="tableEmpty" /></div>
             </template>
           </a-config-provider>
         </a-spin>
@@ -120,48 +121,49 @@ updata({
 const columns= [
         {
           title: "课程名称",
-          dataIndex: "name",
+          dataIndex: "courseName",
           align: "left",
           ellipsis: true,
+          slots: { customRender: "courseName" },
         },
         {
           title: "课程属性",
-          dataIndex: "is_public",
+          dataIndex: "courseAttribute",
           align: "center",
-          slots: { customRender: "is_public" },
+          // slots: { customRender: "is_public" },
         },
         {
           title: "课程所属",
-          dataIndex: "user_name",
+          dataIndex: "courseGroup",
           align: "center",
         },
         {
           title: "课程状态",
-          dataIndex: "state",
+          dataIndex: "courseState",
           align: "center",
-          slots: { customRender: "state" },
+          slots: { customRender: "courseState" },
         },
         {
           title: "实验数",
-          dataIndex: "content_total",
+          dataIndex: "contentsCount",
           align: "center",
         },
         {
           title: "课时",
-          dataIndex: "class_total",
+          dataIndex: "classesCount",
           align: "center",
         },
         {
           title: "操作记录大小",
-          dataIndex: "email",
+          dataIndex: "recordSize",
           align: "center",
           ellipsis: true,
         },
       ]
 var searchInfo:any=reactive({
   courseName:'',
-  courseAttribute:1,
-  courseState:0,
+  courseAttribute:'',
+  courseState:'',
 
   page:1,
   limit:10,
@@ -198,13 +200,24 @@ const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
   initData()
 }
+const courseAttributechange=(val: any)=> {
+  searchInfo.page=1
+  initData()
+}
+const courseStatechange=(val: any)=> {
+  searchInfo.page=1
+  initData()
+}
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
+const getpercent=(val:number)=>{
+  return Math.ceil(val/analysisObj.allCourseCount)
+}
 onMounted(() => {
-  // initData()
+  initData()
 });
 </script>
 
@@ -310,6 +323,12 @@ onMounted(() => {
     }
     .tableContent{
       margin-top: 2rem;
+      .in{
+        color: rgba(6,178,104,0.65);
+      }
+      .nostarted,.courseName{
+        color:var(--primary-color);
+      }
     }
 
   }

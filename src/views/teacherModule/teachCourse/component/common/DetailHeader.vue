@@ -78,7 +78,7 @@
                 <span>/{{info.content_total}}</span>
               </div>
               <div class="item4">
-                <div class="progress-inner" :style="{ width: '50%' }"></div>
+                <div class="progress-inner" :style="{ width: `${info.progress}%` }"></div>
               </div>
               <div class="item5">
                 <span>课程完成率</span>
