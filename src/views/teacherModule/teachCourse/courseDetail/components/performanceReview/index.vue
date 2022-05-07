@@ -55,7 +55,7 @@
           <template #customAutoTitle> 自动评分</template>
           <template #customExercisesTitle> 习题 </template>
           <template #reference="{ text, record, index }">
-            <span class="table-a-link" @click="clickFun('video', record, index)"
+            <span v-if='record.video!=null' class="table-a-link" @click="clickFun('video', record, index)"
               >录屏</span
             >
           </template>
@@ -70,7 +70,7 @@
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('report', record, index)"
+              <span :class="Number(record.status)<2?'no-link':'table-a-link'" @click="Number(record.status)<2?'':clickFun('report', record, index)"
                 >评阅</span
               >
             </template>
@@ -109,7 +109,7 @@
               ></span>
             </template>
             <template v-else>
-              <span class="table-a-link" @click="clickFun('score', record, index)"
+              <span :class="Number(record.status)<2?'no-link':'table-a-link'" @click="Number(record.status)<2?'':clickFun('score', record, index)"
                 >评分</span
               >
             </template>
@@ -655,5 +655,9 @@ onMounted(() => {
       }
     }
   }
+}
+.no-link{
+  cursor:not-allowed;
+  color:var(--black-45);
 }
 </style>
