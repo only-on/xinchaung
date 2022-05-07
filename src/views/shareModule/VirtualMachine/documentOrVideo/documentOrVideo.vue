@@ -6,7 +6,7 @@
           style="width: 100%; height: 650px"
           controls="true"
           v-if="baseInfo.base_info.files.length"
-          :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.content_task_files[0].file_url"
+          :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.files[0].file_url"
         ></video>
       </div>
       <div class="document-wrap setScrollbar" v-else-if="taskType == 7">
