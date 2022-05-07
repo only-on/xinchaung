@@ -22,35 +22,35 @@
  */
 const menuRole= {
     vnc:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     cmd:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     task:{
-        4:['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
+        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     webide:{
-        4:['guide','note','report','question','delayed','end'],
+        4:['guide','note','report','question','classTest','delayed','end'],
         3:['guide','question','end'],
     },
     jupyter:{
-        4:['guide','note','report','question','delayed','end'],
+        4:['guide','note','report','question','classTest','delayed','end'],
         3:['guide','question','end'],
     },
     document:{
-        4:['guide','note','report','question','end'],
+        4:['guide','note','report','question','classTest','end'],
         3:['guide','question','end'],
     },
     video:{
-        4:['guide','note','report','question','end'],
+        4:['guide','note','report','question','classTest','end'],
         3:['guide','question','end'],
     },
     studyType:{
@@ -81,7 +81,7 @@ type taskType="vnc"|"ssh"|"cmd"|"task"|"webide"|"jupyter"|"document"|"video"
 
 type studyType="test"|"recommend"
 
-export type menuTypeArr=['guide','note','report','question','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools']
+export type menuTypeArr=['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools']
 
 /**
  * @description 获取具有权限的按钮

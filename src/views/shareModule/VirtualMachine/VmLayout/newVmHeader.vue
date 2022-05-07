@@ -9,7 +9,7 @@
         <span class="iconfont icon-zuojiantou pointer" @click="back"></span>
         <span class="name">{{ baseInfo?.base_info?.name }}</span>
       </div>
-      <div class="class-test pointer" @click="openQuizModal" v-if="role == 4">
+      <div class="class-test pointer" @click="openQuizModal" v-if="roleArry.includes('classTest')">
         <span>随堂测试</span>
         <span>({{ answerNum + "/" + oldQuizPaperList.length }})</span>
         <i class="sign" v-if="answerNum !== oldQuizPaperList.length"></i>
@@ -1193,6 +1193,7 @@ async function openQuizModal() {
 // 提交
 function submitQuiz() {
   let params: any = {
+    course_student_content_id: baseInfo.value.current.id,
     answer: [],
   };
   for (let i = 0; i < quizPaperList.value.length; i++) {
@@ -1268,8 +1269,10 @@ onMounted(() => {
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
   clearInterval(Number(questionTimer));
-  if (experType !== 6 && experType !== 7 && role === 4) {
+  if (roleArry.includes('delayed')) {
     times();
+  }
+  if (roleArry.includes('classTest')) {
     getQuestionList(false);
     questionTimer = setInterval(() => {
       getQuestionList(false);
