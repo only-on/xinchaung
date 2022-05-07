@@ -37,13 +37,13 @@
                 </div>
               </div>
               <div class="TitRight">
-                <div v-if="props.Editable === 'canStudy'">
+                <div v-if="props.Editable === 'canStudy' || role ===2">
                   <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
                   <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
                   <!-- <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
                   @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
-                  <span v-if="!a.TeachingAids">
+                  <span v-if="!a.TeachingAids && role !==2">
                     <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
                     <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
                     <a-button v-else type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
@@ -539,7 +539,7 @@ const ProcessingData=(data:any)=>{
           v.list.length?v.list.forEach((i:any)=>{
             //  教辅的展示 教师端设置后  后端已经过滤
             if(!i.TeachingAids){
-              if([1,2,3,4].includes(i.task_type)){
+              if([1,2,3].includes(i.task_type)){
                 // console.log(i.type_obj.name+'实验指导')
                 i.power=v.course_setting['is_show_content_guidance']===1?true:false 
               }
@@ -598,11 +598,12 @@ const power=(v:any,a:any)=>{
 }
 onMounted(() => {
   // console.log(props.courseId)
-  if(props.courseId && role === 3){
+  const { course_student_id,from} = route.query;
+  if((props.courseId && role === 3) || (from && from === 'courseManagement' && role===2)){
     getChaptersTree()
   }
   if(role === 4){
-    const { course_student_id} = route.query;
+    
     // console.log(course_student_id)
     StudentChaptersTree(Number(course_student_id))
   }

@@ -114,7 +114,7 @@
         </a-form-item>
       </a-form> -->
       <div class="item flexCenter">
-        <span>实验指导（VNC、Jupyter、IDE、命令行）是否显示</span>
+        <span>实验指导（VNC、IDE、命令行）是否显示</span>
         <a-switch v-model:checked="steupFormState.is_show_content_guidance" />
       </div>
       <div class="item flexCenter">

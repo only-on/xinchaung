@@ -32,7 +32,7 @@
         @click="detail(list)"
       >
         <div class="item-top">
-          <img :src="list.cover?list.cover:'src/assets/images/teacherMaterialResource/defaultCover.jpg'" alt="" />
+          <img :src="list.cover?list.cover:defaultCover" alt="头像" />
           <div class="labels">
             <span v-for="(v, index) in list.tags" :key="index">{{
               v + (index !== list.tags.length - 1 ? " / " : "")
@@ -78,6 +78,7 @@ import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import { bytesToSize } from "src/utils/common"
 import extStorage from "src/utils/extStorage";
+import defaultCover from 'src/assets/images/teacherMaterialResource/defaultCover.jpg'
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherMaterialResource;

@@ -92,7 +92,7 @@
                 <div :class="{'进行中':'in','未开始':'nostarted','已结束':''}[record.courseState]">{{record.courseState}}</div>
               </template>
               <template #courseName="{ record }">
-                <div class="courseName">{{record.courseName}}</div>
+                <div class="courseName" @click="viewDetail(record)">{{record.courseName}}</div>
               </template>
             </a-table>
             <template #renderEmpty>
@@ -110,6 +110,8 @@ import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
+import { useRouter } from "vue-router";
+const router=useRouter()
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
 updata({
@@ -215,6 +217,18 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
 }
 const getpercent=(val:number)=>{
   return Math.ceil(val/analysisObj.allCourseCount)
+}
+// /teacher/teacherCourse/Detail?currentTab=1&courseId=500173
+const viewDetail=(val:any)=>{
+  router.push({
+    path:'/teacher/teacherCourse/Detail',
+    query:{
+      currentTab:1,
+      courseId:val.id,
+      from:'courseManagement'
+    }
+  })
+  // return Math.ceil(val/analysisObj.allCourseCount)
 }
 onMounted(() => {
   initData()
@@ -328,6 +342,7 @@ onMounted(() => {
       }
       .nostarted,.courseName{
         color:var(--primary-color);
+        cursor: pointer;
       }
     }
 

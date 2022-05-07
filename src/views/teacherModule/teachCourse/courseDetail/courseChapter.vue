@@ -5,13 +5,13 @@
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
       </div>
-      <SetupChapter :Editable="(currentTab === '0' && role === 3)?'canEdit':'canStudy'" :courseId="Number(courseId)" />
+      <SetupChapter :Editable="getPower()" :courseId="Number(courseId)" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
-    <div class="rightContent" v-if="role === 4 || (currentTab === '1' && role === 3)">
+    <div class="rightContent" v-if="role === 4 || (currentTab === '1' && role === 3) || role===2">
       <Ranking :courseId="Number(courseId)"  v-if="role === 4"/>
       <graph :courseId="Number(courseId)" />
-      <relevantExpert :courseId="Number(courseId)" />
+      <relevantExpert :courseId="Number(courseId)" v-if="role !== 2" />
     </div>
   </div>
 </template>
@@ -50,6 +50,19 @@ const props = withDefaults(defineProps<Props>(), {
   
   courseDetail: ()=> {},      // 
 });
+const getPower=()=>{
+  let str=''
+  if(role===2){
+    str='readOnly'
+  }
+  if(currentTab === '0' && role === 3){
+    str='canEdit'
+  }
+  if((currentTab === '1' && role === 3) || role===4){
+    str='canStudy'
+  }
+  return str
+}
 onMounted(() => {
 
 });

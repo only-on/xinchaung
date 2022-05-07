@@ -1,6 +1,6 @@
 <template>
   <div class="chartTerr">
-    <div class="chartTerrLeft" :class="((currentTab === '1' && role === 3) || role === 4)?'chartTerrLeft2':''">
+    <div class="chartTerrLeft" :class="((currentTab === '1' && role === 3) || role === 4 || role ===2)?'chartTerrLeft2':''">
       <div class="myChapter textScrollbar">
         <ChapterList
           :ExternalOpen="ExternalOpen"
