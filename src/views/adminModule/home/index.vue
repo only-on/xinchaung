@@ -4,7 +4,7 @@
             <div class="entrance-left">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
-                    <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()">
+                    <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()" @click="toJump(item.link)">
                         <div>
                             <img :src="item.img">
                         </div>
@@ -48,7 +48,7 @@
                 课程活跃榜
                 </div>
                 <div>
-                    <activityList></activityList>
+                    <activityList :activeList='statisticData?.course_activity_list'></activityList>
                 </div>   
             </div>
         </div>
@@ -61,19 +61,19 @@
                 <div class="plateRight">
                     <div>
                         <div id="plate1"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>{{statisticData?.platform_resource.memTotal}}G</span></div>
                     </div>
                     <div>
                         <div id="plate2"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                        <div><span class="labelCon">CPU</span><span class='contentCon'>{{statisticData?.platform_resource.cpuCores}}核</span></div>
                     </div>
                     <div>
                         <div id="plate3"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                        <div><span class="labelCon">硬盘</span><span class='contentCon'>{{statisticData?.platform_resource.disk}}G</span></div>
                     </div>
                    <div>
                         <div id="plate4"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>100G</span></div>
+                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem}}个</span></div>
                    </div>   
                 </div>
             </div>
@@ -193,6 +193,8 @@
     import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
     import * as echarts from 'echarts';
     import activityList from './activityLIst.vue'
+    import request from "src/api/index";
+    const http = (request as any).adminHome;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     updata({ tabs: [], showContent: true, showNav: false });
@@ -214,30 +216,31 @@
       }
     ])
     const warningMessage:any=ref([
-        {title:'CPU使用率',percent:89,grade:'低风险',link:''},
-        {title:'内存使用率',percent:89,grade:'低风险',link:''},
-        {title:'GPU使用率',percent:89,grade:'中风险',link:''},
-        {title:'硬盘使用率',percent:80,grade:'高风险',link:''}
+        {title:'CPU使用率',percent:'--',grade:'低风险',link:''},
+        {title:'内存使用率',percent:'--',grade:'低风险',link:''},
+        {title:'GPU使用率',percent:'--',grade:'中风险',link:''},
+        {title:'硬盘使用率',percent:'--',grade:'高风险',link:''}
     ])
     const value1:any=ref('a')
     const value2:any=ref('')
     const enterNumber1:any=ref([])
     const enterNumber2:any=ref([])
+    const statisticData:any=ref()
     enterNumber1.value=[
         {
         img:img1,
         course:'课程门数',
-        number:'200',
+        number:'--',
         link:''
         },{
         img:img2,
         course:'实验数',
-        number:'10',
+        number:'--',
         link:''
         },{
         img:img3,
         course:'素材数',
-        number:'80',
+        number:'--',
         link:''
         }
     ];
@@ -245,17 +248,17 @@
         {
         img:img4,
         course:'教师数',
-        number:'200',
+        number:'--',
         link:''
         },{
         img:img5,
         course:'学生数',
-        number:'10',
+        number:'--',
         link:''
         },{
         img:img6,
         course:'预约人数',
-        number:'80',
+        number:'--',
         link:''
         }
     ]
@@ -289,23 +292,87 @@
         {name:'招贤纳士'},
         {name:'关注西普科技'},
     ]
+    function toJump(value:any){
+        router.push(value)
+    }
     function handleChange(value:any){
         console.log(value)
     }
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
+import router from "src/routers";
     function drawEcharts(id:any,option:any){
         document.getElementById(id)?.removeAttribute("_echarts_instance_");
         var chartDom:any=document.getElementById(id)
         var myChart = echarts.init(chartDom);
         myChart.setOption(option);
     }
+    const userActive:any=reactive({
+        hours:[],
+        teacherCount:[],
+        stuCount:[],
+        totalCount:[]
+    })
+    const resourceHistory:any=reactive({
+        hours:[],
+        cpu:[],
+        mem:[],
+        gpu:[],
+        disk:[]
+    })
+    const serveNode:any=ref()
+    function getData(){
+        http.statisData().then((res:any)=>{
+            if(res.code==1){
+                statisticData.value=res.data
+                enterNumber1.value[0].number=statisticData.value.course_content_cnt.course_cnt
+                enterNumber1.value[1].number=statisticData.value.course_content_cnt.content_cnt
+                enterNumber1.value[2].number=statisticData.value.course_content_cnt.dataset_cnt
+                enterNumber2.value[0].number=statisticData.value.user_cnt.teacher_cnt
+                enterNumber2.value[1].number=statisticData.value.user_cnt.student_cnt
+                enterNumber2.value[2].number=statisticData.value.user_cnt.curriculum_user_cnt
+                userActive.hours=statisticData.value.user_activity_list.hour_list
+                statisticData.value.user_activity_list.user_activity_list.forEach((item:any)=> {
+                    userActive.teacherCount.push(item.teacher_cnt)
+                    userActive.stuCount.push(item.student_cnt)
+                    userActive.totalCount.push(item.total_cnt)
+                });
+                drawEcharts('activity-echats',activityOption(userActive))
+                //历史资源
+                resourceHistory.hours=statisticData.value.history_recource.time_list
+                statisticData.value.history_recource.monitoring.forEach((item:any)=> {
+                    resourceHistory.cpu.push(item.cpu_use_rate)
+                    resourceHistory.mem.push(item.mem_use_rate)
+                    resourceHistory.gpu.push(item.gpu_use_rate)
+                    resourceHistory.disk.push(item.disk_use_rate)
+                });
+                drawEcharts('resource_echarts',resourceOption(resourceHistory))
+                //平台资源概览
+                drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G','#00cbc2'))
+                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核','#ff9544'))
+                drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G','#9872eb'))
+                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'个','#6993fe'))
+                
+                //服务节点状态
+                serveNode.value=statisticData.value?.single_node_resource
+                warningMessage.value[0].percent=serveNode.value?.cpuUseRate
+                warningMessage.value[1].percent=serveNode.value?.memUseRate
+                warningMessage.value[2].percent=serveNode.value?.gpuUseRate
+                warningMessage.value[3].percent=serveNode.value?.diskUseRate
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},'#6993fe'))
+            }
+        })
+    }
     onMounted(()=>{
-        drawEcharts('activity-echats',activityOption({}))
-        drawEcharts('resource_echarts',resourceOption({}))
-        drawEcharts('plate1',dashboardResource({},'#00cbc2'))
-        drawEcharts('plate2',dashboardResource({},'#ff9544'))
-        drawEcharts('plate3',dashboardResource({},'#9872eb'))
-        drawEcharts('plate4',dashboardResource({},'#6993fe'))
+        getData()
+        // drawEcharts('activity-echats',activityOption(userActive))
+        // drawEcharts('resource_echarts',resourceOption({}))
+        // drawEcharts('plate1',dashboardResource({},'#00cbc2'))
+        // drawEcharts('plate2',dashboardResource({},'#ff9544'))
+        // drawEcharts('plate3',dashboardResource({},'#9872eb'))
+        // drawEcharts('plate4',dashboardResource({},'#6993fe'))
         drawEcharts('node1',dashboardService({},'#00cbc2'))
         drawEcharts('node2',dashboardService({},'#ff9544'))
         drawEcharts('node3',dashboardService({},'#9872eb'))
@@ -376,6 +443,7 @@
         height: 480px;
         background-color: var(--white-100);
         padding: 20px;
+        overflow-y: auto;
     }
 }
 .flexTitle{
@@ -412,10 +480,16 @@
     justify-content: space-between;
     margin-top: 20px;
     .serverNode-left,.serverNode-right{
-        width: 49%;
+        // width: 49%;
         height: 359px;
         background-color: var(--white-100);
         // padding: 20px;
+    }
+    .serverNode-left{
+        width:53%;
+    }
+    .serverNode-right{
+        width:46;
     }
 }
 .serverNode-right{

@@ -29,7 +29,8 @@ function activityOption(data:any){
               type: 'category',
               boundaryGap: false,
               name:'',
-              data: ['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
+              // data: ['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
+              data:data.hours?data.hours:['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
             }
           ],
           yAxis: [
@@ -45,7 +46,8 @@ function activityOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[2,10,24,56,9,45,67,89,12]
+              // data:[2,10,24,56,9,45,67,89,12]
+              data:data.totalCount?data.totalCount:[]
             },
             {
               name: '学生',
@@ -53,7 +55,8 @@ function activityOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[3,4,56,9,67,67,12,86,34]
+              // data:[3,4,56,9,67,67,12,86,34]
+              data:data.stuCount
             },
             {
               name: '教师',
@@ -61,13 +64,14 @@ function activityOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[23,50,64,16,29,5,34,60,7]
+              // data:[23,50,64,16,29,5,34,60,7]
+              data:data.teacherCount
             }
           ]
     }
 return options
 }
-function resourceOption(data:any){
+function resourceOption(data:any,){
     const options:any={
         title: {
             text: ''
@@ -97,7 +101,7 @@ function resourceOption(data:any){
               type: 'category',
               boundaryGap: false,
               name:'',
-              data: ['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
+              data:data.houes?data.houes:['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
             }
           ],
           yAxis: [
@@ -113,7 +117,8 @@ function resourceOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[2,10,24,56,9,45,67,89,12]
+              // data:[2,10,24,56,9,45,67,89,12]
+              data:data.cpu
             },
             {
               name: '内存',
@@ -121,7 +126,7 @@ function resourceOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[3,4,56,9,67,67,12,86,34]
+              data:data.mem
             },
             {
               name: 'GPU',
@@ -129,7 +134,7 @@ function resourceOption(data:any){
               emphasis: {
                 focus: 'series'
               },
-              data:[23,50,64,16,29,5,34,60,7]
+              data:data.gpu
             },
             {
                 name: '磁盘',
@@ -137,14 +142,14 @@ function resourceOption(data:any){
                 emphasis: {
                   focus: 'series'
                 },
-                data:[8,41,7,16,22,5,33,44,5]
+                data:data.disk
               }
           ]
     }
     return options
 }
 
-function dashboardResource(data:any,color:any){
+function dashboardResource(data:any,data1:any,type:any,color:any){
   const options:any={
     color:color,
     series: [
@@ -212,7 +217,8 @@ function dashboardResource(data:any,color:any){
           // formatter:function (value:any) {
           //   return `${value}G`
           // },
-          formatter: "{value}G",
+          // formatter: "{value}"+type,
+          formatter: data+type,
           rich: {
             "<style_name>": {
               align: "left"
@@ -221,7 +227,7 @@ function dashboardResource(data:any,color:any){
         },
         data: [
           { name:'剩余',
-            value: 70
+            value:data1
           }
         ]
       }
@@ -296,14 +302,14 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            return value+'G/'+100+'G'
+            return data.use+'/'+data.total+data.type
           }
         },
         // return params[0].name + '<br>收缩压 : '+params[0].data +' mmHg'+ '<br>舒张压 : '+params[1].data +' mmHg'
         data: [
           {
-            value:23,
-            name:"GPU"
+            value:data.rate,
+            name:data.name
           }
         ]
       }

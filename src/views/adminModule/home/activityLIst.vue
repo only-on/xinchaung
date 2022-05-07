@@ -1,9 +1,9 @@
 <template>
     <div class="Ranking">
-        <div class="gamePlayer flexCenter" v-for="(v,k) in list" :key="v">
+        <div class="gamePlayer flexCenter" v-for="(v,k) in activeList" :key="v">
             <div class="user flexCenter">
             <div class="rank" :class="Number(k)<3?`rank${Number(k)+1}`:''">{{Number(k)>2?Number(k)+1:''}}</div>
-            <div class="name" :title="v">{{v}}</div>
+            <div class="name" :title="v.name">{{v.name}}</div>
             </div>
         </div>
     </div>
@@ -12,26 +12,25 @@
   <script lang="ts" setup>
   import { ref, toRefs, onMounted ,reactive} from "vue";
   import request from 'src/api/index'
-//   const http=(request as any).teachCourse
-//   interface Props {
-//     courseId: number;
-//   }
-//   const props = withDefaults(defineProps<Props>(), {
-//     courseId: 0,
-//   });
-  var list:any=ref([])
-  function courseRankList(){
-    list.value=['大数据技术原理课程相关概念大数据技术原理课程相关概念大数据技术原理课程相关概念','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念哈阿啊阿啊阿啊阿啊阿啊阿啊阿啊']
-    // list.length=0
-    // http.courseRankList({urlParams: {courseId:props.courseId}}).then((res: any) => {
-    //   const {data}=res
-    //   list.push(...data)
-    //   list=['大数据技术原理课程相关概念...','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念...']
-    // });
+  interface Props {
+    activeList:any;
   }
+  const props = withDefaults(defineProps<Props>(), {
+    activeList:[],
+  });
+  // var list:any=ref([])
+  // function courseRankList(){
+  //   list.value=['大数据技术原理课程相关概念大数据技术原理课程相关概念大数据技术原理课程相关概念','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念哈阿啊阿啊阿啊阿啊阿啊阿啊阿啊']
+  //   // list.length=0
+  //   // http.courseRankList({urlParams: {courseId:props.courseId}}).then((res: any) => {
+  //   //   const {data}=res
+  //   //   list.push(...data)
+  //   //   list=['大数据技术原理课程相关概念...','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念讲解','大数据技术原理课程相关概念...']
+  //   // });
+  // }
   onMounted(() => {
     // console.log(props.courseId)
-    courseRankList()
+    // courseRankList()
   });
   
   </script>
@@ -44,7 +43,7 @@
       }
       .gamePlayer{
         width: 100%;
-        line-height: 50px;
+        line-height: 40px;
         .rank{
           width: 24px;
           height: 20px;

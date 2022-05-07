@@ -97,6 +97,7 @@
           <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
           <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
           <report v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
+          <remark v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
         </div>
       </a-modal>
   </div>
@@ -111,6 +112,7 @@ import { useRouter ,useRoute } from 'vue-router';
 import exper from "../courseDetail/components/exper.vue";
 import report from "../courseDetail/components/report.vue";
 import cvideo from "../courseDetail/components/video.vue";
+import remark from "../courseDetail/components/remark.vue";
 const http = (request as any).studentScore;
 const route=useRoute()
 const courseId:any=route.query.courseId  //课程id
