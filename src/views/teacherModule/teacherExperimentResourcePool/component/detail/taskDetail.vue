@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns" v-if="currentTab === '0'">
+    <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <a-button type="primary" @click="preview = false" v-if="preview"
         >编辑</a-button
       >
@@ -36,7 +36,7 @@ const $message: MessageApi = inject("$message")!;
 const http = request.teacherExperimentResourcePool;
 const router = useRouter();
 const route = useRoute();
-const { id, currentTab } = route.query;
+const { id, currentTab, type } = route.query;
 const preview = ref<boolean>(true);
 
 interface Ifiles {

@@ -22,9 +22,9 @@
               <span class="iconfont icon-timu"></span>
               <span>报告模板</span>
             </div>
-            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2 || !(isWsConnect||currentState===1) ? 'none-event':''">
+            <div class="Lesson flexCenter" @click="lessonPreparation" v-if="!props.create" :class="currentState===2&&connectStatus===1 || currentState===3 ? 'none-event':''">
               <span class="iconfont icon-jitibeike"></span>
-              <span>{{currentState===1?'开始备课':currentState===2||!isWsConnect?'准备中...':'进入'}}</span>
+              <span>{{currentState===1||!connectStatus?'开始备课':currentState===2&&connectStatus===1?'准备中...':'进入'}}</span>
             </div>
           </div>
         </div>
@@ -144,6 +144,8 @@ const selectChaptert=(val:any)=>{
 // 选中章节下实验
 const selectExperiment=(val:any)=>{
   // console.log(val)
+  currentState.value = 1
+  connectStatus.value = 0
   state.activeExperimentObj={...val}
   experimentGuideLoading.value=false
   // 获取实验详情
@@ -186,10 +188,12 @@ const cancelViewReport=()=>{
 const currentState = ref(1)
 const is_connect = ref(false)  // 当前ws是否连接成功
 const lessonPreparation=()=>{
-  if (currentState.value === 3) {
+  if (currentState.value === 2&& connectStatus.value===2) {
+    currentState.value = 3
     goToVm(router, routeQuery)
     return
   }
+  connectStatus.value = 1
   const {id, task_type} = state.activeExperimentObj
   const param: any = {
     type: "course",  // 实验
@@ -199,16 +203,18 @@ const lessonPreparation=()=>{
   };
   if (task_type === 6 || task_type === 7 || task_type === 3) {
     isWsConnect.value = true
+    connectStatus.value = 2
   } else {
     isWsConnect.value = false
   }
   // 准备环境
   if (currentState.value === 1) {
-    currentState.value = 2
+    // currentState.value = 2
     prepareEnv(param).then(() =>{
-      currentState.value = 3
+      currentState.value = 2
     }).catch(() => {
       currentState.value = 1
+      connectStatus.value = 0
     })
     return
   }

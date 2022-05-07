@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns" v-if="currentTab === '0'">
+    <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <span class="tips">仅支持ipynb文件</span>
       <a-upload
         name="file"
@@ -29,7 +29,7 @@ import { readFile } from "src/utils/getFileType";
 import { useRouter, useRoute } from "vue-router";
 const router = useRouter()
 const route = useRoute();
-const { currentTab }  = route.query
+const { currentTab, type }  = route.query
 const $message: MessageApi = inject("$message")!;
 const http = request.teacherExperimentResourcePool;
 interface Ifiles {

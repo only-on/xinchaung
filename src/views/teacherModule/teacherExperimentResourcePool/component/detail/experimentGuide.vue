@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns" v-if="currentTab === '0'">
+    <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <a-button type="primary" @click="preview = false" v-if="preview"
         >编辑</a-button
       >
@@ -37,7 +37,7 @@ import request from "src/api/index";
 
 const router = useRouter();
 const route = useRoute();
-const { currentTab }  = route.query
+const { currentTab, type }  = route.query
 const http = (request as any).teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
 const preview = ref<boolean>(true);

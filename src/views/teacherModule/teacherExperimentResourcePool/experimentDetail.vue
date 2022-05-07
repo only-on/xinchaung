@@ -102,7 +102,7 @@ import { getTypeList } from './config'
 import { theme } from "src/utils/theme"
 import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
-import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
@@ -134,46 +134,55 @@ const addToCourse = () => {
   isShowModal.value = true;
 };
 // 开启环境
+let isWsConnect = computed({
+  get: () => {
+    return store.state.isWsConnect
+  },
+  set: val => {
+    store.commit("setIsWsConnect",val)
+  }
+})
+let connectStatus = computed({
+  get: () => {
+    return store.state.connectStatus
+  },
+  set: val => {
+    store.commit('setConnectStatus', val)
+  }
+})
 const openVncState = ref(false)
+const currentState = ref(1)// 1未开始学习  2准备中   3准备完成 待进入
 const openVnc = () => {
-  openVncState.value = true
+  if (currentState.value === 2&& connectStatus.value===2) {
+    currentState.value = 3
+    goToVm(router, routeQuery)
+    return
+  }
+  connectStatus.value = 1
+  const {id, task_type} = experimentDetail
   const param: any = {
     type: "content",  // 实验
     opType: type ? type : "prepare",
     taskId: experimentDetail.id,
     experType: experimentDetail.task_type
   };
-  // 文档视频实验
-  if (experimentDetail.task_type === 6 || experimentDetail.task_type === 7) {
-    router.push({
-      path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: experimentDetail.task_type
-      },
-    });
+  if (task_type === 6 || task_type === 7 || task_type === 3) {
+    isWsConnect.value = true
+    connectStatus.value = 2
+  } else {
+    isWsConnect.value = false
+  }
+  // 准备环境
+  if (currentState.value === 1) {
+    // currentState.value = 2
+    prepareEnv(param).then(() =>{
+      currentState.value = 2
+    }).catch(() => {
+      currentState.value = 1
+      connectStatus.value = 0
+    })
     return
   }
-  if (experimentDetail.task_type === 3 && experimentDetail.programing_type === 1) {
-    // webide
-    router.push({
-      path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: experimentDetail.task_type
-      },
-    });
-    return
-  }
-  toVmConnect(router, param, routeQuery).then((res: any) => {
-    openVncState.value = false
-  })
 }
 // 报告模板
 const reportTemplate = () => {

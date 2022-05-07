@@ -511,8 +511,10 @@ export default defineComponent({
               isRead.value = true
               console.log(helpInfoList.value)
             } else if(data.type==="base_vminfo"&&data.data.vms && data.data.vms.length > 0) {
-              store.commit('setIsWsConnect', true)
-              store.commit('setConnectStatus', 2)
+              setTimeout(() => {
+                store.commit('setIsWsConnect', true)
+                store.commit('setConnectStatus', 2)
+              }, 1000)
             } else if(data.type === 'error') {
               if (data.data?.message) {
                 message.warn(data.data.message);

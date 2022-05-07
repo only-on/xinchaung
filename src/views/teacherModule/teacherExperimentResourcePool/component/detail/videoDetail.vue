@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns" v-if="currentTab === '0'">
+    <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <span v-if="!fileInfo.content_id">
         <span class="tips">支持单个500M以内的MP4格式文件上传</span>
         <a-button type="primary" @click="uploadVideo">上传视频</a-button>
@@ -49,7 +49,7 @@ import Submit from "src/components/submit/index.vue";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 const router = useRouter();
 const route = useRoute();
-const { currentTab }  = route.query
+const { currentTab, type }  = route.query
 const courseApi = request.teachCourse;
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;

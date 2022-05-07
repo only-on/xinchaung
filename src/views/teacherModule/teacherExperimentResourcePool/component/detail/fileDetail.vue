@@ -1,7 +1,7 @@
 <template>
   <div class="title">
     <h3>实验指导</h3>
-    <div class="operate-btns" v-if="currentTab === '0'">
+    <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <a-button type="primary" v-if="props.detail.content_task_files.length || props.detail.guide" @click="deleteFile"
         >移除</a-button
       >
@@ -52,7 +52,7 @@ import { useRouter, useRoute } from "vue-router";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 const router = useRouter();
 const route = useRoute();
-const { currentTab }  = route.query
+const { currentTab, type }  = route.query
 const http = request.teacherExperimentResourcePool;
 const $message: MessageApi = inject("$message")!;
 
@@ -92,6 +92,7 @@ let activeFile = reactive({
 })
 if (props.detail.content_task_files.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
+  // activeFile.pdf_url = props.detail.content_task_files[0].file_url
 } else {
   activeFile.suffix = 'md'
 }
@@ -118,6 +119,7 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
     activeFile.pdf_url = uploadFileList.file_url
   }
   directoryId.value = id
+  // console.log(activeFile)
 };
 
 // 选择文件
