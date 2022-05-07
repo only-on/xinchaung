@@ -4,6 +4,7 @@
  *             note 笔记
  *             report 报告
  *             question 问答
+ *             classTest 随堂测试
  *             switchVm 切换虚拟机
  *             delayed 延时
  *             switchSSH  切换SSH
@@ -73,6 +74,16 @@ const menuRole= {
             jupyter:['guide','question','end'],
             document:['guide','question','end'],
             video:['guide','question','end'],
+        },
+        help: {
+            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            webide:['guide','question','end'],
+            jupyter:['guide','question','end'],
+            document:['guide','question','end'],
+            video:['guide','question','end'],
         }
     }
 }
@@ -87,7 +98,7 @@ export type menuTypeArr=['guide','note','report','question','classTest','switchV
  * @description 获取具有权限的按钮
  * @param role 4学生 3教师
  * @param type 实验类型
- * @param studyType  学习类型 test 练习  recommend  推荐
+ * @param studyType  学习类型 test 练习  recommend  推荐  help 帮助
  */
 
 function getMenuRole(role:4|3,type:taskType,studyType?:studyType) {

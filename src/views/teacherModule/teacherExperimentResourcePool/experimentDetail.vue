@@ -163,11 +163,14 @@ const openVnc = () => {
   connectStatus.value = 1
   const {id, task_type} = experimentDetail
   const param: any = {
-    type: "content",  // 实验
+    type: type ? "course":"content",  // 实验
     opType: type && role === 4 ? type : "prepare",
     taskId: experimentDetail.id,
     experType: experimentDetail.task_type
   };
+  if (type) {
+    param.recommendType = 'content'
+  }
   if (task_type === 6 || task_type === 7 || task_type === 3) {
     isWsConnect.value = true
     connectStatus.value = 2

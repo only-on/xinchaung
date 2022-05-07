@@ -624,7 +624,7 @@ const toolData = [
 ];
 const toolList = toolData;
 
-const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
+const roleArry: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 
