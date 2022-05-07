@@ -9,7 +9,8 @@
   >
   <a-form :rules="rules"  :model="data" layout="vertical" ref="formRef">
     <a-form-item label="评语" name="remark">
-        <markedEditor v-model="data.remark"></markedEditor>
+        <!-- <markedEditor v-model="data.remark"></markedEditor> -->
+        <a-textarea v-model:value="data.remark" />
     </a-form-item>
     <a-form-item label="分数" name="score">
         <a-input v-model:value="data.score"></a-input>

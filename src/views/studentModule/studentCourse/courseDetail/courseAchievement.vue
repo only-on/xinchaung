@@ -19,7 +19,7 @@
       rowKey='content_name'
     >
       <template #check="{ record }">
-        <span :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
+        <span class='recordScreen' :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
         <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
       </template>
       <template #report_score='{record}'>
@@ -43,7 +43,7 @@
       </template>
       <template #auto_score='{record}'>
         <span class='no-link' v-if="record?.auto_score==null">
-          待评分
+          待提交
         </span>
         <span v-else>
           {{record?.auto_score}}
@@ -77,10 +77,10 @@
             <div>当前排名:</div>
           </div>
           <div class="stu-info-right">
-            <div>梁思成</div>
-            <div>2202130213</div>
-            <div>2.79</div>
-            <div>NO.1</div>
+            <div>{{grandsData?.profile?.name}}</div>
+            <div>{{grandsData?.profile?.username}}</div>
+            <div>{{grandsData?.avg}}</div>
+            <div>NO.{{grandsData?.rank}}</div>
           </div>
         </div>
       </div>
@@ -97,7 +97,7 @@
           <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
           <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
           <report v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
-          <remark v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
+          <remark v-if="modaldata.componentName=='remark'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
         </div>
       </a-modal>
   </div>
@@ -116,6 +116,11 @@ import remark from "../courseDetail/components/remark.vue";
 const http = (request as any).studentScore;
 const route=useRoute()
 const courseId:any=route.query.courseId  //课程id
+const studyEffectData:any=reactive({
+    names:[],
+    datas:[]
+})
+const grandsData:any=ref()
 const columns = [
   {
     title: "实验名称",
@@ -132,7 +137,7 @@ const columns = [
   {
     title: "学习时长",
     dataIndex: "used_time",
-    width:'150',
+    width:150,
     key: "used_time",
   },
   {
@@ -148,20 +153,23 @@ const columns = [
         title: "实验报告",
         dataIndex: "report_score",
         key: "report_score",
-        slots: { customRender: "report_score" }
+        slots: { customRender: "report_score" },
+        align:'center'
         // report为空为未提交 report-score为空 未评分
       },
       {
         title: "随堂测试",
         dataIndex: "question_score",
         key: "question_score",
-        slots: { customRender: "question_score" }
+        slots: { customRender: "question_score" },
+        align:'center'
       },
       {
         title: "自动评分",
         dataIndex: "auto_score",
         key: "auto_score",
-        slots: { customRender: "auto_score" }
+        slots: { customRender: "auto_score" },
+        align:'center'
       },
     ],
   },
@@ -198,79 +206,84 @@ const allData:any=ref({})
 const modaldata:any=reactive({
 
 })
-var option = {
-  color: ["#FF9544"],
-  grid: {
-    left: 1,
-    top: 40,
-    // bottom:20,
-    right: 100,
-    containLabel: true,
-  },
-  xAxis: {
-    type: "category",
-    boundaryGap: false,
-    name: "实验",
-    nameTextStyle: {
-      color: "#333333",
+function setChart(data:any){
+  var option = {
+    color: ["#FF9544"],
+    grid: {
+      left: 1,
+      top: 40,
+      // bottom:20,
+      right: 100,
+      containLabel: true,
     },
-    axisLine: {
-      lineStyle: {
-        color: "#ccc",
+    xAxis: {
+      type: "category",
+      boundaryGap: false,
+      name: "实验",
+      nameTextStyle: {
+        color: "#333333",
+      },
+      axisLine: {
+        lineStyle: {
+          color: "#ccc",
+        },
+      },
+      axisTick: {
+        show: false,
+      },
+      data:data.names,
+      // ["实验名称", "实验名称", "实验名称", "实验名称"],
+    },
+    yAxis: {
+      type: "value",
+      name: "学习效率",
+      nameTextStyle: {
+        color: "#333333",
+      },
+      textStyle: {
+        color: "black",
+      },
+      axisLine: {
+        lineStyle: {
+          color: "#ccc",
+        },
+      },
+      axisLabel: {
+        formatter: "{value}",
       },
     },
-    axisTick: {
-      show: false,
-    },
-    data: ["实验名称", "实验名称", "实验名称", "实验名称"],
-  },
-  yAxis: {
-    type: "value",
-    name: "学习效率",
-    nameTextStyle: {
-      color: "#333333",
-    },
-    textStyle: {
-      color: "black",
-    },
-    axisLine: {
-      lineStyle: {
-        color: "#ccc",
-      },
-    },
-    axisLabel: {
-      formatter: "{value}",
-    },
-  },
-  series: [
-    {
-      name: "Highest",
-      type: "line",
-      symbol: "circle",
-      symbolSize: 10,
-      data: [3, 3, 2, 3.5],
-      markLine: {
-        data: [
-          {
-            type: "average",
-            name: "Avg",
-            label: {
-              position: "end", // 表现内容展示的位置
-              formatter: "平均线", // 标线展示的内容
-              color: "#1CB2B3", // 展示内容颜色
-              fontSize: 14,
+    series: [
+      {
+        name: "Highest",
+        type: "line",
+        symbol: "circle",
+        symbolSize: 10,
+        data:data.datas,
+        markLine: {
+          data: [
+            {
+              type: "average",
+              name: "Avg",
+              label: {
+                position: "end", // 表现内容展示的位置
+                formatter: "平均线", // 标线展示的内容
+                color: "#1CB2B3", // 展示内容颜色
+                fontSize: 14,
+              },
+              lineStyle: {
+                type: "solid",
+                color: "#1CB2B3",
+              },
             },
-            lineStyle: {
-              type: "solid",
-              color: "#1CB2B3",
-            },
-          },
-        ],
-        symbol: ["none", "none"],
+          ],
+          symbol: ["none", "none"],
+        },
       },
-    },
-  ],
-};
+    ],
+  };
+  return option
+}
+
 // 分页渲染dom
 function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
@@ -310,8 +323,7 @@ function drawCharts() {
   var myChart = (echarts as any).init(
     document.getElementById("graphicStatistics")
   );
-  myChart.setOption(option);
-  return myChart;
+  myChart.setOption(setChart(studyEffectData));
 }
 // 获取成绩列表
 function getallScoreList() {
@@ -326,11 +338,19 @@ function getallScoreList() {
 function onChangePage(page:any){
   console.log(page)
   datapage.value=page
-    getallScoreList()
+    getallScoreList() 
+}
+function studyChart(){
+  http.statisTicChart({param:{course_id:courseId}}).then((res:any)=>{
+      studyEffectData.names=res.data.content_name
+      studyEffectData.datas=res.data.log
+      grandsData.value=res.data
+      drawCharts();
+  })
 }
 onMounted(() => {
-  drawCharts();
   getallScoreList();
+  studyChart()
 });
 </script>
 
@@ -363,20 +383,20 @@ onMounted(() => {
       cursor: pointer;
       color: var(--primary-color);
     }
-    .table-a-link:nth-last-child(1){
-      margin-left: var(--font-size-16);
+    .recordScreen{
+      margin-right:10px;
     }
+    // .table-a-link:nth-last-child(1){
+    //   margin-left: var(--font-size-16);
+    // }
     .no-link{
       color:var(--black-45);
       cursor:not-allowed;
     }
-    .no-link:nth-last-child(1){
-      margin-left: var(--font-size-16);
-    }
   }
-  .page-wrap {
-    margin: var(--margin-lg) 0 var(--margin-lg) 0;
-  }
+  // .page-wrap {
+  //   margin: var(--margin-lg) 0 var(--margin-lg) 0;
+  // }
   .footer {
     display: flex;
     justify-content: space-between;
@@ -406,8 +426,8 @@ onMounted(() => {
         display: flex;
         left: 66px;
         top: 62px;
-        font-size: var(--font-size-16);
-        font-weight: 400;
+        font-weight: 500;
+        // font-size: var(--font-size-16);
         color: var(--orangeyellow-6);
         // background-color: blue;
         .stu-info-left {

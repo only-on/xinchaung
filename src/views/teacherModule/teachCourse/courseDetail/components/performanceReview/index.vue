@@ -371,6 +371,7 @@ function autoReview() {
     message.success(res.msg);
   });
 }
+const content_id:any=ref()
 // table操作
 function clickFun(type: string, val: any, index: number) {
   currentRow = index;
@@ -379,6 +380,8 @@ function clickFun(type: string, val: any, index: number) {
   // } else {
   //   isEdit.value = false;
   // }
+  content_id.value=val?.course_student_content_id
+  // content_id.value=val?.course_content_record_id
   if (["updateScore", "score"].includes(type)) {
     setScore(type, val.course_student_content_id);
   }
@@ -404,6 +407,7 @@ async function setScore(type: string, studyId: number) {
 async function getScore(type: string, studyId: number) {
   if (type == "score") {
     isEdit.value = false;
+    scoreData.value={}
   } else {
     isEdit.value = true;
     await scoreApi.getScoreApi({ urlParams: { id: studyId } }).then((res: any) => {
@@ -423,6 +427,7 @@ function submitScore() {
     .then((res: any) => {
       (tabelData as any).value[currentRow].final_score = res.data.score;
       scoreVisible.value = false;
+      scoreData.value.score=''
     });
 }
 
@@ -464,7 +469,8 @@ async function getReportOrVideo(studyId: number, type: "video" | "report") {
 // 提交报告评阅
 function submitReport() {
   const body = new FormData();
-  body.append("csc_id", experitId.value);
+  // body.append("csc_id", experitId.value);
+  body.append("csc_id",content_id.value);
   body.append("score", reportData.value.score);
   scoreApi.setReportScoreApi({ param: body }).then((res: any) => {
     (tabelData as any).value[currentRow].report_score = res.data.score;

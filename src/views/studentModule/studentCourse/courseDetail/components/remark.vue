@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="remark">
       {{detailInfo}}    
     </div>
 </template>
@@ -10,3 +10,8 @@
       props: ["detailInfo"]
     });
     </script>
+<style lang="less" scoped>
+ .remark{
+   min-height: 200px;
+ } 
+</style>
