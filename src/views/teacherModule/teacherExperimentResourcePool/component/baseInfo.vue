@@ -98,6 +98,14 @@
         </a-form-item>
       </div>
     </div>
+    <!-- 实验环境配置 -->
+    <div class="configuration" v-if="componentsList.includes('configuration')">
+      <Environment
+        :type="formState.single"
+        @handleOk="ConfirmConfiguration"
+        :imageType="createTypeNumber === 2 ? 'jupyter':'vnc'"
+      />
+    </div>
     <div class="submitBox">
       <Submit @submit="create" @cancel="cancel"></Submit>
     </div>
@@ -218,7 +226,7 @@ formState.tags = formState.tag.map((v : any) => v.name)
 formState.report = {id: formState.content_template.template_id, name: formState.content_template.name}
 formState.selectedName = []
 formState.datasets = []
-formState.dataset.forEach((v: any) => {
+formState.dataset?.forEach((v: any) => {
   formState.selectedName.push(v.name)
   formState.datasets.push(v.uid)
 })
@@ -259,6 +267,22 @@ function remove(val: any, index: number) {
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
+
+const ConfirmConfiguration = (val: any) => {
+  // console.log(val)
+  let arr:any=[]
+  val.forEach((v:any) => {
+    // console.log(v)
+    const {ram,cpu,disk}=v.flavor
+    let obj={
+      image:v.image_id,
+      is_use_gpu:v.flavor.gpu,
+      flavor:{ram,cpu,disk}
+    }
+    arr.push(obj)
+  });
+  formState.imageConfigs = arr;
+};
 
 function create() {
   // console.log(formState)

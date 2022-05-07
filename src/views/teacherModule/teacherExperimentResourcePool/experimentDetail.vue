@@ -16,8 +16,8 @@
           }">{{getTypeList('-90deg')[experimentDetail.task_type].name}}</span>
         </div>
         <div class="right">
-          <span class="pointer" @click="addToCourse()">添加到课程</span>
-          <a-button class="123" type="primary" size="large" :loading="openVncState" @click="openVnc">{{openVncState ? '准备中...' : '启动环境'}}</a-button>
+          <span class="pointer" v-if="role === 3" @click="addToCourse()">添加到课程</span>
+          <a-button class="123" type="primary" size="large" :loading="openVncState" @click="openVnc">{{openVncState ? '准备中...' : role === 4 ? '开始学习':'启动环境'}}</a-button>
         </div>
       </div>
       <div class="info">
@@ -47,7 +47,7 @@
           <span class="iconfont icon-fuzhiniantie"></span>
           <span>查看报告模板</span>
         </span>
-        <span class="edit pointer" @click="editBaseInfo" v-if="Number(currentTab) === 0">
+        <span class="edit pointer" @click="editBaseInfo" v-if="Number(currentTab) === 0&&type!=='recommend'">
           <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
@@ -66,7 +66,7 @@
     </div>
   </div>
   <!-- 添加到课程 -->
-  <add-to-course-modal v-model:isShow="isShowModal"></add-to-course-modal>
+  <add-to-course-modal v-model:isShow="isShowModal" v-if="isShowModal"></add-to-course-modal>
   <!-- 编辑基本信息 -->
   <a-modal
     :visible="baseInfoModal"
@@ -101,6 +101,7 @@ import addToCourseModal from "./component/addToCourseModal.vue";
 import { getTypeList } from './config'
 import { theme } from "src/utils/theme"
 import { useStore } from "vuex"
+import extStorage from "src/utils/extStorage";
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect"; // 打开虚拟机
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
@@ -114,7 +115,9 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore()
 const routeQuery = route.query
-const { id, currentTab } = route.query;
+const { id, currentTab, type } = route.query;
+const { lStorage } = extStorage;
+const role = lStorage.get("role") || 3;
 const http = (request as any).teacherExperimentResourcePool;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -136,7 +139,7 @@ const openVnc = () => {
   openVncState.value = true
   const param: any = {
     type: "content",  // 实验
-    opType: "prepare",
+    opType: type ? type : "prepare",
     taskId: experimentDetail.id,
     experType: experimentDetail.task_type
   };

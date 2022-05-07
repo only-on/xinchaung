@@ -42,7 +42,8 @@ const Detail=(val:any)=>{
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
     query:{
       id:val.content_id,
-      currentTab:0
+      currentTab:0,
+      type: 'recommend'
     }
   })
 }
