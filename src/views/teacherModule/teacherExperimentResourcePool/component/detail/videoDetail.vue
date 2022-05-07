@@ -76,7 +76,7 @@ const props: Props = defineProps({
     }
   }
 })
-const fileInfo = props.detail.content_task_files.length ? 
+const fileInfo = props.detail.content_task_files&&props.detail.content_task_files.length ? 
   Object.assign(props.detail.content_task_files[0], {tusdVideoUrl:props.detail.content_task_files[0].file_url}) : {
     content_id: 0,
     tusdVideoUrl: '',

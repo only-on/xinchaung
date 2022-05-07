@@ -2,7 +2,7 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
-      <a-button type="primary" v-if="props.detail.content_task_files.length || props.detail.guide" @click="deleteFile"
+      <a-button type="primary" v-if="(props.detail.content_task_files&&props.detail.content_task_files.length) || props.detail.guide" @click="deleteFile"
         >移除</a-button
       >
       <span v-else>
@@ -18,7 +18,7 @@
     <div v-if="activeFile.suffix === 'md'">
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
-    <PdfVue :url="activeFile.pdf_url" v-else />
+    <PdfVue :url="activeFile.file_html" v-else />
   </div>
   <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
@@ -88,9 +88,10 @@ const experimentContent = ref<any>(props.detail.guide);
 let activeFile = reactive({
   suffix: 'md',
   file_url: '',
-  pdf_url: ''
+  pdf_url: '',
+  file_html: ''
 })
-if (props.detail.content_task_files.length) {
+if (props.detail.content_task_files?.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
   // activeFile.pdf_url = props.detail.content_task_files[0].file_url
 } else {
