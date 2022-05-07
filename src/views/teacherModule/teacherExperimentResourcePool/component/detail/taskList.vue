@@ -46,7 +46,7 @@
         :preview="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务步骤" name="summary" required>
+    <a-form-item label="任务步骤" name="summary" required v-if="props.is_show_task_step">
       <div class="form-switch">
         状态
         <a-switch
@@ -76,7 +76,7 @@
 </template>
 
 <script lang="ts" setup="props">
-import { ref, reactive, inject } from "vue";
+import { ref, reactive, inject,Ref } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { NoToCh } from "src/utils/common";
@@ -112,13 +112,16 @@ const stepbeforeUpload = async (file: any, fileList: any) => {
   const text = await readFile(file);
   props.taskList.summary = text;
 };
+var Visible: Ref<boolean> = ref(false);
 const delet = () => {
   emit('delet', props.index)
 }
+console.log(props.is_show_task_step)
 interface Props {
   preview: boolean;
   taskList: ItaskList;
   index: number;
+  is_show_task_step:boolean
 }
 interface ItaskList {
   name: string;

@@ -58,19 +58,15 @@
         <div class="left flexCenter">
           <div class="item">
             <span>镜像名称：</span>
-            <a-input v-model:value="searchInfo.imageName" placeholder="请输入关键字搜索" />
+            <a-input v-model:value="searchInfo.imageName" placeholder="请输入关键字搜索" @keyup.enter="searchList"  />
           </div>
           <div  class="item">
             <span>镜像所属：</span>
-            <a-input v-model:value="searchInfo.imageGroup" placeholder="请输入镜像所属" />
-            <!-- <a-select v-model:value="searchInfo.imageGroup" placeholder="请选择镜像所属">
-              <a-select-option :value="1">内置镜像</a-select-option>
-              <a-select-option :value="0">教师镜像</a-select-option>
-            </a-select> -->
+            <a-input v-model:value="searchInfo.imageGroup" placeholder="请输入镜像所属" @keyup.enter="searchList"  />
           </div>
           <div class="item">
             <span>镜像类型：</span>
-            <a-select v-model:value="searchInfo.imageType" placeholder="请选择镜像类型">
+            <a-select v-model:value="searchInfo.imageType" placeholder="请选择镜像类型"  @change="courseStatechange">
               <a-select-option value="">全部</a-select-option>
               <a-select-option value="ARM">ARM</a-select-option>
               <a-select-option value="Docker">Docker</a-select-option>
@@ -95,7 +91,7 @@
               </template>
             </a-table>
             <template #renderEmpty>
-              <div><Empty type="tableEmpty" /></div>
+              <div v-if="!loading"><Empty type="tableEmpty" /></div>
             </template>
           </a-config-provider>
         </a-spin>
@@ -197,6 +193,14 @@ type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+}
+const courseStatechange=(val: any)=> {
+  searchInfo.page=1
+  initData()
+}
+const searchList=()=> {
+  searchInfo.page=1
+  initData()
 }
 onMounted(() => {
   initData()

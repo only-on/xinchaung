@@ -56,7 +56,7 @@
         <div class="left flexCenter">
           <div class="item">
             <span>课程名称：</span>
-            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" />
+            <a-input v-model:value="searchInfo.courseName" placeholder="请输入关键字搜索" @keyup.enter="searchList" />
           </div>
           <div  class="item">
             <span>课程属性：</span>
@@ -206,6 +206,11 @@ const courseAttributechange=(val: any)=> {
   searchInfo.page=1
   initData()
 }
+const searchList=()=> {
+  searchInfo.page=1
+  initData()
+}
+
 const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()
@@ -278,7 +283,7 @@ onMounted(() => {
           width: 164px;
           height: 98px;
           background-size: 100% 100%;
-          background-image: url('src/assets/images/user/teacher.png');
+          background-image: url('src/assets/images/TeachingResourceManagement/8739.png');
           background-size: 100% 100%;
           background-repeat: no-repeat;
         }

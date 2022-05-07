@@ -17,7 +17,7 @@
       v-for="(v, i) in props.detail.task_steps"
       :key="v.content_id"
     >
-      <task-list :preview="preview" :taskList="v" :index="i" @delet="delet"></task-list>
+      <task-list :preview="preview" :taskList="v" :index="i" @delet="delet" :is_show_task_step="true"></task-list>
     </div>
   </div>
   <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>

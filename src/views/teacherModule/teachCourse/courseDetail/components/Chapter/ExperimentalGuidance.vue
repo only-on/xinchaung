@@ -11,7 +11,7 @@
     <template v-if="props.activeExperimentObj.type===5">
     <!-- 任务制 -->
       <div class="task-list" v-for="(v, i) in props.activeExperimentObj.Newguidance.task_steps" :key="v.content_id">
-        <task-list :preview="true" :taskList="v" :index="i" />
+        <task-list :preview="true" :taskList="v" :index="i" :is_show_task_step="props.activeExperimentObj.is_show_task_step" />
       </div>
     </template>
     <template v-if="props.activeExperimentObj.type===6">
