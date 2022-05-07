@@ -19,7 +19,7 @@
       rowKey='content_name'
     >
       <template #check="{ record }">
-        <span :class="record?.video?'table-a-link':'no-link'" @click="record?.video?clickFun(record.video, 'video'):''">录屏</span>
+        <span :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
         <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
       </template>
       <template #report_score='{record}'>
