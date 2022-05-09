@@ -70,7 +70,7 @@
               ></span>
             </template>
             <template v-else>
-              <span :class="Number(record.status)<2?'no-link':'table-a-link'" @click="Number(record.status)<2?'':clickFun('report', record, index)"
+              <span :class="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?'table-a-link':'no-link'" @click="Number(record.status)>1&&(record.report?.pdf_path || record.report?.json_content)?clickFun('report', record, index):''"
                 >评阅</span
               >
             </template>
@@ -84,7 +84,8 @@
             </template>
           </template>
           <template #autoScore="{ text, record, index }">
-            <span>{{ text }}</span>
+            <span v-if="record.auto_score!=null">{{ text }}</span>
+            <span v-else>--</span>
             <!-- <template v-if="record.auto_score!=null">
               <span
                 >{{ text
@@ -232,7 +233,7 @@ const oldColumns: any[] = [
     width: 49,
     algin: "center",
     customRender: ({ text, record, index }: any) => {
-      return index + 1;
+      return index+1;
     },
   },
   {
@@ -251,6 +252,7 @@ const oldColumns: any[] = [
   {
     title: "花费时间",
     dataIndex: "used_time",
+    width:130,
   },
   {
     title: "评分项",
@@ -259,16 +261,25 @@ const oldColumns: any[] = [
         dataIndex: "report_score",
         slots: { title: "customReportTitle", customRender: "report" },
         width: 74,
+        align:'center'
       },
       {
         dataIndex: "question_score",
         slots: { title: "customQuizTitle", customRender: "question" },
         width: 74,
+        align:'center'
       },
-      {
+      { 
         dataIndex: "auto_score",
         slots: { title: "customAutoTitle", customRender: "autoScore" },
         width: 74,
+        align:'center'
+      },
+      { 
+        dataIndex: "auto_score",
+        slots: { title: "customAutoTitle", customRender: "autoScore" },
+        width: 74,
+        align:'center'
       },
       // {
       //   dataIndex: "exercises",

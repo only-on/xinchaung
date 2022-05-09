@@ -1,10 +1,12 @@
 <template>
   <div class="exper">
     <div class="test" v-for="(item, index) in detailInfo" :key="index.toString()">
-      <div class="title">
-        <span>{{ Number(index) + 1 }}、{{ item.question }}（）</span>
+      <div :class="item.type_id==2?'title':'redtitlt'">
+        <!-- {{ Number(index) + 1 }}、 -->
+        <span>{{ item.question }}（）</span>
         <span class="score"
-          >{{ item.student_score }}
+          >
+          <!-- {{ item.student_score }} -->
           <span class="origin_score">({{ item.origin_score }}分)</span></span
         >
       </div>
@@ -12,9 +14,9 @@
         <div
           v-for="(it, j) in item.options"
           :class="
-            ifAnswerTrue(item, it)
+            ifAnswerTrue(item, it,index)
               ? 'correct'
-              : ifAnswerTrue(item, it) === false
+              : ifAnswerTrue(item, it,index) === false
               ? 'wrong'
               : ''
           "
@@ -23,25 +25,50 @@
           {{ optionItemName[j] }}.{{ it.option }}
         </div>
       </div>
+      
       <div v-if="item.type.id === 2 " class="answer">
-        <div
+        <a-checkbox-group name="checkboxgroup" class="radio_group"
+              v-model:value="item.student_answer">
+        <!-- <div
           v-for="(it, j) in item.options"
           :class="
             item.student_answer.includes(it.id.toString())?item.answer_is_right?'correct':'wrong':''
           "
           :key="j.toString()"
         >
+        <a-checkbox :value="j">
           {{ optionItemName[j] }}.{{ it.option }}
+        </a-checkbox> 
+        </div> -->
+        <div
+          v-for="(it, j) in item.options"
+          :class="
+            ifAnswerTrue(item, it,index)
+              ? 'correct'
+              : ifAnswerTrue(item, it,index) === false
+              ? 'wrong'
+              : ''
+          "
+          :key="j.toString()"
+        >
+        <a-checkbox :value="it.id" :disabled='true'>
+          {{ optionItemName[j] }}.{{ it.option }}
+        </a-checkbox> 
         </div>
+      </a-checkbox-group>
+      <div class="correctAnswers">
+        <span class="answerLabel">正确答案:</span>
+        <span>{{correctAnswer(item)}}</span>
+      </div>
       </div>
       <div v-if="item.type.id === 4" class="jdt-options">
         <div
           v-for="(it, j) in item.answers"
           :key="j.toString()"
           :class="
-            ifAnswerTrue(item, it)
+            ifAnswerTrue(item, it,index)
               ? 'correct'
-              : ifAnswerTrue(item, it) === false
+              : ifAnswerTrue(item, it,index) === false
               ? 'wrong'
               : ''
           "
@@ -54,9 +81,9 @@
           v-for="(it, j) in item.answers"
           :key="j.toString()"
           :class="
-            ifAnswerTrue(item, it)
+            ifAnswerTrue(item, it,index)
               ? 'correct'
-              : ifAnswerTrue(item, it) === false
+              : ifAnswerTrue(item, it,index) === false
               ? 'wrong'
               : ''
           "
@@ -68,7 +95,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, reactive, toRefs, watch } from "vue";
+import { defineComponent, reactive, toRefs, watch,ref } from "vue";
 interface Istate {
   data: any[];
   answerClass: string;
@@ -92,29 +119,50 @@ export default defineComponent({
       answerClass: "",
     });
     const methods = {
-      ifAnswerTrue(item: any, it: any) {
+      ifAnswerTrue(item: any, it: any,index:any) {
+        return true
+        // const allanswer: any = [];
+        // const rightIndex: any = [];
+        // const wrongIndex: any = [];
+        // item.answers.forEach((opt: any) => {
+        //   allanswer.push(Number(opt.answer));
+        //   // 所有正确答案
+        // });
+        // item.student_answer.forEach((it: any, i: any) => {
+        //   if (allanswer.indexOf(it) !== -1) {
+        //     rightIndex.push(it);
+        //   } else {
+        //     wrongIndex.push(it);
+        //   }
+        // });
+        // console.log(rightIndex,'rightIndex')
+        // props.detailInfo[index].correctAnswer=rightIndex
+        // if (rightIndex.indexOf(it.id.toString()) !== -1) {
+        //   return true;
+        // } else if (wrongIndex.indexOf(it.id.toString()) !== -1) {
+        //   return false;
+        // }
+      },
+      correctAnswer(item:any){
         const allanswer: any = [];
         const rightIndex: any = [];
         const wrongIndex: any = [];
-        item.answers.forEach((opt: any) => {
-          allanswer.push(opt.answer);
-          // 所有正确答案
-        });
-        item.student_answer.forEach((it: any, i: any) => {
-          if (allanswer.indexOf(it) !== -1) {
-            rightIndex.push(it);
-          } else {
-            wrongIndex.push(it);
-          }
-        });
-        if (rightIndex.indexOf(it.id.toString()) !== -1) {
-          return true;
-        } else if (wrongIndex.indexOf(it.id.toString()) !== -1) {
-          return false;
+        if(item.type_id==2){
+          item.answers.forEach((opt: any) => {
+            allanswer.push(Number(opt.answer));
+            // 所有正确答案
+          });
+         item.options.forEach((it:any,i:any)=>{
+           if(allanswer.indexOf(it.id) !== -1){
+            rightIndex.push(it.option)
+           }
+         })
         }
-      },
+        console.log(allanswer,rightIndex)
+        return rightIndex.join(',')
+      }
     };
-    return { ...toRefs(state), optionItemName, ...methods };
+    return { ...toRefs(state), optionItemName, ...methods};
   },
 });
 </script>
@@ -130,11 +178,21 @@ export default defineComponent({
 .test {
   padding: 20px;
   .title {
-    background-color: var(--gray-2);
+    background-color:#DDF9F3;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 10px;
+  }
+  .redtitlt{
+    background-color:#FFF3F3;
+    height: 36px;
+    line-height: 36px;
+    padding-left: 10px;
   }
   .score {
-    margin-left: 30px;
-    color: var(--purpleblue-6);
+    // margin-left: 30px;
+    // color: var(--purpleblue-6);
+    color: var(--primary-color);
     .origin_score {
       margin-left: 10px;
     }
@@ -148,6 +206,13 @@ export default defineComponent({
     .wrong {
       color: red;
     }
+  }
+}
+.correctAnswers{
+  margin-top: 10px;
+  color:#1CB2B3;
+  .answerLabel{
+    margin-right: 10px;
   }
 }
 </style>

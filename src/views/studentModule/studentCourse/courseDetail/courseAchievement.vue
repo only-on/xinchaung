@@ -182,7 +182,8 @@ const columns = [
     title: "最终成绩",
     dataIndex: "score",
     key: "score",
-    slots: { customRender: "score" }
+    slots: { customRender: "score" },
+    align:'center'
   },
 ];
 // table数据
