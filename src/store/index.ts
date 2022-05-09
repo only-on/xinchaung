@@ -23,6 +23,7 @@ const clearStore = (keys:any) =>
      aaa:'798',
      isWsConnect: false,
      connectStatus: 0,   // 0失败 1 连接中 2 成功
+     longWs: null
   },
   getters: {
     isLogged() {
@@ -52,6 +53,9 @@ const clearStore = (keys:any) =>
     },
     setConnectStatus(state, val) {
       state.connectStatus = val
+    },
+    setLongWs(state, val) {
+      state.longWs = val
     },
   },
   actions: {

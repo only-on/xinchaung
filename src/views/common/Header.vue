@@ -468,18 +468,29 @@ export default defineComponent({
       }
     }
     window.XC_ROLE=2
+    
+    let longWs: any = null
+    const store = useStore()
+    let longWs1 = computed({
+      get: () => {
+        return store.state.longWs
+      },
+      set: val => {
+        store.commit("setLongWs",val)
+      }
+    })
     onMounted(() => {
       lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
-      console.log(lStorage.get("role"), lStorage.get("uid"))
-      if (role === 3 || role === 4) {
+      // console.log(lStorage.get("role"), lStorage.get("uid"))
+      // console.log('-----------------------------',lStorage.get("longWs"))
+      if ((role === 3 || role === 4)&&!longWs1.value) {
         initWs()
+        // lStorage.set("longWs", longWs)
       }
       if (role === 3) {
         getHelpFinfo()
       }
     });
-
-    let longWs: any = null
     const helpInfoList: Ref<any> = ref([])
     const isRead: Ref<boolean> = ref(false)
     provide('helpInfoList', helpInfoList)
@@ -488,9 +499,8 @@ export default defineComponent({
       let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
       const uid = lStorage.get("uid")
-      const store = useStore()
-      console.log(user_id,longWs)
-      longWs = wsConnect({
+      // console.log(user_id,longWs)
+      longWs1.value = wsConnect({
         url:
           "://" +
           ws_config.host +
@@ -590,7 +600,8 @@ export default defineComponent({
       })
     }
     onBeforeRouteLeave(()=>{
-      longWs?.close()
+      // longWs?.close()
+      // console.log('+++++++++++++++')
     })
     return {
       env,
