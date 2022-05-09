@@ -150,24 +150,24 @@ const detail=(val:any)=>{
   
 }
 const currentTab = ref<number>(0);
-watch(
-  () => {
-    return configuration.componenttype;
-  },
-  (val) => {
-    currentTab.value = Number(val);
-    pageInfo.page = 1
-    // searchKey.value = ''
-    labelSearch.label = 0
-    labelSearch.type = 0
-    classifyList[0].value = 0
-    classifyList[1].value = 0
-    initData();
-    getLabelsList()
-    getTypeList()
-    getMountInfo()
-  }
-);
+// watch(
+//   () => {
+//     return configuration.componenttype;
+//   },
+//   (val) => {
+//     currentTab.value = Number(val);
+//     pageInfo.page = 1
+//     // searchKey.value = ''
+//     labelSearch.label = 0
+//     labelSearch.type = 0
+//     classifyList[0].value = 0
+//     classifyList[1].value = 0
+//     initData();
+//     getLabelsList()
+//     getTypeList()
+//     getMountInfo()
+//   }
+// );
 
 interface ILabel {
   uid: string;
@@ -313,6 +313,25 @@ const getTypeList = () => {
     classifyList[0].data.push(...data)
   })
 }
+watch(
+  () => {
+    return route.query.currentTab;
+  },
+  (val: any) => {
+    currentTab.value = Number(val);
+    pageInfo.page = 1
+    // searchKey.value = ''
+    labelSearch.label = 0
+    labelSearch.type = 0
+    classifyList[0].value = 0
+    classifyList[1].value = 0
+    initData();
+    getLabelsList()
+    getTypeList()
+    getMountInfo()
+  },
+  { immediate: true }
+);
 </script>
 
 <style lang="less" scoped>
