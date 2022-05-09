@@ -244,7 +244,7 @@ const searchFileList=computed(()=>{
 })
 // 
 const selectFile=(val:any)=>{
-  // console.log(val) 
+  console.log(val) 
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{

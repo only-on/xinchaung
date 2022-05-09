@@ -23,7 +23,7 @@
                 <template #label>
                   {{ key }}
                 </template>
-                <a-select-option v-for="v in val" :key="v.id" :value="v.id">{{
+                <a-select-option v-for="v in val" :key="`${key}${v.id}`" :value="v.id">{{
                   v.name
                 }}</a-select-option>
               </a-select-opt-group>
