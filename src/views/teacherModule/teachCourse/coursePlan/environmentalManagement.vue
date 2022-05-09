@@ -3,59 +3,63 @@
     <div class="search-top">
       <div class="search-left">
         <div class="simple-search">
-          <label>班级</label>
+          <label>姓名</label>
+          <a-input
+            @keyup.enter="search"
+            v-model:value="formData.name"
+            placeholder=""
+          />
+          <label style="margin-left:20px">班级</label>
           <span class="input-span">
-            <a-select class="select-input" v-model:value="formData.classType">
+            <!-- <a-select class="select-input" v-model:value="formData.classType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">包含</a-select-option>
               <a-select-option value="2">不包含</a-select-option>
-            </a-select>
-            <a-input v-model:value="formData.className"></a-input>
+            </a-select> -->
+            <a-input @keyup.enter="search" v-model:value="formData.class"></a-input>
           </span>
-          <a-input-search
-            @search="search"
-            v-model:value="formData.keyWorld"
-            class="search-input-btn"
-            placeholder="请输入搜索关键字"
-          />
           <a-button type="primary" class="search-btn" @click="switchSearchMode">{{
             searchMode ?  "普通检索": "高级检索"
           }}</a-button>
         </div>
+
         <div class="complex-search" v-if="searchMode">
           <label>GPU</label>
           <span class="input-span">
-            <a-select class="select-input" v-model:value="formData.gpuType">
+            <!-- <a-select class="select-input" v-model:value="formData.gpuType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select>
-            <a-input v-model:value="formData.gpu"></a-input>
+            </a-select> -->
+            <span class="inputDiv">=</span>
+            <a-input v-model:value="formData.gpu" @keyup.enter="search"></a-input>
           </span>
           <label class="m-l">内存</label>
           <span class="input-span">
-            <a-select class="select-input" v-model:value="formData.memoryType">
+            <!-- <a-select class="select-input" v-model:value="formData.memoryType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select>
-            <a-input v-model:value="formData.memory"></a-input>
+            </a-select> -->
+            <span class="inputDiv">=</span>
+            <a-input v-model:value="formData.memory" @keyup.enter="search"></a-input>
           </span>
           <label class="m-l">CPU</label>
           <span class="input-span">
-            <a-select class="select-input" v-model:value="formData.cpuType">
+            <!-- <a-select class="select-input" v-model:value="formData.cpuType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select>
-            <a-input v-model:value="formData.cpu"></a-input>
+            </a-select> -->
+            <span class="inputDiv">=</span>
+            <a-input v-model:value="formData.cpu" @keyup.enter="search"></a-input>
           </span>
         </div>
       </div>
@@ -179,14 +183,14 @@ const selectedRowKeys: Ref<any> = ref([]);
 const dataList: Ref<any> = ref([]);
 const disabledVisible = ref(false);
 const formData = reactive({
-  classType: "0",
-  className: "",
-  keyWorld: "",
-  gpuType: "0",
+  classType: "",
+  class: "",
+  name: "",
+  gpuType: "",
   gpu: "",
-  memoryType: "0",
+  memoryType: "",
   memory: "",
-  cpuType: "0",
+  cpuType: "",
   cpu: "",
   page: 1,
   pageSize: 10,
@@ -207,7 +211,7 @@ function getList() {
   dataList.value=[]
   http
     .envMonitoringList({
-      param: params,
+      param:formData,
     })
     .then((res: any) => {
       const { data, total } = res.data;
@@ -358,5 +362,15 @@ onMounted(() => {
   .page-box {
     margin-top: 16px;
   }
+}
+.inputDiv{
+  display: inline-block;
+  width:50px;
+  height: 34px;
+  line-height: 34px;
+  text-align: center;
+  border: 1px solid var(--gray-5);
+  background-color: var(--white-100);
+  border-right: none;
 }
 </style>

@@ -41,7 +41,7 @@
           <h3 class="">排课成员列表</h3>
           <div class="addStudent">
             <a-button type="primary" @click="addStudentOrClass('student')">添加学生</a-button>
-            <a-button type="primary" @click="addStudentOrClass('class')">添加班级</a-button>
+            <!-- <a-button type="primary" @click="addStudentOrClass('class')">添加班级</a-button> -->
           </div>
         </div>
         <div class="retain flex_center">
@@ -68,17 +68,16 @@
             <Empty type="tableEmpty" :height="200"></Empty>
           </template>
           <div class="schedule-main-content-table">
-            <div class="schedule-main-content-table-title">
+            <!-- <div class="schedule-main-content-table-title">
               <a-tabs v-model:activeKey="selectName" class="selectName">
                 <a-tab-pane v-for="item in ['已选学生', '已选班级']" :key="item" :tab="item" />
               </a-tabs>
-            </div>
+            </div> -->
             <a-table
               v-if="selectName === '已选班级'"
               rowKey="class_id"
               :columns="selectedClassesColumns"
               :data-source="selectedClassesData"
-              :bordered="true"
               :pagination="false"
               size="middle"
               :scroll="{ y: 280 }"
@@ -122,21 +121,21 @@
       </a-form-item>
     </a-form>
   </div>
-  <select-stu-class v-model:visible="visible" v-model:activeName="activeName"></select-stu-class>
+  <select-stu v-model:visable="visible" :selectedStuIds='selectedStuIds' :total='tableData.total' :data='data' @updateStuParams='updateStuParams' @updateSelectStuVisable="updateSelectStuVisable"></select-stu>
 </template>
 
 <script lang="ts">
 import { defineComponent, reactive, ref, toRefs, onMounted, provide, inject, watch, nextTick, PropType, computed } from 'vue'
 import moment, { Moment } from 'moment'
 import { useRouter, useRoute } from 'vue-router'
-import selectStuClass from './selectStuClass.vue'
-import { MessageApi } from "ant-design-vue/lib/message";
+import selectStu from './selectStu.vue'
+import message, { MessageApi } from "ant-design-vue/lib/message";
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 
 export default defineComponent({
   name: 'schedule-create',
-  components: { selectStuClass },
+  components: { selectStu },
   props: {},
   emit: [],
   setup() {
@@ -153,6 +152,11 @@ export default defineComponent({
     let {week, time} = route.query
 
     let checkDate = ref<boolean>(false)
+      
+    const tableParams = reactive({
+      student_id:[]
+    })
+    const selectedStuIds:any=ref([])
     let form = reactive<IForm>({
       course_name: '',
       week_recycle: false,
@@ -175,6 +179,24 @@ export default defineComponent({
     let leftStuNum = ref(route.query.leftStuNum)
     let selectedNum = ref(0)
     let {id, date} = route.query
+
+    const params:any=reactive({
+        // type:props.type,
+        // id:props.courseId,
+        // withs:'userProfile',
+        // nick:'',
+        // grade:'',
+        // direct:'',
+        // class:'',
+        pageinfo:{
+          index:1,
+          size:10,
+        }
+      });
+    function updateStuParams(param:any){
+      params.pageinfo.index=param.page
+      getallstudent()
+    }
     onMounted(() => {
       if (id) {
         getDetails()
@@ -201,12 +223,14 @@ export default defineComponent({
           const { detail } = data
           selectedClassesData.push(...detail['classes'])
           selectedStudentsData.push(...detail['users'])
+          selectedStuIds.value=selectedStudentsData.map((item: ITableList) => item.stu_id)
           if (detail['classes'].length && !detail['users'].length) {
             selectName.value = '已选班级'
           }
 
           selectedIds['class'] = selectedClassesData.map((item: ITableList) => item.class_id)
           selectedIds['student'] = selectedStudentsData.map((item: ITableList) => item.stu_id)
+          selectedStuIds.value=selectedStudentsData.map((item: ITableList) => item.stu_id)
 
           form.course_name = data.course_name
           form.week_recycle = data.week_recycle === '1' ? true : false
@@ -265,12 +289,39 @@ export default defineComponent({
     }
     provide('onCrossvalidation', onCrossvalidation)
     provide('selectedIds', selectedIds)
-
+    // 添加学生
+    function updateSelectStuVisable(value: any,studentids:any,tableData:any) {
+      // visible.value = false;
+      // console.log(value,'value')
+      if(value==='ok'){
+        tableParams.student_id=studentids
+        http.classStuIntersect({param:{stuIds:tableParams.student_id}})
+        .then((res: IBusinessResp) => {
+         if(res.code==1){
+           message.warning('添加成功')
+           visible.value = false;
+           selectedStudentsData.length = 0
+           data.value.forEach((item:any,index:any)=>{
+            // &&selectedStuIds.value.indexOf(item.stu_id)==-1
+             if(studentids.includes(item.stu_id)){
+              data.value[index].is_selected=1
+              selectedStudentsData.push(item)
+              selectedStuIds.value=selectedStudentsData.map((item: ITableList) => item.stu_id)
+             }
+           })
+          //  getDetails()
+         }
+        })
+      }else{
+         visible.value = false;
+      }
+    }
     // 添加学生/班级
     function addStudentOrClass(type: string) {
       visible.value = true
       activeName.value = type
       selectName.value = type === 'student' ? '已选学生' : '已选班级'
+      getallstudent()
     }
     // 删除班级
     function onDeleteClass(id: number) {
@@ -290,6 +341,7 @@ export default defineComponent({
       selectedStudentsData.forEach((v, k) => {
         if (v.stu_id === id) {
           selectedStudentsData.splice(k, 1)
+          selectedStuIds.value=selectedStudentsData.map((item: ITableList) => item.stu_id)
         }
       })
       selectedIds['student'].forEach((v, k) => {
@@ -302,8 +354,8 @@ export default defineComponent({
     // 保存
     function handleSubmit () {
       ruleForm.value.validate().then(() => {
-        if (selectedClassesData.length === 0 && selectedStudentsData.length === 0) {
-          $message.warn('请选择班级或选择学生')
+        if (!id&&!tableParams.student_id?.length) {
+          $message.warn('请选择学生')
           return
         }
         let param = {
@@ -313,21 +365,23 @@ export default defineComponent({
           startDate: startDate,
           teacherOccupied: form.teacher_occupied ? 1 : 0,
           weekRecycle: checkDate.value ? 1 : 0,
-          stuIds: selectedIds['student'],
+          // stuIds: selectedIds['student'],
+          stuIds:tableParams.student_id,
           classIds: selectedIds['class'],
         }
-        if (id !== 'undefined' && id) {
-          http.scheduleUpdate({
-            param: {params: Object.assign(param, {id})}
-          }).then((res: IBusinessResp) => {
-            $message.success('修改成功！')
-            router.go(-1)
-          })
-          return
-        }
+        // if (id !== 'undefined' && id) {
+        //   http.scheduleUpdate({
+        //     param: {params: Object.assign(param, {id})}
+        //   }).then((res: IBusinessResp) => {
+        //     $message.success('修改成功！')
+        //     router.go(-1)
+        //   })
+        //   return
+        // }
         http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
           $message.success('创建成功！')
-          router.go(-1)
+          // router.go(-1)
+          // visible.value = false;
         })
       })
     }
@@ -379,7 +433,19 @@ export default defineComponent({
         teacherOccupied.value = 0
       }
     }
+    const data:any=ref()
+    const  tableData= reactive({
+      total:0
+    })
+    function getallstudent(){
+      http.getStudentList({param:params}).then((res:any)=>{
+        data.value=res.data?.data
+        tableData.total=res.data.page.count
+      })
+    }
     return {
+      tableData,
+      data,
       ruleForm,
       form,
       rule,
@@ -404,6 +470,9 @@ export default defineComponent({
       onDeleteStudent,
       addStudentOrClass,
       onDeleteClass,
+      updateSelectStuVisable,
+      updateStuParams,
+      selectedStuIds
     }
   },
 })
@@ -537,7 +606,9 @@ interface IForm {
       height: 48px;
       padding: 0 20px;
       background:var(--purpleblue-1-2);
-      border: 1px solid var(--purpleblue-2);
+      // border: 1px solid var(--purpleblue-2);
+      margin-bottom: 20px;
+      background-color: #FFF7E6;
       .ant-row {
         margin: 0;
 
@@ -551,13 +622,15 @@ interface IForm {
           padding-right: 20px;
           span {
             font-size: 18px;
-            color: var(--purpleblue-6);
+            // color: var(--purpleblue-6);
+            color: var(--primary-color);
           }
         }
         .choose-text {
           span {
             font-size: 18px;
-            color: var(--purpleblue-6);
+            // color: var(--purpleblue-6);
+            color: var(--primary-color);
           }
         }
       }

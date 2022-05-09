@@ -148,16 +148,16 @@
                   </div>
                 </div>
                 <!-- 有当前教师 -->
-                <!-- <div
+                <div
                   v-else-if="classVal.belongs_to_currentteacher"
                   class="teacher-current hover-edit teacher-no"
                 >
                   <div class="edit-wrap flex-center">
-                    <div class="course-name flex-center">
+                    <!-- <div class="course-name flex-center">
                       {{ classVal.arrangements[0].course_name }}
-                    </div>
+                    </div> -->
+                    <!-- class="teacher-operation top" -->
                     <div
-                      class="teacher-operation top"
                       @click="
                         editTeachingSchedule(
                           classVal.arrangements[0].cid,
@@ -165,13 +165,13 @@
                         )
                       "
                     >
-                      编辑预约
+                      编辑
                     </div>
+                    <!-- class="teacher-operation" -->
                     <div
-                      class="teacher-operation"
                       @click="cancelScheduleConfirm(classVal.arrangements[0].cid)"
                     >
-                      删除预约
+                      删除
                     </div>
                   </div>
                   <div class="course-name flex-center">
@@ -179,7 +179,8 @@
                   </div>
                   <div class="teacher-course-info flex-center">
                     <div class="stu-number">
-                      预约人数{{ classVal.arrangements[0].stu_num }}
+                      <div class="label">已预约人数</div>
+                      <div class="number">{{ classVal.arrangements[0].stu_num }}</div>
                     </div>
                     <div
                       v-if="Number(classVal.arrangements[0].week_recycle) === 1"
@@ -189,7 +190,7 @@
                       {{ classVal.arrangements[0].end }}
                     </div>
                   </div>
-                </div> -->
+                </div>
                 <!-- 无当前教师 -->
                 <div class="teacher-no flex-center" v-else>
                   <!-- 约满 -->
@@ -310,9 +311,12 @@
                               class="make-item-item"
                               v-for="(mit, aindex) in classVal.arrangements"
                             >
+                            <div>
                               <span>{{
                                 classVal.arrangements[aindex].teacher_name
                               }}</span>
+                            </div>
+                             
                               <span
                                 >公预约{{ classVal.arrangements[aindex].stu_num }}人
                                 <span class="edit-del-btn-wrap">
@@ -328,13 +332,13 @@
                               </span>
                             </div>
                           </div>
-                          <div class="make-create-btn" @click="
+                          <!-- <div class="make-create-btn" @click="
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
                             classIndex
                           )
-                        ">创建排课</div>
+                        ">创建排课3</div> -->
                         </template>
                         <div v-else class="a-create-wrap">
                           <div class="make-create-btn" @click="
@@ -864,11 +868,13 @@ onMounted(() => {
             height: 100%;
             flex-flow: column;
             // background: rgba(255, 156, 1, .8);
-            background: var(--white-100);
-            color: #ccc;
+            background: var(--primary-color);
+            color: var(--white-100);
             z-index: 1;
-            font-size: 20px;
+            font-size:14px;
             cursor: pointer;
+            text-align: center;
+            padding:50px;
             .teacher-operation {
               height: 28px;
               line-height: 28px;
@@ -921,18 +927,27 @@ onMounted(() => {
             flex-direction: column;
             align-items: flex-start;
             font-size: 12px;
-            div {
-              position: relative;
-              margin: 10px 0;
-              padding: 5.5px 0px 5.5px 14px;
-              width: 154px;
-              // height: 29px;
-              // opacity: 0.08;
-              background: rgba(185, 185, 185, 0.08);
-              color: rgba(5, 1, 1, 0.65);
-              border-left: 3px solid #b4b4b4;
-              border-radius: 0px 5px 5px 0px;
+            .stu-number{
+              width: 100%;
+              text-align: center;
+              color: var(--primary-color);
+              .number{
+                font-size:46px;
+                font-weight: 500;
+              }
             }
+            // div {
+            //   position: relative;
+            //   margin: 10px 0;
+            //   padding: 5.5px 0px 5.5px 14px;
+            //   width: 154px;
+            //   // height: 29px;
+            //   // opacity: 0.08;
+            //   background: rgba(185, 185, 185, 0.08);
+            //   color: rgba(5, 1, 1, 0.65);
+            //   border-left: 3px solid #b4b4b4;
+            //   border-radius: 0px 5px 5px 0px;
+            // }
           }
         }
         .teacher-no {
@@ -1060,6 +1075,7 @@ onMounted(() => {
             flex-direction: column;
             .course-info-text {
               font-size: 12px;
+              margin-bottom:20px;
             }
             .course-info-num {
               font-size: 50px;
@@ -1292,5 +1308,9 @@ onMounted(() => {
 }
 .add-time-btn{
   margin-left: 20px;
+}
+.circulate{
+  width: 100%;
+  text-align: center;
 }
 </style>

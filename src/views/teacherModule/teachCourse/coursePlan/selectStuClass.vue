@@ -1,15 +1,24 @@
 <template>
-  <a-drawer
+  <!-- <a-drawer
     class="select-stuclass-drawer"
     width="640"
     placement="right"
     :closable="false"
     :visible="visible"
     @close="onClose"
-  >
-    <a-tabs v-model:activeKey="currentType" class="activeClass" @change="change">
+  > -->
+  <a-modal
+      :width="1200"
+      cancelText="取消"
+      okText="确定"
+      title="添加学生"
+      :visible="visible"
+      @ok="onClose"
+      @cancel="onClose"
+    >
+    <!-- <a-tabs v-model:activeKey="currentType" class="activeClass" @change="change">
       <a-tab-pane v-for="item in tabsList" :key="item.key" :tab="item.tab" />
-    </a-tabs>
+    </a-tabs> -->
     <div v-if="visible">
       <select-table 
         v-if="currentType === 'student'"
@@ -20,7 +29,8 @@
         :currentType="currentType"
       ></select-table>
     </div>
-  </a-drawer>
+  </a-modal>
+  <!-- </a-drawer> -->
 </template>
 
 <script lang="ts">
