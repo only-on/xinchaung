@@ -89,6 +89,7 @@ import studentUserImg from "src/assets/images/user/student.png";
 import { wsConnect } from "src/request/websocket";
 import { useStore } from "vuex";
 import { createExamples } from "src/utils/vncInspect";
+import {clearAllCookies} from "../../utils/cookieHelper";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -132,6 +133,7 @@ export default defineComponent({
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
         lStorage.clean();
+        clearAllCookies();
         router.replace({ path: "/login" }).catch(() => {});
       });
     }
@@ -476,7 +478,7 @@ export default defineComponent({
         getHelpFinfo()
       }
     });
-    
+
     let longWs: any = null
     const helpInfoList: Ref<any> = ref([])
     const isRead: Ref<boolean> = ref(false)

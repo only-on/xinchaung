@@ -16,9 +16,7 @@ api.common
   .then((res: any) => {
     // res为null代表请求未执行，因为遇到了customState不是wait
     if (res) {
-      setTimeout(() => {
-        router.replace(getHomePath(res.data.role));
-      }, 1000);
+      router.replace(getHomePath(res.data.role));
     }
   })
   .catch((err) => {});

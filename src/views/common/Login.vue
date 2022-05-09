@@ -1,18 +1,14 @@
 <script lang="ts" setup>
-import { ref, reactive } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 // import http from "src/api";
-
 import extStorage from "src/utils/extStorage";
-import {
-  UserOutlined,
-  LockOutlined,
-  PictureOutlined,
-} from "@ant-design/icons-vue";
 import { ValidateErrorEntity } from "ant-design-vue/es/form/interface";
 import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
+import { getHomePath } from "../../routers/common";
+
 const http = (request as any).common;
 const { lStorage } = extStorage;
 const router = useRouter();
@@ -71,6 +67,14 @@ const refreshCaptcha = () => {
     });
 };
 
+// 检查是否应该直接登入
+http.doesLoggedIn({ silent: true }).then((res: any) => {
+  // res为null代表请求未执行，因为遇到了customState不是wait
+  if (res) {
+    router.push(getHomePath(res.data.role));
+  }
+});
+
 // 检查是否需要显示验证码
 http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
   needCaptcha.value = res!.data.need_verify;
@@ -117,7 +121,8 @@ const login = () => {
           console.error("login failed: ", res);
           if (res.data.need_verify) {
             needCaptcha.value = true;
-            captchaUrl.value = "/api/yii/site/captcha?v=" + new Date().getTime();
+            captchaUrl.value =
+              "/api/yii/site/captcha?v=" + new Date().getTime();
           }
           submitLoading.value = false;
         });
@@ -135,7 +140,7 @@ const login = () => {
     </div>
     <div class="main">
       <div class="banner">
-        <img src="/img/default/login-banner.png"/>
+        <img src="/img/default/login-banner.png" />
       </div>
       <div class="login-box">
         <div class="logo">

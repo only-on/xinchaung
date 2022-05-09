@@ -11,6 +11,7 @@ import store from "src/store/index";
 import { message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import router from "src/routers";
+import {clearAllCookies} from "../utils/cookieHelper";
 const { lStorage } = extStorage;
 
 // 检查是否为对象
@@ -185,6 +186,7 @@ export default function request({
           // console.log('[fetch] RESP_AUTH_FAILURE, will replace to login page');
           // 登录失效或其他特殊状态码处理
           lStorage.clean();
+          clearAllCookies();
           if (!silent) {
             message.warning(res.msg);
           }

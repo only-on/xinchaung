@@ -26,6 +26,7 @@ import { defineComponent, ref, onMounted } from "vue";
 import extStorage from "src/utils/extStorage";
 import request from "src/api/index";
 import { operatesHandle } from "src/utils/vncInspect";
+import {clearAllCookies} from "../../../../utils/cookieHelper";
 
 export default defineComponent({
   props: ["visable", "data", "opType", "type", "uuid", "taskId", "current"],
@@ -66,6 +67,7 @@ export default defineComponent({
     function loginOut() {
       (request as any).common.loginOut().then((res: any) => {
         extStorage.lStorage.clean();
+        clearAllCookies();
         let url = `${window.origin}/#/login`;
         window.location.href = url;
       });
