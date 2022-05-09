@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3150577 */
-  src: url('iconfont.woff2?t=1651805709087') format('woff2'),
-       url('iconfont.woff?t=1651805709087') format('woff'),
-       url('iconfont.ttf?t=1651805709087') format('truetype'),
-       url('iconfont.svg?t=1651805709087#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1652068474323') format('woff2'),
+       url('iconfont.woff?t=1652068474323') format('woff'),
+       url('iconfont.ttf?t=1652068474323') format('truetype'),
+       url('iconfont.svg?t=1652068474323#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,30 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-a-zu8854:before {
+  content: "\e706";
+}
+
+.icon-a-zu8852:before {
+  content: "\e707";
+}
+
+.icon-a-zu8853:before {
+  content: "\e708";
+}
+
+.icon-a-zu8851:before {
+  content: "\e709";
+}
+
+.icon-shujuji:before {
+  content: "\e70a";
+}
+
+.icon-shipinbofang:before {
+  content: "\e70b";
 }
 
 .icon-windows:before {

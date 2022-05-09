@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "29486856",
+      "name": "实验文档",
+      "font_class": "a-zu8854",
+      "unicode": "e706",
+      "unicode_decimal": 59142
+    },
+    {
+      "icon_id": "29486857",
+      "name": "备课资料",
+      "font_class": "a-zu8852",
+      "unicode": "e707",
+      "unicode_decimal": 59143
+    },
+    {
+      "icon_id": "29486858",
+      "name": "教学指导",
+      "font_class": "a-zu8853",
+      "unicode": "e708",
+      "unicode_decimal": 59144
+    },
+    {
+      "icon_id": "29486859",
+      "name": "课件",
+      "font_class": "a-zu8851",
+      "unicode": "e709",
+      "unicode_decimal": 59145
+    },
+    {
+      "icon_id": "29486860",
+      "name": "数据集",
+      "font_class": "shujuji",
+      "unicode": "e70a",
+      "unicode_decimal": 59146
+    },
+    {
+      "icon_id": "29486861",
+      "name": "视频",
+      "font_class": "shipinbofang",
+      "unicode": "e70b",
+      "unicode_decimal": 59147
+    },
+    {
       "icon_id": "29481517",
       "name": "windows",
       "font_class": "windows",
