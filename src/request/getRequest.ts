@@ -40,6 +40,8 @@ GetRequest.prototype.sendServe = function (
   const concurrent = config.concurrent ? config.concurrent : false; // 相同接口是否需要并发请求
   const param = config.param || {}; //  调用接口需要的参数 格式为param
   const dataType = init.dataType ? init.dataType : "urlencoded"; //  请求接口参数的数据格式   可选JSON   TEXT  FORMDATA
+  const silent = config.silent ? config.silent : false;
+
   // let url = this.baseUrl + init.url; // 接口地址
   let url = init.url; // 接口地址
   if (config.urlParams) {
@@ -67,8 +69,11 @@ GetRequest.prototype.sendServe = function (
       method: method,
       body: param,
       dataType: dataType,
+      silent: silent
     }).then(callback).finally(()=>{
+      // console.log('[getRequest] sendServe finally: moduleName: ', modulename, 'name: ', name);
       self[modulename][name].customState = "await";
+      // console.log('[getRequest] self: ',  self);
     });
   }
   return new Promise((resolve, reject) => { resolve(null) });

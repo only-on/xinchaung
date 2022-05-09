@@ -1,35 +1,49 @@
-
 import Layout from "../views/common/Layout.vue";
+import Port from "../views/common/Port.vue";
 import extStorage from "src/utils/extStorage";
-const { lStorage } = extStorage
-const role = lStorage.get('role') || 3
-const PathList={1:'',2:'/admin/home',3:'/teacher/teacherExperimentResourcePool',4:'/student/statistics',5:''}
-const homePath=PathList[Number(role)]
+const { lStorage } = extStorage;
+const role = lStorage.get("role") || 3;
+const PathList = {
+  1: "",
+  2: "/admin/home",
+  3: "/teacher/teacherExperimentResourcePool",
+  4: "/student/statistics",
+  5: "",
+};
+
+/**
+ * 获取首页地址
+ * @param roleId
+ */
+export function getHomePath(roleId: Number | String) {
+  return PathList[Number(roleId)];
+}
+
 export default [
-    {
-        path: "/",
-        name: 'index',
-        component: Layout,
-        meta: {
-            title: "首页",
-            authCode: "Home",
-        },
-        redirect: homePath,
+  {
+    path: "/",
+    name: "index",
+    component: Port,
+    meta: {
+      title: "请稍候...",
+      authCode: "Port",
     },
-    {
-        path: "/login",
-        name: "login",
-        component: () => import("src/views/common/Login.vue"),
-        meta: {
-            title: "登录",
-            authCode: 'login',
-            exclude: true,
-            outward: true,
-        },
+    // redirect: homePath,
+  },
+  {
+    path: "/login",
+    name: "login",
+    component: () => import("src/views/common/Login.vue"),
+    meta: {
+      title: "登录",
+      authCode: "login",
+      exclude: true,
+      outward: true,
     },
-    {
-        path: "/:pathMatch(.*)*",
-        name: "NotFound",
-        component: () => import("src/views/common/NotFound.vue"),
-    },
-]
+  },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFound",
+    component: () => import("src/views/common/NotFound.vue"),
+  },
+];

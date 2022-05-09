@@ -29,7 +29,9 @@ export default {
     // 刷新验证码
     refreshCaptcha: { url: `/api/yii/site/captcha`, method: 'GET'},
     // 获取在线用户信息
-    onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'}
+    onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'},
+    // 检查当前用户是否已登录
+    doesLoggedIn: { url: `/api/common/does-logged-in`, method: 'GET' },
 
 }
 export interface ICommonAps {
@@ -42,6 +44,7 @@ export interface ICommonAps {
     doesNeedCaptcha: TFHttpSend
     refreshCaptcha: TFHttpSend
     onlineUserInfo: TFHttpSend
+    doesLoggedIn: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

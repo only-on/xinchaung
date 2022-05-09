@@ -12,12 +12,13 @@ export interface IHttpClient extends IApiCollection {
 }
 
 // 发送http请求的方法
-export type TFHttpSend = (config: IRequestConfig) => Promise<IBusinessResp | null>
+export type TFHttpSend = (config?: IRequestConfig) => Promise<IBusinessResp | null>
 
 export interface IRequestConfig {
     bindName?: string;
     concurrent?: false;
     param?: Record<string, any>;
     urlParams?: object;
-    success?: (resp: IBusinessResp) => void
+    success?: (resp: IBusinessResp) => void;
+    silent?: boolean;
 }
