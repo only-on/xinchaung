@@ -12,6 +12,7 @@ import { message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import router from "src/routers";
 import {clearAllCookies} from "../utils/cookieHelper";
+import {IWmc} from "../typings/wmc";
 const { lStorage } = extStorage;
 
 // 检查是否为对象
@@ -187,6 +188,9 @@ export default function request({
           // 登录失效或其他特殊状态码处理
           lStorage.clean();
           clearAllCookies();
+          if (store.state.longWs) {
+            (store.state.longWs as IWmc).close();
+          }
           if (!silent) {
             message.warning(res.msg);
           }

@@ -8,6 +8,7 @@ import { UnwrapNestedRefs } from "@vue/reactivity/dist/reactivity";
 import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
 import { getHomePath } from "../../routers/common";
+import { PictureOutlined } from "@ant-design/icons-vue";
 
 const http = (request as any).common;
 const { lStorage } = extStorage;

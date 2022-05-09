@@ -1,7 +1,8 @@
 import Wmc from "js-wm"
+import { IWmc } from "../typings/wmc";
 
 
-let conn: any
+let conn: IWmc
 
 function getQueryString(name: string) {
     let reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
@@ -38,7 +39,7 @@ function wsConnect(options: any) {
             error: (ev: Event) => {
                 console.log('[error]', ev)
                 // setTimeout(() => {
-                //     wsConnect(options) 
+                //     wsConnect(options)
                 // }, 200);
 
             },

@@ -27,6 +27,8 @@ import extStorage from "src/utils/extStorage";
 import request from "src/api/index";
 import { operatesHandle } from "src/utils/vncInspect";
 import {clearAllCookies} from "../../../../utils/cookieHelper";
+import store from 'src/store';
+import { IWmc } from "src/typings/wmc";
 
 export default defineComponent({
   props: ["visable", "data", "opType", "type", "uuid", "taskId", "current"],
@@ -68,6 +70,9 @@ export default defineComponent({
       (request as any).common.loginOut().then((res: any) => {
         extStorage.lStorage.clean();
         clearAllCookies();
+        if (store.state.longWs) {
+          (store.state.longWs as IWmc).close();
+        }
         let url = `${window.origin}/#/login`;
         window.location.href = url;
       });

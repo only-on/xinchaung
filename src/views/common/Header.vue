@@ -74,6 +74,7 @@ import {
   onMounted,
   watch,
   provide,
+  WritableComputedRef,
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from "../../api/index";
@@ -90,6 +91,8 @@ import { wsConnect } from "src/request/websocket";
 import { useStore } from "vuex";
 import { createExamples } from "src/utils/vncInspect";
 import {clearAllCookies} from "../../utils/cookieHelper";
+import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
+import {IWmc} from "../../typings/wmc";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -134,6 +137,9 @@ export default defineComponent({
       http.loginOut().then((res: IBusinessResp) => {
         lStorage.clean();
         clearAllCookies();
+        if (longWs1.value) {
+          longWs1.value.close();
+        }
         router.replace({ path: "/login" }).catch(() => {});
       });
     }
@@ -468,10 +474,10 @@ export default defineComponent({
       }
     }
     window.XC_ROLE=2
-    
+
     let longWs: any = null
     const store = useStore()
-    let longWs1 = computed({
+    let longWs1: WritableComputedRef<IWmc> = computed({
       get: () => {
         return store.state.longWs
       },
@@ -484,7 +490,11 @@ export default defineComponent({
       // console.log(lStorage.get("role"), lStorage.get("uid"))
       // console.log('-----------------------------',lStorage.get("longWs"))
       if ((role === 3 || role === 4)&&!longWs1.value) {
-        initWs()
+        try {
+          initWs()
+        } catch (e: any) {
+          message.warn(i18nWebMsg[e.toString()] || e.toString());
+        }
         // lStorage.set("longWs", longWs)
       }
       if (role === 3) {
@@ -509,17 +519,20 @@ export default defineComponent({
           "/?uid=" +
           uid+'_0',
         open: () => {
-          if (longWs && role === 3) {
-            longWs.join(uid+"_teacher" + "_room");
+          if (longWs1.value && role === 3) {
+            longWs1.value.join(uid+"_teacher" + "_room");
           }
         },
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
-            console.log(longWs);
+            console.log(longWs1);
             console.log(
               "wsVmConnect.value.isReset",
-              longWs.isReset()
+              longWs1.value.isReset()
             );
+            if (longWs1.value.isReset()) {
+              message.warn(i18nWebMsg["The user id has been registered by another client."] || "The user id has been registered by another client.");
+            }
           }
         },
         message: (ev: MessageEvent) => {
