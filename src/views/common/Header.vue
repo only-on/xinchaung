@@ -144,6 +144,16 @@ export default defineComponent({
     }
     const route = useRoute();
     var menus: any[] = reactive([]);
+    // 教师首页
+    let teacherHome={
+      icon: "",
+      id: 189,
+      name: "首页",
+      parent_id: 0,
+      sort: 89,
+      url: "/teacher/home",
+      children: [],
+    };
      //论坛
     let forum={
       children: [],
@@ -424,7 +434,7 @@ export default defineComponent({
     let arr:any={
       1:[],
       2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,adminForum],
-      3:[center,material,teacherCourse,forum],
+      3:[teacherHome,center,material,teacherCourse,forum],
       4:[statistics,forum,studentCourse]
     }[role]
     menus.push(...arr)

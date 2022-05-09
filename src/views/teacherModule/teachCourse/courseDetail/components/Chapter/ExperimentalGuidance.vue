@@ -24,7 +24,7 @@
     </template>
     <template v-if="props.activeExperimentObj.type===7">
       <!-- 文档实验 -->
-      <div v-if="!props.activeExperimentObj.Newguidance.content_task_files.length">
+      <div v-if="!props.activeExperimentObj.Newguidance.content_task_files">
         <marked-editor v-model="props.activeExperimentObj.Newguidance.guide" :preview="true" />
       </div>
       <PdfVue v-else  :url="props.activeExperimentObj.Newguidance.content_task_files[0].file_url" />

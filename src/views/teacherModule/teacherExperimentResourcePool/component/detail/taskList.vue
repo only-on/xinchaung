@@ -116,7 +116,7 @@ var Visible: Ref<boolean> = ref(false);
 const delet = () => {
   emit('delet', props.index)
 }
-console.log(props.is_show_task_step)
+// console.log(props.is_show_task_step)
 interface Props {
   preview: boolean;
   taskList: ItaskList;

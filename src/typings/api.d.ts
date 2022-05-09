@@ -5,6 +5,7 @@ import { IKnowledgeMap } from "src/api/modules/knowledgeMap";
 import { IteacherWorkbench } from "src/api/modules/teacherWorkbench";
 import { ITeacherTemplateApis } from "src/api/teacher/teacherTemplate";
 import { ITeacherForum } from "src/api/teacher/teacherForum";
+import { ITeacherHome } from "src/api/teacher/teacherHome";
 import { ICommonAps } from "src/api/modules/common";
 import { ITeacherCourseApis } from "src/api/teacher/teachCourse";
 import { IStudentCourse } from "src/api/student/studentCourse";
@@ -14,7 +15,7 @@ import { ITeachingResourceManagement } from "src/api/admin/TeachingResourceManag
 // import { ICourseTreeApis } from "src/api/modules/courseTree";
 // import { ITeacherCourseAnalysisApis } from "src/api/modules/teacherCourseAnalysis";
 // import { ITeacherExamlAps } from "src/api/modules/teacherExam";
-// import { ITeacherHome } from "src/api/modules/teacherHome";
+
 // import { IClassicalAssetApi } from "../api/modules/classicalAsset";
 // import { ITeacherExperAps } from "src/api/modules/teacherExperiment";
 // import { IDataSet } from "src/api/modules/dataSet";
@@ -73,7 +74,6 @@ export interface IApiCollection {
   // teacherCourseAnalysis: ITeacherCourseAnalysisApis;
   // teacherTrain: ITeacherTrainAps;
   // teacherExam: ITeacherExamlAps;
-  // teacherHome: ITeacherHome;
   // teacherExperiment: ITeacherExperAps;
   // dataSet: IDataSet;
   // adminSystemSetting: TAdminSystemSetting;
@@ -81,6 +81,7 @@ export interface IApiCollection {
   // adminExperimentManage: IAdminExperimentManage;
   // adminCourse: TAdminCourse;
   // adminHome: IAdminHome;
+  teacherHome: ITeacherHome;
   knowledgeMap: IKnowledgeMap;
   teacherTemplate: ITeacherTemplateApis;
   teacherWorkbench: IteacherWorkbench;

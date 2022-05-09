@@ -522,6 +522,9 @@ const ProcessingData=(data:any)=>{
           i.TeachingAids=false
           i.task_type=i.type
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
+          if(i.task_type === 5){
+            i.is_show_task_step=true
+          }
           if(props.Environment){
             if(i.type!==6 && i.type!==7){
               v.list.push(i)
