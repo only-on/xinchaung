@@ -178,13 +178,11 @@ export default defineComponent({
     ];
     var updata = inject("updataNav") as Function;
     updata({
-  tabs: [
-   
-  ],
-  showContent: false,
-  componenttype: undefined,
-  showNav: false,
-});
+      tabs: [],
+      showContent: false,
+      componenttype: undefined,
+      showNav: false,
+    });
     const slideChangeTransitionEnd = (swiper: any) => {
       getData(courseLists[swiper.realIndex].id);
     };
@@ -265,7 +263,7 @@ export default defineComponent({
       });
     };
     onMounted(() => {
-      getCourseList();
+      // getCourseList();
       window.addEventListener("resize", () => {
         chartDom.forEach((item: any) => {
           item.resize();
@@ -355,7 +353,7 @@ export default defineComponent({
         justify-content: center;
         align-items: center;
         transition-property: all;
-        background: url(src/assets/images/teacher-default/banner-bg.png) no-repeat;
+        background: url(src/assets/images/teacher-default/banner-bg2.png) no-repeat;
         word-break: break-all;
         padding: 10px;
         &.swiper-slide-next {
@@ -371,7 +369,7 @@ export default defineComponent({
     height: 400px;
     border-radius: 6px;
     &.completion {
-      background: url("src/assets/images/teacher-default/panel-first-bg.png") no-repeat
+      background: url("src/assets/images/teacher-default/panel-first-bg2.png") no-repeat
         90% 55%;
       background-color: var(--white-100);
       & > div:nth-child(2) {

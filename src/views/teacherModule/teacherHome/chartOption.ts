@@ -46,6 +46,7 @@ export const pieOptions = (data: IpieData) => {
 }
 // 课程成绩分布
 export const radarOptions = (data: any) => {
+  // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas) * 1.5;
   var indicator = assmax === 0 ? [

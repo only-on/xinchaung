@@ -366,6 +366,12 @@ onMounted(() => {
     .midItem{
       margin: 0 18px 2rem;
     }
+    .item:hover,.midItem:hover{
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+      position: relative;
+      top: -6px;
+      transition: all 0.3s;
+    }
   }
   .setupVisible{
     color: var(--black-65);

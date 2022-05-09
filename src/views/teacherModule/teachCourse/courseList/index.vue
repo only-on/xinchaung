@@ -7,14 +7,14 @@
         <div class="coverBox">
           <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
             <div class="top flexCenter">
-              <div v-show="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
-              <div v-show="currentTab === 1" class="flexCenter user">
-              <!-- :style="`background-image: url(${v.avatar});`" -->
+              <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
+              <div v-if="currentTab === 1" class="flexCenter user">
                 <span class="img" :class="v.is_init?'initImg':''"></span>
                 <span class="userName">{{v.is_init?'系统内置':v.user_name}}</span>
               </div>
             </div>
             <div class="tabBox">
+              <!-- :style="`background-image: url(${v.avatar});`" -->
               <!-- <span>标签1/标签2/</span> -->
                 <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
             </div>
@@ -418,7 +418,7 @@ onMounted(() => {
       flex-direction: column;
       justify-content: space-between;
       margin-bottom: 2rem;
-      box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07); 
+      box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
       border-radius: 6px;
       background-color: #fff;
       .coverBox{
@@ -533,6 +533,12 @@ onMounted(() => {
     }
     .midItem{
       margin: 0 18px 2rem;
+    }
+    .item:hover,.midItem:hover{
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+      position: relative;
+      top: -6px;
+      transition: all 0.3s;
     }
   }
   .setupVisible{
