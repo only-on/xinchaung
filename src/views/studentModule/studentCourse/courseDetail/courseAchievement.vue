@@ -23,7 +23,7 @@
         <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
       </template>
       <template #report_score='{record}'>
-        <span :class="record?.report_score?'table-a-link':'no-link'" v-if="record?.report_score">
+        <span :class="record?.report_score?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.report?.pdf_path, 'report',record.report):''" v-if="record?.report_score">
           {{record?.report_score}}
         </span>
         <span class='no-link' v-else-if="!record?.report_score&&record?.report?.length">
@@ -96,7 +96,7 @@
         <div>
           <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
           <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
-          <report v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
+          <report v-if="modaldata.componentName=='report'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
           <remark v-if="modaldata.componentName=='remark'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
         </div>
       </a-modal>
@@ -301,7 +301,7 @@ function clickFun(resultData: any, type: any, report?: any) {
     modaldata.componentName = type === "video" ? "cvideo" : type;
     
       const types = {
-        exper: "习题",
+        exper: "随堂测试详情",
         video: "操作视频",
         report: "报告",
         remark:'评语'

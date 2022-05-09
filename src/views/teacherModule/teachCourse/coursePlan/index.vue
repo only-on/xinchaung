@@ -405,7 +405,7 @@ interface IDaytime {
 const role = window.XC_ROLE;
 
 // 实例化请求
-const http = (request as any).teachCourse;
+const http = (request as any).coursePlain;
 const router = useRouter();
 var updata = inject("updataNav") as Function;
 updata({
@@ -470,23 +470,23 @@ watch(
 );
 function getLeftTime() {
   dayTimes.value.length = 0;
-  // http.getLeftTime().then((res: any) => {
-  //   // this.loading = true
-  //   dayTimes.value.push(...res.data);
-  // });
+  http.getLeftTime().then((res: any) => {
+    // this.loading = true
+    dayTimes.value.push(...res.data);
+  });
 }
 function getTimeTable(data: string) {
   const param = {
     date: data,
   };
-  datas.tableList = {};
-  console.log("2222");
+  // datas.tableList = {};
+  // console.log("2222");
 
-  // http.getTimeTable({ param }).then((res: any) => {
-  //   console.log(res);
+  http.getTimeTable({ param }).then((res: any) => {
+    console.log(res);
 
-  //   datas.tableList = res.data;
-  // });
+    datas.tableList = res.data;
+  });
 }
 function monthChange(date: Moment, dateString: string[]) {
   console.log(date, dateString);
@@ -580,6 +580,7 @@ function createTeachingSchedule(
   weekIndex: number,
   classIndex: number
 ) {
+  console.log(dayTimes.value,dayTimes.value[classIndex])
   // 创建排课页需要的参数
   const params = {
     leftStuNum: leftStuNum,

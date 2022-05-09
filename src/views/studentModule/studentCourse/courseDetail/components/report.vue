@@ -8,14 +8,14 @@
         <pdf :url="detailInfo"></pdf>
       </div>
     </template>
-    <table style="width: 100%" class="teacherRemark" v-if="baseInfo?.remark">
+    <!-- <table style="width: 100%" class="teacherRemark" v-if="baseInfo?.remark">
       <tr>
         <td style="width: 16.7%" class="remark">教师批注</td>
         <td colspan="6" class="remarkValue">
           {{ baseInfo?.remark }}
         </td>
       </tr>
-    </table>
+    </table> -->
   </div>
 </template>
 <script lang="ts">
@@ -38,17 +38,17 @@ export default defineComponent({
       reportUrl: "",
     });
     provide("reportTemplateData", props.baseInfo);
-    // watch(
-    //   () => props.detailInfo,
-    //   () => {
-    //     let development = process.env.NODE_ENV == "development" ? true : false;
-    //     let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
-    //     console.log(props.detailInfo, props.baseInfo);
-    //     state.reportUrl =
-    //       "pdfjs-2.5.207/web/viewer.html?file=" + baseurl + props.detailInfo;
-    //   },
-    //   { immediate: true, deep: true }
-    // );
+    watch(
+      () => props.detailInfo,
+      () => {
+        let development = process.env.NODE_ENV == "development" ? true : false;
+        let baseurl = development ? "http://localhost:3000/proxyPrefix" : "";
+        console.log(props.detailInfo, props.baseInfo);
+        state.reportUrl =
+          "pdfjs-2.5.207/web/viewer.html?file=" + baseurl + props.detailInfo;
+      },
+      { immediate: true, deep: true }
+    );
     return { ...toRefs(state), provide };
   },
 });

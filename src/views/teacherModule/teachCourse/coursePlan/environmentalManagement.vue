@@ -127,7 +127,7 @@ import request from "src/api/index";
 import moment, { Moment } from "moment";
 
 var updata = inject("updataNav") as Function;
-const http = (request as any).teachCourse;
+const http = (request as any).coursePlain;
 updata({
   tabs: [
     {

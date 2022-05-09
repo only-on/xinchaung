@@ -74,7 +74,7 @@ export default defineComponent({
   emit: [],
   setup(props) {
     const $message: MessageApi = inject("$message")!;
-    const http = (request as any).teachCourse;
+    const http = (request as any).coursePlain;
 
     let name = ref<string>("");
     let loading = ref<boolean>(false);

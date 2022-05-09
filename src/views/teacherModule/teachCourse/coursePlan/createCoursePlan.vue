@@ -141,7 +141,7 @@ export default defineComponent({
   emit: [],
   setup() {
     const $message: MessageApi = inject("$message")!;
-    const http=(request as any).teachCourse
+    const http=(request as any).coursePlain
     var updata = inject("updataNav") as Function;
     updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
     let router = useRouter()

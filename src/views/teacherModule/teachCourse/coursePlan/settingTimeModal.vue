@@ -29,7 +29,7 @@ interface IOptions {
 export default defineComponent({
   name: 'settingTimeModal',
   setup() {
-    const http=(request as any).teachCourse
+    const http=(request as any).coursePlain
     const visible = ref<boolean>(false)
     const edit = ref<boolean>(false)
     const options = reactive({
