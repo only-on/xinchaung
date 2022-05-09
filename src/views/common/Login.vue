@@ -212,7 +212,7 @@ const login = () => {
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(315deg, #1f227d 0%, #141c65 39%, #00113b);
+  background: linear-gradient(135deg, #1f227d 0%, #141c65 39%, #00113b);
 
   .online-info {
     position: absolute;

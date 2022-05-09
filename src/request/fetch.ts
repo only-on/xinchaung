@@ -188,7 +188,7 @@ export default function request({
           if (!silent) {
             message.warning(res.msg);
           }
-          // router.replace({ path: "/login" }).catch(() => {});
+          router.replace({ path: "/login" }).catch(() => {});
           reject(res);
         } else {
           let meg = "请求出错";
