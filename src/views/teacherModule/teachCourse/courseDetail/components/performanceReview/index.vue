@@ -55,7 +55,7 @@
           <template #customAutoTitle> 自动评分</template>
           <template #customExercisesTitle> 习题 </template>
           <template #reference="{ text, record, index }">
-            <span v-if='record.video!=null' class="table-a-link" @click="clickFun('video', record, index)"
+            <span :class="record.video!=null&&record.video?.length!==0?'table-a-link':'no-link'" @click="record.video!=null&&record.video?.length!==0?clickFun('video', record, index):''"
               >录屏</span
             >
           </template>
