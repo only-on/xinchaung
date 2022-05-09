@@ -1,7 +1,14 @@
-import { RESP_AUTH_FAILURE, RESP_SUCCESS } from 'src/api/index';
-import { IMimeMap, TMimeTypes, IBusinessResp, TDataType, IRequestParams, THttpHeaders } from 'src/typings/fetch';
+import { RESP_AUTH_FAILURE, RESP_SUCCESS } from "src/api/index";
+import {
+  IMimeMap,
+  TMimeTypes,
+  IBusinessResp,
+  TDataType,
+  IRequestParams,
+  THttpHeaders,
+} from "src/typings/fetch";
 import store from "src/store/index";
-import { message } from 'ant-design-vue';
+import { message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 import router from "src/routers";
 const { lStorage } = extStorage;
@@ -20,13 +27,15 @@ function urlParams(data: Record<string, string>): string {
 }
 // 检查 response 返回状态
 function checkStatus(response: Response) {
+  // console.log('[fetch] checkStatus');
   if (response.status >= 200 && response.status < 300) {
     return response;
   }
-  throw response
+  throw response;
 }
 // 根据 ContentType 猜测解析方式
 function guessType(ct: string): TMimeTypes {
+  // console.log('[fetch] guessType');
   // 常用类型检查,可以修改此进行调整
   const typeMap: IMimeMap = {
     blob: ["image", "video"],
@@ -38,10 +47,11 @@ function guessType(ct: string): TMimeTypes {
     typeMap[key as TMimeTypes].some((vi) => ct.toLocaleLowerCase().includes(vi))
   );
   // 如果未找到预设，则直接返回text
-  return target as TMimeTypes || "text";
+  return (target as TMimeTypes) || "text";
 }
 // 检查 response 返回数据类型，并进行相应解析，解析异常时，直接按照文本解析
 function checkResponseType(response: Response) {
+  // console.log('[fetch] checkResponseType');
   const contentType = response.headers.get("Content-Type");
   if (contentType) {
     return response[guessType(contentType)]();
@@ -50,7 +60,10 @@ function checkResponseType(response: Response) {
   }
 }
 // 格式化发送数据类型和数据格式
-function contentTypeAndData(dataType: TDataType, body: string | Record<string, string>) {
+function contentTypeAndData(
+  dataType: TDataType,
+  body: string | Record<string, string>
+) {
   const currentMode = {
     urlencoded: {
       contentType: "application/x-www-form-urlencoded;charset=utf-8",
@@ -65,7 +78,7 @@ function contentTypeAndData(dataType: TDataType, body: string | Record<string, s
       data: typeof body === "string" ? body : "",
     },
     formdata: {
-      contentType: '',
+      contentType: "",
       data: isObject(body) ? body : "",
     },
   }[dataType];
@@ -80,6 +93,7 @@ function contentTypeAndData(dataType: TDataType, body: string | Record<string, s
 
 // 请求成功的处理；请在此处添加自定义成功处理
 function responseSucceed(response: IBusinessResp) {
+  // console.log('[fetch] responseSucceed');
   // const codeList = [1]
   // if (codeList.includes(response.status)) {
   //   response.code = 200
@@ -110,18 +124,27 @@ export default function request({
   mode = "cors",
   dataType = "urlencoded",
   timeout = 0,
+  silent = false,
 }: IRequestParams): Promise<IBusinessResp> {
   // fetch 参数方便后续调整
-  let init: RequestInit = { headers, method, cache: cache, credentials: credentials, mode };
+  let init: RequestInit = {
+    headers,
+    method,
+    cache: cache,
+    credentials: credentials,
+    mode,
+  };
   // let fetchUrl = url;
-  let fetchUrl = (window as any).proxy_api ? `${(window as any).proxy_api}${url}` : url;
+  let fetchUrl = (window as any).proxy_api
+    ? `${(window as any).proxy_api}${url}`
+    : url;
   // 根据发送数据类型来自动生成 ContentType 和 body格式
   let { sendContentType, data } = contentTypeAndData(dataType, body);
   // headers构造
   let httpHeaders: THttpHeaders = {
     "Cache-Control": cache,
     "Content-Type": sendContentType,
-    'Authorization': store.state.adminInfo.token as string || '',
+    Authorization: (store.state.adminInfo.token as string) || "",
     // 'Login-Role': ls.lStorage.get("username") || 'teacher',// student teacher admin init assistant
     ...headers,
   };
@@ -140,7 +163,7 @@ export default function request({
     fetchUrl = urlParamsStr ? [fetchUrl, urlParamsStr].join("?") : fetchUrl;
   } else {
     // 设置数据
-    init.body = sendContentType ? data as string : body as string;
+    init.body = sendContentType ? (data as string) : (body as string);
   }
   // 检查是否支持 AbortController，AbortSignal ，来确定是否使用超时
   if ("signal" in new Request("") && timeout > 0) {
@@ -155,20 +178,33 @@ export default function request({
       .then(checkResponseType)
       .then(responseSucceed)
       .then((res: IBusinessResp) => {
-        // console.log(res);
+        // console.log('[fetch] res:', res);
         if (res.code === RESP_SUCCESS || res.code === 200 || res.status === 1) {
           resolve(res);
-        } else if (res.code === RESP_AUTH_FAILURE) {    // 登录失效或其他特殊状态码处理
+        } else if (res.code === RESP_AUTH_FAILURE) {
+          // console.log('[fetch] RESP_AUTH_FAILURE, will replace to login page');
+          // 登录失效或其他特殊状态码处理
           lStorage.clean();
-          message.warning(res.msg);
-          router.replace({ path: "/login" }).catch(() => {});
+          if (!silent) {
+            message.warning(res.msg);
+          }
+          // router.replace({ path: "/login" }).catch(() => {});
+          reject(res);
         } else {
-          let meg='请求出错'
-          if(res.message){meg=res.message}
-          if(res.msg){meg=res.msg}
-          if(res.error){meg=res.error.msg}
-          message.warning(meg);
-          reject(res)
+          let meg = "请求出错";
+          if (res.message) {
+            meg = res.message;
+          }
+          if (res.msg) {
+            meg = res.msg;
+          }
+          if (res.error) {
+            meg = res.error.msg;
+          }
+          if (!silent) {
+            message.warning(meg);
+          }
+          reject(res);
         }
       })
       .catch((error: Error) => {
