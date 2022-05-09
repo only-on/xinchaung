@@ -62,13 +62,23 @@ export default defineComponent({
       showNav: true,
     });
 
+    // watch(
+    //   () => {
+    //     return configuration.componenttype;
+    //   },
+    //   (val) => {
+    //     componentName.value = componentNames[val];
+    //   }
+    // );
+    
     watch(
       () => {
-        return configuration.componenttype;
+        return route.query.currentTab;
       },
-      (val) => {
+      (val: any) => {
         componentName.value = componentNames[val];
-      }
+      },
+      { immediate: true }
     );
     onMounted(() => {});
     const ExperimentTypeList = reactive([

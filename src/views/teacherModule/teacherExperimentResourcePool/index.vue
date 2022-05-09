@@ -125,6 +125,7 @@ watch(
       v.value = 0
     })
     initData();
+    getDirection()
     isShowAdd.value = currentTab.value === 0;
   }
 );
@@ -320,20 +321,21 @@ const detail = (id: number) => {
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
     currentTab.value = 1
-    configuration.componenttype = 0
+    // configuration.componenttype = 0
   } else {
     currentTab.value = 0
-    configuration.componenttype = 1
+    // configuration.componenttype = 1
   }
   // searchInfo.init_type = currentTab.value
   
-  initData();
+  // initData();
   // 获取技术方向列表
-  getDirection()
+  // getDirection()
 });
 
 const getDirection = () => {
   http.getDirection().then((res: IBusinessResp) => {
+    if (!res) return
     const data = res.data
     data.forEach((v: any) => {
       v.value = v.name

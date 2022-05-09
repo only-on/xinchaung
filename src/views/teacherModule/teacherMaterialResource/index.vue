@@ -163,6 +163,9 @@ watch(
     classifyList[0].value = 0
     classifyList[1].value = 0
     initData();
+    getLabelsList()
+    getTypeList()
+    getMountInfo()
   }
 );
 
@@ -202,9 +205,11 @@ const initData = () => {
   };
   if (labelSearch.type === '数据集') {
     http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
+      if (!res) return
       // console.log(Object.values(res.data.list))
       http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
         // console.log(res)
+        if (!res) return
         const { data, total} = res
         data.forEach((v: any) => {
           v.id = v.uid
@@ -234,14 +239,14 @@ const initData = () => {
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
     currentTab.value = 0
-    configuration.componenttype = 0
+    // configuration.componenttype = 0
   } else {
     currentTab.value = 1
-    configuration.componenttype = 1
+    // configuration.componenttype = 1
   }
-  getLabelsList()
-  getTypeList()
-  getMountInfo()
+  // getLabelsList()
+  // getTypeList()
+  // getMountInfo()
 })
 
 // 获取挂载分区信息
@@ -255,6 +260,7 @@ const mountInfo = reactive({
 })
 const getMountInfo = () => {
   http.getMountInfo().then((res: IBusinessResp) => {
+    if (!res) return
     Object.assign(mountInfo, res.data)
   })
 }
@@ -289,6 +295,7 @@ const labelSearch: {type: any, label: any} = reactive({
 });
 const getLabelsList = () => {
   http.getLabelsList().then((res: IBusinessResp) => {
+    if (!res) return
     const data = res.data
     data.forEach((v: any) => {
       v.value = v.name
@@ -298,6 +305,7 @@ const getLabelsList = () => {
 }
 const getTypeList = () => {
   http.getTypeList().then((res: IBusinessResp) => {
+    if (!res) return
     const data = res.data
     data.forEach((v: any) => {
       v.value = v.name

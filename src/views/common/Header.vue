@@ -557,6 +557,7 @@ export default defineComponent({
     function getHelpFinfo() {
       helpInfoList.value.length -= 0
       vmApi.getHelpFinfoApi({}).then((res: any) => {
+        if (!res) return
         console.log(res);
         helpInfoList.value.push(...res.data.list)
         if (helpInfoList.value.length>0) {

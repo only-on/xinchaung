@@ -43,6 +43,7 @@ export default defineComponent({
     const getRecommendList = () => {
       courseList.length = 0
       http.hotCourseRecommend().then((res: IBusinessResp) => {
+        if (!res) return
         const data = res.data
         courseList.push(...data)
       })

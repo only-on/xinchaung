@@ -149,6 +149,7 @@ export default defineComponent({
     let tagList = reactive<ITagList[]>([])
     const getTagsList = () => {
       http.getForumTags().then((res: IBusinessResp) => {
+        if (!res) return
         const { data } = res
         data.forEach((v: ITagList) => {
           v.value = v.name
@@ -165,6 +166,7 @@ export default defineComponent({
     provide("hotLabelList", hotLabelList)
     const getHotLabels = () => {
       http.getHotLabels().then((res: IBusinessResp) => {
+        if (!res) return
         hotLabelList.push(...res.data)
       })
     }
