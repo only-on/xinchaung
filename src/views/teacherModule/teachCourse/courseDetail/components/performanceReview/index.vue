@@ -274,13 +274,7 @@ const oldColumns: any[] = [
         slots: { title: "customAutoTitle", customRender: "autoScore" },
         width: 74,
         align:'center'
-      },
-      { 
-        dataIndex: "auto_score",
-        slots: { title: "customAutoTitle", customRender: "autoScore" },
-        width: 74,
-        align:'center'
-      },
+      }
       // {
       //   dataIndex: "exercises",
       //   slots: { title: "customExercisesTitle", customRender: "exercises" },

@@ -20,7 +20,7 @@
             placeholder="请输入搜索关键字"
           />
           <a-button type="primary" class="search-btn" @click="switchSearchMode">{{
-            searchMode ? "高级检索" : "普通检索"
+            searchMode ?  "普通检索": "高级检索"
           }}</a-button>
         </div>
         <div class="complex-search" v-if="searchMode">
