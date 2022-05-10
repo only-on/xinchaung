@@ -20,6 +20,7 @@
         </a-select-option>
       </a-select>
       <a-upload
+        :custom-request="() => {}"
         :show-upload-list="false"
         :before-upload="beforeUpload"
         :accept="props.type === 'video' ? '.mp4' : '.md,.doc,.docx,.pdf'"
