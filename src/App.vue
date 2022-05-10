@@ -4,7 +4,7 @@
       <a-radio-button key="cn" :value="zhCN.locale">中文</a-radio-button>
     </a-radio-group> -->
     <a-config-provider :locale="locale === 'en' ? enUS : zhCN">
-      <router-view :key="$route.fullPath" />
+      <router-view />
     </a-config-provider>
 </template>
 
