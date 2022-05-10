@@ -298,7 +298,7 @@ function initWs() {
         }else if (wsJsonData.type=="switch_success") {
           message.success("切换成功")
           currentInterface.value = "vnc";
-            vmsInfo.value = wsJsonData;
+            vmsInfo.value = wsJsonData.data;
               settingCurrentVM(
                 wsJsonData.data.vms[currentVmIndex.value]
               );

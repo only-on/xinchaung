@@ -105,7 +105,7 @@
               class="pointer"
               @click="list.function"
               v-if="list.key == 'record'"
-              :class="roleArry.includes(list.key as any)?'':'none-event'"
+              :class="roleArry.includes(list.key as any)&&currentInterface === 'vnc'?'':'none-event'"
             >
               <span class="iconfont" :class="list.icon"></span>
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>

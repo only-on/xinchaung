@@ -1,5 +1,6 @@
 <template>
-  <p class="guide-waraing" v-if="!currentTask.state">
+<div v-if="baseInfo.base_info.step.length">
+  <p class="guide-waraing" v-if="!isLookStep&&currentTask.state">
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
   <div class="task-name single_ellipsis">任务一：{{ currentTask.name }}</div>
@@ -9,7 +10,7 @@
       <a-button
         type="primary"
         size="small"
-        v-if="!isLookStep&&!currentTask.state"
+        v-if="!isLookStep&&currentTask.state"
         @click="lookStep"
         >查看步骤</a-button
       >
@@ -39,6 +40,8 @@
       >下一任务</a-button
     >
   </div>
+</div>
+<empty v-else> </empty>
 </template>
 
 <script lang="ts" setup>
@@ -107,7 +110,7 @@ function submitStepAction() {
 }
 // 获取当前步骤状态
 function getStepStatus(stepId: any) {
-  let i = findIndex(baseInfo.value.current_step, { task_step_id: stepId });
+  let i = findIndex(baseInfo.value.current_step, { task_step_id: currentTask.value.id });
   isLookStep.value =
     i != -1 ? baseInfo.value.current_step[i].is_see_step : 0;
 }
@@ -132,7 +135,7 @@ function lookStep() {
       };
       stepAction(params).then((res:any) => {
         let i = findIndex(baseInfo.value.current_step, {
-          task_step_id: steps.value.id,
+          task_step_id: currentTask.value.id,
         });
         currentTask.value.state = 1;
         isLookStep.value = 1
@@ -140,7 +143,7 @@ function lookStep() {
           baseInfo.value.current_step[i].is_see_step = 1;
         } else {
           baseInfo.value.current_step.push({
-            task_step_id: steps.value.id,
+            task_step_id: currentTask.value.id,
             is_see_step: 1,
           });
           // currentTask.value.state = 1;
@@ -161,9 +164,10 @@ watch(
     console.log(baseInfo.value.base_info);
     if (baseInfo.value.base_info) {
       taskList.length = 0
-      currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
+      baseInfo.value.base_info.step.length ? currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value]:'';
       taskList.push(...baseInfo.value.base_info.step)
     }
+    getStepStatus(currentTask.value.id)
   },
   { deep: true, immediate: true }
 );

@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, watch, inject } from "vue";
+import { ref, toRefs, onMounted, Ref, watch, inject, reactive } from "vue";
 import guide from "../component/guide/index.vue";
 import note from "../component/note/index.vue";
 import report from "../component/report/index.vue";
@@ -60,12 +60,24 @@ let role = storage.lStorage.get("role");
 
 const leftWidth: Ref<any> = inject("leftWidth", ref(70));
 const rightWidth: Ref<any> = inject("rightWidth", ref(window.innerWidth - 70));
-const navData = [
+let baseInfo: any = inject("baseInfo");
+const navData = reactive([
   { name: "指导", key: "guide", icon: "icon-zhidao" },
   { name: "笔记", key: "note", icon: "icon-biji" },
   { name: "报告", key: "report", icon: "icon-baogao" },
   { name: "问答", key: "question", icon: "icon-wenda" },
-];
+]);
+
+watch(
+  () => baseInfo.value.base_info,
+  (val) => {
+    if (val && !val.is_open && (Number(experType)===1 || Number(experType)===2 || Number(experType)===3)) {
+      navData.shift()
+    } 
+    // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
+  },
+  { deep: true, immediate: true }
+);
 const componentList = {report}
 const currentNavKey = ref("");
 let lastKey = ref(navData[0].key);
