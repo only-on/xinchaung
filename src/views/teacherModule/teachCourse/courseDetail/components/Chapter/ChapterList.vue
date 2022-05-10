@@ -64,7 +64,7 @@
             <div class="experimentGuide" v-if="a.openGuidance">
               <a-spin  :spinning="a.experimentGuideLoading" size="large" tip="Loading..." class="experimentGuideContnet">
                 <template v-if="!a.experimentGuideLoading">
-                  <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
+                  <ExperimentalGuidance :activeExperimentObj="a.activeExperimentObj" />
                 </template>
               </a-spin>
             </div>
@@ -398,16 +398,23 @@ function ViewExperiment(a:any,v:any){
       a.experimentGuideLoading=false
     }
   }
+  if(role===3 && Number(currentTab) === 1){
+    a.activeExperimentObj={...a}
+  }
 }
 // const experimentGuideLoading: Ref<boolean> = ref(false);
 const getExperimentGuide=(id:number,a:any)=>{
   a.experimentGuideLoading=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
     // console.log(res)
-    const {data}=res  
-    state.activeExperimentObj.Newguidance=data
+    var {data}=res  
     if(data.task_type === 6){
-      state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+      // state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+      data.file_url=data.content_task_files?data.content_task_files[0].file_url:''
+    }
+    state.activeExperimentObj.Newguidance=data
+    if(role===3 && Number(currentTab) === 1){
+      a.activeExperimentObj.Newguidance=data
     }
     a.experimentGuideLoading=false
   })
