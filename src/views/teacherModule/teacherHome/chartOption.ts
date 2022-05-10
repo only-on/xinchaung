@@ -48,7 +48,7 @@ export const pieOptions = (data: IpieData) => {
 export const radarOptions = (data: any) => {
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
-  var assmax = Math.max.apply(null, datas) * 1.5;
+  var assmax = Math.max.apply(null, datas) * 1.2;
   var indicator = assmax === 0 ? [
     { name: '未完成', min: assmax },
     { name: 'D', min: assmax },
@@ -134,7 +134,8 @@ export const radarOptions = (data: any) => {
             color: theme.themeColor,
           },
           areaStyle: {
-            color: theme.nextThemeColor,
+            // color: theme.nextThemeColor,
+            color: 'rgba(255, 149, 68,.25)',
           }
         }
       ]

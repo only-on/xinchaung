@@ -250,6 +250,7 @@ onMounted(() => {
         min-height:500px;
         max-height: 700px;
         overflow: auto;
+        padding-right: 10px;
       }
     }
     .chartTerrLeft2{

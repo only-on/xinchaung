@@ -33,10 +33,10 @@
               <span>职业方向</span>
               <span class="num" :class="isShowCourseDetail?'num2':''">{{info.direction}}</span>
             </div>
-            <div class="item" v-if="isShowCourseDetail">
+            <!-- <div class="item" v-if="isShowCourseDetail">
               <span>实验成绩</span>
               <span class="num num2">{{info.content_score}}分</span>
-            </div>
+            </div> -->
             <div class="item" v-if="isShowCourseDetail">
               <span>实验时长</span>
               <span class="num">{{info.content_duration}}分钟</span>

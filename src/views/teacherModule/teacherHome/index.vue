@@ -263,12 +263,12 @@ export default defineComponent({
       });
     };
     onMounted(() => {
-      // getCourseList();
-      window.addEventListener("resize", () => {
-        chartDom.forEach((item: any) => {
-          item.resize();
-        });
-      });
+      getCourseList();
+      // window.addEventListener("resize", () => {
+      //   chartDom.forEach((item: any) => {
+      //     item.resize();
+      //   });
+      // });
     });
     const formatProgress = (percent: any) => {
       return percent + "%";
