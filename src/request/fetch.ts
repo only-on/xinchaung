@@ -183,6 +183,10 @@ export default function request({
         // console.log('[fetch] res:', res);
         if (res.code === RESP_SUCCESS || res.code === 200 || res.status === 1) {
           resolve(res);
+          setTimeout(() => {
+            // message.warning('超时');
+            // router.replace({ path: "/login" }).catch(() => {});
+          }, 3000);
         } else if (res.code === RESP_AUTH_FAILURE) {
           // console.log('[fetch] RESP_AUTH_FAILURE, will replace to login page');
           // 登录失效或其他特殊状态码处理
@@ -194,8 +198,8 @@ export default function request({
           if (!silent) {
             message.warning(res.msg);
           }
-          router.replace({ path: "/login" }).catch(() => {});
           reject(res);
+          router.replace({ path: "/login" }).catch(() => {});
         } else {
           let meg = "请求出错";
           if (res.message) {

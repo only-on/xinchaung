@@ -23,12 +23,12 @@ export default [
   {
     path: "/",
     name: "index",
-    component: Port,
+    // component: Port,
     meta: {
       title: "请稍候...",
       authCode: "Port",
     },
-    // redirect: homePath,
+    redirect: '/login',
   },
   {
     path: "/login",
