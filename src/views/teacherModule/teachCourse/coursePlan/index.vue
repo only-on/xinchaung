@@ -151,7 +151,7 @@
                 <div
                   v-else-if="classVal.belongs_to_currentteacher"
                   class="teacher-current hover-edit teacher-no"
-                >
+                > 
                   <div class="edit-wrap flex-center">
                     <!-- <div class="course-name flex-center">
                       {{ classVal.arrangements[0].course_name }}
@@ -240,7 +240,7 @@
                           classVal.arrangements.length
                         "
                       >
-                        <div
+                        <!-- <div
                           v-for="(teaList, index) in classVal.arrangements"
                           :key="index"
                           class="teaList-item"
@@ -248,6 +248,13 @@
                           <span class="popover-name">{{ teaList.course_name }}</span>
                           <span class="teaList-item-text">已预约人数</span>
                           <span class="teaList-item-num">{{ teaList.stu_num }}</span>
+                        </div> -->
+                          <div
+                          class="course-info-title"
+                          :class="!classVal.full ? 'course-info-title-active' : ''"
+                        >
+                          <span class="course-info-text">剩余可约人数</span>
+                          <span class="course-info-num">{{ classVal.left_stunum }}</span>
                         </div>
                       </template>
                       <div
@@ -318,6 +325,7 @@
                             </div>
                              
                               <span
+                                class='subscribe'
                                 >公预约{{ classVal.arrangements[aindex].stu_num }}人
                                 <span class="edit-del-btn-wrap">
                                   <i
@@ -326,7 +334,7 @@
                                   ></i>
                                   <i
                                     @click="adminDel(classVal.arrangements[aindex])"
-                                    class="icon-shanchu iconfont"
+                                    class="icon-shanchu admin-shanchu iconfont"
                                   ></i>
                                 </span>
                               </span>
@@ -406,7 +414,9 @@ interface IDaytime {
   serial_number?: number;
 }
 
-const role = window.XC_ROLE;
+// const role = window.XC_ROLE;
+const { lStorage } = extStorage
+const role = lStorage.get('role')
 
 // 实例化请求
 const http = (request as any).coursePlain;
@@ -625,10 +635,12 @@ function toDayList(index: number) {
 // 管理员编辑
 function adminEdit(val: any) {
   console.log("adminEdit", val);
+  editTeachingSchedule(val?.cid,val?.start)
 }
 // 管理员删除
 function adminDel(val: any) {
   console.log("adminDel", val);
+  cancelScheduleConfirm(val?.cid)
 }
 // 添加时间段空行
 function addTimeSlot() {
@@ -1291,8 +1303,8 @@ onMounted(() => {
       line-height: 28px;
       width: 90%;
       margin: 0 auto;
-      background: var(--purpleblue-6);
-      border-radius: 4px;
+      background: var(--primary-color);
+      border-radius:20px;
     }
   }
   .a-create-wrap{
@@ -1312,5 +1324,11 @@ onMounted(() => {
 .circulate{
   width: 100%;
   text-align: center;
+}
+.subscribe{
+  margin-right: 20px;
+}
+.admin-shanchu{
+  margin-left: 5px;
 }
 </style>

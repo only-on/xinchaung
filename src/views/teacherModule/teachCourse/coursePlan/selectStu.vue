@@ -33,7 +33,6 @@
         > -->
       </div>
     </div>
-    {{total}}
     <a-table
       :columns="columns"
       :data-source="data"
