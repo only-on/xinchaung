@@ -415,13 +415,13 @@
       </p>
     </a-upload-dragger>
     <template #footer>
-      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="false"></Submit>
+      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading"></Submit>
     </template>
   </a-modal>
 </template>
 
 <script lang="ts" setup>
-import { ref, defineProps, inject, Ref, onMounted, watch, nextTick, computed, createVNode } from "vue";
+import { ref, reactive, defineProps, inject, Ref, onMounted, watch, nextTick, computed, createVNode } from "vue";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import numberInput from "src/components/aiAnt/numberInput.vue";
 import { message, Modal } from "ant-design-vue";
@@ -446,10 +446,12 @@ import { cloneDeep } from "lodash";
 import storage from "src/utils/extStorage";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import Submit from "src/components/submit/index.vue";
+import { IBusinessResp } from "src/typings/fetch.d";
 
 const route = useRoute();
 const router = useRouter();
 const vmApi = request.vmApi;
+const http=(request as any).common
 // const examApi = request.studentExam;
 const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 const experType = Number(route.query.experType);
@@ -844,7 +846,7 @@ async function endVmOperates() {
 }
 // 切换抽屉时动画结束后的回调
 function afterVisibleChange(bool: boolean) {
-  console.log("visible", bool);
+  // console.log("visible", bool);
 }
 
 // 工具箱操作
@@ -927,8 +929,60 @@ function saveKvm() {
   });
 }
 
+
+// 文件上传
+const uploadVisible = ref(false)
+const uploadFile: any = reactive({
+  fileList: []
+})
+const uploadFilePath = ref('')
+const uploadLoading = ref(false)
 function upload() {
   uploadVisible.value = true
+  uploadFile.fileList = []
+  uploadFilePath.value = ''
+}
+const okUploadFile = () => {
+  if (!uploadFilePath.value) {
+    message.warn("请选择上传文件");
+    return
+  }
+  uploadLoading.value = true
+  const params: any = {
+    action: 'upload',
+    params: {
+      uuid: currentUuid.value,
+      path: uploadFilePath.value
+    },
+  };
+  operatesHandle(params).then((res:any) => {
+    uploadLoading.value = false
+  })
+}
+const beforeUpload = (file: any) => {
+  if (file.size > 20*1024*1024) {
+    message.warn("文件大小不能超过20MB");
+    return
+  }
+  const postfix = (file && file.name).split(".")[1];
+  let obj:any={
+    uid: file.uid,    
+    file_url:'',
+    name:file.name
+  }
+  uploadFile.fileList[0] = obj
+  const fd = new FormData()
+  fd.append('file', file)
+  fd.append('upload_path', '/simpleupload')
+  fd.append('default_name', '1')
+  http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
+    uploadFilePath.value = res.data.url
+  })
+  return false;
+}
+const remove = () => {
+  uploadFile.fileList = []
+  uploadFilePath.value = ''
 }
 
 function download() {
@@ -938,10 +992,19 @@ function download() {
     icon: () => createVNode(ExclamationCircleOutlined),
     content: () => createVNode('div', {}, '文件下载功能:将"C:/Windows/AppReadiness/userfiles"目录进行打包 并下载（限制？？M以内）'),
     onOk() {
-      console.log('OK');
+      const params: any = {
+        action: 'download',
+        params: {
+          uuid: currentUuid.value,
+          path: ''
+        },
+      };
+      operatesHandle(params).then((res:any) => {
+        console.log(res)
+      })
     },
     onCancel() {
-      console.log('Cancel');
+      // console.log('Cancel');
     },
     class: 'vm-download',
   });
@@ -1092,9 +1155,6 @@ function okProgress() {
         progressVisible.value = false;
       }
     })
-    .catch((err:any) => {
-      console.log(err);
-    });
 }
 
 // 保存进度单选发生变化
@@ -1280,7 +1340,7 @@ onMounted(() => {
   }
 }),
   onBeforeRouteLeave(() => {
-    console.log("离开页面");
+    // console.log("离开页面");
     clearInterval(Number(timer));
     clearInterval(Number(viodeTimer));
     clearInterval(Number(delayTimer));
@@ -1291,32 +1351,6 @@ onMounted(() => {
 //   evaluateVisible.value = true;
 //   initEvaluate()
 // }
-// 文件上传
-const uploadVisible = ref(false)
-const uploadFile: any = ref({
-  fileList: []
-})
-const okUploadFile = () => {
-  
-}
-const beforeUpload = (file: any) => {
-  const postfix = (file && file.name).split(".")[1];
-  let obj:any={
-    uid: file.uid,    
-    file_url:'',
-    name:file.name
-  }
-  uploadFile.fileList[0] = obj
-  let accept = ['.']
-  let tusdDirKey = 'document_path'
-  tusFileUpload.onUpload(file, tusdDirKey, accept, uploadFile.fileList[0])
-}
-const remove = () => {
-  if(uploadFile.fileList[0].status !== "done"){
-    uploadFile.tusFileUpload.remove(uploadFile.fileList[0])
-  }
-  uploadFile.fileList = []
-}
 </script>
 
 <style lang="less" scoped>
