@@ -211,7 +211,7 @@ const columns = [
           data.map((v: any) => {
             v.genderText = v.gender === 2 ? "女" : "男";
           });
-          list.push(...data);
+          list.value.push(...data);
           total.value = res.data.page.totalCount;
         }
         // console.log(list)
@@ -219,7 +219,7 @@ const columns = [
     }
     function search() {
       ForumSearch.page = 1;
-      // initData();
+      initData();
     }
     function  onSelectChange(selectedRowKeys:any[], selectedRows:any[]) {
         state.selectedRowKeys = selectedRowKeys;

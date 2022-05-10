@@ -358,6 +358,10 @@ export default defineComponent({
           $message.warn('请选择学生')
           return
         }
+        let ids:any=[]
+        selectedStudentsData.forEach((it:any,i:any)=>{
+          ids.push(it.stu_id)
+        })
         let param = {
           courseName: form.course_name,
           endDate: checkDate.value ? form.endDate?.format('YYYY-MM-DD') : '',
@@ -366,23 +370,25 @@ export default defineComponent({
           teacherOccupied: form.teacher_occupied ? 1 : 0,
           weekRecycle: checkDate.value ? 1 : 0,
           // stuIds: selectedIds['student'],
-          stuIds:tableParams.student_id,
+          stuIds:id?ids:tableParams.student_id,
           classIds: selectedIds['class'],
         }
-        // if (id !== 'undefined' && id) {
-        //   http.scheduleUpdate({
-        //     param: {params: Object.assign(param, {id})}
-        //   }).then((res: IBusinessResp) => {
-        //     $message.success('修改成功！')
-        //     router.go(-1)
-        //   })
-        //   return
-        // }
-        http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
+        if (id !== 'undefined' && id) {
+          http.scheduleUpdate({
+            param: {params: Object.assign(param, {id})}
+          }).then((res: IBusinessResp) => {
+            $message.success('修改成功！')
+            router.go(-1)
+          })
+          return
+        }else{
+          http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
           $message.success('创建成功！')
-          // router.go(-1)
+          router.go(-1)
           // visible.value = false;
         })
+        }
+        
       })
     }
     //取消

@@ -80,6 +80,7 @@
     } from "vue";
     import request from "src/api/index";
     import { useRouter, useRoute } from "vue-router";
+    const http = (request as any).adminUserManagement;
     const router = useRouter();
     const route = useRoute();
      var updata = inject("updataNav") as Function;
@@ -158,9 +159,33 @@
         formRef.value
         .validate()
         .then(() => {
-          console.log('values', formState);
-          message.success('验证成功！')
-          router.push({path: '/admin/adminUserManagement/teacherManagement'});
+          let obj: any = {
+          Teacher: {
+            username: formState.username,
+            email: formState.email,
+            userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+          },
+          TeacherProfile: {
+            department: formState.department,
+            direct: formState.direct,
+            course: formState.course,
+            name: formState.name,
+            gender: formState.gender,
+            phone: formState.phone,
+            status: formState.status,
+            introduce: formState.introduce,
+          },
+        };
+          const promise = editId.value
+          ? http.editTeacher({ urlParams: { id: editId.value }, param: { ...obj } })
+          : http.createTeacher({ param: { ...obj } });
+        promise.then((res:any) => {
+          // initData();
+          message.success(editId.value ? "编辑成功" : "创建成功");
+          formRef.value.resetFields();
+          formState.reset = false;
+          // visible.value = false;
+        });
         })
         .catch((error:any) => {
           console.log('error', error);

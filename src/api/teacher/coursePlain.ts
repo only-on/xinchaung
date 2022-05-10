@@ -3,70 +3,70 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default {
 // 排课
   getLeftTime: {
-    url: "/timetable/timetable-set/time-table",
+    url: "/api/yii/timetable/timetable-set/time-table",
     method: "GET"
   },
   getTimeTable: {
-    url: "/timetable/timetable/index",
+    url: "/api/yii/timetable/timetable/index",
     method: "GET"
   },
   getStudentList: {
-    url: "/timetable/timetable/students",
+    url: "/api/yii/timetable/timetable/students",
     method: "POST",
     dataType: "json"
   },
   getClassestList: {
-    url: "/timetable/timetable/classes",
+    url: "/api/yii/timetable/timetable/classes",
     method: "POST",
     dataType: "json"
   },
   classStuIntersect: {
-    url: "/timetable/timetable/class-stu-intersect",
+    url: "/api/yii/timetable/timetable/class-stu-intersect",
     method: "POST",
     dataType: "json"
   },
   createSchedule: {
-    url: "/timetable/timetable/create",
+    url: "/api/yii/timetable/timetable/create",
     method: "POST",
     dataType: "json"
   },
   scheduleDetail: {
-    url: "/timetable/timetable/view",
+    url: "/api/yii/timetable/timetable/view",
     method: "GET",
     dataType: "json"
   },
   scheduleUpdate: {
-    url: "/timetable/timetable/update",
+    url: "/api/yii/timetable/timetable/update",
     method: "POST",
     dataType: "json"
   },
   scheduleDelete: {
-    url: "/timetable/timetable/delete",
+    url: "/api/yii/timetable/timetable/delete",
     method: "POST",
     dataType: "json"
   },
   setTimeTable: {
-    url: "/timetable/timetable-set/set",
+    url: "/api/yii/timetable/timetable-set/set",
     method: "POST",
     dataType: 'json'
   },
   updateTimeTable: {
-    url: "/timetable/timetable-set/update",
+    url: "/api/yii/timetable/timetable-set/update",
     method: "POST",
     dataType: 'json'
   },
   deleteTimeTable: {
-    url: "/timetable/timetable-set/delete/",
+    url: "/api/yii/timetable/timetable-set/delete/",
     method: "POST",
     dataType: 'json'
   },
   envMonitoringList: {
-    url: "/timetable/online-resource/index",
+    url: "/api/yii/timetable/online-resource/index",
     method: "POST",
     dataType: 'json'
   },
   forbiddenUser: {
-    url: "/timetable/online-resource/disable",
+    url: "/api/yii/timetable/online-resource/disable",
     method: "POST",
     dataType: 'json'
   },
