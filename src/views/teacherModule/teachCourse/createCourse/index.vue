@@ -18,7 +18,7 @@
                 <a-input v-model:value="formState.name" placeholder="请输入课程名称" />
               </a-form-item>
               <a-form-item label="起始时间" name="date">
-                <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss" :disabledDate="disabledDate">
+                <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabledDate="disabledDate">
                   <template #suffixIcon>
                     <SmileOutlined />
                   </template>
@@ -133,7 +133,7 @@ type Key = ColumnProps["key"];
 const router = useRouter();
 const route = useRoute();
 
-const { EditId ,currentTab} = route.query;  
+const { EditId ,currentTab} = route.query;
 const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -180,7 +180,7 @@ const next=(val:number)=>{
       })
 
     })
-    return 
+    return
   }
   if(val === 3){
     formState.is_available=1
@@ -193,7 +193,7 @@ const next=(val:number)=>{
     }).catch((err:any)=>{
       stup1Loading.value=false
     })
-    return 
+    return
   }
   currentStep.value=val
 }
@@ -220,7 +220,7 @@ const multiplexingCourse=(val:number)=>{
       })
 
     })
-    return 
+    return
   }
   if(val===3 || val === 4){
       formState.is_available=1
@@ -250,18 +250,18 @@ const courseCategory:any=reactive([])
 const vocationDirection:any=reactive([])
 
 // interface IFormState{
-//   is_available:boolean, 
-//   name: string, 
-//   url: string, 
+//   is_available:boolean,
+//   name: string,
+//   url: string,
 //   introduce:string,
 //   date: Moment[];
 //   start_time: "" | Moment;
 //   end_time: "" | Moment;
-//   category:string,  
-//   direction: string, 
-//   is_public: number, 
-//   class_total:number, 
-//   tags: string[],   
+//   category:string,
+//   direction: string,
+//   is_public: number,
+//   class_total:number,
+//   tags: string[],
 //   content_duration: number | string ,
 // }
 const formState:any = reactive({
@@ -275,7 +275,7 @@ const formState:any = reactive({
   end_time:'',
   category:'',  // "深度学习", // 课程方向
   direction: '', // "大数据工程师", // 职业方向
-  is_public: 0,  // 0-私有, 1-公开    
+  is_public: 0,  // 0-私有, 1-公开
   class_total:2, // 课时
   tags: [],   // ["大数据","人工智能"], // 标签
   content_duration: '',// 实验时长
