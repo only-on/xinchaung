@@ -134,7 +134,7 @@ const reportTab = (val: number) => {
 };
 const getTemplateList = () => {
   TemplateList.length=0
-  http.getTemplateList().then((res: IBusinessResp) => {
+  http.getTemplateList({param: {type: 1}}).then((res: IBusinessResp) => {
     let list=res.data.list
     // type=0 系统  1在线 2离线
     list.map((v:any)=>{
@@ -166,7 +166,7 @@ const Download = (item: any) => {
 };
   const env = process.env.NODE_ENV == "development" ? true : false;
 const viewTemplate = (n: number, val?: any) => {
-  
+
   // 3在线制作 2预览离线  1预览在线   0编辑在线
   console.log(n)
   pdfUrl.value=''

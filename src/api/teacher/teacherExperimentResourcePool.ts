@@ -13,16 +13,16 @@ export default {
   // 视频实验
   createVideo:{ url: `/api/xinchuang/content/video/create`, method: "POST" ,dataType: 'json'},
                     //    /api/xinchuang/report/templates
-  getTemplateList:{ url: `/api/xinchuang/report/templates`, method: "GET"},
+  getTemplateList:{ url: `/api/simple/report/templates`, method: "GET"},
                         // /api/xinchuang/report/templates
-  upLoadExperimentReport:{ url: `/api/xinchuang/report/templates/import-template`, method: "POST",dataType: 'formdata'},
+  upLoadExperimentReport:{ url: `/api/simple/report/templates/import-template`, method: "POST",dataType: 'formdata'},
 
   // 实验技术方向
   getDirection: { url: `/api/category/技术方向/tags`, method: "GET" },
   // 删除实验报告模板
-  deleteTemplate:{ url: `/api/xinchuang/report/templates/{id}`, method: "DELETE" ,},
+  deleteTemplate:{ url: `/api/simple/report/templates/{id}`, method: "DELETE" ,},
   // 实验报告模板详情
-  detailTemplate:{ url: `/api/xinchuang/report/templates/{id}`, method: "GET" ,},
+  detailTemplate:{ url: `/api/simple/report/templates/{id}`, method: "GET" ,},
 
   // 同屏
   getSameScreenInfo: {

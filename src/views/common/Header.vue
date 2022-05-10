@@ -525,12 +525,8 @@ export default defineComponent({
         },
         close: (ev: CloseEvent) => {
           if (ev.type === "close") {
-            console.log(longWs1);
-            console.log(
-              "wsVmConnect.value.isReset",
-              longWs1.value.isReset()
-            );
-            if (longWs1.value.isReset()) {
+            console.log('[Header] longWs1: ', longWs1);
+            if (longWs1.value && longWs1.value.isReset()) {
               message.warn(i18nWebMsg["The user id has been registered by another client."] || "The user id has been registered by another client.");
             }
           }

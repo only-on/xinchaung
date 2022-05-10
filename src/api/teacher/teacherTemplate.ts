@@ -9,9 +9,9 @@ export default {
   copyTemplate: {url: `/report/template/copy`, method: 'POST'},
   shareTemplate: {url: `/report/template/share`, method: 'POST'},
   unshareTemplate: {url: `/report/template/unshare`, method: 'POST'},
-  createTemplate: {url: `/api/xinchuang/report/templates`, method: 'POST', dataType:'json'},
-  viewTemplate: {url: ` /api/xinchuang/report/templates/{id}`, method: 'GET'},
-  updateTemplate: {url: `/api/xinchuang/report/templates/{id}`, method: 'PATCH', dataType:'json'},
+  createTemplate: {url: `/api/simple/report/templates`, method: 'POST', dataType:'json'},
+  viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
+  updateTemplate: {url: `/api/simple/report/templates/{id}`, method: 'PATCH', dataType:'json'},
 }
 
 export interface ITeacherTemplateApis {
