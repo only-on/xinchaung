@@ -23,7 +23,7 @@ export default {
         import("src/views/teacherModule/teacherMaterialResource/index.vue"),
       meta: {
         icon: "",
-        authCode: "teacherMaterialResource",
+        authCode: "materialList",
       },
     },
     {

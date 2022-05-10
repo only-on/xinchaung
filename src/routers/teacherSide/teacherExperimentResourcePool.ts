@@ -25,7 +25,7 @@ export default {
         ),
       meta: {
         icon: "",
-        authCode: "teacherExperimentResourcePool",
+        authCode: "experimentList",
       },
     },
     {

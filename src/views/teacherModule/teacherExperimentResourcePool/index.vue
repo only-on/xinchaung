@@ -91,7 +91,7 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-import { getTypeList } from './config'
+import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 const router = useRouter();
 const route = useRoute();
@@ -110,25 +110,25 @@ updata({
 });
 const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
-// watch(
-//   () => {
-//     return configuration.componenttype;
-//   },
-//   (val) => {
-//     currentTab.value = Number(val) ? 0 : 1;
-//     // searchInfo.init_type = currentTab.value
-//     searchInfo.page = 1
-//     searchInfo.content_direction = 0
-//     searchInfo.content_type = 0
-//     searchInfo.content_level = 0
-//     classifyList.forEach((v: any) => {
-//       v.value = 0
-//     })
-//     initData();
-//     // getDirection()
-//     isShowAdd.value = currentTab.value === 0;
-//   }
-// );
+watch(
+  () => {
+    return configuration.componenttype;
+  },
+  (val) => {
+    currentTab.value = Number(val) ? 0 : 1;
+    // searchInfo.init_type = currentTab.value
+    searchInfo.page = 1
+    searchInfo.content_direction = 0
+    searchInfo.content_type = 0
+    searchInfo.content_level = 0
+    classifyList.forEach((v: any) => {
+      v.value = 0
+    })
+    initData();
+    // getDirection()
+    isShowAdd.value = currentTab.value === 0;
+  }
+);
 
 /**
  * 标签操作
@@ -321,10 +321,10 @@ const detail = (id: number) => {
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
     currentTab.value = 1
-    // configuration.componenttype = 0
+    configuration.componenttype = 0
   } else {
     currentTab.value = 0
-    // configuration.componenttype = 1
+    configuration.componenttype = 1
   }
   // searchInfo.init_type = currentTab.value
   
@@ -332,26 +332,6 @@ onMounted(() => {
   // 获取技术方向列表
   getDirection()
 });
-watch(
-  () => {
-    return route.query.currentTab;
-  },
-  (val: any) => {
-    currentTab.value = Number(val) ? 0 : 1;
-    // searchInfo.init_type = currentTab.value
-    searchInfo.page = 1
-    searchInfo.content_direction = 0
-    searchInfo.content_type = 0
-    searchInfo.content_level = 0
-    classifyList.forEach((v: any) => {
-      v.value = 0
-    })
-    initData();
-    // getDirection()
-    isShowAdd.value = currentTab.value === 0;
-  },
-  { immediate: true }
-);
 
 const getDirection = () => {
   http.getDirection().then((res: IBusinessResp) => {

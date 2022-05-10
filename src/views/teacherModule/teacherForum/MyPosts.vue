@@ -26,7 +26,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script lang="ts" setup>
 import {
   defineComponent,
   ref,
@@ -49,148 +49,126 @@ import { removeHtmlTag, fixHtml} from 'src/utils/htmlLabel'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherForum;
-export default defineComponent({
-  name: "ForumSquare",
-  components: {
-    ForumnTop,
-    Forumn,
-  },
-  setup: (props, { emit }) => {
-    const router = useRouter();
-    let currentTab = ref<number>(0);
-    const httpList = {
-      0: 'getForumList',
-      1: 'getAttendList'
-    }
-    // 发帖
-    function createPost() {
-      router.push("/teacher/teacherForum/CreatePosts");
-    }
-    let forumSearch = reactive<IForumSearch>({
-      title: "",
-      pageSize: 10,
-      page: 1,
-      type: '',
-    });
-    const loading = ref(false)
-    let forumnList = reactive<IForumnList[]>([]);
-    const total = ref(0)
-    function initData() {
-      loading.value = true
-      // 获取帖子列表
-      const param = {
-        page: forumSearch.page,
-        limit: forumSearch.pageSize,
-        // type: forumSearch.type,
-        // keyword: forumSearch.title
-      }
-      // order=2 最新 1 热门
-      currentTab.value ? 
-        (forumSearch.type === 'hot' ? 
-          Object.assign(param, {order: 1}) : 
-          (forumSearch.type === 'new'? 
-            Object.assign(param, {order: 2}) : 
-            Object.assign(param, {type: forumSearch.type}))) : 
-        Object.assign(param, {self: 1, type: forumSearch.type})
-      http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
-        loading.value = false
-        forumnList.length = 0
-        const { list, page } = res.data
-        list.forEach((v: IForumnList) => {
-          v.content = goHtml(v.content)
-          v.desc = fixHtml(removeHtmlTag(v.content).substr(0, 200))
-          v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
-        })
-        forumnList.push(...list)
-        total.value = page.totalCount
-      })
-    }
-    function search(params: IForumSearch) {
-      forumSearch.title = params.title;
-      forumSearch.type = params.type;
-      forumSearch.page = 1
-      initData();
-    }
-    // 页码变化
-    function pageChange(page: number) {
-      forumSearch.page = page;
-      initData();
-    }
-    //
-    function tabChange(id: number) {
-      currentTab.value = id;
-      // initData();
-      id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
-    }
-    // 常驻类型
-    const tags = [
-      {id: 0, name: '热门', value: 'hot'},
-      {id: -1, name: '最新', value: 'new'}
-    ]
-    let tagList = reactive<ITagList[]>([])
-    const getTagsList = (param: any) => {
-      tagList.length = 0
-      http.getForumTags({param}).then((res: IBusinessResp) => {
-        const { data } = res
-        data.forEach((v: ITagList) => {
-          v.value = v.name
-        })
-        currentTab.value ? data.splice(1, 0, ...tags) : ''
-        tagList.push(...data)
-        forumSearch.type = data[0].name
+const router = useRouter();
+let currentTab = ref<number>(0);
+const httpList = {
+  0: 'getForumList',
+  1: 'getAttendList'
+}
+// 发帖
+function createPost() {
+  router.push("/teacher/teacherForum/CreatePosts");
+}
+let forumSearch = reactive<IForumSearch>({
+  title: "",
+  pageSize: 10,
+  page: 1,
+  type: '',
+});
+const loading = ref(false)
+let forumnList = reactive<IForumnList[]>([]);
+const total = ref(0)
+function initData() {
+  loading.value = true
+  // 获取帖子列表
+  const param = {
+    page: forumSearch.page,
+    limit: forumSearch.pageSize,
+    // type: forumSearch.type,
+    // keyword: forumSearch.title
+  }
+  // order=2 最新 1 热门
+  currentTab.value ? 
+    (forumSearch.type === 'hot' ? 
+      Object.assign(param, {order: 1}) : 
+      (forumSearch.type === 'new'? 
+        Object.assign(param, {order: 2}) : 
+        Object.assign(param, {type: forumSearch.type}))) : 
+    Object.assign(param, {self: 1, type: forumSearch.type})
+  http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
+    loading.value = false
+    forumnList.length = 0
+    const { list, page } = res.data
+    list.forEach((v: IForumnList) => {
+      v.content = goHtml(v.content)
+      v.desc = fixHtml(removeHtmlTag(v.content).substr(0, 200))
+      v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
+    })
+    forumnList.push(...list)
+    total.value = page.totalCount
+  })
+}
+function search(params: IForumSearch) {
+  forumSearch.title = params.title;
+  forumSearch.type = params.type;
+  forumSearch.page = 1
+  initData();
+}
+// 页码变化
+function pageChange(page: number) {
+  forumSearch.page = page;
+  initData();
+}
+//
+function tabChange(id: number) {
+  currentTab.value = id;
+  // initData();
+  id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
+}
+// 常驻类型
+const tags = [
+  {id: 0, name: '热门', value: 'hot'},
+  {id: -1, name: '最新', value: 'new'}
+]
+let tagList = reactive<ITagList[]>([])
+const getTagsList = (param: any) => {
+  tagList.length = 0
+  http.getForumTags({param}).then((res: IBusinessResp) => {
+    const { data } = res
+    data.forEach((v: ITagList) => {
+      v.value = v.name
+    })
+    currentTab.value ? data.splice(1, 0, ...tags) : ''
+    tagList.push(...data)
+    forumSearch.type = data[0].name
+    initData()
+  })
+}
+
+// 删除帖子
+const deleteForum = (id: number) => {
+  Modal.confirm({
+    title: '确认删除吗？',
+    icon: createVNode(ExclamationCircleOutlined),
+    content: '删除后不可恢复',
+    okText: '确认',
+    cancelText: '取消',
+    onOk(){
+      http.deleteForum({urlParams: {id}}).then((res:IBusinessResp)=>{
+        message.success('删除成功')
         initData()
       })
     }
-
-    // 删除帖子
-    const deleteForum = (id: number) => {
-      Modal.confirm({
-        title: '确认删除吗？',
-        icon: createVNode(ExclamationCircleOutlined),
-        content: '删除后不可恢复',
-        okText: '确认',
-        cancelText: '取消',
-        onOk(){
-          http.deleteForum({urlParams: {id}}).then((res:IBusinessResp)=>{
-            message.success('删除成功')
-            initData()
-          })
-        }
-      });
-    }
-    provide("deleteForum", deleteForum)
+  });
+}
+provide("deleteForum", deleteForum)
 
 
-    // 点击展开全文 底部收起样式
-    let bottomStyle = reactive({
-      bottom: "0px",
-      width: "1200px",
-    });
-    provide("bottomStyle", bottomStyle);
-
-    onMounted(() => {
-      getTagsList({scene: 'private'})
-      // initData();
-    });
-    return {
-      currentTab,
-      forumnList,
-      search,
-      pageChange,
-      tabs: [
-        { id: 0, name: "我发布的帖子" },
-        { id: 1, name: "我参与的帖子" },
-      ],
-      tabChange,
-      bottomStyle,
-      tagList,
-      total,
-      loading,
-      forumSearch,
-      createPost,
-    };
-  },
+// 点击展开全文 底部收起样式
+let bottomStyle = reactive({
+  bottom: "0px",
+  width: "1200px",
 });
+provide("bottomStyle", bottomStyle);
+
+onMounted(() => {
+  getTagsList({scene: 'private'})
+  // initData();
+});
+const tabs = [
+  { id: 0, name: "我发布的帖子" },
+  { id: 1, name: "我参与的帖子" },
+]
 </script>
 
 <style scoped lang="less">

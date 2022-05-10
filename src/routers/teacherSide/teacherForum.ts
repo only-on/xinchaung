@@ -23,7 +23,7 @@ export default {
       component: () => import("src/views/teacherModule/teacherForum/index.vue"),
       meta: {
         icon: "",
-        authCode: "forum",
+        authCode: "forumList",
       },
     },
     {
