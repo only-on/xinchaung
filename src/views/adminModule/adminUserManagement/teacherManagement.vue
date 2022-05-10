@@ -585,7 +585,7 @@ const columns = [
       });
     }
     onMounted(() => {
-      // initData();
+      initData();
     })
 </script>
 

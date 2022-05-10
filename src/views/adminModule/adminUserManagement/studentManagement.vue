@@ -211,8 +211,8 @@ const columns = [
           data.map((v: any) => {
             v.genderText = v.gender === 2 ? "女" : "男";
           });
-          // list.push(...data);
-          // total.value = res.data.page.totalCount;
+          list.push(...data);
+          total.value = res.data.page.totalCount;
         }
         // console.log(list)
       });
@@ -338,7 +338,7 @@ const columns = [
       // ImportVisible.value = true;
     }
     onMounted(() => {
-      // initData();
+      initData();
     });
 </script>
 

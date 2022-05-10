@@ -64,7 +64,6 @@ function HotWords(id:any, data: any){
           data:data,
         }]
       }
-     
     document.getElementById(id)?.removeAttribute("_echarts_instance_");
     var chartDom:any=document.getElementById(id)
     const chart = echarts.init(chartDom)
@@ -83,7 +82,7 @@ function echartsPie(id:any,data:any){
      },
      legend: {
         icon: "circle", 
-        itemHeight: 7,
+        itemHeight:7,
        orient: "vertical",
        top: '35%',
        left: '0%',
@@ -151,7 +150,7 @@ function echartsPie(id:any,data:any){
     document.getElementById(id)?.removeAttribute("_echarts_instance_");
     var chartDom:any=document.getElementById(id)
     const chart = echarts.init(chartDom)
-      chart && chart.setOption(option);
+    chart && chart.setOption(option);
 }
 function echartsBar(id:any,data:any){
   const option={

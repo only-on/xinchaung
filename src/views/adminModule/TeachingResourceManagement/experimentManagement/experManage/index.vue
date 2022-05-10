@@ -24,7 +24,7 @@
         <span style="width:50px">实验属性</span>
         <a-input
           style="width:224px"
-          v-model:value="ForumSearch.nnn"
+          v-model:value="ForumSearch.attribute"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -38,14 +38,14 @@
     </div>
     <a-table
       :columns="columns"
-      :data-source="data"
+      :data-source="listdata"
       rowKey='id'
       :pagination="
-        tableData.total > 10
+        total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
+              showSizeChanger:false,
+              total:total,
               current: params.page,
               pageSize: params.limit,
               onChange: onChange,
@@ -60,24 +60,26 @@
       }"
     >
     </a-table>
+    
     </div>
 </template>
 <script lang="ts" setup>
     import { ref, toRefs, onMounted,inject, reactive} from "vue";
     const ForumSearch:any=reactive({
-        name:''
     })
     interface Props {
-      data: any[]; 
+      listdata: any[]; 
+      total:any
     }
     const props = withDefaults(defineProps<Props>(), {
-      data: () => [],
+      listdata: () => [],
+      total:()=>{}
     });
     const columns = [
         {
           title: '实验名称',
+          key: 'name',
           dataIndex: 'name',
-          slots: { customRender: 'name' },
         },
         {
           title: '实验属性',
@@ -101,12 +103,19 @@
         },
       ];
     const tableData:any=reactive({})
-    const params:any=reactive({})
+    const params:any=reactive({
+      page:1
+    })
+    const emit = defineEmits<{
+      (e: "updateData", val: any): void;
+    }>();
     function search(){
-
+        emit('updateData',{name:ForumSearch.name,page:1,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
-    function onChange(){
-
+    function onChange(page:any,size:any){
+      params.page=page
+      emit('updateData',{name:ForumSearch.name,page:params.page,type:ForumSearch.type,attribute:ForumSearch.attribute})
+      
     }
     function onShowSizeChange(){
 

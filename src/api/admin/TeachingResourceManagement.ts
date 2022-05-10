@@ -6,7 +6,7 @@ export default{
    courselist:{url:`/api/course/admin/courses/list`,method:'get',dataType: 'json'},
 
    //实验管理列表
-   experList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'},
+   experList:{url:`/api/course/admin/courses/contents`,method:'get',dataType: 'json'},
    
    //实验模版列表
    experTemplateList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'}

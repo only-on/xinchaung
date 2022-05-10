@@ -1,14 +1,14 @@
 import { TFHttpSend } from "src/typings/getRequest";
 export default{
    //  教师
-  teacherList:{url:`/teacher/index`,method:'POST',dataType: 'json'},
+  teacherList:{url:`/api/yii/teacher/index`,method:'POST',dataType: 'json'},
   teacherUserDelete:{url:`/teacher/delete?id={id}`,method:'POST'},
   teacherUserBatchDelete:{url:`/teacher/delall`,method:'POST',dataType:'json'},
   createTeacher:{url:`/teacher/create`,method:'POST',dataType: 'json'},
   editTeacher:{url:`/teacher/update?id={id}`,method:'POST',dataType: 'json'},
   viewTeacher:{url:`/teacher/view?id={id}`,method:'POST',dataType: 'json'},
   //  学生
-  studentList:{url:`/student/index`,method:'POST',dataType: 'json'},
+  studentList:{url:`/api/yii/student/index`,method:'POST',dataType: 'json'},
   studentUserDelete:{url:`/student/delete?id={id}`,method:'POST'},
   studentUserBatchDelete:{url:`/student/delall`,method:'POST',dataType:'json'},
   studentCreate:{url:`/student/create`,method:'POST',dataType: 'json'},

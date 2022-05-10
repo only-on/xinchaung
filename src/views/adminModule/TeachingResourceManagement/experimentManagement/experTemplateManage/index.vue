@@ -20,14 +20,14 @@
     </div>
     <a-table
       :columns="columns"
-      :data-source="data"
+      :data-source="listdata"
       rowKey='id'
       :pagination="
-        tableData.total > 10
+        total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
+              showSizeChanger:false,
+              total:total,
               current: params.page,
               pageSize: params.limit,
               onChange: onChange,
@@ -41,6 +41,7 @@
         getCheckboxProps: getCheckboxProps,
       }"
     >
+    
         <template #action="{record}">
             <span class="action action-delete">删除</span>
             <span class="action action-download">
@@ -55,38 +56,57 @@
     const ForumSearch:any=reactive({
         name:''
     })
+    interface Props {
+      listdata: any[]; 
+      total:any;
+    }
+    const props = withDefaults(defineProps<Props>(), {
+      listdata: () => [],
+      total:()=>{}
+    });
     const columns = [
         {
           title: '报告模版名称',
-          dataIndex: 'name',
-          slots: { customRender: 'name' },
+          key: 'templateName',
+          dataIndex: 'templateName',
         },
         {
           title: '所属人',
-          dataIndex: 'age',
+          key: 'ownerBy',
+          dataIndex: 'ownerBy',
         },
         {
           title: '类型',
-          dataIndex: 'address',
+          key: 'templateType',
+          dataIndex: 'templateType',
         },
         {
           title: '创建时间',
-          dataIndex: 'address',
+          key: 'createdAt',
+          dataIndex: 'createdAt',
         },
         {
           title: '操作',
           width:150,
+          key: 'action',
           slots: { customRender: 'action' },
         }
       ];
     const data:any=ref([]) 
     const tableData:any=reactive({})
-    const params:any=reactive({})
+    const params:any=reactive({
+      page:1
+    })
+        const emit = defineEmits<{
+      (e: "updateData", val: any): void;
+    }>();
     function search(){
-
+      emit('updateData',{expername:ForumSearch.name,page:1})
     }
-    function onChange(){
-
+    function onChange(page:any,size:any){
+        params.page=page
+      emit('updateData',{expername:ForumSearch.name,page:params.page})
+        
     }
     function onShowSizeChange(){
 
