@@ -37,16 +37,17 @@
                 </div>
               </div>
               <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
-              <div class="name single_ellipsis">数据集名称</div>
-              <div class="miaoshu single_ellipsis">
-                数据集描述数据集描述数据集描述数据集描述数据集描述
-                <div></div>
-                <a-popover>
-                  <template #content>
-                    <p>Content</p>
-                  </template>
-                  <span class="iconfont icon-chakangengduo"></span>
-                </a-popover>
+              <div class="name">数据集</div>
+              <div class="miaoshu single_ellipsis flexCenter">
+                <div class="one">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
+                <div class="more" v-if="v.dataset && v.dataset.length>1">
+                  <a-popover>
+                    <template #content>
+                      <p v-for="i in v.dataset">{{i.name}}</p>
+                    </template>
+                    <span class="iconfont icon-chakangengduo"></span>
+                  </a-popover>
+                </div>
               </div>
             </div>
             <div class="right">
@@ -283,6 +284,15 @@ onMounted(() => {
         }
         .miaoshu {
           width: 80%;
+          height: 32px;
+          justify-content: space-between;
+          padding-right: 4px;
+          cursor: pointer;
+          .more{
+            .icon-chakangengduo{
+              font-size: 26px;
+            }
+          }
         }
       }
       .right {
