@@ -149,7 +149,7 @@
                 </div>
                 <!-- 有当前教师 -->
                 <div
-                  v-else-if="classVal.belongs_to_currentteacher"
+                  v-else-if="classVal.belongs_to_currentteacher&&role!=2"
                   class="teacher-current hover-edit teacher-no"
                 > 
                   <div class="edit-wrap flex-center">

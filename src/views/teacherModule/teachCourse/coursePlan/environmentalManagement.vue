@@ -64,7 +64,7 @@
         </div>
       </div>
       <div class="search-right">
-        <a-button type="primary" @click="batchDelete">批量删除</a-button>
+        <!-- <a-button type="primary" @click="batchDelete">批量删除</a-button> -->
         <a-button type="primary" @click="batchDisabled">批量禁用</a-button>
       </div>
     </div>
