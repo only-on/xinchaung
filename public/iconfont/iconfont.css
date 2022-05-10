@@ -1,9 +1,9 @@
 @font-face {
   font-family: "iconfont"; /* Project id 3150577 */
-  src: url('iconfont.woff2?t=1652068474323') format('woff2'),
-       url('iconfont.woff?t=1652068474323') format('woff'),
-       url('iconfont.ttf?t=1652068474323') format('truetype'),
-       url('iconfont.svg?t=1652068474323#iconfont') format('svg');
+  src: url('iconfont.woff2?t=1652163071598') format('woff2'),
+       url('iconfont.woff?t=1652163071598') format('woff'),
+       url('iconfont.ttf?t=1652163071598') format('truetype'),
+       url('iconfont.svg?t=1652163071598#iconfont') format('svg');
 }
 
 .iconfont {
@@ -12,6 +12,10 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-chakangengduo:before {
+  content: "\e665";
 }
 
 .icon-a-zu8854:before {

@@ -38,11 +38,15 @@
               </div>
               <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
               <div class="name single_ellipsis">数据集名称</div>
-              <div
-                class="miaoshu single_ellipsis"
-                title="数据集描述数据集描述数据集描述数据集描述数据集描述"
-              >
+              <div class="miaoshu single_ellipsis">
                 数据集描述数据集描述数据集描述数据集描述数据集描述
+                <div></div>
+                <a-popover>
+                  <template #content>
+                    <p>Content</p>
+                  </template>
+                  <span class="iconfont icon-chakangengduo"></span>
+                </a-popover>
               </div>
             </div>
             <div class="right">

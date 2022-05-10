@@ -165,6 +165,8 @@ const getExperimentGuide=(id:number)=>{
     }
     console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false
+  }).catch((err:any)=>{
+    experimentGuideLoading.value=false
   })
 }
 const experimentGuideLoading: Ref<boolean> = ref(false);
