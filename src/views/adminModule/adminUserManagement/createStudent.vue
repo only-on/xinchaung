@@ -84,6 +84,7 @@ import {
 } from "vue";
 import request from "src/api/index";
 import { useRouter, useRoute } from "vue-router";
+const http = (request as any).adminUserManagement;
 const router = useRouter();
 const route = useRoute();
  var updata = inject("updataNav") as Function;
@@ -138,7 +139,7 @@ const route = useRoute();
         { required: true, message: "请输入确认密码", trigger: "blur" },
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      // gender: [{ required: true, message: "请选择性别", trigger: "change" }],
       class: [{ required: true, message: "请输入班级", trigger: "blur" }],
       grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
       major: [{ required: true, message: "请输入年级", trigger: "blur" }],
@@ -163,13 +164,43 @@ const route = useRoute();
         .validate()
         .then(() => {
           console.log('values', formState);
-          message.success('验证成功！')
+          if (formState.password_hash !== formState.repassword) {
+          message.warn("密码输入不一致");
+          return;
+        }
+        let obj: any = {
+          Student: {
+            username: formState.username,
+            email: formState.email,
+            userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+          },
+          StudentProfile: {
+            department: formState.department,
+            grade: formState.grade,
+            name: formState.name,
+            gender: formState.gender,
+            phone: formState.phone,
+            status: status,
+            introduce: formState.introduce,
+          },
+        };
+        if ((formState.reset && editId.value) || editId.value === 0) {
+          obj.Student.password_hash = formState.password_hash;
+          obj.Student.repassword = formState.repassword;
+        }
+        const promise = editId.value
+          ? http.editStudent({ urlParams: { id: editId.value }, param: { ...obj } })
+          : http.studentCreate({ param: { ...obj } });
+        promise.then((res:any) => {
+          message.success(editId.value ? "编辑成功" : "创建成功");
+          formRef.value.resetFields();
+          formState.reset = false;
           router.push({path: '/admin/adminUserManagement/studentManagement'});
-
         })
         .catch((error:any) => {
           console.log('error', error);
         });
+      })
     }
     function cancelSave(){
       router.push({path: '/admin/adminUserManagement/studentManagement'});
