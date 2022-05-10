@@ -295,16 +295,17 @@ export default defineComponent({
       // console.log(value,'value')
       if(value==='ok'){
         tableParams.student_id=studentids
+        let ids:any=[]
+        selectedStudentsData.forEach((it:any,i:any)=>{
+          ids.push(it.stu_id)
+        })
         http.classStuIntersect({param:{stuIds:tableParams.student_id}})
         .then((res: IBusinessResp) => {
          if(res.code==1){
            message.warning('添加成功')
            visible.value = false;
-           selectedStudentsData.length = 0
            data.value.forEach((item:any,index:any)=>{
-            // &&selectedStuIds.value.indexOf(item.stu_id)==-1
-             if(studentids.includes(item.stu_id)){
-              data.value[index].is_selected=1
+            if(studentids.includes(item.stu_id)&&ids.indexOf(item.stu_id)==-1){
               selectedStudentsData.push(item)
               selectedStuIds.value=selectedStudentsData.map((item: ITableList) => item.stu_id)
              }
@@ -446,7 +447,7 @@ export default defineComponent({
     function getallstudent(){
       http.getStudentList({param:params}).then((res:any)=>{
         data.value=res.data?.data
-        tableData.total=res.data.page.count
+        tableData.total=res.data.total
       })
     }
     return {
