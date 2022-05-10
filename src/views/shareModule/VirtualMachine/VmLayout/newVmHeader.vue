@@ -418,6 +418,22 @@
       <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading"></Submit>
     </template>
   </a-modal>
+  <!-- 下载文件 -->
+  <a-modal
+    class="vm-file-download"
+    title="文件下载"
+    :visible="downloadVisible"
+    :width="540"
+    @cancel="downloadVisible = false"
+    @ok="okDownloadFile"
+  >
+    <p class="label">请输入一个下载路径</p>
+    <a-input v-model:value="downloadAdd" placeholder="" />
+    <div class="tip">注：下载路径需要是一个文件或者压缩包，例如:/home/user.zip，大小限制在200M内</div>
+    <template #footer>
+      <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false" :loading="false"></Submit>
+    </template>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -973,10 +989,10 @@ const beforeUpload = (file: any) => {
   uploadFile.fileList[0] = obj
   const fd = new FormData()
   fd.append('file', file)
-  fd.append('upload_path', '/simpleupload')
+  fd.append('upload_path', 'simpleupload')
   fd.append('default_name', '1')
   http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
-    uploadFilePath.value = res.data.url
+    uploadFilePath.value = res.data.full_url
   })
   return false;
 }
@@ -984,30 +1000,27 @@ const remove = () => {
   uploadFile.fileList = []
   uploadFilePath.value = ''
 }
-
+// 文件下载
+const downloadVisible = ref(false)
+const downloadAdd = ref('')
 function download() {
-  Modal.confirm({
-    width: 540,
-    title: () => '文件下载',
-    icon: () => createVNode(ExclamationCircleOutlined),
-    content: () => createVNode('div', {}, '文件下载功能:将"C:/Windows/AppReadiness/userfiles"目录进行打包 并下载（限制？？M以内）'),
-    onOk() {
-      const params: any = {
-        action: 'download',
-        params: {
-          uuid: currentUuid.value,
-          path: ''
-        },
-      };
-      operatesHandle(params).then((res:any) => {
-        console.log(res)
-      })
+  downloadVisible.value = true
+}
+const okDownloadFile = () => {
+  if (!downloadAdd.value) {
+    message.warn("请输入下载路径");
+    return
+  }
+  const params: any = {
+    action: 'download',
+    params: {
+      uuid: currentUuid.value,
+      path: downloadAdd.value
     },
-    onCancel() {
-      // console.log('Cancel');
-    },
-    class: 'vm-download',
-  });
+  };
+  operatesHandle(params).then((res:any) => {
+    console.log(res)
+  })
 }
 
 async function startEndRecord() {
@@ -1700,6 +1713,16 @@ i {
         margin-bottom: 14px;
       }
     }
+  }
+}
+.vm-file-download {
+  .label {
+    margin-bottom: 8px;
+    color: var(--black-65);
+  }
+  .tip {
+    margin-top: 8px;
+    color: var(--primary-color);
   }
 }
 </style>

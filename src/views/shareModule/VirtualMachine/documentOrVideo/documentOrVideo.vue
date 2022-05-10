@@ -1,6 +1,7 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right>
+      <div v-if="baseInfo.base_info&&baseInfo.base_info.files&&baseInfo.base_info.files.length">
       <div class="video-wrap" v-if="taskType == 6">
         <video
           style="width: 100%; height: 650px"
@@ -17,6 +18,8 @@
         />
         <PdfVue :url="baseInfo.base_info.files[0].file_url" v-else/>
       </div>
+      </div>
+      <empty v-else> </empty>
     </template>
   </layout>
 </template>

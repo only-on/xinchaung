@@ -82,7 +82,8 @@ const beforeUpload = async (file: any, fileList: any) => {
         }
      ]
     }
-    http.updateJupyterGuide({urlParams: {content_id: props.detail.content_task_files[0].content_id}, param})
+    const content_id = props.detail.content_task_files.length ? props.detail.content_task_files[0].content_id : ''
+    http.updateJupyterGuide({urlParams: {content_id}, param})
     .then((res: any) => {
       router.go(-1)
       props.detail.content_task_files[0] = Object.assign(props.detail.content_task_files[0], data, {file_url: data.url})

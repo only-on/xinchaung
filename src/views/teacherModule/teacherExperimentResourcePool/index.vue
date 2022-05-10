@@ -256,11 +256,11 @@ const initData = () => {
 };
 const pageChange = async (current: any, pageSize: any) => {
   searchInfo.page = current;
-  const { query, path } = route;
-  await router.replace({
-    path: path,
-    query: { ...query, page: current },
-  });
+  // const { query, path } = route;
+  // await router.replace({
+  //   path: path,
+  //   query: { ...query, page: current },
+  // });
   initData();
 };
 
