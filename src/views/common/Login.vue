@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
 import { ValidateErrorEntity } from "ant-design-vue/es/form/interface";
@@ -13,6 +13,7 @@ import { PictureOutlined } from "@ant-design/icons-vue";
 const http = (request as any).common;
 const { lStorage } = extStorage;
 const router = useRouter();
+const route = useRoute();
 
 interface FormState {
   username: string;
@@ -69,12 +70,15 @@ const refreshCaptcha = () => {
 };
 
 // 检查是否应该直接登入
-http.doesLoggedIn({ silent: true }).then((res: any) => {
-  // res为null代表请求未执行，因为遇到了customState不是wait
-  if (res) {
-    router.push(getHomePath(res.data.role));
-  }
-});
+const needCheckLoggedIn = route.query.s === undefined;
+if (needCheckLoggedIn) {
+  http.doesLoggedIn({ silent: true }).then((res: any) => {
+    // res为null代表请求未执行，因为遇到了customState不是wait
+    if (res) {
+      router.push(getHomePath(res.data.role));
+    }
+  }).catch(() => {});
+}
 
 // 检查是否需要显示验证码
 http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {

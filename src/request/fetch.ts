@@ -115,6 +115,16 @@ function responseError(error: Error) {
   return error;
 }
 
+/**
+ * 检查是否是登录页
+ */
+function isLoginPage() {
+  let hash = window.location.hash
+  hash = hash.indexOf("?") !== -1 ? hash.split("?")[0] : hash;
+  let path = hash.substring(1, hash.length);
+  return path === "/login";
+}
+
 // fetch 简易包装
 export default function request({
   url = "",
@@ -199,7 +209,12 @@ export default function request({
             message.warning(res.msg);
           }
           reject(res);
-          router.replace({ path: "/login" }).catch(() => {});
+          // 1. 没有登录状态，跳转到登录页
+          // 2. 登录页不再检查是否需要登录了
+          // 3. 若当前就是登录页，不需要跳转
+          if (!isLoginPage()) {
+            router.replace({ path: "/login", query: {s: 1} }).catch(() => {});
+          }
         } else {
           let meg = "请求出错";
           if (res.message) {
