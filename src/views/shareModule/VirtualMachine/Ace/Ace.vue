@@ -172,6 +172,7 @@ import {
 import { wsConnect } from "src/request/websocket";
 import storage from "src/utils/extStorage"
 import layoutBg from "src/assets/images/common/layout_bg.jpg"
+import { IWmc } from "src/typings/wmc";
 
 export default defineComponent({
   components: {
@@ -183,7 +184,7 @@ export default defineComponent({
     var reportTemid:Ref<any>=ref(0)
     const route = useRoute();
     const router = useRouter();
-    const wsVmConnect = ref(null);
+    const wsVmConnect: any = ref(null);
     const openOrCloseResultStatus: Ref<boolean> = ref(true);
     const options = {
       enableBasicAutocompletion: true,
@@ -244,7 +245,7 @@ export default defineComponent({
     onBeforeRouteLeave(() => {
       clearInterval(Number(timer));
       console.log("离开页面");
-      wsVmConnect.value ? (wsVmConnect.value as any).close() : "";
+      wsVmConnect.value ? (wsVmConnect.value as IWmc).close() : "";
     });
     let vmBaseInfo: any = {};
     onMounted(async () => {

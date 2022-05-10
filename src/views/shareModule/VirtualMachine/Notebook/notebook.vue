@@ -34,6 +34,7 @@ import {useRoute,useRouter,onBeforeRouteLeave} from "vue-router"
 import {wsConnect} from "src/request/websocket"
 import {message} from "ant-design-vue"
 import storage from "src/utils/extStorage"
+import { IWmc } from "src/typings/wmc";
 export default defineComponent({
   components: {
     layout,
@@ -64,7 +65,7 @@ export default defineComponent({
       experType,
     }: any = vmQuery;
     const data = reactive(navData);
-    const wsVmConnect = ref(null);
+    const wsVmConnect: any = ref(null);
     let timer:NodeJS.Timer|null =null
     const reactiveData:any=reactive({
       allInfo:{}
@@ -89,7 +90,7 @@ export default defineComponent({
     onBeforeRouteLeave(() => {
       clearInterval(Number(timer));
       console.log("离开页面");
-      wsVmConnect.value ? (wsVmConnect.value as any).close() : "";
+      wsVmConnect.value ? (wsVmConnect.value as IWmc).close() : "";
     });
 
     function initWs() {
