@@ -323,84 +323,64 @@ let gradeDistributionOption = (data: any) => {
   return option;
 };
 // 知识图谱
-function setTagData(knowledge_map: any, size: number) {
-  let links: any[] = [];
-  let data: any[] = [];
-  if (Object.keys(knowledge_map).length == 0) {
-    return { data, links };
+let links: any[] = [];
+let data: any[] = [];
+let categorys: any[] = [0];
+let itemCategory = 0
+let colorList = ['#FE8020', '#FFB354', '#00CBC2', '#6AC8F4', '#6AC8F4']
+function handleGraphData(knowledge_map: any,  pid?:any) {
+  if (!knowledge_map) {
+    return { data, links, categorys };
   }
-  data.push({
-    name: knowledge_map.parentNode,
-    id: String(knowledge_map.parentNode),
-    symbolSize: size,
-    draggable: true,
-    itemStyle: {
-      // borderColor: theme.themeColor,
-      // borderWidth: 6,
-      // shadowBlur: 10,
-      // shadowColor: theme.themeColor,
-      color: "#FF9544",
-      // color: function () {
-      //   // Random color        橙 #FF9544    绿 #1CB2B3    蓝紫  #758AEE
-      //   let arr=['#FF9544','#1CB2B3','#758AEE']
-      //   return arr[Math.round(Math.random() * 2)]
-      // }
-    },
-    category: 0,
-  });
-  knowledge_map.childNodes.forEach((item: any) => {
-    item.content_id = String(item.content_id);
-    if (item.contentvia) {
-      item.contentvia.id = String(item.contentvia.id);
-      data.push({
-        name: item.contentvia.name,
-        id: String(item.contentvia.id),
-        symbolSize: size,
-        draggable: true,
-        itemStyle: {
-          // borderColor: theme.themeColor,
-          // borderWidth: 6,
-          // shadowBlur: 10,
-          // shadowColor: theme.themeColor,
-          color: "#1CB2B3 ",
-          // color: 'red'
-        },
-        category: 1,
-      });
+  itemCategory += 1;
+  knowledge_map.forEach((item: any) => {
+    data.push({
+      name: item.knowledge_map_name,
+      id: String(item.id),
+      symbolSize: 60,
+      draggable: true,
+      itemStyle: {
+        color: colorList[(itemCategory - 1) % 5],
+      },
+      category: itemCategory,
+    });
+    if (itemCategory - 1 !== 0) {
       links.push({
-        source: knowledge_map.parentNode,
-        target: item.contentvia.id,
+        source: pid ? pid : String(item.id),
+        target: String(item.id),
       });
-      item.contentvia.knowledages.length
-        ? item.contentvia.knowledages.forEach((knowledage: any) => {
-            const { knowledge_map_name, id } = knowledage.knowledge_map;
-            data.push({
-              name: knowledge_map_name,
-              id: String(item.contentvia.id + "->" + id),
-              symbolSize: size,
-              draggable: true,
-              itemStyle: {
-                // borderColor: theme.themeColor,
-                // borderWidth: 6,
-                // shadowBlur: 10,
-                // shadowColor: theme.themeColor,
-                color: "#758AEE",
-                // color: 'red'
-              },
-              category: 1,
-            });
-            links.push({
-              source: item.contentvia.id,
-              target: item.contentvia.id + "->" + id,
-            });
-          })
-        : "";
+    }
+    if (item.child && item.child.length) {
+      itemCategory += 1;
+      item.child.forEach((itemChild: any) => {
+        data.push({
+          name: itemChild.knowledge_map_name,
+          id: String(itemChild.id),
+          symbolSize: 50,
+          draggable: true,
+          itemStyle: {
+            color: colorList[(itemCategory - 1) % 5],
+          },
+          category: itemCategory,
+        });
+        links.push({
+          source: String(item.id),
+          target: String(itemChild.id),
+        });
+        handleGraphData(itemChild.child, String(itemChild.id));
+      });
     }
   });
-  return { data, links };
+  return { data, links, categorys };
 }
 function setOption4(data: any) {
-  let datas = setTagData(data, 50);
+  let datas = handleGraphData(data);
+  setTimeout(()=>{
+    for (let i = 0; i < itemCategory; i++) {
+      categorys.push({ name: i });
+    }
+  },400)
+  console.log(datas)
   let option: any = {
     tooltip: {
       formatter: function (val: any) {
@@ -452,7 +432,7 @@ function setOption4(data: any) {
             symbolSize: 0.5,
           },
         },
-        categories: [{ name: "0" }, { name: "1" }, { name: "2" }],
+        categories: categorys,
       },
     ],
   };
@@ -461,7 +441,6 @@ function setOption4(data: any) {
 // 高频易错点梳理
 let combOption = (data: any) => {
   let option = {
-    color: ["#FF9A56", "#33D0DB", "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
     tooltip: {
       trigger: "item",
     },

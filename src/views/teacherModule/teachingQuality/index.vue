@@ -38,6 +38,7 @@
       </div>
     </div>
     <div class="banner-2" v-if="courseSwitchData.length">
+      <!-- centeredSlides -->
       <swiper
         :modules="modules"
         navigation
@@ -49,7 +50,7 @@
         @slideChange="slideChangeTransitionEnd"
       >
         <swiper-slide v-for="item in courseSwitchData" :key="item.id">
-          <img :src="'http://192.168.101.221:84' + item.url" alt="" />
+          <img :src="item.url" alt="" />
           <div class="mask">
             <span>{{ item.name }}</span>
             <span @click.stop="goAnalysis(item.id)">学情分析 >></span>
@@ -93,9 +94,9 @@
         </div>
         <div
           id="knowledgeGraph"
-          v-show="fourChart.knowledge_map?.parentNode"
+          v-show="fourChart.knowledge_map.length"
         ></div>
-        <empty :height="230" v-show="!fourChart.knowledge_map?.parentNode" />
+        <empty :height="230" v-show="!fourChart.knowledge_map.length" />
       </div>
       <div class="right">
         <div class="header">
@@ -170,20 +171,19 @@ const fourChart = reactive<IfourChart>({
     name: [],
     score: [],
   },
-  knowledge_map: {},
+  knowledge_map: [],
   combData: {
     data: [],
     links: []
   }
 });
 function changeTabs(val: string) {
-  console.log(val);
-  console.log(activeKey.value);
   drawAnalysis(val);
 }
 const modules: any = ref([Navigation]);
 function slideChangeTransitionEnd(swiper: any) {
   console.log(courseSwitchData[swiper.realIndex].id);
+  currentCourseId.value = courseSwitchData[swiper.realIndex].id
 }
 function setChartOption(id: any, option: any) {
   document.getElementById(id)?.removeAttribute("_echarts_instance_");
@@ -248,34 +248,49 @@ function drawAnalysis(jobName: string) {
 function getCourseSwitch() {
   courseSwitchData.length = 0;
   http.coursesSwitch().then((res: IBusinessResp) => {
-    console.log(res.data);
     courseSwitchData.push(...res.data);
-    // if (courseSwitchData.length) {
-    //   currentCourseId.value = courseSwitchData[0].id;
-    //   getFourChartData();
-    // }
-    currentCourseId.value = 500238
-    getFourChartData()
+    if (courseSwitchData.length) {
+      currentCourseId.value = courseSwitchData[0].id;
+    }
+    // currentCourseId.value = 500238
+    // getFourChartData()
   });
 }
 // 查看学情分析
 function goAnalysis(id: number) {
   router.push({
     path: "/teacher/teacherCourse/Detail",
-    query: { currentTab: 0, courseId: id, activeTabOrder: 3 },
+    query: { currentTab: 0, courseId: id, activeTabOrder: 4 },
   });
 }
+// 处理桑基图需要的数据格式
 function handleCombData(sankey_error_rate: any) {
   if (!Object.keys(sankey_error_rate).length) return
   let contentsIdArr:any[] = [];
   let contentsNameArr:any[] = [];
+  let colorList = ["#FF9544", "#FFBF50", "#33D0DB", "#748ADE", "#A782F3"]
   sankey_error_rate.contents.forEach((item: any) => {
-    fourChart.combData.data.push({ name: item.name });
+    fourChart.combData.data.push({ 
+      name: item.name,
+      label: {
+        position: 'left'
+      }
+    });
     contentsIdArr.push(item.content_id);
     contentsNameArr.push(item.name);
   });
-  sankey_error_rate.knoledge_error_rate.forEach((item: any) => {
-    fourChart.combData.data.push({ name: item.knowledge_map_name });
+  sankey_error_rate.knoledge_error_rate.forEach((item: any, index:number) => {
+    fourChart.combData.data.push({ 
+      name: item.knowledge_map_name,
+      label: {
+        position: 'right'
+      },
+      itemStyle: {
+        normal: {
+          color: colorList[index % 5]
+        }
+      }
+    });
     item.names = [];
     item.content_ids.forEach((itemId: any, index: number) => {
       let subs = contentsIdArr.indexOf(Number(itemId));
@@ -289,7 +304,7 @@ function handleCombData(sankey_error_rate: any) {
       fourChart.combData.links.push({
         source: item.knowledge_map_name,
         target: itemName,
-        value: 2,
+        value: item.error_rate,
       });
     });
   });
@@ -301,7 +316,6 @@ function getFourChartData() {
   http
     .coursesResult({ urlParams: { courseId: currentCourseId.value } })
     .then((res: IBusinessResp) => {
-      console.log(res);
       let result = res.data;
       // 知识点错误率
       result.error_knowledge.forEach((item: any) => {
@@ -325,7 +339,7 @@ function getFourChartData() {
       );
       // 知识图谱
       fourChart.knowledge_map = result.knowledge_map;
-      // setChartOption("knowledgeGraph", setOption4(fourChart.knowledge_map));
+      setChartOption("knowledgeGraph", setOption4(fourChart.knowledge_map));
       // 高频易错点梳理
       handleCombData(result.sankey_error_rate);
       setChartOption("highFrequencyErrorProne", combOption(fourChart.combData));
@@ -346,6 +360,9 @@ watch(
     });
   }
 );
+watch(()=>currentCourseId.value, newVal => {
+  getFourChartData()
+})
 onMounted(() => {
   // 课程成绩对比
   getCourseScore();
@@ -386,7 +403,6 @@ onMounted(() => {
 }
 .swiper {
   padding: 0 25px 3px;
-  background: var(--white-100);
 }
 .swiper-wrapper {
   .swiper-slide {
@@ -472,6 +488,7 @@ onMounted(() => {
   .tit {
     margin-top: 10px;
     color: var(--black-45);
+    font-size: 12px;
   }
 }
 #courseAchieve,
