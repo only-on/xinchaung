@@ -13,12 +13,21 @@
       </div>
       <div class="item custom_input custom_input2">
         <span style="width:50px">实验类型</span>
-        <a-input
+        <!-- <a-input
           style="width:224px"
           v-model:value="ForumSearch.type"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
-        />
+        /> -->
+          <a-select
+          v-model:value="ForumSearch.type"
+          placeholder="请选择实验类型"
+          @change="search()"
+          style="width: 240px; margin-right: 16px"
+        >
+          <a-select-option :value="0">私有</a-select-option>
+          <a-select-option :value="1">公有</a-select-option>
+        </a-select>
       </div>
       <div class="item custom_input custom_input2">
         <span style="width:50px">实验属性</span>
@@ -33,7 +42,7 @@
       <div class="item">
         <!-- <a-button type="primary" @click="search()">查询</a-button>
         <a-button type="primary" @click="clearSearch()">清空</a-button> -->
-        <a-button type="primary">批量删除</a-button>
+        <a-button type="primary" @click="batchDelete">批量删除</a-button>
       </div>
     </div>
     <a-table
@@ -59,12 +68,23 @@
         getCheckboxProps: getCheckboxProps,
       }"
     >
+    <!-- detail -->
+    <template #contentName='{record}'>
+      <div class="detail" @click="detail(record.id,record.contentAttribute)">
+        {{record.contentName}}
+      </div>
+    </template>
     </a-table>
     
     </div>
 </template>
 <script lang="ts" setup>
-    import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { message,Modal } from "ant-design-vue";
+import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { useRouter, useRoute } from "vue-router";
+import request from "src/api/index";
+const router = useRouter();
+const route = useRoute();
     const ForumSearch:any=reactive({
     })
     interface Props {
@@ -78,28 +98,29 @@
     const columns = [
         {
           title: '实验名称',
-          key: 'name',
-          dataIndex: 'name',
+          key: 'contentName',
+          dataIndex: 'contentName',
+          slots: { customRender: 'contentName' },
         },
         {
           title: '实验属性',
-          dataIndex: 'age',
+          dataIndex: 'contentAttribute',
         },
         {
           title: '实验所属',
-          dataIndex: 'address',
+          dataIndex: 'contentGroup',
         },
         {
           title: '实验类型',
-          dataIndex: 'address',
+          dataIndex: 'contentType',
         },
         {
           title: '所属技术方向',
-          dataIndex: 'address',
+          dataIndex: 'contentTechnicalDirectionGroup',
         },
         {
           title: '课时',
-          dataIndex: 'address',
+          dataIndex: 'contentClassesCount',
         },
       ];
     const tableData:any=reactive({})
@@ -120,15 +141,41 @@
     function onShowSizeChange(){
 
     }
-    function onSelectChange(){
-
+    function onSelectChange(selectedRowKeys:any, selectedRows:any){
+      tableData.selectedRowKeys=selectedRowKeys
     }
     function getCheckboxProps(record: any) {
-    return {
-      disabled: record.selected,
-      defaultChecked: record.selected,
-    };
-}
+      return {
+        disabled: record.selected,
+        defaultChecked: record.selected,
+      }
+    }
+    function batchDelete(){
+      if(!tableData.selectedRowKeys?.length){
+        message.warning('请至少选择一条数据！')
+        return
+      }
+      Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗？",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {
+          emit('updateData',{name:'',page:params.page,type:'',attribute:''})
+        }
+      })
+    }
+  function detail(id: number,currentTab:any){
+  const type:any= currentTab=='私有实验'?0:1;
+  // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+  router.push({
+    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+    query: {
+      id,
+      currentTab:type,
+    },
+  });
+};
 </script>
 <style lang="less" scoped>
  .search{
@@ -146,5 +193,14 @@
  }  
  :deep(.ant-input) {
     border-radius: 20px;
+ }
+ :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
+   border-radius: 20px;
+ }
+ .detail{
+   color: var(--primary-color);
+ }
+ .detail:hover{
+   cursor: pointer;
  }
 </style>

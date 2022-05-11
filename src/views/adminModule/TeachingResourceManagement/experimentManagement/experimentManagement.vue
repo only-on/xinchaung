@@ -8,10 +8,10 @@
     <div class="tabsTable">
      <a-tabs v-model:activeKey="activeKey" @change='callBack'>
         <a-tab-pane key="1" tab="实验管理">
-          <experManage v-if="activeKey==1"  :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
+          <experManage v-if="activeKey==1"   :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experManage>
         </a-tab-pane>
         <a-tab-pane key="2" tab="实验报告模版管理">
-          <experTemplateManage v-if="activeKey==2" :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
+          <experTemplateManage v-if="activeKey==2"  :total='tableData.total' :listdata='tableData.data' @updateData='updateData'></experTemplateManage>
         </a-tab-pane>
       </a-tabs>
     </div>
@@ -127,8 +127,8 @@ function experTemplateData(){
 function experData(){
   const param:any={
     'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
-    'search[contentAttribute]':experParams.search.contentAttribute,
-    'search[contentType]':experParams.search.contentType,
+    'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:(experParams.search.contentAttribute==0?0:''),
+    'search[contentType]':experParams.search.contentType?experParams.search.contentType:'',
     page:experParams.page,
     limit:experParams.limit
   }

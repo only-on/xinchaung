@@ -15,7 +15,7 @@
             <div class="item">
                 <!-- <a-button type="primary" @click="search()">查询</a-button>
                 <a-button type="primary" @click="clearSearch()">清空</a-button> -->
-                <a-button type="primary">批量删除</a-button>
+                <a-button type="primary" @click="batchDelete">批量删除</a-button>
             </div>
     </div>
     <a-table
@@ -53,6 +53,8 @@
 </template>
 <script lang="ts" setup>
     import { ref, toRefs, onMounted,inject, reactive} from "vue";
+    import { message,Modal } from "ant-design-vue";
+
     const ForumSearch:any=reactive({
         name:''
     })
@@ -111,8 +113,8 @@
     function onShowSizeChange(){
 
     }
-    function onSelectChange(){
-
+    function onSelectChange(selectedRowKeys:any, selectedRows:any){
+      tableData.selectedRowKeys=selectedRowKeys
     }
     function getCheckboxProps(record: any) {
     return {
@@ -120,6 +122,19 @@
       defaultChecked: record.selected,
     };
 }
+function batchDelete(){
+      if(!tableData.selectedRowKeys?.length){
+        message.warning('请至少选择一条数据！')
+        return
+      }
+      Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗？",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {}
+      })
+    }
 </script>
 <style lang="less" scoped>
  .search{
