@@ -9,7 +9,7 @@
   </div>
   <div class="content" v-else v-html="item.content"></div>
   <div class="user-info">
-    <img :src="item.avatar" alt="" />
+    <img :src="item.avatar || 'src/assets/images/user/admin_p.png'" alt="" />
     <span class="user-name">{{ item.user.username }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
     <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
@@ -123,9 +123,9 @@ export default defineComponent({
       http.getReplyList({urlParams: {id}, param}).then((res: IBusinessResp) => {
         loading.value = false
         const { list, page } = res.data
-        list.data.forEach((v: IForumnList) => {
-          v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
-        })
+        // list.data.forEach((v: IForumnList) => {
+        //   v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
+        // })
         replyList.push(...list.data)
         totalReply.value = page.totalCount
       })

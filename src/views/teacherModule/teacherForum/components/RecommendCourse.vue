@@ -4,7 +4,7 @@
     <div class="course-list">
       <div class="list" v-for="item in courseList" :key="item.id">
         <div class="left">
-          <img :src="item.url" alt="" srcset="" />
+          <img :src="item.url||'src/assets/images/teacherCourse/defaultCover.jpg'" alt="" srcset="" />
         </div>
         <div class="right">
           <span class="name">{{ item.name }}</span>
