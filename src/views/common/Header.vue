@@ -58,6 +58,7 @@
         </template>
         <div class="user-name">
           <img :src="userImg" />
+          <!-- :style="v.url?`background-image: url(${v.url});`:''" -->
           <span class="user-name">{{ userName }}</span>
         </div>
       </a-popover>
