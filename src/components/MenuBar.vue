@@ -2,11 +2,13 @@
   <div class="nav__menu">
     <a-dropdown v-for="v in menus" :key="v">
       <div
-        class="menu__top-item ant-dropdown-trigger"
+        class="menu__top-item ant-dropdown-trigger flexCenter"
         :class="v.name === activeName ? 'active' : ''"
         @click="!v.children.length ? select('Parent', v) : ''"
       >
-        {{ v.name }}
+        
+        <span class="iconfont icon-shujuji" style="padding-right:4px;"></span>
+        <span>{{ v.name }}</span>
       </div>
       <template #overlay>
         <a-menu class="menu__group">

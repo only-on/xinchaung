@@ -15,7 +15,7 @@ interface IchildNodes {
 // 课程完成率
 export const pieOptions = (data: IpieData) => {
   let options = {
-    color: data.done === 0 && data.undone === 0 ? [theme.nextThemeColor] : [theme.themeColor, theme.nextThemeColor],
+    color: data.done === 0 && data.undone === 0 ? ['rgba(255, 149, 68,.25)'] : [theme.themeColor, 'rgba(255, 149, 68,.25)'],
     series: [
       {
         type: 'pie',
