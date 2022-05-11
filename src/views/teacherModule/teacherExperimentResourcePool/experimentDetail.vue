@@ -54,9 +54,10 @@
           <span>编辑基本信息</span>
         </span>
       </div>
-      <div class="user-info" v-if="Number(currentTab) === 1">
-        <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
-        <span class="user-name">TEACHERNAME</span>
+      <div class="user-info flexCenter" v-if="Number(currentTab) === 1">
+        <!-- <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" /> -->
+        <img :src="experimentDetail.user_profile.portrait" alt="" srcset="" />
+        <span class="user-name">{{experimentDetail.user_profile.name}}</span>
       </div>
     </div>
     <div class="detail-content">
@@ -226,6 +227,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   tag: [],
   content_template: {},
   programing_type: 0,
+  user_profile:{}
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -276,6 +278,7 @@ interface IExperimentDetail {
   tag: any[]
   content_template: any
   programing_type: number
+  user_profile:any
 }
 </script>
 <style scoped lang="less">

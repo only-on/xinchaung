@@ -60,6 +60,11 @@ export default defineConfig({
         // target: "http://192.168.101.130",
         target: "http://192.168.101.221:84",
         changeOrigin: true,
+      },
+      "/professor": {
+        // target: "http://192.168.101.130",
+        target: "http://192.168.101.221:84",
+        changeOrigin: true,
       },          
       "/knowledge-map1": {
         target: "http://192.168.101.130",
