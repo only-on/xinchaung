@@ -595,18 +595,6 @@ function StudentChaptersTree(course_student_id:number){
     console.log(course_setting)
   })
 }
-const power=(v:any,a:any)=>{
-  return true
-  // if(role !== 4){
-  //   return true
-  // }
-  // if(a.TeachingAids){
-  //   // 教辅
-  //   if(a.type===5){
-
-  //   }
-  // }
-}
 onMounted(() => {
   // console.log(props.courseId)
   const { course_student_id,from} = route.query;

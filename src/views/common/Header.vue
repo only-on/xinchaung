@@ -154,7 +154,7 @@ export default defineComponent({
     var menus: any[] = reactive([]);
     // 教师首页
     let teacherHome={
-      icon: "",
+      icon: "icon-shouye1",
       id: 189,
       name: "首页",
       parent_id: 0,
@@ -165,7 +165,7 @@ export default defineComponent({
      //论坛
     let forum={
       children: [],
-      icon: "",
+      icon: "icon-jiaoliu1",
       id: 169,
       name: "论坛",
       parent_id: 0,
@@ -174,7 +174,7 @@ export default defineComponent({
     }
     // 实验中心
     let center = {
-      icon: "",
+      icon: "icon-shiyan2",
       id: 170,
       name: "实验中心",
       parent_id: 0,
@@ -203,6 +203,7 @@ export default defineComponent({
     };
     // 素材资源
     let material = {
+      icon:'icon-sucai1',
       id: 170,
       name: "素材资源",
       parent_id: 0,
@@ -212,7 +213,7 @@ export default defineComponent({
     };
     // 教师课程
     let teacherCourse={
-      icon: "",
+      icon: "icon-jiaoxue",
       id: 180,
       name: "教学过程",
       parent_id: 0,
@@ -259,7 +260,7 @@ export default defineComponent({
     }
     // 管理端首页
     let adminHome={
-      icon: "",
+      icon: "icon-shouye1",
       id: 119,
       name: "首页",
       parent_id: 0,
@@ -269,7 +270,7 @@ export default defineComponent({
     }
     //管理端 教学资源管理
     let TeachingResourceManagement={
-      icon: "",
+      icon: "icon-jiaoxue",
       id: 175,
       name: "教学资源管理",
       parent_id: 0,
@@ -325,7 +326,7 @@ export default defineComponent({
     }
     // 管理端系统维护
     let systemMaintenance={
-      icon: "",
+      icon: "icon-weihu",
       id: 135,
       name: "系统维护",
       parent_id: 0,
@@ -373,7 +374,7 @@ export default defineComponent({
     // 管理管交流预约
     let adminForum={
       children: [],
-      icon: "",
+      icon: "icon-jiaoliu1",
       id: 169,
       name: "交流预约",
       parent_id: 0,
@@ -382,7 +383,7 @@ export default defineComponent({
     }
     //管理端用户管理
     let adminUserManagement={
-      icon: "",
+      icon: "icon-yonghuguanli",
       id: 135,
       name: "用户管理",
       parent_id: 0,
@@ -411,7 +412,7 @@ export default defineComponent({
     }
     //管理管资源预约-排课
     let coursePlan={
-      icon: "",
+      icon: "icon-zuoyekaoshi1",
       id: 135,
       name: "资源预约",
       parent_id: 0,
@@ -421,7 +422,7 @@ export default defineComponent({
     }
     //  学生课程
     let studentCourse={
-      icon: "",
+      icon: "icon-jiaoxue",
       id: 188,
       name: "学生课程",
       parent_id: 0,
@@ -431,7 +432,7 @@ export default defineComponent({
     }
     // 学生首页
     let statistics={
-      icon: "",
+      icon: "icon-shouye1",
       id: 189,
       name: "首页",
       parent_id: 0,

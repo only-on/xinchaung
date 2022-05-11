@@ -7,7 +7,7 @@
         @click="!v.children.length ? select('Parent', v) : ''"
       >
         
-        <span class="iconfont icon-shujuji" style="padding-right:4px;"></span>
+        <span class="iconfont" style="padding-right:4px;" :class="v.icon"></span>
         <span>{{ v.name }}</span>
       </div>
       <template #overlay>

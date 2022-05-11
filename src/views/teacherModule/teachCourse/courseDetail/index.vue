@@ -223,7 +223,7 @@ const  studentDetailTabs=[
   {name:'课程成绩',value:'courseAchievement'},
 ]
 var state:IState=reactive({
-  activeTab:{value:'courseChapter'},
+  activeTab:{value:''},
   courseDetail:{}
 })
 function initData(){
