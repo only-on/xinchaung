@@ -25,6 +25,7 @@ import experTemplateManage from './experTemplateManage/index.vue'
 import {HotWords,echartsPie,echartsBar} from './echartsOption';
 const colorList = ['#fe9956', ' #fed755', '#32d0db', '#708cf3']
 import request from "src/api/index";
+import { resolve } from "path/posix";
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
     updata({
@@ -118,7 +119,9 @@ function experTemplateData(){
     limit:experTemplateParams.limit
   }
   http.experTemplateList({param:param}).then((res:any)=>{
-    daWithdata(res)
+    // daWithdata(res)
+    tableData.data=res.data.list
+    tableData.total=res.data.page.totalCount
   })
 }
 function experData(){
@@ -130,7 +133,9 @@ function experData(){
     limit:experParams.limit
   }
   http.experList({param:param}).then((res:any)=>{
-    daWithdata(res)
+    // daWithdata(res)
+    tableData.data=res.data.list
+    tableData.total=res.data.page.totalCount
   })
 }
 function doHotData(data1:any){
@@ -164,7 +169,16 @@ function callBack(key:any){
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
-  experData()
+    const param:any={
+      'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
+      'search[contentAttribute]':experParams.search.contentAttribute,
+      'search[contentType]':experParams.search.contentType,
+      page:experParams.page,
+      limit:experParams.limit
+    }
+    http.experList({param:param}).then((res:any)=>{
+      daWithdata(res)
+    })
   // HotWords('KnowledgePoints',{})
   // echartsPie('experStatistic',{})
   // echartsBar('experType',{})

@@ -46,16 +46,21 @@
         <a @click="details(record.id)">{{ text }}</a>
       </template>
       <template #operation="{ record }">
-        <i
-          class="caozuo iconfont icon-bianji"
+        <!-- icon-bianji -->
+        <span
+          class="caozuo iconfont"
           @click="editCard(record)"
           title="更新"
-        ></i>
-        <i
-          class="caozuo iconfont icon-shanchu"
+        >编辑</span>
+        <!-- icon-shanchu -->
+        <span
+          class="caozuo iconfont"
           @click="delateCard(record.id)"
           title="删除"
-        ></i>
+        >删除</span>
+        <span  class="caozuo">
+          关闭
+        </span>
       </template>
     </a-table>
   </a-config-provider>
@@ -683,5 +688,8 @@ const columns = [
   .ant-checkbox-wrapper {
     margin: 0 10px;
   }
+}
+:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
+  border-radius: 20px;
 }
 </style>
