@@ -129,7 +129,7 @@ let jobAbilityOption = (data: any) => {
       shape: "polygon",
       center: ["55%", "43%"],
       radius: ["0%", "60%"],
-      nameGap: 15,
+      axisNameGap: 15,
       indicator: data.name,
       splitArea: {
         show: true,
@@ -170,6 +170,7 @@ let jobAbilityOption = (data: any) => {
 // 知识点错误率
 let knowledageErrorOption = (data: any) => {
   let option = {
+    tooltip: {},
     color: ["#FF9A56", "#33D0DB", "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
     series: [
       {
@@ -327,50 +328,70 @@ let links: any[] = [];
 let data: any[] = [];
 let categorys: any[] = [0];
 let itemCategory = 0
-let colorList = ['#FE8020', '#FFB354', '#00CBC2', '#6AC8F4', '#6AC8F4']
+let colorList = ['#FE8020', '#FFB354', '#00CBC2', '#6AC8F4', '#748ADE']
 function handleGraphData(knowledge_map: any,  pid?:any) {
   if (!knowledge_map) {
     return { data, links, categorys };
   }
-  itemCategory += 1;
+  // itemCategory += 1;
+  if (itemCategory !== 0) {
+    // itemCategory += 1
+  }
   knowledge_map.forEach((item: any) => {
-    data.push({
+    let s = {
       name: item.knowledge_map_name,
       id: String(item.id),
-      symbolSize: 60,
+      symbolSize: item.error_rate ? item.error_rate : 50,
+      value: item.error_rate,
       draggable: true,
       itemStyle: {
-        color: colorList[(itemCategory - 1) % 5],
+        color: colorList[itemCategory % 5],
       },
       category: itemCategory,
-    });
-    if (itemCategory - 1 !== 0) {
+    }
+    data.push(s);
+    console.log(itemCategory,'第一层级')
+    console.log(s)
+    if (itemCategory !== 0) {
       links.push({
         source: pid ? pid : String(item.id),
         target: String(item.id),
       });
     }
+  });
+  knowledge_map.forEach((item:any) => {
     if (item.child && item.child.length) {
       itemCategory += 1;
       item.child.forEach((itemChild: any) => {
-        data.push({
+        let s = {
           name: itemChild.knowledge_map_name,
           id: String(itemChild.id),
-          symbolSize: 50,
+          symbolSize: itemChild.error_rate ? itemChild.error_rate : 50,
+          value: item.error_rate,
           draggable: true,
           itemStyle: {
-            color: colorList[(itemCategory - 1) % 5],
+            color: colorList[itemCategory % 5],
           },
           category: itemCategory,
-        });
+        }
+        data.push(s);
+        console.log(itemCategory,'第二层级')
+        console.log(s)
         links.push({
           source: String(item.id),
           target: String(itemChild.id),
         });
-        handleGraphData(itemChild.child, String(itemChild.id));
       });
     }
-  });
+  })
+  knowledge_map.forEach((item:any) => {
+    if (item.child && item.child.length) {
+      itemCategory += 1;
+      item.child.forEach((itemChild:any) => {
+        handleGraphData(itemChild.child, String(itemChild.id));
+      })
+    }
+  })
   return { data, links, categorys };
 }
 function setOption4(data: any) {
@@ -382,11 +403,7 @@ function setOption4(data: any) {
   },400)
   console.log(datas)
   let option: any = {
-    tooltip: {
-      formatter: function (val: any) {
-        return val.name;
-      },
-    },
+    tooltip: {},
     grid: {
       left: "10%",
       top: "20%",

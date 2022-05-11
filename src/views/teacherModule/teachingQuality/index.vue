@@ -7,7 +7,7 @@
           <span class="tit">最近开设课程的学生成绩最高分和平均分的对比</span>
         </div>
         <div id="courseAchieve" v-show="scoreData.name.length"></div>
-        <empty :height="230" v-show="!scoreData.name.length" />
+        <empty :height="230" v-show="!scoreData.name.length"/>
       </div>
       <div class="right">
         <div class="header">
@@ -364,12 +364,14 @@ watch(()=>currentCourseId.value, newVal => {
   getFourChartData()
 })
 onMounted(() => {
-  // 课程成绩对比
-  getCourseScore();
-  // 岗位列表
-  getCategoryTags();
-  // 课程轮播
-  getCourseSwitch();
+  nextTick(() => {
+    // 课程成绩对比
+    getCourseScore();
+    // 岗位列表
+    getCategoryTags();
+    // 课程轮播
+    getCourseSwitch();
+  })
 });
 </script>
 <style lang="less" scoped>
