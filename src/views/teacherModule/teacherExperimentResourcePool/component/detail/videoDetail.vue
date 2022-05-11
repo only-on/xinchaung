@@ -2,7 +2,7 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
-      <span v-if="!fileInfo.content_id">
+      <span v-if="!fileInfo.id">
         <span class="tips">支持单个500M以内的MP4格式文件上传</span>
         <a-button type="primary" @click="uploadVideo">上传视频</a-button>
         <a-button type="primary" @click="selectVideoClick">选择视频</a-button>
@@ -20,7 +20,7 @@
       v-if="fileInfo.tusdVideoUrl"
     ></video>
   </div>
-  <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.content_id && fileInfo.tusdVideoUrl"></Submit>
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit>
   <!-- 选择视频抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -78,7 +78,7 @@ const props: Props = defineProps({
 })
 const fileInfo = props.detail.content_task_files&&props.detail.content_task_files.length ? 
   Object.assign(props.detail.content_task_files[0], {tusdVideoUrl:props.detail.content_task_files[0].file_url}) : {
-    content_id: 0,
+    id: 0,
     tusdVideoUrl: '',
     file_url: ''
   }
@@ -86,10 +86,11 @@ const fileInfo = props.detail.content_task_files&&props.detail.content_task_file
 
 // 移除视频
 const deletVideo = () => {
-  http.deleteVideo({urlParams: {content_id: fileInfo.content_id}})
+  http.deleteVideo({urlParams: {content_id: props.detail.id}})
   .then((res: any) => {
-    fileInfo.content_id = 0
+    fileInfo.id = 0
     fileInfo.tusdVideoUrl = ''
+    fileInfo.file_url = ''
   })
 };
 
@@ -104,7 +105,8 @@ const selectDocOrMp4File = (val: any) => {
   // console.log(val)
   Object.assign(activeFile, val)
   fileInfo.tusdVideoUrl = val.file_url
-  activeFile.id = val.id
+  fileInfo.file_url = val.file_url
+  // activeFile.id = val.id
 };
 const closeDrawerDoc = () => {
   visible.value = false;
@@ -124,6 +126,10 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
 };
 
 const onSubmit = () => {
+  if (!fileInfo.file_url) {
+    $message.warn("请上传或选择视频")
+    return
+  }
   const file = {
     "file_path": fileInfo.file_url,// 文档实验-文件
   }

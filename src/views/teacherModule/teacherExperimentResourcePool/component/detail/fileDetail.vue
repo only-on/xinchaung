@@ -20,7 +20,7 @@
     </div>
     <PdfVue :url="activeFile.file_html" v-else />
   </div>
-  <Submit v-if="!preview" @submit="onSubmit" @cancel="cancel"></Submit>
+  <Submit v-if="!preview || !props.detail.content_task_files || !props.detail.content_task_files.length" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -152,11 +152,16 @@ const deleteFile = () => {
     props.detail.guide = ''
     experimentContent.value = ''
     activeFile.file_url = ''
+    activeFile.file_html = ''
     activeFile.suffix = 'md'
   })
 };
 
 const onSubmit = () => {
+  if (!(experimentContent.value || activeFile.file_url)) {
+    $message.warn("请上传或选择文件")
+    return
+  }
   const param = {}
   if (activeFile.suffix === 'md' || experimentContent.value) {
     Object.assign(param, {guide: experimentContent.value})
