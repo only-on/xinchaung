@@ -2,7 +2,7 @@
   <div class="reply-list">
     <div class="user-info">
       <div class="left">
-        <img :src="list.avatar || 'src/assets/images/user/admin_p.png'" alt="" />
+        <img :src="list.user.avatar || 'src/assets/images/user/admin_p.png'" alt="" />
         <span class="user-name">{{list.user?.username}}</span>
         <span class="rep" v-if="replyUserName">回应</span>
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
@@ -128,9 +128,6 @@ export default defineComponent({
         loading.value = false
         const { list, page } = res.data
         totalReply.value = page.totalCount
-        // list.data.forEach((v: IReplyList) => {
-        //   v.avatar = v.avatar ? v.avatar : 'src/assets/images/user/admin_p.png'
-        // })
         replyList.push(...list.data)
       })
     }
