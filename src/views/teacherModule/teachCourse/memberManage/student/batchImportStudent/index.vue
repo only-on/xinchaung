@@ -12,7 +12,7 @@
         <a-button type="primary">选择文件</a-button>
         </a-upload>
       <span>
-        <span class="downTemplate">下载学生模板</span>
+        <span class="downTemplate" @click="downloadTemplate">下载学生模板</span>
         <span class="title">*建议每次导入的数量不要超过500条</span>
       </span>
     </div>
@@ -54,6 +54,7 @@ import group from "./group/index.vue";
 import assistant from "./assistant/index.vue";
 import request from 'src/api/index'
 import { message,Modal } from "ant-design-vue";
+import FileSaver from "file-saver";
 const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
@@ -94,6 +95,13 @@ function beforeUpload(file:any){
 function onChange(page: any, pageSize: any) {}
 function onShowSizeChange(current: any, size: any) {}
 function callback() {}
+function downloadTemplate(){
+  let development = process.env.NODE_ENV == "development" ? true : false;
+      // let url = development
+      //   ? "http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo"
+      //   : "/api/v1/question/questions/import/demo";
+      // FileSaver.saveAs(url);
+}
 </script>
 
 <style lang="less" scoped>

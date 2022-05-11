@@ -90,6 +90,10 @@ function sendExplainQues(){
     answers:[formState.textanswer]
 
   }
+  if(!props.experitId){
+    message.warning('请创建实验再添加习题！')
+    return
+  }
   http.addques({urlParams:{content_id:props.experitId},param:params}).then((res:any)=>{
     updateVisable(true)
   })

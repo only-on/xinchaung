@@ -8,14 +8,14 @@
         <div class="inclass-header-left">
           <span
             >共发布
-            <span class="number">{{statisTic.all_type_count}}</span>
+            <span class="number">{{statisTic.all_type_count?statisTic.all_type_count:'0'}}</span>
             道题</span
           >
           <span>
-            <span class="number">{{statisTic.choice_type_count}}</span>
+            <span class="number">{{statisTic.choice_type_count?statisTic.choice_type_count:'0'}}</span>
             道选择题</span
           >
-          <span><span class="number">{{statisTic.questioning_type_count}}</span> 道问答题</span>
+          <span><span class="number">{{statisTic.questioning_type_count?statisTic.questioning_type_count:'0'}}</span> 道问答题</span>
         </div>
         <div class="inclass-header-right">
           <span class="statistic" @click="scoreStatistic">
@@ -39,7 +39,8 @@
         </div>
       </div>
       <div class="testList">
-        <testList @deleteQues="deleteQues" :datalist='datalist'></testList>
+        <testList v-if="datalist?.length" @deleteQues="deleteQues" :datalist='datalist'></testList>
+        <Empty v-else></Empty>
       </div>
     </div>
     <achievementStatis
