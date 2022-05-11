@@ -118,8 +118,8 @@ provide("currentClickIndex", ref("")); // 当前点击的虚拟机索引
 provide("currentVmIndex", ref(0)); // 当前展示的虚拟机索引
 provide("currentVm", ref({})); // 当前展示的虚拟机
 provide("isScreenRecording", ref(false)); // 是否正在录屏
-provide("leftWidth", ref(70)); // 左侧容器宽度
-provide("rightWidth", ref(window.innerWidth - 70)); // 右侧容易宽度
+provide("leftWidth", ref(45)); // 左侧容器宽度
+provide("rightWidth", ref(window.innerWidth - 45)); // 右侧容易宽度
 provide("evaluateVisible", evaluateVisible); // 控制自评推荐实验modal显示隐藏
 provide("initEvaluate", initEvaluate);  // 初始化自评modal图
 provide("evaluateData", evaluateData); // 自评数据

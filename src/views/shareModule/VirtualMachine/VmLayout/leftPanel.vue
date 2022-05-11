@@ -8,7 +8,7 @@
         :key="index.toString()"
         @click="open(item.key)"
       >
-        <div v-if="roleArry.includes(item.key as any)">
+        <div v-if="roleArry.includes(item.key as any)" class="item">
           <span class="iconfont" :class="item.icon"></span>
           <span class="nav-title">{{ item.name }}</span>
         </div>
@@ -58,8 +58,8 @@ const { type, opType, taskId, topoinst_id, topoinst_uuid, experType } = route.qu
 
 let role = storage.lStorage.get("role");
 
-const leftWidth: Ref<any> = inject("leftWidth", ref(70));
-const rightWidth: Ref<any> = inject("rightWidth", ref(window.innerWidth - 70));
+const leftWidth: Ref<any> = inject("leftWidth", ref(45));
+const rightWidth: Ref<any> = inject("rightWidth", ref(window.innerWidth - 45));
 let baseInfo: any = inject("baseInfo");
 const navData = reactive([
   { name: "指导", key: "guide", icon: "icon-zhidao" },
@@ -92,7 +92,7 @@ function open(key?: string) {
   // 视频文档 
   if (key === 'guide' && (Number(experType) === 6 || Number(experType) === 7)) {
     contentShow.value = false
-    leftWidth.value = 70;
+    leftWidth.value = 45;
     rightWidth.value = window.innerWidth - leftWidth.value;
     currentNavKey.value = key;
     lastKey.value = key;
@@ -100,7 +100,7 @@ function open(key?: string) {
   }
   if (!key || currentNavKey.value === key) {   // 收起
     contentShow.value = false
-    leftWidth.value = 70;
+    leftWidth.value = 45;
     rightWidth.value = window.innerWidth - leftWidth.value;
     currentNavKey.value = "";
     return
@@ -109,13 +109,13 @@ function open(key?: string) {
   if (key === 'report') {
     contentShow.value = false
     contentModal.value = true
-    leftWidth.value = 70;
+    leftWidth.value = 45;
     rightWidth.value = window.innerWidth - leftWidth.value;
     return
   }
   if (currentNavKey.value != key) {
     contentShow.value = true;
-    if (leftWidth.value == 70) {
+    if (leftWidth.value == 45) {
       leftWidth.value = 400;
       rightWidth.value = window.innerWidth - leftWidth.value;
       currentNavKey.value = key;
@@ -131,18 +131,24 @@ function open(key?: string) {
   .vm-nav {
     height: 100%;
     flex-shrink: 0;
-    width: 70px;
+    width: 45px;
     background: #e2e2e2;
   }
   .vm-nav-list {
     text-align: center;
   }
   .vm-nav-item {
-    line-height: 44px;
+    // line-height: 44px;
+    height: 70px;
+    padding: 12px 0;
     cursor: pointer;
     &.active {
       background: var(--white-100);
       color: #ff9544;
+    }
+    .item {
+      display: flex;
+      flex-direction: column;
     }
   }
   .leftContent {

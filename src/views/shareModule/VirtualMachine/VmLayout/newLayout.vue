@@ -42,8 +42,8 @@ const props = defineProps({
 const currentNavKey = ref("");
 const leftEl = ref(null); // left
 const rightEl = ref(null); // right
-const leftWidth = inject("leftWidth",ref(70));
-const rightWidth = inject("rightWidth",ref(window.innerWidth - 70));
+const leftWidth = inject("leftWidth",ref(45));
+const rightWidth = inject("rightWidth",ref(window.innerWidth - 45));
 const vmWrapWidth: Ref<number> = ref(0);
 
 let mouseStart: number = 0; // 鼠标开始移动位置
@@ -62,7 +62,7 @@ function mousedown(e: MouseEvent) {
 
   leftWidth.value = (leftEl as any).value.clientWidth;
   rightWidth.value = (rightEl as any).value.clientWidth;
-  vmWrapWidth.value = window.innerWidth - 70;
+  vmWrapWidth.value = window.innerWidth - 45;
   mouseStart = e.pageX;
   isMove = true;
   document.onmousemove = (event: any) => {
@@ -119,7 +119,7 @@ onMounted(() => {
   height: 100%;
   flex-shrink: 0;
   .vm-main {
-    height: calc(100% - 70px);
+    height: calc(100% - 45px);
     display: flex;
     overflow-y:hidden ;
   }
@@ -134,7 +134,7 @@ onMounted(() => {
   .vm-left {
     height: 100%;
     position: relative;
-    min-width: 74px;
+    min-width: 51px;
     flex-shrink: 0;
     display: flex;
     flex-direction: row;

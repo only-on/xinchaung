@@ -179,7 +179,7 @@ export default defineComponent({
     eventCustom.initEvent("resize", true, true);
     onMounted(() => {
       nextTick(() => {
-        vmWrapWidth.value = window.innerWidth - 70;
+        vmWrapWidth.value = window.innerWidth - 45;
         rightWidth.value =
           vmWrapWidth.value - (openStatus.value ? leftWidth.value - 1 : 1);
       });
@@ -193,7 +193,7 @@ export default defineComponent({
       // 监听window变化事件
       window.addEventListener("resize", function () {
         // vmWrapWidth.value = (vmWrapEl as any).value?.clientWidth;
-        vmWrapWidth.value = window.innerWidth - 70;
+        vmWrapWidth.value = window.innerWidth - 45;
       });
     });
 
@@ -249,7 +249,7 @@ export default defineComponent({
       }
       if (isLeftContentShowType === "line") {
         // 当为关闭状态时，从新设置值
-        vmWrapWidth.value = window.innerWidth - 70;
+        vmWrapWidth.value = window.innerWidth - 45;
         if (!openStatus.value) {
           leftWidth.value = 443;
         }
@@ -288,7 +288,7 @@ export default defineComponent({
     function mousedown(e: MouseEvent) {
       leftWidth.value = (leftEl as any).value.clientWidth;
       rightWidth.value = (rightEl as any).value.clientWidth;
-      vmWrapWidth.value = window.innerWidth - 70;
+      vmWrapWidth.value = window.innerWidth - 45;
       mouseStart = e.pageX;
       isMove = true;
       document.onmousemove = (event: any) => {

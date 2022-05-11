@@ -1396,6 +1396,8 @@ i {
   justify-content: space-between;
   background: #192843;
   width: 100%;
+  height: 45px;
+  line-height: 45px;
   .back {
     margin: 0 15px;
     color: var(--white-65);
@@ -1405,14 +1407,14 @@ i {
   }
   .left-box {
     color: var(--white-100);
-    padding: 22px 0;
+    // padding: 22px 0;
     position: relative;
     display: flex;
     width: 550px;
     .selected {
       // width: 460px;
-      height: 26px;
-      line-height: 26px;
+      // height: 26px;
+      // line-height: 26px;
       font-size: var(--font-size-20);
       margin-left: 24px;
       .name {
@@ -1447,10 +1449,15 @@ i {
     }
   }
   .right-box {
-    padding: 25px 0;
+    &>div {
+      margin-top: 12px;
+      height: 21px;
+      line-height: 21px;
+    }
+    // padding: 25px 0;
     display: flex;
-    height: 70px;
-    line-height: 20px;
+    // height: 70px;
+    // line-height: 20px;
     .ip-list {
       padding: 0 20px;
       // border-left: 1px solid #2c3a54;
