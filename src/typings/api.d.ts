@@ -27,7 +27,8 @@ import { ITeachingResourceManagement } from "src/api/admin/TeachingResourceManag
 
 import { ITeacherExperimentResourcePool } from "src/api/teacher/teacherExperimentResourcePool";
 import { ITeacherMaterialResource } from "src/api/teacher/teacherMaterialResource";
-import {ITeacherImageResourcePool} from 'src/api/teacher/teacherImageResourcePool'
+import {ITeacherImageResourcePool} from 'src/api/teacher/teacherImageResourcePool';
+import { ITeachingQuality } from "src/api/teacher/teachingQuality" ;
 
 /**
  * 通用响应类型
@@ -94,5 +95,6 @@ export interface IApiCollection {
   teacherMaterialResource: ITeacherMaterialResource;
   teacherImageResourcePool:ITeacherImageResourcePool
 
-  TeachingResourceManagement:ITeachingResourceManagement
+  TeachingResourceManagement:ITeachingResourceManagement;
+  teachingQuality: ITeachingQuality
 }

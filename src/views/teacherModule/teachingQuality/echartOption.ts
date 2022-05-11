@@ -1,288 +1,357 @@
-let option:any= {
+import { option } from "./../../adminModule/systemMaintenance/diskManagement/option";
+import * as echarts from "echarts";
+import { prepareBoxplotData } from "echarts/extension/dataTool";
+// 课程成绩对比
+let courseScoreOption = (data: any) => {
+  let option = {
     tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'cross',
-        crossStyle: {
-          color: '#999'
-        }
-      }
+      trigger: "axis",
+      // axisPointer: {
+      //   type: "cross",
+      //   crossStyle: {
+      //     color: "#999",
+      //   },
+      // },
     },
     legend: {
-      data: ['成绩平均分', '成绩最高分']
+      data: ["成绩平均分", "成绩最高分"],
     },
     xAxis: [
       {
-        type: 'category',
-        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+        type: "category",
+        data: data.name,
         axisPointer: {
-          type: 'shadow'
-        }
-      }
+          type: "shadow",
+        },
+        axisLabel: {
+          formatter: function (params: any) {
+            var newParamsName = "";
+            var paramsNameNumber = params.length;
+            var provideNumber = 8; //一行显示几个字
+            var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+            if (paramsNameNumber > provideNumber) {
+              for (var p = 0; p < rowNumber; p++) {
+                var tempStr = "";
+                var start = p * provideNumber;
+                var end = start + provideNumber;
+                if (p == rowNumber - 1) {
+                  tempStr = params.substring(start, paramsNameNumber);
+                } else {
+                  tempStr = params.substring(start, end) + "\n";
+                }
+                newParamsName += tempStr;
+              }
+            } else {
+              newParamsName = params;
+            }
+            return newParamsName;
+          },
+        },
+      },
     ],
     yAxis: [
       {
-        type: 'value',
-        name: '',
+        type: "value",
+        name: "",
         min: 0,
-        max: 250,
-        interval: 50,
+        max: 100,
+        interval: 20,
         axisLabel: {
-          formatter: '{value}'
-        }
+          formatter: "{value}",
+        },
       },
       {
-        type: 'value',
-        name: '',
+        type: "value",
+        name: "",
         min: 0,
-        max: 25,
-        interval: 5,
+        max: 100,
+        interval: 20,
         axisLabel: {
-          formatter: ''
-        }
-      }
+          formatter: "",
+        },
+      },
     ],
     dataZoom: [
       {
-        type: 'slider',
-        show:true,
+        type: "slider",
+        show: true,
+        start: 0,
+        end: 30,
         xAxisIndex: 0,
-        bottom:30,
-        filterMode: 'none',
-        height:10,
+        bottom: 30,
+        filterMode: "none",
+        height: 10,
       },
     ],
     series: [
       {
-        name: '成绩平均分',
-        type: 'bar',
-        color:'#00CBC2',
-        barWidth:10,
+        name: "成绩平均分",
+        type: "bar",
+        color: "#00CBC2",
+        barWidth: 10,
         itemStyle: {
           //柱形图圆角，鼠标移上去效果，如果只是一个数字则说明四个参数全部设置为那么多
-          normal: {
-           //柱形图圆角，初始化效果
-           barBorderRadius: [5, 5, 5, 5],
-          }
-         },
-        tooltip: {
-          valueFormatter: function (value:any) {
-            return value + ' ml';
-          }
+          //柱形图圆角，初始化效果
+          borderRadius: [5, 5, 5, 5],
         },
-        data: [
-          2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3
-        ]
+        tooltip: {
+          valueFormatter: function (value: any) {
+            return value + " 分";
+          },
+        },
+        data: data.average_score,
       },
       {
-        name: '成绩最高分',
-        type: 'line',
-        color:'#FF9544',
+        name: "成绩最高分",
+        type: "line",
+        color: "#FF9544",
         yAxisIndex: 1,
         tooltip: {
-          valueFormatter: function (value:any) {
-            return value + ' °C';
-          }
-        },
-        data: [2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2]
-      }
-    ]
-  };
-let option1:any = {
-    title: {
-      text: ''
-    },
-    legend: {
-      data: ['']
-    },
-    radar: {
-    center: ["55%", "43%"],
-    radius: ["0%", "60%"],
-      nameGap:15,
-      indicator: [
-        { name: '课程1', max: 6500 },
-        { name: '课程2', max: 16000 },
-        { name: '看echnology', max: 30000 },
-        { name: 'Customer Support', max: 38000 },
-        { name: 'Development', max: 52000 },
-        { name: 'Marketing', max: 25000 }
-      ],
-      splitArea:{
-        show:true,
-        areaStyle:{
-          // color:['#FF9544','']
-        }
-      }
-    },
-    series: [
-      {
-        name: '',
-        type: 'radar',
-        color:'#FF9544',
-        backgroundColor:'red',
-        data: [
-          {
-            value: [5000, 14000, 28000, 26000, 42000, 21000],
-            name: '111'
-          }
-        ]
-      }
-    ]
-  };
-let option2:any = {
-    color:['#FF9A56','#33D0DB','#718CF3','#FF7B7B','#FFCE2B','#FF9A56'],
-    series: [
-      {
-        type: 'treemap',
-        data: [
-          {
-            name: 'nodeA',
-            value: 10,
-            children: [
-              {
-                name: 'nodeAa',
-                value: 4
-              },
-              {
-                name: 'nodeAb',
-                value: 6
-              }
-            ]
+          valueFormatter: function (value: any) {
+            return value + " 分";
           },
-          {
-            name: 'nodeB',
-            value: 20,
-            children: [
-              {
-                name: 'nodeBa',
-                value: 20,
-                children: [
-                  {
-                    name: 'nodeBa1',
-                    value: 20
-                  }
-                ]
-              }
-            ]
-          }
-        ],
-        top:'10',
-        bottom:'70',
-        breadcrumb: {
-          show: false
-        }
-      }
-    ]
-  };
-  let option3:any = {
-    dataset: [
-      {
-        // prettier-ignore
-        source: [
-                  [850, 740, 900, 1070, 930, 850, 950, 980, 980, 880, 1000, 980, 930, 650, 760, 810, 1000, 1000, 960, 960],
-                  [960, 940, 960, 940, 880, 800, 850, 880, 900, 840, 830, 790, 810, 880, 880, 830, 800, 790, 760, 800],
-                  [880, 880, 880, 860, 720, 720, 620, 860, 970, 950, 880, 910, 850, 870, 840, 840, 850, 840, 840, 840],
-                  [890, 810, 810, 820, 800, 770, 760, 740, 750, 760, 910, 920, 890, 860, 880, 720, 840, 850, 850, 780],
-                  [890, 840, 780, 810, 760, 810, 790, 810, 820, 850, 870, 870, 810, 740, 810, 940, 950, 800, 810, 870]
-              ]
+        },
+        data: data.max_score,
       },
-      {
-        transform: {
-          type: 'boxplot',
-          config: { itemNameFormatter: 'expr {value}' }
-        }
-      },
-      {
-        fromDatasetIndex: 1,
-        fromTransformResult: 1
-      }
     ],
-    tooltip: {
-      trigger: 'item',
-      axisPointer: {
-        type: 'shadow'
-      }
+  };
+  return option;
+};
+
+// 岗位能力分析
+let jobAbilityOption = (data: any) => {
+  let option = {
+    title: {
+      text: "",
     },
-    grid: {
-      top:'5%',
-      left: '10%',
-      right: '10%',
-      bottom: '30%'
-    },
-    xAxis: {
-      type: 'category',
-      boundaryGap: true,
-      nameGap: 30,
+    tooltip: {},
+    radar: {
+      shape: "polygon",
+      center: ["55%", "43%"],
+      radius: ["0%", "60%"],
+      nameGap: 15,
+      indicator: data.name,
       splitArea: {
-        show: false
+        show: true,
+        areaStyle: {
+          color: "transparent",
+        },
+      },
+      axisLine: {
+        show: false,
       },
       splitLine: {
-        show: false
-      }
+        show: true,
+        lineStyle: {
+          width: 1,
+          color: "#FFE4CE", // 设置网格的颜色
+        },
+      },
+    },
+    series: [
+      {
+        name: "",
+        type: "radar",
+        color: "#FF9544",
+        lineStyle: {
+          width: 2,
+        },
+        data: [
+          {
+            value: data.value,
+            name: "岗位能力分析",
+          },
+        ],
+      },
+    ],
+  };
+  return option;
+};
+// 知识点错误率
+let knowledageErrorOption = (data: any) => {
+  let option = {
+    color: ["#FF9A56", "#33D0DB", "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
+    series: [
+      {
+        type: "treemap",
+        data: data,
+        // [
+        //   {
+        //     name: 'nodeA',
+        //     value: 10
+        //   },
+        //   {
+        //     name: 'nodeB',
+        //     value: 20,
+        //   },
+        //   {
+        //     name: 'nodeC',
+        //     value: 20
+        //   }
+        // ],
+        top: "10",
+        bottom: "70",
+        breadcrumb: {
+          show: false,
+        },
+      },
+    ],
+  };
+  return option;
+};
+// 实验成绩分布
+function formatterTip(params: any) {
+  let txt = "";
+  txt +=
+    params.seriesName +
+    "<br>" +
+    params.marker +
+    "最高分：" +
+    params.data[5] +
+    "分" +
+    "<br>" +
+    params.marker +
+    "上四分位数：" +
+    params.data[4] +
+    "分" +
+    "<br>" +
+    params.marker +
+    "中位数：" +
+    params.data[3] +
+    "分" +
+    "<br>" +
+    params.marker +
+    "下四分位数：" +
+    params.data[2] +
+    "分" +
+    "<br>" +
+    params.marker +
+    "最低分：" +
+    params.data[1] +
+    "分" +
+    "<br>";
+  return txt;
+}
+let gradeDistributionOption = (data: any) => {
+  let handledData = prepareBoxplotData(data.score);
+  let option = {
+    tooltip: {
+      trigger: "item",
+      axisPointer: {
+        type: "shadow",
+      },
+    },
+    grid: {
+      top: "5%",
+      left: "10%",
+      right: "10%",
+      bottom: "30%",
+    },
+    xAxis: {
+      type: "category",
+      boundaryGap: true,
+      nameGap: 30,
+      data: data.name,
+      splitArea: {
+        show: false,
+      },
+      splitLine: {
+        show: false,
+      },
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0,0,0,0.14)",
+        },
+      },
+      axisLabel: {
+        color: "rgba(0,0,0,0.45)",
+        formatter: "{value}",
+      },
     },
     dataZoom: [
       {
-        type: 'slider',
-        show:true,
+        type: "slider",
+        show: true,
         xAxisIndex: 0,
-        top:'80%',
-        filterMode: 'none',
-        height:10,
+        top: "80%",
+        filterMode: "none",
+        height: 10,
       },
     ],
     yAxis: {
-      type: 'value',
-      name: '',
-      splitArea: {
-        show: true
-      }
+      type: "value",
+      name: "",
+      min: 0,
+      max: 100,
+      interval: 20,
+      axisLine: {
+        show: true,
+        lineStyle: {
+          color: "rgba(0,0,0,0.14)",
+        },
+      },
+      axisLabel: {
+        color: "rgba(0,0,0,0.45)",
+      },
+      splitLine: {
+        lineStyle: {
+          type: "dashed",
+        },
+      },
     },
     series: [
       {
-        name: 'boxplot',
-        color:'#FF9544',
-        type: 'boxplot',
-        datasetIndex: 1
+        name: "实验成绩分布",
+        color: "#FF9544",
+        type: "boxplot",
+        datasetIndex: 1,
+        data: handledData.boxData,
+        tooltip: {
+          formatter: formatterTip,
+        },
       },
       {
-        name: 'outlier',
-        color:'#1CB2B3',
-        type: 'scatter',
-        datasetIndex: 2
-      }
-    ]
-  };
- function setTagData(knowledge_map: any,size:number) {
-  let links: any[] = []
-  let data: any[] = []
-  if (Object.keys(knowledge_map).length == 0) {
-    return { data, links }
-  }
-  data.push(
-    {
-      name: knowledge_map.parentNode,
-      id: String(knowledge_map.parentNode),
-      symbolSize: size,
-      draggable: true,
-      itemStyle: {
-        // borderColor: theme.themeColor,
-        // borderWidth: 6,
-        // shadowBlur: 10,
-        // shadowColor: theme.themeColor,
-        color: '#FF9544'
-        // color: function () {
-        //   // Random color        橙 #FF9544    绿 #1CB2B3    蓝紫  #758AEE
-        //   let arr=['#FF9544','#1CB2B3','#758AEE']
-        //   return arr[Math.round(Math.random() * 2)]
-        // }
+        name: "实验成绩分布",
+        color: "#1CB2B3",
+        type: "scatter",
+        datasetIndex: 2,
+        data: handledData.outliers,
       },
-      category: 0,
-    }
-  )
+    ],
+  };
+  return option;
+};
+// 知识图谱
+function setTagData(knowledge_map: any, size: number) {
+  let links: any[] = [];
+  let data: any[] = [];
+  if (Object.keys(knowledge_map).length == 0) {
+    return { data, links };
+  }
+  data.push({
+    name: knowledge_map.parentNode,
+    id: String(knowledge_map.parentNode),
+    symbolSize: size,
+    draggable: true,
+    itemStyle: {
+      // borderColor: theme.themeColor,
+      // borderWidth: 6,
+      // shadowBlur: 10,
+      // shadowColor: theme.themeColor,
+      color: "#FF9544",
+      // color: function () {
+      //   // Random color        橙 #FF9544    绿 #1CB2B3    蓝紫  #758AEE
+      //   let arr=['#FF9544','#1CB2B3','#758AEE']
+      //   return arr[Math.round(Math.random() * 2)]
+      // }
+    },
+    category: 0,
+  });
   knowledge_map.childNodes.forEach((item: any) => {
-    item.content_id=String(item.content_id)
+    item.content_id = String(item.content_id);
     if (item.contentvia) {
-      item.contentvia.id=String(item.contentvia.id)
+      item.contentvia.id = String(item.contentvia.id);
       data.push({
         name: item.contentvia.name,
         id: String(item.contentvia.id),
@@ -293,83 +362,85 @@ let option2:any = {
           // borderWidth: 6,
           // shadowBlur: 10,
           // shadowColor: theme.themeColor,
-          color: '#1CB2B3 '
+          color: "#1CB2B3 ",
           // color: 'red'
         },
         category: 1,
-      })
+      });
       links.push({
         source: knowledge_map.parentNode,
         target: item.contentvia.id,
-      })
-      item.contentvia.knowledages.length?item.contentvia.knowledages.forEach((knowledage: any) => {
-        const {knowledge_map_name,id}=knowledage.knowledge_map
-        data.push({
-          name: knowledge_map_name,
-          id: String(item.contentvia.id + "->" +id),
-          symbolSize: size,
-          draggable: true,
-          itemStyle: {
-            // borderColor: theme.themeColor,
-            // borderWidth: 6,
-            // shadowBlur: 10,
-            // shadowColor: theme.themeColor,
-            color: '#758AEE'
-            // color: 'red'
-          },
-          category: 1,
-        })
-        links.push({
-          source: item.contentvia.id,
-          target: item.contentvia.id + "->" + id,
-        })
-      }):''
+      });
+      item.contentvia.knowledages.length
+        ? item.contentvia.knowledages.forEach((knowledage: any) => {
+            const { knowledge_map_name, id } = knowledage.knowledge_map;
+            data.push({
+              name: knowledge_map_name,
+              id: String(item.contentvia.id + "->" + id),
+              symbolSize: size,
+              draggable: true,
+              itemStyle: {
+                // borderColor: theme.themeColor,
+                // borderWidth: 6,
+                // shadowBlur: 10,
+                // shadowColor: theme.themeColor,
+                color: "#758AEE",
+                // color: 'red'
+              },
+              category: 1,
+            });
+            links.push({
+              source: item.contentvia.id,
+              target: item.contentvia.id + "->" + id,
+            });
+          })
+        : "";
     }
-  })
-  return { data, links}
+  });
+  return { data, links };
 }
-function setOption4(data:any){
-  let datas = setTagData(data,50)
-  let option:any = {
+function setOption4(data: any) {
+  let datas = setTagData(data, 50);
+  let option: any = {
     tooltip: {
       formatter: function (val: any) {
-        return val.name
-      }
+        return val.name;
+      },
     },
     grid: {
       left: "10%",
       top: "20%",
-      right:'2%',
-      bottom:'40%'
+      right: "2%",
+      bottom: "40%",
     },
-    color:['#FE8020','#FFB354','#00CBC2','#6AC8F4'],
+    color: ["#FE8020", "#FFB354", "#00CBC2", "#6AC8F4"],
     animationDurationUpdate: 1500,
-    animationEasingUpdate: 'quinticInOut',
+    animationEasingUpdate: "quinticInOut",
     series: [
       {
-        type: 'graph',
-        layout: 'force',
+        type: "graph",
+        layout: "force",
         smooth: true,
         force: {
           repulsion: 1000,
-          edgeLength: 50
+          edgeLength: 50,
         },
         roam: true,
         label: {
-          show:true,
-          position: 'bottom',
+          show: true,
+          position: "bottom",
           // padding:[0,0,0,0], //调整左右位置
           formatter: (params: any) => {
             // return params.name+'\n'+params.value
-            return params.name
-          }
+            return params.name;
+          },
         },
         data: datas?.data,
         links: datas?.links,
         lineStyle: {
-          width:1,
+          width: 1,
           curveness: 0.1,
-          color:'source'
+          color: "source",
         },
         aria: {
           // 下面几行可以不写，因为 label.enabled 默认 true
@@ -377,89 +448,48 @@ function setOption4(data:any){
           //     enabled: true
           // },
           // enabled: true
-          decals:{
-            symbolSize:0.5,
+          decals: {
+            symbolSize: 0.5,
           },
+        },
+        categories: [{ name: "0" }, { name: "1" }, { name: "2" }],
       },
-        categories: [
-          { name: '0' },
-          { name: '1' },
-          { name: '2' }
-        ]
-      }
-    ]
-  }
-  return option
-}
-
-let option5:any= {
-  color:['#FF9A56','#33D0DB','#718CF3','#FF7B7B','#FFCE2B','#FF9A56'],
-    series: {
-      type: 'sankey',
-      bottom: '15%',
-      left: '5%',
-      top: '5%',
-      right: '10%',
-      layout: 'none',
-      emphasis: {
-        focus: 'adjacency'
-      },
-      data: [
-        {
-          name: 'a'
-        },
-        {
-          name: 'b'
-        },
-        {
-          name: 'a1'
-        },
-        {
-          name: 'a2'
-        },
-        {
-          name: 'b1'
-        },
-        {
-          name: 'c'
-        }
-      ],
-      links: [
-        {
-          source: 'a',
-          target: 'a1',
-          value: 5
-        },
-        {
-          source: 'a',
-          target: 'a2',
-          value: 3
-        },
-        {
-          source: 'b',
-          target: 'b1',
-          value: 8
-        },
-        {
-          source: 'a',
-          target: 'b1',
-          value: 3
-        },
-        {
-          source: 'b1',
-          target: 'a1',
-          value: 1
-        },
-        {
-          source: 'b1',
-          target: 'c',
-          value: 2
-        }
-      ],
-      lineStyle: {
-        color: 'source',
-        curveness: 0.5
-      },
-    }
+    ],
   };
-  export {option,option1,option2,option3,setOption4,option5}
+  return option;
+}
+// 高频易错点梳理
+let combOption = (data: any) => {
+  let option = {
+    color: ["#FF9A56", "#33D0DB", "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
+    tooltip: {
+      trigger: "item",
+    },
+    series: {
+      type: "sankey",
+      bottom: "15%",
+      left: "5%",
+      top: "5%",
+      right: "10%",
+      layout: "none",
+      emphasis: {
+        focus: "adjacency",
+      },
+      data: data.data,
+      links: data.links,
+      lineStyle: {
+        color: "source",
+        curveness: 0.5,
+      },
+    },
+  };
+  return option;
+};
+export {
+  courseScoreOption,
+  jobAbilityOption,
+  knowledageErrorOption,
+  gradeDistributionOption,
+  setOption4,
+  combOption,
+};

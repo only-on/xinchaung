@@ -1,5 +1,5 @@
 <template>
-  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:[]" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
+  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:[]" :activeTabOrder="activeTabOrder ? Number(activeTabOrder) : 0" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
@@ -210,7 +210,7 @@ const router = useRouter();
 const http=(request as any).teachCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
-const { currentTab,courseId } = route.query;
+const { currentTab,courseId, activeTabOrder } = route.query;
 const detailTabs=[
   {name:'课程章节',value:'courseChapter'},
   {name:'课程实验管理',value:'courseExperiment'},

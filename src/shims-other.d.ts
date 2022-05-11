@@ -1,6 +1,7 @@
 declare module "*.js"
 declare module '*.md';
 declare module 'swiper/vue';
+declare module 'echarts/extension/dataTool'
 interface Window {
     _config:{
         TUS_SERVE_IP: string,
