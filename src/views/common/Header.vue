@@ -108,7 +108,7 @@ export default defineComponent({
       4: studentUserImg,
       5: "",
     };
-    const userImg = List[Number(role)];
+    const userImg = lStorage.get("portrait") || List[Number(role)];
     const http = (request as any).common;
     const assistText: Ref<string> = ref("您暂时还未收到远程协助请求！");
     const homePath = computed(() => {
@@ -739,6 +739,12 @@ export default defineComponent({
         background: url("src/assets/images/user/teacher_p.png") no-repeat center;
         background-size: 100% 100%;
       }
+       > img {
+         width: 35px;
+         height: 35px;
+         border-radius: 50%;
+         border: 1px solid var(--white-100);
+       }
       .user-name {
         padding: 0 6px;
         color: var(--white);

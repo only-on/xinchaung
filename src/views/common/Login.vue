@@ -113,6 +113,7 @@ const login = () => {
           lStorage.set("role", res!.data.role);
           lStorage.set("uid", res!.data.uid);
           lStorage.set("username", res!.data.username);
+          lStorage.set("portrait", res!.data.portrait);
           if (res!.data.role === 2) {
             router.replace("/admin");
           } else if (res!.data.role === 3) {
