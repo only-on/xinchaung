@@ -2,14 +2,16 @@
   <header class="header-box">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
-        <div
+        <!-- <div
           class="logo"
           :style="`background-image: url(${
             env
               ? '/proxyPrefix' + systemBaseInfo.login_logo
               : systemBaseInfo.login_logo
           });`"
-        ></div>
+        ></div> -->
+        <div
+          class="logo"></div>
         <span class="web-title">SimpleAHP</span>
       </div>
     </div>
@@ -57,8 +59,8 @@
           <p class="operation" @click="loginOut">退出登录</p>
         </template>
         <div class="user-name">
-          <img :src="userImg" />
-          <!-- :style="v.url?`background-image: url(${v.url});`:''" -->
+          <!-- <img :src="userImg" /> -->
+          <div class="user-img" :style="`background-image: url(${userImg});`"></div>
           <span class="user-name">{{ userName }}</span>
         </div>
       </a-popover>
@@ -664,6 +666,7 @@ export default defineComponent({
       height: 32px;
       margin-right: 10px;
       // background: url("../../assets/images/user/favicon.png") no-repeat center;
+      background: url("src/assets/images/user/logo.png") no-repeat center;
       background-repeat: no-repeat;
       background-size: 100% 100%;
       background-position: center;
@@ -733,20 +736,21 @@ export default defineComponent({
       }
     }
     .user-name {
-      // display: flex;
-      // align-items: center;
+      display: flex;
+      align-items: center;
       .user-img {
-        width: 28px;
-        height: 28px;
-        background: url("src/assets/images/user/teacher_p.png") no-repeat center;
+        width: 35px;
+        height: 35px;
+        border-radius: 50%;
+        background: url("src/assets/images/user/teacher_p.png") no-repeat ;
         background-size: 100% 100%;
       }
-       > img {
-         width: 35px;
-         height: 35px;
-         border-radius: 50%;
-         border: 1px solid var(--white-100);
-       }
+      //  > img {
+      //    width: 35px;
+      //    height: 35px;
+      //    border-radius: 50%;
+      //    border: 1px solid var(--white-100);
+      //  }
       .user-name {
         padding: 0 6px;
         color: var(--white);
