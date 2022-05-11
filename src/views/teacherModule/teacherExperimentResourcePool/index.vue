@@ -22,8 +22,8 @@
         <div class="class-time">推荐课时 {{v.class_cnt}}</div>
         <div class="user-info" v-if="currentTab === 1">
           <!-- is_init :1 就是内置数据 -->
-          <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" />
-          <span class="user-name" v-if="v.user">{{v.is_init === 1 ? '内置实验' : v.user.username}}</span>
+          <img :src="v.user_profile.portrait||'src/assets/images/admin/home/env3.png'" alt="" srcset="" />
+          <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
         </div>
         <div class="operate" v-if="currentTab === 0">
           <!-- is_share:1 就是共享数据 -->
@@ -222,7 +222,9 @@ interface IExperimentList {
   user: Iuser
   is_share: number
   type_obj?: any
-  tag: any[]
+  tag: any[],
+  user_profile: any
+  user_id: number
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);

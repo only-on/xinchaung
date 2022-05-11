@@ -149,7 +149,7 @@ function initWs() {
     close: (ev: CloseEvent) => {
       if (ev.type === "close") {
             if (isCurrentPage) {
-              if (!ws.value.isReset()) {
+              if (ws.value.isReset()) {
                 Modal.confirm({
                   title: "提示",
                   content: "改页面已在其他浏览器存在，是否替换",
