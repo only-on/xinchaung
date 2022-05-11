@@ -104,13 +104,18 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.class",
+    key: "user_profile.class",
+  },
+  {
+    title: "年级",
+    dataIndex: "user_profile.grade",
+    key: "user_profile.grade",
   },
   {
     title: "专业",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "user_profile.direct",
+    key: "user_profile.direct",
   },
   {
     title: "学院",
@@ -121,11 +126,13 @@ columns.value = [
     title: "邮箱",
     dataIndex: "email",
     key: "email",
+    width:150,
   },
   {
     title: "电话",
     dataIndex: "user_profile.phone",
     key: "user_profile.phone",
+    width:150,
   },
 ];
 const tableData: any = reactive({

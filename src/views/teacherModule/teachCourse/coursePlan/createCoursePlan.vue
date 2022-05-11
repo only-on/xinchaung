@@ -184,17 +184,25 @@ export default defineComponent({
         // type:props.type,
         // id:props.courseId,
         // withs:'userProfile',
-        // nick:'',
-        // grade:'',
-        // direct:'',
-        // class:'',
+        query:{
+          stu_no:'',
+          classname:'',
+          grade:'',
+          major:''
+        },
         pageinfo:{
           index:1,
           size:10,
-        }
+        },
       });
     function updateStuParams(param:any){
+      console.log(param,'shhhhhhhhh')
       params.pageinfo.index=param.page
+      params.query.stu_no=param.stu_no
+      params.query.classname=param.classname
+      params.query.grade=param.grade
+      params.query.major=param.major
+
       getallstudent()
     }
     onMounted(() => {

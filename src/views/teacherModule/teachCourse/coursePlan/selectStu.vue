@@ -14,7 +14,7 @@
       <div class="header-left">
         <a-form layout="inline">
           <a-form-item label="姓名">
-            <a-input v-model:value='params.nick' @keyup.enter="onSearch"></a-input>
+            <a-input v-model:value='params.name' @keyup.enter="onSearch"></a-input>
           </a-form-item>
           <a-form-item label="班级">
             <a-input v-model:value='params.class' @keyup.enter="onSearch"></a-input>
@@ -169,6 +169,14 @@ function onSearch(value: any) {
   console.log(value);
   params.pageinfo.index=1
   // getallstudent()
+  let param:any={
+   page:1,
+   stu_no:params.name,
+   classname:params.class,
+   grade:params.grade,
+   major:params.direct
+  }
+  emit('updateStuParams',param)
 }
 function onChange(page: any, pageSize: any) {
   params.pageinfo.index=page;

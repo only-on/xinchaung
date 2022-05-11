@@ -13,40 +13,31 @@
         <div>
           <a-form layout="inline" class="searchContent">
             <div class="stuSearch">
-              <a-form-item>
+              <a-form-item label='姓名'>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="studentValue"
-                  placeholder="姓名"
                 >
-                  <template #prefix>
-                    <img src="src/assets/images/screenicon/Group7.png" />
-                  </template>
                 </a-input>
               </a-form-item>
-              <a-form-item>
+              <a-form-item label='班级'>
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
-                  v-model:value="fullName"
-                  placeholder="班级"
+                  v-model:value="classes"
                 >
-                  <template #prefix
-                    ><img src="src/assets/images/screenicon/Group6.png" />
-                  </template>
                 </a-input>
               </a-form-item>
-              <a-form-item>
+              <a-form-item label="年级">
+                <a-input v-model:value='grade' @keyup.enter="inquiry"></a-input>
+              </a-form-item>
+              <a-form-item label="专业">
                 <a-input
                   style="width: 150px"
                   @keyup.enter="inquiry"
                   v-model:value="faculty"
-                  placeholder="专业"
                 >
-                  <template #prefix
-                    ><img src="src/assets/images/screenicon/Group8.png" />
-                  </template>
                 </a-input>
               </a-form-item>
             </div>
@@ -105,6 +96,7 @@ interface Istate {
   studentValue: string;
   fullName: string;
   faculty: string;
+  grade:string;
   classes: string;
   selectedRows: any[];
   unSelectKeys: any[];
@@ -138,59 +130,60 @@ export default defineComponent({
     const state: Istate = reactive({
       confirmLoading: false,
       columns: [
-        {
-          title: "学号",
-          dataIndex: "username",
-          align: "left",
-          ellipsis: true,
-        },
-        {
-          title: "姓名",
-          dataIndex: "user_profile.name",
-          ellipsis: true,
-          // slots: { customRender: "name" },
-        },
-        {
-          title: "性别",
-          dataIndex: "user_profile.gender",
-          // slots: { customRender: "gender" },
-          width: 80,
-        },
-        {
-          title: "班级",
-          dataIndex: "user_profile.grade",
-          align: "left",
-          ellipsis: true,
-        },
-        {
-          title: "专业",
-          dataIndex: "user_profile.department",
-          align: "left",
-          ellipsis: true,
-        },
-        {
-          title: "学院",
-          dataIndex: "user_profile.department",
-          ellipsis: true,
-          // slots: { customRender: "department" },
-        },
-        
-        {
-          title: "邮箱",
-          dataIndex: "email",
-          align: "center",
-          ellipsis: true,
-        },
-        {
-          title: "电话",
-          dataIndex: "user_profile.phone",
-          ellipsis: true,
-          // slots: { customRender: "phone" },
-        },
+      {
+    title: "账号",
+    dataIndex: "username",
+    key: "username",
+    width:100,
+  },
+  {
+    title: "姓名",
+    dataIndex: "user_profile.name",
+    key: "user_profile.name",
+  },
+  {
+    title: "性别",
+    dataIndex: "user_profile.gender",
+    key: "user_profile.gender",
+  },
+  {
+    title: "班级",
+    dataIndex: "user_profile.class",
+    key: "user_profile.class",
+  },
+  {
+    title: "年级",
+    dataIndex: "user_profile.grade",
+    key: "user_profile.grade",
+  },
+  {
+    title: "专业",
+    dataIndex: "user_profile.direct",
+    key: "user_profile.direct",
+  },
+  {
+    title: "学院",
+    dataIndex: "user_profile.department",
+    key: "user_profile.department",
+    width:100,
+  },
+  {
+    title: "邮箱",
+    dataIndex: "email",
+    key: "email",
+    width:150,
+  },
+  {
+    title: "电话",
+    dataIndex: "user_profile.phone",
+    key: "user_profile.phone",
+    width:150,
+  },
       ],
       data: [],
       studentValue: "",
       fullName: "",
+      grade:'',
       faculty: "",
       classes: "",
       selectedRows: [],
@@ -276,6 +269,7 @@ export default defineComponent({
       inquiry() {
         state.studentData.page = 1;
         console.log(state.studentValue, state.fullName, state.faculty, state.classes);
+        initData()
       },
     };
     const initData=()=>{
@@ -284,7 +278,11 @@ export default defineComponent({
         id:props.courseId,
         page:state.studentData.page,
         limit:state.studentData.limit,
-        withs:'userProfile,user'
+        withs:'userProfile,user',
+        name:state.studentValue,
+        class:state.classes,
+        grade:state.grade,
+        direct:state.faculty
       }
       state.studentData.list.length=0
       http.getAllCourseStudent({param:{...obj}}).then((res:any)=>{
