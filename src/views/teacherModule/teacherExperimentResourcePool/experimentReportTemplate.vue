@@ -2,7 +2,11 @@
   <div class="report-template">
     <div class="report-template-name">{{reportName}}</div>
     <div class="report-template-content">
+      <div class="pdfBox" v-if="pdfUrl">
+        <PdfVue :url="pdfUrl" />
+      </div>
       <drag-gable
+        v-else
         :list="dataList"
         class="tableDom"
         :sort="true"
@@ -34,6 +38,7 @@ import { defineComponent, inject, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 import dragGable from "vuedraggable";
+import PdfVue from "src/components/pdf/pdf.vue";
 import widgetCreate from "src/views/teacherModule/teacherTemplate/components/widgetCreate.vue";
 import { widgetDataModel } from "src/views/teacherModule/teacherTemplate/components/DM";
 import { deepClone } from "src/views/teacherModule/teacherTemplate/utils";
@@ -70,6 +75,7 @@ const dataList = reactive<any[]>([
   },
 ]);
 const reportName = ref<string>("");
+const pdfUrl = ref('')
 const getDetail = () => {
   dataList.length = 0;
   http.detailTemplate({ urlParams: { id: templateId } })
@@ -77,6 +83,7 @@ const getDetail = () => {
       if (res && res.data) {
         const result = res.data;
         reportName.value = result.name;
+        pdfUrl.value = result.pdf_path
         Object.assign(dataList, result.json_content);
         // 增加唯一标识， 否则拖拽排序时input的value值会被影响
         dataList.forEach((item: WidgetModel, index: number) => {
