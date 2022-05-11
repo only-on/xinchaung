@@ -17,7 +17,7 @@
       </span>
     </div>
     <div class="importStatistic">
-      <span class="hasImport">已导入20条</span>
+      <span class="hasImport">已导入条</span>
       <span>未导入0条</span>
       <span></span>
     </div>
@@ -41,7 +41,8 @@
   >
           <template #success='record'>
             <div>
-              {{record.success?'导入成功':'导入失败'}}
+              <!-- {{record.success==true?'导入成功':'导入失败'}} -->
+              哈哈
             </div>
           </template>
   </a-table>

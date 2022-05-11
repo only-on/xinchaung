@@ -58,7 +58,7 @@
       <a-form ref="formRef" :model="formState" layout="vertical" :rules="rules">
         <div class="formBox">
             <a-form-item label="账号"  name="username">
-              <a-input v-model:value="formState.username" :disabled='editId' />
+              <a-input v-model:value="formState.username" :disabled='editId?true:false' />
             </a-form-item>
             <a-form-item label="姓名"  name="name">
               <a-input v-model:value="formState.name" />

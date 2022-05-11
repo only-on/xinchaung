@@ -27,38 +27,38 @@
         <div class="complex-search" v-if="searchMode">
           <label>GPU</label>
           <span class="input-span">
-            <!-- <a-select class="select-input" v-model:value="formData.gpuType">
+            <a-select class="select-input" v-model:value="formData.gpunumType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select> -->
-            <span class="inputDiv">=</span>
+            </a-select>
+            <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.gpu" @keyup.enter="search"></a-input>
           </span>
           <label class="m-l">内存</label>
           <span class="input-span">
-            <!-- <a-select class="select-input" v-model:value="formData.memoryType">
+            <a-select class="select-input" v-model:value="formData.memoryType">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select> -->
-            <span class="inputDiv">=</span>
+            </a-select>
+            <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.memory" @keyup.enter="search"></a-input>
           </span>
           <label class="m-l">CPU</label>
           <span class="input-span">
-            <!-- <a-select class="select-input" v-model:value="formData.cpuType">
+            <a-select class="select-input" v-model:value="formData.cpunumType ">
               <template #suffixIcon></template>
               <a-select-option value="0">全部</a-select-option>
               <a-select-option value="1">=</a-select-option>
               <a-select-option value="2">&lt;</a-select-option>
               <a-select-option value="3">&gt;</a-select-option>
-            </a-select> -->
-            <span class="inputDiv">=</span>
+            </a-select>
+            <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.cpu" @keyup.enter="search"></a-input>
           </span>
         </div>
@@ -183,6 +183,8 @@ const selectedRowKeys: Ref<any> = ref([]);
 const dataList: Ref<any> = ref([]);
 const disabledVisible = ref(false);
 const formData = reactive({
+  gpunumType:'',
+  cpunumType:'',
   classType: "",
   class: "",
   name: "",
