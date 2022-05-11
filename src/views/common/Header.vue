@@ -12,7 +12,7 @@
         ></div> -->
         <div
           class="logo"></div>
-        <span class="web-title">SimpleAHP</span>
+        <span class="web-title">Xinchuang</span>
       </div>
     </div>
     <div class="header-middle">

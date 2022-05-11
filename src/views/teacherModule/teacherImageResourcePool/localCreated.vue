@@ -172,8 +172,13 @@ const create = () => {
     // fileListValidator().then((res:any)=>{
     //   console.log(res)
     // })
+    if(!image.file_path){
+      message.warning('请上传镜像文件')
+      return
+    }
     const val= await fileListValidator()
-    console.log(val)
+    // console.log(image)
+    // return
     const parmas = {
       // ostype: "docker" , 
       classify_id: image.classify_id,
