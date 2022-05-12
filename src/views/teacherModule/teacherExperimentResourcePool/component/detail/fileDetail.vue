@@ -116,8 +116,10 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
   Object.assign(activeFile, uploadFileList)
   if (uploadFileList.suffix === 'pdf') {
     activeFile.pdf_url = uploadFileList.tusdDocumentUrl
+    activeFile.file_html = uploadFileList.tusdDocumentUrl
   } else {
     activeFile.pdf_url = uploadFileList.file_url
+    activeFile.file_html = uploadFileList.file_url
   }
   directoryId.value = id
   // console.log(activeFile)

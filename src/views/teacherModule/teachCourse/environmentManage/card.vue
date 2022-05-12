@@ -39,7 +39,7 @@
       </p>
       <p class="operation-status">
         操作状态：<span>{{
-          list.online && list.vms.vms[current].uuid === list.current
+          list.is_online && list.vms.vms[current].uuid === list.current
             ? "繁忙"
             : "空闲"
         }}</span>
@@ -144,7 +144,7 @@ function jumpHandle(list: any) {
             opType: "help",
             type: "course",
             taskId: list.taskId,
-            connection_id: ls.lStorage.get("user_id") + "_" + list.id,
+            connection_id: ls.lStorage.get("uid") + "_" + list.id,
             experType: props.currentExperiment.type
           },
         }); // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace

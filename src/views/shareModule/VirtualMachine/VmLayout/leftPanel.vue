@@ -71,7 +71,7 @@ const navData = reactive([
 watch(
   () => baseInfo.value.base_info,
   (val) => {
-    if (val && !val.is_open && (Number(experType)===1 || Number(experType)===2 || Number(experType)===3)) {
+    if (val && !val.is_open && (Number(experType)===1 || Number(experType)===2 || Number(experType)===3)&&opType!=='help') {
       navData.shift()
     } 
     // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
