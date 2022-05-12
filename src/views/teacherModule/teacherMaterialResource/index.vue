@@ -46,9 +46,9 @@
             <span class="desc single_ellipsis">{{ list.description }}</span>
           </div>
           <div class="user-num">
-            <div class="user" v-if="currentTab === 0">
-              <img :src="list.avatar" alt="" srcset="" />
-              <span class="name">{{list.username}}</span>
+            <div class="user" v-if="currentTab === 0 && list.user">
+              <img :src="list.user.avatar" alt="" srcset="" />
+              <span class="name">{{list.user.username}}</span>
             </div>
             <div class="num-size">
               <span class="num">数量 {{ list.item_count }}</span>
@@ -211,15 +211,15 @@ const initData = () => {
         // console.log(res)
         if (!res) return
         const { data, total} = res
-        data.forEach((v: any) => {
-          v.id = v.uid
-          v.item_count = v.amount
-          v.item_size = v.size
-          v.tags = v.labels?.map((v: any) => v.name)
-          v.type_name = '数据集'
-          v.username = v.username ? v.username : 'teach'
-          v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
-        })
+        // data.forEach((v: any) => {
+        //   v.id = v.uid
+        //   v.item_count = v.amount
+        //   v.item_size = v.size
+        //   v.tags = v.labels?.map((v: any) => v.name)
+        //   v.type_name = '数据集'
+        //   v.username = v.username ? v.username : 'teach'
+        //   v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
+        // })
         materialList.push(...data);
         pageTotal.value = total;
       })
@@ -229,9 +229,9 @@ const initData = () => {
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;
-    list.forEach((v: any) => {
-      v.item_size = bytesToSize(v.item_size)
-    })
+    // list.forEach((v: any) => {
+    //   // v.item_size = bytesToSize(v.item_size)
+    // })
     materialList.push(...list);
     pageTotal.value = page.totalCount;
   });
