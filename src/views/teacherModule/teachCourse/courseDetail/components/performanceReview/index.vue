@@ -374,6 +374,7 @@ function submitWeight() {
 function autoReview() {
   scoreApi.autoReviewApi({ urlParams: { taskId: experitId.value } }).then((res: any) => {
     message.success(res.msg);
+    getTeacherEvaluates();
   });
 }
 const content_id:any=ref()

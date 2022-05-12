@@ -42,24 +42,39 @@
       }"
     >
     <template #templateName='{record}'>
-      <div class="detail" @click="detail(record.id,record.contentAttribute)">
+      <div class="detail" @click="detail(record.id,record.templateType)">
         {{record.templateName}}
       </div>
     </template>
         <template #action="{record}">
             <span class="action action-delete">删除</span>
-            <span class="action action-download">
+            <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
                 下载
             </span>
         </template>
     </a-table>
+     <!-- 在线制作 预览  编辑实验模板 -->
+    <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
+      <div class="pdfBox" v-if="template.pdfUrl">
+        <PdfVue :url="template.pdfUrl" />
+      </div>
+      <viewTemplateShow :id="template.Templateid" />
+      <template #footer>
+        <span></span>
+      </template>
+    </a-modal>
     </div>
 </template>
 <script lang="ts" setup>
     import { ref, toRefs, onMounted,inject, reactive} from "vue";
+    import PdfVue from "src/components/pdf/pdf.vue";
+    import { downloadUrl } from "src/utils/download";
+    import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
+    import viewTemplateShow from "src/components/report/viewTemplate.vue";
     import { message,Modal } from "ant-design-vue";
     import { useRouter, useRoute } from "vue-router";
     import request from "src/api/index";
+    const http = (request as any).TeachingResourceManagement;
     const router = useRouter();
     const route = useRoute();
     const ForumSearch:any=reactive({
@@ -73,6 +88,14 @@
       listdata: () => [],
       total:()=>{}
     });
+    const template:any=reactive({
+      templateVisble:false,
+      reportTitle:'实验模版',
+      TemplateEditId:'',
+      Templateid:'',
+      TemplateViewType:'',
+      pdfUrl:''
+    })
     const columns = [
         {
           title: '报告模版名称',
@@ -130,17 +153,18 @@
       defaultChecked: record.selected,
     };
 }
-function detail(id:any,i:any){
-  // const type:any= currentTab=='私有实验'?0:1;
-  // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
-  router.push({
-    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
-    query: {
-      id,
-      // currentTab:type,
-    },
-  });
-
+function detail(id:any,type:any){
+  if(type=='在线'){
+    
+    template.templateVisble=true
+    template.Templateid=id
+    // http.viewTemplate({urlParams:{id:id}}).then((res:any)=>{
+    // })
+  }
+}
+function downLoad(record:any){
+  // const name=`${item.name}.${getFileSuffix(item.word_path)}`
+  // downloadUrl(item.word_path,name)
 }
 function batchDelete(){
       if(!tableData.selectedRowKeys?.length){
@@ -157,7 +181,7 @@ function batchDelete(){
     }
 </script>
 <style lang="less" scoped>
- .search{
+ .search{ 
      display: flex;
      justify-content: space-between;
      >div:nth-child(1){
@@ -182,5 +206,11 @@ function batchDelete(){
  }
  .action-download{
      margin-left:10px;
+ }
+ .detail{
+   color: var(--primary-color);
+ }
+ .detail:hover{
+   cursor: pointer;
  }
 </style>

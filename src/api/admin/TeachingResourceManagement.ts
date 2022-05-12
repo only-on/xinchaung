@@ -9,12 +9,16 @@ export default{
    experList:{url:`/api/course/admin/courses/contents`,method:'get',dataType: 'json'},
    
    //实验模版列表
-   experTemplateList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'}
+   experTemplateList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'},
+
+   //在线模版
+   viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
 }
 export interface ITeachingResourceManagement{
     imageslist:TFHttpSend
     courselist:TFHttpSend
     experList:TFHttpSend
     experTemplateList:TFHttpSend
+    viewTemplate:TFHttpSend
 }
 export const MODULE_NAME = 'TeachingResourceManagement'
