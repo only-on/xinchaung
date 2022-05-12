@@ -41,7 +41,11 @@
         getCheckboxProps: getCheckboxProps,
       }"
     >
-    
+    <template #templateName='{record}'>
+      <div class="detail" @click="detail(record.id,record.contentAttribute)">
+        {{record.templateName}}
+      </div>
+    </template>
         <template #action="{record}">
             <span class="action action-delete">删除</span>
             <span class="action action-download">
@@ -54,7 +58,10 @@
 <script lang="ts" setup>
     import { ref, toRefs, onMounted,inject, reactive} from "vue";
     import { message,Modal } from "ant-design-vue";
-
+    import { useRouter, useRoute } from "vue-router";
+    import request from "src/api/index";
+    const router = useRouter();
+    const route = useRoute();
     const ForumSearch:any=reactive({
         name:''
     })
@@ -71,6 +78,7 @@
           title: '报告模版名称',
           key: 'templateName',
           dataIndex: 'templateName',
+          slots: { customRender: 'templateName' },
         },
         {
           title: '所属人',
@@ -121,6 +129,18 @@
       disabled: record.selected,
       defaultChecked: record.selected,
     };
+}
+function detail(id:any,i:any){
+  // const type:any= currentTab=='私有实验'?0:1;
+  // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+  router.push({
+    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+    query: {
+      id,
+      // currentTab:type,
+    },
+  });
+
 }
 function batchDelete(){
       if(!tableData.selectedRowKeys?.length){

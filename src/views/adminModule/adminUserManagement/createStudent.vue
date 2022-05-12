@@ -180,7 +180,7 @@ const route = useRoute();
             name: formState.name,
             gender: formState.gender,
             phone: formState.phone,
-            status: status,
+            status:10,
             introduce: formState.introduce,
           },
         };
