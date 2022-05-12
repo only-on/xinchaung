@@ -5,7 +5,7 @@ export default {
   addStudentToCourse:{url: '/api/arrange/students', method: "POST"},//添加学生到课程
   importStu:{url:'/api/arrange/students/import',method: "POST", dataType: 'formdata'},//导入学生
   deleteStudentCourse:{url:'/api/arrange/students/delete',method:"POST",dataType: 'json'},//删除课程里学生
-  resetPassWord: { url: '/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
+  resetPassWord: { url: '/api/yii/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
   grouplist:{url:'/api/arrange/groups',method:'GET'},
   automaticGroup: { url: '/api/arrange/groups/auto', method: "POST", dataType: 'json' }, // 自动分组
   deleteGroup:{url:'/api/arrange/groups/{group}',method:'DELETE'}, //删除分组
