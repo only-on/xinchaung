@@ -389,6 +389,7 @@ function ViewExperiment(a:any,v:any){
   console.log(a)
   a.openGuidance=!a.openGuidance
   state.activeExperimentObj={...a}
+  a.activeExperimentObj={...a}
   if(a.openGuidance){
     if(!a.TeachingAids){
       selectExperiment(a,v)
@@ -398,24 +399,25 @@ function ViewExperiment(a:any,v:any){
       a.experimentGuideLoading=false
     }
   }
-  if(role===3 && Number(currentTab) === 1){
-    a.activeExperimentObj={...a}
-  }
+  // if(role===3 && Number(currentTab) === 1){
+  //   a.activeExperimentObj={...a}
+  // }
 }
 // const experimentGuideLoading: Ref<boolean> = ref(false);
 const getExperimentGuide=(id:number,a:any)=>{
   a.experimentGuideLoading=true
   http.getExperimentGuide({urlParams:{experimentId:id}}).then((res:IBusinessResp)=>{
-    // console.log(res)
+    console.log(res)
     var {data}=res  
     if(data.task_type === 6){
       // state.activeExperimentObj.Newguidance.file_url=data.content_task_files?data.content_task_files[0].file_url:''
       data.file_url=data.content_task_files?data.content_task_files[0].file_url:''
     }
     state.activeExperimentObj.Newguidance=data
-    if(role===3 && Number(currentTab) === 1){
-      a.activeExperimentObj.Newguidance=data
-    }
+    // if(role===3 && Number(currentTab) === 1){
+    //   a.activeExperimentObj.Newguidance=data
+    // }
+    a.activeExperimentObj.Newguidance=data
     a.experimentGuideLoading=false
   })
 }
@@ -596,13 +598,12 @@ function StudentChaptersTree(course_student_id:number){
   })
 }
 onMounted(() => {
-  // console.log(props.courseId)
+  console.log(props.courseId)
   const { course_student_id,from} = route.query;
   if((props.courseId && role === 3) || (from && from === 'courseManagement' && role===2)){
     getChaptersTree()
   }
   if(role === 4){
-    
     // console.log(course_student_id)
     StudentChaptersTree(Number(course_student_id))
   }

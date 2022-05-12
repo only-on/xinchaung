@@ -650,11 +650,12 @@ export default defineComponent({
     margin-right: 100px;
     .a-logo {
       display: flex;
+      align-items: center;
       cursor: pointer;
     }
     .logo {
-      width: 32px;
-      height: 32px;
+      width: 25px;
+      height: 25px;
       margin-right: 10px;
       // background: url("../../assets/images/user/favicon.png") no-repeat center;
       background: url("src/assets/images/user/logo.png") no-repeat center;

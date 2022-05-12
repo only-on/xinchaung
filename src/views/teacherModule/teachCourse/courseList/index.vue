@@ -85,7 +85,7 @@
           <a-table :columns="columns" :data-source="RecordingScreen.list"
             :pagination="{ hideOnSinglePage: false, total: RecordingScreen.total, pageSize:10,current: RecordingScreen.page, onChange: onChange}"
             :row-selection="{ selectedRowKeys: RecordingScreen.selectedRowKeys, onChange: onSelectChange,}"
-            rowKey="id">
+            rowKey="name">
 
             <template #operation="{ record }">
               <a-button type="link" @click="Save('video',record)">下载</a-button>
@@ -337,11 +337,11 @@ const archives=(val: any)=>{
       RecordingScreen.downData[v.export_type]=v
     })
     // console.log(RecordingScreen)
-    // activeCourse.name=val.name
+    activeCourse.name=val.name
   });
 }
 const Save=(val:string,data?:any)=>{
-  // let url=`${env?'/proxyPrefix':''}${activeCourse.file_url}`
+  
   // downloadUrl(url,activeCourse.name)
   let obj=RecordingScreen.downData[val]
   if(!obj || (obj && (obj['status']!=='finished' || obj['file_path']===''))){
@@ -349,7 +349,9 @@ const Save=(val:string,data?:any)=>{
     return
   }
   if(obj['status']==='finished' && obj['file_path']){
-    downloadUrl(obj['file_path'],obj['fileName'])
+    let url=`${env?'/proxyPrefix':''}${obj['file_path']}`
+    // downloadUrl(url,obj['fileName'])
+    downloadUrl(url,`${activeCourse.name}.zip`)
   }
   Visible.value=false
 }

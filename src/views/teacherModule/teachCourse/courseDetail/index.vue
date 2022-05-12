@@ -1,5 +1,5 @@
 <template>
-  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:[]" :activeTabOrder="activeTabOrder ? Number(activeTabOrder) : 0" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
+  <DetailHeader :info="state.courseDetail" :tabs="Number(currentTab)===0?detailTabs:detailTabs2" :activeTabOrder="activeTabOrder ? Number(activeTabOrder) : 0" @selectTab="selectTab" @setupCourse="setupCourse" @editCourse="editCourse" />
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
@@ -218,6 +218,7 @@ const detailTabs=[
   {name:'成绩评阅',value:'performanceReview'},
   {name:'学情分析',value:'studentAnalysis'},
   {name:'成员管理',value:'memberManagement'},]
+const detailTabs2=[{name:'课程章节',value:'courseChapter'},]
 const  studentDetailTabs=[
   {name:'课程内容',value:'courseChapter'},
   {name:'课程成绩',value:'courseAchievement'},

@@ -244,7 +244,8 @@
       <div v-if="formState.document.type === 'pdf'" class="pdfBox">
         <!-- <PdfVue :url="formState.document.pdf" /> -->
         <div class="selectFile">
-          <span>{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
+          <span v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
+          <span v-else>{{docOrMp4Drawer.activeFile.file_name}}</span>
           <span class="iconfont icon-shanchu" @click.stop="removeDocMp4"></span>
         </div>
       </div>
@@ -817,6 +818,7 @@ const removeDocMp4=()=>{
     tusFileUpload.remove(upDoc.docFileList[0])
   }
   upDoc.docFileList=[]
+  docOrMp4Drawer.activeFile={}
 }
 const upDocx = (n: number) => {
   // upDoc.docFileList.length=0
@@ -877,6 +879,7 @@ const cancelUpDoc = () => {
 // 选择系统内置文档或者视频
 const env = process.env.NODE_ENV == "development" ? true : false;
 const selectDocOrMp4File = (val: any) => {
+  // console.log(val)
   upDoc.docFileList.length=0
   docOrMp4Drawer.activeFile = { ...val};
   if(docOrMp4Type.value === 1){
