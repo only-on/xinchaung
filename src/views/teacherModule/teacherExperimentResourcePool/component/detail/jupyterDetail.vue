@@ -72,16 +72,14 @@ const beforeUpload = async (file: any, fileList: any) => {
     const { data } = res
     // console.log(data)
     const param = {
-      "guidebooks": [
-        {
-          file_name: data.file_name,
-          file_url: data.url,
-          size: data.size,
-          sort: 0,
-          suffix: data.suffix,
-          type: 1 // 实验指导文件类型
-        }
-     ]
+      guidebooks:{
+        file_name: data.file_name,
+        file_url: data.url,
+        size: data.size,
+        sort: 0,
+        suffix: data.suffix,
+        type: 1 // 实验指导文件类型
+      }
     }
     const content_id = props.detail.content_task_files.length ? props.detail.content_task_files[0].content_id : ''
     http.updateJupyterGuide({urlParams: {content_id: props.detail.id}, param})
