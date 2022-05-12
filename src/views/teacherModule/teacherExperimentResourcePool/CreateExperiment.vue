@@ -325,7 +325,7 @@
       </p>
     </a-upload-dragger>
     <div style="padding:2rem;">
-      <input type="file" @change="docBeforeUpload2" multiple>
+      <input type="file" @change="docBeforeUpload2" multiple :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`">
     </div>
     <template #footer>
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
@@ -820,6 +820,7 @@ const docBeforeUpload =(file: any) => {
 const docBeforeUpload2=(e:any)=>{
   console.log(e.target.files[0])
   let file=e.target.files[0]
+  file.uid=file.lastModified
   docBeforeUpload(file)
 }
 const removeDocMp4=()=>{
