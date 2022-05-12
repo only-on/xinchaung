@@ -102,7 +102,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const $message: MessageApi = inject("$message")!;
     const datasetApi = request.teacherWorkbench;
-    const uid = storage.lStorage.get("uid") || storage.lStorage.get("user_id") || 100;
+    const uid = storage.lStorage.get("uid") || storage.lStorage.get("uid") || 100;
     const limitNumber: Ref<number> = ref(3);
     props.limitNumber ? (limitNumber.value = props.limitNumber) : "";
     const reactiveData: {

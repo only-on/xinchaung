@@ -95,7 +95,7 @@ interface IFormState {
 }
 const { lStorage } = extStorage;
 const formState = reactive<IFormState>({
-  creator: Number(lStorage.get("user_id")) || 100,
+  creator: Number(lStorage.get("uid")) || 100,
   role: Number(lStorage.get("role")) || 3,
   name: '',
   description: '',

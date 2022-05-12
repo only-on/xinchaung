@@ -145,7 +145,7 @@ export default defineComponent({
     const route = useRoute();
     const { lStorage } = extStorage;
     const role = lStorage.get("role");
-    const uid = lStorage.get("user_id");
+    const uid = lStorage.get("uid");
     var showSearch: Ref<boolean> = ref(false);
     var currentTab: Ref<number> = ref(0);
     var totalCount: Ref<number> = ref(0);

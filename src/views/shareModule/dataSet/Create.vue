@@ -262,7 +262,7 @@ export default defineComponent({
     const route = useRoute();
     const { lStorage } = extStorage;
     const role = lStorage.get("role");
-    const uid = lStorage.get("user_id");
+    const uid = lStorage.get("uid");
     var updata = inject("updataNav") as Function;
     updata({
       tabs: [],
@@ -310,7 +310,7 @@ export default defineComponent({
     }
     const state: IState = reactive({
       ForumSearch: {
-        creator: Number(lStorage.get("user_id")),
+        creator: Number(lStorage.get("uid")),
         role: Number(lStorage.get("role")),
         common: [3, 5].includes(Number(lStorage.get("role"))) ? 0 : 1,
         name: "",

@@ -1,6 +1,6 @@
 <template>
 <div v-if="baseInfo.base_info.step.length">
-  <p class="guide-waraing" v-if="!isLookStep&&currentTask.state">
+  <p class="guide-waraing" v-if="!isLookStep&&currentTask.state&&role===4">
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
   <div class="task-name single_ellipsis">任务一：{{ currentTask.name }}</div>
@@ -51,8 +51,10 @@ import { Modal } from "ant-design-vue";
 import { stepAction } from "src/utils/vncInspect";
 import { findIndex } from "lodash";
 import { useRoute, useRouter } from "vue-router";
+import storage from "src/utils/extStorage";
 const route = useRoute();
 const router = useRouter();
+let role = storage.lStorage.get("role");
 let vmQuery = route.query as any;
 let {
   opType,
@@ -78,15 +80,15 @@ const steps: any = ref({});
 
 // 上一个任务
 const preTask = async () => {
-  baseInfo.value.base_info.step_score_exists ? await submitStepAction() : ''
+  baseInfo.value.base_info.step_score_exists && role===4 ? await submitStepAction() : ''
   currentTaskIndex.value--;
   currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
   getStepStatus(currentTask.value.id)
 };
 // 下一个任务
 const nextTask = async () => {
-  console.log(baseInfo.value.base_info.step)
-  baseInfo.value.base_info.step_score_exists ? await submitStepAction() : ''
+  console.log(baseInfo.value.base_info.step_score_exists && role===4)
+  baseInfo.value.base_info.step_score_exists && role===4 ? await submitStepAction() : ''
   currentTaskIndex.value++;
   currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
   console.log(taskList)
@@ -117,6 +119,11 @@ function getStepStatus(stepId: any) {
 
 // 查看步骤
 function lookStep() {
+  if (role !== 4) {
+    currentTask.value.state = 1;
+    isLookStep.value = 1
+    return
+  }
   Modal.confirm({
     title: "提示",
     content: "查看步骤会扣除本步骤50%的分数，确定查看？",
