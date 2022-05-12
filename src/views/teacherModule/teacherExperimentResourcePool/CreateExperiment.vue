@@ -305,6 +305,7 @@
       :options="catalogueOptions"
     ></a-select>
     <a-upload-dragger
+      :custom-request="()=>{}"
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
       :multiple="true"
@@ -323,6 +324,9 @@
         支持单个MP4格式文件上传 且文件小于500M
       </p>
     </a-upload-dragger>
+    <div style="padding:2rem;">
+      <input type="file" @change="docBeforeUpload2" multiple>
+    </div>
     <template #footer>
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
@@ -782,7 +786,7 @@ var upDoc: any = reactive({
 });
 var upDocVisible = ref<boolean>(false);
 const docBeforeUpload =(file: any) => {
-  // console.log(file)
+  console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
   const postfix = (file && file.name).split(".")[1];
@@ -813,6 +817,11 @@ const docBeforeUpload =(file: any) => {
   docOrMp4Drawer.activeFile={}
   return false
 };
+const docBeforeUpload2=(e:any)=>{
+  console.log(e.target.files[0])
+  let file=e.target.files[0]
+  docBeforeUpload(file)
+}
 const removeDocMp4=()=>{
   upDoc.nowDocument.mdValue=''
   if(upDoc.docFileList[0].status !== "done"){
