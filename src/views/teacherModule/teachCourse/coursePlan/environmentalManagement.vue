@@ -29,10 +29,10 @@
           <span class="input-span">
             <a-select class="select-input" v-model:value="formData.gpunumType">
               <template #suffixIcon></template>
-              <a-select-option value="0">全部</a-select-option>
-              <a-select-option value="1">=</a-select-option>
-              <a-select-option value="2">&lt;</a-select-option>
-              <a-select-option value="3">&gt;</a-select-option>
+              <a-select-option :value="0">全部</a-select-option>
+              <a-select-option :value="1">=</a-select-option>
+              <a-select-option :value="2">&lt;</a-select-option>
+              <a-select-option :value="3">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.gpu" @keyup.enter="search"></a-input>
@@ -41,10 +41,10 @@
           <span class="input-span">
             <a-select class="select-input" v-model:value="formData.memoryType">
               <template #suffixIcon></template>
-              <a-select-option value="0">全部</a-select-option>
-              <a-select-option value="1">=</a-select-option>
-              <a-select-option value="2">&lt;</a-select-option>
-              <a-select-option value="3">&gt;</a-select-option>
+              <a-select-option :value="0">全部</a-select-option>
+              <a-select-option :value="1">=</a-select-option>
+              <a-select-option :value="2">&lt;</a-select-option>
+              <a-select-option :value="3">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.memory" @keyup.enter="search"></a-input>
@@ -53,10 +53,10 @@
           <span class="input-span">
             <a-select class="select-input" v-model:value="formData.cpunumType ">
               <template #suffixIcon></template>
-              <a-select-option value="0">全部</a-select-option>
-              <a-select-option value="1">=</a-select-option>
-              <a-select-option value="2">&lt;</a-select-option>
-              <a-select-option value="3">&gt;</a-select-option>
+              <a-select-option :value="0">全部</a-select-option>
+              <a-select-option :value="1">=</a-select-option>
+              <a-select-option :value="2">&lt;</a-select-option>
+              <a-select-option :value="3">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.cpu" @keyup.enter="search"></a-input>
@@ -170,8 +170,8 @@ const columns: any = [
   },
   {
     title: "占用CPU",
-    dataIndex: "cpu",
-    key: "cpu",
+    dataIndex: "cpu_num",
+    key: "cpu_num",
   },
   {
     title: "占用GPU",
@@ -183,16 +183,13 @@ const selectedRowKeys: Ref<any> = ref([]);
 const dataList: Ref<any> = ref([]);
 const disabledVisible = ref(false);
 const formData = reactive({
-  gpunumType:'',
-  cpunumType:'',
-  classType: "",
-  class: "",
   name: "",
-  gpuType: "",
+  class: "",
+  gpunumType:0,
   gpu: "",
-  memoryType: "",
+  memoryType:0,
   memory: "",
-  cpuType: "",
+  cpunumType:0,
   cpu: "",
   page: 1,
   pageSize: 10,
@@ -203,7 +200,18 @@ let endTime = ref<Moment>();
 const searchMode = ref(false); // false 简单  true高级
 
 function getList() {
-  let params = {};
+  let params = {
+    name:formData.name,
+    class:formData.class,
+    gpunumType:formData.gpunumType,
+    gpu:formData.gpu,
+    memoryType:formData.memoryType,
+    memory:formData.memory,
+    cpunumType:formData.cpunumType,
+    cpu_num:formData.cpu,
+    page:formData.page,
+    pageSize:formData.pageSize,
+  };
   if (searchMode.value) { // 高级查询
     
   }else{
@@ -213,7 +221,7 @@ function getList() {
   dataList.value=[]
   http
     .envMonitoringList({
-      param:formData,
+      param:params,
     })
     .then((res: any) => {
       const { data, total } = res.data;
