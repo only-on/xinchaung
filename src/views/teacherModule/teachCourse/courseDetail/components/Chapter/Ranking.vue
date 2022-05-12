@@ -9,7 +9,7 @@
           <div class="portrait"></div>
           <div class="name">{{v.username}}</div>
         </div>
-        <div class="progress">学习进度{{v.progress}}%</div>
+        <div class="progress">学习进度{{v.progress*100}}%</div>
       </div>
     </div>
   </div>
