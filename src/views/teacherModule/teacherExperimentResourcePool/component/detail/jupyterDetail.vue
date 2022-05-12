@@ -75,7 +75,7 @@ const beforeUpload = async (file: any, fileList: any) => {
       "guidebooks": [
         {
           file_name: data.file_name,
-          file_url: data.file_path,
+          file_url: data.url,
           size: data.size,
           sort: 0,
           suffix: data.suffix,

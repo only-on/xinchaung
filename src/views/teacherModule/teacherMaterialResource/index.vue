@@ -32,7 +32,7 @@
         @click="detail(list)"
       >
         <div class="item-top">
-          <img :src="list.cover?list.cover:defaultCover" alt="头像" />
+          <img :src="list.cover?list.cover:defaultCover" alt="封面" />
           <div class="labels">
             <span v-for="(v, index) in list.tags" :key="index">{{
               v + (index !== list.tags.length - 1 ? " / " : "")

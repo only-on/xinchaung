@@ -140,6 +140,7 @@
         <div class="uploadBox">
           <a-upload
             accept=".ipynb"
+            :custom-request="()=>{}"
             :file-list="formState.ipynbList"
             :before-upload="beforeUploadIpynb"
             :remove="IpynbFileRemove"
