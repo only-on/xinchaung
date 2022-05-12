@@ -15,8 +15,6 @@ export default {
   createMirrorApi: { url: `/api/env/images`, method: "POST",dataType: 'json' },
 
   getImgTag:{ url: `/api/category/镜像标签/tags`, method: "GET"},
-
-  getFileConfig:{ url: `/api/config/public-config`, method: "GET"}
 };
 
 export interface ITeacherImageResourcePool {
@@ -30,7 +28,6 @@ export interface ITeacherImageResourcePool {
 
   getImgTag:TFHttpSend
 
-  getFileConfig:TFHttpSend
 }
 
 export const MODULE_NAME = "teacherImageResourcePool";

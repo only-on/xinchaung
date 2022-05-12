@@ -102,7 +102,7 @@ export default defineComponent({
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
-    const { lStorage } = extStorage;
+    const { lStorage,sStorage } = extStorage;
     const role = lStorage.get("role") || 3;
     const List = {
       1: "",
@@ -480,10 +480,17 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
+    function getConfig(){
+      http.getFileConfig().then((res: IBusinessResp) => {
+        const {webmsg_ip,webmsg_port}=res.data
+        const ip= JSON.stringify(`${webmsg_ip}:${webmsg_port}`)
+        lStorage.set("ws_config",ip)
+        sStorage.set("ws_config",ip)
+      })
+    }
     onMounted(() => {
-      lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
-      // console.log(lStorage.get("role"), lStorage.get("uid"))
-      // console.log('-----------------------------',lStorage.get("longWs"))
+      // lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
+      getConfig()
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
           initWs()

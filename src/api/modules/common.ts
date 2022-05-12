@@ -32,9 +32,12 @@ export default {
     onlineUserInfo: { url: `/api/yii/site/online-info`, method: 'GET'},
     // 检查当前用户是否已登录
     doesLoggedIn: { url: `/api/common/does-logged-in`, method: 'GET' },
+    //  获取公共配置
+    getFileConfig:{ url: `/api/config/public-config`, method: "GET"}
 
 }
 export interface ICommonAps {
+    getFileConfig:TFHttpSend
     getMenu: TFHttpSend
     loginOut: TFHttpSend
     uploadsFile: TFHttpSend

@@ -41,6 +41,7 @@ import * as tus from "tus-js-client";
 // import { createMirrorApi, getConfigApi } from "./api";
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
+const httpCommon=(request as any).commom;
 import { message } from "ant-design-vue";
 interface ImageType {
   name: string;
@@ -219,7 +220,7 @@ export default defineComponent({
       ProjectPath:''
     })
     onMounted(() => {
-      http.getFileConfig().then((res:any)=>{
+      httpCommon.getFileConfig().then((res:any)=>{
         FileConfig.endpoint=res.data.tusd_url
         FileConfig.ProjectPath=res.data.project_path
       })

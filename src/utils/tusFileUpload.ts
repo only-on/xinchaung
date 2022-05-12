@@ -2,7 +2,7 @@
 import  *  as  tus  from  "tus-js-client"
 import { message } from "ant-design-vue"; 
 import request from "src/api/index";
-const http = (request as any).teacherImageResourcePool;
+const http = (request as any).common;
 var state: any = {
   upload: "",
   file: "",
