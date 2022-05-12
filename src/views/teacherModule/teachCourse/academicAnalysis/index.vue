@@ -5,7 +5,7 @@
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults v-if="statisData"  :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData" :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -66,8 +66,9 @@ option.value = [
 
 const columns: any = ref();
 const data: any = ref([]);
+const echartsData:any=ref()
 const statisData:any=ref()
-statisData.value={
+echartsData.value={
           maxScore:0,
           statisData:0,
           avgScore:0,
@@ -142,6 +143,8 @@ function getStuStatis(){
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
       if(res.code&&res.data?.length!==0){
         statisData.value=res.data
+      }else{
+        statisData.value=echartsData.value
       }
     })
 }

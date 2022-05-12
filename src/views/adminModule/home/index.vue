@@ -231,17 +231,17 @@
         img:img1,
         course:'课程门数',
         number:'--',
-        link:''
+        link:'/admin/TeachingResourceManagement/courseManagement'
         },{
         img:img2,
         course:'实验数',
         number:'--',
-        link:''
+        link:'/admin/TeachingResourceManagement/experimentManagement'
         },{
         img:img3,
         course:'素材数',
         number:'--',
-        link:''
+        link:'/admin/TeachingResourceManagement/resourcesManagement'
         }
     ];
     enterNumber2.value=[
