@@ -13,7 +13,7 @@
         <!-- 热门标签 -->
         <hot-label></hot-label>
         <!-- 热力图 -->
-        <heat-map></heat-map>
+        <heat-map id="echarts-list"></heat-map>
         <!-- 推荐课程 -->
         <recommend-course></recommend-course>
       </div>

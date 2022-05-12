@@ -16,7 +16,7 @@
           v-model="baseInfo.base_info.guide"
           :preview="true"
         />
-        <PdfVue :url="baseInfo.base_info.files[0].file_url" v-else/>
+        <PdfVue :url="baseInfo.base_info.files[0].file_html" v-else/>
       </div>
       </div>
       <empty v-else> </empty>

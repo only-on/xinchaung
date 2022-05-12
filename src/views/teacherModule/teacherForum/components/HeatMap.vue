@@ -2,7 +2,7 @@
   <div class="heat-map">
     <div class="components_title">热力图</div>
     <div class="map-content">
-      <div id="d3-echarts" style="width: 300px;height: 300px"></div>
+      <div :id="props.id" style="width: 300px;height: 300px"></div>
     </div>
   </div>
 </template>
@@ -21,6 +21,9 @@ import {
 } from "vue";
 import { ILabelList } from "./../forumnTyping.d";
 import * as echarts from "echarts";
+const props = withDefaults(defineProps<{id: string}>(), {
+  id: 'd3-echarts',
+});
 let hotLabelList: ILabelList[] = inject('hotLabelList') as any
 let myChart: any = null
 const colorList = ['#fe9956', ' #fed755', '#32d0db', '#708cf3']
@@ -89,7 +92,7 @@ const option = {
   }]
 }
 onMounted(() => {
-  myChart = (echarts as any).init(document.getElementById('d3-echarts'))
+  myChart = (echarts as any).init(document.getElementById(props.id))
   const data: any[] = []
   let i = 0
   setTimeout(() => {

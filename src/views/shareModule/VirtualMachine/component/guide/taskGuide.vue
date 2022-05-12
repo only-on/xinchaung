@@ -78,7 +78,7 @@ const steps: any = ref({});
 
 // 上一个任务
 const preTask = async () => {
-  await submitStepAction()
+  baseInfo.value.base_info.step_score_exists ? await submitStepAction() : ''
   currentTaskIndex.value--;
   currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
   getStepStatus(currentTask.value.id)
@@ -86,13 +86,13 @@ const preTask = async () => {
 // 下一个任务
 const nextTask = async () => {
   console.log(baseInfo.value.base_info.step)
-  await submitStepAction()
+  baseInfo.value.base_info.step_score_exists ? await submitStepAction() : ''
   currentTaskIndex.value++;
   currentTask.value = baseInfo.value.base_info.step[currentTaskIndex.value];
   console.log(taskList)
   getStepStatus(currentTask.value.id)
 };
-function submitStepAction() {
+function submitStepAction() { 
   return new Promise((resolve:any,rejects:any)=>{
     let params = {
       opType: opType,
