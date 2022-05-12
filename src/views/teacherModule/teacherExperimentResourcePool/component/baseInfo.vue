@@ -99,13 +99,13 @@
       </div>
     </div>
     <!-- 实验环境配置 -->
-    <div class="configuration" v-if="componentsList.includes('configuration')">
+    <!-- <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
         :type="formState.single"
         @handleOk="ConfirmConfiguration"
         :imageType="createTypeNumber === 2 ? 'jupyter':'vnc'"
       />
-    </div>
+    </div> -->
     <div class="submitBox">
       <Submit @submit="create" @cancel="cancel"></Submit>
     </div>

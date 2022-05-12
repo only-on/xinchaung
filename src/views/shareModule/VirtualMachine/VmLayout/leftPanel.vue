@@ -139,14 +139,14 @@ function open(key?: string) {
   }
   .vm-nav-item {
     // line-height: 44px;
-    height: 70px;
-    padding: 12px 0;
     cursor: pointer;
     &.active {
       background: var(--white-100);
       color: #ff9544;
     }
     .item {
+      height: 70px;
+      padding: 12px 0;
       display: flex;
       flex-direction: column;
     }

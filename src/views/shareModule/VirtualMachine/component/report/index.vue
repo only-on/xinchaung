@@ -164,6 +164,7 @@ function handleUpload() {
   formData.append("csc_id", baseInfo.value.current.id);
   vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     reportTemplateData.value = res?.data;
+    emit('update:visible', false)
   });
 }
 function downLoadExperReport(fileurl: any, filename: any) {

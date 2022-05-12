@@ -1442,7 +1442,7 @@ i {
   }
   .center-box {
     flex-shrink: 0;
-    line-height: 70px;
+    // line-height: 70px;
     .video-time {
       height: 35px;
       color: #ffba49;

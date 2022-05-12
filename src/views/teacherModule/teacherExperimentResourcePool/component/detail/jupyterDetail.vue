@@ -4,6 +4,7 @@
     <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
       <span class="tips">仅支持ipynb文件</span>
       <a-upload
+        :custom-request="() => {}"
         name="file"
         :show-upload-list="false"
         accept=".ipynb"
