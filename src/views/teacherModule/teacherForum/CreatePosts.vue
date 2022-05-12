@@ -39,6 +39,7 @@
                   @click="removeLabel(item)"
                 ></i>
               </span>
+              <span v-if="formState.label_name.length < 3">
               <span
                 class="add-btn pointer"
                 v-show="!isInput"
@@ -53,6 +54,7 @@
                 v-show="isInput"
                 v-model:value="labelContent"
               />
+              </span>
             </div>
           </a-form-item>
         </div>

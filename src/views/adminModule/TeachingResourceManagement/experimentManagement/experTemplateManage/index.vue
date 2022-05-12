@@ -179,6 +179,9 @@ function batchDelete(){
         onOk: () => {}
       })
     }
+const cancelTemplate = (val: number) => {
+
+}
 </script>
 <style lang="less" scoped>
  .search{ 
