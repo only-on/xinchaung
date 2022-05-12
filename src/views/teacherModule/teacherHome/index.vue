@@ -315,7 +315,7 @@ export default defineComponent({
       margin-top: auto;
       margin-bottom: auto;
       z-index: 99;
-      background: #edf0f5;
+      background: #fafafb;
       display: flex;
       align-items: center;
       justify-content: center;

@@ -16,8 +16,7 @@
           </a-form-item>
           <div>
               <a-checkbox-group name="checkboxgroup" class="radio_group"
-              v-model:value="formState.answer"
-              @change="onChange">
+              v-model:value="formState.answer">
                 <div class="option">
                   <div class="option-item">
                     <a-form-item :label="'选项A'" name="optionA">
@@ -102,7 +101,7 @@ const formState: any = reactive({
   optionB: "",
   optionC: "",
   optionD: "",
-  answer: "",
+  answer: [],
   score: "",
 });
 interface Props {
@@ -125,7 +124,7 @@ function clearInputContent() {
   formState.optionB = "";
   formState.optionC = "";
   formState.optionD = "";
-  formState.answer = "";
+  formState.answer = [];
   formState.score = "";
 }
 function sendChoiceQues(){
@@ -153,9 +152,6 @@ function handleOk() {
 }
 function handleCancel() {
   updateVisable(false);
-}
-function onChange(e: any) {
-  console.log(e.target.value);
 }
 function verifiyInfor() {
   formRef.value.validate();
