@@ -1,17 +1,34 @@
-import { option } from "./../../adminModule/systemMaintenance/diskManagement/option";
+
 import * as echarts from "echarts";
 import { prepareBoxplotData } from "echarts/extension/dataTool";
+function handleText (params:any) {
+  var newParamsName = "";
+  var paramsNameNumber = params.length;
+  if (paramsNameNumber < 10) return params
+  var provideNumber = 8; //一行显示几个字
+  var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
+  if (paramsNameNumber > provideNumber) {
+    for (var p = 0; p < rowNumber; p++) {
+      var tempStr = "";
+      var start = p * provideNumber;
+      var end = start + provideNumber;
+      if (p == rowNumber - 1) {
+        tempStr = params.substring(start, paramsNameNumber);
+      } else {
+        tempStr = params.substring(start, end) + "\n";
+      }
+      newParamsName += tempStr;
+    }
+  } else {
+    newParamsName = params;
+  }
+  return newParamsName;
+}
 // 课程成绩对比
 let courseScoreOption = (data: any) => {
   let option = {
     tooltip: {
-      trigger: "axis",
-      // axisPointer: {
-      //   type: "cross",
-      //   crossStyle: {
-      //     color: "#999",
-      //   },
-      // },
+      trigger: "axis"
     },
     legend: {
       data: ["成绩平均分", "成绩最高分"],
@@ -24,28 +41,7 @@ let courseScoreOption = (data: any) => {
           type: "shadow",
         },
         axisLabel: {
-          formatter: function (params: any) {
-            var newParamsName = "";
-            var paramsNameNumber = params.length;
-            var provideNumber = 8; //一行显示几个字
-            var rowNumber = Math.ceil(paramsNameNumber / provideNumber);
-            if (paramsNameNumber > provideNumber) {
-              for (var p = 0; p < rowNumber; p++) {
-                var tempStr = "";
-                var start = p * provideNumber;
-                var end = start + provideNumber;
-                if (p == rowNumber - 1) {
-                  tempStr = params.substring(start, paramsNameNumber);
-                } else {
-                  tempStr = params.substring(start, end) + "\n";
-                }
-                newParamsName += tempStr;
-              }
-            } else {
-              newParamsName = params;
-            }
-            return newParamsName;
-          },
+          formatter: handleText
         },
       },
     ],
@@ -127,10 +123,14 @@ let jobAbilityOption = (data: any) => {
     tooltip: {},
     radar: {
       shape: "polygon",
-      center: ["55%", "43%"],
-      radius: ["0%", "60%"],
+      center: ["50%", "50%"],
+      radius: ["0%", "70%"],
       axisNameGap: 15,
       indicator: data.name,
+      axisName: {
+        color: 'rgba(0,0,0,0.65)',
+        formatter: handleText,
+      },
       splitArea: {
         show: true,
         areaStyle: {
@@ -176,20 +176,6 @@ let knowledageErrorOption = (data: any) => {
       {
         type: "treemap",
         data: data,
-        // [
-        //   {
-        //     name: 'nodeA',
-        //     value: 10
-        //   },
-        //   {
-        //     name: 'nodeB',
-        //     value: 20,
-        //   },
-        //   {
-        //     name: 'nodeC',
-        //     value: 20
-        //   }
-        // ],
         top: "10",
         bottom: "70",
         breadcrumb: {
@@ -333,10 +319,6 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
   if (!knowledge_map) {
     return { data, links, categorys };
   }
-  // itemCategory += 1;
-  if (itemCategory !== 0) {
-    // itemCategory += 1
-  }
   knowledge_map.forEach((item: any) => {
     let s = {
       name: item.knowledge_map_name,
@@ -350,8 +332,6 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
       category: itemCategory,
     }
     data.push(s);
-    console.log(itemCategory,'第一层级')
-    console.log(s)
     if (itemCategory !== 0) {
       links.push({
         source: pid ? pid : String(item.id),
@@ -375,8 +355,6 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
           category: itemCategory,
         }
         data.push(s);
-        console.log(itemCategory,'第二层级')
-        console.log(s)
         links.push({
           source: String(item.id),
           target: String(itemChild.id),
@@ -394,14 +372,17 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
   })
   return { data, links, categorys };
 }
-function setOption4(data: any) {
-  let datas = handleGraphData(data);
+function setOption4(datas: any) {
+  links = [];
+  data = [];
+  categorys = [0];
+  itemCategory = 0
+  let dataObj = handleGraphData(datas);
   setTimeout(()=>{
     for (let i = 0; i < itemCategory; i++) {
       categorys.push({ name: i });
     }
   },400)
-  console.log(datas)
   let option: any = {
     tooltip: {},
     grid: {
@@ -432,8 +413,8 @@ function setOption4(data: any) {
             return params.name;
           },
         },
-        data: datas?.data,
-        links: datas?.links,
+        data: dataObj?.data,
+        links: dataObj?.links,
         lineStyle: {
           width: 1,
           curveness: 0.1,
