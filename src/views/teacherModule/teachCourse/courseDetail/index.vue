@@ -298,7 +298,7 @@ const editCourse=()=>{
     const {data}=res
     vocationDirection.push(...data)
   })
-  const {name,url,is_public,category,direction,introduce,tag,class_total,content_duration,start_time,end_time}=state.courseDetail
+  const {name,url,is_public,category,direction,introduce,tag,class_total,content_duration,start_time,end_time}=JSON.parse(JSON.stringify(state.courseDetail))
   formState.date=[start_time,end_time]
   formState.start_time=start_time
   formState.end_time=end_time

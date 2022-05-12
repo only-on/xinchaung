@@ -4,7 +4,7 @@
     <div class="course-list">
       <div class="list" v-for="item in courseList" :key="item.id">
         <div class="left">
-          <img :src="item.url||'src/assets/images/teacherCourse/defaultCover.jpg'" alt="" srcset="" />
+          <img :src="item.url|| defaultCover" alt="" srcset="" />
         </div>
         <div class="right">
           <span class="name">{{ item.name }}</span>
@@ -29,6 +29,7 @@ import {
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import defaultCover from 'src/assets/images/teacherCourse/defaultCover.jpg'
 const http = (request as any).teachCourse;
 export default defineComponent({
   name: "RecommendCourse",
@@ -53,6 +54,7 @@ export default defineComponent({
     })
     return {
       courseList,
+      defaultCover
     };
   },
 });
