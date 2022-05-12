@@ -8,6 +8,9 @@
       <a-button type="primary" @click="Reselection()">保存实验</a-button>
     </div>
   </div>
+  <div style="margin-bottom: 24px;">
+    <a-input-search style="width:364px"  v-model:value="docOrMp4Drawer.name" placeholder="请输入搜索关键词" @search="getExperiments" @keyup.enter="getExperiments()" />
+  </div>
   <div class="Exhibition flexCenter">
     <div class="left">
       <span>已选择 <span class="num">{{docOrMp4Drawer.selectList.length}}</span> 个实验</span>
@@ -86,6 +89,7 @@ const docOrMp4Drawer: any = reactive({
   list: [],
   page: 1,
   limit: 10,
+  name:'',
   totalCount: 0,
   loading: false,
   activeFile: {}, //  选择的素材
@@ -126,12 +130,12 @@ const getDetailFile = (val:any) => {
 };
 // 获取实验列表
 const getExperiments = () => {
-  const {page,limit}=docOrMp4Drawer
-  let params:any={page,limit}
+  const {page,limit,name}=docOrMp4Drawer
   let obj={
     init_type:init_type.value,
     page,
-    limit
+    limit,
+    name
   }
   docOrMp4Drawer.loading=true
   docOrMp4Drawer.list.length=0
@@ -190,7 +194,7 @@ onMounted(()=>{
   }
 }
 .Exhibition{
-  padding:9px 1rem;
+  padding:0px 1rem 10px;
   margin-bottom: 20px;
   justify-content:space-between;
   .left{
