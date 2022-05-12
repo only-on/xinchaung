@@ -190,6 +190,7 @@ interface IMaterialList {
 }
 interface Iuser {
   username: string
+  avatar: string
 }
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
