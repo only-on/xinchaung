@@ -480,20 +480,20 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
-    function getConfig(){
-      http.getFileConfig().then((res: IBusinessResp) => {
+    async function getConfig(){
+      await http.getFileConfig().then((res: IBusinessResp) => {
         const {webmsg_ip,webmsg_port}=res.data
-        const ip= JSON.stringify(`${webmsg_ip}:${webmsg_port}`)
+        const ip=JSON.stringify({"host":webmsg_ip,"port":webmsg_port})
         lStorage.set("ws_config",ip)
         sStorage.set("ws_config",ip)
       })
     }
-    onMounted(() => {
+    onMounted(async () => {
       // lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
-      getConfig()
+      await getConfig()
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
-          initWs()
+          await initWs()
         } catch (e: any) {
           message.warn(i18nWebMsg[e.toString()] || e.toString());
         }
@@ -507,11 +507,13 @@ export default defineComponent({
     const isRead: Ref<boolean> = ref(false)
     provide('helpInfoList', helpInfoList)
     provide('isRead', isRead)
+    
     function initWs() {
       let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
       const uid = lStorage.get("uid")
       // console.log(user_id,longWs)
+      // console.log(ws_config)
       longWs1.value = wsConnect({
         url:
           "://" +
