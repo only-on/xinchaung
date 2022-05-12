@@ -17,8 +17,8 @@
       </span>
     </div>
     <div class="importStatistic">
-      <span class="hasImport">已导入条</span>
-      <span>未导入0条</span>
+      <span class="hasImport">已导入{{hasImport}}条</span>
+      <span>未导入{{tableData.total-hasImport}}条</span>
       <span></span>
     </div>
   </div>
@@ -39,10 +39,9 @@
         : false
     "
   >
-          <template #success='record'>
+          <template #success='{record}'>
             <div>
-              <!-- {{record.success==true?'导入成功':'导入失败'}} -->
-              哈哈
+              {{record.success==true?'导入成功':'导入失败'}}
             </div>
           </template>
   </a-table>
@@ -59,6 +58,7 @@ import FileSaver from "file-saver";
 const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
+const hasImport:any=ref(0)
 columns.value = [
   {
     title: "账号",
@@ -82,6 +82,8 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const successData:any=ref([])
+const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function beforeUpload(file:any){
   console.log(file)
   const fd = new FormData()
@@ -90,6 +92,19 @@ function beforeUpload(file:any){
       if(res.code){
         // message.warning('导入成功')
         data.value=res.data
+        tableData.total=data.value?.length
+        successData.value=data.value?.filter((item:any)=>{
+          return item.success==true
+        })
+        console.log(successData.value)
+        hasImport.value=successData.value?.length
+        let ids:any=[]
+        successData.value.forEach((item:any)=> {
+          ids.push(item.id)
+        });
+        if(ids?.length){
+          emit("updateSelectStuVisable",'ok',ids);
+        }
       }
  })
 }
@@ -101,7 +116,10 @@ function downloadTemplate(){
       // let url = development
       //   ? "http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo"
       //   : "/api/v1/question/questions/import/demo";
-      // FileSaver.saveAs(url);
+      let url = development
+        ? "http://localhost:3000/proxyPrefix/uploadfiles/import/student.xlsx"
+        : "/uploadfiles/import/student.xlsx";
+      FileSaver.saveAs(url);
 }
 </script>
 

@@ -63,7 +63,7 @@
     <template #action='{record}'>
       <div class="action">
         <span class='delete' @click="deleteStu(record.id)">删除</span>
-        <span @click="initPassward">初始化密码</span>
+        <span @click="initPassward(record.id)">初始化密码</span>
       </div>
     </template>
     </a-table>
@@ -81,7 +81,7 @@
         <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
       </template>
       <div>
-        <batchImportStu></batchImportStu>
+        <batchImportStu @updateSelectStuVisable="updateSelectStuVisable"></batchImportStu>
       </div>
     </a-modal>
 </template>
@@ -255,8 +255,23 @@ function delteteManyStu(){
   }
   deleteteStudent(tableData.selectedRowKeys)
 }
-function initPassward(){
-
+function initPassward(id:any){
+  Modal.confirm({
+          title: "提示信息",
+          width: "500px",
+          content: "确定要重置密码吗？",
+          okText:"确定",
+          cancelText:"取消",
+          onOk: () => {
+            console.log("ok");
+            http.resetPassWord({ param: { schedule_id: id } }).then((res: any) => {
+              message.success("重置密码成功！");
+            });
+          },
+          onCancel: () => {
+            console.log("cancel");
+          },
+        });
 }
 onMounted(()=>{
   getcoursestudent()
