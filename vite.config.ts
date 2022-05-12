@@ -65,6 +65,11 @@ export default defineConfig({
         // target: "http://192.168.101.130",
         target: "http://192.168.101.221:84",
         changeOrigin: true,
+      },
+      "/upload/course_exports": {
+        // target: "http://192.168.101.130",
+        target: "http://192.168.101.221:84",
+        changeOrigin: true,
       },          
       "/knowledge-map1": {
         target: "http://192.168.101.130",

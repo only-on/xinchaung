@@ -170,7 +170,8 @@ export default defineComponent({
       children: [],
       icon: "icon-jiaoliu1",
       id: 169,
-      name: "论坛",
+      // name: "论坛",
+      name:['','交流问答','学习问答','学习交流',''][role-1],
       parent_id: 0,
       sort: 9,
       url: "/teacher/teacherForum",
@@ -374,16 +375,6 @@ export default defineComponent({
         },
       ]
     }
-    // 管理管交流预约
-    let adminForum={
-      children: [],
-      icon: "icon-jiaoliu1",
-      id: 169,
-      name: "交流预约",
-      parent_id: 0,
-      sort: 9,
-      url: "/teacher/teacherForum",
-    }
     //管理端用户管理
     let adminUserManagement={
       icon: "icon-yonghuguanli",
@@ -445,7 +436,7 @@ export default defineComponent({
     }
     let arr:any={
       1:[],
-      2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,adminForum],
+      2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
       3:[teacherHome,center,material,teacherCourse,forum],
       4:[statistics,forum,studentCourse]
     }[role]

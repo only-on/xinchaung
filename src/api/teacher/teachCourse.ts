@@ -60,6 +60,8 @@ export default {
   
   // 课程复用  
   multiplexing:{ url: `/api/course/courses/{courseId}/replicate`, method: "put"},
+  //归档
+  Getarchives:{ url: `/api/course/courses/{courseId}/outcomes`, method: "post"},
   
 
   // 删除课程

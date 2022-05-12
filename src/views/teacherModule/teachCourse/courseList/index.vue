@@ -62,21 +62,21 @@
     <div class="fileList">
       <div class="file flexCenter">
         <div class="flexCenter">
-          <span class="img" :style="`background-image: url(${getFileTypeIcon(activeCourse.name)});`"></span>
-          <span>{{activeCourse.name}}</span>
+          <span class="img" :style="`background-image: url(${getFileTypeIcon('test.xls')});`"></span>
+          <span>学生成绩.xls</span>
         </div>
-        <a-button type="link" @click="Save(2)">下载</a-button>
+        <a-button type="link" @click="Save('score')">下载</a-button>
       </div>
       <div class="file flexCenter">
         <div class="flexCenter">
-          <span class="img" :style="`background-image: url(${getFileTypeIcon(activeCourse.name)});`"></span>
-          <span>{{activeCourse.name}}</span>
+          <span class="img" :style="`background-image: url(${getFileTypeIcon('zip')});`"></span>
+          <span>实验报告.zip</span>
         </div>
-        <a-button type="link" @click="Save(2)">下载</a-button>
+        <a-button type="link" @click="Save('report')">下载</a-button>
       </div>
       <div class="file flexCenter">
         <div class="title">学生录屏</div>
-        <a-button type="link" @click="Save(2)">批量下载</a-button>
+        <a-button type="link" @click="Save('video')">批量下载</a-button>
       </div>  
     </div>
     <div class="tableContent">
@@ -88,7 +88,7 @@
             rowKey="id">
 
             <template #operation="{ record }">
-              <a-button type="link" @click="Save(record)">下载</a-button>
+              <a-button type="link" @click="Save('video',record)">下载</a-button>
             </template>
           </a-table>
           <template #renderEmpty>
@@ -330,11 +330,27 @@ var activeCourse:any=reactive({
 })
 const archives=(val: any)=>{
   Visible.value=true
-  // activeCourse.name=val.name
+  http.Getarchives({urlParams: {courseId: val.id}}).then((res: any) => {
+    // RecordingScreen.downData
+    let {data}=res
+    data.forEach((v:any)=>{
+      RecordingScreen.downData[v.export_type]=v
+    })
+    // console.log(RecordingScreen)
+    // activeCourse.name=val.name
+  });
 }
-const Save=(val:any)=>{
+const Save=(val:string,data?:any)=>{
   // let url=`${env?'/proxyPrefix':''}${activeCourse.file_url}`
   // downloadUrl(url,activeCourse.name)
+  let obj=RecordingScreen.downData[val]
+  if(!obj || (obj && (obj['status']!=='finished' || obj['file_path']===''))){
+    message.warning('暂无该数据')
+    return
+  }
+  if(obj['status']==='finished' && obj['file_path']){
+    downloadUrl(obj['file_path'],obj['fileName'])
+  }
   Visible.value=false
 }
 const cancel=()=>{
@@ -355,6 +371,7 @@ const columns=[
   },
 ]
 const RecordingScreen:any=reactive({
+  downData:{},
   loading:false,
   limit:10,
   page:1,
