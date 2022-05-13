@@ -43,6 +43,8 @@ import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 const httpCommon=(request as any).commom;
 import { message } from "ant-design-vue";
+import { lStorage } from '../../../utils/extStorage';
+
 interface ImageType {
   name: string;
   imageType: any;
@@ -220,10 +222,8 @@ export default defineComponent({
       ProjectPath:''
     })
     onMounted(() => {
-      httpCommon.getFileConfig().then((res:any)=>{
-        FileConfig.endpoint=res.data.tusd_url
-        FileConfig.ProjectPath=res.data.project_path
-      })
+      FileConfig.endpoint = lStorage.get('tusd_url');
+      FileConfig.ProjectPath = lStorage.get('project_path');
     });
     return { ...methods, ...toRefs(state) };
   },

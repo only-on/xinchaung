@@ -84,7 +84,7 @@ import request from "../../api/index";
 import { IBusinessResp } from "../../typings/fetch";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { Modal, message } from "ant-design-vue";
-import extStorage from "src/utils/extStorage";
+import extStorage, {sStorage} from "src/utils/extStorage";
 import { useRouter, useRoute, onBeforeRouteLeave } from "vue-router";
 import handImg from "src/assets/images/reqi_icon.png";
 import teacherUserImg from "src/assets/images/user/teacher.png";
@@ -96,6 +96,7 @@ import { createExamples } from "src/utils/vncInspect";
 import {clearAllCookies} from "../../utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "../../typings/wmc";
+import api from "../../api";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -133,6 +134,20 @@ export default defineComponent({
       return role === 3 || role === 1 || role === 2;
     });
     const userName = ref<string>(lStorage.get("username"));
+
+    // 检查有无配置缓存，若无，则进行缓存
+    let wsConfig = lStorage.get("ws_config");
+    if (!wsConfig) {
+      api.common.getFileConfig().then((res: IBusinessResp | null) => {
+        console.log('[App] getFileConfig: ', res);
+        wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
+        lStorage.set('ws_config', wsConfig);
+        lStorage.set('tusd_url', res?.data.tusd_url);
+        lStorage.set('project_path', res?.data.project_path);
+        sStorage.set('ws_config', wsConfig);
+      }).catch((error: any) => {})
+    }
+
     function information() {
       router.push("/personalInformation");
     }
@@ -480,17 +495,7 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
-    async function getConfig(){
-      await http.getFileConfig().then((res: IBusinessResp) => {
-        const {webmsg_ip,webmsg_port}=res.data
-        const ip=JSON.stringify({"host":webmsg_ip,"port":webmsg_port})
-        lStorage.set("ws_config",ip)
-        sStorage.set("ws_config",ip)
-      })
-    }
     onMounted(async () => {
-      // lStorage.set("ws_config", JSON.stringify({"host":"192.168.101.221","port":9034}));
-      await getConfig()
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
           await initWs()
@@ -507,7 +512,7 @@ export default defineComponent({
     const isRead: Ref<boolean> = ref(false)
     provide('helpInfoList', helpInfoList)
     provide('isRead', isRead)
-    
+
     function initWs() {
       let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");

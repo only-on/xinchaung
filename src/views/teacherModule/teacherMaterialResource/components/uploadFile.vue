@@ -25,8 +25,8 @@
         </div>
       </div>
       <div class="progress-box textScrollbar">
-        <div 
-          class="progress-item" 
+        <div
+          class="progress-item"
           v-for="(value, key) in props.fileList"
           :key="value"
         >
@@ -73,6 +73,7 @@ import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
 const $message: MessageApi = inject("$message")!;
+import api from 'src/api';
 interface Props {
   type: number
   fileList: any

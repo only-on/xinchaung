@@ -49,8 +49,11 @@ function extStorage(type:any) {
   // }
 }
 
+export const lStorage = extStorage("localStorage");
+export const sStorage = extStorage("sessionStorage");
+
 export default {
-  sStorage: extStorage("sessionStorage"),
-  lStorage: extStorage("localStorage"),
+  sStorage,
+  lStorage,
 };
 
