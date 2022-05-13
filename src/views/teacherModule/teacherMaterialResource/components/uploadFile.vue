@@ -77,13 +77,15 @@ interface Props {
   type: number
   fileList: any
   complete?:any
+  slab_uid?: string
 }
 const props = withDefaults(defineProps<Props>(), {
   type: 1,
   fileList: {},
   complete:{
     complete:false // 全部文件是否上传完成
-  }
+  },
+  slab_uid: ''
 });
 // type 1:数据集 2:应用软件 3:课件 4:视频 5:备课资料 6:教学指导
 const typeInfo = reactive({
@@ -134,7 +136,7 @@ function fileBeforeUpload(file: any) {
     startUploadURL: "/dmc/v1.0/create_multi_part",
     multiUploadURL: "/dmc/v1.0/multi_part_upload",
     mergeUploadUrl: "/dmc/v1.0/compose_part",
-    data_set_id: "",
+    data_set_id: props.slab_uid || '',
     file: file,
     chunkSize: 5242880, // 2096963
     chunkFun: chunkFun,

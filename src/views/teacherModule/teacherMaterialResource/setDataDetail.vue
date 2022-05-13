@@ -131,7 +131,7 @@
   <!-- 上传文件 弹窗 -->
   <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900">
     <div>
-      <upload-file ref="uploadFileRef" :type="state.detail.type" :fileList="AddFileLObj.AddFileList" :complete="AddFileLObj" />
+      <upload-file ref="uploadFileRef" :slab_uid="state.detail.uid" :type="state.detail.type" :fileList="AddFileLObj.AddFileList" :complete="AddFileLObj" />
     </div>
     <template #footer>
       <Submit @submit="SaveFile()" @cancel="cancelAddFile()" :loading="AddFileLObj.complete"></Submit>
@@ -363,27 +363,31 @@ const addFile=()=>{
   addFileVisible.value=true
 }
 const SaveFile=()=>{
-  console.log(AddFileLObj.AddFileList)
-  const list=Object.values(AddFileLObj.AddFileList)
-  if(list.length){
-    let items:any=[]
-    list.forEach((v:any)=>{
-      var {name,file_url,suffix,size}=v
-      items.push({file_name:name,file_url,suffix,size})
-    })
-    http.SaveFile({param:{items},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
-      //   要添加loading
-      message.success('上传成功')
-      AddFileLObj.AddFileList={}
-      // getDetailFile()
-      addFileVisible.value=false
-    })
-  }else{
-     addFileVisible.value=false
-  }
+  // console.log(AddFileLObj.AddFileList)
+  // const list=Object.values(AddFileLObj.AddFileList)
+  // if(list.length){
+  //   let items:any=[]
+  //   list.forEach((v:any)=>{
+  //     var {name,file_url,suffix,size}=v
+  //     items.push({file_name:name,file_url,suffix,size})
+  //   })
+  //   http.SaveFile({param:{items},urlParams:{editId:editId}}).then((res: IBusinessResp) => {
+  //     //   要添加loading
+  //     message.success('上传成功')
+  //     AddFileLObj.AddFileList={}
+  //     // getDetailFile()
+  //     addFileVisible.value=false
+  //   })
+  // }else{
+  //    addFileVisible.value=false
+  // }
+  AddFileLObj.AddFileList={}
+  addFileVisible.value=false
+  getDataFileList()
 }
 const cancelAddFile=()=>{
   addFileVisible.value=false
+  getDataFileList()
   AddFileLObj.AddFileList={}
 }
 var oldCommon: Ref<number> = ref(0);
@@ -419,7 +423,7 @@ function getDataFileList() {
   state.fileList.length=0
   http.getDataFileList({param:{ data_id:editId }}).then((res:any) => {
     const list=res.data
-    list.length?selectFile(list[0]):''
+    list.length?selectFile(list[0]):selectFile({})
     if(list.length){
       list.map((v:any)=>{
         v.suffix=''     //  v.suffix=v.class  //现在没有预览地址  字段置空
