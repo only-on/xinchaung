@@ -1,7 +1,7 @@
 <template>
   <a-modal
     title="一键评阅权重设置"
-    v-model:visible="weightVisible"
+    v-model:visible="props.weightVisible"
     @cancel="colseModal"
     :footer="false"
     :destroyOnClose="true"
