@@ -85,75 +85,54 @@
           <a-form-item label="账号" name="username">
             <a-input
               v-model:value="formState.username"
-              :disabled="editId ? true : false"
             />
+          </a-form-item>
+          <a-form-item label="姓名" name="name">
+            <a-input v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
             <a-input-password
               v-model:value="formState.password_hash"
-              :disabled="InputPassword"
               :visibilityToggle="false"
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
             <a-input-password
               v-model:value="formState.repassword"
-              :disabled="InputPassword"
               :visibilityToggle="false"
             />
           </a-form-item>
-          <div class="userinitpassword" v-if="!editId">
-            <span>使用初始密码</span>
-            <a-checkbox
-              v-model:checked="formState.userinitpassword"
-            ></a-checkbox>
-            <span>{{ `(账号+${suffix})` }}</span>
-          </div>
-          <div class="userinitpassword" v-if="editId">
-            <a-checkbox v-model:checked="formState.reset"></a-checkbox>
-            <span>重置密码</span>
-          </div>
-          <a-form-item label="院系" name="department">
-            <a-input v-model:value="formState.department" />
-          </a-form-item>
-          <a-form-item label="研究方向" name="direct">
-            <a-input v-model:value="formState.direct" />
-          </a-form-item>
-          <a-form-item label="主讲课程" name="course">
-            <a-input v-model:value="formState.course" />
+          <a-form-item label="职称" name="professionalTitle">
+            <a-input
+              v-model:value="formState.professionalTitle"
+            />
           </a-form-item>
         </div>
         <div class="right">
-          <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
-          </a-form-item>
-          <a-form-item label="性别" name="gender">
-            <a-select v-model:value="formState.gender" placeholder="请选择">
-              <a-select-option value="1">男</a-select-option>
-              <a-select-option value="2">女</a-select-option>
-            </a-select>
-          </a-form-item>
-          <a-form-item label="电话" name="phone">
-            <a-input v-model:value="formState.phone" />
-          </a-form-item>
-          <a-form-item label="邮箱" name="email">
-            <a-input v-model:value="formState.email" />
-          </a-form-item>
-          <a-form-item label="状态" name="status">
-            <a-select v-model:value="formState.status" placeholder="请选择">
-              <a-select-option value="10">开启</a-select-option>
-              <a-select-option value="1">关闭</a-select-option>
-            </a-select>
-          </a-form-item>
+            <a-form-item label="性别" name="gender">
+                  <a-radio-group v-model:value="formState.gender">
+                      <a-radio :value="1">男</a-radio>
+                      <a-radio :value="2">女</a-radio>
+                  </a-radio-group>
+            </a-form-item>
+            <a-form-item label="学院" name="department">
+              <a-input v-model:value="formState.department" />
+            </a-form-item>
+            <a-form-item label="手机" name="phone">
+              <a-input v-model:value="formState.phone" />
+            </a-form-item>
+            <a-form-item label="邮箱" name="email">
+              <a-input v-model:value="formState.email" />
+            </a-form-item>
         </div>
       </div>
-      <a-form-item label="介绍" name="introduce">
+      <!-- <a-form-item label="介绍" name="introduce">
         <a-textarea
           v-model:value="formState.introduce"
           placeholder="输入介绍"
           :rows="4"
         />
-      </a-form-item>
+      </a-form-item> -->
     </a-form>
   </a-modal>
 </template>
@@ -231,25 +210,25 @@ const columns = [
     width: 120,
   },
   {
-    title: "性别",
-    dataIndex: "genderText",
+    title: "职称",
+    dataIndex: "",
     align: "center"
   },
   {
-    title: "所属院系",
+    title: "学院",
     dataIndex: "department",
     align: "center"
   },
-  {
-    title: "研究方向",
-    dataIndex: "direct",
-    align: "center"
-  },
-  {
-    title: "主讲课程",
-    dataIndex: "course",
-    align: "center"
-  },
+  // {
+  //   title: "研究方向",
+  //   dataIndex: "direct",
+  //   align: "center"
+  // },
+  // {
+  //   title: "主讲课程",
+  //   dataIndex: "course",
+  //   align: "center"
+  // },
   {
     title: "邮箱",
     dataIndex: "email",
@@ -303,6 +282,7 @@ const columns = [
       department: "",
     });
     var formState: IFormState = reactive({
+      professionalTitle:'',
       username: "",
       password_hash: "",
       repassword: "",

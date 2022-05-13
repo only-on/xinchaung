@@ -40,7 +40,7 @@
                             <a-radio-button value="today">今日</a-radio-button>
                             <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" :disabled-date="disabledDate" v-model:value="pickTimeUser" />
+                        <a-date-picker class="pickDay" :disabled-date="disabledDate" v-model:value="pickTimeUser" @change='useractivePick' />
                     </div>
                 </div>
                 <div id='activity-echats'></div>
@@ -157,7 +157,7 @@
                             <a-radio-button value="today">今日</a-radio-button>
                             <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" v-model:value="pickTime" />
+                        <a-date-picker class="pickDay" v-model:value="pickTime" @change='resourcePickTime' />
                     </div>
                 </div>
                 <div id="resource_echarts">
@@ -386,13 +386,24 @@
     }
     //用户活跃度改变日期
     function useractiveChange(val:any){
+        pickTimeUser.value=''
         http.userActive({param:{start_date:'',end_date:''}}).then((res:any)=>{
 
         })
     }
+    function useractivePick(){
+        radioTimeUser.value=''
+    }
     //资源历史使用概览
     function resourceChangeTime(val:any){
-
+        pickTime.value=''
+    // const pickTime:any=ref()
+    // //用户活跃度
+    // const radioTimeUser:any=ref('yesterday')
+    // const pickTimeUser:any=ref()
+    }
+    function resourcePickTime(val:any){
+        radioTime.value=''
     }
     function getNextDate(date:any, day:any) { 
     　　var dd = new Date(date);

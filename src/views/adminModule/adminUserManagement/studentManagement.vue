@@ -119,14 +119,16 @@
     >
       <div class="formBox">
         <div class="left">
-          <a-form-item label="学号" name="username">
+          <a-form-item label="账号" name="username">
             <a-input
               v-model:value="formState.username"
               :disabled="editId ? true : false"
             />
           </a-form-item>
+          <a-form-item label="姓名" name="name">
+            <a-input v-model:value="formState.name" />
+          </a-form-item>
           <a-form-item label="密码" name="password_hash">
-            <!-- <a-input v-model:value="formState.password_hash" :disabled="InputPassword" /> -->
             <a-input-password
               v-model:value="formState.password_hash"
               :disabled="InputPassword"
@@ -134,62 +136,47 @@
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
-            <!-- <a-input v-model:value="formState.repassword" :disabled="InputPassword" /> -->
             <a-input-password
               v-model:value="formState.repassword"
               :disabled="InputPassword"
               :visibilityToggle="false"
             />
           </a-form-item>
-          <div class="userinitpassword" v-if="!editId">
-            <span>使用初始密码</span>
-            <a-form-item label="" name="userinitpassword">
-              <a-checkbox v-model:checked="formState.userinitpassword"></a-checkbox>
-            </a-form-item>
-            <span>{{ `(学号+${suffix})` }}</span>
-          </div>
-          <div class="userinitpassword" v-if="editId">
-            <a-checkbox v-model:checked="formState.reset"></a-checkbox>
-            <span>重置密码</span>
-          </div>
-          <a-form-item label="院系" name="department">
-            <a-input v-model:value="formState.department" />
+          <a-form-item label="性别" name="gender">
+                <a-radio-group v-model:value="formState.gender">
+                    <a-radio :value="1">男</a-radio>
+                    <a-radio :value="2">女</a-radio>
+                 </a-radio-group>
+          </a-form-item>
+        </div>
+        <div class="right">
+          <a-form-item label="班级" name="class">
+            <a-input v-model:value="formState.class" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
             <a-input v-model:value="formState.grade" />
           </a-form-item>
-        </div>
-        <div class="right">
-          <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
+          <a-form-item label="专业" name="major">
+            <a-input v-model:value="formState.major" />
           </a-form-item>
-          <a-form-item label="性别" name="gender">
-            <a-select v-model:value="formState.gender" placeholder="请选择">
-              <a-select-option value="1">男</a-select-option>
-              <a-select-option value="2">女</a-select-option>
-            </a-select>
+           <a-form-item label="学院" name="department">
+            <a-input v-model:value="formState.department" />
           </a-form-item>
-          <a-form-item label="电话" name="phone">
+          <a-form-item label="手机" name="phone">
             <a-input v-model:value="formState.phone" />
           </a-form-item>
           <a-form-item label="邮箱" name="email">
             <a-input v-model:value="formState.email" />
           </a-form-item>
-          <a-form-item label="状态" name="status">
-            <a-select v-model:value="formState.status" placeholder="请选择">
-              <a-select-option value="10">开启</a-select-option>
-              <a-select-option value="1">关闭</a-select-option>
-            </a-select>
-          </a-form-item>
         </div>
       </div>
-      <a-form-item label="介绍" name="introduce">
+      <!-- <a-form-item label="介绍" name="introduce">
         <a-textarea
           v-model:value="formState.introduce"
           placeholder="输入介绍"
           :rows="4"
         />
-      </a-form-item>
+      </a-form-item> -->
     </a-form>
   </a-modal>
   <a-modal
@@ -265,6 +252,8 @@ import {
   UserOutlined,
 } from "@ant-design/icons-vue";
 interface IFormState {
+  class:string;
+  major:any;
   username: string;
   password_hash: string;
   repassword: string;
@@ -281,7 +270,7 @@ interface IFormState {
 }
 const columns = [
   {
-    title: "学号",
+    title: "账号",
     dataIndex: "stu_no",
     align: "center",
     width: 120,
@@ -293,14 +282,9 @@ const columns = [
     width: 120,
   },
   {
-    title: "性别",
-    dataIndex: "genderText",
-    align: "center",
-  },
-  {
-    title: "所属院系",
-    dataIndex: "department",
-    align: "center",
+    title: "班级",
+    dataIndex: "",
+    align: "",
   },
   {
     title: "年级",
@@ -308,14 +292,26 @@ const columns = [
     align: "center"
   },
   {
+    title: "专业",
+    dataIndex: "",
+    align: "center"
+  },
+  {
+    title: "学院",
+    dataIndex: "department",
+    align: "center"
+  },
+  {
     title: "邮箱",
     dataIndex: "email",
-    align: "center"
+    align: "center",
+    width:150,
   },
   {
     title: "电话",
     dataIndex: "phone",
-    align: "center"
+    align: "center",
+    width:150,
   },
   {
     title: "操作",
@@ -398,6 +394,8 @@ const router = useRouter();
       department: "",
     });
     var formState: IFormState = reactive({
+      class:'',
+      major:'',
       username: "",
       password_hash: "",
       repassword: "",
