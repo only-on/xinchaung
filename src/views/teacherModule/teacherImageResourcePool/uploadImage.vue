@@ -223,7 +223,7 @@ export default defineComponent({
     })
     onMounted(() => {
       FileConfig.endpoint = lStorage.get('tusd_url');
-      FileConfig.ProjectPath = lStorage.get('project_path');
+      FileConfig.ProjectPath = lStorage.get('tusd_image_path');
     });
     return { ...methods, ...toRefs(state) };
   },
