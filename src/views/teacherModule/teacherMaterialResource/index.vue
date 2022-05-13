@@ -95,6 +95,7 @@ updata({
   showNav: false,
 });
 const { lStorage } = extStorage;
+const uid = lStorage.get("uid")
 
 // 搜索
 const searchKey = ref<string>("");
@@ -131,12 +132,12 @@ const pageChange = (page: number) => {
 const detail=(val:any)=>{
   let query:any={
     currentTab:currentTab.value,
-    editId:labelSearch.type === '数据集'?val.uid:val.id,
+    editId: val.slab_uid ? val.slab_uid: val.id,
     type:val.type_name,
-    cardType:labelSearch.type === '数据集'?'setData':'other',
-    user_id:labelSearch.type === '数据集'?val.creator:'', 
+    cardType: val.slab_uid ? 'setData':'other',
+    user_id: uid, 
   }
-  if(labelSearch.type === '数据集'){
+  if(val.slab_uid){
     router.push({
       path:'/teacher/teacherMaterialResource/setDataDetail',
       query:{...query}
@@ -204,29 +205,29 @@ const initData = () => {
       (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label),
     ...pageInfo,
   };
-  if (labelSearch.type === '数据集') {
-    http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
-      if (!res) return
-      // console.log(Object.values(res.data.list))
-      http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
-        // console.log(res)
-        if (!res) return
-        const { data, total} = res
-        // data.forEach((v: any) => {
-        //   v.id = v.uid
-        //   v.item_count = v.amount
-        //   v.item_size = v.size
-        //   v.tags = v.labels?.map((v: any) => v.name)
-        //   v.type_name = '数据集'
-        //   v.username = v.username ? v.username : 'teach'
-        //   v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
-        // })
-        materialList.push(...data);
-        pageTotal.value = total;
-      })
-    })
-    return
-  }
+  // if (labelSearch.type === '数据集') {
+  //   http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
+  //     if (!res) return
+  //     // console.log(Object.values(res.data.list))
+  //     http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
+  //       // console.log(res)
+  //       if (!res) return
+  //       const { data, total} = res
+  //       // data.forEach((v: any) => {
+  //       //   v.id = v.uid
+  //       //   v.item_count = v.amount
+  //       //   v.item_size = v.size
+  //       //   v.tags = v.labels?.map((v: any) => v.name)
+  //       //   v.type_name = '数据集'
+  //       //   v.username = v.username ? v.username : 'teach'
+  //       //   v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
+  //       // })
+  //       materialList.push(...data);
+  //       pageTotal.value = total;
+  //     })
+  //   })
+  //   return
+  // }
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;
