@@ -9,8 +9,9 @@
             <div class="top flexCenter">
               <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
               <div v-if="currentTab === 1" class="flexCenter user">
-                <span class="img" :class="v.is_init?'initImg':''"></span>
-                <span class="userName">{{v.is_init?'系统内置':v.user_name}}</span>
+                <!-- <span class="img" :class="v.is_init?'initImg':''" ></span> -->
+                <span class="img" :style="`background-image: url(${v.portrait});`" ></span>
+                <span class="userName">{{v.is_init?'系统内置':v.profile_name}}</span>
               </div>
             </div>
             <div class="tabBox">
