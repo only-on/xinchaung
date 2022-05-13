@@ -137,5 +137,8 @@ const replaceReport = () => {
       margin-left: 16px;
     }
   }
+  .pdfBox {
+    height: 800px;
+  }
 }
 </style>

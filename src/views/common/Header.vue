@@ -146,6 +146,7 @@ export default defineComponent({
         for (let key in res?.data) {
           lStorage.set(key, res?.data[key]);
         }
+        initWs(JSON.parse(wsConfig))
       }).catch((error: any) => {})
     }
 
@@ -499,7 +500,7 @@ export default defineComponent({
     onMounted(async () => {
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
-          await initWs()
+          // await initWs()
         } catch (e: any) {
           message.warn(i18nWebMsg[e.toString()] || e.toString());
         }
@@ -514,8 +515,8 @@ export default defineComponent({
     provide('helpInfoList', helpInfoList)
     provide('isRead', isRead)
 
-    function initWs() {
-      let ws_config = lStorage.get("ws_config")
+    function initWs(ws_config: any) {
+      // let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
       const uid = lStorage.get("uid")
       // console.log(user_id,longWs)
