@@ -20,7 +20,7 @@ function activityOption(data:any){
           },
           grid: {
             left: '3%',
-            right: '3%',
+            right: '5%',
             bottom: '3%',
             containLabel: true
           },
@@ -30,7 +30,7 @@ function activityOption(data:any){
               boundaryGap: false,
               name:'',
               // data: ['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
-              data:data.hours?data.hours:['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
+              data:data.hours
             }
           ],
           yAxis: [
@@ -101,7 +101,7 @@ function resourceOption(data:any,){
               type: 'category',
               boundaryGap: false,
               name:'',
-              data:data.houes?data.houes:['00:00', '03:00', '06:00', '09:00', '12:00','15:00','18:00','21:00','24:00']
+              data:data.houes
             }
           ],
           yAxis: [

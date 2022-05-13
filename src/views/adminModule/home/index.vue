@@ -85,14 +85,13 @@
                     <div class="title-bac">服务器节点状态</div>
                     <div>评级:<span class="status">{{serveNodeStatus}}</span></div>
                     <div>
-                        <a-select
-                            v-model:value="serveNodeValue"
-                            label-in-value
-                            style="width: 170px"
-                            :options="options"
-                            @change="handleChange"
-                            class="select-input"
-                        >
+                        <a-select class="select-input"  @change="handleChange" v-model:value="serveNodeValue">
+                            <a-select-option
+                                v-for="item in options"
+                                :key="item"
+                                :value="item.value"
+                                >{{ item.label }}
+                            </a-select-option>
                         </a-select>
                         <span class="ifRun">运行</span>
                     </div>
@@ -126,8 +125,8 @@
                                 <span :class="item.grade=='low'?'low':(item.grade=='middle'?'middle':'high')">
                                     {{item.grade=='low'?'低风险':(item.grade=='middle'?'中风险':'高风险')}}
                                 </span>
-                                <span>
-                                    去维护 >
+                                <span class='maintain' @click="toMaintain">
+                                    去维护 
                                 </span>
                             </div>
                         </div>
@@ -156,7 +155,7 @@
                             <a-radio-button value="today">今日</a-radio-button>
                             <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" v-model:value="pickTime" @change='resourcePickTime' />
+                        <a-date-picker class="pickDay" valueFormat='YYYY-MM-DD' v-model:value="pickTime" @change='resourcePickTime' />
                     </div>
                 </div>
                 <div id="resource_echarts">
@@ -177,7 +176,7 @@
                 <div class="quickEntrance">
                     <div class="infoName">快捷入口</div>
                     <div class='infoCon'>
-                        <div class="name" v-for="(item,i) in enterInfo" :key="i">{{item.name}}</div>
+                        <div class="name quicklyEnter" v-for="(item,i) in enterInfo" :key="i" @click="toJump(item.link)">{{item.name}}</div>
                     </div>
                 </div>
                 </div>
@@ -286,14 +285,14 @@
         {name:'14567855671'},
     ]
     enterInfo.value=[
-        {name:'课程安排'},
-        {name:'产品授权'},
-        {name:'方向规划'},
-        {name:'个性化设置'},
-        {name:'运行环境清理'},
-        {name:'用户登录信息'},
-        {name:'磁盘管理'},
-        {name:'平台设置'},
+        {name:'课程安排',link:'/teacher/coursePlan'},
+        {name:'产品授权',link:'/admin/systemMaintenance/systemAuthorization'},
+        {name:'方向规划',link:'/admin/TeachingResourceManagement/DirectionPlanning'},
+        {name:'个性化设置',link:'/admin/systemMaintenance/personalization'},
+        {name:'运行环境清理',link:'/admin/systemMaintenance/diskManagement'},
+        {name:'用户登录信息',link:'/admin/systemMaintenance/userloginInformation'},
+        {name:'磁盘管理',link:'/admin/systemMaintenance/diskManagement'},
+        {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
     ]
     aboutData.value=[
         {name:'了解西普'},
@@ -336,7 +335,7 @@
                 res.data?.nodes_ip_list.forEach((item:any)=>{
                     options.value.push({value:item,label:item})
                 })
-                // serveNodeValue.value=options.value[0].value
+                serveNodeValue.value=options.value[0].value.toString()
                 enterNumber1.value[0].number=statisticData.value.course_content_cnt.course_cnt
                 enterNumber1.value[1].number=statisticData.value.course_content_cnt.content_cnt
                 enterNumber1.value[2].number=statisticData.value.course_content_cnt.dataset_cnt
@@ -385,7 +384,11 @@
     }
     function changeUserParams(start:any,end:any){
         http.userActive({param:{start_date:start,end_date:end}}).then((res:any)=>{
-            userActive.hours=res.data?.user_activity_list.hour_list
+            userActive.hours=[]
+            userActive.teacherCount=[]
+            userActive.stuCount=[]
+            userActive.totalCount=[]
+            userActive.hours=res.data?.user_activity_list.date_list
             res.data.user_activity_list.user_activity_list.forEach((item:any)=> {
                     userActive.teacherCount.push(item.teacher_cnt)
                     userActive.stuCount.push(item.student_cnt)
@@ -397,6 +400,22 @@
     //服务节点变化
     function handleChange(value:any){
         console.log(value,serveNodeValue.value?.value)
+        http.serveStatus({param:{id:serveNodeValue.value?.value}}).then((res:any)=>{
+                serveNode.value=res.data?.single_node_resource
+                warningMessage.value[0].percent=serveNode.value?.cpuUseRate
+                warningMessage.value[0].grade=serveNode.value?.cpuRiskLevel
+                warningMessage.value[1].percent=serveNode.value?.memUseRate
+                warningMessage.value[1].grade=serveNode.value?.memRiskLevel
+                warningMessage.value[2].percent=serveNode.value?.gpuUseRate
+                warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
+                warningMessage.value[3].percent=serveNode.value?.diskUseRate
+                warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},'#6993fe'))
+        })
     }
     //用户活跃度改变日期
     function useractiveChange(val:any){
@@ -419,8 +438,12 @@
     // resourceSearch
     function changeResourceTime(start:any,end:any){
         http.resourceSearch({param:{start_date:start,end_date:end}}).then((res:any)=>{
-            
-            res.data.history_recource.monitoring.forEach((item:any)=> {
+            resourceHistory.hours=res.data?.history_recource?.date_list
+            resourceHistory.cpu=[]
+            resourceHistory.mem=[]
+            resourceHistory.gpu=[]
+            resourceHistory.disk=[]
+            res.data.history_recource?.monitoring.forEach((item:any)=> {
                     resourceHistory.cpu.push(item.cpu_use_rate)
                     resourceHistory.mem.push(item.mem_use_rate)
                     resourceHistory.gpu.push(item.gpu_use_rate)
@@ -431,9 +454,17 @@
     }
     function resourceChangeTime(val:any){
         pickTime.value=''
+        if(radioTime.value=='today'){
+            changeResourceTime(getNextDate(today,0),getNextDate(today,0))
+        }else if(radioTime.value=='yesterday'){
+            changeResourceTime(getNextDate(today,-1),getNextDate(today,-1))
+        }else{
+            changeResourceTime(getNextDate(today,-6),getNextDate(today,0))
+        }
     }
     function resourcePickTime(val:any){
         radioTime.value=''
+        changeUserParams(pickTime.value,pickTime.value)
     }
     function getNextDate(date:any, day:any) { 
     　　var dd = new Date(date);
@@ -443,6 +474,9 @@
     　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
     　　return y + "-" + m + "-" + d;
     };
+    function toMaintain(){
+        router.push('/admin/systemMaintenance/diskManagement')
+    }
     onMounted(()=>{
         getData()
         drawEcharts('activity-echats',activityOption(userActive))
@@ -810,5 +844,11 @@
                 }
             }
     }
+}
+.maintain:hover{
+    cursor: pointer;
+}
+.quicklyEnter:hover{
+    cursor: pointer;
 }
 </style>
