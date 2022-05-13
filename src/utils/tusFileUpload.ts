@@ -22,6 +22,7 @@ const tusFileUpload={
     })
   },
   onUpload:(file:any,directory:string,accept:string[],data:any)=> {
+    console.log(file)
     /**
      * file:文件  directory:tusd上传目录名key accept：允许的文件类型如['md','doc','docx','pdf']
      *     
@@ -41,7 +42,10 @@ const tusFileUpload={
     data.suffix=type
     data.status= "uploading",
     data.UpState={}
-    
+    var parallelUploads = parseInt(data.size, 10)
+    if (isNaN(parallelUploads)) {
+      parallelUploads = 1
+    }
     if (!file) {
       message.warning("请先上传文件！");
       return;
@@ -69,8 +73,10 @@ const tusFileUpload={
         "Project-Path": FileConfig[directory],
       },
       // 默认值：Infinity
-      // chunkSize: 5242880,
-      chunkSize: 5242880,
+      chunkSize: parseInt(data.size, 10),
+      parallelUploads,
+      uploadSize:data.size,
+      // chunkSize: Infinity,
       // 附加元数据。当(且仅当)创建新的上传时，将传递给服务器。可以用于文件名，文件类型
       metadata: {
         filename: file.name,

@@ -95,7 +95,7 @@
             <div class="fileView" v-show="state.fileItem.id">
               <!-- <h2>文件内容</h2> -->
               <div v-if="state.fileItem.suffix === 'md'">
-                <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
+                <MarkedEditor v-model="state.fileItem.file_html" class="markdown__editor" :preview="true" />
               </div>
               <div v-else-if="state.fileItem.suffix === 'mp4'">
                 <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>

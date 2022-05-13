@@ -812,6 +812,7 @@ const docBeforeUpload =(file: any) => {
   }else{
     let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
     let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
+    console.log(file)
     tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
   }
   docOrMp4Drawer.activeFile={}
@@ -848,7 +849,7 @@ const catalogueOptions = ref<SelectTypes["options"]>([
 ]);
 // 获取文档目录
 const getCatalogue = () => {
-  let type=docOrMp4Type.value === 1?3:4
+  let type=docOrMp4Type.value === 1?7:4
   http.getCatalogueList({urlParams:{typeId:type}}).then((res: IBusinessResp) => {
     interface IOptions {
       value: string;
