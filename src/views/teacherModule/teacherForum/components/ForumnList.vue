@@ -9,7 +9,7 @@
   </div>
   <div class="content" v-else v-html="item.content"></div>
   <div class="user-info">
-    <img :src="item.user.avatar || 'src/assets/images/user/admin_p.png'" alt="" />
+    <img :src="item.user.avatar || defaultAvatar" alt="" />
     <span class="user-name">{{ item.user.username }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
     <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
@@ -71,6 +71,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from "ant-design-vue";
+import defaultAvatar from 'src/assets/images/user/admin_p.png'
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ForumnList",
@@ -172,6 +173,7 @@ export default defineComponent({
       loading,
       delet,
       deleteReply,
+      defaultAvatar,
     };
   },
 });

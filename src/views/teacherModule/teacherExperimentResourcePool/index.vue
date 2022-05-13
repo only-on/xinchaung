@@ -20,9 +20,9 @@
         </div>
         <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
         <div class="class-time">推荐课时 {{v.class_cnt}}</div>
-        <div class="user-info" v-if="currentTab === 1">
+        <div class="user-info" v-if="currentTab === 1&&v.user_profile">
           <!-- is_init :1 就是内置数据 -->
-          <img :src="v.user_profile.portrait||'src/assets/images/admin/home/env3.png'" alt="" srcset="" />
+          <img :src="v.user_profile.portrait||defaultAvatar" alt="" srcset="" />
           <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
         </div>
         <div class="operate" v-if="currentTab === 0">
@@ -93,6 +93,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import defaultAvatar from 'src/assets/images/admin/home/env3.png'
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;

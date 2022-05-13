@@ -47,7 +47,7 @@
           </div>
           <div class="user-num">
             <div class="user" v-if="currentTab === 0 && list.user">
-              <img :src="list.user.avatar" alt="" srcset="" />
+              <img :src="list.user.avatar||defaultAvatar" alt="" srcset="" />
               <span class="name">{{list.user.username}}</span>
             </div>
             <div class="num-size">
@@ -79,6 +79,7 @@ import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import { bytesToSize } from "src/utils/common"
 import extStorage from "src/utils/extStorage";
 import defaultCover from 'src/assets/images/teacherMaterialResource/defaultCover.jpg'
+import defaultAvatar from 'src/assets/images/user/admin_p.png'
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherMaterialResource;

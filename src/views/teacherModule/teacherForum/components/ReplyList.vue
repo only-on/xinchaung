@@ -2,7 +2,7 @@
   <div class="reply-list">
     <div class="user-info">
       <div class="left">
-        <img :src="list.user.avatar || 'src/assets/images/user/admin_p.png'" alt="" />
+        <img :src="list.user.avatar || defaultAvatar" alt="" />
         <span class="user-name">{{list.user?.username}}</span>
         <span class="rep" v-if="replyUserName">回应</span>
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
@@ -72,6 +72,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from "ant-design-vue";
+import defaultAvatar from 'src/assets/images/user/admin_p.png'
 const http = (request as any).teacherForum;
 export default defineComponent({
   name: "ReplyList",
@@ -187,6 +188,7 @@ export default defineComponent({
       totalReply,
       clickLoadingMore,
       deleteReply,
+      defaultAvatar,
     };
   },
 });

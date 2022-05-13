@@ -54,10 +54,9 @@
           <span>编辑基本信息</span>
         </span>
       </div>
-      <div class="user-info flexCenter" v-if="Number(currentTab) === 1">
-        <!-- <img src="src/assets/images/admin/home/env3.png" alt="" srcset="" /> -->
-        <img :src="experimentDetail.user_profile.portrait" alt="" srcset="" />
-        <span class="user-name">{{experimentDetail.user_profile.name}}</span>
+      <div class="user-info" v-if="Number(currentTab) === 1">
+        <img :src="experimentDetail.user_profile.portrait||defaultAvatar" alt="" srcset="" />
+        <span class="user-name">{{experimentDetail.user_profile.name||'TEACHERNAME'}}</span>
       </div>
     </div>
     <div class="detail-content">
@@ -105,6 +104,7 @@ import { getTypeList } from './config'
 import { theme } from "src/utils/theme"
 import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
+import defaultAvatar from 'src/assets/images/admin/home/env3.png'
 import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
@@ -227,7 +227,10 @@ let experimentDetail = reactive<IExperimentDetail>({
   tag: [],
   content_template: {},
   programing_type: 0,
-  user_profile:{}
+  user_profile: {
+    portrait: '',
+    name: ''
+  }
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -278,7 +281,7 @@ interface IExperimentDetail {
   tag: any[]
   content_template: any
   programing_type: number
-  user_profile:any
+  user_profile: any
 }
 </script>
 <style scoped lang="less">
