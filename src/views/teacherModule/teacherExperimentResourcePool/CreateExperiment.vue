@@ -324,9 +324,9 @@
         支持单个MP4格式文件上传 且文件小于500M
       </p>
     </a-upload-dragger>
-    <div style="padding:2rem;">
+    <!-- <div style="padding:2rem;">
       <input type="file" @change="docBeforeUpload2" multiple :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`">
-    </div>
+    </div> -->
     <template #footer>
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
