@@ -10,9 +10,10 @@
     :width="800"
   >
     <div class="report-wrap">
-      <div class="report-template">
-        <onlinePreview :content="data.json_content"></onlinePreview>
+      <div :class="reportType=='form'?'report-template':'report-pdf'">
+        <onlinePreview v-if="reportType=='form'"  :content="data.json_content"></onlinePreview>
         <!-- <div v-html="data.html_content"></div> -->
+        <PdfVue class="pdfHeight" v-else :url="data.pdf_path" />
       </div>
       <div class="action-footer">
         <label><i>*</i>评分</label>
@@ -27,6 +28,7 @@
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
 import onlinePreview from "src/components/report/onlinePreview.vue"
 import { message } from "ant-design-vue";
+import PdfVue from "src/components/pdf/pdf.vue";
 
 // props传值
 const props = defineProps({
@@ -44,6 +46,8 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  reportType:{
+  }
 });
 
 // emit方法
@@ -97,6 +101,10 @@ function submit() {
       padding:0 40px 0 40px;
       max-height: 700px;
       overflow-y: auto;
+    }
+    .report-pdf{
+      height: 700px;
+      padding:0 40px 0 40px;
     }
   }
   // }

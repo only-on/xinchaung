@@ -150,6 +150,7 @@
   ></ratingScores>
   <reportModal
     :isEdit="isEdit"
+    :reportType='reportType'
     v-if="reportVisible"
     v-model:visible="reportVisible"
     v-model:data="reportData"
@@ -226,6 +227,9 @@ const staticInfo: Ref<any> = ref({});
 
 // 评分参考视频url地址
 const videoUrl: Ref<any> = ref("");
+
+//报告类型
+const reportType:any=ref()
 // table头信息
 const oldColumns: any[] = [
   {
@@ -393,6 +397,8 @@ function clickFun(type: string, val: any, index: number) {
   }
   if (["updateReport", "report"].includes(type)) {
     reportReview(type, val.course_student_content_id);
+    console.log(val,'hhhhhhh')
+    reportType.value=val?.report?.template_type
   }
   if (["updateCode", "code"].includes(type)) {
     codeVisible.value = true;

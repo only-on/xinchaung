@@ -302,7 +302,7 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            return data.use+'/'+data.total+data.type
+            return data.use?data.use:'--'+'/'+data.total?data.total:'--'+data.type
           }
         },
         // return params[0].name + '<br>收缩压 : '+params[0].data +' mmHg'+ '<br>舒张压 : '+params[1].data +' mmHg'

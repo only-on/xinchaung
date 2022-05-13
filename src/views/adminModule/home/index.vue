@@ -1,6 +1,8 @@
 <template>
     <div class="home">
-        <div class="entrance">
+        {{getNextDate(today,-1)}}
+        <div class="corlorwhite">
+            <div class="entrance">
             <div class="entrance-left">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
@@ -33,12 +35,12 @@
                     用户活跃度 
                     </div>
                     <div>
-                        <a-radio-group v-model:value="value1" button-style="solid">
-                            <a-radio-button value="a">昨日</a-radio-button>
-                            <a-radio-button value="b">今日</a-radio-button>
-                            <a-radio-button value="c">最近7日</a-radio-button>
+                        <a-radio-group v-model:value="radioTimeUser" button-style="solid" @change='useractiveChange'>
+                            <a-radio-button value="yesterday">昨日</a-radio-button>
+                            <a-radio-button value="today">今日</a-radio-button>
+                            <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" v-model:value="value2" />
+                        <a-date-picker class="pickDay" :disabled-date="disabledDate" v-model:value="pickTimeUser" />
                     </div>
                 </div>
                 <div id='activity-echats'></div>
@@ -150,12 +152,12 @@
                     资源历史使用概览
                     </div>
                     <div>
-                        <a-radio-group v-model:value="value1" button-style="solid">
-                            <a-radio-button value="a">昨日</a-radio-button>
-                            <a-radio-button value="b">今日</a-radio-button>
-                            <a-radio-button value="c">最近7日</a-radio-button>
+                        <a-radio-group v-model:value="radioTime" button-style="solid" @change='resourceChangeTime'>
+                            <a-radio-button value="yesterday">昨日</a-radio-button>
+                            <a-radio-button value="today">今日</a-radio-button>
+                            <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" v-model:value="value2" />
+                        <a-date-picker class="pickDay" v-model:value="pickTime" />
                     </div>
                 </div>
                 <div id="resource_echarts">
@@ -163,28 +165,35 @@
                 </div>
             </div>
         </div>
-        <div class="bottomInfo">
-            <div class="productinfo">
-                <div class="infoName">产品信息</div>
-                <div class='infoCon'>
-                    <div class="name" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
-                </div>
-            </div>
-            <div class="quickEntrance">
-                <div class="infoName">快捷入口</div>
-                <div class='infoCon'>
-                    <div class="name" v-for="(item,i) in enterInfo" :key="i">{{item.name}}</div>
-                </div>
-            </div>
         </div>
-        <div class="aboutXiPu">
-            <div class="aboutLeft">
-                <div class="aboutItem" v-for="(item,i) in aboutData" :key="i">
-                    {{item.name}}
+        <div class="colorBlack">
+            <div class="bottomInfo">
+                <div>
+                    <div class="productinfo">
+                    <div class="infoName">产品信息</div>
+                    <div class='infoCon'>
+                        <div class="name" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                    </div>
+                </div>
+                <div class="quickEntrance">
+                    <div class="infoName">快捷入口</div>
+                    <div class='infoCon'>
+                        <div class="name" v-for="(item,i) in enterInfo" :key="i">{{item.name}}</div>
+                    </div>
+                </div>
                 </div>
             </div>
-            <div class="aboutRight">
-                Copyright © 2022 simpleedu.com.cn保留所有权利 京ICP备15049788号-7
+            <div class="aboutXiPu">
+                <div>
+                    <div class="aboutLeft">
+                    <div class="aboutItem" v-for="(item,i) in aboutData" :key="i">
+                        {{item.name}}
+                    </div>
+                </div>
+                <div class="aboutRight">
+                    Copyright © 2022 simpleedu.com.cn保留所有权利 京ICP备15049788号-7
+                </div>
+                </div>
             </div>
         </div>
     </div>
@@ -192,18 +201,22 @@
 <script lang='ts' setup>
     import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
     import * as echarts from 'echarts';
+    import moment from 'moment';
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
     const http = (request as any).adminHome;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
-    updata({ tabs: [], showContent: true, showNav: false });
+    updata({ tabs: [], showContent:false, showNav: false });
     import img1 from 'src/assets/images/admin/home/1.png'
     import img2 from 'src/assets/images/admin/home/2.png'
     import img3 from 'src/assets/images/admin/home/3.png'
     import img4 from 'src/assets/images/admin/home/4.png'
     import img5 from 'src/assets/images/admin/home/5.png'
     import img6 from 'src/assets/images/admin/home/6.png'
+    const disabledDate = (current:any) => {
+        return current && current > moment().endOf('day');
+    };
     const value:any=ref()
     const options:any = ref([
       {
@@ -221,8 +234,14 @@
         {title:'GPU使用率',percent:'--',grade:'中风险',link:''},
         {title:'硬盘使用率',percent:'--',grade:'高风险',link:''}
     ])
-    const value1:any=ref('a')
-    const value2:any=ref('')
+    //资源历史使用概览
+    const radioTime:any=ref('yesterday')
+    const pickTime:any=ref()
+    //用户活跃度
+    const radioTimeUser:any=ref('yesterday')
+    const pickTimeUser:any=ref()
+    // 今日
+    const today=moment(new Date(), "YYYY-MM-DD")
     const enterNumber1:any=ref([])
     const enterNumber2:any=ref([])
     const statisticData:any=ref()
@@ -249,17 +268,17 @@
         img:img4,
         course:'教师数',
         number:'--',
-        link:''
+        link:'/admin/adminUserManagement/teacherManagement'
         },{
         img:img5,
         course:'学生数',
         number:'--',
-        link:''
+        link:'/admin/adminUserManagement/studentManagement'
         },{
         img:img6,
         course:'预约人数',
         number:'--',
-        link:''
+        link:'/teacher/coursePlan'
         }
     ]
     const productInfo:any=ref([])
@@ -299,7 +318,7 @@
         console.log(value)
     }
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
-import router from "src/routers";
+    import router from "src/routers";
     function drawEcharts(id:any,option:any){
         document.getElementById(id)?.removeAttribute("_echarts_instance_");
         var chartDom:any=document.getElementById(id)
@@ -365,14 +384,32 @@ import router from "src/routers";
             }
         })
     }
+    //用户活跃度改变日期
+    function useractiveChange(val:any){
+        http.userActive({param:{start_date:'',end_date:''}}).then((res:any)=>{
+
+        })
+    }
+    //资源历史使用概览
+    function resourceChangeTime(val:any){
+
+    }
+    function getNextDate(date:any, day:any) { 
+    　　var dd = new Date(date);
+    　　dd.setDate(dd.getDate() + day);
+    　　var y = dd.getFullYear();
+    　　var m = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+    　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+    　　return y + "-" + m + "-" + d;
+    };
     onMounted(()=>{
         getData()
-        // drawEcharts('activity-echats',activityOption(userActive))
-        // drawEcharts('resource_echarts',resourceOption({}))
-        // drawEcharts('plate1',dashboardResource({},'#00cbc2'))
-        // drawEcharts('plate2',dashboardResource({},'#ff9544'))
-        // drawEcharts('plate3',dashboardResource({},'#9872eb'))
-        // drawEcharts('plate4',dashboardResource({},'#6993fe'))
+        drawEcharts('activity-echats',activityOption(userActive))
+        drawEcharts('resource_echarts',resourceOption({}))
+        drawEcharts('plate1',dashboardResource(0,0,'G','#00cbc2'))
+        drawEcharts('plate2',dashboardResource(0,0,'核','#ff9544'))
+        drawEcharts('plate3',dashboardResource(0,0,'G','#9872eb'))
+        drawEcharts('plate4',dashboardResource(0,0,'个','#6993fe'))
         drawEcharts('node1',dashboardService({},'#00cbc2'))
         drawEcharts('node2',dashboardService({},'#ff9544'))
         drawEcharts('node3',dashboardService({},'#9872eb'))
@@ -407,6 +444,9 @@ import router from "src/routers";
         }
         .enterItem{
             text-align: center;
+        }
+        .enterItem:hover{
+            cursor: pointer;
         }
     }
     .entrance-left{
@@ -500,18 +540,6 @@ import router from "src/routers";
         padding:20px;
         padding-bottom: 0px;
     }
-}
-.bottomInfo{
-    width: 100%;
-    height:204px;
-    background-color:#192843;
-    margin-top: 40px;
-}
-.aboutXiPu{
-    width: 100%;
-    height:70px;
-    background-color:#131F34;
-    display: flex;
 }
 
 #activity-echats,#resource_echarts{
@@ -640,10 +668,16 @@ import router from "src/routers";
 }
 
 .bottomInfo{
-    display: flex;
     >div{
-        width: 50%;
-        padding: 20px;
+        // width: 50%;
+        // padding: 20px;
+        display: flex;
+        width: var(--center-width);
+        margin: 0 auto;
+        >div{
+            width: 50%;
+            padding: 20px;
+        }
     }
     .infoName{
         font-size: 18px;
@@ -703,5 +737,37 @@ import router from "src/routers";
 .pickDay{
     margin-left: 10px;
     width: 120px;
+}
+.home{
+    width: 100%;
+    margin-top: 20px;
+    .corlorwhite{
+        background-color: var(--white-100);
+        >div{
+            width:var(--center-width);
+            margin: 0 auto;
+        }
+    }
+    .colorBlack{
+        width: 100%;
+        .bottomInfo{
+            width: 100%;
+            height:204px;
+            background-color:#192843;
+            margin-top: 40px;
+             }
+            .aboutXiPu{
+                width: 100%;
+                height:70px;
+                background-color:#131F34;
+               
+                >div{
+                    display: flex;
+                    width:var(--center-width);
+                    margin:0 auto;
+                    height: 100%;
+                }
+            }
+    }
 }
 </style>
