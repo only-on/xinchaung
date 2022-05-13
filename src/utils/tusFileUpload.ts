@@ -60,8 +60,9 @@ const tusFileUpload = {
     const projectPath = lStorage.get("project_path");
     let options = {
       tusd_url: lStorage.get("tusd_url"),
-      document_path: projectPath + "/document",
-      video_path: projectPath + "/video",
+      image_path: lStorage.get("tusd_image_path"),
+      document_path: lStorage.get("tusd_document_path"),
+      video_path: lStorage.get("tusd_video_path"),
     };
     Object.assign(FileConfig, options);
   },

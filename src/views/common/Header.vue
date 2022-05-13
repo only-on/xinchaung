@@ -142,9 +142,10 @@ export default defineComponent({
         console.log('[App] getFileConfig: ', res);
         wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
         lStorage.set('ws_config', wsConfig);
-        lStorage.set('tusd_url', res?.data.tusd_url);
-        lStorage.set('project_path', res?.data.project_path);
         sStorage.set('ws_config', wsConfig);
+        for (let key in res?.data) {
+          lStorage.set(key, res?.data[key]);
+        }
       }).catch((error: any) => {})
     }
 
