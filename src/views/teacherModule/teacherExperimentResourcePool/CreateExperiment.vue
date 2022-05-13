@@ -891,13 +891,13 @@ const cancelUpDoc = () => {
 // 选择系统内置文档或者视频
 const env = process.env.NODE_ENV == "development" ? true : false;
 const selectDocOrMp4File = (val: any) => {
-  // console.log(val)
+  console.log(val)
   upDoc.docFileList.length=0
   docOrMp4Drawer.activeFile = { ...val};
   if(docOrMp4Type.value === 1){
     formState.document.type = val.suffix === 'md' ?'md':'pdf'
     formState.document.pdf = formState.document.type === 'md' ? '' : val.file_url
-    formState.document.mdValue =formState.document.type === 'md' ? val.mdText : ''
+    formState.document.mdValue =formState.document.type === 'md' ? val.file_html : ''
   }else{
     formState.document.videoUrl=val.file_url
   }
