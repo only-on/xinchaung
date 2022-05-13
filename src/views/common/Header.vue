@@ -135,21 +135,6 @@ export default defineComponent({
     });
     const userName = ref<string>(lStorage.get("username"));
 
-    // 检查有无配置缓存，若无，则进行缓存
-    let wsConfig = lStorage.get("ws_config");
-    if (!wsConfig) {
-      api.common.getFileConfig().then((res: IBusinessResp | null) => {
-        console.log('[App] getFileConfig: ', res);
-        wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
-        lStorage.set('ws_config', wsConfig);
-        sStorage.set('ws_config', wsConfig);
-        for (let key in res?.data) {
-          lStorage.set(key, res?.data[key]);
-        }
-        initWs(JSON.parse(wsConfig))
-      }).catch((error: any) => {})
-    }
-
     function information() {
       router.push("/personalInformation");
     }
@@ -497,6 +482,24 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
+
+     // 检查有无配置缓存，若无，则进行缓存
+    let wsConfig = lStorage.get("ws_config");
+    if (!wsConfig) {
+      api.common.getFileConfig().then((res: IBusinessResp | null) => {
+        console.log('[App] getFileConfig: ', res);
+        wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
+        lStorage.set('ws_config', wsConfig);
+        sStorage.set('ws_config', wsConfig);
+        for (let key in res?.data) {
+          lStorage.set(key, res?.data[key]);
+        }
+        initWs(JSON.parse(wsConfig))
+      }).catch((error: any) => {})
+    } else {
+      initWs(wsConfig)
+    }
+
     onMounted(async () => {
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
