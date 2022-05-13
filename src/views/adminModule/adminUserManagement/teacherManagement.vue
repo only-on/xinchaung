@@ -180,6 +180,7 @@ interface TState {
   selectedRowKeys: any[]
 }
 interface IFormState {
+  professionalTitle:string;
   username: string;
   password_hash: string;
   repassword: string;

@@ -20,7 +20,7 @@ function activityOption(data:any){
           },
           grid: {
             left: '3%',
-            right: '14%',
+            right: '3%',
             bottom: '3%',
             containLabel: true
           },
@@ -92,7 +92,7 @@ function resourceOption(data:any,){
           },
           grid: {
             left: '3%',
-            right: '14%',
+            right: '5%',
             bottom: '3%',
             containLabel: true
           },

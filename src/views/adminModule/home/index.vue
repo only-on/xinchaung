@@ -1,6 +1,5 @@
 <template>
     <div class="home">
-        {{getNextDate(today,-1)}}
         <div class="corlorwhite">
             <div class="entrance">
             <div class="entrance-left">
@@ -40,8 +39,8 @@
                             <a-radio-button value="today">今日</a-radio-button>
                             <a-radio-button value="lastSevenDays">最近7日</a-radio-button>
                         </a-radio-group>
-                        <a-date-picker class="pickDay" :disabled-date="disabledDate" v-model:value="pickTimeUser" @change='useractivePick' />
-                    </div>
+                        <a-date-picker class="pickDay" :disabled-date="disabledDate" valueFormat='YYYY-MM-DD' v-model:value="pickTimeUser" @change='useractivePick' />
+                    </div> 
                 </div>
                 <div id='activity-echats'></div>
             </div>
@@ -84,10 +83,10 @@
             <div class="serverNode-left">
                 <div class="flexTitle">
                     <div class="title-bac">服务器节点状态</div>
-                    <div>评级:<span class="status">良好</span></div>
+                    <div>评级:<span class="status">{{serveNodeStatus}}</span></div>
                     <div>
                         <a-select
-                            v-model:value="value"
+                            v-model:value="serveNodeValue"
                             label-in-value
                             style="width: 170px"
                             :options="options"
@@ -124,8 +123,8 @@
                                 <span>
                                     等级:
                                 </span>
-                                <span :class="item.grade=='低风险'?'low':(item.grade=='中风险'?'middle':'high')">
-                                    {{item.grade}}
+                                <span :class="item.grade=='low'?'low':(item.grade=='middle'?'middle':'high')">
+                                    {{item.grade=='low'?'低风险':(item.grade=='middle'?'中风险':'高风险')}}
                                 </span>
                                 <span>
                                     去维护 >
@@ -217,16 +216,8 @@
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
     };
-    const value:any=ref()
+    const serveNodeValue:any=ref()
     const options:any = ref([
-      {
-        value: '192.168.112',
-        label: '192.168.112',
-      },
-      {
-        value: '192.168.224',
-        label: '192.168.224',
-      }
     ])
     const warningMessage:any=ref([
         {title:'CPU使用率',percent:'--',grade:'低风险',link:''},
@@ -314,9 +305,6 @@
     function toJump(value:any){
         router.push(value)
     }
-    function handleChange(value:any){
-        console.log(value)
-    }
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
     import router from "src/routers";
     function drawEcharts(id:any,option:any){
@@ -339,10 +327,16 @@
         disk:[]
     })
     const serveNode:any=ref()
+    const serveNodeStatus:any=ref()
     function getData(){
         http.statisData().then((res:any)=>{
             if(res.code==1){
                 statisticData.value=res.data
+                // nodes_ip_list
+                res.data?.nodes_ip_list.forEach((item:any)=>{
+                    options.value.push({value:item,label:item})
+                })
+                // serveNodeValue.value=options.value[0].value
                 enterNumber1.value[0].number=statisticData.value.course_content_cnt.course_cnt
                 enterNumber1.value[1].number=statisticData.value.course_content_cnt.content_cnt
                 enterNumber1.value[2].number=statisticData.value.course_content_cnt.dataset_cnt
@@ -374,9 +368,14 @@
                 //服务节点状态
                 serveNode.value=statisticData.value?.single_node_resource
                 warningMessage.value[0].percent=serveNode.value?.cpuUseRate
+                warningMessage.value[0].grade=serveNode.value?.cpuRiskLevel
                 warningMessage.value[1].percent=serveNode.value?.memUseRate
+                warningMessage.value[1].grade=serveNode.value?.memRiskLevel
                 warningMessage.value[2].percent=serveNode.value?.gpuUseRate
+                warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
+                warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
                 drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
@@ -384,23 +383,54 @@
             }
         })
     }
+    function changeUserParams(start:any,end:any){
+        http.userActive({param:{start_date:start,end_date:end}}).then((res:any)=>{
+            userActive.hours=res.data?.user_activity_list.hour_list
+            res.data.user_activity_list.user_activity_list.forEach((item:any)=> {
+                    userActive.teacherCount.push(item.teacher_cnt)
+                    userActive.stuCount.push(item.student_cnt)
+                    userActive.totalCount.push(item.total_cnt)
+                });
+            drawEcharts('activity-echats',activityOption(userActive))
+        })
+    }
+    //服务节点变化
+    function handleChange(value:any){
+        console.log(value,serveNodeValue.value?.value)
+    }
     //用户活跃度改变日期
     function useractiveChange(val:any){
         pickTimeUser.value=''
-        http.userActive({param:{start_date:'',end_date:''}}).then((res:any)=>{
-
-        })
+        console.log(radioTimeUser.value,'hhhh')
+        if(radioTimeUser.value=='today'){
+            changeUserParams(getNextDate(today,0),getNextDate(today,0))
+        }else if(radioTimeUser.value=='yesterday'){
+            changeUserParams(getNextDate(today,-1),getNextDate(today,-1))
+        }else{
+            changeUserParams(getNextDate(today,-6),getNextDate(today,0))
+        }
     }
     function useractivePick(){
         radioTimeUser.value=''
+        console.log(pickTimeUser.value,' pickTimeUser.value')
+        changeUserParams(pickTimeUser.value,pickTimeUser.value)
     }
     //资源历史使用概览
+    // resourceSearch
+    function changeResourceTime(start:any,end:any){
+        http.resourceSearch({param:{start_date:start,end_date:end}}).then((res:any)=>{
+            
+            res.data.history_recource.monitoring.forEach((item:any)=> {
+                    resourceHistory.cpu.push(item.cpu_use_rate)
+                    resourceHistory.mem.push(item.mem_use_rate)
+                    resourceHistory.gpu.push(item.gpu_use_rate)
+                    resourceHistory.disk.push(item.disk_use_rate)
+                });
+            drawEcharts('resource_echarts',resourceOption(resourceHistory))
+        })
+    }
     function resourceChangeTime(val:any){
         pickTime.value=''
-    // const pickTime:any=ref()
-    // //用户活跃度
-    // const radioTimeUser:any=ref('yesterday')
-    // const pickTimeUser:any=ref()
     }
     function resourcePickTime(val:any){
         radioTime.value=''
@@ -531,16 +561,15 @@
     justify-content: space-between;
     margin-top: 20px;
     .serverNode-left,.serverNode-right{
-        // width: 49%;
         height: 359px;
         background-color: var(--white-100);
         // padding: 20px;
     }
     .serverNode-left{
-        width:53%;
+        width:52%,
     }
     .serverNode-right{
-        width:46;
+        width:47%;
     }
 }
 .serverNode-right{
@@ -724,7 +753,7 @@
 }
 .aboutItem{
     font-size:16px;
-    color:var(--white-100);
+    color:#576078;
     margin-right:30px;
 }
 :deep(.ant-radio-group-solid .ant-radio-button-wrapper-checked:not(.ant-radio-button-wrapper-disabled):hover){
@@ -753,10 +782,11 @@
     width: 100%;
     margin-top: 20px;
     .corlorwhite{
-        background-color: var(--white-100);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
         >div{
             width:var(--center-width);
-            margin: 0 auto;
         }
     }
     .colorBlack{
