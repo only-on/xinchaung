@@ -71,7 +71,11 @@ const navData = reactive([
 watch(
   () => baseInfo.value.base_info,
   (val) => {
-    if (val && !val.is_open && (Number(experType)===1 || Number(experType)===2 || Number(experType)===3)&&opType!=='help') {
+    // 只针对vnc ide ssh
+    if (!val) return
+    const {task_type} = val
+    const isSetting = Number(experType)===1 || Number(experType)===2 || Number(experType)===3|| (task_type.type===4&&task_type.programing_type)
+    if (val && !val.is_open && isSetting &&opType!=='help') {
       navData.shift()
     } 
     // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
