@@ -7,6 +7,7 @@ export default{
   createTeacher:{url:`/api/yii/teacher/create`,method:'POST',dataType: 'json'},
   editTeacher:{url:`/api/yii/teacher/update?id={id}`,method:'POST',dataType: 'json'},
   viewTeacher:{url:`/api/yii/teacher/view?id={id}`,method:'POST',dataType: 'json'},
+  batchResetTpassword:{url:'/api/yii/teacher/batch-init-password'},
   //  学生
   studentList:{url:`/api/yii/student/index`,method:'POST',dataType: 'json'},
   studentUserDelete:{url:`/api/yii/student/delete?id={id}`,method:'POST'},

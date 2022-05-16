@@ -6,7 +6,7 @@
       </div>
       <div class="table-header-right">
         <div>实验最高分：{{allData?.max_min_score?.max_score?allData?.max_min_score?.max_score:'--'}}分</div>
-        <div>实验最低分：{{allData?.max_min_score?.min_score?allData?.minx_min_score?.max_score:'--'}}分</div>
+        <div>实验最低分：{{allData?.max_min_score?.min_socre?allData?.max_min_score?.min_socre:'--'}}分</div>
       </div>
     </div>
 
