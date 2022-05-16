@@ -11,9 +11,9 @@
         <div class="left">
           <span class="name">{{ experimentDetail.name }}</span>
           <span class="type" :style="{
-            color: getTypeList('-90deg')[experimentDetail.task_type].color,
-            background: getTypeList('-90deg')[experimentDetail.task_type].backgroundColor,
-          }">{{getTypeList('-90deg')[experimentDetail.task_type].name}}</span>
+            color: getTypeList('-90deg')[experimentDetail.content_type].color,
+            background: getTypeList('-90deg')[experimentDetail.content_type].backgroundColor,
+          }">{{getTypeList('-90deg')[experimentDetail.content_type].name}}</span>
         </div>
         <div class="right">
           <span class="pointer" v-if="role === 3" @click="addToCourse()">添加到课程</span>
@@ -64,7 +64,7 @@
       <!-- <video-detail></video-detail> -->
       <!-- <file-detail></file-detail> -->
       <!-- <task-detail></task-detail>  -->
-      <component :is="components[experimentDetail.task_type]" :detail="experimentDetail"></component>
+      <component :is="components[experimentDetail.content_type]" :detail="experimentDetail"></component>
     </div>
   </div>
   <!-- 添加到课程 -->
@@ -113,7 +113,7 @@ import videoDetail from "src/views/teacherModule/teacherExperimentResourcePool/c
 import fileDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/fileDetail.vue";
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
 // 1 vnc   4:jupyter 5:任务制 6:视频 7:文档
-const components = ['', experimentGuide, '', '', jupyterDetail, taskDetail, videoDetail, fileDetail]
+const components = ['', experimentGuide, experimentGuide, experimentGuide, jupyterDetail, taskDetail, videoDetail, fileDetail]
 const router = useRouter();
 const route = useRoute();
 const store = useStore()
@@ -232,11 +232,17 @@ let experimentDetail = reactive<IExperimentDetail>({
   user_profile: {
     portrait: '',
     name: ''
-  }
+  },
+  content_type: 1,
+  is_webssh: 0
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
     Object.assign(experimentDetail, res.data);
+    const type = experimentDetail.is_webssh ? 2 
+      : (experimentDetail.task_type===4&&experimentDetail.programing_type) ? 3
+        : experimentDetail.task_type
+    experimentDetail.content_type = type
   })
 };
 
@@ -285,6 +291,8 @@ interface IExperimentDetail {
   content_template: any
   programing_type: number
   user_profile: any
+  content_type: number
+  is_webssh: number
 }
 </script>
 <style scoped lang="less">

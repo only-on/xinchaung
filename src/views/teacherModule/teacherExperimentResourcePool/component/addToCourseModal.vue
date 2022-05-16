@@ -53,6 +53,9 @@ import { CarryOutOutlined, FormOutlined } from "@ant-design/icons-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
 import request from "src/api/index";
 import { Modal, message } from "ant-design-vue"; //
+import { useRouter, useRoute } from "vue-router";
+const route = useRoute();
+const { id } = route.query;
 const http = (request as any).teachCourse;
 const props = withDefaults(defineProps<{ isShow: boolean }>(), {
   isShow: false,
@@ -71,6 +74,11 @@ const handleOk = () => {
     urlParams: {
       courseId: selectNode.value.courseId,
       chapterId: selectNode.value.chapterId
+    },
+    param: {
+      "content_ids":[id],
+      "type":1 // 1-为实验, 2-实训, 3-视频, 4-文档]
+
     }
   }).then((res: IBusinessResp) => {
     message.success("添加成功！")

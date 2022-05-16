@@ -226,6 +226,8 @@ interface IExperimentList {
   tag: any[],
   user_profile: any
   user_id: number
+  is_webssh: number
+  programing_type: number
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
@@ -251,7 +253,13 @@ const initData = () => {
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: IExperimentList) => {
-      v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
+      let type = v.task_type
+      if (v.is_webssh) {
+        type = 2
+      } else if (type===4&&v.programing_type) {
+        type = 3
+      }
+      v.type_obj = Object.assign({}, getTypeList('90deg')[type]);
     });
     experimentList.push(...list)
     totalCount.value = page.totalCount
