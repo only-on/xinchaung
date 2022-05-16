@@ -83,7 +83,7 @@ const tusFileUpload = {
       size:'',       文件大小
     }
      */
-    const type = file.name.split(".")[file.name.split(".").length - 1];
+    const type = file.name.split(".")[file.name.split(".").length - 1].toLowerCase();
     data.percent = 0;
     data.name = file.name;
     data.size = file.size;
@@ -170,7 +170,7 @@ const tusFileUpload = {
   },
   remove(data: any) {
     // data  同onUpload()  方法里的data
-    data.UpState.upload.abort();
+    data.UpState.upload?.abort();
     data.UpState = {};
   },
 };

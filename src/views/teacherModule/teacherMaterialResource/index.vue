@@ -89,7 +89,7 @@ var updata = inject("updataNav") as Function;
 updata({
   tabs: [
     { name: "公开素材", componenttype: 0 },
-    { name: "私有素材", componenttype: 1 },
+    { name: "我的素材", componenttype: 1 },
   ],
   showContent: true,
   componenttype: undefined,

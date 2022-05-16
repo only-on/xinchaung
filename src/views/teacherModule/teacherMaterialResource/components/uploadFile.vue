@@ -73,7 +73,7 @@ import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
 const $message: MessageApi = inject("$message")!;
-import api from 'src/api';
+// import api from 'src/api';
 interface Props {
   type: number
   fileList: any
