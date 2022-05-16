@@ -173,6 +173,8 @@ const route = useRoute();
             username: formState.username,
             email: formState.email,
             userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+            password_hash:formState.password_hash,
+            repassword:formState.repassword
           },
           StudentProfile: {
             department: formState.department,
@@ -181,7 +183,7 @@ const route = useRoute();
             gender: formState.gender,
             phone: formState.phone,
             status:10,
-            introduce: formState.introduce,
+            // introduce: formState.introduce,
           },
         };
         if ((formState.reset && editId.value) || editId.value === 0) {

@@ -22,12 +22,30 @@
               </a-input>
             </div>
         </div>
-        <a-table :columns="columns" :data-source="state.data" rowKey="id"> </a-table>
+        <a-table :columns="columns" :data-source="state.data" rowKey="id"  
+        :pagination="tableData.total > 10
+          ? {
+              hideOnSinglePage: false,
+              showSizeChanger:false,
+              total: tableData.total,
+              current: tableData.page,
+              pageSize: tableData.limit,
+              onChange: onChange,
+              onShowSizeChange: onShowSizeChange,
+            }
+          : false
+      "> </a-table>
     </div>
   </template>
   <script lang="ts" setup>
   import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
   import request from "src/api/index";
+  const http = (request as any).systemMaintenance;
+  const tableData= reactive({
+    total:0,
+    page:1,
+    limit:10
+  })
   const columns:any=ref()
   columns.value= [
     {
@@ -55,7 +73,6 @@
       dataIndex: "created_at",
     },
   ];
-      const http = (request as any).adminSystemManage;
         var configuration: any = inject("configuration");
         var updata = inject("updataNav") as Function;
         updata({
@@ -79,10 +96,20 @@
         }
       });
         function getSystemList() {
-          state.query.type = state.opertype === undefined ? "" : state.opertype;
-          http.systemLogList({ param: { query: state.query } }).then((res: any) => {
+          let search = {
+          // ...ForumSearch,
+          limit:tableData.limit,
+          page:tableData.page,
+          "search[type]":state.opertype === undefined ? "" : state.opertype,
+          "search[operation_type]":state.query.operation_type,
+          "search[ip]": state.query.ip,
+          "search[from]":state.query.begintime? state.query.begintime : "",
+          "search[to]":state.query.endtime?state.query.endtime:"",
+        };
+          http.systemLogList({ param:search}).then((res: any) => {
             console.log(res);
             state.data = res.data.list;
+            tableData.total=res.data.page.totalCount
           });
         }
         function search() {
@@ -97,11 +124,20 @@
           state.query.endtime = "";
           getSystemList();
         }
+        function onChange(page:any,pageSize:any){
+          tableData.page=page
+          getSystemList()
+        }
+        function onShowSizeChange(page:any,pageSize:any){
+          tableData.page=1
+          tableData.limit=pageSize
+          getSystemList()
+        }
         function handleChange() {
           getSystemList();
         }
         onMounted(() => {
-            // methods.getSystemList();
+            getSystemList();
         })
   </script>
   <style lang="less" scoped>

@@ -41,7 +41,7 @@
           </a-form-item>
         </div>
         <div class="right">
-            <a-form-item label="性别" name="gender">
+            <a-form-item label="性别" required name="gender">
                 <a-radio-group v-model:value="formState.gender">
                     <a-radio :value="1">男</a-radio>
                     <a-radio :value="2">女</a-radio>
@@ -159,11 +159,17 @@
         formRef.value
         .validate()
         .then(() => {
+          if(formState.password_hash!==formState.repassword){
+            message.warning('密码不一致！')
+            return
+          }
           let obj: any = {
           Teacher: {
             username: formState.username,
             email: formState.email,
             userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+            password_hash:formState.password_hash,
+            repassword:formState.repassword
           },
           TeacherProfile: {
             department: formState.department,
@@ -173,7 +179,7 @@
             gender: formState.gender,
             phone: formState.phone,
             status: formState.status,
-            introduce: formState.introduce,
+            // introduce: formState.introduce,
           },
         };
           const promise = editId.value

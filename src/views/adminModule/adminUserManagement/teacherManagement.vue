@@ -109,7 +109,7 @@
           </a-form-item>
         </div>
         <div class="right">
-            <a-form-item label="性别" name="gender">
+            <a-form-item label="性别" required name="gender">
                   <a-radio-group v-model:value="formState.gender">
                       <a-radio :value="1">男</a-radio>
                       <a-radio :value="2">女</a-radio>
@@ -316,7 +316,7 @@ const columns = [
         { required: true, message: "请输入确认密码", trigger: "blur" },
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      // gender: [{ required: true, message: "请选择性别", trigger: "change" }],
       email: [
         {
           pattern:
@@ -533,7 +533,7 @@ const columns = [
             }
           });
           formState.status = String(res.data.status);
-          formState.gender = String(res.data.gender === 2 ? 2 : 1);
+          formState.gender = res.data.gender;
           formState.username = res.data.stu_no;
         });
       visible.value = true;

@@ -625,7 +625,7 @@ const router = useRouter();
             }
           });
           formState.status = String(res.data.status);
-          formState.gender = String(res.data.gender === 2 ? 2 : 1);
+          formState.gender =res.data.gender;
           formState.username = res.data.stu_no;
         });
       visible.value = true;
