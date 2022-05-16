@@ -58,8 +58,13 @@
           @click="delateCard(record.id)"
           title="删除"
         >删除</span>
-        <span  class="caozuo">
-          关闭
+        <span class="caozuo" @click="closeOrOpen(record.id,record.status)">
+          <span v-if="record.status==10">
+            关闭
+          </span>
+          <span v-else>
+            开启
+          </span>
         </span>
       </template>
     </a-table>
@@ -482,6 +487,11 @@ const teacherColumns = [
           total.value = res.data.page.totalCount;
         }
       });
+    }
+    function closeOrOpen(id:any,status:any){
+      http.closeOrOpenTea({param:{id:id,status:status==10?0:10}}).then((res:any)=>{
+        initData();
+      })
     }
     function search() {
       ForumSearch.page = 1;

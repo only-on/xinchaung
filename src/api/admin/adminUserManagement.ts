@@ -8,7 +8,7 @@ export default{
   editTeacher:{url:`/api/yii/teacher/update?id={id}`,method:'POST',dataType: 'json'},
   viewTeacher:{url:`/api/yii/teacher/view?id={id}`,method:'POST',dataType: 'json'},
   batchResetTpassword:{url:'/api/yii/teacher/batch-init-password',method:'POST',dataType: 'json'},
-  closeOrOpenTea:{url:'/api/yii/teacher/change-status',method:'POST'},
+  closeOrOpenTea:{url:'/api/yii/teacher/change-status',method:'POST',dataType: 'json'},
   //  学生
   studentList:{url:`/api/yii/student/index`,method:'POST',dataType: 'json'},
   studentUserDelete:{url:`/api/yii/student/delete?id={id}`,method:'POST'},
@@ -18,7 +18,7 @@ export default{
   viewStudent:{url:`/api/yii/student/view?id={id}`,method:'POST',dataType: 'json'},
   BatchImport:{url:`/api/yii/student/importtpl`,method:'POST',dataType: 'formdata'},
   batchResetSpassword:{url:'/api/yii/student/batch-init-password',method:'POST',dataType: 'json'},
-  closeOrOpenStu:{url:'/api/yii/student/change-status',method:'POST'},
+  closeOrOpenStu:{url:'/api/yii/student/change-status',method:'POST',dataType: 'json'},
 }
 export interface IAdminUserManagement{
   teacherList:TFHttpSend
