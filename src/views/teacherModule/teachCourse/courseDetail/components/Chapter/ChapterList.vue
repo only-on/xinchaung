@@ -532,7 +532,7 @@ const ProcessingData=(data:any)=>{
           // i.task_type=i.type
           if (i.is_webide&&i.type===4 || i.content_type==="webide") {
             i.task_type = 3
-          } else if (i.is_webssh&&i.type===1 || i.content_type==="vnc") {
+          } else if (i.is_webssh&&i.type===1 || i.content_type==="webssh") {
             i.task_type = 2
           } else {
             i.task_type = i.type
