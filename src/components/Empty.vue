@@ -46,7 +46,7 @@ export default defineComponent({
       tableSearchEmpty:'抱歉。未搜到相关数据！',
       drawerEmpty:'抱歉，暂无数据！',
       drawerSearchEmpty:'抱歉。未搜到相关数据！',
-      filePreview:'抱歉，改文件暂不支持预览，建议下载查看'
+      filePreview:'抱歉，该文件暂不支持预览，建议下载查看'
     }
     height.value=props.height
     emptyType.value=props.type

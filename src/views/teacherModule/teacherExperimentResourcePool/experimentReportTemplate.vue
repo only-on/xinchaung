@@ -23,7 +23,7 @@
     </div>
     <div class="operate">
       <a-button @click="backGo">返回</a-button>
-      <a-button type="primary" v-show="canEdit" @click="reportVisible = true">更换报告</a-button>
+      <a-button type="primary" v-show="canEdit" @click="reportVisible = true">更换报告模板</a-button>
     </div>
     <SelectReport
       v-if="reportVisible"

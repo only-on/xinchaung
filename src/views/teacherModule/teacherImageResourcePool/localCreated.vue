@@ -9,6 +9,36 @@
           <a-form-item label="镜像名称" name="name">
             <a-input class="form-input" v-model:value="image.name"></a-input>
           </a-form-item>
+          <a-form-item label="添加标签" name="tag">
+            <div>
+              <LabelList :tag="image.tag" :recommend="recommend" />
+            </div>
+          </a-form-item>
+          <!-- <a-form-item label="系统类型" name="ostype">
+            <a-select
+              class="form-input"
+              v-model:value="image.ostype"
+              placeholder="请选择系统类型"
+            >
+              <a-select-option
+                :value="item.name"
+                v-for="(item, index) in image.image_classify"
+                :key="index.toString()"
+              >
+                {{ item.name }}
+              </a-select-option>
+            </a-select>
+          </a-form-item> -->
+        </div>
+        <div>
+          <!-- <a-form-item label="镜像类型" required>
+            <a-input
+              class="form-input"
+              disabled
+              v-model:value="image.classify_id"
+            ></a-input>
+            是通过上传的文件获取的文件类型
+          </a-form-item> -->
           <a-form-item label="系统类型" name="ostype">
             <a-select
               class="form-input"
@@ -24,21 +54,11 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-        </div>
-        <div>
-          <a-form-item label="镜像类型" required>
-            <a-input
-              class="form-input"
-              disabled
-              v-model:value="image.classify_id"
-            ></a-input>
-            <!-- 是通过上传的文件获取的文件类型 -->
-          </a-form-item>
-          <a-form-item label="添加标签" name="tag">
+          <!-- <a-form-item label="添加标签" name="tag">
             <div>
               <LabelList :tag="image.tag" :recommend="recommend" />
             </div>
-          </a-form-item>
+          </a-form-item> -->
         </div>
       </div>
       <a-form-item label="镜像描述">
