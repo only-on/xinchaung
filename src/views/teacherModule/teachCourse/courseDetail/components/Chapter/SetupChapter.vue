@@ -178,7 +178,13 @@ const Reselection=()=>{
 var TemplatePreview: Ref<boolean> = ref(false);
 
 const viewReport=()=>{
-  TemplatePreview.value=true
+  // TemplatePreview.value=true
+  if(state.activeExperimentObj.Newguidance.content_template){
+    TemplatePreview.value=true
+  }else{
+    message.warning('该实验暂无报告模板')
+  }
+  
 }
 const cancelViewReport=()=>{
   TemplatePreview.value=false

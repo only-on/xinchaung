@@ -280,6 +280,9 @@ const Save=()=>{
       initData()
       editLoading.value=false
       editVisible.value=false
+    }).catch((err:any)=>{
+      console.log(err)
+      editLoading.value=false
     })
   })
 }
