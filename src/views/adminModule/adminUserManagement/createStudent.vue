@@ -111,7 +111,7 @@ const route = useRoute();
       username: "",
       password_hash: "",
       repassword: "",
-      userinitpassword: true,
+      userinitpassword:false,
       department: "",
       grade: "",
       name: "",

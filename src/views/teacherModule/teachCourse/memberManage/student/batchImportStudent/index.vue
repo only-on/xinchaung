@@ -41,7 +41,7 @@
   >
           <template #success='{record}'>
             <div>
-              {{record.success==true?'导入成功':'导入失败'}}
+              {{record.success==true?'导入成功':record.result}}
             </div>
           </template>
   </a-table>

@@ -241,10 +241,10 @@ function handleCancelSelect(){
 //   })
 // }
 watch(
-      () =>props.visable,
+      () =>props.selectedStuIds,
       () => {
-        if(props.visable){
-          // getallstudent()
+        if(props.selectedStuIds){
+          tableData.selectedRowKeys=props.selectedStuIds
         }
       },
       { deep: true, immediate: true }

@@ -97,7 +97,7 @@
       password_hash: "",
       repassword: "",
       professionalTitle:'',
-      userinitpassword: true,
+      userinitpassword:false,
       department: "",
       grade: "",
       name: "",
