@@ -133,7 +133,7 @@ const onSubmit = () => {
   const file = {
     "file_path": fileInfo.file_url,// 文档实验-文件
   }
-  dataId ? Object.assign(file, {"directory_id": dataId}) : ''
+  Object.assign(file, {"directory_id": dataId || activeFile.dataset_id})
   http.updateVideoGuide({
     param: {video_file:file},
     urlParams: {content_id: props.detail.id}

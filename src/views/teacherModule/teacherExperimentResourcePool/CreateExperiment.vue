@@ -526,6 +526,7 @@ function create() {
     if(docMp4File.suffix === 'md'){
       docMp4FileObj.guide=formState.document.mdValue
     }else{
+      docMp4FileObj.directory_id = docMp4File.dataset_id
       docMp4FileObj.file_path=docMp4File.file_url
     }
     console.log(docMp4File);

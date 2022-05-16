@@ -7,7 +7,7 @@
   ></search-add>
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
-    <div class="flex-row-reverse">
+    <div class="flex-row-reverse" v-if="currentTab === 1">
       <div class="rest-disk">
         <div class="text">
           <div class="left">剩余可用磁盘</div>
@@ -114,7 +114,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
 const materialTypeList = reactive([
   { name: "数据集", key: "dataSet" },
   { name: "视频目录", key: "videoDirectory" },
-  { name: "文档实验目录", key: "documentDirectory" },
+  { name: "文档实验", key: "documentDirectory" },
   { name: "课件目录", key: "coursewareDirectory" },
   { name: "备课资料目录", key: "lessonDirectory" },
   { name: "教学指导目录", key: "guidanceDirectory" },
@@ -328,7 +328,10 @@ const getTypeList = () => {
     margin-bottom: 27px;
     margin-right: 24px;
     display: inline-block;
-    background: var(--white-70);
+    // background: var(--white-70);
+    background: var(--white);
+    border-radius: 6px;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07); 
     &:hover {
       box-shadow: 0px 3px 6px 0px rgba(0, 0, 0, 0.16);
     }
@@ -338,6 +341,7 @@ const getTypeList = () => {
       img {
         width: 100%;
         height: 100%;
+        border-radius: 6px 6px 0 0;
       }
       .labels {
         width: 100%;

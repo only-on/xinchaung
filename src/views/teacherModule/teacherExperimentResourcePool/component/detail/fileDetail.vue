@@ -132,6 +132,10 @@ const selectDocOrMp4File = (val: any) => {
   // fetch('/proxyPrefix'+val.file_url, {responseType: 'text/plain;charset=utf-8', headers: {'Content-Type': 'text/plain;charset=utf-8'}}).then(res => {
   //   console.log(res)
   // })
+  if (activeFile.suffix === 'md') {
+    experimentContent.value = activeFile.file_html
+  }
+  directoryId.value = val.dataset_id
 };
 const closeDrawerDoc = () => {
   visible.value = false;
