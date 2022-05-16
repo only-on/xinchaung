@@ -154,11 +154,11 @@ const classifyList: any = reactive([
       { name: "全部", value: 0 },
       { name: "桌面实验", value: 1 },
       { name: "命令行实验", value: 2 },
-      { name: "Jupyter实验", value: 4 },
       { name: "IDE实验", value: 3 },
+      { name: "Jupyter实验", value: 4 },
       { name: "任务制实验", value: 5 },
-      { name: "文档实验", value: 7 },
       { name: "视频实验", value: 6 },
+      { name: "文档实验", value: 7 },
     ],
   },
   {

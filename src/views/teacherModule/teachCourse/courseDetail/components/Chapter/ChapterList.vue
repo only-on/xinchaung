@@ -529,7 +529,14 @@ const ProcessingData=(data:any)=>{
           i.openGuidance=false //公开 展开实验指导
           i.experimentGuideLoading=false  // 公开课程加载实验指导
           i.TeachingAids=false
-          i.task_type=i.type
+          // i.task_type=i.type
+          if (i.is_webide&&i.type===4 || i.content_type==="webide") {
+            i.task_type = 3
+          } else if (i.is_webssh&&i.type===1 || i.content_type==="vnc") {
+            i.task_type = 2
+          } else {
+            i.task_type = i.type
+          }
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
           if(i.task_type === 5){
             i.is_show_task_step=true

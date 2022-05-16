@@ -18,7 +18,7 @@
         <div class="right">
           <span class="pointer" v-if="role === 3" @click="addToCourse()">添加到课程</span>
           <a-button class="123" type="primary" size="large" @click="openVnc" :loading="((currentState===2&&connectStatus===1) || currentState===3)">
-            {{currentState===1||!connectStatus?(role === 3 ?'开始备课':'开始学习'):currentState===2&&connectStatus===1?'准备中...':'进入'}}
+            {{currentState===1||!connectStatus?'准备环境':currentState===2&&connectStatus===1?'准备中...':'进入'}}
           </a-button>
         </div>
       </div>

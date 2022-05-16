@@ -196,7 +196,11 @@ const lessonPreparation=()=>{
     return
   }
   connectStatus.value = 1
-  const {id, task_type} = state.activeExperimentObj
+  const {id} = state.activeExperimentObj
+  let task_type = state.activeExperimentObj.task_type
+  if (state.activeExperimentObj.is_webide && state.activeExperimentObj.type === 4) {
+    task_type = 3
+  }
   const param: any = {
     type: "course",  // 实验
     opType: "prepare",

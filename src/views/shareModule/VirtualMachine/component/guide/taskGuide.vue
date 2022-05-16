@@ -3,7 +3,7 @@
   <p class="guide-waraing" v-if="!isLookStep&&currentTask.state&&role===4">
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
-  <div class="task-name single_ellipsis">任务一：{{ currentTask.name }}</div>
+  <div class="task-name single_ellipsis">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
   <div class="desc-content">
     <div class="title">
       <span>任务描述</span>
@@ -52,6 +52,7 @@ import { stepAction } from "src/utils/vncInspect";
 import { findIndex } from "lodash";
 import { useRoute, useRouter } from "vue-router";
 import storage from "src/utils/extStorage";
+import { NoToCh } from "src/utils/common";
 const route = useRoute();
 const router = useRouter();
 let role = storage.lStorage.get("role");
