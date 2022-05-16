@@ -388,7 +388,7 @@
             userActive.teacherCount=[]
             userActive.stuCount=[]
             userActive.totalCount=[]
-            userActive.hours=res.data?.user_activity_list.date_list
+            userActive.hours=res.data?.user_activity_list.date_list?res.data?.user_activity_list.date_list:res.data?.user_activity_list.hour_list
             res.data.user_activity_list.user_activity_list.forEach((item:any)=> {
                     userActive.teacherCount.push(item.teacher_cnt)
                     userActive.stuCount.push(item.student_cnt)
@@ -438,12 +438,13 @@
     // resourceSearch
     function changeResourceTime(start:any,end:any){
         http.resourceSearch({param:{start_date:start,end_date:end}}).then((res:any)=>{
-            resourceHistory.hours=res.data?.history_recource?.date_list
+            resourceHistory.hours=[]
             resourceHistory.cpu=[]
             resourceHistory.mem=[]
             resourceHistory.gpu=[]
             resourceHistory.disk=[]
-            res.data.history_recource?.monitoring.forEach((item:any)=> {
+            resourceHistory.hours=res.data.history_resource.time_list
+            res.data.history_resource?.monitoring.forEach((item:any)=> {
                     resourceHistory.cpu.push(item.cpu_use_rate)
                     resourceHistory.mem.push(item.mem_use_rate)
                     resourceHistory.gpu.push(item.gpu_use_rate)
@@ -464,7 +465,7 @@
     }
     function resourcePickTime(val:any){
         radioTime.value=''
-        changeUserParams(pickTime.value,pickTime.value)
+        changeResourceTime(pickTime.value,pickTime.value)
     }
     function getNextDate(date:any, day:any) { 
     　　var dd = new Date(date);

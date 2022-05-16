@@ -78,14 +78,7 @@ function daWithdata(res:any){
     }
     tableData.data=res.data.list
     tableData.total=res.data.page.totalCount
-    echartsData.hotLabelList.length=0
-    for (let i in res.data?.analysis?.technicalDirection) {
-      echartsData.hotLabelList.push(res.data.analysis.technicalDirection[i])
-    }
-    console.log(echartsData.hotLabelList,'echartsData.hotLabelList')
-    if(activeKey.value==1){
-      HotWords('directPoints',doHotData(echartsData.hotLabelList))
-    }
+    echartsData.hotLabelList=[]
     echartsData.statistic.publicContentsCount=res.data.analysis.publicContentsCount
     echartsData.statistic.privateContentsCount=res.data.analysis.privateContentsCount
     res.data?.analysis?.contentsCountWithType.forEach((item:any)=> {
@@ -95,6 +88,14 @@ function daWithdata(res:any){
     console.log(echartsData.experType)
     echartsPie('experStatistic',echartsData.statistic)
     echartsBar('experType',echartsData.experType)
+    //技术方向
+    // for (let i in res.data?.analysis?.technicalDirection) {
+    //   echartsData.hotLabelList.push(res.data.analysis.technicalDirection[i])
+    //   // echartsData.hotLabelList.push(i)
+    // }
+    console.log(Object.values(res.data.analysis.technicalDirection))
+    echartsData.hotLabelList=Object.values(res.data.analysis.technicalDirection)
+    HotWords('directPoints',doHotData(echartsData.hotLabelList))
 }
 function updateData(val:any){
   console.log(val)
@@ -119,9 +120,9 @@ function experTemplateData(){
     limit:experTemplateParams.limit
   }
   http.experTemplateList({param:param}).then((res:any)=>{
-    // daWithdata(res)
-    tableData.data=res.data.list
-    tableData.total=res.data.page.totalCount
+    daWithdata(res)
+    // tableData.data=res.data.list
+    // tableData.total=res.data.page.totalCount
   })
 }
 function experData(){
@@ -133,55 +134,44 @@ function experData(){
     limit:experParams.limit
   }
   http.experList({param:param}).then((res:any)=>{
-    // daWithdata(res)
-    tableData.data=res.data.list
-    tableData.total=res.data.page.totalCount
+    daWithdata(res)
+    // tableData.data=res.data.list
+    // tableData.total=res.data.page.totalCount
   })
 }
-function doHotData(data1:any){
-      let i = 0
-      const total = data1.reduce((pre: any, cur: any) => {
-        return pre+cur.count
-      }, 0)
-      data1.forEach((v: any, k: number) => {
-        if (i % 4 === 0) {
-          i = 0
-        }
-      data.value.push({
-          "name": v.name ? v.name : v.id,
-          "value": v.count,
-          "symbolSize": Math.ceil(v.count/total*300),
-          "draggable": true,
-          "itemStyle": {
-            "normal": {
-              // "shadowBlur": 100,
-              // "shadowColor": colorList[0],
-              "color": colorList[i]
-            }
+function doHotData(directData:any){
+  const data: any[] = []
+  let i = 0
+  const total = directData.reduce((pre: any, cur: any) => {
+      return pre+cur.count
+    }, 0)
+    directData.forEach((v: any, k: number) => {
+      if ((i) % 4 === 0) {
+        i = 0
+      }
+      data.push({
+        "name": v.name ? v.name : v.id,
+        "value": v.count,
+        "symbolSize": Math.ceil(v.count/total*100),
+        "draggable": true,
+        "itemStyle": {
+          "normal": {
+            // "shadowBlur": 100,
+            // "shadowColor": colorList[0],
+            "color": colorList[i]
           }
-        })
-        i++
+        }
+      })
+      i++
     })
-  return data.value
+    return data
 }
 function callBack(key:any){
   // console.log(key)
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
-    const param:any={
-      'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
-      'search[contentAttribute]':experParams.search.contentAttribute,
-      'search[contentType]':experParams.search.contentType,
-      page:experParams.page,
-      limit:experParams.limit
-    }
-    http.experList({param:param}).then((res:any)=>{
-      daWithdata(res)
-    })
-  // HotWords('KnowledgePoints',{})
-  // echartsPie('experStatistic',{})
-  // echartsBar('experType',{})
+  experData()
 })
 </script>
 

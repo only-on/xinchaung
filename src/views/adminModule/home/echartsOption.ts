@@ -101,7 +101,7 @@ function resourceOption(data:any,){
               type: 'category',
               boundaryGap: false,
               name:'',
-              data:data.houes
+              data:data.hours
             }
           ],
           yAxis: [
