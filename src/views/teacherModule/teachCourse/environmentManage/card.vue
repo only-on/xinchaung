@@ -97,7 +97,7 @@ const props = withDefaults(defineProps<Props>(), {
   currentExperiment: () => {}
 });
 const emit = defineEmits<{
-  (e: "getList"): void;
+  (e: "getList", v: string, list: any): void;
 }>();
 let current = ref(0);
 function beforeChange(from: Function, to: number) {
@@ -125,7 +125,7 @@ function btnClick(v: any) {
   };
   operatesHandle(param).then((res: any) => {
     // console.log(res);
-    emit("getList");
+    res.status ? emit("getList", vmStatus[v], props.list.vms.vms[current.value]) : '';
   });
 }
 

@@ -106,7 +106,7 @@ const onSearch = () => {
   getList();
 }
 
-function getList() {
+function getList(type?: any, i?: any) {
   clearTimeout(Number(timer));
   envList.length = 0;
   loading.value = true;
@@ -118,15 +118,33 @@ function getList() {
     // console.log("envList", envList);
     searchInfo.page = page.currentPage
     searchInfo.total = page.totalCount
+    let isCorrect = false
     if (envList.length > 0) {
-      let isVms = envList.some((item: any) => {
+      // let isVms = envList.some((item: any) => {
+      //   return item.vms?.vms?.length > 0;
+      // });
+      isCorrect = !type ? envList.every((item: any) => {
         return item.vms?.vms?.length > 0;
-      });
-      if (isVms) {
+      }) : false
+      i ? envList.forEach((v: any) => {
+        if (v.uuid === i.stack_id&&type) {
+          v.vms?.vms?.forEach((vv: any) => {
+            if (vv.uuid === i.uuid) {
+              // status: "ACTIVE" status: "SHUTOFF"
+              if (type === 'closeVm') {
+                vv.status === "SHUTOFF" ? isCorrect = true : ''
+              } else if(type === 'startVm') {
+                vv.status === "ACTIVE" ? isCorrect = true : ''
+              }
+            }
+          })
+        }
+      }) : ''
+      if (isCorrect) {
         message.success({ content: "请求成功!", duration: 2 });
       } else {
         timer = setTimeout(() => {
-          getList();
+          getList(type, i);
         }, 1500);
       }
     }
