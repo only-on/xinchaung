@@ -20,7 +20,7 @@
     </div>
     <a-button class="addTeacher" @click="createteacher()" type="primary">创建教师</a-button>
       <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
-      <a-button class="addTeacher" @click="batchImport()" type="primary">批量重置密码</a-button>
+      <a-button class="addTeacher" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
       <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
   </div>
   <a-config-provider>
@@ -134,6 +134,55 @@
         />
       </a-form-item> -->
     </a-form>
+  </a-modal>
+  <a-modal
+    v-model:visible="ImportVisible"
+    title="导入"
+    :width="960"
+    class="modal-post"
+    :footer="null"
+  >
+    <div class="studentList">
+      <div class="heard">
+        <a-upload
+          :before-upload="fileBeforeUpload"
+          :show-upload-list="false"
+          accept=".xls,.xlsx"
+        >
+          <a-button>
+            <span class="icon iconfont icon-upload"></span>
+            选择文件
+          </a-button>
+        </a-upload>
+        <!-- <div>
+            <a-button @click="DownloadTemplate" type="primary">导入</a-button>
+          </div> -->
+        <div>
+          <a-button @click="DownloadTemplate" type="link">下载教师模板</a-button>
+          <span class="notes">*注：建议每次导入的数量不要超过500条</span>
+        </div>
+      </div>
+      <div class="list">
+        <div class="title">
+          <span>已导入：{{ ImportData.finished }} 条</span>
+          <span>未导入：{{ ImportData.unfinished }} 条</span>
+        </div>
+        <a-table
+          v-if="!uploadData"
+          :columns="teacherColumns"
+          :data-source="ImportData.list"
+          :bordered="true"
+          row-key="username"
+          class="components-table-demo-nested"
+        >
+        </a-table>
+        <div v-else>
+          <a-spin tip="Loading...">
+            <div class="spin-content">数据导入中,请稍等！</div>
+          </a-spin>
+        </div>
+      </div>
+    </div>
   </a-modal>
 </template>
 
@@ -251,6 +300,20 @@ const columns = [
     width: 200,
   },
 ];
+const teacherColumns = [
+  {
+    title: "学号",
+    dataIndex: "username",
+  },
+  {
+    title: "姓名",
+    dataIndex: "name",
+  },
+  {
+    title: "导入情况",
+    dataIndex: "result",
+  },
+]; 
     const router = useRouter();
     const route = useRoute();
 
@@ -265,8 +328,10 @@ const columns = [
     });
 
     const http = (request as any).adminUserManagement;
+    var uploadData:any= ref(false);
     var loading:any = ref(false);
     var visible:any = ref(false);
+    const ImportVisible:any=ref(false)
     var total:any = ref(0);
     var list: ItdItems[] = reactive([]);
     var editId:any= ref(0);
@@ -387,6 +452,11 @@ const columns = [
     function  onSelectChange(selectedRowKeys:any, selectedRows:any){
         state.selectedRowKeys = selectedRowKeys
       }
+      var ImportData: any = reactive({
+      list: [],
+      finished: 0,
+      unfinished: 0,
+    });
     function initData() {
       loading.value = true;
       list.length = 0;
@@ -436,7 +506,34 @@ const columns = [
       });
     }
     function batchImport(){
-
+      ImportData.list.length = 0;
+      ImportData.finished = 0;
+      ImportData.unfinished = 0;
+      ImportVisible.value = true;
+    }
+    function batchResetPassword(){
+      if (!state.selectedRowKeys.length) {
+        message.warn("请选择要删除的数据");
+        return;
+      }
+      Modal.confirm({
+        title: "确认重置密码吗？",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "重置后不可恢复",
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          http
+            .batchResetTpassword({
+              param: { uids: state.selectedRowKeys },
+            })
+            .then((res:any) => {
+              initData();
+              state.selectedRowKeys=[]
+              message.success("重置成功");
+            });
+        },
+      });
     }
     function BatchDelete() {
       if (!state.selectedRowKeys.length) {
@@ -570,6 +667,39 @@ const columns = [
         query: { detailId: id, currentTab: currentTab },
       });
     }
+    function fileBeforeUpload(file: any) {
+      if (file && file.size === 0) {
+        message.warn("文件大小不能为空");
+        return false;
+      }
+      // loading.value=true
+      const fd = new FormData();
+      fd.append("file", file);
+      http.BatchImport({ param: fd }).then((res:any) => {
+        ImportData.finished = res.data.total.finished;
+        ImportData.unfinished = res.data.total.unfinished;
+        ImportData.list = res.data.msg;
+        message.success("导入完成");
+        initData();
+      });
+      return false
+    }
+    function DownloadTemplate() {
+      const isDev = process.env.NODE_ENV == "development" ? true : false;
+      let url = isDev
+        ? "./public/template/student.xlsx"
+        : "./template/student.xlsx";
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "学生模板.xlsx";
+      a.click();
+    }
+    function ImportStudent() {
+      ImportData.list.length = 0;
+      ImportData.finished = 0;
+      ImportData.unfinished = 0;
+      ImportVisible.value = true;
+    }
     onMounted(() => {
       initData();
     })
@@ -672,5 +802,38 @@ const columns = [
 }
 :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
   border-radius: 20px;
+}
+.ant-upload {
+  button {
+    background: var(--primary-color);
+    border-radius: 5px;
+    color: #ffffff;
+    .icon-upload {
+      font-size: 12px;
+      padding-right: 6px;
+    }
+  }
+}
+.studentList {
+  min-height: 400px;
+  .heard {
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    // justify-content: space-around;
+    .notes {
+      color: red;
+      padding-left: 16px;
+      font-size: 13px;
+    }
+  }
+  .list {
+    .title {
+      span {
+        margin-right: 50px;
+      }
+    }
+  }
 }
 </style>

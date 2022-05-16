@@ -16,7 +16,7 @@
                 <div class="title">
                     实验报告提交率
                 </div>
-                <Progress type="circle" :percent='statisData?.ExperimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
+                <Progress type="circle" :percent='statisData?.experimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
             </div>
             <div class='pie-item'>
                 <div class="title">

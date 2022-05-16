@@ -534,7 +534,28 @@ const router = useRouter();
       router.push({path: '/admin/adminUserManagement/createStudent'});
     }
     function batchResetPassword(){
-
+      if (!state.selectedRowKeys.length) {
+        message.warn("请选择要删除的数据");
+        return;
+      }
+      Modal.confirm({
+        title: "确认重置密码吗？",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "重置后不可恢复",
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          http
+            .batchResetSpassword({
+              param: { uids: state.selectedRowKeys },
+            })
+            .then((res:any) => {
+              initData();
+              state.selectedRowKeys=[]
+              message.success("重置成功");
+            });
+        },
+      });
     }
     function BatchDelete() {
       if (!state.selectedRowKeys.length) {
