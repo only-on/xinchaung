@@ -41,7 +41,7 @@
           </a-form-item>
         </div>
         <div class="right">
-            <a-form-item label="性别" required name="gender">
+            <a-form-item label="性别" name="gender">
                 <a-radio-group v-model:value="formState.gender">
                     <a-radio :value="1">男</a-radio>
                     <a-radio :value="2">女</a-radio>
@@ -122,11 +122,11 @@
     const rules = {
       username: [
         { required: true, message: "请输入账号", trigger: "blur" },
-        // {
-        //   pattern: /^[_a-zA-Z0-9]{1,10}$/,
-        //   message: "学号应为字母或数字，长度不超过10",
-        //   trigger: "blur",
-        // },
+        {
+          pattern: /^[_a-zA-Z0-9]{1,10}$/,
+          message: "学号应为字母或数字，长度不超过10",
+          trigger: "blur",
+        },
         // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],

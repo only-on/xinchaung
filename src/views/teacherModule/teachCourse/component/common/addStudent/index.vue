@@ -114,8 +114,8 @@ columns.value = [
   },
   {
     title: "专业",
-    dataIndex: "user_profile.direct",
-    key: "user_profile.direct",
+    dataIndex: "user_profile.major",
+    key: "user_profile.major",
   },
   {
     title: "学院",

@@ -5,7 +5,7 @@ export default {
     method: 'POST'
   },
   examMapList:{
-    url: '/exam/question-bank/get-knowledge-map-list',
+    url: '/api/yii/exam/question-bank/get-knowledge-map-list',
     method: 'POST'
   },
   getContentlist:{
