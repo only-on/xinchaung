@@ -180,6 +180,7 @@
             phone: formState.phone,
             status: formState.status,
             // introduce: formState.introduce,
+            title:formState.professionalTitle,
           },
         };
           const promise = editId.value

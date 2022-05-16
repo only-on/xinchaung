@@ -38,10 +38,9 @@
 <script lang="ts" setup>
 import distributionOfResults from './distributionOfResults/index.vue'
 import * as echarts from 'echarts';
-import { ref, toRefs, onMounted,reactive} from "vue";
+import { ref, toRefs, onMounted,reactive,watch} from "vue";
 import { Progress } from 'ant-design-vue';
 import leftPanelVue from 'src/views/shareModule/VirtualMachine/VmLayout/leftPanel.vue';
-import { watch } from 'fs';
 
 interface Props {
   statisData:any
@@ -101,7 +100,8 @@ option.value = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.finalScoreDistributionOfScores
+      // data:props.statisData?.finalScoreDistributionOfScores
+      data:[]
     },
     {
       name: '实验报告',
@@ -112,7 +112,8 @@ option.value = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.experimentalReportDistributionOfScores
+      // data:props.statisData?.experimentalReportDistributionOfScores
+      data:[]
     },
     {
       name: '自动评分',
@@ -123,7 +124,8 @@ option.value = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.automaticScoringDistributionOfScores
+      // data:props.statisData?.automaticScoringDistributionOfScores
+      data:[]
     },
     {
       name: '随测',
@@ -134,14 +136,27 @@ option.value = {
       emphasis: {
         focus: 'series'
       },
-      data:props.statisData?.inClassTestDistributionOfScores
+      // data:props.statisData?.inClassTestDistributionOfScores
+      data:[]
     }
   ]
 };
+function draw(){
+  option.value.series[0].data=props.statisData?.finalScoreDistributionOfScores
+  option.value.series[1].data=props.statisData?.experimentalReportDistributionOfScores
+  option.value.series[2].data=props.statisData?.automaticScoringDistributionOfScores
+  option.value.series[3].data=props.statisData?.inClassTestDistributionOfScores
+  var chartDom:any = document.getElementById(lineChart.value);
+  var myChart = echarts.init(chartDom);
+  myChart.setOption(option.value);
+}
+watch(()=>props.statisData,(val:any)=>{
+  draw()
+})
 onMounted(()=>{
-    var chartDom:any = document.getElementById(lineChart.value);
-    var myChart = echarts.init(chartDom);
-    myChart.setOption(option.value);
+  setTimeout(()=>{
+    draw()
+  },20)
 })
 
 </script>

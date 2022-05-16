@@ -184,6 +184,8 @@ const route = useRoute();
             phone: formState.phone,
             status:10,
             // introduce: formState.introduce,
+            classname:formState.class,
+            major:formState.major
           },
         };
         if ((formState.reset && editId.value) || editId.value === 0) {

@@ -5,7 +5,7 @@
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults v-if="statisData" :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData" :experitId='experitId' :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -55,7 +55,7 @@ const chartLoading:any=ref(false)
 const ChaptersTreeList:any=ref([])
 const Editable:any=ref(false)
 const option: any = ref();
-const experitId:any=ref('')
+const experitId:any=ref('0')
 const className:any=ref('')
 option.value = [
   { id: "", name: "全部" },
@@ -141,7 +141,9 @@ function onSearch(){
 }
 function getStuStatis(){
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
+      console.log(res.data?.length,'res.data?.length')
       if(res.code&&res.data?.length!==0){
+        console.log('hhahhahahaahh')
         statisData.value=res.data
       }else{
         statisData.value=echartsData.value
