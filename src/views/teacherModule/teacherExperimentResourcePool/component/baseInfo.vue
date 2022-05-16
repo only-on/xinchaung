@@ -152,6 +152,7 @@ import {
   Ref,
   inject,
   nextTick,
+  watch
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -212,24 +213,27 @@ const createTypeNumber = props.detail.task_type;
 const createMethod = currentTypeInfo.method;
 const isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
-const formState = reactive({...props.detail})
-formState.direction = formState.direction
-let arr:any = []
-formState.know_point ? formState.know_point.split(',').forEach((v: number, k: number) => {
-  arr.push({
-    id: Number(v),
-    text: formState.konwledge_map[k]
+const formState = reactive<any>({})
+watch(()=>props.detail, newVal => {
+  Object.assign(formState, newVal)
+  formState.direction = formState.direction
+  let arr:any = []
+  formState.know_point ? formState.know_point.split(',').forEach((v: number, k: number) => {
+    arr.push({
+      id: Number(v),
+      text: formState.konwledge_map[k]
+    })
+  }) : ''
+  formState.know_point = arr
+  formState.tags = formState.tag.map((v : any) => v.name)
+  formState.report = {id: formState.content_template.template_id, name: formState.content_template.name}
+  formState.selectedName = []
+  formState.datasets = []
+  formState.dataset?.forEach((v: any) => {
+    formState.selectedName.push(v.name)
+    formState.datasets.push(v.uid)
   })
-}) : ''
-formState.know_point = arr
-formState.tags = formState.tag.map((v : any) => v.name)
-formState.report = {id: formState.content_template.template_id, name: formState.content_template.name}
-formState.selectedName = []
-formState.datasets = []
-formState.dataset?.forEach((v: any) => {
-  formState.selectedName.push(v.name)
-  formState.datasets.push(v.uid)
-})
+}, {deep:true,immediate:true})
 // console.log(formState)
 const rules = {
   name: [

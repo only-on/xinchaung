@@ -298,12 +298,13 @@ var imageData:any=reactive({
 var visible: Ref<boolean> = ref(false);
 const edit=(val:any)=>{
   console.log(val) // ostype
-  imageData.ostype= val.ostype,  
-  imageData.id=val.id
-  imageData.tags=val.tags
-  imageData.classify_id=val.classify      
-  imageData.name=val.name
-  imageData.description=val.description
+  let copyVal = JSON.parse(JSON.stringify(val))
+  imageData.ostype = copyVal.ostype,  
+  imageData.id = copyVal.id
+  imageData.tags = copyVal.tags
+  imageData.classify_id = copyVal.classify      
+  imageData.name = copyVal.name
+  imageData.description = copyVal.description
 
   visible.value=true
 }

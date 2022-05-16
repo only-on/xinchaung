@@ -196,13 +196,14 @@ const reportTemplate = () => {
   const templateId = experimentDetail.content_template?experimentDetail.content_template.template_id : ''
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
-    query: { templateId: templateId, id:  experimentDetail.id},
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id},
   });
 };
 // 编辑基本信息
 const baseInfoModal = ref(false)
 const editBaseInfo = () => {
   baseInfoModal.value = true
+  getExperimentDetail();
 }
 const handleOk = () => {
   baseInfoModal.value = false
@@ -214,6 +215,7 @@ const handleCancel = () => {
 
 let experimentDetail = reactive<IExperimentDetail>({
   id: 1,
+  user_id: 0,
   is_init: 0,
   name: '',
   task_type: 1,
@@ -268,6 +270,7 @@ const directionName = computed(() => {
 const levelList = {'1': '初级', '2': '中级', '3': '高级'}
 interface IExperimentDetail {
   id: number;
+  user_id: number;
   is_init: number
   name: string;
   task_type: number;
@@ -433,7 +436,7 @@ interface IExperimentDetail {
     margin-top: 16px;
     background-color: var(--white-100);
     border: 1px solid var(--lightgray-3);
-    padding: 0 24px;
+    padding: 0 24px 24px;
   }
 }
 </style>

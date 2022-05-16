@@ -23,7 +23,7 @@
     </div>
     <div class="operate">
       <a-button @click="backGo">返回</a-button>
-      <a-button type="primary" @click="reportVisible = true">更换报告</a-button>
+      <a-button type="primary" v-show="canEdit" @click="reportVisible = true">更换报告</a-button>
     </div>
     <SelectReport
       v-if="reportVisible"
@@ -45,12 +45,16 @@ import { deepClone } from "src/views/teacherModule/teacherTemplate/utils";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { WidgetModel } from "src/views/teacherModule/teacherTemplate/templateTyping";
+import extStorage from "src/utils/extStorage";
 
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
-let {templateId, id} = route.query;
+let {templateId, id, createExperUserId} = route.query;
 var updata = inject("updataNav") as Function;
+const { lStorage } = extStorage
+// 当前用户id === 创建实验用户id
+const canEdit = ref<boolean>(Number(createExperUserId) === lStorage.get('uid') ? true : false)
 updata({
   tabs: [{ name: "报告模板预览", componenttype: 0 }],
   showContent: false,
