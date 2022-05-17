@@ -54,7 +54,7 @@
               <div class="time">存活倒计时</div>
               <div class="flexCenter">
                 <div class="tian">{{v.is_permanent}}</div>
-                小时
+                <!-- 小时 -->
               </div>
             </div>
           </div>
@@ -259,7 +259,7 @@ async function init() {
 }
 .mainBox {
   flex-wrap: wrap;
-  margin-top: 1rem;
+  margin-top: 2rem;
   min-height: 200px;
   .imageBox {
     width: 33.33%;
