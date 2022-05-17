@@ -16,7 +16,7 @@
       <span>已选择 <span class="num">{{docOrMp4Drawer.selectList.length}}</span> 个实验</span>
       <span>共 <span class="num">{{classNum}}</span> 课时</span>
     </div>
-    <span class="empty">清空</span>
+    <span class="empty" @click="qingkong()">清空</span>
   </div>
   <a-spin :spinning="docOrMp4Drawer.loading" size="large" tip="Loading...">
     <div class="dataList setScrollbar">
@@ -164,6 +164,10 @@ const searchDocOrMp4List = () => {
 };
 const Reselection=()=>{
   emit('preservation',docOrMp4Drawer.selectListIds)
+}
+const qingkong=()=>{
+  docOrMp4Drawer.selectList=[]
+  docOrMp4Drawer.selectListIds=[]
 }
 // watch(()=>{ return props.tags},(val:any)=>{
 //   // console.log(val)

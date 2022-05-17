@@ -43,7 +43,11 @@
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>
-                      <p v-for="i in v.dataset">{{i.name}}</p>
+                      <div style="">
+                        <div v-for="i in v.dataset">{{i.name}}</div>
+                        <!-- <div>skdhskdfhsdfhs</div>
+                        <div>暗杀的急啊姐姐和</div> -->
+                      </div>
                     </template>
                     <span class="iconfont icon-chakangengduo"></span>
                   </a-popover>

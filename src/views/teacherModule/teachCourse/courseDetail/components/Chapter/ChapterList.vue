@@ -284,15 +284,12 @@ const cancel=()=>{
 // 选中章节
 const selectChaptert=(val:any)=>{
   // console.log('章节',val)
-  // val.openItem=!val.openItem
+  // if(){
+
+  // }
   state.activeChapter={...val}
   state.activeTab.chapterId=val.id
-  // let ExperimentIds:any=[]
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
-  // val.contents.forEach((v:any)=>{
-  //   ExperimentIds.push(v.content_id)
-  // })
-  // ExperimentsAndMaterialsObj.activeExperiments=ExperimentIds
   emit('selectChaptert',val)
 }
   // 选中章节下实验
@@ -465,7 +462,8 @@ const deleteChapter=(val:any)=>{
     onOk() {
       http.DeleteCourseChapter({urlParams: {courseId:props.courseId,chapterId:val.id}}).then((res: any) => {
         message.success("删除成功");
-          getChaptersTree()
+        state.activeExperimentObj={}
+        getChaptersTree()
       });
     },
   });
@@ -495,6 +493,7 @@ const deleteExperiment=(v:any,a:any)=>{
     v:v,
     a:a
   }
+  console.log(v)
   console.log('删除实验',a)
   // return 
   // state.activeTab.chapterId=v.id
@@ -588,12 +587,15 @@ const ProcessingData=(data:any)=>{
           }):''
         }
       })
-      // console.log(item)
+      console.log(item)
       selectChaptert(item)
       if(item.list.length){
         selectExperiment(item.list[0],item)
       }
       data[index].openItem=true
+    }else{
+      selectChaptert({})
+      selectExperiment({},{})
     }
     ChaptersTreeList.push(...data)
 }

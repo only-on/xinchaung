@@ -38,7 +38,7 @@
           </div>
         </a-spin>
       </template>
-      <Empty v-else :text="'暂无内容，请先于左侧创建章节'" />
+      <Empty v-else :text="'暂无数据'" />
     </div>
   </div>
 
@@ -152,7 +152,7 @@ const selectExperiment=(val:any)=>{
   state.activeExperimentObj={...val}
   experimentGuideLoading.value=false
   // 获取实验详情
-  if(!val.TeachingAids && currentTab === '0' && role===3){
+  if(!val.TeachingAids && currentTab === '0' && role===3 && val.id){
     // 教师端我的教学  才在右边展示实验指导
     getExperimentGuide(val.content_id)
   }
