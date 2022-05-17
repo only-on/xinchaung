@@ -497,7 +497,14 @@ function create() {
   // console.log(TaskLIst)
   // return
   formRef.value.validate().then(() => {
+    const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
+    const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象
     if(createTypeNumber === 2 && formState.ipynbList.length === 0){
+      message.warning('请选择实验指导')
+      return
+    }
+    if([4,5].includes(createTypeNumber) && !docMp4File.file_url){   
+      // console.log(docMp4File)
       message.warning('请选择实验指导')
       return
     }
@@ -517,8 +524,7 @@ function create() {
       report:formState.report.id,
       container:formState.imageConfigs
     }
-    const docMp4File=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
-    const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}    // 是视频和文档公用一个 文件对象
+    
     const docMp4FileObj:any={
       // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
       // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
@@ -526,7 +532,7 @@ function create() {
     if(docMp4File.suffix === 'md'){
       docMp4FileObj.guide=formState.document.mdValue
     }else{
-      docMp4FileObj.directory_id = docMp4File.dataset_id
+      docMp4FileObj.directory_id = docMp4File.dataset_id      // 取的已选资源的目录id
       docMp4FileObj.file_path=docMp4File.file_url
     }
     console.log(docMp4File);
@@ -557,11 +563,6 @@ function create() {
       message.success('创建成功')
       cancel()
     })
-    // http.create({param:{...obj}}).then((res: IBusinessResp) => {
-    //   message.success('创建成功')
-    //   cancel()
-    //   // list.push(...res.data);
-    // });
   });
 }
 // 取消
