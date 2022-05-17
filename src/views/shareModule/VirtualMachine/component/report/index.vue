@@ -24,7 +24,8 @@
         :src="reportTemplateData.pdf_url"
       >
       </iframe>
-      <div class="uploadReport" v-if="!reportTemplateData.pdf_url && reportTemplateData.can_student_update">
+      <div>{{reportTemplateData.filename+'docx'}}</div>
+      <div class="uploadReport" v-if="reportTemplateData.can_student_update">
         <div>实验报告</div>
         <div>
           <a-upload :showUploadList="false" class="upload-btn" :file-list="fileList" :before-upload="beforeUpload">
@@ -184,7 +185,7 @@ function downLoadExperReport(fileurl: any, filename: any) {
       const link = document.createElement("a"); // 创建a标签
       link.download = fileName; // a标签添加属性
       link.style.display = "none";
-      link.href = URL.createObjectURL(blob);
+      link.href = url;
       document.body.appendChild(link);
       link.click(); // 执行下载
       URL.revokeObjectURL(link.href); // 释放url

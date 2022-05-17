@@ -72,7 +72,7 @@ export default defineComponent({
   setup(props, {emit}) {
     let detail = ref(props.modelValue)
     const vncLoading=ref(false)
-    provide("vncLoading",vncLoading)
+    provide("loading",vncLoading)
     function quitScreen() {
       emit('update:screenStatus', false)
       emit('update:modelValue', detail.value)
