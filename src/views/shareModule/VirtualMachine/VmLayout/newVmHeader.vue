@@ -726,8 +726,9 @@ async function switchVm() {
 
 // 延时
 function delayedTime() {
+  clearInterval(Number(timer));
   VmOperatesHandle("delay").then((res: any) => {
-    if (res.data && res.data.remaining_time) {
+    if (res?.data && res.data.remaining_time) {
       use_time.value = res.data.remaining_time;
       times();
     }
@@ -1347,15 +1348,24 @@ function getKeyword(val: any) {
 }
 let questionTimer: NodeJS.Timer | null = null;
 // f
+watch(
+  () => baseInfo.value,
+  () => {
+    if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
+      times();
+    }
+  },
+  { deep: true, immediate: true }
+);
 onMounted(() => {
   
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
   clearInterval(Number(questionTimer));
-  if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
-    times();
-  }
+  // if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
+    // times();
+  // }
   if (roleArry.includes('classTest')) {
     getQuestionList(false);
     questionTimer = setInterval(() => {
