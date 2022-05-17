@@ -357,10 +357,11 @@ function prepare(a:any, i: number) {
     return
   }
 }
+const isOpen = ref(false)
 watch(
   () => connectStatus.value,
   (val) => {
-    if (val === 2 && role === 4) {
+    if (val === 2 && role === 4&&!isOpen.value) {
       StudentChaptersTree(Number(course_student_id))
     }
   },
@@ -368,6 +369,7 @@ watch(
 )
 // 进入
 const openVm = (a: any, opType: string) => {
+  isOpen.value = true
   const { id } = a
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
