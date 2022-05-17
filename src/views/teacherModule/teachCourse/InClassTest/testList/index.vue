@@ -31,7 +31,7 @@
           <a-progress
             class="pie-circle-inner"
             type="circle"
-            :percent="itemValue.submission_rate"
+            :percent="itemValue.correct_rate"
             strokeColor="#FF9544"
             :width="70"
             :showInfo="false"
@@ -41,7 +41,7 @@
           <a-progress
             class="pie-circle"
             type="circle"
-            :percent="itemValue.correct_rate"
+            :percent="itemValue.submission_rate"
             strokeColor="#00CBC2"
             :width="120"
             :showInfo="false"
