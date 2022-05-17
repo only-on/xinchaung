@@ -20,8 +20,8 @@
           <div class="change">
             <div class="FrontDisplay">
               <div class="information flexCenter">
-                <!-- <span>类型：{{v.ostype}}</span> -->
-                <span>信息：{{'X86'}}</span>
+                <span>类型：{{v.classify}}</span>
+                <span>架构：{{'X86'}}</span>
               </div>
               <div class="labels flexCenter" :class="(v.tags && v.tags.length)?'labelsBg':''">
                 <template v-for="(i,n) in v.tags" :key="i">

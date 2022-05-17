@@ -23,7 +23,7 @@
                 <template #label>
                   {{ key }}
                 </template>
-                <a-select-option v-for="v in val" :key="`${key}${v.id}`" :value="v.id">{{
+                <a-select-option v-for="v in val" :key="`${key}${v.id}`" :value="v.id" :classify="v.classify">{{
                   v.name
                 }}</a-select-option>
               </a-select-opt-group>
@@ -68,7 +68,7 @@
             <a-button
               type="primary"
               @click="reactiveData.drawerVisible = true"
-              :disabled="reactiveData.selectedName.length >= 3"
+              :disabled="(reactiveData.selectedName.length >= 3 || setDetDis)"
               class="add-data-set-btn"
             >
               选择</a-button
@@ -187,8 +187,22 @@ let rules = {
   disk: [{ required: true, message: "请选择硬盘" }],
   image: [{ required: true, message: "请选择" }],
 };
+
+var Classify: Ref<string> = ref('docker');
+const setDetDis:any=computed(()=>{
+  console.log(Classify.value)
+  if(Classify.value === 'kvm'){
+    reactiveData.selectedName = [];
+    reactiveData.ruleForm.datasets = [];
+    return true
+  }else{
+    return false
+  }
+})
 // 镜像选择发生变化时
-function imageChange(val: any) {
+function imageChange(val: any,option:any) {
+  console.log(option)
+  Classify.value=option.classify
   let currentImageTemp: any = {};
   outerloop: for (const key in reactiveData.images) {
     if (Object.prototype.hasOwnProperty.call(reactiveData.images, key)) {

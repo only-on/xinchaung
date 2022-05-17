@@ -408,6 +408,8 @@ async function init() {
       height: 44px;
       justify-content: space-around;
       color: var(--black-65);
+      background-color: #fff;
+      border-radius: 10px;
       span:hover {
         // cursor: pointer;
         color: var(--primary-color);

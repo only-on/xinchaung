@@ -39,11 +39,11 @@
             ></a-input>
             是通过上传的文件获取的文件类型
           </a-form-item> -->
-          <a-form-item label="系统类型" name="ostype">
+          <a-form-item label="镜像类型" name="ostype">
             <a-select
               class="form-input"
               v-model:value="image.ostype"
-              placeholder="请选择系统类型"
+              placeholder="请选择镜像类型"
             >
               <a-select-option
                 :value="item.name"
