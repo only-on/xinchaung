@@ -247,7 +247,7 @@
         <div class="selectFile">
           <span v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
           <span v-else>{{docOrMp4Drawer.activeFile.file_name}}</span>
-          <span class="iconfont icon-shanchu" @click.stop="removeDocMp4"></span>
+          <span class="iconfont icon-shanchu" v-if="upDoc.docFileList.length || docOrMp4Drawer.activeFile.file_name" @click.stop="removeDocMp4"></span>
         </div>
       </div>
     </div>
@@ -827,7 +827,7 @@ const docBeforeUpload2=(e:any)=>{
 }
 const removeDocMp4=()=>{
   upDoc.nowDocument.mdValue=''
-  if(upDoc.docFileList[0].status !== "done"){
+  if(upDoc.docFileList.length && upDoc.docFileList[0].status !== "done"){
     tusFileUpload.remove(upDoc.docFileList[0])
   }
   upDoc.docFileList=[]

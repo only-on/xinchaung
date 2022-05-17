@@ -210,6 +210,7 @@
     --orangeyellow-2: #FF9544;
     --orangeyellow-3: #FE8020;
     --orangeyellow-4: #FF9544; */
+  --orangeyellow-1: #FFF8F2;
   --orangeyellow-5: #fe8020;
   --orangeyellow-6: #ff9544;
   --orangeyellow-6-24: rgba(255,149,68, 0.24);
@@ -242,7 +243,7 @@
   --primary-4: var(--purpleblue-4);
   --primary-3: var(--purpleblue-3);
   --primary-2: var(--purpleblue-2);
-  --primary-1: var(--purpleblue-1);
+  --primary-1: var(--orangeyellow-1);
 
   --primary-atn-hover: var(--blue-5);
 

@@ -9,13 +9,13 @@
       :rules="rules"
     >
       <a-form-item label="旧密码" name="oldpass">
-        <a-input v-model:value="formState.oldpass" />
+        <a-input-password v-model:value="formState.oldpass" />
       </a-form-item>
       <a-form-item label="新密码" name="newpass">
-        <a-input v-model:value="formState.newpass" />
+        <a-input-password v-model:value="formState.newpass" />
       </a-form-item>
       <a-form-item label="再次输入新密码" name="repeatnewpass">
-        <a-input v-model:value="formState.repeatnewpass" />
+        <a-input-password v-model:value="formState.repeatnewpass" />
       </a-form-item>
     </a-form>
     <div class="foot">

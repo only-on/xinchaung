@@ -12,12 +12,16 @@
         <div class="describe ellipsis">
           {{state.detail.description}}
         </div>
-        <div class="labels flexCenter">
-          <span v-for="v in state.detail.tags" :key="v">
-            {{v}}
+        <div class="labels" v-if="state.detail.tags && state.detail.tags.length">
+          <span v-for="(v, index) in state.detail.tags" :key="index">
+            {{v}} <span v-if="index !== state.detail.tags.length - 1"> / </span>
           </span>
         </div>
         <div class="info flexCenter">
+          <div class="item userAvatar">
+            <img :src="state.detail.user?.avatar" alt="">
+            <span>{{state.detail.user?.username}}</span>
+          </div>
           <div class="item">
             <span>数量</span>
             <span>{{state.detail.item_count}}</span>
@@ -325,6 +329,7 @@ const initData = () => {
       ...res.data
     }
     state.detail.is_public=state.detail.is_public?'1':'0'
+    state.detail.created_at = res.data.created_at.substr(0, 10)
     isDataSet.value=res.data.type_name === '数据集' ? true :false
     activeTab.value =isDataSet.value?'说明文档':'文件列表'
   })
@@ -395,14 +400,14 @@ onMounted(() => {
 }
 
 .detail{
-  padding: 20px 24px;
   height: 600px;
   // border: 1px solid #76e6bb;
   .header{
-    height: 150px;
     margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
+    background: var(--white-100);
+    padding: 20px 24px;
     .img{
       width: 270px;
       height: 150px;
@@ -414,10 +419,13 @@ onMounted(() => {
       // flex: 1;
       width: 770px;
       padding-left: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       .sign{
         width: 64px;
         height: 20px;
-        background: #ff6554;
+        background: var(--primary-color);
         border-radius: 2px;
         color: #fff;
         line-height: 20px;
@@ -437,11 +445,11 @@ onMounted(() => {
         -webkit-line-clamp: 2;
       }
       .labels{
-        height: 46px;
-        span{
-          color: var(--brightBtn);
-          padding: 12px;
-        }
+        align-self: baseline;
+        padding: 3px 14px;
+        border-radius: 2px;
+        background: var(--primary-1);
+        color: var(--primary-color);
       }
       .info{
         color: var(--black-45);
@@ -449,6 +457,14 @@ onMounted(() => {
           margin-right: 2rem;
           span{
             padding-right: 6px;
+          }
+          &.userAvatar{
+            img{
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              margin-right: 5px;
+            }
           }
         }
       }
@@ -463,7 +479,8 @@ onMounted(() => {
     }
   }
   .fileList{
-    padding: 24px 0;
+    padding: 20px 24px;
+    background: var(--white-100);
     // border: 1px solid #76e6bb;
     .title{
       

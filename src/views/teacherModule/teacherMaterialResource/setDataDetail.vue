@@ -12,9 +12,9 @@
         <div class="describe ellipsis">
           {{state.detail.description}}
         </div>
-        <div class="labels flexCenter">
-          <span v-for="v in state.detail.tags" :key="v">
-            {{v}}
+        <div class="labels" v-if="state.detail.tags && state.detail.tags.length">
+          <span v-for="(v, index) in state.detail.tags" :key="index">
+            {{v}} <span v-if="index !== state.detail.tags.length - 1"> / </span>
           </span>
         </div>
         <div class="info flexCenter">
@@ -29,6 +29,10 @@
           <div class="item">
             <span>创建日期</span>
             <span>{{state.detail.created_at}}</span>
+          </div>
+          <div class="item">
+            <span>类型</span>
+            <span>{{state.detail.categoryName}}</span>
           </div>
         </div>
       </div>
@@ -97,12 +101,15 @@
               <div v-if="state.fileItem.suffix === 'md'">
                 <MarkedEditor v-model="state.fileItem.document" class="markdown__editor" :preview="true" />
               </div>
-              <div v-else-if="state.fileItem.suffix === 'mp4'">
-                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>
+              <div v-else-if="['MP4', 'mp4'].includes(state.fileItem.suffix)">
+                <video :src="env ? '/proxyPrefix' + state.fileItem.path : state.fileItem.path" :controls="true" height="440" width="847"> 您的浏览器不支持 video 标签</video>
               </div>
               <div v-else-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
-                <PdfVue :url="state.fileItem.file_html" />
+                <PdfVue :url="state.fileItem.path" />
+              </div>
+              <div v-else-if="['jpg','jpeg','png','gif'].includes(state.fileItem.suffix)">
+                <img :src="state.fileItem.path" alt="" class="imgBox">
               </div>
               <!-- ="['md','mp4','pdf'].includes(state.fileItem.suffix) === false" -->
               <div v-else>
@@ -258,7 +265,7 @@ const searchFileList=computed(()=>{
 })
 // 
 const selectFile=(val:any)=>{
-  // console.log(val) 
+  console.log(val) 
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
@@ -407,6 +414,8 @@ function detailed(){
     state.detail.type_name='数据集'
     state.document.content=res.data.documents
     state.detail.tags=[]
+    state.detail.created_at = res.data.created_at.substr(0, 10)
+    state.detail.categoryName = res.data.categorys.length && res.data.categorys[0].name
     if(res.data.labels && res.data.labels.length){
       res.data.labels.forEach((v:any)=>{
         state.detail.tags.push(v.name)
@@ -448,14 +457,14 @@ onMounted(() => {
 }
 
 .detail{
-  padding: 20px 24px;
   height: 600px;
   // border: 1px solid #76e6bb;
   .header{
-    height: 150px;
     margin-bottom: 24px;
     display: flex;
     justify-content: space-between;
+    background: var(--white-100);
+    padding: 20px 24px;
     .img{
       width: 270px;
       height: 150px;
@@ -467,10 +476,13 @@ onMounted(() => {
       // flex: 1;
       width: 770px;
       padding-left: 24px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
       .sign{
         width: 64px;
         height: 20px;
-        background: #ff6554;
+        background: var(--primary-color);
         border-radius: 2px;
         color: #fff;
         line-height: 20px;
@@ -490,11 +502,11 @@ onMounted(() => {
         -webkit-line-clamp: 2;
       }
       .labels{
-        height: 46px;
-        span{
-          color: var(--brightBtn);
-          padding: 12px;
-        }
+        align-self: baseline;
+        padding: 3px 14px;
+        border-radius: 2px;
+        background: var(--primary-1);
+        color: var(--primary-color);
       }
       .info{
         color: var(--black-45);
@@ -516,7 +528,8 @@ onMounted(() => {
     }
   }
   .fileList{
-    padding: 24px 0;
+    padding: 20px 24px;
+    background: var(--white-100);
     // border: 1px solid #76e6bb;
     .title{
       
@@ -608,6 +621,10 @@ onMounted(() => {
               width: 100%;
               height: 450px;
               object-fit: fill;
+            }
+            .imgBox{
+              width: 100%;
+              height: 100%;
             }
           }
         }
