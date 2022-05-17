@@ -27,12 +27,12 @@
     </template>
   </layout>
   <!--禁用modal-->
-  <disableStudent 
+  <disableStudent
     v-if="disableVisable"
-    v-model:visable="disableVisable" 
-    :data="disableData" 
-    @save="saveKvm" 
-    :type="type" 
+    v-model:visable="disableVisable"
+    :data="disableData"
+    @save="saveKvm"
+    :type="type"
     :uuid="currentUuid"
     :taskId="taskId"
     :opType="opType"
@@ -246,7 +246,7 @@ function initWs() {
                   isClose.value=true
                   return;
                 }
-                
+
                 settingCurrentVM(wsJsonData.data.vms[currentVmIndex.value]);
 
                 if (
@@ -300,7 +300,7 @@ function initWs() {
               // 自评推荐
               evaluateVisible.value=true
               evaluateData.value = wsJsonData.data;
-            
+
               nextTick(()=>{
                 initEvaluate()
               })
@@ -315,7 +315,7 @@ function initWs() {
           // recommendExperimentData.value = wsJsonData.data;
           // recommendVisible.value = true;
         }else if (wsJsonData.type=="help") {
-          
+
         }else if (wsJsonData.type=="delay") {
           use_time.value = wsJsonData.data.remaining_time
         }else if (wsJsonData.type=="manual-disable") {
@@ -348,7 +348,7 @@ function initWs() {
 
 // saveKvm
 function saveKvm() {
-  
+
 }
 // 设置当前虚拟机信息
 function settingCurrentVM(data: any) {
@@ -375,7 +375,7 @@ initVnc.value = () => {
     novncEl.value.connectVnc();
   }
 };
- // 断开虚拟机 
+ // 断开虚拟机
     function sendDisconnect() {
        if (novncEl.value) {
         novncEl.value.sendDisconnect();

@@ -48,12 +48,13 @@ export default defineComponent({
       default: "",
     },
   },
+  emits: ["clipboard"],
   setup(props, context) {
     let rfb: any = ref(null);
     let loading:Ref<boolean>|undefined=inject("loading")
     const refName=ref(props.refName)
     let isClose:Ref<boolean>|undefined=inject("isClose",ref(false))
-    
+
     // 连接断开
     function disconnect(msg: any) {
       if(isClose!.value) return;

@@ -35,7 +35,7 @@
             :key="index"
             :value="index"
           >
-            <span class="ip-name">{{ item.host_ip }}</span>
+            <span class="ip-name">{{ item.ip }}</span>
             <span class="vm-state" :class="item.status === 'ACTIVE' ? 'open' : 'close'">{{
               item.status === "ACTIVE" ? "开" : "关"
             }}</span>
@@ -148,11 +148,11 @@
           <ul>
             <li class="ellipse">
               <span class="iconfont icon-yonghuming"></span>
-              <span>用户名：{{ currentVm?.name }}</span>
+              <span>用户名：{{ currentVm?.ssh_user }}</span>
             </li>
             <li>
               <span class="iconfont icon-mima"></span>
-              <span>密码：vncpassword</span>
+              <span>密码：{{ currentVm?.ssh_pass }}</span>
             </li>
             <li>
               <span class="iconfont icon-IP"></span>
@@ -161,10 +161,10 @@
             <li>
               <span class="iconfont icon-duankou"></span>
               <span
-                >{{ currentVm?.classify === "Linux" ? "ssh" : "rdp" }}端口：{{
-                  currentVm?.classify === "Linux"
-                    ? currentVm?.ssh_port
-                    : currentVm?.rdp_port
+                >{{ currentVm?.classify === "Windows" ? "rdp" : "ssh" }}端口：{{
+                  currentVm?.classify === "Windows"
+                    ? currentVm?.rdp_port
+                    : currentVm?.ssh_port
                 }}</span
               >
             </li>
@@ -874,7 +874,7 @@ function fullScreen() {
 // 关机
 function colseOrStart() {
   if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
-   
+
     closeVm();
   } else {
     startVm();
@@ -984,7 +984,7 @@ const beforeUpload = (file: any) => {
   }
   const postfix = (file && file.name).split(".")[1];
   let obj:any={
-    uid: file.uid,    
+    uid: file.uid,
     file_url:'',
     name:file.name
   }
@@ -1252,7 +1252,7 @@ function settingCurrentVM() {
 // 打开随堂测试
 async function openQuizModal() {
   if (oldQuizPaperList.value.length == answerNum.value) {
-    
+
     await getQuestionList(true);
     quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
@@ -1358,7 +1358,7 @@ watch(
   { deep: true, immediate: true }
 );
 onMounted(() => {
-  
+
   clearInterval(Number(viodeTimer));
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
@@ -1729,7 +1729,7 @@ i {
       .ant-upload-drag-icon {
         margin-bottom: 0px;
         color: var(--primary-color);
-        .iconfont { 
+        .iconfont {
           font-size: var(--font-size-24);
         }
       }
