@@ -19,6 +19,7 @@
           </a-form-item>
           <a-form-item label="关键词" name="keyWords">
             <a-textarea v-model:value="formState.keyWords"></a-textarea>
+            <span class='title'>*关键字最少是5个，请用,隔开</span>
           </a-form-item>
           <a-form-item label="分数" name="score">
             <a-input v-model:value="formState.score"></a-input>
@@ -86,7 +87,7 @@ function sendExplainQues(){
     type_id: 5,
     level_id:1,
     origin_score: formState.score,
-    keywords:[formState.keyWords],
+    keywords:formState.keyWords.split(','),
     answers:[formState.textanswer]
 
   }
@@ -100,6 +101,11 @@ function sendExplainQues(){
 }
 function handleOk() {
   formRef.value.validate().then(() => {
+    console.log(formState.keyWords.split(','),'hhhhhhhhh')
+    if(formState.keyWords.split(',')?.length<5){
+      message.warning('关键字最少是5个')
+      return
+    }
     sendExplainQues()
   });
 }
@@ -116,5 +122,8 @@ function handleCancel() {
 }
 .ant-input {
   border-radius: 18px;
+}
+.title{
+  color: var(--primary-color);
 }
 </style>
