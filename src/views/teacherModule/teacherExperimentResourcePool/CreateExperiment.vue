@@ -503,11 +503,6 @@ function create() {
       message.warning('请选择实验指导')
       return
     }
-    if([4,5].includes(createTypeNumber) && !docMp4File.file_url){   
-      // console.log(docMp4File)
-      message.warning('请选择实验指导')
-      return
-    }
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
@@ -529,15 +524,22 @@ function create() {
       // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
       // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
     }
-    if(docMp4File.suffix === 'md'){
+    if(docMp4File.suffix === 'md' || formState.document.mdValue){
       docMp4FileObj.guide=formState.document.mdValue
     }else{
       docMp4FileObj.directory_id = docMp4File.dataset_id      // 取的已选资源的目录id
       docMp4FileObj.file_path=docMp4File.file_url
     }
-    console.log(docMp4File);
-    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md') ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
+    // console.log(docMp4File);
+    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
     // console.log(ipynbFileObj)
+    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
+      console.log(docMp4FileObj)
+      message.warning('请选择实验指导')
+      return
+    }
+    // console.log(docMp4FileObj)
+    // return
     const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj
     let parameter=[
       {

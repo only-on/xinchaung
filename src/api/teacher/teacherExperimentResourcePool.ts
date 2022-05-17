@@ -76,6 +76,8 @@ export default {
   deleteVideo: { url: `/api/xinchuang/content/video/remove/{content_id}`, method: "DELETE"},
   updateVideoGuide: { url: `/api/xinchuang/content/video/{content_id}/guidebook`, method: "PUT", dataType: "json" },
   updateReport: { url: `/api/xinchuang/content/content/update_report/{id}`, method: "POST", dataType: "json" },
+  // 课程里章节选择实验列表
+  getExperimentList2: { url: `/api/course/contents/list`, method: "GET" },
 };
 
 export interface ITeacherExperimentResourcePool {
