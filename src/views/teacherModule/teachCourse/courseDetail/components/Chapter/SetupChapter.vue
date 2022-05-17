@@ -38,7 +38,7 @@
           </div>
         </a-spin>
       </template>
-      <Empty v-else :text="'暂无数据'" />
+      <Empty v-else :text="'暂无实验数据'" />
     </div>
   </div>
 

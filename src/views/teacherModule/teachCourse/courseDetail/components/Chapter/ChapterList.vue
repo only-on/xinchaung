@@ -283,19 +283,20 @@ const cancel=()=>{
 }
 // 选中章节
 const selectChaptert=(val:any)=>{
-  // console.log('章节',val)
+  console.log('章节',val)
   // if(){
 
   // }
-  state.activeChapter={...val}
+  state.activeChapter=val
   state.activeTab.chapterId=val.id
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
   emit('selectChaptert',val)
 }
   // 选中章节下实验
 function selectExperiment(a:any,v:any){
-  state.activeTab.chapterId=v.idv
-  state.activeExperimentObj={...a}
+  console.log('实验',a)
+  state.activeTab.chapterId=v.id
+  state.activeExperimentObj=a
   emit('selectExperiment',a)
   // pdf 视频 跳页面展示
   // const { href } = router.resolve({
@@ -587,10 +588,12 @@ const ProcessingData=(data:any)=>{
           }):''
         }
       })
-      console.log(item)
+      // console.log(item)
       selectChaptert(item)
       if(item.list.length){
         selectExperiment(item.list[0],item)
+      }else{
+        selectExperiment({},{})
       }
       data[index].openItem=true
     }else{
