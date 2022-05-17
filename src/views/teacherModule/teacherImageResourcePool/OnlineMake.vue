@@ -61,8 +61,8 @@
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
-            <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id)">
-              <span v-if="!opening">开启</span>
+            <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k)">
+              <span v-if="!v.opening">开启</span>
               <span v-else class="openStatus">
                 <LoadingOutlined></LoadingOutlined>
                 开启中...
@@ -213,11 +213,12 @@ const enterFun = (val: any) => {
     val.status=false
   })
 };
-const openEnv=(val:any)=>{
-  opening.value=true
+const openEnv=(val:any,index:any)=>{
+  // opening.value=true
+  list[index].opening=true
   http.openWorkbenchApi({urlParams:{id:val}}).then((res:any)=>{
     message.success('开启成功！')
-    opening.value=false
+    list[index].opening=false
     getWorkbenchStatus();
   })
 }
@@ -282,6 +283,7 @@ const initData = () => {
     // ostype  classify
     let data=res.data.list
     data.map((v:any)=>{
+      v.opening=false
       v.generateLoad=false
       v.status=false
     })
