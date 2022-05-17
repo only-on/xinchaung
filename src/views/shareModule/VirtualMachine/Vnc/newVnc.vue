@@ -159,7 +159,7 @@ function initWs() {
               if (ws.value.isReset()) {
                 Modal.confirm({
                   title: "提示",
-                  content: "改页面已在其他浏览器存在，是否替换",
+                  content: "该页面已在其他浏览器存在，是否替换",
                   okText: "是",
                   cancelText: "否",
                   class: "reset-ws-modal",
@@ -348,6 +348,7 @@ function settingCurrentVM(data: any) {
 // 关闭ws
     function closeWs() {
       (ws.value as any).close();
+      console.log(ws.value)
     }
 // 开启虚拟机
 initVnc.value = () => {

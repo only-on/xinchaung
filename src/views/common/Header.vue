@@ -484,21 +484,27 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
-    // 检查有无配置缓存，若无，则进行缓存
-    let wsConfig = lStorage.get("ws_config");
-    if (!wsConfig) {
-      api.common.getFileConfig().then((res: IBusinessResp | null) => {
-        console.log('[App] getFileConfig: ', res);
-        wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
-        lStorage.set('ws_config', wsConfig);
-        sStorage.set('ws_config', wsConfig);
-        for (let key in res?.data) {
-          lStorage.set(key, res?.data[key]);
-        }
-        initWs(JSON.parse(wsConfig))
-      }).catch((error: any) => {})
-    } else {
-      initWs(wsConfig)
+    function setWs () {
+      // 检查有无配置缓存，若无，则进行缓存
+      let wsConfig = lStorage.get("ws_config");
+      if (longWs1.value) {
+        longWs1.value.close();
+        longWs1.value = null as any
+      }
+      if (!wsConfig) {
+        api.common.getFileConfig().then((res: IBusinessResp | null) => {
+          console.log('[App] getFileConfig: ', res);
+          wsConfig = JSON.stringify({"host":res?.data.webmsg_ip,"port":res?.data.webmsg_port});
+          lStorage.set('ws_config', wsConfig);
+          sStorage.set('ws_config', wsConfig);
+          for (let key in res?.data) {
+            lStorage.set(key, res?.data[key]);
+          }
+          initWs(JSON.parse(wsConfig))
+        }).catch((error: any) => {})
+      } else {
+        initWs(wsConfig)
+      }
     }
     onMounted(async () => {
       if ((role === 3 || role === 4)&&!longWs1.value) {
@@ -511,6 +517,7 @@ export default defineComponent({
       }
       if (role === 3) {
         getHelpFinfo()
+        setWs()
       }
     });
     const helpInfoList: Ref<any> = ref([])
@@ -627,11 +634,24 @@ export default defineComponent({
       // longWs?.close()
       // console.log('+++++++++++++++')
     })
-    onUnmounted(() => {
+    function closeWs () {
       if (longWs1.value) {
+        longWs1.value.refresh();
         longWs1.value.close();
         longWs1.value = null as any
       }
+    }
+    // 监测学生端课程详情连接ws,其他页面断开ws
+    watch(() => router.currentRoute.value.path, newVal => {
+      if (role === 4) {
+        closeWs()
+        if (newVal === '/student/studentCourse/Detail') {
+          setWs()
+        }
+      }
+    },{immediate: true})
+    onUnmounted(() => {
+      closeWs()
     })
     return {
       env,
