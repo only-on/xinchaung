@@ -27,7 +27,7 @@
             <a-input v-model:value="formState.name" placeholder="请输入课程名称" />
           </a-form-item>
           <a-form-item label="起始时间" name="date">
-            <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD HH:mm:ss" format="YYYY-MM-DD HH:mm:ss" :disabledDate="disabledDate">
+            <a-range-picker @change="dateChange" v-model:value="formState.date" valueFormat="YYYY-MM-DD" format="YYYY-MM-DD" :disabledDate="disabledDate">
               <template #suffixIcon>
                 <SmileOutlined />
               </template>
@@ -336,7 +336,8 @@ const steupFormState:any=reactive({
   is_show_content_report:true,
   reportObj:{
     id:0,
-    name:''
+    name:'',
+    typeText:'',
   }
 })
 var reportVisible = ref<boolean>(false);
@@ -380,6 +381,7 @@ const disabledDate=(current: Moment)=>{
 }
 const dateChange=(val:any)=>{
   // console.log(val)
+  formState.date=val
   formState.start_time=val[0],
   formState.end_time=val[1]
   // console.log(formState)
