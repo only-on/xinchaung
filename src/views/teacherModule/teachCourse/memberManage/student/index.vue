@@ -46,7 +46,7 @@
         tableData.total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: true,
+              showSizeChanger:false,
               total: tableData.total,
               current: tableData.page,
               pageSize: tableData.limit,
@@ -186,7 +186,8 @@ function onSearch(value: any) {
   getcoursestudent()
 }
 function onChange(page: any, pageSize: any) {
-  tableData.page=1
+  console.log(pageSize,page)
+  tableData.page=page
   tableData.limit=pageSize
   getcoursestudent()
 }
@@ -213,7 +214,10 @@ function updateSelectStuVisable(value: any,studentids:any) {
   }
 }
 function getcoursestudent(){
-  http.coursestudentlist({param:params,limit:tableData.limit,page:tableData.page}).then((res:any)=>{
+  // limit:tableData.limit,page:tableData.page
+  params.page=tableData.page
+  params.limit=tableData.limit
+  http.coursestudentlist({param:params}).then((res:any)=>{
     data.value=res.data.list
     tableData.total=res.data.page.totalCount
   })

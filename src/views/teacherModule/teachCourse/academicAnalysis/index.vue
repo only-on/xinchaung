@@ -18,7 +18,8 @@
                           </a-form-item>
                     </div>
                 </div>
-                <a-table
+                <div class="tableHeight">
+                  <a-table
       rowKey='username'
       :columns="columns"
       :data-source="data"
@@ -26,7 +27,7 @@
         tableData.total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: true,
+              showSizeChanger:false,
               total: tableData.total,
               current: tableData.page,
               pageSize: tableData.limit,
@@ -37,6 +38,7 @@
       "
     >
     </a-table>
+                </div>
             </div> 
        </div>
     </div>
@@ -188,5 +190,9 @@ function selectExperiment(val: any) {
    }
    .header-select{
      display: flex;
+   }
+   .tableHeight{
+     height:247px;
+     overflow-y: auto;
    }
 </style>
