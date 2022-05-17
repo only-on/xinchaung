@@ -61,20 +61,44 @@
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
-            <a-butoon class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id)">
+            <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id)">
               <span v-if="!opening">开启</span>
               <span v-else class="openStatus">
                 <LoadingOutlined></LoadingOutlined>
                 开启中...
               </span>
-      </a-butoon>
-            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
+          </a-button>
+            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v,k)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
           </div>
         </div>
       </div>
       <Empty v-if="!list.length && !loading" />
     </div>
   </a-spin>
+  <a-modal class="save-image-modal" :visible="saveVisible" @cancel='cancel'>
+         <template v-slot:title>保存镜像</template>
+          <div>
+            <a-form ref="createForm" :model="createFormData">
+              <a-form-item has-feedback required label="镜像名称" name="name">
+                <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
+              </a-form-item>
+              <a-form-item has-feedback required label="镜像描述" name="description">
+                <a-textarea
+                  v-model:value="createFormData.description"
+                  placeholder="请在这里输入镜像描述文字"
+                  :auto-size="{ minRows: 3, maxRows: 5 }"
+                />
+              </a-form-item>
+            </a-form>
+          </div>
+          <template v-slot:footer>
+            <div>
+              <a-button @click="cancel">取消</a-button>
+              <a-button type="primary" @click="saveImage">确定</a-button>
+            </div>
+          </template> 
+          
+        </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -111,7 +135,24 @@ updata({
   componenttype: undefined,
   showNav: true,
 });
-
+const saveVisible:any=ref(false)
+const createFormData=reactive({
+    name:'',
+    description:''
+})
+// const rules: any = {
+//       name: [{ required:true,trigger: "change" }],
+//       description: [
+//         {
+//           required: false,
+//           max: 200,
+//           message: "镜像描述最长200个字",
+//           trigger: "change",
+//         },
+//       ],
+//     };
+const imageid:any=ref()
+const saveIndex:any=ref()
 const OnlineAdd = () => {
   if(list && list.length >= 5 ){
     message.warning("最多存在5个容器")
@@ -194,24 +235,42 @@ const deleteFun = (val: any) => {
     },
   });
 };
-const GenerateImage = (val: any) => {
-  let obj={
-    // name:val.image.name,
-    // description:val.image.description
-
-    name:'',
-    description:''
+const GenerateImage = (val: any,k:any) => {
+  saveVisible.value=true
+  imageid.value=val.id
+  saveIndex.value=k
+};
+const saveImage=()=>{
+  if(!createFormData.name){
+    message.warning('镜像名称不能为空！')
+    return
   }
-  val.generateLoad=true
-  http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
+  if(!createFormData.description){
+    message.warning('镜像描述不能为空！')
+    return
+  }
+   let obj={
+    name:createFormData.name,
+    description:createFormData.description
+  }
+  list[saveIndex.value].generateLoad=true
+  // val.generateLoad=true
+  http.GenerateImage({urlParams:{imageID:imageid.value},param:{...obj}}).then((res: IBusinessResp) => {
     message.success("生成成功");
-   val.generateLoad=false
+    saveVisible.value=false
+    createFormData.name=''
+    createFormData.description=''
+    list[saveIndex.value].generateLoad=false
+  //  val.generateLoad=false
   })
   .catch(() => {
-    val.generateLoad=false
+    // val.generateLoad=false
+    list[saveIndex.value].generateLoad=false
   })
-};
-
+}
+const cancel=()=>{
+  saveVisible.value=false
+}
 var loading: Ref<boolean> = ref(false);
 var list: any = reactive([]);
 const initData = () => {
@@ -237,7 +296,7 @@ onMounted(() => {
 async function init() {
       await initData();
       getWorkbenchStatus();
-    }
+}
 </script>
 <style scoped lang="less">
 .reference {
