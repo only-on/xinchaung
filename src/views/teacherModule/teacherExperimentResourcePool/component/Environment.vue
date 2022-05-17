@@ -78,10 +78,12 @@ const http = (request as any).teacherImageResourcePool;
 interface Props {
   type: boolean;     // true单环境    false 多环境
   imageType:string      //  筛选镜像类型
+  envList?: any
 }
 const props = withDefaults(defineProps<Props>(), {
   type: false,
-  imageType:'vnc' 
+  imageType:'vnc',
+  envList: () => []
 });
 const configs: any = reactive([
   {
@@ -129,6 +131,7 @@ const reactiveData: any = reactive({
 });
 var visible: Ref<boolean> = ref(false);
 const selectList: any = reactive([]);
+selectList.push(...props.envList)
 const currentImage: any = reactive({
   flavor: {
     cpu: "",

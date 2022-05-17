@@ -138,7 +138,7 @@ const getClass = (i: any, idx: number, v: any) => {
   if (idx < v.data.length - 1) {
     str = "haveAfter";
   }
-  if (i === v.value) {
+  if (i === Number(v.value)) {
     v.active = idx;
     str += " active";
   }

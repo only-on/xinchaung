@@ -99,13 +99,14 @@
       </div>
     </div>
     <!-- 实验环境配置 -->
-    <!-- <div class="configuration" v-if="componentsList.includes('configuration')">
+    <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
         :type="formState.single"
         @handleOk="ConfirmConfiguration"
         :imageType="createTypeNumber === 2 ? 'jupyter':'vnc'"
+        :envList="formState.imageConfigs"
       />
-    </div> -->
+    </div>
     <div class="submitBox">
       <Submit @submit="create" @cancel="cancel"></Submit>
     </div>
@@ -232,6 +233,15 @@ watch(()=>props.detail, newVal => {
   formState.dataset?.forEach((v: any) => {
     formState.selectedName.push(v.name)
     formState.datasets.push(v.uid)
+  })
+  formState.imageConfigs = []
+  formState.env?.forEach((v: any, k: number) => {
+    formState.imageConfigs.push({
+      id: k,
+      image_id: v.image.id,
+      imageName: v.image.name,
+      flavor: v.flavor
+    })
   })
 }, {deep:true,immediate:true})
 // console.log(formState)
