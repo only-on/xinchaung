@@ -142,7 +142,7 @@
         <a-button type="primary" @click="changeReport()" size="small"> 选择 </a-button>
       </div>
       <div v-if="steupFormState.reportObj.id" class="item report">
-        <span class="type">{{`【${steupFormState.reportObj.typeText}】`}}</span>
+        <span class="type">{{`${steupFormState.reportObj.typeText}`}}</span>
         <span>{{`${steupFormState.reportObj.name}`}}</span>
       </div>
     </div>
@@ -404,9 +404,9 @@ const getCourseSetup=()=>{
     steupFormState.is_show_content_report=data.is_show_content_report?true:false
     if(data.report_template){
       if(data.report_template.is_init === 1){
-        data.report_template.typeText='系统默认'
+        data.report_template.typeText='【系统默认】'
       }else{
-        data.report_template.typeText=data.report_template.word_path === ''?'在线':'离线'
+        data.report_template.typeText=data.report_template.word_path === ''?'【在线】':'【离线】'
       }
       steupFormState.reportObj={...data.report_template}
     }
