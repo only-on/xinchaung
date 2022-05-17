@@ -162,12 +162,17 @@ const openVnc = () => {
     return
   }
   connectStatus.value = 1
-  const {id, task_type} = experimentDetail
+  let {id, task_type} = experimentDetail
+  if (experimentDetail.is_webssh) {
+    task_type = 2
+  } else if (experimentDetail.programing_type && experimentDetail.task_type === 4) {
+    task_type = 3
+  }
   const param: any = {
     type: type ? "course":"content",  // 实验
     opType: type && role === 4 ? type : "prepare",
     taskId: experimentDetail.id,
-    experType: experimentDetail.task_type
+    experType: task_type
   };
   if (type) {
     param.recommendType = 'content'

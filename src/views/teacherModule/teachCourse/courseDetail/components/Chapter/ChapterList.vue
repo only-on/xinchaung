@@ -307,6 +307,7 @@ function selectExperiment(a:any,v:any){
 
 // 备课 开始学习
 let currentClickIndex = ref(-1)
+const isOpen = ref(false)
 function prepare(a:any, i: number) {
   currentClickIndex.value = i
   const { id } = a
@@ -339,6 +340,7 @@ function prepare(a:any, i: number) {
       if (task_type === 6 || task_type === 7 || task_type === 3) {
         connectStatus.value = 2
         isWsConnect.value = true
+        isOpen.value = true
       } else {
         // isWsConnect.value = false
       }
@@ -357,7 +359,6 @@ function prepare(a:any, i: number) {
     return
   }
 }
-const isOpen = ref(false)
 watch(
   () => connectStatus.value,
   (val) => {
