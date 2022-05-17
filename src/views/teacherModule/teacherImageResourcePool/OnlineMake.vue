@@ -121,6 +121,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined,LoadingOutlined } from "@ant-design/icons-vue";
 import { getWorkbenchInfoApi, deleteWorkbenchApi } from "./api";
+import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -130,7 +131,7 @@ var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const statusList:any=ref([])
 updata({
-  tabs: [{ name: "在线镜像制作台1", componenttype: 0 }],
+  tabs: [{ name: "在线镜像制作台", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -236,6 +237,8 @@ const deleteFun = (val: any) => {
   });
 };
 const GenerateImage = (val: any,k:any) => {
+  createFormData.name=''
+  createFormData.description=''
   saveVisible.value=true
   imageid.value=val.id
   saveIndex.value=k
@@ -258,8 +261,6 @@ const saveImage=()=>{
   http.GenerateImage({urlParams:{imageID:imageid.value},param:{...obj}}).then((res: IBusinessResp) => {
     message.success("生成成功");
     saveVisible.value=false
-    createFormData.name=''
-    createFormData.description=''
     list[saveIndex.value].generateLoad=false
   //  val.generateLoad=false
   })
