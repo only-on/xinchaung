@@ -15,6 +15,9 @@ export default {
   createMirrorApi: { url: `/api/env/images`, method: "POST",dataType: 'json' },
 
   getImgTag:{ url: `/api/category/镜像标签/tags`, method: "GET"},
+
+  getWorkbenchStatusApi: { url: "/api/env/workbenchs/vms", method: "GET" },//获取工作台状态
+  openWorkbenchApi: { url: "/api/env/workbenchs/start/{id}", method: "POST" },//开启工作台
 };
 
 export interface ITeacherImageResourcePool {
@@ -28,6 +31,8 @@ export interface ITeacherImageResourcePool {
 
   getImgTag:TFHttpSend
 
+  getWorkbenchStatusApi:TFHttpSend
+  openWorkbenchApi:TFHttpSend
 }
 
 export const MODULE_NAME = "teacherImageResourcePool";

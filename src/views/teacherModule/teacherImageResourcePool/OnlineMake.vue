@@ -43,7 +43,7 @@
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>
-                      <div v-for="i in v.dataset">{{i.name}}</div>
+                      <p v-for="i in v.dataset">{{i.name}}</p>
                     </template>
                     <span class="iconfont icon-chakangengduo"></span>
                   </a-popover>
@@ -60,28 +60,21 @@
           </div>
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
-            <!-- <a-button type="text" :loading="v.generateLoad" @click="enterFun(v)">进入</a-button> -->
-            <a-button :type="v.status?'link':'text'" :loading="v.status"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
-            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v,k)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
+            <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
+            <a-butoon class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id)">
+              <span v-if="!opening">开启</span>
+              <span v-else class="openStatus">
+                <LoadingOutlined></LoadingOutlined>
+                开启中...
+              </span>
+      </a-butoon>
+            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
           </div>
         </div>
       </div>
       <Empty v-if="!list.length && !loading" />
     </div>
   </a-spin>
-  <a-modal v-model:visible="Visible"  title="生成镜像" class="setupVisible" :width="500">
-    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item :label="`镜像名称`" name="name">
-        <a-input v-model:value="formState.name" :placeholder="`请输入镜像名称`" />
-      </a-form-item>
-      <a-form-item :label="`镜像描述`" name="description">
-        <a-textarea v-model:value="formState.description" :placeholder="`请输入镜像描述`" />
-      </a-form-item>
-    </a-form>
-    <template #footer>
-      <Submit @submit="Save" @cancel="cancel"></Submit>
-    </template>
-  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -102,16 +95,16 @@ import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
-import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { ExclamationCircleOutlined,LoadingOutlined } from "@ant-design/icons-vue";
 import { getWorkbenchInfoApi, deleteWorkbenchApi } from "./api";
-import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
 const http = (request as any).teacherImageResourcePool;
-
+const opening:any=ref(false)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
+const statusList:any=ref([])
 updata({
   tabs: [{ name: "在线镜像制作台", componenttype: 0 }],
   showContent: true,
@@ -138,7 +131,11 @@ const getClass = (k: number) => {
   }
   return str;
 };
-
+const getWorkbenchStatus=()=>{
+      http.getWorkbenchStatusApi().then((res: any) => {
+        statusList.value=res.data
+      })
+};
 const enterFun = (val: any) => {
   let tags: any[] = val.image.tags;
   let id = val.id;
@@ -169,10 +166,19 @@ const enterFun = (val: any) => {
         });
         window.open(href, "_blank");
       }
+      getWorkbenchStatus() 
   }).catch(() => {
     val.status=false
   })
 };
+const openEnv=(val:any)=>{
+  opening.value=true
+  http.openWorkbenchApi({urlParams:{id:val}}).then((res:any)=>{
+    message.success('开启成功！')
+    opening.value=false
+    getWorkbenchStatus();
+  })
+}
 const deleteFun = (val: any) => {
   Modal.confirm({
     title: "确认删除吗？",
@@ -188,7 +194,23 @@ const deleteFun = (val: any) => {
     },
   });
 };
+const GenerateImage = (val: any) => {
+  let obj={
+    // name:val.image.name,
+    // description:val.image.description
 
+    name:'',
+    description:''
+  }
+  val.generateLoad=true
+  http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
+    message.success("生成成功");
+   val.generateLoad=false
+  })
+  .catch(() => {
+    val.generateLoad=false
+  })
+};
 
 var loading: Ref<boolean> = ref(false);
 var list: any = reactive([]);
@@ -207,57 +229,15 @@ const initData = () => {
     loading.value = false;
   });
 };
-//生成镜像
-var Visible: Ref<boolean> = ref(false);
-const formRef = ref();
-const rules = {
-  name: [
-    { required: true, message: `请输入名称`, trigger: "blur" },
-    { max: 30, message: `名称最多30个字符`, trigger: "blur" },
-  ],
-  description:[
-    { required: true, message: `请输入描述`, trigger: "blur" },
-  ]
-}
-const formState=reactive<any>({
-  name:'',
-  description:'',
-  id:0,
-  k:0,
-})
-const cancel=()=>{
-  formRef.value.resetFields()
-  Visible.value=false
-}
-const GenerateImage = (val: any,k:number) => {
-  // val.generateLoad=true
-  Visible.value=true
-  formState.id=val.id
-  formState.k=k
-}
-const Save=()=>{
-  let obj={
-    name:formState.name,
-    description:formState.description,
-  }
-  formRef.value.validate().then(()=>{ 
-    list[formState.k].generateLoad=true
-     http.GenerateImage({urlParams:{imageID:formState.id},param:{...obj}}).then((res: IBusinessResp) => {
-      message.success("生成成功");
-      formRef.value.resetFields()
-      Visible.value=false
-      list[formState.k].generateLoad=false
-    })
-    .catch(() => {
-      formRef.value.resetFields()
-      Visible.value=false
-      list[formState.k].generateLoad=false
-    })   
-  })
-}
+
 onMounted(() => {
-  initData();
+  // initData();
+  init()
 });
+async function init() {
+      await initData();
+      getWorkbenchStatus();
+    }
 </script>
 <style scoped lang="less">
 .reference {
@@ -374,5 +354,11 @@ onMounted(() => {
       }
     }
   }
+}
+.cursor{
+  cursor: pointer;
+}
+.openStatus{
+  color: var(--primary-color);
 }
 </style>
