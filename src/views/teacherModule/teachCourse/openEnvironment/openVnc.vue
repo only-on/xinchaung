@@ -52,7 +52,7 @@
                         item.status === "loading" ? "(" + item.progress + "%)" : ""
                       }}</span
                     >
-                    
+
                     <span
                       v-if="item.status === 'loading'"
                       class="iconfont icon-guanbi cancelUpload"
@@ -236,6 +236,7 @@ export default defineComponent({
       upload: null,
     });
     provide("vncLoading", vncLoading);
+    provide("loading", loading);
     onMounted(() => {
       nextTick(() => {
         initVm();
@@ -272,7 +273,7 @@ export default defineComponent({
               if (novncEl.value) {
                 novncEl.value.connectVnc()
               }
-              
+
           })
           .catch((err:any) => {
             message.error(err);
