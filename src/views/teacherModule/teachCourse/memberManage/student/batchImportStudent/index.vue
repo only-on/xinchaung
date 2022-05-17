@@ -29,7 +29,7 @@
       tableData.total > 10
         ? {
             hideOnSinglePage: false,
-            showSizeChanger: true,
+            showSizeChanger:false,
             total: tableData.total,
             current: tableData.page,
             pageSize: tableData.limit,
@@ -82,6 +82,7 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
+const allTableData:any=ref([])
 const successData:any=ref([])
 const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function beforeUpload(file:any){
@@ -91,6 +92,7 @@ function beforeUpload(file:any){
  http.importStu({param:fd}).then((res:any)=>{
       if(res.code){
         // message.warning('导入成功')
+        allTableData.value=res.data
         data.value=res.data
         tableData.total=data.value?.length
         successData.value=data.value?.filter((item:any)=>{
@@ -108,7 +110,9 @@ function beforeUpload(file:any){
       }
  })
 }
-function onChange(page: any, pageSize: any) {}
+function onChange(page: any, pageSize: any) {
+  tableData.page=page
+}
 function onShowSizeChange(current: any, size: any) {}
 function callback() {}
 function downloadTemplate(){
