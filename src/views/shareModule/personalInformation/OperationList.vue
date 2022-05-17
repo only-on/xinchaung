@@ -109,7 +109,7 @@ export default defineComponent({
     const router = useRouter();
     const route = useRoute();
     const options = ref<SelectTypes['options']>([{value: '登录', label: '登录'},{value: '退出', label: '退出'},{value: '添加', label: '添加'},{value: '删除', label: '删除'},{value: '编辑', label: '编辑'},{value: '回帖', label: '回帖'},{value: '修改设置', label: '修改设置'},{value: '开始学习', label: '开始学习'},{value: '继续学习', label: '继续学习'},{value: '重修', label: '重修'},{value: '练习', label: '练习'},{value: '结束实验', label: '结束实验'},{value: '开始实训', label: '开始实训'},{value: '继续实训', label: '继续实训'},{value: '保存学习进度', label: '保存学习进度'},{value: '开始录制视频', label: '开始录制视频'},{value: '停止录制视频', label: '停止录制视频'},{value: '发帖', label: '发帖'},{value: '删帖', label: '删帖'},{value: '提交', label: '提交'}])
-    const http=(request as any).personalInformation
+    const http=(request as any).common
     var loading:Ref<boolean>=ref(false)
     var total:Ref<number>=ref(0)  
     var list:ItdItems[]=reactive([])

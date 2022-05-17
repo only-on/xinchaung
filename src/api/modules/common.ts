@@ -33,7 +33,11 @@ export default {
     // 检查当前用户是否已登录
     doesLoggedIn: { url: `/api/common/does-logged-in`, method: 'GET' },
     //  获取公共配置
-    getFileConfig:{ url: `/api/config/public-config`, method: "GET"}
+    getFileConfig:{ url: `/api/config/public-config`, method: "GET"},
+    //   退出登录
+    resetPassword:{url: `/api/yii/site/change-password`, method: 'POST', dataType: "json"},
+    operationLog:{ url: '/api/system/user-logs', method: 'GET',},
+    
 
 }
 export interface ICommonAps {
@@ -48,6 +52,8 @@ export interface ICommonAps {
     refreshCaptcha: TFHttpSend
     onlineUserInfo: TFHttpSend
     doesLoggedIn: TFHttpSend
+    resetPassword: TFHttpSend
+    operationLog:TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

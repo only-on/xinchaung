@@ -6,7 +6,7 @@
         <CaretRightOutlined v-show="v.children && v.children.length && !v.show"/>
       </div>
       <span class="itemImg" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
-      <span class="name single_ellipsis">{{v.file_name}}</span>
+      <span class="name single_ellipsis" :title="v.file_name">{{v.file_name}}</span>
     </div>
     <div class="flexCenter level" v-if="v.children && v.children.length && v.show">
       <FileList :FileList="v.children" @selectFile="selectFile"  :activeItem="props.activeItem"/>
@@ -46,10 +46,7 @@ var currentPage: Ref<number> = ref(1);
 var PageCount: Ref<number> = ref(1);
 var limit: Ref<number> = ref(9);
 
-// if(props.FileList.length){
-//   PageCount.value=Math.ceil(props.FileList.length / limit.value)
-//   List.push(...props.FileList)
-// }
+
 var totalList:any=computed(()=>{
   let arr:any=[]
   let curLength=currentPage.value * limit.value
@@ -60,7 +57,12 @@ var totalList:any=computed(()=>{
       arr.push(v)
     }
   })
-  console.log('totalList:'+arr)
+  if(props.FileList.length){
+    // console.log(props.FileList)
+    PageCount.value=Math.ceil(props.FileList.length / limit.value)
+    // List.push(...props.FileList)
+  }
+  console.log('totalList:',arr)
   return arr
 })
 

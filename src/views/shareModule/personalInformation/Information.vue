@@ -100,7 +100,7 @@ export default defineComponent({
             return;
           }
           // console.log(state.formState);
-          http
+          httpLogout
             .resetPassword({
               param: { reset_password_params: { ...state.formState } },
             })

@@ -6,7 +6,7 @@ const role = lStorage.get("role") || 3;
 const PathList = {
   1: "",
   2: "/admin/home",
-  3: "/teacher/teacherExperimentResourcePool",
+  3: "/teacher/home",
   4: "/student/statistics",
   5: "",
 };

@@ -76,7 +76,7 @@ const configs: any = reactive([
     data:[
       {label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},
     ],
-    unit: "GB",
+    unit: "核",
     value: 2,
     type: "select",
     key: "cpu",
@@ -151,6 +151,12 @@ const getClass = (i: any, idx: number, v: any) => {
 const initData = () => {
   http.getConfigApi().then((res: any) => {
     const {image_configs} =res.data
+    Object.keys(image_configs).forEach((v:any)=>{
+      // console.log(image_configs[v]);
+      let val=image_configs[v]
+      console.log(val);
+      console.log(Object.entries(val));
+    })
     
   });
 };

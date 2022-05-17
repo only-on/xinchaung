@@ -445,6 +445,7 @@ export default defineComponent({
       4:[statistics,forum,studentCourse]
     }[role]
     menus.push(...arr)
+    lStorage.set("menuActiveName", '首页');
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });
