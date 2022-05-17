@@ -174,7 +174,7 @@ watch(() => { return configuration.componenttype; },
     labelSearch.year=0
     labelSearch.CourseDirection=0
     labelSearch.CareerDirection=0
-    
+
     classifyList.forEach((v: any) => {
       v.value = 0
     })
@@ -274,11 +274,10 @@ const EmptyType:any=computed(()=>{
       str= 'searchEmpty'
     }
   }
-  console.log(str);
+  // console.log(str);
   return str
 })
 const EmptyText=computed(()=>{
-  // console.log(courseList.length,loading.value,EmptyType.value);
   if(!courseList.length && !loading.value && EmptyType.value ==='empty'){
     return '暂无课程，点击下方按钮创建课程吧！'
   }else{

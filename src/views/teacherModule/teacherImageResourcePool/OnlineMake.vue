@@ -43,7 +43,7 @@
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>
-                      <p v-for="i in v.dataset">{{i.name}}</p>
+                      <div v-for="i in v.dataset">{{i.name}}</div>
                     </template>
                     <span class="iconfont icon-chakangengduo"></span>
                   </a-popover>
@@ -69,6 +69,19 @@
       <Empty v-if="!list.length && !loading" />
     </div>
   </a-spin>
+  <a-modal v-model:visible="Visible"  title="生成镜像" class="setupVisible" :width="500">
+    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
+      <a-form-item :label="`镜像名称`" name="name">
+        <a-input v-model:value="formState.name" :placeholder="`请输入镜像名称`" />
+      </a-form-item>
+      <a-form-item :label="`镜像描述`" name="description">
+        <a-textarea v-model:value="formState.description" :placeholder="`请输入镜像描述`" />
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <Submit @submit="Save" @cancel="cancel"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import {
@@ -91,6 +104,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import { getWorkbenchInfoApi, deleteWorkbenchApi } from "./api";
+import Submit from "src/components/submit/index.vue";
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
@@ -174,23 +188,7 @@ const deleteFun = (val: any) => {
     },
   });
 };
-const GenerateImage = (val: any) => {
-  let obj={
-    // name:val.image.name,
-    // description:val.image.description
 
-    name:'',
-    description:''
-  }
-  val.generateLoad=true
-  http.GenerateImage({urlParams:{imageID:val.id},param:{...obj}}).then((res: IBusinessResp) => {
-    message.success("生成成功");
-   val.generateLoad=false
-  })
-  .catch(() => {
-    val.generateLoad=false
-  })
-};
 
 var loading: Ref<boolean> = ref(false);
 var list: any = reactive([]);
@@ -209,7 +207,47 @@ const initData = () => {
     loading.value = false;
   });
 };
+//生成镜像
+var Visible: Ref<boolean> = ref(false);
+const formRef = ref();
+const rules = {
+  name: [
+    { required: true, message: `请输入名称`, trigger: "blur" },
+    { max: 30, message: `名称最多30个字符`, trigger: "blur" },
+  ],
 
+}
+const formState=reactive<any>({
+  name:'',
+  description:'',
+  id:0
+})
+const cancel=()=>{
+  formRef.value.resetFields()
+  Visible.value=false
+}
+const GenerateImage = (val: any) => {
+  // val.generateLoad=true
+  Visible.value=true
+  formState.id=val.id
+}
+const Save=()=>{
+  let obj={
+    name:formState.name,
+    description:formState.description,
+  }
+  formRef.value.validate().then(()=>{ 
+     http.GenerateImage({urlParams:{imageID:formState.id},param:{...obj}}).then((res: IBusinessResp) => {
+      message.success("生成成功");
+      formRef.value.resetFields()
+      Visible.value=false
+    })
+    .catch(() => {
+      formRef.value.resetFields()
+      Visible.value=false
+    })   
+  })
+}
 onMounted(() => {
   initData();
 });
