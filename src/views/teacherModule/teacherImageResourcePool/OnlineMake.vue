@@ -130,7 +130,7 @@ var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const statusList:any=ref([])
 updata({
-  tabs: [{ name: "在线镜像制作台", componenttype: 0 }],
+  tabs: [{ name: "在线镜像制作台1", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
