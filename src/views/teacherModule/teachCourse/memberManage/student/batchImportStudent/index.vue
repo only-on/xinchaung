@@ -145,4 +145,8 @@ function downloadTemplate(){
     margin-right: 20px;
   }
 }
+:deep(.ant-table-pagination.ant-pagination){
+  float: none;
+  text-align: center;
+}
 </style>

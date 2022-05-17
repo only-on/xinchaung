@@ -38,7 +38,8 @@
         <a-button class="brightBtn" type="primary" @click="addStudent">添加学生</a-button>
       </div>
     </div>
-    <a-table
+    <div class="tableHeight">
+      <a-table
     rowKey='id'
       :columns="columns"
       :data-source="data"
@@ -67,6 +68,7 @@
       </div>
     </template>
     </a-table>
+    </div>
     <addstudent :visable='visable' :courseId='courseId' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
   </div>
   <a-modal
@@ -315,5 +317,9 @@ onMounted(()=>{
   .delete{
     margin-right:10px;
   }
+}
+.tableHeight{
+  height: 530px;
+  overflow-y: auto;
 }
 </style>
