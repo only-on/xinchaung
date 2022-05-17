@@ -189,6 +189,7 @@ const edit = (val: any, k: number) => {
 };
 const Delete = (k: number) => {
   selectList.splice(k, 1);
+  emit("handleOk", selectList);
 };
 const selectedImage = (val: any) => {
   // console.log('已选择好的配置=》',val)

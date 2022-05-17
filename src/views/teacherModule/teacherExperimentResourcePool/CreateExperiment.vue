@@ -538,6 +538,10 @@ function create() {
       message.warning('请选择实验指导')
       return
     }
+    if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
+      message.warning('请添加实验环境')
+      return
+    }
     // console.log(docMp4FileObj)
     // return
     const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj
@@ -689,7 +693,6 @@ function getTopoVmInfo(id: number) {
   });
 }
 const ConfirmConfiguration = (val: any) => {
-  // console.log(val)
   let arr:any=[]
   val.forEach((v:any) => {
     // console.log(v)

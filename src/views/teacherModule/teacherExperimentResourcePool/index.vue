@@ -4,6 +4,7 @@
     @handleMenuClick="handleMenuClick"
     :TypeList="ExperimentTypeList"
     :isShowAdd="isShowAdd"
+    :isReset="resetKeyword"
   ></search-add>
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -111,6 +112,7 @@ updata({
 });
 const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
+const resetKeyword = ref<boolean>(false);
 watch(
   () => {
     return configuration.componenttype;
@@ -122,6 +124,7 @@ watch(
     searchInfo.content_direction = 0
     searchInfo.content_type = 0
     searchInfo.content_level = 0
+    resetKeyword.value = !resetKeyword.value
     classifyList.forEach((v: any) => {
       v.value = 0
     })

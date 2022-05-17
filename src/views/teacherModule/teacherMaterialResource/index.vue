@@ -4,6 +4,7 @@
     @handleMenuClick="handleMenuClick"
     :TypeList="materialTypeList"
     :isShowAdd="true"
+    :isReset="resetKeyword"
   ></search-add>
   <classify :list="classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -100,6 +101,7 @@ const uid = lStorage.get("uid")
 
 // 搜索
 const searchKey = ref<string>("");
+const resetKeyword = ref<boolean>(false)
 const searchFn = (key: string) => {
   searchKey.value = key;
   pageInfo.page = 1
@@ -159,11 +161,13 @@ watch(
   (val) => {
     currentTab.value = Number(val);
     pageInfo.page = 1
-    // searchKey.value = ''
+    searchKey.value = ''
     labelSearch.label = 0
     labelSearch.type = 0
     classifyList[0].value = 0
     classifyList[1].value = 0
+    resetKeyword.value = !resetKeyword.value
+    // }
     initData();
     // getLabelsList()
     // getTypeList()
@@ -197,7 +201,6 @@ interface Iuser {
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
   materialList.length = 0
-    
   const param = {
     name: searchKey.value,
     is_public: currentTab.value ? 0 : 1,  // 1公开 0私有

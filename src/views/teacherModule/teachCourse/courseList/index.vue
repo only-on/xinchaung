@@ -1,5 +1,5 @@
 <template>
-  <search-add @searchFn="searchFn" @handleMenuClick="handleMenuClick" :isShowAdd="isShowAdd"></search-add>
+  <search-add @searchFn="searchFn" @handleMenuClick="handleMenuClick" :isShowAdd="isShowAdd" :isReset="resetKeyword"></search-add>
   <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
@@ -161,6 +161,7 @@ const searchInfo = reactive<ISearchInfo>({
   limit: 12,
   page: 1,
 });
+const resetKeyword = ref<boolean>(false);
 watch(() => { return configuration.componenttype; },
   (val) => {
     // console.log(val)
@@ -174,6 +175,7 @@ watch(() => { return configuration.componenttype; },
     labelSearch.year=0
     labelSearch.CourseDirection=0
     labelSearch.CareerDirection=0
+    resetKeyword.value = !resetKeyword.value
 
     classifyList.forEach((v: any) => {
       v.value = 0

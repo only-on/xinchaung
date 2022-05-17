@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref } from "vue";
+import { ref, watch } from "vue";
 const isMouseOver = ref<boolean>(false);
 const searchKey = ref<string>("");
 const searchFn = () => {
@@ -41,6 +41,9 @@ const searchFn = () => {
 const handleMenuClick = (v: any) => {
   emit("handleMenuClick", v);
 };
+watch(()=>props.isReset, newVal => {
+  searchKey.value = ''
+},{immediate: true, deep:true})
 interface IList {
   name: string;
   key: string;
@@ -48,12 +51,14 @@ interface IList {
 interface Props {
   TypeList?: IList[];
   isShowAdd?: boolean;
-  isShowSearch?: boolean
+  isShowSearch?: boolean;
+  isReset?: boolean;
 }
 const props = withDefaults(defineProps<Props>(), {
   TypeList: () => [],
   isShowAdd: true,
-  isShowSearch: true
+  isShowSearch: true,
+  isReset: false
 });
 const emit = defineEmits<{
   (e: "searchFn", key: string): void;
