@@ -62,7 +62,7 @@
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <!-- <a-button type="text" :loading="v.generateLoad" @click="enterFun(v)">进入</a-button> -->
             <a-button :type="v.status?'link':'text'" :loading="v.status"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
-            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
+            <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v,k)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
           </div>
         </div>
       </div>
@@ -215,21 +215,25 @@ const rules = {
     { required: true, message: `请输入名称`, trigger: "blur" },
     { max: 30, message: `名称最多30个字符`, trigger: "blur" },
   ],
-
+  description:[
+    { required: true, message: `请输入描述`, trigger: "blur" },
+  ]
 }
 const formState=reactive<any>({
   name:'',
   description:'',
-  id:0
+  id:0,
+  k:0,
 })
 const cancel=()=>{
   formRef.value.resetFields()
   Visible.value=false
 }
-const GenerateImage = (val: any) => {
+const GenerateImage = (val: any,k:number) => {
   // val.generateLoad=true
   Visible.value=true
   formState.id=val.id
+  formState.k=k
 }
 const Save=()=>{
   let obj={
@@ -237,14 +241,17 @@ const Save=()=>{
     description:formState.description,
   }
   formRef.value.validate().then(()=>{ 
+    list[formState.k].generateLoad=true
      http.GenerateImage({urlParams:{imageID:formState.id},param:{...obj}}).then((res: IBusinessResp) => {
       message.success("生成成功");
       formRef.value.resetFields()
       Visible.value=false
+      list[formState.k].generateLoad=false
     })
     .catch(() => {
       formRef.value.resetFields()
       Visible.value=false
+      list[formState.k].generateLoad=false
     })   
   })
 }
