@@ -1,6 +1,6 @@
 <template>
   <div class="chartTerr">
-    <div class="chartTerrLeft" :class="((currentTab === '1' && role === 3) || role === 4 || role ===2)?'chartTerrLeft2':''">
+    <div class="chartTerrLeft" :id="fromT==='CreateCourse'?'borBot':''" :class="((currentTab === '1' && role === 3) || role === 4 || role ===2)?'chartTerrLeft2':''">
       <div class="myChapter textScrollbar">
         <ChapterList
           :ExternalOpen="ExternalOpen"
@@ -12,7 +12,7 @@
            />
       </div>
     </div>
-    <div class="chartTerrRight" v-if="currentTab === '0' && role === 3" :class="state.activeExperimentObj.id?'':'flexCenter'">
+    <div class="chartTerrRight" :id="fromT==='CreateCourse'?'borBot':''" v-if="currentTab === '0' && role === 3" :class="state.activeExperimentObj.id?'':'flexCenter'">
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
           <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
@@ -38,7 +38,7 @@
           </div>
         </a-spin>
       </template>
-      <Empty v-else :text="'暂未选择实验'" />
+      <Empty v-else :text="'暂无内容，请先于左侧创建章节'" />
     </div>
   </div>
 
@@ -96,6 +96,9 @@ const route = useRoute();
 const router = useRouter();
 const routeQuery = route.query
 const { currentTab,course_id } = route.query;
+const fromT=route.path.indexOf('CreateCourse')!==-1?'CreateCourse':'Detail'
+console.log(fromT);
+
 interface Props {
   // chapterList:any
   create?:boolean
@@ -248,6 +251,8 @@ onMounted(() => {
     
     .chartTerrLeft{
       width: 470px;
+      background: #ffffff;
+      // border: 1px solid rgba(0,0,0,0.15);
       // flex: 1;
       // padding: 10px;
       // .title{
@@ -256,11 +261,11 @@ onMounted(() => {
       //   // margin-bottom: 1rem;
       // }
       .myChapter{
-        // padding: 10px;
-        min-height:500px;
-        max-height: 700px;
+        padding:0 10px;
+        min-height:700px;
+        max-height: 767px;
         overflow: auto;
-        padding-right: 10px;
+        // padding-right: 10px;
       }
     }
     .chartTerrLeft2{
@@ -268,6 +273,8 @@ onMounted(() => {
     }
     .chartTerrRight{
       // width: 674px;
+      background: #ffffff;
+      margin-left: 16px;
       margin-right: 16px;
       flex: 1;
       padding:10px 22px 22px 30px;
@@ -301,6 +308,9 @@ onMounted(() => {
         // overflow: auto;
       }
       
+    }
+    #borBot{
+      border: 1px solid rgba(0,0,0,0.15);
     }
   }
 </style>

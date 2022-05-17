@@ -645,6 +645,7 @@ onMounted(() => {
     .title3{
       padding: 10px;
       justify-content: space-between;
+      border-bottom: 1px solid rgba(0,0,0,0.15);
     }
   }
   .chapterList{

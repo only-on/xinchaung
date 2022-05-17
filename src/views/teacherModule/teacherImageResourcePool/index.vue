@@ -421,6 +421,7 @@ onMounted(() => {
     height: 120px;
     margin-bottom:24px;
     box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
+    background-color: #fff;
     .left {
       .img {
         border-radius: 13px 0px 0px 13px;
