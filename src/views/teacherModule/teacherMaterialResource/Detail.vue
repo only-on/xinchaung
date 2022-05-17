@@ -344,6 +344,8 @@ const getDetailFile = () => {
       })
       selectFile(list[0])
       state.fileList.push(...list)
+    }else{
+      state.fileItem={}
     }
   })
 };

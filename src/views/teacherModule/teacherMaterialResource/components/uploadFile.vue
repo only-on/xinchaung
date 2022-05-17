@@ -35,7 +35,7 @@
           </div>
           <div class="right">
             <div class="item-top">
-              <span>{{ value.name }}</span>
+              <span class="item-name single_ellipsis" :title=" value.name">{{ value.name }}</span>
               <span
                 class="deleteicon"
                 v-if="value.status !== 'end'&&props.type===1 || value.status !== 'done'&&props.type!==1"
@@ -326,6 +326,7 @@ onMounted(() => {
             > span:nth-child(1) {
               color: #404040;
               font-size: 14px;
+              width: 85%;
             }
 
             .iconfont {
