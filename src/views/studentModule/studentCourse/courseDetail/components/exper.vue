@@ -56,10 +56,10 @@
         </a-checkbox> 
         </div>
       </a-checkbox-group>
-      <div class="correctAnswers">
-        <span class="answerLabel">正确答案:</span>
-        <span>{{correctAnswer(item)}}</span>
-      </div>
+        <div class="correctAnswers">
+          <span class="answerLabel">正确答案:</span>
+          <span>{{correctAnswer(item)}}</span>
+        </div>
       </div>
       <div v-if="item.type.id === 4" class="jdt-options">
         <div
@@ -77,18 +77,25 @@
         </div>
       </div>
       <div v-if="item.type.id === 5" class="jdt-options">
-        <div
-          v-for="(it, j) in item.answers"
-          :key="j.toString()"
-          :class="
+        <!-- :class="
             ifAnswerTrue(item, it,index)
               ? 'correct'
               : ifAnswerTrue(item, it,index) === false
               ? 'wrong'
               : ''
-          "
+          " -->
+        <a-textarea v-model:value="item.student_answer[0]" disabled />
+        <div
+          v-for="(it, j) in item.answers"
+          :key="j.toString()"
+          class="corrctAnswer"
         >
-          答案:{{ it.answer }}
+          <span class="label">正确答案:</span>
+          <span>{{ it.answer }}</span>
+        </div>
+        <div class="keywordColor">
+          <span class="label">关键词:</span>
+          <span v-for="(it,i) in item?.keywords">{{it?.keyword}}</span>
         </div>
       </div>
     </div>
@@ -215,4 +222,16 @@ export default defineComponent({
     margin-right: 10px;
   }
 }
+.keywordColor{
+  color:#1CB2B3;
+  margin-top: 10px;
+}
+.corrctAnswer{
+  color:#1CB2B3;
+  margin-top: 10px;
+}
+.label{
+    margin-right: 10px;
+    margin-left: 10px;
+  }
 </style>
