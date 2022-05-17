@@ -71,6 +71,26 @@ function getVmBase() {
       taskId: taskId,
     };
     getVmBaseInfo(params).then((res: any) => {
+      if (Number(res.data?.current?.status)>=2) {
+        let modal = Modal.confirm({
+          title: "提示",
+          content: "该实验已结束",
+          okText: "确定",
+          cancelText: "取消",
+          class: "finish-modal",
+          onOk: () => {
+            clearTimeout(timer)
+            router.go(-1)
+          },
+        });
+        let timer = setTimeout(() => {
+          router.go(-1)
+          clearTimeout(timer)
+          modal.destroy()
+        }, 5000)
+        return
+      }
+
       baseInfo.value = res.data;
       taskType.value = res.data.base_info.task_type.type;
       if (!res.data.current) {
@@ -189,7 +209,7 @@ function saveKvm() {
 }
 // 关闭ws
 function closeWs() {
-  (ws.value as any).close();
+  (ws.value as any)?.close();
 }
 onBeforeRouteLeave(() => {
   isCurrentPage = false;
@@ -198,7 +218,9 @@ onBeforeRouteLeave(() => {
 });
 onMounted(async () => {
   await getVmBase();
-  initWs()
+  if (Number(baseInfo.value?.current?.status)<2) {
+    initWs();
+  }
 });
 </script>
 

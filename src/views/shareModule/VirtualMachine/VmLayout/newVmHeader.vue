@@ -1353,7 +1353,7 @@ onMounted(() => {
   clearInterval(Number(timer));
   clearInterval(Number(delayTimer));
   clearInterval(Number(questionTimer));
-  if (roleArry.includes('delayed')) {
+  if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
     times();
   }
   if (roleArry.includes('classTest')) {

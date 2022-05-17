@@ -134,6 +134,7 @@ const route = useRoute();
 const router = useRouter();
 const { currentTab} = route.query;
 const routeQuery = useRoute().query;
+const { course_student_id,from} = route.query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
 interface Props {
@@ -358,6 +359,15 @@ function prepare(a:any, i: number) {
     return
   }
 }
+watch(
+  () => connectStatus.value,
+  (val) => {
+    if (val === 2) {
+      StudentChaptersTree(Number(course_student_id))
+    }
+  },
+  {deep:true,immediate:true}
+)
 // 进入
 const openVm = (a: any, opType: string) => {
   const { id } = a
@@ -600,6 +610,7 @@ const getChaptersTree=()=>{
 }
 var course_setting:any=reactive({})
 function StudentChaptersTree(course_student_id:number){
+  ChaptersTreeList.length=0
   studentHttp.StudentChaptersTree({urlParams:{course_student_id:course_student_id}}).then((res:IBusinessResp)=>{
     const {data}=res
     course_setting=data.length?{...data[0].course_setting}:{}
@@ -609,7 +620,7 @@ function StudentChaptersTree(course_student_id:number){
 }
 onMounted(() => {
   console.log(props.courseId)
-  const { course_student_id,from} = route.query;
+  // const { course_student_id,from} = route.query;
   if((props.courseId && role === 3) || (from && from === 'courseManagement' && role===2)){
     getChaptersTree()
   }

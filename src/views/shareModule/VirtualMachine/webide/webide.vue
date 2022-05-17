@@ -329,7 +329,25 @@ function getTaskInfoData() {
     taskId: taskId,
   };
   getTaskInfo(params).then((res: any) => {
-    console.log(res);
+    if (Number(res?.data?.current?.status)>=2) {
+      let modal = Modal.confirm({
+        title: "提示",
+        content: "该实验已结束",
+        okText: "确定",
+        cancelText: "取消",
+        class: "finish-modal",
+        onOk: () => {
+          clearTimeout(timer)
+          router.go(-1)
+        },
+      });
+      let timer = setTimeout(() => {
+        router.go(-1)
+        clearTimeout(timer)
+        modal.destroy()
+      }, 5000)
+      return
+    }
 
     baseInfo.value = res?.data;
     console.log(baseInfo.value);
@@ -538,7 +556,9 @@ onBeforeRouteLeave(() => {
 onMounted(async () => {
   createTopo().then(async () => {
     await getTaskInfoData();
-    initWs();
+    if (Number(baseInfo.value?.current?.status)<2) {
+      initWs();
+    }
   });
   let versions: any = await getVersionListData();
       console.log(versions);

@@ -24,7 +24,7 @@
         :src="reportTemplateData.pdf_url"
       >
       </iframe>
-      <div>{{reportTemplateData.filename+'docx'}}</div>
+      <div v-if="reportTemplateData.json_content&&reportTemplateData.json_content.filename">{{reportTemplateData.json_content.filename}}</div>
       <div class="uploadReport" v-if="reportTemplateData.can_student_update">
         <div>实验报告</div>
         <div>
