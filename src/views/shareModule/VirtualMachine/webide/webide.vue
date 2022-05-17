@@ -130,6 +130,7 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 const { opType, type, taskId } = route.query;
+let role = storage.lStorage.get("role");
 
 let ws_config = storage.lStorage.get("ws_config");
 
@@ -556,7 +557,7 @@ onBeforeRouteLeave(() => {
 onMounted(async () => {
   createTopo().then(async () => {
     await getTaskInfoData();
-    if (Number(baseInfo.value?.current?.status)<2) {
+    if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
       initWs();
     }
   });

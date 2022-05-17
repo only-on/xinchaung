@@ -39,6 +39,7 @@ const router = useRouter();
 const { opType, type, taskId, topoinst_id, connection_id } = route.query;
 
 let ws_config = storage.lStorage.get("ws_config");
+let role = storage.lStorage.get("role");
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
@@ -218,7 +219,7 @@ onBeforeRouteLeave(() => {
 });
 onMounted(async () => {
   await getVmBase();
-  if (Number(baseInfo.value?.current?.status)<2) {
+  if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
     initWs();
   }
 });

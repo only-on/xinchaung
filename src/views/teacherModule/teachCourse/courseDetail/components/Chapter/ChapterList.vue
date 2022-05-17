@@ -360,7 +360,7 @@ function prepare(a:any, i: number) {
 watch(
   () => connectStatus.value,
   (val) => {
-    if (val === 2) {
+    if (val === 2 && role === 4) {
       StudentChaptersTree(Number(course_student_id))
     }
   },

@@ -388,7 +388,7 @@ initVnc.value = () => {
     });
 onMounted(async () => {
   await getVmBase();
-  if (Number(baseInfo.value?.current?.status)<2) {
+  if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
     initWs();
   }
 });
