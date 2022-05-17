@@ -337,7 +337,7 @@ function prepare(a:any, i: number) {
       connectStatus.value = 1
       // 视频 文档 webide
       if (task_type === 6 || task_type === 7 || task_type === 3) {
-        connectStatus.value = 2
+        // connectStatus.value = 2
         isWsConnect.value = true
       } else {
         // isWsConnect.value = false
