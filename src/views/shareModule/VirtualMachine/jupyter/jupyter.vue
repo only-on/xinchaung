@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, inject } from "vue";
+import { ref, toRefs, onMounted, Ref, inject, computed,WritableComputedRef } from "vue";
 import layout from "../VmLayout/newLayout.vue";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
@@ -31,6 +31,8 @@ import storage from "src/utils/extStorage";
 import { wsConnect } from "src/request/websocket";
 import { Modal, message } from "ant-design-vue";
 import disableStudent from "../component/disableStudent.vue"
+import {IWmc} from "src/typings/wmc";
+import { useStore } from "vuex";
 
 const route = useRoute();
 const router = useRouter();
@@ -42,10 +44,10 @@ const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
 const taskType: any = inject("taskType");
 const use_time: any = inject("use_time");
-const ws: any = inject("ws");
 const currentVm: any = inject("currentVm");
 const currentUuid: any = inject("currentUuid");
 const noteUrl: any = ref("");
+const store = useStore();
 
 const navData = [
   { name: "指导", key: "guide", icon: "icon-zhidao" },
@@ -85,12 +87,19 @@ function getVmBase() {
     });
   });
 }
-
+let ws: WritableComputedRef<IWmc> = computed({
+  get: () => {
+    return store.state.longWs
+  },
+  set: val => {
+    store.commit("setLongWs",val)
+  }
+})
 // 初始化ws
 function initWs() {
-  if (ws.value) {
-    ws.value.leave(topoinst_id + "_room");
-  }
+  // if (ws.value) {
+  //   ws.value.leave(topoinst_id + "_room");
+  // }
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,

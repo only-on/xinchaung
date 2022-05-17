@@ -102,7 +102,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, inject } from "vue";
+import { ref, toRefs, onMounted, Ref, inject, computed, WritableComputedRef } from "vue";
 import layout from "../VmLayout/newLayout.vue";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
@@ -112,6 +112,8 @@ import { Modal, message } from "ant-design-vue";
 import disableStudent from "../component/disableStudent.vue";
 import ace from "src/components/ace/ace.vue";
 import "src/components/ace/options";
+import {IWmc} from "src/typings/wmc";
+import { useStore } from "vuex";
 import {
   getTaskInfo,
   getVersionList,
@@ -126,6 +128,7 @@ import {
 
 const route = useRoute();
 const router = useRouter();
+const store = useStore();
 const { opType, type, taskId } = route.query;
 
 let ws_config = storage.lStorage.get("ws_config");
@@ -134,7 +137,6 @@ const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
 const taskType: any = inject("taskType");
 const use_time: any = inject("use_time");
-const ws: any = inject("ws");
 const currentVm: any = inject("currentVm");
 const currentUuid: any = inject("currentUuid");
 
@@ -172,6 +174,14 @@ const options = {
 
   enableLiveAutocompletion: true,
 };
+let ws: WritableComputedRef<IWmc> = computed({
+  get: () => {
+    return store.state.longWs
+  },
+  set: val => {
+    store.commit("setLongWs",val)
+  }
+})
 // 获取虚拟机基本信息pageinfo
 function getVmBase() {
   loading.value = true;
@@ -202,9 +212,6 @@ function getVmBase() {
 
 // 初始化ws
 function initWs() {
-  if (ws.value) {
-    ws.value.leave(topoinst_id + "_room");
-  }
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,

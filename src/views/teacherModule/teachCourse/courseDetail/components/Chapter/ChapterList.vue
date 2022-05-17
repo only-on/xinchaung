@@ -310,15 +310,6 @@ function selectExperiment(a:any,v:any){
 let currentClickIndex = ref(-1)
 function prepare(a:any, i: number) {
   currentClickIndex.value = i
-  if (a.startup === 2 && connectStatus.value===2) {
-    a.startup = 3
-    goToVm(router, routeQuery)
-    return
-  } else {
-    a.startup = 1
-  }
-
-  isWsConnect.value = false
   const { id } = a
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
@@ -327,6 +318,18 @@ function prepare(a:any, i: number) {
     taskId: id,
     experType: task_type
   };
+  if (a.startup === 2 && connectStatus.value===2) {
+    // 视频、文档类实验不显示Loading
+    if (!(task_type === 6 || task_type === 7)) {
+      a.startup = 3
+    }
+    goToVm(router, routeQuery)
+    return
+  } else {
+    a.startup = 1
+  }
+
+  isWsConnect.value = false
   console.log(task_type)
   // 准备环境
   if (a.startup === 1) {

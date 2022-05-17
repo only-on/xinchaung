@@ -27,12 +27,18 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, reactive, toRefs, inject } from "vue";
+import { defineComponent, ref, onMounted, reactive, toRefs, inject, computed, WritableComputedRef } from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter, useRoute } from "vue-router";
 import { Modal, message } from "ant-design-vue";
+import extStorage from "src/utils/extStorage";
+import {clearAllCookies} from "src/utils/cookieHelper";
+import {IWmc} from "src/typings/wmc";
+import { useStore } from "vuex";
+const { lStorage } = extStorage;
 const http = (request as any).personalInformation;
+const httpLogout = (request as any).common;
 interface form {
   oldpass: string;
   newpass: string;
@@ -50,10 +56,28 @@ export default defineComponent({
   setup: (props, { emit }) => {
     const router = useRouter();
     const route = useRoute();
+    const store = useStore();
     const { editId } = route.query;
     var updata = inject("updataNav") as Function;
     // updata({showContent:true,navType:false,navPosition:'outside'})
-
+    let longWs: WritableComputedRef<IWmc> = computed({
+      get: () => {
+        return store.state.longWs
+      },
+      set: val => {
+        store.commit("setLongWs",val)
+      }
+    })
+    function loginOut() {
+      httpLogout.loginOut().then((res: IBusinessResp) => {
+        lStorage.clean();
+        clearAllCookies();
+        if (longWs.value) {
+          longWs.value.close();
+        }
+        router.replace({ path: "/login" }).catch(() => {});
+      });
+    }
     const state: Istate = reactive({
       formRef: "formRef",
       formState: {
@@ -83,6 +107,7 @@ export default defineComponent({
             .then((res: IBusinessResp) => {
               message.success("修改成功");
               state.formRef.resetFields();
+              loginOut();
               // router.go(-1)
             });
         });

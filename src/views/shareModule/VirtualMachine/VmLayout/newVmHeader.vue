@@ -663,7 +663,7 @@ async function getQuestionList(needs_answer: boolean = false) {
 function back() {
   Modal.confirm({
     title: "提示",
-    content: "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+    content: experType === 6 || experType === 7 ? "返回实验列表" : "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
     okText: "确定",
     cancelText: "取消",
     onOk: () => {

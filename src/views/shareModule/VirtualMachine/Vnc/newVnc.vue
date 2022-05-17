@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, onMounted,nextTick } from "vue";
+import { inject, ref, onMounted,nextTick, computed, WritableComputedRef } from "vue";
 import loadingGif from "src/assets/images/vmloading.gif";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import disableStudent from "../component/disableStudent.vue"
@@ -49,6 +49,8 @@ import layout from "../VmLayout/newLayout.vue";
 import { message,Modal } from "ant-design-vue";
 import { wsConnect } from "src/request/websocket";
 import { getVmBaseInfo } from "src/utils/vncInspect";
+import {IWmc} from "src/typings/wmc";
+import { useStore } from "vuex";
 
 import {
   onBeforeRouteLeave,
@@ -65,7 +67,8 @@ import { getVmConnectSetting } from "src/utils/seeting";
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
 const route = useRoute();
-const router=useRouter()
+const router=useRouter();
+const store = useStore();
 const { opType, type, taskId, topoinst_id, connection_id, experType } = route.query;
 const currentOption = inject(
   "currentOption",
@@ -77,7 +80,6 @@ const currentInterface = inject("currentInterface", ref("vnc"));
 const baseInfo: any = inject("baseInfo", ref({}));
 const taskType: any = inject("taskType");
 const use_time: any = inject("use_time");
-const ws: any = inject("ws");
 const vmsInfo: any = inject("vmsInfo");
 const currentVm: any = inject("currentVm");
 const isClose: any = inject("isClose");
@@ -102,6 +104,14 @@ let ind = 0;
 
 let isCurrentPage = true;  // 是否是当前页面
 let timerout:NodeJS.Timeout|null=null
+let ws: WritableComputedRef<IWmc> = computed({
+  get: () => {
+    return store.state.longWs
+  },
+  set: val => {
+    store.commit("setLongWs",val)
+  }
+})
 function clipboard() {}
 // 获取虚拟机基本信息pageinfo
 function getVmBase() {
@@ -132,9 +142,6 @@ function getVmBase() {
 }
 
 function initWs() {
-  if (ws.value) {
-    ws.value.leave(topoinst_id + "_room");
-  }
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,

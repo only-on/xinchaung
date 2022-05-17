@@ -78,6 +78,7 @@ import {
   watch,
   provide,
   WritableComputedRef,
+  onUnmounted,
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from "../../api/index";
@@ -97,6 +98,7 @@ import {clearAllCookies} from "../../utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "../../typings/wmc";
 import api from "../../api";
+import { AnyMxRecord } from "dns";
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -136,7 +138,7 @@ export default defineComponent({
     const userName = ref<string>(lStorage.get("username"));
 
     function information() {
-      router.push("/personalInformation");
+      router.push("/teacher/personalInformation");
     }
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
@@ -150,7 +152,7 @@ export default defineComponent({
     }
     function helpMessage() {}
     function modifyPassword() {
-      router.push("/personalInformation");
+      router.push("/teacher/personalInformation");
       // http.resetPassword({param:{}}).then((res:IBusinessResp)=>{
       //   console.log(res)
       // })
@@ -482,8 +484,7 @@ export default defineComponent({
         store.commit("setLongWs",val)
       }
     })
-
-     // 检查有无配置缓存，若无，则进行缓存
+    // 检查有无配置缓存，若无，则进行缓存
     let wsConfig = lStorage.get("ws_config");
     if (!wsConfig) {
       api.common.getFileConfig().then((res: IBusinessResp | null) => {
@@ -499,7 +500,6 @@ export default defineComponent({
     } else {
       initWs(wsConfig)
     }
-
     onMounted(async () => {
       if ((role === 3 || role === 4)&&!longWs1.value) {
         try {
@@ -626,6 +626,12 @@ export default defineComponent({
     onBeforeRouteLeave(()=>{
       // longWs?.close()
       // console.log('+++++++++++++++')
+    })
+    onUnmounted(() => {
+      if (longWs1.value) {
+        longWs1.value.close();
+        longWs1.value = null as any
+      }
     })
     return {
       env,

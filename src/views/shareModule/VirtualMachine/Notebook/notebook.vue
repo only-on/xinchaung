@@ -27,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, reactive ,ref,toRefs,provide,Ref} from "vue";
+import { defineComponent, onMounted, reactive ,ref,toRefs,provide,Ref, computed, WritableComputedRef} from "vue";
 import layout from "../VmLayout/VmLayout.vue";
 import {backTo,getVmBaseInfo} from "src/utils/vncInspect";
 import {useRoute,useRouter,onBeforeRouteLeave} from "vue-router"
@@ -35,6 +35,7 @@ import {wsConnect} from "src/request/websocket"
 import {message} from "ant-design-vue"
 import storage from "src/utils/extStorage"
 import { IWmc } from "src/typings/wmc";
+import { useStore } from "vuex";
 export default defineComponent({
   components: {
     layout,
@@ -42,6 +43,7 @@ export default defineComponent({
   setup() {
       const route = useRoute();
       const router = useRouter();
+      const store = useStore();
       let role = storage.lStorage.get("role");
       let ws_config=storage.lStorage.get("ws_config")
     let navData = role===4?[
@@ -65,7 +67,6 @@ export default defineComponent({
       experType,
     }: any = vmQuery;
     const data = reactive(navData);
-    const wsVmConnect: any = ref(null);
     let timer:NodeJS.Timer|null =null
     const reactiveData:any=reactive({
       allInfo:{}
@@ -83,6 +84,14 @@ export default defineComponent({
     provide("uuid",vm_uuid)
     provide("use_time",use_time)
     provide("taskType",taskType)
+    let wsVmConnect: WritableComputedRef<IWmc> = computed({
+      get: () => {
+        return store.state.longWs
+      },
+      set: val => {
+        store.commit("setLongWs",val)
+      }
+    })
     onMounted(()=>{
       initWs()
       getTaskInfoData()

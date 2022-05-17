@@ -144,6 +144,8 @@ import {
   Ref,
   toRefs,
   provide,
+  computed, 
+  WritableComputedRef
 } from "vue";
 import layout from "../VmLayout/VmLayout.vue";
 import { onBeforeRouteLeave, useRouter, useRoute } from "vue-router";
@@ -173,6 +175,7 @@ import { wsConnect } from "src/request/websocket";
 import storage from "src/utils/extStorage"
 import layoutBg from "src/assets/images/common/layout_bg.jpg"
 import { IWmc } from "src/typings/wmc";
+import { useStore } from "vuex";
 
 export default defineComponent({
   components: {
@@ -184,7 +187,7 @@ export default defineComponent({
     var reportTemid:Ref<any>=ref(0)
     const route = useRoute();
     const router = useRouter();
-    const wsVmConnect: any = ref(null);
+    const store = useStore();
     const openOrCloseResultStatus: Ref<boolean> = ref(true);
     const options = {
       enableBasicAutocompletion: true,
@@ -242,6 +245,14 @@ export default defineComponent({
     provide("use_time",use_time)
     provide("taskType",taskType)
     const runResult = ref("");
+    let wsVmConnect: WritableComputedRef<IWmc> = computed({
+      get: () => {
+        return store.state.longWs
+      },
+      set: val => {
+        store.commit("setLongWs",val)
+      }
+    })
     onBeforeRouteLeave(() => {
       clearInterval(Number(timer));
       console.log("离开页面");
