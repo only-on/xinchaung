@@ -30,9 +30,10 @@
           <div class="flexCenter right">
             <div class="class-time">推荐课时 {{v.class_cnt}}</div>
             <div class="icon">
-              <span class="iconfont" @click="getDetailFile(v)">
+              <a-button class="iconfont" @click="getDetailFile(v)" type="text" :disabled="v.is_selected">
               {{ docOrMp4Drawer.selectListIds.includes(v.id) ? "取消" : "选择" }}
-              </span>
+              </a-button>
+              <!-- <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k)"></a-button> -->
             </div>
           </div>
         </div>
@@ -64,12 +65,15 @@ import {
   defineProps,
   withDefaults,
 } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import iconList from "src/utils/iconList";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { getFileTypeIcon } from 'src/utils/getFileType'
 import { bytesToSize } from "src/utils/common"
 import request from "src/api/index";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
+const route = useRoute();
+const { courseId } = route.query;
 const http = (request as any).teacherExperimentResourcePool;
 interface Props { 
   selectList:any;     // 选中的文件对象
@@ -135,11 +139,12 @@ const getExperiments = () => {
     init_type:init_type.value,
     page,
     limit,
-    name
+    name,
+    course_id:courseId
   }
   docOrMp4Drawer.loading=true
   docOrMp4Drawer.list.length=0
- http.getExperimentList({param:{...obj}}).then((res: IBusinessResp) => {
+ http.getExperimentList2({param:{...obj}}).then((res: IBusinessResp) => {
     docOrMp4Drawer.loading = false
     // if (!res) return
     const { list, page }  = res.data
