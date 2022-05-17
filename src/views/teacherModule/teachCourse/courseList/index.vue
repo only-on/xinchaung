@@ -38,7 +38,10 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!courseList.length && !loading" />
+      <div v-if="!courseList.length && !loading" class="kong">
+        <Empty :type="EmptyType" :text="EmptyText" />
+        <a-button v-if="EmptyText && currentTab===0" type="primary" @click="handleMenuClick" >创建课程</a-button>
+      </div>
       <a-pagination
         v-if="totalCount > 12"
         v-model:current="searchInfo.page"
@@ -165,10 +168,17 @@ watch(() => { return configuration.componenttype; },
     searchInfo.is_public = currentTab.value
     searchInfo.page = 1
     totalCount.value=0
-    // searchInfo.content_direction = 0
-    // searchInfo.content_type = 0
-    // searchInfo.content_level = 0
+    searchInfo.name = ''
+
+    labelSearch.state=0
+    labelSearch.year=0
+    labelSearch.CourseDirection=0
+    labelSearch.CareerDirection=0
+    
     classifyList.forEach((v: any) => {
+      v.value = 0
+    })
+    publicClassifyList.forEach((v: any) => {
       v.value = 0
     })
     initData();
@@ -248,6 +258,34 @@ const searchFn = (key: string) => {
   searchInfo.page = 1;
   initData();
 };
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(currentTab.value === 0){
+    if(labelSearch.state ===0 && labelSearch.year ===0 && searchInfo.name===''){
+      str= 'empty'
+    }else{
+      str= 'searchEmpty'
+    }
+  }
+  if(currentTab.value === 1){
+    if(labelSearch.CourseDirection ===0 && labelSearch.CareerDirection ===0  && searchInfo.name===''){
+      str= 'empty'
+    }else{
+      str= 'searchEmpty'
+    }
+  }
+  console.log(str);
+  return str
+})
+const EmptyText=computed(()=>{
+  // console.log(courseList.length,loading.value,EmptyType.value);
+  if(!courseList.length && !loading.value && EmptyType.value ==='empty'){
+    return '暂无课程，点击下方按钮创建课程吧！'
+  }else{
+    // return '抱歉暂未搜到相关数据'
+    return ''
+  }
+})
 const initData = () => {
   // return
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})
@@ -560,6 +598,11 @@ onMounted(() => {
       top: -6px;
       transition: all 0.3s;
     }
+  }
+  .kong{
+    margin: 0 auto;
+    width: 100%;
+    text-align: center;
   }
   .setupVisible{
     color: var(--black-65);

@@ -4,7 +4,7 @@
       <div class="title" v-if="v.title">{{ v.title }}：</div>
       <div
         v-for="i in v.data"
-        :key="i.name"
+        :key="`${v.keyName}${i.name}`"
         class="label-btn"
         :class="(i.name && i.value === v.value) ? 'current' : ''"
         @click="change(v, i)"

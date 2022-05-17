@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!list.length && !loading" />
+      <Empty v-if="!list.length && !loading" :type="fromData.name?'searchEmpty':'empty'"  />
       <a-pagination
         v-if="totalCount > 12"
         v-model:current="fromData.page"
