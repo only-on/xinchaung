@@ -166,6 +166,8 @@ const next=(val:number)=>{
     formRef.value.validate().then(()=>{
       formState.is_available=0
       stup1Loading.value=true
+      formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+      formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
       http.createCourseBaseApi({param:{...formState}}).then((res:IBusinessResp)=>{
         const {data}=res
         stup1Loading.value=false
@@ -188,6 +190,8 @@ const next=(val:number)=>{
   if(val === 3){
     formState.is_available=1
     stup1Loading.value=true
+    formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+    formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
     http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
       const {data}=res
       stup1Loading.value=false

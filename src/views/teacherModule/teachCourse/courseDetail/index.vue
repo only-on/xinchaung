@@ -295,6 +295,8 @@ const Save=()=>{
   // return
   formRef.value.validate().then(()=>{
     editLoading.value=true
+    formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+    formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
     http.UploadCourse({param:{...formState},urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
       message.success('编辑成功')
       formRef.value.resetFields()
