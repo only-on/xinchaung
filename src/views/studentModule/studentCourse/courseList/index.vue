@@ -21,7 +21,7 @@
             <div class="date flexCenter">
               <div class="flexCenter user">
                 <div class="img" :class="v.is_init?'initImg':''"></div>
-                <div class="userName">{{v.teacher}}</div>
+                <div class="userName single_ellipsis">{{v.teacher}}</div>
               </div>
               <span>实验:{{v.content_total}}</span>
               <span>课时:{{v.class_total}}</span>
@@ -341,6 +341,7 @@ onMounted(() => {
                 color: var(--black-45);
                 flex:1;
                 text-align: center;
+                max-width: 72px;
               }
             }
         }

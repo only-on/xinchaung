@@ -18,6 +18,16 @@
     <div v-if="activeFile.suffix === 'md'">
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
+    <div v-else-if="activeFile.file_html === ''" class="pdfBox">
+      <div class="flexCenter">
+        <h2>{{activeFile.name}}</h2>
+        <span class="iconfont icon-shanchu" @click="removeAct()"></span>
+      </div>
+      <h2>
+        <!-- {{activeFile.name}} -->
+        <!-- 请确认保存后查看文档转换 -->
+      </h2>
+    </div>
     <PdfVue :url="activeFile.file_html" v-else />
   </div>
   <Submit v-if="!preview || !props.detail.content_task_files || !props.detail.content_task_files.length" @submit="onSubmit" @cancel="cancel"></Submit>
@@ -86,6 +96,7 @@ const props: Props = defineProps({
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>(props.detail.guide);
 let activeFile = reactive({
+  name:'',
   suffix: 'md',
   file_url: '',
   pdf_url: '',
@@ -93,6 +104,7 @@ let activeFile = reactive({
 })
 if (props.detail.content_task_files?.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
+  // activeFile.pdf_url=props.detail.content_task_files[0].file_url
   // activeFile.pdf_url = props.detail.content_task_files[0].file_url
 } else {
   activeFile.suffix = 'md'
@@ -105,6 +117,7 @@ const uploadFile = () => {
 const visibleUpload = ref<boolean>(false);
 const directoryId = ref(0)
 const uploadSuccess = (uploadFileList: any, id: any) => {
+  // console.log(uploadFileList)
   if (id === 'md') {
     // props.detail.guide = uploadFileList
     experimentContent.value = uploadFileList
@@ -112,19 +125,33 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
     activeFile.suffix = 'md'
     return
   }
-  // console.log(uploadFileList)
   Object.assign(activeFile, uploadFileList)
   if (uploadFileList.suffix === 'pdf') {
-    activeFile.pdf_url = uploadFileList.tusdDocumentUrl
-    activeFile.file_html = uploadFileList.tusdDocumentUrl
+    activeFile.suffix = 'pdf'
+    // activeFile.pdf_url = uploadFileList.tusdDocumentUrl
+    // activeFile.pdf_url = ''   // tusd  的这个地址不能预览
+    // activeFile.file_html = uploadFileList.tusdDocumentUrl
+    activeFile.file_html=''
   } else {
-    activeFile.pdf_url = uploadFileList.file_url
-    activeFile.file_html = uploadFileList.file_url
+    // activeFile.suffix = 'pdf'
+    // activeFile.pdf_url = uploadFileList.file_url
+    // activeFile.file_html = uploadFileList.file_url
+    activeFile.file_html=''
   }
   directoryId.value = id
-  // console.log(activeFile)
+  console.log(activeFile)
 };
-
+const removeAct=()=>{
+  let obj = {
+    name:'',
+    suffix: 'md',
+    file_url: '',
+    pdf_url: '',
+    file_html: ''
+  }
+  Object.assign(activeFile, obj)
+  console.log(activeFile)
+}
 // 选择文件
 const visible = ref<boolean>(false);
 const selectDocOrMp4File = (val: any) => {
@@ -136,6 +163,7 @@ const selectDocOrMp4File = (val: any) => {
     experimentContent.value = activeFile.file_html
   }
   directoryId.value = val.dataset_id
+  console.log(activeFile)
 };
 const closeDrawerDoc = () => {
   visible.value = false;
@@ -227,6 +255,16 @@ const cancel = () => {
   }
   .submit {
     margin-top: 32px;
+  }
+}
+.pdfBox{
+  .flexCenter{
+    width: 30%;
+    justify-content: space-between;
+    height: 40px;
+    .iconfont{
+      cursor: pointer;
+    }
   }
 }
 </style>
