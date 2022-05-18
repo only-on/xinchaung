@@ -42,7 +42,7 @@
       <swiper
         :modules="modules"
         navigation
-        loop
+        :loop="courseSwitchData.length > 3 ? true : false"
         watchSlidesProgress
         :slides-per-view="4"
         :space-between="30"
@@ -405,6 +405,7 @@ onMounted(() => {
 }
 .swiper {
   padding: 0 25px 3px;
+  width: 100%;
 }
 .swiper-wrapper {
   .swiper-slide {

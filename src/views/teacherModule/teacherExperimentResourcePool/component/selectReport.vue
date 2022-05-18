@@ -3,7 +3,7 @@
   <a-modal
     :destroyOnClose="true"
     v-model:visible="reportVisible"
-    title="设置实验实验报告模板"
+    title="设置实验报告模板"
     class="report"
     :width="640"
     @cancel="reportCancel"

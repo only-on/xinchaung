@@ -85,6 +85,7 @@
       <a-pagination
         v-model:current="formData.page"
         :total="formData.total"
+        @change="pageChange"
         show-less-items
       />
     </div>
@@ -252,7 +253,10 @@ function search() {
   formData.pageSize=10
   getList()
 }
-
+function pageChange (page: any) {
+  formData.page = page
+  getList()
+}
 // 批量删除
 function batchDelete() {
   if (selectedRowKeys.value.length == 0) {

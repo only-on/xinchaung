@@ -164,7 +164,8 @@ const searchInfo = reactive<ISearchInfo>({
 const resetKeyword = ref<boolean>(false);
 watch(() => { return configuration.componenttype; },
   (val) => {
-    // console.log(val)
+    console.log(val)
+    val = Number(val)
     currentTab.value = val;
     searchInfo.is_public = currentTab.value
     searchInfo.page = 1
@@ -467,6 +468,8 @@ onMounted(() => {
     })
     publicClassifyList[1].data.push(...data)
   })
+  console.log('来了');
+  
   initData();
 });
 </script>
