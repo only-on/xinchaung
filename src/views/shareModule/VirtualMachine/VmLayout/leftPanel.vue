@@ -76,7 +76,7 @@ watch(
     if (!val) return
     const {task_type} = val
     const isSetting = Number(experType)===1 || Number(experType)===2 || Number(experType)===3|| (task_type.type===4&&task_type.programing_type)
-    if (val && !val.is_open && isSetting &&opType!=='help') {
+    if (val && val.is_open===0 && isSetting &&opType!=='help'&&role===4) {
       // navData.shift()
       isShowGuide.value = false
     } 

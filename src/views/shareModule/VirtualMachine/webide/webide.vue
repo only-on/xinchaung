@@ -351,9 +351,9 @@ function getTaskInfoData() {
     }
 
     baseInfo.value = res?.data;
-    console.log(baseInfo.value);
-    use_time.value = res?.data.current.remaining_time;
-    taskType.value = res.data.base_info.task_type.type;
+    // console.log(baseInfo.value);
+    use_time.value = res?.data.current?.remaining_time;
+    // taskType.value = res.data.base_info.task_type.type;
   });
 }
 // 获取版本列表

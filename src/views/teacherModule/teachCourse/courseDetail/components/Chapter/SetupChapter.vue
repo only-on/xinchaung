@@ -199,29 +199,52 @@ const cancelViewReport=()=>{
 const currentState = ref(1)
 const is_connect = ref(false)  // 当前ws是否连接成功
 const lessonPreparation=()=>{
-  if (currentState.value === 2&& connectStatus.value===2) {
-    currentState.value = 3
-    goToVm(router, routeQuery)
-    return
-  }
-  connectStatus.value = 1
-  const {id} = state.activeExperimentObj
-  let task_type = state.activeExperimentObj.task_type
-  if (state.activeExperimentObj.is_webide && state.activeExperimentObj.type === 4) {
-    task_type = 3
-  }
+  
+  let {task_type, id} = state.activeExperimentObj
   const param: any = {
     type: "course",  // 实验
     opType: "prepare",
     taskId: id,
     experType: task_type
   };
+
   if (task_type === 6 || task_type === 7 || task_type === 3) {
-    isWsConnect.value = true
-    connectStatus.value = 2
-  } else {
-    isWsConnect.value = false
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
   }
+
+  if (currentState.value === 2&& connectStatus.value===2) {
+    currentState.value = 3
+    goToVm(router, routeQuery)
+    return
+  }
+  connectStatus.value = 1
+  // const {id} = state.activeExperimentObj
+  // let task_type = state.activeExperimentObj.task_type
+  // if (state.activeExperimentObj.is_webide && state.activeExperimentObj.type === 4) {
+  //   task_type = 3
+  // }
+  // const param: any = {
+  //   type: "course",  // 实验
+  //   opType: "prepare",
+  //   taskId: id,
+  //   experType: task_type
+  // };
+  // if (task_type === 6 || task_type === 7 || task_type === 3) {
+  //   isWsConnect.value = true
+  //   connectStatus.value = 2
+  // } else {
+  //   isWsConnect.value = false
+  // }
   // 准备环境
   if (currentState.value === 1) {
     // currentState.value = 2

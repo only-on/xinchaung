@@ -150,4 +150,8 @@ function finish() {
     height: 100%;
   }
 }
+.video-wrap {
+  display: flex;
+  align-items: center;
+}
 </style>

@@ -45,6 +45,7 @@
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
                   <span v-if="!a.TeachingAids && role !==2">
                     <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
+                    <a-button  v-else-if="a.task_type===3||a.task_type===6||a.task_type===7" type="primary" class="brightBtn" size="small" @click="openVm(a, 'start')">开始学习</a-button>
                     <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
                     <a-button v-else type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
                     @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>

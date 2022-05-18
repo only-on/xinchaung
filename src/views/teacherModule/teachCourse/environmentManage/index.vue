@@ -20,7 +20,7 @@
           />
         </div>
         <div class="btns-box">
-          <a-button type="primary" @click="visible = true">开启实验环境</a-button>
+          <a-button type="primary" @click="openEnv">开启实验环境</a-button>
         </div>
       </div>
       <a-spin :spinning="loading" size="large" tip="Loading...">
@@ -177,13 +177,25 @@ onUnmounted(() => {
 
 // 开启实验环境
 const openEnvNum = ref()
-const limit = ref(100);
+const limit = ref(0);
 const visible = ref(false)
 function getLimit() {
   http.maxLimit().then((res: IBusinessResp) => {
     limit.value = res.data.limit;
     // limit.value = 10
   });
+}
+function openEnv() {
+  // console.log(currentExperiment)
+  if (currentExperiment.is_high) {
+    message.warning(`该${name}为高配${name}，无法预启动${name}环境!`);
+    return;
+  }
+  if (!limit.value) {
+    message.warning('授权人数为0，无法开启!');
+    return;
+  } 
+  visible.value = true
 }
 function handleOk(num: number) {
   const limitParams = {

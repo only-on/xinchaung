@@ -156,33 +156,56 @@ let connectStatus = computed({
 const openVncState = ref(false)
 const currentState = ref(1)// 1未开始学习  2准备中   3准备完成 待进入
 const openVnc = () => {
+  // console.log(experimentDetail)
+  let {id, task_type, content_type} = experimentDetail
+  const param: any = {
+    type: type ? "course":"content",  // 实验
+    opType: type && role === 4 ? type : "prepare",
+    taskId: experimentDetail.id,
+    experType: content_type
+  };
+  if (type) {
+    param.recommendType = 'content'
+  }
+
+  if (content_type === 6 || content_type === 7 || content_type === 3) {
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        routerQuery: JSON.stringify(routeQuery),
+        experType: content_type
+      },
+    });
+    return
+  }
+
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
     goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1
-  let {id, task_type} = experimentDetail
-  if (experimentDetail.is_webssh) {
-    task_type = 2
-  } else if (experimentDetail.programing_type && experimentDetail.task_type === 4) {
-    task_type = 3
-  }
-  const param: any = {
-    type: type ? "course":"content",  // 实验
-    opType: type && role === 4 ? type : "prepare",
-    taskId: experimentDetail.id,
-    experType: task_type
-  };
-  if (type) {
-    param.recommendType = 'content'
-  }
-  if (task_type === 6 || task_type === 7 || task_type === 3) {
-    isWsConnect.value = true
-    connectStatus.value = 2
-  } else {
-    isWsConnect.value = false
-  }
+  // let {id, task_type, content_type} = experimentDetail
+  // if (experimentDetail.is_webssh) {
+  //   task_type = 2
+  // } else if (experimentDetail.programing_type && experimentDetail.task_type === 4) {
+  //   task_type = 3
+  // }
+  // const param: any = {
+  //   type: type ? "course":"content",  // 实验
+  //   opType: type && role === 4 ? type : "prepare",
+  //   taskId: experimentDetail.id,
+  //   experType: task_type
+  // };
+  // if (task_type === 6 || task_type === 7 || task_type === 3) {
+  //   isWsConnect.value = true
+  //   connectStatus.value = 2
+  // } else {
+  //   isWsConnect.value = false
+  // }
   // 准备环境
   if (currentState.value === 1) {
     // currentState.value = 2

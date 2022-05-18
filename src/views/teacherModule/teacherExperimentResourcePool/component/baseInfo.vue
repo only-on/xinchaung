@@ -317,6 +317,7 @@ function create() {
       report: formState.report.id,
       tags: formState.tags,
       dataset_ids: formState.datasets,
+      container: formState.imageConfigs
     }
     // console.log(param)
     // return
