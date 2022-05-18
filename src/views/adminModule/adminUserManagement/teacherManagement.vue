@@ -110,6 +110,13 @@
               :visibilityToggle="false"
             />
           </a-form-item>
+          <!-- <div class="userinitpassword">
+            <span>使用初始密码</span>
+            <a-form-item label="" name="userinitpassword">
+              <a-checkbox v-model:checked="formState.userinitpassword"></a-checkbox>
+            </a-form-item>
+            <span>{{ `(账号+${suffix})` }}</span>
+          </div> -->
           <a-form-item label="职称" name="title">
             <a-input
               v-model:value="formState.title"
@@ -358,9 +365,9 @@ const teacherColumns = [
     var formState: IFormState = reactive({
       title:'',
       username: "",
-      password_hash: "",
+      password_hash:'',
       repassword: "",
-      userinitpassword: true,
+      userinitpassword:false,
       department: "",
       direct: "",
       course: "",
@@ -372,6 +379,8 @@ const teacherColumns = [
       introduce: "",
       reset: false
     });
+    formState.password_hash = `${formState.username}${suffix}`;
+    formState.repassword = `${formState.username}${suffix}`;
     const rules = {
       username: [
         { required: true, message: "请输入账号", trigger: "blur" },
@@ -383,7 +392,7 @@ const teacherColumns = [
         // var reg = new RegExp('^[_a-zA-Z0-9]{1,30}$')
       ],
       password_hash: [
-        { required: true, message: "请输入密码", trigger: "blur" },
+        { required: true, message: "请输入密码", trigger: "blur"},
       ],
       repassword: [
         { required: true, message: "请输入确认密码", trigger: "blur" },
@@ -406,22 +415,22 @@ const teacherColumns = [
         },
       ],
     };
-    watch(
-      () => {
-        return formState.userinitpassword;
-      },
-      (val) => {
-        // console.log(val)
-        if (val === true && formState.username) {
-          formState.password_hash = `${formState.username}${suffix}`;
-          formState.repassword = `${formState.username}${suffix}`;
-        } else {
-          formState.password_hash = "";
-          formState.repassword = "";
-        }
-      },
-      { immediate: true }
-    );
+    // watch(
+    //   () => {
+    //     return formState.userinitpassword;
+    //   },
+    //   (val) => {
+    //     // console.log(val)
+    //     if (val === true && formState.username) {
+    //       formState.password_hash = `${formState.username}${suffix}`;
+    //       formState.repassword = `${formState.username}${suffix}`;
+    //     } else {
+    //       formState.password_hash = "";
+    //       formState.repassword = "";
+    //     }
+    //   },
+    //   { immediate: true }
+    // );
     watch(
       () => {
         return formState.username;
@@ -448,6 +457,14 @@ const teacherColumns = [
       },
       { immediate: true }
     );
+    const ifUserInit:any=ref(true)
+    watch(
+      ()=>{
+        return formState.password_hash
+      },(val)=>{
+        console.log(formState.password_hash,formState.userinitpassword,'formState.password_hash')
+        ifUserInit.value=false
+      })
     const InputPassword = computed(() => {
       let sign = false;
       if (editId.value) {
@@ -614,11 +631,16 @@ const teacherColumns = [
             title:title
           },
         };
-        // 编辑时改变了就传
-        if ((formState.reset && editId.value) || editId.value === 0) {
-          obj.Teacher.password_hash = password_hash;
-          obj.Teacher.repassword = repassword;
+        if(ifUserInit.value){
+          delete obj.Teacher.password_hash;
+          delete obj.Teacher.repassword;
         }
+        // 编辑时改变了就传
+        // if ((formState.reset && editId.value) || editId.value === 0) {
+        //   obj.Teacher.password_hash = password_hash;
+        //   obj.Teacher.repassword = repassword;
+        // }
+        console.log(obj,'objjjjjjjjjj')
         const promise = editId.value
           ? http.editTeacher({
               urlParams: { id: editId.value },
@@ -650,6 +672,8 @@ const teacherColumns = [
           formState.status = String(res.data.status);
           formState.gender = res.data.gender;
           formState.username = res.data.stu_no;
+          // formState.password_hash = `${formState.username}${suffix}`;
+          // formState.repassword = `${formState.username}${suffix}`;
         });
       visible.value = true;
     }

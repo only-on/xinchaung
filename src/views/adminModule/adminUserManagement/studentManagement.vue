@@ -21,7 +21,7 @@
         <span style="width:50px">专业</span>
         <a-input
           style="width:224px"
-          v-model:value="ForumSearch.name"
+          v-model:value="ForumSearch.major"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -30,7 +30,7 @@
         <span style="width:50px">班级</span>
         <a-input
           style="width:224px"
-          v-model:value="ForumSearch.name"
+          v-model:value="ForumSearch.classname"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -39,7 +39,7 @@
         <span style="width:50px">年级</span>
         <a-input
         style="width:224px"
-          v-model:value="ForumSearch.name"
+          v-model:value="ForumSearch.grade"
           placeholder="请输入搜索关键词"
           @keyup.enter="search()"
         />
@@ -134,14 +134,14 @@
             <a-input v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
-            <!-- :disabled="InputPassword" :visibilityToggle="false" -->
+            <!-- :visibilityToggle="false" -->
             <a-input-password
               v-model:value="formState.password_hash"
               :visibilityToggle="false"
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
-            <!-- :disabled="InputPassword" :visibilityToggle="false"-->
+            <!-- :visibilityToggle="false" -->
             <a-input-password
               v-model:value="formState.repassword"
               :visibilityToggle="false"
@@ -397,14 +397,19 @@ const router = useRouter();
       page: 1,
       name: "",
       department: "",
+      classname:'',
+      grade:'',
+      major:'',
+
     });
+    var suffix = "1q2w";
     var formState: IFormState = reactive({
       classname:'',
       major:'',
       username: "",
       password_hash: "",
       repassword: "",
-      userinitpassword: true,
+      userinitpassword:false,
       department: "",
       grade: "",
       name: "",
@@ -415,6 +420,8 @@ const router = useRouter();
       introduce: "",
       reset: false,
     });
+    formState.password_hash = `${formState.username}${suffix}`;
+    formState.repassword = `${formState.username}${suffix}`;
     var uploadData:any= ref(false);
     const loading:any=ref(false)
     var visible:any = ref(false);
@@ -437,9 +444,12 @@ const router = useRouter();
       list.length = 0;
       let obj = {
         query: {
-          username: ForumSearch.username,
           name: ForumSearch.name,
-          department: ForumSearch.department,
+          // username: ForumSearch.username,
+          // department: ForumSearch.department,
+          major: ForumSearch.major,
+          classname:ForumSearch.classname,
+          grade:ForumSearch.grade
         },
         page: {
           pageSize: ForumSearch.pageSize,
@@ -463,22 +473,22 @@ const router = useRouter();
       ForumSearch.page = 1;
       initData();
     }
-    watch(
-      () => {
-        return formState.userinitpassword;
-      },
-      (val) => {
-        // console.log(val)
-        if (val === true && formState.username) {
-          formState.password_hash = `${formState.username}${suffix}`;
-          formState.repassword = `${formState.username}${suffix}`;
-        } else {
-          formState.password_hash = "";
-          formState.repassword = "";
-        }
-      },
-      { immediate: true }
-    );
+    // watch(
+    //   () => {
+    //     return formState.userinitpassword;
+    //   },
+    //   (val) => {
+    //     // console.log(val)
+    //     if (val === true && formState.username) {
+    //       formState.password_hash = `${formState.username}${suffix}`;
+    //       formState.repassword = `${formState.username}${suffix}`;
+    //     } else {
+    //       formState.password_hash = "";
+    //       formState.repassword = "";
+    //     }
+    //   },
+    //   { immediate: true }
+    // );
     watch(
       () => {
         return formState.username;
@@ -505,6 +515,13 @@ const router = useRouter();
       },
       { immediate: true }
     );
+    const ifUserInit:any=ref(true)
+    watch(
+      ()=>{
+        return formState.password_hash
+      },(val)=>{
+        ifUserInit.value=false
+      })
     const InputPassword = computed(() => {
       let sign = false;
       if (editId.value) {
@@ -624,10 +641,14 @@ const router = useRouter();
             introduce: introduce,
           },
         };
-        if ((formState.reset && editId.value) || editId.value === 0) {
-          obj.Student.password_hash = password_hash;
-          obj.Student.repassword = repassword;
+        if(ifUserInit.value){
+          delete obj.Teacher.password_hash;
+          delete obj.Teacher.repassword;
         }
+        // if ((formState.reset && editId.value) || editId.value === 0) {
+        //   obj.Student.password_hash = password_hash;
+        //   obj.Student.repassword = repassword;
+        // }
         const promise = editId.value
           ? http.editStudent({ urlParams: { id: editId.value }, param: { ...obj } })
           : http.studentCreate({ param: { ...obj } });
