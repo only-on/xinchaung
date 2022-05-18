@@ -9,7 +9,7 @@
           <div class="portrait"></div>
           <div class="name">{{v.username}}</div>
         </div>
-        <div class="progress">学习进度{{v.progress*100}}%</div>
+        <div class="progress">学习进度{{v.progress}}%</div>
       </div>
     </div>
   </div>
@@ -30,6 +30,9 @@ const courseRankList=()=>{
   list.length=0
   http.courseRankList({urlParams: {courseId:props.courseId}}).then((res: any) => {
     const {data}=res
+    data.forEach((v:any)=>{
+      v.progress=Math.ceil(v.progress*100)
+    })
     list.push(...data)
   });
 }
