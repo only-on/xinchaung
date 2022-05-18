@@ -372,7 +372,7 @@ function settingCurrentVM(data: any) {
 // 开启虚拟机
 initVnc.value = () => {
   if (novncEl.value) {
-    novncEl.value.connectVnc();
+    // novncEl.value.connectVnc();
   }
 };
  // 断开虚拟机
