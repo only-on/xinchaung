@@ -42,6 +42,7 @@
       <swiper
         :modules="modules"
         navigation
+        :centerInsufficientSlides="true"
         :loop="courseSwitchData.length > 3 ? true : false"
         watchSlidesProgress
         :slides-per-view="4"

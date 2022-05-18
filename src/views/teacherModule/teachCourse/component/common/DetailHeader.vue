@@ -344,7 +344,7 @@ const edit=()=>{
         .img{
           width: 121px;
           height: 139px;
-          background: url('src/assets/images/teacherCourse/courseHeader.jpg') no-repeat;
+          background: url('src/assets/images/studentcourse/course-header.png') no-repeat;
           background-size: 100% 100%;
         }
       }

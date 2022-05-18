@@ -72,5 +72,8 @@ onMounted(() => {
         color: var(--black-45);
       }
     }
+    .no-data{
+      background-color: transparent;
+    }
   }
 </style>
