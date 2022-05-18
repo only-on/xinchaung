@@ -65,7 +65,8 @@
           <div class="caozuo">
             <!-- <span v-if="selected.includes(item.uid)" class="shanchu iconfont icon-yichu1" @click="remove(item)"></span>
             <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span> -->
-            <span v-if="selected.includes(item.uid)" class="iconfont" @click="remove(item)">取消</span>
+            <!-- <span v-if="selected.includes(item.uid)" class="iconfont" @click="remove(item)">取消</span> -->
+            <span v-if="selected.includes(item.id)" class="iconfont" @click="remove(item)">取消</span>
             <span v-else class="select-btn iconfont" @click="select(item)">选择</span>
           </div>
         </div>
@@ -209,16 +210,26 @@ export default defineComponent({
         return;
       }
 
-      if (reactiveData.selected.includes(val.uid)) {
+      // if (reactiveData.selected.includes(val.uid)) {
+      //   return;
+      // }
+      // reactiveData.selected.push(val.uid);
+      if (reactiveData.selected.includes(val.id)) {
         return;
       }
-      reactiveData.selected.push(val.uid);
+      reactiveData.selected.push(val.id);
       emit("update:value", reactiveData.selected);
+      // let temp = {
+      //   uid: val.uid,
+      //   name: val.name,
+      //   amount: val.amount,
+      //   size: val.size,
+      // };
       let temp = {
-        uid: val.uid,
+        uid: val.id,
         name: val.name,
-        amount: val.amount,
-        size: val.size,
+        amount: val.item_count,
+        size: val.item_size,
       };
       reactiveData.names.push(temp);
       emit("update:names", reactiveData.names);
@@ -236,7 +247,7 @@ export default defineComponent({
       reactiveData.params.page = 1;
       reactiveData.params.common=v
       reactiveData.params.is_public=v
-      getDataList()
+      // getDataList()
     }
     return {
       ...toRefs(reactiveData),
