@@ -3,7 +3,7 @@
     <ul class="vm-nav-list">
       <li
         class="vm-nav-item"
-        :class="lastKey === item.key ? 'active' : ''"
+        :class="[lastKey === item.key ? 'active' : '', !isShowGuide&&item.key === 'guide'?'none-event': '']"
         v-for="(item, index) in navData"
         :key="index.toString()"
         @click="open(item.key)"
@@ -68,6 +68,7 @@ const navData = reactive([
   { name: "问答", key: "question", icon: "icon-wenda" },
 ]);
 
+let isShowGuide = ref(true)
 watch(
   () => baseInfo.value.base_info,
   (val) => {
@@ -76,7 +77,8 @@ watch(
     const {task_type} = val
     const isSetting = Number(experType)===1 || Number(experType)===2 || Number(experType)===3|| (task_type.type===4&&task_type.programing_type)
     if (val && !val.is_open && isSetting &&opType!=='help') {
-      navData.shift()
+      // navData.shift()
+      isShowGuide.value = false
     } 
     // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
   },
@@ -154,6 +156,11 @@ function open(key?: string) {
       display: flex;
       flex-direction: column;
     }
+    &.none-event {
+      pointer-events: none;
+      cursor: not-allowed;
+      color: var(--black-25);
+    }
   }
   .leftContent {
     background: var(--white-100);
@@ -188,4 +195,5 @@ function open(key?: string) {
     }
   }
 }
+
 </style>

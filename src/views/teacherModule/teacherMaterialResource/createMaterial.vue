@@ -21,6 +21,7 @@
                 :before-upload="MdFileBeforeUpload"
                 :show-upload-list="false"
                 accept=".md"
+                :custom-request="() => {}"
               >
                 <a-button type="primary">上传说明</a-button>
                 <span class="tips">仅支持md文件</span>
@@ -197,7 +198,17 @@ const submit = async() => {
     })
   })
 }
-const createDataSet = () => {
+function defaultCover() {
+  const path = process.env.NODE_ENV === "development" ? "/public/" : "/";
+  if (!formState.cover || formState.cover === "") {
+    const i = Math.floor(Math.random() * 10) + 1;
+    var url = `${path}img/init/cover/material/sc${i}.jpg`
+    formState.cover = url;
+    // console.log(url);
+  }
+}
+const createDataSet = async () => {
+  await defaultCover()
   const file = []
   for (const key in formState.fileList) {
     if (
