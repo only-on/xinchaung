@@ -468,8 +468,6 @@ onMounted(() => {
     })
     publicClassifyList[1].data.push(...data)
   })
-  console.log('来了');
-  
   initData();
 });
 </script>

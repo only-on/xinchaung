@@ -72,8 +72,11 @@
           <a-form-item label="课时" name="class_total">
             <a-input v-model:value="formState.class_total" placeholder="请输入课时" />
           </a-form-item>
-          <a-form-item label="实验时长" name="content_duration">
-            <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />
+          <a-form-item label="实验时长" name="content_duration" class="conentDuration">
+            <template #extra>
+              时间设置范围为40-120分钟
+            </template>
+            <a-input v-model:value="formState.content_duration" placeholder="请输入实验时长" />分钟
           </a-form-item>
           <a-form-item label="课程简介" name="introduce">
              <a-textarea v-model:value="formState.introduce" :auto-size="{ minRows: 6, maxRows: 8 }" placeholder="请输入课程简介" />
@@ -260,6 +263,18 @@ const formState = reactive<any>({
   tags: [],   // ["大数据","人工智能"], // 标签
   content_duration: '',// 实验时长
 })
+let validateNum = async (rule: any, value: string) => {
+  let validateor = /^[0-9]*[1-9][0-9]*$/
+  if (!validateor.test(value)) {
+    return Promise.reject('请输入正整数');
+  } else if (rule.field === 'content_duration') {
+    if (Number(value) < 40 || Number(value) > 120) {
+      return Promise.reject('时间设置范围为40-120分钟');
+    }
+  } else {
+    return Promise.resolve();
+  }
+};
 const rules = {
   name: [
     { required: true, message: `请输入名称`, trigger: "blur" },
@@ -268,12 +283,18 @@ const rules = {
   categoryText: [
     { required: true, message: "请选择数据集类型", trigger: "change" },
   ],
+  class_total: [
+    {validator: validateNum}
+  ],
+  content_duration: [
+    {validator: validateNum}
+  ]
 }
 const Save=()=>{
   console.log(formState)
   // return
-  editLoading.value=true
   formRef.value.validate().then(()=>{
+    editLoading.value=true
     http.UploadCourse({param:{...formState},urlParams: {courseId: courseId}}).then((res: IBusinessResp)=>{
       message.success('编辑成功')
       formRef.value.resetFields()
@@ -434,6 +455,19 @@ onMounted(() => {
       justify-content: space-around;
       .left,.right{
         width: 40%;
+      }
+      .conentDuration{
+        position: relative;
+        :deep(.ant-form-item-extra){
+          position: absolute;
+          top: -28px;
+          left: 68px;
+          font-size: 12px;
+        }
+        .ant-input{
+          width: 89%;
+          margin-right: 8px;
+        }
       }
     }
   }
