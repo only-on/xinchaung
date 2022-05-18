@@ -116,20 +116,20 @@ const searchInfo = reactive<ISearchInfo>({
   limit: 12,
   page: 1,
 });
-watch(() => { return configuration.componenttype; },
-  (val) => {
-    // console.log(val)
-    currentTab.value = val ;
-    searchInfo.page = 1
-    // searchInfo.content_direction = 0
-    // searchInfo.content_type = 0
-    // searchInfo.content_level = 0
-    classifyList.forEach((v: any) => {
-      v.value = 0
-    })
-    initData();
-  }
-);
+// watch(() => { return configuration.componenttype; },
+//   (val) => {
+//     // console.log(val)
+//     currentTab.value = val ;
+//     searchInfo.page = 1
+//     // searchInfo.content_direction = 0
+//     // searchInfo.content_type = 0
+//     // searchInfo.content_level = 0
+//     classifyList.forEach((v: any) => {
+//       v.value = 0
+//     })
+//     initData();
+//   }
+// );
 /**
  * 标签操作
  */

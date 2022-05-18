@@ -128,7 +128,10 @@ watch(
     classifyList.forEach((v: any) => {
       v.value = 0
     })
-    initData();
+    if(val === 1 || val ===0){
+      console.log(val)
+      initData();
+    }
     // getDirection()
     isShowAdd.value = currentTab.value === 0;
   }

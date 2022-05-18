@@ -164,7 +164,7 @@ const searchInfo = reactive<ISearchInfo>({
 const resetKeyword = ref<boolean>(false);
 watch(() => { return configuration.componenttype; },
   (val) => {
-    // console.log(val)
+    console.log(val)
     currentTab.value = val;
     searchInfo.is_public = currentTab.value
     searchInfo.page = 1
@@ -183,7 +183,9 @@ watch(() => { return configuration.componenttype; },
     publicClassifyList.forEach((v: any) => {
       v.value = 0
     })
-    initData();
+    if(val === 1 || val ===0){
+      initData();
+    }
     isShowAdd.value = val === 0;
     // console.log(isShowAdd.value)
   }
@@ -465,6 +467,8 @@ onMounted(() => {
     })
     publicClassifyList[1].data.push(...data)
   })
+  console.log('来了');
+  
   initData();
 });
 </script>
