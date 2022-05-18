@@ -41,9 +41,9 @@
             <div class="information2">
               <div class="portrait flexCenter">
                 <!-- v-if="params.common === 1" -->
-                <div class="flexCenter imgBox" v-if="item.is_public">
+                <div class="flexCenter imgBox" v-if="params.common === 1">
                   <span class="img"></span>
-                  <span class="text">系统内置</span>
+                  <span class="text">{{item.username}}</span>
                 </div>
                 <div class="tags flexCenter">
                   <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
@@ -74,7 +74,7 @@
       <p
         class="look-more-btn"
         @click="lookMore"
-        v-if="dataSetList.length < count"
+        v-if="(dataSetList.length < count)&&(params.page<totalPage)"
       >
         查看更多>>
       </p>
@@ -107,6 +107,7 @@ export default defineComponent({
     const uid = storage.lStorage.get("uid") || storage.lStorage.get("uid") || 100;
     const limitNumber: Ref<number> = ref(3);
     props.limitNumber ? (limitNumber.value = props.limitNumber) : "";
+    const totalPage:any=ref(1)
     const reactiveData: {
       params: any;
       category: any[];
@@ -160,6 +161,7 @@ export default defineComponent({
           // }):''
           reactiveData.dataSetList.push(...data);
           reactiveData.count = res.data.page.totalCount;
+          totalPage.value=res.data.page.pageCount;
         });
     }
     // 搜索
@@ -246,7 +248,8 @@ export default defineComponent({
       lookMore,
       remove,
       select,
-      bytesToSize
+      bytesToSize,
+      totalPage
     };
   },
 });
