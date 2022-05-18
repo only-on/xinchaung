@@ -7,7 +7,8 @@ export default {
     getWorkbenchInfoApi: { url: "/api/env/workbenchs/info/{id}", method: "GET" },
     getWorkbenchStatusApi: { url: "/api/env/workbenchs/vms", method: "GET" },
     getConfigApi: { url: "/api/env/images/config", method: "GET" }, // 获取工作台配置
-    getDataSetApi: { url: "/dmc/v1.0/datasets", method: "GET" }, // 获取数据集
+    // getDataSetApi: { url: "/dmc/v1.0/datasets", method: "GET" }, // 获取数据集
+    getDataSetApi: { url: "/api/resource/data", method: "GET" }, // 获取数据集
     getDatacategoryApi: { url: "/dmc/v1.0/datacategory", method: "GET" }, // 获取数据集类型
     createWorkbenchApi: { url: "/api/env/workbenchs", method: "POST", dataType: "json" },
     getMyImageApi: { url: "/api/env/images", method: "GET" },

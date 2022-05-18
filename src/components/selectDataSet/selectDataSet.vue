@@ -26,7 +26,7 @@
       </div>
       <div class="item custom_input">
         <a-input-search
-          v-model:value="params.keyword"
+          v-model:value="params.name"
           placeholder="请输入搜索关键字"
           @search="getDataList"
         />
@@ -40,21 +40,23 @@
             <h2>{{ item.name }}</h2>
             <div class="information2">
               <div class="portrait flexCenter">
-                <div class="flexCenter imgBox" v-if="params.common === 1">
+                <!-- v-if="params.common === 1" -->
+                <div class="flexCenter imgBox" v-if="item.is_public">
                   <span class="img"></span>
                   <span class="text">系统内置</span>
                 </div>
                 <div class="tags flexCenter">
-                  <span>{{`${item.tags.join('/')}`}}</span>
+                  <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
+                  <span>{{item.tags.join('/')}}</span>
                 </div>
                 <div class="numSize">
                   <div class="text">
                     <span>数量</span>
-                    <span>{{item.amount}}</span>
+                    <span>{{item.item_count}}</span>
                   </div>
                   <div class="text">
                     <span>大小</span>
-                    <span>{{ item.size}}</span>
+                    <span>{{ item.item_size}}</span>
                   </div>
                 </div>
             </div>
@@ -114,14 +116,17 @@ export default defineComponent({
       names: any[];
     } = reactive({
       params: {
-        per_page: 20,
+        // per_page: 20,
+        limit:10,
         page: 1,
-        category: "",
-        label: "",
-        keyword: "",
+        // category: "",
+        // label: "",
+        // keyword: "",
         common: 1,
-        user_id: uid,
-        is_public:1
+        // user_id: uid,
+        is_public:1,
+        tags:'数据集',
+        name:''
       },
       category: [],
       dataSetList: [],
@@ -146,15 +151,15 @@ export default defineComponent({
       datasetApi
         .getDataSetApi({ param: reactiveData.params })
         .then((res: any) => {
-          let data=res.data
-          data.length?data.map((v:any)=>{
-            v.tags=[]
-            v.labels.length?v.labels.forEach((i:any)=>{
-              v.tags.push(i.name)
-            }):''
-          }):''
+          let data=res.data.list
+          // data.length?data.map((v:any)=>{
+          //   v.tags=[]
+          //   // v.labels.length?v.labels.forEach((i:any)=>{
+          //   //   v.tags.push(i.name)
+          //   // }):''
+          // }):''
           reactiveData.dataSetList.push(...data);
-          reactiveData.count = res.total;
+          reactiveData.count = res.data.page.totalCount;
         });
     }
     // 搜索
@@ -228,6 +233,7 @@ export default defineComponent({
     const changeTab=(v:number)=>{
       reactiveData.params.page = 1;
       reactiveData.params.common=v
+      reactiveData.params.is_public=v
       getDataList()
     }
     return {
