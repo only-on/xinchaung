@@ -41,7 +41,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, onMounted,nextTick, computed, WritableComputedRef } from "vue";
+import { inject, ref, onMounted,nextTick, computed, WritableComputedRef, watch } from "vue";
 import loadingGif from "src/assets/images/vmloading.gif";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import disableStudent from "../component/disableStudent.vue"
@@ -160,7 +160,16 @@ function getVmBase() {
     });
   });
 }
-
+watch(
+  () => currentVm.value,
+  (newval, oldval) => {
+    if (baseInfo.value?.base_info?.is_webssh) {
+      oldval ? ws.value.leave(oldval.uuid + "_room") : ''
+      ws.value.join(newval.uuid + "_room");
+    }
+  },
+  { deep: true, immediate: true }
+);
 function initWs() {
   clearTimeout(Number(timerout));
   ws.value = wsConnect({

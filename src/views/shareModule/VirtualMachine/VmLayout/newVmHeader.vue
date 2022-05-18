@@ -728,6 +728,8 @@ async function switchVm() {
 function delayedTime() {
   clearInterval(Number(timer));
   VmOperatesHandle("delay").then((res: any) => {
+    delayVisiable.value = false
+    clearInterval(Number(delayTimer));
     if (res?.data && res.data.remaining_time) {
       use_time.value = res.data.remaining_time;
       times();
