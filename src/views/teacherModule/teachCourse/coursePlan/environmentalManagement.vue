@@ -210,15 +210,18 @@ function getList() {
     memory:formData.memory,
     cpunumType:formData.cpunumType,
     cpu_num:formData.cpu,
-    page:formData.page,
-    pageSize:formData.pageSize,
+    // page:formData.page,
+    // pageSize:formData.pageSize,
+    pageinfo:{
+      index:formData.page,
+      size:formData.pageSize
+    }
   };
   if (searchMode.value) { // 高级查询
     
   }else{
     // 普通查询
   }
-  
   dataList.value=[]
   http
     .envMonitoringList({
@@ -254,6 +257,7 @@ function search() {
   getList()
 }
 function pageChange (page: any) {
+  console.log(page,'page111')
   formData.page = page
   getList()
 }
