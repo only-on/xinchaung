@@ -542,6 +542,10 @@ function create() {
       message.warning('请添加实验环境')
       return
     }
+    if (createTypeNumber === 2 && !formState.imageConfigs[0].image) {
+      message.warning('请选择镜像')
+      return
+    }
     // console.log(docMp4FileObj)
     // return
     const {type,file_name,file_url,suffix,size,sort}=ipynbFileObj

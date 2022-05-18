@@ -375,7 +375,7 @@ const getTypeList = () => {
       .type {
         display: inline-block;
         padding: 0 7px;
-        background: #ff6554;
+        background: var(--primary-color);
         border-radius: 2px;
         font-size: var(--font-size-sm);
         color: var(--white-100);

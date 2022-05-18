@@ -137,6 +137,8 @@ const routeQuery = useRoute().query;
 const { course_student_id,from} = route.query;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const detailInfoUrl='/professor/classic/video/112/22/1523425771.mp4'
+var chartLoading: Ref<boolean> = ref(false);
+var ChaptersTreeList:any=reactive([])
 interface Props {
   ExternalOpen?:boolean
   Editable?:string
@@ -605,8 +607,6 @@ const ProcessingData=(data:any)=>{
     }
     ChaptersTreeList.push(...data)
 }
-var chartLoading: Ref<boolean> = ref(false);
-var ChaptersTreeList:any=reactive([])
 const getChaptersTree=()=>{
   chartLoading.value=true
   ChaptersTreeList.length=0
@@ -620,6 +620,7 @@ var course_setting:any=reactive({})
 function StudentChaptersTree(course_student_id:number){
   ChaptersTreeList.length=0
   studentHttp.StudentChaptersTree({urlParams:{course_student_id:course_student_id}}).then((res:IBusinessResp)=>{
+    if (!res) return
     const {data}=res
     course_setting=data.length?{...data[0].course_setting}:{}
     ProcessingData(data)
