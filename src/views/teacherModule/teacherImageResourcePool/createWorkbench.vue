@@ -190,7 +190,7 @@ let rules = {
 
 var Classify: Ref<string> = ref('docker');
 const setDetDis:any=computed(()=>{
-  console.log(Classify.value)
+  // console.log(Classify.value)
   if(Classify.value === 'kvm'){
     reactiveData.selectedName = [];
     reactiveData.ruleForm.datasets = [];
@@ -287,9 +287,8 @@ function remove(val: any, index: number) {
 }
 
 function getConfig() {
-  http.getConfigApi().then((res: any) => {
+  http.getConfigApi({concurrent:true}).then((res: any) => {
     const { base_image } = res.data;
-    // reactiveData.configs = image_configs;
     reactiveData.images = base_image;
   });
 }

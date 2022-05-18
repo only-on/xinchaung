@@ -32,7 +32,7 @@
           @change="change(v.key, v.value)"
         >
           <a-radio :value="a.value" v-for="a in v.data" :key="a">{{
-            a.name
+            a.label
           }}</a-radio>
         </a-radio-group>
       </template>
@@ -63,7 +63,7 @@ const configs: any = reactive([
     name: "内存",
     // data: [2, 4, 6, 8],
     data:[
-      {label:2,value:2048},{label:4,value:4096},{label:6,value:6144},{label:8,value:8192},
+      // {label:2,value:2048},{label:4,value:4096},{label:6,value:6144},{label:8,value:8192},
     ],
     unit: "GB",
     value: 4096,
@@ -74,7 +74,7 @@ const configs: any = reactive([
     name: "CPU",
     // data: [1, 2, 3, 4],
     data:[
-      {label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},
+      // {label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},
     ],
     unit: "核",
     value: 2,
@@ -85,7 +85,7 @@ const configs: any = reactive([
     name: "硬盘",
     // data: [30, 40, 50, 100],
     data:[
-      {label:30,value:30},{label:40,value:40},{label:50,value:50}
+      // {label:30,value:30},{label:40,value:40},{label:50,value:50}
     ],
     unit: "GB",
     value: 50,
@@ -94,13 +94,13 @@ const configs: any = reactive([
   },
   {
     name: "GPU",
-    data: [
-      { name: "是", value: true },
-      { name: "否", value: false },
-    ],
     value: false,
     type: "radio",
     key: "gpu",
+    data: [
+      { label: "是", value: true },
+      { label: "否", value: false },
+    ],
   },
 ]);
 const props = withDefaults(defineProps<Props>(), {
@@ -149,20 +149,27 @@ const getClass = (i: any, idx: number, v: any) => {
 }
 
 const initData = () => {
-  http.getConfigApi().then((res: any) => {
+  http.getConfigApi({concurrent:true}).then((res: any) => {
     const {image_configs} =res.data
-    Object.keys(image_configs).forEach((v:any)=>{
-      // console.log(image_configs[v]);
-      let val=image_configs[v]
-      console.log(val);
-      console.log(Object.entries(val));
+    configs.forEach((val:any)=>{
+      if(image_configs[val.key]){
+        let configobj=image_configs[val.key]
+        // console.log(image_configs[val.key]);
+        Object.keys(configobj).forEach((v:any)=>{
+          let obj:any={
+            label:Number(configobj[v]),
+            value:Number(v)
+          }
+          val.data.push(obj)
+        })
+      }
     })
-    
+    console.log(configs);
   });
 };
 onMounted(() => {
   emit("change", params);
-  // initData()
+  initData()
 });
 </script>
 <style scoped lang="less">

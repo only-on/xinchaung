@@ -50,7 +50,7 @@ if (props.defaultConfig.flavor && props.defaultConfig.image_id) {
 
 
 const configChange = (val: any) => {
-  // console.log(val)
+  console.log(val)
   reactiveData.flavor = val;
   emit("selectedImage", reactiveData);
 };
