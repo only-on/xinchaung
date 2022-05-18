@@ -39,7 +39,8 @@
                     </div>
                     <div class="text">
                       <span>大小</span>
-                      <span>{{ bytesToSize(v.item_size)}}</span>
+                      <!-- <span>{{ bytesToSize(v.item_size)}}</span> -->
+                      <span>{{v.item_size}}</span>
                     </div>
                   </div>
                 </div>

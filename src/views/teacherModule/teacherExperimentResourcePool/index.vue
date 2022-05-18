@@ -129,7 +129,7 @@ watch(
       v.value = 0
     })
     if(val === 1 || val ===0){
-      console.log(val)
+      // console.log(val)
       initData();
     }
     // getDirection()
