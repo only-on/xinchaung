@@ -29,13 +29,19 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
     // 4   个人信息  3 1 2修改密码
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
-    // watch(()=>{return configuration.componenttype},(val)=>{
-    //   // console.log(val)
-    //   if(role===2 || role===4){
-    //      componentName.value=componentNames[val]
-    //   }
-    // })
+    // updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    updata({
+      tabs: [],
+      showContent: true,
+      componenttype: undefined,
+      showNav: false,
+    });
+    watch(()=>{return configuration.componenttype},(val)=>{
+      // console.log(val)
+      if(role===2 || role===4){
+         componentName.value=componentNames[val]
+      }
+    })
   
     onMounted(()=>{
      

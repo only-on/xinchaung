@@ -117,9 +117,15 @@ export default defineComponent({
     const { lStorage } = extStorage
     const role = lStorage.get('role')
     var updata=inject('updataNav') as Function
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    // updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+    updata({
+      tabs: [],
+      showContent: true,
+      componenttype: undefined,
+      showNav: false,
+    });
     if(role===2){
-      updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
+      // updata({tabs:[],navPosition:'outside',navType:false,showContent:true,componenttype:undefined,showNav:true,backOff:false,showPageEdit:false})
     }else{
       
     }
