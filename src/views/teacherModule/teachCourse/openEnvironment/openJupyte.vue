@@ -3,14 +3,15 @@
     <a-drawer class="jupyter-detail-drawer" :visible="true" :closable="false">
       <div class="jupyte-detail-box">
         <div class="jupyte-detail-info">
-          <a-space size="large">
+          <span>在线制作</span>
+          <div>
             <a-button type="primary" :disabled="!isSaveImage" @click="stop"
               >停止环境</a-button
             >
             <a-button type="primary" :disabled="!isSaveImage" @click="create"
               >生成环境</a-button
             >
-          </a-space>
+          </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
           <!-- <iframe id="iframe" :src="jupyteUrl" frameborder="0"></iframe> -->
@@ -316,9 +317,6 @@ export default defineComponent({
     }
   }
 }
-.jupyte-detail-box .jupyte-detail-info {
-  padding: 5px 10px;
-}
 .image-container {
   padding: 0;
 }
@@ -335,23 +333,25 @@ export default defineComponent({
   .jupyte-detail-info {
     display: flex;
     flex-direction: row;
-    padding: 10px 0px;
+    justify-content: space-between;
+    padding: 10px 20px;
     border-bottom: 1px solid #d8d8d8;
     flex-shrink: 0;
-
-    > div {
-      margin-right: 50px;
-
-      > span:nth-child(1) {
-        font-size: 16px;
-        color: #050101;
+    >span{
+      font-size: 18px;
+      color: #33394B;
+    }
+    >div{
+      button:first-child{
+        margin-right: 20px;
+        background: #eee;
+        color: #535353;
+        border-color: #eee;
       }
-
-      > span:nth-child(2) {
-        font-size: 14px;
+      button{
+        border-radius: 17px;
       }
     }
-
     > div.link-info {
       margin-right: 25px;
       margin-left: 20px;

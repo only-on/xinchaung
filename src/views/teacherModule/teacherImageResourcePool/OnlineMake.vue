@@ -183,6 +183,7 @@ const getWorkbenchStatus=()=>{
       })
 };
 const enterFun = (val: any) => {
+  console.log(val)
   let tags: any[] = val.image.tags;
   let id = val.id;
   val.status=true
@@ -195,7 +196,7 @@ const enterFun = (val: any) => {
   // {urlParams:{imageID:val.id}}
  getWorkbenchInfoApi({id:val.id}).then((res: any) => {
       val.status=false
-      if (tags.indexOf("Notebook") > -1) {
+      if (tags.indexOf("jupyter") > -1) {
         const { href } = router.resolve({
           path: "/teacher/teacherCourse/open-jupyte",
           query: {
