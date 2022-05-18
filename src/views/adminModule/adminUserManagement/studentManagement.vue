@@ -95,8 +95,13 @@
           @click="delateCard(record.id)"
           title="删除"
         >删除</span>
-        <span  class="caozuo">
-          关闭
+        <span class="caozuo" @click="closeOrOpen(record.id,record.status)">
+          <span v-if="record.status==10">
+            关闭
+          </span>
+          <span v-else>
+            开启
+          </span>
         </span>
       </template>
     </a-table>
@@ -129,16 +134,16 @@
             <a-input v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
+            <!-- :disabled="InputPassword" :visibilityToggle="false" -->
             <a-input-password
               v-model:value="formState.password_hash"
-              :disabled="InputPassword"
               :visibilityToggle="false"
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
+            <!-- :disabled="InputPassword" :visibilityToggle="false"-->
             <a-input-password
               v-model:value="formState.repassword"
-              :disabled="InputPassword"
               :visibilityToggle="false"
             />
           </a-form-item>
@@ -151,7 +156,7 @@
         </div>
         <div class="right">
           <a-form-item label="班级" name="class">
-            <a-input v-model:value="formState.class" />
+            <a-input v-model:value="formState.classname" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
             <a-input v-model:value="formState.grade" />
@@ -252,7 +257,7 @@ import {
   UserOutlined,
 } from "@ant-design/icons-vue";
 interface IFormState {
-  class:string;
+  classname:string;
   major:any;
   username: string;
   password_hash: string;
@@ -283,8 +288,8 @@ const columns = [
   },
   {
     title: "班级",
-    dataIndex: "",
-    align: "",
+    dataIndex: "classname",
+    align: "classname",
   },
   {
     title: "年级",
@@ -293,7 +298,7 @@ const columns = [
   },
   {
     title: "专业",
-    dataIndex: "",
+    dataIndex: "major",
     align: "center"
   },
   {
@@ -370,7 +375,7 @@ const router = useRouter();
           trigger: "blur",
         },
       ],
-      gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      // gender: [{ message: "请选择性别", trigger: "change" }],
       email: [
         {
           pattern: /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/,
@@ -394,7 +399,7 @@ const router = useRouter();
       department: "",
     });
     var formState: IFormState = reactive({
-      class:'',
+      classname:'',
       major:'',
       username: "",
       password_hash: "",
@@ -604,7 +609,10 @@ const router = useRouter();
           Student: {
             username: username,
             email: email,
-            userinitpassword: editId.value ? false : userinitpassword, // 编辑时默认false
+            // userinitpassword: editId.value ? false : userinitpassword, // 编辑时默认false
+            userinitpassword:false, // 编辑时默认false
+            password_hash:password_hash,
+            repassword:repassword
           },
           StudentProfile: {
             department: department,
@@ -689,8 +697,8 @@ const router = useRouter();
     function DownloadTemplate() {
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
-        ? "./public/template/student.xlsx"
-        : "./template/student.xlsx";
+        ? "./public/template/Student.xlsx"
+        : "./template/Student.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "学生模板.xlsx";
@@ -701,6 +709,11 @@ const router = useRouter();
       ImportData.finished = 0;
       ImportData.unfinished = 0;
       ImportVisible.value = true;
+    }
+    function closeOrOpen(id:any,status:any){
+      http.closeOrOpenStu({param:{id:id,status:status==10?0:10}}).then((res:any)=>{
+        initData();
+      })
     }
     onMounted(() => {
       initData();
@@ -748,22 +761,22 @@ const router = useRouter();
         position: absolute;
         left: 8px;
         top: 8px;
-        background: url(../../assets/images/screenicon/Group7.png) no-repeat;
+        // background: url(../../assets/images/screenicon/Group7.png) no-repeat;
         width: 16px;
         height: 16px;
         z-index: 10;
       }
     }
-    .custom_input2 {
-      &::before {
-        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-      }
-    }
-    .custom_input3 {
-      &::before {
-        background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-      }
-    }
+  //   .custom_input2 {
+  //     &::before {
+  //       // background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+  //     }
+  //   }
+  //   .custom_input3 {
+  //     &::before {
+  //       // background: url(../../assets/images/screenicon/Group8.png) no-repeat;
+  //     }
+  //   }
   }
 
   .header-btn{

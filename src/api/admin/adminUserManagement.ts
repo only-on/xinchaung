@@ -17,6 +17,7 @@ export default{
   editStudent:{url:`/api/yii/student/update?id={id}`,method:'POST',dataType: 'json'},
   viewStudent:{url:`/api/yii/student/view?id={id}`,method:'POST',dataType: 'json'},
   BatchImport:{url:`/api/yii/student/importtpl`,method:'POST',dataType: 'formdata'},
+  BatchImportTeacher:{url:`/api/yii/teacher/importtpl`,method:'POST',dataType: 'formdata'},
   batchResetSpassword:{url:'/api/yii/student/batch-init-password',method:'POST',dataType: 'json'},
   closeOrOpenStu:{url:'/api/yii/student/change-status',method:'POST',dataType: 'json'},
 }
@@ -37,6 +38,7 @@ export interface IAdminUserManagement{
   editStudent:TFHttpSend
   viewStudent:TFHttpSend
   BatchImport:TFHttpSend
+  BatchImportTeacher:TFHttpSend
   batchResetSpassword:TFHttpSend
   closeOrOpenStu:TFHttpSend
 

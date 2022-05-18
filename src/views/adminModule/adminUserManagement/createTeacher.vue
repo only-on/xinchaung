@@ -167,7 +167,8 @@
           Teacher: {
             username: formState.username,
             email: formState.email,
-            userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+            // userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+            userinitpassword:false,
             password_hash:formState.password_hash,
             repassword:formState.repassword
           },

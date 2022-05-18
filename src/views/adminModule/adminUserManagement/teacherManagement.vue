@@ -89,6 +89,7 @@
         <div class="left">
           <a-form-item label="账号" name="username">
             <a-input
+              disabled
               v-model:value="formState.username"
             />
           </a-form-item>
@@ -96,25 +97,27 @@
             <a-input v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
+            <!-- :visibilityToggle="false" -->
             <a-input-password
               v-model:value="formState.password_hash"
               :visibilityToggle="false"
             />
           </a-form-item>
           <a-form-item label="确认密码" name="repassword">
+            <!-- :visibilityToggle="false" -->
             <a-input-password
               v-model:value="formState.repassword"
               :visibilityToggle="false"
             />
           </a-form-item>
-          <a-form-item label="职称" name="professionalTitle">
+          <a-form-item label="职称" name="title">
             <a-input
-              v-model:value="formState.professionalTitle"
+              v-model:value="formState.title"
             />
           </a-form-item>
         </div>
         <div class="right">
-            <a-form-item label="性别" required name="gender">
+            <a-form-item label="性别" name="gender">
                   <a-radio-group v-model:value="formState.gender">
                       <a-radio :value="1">男</a-radio>
                       <a-radio :value="2">女</a-radio>
@@ -234,7 +237,7 @@ interface TState {
   selectedRowKeys: any[]
 }
 interface IFormState {
-  professionalTitle:string;
+  title:string;
   username: string;
   password_hash: string;
   repassword: string;
@@ -266,7 +269,7 @@ const columns = [
   },
   {
     title: "职称",
-    dataIndex: "",
+    dataIndex: "title",
     align: "center"
   },
   {
@@ -353,7 +356,7 @@ const teacherColumns = [
       department: "",
     });
     var formState: IFormState = reactive({
-      professionalTitle:'',
+      title:'',
       username: "",
       password_hash: "",
       repassword: "",
@@ -367,7 +370,7 @@ const teacherColumns = [
       email: "",
       status: "10",
       introduce: "",
-      reset: false,
+      reset: false
     });
     const rules = {
       username: [
@@ -571,6 +574,7 @@ const teacherColumns = [
     function submit() {
       formRef.value.validate().then(() => {
         const {
+          title,
           username,
           password_hash,
           repassword,
@@ -593,7 +597,10 @@ const teacherColumns = [
           Teacher: {
             username: username,
             email: email,
-            userinitpassword: editId.value ? false : userinitpassword, // 编辑时默认false
+            // userinitpassword: editId.value ? false : userinitpassword, // 编辑时默认false
+            userinitpassword:false, // 编辑时默认false
+            password_hash:password_hash,
+            repassword:repassword
           },
           TeacherProfile: {
             department: department,
@@ -604,6 +611,7 @@ const teacherColumns = [
             phone: phone,
             status: status,
             introduce: introduce,
+            title:title
           },
         };
         // 编辑时改变了就传
@@ -685,7 +693,7 @@ const teacherColumns = [
       // loading.value=true
       const fd = new FormData();
       fd.append("file", file);
-      http.BatchImport({ param: fd }).then((res:any) => {
+      http.BatchImportTeacher({ param: fd }).then((res:any) => {
         ImportData.finished = res.data.total.finished;
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
@@ -697,11 +705,11 @@ const teacherColumns = [
     function DownloadTemplate() {
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
-        ? "./public/template/student.xlsx"
-        : "./template/student.xlsx";
+        ? "./public/template/Teacher.xlsx"
+        : "./template/Teacher.xlsx";
       const a = document.createElement("a");
       a.href = url;
-      a.download = "学生模板.xlsx";
+      a.download = "教师模板.xlsx";
       a.click();
     }
     function ImportStudent() {
@@ -760,22 +768,22 @@ const teacherColumns = [
         position: absolute;
         left: 8px;
         top: 8px;
-        background: url(../../assets/images/screenicon/Group7.png) no-repeat;
+        // background: url(../../assets/images/screenicon/Group7.png) no-repeat;
         width: 16px;
         height: 16px;
         z-index: 10;
       }
     }
-    .custom_input2 {
-      &::before {
-        background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-      }
-    }
-    .custom_input3 {
-      &::before {
-        background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-      }
-    }
+    // .custom_input2 {
+    //   &::before {
+    //     background: url(../../assets/images/screenicon/Group6.png) no-repeat;
+    //   }
+    // }
+    // .custom_input3 {
+    //   &::before {
+    //     background: url(../../assets/images/screenicon/Group8.png) no-repeat;
+    //   }
+    // }
   }
   .addTeacher {
     margin-right: 16px;

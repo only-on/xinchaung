@@ -172,7 +172,8 @@ const route = useRoute();
           Student: {
             username: formState.username,
             email: formState.email,
-            userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
+            userinitpassword:false,
+            // userinitpassword: editId.value ? false : formState.userinitpassword, // 编辑时默认false
             password_hash:formState.password_hash,
             repassword:formState.repassword
           },
