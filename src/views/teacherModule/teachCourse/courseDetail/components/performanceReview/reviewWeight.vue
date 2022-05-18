@@ -12,7 +12,7 @@
         <template v-if="weightData.show.includes('report')">
           <label>实验报告</label
           ><a-input v-model:value="weightData.calc.report" @change="dataChange"></a-input>
-          <i>+</i>
+          <i v-if="weightData.show.length>1&&weightData.show.includes('question')">+</i>
         </template>
         <template v-if="weightData.show.includes('question')">
           <label>随堂测试</label
