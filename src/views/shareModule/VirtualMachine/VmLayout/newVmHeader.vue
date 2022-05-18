@@ -1090,7 +1090,7 @@ function times() {
     if (!taskType.value) {
       use_time.value++;
     } else {
-      if (use_time.value <= 600) {
+      if (use_time.value === 600) {
         clearInterval(Number(timer));
         Modal.confirm({
           title: "是否延时？",
