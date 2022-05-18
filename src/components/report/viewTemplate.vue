@@ -1,5 +1,8 @@
 <template>
-  <div class="wrapper">
+  <div class="pdfBox" v-if="pdfUrl">
+    <PdfVue :url="pdfUrl" />
+  </div>
+  <div class="wrapper" v-else>
     <div class="content">
       <div class="dnd-space">
         <a-form :model="form" layout="vertical" ref="formRef">
@@ -52,6 +55,7 @@ import dragGable from "vuedraggable";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ITeacherTemplateHttp, Iform, WidgetModel } from "./templateTyping";
+import PdfVue from "src/components/pdf/pdf.vue";
 const http = (request as ITeacherTemplateHttp).teacherTemplate;
 const $message: MessageApi = inject("$message")!;
 const router = useRouter();
@@ -79,6 +83,7 @@ onMounted(() => {
     getDetail();
   }
 });
+const pdfUrl = ref('')
 const getDetail = () => {
   dataList.length = 0;  // {urlParams: {id: templateId.value}}
   http.viewTemplate({urlParams: {id: templateId.value}})
@@ -86,6 +91,7 @@ const getDetail = () => {
       if (res && res.data) {
         let result = res.data;
         form.name = result.name;
+        pdfUrl.value = result.pdf_path
         Object.assign(dataList, result.json_content);
         // 增加唯一标识， 否则拖拽排序时input的value值会被影响
         dataList.forEach((item: WidgetModel, index: number) => {
@@ -182,4 +188,7 @@ const getDetail = () => {
 :deep(.toolCol) {
   width: 31px;
 }
+.pdfBox {
+    height: 800px;
+  }
 </style>
