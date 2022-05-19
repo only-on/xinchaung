@@ -17,7 +17,7 @@
                <leftPanel></leftPanel>
             </slot>
         </div>
-        <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup"></div>
+        <div class="move-bar" @mousedown="mousedown" @mouseup="mouseup" v-if="contentShow"></div>
       </div>
       <div class="vm-content" ref="vmWrapEl">
         <div class="vm-content-right" ref="rightEl">
@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, defineProps, inject } from "vue";
+import { ref, toRefs, onMounted, Ref, defineProps, inject, provide } from "vue";
 import VmHeader from "./newVmHeader.vue";
 import leftPanel from "./leftPanel.vue";
 const props = defineProps({
@@ -38,6 +38,8 @@ const props = defineProps({
     defalut: [],
   },
 });
+const contentShow = ref(false);
+provide('contentShow', contentShow)   // 左侧tab对应的内容是否显示
 
 const currentNavKey = ref("");
 const leftEl = ref(null); // left
