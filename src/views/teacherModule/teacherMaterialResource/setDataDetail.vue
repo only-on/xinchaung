@@ -57,7 +57,7 @@
           </template>
           <template v-if="currentTab === '1' && activeTab==='说明文档' && showEditMd">
           <span class="data-set-hint">仅支持单个md格式文件上传</span>
-            <a-upload class="upload" :showUploadList="false" :before-upload="readMdFile" accept=".md">
+            <a-upload class="upload" :showUploadList="false" :before-upload="readMdFile" accept=".md" :custom-request="()=>{}">
               <a-button type="primary" class="brightBtn"> 上 传 </a-button>
             </a-upload>
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>

@@ -116,6 +116,7 @@
           <h3>实验指导</h3>
           <div class="upload-box">
             <a-upload
+              :custom-request="()=>{}"
               class="upload"
               :showUploadList="false"
               :before-upload="mdBeforeUpload"

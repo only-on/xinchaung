@@ -5,7 +5,7 @@
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
       </div>
-      <SetupChapter :Editable="Number(state)===1?'noStudy':'canStudy'" :courseId="Number(courseId)" />
+      <SetupChapter :Editable="Number(state)===3?'canStudy':'noStudy'" :courseId="Number(courseId)" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent">
