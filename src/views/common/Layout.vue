@@ -108,9 +108,8 @@ export default defineComponent({
     flex: 1;
     background: #fafafb;
     // background: rgba(240, 240, 240, 0.7);
-    overflow: hidden;
     padding-bottom: 32px;
-    min-height: 750px;
+    // min-height: 750px;
     overflow: auto;
     width: 100%;
     height: 100%;

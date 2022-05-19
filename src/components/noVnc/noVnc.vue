@@ -144,15 +144,15 @@ export default defineComponent({
       isClose!.value=false
     })
     // 监听prop属性变化时，执行
-    watch(
-      () => props,
-      () => {
-        nextTick(() => {
-          connectVnc();
-        });
-      },
-      { deep: true }
-    );
+    // watch(
+    //   () => props,
+    //   () => {
+    //     nextTick(() => {
+    //       connectVnc();
+    //     });
+    //   },
+    //   { deep: true }
+    // );
 
     return { connectVnc,sendDisconnect, rfb,loading,sendSelectContent ,refName,sendCtrlAltDel,isClose,closevmImg};
   },
