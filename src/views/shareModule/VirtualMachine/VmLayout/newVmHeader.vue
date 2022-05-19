@@ -647,7 +647,7 @@ const roleArry: menuTypeArr = ["recommend", "test", "help"].includes(opType as a
   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 
-// 获取随堂测试习题·
+// 获取随堂测试习题.
 async function getQuestionList(needs_answer: boolean = false) {
   let param = {
     page: 1,
@@ -732,6 +732,7 @@ function delayedTime() {
     delayVisiable.value = false
     clearInterval(Number(delayTimer));
     if (res?.data && res.data.remaining_time) {
+      message.success("延时成功");
       use_time.value = res.data.remaining_time;
       times();
     }
@@ -838,12 +839,13 @@ function endVmEnvirment() {
         !["recommend", "test", "help"].includes(opType as any) &&
         !["train"].includes(type as any)
       ) {
+        router.go(-1);
         // 自评推荐写在此处
         evaluateData.value = res.data;
         evaluateVisible.value = true;
         nextTick(() => {
           //   histogramCharts(evaluateData.value)
-          initEvaluate();
+          // initEvaluate();
         });
       } else {
         // backTo(router, type, 3, routerQuery);

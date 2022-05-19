@@ -136,7 +136,7 @@ onMounted(() => {
   .vm-left {
     height: 100%;
     position: relative;
-    min-width: 51px;
+    // min-width: 51px;
     flex-shrink: 0;
     display: flex;
     flex-direction: row;

@@ -300,12 +300,13 @@ function initWs() {
           }
           if (!["train"].includes(type as any)) {
             if (layout.value) {
+              router.go(-1);
               // 自评推荐
               evaluateVisible.value=true
               evaluateData.value = wsJsonData.data;
 
               nextTick(()=>{
-                initEvaluate()
+                // initEvaluate()
               })
               sendDisconnect();
               isClose.value=true
