@@ -129,7 +129,10 @@ function getVmBase() {
           content: "该实验已结束",
           okText: "确定",
           cancelText: "取消",
-          class: "finish-modal",
+          class: "vm-finish-modal",
+          cancelButtonProps: {
+            type: 'ghost'
+          },
           onOk: () => {
             clearTimeout(timer)
             router.go(-1)
@@ -160,16 +163,7 @@ function getVmBase() {
     });
   });
 }
-watch(
-  () => currentVm.value,
-  (newval, oldval) => {
-    if (baseInfo.value?.base_info?.is_webssh) {
-      oldval ? ws.value.leave(oldval.uuid + "_room") : ''
-      ws.value.join(newval.uuid + "_room");
-    }
-  },
-  { deep: true, immediate: true }
-);
+
 function initWs() {
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
@@ -460,5 +454,10 @@ onMounted(async () => {
 }
 .is-none {
   display: none;
+}
+.vm-finish-modal {
+  .ant-btn-ghost {
+    display: none;
+  }
 }
 </style>

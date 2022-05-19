@@ -86,6 +86,7 @@
       :drawer-style="{ backgroundColor: '#192843' }"
       :mask-style="{ opacity: 0 }"
       :width="'216px'"
+      class="vm-drawer"
     >
       <div class="vm-operate">
         <ul>
@@ -1538,14 +1539,14 @@ i {
 }
 </style>
 <style lang="less">
-.ant-drawer {
-  top: 70px;
+.ant-drawer.vm-drawer {
+  top: 45px;
   color: var(--white-45);
   .iconfont {
     font-size: var(--base-font-size);
   }
   .ant-drawer-body {
-    height: calc(100% - 70px);
+    height: calc(100% - 45px);
     padding: 0;
     display: flex;
     flex-direction: column;
@@ -1592,9 +1593,9 @@ i {
       margin-top: 8px;
     }
   }
-}
-.ant-drawer-header {
-  display: none;
+  .ant-drawer-header {
+    display: none;
+  }
 }
 
 .ant-select-dropdown {
