@@ -24,7 +24,7 @@
 import { defineComponent, watch, ref, onUnmounted } from "vue";
 import empty from "src/components/Empty.vue";
 import { message } from "ant-design-vue";
-import transimg from "src/assets/images/common/ppt-trans.gif";
+import transimg from "src/assets/images/common/ppt-trans2.gif";
 export default defineComponent({
   components: {
     empty,

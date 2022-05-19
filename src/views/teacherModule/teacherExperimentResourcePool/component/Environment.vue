@@ -75,52 +75,27 @@ import { Modal, message } from "ant-design-vue";
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherImageResourcePool;
+interface IFlavor{
+  cpu:number
+  disk:number
+  gpu:boolean
+  ram:number
+}
+interface envListItem{
+  imageName:string
+  image_id:number
+  flavor:IFlavor
+}
 interface Props {
   type: boolean;     // true单环境    false 多环境
   imageType:string      //  筛选镜像类型
-  envList?: any
+  envList?: envListItem[]
 }
 const props = withDefaults(defineProps<Props>(), {
   type: false,
   imageType:'vnc',
   envList: () => []
 });
-const configs: any = reactive([
-  {
-    name: "内存",
-    data: [2, 4, 6, 8],
-    unit: "GB",
-    value: 2,
-    type: "select",
-    key: "ram",
-  },
-  {
-    name: "CPU",
-    data: [1, 2, 3, 4],
-    unit: "GB",
-    value: 1,
-    type: "select",
-    key: "cpu",
-  },
-  {
-    name: "硬盘",
-    data: [30, 40, 50, 100],
-    unit: "GB",
-    value: 30,
-    type: "select",
-    key: "disk",
-  },
-  {
-    name: "GPU",
-    data: [
-      { name: "是", value: true },
-      { name: "否", value: false },
-    ],
-    value: false,
-    type: "radio",
-    key: "gpu",
-  },
-]);
 const reactiveData: any = reactive({
   flavor: {
     cpu: {},
@@ -168,7 +143,7 @@ const handleOk = () => {
   currentImage.imageName = "";
   currentImage.image_id = ''
   visible.value = false;
-  // console.log(selectList)
+  console.log(selectList)
   emit("handleOk", selectList);
   // modal.destroy()
 };

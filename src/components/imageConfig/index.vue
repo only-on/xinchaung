@@ -164,7 +164,7 @@ const initData = () => {
         })
       }
     })
-    console.log(configs);
+    // console.log(configs);
   });
 };
 onMounted(() => {

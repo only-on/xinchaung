@@ -20,7 +20,7 @@
     </div>
     <div v-else-if="activeFile.file_html === ''" class="pdfBox">
       <div class="flexCenter">
-        <h2>{{activeFile.name}}</h2>
+        <h2 class="single_ellipsis">{{activeFile.name}}</h2>
         <span class="iconfont icon-shanchu" @click="removeAct()"></span>
       </div>
       <h2>
@@ -259,9 +259,12 @@ const cancel = () => {
 }
 .pdfBox{
   .flexCenter{
-    width: 30%;
+    width: 50%;
     justify-content: space-between;
     height: 40px;
+    h2{
+      width: 80%;
+    }
     .iconfont{
       cursor: pointer;
     }
