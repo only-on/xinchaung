@@ -667,9 +667,9 @@ function setTagData(knowledge_map: any,size:number) {
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.length?item.contentvia.knowledages.forEach((knowledage: any,key:number) => {
-        const {knowledge_map_name,content_id}=knowledage
-        knowledage.id=content_id
-        var id=knowledage.id
+        const {knowledge_map_name,id}=knowledage.knowledge_map
+        // knowledage.id=content_id
+        // var id=knowledage.id
         data.push({
           name: knowledge_map_name,
           id: String(item.contentvia.id + "->" +id),

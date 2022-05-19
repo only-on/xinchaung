@@ -39,7 +39,6 @@
               <div class="TitRight"> 
                 <!-- 管理端是直接进入详情查看了，没有传参数通过 role判断 -->
                 <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
-                  <!-- ['canStudy','noStudy'].includes(props.Editable) -->
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
                   <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
                     <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
