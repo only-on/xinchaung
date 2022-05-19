@@ -297,4 +297,13 @@ export default defineComponent({
 .ant-spin-nested-loading {
   min-height: 80px;
 }
+.content{
+  :deep(.ql-image){
+    max-width: 830px;
+  }
+  :deep(.ql-video){
+    width: 830px;
+    height: 500px;
+  }
+}
 </style>
