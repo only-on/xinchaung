@@ -78,12 +78,12 @@
         </div>
         <a-button type="link" @click="Save('report')">下载</a-button>
       </div>
-      <div class="file flexCenter">
+      <div class="file flexCenter" v-show="false">
         <div class="title">学生录屏</div>
         <a-button type="link" @click="Save('video')">批量下载</a-button>
       </div>  
     </div>
-    <div class="tableContent">
+    <div class="tableContent" v-show="false">
       <a-spin :spinning="RecordingScreen.loading" size="large" tip="Loading...">
         <a-config-provider>
           <a-table :columns="columns" :data-source="RecordingScreen.list"
@@ -162,9 +162,9 @@ const searchInfo = reactive<ISearchInfo>({
   page: 1,
 });
 const resetKeyword = ref<boolean>(false);
-watch(() => { return configuration.componenttype; },
+watch(() => { return configuration.componenttype;},
   (val) => {
-    console.log(val)
+    // console.log(val)
     val = Number(val)
     currentTab.value = val;
     searchInfo.is_public = currentTab.value
@@ -421,7 +421,7 @@ const RecordingScreen:any=reactive({
   limit:10,
   page:1,
   total:0,
-  list:[{name:'test'}]
+  list:[]
 })
 const GetRecordingScreen=()=>{
   return

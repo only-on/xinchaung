@@ -25,7 +25,7 @@
             >
           </div>
         </a-form-item>
-        <a-form-item name="datasets" label="知识点">
+        <a-form-item label="知识点" name="selectedKnowledgeList">
           <div class="Knowledge">
             <div class="flexCenter">
               <a-button
@@ -84,7 +84,6 @@
               @click="delSelectedReport()"
             ></span>
           </div>
-          
         </a-form-item>
         <a-form-item name="datasets" label="数据集" v-if="componentsList.includes('setData')">
           <div class="datasets-box flexCenter">
@@ -366,6 +365,7 @@ import {
   onMounted,
   reactive,
   Ref,
+  watch,
   inject,
   nextTick,
 } from "vue";
@@ -465,6 +465,21 @@ const rules = {
     { required: true, message: "" },
     { validator: classCutValidator, trigger: "blur" },
   ],
+  report:[
+    { required: true, message: "" },
+    { validator: reportValidator, trigger: "change" },
+  ],
+  selectedKnowledgeList:[
+    { required: true, message: "" },
+    { validator: selectedKnowledgeValidator, trigger: "change" },
+  ],
+  tags:[
+    { required: true, message: "" },
+    { validator: tagsValidator, trigger: "blur" },
+  ],
+  direction:[
+    { required: true, message: "请选择所属方向" ,trigger: "change" },
+  ]
 };
 async function classCutValidator(rule: any, value: string) {
   if (!value) {
@@ -475,9 +490,41 @@ async function classCutValidator(rule: any, value: string) {
     return Promise.reject("课时数为1~16之间整数");
   }
 }
+async function reportValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.id) {
+    return Promise.reject("请选择实验报告");
+  }else{
+    formRef.value.clearValidate('report')
+    return Promise.resolve()
+  }
+}
+async function selectedKnowledgeValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.length) {
+    return Promise.reject("请选择知识点");
+  }else{
+    formRef.value.clearValidate('selectedKnowledgeList')
+    return Promise.resolve()
+  }
+}
+async function tagsValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.length) {
+    return Promise.reject("请填写标签");
+  }
+}
 const closeDrawer = () => {
   formState.drawerVisible = false;
 };
+watch(()=>{
+  return isShowKnowledge.value
+},(val:any)=>{
+  // console.log(val);
+  if(!val){
+    selectedKnowledgeValidator({},formState.selectedKnowledgeList)
+  }
+})
 // 移除知识点
 function removeKnowledge(val: any, index: number) {
   formState.selectedKnowledgeList.forEach((v: any, k: number) => {
@@ -533,17 +580,17 @@ function create() {
     // console.log(docMp4File);
     (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
     // console.log(ipynbFileObj)
-    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
-      console.log(docMp4FileObj)
-      message.warning('请选择实验指导')
-      return
-    }
     if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
       message.warning('请添加实验环境')
       return
     }
     if (createTypeNumber === 2 && !formState.imageConfigs[0].image) {
       message.warning('请选择镜像')
+      return
+    }
+    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
+      console.log(docMp4FileObj)
+      message.warning('请选择实验指导')
       return
     }
     // console.log(docMp4FileObj)
@@ -596,6 +643,7 @@ const reportOk = (val: any) => {
   // console.log(val)
   formState.report.id = val.id;
   formState.report.name = val.name;
+  reportValidator({},formState.report)
 };
 // 同屏vm连接信息
 let screenVmInfo: any = reactive([]);

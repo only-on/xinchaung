@@ -64,10 +64,10 @@ router.afterEach(
   ) => {
     const role = storage.lStorage.get("role");
     const breadcrumbs: IRouteTuple[] = [
-      {
-        control: { title: "首页", enabled: true },
-        route: PathList[Number(role)],
-      },
+      // {
+      //   control: { title: "首页", enabled: true },
+      //   route: PathList[Number(role)],
+      // },
     ];
     let processedPath: string[] = [];
     // console.log('matched:=',to.matched)
@@ -102,7 +102,7 @@ router.afterEach(
         processedPath.push(routeSegment.path);
       }
     });
-    // console.log("breadcrumbs:=", breadcrumbs);
+    console.log("breadcrumbs:=", breadcrumbs);
     // console.log('processedPath:=',processedPath)
     store.commit("saveBreadcrumb", breadcrumbs);
   }
