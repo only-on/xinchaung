@@ -33,52 +33,62 @@
       </div>
     </div>
     <div class="data-set-base-box setScrollbar">
-      <template v-if="dataSetList.length > 0">
-        <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
-          <div><img :src="item.cover" alt="" /></div>
-          <div class="data-base-info">
-            <h2>{{ item.name }}</h2>
-            <div class="information2">
-              <div class="portrait flexCenter">
-                <!-- v-if="params.common === 1" -->
-                <div class="flexCenter imgBox" v-if="params.common === 1">
-                  <span class="img"></span>
-                  <span class="text">{{item.username}}</span>
-                </div>
-                <div class="tags flexCenter">
-                  <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
-                  <span>{{item.tags.join('/')}}</span>
-                </div>
-                <div class="numSize">
-                  <div class="text">
-                    <span>数量</span>
-                    <span>{{item.item_count}}</span>
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+      
+        <template v-if="dataSetList.length > 0 && !loading">
+          <div class="data-set-item" v-for="item in dataSetList" :key="item.id">
+            <div><img :src="item.cover" alt="" /></div>
+            <div class="data-base-info">
+              <h2>{{ item.name }}</h2>
+              <div class="information2">
+                <div class="portrait flexCenter">
+                  <!-- v-if="params.common === 1" -->
+                  <div class="flexCenter imgBox" v-if="params.common === 1">
+                    <span class="img"></span>
+                    <span class="text">{{item.username}}</span>
                   </div>
-                  <div class="text">
-                    <span>大小</span>
-                    <span>{{ item.item_size}}</span>
+                  <div class="tags flexCenter">
+                    <!-- <span>{{`${item.tags.join('/')}`}}</span> -->
+                    <span>{{item.tags.join('/')}}</span>
                   </div>
-                </div>
+                  <div class="numSize">
+                    <div class="text">
+                      <span>数量</span>
+                      <span>{{item.item_count}}</span>
+                    </div>
+                    <div class="text">
+                      <span>大小</span>
+                      <span>{{ item.item_size}}</span>
+                    </div>
+                  </div>
+              </div>
+            </div>
+            </div>
+            <div class="caozuo">
+              <!-- <span v-if="selected.includes(item.uid)" class="shanchu iconfont icon-yichu1" @click="remove(item)"></span>
+              <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span> -->
+              <!-- <span v-if="selected.includes(item.uid)" class="iconfont" @click="remove(item)">取消</span> -->
+              <span v-if="selected.includes(item.id)" class="iconfont" @click="remove(item)">取消</span>
+              <span v-else class="select-btn iconfont" @click="select(item)">选择</span>
             </div>
           </div>
-          </div>
-          <div class="caozuo">
-            <!-- <span v-if="selected.includes(item.uid)" class="shanchu iconfont icon-yichu1" @click="remove(item)"></span>
-            <span v-else class="select-btn icon-xuanze_check iconfont" @click="select(item)"></span> -->
-            <!-- <span v-if="selected.includes(item.uid)" class="iconfont" @click="remove(item)">取消</span> -->
-            <span v-if="selected.includes(item.id)" class="iconfont" @click="remove(item)">取消</span>
-            <span v-else class="select-btn iconfont" @click="select(item)">选择</span>
-          </div>
-        </div>
-      </template>
-      <empty v-else></empty>
-      <p
-        class="look-more-btn"
-        @click="lookMore"
-        v-if="(dataSetList.length < count)&&(params.page<totalPage)"
-      >
-        查看更多>>
-      </p>
+        </template>
+        <empty v-else></empty>
+        <a-pagination
+          v-if="count > 12"
+          v-model:current="params.page"
+          :pageSize="params.limit"
+          :total="count"
+          @change="pageChange"
+        />
+        <!-- <p
+          class="look-more-btn"
+          @click="lookMore"
+          v-if="(dataSetList.length < count)&&(params.page<totalPage)"
+        >
+          查看更多>>
+        </p> -->
+      </a-spin>
     </div>
   </div>
 </template>
@@ -148,12 +158,15 @@ export default defineComponent({
       { deep: true, immediate: true }
     );
     // 获取数据集列表
+    var loading: Ref<boolean> = ref(false);
     function getDataList() {
       reactiveData.dataSetList.length=0
+      loading.value=true
       datasetApi
         .getDataSetApi({ param: reactiveData.params })
         .then((res: any) => {
           let data=res.data.list
+          loading.value=false
           // data.length?data.map((v:any)=>{
           //   v.tags=[]
           //   // v.labels.length?v.labels.forEach((i:any)=>{
@@ -191,6 +204,11 @@ export default defineComponent({
       reactiveData.params.page++;
       getDataList();
     }
+    function pageChange(current: any,) {
+      reactiveData.params.page=current
+      getDataList();
+    }
+    // pageChange
 
     // 移除
     function remove(val: any) {
@@ -257,10 +275,12 @@ export default defineComponent({
       dataSetChange,
       tagChange,
       lookMore,
+      pageChange,
       remove,
       select,
       bytesToSize,
-      totalPage
+      totalPage,
+      loading
     };
   },
 });

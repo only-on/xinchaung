@@ -48,10 +48,11 @@ var componentName: any = ref(ForumSquare);
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
+  // tabs: tabs,
   tabs: tabs,
   showContent: false,
   componenttype: undefined,
-  showNav: true,
+  showNav: false,
 });
 
 watch(
