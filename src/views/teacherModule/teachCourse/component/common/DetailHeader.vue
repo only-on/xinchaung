@@ -45,8 +45,13 @@
           <div class="user flexCenter">
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
             <div class="name flexCenter" v-if="(Number(currentTab) === 1 && role===3) || role===4 || role===2">
-              <div class="chart" :style="`background-image: url(${info.avatar});`"></div>
-              <div class="userName">{{info.user_name}}</div>
+              <template v-if="info.is_authorized">
+                <div class="chart" :style="`background-image: url(${info.avatar});`"></div>
+                <div class="userName">{{info.user_name}}</div>
+              </template>
+              <template v-else>
+                <div class="userName">未授权</div>
+              </template>
             </div>
             <div class="tags">
               <!-- <span>标签1/标签2/</span> -->

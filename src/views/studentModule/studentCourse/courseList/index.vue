@@ -4,38 +4,45 @@
     <classify :list="classifyList" @change="classifyChange"></classify>
     <a-spin :spinning="loading" size="large" tip="Loading...">
       <div class="flexCenter mainBox">
-        <div class="item" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
-          <div class="coverBox">
-            <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
-              <div class="top flexCenter">
-                <div class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
-              </div>
-              <div class="tabBox">
-                <!-- <span>标签1/标签2/</span> -->
-                  <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
+        <div class="itemBox" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" >
+          <div class="item" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
+            <div class="coverBox">
+              <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
+                <div class="top flexCenter">
+                  <template v-if="v.is_authorized">
+                    <div class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
+                  </template>
+                  <template v-else>
+                    <div class="state">未授权</div>
+                  </template>
+                </div>
+                <div class="tabBox">
+                  <!-- <span>标签1/标签2/</span> -->
+                    <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div class="info">
-            <div class="name">{{v.name}}</div>
-            <div class="date flexCenter">
-              <div class="flexCenter user">
-                <div class="img" :class="v.is_init?'initImg':''"></div>
-                <div class="userName single_ellipsis">{{v.teacher}}</div>
+            <div class="info">
+              <div class="name">{{v.name}}</div>
+              <div class="date flexCenter">
+                <div class="flexCenter user">
+                  <div class="img" :class="v.is_init?'initImg':''"></div>
+                  <div class="userName single_ellipsis">{{v.teacher}}</div>
+                </div>
+                <span>实验:{{v.content_total}}</span>
+                <span>课时:{{v.class_total}}</span>
               </div>
-              <span>实验:{{v.content_total}}</span>
-              <span>课时:{{v.class_total}}</span>
-            </div>
-            <div class="createDate flexCenter" v-if="v.start_time && v.end_time">
-              <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
-            </div>
-            <div class="progress flexCenter">
-              <div class="left flexCenter">
-                <span class="yixue">已学</span>
-                <a-progress :title="`已学习${v.progress}`" :percent="v.progress" />
+              <div class="createDate flexCenter" v-if="v.start_time && v.end_time">
+                <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
               </div>
-              <div @click.stop="viewAchievement(v)">
-                <span class="viewAchievement" v-if="v.state!==2">查看成绩</span>
+              <div class="progress flexCenter">
+                <div class="left flexCenter">
+                  <span class="yixue">已学</span>
+                  <a-progress :title="`已学习${v.progress}`" :percent="v.progress" />
+                </div>
+                <div @click.stop="viewAchievement(v)">
+                  <span class="viewAchievement" v-if="v.state!==2">查看成绩</span>
+                </div>
               </div>
             </div>
           </div>
@@ -176,6 +183,8 @@ const initData = () => {
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: any) => {
+      // v.is_authorized=false
+      v.is_authorizedText=v.is_authorized?'':'Unauthorized'
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     courseList.push(...list)
@@ -198,7 +207,8 @@ const courseDetail=(val:any)=>{
       currentTab:currentTab.value,
       courseId:val.id,
       course_student_id:val.course_student_id,
-      state:val.state
+      state:val.state,
+      is_authorizedText:val.is_authorizedText
        }
     });
 }
@@ -372,11 +382,19 @@ onMounted(() => {
     .midItem{
       margin: 0 18px 2rem;
     }
-    .item:hover,.midItem:hover{
-      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
-      position: relative;
-      top: -6px;
-      transition: all 0.3s;
+    // .item:hover,.midItem:hover{
+    //   box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+    //   position: relative;
+    //   top: -6px;
+    //   transition: all 0.3s;
+    // }
+    .itemBox:hover{
+      .item,.midItem{
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+        position: relative;
+        top: -4px;
+        transition: all 0.3s;
+      }
     }
   }
   .setupVisible{

@@ -234,6 +234,8 @@ function initData(){
   editLoading.value=true
   http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
     state.courseDetail=res.data
+    // state.courseDetail.is_authorized=false
+    state.courseDetail.is_authorizedText=state.courseDetail.is_authorized?'':'Unauthorized'
     editLoading.value=false
   })
 }

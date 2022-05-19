@@ -3,38 +3,47 @@
   <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div class="item" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
-        <div class="coverBox">
-          <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
-            <div class="top flexCenter">
-              <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
-              <div v-if="currentTab === 1" class="flexCenter user">
-                <!-- <span class="img" :class="v.is_init?'initImg':''" ></span> -->
-                <span class="img" :style="`background-image: url(${v.portrait});`" ></span>
-                <span class="userName">{{v.is_init?'系统内置':v.profile_name}}</span>
+      <div></div>
+      <div class="itemBox" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" >
+        <div class="item" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
+          <div class="coverBox">
+            <div class="cover" :style="v.url?`background-image: url(${v.url});`:''">
+              <div class="top flexCenter">
+                <div v-if="currentTab === 0" class="state" :class="v.state==3?'state-ing':''">{{`${['已结束','未开始','进行中'][v.state-1]}`}}</div>
+                <div v-if="currentTab === 1" class="flexCenter user">
+                  
+                  <template v-if="v.is_authorized">
+                    <span class="img" :style="`background-image: url(${v.portrait});`" ></span>
+                    <span class="userName">{{v.is_init?'系统内置':v.profile_name}}</span>
+                  </template>
+                  <template v-else>
+                    <span class="">未授权</span>
+                  </template>
+                  <!-- // is_authorized -->
+                </div>
+              </div>
+              <div class="tabBox">
+                <!-- :style="`background-image: url(${v.avatar});`" -->
+                <!-- <span>标签1/标签2/</span> -->
+                  <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
               </div>
             </div>
-            <div class="tabBox">
-              <!-- :style="`background-image: url(${v.avatar});`" -->
-              <!-- <span>标签1/标签2/</span> -->
-                <span>{{(v.tags && v.tags.length)?`${v.tags.join(' / ')}`:''}}</span>
+            <div class="flexCenter Projection" v-if="currentTab === 0 || (currentTab === 1 && v.is_authorized)">
+              <span class="text" @click.stop="multiplexing(v)">复用</span>
+              <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
+              <span class="text" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span>
             </div>
           </div>
-          <div class="flexCenter Projection">
-            <span class="text" @click.stop="multiplexing(v)">复用</span>
-            <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
-            <span class="text" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span>
-          </div>
-        </div>
-        <div class="info">
-          <div class="name">{{v.name}}</div>
-          <div class="date">
-            <span>实验:{{v.content_total}}</span>
-            <span>课时:{{v.class_total}}</span>
-            <span>学生:{{v.student_total}}</span>
-          </div>
-          <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
-            <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
+          <div class="info">
+            <div class="name">{{v.name}}</div>
+            <div class="date">
+              <span>实验:{{v.content_total}}</span>
+              <span>课时:{{v.class_total}}</span>
+              <span>学生:{{v.student_total}}</span>
+            </div>
+            <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
+              <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
+            </div>
           </div>
         </div>
       </div>
@@ -315,10 +324,13 @@ const initData = () => {
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: any) => {
+      // v.is_authorized=false
+      v.is_authorizedText=v.is_authorized?'':'Unauthorized'
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     courseList.push(...list)
     totalCount.value = page.totalCount
+    // console.log(courseList);
   })
 };
 const pageChange = async (current: any, pageSize: any) => {
@@ -341,7 +353,11 @@ const handleMenuClick = ({ key }: { key: string }) => {
 const courseDetail=(val:any)=>{
   router.push({ 
     path: "/teacher/teacherCourse/Detail",
-    query: { currentTab:currentTab.value,courseId:val.id }
+    query: { 
+      currentTab:currentTab.value,
+      courseId:val.id,
+      is_authorizedText:val.is_authorizedText
+      }
     });
 }
 const deleteFun = (val: any) => {
@@ -596,11 +612,19 @@ onMounted(() => {
     .midItem{
       margin: 0 18px 2rem;
     }
-    .item:hover,.midItem:hover{
-      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
-      position: relative;
-      top: -6px;
-      transition: all 0.3s;
+    // .item:hover,.midItem:hover{
+      // box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+      // position: relative;
+      // top: -4px;
+      // transition: all 0.3s;
+    // }
+    .itemBox:hover{
+      .item,.midItem{
+        box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
+        position: relative;
+        top: -4px;
+        transition: all 0.3s;
+      }
     }
   }
   .kong{

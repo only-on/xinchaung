@@ -5,7 +5,7 @@
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
       </div>
-      <SetupChapter :Editable="Number(state)===3?'canStudy':'noStudy'" :courseId="Number(courseId)" />
+      <SetupChapter :Editable="getPower()" :courseId="Number(courseId)" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent">
@@ -35,7 +35,7 @@ const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
-const { currentTab,courseId,state } = route.query;
+const { currentTab,courseId,state,is_authorizedText } = route.query;
 const http=(request as any).studentCourse
 const rules = {
   name: [
@@ -50,6 +50,19 @@ const props = withDefaults(defineProps<Props>(), {
   
   courseDetail: ()=> {},      // 
 });
+const getPower=()=>{
+  let str=''
+  // :Editable="Number(state)===3?'canStudy':'noStudy'"
+  if(Number(state)===3){
+    str='canStudy'
+  }else{
+    str='noStudy'
+  }
+  if(is_authorizedText === 'Unauthorized'){
+    str='readOnly'
+  }
+  return str
+}
 const initData = () => {
   return
   // const param = currentTab.value ? Object.assign({}, {...searchInfo}, {myexper: true}) : Object.assign({}, {...searchInfo})

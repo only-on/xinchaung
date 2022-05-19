@@ -97,7 +97,7 @@ const router = useRouter();
 const routeQuery = route.query
 const { currentTab,course_id } = route.query;
 const fromT=route.path.indexOf('CreateCourse')!==-1?'CreateCourse':'Detail'
-console.log(fromT);
+// console.log(fromT);
 
 interface Props {
   // chapterList:any
@@ -114,6 +114,8 @@ const props = withDefaults(defineProps<Props>(), {
   Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑
   courseId:0
 });
+console.log(props.Editable);
+
 const http=(request as any).teachCourse
 var state:any=reactive({
   chapterList:[],

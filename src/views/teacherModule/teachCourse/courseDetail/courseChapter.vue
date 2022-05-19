@@ -35,7 +35,7 @@ const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
-const { currentTab,courseId } = route.query;
+const { currentTab,courseId,is_authorizedText } = route.query;
 const http=(request as any).teachCourse
 const rules = {
   name: [
@@ -47,9 +47,9 @@ interface Props {
   courseDetail:any
 }
 const props = withDefaults(defineProps<Props>(), {
-  
   courseDetail: ()=> {},      // 
 });
+console.log(props.courseDetail);
 const getPower=()=>{
   let str=''
   if(role===2){
@@ -60,6 +60,9 @@ const getPower=()=>{
   }
   if((currentTab === '1' && role === 3) || role===4){
     str='canStudy'
+  }
+  if(is_authorizedText === 'Unauthorized'){
+    str='readOnly'
   }
   return str
 }
