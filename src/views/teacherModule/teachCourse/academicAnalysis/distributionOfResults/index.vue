@@ -81,7 +81,7 @@ option.value = {
       type: 'category',
       boundaryGap: false,
       name:'分数段',
-      data: ['0-60', '60-70', '7-80', '80-90', '90-100']
+      data: ['0-60', '60-70', '70-80', '80-90', '90-100']
     }
   ],
   yAxis: [

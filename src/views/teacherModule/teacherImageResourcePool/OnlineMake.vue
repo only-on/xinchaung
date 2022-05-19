@@ -66,10 +66,10 @@
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
             <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k)">
-              <span v-if="!v.opening">开启</span>
-              <span v-else class="openStatus">
+              <span v-if="!v.opening&&statusList[k]?.status!=='none'">开启</span>
+              <span v-if='v.opening||statusList[k]?.status=="none"' class="openStatus">
                 <LoadingOutlined></LoadingOutlined>
-                开启中...
+                准备中...
               </span>
           </a-button>
             <a-button :type="v.generateLoad?'link':'text'" :loading="v.generateLoad"  @click="GenerateImage(v,k)">{{v.generateLoad?'镜像生成中...':'生成镜像'}}</a-button>
@@ -177,9 +177,21 @@ const getClass = (k: number) => {
   }
   return str;
 };
+const flag:any=ref(false)
 const getWorkbenchStatus=()=>{
+      flag.value=false
       http.getWorkbenchStatusApi().then((res: any) => {
         statusList.value=res.data
+        statusList.value.forEach((item:any)=>{
+          if(item.status=='none'){
+            flag.value=true
+          }
+        })
+        if(flag.value){
+          setTimeout(()=>{
+            getWorkbenchStatus()
+          },100)
+        }
       })
 };
 const enterFun = (val: any) => {
