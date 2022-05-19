@@ -642,8 +642,8 @@ const router = useRouter();
           },
         };
         if(ifUserInit.value){
-          delete obj.Teacher.password_hash;
-          delete obj.Teacher.repassword;
+          delete obj.Student.password_hash;
+          delete obj. Student.repassword;
         }
         // if ((formState.reset && editId.value) || editId.value === 0) {
         //   obj.Student.password_hash = password_hash;
