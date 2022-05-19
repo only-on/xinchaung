@@ -5,7 +5,7 @@
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
       </div>
-      <SetupChapter :Editable="'canStudy'" :courseId="Number(courseId)" />
+      <SetupChapter :Editable="Number(state)===1?'noStudy':'canStudy'" :courseId="Number(courseId)" />
     </div>
     <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
     <div class="rightContent">
@@ -35,7 +35,7 @@ const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
-const { currentTab,courseId } = route.query;
+const { currentTab,courseId,state } = route.query;
 const http=(request as any).studentCourse
 const rules = {
   name: [

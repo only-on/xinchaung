@@ -7,7 +7,7 @@
           <div class="rank" :class="k<3?`rank${k+1}`:''">{{k>2?k+1:''}}</div>
           <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
           <div class="portrait"></div>
-          <div class="name">{{v.username}}</div>
+          <div class="name single_ellipsis" :title="v.username">{{v.username}}</div>
         </div>
         <div class="progress">学习进度{{v.progress}}%</div>
       </div>

@@ -194,7 +194,12 @@ const pageChange = async (current: any, pageSize: any) => {
 const courseDetail=(val:any)=>{
   router.push({ 
     path: "/student/studentCourse/Detail",
-    query: { currentTab:currentTab.value,courseId:val.id,course_student_id:val.course_student_id }
+    query: { 
+      currentTab:currentTab.value,
+      courseId:val.id,
+      course_student_id:val.course_student_id,
+      state:val.state
+       }
     });
 }
 const viewAchievement=(val:any)=>{

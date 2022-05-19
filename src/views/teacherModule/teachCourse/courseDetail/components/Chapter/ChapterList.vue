@@ -36,14 +36,12 @@
                   <span class="ItemExperimentTitle">{{a.name}}</span>
                 </div>
               </div>
-              <div class="TitRight">
-                <div v-if="props.Editable === 'canStudy' || role ===2">
-                  <!-- 1未开始学习  2准备中   3准备完成 待进入 -->
-                  <!-- {{`${['开始学习','准备中...','进入'][a.startup-1]}`}} -->
-                  <!-- <a-button v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" :loading="!(isWsConnect||a.startup===1)&&currentClickIndex===i || a.startup===3" 
-                  @click.stop="prepare(a, i)">{{a.startup===1?'开始学习':((!isWsConnect)&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
+              <div class="TitRight"> 
+                <!-- 管理端是直接进入详情查看了，没有传参数通过 role判断 -->
+                <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
+                  <!-- ['canStudy','noStudy'].includes(props.Editable) -->
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
-                  <span v-if="!a.TeachingAids && role !==2">
+                  <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
                     <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
                     <a-button  v-else-if="a.task_type===3||a.task_type===6||a.task_type===7" type="primary" class="brightBtn" size="small" @click="openVm(a, 'start')">开始学习</a-button>
                     <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
@@ -150,7 +148,7 @@ interface Props {
 }
 const props = withDefaults(defineProps<Props>(), {
   courseId:0,                 // 课程id
-  Editable:'readOnly',          //readOnly canStudy canEdit 是否可编辑  可编辑  可学习  只展示
+  Editable:'readOnly',          // canEdit可编辑  readOnly可学习   canStudy只展示   noStudy学生端已结束的课程不能学习
   ExternalOpen:false,         // 父组件打开教辅选择抽屉
   Environment:false       // 只筛选有环境的实验，去除文档和视频类型
 });
@@ -195,7 +193,7 @@ const emit = defineEmits<{
 }>();
 const getTitLeftClass=()=>{
   let str=''
-  if(props.Editable === 'canStudy'){
+  if(['canStudy','noStudy'].includes(props.Editable)){
     str='study'
   }
   if(props.Editable === 'canEdit'){
@@ -572,7 +570,7 @@ const ProcessingData=(data:any)=>{
           item={...v}
           index=k
         }
-        // 学生端是否展示实验指导
+        // 学生端根据教师端的课程设置是否展示实验指导     // 
         if(role === 4){
           v.list.length?v.list.forEach((i:any)=>{
             //  教辅的展示 教师端设置后  后端已经过滤
@@ -591,6 +589,7 @@ const ProcessingData=(data:any)=>{
                 i.power=true
               }
             }
+
           }):''
         }
       })
