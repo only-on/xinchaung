@@ -69,9 +69,14 @@
     <div class="pdfBox" v-if="pdfUrl">
       <PdfVue :url="pdfUrl" />
     </div>
-    <CreateTemplate v-else @cancelTemplate="cancelTemplate" :id="TemplateEditId" :type="TemplateViewType" @viewTemplate="viewTemplate"></CreateTemplate>
+    <CreateTemplate v-else @cancelTemplate="cancelTemplate" 
+    :id="TemplateEditId"
+     :type="TemplateViewType"
+      @viewTemplate="viewTemplate"
+       @settingReport="settingReport" />
     <template #footer>
       <span></span>
+      <a-button v-if="pdfUrl" @click="cancelTemplate">关闭</a-button>
     </template>
   </a-modal>
 </template>
@@ -132,7 +137,7 @@ const reportTab = (val: number) => {
     getTemplateList();
   }
 };
-const getTemplateList = () => {
+const getTemplateList = (ActId?:number) => {
   TemplateList.length=0
   http.getTemplateList({param: {type: 1}}).then((res: IBusinessResp) => {
     let list=res.data.list
@@ -144,6 +149,14 @@ const getTemplateList = () => {
         v.type=v.word_path === '' ? 1:2
       }
       v.typeText=`【${['系统默认','在线','离线'][v.type]}】`
+      if(ActId && ActId===v.id){
+        let obj={
+          id:v.id,
+          name:v.name,
+          typeText:v.typeText
+        }
+        settingReport(obj)
+      }
     })
     TemplateList.push(...list);
   });
@@ -271,15 +284,23 @@ const reportHandleOk = () => {
   emit("reportOk", active);
   emit("reportCancel");
 };
+const settingReport=(val:any)=>{
+  // console.log(val);
+  
+  emit("reportOk", val);
+  emit("reportCancel");
+}
 const reportCancel = () => {
   // activeTemplateItem.id = 0;
   // activeTemplateItem.name = "";
   reportVisible.value = false;
   emit("reportCancel");
 };
-const cancelTemplate = (val: number) => {
+const cancelTemplate = (val: number,id?:number) => {
+  console.log(2,id);
+  
   if (val === 2) {
-    getTemplateList();
+    getTemplateList(id);
   }
   reportTemplate.value = false;
   TemplateEditId.value = 0;

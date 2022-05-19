@@ -66,7 +66,7 @@
     </div>
   </div>
   <div class="operate">
-    <a-button @click="goBack(1)">{{ templateId ? "返回" : "取消" }}</a-button>
+    <a-button @click="goBack(1)">{{ templateId ? "关闭" : "取消" }}</a-button>
     <a-button
       v-show="!isCheck"
       type="primary"
@@ -191,6 +191,11 @@ onMounted(() => {
     getDetail();
   }
 });
+var activeTemplateItem: any = reactive({
+  id: 0,
+  name: "",
+  typeText:''
+});
 const getDetail = () => {
   dataList.length = 0;  // {urlParams: {id: templateId.value}}
   http.viewTemplate({urlParams: {id: templateId.value}})
@@ -203,7 +208,19 @@ const getDetail = () => {
         dataList.forEach((item: WidgetModel, index: number) => {
           item.idx = index;
         });
-      }
+
+          //
+          let type=0
+          if(result.is_init === 1){
+            type=0
+          }else{
+            type=result.word_path === '' ? 1:2
+          }
+          activeTemplateItem.typeText=`【${['系统默认','在线','离线'][type]}】`
+          activeTemplateItem.id=result.id
+          activeTemplateItem.name=result.name
+        }
+        
     });
 };
 const handleDragEnd = (evt: any) => {
@@ -238,22 +255,23 @@ const handleSave = () => {
       params.id = templateId.value;
       http.updateTemplate({ param: params,urlParams:{id:params.id}}).then((res: IBusinessResp) => {
         $message.success("报告模板编辑成功！");
-        goBack(2);
+        goBack(2,res.data);
       });
     } else {
       http.createTemplate({ param: params }).then((res: IBusinessResp) => {
         $message.success("报告模板创建成功！");
-        goBack(2);
+        goBack(2,res.data.id);
       });
     }
   });
 };
 const emit = defineEmits<{
-  (e: "cancelTemplate", val: number): void;
+  (e: "cancelTemplate", val: number,id?:number): void;
   (e: "viewTemplate", i: number, v: any): void;
+  (e: "settingReport", val: any): void;
 }>();
-const goBack = (val: number) => {
-  emit("cancelTemplate", val);
+const goBack = (val: number,id?:number) => {
+  emit("cancelTemplate", val,id);
   // if (templateId.value) {
   //   router.go(-1)
   // } else {
@@ -278,8 +296,8 @@ const editReport = () => {
 };
 // 设置为模板
 const settingReport = () => {
-  console.log("settingReport");
-  emit("cancelTemplate", 0);
+  // console.log("settingReport");
+  emit("settingReport", activeTemplateItem);
 };
 </script>
 <style lang="less" scoped>

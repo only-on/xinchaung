@@ -46,7 +46,7 @@
     :destroyOnClose="true"
   >
     <ConfigModal
-    :imageList="imageList"
+      :imageList="imageList"
       @selectedImage="selectedImage"
       :defaultConfig="defaultConfig"
     />
@@ -96,16 +96,9 @@ const props = withDefaults(defineProps<Props>(), {
   imageType:'vnc',
   envList: () => []
 });
-const reactiveData: any = reactive({
-  flavor: {
-    cpu: {},
-    disk: {},
-    ram: {},
-    gpu: false,
-  },
-});
 var visible: Ref<boolean> = ref(false);
 const selectList: any = reactive([]);
+// console.log(props.envList)
 selectList.push(...props.envList)
 const currentImage: any = reactive({
   flavor: {
