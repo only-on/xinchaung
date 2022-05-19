@@ -224,6 +224,10 @@ function handleOkSelect(){
 function handleCancelSelect(){
   emit("updateSelectStuVisable", 'cancel',[]);
   tableData.selectedRowKeys=[]
+  params.name=''
+  params.class=''
+  params.grade=''
+  params.direct=''
 }
 // function getStudentList() {
 //       loading.value = true;
