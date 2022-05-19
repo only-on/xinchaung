@@ -5,7 +5,7 @@
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults v-if="statisData" :experitId='experitId' :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData" :experType='experType' :experitId='experitId' :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -58,6 +58,7 @@ const ChaptersTreeList:any=ref([])
 const Editable:any=ref(false)
 const option: any = ref();
 const experitId:any=ref('0')
+const experType:any=ref()
 const className:any=ref('')
 option.value = [
   { id: "", name: "全部" },
@@ -118,6 +119,11 @@ columns.value = [
     dataIndex: "reportScore",
     key: "reportScore",
   },
+  {
+    title: "随测得分",
+    dataIndex: "inClassTestScore",
+    key: "inClassTestScore",
+  },
 ];
 
 function onChange(page: any, pageSize: any) {
@@ -155,6 +161,7 @@ function getStuStatis(){
 function selectExperiment(val: any) {
   console.log(val);
   experitId.value=val.id
+  experType.value=val.type
   getStuStatis()
   getStugrandsList()
 }

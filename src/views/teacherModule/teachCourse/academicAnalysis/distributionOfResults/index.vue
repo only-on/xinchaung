@@ -12,20 +12,21 @@
         <div :id="lineChart" class="line-chart"></div>
         <div id="pie-chart">
             <div class="pie-chart-row">
-                <div class='pie-item'>
+                <div class='pie-item' v-if="statisData?.experimentalReportSubmissionRate!==null">
                 <div class="title">
                     实验报告提交率
                 </div>
                 <Progress type="circle" :percent='statisData?.experimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
             </div>
-            <div class='pie-item'>
+            <div class='pie-item' v-if="statisData?.inClassTestDistributionOfScores!==null">
                 <div class="title">
                     随测正确率
                 </div>
                 <Progress type="circle" :percent='statisData?.inClassTestAccuracyRate' :width='100' :strokeWidth='10' strokeColor='#f6bc3a' />
             </div>
             </div>
-            <div class='pie-item'>
+            <!-- (experType!==6&&experType!==7)&& -->
+            <div class='pie-item' v-if="statisData?.automaticScoringCorrectRate!==null">
                 <div class="title">
                     自动评分率
                 </div>
@@ -43,10 +44,12 @@ import { Progress } from 'ant-design-vue';
 import leftPanelVue from 'src/views/shareModule/VirtualMachine/VmLayout/leftPanel.vue';
 
 interface Props {
-  statisData:any
+  statisData:any,
+  experType:any
 }
 const props = withDefaults(defineProps<Props>(), {
   statisData: () => {},
+  experType:()=>{}
 })
 var lineChart:any=ref('')
 lineChart.value='line-chart'+Math.random()
