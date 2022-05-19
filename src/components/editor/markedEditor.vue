@@ -4,8 +4,8 @@
       editor-name="content"
       :image-upload-url="
         env
-          ? '/proxyPrefix/api/content/vnc/upload_mkfile'
-          : '/api/content/vnc/upload_mkfile'
+          ? '/proxyPrefix/api/xinchuang/content/vnc/upload_mkfile'
+          : '/api/xinchuang/content/vnc/upload_mkfile'
       "
       :image-upload-before-hook="handleBeforeUpload"
       :image-upload-data="imageUploadData"
