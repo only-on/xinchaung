@@ -17,6 +17,15 @@ export default {
       },
     },
     {
+        path:"vm",
+        name:"vm",
+        component:()=>import("src/views/shareModule/VirtualMachine/Vm/Vm.vue"),
+        meta:{
+            title:"vnc",
+            authCode:""
+        },
+    },
+    {
       path: "webmsg",
       name: "webmsg",
       component: () =>

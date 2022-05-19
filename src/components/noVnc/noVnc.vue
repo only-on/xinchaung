@@ -137,7 +137,7 @@ export default defineComponent({
     }
     // 直接mounted周期
     onMounted(() => {
-      // connectVnc();
+      connectVnc();
     });
     onBeforeRouteLeave(()=>{
       console.log(isClose)

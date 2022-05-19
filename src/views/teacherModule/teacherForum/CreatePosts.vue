@@ -28,33 +28,7 @@
           <a-form-item label="添加标签" name="label">
             <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
             <div class="label-list">
-              <span
-                v-for="(item, index) in formState.label_name"
-                :key="index"
-                class="list"
-              >
-                {{ item }}
-                <i
-                  class="remove iconfont icon-guanbi pointer"
-                  @click="removeLabel(item)"
-                ></i>
-              </span>
-              <span v-if="formState.label_name.length < 3">
-              <span
-                class="add-btn pointer"
-                v-show="!isInput"
-                @click="clickLabelBtn"
-                ><i class="iconfont icon-tianjia"></i>添加标签</span
-              >
-              <a-input
-                ref="refLabel"
-                @pressEnter="labelSubmit"
-                @blur="labelSubmit"
-                @change="changeLabel"
-                v-show="isInput"
-                v-model:value="labelContent"
-              />
-              </span>
+              <LabelList :tag="formState.label_name" />
             </div>
           </a-form-item>
         </div>
@@ -107,6 +81,7 @@ import Submit from "src/components/submit/index.vue";
 import { goHtml } from "src/utils/common";
 import { ILabelList, ITagList } from "./forumnTyping.d";
 import extStorage from "src/utils/extStorage";
+import LabelList from 'src/components/LabelList.vue'
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const http = (request as any).teacherForum;
@@ -254,20 +229,6 @@ const getTagsList = (param: any) => {
         }
         &:nth-child(2) {
           flex: 1;
-          .label-list .list {
-            display: inline-block;
-            height: 24px;
-            line-height: 24px;
-            background: var(--white-100);
-            border: 1px solid var(--lightgray-6);
-            border-radius: 13px;
-            // color: var(--primary-color);
-            padding: 0 18px;
-            margin-right: 8px;
-            .iconfont {
-              font-size: var(--font-size-sm);
-            }
-          }
           .add-btn {
             display: inline-block;
             height: 24px;

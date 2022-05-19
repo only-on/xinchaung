@@ -60,45 +60,7 @@
       </a-radio-group>
     </a-form-item>
     <a-form-item class="right" label="添加标签" name="tags">
-      <div class="label-list">
-        <span
-          v-for="(item, index) in formState.tags"
-          :key="index"
-          class="active"
-        >
-          {{ item }}
-          <i
-            class="remove iconfont icon-guanbi"
-            @click="removeLabel(item)"
-          ></i>
-        </span>
-        <span class="edit-box" v-if="formState.tags && formState.tags.length < 3">
-          <span @click="clickCustomLabel" v-show="!openCustom">
-            <span class="iconfont iconbiaoqian"></span>
-            + 添加标签
-          </span>
-          <a-input
-            ref="refCustomLabel"
-            @pressEnter="customFinish"
-            @blur="customFinish"
-            @change="changeLabel"
-            v-show="openCustom"
-            v-model:value="customLabelV"
-          />
-        </span>
-      </div>
-      <div class="recommend" v-if="showTag">
-        <div class="tit">或从推荐中选择</div>
-        <span class="iconfont icon-guanbi" @click="showTag = false"></span>
-        <div class="tagBox">
-          <span 
-            v-for="v in commonLabelsList" :key="v.id"
-            @click="addTag(v)"
-            :class="formState.tags.includes(v.name) ? 'act' : ''"
-            >{{v.name}}</span
-          >
-        </div>
-      </div>
+      <LabelList :tag="formState.tags" :recommend="commonLabelsList" />
     </a-form-item>
   </div>
 </a-form>
@@ -111,6 +73,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import uploadCover from "src/components/uploadCover/index.vue"
+import LabelList from 'src/components/LabelList.vue'
 const http = (request as any).teacherMaterialResource;
 const datasetHttp = (request as any).dataSet;
 const $message: MessageApi = inject("$message")!;
@@ -305,7 +268,10 @@ const getLabelsList = () => {
   commonLabelsList.length = 0
   http.getLabelsList().then((res: IBusinessResp) => {
     const data = res.data
-    commonLabelsList.push(...data)
+    data.forEach(({name}: {name: string}) => {
+      commonLabelsList.push({value: name, name})
+    })
+    // commonLabelsList.push(...data)
   })
 }
 onMounted(() => {
@@ -366,65 +332,6 @@ const getNavList = () => {
       cursor: pointer;
       img {
         width: 70px;
-      }
-    }
-  }
-}
-.label-list {
-  display: flex;
-  flex-wrap: wrap;
-
-  > span {
-    margin: 0px 5px 0px 0px;
-    padding: 5px 15px;
-    background: #ebebeb;
-    margin-bottom: 5px;
-    position: relative;
-    border-radius: 5px;
-    margin-right: 10px;
-
-    > .remove {
-      position: absolute;
-      font-size: 12px;
-      background: red;
-      width: 14px;
-      height: 14px;
-      top: -5px;
-      right: -5px;
-      border-radius: 50%;
-      text-align: center;
-      line-height: 14px;
-      cursor: pointer;
-    }
-
-    &.active {
-      background: var(--primary-color);
-      color: #ffffff;
-    }
-  }
-
-  .edit-box {
-    margin: 0px 5px 0px 0px;
-    padding: 0px 0px;
-    background: #ebebeb;
-    margin-bottom: 5px;
-    position: relative;
-    width: 120px;
-    cursor: pointer;
-
-    > span {
-      // padding: 0px 15px;
-      display: block;
-      text-align: center;
-      width: 100%;
-      line-height: 30px;
-      color: var(--primary-color);
-      border: 1px solid var(--primary-color);
-      border-radius: 5px;
-      background: #ffffff;
-
-      &:hover {
-        background: #f8efff;
       }
     }
   }
