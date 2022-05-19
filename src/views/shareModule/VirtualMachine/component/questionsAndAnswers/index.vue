@@ -11,7 +11,7 @@
           />
           <a-spin :spinning="loading" size="large" tip="Loading...">
           <div v-if="forumnList.length > 0">
-            <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
+            <forumn :forumnList="forumnList" :forumSearch="forumSearch" @pageChange="pageChange" :total="total"></forumn>
           </div>
           <div v-else>
             <empty></empty>
@@ -29,7 +29,7 @@
           />
           <a-spin :spinning="loading" size="large" tip="Loading...">
           <div v-if="forumnList.length > 0">
-            <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total"></forumn>
+            <forumn :forumnList="forumnList" :forumSearch="forumSearch" @pageChange="pageChange" :total="total"></forumn>
           </div>
           <div v-else>
             <empty></empty>
