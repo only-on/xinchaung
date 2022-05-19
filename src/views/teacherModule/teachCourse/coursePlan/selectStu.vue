@@ -182,7 +182,11 @@ function onChange(page: any, pageSize: any) {
   params.pageinfo.index=page;
   // getallstudent()
   let param:any={
-    page:page
+    page:page,
+    stu_no:params.name,
+    classname:params.class,
+    grade:params.grade,
+    major:params.direct
   }
   emit('updateStuParams',param)
 }
