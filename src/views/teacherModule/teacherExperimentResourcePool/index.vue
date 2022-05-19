@@ -26,6 +26,9 @@
           <img :src="v.user_profile.portrait||defaultAvatar" alt="" srcset="" />
           <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
         </div>
+        <div class="operate" v-if="currentTab === 1">
+          <span  v-show="v.is_share === 1" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+        </div>
         <div class="operate" v-if="currentTab === 0">
           <!-- is_share:1 就是共享数据 -->
           <span class="share pointer" @click.stop="share(v.id, v.is_share)">{{
@@ -71,10 +74,22 @@
       />
     </div>
   </a-spin>
+  <!-- 保存到我的 -->
+  <a-modal v-model:visible="saveVisible"  title="设置实验名称" :width="500">
+    <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
+      <a-form-item label="实验名称" name="name">
+        <a-input v-model:value="formState.name" :placeholder="`请输入实验名称`" />
+      </a-form-item>
+    </a-form>
+    <template #footer>
+      <Submit @submit="Save" @cancel="cancel"></Submit>
+    </template>
+  </a-modal>
 </template>
 <script lang="ts" setup>
 import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
+import Submit from "src/components/submit/index.vue";
 import {
   defineComponent,
   ref,
@@ -113,6 +128,18 @@ updata({
 const currentTab = ref<number>(0);
 const isShowAdd = ref<boolean>(true);
 const resetKeyword = ref<boolean>(false);
+const formRef = ref<any>();
+const saveVisible = ref<boolean>(false);
+const formState=reactive<any>({
+  name:'',
+  id: 0
+})
+const rules = {
+  name: [
+    { required: true, message: `请输入实验名称`, trigger: "blur" },
+    { max: 30, message: `名称最多30个字符`, trigger: "blur" },
+  ],
+}
 watch(
   () => {
     return configuration.componenttype;
@@ -324,6 +351,20 @@ const delet = (id: number) => {
     },
   });
 };
+const saveTomy = (id:number, name:string) => {
+  // saveVisible.value = true
+  // // formState.name = name
+  // formState.id = id
+  http.savedMycontent({param: {id: id}}).then((res:IBusinessResp) => {
+    message.success('保存成功')
+    initData()
+  })
+}
+const Save = () => {}
+const cancel = () => {
+  formRef.value.resetFields()
+  saveVisible.value = false
+}
 const detail = (id: number) => {
   // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
   router.push({
@@ -373,7 +414,7 @@ const getDirection = () => {
     border-radius: 32px;
     background: var(--white-65);
     padding-right: 40px;
-    &.self:hover {
+    &:hover {
       box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
       .label {
         display: none;

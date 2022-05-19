@@ -78,6 +78,8 @@ export default {
   updateReport: { url: `/api/xinchuang/content/content/update_report/{id}`, method: "POST", dataType: "json" },
   // 课程里章节选择实验列表
   getExperimentList2: { url: `/api/course/contents/list`, method: "GET" },
+  // 保存到我的
+  savedMycontent: { url: `/api/xinchuang/content/content/saved_my_content`, method: "POST" },
 };
 
 export interface ITeacherExperimentResourcePool {
@@ -122,6 +124,7 @@ export interface ITeacherExperimentResourcePool {
   deleteVideo: TFHttpSend;
   updateVideoGuide: TFHttpSend;
   updateReport: TFHttpSend;
+  savedMycontent: TFHttpSend
 }
 
 export const MODULE_NAME = "teacherExperimentResourcePool";

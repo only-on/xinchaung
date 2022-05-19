@@ -240,7 +240,8 @@ watch(()=>props.detail, newVal => {
       id: k,
       image_id: v.image.id,
       imageName: v.image.name,
-      flavor: v.flavor
+      flavor: v.flavor,
+      is_use_gpu: v.is_use_gpu
     })
   })
 }, {deep:true,immediate:true})
@@ -283,14 +284,12 @@ function remove(val: any, index: number) {
 }
 
 const ConfirmConfiguration = (val: any) => {
-  // console.log(val)
   let arr:any=[]
   val.forEach((v:any) => {
-    // console.log(v)
     const {ram,cpu,disk}=v.flavor
     let obj={
       image:v.image_id,
-      is_use_gpu:v.flavor.gpu,
+      is_use_gpu:v.flavor.gpu !== undefined ? v.flavor.gpu :v.is_use_gpu ,
       flavor:{ram,cpu,disk}
     }
     arr.push(obj)
@@ -307,6 +306,18 @@ function create() {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
     }, [])
+    // 未改变实验环境时
+    let arr:any = []
+    formState.imageConfigs.forEach((item:any) => {
+      if (item.image_id) {
+        let obj = {
+          flavor: item.flavor,
+          image: item.image_id,
+          is_use_gpu: item.is_use_gpu
+        }
+        arr.push(obj)
+      }
+    })
     const param = {
       // id: formState.id,
       name: formState.name,
@@ -317,7 +328,7 @@ function create() {
       report: formState.report.id,
       tags: formState.tags,
       dataset_ids: formState.datasets,
-      container: formState.imageConfigs
+      container: arr.length ? arr : formState.imageConfigs
     }
     // console.log(param)
     // return

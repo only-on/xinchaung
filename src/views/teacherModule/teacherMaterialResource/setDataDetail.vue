@@ -18,6 +18,10 @@
           </span>
         </div>
         <div class="info flexCenter">
+          <div class="item userAvatar">
+            <img :src="state.detail.user?.avatar" alt="">
+            <span>{{state.detail.user?.username}}</span>
+          </div>
           <div class="item">
             <span>数量</span>
             <span>{{state.detail.item_count}}</span>
@@ -514,6 +518,14 @@ onMounted(() => {
           margin-right: 2rem;
           span{
             padding-right: 6px;
+          }
+        }
+        &.userAvatar{
+          img{
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
           }
         }
       }

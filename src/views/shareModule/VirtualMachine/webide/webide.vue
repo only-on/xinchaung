@@ -555,6 +555,7 @@ onBeforeRouteLeave(() => {
   closeWs();
 });
 onMounted(async () => {
+  getVmBase()
   createTopo().then(async () => {
     await getTaskInfoData();
     if (Number(baseInfo.value?.current?.status)<2||role !== 4) {

@@ -90,7 +90,7 @@
         <div class="header">
           <div class="name">知识图谱</div>
           <div class="tit">
-            以关系图显示课程-实验-知识点之间的关系，知识点错误率越高，圈越大。
+            以关系图显示本课程知识点之间的关系，知识点错误率越大，圈越大。
           </div>
         </div>
         <div
@@ -103,7 +103,7 @@
         <div class="header">
           <div class="name">高频易错点梳理图</div>
           <div class="tit">
-            以桑基图展示所选课程中错误率最高的10个知识点与实验、习题之间的关系
+            以桑基图展示所选课程中错误率最高的10个知识点与实验之间的关系
           </div>
         </div>
         <div
