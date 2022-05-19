@@ -323,7 +323,7 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
     let s = {
       name: item.knowledge_map_name,
       id: String(item.id),
-      symbolSize: item.error_rate ? item.error_rate : 50,
+      symbolSize: Number(item.error_rate) + 20,
       value: item.error_rate,
       draggable: true,
       itemStyle: {
@@ -346,8 +346,8 @@ function handleGraphData(knowledge_map: any,  pid?:any) {
         let s = {
           name: itemChild.knowledge_map_name,
           id: String(itemChild.id),
-          symbolSize: itemChild.error_rate ? itemChild.error_rate : 50,
-          value: item.error_rate,
+          symbolSize: Number(itemChild.error_rate) + 20,
+          value: itemChild.error_rate,
           draggable: true,
           itemStyle: {
             color: colorList[itemCategory % 5],

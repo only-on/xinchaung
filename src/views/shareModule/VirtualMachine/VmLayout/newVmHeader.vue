@@ -1034,6 +1034,7 @@ const okDownloadFile = () => {
     let aLink = document.createElement('a')
     aLink.href = res.data.file_path
     aLink.download = ""
+    document.body.appendChild(aLink)
     aLink.click()
     document.body.removeChild(aLink)
   })
