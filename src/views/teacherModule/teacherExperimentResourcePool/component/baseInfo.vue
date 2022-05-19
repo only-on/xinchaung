@@ -227,7 +227,7 @@ watch(()=>props.detail, newVal => {
   }) : ''
   formState.know_point = arr
   formState.tags = formState.tag.map((v : any) => v.name)
-  formState.report = {id: formState.content_template.template_id, name: formState.content_template.name}
+  formState.report = formState.content_template ? {id: formState.content_template.template_id, name: formState.content_template.name} : ''
   formState.selectedName = []
   formState.datasets = []
   formState.dataset?.forEach((v: any) => {
