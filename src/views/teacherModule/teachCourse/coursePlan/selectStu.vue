@@ -33,30 +33,35 @@
         > -->
       </div>
     </div>
-    <a-table
-      :columns="columns"
-      :data-source="data"
-      rowKey='stu_id'
-      :pagination="
-        total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger: false,
-              total:total,
-              current: params.pageinfo.index,
-              pageSize: params.pageinfo.size,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: getCheckboxProps,
-      }"
-    >
-    </a-table>
+    <a-config-provider>
+          <a-table
+          :columns="columns"
+          :data-source="data"
+          rowKey='stu_id'
+          :pagination="
+            total > 10
+              ? {
+                  hideOnSinglePage: false,
+                  showSizeChanger: false,
+                  total:total,
+                  current: params.pageinfo.index,
+                  pageSize: params.pageinfo.size,
+                  onChange: onChange,
+                  onShowSizeChange: onShowSizeChange,
+                }
+              : false
+              "
+              :row-selection="{
+                selectedRowKeys: tableData.selectedRowKeys,
+                onChange: onSelectChange,
+                getCheckboxProps: getCheckboxProps,
+              }"
+            >
+            </a-table>
+          <template #renderEmpty>
+            <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+          </template>
+        </a-config-provider>
       </div>
     </a-modal>
   </div>
@@ -153,6 +158,7 @@ const params:any=reactive({
     size:10,
   }
 });
+const ifSearch:any=ref(false)
 // const emit = defineEmits<{
 //   (e: "submit"): void;
 //   (e: "cancel"): void;
@@ -177,6 +183,11 @@ function onSearch(value: any) {
    major:params.direct
   }
   emit('updateStuParams',param)
+  if(params.name||params.class||params.grade||params.direct){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
 }
 function onChange(page: any, pageSize: any) {
   params.pageinfo.index=page;

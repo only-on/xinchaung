@@ -69,17 +69,31 @@
       </div>
     </div>
     <div class="environmental-table">
-      <a-table
-        :dataSource="dataList"
-        rowKey="id"
-        :pagination="false"
-        :columns="columns"
-        :row-selection="{
-          selectedRowKeys: selectedRowKeys,
-          onChange: onSelectChange,
-          getCheckboxProps: getCheckboxProps,
-        }"
-      />
+        <a-config-provider>
+              <a-table
+              :dataSource="dataList"
+              rowKey="id"
+              :pagination="false"
+              :columns="columns"
+              :row-selection="{
+                selectedRowKeys: selectedRowKeys,
+                onChange: onSelectChange,
+                getCheckboxProps: getCheckboxProps,
+              }"
+            >
+            <template #score_total='{record}'>
+                  <span v-if="record.score_total==null">--</span>
+                  <span v-else>{{record.score_total}}</span>
+              </template>
+              <template #wrong_answers_number='{record}'>
+                  <span v-if="record.wrong_answers_number==null">--</span>
+                  <span v-else>{{record.wrong_answers_number}}</span>
+              </template>
+            </a-table>
+          <template #renderEmpty>
+            <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+          </template>
+        </a-config-provider>
     </div>
     <div class="page-box" v-if="formData.total > 10">
       <a-pagination
@@ -199,7 +213,7 @@ const formData = reactive({
 const beginTime = ref<Moment>(moment(new Date()));
 let endTime = ref<Moment>();
 const searchMode = ref(false); // false 简单  true高级
-
+const ifSearch:any=ref(false)
 function getList() {
   let params = {
     name:formData.name,
@@ -255,6 +269,11 @@ function search() {
   formData.page=1
   formData.pageSize=10
   getList()
+  if(formData.name||formData.class||formData.gpu||formData.memory||formData.cpu){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
 }
 function pageChange (page: any) {
   console.log(page,'page111')
