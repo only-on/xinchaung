@@ -12,7 +12,7 @@ export default {
     {
       path: "",
       name: "",
-      component: () => import("src/views/studentModule/studentCourse//courseList/index.vue"),
+      component: () => import("src/views/studentModule/studentCourse/courseList/index.vue"),
       meta: {
         title: "学生课程",
         authCode: "studentCourse",

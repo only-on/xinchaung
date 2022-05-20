@@ -47,7 +47,7 @@
             </div>
           </div>
         </div>
-        <Empty v-if="!courseList.length && !loading" />
+        <Empty v-if="!courseList.length && !loading" :type="EmptyType"/>
         <a-pagination
           v-if="totalCount > 12"
           v-model:current="searchInfo.page"
@@ -109,6 +109,15 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(searchInfo.name === '' && labelSearch.state === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 interface ISearchInfo {
   name: string
   limit: number

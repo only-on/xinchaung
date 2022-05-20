@@ -258,9 +258,9 @@ function handleCombData(sankey_error_rate: any) {
   let colorList = ["#FF9544", "#FFBF50", "#33D0DB", "#748ADE", "#A782F3"]
   sankey_error_rate.contents.forEach((item: any) => {
     if (!contentsIdArr.includes(item.content_id)) {
-      
       fourChart.combData.data.push({ 
         name: item.name,
+        id: item.content_id,
         label: {
           position: 'left'
         }
@@ -270,8 +270,12 @@ function handleCombData(sankey_error_rate: any) {
     }
   });
   sankey_error_rate.knoledge_error_rate.forEach((item: any, index:number) => {
+    if (contentsNameArr.includes(item.knowledge_map_name)) {
+      item.knowledge_map_name += ' '
+    }
     fourChart.combData.data.push({ 
       name: item.knowledge_map_name,
+      id: item.id,
       label: {
         position: 'right'
       },
@@ -294,7 +298,7 @@ function handleCombData(sankey_error_rate: any) {
       fourChart.combData.links.push({
         source: item.knowledge_map_name,
         target: itemName,
-        value: item.error_rate,
+        value: Number(item.error_rate),
       });
     });
   });
