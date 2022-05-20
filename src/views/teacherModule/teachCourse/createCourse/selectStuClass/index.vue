@@ -249,6 +249,10 @@ export default defineComponent({
         //   state.selectedRowKeys
         // );
         // state.selectedRowKeys = [];
+        if (!state.selectedRowKeys.length) {
+          message.warning('请选择需要添加的学生')
+          return
+        }
         let obj={
           id:props.courseId,
           student_id:state.selectedRowKeys,
