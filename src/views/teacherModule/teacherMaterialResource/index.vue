@@ -58,7 +58,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!materialList.length && !loading" />
+      <Empty v-if="!materialList.length && !loading" :type="EmptyType" />
       <a-pagination
         v-if="pageTotal > 8"
         v-model:current="pageInfo.page"
@@ -70,7 +70,7 @@
   </a-spin>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, inject, watch, onMounted } from "vue";
+import { ref, reactive, inject, watch, onMounted, computed } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -102,11 +102,21 @@ const uid = lStorage.get("uid")
 // 搜索
 const searchKey = ref<string>("");
 const resetKeyword = ref<boolean>(false)
+const tag = ref<string>('')
 const searchFn = (key: string) => {
   searchKey.value = key;
   pageInfo.page = 1
   initData();
 };
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(searchKey.value === '' && tag.value === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 const handleMenuClick = ({ key }: { key: string }) => {
   router.push({
     path: "/teacher/teacherMaterialResource/createMaterial",
@@ -201,12 +211,13 @@ interface Iuser {
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
   materialList.length = 0
+  tag.value = !labelSearch.type ? 
+      (!labelSearch.label ? '' : labelSearch.label) : 
+      (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label)
   const param = {
     name: searchKey.value,
     is_public: currentTab.value ? 0 : 1,  // 1公开 0私有
-    tags: !labelSearch.type ? 
-      (!labelSearch.label ? '' : labelSearch.label) : 
-      (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label),
+    tags: tag.value,
     ...pageInfo,
   };
   // if (labelSearch.type === '数据集') {

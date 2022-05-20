@@ -5,7 +5,7 @@
       <div class="left">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
-          <Empty v-if="!forumnList.length && !loading" />
+          <Empty v-if="!forumnList.length && !loading" :type="EmptyType"/>
         </a-spin>
       </div>
       <div class="right" v-if="role !== 2">
@@ -32,8 +32,9 @@ import {
   watch,
   provide,
   createVNode,
+  computed
 } from "vue";
-import { useRouter, useRoute } from "vue-router";
+import { useRouter, useRoute} from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
 import Forumn from "./components/Forumn.vue";
 import HotLabel from "./components/HotLabel.vue";
@@ -61,6 +62,15 @@ var forumSearch = reactive<IForumSearch>({
 });
 const loading = ref(false)
 const total = ref(0)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(forumSearch.title === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 let forumnList = reactive<IForumnList[]>([]);
 function initData() {
   loading.value = true

@@ -19,7 +19,7 @@
       <div class="right">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
-          <Empty v-if="!forumnList.length && !loading" />
+          <Empty v-if="!forumnList.length && !loading" :type="EmptyType"/>
         </a-spin>
       </div>
     </div>
@@ -37,6 +37,7 @@ import {
   watch,
   provide,
   createVNode,
+  computed
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
@@ -55,6 +56,15 @@ const httpList = {
   0: 'getForumList',
   1: 'getAttendList'
 }
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(forumSearch.title === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 // 发帖
 function createPost() {
   router.push("/teacher/teacherForum/CreatePosts");
