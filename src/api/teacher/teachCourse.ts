@@ -42,7 +42,8 @@ export default {
   // 新建课程  已选择学生移除
   deleteScheduleStu: { url: '/api/arrange/students/{id}', method: "DELETE" },
   // 新建课程 已选择学生初始化密码
-  resetPassWord: { url: 'api/course/courses/reset-student-password/{studentId}', method: "put" },
+  // resetPassWord: { url: 'api/course/courses/reset-student-password/{studentId}', method: "put" },
+  resetPassWord: { url: '/api/yii/teacher-train/reset-student-pwd', method: "POST" },//初始化密码
   //新建课程批量删除课程下学生
   deleteScheduleStuMany: { url: '/api/arrange/students/delete', method: "POST" },
 
