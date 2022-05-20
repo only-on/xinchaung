@@ -21,6 +21,7 @@ import {
   Ref,
   ref,
   watch,
+  computed,
   onBeforeUnmount,
 } from "vue";
 import { Modal, message } from "ant-design-vue";
@@ -51,11 +52,21 @@ const router = useRouter();
 const http=(request as any).studentCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
-const { currentTab,courseId ,course_student_id,studentDetailTab} = route.query;
-const  studentDetailTabs=[
-  {name:'课程内容',value:'courseChapter'},
-  {name:'课程成绩',value:'courseAchievement'},
-]
+const { currentTab,courseId ,course_student_id,studentDetailTab,is_authorizedText} = route.query;
+// const  studentDetailTabs=[
+//   {name:'课程内容',value:'courseChapter'},
+//   {name:'课程成绩',value:'courseAchievement'},
+// ]
+const studentDetailTabs=computed(()=>{
+  if(!is_authorizedText){
+    return [
+    {name:'课程内容',value:'courseChapter'},
+    {name:'课程成绩',value:'courseAchievement'},
+    ]
+  }else{
+    return [{name:'课程内容',value:'courseChapter'}]
+  }
+})
 var state:IState=reactive({
   activeTab:{},
   courseDetail:{}

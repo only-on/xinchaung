@@ -67,7 +67,7 @@
           <a-button type="primary"  @click="edit()">编辑</a-button>
         </div>
         <!-- 学生端 -->
-        <div class="student flexCenter" v-if="role === 4">
+        <div class="student flexCenter" v-if="role === 4 && !is_authorizedText">
           <div class="timeUse ">
             <div class="date">
               <div class="item1">
@@ -126,7 +126,7 @@ import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 const router = useRouter();
 const route = useRoute();
-const { currentTab,course_id } = route.query;
+const { currentTab,course_id,is_authorizedText } = route.query;
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const http = (request as any).teacherImageResourcePool;
