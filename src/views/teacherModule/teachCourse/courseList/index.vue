@@ -31,7 +31,7 @@
             <div class="flexCenter Projection" v-if="currentTab === 0 || (currentTab === 1 && v.is_authorized)">
               <span class="text" @click.stop="multiplexing(v)">复用</span>
               <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
-              <span class="text" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span>
+              <!-- <span class="text" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span> -->
             </div>
           </div>
           <div class="info">

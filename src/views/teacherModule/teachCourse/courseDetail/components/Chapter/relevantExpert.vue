@@ -11,6 +11,7 @@
 </template>
 
 <script lang="ts" setup>
+import { Modal, message } from "ant-design-vue";
 import { ref, toRefs, onMounted ,Ref,reactive} from "vue";
 import extStorage from "src/utils/extStorage";
 import { useRoute ,useRouter} from "vue-router";
@@ -38,6 +39,10 @@ const courseExperimentRecommend=()=>{
 }
 // /teacher/teacherExperimentResourcePool/experimentDetail?id=500043&currentTab=0
 const Detail=(val:any)=>{
+  if(val.is_public){
+    message.warning('未授权课程不能查看公开实验')
+    return 
+  }
   router.push({
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
     query:{
