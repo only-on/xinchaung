@@ -257,10 +257,9 @@ function handleCombData(sankey_error_rate: any) {
   let contentsNameArr:any[] = [];
   let colorList = ["#FF9544", "#FFBF50", "#33D0DB", "#748ADE", "#A782F3"]
   sankey_error_rate.contents.forEach((item: any) => {
-    if (!contentsIdArr.includes(item.content_id)) {
+    if (!contentsIdArr.includes(item.content_id) && !contentsNameArr.includes(item.name)) {
       fourChart.combData.data.push({ 
         name: item.name,
-        id: item.content_id,
         label: {
           position: 'left'
         }
@@ -275,7 +274,6 @@ function handleCombData(sankey_error_rate: any) {
     }
     fourChart.combData.data.push({ 
       name: item.knowledge_map_name,
-      id: item.id,
       label: {
         position: 'right'
       },

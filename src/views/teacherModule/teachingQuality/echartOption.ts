@@ -440,6 +440,7 @@ function setOption4(datas: any) {
 }
 // 高频易错点梳理
 let combOption = (data: any) => {
+  console.log(data)
   let option = {
     tooltip: {
       trigger: "item",
