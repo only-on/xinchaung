@@ -78,7 +78,10 @@ function getVmBase() {
           content: "该实验已结束",
           okText: "确定",
           cancelText: "取消",
-          class: "finish-modal",
+          class: "vm-finish-modal",
+          cancelButtonProps: {
+            type: 'ghost'
+          },
           onOk: () => {
             clearTimeout(timer)
             router.go(-1)

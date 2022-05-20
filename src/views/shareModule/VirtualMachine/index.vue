@@ -216,4 +216,10 @@ function initEvaluate(){
     padding-bottom: 20px;
   }
 }
+
+.vm-finish-modal {
+  .ant-btn-ghost {
+    display: none;
+  }
+}
 </style>

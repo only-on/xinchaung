@@ -336,7 +336,10 @@ function getTaskInfoData() {
         content: "该实验已结束",
         okText: "确定",
         cancelText: "取消",
-        class: "finish-modal",
+        class: "vm-finish-modal",
+        cancelButtonProps: {
+          type: 'ghost'
+        },
         onOk: () => {
           clearTimeout(timer)
           router.go(-1)
@@ -561,6 +564,8 @@ onMounted(async () => {
     if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
       initWs();
     }
+  }).catch(() => {
+    router.go(-1)
   });
   let versions: any = await getVersionListData();
       console.log(versions);
