@@ -21,29 +21,34 @@
           <span>总分 <span class="number">{{statis.scores}}</span>分</span>
         </div>
       </div>
-      <a-table :columns="columns" :data-source="data" 
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "> 
-      <template #score_total='{record}'>
-            <span v-if="record.score_total==null">--</span>
-            <span v-else>{{record.score_total}}</span>
-        </template>
-         <template #wrong_answers_number='{record}'>
-            <span v-if="record.wrong_answers_number==null">--</span>
-            <span v-else>{{record.wrong_answers_number}}</span>
-        </template>
-      </a-table>
+      <a-config-provider>
+        <a-table :columns="columns" :data-source="data" 
+          :pagination="
+            tableData.total > 10
+              ? {
+                  hideOnSinglePage: false,
+                  showSizeChanger: true,
+                  total: tableData.total,
+                  current: tableData.page,
+                  pageSize: tableData.limit,
+                  onChange: onChange,
+                  onShowSizeChange: onShowSizeChange,
+                }
+              : false
+          "> 
+          <template #score_total='{record}'>
+                <span v-if="record.score_total==null">--</span>
+                <span v-else>{{record.score_total}}</span>
+            </template>
+            <template #wrong_answers_number='{record}'>
+                <span v-if="record.wrong_answers_number==null">--</span>
+                <span v-else>{{record.wrong_answers_number}}</span>
+            </template>
+          </a-table>
+          <template #renderEmpty>
+            <div><Empty type="tableEmpty" /></div>
+          </template>
+          </a-config-provider>
     </div>
   </a-modal>
 </template>

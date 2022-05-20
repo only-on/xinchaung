@@ -42,7 +42,8 @@
         </div>
       </div>
       <div class="c-table">
-        <a-table
+        <a-config-provider>
+          <a-table
           class="correct-table"
           :columns="columns"
           bordered
@@ -116,8 +117,13 @@
             </template>
           </template>
         </a-table>
+          <template #renderEmpty>
+            <div><Empty type="tableEmpty" /></div>
+          </template>
+          </a-config-provider>
       </div>
       <a-pagination
+        v-if="total>10"
         :total="total"
         v-model:current="params.page"
         v-model:pageSize="params.limit"
