@@ -87,6 +87,13 @@
         </div>
         <a-button type="link" @click="Save('report')">下载</a-button>
       </div>
+      <div class="file flexCenter">
+        <div class="flexCenter">
+          <span class="img" :style="`background-image: url(${getFileTypeIcon('zip')});`"></span>
+          <span>学生录屏.zip</span>
+        </div>
+        <a-button type="link" @click="Save('video')">下载</a-button>
+      </div>
       <div class="file flexCenter" v-show="false">
         <div class="title">学生录屏</div>
         <a-button type="link" @click="Save('video')">批量下载</a-button>
@@ -400,7 +407,6 @@ const archives=(val: any)=>{
   });
 }
 const Save=(val:string,data?:any)=>{
-  
   // downloadUrl(url,activeCourse.name)
   let obj=RecordingScreen.downData[val]
   if(!obj || (obj && (obj['status']!=='finished' || obj['file_path']===''))){
@@ -409,8 +415,8 @@ const Save=(val:string,data?:any)=>{
   }
   if(obj['status']==='finished' && obj['file_path']){
     let url=`${env?'/proxyPrefix':''}${obj['file_path']}`
-    // downloadUrl(url,obj['fileName'])
-    downloadUrl(url,`${activeCourse.name}.zip`)
+    downloadUrl(url,obj['fileName'])
+    // downloadUrl(url,`${activeCourse.name}.zip`)
   }
   Visible.value=false
 }
