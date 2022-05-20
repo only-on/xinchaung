@@ -80,6 +80,9 @@ watch(
       // navData.shift()
       isShowGuide.value = false
     } 
+    if (Number(experType) === 4) {
+      navData.shift()
+    }
     // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
   },
   { deep: true, immediate: true }

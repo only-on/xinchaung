@@ -735,6 +735,8 @@ function delayedTime() {
       message.success("延时成功");
       use_time.value = res.data.remaining_time;
       times();
+    } else {
+      times();
     }
   });
 }
