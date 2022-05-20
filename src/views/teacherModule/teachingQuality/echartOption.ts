@@ -190,7 +190,7 @@ let knowledageErrorOption = (data: any) => {
 function formatterTip(params: any) {
   let txt = "";
   txt +=
-    params.seriesName +
+    params.name +
     "<br>" +
     params.marker +
     "最高分：" +
@@ -220,6 +220,7 @@ function formatterTip(params: any) {
   return txt;
 }
 let gradeDistributionOption = (data: any) => {
+  console.log(data.name.length, data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 , '*******')
   let handledData = prepareBoxplotData(data.score);
   let option = {
     tooltip: {
@@ -230,9 +231,9 @@ let gradeDistributionOption = (data: any) => {
     },
     grid: {
       top: "5%",
-      left: "10%",
-      right: "10%",
-      bottom: "30%",
+      left: "5%",
+      right: "2%",
+      bottom: "35%",
     },
     xAxis: {
       type: "category",
@@ -253,7 +254,7 @@ let gradeDistributionOption = (data: any) => {
       },
       axisLabel: {
         color: "rgba(0,0,0,0.45)",
-        formatter: "{value}",
+        rotate: 30
       },
     },
     dataZoom: [
@@ -264,6 +265,8 @@ let gradeDistributionOption = (data: any) => {
         top: "80%",
         filterMode: "none",
         height: 10,
+        start: 0,
+        end: data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 
       },
     ],
     yAxis: {

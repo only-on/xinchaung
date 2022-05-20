@@ -271,14 +271,17 @@ function handleCombData(sankey_error_rate: any) {
   let contentsNameArr:any[] = [];
   let colorList = ["#FF9544", "#FFBF50", "#33D0DB", "#748ADE", "#A782F3"]
   sankey_error_rate.contents.forEach((item: any) => {
-    fourChart.combData.data.push({ 
-      name: item.name,
-      label: {
-        position: 'left'
-      }
-    });
-    contentsIdArr.push(item.content_id);
-    contentsNameArr.push(item.name);
+    if (!contentsIdArr.includes(item.content_id)) {
+      
+      fourChart.combData.data.push({ 
+        name: item.name,
+        label: {
+          position: 'left'
+        }
+      });
+      contentsIdArr.push(item.content_id);
+      contentsNameArr.push(item.name);
+    }
   });
   sankey_error_rate.knoledge_error_rate.forEach((item: any, index:number) => {
     fourChart.combData.data.push({ 
