@@ -20,13 +20,13 @@
             v-model:value="weightData.calc.question"
             @change="dataChange"
           ></a-input>
+        </template>
           <template v-if="type == 0"> </template>
           <template v-if="weightData.show.includes('auto')">
             <i>+</i>
             <label>自动评分</label
             ><a-input v-model:value="weightData.calc.auto" @change="dataChange"></a-input>
           </template>
-        </template>
       </div>
       <p class="hint" v-if="exceed">权重总和超过已超过100%，无法提交！</p>
       <div class="modal-footer">

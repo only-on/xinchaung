@@ -357,6 +357,7 @@ function getTaskInfoData() {
     // console.log(baseInfo.value);
     use_time.value = res?.data.current?.remaining_time;
     // taskType.value = res.data.base_info.task_type.type;
+    taskType.value = 3
   });
 }
 // 获取版本列表
@@ -558,7 +559,7 @@ onBeforeRouteLeave(() => {
   closeWs();
 });
 onMounted(async () => {
-  getVmBase()
+  // getVmBase()
   createTopo().then(async () => {
     await getTaskInfoData();
     if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
