@@ -38,6 +38,7 @@
               v-model="formState.content"
               :height="'400px'"
               :uploadPathName="'teacherForum'"
+              :toolbar="toolbarOptions"
             />
           </div>
         </a-form-item>
@@ -94,6 +95,25 @@ interface IFormState {
 const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
+const toolbarOptions: any = [
+  ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+  ['blockquote', 'code-block'],
+
+  [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+  [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+  [{ 'direction': 'rtl' }],                         // text direction
+
+  // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+  // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+  // [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+  // [{ 'font': [] }],
+  [{ 'align': [] }],
+
+  ['clean']                                         // remove formatting button
+];
 
 const tabs = [{ name: role !== 2 ? "发帖" : '发布公告', componenttype: 0 }];
 var updata = inject("updataNav") as Function;
@@ -293,5 +313,15 @@ h1 {
   margin-top: 50px;
   width: 100%;
   text-align: center;
+}
+.quill-editor-wrap {
+  :deep(.quill-editor) {
+    h1 {
+      font-size: var(--font-size-18);
+    }
+    h2 {
+      font-size: var(--font-size-16);
+    }
+  }
 }
 </style>
