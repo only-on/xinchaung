@@ -63,7 +63,7 @@
           </a-tooltip>
         </div>
       </div>
-      <Empty v-if="!experimentList.length && !loading" />
+      <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
         <!-- -->
       <a-pagination 
         v-if="totalCount > 10"
@@ -140,6 +140,15 @@ const rules = {
     { max: 30, message: `名称最多30个字符`, trigger: "blur" },
   ],
 }
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(searchInfo.content_direction ===0 && searchInfo.content_type ===0 && searchInfo.content_level === 0 && searchInfo.name === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 watch(
   () => {
     return configuration.componenttype;

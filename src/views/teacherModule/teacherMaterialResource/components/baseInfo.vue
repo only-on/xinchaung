@@ -60,7 +60,9 @@
       </a-radio-group>
     </a-form-item>
     <a-form-item class="right" label="添加标签" name="tags">
-      <LabelList :tag="formState.tags" :recommend="commonLabelsList" />
+      <div>
+        <LabelList :tag="formState.tags" :recommend="commonLabelsList" />
+      </div>
     </a-form-item>
   </div>
 </a-form>

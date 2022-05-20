@@ -151,7 +151,6 @@ updata({
   showNav: false,
 });
 const http = (request as any).teachingQuality;
-const httpCourse = (request as any).teachCourse;
 const router = useRouter();
 const activeKey = ref("1");
 const scoreData = reactive<any>({
@@ -196,19 +195,6 @@ function setChartOption(id: any, option: any) {
   }
 }
 const chartData: any = ref({});
-function getKnoledgeData() {
-  httpCourse
-    .courseknowledge({ urlParams: { courseId: 500229 } })
-    .then((res: any) => {
-      const { data } = res;
-      chartData.value = { ...data };
-      // list.push(...data)
-      nextTick(() => {
-        //   Knowledge3('knowledgeGraph',chartData.value,50)
-        setChartOption("knowledgeGraph", setOption4(chartData.value));
-      });
-    });
-}
 // 课程成绩对比
 function getCourseScore() {
   http.courseScore().then((res: IBusinessResp) => {

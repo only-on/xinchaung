@@ -43,7 +43,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!list.length && !loading" :type="fromData.name?'searchEmpty':'empty'"  />
+      <Empty v-if="!list.length && !loading" :type="EmptyType"/>
       <a-pagination
         v-if="totalCount > 12"
         v-model:current="fromData.page"
@@ -152,6 +152,7 @@ const router = useRouter();
 const route = useRoute();
 const { editId } = route.query;
 const http = (request as any).teacherImageResourcePool;
+const tag = ref<string>('')
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -160,6 +161,15 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(labelSearch.is_init === '' && fromData.name === '' && tag.value === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  return str
+})
 const ExperimentTypeList = reactive([
   { name: "本地上传", key: "local" },
   { name: "在线制作", key: "Online" },
@@ -247,11 +257,11 @@ const initData = () => {
   list.length=0
   totalCount.value=0
   // const tag=[labelSearch.tags,labelSearch.ostype].join(',')
-  const tag=`${labelSearch.tags}${(labelSearch.tags && labelSearch.ostype)?',':''}${labelSearch.ostype}`
+  tag.value=`${labelSearch.tags}${(labelSearch.tags && labelSearch.ostype)?',':''}${labelSearch.ostype}`
   let obj={
     ...fromData,
     is_init:labelSearch.is_init,
-    tags:tag
+    tags:tag.value
   }
   http.imagesList({param:{...obj}}).then((res: IBusinessResp) => {
     // console.log(res.data)
