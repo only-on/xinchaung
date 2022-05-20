@@ -33,30 +33,35 @@
         > -->
       </div>
     </div>
-    <a-table
-      :columns="columns"
-      :data-source="data"
-      rowKey='id'
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
-              current: params.page,
-              pageSize: params.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-        getCheckboxProps: getCheckboxProps,
-      }"
-    >
-    </a-table>
+    <a-config-provider>
+      <a-table
+          :columns="columns"
+          :data-source="data"
+          rowKey='id'
+          :pagination="
+            tableData.total > 10
+              ? {
+                  hideOnSinglePage: false,
+                  showSizeChanger: true,
+                  total: tableData.total,
+                  current: params.page,
+                  pageSize: params.limit,
+                  onChange: onChange,
+                  onShowSizeChange: onShowSizeChange,
+                }
+              : false
+          "
+            :row-selection="{
+              selectedRowKeys: tableData.selectedRowKeys,
+              onChange: onSelectChange,
+              getCheckboxProps: getCheckboxProps,
+            }"
+          >
+          </a-table>
+          <template #renderEmpty>
+            <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+          </template>
+        </a-config-provider> 
       </div>
     </a-modal>
   </div>
@@ -85,6 +90,7 @@ option.value = [
 ];
 const columns: any = ref();
 const data: any = ref([]);
+const ifSearch:any=ref('')
 const modalVisable: any = ref(false);
 columns.value = [
   {
@@ -162,6 +168,11 @@ function onSearch(value: any) {
   console.log(value);
   params.page=1
   getallstudent()
+  if(params.nick||params.class||params.grade||params.direct){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
 }
 function onChange(page: any, pageSize: any) {
   params.page=page;

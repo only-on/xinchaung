@@ -39,28 +39,29 @@
       </div>
     </div>
     <div class="tableHeight">
-      <a-table
-    rowKey='id'
-      :columns="columns"
-      :data-source="data"
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:false,
-              total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys: tableData.selectedRowKeys,
-        onChange: onSelectChange,
-      }"
-    >
+      <a-config-provider>
+        <a-table
+          rowKey='id'
+            :columns="columns"
+            :data-source="data"
+            :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger:false,
+                    total: tableData.total,
+                    current: tableData.page,
+                    pageSize: tableData.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "
+            :row-selection="{
+              selectedRowKeys: tableData.selectedRowKeys,
+              onChange: onSelectChange,
+            }"
+          >
     <template #action='{record}'>
       <div class="action">
         <span class='delete' @click="deleteStu(record.id)">删除</span>
@@ -68,6 +69,10 @@
       </div>
     </template>
     </a-table>
+          <template #renderEmpty>
+            <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+          </template>
+        </a-config-provider> 
     </div>
     <addstudent :visable='visable' :courseId='courseId' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addstudent>
   </div>
@@ -182,10 +187,16 @@ const params:any=reactive({
   page: 1,
   limit: 10
 })
+const ifSearch:any=ref(false)
 function handleChange() {}
 function onSearch(value: any) {
   tableData.page=1
   getcoursestudent()
+  if(params.nick||params.class||params.grade){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
 }
 function onChange(page: any, pageSize: any) {
   console.log(pageSize,page)

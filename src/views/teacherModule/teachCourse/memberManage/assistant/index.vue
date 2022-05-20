@@ -16,44 +16,49 @@
         <a-button type="primary" class="brightBtn right-btn1" @click="addHelp">添加助教</a-button>
       </div>
     </div>
-    <a-table
-      :columns="columns"
-      :data-source="data"
-      rowKey='id'
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger: true,
-              total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-      :row-selection="{
-        selectedRowKeys:tableData.selectedRowKeys,
-        onChange: onSelectChange,
-      }"
-    >
-    <template #status="{ record }">
-        <a-switch
-          checked-children="启用"
-          un-checked-children="禁用"
-          :checked="record.bind_status === '1' ? true : false"
-          @change="changeSwitch(record)"
-        />
-      </template>
-      <template #action="{ record }">
-        <div class="action">
-          <span class="delete" @click="delateCard(record.id)">删除</span>
-          <span class="caozuo" @click="editCard(record)"
-          title="更新">编辑</span>
-        </div>  
-      </template>
-    </a-table>
+    <a-config-provider>
+        <a-table
+            :columns="columns"
+            :data-source="data"
+            rowKey='id'
+            :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger: true,
+                    total: tableData.total,
+                    current: tableData.page,
+                    pageSize: tableData.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "
+            :row-selection="{
+              selectedRowKeys:tableData.selectedRowKeys,
+              onChange: onSelectChange,
+            }"
+          >
+          <template #status="{ record }">
+              <a-switch
+                checked-children="启用"
+                un-checked-children="禁用"
+                :checked="record.bind_status === '1' ? true : false"
+                @change="changeSwitch(record)"
+              />
+            </template>
+            <template #action="{ record }">
+              <div class="action">
+                <span class="delete" @click="delateCard(record.id)">删除</span>
+                <span class="caozuo" @click="editCard(record)"
+                title="更新">编辑</span>
+              </div>  
+            </template>
+          </a-table>
+          <template #renderEmpty>
+            <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+          </template>
+        </a-config-provider> 
     <a-modal v-model:visible="visible" :title='editId?"编辑助教":"添加助教"' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
       <a-form ref="formRef" :model="formState" layout="vertical" :rules="rules">
         <div class="formBox">
@@ -176,6 +181,7 @@ var formState:any=reactive({
       introduce:'',
       reset:false
     })
+const ifSearch:any=ref(false)
     const rules={
         username: [
           { required: true, message: '请输入账号', trigger: 'blur'},
@@ -318,6 +324,11 @@ function submit(){
 function onSearch(){
   tableData.page=1
   getAssistantList()
+  if(params.username||params.name){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
 }
 function getAssistantList(){
   let obj = {
