@@ -19,25 +19,30 @@
                     </div>
                 </div>
                 <div class="tableHeight">
-                  <a-table
-      rowKey='username'
-      :columns="columns"
-      :data-source="data"
-      :pagination="
-        tableData.total > 10
-          ? {
-              hideOnSinglePage: false,
-              showSizeChanger:false,
-              total: tableData.total,
-              current: tableData.page,
-              pageSize: tableData.limit,
-              onChange: onChange,
-              onShowSizeChange: onShowSizeChange,
-            }
-          : false
-      "
-    >
-    </a-table>
+                  <a-config-provider>
+                      <a-table
+                        rowKey='username'
+                        :columns="columns"
+                        :data-source="data"
+                        :pagination="
+                          tableData.total > 10
+                            ? {
+                                hideOnSinglePage: false,
+                                showSizeChanger:false,
+                                total: tableData.total,
+                                current: tableData.page,
+                                pageSize: tableData.limit,
+                                onChange: onChange,
+                                onShowSizeChange: onShowSizeChange,
+                              }
+                            : false
+                            "
+                          >
+                          </a-table>
+                        <template #renderEmpty>
+                          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+                        </template>
+                      </a-config-provider> 
                 </div>
             </div> 
        </div>
@@ -59,7 +64,8 @@ const Editable:any=ref(false)
 const option: any = ref();
 const experitId:any=ref('0')
 const experType:any=ref()
-const className:any=ref('')
+const className:any=ref()
+const ifSearch:any=ref(false)
 option.value = [
   { id: "", name: "全部" },
   { id: 1, name: "班级1" },
@@ -145,6 +151,11 @@ function getStugrandsList(){
 }
 function onSearch(){
   tableData.page=1
+  if(className.value){
+    ifSearch.value=true
+  }else{
+    ifSearch.value=false
+  }
   getStugrandsList()
 }
 function getStuStatis(){

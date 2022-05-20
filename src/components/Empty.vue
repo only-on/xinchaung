@@ -9,7 +9,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent,ref, onMounted,computed ,Ref, PropType} from 'vue'
+import { defineComponent,ref, onMounted,computed ,Ref, PropType,watch} from 'vue'
 import {useStore} from "vuex"
 import { useRouter } from 'vue-router';
 type TEmptyType= 'empty' | 'searchEmpty' | 'tableEmpty' | 'tableSearchEmpty' | 'drawerEmpty' | 'drawerSearchEmpty'
@@ -50,8 +50,15 @@ export default defineComponent({
     }
     height.value=props.height
     emptyType.value=props.type
-    emptyText.value=props.text?props.text:defaultText[emptyType.value]
+    // emptyText.value=props.text?props.text:defaultText[emptyType.value]
     // console.log(props)
+    watch(
+    ()=> {return props.text},
+    (val: any) => {
+      emptyText.value=props.text?props.text:defaultText[emptyType.value]
+    },{
+      immediate:true
+    })
     onMounted(()=>{
      
     })
