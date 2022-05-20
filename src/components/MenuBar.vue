@@ -1,6 +1,8 @@
 <template>
   <div class="nav__menu">
-    <a-dropdown v-for="v in menus" :key="v">
+    <a-dropdown v-for="v in menus" :key="v" trigger="hover" 
+    :overlayClassName="`${v.children && v.children.length?'meanBarOverlay borC':'meanBarOverlay'}`"
+     @visibleChange="visibleChange">
       <div
         class="menu__top-item ant-dropdown-trigger flexCenter"
         :class="v.name === activeName ? 'active' : ''"
@@ -30,6 +32,7 @@ import {
   watch,
   onMounted,
   PropType,
+  nextTick,
 } from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { useRouter, useRoute } from "vue-router";
@@ -140,8 +143,22 @@ export default defineComponent({
     });
     const http = (request as any).common;
 
-    onMounted(() => {});
-    return { menus, select, activeName };
+    const visibleChange=(val:any)=>{
+      // console.log(val);
+      
+      nextTick(()=>{
+        // var dom:any=document.querySelector('.meanBarOverlay')
+        // console.log(dom); 
+        // dom.style.minWidth='86px'
+        // dom.style.position='absolute'
+        // dom.style.left='790px'
+        // console.log(dom.style.cssText);
+      })
+    }
+    onMounted(() => {
+      
+    });
+    return { menus, select, activeName ,visibleChange};
   },
   components: {},
 });
@@ -167,18 +184,30 @@ export default defineComponent({
   }
 }
 .menu__item {
-  span {
-    padding: var(--padding-xss) var(--padding-md);
-    font-size: var(--base-font-size);
-    // color: var(--black-85);
-    color: var(--white-45);
-  }
-}
-.ant-dropdown-menu {
-  padding: 0px;
+  background: #192843;
+  border: 1px solid #ff9544;
+  border-radius: 6px;
+  // span {
+  //   padding: var(--padding-xss) var(--padding-md);
+  //   font-size: var(--base-font-size);
+  //   // color: var(--black-85);
+  //   color: var(--white-45);
+  // }
+  // div {
+  //   padding: var(--padding-xss) var(--padding-md);
+  //   font-size: var(--base-font-size);
+  //   // color: var(--black-85);
+  //   color: var(--white-45);
+  //   background: #192843;
+  // }
 }
 :deep(.ant-dropdown-menu-item, .ant-dropdown-menu-submenu-title) {
-  color: var(--black-65);
-  font-size: var(--base-font-size);
+  // color: var(--black-65);
+  // font-size: var(--base-font-size);
+}
+:deep(.ant-dropdown-menu){
+  // background: #192843;
+  // border: 1px solid #ff9544;
+  // border-radius: 6px;
 }
 </style>
