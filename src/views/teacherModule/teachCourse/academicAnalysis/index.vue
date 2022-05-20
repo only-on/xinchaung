@@ -64,7 +64,7 @@ const Editable:any=ref(false)
 const option: any = ref();
 const experitId:any=ref('0')
 const experType:any=ref()
-const className:any=ref()
+const className:any=ref('')
 const ifSearch:any=ref(false)
 option.value = [
   { id: "", name: "全部" },
