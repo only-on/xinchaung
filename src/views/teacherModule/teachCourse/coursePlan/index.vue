@@ -340,13 +340,15 @@
                               </span>
                             </div>
                           </div>
-                          <!-- <div class="make-create-btn" @click="
+                          <!-- {{classVal.belongs_to_currentteacher}} -->
+                          <div :class="classVal.belongs_to_currentteacher?'noclick':'make-create-btn'" 
+                          @click="classVal.belongs_to_currentteacher?'':
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
                             classIndex
                           )
-                        ">创建排课3</div> -->
+                        ">创建排课</div>
                         </template>
                         <div v-else class="a-create-wrap">
                           <div class="make-create-btn" @click="
@@ -1330,5 +1332,18 @@ onMounted(() => {
 }
 .admin-shanchu{
   margin-left: 5px;
+}
+.noclick{
+  cursor: not-allowed;
+  color: #828282;
+  width: 112px;
+  height: 24px;
+  background: #f5f5f5;
+  border: 1px solid #d9d9d9;
+  border-radius: 13px;
+  text-align: center;
+  line-height: 24px;
+  margin: auto auto 10px auto;
+  margin-top: auto;
 }
 </style>
