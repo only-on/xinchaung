@@ -57,7 +57,10 @@
             <div class="right">
               <div class="time">存活倒计时</div>
               <div class="flexCenter">
-                <div class="tian">{{v.is_permanent}}</div>
+                <div>
+                  <span class="tian">{{v.is_permanent.split(":")[0]}}</span>
+                  <span class="unit">{{v.is_permanent.split(":")[1]}}</span>
+                </div>
                 <!-- 小时 -->
               </div>
             </div>
@@ -407,6 +410,9 @@ async function init() {
         }
         .tian {
           font-size: 22px;
+        }
+        .unit{
+          font-size: 12px;
         }
       }
     }
