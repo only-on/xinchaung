@@ -265,7 +265,7 @@ export default defineComponent({
       reactiveData.params.page = 1;
       reactiveData.params.common=v
       reactiveData.params.is_public=v
-      // getDataList()
+      getDataList()
     }
     return {
       ...toRefs(reactiveData),

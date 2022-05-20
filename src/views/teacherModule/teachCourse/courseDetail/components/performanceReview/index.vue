@@ -118,7 +118,10 @@
           </template>
         </a-table>
           <template #renderEmpty>
-            <div><Empty type="tableEmpty" /></div>
+            <div>
+              <Empty v-if="!loading" type="tableEmpty" />
+              <a-spin v-else tip="Loading..." />
+            </div>
           </template>
           </a-config-provider>
       </div>
@@ -237,6 +240,9 @@ const videoUrl: Ref<any> = ref("");
 //报告类型
 const reportType:any=ref()
 // table头信息
+
+
+const loading:any=ref(false)
 const oldColumns: any[] = [
   {
     title: "序号",
@@ -315,12 +321,14 @@ const tabelData = ref([]);
 function getTeacherEvaluates() {
   tabelData.value=[]
   total.value=0
+  loading.value=true
   Object.assign(params.value, { taskId: experitId.value });
   scoreApi.getTeacherEvaluatesApi({ param: params.value }).then((res: any) => {
     tabelData.value = res.data.list;
     total.value = res.data.page.totalCount;
     staticInfo.value = res.data.statistics;
     updateTableHeader(res.data.show);
+    loading.value=false
   });
 }
 
