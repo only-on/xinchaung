@@ -39,10 +39,10 @@ const courseExperimentRecommend=()=>{
 }
 // /teacher/teacherExperimentResourcePool/experimentDetail?id=500043&currentTab=0
 const Detail=(val:any)=>{
-  if(val.is_public){
-    message.warning('未授权课程不能查看公开实验')
-    return 
-  }
+  // if(val.is_public){
+  //   message.warning('未授权课程不能查看公开实验')
+  //   return 
+  // }
   router.push({
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
     query:{
