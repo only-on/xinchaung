@@ -72,7 +72,7 @@ let courseScoreOption = (data: any) => {
         type: "slider",
         show: true,
         start: 0,
-        end: 30,
+        end: data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 ,
         xAxisIndex: 0,
         bottom: 30,
         filterMode: "none",
@@ -220,7 +220,6 @@ function formatterTip(params: any) {
   return txt;
 }
 let gradeDistributionOption = (data: any) => {
-  console.log(data.name.length, data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 , '*******')
   let handledData = prepareBoxplotData(data.score);
   let option = {
     tooltip: {

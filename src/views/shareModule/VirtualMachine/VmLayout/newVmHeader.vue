@@ -1093,6 +1093,10 @@ function remoteAssist() {
 
 // 轮询实验时间
 function times() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
   timer = setInterval(() => {
     experimentTime!.value = secondToHHMMSS(Number(use_time.value));
     if (!taskType.value) {
