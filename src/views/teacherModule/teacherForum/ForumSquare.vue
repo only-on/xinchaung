@@ -5,7 +5,7 @@
       <div class="left">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
-          <Empty v-if="!forumnList.length && !loading" :type="EmptyType"/>
+          <Empty v-if="!forumnList.length && !loading" :type="EmptyType" />
         </a-spin>
       </div>
       <div class="right" v-if="role !== 2">
@@ -34,7 +34,7 @@ import {
   createVNode,
   computed
 } from "vue";
-import { useRouter, useRoute} from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import ForumnTop from "./components/ForumnTop.vue";
 import Forumn from "./components/Forumn.vue";
 import HotLabel from "./components/HotLabel.vue";
@@ -50,7 +50,8 @@ import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
 const route = useRoute();
 const router = useRouter();
-let {currentTab} = route.query
+const {path} = route
+let {currentTab, type, tab} = route.query
 const http = (request as any).teacherForum;
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
@@ -58,7 +59,7 @@ var forumSearch = reactive<IForumSearch>({
   title: "",
   pageSize: 10,
   page: 1,
-  type: '',
+  type: type ? String(type) : 'wiki',
 });
 const loading = ref(false)
 const total = ref(0)
@@ -134,7 +135,13 @@ const deleteForum = (id: number) => {
 }
 provide("deleteForum", deleteForum)
 
-onMounted(() => {
+onMounted(async() => {
+  
+  let NewQuery = { currentTab:route.query.currentTab, tab, type };
+  await router.replace({
+    path: path,
+    query: NewQuery,
+  });
   if (currentTab === '0' || !currentTab) {
     getTagsList()
     // initData();
@@ -156,7 +163,7 @@ const getTagsList = () => {
     })
     data.splice(1, 0, ...tags)
     tagList.push(...data)
-    forumSearch.type = data[0].name
+    // forumSearch.type = data[0].name
     initData();
   })
 }

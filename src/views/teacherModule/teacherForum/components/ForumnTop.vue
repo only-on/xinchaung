@@ -31,6 +31,7 @@ import {
 } from "vue";
 import { IForumSearch, ITagList } from "./../forumnTyping.d";
 import classify from "src/components/classify/index.vue";
+import { useRouter, useRoute } from "vue-router";
 export default defineComponent({
   name: "ForumTop",
   components: {
@@ -44,6 +45,10 @@ export default defineComponent({
     }
   },
   setup: (props, { emit }) => {
+    const route = useRoute();
+    const router = useRouter();
+    const { query, path } = route;
+    const {type } = query
     let ForumSearch = reactive<IForumSearch>({
       title: "",
       type: '',
@@ -60,8 +65,8 @@ export default defineComponent({
     ]);
     watch(props.tagList, (val) => {
       if (!val.length) return
-      val.length ? classifyList[0].value = val[0].name : '';
-      ForumSearch.type = val.length ? val[0].name : '';
+      classifyList[0].value = type ? String(type) : val[0].name;
+      ForumSearch.type = type ? String(type) : val[0].name;
       // emit("search", ForumSearch);
     })
     function search() {
@@ -71,9 +76,15 @@ export default defineComponent({
     //   ForumSearch.type = val;
     //   emit("search", ForumSearch);
     // }
-    const classifyChange = (obj: any) => {
+    const classifyChange = async (obj: any) => {
       ForumSearch.title = ''
       ForumSearch.type = obj.label;
+      // console.log(query)
+      let NewQuery = { type: ForumSearch.type, currentTab: query.currentTab };
+      await router.replace({
+        path: path,
+        query: NewQuery,
+      });
       emit("search", ForumSearch);
     };
 

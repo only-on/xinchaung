@@ -19,7 +19,7 @@
       <div class="right">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
-          <Empty v-if="!forumnList.length && !loading" :type="EmptyType"/>
+          <Empty v-if="!forumnList.length && !loading" :type="EmptyType" />
         </a-spin>
       </div>
     </div>
@@ -50,8 +50,11 @@ import { removeHtmlTag, fixHtml} from 'src/utils/htmlLabel'
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
 import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherForum;
+const route = useRoute();
 const router = useRouter();
-let currentTab = ref<number>(0);
+const {path} = route
+let {type, tab} = route.query
+let currentTab = ref<number>(tab?Number(tab):0);
 const httpList = {
   0: 'getForumList',
   1: 'getAttendList'
@@ -73,7 +76,7 @@ let forumSearch = reactive<IForumSearch>({
   title: "",
   pageSize: 10,
   page: 1,
-  type: '',
+  type: type ? String(type) : 'wiki',
 });
 const loading = ref(false)
 let forumnList = reactive<IForumnList[]>([]);
@@ -120,8 +123,13 @@ function pageChange(page: number) {
   initData();
 }
 //
-function tabChange(id: number) {
+async function tabChange(id: number) {
   currentTab.value = id;
+  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: type ? type : 'wiki', };
+  await router.replace({
+    path: path,
+    query: NewQuery,
+  });
   // initData();
   id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
 }
@@ -140,7 +148,7 @@ const getTagsList = (param: any) => {
     })
     currentTab.value ? data.splice(1, 0, ...tags) : ''
     tagList.push(...data)
-    forumSearch.type = data[0].name
+    // forumSearch.type = data[0].name
     initData()
   })
 }
@@ -171,8 +179,15 @@ let bottomStyle = reactive({
 });
 provide("bottomStyle", bottomStyle);
 
-onMounted(() => {
-  getTagsList({scene: 'private'})
+onMounted(async() => {
+  
+  let NewQuery = { currentTab:route.query.currentTab, tab, type };
+  await router.replace({
+    path: path,
+    query: NewQuery,
+  });
+  // getTagsList({scene: 'private'})
+  currentTab.value === 0 ? getTagsList({scene: 'private'}) : (currentTab.value === 1 ? getTagsList({}) : '')
   // initData();
 });
 const tabs = [

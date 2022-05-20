@@ -1,22 +1,31 @@
 <template>
-  <h3 class="title">{{ item.title }}</h3>
-  <div class="content" v-if="!item.isAllText">
+  <h3 class="forum-title">
+    <span class="sub">#标题#</span>
+    {{ item.title }}
+  </h3>
+  <div class="forum-content" v-if="!item.isAllText">
     <span class="desc" v-html="item.desc"></span>
     <span>...</span>
     <span class="read-btn pointer" @click="readAllText(item.id)"
       >阅读全文<i class="iconfont icon-zhankai"></i
     ></span>
   </div>
-  <div class="content" v-else v-html="item.content"></div>
+  <div class="forum-content-all" v-else v-html="item.content"></div>
   <div class="user-info">
     <img :src="item.user.avatar || defaultAvatar" alt="" />
     <span class="user-name">{{ item.user.username }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
-    <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
-    <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
-      !isReply ? "回应" : "收起回应"
-    }}</span>
-    <span class="delet pointer" v-if="item.is_del" @click="delet(item.id)">删除</span>
+    <span class="btns">
+      <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
+        !isReply ? "回应" : "收起回应"
+      }}
+      <!--  v-if="!isReply" -->
+        <span class="reply-num">{{ item.reply_number_count }}</span>
+      </span>
+      <span class="delet pointer" v-if="item.is_del" @click="delet(item.id)">
+        <span class="division" v-if="item.is_del"></span>删除
+      </span>
+    </span>
   </div>
   <!--回应内容-->
   <div class="reply-box" v-if="isReply">
@@ -180,10 +189,17 @@ export default defineComponent({
 </script>
 
 <style lang="less" scoped>
-.title {
-  margin-bottom: 8px;
+.forum-title {
+  margin-bottom: 10px;
+  font-size: var(--font-size-20);
+  color: var(--black-100);
+  font-weight: 700;
+  .sub {
+    color: var(--brightBtn);
+    margin-right: 4px;
+  }
 }
-.content {
+.forum-content {
   color: var(--black-65);
   // line-height: 24px;
   .desc {
@@ -199,9 +215,19 @@ export default defineComponent({
     }
   }
 }
+.forum-content-all {
+  :deep(h1) {
+    font-size: var(--font-size-18);
+  }
+  :deep(h2) {
+    font-size: var(--font-size-16);
+  }
+}
 .user-info {
   color: var(--black-45);
-  margin: 12px 0;
+  // margin: 12px 0;
+  margin-top: 16px;
+  line-height: 32px;
   img {
     width: 24px;
     height: 24px;
@@ -212,12 +238,28 @@ export default defineComponent({
   .create-time {
     margin: 0 24px;
   }
-  .reply-btn, .delet {
+  .btns {
+    padding: 0 22px;
+    background: #fff2d9;
     color: var(--primary-color);
-    margin-left: 3px;
+    height: 32px;
+    display: inline-block;
+    border-radius: 16px;
+  }
+  .reply-num {
+    margin-left: 4px;
   }
   .delet {
-    margin-left: 24px;
+    // margin-left: 24px;
+  }
+  .division {
+    display: inline-block;
+    width: 1px;
+    height: 17px;
+    background: var(--primary-color);
+    margin: 0 16px;
+    vertical-align: middle;
+    margin-bottom: 2px;
   }
 }
 .reply-box {
@@ -297,7 +339,7 @@ export default defineComponent({
 .ant-spin-nested-loading {
   min-height: 80px;
 }
-.content{
+.forum-content-all{
   :deep(.ql-image){
     max-width: 830px;
   }

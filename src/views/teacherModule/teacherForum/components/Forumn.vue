@@ -98,7 +98,9 @@ interface IPageInfo {
 <style lang="less" scoped>
 .forumn-list {
   .lists {
-    margin-top: 32px;
+    margin-top: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid rgba(0,0,0,0.15);
   }
 }
 .forumn-pagination {
