@@ -523,7 +523,7 @@ const deleteExperiment=(v:any,a:any)=>{
   // emit('deleteExperiment',obj)
 }
 const ProcessingData=(data:any)=>{
-    let obj={5:'备课资料',6:'教学指导',3:'课件'}
+    let obj= {3:'课件',5:'备课资料',6:'教学指导'}
     if(data.length){
       let item:any=data[0]
       let index:number=0
@@ -535,7 +535,7 @@ const ProcessingData=(data:any)=>{
           i.TeachingAids=true   // TeachingAids是教辅
           i.TeachingAidsName=obj[i.type]
           i.name=i.file_name
-          if(props.Editable !== 'readOnly'){
+          if(props.Editable !== 'readOnly' && obj[i.type]){
             v.list.push(i)
           }
         }):''

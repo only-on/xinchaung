@@ -331,6 +331,7 @@ onMounted(() => {
         padding: 10px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
+        max-width: 606px;
       }
       
     }
