@@ -42,7 +42,7 @@
       }"
     >
     <template #templateName='{record}'>
-      <div class="detail" @click="detail(record.id,record.templateType)">
+      <div class="detail" @click="detail(record.id,record.templateType,record.pdfPath)">
         {{record.templateName}}
       </div>
     </template>
@@ -53,12 +53,12 @@
             </span>
         </template>
     </a-table>
-     <!-- 在线制作 预览  编辑实验模板 -->
+     <!-- 在线制作 预览实验模板 -->
     <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
       <div class="pdfBox" v-if="template.pdfUrl">
         <PdfVue :url="template.pdfUrl" />
       </div>
-      <viewTemplateShow :id="template.Templateid" />
+      <viewTemplateShow v-else :id="template.Templateid" />
       <template #footer>
         <span></span>
       </template>
@@ -153,13 +153,14 @@
       defaultChecked: record.selected,
     };
 }
-function detail(id:any,type:any){
+function detail(id:any,type:any,path:any){
+  template.pdfUrl=''
+  template.Templateid=''
+  template.templateVisble=true
   if(type=='在线'){
-    
-    template.templateVisble=true
     template.Templateid=id
-    // http.viewTemplate({urlParams:{id:id}}).then((res:any)=>{
-    // })
+  }else{
+    template.pdfUrl=path
   }
 }
 function downLoad(record:any){
