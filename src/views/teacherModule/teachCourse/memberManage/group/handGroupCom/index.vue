@@ -102,7 +102,7 @@
           <div>
           </div>
           <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
-            <div v-for="(item, index) in unGroupData" :key="index.toString()">
+            <div v-for="(item, index) in unGroupData" :key="item.userProfile.id">
               <a-checkbox :value="item.userProfile.id">
                 {{ item.userProfile.name }}
               </a-checkbox>
@@ -296,9 +296,10 @@ function groupNumberList(){
 watch(
       () => checkedValues.value,
       val => {
+        console.log(val.length,unGroupData.value.length,'valvalval')
         indeterminate.value = !!val.length && val.length < unGroupData.value.length;
-        checkAll.value = val.length === unGroupData.value.length;
-      },
+        checkAll.value = val.length === unGroupData.value.length&&unGroupData.value.length!==0;
+      }
 )
 watch(
       () =>props.visable,
@@ -307,6 +308,7 @@ watch(
           treeData.value=[]
           unGroupData.value=[]
           console.log(props.ifedit,'props.ifedit')
+          checkedValues.value=[]
           if(props.ifedit){
             groupNumberList()
             getUngroupStu()
