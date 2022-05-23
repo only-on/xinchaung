@@ -87,7 +87,7 @@ onMounted(async () => {
 });
 // 创建实例
 function createTopo() {
-  console.log(12121);
+  // console.log(12121);
 
   let params: any = {
     type: type,
@@ -104,8 +104,13 @@ function createTopo() {
       })
       .catch((err:any) => {
         reject(err);
+        if(err.msg === "当前学生没有相应排课") {
+          setTimeout(() => {
+            router.go(-1);
+          }, 3000)
+        }
       });
-  }).catch();
+  })
 }
 // 获取实验基本信息pageinfo
 function getVmBase() {

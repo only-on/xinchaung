@@ -565,28 +565,32 @@ onMounted(async () => {
     if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
       initWs();
     }
-  }).catch(() => {
-    router.go(-1)
-  });
-  let versions: any = await getVersionListData();
+    let versions: any = await getVersionListData();
+    console.log(versions);
+    if (versions.length > 0) {
+      version_id.value = versions[0].id;
+      version_name.value = versions[0].version_name;
+    } else {
+      version_name.value = "namefile";
+      let versionsData = await createVersionData();
+      console.log(versionsData);
+      let versions: any = await getVersionListData();
       console.log(versions);
       if (versions.length > 0) {
         version_id.value = versions[0].id;
         version_name.value = versions[0].version_name;
-      } else {
-        version_name.value = "namefile";
-        let versionsData = await createVersionData();
-        console.log(versionsData);
-        let versions: any = await getVersionListData();
-        console.log(versions);
-        if (versions.length > 0) {
-          version_id.value = versions[0].id;
-          version_name.value = versions[0].version_name;
-        }
       }
-      await getFileListData();
+    }
+    await getFileListData();
 
-      getCurrentSWitchFile();
+    getCurrentSWitchFile();
+  }).catch((err: any) => {
+    if(err.msg === "当前学生没有相应排课") {
+      setTimeout(() => {
+        router.go(-1);
+      }, 3000)
+    }
+  });
 });
 </script>
 

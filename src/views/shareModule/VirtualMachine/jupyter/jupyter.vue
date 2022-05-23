@@ -108,6 +108,12 @@ function getVmBase() {
         use_time.value = res.data.current.remaining_time;
       }
       resolve();
+    }).catch((err: any) => {
+      if(err.msg === "当前学生没有相应排课") {
+        setTimeout(() => {
+          router.go(-1);
+        }, 3000)
+      }
     });
   });
 }

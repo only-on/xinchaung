@@ -160,6 +160,13 @@ function getVmBase() {
         use_time.value = res.data.current.remaining_time;
       }
       resolve();
+    }).catch((err) => {
+      // console.log(err)
+      if(err.msg === "当前学生没有相应排课") {
+        setTimeout(() => {
+          router.go(-1);
+        }, 3000)
+      }
     });
   });
 }
@@ -260,7 +267,7 @@ function initWs() {
                   if (currentClickIndex.value == currentVmIndex.value) {
                     loading.value = false;
                   }
-
+                  
                   initVnc.value();
                 } else {
                   isClose.value = false;
@@ -455,10 +462,5 @@ onMounted(async () => {
 }
 .is-none {
   display: none;
-}
-.vm-finish-modal {
-  .ant-btn-ghost {
-    display: none;
-  }
 }
 </style>
