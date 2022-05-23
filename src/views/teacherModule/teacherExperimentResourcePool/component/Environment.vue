@@ -67,6 +67,7 @@ import {
   Ref,
   defineProps,
   withDefaults,
+  watch
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -98,8 +99,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 var visible: Ref<boolean> = ref(false);
 const selectList: any = reactive([]);
-// console.log(props.envList)
-selectList.push(...props.envList)
 const currentImage: any = reactive({
   flavor: {
     cpu: "",
@@ -116,7 +115,10 @@ const defaultConfig: any = {
   image_id:'',
   editIdx: "",
 };
-
+watch(()=>props.envList, newVal => {
+  selectList.length = 0
+  selectList.push(...JSON.parse(JSON.stringify(newVal)))
+}, {deep: true, immediate: true})
 const emit = defineEmits<{
   (e: "handleOk", val: any): void;
 }>();
@@ -136,6 +138,7 @@ const handleOk = () => {
   currentImage.imageName = "";
   currentImage.image_id = ''
   visible.value = false;
+  defaultConfig.editIdx = ''
   console.log(selectList)
   emit("handleOk", selectList);
   // modal.destroy()

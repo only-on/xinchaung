@@ -215,8 +215,10 @@ const createMethod = currentTypeInfo.method;
 const isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
 const formState = reactive<any>({})
+const saveImages = reactive<any>([])
 watch(()=>props.detail, newVal => {
   Object.assign(formState, newVal)
+  saveImages.length = 0
   formState.direction = formState.direction
   let arr:any = []
   formState.know_point ? formState.know_point.split(',').forEach((v: number, k: number) => {
@@ -284,7 +286,10 @@ function remove(val: any, index: number) {
 }
 
 const ConfirmConfiguration = (val: any) => {
-  let arr:any=[]
+  if (!val.length) {
+    formState.imageConfigs.length = 0
+  }
+  saveImages.length = 0
   val.forEach((v:any) => {
     const {ram,cpu,disk}=v.flavor
     let obj={
@@ -292,9 +297,8 @@ const ConfirmConfiguration = (val: any) => {
       is_use_gpu:v.flavor.gpu !== undefined ? v.flavor.gpu :v.is_use_gpu ,
       flavor:{ram,cpu,disk}
     }
-    arr.push(obj)
+    saveImages.push(obj)
   });
-  formState.imageConfigs = arr;
 };
 
 function create() {
@@ -306,18 +310,20 @@ function create() {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
     }, [])
-    // 未改变实验环境时
+    // 未改变实验环境直接保存
     let arr:any = []
-    formState.imageConfigs.forEach((item:any) => {
-      if (item.image_id) {
-        let obj = {
-          flavor: item.flavor,
-          image: item.image_id,
-          is_use_gpu: item.is_use_gpu
+    if (!saveImages.length) {
+      formState.imageConfigs.forEach((item:any) => {
+        if (item.image_id) {
+          let obj = {
+            flavor: item.flavor,
+            image: item.image_id,
+            is_use_gpu: item.is_use_gpu
+          }
+          arr.push(obj)
         }
-        arr.push(obj)
-      }
-    })
+      })
+    }
     const param = {
       // id: formState.id,
       name: formState.name,
@@ -328,9 +334,12 @@ function create() {
       report: formState.report.id,
       tags: formState.tags,
       dataset_ids: formState.datasets,
-      container: arr.length ? arr : formState.imageConfigs
+      container: arr.length ? arr : saveImages
     }
-    // console.log(param)
+    if (!param.container.length) {
+      message.warn('实验环境不能为空')
+      return
+    }
     // return
     http.updateBaseInfo({urlParams: {id: formState.id}, param}).then((res: IBusinessResp)=>{
       message.success('编辑基本信息成功')
