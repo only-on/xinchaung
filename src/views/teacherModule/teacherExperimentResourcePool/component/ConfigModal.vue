@@ -41,14 +41,13 @@ if(props.imageList && props.imageList.length){
     reactiveData.imageName=val.name
     emit("selectedImage", reactiveData);
 }
-
-if (props.defaultConfig.flavor && props.defaultConfig.image_id) {
-  reactiveData.imageName = props.defaultConfig.imageName;
-  reactiveData.image_id = props.defaultConfig.image_id;
-  reactiveData.flavor = props.defaultConfig.flavor;
-}
-
-
+watch(()=>props.defaultConfig, newVal => {
+  if (newVal.flavor && newVal.image_id) {
+    reactiveData.imageName = newVal.imageName;
+    reactiveData.image_id = newVal.image_id;
+    reactiveData.flavor = newVal.flavor;
+  }
+},{deep:true,immediate:true})
 const configChange = (val: any) => {
   // console.log(val)
   reactiveData.flavor = val;
@@ -63,7 +62,6 @@ const imageChange = (val:any) => {
   // console.log(item)
   reactiveData.image_id=val
   reactiveData.imageName=item[0].name
-  console.log(reactiveData)
   emit("selectedImage", reactiveData);
 };
 onMounted(() => {

@@ -29,7 +29,7 @@
       <div class="content">
         <div class="info flexCenter">
           <span>内存：{{ v.flavor.ram / 1024 }}GB</span>
-          <span>cpu：{{ v.flavor.cpu }}GB</span>
+          <span>CPU：{{ v.flavor.cpu }}GB</span>
           <span>硬盘：{{ v.flavor.disk }}GB</span>
           <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
         </div>
@@ -109,15 +109,21 @@ const currentImage: any = reactive({
   imageName: "",
   image_id:'',
 });
-const defaultConfig: any = {
+const defaultConfig: any = reactive({
   flavor: {},
   imageName: "",
   image_id:'',
   editIdx: "",
-};
+});
 watch(()=>props.envList, newVal => {
   selectList.length = 0
   selectList.push(...JSON.parse(JSON.stringify(newVal)))
+  // 单环镜
+  if (props.type) {
+    defaultConfig.flavor = selectList[0].flavor
+    defaultConfig.flavor.gpu = selectList[0].is_use_gpu
+    defaultConfig.image_id = selectList[0].image_id
+  }
 }, {deep: true, immediate: true})
 const emit = defineEmits<{
   (e: "handleOk", val: any): void;

@@ -101,9 +101,9 @@
     <!-- 实验环境配置 -->
     <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
-        :type="formState.single"
+        :type="createTypeNumber === 4 ? true : false"
         @handleOk="ConfirmConfiguration"
-        :imageType="createTypeNumber === 2 ? 'jupyter':'vnc'"
+        :imageType="createTypeNumber === 4 ? 'jupyter':'vnc'"
         :envList="formState.imageConfigs"
       />
     </div>

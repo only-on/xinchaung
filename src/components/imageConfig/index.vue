@@ -40,7 +40,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { reactive, ref, Ref, onMounted } from "vue";
+import { reactive, ref, Ref, onMounted, watch } from "vue";
 import request from "src/api/index";
 const http = (request as any).teacherImageResourcePool;
 // 采用ts专有声明，有默认值
@@ -106,13 +106,15 @@ const configs: any = reactive([
 const props = withDefaults(defineProps<Props>(), {
   defaultConfig: () => {},
 });
-configs.map((v: any) => {
-  let arr = props.defaultConfig ? Object.keys(props.defaultConfig) : [];
-  if (arr && arr.length && arr.includes(v.key) && props.defaultConfig[v.key] !== "") {
-    // console.log(props.defaultConfig[v.key])
-    v.value = props.defaultConfig[v.key];
-  }
-});
+watch(()=>props.defaultConfig, newVal => {
+  configs.map((v: any) => {
+    let arr = props.defaultConfig ? Object.keys(props.defaultConfig) : [];
+    if (arr && arr.length && arr.includes(v.key) && props.defaultConfig[v.key] !== "") {
+      // console.log(props.defaultConfig[v.key])
+      v.value = props.defaultConfig[v.key];
+    }
+  });
+}, {deep:true,immediate:true})
 
 const emit = defineEmits<{
   (e: "change", val: any): void;
