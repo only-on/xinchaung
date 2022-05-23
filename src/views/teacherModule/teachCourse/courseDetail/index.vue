@@ -368,6 +368,7 @@ const steupFormState:any=reactive({
 var reportVisible = ref<boolean>(false);
 const setupCourse=()=>{
   setupVisible.value=true
+  getCourseSetup()
 }
 const changeReport=()=>{
   reportVisible.value = true;
@@ -434,15 +435,17 @@ const getCourseSetup=()=>{
         data.report_template.typeText=data.report_template.word_path === ''?'【在线】':'【离线】'
       }
       steupFormState.reportObj={...data.report_template}
+    } else {
+      steupFormState.reportObj.id = 0
     }
     console.log(steupFormState)
   })
 }
 onMounted(() => {
   initData()
-  if(Number(currentTab)===0 && role === 3){
-    getCourseSetup()
-  }
+  // if(Number(currentTab)===0 && role === 3){
+  //   getCourseSetup()
+  // }
 });
 
 </script>
