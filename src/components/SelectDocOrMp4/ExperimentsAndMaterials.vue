@@ -17,9 +17,9 @@
     <span class="iconfont icon-guanbi" @click="closeDrawerDoc"></span>
   </div>
   <div v-if="selectNum === 2" class="flexCenter classifyTabs tags">
-    <span :class="tags === '教学指导'? 'active':''" @click="changeTab('教学指导')">教学指导</span>
+    <span class="left" :class="tags === '教学指导'? 'active':''" @click="changeTab('教学指导')">教学指导</span>
     <span :class="tags === '备课资料'? 'active':''" @click="changeTab('备课资料')">备课资料</span>
-    <span :class="tags === '课件'? 'active':''" @click="changeTab('课件')">课件</span>
+    <span class="right" :class="tags === '课件'? 'active':''" @click="changeTab('课件')">课件</span>
   </div>
   <SourceMaterial v-if="selectNum === 2" :activeFile="props.activeFile" :tags="tags" @selectSourceMaterialFile="selectSourceMaterialFile"/>
   <Experiments v-if="selectNum === 1" :selectList="props.selectList" @preservation="preservation" />

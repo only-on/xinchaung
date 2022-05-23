@@ -21,8 +21,8 @@
     </div> -->
     <div class="search flexCenter">
       <div class="flexCenter classifyTabs">
-        <span :class="params.common === 1? 'active':''" @click="changeTab(1)">公开素材</span>
-        <span :class="params.common === 0? 'active':''" @click="changeTab(0)">私有素材</span>
+        <span class="left" :class="params.common === 1? 'active':''" @click="changeTab(1)">公开素材</span>
+        <span class="right" :class="params.common === 0? 'active':''" @click="changeTab(0)">私有素材</span>
       </div>
       <div class="item custom_input">
         <a-input-search

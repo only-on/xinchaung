@@ -1,8 +1,8 @@
 <template>
   <div class="search flexCenter">
     <div class="flexCenter classifyTabs">
-      <span :class="is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
-      <span :class="is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
+      <span class="left" :class="is_public === 1? 'active':''" @click="changeTab(1)">公开素材</span>
+      <span class="right" :class="is_public === 0? 'active':''" @click="changeTab(0)">私有素材</span>
     </div>
     <div class="item custom_input">
       <a-input-search
