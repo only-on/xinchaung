@@ -589,7 +589,7 @@ function create() {
       return
     }
     if(createTypeNumber === 3 && TaskLIst.length !== 0){
-      checkTask(TaskLIst)
+      // checkTask(TaskLIst)
       // message.warning('请选择实验指导')
       // return
     }
