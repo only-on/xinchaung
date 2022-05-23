@@ -18,9 +18,9 @@
           </span>
         </div>
         <div class="info flexCenter">
-          <div class="item userAvatar">
-            <img :src="avatar" alt="">
-            <span>{{username}}</span>
+          <div class="item userAvatar" v-if="userInfo.avatar">
+            <img :src="userInfo.avatar" alt="">
+            <span>{{userInfo.username}}</span>
           </div>
           <div class="item">
             <span>数量</span>
@@ -180,7 +180,11 @@ import { split } from "lodash";
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
-const {currentTab, editId ,cardType,type,user_id, avatar,username} = route.query;
+const {currentTab, editId ,cardType,type,user_id} = route.query;
+const userInfo = reactive<any>({
+  avatar: route.query?.avatar,
+  username: route.query?.username
+})
 const http = (request as any).teacherMaterialResource;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
