@@ -286,6 +286,7 @@ function toLeft(){
   unGroupData.value=unGroupData.value.filter((item:any)=>{
       return !checkedValues.value.includes(item.userProfile.id)
   })
+  checkedValues.value=[]
 }
 //把分组的学生移回
 function toRight(){
