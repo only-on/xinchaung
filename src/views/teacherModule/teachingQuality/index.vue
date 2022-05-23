@@ -268,9 +268,22 @@ function handleCombData(sankey_error_rate: any) {
       contentsNameArr.push(item.name);
     }
   });
+  let knowNameArr:any = []
   sankey_error_rate.knoledge_error_rate.forEach((item: any, index:number) => {
+    knowNameArr.push(item.knowledge_map_name)
+    let repeatCount = 0
     if (contentsNameArr.includes(item.knowledge_map_name)) {
       item.knowledge_map_name += ' '
+    }
+    if (knowNameArr.includes(item.knowledge_map_name)) {
+      knowNameArr.forEach((nameItem:any) => {
+        if (item.knowledge_map_name === nameItem) {
+          repeatCount++
+        }
+      })
+      if (repeatCount > 1) {
+        item.knowledge_map_name = item.knowledge_map_name+'-'+ (repeatCount -1)
+      }
     }
     fourChart.combData.data.push({ 
       name: item.knowledge_map_name,
@@ -291,7 +304,7 @@ function handleCombData(sankey_error_rate: any) {
       }
     });
   });
-  sankey_error_rate.knoledge_error_rate.forEach((item: any) => {
+  sankey_error_rate.knoledge_error_rate.forEach((item: any, index:number) => {
     item.names.forEach((itemName: any) => {
       fourChart.combData.links.push({
         source: item.knowledge_map_name,
