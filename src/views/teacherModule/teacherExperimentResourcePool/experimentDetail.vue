@@ -9,11 +9,12 @@
       </div>
       <div class="name-type flexCenter">
         <div class="left">
-          <span class="name">{{ experimentDetail.name }}</span>
           <span class="type" :style="{
             color: getTypeList('-90deg')[experimentDetail.content_type].color,
-            background: getTypeList('-90deg')[experimentDetail.content_type].backgroundColor,
+            background: getTypeList('-90deg')[experimentDetail.content_type].detailebBackgroundColor,
           }">{{getTypeList('-90deg')[experimentDetail.content_type].name}}</span>
+
+          <span class="name">{{ experimentDetail.name }}</span>
         </div>
         <div class="right">
           <span class="pointer" v-if="role === 3" @click="addToCourse()">添加到课程</span>
@@ -362,7 +363,7 @@ interface IExperimentDetail {
       .type {
         display: inline-block;
         width: 70px;
-        margin-left: 16px;
+        margin-right: 16px;
         color: #3094ef;
         background: linear-gradient(
           -90deg,

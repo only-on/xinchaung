@@ -217,7 +217,8 @@ const courseDetail=(val:any)=>{
       courseId:val.id,
       course_student_id:val.course_student_id,
       state:val.state,
-      is_authorizedText:val.is_authorizedText
+      is_authorizedText:val.is_authorizedText,
+      activeTabOrder:0
        }
     });
 }
@@ -228,7 +229,10 @@ const viewAchievement=(val:any)=>{
       currentTab:currentTab.value,
       courseId:val.id,
       course_student_id:val.course_student_id,
-      studentDetailTab:'courseAchievement'
+      studentDetailTab:'courseAchievement',
+      state:val.state,
+      is_authorizedText:val.is_authorizedText,
+      activeTabOrder:1
       }
     });
 }

@@ -288,7 +288,7 @@ onMounted(() => {
       .myChapter{
         padding:0 10px;
         min-height:700px;
-        max-height: 767px;
+        max-height: 850px;
         overflow: auto;
         // padding-right: 10px;
       }
@@ -325,13 +325,13 @@ onMounted(() => {
       //   height: 630px;
       // }
       .experimentGuide{
-        height: 630px;
+        height: 730px;
         // overflow: auto;
         // border: 1px solid rgba(0,0,0,0.15);
         padding: 10px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
-        max-width: 606px;
+        max-width: 646px;
       }
       
     }
