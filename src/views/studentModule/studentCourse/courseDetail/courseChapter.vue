@@ -101,15 +101,17 @@ onMounted(() => {
     display: flex;
     
     .content{
-      padding: 20px;
+      // padding: 20px;
     }
     .leftContent{
-      background-color: #fff;
+      // background-color: #fff;
       // width: 70%;
       flex: 1;
-      padding-top: 40px;
+      // padding-top: 40px;
       .introduceBox{
-        
+        background-color: #fff;
+        padding: 24px;
+        margin-bottom: 24px;
       }
       .introduce{
         font-weight: 400;
@@ -124,10 +126,7 @@ onMounted(() => {
       width: 240px;
       margin-bottom: 2rem;
       margin-left: 50px;
-      padding-top: 20px;
-      
-      
-      
+      // padding-top: 20px;
     }
   }
   .modal-post{

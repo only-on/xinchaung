@@ -669,7 +669,7 @@ onMounted(() => {
     text-align: center;
     // justify-content: center;
     .title3{
-      padding: 10px;
+      padding: 10px 0;
       justify-content: space-between;
       border-bottom: 1px solid rgba(0,0,0,0.15);
     }
@@ -681,7 +681,8 @@ onMounted(() => {
       justify-content: space-between;
       height: 46px;
       border-bottom: 1px dashed #e8e8e8;
-      padding: 0 8px;
+      // padding: 0 8px;
+      padding-right: 10px;
       &:hover{
         background: #fff7e6;
         cursor: pointer;
@@ -729,7 +730,7 @@ onMounted(() => {
       .itemTit{
         justify-content: space-between;
         height: 40px;
-        padding: 0 8px;
+        padding-right: 10px;
         .TitLeft{
           width: 100%;
           
@@ -816,7 +817,7 @@ onMounted(() => {
     }
   }
   .operation{
-    margin: 0 1rem;
+    // margin: 0 1rem;
     .iconfont{
       color: #1CB2B3;
       cursor: pointer;

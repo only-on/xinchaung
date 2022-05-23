@@ -286,7 +286,7 @@ onMounted(() => {
       //   // margin-bottom: 1rem;
       // }
       .myChapter{
-        padding:0 10px;
+        padding:0 24px;
         min-height:700px;
         max-height: 850px;
         overflow: auto;
@@ -294,7 +294,7 @@ onMounted(() => {
       }
     }
     .chartTerrLeft2{
-      width: 874px;
+      width: 910px;
     }
     .chartTerrRight{
       // width: 674px;

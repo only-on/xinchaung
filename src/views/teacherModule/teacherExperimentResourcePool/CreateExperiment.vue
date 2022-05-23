@@ -547,14 +547,14 @@ function create() {
   formRef.value.validate().then(() => {
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象
-    if(createTypeNumber === 2 && formState.ipynbList.length === 0){
-      message.warning('请选择实验指导')
-      return
-    }
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
       pre.indexOf(cur.id) === -1 && pre.push(cur.id);
       return pre
     }, [])
+     const docMp4FileObj:any={
+      // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
+      // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
+    }
     const param={
       tags:formState.tags,
       type:createTypeNumber,  // 
@@ -566,11 +566,6 @@ function create() {
       knowledge:selectedKnowledgeIds,
       report:formState.report.id,
       container:formState.imageConfigs
-    }
-    
-    const docMp4FileObj:any={
-      // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
-      // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
     }
     if(docMp4File.suffix === 'md' || formState.document.mdValue){
       docMp4FileObj.guide=formState.document.mdValue
@@ -585,9 +580,18 @@ function create() {
       message.warning('请添加实验环境')
       return
     }
+    if(createTypeNumber === 2 && formState.ipynbList.length === 0){
+      message.warning('请选择实验指导')
+      return
+    }
     if (createTypeNumber === 2 && !formState.imageConfigs[0].image) {
       message.warning('请选择镜像')
       return
+    }
+    if(createTypeNumber === 3 && TaskLIst.length !== 0){
+      checkTask(TaskLIst)
+      // message.warning('请选择实验指导')
+      // return
     }
     if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
       console.log(docMp4FileObj)
@@ -622,6 +626,29 @@ function create() {
       cancel()
     })
   });
+}
+const checkTask=(list:any)=>{
+  let obj={name:'任务名称',description:'任务描述',detail:'任务步骤'}
+  // list.forEach((v:any,k:number)=>{
+  //   Object.keys(obj).forEach((key:string)=>{
+  //     if(!v[key]){
+  //       let str=`请输入任务${k+1}的${obj[key]}`
+  //       message.warning(str)
+  //       return
+  //     }
+  //   })
+  //   // const {name,description,detail}=v
+
+  // })
+  Object.keys(obj).forEach((key:string)=>{
+    list.forEach((v:any,k:number)=>{
+      if(!v[key]){
+        let str=`请输入任务${k+1}的${obj[key]}`
+        message.warning(str)
+        return
+      }
+    })
+  })
 }
 // 取消
 function cancel() {
