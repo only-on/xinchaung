@@ -447,13 +447,16 @@ let combOption = (data: any) => {
     },
     series: {
       type: "sankey",
-      bottom: "15%",
+      bottom: "5%",
       left: "5%",
       top: "5%",
       right: "10%",
       layout: "none",
       emphasis: {
         focus: "adjacency",
+      },
+      label: {
+        fontSize: 12
       },
       data: data.data,
       links: data.links,

@@ -27,7 +27,7 @@
           <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
         </div>
         <div class="operate" v-if="currentTab === 1">
-          <span  v-show="v.is_share === 1" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+          <span  v-show="v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
         </div>
         <div class="operate" v-if="currentTab === 0">
           <!-- is_share:1 就是共享数据 -->
@@ -90,6 +90,7 @@
 import classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 import Submit from "src/components/submit/index.vue";
+import {lStorage} from "src/utils/extStorage";
 import {
   defineComponent,
   ref,
@@ -130,6 +131,7 @@ const isShowAdd = ref<boolean>(true);
 const resetKeyword = ref<boolean>(false);
 const formRef = ref<any>();
 const saveVisible = ref<boolean>(false);
+const currentUid = lStorage.get('uid')
 const formState=reactive<any>({
   name:'',
   id: 0

@@ -148,12 +148,16 @@ const detail=(val:any)=>{
     editId: val.slab_uid ? val.slab_uid: val.id,
     type:val.type_name,
     cardType: val.slab_uid ? 'setData':'other',
-    user_id: uid, 
+    user_id: uid
   }
   if(val.slab_uid){
     router.push({
       path:'/teacher/teacherMaterialResource/setDataDetail',
-      query:{...query}
+      query:{
+        ...query,  
+        avatar: val.user.avatar,
+        username: val.user.username
+      }
     })
   }else{
     router.push({

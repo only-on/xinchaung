@@ -19,8 +19,8 @@
         </div>
         <div class="info flexCenter">
           <div class="item userAvatar">
-            <img :src="state.detail.user?.avatar" alt="">
-            <span>{{state.detail.user?.username}}</span>
+            <img :src="avatar" alt="">
+            <span>{{username}}</span>
           </div>
           <div class="item">
             <span>数量</span>
@@ -180,7 +180,7 @@ import { split } from "lodash";
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
-const {currentTab, editId ,cardType,type,user_id} = route.query;
+const {currentTab, editId ,cardType,type,user_id, avatar,username} = route.query;
 const http = (request as any).teacherMaterialResource;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -519,13 +519,13 @@ onMounted(() => {
           span{
             padding-right: 6px;
           }
-        }
-        &.userAvatar{
-          img{
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            margin-right: 5px;
+          &.userAvatar{
+            img{
+              width: 20px;
+              height: 20px;
+              border-radius: 50%;
+              margin-right: 5px;
+            }
           }
         }
       }
