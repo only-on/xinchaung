@@ -562,9 +562,9 @@ onMounted(async () => {
   // getVmBase()
   createTopo().then(async () => {
     await getTaskInfoData();
-    if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
+    // if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
       initWs();
-    }
+    // }
     let versions: any = await getVersionListData();
     console.log(versions);
     if (versions.length > 0) {
