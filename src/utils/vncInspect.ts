@@ -494,6 +494,57 @@ function operatesHandle(params: IOperatesHandle) {
     console.log(err);
   });
 }
+/**
+ * @description 创建环境前的检查环境
+ * @param params
+ */
+ function inspectEnv(params: IEnvirmentsParam) {
+  return new Promise(async (resolve: any, reject: any) => {
+    envirmentsInspect(params)
+      .then((result: any) => {
+        // console.log(result);
+
+        if (result.status === 1) {
+          if (result.msg && result.msg.topoinst_id) {
+            const modal = Modal.confirm({
+              title: "开启新环境，将删除未保存的环境，确定要开启吗？",
+              cancelText: "取消",
+              okText: "确定",
+              onOk() {
+                try {
+                  cleanEnvirments(result.msg.topoinst_id).then(() => {
+                    resourceInspect().then(() => {
+                      resolve()
+                    })
+                  })
+                } catch (error) {
+                  console.log(error);
+                }
+  
+  
+              },
+              onCancel() {
+                reject()
+                console.log("关闭");
+                modal.destroy()
+              }
+            })
+  
+          } else {
+            resourceInspect().then(() => {
+              resolve()
+            })
+          }
+  
+        } else {
+  
+        }
+      })
+      .catch((err:any) => {
+        console.log(err);
+      });
+  });
+}
 
 /* ------工具方法start----- */
 /**
@@ -600,4 +651,5 @@ export {
   goToVm,
   connectEnv,
   createExamples,
+  inspectEnv,
 };
