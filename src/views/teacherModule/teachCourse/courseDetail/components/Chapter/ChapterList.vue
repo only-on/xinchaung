@@ -32,7 +32,7 @@
                 </div>
                 <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
                   <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
-                  <span v-if="!a.TeachingAids">{{`${k+1}-${i+1}`}}&nbsp;&nbsp;</span>
+                  <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>
                   <span class="ItemExperimentTitle">{{a.name}}</span>
                 </div>
               </div>
@@ -531,6 +531,7 @@ const ProcessingData=(data:any)=>{
       data.forEach((v:any,k:number)=>{
         v.openItem=false
         v.list=[]
+        v.orderNuumber=v.resource && v.resource.length?v.resource.length:0
         v.resource.length?v.resource.forEach((i:any)=>{
           i.power=true
           i.TeachingAids=true   // TeachingAids是教辅
@@ -589,7 +590,6 @@ const ProcessingData=(data:any)=>{
                 i.power=true
               }
             }
-
           }):''
         }
       })
