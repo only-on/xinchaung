@@ -20,7 +20,8 @@
     </div>
   </div>
   <div class="experiment-content">
-    <marked-editor v-model="props.detail.guide" :preview="preview" />
+    <iframe v-if="props.detail.content_task_files?.length" :src="props.detail.content_task_files[0].file_html" frameborder="0" style="width:100%;height:100%"></iframe>
+    <marked-editor v-else v-model="props.detail.guide" :preview="preview" />
     <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
   </div>
 </template>
@@ -46,7 +47,8 @@ const props: Props = defineProps({
     type: Object as PropType<IDetail>,
     require: true,
     default: {
-      guide: ''
+      guide: '',
+      content_task_files: []
     }
   }
 })
@@ -54,6 +56,7 @@ let experimentContent = ref<any>(props.detail.guide || '');
 interface IDetail {
   id: number
   guide: string
+  content_task_files: any
 }
 interface Props {
   detail: IDetail

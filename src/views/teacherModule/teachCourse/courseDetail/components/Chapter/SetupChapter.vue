@@ -326,7 +326,7 @@ onMounted(() => {
       // }
       .experimentGuide{
         height: 630px;
-        overflow: auto;
+        // overflow: auto;
         // border: 1px solid rgba(0,0,0,0.15);
         padding: 10px 10px 20px 0px;
         // max-height: 500px;

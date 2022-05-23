@@ -4,7 +4,12 @@
     <template v-if="props.activeExperimentObj.type===1">
       <MarkedEditor v-model="props.activeExperimentObj.Newguidance.guide" class="markdown__editor" :preview="true" />
     </template>
-    <template v-if="props.activeExperimentObj.type===4">
+    <!-- ide -->
+    <template v-if="props.activeExperimentObj.is_webide">
+      <iframe v-if="props.activeExperimentObj.Newguidance.content_task_files?.length" :src="props.activeExperimentObj.Newguidance.content_task_files[0].file_html" frameborder="0" style="width:100%;height:100%"></iframe>
+      <MarkedEditor v-else v-model="props.activeExperimentObj.Newguidance.guide" class="markdown__editor" :preview="true" />
+    </template>
+    <template v-if="props.activeExperimentObj.type===4&&!props.activeExperimentObj.is_webide">
       <!-- jupyter -->
       <iframe :src="props.activeExperimentObj.Newguidance.guide" frameborder="0" style="width:100%;height:100%"></iframe>
     </template>
@@ -74,7 +79,8 @@ const props = withDefaults(defineProps<Props>(), {
   height:100%
 }
 .markdown__editor{
-  height: 400px;
+  // height: 400px;
+  height: 100%;
   padding: 1rem 2rem 0;
 }
 .taskItem {
