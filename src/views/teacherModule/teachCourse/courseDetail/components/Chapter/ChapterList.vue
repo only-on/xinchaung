@@ -404,6 +404,7 @@ function ViewExperiment(a:any,v:any){
   a.openGuidance=!a.openGuidance
   state.activeExperimentObj={...a}
   a.activeExperimentObj={...a}
+  a.activeExperimentObj.is_webide = a.content_type==="webide"
   if(a.openGuidance){
     if(!a.TeachingAids){
       selectExperiment(a,v)
@@ -787,7 +788,7 @@ onMounted(() => {
       .experimentGuide{
         height: 400px;
         max-height: 500px;
-        overflow: auto;
+        // overflow: auto;
         :deep(.ant-spin-nested-loading){
           height: 100%;
         }

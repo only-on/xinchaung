@@ -109,6 +109,12 @@ function createTopo() {
             router.go(-1);
           }, 3000)
         }
+        
+        if(err.msg === "您已完成当前实验的学习") {
+          setTimeout(() => {
+            router.go(-1);
+          }, 3000)
+        }
       });
   })
 }

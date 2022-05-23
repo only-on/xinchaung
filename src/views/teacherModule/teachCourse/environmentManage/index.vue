@@ -33,7 +33,7 @@
           {{ noDataPrompt }}
         </div> -->
       </div>
-      <Empty v-else />
+      <Empty v-if="!envList.length&&!loading" :type="EmptyType" />
       </a-spin>
       <a-pagination
         v-model:current="searchInfo.page"
@@ -76,7 +76,8 @@ import {
   provide,
   inject,
   onBeforeMount,
-  onUnmounted
+  onUnmounted,
+  computed,
 } from "vue";
 import { message } from "ant-design-vue";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -99,6 +100,16 @@ const searchInfo: any = reactive({
 })
 const envList: any = reactive([])
 const loading = ref(false)
+const EmptyType:any=computed(()=>{
+  let str=''
+  if(searchInfo.keyword === ''){
+    str= 'empty'
+  }else{
+    str= 'searchEmpty'
+  }
+  console.log(str)
+  return str
+})
 
 // 查询
 const onSearch = () => {
@@ -159,6 +170,7 @@ const selectExperiment = (val: any) => {
   // console.log(val)
   Object.assign(currentExperiment, val)
   searchInfo.taskId = val.id
+  searchInfo.keyword = ''
   getList();
 }
 
