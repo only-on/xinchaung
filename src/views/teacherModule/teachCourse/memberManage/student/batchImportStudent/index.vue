@@ -41,7 +41,11 @@
   >
           <template #success='{record}'>
             <div>
-              {{record.success==true?'导入成功':record.result}}
+              <span v-if="record.success">
+                <span class="yellow"  v-if="record.result!==''">{{record.result}}</span>
+                <span v-else class="green">导入成功</span>
+              </span>
+              <span class="red" v-else>{{record.result}}</span>
             </div>
           </template>
   </a-table>
@@ -117,13 +121,10 @@ function onShowSizeChange(current: any, size: any) {}
 function callback() {}
 function downloadTemplate(){
   let development = process.env.NODE_ENV == "development" ? true : false;
-      // let url = development
-      //   ? "http://localhost:3000/proxyPrefix/api/v1/question/questions/import/demo"
-      //   : "/api/v1/question/questions/import/demo";
       let url = development
-        ? "http://localhost:3000/proxyPrefix/uploadfiles/import/student.xlsx"
-        : "/uploadfiles/import/student.xlsx";
-      FileSaver.saveAs(url);
+        ? "'./public/template/Student.xlsx'"
+        : "/uploadfiles/import/student.xlsx"; 
+      FileSaver.saveAs(url,'学生模版');
 }
 </script>
 
@@ -148,5 +149,14 @@ function downloadTemplate(){
 :deep(.ant-table-pagination.ant-pagination){
   float: none;
   text-align: center;
+}
+.yellow{
+  color:var(--primary-color);
+}
+.green{
+  color: green;
+}
+.red{
+  color: red;
 }
 </style>
