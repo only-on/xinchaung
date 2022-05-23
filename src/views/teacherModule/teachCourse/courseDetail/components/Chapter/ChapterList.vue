@@ -100,7 +100,7 @@ import Submit from "src/components/submit/index.vue";
 import ExperimentalGuidance from './ExperimentalGuidance.vue'
 import { Modal, message } from "ant-design-vue";
 import ExperimentsAndMaterials from 'src/components/SelectDocOrMp4/ExperimentsAndMaterials.vue'
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect";
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect";
 import { useRoute ,useRouter} from "vue-router";
 import { getTypeList } from 'src/views/teacherModule/teacherExperimentResourcePool/config'
 import request from 'src/api/index'
@@ -379,8 +379,24 @@ const openVm = (a: any, opType: string) => {
     taskId: id,
     experType: task_type
   };
+  // ide
+  if (task_type === 3) {
+    inspectEnv(param).then(() => {
+      router.push({
+        path: "/vm",
+        query: {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          routerQuery: JSON.stringify(routeQuery),
+          experType: task_type
+        },
+      });
+    })
+    return
+  }
   // 文档视频实验
-  if (task_type === 6 || task_type === 7 || task_type === 3) {
+  if (task_type === 6 || task_type === 7) {
     
     router.push({
       path: "/vm",
@@ -590,6 +606,7 @@ const ProcessingData=(data:any)=>{
                 i.power=true
               }
             }
+
           }):''
         }
       })
