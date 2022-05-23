@@ -234,4 +234,10 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less">
+.vm-finish-modal {
+  .ant-btn-ghost {
+    display: none;
+  }
+}
+</style>

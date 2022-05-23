@@ -735,9 +735,7 @@ function delayedTime() {
       message.success("延时成功");
       use_time.value = res.data.remaining_time;
       times();
-    } else {
-      times();
-    }
+    } 
   });
 }
 
@@ -833,7 +831,7 @@ function endVmEnvirment() {
       taskId: taskId,
     };
   }
-
+        
   setTimeout(() => {
     endExperiment(params).then((res: any) => {
       if (
@@ -841,7 +839,6 @@ function endVmEnvirment() {
         !["recommend", "test", "help"].includes(opType as any) &&
         !["train"].includes(type as any)
       ) {
-        router.go(-1);
         // 自评推荐写在此处
         evaluateData.value = res.data;
         evaluateVisible.value = true;
@@ -849,6 +846,11 @@ function endVmEnvirment() {
           //   histogramCharts(evaluateData.value)
           // initEvaluate();
         });
+        router.go(historyLength - history.length-1);
+        // router.replace({
+        //   path: '/student/studentCourse/Detail',
+        //   query: {...JSON.parse(routerQuery)}
+        // })
       } else {
         // backTo(router, type, 3, routerQuery);
         router.go(historyLength - history.length - 1);
