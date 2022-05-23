@@ -120,6 +120,7 @@ import { DownOutlined } from "@ant-design/icons-vue";
 import {message} from 'ant-design-vue'
 import request from 'src/api/index'
 import { useRouter ,useRoute } from 'vue-router';
+import { resolve } from 'path/posix';
 const http = (request as any).teacherMemberManage;
 const route=useRoute()
 const courseId:any=route.query.courseId  //章节id
@@ -166,23 +167,55 @@ const emit = defineEmits<{ (e: "updateVisable", val: any,groupok:any): void }>()
 function handleOk(){
   console.log(treeData.value)
   if(props.ifedit){
-    const params:any={
-    name:'',
-    members:[]
-  }
-  treeData.value.forEach((item:any) => {
-      params.name=item.name;
-      item.student_list.forEach((it: any) => {
-              params.members.push(it.id);
-      });
-  });
-      http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
-        if(res.code){
-        emit("updateVisable",'false',true);
-        treeData.value=[]
-        unGroupData.value=[]
-      }
-    })
+          const arryData: any = Array.from(treeData.value);
+          const editData: any = arryData.filter((item: any) => {
+            console.log(item.id !== undefined, item.id, "edit");
+            return item.id !== undefined;
+          });
+          const createData: any = arryData.filter((item: any) => {
+            console.log(item.id === undefined);
+            return item.id === undefined;
+          });
+          const params:any={
+            name:'',
+            members:[]
+          }
+          editData.forEach((item:any) => {
+              params.name=item.name;
+              item.student_list.forEach((it: any) => {
+                      params.members.push(it.id);
+              });
+          });
+        const promise=new Promise((resolve:any,reject:any)=>{
+          return http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
+            if(res.code){
+              // emit("updateVisable",'false',true);
+              treeData.value=[]
+              unGroupData.value=[]
+                resolve((res:any)=>{
+                  return res
+                })
+              }
+            })
+          })
+          promise.then((res:any)=>{
+            if(createData?.length){
+              const groups:any=[]
+              createData.forEach((item:any,index:any)=> {
+                groups.push({name:item.name,members:[]})
+                item.student_list.forEach((it:any)=>{
+                  groups[index].members.push(it.id)
+                })
+              });
+              http.handGroup({param:{id:courseId,type:1,groups:groups}}).then((res:any)=>{
+                  if(res.code){
+                    emit("updateVisable",'false',true);
+                  }
+                })   
+            }else{
+              emit("updateVisable",'false',true);
+            }
+          })
   }else{
     const groups:any=[]
     treeData.value.forEach((item:any,index:any)=> {
