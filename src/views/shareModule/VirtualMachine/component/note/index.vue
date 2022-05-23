@@ -61,7 +61,7 @@ onMounted(() => {
   padding: 15px;
   display: flex;
   flex-direction: column;
-  height: calc(100% - 60px);
+  height: calc(100% - 120px);
   .ql-container {
     min-height: 600px !important;
   }
