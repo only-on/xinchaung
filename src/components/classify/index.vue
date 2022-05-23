@@ -1,15 +1,17 @@
 <template>
   <div>
-    <div v-for="v in props.list" :key="v.value" class="labelSearch flexCenter">
+    <div v-for="v in props.list" :key="v.value" class="labelSearch">
       <div class="title" v-if="v.title">{{ v.title }}：</div>
-      <div
-        v-for="i in v.data"
-        :key="`${v.keyName}${i.name}`"
-        class="label-btn"
-        :class="(i.name && i.value === v.value) ? 'current' : ''"
-        @click="change(v, i)"
-      >
-        {{ i.name }}
+      <div class="labelBox">
+        <div
+          v-for="i in v.data"
+          :key="`${v.keyName}${i.name}`"
+          class="label-btn"
+          :class="(i.name && i.value === v.value) ? 'current' : ''"
+          @click="change(v, i)"
+        >
+          {{ i.name }}
+        </div>
       </div>
     </div>
   </div>
@@ -78,16 +80,24 @@ defineExpose({
 .labelSearch {
   color: var(--black-65);
   margin-bottom: 18px;
+  display: flex;
   .title {
-    margin-right: 16px;
+    // margin-right: 16px;
+    width: 80px;
+  }
+  .labelBox{
+    flex:1;
+    line-height: 44px;
   }
   .label-btn {
+    display: inline-block;
     height: 30px;
     line-height: 30px;
     border-radius: 15px;
-    padding: 0 19px;
-    // color: var(--black-65);
+    padding: 0px 20px;
+    color: var(--black-65);
     cursor: pointer;
+    // width:70px;
   }
   .current {
     background-color: var(--primary-color);

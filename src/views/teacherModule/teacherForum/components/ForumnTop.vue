@@ -10,7 +10,6 @@
       </div>
       <div class="label-list">
         <classify :list="classifyList" @change="classifyChange"></classify>
-        <!-- <span class="label-btn" :class="{'current': item.id === ForumSearch.type}" v-for="item in labelList" :key="item.id" @click="changeLabel(item.id)">{{item.name}}</span> -->
       </div>
     </div>
   </div>
