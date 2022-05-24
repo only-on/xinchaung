@@ -133,13 +133,13 @@
                     </div>
                 </div>
                 <div class="nodeOperation">
-                    <div>
+                    <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','stop')">
                         关机 <span class="icon iconfont icon-kaiguanshenx"></span>
                     </div>
-                    <div>
+                    <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','restart')">
                         重启 <span class="icon iconfont icon-loading"></span>
                     </div>
-                    <div>
+                    <div class="dohover" @click="doSimJetSoft">
                         一键关闭 <span class="icon iconfont icon-guanbi"></span>
                     </div>
                 </div>
@@ -202,6 +202,7 @@
     import moment from 'moment';
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
+   import {Modal } from 'ant-design-vue'
     const http = (request as any).adminHome;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
@@ -478,6 +479,36 @@
     function toMaintain(){
         router.push('/admin/systemMaintenance/diskManagement')
     }
+    function nodeOpera(ip: any, node_type: any, action: any) {
+        Modal.confirm({
+          title: "提示",
+          content: action === "restart" ? "确定要重启吗？" : "确定要关机吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http
+              .deviceNodeOperation({
+                param: { ip: ip, node_type: node_type, action: action },
+              })
+              .then((res: any) => {
+                getData()
+              });
+          },
+        });
+      }
+    function doSimJetSoft() {
+        Modal.confirm({
+          title: "提示",
+          content: "确定要关闭服务器吗？",
+          okText: "确认",
+          cancelText: "取消",
+          onOk: () => {
+            http.simJetSoft().then((res: any) => {
+              console.log(res);
+            });
+          },
+        });
+      }
     onMounted(()=>{
         getData()
         drawEcharts('activity-echats',activityOption(userActive))
@@ -851,5 +882,11 @@
 }
 .quicklyEnter:hover{
     cursor: pointer;
+}
+.dohover{
+    cursor: pointer;
+}
+.dohover:hover{
+    color: var(--primary-color);
 }
 </style>
