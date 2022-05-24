@@ -185,6 +185,7 @@ export default defineComponent({
     });
     const slideChangeTransitionEnd = (swiper: any) => {
       getData(courseLists[swiper.realIndex].id);
+      getErrorRoate(courseLists[swiper.realIndex].id)
     };
     const setTranslate = (swiper: any) => {
       var slides = swiper.slides;
@@ -220,6 +221,14 @@ export default defineComponent({
       setChart("scater", scaterOptions(0, {}));
       setChart("graph", graphOptions({}));
     };
+    const getErrorRoate=(courseId: string | number)=>{
+      http.pointErrorRate({urlParams: { courseId:courseId } }).then((res: IBusinessResp) => {
+        if(res && res.data){
+          let result = res.data;
+          errorKonwledge.push(...result.error_knowledge);
+        }
+      })
+    }
     const getData = (courseId: string | number) => {
       errorKonwledge.length = 0;
       if (!courseId) {
@@ -228,8 +237,8 @@ export default defineComponent({
         reset();
         return;
       }
-      // http.courseData({ param: { course_id: courseId } }).then((res: IBusinessResp) => {
-      http.courseData({urlParams: { courseId:courseId } }).then((res: IBusinessResp) => {
+      http.courseData({ param: { course_id: courseId } }).then((res: IBusinessResp) => {
+      // http.courseData({urlParams: { courseId:courseId } }).then((res: IBusinessResp) => {
         if (res && res.data) {
           let result = res.data;
           echartData.value = res.data;
@@ -238,7 +247,7 @@ export default defineComponent({
           courseCompletion.undone = result.undone;
           setChart("pie", pieOptions(courseCompletion));
           // 知识点错误率
-          errorKonwledge.push(...result.error_knowledge);
+          // errorKonwledge.push(...result.error_knowledge);
           // 课程成绩分布
           gradeDistribution.value = handleData(result.course_rank, "grade");
           setChart("radar", radarOptions(gradeDistribution.value));
@@ -259,6 +268,7 @@ export default defineComponent({
           Object.assign(courseLists, res.data.course_ongoing);
           if (courseLists.length > 0) {
             getData(courseLists[0].id);
+            getErrorRoate(courseLists[0].id)
           }
         }
       });

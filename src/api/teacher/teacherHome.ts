@@ -4,11 +4,11 @@ export default {
     url: '/api/yii/teacher-env/index',
     method: 'GET'
   },
-  // courseData:{
-  //   url: '/api/yii/teacher-env/course-data',
-  //   method: 'POST'
-  // },
   courseData:{
+    url: '/api/yii/teacher-env/course-data',
+    method: 'POST'
+  },
+  pointErrorRate:{
     url: '/api/course/teaching-quality/courses/{courseId}/error-rate',
     method: 'GET'
   },
@@ -17,10 +17,12 @@ export default {
   //   method: 'GET'
   // },
   // updateReadStatusApi:{url:"/api/operate/operates/handle",method:"POST",dataType: 'json'}
+
 }
 export interface ITeacherHome{
   courseList: TFHttpSend
   courseData: TFHttpSend
+  pointErrorRate:TFHttpSend
   // getHelpFinfoApi:TFHttpSend
   // updateReadStatusApi:TFHttpSend
 }
