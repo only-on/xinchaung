@@ -79,7 +79,7 @@ watch(
     if (val && val.is_open===0 && isSetting &&opType!=='help'&&role===4) {
       // navData.shift()
       isShowGuide.value = false
-    } 
+    }
     if (Number(experType) === 4) {
       navData.shift()
     }
@@ -98,7 +98,7 @@ const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
 const contentModal = ref(false)  // 报告modal
 const visible = ref(false)  // 报告modal
 function open(key?: string) {
-  // 视频文档 
+  // 视频文档
   if (key === 'guide' && (Number(experType) === 6 || Number(experType) === 7)) {
     contentShow.value = false
     leftWidth.value = 45;
@@ -172,6 +172,7 @@ function open(key?: string) {
     word-break: break-all;
     white-space: normal;
     position: relative;
+    width: calc(100% - 45px);
     .shouqi {
       height: 159px;
       width: 10px;
