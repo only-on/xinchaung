@@ -25,13 +25,13 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive, ref, onMounted, inject } from "vue";
+import { reactive, ref, onMounted, inject, WritableComputedRef, computed } from "vue";
 import layout from "../VmLayout/newLayout.vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
 import storage from "src/utils/extStorage";
 import { getVmBaseInfo, TopType, TStudyType } from "src/utils/vncInspect";
 import PdfVue from "src/components/pdf/pdf.vue";
-import { message } from "ant-design-vue";
+import { message, Modal } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import {
@@ -45,8 +45,12 @@ import {
   runCodeApi,
   createTopoApi,
 } from "src/utils/webideInspect";
+import {IWmc} from "src/typings/wmc";
+import { useStore } from "vuex";
+import { wsConnect } from "src/request/websocket";
 const http = (request as any).teacherExperimentResourcePool;
 const env = process.env.NODE_ENV == "development" ? true : false;
+const store = useStore();
 
 type TvmQuery = {
   opType: TopType;
@@ -68,6 +72,7 @@ let {
   taskId, // 实验id
   type, // 是实验还是课程
   experType,
+  connection_id,
 }: TvmQuery = vmQuery;
 
 const baseInfo: any = inject("baseInfo", ref({}));
@@ -84,6 +89,7 @@ const navData = [
 onMounted(async () => {
   await createTopo()
   await getVmBase();
+  initWs()
 });
 // 创建实例
 function createTopo() {
@@ -98,7 +104,7 @@ function createTopo() {
     createTopoApi(params)
       .then((res:any) => {
         console.log(res);
-        // connection_id = res?.data.connection_id;
+        connection_id = res?.data.connection_id;
         // topoinst_id = res?.data.topoinst_id;
         resolve(res?.data);
       })
@@ -142,6 +148,72 @@ function getVmBase() {
     });
   });
 }
+
+let isCurrentPage = true;  // 是否是当前页面
+let timerout:NodeJS.Timeout|null=null
+let ws: WritableComputedRef<IWmc> = computed({
+  get: () => {
+    return store.state.longWs
+  },
+  set: val => {
+    store.commit("setLongWs",val)
+  }
+})
+// 连接ws
+function initWs() {
+  clearTimeout(Number(timerout));
+  ws.value = wsConnect({
+    url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
+    open: () => {
+      // if (baseInfo.value && baseInfo.value?.current) {
+      //   ws.value.join(topoinst_id + "_room");
+      // }
+      // if (opType == "help") {
+      //   ws.value.join(topoinst_id + "_room");
+      // }
+    },
+    close: (ev: CloseEvent) => {
+      if (ev.type === "close") {
+            if (isCurrentPage) {
+              if (ws.value.isReset()) {
+                Modal.confirm({
+                  title: "提示",
+                  content: "该页面已在其他浏览器存在，是否替换",
+                  okText: "是",
+                  cancelText: "否",
+                  class: "reset-ws-modal",
+                  onOk: () => {
+                    ws.value.refresh();
+                    initWs();
+                  },
+                });
+              } else {
+                timerout = setTimeout(() => {
+                  initWs();
+                }, 300);
+              }
+            }
+            // message.success("ws关闭成功");
+          }
+    },
+    message: (ev: MessageEvent) => {
+      let regex = /\{.*?\}/g;
+      if (typeof ev.data === "string" && regex.test(ev.data)) {
+        let wsJsonData = JSON.parse(ev.data);
+        console.log(wsJsonData)
+      }
+    },
+  });
+}
+// 关闭ws
+function closeWs() {
+  (ws.value as any)?.close();
+}
+onBeforeRouteLeave(() => {
+  isCurrentPage = false;
+  clearTimeout(Number(timerout));
+  closeWs();
+});
 
 // 返回
 function black() {
