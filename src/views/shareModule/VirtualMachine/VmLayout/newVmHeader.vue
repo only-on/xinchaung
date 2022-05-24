@@ -322,7 +322,7 @@
                     : 'error-answer'
                 "
               >
-                {{ item.question }}<i class="score">(({{ item.score }}分)</i>
+                {{ item.question }}<i class="score">({{ item.score }}分)</i>
               </div>
               <a-checkbox-group
                 class="question-options-wrap"
@@ -533,7 +533,7 @@ const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测�
 const answerNum = computed(() => {
   let num = 0;
   oldQuizPaperList.value.forEach((item: any) => {
-    if (item.student_answer) {
+    if (item.student_answer&&item.student_answer.length) {
       num++;
     }
   });
@@ -664,6 +664,7 @@ async function getQuestionList(needs_answer: boolean = false) {
   return vmApi
     .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
     .then((res: any) => {
+      if (!res) return
       oldQuizPaperList.value = res.data;
       return res.data;
     });
@@ -1309,11 +1310,11 @@ async function openQuizModal() {
     currentQuestionIds = [];
     let tempData: any[] = cloneDeep(oldQuizPaperList.value);
     tempData = tempData.filter((item: any) => {
-      return !item.student_answer;
+      return !item.student_answer || !(item.student_answer &&item.student_answer.length);
     });
     for (let i = 0; i < tempData.length; i++) {
       currentQuestionIds.push(tempData[i].id);
-      if (!tempData[i].student_answer) {
+      if (!tempData[i].student_answer || !(tempData[i].student_answer &&tempData[i].student_answer.length)) {
         tempData[i].student_answer = [];
       }
     }
