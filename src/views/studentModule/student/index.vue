@@ -32,13 +32,17 @@
       <div class="box-right">
         <div class="right-f1 f1">
           <div class="right-f1-left">
-            <div class="top-title">教师综合评价</div>
+            <div class="top-title">综合评价</div>
             <div class="evaluate">
               <img src="src/assets/images/excellent-no.png" />
             </div>
           </div>
           <div class="right-f1-img">
-            <img src="src/assets/images/evaluate-no.png" />
+            <img v-if="state.staticInfo.avgRank=='差'" src="src/assets/images/unqualified.png">
+            <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/qualified.png">
+            <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/good.png">
+            <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/excellent.png">
+            <img v-if="state.staticInfo.avgRank==''" src="src/assets/images/evaluate-no.png" />
           </div>
         </div>
         <div class="right-f2 f2">
