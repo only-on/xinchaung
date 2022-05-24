@@ -555,6 +555,8 @@ const ProcessingData=(data:any)=>{
           i.name=i.file_name
           if(props.Editable !== 'readOnly' && obj[i.type]){
             v.list.push(i)
+          }else{
+            v.orderNuumber=0
           }
         }):''
         v.contents.length?v.contents.forEach((i:any)=>{
