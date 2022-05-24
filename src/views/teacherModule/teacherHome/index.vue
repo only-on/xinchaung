@@ -228,7 +228,8 @@ export default defineComponent({
         reset();
         return;
       }
-      http.courseData({ param: { course_id: courseId } }).then((res: IBusinessResp) => {
+      // http.courseData({ param: { course_id: courseId } }).then((res: IBusinessResp) => {
+      http.courseData({urlParams: { courseId:courseId } }).then((res: IBusinessResp) => {
         if (res && res.data) {
           let result = res.data;
           echartData.value = res.data;

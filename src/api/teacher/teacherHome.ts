@@ -4,9 +4,13 @@ export default {
     url: '/api/yii/teacher-env/index',
     method: 'GET'
   },
+  // courseData:{
+  //   url: '/api/yii/teacher-env/course-data',
+  //   method: 'POST'
+  // },
   courseData:{
-    url: '/api/yii/teacher-env/course-data',
-    method: 'POST'
+    url: '/api/course/teaching-quality/courses/{courseId}/error-rate',
+    method: 'GET'
   },
   // getHelpFinfoApi:{
   //   url: '/api/operate/teacherResults/questions',
