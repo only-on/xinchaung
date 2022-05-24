@@ -41,9 +41,9 @@
       <!-- centeredSlides -->
       <swiper
         :modules="modules"
-        navigation
+        :navigation="courseSwitchData.length > 4 ? true : false"
         :centerInsufficientSlides="true"
-        :loop="courseSwitchData.length > 3 ? true : false"
+        :loop="courseSwitchData.length > 4 ? true : false"
         watchSlidesProgress
         :slides-per-view="4"
         :space-between="30"
@@ -257,15 +257,24 @@ function handleCombData(sankey_error_rate: any) {
   let contentsNameArr:any[] = [];
   let colorList = ["#FF9544", "#FFBF50", "#33D0DB", "#748ADE", "#A782F3"]
   sankey_error_rate.contents.forEach((item: any) => {
-    if (!contentsIdArr.includes(item.content_id) && !contentsNameArr.includes(item.name)) {
+    if (!contentsIdArr.includes(item.content_id)) {
+      let repeatCount = 0
+      contentsNameArr.push(item.name);
+      contentsIdArr.push(item.content_id);
+      contentsNameArr.forEach((nameItem:any) => {
+        if (item.name === nameItem) {
+          repeatCount++
+        }
+      })
+      if (repeatCount > 1) {
+        item.name = item.name+'-'+ (repeatCount -1)
+      }
       fourChart.combData.data.push({ 
         name: item.name,
         label: {
           position: 'left'
         }
       });
-      contentsIdArr.push(item.content_id);
-      contentsNameArr.push(item.name);
     }
   });
   let knowNameArr:any = []
@@ -275,15 +284,13 @@ function handleCombData(sankey_error_rate: any) {
     if (contentsNameArr.includes(item.knowledge_map_name)) {
       item.knowledge_map_name += ' '
     }
-    if (knowNameArr.includes(item.knowledge_map_name)) {
-      knowNameArr.forEach((nameItem:any) => {
-        if (item.knowledge_map_name === nameItem) {
-          repeatCount++
-        }
-      })
-      if (repeatCount > 1) {
-        item.knowledge_map_name = item.knowledge_map_name+'-'+ (repeatCount -1)
+    knowNameArr.forEach((nameItem:any) => {
+      if (item.knowledge_map_name === nameItem) {
+        repeatCount++
       }
+    })
+    if (repeatCount > 1) {
+      item.knowledge_map_name = item.knowledge_map_name+'-'+ (repeatCount -1)
     }
     fourChart.combData.data.push({ 
       name: item.knowledge_map_name,

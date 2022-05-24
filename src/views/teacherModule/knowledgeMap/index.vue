@@ -5,15 +5,14 @@
       <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
     <div class="right setScrollbar">
-      <div class="title">所选知识点相关内容链接</div>
-      <ul>
-        <template v-if="contentList.length > 0">
-          <li v-for="(item,index) in contentList" :key="index" @click="router.push(item.task_url)" :title="item.task_name">{{item.task_name}}</li>
-        </template>
-        <template v-if="contentList.length === 0 && isShow">
-          <li class="nodata">该知识点无关联实验！</li>
-        </template>
+      <div class="title">
+        <span><i class="iconfont icon-lianjie"></i></span>
+        <span>所选知识点相关内容链接</span>
+      </div>
+      <ul v-if="contentList.length > 0">
+          <li v-for="(item,index) in contentList" :key="index" @click="router.push(item.task_url)" :title="item.task_name">{{item.task_name}}</li>      
       </ul>
+      <div class="noData"><span>该知识点无关联实验！</span></div>
     </div>
     <!-- 菜单 -->
     <div id="menu" v-show="showMenu">
@@ -275,7 +274,6 @@ export default defineComponent({
 <style lang="less" scoped>
 .knowledgeMap{
   min-height:750px;
-  width: 1300px;
   margin: 0 auto;
   display: flex;
   .left{
@@ -308,14 +306,29 @@ export default defineComponent({
   }
   .right{
     width: 280px;
-    background: #f0f5ff;
+    background: #FCFCFC;
     overflow: auto;
     .title{
-      padding-left: 18px;
+      padding: 0 20px;
       line-height: 56px;
-      background: var(--primary-color);
-      color: var(--white-100);
-      font-size: 18px;
+      background: rgba(255,202,161,0.06);
+      color: #31394D;
+      font-size: 16px;
+      display: flex;
+      align-items:center;
+      justify-content: center;
+      >span:first-child{
+        display: inline-block;
+        width: 34px;
+        height: 34px;
+        background: #FEF7DF;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--primary-color);
+        margin-right: 10px;
+      }
     }
     ul{
       padding: 0 18px;
@@ -338,6 +351,18 @@ export default defineComponent({
       cursor: pointer;
       text-align: center;
       color: var(--primary-color);
+    }
+    .noData{
+      height: 240px;
+      background: url(src/assets/images/admin/teachingResource/noData.png) no-repeat center  76%;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      color: var(--primary-color);
+      font-size: 16px;
+      span{
+        margin-left: 25px;
+      }
     }
   }
   #menu{

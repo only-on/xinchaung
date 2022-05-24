@@ -244,9 +244,11 @@
   --primary-3: var(--purpleblue-3);
   --primary-2: var(--purpleblue-2);
   --primary-1: var(--orangeyellow-1);
+  --theme-color:#192843;
 
   --primary-atn-hover: var(--blue-5);
 
-  --text-color: var(var(--black-85));
+  --text-color: var(--black-85);
   --border-color-base: hsv(0, 0, 85%);
+
 }

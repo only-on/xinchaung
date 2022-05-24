@@ -12,23 +12,26 @@
         <div class="upload-logo-box">
           <div class="upload-logo">
               <a-upload
+                v-model:file-list="fileList"
                 name="avatar"
                 list-type="picture-card"
                 class="avatar-uploader login-logo"
+                action=""
                 :show-upload-list="false"
                 :beforeUpload="logUploadBefore"
                 accept='.jpg,.png'
+                @change="handleChange"
               >
                 <div 
                 class="login_logo_bg" 
                 :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`"></div>
-                <div>
-                  <span class="icon-huigun iconfont"></span>
+                <div class="mask">
+                  <span class="icon-zhongzhi iconfont"></span>
                 </div>
               </a-upload>
           </div>
           <div class="logo-size">60x60px</div>
-          <div class="logo-hint">支持小于10k的png文件</div>
+          <div class="logo-hint">支持小于20K的png文件</div>
         </div>
       </div>
       <div class="themeStyle">
@@ -40,7 +43,7 @@
         <chooseStyle titleInfo='尺寸1920X1080px' type='img' :data='imgdata'></chooseStyle>
       </div>
       <div class="bottomBtn">
-        <a-button type='primary'>保存</a-button>
+        <a-button type='primary' @click="handleSave">保存</a-button>
         <a-button type='primary' class="brightBtn">设置初始化</a-button>
       </div>
     </div>
@@ -74,11 +77,43 @@
     const systemBaseInfo:any=reactive({
       login_logo:''
     })
-    function logUploadBefore(){
-
+    const fileList = ref<any>()
+    function logUploadBefore(file:any){
+      return new Promise((resolve, reject) => {
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+          // message.warn('支持格式为jpg、png!');
+          return false
+        }
+        let reader = new FileReader()
+        reader.readAsDataURL(file)
+        reader.onload= ()=>{
+          const image=new Image()
+          image.src= reader.result as string
+          image.onload=()=>{
+            let w=image.width
+            let h=image.height
+            if (w > 60 || h > 60) {
+            //  message.warn('图片尺寸不能超过60*60px')
+              return false
+            } else {
+              resolve(true);
+            }
+          }
+        }
+      })
     }
-    function iconUploadBefore(){
-
+    function handleChange (info:any) {
+      let fileArr = info.fileList
+      if (info.file.status === 'done') {
+        const { response } = info.file;
+        if (response.code === 1) {
+        }
+        fileList.value = fileArr
+      }
+    }
+    function handleSave () {
+      document.getElementsByTagName('body')[0].style.setProperty('--theme-color', '#659bfe')
     }
 </script>
 <style lang="less" scoped>
@@ -86,44 +121,61 @@
   width:100%;
 }
   .upload-logo-box {
-          .logo-size{
-            color: rgba(0, 0, 0, 0.25);
-          }
-          .logo-hint {
-            font-size: 12px;
-            color: rgba(0, 0, 0, 0.25);
-            width: 140px;
-            border-top: 1px dashed rgba(0, 0, 0, 0.25);
-            margin-top: 10px;
-            padding-top: 10px;
-          }
-          .login_logo_bg{
-            width: 16px;
-            height: 16px;
-            background-repeat: no-repeat;
-            background-size: 100% 100%;
-          }  
-        }
-        .tit{
-            font-size: 16px;
-          }
-        .themeStyle{
-          margin-bottom: 20px;
-          margin-top: 20px;
-        }
-        .bottomBtn{
-          width: 100%;
-          display: flex;
-          margin-top: 40px;
-          justify-content:center;
-        }
-        .brightBtn{
-          margin-left: 10px;
-        }
-        :deep(.ant-upload.ant-upload-select-picture-card){
-        width: 60px;
-        height: 60px;
-        margin-right: 0px;
-        margin-bottom: 0px;
-       }
+    margin-top: 20px;
+    .logo-size{
+      font-size: 12px;
+      color: #808294;
+      padding: 5px 10px 10px;
+    }
+    .logo-hint {
+      font-size: 12px;
+      color: #808294;
+      width: 240px;
+      border-top: 1px dashed rgba(0, 0, 0, 0.25);
+      padding-top: 6px;
+    }
+    .login_logo_bg{
+      width: 16px;
+      height: 16px;
+      background-repeat: no-repeat;
+      background-size: 100% 100%;
+    }  
+  }
+  .tit{
+      font-size: 16px;
+    }
+  .themeStyle{
+    margin-bottom: 20px;
+    margin-top: 20px;
+  }
+  .bottomBtn{
+    width: 100%;
+    display: flex;
+    margin-top: 40px;
+    justify-content:center;
+  }
+  .brightBtn{
+    margin-left: 10px;
+  }
+  :deep(.ant-upload.ant-upload-select-picture-card){
+    width: 60px;
+    height: 60px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    border-radius: 4px;
+    position: relative;
+    .mask{
+      position: absolute;
+      left: 0;
+      right: 0;
+      top:0;
+      bottom: 0;
+      background: var(--black-65);
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--white-100);
+    }
+  }
 </style>

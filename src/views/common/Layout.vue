@@ -101,7 +101,7 @@ export default defineComponent({
     height: 100%;
     overflow: hidden;
     .header {
-      background: #192843;
+      background: var( --theme-color);
     }
   }
   .main-box {
