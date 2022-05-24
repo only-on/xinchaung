@@ -3,6 +3,11 @@ import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import viteRawPlugin from "vite-raw-plugin";
+const proxyTarget={
+  130:'http://192.168.101.130',
+  221:'http://192.168.101.221:84',
+  222:'http://192.168.101.222:84',
+}
 export default defineConfig({
   base: "./",
   plugins: [
@@ -30,44 +35,45 @@ export default defineConfig({
   server: {
     proxy: {
       "/proxyPrefix": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[222],
+        target: proxyTarget[221],
         // target: "http://xinchuang.local/",
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/proxyPrefix/, ""),
       },
       "/api": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[130]",
+        target: proxyTarget[221],
+        // target: proxyTarget[222],
         changeOrigin: true,
       },
       // "/report": {
-      //   // target: "http://192.168.101.130",
-      //   target: "http://192.168.101.221:84",
+      //   // target: proxyTarget[130]",
+      //   target: proxyTarget[221],
       //   changeOrigin: true,
       // },
       "/timetable": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[130]",
+        target: proxyTarget[221],
         changeOrigin: true,
       },    
       "/dmc": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[130]",
+        target: proxyTarget[221],
         changeOrigin: true,
       },
       "/uploadfiles": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[130]",
+        target: proxyTarget[221],
         changeOrigin: true,
       },
       "/professor": {
-        // target: "http://192.168.101.130",
-        target: "http://192.168.101.221:84",
+        // target: proxyTarget[130]",
+        target: proxyTarget[221],
         changeOrigin: true,
       },        
       "/knowledge-map1": {
-        target: "http://192.168.101.130",
+        target: proxyTarget[130],
         changeOrigin: true,
       },
       '/ws': {
