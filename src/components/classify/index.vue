@@ -81,6 +81,7 @@ defineExpose({
   color: var(--black-65);
   margin-bottom: 18px;
   display: flex;
+  align-items: center;
   .title {
     // margin-right: 16px;
     width: 80px;

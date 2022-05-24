@@ -262,7 +262,7 @@
         </div>
       </div>
       <div v-if="formState.document.videoUrl" class="video-box">
-      <video :src="formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video>
+      <video :src="formState.document.videoUrl" :controls="true" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
         <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
         <!-- <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
           您的浏览器不支持 video 标签
@@ -360,6 +360,7 @@ import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
 import LabelList from 'src/components/LabelList.vue'
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 import {
   defineComponent,
   ref,

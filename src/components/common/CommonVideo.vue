@@ -1,6 +1,7 @@
 <script lang="tsx">
 import { defineComponent, ref } from "@vue/runtime-core";
-import videoCover from "src/assets/images/common/video-cover.jpg";
+// import videoCover from "src/assets/images/common/video-cover.jpg";
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 export default defineComponent({
   name: "CommonVideo",
   setup() {

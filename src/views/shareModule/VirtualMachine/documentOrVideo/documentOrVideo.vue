@@ -4,6 +4,7 @@
       <div style="height: 100%;" v-if="baseInfo.base_info&&baseInfo.base_info.files&&baseInfo.base_info.files.length || baseInfo.base_info&&baseInfo.base_info.guide">
       <div class="video-wrap" v-if="taskType == 6">
         <video
+          :poster="videoCover"
           style="width: 100%; height: 650px"
           controls="true"
           v-if="baseInfo.base_info.files.length"
@@ -34,6 +35,7 @@ import PdfVue from "src/components/pdf/pdf.vue";
 import { message, Modal } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 import {
   getTaskInfo,
   getVersionList,

@@ -12,6 +12,7 @@
     <div class="code-wrap">
       <div class="video-template">
         <video
+          :poster="videoCover"
           :src="url"
           :controls="true"
           class="video-js vjs-big-play-centered vjs-fluid"
@@ -33,7 +34,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
-
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 // props传值
 const props = defineProps({
   visible: {

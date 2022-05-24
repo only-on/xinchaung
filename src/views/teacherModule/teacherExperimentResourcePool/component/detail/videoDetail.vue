@@ -14,6 +14,7 @@
   </div>
   <div class="experiment-content">
     <video
+      :poster="videoCover"
       style="width: 100%; height: 650px"
       controls="true"
       :src="fileInfo.tusdVideoUrl"
@@ -39,6 +40,7 @@
 
 <script lang="ts" setup>
 import { ref, inject, reactive, PropType } from "vue";
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 import { MessageApi } from "ant-design-vue/lib/message";
 import selectFile from "src/components/selectFile/selectFile.vue";
 import uploadFileModal from "./../uploadFileModal.vue";

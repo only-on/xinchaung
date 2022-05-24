@@ -1,6 +1,7 @@
 <template>
   <div class="content">
     <video
+      :poster="videoCover"
       :src="videoUrl"
       :controls="true"
       webkit-playsinline="true"
@@ -12,6 +13,7 @@
   </div>
 </template>
 <script lang="ts">
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 import { defineComponent, reactive, toRefs, watch } from "vue";
 interface Istate {
   videoUrl: string;
@@ -33,7 +35,7 @@ export default defineComponent({
       },
       { immediate: true, deep: true }
     );
-    return { ...toRefs(state) };
+    return { ...toRefs(state),videoCover };
   },
 });
 </script>

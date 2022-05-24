@@ -57,6 +57,7 @@
   </div>
   <div v-else-if="allInfo && allInfo.base_info.guide && Number(taskType) === 6">
     <video
+      :poster="videoCover"
       style="width: 100%; height: 650px"
       controls="true"
       :src="allInfo.base_info.guide"
@@ -73,6 +74,7 @@
 
 <script lang="ts" setup>
 import { defineComponent, ref, inject, onMounted, Ref, watch } from "vue";
+import videoCover from 'src/assets/images/common/videoCover.jpg'
 import markedEditor from "src/components/editor/markedEditor.vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 import { stepAction } from "src/utils/vncInspect";
