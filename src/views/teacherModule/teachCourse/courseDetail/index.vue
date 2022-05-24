@@ -216,7 +216,7 @@ const routeQuery = useRoute().query;
 const { currentTab,courseId, activeTabOrder } = route.query;
 const detailTabs=[
   {name:'课程章节',value:'courseChapter'},
-  {name:'课程实验管理',value:'courseExperiment'},
+  {name:'实验环境管理',value:'courseExperiment'},
   {name:'随堂测试',value:'popQuiz'},
   {name:'成绩评阅',value:'performanceReview'},
   {name:'学情分析',value:'studentAnalysis'},

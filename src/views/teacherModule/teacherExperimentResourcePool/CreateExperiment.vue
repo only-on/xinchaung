@@ -589,7 +589,11 @@ function create() {
       return
     }
     if(createTypeNumber === 3 && TaskLIst.length !== 0){
-      // checkTask(TaskLIst)
+      let flage=checkTask(TaskLIst)
+      console.log(flage);
+      if(!flage){
+        return
+      }
       // message.warning('请选择实验指导')
       // return
     }
@@ -629,26 +633,25 @@ function create() {
 }
 const checkTask=(list:any)=>{
   let obj={name:'任务名称',description:'任务描述',detail:'任务步骤'}
-  // list.forEach((v:any,k:number)=>{
-  //   Object.keys(obj).forEach((key:string)=>{
-  //     if(!v[key]){
-  //       let str=`请输入任务${k+1}的${obj[key]}`
-  //       message.warning(str)
-  //       return
-  //     }
-  //   })
-  //   // const {name,description,detail}=v
-
-  // })
+  let obj2={0:'一',1:'二',2:'三'}
+  let flage=true
   Object.keys(obj).forEach((key:string)=>{
     list.forEach((v:any,k:number)=>{
       if(!v[key]){
-        let str=`请输入任务${k+1}的${obj[key]}`
+        let str=`请输入任务${obj2[k]}的${obj[key]}`
         message.warning(str)
+        flage=false
+        return
+      }
+      if(!flage){
         return
       }
     })
+    if(!flage){
+      return
+    }
   })
+  return flage
 }
 // 取消
 function cancel() {
