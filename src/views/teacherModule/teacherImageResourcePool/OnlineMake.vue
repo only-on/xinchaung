@@ -39,7 +39,7 @@
               <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
               <div class="name">数据集</div>
               <div class="miaoshu single_ellipsis flexCenter">
-                <div class="one">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
+                <div class="one single_ellipsis">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>
@@ -395,6 +395,9 @@ async function init() {
           justify-content: space-between;
           padding-right: 4px;
           cursor: pointer;
+          .one{
+            width:80%;
+          }
           .more{
             .icon-chakangengduo{
               font-size: 26px;
