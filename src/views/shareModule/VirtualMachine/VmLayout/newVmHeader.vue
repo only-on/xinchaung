@@ -56,7 +56,7 @@
         class="vnc-change pointer"
         :class="loading ? 'none-event' : ''"
         @click="showChange"
-        v-if="baseInfo?.base_info?.is_webssh === 1"
+        v-if="baseInfo?.base_info?.is_webssh === 1 && roleArry.includes('switchSSH')"
       >
         切换为{{ currentInterface === "ssh" ? "VNC" : "SSH" }}
       </div>
@@ -643,10 +643,10 @@ const toolData = [
 ];
 const toolList = toolData;
 
-const roleArry: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
+const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
-
+const roleArry: any = ref(roleArry1)
 // 获取随堂测试习题.
 async function getQuestionList(needs_answer: boolean = false) {
   let param = {
@@ -740,11 +740,14 @@ function delayedTime() {
 }
 
 // 切换webssh、vnc
-function showChange() {
+async function showChange() {
   // currentvm.value=baseInfo.value.data.vms[vmCurrentIndex.value]
   let cureentIp = location.protocol+"//"+location.hostname
   loading.value=false
   if (currentInterface.value==="vnc") {
+    if (isScreenRecording.value) {
+      await startEndRecord();
+    }
     currentInterface.value="ssh"
     sshUrl.value=""
     setTimeout(()=>{
@@ -768,6 +771,19 @@ function showChange() {
   }
 }
 
+watch(
+  () => currentInterface.value,
+  (val) => {
+    if (experType === 1 || experType === 2) {
+      const roleArry1 = ["recommend", "test", "help"].includes(opType as any)
+        ? (getMenuRole(role as any, val as any, opType as any) as any)
+        : (getMenuRole(role as any, val as any) as any);
+      roleArry.value = roleArry1
+    }
+  },
+  { deep: true, immediate: true }
+);
+
 // 结束实验
 function finishExperiment() {
   let modal = Modal.confirm({
@@ -779,6 +795,7 @@ function finishExperiment() {
       //   router.go(historyLength - history.length - 1);
       //   return;
       // }
+      // Modal.confirm()
       await finishTest();
       modal.destroy();
     },
@@ -1361,13 +1378,16 @@ function getKeyword(val: any) {
   return keywords.join(" , ");
 }
 let questionTimer: NodeJS.Timer | null = null;
+
+const delayNum = ref(0)
 // f
 watch(
   () => baseInfo.value,
   () => {
-    if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
+    if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
       times();
     }
+    delayNum.value = baseInfo.value?.current?.delay_num
   },
   { deep: true, immediate: true }
 );
@@ -1380,7 +1400,7 @@ onMounted(() => {
   // if (roleArry.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
     // times();
   // }
-  if (roleArry.includes('classTest')) {
+  if (roleArry.value.includes('classTest')) {
     getQuestionList(false);
     questionTimer = setInterval(() => {
       getQuestionList(false);

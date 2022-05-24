@@ -27,8 +27,8 @@ const menuRole= {
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
-        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
-        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','record','help','end','tools'],
+        3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
     },
     cmd:{
         4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
@@ -76,10 +76,10 @@ const menuRole= {
             video:['guide','question','end'],
         },
         help: {
-            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            vnc:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','end','tools'],
             cmd:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
-            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
-            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','copy','end','tools'],
+            ssh:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
+            task:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','end','tools'],
             webide:['guide','question','end'],
             jupyter:['guide','question','end'],
             document:['guide','question','end'],
