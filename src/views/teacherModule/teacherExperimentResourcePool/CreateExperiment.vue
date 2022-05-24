@@ -470,10 +470,10 @@ const rules = {
     { required: true, message: "" },
     { validator: reportValidator, trigger: "change" },
   ],
-  selectedKnowledgeList:[
-    { required: true, message: "" },
-    { validator: selectedKnowledgeValidator, trigger: "change" },
-  ],
+  // selectedKnowledgeList:[
+  //   { required: true, message: "" },
+  //   { validator: selectedKnowledgeValidator, trigger: "change" },
+  // ],
   tags:[
     { required: true, message: "" },
     { validator: tagsValidator, trigger: "blur" },
