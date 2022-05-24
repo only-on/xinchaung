@@ -241,6 +241,7 @@
     class="delay-end-modal"
     @cancel="finishTest"
     @ok="delayedTime"
+    :closable="false"
   >
     <div class="hint-delay-info">
       实验时间已到，您可以选择结束实验或通过延时继续进行实验！<span
@@ -248,6 +249,12 @@
         >{{ delayTime }}</span
       >s后自动结束实验！;
     </div>
+    <template #footer>
+      <div class="btns">
+        <a-button @click="finishTest">结束</a-button>
+        <a-button type="primary" v-if="delayNum < 5" @click="delayedTime">延时</a-button>
+      </div>
+    </template>
   </a-modal>
   <!-- 随堂测试 -->
   <a-modal
@@ -727,6 +734,14 @@ async function switchVm() {
 
 // 延时
 function delayedTime() {
+  if (use_time.value > 600) {
+    message.warn('延迟操作只能在剩余时间小于10分钟时执行')
+    return
+  }
+  if (delayNum.value >= 5) {
+    message.warn('延时次数已达5次上限')
+    return
+  }
   clearInterval(Number(timer));
   VmOperatesHandle("delay").then((res: any) => {
     delayVisiable.value = false
@@ -734,6 +749,7 @@ function delayedTime() {
     if (res?.data && res.data.remaining_time) {
       message.success("延时成功");
       use_time.value = res.data.remaining_time;
+      delayNum.value ++
       times();
     } 
   });
@@ -1121,7 +1137,7 @@ function times() {
     if (!taskType.value) {
       use_time.value++;
     } else {
-      if (use_time.value === 600) {
+      if (use_time.value === 600 && delayNum.value < 5) {
         clearInterval(Number(timer));
         Modal.confirm({
           title: "是否延时？",
@@ -1148,6 +1164,7 @@ function times() {
             finishTest();
           }
         }, 1000);
+        return
       }
       if (use_time.value < 0) {
         use_time.value = 0;
@@ -1479,7 +1496,7 @@ i {
         border-radius: 50%;
         background: #ff0000;
         position: absolute;
-        top: 1px;
+        top: 12px;
         right: -6px;
       }
     }
