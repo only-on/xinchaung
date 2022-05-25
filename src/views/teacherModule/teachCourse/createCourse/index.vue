@@ -244,6 +244,7 @@ const multiplexingCourse=(val:number)=>{
       }).catch((err:any)=>{
         stup1Loading.value=false
       })
+    return  
   }
   currentStep.value=val
 }
