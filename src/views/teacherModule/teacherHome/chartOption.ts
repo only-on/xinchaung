@@ -48,7 +48,7 @@ export const pieOptions = (data: IpieData) => {
 export const radarOptions = (data: any) => {
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
-  var assmax = Math.max.apply(null, datas) * 1.2;
+  var assmax = Math.max.apply(null, datas);
   var indicator = assmax === 0 ? [
     { name: '未完成', min: assmax },
     { name: 'D', min: assmax },
@@ -56,7 +56,7 @@ export const radarOptions = (data: any) => {
     { name: 'B', min: assmax },
     { name: 'A', min: assmax }]
     : [
-      { name: '未完成', max: assmax },
+      { name: '未完成', max:assmax},
       { name: 'D', max: assmax },
       { name: 'C', max: assmax },
       { name: 'B', max: assmax },
@@ -90,7 +90,8 @@ export const radarOptions = (data: any) => {
       },
       axisTick: {
         length: 1
-      }
+      },
+      nameGap:20,
     },
     series: [{
       type: 'radar',
