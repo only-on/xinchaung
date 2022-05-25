@@ -409,7 +409,6 @@
       :remove="remove"
       :multiple="true"
       :fileList="uploadFile.fileList"
-      :accept="'.'"
       class="upload"
     >
       <p class="ant-upload-drag-icon">

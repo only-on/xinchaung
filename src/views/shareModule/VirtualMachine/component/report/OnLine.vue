@@ -3,6 +3,7 @@
     class="report-template-data"
     v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
   >
+    <div class="template-name">{{reportTemplateData.filename.split('.')[0]}}</div>
     <table style="width: 100%" id="onlineReportTableEditable">
       <template
         v-for="(item, index) in reportTemplateData.json_content"
@@ -114,11 +115,11 @@
           </td>
           <td class="" colspan="5">
             <div>
-              <antdv-markdown
+              <marked-editor
                 v-if="reportTemplateData.can_student_update"
                 v-model="item.fields[1].value"
               />
-              <antdv-markdown
+              <marked-editor
                 v-else
                 :preview-only="true"
                 v-model="item.fields[1].value"
@@ -137,11 +138,11 @@
           </td>
           <td class="editable-markdown" colspan="6">
             <div>
-              <antdv-markdown
+              <marked-editor
                 v-if="reportTemplateData.can_student_update"
                 v-model="item.fields[1].value"
               />
-              <antdv-markdown
+              <marked-editor
                 v-else
                 :preview-only="true"
                 v-model="item.fields[1].value"
@@ -156,9 +157,10 @@
 
 <script lang="ts">
 import { defineComponent, inject } from "vue";
+import markedEditor from "src/components/editor/markedEditor.vue";
 
 export default defineComponent({
-  components: {  },
+  components: { markedEditor },
   setup() {
     const reportTemplateData:any = inject("reportTemplateData");
     return {
@@ -170,6 +172,11 @@ export default defineComponent({
 
 <style lang="less">
 .report-template-data {
+  .template-name {
+    margin-bottom: 24px;
+    text-align: center;
+    font-size: 16px;
+  }
   .mark__body .mark__editor {
     min-width: auto;
   }
