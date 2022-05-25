@@ -17,9 +17,9 @@
   </div>
   <div class="leftContent" v-if="contentShow">
     <guide v-if="lastKey == 'guide'"></guide>
-    <note v-if="lastKey == 'note'"></note>
+    <note v-else-if="lastKey == 'note'"></note>
     <!-- <report v-if="lastKey == 'report'"></report> -->
-    <questionsAndAnswers v-if="lastKey == 'question'"></questionsAndAnswers>
+    <questionsAndAnswers v-else-if="lastKey == 'question'"></questionsAndAnswers>
     <create-post></create-post>
     <div class="shouqi pointer" @click="open()"></div>
   </div>
@@ -79,7 +79,7 @@ watch(
     if (val && val.is_open===0 && isSetting &&opType!=='help'&&role===4) {
       // navData.shift()
       isShowGuide.value = false
-    }
+    } 
     if (Number(experType) === 4) {
       navData.shift()
     }
@@ -98,7 +98,7 @@ const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
 const contentModal = ref(false)  // 报告modal
 const visible = ref(false)  // 报告modal
 function open(key?: string) {
-  // 视频文档
+  // 视频文档 
   if (key === 'guide' && (Number(experType) === 6 || Number(experType) === 7)) {
     contentShow.value = false
     leftWidth.value = 45;

@@ -27,7 +27,7 @@
         :disabled="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务描述" name="detail" required>
+    <a-form-item label="任务描述" name="summary" required>
       <div class="form-upload" v-if="!props.preview">
         <a-upload
           name="file"
@@ -42,11 +42,11 @@
         </a-upload>
       </div>
       <marked-editor
-        v-model="props.taskList.detail"
+        v-model="props.taskList.summary"
         :preview="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务步骤" name="summary" required v-if="props.is_show_task_step">
+    <a-form-item label="任务步骤" name="detail" required v-if="props.is_show_task_step">
       <div class="form-switch">
         状态
         <a-switch
@@ -68,7 +68,7 @@
         </a-upload>
       </div>
       <marked-editor
-        v-model="props.taskList.summary"
+        v-model="props.taskList.detail"
         :preview="props.preview"
       />
     </a-form-item>

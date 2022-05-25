@@ -1,29 +1,33 @@
 <template>
-<div v-if="baseInfo.base_info.step.length">
+<div v-if="baseInfo.base_info.step.length" class="vm-task-guide">
   <p class="guide-waraing" v-if="!isLookStep&&currentTask.state&&role===4">
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
+  <div class="current-task-content">
   <div class="task-name single_ellipsis">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
+  <div class="task-content" :class="isLookStep&&currentTask.state || role !== 4 ? 'show-step' : ''">
   <div class="desc-content">
     <div class="title">
       <span>任务描述</span>
       <a-button
         type="primary"
         size="small"
-        v-if="!isLookStep&&currentTask.state"
+        v-if="!isLookStep&&currentTask.state&&role===4"
         @click="lookStep"
         >查看步骤</a-button
       >
     </div>
-    <div class="content" :class="currentTask.state ? 'show-step' : ''">
+    <div class="content">
+      <marked-editor v-model="currentTask.detail" :preview="preview" />
+    </div>
+  </div>
+  <div class="step-content" v-if="isLookStep&&currentTask.state || role !== 4">
+    <div class="title">任务步骤</div>
+    <div class="content">
       <marked-editor v-model="currentTask.summary" :preview="preview" />
     </div>
   </div>
-  <div class="step-content" v-if="isLookStep&&currentTask.state">
-    <div class="title">任务步骤</div>
-    <div class="content" :class="currentTask.state ? 'show-step' : ''">
-      <marked-editor v-model="currentTask.detail" :preview="preview" />
-    </div>
+  </div>
   </div>
   <div class="btns">
     <a-button
@@ -182,6 +186,29 @@ watch(
 </script>
 
 <style lang="less" scoped>
+.vm-task-guide {
+  height: 100%;
+  // display: flex;
+  // flex-direction: column;
+  .current-task-content {
+    // flex: 1;
+    height: calc(100% - 70px);
+    .task-content {
+      height: calc(100% - 29px);
+      .desc-content, .step-content {
+        height: calc(100% - 24px);
+      }
+      &.show-step {
+        .desc-content, .step-content {
+          height: calc(50% - 24px);
+        }
+      }
+      :deep(.markdown-body) {
+        overflow: auto;
+      }
+    }
+  }
+}
 .task-name {
   font-size: var(--font-size-18);
 }
@@ -203,17 +230,20 @@ watch(
     }
   }
   .content {
+    height: calc(100% - 40px);
     padding: 0 4px;
     .demo__container {
-      :deep(.mark__preview) {
-        height: 290px;
-        overflow: auto;
-      }
+      height: 100%;
+      overflow: auto;
+      // :deep(.mark__preview) {
+      //   height: 290px;
+      //   overflow: auto;
+      // }
     }
     &.show-step {
-      :deep(.mark__preview) {
-        height: 130px;
-      }
+      // :deep(.mark__preview) {
+      //   height: 130px;
+      // }
     }
   }
 }

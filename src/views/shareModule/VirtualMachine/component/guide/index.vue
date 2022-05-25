@@ -34,7 +34,7 @@ console.log(taskType.value);
   padding: 16px;
   white-space: break-spaces;
   overflow: auto;
-  height: calc(100% - 23px);
+  height: calc(100% - 68px);
   .train-experimental-guide {
     // height: 100%;
     display: flex;

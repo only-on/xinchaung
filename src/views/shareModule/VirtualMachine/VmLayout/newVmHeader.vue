@@ -242,6 +242,7 @@
     @cancel="finishTest"
     @ok="delayedTime"
     :closable="false"
+    :maskClosable="false"
   >
     <div class="hint-delay-info">
       实验时间已到，您可以选择结束实验或通过延时继续进行实验！<span
