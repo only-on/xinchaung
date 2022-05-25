@@ -15,9 +15,9 @@
       </li>
     </ul>
   </div>
-  <div class="leftContent" v-if="contentShow">
-    <guide v-if="lastKey == 'guide'"></guide>
-    <note v-else-if="lastKey == 'note'"></note>
+  <div class="leftContent">
+    <guide v-show="lastKey == 'guide'"></guide>
+    <note v-if="lastKey == 'note'"></note>
     <!-- <report v-if="lastKey == 'report'"></report> -->
     <questionsAndAnswers v-else-if="lastKey == 'question'"></questionsAndAnswers>
     <create-post></create-post>
@@ -127,7 +127,7 @@ function open(key?: string) {
     if (leftWidth.value == 45) {
       leftWidth.value = 400;
       rightWidth.value = window.innerWidth - leftWidth.value;
-      currentNavKey.value = key;
+      // currentNavKey.value = key;
     } else {
     }
     currentNavKey.value = key;

@@ -1,7 +1,7 @@
 <template>
+<div v-if="allInfo &&allInfo.base_info">
   <div
     v-if="
-      allInfo &&
       allInfo.base_info.is_simple == 0 &&
       steps.length > 0 &&
       taskType === '1'
@@ -40,13 +40,13 @@
     </div>
   </div>
   <div
-    v-else-if="allInfo && allInfo.base_info.guide && Number(taskType) === 1"
+    v-else-if="allInfo.base_info.guide && Number(taskType) === 1"
     class="111"
   >
     <marked-editor v-model="allInfo.base_info.guide" :preview="preview" />
   </div>
   <div
-    v-else-if="allInfo && allInfo.base_info.guide && Number(taskType) === 4"
+    v-else-if="allInfo && allInfo.base_info && allInfo.base_info.guide && Number(taskType) === 4"
     class="juypter-box"
   >
     <iframe
@@ -55,7 +55,7 @@
       style="width: 100%; height: 100%"
     ></iframe>
   </div>
-  <div v-else-if="allInfo && allInfo.base_info.guide && Number(taskType) === 6">
+  <div v-else-if="allInfo.base_info.guide && Number(taskType) === 6">
     <video
       :poster="videoCover"
       style="width: 100%; height: 650px"
@@ -63,13 +63,14 @@
       :src="allInfo.base_info.guide"
     ></video>
   </div>
-  <div v-else-if="allInfo && allInfo.base_info.guide && Number(taskType) === 7">
+  <div v-else-if="allInfo.base_info.guide && Number(taskType) === 7">
     <div v-if="true">
       <marked-editor v-model="allInfo.base_info.guide" :preview="preview" />
     </div>
     <PdfVue :url="allInfo.base_info.guide" v-else />
   </div>
-  <empty v-else> </empty>
+</div>
+<empty v-else> </empty>
 </template>
 
 <script lang="ts" setup>
@@ -108,7 +109,7 @@ const steps: Ref<any> = ref([]); // 所有步骤
 const isLookStatus = ref(0); // 当前步骤能否查看
 const currentStepStatus: any = ref([]); // 当前查看过的所有步骤
 onMounted(() => {
-  console.log(allInfo.value.base_info.step);
+  // console.log(allInfo.value.base_info.step);
   // allInfo.value.current_step=[]
 });
 
