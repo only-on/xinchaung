@@ -81,10 +81,11 @@ defineExpose({
   color: var(--black-65);
   margin-bottom: 18px;
   display: flex;
-  align-items: center;
+  // align-items: center;
   .title {
     // margin-right: 16px;
     width: 80px;
+    line-height: 44px;
   }
   .labelBox{
     flex:1;
