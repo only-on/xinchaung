@@ -30,7 +30,7 @@
     </div>
     <PdfVue :url="activeFile.file_html" v-else />
   </div>
-  <Submit v-if="!preview || !props.detail.content_task_files || !props.detail.content_task_files.length" @submit="onSubmit" @cancel="cancel"></Submit>
+  <Submit v-if="(!preview || !props.detail.content_task_files || !props.detail.content_task_files.length) && role!==2" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -60,6 +60,9 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { readFile } from "src/utils/common";
 import { useRouter, useRoute } from "vue-router";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
 const { currentTab, type }  = route.query

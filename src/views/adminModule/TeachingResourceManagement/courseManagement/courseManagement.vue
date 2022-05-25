@@ -79,8 +79,8 @@
           </div>
         </div>
         <div class="right">
-          <a-button type="primary"> 批量删除 </a-button>
-          <a-button type="primary" class="brightBtn"> 批量清楚录屏 </a-button>
+          <a-button type="primary" @click="BatchDelete()"> 批量删除 </a-button>
+          <a-button type="primary" class="brightBtn" @click="ClearScreen()"> 批量清除录屏 </a-button>
         </div>
       </div>
       <div class="tableContent">
@@ -108,12 +108,14 @@
 </template>
 
 <script lang="ts" setup>
-import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import { useRouter } from "vue-router";
 import StatisticsPie from '../components/StatisticsPie.vue'
+import { Modal, message } from "ant-design-vue";
 const router=useRouter()
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
@@ -221,7 +223,42 @@ const courseStatechange=(val: any)=> {
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
+  console.log(selectedRowKeys);
+  
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+}
+const BatchDelete=()=>{
+  return
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.BatchDelete({urlParams: {courseId:''}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
+}
+// 
+const ClearScreen=()=>{
+  return
+  Modal.confirm({
+    title: "确认清除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "清除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.BatchDelete({urlParams: {courseId:''}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
 }
 const getpercent=(val:number)=>{
   return Math.ceil(val/analysisObj.allCourseCount)
@@ -255,6 +292,7 @@ onMounted(() => {
       height: 180px;
       background-color: var(--white);
       padding: 12px;
+      // width:270px;
     }
     .item2{
       .progressItem{
@@ -332,6 +370,7 @@ onMounted(() => {
           display: flex;
           align-items: center;
           margin-right: 12px;
+           width:270px;
           .ant-select,.ant-input{
             width: 200px;
           }

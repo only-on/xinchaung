@@ -22,7 +22,7 @@
   <div class="experiment-content">
     <iframe v-if="props.detail.content_task_files?.length" :src="props.detail.content_task_files[0].file_html" frameborder="0" style="width:100%;height:100%"></iframe>
     <marked-editor v-else v-model="props.detail.guide" :preview="preview" />
-    <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
+    <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2"></Submit>
   </div>
 </template>
 
@@ -35,7 +35,9 @@ import { readFile } from "src/utils/common";
 import { useRouter, useRoute } from "vue-router";
 import { IBusinessResp } from "src/typings/fetch";
 import request from "src/api/index";
-
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 const router = useRouter();
 const route = useRoute();
 const { currentTab, type }  = route.query
@@ -103,6 +105,7 @@ const cancel = () => {
 }
 .experiment-content {
   margin-top: 16px;
+  height: 700px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }

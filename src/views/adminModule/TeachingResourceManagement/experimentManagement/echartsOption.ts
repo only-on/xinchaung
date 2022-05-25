@@ -189,7 +189,7 @@ function echartsBar(id:any,data:any){
         itemStyle: {
           normal: {
               //这里设置柱形图圆角 [左上角，右上角，右下角，左下角]
-              barBorderRadius:[10, 10, 10, 10]
+              borderRadius:[10, 10, 10, 10]
           }
       }
       }

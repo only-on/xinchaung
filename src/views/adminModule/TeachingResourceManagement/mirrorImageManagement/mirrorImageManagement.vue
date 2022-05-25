@@ -222,6 +222,7 @@ onMounted(() => {
       height: 180px;
       background-color: var(--white);
       padding: 12px;
+      // width:270px;
     }
     .item2{
       width:590px;
@@ -324,6 +325,7 @@ onMounted(() => {
           display: flex;
           align-items: center;
           margin-right: 12px;
+           width:270px;
           .ant-select,.ant-input{
             width: 200px;
           }

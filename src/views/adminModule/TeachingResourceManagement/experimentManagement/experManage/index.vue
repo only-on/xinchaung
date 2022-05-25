@@ -172,7 +172,6 @@ const route = useRoute();
     path: "/teacher/teacherExperimentResourcePool/experimentDetail",
     query: {
       id,
-      currentTab:type,
     },
   });
 };

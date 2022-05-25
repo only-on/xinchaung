@@ -20,7 +20,7 @@
       <task-list :preview="preview" :taskList="v" :index="i" @delet="delet" :is_show_task_step="true"></task-list>
     </div>
   </div>
-  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview"></Submit>
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2"></Submit>
 </template>
 
 <script lang="ts" setup>
@@ -32,6 +32,9 @@ import taskList from "src/views/teacherModule/teacherExperimentResourcePool/comp
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 const $message: MessageApi = inject("$message")!;
 const http = request.teacherExperimentResourcePool;
 const router = useRouter();
