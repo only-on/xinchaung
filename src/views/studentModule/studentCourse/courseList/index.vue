@@ -347,7 +347,7 @@ onMounted(() => {
          padding-bottom: 10px;
           span{
             color: var(--black-45);
-            padding-right: 2rem;
+            width: 80px;
           }
           .user{
               // color: var(--white);
