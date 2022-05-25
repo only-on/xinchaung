@@ -137,6 +137,7 @@ const opening:any=ref(false)
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 const statusList:any=ref([])
+const taskState:any=ref('')
 updata({
   tabs: [{ name: "在线镜像制作台", componenttype: 0 }],
   showContent: true,
@@ -186,7 +187,7 @@ const getWorkbenchStatus=()=>{
       http.getWorkbenchStatusApi().then((res: any) => {
         statusList.value=res.data
         statusList.value.forEach((item:any)=>{
-          if(item.status=='none'){
+          if(item.status=='none'||item.task_state!==null){
             flag.value=true
           }
         })
