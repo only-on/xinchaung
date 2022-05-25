@@ -73,6 +73,7 @@
     import viewTemplateShow from "src/components/report/viewTemplate.vue";
     import { message,Modal } from "ant-design-vue";
     import { useRouter, useRoute } from "vue-router";
+    import {getFileSuffix} from 'src/utils/getFileType'
     import request from "src/api/index";
     const http1 = (request as any).teacherExperimentResourcePool;
     const http = (request as any).TeachingResourceManagement;
@@ -164,9 +165,9 @@ function detail(id:any,type:any,path:any){
     template.pdfUrl=path
   }
 }
-function downLoad(record:any){
-  // const name=`${item.name}.${getFileSuffix(item.word_path)}`
-  // downloadUrl(item.word_path,name)
+function downLoad(item:any){
+  const name=`${item.templateName}.${getFileSuffix(item.wordPath)}`
+  downloadUrl(item.wordPath,name)
 }
   // 删除模板
   function dleDelete(item: any){
