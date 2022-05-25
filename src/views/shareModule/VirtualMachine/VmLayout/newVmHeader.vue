@@ -534,7 +534,7 @@ const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测�
 const answerNum = computed(() => {
   let num = 0;
   oldQuizPaperList.value.forEach((item: any) => {
-    if (item.student_answer&&item.student_answer.length) {
+    if (item.student_answer) {
       num++;
     }
   });
@@ -1140,7 +1140,7 @@ function times() {
       use_time.value++;
     } else {
       if (use_time.value === 600 && delayNum.value < 5) {
-        clearInterval(Number(timer));
+        // clearInterval(Number(timer));
         Modal.confirm({
           title: "是否延时？",
           okText: "确认",
@@ -1311,11 +1311,11 @@ async function openQuizModal() {
     currentQuestionIds = [];
     let tempData: any[] = cloneDeep(oldQuizPaperList.value);
     tempData = tempData.filter((item: any) => {
-      return !item.student_answer || !(item.student_answer &&item.student_answer.length);
+      return !item.student_answer;
     });
     for (let i = 0; i < tempData.length; i++) {
       currentQuestionIds.push(tempData[i].id);
-      if (!tempData[i].student_answer || !(tempData[i].student_answer &&tempData[i].student_answer.length)) {
+      if (!tempData[i].student_answer) {
         tempData[i].student_answer = [];
       }
     }
