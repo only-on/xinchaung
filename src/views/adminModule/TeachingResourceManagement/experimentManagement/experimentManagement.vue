@@ -133,7 +133,7 @@ function experTemplateData(){
 function experData(){
   const param:any={
     'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
-    'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:(experParams.search.contentAttribute==0?0:''),
+    'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:'',
     'search[contentType]':experParams.search.contentType?experParams.search.contentType:'',
     page:experParams.page,
     limit:experParams.limit

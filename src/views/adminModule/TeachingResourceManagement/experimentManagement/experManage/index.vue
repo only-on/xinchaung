@@ -12,7 +12,7 @@
         />
       </div>
       <div class="item custom_input custom_input2">
-        <span style="width:50px">实验类型</span>
+        <span style="width:50px">实验属性</span>
         <!-- <a-input
           style="width:224px"
           v-model:value="ForumSearch.type"
@@ -20,23 +20,26 @@
           @keyup.enter="search()"
         /> -->
           <a-select
+          v-model:value="ForumSearch.attribute"
+          placeholder="请选择实验属性"
+          @change="search()"
+          style="width: 240px; margin-right: 16px"
+        >
+          <a-select-option value="">全部</a-select-option>
+          <a-select-option value="0">私有</a-select-option>
+          <a-select-option value="1">公有</a-select-option>
+        </a-select>
+      </div>
+      <div class="item custom_input custom_input2">
+        <span style="width:50px">实验类型</span>
+        <a-select
           v-model:value="ForumSearch.type"
           placeholder="请选择实验类型"
           @change="search()"
           style="width: 240px; margin-right: 16px"
         >
-          <a-select-option :value="0">私有</a-select-option>
-          <a-select-option :value="1">公有</a-select-option>
+          <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
         </a-select>
-      </div>
-      <div class="item custom_input custom_input2">
-        <span style="width:50px">实验属性</span>
-        <a-input
-          style="width:224px"
-          v-model:value="ForumSearch.attribute"
-          placeholder="请输入搜索关键词"
-          @keyup.enter="search()"
-        />
       </div>
           </div>
       <div class="item">
@@ -83,8 +86,19 @@ import { message,Modal } from "ant-design-vue";
 import { ref, toRefs, onMounted,inject, reactive} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
+const http = (request as any).TeachingResourceManagement;
 const router = useRouter();
 const route = useRoute();
+const allexperTypes:any=ref([
+  {name:'全部',type:''},
+  {name:'桌面实验',type:1},
+  {name:'命令行实验',type:2},
+  {name:'IDE实验',type:3},
+  {name:'Jupyter实验',type:4},
+  {name:'任务制实验',type:5},
+  {name:'视频实验',type:6},
+  {name:'文档实验',type:7},
+])
     const ForumSearch:any=reactive({
     })
     interface Props {
@@ -161,7 +175,13 @@ const route = useRoute();
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
-          emit('updateData',{name:'',page:params.page,type:'',attribute:''})
+          http.experDelete({params:{conent_ids:tableData.selectedRowKeys}}).then((res:any)=>{
+            if(res.code){
+              message.warning('删除成功！')
+              emit('updateData',{name:'',page:params.page,type:'',attribute:''})
+              tableData.selectedRowKeys=[]
+            }
+          })
         }
       })
     }

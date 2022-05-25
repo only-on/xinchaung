@@ -16,6 +16,13 @@ export default{
 
    //在线模版
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
+
+    //实验批量删除
+    experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT'},
+
+    // 实验模版批量删除
+    experTemplateDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT'}
+
 }
 export interface ITeachingResourceManagement{
     imageslist:TFHttpSend
@@ -23,5 +30,7 @@ export interface ITeachingResourceManagement{
     experList:TFHttpSend
     experTemplateList:TFHttpSend
     viewTemplate:TFHttpSend
+    experDelete:TFHttpSend
+    experTemplateDelete:TFHttpSend
 }
 export const MODULE_NAME = 'TeachingResourceManagement'

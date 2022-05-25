@@ -47,7 +47,7 @@
       </div>
     </template>
         <template #action="{record}">
-            <span class="action action-delete">删除</span>
+            <span class="action action-delete" @click="dleDelete(record)">删除</span>
             <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
                 下载
             </span>
@@ -74,6 +74,7 @@
     import { message,Modal } from "ant-design-vue";
     import { useRouter, useRoute } from "vue-router";
     import request from "src/api/index";
+    const http1 = (request as any).teacherExperimentResourcePool;
     const http = (request as any).TeachingResourceManagement;
     const router = useRouter();
     const route = useRoute();
@@ -167,6 +168,22 @@ function downLoad(record:any){
   // const name=`${item.name}.${getFileSuffix(item.word_path)}`
   // downloadUrl(item.word_path,name)
 }
+  // 删除模板
+  function dleDelete(item: any){
+        Modal.confirm({
+          title: "提示",
+          content: "确定删除实验报告模板?删除后不可恢复",
+          okText: "确定",
+          cancelText: "取消",
+          onOk() {
+            http1.deleteTemplate({urlParams: {id: item.id}}).then((res:any) => {
+              message.success(`删除成功！`)
+              // getTemplateList()
+              emit('updateData',{expername:ForumSearch.name,page:params.page})
+            })
+          },
+        });
+    };
 function batchDelete(){
       if(!tableData.selectedRowKeys?.length){
         message.warning('请至少选择一条数据！')
@@ -177,7 +194,14 @@ function batchDelete(){
         content: "确定要删除吗？",
         okText: "确定",
         cancelText: "取消",
-        onOk: () => {}
+        onOk: () => {
+          http.experTemplateDelete({params:{template_ids:tableData.selectedRowKeys}}).then((res:any)=>{
+            if(res.code){
+              emit('updateData',{expername:ForumSearch.name,page:params.page})
+              tableData.selectedRowKeys=[]
+            }
+          })
+        }
       })
     }
 const cancelTemplate = (val: number) => {
