@@ -200,6 +200,8 @@ const allexperTypes:any=ref([
  .search{
      display: flex;
      justify-content: space-between;
+     padding: 20px;
+     padding-top: 0px;
      >div:nth-child(1){
        display: flex;
        >div{
@@ -221,5 +223,6 @@ const allexperTypes:any=ref([
  }
  .detail:hover{
    cursor: pointer;
+   color: var(--primary-color);
  }
 </style>

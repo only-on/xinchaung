@@ -213,6 +213,8 @@ const cancelTemplate = (val: number) => {
  .search{ 
      display: flex;
      justify-content: space-between;
+     padding: 20px;
+     padding-top: 0px;
      >div:nth-child(1){
        display: flex;
        >div{
@@ -230,7 +232,7 @@ const cancelTemplate = (val: number) => {
      color:var(--primary-color);
      cursor: pointer;
     &:hover {
-        color: rgba(var(--primary-color), 0.5);
+      color:var(--primary-color);
     }
  }
  .action-download{

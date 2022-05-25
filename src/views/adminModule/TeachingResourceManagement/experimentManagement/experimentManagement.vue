@@ -215,5 +215,6 @@ onMounted(()=>{
 .tabsTable{
   background-color: var(--white);
   margin-top: 20px;
+  padding: 20px;
 }
 </style>
