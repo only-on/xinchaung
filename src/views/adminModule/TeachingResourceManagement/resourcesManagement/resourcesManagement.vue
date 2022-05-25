@@ -2,7 +2,7 @@
   <div class="resourceManagement">
     <div class="Statistics flexCenter">
       <div class="item">
-        <statistics-pie title="素材资源统计" :data="statisticList"></statistics-pie>
+        <statistics-pie title="素材资源统计" :data="[{ value:analysisObj.teacherImagesCount, name: '私有资源',color:'#00CBC2' }, { value:analysisObj.teacherImagesCount, name: '公开资源',color:'#FF9544' }]"></statistics-pie>
       </div>
       <div class="item item2">
         <h3 class="statisticalTitle">素材类型</h3>
@@ -14,41 +14,6 @@
             </div>
             <div class="type">{{list.name}}</div>
           </div>
-          <!-- <div class="progressItem progressItem2">
-            <div class="text flexCenter">
-              <span class="iconfont icon-docker"></span>
-              <span class="num">{{analysisObj.dockerImagesCount}}</span>
-            </div>
-            <div class="type">Docker</div>
-          </div>
-          <div class="progressItem progressItem3">
-            <div class="text flexCenter">
-              <span class="iconfont icon-linux"></span>
-              <span class="num">{{analysisObj.kvmLinuxImagesCount}}</span>
-            </div>
-            <div class="type">KVM-Linux</div>
-          </div>
-          <div class="progressItem progressItem4">
-            <div class="text flexCenter">
-              <span class="iconfont icon-windows"></span>
-              <span class="num">{{analysisObj.kvmWindowImagesCount}}</span>
-            </div>
-            <div class="type">KVM-Windows</div>
-          </div>
-          <div class="progressItem progressItem1">
-            <div class="text flexCenter">
-              <span class="iconfont icon-linux"></span>
-              <span class="num">{{analysisObj.kvmLinuxImagesCount}}</span>
-            </div>
-            <div class="type">KVM-Linux</div>
-          </div>
-          <div class="progressItem progressItem2">
-            <div class="text flexCenter">
-              <span class="iconfont icon-windows"></span>
-              <span class="num">{{analysisObj.kvmWindowImagesCount}}</span>
-            </div>
-            <div class="type">KVM-Windows</div>
-          </div> -->
         </div>
       </div>
     </div>
@@ -194,6 +159,7 @@ const initData = () => {
   }
   loading.value = true;
   courseList.length = 0
+  // resourceslist
   http.imageslist({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
@@ -226,7 +192,7 @@ const searchList=()=> {
 }
 const statisticList: any = reactive([])
 onMounted(() => {
-  statisticList.push(...[{ value:100, name: '私有资源' }, { value:50, name: '公开资源' }])
+  // statisticList.push(...[{ value:100, name: '私有资源',color:'#00CBC2' }, { value:50, name: '公开资源',color:'#FF9544' }])
   initData()
 });
 </script>

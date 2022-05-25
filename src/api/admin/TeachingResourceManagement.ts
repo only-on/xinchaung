@@ -11,6 +11,9 @@ export default{
    //实验模版列表
    experTemplateList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'},
 
+   //素材资源
+   resourceslist:{url:`/api/env/admin/images`,method:'get',dataType: 'json'},
+
    //在线模版
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
 }

@@ -1,7 +1,11 @@
 <template>
   <div class="experimentManage">
     <div class="statistic">
-      <div id="experStatistic"></div>
+      <!-- <div id="experStatistic"></div> -->
+      <div id="experStatistic">
+        <StatisticsPie :title="'实验统计'"  
+        :data="[{ value:echartsData.statistic.privateContentsCount, name: '私有实验',color:'#03C8BF' }, { value:echartsData.statistic.publicContentsCount, name: '公开实验',color:'#9872EB' }]" />
+      </div>
       <div id="experType"></div>
       <div id="directPoints"></div>
     </div>
@@ -20,12 +24,13 @@
 
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,inject,reactive} from "vue";
+import StatisticsPie from '../components/StatisticsPie.vue'
 import experManage from './experManage/index.vue'
 import experTemplateManage from './experTemplateManage/index.vue'
 import {HotWords,echartsPie,echartsBar} from './echartsOption';
-const colorList = ['#fe9956', ' #fed755', '#32d0db', '#708cf3']
 import request from "src/api/index";
 import { resolve } from "path/posix";
+const colorList = ['#fe9956', ' #fed755', '#32d0db', '#708cf3']
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
     updata({
@@ -86,7 +91,7 @@ function daWithdata(res:any){
       echartsData.experType.numbers.push(item[1]) 
     });
     console.log(echartsData.experType)
-    echartsPie('experStatistic',echartsData.statistic)
+    // echartsPie('experStatistic',echartsData.statistic)
     echartsBar('experType',echartsData.experType)
     //技术方向
     // for (let i in res.data?.analysis?.technicalDirection) {

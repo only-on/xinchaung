@@ -1,7 +1,9 @@
 <template>
   <div class="courseManagement">
     <div class="Statistics flexCenter">
-      <div class="item"></div>
+      <div class="item">
+        <StatisticsPie :title="'课程统计'"  :data="[{ value:analysisObj.privateCourseCount, name: '私有课程',color:'#00CBC2' }, { value:analysisObj.publicCourseCount, name: '公开课程' ,color:'#FF9544'}]" />
+      </div>
       <div class="item item2">
         <h3 class="statisticalTitle">课程状态</h3>
         <div class="progressItem">
@@ -111,6 +113,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import { useRouter } from "vue-router";
+import StatisticsPie from '../components/StatisticsPie.vue'
 const router=useRouter()
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;

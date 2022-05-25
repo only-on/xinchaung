@@ -7,15 +7,17 @@ import { ref, toRefs, onMounted,inject,reactive, watch} from "vue";
 import * as echarts from "echarts"
 interface IData {
   name: string
-  value: number
+  value: number,
+  color:string
 }
 const props = withDefaults(defineProps<{title: string;data: IData[]}>(), {
   title: '素材资源统计',
-  data: () =>  [{ value:10, name: '私有资源' }, { value:5, name: '公开资源' }]
+  data: () =>  [{ value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }],
 });
 const drawEcharts = () => {
   const option={
-    color:['#1cb2b3','#ff9544',],
+    // color:['#1cb2b3','#ff9544',],
+    color:[props.data[0].color,props.data[1].color,],
     title: {
       text: props.title,
       left: '0%',

@@ -1,7 +1,9 @@
 <template>
   <div class="courseManagement">
     <div class="Statistics flexCenter">
-      <div class="item"></div>
+      <div class="item">
+        <StatisticsPie :title="'镜像统计'"  :data="[{ value:analysisObj.teacherImagesCount, name: '教师镜像',color:'#00CBC2' }, { value:analysisObj.initImagesCount, name: '内置镜像' ,color:'#FF9544'}]" />
+      </div>
       <div class="item item2">
         <h3 class="statisticalTitle">镜像类型</h3>
         <div class="progressBox flexCenter">
@@ -105,6 +107,7 @@ import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
+import StatisticsPie from '../components/StatisticsPie.vue'
 const http = (request as any).TeachingResourceManagement;
 var updata = inject("updataNav") as Function;
 updata({

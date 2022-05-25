@@ -145,7 +145,8 @@ const props = withDefaults(defineProps<Props>(), {
   }
 }
 .pdfBox{
-  height: 500px;
+  // height: 500px;
+  height:100%;
   width: 100%;
 }
 </style>
