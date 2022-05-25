@@ -68,7 +68,7 @@
           <div class="caoZuo flexCenter">
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
-            <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k)">
+            <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k,'开启')">
               <span v-if="!v.opening&&statusList[k]?.status!=='none'">开启</span>
               <span v-if='v.opening||statusList[k]?.status=="none"' class="openStatus">
                 <LoadingOutlined></LoadingOutlined>
@@ -182,7 +182,7 @@ const getClass = (k: number) => {
   return str;
 };
 const flag:any=ref(false)
-const getWorkbenchStatus=()=>{
+const getWorkbenchStatus=(operate?:any,index?:any)=>{
       flag.value=false
       http.getWorkbenchStatusApi().then((res: any) => {
         statusList.value=res.data
@@ -191,9 +191,14 @@ const getWorkbenchStatus=()=>{
             flag.value=true
           }
         })
+        // 1.开启的时候
+        if(!flag.value&&list[index]?.opening){
+          message.warning('开启成功！')
+          list[index].opening=false
+        }
         if(flag.value){
           setTimeout(()=>{
-            getWorkbenchStatus()
+            getWorkbenchStatus(operate,index)
           },100)
         }
       })
@@ -234,13 +239,13 @@ const enterFun = (val: any) => {
     val.status=false
   })
 };
-const openEnv=(val:any,index:any)=>{
+const openEnv=(val:any,index:any,operate:any)=>{
   // opening.value=true
   list[index].opening=true
   http.openWorkbenchApi({urlParams:{id:val}}).then((res:any)=>{
-    message.success('开启成功！')
-    list[index].opening=false
-    getWorkbenchStatus();
+    // message.success('开启成功！')
+    // list[index].opening=false
+    getWorkbenchStatus(operate,index);
   })
 }
 const deleteFun = (val: any) => {
@@ -318,8 +323,8 @@ onMounted(() => {
   init()
 });
 async function init() {
-      await initData();
-      getWorkbenchStatus();
+    await initData();
+    getWorkbenchStatus();
 }
 </script>
 <style scoped lang="less">

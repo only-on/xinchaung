@@ -286,9 +286,11 @@ export default defineComponent({
     function stop() {
       stopImageApi({ id: reactiveData.id as any }).then((res: any) => {
         message.success("环境停止成功");
-        router.push({
+        setTimeout(()=>{
+          router.push({
           path: "/teacher/teacherImageResourcePool/OnlineMake",
         });
+        },100)
       });
     }
     // 取消
