@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="experTemplate">
         <div class="search">
           <div>
             <div class="item custom_input custom_input2">
@@ -213,8 +213,7 @@ const cancelTemplate = (val: number) => {
  .search{ 
      display: flex;
      justify-content: space-between;
-     padding: 20px;
-     padding-top: 0px;
+      margin-bottom: 20px;
      >div:nth-child(1){
        display: flex;
        >div{
@@ -243,5 +242,9 @@ const cancelTemplate = (val: number) => {
  }
  .detail:hover{
    cursor: pointer;
+ }
+ .experTemplate{
+   margin: 20px;
+   margin-top: 0px;
  }
 </style>

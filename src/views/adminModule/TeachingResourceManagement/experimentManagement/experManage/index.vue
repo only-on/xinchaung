@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="experManage">
         <div class="search">
           <div>
             <div class="item custom_input custom_input2">
@@ -200,8 +200,7 @@ const allexperTypes:any=ref([
  .search{
      display: flex;
      justify-content: space-between;
-     padding: 20px;
-     padding-top: 0px;
+     margin-bottom: 20px;
      >div:nth-child(1){
        display: flex;
        >div{
@@ -224,5 +223,9 @@ const allexperTypes:any=ref([
  .detail:hover{
    cursor: pointer;
    color: var(--primary-color);
+ }
+ .experManage{
+   margin: 20px;
+   margin-top:0px;
  }
 </style>
