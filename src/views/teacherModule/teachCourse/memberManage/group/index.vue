@@ -23,8 +23,8 @@
     >
     <template #action='{record}'>
       <div class="action">
-        <span class='delete' @click="deleteGroup(record.id)">删除</span>
-        <span @click="editGroup(record.id,record.name)">编辑</span>
+        <span class='delete actionBtn' @click="deleteGroup(record.id)">删除</span>
+        <span class="actionBtn" @click="editGroup(record.id,record.name)">编辑</span>
       </div>
     </template>
     </a-table>
@@ -167,6 +167,9 @@ onMounted(()=>{
   .delete{
   margin-right: 20px;
   }
+}
+.actionBtn:hover{
+  cursor: pointer;
 }
 
 </style>
