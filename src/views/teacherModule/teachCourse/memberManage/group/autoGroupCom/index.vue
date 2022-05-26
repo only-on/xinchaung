@@ -38,7 +38,7 @@
     const courseId:any=route.query.courseId  //章节id
     const columns: any = ref();
     const data: any = ref([]);
-    const selectValue: any = ref("");
+    const selectValue: any = ref("group_people_num");
     const number: any = ref("");
     const groupType:any=ref('');
     interface Props {

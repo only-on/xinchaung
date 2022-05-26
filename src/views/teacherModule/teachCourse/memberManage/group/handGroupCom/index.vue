@@ -237,8 +237,10 @@ function handleCancel(){
   unGroupData.value=[]
 }
 function createGroup(){
-  const newGroupData={name:groupName.value,student_list:[]}
+  if(groupName.value){
+    const newGroupData={name:groupName.value,student_list:[]}
   treeData.value.push(newGroupData)
+  }
   groupName.value=''
 }
 function onSearch() {
@@ -339,10 +341,15 @@ watch(
       () =>props.visable,
       () => {
         if(props.visable){
+          //分组列表置空
           treeData.value=[]
+          //学生列表
           unGroupData.value=[]
           console.log(props.ifedit,'props.ifedit')
+          //勾选的数据
           checkedValues.value=[]
+          //选择的分组
+          selectedGroup.value=''
           if(props.ifedit){
             groupNumberList()
             getUngroupStu()
