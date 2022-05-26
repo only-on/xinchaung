@@ -123,6 +123,7 @@ function btnClick(v: any) {
   };
   operatesHandle(param).then((res: any) => {
     // console.log(res);
+    if (!res?.status || !res?.code) return
     const status = v===0||v===1?vmStatus[v] : currentStatus.value ? 'startVm' : 'closeVm'
     res.status ? emit("getList", status, props.list.vms.vms[current.value]) : '';
   });
