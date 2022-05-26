@@ -124,7 +124,7 @@ function btnClick(v: any) {
   if (props.list.course_student_content?.length) {
     Object.assign(param.params, {
       type: props.list.course_student_content[0].type,
-      opType: props.list.course_student_content[0].opType,
+      opType: 'help',
       taskId: props.list.course_student_content[0].taskId
     })
   }
