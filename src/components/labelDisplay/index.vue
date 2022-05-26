@@ -1,5 +1,5 @@
 <template>
-  <div class="labelList flexCenter">
+  <div class="labelList">
     <div
       class="item flexCenter"
       :class="k !== list.length - 1 ? 'margin-right' : ''"
@@ -52,6 +52,8 @@ var list: any = computed(() => {
     border: 1px solid #e1e1e1;
     border-radius: 13px;
     padding: 0 6px;
+    display: inline-block;
+    margin-bottom: 8px;
     .iconfont {
       color: var(--black);
       cursor: pointer;
