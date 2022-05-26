@@ -33,7 +33,7 @@ export default{
   //删除知识点
   delKnowledgeMap: {url: `/api/service/knowledges/{nodeID}`, method: 'delete'},
   // 获取知识点对应的实验
-  getContentlist: {url: `//api/service/knowledges/{nodeID}/contents`, method: 'get'}
+  getContentlist: {url: `/api/service/knowledges/{nodeID}/contents`, method: 'get'}
 }
 export interface ITeachingResourceManagement{
     imageslist:TFHttpSend

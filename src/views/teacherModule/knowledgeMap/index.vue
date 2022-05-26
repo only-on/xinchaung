@@ -1,18 +1,18 @@
 <template>
   <div class="knowledgeMap">
     <div class="left">
-      <div class="saveimg" @click="handleImg"></div>
+      <!-- <div class="saveimg" @click="handleImg"></div> -->
       <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
-    <div class="right setScrollbar">
+    <div class="right">
       <div class="title">
         <span><i class="iconfont icon-lianjie"></i></span>
         <span>所选知识点相关内容链接</span>
       </div>
-      <ul v-if="contentList.length > 0">
-          <li v-for="(item,index) in contentList" :key="index" @click="router.push(item.task_url)" :title="item.task_name">{{item.task_name}}</li>      
+      <ul v-if="contentList.length > 0" class="setScrollbar">
+          <li v-for="(item,index) in contentList" :key="index" :title="item.name" @click="handleJump(item.id)">{{item.name}}</li>      
       </ul>
-      <div class="noData"><span>该知识点无关联实验！</span></div>
+      <div v-else class="noData"><span>该知识点无关联实验！</span></div>
     </div>
     <!-- 菜单 -->
     <div id="menu" v-show="showMenu">
@@ -33,9 +33,10 @@ import jsMind from 'jsmind/js/jsmind.js'
 import request from "src/api/index";
 import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
-import {MessageApi} from "ant-design-vue/lib/message"
+import message, {MessageApi} from "ant-design-vue/lib/message"
 import {screenshot} from 'src/utils/manipulatePicture'
 import { theme } from 'src/utils/theme'
+import {lStorage} from 'src/utils/extStorage'
 interface IpageInfo{
   count: number,
   index: number,
@@ -66,7 +67,7 @@ export default defineComponent({
   props: {
     tabsName :[String, Number]
   },
-  setup(props) {
+  setup(props,{emit}) {
     const http = (request as any).TeachingResourceManagement
     const $message:MessageApi = inject('$message')!
     const router = useRouter()
@@ -80,7 +81,7 @@ export default defineComponent({
     const mapData = reactive<ImapData>({
       data: [],
       meta: {},
-      role: 3,
+      role: lStorage.get('role'),
       format: 'node_array'
     })
     const contentList = reactive<Icontent[]>([])
@@ -93,7 +94,7 @@ export default defineComponent({
     const getMapdata = () => {
       http.knowledgesList().then((res:IBusinessResp) => {
         if (res && res.data) {
-          mapData.role = res.data.role
+          // mapData.role = res.data.role
           initData(res.data)
         }
       })
@@ -101,7 +102,7 @@ export default defineComponent({
     const initData = (data: any) => {
       document.getElementById('jsmind_container')!.innerHTML = ''
       mapData.meta = data.meta
-      mapData.data = data.list
+      mapData.data = data.data
       const options = {
         container: 'jsmind_container', // 必选，容器ID
         editable: true, // 可选，是否启用编辑
@@ -159,6 +160,7 @@ export default defineComponent({
     }
     // 鼠标右击事件
     const handleContextMenu = (event:any) => {
+      let clickEle =document.getElementById('jsmind_container')?.getBoundingClientRect()
       if (mapData.role == 3 || mapData.role == 5){
         return;
       }
@@ -166,8 +168,8 @@ export default defineComponent({
       if (selectNode) {
         setMenuStatus(true, selectNode.data.nodes_number)
         let menu:any = document.getElementById('menu')
-        menu.style.left = event.pageX + 'px'
-        menu.style.top = event.pageY + 'px'
+        menu.style.left = event.pageX - clickEle!.left + 'px'
+        menu.style.top = event.pageY - clickEle!.top + 80 + 'px'
       }
       jm.select_clear()
     }
@@ -183,7 +185,7 @@ export default defineComponent({
     const addNode = (event:any) => {
       setMenuStatus(false)
       if (selectNode.data.nodes_number >= 5) {
-        $message.warning('已达节点上限，请重新规划图谱')
+        message.warn('已达节点上限，请重新规划图谱')
         setMenuStatus(false)
         jm.select_clear();
         return false
@@ -214,11 +216,14 @@ export default defineComponent({
       function setParams () {
          if (type === 'add') {
           params.parentID = selectNode.id;
-          params.nodes_number = selectNode.data.nodes_number;
+          params.nodesNumber = selectNode.data.nodes_number;
           params.topicName = ele.value;
           ele.removeEventListener('blur', setParams)
           http.addKnowledgeMap({param: params}).then((res:IBusinessResp) => {
-            initData(res.data)
+            console.log('添加成功')
+            message.success('添加成功')
+            getMapdata()
+            // initData(res.data)
           })
         } else {
           params.parentID = selectNode.parent.id;
@@ -226,7 +231,8 @@ export default defineComponent({
           params.topicName = ele.value;
           ele.removeEventListener('blur', setParams)
           http.editKnowledgeMap({urlParams: {nodeID: selectNode.id}, param: params}).then((res:IBusinessResp) => {
-            initData(res.data)
+            message.success('修改成功')
+            getMapdata()
           })
         }
       }
@@ -237,21 +243,30 @@ export default defineComponent({
           jm.select_clear();
           return false;
       }
-      http.delKnowledgeMap({urlParams: {nowID: selectNode.id}}).then((res:IBusinessResp) => {
-      jm.remove_node(selectNode.id)
-        initData(res.data)
+      http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
+        jm.remove_node(selectNode.id)
+        message.success('删除成功')
+        getMapdata()
       })
     }
     const getSelectedNodeData = () => {
       isShow.value = true
       contentList.length = 0
-      http.getContentlist({ urlParams: {nowID: selectNode.id}}).then((res:IBusinessResp) => {
+      http.getContentlist({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
         if (res&&res.data.length > 0) {
           contentList.push(...res.data)
         } else {
           $message.warning('该知识点无关联实验!')
         }
       })
+    }
+    const handleJump = (id: any) => {
+      router.push({
+        path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+        query: {
+          id
+        }
+      });
     }
     onMounted(()=>{
       getMapdata()
@@ -264,6 +279,7 @@ export default defineComponent({
       delNode,
       editNode,
       handleBlur,
+      handleJump,
       router,
       contentList,
       showMenu,
@@ -308,18 +324,17 @@ export default defineComponent({
     }
   }
   .right{
-    width: 280px;
-    background: #FCFCFC;
-    overflow: auto;
+    width: 320px;
+    background: #FAFAFA;
     .title{
-      padding: 0 20px;
+      padding: 0 30px;
       line-height: 56px;
-      background: rgba(255,202,161,0.06);
+      background: #FFFCFA;
       color: #31394D;
       font-size: 16px;
       display: flex;
       align-items:center;
-      justify-content: center;
+      justify-content: flex-start;
       >span:first-child{
         display: inline-block;
         width: 34px;
@@ -334,19 +349,32 @@ export default defineComponent({
       }
     }
     ul{
-      padding: 0 18px;
+      padding: 18px 20px;
+      max-height: 700px;
+      overflow: auto;
       li{
-        line-height: 42px;
+        line-height: 45px;
+        font-size: 16px;
         overflow: hidden;
         white-space: nowrap;
         text-overflow: ellipsis;
         color: var(--primary-color);
-        border-bottom: 1px solid #C7AEDC;
-        &:not(.nodata){
-          cursor: pointer;
-          &:hover{
-            color: #ff8400;
-          }
+        position: relative;
+        padding-left: 15px;
+        cursor: pointer;
+        &::before{
+          content: '';
+          display: block;
+          width: 8px;
+          height: 8px;
+          background: var(--primary-color);
+          border-radius: 50%;
+          position: absolute;
+          left: 0;
+          top:0;
+          bottom: 0;
+          margin-top:auto;
+          margin-bottom: auto;
         }
       }
     }
@@ -383,7 +411,7 @@ export default defineComponent({
       transition: all 0.2s;
       text-align: center;
       &:hover{
-        background: #C7AEDC;
+        background: #FEF7DF;
       }
     }
   }
