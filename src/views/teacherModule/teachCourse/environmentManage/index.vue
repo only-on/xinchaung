@@ -151,7 +151,7 @@ function getList(type?: any, i?: any) {
         }
       }) : ''
       if (isCorrect) {
-        message.success({ content: "请求成功!", duration: 2 });
+        // message.success({ content: "请求成功!", duration: 2 });
       } else {
         timer = setTimeout(() => {
           getList(type, i);
@@ -222,7 +222,7 @@ function handleOk(num: number) {
       visible.value = false
       getList();
       openEnvNum.value = 0
-      message.success({ content: "请求成功!", duration: 2 });
+      // message.success({ content: "请求成功!", duration: 2 });
     }
   });
 }

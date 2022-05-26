@@ -39,7 +39,7 @@
       </p>
       <p class="operation-status">
         操作状态：<span>{{
-          list.is_online && list.vms.vms[current].uuid === list.current
+          list.is_online
             ? "繁忙"
             : "空闲"
         }}</span>
@@ -63,13 +63,11 @@
     <span
       class="btn vm-revert pointer"
       @click="btnClick(2)"
-      :class="currentStatus ? '' : 'isOpen'"
       >重启</span
     >
     <span
       class="btn vm-reset pointer"
       @click="btnClick(3)"
-      :class="currentStatus ? '' : 'isOpen'"
       >重置</span
     >
   </div>
@@ -106,7 +104,7 @@ function beforeChange(from: Function, to: number) {
 
 // 当前环境状态 开启是true
 const currentStatus = computed(
-  () => props.list.vms.vms[current.value].status === "ACTIVE"
+  () => props.list.vms.vms[current.value]?.status === "ACTIVE"
 );
 
 let vmStatus = {
@@ -125,7 +123,8 @@ function btnClick(v: any) {
   };
   operatesHandle(param).then((res: any) => {
     // console.log(res);
-    res.status ? emit("getList", vmStatus[v], props.list.vms.vms[current.value]) : '';
+    const status = v===0||v===1?vmStatus[v] : currentStatus.value ? 'startVm' : 'closeVm'
+    res.status ? emit("getList", status, props.list.vms.vms[current.value]) : '';
   });
 }
 
