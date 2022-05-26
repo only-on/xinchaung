@@ -12,12 +12,16 @@ interface IData {
 }
 const props = withDefaults(defineProps<{title: string;data: IData[]}>(), {
   title: '素材资源统计',
-  data: () =>  [{ value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }],
-});
+  data: () =>  [], // { value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }
+}); 
+const data:any=reactive([
+  { value:0, name: '私有',color:'#1cb2b3' }, { value:0, name: '公开',color:'#ff9544' }
+])
+
 const drawEcharts = () => {
   const option={
     // color:['#1cb2b3','#ff9544',],
-    color:[props.data[0].color,props.data[1].color,],
+    color:[data[0].color,data[1].color,],
     title: {
       text: props.title,
       left: '0%',
@@ -98,7 +102,7 @@ const drawEcharts = () => {
         labelLine: {
           show: false
         },
-        data: props.data
+        data: data
       }
     ]
   }
@@ -112,6 +116,16 @@ onMounted(() => {
 watch(
   ()=> props.data, 
   () => {
+    if(props.data.length){
+      data[0].value=props.data[0].value?props.data[0].value:0
+      data[1].value=props.data[1].value?props.data[1].value:0
+
+      props.data[0].name?data[0].name=props.data[0].name:''
+      props.data[1].name?data[1].name=props.data[1].name:''
+
+      props.data[0].color?data[0].color=props.data[0].color:''
+      props.data[1].color?data[1].color=props.data[1].color:''
+    }
     drawEcharts()
   },{
     deep: true, immediate: true

@@ -2,6 +2,8 @@ import { TFHttpSend } from "src/typings/getRequest";
 export default{
   //  管理镜像列表
   imageslist:{url:`/api/env/admin/images`,method:'get',dataType: 'json'},
+  // 镜像批量删除
+  imageBatchDelete:{url: `/api/course/admin/courses/images/multiple-deletes`, method: 'PUT',dataType: 'json'},
   //  课程列表
   courselist:{url:`/api/course/admin/courses/list`,method:'get',dataType: 'json'},
 
