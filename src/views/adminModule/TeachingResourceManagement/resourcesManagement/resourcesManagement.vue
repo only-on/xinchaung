@@ -209,6 +209,7 @@ onMounted(() => {
       height: 180px;
       background-color: var(--white);
       padding: 12px;
+      width:270px;
     }
     .item2{
       width:895px;
