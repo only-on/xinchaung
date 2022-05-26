@@ -196,22 +196,21 @@ interface DataItem {
   name: string;
   id: any;
 }
-const columns = [
+const columns = reactive<any>([
   {
-    title: "方向",
+    title: "课程方向",
     dataIndex: "name",
     width: "50%",
     align: "center",
     slots: { customRender: "name" },
   },
-
   {
     title: "操作",
     dataIndex: "operation",
     align: "center",
     slots: { customRender: "operation" },
-  },
-];
+  }
+])
 
 function getList () {
   if (activeKey.value !== 3) {
@@ -228,10 +227,11 @@ const onChangePage = (val:number) => {
   searchParams.page = val
   getList()
 }
-const changeTab = (activeKey: any) => {
+const changeTab = (key: any) => {
   if (!!editableDataKey || editableDataKey == 0) {
     delete editableData[editableDataKey];
   }
+  columns[0].title = planTtab[key].title
   searchParams.page = 1
   searchParams.name = ''
   getList()
@@ -244,12 +244,19 @@ const edit = (record:any, key: number) => {
   editableData[key] = cloneDeep(record);
 };
 const save = (key: number) => {
-  const params = {
-    name: editableData[key].name,
-  };
+  if (!editableData[key].name) {
+    message.warn(planTtab[activeKey.value].title + '不能为空')
+    return
+  }
+  if (editableData[key].name.length > 30) {
+    message.warn(planTtab[activeKey.value].title + '不能超过30个字符')
+    return
+  }
   var newhttp = http[obj[activeKey.value]["modify"]]({
     urlParams: { ID: editableData[key].id },
-    param: params,
+    param: {
+      name: editableData[key].name
+    },
   });
   newhttp.then((res: IBusinessResp) => {
     message.success('修改成功')

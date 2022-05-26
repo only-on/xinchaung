@@ -9,6 +9,7 @@ const clearStore = (keys:any) =>
   keys.forEach((key:any) => {
     sStorage.del(key);
   });
+  console.log(sStorage.get('systemInfo'))
   const breadcrumb = sStorage.get("breadcrumb") || [];
   const store:any = createStore({
   // state() {
@@ -23,7 +24,13 @@ const clearStore = (keys:any) =>
      aaa:'798',
      isWsConnect: false,
      connectStatus: 0,   // 0失败 1 连接中 2 成功
-     longWs: null
+     longWs: null,
+     systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : {
+      logo_url: "",
+      site_name: "Xinchuang",
+      theme: "A",
+      login: "A"
+    }
   },
   getters: {
     isLogged() {
@@ -57,6 +64,10 @@ const clearStore = (keys:any) =>
     setLongWs(state, val) {
       state.longWs = val
     },
+    setSystemInfo (state, val) {
+      sStorage.set('systemInfo', val)
+      state.systemInfo = val
+    }
   },
   actions: {
     

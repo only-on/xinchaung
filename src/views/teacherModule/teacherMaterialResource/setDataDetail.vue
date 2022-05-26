@@ -36,7 +36,7 @@
           </div>
           <div class="item">
             <span>类型</span>
-            <span>{{state.detail.categoryName}}</span>
+            <span>{{state.detail.categoryText}}</span>
           </div>
         </div>
       </div>
@@ -423,7 +423,6 @@ function detailed(){
     state.document.content=res.data.documents
     state.detail.tags=[]
     state.detail.created_at = res.data.created_at.substr(0, 10)
-    state.detail.categoryName = res.data.categorys.length && res.data.categorys[0].name
     if(res.data.labels && res.data.labels.length){
       res.data.labels.forEach((v:any)=>{
         state.detail.tags.push(v.name)

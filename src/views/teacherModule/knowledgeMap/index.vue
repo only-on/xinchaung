@@ -67,7 +67,7 @@ export default defineComponent({
     tabsName :[String, Number]
   },
   setup(props) {
-    const http = (request as any).knowledgeMap
+    const http = (request as any).TeachingResourceManagement
     const $message:MessageApi = inject('$message')!
     const router = useRouter()
     var jm = ref<any>(null)
@@ -91,9 +91,7 @@ export default defineComponent({
       knowledge_map_id: ''
     })
     const getMapdata = () => {
-      let role:any = localStorage.getItem('role')
-      let url = knowledgeMap[role] || knowledgeMap[1]
-      http[url]().then((res:IBusinessResp) => {
+      http.knowledgesList().then((res:IBusinessResp) => {
         if (res && res.data) {
           mapData.role = res.data.role
           initData(res.data)
@@ -217,15 +215,20 @@ export default defineComponent({
          if (type === 'add') {
           params.parentID = selectNode.id;
           params.nodes_number = selectNode.data.nodes_number;
+          params.topicName = ele.value;
+          ele.removeEventListener('blur', setParams)
+          http.addKnowledgeMap({param: params}).then((res:IBusinessResp) => {
+            initData(res.data)
+          })
         } else {
           params.parentID = selectNode.parent.id;
           params.nowID = selectNode.id;
+          params.topicName = ele.value;
+          ele.removeEventListener('blur', setParams)
+          http.editKnowledgeMap({urlParams: {nodeID: selectNode.id}, param: params}).then((res:IBusinessResp) => {
+            initData(res.data)
+          })
         }
-        params.topicName = ele.value;
-        ele.removeEventListener('blur', setParams)
-        http.addKnowledgeMap({param: params}).then((res:IBusinessResp) => {
-          initData(res.data)
-        })
       }
     }
     const delNode = () => {
@@ -234,7 +237,7 @@ export default defineComponent({
           jm.select_clear();
           return false;
       }
-      http.delKnowledgeMap({param: {nowID: selectNode.id}}).then((res:IBusinessResp) => {
+      http.delKnowledgeMap({urlParams: {nowID: selectNode.id}}).then((res:IBusinessResp) => {
       jm.remove_node(selectNode.id)
         initData(res.data)
       })
@@ -242,7 +245,7 @@ export default defineComponent({
     const getSelectedNodeData = () => {
       isShow.value = true
       contentList.length = 0
-      http.getContentlist({ param: pageInfo}).then((res:IBusinessResp) => {
+      http.getContentlist({ urlParams: {nowID: selectNode.id}}).then((res:IBusinessResp) => {
         if (res&&res.data.length > 0) {
           contentList.push(...res.data)
         } else {

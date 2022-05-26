@@ -175,7 +175,7 @@ const allexperTypes:any=ref([
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
-          http.experDelete({params:{conent_ids:tableData.selectedRowKeys}}).then((res:any)=>{
+          http.experDelete({param:{content_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
               message.warning('删除成功！')
               emit('updateData',{name:'',page:params.page,type:'',attribute:''})

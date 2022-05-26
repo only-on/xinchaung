@@ -324,5 +324,5 @@ export {
   dateFormat,
   dateFormat1,
   getTimer,
-  bytesToSize,
+  bytesToSize
 };
