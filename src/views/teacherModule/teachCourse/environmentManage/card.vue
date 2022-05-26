@@ -121,6 +121,13 @@ function btnClick(v: any) {
       uuid: props.list.vms.vms[current.value]?.uuid,
     },
   };
+  if (props.list.course_student_content?.length) {
+    Object.assign(param.params, {
+      type: props.list.course_student_content[0].type,
+      opType: props.list.course_student_content[0].opType,
+      taskId: props.list.course_student_content[0].taskId
+    })
+  }
   operatesHandle(param).then((res: any) => {
     // console.log(res);
     if (!res?.status || !res?.code) return
