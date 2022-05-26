@@ -12,16 +12,16 @@ interface IUser {
 export interface IForumnList {
   id: number;
   title: string;
-  desc: string;
+  desc?: string;
   content: string;
   user_name: string;
   avatar: string;
   created_at: number;
   views: number;
   reply_number_count: number
-  isAllText: boolean;
+  isAllText?: boolean;
   user: IUser
-  is_del: boolean
+  is_del?: boolean
 }
 export interface ILabel {
   value: number;

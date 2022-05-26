@@ -34,5 +34,13 @@ export default {
         title: "发帖",
       },
     },
+    {
+      path:'ForumnDetail',
+      name: "ForumnDetail",
+      component: () => import("src/views/teacherModule/teacherForum/ForumnDetail.vue"),
+      meta: {
+        title: "帖子详情",
+      },
+    },
   ]
 }

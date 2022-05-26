@@ -114,7 +114,7 @@ export default defineComponent({
       }
       http.replyForum({param}).then((res: IBusinessResp) => {
         replyContent.value = ''
-        replyList.length = 0
+        // replyList.length = 0
         getReplyList(id)
         props.item.reply_number_count ++
       })
@@ -126,7 +126,7 @@ export default defineComponent({
     const totalReply = ref(0)
     function getReplyList(id: number) {
       loading.value = true
-      replyList.length = 0
+      // replyList.length = 0
       let param = {
         page: page.value,
       }

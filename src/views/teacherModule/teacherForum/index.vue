@@ -28,6 +28,7 @@ import {
 } from "vue";
 import ForumSquare from "./ForumSquare.vue";
 import MyPosts from "./MyPosts.vue";
+import ForumManage from "./ForumnManage.vue";
 import { useRouter, useRoute } from "vue-router";
 import { ILabel } from "./forumnTyping.d";
 import ForumnTop from "./components/ForumnTop.vue";
@@ -35,7 +36,7 @@ import extStorage from "src/utils/extStorage";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 const route = useRoute();
 const router = useRouter();
-const componentNames = [markRaw(ForumSquare), markRaw(MyPosts), markRaw(MyPosts)];
+const componentNames = [markRaw(ForumSquare), markRaw(MyPosts), markRaw(ForumManage)];
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const tabs = [
