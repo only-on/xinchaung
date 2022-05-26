@@ -52,7 +52,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, reactive } from "vue";
+import { ref, toRefs, onMounted, reactive ,watch} from "vue";
 import student from "./student/index.vue";
 import group from "./group/index.vue";
 import assistant from "./assistant/index.vue";
@@ -63,6 +63,12 @@ const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
 const hasImport:any=ref(0)
+interface Props {
+  modalVisable:any;
+}
+const props = withDefaults(defineProps<Props>(), {
+  modalVisable:() =>{}
+})
 columns.value = [
   {
     title: "账号",
@@ -100,7 +106,7 @@ function beforeUpload(file:any){
         data.value=res.data
         tableData.total=data.value?.length
         successData.value=data.value?.filter((item:any)=>{
-          return item.success==true
+          return item.success==true&&item.result==''
         })
         console.log(successData.value)
         hasImport.value=successData.value?.length
@@ -122,10 +128,20 @@ function callback() {}
 function downloadTemplate(){
   let development = process.env.NODE_ENV == "development" ? true : false;
       let url = development
-        ? "'./public/template/Student.xlsx'"
+        ? './public/template/Student.xlsx'
         : "/uploadfiles/import/student.xlsx"; 
       FileSaver.saveAs(url,'学生模版');
 }
+
+watch(() => props.modalVisable, (val:any) => {
+  data.value=[]
+  tableData.total=0
+  tableData.page=1
+  tableData.limit=10
+}, {
+  deep: true,
+  immediate:true
+})
 </script>
 
 <style lang="less" scoped>

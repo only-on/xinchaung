@@ -88,7 +88,7 @@
         <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
       </template>
       <div>
-        <batchImportStu @updateSelectStuVisable="updateSelectStuVisable"></batchImportStu>
+        <batchImportStu :modalVisable='modalVisable' @updateSelectStuVisable="updateSelectStuVisable"></batchImportStu>
       </div>
     </a-modal>
 </template>

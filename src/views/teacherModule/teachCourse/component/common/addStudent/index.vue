@@ -258,4 +258,8 @@ onMounted(()=>{
 .icon-fanhui1 {
   color: var(--primary-color);
 }
+:deep(.ant-table-pagination.ant-pagination){
+  float: none;
+  text-align: center;
+}
 </style>
