@@ -418,7 +418,7 @@ const Save=(val:string,data?:any)=>{
     downloadUrl(url,obj['fileName'])
     // downloadUrl(url,`${activeCourse.name}.zip`)
   }
-  Visible.value=false
+  // Visible.value=false
 }
 const cancel=()=>{
   Visible.value=false

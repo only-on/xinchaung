@@ -336,7 +336,7 @@ onMounted(() => {
       
     }
     #borBot{
-      border: 1px solid rgba(0,0,0,0.15);
+      // border: 1px solid rgba(0,0,0,0.15);
     }
   }
 </style>
