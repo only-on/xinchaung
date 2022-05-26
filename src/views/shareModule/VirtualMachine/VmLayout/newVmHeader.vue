@@ -162,7 +162,7 @@
             <li>
               <span class="iconfont icon-duankou"></span>
               <span
-                >{{ currentVm?.classify === "Windows" ? "rdp" : "ssh" }}端口：{{
+                >{{ currentVm?.classify === "Windows" ? "RDP" : "SSH" }}端口：{{
                   currentVm?.classify === "Windows"
                     ? currentVm?.rdp_port
                     : currentVm?.ssh_port

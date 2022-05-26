@@ -272,6 +272,9 @@ function initWs() {
             message.warn(wsJsonData.data);
           }
         } else if (wsJsonData.type == "message") {
+          if (typeof(wsJsonData.data)=="string") {
+            message.warn(wsJsonData.data)
+          }
         } else if (wsJsonData.type == "return_message") {
           if (Object.keys(wsJsonData.data).length > 0) {
             if (wsJsonData.data?.message) {
