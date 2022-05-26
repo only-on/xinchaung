@@ -21,7 +21,7 @@
       v-if="fileInfo.tusdVideoUrl"
     ></video>
   </div>
-  <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit>
+  <!-- <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit> -->
   <!-- 选择视频抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -125,6 +125,19 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
   dataId = id
   fileInfo.tusdVideoUrl = uploadFileList.tusdVideoUrl
   fileInfo.file_url = uploadFileList.file_url
+
+  const file = {
+    "file_path": fileInfo.file_url,// 文档实验-文件
+  }
+  Object.assign(file, {"directory_id": dataId || activeFile.dataset_id})
+  http.updateVideoGuide({
+    param: {video_file:file},
+    urlParams: {content_id: props.detail.id}
+  }).then((res: any) => {
+    dataId = 0
+    $message.success("更新成功")
+    // router.go(-1)
+  })
 };
 
 const onSubmit = () => {
