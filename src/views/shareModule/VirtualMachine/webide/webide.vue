@@ -511,6 +511,7 @@ function okBackupModal() {
     if (res.status === 1) {
       message.success("备份成功");
       backupVisible.value = false;
+      rollBack(res.data)
     }
     console.log(version_name.value);
   });
