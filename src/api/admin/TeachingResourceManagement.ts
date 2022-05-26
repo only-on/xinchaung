@@ -18,10 +18,10 @@ export default{
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
 
     //实验批量删除
-    experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT'},
+    experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT',dataType: 'json'},
 
     // 实验模版批量删除
-    experTemplateDelete:{url: `/api/course/admin/courses/content-templates/multiple-deletes`, method: 'PUT'},
+    experTemplateDelete:{url: `/api/course/admin/courses/content-templates/multiple-deletes`, method: 'PUT',dataType: 'json'},
   // 知识图谱列表
   knowledgesList: {url: `/api/service/knowledges`, method: 'GET'},
   //创建知识点
