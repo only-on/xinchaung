@@ -21,7 +21,7 @@ export default{
     experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT'},
 
     // 实验模版批量删除
-    experTemplateDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT'},
+    experTemplateDelete:{url: `/api/course/admin/courses/content-templates/multiple-deletes`, method: 'PUT'},
   // 知识图谱列表
   knowledgesList: {url: `/api/service/knowledges`, method: 'GET'},
   //创建知识点

@@ -196,7 +196,7 @@ function batchDelete(){
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
-          http.experTemplateDelete({params:{template_ids:tableData.selectedRowKeys}}).then((res:any)=>{
+          http.experTemplateDelete({param:{template_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
               emit('updateData',{expername:ForumSearch.name,page:params.page})
               tableData.selectedRowKeys=[]
