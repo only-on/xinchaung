@@ -10,9 +10,8 @@
               : systemBaseInfo.login_logo
           });`"
         ></div> -->
-        <div
-          class="logo"></div>
-        <span class="web-title">Xinchuang</span>
+        <img class="logo" :src="store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg"/>
+        <span class="web-title">{{store.state.systemInfo.site_name}}</span>
       </div>
     </div>
     <div class="header-middle">
@@ -99,12 +98,14 @@ import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "../../typings/wmc";
 import api from "../../api";
 import { AnyMxRecord } from "dns";
+import logoImg from "src/assets/images/user/logo.png"
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
+    const store = useStore()
     const { lStorage,sStorage } = extStorage;
     const role = lStorage.get("role") || 3;
     const List = {
@@ -476,7 +477,6 @@ export default defineComponent({
     window.XC_ROLE=2
 
     let longWs: any = null
-    const store = useStore()
     let longWs1: WritableComputedRef<IWmc> = computed({
       get: () => {
         return store.state.longWs
@@ -673,6 +673,8 @@ export default defineComponent({
       goHome,
       helpInfoList,
       toHelp,
+      store,
+      logoImg
     };
   },
 });
@@ -703,11 +705,6 @@ export default defineComponent({
       width: 25px;
       height: 25px;
       margin-right: 10px;
-      // background: url("../../assets/images/user/favicon.png") no-repeat center;
-      background: url("src/assets/images/user/logo.png") no-repeat center;
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
-      background-position: center;
     }
     .web-title {
       color: var(--primary-color);

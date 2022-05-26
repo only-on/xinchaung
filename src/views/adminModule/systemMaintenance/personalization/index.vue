@@ -1,9 +1,9 @@
 <template>
     <div class="personalization">
       <div class="name">
-          <a-form layout='vertical'>
-            <a-form-item label="系统名称" name='systemName' required>
-            <a-input style="width:570px" v-model:value="systemName" placeholder="请在这里输入系统名称"/>
+          <a-form layout='vertical' :model="systemInfo" ref="formRef">
+            <a-form-item label="系统名称" name='site_name' :rules="rules">
+            <a-input style="width:570px" v-model:value="systemInfo.site_name" :disabled="!isEdit" placeholder="请在这里输入系统名称"/>
           </a-form-item>
           </a-form>
       </div>
@@ -16,15 +16,14 @@
                 name="avatar"
                 list-type="picture-card"
                 class="avatar-uploader login-logo"
-                action=""
+                action="/api/instance/uploads/file"
+                :disabled="!isEdit"
                 :show-upload-list="false"
                 :beforeUpload="logUploadBefore"
-                accept='.jpg,.png'
+                accept='.png'
                 @change="handleChange"
               >
-                <div 
-                class="login_logo_bg" 
-                :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`"></div>
+                <img :src="systemInfo.logo_url" alt="">
                 <div class="mask">
                   <span class="icon-zhongzhi iconfont"></span>
                 </div>
@@ -36,89 +35,146 @@
       </div>
       <div class="themeStyle">
         <div class="tit">主题风格</div>
-        <chooseStyle titleInfo='建议尺寸1920X268px' type='color' :data='colordata'></chooseStyle>
+        <chooseStyle titleInfo='建议尺寸1920X268px' type='color' v-model:checkVal="systemInfo.theme" :data='themeData.color' :disabled="!isEdit"></chooseStyle>
       </div> 
       <div class="loginScreen">
         <div class="tit">系统登录界面</div>
-        <chooseStyle titleInfo='尺寸1920X1080px' type='img' :data='imgdata'></chooseStyle>
+        <chooseStyle titleInfo='尺寸1920X1080px' type='img' v-model:checkVal="systemInfo.login" :data='themeData.img' :disabled="!isEdit"></chooseStyle>
       </div>
       <div class="bottomBtn">
-        <a-button type='primary' @click="handleSave">保存</a-button>
-        <a-button type='primary' class="brightBtn">设置初始化</a-button>
+        <a-button type='primary' @click="handleSave">{{isEdit ? '保存' : '编辑'}}</a-button>
+        <a-button type='primary' class="brightBtn" :disabled="!isEdit" @click="handleInit">设置初始化</a-button>
       </div>
     </div>
 </template>
 <script lang="ts" setup>
-    import {
-      defineComponent,
-      ref,
-      onMounted,
-      reactive,
-      inject
-    } from "vue";
-    import loginImg1 from 'src/assets/images/admin/systemmain/login1.png'
-    import loginImg2 from 'src/assets/images/admin/systemmain/login1.png'
-    import loginImg3 from 'src/assets/images/admin/systemmain/login1.png'
-    import chooseStyle from './chooseStyle/index.vue'
-    const env = process.env.NODE_ENV == "development" ? true : false;
-    var configuration: any = inject("configuration");
-    var updata = inject("updataNav") as Function;
-    updata({
-      tabs: [
-        { name: "个性化设置", componenttype: 0 }
-      ],
-      showContent: true,
-      componenttype: undefined,
-      showNav:true,
-    });
-    const systemName:any=ref('')
-    const colordata:any=ref(['#000000','#659BFE','#C665FE'])
-    const imgdata:any=ref([loginImg1,loginImg2,loginImg3])
-    const systemBaseInfo:any=reactive({
-      login_logo:''
-    })
-    const fileList = ref<any>()
-    function logUploadBefore(file:any){
-      return new Promise((resolve, reject) => {
-        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
-        if (!isJpgOrPng) {
-          // message.warn('支持格式为jpg、png!');
-          return false
-        }
-        let reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload= ()=>{
-          const image=new Image()
-          image.src= reader.result as string
-          image.onload=()=>{
-            let w=image.width
-            let h=image.height
-            if (w > 60 || h > 60) {
-            //  message.warn('图片尺寸不能超过60*60px')
-              return false
-            } else {
-              resolve(true);
-            }
+  import {
+    defineComponent,
+    ref,
+    onMounted,
+    reactive,
+    inject
+  } from "vue";
+  import chooseStyle from './chooseStyle/index.vue'
+  import { message } from "ant-design-vue";
+  import {useStore} from "vuex"
+  import request from "src/api/index";
+  import { IBusinessResp } from "src/typings/fetch";
+  import {loginStyleList,themeColorList,setThemeColor} from 'src/utils/theme'
+  import {sStorage} from "src/utils/extStorage";
+  import {cloneDeep} from 'lodash'
+  const http = (request as any).systemMaintenance;
+  const store = useStore()
+  const formRef = ref<any>()
+  const isEdit = ref<boolean>(false)
+  var configuration: any = inject("configuration");
+  var updata = inject("updataNav") as Function;
+  updata({
+    tabs: [
+      { name: "个性化设置", componenttype: 0 }
+    ],
+    showContent: true,
+    componenttype: undefined,
+    showNav:true,
+  });
+  
+  const rules = [
+    { required: true, message: `请输入系统名称`, trigger: "blur" },
+    { max: 20, message: `名称最多20个字符`, trigger: "blur" },
+  ]
+  const themeData = reactive<any>({
+    img: loginStyleList,
+    color: themeColorList
+  })
+  const systemInfo:any=reactive({
+    logo_url:'',
+    site_name: '',
+    theme: '',
+    login: ''
+  })
+  const fileList = ref<any>([])
+  function logUploadBefore(file:any){
+    console.log(file)
+    return new Promise((resolve, reject) => {
+      const isPng = file.type === 'image/png';
+      if (!isPng) {
+        message.warn('支持格式为png!');
+        reject(false)
+      }
+      if (file.size / 1024 > 20) {
+        message.warn('文件大小超过20K!');
+        reject(false)
+      }
+      let reader = new FileReader()
+      reader.readAsDataURL(file)
+      reader.onload= ()=>{
+        const image=new Image()
+        image.src= reader.result as string
+        image.onload=()=>{
+          let w=image.width
+          let h=image.height
+          if (w > 60 || h > 60) {
+            message.warn('图片尺寸不能超过60*60px')
+            reject(false)
+          } else {
+            resolve(true);
           }
         }
-      })
-    }
-    function handleChange (info:any) {
-      let fileArr = info.fileList
-      if (info.file.status === 'done') {
-        const { response } = info.file;
-        if (response.code === 1) {
-        }
-        fileList.value = fileArr
       }
+    })
+  }
+  function handleChange (info:any) {
+    let fileArr = info.fileList
+    if (info.file.status === 'done') {
+      const { response } = info.file;
+      if (response.code === 1) {
+        systemInfo.logo_url = response.data.url
+      }
+      fileList.value = fileArr
     }
-    function handleSave () {
-      document.getElementsByTagName('body')[0].style.setProperty('--theme-color', '#659bfe')
+  }
+  function changeStyle (type:string, value: number) {
+    console.log(type, value)
+    systemInfo[type === 'color' ? 'theme' : 'login'] = value
+  }
+  // 保存
+  function handleSave () {
+    if (!isEdit.value) {
+      isEdit.value = !isEdit.value
+      return
     }
+    formRef.value.validate().then(()=>{
+      http.systemPersonalSet({param: systemInfo}).then((res:IBusinessResp) => {
+        message.success('保存成功')
+        isEdit.value = false
+        setStyle()
+      })
+    })
+  }
+  // 设置初始化
+  function handleInit () {
+    http.systemPersonalShow().then((res:IBusinessResp) => {
+      if (isEdit.value) {
+        isEdit.value = false
+        message.success('初始化成功')
+      }
+      Object.assign(systemInfo, res.data)
+      setStyle()
+    })
+  }
+  function setStyle () {
+    store.commit('setSystemInfo', cloneDeep(systemInfo))
+    setThemeColor('theme', systemInfo.theme)
+  }
+  onMounted(()=>{
+    handleInit()
+  })
 </script>
 <style lang="less" scoped>
 .personalization{
   width:100%;
+  padding: 30px 60px;
+  background: var(--white-100);
 }
   .upload-logo-box {
     margin-top: 20px;
@@ -134,12 +190,10 @@
       border-top: 1px dashed rgba(0, 0, 0, 0.25);
       padding-top: 6px;
     }
-    .login_logo_bg{
-      width: 16px;
-      height: 16px;
-      background-repeat: no-repeat;
-      background-size: 100% 100%;
-    }  
+    img{
+      width: 100%;
+      height: 100%;
+    }
   }
   .tit{
       font-size: 16px;
@@ -170,7 +224,7 @@
       right: 0;
       top:0;
       bottom: 0;
-      background: var(--black-65);
+      background: rgba(5,1,1,0.50);
       border-radius: 4px;
       display: flex;
       align-items: center;

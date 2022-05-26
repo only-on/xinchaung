@@ -1,12 +1,13 @@
 <template>
     <div class="chooseStyles">
-        <div class="styleItem" v-for="(i,index) in data">
-            <a-radio-group v-model:value="value" class="radioGroup">
-                <a-radio class="radio" :value="index">
+        <div class="styleItem" v-for="(item,index) in data" :key="index">
+            <a-radio-group v-model:value="checkVal" class="radioGroup" @change="handleChange" :disabled="disabled">
+                <a-radio class="radio" :value="item.value">
                     <div v-if="type=='img'" class="imgBox">
-                        <img :src="i">
+                        <img :src="item.label">
+                        <div class="mask"></div>
                     </div>
-                    <div v-else class="colorBox" :style="{backgroundColor:i}"></div>
+                    <div v-else class="colorBox" :style="{backgroundColor:item.label}"></div>
                 </a-radio>
             </a-radio-group> 
             <div class="titleInfo">{{titleInfo}}</div> 
@@ -22,17 +23,26 @@
       inject
     } from "vue";
 interface Props {
-    titleInfo?: any;
-    type?:any;
+    titleInfo?: string;
+    type?:string;
     data?:any;
+    checkVal: any;
+    disabled: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
-    titleInfo: { },
-    type:{},
-    data:{}
+    titleInfo: '',
+    type: '',
+    data:{},
+    checkVal: '',
+    disabled: false
 });
-const value:any=ref()
+const emit = defineEmits<{
+  (e: "update:checkVal", val: number): void;
+}>();
+const handleChange = (e:any) => {
+  emit('update:checkVal', props.checkVal)
+}
 </script>
 <style lang="less" scoped>
  .chooseStyles{
@@ -48,8 +58,18 @@ const value:any=ref()
      text-align: center;
  }
  .imgBox{
-     border: 1px solid #808294;
-     padding: 2px;
+    border: 1px solid #808294;
+    padding: 2px;
+    position: relative;
+    .mask{
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: var(--white-45);
+      display: none;
+    }
  }
  .colorBox{
      width:348px;
@@ -63,15 +83,26 @@ const value:any=ref()
       position: absolute;
       top: 5px;
       left:320px;
+      z-index: 9;
     }
     :deep(.ant-radio-input ){
       width: 16px;
       height: 16px;
     }
     /* 单选选中样式 */
-    :deep(.ant-radio-checked .ant-radio-inner ){
-      background-color: #FF9544;
-      border: none;
+    :deep(.ant-radio-checked){
+      .ant-radio-inner {
+        background-color: #FF9544;
+        border: none;
+      }
+      &+span{
+        .imgBox{
+          border-color: var(--primary-color);
+          .mask{
+            display: block;
+          }
+        }
+      }
     }
     :deep(.ant-radio-inner::after ){
       content: "";

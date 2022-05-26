@@ -9,11 +9,14 @@ import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
 import { getHomePath } from "../../routers/common";
 import { PictureOutlined } from "@ant-design/icons-vue";
+import {useStore} from 'vuex';
+  import {setThemeColor} from 'src/utils/theme'
 
 const http = (request as any).common;
-const { lStorage } = extStorage;
+const { lStorage, sStorage } = extStorage;
 const router = useRouter();
 const route = useRoute();
+const store = useStore();
 
 interface FormState {
   username: string;
@@ -91,6 +94,8 @@ http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 // 获取在线用户数信息
 http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   onlineUserInfo.value = res!.data.online_info;
+  store.commit('setSystemInfo', res!.data.site_setting)
+  setThemeColor('theme', res!.data.site_setting.theme)
 });
 
 const login = () => {
@@ -150,8 +155,8 @@ const login = () => {
       </div>
       <div class="login-box">
         <div class="logo">
-          <img src="/img/default/login-logo.png" />
-          <h1>欢迎登录信创平台</h1>
+          <img :src="store.state.systemInfo.logo_url ? store.state.systemInfo.logo_url: '/img/default/login-logo.png'" />
+          <h1>欢迎登录{{store.state.systemInfo.site_name}}平台</h1>
         </div>
         <div class="form">
           <a-form
@@ -263,7 +268,10 @@ const login = () => {
 
       .logo {
         text-align: center;
-
+        img{
+          width: 70px;
+          height: 74px;
+        }
         h1 {
           margin: 10px 0;
         }
