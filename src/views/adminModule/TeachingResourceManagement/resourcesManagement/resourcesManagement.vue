@@ -2,7 +2,7 @@
   <div class="resourceManagement">
     <div class="Statistics flexCenter">
       <div class="item">
-        <statistics-pie title="素材资源统计" :data="[{ value:analysisObj.teacherImagesCount, name: '私有资源',color:'#00CBC2' }, { value:analysisObj.teacherImagesCount, name: '公开资源',color:'#FF9544' }]"></statistics-pie>
+        <statistics-pie title="素材资源统计" :data="[{ value:analysisObj.privateCount, name: '私有资源',color:'#00CBC2' }, { value:analysisObj.publicCount, name: '公开资源',color:'#FF9544' }]"></statistics-pie>
       </div>
       <div class="item item2">
         <h3 class="statisticalTitle">素材类型</h3>
@@ -54,6 +54,9 @@
               <template #imageTags="{ record }">
                 <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
               </template>
+              <template #name="{ record }">
+                <div class="courseName" @click="viewDetail(record)">{{record.name}}</div>
+              </template>
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -71,6 +74,11 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import StatisticsPie from './../components/StatisticsPie.vue'
+import { useRouter } from "vue-router";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const uid = lStorage.get("uid")
+const router=useRouter()
 const http = (request as any).TeachingResourceManagement;
 const http2 = (request as any).teacherMaterialResource;
 var updata = inject("updataNav") as Function;
@@ -81,12 +89,12 @@ updata({
   showNav: true,
 });
 const materialTypeList: any = reactive([
-  {id: 1, name: "数据集", count: 9, class: 'progressItem1', icon: 'icon-shujuji'},
-  {id: 2, name: "视频", count: 9, class: 'progressItem2', icon: 'icon-shipinbofang'},
-  {id: 3, name: "课件", count: 9, class: 'progressItem3', icon: 'icon-a-zu8851'},
-  {id: 4, name: "备课资料", count: 9, class: 'progressItem4', icon: 'icon-a-zu8852'},
-  {id: 5, name: "教学指导", count: 9, class: 'progressItem1', icon: 'icon-a-zu8853'},
-  {id: 6, name: "实验文档", count: 9, class: 'progressItem2', icon: 'icon-a-zu8854'},
+  {id: 1, name: "数据集", count: 0, class: 'progressItem1', icon: 'icon-shujuji',key:'datasetCount'},
+  {id: 2, name: "视频", count: 0, class: 'progressItem2', icon: 'icon-shipinbofang',key:'videoCount'},
+  {id: 3, name: "课件", count: 0, class: 'progressItem3', icon: 'icon-a-zu8851',key:'coursewareCount'},
+  {id: 4, name: "备课资料", count: 0, class: 'progressItem4', icon: 'icon-a-zu8852',key:'preparationCount'},
+  {id: 5, name: "教学指导", count: 0, class: 'progressItem1', icon: 'icon-a-zu8853',key:'guidanceCount'},
+  {id: 6, name: "实验文档", count: 0, class: 'progressItem2', icon: 'icon-a-zu8854',key:'documentCount'},
 ])
 const columns= [
   {
@@ -94,6 +102,7 @@ const columns= [
     dataIndex: "name",
     align: "left",
     ellipsis: true,
+    slots: { customRender: "name" },
   },
   {
     title: "素材属性",
@@ -185,6 +194,41 @@ const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()
 }
+const resourceStatistics=()=>{
+  http.resourceStatistics().then((res: IBusinessResp) => {
+    const {typeStatistics,visibleStatistics }  = res.data
+    Object.assign(analysisObj,typeStatistics,visibleStatistics)
+    materialTypeList.forEach((v:any)=>{
+      if(analysisObj[v.key]){
+        v.count=analysisObj[v.key]
+      }
+    })
+  })
+}
+const viewDetail=(val:any)=>{
+  let query:any={
+    currentTab:val.is_public?0:1,
+    editId: val.slab_uid ? val.slab_uid: val.id,
+    type:val.type_name,
+    cardType: val.slab_uid ? 'setData':'other',
+    user_id: uid
+  }
+  if(val.slab_uid){
+    router.push({
+      path:'/teacher/teacherMaterialResource/setDataDetail',
+      query:{
+        ...query,  
+        avatar: val.user.avatar,
+        username: val.user.username
+      }
+    })
+  }else{
+    router.push({
+      path:'/teacher/teacherMaterialResource/ResourceDetail',
+      query:{...query}
+    })
+  }
+}
 const searchList=()=> {
   searchInfo.page=1
   initData()
@@ -193,6 +237,7 @@ const statisticList: any = reactive([])
 onMounted(() => {
   // statisticList.push(...[{ value:100, name: '私有资源',color:'#00CBC2' }, { value:50, name: '公开资源',color:'#FF9544' }])
   initData()
+  resourceStatistics()
 });
 </script>
 
@@ -297,6 +342,10 @@ onMounted(() => {
     }
     .tableContent{
       margin-top: 2rem;
+      .courseName{
+        color:var(--primary-color);
+        cursor: pointer;
+      }
     }
 
   }

@@ -13,8 +13,8 @@ export default{
   //实验模版列表
   experTemplateList:{url:`/api/course/admin/courses/content-templates`,method:'get',dataType: 'json'},
 
-   //素材资源
-//    resourceslist:{url:`/api/env/admin/images`,method:'get',dataType: 'json'},
+   //素材资源 统计
+   resourceStatistics:{url:`/api/admin/resource/data/statistics`,method:'get'},
 
    //在线模版
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
