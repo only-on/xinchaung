@@ -27,7 +27,7 @@
     </div>
   </template>
   <script lang="ts" setup>
-    import { ref, toRefs, onMounted,reactive } from "vue";
+    import { ref, toRefs, onMounted,reactive,watch } from "vue";
     import handGroupCom from './handGroupCom/index.vue'
     import autoGroupCom from './autoGroupCom/index.vue'
     import { Modal, message } from "ant-design-vue";
@@ -118,6 +118,15 @@
     function handleCancel() {
       emit("updateVisable",'false',false);
     }
+    watch(
+      () =>props.visable,
+      (val:any) => {
+        if(val)
+        selectValue.value='group_people_num'
+        number.value=''
+      },
+    { deep: true, immediate: true }
+);
     </script>
   <style lang="less" scoped>
   .select {
