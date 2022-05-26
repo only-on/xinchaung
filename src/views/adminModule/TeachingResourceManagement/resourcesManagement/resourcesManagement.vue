@@ -22,23 +22,21 @@
         <div class="left flexCenter">
           <div class="item">
             <span>素材名称：</span>
-            <a-input v-model:value="searchInfo.imageName" placeholder="请输入关键字搜索" @keyup.enter="searchList"  />
+            <a-input v-model:value="searchInfo.name" placeholder="请输入关键字搜索" @keyup.enter="searchList"  />
           </div>
           <div class="item">
             <span>素材属性：</span>
-            <a-select v-model:value="searchInfo.imageAttr" placeholder="请选择素材属性"  @change="courseStatechange">
-              <a-select-option :value="0">公开素材</a-select-option>
-              <a-select-option :value="1">私有素材</a-select-option>
+            <a-select v-model:value="searchInfo.is_public" placeholder="请选择素材属性"  @change="courseStatechange">
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option :value="1">公开素材</a-select-option>
+              <a-select-option :value="0">私有素材</a-select-option>
             </a-select>
           </div>
           <div class="item">
             <span>素材类型：</span>
-            <a-select v-model:value="searchInfo.imageType" placeholder="请选择素材类型"  @change="courseStatechange">
+            <a-select v-model:value="searchInfo.tags" placeholder="请选择素材类型"  @change="courseStatechange">
               <a-select-option value="">全部</a-select-option>
               <a-select-option  v-for="list in materialTypeList" :key="list.id" :value="list.name">{{list.name}}</a-select-option>
-              <!-- <a-select-option value="Docker">Docker</a-select-option>
-              <a-select-option value="KVM-Linux">KVM-Linux</a-select-option>
-              <a-select-option value="KVM-Windows">KVM-Windows</a-select-option> -->
             </a-select>
           </div>
         </div>
@@ -74,6 +72,7 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import StatisticsPie from './../components/StatisticsPie.vue'
 const http = (request as any).TeachingResourceManagement;
+const http2 = (request as any).teacherMaterialResource;
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "素材资源管理", componenttype: 0 }],
@@ -92,33 +91,33 @@ const materialTypeList: any = reactive([
 const columns= [
   {
     title: "目录名称",
-    dataIndex: "imageName",
+    dataIndex: "name",
     align: "left",
     ellipsis: true,
   },
   {
     title: "素材属性",
-    dataIndex: "imageGroup",
+    dataIndex: "is_publicName",
     align: "center",
   },
   {
     title: "素材所属",
-    dataIndex: "imageGroup",
+    dataIndex: "username",
     align: "center",
   },
   {
     title: "素材类型",
-    dataIndex: "imageType",
+    dataIndex: "type_name",
     align: "center",
   },
   {
     title: "数量",
-    dataIndex: "imageSize",
+    dataIndex: "item_count",
     align: "center",
   },
   {
     title: "大小",
-    dataIndex: "imageSize",
+    dataIndex: "item_size",
     align: "center",
   },
   {
@@ -130,16 +129,15 @@ const columns= [
   },
   {
     title: "描述",
-    dataIndex: "imageDescription",
+    dataIndex: "description",
     align: "center",
     ellipsis: true,
   },
 ]
 var searchInfo:any=reactive({
-  imageName:'',
-  imageGroup:'',
-  imageType:'',
-  imageAttr: 0,
+  name:'',
+  is_public:'',
+  tags:'',
   page:1,
   limit:10,
   selectedRowKeys:[],
@@ -151,20 +149,21 @@ var totalCount: Ref<number> = ref(0);
 var analysisObj:any=reactive({})
 const initData = () => {
   const param:any={
-    'search[imageName]':searchInfo.imageName,
-    'search[imageGroup]':searchInfo.imageGroup,
-    'search[imageType]':searchInfo.imageType,
+    name:searchInfo.name,
+    is_public:searchInfo.is_public,
+    tags:searchInfo.tags,
     page:searchInfo.page,
     limit:searchInfo.limit
   }
   loading.value = true;
   courseList.length = 0
   // resourceslist
-  http.imageslist({param:{...param}}).then((res: IBusinessResp) => {
+  http2.dataSets({param:{...param}}).then((res: IBusinessResp) => {
     loading.value = false
     if (!res) return
     const { list, page,analysis }  = res.data
     list.forEach((v: any) => {
+      v.is_publicName=v.is_public?'公开素材':'私有素材'
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     Object.assign(analysisObj,analysis)

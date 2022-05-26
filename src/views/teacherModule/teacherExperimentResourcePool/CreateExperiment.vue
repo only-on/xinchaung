@@ -190,6 +190,7 @@
               <!-- <a-button type="primary" size="small" @click="selectTaskMd(v,'description')">上传文档</a-button> -->
               <div @click="TaskMdTaskStep(k, 'description')">
                 <a-upload
+                  :custom-request="()=>{}"
                   class="upload"
                   :showUploadList="false"
                   :before-upload="TaskMdBeforeUpload"
@@ -216,6 +217,7 @@
               <div @click="TaskMdTaskStep(k, 'detail')">
                 <a-upload
                   class="upload"
+                  :custom-request="()=>{}"
                   :showUploadList="false"
                   :before-upload="TaskMdBeforeUpload"
                   accept=".md"

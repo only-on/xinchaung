@@ -5,13 +5,11 @@
       <template v-if="v.type === 'select'" class="flexCenter">
         <div class="node">
           <div class="circleBox flexCenter">
-            <div
-              class="circle"
-              v-for="(i, idx) in v.data"
-              :key="i"
-              @click="selectNode(v, i.value)"
-              :class="getClass(i.value, idx, v)"
-            ></div>
+            <div class="circle" v-for="(i, idx) in v.data" :key="i" @click="selectNode(v, i.value)" :class="getClass(i.value, idx, v)">
+              <div class="tips flexCenter">
+                <div class="numerical flexCenter">{{ i.label }}{{ v.unit }}</div>
+              </div>
+            </div>
           </div>
           <div class="numBox flexCenter">
             <div
@@ -199,6 +197,38 @@ onMounted(() => {
           height: 12px;
           position: relative;
           cursor: pointer;
+          .tips{
+            display: none;
+            position: absolute;
+            top: -44px;
+            left: -12px;
+            .numerical{
+              position: relative;
+              width: max-content;
+              padding: 0 4px;
+              min-width: 33px;
+              height: 33px;
+              justify-content: center;
+              color: #fff;
+              background-color: rgba(0, 0, 0);
+              &::after{
+                position: absolute;
+                content: "";
+                width: 0; 
+                height: 0;
+                left: calc(50% - 5px);
+                bottom: -10px;
+                border-width: 5px;
+                border-style: solid;
+                border-color:#000 transparent transparent transparent;
+              }
+            }
+          }
+          &:hover{
+            .tips{
+              display: block;
+            }
+          }
         }
         .haveAfter {
           margin-right: 100px;
