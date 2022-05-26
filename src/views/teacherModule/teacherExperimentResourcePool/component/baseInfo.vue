@@ -257,6 +257,21 @@ const rules = {
     { required: true, message: "" },
     { validator: classCutValidator, trigger: "blur" },
   ],
+  report:[
+    { required: true, message: "" },
+    { validator: reportValidator, trigger: "change" },
+  ],
+  // selectedKnowledgeList:[
+  //   { required: true, message: "" },
+  //   { validator: selectedKnowledgeValidator, trigger: "change" },
+  // ],
+  tags:[
+    { required: true, message: "" },
+    { validator: tagsValidator, trigger: "blur" },
+  ],
+  direction:[
+    { required: true, message: "请选择所属方向" ,trigger: "change" },
+  ]
 };
 async function classCutValidator(rule: any, value: string) {
   if (!value) {
@@ -265,6 +280,30 @@ async function classCutValidator(rule: any, value: string) {
   const reg = new RegExp("^([1-9]|[1][0-6])$");
   if (!reg.test(String(formState.class_cnt))) {
     return Promise.reject("课时数为1~16之间整数");
+  }
+}
+async function reportValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.id) {
+    return Promise.reject("请选择实验报告");
+  }else{
+    formRef.value.clearValidate('report')
+    return Promise.resolve()
+  }
+}
+async function selectedKnowledgeValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.length) {
+    return Promise.reject("请选择知识点");
+  }else{
+    formRef.value.clearValidate('selectedKnowledgeList')
+    return Promise.resolve()
+  }
+}
+async function tagsValidator(rule: any, value:any) {
+  // console.log(value)
+  if (!value.length) {
+    return Promise.reject("请填写标签");
   }
 }
 const closeDrawer = () => {
