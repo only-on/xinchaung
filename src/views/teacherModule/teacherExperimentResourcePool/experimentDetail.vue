@@ -77,7 +77,7 @@
     title="编辑基本信息"
     @ok="handleOk"
     @cancel="handleCancel"
-    :width="906"
+    :width="1100"
     :footer="null"
   >
     <base-info :detail="experimentDetail" @handleOk="handleOk" @handleCancel="handleCancel"></base-info>

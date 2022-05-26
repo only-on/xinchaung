@@ -29,7 +29,7 @@
       <div class="content">
         <div class="info flexCenter">
           <span>内存：{{ v.flavor.ram / 1024 }}GB</span>
-          <span>CPU：{{ v.flavor.cpu }}GB</span>
+          <span>CPU：{{ v.flavor.cpu }}核</span>
           <span>硬盘：{{ v.flavor.disk }}GB</span>
           <span>GPU：{{ v.flavor.gpu ? "是" : "否" }}</span>
         </div>
