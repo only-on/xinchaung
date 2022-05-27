@@ -6,6 +6,48 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "30030099",
+      "name": "成绩统计",
+      "font_class": "chengjitongji",
+      "unicode": "e674",
+      "unicode_decimal": 58996
+    },
+    {
+      "icon_id": "1509751",
+      "name": "素材库",
+      "font_class": "material",
+      "unicode": "e676",
+      "unicode_decimal": 58998
+    },
+    {
+      "icon_id": "3402790",
+      "name": "自动清理",
+      "font_class": "zidongqingli",
+      "unicode": "e758",
+      "unicode_decimal": 59224
+    },
+    {
+      "icon_id": "21053576",
+      "name": "容器镜像服务",
+      "font_class": "rongqijingxiangfuwu",
+      "unicode": "e673",
+      "unicode_decimal": 58995
+    },
+    {
+      "icon_id": "30029756",
+      "name": "重启",
+      "font_class": "zhongqi",
+      "unicode": "e671",
+      "unicode_decimal": 58993
+    },
+    {
+      "icon_id": "30029757",
+      "name": "关机",
+      "font_class": "guanji",
+      "unicode": "e672",
+      "unicode_decimal": 58994
+    },
+    {
       "icon_id": "24379198",
       "name": "链接",
       "font_class": "lianjie",

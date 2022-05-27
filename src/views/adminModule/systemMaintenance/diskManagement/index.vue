@@ -18,7 +18,7 @@
                         
                     </div>
                     <div class="autoclear" @click="clean('video',true)">
-                        <span class="icon iconfont icon-zuoyekaoshi"></span>
+                        <span class="icon iconfont icon-zidongqingli"></span>
                         <span>自动清理设置</span>
                     </div>
                 </div>
@@ -40,7 +40,7 @@
                         </div>
                     </div>
                     <div class="autoclear" @click="clean('systemLog',true)">
-                        <span class="icon iconfont icon-zuoyekaoshi"></span>
+                        <span class="icon iconfont icon-zidongqingli"></span>
                         <span>自动清理设置</span>
                     </div>
                 </div>      
@@ -52,12 +52,12 @@
                         <div class="tit tit2">更多清理</div>
                         <div class='toMaterial'>
                             <a-button type='primary' class="btn orange">
-                                <span class="icon iconfont icon-zuoyekaoshi"></span>
+                                <span class="icon iconfont icon-material"></span>
                                 <span> 到素材资源</span>                          
                             </a-button></div>
                         <div>
                             <a-button class="button">
-                            <span class="icon iconfont icon-zuoyekaoshi"></span>
+                            <span class="icon iconfont icon-rongqijingxiangfuwu"></span>
                             <span>到镜像</span>
                             </a-button>
                         </div>   

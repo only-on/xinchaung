@@ -19,7 +19,7 @@
         </div>
         <div class="inclass-header-right">
           <span class="statistic" @click="scoreStatistic">
-            <span class="icon iconfont icon-shijian"></span>
+            <span class="icon iconfont icon-chengjitongji"></span>
             <span>成绩统计</span>
           </span>
 

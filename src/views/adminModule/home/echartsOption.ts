@@ -302,6 +302,7 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
+            console.log(data,'datadatadatadatadatadatadatadatadatadata')
             return data.use?data.use:'--'+'/'+data.total?data.total:'--'+data.type
           }
         },

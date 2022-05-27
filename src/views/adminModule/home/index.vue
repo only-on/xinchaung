@@ -116,7 +116,7 @@
                                 <span>
                                     {{item.title}}:
                                 </span>
-                                <span>
+                                <span class='percent'>
                                     {{item.percent}}%
                                 </span>
                                 <span>
@@ -134,10 +134,11 @@
                 </div>
                 <div class="nodeOperation">
                     <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','stop')">
-                        关机 <span class="icon iconfont icon-kaiguanshenx"></span>
+                        关机 <span class="icon iconfont icon-guanji"></span>
                     </div>
                     <div class="dohover" @click="nodeOpera(serveNodeValue,serveNodeValue==options[0].value?'master':'slave','restart')">
-                        重启 <span class="icon iconfont icon-loading"></span>
+                        重启 
+                        <span class="icon iconfont icon-zhongqi"></span>
                     </div>
                     <div class="dohover" @click="doSimJetSoft">
                         一键关闭 <span class="icon iconfont icon-guanbi"></span>
@@ -202,7 +203,7 @@
     import moment from 'moment';
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
-   import {Modal } from 'ant-design-vue'
+    import {Modal } from 'ant-design-vue'
     const http = (request as any).adminHome;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
@@ -888,5 +889,13 @@
 }
 .dohover:hover{
     color: var(--primary-color);
+}
+.percent{
+    display: inline-block;
+    width:46px;
+}
+.icon-guanbi{
+    font-size: 14px;
+    font-weight: bold;
 }
 </style>
