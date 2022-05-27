@@ -251,6 +251,7 @@ function deleteteStudent(id:any) {
               http.deleteStudentCourse({param:{id:id}}).then((res:any)=>{
                 if(res.code){
                   tableData.selectedRowKeys=[]
+                  tableData.page=1
                   getcoursestudent()
                 }
           })

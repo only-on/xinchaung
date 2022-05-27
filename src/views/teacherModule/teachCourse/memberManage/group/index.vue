@@ -123,6 +123,7 @@ function updateVisable(val:any,groupok:any){
 function deleteGroup(id:any){
     http.deleteGroup({urlParams:{group:id}}).then((res:any)=>{
       if(res.code){
+        groupListParams.page=1
         getGroupList()
       }
     })

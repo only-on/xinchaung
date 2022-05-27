@@ -254,6 +254,7 @@ function delateCard(val: number) {
           http
             .AssistantBatchDelete({ param: { user_ids: [val] } })
             .then((res:any) => {
+              tableData.page=1
               getAssistantList()
               message.success("删除成功");
             });
@@ -274,6 +275,7 @@ function delateCard(val: number) {
           http
             .AssistantBatchDelete({ param: { user_ids:tableData.selectedRowKeys} })
             .then((res:any) => {
+              tableData.page=1
               getAssistantList()
               message.success("删除成功");
             });
