@@ -111,7 +111,7 @@ updata({
 });
 const EmptyType:any=computed(()=>{
   let str=''
-  if(searchInfo.name === '' && labelSearch.state === ''){
+  if(searchInfo.name === '' && labelSearch.state === 0){
     str= 'empty'
   }else{
     str= 'searchEmpty'
