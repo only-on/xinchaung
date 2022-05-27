@@ -216,6 +216,21 @@ function addHelp(){
 }
 function cancel(){
   visible.value=false;
+  // 关闭时清理下数据
+  formState.username='',
+  formState.password_hash='',
+  formState.repassword='',
+  formState.userinitpassword=true,
+  formState.direct='',
+  formState.course='',
+  formState.name='',
+  formState.gender='1',
+  formState.phone='',
+  formState.email='',
+  formState.status='10',
+  formState.introduce='',
+  formState.reset=false
+  editId.value=''
 }
 function changeSwitch(item: any) {
       item.bind_status = item.bind_status === "1" ? "0" : "1";
