@@ -4,7 +4,8 @@
       <a-button class="btn1" type="primary" @click="autoGroup">自动分组</a-button>
       <a-button type="primary" @click="handGroup">手动分组</a-button>
     </div>
-    <a-table
+    <div class="tableScrollbar">
+      <a-table
       :columns="columns"
       :data-source="data"
       :pagination="
@@ -28,6 +29,7 @@
       </div>
     </template>
     </a-table>
+    </div>
     <autoGroupCom v-if="groupType=='auto'" :visable='modalVisable' @updateVisable='updateVisable'></autoGroupCom>
     <handGroupCom v-if="groupType=='hand'" :ifedit='ifedit' :editGroupname='editGroupname' :group_id='group_id' :visable='modalVisable' @updateVisable='updateVisable'></handGroupCom>
   </div>
@@ -172,5 +174,8 @@ onMounted(()=>{
 .actionBtn:hover{
   cursor: pointer;
 }
-
+.tableScrollbar{
+  height: 530px;
+  overflow-y: auto;
+}
 </style>

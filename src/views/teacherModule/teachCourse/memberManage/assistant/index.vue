@@ -16,7 +16,8 @@
         <a-button type="primary" class="brightBtn right-btn1" @click="addHelp">添加助教</a-button>
       </div>
     </div>
-    <a-config-provider>
+    <div class="tableScrollbar">
+      <a-config-provider>
         <a-table
             :columns="columns"
             :data-source="data"
@@ -59,6 +60,7 @@
             <div><Empty :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
           </template>
         </a-config-provider> 
+    </div>
     <a-modal v-model:visible="visible" :title='editId?"编辑助教":"添加助教"' @cancel="cancel" @ok="submit" :width="500" class="modal-post">
       <a-form ref="formRef" :model="formState" layout="vertical" :rules="rules">
         <div class="formBox">
@@ -397,5 +399,9 @@ onMounted(()=>{
   .delete{
     margin-right:10px;
   }
+}
+.tableScrollbar{
+  height: 530px;
+  overflow-y: auto;
 }
 </style>
