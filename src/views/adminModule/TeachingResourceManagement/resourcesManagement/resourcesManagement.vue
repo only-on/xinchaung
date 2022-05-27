@@ -257,6 +257,7 @@ const BatchDelete=()=>{
         message.success("删除成功"); //
         searchInfo.selectedRowKeys=[]
         initData();
+        resourceStatistics()
       });
     },
   });
