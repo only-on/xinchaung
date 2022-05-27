@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="right">
-          <a-button type="primary"> 批量删除 </a-button>
+          <a-button type="primary"  @click="BatchDelete()"> 批量删除 </a-button>
         </div>
       </div>
       <div class="tableContent">
@@ -69,13 +69,15 @@
 </template>
 
 <script lang="ts" setup>
-import { inject,ref, toRefs, onMounted ,Ref,reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { inject,ref, toRefs, onMounted ,Ref,reactive,createVNode} from "vue";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 import StatisticsPie from './../components/StatisticsPie.vue'
 import { useRouter } from "vue-router";
 import extStorage from "src/utils/extStorage";
+import { Modal, message } from "ant-design-vue";
 const { lStorage } = extStorage;
 const uid = lStorage.get("uid")
 const router=useRouter()
@@ -183,12 +185,17 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.selectedRowKeys=[]
   initData()
+  console.log(searchInfo.selectedRowKeys);
 }
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
+  console.log(selectedRowKeys);
+  
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+  console.log(searchInfo.selectedRowKeys);
 }
 const courseStatechange=(val: any)=> {
   searchInfo.page=1
@@ -232,6 +239,27 @@ const viewDetail=(val:any)=>{
 const searchList=()=> {
   searchInfo.page=1
   initData()
+}
+const BatchDelete=()=>{
+  if(!searchInfo.selectedRowKeys?.length){
+    message.warning('请至少选择一条数据！')
+    return
+  }
+  let datasetIds=searchInfo.selectedRowKeys.join(',')
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.resourceBatchDelete({param: {datasetIds:datasetIds}}).then((res: any) => {
+        message.success("删除成功"); //
+        searchInfo.selectedRowKeys=[]
+        initData();
+      });
+    },
+  });
 }
 const statisticList: any = reactive([])
 onMounted(() => {

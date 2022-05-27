@@ -15,6 +15,8 @@ export default{
 
    //素材资源 统计
    resourceStatistics:{url:`/api/admin/resource/data/statistics`,method:'get'},
+   // 素材资批量删除
+   resourceBatchDelete:{url: `/api/admin/resource/data`, method: 'DELETE',dataType: 'json'},
 
    //在线模版
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},

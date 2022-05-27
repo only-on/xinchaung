@@ -192,6 +192,7 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.selectedRowKeys=[]
   initData()
 }
 type Key = ColumnProps["key"];
@@ -219,6 +220,7 @@ const BatchDelete=()=>{
     onOk() {
       http.imageBatchDelete({param:{image_ids:searchInfo.selectedRowKeys}}).then((res: any) => {
         message.success("删除成功"); //
+        searchInfo.selectedRowKeys=[]
         initData();
       });
     },

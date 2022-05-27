@@ -205,6 +205,7 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.selectedRowKeys=[]
   initData()
 }
 const courseAttributechange=(val: any)=> {
@@ -238,6 +239,7 @@ const BatchDelete=()=>{
     onOk() {
       http.BatchDelete({urlParams: {courseId:''}}).then((res: any) => {
         message.success("删除成功"); //
+        searchInfo.selectedRowKeys=[]
         initData();
       });
     },
