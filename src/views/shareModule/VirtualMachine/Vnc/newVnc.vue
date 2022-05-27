@@ -66,6 +66,7 @@ import { getVmConnectSetting } from "src/utils/seeting";
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
+const user_id = storage.lStorage.get("uid");
 const route = useRoute();
 const router=useRouter();
 const store = useStore();
@@ -290,13 +291,13 @@ function initWs() {
             message.warn(wsJsonData.data);
           }
         }else if (wsJsonData.type=="message") {
-              if (typeof(wsJsonData.data)=="string") {
-                    message.warn(wsJsonData.data)
-                    if (wsJsonData.data == '分组成员正在重置虚机') {
-                      // isConnect.value=true
-                      // vncLoadingV.value=false
-                    }
-                  }
+          if (typeof(wsJsonData.data)=="string") {
+            message.warn(wsJsonData.data)
+          }
+        }else if (wsJsonData.type=="vm_act_message"){ // 分组成员在操作
+          if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
+            message.warn(wsJsonData.data.msg)
+          }
         }else if (wsJsonData.type=="return_message") {
           if (Object.keys(wsJsonData).length>0) {
             if (wsJsonData.data?.msg) {
