@@ -38,14 +38,14 @@ const props = defineProps({
     defalut: [],
   },
 });
-const contentShow = ref(true);
+const contentShow = ref(false);
 provide('contentShow', contentShow)   // 左侧tab对应的内容是否显示
 
 const currentNavKey = ref("");
 const leftEl = ref(null); // left
 const rightEl = ref(null); // right
-const leftWidth = inject("leftWidth",ref(400));
-const rightWidth = inject("rightWidth",ref(window.innerWidth - 400));
+const leftWidth = inject("leftWidth",ref(45));
+const rightWidth = inject("rightWidth",ref(window.innerWidth - 45));
 const vmWrapWidth: Ref<number> = ref(0);
 
 let mouseStart: number = 0; // 鼠标开始移动位置

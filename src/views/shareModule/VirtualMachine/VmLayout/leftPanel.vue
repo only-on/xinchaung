@@ -67,7 +67,7 @@ const navData = reactive([
   { name: "报告", key: "report", icon: "icon-baogao" },
   { name: "问答", key: "question", icon: "icon-wenda" },
 ]);
-
+ 
 let isShowGuide = ref(true)
 watch(
   () => baseInfo.value.base_info,
@@ -79,7 +79,10 @@ watch(
     if (val && val.is_open===0 && isSetting &&opType!=='help'&&role===4) {
       // navData.shift()
       isShowGuide.value = false
-    } 
+      open('note')
+    } else {
+      open('guide')
+    }
     if (Number(experType) === 4) {
       navData.shift()
     }
@@ -90,7 +93,7 @@ watch(
 const componentList = {report}
 const currentNavKey = ref("");
 let lastKey = ref(navData[0].key);
-const contentShow = inject("contentShow", ref(true));
+const contentShow = inject("contentShow", ref(false));
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, "vnc", opType as any) as any)

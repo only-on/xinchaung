@@ -681,7 +681,7 @@ function back() {
         return
       }
       if (ws && baseInfo.value?.current?.is_teamed == 1) {
-        ws.value.leave(topoinst_id + "_room");
+        ws.value?.leave(topoinst_id + "_room");
       }
       if (opType === "test" || opType === "prepare") {
         endVmEnvirment();
