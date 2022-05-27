@@ -74,7 +74,7 @@
                     </div>
                    <div>
                         <div id="plate4"></div>
-                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem}}个</span></div>
+                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem}}G</span></div>
                    </div>   
                 </div>
             </div>
@@ -363,7 +363,7 @@
                 drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G','#00cbc2'))
                 drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核','#ff9544'))
                 drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G','#9872eb'))
-                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'个','#6993fe'))
+                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'G','#6993fe'))
                 
                 //服务节点状态
                 serveNode.value=statisticData.value?.single_node_resource

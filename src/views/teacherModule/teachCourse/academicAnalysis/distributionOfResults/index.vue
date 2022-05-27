@@ -18,7 +18,7 @@
                 </div>
                 <Progress type="circle" :percent='statisData?.experimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
             </div>
-            <div class='pie-item' v-if="statisData?.inClassTestDistributionOfScores!==null">
+            <div class='pie-item' v-if="statisData?.inClassTestAccuracyRate!==null">
                 <div class="title">
                     随测正确率
                 </div>
@@ -45,11 +45,13 @@ import leftPanelVue from 'src/views/shareModule/VirtualMachine/VmLayout/leftPane
 
 interface Props {
   statisData:any,
-  experType:any
+  experType:any,
+  legend:any
 }
 const props = withDefaults(defineProps<Props>(), {
   statisData: () => {},
-  experType:()=>{}
+  experType:()=>{},
+  legend:()=>{}
 })
 var lineChart:any=ref('')
 lineChart.value='line-chart'+Math.random()
@@ -71,7 +73,8 @@ option.value = {
   legend: {
     x:leftPanelVue,
     icon:'circle',
-    data: ['最终成绩', '实验报告', '自动评分', '随测']
+    // data: ['最终成绩', '实验报告', '自动评分', '随测']
+    data:[],
   },
   grid: {
     left: '3%',
@@ -149,6 +152,7 @@ function draw(){
   option.value.series[1].data=props.statisData?.experimentalReportDistributionOfScores
   option.value.series[2].data=props.statisData?.automaticScoringDistributionOfScores
   option.value.series[3].data=props.statisData?.inClassTestDistributionOfScores
+  option.value.legend.data=props.legend
   var chartDom:any = document.getElementById(lineChart.value);
   var myChart = echarts.init(chartDom);
   myChart.setOption(option.value);

@@ -5,7 +5,7 @@
        </div>
        <div class="analy-right">
             <div>
-                <distributionOfResults v-if="statisData" :experType='experType' :experitId='experitId' :statisData='statisData'></distributionOfResults>
+                <distributionOfResults v-if="statisData" :legend='legend' :experType='experType' :experitId='experitId' :statisData='statisData'></distributionOfResults>
             </div>
            <div class="achive-detail">
                 <div class="achive-detail-header">
@@ -66,6 +66,8 @@ const experitId:any=ref('0')
 const experType:any=ref()
 const className:any=ref('')
 const ifSearch:any=ref(false)
+const legend1:any=ref(['最终成绩', '实验报告', '自动评分', '随测'])
+const legend:any=ref()
 option.value = [
   { id: "", name: "全部" },
   { id: 1, name: "班级1" },
@@ -94,7 +96,7 @@ const tableData: any = reactive({
   page: 1,
   limit: 10,
 });
-columns.value = [
+const columns1:any= [
   {
     title: "学号",
     dataIndex: "username",
@@ -158,12 +160,39 @@ function onSearch(){
   }
   getStugrandsList()
 }
+const columnDataShow:any=ref([])
 function getStuStatis(){
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
       console.log(res.data?.length,'res.data?.length')
+      columns.value=columns1
+      legend.value=legend1.value
       if(res.code&&res.data?.length!==0){
-        console.log('hhahhahahaahh')
         statisData.value=res.data
+        //过滤columns
+        if(res.data?.automaticScoringCorrectRate==null){
+          columns.value=columns.value.filter((item:any)=>{
+            return item.key!=='automaticScore'
+          })
+          legend.value=legend.value.filter((jt:any)=>{
+            return jt!=='自动评分'
+          })
+        }
+        if(res.data?.experimentalReportSubmissionRate==null){
+          columns.value=columns.value.filter((item:any)=>{
+            return item.key!=='reportScore'
+          })
+          legend.value=legend.value.filter((jt:any)=>{
+            return jt!=='实验报告'
+          })
+        }
+        if(res.data?.inClassTestAccuracyRate==null){
+          columns.value=columns.value.filter((item:any)=>{
+            return item.key!=='inClassTestScore'
+          })
+          legend.value=legend.value.filter((jt:any)=>{
+            return jt!=='随测'
+          })
+        }
       }else{
         statisData.value=echartsData.value
       }
