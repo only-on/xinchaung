@@ -213,10 +213,13 @@ function onSelectChange(selectedRowKeys: any) {
 }
 function addHelp(){
   visible.value=true;
+  // 添加时清理下数据
+  clearData()
 }
 function cancel(){
   visible.value=false;
-  // 关闭时清理下数据
+}
+function clearData(){
   formState.username='',
   formState.password_hash='',
   formState.repassword='',
@@ -244,6 +247,7 @@ function changeSwitch(item: any) {
       });
  }
  function editCard(val:any) {
+      clearData()
       editId.value = val.id;
       http
         .getAssistantDetail({ urlParams: { id: editId.value } })
