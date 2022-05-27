@@ -37,11 +37,12 @@ const props = withDefaults(defineProps<Props>(), {
     checkVal: '',
     disabled: false
 });
+const checkVal = ref(props.checkVal)
 const emit = defineEmits<{
   (e: "update:checkVal", val: number): void;
 }>();
 const handleChange = (e:any) => {
-  emit('update:checkVal', props.checkVal)
+  emit('update:checkVal', checkVal.value)
 }
 </script>
 <style lang="less" scoped>
