@@ -167,7 +167,7 @@ watch(
     classifyList.forEach((v: any) => {
       v.value = 0
     })
-    if(val === 1 || val ===0){
+    if(Number(val) === 1 || Number(val) ===0){
       // console.log(val)
       initData();
     }
