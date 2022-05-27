@@ -168,6 +168,12 @@ const visible:any=ref(false)
             }else{
                 clearScreenData(day)
             }
+        }else{
+            if(diskType.value=='systemLog'){
+                handclearLogData(day)
+            }else{
+                handclearScreenData(day)
+            }
         }
     }
     function drawEcharts(){
@@ -207,6 +213,16 @@ const visible:any=ref(false)
     }
     function clearLogData(day:any){
         http.clearLog({param:{day:day}}).then((res:any)=>{
+            message.success('清除成功')
+        })
+    }
+    function handclearScreenData(day:any){
+        http.handclearScreen({param:{day:day}}).then((res:any)=>{
+            message.success('清除成功')
+        })
+    }
+    function handclearLogData(day:any){
+        http.handclearLog({param:{day:day}}).then((res:any)=>{
             message.success('清除成功')
         })
     }

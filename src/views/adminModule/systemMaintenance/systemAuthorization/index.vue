@@ -36,17 +36,18 @@
                             v-if="authorizationFile.progress"
                             >
                             <a-progress :percent="authorizationFile.progress" />
-                            <span
+                            <!-- <span
                                 @click="removeFile"
                                 class="iconfont icon-shanchu"
-                            ></span>
+                            ></span> -->
                             </div>
                         </div>
                     </div>
                     <div class="step-row">
                         <div class="step-text">文件名称</div>
-                        <div>文件名称1111111111111
-                            <span class="icon iconfont icon-shanchu"></span>   
+                        <div>
+                            <span class="filename">{{authorizationFile.filename}}</span>
+                            <span v-if="authorizationFile.filename"  @click="removeFile" class="icon iconfont icon-shanchu"></span>   
                         </div>
                     </div>
                 </div>
@@ -65,7 +66,8 @@
         </div>
         <div class="settingList">
             <div class="tit">授权设置</div>
-            <a-table
+            <div class="tableHeight">
+              <a-table
             rowKey='username'
             :columns="columns"
             :data-source="data"
@@ -84,6 +86,7 @@
             "
             >
             </a-table>
+            </div>
         </div>
     </div>
 </template>
@@ -99,6 +102,10 @@
     import uploadFile from "src/request/uploadFile";
     import cleanModal from './cleanModal.vue'
     import { message, Modal } from "ant-design-vue";
+    import request from "src/api/index";
+    import { useRouter ,useRoute } from 'vue-router';
+    const router = useRouter();
+    const http = (request as any).systemMaintenance;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     updata({
@@ -145,7 +152,9 @@ const authorizationData:any=reactive({
     authorization_code:''
 })
 const authorizationFile:any=reactive({
-    progress:0
+    progress:0,
+    ilename:'',
+    url:'',
 })
 const reactiveData:any=reactive({
     isShowBtn:false,
@@ -186,9 +195,9 @@ function modalEl(){
       }
 // 设置授权码
 function settingAutoKey() {
-        // settingAutoKeyApi().then((res: any) => {
-        //   authorizationData.authorization_code = res.datas?.key?res.datas.key:res.data.key;
-        // });
+      http.settingAutoKeyApi().then((res: any) => {
+        authorizationData.authorization_code = res.datas?.key?res.datas.key:res.data.key;
+  });
 }
 function copyCode(e: Event) {
         e.preventDefault();
@@ -242,15 +251,16 @@ function copyCode(e: Event) {
       function removeFile() {
         if (reactiveData.upload) {
             reactiveData.upload.abortUpload();
-            // authorizationFile = {};
+            authorizationFile.progress=0;
+            authorizationFile.filename='';
         }
       }
       // 授权
       function authorizationFun() {
-        if (!authorizationFile.filename) {
-          message.warn("请上传图片");
-          return;
-        }
+        // if (!authorizationFile.filename) {
+        //   message.warn("请上传图片");
+        //   return;
+        // }
         if (!authorizationData.authorization_code) {
           message.warn("请输入授权码");
           return;
@@ -261,11 +271,11 @@ function copyCode(e: Event) {
           authNumber: authorizationData.authorization_code,
           url: authorizationFile.url,
         };
-        //  saveSettingApi().then((res: any) => {
-        //   reactiveData.authorizationData.authorization_code =
-        //     res.authNumber;
-        //   method.getAuthorizationInfo();
-        // });
+         http.saveSettingApi({param:params}).then((res: any) => {
+          reactiveData.authorizationData.authorization_code =
+            res.authNumber;
+          method.getAuthorizationInfo();
+        });
     }
       // 获取系统日志时间配置
 </script>
@@ -331,5 +341,18 @@ function copyCode(e: Event) {
                
             }
         }
+    }
+    .settingList{
+      .tableHeight{
+        height:430px;
+        overflow-y: hidden;
+      }
+    }
+    .filename{
+      display: inline-block;
+      width: 100px;
+      white-space:nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 </style>
