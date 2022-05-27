@@ -233,8 +233,8 @@ watch(()=>props.detail, newVal => {
   formState.selectedName = []
   formState.datasets = []
   formState.dataset?.forEach((v: any) => {
-    formState.selectedName.push(v.name)
-    formState.datasets.push(v.uid)
+    formState.selectedName.push(v)
+    formState.datasets.push(v.id)
   })
   formState.imageConfigs = []
   formState.env?.forEach((v: any, k: number) => {
@@ -319,7 +319,7 @@ function removeKnowledge(val: any, index: number) {
 }
 // 移除数据集
 function remove(val: any, index: number) {
-  let i = formState.datasets.indexOf(val.uid);
+  let i = formState.datasets.indexOf(val.id);
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
