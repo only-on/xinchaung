@@ -15,7 +15,7 @@
       </li>
     </ul>
   </div>
-  <div class="leftContent">
+  <div class="leftContent" v-show="contentShow">
     <guide v-show="lastKey == 'guide'"></guide>
     <note v-if="lastKey == 'note'"></note>
     <!-- <report v-if="lastKey == 'report'"></report> -->
@@ -89,13 +89,22 @@ watch(
 );
 const componentList = {report}
 const currentNavKey = ref("");
-let lastKey = ref(navData[0].key);
+let lastKey = ref('');
 const contentShow = inject("contentShow", ref(false));
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, "vnc", opType as any) as any)
   : (getMenuRole(role as any, "vnc") as any);
 const contentModal = ref(false)  // 报告modal
+watch(
+  () => contentModal.value,
+  (val) => {
+    if (!val) {
+      lastKey.value = ''
+    }
+  },
+  { deep: true, immediate: true }
+);
 const visible = ref(false)  // 报告modal
 function open(key?: string) {
   // 视频文档 
@@ -108,6 +117,7 @@ function open(key?: string) {
     return
   }
   if (!key || currentNavKey.value === key) {   // 收起
+    lastKey.value = ''
     contentShow.value = false
     leftWidth.value = 45;
     rightWidth.value = window.innerWidth - leftWidth.value;
