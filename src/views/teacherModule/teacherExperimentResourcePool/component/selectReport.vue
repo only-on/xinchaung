@@ -5,7 +5,7 @@
     v-model:visible="reportVisible"
     title="设置实验报告模板"
     class="report"
-    :width="640"
+    :width="700"
     @cancel="reportCancel"
   >
     <div class="top flexCenter">
@@ -370,12 +370,12 @@ const cancelTemplate = (val: number,id?:number) => {
             }
           }
           .nameBox {
-            width: 445px;
+            width: 500px;
             .prefix {
               color: var(--brightBtn);
             }
             .name {
-              max-width: 360px;
+              max-width: 410px;
               cursor: pointer;
             }
             .name:hover {
