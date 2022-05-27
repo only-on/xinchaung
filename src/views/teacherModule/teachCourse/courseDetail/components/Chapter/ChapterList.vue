@@ -499,7 +499,7 @@ function ViewExperiment(a:any,v:any){
   if(a.openGuidance){
     if(!a.TeachingAids){
       selectExperiment(a,v)
-      getExperimentGuide(a.content_id,a)
+      getExperimentGuide(a.id,a)
     }else{
       console.log('教辅')
       a.experimentGuideLoading=false

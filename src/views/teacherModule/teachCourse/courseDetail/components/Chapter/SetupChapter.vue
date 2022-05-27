@@ -156,7 +156,7 @@ const selectExperiment=(val:any)=>{
   // 获取实验详情
   if(!val.TeachingAids && currentTab === '0' && role===3 && val.id){
     // 教师端我的教学  才在右边展示实验指导
-    getExperimentGuide(val.content_id)
+    getExperimentGuide(val.id)
   }
 }
 const getExperimentGuide=(id:number)=>{
