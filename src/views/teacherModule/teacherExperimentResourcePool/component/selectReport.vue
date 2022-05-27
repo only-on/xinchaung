@@ -26,9 +26,9 @@
     <div class="content textScrollbar">
       <div v-if="reportActive === 1" class="contentLeft">
         <div class="reportList flexCenter">
-          <!-- <div class="search">
-            <a-input v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
-          </div> -->
+          <div class="search">
+            <a-input-search v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
+          </div>
           <div class="item flexCenter" v-for="v in TemplateList" :key="v">
             <div
               class="eyeBox flexCenter"
@@ -393,8 +393,12 @@ const cancelTemplate = (val: number,id?:number) => {
           }
         }
         .search{
-          margin: 0;
+          margin: 12px 0;
           input{
+            width: 260px;
+            border-radius: 18px;
+          }
+          .ant-input-search{
             width: 260px;
             border-radius: 18px;
           }
