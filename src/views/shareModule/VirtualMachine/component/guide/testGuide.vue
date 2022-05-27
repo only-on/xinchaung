@@ -40,7 +40,7 @@
     </div>
   </div>
   <div
-    v-else-if="allInfo.base_info.guide && Number(taskType) === 1"
+    v-else-if="allInfo.base_info.guide && (Number(taskType) === 1||Number(taskType) === 2||Number(taskType) === 3)"
     class="111"
   >
     <marked-editor v-model="allInfo.base_info.guide" :preview="preview" />

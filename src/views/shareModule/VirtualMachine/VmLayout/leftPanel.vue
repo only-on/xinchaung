@@ -74,17 +74,24 @@ watch(
   (val) => {
     // 只针对vnc ide ssh
     if (!val) return
+    // jupyter实验不显示实验指导
+    if (Number(experType) === 4) {
+      navData.shift()
+      if (role === 4) {
+        open('note')
+      } else {
+        open('question')
+      }
+      return
+    }
     const {task_type} = val
-    const isSetting = Number(experType)===1 || Number(experType)===2 || Number(experType)===3|| (task_type.type===4&&task_type.programing_type)
+    const isSetting = Number(experType)===1 || Number(experType)===2 || Number(experType)===3
     if (val && val.is_open===0 && isSetting &&opType!=='help'&&role===4) {
       // navData.shift()
       isShowGuide.value = false
       open('note')
     } else {
       open('guide')
-    }
-    if (Number(experType) === 4) {
-      navData.shift()
     }
     // !baseInfo.value.base_info?.is_open ? navData.shift() : ''
   },
