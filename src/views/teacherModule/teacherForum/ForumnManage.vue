@@ -230,13 +230,11 @@ const batchDelete = () => {
 }
 
 onMounted(async() => {
-  debugger
   let NewQuery = { currentTab:route.query.currentTab, tab, type };
   await router.replace({
     path: path,
     query: NewQuery,
   });
-  debugger
   if (currentTab === '2') {
     initData();
   }

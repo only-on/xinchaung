@@ -89,8 +89,8 @@ watch(
 );
 const componentList = {report}
 const currentNavKey = ref("");
-let lastKey = ref('');
-const contentShow = inject("contentShow", ref(false));
+let lastKey = ref(navData[0].key);
+const contentShow = inject("contentShow", ref(true));
 
 const roleArry: menuTypeArr = ["recommend", "test"].includes(opType as any)
   ? (getMenuRole(role as any, "vnc", opType as any) as any)
@@ -99,7 +99,7 @@ const contentModal = ref(false)  // 报告modal
 watch(
   () => contentModal.value,
   (val) => {
-    if (!val) {
+    if (!val && lastKey.value === 'report') {
       lastKey.value = ''
     }
   },
