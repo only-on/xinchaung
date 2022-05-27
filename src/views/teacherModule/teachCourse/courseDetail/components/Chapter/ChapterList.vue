@@ -886,7 +886,7 @@ onMounted(() => {
         }
       }
       .experimentGuide{
-        height: 400px;
+        height: 500px;
         max-height: 500px;
         // overflow: auto;
         :deep(.ant-spin-nested-loading){
