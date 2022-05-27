@@ -589,7 +589,7 @@ onMounted(() => {
             color: var(--primary-color);
           }
           .text2{
-            display: none;
+            // display: none;
           }
         }
         &:hover{
