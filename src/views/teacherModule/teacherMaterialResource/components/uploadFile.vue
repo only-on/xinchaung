@@ -252,7 +252,7 @@ onMounted(() => {
   display: flex;
   justify-content: space-between;
   height: 400px;
-  overflow: auto;
+  // overflow: auto;
   .upload {
     width: 400px;
     margin-right: 30px;
@@ -312,7 +312,7 @@ onMounted(() => {
         }
 
         .right {
-          width: 100%;
+          width: 306px;
           margin-left: 24px;
           > .item-top {
             display: flex;
