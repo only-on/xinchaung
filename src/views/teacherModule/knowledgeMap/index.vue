@@ -55,8 +55,8 @@ interface Imeta{
   version?: string
 }
 interface Icontent{
-  task_name: string
-  task_url: string
+  id: any
+  name: string
 }
 
 const knowledgeMap = {
