@@ -7,7 +7,7 @@
           <ul class="webide-file-list">
             <li
               class="webide-file-item"
-              v-for="(item, index) in fileListData"
+              v-for="(item, index) in fileListData" 
               :key="item.file_id"
               :class="currentIndex === index ? 'active' : ''"
               @click="selectFile(index)"
@@ -575,7 +575,7 @@ onMounted(async () => {
       version_id.value = versions[0].id;
       version_name.value = versions[0].version_name;
     } else {
-      version_name.value = "namefile";
+      version_name.value = "基础版本";
       let versionsData = await createVersionData();
       console.log(versionsData);
       let versions: any = await getVersionListData();
