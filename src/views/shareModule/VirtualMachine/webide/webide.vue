@@ -275,6 +275,12 @@ function initWs() {
           if (typeof(wsJsonData.data)=="string") {
             message.warn(wsJsonData.data)
           }
+        }else if (wsJsonData.type=="vm_act_message"){ 
+          // 教师在操作
+          if (wsJsonData.data?.msg?.indexOf('教师正在') !== -1) {
+            message.warn(wsJsonData.data.msg)
+            return
+          }
         } else if (wsJsonData.type == "return_message") {
           if (Object.keys(wsJsonData.data).length > 0) {
             if (wsJsonData.data?.message) {

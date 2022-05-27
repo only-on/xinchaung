@@ -294,7 +294,13 @@ function initWs() {
           if (typeof(wsJsonData.data)=="string") {
             message.warn(wsJsonData.data)
           }
-        }else if (wsJsonData.type=="vm_act_message"){ // 分组成员在操作
+        }else if (wsJsonData.type=="vm_act_message"){ 
+          // 教师在操作
+          if (wsJsonData.data?.msg?.indexOf('教师正在') !== -1) {
+            message.warn(wsJsonData.data.msg)
+            return
+          }
+          // 分组成员在操作
           if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
           }

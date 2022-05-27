@@ -419,7 +419,7 @@
         (单个文件最味限制为20MB)
       </p>
       <p class="ant-upload-dir">
-        默认存放目录路径为"/simpleupload"
+        默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\simpleupload":"/simpleupload"}}
       </p>
     </a-upload-dragger>
     <template #footer>
@@ -437,7 +437,7 @@
   >
     <p class="label">请输入一个下载路径</p>
     <a-input v-model:value="downloadAdd" placeholder="" />
-    <div class="tip">注：下载路径需要是一个文件或者压缩包，例如:/home/user.zip，大小限制在200M内</div>
+    <div class="tip">注：下载路径需要是一个文件或者压缩包，例如:{{currentVm?.classify === "Windows" ? "C:\name.zip":"/home/name.zip"}}，大小限制在200M内</div>
     <template #footer>
       <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false" :loading="false"></Submit>
     </template>

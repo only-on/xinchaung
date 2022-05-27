@@ -197,7 +197,7 @@ export default defineComponent({
           name: "实验资源库",
           parent_id: 161,
           sort: 1,
-          url: "/teacher/teacherExperimentResourcePool",
+          url: "/teacher/teacherExperimentResourcePool?currentTab=0",
         },
         {
           children: [],

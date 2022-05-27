@@ -24,11 +24,11 @@
         :src="reportTemplateData.pdf_url"
       >
       </iframe>
-      <div v-if="reportTemplateData.json_content&&reportTemplateData.json_content.filename">{{reportTemplateData.json_content.filename}}</div>
+      <!-- <div v-if="reportTemplateData.json_content&&reportTemplateData.json_content.filename">{{reportTemplateData.json_content.filename}}</div> -->
       <div class="uploadReport" v-if="reportTemplateData.can_student_update">
         <div>实验报告</div>
         <div>
-          <a-upload :showUploadList="false" class="upload-btn" :file-list="fileList" :before-upload="beforeUpload">
+          <a-upload :showUploadList="false" class="upload-btn" :file-list="fileList" :before-upload="beforeUpload" accept=".doc, .docx">
             <a-button type="primary">上传文件</a-button>
           </a-upload>
           <span
@@ -76,6 +76,7 @@ import OnLine from "./OnLine.vue";
 import empty from "src/components/Empty.vue";
 import iconList from "src/utils/iconList";
 // import { renderMarkdown } from  '@xianfe/antdv-markdown';
+import { Modal, message } from "ant-design-vue";
 
 interface experReportParam {
   csc_id: any;
@@ -114,6 +115,9 @@ function getUrlParam(name: string): string | null {
 function experReport(params: experReportParam) {
   vmApi.experimentalReport({ param: params }).then((res:any) => {
     reportTemplateData.value = res?.data;
+    fileList.value = [
+      {id: reportTemplateData.value.id, name: reportTemplateData.value.json_content?.filename}
+    ]
   });
 }
 function submitOfflineReport() {
@@ -159,6 +163,10 @@ function beforeUpload(file: any) {
   return false;
 }
 function handleUpload() {
+  if (!fileList.value.length) {
+    message.warn('请选择上传文件')
+    return
+  }
   let formData: any = new FormData();
   formData.append("file", fileList.value[0]);
   formData.append("id", reportTemplateData.value.templatable_id);
