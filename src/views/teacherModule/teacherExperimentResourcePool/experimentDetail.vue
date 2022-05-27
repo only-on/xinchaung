@@ -8,12 +8,12 @@
         技术方向：{{ experimentDetail.direction }}
       </div>
       <div class="name-type flexCenter">
-        <div class="left">
+        <div class="left flexCenter">
           <span class="type" :style="{
             color: getTypeList('-90deg')[experimentDetail.content_type].color,
             background: getTypeList('-90deg')[experimentDetail.content_type].detailebBackgroundColor,
           }">{{getTypeList('-90deg')[experimentDetail.content_type].name}}</span>
-
+          <!-- <span class="iconfont icon-gaopei gaopeiColor"></span> -->
           <span class="name">{{ experimentDetail.name }}</span>
         </div>
         <div class="right">
@@ -359,6 +359,10 @@ interface IExperimentDetail {
         font-size: var(--font-size-24);
         color: var(--white-100);
         vertical-align: middle;
+      }
+      .icon-gaopei{
+        font-size: 20px;
+        margin-right: 8px;
       }
       .type {
         display: inline-block;

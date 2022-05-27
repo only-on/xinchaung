@@ -96,6 +96,7 @@
                 </div>
                 <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
                   <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
+                  <span v-if="a.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
                   <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>
                   <span class="ItemExperimentTitle">{{a.name}}</span>
                 </div>
@@ -832,6 +833,9 @@ onMounted(() => {
             .ItemExperimentTitle{
               color: var(--black-65);
               width: calc(100% - 60px);
+            }
+            .icon-gaopei{
+              margin-right: 4px;
             }
             &.TeachingAids{
               color: #1CB2B3;

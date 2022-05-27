@@ -19,6 +19,7 @@
         >
           {{ v.type_obj.name }}
         </div>
+        <!-- <span class="iconfont icon-gaopei gaopeiColor"></span> -->
         <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
         <div class="class-time">推荐课时 {{v.class_cnt}}</div>
         <div class="user-info" v-if="currentTab === 1&&v.user_profile">
@@ -453,6 +454,10 @@ const getDirection = () => {
       font-size: var(--font-size-16);
       flex: 1;
       padding-right: 14px;
+    }
+    .icon-gaopei{
+      margin-right: 8px;
+      font-size: 18px;
     }
     .class-time {
       width: 120px;

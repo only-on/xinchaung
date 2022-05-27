@@ -6,6 +6,13 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "30030610",
+      "name": "高配",
+      "font_class": "gaopei",
+      "unicode": "e677",
+      "unicode_decimal": 58999
+    },
+    {
       "icon_id": "30030099",
       "name": "成绩统计",
       "font_class": "chengjitongji",
