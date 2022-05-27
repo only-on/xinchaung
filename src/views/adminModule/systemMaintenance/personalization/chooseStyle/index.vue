@@ -20,7 +20,8 @@
       ref,
       onMounted,
       reactive,
-      inject
+      inject,
+      watch
     } from "vue";
 interface Props {
     titleInfo?: string;
@@ -37,7 +38,10 @@ const props = withDefaults(defineProps<Props>(), {
     checkVal: '',
     disabled: false
 });
-const checkVal = ref(props.checkVal)
+const checkVal = ref<any>()
+watch(()=>props.checkVal, newVal => {
+  checkVal.value = newVal
+},{immediate: true})
 const emit = defineEmits<{
   (e: "update:checkVal", val: number): void;
 }>();
