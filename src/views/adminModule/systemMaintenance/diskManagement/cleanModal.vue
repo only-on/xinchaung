@@ -5,14 +5,28 @@
                 <div>
                     <div>单个节点磁盘使用量达到80%</div>
                     自动清除系统中
-                    <a-month-picker v-model:value="value2" format="M月" :disabled-date="disabledDate" placeholder="请选择月份"/>
+                    <a-select v-model:value="value2">
+                    <a-select-option
+                        v-for="item in timeSelectData"
+                        :value="item.value"
+                        :key="item.value"
+                        >{{ item.label }}</a-select-option
+                    >
+                    </a-select>
                     以前的操作视频
                 </div>
             </div>
             <div v-else>
                 <div>
                     请选择，清理
-                    <a-month-picker v-model:value="value2" format="M月" :disabled-date="disabledDate" placeholder="请选择月份"/>
+                    <a-select v-model:value="value2">
+                    <a-select-option
+                        v-for="item in timeSelectData"
+                        :value="item.value"
+                        :key="item.value"
+                        >{{ item.label }}</a-select-option
+                    >
+                    </a-select>
                     日期当日及之前的系统日志（建议不要清除近三个月的内容）
                 </div>
             </div>
@@ -28,6 +42,13 @@
       inject
     } from "vue";
     import moment from 'moment';
+    const timeSelectData=[
+        {label:'一个月前',value:30},
+        {label:'二个月前',value:60},
+        {label:'三个月前',value:90},
+        {label:'六个月前',value:180},
+        {label:'一年前',value:365}
+    ]
 interface Props {
     visible:any;
     cleanType:any;
@@ -38,21 +59,24 @@ const props = withDefaults(defineProps<Props>(), {
   cleanType:()=>{},
   diskType:()=>{}
 });
-const value2:any=ref()
+const value1:any=ref(365)
+const value2:any=ref(365)
 const disabledDate = (current:any) => {
       // Can not select days before today and today
       return current && current > moment().endOf('day');
 };
 const emit = defineEmits<{
   (e: "update:visible", visible: boolean): void;
+  (e: "getday",value2:any): void;
 }>();
 function handleOk(){ 
     emit("update:visible", false);
-    value2.value=''
+    emit('getday',value2.value)
+    value2.value=365
 }
 function handCancel(){
     emit("update:visible", false);
-    value2.value=''
+    value2.value=365
 }
 
 </script>

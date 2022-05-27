@@ -213,26 +213,10 @@ function onSelectChange(selectedRowKeys: any) {
 }
 function addHelp(){
   visible.value=true;
-  // 添加时清理下数据
-  clearData()
 }
 function cancel(){
   visible.value=false;
-}
-function clearData(){
-  formState.username='',
-  formState.password_hash='',
-  formState.repassword='',
-  formState.userinitpassword=true,
-  formState.direct='',
-  formState.course='',
-  formState.name='',
-  formState.gender='1',
-  formState.phone='',
-  formState.email='',
-  formState.status='10',
-  formState.introduce='',
-  formState.reset=false
+  formRef.value.resetFields()
   editId.value=''
 }
 function changeSwitch(item: any) {
@@ -247,7 +231,6 @@ function changeSwitch(item: any) {
       });
  }
  function editCard(val:any) {
-      clearData()
       editId.value = val.id;
       http
         .getAssistantDetail({ urlParams: { id: editId.value } })

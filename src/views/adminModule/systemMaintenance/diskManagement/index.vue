@@ -51,12 +51,12 @@
                     <div class='content-left'>
                         <div class="tit tit2">更多清理</div>
                         <div class='toMaterial'>
-                            <a-button type='primary' class="btn orange">
+                            <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/resourcesManagement')">
                                 <span class="icon iconfont icon-material"></span>
                                 <span> 到素材资源</span>                          
                             </a-button></div>
-                        <div>
-                            <a-button class="button">
+                        <div class="toImage">
+                            <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/mirrorImageManagement')">
                             <span class="icon iconfont icon-rongqijingxiangfuwu"></span>
                             <span>到镜像</span>
                             </a-button>
@@ -67,12 +67,12 @@
             </div>
         </div>
         <div class="managementBottom">
-            <div class="diskStatistic">
+            <!-- <div class="diskStatistic">
                 <div class="diskTitle">
                    磁盘使用统计
                 </div>
                 <div id="statiscEcharts"></div>
-            </div>
+            </div> -->
             <div class="diskOperateRecord">
                 <div class="diskTitle">
                    操作记录 
@@ -80,11 +80,25 @@
                 <a-table
                     :columns="columns"
                     :data-source="tabledata"
+                    row-key="id"
+                    :pagination="
+                    tableData.total > 10
+                    ? {
+                        hideOnSinglePage: false,
+                        showSizeChanger: false,
+                        total: tableData.total,
+                        current: tableData.page,
+                        pageSize: tableData.limit,
+                        onChange: onChange,
+                        onShowSizeChange: onShowSizeChange,
+                        }
+                    : false
+                "
                 >
                 </a-table>
             </div>
         </div>
-        <cleanModal v-model:visible='visible' :diskType='diskType' :cleanType='cleanType'></cleanModal>
+        <cleanModal v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
     </div>
 </template>
 <script lang="ts" setup>
@@ -98,7 +112,12 @@
     import {option}  from './option';
     import * as echarts from 'echarts';
     import cleanModal from './cleanModal.vue'
-import { Console } from "console";
+    import { Console } from "console";
+    import request from "src/api/index";
+    import { message } from "ant-design-vue";
+    import { useRouter ,useRoute } from 'vue-router';
+    const router = useRouter();
+    const http = (request as any).systemMaintenance;
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     updata({
@@ -112,27 +131,45 @@ import { Console } from "console";
 const diskType:any=ref('video');
 const cleanType:any=ref(false);
 const columns: any = ref();
-const tabledata: any = ref([]);
+const tableData = reactive({
+  total: 0,
+  page: 1,
+  limit: 10,
+});
+const tabledata: any = ref();
 columns.value = [
   {
     title: "时间",
-    dataIndex: "time",
-    key: "time",
+    dataIndex: "updated_at",
+    key: "updated_at",
   },
   {
     title: "清理内容",
-    dataIndex: "content",
-    key: "content",
+    dataIndex: "detail.type",
+    key: "detail.type",
   },
   {
     title: "释放空间",
-    dataIndex: "space",
-    key: "space",
+    dataIndex: "detail.free_size",
+    key: "detail.free_size",
   }
 ];
 const chartdata:any=ref('')
 chartdata.value='录制视频'
 const visible:any=ref(false)
+    function getday(day:any){
+        console.log(day,'daydayggggggggg')
+        // cleanType.value是否自动清理 true false
+          //diskType.value   systemLog  video
+
+        if(cleanType.value){
+            if(diskType.value=='systemLog'){
+                clearLogData(day)
+            }else{
+                clearScreenData(day)
+            }
+        }
+    }
     function drawEcharts(){
         document.getElementById('statiscEcharts')?.removeAttribute("_echarts_instance_");
         var chartDom:any=document.getElementById('statiscEcharts')
@@ -144,8 +181,41 @@ const visible:any=ref(false)
         diskType.value=type
         cleanType.value=ifauto
     }
+    function onChange(page: any, pageSize: any) {
+        tableData.page = page;
+        getOperateList()
+    }
+    function onShowSizeChange(page: any, pageSize: any) {
+        tableData.page = 1;
+        tableData.limit = pageSize;
+        getOperateList()
+    }
+    function getOperateList(){
+        let params = {
+            limit: tableData.limit,
+            page: tableData.page,
+        };
+        http.operateRecords({param:params}).then((res:any)=>{
+            tabledata.value=res.data.list
+            tableData.total=res.data.page.totalCount
+        })
+    }
+    function clearScreenData(day:any){
+        http.clearScreen({param:{day:day}}).then((res:any)=>{
+            message.success('清除成功')
+        })
+    }
+    function clearLogData(day:any){
+        http.clearLog({param:{day:day}}).then((res:any)=>{
+            message.success('清除成功')
+        })
+    }
+    function jump(url:any){
+        router.push(url)
+    }
     onMounted(()=>{
-        drawEcharts()
+        getOperateList()
+        // drawEcharts()
     })
     </script>
     <style lang="less" scoped>
@@ -222,16 +292,18 @@ const visible:any=ref(false)
             .big-icon2{
                 background:linear-gradient(#95EDF3 0%,#74C4E8 50%, #A4CBFB 100%);
             }
-            .toMaterial{
+            .toMaterial,.toImage{
                 :deep(.ant-btn){
                 border-radius: 5px!important;
+                width: 150px;
+                text-align: left;
             }
                 margin-bottom: 15px;
                 .icon{
                     margin-right: 10px;
                 }
             }
-            .button{
+            .jumpBtn{
                 color: var(--primary-color);
                 .icon{
                     margin-right: 10px;
@@ -265,13 +337,13 @@ const visible:any=ref(false)
         .managementBottom{
             display: flex;
             justify-content: space-between;
-            height: 429px;
+            height:580px;
             .diskTitle{
                 font-size: 18px;
                 margin-bottom: 20px;
             }
             .diskStatistic,.diskOperateRecord{
-                width: 49.5%;
+                // width: 49.5%;
                 padding: 20px;
                 background-color: var(--white);
             }
@@ -281,4 +353,9 @@ const visible:any=ref(false)
             }
         }
     }
+    
+        .jumpBtn:hover{
+            background-color: var(--primary-color);
+            color: white !important;
+        }
     </style>

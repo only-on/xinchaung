@@ -319,14 +319,16 @@
                               v-for="(mit, aindex) in classVal.arrangements"
                             >
                             <div>
-                              <span>{{
-                                classVal.arrangements[aindex].teacher_name
-                              }}</span>
+                              <span :title="classVal.arrangements[aindex].teacher_name" class="teacher_name">
+                              <!-- {{classVal.arrangements[aindex].teacher_name}} -->
+                              哈哈哈哈哈哈哈哈
+                              </span>
                             </div>
                              
                               <span
                                 class='subscribe'
-                                >公预约{{ classVal.arrangements[aindex].stu_num }}人
+                                >共预约
+                                {{ classVal.arrangements[aindex].stu_num }}人
                                 <span class="edit-del-btn-wrap">
                                   <i
                                     @click="adminEdit(classVal.arrangements[aindex])"
@@ -1257,9 +1259,9 @@ onMounted(() => {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        padding: 0 15px;
+        padding: 0 10px;
         cursor: pointer;
-        line-height: 24px;
+        line-height: 20px;
         position: relative;
         .edit-del-btn-wrap {
           display: none;
@@ -1274,6 +1276,7 @@ onMounted(() => {
             color: var(--brightBtn);
             line-height: 22px;
             vertical-align: text-bottom;
+            width:33px;
           }
         }
         > span {
@@ -1328,7 +1331,7 @@ onMounted(() => {
   text-align: center;
 }
 .subscribe{
-  margin-right: 20px;
+  // margin-right: 20px;
 }
 .admin-shanchu{
   margin-left: 5px;
@@ -1345,5 +1348,13 @@ onMounted(() => {
   line-height: 24px;
   margin: auto auto 10px auto;
   margin-top: auto;
+}
+.teacher_name{
+  display: inline-block;
+  width:70px;
+  height: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
