@@ -26,8 +26,8 @@ interface Props {
     titleInfo?: string;
     type?:string;
     data?:any;
-    checkVal: any;
-    disabled: boolean
+    checkVal?: any;
+    disabled?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
