@@ -21,6 +21,7 @@
           </div>
           <div>
           </div>
+          <div class='selected'>
             <a-tree
             checkable
             @select="selectTree"
@@ -70,6 +71,7 @@
               </a-tree-node>
             </a-tree-node>
             </a-tree>
+          </div>
         </div>
         <div class="middle">
           <div class="transferBox">
@@ -101,13 +103,15 @@
           </div>
           <div>
           </div>
-          <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
+          <div class="unselect">
+            <a-checkbox-group v-model:value="checkedValues" @change='changeChecks'>
             <div v-for="(item, index) in unGroupData" :key="item.userProfile.id">
               <a-checkbox :value="item.userProfile.id">
                 {{ item.userProfile.name }}
               </a-checkbox>
             </div>
           </a-checkbox-group>
+          </div>
         </div>
       </div>
     </a-modal>
@@ -412,6 +416,9 @@ onMounted(()=>{
       align-items: center;
       border-left: none;
     }
+    .createBtn:hover{
+      cursor: pointer;
+    }
   }
 }
 .unGroup{
@@ -428,5 +435,9 @@ onMounted(()=>{
 }
 :deep(.ant-input-group-addon){
   padding: 0px;
+}
+.unselect,.selected{
+  height: 420px;
+  overflow-y: auto;
 }
 </style>
