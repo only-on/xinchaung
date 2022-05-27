@@ -88,7 +88,7 @@
               <div class="flexCenter">
                 <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.file_name)});`"> </div>
                 <div class="fileInfo">
-                  <div class="fileName">{{state.fileItem.file_name}}</div>
+                  <div class="fileName single_ellipsis">{{state.fileItem.file_name}}</div>
                   <div class="info">
                     <span>{{state.fileItem.sizeString?state.fileItem.sizeString:bytesToSize(state.fileItem.size)}}</span>
                     <span>{{state.fileItem.created_at}}</span>
@@ -611,6 +611,7 @@ onMounted(() => {
               .fileName{
                 letter-spacing: 0.7px;
                 color: var(--black-85);
+                max-width: 650px;
               }
               .info{
                 color: var(--black-45);
