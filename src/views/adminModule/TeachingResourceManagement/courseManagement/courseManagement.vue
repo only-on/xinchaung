@@ -36,7 +36,7 @@
         </div>
       </div>
       <div class="item item4">
-        <h3 class="statisticalTitle">录像占用</h3>
+        <h3 class="statisticalTitle">录像</h3>
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
@@ -45,7 +45,7 @@
           <div class="right">
             <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
               <template #format="percent">
-                <div class="right1">镜像总量</div>
+                <div class="right1">磁盘总量</div>
                 <div class="right2">{{analysisObj.allTotalDisk}}G</div>
               </template>
             </a-progress>

@@ -26,6 +26,9 @@
     <div class="content textScrollbar">
       <div v-if="reportActive === 1" class="contentLeft">
         <div class="reportList flexCenter">
+          <!-- <div class="search">
+            <a-input v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
+          </div> -->
           <div class="item flexCenter" v-for="v in TemplateList" :key="v">
             <div
               class="eyeBox flexCenter"
@@ -123,6 +126,7 @@ var reportVisible = ref<boolean>(true);
 var reportTemplate = ref<boolean>(false);
 var reportActive = ref<number>(1);
 const TemplateList: any = reactive([1, 2, 3, 4, 5, 6]);
+var TemplaName=ref<string>("");
 const TemplateEditId = ref<number>(0);
 const TemplateViewType = ref<string>("");
 var reportTitle = ref<string>("");
@@ -139,6 +143,7 @@ const reportTab = (val: number) => {
 };
 const getTemplateList = (ActId?:number) => {
   TemplateList.length=0
+  // TemplaName
   http.getTemplateList({param: {type: 1}}).then((res: IBusinessResp) => {
     let list=res.data.list
     // type=0 系统  1在线 2离线
@@ -329,9 +334,9 @@ const cancelTemplate = (val: number,id?:number) => {
     }
   }
   .content {
-    max-height: 200px;
+    max-height: 600px;
     overflow-y: auto;
-    height: 200px;
+    height: 400px;
     .contentLeft {
       .reportList {
         flex-wrap: wrap;
@@ -385,6 +390,13 @@ const cancelTemplate = (val: number,id?:number) => {
               color: var(--primary-color);
               cursor: pointer;
             }
+          }
+        }
+        .search{
+          margin: 0;
+          input{
+            width: 260px;
+            border-radius: 18px;
           }
         }
         .item:hover {
