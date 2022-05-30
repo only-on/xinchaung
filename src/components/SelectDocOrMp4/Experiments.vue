@@ -24,8 +24,11 @@
         <div class="item flexCenter" v-for="v in docOrMp4Drawer.list" :key="v" :class="docOrMp4Drawer.activeFile.id === v.id ? 'active' : ''">
           <div class="flexCenter left">
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
-            <div class="task_type">{{v.type_obj.name}}</div>
-            <div class="quName single_ellipsis">{{v.name}}</div>
+            <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
+            <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
+            <div class="quName single_ellipsis flexCenter">
+              {{v.name}}
+            </div>
           </div>
           <div class="flexCenter right">
             <div class="class-time">推荐课时 {{v.class_cnt}}</div>
@@ -233,7 +236,7 @@ onMounted(()=>{
             // width: 55%;
             flex:1;
             .task_type{
-              width:80px;
+              width:70px;
               margin-left: 1rem;
             }
           }
@@ -252,10 +255,14 @@ onMounted(()=>{
               }
             }
           }
+          .icon-gaopei{
+              font-size: 16px;
+              margin-right: 4px;
+            }
           .quName {
             // word-break: break-all;
-            max-width: 200px;
             color: var(--black-85);
+            max-width: 200px;
             margin-bottom: 6px;
           }
       }
