@@ -6,6 +6,7 @@
     </div>
     <div class="tableScrollbar">
       <a-table
+      rowKey='id'
       :columns="columns"
       :data-source="data"
       :pagination="
@@ -137,6 +138,7 @@ function editGroup(id:any,name:any){
   group_id.value=id
   editGroupname.value=name
 }
+const emit = defineEmits<{ (e: "updateGroup",groupok:any): void }>();
 // 获取分组列表
 function getGroupList() {
         http
@@ -147,6 +149,11 @@ function getGroupList() {
             console.log(res);
             data.value = res.data.list;
             tableData.total = res?.data.page.totalCount;
+            if(tableData.total){
+              emit("updateGroup",false);
+            }else{
+              emit("updateGroup",true);
+            }
           });
 }
 onMounted(()=>{

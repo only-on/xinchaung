@@ -363,7 +363,8 @@ const courseDetail=(val:any)=>{
     query: { 
       currentTab:currentTab.value,
       courseId:val.id,
-      is_authorizedText:val.is_authorizedText
+      is_authorizedText:val.is_authorizedText,
+      // vvvvvvvvv
       }
     });
 }
