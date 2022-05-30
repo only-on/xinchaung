@@ -1,6 +1,6 @@
 <template>
   <div class="correct-wrap">
-    <div class="c-d-left">
+    <div class="c-d-left myChapter textScrollbar">
       <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
     </div>
     <div class="correct-right right">
@@ -564,6 +564,13 @@ onMounted(() => {
   height: 767px;
   width: var(--center-width);
   margin: 0 auto;
+  .myChapter{
+        padding:0 24px;
+        min-height:700px;
+        max-height: 850px;
+        overflow: auto;
+        // padding-right: 10px;
+      }
   .c-d-left {
     padding-top: 24px;
     width: 300px;

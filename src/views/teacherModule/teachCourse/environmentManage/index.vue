@@ -1,6 +1,6 @@
 <template>
   <div class="env-manage">
-    <div class="tree">
+    <div class="tree myChapter textScrollbar">
       <chapter-tree 
         :Environment="true"
         :courseId="Number(courseId)"
@@ -239,6 +239,13 @@ function handleOk(num: number) {
     margin-right: 16px;
     background-color: var(--white-100);
   }
+  .myChapter{
+        padding:0 24px;
+        min-height:700px;
+        max-height: 850px;
+        overflow: auto;
+        // padding-right: 10px;
+      }
   .content {
     flex: 1;
     padding: 24px;
