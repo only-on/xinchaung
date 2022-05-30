@@ -274,7 +274,7 @@ function copyCode(e: Event) {
          http.saveSettingApi({param:params}).then((res: any) => {
           reactiveData.authorizationData.authorization_code =
             res.authNumber;
-          method.getAuthorizationInfo();
+          // getAuthorizationInfo();
         });
     }
       // 获取系统日志时间配置
