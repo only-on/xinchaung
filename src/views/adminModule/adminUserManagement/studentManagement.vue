@@ -719,10 +719,10 @@ const router = useRouter();
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
         ? "./public/template/student.xlsx"
-        : "./public/template/student.xlsx";
+        : "./template/Teacher.xlsx";
       const a = document.createElement("a");
       a.href = url;
-      a.download = "学生模板.xlsx";
+      a.download = "学生模板1.xlsx";
       a.click();
     }
     function ImportStudent() {

@@ -313,6 +313,7 @@ function toRight(){
         });
         console.log(allstuids,'allstuids')
     }) 
+    groupedKeys.value=[]
 }
 function ifselect(keys:any){
   if(keys?.length){
