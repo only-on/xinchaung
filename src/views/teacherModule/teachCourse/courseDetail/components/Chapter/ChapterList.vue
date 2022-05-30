@@ -786,10 +786,10 @@ onMounted(() => {
 watch(
   () => connectStatus.value,
   (val) => {
-    if (val === 2 && role === 4&&!isOpen.value) {
+    if (val === 2 && role === 4&&!isOpen.value) {   // 学生端课程详情页面
       StudentChaptersTree(Number(course_student_id))
     }
-    if (val === 2 && role === 3&&!isOpen.value) {
+    if (val === 2 && role === 3&&!isOpen.value&&currentTab === '1') {  // 教师端 公开课程详情页面
       getChaptersTree()
     }
   },
