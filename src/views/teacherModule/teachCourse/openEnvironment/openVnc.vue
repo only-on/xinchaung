@@ -22,8 +22,8 @@
                   <span>{{ vmData.ssh_pass ? vmData.ssh_pass : "" }}</span>
                 </a-col>
                 <a-col :span="12">
-                  <span class="vm-list-title">ssh端口：</span>
-                  <span>{{ vmData.ssh_port ? vmData.ssh_port : "" }}</span>
+                  <span class="vm-list-title">{{ vmData?.classify === "Windows" ? "RDP" : "SSH" }}端口：</span>
+                  <span>{{ vmData?.classify === "Windows" ? vmData?.rdp_port : vmData?.ssh_port }}</span>
                 </a-col>
               </a-row>
             </div>
@@ -80,7 +80,7 @@
               <div class="upload-desc">
                 仅允许同时上传一个大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
               </div>
-              <div class="upload-path">文件目录：{{ vmData.base_upload_path }}</div>
+              <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}</div>
             </div>
             <div class="text-center">
               <a-space>
