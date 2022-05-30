@@ -320,8 +320,7 @@
                             >
                             <div>
                               <span :title="classVal.arrangements[aindex].teacher_name" class="teacher_name">
-                              <!-- {{classVal.arrangements[aindex].teacher_name}} -->
-                              哈哈哈哈哈哈哈哈
+                              {{classVal.arrangements[aindex].teacher_name}}
                               </span>
                             </div>
                              
@@ -1276,7 +1275,7 @@ onMounted(() => {
             color: var(--brightBtn);
             line-height: 22px;
             vertical-align: text-bottom;
-            width:33px;
+            width:29px;
           }
         }
         > span {
