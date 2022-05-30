@@ -46,7 +46,7 @@ const Detail=(val:any)=>{
   router.push({
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
     query:{
-      id:val.content_id,
+      id:val.id,
       currentTab:0,
       type: 'recommend'
     }
