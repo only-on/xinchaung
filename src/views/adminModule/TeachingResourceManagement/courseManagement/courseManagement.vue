@@ -224,12 +224,12 @@ const courseStatechange=(val: any)=> {
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   searchInfo.selectedRowKeys = selectedRowKeys; // 不去分别分页的弹窗已选ids
-  console.log(selectedRowKeys);
+  console.log(searchInfo.selectedRowKeys);
   
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
 }
 const BatchDelete=()=>{
-  return
+  // return
   Modal.confirm({
     title: "确认删除吗？",
     icon: createVNode(ExclamationCircleOutlined),
@@ -237,7 +237,7 @@ const BatchDelete=()=>{
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.BatchDelete({urlParams: {courseId:''}}).then((res: any) => {
+      http.CourseBatchDelete({param: {course_ids:searchInfo.selectedRowKeys}}).then((res: any) => {
         message.success("删除成功"); //
         searchInfo.selectedRowKeys=[]
         initData();
@@ -247,16 +247,17 @@ const BatchDelete=()=>{
 }
 // 
 const ClearScreen=()=>{
-  return
+  // return
   Modal.confirm({
-    title: "确认清除吗？",
+    title: "确认清除录屏吗？",
     icon: createVNode(ExclamationCircleOutlined),
     content: "清除后不可恢复",
     okText: "确认",
     cancelText: "取消",
     onOk() {
-      http.BatchDelete({urlParams: {courseId:''}}).then((res: any) => {
-        message.success("删除成功"); //
+      http.CourseBatchClearScreen({param: {course_ids:searchInfo.selectedRowKeys}}).then((res: any) => {
+        message.success("清除成功"); //
+        searchInfo.selectedRowKeys=[]
         initData();
       });
     },

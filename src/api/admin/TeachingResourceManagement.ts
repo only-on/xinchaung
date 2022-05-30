@@ -6,6 +6,10 @@ export default{
   imageBatchDelete:{url: `/api/course/admin/courses/images/multiple-deletes`, method: 'PUT',dataType: 'json'},
   //  课程列表
   courselist:{url:`/api/course/admin/courses/list`,method:'get',dataType: 'json'},
+  // 批量删除课程
+  CourseBatchDelete:{url: `/api/course/admin/courses/destroy`, method: 'DELETE',dataType: 'json'},
+  // 批量清楚录屏
+  CourseBatchClearScreen:{url: `/api/course/admin/courses/videos`, method: 'DELETE',dataType: 'json'},
 
   //实验管理列表
   experList:{url:`/api/course/admin/courses/contents`,method:'get',dataType: 'json'},
