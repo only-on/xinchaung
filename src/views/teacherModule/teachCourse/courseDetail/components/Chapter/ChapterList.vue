@@ -106,11 +106,12 @@
                 <div v-if="['canStudy','noStudy'].includes(props.Editable) || role ===2">
                   <!-- status 1 开始学习 topoinst_id有值 进入 status 2 学习结束 -->
                   <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
-                    <a-button  v-if="a.studys&&a.studys.length&&Number(a.studys[0].status)>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                    <a-button  v-else-if="a.task_type===3||a.task_type===6||a.task_type===7" type="primary" class="brightBtn" size="small" @click="openVm(a, 'start')">开始学习</a-button>
-                    <a-button  v-else-if="a.studys&&a.studys.length&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id" type="primary" class="brightBtn" size="small" @click="openVm(a, 'continue')">进入</a-button>
-                    <a-button v-else type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
-                    @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button>
+                    <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
+                    @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
+                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || role===3&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
+                    <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
+                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || role===3&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click="openVm(a, 'continue')">进入</a-button>
+                    <a-button v-else type="primary" class="brightBtn" size="small"  @click="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
                   </span>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
@@ -382,6 +383,51 @@ function selectExperiment(a:any,v:any){
 }
 
 // 备课 开始学习
+function studyHandle(a: any, studyType: string) {
+  const { id } = a
+  const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
+  const param: any = {
+    type: "course",  // 实验
+    opType: role === 3 ? 'prepare' : studyType,
+    taskId: id,
+    experType: task_type
+  };
+  // ide
+  if (task_type === 3) {
+    inspectEnv(param).then(() => {
+      a.startup=3
+      router.push({
+        path: "/vm",
+        query: {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          // routerQuery: JSON.stringify(routeQuery),
+          experType: task_type
+        },
+      });
+    })
+    return
+  }
+  // 文档视频实验
+  if (task_type === 6 || task_type === 7) {
+    a.startup=3
+    router.push({
+      path: "/vm",
+      query: {
+        type: param.type,
+        opType: param.opType,
+        taskId: param.taskId,
+        // routerQuery: JSON.stringify(routeQuery),
+        experType: task_type
+      },
+    });
+    return
+  }
+  prepareEnv(param).then(() =>{
+    a.startup=2
+  })
+}
 let currentClickIndex = ref(-1)
 const isOpen = ref(false)
 function prepare(a:any, i: number) {
@@ -435,23 +481,15 @@ function prepare(a:any, i: number) {
     return
   }
 }
-watch(
-  () => connectStatus.value,
-  (val) => {
-    if (val === 2 && role === 4&&!isOpen.value) {
-      StudentChaptersTree(Number(course_student_id))
-    }
-  },
-  {deep:true,immediate:true}
-)
 // 进入
 const openVm = (a: any, opType: string) => {
+  a.startup=2
   isOpen.value = true
   const { id } = a
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: opType,
+    opType: role === 3 ? 'prepare' : opType,
     taskId: id,
     experType: task_type
   };
@@ -464,7 +502,7 @@ const openVm = (a: any, opType: string) => {
           type: param.type,
           opType: param.opType,
           taskId: param.taskId,
-          routerQuery: JSON.stringify(routeQuery),
+          // routerQuery: JSON.stringify(routeQuery),
           experType: task_type
         },
       });
@@ -480,7 +518,7 @@ const openVm = (a: any, opType: string) => {
         type: param.type,
         opType: param.opType,
         taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
+        // routerQuery: JSON.stringify(routeQuery),
         experType: task_type
       },
     });
@@ -711,6 +749,7 @@ const getChaptersTree=()=>{
   chartLoading.value=true
   ChaptersTreeList.length=0
   http.getChaptersTree({urlParams:{courseId:props.courseId}}).then((res:any)=>{
+    if (!res) return
     const {data}=res
     chartLoading.value=false
     ProcessingData(data)
@@ -744,6 +783,18 @@ onMounted(() => {
   //   })
   // }
 });
+watch(
+  () => connectStatus.value,
+  (val) => {
+    if (val === 2 && role === 4&&!isOpen.value) {
+      StudentChaptersTree(Number(course_student_id))
+    }
+    if (val === 2 && role === 3&&!isOpen.value) {
+      getChaptersTree()
+    }
+  },
+  {deep:true,immediate:true}
+)
 </script>
 
 <style lang="less" scope>
