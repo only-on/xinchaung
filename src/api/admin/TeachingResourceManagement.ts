@@ -24,7 +24,7 @@ export default{
     //实验批量删除
     experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT',dataType: 'json'},
 
-    // 实验模版批量删除
+  //实验模版批量删除
     experTemplateDelete:{url: `/api/course/admin/courses/content-templates/multiple-deletes`, method: 'PUT',dataType: 'json'},
   // 知识图谱列表
   knowledgesList: {url: `/api/service/knowledges`, method: 'GET'},
