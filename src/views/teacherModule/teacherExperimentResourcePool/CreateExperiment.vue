@@ -308,10 +308,11 @@
     ></a-select>
     <a-upload-dragger
       :custom-request="()=>{}"
+      :show-upload-list="false"
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
       :multiple="false"
-      :fileList="upDoc.docFileList"
+      
       :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
     >
@@ -326,6 +327,13 @@
         支持单个MP4格式文件上传 且文件小于500M
       </p>
     </a-upload-dragger>
+    <div v-if="upDoc.docFileList.length" class="progress-box">
+      <div class="file-base-info">
+        <span>文件名称：{{ upDoc.docFileList[0].name }}</span
+        ><span class="icon-shanchu iconfont" @click="removeDocMp4"></span>
+      </div>
+      <a-progress :percent="upDoc.docFileList[0].percent" />
+    </div>
     <template #footer>
       <Submit @submit="confirmDoc()" @cancel="cancelUpDoc()" :loading="(upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0].status !== 'done')?true:false"></Submit>
     </template>
@@ -1235,6 +1243,17 @@ h3 {
   .icon-upload {
     font-size: 24px;
     color: var(--primary-color);
+  }
+  .progress-box {
+    margin-top: 10px;
+    .file-base-info {
+      display: flex;
+      justify-content: space-between;
+      &:hover {
+        cursor: pointer;
+        color: var(--primary-color);
+      }
+    }
   }
 }
 .submitBox {
