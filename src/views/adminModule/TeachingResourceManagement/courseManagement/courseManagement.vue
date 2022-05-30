@@ -264,7 +264,9 @@ const ClearScreen=()=>{
   });
 }
 const getpercent=(val:number)=>{
-  return Math.ceil(val/analysisObj.allCourseCount)
+  // console.log(Math.ceil(val/analysisObj.allCourseCount*100));
+  
+  return Math.ceil(val/analysisObj.allCourseCount*100)
 }
 // /teacher/teacherCourse/Detail?currentTab=1&courseId=500173
 const viewDetail=(val:any)=>{
