@@ -312,8 +312,8 @@ onMounted(() => {
         }
 
         .right {
-          width: 306px;
-          margin-left: 24px;
+          width: calc(100% - 44px);
+          padding-left: 24px;
           > .item-top {
             display: flex;
             flex-direction: row;
