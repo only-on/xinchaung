@@ -9,9 +9,16 @@
             </td>
           </template>
         </tr>
-        <tr v-if="['w2','w3'].includes(item.type)"  :class="item.type">
+       <tr v-if="['w2'].includes(item.type)"  :class="item.type">
             <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:4" :name="it.name" :align="it.align">
+            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
+              {{ it.value }}
+            </td>
+          </template>
+        </tr>
+        <tr v-if="['w3'].includes(item.type)"  :class="item.type">
+            <template v-for="(it,ind) in item.fields" :key="item.type + ind">
+            <td :colspan="1" :name="it.name" :align="it.align">
               {{ it.value }}
             </td>
           </template>
@@ -23,9 +30,10 @@
                 </td>
             </tr>
         </template>
+        
         <tr v-if="['w5'].includes(item.type)"  :class="item.type">
             <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:4" :name="it.name" :align="it.align">
+            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
               {{ it.value }}
             </td>
           </template>
@@ -39,7 +47,7 @@
         </template>
         <tr v-if="['w7'].includes(item.type)"  :class="item.type">
             <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:4" :name="it.name" :align="it.align">
+            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
               <template v-if="ind==0">
                 {{ it.value }}
               </template>

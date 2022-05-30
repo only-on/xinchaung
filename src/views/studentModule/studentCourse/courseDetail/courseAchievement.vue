@@ -432,7 +432,7 @@ onMounted(() => {
         color: var(--orangeyellow-6);
         // background-color: blue;
         .stu-info-left {
-          padding-right: var(--padding-xs);
+          // padding-right: var(--padding-xs);
           > div:nth-child(-n + 2) {
             color: #1a0f91;
           }
