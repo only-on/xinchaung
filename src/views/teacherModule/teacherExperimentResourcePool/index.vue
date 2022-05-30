@@ -163,6 +163,7 @@ watch(
     searchInfo.content_direction = 0
     searchInfo.content_type = 0
     searchInfo.content_level = 0
+    searchInfo.name = ''
     resetKeyword.value = !resetKeyword.value
     classifyList.forEach((v: any) => {
       v.value = 0

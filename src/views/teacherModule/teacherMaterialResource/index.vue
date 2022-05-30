@@ -181,7 +181,6 @@ watch(
     classifyList[0].value = 0
     classifyList[1].value = 0
     resetKeyword.value = !resetKeyword.value
-    // }
     initData();
     // getLabelsList()
     // getTypeList()

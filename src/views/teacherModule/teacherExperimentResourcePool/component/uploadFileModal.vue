@@ -11,12 +11,9 @@
         style="width: 240px"
         v-model:value="dataset_id"
         placeholder="请选择目录"
+        :options="videoDirectoryList"
       >
-        <a-select-option
-          v-for="(val) in videoDirectoryList"
-          :value="val.id"
-          :key="val.id"
-          >{{ val.name }}
+        <a-select-option>
         </a-select-option>
       </a-select>
       <a-upload
@@ -67,8 +64,8 @@ onMounted(() => {
 });
 // 获取视频/文档目录列表
 interface IVideoDirectoryList {
-  id: number
-  name: string
+  label: string
+  options: any[]
 }
 const props = withDefaults(defineProps<Props>(), {
   visibleUpload: false,
@@ -82,13 +79,28 @@ interface Props {
   visibleUpload: boolean;
   type: string;
 }
-const videoDirectoryList = reactive<IVideoDirectoryList[]>([]);
+const videoDirectoryList = reactive<IVideoDirectoryList[]>([
+  { label: "公有", options: [{ label: "共有1", value: 1 }] },
+  { label: "私有", options: [{ label: "私有1", value: 2 }] }
+]);
 const getVideoDirectory = () => {
+  videoDirectoryList[0].options.length = 0
+  videoDirectoryList[1].options.length = 0
   // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导 7: 文档实验
-  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:7}}).then((res: any) => {
-    videoDirectoryList.push(...res.data.private)
-    dataset_id.value=videoDirectoryList[0]?.id
-
+  httpExp.getCatalogueList({urlParams: {typeId: props.type==='video' ? 4:7}}).then((res: any) => {
+    res.data.public.forEach((item:any) => {
+      videoDirectoryList[0].options.push({
+        value: item.id,
+        label: item.name
+      })
+    })
+    res.data.private.forEach((item:any) => {
+      videoDirectoryList[1].options.push({
+        value: item.id,
+        label: item.name
+      })
+    })
+    dataset_id.value= res.data.private[0]?.id || res.data.public[0]?.id
   });
 };
 
