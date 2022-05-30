@@ -209,6 +209,8 @@ const multiplexingCourse=(val:number)=>{
     formRef.value.validate().then(()=>{
       formState.is_available=0
       // formState.is_available=1
+      formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+      formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
       stup1Loading.value=true
       http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
         const {data}=res
@@ -232,6 +234,8 @@ const multiplexingCourse=(val:number)=>{
   if(val===3 || val === 4){
       formState.is_available=1
       stup1Loading.value=true
+      formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+      formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
       http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
         const {data}=res
         stup1Loading.value=false
