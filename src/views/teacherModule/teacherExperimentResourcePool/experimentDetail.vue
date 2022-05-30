@@ -107,7 +107,7 @@ import { theme } from "src/utils/theme"
 import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
 import defaultAvatar from 'src/assets/images/admin/home/env3.png'
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
@@ -169,15 +169,31 @@ const openVnc = () => {
   if (type) {
     param.recommendType = 'content'
   }
-
-  if (content_type === 6 || content_type === 7 || content_type === 3) {
+  // ide
+  if (content_type === 3) {
+    inspectEnv(param).then(() => {
+      router.push({
+        path: "/vm",
+        query: {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          // routerQuery: JSON.stringify(routeQuery),
+          experType: task_type
+        },
+      });
+    })
+    return
+  }
+  // 视频 文档
+  if (content_type === 6 || content_type === 7) {
     router.push({
       path: "/vm",
       query: {
         type: param.type,
         opType: param.opType,
         taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
+        // routerQuery: JSON.stringify(routeQuery),
         experType: content_type
       },
     });

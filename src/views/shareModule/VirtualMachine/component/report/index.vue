@@ -115,9 +115,11 @@ function getUrlParam(name: string): string | null {
 function experReport(params: experReportParam) {
   vmApi.experimentalReport({ param: params }).then((res:any) => {
     reportTemplateData.value = res?.data;
-    fileList.value = [
-      {id: reportTemplateData.value.id, name: reportTemplateData.value.json_content?.filename}
-    ]
+    if (reportTemplateData.value && reportTemplateData.value.template_type === 'file') {
+      reportTemplateData.value.json_content?.filename ? fileList.value = [
+        {id: reportTemplateData.value.id, name: reportTemplateData.value.json_content?.filename}
+      ] : ''
+    }
   });
 }
 function submitOfflineReport() {

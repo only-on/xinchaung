@@ -647,6 +647,11 @@ export default defineComponent({
         closeWs()
         if (newVal === '/student/studentCourse/Detail') {
           setWs()
+          return
+        }
+        if (newVal === '/teacher/teacherExperimentResourcePool/experimentDetail') {
+          setWs()
+          return
         }
       }
       if (['/teacher/home', '/admin/home', '/student/statistics'].includes(newVal)) {

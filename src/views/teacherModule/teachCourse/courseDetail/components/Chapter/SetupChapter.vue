@@ -68,7 +68,7 @@ import { Modal, message } from "ant-design-vue";
 import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
 
 import { useStore } from "vuex";
 const store = useStore()
@@ -209,8 +209,24 @@ const lessonPreparation=()=>{
     taskId: id,
     experType: task_type
   };
-
-  if (task_type === 6 || task_type === 7 || task_type === 3) {
+  // ide
+  if (task_type === 3) {
+    inspectEnv(param).then(() => {
+      router.push({
+        path: "/vm",
+        query: {
+          type: param.type,
+          opType: param.opType,
+          taskId: param.taskId,
+          // routerQuery: JSON.stringify(routeQuery),
+          experType: task_type
+        },
+      });
+    })
+    return
+  }
+  // 视频 文档
+  if (task_type === 6 || task_type === 7) {
     router.push({
       path: "/vm",
       query: {

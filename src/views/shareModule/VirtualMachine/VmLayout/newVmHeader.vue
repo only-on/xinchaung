@@ -248,7 +248,7 @@
       实验时间已到，您可以选择结束实验或通过延时继续进行实验！<span
         class="down-time-60s"
         >{{ delayTime }}</span
-      >s后自动结束实验！;
+      >s后自动结束实验！
     </div>
     <template #footer>
       <div class="btns">
