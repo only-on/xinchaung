@@ -19,7 +19,7 @@
         >
           {{ v.type_obj.name }}
         </div>
-        <!-- <span class="iconfont icon-gaopei gaopeiColor"></span> -->
+        <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
         <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
         <div class="class-time">推荐课时 {{v.class_cnt}}</div>
         <div class="user-info" v-if="currentTab === 1&&v.user_profile">
@@ -274,6 +274,7 @@ interface IExperimentList {
   user_id: number
   is_webssh: number
   programing_type: number
+  is_high:boolean
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);

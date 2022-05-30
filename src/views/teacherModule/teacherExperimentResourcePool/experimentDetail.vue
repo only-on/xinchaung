@@ -13,7 +13,7 @@
             color: getTypeList('-90deg')[experimentDetail.content_type].color,
             background: getTypeList('-90deg')[experimentDetail.content_type].detailebBackgroundColor,
           }">{{getTypeList('-90deg')[experimentDetail.content_type].name}}</span>
-          <!-- <span class="iconfont icon-gaopei gaopeiColor"></span> -->
+          <span v-if="experimentDetail.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
           <span class="name">{{ experimentDetail.name }}</span>
         </div>
         <div class="right">
@@ -264,7 +264,8 @@ let experimentDetail = reactive<IExperimentDetail>({
     name: ''
   },
   content_type: 1,
-  is_webssh: 0
+  is_webssh: 0,
+  is_high:false
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -323,6 +324,7 @@ interface IExperimentDetail {
   user_profile: any
   content_type: number
   is_webssh: number
+  is_high:boolean
 }
 </script>
 <style scoped lang="less">
