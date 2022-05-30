@@ -87,7 +87,7 @@ const getVideoDirectory = () => {
   videoDirectoryList[0].options.length = 0
   videoDirectoryList[1].options.length = 0
   // 1：数据集；2：应用软件；3：课件；4：视频；5：备课资料；6：教学指导 7: 文档实验
-  httpExp.getCatalogueList({urlParams: {typeId: props.type==='video' ? 4:7}}).then((res: any) => {
+  http.getSelectResourceList({urlParams: {typeID: props.type==='video' ? 4:7}}).then((res: any) => {
     res.data.public.forEach((item:any) => {
       videoDirectoryList[0].options.push({
         value: item.id,
