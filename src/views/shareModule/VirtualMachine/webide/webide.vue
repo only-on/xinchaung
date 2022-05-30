@@ -367,6 +367,8 @@ function getTaskInfoData() {
     use_time.value = res?.data.current?.remaining_time;
     // taskType.value = res.data.base_info.task_type.type;
     taskType.value = 3
+
+    initWs();
   });
 }
 // 获取版本列表
@@ -573,7 +575,7 @@ onMounted(async () => {
   createTopo().then(async () => {
     await getTaskInfoData();
     // if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
-      initWs();
+      // initWs();
     // }
     let versions: any = await getVersionListData();
     console.log(versions);

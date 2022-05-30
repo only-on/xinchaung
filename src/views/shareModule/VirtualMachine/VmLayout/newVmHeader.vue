@@ -702,11 +702,11 @@ function back() {
 
 // 下拉选择虚拟机
 async function switchVm() {
-  currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
-  currentUuid.value = currentVm.value.uuid;
   if (isScreenRecording.value) {
     await startEndRecord();
   }
+  currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
+  currentUuid.value = currentVm.value.uuid;
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
