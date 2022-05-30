@@ -45,7 +45,7 @@
                     </div>
                     <div class="step-row">
                         <div class="step-text">文件名称</div>
-                        <div>
+                        <div class="divbox">
                             <span class="filename">{{authorizationFile.filename}}</span>
                             <span v-if="authorizationFile.filename"  @click="removeFile" class="icon iconfont icon-shanchu"></span>   
                         </div>
@@ -354,5 +354,9 @@ function copyCode(e: Event) {
       white-space:nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+    .divbox{
+      display: flex;
+      align-items: center;
     }
 </style>
