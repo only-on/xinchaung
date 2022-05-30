@@ -446,7 +446,6 @@ export default defineComponent({
       4:[statistics,forum,studentCourse]
     }[role]
     menus.push(...arr)
-    lStorage.set("menuActiveName", '首页');
     var systemBaseInfo: any = reactive({
       login_logo: "",
     });
@@ -649,6 +648,9 @@ export default defineComponent({
         if (newVal === '/student/studentCourse/Detail') {
           setWs()
         }
+      }
+      if (['/teacher/home', '/admin/home', '/student/statistics'].includes(newVal)) {
+        lStorage.set("menuActiveName", '首页');
       }
     },{immediate: true})
     onUnmounted(() => {

@@ -138,7 +138,7 @@ export default defineComponent({
         });
       }
     }
-    watch(activeName, (val: any) => {
+    watch(()=>activeName.value, (val: any) => {
       lStorage.set("menuActiveName", val);
     });
     const http = (request as any).common;
