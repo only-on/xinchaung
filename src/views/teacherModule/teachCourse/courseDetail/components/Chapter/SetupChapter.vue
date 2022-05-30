@@ -29,8 +29,8 @@
           </div>
         </div>
         <a-spin :spinning="experimentGuideLoading" size="large" tip="Loading...">
-          <div class="pdfBox experimentGuide">
-            <!-- 实验指导展示  chartLoading-->
+          <div class="experimentGuide">
+            <!-- 实验指导展示  chartLoading  textScrollbar  --> 
             <!-- {{`实验类型：${state.activeExperimentObj.type}`}} -->
             <template v-if="!experimentGuideLoading">
               <ExperimentalGuidance :activeExperimentObj="state.activeExperimentObj" />
@@ -300,7 +300,7 @@ onMounted(() => {
       // width: 674px;
       background: #ffffff;
       margin-left: 16px;
-      margin-right: 16px;
+      // margin-right: 16px;
       flex: 1;
       padding:10px 22px 22px 30px;
       .title{
@@ -325,10 +325,10 @@ onMounted(() => {
       //   height: 630px;
       // }
       .experimentGuide{
-        height: 730px;
-        // overflow: auto;
+        height: 800px;
+        overflow: auto;
         // border: 1px solid rgba(0,0,0,0.15);
-        padding: 10px 10px 20px 0px;
+        padding: 24px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
         max-width: 646px;
