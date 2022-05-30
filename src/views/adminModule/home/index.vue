@@ -125,7 +125,7 @@
                                 <span :class="item.grade=='low'?'low':(item.grade=='middle'?'middle':'high')">
                                     {{item.grade=='low'?'低风险':(item.grade=='middle'?'中风险':'高风险')}}
                                 </span>
-                                <span class='maintain' @click="toMaintain">
+                                <span class='maintain' @click="toMaintain(item.link)">
                                     去维护 
                                 </span>
                             </div>
@@ -221,10 +221,10 @@
     const options:any = ref([
     ])
     const warningMessage:any=ref([
-        {title:'CPU使用率',percent:'--',grade:'低风险',link:''},
-        {title:'内存使用率',percent:'--',grade:'低风险',link:''},
-        {title:'GPU使用率',percent:'--',grade:'中风险',link:''},
-        {title:'硬盘使用率',percent:'--',grade:'高风险',link:''}
+        {title:'CPU使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
+        {title:'内存使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
+        {title:'GPU使用率',percent:'--',grade:'中风险',link:'/teacher/coursePlan'},
+        {title:'硬盘使用率',percent:'--',grade:'高风险',link:'/admin/systemMaintenance/diskManagement'}
     ])
     //资源历史使用概览
     const radioTime:any=ref('yesterday')
@@ -377,10 +377,10 @@
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
-                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},'#00cbc2'))
                 drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
-                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},'#6993fe'))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},'#6993fe'))
             }
         })
     }
@@ -477,8 +477,8 @@
     　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
     　　return y + "-" + m + "-" + d;
     };
-    function toMaintain(){
-        router.push('/admin/systemMaintenance/diskManagement')
+    function toMaintain(link:any){
+        router.push(link)
     }
     function nodeOpera(ip: any, node_type: any, action: any) {
         Modal.confirm({
