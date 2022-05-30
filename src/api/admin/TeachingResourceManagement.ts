@@ -21,8 +21,8 @@ export default{
    //在线模版
    viewTemplate: {url: ` /api/simple/report/templates/{id}`, method: 'GET'},
 
-    //实验批量删除
-    experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT',dataType: 'json'},
+  //实验批量删除
+  experDelete:{url: `/api/course/admin/courses/contents/multiple-deletes`, method: 'PUT',dataType: 'json'},
   //实验模版批量删除
     experTemplateDelete:{url: `/api/course/admin/courses/content-templates/multiple-deletes`, method: 'PUT',dataType: 'json'},
   // 知识图谱列表
