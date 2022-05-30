@@ -214,8 +214,8 @@ function copyCode(e: Event) {
         };
         reactiveData.upload = new uploadFile({
           url: env
-            ? "/proxyPrefix/authorization/setting/upload-file"
-            : "/authorization/setting/upload-file",
+            ? "/api/yii/proxyPrefix/authorization/setting/upload-file"
+            : "api/yii/authorization/setting/upload-file",
           body,
           success: (res: any) => {
             if (res.status === 1) {

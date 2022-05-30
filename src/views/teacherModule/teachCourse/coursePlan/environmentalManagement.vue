@@ -175,8 +175,8 @@ const columns: any = [
   },
   {
     title: "虚拟机个数",
-    dataIndex: "className",
-    key: "address",
+    dataIndex: "vm_mum",
+    key: "vm_mum",
   },
   {
     title: "占用内存",

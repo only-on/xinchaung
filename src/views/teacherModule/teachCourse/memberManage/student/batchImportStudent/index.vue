@@ -128,7 +128,7 @@ function callback() {}
 function downloadTemplate(){
   let development = process.env.NODE_ENV == "development" ? true : false;
       let url = development
-        ? './public/template/Student.xlsx'
+        ? './public/template/student.xlsx'
         : "/uploadfiles/import/student.xlsx"; 
       FileSaver.saveAs(url,'学生模版');
 }
