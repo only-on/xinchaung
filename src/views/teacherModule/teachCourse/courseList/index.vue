@@ -299,7 +299,7 @@ const EmptyType:any=computed(()=>{
   return str
 })
 const EmptyText=computed(()=>{
-  if(!courseList.length && !loading.value && EmptyType.value ==='empty'){
+  if(!courseList.length && !loading.value && EmptyType.value ==='empty' && currentTab.value===0){
     return '暂无课程，点击下方按钮创建课程吧！'
   }else{
     // return '抱歉暂未搜到相关数据'
@@ -416,7 +416,10 @@ const Save=(val:string,data?:any)=>{
   if(obj['status']==='finished' && obj['file_path']){
     let url=`${env?'/proxyPrefix':''}${obj['file_path']}`
     downloadUrl(url,obj['fileName'])
-    // downloadUrl(url,`${activeCourse.name}.zip`)
+    // const a = document.createElement("a");
+    // a.href = url;
+    // a.download = obj['fileName'];
+    // a.click();
   }
   // Visible.value=false
 }

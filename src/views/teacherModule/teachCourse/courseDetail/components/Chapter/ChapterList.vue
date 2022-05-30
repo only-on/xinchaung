@@ -890,9 +890,10 @@ onMounted(() => {
         }
       }
       .experimentGuide{
-        height: 500px;
-        max-height: 500px;
+        // height: 500px;
+        // max-height: 500px;
         // overflow: auto;
+        padding: 1rem 0;
         :deep(.ant-spin-nested-loading){
           height: 100%;
         }

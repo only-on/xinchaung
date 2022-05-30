@@ -34,10 +34,10 @@
             <span>创建日期</span>
             <span>{{state.detail.created_at}}</span>
           </div>
-          <div class="item">
+          <!-- <div class="item">
             <span>类型</span>
             <span>{{state.detail.categoryText}}</span>
-          </div>
+          </div> -->
         </div>
       </div>
       <div class="header_right">

@@ -27,7 +27,7 @@
         :disabled="props.preview"
       />
     </a-form-item>
-    <a-form-item label="任务描述" name="summary" required>
+    <a-form-item label="任务描述" class="item2" name="summary" required>
       <div class="form-upload" v-if="!props.preview">
         <a-upload
           name="file"
@@ -44,9 +44,10 @@
       <marked-editor
         v-model="props.taskList.summary"
         :preview="props.preview"
+        class="markdown__editor"
       />
     </a-form-item>
-    <a-form-item label="任务步骤" name="detail" required v-if="props.is_show_task_step">
+    <a-form-item label="任务步骤" class="item2" name="detail" required v-if="props.is_show_task_step">
       <div class="form-switch">
         状态
         <a-switch
@@ -70,6 +71,7 @@
       <marked-editor
         v-model="props.taskList.detail"
         :preview="props.preview"
+        class="markdown__editor"
       />
     </a-form-item>
   </a-form>
@@ -188,8 +190,12 @@ interface ItaskList {
   :deep(.mark__body) {
     .mark__editor,
     .mark__preview {
-      height: 316px;
+      // height: 316px;
     }
   }
+}
+.markdown__editor{
+  // height: 100%;
+  height: 500px;
 }
 </style>
