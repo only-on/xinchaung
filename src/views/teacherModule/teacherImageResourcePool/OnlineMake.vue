@@ -85,7 +85,7 @@
   <a-modal class="save-image-modal" :visible="saveVisible" @cancel='cancel'>
          <template v-slot:title>保存镜像</template>
           <div>
-            <a-form ref="createForm" :model="createFormData">
+            <a-form ref="createForm" :model="createFormData" :rules="rules">
               <a-form-item has-feedback required label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
@@ -149,17 +149,31 @@ const createFormData=reactive({
     name:'',
     description:''
 })
-// const rules: any = {
-//       name: [{ required:true,trigger: "change" }],
-//       description: [
-//         {
-//           required: false,
-//           max: 200,
-//           message: "镜像描述最长200个字",
-//           trigger: "change",
-//         },
-//       ],
-//     };
+const createForm:any=ref()
+// 镜像名称校验
+const nameValidator = (rule: any, value: any, callback: any) => {
+      var reg = /^[a-zA-Z0-9_]+$/g;
+      if (value === "") {
+        callback("请输入镜像名称");
+      } else if (value.length > 30) {
+        callback("镜像名称最长30个字");
+      } else if (!reg.test(value)) {
+        callback("镜像名称只能由英文字母数字下划线组成");
+      } else {
+        callback();
+      }
+    };
+const rules: any = {
+      name: [{ validator: nameValidator, trigger: "change" }],
+      description: [
+        {
+          required: false,
+          max: 200,
+          message: "镜像描述最长200个字",
+          trigger: "change",
+        },
+      ],
+    };
 const imageid:any=ref()
 const saveIndex:any=ref()
 const OnlineAdd = () => {
@@ -269,8 +283,10 @@ const GenerateImage = (val: any,k:any) => {
   saveVisible.value=true
   imageid.value=val.id
   saveIndex.value=k
+  createForm.value.resetFields();
 };
 const saveImage=()=>{
+
   if(!createFormData.name){
     message.warning('镜像名称不能为空！')
     return
@@ -279,6 +295,9 @@ const saveImage=()=>{
     message.warning('镜像描述不能为空！')
     return
   }
+  // createForm.value.validate().then((res:any)=> {
+
+  // }).catch((err:any)=>{message.warning(err)})
    let obj={
     name:createFormData.name,
     description:createFormData.description
