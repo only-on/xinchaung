@@ -4,7 +4,7 @@
       <template v-for="(item, index) in content" :key="index">
         <tr v-if="item.type == 'w1'" :class="item.type">
           <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="it.colspan" :name="it.name" :align="it.align">
+            <td colspan="4" :name="it.name" :align="it.align">
               {{ it.value }}
             </td>
           </template>

@@ -60,7 +60,7 @@ const scoreValidator= async(rule: RuleObject, value: any)=>{
 }
 // 校验规则
 const rules:any={
-    remark:[{required:true, trigger: 'change',message:"请输入评语"}],
+    remark:[{required:true, trigger: 'change', max: 100,message:"评语不能为空，字符长度最大100"}],
     score:[{required:true, trigger: 'change',validator:scoreValidator}],
 }
 // 关闭弹窗
