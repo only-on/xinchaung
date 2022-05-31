@@ -19,7 +19,7 @@ const PathList = {
   2: "/admin/home",
   3: "/teacher/home",
   4: "/student/statistics",
-  5: "",
+  5: "/teacher/teacherCourse",
 };
 // 登录状态检查
 import { IRouteTuple } from "src/types";
