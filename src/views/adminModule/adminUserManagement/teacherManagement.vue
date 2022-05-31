@@ -730,7 +730,7 @@ const teacherColumns = [
       const isDev = process.env.NODE_ENV == "development" ? true : false;
       let url = isDev
         ? "./public/template/Teacher.xlsx"
-        : "./template/Teacher.xlsx";
+        : "api/template/Teacher.xlsx";
       const a = document.createElement("a");
       a.href = url;
       a.download = "教师模板.xlsx";
