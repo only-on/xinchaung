@@ -246,7 +246,9 @@
   --primary-1: var(--orangeyellow-1);
   --theme-color:#192843;
 
-  --primary-atn-hover: var(--blue-5);
+  --primary-atn-hover: var(--blue-5);  
+   /* var(--blue-5);     */
+  /* --primary-atn-hover-shadow:var(--primary-5); */
 
   --text-color: var(--black-85);
   --border-color-base: hsv(0, 0, 85%);

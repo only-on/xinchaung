@@ -127,7 +127,8 @@
             <i class="data-set-hint">仅支持md文件</i>
           </div>
           <div class="osd-mode">
-            <span @click="openScreen()"> 进入同屏模式 </span>
+            <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
+            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中。。。':'进入同屏模式'}}</a-button>
           </div>
         </div>
       </div>
@@ -703,6 +704,7 @@ function pollGetVM(id: number) {
   // screenStatus.value = true;
   getTopoVmInfo(id);
 }
+var openScreenLoading= ref<boolean>(false);
 function openScreen() {
   // message.warn("接口暂未调试");
   // return
@@ -757,20 +759,18 @@ function getTopoBaseInfo() {
 }
 // 获取基础信息
 function getTopoVmInfo(id: number) {
+  openScreenLoading.value=true
   return new Promise((resolve: any, reject: any) => {
     http.getTopoVmInfo({ urlParams: { id } }).then((res: IBusinessResp) => {
       console.log(res);
       if (res.code === 1) {
         if (res.data.vms.length > 0) {
           screenVmInfo.push(...res.data.vms);
-          // this.vncLoading = false
-          // clearInterval(timers);
           screenStatus.value = true;
+          openScreenLoading.value=false
           nextTick(() => {
             sameScreen.value.init();
           });
-
-          // this.screenStatus = true
         } else {
           setTimeout(() => {
             getTopoVmInfo(id);
@@ -1123,6 +1123,12 @@ h3 {
       margin-left: auto;
       color: var(--brightBtn);
       cursor: pointer;
+      .ant-btn-link{
+        color: var(--brightBtn);
+        &:hover{
+          color: var(--brightBtn);
+        }
+      }
     }
   }
 }

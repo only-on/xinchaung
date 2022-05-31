@@ -212,37 +212,33 @@ export default defineComponent({
 
     // 移除
     function remove(val: any) {
-      let i = reactiveData.selected.indexOf(val.uid);
+      console.log(val)
+      let i = reactiveData.selected.indexOf(val.id);
       reactiveData.selected.splice(i, 1);
       emit("update:value", reactiveData.selected);
       reactiveData.names = reactiveData.names.filter((item: any) => {
-        return val.uid != item.uid;
+        return val.id !== item.uid;
       });
+      // reactiveData.names.map((v:any,k:number)=>{
+      //   if(val.uid === v.uid){
+      //     reactiveData.names.splice(k, 1);
+      //   }
+      // })
+      // reactiveData.selected.splice(i, 1);
       emit("update:names", reactiveData.names);
+      console.log(reactiveData.names)
     }
-
     // 选择
     function select(val: any) {
       if (limitNumber.value === reactiveData.selected.length) {
         $message.warn(`数据集最多可选择${limitNumber.value}个`);
         return;
       }
-
-      // if (reactiveData.selected.includes(val.uid)) {
-      //   return;
-      // }
-      // reactiveData.selected.push(val.uid);
       if (reactiveData.selected.includes(val.id)) {
         return;
       }
       reactiveData.selected.push(val.id);
       emit("update:value", reactiveData.selected);
-      // let temp = {
-      //   uid: val.uid,
-      //   name: val.name,
-      //   amount: val.amount,
-      //   size: val.size,
-      // };
       let temp = {
         uid: val.id,
         name: val.name,
@@ -251,6 +247,7 @@ export default defineComponent({
       };
       reactiveData.names.push(temp);
       emit("update:names", reactiveData.names);
+      // console.log(reactiveData.selected,reactiveData.names)
     }
     watch(
       () => {
