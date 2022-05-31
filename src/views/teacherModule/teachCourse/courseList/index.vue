@@ -31,7 +31,8 @@
             <div class="flexCenter Projection" v-if="currentTab === 0 || (currentTab === 1 && v.is_authorized)">
               <span class="text" @click.stop="multiplexing(v)">复用</span>
               <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
-              <span class="text text2" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">学情归档</span>
+              <!-- <span class="text text2" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">{{v.loading?'生成中。。。':'学情归档'}}</span> -->
+              <a-button type="link" @click.stop="archives(v)" :loading="v.loading">{{v.loading?'生成中。。。':'学情归档'}}</a-button>
             </div>
           </div>
           <div class="info">
@@ -396,7 +397,7 @@ var activeCourse:any=reactive({
   name:'测试课程名称.xls'
 })
 const archives=(val: any)=>{
-  Visible.value=true
+  val.loading=true
   http.Getarchives({urlParams: {courseId: val.id}}).then((res: any) => {
     // RecordingScreen.downData
     let {data}=res
@@ -405,6 +406,8 @@ const archives=(val: any)=>{
     })
     // console.log(RecordingScreen)
     activeCourse.name=val.name
+    Visible.value=true
+    val.loading=false
   });
 }
 const Save=(val:string,data?:any)=>{
@@ -585,15 +588,15 @@ onMounted(() => {
           transform: rotateY(90deg);
           background: rgba(0,0,0,0.3);
           border-radius: 6px 6px 0px 0px;
-          .text{
+          .text,.ant-btn-link{
             color: var(--white);
             padding: 10px 14px;
           }
-          .text:hover{
+          .text:hover,.ant-btn-link:hover{
             color: var(--primary-color);
           }
-          .text2{
-            // display: none;
+          .ant-btn-loading{
+            color: var(--primary-color);
           }
         }
         &:hover{
