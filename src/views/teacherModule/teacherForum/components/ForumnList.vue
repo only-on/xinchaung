@@ -13,7 +13,7 @@
   <div class="forum-content-all" v-else v-html="item.content"></div>
   <div class="user-info">
     <img :src="item.user.avatar || defaultAvatar" alt="" />
-    <span class="user-name">{{ item.user_profile.name }}</span>
+    <span class="user-name">{{ item.user_profile?.name }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
     <span class="btns">
       <span class="reply-btn pointer" @click="clickFirstReply(item.id)">{{
@@ -126,7 +126,7 @@ export default defineComponent({
     const totalReply = ref(0)
     function getReplyList(id: number) {
       loading.value = true
-      // replyList.length = 0
+      page.value === 1 ?replyList.length = 0 : ''
       let param = {
         page: page.value,
       }

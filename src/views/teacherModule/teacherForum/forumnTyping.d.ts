@@ -21,6 +21,7 @@ export interface IForumnList {
   reply_number_count: number
   isAllText?: boolean;
   user: IUser
+  user_profile: any
   is_del?: boolean
 }
 export interface ILabel {
@@ -52,5 +53,6 @@ export interface IReplyList {
   updated_at: number
   deleted_at: null
   user: IUser
+  user_profile: any
   is_del: boolean
 }

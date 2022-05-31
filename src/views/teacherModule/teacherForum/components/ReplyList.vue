@@ -3,7 +3,7 @@
     <div class="user-info">
       <div class="left">
         <img :src="list.user.avatar || defaultAvatar" alt="" />
-        <span class="user-name">{{list.user?.username}}</span>
+        <span class="user-name">{{list.user_profile?.name||list.user?.username}}</span>
         <span class="rep" v-if="replyUserName">回应</span>
         <span class="reply-name" v-if="replyUserName">{{replyUserName}}</span>
       </div>
@@ -12,7 +12,7 @@
       </div>
     </div>
     <div class="reply">
-      <div class="reply-info" v-html="list.content"></div>
+      <div class="reply-info">{{list.content}}</div>
       <div class="reply-btn">
         <span v-if="!list.pid">
         <span class="pointer" @click="isReply = !isReply">回应</span>
@@ -29,7 +29,7 @@
         <span class="delet pointer" v-if="list.is_del" @click="deleteReply(list.id, list.pid, list.forum_id)">删除</span>
       </div>
       <div class="reply-box" v-if="isReply">
-        <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user?.username" />
+        <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user_profile?.name" />
         <span class="pointer" @click="submitReply(list)">回应</span>
         <!-- <a-button type="primary">回应</a-button> -->
       </div>
