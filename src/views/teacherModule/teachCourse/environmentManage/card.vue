@@ -39,7 +39,7 @@
       </p>
       <p class="operation-status">
         操作状态：<span>{{
-          list.is_online
+          list.is_online&& list.vms.vms[current].uuid === list.current
             ? "繁忙"
             : "空闲"
         }}</span>

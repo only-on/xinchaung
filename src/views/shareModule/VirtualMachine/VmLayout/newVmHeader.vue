@@ -708,6 +708,7 @@ async function switchVm() {
   }
   currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
   currentUuid.value = currentVm.value.uuid;
+  role === 4 ? await VmOperatesHandle('active') : ''  // 标记当前虚机
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
@@ -727,7 +728,8 @@ async function switchVm() {
     }
   } else {
     loading.value = true;
-    await VmOperatesHandle("startVm");
+    isClose.value = false;
+    // await VmOperatesHandle("startVm");
     vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
     settingCurrentVM();
     initVnc.value();
@@ -1401,9 +1403,19 @@ let questionTimer: NodeJS.Timer | null = null;
 const delayNum = ref(0)
 // f
 watch(
+  () => vmsInfo.value,
+  async(val) => {
+    if (val.vms?.length && role===4) {
+      await VmOperatesHandle('active')  // 标记当前虚机  只在学生端
+    }
+  },
+  { deep: true, immediate: true }
+);
+// f
+watch(
   () => baseInfo.value,
-  () => {
-    if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
+  async() => {
+    if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2&&!(baseInfo.value?.current?.is_teamed==1&&baseInfo.value?.current?.is_lead==0)) {
       times();
     }
     delayNum.value = baseInfo.value?.current?.delay_num
