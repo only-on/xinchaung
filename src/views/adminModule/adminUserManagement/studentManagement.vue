@@ -721,7 +721,7 @@ const router = useRouter();
       // let url = isDev
       //   ? "./public/template/Student.xlsx"
       //   : "./public/template/Student.xlsx";
-      let url='./public/template/stu.xlsx'
+      let url='./public/template/student.xlsx'
       const a = document.createElement("a");
       a.href = url;
       a.download = "学生模板.xlsx";

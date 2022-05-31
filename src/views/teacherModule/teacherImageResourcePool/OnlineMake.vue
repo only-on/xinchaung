@@ -86,10 +86,10 @@
          <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback required label="镜像名称" name="name">
+              <a-form-item has-feedback label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
-              <a-form-item has-feedback required label="镜像描述" name="description">
+              <a-form-item has-feedback label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请在这里输入镜像描述文字"
@@ -164,10 +164,10 @@ const nameValidator = (rule: any, value: any, callback: any) => {
       }
     };
 const rules: any = {
-      name: [{ validator: nameValidator, trigger: "change" }],
+      name: [{ validator: nameValidator, required:true, trigger: "change" }],
       description: [
         {
-          required: false,
+          required:true,
           max: 200,
           message: "镜像描述最长200个字",
           trigger: "change",
@@ -283,7 +283,6 @@ const GenerateImage = (val: any,k:any) => {
   saveVisible.value=true
   imageid.value=val.id
   saveIndex.value=k
-  createForm.value.resetFields();
 };
 const saveImage=()=>{
 
@@ -306,6 +305,7 @@ const saveImage=()=>{
   // val.generateLoad=true
   http.GenerateImage({urlParams:{imageID:imageid.value},param:{...obj}}).then((res: IBusinessResp) => {
     message.success("生成成功");
+    createForm.value.resetFields();
     saveVisible.value=false
     list[saveIndex.value].generateLoad=false
   //  val.generateLoad=false
@@ -316,6 +316,7 @@ const saveImage=()=>{
   })
 }
 const cancel=()=>{
+  createForm.value.resetFields();
   saveVisible.value=false
 }
 var loading: Ref<boolean> = ref(false);
