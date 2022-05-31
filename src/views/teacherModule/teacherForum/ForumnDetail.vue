@@ -86,6 +86,7 @@ const detail = reactive<IForumnList>({
   created_at: 0,
   views: 0,
   reply_number_count: 0,
+  user_profile:{},
   user: {
     id:0, 
     username: '', 
