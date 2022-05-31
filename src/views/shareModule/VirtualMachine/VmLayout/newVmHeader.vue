@@ -50,7 +50,7 @@
         <span>
           {{ experimentTime?.h + ":" + experimentTime?.m + ":" + experimentTime?.s }}
         </span>
-        <span class="pointer" @click="delayedTime">延时</span>
+        <span class="pointer" @click="delayedTime" v-if="isShowDelayBtn">延时</span>
       </div>
       <div
         class="vnc-change pointer"
@@ -514,6 +514,8 @@ const saveExperimentData: Ref<{
   course: [],
   train: [],
 });
+
+const isShowDelayBtn = ref(true)
 
 const shareVisible: Ref<boolean> = ref(false);
 const tempVmUrl: Ref<string> = ref("");
@@ -1141,7 +1143,7 @@ function times() {
     if (!taskType.value) {
       use_time.value++;
     } else {
-      if (use_time.value === 600 && delayNum.value < 5) {
+      if (use_time.value === 600 && delayNum.value < 5 && isShowDelayBtn.value) {
         // clearInterval(Number(timer));
         Modal.confirm({
           title: "是否延时？",
@@ -1156,7 +1158,7 @@ function times() {
         });
       }
 
-      if (use_time.value === 0) {
+      if (use_time.value === 0 && isShowDelayBtn.value) {
         clearInterval(Number(timer));
         delayTime.value = 60;
         delayVisiable.value = true;
@@ -1415,14 +1417,14 @@ watch(
 watch(
   () => baseInfo.value,
   async() => {
-    if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2&&!(baseInfo.value?.current?.is_teamed==1&&baseInfo.value?.current?.is_lead==0)) {
+    if (roleArry.value.includes('delayed')&&Number(baseInfo.value?.current?.status)<2) {
       times();
     }
     delayNum.value = baseInfo.value?.current?.delay_num
     if (role === 4&&baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0) {  // 高配分组 非组长
-      console.log('roleArry1',roleArry.value)
+      isShowDelayBtn.value = !(baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0)
       roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
-      console.log('roleArry2',roleArry.value)
+      // console.log('roleArry2',roleArry.value)
     } else {
       const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
         ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)

@@ -86,9 +86,9 @@ const menuRole= {
             video:['guide','question','end'],
         },
         highGroup: {
-            vnc: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
-            ssh: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','record','help','tools'],
-            task: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
+            vnc: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
+            ssh: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','record','help','tools'],
+            task: ['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
         }
     },
 }
