@@ -22,7 +22,8 @@
         <span class='recordScreen' :class="record?.video?.length?'table-a-link':'no-link'" @click="record?.video?.length?clickFun(record.video, 'video'):''">录屏</span>
         <span :class="record?.remark!=='--'?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.remark, 'remark'):''">评语</span>
       </template>
-      <template #report_score='{record}'>
+      <!-- 报告 -->
+      <!-- <template #report_score='{record}'>
         <span :class="record?.report_score?'table-a-link':'no-link'" @click="record?.remark!=='--'?clickFun(record.report?.pdf_path, 'report',record.report):''" v-if="record?.report_score">
           {{record?.report_score}}
         </span>
@@ -32,16 +33,32 @@
         <span class='no-link' v-else>
           未提交
         </span>
+      </template> -->
+      <template #report_score='{record}'>
+        <div>
+          <span :class="['未提交','未评阅','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
+          {{record?.report_score}}
+        </span>
+        </div>
       </template>
-      <template #question_score='{record}'>
+      <!-- //随测 -->
+      <!-- <template #question_score='{record}'>
         <span class='no-link' v-if="record?.question_score==null">
           未提交
         </span>
         <span class='table-a-link' v-else @click="clickFun(record.exper, 'exper')">
           {{record?.question_score}}
         </span>
+      </template> -->
+      <template #question_score='{record}'>
+        <div>
+          <span :class="['未提交','未评阅','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
+          {{record?.question_score}}
+        </span>
+        </div>
       </template>
-      <template #auto_score='{record}'>
+      <!-- //自动评分 -->
+      <!-- <template #auto_score='{record}'>
         <span class='no-link' v-if="record?.auto_score==null">
           待提交
         </span>
@@ -49,14 +66,21 @@
           {{record?.auto_score}}
         </span>
       </template>
-      <template #score='{record}'>
-        <span v-if="record?.score==null">
-          --
+      -->
+       <template #auto_score='{record}'>
+        <div>
+          <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
+          {{record?.auto_score}}
         </span>
-        <span v-else>
+        </div>
+      </template>
+      <!-- //最终成绩 -->
+      <template #score='{record}'>
+        <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
           {{record?.score}}
         </span>
       </template>
+     
     </a-table>
     <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
       
@@ -289,6 +313,9 @@ function setChart(data:any){
 function renderVNode(_: any, { attrs: { vnode } }: any) {
   return vnode;
 }
+function noclick(){
+
+}
 // table操作
 function clickFun(resultData: any, type: any, report?: any) {
   // console.log(val);
@@ -392,7 +419,7 @@ onMounted(() => {
     // }
     .no-link{
       color:var(--black-45);
-      cursor:not-allowed;
+      // cursor:not-allowed;
     }
   }
   // .page-wrap {
@@ -445,5 +472,8 @@ onMounted(() => {
       }
     }
   }
+}
+.table_black{
+  color: var(--black-65);
 }
 </style>
