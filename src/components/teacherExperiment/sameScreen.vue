@@ -25,6 +25,7 @@
           <span class="font-size-16">远程连接信息</span>
           <span>用户名：{{ currentVmInfo.ssh_user }}</span>
           <span>密码：{{ currentVmInfo.ssh_pass }}</span>
+          <span>IP：{{ currentVmInfo.host_ip }}</span>
           <span>
             {{
               currentVmInfo.classify === 'Linux'
@@ -100,7 +101,8 @@ export default defineComponent({
       classify: '',
       ssh_port: '',
       rdp_port: '',
-      base_ip: ''
+      base_ip: '',
+      host_ip: ''
     })
     const vncConnectOption:TvncConnectOption = reactive({
        vmOptions: {
@@ -163,6 +165,7 @@ interface IVmInfo {
   ssh_port: string
   rdp_port: string
   base_ip: string
+  host_ip: string
 }
 </script>
 
