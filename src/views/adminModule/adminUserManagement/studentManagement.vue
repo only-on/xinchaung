@@ -722,7 +722,7 @@ const router = useRouter();
         : "src/assets/template/Student.xlsx";
       const a = document.createElement("a");
       a.href = url;
-      a.download = "学生模板.xlsx";
+      a.download = "学生模板1.xlsx";
       a.click();
     }
     function ImportStudent() {
