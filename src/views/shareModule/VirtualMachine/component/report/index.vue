@@ -159,14 +159,15 @@ function submitOfflineReport() {
   });
 }
 function beforeUpload(file: any) {
-  console.log(file);
+  // console.log(file);
   fileList.value = [file];
   // fileList.value = [...fileList.value, file];
   return false;
 }
 function handleUpload() {
-  if (!fileList.value.length) {
-    message.warn('请选择上传文件')
+  if (!fileList.value.length || fileList.value[0]?.id) {
+    emit('update:visible', false)
+    // message.warn('请选择上传文件')
     return
   }
   let formData: any = new FormData();
