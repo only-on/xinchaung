@@ -15,7 +15,7 @@
     <!-- 成员管理 -->
     <memberManagement v-if="state.activeTab.value=='memberManagement'" :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
     <!-- 课程成绩 -->
-    <courseAchievement v-if="state.activeTab.value=='courseAchievement'" />
+    <!-- <courseAchievement v-if="state.activeTab.value=='courseAchievement'" /> -->
   </div>
 
   <!-- 编辑课程基本信息 弹窗 -->
@@ -195,7 +195,7 @@ import popQuiz from "./popQuiz.vue" // 随堂测试
 import performanceReview from "./performanceReview.vue" // 成绩评阅
 import studentAnalysis from "./studentAnalysis.vue" // 学情分析
 import memberManagement from "./memberManagement.vue" // 成员管理
-import courseAchievement from "./courseAchievement.vue" // 课程成绩
+// import courseAchievement from "./courseAchievement.vue" // 课程成绩
 import moment, { Moment } from 'moment';
 interface IState{
   activeTab:any
