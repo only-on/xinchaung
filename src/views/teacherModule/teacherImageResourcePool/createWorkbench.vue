@@ -34,6 +34,7 @@
         <ImageConfig
           v-if="!AddedSuccessfully"
           @change="configChange"
+          :showTip="false"
         ></ImageConfig>
       </div>
       <div class="form-right">

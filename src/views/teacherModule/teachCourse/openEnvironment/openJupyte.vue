@@ -201,8 +201,13 @@ export default defineComponent({
               );
               reactiveData.isSaveImage = false;
               startTimer();
-              cancel();
+              // cancel();
               message.success("环境保存成功");
+              setTimeout(()=>{
+                router.push({
+                path: "/teacher/teacherImageResourcePool/OnlineMake",
+              });
+            },100)
             } else {
               message.warn(res.msg);
             }

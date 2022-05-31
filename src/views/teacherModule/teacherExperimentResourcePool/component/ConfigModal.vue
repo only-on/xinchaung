@@ -6,7 +6,7 @@
       </a-select-option>
     </a-select>
     <div class="configs">镜像配置</div>
-    <ImageConfig @change="configChange" :defaultConfig="reactiveData.flavor" />
+    <ImageConfig @change="configChange" :defaultConfig="reactiveData.flavor" :showTip="true" />
 </template>
 <script lang="ts" setup>
 import ImageConfig from "src/components/imageConfig/index.vue";

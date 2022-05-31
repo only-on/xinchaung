@@ -1,6 +1,6 @@
 <template>
   <div class="labelList flexCenter">
-    <div class="item" v-for="v in configs" :key="v">
+    <div class="item" v-for="(v,k) in configs" :key="v">
       <div class="name">{{ v.name }}</div>
       <template v-if="v.type === 'select'" class="flexCenter">
         <div class="node">
@@ -21,6 +21,7 @@
               {{ i.label }}{{ v.unit }}
             </div>
           </div>
+          <div class="tips" :class="`tips${k+1}`" v-if="showTips(v)">有可能无法达到所期望的并发数量</div>
         </div>
       </template>
       <template v-if="v.type === 'radio'">
@@ -49,6 +50,7 @@ interface Props {
   //   ram:number,
   //   ram:number,
   // };
+  showTip?:boolean;
   defaultConfig?: any;
 }
 /***
@@ -102,6 +104,7 @@ const configs: any = reactive([
   },
 ]);
 const props = withDefaults(defineProps<Props>(), {
+  showTip:false,
   defaultConfig: () => {},
 });
 watch(()=>props.defaultConfig, newVal => {
@@ -127,7 +130,21 @@ const selectNode = (v: any, i: any) => {
   v.value = i;
   params[v.key] = v.value;
   emit("change", params);
+  // console.log(params)
 };
+const showTips=(val:any)=>{
+  let flage=false
+  if(!props.showTip){
+    return false
+  }
+  if(val.key==='ram' && [6144,8192].includes(params[val.key])){
+    flage=true
+  }
+  if(val.key==='cpu' && [4].includes(params[val.key])){
+    flage=true
+  }
+  return flage
+}
 const change = (key: string, value: boolean) => {
   params[key] = value;
   emit("change", params);
@@ -259,6 +276,17 @@ onMounted(() => {
         padding-top: 8px;
         .numW {
           width: 102px;
+        }
+      }
+      .tips{
+        color:var(--primary-color);
+        font-size:12px;
+        opacity: .65;
+        &.tips1{
+          padding-left: 130px;
+        }
+        &.tips2{
+          padding-left: 220px;
         }
       }
     }
