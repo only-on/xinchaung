@@ -135,13 +135,13 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "classes",
+    key: "classes",
   },
   {
     title: "专业",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "userProfile.major",
+    key: "userProfile.major",
   },
   {
     title: "学院",

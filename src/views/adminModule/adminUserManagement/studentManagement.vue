@@ -716,13 +716,15 @@ const router = useRouter();
       return false
     }
     function DownloadTemplate() {
-      const isDev = process.env.NODE_ENV == "development" ? true : false;
-      let url = isDev
-        ? "src/assets/template/Student.xlsx"
-        : "src/assets/template/Student.xlsx";
+      // const isDev = process.env.NODE_ENV == "development" ? true : false;
+      // const isDev = false;
+      // let url = isDev
+      //   ? "./public/template/Student.xlsx"
+      //   : "./public/template/Student.xlsx";
+      let url='./public/template/stu.xlsx'
       const a = document.createElement("a");
       a.href = url;
-      a.download = "学生模板1.xlsx";
+      a.download = "学生模板.xlsx";
       a.click();
     }
     function ImportStudent() {

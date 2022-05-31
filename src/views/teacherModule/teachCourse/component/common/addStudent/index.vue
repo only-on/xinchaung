@@ -110,8 +110,8 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "user_profile.class",
-    key: "user_profile.class",
+    dataIndex: "classes",
+    key: "classes",
   },
   {
     title: "年级",

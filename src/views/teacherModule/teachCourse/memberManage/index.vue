@@ -69,4 +69,7 @@ function updateGroup(val:any){
 .icon-guanbi{
   font-size: 14px;
 }
+.icon-guanbi:hover{
+  cursor: pointer;
+}
 </style>
