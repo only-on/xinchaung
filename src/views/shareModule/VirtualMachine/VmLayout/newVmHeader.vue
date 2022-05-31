@@ -73,6 +73,7 @@
         class="switch pointer"
         :class="loading ? 'none-event' : ''"
         @click="finishExperiment"
+        v-if="roleArry.includes('end')"
       >
         <span class="iconfont icon-guanbi1"></span>
       </div>
@@ -650,10 +651,10 @@ const toolData = [
 ];
 const toolList = toolData;
 
-const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
-  ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
-  : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
-const roleArry: any = ref(roleArry1)
+// const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
+//   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
+//   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
+const roleArry: any = ref([])
 // 获取随堂测试习题.
 async function getQuestionList(needs_answer: boolean = false) {
   let param = {
@@ -1406,6 +1407,16 @@ watch(
       times();
     }
     delayNum.value = baseInfo.value?.current?.delay_num
+    if (role === 4&&baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0) {  // 高配分组 非组长
+      console.log('roleArry1',roleArry.value)
+      roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
+      console.log('roleArry2',roleArry.value)
+    } else {
+      const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
+        ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
+        : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
+        roleArry.value = roleArry1
+    }
   },
   { deep: true, immediate: true }
 );

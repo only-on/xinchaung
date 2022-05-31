@@ -84,13 +84,18 @@ const menuRole= {
             jupyter:['guide','question','end'],
             document:['guide','question','end'],
             video:['guide','question','end'],
+        },
+        highGroup: {
+            vnc: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
+            ssh: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','record','help','tools'],
+            task: ['guide','note','report','question','classTest','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','record','share','help','tools'],
         }
-    }
+    },
 }
 // 实验类型{vnc:VNC,ssh:SSH,cmd:命令行,task:任务制实验,webide:DE实验,jupyter:Jupyter,document:文档,video:视频}
 type taskType="vnc"|"ssh"|"cmd"|"task"|"webide"|"jupyter"|"document"|"video"
 
-type studyType="test"|"recommend"
+type studyType="test"|"recommend"|"highGroup"
 
 export type menuTypeArr=['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools']
 
