@@ -593,7 +593,7 @@ function create() {
       return
     }
     if (createTypeNumber === 2 && !formState.imageConfigs[0].image) {
-      message.warning('请选择镜像')
+      message.warning('请选择实验环境')
       return
     }
     if(createTypeNumber === 3 && TaskLIst.length !== 0){
@@ -719,7 +719,7 @@ function openScreen() {
     })
   });
   if (screenParam.container.length <= 0) {
-    message.warn("请选择镜像");
+    message.warn("请选择实验环境");
     return;
   }
   console.log(sameScreen.value);

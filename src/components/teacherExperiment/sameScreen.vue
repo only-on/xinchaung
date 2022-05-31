@@ -9,7 +9,7 @@
         <span class="hint">或按[ESC]可退出同屏模式</span>
       </div>
       <div class="md-box">
-        <antdv-markdown v-model="detail"  class="markdown__editor"/>
+        <MarkedEditor v-model="detail" class="markdown__editor" />
       </div>
     </div>
     <div class="same-screen-right">
@@ -54,12 +54,14 @@
 <script lang="ts">
 import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType, provide } from 'vue'
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
+import MarkedEditor from "src/components/editor/markedEditor.vue";
 type TvncConnectOption={
   vmOptions:any
 }
 export default defineComponent({
   components: {
-    "vue-no-vnc":VueNoVnc
+    "vue-no-vnc":VueNoVnc,
+    MarkedEditor
   },
   props: {
     screenStatus: Boolean,
@@ -77,6 +79,7 @@ export default defineComponent({
       emit('update:screenStatus', false)
       emit('update:modelValue', detail.value)
     }
+    const novncEl: any = ref(null)
     onMounted(() => {
       nextTick(() => {
         document.addEventListener('keyup', (e: any) => {
@@ -115,6 +118,7 @@ export default defineComponent({
           currentVmInfo = Object.assign(currentVmInfo, item)
           vncConnectOption.vmOptions.wsUrl="ws://"+item.base_ip+":8888/websockify?vm_uuid="+item.uuid
           // ;(this.$refs as any).vnc.startNoVnc()
+          novncEl.value?.connectVnc();
         }
       })
     }
@@ -127,6 +131,7 @@ export default defineComponent({
         vncConnectOption.vmOptions.wsUrl="ws://"+props.screenInfo[0].base_ip+":8888/websockify?vm_uuid="+props.screenInfo[0].uuid
         vncConnectOption.vmOptions.password = 'vncpassword'
         // ;(this.$refs as any).vnc.startNoVnc()
+        novncEl.value?.connectVnc();
       }
     }
     // watch(
@@ -145,6 +150,7 @@ export default defineComponent({
       hostIp,
       init,
       ...toRefs(vncConnectOption),
+      novncEl,
     }
   }
 })
