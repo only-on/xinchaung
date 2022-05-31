@@ -80,9 +80,9 @@ const data: any = ref([]);
 const echartsData:any=ref()
 const statisData:any=ref()
 echartsData.value={
-          maxScore:0,
-          statisData:0,
-          avgScore:0,
+          maxScore:'--',
+          statisData:'--',
+          avgScore:'--',
           ExperimentalReportSubmissionRate:0,
           inClassTestAccuracyRate:0,
           automaticScoringCorrectRate:0,
