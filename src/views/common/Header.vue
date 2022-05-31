@@ -439,11 +439,15 @@ export default defineComponent({
       url: "/student/statistics",
       children: [],
     }
+    if(role === 5){
+      teacherCourse.children.splice(3,1)
+    }
     let arr:any={
       1:[],
       2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
       3:[teacherHome,center,material,teacherCourse,forum],
-      4:[statistics,forum,studentCourse]
+      4:[statistics,forum,studentCourse],
+      5:[center,teacherCourse,material]
     }[role]
     menus.push(...arr)
     var systemBaseInfo: any = reactive({
@@ -469,7 +473,7 @@ export default defineComponent({
         router.push("/admin");
       }
       if (role == 5) {
-        // return "" // 助教端
+        router.push("/teacher"); // 助教端
         // router.push("/");
       }
     }

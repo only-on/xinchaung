@@ -125,6 +125,8 @@ const login = () => {
             router.replace("/teacher");
           } else if (res!.data.role === 4) {
             router.replace("/student");
+          }else if (res!.data.role === 5) {
+            router.replace("/teacher/teacherCourse");
           }
           submitLoading.value = false;
         })
