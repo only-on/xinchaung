@@ -65,6 +65,7 @@
 <script lang="ts" setup>
 import { defineComponent, ref, toRef, inject, reactive, toRefs, onMounted } from "vue";
 import request from 'src/api/index'
+import { Modal, message } from "ant-design-vue";
 const http = (request as any).teacherInclassTest;
 const itemValue: any = ref("");
 interface Props {
@@ -77,7 +78,15 @@ const optionsNames:any=ref(['A','B','C','D'])
 const emit = defineEmits<{ (e: "deleteQues", val: any): void }>();
 function deleteQues(id: any) {
   console.log(id);
-  emit("deleteQues", id);
+  Modal.confirm({
+        title: "提示",
+        content: "确定要删除吗？删除之后不可恢复",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {
+          emit("deleteQues", id);
+        }
+      })
 }
 function ifCorrect(answers:any,id:any){
   const correctAnswer:any=[];
