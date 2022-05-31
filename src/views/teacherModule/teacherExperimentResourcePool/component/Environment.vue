@@ -93,7 +93,7 @@ interface Props {
   envList?: envListItem[]
 }
 const props = withDefaults(defineProps<Props>(), {
-  type: false,
+  type: false,    // true单环境    false 多环境
   imageType:'vnc',
   envList: () => []
 });
@@ -143,11 +143,9 @@ const handleOk = () => {
   currentImage.flavor = { cpu: "", disk: "", ram: "", gpu: false };
   currentImage.imageName = "";
   currentImage.image_id = ''
-  visible.value = false;
-  defaultConfig.editIdx = ''
-  console.log(selectList)
+  // console.log(selectList)
   emit("handleOk", selectList);
-  // modal.destroy()
+  cancel()
 };
 const cancel = () => {
   defaultConfig.flavor = { cpu: "", disk: "", ram: "", gpu: false };

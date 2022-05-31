@@ -108,6 +108,7 @@ const props = withDefaults(defineProps<Props>(), {
   defaultConfig: () => {},
 });
 watch(()=>props.defaultConfig, newVal => {
+  // console.log(props.defaultConfig)
   configs.map((v: any) => {
     let arr = props.defaultConfig ? Object.keys(props.defaultConfig) : [];
     if (arr && arr.length && arr.includes(v.key) && props.defaultConfig[v.key] !== "") {

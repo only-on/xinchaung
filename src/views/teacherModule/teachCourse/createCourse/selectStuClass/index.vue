@@ -2,7 +2,7 @@
   <div class="selectStuClass">
     <a-modal
       :destroyOnClose="true"
-      width="1000px"
+      width="1200px"
       :title="'学生选择'"
       :visible="isVisible"
       :confirm-loading="confirmLoading"
@@ -135,11 +135,14 @@ export default defineComponent({
     dataIndex: "username",
     key: "username",
     width:100,
+    ellipsis: true,
   },
   {
     title: "姓名",
     dataIndex: "user_profile.name",
     key: "user_profile.name",
+    width:100,
+    ellipsis: true,
   },
   {
     title: "性别",
@@ -155,29 +158,36 @@ export default defineComponent({
     title: "年级",
     dataIndex: "user_profile.grade",
     key: "user_profile.grade",
+    width:100,
+    ellipsis: true,
   },
   {
     title: "专业",
     dataIndex: "user_profile.major",
     key: "user_profile.major",
+    width:120,
+    ellipsis: true,
   },
   {
     title: "学院",
     dataIndex: "user_profile.department",
     key: "user_profile.department",
-    width:100,
+    width:120,
+    ellipsis: true,
   },
   {
     title: "邮箱",
     dataIndex: "email",
     key: "email",
     width:150,
+    ellipsis: true,
   },
   {
     title: "电话",
     dataIndex: "user_profile.phone",
     key: "user_profile.phone",
     width:150,
+    ellipsis: true,
   },
       ],
       data: [],
