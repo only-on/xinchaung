@@ -106,9 +106,12 @@ export const radarOptions = (data: any) => {
             // formatter:'{c}人',
             position: 'top',
             formatter: function (params: any) {
+              const unit=params.value?'人':''
+              const num=params.value?params.value:''
               var type = ['a', 'b', 'c', 'd', 'e'];
               var index = params.data.value.indexOf(params.value);
-              return '{' + type[index] + '|' + params.value + '人}';
+              // return '{' + type[index] + '|' + params.value + '人}';
+              return '{' + type[index] + '|' + num +unit +'}';
             },
             rich: {
               a: {

@@ -12,9 +12,9 @@
         :space-between="33"
         :slideToClickedSlide="true"
         @slideChange="slideChangeTransitionEnd"
-        @slideChangeTransitionEnd="slideChangeTransitionEnd"
         @setTranslate="setTranslate"
       >
+      <!-- @slideChangeTransitionEnd="slideChangeTransitionEnd" -->
         <swiper-slide v-for="item in courseLists" :key="item.id">
           {{ item.name }}
         </swiper-slide>
