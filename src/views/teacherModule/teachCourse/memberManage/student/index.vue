@@ -48,7 +48,7 @@
               tableData.total > 10
                 ? {
                     hideOnSinglePage: false,
-                    showSizeChanger:false,
+                    showSizeChanger:true,
                     total: tableData.total,
                     current: tableData.page,
                     pageSize: tableData.limit,
@@ -139,6 +139,11 @@ columns.value = [
     key: "classes",
   },
   {
+    title: "年级",
+    dataIndex: "userProfile.grade",
+    key: "userProfile.grade",
+  },
+  {
     title: "专业",
     dataIndex: "userProfile.major",
     key: "userProfile.major",
@@ -204,7 +209,11 @@ function onChange(page: any, pageSize: any) {
   tableData.limit=pageSize
   getcoursestudent()
 }
-function onShowSizeChange(current: any, size: any) {}
+function onShowSizeChange(current: any, size: any) {
+  tableData.page=1
+  tableData.limit=size
+  getcoursestudent()
+}
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
   tableData.selectedRowKeys=selectedRowKeys

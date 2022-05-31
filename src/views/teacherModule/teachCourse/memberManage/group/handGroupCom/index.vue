@@ -48,7 +48,8 @@
                   </template>
                   <template v-else>
                     <span class="name"
-                      >{{ item.name }}
+                      >
+                      <span class="itemName">{{ item.name }}</span>
                       <!-- <i
                         class="edit icon-bianji1 iconfont"
                         @click="editTreeTittle(index)"
@@ -58,6 +59,9 @@
                         class="delete icon-shanchu-copy iconfont"
                         @click="deleteTree(index)"
                       ></i>
+                      <span class="itemNumber">
+                        {{item?.student_list?.length}}
+                      </span>
                     </span>
                   </template>
                 </div>
@@ -440,5 +444,16 @@ onMounted(()=>{
 .unselect,.selected{
   height: 420px;
   overflow-y: auto;
+}
+.name{
+  display: flex;
+  justify-content:space-between;
+  .itemName{
+    width:300px;
+  }
+  .itemNumber{
+    width:30px;
+    text-align: center;
+  }
 }
 </style>
