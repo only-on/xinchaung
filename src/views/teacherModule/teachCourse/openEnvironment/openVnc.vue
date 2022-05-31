@@ -328,7 +328,12 @@ export default defineComponent({
             storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
             reactiveData.isSaveImage = false;
             startTimer();
-            cancel();
+            // cancel();
+            setTimeout(()=>{
+                router.push({
+                path: "/teacher/teacherImageResourcePool/OnlineMake",
+              });
+            },100)
           });
         }
       });

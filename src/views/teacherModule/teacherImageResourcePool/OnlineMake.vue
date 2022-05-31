@@ -207,7 +207,7 @@ const getWorkbenchStatus=(operate?:any,index?:any)=>{
         })
         // 1.开启的时候
         if(!flag.value&&list[index]?.opening){
-          message.warning('开启成功！')
+          message.success('开启成功！')
           list[index].opening=false
         }
         if(flag.value){
