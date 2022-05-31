@@ -17,7 +17,7 @@
             <div class="entrance-right">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
-                    <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()">
+                    <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()" @click="toJump(item.link)">
                         <div>
                             <img :src="item.img">
                         </div>
