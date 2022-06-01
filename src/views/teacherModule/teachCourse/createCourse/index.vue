@@ -232,21 +232,25 @@ const multiplexingCourse=(val:number)=>{
     return
   }
   if(val===3 || val === 4){
-      formState.is_available=1
-      stup1Loading.value=true
-      formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
-      formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
-      http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
-        const {data}=res
-        stup1Loading.value=false
-        if(val === 4){
-          cancel()
-          return
-        }
-        currentStep.value=val
-        courseId.value=data.id
-      }).catch((err:any)=>{
-        stup1Loading.value=false
+      console.log('baocun1')
+      // return
+      formRef.value.validate().then(()=>{
+        stup1Loading.value=true
+        formState.is_available=1
+        formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+        formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
+        http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
+          const {data}=res
+          stup1Loading.value=false
+          if(val === 4){
+            cancel()
+            return
+          }
+          currentStep.value=val
+          courseId.value=data.id
+        }).catch((err:any)=>{
+          stup1Loading.value=false
+        })
       })
     return  
   }
