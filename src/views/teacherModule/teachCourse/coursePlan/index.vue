@@ -623,6 +623,8 @@ function editTeachingSchedule(id: number, date: string) {
 function cancelScheduleConfirm(id: number) {
   Modal.confirm({
     content: "您确定要取消此项排课吗？执行后无法恢复，请谨慎操作",
+    okText: "确定",
+    cancelText: "取消",
     onOk: () => {
       http.scheduleDelete({ param: { id } }).then((res: any) => {
         getLeftTime();
