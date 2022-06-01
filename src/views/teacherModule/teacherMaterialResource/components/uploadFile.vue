@@ -20,7 +20,7 @@
         <div v-for="(v, k, i) in ChunkStatus" :key="i">
           <span>文件名称：{{ v.name }}</span>
           <span
-            >计算md5进度：{{ v.chunks + "/" + v.currentChunk }}</span
+            >计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span
           >
         </div>
       </div>
