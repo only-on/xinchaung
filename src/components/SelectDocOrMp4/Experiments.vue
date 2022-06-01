@@ -9,7 +9,7 @@
     </div>
   </div>
   <div style="margin-bottom: 24px;">
-    <a-input-search style="width:364px"  v-model:value="docOrMp4Drawer.name" placeholder="请输入搜索关键词" @search="getExperiments" @keyup.enter="getExperiments()" />
+    <a-input-search style="width:364px"  v-model:value="docOrMp4Drawer.name" placeholder="请输入搜索关键词" @search="searchDocOrMp4List" @keyup.enter="searchDocOrMp4List()" />
   </div>
   <div class="Exhibition flexCenter">
     <div class="left">
@@ -50,6 +50,7 @@
     v-model:current="docOrMp4Drawer.page"
     v-model:pageSize="docOrMp4Drawer.limit"
     :total="docOrMp4Drawer.totalCount"
+    @showSizeChange="showSizeChange"
     @change="pageChange"
   />
 </template>
@@ -123,6 +124,7 @@ const classNum=computed(()=>{
 var init_type:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   init_type.value=v
+  docOrMp4Drawer.page = 1;
   getExperiments()
 }
 const getDetailFile = (val:any) => {
@@ -157,6 +159,12 @@ const getExperiments = () => {
     docOrMp4Drawer.list.push(...list)
     docOrMp4Drawer.totalCount = page.totalCount
   })
+};
+const showSizeChange = (current: any,size: any) => {
+  // console.log(size);
+  docOrMp4Drawer.page = 1
+  docOrMp4Drawer.limit = size;
+  getExperiments();
 };
 const pageChange = (current: any) => {
   docOrMp4Drawer.page = current;
