@@ -28,7 +28,7 @@
           <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
         </div>
         <div class="operate" v-if="currentTab === 1">
-          <span  v-show="v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+          <span  v-show="v.is_init === 0 && v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
         </div>
         <div class="operate" v-if="currentTab === 0">
           <!-- is_share:1 就是共享数据 -->
@@ -499,10 +499,10 @@ const getDirection = () => {
       display: inline-block;
       max-width: 233px;
       border-radius: 2px;
-      color: rgba(255,149,68,0.85);
+      color: var(--primary-color);
       font-size: var(--font-size-sm);
       padding: 0 14px;
-      background: rgba(255,149,68,0.07);
+      background: var(--primary-2);
     }
   }
 }

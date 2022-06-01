@@ -35,7 +35,7 @@
       </div>
       <div class="themeStyle">
         <div class="tit">主题风格</div>
-        <chooseStyle titleInfo='建议尺寸1920X268px' type='color' v-model:checkVal="systemInfo.theme" :data='themeData.color' :disabled="!isEdit"></chooseStyle>
+        <chooseStyle titleInfo='系统主题色' type='color' v-model:checkVal="systemInfo.theme" :data='themeData.color' :disabled="!isEdit"></chooseStyle>
       </div> 
       <div class="loginScreen">
         <div class="tit">系统登录界面</div>
@@ -60,7 +60,7 @@
   import {useStore} from "vuex"
   import request from "src/api/index";
   import { IBusinessResp } from "src/typings/fetch";
-  import {loginStyleList,themeColorList,setThemeColor} from 'src/utils/theme'
+  import {loginStyleList,themeColorList} from 'src/utils/theme'
   import {sStorage} from "src/utils/extStorage";
   import {cloneDeep} from 'lodash'
   const http = (request as any).systemMaintenance;
@@ -164,7 +164,6 @@
   }
   function setStyle () {
     store.commit('setSystemInfo', cloneDeep(systemInfo))
-    setThemeColor('theme', systemInfo.theme)
   }
   onMounted(()=>{
     handleInit()

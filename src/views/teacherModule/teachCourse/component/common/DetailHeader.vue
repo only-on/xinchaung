@@ -206,6 +206,15 @@ const edit=()=>{
     .LeftBox{
      width: 940px;
      padding : 14px 0;
+     :deep(.ant-breadcrumb){
+       color: var(--white-45);
+       .ant-breadcrumb-separator{
+         color:var(--white-45);
+       }
+       >span:last-child{
+         color: var(--white-45);
+       }
+     }
       .termOfValidity{
         color: #37E6AE;
         font-size: 12px;

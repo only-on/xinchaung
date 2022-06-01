@@ -30,6 +30,7 @@ import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
+import {setTheme} from 'src/utils/theme'
 import DetailHeader from 'src/views/teacherModule/teachCourse/component/common/DetailHeader.vue' 
 
 // 内容去tab
@@ -84,6 +85,11 @@ const selectTab=(val:any)=>{
 onMounted(() => {
   // console.log(course_student_id)
   initData()
+  // 根据系统主题设置头部背景图
+  setTheme({
+    type: 'course',
+    class: 'courseHeader'
+  })
 });
 
 </script>

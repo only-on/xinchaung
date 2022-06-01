@@ -184,6 +184,7 @@ import { useRoute ,useRouter} from "vue-router";
 import request from 'src/api/index'
 import { IBusinessResp} from 'src/typings/fetch.d';
 import { toVmConnect, IEnvirmentsParam } from "src/utils/vncInspect";
+import {setTheme} from 'src/utils/theme'
 import PdfVue from "src/components/pdf/pdf.vue"
 import DetailHeader from '../component/common/DetailHeader.vue'
 import uploadCover from "src/components/uploadCover/index.vue"
@@ -443,6 +444,11 @@ const getCourseSetup=()=>{
 }
 onMounted(() => {
   initData()
+  // 根据系统主题设置头部背景图
+  setTheme({
+    type: 'course',
+    class: 'courseHeader'
+  })
   // if(Number(currentTab)===0 && role === 3){
   //   getCourseSetup()
   // }

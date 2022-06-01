@@ -228,4 +228,8 @@ const allexperTypes:any=ref([
    margin: 20px;
    margin-top:0px;
  }
+  .item>.ant-btn{
+   background: var(--brightBtn);
+   border-color: var(--brightBtn);
+ }
 </style>

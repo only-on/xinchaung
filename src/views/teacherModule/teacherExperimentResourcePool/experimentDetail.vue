@@ -108,6 +108,7 @@ import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
 import defaultAvatar from 'src/assets/images/admin/home/env3.png'
 import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import {setTheme} from 'src/utils/theme'
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
@@ -125,6 +126,7 @@ const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const http = (request as any).teacherExperimentResourcePool;
 var configuration: any = inject("configuration");
+
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [],
@@ -306,6 +308,11 @@ const getExperimentDetail = () => {
 onMounted(() => {
   getExperimentDetail();
   getDirection()
+  // 根据系统主题设置头部背景图
+  setTheme({
+    type: 'experiment',
+    class: 'top'
+  })
 });
 const directionList: any = reactive([])
 const getDirection = () => {
@@ -500,3 +507,4 @@ interface IExperimentDetail {
   }
 }
 </style>
+

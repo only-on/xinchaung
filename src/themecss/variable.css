@@ -210,7 +210,9 @@
     --orangeyellow-2: #FF9544;
     --orangeyellow-3: #FE8020;
     --orangeyellow-4: #FF9544; */
-  --orangeyellow-1: #FFF8F2;
+  --orangeyellow-1: #fff7e6;
+  --orangeyellow-2: #FDF6F0;
+  --orangeyellow-3:#fff2d9;
   --orangeyellow-5: #fe8020;
   --orangeyellow-6: #ff9544;
   --orangeyellow-6-24: rgba(255,149,68, 0.24);
@@ -241,10 +243,14 @@
   --primary-6: var(--primary-color);
   --primary-5: var(--orangeyellow-5);
   --primary-4: var(--purpleblue-4);
-  --primary-3: var(--purpleblue-3);
-  --primary-2: var(--purpleblue-2);
+  --primary-3: var(--orangeyellow-3);
+  --primary-2: var(--orangeyellow-2);
   --primary-1: var(--orangeyellow-1);
-  --theme-color:#192843;
+
+  --menu-bg: #192843;
+  --menu-text: var(--white-45);
+  --menu-active: var(--white-100);
+  
 
   --primary-atn-hover: var(--blue-5);  
    /* var(--blue-5);     */

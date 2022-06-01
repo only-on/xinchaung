@@ -215,7 +215,7 @@ const clickLoadingMore = (id: number) => {
   }
   .btns {
     padding: 0 22px;
-    background: #fff2d9;
+    background: var(--primary-3);
     color: var(--primary-color);
     height: 32px;
     display: inline-block;

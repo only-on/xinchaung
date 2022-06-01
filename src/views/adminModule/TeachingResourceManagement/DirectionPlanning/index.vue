@@ -17,7 +17,7 @@
             >添加{{ tab.title }}</a-button
           >
         </div>
-        <logicDiagram v-if="i == 3" :tabsName="tabsName" @jump="handleJump"/>
+        <logicDiagram v-if="i == 3" :tabsName="tabsName"/>
         <a-config-provider>
             <a-table
             v-if="i !== 3"
@@ -301,15 +301,6 @@ const saveAdd = () => {
     });
   })
 }
-const handleJump = (id: any) => {
-    console.log(id)
-    // router.push({
-    //   path: "/teacher/teacherExperimentResourcePool/experimentDetail",
-    //   query: {
-    //     id
-    //   }
-    // });
-  }
 const cancel = () => {
   dialogVisible.value = false
   formRef.value.resetFields();

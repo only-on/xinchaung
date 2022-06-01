@@ -663,9 +663,10 @@ onMounted(() => {
   }
   button.auto-preview-btn {
     padding: 0 !important;
+    border: none;
     .preview-btn {
       padding: 0 10px 0 27px;
-      background: var(--primary-6);
+      background: var(--primary-color);
       height: 100%;
       line-height: 33.99px;
       border-top-left-radius: 17px;
@@ -677,7 +678,7 @@ onMounted(() => {
     }
     .setting-btn {
       padding: 0 27px 0 10px;
-      background: var(--primary-6);
+      background: var(--primary-color);
       line-height: 33.99px;
       border-top-right-radius: 17px;
       border-bottom-right-radius: 17px;

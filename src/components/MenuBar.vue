@@ -172,14 +172,14 @@ export default defineComponent({
     display: inline-block;
     padding: 0 var(--padding-md);
     // color: var(--black-25);
-    color: var(--white-45);
+    color: var(--menu-text);
     font-size: var(--font-size-18);
     text-align: center;
     cursor: pointer;
     width: max-content;
     &.active {
       // color: var(--black-85);
-      color: var(--white);
+      color: var(--menu-active);
     }
   }
 }

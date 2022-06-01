@@ -357,6 +357,10 @@ onMounted(() => {
         }
       }
       .right{
+        .ant-btn{
+          background: var(--brightBtn);
+          border-color: var(--brightBtn);
+        }
         .ant-btn:nth-child(1){
           margin-right: 12px;
         }
