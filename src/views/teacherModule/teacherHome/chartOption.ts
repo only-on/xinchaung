@@ -188,11 +188,11 @@ export const scaterOptions = (type: number, data: any) => {
       formatter: function (params: any) {
         var tips = ''
         if (type == 1) {
-          params['data'][2].forEach(function (item: any) {
+          params['data'][2]?.forEach(function (item: any) {
             tips = tips + item['username'] + " " + item['usedtime'] + "分钟" + "<br>"
           })
         } else {
-          params['data'][2].forEach(function (item: any) {
+          params['data'][2]?.forEach(function (item: any) {
             tips = tips + item['username'] + " " + item['score'] + "分" + "<br>"
           })
         }
@@ -206,23 +206,33 @@ export const scaterOptions = (type: number, data: any) => {
       containLabel: true
     },
     dataZoom: [{
-      type: 'inside',
-      show: Object.keys(data).length <= 7 ? false : true,
-      start: 0,
-      end: Object.keys(data).length >= 7 ? 30 : 100,
-      backgroundColor: theme.nextThemeColor, //组件的背景颜色
+      // type: 'inside',
+      type: Object.keys(data).length>30?'slider':'inside',
+      show: true,
+      startValue: 1,
+      endValue:Object.keys(data).length,
+      // end: data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 ,
+      xAxisIndex: 0,
+      bottom: 30,
+      filterMode: "none",
+      height: 10,
+      // show: Object.keys(data).length <= 7 ? false : true,
+      // show:true,
+      
+      // end: Object.keys(data).length >= 7 ? 30 : 100,
+      // backgroundColor: theme.nextThemeColor, //组件的背景颜色
       fillerColor: theme.themeColor, //选中范围的填充颜色
-      handleSize: 10,//滑动条的 左右2个滑动条的大小
-      showDetail: false,
-      height: 10,//组件高度
-      handleColor: '#fff',//h滑动图标的颜色
-      handleStyle: {
-        borderColor: theme.themeColor,
-        borderWidth: "1",
-        shadowBlur: 2,
-        background: "#ddd",
-        shadowColor: "#ddd",
-      }
+      // handleSize: 10,//滑动条的 左右2个滑动条的大小
+      // showDetail: false,
+      // height: 10,//组件高度
+      // handleColor: '#fff',//h滑动图标的颜色
+      // handleStyle: {
+      //   borderColor: theme.themeColor,
+      //   borderWidth: "1",
+      //   shadowBlur: 2,
+      //   background: "#ddd",
+      //   shadowColor: "#ddd",
+      // }
     }],
     xAxis: [
       {
@@ -233,7 +243,8 @@ export const scaterOptions = (type: number, data: any) => {
           show: false
         },
         axisTick: {
-          show: false
+          show:true
+          // show: false
         },
         axisLabel: {
           formatter: function (value: any, index: any) {
