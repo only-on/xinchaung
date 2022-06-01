@@ -617,6 +617,8 @@ const router = useRouter();
           email,
           status,
           introduce,
+          classname,
+          major,
         } = formState;
         if (password_hash !== repassword) {
           message.warn("密码输入不一致");
@@ -639,6 +641,8 @@ const router = useRouter();
             phone: phone,
             status: status,
             introduce: introduce,
+            classname:  classname,
+            major: major,
           },
         };
         if(ifUserInit.value){

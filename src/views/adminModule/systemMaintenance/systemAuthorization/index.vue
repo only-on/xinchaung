@@ -249,11 +249,9 @@ function copyCode(e: Event) {
         return false;
       }
       function removeFile() {
-        if (reactiveData.upload) {
             reactiveData.upload.abortUpload();
             authorizationFile.progress=0;
             authorizationFile.filename='';
-        }
       }
       // 授权
       function authorizationFun() {
