@@ -1,3 +1,4 @@
+import { theme } from 'src/utils/theme';
 
 import {sStorage} from 'src/utils/extStorage'
 import loginA from 'src/assets/images/admin/systemmain/loginA.png'
@@ -46,11 +47,11 @@ const themeColorList = [
     menuBg: '#192843',
     menuText: 'rgba(255, 255, 255, 0.45)',
     menuActive: '#fff',
-    light1: '#fff7e6',
-    light2: '#FDF6F0',
-    light3: '#fff2d9',
-    light5: '#fe8020 ', // 鼠标移入颜色
-    light7: '#D78D0E' //主色点击颜色
+    primary1: '#fff7e6',
+    primary2: '#FDF6F0',
+    primary3: '#fff2d9',
+    primary5: '#fe8020 ', // 鼠标移入颜色
+    primary7: '#D78D0E' //主色点击颜色
   },
   {
     value: 'B',
@@ -59,11 +60,11 @@ const themeColorList = [
     menuBg: '#102241',
     menuText: 'rgba(255, 255, 255, 0.45)',
     menuActive: '#fff',
-    light1: '#F0FBFC', // 较浅主题颜色
-    light2: '#E5F8FA', // 浅主题颜色
-    light3: '#CDEDF0',
-    light5: '#3BDEDC', // 鼠标移入颜色
-    light7: '#0392AC' //主色点击颜色
+    primary1: '#F0FBFC', // 较浅主题颜色
+    primary2: '#E5F8FA', // 浅主题颜色
+    primary3: '#CDEDF0',
+    primary5: '#3BDEDC', // 鼠标移入颜色
+    primary7: '#0392AC' //主色点击颜色
   },
   {
     value: 'C',
@@ -72,11 +73,11 @@ const themeColorList = [
     menuBg: '#fff',
     menuText: 'rgba(0, 0, 0, 0.65)', 
     menuActive: '#FFB849',
-    light1: '#FCFAF0', // 较浅主题颜色
-    light2: '#FFF7E7', // 浅主题颜色
-    light3: '#F8EDDC',
-    light5: '#FAAD14', // 主色鼠标移入颜色
-    light7: '#D78D0E' //主色点击颜色
+    primary1: '#FCFAF0', // 较浅主题颜色
+    primary2: '#FFF7E7', // 浅主题颜色
+    primary3: '#F8EDDC',
+    primary5: '#FAAD14', // 主色鼠标移入颜色
+    primary7: '#D78D0E' //主色点击颜色
   }
 ]
  const loginStyleList = [
@@ -93,46 +94,33 @@ const themeColorList = [
     label: loginC
   }
 ]
-// 课程、实验详情顶部背景图
-const detailBg = {
-  course: {
-    A: courseA,
-    B: courseB,
-    C: courseC
-  },
-  experiment: {
-    A: experimentA,
-    B: experimentB,
-    C: experimentC
+function getTheme () {
+  let systemInfo = sStorage.get('systemInfo')
+  let theme = systemInfo.theme
+  let themeData = themeColorList.filter((item:any) => item.value === systemInfo.theme)[0]
+  return {
+    systemInfo,
+    themeData,
+    theme
   }
 }
-function setTheme (moduleObj?: ImoduleObj) {
-  let systemInfo = sStorage.get('systemInfo').theme
-  // 设置课程、实验顶部背景图
-  if (moduleObj) {
-    let currentTheme = sStorage.get('systemInfo').theme
-    let ele:any = document.getElementsByClassName(moduleObj.class)[0]
-    ele.style.background = `url(${detailBg[moduleObj.type][currentTheme]})`
-    return
-  }
+function setTheme () {
+  let {systemInfo, themeData} = getTheme()
   if (!Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
     if (key === 'theme') {
-      let themeData = themeColorList.filter((item:any) => item.value === systemInfo[key])[0]
       let bodyEle = document.getElementsByTagName('body')[0]
       bodyEle.style.setProperty('--primary-color', themeData.primary) // 主题色
       bodyEle.style.setProperty('--brightBtn', themeData.secondary) // 辅助色
       bodyEle.style.setProperty('--menu-bg', themeData.menuBg) // 菜单背景
       bodyEle.style.setProperty('--menu-text', themeData.menuText) // 菜单文字颜色
       bodyEle.style.setProperty('--menu-active', themeData.menuActive) // 菜单选中文字颜色
-      bodyEle.style.setProperty('--primary-1', themeData.light1)
-      bodyEle.style.setProperty('--primary-2', themeData.light2)
-      bodyEle.style.setProperty('--primary-3', themeData.light3)
-      bodyEle.style.setProperty('--primary-5', themeData.light5)
-      bodyEle.style.setProperty('--primary-7', themeData.light7)
-      bodyEle.style.setProperty('--primary-atn-hover', themeData.light5)
-      // bodyEle.style.setProperty('--menu-active', themeData.menuActive)
-      
+      bodyEle.style.setProperty('--primary-1', themeData.primary1)
+      bodyEle.style.setProperty('--primary-2', themeData.primary2)
+      bodyEle.style.setProperty('--primary-3', themeData.primary3)
+      bodyEle.style.setProperty('--primary-5', themeData.primary5)
+      bodyEle.style.setProperty('--primary-7', themeData.primary7)
+      bodyEle.style.setProperty('--primary-atn-hover', themeData.primary5)
     }
     if (key === 'logo_url') {
       let favEle:any = document.getElementById('custom_favicon');
@@ -143,10 +131,29 @@ function setTheme (moduleObj?: ImoduleObj) {
     }
   }
 }
+let imageData = {
+  A: {
+    courseBan: courseA,
+    experBan: experimentA
+  },
+  B: {
+    courseBan: courseB,
+    experBan: experimentB
+  },
+  C: {
+    courseBan: courseC,
+    experBan: experimentC
+  }
+}
+const systemImages = imageData[getTheme().theme]
+console.log(systemImages)
+const systemColor = {...getTheme().themeData}
 export{
   theme,
   image,
   themeColorList,
   loginStyleList,
-  setTheme
+  setTheme,
+  systemImages,
+  systemColor
 }

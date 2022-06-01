@@ -1,5 +1,5 @@
 <template>
-  <div class="courseHeader">
+  <div class="courseHeader" :style="`background-image: url(${systemImages.courseBan});`">
     <div class="infoBox">
       <div class="LeftBox">
         <breadcrumb />
@@ -124,6 +124,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
+import {systemImages} from 'src/utils/theme'
 const router = useRouter();
 const route = useRoute();
 const { currentTab,course_id,is_authorizedText } = route.query;
