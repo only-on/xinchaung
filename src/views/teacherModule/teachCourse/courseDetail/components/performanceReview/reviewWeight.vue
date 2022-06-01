@@ -99,8 +99,11 @@ function verifyNumber(val: string) {
   if (!/^\d+\.?\d*\%?$/.test(val)) {
     message.warn("请输入数字");
     return false;
-  } else {
-    return true;
+  } else if(Number(val)%1!==0){
+    message.warn("请输入整数");
+    return false;
+  }else{
+    return true
   }
 }
 

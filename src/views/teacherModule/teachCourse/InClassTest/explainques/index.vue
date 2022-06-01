@@ -47,7 +47,7 @@ rules.value = {
   titleDescription: [{ required: true, message: "请输入题目描述" }],
   textanswer: [{ required: true, message: "请输入答案" }],
   keyWords: [{ required: true, message: "请输入关键词" }],
-  score: [{ required: true, message: "请输入分数" }],
+  score: [{required: true, message: "请输入分数", }],
 };
 interface Istate {
   visible: boolean;
@@ -106,10 +106,23 @@ function handleOk() {
       message.warning('关键字最少是5个')
       return
     }
+    if(isNaN(parseFloat(formState.score))){
+      message.warning('习题分数只能是数字！')
+      return
+    }
+    if(formState.score<=0){
+      message.warning('习题分数需要大于0！')
+      return
+    }
+    if(formState.score>100){
+      message.warning('习题分数需要小于100！')
+      return
+    }
     sendExplainQues()
   });
 }
 function handleCancel() {
+  formRef.value.resetFields()
   updateVisable(false);
 }
 </script>
