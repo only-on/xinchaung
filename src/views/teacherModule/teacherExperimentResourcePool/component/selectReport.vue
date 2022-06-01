@@ -218,6 +218,7 @@ var activeTemplateItem: any = reactive({
 if (props.selectedReport) {
   activeTemplateItem.id = props.selectedReport.id;
   activeTemplateItem.name = props.selectedReport.name;
+  activeTemplateItem.typeText = props.selectedReport.typeText
 }
 const selectTemplate = (val: any) => {
   activeTemplateItem.id = val.id;
@@ -235,6 +236,11 @@ const handleDelete = (item: any) => {
     onOk() {
       http.deleteTemplate({urlParams: {id: item.id}}).then((res:IBusinessResp) => {
         message.success(`实验报告模板：${item.name}, 删除成功！`)
+        if(activeTemplateItem.id===item.id){
+          activeTemplateItem.id=0
+          activeTemplateItem.name=''
+          activeTemplateItem.typeText=''
+        }
         getTemplateList()
       })
     },
@@ -267,6 +273,7 @@ function beforeUploadReport(file: any) {
       status: "done",
       url:data.word_path,
       file: file,
+      typeText:'【离线】',
     };
     console.log(formState.reportUploadList)
   });
@@ -285,13 +292,12 @@ const reportHandleOk = () => {
   } else {
     active = activeTemplateItem;
   }
-  // console.log(activeTemplateItem);
+  console.log(active);
   emit("reportOk", active);
   emit("reportCancel");
 };
 const settingReport=(val:any)=>{
   // console.log(val);
-  
   emit("reportOk", val);
   emit("reportCancel");
 }

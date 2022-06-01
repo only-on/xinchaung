@@ -377,7 +377,7 @@ const reportCancel = () => {
   reportVisible.value = false;
 };
 const reportOk = (val: any) => {
-  console.log(val)
+  // console.log(val)
   steupFormState.reportObj={...val}
   // steupFormState.reportObj.id = val.id;
   // steupFormState.reportObj.name = val.name;
