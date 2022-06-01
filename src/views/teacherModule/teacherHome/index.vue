@@ -222,6 +222,9 @@ export default defineComponent({
       setChart("graph", graphOptions({}));
     };
     const getErrorRoate=(courseId: string | number)=>{
+      if (!courseId) {
+        return;
+      }
       http.pointErrorRate({urlParams: { courseId:courseId } }).then((res: IBusinessResp) => {
         if(res && res.data){
           let result = res.data;
