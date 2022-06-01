@@ -108,6 +108,10 @@ function fileBeforeUpload(file: any) {
     $message.warn(`${file.name}文件大小不能为空`);
     return false;
   }
+  if (props.type === 4 && file.size > 500*1024*1024) {
+    $message.warn(`上传文件大小必须要在500M以内`);
+    return
+  }
   if (props.type !== 1) {
     let obj = {
       data: {},
