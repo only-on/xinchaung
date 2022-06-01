@@ -56,10 +56,10 @@ export default defineComponent({
     function checkPdf(url: string) {
       frequency.value+=1
       // console.log(frequency.value)
-      if(frequency.value === 6){
-        clearTimeout(Number(timer));
-        return
-      }
+      // if(frequency.value === 6){
+      //   clearTimeout(Number(timer));
+      //   return
+      // }
       if (!url) {
         clearTimeout(Number(timer));
         return;
