@@ -9,6 +9,7 @@
         v-model:value="docOrMp4Drawer.file_name"
         placeholder="请输入搜索关键字"
         @search="searchDocOrMp4List"
+        @keyup.enter="searchDocOrMp4List()" 
       />
     </div>
   </div>
@@ -84,6 +85,7 @@
     v-model:pageSize="docOrMp4Drawer.limit"
     :total="docOrMp4Drawer.totalCount"
     @change="pageChange"
+    @showSizeChange="showSizeChange"
   />
 </template>
 <script lang="ts" setup>
@@ -132,6 +134,7 @@ console.log(props.activeFile)
 var is_public:Ref<number>=ref(1)
 const changeTab=(v:number)=>{
   is_public.value=v
+  docOrMp4Drawer.page = 1;
   getSourceMaterial()
 }
 const getDetailFile = (val:any) => {
@@ -178,6 +181,12 @@ const getSourceMaterial = () => {
     docOrMp4Drawer.totalCount=page.totalCount
     // console.log(docOrMp4Drawer.list)
   });
+};
+const showSizeChange = (current: any,size: any) => {
+  // console.log(size);
+  docOrMp4Drawer.page = 1
+  docOrMp4Drawer.limit = size;
+  getSourceMaterial();
 };
 const pageChange = (current: any) => {
   docOrMp4Drawer.page = current;
