@@ -145,7 +145,6 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { useRouter, useRoute } from "vue-router";
 import { downloadUrl } from "src/utils/download";
-import { string } from "vue-types";
 const router = useRouter();
 const env = process.env.NODE_ENV == "development" ? true : false;
 const route = useRoute();

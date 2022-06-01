@@ -1,5 +1,4 @@
-import { theme } from 'src/utils/theme';
-
+// import { theme } from 'src/utils/theme';
 import {sStorage} from 'src/utils/extStorage'
 import loginA from 'src/assets/images/admin/systemmain/loginA.png'
 import loginB from 'src/assets/images/admin/systemmain/loginB.png'

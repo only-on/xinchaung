@@ -511,7 +511,7 @@ export default defineComponent({
       }
     }
     onMounted(async () => {
-      if ((role === 3 || role === 4)&&!longWs1.value) {
+      if ((role === 3 || role === 4 || role === 5)&&!longWs1.value) {
         try {
           // await initWs()
         } catch (e: any) {
@@ -519,7 +519,7 @@ export default defineComponent({
         }
         // lStorage.set("longWs", longWs)
       }
-      if (role === 3) {
+      if (role === 3 || role==5) {
         getHelpFinfo()
         setWs()
       }
