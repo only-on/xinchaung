@@ -31,8 +31,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.gpu" @keyup.enter="search"></a-input>
@@ -43,8 +43,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.memory" @keyup.enter="search"></a-input>
@@ -55,8 +55,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.cpu" @keyup.enter="search"></a-input>
