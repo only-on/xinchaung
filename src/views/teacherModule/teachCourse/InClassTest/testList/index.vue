@@ -51,7 +51,7 @@
         </div>
 
         <div class="rate">
-          <div class="correctRate">正确率 <span>{{itemValue.correct_rate}}</span> %</div>
+          <div class="correctRate">正确率： <span>{{itemValue.correct_rate}}</span>%</div>
           <div class="submitRate">提交率：<span>{{itemValue.submission_rate}}</span>%</div>
         </div>
       </div>
@@ -90,7 +90,7 @@ function deleteQues(id: any) {
 }
 function ifCorrect(answers:any,id:any){
   const correctAnswer:any=[];
-  answers.forEach((e:any) => {
+  answers?.forEach((e:any) => {
     correctAnswer.push(Number(e.answer))
   });
   if(correctAnswer.includes(id)){
@@ -171,11 +171,15 @@ function ifCorrect(answers:any,id:any){
       }
     }
     .rate {
+      width: 120px;
+      text-align: center;
       .correctRate {
         color: var(--primary-color);
+        width: 100%;
       }
       .submitRate {
         color: var(--cyan-100);
+        width: 100%;
       }
     }
   }

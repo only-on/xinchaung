@@ -210,7 +210,7 @@ export const scaterOptions = (type: number, data: any) => {
       type: Object.keys(data).length>30?'slider':'inside',
       show: true,
       startValue: 1,
-      endValue:Object.keys(data).length,
+      endValue:Object.keys(data).length>30?30:Object.keys(data).length,
       // end: data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 ,
       xAxisIndex: 0,
       bottom: 30,
