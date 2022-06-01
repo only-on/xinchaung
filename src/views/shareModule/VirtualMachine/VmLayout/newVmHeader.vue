@@ -411,6 +411,9 @@
       :multiple="true"
       :fileList="uploadFile.fileList"
       class="upload"
+      @change="onChange"
+      :showUploadList="false"
+      :action="uploadAction"
     >
       <p class="ant-upload-drag-icon">
         <span class="iconfont icon-upload"></span>
@@ -423,8 +426,15 @@
         默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}
       </p>
     </a-upload-dragger>
+    <div v-if="uploadFile.fileList.length" class="progress-box">
+      <div class="file-base-info">
+        <span>文件名称：{{ uploadFile.fileList[0].name }}</span
+        ><span class="icon-shanchu iconfont" @click="remove"></span>
+      </div>
+      <a-progress :percent="uploadPercent" />
+    </div>
     <template #footer>
-      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading"></Submit>
+      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading||fileLoading"></Submit>
     </template>
   </a-modal>
   <!-- 下载文件 -->
@@ -482,6 +492,8 @@ const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 const experType = Number(route.query.experType);
 
 let role = storage.lStorage.get("role");
+const env = process.env.NODE_ENV === "development" ? true : false;
+const uploadAction = (env ? '/proxyPrefix':'')+'/api/instance/uploads/file'
 
 // inject接收块
 const taskType: any = inject("taskType");
@@ -987,8 +999,10 @@ const uploadVisible = ref(false)
 const uploadFile: any = reactive({
   fileList: []
 })
+const uploadPercent = ref(0)
 const uploadFilePath = ref('')
 const uploadLoading = ref(false)
+const fileLoading = ref(false)
 function upload() {
   uploadVisible.value = true
   uploadFile.fileList = []
@@ -1024,19 +1038,37 @@ const beforeUpload = (file: any) => {
     name:file.name
   }
   uploadFile.fileList[0] = obj
-  const fd = new FormData()
-  fd.append('file', file)
-  fd.append('upload_path', 'simpleupload')
-  fd.append('default_name', '1')
-  http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
-    uploadFilePath.value = res.data.full_url
-  })
-  return false;
+  // const fd = new FormData()
+  // fd.append('file', file)
+  // fd.append('upload_path', 'simpleupload')
+  // fd.append('default_name', '1')
+  // http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
+  //   uploadFilePath.value = res.data.full_url
+  // })
+  // return false;
+  fileLoading.value = true
 }
 const remove = () => {
   uploadFile.fileList = []
   uploadFilePath.value = ''
 }
+const onChange = (info: any) => {
+  // console.log(info)
+  const {event, file} = info
+  if (event) {
+    if (event.percent===100) {
+      return
+    } else {
+      uploadPercent.value = Math.floor(event.percent)
+    }
+  }
+  if (file.status === 'done') { // 上传成功
+    fileLoading.value = false
+    uploadPercent.value = 100
+    uploadFilePath.value = file.response?.data?.full_url
+  }
+}
+
 // 文件下载
 const downloadVisible = ref(false)
 const downloadAdd = ref('')
@@ -1835,6 +1867,14 @@ i {
         color: var(--black-25);
         margin-bottom: 14px;
       }
+    }
+  }
+  .progress-box {
+    margin-top: 24px;
+    .file-base-info {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 14px;
     }
   }
 }
