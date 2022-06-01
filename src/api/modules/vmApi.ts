@@ -51,7 +51,8 @@ export default {
     // 学生自评
     evaluateApi:{url:"/api/operate/operates/handle",method:"POST",dataType:"json"},
      // 随堂测试
-    getQuestionListApi:{url:"api/v1/xinchuang/question/contents/{content_id}/questions",methods:"GET",dataType:"json"},
+    getQuestionListApi:{url:"/api/v1/xinchuang/question/contents/{content_id}/questions",methods:"GET",dataType:"json"},
+    getAnswerListApi:{url:"/api/v1/xinchuang/question/contents/{content_id}/questions-with-answer",methods:"GET",dataType:"json"},
     submitAnswerApi:{url:"/api/v1/question/answers",method:"POST",dataType:"json"},
     // 远程协助消息
     getHelpFinfoApi:{ url: '/api/operate/teacherResults/questions', method: 'GET' },
@@ -91,6 +92,7 @@ export interface IvmApi {
     saveTrainNoteApi:TFHttpSend
     getTrainResourceApi:TFHttpSend
     studentQuestionApi:TFHttpSend
+    getAnswerListApi:TFHttpSend
     switchInterfaceApi:TFHttpSend
     uploadTrainReportApi:TFHttpSend
     evaluateApi:TFHttpSend

@@ -314,7 +314,7 @@
             <span>共<i>{{oldQuizPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
             ><span>得分<i class="goal">{{goalNum}}</i>分</span>
           </div>
-          <div v-for="item in quizPaperList" :key="item.id">
+          <div v-for="item in answerPaperList" :key="item.id">
             <template v-if="item.type_id == 2">
               <div
                 class="choice-title black-004 question-title"
@@ -352,7 +352,7 @@
               </div>
               <div class="question-options-wrap">
                 <a-textarea
-                  v-if="item.student_answer && item.student_answer[0]"
+                  v-if="item.student_answer"
                   :value="item.student_answer[0]"
                   :auto-size="{ minRows: 2, maxRows: 5 }"
                   :disabled="true"
@@ -532,6 +532,7 @@ const oldQuizPaperList: Ref<any> = ref([]); // 原始数据
 const quizPaperList: Ref<any> = ref([]);
 const currentQuizIndex: Ref<number> = ref(0);
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
+const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
 
 const answerNum = computed(() => {
   let num = 0;
@@ -657,21 +658,7 @@ const toolList = toolData;
 //   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
 //   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 const roleArry: any = ref([])
-// 获取随堂测试习题.
-async function getQuestionList(needs_answer: boolean = false) {
-  let param = {
-    page: 1,
-    limit: "all",
-    needs_answer: needs_answer,
-  };
-  return vmApi
-    .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
-    .then((res: any) => {
-      if (!res) return
-      oldQuizPaperList.value = res.data;
-      return res.data;
-    });
-}
+
 function back() {
   Modal.confirm({
     title: "提示",
@@ -1307,7 +1294,8 @@ function settingCurrentVM() {
 async function openQuizModal() {
   if (oldQuizPaperList.value.length == answerNum.value) {
 
-    await getQuestionList(true);
+    // await getQuestionList(true);
+    await getAnswerList()
     quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
   } else {
@@ -1329,6 +1317,36 @@ async function openQuizModal() {
   }
   quizVisiable.value = true;
 }
+// 获取随堂测试习题.
+async function getQuestionList(needs_answer: boolean = false) {
+  let param = {
+    page: 1,
+    limit: "all",
+    needs_answer: needs_answer,
+  };
+  return vmApi
+    .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
+    .then((res: any) => {
+      if (!res) return
+      oldQuizPaperList.value = res.data;
+      return res.data;
+    });
+}
+// 获取有答案的随堂测试习题.
+async function getAnswerList(needs_answer: boolean = false) {
+  let param = {
+    page: 1,
+    limit: "all",
+    // needs_answer: needs_answer,
+  };
+  return vmApi
+    .getAnswerListApi({ param: param, urlParams: { content_id: taskId } })
+    .then((res: any) => {
+      if (!res) return
+      answerPaperList.value = res.data;
+      return res.data;
+    });
+}
 // 提交
 function submitQuiz() {
   let params: any = {
@@ -1345,7 +1363,7 @@ function submitQuiz() {
 
   vmApi.submitAnswerApi({ param: params }).then(async (res: any) => {
     message.success("提交成功");
-    let questionTemp: any[] = await getQuestionList(true);
+    let questionTemp: any[] = await getAnswerList();
     quizPaperList.value = questionTemp.filter((item: any) => {
       return currentQuestionIds.includes(item.id);
     });
