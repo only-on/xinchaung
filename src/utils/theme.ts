@@ -1,14 +1,18 @@
-// import { theme } from 'src/utils/theme';
 import {sStorage} from 'src/utils/extStorage'
 import loginA from 'src/assets/images/admin/systemmain/loginA.png'
 import loginB from 'src/assets/images/admin/systemmain/loginB.png'
 import loginC from 'src/assets/images/admin/systemmain/loginC.png'
-import experimentA from 'src/assets/images/teacherExperimentResourcePool/base_info_bg.png'
-import experimentB from 'src/assets/images/teacherExperimentResourcePool/base_info_bgB.jpg'
-import experimentC from 'src/assets/images/teacherExperimentResourcePool/base_info_bgC.jpg'
-import courseA from 'src/assets/images/teacherCourse/courseHeader.jpg'
-import courseB from 'src/assets/images/teacherCourse/courseHeaderB.jpg'
-import courseC from 'src/assets/images/teacherCourse/courseHeaderC.jpg'
+// 实验详情顶部图片
+import experimentA from 'src/assets/images/themeA/teacherExperiment/base_info_bg.png'
+import experimentB from 'src/assets/images/themeB/teacherExperiment/base_info_bg.jpg'
+import experimentC from 'src/assets/images/themeC/teacherExperiment/base_info_bg.jpg'
+// 课程详情顶部详情图片
+import courseA from 'src/assets/images/themeA/teacherCourse/courseHeader.jpg'
+import courseB from 'src/assets/images/themeB/teacherCourse/courseHeader.jpg'
+import courseC from 'src/assets/images/themeC/teacherCourse/courseHeader.jpg'
+// 管理端首页
+import greenImg from 'src/assets/images/admin/home/enter.png'
+import purpleImg from 'src/assets/images/admin/home/enter1.png'
 type TThemeColor={
   themeColor: string,
   nextThemeColor:string,
@@ -95,8 +99,8 @@ const themeColorList = [
 ]
 function getTheme () {
   let systemInfo = sStorage.get('systemInfo')
-  let theme = systemInfo.theme
-  let themeData = themeColorList.filter((item:any) => item.value === systemInfo.theme)[0]
+  let theme = systemInfo ? systemInfo.theme : 'A'
+  let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
   return {
     systemInfo,
     themeData,
@@ -133,26 +137,33 @@ function setTheme () {
 let imageData = {
   A: {
     courseBan: courseA,
-    experBan: experimentA
+    experBan: experimentA,
+    entranceLeft: greenImg,
+    entranceRight: purpleImg
   },
   B: {
     courseBan: courseB,
-    experBan: experimentB
+    experBan: experimentB,
+    entranceLeft: greenImg,
+    entranceRight: purpleImg
   },
   C: {
     courseBan: courseC,
-    experBan: experimentC
+    experBan: experimentC,
+    entranceLeft: greenImg,
+    entranceRight: purpleImg
   }
 }
-const systemImages = imageData[getTheme().theme]
-console.log(systemImages)
-const systemColor = {...getTheme().themeData}
+export function getThemeData () {
+  return {
+    systemImages: imageData[getTheme().theme],
+    systemColor: {...getTheme().themeData}
+  }
+}
 export{
   theme,
   image,
   themeColorList,
   loginStyleList,
-  setTheme,
-  systemImages,
-  systemColor
+  setTheme
 }

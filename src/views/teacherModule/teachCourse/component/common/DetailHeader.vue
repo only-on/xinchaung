@@ -124,13 +124,15 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import extStorage from "src/utils/extStorage";
-import {systemImages} from 'src/utils/theme'
+import {getThemeData} from 'src/utils/theme'
 const router = useRouter();
 const route = useRoute();
 const { currentTab,course_id,is_authorizedText } = route.query;
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const http = (request as any).teacherImageResourcePool;
+const {systemImages} = getThemeData()
+console.log(systemImages)
 interface Props {
   info: any;
   tabs?:any
@@ -195,7 +197,6 @@ const edit=()=>{
 
 .courseHeader{
   // height: 200px;
-  background: url('src/assets/images/teacherCourse/courseHeader.jpg') no-repeat;
   background-size: 100% 100%;
   color: var(--white);
   .infoBox{
@@ -209,11 +210,8 @@ const edit=()=>{
      padding : 14px 0;
      :deep(.ant-breadcrumb){
        color: var(--white-45);
-       .ant-breadcrumb-separator{
+       >span, .ant-breadcrumb-separator{
          color:var(--white-45);
-       }
-       >span:last-child{
-         color: var(--white-45);
        }
      }
       .termOfValidity{

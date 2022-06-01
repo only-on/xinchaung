@@ -2,7 +2,7 @@
     <div class="home">
         <div class="corlorwhite">
             <div class="entrance">
-            <div class="entrance-left">
+            <div class="entrance-left" :style="`background-image: url(${systemImages.entranceLeft});`">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()" @click="toJump(item.link)">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            <div class="entrance-right">
+            <div class="entrance-right" :style="`background-image: url(${systemImages.entranceRight});`">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()" @click="toJump(item.link)">
@@ -112,7 +112,7 @@
                             信息警告：
                         </div>
                         <div>
-                            <div class="warningItem" v-for='(item,i) in warningMessage' key="i">
+                            <div class="warningItem" v-for='(item,i) in warningMessage' :key="i">
                                 <span>
                                     {{item.title}}:
                                 </span>
@@ -204,7 +204,9 @@
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
     import {Modal } from 'ant-design-vue'
+    import {getThemeData} from 'src/utils/theme'
     const http = (request as any).adminHome;
+    const {systemImages} = getThemeData()
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     updata({ tabs: [], showContent:false, showNav: false });
