@@ -154,8 +154,8 @@ const last=(val:number)=>{
   console.log(formState)
 }
 const next=(val:number)=>{
-  console.log(formState)
-  // currentStep.value=val
+  console.log(formState)         
+  // currentStep.value=val   next3 创建最终保存    next4复用中途保存
   // return
   if(EditId){
     // 复用课程
@@ -188,18 +188,7 @@ const next=(val:number)=>{
     return
   }
   if(val === 3){
-    formState.is_available=1
-    stup1Loading.value=true
-    formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
-    formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
-    http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
-      const {data}=res
-      stup1Loading.value=false
-      currentStep.value=val
-      courseId.value=data.id
-    }).catch((err:any)=>{
-      stup1Loading.value=false
-    })
+    UpdateCourse(val)
     return
   }
   currentStep.value=val
@@ -212,7 +201,7 @@ const multiplexingCourse=(val:number)=>{
       formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
       formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
       stup1Loading.value=true
-      http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
+      http.UpdateCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
         const {data}=res
         stup1Loading.value=false
         currentStep.value=val
@@ -232,29 +221,32 @@ const multiplexingCourse=(val:number)=>{
     return
   }
   if(val===3 || val === 4){
-      console.log('baocun1')
-      // return
-      formRef.value.validate().then(()=>{
-        stup1Loading.value=true
-        formState.is_available=1
-        formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
-        formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
-        http.UploadCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
-          const {data}=res
-          stup1Loading.value=false
-          if(val === 4){
-            cancel()
-            return
-          }
-          currentStep.value=val
-          courseId.value=data.id
-        }).catch((err:any)=>{
-          stup1Loading.value=false
-        })
-      })
-    return  
+    if(currentStep.value === 0){
+      formRef.value.validate().then(()=>{ UpdateCourse(val)})
+    }else{
+      UpdateCourse(val)
+    }
+    return
   }
   currentStep.value=val
+}
+function UpdateCourse(val:number){
+  stup1Loading.value=true
+  formState.is_available=1
+  formState.start_time=moment(formState.start_time).format('YYYY-MM-DD 00:00:00');
+  formState.end_time=moment(formState.end_time).format('YYYY-MM-DD 23:59:59');
+  http.UpdateCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
+    const {data}=res
+    stup1Loading.value=false
+    if(val === 4){
+      cancel()
+      return
+    }
+    currentStep.value=val
+    courseId.value=data.id
+  }).catch((err:any)=>{
+    stup1Loading.value=false
+  })
 }
 const cancel=()=>{
   router.go(-1)

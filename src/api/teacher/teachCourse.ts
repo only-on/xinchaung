@@ -70,7 +70,7 @@ export default {
   // 课程复用
   // multiplexing: { url: '/api/course/courses/{course_id}/replicate', method: "PUT" }, // 现在的复用是编辑
   //  更新课程基本信息
-  UploadCourse:{ url: `/api/course/courses/{courseId}`, method: "put",dataType: "json"},
+  UpdateCourse:{ url: `/api/course/courses/{courseId}`, method: "put",dataType: "json"},
   // 课程设置  
   CourseSteup:{ url: `/api/course/courses/{courseId}/setting`, method: "put",dataType: "json"},
   // 获取课程设置
@@ -138,7 +138,7 @@ export interface ITeacherCourseApis {
 
   hotCourseRecommend:TFHttpSend
   getTeacherEvaluatesApi:TFHttpSend
-  UploadCourse:TFHttpSend
+  UpdateCourse:TFHttpSend
   getWeightApi:TFHttpSend
   saveWeightApi:TFHttpSend
   applyWeightApi:TFHttpSend

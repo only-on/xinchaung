@@ -290,7 +290,7 @@ const EmptyType:any=computed(()=>{
     }
   }
   if(currentTab.value === 1){
-    if(labelSearch.CourseDirection ===0 && labelSearch.CareerDirection ===0  && searchInfo.name===''){
+    if(labelSearch.CourseDirection ===0 && labelSearch.CareerDirection ===0  && searchInfo.name==='' && loading.value===false){
       str= 'empty'
     }else{
       str= 'searchEmpty'
@@ -300,7 +300,7 @@ const EmptyType:any=computed(()=>{
   return str
 })
 const EmptyText=computed(()=>{
-  if(!courseList.length && !loading.value && EmptyType.value ==='empty' && currentTab.value===0){
+  if(!courseList.length && !loading.value && EmptyType.value ==='empty' && currentTab.value===0 && loading.value===false){
     return '暂无课程，点击下方按钮创建课程吧！'
   }else{
     // return '抱歉暂未搜到相关数据'
