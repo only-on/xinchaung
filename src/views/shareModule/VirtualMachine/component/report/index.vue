@@ -75,9 +75,8 @@ import request from "src/request/getRequest";
 import OnLine from "./OnLine.vue";
 import empty from "src/components/Empty.vue";
 import iconList from "src/utils/iconList";
-// import { renderMarkdown } from  '@xianfe/antdv-markdown';
-import { Modal, message } from "ant-design-vue";
-
+// @ts-ignore 类型声明需要完善，此处先用注解压制错误
+import {renderMarkdown} from  '@xianfe/antdv-markdown';
 interface experReportParam {
   csc_id: any;
 }
@@ -143,7 +142,7 @@ function submitOfflineReport() {
             // json_view_content
             formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][name]`,item.name);
             // @ts-ignore
-            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][value]`,item.value);
+            formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][value]`,renderMarkdown(true,item.value))
             formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][placeholder]`,item.placeholder);
             formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][readonly]`,item.readonly);
             formData.append(`json_view_content[`+[i]+`][fields][`+[j]+`][align]`,item.align);
