@@ -130,7 +130,7 @@ function updateVisable(value: any,addok:any) {
   }
 }
 function deleteQues(id: any) {
-  http.deleteInclassTestItem({urlParams:{question_id:id}}).then((res:any)=>{
+  http.deleteInclassTestItem({urlParams:{question_id:id,content_id:experitId.value}}).then((res:any)=>{
     inclassTestList()
   })
 }

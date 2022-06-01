@@ -151,23 +151,26 @@ const cancelSelectStu=()=>{
   // initData()
 }
 const updateSelectStuVisable=(value: any,studentids:any)=>{
-  isVisible.value=false
   console.log(value,'value')
   if(value==='ok'){
     if (!studentids.length) {
           message.warning('请选择需要添加的学生')
           return
-        }
-    let obj={
+    }else{
+      let obj={
           id:props.courseId,
           student_id:studentids,
-          type:1,
+            type:1,
+      }
+        http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
+              message.success("保存成功");
+              isVisible.value=false
+              initData()
+            })
+      }
+    }else{
+      isVisible.value=false
     }
-    http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
-          message.success("保存成功");
-          initData()
-        })
-  }
 }
 type Key = ColumnProps["key"];
 interface IStudentData{
