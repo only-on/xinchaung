@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref,watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -104,10 +104,15 @@ http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 
 // 获取在线用户数信息
 http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
+  // const {site_setting}=res.data
   onlineUserInfo.value = res!.data.online_info;
   store.commit('setSystemInfo', res!.data.site_setting)
+  const site_setting=res!.data.site_setting
+  // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });
-
+watch(()=>{return store.state.systemInfo},(val:any)=>{
+  console.log(val)
+},{deep:true})
 const login = () => {
   refForm.value
     .validate()
@@ -156,6 +161,7 @@ const login = () => {
 };
 </script>
 <template>
+<!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->
   <div :class="['container', loginInfo.class]">
     <div class="online-info">
       <span class="online-title">当前在线人数：</span>
@@ -261,6 +267,7 @@ const login = () => {
   }
   &.loginB{
     background:  url(src/assets/images/login/bgB.jpg) no-repeat center center;
+    background-size: 100% 100%;
     .banner{
       width: 1064px;
       display: flex;
@@ -283,7 +290,6 @@ const login = () => {
       background: linear-gradient(90deg,#f16624, #ffb849 62%, #ffe749);
     }
   }
-  
 
   .online-info {
     position: absolute;
