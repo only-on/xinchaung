@@ -45,7 +45,7 @@
             <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
           </div>
           <div class="right">
-            <a-progress type="circle" :percent="75" :strokeColor="'#9872EB'" :strokeWidth="12">
+            <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
               <template #format="percent">
                 <div class="right1">镜像总量</div>
                 <div class="right2">{{analysisObj.allTotalDisk}}G</div>
