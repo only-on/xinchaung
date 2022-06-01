@@ -105,7 +105,13 @@ const columns= [
         },
         {
           title: "班级",
-          dataIndex: "user_id",
+          dataIndex: "classes",
+          align: "left",
+          ellipsis: true,
+        },
+        {
+          title: "年级",
+          dataIndex: "userProfile.grade",
           align: "left",
           ellipsis: true,
         },
