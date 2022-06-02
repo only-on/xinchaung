@@ -560,12 +560,10 @@
         }
     }
     .entrance-left{
-        background-image: url('src/assets/images/admin/home/enter.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
     .entrance-right{
-        background-image: url('src/assets/images/admin/home/enter1.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }

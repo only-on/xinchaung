@@ -250,7 +250,7 @@ function removeFile(file: any, index: any) {
 }
 function removeAllFile() {
   props.fileList.forEach((v: any) => {
-    console.log(version)
+    // console.log(version)
   })
 }
 onMounted(() => {
