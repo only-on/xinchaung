@@ -77,8 +77,8 @@
                 }}</span>
                 <a-progress
                   :stroke-color="{
-                    '0%': theme.nextThemeColor,
-                    '100%': theme.themeColor,
+                    '0%': systemColor.secondary,
+                    '100%': systemColor.primary,
                   }"
                   :percent="Number(item.error_rate)"
                 />
@@ -112,7 +112,7 @@
     </a-row>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { defineComponent, onBeforeUnmount, onMounted, reactive, ref, inject } from "vue";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import { Navigation } from "swiper";
@@ -130,7 +130,9 @@ import { Ihttp } from "./typings";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { theme } from "src/utils/theme";
 import { useI18n } from "vue-i18n";
-
+import {getThemeData} from 'src/utils/theme'
+const {systemColor,systemImages} = getThemeData()
+console.log(systemImages)
 interface Ierror {
   id: number | string;
   knowledge_map_name: string;
@@ -140,12 +142,6 @@ interface Ilists {
   id: number | string;
   name: string;
 }
-export default defineComponent({
-  components: {
-    Swiper,
-    SwiperSlide,
-  },
-  setup() {
     const { t } = useI18n();
     const http = (request as Ihttp).teacherHome;
     const activeIndex = ref<number>(0);
@@ -287,27 +283,15 @@ export default defineComponent({
     const formatProgress = (percent: any) => {
       return percent + "%";
     };
-    return {
-      slideChangeTransitionEnd,
-      setTranslate,
-      changeTab,
-      modules: [Navigation],
-      tabs,
-      activeIndex,
-      courseCompletion,
-      errorKonwledge,
-      gradeDistribution,
-      courseLists,
-      showGraph,
-      formatProgress,
-      theme,
-      echartData,
-    };
-  },
-});
+    const modules:any=[Navigation]
+    const left = `url(${systemImages.ThomeLunbo.left})`
+    const right = `url(${systemImages.ThomeLunbo.right})`
+    console.log(left);
+    
 </script>
 <style lang="less" scoped>
 .teacherHome {
+  // color: rgba(255, 149, 68,.25);
   min-width: var(--center-width);
   // overflow: auto;
   height: 100%;
@@ -334,6 +318,7 @@ export default defineComponent({
       align-items: center;
       justify-content: center;
       cursor: pointer;
+      color:v-bind(systemColor)
     }
     .swiper-button-prev {
       left: 0;
@@ -341,7 +326,8 @@ export default defineComponent({
         content: "";
         width: 64px;
         height: 64px;
-        background: url(src/assets/images/teacher-default/left.png) no-repeat;
+        // background: url(src/assets/images/teacher-default/left.png) no-repeat;
+        background-image: v-bind(left);
       }
     }
     .swiper-button-next {
@@ -350,7 +336,8 @@ export default defineComponent({
         content: "";
         width: 64px;
         height: 64px;
-        background: url(src/assets/images/teacher-default/right.png) no-repeat;
+        // background: url(src/assets/images/teacher-default/right.png) no-repeat;
+        background-image: v-bind(right);
       }
     }
     .swiper-wrapper {
@@ -408,6 +395,7 @@ export default defineComponent({
       line-height: 28px;
       font-size: 18px;
       font-weight: 500;
+      
     }
     #pie,
     #radar {

@@ -13,6 +13,14 @@ import courseC from 'src/assets/images/themeC/teacherCourse/courseHeader.jpg'
 // 管理端首页
 import greenImg from 'src/assets/images/admin/home/enter.png'
 import purpleImg from 'src/assets/images/admin/home/enter1.png'
+// 教师端首页 轮播图按钮    Aleft Aright Bleft Bright Cleft Cright
+import Aleft from 'src/assets/images/teacher-default/left.png'
+import Aright from 'src/assets/images/teacher-default/right.png'
+import Bleft from 'src/assets/images/teacher-default/Bleft.png'
+import Bright from 'src/assets/images/teacher-default/Bright.png'
+import Cleft from 'src/assets/images/teacher-default/Cleft.png'
+import Cright from 'src/assets/images/teacher-default/Cright.png'
+
 type TThemeColor={
   themeColor: string,
   nextThemeColor:string,
@@ -42,7 +50,8 @@ interface ImoduleObj {
   class: string,
   type: string
 }
-const themeColorList = [
+
+const themeColorList:any = [
   {
     value: 'A',
     primary: '#FF9544', // 主色
@@ -85,7 +94,7 @@ const themeColorList = [
 ]
  const loginStyleList = [
   {
-    value: 'A',
+    value: 'A',  
     label: loginA
   },
   {
@@ -97,10 +106,38 @@ const themeColorList = [
     label: loginC
   }
 ]
+const THomeEchartsThemeColor={
+  A:{
+    Tcolor1:'rgba(255, 149, 68,.25)',// 课程完成率
+    Tcolor2:'#FF9544',
+
+    Tcolor3:'#05BBC9',// 课程成绩分布
+    Tcolor4:'rgba(255, 149, 68,.25)',
+    Tcolor5:'rgba(255, 149, 68,.25)'
+  },
+  B:{
+    Tcolor1:'rgba(5,187,201,0.20)',// 课程完成率
+    Tcolor2:'#05BBC9',
+
+    Tcolor3:'#FF9544',// 课程成绩分布
+    Tcolor4:'#05BBC9',
+    Tcolor5:'#fff'
+  },
+  C:{
+    Tcolor1:'rgba(255,186,73,0.20)',// 课程完成率
+    Tcolor2:'#FFBA49', 
+
+    Tcolor3:'#FF9544',// 课程成绩分布
+    Tcolor4:'rgba(255, 149, 68,.25)',
+    Tcolor5:'rgba(255, 149, 68,.25)'
+  },
+}
 function getTheme () {
+  // A默认的橘黄系统色    B 暗色蓝绿   C 白色+浅色黄色
   let systemInfo = sStorage.get('systemInfo')
   let theme = systemInfo ? systemInfo.theme : 'A'
   let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
+  Object.assign(themeData,THomeEchartsThemeColor[theme])
   return {
     systemInfo,
     themeData,
@@ -139,19 +176,31 @@ let imageData = {
     courseBan: courseA,
     experBan: experimentA,
     entranceLeft: greenImg,
-    entranceRight: purpleImg
+    entranceRight: purpleImg, 
+    ThomeLunbo:{
+      left:Cleft,
+      right:Cright
+    }
   },
   B: {
     courseBan: courseB,
     experBan: experimentB,
     entranceLeft: greenImg,
-    entranceRight: purpleImg
+    entranceRight: purpleImg,
+    ThomeLunbo:{
+      left:Bleft,
+      right:Bright
+    }
   },
   C: {
     courseBan: courseC,
     experBan: experimentC,
     entranceLeft: greenImg,
-    entranceRight: purpleImg
+    entranceRight: purpleImg,
+    ThomeLunbo:{
+      left:Cleft,
+      right:Cright
+    }
   }
 }
 export function getThemeData () {
