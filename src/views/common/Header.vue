@@ -1,5 +1,5 @@
 <template>
-  <header class="header-box">
+  <header :class="['header-box', 'theme'+systemTheme]">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${ getLogoUrl});`"></div>
@@ -92,10 +92,12 @@ import {IWmc} from "src/typings/wmc";
 import api from "src/api";
 import { AnyMxRecord } from "dns";
 import logoImg from "src/assets/images/user/logo.png"
+import {getThemeData} from 'src/utils/theme'
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
+    const {systemTheme} = getThemeData()
     const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
     const store = useStore()
@@ -685,7 +687,8 @@ export default defineComponent({
       toHelp,
       store,
       logoImg,
-      getLogoUrl
+      getLogoUrl,
+      systemTheme
     };
   },
 });
@@ -700,6 +703,14 @@ export default defineComponent({
   align-items: center;
   width: var(--center-width);
   margin: 0 auto;
+  &.themeC{
+    > .header-left .web-title{
+      color: var(--black-85);
+    }
+    > .header-right .user-name .user-name{
+      color: var(--black-85);
+    }
+  }
   // box-shadow: 0 0 5px #c2aad6;
   > .header-left {
     flex-shrink: 0;
@@ -719,7 +730,7 @@ export default defineComponent({
       background-size: 100% 100%;
     }
     .web-title {
-      color: var(--primary-color);
+      color: var(--white);
       font-size: 22px;
     }
   }
@@ -800,7 +811,7 @@ export default defineComponent({
       //  }
       .user-name {
         padding: 0 6px;
-        color: var(--menu-text);
+        color: var(--white);
       }
     }
   }

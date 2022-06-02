@@ -72,7 +72,6 @@ export default defineComponent({
     const route = useRoute();
     const store = useStore();
     const themeClass = ref<string>('theme' + store.state.systemInfo.theme)
-    console.log(themeClass.value)
     const tabs = reactive(configuration.tabs) as ITab[];
     const activeName: Ref<string> = ref("");
     var updata = inject("updataNav") as Function;

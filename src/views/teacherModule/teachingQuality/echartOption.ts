@@ -134,13 +134,13 @@ let jobAbilityOption = (data: any) => {
             indicator1.push(indicator[key].name)
           }
         for (var i = 0 ; i < params.value.length ; i++){
-          stt = `<span style="width:100%;display:block,height:0">
-                    <span>${indicator1[i]}：</span>
-                    <span style="float:right;font-weight:600">${params.value[i]}分</span>
-                  </span>`
+          stt = `<span style="width:100%;display:flex;align-items:center;justify-content:space-between;height:0;">
+                    <span><span style="display:inline-block;width:5px;height:5px;border-radius:50%;margin-right:5px;background:${systemColor.primary}"></span>${indicator1[i]}：</span>
+                    <span style="font-weight:600">${params.value[i]}分</span>
+                </span>`
           result += stt + "<br/>"
         }
-        return params.data.name+ "<br/>"+result
+        return params.data.name+ "<br/><br/>" + result
       }
     },
     radar: {

@@ -280,7 +280,8 @@ let imageData = {
 export function getThemeData () {
   return {
     systemImages: imageData[getTheme().theme],
-    systemColor: {...getTheme().themeData}
+    systemColor: {...getTheme().themeData},
+    systemTheme: getTheme().theme
   }
 }
 export{
