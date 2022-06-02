@@ -50,6 +50,10 @@ interface Istate {
   rules: any;
   onSubmit: () => void;
 }
+const requestObj = {
+  student: 'stuResetPassword',
+  other: 'resetPassword'
+}
 export default defineComponent({
   name: "CreatePosts",
   components: {},
@@ -93,19 +97,27 @@ export default defineComponent({
         ],
       },
       onSubmit: () => {
+        let request:any = ''
+        let params:any = {}
         state.formRef.validate().then(() => {
           console.log("验证过");
           if (state.formState.newpass !== state.formState.repeatnewpass) {
             message.warn("输入新密码不一致");
             return;
           }
+          if (lStorage.get('role') === 4) {
+            request = requestObj['student']
+            params = { ...state.formState}
+          } else {
+            request = requestObj['other']
+            params = { reset_password_params: { ...state.formState } }
+          }
           // console.log(state.formState);
-          httpLogout
-            .resetPassword({
-              param: { reset_password_params: { ...state.formState } },
+          httpLogout[request]({
+              param: params,
             })
             .then((res: IBusinessResp) => {
-              message.success("修改成功");
+              message.success("修改成功,请重新登录");
               state.formRef.resetFields();
               loginOut();
               // router.go(-1)

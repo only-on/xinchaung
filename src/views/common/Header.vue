@@ -134,7 +134,7 @@ export default defineComponent({
     });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码
-      return role === 3 || role === 1 || role === 2;
+      return role === 3 || role === 1 || role === 2 || role === 4;
     });
     const userName = ref<string>(lStorage.get("username"));
 
