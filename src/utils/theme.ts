@@ -14,13 +14,14 @@ import courseC from 'src/assets/images/themeC/teacherCourse/courseHeader.jpg'
 import greenImg from 'src/assets/images/admin/home/enter.png'
 import purpleImg from 'src/assets/images/admin/home/enter1.png'
 // 教师端首页 轮播图按钮    Aleft Aright Bleft Bright Cleft Cright
-import Aleft from 'src/assets/images/teacher-default/left.png'
-import Aright from 'src/assets/images/teacher-default/right.png'
+import Aleft from 'src/assets/images/teacher-default/Aleft.png'
+import Aright from 'src/assets/images/teacher-default/Aright.png'
 import Bleft from 'src/assets/images/teacher-default/Bleft.png'
 import Bright from 'src/assets/images/teacher-default/Bright.png'
 import Cleft from 'src/assets/images/teacher-default/Cleft.png'
 import Cright from 'src/assets/images/teacher-default/Cright.png'
-
+import bannerlunBoA from 'src/assets/images/teacher-default/banner-bg3.jpg'
+import bannerlunBoB from 'src/assets/images/teacher-default/banner-bg2.png'
 type TThemeColor={
   themeColor: string,
   nextThemeColor:string,
@@ -179,7 +180,8 @@ let imageData = {
     entranceRight: purpleImg, 
     ThomeLunbo:{
       left:Cleft,
-      right:Cright
+      right:Cright,
+      bannerlunBo:bannerlunBoA
     }
   },
   B: {
@@ -189,7 +191,8 @@ let imageData = {
     entranceRight: purpleImg,
     ThomeLunbo:{
       left:Bleft,
-      right:Bright
+      right:Bright,
+      bannerlunBo:bannerlunBoB
     }
   },
   C: {
@@ -199,7 +202,8 @@ let imageData = {
     entranceRight: purpleImg,
     ThomeLunbo:{
       left:Cleft,
-      right:Cright
+      right:Cright,
+      bannerlunBo:bannerlunBoA
     }
   }
 }

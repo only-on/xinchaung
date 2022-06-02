@@ -286,7 +286,8 @@ interface Ilists {
     const modules:any=[Navigation]
     const left = `url(${systemImages.ThomeLunbo.left})`
     const right = `url(${systemImages.ThomeLunbo.right})`
-    console.log(left);
+    const bannerlunBo= `url(${systemImages.ThomeLunbo.bannerlunBo})`
+    console.log(bannerlunBo);
     
 </script>
 <style lang="less" scoped>
@@ -328,6 +329,8 @@ interface Ilists {
         height: 64px;
         // background: url(src/assets/images/teacher-default/left.png) no-repeat;
         background-image: v-bind(left);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
       }
     }
     .swiper-button-next {
@@ -338,6 +341,8 @@ interface Ilists {
         height: 64px;
         // background: url(src/assets/images/teacher-default/right.png) no-repeat;
         background-image: v-bind(right);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
       }
     }
     .swiper-wrapper {
@@ -354,7 +359,10 @@ interface Ilists {
         justify-content: center;
         align-items: center;
         transition-property: all;
-        background: url(src/assets/images/teacher-default/banner-bg2.png) no-repeat;
+        // background: url(src/assets/images/teacher-default/banner-bg2.png) no-repeat;
+        background-image: v-bind(bannerlunBo);
+        background-repeat: no-repeat;
+        background-size: 100% 100%;
         word-break: break-all;
         padding: 10px;
         &.swiper-slide-next {
