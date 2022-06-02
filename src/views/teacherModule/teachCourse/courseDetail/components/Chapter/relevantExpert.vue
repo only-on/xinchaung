@@ -43,6 +43,10 @@ const Detail=(val:any)=>{
   //   message.warning('未授权课程不能查看公开实验')
   //   return 
   // }
+  if(!val.is_authorize){
+    message.success('该实验未授权，暂不能查看！')
+    return
+  }
   router.push({
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
     query:{
