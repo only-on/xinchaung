@@ -132,7 +132,7 @@ import { theme } from "src/utils/theme";
 import { useI18n } from "vue-i18n";
 import {getThemeData} from 'src/utils/theme'
 const {systemColor,systemImages} = getThemeData()
-console.log(systemImages)
+// console.log(systemImages)
 interface Ierror {
   id: number | string;
   knowledge_map_name: string;
@@ -189,7 +189,7 @@ interface Ilists {
         let progress = item.progress;
         item.style.transform = "scale(" + (1.5 - Math.abs(progress) / 4) + ")";
         activeIndex.value = 0;
-        setChart("scater", scaterOptions(0, score_usedtime.value,systemColor));
+        setChart("scater", scaterOptions(0, score_usedtime.value));
       });
     };
     const setChart = (ele: string, options: object) => {
@@ -200,7 +200,7 @@ interface Ilists {
     };
     const changeTab = (index: number) => {
       activeIndex.value = index;
-      setChart("scater", scaterOptions(index, score_usedtime.value,systemColor));
+      setChart("scater", scaterOptions(index, score_usedtime.value));
     };
     const handleData = (obj: Object, type?: string) => {
       return Object.keys(obj).length
@@ -212,10 +212,10 @@ interface Ilists {
     const reset = () => {
       courseCompletion.done = 0;
       courseCompletion.undone = 0;
-      setChart("pie", pieOptions(courseCompletion,systemColor));
-      setChart("radar", radarOptions(handleData({}, "grade"),systemColor));
-      setChart("scater", scaterOptions(0, {},systemColor));
-      setChart("graph", graphOptions({},systemColor));
+      setChart("pie", pieOptions(courseCompletion));
+      setChart("radar", radarOptions(handleData({}, "grade")));
+      setChart("scater", scaterOptions(0, {}));
+      setChart("graph", graphOptions({}));
     };
     const getErrorRoate=(courseId: string | number)=>{
       if (!courseId) {
@@ -244,17 +244,17 @@ interface Ilists {
           // 课程完成率
           courseCompletion.done = result.done;
           courseCompletion.undone = result.undone;
-          setChart("pie", pieOptions(courseCompletion,systemColor));
+          setChart("pie", pieOptions(courseCompletion));
           // 知识点错误率
           // errorKonwledge.push(...result.error_knowledge);
           // 课程成绩分布
           gradeDistribution.value = handleData(result.course_rank, "grade");
-          setChart("radar", radarOptions(gradeDistribution.value,systemColor));
+          setChart("radar", radarOptions(gradeDistribution.value));
           // 实验成绩分布
           score_usedtime.value = handleData(result.score_usedtime);
-          setChart("scater", scaterOptions(0, score_usedtime.value,systemColor));
+          setChart("scater", scaterOptions(0, score_usedtime.value));
           // 知识图谱
-          setChart("graph", graphOptions(handleData(result.knowledge_map),systemColor));
+          setChart("graph", graphOptions(handleData(result.knowledge_map)));
           // Object.keys(result.knowledge_map).length
           //   ? (showGraph.value = true)
           //   : (showGraph.value = false);
@@ -288,7 +288,7 @@ interface Ilists {
     const left = `url(${systemImages.ThomeLunbo.left})`
     const right = `url(${systemImages.ThomeLunbo.right})`
     const bannerlunBo= `url(${systemImages.ThomeLunbo.bannerlunBo})`
-    console.log(bannerlunBo);
+    // console.log(bannerlunBo);
     
 </script>
 <style lang="less" scoped>

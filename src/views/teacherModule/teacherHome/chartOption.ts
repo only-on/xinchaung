@@ -1,7 +1,7 @@
 import { theme } from 'src/utils/theme'
 import {getThemeData} from 'src/utils/theme'
 const {systemColor} = getThemeData()
-console.log(systemColor)
+// console.log(systemColor)
 export interface IpieData {
   done: number,
   undone: number
@@ -16,8 +16,8 @@ interface IchildNodes {
   type: string
 }
 // 课程完成率
-export const pieOptions = (data: IpieData,systemColor:any) => {
-  // const systemColor=systemColor
+export const pieOptions = (data: IpieData) => {
+  const {systemColor} = getThemeData()
   let options = {
     color: data.done === 0 && data.undone === 0 ? [systemColor.Tcolor1] : [systemColor.Tcolor2, systemColor.Tcolor1],
     series: [
@@ -49,7 +49,8 @@ export const pieOptions = (data: IpieData,systemColor:any) => {
   return options
 }
 // 课程成绩分布
-export const radarOptions = (data: any,systemColor:any) => {
+export const radarOptions = (data: any) => {
+  const {systemColor} = getThemeData()
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas);
@@ -163,7 +164,8 @@ function stringToArray(val: string, number: number) {
   return arr
 }
 // 实验成绩分布
-export const scaterOptions = (type: number, data: any,systemColor:any) => {
+export const scaterOptions = (type: number, data: any) => {
+  const {systemColor} = getThemeData()
   var seriesData: any[] = [];
   var taskNameLength: any[] = []
   var xNames: any[] = []
@@ -293,7 +295,8 @@ export const scaterOptions = (type: number, data: any,systemColor:any) => {
   return options
 }
 // 知识图谱
-function setTagData(knowledge_map: IknowledgeMap,systemColor:any) {
+function setTagData(knowledge_map: IknowledgeMap) {
+  const {systemColor} = getThemeData()
   let links: any[] = []
   let data: any[] = []
   if (Object.keys(knowledge_map).length == 0) {
@@ -359,8 +362,8 @@ function setTagData(knowledge_map: IknowledgeMap,systemColor:any) {
   })
   return { data, links}
 }
-export const graphOptions = (data: any,systemColor:any) => {
-  let datas = setTagData(data,systemColor)
+export const graphOptions = (data: any) => {
+  let datas = setTagData(data)
   let options = {
     tooltip: {
       formatter: function (val: any) {
