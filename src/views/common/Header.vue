@@ -2,15 +2,8 @@
   <header class="header-box">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
-        <!-- <div
-          class="logo"
-          :style="`background-image: url(${
-            env
-              ? '/proxyPrefix' + systemBaseInfo.login_logo
-              : systemBaseInfo.login_logo
-          });`"
-        ></div> -->
-        <img class="logo" :src="store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg"/>
+        <div class="logo" :style="`background-image: url(${ getLogoUrl});`"></div>
+        <!-- <img class="logo" :src="store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg"/> -->
         <span class="web-title">{{store.state.systemInfo.site_name}}</span>
       </div>
     </div>
@@ -136,6 +129,12 @@ export default defineComponent({
       //  4  个人信息  3 1 2修改密码
       return role === 3 || role === 1 || role === 2 || role === 4;
     });
+    const getLogoUrl=computed(()=>{
+      // env? '/proxyPrefix' + systemBaseInfo.logo_url : systemBaseInfo.logo_url
+      // store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg
+      let logo_url=store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg
+      return env?'/proxyPrefix' + logo_url : logo_url
+    })
     const userName = ref<string>(lStorage.get("username"));
 
     function information() {
@@ -685,7 +684,8 @@ export default defineComponent({
       helpInfoList,
       toHelp,
       store,
-      logoImg
+      logoImg,
+      getLogoUrl
     };
   },
 });
@@ -716,6 +716,7 @@ export default defineComponent({
       width: 25px;
       height: 25px;
       margin-right: 10px;
+      background-size: 100% 100%;
     }
     .web-title {
       color: var(--primary-color);
