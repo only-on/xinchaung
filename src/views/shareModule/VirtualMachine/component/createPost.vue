@@ -7,14 +7,14 @@
       <span class="close pointer" @click="isShowForumn = false"
         ><span class="iconfont icon-guanbi"></span
       ></span>
-      <a-form ref="formRef" :model="formState" labelAlign="left">
-        <a-form-item label="帖子名称" name="name">
+      <a-form ref="formRef" :model="formState" labelAlign="left" :rules="rules">
+        <a-form-item label="帖子名称" name="title">
           <a-input
             v-model:value="formState.title"
             placeholder="请在这里输入帖子标题"
           />
         </a-form-item>
-        <a-form-item>
+        <a-form-item name="content">
           <QuillEditor
             v-model="formState.content"
             :height="'200px'"
@@ -49,22 +49,42 @@ const formState = reactive<IFormState>({
     ops: [],
   },
 });
+const contentValidator = (rule: any, value: Delta) => {
+  if (value.ops && value.ops.length) {
+    return Promise.resolve();
+  } else {
+    return Promise.reject("请输入帖子内容");
+  }
+}
+const rules = {
+  title: [
+    { required: true, message: "请输入帖子名称", trigger: "change" },
+    { min: 1, max: 16, message: "名称长度为1-16个字符", trigger: "blur" },
+  ],
+  content: [
+    // { required: true, message: "请输入帖子内容", trigger: "blur" },
+    { validator: contentValidator, message: "请输入帖子内容" },
+  ],
+}
+const formRef = ref()
 // 发帖
 function onSubmit() {
-  const param = {
-    type: "求助",
-    label_name: [],
-    title: formState.title,
-    content: JSON.stringify(formState.content),
-  };
-  http.createForum({ param }).then((res: IBusinessResp) => {
-    message.success("发布成功");
-    isShowForumn.value = false;
-    formState.title = "";
-    formState.content = {
-      ops: [],
+  formRef.value.validate().then(() => {
+    const param = {
+      type: "求助",
+      label_name: [],
+      title: formState.title,
+      content: JSON.stringify(formState.content),
     };
-  });
+    http.createForum({ param }).then((res: IBusinessResp) => {
+      message.success("发布成功");
+      isShowForumn.value = false;
+      formState.title = "";
+      formState.content = {
+        ops: [],
+      };
+    });
+  })
 }
 </script>
 
