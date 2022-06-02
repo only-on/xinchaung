@@ -1,6 +1,8 @@
 
 import * as echarts from "echarts";
 import { prepareBoxplotData } from "echarts/extension/dataTool";
+import {getThemeData} from 'src/utils/theme'
+
 function handleText (params:any) {
   var newParamsName = "";
   var paramsNameNumber = params.length;
@@ -116,11 +118,31 @@ let courseScoreOption = (data: any) => {
 
 // 岗位能力分析
 let jobAbilityOption = (data: any) => {
+  const {systemColor} = getThemeData()
   let option = {
     title: {
       text: "",
     },
-    tooltip: {},
+    tooltip: {
+      trigger: 'item',
+      formatter: function(params:any){
+        var indicator1 =[]
+        var indicator= data.name;
+        var stt = ""
+        var result = ""
+        for(var key in indicator){
+            indicator1.push(indicator[key].name)
+          }
+        for (var i = 0 ; i < params.value.length ; i++){
+          stt = `<span style="width:100%;display:block,height:0">
+                    <span>${indicator1[i]}：</span>
+                    <span style="float:right;font-weight:600">${params.value[i]}分</span>
+                  </span>`
+          result += stt + "<br/>"
+        }
+        return params.data.name+ "<br/>"+result
+      }
+    },
     radar: {
       shape: "polygon",
       center: ["50%", "50%"],
@@ -144,7 +166,7 @@ let jobAbilityOption = (data: any) => {
         show: true,
         lineStyle: {
           width: 1,
-          color: "#FFE4CE", // 设置网格的颜色
+          color: systemColor.primary3, // 设置网格的颜色
         },
       },
     },
@@ -152,9 +174,12 @@ let jobAbilityOption = (data: any) => {
       {
         name: "",
         type: "radar",
-        color: "#FF9544",
+        color: systemColor.primary,
         lineStyle: {
-          width: 2,
+          width: 1,
+        },
+        areaStyle: {
+            color: systemColor.primary5
         },
         data: [
           {
@@ -169,9 +194,10 @@ let jobAbilityOption = (data: any) => {
 };
 // 知识点错误率
 let knowledageErrorOption = (data: any) => {
+  const {systemColor} = getThemeData()
   let option = {
     tooltip: {},
-    color: ["#FF9A56", "#33D0DB", "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
+    color: [systemColor.primary, systemColor.secondary, "#718CF3", "#FF7B7B", "#FFCE2B", "#FF9A56"],
     series: [
       {
         type: "treemap",
@@ -220,6 +246,7 @@ function formatterTip(params: any) {
   return txt;
 }
 let gradeDistributionOption = (data: any) => {
+  const {systemColor} = getThemeData()
   let handledData = prepareBoxplotData(data.score);
   let option = {
     tooltip: {
@@ -316,8 +343,9 @@ let links: any[] = [];
 let data: any[] = [];
 let categorys: any[] = [0];
 let itemCategory = 0
-let colorList = ['#FE8020', '#FFB354', '#00CBC2', '#6AC8F4', '#748ADE']
 function handleGraphData(knowledge_map: any,  pid?:any) {
+  const {systemColor} = getThemeData()
+  let colorList = [systemColor.primary, systemColor.secondary, '#00CBC2', '#6AC8F4', '#748ADE']
   if (!knowledge_map) {
     return { data, links, categorys };
   }
@@ -393,7 +421,6 @@ function setOption4(datas: any) {
       right: "2%",
       bottom: "40%",
     },
-    color: ["#FE8020", "#FFB354", "#00CBC2", "#6AC8F4"],
     animationDurationUpdate: 1500,
     animationEasingUpdate: "quinticInOut",
     series: [
@@ -440,7 +467,6 @@ function setOption4(datas: any) {
 }
 // 高频易错点梳理
 let combOption = (data: any) => {
-  console.log(data)
   let option = {
     tooltip: {
       trigger: "item",

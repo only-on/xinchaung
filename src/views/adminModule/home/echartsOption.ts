@@ -1,4 +1,6 @@
 import * as echarts from 'echarts';
+import {getThemeData} from 'src/utils/theme'
+const {systemColor} = getThemeData()
 function activityOption(data:any){
     const options:any={
         title: {
@@ -13,7 +15,7 @@ function activityOption(data:any){
               }
             }
           },
-          color:['#FF9544','#00CBC2','#6993FE','#FFC33D'],
+          color:[systemColor.primary,systemColor.secondary,systemColor.Acolor1],
           legend: {
             x:'3%',
             data: ['总数', '学生', '教师']
@@ -85,10 +87,10 @@ function resourceOption(data:any,){
               }
             }
           },
-          color:['#FF9544','#00CBC2','#6993FE','#FFC33D'],
+          color:[systemColor.Acolor1,systemColor.Acolor2,systemColor.Acolor3,systemColor.Acolor4],
           legend: {
             x:'3%',
-            data: ['cpu', '内存', 'GPU','磁盘']
+            data: ['cpu', '内存', 'GPU','磁盘'] 
           },
           grid: {
             left: '3%',

@@ -24,10 +24,10 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore();
 const loginInfo = ref<any>({
-  src: loginBg[store.state.systemInfo.login],
+  src: loginBg[store.state.systemInfo.theme],
   logo: store.state.systemInfo.logo_url,
   name: store.state.systemInfo.site_name,
-  class: 'login' + store.state.systemInfo.login
+  class: 'login' + store.state.systemInfo.theme
 })
 interface FormState {
   username: string;

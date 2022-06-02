@@ -10,9 +10,6 @@ import experimentC from 'src/assets/images/themeC/teacherExperiment/base_info_bg
 import courseA from 'src/assets/images/themeA/teacherCourse/courseHeader.jpg'
 import courseB from 'src/assets/images/themeB/teacherCourse/courseHeader.jpg'
 import courseC from 'src/assets/images/themeC/teacherCourse/courseHeader.jpg'
-// 管理端首页
-import greenImg from 'src/assets/images/admin/home/enter.png'
-import purpleImg from 'src/assets/images/admin/home/enter1.png'
 // 教师端首页 轮播图按钮    Aleft Aright Bleft Bright Cleft Cright
 import Aleft from 'src/assets/images/teacher-default/Aleft.png'
 import Aright from 'src/assets/images/teacher-default/Aright.png'
@@ -22,6 +19,28 @@ import Cleft from 'src/assets/images/teacher-default/Cleft.png'
 import Cright from 'src/assets/images/teacher-default/Cright.png'
 import bannerlunBoA from 'src/assets/images/teacher-default/banner-bg3.jpg'
 import bannerlunBoB from 'src/assets/images/teacher-default/banner-bg2.png'
+
+// 管理端首页
+import greenImg from 'src/assets/images/themeA/adminHome/enter.png'
+import purpleImg from 'src/assets/images/themeA/adminHome/enter1.png'
+import orangeImg from 'src/assets/images/themeA/adminHome/enter2.png'
+import home1 from 'src/assets/images/themeA/adminHome/1.png'
+import home2 from 'src/assets/images/themeA/adminHome/2.png'
+import home3 from 'src/assets/images/themeA/adminHome/3.png'
+import home4 from 'src/assets/images/themeA/adminHome/4.png'
+import home5 from 'src/assets/images/themeA/adminHome/5.png'
+import home6 from 'src/assets/images/themeA/adminHome/6.png'
+import home7 from 'src/assets/images/themeB/adminHome/4.png'
+import home8 from 'src/assets/images/themeB/adminHome/5.png'
+import home9 from 'src/assets/images/themeB/adminHome/6.png'
+import home10 from 'src/assets/images/themeC/adminHome/1.png'
+import home11 from 'src/assets/images/themeC/adminHome/2.png'
+import home12 from 'src/assets/images/themeC/adminHome/3.png'
+// 教学质量
+import prevImg from 'src/assets/images/themeA/teacherCourse/prev.png'
+import nextImg from 'src/assets/images/themeA/teacherCourse/next.png'
+import prevImg1 from 'src/assets/images/themeC/teacherCourse/prev.png'
+import nextImg1 from 'src/assets/images/themeC/teacherCourse/next.png'
 type TThemeColor={
   themeColor: string,
   nextThemeColor:string,
@@ -133,12 +152,33 @@ const THomeEchartsThemeColor={
     Tcolor5:'rgba(255, 149, 68,.25)'
   },
 }
+const AHomeEchartsThemeColor = {
+  A: {
+    Acolor1: '#00CBC2',
+    Acolor2: '#FF9544',
+    Acolor3: '#9872EB',
+    Acolor4: '#6993FE',
+  }, 
+  B: {
+    Acolor1: '#74C77D',
+    Acolor2: '#FAAD14',
+    Acolor3: '#07A3F7',
+    Acolor4: '#05BBC9',
+  },
+  C: {
+    Acolor1: '#8FC75D',
+    Acolor2: '#FAAD14',
+    Acolor3: '#59A5F2',
+    Acolor4: '#EE7258',
+  }
+}
 function getTheme () {
   // A默认的橘黄系统色    B 暗色蓝绿   C 白色+浅色黄色
   let systemInfo = sStorage.get('systemInfo')
   let theme = systemInfo ? systemInfo.theme : 'A'
   let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
   Object.assign(themeData,THomeEchartsThemeColor[theme])
+  Object.assign(themeData, AHomeEchartsThemeColor[theme])
   return {
     systemInfo,
     themeData,
@@ -174,37 +214,67 @@ function setTheme () {
 }
 let imageData = {
   A: {
-    courseBan: courseA,
-    experBan: experimentA,
-    entranceLeft: greenImg,
-    entranceRight: purpleImg, 
+    courseBan: courseA, // 课程详情
+    experBan: experimentA, //实验详情
     ThomeLunbo:{
       left:Cleft,
       right:Cright,
       bannerlunBo:bannerlunBoA
-    }
+    },
+    Ahome: {
+      entranceLeft: greenImg,
+      entranceRight: purpleImg, 
+      adminHome1: home1,
+      adminHome2: home2,
+      adminHome3: home3,
+      adminHome4: home4,
+      adminHome5: home5,
+      adminHome6: home6,
+    },
+    qualityPrev: prevImg, // 教学质量 轮播图按钮
+    qualityNext: nextImg, // 教学质量 轮播图按钮
   },
   B: {
     courseBan: courseB,
     experBan: experimentB,
-    entranceLeft: greenImg,
-    entranceRight: purpleImg,
     ThomeLunbo:{
       left:Bleft,
       right:Bright,
       bannerlunBo:bannerlunBoB
-    }
+    },
+    Ahome: {
+      entranceLeft: greenImg,
+      entranceRight: purpleImg,
+      adminHome1: home1,
+      adminHome2: home2,
+      adminHome3: home3,
+      adminHome4: home7,
+      adminHome5: home8,
+      adminHome6: home9,
+    },
+    qualityPrev: prevImg,
+    qualityNext: nextImg
   },
   C: {
     courseBan: courseC,
     experBan: experimentC,
-    entranceLeft: greenImg,
-    entranceRight: purpleImg,
     ThomeLunbo:{
       left:Cleft,
       right:Cright,
       bannerlunBo:bannerlunBoA
-    }
+    },
+    Ahome:{
+      entranceLeft: greenImg,
+      entranceRight: purpleImg,
+      adminHome1: home10,
+      adminHome2: home11,
+      adminHome3: home12,
+      adminHome4: home4,
+      adminHome5: home5,
+      adminHome6: home6,
+    },
+    qualityPrev: prevImg1,
+    qualityNext: nextImg1
   }
 }
 export function getThemeData () {

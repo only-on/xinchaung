@@ -142,6 +142,8 @@ import { Knowledge3 } from "src/views/teacherModule/teachCourse/courseDetail/com
 import { ICourseScore, IjobData, IfourChart } from "./qualityTyping";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
+import {getThemeData} from 'src/utils/theme'
+const {systemImages} = getThemeData()
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -152,6 +154,8 @@ updata({
 });
 const http = (request as any).teachingQuality;
 const router = useRouter();
+const prevImg = `url(${systemImages.qualityPrev})`
+const nextImg = `url(${systemImages.qualityNext})`
 const activeKey = ref("1");
 const scoreData = reactive<any>({
   name: [],
@@ -403,7 +407,8 @@ onMounted(() => {
   z-index: 10;
   width: 48px;
   height: 48px;
-  background: url(src/assets/images/prev.png) no-repeat;
+  background-image: v-bind(prevImg);
+  cursor: pointer;
 }
 :deep(.swiper-button-next) {
   position: absolute;
@@ -412,8 +417,8 @@ onMounted(() => {
   z-index: 10;
   width: 48px;
   height: 48px;
-  background-color: aqua;
-  background: url(src/assets/images/next.png) no-repeat;
+  background-image: v-bind(nextImg);
+  cursor: pointer;
 }
 .swiper {
   padding: 0 25px 3px;

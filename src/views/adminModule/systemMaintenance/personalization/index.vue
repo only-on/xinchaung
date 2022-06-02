@@ -39,7 +39,7 @@
       </div> 
       <div class="loginScreen">
         <div class="tit">系统登录界面</div>
-        <chooseStyle titleInfo='尺寸1920X1080px' type='img' v-model:checkVal="systemInfo.login" :data='themeData.img' :disabled="!isEdit"></chooseStyle>
+        <chooseStyle titleInfo='尺寸1920X1080px' type='img' v-model:checkVal="systemInfo.theme" :data='themeData.img' :disabled="!isEdit"></chooseStyle>
       </div>
       <div class="bottomBtn">
         <a-button type='primary' @click="handleSave">{{isEdit ? '保存' : '编辑'}}</a-button>
@@ -144,6 +144,7 @@
       return
     }
     formRef.value.validate().then(()=>{
+      systemInfo.login = systemInfo.theme
       http.systemPersonalSet({param: systemInfo}).then((res:IBusinessResp) => {
         message.success('保存成功')
         isEdit.value = false
