@@ -15,10 +15,10 @@ interface IData {
 }
 const props = withDefaults(defineProps<{title: string;data: IData[]}>(), {
   title: '素材资源统计',
-  data: () =>  [], // { value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }
+  data: () =>  [], // { value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }  
 }); 
 const data:any=reactive([
-  { value:0, name: '私有',color:'#1cb2b3' }, { value:0, name: '公开',color:systemColor.primary }
+  { value:0, name: '私有',color:systemColor.secondary }, { value:0, name: '公开',color:systemColor.primary }
 ])
 
 const drawEcharts = () => {
