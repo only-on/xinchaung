@@ -204,18 +204,21 @@
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
     import {Modal } from 'ant-design-vue'
-    import {getThemeData} from 'src/utils/theme'
-    const http = (request as any).adminHome;
-    const {systemImages} = getThemeData()
-    var configuration: any = inject("configuration");
-    var updata = inject("updataNav") as Function;
-    updata({ tabs: [], showContent:false, showNav: false });
     import img1 from 'src/assets/images/admin/home/1.png'
     import img2 from 'src/assets/images/admin/home/2.png'
     import img3 from 'src/assets/images/admin/home/3.png'
     import img4 from 'src/assets/images/admin/home/4.png'
     import img5 from 'src/assets/images/admin/home/5.png'
     import img6 from 'src/assets/images/admin/home/6.png'
+    import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
+    import router from "src/routers";
+    import {getThemeData} from 'src/utils/theme'
+    const {systemColor} = getThemeData()
+    const http = (request as any).adminHome;
+    const {systemImages} = getThemeData()
+    var configuration: any = inject("configuration");
+    var updata = inject("updataNav") as Function;
+    updata({ tabs: [], showContent:false, showNav: false });
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
     };
@@ -308,8 +311,7 @@
     function toJump(value:any){
         router.push(value)
     }
-    import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
-    import router from "src/routers";
+    
     function drawEcharts(id:any,option:any){
         document.getElementById(id)?.removeAttribute("_echarts_instance_");
         var chartDom:any=document.getElementById(id)
@@ -364,7 +366,7 @@
                 drawEcharts('resource_echarts',resourceOption(resourceHistory))
                 //平台资源概览
                 drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G','#00cbc2'))
-                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核','#ff9544'))
+                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核',systemColor.primary))
                 drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G','#9872eb'))
                 drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'G','#6993fe'))
                 
@@ -380,7 +382,7 @@
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},'#00cbc2'))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.primary))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
                 drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},'#6993fe'))
             }
@@ -416,7 +418,7 @@
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.primary))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
                 drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},'#6993fe'))
         })
@@ -517,11 +519,11 @@
         drawEcharts('activity-echats',activityOption(userActive))
         drawEcharts('resource_echarts',resourceOption({}))
         drawEcharts('plate1',dashboardResource(0,0,'G','#00cbc2'))
-        drawEcharts('plate2',dashboardResource(0,0,'核','#ff9544'))
+        drawEcharts('plate2',dashboardResource(0,0,'核',systemColor.primary))
         drawEcharts('plate3',dashboardResource(0,0,'G','#9872eb'))
         drawEcharts('plate4',dashboardResource(0,0,'个','#6993fe'))
         drawEcharts('node1',dashboardService({},'#00cbc2'))
-        drawEcharts('node2',dashboardService({},'#ff9544'))
+        drawEcharts('node2',dashboardService({},systemColor.primary))
         drawEcharts('node3',dashboardService({},'#9872eb'))
         drawEcharts('node4',dashboardService({},'#6993fe'))
     })
