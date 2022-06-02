@@ -73,8 +73,8 @@ import {
   onUnmounted,
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
-import request from "../../api/index";
-import { IBusinessResp } from "../../typings/fetch";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { Modal, message } from "ant-design-vue";
 import extStorage, {sStorage} from "src/utils/extStorage";
@@ -86,10 +86,10 @@ import studentUserImg from "src/assets/images/user/student.png";
 import { wsConnect } from "src/request/websocket";
 import { useStore } from "vuex";
 import { createExamples } from "src/utils/vncInspect";
-import {clearAllCookies} from "../../utils/cookieHelper";
+import {clearAllCookies} from "src/utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
-import {IWmc} from "../../typings/wmc";
-import api from "../../api";
+import {IWmc} from "src/typings/wmc";
+import api from "src/api";
 import { AnyMxRecord } from "dns";
 import logoImg from "src/assets/images/user/logo.png"
 export default defineComponent({

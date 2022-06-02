@@ -185,7 +185,7 @@ export default defineComponent({
 }
 .menu__item {
   background: #192843;
-  border: 1px solid #ff9544;
+  border: 1px solid var(--primary-color);
   border-radius: 6px;
   // span {
   //   padding: var(--padding-xss) var(--padding-md);
@@ -207,7 +207,7 @@ export default defineComponent({
 }
 :deep(.ant-dropdown-menu){
   // background: #192843;
-  // border: 1px solid #ff9544;
+  // border: 1px solid var(--primary-color);
   // border-radius: 6px;
 }
 </style>
