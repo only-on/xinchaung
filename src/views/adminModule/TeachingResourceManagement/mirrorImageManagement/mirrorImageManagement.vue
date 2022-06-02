@@ -47,7 +47,7 @@
           <div class="right">
             <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
               <template #format="percent">
-                <div class="right1">镜像总量</div>
+                <div class="right1">磁盘总量</div>
                 <div class="right2">{{analysisObj.allTotalDisk}}G</div>
               </template>
             </a-progress>
