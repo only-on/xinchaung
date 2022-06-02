@@ -255,6 +255,7 @@ const deleteFile=(val:any)=>{
   http.deleteFile({urlParams:{editId:editId,fileId:val.id}}).then((res: IBusinessResp) => {
       message.success('删除成功')
       getDetailFile()
+      initData();
     })
 }
 const downLoadFile=(val:any)=>{
@@ -379,6 +380,7 @@ const SaveFile=()=>{
       message.success('上传成功')
       AddFileLObj.AddFileList={}
       getDetailFile()
+      initData();
       addFileVisible.value=false
     })
   }else{
