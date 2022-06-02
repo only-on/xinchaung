@@ -77,7 +77,7 @@
                 }}</span>
                 <a-progress
                   :stroke-color="{
-                    '0%': systemColor.secondary,
+                    '0%': systemColor.primary,
                     '100%': systemColor.primary,
                   }"
                   :percent="Number(item.error_rate)"
@@ -189,7 +189,7 @@ interface Ilists {
         let progress = item.progress;
         item.style.transform = "scale(" + (1.5 - Math.abs(progress) / 4) + ")";
         activeIndex.value = 0;
-        setChart("scater", scaterOptions(0, score_usedtime.value));
+        setChart("scater", scaterOptions(0, score_usedtime.value,systemColor));
       });
     };
     const setChart = (ele: string, options: object) => {
@@ -200,7 +200,7 @@ interface Ilists {
     };
     const changeTab = (index: number) => {
       activeIndex.value = index;
-      setChart("scater", scaterOptions(index, score_usedtime.value));
+      setChart("scater", scaterOptions(index, score_usedtime.value,systemColor));
     };
     const handleData = (obj: Object, type?: string) => {
       return Object.keys(obj).length
@@ -212,10 +212,10 @@ interface Ilists {
     const reset = () => {
       courseCompletion.done = 0;
       courseCompletion.undone = 0;
-      setChart("pie", pieOptions(courseCompletion));
-      setChart("radar", radarOptions(handleData({}, "grade")));
-      setChart("scater", scaterOptions(0, {}));
-      setChart("graph", graphOptions({}));
+      setChart("pie", pieOptions(courseCompletion,systemColor));
+      setChart("radar", radarOptions(handleData({}, "grade"),systemColor));
+      setChart("scater", scaterOptions(0, {},systemColor));
+      setChart("graph", graphOptions({},systemColor));
     };
     const getErrorRoate=(courseId: string | number)=>{
       if (!courseId) {
@@ -244,17 +244,17 @@ interface Ilists {
           // 课程完成率
           courseCompletion.done = result.done;
           courseCompletion.undone = result.undone;
-          setChart("pie", pieOptions(courseCompletion));
+          setChart("pie", pieOptions(courseCompletion,systemColor));
           // 知识点错误率
           // errorKonwledge.push(...result.error_knowledge);
           // 课程成绩分布
           gradeDistribution.value = handleData(result.course_rank, "grade");
-          setChart("radar", radarOptions(gradeDistribution.value));
+          setChart("radar", radarOptions(gradeDistribution.value,systemColor));
           // 实验成绩分布
           score_usedtime.value = handleData(result.score_usedtime);
-          setChart("scater", scaterOptions(0, score_usedtime.value));
+          setChart("scater", scaterOptions(0, score_usedtime.value,systemColor));
           // 知识图谱
-          setChart("graph", graphOptions(handleData(result.knowledge_map)));
+          setChart("graph", graphOptions(handleData(result.knowledge_map),systemColor));
           // Object.keys(result.knowledge_map).length
           //   ? (showGraph.value = true)
           //   : (showGraph.value = false);
@@ -273,6 +273,7 @@ interface Ilists {
       });
     };
     onMounted(() => {
+
       getCourseList();
       // window.addEventListener("resize", () => {
       //   chartDom.forEach((item: any) => {

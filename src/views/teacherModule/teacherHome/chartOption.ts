@@ -16,7 +16,8 @@ interface IchildNodes {
   type: string
 }
 // 课程完成率
-export const pieOptions = (data: IpieData) => {
+export const pieOptions = (data: IpieData,systemColor:any) => {
+  // const systemColor=systemColor
   let options = {
     color: data.done === 0 && data.undone === 0 ? [systemColor.Tcolor1] : [systemColor.Tcolor2, systemColor.Tcolor1],
     series: [
@@ -48,7 +49,7 @@ export const pieOptions = (data: IpieData) => {
   return options
 }
 // 课程成绩分布
-export const radarOptions = (data: any) => {
+export const radarOptions = (data: any,systemColor:any) => {
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas);
@@ -162,7 +163,7 @@ function stringToArray(val: string, number: number) {
   return arr
 }
 // 实验成绩分布
-export const scaterOptions = (type: number, data: any) => {
+export const scaterOptions = (type: number, data: any,systemColor:any) => {
   var seriesData: any[] = [];
   var taskNameLength: any[] = []
   var xNames: any[] = []
@@ -292,7 +293,7 @@ export const scaterOptions = (type: number, data: any) => {
   return options
 }
 // 知识图谱
-function setTagData(knowledge_map: IknowledgeMap) {
+function setTagData(knowledge_map: IknowledgeMap,systemColor:any) {
   let links: any[] = []
   let data: any[] = []
   if (Object.keys(knowledge_map).length == 0) {
@@ -358,8 +359,8 @@ function setTagData(knowledge_map: IknowledgeMap) {
   })
   return { data, links}
 }
-export const graphOptions = (data: any) => {
-  let datas = setTagData(data)
+export const graphOptions = (data: any,systemColor:any) => {
+  let datas = setTagData(data,systemColor)
   let options = {
     tooltip: {
       formatter: function (val: any) {
