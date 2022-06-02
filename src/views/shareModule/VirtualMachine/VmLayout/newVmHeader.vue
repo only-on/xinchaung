@@ -443,14 +443,14 @@
     title="文件下载"
     :visible="downloadVisible"
     :width="540"
-    @cancel="downloadVisible = false"
+    @cancel="downloadVisible = false;downloadAdd='';"
     @ok="okDownloadFile"
   >
     <p class="label">请输入一个下载路径</p>
     <a-input v-model:value="downloadAdd" placeholder="" />
     <div class="tip">注：下载路径需要是一个文件或者压缩包，例如:{{currentVm?.classify === "Windows" ? "C:\\user.zip":"/home/user.zip"}}，大小限制在200M内</div>
     <template #footer>
-      <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false" :loading="false"></Submit>
+      <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false;downloadAdd='';" :loading="false"></Submit>
     </template>
   </a-modal>
   <!-- 正在结束实验 -->
