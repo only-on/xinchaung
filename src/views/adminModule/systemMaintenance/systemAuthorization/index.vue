@@ -46,7 +46,7 @@
                     <div class="step-row">
                         <div class="step-text">文件名称</div>
                         <div class="divbox">
-                            <span class="filename">{{authorizationFile.filename}}</span>
+                            <span class="filename" :title="authorizationFile.filename">{{authorizationFile.filename}}</span>
                             <span v-if="authorizationFile.filename"  @click="removeFile" class="icon iconfont icon-shanchu"></span>   
                         </div>
                     </div>
@@ -273,8 +273,8 @@ function copyCode(e: Event) {
           auth_file: authorizationFile.url,
         };
          http.saveSettingApi({param:params}).then((res: any) => {
-          reactiveData.authorizationData.authorization_code =
-            res.authNumber;
+          // reactiveData.authorizationData.authorization_code = res.authNumber;
+            message.warning('授权成功！')
             getPowerList()
         });
     }

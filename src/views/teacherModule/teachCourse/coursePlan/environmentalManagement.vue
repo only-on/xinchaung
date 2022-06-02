@@ -294,6 +294,7 @@ function batchDisabled() {
     return;
   }
   disabledVisible.value = true;
+  endTime.value=moment(dateAdd(),"YYYY-MM-DD")
 }
 // 确认
 function handleOk() {
@@ -328,6 +329,17 @@ function handleCancel() {
 }
 function disabledDate(current: any) {
   return current && moment(current).add(1, "days") < moment();
+}
+function dateAdd(){
+//1.获取当前日期
+var date=new Date();
+//2. 获取当前分钟
+var min=date.getMinutes();
+//3. 设置当前时间+5分钟：把当前分钟数+5后的值重新设置为date对象的分钟数
+date.setMinutes(min+1);
+return date
+//4. 测试
+
 }
 onMounted(() => {
   getList();
