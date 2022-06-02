@@ -453,6 +453,19 @@
       <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false" :loading="false"></Submit>
     </template>
   </a-modal>
+  <!-- 正在结束实验 -->
+  <a-modal
+    class="vm-finishing-experiment-modal"
+    title=""
+    :visible="finishingExperimentVisible"
+    :footer="null"
+    :closable="false"
+    :destroyOnClose="true"
+  >
+
+    <img :src="loadingGif" alt="" srcset="" />
+    <span>正在结束实验...</span>
+  </a-modal>
 </template>
 
 <script lang="ts" setup>
@@ -467,6 +480,7 @@ import request from "src/request/getRequest";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { numToAbc } from "src/utils/common";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import loadingGif from "src/assets/images/vmloading.gif";
 import {
   endOperates,
   endExperiment,
@@ -806,6 +820,7 @@ watch(
 );
 
 // 结束实验
+let finishingExperimentVisible = ref(false)
 function finishExperiment() {
   let modal = Modal.confirm({
     title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
@@ -816,7 +831,7 @@ function finishExperiment() {
       //   router.go(historyLength - history.length - 1);
       //   return;
       // }
-      // Modal.confirm()
+      finishingExperimentVisible.value = true
       await finishTest();
       modal.destroy();
     },
@@ -846,12 +861,14 @@ async function finishTest() {
       // evaluateVisible.value = true;
       // recommendExperimentData.value = res.data;
       endVmEnvirment();
+    }).catch((err) => {
+      finishingExperimentVisible.value = false
     });
   } else {
     endVmEnvirment();
   }
 }
-// 结束脚本入口
+// 结束实验
 function endVmEnvirment() {
   let params: any = null;
   if (role === 4) {
@@ -894,10 +911,12 @@ function endVmEnvirment() {
         router.go(historyLength - history.length - 1);
       }
       // message.success("结束成功");
+    }).catch((err) => {
+      finishingExperimentVisible.value = false
     });
   }, 3000);
 }
-// 结束实验
+// 结束脚本
 async function endVmOperates() {
   let param: any = {
     type: type,
@@ -1886,6 +1905,25 @@ i {
   .tip {
     margin-top: 8px;
     color: var(--primary-color);
+  }
+}
+.vm-finishing-experiment-modal {
+  top: 50%;
+  .ant-modal-content {
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: none;
+  }
+  .ant-modal-body {
+    padding: 0;
+    text-align: center;
+    font-size: 20px;
+    color: var(--white-65);
+    .ant-modal-confirm-btns {
+      display: none;
+    }
+    .img {
+      margin-right: 8px;
+    }
   }
 }
 </style>
