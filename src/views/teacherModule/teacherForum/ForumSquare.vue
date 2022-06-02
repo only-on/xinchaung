@@ -1,7 +1,7 @@
 <template>
   <div class="forum-square">
     <forumn-top @search="search" :tagList="tagList"></forumn-top>
-    <div class="forumn-content">
+    <div class="forumn-content" id="scrool">
       <div class="left">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
@@ -112,6 +112,8 @@ function search(params: IForumSearch) {
 // 页码变化
 function pageChange(page: number) {
   forumSearch.page = page;
+  const target:any=document.getElementsByClassName('main-box')[0];
+  target.scrollTop='0px';
   initData();
 }
 // 发帖
