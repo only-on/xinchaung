@@ -1,7 +1,7 @@
 <template>
   <h3 class="forum-title">
     <span class="sub">#标题#</span>
-    {{ item.title }}
+    <span class="title single_ellipsis">{{ item.title }}</span>
   </h3>
   <div class="forum-content" v-if="!item.isAllText">
     <span class="desc" v-html="item.desc"></span>
@@ -194,9 +194,14 @@ export default defineComponent({
   font-size: var(--font-size-20);
   color: var(--black-100);
   font-weight: 700;
+  display: flex;
   .sub {
     color: var(--brightBtn);
     margin-right: 4px;
+  }
+  .title {
+    flex: 1;
+    width: 600px;
   }
 }
 .forum-content {
@@ -216,6 +221,7 @@ export default defineComponent({
   }
 }
 .forum-content-all {
+  word-break: break-all;
   :deep(h1) {
     font-size: var(--font-size-18);
   }

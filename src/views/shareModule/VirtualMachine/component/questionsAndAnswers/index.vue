@@ -71,7 +71,7 @@ interface Iparams {
 }
 const http = (request as any).teacherForum;
 console.log(http);
-const activeKey = ref("1");
+const activeKey = ref("0");
 let forumnList = reactive<IForumnList[]>([]);
 const forumSearch = reactive<Iparams>({
   title: "",
