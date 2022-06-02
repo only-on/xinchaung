@@ -1351,20 +1351,23 @@ async function openQuizModal() {
     currentShowType.value = 1;
   } else {
     await getQuestionList(false);
-    currentQuestionIds = [];
-    let tempData: any[] = cloneDeep(oldQuizPaperList.value);
-    tempData = tempData.filter((item: any) => {
-      return !item.student_answer;
-    });
-    for (let i = 0; i < tempData.length; i++) {
-      currentQuestionIds.push(tempData[i].id);
-      if (!tempData[i].student_answer) {
-        tempData[i].student_answer = [];
+    if(!quizPaperList.value?.length||(quizPaperList.value?.length&&quizPaperList.value?.length!==oldQuizPaperList.value?.length)){
+        currentQuestionIds = [];
+      let tempData: any[] = cloneDeep(oldQuizPaperList.value);
+      tempData = tempData.filter((item: any) => {
+        return !item.student_answer;
+      });
+      for (let i = 0; i < tempData.length; i++) {
+        currentQuestionIds.push(tempData[i].id);
+        if (!tempData[i].student_answer) {
+          tempData[i].student_answer = [];
+        }
       }
-    }
+      
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
     currentShowType.value = 0;
+    }
   }
   quizVisiable.value = true;
 }
