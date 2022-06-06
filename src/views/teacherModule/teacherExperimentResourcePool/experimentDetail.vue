@@ -163,7 +163,7 @@ const openVnc = () => {
   // console.log(experimentDetail)
   let {id, task_type, content_type} = experimentDetail
   const param: any = {
-    type: "content",  // 实验
+    type: type ? "course":"content",  // 实验
     opType: type && role === 4 ? type : "prepare",
     taskId: experimentDetail.id,
     experType: content_type
