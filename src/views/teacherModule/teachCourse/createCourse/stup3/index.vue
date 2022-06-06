@@ -58,12 +58,7 @@
         </a-config-provider>
       </div>
       <div>
-        <selectStuClass v-if="isVisible"
-          :courseId="props.courseId"
-          :isVisible="isVisible"
-          @init="initData"
-          @cancelSelectStu="cancelSelectStu"
-        />
+        <addStudent :visable='isVisible' :courseId='props.courseId' @updateSelectStuVisable="updateSelectStuVisable" :type='1'></addStudent>
       </div>
       <!-- <template #stuaction="{ record }">
               <div class="action">
@@ -78,7 +73,7 @@
 import { defineComponent, onMounted, inject, reactive, Ref, ref, watch } from "vue";
 import request from "src/api/index";
 import Empty from "src/components/Empty.vue";
-import selectStuClass from "../selectStuClass/index.vue";
+import addStudent from '../../component/common/addStudent/index.vue';
 import { message, Modal } from "ant-design-vue";
 import { ColumnProps } from "ant-design-vue/es/table/interface";
 const http = (request as any).teachCourse;
@@ -110,7 +105,13 @@ const columns= [
         },
         {
           title: "班级",
-          dataIndex: "user_id",
+          dataIndex: "classes",
+          align: "left",
+          ellipsis: true,
+        },
+        {
+          title: "年级",
+          dataIndex: "userProfile.grade",
           align: "left",
           ellipsis: true,
         },
@@ -154,6 +155,28 @@ const selectStuClassFn=()=>{
 const cancelSelectStu=()=>{
   isVisible.value=false
   // initData()
+}
+const updateSelectStuVisable=(value: any,studentids:any)=>{
+  console.log(value,'value')
+  if(value==='ok'){
+    if (!studentids.length) {
+          message.warning('请选择需要添加的学生')
+          return
+    }else{
+      let obj={
+          id:props.courseId,
+          student_id:studentids,
+            type:1,
+      }
+        http.saveCourseStudentt({param:{...obj}}).then((res:any)=>{
+              message.success("保存成功");
+              isVisible.value=false
+              initData()
+            })
+      }
+    }else{
+      isVisible.value=false
+    }
 }
 type Key = ColumnProps["key"];
 interface IStudentData{

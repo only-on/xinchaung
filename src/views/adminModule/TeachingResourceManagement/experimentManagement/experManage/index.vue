@@ -73,7 +73,7 @@
     >
     <!-- detail -->
     <template #contentName='{record}'>
-      <div class="detail" @click="detail(record.id,record.contentAttribute)">
+      <div class="detail" @click="detail(record,record.contentAttribute)">
         {{record.contentName}}
       </div>
     </template>
@@ -185,13 +185,17 @@ const allexperTypes:any=ref([
         }
       })
     }
-  function detail(id: number,currentTab:any){
+  function detail(val: any,currentTab:any){
   const type:any= currentTab=='私有实验'?0:1;
   // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+  if(!val.is_authorize){
+    message.success('该实验未授权，暂不能查看！')
+    return
+  }
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentDetail",
     query: {
-      id,
+      id:val.id,
     },
   });
 };
@@ -227,5 +231,9 @@ const allexperTypes:any=ref([
  .experManage{
    margin: 20px;
    margin-top:0px;
+ }
+  .item>.ant-btn{
+   background: var(--brightBtn);
+   border-color: var(--brightBtn);
  }
 </style>

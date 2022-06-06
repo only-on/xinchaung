@@ -1,15 +1,19 @@
+
+import {getThemeData} from 'src/utils/theme'
+const {systemColor} = getThemeData()
+
 const getTypeList = (deg: string) => {
 return {
   1: {
     name: "桌面",
-    color: "#ff9544",
+    color: systemColor.primary,
     backgroundColor:
       "linear-gradient("+deg+",rgba(255,149,68,0.14), rgba(255,199,156,0.14) 36%, rgba(255,255,255,0.14))",
     detailebBackgroundColor:"linear-gradient("+deg+",rgba(255,149,68,0.14), rgba(255,199,156,0.14) 36%, #133355)",
   },
   2: {
     name: "命令行",
-    color: "#1cb2b3",
+    color: systemColor.secondary,
     backgroundColor:
       "linear-gradient("+deg+",rgba(28,178,179,0.14), rgba(85,218,219,0.14) 36%, rgba(255,255,255,0.14))",
     detailebBackgroundColor:"linear-gradient("+deg+",rgba(28,178,179,0.14), rgba(85,218,219,0.14) 36%, #133355)",  

@@ -5,6 +5,9 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,inject,reactive, watch} from "vue";
 import * as echarts from "echarts"
+import {getThemeData} from 'src/utils/theme'
+const {systemColor} = getThemeData()
+// console.log(systemColor)
 interface IData {
   name: string
   value: number,
@@ -12,15 +15,14 @@ interface IData {
 }
 const props = withDefaults(defineProps<{title: string;data: IData[]}>(), {
   title: '素材资源统计',
-  data: () =>  [], // { value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }
+  data: () =>  [], // { value:10, name: '私有资源',color:'' }, { value:5, name: '公开资源',color:'' }  
 }); 
 const data:any=reactive([
-  { value:0, name: '私有',color:'#1cb2b3' }, { value:0, name: '公开',color:'#ff9544' }
+  { value:0, name: '私有',color:systemColor.secondary }, { value:0, name: '公开',color:systemColor.primary }
 ])
 
 const drawEcharts = () => {
   const option={
-    // color:['#1cb2b3','#ff9544',],
     color:[data[0].color,data[1].color,],
     title: {
       text: props.title,

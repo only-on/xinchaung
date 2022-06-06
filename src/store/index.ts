@@ -1,15 +1,26 @@
 import { createStore } from "vuex";
 import CommonState from "./common/common"
 import extStorage from "../utils/extStorage";
+import {setTheme} from '../utils/theme'
 const { sStorage } = extStorage;
 // 登录数据恢复和保存
 const restore = (key:any) => sStorage.get(key);
 const backup = (key:any, val:any) => sStorage.set(key, val);
+const defaultTheme = {
+  logo_url: "/img/default/login-logo.png",
+  site_name: "Xinchuang",
+  theme: "A",
+  login: "A"
+}
+if (sStorage.get('systemInfo')) {
+  setTheme()
+} else {
+  sStorage.set('systemInfo', defaultTheme)
+}
 const clearStore = (keys:any) =>
   keys.forEach((key:any) => {
     sStorage.del(key);
   });
-  console.log(sStorage.get('systemInfo'))
   const breadcrumb = sStorage.get("breadcrumb") || [];
   const store:any = createStore({
   // state() {
@@ -25,12 +36,7 @@ const clearStore = (keys:any) =>
      isWsConnect: false,
      connectStatus: 0,   // 0失败 1 连接中 2 成功
      longWs: null,
-     systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : {
-      logo_url: "",
-      site_name: "Xinchuang",
-      theme: "A",
-      login: "A"
-    }
+     systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : defaultTheme
   },
   getters: {
     isLogged() {
@@ -67,6 +73,7 @@ const clearStore = (keys:any) =>
     setSystemInfo (state, val) {
       sStorage.set('systemInfo', val)
       state.systemInfo = val
+      setTheme()
     }
   },
   actions: {

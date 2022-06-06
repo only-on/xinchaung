@@ -3786,7 +3786,7 @@ textarea.ant-input-affix-wrapper {
   border-color: var(--primary-atn-hover);
   border-right-width: 1px !important;
   outline: 0;
-  box-shadow: 0 0 0 2px var(--blue-6-2);
+  box-shadow: 0 0 0 2px var(--primary-1);
 }
 .ant-input-disabled {
   color: var(--black-25);

@@ -397,12 +397,14 @@ onMounted(() => {
     .table-header-right {
       display: flex;
       justify-content: space-between;
-      color: var(--orangeyellow-6);
       > div {
         padding-left: var(--padding-lg);
       }
       > div:nth-child(1) {
         color: var(--brightBtn);
+      }
+      > div:nth-child(2) {
+        color: var(--primary-color);
       }
     }
   }

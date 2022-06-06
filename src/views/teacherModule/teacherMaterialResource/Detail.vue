@@ -34,10 +34,6 @@
             <span>创建日期</span>
             <span>{{state.detail.created_at}}</span>
           </div>
-          <!-- <div class="item">
-            <span>类型</span>
-            <span>{{state.detail.categoryText}}</span>
-          </div> -->
         </div>
       </div>
       <div class="header_right">
@@ -259,6 +255,7 @@ const deleteFile=(val:any)=>{
   http.deleteFile({urlParams:{editId:editId,fileId:val.id}}).then((res: IBusinessResp) => {
       message.success('删除成功')
       getDetailFile()
+      initData();
     })
 }
 const downLoadFile=(val:any)=>{
@@ -334,7 +331,6 @@ const initData = () => {
     }
     state.detail.is_public=state.detail.is_public?'1':'0'
     state.detail.created_at = res.data.created_at.substr(0, 10)
-    state.detail.categoryText=res.data.categorys && res.data.categorys[0].name
     isDataSet.value=res.data.type_name === '数据集' ? true :false
     activeTab.value =isDataSet.value?'说明文档':'文件列表'
   })
@@ -384,6 +380,7 @@ const SaveFile=()=>{
       message.success('上传成功')
       AddFileLObj.AddFileList={}
       getDetailFile()
+      initData();
       addFileVisible.value=false
     })
   }else{

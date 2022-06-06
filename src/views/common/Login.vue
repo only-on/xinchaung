@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { reactive, ref } from "vue";
+import { reactive, ref,watch } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -10,14 +10,25 @@ import request from "src/api/index";
 import { getHomePath } from "../../routers/common";
 import { PictureOutlined } from "@ant-design/icons-vue";
 import {useStore} from 'vuex';
-  import {setThemeColor} from 'src/utils/theme'
-
+import loginA from 'src/assets/images/login/loginA.png'
+import loginB from 'src/assets/images/login/loginB.png'
+import loginC from 'src/assets/images/login/loginC.png'
+const loginBg = {
+  A: loginA,
+  B: loginB,
+  C: loginC
+}
 const http = (request as any).common;
 const { lStorage, sStorage } = extStorage;
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-
+const loginInfo = ref<any>({
+  src: loginBg[store.state.systemInfo.theme],
+  logo: store.state.systemInfo.logo_url,
+  name: store.state.systemInfo.site_name,
+  class: 'login' + store.state.systemInfo.theme
+})
 interface FormState {
   username: string;
   password: string;
@@ -93,11 +104,15 @@ http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 
 // 获取在线用户数信息
 http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
+  // const {site_setting}=res.data
   onlineUserInfo.value = res!.data.online_info;
   store.commit('setSystemInfo', res!.data.site_setting)
-  setThemeColor('theme', res!.data.site_setting.theme)
+  const site_setting=res!.data.site_setting
+  // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });
-
+watch(()=>{return store.state.systemInfo},(val:any)=>{
+  console.log(val)
+},{deep:true})
 const login = () => {
   refForm.value
     .validate()
@@ -146,19 +161,20 @@ const login = () => {
 };
 </script>
 <template>
-  <div class="container">
+<!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->
+  <div :class="['container', loginInfo.class]">
     <div class="online-info">
       <span class="online-title">当前在线人数：</span>
       <span class="online-count">{{ onlineUserInfo }}</span>
     </div>
     <div class="main">
       <div class="banner">
-        <img src="/img/default/login-banner.png" />
+        <img :src="loginInfo.src" />
       </div>
       <div class="login-box">
         <div class="logo">
-          <img :src="store.state.systemInfo.logo_url ? store.state.systemInfo.logo_url: '/img/default/login-logo.png'" />
-          <h1>欢迎登录{{store.state.systemInfo.site_name}}平台</h1>
+          <div :style="`background-image: url(${loginInfo.logo});`"></div>
+          <h1>欢迎登录{{loginInfo.name}}平台</h1>
         </div>
         <div class="form">
           <a-form
@@ -230,7 +246,50 @@ const login = () => {
   display: flex;
   flex-direction: column;
   position: relative;
-  background: linear-gradient(135deg, #1f227d 0%, #141c65 39%, #00113b);
+  &.loginA{
+    background: linear-gradient(135deg, #1f227d 0%, #141c65 39%, #00113b);
+    .banner{
+      width: 871px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .login-button{
+      background: linear-gradient(
+        90deg,
+        #f5c05b,
+        #faa94f 35%,
+        #fd9a46 71%,
+        #ff9544
+      );
+    }
+  }
+  &.loginB{
+    background:  url(src/assets/images/login/bgB.jpg) no-repeat center center;
+    background-size: 100% 100%;
+    .banner{
+      width: 1064px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .login-button{
+      background: linear-gradient(90deg,#04eacc, #04bbcc);
+    }
+  }
+  &.loginC{
+    background:  linear-gradient(46deg,#ffd249 1%, #feb849 1%, #feed9a 100%);;
+    .banner{
+      width: 1064px;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+    .login-button{
+      background: linear-gradient(90deg,#f16624, #ffb849 62%, #ffe749);
+    }
+  }
 
   .online-info {
     position: absolute;
@@ -255,9 +314,6 @@ const login = () => {
     .banner {
       width: 871px;
       height: 100%;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
     }
 
     .login-box {
@@ -270,12 +326,14 @@ const login = () => {
 
       .logo {
         text-align: center;
-        img{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        div{
           width: 70px;
           height: 74px;
-        }
-        h1 {
-          margin: 10px 0;
+          background-size: 100% 100%;
+          background-position: center;
         }
       }
 
@@ -364,16 +422,10 @@ const login = () => {
         .login-button {
           width: 100%;
           height: 64px !important;
-          background: linear-gradient(
-            90deg,
-            #f5c05b,
-            #faa94f 35%,
-            #fd9a46 71%,
-            #ff9544
-          );
           border-radius: 4px !important;
           color: #fff;
           font-size: 24px !important;
+          border: none !important;
         }
       }
     }

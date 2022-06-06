@@ -818,7 +818,7 @@ watch(
       // padding: 0 8px;
       padding-right: 10px;
       &:hover{
-        background: #fff7e6;
+        background: var(--primary-1);
         cursor: pointer;
       }
       .titleBox{
@@ -925,7 +925,7 @@ watch(
           width: calc(100% - 100px);
         }
         &:hover{
-          background: #fff7e6;
+          background: var(--primary-1);
           cursor: pointer;
           .operation{
             span{
@@ -935,7 +935,7 @@ watch(
         }
       }
       .ActiveItem{
-        background: #fff7e6;
+        background: var(--primary-1);
         .TitLeft .ItemExperimentTitle{
           color: var(--primary-color);
         }
@@ -957,7 +957,7 @@ watch(
   .operation{
     // margin: 0 1rem;
     .iconfont{
-      color: #1CB2B3;
+      color: var(--brightBtn);
       cursor: pointer;
       padding: 0 6px;
     }

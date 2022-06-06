@@ -35,11 +35,11 @@
       </div>
       <div class="themeStyle">
         <div class="tit">主题风格</div>
-        <chooseStyle titleInfo='建议尺寸1920X268px' type='color' v-model:checkVal="systemInfo.theme" :data='themeData.color' :disabled="!isEdit"></chooseStyle>
+        <chooseStyle titleInfo='系统主题色' type='color' v-model:checkVal="systemInfo.theme" :data='themeData.color' :disabled="!isEdit"></chooseStyle>
       </div> 
       <div class="loginScreen">
         <div class="tit">系统登录界面</div>
-        <chooseStyle titleInfo='尺寸1920X1080px' type='img' v-model:checkVal="systemInfo.login" :data='themeData.img' :disabled="!isEdit"></chooseStyle>
+        <chooseStyle titleInfo='尺寸1920X1080px' type='img' v-model:checkVal="systemInfo.theme" :data='themeData.img' :disabled="!isEdit"></chooseStyle>
       </div>
       <div class="bottomBtn">
         <a-button type='primary' @click="handleSave">{{isEdit ? '保存' : '编辑'}}</a-button>
@@ -60,7 +60,7 @@
   import {useStore} from "vuex"
   import request from "src/api/index";
   import { IBusinessResp } from "src/typings/fetch";
-  import {loginStyleList,themeColorList,setThemeColor} from 'src/utils/theme'
+  import {loginStyleList,themeColorList} from 'src/utils/theme'
   import {sStorage} from "src/utils/extStorage";
   import {cloneDeep} from 'lodash'
   const http = (request as any).systemMaintenance;
@@ -144,6 +144,7 @@
       return
     }
     formRef.value.validate().then(()=>{
+      systemInfo.login = systemInfo.theme
       http.systemPersonalSet({param: systemInfo}).then((res:IBusinessResp) => {
         message.success('保存成功')
         isEdit.value = false
@@ -164,7 +165,6 @@
   }
   function setStyle () {
     store.commit('setSystemInfo', cloneDeep(systemInfo))
-    setThemeColor('theme', systemInfo.theme)
   }
   onMounted(()=>{
     handleInit()

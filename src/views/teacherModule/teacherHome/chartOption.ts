@@ -1,4 +1,7 @@
 import { theme } from 'src/utils/theme'
+import {getThemeData} from 'src/utils/theme'
+const {systemColor} = getThemeData()
+// console.log(systemColor)
 export interface IpieData {
   done: number,
   undone: number
@@ -14,8 +17,9 @@ interface IchildNodes {
 }
 // 课程完成率
 export const pieOptions = (data: IpieData) => {
+  const {systemColor} = getThemeData()
   let options = {
-    color: data.done === 0 && data.undone === 0 ? ['rgba(255, 149, 68,.25)'] : [theme.themeColor, 'rgba(255, 149, 68,.25)'],
+    color: data.done === 0 && data.undone === 0 ? [systemColor.Tcolor1] : [systemColor.Tcolor2, systemColor.Tcolor1],
     series: [
       {
         type: 'pie',
@@ -46,6 +50,7 @@ export const pieOptions = (data: IpieData) => {
 }
 // 课程成绩分布
 export const radarOptions = (data: any) => {
+  const {systemColor} = getThemeData()
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas);
@@ -73,18 +78,18 @@ export const radarOptions = (data: any) => {
       splitArea: {
         areaStyle: {//内区块
           color: 'transparent',
-          shadowColor: theme.nextThemeColor,
+          shadowColor: systemColor.Tcolor3,
           shadowBlur: 10
         }
       },
       splitLine: {
         lineStyle: {
-          color: theme.themeColor
+          color: systemColor.Tcolor3
         }
       },
       axisLine: {
         lineStyle: {
-          color: theme.themeColor  //半径线条
+          color: systemColor.Tcolor3  //半径线条
         },
         symbolSize: [0, 1]
       },
@@ -102,7 +107,7 @@ export const radarOptions = (data: any) => {
           name: "成绩分布",
           label: {
             show: true,
-            color: theme.themeColor,
+            color: systemColor.Tcolor2,
             // formatter:'{c}人',
             position: 'top',
             formatter: function (params: any) {
@@ -132,14 +137,14 @@ export const radarOptions = (data: any) => {
             }
           },
           itemStyle: {
-            color: theme.themeColor,
+            color: systemColor.Tcolor4,
           },
           lineStyle: {
-            color: theme.themeColor,
+            color: systemColor.Tcolor4,
           },
           areaStyle: {
-            // color: theme.nextThemeColor,
-            color: 'rgba(255, 149, 68,.25)',
+            color: systemColor.Tcolor4,
+            // color: 'rgba(255, 149, 68,.25)',
           }
         }
       ]
@@ -160,6 +165,7 @@ function stringToArray(val: string, number: number) {
 }
 // 实验成绩分布
 export const scaterOptions = (type: number, data: any) => {
+  const {systemColor} = getThemeData()
   var seriesData: any[] = [];
   var taskNameLength: any[] = []
   var xNames: any[] = []
@@ -182,7 +188,7 @@ export const scaterOptions = (type: number, data: any) => {
     })
   });
   let options = {
-    color: [theme.themeColor],
+    color: [systemColor.Tcolor2],
     tooltip: {
       position: 'right',
       formatter: function (params: any) {
@@ -221,13 +227,13 @@ export const scaterOptions = (type: number, data: any) => {
       
       // end: Object.keys(data).length >= 7 ? 30 : 100,
       // backgroundColor: theme.nextThemeColor, //组件的背景颜色
-      fillerColor: theme.themeColor, //选中范围的填充颜色
+      fillerColor: systemColor.Tcolor2, //选中范围的填充颜色
       // handleSize: 10,//滑动条的 左右2个滑动条的大小
       // showDetail: false,
       // height: 10,//组件高度
       // handleColor: '#fff',//h滑动图标的颜色
       // handleStyle: {
-      //   borderColor: theme.themeColor,
+      //   borderColor: systemColor.Tcolor2,
       //   borderWidth: "1",
       //   shadowBlur: 2,
       //   background: "#ddd",
@@ -290,6 +296,7 @@ export const scaterOptions = (type: number, data: any) => {
 }
 // 知识图谱
 function setTagData(knowledge_map: IknowledgeMap) {
+  const {systemColor} = getThemeData()
   let links: any[] = []
   let data: any[] = []
   if (Object.keys(knowledge_map).length == 0) {
@@ -302,10 +309,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
       symbolSize: 50,
       draggable: true,
       itemStyle: {
-        borderColor: theme.themeColor,
+        borderColor: systemColor.Tcolor2,
         borderWidth: 6,
         shadowBlur: 20,
-        shadowColor: theme.themeColor,
+        shadowColor: systemColor.Tcolor2,
         color: '#000'
       },
       category: 0,
@@ -319,10 +326,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
         symbolSize: 30,
         draggable: true,
         itemStyle: {
-          borderColor: theme.themeColor,
+          borderColor: systemColor.Tcolor2,
           borderWidth: 6,
           shadowBlur: 20,
-          shadowColor: theme.themeColor,
+          shadowColor: systemColor.Tcolor2,
           color: '#384A67'
         },
         category: 1,
@@ -338,10 +345,10 @@ function setTagData(knowledge_map: IknowledgeMap) {
           symbolSize: 15,
           draggable: true,
           itemStyle: {
-            borderColor: theme.themeColor,
+            borderColor: systemColor.Tcolor2,
             borderWidth: 6,
             shadowBlur: 20,
-            shadowColor: theme.themeColor,
+            shadowColor: systemColor.Tcolor2,
             color: '#b0ccfe'
           },
           category: 1,

@@ -1,80 +1,82 @@
 <template>
-  <search-add
-    @searchFn="searchFn"
-    @handleMenuClick="handleMenuClick"
-    :TypeList="ExperimentTypeList"
-    :isShowAdd="isShowAdd"
-    :isReset="resetKeyword"
-  ></search-add>
-  <classify :list="classifyList" @change="classifyChange"></classify>
-  <a-spin :spinning="loading" size="large" tip="Loading...">
-    <div class="flexCenter mainBox">
-      <div class="item flexCenter" :class="{self: currentTab === 0}" v-for="(v) in experimentList" :key="v.id">
-        <div
-          class="exper-type"
-          :style="{
-            color: v.type_obj.color,
-            background: v.type_obj.backgroundColor,
-          }"
-        >
-          {{ v.type_obj.name }}
-        </div>
-        <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-        <div class="exper-name pointer" @click="detail(v.id)">{{ v.name }}</div>
-        <div class="class-time">推荐课时 {{v.class_cnt}}</div>
-        <div class="user-info" v-if="currentTab === 1&&v.user_profile">
-          <!-- is_init :1 就是内置数据 -->
-          <img :src="v.user_profile.portrait||defaultAvatar" alt="" srcset="" />
-          <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
-        </div>
-        <div class="operate" v-if="currentTab === 1">
-          <span  v-show="v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
-        </div>
-        <div class="operate" v-if="currentTab === 0">
-          <!-- is_share:1 就是共享数据 -->
-          <span class="share pointer" @click.stop="share(v.id, v.is_share)">{{
-            v.is_share === 1 ? "取消共享" : "共享"
-          }}</span>
-          <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
-        </div>
-        <!-- <a-tooltip placement="top">
-          <template #title>
-            <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
-          </template>
-          <div class="label pointer">
-            <span class="labels single-ellipsis">
-              <span v-for="(list, index) in v.tag" :key="index">{{
-                  list.name + (index !== v.tag.length - 1 ? " / &nbsp; " : "")
-                }}</span>
-            </span>
+  <div class="teacherExperimentList">
+    <search-add
+      @searchFn="searchFn"
+      @handleMenuClick="handleMenuClick"
+      :TypeList="ExperimentTypeList"
+      :isShowAdd="isShowAdd"
+      :isReset="resetKeyword"
+    ></search-add>
+    <classify :list="classifyList" @change="classifyChange"></classify>
+    <a-spin :spinning="loading" size="large" tip="Loading...">
+      <div class="flexCenter mainBox">
+        <div class="item flexCenter" :class="{self: currentTab === 0}" v-for="(v) in experimentList" :key="v.id">
+          <div
+            class="exper-type"
+            :style="{
+              color: v.type_obj.color,
+              background: v.type_obj.backgroundColor,
+            }"
+          >
+            {{ v.type_obj.name }}
           </div>
-        </a-tooltip> -->
-        <div class="label pointer">
-          <a-tooltip placement="top">
+          <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
+          <div class="exper-name pointer" @click="detail(v)">{{ v.name }}</div>
+          <div class="class-time">推荐课时 {{v.class_cnt}}</div>
+          <div class="user-info" v-if="currentTab === 1&&v.user_profile">
+            <!-- is_init :1 就是内置数据 -->
+            <img :src="v.user_profile.portrait||defaultAvatar" alt="" srcset="" />
+            <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
+          </div>
+          <div class="operate" v-if="currentTab === 1">
+            <span  v-show="v.is_init === 0 && v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+          </div>
+          <div class="operate" v-if="currentTab === 0">
+            <!-- is_share:1 就是共享数据 -->
+            <span class="share pointer" @click.stop="share(v.id, v.is_share)">{{
+              v.is_share === 1 ? "取消共享" : "共享"
+            }}</span>
+            <span class="delete pointer" @click.stop="delet(v.id)">删除</span>
+          </div>
+          <!-- <a-tooltip placement="top">
             <template #title>
               <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
             </template>
-            <div style="width: max-content;">
-              <span class="labels single_ellipsis">
+            <div class="label pointer">
+              <span class="labels single-ellipsis">
                 <span v-for="(list, index) in v.tag" :key="index">{{
-                    list.name + (index !== v.tag.length - 1 ? "&nbsp;/&nbsp;" : "")
+                    list.name + (index !== v.tag.length - 1 ? " / &nbsp; " : "")
                   }}</span>
               </span>
             </div>
-          </a-tooltip>
+          </a-tooltip> -->
+          <div class="label pointer">
+            <a-tooltip placement="top">
+              <template #title>
+                <div v-for="(vv, i) in v.tag" :key="i">{{vv.name}}</div>
+              </template>
+              <div style="width: max-content;">
+                <span class="labels single_ellipsis">
+                  <span v-for="(list, index) in v.tag" :key="index">{{
+                      list.name + (index !== v.tag.length - 1 ? "&nbsp;/&nbsp;" : "")
+                    }}</span>
+                </span>
+              </div>
+            </a-tooltip>
+          </div>
         </div>
+        <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
+          <!-- -->
+        <a-pagination 
+          v-if="totalCount > 10"
+          v-model:current="searchInfo.page"
+          :pageSize="searchInfo.limit"
+          :total="totalCount"
+          @change="pageChange"
+        />
       </div>
-      <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
-        <!-- -->
-      <a-pagination 
-        v-if="totalCount > 10"
-        v-model:current="searchInfo.page"
-        :pageSize="searchInfo.limit"
-        :total="totalCount"
-        @change="pageChange"
-      />
-    </div>
-  </a-spin>
+    </a-spin>
+  </div>
   <!-- 保存到我的 -->
   <a-modal v-model:visible="saveVisible"  title="设置实验名称" :width="500">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
@@ -275,6 +277,7 @@ interface IExperimentList {
   is_webssh: number
   programing_type: number
   is_high:boolean
+  is_authorize:boolean
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
@@ -379,12 +382,16 @@ const cancel = () => {
   formRef.value.resetFields()
   saveVisible.value = false
 }
-const detail = (id: number) => {
+const detail = (val: any) => {
   // router.push("/teacher/teacherExperimentResourcePool/experimentDetail");
+  if(!val.is_authorize){
+    message.success('该实验未授权，暂不能查看！')
+    return
+  }
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentDetail",
     query: {
-      id,
+      id:val.id,
       currentTab: currentTab.value,
     },
   });
@@ -417,6 +424,9 @@ const getDirection = () => {
 }
 </script>
 <style scoped lang="less">
+.teacherExperimentList{
+  margin-bottom: 50px;
+}
 .mainBox {
   flex-wrap: wrap;
   justify-content: space-between;
@@ -499,10 +509,10 @@ const getDirection = () => {
       display: inline-block;
       max-width: 233px;
       border-radius: 2px;
-      color: rgba(255,149,68,0.85);
+      color: var(--primary-color);
       font-size: var(--font-size-sm);
       padding: 0 14px;
-      background: rgba(255,149,68,0.07);
+      background: var(--primary-2);
     }
   }
 }

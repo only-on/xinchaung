@@ -2,7 +2,8 @@
   <div class="course-plan-wrap">
     <div class="c-p-header">
       <div class="top-left">
-        <a-month-picker
+        <div class="top-left-time">
+          <a-month-picker
           class="month-picker"
           placeholder="请选择月份"
           format="YYYY年MM月"
@@ -21,8 +22,9 @@
           <span class="week">{{ changeWeek }}</span>
           <span @click="next" class="right-btn">></span>
         </div>
+        </div>
+        <div class="tipInfo" v-if="role!== 2"> <span class="icon iconfont icon-zhuyi"></span> 如有冲突可联系管理员</div>
       </div>
-
       <div class="course-plan-title">
         {{ moment(new Date()).format("YYYY年MM月DD日") }}
         {{ tableWeekName[new Date().getDay() - 1] }}
@@ -623,6 +625,8 @@ function editTeachingSchedule(id: number, date: string) {
 function cancelScheduleConfirm(id: number) {
   Modal.confirm({
     content: "您确定要取消此项排课吗？执行后无法恢复，请谨慎操作",
+    okText: "确定",
+    cancelText: "取消",
     onOk: () => {
       http.scheduleDelete({ param: { id } }).then((res: any) => {
         getLeftTime();
@@ -721,8 +725,12 @@ onMounted(() => {
     font-size: 26px;
   }
   .top-left {
-    display: flex;
+    // display: flex;
     align-items: center;
+    >div:nth-child(1){
+      display: flex;
+      align-items: center;
+    }
   }
 }
 .month-picker {
@@ -1355,5 +1363,15 @@ onMounted(() => {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+}
+.tipInfo{
+  width: 200px;
+  height: 30px;
+  line-height: 30px;
+  font-size: 12px;
+  color: var(--primary-color);
+  .iconfont{
+    font-size: 12px;
+  }
 }
 </style>

@@ -314,7 +314,7 @@
             <span>共<i>{{oldQuizPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
             ><span>得分<i class="goal">{{goalNum}}</i>分</span>
           </div>
-          <div v-for="item in quizPaperList" :key="item.id">
+          <div v-for="item in answerPaperList" :key="item.id">
             <template v-if="item.type_id == 2">
               <div
                 class="choice-title black-004 question-title"
@@ -352,7 +352,7 @@
               </div>
               <div class="question-options-wrap">
                 <a-textarea
-                  v-if="item.student_answer && item.student_answer[0]"
+                  v-if="item.student_answer"
                   :value="item.student_answer[0]"
                   :auto-size="{ minRows: 2, maxRows: 5 }"
                   :disabled="true"
@@ -411,6 +411,9 @@
       :multiple="true"
       :fileList="uploadFile.fileList"
       class="upload"
+      @change="onChange"
+      :showUploadList="false"
+      :action="uploadAction"
     >
       <p class="ant-upload-drag-icon">
         <span class="iconfont icon-upload"></span>
@@ -423,8 +426,15 @@
         默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}
       </p>
     </a-upload-dragger>
+    <div v-if="uploadFile.fileList.length" class="progress-box">
+      <div class="file-base-info">
+        <span>文件名称：{{ uploadFile.fileList[0].name }}</span
+        ><span class="icon-shanchu iconfont" @click="remove"></span>
+      </div>
+      <a-progress :percent="uploadPercent" />
+    </div>
     <template #footer>
-      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading"></Submit>
+      <Submit @submit="okUploadFile()" @cancel="uploadVisible = false" :loading="uploadLoading||fileLoading"></Submit>
     </template>
   </a-modal>
   <!-- 下载文件 -->
@@ -433,15 +443,28 @@
     title="文件下载"
     :visible="downloadVisible"
     :width="540"
-    @cancel="downloadVisible = false"
+    @cancel="downloadVisible = false;downloadAdd='';"
     @ok="okDownloadFile"
   >
     <p class="label">请输入一个下载路径</p>
     <a-input v-model:value="downloadAdd" placeholder="" />
     <div class="tip">注：下载路径需要是一个文件或者压缩包，例如:{{currentVm?.classify === "Windows" ? "C:\\user.zip":"/home/user.zip"}}，大小限制在200M内</div>
     <template #footer>
-      <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false" :loading="false"></Submit>
+      <Submit @submit="okDownloadFile()" @cancel="downloadVisible = false;downloadAdd='';" :loading="false"></Submit>
     </template>
+  </a-modal>
+  <!-- 正在结束实验 -->
+  <a-modal
+    class="vm-finishing-experiment-modal"
+    title=""
+    :visible="finishingExperimentVisible"
+    :footer="null"
+    :closable="false"
+    :destroyOnClose="true"
+  >
+
+    <img :src="loadingGif" alt="" srcset="" />
+    <span>正在结束实验...</span>
   </a-modal>
 </template>
 
@@ -457,6 +480,7 @@ import request from "src/request/getRequest";
 import { getVmConnectSetting } from "src/utils/seeting";
 import { numToAbc } from "src/utils/common";
 import { ExclamationCircleOutlined } from '@ant-design/icons-vue';
+import loadingGif from "src/assets/images/vmloading.gif";
 import {
   endOperates,
   endExperiment,
@@ -482,6 +506,8 @@ const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
 const experType = Number(route.query.experType);
 
 let role = storage.lStorage.get("role");
+const env = process.env.NODE_ENV === "development" ? true : false;
+const uploadAction = (env ? '/proxyPrefix':'')+'/api/instance/uploads/file'
 
 // inject接收块
 const taskType: any = inject("taskType");
@@ -532,6 +558,7 @@ const oldQuizPaperList: Ref<any> = ref([]); // 原始数据
 const quizPaperList: Ref<any> = ref([]);
 const currentQuizIndex: Ref<number> = ref(0);
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
+const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
 
 const answerNum = computed(() => {
   let num = 0;
@@ -657,21 +684,7 @@ const toolList = toolData;
 //   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
 //   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 const roleArry: any = ref([])
-// 获取随堂测试习题.
-async function getQuestionList(needs_answer: boolean = false) {
-  let param = {
-    page: 1,
-    limit: "all",
-    needs_answer: needs_answer,
-  };
-  return vmApi
-    .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
-    .then((res: any) => {
-      if (!res) return
-      oldQuizPaperList.value = res.data;
-      return res.data;
-    });
-}
+
 function back() {
   Modal.confirm({
     title: "提示",
@@ -807,6 +820,7 @@ watch(
 );
 
 // 结束实验
+let finishingExperimentVisible = ref(false)
 function finishExperiment() {
   let modal = Modal.confirm({
     title: `确认结束${opType === "help" ? "演示" : role === 4 ? "实验" : "备课"}吗？`,
@@ -817,7 +831,7 @@ function finishExperiment() {
       //   router.go(historyLength - history.length - 1);
       //   return;
       // }
-      // Modal.confirm()
+      finishingExperimentVisible.value = true
       await finishTest();
       modal.destroy();
     },
@@ -847,12 +861,14 @@ async function finishTest() {
       // evaluateVisible.value = true;
       // recommendExperimentData.value = res.data;
       endVmEnvirment();
+    }).catch((err) => {
+      finishingExperimentVisible.value = false
     });
   } else {
     endVmEnvirment();
   }
 }
-// 结束脚本入口
+// 结束实验
 function endVmEnvirment() {
   let params: any = null;
   if (role === 4) {
@@ -895,10 +911,12 @@ function endVmEnvirment() {
         router.go(historyLength - history.length - 1);
       }
       // message.success("结束成功");
+    }).catch((err) => {
+      finishingExperimentVisible.value = false
     });
   }, 3000);
 }
-// 结束实验
+// 结束脚本
 async function endVmOperates() {
   let param: any = {
     type: type,
@@ -1000,8 +1018,10 @@ const uploadVisible = ref(false)
 const uploadFile: any = reactive({
   fileList: []
 })
+const uploadPercent = ref(0)
 const uploadFilePath = ref('')
 const uploadLoading = ref(false)
+const fileLoading = ref(false)
 function upload() {
   uploadVisible.value = true
   uploadFile.fileList = []
@@ -1037,19 +1057,37 @@ const beforeUpload = (file: any) => {
     name:file.name
   }
   uploadFile.fileList[0] = obj
-  const fd = new FormData()
-  fd.append('file', file)
-  fd.append('upload_path', 'simpleupload')
-  fd.append('default_name', '1')
-  http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
-    uploadFilePath.value = res.data.full_url
-  })
-  return false;
+  // const fd = new FormData()
+  // fd.append('file', file)
+  // fd.append('upload_path', 'simpleupload')
+  // fd.append('default_name', '1')
+  // http.uploadsFile({param:fd}).then((res: IBusinessResp)=>{
+  //   uploadFilePath.value = res.data.full_url
+  // })
+  // return false;
+  fileLoading.value = true
 }
 const remove = () => {
   uploadFile.fileList = []
   uploadFilePath.value = ''
 }
+const onChange = (info: any) => {
+  // console.log(info)
+  const {event, file} = info
+  if (event) {
+    if (event.percent===100) {
+      return
+    } else {
+      uploadPercent.value = Math.floor(event.percent)
+    }
+  }
+  if (file.status === 'done') { // 上传成功
+    fileLoading.value = false
+    uploadPercent.value = 100
+    uploadFilePath.value = file.response?.data?.full_url
+  }
+}
+
 // 文件下载
 const downloadVisible = ref(false)
 const downloadAdd = ref('')
@@ -1307,27 +1345,61 @@ function settingCurrentVM() {
 async function openQuizModal() {
   if (oldQuizPaperList.value.length == answerNum.value) {
 
-    await getQuestionList(true);
+    // await getQuestionList(true);
+    await getAnswerList()
     quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
   } else {
     await getQuestionList(false);
-    currentQuestionIds = [];
-    let tempData: any[] = cloneDeep(oldQuizPaperList.value);
-    tempData = tempData.filter((item: any) => {
-      return !item.student_answer;
-    });
-    for (let i = 0; i < tempData.length; i++) {
-      currentQuestionIds.push(tempData[i].id);
-      if (!tempData[i].student_answer) {
-        tempData[i].student_answer = [];
+    if(!quizPaperList.value?.length||(quizPaperList.value?.length&&quizPaperList.value?.length!==oldQuizPaperList.value?.length)){
+        currentQuestionIds = [];
+      let tempData: any[] = cloneDeep(oldQuizPaperList.value);
+      tempData = tempData.filter((item: any) => {
+        return !item.student_answer;
+      });
+      for (let i = 0; i < tempData.length; i++) {
+        currentQuestionIds.push(tempData[i].id);
+        if (!tempData[i].student_answer) {
+          tempData[i].student_answer = [];
+        }
       }
-    }
+      
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
     currentShowType.value = 0;
+    }
   }
   quizVisiable.value = true;
+}
+// 获取随堂测试习题.
+async function getQuestionList(needs_answer: boolean = false) {
+  let param = {
+    page: 1,
+    limit: "all",
+    needs_answer: needs_answer,
+  };
+  return vmApi
+    .getQuestionListApi({ param: param, urlParams: { content_id: taskId } })
+    .then((res: any) => {
+      if (!res) return
+      oldQuizPaperList.value = res.data;
+      return res.data;
+    });
+}
+// 获取有答案的随堂测试习题.
+async function getAnswerList(needs_answer: boolean = false) {
+  let param = {
+    page: 1,
+    limit: "all",
+    // needs_answer: needs_answer,
+  };
+  return vmApi
+    .getAnswerListApi({ param: param, urlParams: { content_id: taskId } })
+    .then((res: any) => {
+      if (!res) return
+      answerPaperList.value = res.data;
+      return res.data;
+    });
 }
 // 提交
 function submitQuiz() {
@@ -1345,7 +1417,7 @@ function submitQuiz() {
 
   vmApi.submitAnswerApi({ param: params }).then(async (res: any) => {
     message.success("提交成功");
-    let questionTemp: any[] = await getQuestionList(true);
+    let questionTemp: any[] = await getAnswerList();
     quizPaperList.value = questionTemp.filter((item: any) => {
       return currentQuestionIds.includes(item.id);
     });
@@ -1819,6 +1891,14 @@ i {
       }
     }
   }
+  .progress-box {
+    margin-top: 24px;
+    .file-base-info {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 14px;
+    }
+  }
 }
 .vm-file-download {
   .label {
@@ -1828,6 +1908,25 @@ i {
   .tip {
     margin-top: 8px;
     color: var(--primary-color);
+  }
+}
+.vm-finishing-experiment-modal {
+  top: 50%;
+  .ant-modal-content {
+    background-color: rgba(255, 255, 255, 0);
+    box-shadow: none;
+  }
+  .ant-modal-body {
+    padding: 0;
+    text-align: center;
+    font-size: 20px;
+    color: var(--white-65);
+    .ant-modal-confirm-btns {
+      display: none;
+    }
+    .img {
+      margin-right: 8px;
+    }
   }
 }
 </style>

@@ -9,7 +9,7 @@
       <breadcrumb v-show="configuration.showNav" />
     </div>
     <div class="navList">
-      <div class="tab">
+      <div :class="['tab', themeClass]">
         <div
           v-for="(v, i) in configuration.tabs"
           :key="v.name"
@@ -70,6 +70,8 @@ export default defineComponent({
     var configuration: any = inject("configuration");
     const router = useRouter();
     const route = useRoute();
+    const store = useStore();
+    const themeClass = ref<string>('theme' + store.state.systemInfo.theme)
     const tabs = reactive(configuration.tabs) as ITab[];
     const activeName: Ref<string> = ref("");
     var updata = inject("updataNav") as Function;
@@ -178,7 +180,11 @@ export default defineComponent({
       // console.log(val)
       updata({ ...configuration, componenttype:val });
     },{deep:true})
-    return { activeName, ActiveName, tabChange, configuration };
+    // 系统主题更改
+    watch(()=>store.state.systemInfo, newVal => {
+      themeClass.value = 'theme'+newVal.theme
+    },{deep: true, immediate: true})
+    return { activeName, ActiveName, tabChange, configuration, themeClass };
   },
 });
 </script>
@@ -205,7 +211,7 @@ export default defineComponent({
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
       margin-right: 15px;
-      color: var(--white-65);
+      color: var(--menu-text);
       font-size: var(--font-size-16);
       // padding-right: 15px;
       border-bottom: 3px solid transparent;
@@ -217,10 +223,19 @@ export default defineComponent({
       }
     }
     .active {
-      color: #fff;
+      color: var(--menu-active);
       transition: all 0.3s;
-      &:hover {
-        color: #fff;
+        &:hover {
+          color: var(--menu-active);
+        }
+    }
+    &.themeC{
+      .active {
+        color: var(--black-85);
+        transition: all 0.3s;
+        &:hover {
+          color: var(--black-85);
+        }
       }
     }
     .activeBor {

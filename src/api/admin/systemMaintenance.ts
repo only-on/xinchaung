@@ -20,9 +20,12 @@ export default{
      // 4.手动清理日志
     handclearLog:{url:'/api/system/setting/clear-log',method:'post',dataType:'json'},
 
-
-    settingAutoKeyApi: { url: "/api/yii/setting/auto-key", method: "POST" },
-    saveSettingApi: { url: "/api/yii/setting/save-auto", method: "POST", dataType: 'json' },
+    //生成授权码
+    settingAutoKeyApi: { url: "/api/system/auth/auth-key", method: "POST" },
+    // 授权
+    saveSettingApi: { url: "/api/system/auth/save-auth", method: "POST", dataType: 'json' },
+    // 授权列表
+    powerList:{url: "/api/system/auth/auth-info", method: "GET", dataType: 'json' },
 }
 export interface IsystemMaintenance{
     systemLogList:TFHttpSend,

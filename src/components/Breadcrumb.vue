@@ -79,7 +79,7 @@ export default defineComponent({
   align-items: center;
   font-size: 12px;
   // color: var(--black-25);
-  color: var(--white);
+  color: var(--menu-text);
   .allow {
     :deep(.ant-breadcrumb-link) {
       cursor: pointer;
@@ -91,10 +91,10 @@ export default defineComponent({
   a,
   span,
   span:last-child {
-    color: #fff;
+    color: var(--menu-text);
   }
   :deep(.ant-breadcrumb-separator) {
-    color: #fff;
+    color: var(--menu-text);
   }
 }
 </style>

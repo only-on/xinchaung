@@ -126,7 +126,7 @@ const handleMenuClick = ({ key }: { key: string }) => {
 const materialTypeList = reactive([
   { name: "数据集", key: "dataSet" },
   { name: "视频目录", key: "videoDirectory" },
-  { name: "文档实验", key: "documentDirectory" },
+  { name: "实验文档", key: "documentDirectory" },
   { name: "课件目录", key: "coursewareDirectory" },
   { name: "备课资料目录", key: "lessonDirectory" },
   { name: "教学指导目录", key: "guidanceDirectory" },

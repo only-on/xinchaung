@@ -1,6 +1,6 @@
 <template>
   <div class="experiment-detail">
-    <div class="top" :class="{ public: Number(currentTab) === 1 }">
+    <div class="top" :class="{ public: Number(currentTab) === 1 }" :style="`background: url(${systemImages.experBan})`">
       <div class="crumbs">
         <breadcrumb />
       </div>
@@ -108,6 +108,7 @@ import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
 import defaultAvatar from 'src/assets/images/admin/home/env3.png'
 import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import {getThemeData} from 'src/utils/theme'
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
 import jupyterDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/jupyterDetail.vue";
@@ -124,6 +125,7 @@ const { id, currentTab, type } = route.query;
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const http = (request as any).teacherExperimentResourcePool;
+const {systemImages} = getThemeData()
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
@@ -349,8 +351,6 @@ interface IExperimentDetail {
   margin: 0 auto;
   .top {
     height: 170px;
-    background: url("src/assets/images/teacherExperimentResourcePool/base_info_bg.png")
-      center no-repeat;
     // background-size: 100% 200px;
     padding: 0 14px;
     &.public {
@@ -500,3 +500,4 @@ interface IExperimentDetail {
   }
 }
 </style>
+

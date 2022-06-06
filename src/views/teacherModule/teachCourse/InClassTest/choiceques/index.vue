@@ -147,10 +147,23 @@ function sendChoiceQues(){
 }
 function handleOk() {
   formRef.value.validate().then(() => {
+    if(isNaN(parseFloat(formState.score))){
+      message.warning('习题分数只能是数字！')
+      return
+    }
+    if(formState.score<=0){
+      message.warning('习题分数需要大于0！')
+      return
+    }
+    if(formState.score>100){
+      message.warning('习题分数需要小于100！')
+      return
+    }
     sendChoiceQues()
   });
 }
 function handleCancel() {
+  formRef.value.resetFields()
   updateVisable(false);
 }
 function verifiyInfor() {

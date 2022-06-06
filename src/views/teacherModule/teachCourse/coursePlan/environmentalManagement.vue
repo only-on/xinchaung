@@ -31,8 +31,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.gpu" @keyup.enter="search"></a-input>
@@ -43,8 +43,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.memory" @keyup.enter="search"></a-input>
@@ -55,8 +55,8 @@
               <template #suffixIcon></template>
               <a-select-option :value="0">全部</a-select-option>
               <a-select-option :value="1">=</a-select-option>
-              <a-select-option :value="2">&lt;</a-select-option>
-              <a-select-option :value="3">&gt;</a-select-option>
+              <a-select-option :value="3">&lt;</a-select-option>
+              <a-select-option :value="2">&gt;</a-select-option>
             </a-select>
             <!-- <span class="inputDiv">=</span> -->
             <a-input v-model:value="formData.cpu" @keyup.enter="search"></a-input>
@@ -294,6 +294,7 @@ function batchDisabled() {
     return;
   }
   disabledVisible.value = true;
+  endTime.value=moment(dateAdd(),"YYYY-MM-DD")
 }
 // 确认
 function handleOk() {
@@ -328,6 +329,17 @@ function handleCancel() {
 }
 function disabledDate(current: any) {
   return current && moment(current).add(1, "days") < moment();
+}
+function dateAdd(){
+//1.获取当前日期
+var date=new Date();
+//2. 获取当前分钟
+var min=date.getMinutes();
+//3. 设置当前时间+5分钟：把当前分钟数+5后的值重新设置为date对象的分钟数
+date.setMinutes(min+1);
+return date
+//4. 测试
+
 }
 onMounted(() => {
   getList();

@@ -1,7 +1,7 @@
 <template>
   <div class="forum-square">
     <forumn-top @search="search" :tagList="tagList"></forumn-top>
-    <div class="forumn-content">
+    <div class="forumn-content" id="scrool">
       <div class="left">
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <forumn :forumnList="forumnList" @pageChange="pageChange" :total="total" :forumSearch="forumSearch"></forumn>
@@ -9,6 +9,7 @@
         </a-spin>
       </div>
       <div class="right" v-if="role !== 2">
+        <div v-show="!loading">
         <div class="post pointer" @click="createPost">发帖</div>
         <!-- 热门标签 -->
         <hot-label></hot-label>
@@ -16,6 +17,7 @@
         <heat-map id="echarts-list"></heat-map>
         <!-- 推荐课程 -->
         <recommend-course></recommend-course>
+        </div>
       </div>
     </div>
   </div>
@@ -86,11 +88,11 @@ function initData() {
     (forumSearch.type === 'new'? 
       Object.assign(param, {order: 2}) : 
       Object.assign(param, {type: forumSearch.type}))
+    forumnList.length = 0
   // 获取帖子列表
   http.getForumList({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
     loading.value = false
     const { list, page } = res.data
-    forumnList.length = 0
     list.forEach((v: IForumnList) => {
       v.content = goHtml(v.content)
       fixHtml(removeHtmlTag(v.content).substr(0, 200))
@@ -110,6 +112,8 @@ function search(params: IForumSearch) {
 // 页码变化
 function pageChange(page: number) {
   forumSearch.page = page;
+  const target:any=document.getElementsByClassName('main-box')[0];
+  target.scrollTop='0px';
   initData();
 }
 // 发帖

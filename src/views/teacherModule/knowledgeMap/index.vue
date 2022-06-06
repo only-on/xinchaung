@@ -329,7 +329,7 @@ export default defineComponent({
     .title{
       padding: 0 30px;
       line-height: 56px;
-      background: #FFFCFA;
+      background: var(--primary-2);
       color: #31394D;
       font-size: 16px;
       display: flex;
@@ -339,7 +339,7 @@ export default defineComponent({
         display: inline-block;
         width: 34px;
         height: 34px;
-        background: #FEF7DF;
+        background: var(--primary-3);
         border-radius: 50%;
         display: flex;
         align-items: center;

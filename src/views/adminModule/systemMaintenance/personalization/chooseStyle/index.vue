@@ -7,7 +7,7 @@
                         <img :src="item.label">
                         <div class="mask"></div>
                     </div>
-                    <div v-else class="colorBox" :style="{backgroundColor:item.label}"></div>
+                    <div v-else class="colorBox" :style="{backgroundColor:item.primary}"></div>
                 </a-radio>
             </a-radio-group> 
             <div class="titleInfo">{{titleInfo}}</div> 
@@ -63,9 +63,14 @@ const handleChange = (e:any) => {
      text-align: center;
  }
  .imgBox{
+    width: 274px;
+    height: 128px;
     border: 1px solid #808294;
-    padding: 2px;
     position: relative;
+    img{
+      width: 100%;
+      height: 100%;
+    }
     .mask{
       position: absolute;
       left: 0;
@@ -77,8 +82,9 @@ const handleChange = (e:any) => {
     }
  }
  .colorBox{
-     width:348px;
+     width:276px;
      height: 40px;
+     border: 1px solid transparent;
  }
  .radio {
      display: block;
@@ -86,8 +92,8 @@ const handleChange = (e:any) => {
       width: 20px;
       height: 20px;
       position: absolute;
-      top: 5px;
-      left:320px;
+      top: 11px;
+      left: 245px;
       z-index: 9;
     }
     :deep(.ant-radio-input ){
@@ -97,8 +103,8 @@ const handleChange = (e:any) => {
     /* 单选选中样式 */
     :deep(.ant-radio-checked){
       .ant-radio-inner {
-        background-color: #FF9544;
-        border: none;
+        background-color: var(--primary-color);
+        // border: none;
       }
       &+span{
         .imgBox{
@@ -106,6 +112,9 @@ const handleChange = (e:any) => {
           .mask{
             display: block;
           }
+        }
+        .colorBox{
+          border-color: var(--primary-color);
         }
       }
     }

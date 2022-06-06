@@ -70,8 +70,8 @@ interface Iparams {
   page: number;
 }
 const http = (request as any).teacherForum;
-console.log(http);
-const activeKey = ref("1");
+// console.log(http);
+const activeKey = ref("0");
 let forumnList = reactive<IForumnList[]>([]);
 const forumSearch = reactive<Iparams>({
   title: "",
@@ -92,7 +92,7 @@ function getForumnList() {
   // 获取帖子列表
   loading.value = true
   forumnList.length = 0
-  console.log(forumSearch)
+  // console.log(forumSearch)
   const param = {
     page: forumSearch.page,
     limit: forumSearch.pageSize,
@@ -116,14 +116,14 @@ function getForumnList() {
 }
 
 function tabChange(key: string) {
-  console.log(key, '1');
+  // console.log(key, '1');
   forumSearch.type = key;
   getForumnList();
 }
 
 // 删除帖子
 const deleteForum = (id: number) => {
-  console.log(id)
+  // console.log(id)
   Modal.confirm({
     title: '确认删除吗？',
     icon: createVNode(ExclamationCircleOutlined),
@@ -141,20 +141,27 @@ const deleteForum = (id: number) => {
 provide("deleteForum", deleteForum)
 
 const leftWidth: Ref<number> = inject("leftWidth", ref(70));
-console.log(leftWidth.value)
+// console.log(leftWidth.value)
+
 // 点击展开全文 底部收起样式
 let bottomStyle = reactive({
   bottom: "80px",
   width: (Number(leftWidth.value)-70-20)+"px",
 });
 provide("bottomStyle", bottomStyle);
-
+watch(
+  () => leftWidth.value,
+  () => {
+    bottomStyle.width = (Number(leftWidth.value)-70-20)+"px"
+  },
+  { deep: true, immediate: true }
+);
 onMounted(() => {
   getForumnList();
 });
 // 页码变化
 function pageChange(page: number) {
-  console.log(page);
+  // console.log(page);
   forumSearch.page = page;
   getForumnList();
 }

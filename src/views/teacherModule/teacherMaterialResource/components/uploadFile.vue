@@ -20,7 +20,7 @@
         <div v-for="(v, k, i) in ChunkStatus" :key="i">
           <span>文件名称：{{ v.name }}</span>
           <span
-            >计算md5进度：{{ v.chunks + "/" + v.currentChunk }}</span
+            >计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span
           >
         </div>
       </div>
@@ -107,6 +107,14 @@ function fileBeforeUpload(file: any) {
   if (file && file.size === 0) {
     $message.warn(`${file.name}文件大小不能为空`);
     return false;
+  }
+  if (file.name.length > 100) {
+    $message.warn(`文件名称不能大于100`);
+    return
+  }
+  if (props.type === 4 && file.size > 500*1024*1024) {
+    $message.warn(`上传文件大小必须要在500M以内`);
+    return
   }
   if (props.type !== 1) {
     let obj = {
@@ -239,6 +247,11 @@ function removeFile(file: any, index: any) {
     }
   });
   delete props.fileList[index];
+}
+function removeAllFile() {
+  props.fileList.forEach((v: any) => {
+    // console.log(version)
+  })
 }
 onMounted(() => {
   tusFileUpload.init()

@@ -284,6 +284,7 @@ const deleteFile=(val:any)=>{
 http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
   message.success('删除成功')
   getDataFileList()
+  detailed()
 })
 }
 const downLoadFile=(val:any)=>{
@@ -399,6 +400,7 @@ const SaveFile=()=>{
   AddFileLObj.AddFileList={}
   addFileVisible.value=false
   getDataFileList()
+  detailed()
 }
 const cancelAddFile=()=>{
   addFileVisible.value=false

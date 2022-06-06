@@ -1,16 +1,9 @@
 <template>
-  <header class="header-box">
+  <header :class="['header-box', 'theme'+systemTheme]">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
-        <!-- <div
-          class="logo"
-          :style="`background-image: url(${
-            env
-              ? '/proxyPrefix' + systemBaseInfo.login_logo
-              : systemBaseInfo.login_logo
-          });`"
-        ></div> -->
-        <img class="logo" :src="store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg"/>
+        <div class="logo" :style="`background-image: url(${ getLogoUrl});`"></div>
+        <!-- <img class="logo" :src="store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg"/> -->
         <span class="web-title">{{store.state.systemInfo.site_name}}</span>
       </div>
     </div>
@@ -80,8 +73,8 @@ import {
   onUnmounted,
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
-import request from "../../api/index";
-import { IBusinessResp } from "../../typings/fetch";
+import request from "src/api/index";
+import { IBusinessResp } from "src/typings/fetch";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
 import { Modal, message } from "ant-design-vue";
 import extStorage, {sStorage} from "src/utils/extStorage";
@@ -93,16 +86,18 @@ import studentUserImg from "src/assets/images/user/student.png";
 import { wsConnect } from "src/request/websocket";
 import { useStore } from "vuex";
 import { createExamples } from "src/utils/vncInspect";
-import {clearAllCookies} from "../../utils/cookieHelper";
+import {clearAllCookies} from "src/utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
-import {IWmc} from "../../typings/wmc";
-import api from "../../api";
+import {IWmc} from "src/typings/wmc";
+import api from "src/api";
 import { AnyMxRecord } from "dns";
 import logoImg from "src/assets/images/user/logo.png"
+import {getThemeData} from 'src/utils/theme'
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
+    const {systemTheme} = getThemeData()
     const env = process.env.NODE_ENV == "development" ? true : false;
     const router = useRouter();
     const store = useStore()
@@ -134,8 +129,14 @@ export default defineComponent({
     });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码
-      return role === 3 || role === 1 || role === 2;
+      return role === 3 || role === 1 || role === 2 || role === 4;
     });
+    const getLogoUrl=computed(()=>{
+      // env? '/proxyPrefix' + systemBaseInfo.logo_url : systemBaseInfo.logo_url
+      // store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg
+      let logo_url=store.state.systemInfo.logo_url ?store.state.systemInfo.logo_url :logoImg
+      return env?'/proxyPrefix' + logo_url : logo_url
+    })
     const userName = ref<string>(lStorage.get("username"));
 
     function information() {
@@ -511,7 +512,7 @@ export default defineComponent({
       }
     }
     onMounted(async () => {
-      if ((role === 3 || role === 4)&&!longWs1.value) {
+      if ((role === 3 || role === 4 || role === 5)&&!longWs1.value) {
         try {
           // await initWs()
         } catch (e: any) {
@@ -519,7 +520,7 @@ export default defineComponent({
         }
         // lStorage.set("longWs", longWs)
       }
-      if (role === 3) {
+      if (role === 3 || role==5) {
         getHelpFinfo()
         setWs()
       }
@@ -685,7 +686,9 @@ export default defineComponent({
       helpInfoList,
       toHelp,
       store,
-      logoImg
+      logoImg,
+      getLogoUrl,
+      systemTheme
     };
   },
 });
@@ -700,6 +703,14 @@ export default defineComponent({
   align-items: center;
   width: var(--center-width);
   margin: 0 auto;
+  &.themeC{
+    > .header-left .web-title{
+      color: var(--black-85);
+    }
+    > .header-right .user-name .user-name{
+      color: var(--black-85);
+    }
+  }
   // box-shadow: 0 0 5px #c2aad6;
   > .header-left {
     flex-shrink: 0;
@@ -716,9 +727,10 @@ export default defineComponent({
       width: 25px;
       height: 25px;
       margin-right: 10px;
+      background-size: 100% 100%;
     }
     .web-title {
-      color: var(--primary-color);
+      color: var(--white);
       font-size: 22px;
     }
   }

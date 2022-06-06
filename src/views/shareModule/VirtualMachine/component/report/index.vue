@@ -5,14 +5,15 @@
   title="实验报告"
   @ok="handleOk"
   @cancel="cancel"
+  :footer="null"
 >
   <div class="report-content" v-if="reportTemplateData">
     <!-- 在线报告 -->
     <div v-if="reportTemplateData && reportTemplateData.template_type === 'form'">
       <on-line />
-      <!-- <div v-if="reportTemplateData.can_student_update" class="bottom">
-        <a-button class="btn" type="parmary" @click="submitOfflineReport" >提交报告</a-button>
-      </div> -->
+      <div v-if="reportTemplateData.can_student_update" class="bottom">
+        <a-button class="btn" type="parmary" @click="submitOfflineReport" :loading="saveLoading">提交报告</a-button>
+      </div>
     </div>
 
     <!-- 离线报告 -->
@@ -51,6 +52,9 @@
           </div>
         </div>
       </div>
+      <div class="btns">
+        <Submit @submit="handleOk" @cancel="cancel" :loading="saveLoading"></Submit>
+      </div>
     </div>
   </div>
   <div v-else>
@@ -77,6 +81,7 @@ import empty from "src/components/Empty.vue";
 import iconList from "src/utils/iconList";
 // @ts-ignore 类型声明需要完善，此处先用注解压制错误
 import {renderMarkdown} from  '@xianfe/antdv-markdown';
+import Submit from "src/components/submit/index.vue";
 interface experReportParam {
   csc_id: any;
 }
@@ -88,6 +93,7 @@ const baseInfo: any = inject("baseInfo")
 const reportId: any = ref(baseInfo?.current?.id || 0);
 console.log(reportId, "reportId");
 const fileList: Ref<any> = ref([]);
+const saveLoading = ref(false)
 watch(
   () => reportTemplateData,
   () => {
@@ -155,6 +161,7 @@ function submitOfflineReport() {
     // reportTemplateData.value= res?.data
     emit("update:visible", false)
     experReport({ csc_id: baseInfo.value.current.id });
+    saveLoading.value = false
   });
 }
 function beforeUpload(file: any) {
@@ -176,6 +183,7 @@ function handleUpload() {
   vmApi.updateTemplateReport({ param: formData }).then((res:any) => {
     reportTemplateData.value = res?.data;
     emit('update:visible', false)
+    saveLoading.value = false
   });
 }
 function downLoadExperReport(fileurl: any, filename: any) {
@@ -210,6 +218,7 @@ const cancel = () => {
   emit('update:visible', false)
 }
 const handleOk = () => {
+  saveLoading.value = true
   if (reportTemplateData.value && reportTemplateData.value.template_type === 'form') {
     submitOfflineReport()
   } else if (reportTemplateData.value && reportTemplateData.value.template_type === 'file') {
@@ -429,6 +438,9 @@ onMounted(() => {
 .offlineReport {
   width: 100%;
   height: 100%;
+  .btns {
+    margin-top: 24px;
+  }
   .iframe {
     width: 100%;
     height: 100%;

@@ -14,7 +14,7 @@
                 ></a-input>
                     </div>
                     <div class="step-row">
-                        <a-button class='brightBtn step-btn' type='primary' @click="copyCode">复制授权码</a-button>
+                        <a-button  class='brightBtn step-btn' :disabled='authorizationData.authorization_code?false:true' type='primary' @click="copyCode">复制授权码</a-button>
                         <span class="titinfo">提示：复制授权码找授权管理人员获得授权文件</span>
                     </div>
                 </div>
@@ -29,7 +29,7 @@
                             :showUploadList="false"
                             :beforeUpload="beforeUpload"
                             >
-                                <a-button type='primary'>选择文件</a-button>
+                                <a-button :disabled='authorizationData.authorization_code?false:true' type='primary'>选择文件</a-button>
                             </a-upload>
                             <div
                             class="progress-box active"
@@ -46,7 +46,7 @@
                     <div class="step-row">
                         <div class="step-text">文件名称</div>
                         <div class="divbox">
-                            <span class="filename">{{authorizationFile.filename}}</span>
+                            <span class="filename" :title="authorizationFile.filename">{{authorizationFile.filename}}</span>
                             <span v-if="authorizationFile.filename"  @click="removeFile" class="icon iconfont icon-shanchu"></span>   
                         </div>
                     </div>
@@ -57,7 +57,7 @@
                         <div class="step-text">授权系统</div>
                             <a-button
                             type="primary"
-                            :disabled="reactiveData.isShowBtn"
+                            :disabled='authorizationFile.url?false:true'
                             @click="authorizationFun"
                             >授权</a-button>
                         </div>
@@ -68,7 +68,7 @@
             <div class="tit">授权设置</div>
             <div class="tableHeight">
               <a-table
-            rowKey='username'
+            rowKey='module'
             :columns="columns"
             :data-source="data"
             :pagination="
@@ -124,28 +124,28 @@ const statisData:any=ref()
 const tableData: any = reactive({
   total: 0,
   page: 1,
-  limit: 10,
+  limit:10,
 });
 columns.value = [
   {
     title: "模块",
-    dataIndex: "username",
-    key: "username",
+    dataIndex: "module",
+    key: "module",
   },
   {
     title: "授权类型",
-    dataIndex: "name",
-    key: "name",
+    dataIndex: "auth_type",
+    key: "auth_type",
   },
   {
     title: "授权人数",
-    dataIndex: "className",
-    key: "className",
+    dataIndex: "auth_number",
+    key: "auth_number",
   },
   {
     title: "授权时间",
-    dataIndex: "score",
-    key: "score",
+    dataIndex: "auth_time_left",
+    key: "auth_time_left",
   }
 ];
 const authorizationData:any=reactive({
@@ -196,7 +196,8 @@ function modalEl(){
 // 设置授权码
 function settingAutoKey() {
       http.settingAutoKeyApi().then((res: any) => {
-        authorizationData.authorization_code = res.datas?.key?res.datas.key:res.data.key;
+        authorizationData.authorization_code = res.data?.auth_key;
+        // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
   });
 }
 function copyCode(e: Event) {
@@ -214,8 +215,8 @@ function copyCode(e: Event) {
         };
         reactiveData.upload = new uploadFile({
           url: env
-            ? "/api/yii/proxyPrefix/authorization/setting/upload-file"
-            : "/api/yii/authorization/setting/upload-file",
+            ? "/api/instance/uploads/file"
+            : "/api/instance/uploads/file",
           body,
           success: (res: any) => {
             if (res.status === 1) {
@@ -250,34 +251,46 @@ function copyCode(e: Event) {
       }
       function removeFile() {
         if (reactiveData.upload) {
-            reactiveData.upload.abortUpload();
-            authorizationFile.progress=0;
-            authorizationFile.filename='';
+          reactiveData.upload.abortUpload();
         }
+        authorizationFile.filename='';
+        authorizationFile.progress=0;
+        authorizationFile.url=''
       }
       // 授权
       function authorizationFun() {
-        // if (!authorizationFile.filename) {
-        //   message.warn("请上传图片");
-        //   return;
-        // }
+        if (!authorizationFile.url) {
+          message.warn("请上传授权文件");
+          return;
+        }
         if (!authorizationData.authorization_code) {
           message.warn("请输入授权码");
           return;
         }
         // reactiveData.isShowBtn = true;
         let params: any = {
-          params: authorizationFile.filename,
-          authNumber: authorizationData.authorization_code,
-          url: authorizationFile.url,
+          auth_code: authorizationData.authorization_code,
+          auth_file: authorizationFile.url,
         };
          http.saveSettingApi({param:params}).then((res: any) => {
-          reactiveData.authorizationData.authorization_code =
-            res.authNumber;
-          // getAuthorizationInfo();
+          // reactiveData.authorizationData.authorization_code = res.authNumber;
+            message.warning('授权成功！')
+            getPowerList()
         });
     }
       // 获取系统日志时间配置
+
+      function getPowerList(){
+        http.powerList().then((res:any)=>{
+          data.value=res.data.auth_data
+          tableData.total=res.data.auth_data?.length
+          authorizationData.authorization_code =res.data?.auth_code
+          // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
+        })
+      }
+      onMounted(()=>{
+        getPowerList()
+      })
 </script>
 <style lang="less" scoped>
     .systemAuthorization{

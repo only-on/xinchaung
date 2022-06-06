@@ -196,7 +196,7 @@ function jumpHandle(list: any) {
     position: relative;
     color: #08414d;
     &.close {
-      color: var(--brightBtn);
+      color: var(--primary-color);
     }
   }
 }

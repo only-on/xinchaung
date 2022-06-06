@@ -2,7 +2,7 @@
     <div class="home">
         <div class="corlorwhite">
             <div class="entrance">
-            <div class="entrance-left">
+            <div class="entrance-left" :style="`background-image: url(${systemImages.Ahome.entranceLeft});`">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()" @click="toJump(item.link)">
@@ -14,7 +14,7 @@
                     </div>
                 </div>
             </div>
-            <div class="entrance-right">
+            <div class="entrance-right" :style="`background-image: url(${systemImages.Ahome.entranceRight});`">
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()" @click="toJump(item.link)">
@@ -112,7 +112,7 @@
                             信息警告：
                         </div>
                         <div>
-                            <div class="warningItem" v-for='(item,i) in warningMessage' key="i">
+                            <div class="warningItem" v-for='(item,i) in warningMessage' :key="i">
                                 <span>
                                     {{item.title}}:
                                 </span>
@@ -204,16 +204,15 @@
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
     import {Modal } from 'ant-design-vue'
+    import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
+    import router from "src/routers";
+    import {getThemeData} from 'src/utils/theme'
+    const {systemColor} = getThemeData()
     const http = (request as any).adminHome;
+    const {systemImages} = getThemeData()
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     updata({ tabs: [], showContent:false, showNav: false });
-    import img1 from 'src/assets/images/admin/home/1.png'
-    import img2 from 'src/assets/images/admin/home/2.png'
-    import img3 from 'src/assets/images/admin/home/3.png'
-    import img4 from 'src/assets/images/admin/home/4.png'
-    import img5 from 'src/assets/images/admin/home/5.png'
-    import img6 from 'src/assets/images/admin/home/6.png'
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
     };
@@ -239,17 +238,17 @@
     const statisticData:any=ref()
     enterNumber1.value=[
         {
-        img:img1,
+        img: systemImages.Ahome.adminHome1,
         course:'课程门数',
         number:'--',
         link:'/admin/TeachingResourceManagement/courseManagement'
         },{
-        img:img2,
+        img:systemImages.Ahome.adminHome2,
         course:'实验数',
         number:'--',
         link:'/admin/TeachingResourceManagement/experimentManagement'
         },{
-        img:img3,
+        img:systemImages.Ahome.adminHome3,
         course:'素材数',
         number:'--',
         link:'/admin/TeachingResourceManagement/resourcesManagement'
@@ -257,17 +256,17 @@
     ];
     enterNumber2.value=[
         {
-        img:img4,
+        img:systemImages.Ahome.adminHome4,
         course:'教师数',
         number:'--',
         link:'/admin/adminUserManagement/teacherManagement'
         },{
-        img:img5,
+        img:systemImages.Ahome.adminHome5,
         course:'学生数',
         number:'--',
         link:'/admin/adminUserManagement/studentManagement'
         },{
-        img:img6,
+        img:systemImages.Ahome.adminHome6,
         course:'预约人数',
         number:'--',
         link:'/teacher/coursePlan'
@@ -306,8 +305,7 @@
     function toJump(value:any){
         router.push(value)
     }
-    import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
-    import router from "src/routers";
+    
     function drawEcharts(id:any,option:any){
         document.getElementById(id)?.removeAttribute("_echarts_instance_");
         var chartDom:any=document.getElementById(id)
@@ -361,10 +359,10 @@
                 });
                 drawEcharts('resource_echarts',resourceOption(resourceHistory))
                 //平台资源概览
-                drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G','#00cbc2'))
-                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核','#ff9544'))
-                drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G','#9872eb'))
-                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'G','#6993fe'))
+                drawEcharts('plate1',dashboardResource(statisticData.value.platform_resource.memTotal-statisticData.value.platform_resource.memUsed,statisticData.value.platform_resource.memUseRate,'G',systemColor.Acolor1))
+                drawEcharts('plate2',dashboardResource(statisticData.value.platform_resource.cpuCores-statisticData.value.platform_resource.cpuUsed,statisticData.value.platform_resource.cpuUseRate,'核',systemColor.Acolor2))
+                drawEcharts('plate3',dashboardResource(statisticData.value.platform_resource.disk-statisticData.value.platform_resource.diskUsed,statisticData.value.platform_resource.diskUseRate,'G',systemColor.Acolor3))
+                drawEcharts('plate4',dashboardResource(statisticData.value.platform_resource.gpuMem-statisticData.value.platform_resource.gpuMemUsed,statisticData.value.platform_resource.gpuUseRate,'G',systemColor.Acolor4))
                 
                 //服务节点状态
                 serveNode.value=statisticData.value?.single_node_resource
@@ -377,10 +375,10 @@
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
-                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},'#00cbc2'))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
-                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
-                drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},'#6993fe'))
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},systemColor.Acolor4))
             }
         })
     }
@@ -413,10 +411,10 @@
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
-                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},'#00cbc2'))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},'#ff9544'))
-                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},'#9872eb'))
-                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},'#6993fe'))
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},systemColor.secondary))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.primary))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor1))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},systemColor.Acolor2))
         })
     }
     //用户活跃度改变日期
@@ -514,14 +512,14 @@
         getData()
         drawEcharts('activity-echats',activityOption(userActive))
         drawEcharts('resource_echarts',resourceOption({}))
-        drawEcharts('plate1',dashboardResource(0,0,'G','#00cbc2'))
-        drawEcharts('plate2',dashboardResource(0,0,'核','#ff9544'))
-        drawEcharts('plate3',dashboardResource(0,0,'G','#9872eb'))
-        drawEcharts('plate4',dashboardResource(0,0,'个','#6993fe'))
-        drawEcharts('node1',dashboardService({},'#00cbc2'))
-        drawEcharts('node2',dashboardService({},'#ff9544'))
-        drawEcharts('node3',dashboardService({},'#9872eb'))
-        drawEcharts('node4',dashboardService({},'#6993fe'))
+        drawEcharts('plate1',dashboardResource(0,0,'G',systemColor.Acolor1))
+        drawEcharts('plate2',dashboardResource(0,0,'核',systemColor.Acolor2))
+        drawEcharts('plate3',dashboardResource(0,0,'G',systemColor.Acolor3))
+        drawEcharts('plate4',dashboardResource(0,0,'个',systemColor.Acolor4))
+        drawEcharts('node1',dashboardService({},systemColor.Acolor1))
+        drawEcharts('node2',dashboardService({},systemColor.Acolor2))
+        drawEcharts('node3',dashboardService({},systemColor.Acolor3))
+        drawEcharts('node4',dashboardService({},systemColor.Acolor4))
     })
 </script>
 <style lang="less" scoped>
@@ -540,7 +538,7 @@
         .entranceCon{
             display: flex;
             justify-content: space-between;
-            padding: 30px;
+            padding: 10px 30px;
         }
         .number{
             font-weight:20px;
@@ -552,18 +550,20 @@
         }
         .enterItem{
             text-align: center;
+            img{
+                width: 100px;
+                height: 100px;
+            }
         }
         .enterItem:hover{
             cursor: pointer;
         }
     }
     .entrance-left{
-        background-image: url('src/assets/images/admin/home/enter.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
     .entrance-right{
-        background-image: url('src/assets/images/admin/home/enter1.png');
         background-repeat: no-repeat;
         background-size: 100% 100%;
     }
@@ -723,7 +723,7 @@
         }
         .warningItem{
             margin-bottom: 20px;
-            background-color: #FFFBF6;
+            background-color: var(--primary-1);
             border-radius: 14px;
             height: 34px;
             line-height: 34px;

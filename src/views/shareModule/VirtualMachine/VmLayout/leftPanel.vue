@@ -171,7 +171,7 @@ function open(key?: string) {
     cursor: pointer;
     &.active {
       background: var(--white-100);
-      color: #ff9544;
+      color: var(--primary-color);
     }
     .item {
       height: 70px;
