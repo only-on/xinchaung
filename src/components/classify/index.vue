@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="labelSearchBox">
     <div v-for="v in props.list" :key="v.value" class="labelSearch">
       <div class="title" v-if="v.title">{{ v.title }}：</div>
       <div class="labelBox">

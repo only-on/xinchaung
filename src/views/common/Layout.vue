@@ -1,7 +1,9 @@
 <template>
   <div class="app_content">
     <div class="header">
-      <Header></Header>
+      <div :class="['headerBox', 'theme'+systemTheme]">
+        <Header></Header>
+      </div>
       <NavTab @tabSwitch="tabSwitch" />
     </div>
     <div
@@ -14,7 +16,7 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
 import {
@@ -29,6 +31,8 @@ import {
   computed,
 } from "vue";
 import { useRouter } from "vue-router";
+import {getThemeData} from 'src/utils/theme'
+const {systemTheme} = getThemeData()
 // import router from "../../routers/index";
 interface tab {
   name: string;
@@ -45,13 +49,13 @@ interface config {
   showPageEdit: boolean;
   pageEdit: () => void;
 }
-export default defineComponent({
-  name: "Layout",
-  components: {
-    Header,
-    Footer,
-  },
-  setup: () => {
+// export default defineComponent({
+  // name: "Layout",
+  // components: {
+  //   Header,
+  //   Footer,
+  // },
+  // setup: () => {
     const router = useRouter();
     var configuration: config = reactive({
       showNav: true, // 是否需要导航条
@@ -85,9 +89,9 @@ export default defineComponent({
       },
       () => {}
     );
-    return { tabSwitch, configuration };
-  },
-});
+    // return { tabSwitch, configuration };
+  // },
+// });
 </script>
 <style lang="less" scoped>
 #app {
@@ -102,6 +106,11 @@ export default defineComponent({
     overflow: hidden;
     .header {
       background: var(--menu-bg);
+    }
+    .headerBox{
+      &.themeC{
+        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.14); 
+      }
     }
   }
   .main-box {
