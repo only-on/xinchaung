@@ -6,10 +6,13 @@
   </div>
   <div class="forumn-pagination" v-if="total">
     <a-pagination
+      v-if="total > 10"
+      show-size-changer
       :total="total"
       :current="forumSearch.page"
       :pageSize="forumSearch.pageSize"
       @change="pageChange"
+      @showSizeChange="showSizeChange"
     >
       <!-- <template #itemRender="{ page, type, originalElement }">
 				<a v-if="type === 'prev'">上一页</a>
@@ -70,9 +73,15 @@ export default defineComponent({
       pageSize: 10,
       total: 100,
     });
-    function pageChange(page: number) {
+    function pageChange(page: number,pageSize:number) {
       pageInfo.page = page;
-      emit("pageChange", page);
+      pageInfo.pageSize = pageSize;
+      emit("pageChange", page,pageSize);
+    }
+    function showSizeChange(page:number,pageSize:number){
+      pageInfo.page =1;
+      pageInfo.pageSize = pageSize;
+      emit("pageChange",pageInfo.page,pageInfo.pageSize);
     }
     function readAllText(i: number) {
       props.forumnList?.forEach((v, k) => {
@@ -83,6 +92,7 @@ export default defineComponent({
     return {
       ...toRefs(props),
       pageChange,
+      showSizeChange,
       pageInfo,
       readAllText,
     };

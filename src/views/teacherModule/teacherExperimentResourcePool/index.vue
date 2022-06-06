@@ -69,10 +69,12 @@
           <!-- -->
         <a-pagination 
           v-if="totalCount > 10"
+          show-size-changer
           v-model:current="searchInfo.page"
           :pageSize="searchInfo.limit"
           :total="totalCount"
           @change="pageChange"
+          @showSizeChange="showSizeChange"
         />
       </div>
     </a-spin>
@@ -324,6 +326,12 @@ const pageChange = async (current: any, pageSize: any) => {
   // });
   initData();
 };
+const showSizeChange=async (current: any, pageSize: any) => {
+  searchInfo.page = 1;
+  searchInfo.limit=pageSize;
+  initData();
+};
+
 
 const ExperimentTypeList = reactive([
   { name: "桌面实验", key: "desktop" },

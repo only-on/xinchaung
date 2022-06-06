@@ -110,8 +110,9 @@ function search(params: IForumSearch) {
   initData();
 }
 // 页码变化
-function pageChange(page: number) {
+function pageChange(page: number,pageSize:number) {
   forumSearch.page = page;
+  forumSearch.pageSize = pageSize;
   const target:any=document.getElementsByClassName('main-box')[0];
   target.scrollTop='0px';
   initData();
