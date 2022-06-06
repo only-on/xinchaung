@@ -17,7 +17,7 @@
           <span class="name">{{ experimentDetail.name }}</span>
         </div>
         <div class="right">
-          <span class="pointer" v-if="role === 3 || role===5" @click="addToCourse()">添加到课程</span>
+          <span class="pointer" v-if="type !== 'recommend' && (role === 3 || role===5)" @click="addToCourse()">添加到课程</span>
           <!-- 视频、文档类实验不显示启动环境 -->
           <a-button v-if="![6, 7].includes(experimentDetail.task_type) && role!==2" class="123" type="primary" size="large" @click="openVnc" :loading="((currentState===2&&connectStatus===1) || currentState===3)">
             {{currentState===1||!connectStatus?'启动环境':currentState===2&&connectStatus===1?'准备中...':'进入'}}
@@ -163,7 +163,7 @@ const openVnc = () => {
   // console.log(experimentDetail)
   let {id, task_type, content_type} = experimentDetail
   const param: any = {
-    type: type ? "course":"content",  // 实验
+    type: "content",  // 实验
     opType: type && role === 4 ? type : "prepare",
     taskId: experimentDetail.id,
     experType: content_type
@@ -292,6 +292,12 @@ const getExperimentDetail = () => {
       : (experimentDetail.task_type===4&&experimentDetail.programing_type) ? 3
         : experimentDetail.task_type
     experimentDetail.content_type = type
+    
+    // ide不准备环境 直接进入
+    if (type === 3) { 
+      currentState.value = 2
+      connectStatus.value =2
+    }
   })
 };
 

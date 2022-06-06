@@ -17,8 +17,8 @@ import Bleft from 'src/assets/images/teacher-default/Bleft.png'
 import Bright from 'src/assets/images/teacher-default/Bright.png'
 import Cleft from 'src/assets/images/teacher-default/Cleft.png'
 import Cright from 'src/assets/images/teacher-default/Cright.png'
-import bannerlunBoA from 'src/assets/images/teacher-default/banner-bg3.jpg'
-import bannerlunBoB from 'src/assets/images/teacher-default/banner-bg2.png'
+import bannerlunBoA from 'src/assets/images/teacher-default/bannerA.jpg'
+import bannerlunBoB from 'src/assets/images/teacher-default/bannerB.png'
 
 // 管理端首页
 import greenImg from 'src/assets/images/themeA/adminHome/enter.png'
