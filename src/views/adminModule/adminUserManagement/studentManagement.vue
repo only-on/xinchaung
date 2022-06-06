@@ -69,13 +69,19 @@
       :loading="loading"
       :data-source="list"
       row-key="id"
-      :pagination="{
-        current: ForumSearch.page,
-        pageSize: ForumSearch.pageSize,
-        total: total,
-        onChange: onChangePage,
-        hideOnSinglePage: true,
-      }"
+      :pagination="
+        total > 10
+          ? {
+            showSizeChanger:true,
+            current: ForumSearch.page,
+            pageSize: ForumSearch.pageSize,
+            total: total,
+            onChange: onChangePage,
+            hideOnSinglePage: true,
+            onShowSizeChange: onShowSizeChange,
+                }
+          : false
+      "
       :row-selection="{
         selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
@@ -700,6 +706,17 @@ const router = useRouter();
       });
       initData();
     }
+    function onShowSizeChange(page:number,pageSize:number){
+      const { query, path } = route;
+      ForumSearch.page = 1;
+      ForumSearch.pageSize = pageSize;
+      state.selectedRowKeys.length = 0;
+      router.replace({
+        path: path,
+        query: { ...query, page: ForumSearch.page,PageSize:pageSize},
+      });
+      initData();
+    }
     function addStudent() {
     }
     function fileBeforeUpload(file: any) {
@@ -864,9 +881,6 @@ const router = useRouter();
       padding-right: 6px;
     }
   }
-}
-:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-  border-radius: 20px;
 }
 .formBox {
   width: 100%;

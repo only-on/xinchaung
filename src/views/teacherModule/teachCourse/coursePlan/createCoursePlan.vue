@@ -205,6 +205,7 @@ export default defineComponent({
     function updateStuParams(param:any){
       console.log(param,'shhhhhhhhh')
       params.pageinfo.index=param.page
+      params.pageinfo.size=param.pageSize
       params.query.stu_no=param.stu_no
       params.query.classname=param.classname
       params.query.grade=param.grade

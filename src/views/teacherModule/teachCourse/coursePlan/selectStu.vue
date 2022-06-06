@@ -42,7 +42,7 @@
             total > 10
               ? {
                   hideOnSinglePage: false,
-                  showSizeChanger: false,
+                  showSizeChanger:true,
                   total:total,
                   current: params.pageinfo.index,
                   pageSize: params.pageinfo.size,
@@ -204,7 +204,15 @@ function onChange(page: any, pageSize: any) {
 function onShowSizeChange(current: any, size: any) {
   params.pageinfo.index=1;
   params.pageinfo.size=size;
-  // getallstudent()
+  let param:any={
+    page:params.pageinfo.index,
+    pageSize:size,
+    stu_no:params.name,
+    classname:params.class,
+    grade:params.grade,
+    major:params.direct
+  }
+  emit('updateStuParams',param)
 }
 function onSelectChange(selectedRowKeys: any) {
   console.log(selectedRowKeys);
@@ -239,6 +247,14 @@ function handleCancelSelect(){
   params.class=''
   params.grade=''
   params.direct=''
+  let param:any={
+   page:1,
+   stu_no:params.name,
+   classname:params.class,
+   grade:params.grade,
+   major:params.direct
+  }
+  emit('updateStuParams',param)
 }
 // function getStudentList() {
 //       loading.value = true;

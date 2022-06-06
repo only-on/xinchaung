@@ -37,7 +37,7 @@
         tableData.total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: false,
+              showSizeChanger:true,
               total: tableData.total,
               current: tableData.page,
               pageSize: tableData.limit,
@@ -150,6 +150,7 @@ function onShowSizeChange(page: any, pageSize: any) {
   getSystemList();
 }
 function handleChange() {
+  tableData.page = 1;
   getSystemList();
 }
 onMounted(() => {

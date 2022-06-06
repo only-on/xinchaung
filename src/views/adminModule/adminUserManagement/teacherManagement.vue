@@ -29,13 +29,19 @@
       :loading="loading"
       :data-source="list"
       row-key="id"
-      :pagination="{
-        current: ForumSearch.page,
-        pageSize: ForumSearch.pageSize,
-        total: total,
-        onChange: onChangePage,
-        hideOnSinglePage: true,
-      }"
+      :pagination="
+        total > 10
+          ? {
+            showSizeChanger:true,
+            current: ForumSearch.page,
+            pageSize: ForumSearch.pageSize,
+            total: total,
+            onChange: onChangePage,
+            onShowSizeChange: onShowSizeChange,
+            hideOnSinglePage: true,
+            }
+          : false
+      "
       :row-selection="{
         selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
@@ -48,13 +54,13 @@
       <template #operation="{ record }">
         <!-- icon-bianji -->
         <span
-          class="caozuo iconfont"
+          class="caozuo"
           @click="editCard(record)"
           title="更新"
         >编辑</span>
         <!-- icon-shanchu -->
         <span
-          class="caozuo iconfont"
+          class="caozuo"
           @click="delateCard(record.id)"
           title="删除"
         >删除</span>
@@ -698,6 +704,17 @@ const teacherColumns = [
       });
       initData();
     }
+    function onShowSizeChange(page:number,pageSize:number){
+      const { query, path } = route;
+      ForumSearch.page = 1;
+      ForumSearch.pageSize = pageSize;
+      state.selectedRowKeys.length = 0;
+      router.replace({
+        path: path,
+        query: { ...query, page: ForumSearch.page,PageSize:pageSize},
+      });
+      initData();
+    }
     function addTeacher() {
       editId.value = 0;
       visible.value = true;
@@ -841,9 +858,6 @@ const teacherColumns = [
   .ant-checkbox-wrapper {
     margin: 0 10px;
   }
-}
-:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-  border-radius: 20px;
 }
 .ant-upload {
   button {
