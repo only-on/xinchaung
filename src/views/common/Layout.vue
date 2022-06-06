@@ -16,7 +16,7 @@
     </div>
   </div>
 </template>
-<script lang="ts" setup>
+<script lang="ts">
 import Header from "./Header.vue";
 import Footer from "./Footer.vue";
 import {
@@ -49,13 +49,13 @@ interface config {
   showPageEdit: boolean;
   pageEdit: () => void;
 }
-// export default defineComponent({
-  // name: "Layout",
-  // components: {
-  //   Header,
-  //   Footer,
-  // },
-  // setup: () => {
+export default defineComponent({
+  name: "Layout",
+  components: {
+    Header,
+    Footer,
+  },
+  setup: () => {
     const router = useRouter();
     var configuration: config = reactive({
       showNav: true, // 是否需要导航条
@@ -89,9 +89,9 @@ interface config {
       },
       () => {}
     );
-    // return { tabSwitch, configuration };
-  // },
-// });
+    return { tabSwitch, configuration ,systemTheme};
+  },
+});
 </script>
 <style lang="less" scoped>
 #app {
