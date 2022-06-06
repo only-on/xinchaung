@@ -56,10 +56,10 @@
         total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger:false,
+              showSizeChanger:true,
               total:total,
               current: params.page,
-              pageSize: params.limit,
+              pageSize: params.pageSize,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -139,7 +139,8 @@ const allexperTypes:any=ref([
       ];
     const tableData:any=reactive({})
     const params:any=reactive({
-      page:1
+      page:1,
+      pageSize:10,
     })
     const emit = defineEmits<{
       (e: "updateData", val: any): void;
@@ -149,11 +150,14 @@ const allexperTypes:any=ref([
     }
     function onChange(page:any,size:any){
       params.page=page
-      emit('updateData',{name:ForumSearch.name,page:params.page,type:ForumSearch.type,attribute:ForumSearch.attribute})
+      params.pageSize=size
+      emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
       
     }
-    function onShowSizeChange(){
-
+    function onShowSizeChange(page:any,size:any){
+      params.page=1
+      params.pageSize=size
+      emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onSelectChange(selectedRowKeys:any, selectedRows:any){
       tableData.selectedRowKeys=selectedRowKeys
@@ -218,7 +222,7 @@ const allexperTypes:any=ref([
  :deep(.ant-input) {
     border-radius: 20px;
  }
- :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
+ .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
    border-radius: 20px;
  }
  .detail{

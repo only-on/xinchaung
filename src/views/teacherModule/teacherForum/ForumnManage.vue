@@ -18,6 +18,7 @@
                   ? {
                       hideOnSinglePage: false,
                       total: total,
+                      showSizeChanger:true,
                       current: forumSearch.page,
                       pageSize: forumSearch.pageSize,
                       onChange: pageChange,
@@ -173,7 +174,11 @@ function pageChange(page: number) {
   forumSearch.page = page;
   initData();
 }
-function onShowSizeChange(current: any, size: any) {}
+function onShowSizeChange(current: any, size: any) {
+  forumSearch.page = 1;
+  forumSearch.pageSize=size;
+  initData();
+}
 const tableSelect = reactive({
   selectedRowKeys: []
 })
