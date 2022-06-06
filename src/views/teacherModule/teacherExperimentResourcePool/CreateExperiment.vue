@@ -561,6 +561,7 @@ function create() {
       return pre
     }, [])
      const docMp4FileObj:any={
+       file_name:docMp4File.name || docMp4File.file_name
       // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
       // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
     }
