@@ -36,7 +36,7 @@
             </div>
           </div>
           <div class="info">
-            <div class="name">{{v.name}}</div>
+            <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
             <div class="date">
               <span>实验:{{v.content_total}}</span>
               <span>课时:{{v.class_total}}</span>
