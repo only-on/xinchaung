@@ -464,7 +464,7 @@
   >
 
     <img :src="loadingGif" alt="" srcset="" />
-    <span>正在结束实验...</span>
+    <span>正在结束中...</span>
   </a-modal>
 </template>
 

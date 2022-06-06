@@ -80,7 +80,7 @@
               <div class="upload-desc">
                 仅允许同时上传一个大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
               </div>
-              <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}</div>
+              <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\":"/simpleupload"}}</div>
             </div>
             <div class="text-center">
               <a-space>

@@ -20,7 +20,7 @@
       <task-list :preview="preview" :taskList="v" :index="i" @delet="delet" :is_show_task_step="true"></task-list>
     </div>
   </div>
-  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2"></Submit>
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2" okText="保存"></Submit>
 </template>
 
 <script lang="ts" setup>
