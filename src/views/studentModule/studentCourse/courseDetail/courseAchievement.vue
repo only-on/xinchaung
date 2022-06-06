@@ -329,6 +329,7 @@ function noclick(){
 }
 // table操作
 function clickFun(resultData: any, type: any, report?: any) {
+  modaldata.baseInfo=''
   // console.log(val);
   // if (["updateReport", "video"].includes(type)) {
   //   console.log("录屏click");
