@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="right" >
-          <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
+          <div class="name single_ellipsis">{{v.name}}</div>
           <div class="change">
             <div class="FrontDisplay">
               <div class="information flexCenter">
@@ -25,13 +25,13 @@
               </div>
               <div class="labels flexCenter" :class="(v.tags && v.tags.length)?'labelsBg':''">
                 <template v-for="(i,n) in v.tags" :key="i">
-                  <span class="single_ellipsis" :title="i">{{i}}</span>
+                  <span class="single_ellipsis">{{i}}</span>
                   <span>&nbsp;&nbsp;{{`${(n !== (v.tags && v.tags.length-1) && i)?'/':''}`}}&nbsp;&nbsp;</span>
                 </template>
               </div>
             </div>
             <div class="PostDisplay">
-              <div class="text ellipsis">
+              <div class="text ellipsis" :title="v.description?v.description:''">
               {{v.description?v.description:'该镜像暂无描述'}}
               </div>
               <div class="caoZuo flexCenter" v-if="!v.is_init">
@@ -514,7 +514,8 @@ onMounted(() => {
         }
       }
       .labelsBg{
-        background: rgba(255,149,68,0.07);
+        background: var(--primary-1);
+        padding-left: 6px;
       }
       .text {
         height: 41px;

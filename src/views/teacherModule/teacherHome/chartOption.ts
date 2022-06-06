@@ -192,6 +192,9 @@ export const scaterOptions = (type: number, data: any) => {
     tooltip: {
       position: 'right',
       formatter: function (params: any) {
+        if (params.componentType === 'markLine') {
+          return null;
+        }
         var tips = ''
         if (type == 1) {
           params['data'][2]?.forEach(function (item: any) {

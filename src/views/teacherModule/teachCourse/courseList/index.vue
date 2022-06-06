@@ -14,7 +14,7 @@
                   
                   <template v-if="v.is_authorized">
                     <span class="img" :style="`background-image: url(${v.portrait});`" ></span>
-                    <span class="userName">{{v.is_init?'系统内置':v.profile_name}}</span>
+                    <span class="userName" :title="v.is_init?'系统内置':v.profile_name">{{v.is_init?'系统内置':v.profile_name}}</span>
                   </template>
                   <template v-else>
                     <span class="">未授权</span>
@@ -528,9 +528,6 @@ onMounted(() => {
           background-repeat: no-repeat;
           background-image: url(src/assets/images/teacherCourse/defaultCover.jpg);
           .top{
-            border-radius: 6px 0px 6px 0px;
-            // opacity: .5;
-            padding: 3px 0;
             .state{
               background-color: rgba(0, 0, 0,.5);
               color: var(--white-70);
@@ -542,9 +539,11 @@ onMounted(() => {
               }
             }
             .user{
+              padding: 3px 10px 3px 3px;
+              border-top-left-radius: 6px;
+              border-bottom-right-radius: 6px;
               color: var(--white);
               background-color: rgba(0, 0, 0,.5);
-              width: 100px;
               justify-content: center;
               .img{
                 width: 20px;
