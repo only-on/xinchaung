@@ -24,13 +24,19 @@
             :data-source="tableData.data"
             :columns="columns"
             rowKey="id"
-            :pagination="{
-              current: searchParams.page,
-              pageSize: searchParams.limit,
-              total: tableData.total,
-              onChange: onChangePage,
-              hideOnSinglePage: true,
-            }">
+            :pagination="
+            tableData.total > 10
+              ? {
+                  hideOnSinglePage: false,
+                  showSizeChanger:true,
+                  current: searchParams.page,
+                  pageSize: searchParams.limit,
+                  total: tableData.total,
+                  onChange: onChangePage,
+                  onShowSizeChange: onShowSizeChange,
+                }
+              : false
+          ">
             <template #name="{ text, index }">
               <div class="editable-cell">
                 <div
@@ -223,8 +229,14 @@ function getList () {
     });
   }
 }
-const onChangePage = (val:number) => {
-  searchParams.page = val
+const onChangePage = (page:number,pageSize:number) => {
+  searchParams.page = page
+  searchParams.limit=pageSize
+  getList()
+}
+const onShowSizeChange=(page:number,pageSize:number)=>{
+  searchParams.page = 1
+  searchParams.limit=pageSize
   getList()
 }
 const changeTab = (key: any) => {
