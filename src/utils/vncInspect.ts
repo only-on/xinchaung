@@ -21,6 +21,7 @@ export interface IEnvirmentsParam {
   opType: TopType;
   taskId: any;
   experType?: any
+  recommendType?: string
 }
 
 export interface IStopOperatesParam extends IEnvirmentsParam {
@@ -410,6 +411,7 @@ async function prepareEnv(
           topoinst_id: createExamplesInfo.data.data.topoinst_id,
         }
       );
+      param.recommendType ? paramVm.recommendType = param.recommendType : ''
     }
     }).catch(() => {
       reject()
@@ -423,7 +425,10 @@ function goToVm(
 ) {
   router.push({
     path: "/vm",
-    query: {...paramVm, routerQuery: JSON.stringify(routerQuery)}
+    query: {
+      ...paramVm, 
+      // routerQuery: JSON.stringify(routerQuery)
+    }
   })
   setTimeout(() => {
     paramVm = {}

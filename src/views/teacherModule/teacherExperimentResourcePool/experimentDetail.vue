@@ -181,7 +181,8 @@ const openVnc = () => {
           opType: param.opType,
           taskId: param.taskId,
           // routerQuery: JSON.stringify(routeQuery),
-          experType: task_type
+          experType: task_type,
+          recommendType: 'content'
         },
       });
     })
@@ -196,7 +197,8 @@ const openVnc = () => {
         opType: param.opType,
         taskId: param.taskId,
         // routerQuery: JSON.stringify(routeQuery),
-        experType: content_type
+        experType: content_type,
+        recommendType: 'content'
       },
     });
     return

@@ -36,7 +36,7 @@ import { useStore } from "vuex";
 
 const route = useRoute();
 const router = useRouter();
-const { opType, type, taskId, topoinst_id, connection_id } = route.query;
+const { opType, type, taskId, topoinst_id, connection_id, recommendType } = route.query;
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
@@ -71,6 +71,7 @@ function getVmBase() {
       type: type,
       taskId: taskId,
     };
+    recommendType ? params.recommendType = recommendType : ''
     getVmBaseInfo(params).then((res: any) => {
       if (Number(res.data?.current?.status)>=2) {
         let modal = Modal.confirm({

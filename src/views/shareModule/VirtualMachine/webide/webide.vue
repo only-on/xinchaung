@@ -129,7 +129,7 @@ import {
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const { opType, type, taskId } = route.query;
+const { opType, type, taskId, recommendType } = route.query;
 let role = storage.lStorage.get("role");
 
 let ws_config = storage.lStorage.get("ws_config");
@@ -338,6 +338,7 @@ function getTaskInfoData() {
     opType: opType,
     taskId: taskId,
   };
+  recommendType ? params.recommendType = recommendType : ''
   getTaskInfo(params).then((res: any) => {
     if (Number(res?.data?.current?.status)>=2) {
       let modal = Modal.confirm({

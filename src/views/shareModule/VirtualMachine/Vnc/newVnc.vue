@@ -70,7 +70,7 @@ const user_id = storage.lStorage.get("uid");
 const route = useRoute();
 const router=useRouter();
 const store = useStore();
-const { opType, type, taskId, topoinst_id, connection_id, experType } = route.query;
+const { opType, type, taskId, topoinst_id, connection_id, experType, recommendType } = route.query;
 const currentOption = inject(
   "currentOption",
   ref({ password: "", wsUrl: "", userName: "" })
@@ -123,6 +123,7 @@ function getVmBase() {
       type: type,
       taskId: taskId,
     };
+    recommendType ? params.recommendType = recommendType : ''
     getVmBaseInfo(params).then((res: any) => {
       if (Number(res.data?.current?.status)>=2) {
         let modal = Modal.confirm({
