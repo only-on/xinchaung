@@ -50,7 +50,7 @@ export default {
         title: (params?: RouteParams, query?: RouteParams) => {
           const dataDetailMap = {
               '0': '公有素材',
-              '1': '私有素材',
+              '1': '我的素材',
           }
           return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
         },

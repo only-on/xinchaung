@@ -14,7 +14,7 @@ export default {
     //   }
     //   return dataDetailMap[query!.currentTab && query!.currentTab.toString()] || dataDetailMap[0]
     // },
-    title:'课程',
+    title:'教学过程',
     authCode: 'courseList'
   },
   children: [
@@ -49,7 +49,7 @@ export default {
       name:'课程详情',
       component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
       meta: {
-        title: "详情",
+        title: "课程详情",
         authCode: 'Detail'
       },
     },
