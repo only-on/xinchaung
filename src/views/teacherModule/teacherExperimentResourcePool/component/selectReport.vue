@@ -144,7 +144,7 @@ const reportTab = (val: number) => {
 const getTemplateList = (ActId?:number) => {
   TemplateList.length=0
   // TemplaName
-  http.getTemplateList({param: {type: 1}}).then((res: IBusinessResp) => {
+  http.getTemplateList({param: {type: 1,name:TemplaName.value}}).then((res: IBusinessResp) => {
     let list=res.data.list
     // type=0 系统  1在线 2离线
     list.map((v:any)=>{
