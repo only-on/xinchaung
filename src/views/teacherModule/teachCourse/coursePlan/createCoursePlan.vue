@@ -555,7 +555,7 @@ const selectedStudentsColumns = [
   },
   {
     title: '班级',
-    dataIndex: 'class_name',
+    dataIndex: 'classname',
     ellipsis: true,
     align: 'center',
   },

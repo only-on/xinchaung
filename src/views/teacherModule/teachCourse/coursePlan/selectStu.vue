@@ -115,13 +115,13 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "class_name",
-    key: "class_name",
+    dataIndex: "classname",
+    key: "classname",
   },
   {
     title: "专业",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "major",
+    key: "major",
   },
   {
     title: "学院",
@@ -136,8 +136,8 @@ columns.value = [
   },
   {
     title: "电话",
-    dataIndex: "user_profile.phone",
-    key: "user_profile.phone",
+    dataIndex: "phone",
+    key: "phone",
   },
 ];
 const tableData: any = reactive({
@@ -238,6 +238,19 @@ function handleCancel() {
 }
 function handleOkSelect(){
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
+  tableData.selectedRowKeys=[]
+  params.name=''
+  params.class=''
+  params.grade=''
+  params.direct=''
+  let param:any={
+   page:1,
+   stu_no:params.name,
+   classname:params.class,
+   grade:params.grade,
+   major:params.direct
+  }
+  emit('updateStuParams',param)
   // tableData.selectedRowKeys=[]
 }
 function handleCancelSelect(){
