@@ -423,7 +423,7 @@
         (单个文件最味限制为20MB)
       </p>
       <p class="ant-upload-dir">
-        默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}
+        默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\":"/simpleupload"}}
       </p>
     </a-upload-dragger>
     <div v-if="uploadFile.fileList.length" class="progress-box">
