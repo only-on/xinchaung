@@ -40,6 +40,7 @@
               <span class="prefix">{{v.typeText}}</span>
               <span
                 class="name single_ellipsis"
+                :title="v.name"
                 @click.stop="viewTemplate(v.type === 2?2:1, v)"
                 >{{v.name}}</span>
               <!-- @click.stop="viewTemplate(2, v)" 离线-->

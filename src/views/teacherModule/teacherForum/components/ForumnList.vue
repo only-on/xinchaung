@@ -1,7 +1,7 @@
 <template>
   <h3 class="forum-title">
     <span class="sub">#标题#</span>
-    <span class="title single_ellipsis">{{ item.title }}</span>
+    <span class="title single_ellipsis" :title="item.title">{{ item.title }}</span>
   </h3>
   <div class="forum-content" v-if="!item.isAllText">
     <span class="desc" v-html="item.desc"></span>

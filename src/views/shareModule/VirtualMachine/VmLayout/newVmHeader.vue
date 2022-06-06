@@ -7,7 +7,7 @@
       </div>-->
       <div class="selected">
         <span class="iconfont icon-zuojiantou pointer" @click="back"></span>
-        <span class="name">{{ baseInfo?.base_info?.name }}</span>
+        <span class="name single_ellipsis" :title="baseInfo?.base_info?.name">{{ baseInfo?.base_info?.name }}</span>
       </div>
       <div class="class-test pointer" @click="openQuizModal" v-if="roleArry.includes('classTest')">
         <span>随堂测试</span>
@@ -1576,8 +1576,13 @@ i {
       // line-height: 26px;
       font-size: var(--font-size-20);
       margin-left: 24px;
+      flex: 1;
+      display: flex;
+      align-items: center;
       .name {
         padding: 0 10px;
+        display: inline-block;
+        max-width: 400px;
       }
       .iconfont {
         font-size: 20px;

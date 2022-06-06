@@ -411,7 +411,7 @@ export default defineComponent({
       transition: all 0.2s;
       text-align: center;
       &:hover{
-        background: #FEF7DF;
+        background: var(--primary-1);
       }
     }
   }

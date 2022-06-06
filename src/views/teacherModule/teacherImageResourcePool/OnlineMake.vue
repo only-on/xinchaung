@@ -17,7 +17,7 @@
           <div class="top flexCenter" :class="v.image && v.image.ostype">
             <div class="left">
               <div class="tit">{{v.image && v.image.name}}</div>
-              <div class="text single_ellipsis">{{v.image && v.image.description}}</div>
+              <div class="text single_ellipsis" :title="v.image?.description">{{v.image && v.image.description}}</div>
               <div class="parameter flexCenter">
                 <div class="item">
                   <span>内存</span>
@@ -39,7 +39,7 @@
               <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
               <div class="name">数据集</div>
               <div class="miaoshu single_ellipsis flexCenter">
-                <div class="one single_ellipsis">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
+                <div class="one single_ellipsis" :title="v.dataset && v.dataset[0] && v.dataset[0].name">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>

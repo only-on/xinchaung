@@ -23,7 +23,7 @@
       <div class="limit">最多添加三个环境</div>
     </div>
     <div class="item" v-for="(v, idx) in selectList" :key="v">
-      <div class="single_ellipsis">
+      <div class="single_ellipsis" :title="v.imageName">
         {{ v.imageName }}
       </div>
       <div class="content">

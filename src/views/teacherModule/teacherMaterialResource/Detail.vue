@@ -7,7 +7,7 @@
       <div class="header_mid">
         <div class="title flexCenter">
           <div class="sign">{{state.detail.type_name}}</div>
-          <div class="titText single_ellipsis">{{state.detail.name}}</div>
+          <div class="titText single_ellipsis" :title="state.detail.name">{{state.detail.name}}</div>
         </div>
         <div class="describe ellipsis">
           {{state.detail.description}}
@@ -84,7 +84,7 @@
               <div class="flexCenter">
                 <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.file_name)});`"> </div>
                 <div class="fileInfo">
-                  <div class="fileName single_ellipsis">{{state.fileItem.file_name}}</div>
+                  <div class="fileName single_ellipsis" :title="state.fileItem.file_name">{{state.fileItem.file_name}}</div>
                   <div class="info">
                     <span>{{bytesToSize(state.fileItem.size)}}</span>
                     <span>{{state.fileItem.created_at}}</span>

@@ -31,7 +31,7 @@
               }"
             >
               <template #title='{record}'>
-                <div class="title pointer single_ellipsis">
+                <div class="title pointer single_ellipsis" :title="record?.title">
                   <span class='delete' @click="detail(record.id)">{{record?.title}}</span>
                 </div>
               </template>

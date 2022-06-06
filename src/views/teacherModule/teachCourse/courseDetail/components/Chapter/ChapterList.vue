@@ -75,7 +75,7 @@
         <div class="title flexCenter" @click.stop="selectChaptert(v),v.openItem=!v.openItem">
           <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
             <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
-            <div class="titleItem titleItem2 single_ellipsis">{{v.name}}</div>
+            <div class="titleItem titleItem2 single_ellipsis" :title="v.name">{{v.name}}</div>
           </div>
           <div class="titleBoxRight flexCenter">
             <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
@@ -94,7 +94,7 @@
                   <span v-if="a.TeachingAids">教辅</span>
                   <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
                 </div>
-                <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
+                <div class="experimentTitle single_ellipsis" :title="a.name" :class="a.TeachingAids?'TeachingAids':''">
                   <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
                   <span v-if="a.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
                   <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>

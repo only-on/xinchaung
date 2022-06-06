@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="right" >
-          <div class="name single_ellipsis">{{v.name}}</div>
+          <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
           <div class="change">
             <div class="FrontDisplay">
               <div class="information flexCenter">
@@ -25,7 +25,7 @@
               </div>
               <div class="labels flexCenter" :class="(v.tags && v.tags.length)?'labelsBg':''">
                 <template v-for="(i,n) in v.tags" :key="i">
-                  <span class="single_ellipsis">{{i}}</span>
+                  <span class="single_ellipsis" :title="i">{{i}}</span>
                   <span>&nbsp;&nbsp;{{`${(n !== (v.tags && v.tags.length-1) && i)?'/':''}`}}&nbsp;&nbsp;</span>
                 </template>
               </div>

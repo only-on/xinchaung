@@ -41,10 +41,10 @@
           </div>
         </div>
         <div class="item-content">
-          <div class="item-name single_ellipsis">{{ list.name }}</div>
+          <div class="item-name single_ellipsis" :title="list.name">{{ list.name }}</div>
           <div class="item-desc">
             <span class="type">{{ list.type_name }}</span>
-            <span class="desc single_ellipsis">{{ list.description }}</span>
+            <span class="desc single_ellipsis" :title="list.description">{{ list.description }}</span>
           </div>
           <div class="user-num">
             <div class="user" v-if="currentTab === 0 && list.user">

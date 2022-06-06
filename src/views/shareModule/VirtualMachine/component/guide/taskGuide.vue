@@ -4,7 +4,7 @@
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
   <div class="current-task-content">
-  <div class="task-name single_ellipsis">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
+  <div class="task-name single_ellipsis" :title="currentTask.name">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
   <div class="task-content" :class="isLookStep&&currentTask.state || role !== 4 ? 'show-step' : ''">
   <div class="desc-content">
     <div class="title">

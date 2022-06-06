@@ -244,7 +244,7 @@ let imageData = {
     },
     Ahome: {
       entranceLeft: greenImg,
-      entranceRight: purpleImg,
+      entranceRight: orangeImg,
       adminHome1: home1,
       adminHome2: home2,
       adminHome3: home3,
@@ -264,7 +264,7 @@ let imageData = {
       bannerlunBo:bannerlunBoA
     },
     Ahome:{
-      entranceLeft: greenImg,
+      entranceLeft: orangeImg,
       entranceRight: purpleImg,
       adminHome1: home10,
       adminHome2: home11,

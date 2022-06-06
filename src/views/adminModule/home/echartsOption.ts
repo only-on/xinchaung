@@ -15,7 +15,7 @@ function activityOption(data:any){
               }
             }
           },
-          color:[systemColor.primary,systemColor.secondary,systemColor.Acolor1],
+          color:[systemColor.primary,systemColor.secondary,systemColor.Acolor3],
           legend: {
             x:'3%',
             data: ['总数', '学生', '教师']

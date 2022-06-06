@@ -78,7 +78,7 @@
           </div>
           <div class="reportName flexCenter" v-if="formState.report.name">
             <span class="iconfont icon-fujian"></span>
-            <span class="name single_ellipsis">{{ formState.report.name }}</span>
+            <span class="name single_ellipsis" :title="formState.report.name">{{ formState.report.name }}</span>
             <span
               class="iconfont icon-shanchu"
               @click="delSelectedReport()"
