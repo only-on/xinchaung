@@ -166,7 +166,7 @@ export default defineComponent({
               deleteFirstReply(forum_id, pid)
             // } else {
             //   deleteFirstReply(forum_id, pid)
-            // }
+            }
           })
         }
       });
