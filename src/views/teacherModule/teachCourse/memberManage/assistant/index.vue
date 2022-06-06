@@ -312,6 +312,7 @@ function submit(){
   if(editId.value){
     http.updateAssistant({ urlParams: { id: editId.value }, param:params}).then((res:any)=>{
       if(res){
+        formRef.value.resetFields()
         visible.value=false;
         editId.value=''
         getAssistantList()
@@ -320,6 +321,7 @@ function submit(){
   }else{
     http.addAssistanter({param:params}).then((res:any)=>{
       if(res){
+        formRef.value.resetFields()
         visible.value=false;
         getAssistantList()
       }

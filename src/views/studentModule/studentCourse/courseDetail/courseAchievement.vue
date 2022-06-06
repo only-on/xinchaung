@@ -36,7 +36,7 @@
       </template> -->
       <template #report_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
+          <span :class="['未提交','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
           {{record?.report_score}}
         </span>
         </div>
@@ -52,7 +52,7 @@
       </template> -->
       <template #question_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
+          <span :class="['未提交','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
           {{record?.question_score}}
         </span>
         </div>
@@ -69,20 +69,30 @@
       -->
        <template #auto_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
+          <span :class="['未提交','--'].includes(record?.auto_score)?'no-link':'table_black'">
           {{record?.auto_score}}
         </span>
         </div>
       </template>
       <!-- //最终成绩 -->
       <template #score='{record}'>
-        <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
+        <span :class="['未提交','--','未评阅'].includes(record?.auto_score)?'no-link':'table_black'">
           {{record?.score}}
         </span>
       </template>
      
     </a-table>
-    <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
+    <a-pagination 
+    v-if="allData?.all?.page?.totalCount>10" 
+    :total="allData?.all?.page?.totalCount" 
+    class="page-wrap" 
+    v-model:current="datapage"
+    v-model:pageSize="datapageSize"
+    @Change='onChangePage' 
+    @showSizeChange="showSizeChange"
+    show-size-changer
+
+    >
       
     </a-pagination>
 
@@ -226,7 +236,8 @@ const data = ref([
   },
 ]);
 const tableData = ref([]);
-const datapage:any=ref('')
+const datapage:any=ref(1)
+const datapageSize:any=ref(10)
 const allData:any=ref({})
 const modaldata:any=reactive({
 
@@ -357,7 +368,7 @@ function drawCharts() {
 function getallScoreList() {
   console.log('111111')
   // courseId
-  http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:10} }).then((res: any) => {
+  http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:datapageSize.value} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.list;
     allData.value=res.data
@@ -367,6 +378,11 @@ function onChangePage(page:any){
   console.log(page)
   datapage.value=page
     getallScoreList() 
+}
+function showSizeChange(page:any,pageSize:any){
+  datapage.value=page=1
+  datapageSize.value=pageSize
+  getallScoreList() 
 }
 function studyChart(){
   http.statisTicChart({param:{course_id:courseId}}).then((res:any)=>{
@@ -427,6 +443,9 @@ onMounted(() => {
   // .page-wrap {
   //   margin: var(--margin-lg) 0 var(--margin-lg) 0;
   // }
+  .page-wrap{
+    margin-top: 30px;
+  }
   .footer {
     display: flex;
     justify-content: space-between;

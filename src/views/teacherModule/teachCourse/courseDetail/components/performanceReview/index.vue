@@ -128,10 +128,12 @@
       <a-pagination
         v-if="total>10"
         :total="total"
+        show-size-changer
         v-model:current="params.page"
         v-model:pageSize="params.limit"
         class="page-wrap"
         @change="pageChange"
+        @ShowSizeChange='onShowSizeChange'
       >
         <!-- <template #itemRender="{ page, type, originalElement }">
           <a v-if="type === 'prev'">上一页</a>
@@ -335,6 +337,13 @@ function getTeacherEvaluates() {
 
 // 分页发生变化
 function pageChange(page: number, pageSize: number) {
+  params.value.page=page
+  getTeacherEvaluates();
+}
+function onShowSizeChange(page: number, pageSize: number){ 
+  params.value.page=1
+  params.value.limit=pageSize
+  console.log('哈哈哈哈')
   getTeacherEvaluates();
 }
 // 分页渲染dom
@@ -640,7 +649,7 @@ onMounted(() => {
     }
   }
   .page-wrap {
-    margin-top: auto;
+    margin-top:30px;
   }
   .correct-table {
     :deep(.ant-table-thead > tr > th),
