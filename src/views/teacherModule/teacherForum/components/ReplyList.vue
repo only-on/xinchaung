@@ -160,13 +160,13 @@ export default defineComponent({
         onOk(){
           http.deleteReply({urlParams: {id}}).then((res:IBusinessResp)=>{
             message.success('删除成功')
-            if (pid) {
+            // if (pid) {
               // emit("deleteSecondReply", forum_id, pid)
               // deleteSecondReply(forum_id, pid)
               deleteFirstReply(forum_id, pid)
             // } else {
             //   deleteFirstReply(forum_id, pid)
-            }
+            // }
           })
         }
       });

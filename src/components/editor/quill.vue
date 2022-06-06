@@ -70,7 +70,7 @@ export default defineComponent({
     },
     toolbar:{
       default: "full",
-      type: Array as PropType<any>,
+      type: [Array, String],
     },
     uploadPathName:{      //  编辑器上传文件至服务     服务器存储目录   
       default: "",
