@@ -37,6 +37,10 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import QuillEditor from "src/components/editor/quill.vue";
 const http = (request as any).teacherForum;
+
+const emit = defineEmits<{
+  (e: "forumChange"): void;
+}>();
 // 论坛
 const isShowForumn = ref<boolean>(false);
 interface IFormState {
@@ -83,6 +87,7 @@ function onSubmit() {
       formState.content = {
         ops: [],
       };
+      emit('forumChange')
     });
   })
 }

@@ -165,6 +165,8 @@ function pageChange(page: number) {
   forumSearch.page = page;
   getForumnList();
 }
+
+defineExpose({ getForumnList})
 </script>
 
 <style lang="less" scoped>

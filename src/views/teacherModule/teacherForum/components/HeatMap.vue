@@ -21,7 +21,7 @@ import {
 } from "vue";
 import { ILabelList } from "./../forumnTyping.d";
 import * as echarts from "echarts";
-const props = withDefaults(defineProps<{id: string}>(), {
+const props = withDefaults(defineProps<{id?: string}>(), {
   id: 'd3-echarts',
 });
 let hotLabelList: ILabelList[] = inject('hotLabelList') as any
@@ -82,11 +82,11 @@ const option = {
       "symbolSize": 48,
       "draggable": true,
       "itemStyle": {
-        "normal": {
+        // "normal": {
           "shadowBlur": 100,
           "shadowColor": colorList[0],
           "color": colorList[0]
-        }
+        // }
       }
     }]
   }]
@@ -109,11 +109,11 @@ onMounted(() => {
         "symbolSize": Math.ceil(v.count/total*500),
         "draggable": true,
         "itemStyle": {
-          "normal": {
+          // "normal": {
             // "shadowBlur": 100,
             // "shadowColor": colorList[0],
             "color": colorList[i]
-          }
+          // }
         }
       })
       i++

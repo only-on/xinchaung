@@ -163,10 +163,10 @@ export default defineComponent({
             if (pid) {
               // emit("deleteSecondReply", forum_id, pid)
               // deleteSecondReply(forum_id, pid)
-              deleteFirstReply(forum_id)
-            } else {
-              deleteFirstReply(forum_id)
-            }
+              deleteFirstReply(forum_id, pid)
+            // } else {
+            //   deleteFirstReply(forum_id, pid)
+            // }
           })
         }
       });

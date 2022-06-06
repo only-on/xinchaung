@@ -154,8 +154,9 @@ export default defineComponent({
       deleteForum(id)
     }
     // 删除一级回复
-    const deleteReply = (id: number) => {
+    const deleteReply = (id: number, pid: number) => {
       getReplyList(id)
+      pid ? "" : props.item.reply_number_count --
     }
     provide("deleteReply", deleteReply)
 
