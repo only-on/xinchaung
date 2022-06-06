@@ -48,7 +48,18 @@
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <a-config-provider>
             <a-table :columns="columns" :data-source="courseList"
-              :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
+              :pagination="
+              totalCount > 10
+                ? {
+                    showSizeChanger:true,
+                    total: totalCount, 
+                    pageSize: searchInfo.limit,
+                    current: searchInfo.page, 
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+              "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
               <template #imageTags="{ record }">
@@ -185,9 +196,16 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.limit=pageSize
   searchInfo.selectedRowKeys=[]
   initData()
   console.log(searchInfo.selectedRowKeys);
+}
+const onShowSizeChange=(page: any, pageSize: any)=>{
+  searchInfo.page=1
+  searchInfo.limit=pageSize
+  searchInfo.selectedRowKeys=[]
+  initData()
 }
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
