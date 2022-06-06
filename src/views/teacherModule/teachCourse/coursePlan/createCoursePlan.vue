@@ -142,7 +142,14 @@ export default defineComponent({
     const $message: MessageApi = inject("$message")!;
     const http=(request as any).coursePlain
     var updata = inject("updataNav") as Function;
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+    // updata({tabs:[{ name: "创建排课", componenttype: 0 }],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+    updata({
+      tabs: [{ name: "创建排课", componenttype: 0 }],
+      // tabs: [],
+      showContent: false,
+      componenttype: undefined,
+      showNav: true,
+    });
     let router = useRouter()
     let route = useRoute()
     // let week: any = route.query.weekIndex

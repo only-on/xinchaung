@@ -6,7 +6,7 @@ export default {
   component: Layout,
   name:'coursePlan',
   meta: {
-    title: "排课",
+    title: "教学课程",
     authCode: "coursePlan",
   },
   children: [
@@ -24,7 +24,7 @@ export default {
       component: () => import("src/views/teacherModule/teachCourse/coursePlan/environmentalManagement.vue"),
       meta: {
         icon: "",
-        title: "环境管理",
+        title: "课程安排",
         authCode: "environmental",
       },
     },
@@ -34,7 +34,7 @@ export default {
       component: () => import("src/views/teacherModule/teachCourse/coursePlan/createCoursePlan.vue"),
       meta: {
         icon: "",
-        title: "创建排课",
+        title: "课程安排", 
         authCode: "createCoursePlan",
       },
     },

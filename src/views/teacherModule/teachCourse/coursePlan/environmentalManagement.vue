@@ -155,7 +155,7 @@ updata({
   ],
   showContent: false,
   componenttype: undefined,
-  showNav: false,
+  showNav: true,
 });
 const columns: any = [
   {

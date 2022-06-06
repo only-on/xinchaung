@@ -429,6 +429,7 @@ const router = useRouter();
 var updata = inject("updataNav") as Function;
 updata({
   tabs: [{ name: "课程安排", componenttype: 0 }],
+  // tabs: [],
   showContent: false,
   componenttype: undefined,
   showNav: false,
