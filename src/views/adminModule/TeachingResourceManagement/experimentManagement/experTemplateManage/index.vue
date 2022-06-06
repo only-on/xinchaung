@@ -26,10 +26,10 @@
         total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger:false,
+              showSizeChanger:true,
               total:total,
               current: params.page,
-              pageSize: params.limit,
+              pageSize: params.pageSize,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -139,12 +139,15 @@
       emit('updateData',{expername:ForumSearch.name,page:1})
     }
     function onChange(page:any,size:any){
-        params.page=page
-      emit('updateData',{expername:ForumSearch.name,page:params.page})
+      params.page=page
+      params.pageSize=size
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
         
     }
-    function onShowSizeChange(){
-
+    function onShowSizeChange(page:any,size:any){
+      params.page=1
+      params.pageSize=size
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
     }
     function onSelectChange(selectedRowKeys:any, selectedRows:any){
       tableData.selectedRowKeys=selectedRowKeys

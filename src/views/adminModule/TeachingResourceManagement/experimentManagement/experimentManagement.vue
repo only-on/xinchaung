@@ -109,10 +109,12 @@ function updateData(val:any){
     experParams.search.contentAttribute=val?.attribute
     experParams.search.contentType=val?.type
     experParams.page=val?.page
+    experParams.limit=val?.pageSize
     experData()
   }else{
     experTemplateParams.search.templateName=val?.expername
     experTemplateParams.page=val?.page
+    experTemplateParams.limit=val?.pageSize
     experTemplateData()
   }
 }
