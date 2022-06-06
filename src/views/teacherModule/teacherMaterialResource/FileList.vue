@@ -1,5 +1,5 @@
 <template>
-  <div class="Category flexCenter" v-for="v in totalList" :key="v.file_name" :class="v.id === props.activeItem.fileItem.id?'CategoryActive':''">
+  <div class="Category flexCenter" v-for="(v,k) in totalList" :key="`${k}${v.uid}`" :class="v.id === props.activeItem.fileItem.id?'CategoryActive':''">
     <div class="upper"  @click="selectFile(v)">
       <div class="iconBox">
         <CaretDownOutlined v-show="v.children && v.children.length && v.show"/>
@@ -25,6 +25,7 @@ import {
   reactive,
   defineProps,
   withDefaults,
+  watch
 } from "vue";
 import { getFileTypeIcon } from 'src/utils/getFileType'
 import {CaretDownOutlined,CaretRightOutlined} from '@ant-design/icons-vue';
@@ -65,7 +66,9 @@ var totalList:any=computed(()=>{
   console.log('totalList:',arr)
   return arr
 })
-
+watch(()=>{ return props.FileList},(val)=>{
+  currentPage.value=1
+},{immediate:true,deep:true})
 const changePage=()=>{
   currentPage.value = currentPage.value < PageCount.value ? currentPage.value += 1 :PageCount.value
 }

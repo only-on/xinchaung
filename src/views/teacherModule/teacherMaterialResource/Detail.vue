@@ -202,13 +202,9 @@ var activeKey: Ref<number> = ref(1);
 var isDataSet: Ref<boolean> = ref(true);
 
 const tabs=computed(()=>{
-  if(isDataSet.value===true){
-    return ['说明文档','文件列表']
-  }else{
-    return ['文件列表']
-  }
+  return ['文件列表']
 })
-const activeTab: Ref<string> = ref('');
+const activeTab: Ref<string> = ref('文件列表');
 const clickTab=(v:string)=>{
   activeTab.value=v
 }

@@ -215,18 +215,12 @@ const state:any=reactive({
   fileItem:{},
   fileKeyWord:'',  //  搜索文件列表关键词
 })
-var activeKey: Ref<number> = ref(1);
 
-var isDataSet: Ref<boolean> = ref(true);
 
 const tabs=computed(()=>{
-  if(isDataSet.value===true){
-    return ['说明文档','文件列表']
-  }else{
-    return ['文件列表']
-  }
+  return ['说明文档','文件列表']
 })
-const activeTab: Ref<string> = ref('');
+const activeTab: Ref<string> = ref('说明文档');
 const clickTab=(v:string)=>{
   activeTab.value=v
 }
@@ -431,8 +425,6 @@ function detailed(){
       })
     }
     // name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover
-    isDataSet.value=true
-    activeTab.value ='说明文档'
 
     oldCommon.value=res.data.common
   })
