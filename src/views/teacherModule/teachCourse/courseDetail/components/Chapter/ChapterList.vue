@@ -3,7 +3,7 @@
     <div class="title3 flexCenter" v-if="props.Editable !== 'readOnly'">
       <h3 class="courseh3">章节目录</h3>
       <div>
-        <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && role === 3 && props.Editable === 'canEdit')">新建章节</a-button>
+        <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && (role === 3 || role===5) && props.Editable === 'canEdit')">新建章节</a-button>
       </div>
     </div>   
     <a-spin :spinning="chartLoading" size="large" tip="Loading...">
@@ -769,7 +769,7 @@ function StudentChaptersTree(course_student_id:number){
 onMounted(() => {
   console.log(props.courseId)
   // const { course_student_id,from} = route.query;
-  if((props.courseId && role === 3) || (from && from === 'courseManagement' && role===2)){
+  if((props.courseId && (role === 3 || role===5)) || (from && from === 'courseManagement' && role===2)){
     getChaptersTree()
   }
   if(role === 4){
@@ -789,7 +789,7 @@ watch(
     if (val === 2 && role === 4&&!isOpen.value) {   // 学生端课程详情页面
       StudentChaptersTree(Number(course_student_id))
     }
-    if (val === 2 && role === 3&&!isOpen.value&&currentTab === '1') {  // 教师端 公开课程详情页面
+    if (val === 2 && (role === 3 || role===5)&&!isOpen.value&&currentTab === '1') {  // 教师端 公开课程详情页面
       getChaptersTree()
     }
   },

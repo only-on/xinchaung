@@ -55,7 +55,7 @@ const getPower=()=>{
   if(role===2){
     str='readOnly'
   }
-  if(currentTab === '0' && role === 3){
+  if(currentTab === '0' && ( role === 3 || role===5)){
     str='canEdit'
   }
   if((currentTab === '1' && role === 3) || role===4){
@@ -64,6 +64,7 @@ const getPower=()=>{
   if(is_authorizedText === 'Unauthorized'){
     str='readOnly'
   }
+  console.log(str);
   return str
 }
 onMounted(() => {
