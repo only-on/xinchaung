@@ -146,7 +146,7 @@ const allexperTypes:any=ref([
       (e: "updateData", val: any): void;
     }>();
     function search(){
-        emit('updateData',{name:ForumSearch.name,page:1,type:ForumSearch.type,attribute:ForumSearch.attribute})
+        emit('updateData',{name:ForumSearch.name,page:1,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onChange(page:any,size:any){
       params.page=page
