@@ -100,7 +100,7 @@
             />
           </a-form-item>
           <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
+            <a-input :maxLength='10' v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
             <!-- :visibilityToggle="false" -->
