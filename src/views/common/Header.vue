@@ -129,7 +129,7 @@ export default defineComponent({
     });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码
-      return role === 3 || role === 1 || role === 2 || role === 4;
+      return role === 3 || role === 1 || role === 2 || role === 4  || role === 5;
     });
     const getLogoUrl=computed(()=>{
       // env? '/proxyPrefix' + systemBaseInfo.logo_url : systemBaseInfo.logo_url

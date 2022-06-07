@@ -14,8 +14,6 @@
     <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
     <!-- 成员管理 -->
     <memberManagement v-if="state.activeTab.value=='memberManagement'" :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
-    <!-- 课程成绩 -->
-    <!-- <courseAchievement v-if="state.activeTab.value=='courseAchievement'" /> -->
   </div>
 
   <!-- 编辑课程基本信息 弹窗 -->

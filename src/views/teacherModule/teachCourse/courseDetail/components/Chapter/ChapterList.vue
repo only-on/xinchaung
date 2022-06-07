@@ -719,15 +719,14 @@ const ProcessingData=(data:any)=>{
               }
               if(i.task_type === 5){
                 // console.log(i.type_obj.name+'任务制')
-                // i.power=v.course_setting['is_show_task_step']===1?true:false
-                i.is_show_task_step=v.course_setting['is_show_task_step']===1?true:false
+                // i.is_show_task_step=v.course_setting['is_show_task_step']===1?true:false
+                i.is_show_task_step=false       //规则改了学生端统一不显示
               }
               if([6,7].includes(i.task_type)){
                 // console.log(i.type_obj.name+'文档视频')
                 i.power=true
               }
             }
-
           }):''
         }
       })
