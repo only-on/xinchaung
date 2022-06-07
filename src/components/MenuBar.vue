@@ -49,6 +49,9 @@ export default defineComponent({
       // type: Array as PropType<MenuItem>,
       default: () => [],
     },
+    activeMenu: {
+      default: ''
+    }
   },
   setup(props, context) {
     const renderFlag: Ref<boolean> = ref(true);
@@ -138,9 +141,9 @@ export default defineComponent({
         });
       }
     }
-    watch(()=>activeName.value, (val: any) => {
-      lStorage.set("menuActiveName", val);
-    });
+    watch(()=>props.activeMenu, newVal => {
+      activeName.value = newVal
+    })
     const http = (request as any).common;
 
     const visibleChange=(val:any)=>{

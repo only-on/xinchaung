@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="header-middle">
-      <menu-bar :menus="menus"></menu-bar>
+      <menu-bar :menus="menus" :activeMenu="activeMenu"></menu-bar>
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
@@ -99,6 +99,7 @@ export default defineComponent({
   setup() {
     const {systemTheme} = getThemeData()
     const env = process.env.NODE_ENV == "development" ? true : false;
+    const activeMenu = ref<string>('')
     const router = useRouter();
     const store = useStore()
     const { lStorage,sStorage } = extStorage;
@@ -659,9 +660,20 @@ export default defineComponent({
           return
         }
       }
-      if (['/teacher/home', '/admin/home', '/student/statistics'].includes(newVal)) {
-        lStorage.set("menuActiveName", '首页');
-      }
+      menus.forEach((item:any) => {
+        if(item.url && item.url === newVal){
+          activeMenu.value = item.name
+          lStorage.set("menuActiveName", item.name);
+        }
+        if (item.children.length) {
+          item.children.forEach((childItem:any) => {
+            if(childItem.url && childItem.url === newVal){
+              activeMenu.value = item.name
+              lStorage.set("menuActiveName", item.name);
+            }
+          })
+        }
+      })
     },{immediate: true})
     onUnmounted(() => {
       closeWs()
@@ -688,7 +700,8 @@ export default defineComponent({
       store,
       logoImg,
       getLogoUrl,
-      systemTheme
+      systemTheme,
+      activeMenu
     };
   },
 });

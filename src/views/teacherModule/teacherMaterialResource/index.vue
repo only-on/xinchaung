@@ -32,12 +32,9 @@
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
         @click="detail(list)"
       >
-        <div class="item-top">
-          <img :src="list.cover?list.cover:defaultCover" alt="封面" />
+        <div class="item-top" :style="list.cover?`background-image: url(${list.cover});`:defaultCover">
           <div class="labels">
-            <span v-for="(v, index) in list.tags" :key="index">{{
-              v + (index !== list.tags.length - 1 ? " / " : "")
-            }}</span>
+            <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
         </div>
         <div class="item-content">
@@ -355,21 +352,16 @@ const getTypeList = () => {
     &-top {
       height: 150px;
       position: relative;
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 6px 6px 0 0;
-      }
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: flex-end;
       .labels {
         width: 100%;
-        position: absolute;
-        bottom: 0;
-        height: 24px;
-        line-height: 24px;
+        padding: 1px 6px;
         background: var(--black-5);
         font-size: var(--font-size-sm);
         color: var(--white-85);
-        padding-left: 9px;
       }
     }
     &-content {

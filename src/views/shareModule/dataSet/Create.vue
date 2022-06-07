@@ -772,7 +772,7 @@ export default defineComponent({
           background: #ffffff;
 
           &:hover {
-            background: #f8efff;
+            background: var(--primary-1);
           }
         }
       }
