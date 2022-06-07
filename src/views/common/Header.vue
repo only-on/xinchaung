@@ -649,17 +649,7 @@ export default defineComponent({
     }
     // 监测学生端课程详情连接ws,其他页面断开ws
     watch(() => router.currentRoute.value.path, newVal => {
-      if (role === 4) {
-        closeWs()
-        if (newVal === '/student/studentCourse/Detail') {
-          setWs()
-          return
-        }
-        if (newVal === '/teacher/teacherExperimentResourcePool/experimentDetail') {
-          setWs()
-          return
-        }
-      }
+      // 根据当前路由高亮对应的菜单
       menus.forEach((item:any) => {
         if(item.url && item.url === newVal){
           activeMenu.value = item.name
@@ -674,6 +664,17 @@ export default defineComponent({
           })
         }
       })
+      if (role === 4) {
+        closeWs()
+        if (newVal === '/student/studentCourse/Detail') {
+          setWs()
+          return
+        }
+        if (newVal === '/teacher/teacherExperimentResourcePool/experimentDetail') {
+          setWs()
+          return
+        }
+      }
     },{immediate: true})
     onUnmounted(() => {
       closeWs()
