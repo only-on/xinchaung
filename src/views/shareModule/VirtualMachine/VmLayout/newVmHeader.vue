@@ -502,7 +502,7 @@ const router = useRouter();
 const vmApi = request.vmApi;
 const http=(request as any).common
 // const examApi = request.studentExam;
-const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+const { type, opType, taskId, topoinst_id, topoinst_uuid, recommendType } = route.query;
 const experType = Number(route.query.experType);
 
 let role = storage.lStorage.get("role");
@@ -723,7 +723,7 @@ async function switchVm() {
   }
   currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
   currentUuid.value = currentVm.value.uuid;
-  role === 4 ? await VmOperatesHandle('active') : ''  // 标记当前虚机
+  role === 4 && !recommendType ? await VmOperatesHandle('active') : ''  // 标记当前虚机
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
@@ -886,7 +886,7 @@ function endVmEnvirment() {
       taskId: taskId,
     };
   }
-        
+  recommendType ? Object.assign(params, {recommendType}) : ''    
   setTimeout(() => {
     endExperiment(params).then((res: any) => {
       if (
@@ -1479,7 +1479,7 @@ const delayNum = ref(0)
 watch(
   () => vmsInfo.value,
   async(val) => {
-    if (val.vms?.length && role===4) {
+    if (val.vms?.length && role===4 && !recommendType) {
       await VmOperatesHandle('active')  // 标记当前虚机  只在学生端
     }
   },
