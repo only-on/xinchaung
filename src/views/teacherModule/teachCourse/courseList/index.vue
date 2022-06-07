@@ -32,7 +32,7 @@
               <span class="text" @click.stop="multiplexing(v)">复用</span>
               <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
               <!-- <span class="text text2" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">{{v.loading?'生成中。。。':'学情归档'}}</span> -->
-              <a-button type="link" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)" :loading="v.loading">{{v.loading?'生成中。。。':'学情归档'}}</a-button>
+              <a-button type="link" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)" :loading="v.loading">{{v.loading?'生成中...':'学情归档'}}</a-button>
             </div>
           </div>
           <div class="info">
