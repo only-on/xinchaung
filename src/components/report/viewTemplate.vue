@@ -84,9 +84,9 @@ onMounted(() => {
   }
 });
 const pdfUrl = ref('')
-const getDetail = () => {
+const getDetail = (id?: number) => {
   dataList.length = 0;  // {urlParams: {id: templateId.value}}
-  http.viewTemplate({urlParams: {id: templateId.value}})
+  http.viewTemplate({urlParams: {id: id||templateId.value}})
     .then((res: IBusinessResp) => {
       if (res && res.data) {
         let result = res.data;
@@ -100,6 +100,9 @@ const getDetail = () => {
       }
     });
 };
+defineExpose({
+  getDetail
+})
 </script>
 <style lang="less" scoped>
 .wrapper {
@@ -115,7 +118,7 @@ const getDetail = () => {
   max-height: 806px;
   .dnd-space {
     padding-left: 25px;
-    min-height: 800px;
+    // min-height: 800px;
   }
   table {
     width: 100%;

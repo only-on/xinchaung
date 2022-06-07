@@ -1,6 +1,7 @@
 <template>
   <div class="report-template">
-    <div class="report-template-name">{{reportName}}</div>
+    <viewTemplate ref="viewTemplateRef" :id="templateId"></viewTemplate>
+    <!-- <div class="report-template-name">{{reportName}}</div>
     <div class="report-template-content">
       <div class="pdfBox" v-if="pdfUrl">
         <PdfVue :url="pdfUrl" />
@@ -20,7 +21,7 @@
           </widget-create>
         </template>
       </drag-gable>
-    </div>
+    </div> -->
     <div class="operate">
       <a-button @click="backGo">返回</a-button>
       <a-button type="primary" v-show="canEdit" @click="reportVisible = true">更换报告模板</a-button>
@@ -46,11 +47,13 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { WidgetModel } from "src/views/teacherModule/teacherTemplate/templateTyping";
 import extStorage from "src/utils/extStorage";
+import viewTemplate from "src/components/report/viewTemplate.vue"
 
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
-let {templateId, id, createExperUserId} = route.query;
+let {id, createExperUserId} = route.query;
+let templateId: number = Number(route.query.templateId)
 var updata = inject("updataNav") as Function;
 const { lStorage } = extStorage
 // 当前用户id === 创建实验用户id
@@ -65,7 +68,7 @@ onMounted(() => {
   // templateId.value = route.query.templateId
   // console.log(templateId);
   if (templateId) {
-    getDetail();
+    // getDetail();
   }
 });
 
@@ -100,13 +103,19 @@ const backGo = () => {
   router.go(-1);
 };
 
+const viewTemplateRef: any = ref(null)
 const reportVisible = ref<boolean>(false);
 const reportOk = (val: any) => {
   // console.log(val);
   http.updateReport({urlParams: {id}, param: {report: val.id}}).then((res: IBusinessResp) => {
     templateId = val.id
     reportInfo.id = val.id
-    getDetail()
+    const { query, path } = route;
+    router.replace({
+      path: path,
+      query: { ...query, templateId: val.id},
+    });
+    viewTemplateRef.value.getDetail(val.id)
   })
 };
 const reportCancel = () => {
