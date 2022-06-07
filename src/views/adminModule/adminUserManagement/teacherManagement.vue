@@ -105,6 +105,7 @@
           <a-form-item label="密码" name="password_hash">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+              :maxLength='16'
               v-model:value="formState.password_hash"
               :visibilityToggle="false"
             />
@@ -112,6 +113,7 @@
           <a-form-item label="确认密码" name="repassword">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+              :maxLength='16'
               v-model:value="formState.repassword"
               :visibilityToggle="false"
             />
@@ -125,6 +127,7 @@
           </div> -->
           <a-form-item label="职称" name="title">
             <a-input
+            :maxLength='20'
               v-model:value="formState.title"
             />
           </a-form-item>
@@ -137,13 +140,13 @@
                   </a-radio-group>
             </a-form-item>
             <a-form-item label="学院" name="department">
-              <a-input v-model:value="formState.department" />
+              <a-input :maxLength='20' v-model:value="formState.department" />
             </a-form-item>
             <a-form-item label="手机" name="phone">
               <a-input v-model:value="formState.phone" />
             </a-form-item>
             <a-form-item label="邮箱" name="email">
-              <a-input v-model:value="formState.email" />
+              <a-input :maxLength='30'  v-model:value="formState.email" />
             </a-form-item>
         </div>
       </div>
