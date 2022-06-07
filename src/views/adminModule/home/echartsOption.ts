@@ -90,11 +90,11 @@ function resourceOption(data:any,){
           color:[systemColor.Acolor1,systemColor.Acolor2,systemColor.Acolor3,systemColor.Acolor4],
           legend: {
             x:'3%',
-            data: ['cpu', '内存', 'GPU','磁盘'] 
+            data: ['CPU', '内存', 'GPU','磁盘'] 
           },
           grid: {
             left: '3%',
-            right: '5%',
+            right: '7%',
             bottom: '3%',
             containLabel: true
           },
@@ -114,7 +114,7 @@ function resourceOption(data:any,){
           ],
           series: [
             {
-              name: 'cpu',
+              name: 'CPU',
               type: 'line',
               emphasis: {
                 focus: 'series'

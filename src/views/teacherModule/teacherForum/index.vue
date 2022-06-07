@@ -61,7 +61,14 @@ watch(
     return configuration.componenttype;
   },
   (val) => {
-    componentName.value = componentNames[val];
+    if(configuration.componenttype==undefined){
+      configuration.componenttype=0
+    }
+    console.log(configuration.componenttype,'configuration.componenttype')
+    componentName.value = componentNames[configuration.componenttype];
+    console.log(componentName.value,'componentName.valuecomponentName.value')
+  },{
+    immediate: true 
   }
 );
 

@@ -226,10 +226,10 @@
         {title:'硬盘使用率',percent:'--',grade:'高风险',link:'/admin/systemMaintenance/diskManagement'}
     ])
     //资源历史使用概览
-    const radioTime:any=ref('yesterday')
+    const radioTime:any=ref('today')
     const pickTime:any=ref()
     //用户活跃度
-    const radioTimeUser:any=ref('yesterday')
+    const radioTimeUser:any=ref('today')
     const pickTimeUser:any=ref()
     // 今日
     const today=moment(new Date(), "YYYY-MM-DD")
@@ -566,6 +566,7 @@
     .entrance-right{
         background-repeat: no-repeat;
         background-size: 100% 100%;
+        border-radius: 10px;
     }
 }
 
