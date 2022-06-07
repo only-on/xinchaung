@@ -130,13 +130,14 @@
     const data:any=ref([]) 
     const tableData:any=reactive({})
     const params:any=reactive({
-      page:1
+      page:1,
+      pageSize:10
     })
         const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
     function search(){
-      emit('updateData',{expername:ForumSearch.name,page:1})
+      emit('updateData',{expername:ForumSearch.name,page:1,pageSize:params.pageSize})
     }
     function onChange(page:any,size:any){
       params.page=page
