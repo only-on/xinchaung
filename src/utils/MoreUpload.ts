@@ -1,5 +1,6 @@
 import SparkMD5 from 'spark-md5'
 import { UUID } from 'src/utils/uuid'
+import { message } from "ant-design-vue";
 // 上传配置
 export interface UploadOptions {
   startUploadURL: string
@@ -232,6 +233,7 @@ export default function Upload(option: UploadOptions) {
             if (option.eruptNum < 5 && currentIndex < FilesChunk.length - 1) {
               currentIndex++
               // console.log(currentIndex)
+              // console.log('FilesChunk.length',FilesChunk.length)
               await multiUpload(FilesChunk)
             }
             if (currentIndex === FilesChunk.length - 1) {
@@ -239,13 +241,21 @@ export default function Upload(option: UploadOptions) {
               resolve(currentIndex)
             }
           } else {
-            multiUpload(FilesChunk, index)
-            reject(new Error('第' + index + '分片上传失败'))
+            console.log(res)
+            console.log(currentIndex)
+            console.log('FilesChunk.length',FilesChunk.length)
+            await multiUpload(FilesChunk, index)
+            
+            if (currentIndex === FilesChunk.length - 1) {
+              mergeUpload(FilesChunk.length)
+            }
+            message.warning('第' + index + '分片上传失败');
+            reject(new Error(res))
           }
         })
         .catch(err => {
           option.eruptNum = 6
-          console.error(err)
+          // console.error(err)
           // reject(new Error(err))
           return
         })
@@ -273,7 +283,7 @@ export default function Upload(option: UploadOptions) {
       .catch()
   }
   // 切片开始上传
-  async function multiUpload1() {
+  async function multiUploadStart() {
     option.eruptNum = 1
     var FilesChunk = createFileChunk(option.file, option.chunkSize)
     const queue: any = []
@@ -317,7 +327,7 @@ export default function Upload(option: UploadOptions) {
 
       upload_id = await startUpload()
       // console.log('m2', upload_id)
-      multiUpload1()
+      multiUploadStart()
     } catch (error) {
       // console.log(error)
     }
