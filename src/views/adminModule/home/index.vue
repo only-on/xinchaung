@@ -220,9 +220,9 @@
     const options:any = ref([
     ])
     const warningMessage:any=ref([
-        {title:'CPU使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
-        {title:'内存使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
-        {title:'GPU使用率',percent:'--',grade:'中风险',link:'/teacher/coursePlan'},
+        {title:'CPU使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan/environmental'},
+        {title:'内存使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan/environmental'},
+        {title:'GPU使用率',percent:'--',grade:'中风险',link:'/teacher/coursePlan/environmental'},
         {title:'硬盘使用率',percent:'--',grade:'高风险',link:'/admin/systemMaintenance/diskManagement'}
     ])
     //资源历史使用概览

@@ -13,7 +13,7 @@
                         <div class="content-right">
                             <div class="tit tit1">录制视频</div>
                             <a-button type='primary' @click="clean('video',false)">清理</a-button>
-                            <div class="detailClear">详细清理</div>
+                            <div class="detailClear" @click="jump('/admin/TeachingResourceManagement/courseManagement')">详细清理</div>
                         </div>
                         
                     </div>
@@ -36,7 +36,7 @@
                         <div class="content-right">
                             <div class="tit tit1">系统日志</div>
                             <a-button type='primary' @click="clean('systemLog',false)">清理</a-button>
-                            <div class="detailClear">详细清理</div>
+                            <!-- <div class="detailClear">详细清理</div> -->
                         </div>
                     </div>
                     <div class="autoclear" @click="clean('systemLog',true)">
@@ -274,6 +274,9 @@ const visible:any=ref(false)
             position: absolute;
             top: 0;
             right: -150px;
+        }
+        .detailClear:hover{
+            cursor: pointer;
         }
         .content{
             padding: 20px;
