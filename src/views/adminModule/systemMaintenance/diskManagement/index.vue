@@ -13,7 +13,7 @@
                         <div class="content-right">
                             <div class="tit tit1">录制视频</div>
                             <a-button type='primary' @click="clean('video',false)">清理</a-button>
-                            <div class="detailClear" @click="jump('/admin/TeachingResourceManagement/courseManagement')">详细清理</div>
+                            <div class="detailClear" @click="jump('/admin/TeachingResourceManagement/courseManagement')">详细清理 ></div>
                         </div>
                         
                     </div>
@@ -208,12 +208,12 @@ const visible:any=ref(false)
     }
     function clearScreenData(day:any){
         http.clearScreen({param:{day:day}}).then((res:any)=>{
-            message.success('清除成功')
+            message.success('设置成功')
         })
     }
     function clearLogData(day:any){
         http.clearLog({param:{day:day}}).then((res:any)=>{
-            message.success('清除成功')
+            message.success('设置成功')
         })
     }
     function handclearScreenData(day:any){
@@ -345,6 +345,9 @@ const visible:any=ref(false)
             .icon{
                 margin-right: 10px;
             }
+        }
+        .autoclear:hover{
+            cursor: pointer;
         }
         .clearImg{
             margin-left: 30px;
