@@ -74,7 +74,6 @@
             :pagination="
                 tableData.total > 10
                 ? {
-                    hideOnSinglePage: false,
                     showSizeChanger: true,
                     total: tableData.total,
                     current: tableData.page,
@@ -162,12 +161,10 @@ const reactiveData:any=reactive({
 })
 function onChange(page: any, pageSize: any) {
   tableData.page=page
-//   getStugrandsList()
 }
 function onShowSizeChange(current: any, size: any) {
   tableData.page=1
   tableData.limit=size
-//   getStugrandsList()
 }
 function modalEl(){
   return h(
@@ -357,8 +354,8 @@ function copyCode(e: Event) {
     }
     .settingList{
       .tableHeight{
-        height:430px;
-        overflow-y: hidden;
+        height:420px;
+        overflow-y:auto;
       }
     }
     .filename{

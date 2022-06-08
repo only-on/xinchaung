@@ -37,8 +37,7 @@
             pageSize: ForumSearch.pageSize,
             total: total,
             onChange: onChangePage,
-            onShowSizeChange: onShowSizeChange,
-            hideOnSinglePage: true,
+            onShowSizeChange: onShowSizeChange
             }
           : false
       "
