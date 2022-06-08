@@ -55,6 +55,10 @@
           <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
+        <span class="save pointer" @click="saveTomy" v-if="Number(currentTab) === 1&&experimentDetail.is_init === 0 && experimentDetail.is_share === 1 && currentUid !== experimentDetail.user_id">
+          <span class="iconfont icon-baocun1"></span>
+          <span>保存到我的</span>
+        </span>
       </div>
       <div class="user-info" v-if="Number(currentTab) === 1">
         <img :src="experimentDetail.user_profile.portrait||defaultAvatar" alt="" srcset="" />
@@ -124,6 +128,7 @@ const routeQuery = route.query
 const { id, currentTab, type } = route.query;
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
+const currentUid = lStorage.get('uid')
 const http = (request as any).teacherExperimentResourcePool;
 const {systemImages} = getThemeData()
 var configuration: any = inject("configuration");
@@ -261,6 +266,12 @@ const handleOk = () => {
 }
 const handleCancel = () => {
   baseInfoModal.value = false
+}
+// 保存到我的
+const saveTomy = () => {
+  http.savedMycontent({param: {id: experimentDetail.id}}).then((res:IBusinessResp) => {
+    message.success('保存成功')
+  })
 }
 
 let experimentDetail = reactive<IExperimentDetail>({
@@ -467,7 +478,7 @@ interface IExperimentDetail {
       }
       .class-num {
       }
-      .report, .edit {
+      .report, .edit, .save {
         color: var(--primary-color);
         position: absolute;
         top: 0;
@@ -483,6 +494,9 @@ interface IExperimentDetail {
       .edit {
         color: var(--cyan-100);
         border-bottom: 1px solid var(--cyan-100);
+        right: 175px;
+      }
+      .save{
         right: 175px;
       }
     }
