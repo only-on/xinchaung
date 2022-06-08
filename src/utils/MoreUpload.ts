@@ -201,7 +201,7 @@ export default function Upload(option: UploadOptions) {
   // 分片上传
   function multiUpload(FilesChunk: any, i?: any) {
     return new Promise((resolve, reject) => {
-      const index = i ? i : currentIndex
+      const index = i||i==0 ? i : currentIndex
       const body = new FormData()
       body.append('upload_id', upload_id)
       body.append('upload_file', FilesChunk[index].upload_file)
@@ -282,6 +282,8 @@ export default function Upload(option: UploadOptions) {
           })
           Promise.all(queue).then(() => {
             mergeUpload(FilesChunk.length, 'mergeUpload')
+          }).catch(() => {
+            mergeUpload(FilesChunk.length, 'mergeUploadError') : ''
           })
         }
       })
