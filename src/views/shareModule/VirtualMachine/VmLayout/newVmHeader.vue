@@ -686,6 +686,10 @@ const toolList = toolData;
 const roleArry: any = ref([])
 
 function back() {
+  if (recommendType) {
+    endVmEnvirment();
+    return
+  }
   Modal.confirm({
     title: "提示",
     content: experType === 6 || experType === 7 ? "返回实验列表" : "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",

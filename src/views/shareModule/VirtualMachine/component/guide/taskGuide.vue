@@ -5,7 +5,7 @@
   </p>
   <div class="current-task-content">
   <div class="task-name single_ellipsis" :title="currentTask.name">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
-  <div class="task-content" :class="isLookStep&&currentTask.state || role !== 4 ? 'show-step' : ''">
+  <div class="task-content" :class="!recommendType&&(isLookStep&&currentTask.state || role !== 4) ? 'show-step' : ''">
   <div class="desc-content">
     <div class="title">
       <span>任务描述</span>
