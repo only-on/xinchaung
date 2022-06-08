@@ -10,7 +10,7 @@
     <!-- <a-button type="primary" shape="round" size="large">确定</a-button>
     <a-button type="primary" shape="round" size="middle">确定</a-button>
     <a-button type="primary" shape="round" size="small">取消</a-button> -->
-    <component :is="componentName" :componentName="componentName" />
+    <component :is="componentName" />
   </div>
 </template>
 
@@ -36,15 +36,21 @@ import extStorage from "src/utils/extStorage";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
 const route = useRoute();
 const router = useRouter();
-const componentNames = [markRaw(ForumSquare), markRaw(MyPosts), markRaw(ForumManage)];
+const componentNames = [markRaw(ForumSquare)];
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const tabs = [
   { name: "论坛广场", componenttype: 0 },
   // { name: "我的帖子", componenttype: 1 },
 ];
-role === 2 ? tabs.push({ name: "帖子管理", componenttype: 2 }):tabs.push({ name: "我的帖子", componenttype: 1 })
-var componentName: any = ref(ForumSquare);
+if (role === 2){
+  tabs.push({ name: "帖子管理", componenttype: 1 })
+  componentNames.push(markRaw(ForumManage))
+} else {
+  tabs.push({ name: "我的帖子", componenttype: 1 })
+  componentNames.push(markRaw(MyPosts))
+}
+var componentName: any = ref();
 
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
@@ -55,7 +61,6 @@ updata({
   componenttype: undefined,
   showNav: false,
 });
-
 watch(
   () => {
     return configuration.componenttype;

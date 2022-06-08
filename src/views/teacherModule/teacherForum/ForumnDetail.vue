@@ -13,7 +13,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num">{{ detail.reply_number_count }}</span>
+        <span class="reply-num">{{ replyList.length }}</span>
       </span>
       <span class="delet pointer" v-if="detail.is_del" @click="deleteForum(detail.id)">
         <span class="division" v-if="detail.is_del"></span>删除
@@ -64,7 +64,7 @@ import defaultAvatar from 'src/assets/images/user/admin_p.png'
 const http = (request as any).teacherForum;
 const route = useRoute();
 const router = useRouter();
-let {currentTab} = route.query
+let {currentTab, id} = route.query
 let isReply = ref<boolean>(true);
 let child = ref<boolean>(true);
 let replyContent = ref<string>("");
@@ -115,6 +115,7 @@ const totalReply = ref(0)
 function getReplyList(id: number) {
   loading.value = true
   // replyList.length = 0
+  page.value === 1 ?replyList.length = 0 : ''
   let param = {
     page: page.value,
   }
@@ -130,9 +131,9 @@ const getDetail = () => {
     page: 1,
     limit: 1
   }
-  http.getForumList({urlParams: {keyword: ''}, param}).then((res: IBusinessResp) => {
-    console.log(res)
-    Object.assign(detail, res.data.list[0])
+  http.getForumDetail({urlParams: {id}}).then((res: IBusinessResp) => {
+    // console.log(res)
+    Object.assign(detail, res.data)
     detail.content = goHtml(detail.content)
     getReplyList(detail.id)
   })
@@ -167,8 +168,9 @@ const deleteForum = (id: number) => {
   });
 }
 // 删除一级回复
-const deleteReply = (id: number) => {
+const deleteReply = (id: number, pid: number) => {
   getReplyList(id)
+  // pid ? "" : detail.reply_number_count --
 }
 provide("deleteReply", deleteReply)
 

@@ -226,10 +226,10 @@ const batchDelete = () => {
     okText: '确认',
     cancelText: '取消',
     onOk(){
-      // http.deleteForum({urlParams: {id}}).then((res:IBusinessResp)=>{
-      //   message.success('删除成功')
-      //   initData()
-      // })
+      http.batchDeleteForum({param: {forum_ids: tableSelect.selectedRowKeys}}).then((res:IBusinessResp)=>{
+        message.success('删除成功')
+        initData()
+      })
     }
   });
 }
@@ -240,7 +240,7 @@ onMounted(async() => {
     path: path,
     query: NewQuery,
   });
-  if (currentTab === '2') {
+  if (currentTab === '1') {
     initData();
   }
 });

@@ -10,6 +10,8 @@ export default {
   replyForum: {url: `/api/forum/reply`, method: "POST",dataType: 'json'},
   deleteForum: {url: `/api/forum/forum/{id}`, method: "DELETE"},
   deleteReply: {url: `/api/forum/Reply/{id}`, method: "DELETE"},
+  getForumDetail: {url: `/api/forum/{id}/detail`, method: "GET"},
+  batchDeleteForum: {url: `api/forum/batch-destroy`, method: "DELETE"},
 }
 
 export interface ITeacherForum {
@@ -22,6 +24,8 @@ export interface ITeacherForum {
   getAttendList: TFHttpSend;
   deleteForum: TFHttpSend;
   deleteReply: TFHttpSend;
+  getForumDetail: TFHttpSend;
+  batchDeleteForum: TFHttpSend;
 }
 
 export const MODULE_NAME = 'teacherForum'
