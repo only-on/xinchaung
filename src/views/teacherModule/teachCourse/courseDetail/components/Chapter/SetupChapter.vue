@@ -1,7 +1,7 @@
 <template>
   <div class="chartTerr">
-    <div class="chartTerrLeft" :id="fromT==='CreateCourse'?'borBot':''" :class="((currentTab === '1' && (role === 3 || role===5)) || role === 4 || role ===2)?'chartTerrLeft2':''">
-      <div class="myChapter textScrollbar">
+    <div class="chartTerrLeft textScrollbar" :id="fromT==='CreateCourse'?'borBot':''" :class="((currentTab === '1' && (role === 3 || role===5)) || role === 4 || role ===2)?'chartTerrLeft2':''">
+      <div class="myChapter ">
         <ChapterList
           :ExternalOpen="ExternalOpen"
           @closeExternalOpen="Reselection"
@@ -293,8 +293,8 @@ onMounted(() => {
     display: flex;
     
     .chartTerrLeft{
-      width: 470px;
-      background: #ffffff;
+      // width: 470px;
+      // background: #ffffff;
       // border: 1px solid rgba(0,0,0,0.15);
       // flex: 1;
       // padding: 10px;
@@ -304,10 +304,10 @@ onMounted(() => {
       //   // margin-bottom: 1rem;
       // }
       .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
+        // padding:0 24px;
+        // min-height:700px;
+        // max-height: 850px;
+        // overflow: auto;
         // padding-right: 10px;
       }
     }
@@ -349,7 +349,7 @@ onMounted(() => {
         padding: 24px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
-        max-width: 646px;
+        max-width: 782px;
       }
       
     }

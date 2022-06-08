@@ -1,6 +1,6 @@
 <template>
     <div class="academicAnalysis">
-       <div class="tree myChapter textScrollbar">
+       <div class="tree myChapter textScrollbar chartTerrLeft">
          <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
        </div>
        <div class="analy-right">
@@ -212,16 +212,17 @@ function selectExperiment(val: any) {
     display: flex;
 }
    .tree{
-       width: 300px;
-       padding: 24px;
+      //  width: 300px;
+      //  padding: 24px;
        margin-right: 16px;
-       background-color: var(--white-100);
+       padding-top: 12px;
+      //  background-color: var(--white-100);
    } 
    .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
+        // padding:0 24px;
+        // min-height:700px;
+        // max-height: 850px;
+        // overflow: auto;
         // padding-right: 10px;
       }
    .analy-right{

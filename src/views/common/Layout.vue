@@ -6,10 +6,7 @@
       </div>
       <NavTab @tabSwitch="tabSwitch" />
     </div>
-    <div
-      class="main-box"
-      :class="configuration.tabs && configuration.tabs.length > 1 ? 'line' : ''"
-    >
+    <div class="main-box" :class="configuration.tabs && configuration.tabs.length > 1 ? 'line' : ''" >
       <div :class="configuration.showContent ? 'regulations' : 'customized'">
         <router-view />
       </div>

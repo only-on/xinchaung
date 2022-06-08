@@ -1,6 +1,6 @@
 <template>
   <div class="env-manage">
-    <div class="tree myChapter textScrollbar">
+    <div class="tree myChapter textScrollbar chartTerrLeft">
       <chapter-tree 
         :Environment="true"
         :courseId="Number(courseId)"
@@ -233,19 +233,19 @@ function handleOk(num: number) {
   border-radius: 10px;
   display: flex;
   .tree {
-    width: 470px;
-    height: 714px;
-    padding: 24px;
+    // width: 350px;
+    // height: 714px;
     margin-right: 16px;
-    background-color: var(--white-100);
+    padding-top: 18px;
+    // background-color: var(--white-100);
   }
   .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
-        // padding-right: 10px;
-      }
+    // padding:0 16px;
+    // min-height:700px;
+    // max-height: 850px;
+    // overflow: auto;
+    // padding-right: 10px;
+  }
   .content {
     flex: 1;
     padding: 24px;

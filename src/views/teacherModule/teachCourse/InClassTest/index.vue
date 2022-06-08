@@ -1,6 +1,6 @@
 <template>
   <div id="inClassTest">
-    <div class="tree">
+    <div class="tree chartTerrLeft textScrollbar">
           <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
     </div>
     <div class="test">
@@ -154,18 +154,20 @@ function inclassTestList(){
 }
 .tree,
 .test {
-  height: 714px;
-  overflow-y: auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px 0 var(--black-0-7);
-  background: var(--white-100);
+  // height: 714px;
+  // overflow-y: auto;
+  // padding: 20px;
+  // border-radius: 10px;
+  // box-shadow: 0 2px 4px 0 var(--black-0-7);
+  // background: var(--white-100);
+  padding-top: 12px;
 }
 .tree {
-  width: 470px;
+  // width: 470px;
 }
 .test {
-  width: 714px;
+  // width: 714px;
+  flex: 1;
   padding: 24px;
   .inTestHeader {
     display: flex;
