@@ -85,7 +85,7 @@
                     tableData.total > 10
                     ? {
                         hideOnSinglePage: false,
-                        showSizeChanger:false,
+                        showSizeChanger:true,
                         total: tableData.total,
                         current: tableData.page,
                         pageSize: tableData.limit,
