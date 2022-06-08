@@ -122,6 +122,7 @@ export default function Upload(option: UploadOptions) {
   let upload_id: any = ''
   let currentIndex: any = 0
   const uploadStatus = []
+  var FilesChunk: any = []
   // 封装http请求
 
   // 文件生成md5码
@@ -244,11 +245,6 @@ export default function Upload(option: UploadOptions) {
             console.log(res)
             console.log(currentIndex)
             console.log('FilesChunk.length',FilesChunk.length)
-            await multiUpload(FilesChunk, index)
-            
-            if (currentIndex === FilesChunk.length - 1) {
-              mergeUpload(FilesChunk.length)
-            }
             message.warning('第' + index + '分片上传失败');
             reject(new Error(res))
           }
@@ -256,13 +252,14 @@ export default function Upload(option: UploadOptions) {
         .catch(err => {
           option.eruptNum = 6
           // console.error(err)
-          // reject(new Error(err))
+          reject(new Error(err))
           return
         })
     }).catch()
   }
   // 合并分片
-  function mergeUpload(part_count: any) {
+  function mergeUpload(part_count: any, type: string) {
+    console.log(type)
     const body = new FormData()
     body.append('data_id', option.data_set_id)
     body.append('file_size', (option.file as any).size)
@@ -278,6 +275,14 @@ export default function Upload(option: UploadOptions) {
           // console.log('分片文件合并成功')
 
           option.endUploadFun(ObjectKey, res.data)
+        } else if (res.code === 20000) {
+          const queue: any = []
+          res.data?.chunk.forEach((v: number) => {
+            queue.push(multiUpload(FilesChunk, v))
+          })
+          Promise.all(queue).then(() => {
+            mergeUpload(FilesChunk.length, 'mergeUpload')
+          })
         }
       })
       .catch()
@@ -285,7 +290,7 @@ export default function Upload(option: UploadOptions) {
   // 切片开始上传
   async function multiUploadStart() {
     option.eruptNum = 1
-    var FilesChunk = createFileChunk(option.file, option.chunkSize)
+    FilesChunk = createFileChunk(option.file, option.chunkSize)
     const queue: any = []
     queue.push(multiUpload(FilesChunk))
     if (FilesChunk.length > 3) {
@@ -302,7 +307,7 @@ export default function Upload(option: UploadOptions) {
     Promise.all(queue).then(() => {
       // console.log('分片上传成功')
 
-      mergeUpload(FilesChunk.length)
+      mergeUpload(FilesChunk.length, 'multiUploadStart')
     })
     // timer = setInterval(() => {
     //   if (FilesChunk.length - 1 === currentIndex && uploadStatus.length === FilesChunk.length) {
