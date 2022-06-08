@@ -651,7 +651,7 @@ export default defineComponent({
     watch(() => router.currentRoute.value.path, newVal => {
       // 根据当前路由高亮对应的菜单
       menus.forEach((item:any) => {
-        if(item.url && item.url === newVal){
+        if(item.url && newVal.includes(item.url)){
           activeMenu.value = item.name
           lStorage.set("menuActiveName", item.name);
         }
