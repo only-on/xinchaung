@@ -78,6 +78,10 @@ columns.value = [
     dataIndex: "user_name",
   },
   {
+    title: "账号",
+    dataIndex: "user_account",
+  },
+  {
     title: "操作类型",
     dataIndex: "type",
   },
