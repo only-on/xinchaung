@@ -278,6 +278,7 @@ let experimentDetail = reactive<IExperimentDetail>({
   id: 1,
   user_id: 0,
   is_init: 0,
+  is_share: 0,
   name: '',
   task_type: 1,
   class_cnt: 2,
@@ -345,7 +346,8 @@ const levelList = {'1': '初级', '2': '中级', '3': '高级'}
 interface IExperimentDetail {
   id: number;
   user_id: number;
-  is_init: number
+  is_init: number;
+  is_share: number;
   name: string;
   task_type: number;
   class_cnt: number;
