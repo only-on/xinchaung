@@ -15,7 +15,7 @@
       <template #nextArrow>
         <div
           class="custom-slick-arrow"
-          :class="current === list.vms.vms.length - 1 ? 'last' : ''"
+          :class="current === list.vms.vms?.length - 1 ? 'last' : ''"
         >
           <span class="iconfont icon-youjiantou"></span>
         </div>
@@ -32,14 +32,14 @@
     <div
       class="kvm-info"
       :class="currentStatus ? '' : 'close'"
-      v-if="list.vms.vms.length > 0"
+      v-if="list.vms.vms?.length > 0"
     >
       <p class="kvm-status">
         虚机状态：<span>{{ currentStatus ? "开启" : "关闭" }}</span>
       </p>
       <p class="operation-status">
         操作状态：<span>{{
-          list.is_online&& list.vms.vms[current].uuid === list.current
+          list.is_online&& list.vms.vms[current]?.uuid === list.current
             ? "繁忙"
             : "空闲"
         }}</span>
@@ -47,7 +47,7 @@
     </div>
     <div class="mask" @click="jumpHandle(list)"></div>
   </div>
-  <div class="btns" v-if="list.vms.vms.length > 0">
+  <div class="btns" v-if="list.vms.vms?.length > 0">
     <span
       class="btn vm-open pointer"
       @click="btnClick(0)"
