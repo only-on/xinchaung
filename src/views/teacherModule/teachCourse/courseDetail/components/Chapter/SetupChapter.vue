@@ -264,10 +264,16 @@ const getPrepareEnv = () => {
     "taskId": props.courseId
   }
   vmApi.getPrepareEnv({param}).then((res: any) => {
-    if (res?.data[Number(state.activeExperimentObj.id)]?.topoinst_id) {
-      currentState.value = 2
-      connectStatus.value = 2
-      Object.assign(createExamplesInfo, res.data[Number(state.activeExperimentObj.id)])
+    if (res?.data[Number(state.activeExperimentObj.id)]) {
+      const {topoinst_id, is_feedback} = res?.data[Number(state.activeExperimentObj.id)]
+      if (topoinst_id && is_feedback == 1) {
+        currentState.value = 2
+        connectStatus.value = 2
+        Object.assign(createExamplesInfo, res.data[Number(state.activeExperimentObj.id)])
+      } else if (topoinst_id && is_feedback == 0) {
+        currentState.value = 2
+        connectStatus.value = 1
+      }
     }
   })
 }
