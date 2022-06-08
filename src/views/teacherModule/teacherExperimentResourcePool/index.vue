@@ -444,7 +444,7 @@ const getDirection = () => {
     line-height: 64px;
     margin-bottom: 24px;
     border-radius: 32px;
-    background: var(--white-65);
+    background: var(--white-100);
     padding-right: 40px;
     &:hover {
       box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);

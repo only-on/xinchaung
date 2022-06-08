@@ -19,7 +19,7 @@
       </a-form-item>
     </a-form>
     <div class="foot">
-      <a-button type="primary" @click.prevent="onSubmit">{{
+      <a-button type="primary" @click.prevent="onSubmit" :loading="loading">{{
         " 保 存 "
       }}</a-button>
     </div>
@@ -49,6 +49,7 @@ interface Istate {
   formState: form;
   rules: any;
   onSubmit: () => void;
+  loading:boolean
 }
 const requestObj = {
   student: 'stuResetPassword',
@@ -96,11 +97,12 @@ export default defineComponent({
           { required: true, message: "请再次输入新密码", trigger: "blur" },
         ],
       },
+      loading:false,
       onSubmit: () => {
         let request:any = ''
         let params:any = {}
         state.formRef.validate().then(() => {
-          console.log("验证过");
+          // console.log("验证过");
           if (state.formState.newpass !== state.formState.repeatnewpass) {
             message.warn("输入新密码不一致");
             return;
@@ -110,18 +112,22 @@ export default defineComponent({
             params = { ...state.formState}
           } else {
             request = requestObj['other']
-            params = { reset_password_params: { ...state.formState } }
+            params = { reset_password_params: { ...state.formState }}
           }
-          // console.log(state.formState);
+          // console.log(request);
+          state.loading=true
           httpLogout[request]({
               param: params,
             })
             .then((res: IBusinessResp) => {
               message.success("修改成功,请重新登录");
-              state.formRef.resetFields();
-              loginOut();
+              state.loading=false
+              // state.formRef.resetFields();
+              // loginOut();
               // router.go(-1)
-            });
+            }).catch(()=>{
+              state.loading=false
+            })
         });
       },
     });
