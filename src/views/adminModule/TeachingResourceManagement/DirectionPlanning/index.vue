@@ -75,6 +75,7 @@
     v-model:visible="dialogVisible"
     :title="'添加' + modalTitle"
     :width="500"
+    @cancel="cancel"
   >
     <a-form
       :layout="'vertical'"
@@ -166,7 +167,7 @@ const planTtab: any = [
   { tabList: "知识图谱规划", title: "知识图谱" },
   { tabList: "标签规划", title: "标签" },
 ];
-var editableDataKey: any;
+let editableDataKey: any;
 let obj: any = {
   0: {
     list: "classList",
@@ -220,7 +221,7 @@ const columns = reactive<any>([
 
 function getList () {
   if (activeKey.value !== 3) {
-    var newhttp = http[obj[activeKey.value]["list"]]({
+    let newhttp = http[obj[activeKey.value]["list"]]({
       param: searchParams
     });
     newhttp.then((res: IBusinessResp) => {
@@ -264,7 +265,7 @@ const save = (key: number) => {
     message.warn(planTtab[activeKey.value].title + '不能超过30个字符')
     return
   }
-  var newhttp = http[obj[activeKey.value]["modify"]]({
+  let newhttp = http[obj[activeKey.value]["modify"]]({
     urlParams: { ID: editableData[key].id },
     param: {
       name: editableData[key].name
@@ -285,7 +286,7 @@ const onDelete = (id: number) => {
     cancelText: "取消",
     onOk: () => {
       if (!id) return
-      var newhttp = http[obj[activeKey.value]["delete"]]({
+      let newhttp = http[obj[activeKey.value]["delete"]]({
         urlParams: { ID: id },
       });
       newhttp.then((res: IBusinessResp) => {
@@ -302,10 +303,10 @@ const handleAdd = () => {
   formState.name = ''
 };
 const saveAdd = () => {
-  var newhttp = http[obj[activeKey.value]["add"]]({
-    param: formState,
-  });
   formRef.value.validate().then(() => {
+    let newhttp = http[obj[activeKey.value]["add"]]({
+      param: formState,
+    });
     newhttp.then((res: IBusinessResp) => {
       dialogVisible.value = false
       message.success('添加成功')
