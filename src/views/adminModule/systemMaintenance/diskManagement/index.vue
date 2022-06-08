@@ -53,12 +53,12 @@
                         <div class='toMaterial'>
                             <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/resourcesManagement')">
                                 <span class="icon iconfont icon-material"></span>
-                                <span> 到素材资源</span>                          
+                                <span> 到素材资源 ></span>                          
                             </a-button></div>
                         <div class="toImage">
                             <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/mirrorImageManagement')">
                             <span class="icon iconfont icon-rongqijingxiangfuwu"></span>
-                            <span>到镜像</span>
+                            <span>到镜像 ></span>
                             </a-button>
                         </div>   
                     </div>
