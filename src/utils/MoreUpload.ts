@@ -310,6 +310,8 @@ export default function Upload(option: UploadOptions) {
       // console.log('分片上传成功')
 
       mergeUpload(FilesChunk.length, 'multiUploadStart')
+    }).catch(() => {
+      mergeUpload(FilesChunk.length, 'multiUploadStartError')
     })
     // timer = setInterval(() => {
     //   if (FilesChunk.length - 1 === currentIndex && uploadStatus.length === FilesChunk.length) {
