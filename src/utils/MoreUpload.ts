@@ -283,7 +283,7 @@ export default function Upload(option: UploadOptions) {
           Promise.all(queue).then(() => {
             mergeUpload(FilesChunk.length, 'mergeUpload')
           }).catch(() => {
-            mergeUpload(FilesChunk.length, 'mergeUploadError') : ''
+            mergeUpload(FilesChunk.length, 'mergeUploadError')
           })
         }
       })
