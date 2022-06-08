@@ -160,9 +160,10 @@ onMounted(() => {
   getForumnList();
 });
 // 页码变化
-function pageChange(page: number) {
+function pageChange(page: number,pageSize:number) {
   // console.log(page);
   forumSearch.page = page;
+  forumSearch.pageSize = pageSize;
   getForumnList();
 }
 
