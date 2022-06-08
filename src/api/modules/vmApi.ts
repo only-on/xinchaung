@@ -57,6 +57,8 @@ export default {
     // 远程协助消息
     getHelpFinfoApi:{ url: '/api/operate/teacherResults/questions', method: 'GET' },
     updateReadStatusApi:{url:"/api/operate/operates/handle",method:"POST",dataType: 'json'},
+    // 查询备课环境
+    getPrepareEnv: {url: '/api/operate/operates/prepares', method:"POST",dataType: 'json'},
 }
 
 // 
@@ -98,6 +100,7 @@ export interface IvmApi {
     evaluateApi:TFHttpSend
     getHelpFinfoApi:TFHttpSend
     updateReadStatusApi:TFHttpSend
+    getPrepareEnv:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

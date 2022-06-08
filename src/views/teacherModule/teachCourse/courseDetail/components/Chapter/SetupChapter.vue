@@ -170,6 +170,10 @@ const getExperimentGuide=(id:number)=>{
     }
     console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false
+    
+    if (![3, 6, 7].includes(data.task_type)) {
+      getPrepareEnv()
+    }
   }).catch((err:any)=>{
     experimentGuideLoading.value=false
   })
@@ -214,13 +218,7 @@ const lessonPreparation=()=>{
     inspectEnv(param).then(() => {
       router.push({
         path: "/vm",
-        query: {
-          type: param.type,
-          opType: param.opType,
-          taskId: param.taskId,
-          // routerQuery: JSON.stringify(routeQuery),
-          experType: task_type
-        },
+        query: param,
       });
     })
     return
@@ -229,40 +227,22 @@ const lessonPreparation=()=>{
   if (task_type === 6 || task_type === 7) {
     router.push({
       path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: task_type
-      },
+      query: param,
     });
     return
   }
 
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
-    goToVm(router, routeQuery)
+    Object.assign(param, {
+      connection_id: createExamplesInfo.connection_id,
+      topoinst_uuid: createExamplesInfo.topoinst_uuid,
+      topoinst_id: createExamplesInfo.topoinst_id,
+    })
+    createExamplesInfo.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1
-  // const {id} = state.activeExperimentObj
-  // let task_type = state.activeExperimentObj.task_type
-  // if (state.activeExperimentObj.is_webide && state.activeExperimentObj.type === 4) {
-  //   task_type = 3
-  // }
-  // const param: any = {
-  //   type: "course",  // 实验
-  //   opType: "prepare",
-  //   taskId: id,
-  //   experType: task_type
-  // };
-  // if (task_type === 6 || task_type === 7 || task_type === 3) {
-  //   isWsConnect.value = true
-  //   connectStatus.value = 2
-  // } else {
-  //   isWsConnect.value = false
-  // }
   // 准备环境
   if (currentState.value === 1) {
     // currentState.value = 2
@@ -274,6 +254,22 @@ const lessonPreparation=()=>{
     })
     return
   }
+}
+// 检查备课环境
+const vmApi = request.vmApi;
+const createExamplesInfo: any = reactive({})
+const getPrepareEnv = () => {
+  const param = {
+    "type": "course",
+    "taskId": props.courseId
+  }
+  vmApi.getPrepareEnv({param}).then((res: any) => {
+    if (res?.data[Number(state.activeExperimentObj.id)]?.topoinst_id) {
+      currentState.value = 2
+      connectStatus.value = 2
+      Object.assign(createExamplesInfo, res.data[Number(state.activeExperimentObj.id)])
+    }
+  })
 }
 
 onMounted(() => {

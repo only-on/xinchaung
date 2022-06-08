@@ -171,68 +171,41 @@ const openVnc = () => {
     type: type ? "course":"content",  // 实验
     opType: type && role === 4 ? type : "prepare",
     taskId: experimentDetail.id,
-    experType: content_type
+    experType: task_type
   };
   if (type) {
     param.recommendType = 'content'
   }
   // ide
-  if (content_type === 3) {
+  if (task_type === 3) {
     inspectEnv(param).then(() => {
       router.push({
         path: "/vm",
-        query: {
-          type: param.type,
-          opType: param.opType,
-          taskId: param.taskId,
-          // routerQuery: JSON.stringify(routeQuery),
-          experType: task_type,
-          recommendType: 'content'
-        },
+        query: param,
       });
     })
     return
   }
   // 视频 文档
-  if (content_type === 6 || content_type === 7) {
+  if (task_type === 6 || task_type === 7) {
     router.push({
       path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        // routerQuery: JSON.stringify(routeQuery),
-        experType: content_type,
-        recommendType: 'content'
-      },
+      query: param,
     });
     return
   }
 
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
-    goToVm(router, routeQuery)
+    Object.assign(param, {
+      connection_id: createExamplesInfo.connection_id,
+      topoinst_uuid: createExamplesInfo.topoinst_uuid,
+      topoinst_id: createExamplesInfo.topoinst_id,
+    })
+    createExamplesInfo.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1
-  // let {id, task_type, content_type} = experimentDetail
-  // if (experimentDetail.is_webssh) {
-  //   task_type = 2
-  // } else if (experimentDetail.programing_type && experimentDetail.task_type === 4) {
-  //   task_type = 3
-  // }
-  // const param: any = {
-  //   type: type ? "course":"content",  // 实验
-  //   opType: type && role === 4 ? type : "prepare",
-  //   taskId: experimentDetail.id,
-  //   experType: task_type
-  // };
-  // if (task_type === 6 || task_type === 7 || task_type === 3) {
-  //   isWsConnect.value = true
-  //   connectStatus.value = 2
-  // } else {
-  //   isWsConnect.value = false
-  // }
   // 准备环境
   if (currentState.value === 1) {
     // currentState.value = 2
@@ -307,11 +280,14 @@ const getExperimentDetail = () => {
         : experimentDetail.task_type
     experimentDetail.content_type = type
     
-    // ide不准备环境 直接进入
+    // ide、视频、文档不准备环境 直接进入
     if (type === 3) { 
       currentState.value = 2
       connectStatus.value =2
     }
+    // if (![3, 6, 7].includes(experimentDetail.task_type)) {
+    //   getPrepareEnv()
+    // }
   })
 };
 
@@ -328,7 +304,23 @@ const getExperimentDetail = () => {
 onMounted(() => {
   getExperimentDetail();
   getDirection()
+  getPrepareEnv()
 });
+const vmApi = request.vmApi;
+const createExamplesInfo: any = reactive({})
+const getPrepareEnv = () => {
+  const param = {
+    "type": "content",
+    "taskId": id
+  }
+  vmApi.getPrepareEnv({param}).then((res: any) => {
+    if (res?.data[Number(id)]?.topoinst_id) {
+      currentState.value = 2
+      connectStatus.value = 2
+      Object.assign(createExamplesInfo, res.data[Number(id)])
+    }
+  })
+}
 const directionList: any = reactive([])
 const getDirection = () => {
   directionList.length = 0
@@ -346,7 +338,7 @@ const levelList = {'1': '初级', '2': '中级', '3': '高级'}
 interface IExperimentDetail {
   id: number;
   user_id: number;
-  is_init: number;
+  is_init: number
   is_share: number;
   name: string;
   task_type: number;
