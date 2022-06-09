@@ -98,7 +98,7 @@
                 </a-table>
             </div>
         </div>
-        <cleanModal ref='cleanmodal' v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
+        <cleanModal  v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
     </div>
 </template>
 <script lang="ts" setup>
@@ -128,7 +128,6 @@
       componenttype: undefined,
       showNav:true,
     });
-    const cleanmodal:any=ref('')
 const diskType:any=ref('video');
 const cleanType:any=ref(false);
 const columns: any = ref();
@@ -187,8 +186,6 @@ const visible:any=ref(false)
         visible.value=true
         diskType.value=type
         cleanType.value=ifauto
-        // const refCustomLabel = ref<HTMLElement>();
-        console.log(cleanmodal.value,'refs.cleanmodalrefs.cleanmodalrefs.cleanmodal')
         
     }
     function onChange(page: any, pageSize: any) {

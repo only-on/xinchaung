@@ -50,8 +50,12 @@
       ref,
       onMounted,
       reactive,
-      inject
+      inject,
+      watch
     } from "vue";
+    import request from "src/api/index";
+    import { message } from "ant-design-vue";
+    const http = (request as any).systemMaintenance;
     import moment from 'moment';
     import beforeIcon from "src/components/aiAnt/beforeIcon.vue";
     import selectIcon from "src/assets/images/screenicon/date.png";
@@ -72,7 +76,7 @@ const props = withDefaults(defineProps<Props>(), {
   cleanType:()=>{},
   diskType:()=>{}
 });
-const value1:any=ref(365)
+const value1:any=ref()
 const value2:any=ref(365)
 const disabledDate = (current:any) => {
       // Can not select days before today and today
@@ -85,13 +89,29 @@ const emit = defineEmits<{
 function handleOk(){ 
     emit("update:visible", false);
     emit('getday',value2.value)
-    value2.value=365
 }
 function handCancel(){
     emit("update:visible", false);
-    value2.value=365
 }
-
+function getLogDay(){
+        http.dayOfsetLog().then((res:any)=>{
+            value2.value=res.data.day_before
+        })
+    }
+function getVideoDay(){
+    http.dayOfsetVideo().then((res:any)=>{
+        value2.value=res.data.day_before
+    })
+}
+watch(()=>props.visible,()=>{
+    if(props.cleanType){
+        props.diskType==='video'?getVideoDay():getLogDay()
+    }else{
+        value2.value=365
+    }
+},{
+    immediate:true
+})
 </script>
 <style lang="less" scoped>
   .cnadelBox{
