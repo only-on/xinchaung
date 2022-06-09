@@ -171,13 +171,17 @@ function doHotData(directData:any){
 }
 function callBack(key:any){
   // console.log(key)
+  experParams.search.contentName=''
+    experParams.search.contentAttribute=''
+    experParams.search.contentType=''
+    experTemplateParams.search.templateName=''
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
   const param:any={
-    'search[contentName]':experParams.search.contentName?experParams.search.contentName:'',
-    'search[contentAttribute]':experParams.search.contentAttribute?experParams.search.contentAttribute:'',
-    'search[contentType]':experParams.search.contentType?experParams.search.contentType:'',
+    'search[contentName]':'',
+    'search[contentAttribute]':'',
+    'search[contentType]':'',
     page:experParams.page,
     limit:experParams.limit
   }

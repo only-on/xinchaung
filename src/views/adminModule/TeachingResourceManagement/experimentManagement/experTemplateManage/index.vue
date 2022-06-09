@@ -65,7 +65,7 @@
       </div>
       <viewTemplateShow v-else :id="template.Templateid" />
       <template #footer>
-        <span></span>
+        <span class='closeBtn' @click="cancelTemplate(1)">关闭</span>
       </template>
     </a-modal>
     </div>
@@ -221,7 +221,7 @@ function batchDelete(){
       })
     }
 const cancelTemplate = (val: number) => {
-
+  template.templateVisble=false
 }
 </script>
 <style lang="less" scoped>
@@ -266,4 +266,22 @@ const cancelTemplate = (val: number) => {
    background: var(--brightBtn);
    border-color: var(--brightBtn);
  }
+ .closeBtn{
+   display: inline-block;
+   width:75px;
+   height: 34px;
+   border-radius:20px;
+   background-color: #EEEEEE;
+   line-height: 34px;
+   margin-top: 15px;
+ }
+ .closeBtn:hover{
+   cursor: pointer;
+ }
+//  .pdfBox{
+//    min-height: 750px;
+//    >div{
+//      height: 100%;
+//    }
+//  }
 </style>

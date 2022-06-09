@@ -105,6 +105,8 @@ const allexperTypes:any=ref([
 ])
 const ifSearch:any=ref(false)
     const ForumSearch:any=reactive({
+      type:'',
+      attribute:''
     })
     interface Props {
       listdata: any[]; 
