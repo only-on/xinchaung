@@ -43,7 +43,7 @@
       }"
     >
     <template #templateName='{record}'>
-      <div class="detail" @click="detail(record.id,record.templateType,record.pdfPath)">
+      <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
         {{record.templateName}}
       </div>
     </template>

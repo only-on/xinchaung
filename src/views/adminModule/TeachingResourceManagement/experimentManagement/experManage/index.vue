@@ -74,8 +74,13 @@
     >
     <!-- detail -->
     <template #contentName='{record}'>
-      <div class="detail" @click="detail(record,record.contentAttribute)">
+      <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
         {{record.contentName}}
+      </div>
+    </template>
+    <template #contentTechnicalDirectionGroup='{record}'>
+        <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
+        {{record.contentTechnicalDirectionGroup}}
       </div>
     </template>
     </a-table>
@@ -138,7 +143,8 @@ const ifSearch:any=ref(false)
         {
           title: '所属技术方向',
           dataIndex: 'contentTechnicalDirectionGroup',
-          ellipsis:true,
+          // ellipsis:true,
+          slots: { customRender: 'contentTechnicalDirectionGroup' },
         },
         {
           title: '课时',
@@ -248,6 +254,11 @@ const ifSearch:any=ref(false)
  .detail:hover{
    cursor: pointer;
    color: var(--primary-color);
+ }
+ .detailDirName{
+  overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .experManage{
    margin: 20px;
