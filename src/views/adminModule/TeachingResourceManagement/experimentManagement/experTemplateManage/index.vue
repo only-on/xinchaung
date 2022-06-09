@@ -176,8 +176,10 @@ function detail(id:any,type:any,path:any){
   template.templateVisble=true
   if(type=='在线'){
     template.Templateid=id
+    template.reportTitle='在线报告模版'
   }else{
     template.pdfUrl=path
+    template.reportTitle='离线报告模版'
   }
 }
 function downLoad(item:any){
