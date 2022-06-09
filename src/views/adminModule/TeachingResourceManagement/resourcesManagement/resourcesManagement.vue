@@ -233,6 +233,7 @@ const resourceStatistics=()=>{
 const viewDetail=(val:any)=>{
   let query:any={
     currentTab:val.is_public?0:1,
+    role:2,
     editId: val.slab_uid ? val.slab_uid: val.id,
     type:val.type_name,
     cardType: val.slab_uid ? 'setData':'other',

@@ -37,10 +37,10 @@
           </div>
           <div class="info">
             <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
-            <div class="date">
-              <span>实验:{{v.content_total}}</span>
-              <span>课时:{{v.class_total}}</span>
-              <span>学生:{{v.student_total}}</span>
+            <div class="date flexCenter">
+              <span class="single_ellipsis">实验:{{v.content_total}}</span>
+              <span class="single_ellipsis">课时:{{v.class_total}}</span>
+              <span class="single_ellipsis">学生:{{v.student_total}}</span>
             </div>
             <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
               <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
@@ -612,9 +612,10 @@ onMounted(() => {
         }
         .date{
          padding-bottom: 10px;
+        justify-content: space-between;
           span{
             color: var(--black-45);
-            padding-right: 2rem;
+            // padding-right: 2rem;
           }
         }
         .createDate{

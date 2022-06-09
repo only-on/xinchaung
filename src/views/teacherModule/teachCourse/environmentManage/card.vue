@@ -60,7 +60,16 @@
       :class="currentStatus ? '' : 'isOpen'"
       >关机</span
     >
-    <span
+    <a-popover placement="bottom">
+      <template #content>
+        <div class="btn vm-revert pointer" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
+        <div  class="btn vm-reset pointer" @click="btnClick(3)" style="padding: 0 10px;">重置</div>
+      </template>
+      <!-- <a-button type="primary">Hover me</a-button> style="border-right: 1px solid var(--brightBtn-25);color: #007879;"-->
+    
+      <span class="iconfont icon-chakangengduo btn vm-revert pointer"></span>
+    </a-popover>
+    <!-- <span
       class="btn vm-revert pointer"
       @click="btnClick(2)"
       >重启</span
@@ -69,7 +78,7 @@
       class="btn vm-reset pointer"
       @click="btnClick(3)"
       >重置</span
-    >
+    > -->
   </div>
 </template>
 
@@ -208,10 +217,12 @@ function jumpHandle(list: any) {
     display: inline-block;
     height: 19px;
     line-height: 19px;
-    padding: 0 25px;
+    // padding: 0 25px;
     margin: 10px 0;
     border-right: 1px solid var(--brightBtn-25);
     color: rgba(0, 120, 121, 1);
+    width: 80px;
+    text-align: center;
     &:last-child {
       border-right: 0;
     }

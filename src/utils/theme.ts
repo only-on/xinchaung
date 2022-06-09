@@ -131,7 +131,8 @@ const THomeEchartsThemeColor={
     Tcolor1:'rgba(255, 149, 68,.25)',// 课程完成率
     Tcolor2:'#FF9544',
 
-    Tcolor3:'#05BBC9',// 课程成绩分布
+    
+    Tcolor3:'#FF9544',// 课程成绩分布
     Tcolor4:'rgba(255, 149, 68,.25)',
     Tcolor5:'rgba(255, 149, 68,.25)'
   },
@@ -139,7 +140,7 @@ const THomeEchartsThemeColor={
     Tcolor1:'rgba(5,187,201,0.20)',// 课程完成率
     Tcolor2:'#05BBC9',
 
-    Tcolor3:'#FF9544',// 课程成绩分布
+    Tcolor3:'#05BBC9',// 课程成绩分布
     Tcolor4:'#05BBC9',
     Tcolor5:'#fff'
   },

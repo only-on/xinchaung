@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="header_right">
-        <div v-if="currentTab === '1'"> 
+        <div v-if="(currentTab === '1' && role===3)"> 
           <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
           <a-button type="primary" class="delete" @click="deleteImages()"> 删除</a-button>
         </div>
@@ -63,7 +63,7 @@
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
           <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn" :disabled="state.fileList.length?false:true" @click="downLoadAll()"> 下载全部</a-button>
-          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class="" @click="addFile()"> 上传文件</a-button>
+          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表' && role===3" class="" @click="addFile()"> 上传文件</a-button>
         </div>
       </div>
       <div class="content">
@@ -92,7 +92,7 @@
                 </div>
               </div>
               <div class="flexCenter caozuo">
-                <a-button v-if="currentTab === '1'" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
+                <a-button v-if="currentTab === '1' && role===3" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
                 <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
               </div>
             </div>
@@ -163,6 +163,7 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import uploadFile from './components/uploadFile.vue'
 import { downloadUrl } from "src/utils/download";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
+import extStorage from "src/utils/extStorage";
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -170,6 +171,8 @@ const {currentTab, editId ,cardType,type,user_id} = route.query;
 const http = (request as any).teacherMaterialResource;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 updata({
   tabs: [{ name: `${type}详情`, componenttype: 0 }],
   showContent: true,

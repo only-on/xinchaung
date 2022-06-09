@@ -125,6 +125,10 @@ function getList(type?: any, i?: any) {
     loading.value = false;
     let { list, page } = res.data;
     envList.push(...list);
+    envList.push(...list);
+    envList.push(...list);
+    envList.push(...list);
+    envList.push(...list);
     // console.log("envList", envList);
     searchInfo.page = page.currentPage
     searchInfo.total = page.totalCount
@@ -267,7 +271,7 @@ function handleOk(num: number) {
       justify-content: space-between;
       .env-list {
         // display: inline-block;
-        width: 320px;
+        width: 245px;
         height: 240px;
         // margin-right: 24px;
         background: var(--brightBtn-14);

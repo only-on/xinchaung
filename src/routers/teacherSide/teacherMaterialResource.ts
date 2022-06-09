@@ -1,26 +1,35 @@
 import RouterViews from "../../components/RouterView.vue";
 import Layout from "../../views/common/Layout.vue";
 import { LocationQuery, RouteParams } from "vue-router";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
+// console.log(role)
 export default {
   path: "teacherMaterialResource",
   component: Layout,
   name: "teacherMaterialResource",
   meta: {
-    title: "素材资源",
-    // title: (params?: RouteParams, query?: RouteParams) => {
-    //   const dataDetailMap = {
-    //       '0': '',
-    //       '1': '',
-    //   }
-    //   return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
-    // },
+    // title: "素材资源",
+    title: (params?: RouteParams, query?: RouteParams) => {
+      const dataDetailMap = {
+          '2': '教学资源管理',
+          '3': '素材资源',
+      }
+      return (query && query!.role)?dataDetailMap[query!.role.toString()]:dataDetailMap[3]
+    },
     authCode: "teacherMaterialResource",
   },
   children: [
     {
       path: "",
-      component: () =>
-        import("src/views/teacherModule/teacherMaterialResource/index.vue"),
+      component: () => {
+        if(role===2){
+          return import("src/views/adminModule/TeachingResourceManagement/resourcesManagement/resourcesManagement.vue")
+        }else{
+          return import("src/views/teacherModule/teacherMaterialResource/index.vue")
+        }
+      },
       meta: {
         icon: "",
         authCode: "materialList",
