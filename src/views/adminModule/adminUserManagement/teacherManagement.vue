@@ -198,6 +198,11 @@
           row-key="username"
           class="components-table-demo-nested"
         >
+        <template #result='{record}'>
+            <div :class='record.result=="添加成功"?"success":"wrong"'>
+              {{record?.result}}
+            </div>
+          </template>
         </a-table>
         <div v-else>
           <a-spin tip="Loading...">
@@ -335,6 +340,7 @@ const teacherColumns = [
   {
     title: "导入情况",
     dataIndex: "result",
+    slots: { customRender: "result" },
   },
 ]; 
     const router = useRouter();
@@ -893,5 +899,11 @@ const teacherColumns = [
       }
     }
   }
+}
+.success{
+  color: green;
+}
+.wrong{
+  color: red;
 }
 </style>

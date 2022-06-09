@@ -148,7 +148,8 @@
         }else{
           ifSearch.value=false
         }
-      emit('updateData',{expername:ForumSearch.name,page:1,pageSize:params.pageSize})
+        params.page=1
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
     }
     function onChange(page:any,size:any){
       params.page=page

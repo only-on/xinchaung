@@ -15,11 +15,14 @@ export default{
     clearScreen:{url:'/api/system/setting/set-video',method:'post',dataType:'json'},
     // 3.自动清理日志
     clearLog:{url:'/api/system/setting/set-log',method:'post',dataType:'json'},
-     // 3.手动清理视频
+     // 4.手动清理视频
     handclearScreen:{url:'/api/system/setting/clear-video',method:'post',dataType:'json'},
-     // 4.手动清理日志
+     // 5.手动清理日志
     handclearLog:{url:'/api/system/setting/clear-log',method:'post',dataType:'json'},
-
+    //6.获取清除日志设置的天数
+    dayOfsetLog:{url:'/api/system/setting/log-set',method:'GET',dataType:'json'},
+    //7.获取清除录屏设置的天数
+    dayOfsetVideo:{url:'/api/system/setting/video-set',method:'GET',dataType:'json'},
     //生成授权码
     settingAutoKeyApi: { url: "/api/system/auth/auth-key", method: "POST" },
     // 授权

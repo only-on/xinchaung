@@ -165,7 +165,8 @@ const ifSearch:any=ref(false)
         }else{
           ifSearch.value=false
         }
-        emit('updateData',{name:ForumSearch.name,page:1,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
+        params.page=1
+        emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onChange(page:any,size:any){
       params.page=page
