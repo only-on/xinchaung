@@ -429,7 +429,7 @@ const http = (request as any).coursePlain;
 const router = useRouter();
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "课程安排", componenttype: 0 }],
+  tabs: [{ name:role==3?"课程安排":"资源预约", componenttype: 0 }],
   // tabs: [],
   showContent: false,
   componenttype: undefined,
