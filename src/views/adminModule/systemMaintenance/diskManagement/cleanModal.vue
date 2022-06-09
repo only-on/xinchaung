@@ -7,7 +7,7 @@
                     <div class="cnadelBox">
                         自动清除系统中
                         <before-icon class="select" :icon="selectIcon">
-                            <a-select style="width: 143px" v-model:value="value1">
+                            <a-select style="width: 143px" v-model:value="value2">
                             <a-select-option
                                 v-for="item in timeSelectData"
                                 :value="item.value"
