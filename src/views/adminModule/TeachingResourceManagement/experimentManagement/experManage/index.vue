@@ -242,6 +242,9 @@ const ifSearch:any=ref(false)
  :deep(.ant-input) {
     border-radius: 20px;
  }
+ .custom_input{
+  width: 285px;
+ }
  .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
    border-radius: 20px;
  }
