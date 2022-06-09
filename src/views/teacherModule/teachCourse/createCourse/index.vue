@@ -238,12 +238,14 @@ function UpdateCourse(val:number){
   http.UpdateCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
     const {data}=res
     stup1Loading.value=false
-    if(val === 4){
-      cancel()
-      return
-    }
+    // if(val === 4){
+    //   cancel()
+    //   return
+    // }
     currentStep.value=val
     courseId.value=data.id
+    cancel()
+    return
   }).catch((err:any)=>{
     stup1Loading.value=false
   })
