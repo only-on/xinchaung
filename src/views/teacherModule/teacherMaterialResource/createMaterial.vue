@@ -12,7 +12,7 @@
         <div class="upload-content">
           <a-form-item :label="createType === 'dataSet' ? '数据集' : ''" name="fileList">
             <div class="upload">
-              <upload-file :type="createMaterialType.id" :fileList="formState.fileList" :complete="uploadComplete"></upload-file>
+              <upload-file ref="uploadRef" :type="createMaterialType.id" :fileList="formState.fileList" :complete="uploadComplete"></upload-file>
             </div>
           </a-form-item>
           <a-form-item label="说明" v-if="createType === 'dataSet'">
@@ -249,7 +249,10 @@ const createDataSet = async () => {
     })
   });
 }
+
+let uploadRef: any = ref(null)
 const cancel = () => {
+  uploadRef.value?.removeAllFile()
   router.go(-1)
 }
 </script>

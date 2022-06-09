@@ -249,10 +249,28 @@ function removeFile(file: any, index: any) {
   delete props.fileList[index];
 }
 function removeAllFile() {
-  props.fileList.forEach((v: any) => {
-    // console.log(version)
+  Object.keys(props.fileList).forEach((v: any) => {
+    console.log(props.fileList[v], props.type===1)
+    if (props.fileList[v].status==='end' || props.fileList[v].status === 'done') {
+      delete props.fileList[v];
+    } else {
+      if (props.type === 1) {
+        props.fileList[v].files.forEach((item: any) => {
+          if (item.xhr) {
+            // console.log(item)
+            item.xhr.abort();
+          }
+        })
+      } else {
+        tusFileUpload.remove(props.fileList[v]);
+      }
+      delete props.fileList[v];
+    }
   })
 }
+defineExpose({
+  removeAllFile
+})
 onMounted(() => {
   tusFileUpload.init()
 })

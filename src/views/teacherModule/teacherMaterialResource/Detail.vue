@@ -387,6 +387,7 @@ const SaveFile=()=>{
   }
 }
 const cancelAddFile=()=>{
+  uploadFileRef.value?.removeAllFile()
   addFileVisible.value=false
   AddFileLObj.AddFileList={}
 }
