@@ -48,7 +48,8 @@
         <a-button type="primary" @click="batchDelete">批量删除</a-button>
       </div>
     </div>
-    <a-table
+    <a-config-provider>
+      <a-table
       :columns="columns"
       :data-source="listdata"
       rowKey='id'
@@ -78,7 +79,10 @@
       </div>
     </template>
     </a-table>
-    
+      <template #renderEmpty>
+          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+      </template>
+    </a-config-provider>
     </div>
 </template>
 <script lang="ts" setup>
@@ -99,6 +103,7 @@ const allexperTypes:any=ref([
   {name:'视频实验',type:6},
   {name:'文档实验',type:7},
 ])
+const ifSearch:any=ref(false)
     const ForumSearch:any=reactive({
     })
     interface Props {
@@ -146,6 +151,11 @@ const allexperTypes:any=ref([
       (e: "updateData", val: any): void;
     }>();
     function search(){
+      if(ForumSearch.name||ForumSearch.attribute||ForumSearch.type){
+          ifSearch.value=true
+        }else{
+          ifSearch.value=false
+        }
         emit('updateData',{name:ForumSearch.name,page:1,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onChange(page:any,size:any){

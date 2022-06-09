@@ -18,7 +18,8 @@
                 <a-button type="primary" @click="batchDelete">批量删除</a-button>
             </div>
     </div>
-    <a-table
+    <a-config-provider>
+      <a-table
       :columns="columns"
       :data-source="listdata"
       rowKey='id'
@@ -53,6 +54,10 @@
             </span>
         </template>
     </a-table>
+      <template #renderEmpty>
+          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+      </template>
+    </a-config-provider>
      <!-- 在线制作 预览实验模板 -->
     <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
       <div class="pdfBox" v-if="template.pdfUrl">
@@ -82,6 +87,7 @@
     const ForumSearch:any=reactive({
         name:''
     })
+    const ifSearch:any=ref(false)
     interface Props {
       listdata: any[]; 
       total:any;
@@ -137,6 +143,11 @@
       (e: "updateData", val: any): void;
     }>();
     function search(){
+      if(ForumSearch.name){
+          ifSearch.value=true
+        }else{
+          ifSearch.value=false
+        }
       emit('updateData',{expername:ForumSearch.name,page:1,pageSize:params.pageSize})
     }
     function onChange(page:any,size:any){
