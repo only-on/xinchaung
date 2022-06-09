@@ -10,8 +10,10 @@ export default {
   meta: {
     title: (params?: RouteParams, query?: RouteParams) => {
       const dataDetailMap = {
-          '3': '教学过程',
           '2': '教学资源管理',
+          '3': '教学过程',
+          '4': '教学过程',
+          '5': '教学过程',
       }
       return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
     },

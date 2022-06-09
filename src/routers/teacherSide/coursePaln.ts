@@ -11,14 +11,11 @@ export default {
   meta: {
     // title: "教学过程",
     title: (params?: RouteParams, query?: RouteParams) => {
-      console.log(role);
-      
       const dataDetailMap = {
           '3': '教学过程',
           '2': '资源预约',
       }
       return dataDetailMap[role.toString()] || dataDetailMap[3]
-      // return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
     },
     authCode: "coursePlan",
   },

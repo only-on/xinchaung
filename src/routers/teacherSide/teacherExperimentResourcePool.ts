@@ -12,8 +12,8 @@ export default {
     // title: "实验资源库",
     title: (params?: RouteParams, query?: RouteParams) => {
       const dataDetailMap = {
-          '3': '实验资源库',
           '2': '教学资源管理',
+          '3': '实验资源库',
       }
       return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
     },

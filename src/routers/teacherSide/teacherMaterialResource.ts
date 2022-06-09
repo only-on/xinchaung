@@ -15,6 +15,7 @@ export default {
       const dataDetailMap = {
           '2': '教学资源管理',
           '3': '素材资源',
+          '5': '素材资源',
       }
       return (query && query!.role)?dataDetailMap[query!.role.toString()]:dataDetailMap[3]
     },
