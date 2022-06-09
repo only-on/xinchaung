@@ -31,7 +31,7 @@
       </div>
       <div class="top-right">
         <a-button type="primary" @click="toEnvironmental">环境管理</a-button>
-        <a-button type="primary" class="add-time-btn" v-if="role == 2" @click="addTimeSlot"
+        <a-button type="primary" class="add-time-btn" v-if="role == 2&&dayTimes?.length<8" @click="addTimeSlot"
           >添加时间段</a-button
         >
       </div>
@@ -556,6 +556,8 @@ function deleteSettingTime(index: number) {
   }
   Modal.confirm({
     content: "您确定删除此时间段吗？执行后无法恢复，请谨慎操作",
+    okText: "确定",
+    cancelText: "取消",
     onOk: () => {
       http
         .deleteTimeTable({

@@ -13,7 +13,7 @@
       </div>
       <div class="header-right">
         <a-button type="primary" @click="BatchDelete">移除助教</a-button>
-        <a-button type="primary" class="brightBtn right-btn1" @click="addHelp">添加助教</a-button>
+        <a-button type="primary" class="marginBtn right-btn1" @click="addHelp">添加助教</a-button>
       </div>
     </div>
     <div class="tableScrollbar">
