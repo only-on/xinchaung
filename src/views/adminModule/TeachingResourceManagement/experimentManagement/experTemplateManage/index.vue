@@ -61,7 +61,7 @@
      <!-- 在线制作 预览实验模板 -->
     <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
       <div class="pdfBox" v-if="template.pdfUrl">
-        <PdfVue :url="template.pdfUrl" />
+        <PdfVue style="height:550px" :url="template.pdfUrl" />
       </div>
       <viewTemplateShow v-else :id="template.Templateid" />
       <template #footer>
@@ -254,6 +254,9 @@ const cancelTemplate = (val: number) => {
  }
  .detail{
    color: var(--primary-color);
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .detail:hover{
    cursor: pointer;

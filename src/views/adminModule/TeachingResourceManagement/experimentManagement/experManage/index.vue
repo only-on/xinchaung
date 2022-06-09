@@ -5,7 +5,7 @@
             <div class="item custom_input custom_input2">
         <span style="width:50px">实验名称</span>
         <a-input
-          style="width:224px"
+          style="width:196px"
           v-model:value="ForumSearch.name"
           placeholder="请输入实验名称关键词搜索"
           @keyup.enter="search()"
@@ -23,7 +23,7 @@
           v-model:value="ForumSearch.attribute"
           placeholder="请选择实验属性"
           @change="search()"
-          style="width: 240px; margin-right: 16px"
+          style="width: 176px; margin-right: 16px"
         >
           <a-select-option value="">全部</a-select-option>
           <a-select-option value="0">私有</a-select-option>
@@ -36,7 +36,7 @@
           v-model:value="ForumSearch.type"
           placeholder="请选择实验类型"
           @change="search()"
-          style="width: 240px; margin-right: 16px"
+          style="width:176px; margin-right: 16px"
         >
           <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
         </a-select>
@@ -138,6 +138,7 @@ const ifSearch:any=ref(false)
         {
           title: '所属技术方向',
           dataIndex: 'contentTechnicalDirectionGroup',
+          ellipsis:true,
         },
         {
           title: '课时',
@@ -194,7 +195,7 @@ const ifSearch:any=ref(false)
           http.experDelete({param:{content_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
               message.success('删除成功！')
-              emit('updateData',{name:'',page:params.page,type:'',attribute:''})
+              emit('updateData',{name:'',page:params.page,pageSize:params.pageSize,type:'',attribute:''})
               tableData.selectedRowKeys=[]
             }
           })
@@ -240,6 +241,9 @@ const ifSearch:any=ref(false)
  }
  .detail{
    color: var(--primary-color);
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .detail:hover{
    cursor: pointer;
