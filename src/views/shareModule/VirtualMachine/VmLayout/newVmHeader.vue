@@ -1510,7 +1510,7 @@ watch(
       isShowDelayBtn.value = !(baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0)
       roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
       // console.log('roleArry2',roleArry.value)
-    } else {
+    } else if (experType!==2) {
       const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
         ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
         : (getMenuRole(role as any, experimentTypeList[experType].name) as any);

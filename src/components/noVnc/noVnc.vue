@@ -120,7 +120,26 @@ export default defineComponent({
 
     function  sendSelectContent(text:string){
       if (text&&rfb.value) {
-        rfb.value.clipboardPasteFrom(text)
+        // rfb.value.clipboardPasteFrom(text)
+        f(text.split(''))
+        function f(strArr: any) {
+          var character = strArr.shift();
+          var i=[];
+          var code = character.charCodeAt();
+          var needs_shift = character.match(/[A-Z!@#$%^&*()_+{}:\"<>?~|]/);
+          if (needs_shift) {
+            rfb.value.sendKey(0xffe1,1);
+          }
+          rfb.value.sendKey(code,1);
+          // rfb.value.sendKey(code,0);
+          if (needs_shift) {
+            rfb.value.sendKey(0xffe1,0);
+          }
+
+          if (strArr.length > 0) {
+            setTimeout(function() {f(strArr);}, 10);
+          }
+        }
       }
     }
     function sendCtrlAltDel(){
