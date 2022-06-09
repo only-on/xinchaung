@@ -36,11 +36,11 @@
         </div>
       </div>
       <div class="item item4">
-        <h3 class="statisticalTitle">录像</h3>
+        <h3 class="statisticalTitle">录屏</h3>
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
-            <span class="left2">{{analysisObj.videoUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
+            <span class="left2">{{analysisObj.videoUsedDisk}}/{{analysisObj.allTotalDisk}}G</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
