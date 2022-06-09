@@ -93,7 +93,7 @@
                                 >{{ item.label }}
                             </a-select-option>
                         </a-select>
-                        <span class="ifRun">运行</span>
+                        <span class='ifRun'>{{serveNode?.state=='up'?'运行':'关闭'}}</span>
                     </div>
                 </div>
                 <div class="node">
@@ -624,6 +624,10 @@
             }
             .ifRun{
                 color:var(--primary-color);
+                margin-left: 10px;
+            }
+            .close{
+                color:red;
                 margin-left: 10px;
             }
             :deep(.ant-select-selector){
