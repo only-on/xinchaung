@@ -195,7 +195,7 @@ function downLoad(item:any){
             http1.deleteTemplate({urlParams: {id: item.id}}).then((res:any) => {
               message.success(`删除成功！`)
               // getTemplateList()
-              emit('updateData',{expername:ForumSearch.name,page:params.page})
+              emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
             })
           },
         });
@@ -213,7 +213,7 @@ function batchDelete(){
         onOk: () => {
           http.experTemplateDelete({param:{template_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
-              emit('updateData',{expername:ForumSearch.name,page:params.page})
+              emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
               tableData.selectedRowKeys=[]
             }
           })
