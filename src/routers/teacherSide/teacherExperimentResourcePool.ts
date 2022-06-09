@@ -15,14 +15,16 @@ export default {
           '2': '教学资源管理',
           '3': '实验资源库',
       }
-      return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
+      return dataDetailMap[role.toString()] || dataDetailMap[3]
+      // return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
     },
     authCode: "teacherExperimentResourcePool",
   },
   children: [
     {
       path: "",
-      component: () => {
+      component: (params?: RouteParams, query?: RouteParams) => {
+        console.log(query)
         if(role===2){
           return import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue")
         }else{
