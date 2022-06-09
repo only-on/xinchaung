@@ -14,10 +14,14 @@
       <div class="imageBox" v-for="(v, k) in list" :key="v" :class="getClass(k)">
         <div class="image">
           <!-- imgType 四种-->
-          <div class="top flexCenter" :class="v.image && v.image.ostype">
+          <div class="top" :class="v.image && v.image.ostype">
             <div class="left">
-              <div class="tit">{{v.image && v.image.name}}</div>
-              <div class="text single_ellipsis" :title="v.image?.description">{{v.image && v.image.description}}</div>
+              <div class="tit2 flexCenter">
+                <span>使用镜像</span>
+                <span>{{v.image && v.image.ostype}}</span>
+              </div>
+              <div class="tit single_ellipsis">{{v.image && v.image.name}}</div>
+              <!-- <div class="text single_ellipsis" :title="v.image?.description">{{v.image && v.image.description}}</div> -->
               <div class="parameter flexCenter">
                 <div class="item">
                   <span>内存</span>
@@ -386,6 +390,7 @@ async function init() {
     // height: 224px;
     color: var(--white);
     .top {
+      display: flex;
       justify-content: space-between;
       padding: 1rem;
       height: 180px;
@@ -397,7 +402,14 @@ async function init() {
         width: 70%;
         .tit {
           color: var(--white-65);
+          font-size: 14px;
+        }
+        .tit2{
           font-size: 12px;
+          span:nth-child(2){
+            color:#fffa75;
+            margin-left: 8px;
+          }
         }
         .parameter {
           margin: 14px 0 20px 0;
