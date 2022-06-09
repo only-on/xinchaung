@@ -154,16 +154,18 @@ function jumpHandle(list: any) {
       if (res.status) {
         // console.log(res);
         // openVm({type:"course",opType:"help",taskId:list.taskId})
-        router.push({
+        const {href} = router.resolve({
           path: "/vm",
           query: {
             opType: "help",
             type: "course",
             taskId: list.taskId,
             connection_id: ls.lStorage.get("uid") + "_" + list.id,
-            experType: props.currentExperiment.type
+            experType: props.currentExperiment.type,
+            isClose: 1 // 打开的标签页
           },
         }); // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
+        window.open(href, '_blank');
         // router.push({
         //   name: 'classicalAsset',
         //   params: {

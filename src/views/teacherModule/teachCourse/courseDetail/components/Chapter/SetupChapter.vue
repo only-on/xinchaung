@@ -332,11 +332,18 @@ onMounted(() => {
         .report{
           color: var(--primary-color);
           cursor: pointer;
+          >span:last-child{
+            margin-left: 5px;
+          }
         }
         .Lesson{
           margin-left: 2rem;
           cursor: pointer;
           color: var(--brightBtn);
+          >span:last-child{
+            margin-left: 5px;
+            font-size: 14px;
+          }
           &.none-event {
             pointer-events: none;
             cursor: not-allowed;

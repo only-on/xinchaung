@@ -696,6 +696,10 @@ function back() {
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
+      // 课程详情-实验环境管理-开启实验环境（新打开的标签页）
+      if (opType === 'help' && route.query.isClose) {
+        window.close();
+      }
       if (experType === 6 || experType === 7) {
         router.go(historyLength - history.length - 1);
         return
@@ -912,7 +916,12 @@ function endVmEnvirment() {
         // })
       } else {
         // backTo(router, type, 3, routerQuery);
-        router.go(historyLength - history.length - 1);
+        // 课程详情-实验环境管理-开启实验环境（新打开的标签页）
+        if (opType === 'help' && route.query.isClose) {
+          window.close();
+        } else {
+          router.go(historyLength - history.length - 1);
+        }
       }
       // message.success("结束成功");
     }).catch((err) => {
