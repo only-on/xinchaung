@@ -209,6 +209,7 @@ const ifSearch:any=ref(false)
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentDetail",
     query: {
+      role:2,
       id:val.id,
     },
   });

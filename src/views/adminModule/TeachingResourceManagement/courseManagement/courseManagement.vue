@@ -292,6 +292,7 @@ const viewDetail=(val:any)=>{
   router.push({
     path:'/teacher/teacherCourse/Detail',
     query:{
+      role:2,
       currentTab:1,
       courseId:val.id,
       from:'courseManagement'
