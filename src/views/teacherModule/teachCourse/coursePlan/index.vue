@@ -209,7 +209,7 @@
                         >
                           <span>{{ classVal.arrangements[aindex].teacher_name }}</span>
                           <span
-                            >公预约{{ classVal.arrangements[aindex].stu_num }}人
+                            >共预约{{ classVal.arrangements[aindex].stu_num }}人
                             <span class="edit-del-btn-wrap">
                               <i
                                 @click="adminEdit(classVal.arrangements[aindex])"
@@ -332,6 +332,7 @@
                                 {{ classVal.arrangements[aindex].stu_num }}人
                                 <span class="edit-del-btn-wrap">
                                   <i
+                                  v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
                                     @click="adminEdit(classVal.arrangements[aindex])"
                                     class="icon-bianji iconfont"
                                   ></i>
