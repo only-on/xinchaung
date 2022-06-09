@@ -50,12 +50,12 @@
     :ok-button-props="{ disabled: false }"
     :cancel-button-props="{ disabled: false }"
     @ok="handleOk"
-    @Cancel="visible = false"
+    @Cancel="visible = false;openEnvNum=''"
     cancel-text="取消"
     ok-text="确定"
     :width="400"
   >
-    <a-input-number v-model:value="openEnvNum" :max="limit" :min="1"  allow-clear autofocus />
+    <a-input-number v-model:value="openEnvNum" :max="limit" :min="0"  allow-clear autofocus />
     <p class="prompt">*最多开启{{limit}}套环境</p>
   </a-modal>
 </template>
@@ -125,10 +125,6 @@ function getList(type?: any, i?: any) {
     loading.value = false;
     let { list, page } = res.data;
     envList.push(...list);
-    envList.push(...list);
-    envList.push(...list);
-    envList.push(...list);
-    envList.push(...list);
     // console.log("envList", envList);
     searchInfo.page = page.currentPage
     searchInfo.total = page.totalCount
@@ -192,7 +188,7 @@ onUnmounted(() => {
 })
 
 // 开启实验环境
-const openEnvNum = ref()
+const openEnvNum: any = ref('')
 const limit = ref(0);
 const visible = ref(false)
 function getLimit() {
@@ -204,7 +200,7 @@ function getLimit() {
 function openEnv() {
   // console.log(currentExperiment)
   if (currentExperiment.is_high) {
-    message.warning(`该${name}为高配${name}，无法预启动${name}环境!`);
+    message.warning(`该实验为高配实验，无法预启动实验环境!`);
     return;
   }
   if (!limit.value) {
@@ -214,6 +210,10 @@ function openEnv() {
   visible.value = true
 }
 function handleOk(num: number) {
+  if (!openEnvNum.value || openEnvNum.value==null) {
+    message.warning('请输入开启数量！');
+    return
+  }
   const limitParams = {
     opType: "precreate", // 预创建
     type: "course", // 学习类别：course:课程实验；train:实训
@@ -225,7 +225,7 @@ function handleOk(num: number) {
     if (res && res.status) {
       visible.value = false
       getList();
-      openEnvNum.value = 0
+      openEnvNum.value = ''
       // message.success({ content: "请求成功!", duration: 2 });
     }
   });
