@@ -11,7 +11,7 @@
   >
     <div class="upload">
       <div class="cover">
-        <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
+        <img :src="systemImages.uploadCoverImg" alt="上传封面">
       </div>
       <loading-outlined v-if="loading"></loading-outlined>
     </div>
@@ -22,6 +22,9 @@
 import { defineComponent, Ref, ref, inject ,watch} from 'vue'
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { MessageApi } from "ant-design-vue/lib/message";
+import {getThemeData} from 'src/utils/theme'
+const {systemImages} = getThemeData()
+// console.log(systemImages)
 const $message: MessageApi = inject("$message")!;
 
 interface Props {

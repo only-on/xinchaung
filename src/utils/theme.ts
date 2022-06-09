@@ -2,6 +2,9 @@ import {sStorage} from 'src/utils/extStorage'
 import loginA from 'src/assets/images/admin/systemmain/loginA.png'
 import loginB from 'src/assets/images/admin/systemmain/loginB.png'
 import loginC from 'src/assets/images/admin/systemmain/loginC.png'
+// 上传文件的封面
+import uploadCoverImg from 'src/assets/images/teacherMaterialResource/cover.png'
+import uploadCoverImg2 from 'src/assets/images/teacherMaterialResource/cover2.png'
 // 实验详情顶部图片
 import experimentA from 'src/assets/images/themeA/teacherExperiment/base_info_bg.png'
 import experimentB from 'src/assets/images/themeB/teacherExperiment/base_info_bg.jpg'
@@ -234,6 +237,7 @@ let imageData = {
     },
     qualityPrev: prevImg, // 教学质量 轮播图按钮
     qualityNext: nextImg, // 教学质量 轮播图按钮
+    uploadCoverImg:uploadCoverImg, // 上传文件的封面
   },
   B: {
     courseBan: courseB,
@@ -254,7 +258,8 @@ let imageData = {
       adminHome6: home9,
     },
     qualityPrev: prevImg,
-    qualityNext: nextImg
+    qualityNext: nextImg,
+    uploadCoverImg:uploadCoverImg2, // 上传文件的封面
   },
   C: {
     courseBan: courseC,
@@ -275,7 +280,8 @@ let imageData = {
       adminHome6: home6,
     },
     qualityPrev: prevImg1,
-    qualityNext: nextImg1
+    qualityNext: nextImg1,
+    uploadCoverImg:uploadCoverImg, // 上传文件的封面
   }
 }
 export function getThemeData () {
