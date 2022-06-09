@@ -1,5 +1,5 @@
 <template>
-  <header :class="['header-box', 'theme'+systemTheme]">
+  <header :class="['header-box', 'theme'+store.state.systemInfo.theme]">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${ getLogoUrl});`"></div>
@@ -90,14 +90,11 @@ import {clearAllCookies} from "src/utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "src/typings/wmc";
 import api from "src/api";
-import { AnyMxRecord } from "dns";
 import logoImg from "src/assets/images/user/logo.png"
-import {getThemeData} from 'src/utils/theme'
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
-    const {systemTheme} = getThemeData()
     const env = process.env.NODE_ENV == "development" ? true : false;
     const activeMenu = ref<string>('')
     const router = useRouter();
@@ -701,7 +698,6 @@ export default defineComponent({
       store,
       logoImg,
       getLogoUrl,
-      systemTheme,
       activeMenu
     };
   },

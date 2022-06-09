@@ -865,7 +865,8 @@ watch(
         height: 40px;
         padding-right: 10px;
         .TitLeft{
-          width: 100%;
+          // width: 100%;
+          flex: 1;
           
           .experimentType{
             color: #1CB2B3;
