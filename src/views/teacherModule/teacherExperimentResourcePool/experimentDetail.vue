@@ -60,7 +60,7 @@
           <span>保存到我的</span>
         </span>
       </div>
-      <div class="user-info" v-if="Number(currentTab) === 1">
+      <div class="user-info" v-if="Number(currentTab) === 1||role === 2">
         <img :src="experimentDetail.user_profile.portrait||defaultAvatar" alt="" srcset="" />
         <span class="user-name">{{experimentDetail.user_profile.name||'TEACHERNAME'}}</span>
       </div>
@@ -369,7 +369,7 @@ interface IExperimentDetail {
   width: var(--center-width);
   margin: 0 auto;
   .top {
-    height: 170px;
+    height: 190px;
     // background-size: 100% 200px;
     padding: 0 14px;
     &.public {
