@@ -323,6 +323,12 @@ onMounted(() => {
       padding:10px 22px 22px 30px;
       .title{
         justify-content: space-between;
+        .report,.Lesson{
+          line-height: 25px;
+          .iconfont{
+            padding-right: 6px;
+          }
+        }
         .report{
           color: var(--primary-color);
           cursor: pointer;
