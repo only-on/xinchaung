@@ -106,7 +106,7 @@
                 <div :class="{'进行中':'in','未开始':'nostarted','已结束':''}[record.courseState]">{{record.courseState}}</div>
               </template>
               <template #courseName="{ record }">
-                <div class="courseName" @click="viewDetail(record)">{{record.courseName}}</div>
+                <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
               </template>
             </a-table>
             <template #renderEmpty>

@@ -62,11 +62,11 @@
               "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #imageTags="{ record }">
-                <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
+              <template #tags="{ record }">
+                <span :title="(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''">{{(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''}}</span>
               </template>
               <template #name="{ record }">
-                <div class="courseName" @click="viewDetail(record)">{{record.name}}</div>
+                <span class="courseName" :title="record.name" @click="viewDetail(record)">{{record.name}}</span>
               </template>
             </a-table>
             <template #renderEmpty>
@@ -144,10 +144,10 @@ const columns= [
   },
   {
     title: "标签",
-    dataIndex: "imageTags",
+    dataIndex: "tags",
     align: "center",
     ellipsis: true,
-    slots: { customRender: "imageTags" },
+    slots: { customRender: "tags" },
   },
   {
     title: "描述",
