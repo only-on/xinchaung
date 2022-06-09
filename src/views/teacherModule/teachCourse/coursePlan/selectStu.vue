@@ -176,11 +176,12 @@ function onSearch(value: any) {
   params.pageinfo.index=1
   // getallstudent()
   let param:any={
-   page:1,
-   stu_no:params.name,
-   classname:params.class,
-   grade:params.grade,
-   major:params.direct
+    page:1,
+    pageSize: params.pageinfo.size,
+    stu_no:params.name,
+    classname:params.class,
+    grade:params.grade,
+    major:params.direct
   }
   emit('updateStuParams',param)
   if(params.name||params.class||params.grade||params.direct){
@@ -194,6 +195,7 @@ function onChange(page: any, pageSize: any) {
   // getallstudent()
   let param:any={
     page:page,
+    pageSize: params.pageinfo.size,
     stu_no:params.name,
     classname:params.class,
     grade:params.grade,
@@ -239,12 +241,17 @@ function handleCancel() {
 function handleOkSelect(){
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
   tableData.selectedRowKeys=[]
+  params.pageinfo = {
+    index: 1,
+    size: 10
+  }
   params.name=''
   params.class=''
   params.grade=''
   params.direct=''
   let param:any={
    page:1,
+   pageSize: 10,
    stu_no:params.name,
    classname:params.class,
    grade:params.grade,
@@ -256,12 +263,17 @@ function handleOkSelect(){
 function handleCancelSelect(){
   emit("updateSelectStuVisable", 'cancel',[]);
   tableData.selectedRowKeys=[]
+  params.pageinfo = {
+    index: 1,
+    size: 10
+  }
   params.name=''
   params.class=''
   params.grade=''
   params.direct=''
   let param:any={
    page:1,
+   pageSize: 10,
    stu_no:params.name,
    classname:params.class,
    grade:params.grade,

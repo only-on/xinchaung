@@ -71,10 +71,7 @@ const option = {
     },
     roam: true,
     label: {
-      show: true,
-      formatter: (params: any) => {
-        return params.name+'\n'+params.value
-      }
+      show: true
     },
     data: [{
       "name": "新冠肺炎愈后一般6个月内不会再得",
