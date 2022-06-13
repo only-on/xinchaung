@@ -69,9 +69,9 @@ watch(
     if(configuration.componenttype==undefined){
       configuration.componenttype=0
     }
-    console.log(configuration.componenttype,'configuration.componenttype')
+    // console.log(configuration.componenttype,'configuration.componenttype')
     componentName.value = componentNames[configuration.componenttype];
-    console.log(componentName.value,'componentName.valuecomponentName.value')
+    // console.log(componentName.value,'componentName.valuecomponentName.value')
   },{
     immediate: true 
   }
@@ -86,7 +86,15 @@ watch(
 //   },
 //   { immediate: true }
 // );
-onMounted(() => {});
+onMounted(() => {
+  if (!Number(route.query.currentTab)) {
+    // currentTab.value = 0
+    configuration.componenttype = 0
+  } else {
+    // currentTab.value = 1
+    configuration.componenttype = 1
+  }
+});
 const ExperimentTypeList = reactive([
   { name: "发布公告", key: "desktop" }
 ])
