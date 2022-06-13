@@ -29,7 +29,7 @@
             <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
           </div>
           <div class="operate" v-if="currentTab === 1">
-            <span  v-show="v.is_init === 0 && v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+            <span  v-show="v.save_my_content" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
           </div>
           <div class="operate" v-if="currentTab === 0">
             <!-- is_share:1 就是共享数据 -->
@@ -280,6 +280,7 @@ interface IExperimentList {
   programing_type: number
   is_high:boolean
   is_authorize:boolean
+  save_my_content: boolean
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
