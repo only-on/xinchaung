@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="header_right">
-        <div v-if="(currentTab === '1' && role===3)"> 
+        <div v-if="(currentTab === '1' && [3,5].includes(role))"> 
           <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
           <a-button type="primary" class="delete" @click="deleteImages()"> 删除</a-button>
         </div>
@@ -56,7 +56,7 @@
           </span>
         </div>
         <div class="right">
-          <template v-if="currentTab === '1' && activeTab==='说明文档' && !showEditMd && role===3">
+          <template v-if="currentTab === '1' && activeTab==='说明文档' && !showEditMd && [3,5].includes(role)">
             <a-button type="primary"  @click="editMark"> 编 辑</a-button>
           </template>
           <template v-if="currentTab === '1' && activeTab==='说明文档' && showEditMd">
@@ -67,7 +67,7 @@
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
           <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn" :disabled="state.fileList.length?false:true" @click="downLoadAll()"> 下载全部</a-button>
-          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表' && role===3" class="" @click="addFile()"> 上传文件</a-button>
+          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表' && [3,5].includes(role)" class="" @click="addFile()"> 上传文件</a-button>
         </div>
       </div>
       <div class="content">
@@ -96,7 +96,7 @@
                 </div>
               </div>
               <div class="flexCenter caozuo">
-                <a-button v-if="currentTab === '1' && role===3" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
+                <a-button v-if="currentTab === '1' && [3,5].includes(role)" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
                 <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
               </div>
             </div>
