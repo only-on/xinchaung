@@ -19,9 +19,9 @@
       </div>
     </div>
     <a-button class="addTeacher" @click="createteacher()" type="primary">创建教师</a-button>
-      <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
+      <a-button class="addTeacher" @click="batchImport()" type="primary">批量导入</a-button>
       <a-button class="addTeacher" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
-      <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
+      <a-button class="addTeacher" @click="BatchDelete()" type="primary">批量删除</a-button>
   </div>
   <a-config-provider>
     <a-table
@@ -47,8 +47,14 @@
       }"
       class="components-table-demo-nested"
     >
-      <template #title="{ record, text }">
-        <a @click="details(record.id)">{{ text }}</a>
+    <template #perTitle="{record}">
+        <div :title="record?.title" class="eslipse">{{record?.title}}</div>
+      </template>
+      <template  #department="{record}">
+        <div :title="record?.department" class="eslipse">{{record.department}}</div>
+      </template>
+      <template #email="{record}">
+        <div :title="record?.email" class="eslipse">{{record.email}}</div>
       </template>
       <template #operation="{ record }">
         <!-- icon-bianji -->
@@ -279,7 +285,6 @@ const columns = [
     dataIndex: "stu_no",
     align: "center",
     width: 120,
-    // slots: { customRender: 'title' },
   },
   {
     title: "姓名",
@@ -290,12 +295,14 @@ const columns = [
   {
     title: "职称",
     dataIndex: "title",
-    align: "center"
+    align: "center",
+    slots: { customRender: 'perTitle' },
   },
   {
     title: "学院",
     dataIndex: "department",
-    align: "center"
+    align: "center",
+    slots: { customRender: "department" },
   },
   // {
   //   title: "研究方向",
@@ -312,6 +319,7 @@ const columns = [
     dataIndex: "email",
     align: "center",
     width: 200,
+    slots: { customRender: "email" },
   },
   {
     title: "电话",
@@ -823,19 +831,12 @@ const teacherColumns = [
         z-index: 10;
       }
     }
-    // .custom_input2 {
-    //   &::before {
-    //     background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-    //   }
-    // }
-    // .custom_input3 {
-    //   &::before {
-    //     background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-    //   }
-    // }
   }
   .addTeacher {
     margin-right: 16px;
+  }
+  .addTeacher:nth-last-child(1){
+    margin-right: 0;
   }
 }
 :deep(.ant-form-item-control) {
@@ -905,5 +906,10 @@ const teacherColumns = [
 }
 .wrong{
   color: red;
+}
+.eslipse{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

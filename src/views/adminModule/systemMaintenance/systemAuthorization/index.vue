@@ -217,7 +217,7 @@ function copyCode(e: Event) {
           body,
           success: (res: any) => {
             if (res.status === 1) {
-              authorizationFile.url = res.data.url;
+              authorizationFile.url = res.data.full_url;
               reactiveData.isShowBtn = false;
               authorizationFile.progress = 100;
             } else {

@@ -73,7 +73,6 @@
       <div class="table-main setscrollbar2">
         <div class="table-content">
           <div class="table-time-col">
-            <!-- <setting-time-modal ref="settingTime" /> -->
             <div
               class="table-time-list table-td flex-center table-left"
               :class="{ 'table-time-hover': role == 2 }"
@@ -92,7 +91,6 @@
                 <div class="table-time-value">
                   {{ moment(item.start, "HH:mm").format("HH:mm") }}
                 </div>
-                <!-- <div class="table-time-value">~</div> -->
                 <div class="table-time-value">
                   {{ moment(item.end, "HH:mm").format("HH:mm") }}
                 </div>
@@ -110,7 +108,6 @@
             </div>
           </div>
           <a-row type="flex" class="table-body">
-            <!-- <modal-confirm ref="modalConfirm" /> -->
             <a-col
               type="flex"
               class="table-col flex-center"
@@ -133,7 +130,6 @@
                   class="course-overdue flex-center"
                 >
                   已过期
-                  <!-- <div class="overdue-box"><div class="overdue"></div></div> -->
                 </div>
                 <!-- 管理端当前时间段 -->
                 <div
@@ -155,10 +151,6 @@
                   class="teacher-current hover-edit teacher-no"
                 > 
                   <div class="edit-wrap flex-center">
-                    <!-- <div class="course-name flex-center">
-                      {{ classVal.arrangements[0].course_name }}
-                    </div> -->
-                    <!-- class="teacher-operation top" -->
                     <div
                       @click="
                         editTeachingSchedule(
@@ -169,7 +161,6 @@
                     >
                       编辑
                     </div>
-                    <!-- class="teacher-operation" -->
                     <div
                       @click="cancelScheduleConfirm(classVal.arrangements[0].cid)"
                     >
@@ -242,15 +233,6 @@
                           classVal.arrangements.length
                         "
                       >
-                        <!-- <div
-                          v-for="(teaList, index) in classVal.arrangements"
-                          :key="index"
-                          class="teaList-item"
-                        >
-                          <span class="popover-name">{{ teaList.course_name }}</span>
-                          <span class="teaList-item-text">已预约人数</span>
-                          <span class="teaList-item-num">{{ teaList.stu_num }}</span>
-                        </div> -->
                           <div
                           class="course-info-title"
                           :class="!classVal.full ? 'course-info-title-active' : ''"
@@ -268,25 +250,14 @@
                         <span class="course-info-num">{{ classVal.left_stunum }}</span>
                       </div>
                     </div>
-
-                    <!-- <div class="course-info-number"></div> -->
-                    <!-- <div class="course-info-reserved" v-if="classVal.arrangements && classVal.arrangements.length">
-                      <a-popover
-                        
-                      >
-                        <template v-slot:content> -->
-
-                    <!-- </template>
-                        <div>已预约{{ classVal.total_students }}人</div>
-                      </a-popover> -->
-                    <!-- </div> -->
                     <div
                       v-if="!classVal.full && role != 2"
                       class="create-button flex-center"
                     >
                       <div
-                        class="create-btn"
+                        :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'create-btn'"
                         @click="
+                        classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
@@ -344,9 +315,8 @@
                               </span>
                             </div>
                           </div>
-                          <!-- {{classVal.belongs_to_currentteacher}} -->
-                          <div :class="classVal.belongs_to_currentteacher?'noclick':'make-create-btn'" 
-                          @click="classVal.belongs_to_currentteacher?'':
+                          <div :class="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'noclick':'make-create-btn'" 
+                          @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
@@ -355,12 +325,12 @@
                         ">创建排课</div>
                         </template>
                         <div v-else class="a-create-wrap">
-                          <div class="make-create-btn" @click="
+                          <div :class="classVal.left_stunum>0?'make-create-btn':'no-make-create-btn'" @click="classVal.left_stunum>0?
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
                             classIndex
-                          )
+                          ):''
                         ">创建排课</div>
                         </div>
                       </div>
@@ -1378,4 +1348,16 @@ onMounted(() => {
     font-size: 12px;
   }
 }
+.no-make-create-btn{
+    width: 112px;
+    height: 24px;
+    background: #f5f5f5;
+    border: 1px solid #d9d9d9;
+    border-radius: 13px;
+    text-align: center;
+    line-height: 24px;
+    margin: auto auto 10px auto;
+    margin-top: auto;
+    cursor: pointer;
+  }
 </style>
