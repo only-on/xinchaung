@@ -25,34 +25,42 @@ const menuRole= {
     vnc:{
         4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     ssh:{
         4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','record','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
+        5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','end','tools'],
     },
     cmd:{
         4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     task:{
         4:['guide','note','report','question','classTest','switchVm','delayed','switchSSH','full','save','closeOrStart','reset','upload','down','copy','record','share','help','end','tools'],
         3:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
+        5:['guide','question','switchVm','switchSSH','full','closeOrStart','reset','upload','down','copy','share','end','tools'],
     },
     webide:{
         4:['guide','note','report','question','classTest','delayed','end'],
         3:['guide','question','end'],
+        5:['guide','question','end'],
     },
     jupyter:{
         4:['guide','note','report','question','classTest','delayed','end'],
         3:['guide','question','end'],
+        5:['guide','question','end'],
     },
     document:{
         4:['guide','note','report','question','classTest','end'],
         3:['guide','question','end'],
+        5:['guide','question','end'],
     },
     video:{
         4:['guide','note','report','question','classTest','end'],
         3:['guide','question','end'],
+        5:['guide','question','end'],
     },
     studyType:{
         test:{
@@ -101,14 +109,14 @@ export type menuTypeArr=['guide','note','report','question','classTest','switchV
 
 /**
  * @description 获取具有权限的按钮
- * @param role 4学生 3教师
+ * @param role 4学生 3教师 5助教
  * @param type 实验类型
  * @param studyType  学习类型 test 练习  recommend  推荐  help 帮助
  */
 
-function getMenuRole(role:4|3,type:taskType,studyType?:studyType) {
+function getMenuRole(role:4|3|5,type:taskType,studyType?:studyType) {
     console.log(role,type);
-    if ([3,4].includes(role)) {
+    if ([3,4,5].includes(role)) {
         if (studyType) {
             return menuRole.studyType[studyType][type]
         }else{
