@@ -179,7 +179,7 @@ const AHomeEchartsThemeColor = {
 function getTheme () {
   // A默认的橘黄系统色    B 暗色蓝绿   C 白色+浅色黄色
   let systemInfo = sStorage.get('systemInfo')
-  let theme = systemInfo ? systemInfo.theme : 'A'
+  let theme = systemInfo && systemInfo.theme ? systemInfo.theme : 'A'
   let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
   Object.assign(themeData,THomeEchartsThemeColor[theme])
   Object.assign(themeData, AHomeEchartsThemeColor[theme])

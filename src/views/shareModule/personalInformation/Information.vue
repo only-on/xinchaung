@@ -122,8 +122,8 @@ export default defineComponent({
             .then((res: IBusinessResp) => {
               message.success("修改成功,请重新登录");
               state.loading=false
-              // state.formRef.resetFields();
-              // loginOut();
+              state.formRef.resetFields();
+              loginOut();
               // router.go(-1)
             }).catch(()=>{
               state.loading=false
