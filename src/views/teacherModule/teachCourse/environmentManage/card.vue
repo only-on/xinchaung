@@ -276,6 +276,8 @@ function jumpHandle(list: any) {
     &.last,
     &.first {
       opacity: 0.25;
+      pointer-events: none;
+      cursor: not-allowed;
     }
     .iconfont {
       font-size: var(--font-size-20);

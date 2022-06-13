@@ -199,10 +199,10 @@ function getLimit() {
 }
 function openEnv() {
   // console.log(currentExperiment)
-  if (currentExperiment.is_high) {
-    message.warning(`该实验为高配实验，无法预启动实验环境!`);
-    return;
-  }
+  // if (currentExperiment.is_high) {
+  //   message.warning(`该实验为高配实验，无法预启动实验环境!`);
+  //   return;
+  // }
   if (!limit.value) {
     message.warning('授权人数为0，无法开启!');
     return;
