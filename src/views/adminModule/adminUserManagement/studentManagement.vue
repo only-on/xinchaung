@@ -354,7 +354,7 @@ const columns = [
 ];
 const studentColumns = [
   {
-    title: "学号",
+    title: "账号",
     dataIndex: "username",
   },
   {
@@ -416,6 +416,9 @@ const studentColumns = [
           trigger: "blur",
         },
       ],
+      class: [{ required: true, message: "请输入班级", trigger: "blur" }],
+      grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
+      major: [{ required: true, message: "请输入专业", trigger: "blur" }],
     };
     var ForumSearch: any = reactive({
       username: "",

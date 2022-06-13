@@ -338,7 +338,7 @@ const columns = [
 ];
 const teacherColumns = [
   {
-    title: "学号",
+    title: "账号",
     dataIndex: "username",
   },
   {
@@ -421,6 +421,8 @@ const teacherColumns = [
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
       // gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      title:[{ required: true, message: "请输入职称", trigger: "blur" }],
+      department: [{ required: true, message: "请输入学院", trigger: "blur" }],
       email: [
         {
           pattern:

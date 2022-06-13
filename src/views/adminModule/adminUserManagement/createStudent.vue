@@ -145,7 +145,7 @@ const route = useRoute();
       // gender: [{ required: true, message: "请选择性别", trigger: "change" }],
       class: [{ required: true, message: "请输入班级", trigger: "blur" }],
       grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
-      major: [{ required: true, message: "请输入年级", trigger: "blur" }],
+      major: [{ required: true, message: "请输入专业", trigger: "blur" }],
       email: [
         {
           pattern:
