@@ -531,7 +531,7 @@ export default defineComponent({
     function initWs(ws_config: any) {
       // let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
-      const uid = lStorage.get("uid")
+      const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
       // console.log(user_id,longWs)
       // console.log(ws_config)
       longWs1.value = wsConnect({

@@ -136,7 +136,7 @@ const isShowAdd = ref<boolean>(true);
 const resetKeyword = ref<boolean>(false);
 const formRef = ref<any>();
 const saveVisible = ref<boolean>(false);
-const currentUid = lStorage.get('uid')
+const currentUid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
 const formState=reactive<any>({
   name:'',
   id: 0

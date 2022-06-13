@@ -142,6 +142,7 @@ const login = () => {
             router.replace("/student");
           }else if (res!.data.role === 5) {
             router.replace("/teacher/teacherCourse");
+            getTeacherInfo()
           }
           submitLoading.value = false;
         })
@@ -159,6 +160,12 @@ const login = () => {
       console.error("login form error: ", error);
     });
 };
+// 获取教师信息接口
+const getTeacherInfo = () => {
+  http.getTeacherInfo().then((res: IBusinessResp | null) => {
+    lStorage.set("tuid", res!.data?.user.id);
+  })
+}
 </script>
 <template>
 <!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->

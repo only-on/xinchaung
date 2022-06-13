@@ -57,7 +57,8 @@ let templateId: number = Number(route.query.templateId)
 var updata = inject("updataNav") as Function;
 const { lStorage } = extStorage
 // 当前用户id === 创建实验用户id
-const canEdit = ref<boolean>(Number(createExperUserId) === lStorage.get('uid') ? true : false)
+const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
+const canEdit = ref<boolean>(Number(createExperUserId) === uid ? true : false)
 updata({
   tabs: [{ name: "报告模板预览", componenttype: 0 }],
   showContent: false,
