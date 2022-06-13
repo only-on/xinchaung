@@ -220,7 +220,7 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
           //   return `${value}G`
           // },
           // formatter: "{value}"+type,
-          formatter: data+type,
+          formatter:data1!==null?data+type:'--',
           rich: {
             "<style_name>": {
               align: "left"
@@ -304,10 +304,10 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            if(data.total){
+            if(data.total!==null){
               return data.use+'/'+data.total+data.type
             }else{
-              return ''
+              return '--/--'
             }
           }
         },

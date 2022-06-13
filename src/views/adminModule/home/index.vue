@@ -62,19 +62,19 @@
                 <div class="plateRight">
                     <div>
                         <div id="plate1"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>{{statisticData?.platform_resource.memTotal}}G</span></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>{{statisticData?.platform_resource.memTotal==null?'--' :statisticData?.platform_resource.memTotal+'G'}}</span></div>
                     </div>
                     <div>
                         <div id="plate2"></div>
-                        <div><span class="labelCon">CPU</span><span class='contentCon'>{{statisticData?.platform_resource.cpuCores}}核</span></div>
+                        <div><span class="labelCon">CPU</span><span class='contentCon'>{{statisticData?.platform_resource.cpuCores==null?'--' :statisticData?.platform_resource.cpuCores+'核'}}</span></div>
                     </div>
                     <div>
                         <div id="plate3"></div>
-                        <div><span class="labelCon">硬盘</span><span class='contentCon'>{{statisticData?.platform_resource.disk}}G</span></div>
+                        <div><span class="labelCon">硬盘</span><span class='contentCon'>{{statisticData?.platform_resource.disk==null?'--' :statisticData?.platform_resource.disk+'G'}}</span></div>
                     </div>
                    <div>
                         <div id="plate4"></div>
-                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem}}G</span></div>
+                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem==null? '--' :statisticData?.platform_resource.gpuMem+'G'}}</span></div>
                    </div>   
                 </div>
             </div>
@@ -117,7 +117,7 @@
                                     {{item.title}}:
                                 </span>
                                 <span class='percent'>
-                                    {{item.percent}}%
+                                    {{item.percent==null?'--':(item.percent+'%')}}
                                 </span>
                                 <span>
                                     等级:
@@ -400,7 +400,7 @@
     //服务节点变化
     function handleChange(value:any){
         console.log(value,serveNodeValue.value?.value)
-        http.serveStatus({param:{id:serveNodeValue.value?.value}}).then((res:any)=>{
+        http.serveStatus({param:{id:value}}).then((res:any)=>{
                 serveNode.value=res.data?.single_node_resource
                 warningMessage.value[0].percent=serveNode.value?.cpuUseRate
                 warningMessage.value[0].grade=serveNode.value?.cpuRiskLevel
@@ -411,10 +411,10 @@
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
                 serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
-                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},systemColor.secondary))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.primary))
-                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor1))
-                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},systemColor.Acolor2))
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},systemColor.Acolor4))
         })
     }
     //用户活跃度改变日期

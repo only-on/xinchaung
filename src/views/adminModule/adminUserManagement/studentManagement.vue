@@ -58,9 +58,9 @@
     </div>
     <div class="header-btn">
       <a-button class="addStudent" @click="createStu()" type="primary">创建学生</a-button>
-      <a-button class="brightBtn addStudent" @click="ImportStudent()" type="primary">批量导入</a-button>
+      <a-button class="addStudent" @click="ImportStudent()" type="primary">批量导入</a-button>
       <a-button class="addStudent" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
-      <a-button class="brightBtn addStudent" @click="BatchDelete()" type="primary">批量删除</a-button>
+      <a-button class="addStudent" @click="BatchDelete()" type="primary">批量删除</a-button>
     </div>
   </div>
   <a-config-provider>
@@ -86,7 +86,22 @@
         onChange: onSelectChange,
       }"
       class="components-table-demo-nested"
-    >
+    > 
+      <template #classname="{record}">
+        <div :title="record?.classname" class="eslipse">{{record?.classname}}</div>
+      </template>
+      <template #grade="{record}">
+        <div :title="record?.grade" class="eslipse">{{record?.grade}}</div>
+      </template>
+      <template #major="{record}">
+        <div :title="record?.major" class="eslipse">{{record?.major}}</div>
+      </template>
+      <template  #department="{record}">
+        <div :title="record?.department" class="eslipse">{{record.department}}</div>
+      </template>
+      <template #email="{record}">
+        <div :title="record?.email" class="eslipse">{{record.email}}</div>
+      </template>
       <template #operation="{ record }">
         <!-- iconfont icon-bianji -->
         <span
@@ -295,35 +310,32 @@ const columns = [
   {
     title: "姓名",
     dataIndex: "name",
-    align: "center",
     width: 120,
   },
   {
     title: "班级",
     dataIndex: "classname",
-    align: "classname",
+    slots: { customRender: "classname" },
   },
   {
     title: "年级",
     dataIndex: "grade",
-    align: "center"
+    slots: { customRender: "grade" },
   },
   {
     title: "专业",
     dataIndex: "major",
-    align: "center"
+    slots: { customRender: "major" },
   },
   {
     title: "学院",
     dataIndex: "department",
-    align: "center",
-    width:110,
+    slots: { customRender: "department" },
   },
   {
     title: "邮箱",
     dataIndex: "email",
-    align: "center",
-    width:170,
+    slots: { customRender: "email" },
   },
   {
     title: "电话",
@@ -337,7 +349,7 @@ const columns = [
     align: "center",
     slots: { customRender: "operation" },
     fixed: "right",
-    width: 200,
+    width: 170,
   },
 ];
 const studentColumns = [
@@ -355,7 +367,7 @@ const studentColumns = [
     slots: { customRender: "result" },
   },
 ]; 
-const router = useRouter();
+    const router = useRouter();
     const route = useRoute();
 
     var updata = inject("updataNav") as Function;
@@ -785,6 +797,7 @@ const router = useRouter();
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     .item {
       display: flex;
       align-items: center;
@@ -817,16 +830,6 @@ const router = useRouter();
         z-index: 10;
       }
     }
-  //   .custom_input2 {
-  //     &::before {
-  //       // background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-  //     }
-  //   }
-  //   .custom_input3 {
-  //     &::before {
-  //       // background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-  //     }
-  //   }
   }
 
   .header-btn{
@@ -835,6 +838,9 @@ const router = useRouter();
   }
   .addStudent {
     margin-right: 16px;
+  }
+  .addStudent:nth-last-child(1){
+    margin-right: 0;
   }
 }
 :deep(.ant-form-item-control) {
@@ -904,5 +910,10 @@ const router = useRouter();
 }
 .wrong{
   color: red;
+}
+.eslipse{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>
