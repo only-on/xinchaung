@@ -420,7 +420,7 @@
       </p>
       <p class="ant-upload-text">点击上传图标，选择要上传的文件或将文件拖拽到此</p>
       <p class="ant-upload-hint">
-        (单个文件最味限制为20MB)
+        (单个文件最大限制为20MB)
       </p>
       <p class="ant-upload-dir">
         默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\":"/simpleupload"}}
@@ -1313,8 +1313,8 @@ function okAssistance() {
     message.warn("请输入请求协助内容");
     return;
   }
-  if (assistanceQuestion.value.length >= 30) {
-    message.warn("请将你的问题用少于30个字来描述");
+  if (assistanceQuestion.value.length > 30) {
+    message.warn("请将你的问题用30个字以内来描述");
     return;
   }
   let param = {
