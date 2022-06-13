@@ -123,7 +123,7 @@ export default defineComponent({
     });
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
-      return role === 3;
+      return role === 3 || role===5;
     });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码

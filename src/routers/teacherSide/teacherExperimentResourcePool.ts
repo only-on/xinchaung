@@ -24,7 +24,7 @@ export default {
     {
       path: "",
       component: (params?: RouteParams, query?: RouteParams) => {
-        console.log(query)
+        // console.log(query)
         if(role===2){
           return import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue")
         }else{
