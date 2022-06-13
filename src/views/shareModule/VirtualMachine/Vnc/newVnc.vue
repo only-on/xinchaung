@@ -1,5 +1,5 @@
 <template>
-  <layout :navData="navData">
+  <layout :navData="navData" ref="layoutRef">
     <template v-slot:right
       >
       <template v-if="currentInterface === 'ssh'">
@@ -173,6 +173,7 @@ function getVmBase() {
   });
 }
 
+let layoutRef: any = ref(null)
 function initWs() {
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
@@ -299,6 +300,7 @@ function initWs() {
           // 分组成员在操作或教师在操作
           if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
+            layoutRef.value.vmHeaderRef.stopRecord()
           }
         }else if (wsJsonData.type=="return_message") {
           if (Object.keys(wsJsonData).length>0) {

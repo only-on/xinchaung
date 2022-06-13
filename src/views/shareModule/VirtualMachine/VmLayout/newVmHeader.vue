@@ -1547,6 +1547,14 @@ onMounted(() => {
 //   evaluateVisible.value = true;
 //   initEvaluate()
 // }
+function stopRecord() {
+  if (isScreenRecording.value) {
+    VmOperatesHandle("stopRecord")
+  }
+}
+defineExpose({
+  stopRecord
+})
 </script>
 
 <style lang="less" scoped>
