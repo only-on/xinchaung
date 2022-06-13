@@ -100,6 +100,7 @@ function initData() {
     Object.assign(param, {self: 1, type: forumSearch.type})
   http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
     loading.value = false
+    if (!res?.data) return 
     forumnList.length = 0
     const { list, page } = res.data
     list.forEach((v: IForumnList) => {
@@ -126,12 +127,12 @@ function pageChange(page: number,pageSize:number) {
 //
 async function tabChange(id: number) {
   currentTab.value = id;
-  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: type ? type : 'wiki', };
+  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: 'wiki', };
   await router.replace({
     path: path,
     query: NewQuery,
   });
-  // initData();
+  initData();
   id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
 }
 // 常驻类型
