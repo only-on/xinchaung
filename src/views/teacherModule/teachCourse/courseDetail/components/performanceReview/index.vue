@@ -251,7 +251,7 @@ const oldColumns: any[] = [
     width: 49,
     algin: "center",
     customRender: ({ text, record, index }: any) => {
-      return index+1;
+      return (params.value.page - 1) * params.value.limit +index + 1;
     },
   },
   {
