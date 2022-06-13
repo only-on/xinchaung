@@ -44,7 +44,7 @@
           </div>
           <div class="user flexCenter">
             <!-- :style="`background-image: url(${env? '/proxyPrefix' + systemBaseInfo.login_logo: systemBaseInfo.login_logo});`" -->
-            <div class="name flexCenter" v-if="(Number(currentTab) === 1 && role===3) || role===4 || role===2">
+            <div class="name flexCenter" v-if="(Number(currentTab) === 1 && [3,5].includes(role)) || role===4 || role===2">
               <template v-if="info.is_authorized">
                 <div class="chart" :style="`background-image: url(${info.avatar});`"></div>
                 <div class="userName">{{info.user_name}}</div>
@@ -62,7 +62,7 @@
       </div>
       <div class="rightBox">
         <!-- 教师端我的教学 -->
-        <div v-if="currentTab && Number(currentTab) === 0 && role === 3" class="flexCenter caozuo">
+        <div v-if="currentTab && Number(currentTab) === 0 &&  [3,5].includes(role)" class="flexCenter caozuo">
           <a-button class="brightBtn" type="primary" @click="setup()">设置</a-button>
           <a-button type="primary"  @click="edit()">编辑</a-button>
         </div>
@@ -172,14 +172,14 @@ if(props.tabs && props.tabs.length){
 
 const isShowCourseDetail=computed(()=>{
   let flag=false
-  if((currentTab && Number(currentTab) === 0) && role === 3){
+  if((currentTab && Number(currentTab) === 0) && [3,5].includes(role)){
     flag=true
   }
   return flag
 })
 const isShowState=computed(()=>{
   let flag=false
-  if((role === 3 && Number(currentTab) === 0) || role === 4){
+  if(([3,5].includes(role) && Number(currentTab) === 0) || role === 4){
     flag=true
   }
   return flag

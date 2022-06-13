@@ -88,10 +88,8 @@ watch(
 // );
 onMounted(() => {
   if (!Number(route.query.currentTab)) {
-    // currentTab.value = 0
     configuration.componenttype = 0
   } else {
-    // currentTab.value = 1
     configuration.componenttype = 1
   }
 });
