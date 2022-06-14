@@ -1547,13 +1547,18 @@ onMounted(() => {
 //   evaluateVisible.value = true;
 //   initEvaluate()
 // }
+// 结束录屏
 function stopRecord() {
-  if (isScreenRecording.value) {
-    VmOperatesHandle("stopRecord")
-  }
+  return new Promise(async (resolve) => {
+    if (isScreenRecording.value) {
+      await VmOperatesHandle("stopRecord")
+      resolve(1)
+    }
+  })
 }
 defineExpose({
-  stopRecord
+  stopRecord,
+  finishingExperimentVisible,
 })
 </script>
 

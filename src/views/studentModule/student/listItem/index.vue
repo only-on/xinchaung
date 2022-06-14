@@ -1,7 +1,7 @@
 <template>
   <div class="listItem">
     <div class="content-title">{{ title }}</div>
-    <div class="content-list" v-for="(item, index) in infoList?.slice(0,3)" :key="index">
+    <div class="content-list" v-for="(item, index) in infoList" :key="index">
       <div
         :style="{ background: color1 }"
         :class="

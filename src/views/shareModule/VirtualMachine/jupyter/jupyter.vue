@@ -2,9 +2,11 @@
   <layout :navData="navData">
     <template v-slot:right>
       <iframe
+        id="iframe"
         :src="'http://' + noteUrl"
         frameborder="0"
         style="width: 100%; height: 100%"
+        v-if="showIframe"
       ></iframe>
     </template>
   </layout>
@@ -61,6 +63,8 @@ let timerout: NodeJS.Timeout | null = null;
 let isCurrentPage = true; // 是否是当前页面
 const disableVisable: any = ref(false);
 const disableData: any = ref({});
+
+let TimerIframe: NodeJS.Timeout | null = null;
 
 // 获取虚拟机基本信息pageinfo
 function getVmBase() {
@@ -136,7 +140,7 @@ function initWs() {
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
     open: () => {
       if (baseInfo.value && baseInfo.value?.current) {
-        console.log(11111);
+        // console.log(11111);
 
         ws.value.join(topoinst_id + "_room");
       }
@@ -235,12 +239,36 @@ onBeforeRouteLeave(() => {
   isCurrentPage = false;
   clearTimeout(Number(timerout));
   closeWs();
+  clearTimeout(Number(TimerIframe));
 });
+let showIframe = ref(true)
 onMounted(async () => {
   await getVmBase();
   if (Number(baseInfo.value?.current?.status)<2||role !== 4||recommendType) {
     initWs();
   }
+  const iframe: any = document.querySelector('#iframe')
+  let onloadIframe = false
+  // 处理兼容性问题
+  if (iframe?.attachEvent) {
+    iframe.attachEvent('onload', () => {
+      clearTimeout(Number(TimerIframe));
+      onloadIframe = true
+    })
+  } else {
+    iframe.onload = () => {
+      clearTimeout(Number(TimerIframe));
+      onloadIframe = true
+    }
+  }
+  TimerIframe = setInterval(() => {
+    // console.log(onloadIframe)
+    if (!onloadIframe) {
+      showIframe.value = false
+      setTimeout(() => {showIframe.value = true}, 200);
+    }
+    // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
+  }, 60000)
 });
 </script>
 

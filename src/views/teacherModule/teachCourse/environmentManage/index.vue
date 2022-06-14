@@ -24,7 +24,7 @@
         </div>
       </div>
       <a-spin :spinning="loading" size="large" tip="Loading...">
-      <div class="env-lists" v-if="envList.length">
+      <div class="env-lists" >
         <div class="env-list" v-for="v in envList" :key="v.id">
           <card :list="v" @getList="getList" :currentExperiment="currentExperiment"></card>
         </div>

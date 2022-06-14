@@ -189,7 +189,6 @@ export default defineComponent({
   padding: 20px;
   .title {
     background-color:#DDF9F3;
-    height: 36px;
     line-height: 36px;
     padding-left: 10px;
   }

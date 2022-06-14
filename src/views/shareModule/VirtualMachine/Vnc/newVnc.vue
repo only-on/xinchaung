@@ -92,6 +92,7 @@ const initVnc: any = inject("initVnc");
 const evaluateData:any=inject("evaluateData")
 const evaluateVisible:any=inject("evaluateVisible")
 const initEvaluate:any=inject("initEvaluate")
+const isScreenRecording: any = inject("isScreenRecording", ref(false));
 
 const disableVisable:any=ref(false)
 const disableData:any=ref({})
@@ -300,7 +301,7 @@ function initWs() {
           // 分组成员在操作或教师在操作
           if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
-            layoutRef.value.vmHeaderRef.stopRecord()
+            isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
           }
         }else if (wsJsonData.type=="return_message") {
           if (Object.keys(wsJsonData).length>0) {
@@ -310,21 +311,21 @@ function initWs() {
               message.warn(wsJsonData.data)
             }
           }
-          if (!["train"].includes(type as any)) {
-            if (layout.value) {
-              router.go(-1);
-              // 自评推荐
-              evaluateVisible.value=true
-              evaluateData.value = wsJsonData.data;
+          if (layout.value) {
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(-1);
+            // 自评推荐
+            evaluateVisible.value=true
+            evaluateData.value = wsJsonData.data;
 
-              nextTick(()=>{
-                // initEvaluate()
-              })
-              sendDisconnect();
-              isClose.value=true
-            }
-          }else{
-            router.go(-1)
+            nextTick(()=>{
+              // initEvaluate()
+            })
+            sendDisconnect();
+            isClose.value=true
+          } else {
+            layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
+            sendDisconnect();
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(-1);
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐

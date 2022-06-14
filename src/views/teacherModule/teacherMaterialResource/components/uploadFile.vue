@@ -18,10 +18,8 @@
     <div class="rightBox textScrollbar">
       <div class="chunk-list">
         <div v-for="(v, k, i) in ChunkStatus" :key="i">
-          <span>文件名称：{{ v.name }}</span>
-          <span
-            >计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span
-          >
+          <span v-if="v.name">文件名称：{{ v.name }}</span>
+          <span v-if="v.currentChunk">计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span>
         </div>
       </div>
       <div class="progress-box textScrollbar">
@@ -65,7 +63,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, onMounted ,watch} from 'vue'
+import { ref, reactive, inject, onMounted ,watch, markRaw} from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
@@ -99,7 +97,7 @@ const typeInfo = reactive({
 });
 const currentType = reactive(typeInfo[props.type])
 const uploadFileUuid = ref(UUID.uuid4());
-const ChunkStatus: any = reactive({});
+let ChunkStatus: any = reactive({});
 const uploadFileList: any = reactive([])
 let sign = 0
 function fileBeforeUpload(file: any) {
@@ -174,6 +172,8 @@ function chunkFun(
   currentChunk: number,
   key: string
 ) {
+  // console.log(currentChunk)
+  if (currentChunk!==1 && !ChunkStatus[key].name) return
   Object.assign(ChunkStatus, {
     [key]: { name: name, chunks: chunks, currentChunk: currentChunk },
   });
@@ -220,11 +220,13 @@ function processFun(e: any, v: any, length: number) {
       : 99;
 }
 function endUploadFun(v: any, d: any) {
+  if (props.fileList[v]) return
   props.fileList[v].status = "end";
   props.fileList[v].progress = 100;
   props.fileList[v].data = d;
 }
 function deleteFile(file: any, key: any) {
+  ChunkStatus[key] = {}
   if (props.type !== 1) { // 不是数据集
     if(props.fileList[key] !== "done"){
       tusFileUpload.remove(props.fileList[key])
@@ -249,6 +251,7 @@ function removeFile(file: any, index: any) {
   delete props.fileList[index];
 }
 function removeAllFile() {
+  ChunkStatus = {}
   Object.keys(props.fileList).forEach((v: any) => {
     console.log(props.fileList[v], props.type===1)
     if (props.fileList[v].status==='end' || props.fileList[v].status === 'done') {
