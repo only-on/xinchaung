@@ -136,11 +136,11 @@ export default defineComponent({
   components: {
     markdown,
   },
-  props:['preview'],
+  props:['preview','reportTemplateData'],
   setup() {
-    const reportTemplateData: any = inject("reportTemplateData");
+    // const reportTemplateData: any = inject("reportTemplateData");
     return {
-      reportTemplateData,
+      // reportTemplateData,
     };
   },
 });

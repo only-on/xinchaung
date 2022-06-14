@@ -1,7 +1,7 @@
 <template>
   <div>
-    <template v-if="baseInfo?.json_content && baseInfo?.json_content.length > 0">
-      <onLine :preview='true'></onLine>
+    <template v-if="baseInfo?.template_type=='form'">
+      <onLine :reportTemplateData='baseInfo' :preview='true'></onLine>
     </template>
     <template v-else>
       <div class="pdfshow">
