@@ -43,7 +43,7 @@
           </div>
         </a-form-item>
         <a-form-item>
-          <Submit @submit="onSubmit" @cancel="cancel"></Submit>
+          <Submit @submit="onSubmit" @cancel="cancel" :loading="loading"></Submit>
         </a-form-item>
       </a-form>
     </div>
@@ -185,6 +185,7 @@ const formState = reactive<IFormState>({
   },
   label_name: []
 })
+const loading = ref(false)
 const onSubmit = () => {
   // return
   formRef.value.validate().then(() => {
@@ -193,10 +194,12 @@ const onSubmit = () => {
       ...formState,
       content: JSON.stringify(formState.content),
     };
+    loading.value = true
     http
       .createForum({ param: { ...obj } })
       .then((res: IBusinessResp) => {
         message.success(editId ? "修改成功" : "发布成功");
+        loading.value = false
         router.go(-1);
       });
   });
