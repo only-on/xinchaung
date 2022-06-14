@@ -76,6 +76,7 @@
             </div>
           </div>
         </div>
+        <div class="loading" v-if="isRunning"><LoadingOutlined></LoadingOutlined></div>
       </div>
     </template>
   </layout>
@@ -125,6 +126,7 @@ import {
   runCodeApi,
   createTopoApi,
 } from "src/utils/webideInspect";
+import { LoadingOutlined, } from '@ant-design/icons-vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -541,6 +543,7 @@ async function rollBack(val: any) {
   getCurrentSWitchFile();
 }
 
+const isRunning = ref(false)
 function runCode() {
   let params: any = {
     type: type,
@@ -551,9 +554,11 @@ function runCode() {
     version_id: version_id.value,
     vm_uuid: currentUuid.value,
   };
+  isRunning.value = true
   runCodeApi(params)
     .then((res: any) => {
       console.log(res);
+      isRunning.value = false
       if (res?.data?.output) {
         runResult.value = res.data.output;
       }
@@ -627,6 +632,20 @@ onMounted(async () => {
   display: flex;
   flex-direction: row;
   height: 100%;
+  position: relative;
+  .loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--black-45);
+    margin-right: 6px;
+    font-size: 30px;
+    color: var(--primary-color);
+    text-align: center;
+    .anticon {
+      margin-top: 300px;
+    }
+  }
 }
 .ace-left {
   width: 200px;
