@@ -95,7 +95,10 @@
         </div>
         <div class="keywordColor">
           <span class="label">关键词:</span>
-          <span v-for="(it,i) in item?.keywords">{{it?.keyword}}</span>
+          <span v-for="(it,i) in item?.keywords" :key="i">
+            {{it?.keyword}}
+            <span v-show="i !== (item?.keywords && item?.keywords.length - 1)">,</span>
+          </span>
         </div>
       </div>
     </div>

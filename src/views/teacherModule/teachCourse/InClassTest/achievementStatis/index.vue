@@ -154,5 +154,9 @@ onMounted(()=>{
       color: var(--primary-color);
     }
   }
+  :deep(.ant-pagination){
+    width: 100%;
+    text-align: center;
+  }
 }
 </style>
