@@ -164,7 +164,7 @@ export default defineComponent({
           });
          item.options.forEach((it:any,i:any)=>{
            if(allanswer.indexOf(it.id) !== -1){
-            rightIndex.push(it.option)
+            rightIndex.push(optionItemName[i])
            }
          })
         }
