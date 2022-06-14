@@ -191,8 +191,14 @@
           axisLabel: {
             color: "#999",
             interval:0,
+            formatter: function (params:any) {
+              if(params.length>9){
+                return params.substring(0,9)+'...'
+              }else{
+                return params
+              }
+            }
           },
-          interval: 0,
           axisTick: {
             show: false,
           },
