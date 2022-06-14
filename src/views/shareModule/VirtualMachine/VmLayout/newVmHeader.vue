@@ -1681,7 +1681,8 @@ i {
       // border: none;
       color: var(--primary-color);
       span:last-child {
-        height: 20px;
+        display: inline-block;
+        height: 18px;
         line-height: 20px;
         padding: 0 21px;
         color: var(--white-100);

@@ -36,6 +36,7 @@
       <Empty v-if="!envList.length&&!loading" :type="EmptyType" />
       </a-spin>
       <a-pagination
+        v-if="envList.length"
         v-model:current="searchInfo.page"
         :pageSize="searchInfo.limit"
         :total="searchInfo.total"
@@ -93,7 +94,7 @@ let timer: NodeJS.Timer | null = null;
 const searchInfo: any = reactive({
   total: 0,
   page: 1,
-  limit: 4,
+  limit: 6,
   keyword: '',
   taskId: 0,
   type: 'course'
@@ -176,7 +177,7 @@ const selectExperiment = (val: any) => {
 
 onMounted(() => {
   // getList()
-  getLimit();
+  // getLimit();
   // let timer = setInterval(() => {
   //   clearInterval(timer)
   //   getLimit()
@@ -192,17 +193,21 @@ const openEnvNum: any = ref('')
 const limit = ref(0);
 const visible = ref(false)
 function getLimit() {
-  http.maxLimit().then((res: IBusinessResp) => {
-    limit.value = res.data.limit;
-    // limit.value = 10
-  });
+  return new Promise((resolve) => {
+    http.maxLimit().then((res: IBusinessResp) => {
+      limit.value = res.data.limit;
+      // limit.value = 10
+      resolve(1)
+    });
+  })
 }
-function openEnv() {
+async function openEnv() {
   // console.log(currentExperiment)
   // if (currentExperiment.is_high) {
   //   message.warning(`该实验为高配实验，无法预启动实验环境!`);
   //   return;
   // }
+  await getLimit()
   if (!limit.value) {
     message.warning('授权人数为0，无法开启!');
     return;
@@ -254,6 +259,7 @@ function handleOk(num: number) {
     flex: 1;
     padding: 24px;
     background-color: var(--white-100);
+    height: 100%;
     .top-box {
       display: flex;
       justify-content: space-between;
@@ -266,18 +272,19 @@ function handleOk(num: number) {
     }
     .env-lists {
       // height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      // display: flex;
+      // flex-wrap: wrap;
+      // justify-content: space-between;
       .env-list {
-        // display: inline-block;
+        display: inline-block;
         width: 245px;
         height: 240px;
-        // margin-right: 24px;
+        margin-right: 24px;
         background: var(--brightBtn-14);
         border-radius: 4px;
         margin-bottom: 24px;
-        &:nth-child(2n) {
+        vertical-align: middle;
+        &:nth-child(3n) {
           margin-right: 0;
         }
       }
