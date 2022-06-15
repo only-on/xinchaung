@@ -1,7 +1,7 @@
 <template>
   <div class="exper">
     <div class="test" v-for="(item, index) in detailInfo" :key="index.toString()">
-      <div :class="item.type_id==2?'title':'redtitlt'">
+      <div :class="item.answer_is_right?'title':'redtitlt'">
         <!-- {{ Number(index) + 1 }}、 -->
         <span>{{ item.question }}（）</span>
         <span class="score"
@@ -194,7 +194,6 @@ export default defineComponent({
   }
   .redtitlt{
     background-color:#FFF3F3;
-    height: 36px;
     line-height: 36px;
     padding-left: 10px;
   }
