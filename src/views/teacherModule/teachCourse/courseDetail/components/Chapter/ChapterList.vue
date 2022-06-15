@@ -108,7 +108,7 @@
                   <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
                     <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
                     @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
-                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || role===3&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
+                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
                     <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
                     <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || role===3&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click="openVm(a, 'continue')">进入</a-button>
                     <a-button v-else type="primary" class="brightBtn" size="small"  @click="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
@@ -388,7 +388,7 @@ function studyHandle(a: any, studyType: string) {
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: role === 3 ? 'prepare' : studyType,
+    opType: role === 4 ? studyType : 'prepare',
     taskId: id,
     experType: task_type
   };
