@@ -1,6 +1,6 @@
 <template>
   <div>
-    <memberManage :is_high='is_high' :is_teamed='is_teamed'></memberManage>
+    <memberManage @updateGroup='updateGroup' :is_high='is_high' :is_teamed='is_teamed'></memberManage>
   </div>
 </template>
 
@@ -15,6 +15,10 @@ const props = withDefaults(defineProps<Props>(), {
   is_high: () =>false,
   is_teamed: () =>false,
 })
+const emit = defineEmits<{ (e: "updateGroup",groupok:any): void }>();
+function updateGroup(val:any){
+  emit("updateGroup",val);
+}
 </script>
 
 <style lang="less" scoped></style>

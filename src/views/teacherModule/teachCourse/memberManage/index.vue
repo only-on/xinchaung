@@ -30,8 +30,10 @@ function callback() {}
 function noshow(){
   visableHigh.value=false
 }
+const emit = defineEmits<{ (e: "updateGroup",groupok:any): void }>();
 function updateGroup(val:any){
   visableHigh.value=val
+  emit("updateGroup",val);
 }
 </script>
 

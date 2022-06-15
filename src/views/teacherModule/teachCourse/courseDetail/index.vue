@@ -13,7 +13,7 @@
     <!-- 学情分析 -->
     <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
     <!-- 成员管理 -->
-    <memberManagement v-if="state.activeTab.value=='memberManagement'" :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
+    <memberManagement v-if="state.activeTab.value=='memberManagement'" @updateGroup='updateGroup'  :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
   </div>
 
   <!-- 编辑课程基本信息 弹窗 -->
@@ -240,6 +240,9 @@ function initData(){
 const selectTab=(val:any)=>{
   console.log(val)
   state.activeTab={...val}
+}
+function updateGroup(val:any){
+  initData()
 }
 // 编辑课程信息
 const formRef = ref();
