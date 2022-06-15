@@ -686,13 +686,21 @@ const toolList = toolData;
 const roleArry: any = ref([])
 
 function back() {
-  if (recommendType) {
-    endVmEnvirment();
-    return
+  let content = '返回!'
+  if (experType === 6 || experType === 7) {
+    content = '返回课程详情!'
+  } else if (recommendType) {
+    content = '返回实验详情，实验环境直接被删除!'
+  } else if (opType === 'prepare') {
+    content = '返回课程详情，实验环境直接被删除!'
+  } else if (route.query.isClose && opType === 'help') {
+    content = '关闭当前页签'
+  } else if (opType === 'continue'||opType === 'start') {
+    content = "返回课程详情，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！"
   }
   Modal.confirm({
     title: "提示",
-    content: experType === 6 || experType === 7 ? "返回实验列表" : "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+    content: content,
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
