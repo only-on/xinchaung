@@ -128,7 +128,7 @@
           </div>
           <div class="osd-mode">
             <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
-            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中。。。':'进入同屏模式'}}</a-button>
+            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button>
           </div>
         </div>
       </div>
@@ -706,11 +706,13 @@ function pollGetVM(id: number) {
   getTopoVmInfo(id);
 }
 var openScreenLoading= ref<boolean>(false);
-function openScreen() {
+let currentUuid = ''
+async function openScreen() {
   // message.warn("接口暂未调试");
   // return
   screenParam.container = [];
   screenParam.dataset_id = [];
+  screenParam.topo_id = '';
   formState.selectedName.forEach((item: any) => {
     screenParam.dataset_id.push(item.uid);
   });
@@ -728,6 +730,8 @@ function openScreen() {
   console.log(sameScreen.value);
   sameScreen.value.detail = formState.guide;
   // screenStatus.value = true
+  currentUuid ? await removeTopo() : ''
+  currentUuid = ''
   if (_.isEqual(oldImageDataSelected, formState.imageConfigs)) {
     pollGetVM(topoinstId);
   } else {
@@ -738,13 +742,23 @@ function openScreen() {
           if (res.data?.topo?.id) {
             screenParam.topo_id = res.data.topo.id;
           }
-          oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
+          currentUuid = res.data?.topo?.uuid
+          // oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
           topoinstId = res.data.topoinst.topoinst_id;
           pollGetVM(res.data.topoinst.topoinst_id);
           // this.screenStatus = true
         }
       })
   }
+}
+function removeTopo() {
+  return new Promise((response: any, reject: any) => {
+    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {
+      response(res);
+    }).catch((err: any) => {
+      reject(err);
+    });
+  })
 }
 function getTopoBaseInfo() {
   return new Promise((response: any, reject: any) => {
@@ -781,6 +795,8 @@ function getTopoVmInfo(id: number) {
         message.warn(res.msg);
       }
       resolve(res);
+    }).catch(() => {
+      openScreenLoading.value=true
     });
   });
 }
