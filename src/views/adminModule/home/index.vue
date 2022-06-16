@@ -6,8 +6,8 @@
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()" @click="toJump(item.link)">
-                        <div>
-                            <img :src="item.img">
+                        <div class='imgBox'>
+                            <img class='img' :src="item.img">
                         </div>
                         <div class="courseNumber">{{item.course}}</div>
                         <div class="number">{{item.number}}</div>
@@ -18,8 +18,8 @@
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()" @click="toJump(item.link)">
-                        <div>
-                            <img :src="item.img">
+                        <div class='imgBox'>
+                            <img class='img' :src="item.img">
                         </div>
                         <div class="courseNumber">{{item.course}}</div>
                         <div class="number">{{item.number}}</div>
@@ -541,15 +541,23 @@
             padding: 10px 30px;
         }
         .number{
-            font-weight:20px;
+            font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
         }
         .courseNumber{
             margin-top: 10px;
+            font-size: 16px;
         }
         .enterItem{
             text-align: center;
+            .imgBox{
+                width:100px;
+                height:100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
             img{
                 width: 100px;
                 height: 100px;
@@ -557,6 +565,10 @@
         }
         .enterItem:hover{
             cursor: pointer;
+            .img{
+                width:90px;
+                height:90px;
+            }
         }
     }
     .entrance-left{
