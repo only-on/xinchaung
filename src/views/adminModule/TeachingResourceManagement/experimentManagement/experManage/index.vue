@@ -1,52 +1,52 @@
 <template>
     <div class="experManage">
         <div class="search">
-          <div>
+          <div class='search_left'>
             <div class="item custom_input custom_input2">
-        <span style="width:50px">实验名称</span>
-        <a-input
-          style="width:196px"
-          v-model:value="ForumSearch.name"
-          placeholder="请输入实验名称关键词搜索"
-          @keyup.enter="search()"
-        />
-      </div>
-      <div class="item custom_input custom_input2">
-        <span style="width:50px">实验属性</span>
-        <!-- <a-input
-          style="width:224px"
-          v-model:value="ForumSearch.type"
-          placeholder="请输入搜索关键词"
-          @keyup.enter="search()"
-        /> -->
-          <a-select
-          v-model:value="ForumSearch.attribute"
-          placeholder="请选择实验属性"
-          @change="search()"
-          style="width: 176px; margin-right: 16px"
-        >
-          <a-select-option value="">全部</a-select-option>
-          <a-select-option value="0">私有</a-select-option>
-          <a-select-option value="1">公有</a-select-option>
-        </a-select>
-      </div>
-      <div class="item custom_input custom_input2">
-        <span style="width:50px">实验类型</span>
-        <a-select
-          v-model:value="ForumSearch.type"
-          placeholder="请选择实验类型"
-          @change="search()"
-          style="width:176px; margin-right: 16px"
-        >
-          <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
-        </a-select>
-      </div>
+              <span style="width:50px">实验名称</span>
+              <a-input
+                style="width:196px"
+                v-model:value="ForumSearch.name"
+                placeholder="请输入实验名称关键词搜索"
+                @keyup.enter="search()"
+              />
+           </div>
+          <div class="item custom_input custom_input2">
+            <span style="width:50px">实验属性</span>
+            <!-- <a-input
+              style="width:224px"
+              v-model:value="ForumSearch.type"
+              placeholder="请输入搜索关键词"
+              @keyup.enter="search()"
+            /> -->
+              <a-select
+              v-model:value="ForumSearch.attribute"
+              placeholder="请选择实验属性"
+              @change="search()"
+              style="width: 176px; margin-right: 16px"
+            >
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option value="0">私有</a-select-option>
+              <a-select-option value="1">公有</a-select-option>
+            </a-select>
           </div>
-      <div class="item">
-        <!-- <a-button type="primary" @click="search()">查询</a-button>
-        <a-button type="primary" @click="clearSearch()">清空</a-button> -->
-        <a-button type="primary" @click="batchDelete">批量删除</a-button>
-      </div>
+        <div class="item custom_input custom_input2">
+          <span style="width:50px">实验类型</span>
+          <a-select
+            v-model:value="ForumSearch.type"
+            placeholder="请选择实验类型"
+            @change="search()"
+            style="width:176px; margin-right: 16px"
+          >
+            <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
+          </a-select>
+        </div>
+            </div>
+        <div class="item">
+          <!-- <a-button type="primary" @click="search()">查询</a-button>
+          <a-button type="primary" @click="clearSearch()">清空</a-button> -->
+          <a-button type="primary" @click="batchDelete">批量删除</a-button>
+        </div>
     </div>
     <a-config-provider>
       <a-table
@@ -230,8 +230,11 @@ const ifSearch:any=ref(false)
      display: flex;
      justify-content: space-between;
      margin-bottom: 20px;
-     >div:nth-child(1){
+     .search_left{
        display: flex;
+     }
+     >div:nth-child(1){
+      //  display: flex;
        >div{
         margin-right: 20px;
          >span{
