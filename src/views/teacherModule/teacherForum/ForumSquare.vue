@@ -9,7 +9,7 @@
         </a-spin>
       </div>
       <div class="right" v-if="role !== 2">
-        <div v-show="!loading">
+        <div>
         <div class="post pointer" @click="createPost">发帖</div>
         <!-- 热门标签 -->
         <hot-label></hot-label>

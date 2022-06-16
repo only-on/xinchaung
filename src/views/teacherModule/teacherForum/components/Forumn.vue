@@ -6,7 +6,7 @@
   </div>
   <div class="forumn-pagination" v-if="total">
     <a-pagination
-      v-if="total > 10"
+      v-if="forumnList.length"
       show-size-changer
       :total="total"
       :current="forumSearch.page"
