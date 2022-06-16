@@ -220,7 +220,7 @@ function processFun(e: any, v: any, length: number) {
       : 99;
 }
 function endUploadFun(v: any, d: any) {
-  if (props.fileList[v]) return
+  if (!props.fileList[v]) return
   props.fileList[v].status = "end";
   props.fileList[v].progress = 100;
   props.fileList[v].data = d;
