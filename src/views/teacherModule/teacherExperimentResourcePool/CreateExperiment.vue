@@ -346,6 +346,7 @@
     v-model:screenStatus="screenStatus"
     v-model="formState.guide"
     :screenInfo="screenVmInfo"
+    :connection_id="connection_id"
   ></SameScreen>
 </template>
 <script lang="ts" setup>
@@ -691,6 +692,7 @@ const reportOk = (val: any) => {
 // 同屏vm连接信息
 let screenVmInfo: any = reactive([]);
 let screenStatus = ref<boolean>(false);
+const connection_id = ref('')
 // 获取同屏连接信息请求参数
 let screenParam: any = reactive({
   container: [],
@@ -743,6 +745,7 @@ async function openScreen() {
             screenParam.topo_id = res.data.topo.id;
           }
           currentUuid = res.data?.topoinst?.info?.uuid
+          connection_id.value = res.data?.topoinst?.connection_id
           // oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
           topoinstId = res.data.topoinst.topoinst_id;
           pollGetVM(res.data.topoinst.topoinst_id);
