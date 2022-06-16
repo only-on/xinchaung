@@ -550,10 +550,12 @@ function remove(val: any, index: number) {
   formState.selectedName.splice(index, 1);
 }
 
+let currentUuid = ''
 function create() {
   // console.log(TaskLIst)
   // return
-  formRef.value.validate().then(() => {
+  formRef.value.validate().then(async () => {
+    currentUuid ? await removeTopo() : ''
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
@@ -706,7 +708,6 @@ function pollGetVM(id: number) {
   getTopoVmInfo(id);
 }
 var openScreenLoading= ref<boolean>(false);
-let currentUuid = ''
 async function openScreen() {
   // message.warn("接口暂未调试");
   // return
@@ -731,7 +732,6 @@ async function openScreen() {
   sameScreen.value.detail = formState.guide;
   // screenStatus.value = true
   currentUuid ? await removeTopo() : ''
-  currentUuid = ''
   if (_.isEqual(oldImageDataSelected, formState.imageConfigs)) {
     pollGetVM(topoinstId);
   } else {
@@ -742,7 +742,7 @@ async function openScreen() {
           if (res.data?.topo?.id) {
             screenParam.topo_id = res.data.topo.id;
           }
-          currentUuid = res.data?.topo?.uuid
+          currentUuid = res.data?.topoinst?.info?.uuid
           // oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
           topoinstId = res.data.topoinst.topoinst_id;
           pollGetVM(res.data.topoinst.topoinst_id);
@@ -753,7 +753,8 @@ async function openScreen() {
 }
 function removeTopo() {
   return new Promise((response: any, reject: any) => {
-    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {
+    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {  
+      currentUuid = ''
       response(res);
     }).catch((err: any) => {
       reject(err);
