@@ -1191,6 +1191,7 @@ function remoteAssist() {
   assistanceVisible.value = true;
 }
 
+let isDelayModal: any = null
 // 轮询实验时间
 function times() {
   if (timer) {
@@ -1204,14 +1205,16 @@ function times() {
     } else {
       if (use_time.value === 600 && delayNum.value < 5 && isShowDelayBtn.value) {
         // clearInterval(Number(timer));
-        Modal.confirm({
+        isDelayModal = Modal.confirm({
           title: "是否延时？",
           okText: "确认",
           onOk: () => {
+            isDelayModal?.destroy();
             delayedTime();
           },
           cancelText: "取消",
           onCancel: () => {
+            isDelayModal?.destroy();
             times();
           },
         });
@@ -1549,6 +1552,7 @@ onMounted(() => {
     clearInterval(Number(viodeTimer));
     clearInterval(Number(delayTimer));
     clearInterval(Number(questionTimer));
+    isDelayModal?.destroy();
   });
 
 // function test(){
