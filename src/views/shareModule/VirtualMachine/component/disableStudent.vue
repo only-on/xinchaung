@@ -11,18 +11,18 @@
     <div class="disable-student-box">
       <p>抱歉，您的登录权限已被禁用，禁用时间段为</p>
       <p>{{ currentData.start_time }}至{{ currentData.end_time }}</p>
-      <p>您是否要保存当前实验环境？</p>
+      <p v-if="isSaveEnv">您是否要保存当前实验环境？</p>
       <p>（倒计时 {{ time }}s）</p>
       <div class="footer-action-btn-wrap">
         <a-button type="default" @click="cancel">取消</a-button>
-        <a-button type="primary" @click="ok">保存</a-button>
+        <a-button type="primary" @click="ok" v-if="isSaveEnv">保存</a-button>
       </div>
     </div>
   </a-modal>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted } from "vue";
+import { defineComponent, ref, onMounted, inject, computed } from "vue";
 import extStorage from "src/utils/extStorage";
 import request from "src/api/index";
 import { operatesHandle } from "src/utils/vncInspect";
@@ -36,9 +36,21 @@ export default defineComponent({
   setup(props, { emit }) {
     const time = ref(30);
     let timer: any = null;
+    const baseInfo: any = inject("baseInfo", ref({}));
+    const taskType: any = inject("taskType");
     onMounted(() => {
       timers();
     });
+    const isSaveEnv = computed(() => {
+      let boolean = false
+      if (
+        baseInfo.value?.current?.is_teamed==1&&baseInfo.value?.current?.is_lead==1 ||
+        baseInfo.value?.current?.is_teamed!=1&&(taskType.value===1||taskType.value===2||taskType.value===5)
+      ) {
+        boolean = true
+      }
+      return boolean
+    })
     function timers() {
       clearTimeout(timer);
       timer = setTimeout(() => {
@@ -54,7 +66,7 @@ export default defineComponent({
       loginOut();
     }
     function ok() {
-      if (props.current && props.current.is_teamed == 1) {
+      if (!isSaveEnv) {
         loginOut();
       } else {
         if (!props.type) {
@@ -103,6 +115,7 @@ export default defineComponent({
       time,
       cancel,
       ok,
+      isSaveEnv,
     };
   },
 });

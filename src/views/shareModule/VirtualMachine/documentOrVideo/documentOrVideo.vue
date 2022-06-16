@@ -23,6 +23,18 @@
       <empty v-else> </empty>
     </template>
   </layout>
+  <!--禁用modal-->
+  <disableStudent
+    v-if="disableVisable"
+    v-model:visable="disableVisable"
+    :data="disableData"
+    @save="saveKvm"
+    :type="type"
+    :uuid="currentUuid"
+    :taskId="taskId"
+    :opType="opType"
+    :current="baseInfo?.current"
+  ></disableStudent>
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +48,7 @@ import { message, Modal } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
+import disableStudent from "../component/disableStudent.vue"
 import {
   getTaskInfo,
   getVersionList,
@@ -79,6 +92,10 @@ let {
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const taskType: any = inject("taskType");
+
+const disableVisable: any = ref(false);
+const disableData: any = ref({});
+const currentUuid = ref('')
 // 左侧导航数据
 
 const navData = [
@@ -202,7 +219,11 @@ function initWs() {
       let regex = /\{.*?\}/g;
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
-        console.log(wsJsonData)
+        if (wsJsonData.type == "manual-disable") {
+          // 禁用学生
+          disableVisable.value = true;
+          disableData.value = wsJsonData.data;
+        }
       }
     },
   });
@@ -211,6 +232,7 @@ function initWs() {
 function closeWs() {
   (ws.value as any)?.close();
 }
+function saveKvm() {}
 onBeforeRouteLeave(() => {
   isCurrentPage = false;
   clearTimeout(Number(timerout));
