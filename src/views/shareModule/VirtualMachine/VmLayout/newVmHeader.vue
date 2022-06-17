@@ -311,7 +311,7 @@
       <template v-if="[1, 2].includes(currentShowType)">
         <div>
           <div v-if="currentShowType == 2" class="static-box">
-            <span>共<i>{{oldQuizPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
+            <span>共<i>{{answerPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
             ><span>得分<i class="goal">{{goalNum}}</i>分</span>
           </div>
           <div v-for="item in answerPaperList" :key="item.id">
@@ -554,9 +554,9 @@ const visible = ref(false);
 
 // 随堂测试
 const quizVisiable = ref(false);
-const oldQuizPaperList: Ref<any> = ref([]); // 原始数据
-const quizPaperList: Ref<any> = ref([]);
-const currentQuizIndex: Ref<number> = ref(0);
+const oldQuizPaperList: Ref<any> = ref([]); // 不带答案的原始数据
+const quizPaperList: Ref<any> = ref([]);   // 没有答完的题
+const currentQuizIndex: Ref<number> = ref(0);  // 当前在答的题目的索引
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
 const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
 
@@ -572,7 +572,7 @@ const answerNum = computed(() => {
 
 const goalNum = computed(() => {
   let num = 0;
-  oldQuizPaperList.value.forEach((item: any) => {
+  answerPaperList.value.forEach((item: any) => {
     if (item.student_score) {
       num+=item.student_score;
     }
@@ -582,7 +582,7 @@ const goalNum = computed(() => {
 
 const totalPoints  = computed(() => {
   let num = 0;
-  oldQuizPaperList.value.forEach((item: any) => {
+  answerPaperList.value.forEach((item: any) => {
     if (item.score) {
       num+=item.score;
     }
@@ -593,9 +593,7 @@ const totalPoints  = computed(() => {
 const delayVisiable = ref(false);
 const delayTime = ref(60); // 实验时间结束，延时提示框倒计时
 let delayTimer: NodeJS.Timer | null = null; // 延时倒计时
-// 随堂测试
-const classTestTotal = ref<number>(5);
-const testNum = ref<number>(0);
+
 // 实验计时
 let experimentTime: Ref<any> = ref({
   h: 0,
@@ -1191,8 +1189,8 @@ function remoteAssist() {
   assistanceVisible.value = true;
 }
 
-let isDelayModal: any = null
 // 轮询实验时间
+let isDelayModal: any = null
 function times() {
   if (timer) {
     clearInterval(timer);
@@ -1367,14 +1365,15 @@ function settingCurrentVM() {
 //
 // 打开随堂测试
 async function openQuizModal() {
+  await getQuestionList(false);
   if (oldQuizPaperList.value.length == answerNum.value) {
 
     // await getQuestionList(true);
     await getAnswerList()
-    quizPaperList.value=cloneDeep(oldQuizPaperList.value)
+    // quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
   } else {
-    await getQuestionList(false);
+    // await getQuestionList(false);
     if(!quizPaperList.value?.length||(quizPaperList.value?.length&&quizPaperList.value?.length!==oldQuizPaperList.value?.length)){
         currentQuestionIds = [];
       let tempData: any[] = cloneDeep(oldQuizPaperList.value);
@@ -1390,8 +1389,8 @@ async function openQuizModal() {
       
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
-    currentShowType.value = 0;
     }
+    currentShowType.value = 0;
   }
   quizVisiable.value = true;
 }
@@ -1421,8 +1420,14 @@ async function getAnswerList(needs_answer: boolean = false) {
     .getAnswerListApi({ param: param, urlParams: { content_id: taskId } })
     .then((res: any) => {
       if (!res) return
-      answerPaperList.value = res.data;
-      return res.data;
+      const arr: any = []
+      res.data.map((v: any) => {
+        if (v.student_answer) {
+          arr.push(v)
+        }
+      });
+      answerPaperList.value = arr
+      return answerPaperList.value;
     });
 }
 // 提交
@@ -1468,7 +1473,7 @@ function next() {
 // 实验随测记录
 function lookRecord() {
   currentShowType.value = 2;
-  quizPaperList.value = cloneDeep(oldQuizPaperList.value);
+  // quizPaperList.value = cloneDeep(oldQuizPaperList.value);
 }
 // 获取多选题答案
 function getChoiceAnswer(val: any) {
