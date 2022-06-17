@@ -241,7 +241,7 @@ const viewDetail=(val:any)=>{
   }
   if(val.slab_uid){
     router.push({
-      path:'/teacher/teacherMaterialResource/setDataDetail',
+      path:'/admin/TeachingResourceManagement/resourcesManagement/setDataDetail',
       query:{
         ...query,  
         avatar: val.user.avatar,
@@ -250,7 +250,7 @@ const viewDetail=(val:any)=>{
     })
   }else{
     router.push({
-      path:'/teacher/teacherMaterialResource/ResourceDetail',
+      path:'/admin/TeachingResourceManagement/resourcesManagement/resourcesDetail',
       query:{...query}
     })
   }

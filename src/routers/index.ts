@@ -93,8 +93,8 @@ router.afterEach(
           },
           route: router.resolve({
             name: routeSegment.name,
-            query: to.query,
-            params: to.params,
+            query: routeSegment.path !== to.path ? {} : to.query,
+            params: routeSegment.path !== to.path ? {} : to.params,
           }).fullPath,
         };
         // console.log('routeTuple:=',routeTuple)

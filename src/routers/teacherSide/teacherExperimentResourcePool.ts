@@ -4,20 +4,21 @@ import { LocationQuery, RouteParams } from "vue-router";
 import extStorage from "src/utils/extStorage";
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
+// console.log(role)
 export default {
   path: "teacherExperimentResourcePool",
   component: Layout,
   name: "teacherExperimentResourcePool",
   meta: {
-    // title: "实验资源库",
-    title: (params?: RouteParams, query?: RouteParams) => {
-      const dataDetailMap = {
-          '2': '教学资源管理',
-          '3': '实验资源库',
-      }
-      return dataDetailMap[role.toString()] || dataDetailMap[3]
-      // return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
-    },
+    title: "实验资源库",
+    // title: (params?: RouteParams, query?: RouteParams) => {
+    //   const dataDetailMap = {
+    //       '2': '教学资源管理',
+    //       '3': '实验资源库',
+    //   }
+    //   return dataDetailMap[role.toString()] || dataDetailMap[3]
+    //   // return dataDetailMap[query!.role && query!.role.toString()] || dataDetailMap[3]
+    // },
     authCode: "teacherExperimentResourcePool",
   },
   children: [
@@ -25,11 +26,11 @@ export default {
       path: "",
       component: (params?: RouteParams, query?: RouteParams) => {
         // console.log(query)
-        if(role===2){
-          return import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue")
-        }else{
+        // if(role===2){
+        //   return import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue")
+        // }else{ 
           return import( "src/views/teacherModule/teacherExperimentResourcePool/index.vue")
-        }
+        // }
       },
       meta: {
         icon: "",

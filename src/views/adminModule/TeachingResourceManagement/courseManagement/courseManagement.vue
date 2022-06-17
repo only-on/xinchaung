@@ -290,7 +290,7 @@ const getpercent=(val:number)=>{
 // /teacher/teacherCourse/Detail?currentTab=1&courseId=500173
 const viewDetail=(val:any)=>{
   router.push({
-    path:'/teacher/teacherCourse/Detail',
+    path:'/admin/TeachingResourceManagement/courseManagement/courseManagementDetail',
     query:{
       role:2,
       currentTab:1,

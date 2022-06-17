@@ -217,7 +217,7 @@ const ifSearch:any=ref(false)
     return
   }
   router.push({
-    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+    path: "/admin/TeachingResourceManagement/experimentManagement/experimentDetail",
     query: {
       role:2,
       id:val.id,

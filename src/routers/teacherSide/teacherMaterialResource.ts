@@ -10,26 +10,26 @@ export default {
   component: Layout,
   name: "teacherMaterialResource",
   meta: {
-    // title: "素材资源",
-    title: (params?: RouteParams, query?: RouteParams) => {
-      const dataDetailMap = {
-          '2': '教学资源管理',
-          '3': '素材资源',
-          '5': '素材资源',
-      }
-      return (query && query!.role)?dataDetailMap[query!.role.toString()]:dataDetailMap[3]
-    },
+    title: "素材资源",
+    // title: (params?: RouteParams, query?: RouteParams) => {
+    //   const dataDetailMap = {
+    //       '2': '教学资源管理',
+    //       '3': '素材资源',
+    //       '5': '素材资源',
+    //   }
+    //   return (query && query!.role)?dataDetailMap[query!.role.toString()]:dataDetailMap[3]
+    // },
     authCode: "teacherMaterialResource",
   },
   children: [
     {
       path: "",
       component: () => {
-        if(role===2){
-          return import("src/views/adminModule/TeachingResourceManagement/resourcesManagement/resourcesManagement.vue")
-        }else{
+        // if(role===2){
+        //   return import("src/views/adminModule/TeachingResourceManagement/resourcesManagement/resourcesManagement.vue")
+        // }else{
           return import("src/views/teacherModule/teacherMaterialResource/index.vue")
-        }
+        // }
       },
       meta: {
         icon: "",
