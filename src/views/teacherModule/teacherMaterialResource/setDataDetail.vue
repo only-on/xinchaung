@@ -455,18 +455,20 @@ function getDataFileList() {
   state.fileList.length=0
   http.getDataFileList({param:{ data_id:editId}}).then((res:any) => {
     const list=res.data
-    list.length?selectFile(list[0]):selectFile({})
+    var arr:any=[]
     if(list.length){
-      list.map((v:any)=>{
+      // external_parameters
+      var arr=list.filter((v:any)=>{return v.external_parameters==='2'})
+      arr.map((v:any,k:any)=>{
         v.suffix=''     //  v.suffix=v.class  //现在没有预览地址  字段置空
         v.id=v.uid
         v.file_name=v.name
         v.sizeString=v.size
       })
-      selectFile(list[0])
-      state.fileList.push(...list)
+      state.fileList.push(...arr)
     }
-    console.log(list)
+    arr.length?selectFile(arr[0]):selectFile({})
+    console.log(arr)
   })
 }
 onMounted(() => {
