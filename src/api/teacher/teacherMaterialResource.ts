@@ -32,7 +32,8 @@ export default {
   deleteItemFile:{url:`/dmc/v1.0/datafile`,method:'DELETE'},
   // toPublic:{url:`/dmc/v1.0/to/public`,method:'POST',dataType: 'json'},
   // toPrivate:{url:`/dmc/v1.0/to/private`,method:'POST',dataType: 'json'},
-  getDataSetsList: { url: `/dmc/v1.0/dataset_lists`, method: 'POST', dataType: 'json' }
+  getDataSetsList: { url: `/dmc/v1.0/dataset_lists`, method: 'POST', dataType: 'json' },
+  uodataFileStatus:{url:'/dmc/v1.0/datafile',method: 'PATCH', dataType: 'json'}
 };
 
 export interface ITeacherMaterialResource {
@@ -64,6 +65,7 @@ export interface ITeacherMaterialResource {
   // toPublic: TFHttpSend;
   // toPrivate: TFHttpSend;
   getDataSetsList: TFHttpSend;
+  uodataFileStatus:TFHttpSend;
 }
 
 export const MODULE_NAME = "teacherMaterialResource";

@@ -210,6 +210,11 @@ function defaultCover() {
 const createDataSet = async () => {
   await defaultCover()
   const file = []
+  let UpdataObj:any={
+    data_id:'',
+    external_parameters:'2',
+    data_uid:[]
+  }
   for (const key in formState.fileList) {
     if (
       Object.prototype.hasOwnProperty.call(formState.fileList, key)
@@ -219,6 +224,7 @@ const createDataSet = async () => {
           uid: formState.fileList[key].data.uid,
           path: formState.fileList[key].data.path,
         });
+        UpdataObj.data_uid.push(formState.fileList[key].data.uid)
       }
     }
   }
@@ -243,9 +249,14 @@ const createDataSet = async () => {
       slab_uid: res.data.uid,
       tags: formState.tags,
     }
+    UpdataObj.data_id=res.data.uid
     http.createDatasets({param}).then((res: IBusinessResp) => {
-      $message.success("创建成功");
-      router.go(-1);
+      http.uodataFileStatus({param:UpdataObj}).then((res: IBusinessResp) => {
+        $message.success("创建成功");
+        router.go(-1);
+      })
+      // $message.success("创建成功");
+      // router.go(-1);
     })
   });
 }

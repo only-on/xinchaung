@@ -70,6 +70,8 @@ import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
+import request from "src/api/index";
+const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
 // import api from 'src/api';
 interface Props {
@@ -248,7 +250,18 @@ function removeFile(file: any, index: any) {
       item.xhr.abort();
     }
   });
-  delete props.fileList[index];
+  if(props.type!==1){
+    delete props.fileList[index];
+  }else{
+    const deleteParam = {
+      file_id: file.data.uid,
+      file_name: file.data.name,
+    }
+    http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
+      delete props.fileList[index];
+    })
+  }
+  // delete props.fileList[index];
 }
 function removeAllFile() {
   ChunkStatus = {}

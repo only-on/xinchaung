@@ -435,7 +435,7 @@ function detailed(){
 }
 function getDataFileList() {
   state.fileList.length=0
-  http.getDataFileList({param:{ data_id:editId }}).then((res:any) => {
+  http.getDataFileList({param:{ data_id:editId}}).then((res:any) => {
     const list=res.data
     list.length?selectFile(list[0]):selectFile({})
     if(list.length){
