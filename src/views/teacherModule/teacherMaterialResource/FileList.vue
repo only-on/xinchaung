@@ -63,7 +63,7 @@ var totalList:any=computed(()=>{
     PageCount.value=Math.ceil(props.FileList.length / limit.value)
     // List.push(...props.FileList)
   }
-  console.log('totalList:',arr)
+  // console.log('totalList:',arr)
   return arr
 })
 watch(()=>{ return props.FileList},(val)=>{

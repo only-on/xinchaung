@@ -251,12 +251,11 @@ const createDataSet = async () => {
     }
     UpdataObj.data_id=res.data.uid
     http.createDatasets({param}).then((res: IBusinessResp) => {
+      // 下接口为更新数据集文件可用状态  external_parameters 2
       http.uodataFileStatus({param:UpdataObj}).then((res: IBusinessResp) => {
         $message.success("创建成功");
         router.go(-1);
       })
-      // $message.success("创建成功");
-      // router.go(-1);
     })
   });
 }

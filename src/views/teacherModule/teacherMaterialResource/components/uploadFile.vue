@@ -244,6 +244,8 @@ function deleteFile(file: any, key: any) {
   delete props.fileList[key];
 }
 function removeFile(file: any, index: any) {
+  // console.log(file);
+  // console.log(props.fileList);
   file.files.forEach((item: any) => {
     if (item.xhr) {
       // console.log(item)

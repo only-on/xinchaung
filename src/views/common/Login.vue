@@ -181,7 +181,7 @@ const getTeacherInfo = () => {
       <div class="login-box">
         <div class="logo">
           <div :style="`background-image: url(${loginInfo.logo});`"></div>
-          <h1>欢迎登录{{loginInfo.name}}平台</h1>
+          <h1>欢迎登录{{loginInfo.name}}</h1>
         </div>
         <div class="form">
           <a-form

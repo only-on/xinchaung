@@ -166,9 +166,9 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         pointer: {
         show: true,
         showAbove:false,
-        width:8,
+        width:8,    
         offsetCenter: [-3, -24],
-        length: "14%"
+        length: "18%"
         },
         axisLine: {
           lineStyle: {
@@ -195,7 +195,7 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         anchor: {
           show:true,
           showAbove: true,
-          size:50,
+          size:70,
           itemStyle: {
             borderWidth: 1,
             borderColor:'white',
@@ -213,7 +213,7 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         },
         detail: {
           valueAnimation: true,
-          fontSize:10,
+          fontSize:14,
           fontWeight: "bolder",
           offsetCenter: [0, '20%'],
           // formatter:function (value:any) {
@@ -295,7 +295,7 @@ function dashboardService(data:any,color:any){
           show: true,
           offsetCenter: [0,"40%"],
           color: "black", 
-          fontSize: 20, 
+          fontSize: 16, 
         },
         detail: {
           valueAnimation:false,

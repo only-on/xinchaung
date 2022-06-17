@@ -700,7 +700,7 @@
     display: flex;
     padding-right: 100px;
     .labelCon{
-       font-size: 18px; 
+       font-size: 16px; 
        font-weight: bold;
     }
     .contentCon{

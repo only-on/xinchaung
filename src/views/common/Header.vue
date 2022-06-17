@@ -472,7 +472,7 @@ export default defineComponent({
         router.push("/admin");
       }
       if (role == 5) {
-        router.push("/teacher"); // 助教端
+        router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
         // router.push("/");
       }
     }

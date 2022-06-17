@@ -270,7 +270,7 @@ const searchFileList=computed(()=>{
 })
 // 
 const selectFile=(val:any)=>{
-  console.log(val) 
+  // console.log(val) 
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
@@ -376,8 +376,8 @@ const addFile=()=>{
   addFileVisible.value=true
 }
 const SaveFile=()=>{
-  // console.log(AddFileLObj.AddFileList)
-  // const list=Object.values(AddFileLObj.AddFileList)
+  console.log(AddFileLObj.AddFileList)
+  // return
   // if(list.length){
   //   let items:any=[]
   //   list.forEach((v:any)=>{
@@ -394,10 +394,28 @@ const SaveFile=()=>{
   // }else{
   //    addFileVisible.value=false
   // }
-  AddFileLObj.AddFileList={}
-  addFileVisible.value=false
-  getDataFileList()
-  detailed()
+  let UpdataObj:any={
+    data_id:state.detail.uid,
+    external_parameters:'2',
+    data_uid:[]
+  }
+  for (const key in AddFileLObj.AddFileList) {
+    if (
+      Object.prototype.hasOwnProperty.call(AddFileLObj.AddFileList, key)
+    ) {
+      if (AddFileLObj.AddFileList[key].status === "end") {
+        UpdataObj.data_uid.push(AddFileLObj.AddFileList[key].data.uid)
+      }
+    }
+  }
+  // console.log(UpdataObj)
+  // return
+  http.uodataFileStatus({param:UpdataObj}).then((res: IBusinessResp) => {
+      AddFileLObj.AddFileList={}
+      addFileVisible.value=false
+      getDataFileList()
+      detailed()
+  })
 }
 const cancelAddFile=()=>{
   uploadFileRef.value?.removeAllFile()
