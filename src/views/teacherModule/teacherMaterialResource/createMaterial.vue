@@ -35,7 +35,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete&&createMaterialType.id!==1"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete"></Submit>
   </div>
 </template>
 

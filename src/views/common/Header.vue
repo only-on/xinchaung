@@ -543,7 +543,7 @@ export default defineComponent({
           "/?uid=" +
           uid+'_0',
         open: () => {
-          if (longWs1.value && (role === 3 || role === 4)) {
+          if (longWs1.value && (role === 3 || role === 5)) {
             longWs1.value.join(uid+"_teacher" + "_room");
           }
         },
