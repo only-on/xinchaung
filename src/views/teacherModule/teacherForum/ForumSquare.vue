@@ -201,6 +201,9 @@ provide("bottomStyle", bottomStyle);
     .left {
       // width: 830px;
       width: 100%;
+      .ant-spin-nested-loading {
+        min-height: 300px;
+      }
     }
     .right {
       width: 300px;

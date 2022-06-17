@@ -144,7 +144,7 @@
       </div>
       <div v-if="steupFormState.reportObj.id" class="item report">
         <span class="type">{{`${steupFormState.reportObj.typeText}`}}</span>
-        <span>{{`${steupFormState.reportObj.name}`}}</span>
+        <span class="report-name single_ellipsis" :title="steupFormState.reportObj.name">{{`${steupFormState.reportObj.name}`}}</span>
       </div>
     </div>
     <template #footer>
@@ -493,8 +493,13 @@ onMounted(() => {
       }
       .report {
         line-height: 44px;
+        display: flex;
         .type{
+          width: 56px;
           color: var(--brightBtn);
+        }
+        .report-name {
+          flex: 1;
         }
       }
     }

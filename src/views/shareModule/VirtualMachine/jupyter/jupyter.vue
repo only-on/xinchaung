@@ -252,12 +252,12 @@ onMounted(async () => {
   // 处理兼容性问题
   if (iframe?.attachEvent) {
     iframe.attachEvent('onload', () => {
-      clearTimeout(Number(TimerIframe));
+      clearInterval(Number(TimerIframe));
       onloadIframe = true
     })
   } else {
     iframe.onload = () => {
-      clearTimeout(Number(TimerIframe));
+      clearInterval(Number(TimerIframe));
       onloadIframe = true
     }
   }

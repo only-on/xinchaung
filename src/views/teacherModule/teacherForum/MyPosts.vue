@@ -246,6 +246,9 @@ const tabs = [
     }
     .right {
       // width: 1044px;
+      .ant-spin-nested-loading {
+        min-height: 300px;
+      }
     }
   }
 }
