@@ -38,6 +38,9 @@ import {
   Rate,
   Collapse,
 } from "ant-design-vue";
+message.config({
+  duration: 2,
+});
 import { IAppManager, TFInitApp } from "./project";
 import { createVNode } from "vue";
 import { ExclamationCircleOutlined } from "@ant-design/icons-vue";

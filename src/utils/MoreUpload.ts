@@ -266,7 +266,7 @@ export default function Upload(option: UploadOptions) {
     body.append('part_count', part_count)
     body.append('upload_id', upload_id)
     body.append('md5', md5String)
-    body.append('external_parameters', '1')
+    body.append('external_parameters', '1') // 勿删 勿修改 2代表文件可用状态， 未确认和未保存的文件为1 不可用
     request({
       url: option.mergeUploadUrl,
       body,
