@@ -147,6 +147,9 @@ function remove() {
 function uploadvideoOk() {
   emit("uploadSuccess", uploadFileList, dataset_id.value);
   emit("update:visibleUpload", false);
+  uploadFileList.status = 'done'
+  uploadFileList.name = ''
+  uploadFileList.percent = 0
 }
 function cancel() {
   emit("update:visibleUpload", false);

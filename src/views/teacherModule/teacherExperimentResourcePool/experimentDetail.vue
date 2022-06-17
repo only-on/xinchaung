@@ -70,7 +70,7 @@
       <!-- <video-detail></video-detail> -->
       <!-- <file-detail></file-detail> -->
       <!-- <task-detail></task-detail>  -->
-      <component :is="components[experimentDetail.content_type]" :detail="experimentDetail"></component>
+      <component :is="components[experimentDetail.content_type]" :detail="experimentDetail" @getExperimentDetail="getExperimentDetail"></component>
     </div>
   </div>
   <!-- 添加到课程 -->
