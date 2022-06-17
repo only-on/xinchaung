@@ -387,7 +387,8 @@ export default defineComponent({
           teacherOccupied: form.teacher_occupied ? 1 : 0,
           weekRecycle: checkDate.value ? 1 : 0,
           // stuIds: selectedIds['student'],
-          stuIds:id?ids:tableParams.student_id,
+          // stuIds:id?ids:tableParams.student_id,
+          stuIds:ids,
           classIds: selectedIds['class'],
         }
         if (id !== 'undefined' && id) {
@@ -402,7 +403,6 @@ export default defineComponent({
           http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
           $message.success('创建成功！')
           router.go(-1)
-          // visible.value = false;
         })
         }
         
