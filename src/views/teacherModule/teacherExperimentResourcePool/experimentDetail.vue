@@ -224,7 +224,7 @@ const reportTemplate = () => {
   const templateId = experimentDetail.content_template?experimentDetail.content_template.template_id : ''
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
-    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id},
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
   });
 };
 // 编辑基本信息
@@ -274,7 +274,9 @@ let experimentDetail = reactive<IExperimentDetail>({
   save_my_content: true
 });
 const getExperimentDetail = () => {
-  http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
+  let params = {urlParams: {id}}
+  type=='recommend' ? Object.assign(params, {param: {type: 'recommend'}}) : ''
+  http.getExperimentDetail(params).then((res: IBusinessResp) => { 
     Object.assign(experimentDetail, res.data);
     const type = experimentDetail.is_webssh ? 2 
       : (experimentDetail.task_type===4&&experimentDetail.programing_type) ? 3

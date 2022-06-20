@@ -441,7 +441,7 @@ function prepare(a:any, i: number) {
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: role === 3 ? "prepare" : 'start',
+    opType: role === 3 || role===5 ? "prepare" : 'start',
     taskId: id,
     experType: task_type
   };
