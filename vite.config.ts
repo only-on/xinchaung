@@ -56,7 +56,7 @@ export default defineConfig({
         // target: proxyTarget[130]",
         target: proxyTarget[221],
         changeOrigin: true,
-      },    
+      },
       "/dmc": {
         // target: proxyTarget[130]",
         target: proxyTarget[221],
@@ -71,7 +71,7 @@ export default defineConfig({
         // target: proxyTarget[130]",
         target: proxyTarget[221],
         changeOrigin: true,
-      },        
+      },
       "/knowledge-map1": {
         target: proxyTarget[130],
         changeOrigin: true,
@@ -90,7 +90,7 @@ export default defineConfig({
     force: true,
   },
   build: {
-    sourcemap: false,
+    sourcemap: true,
     brotliSize: false,
     chunkSizeWarningLimit: 10000,
     rollupOptions: {
