@@ -83,6 +83,9 @@
         {{record.contentTechnicalDirectionGroup}}
       </div>
     </template>
+    <template #action="{record}">
+      <span class="action detail" @click="dleDelete(record)">删除</span>
+    </template>
     </a-table>
       <template #renderEmpty>
           <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
@@ -92,7 +95,8 @@
 </template>
 <script lang="ts" setup>
 import { message,Modal } from "ant-design-vue";
-import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 const http = (request as any).TeachingResourceManagement;
@@ -135,6 +139,8 @@ const ifSearch:any=ref(false)
         {
           title: '实验所属',
           dataIndex: 'contentGroup',
+          width:120,
+          ellipsis: true,
         },
         {
           title: '实验类型',
@@ -150,6 +156,12 @@ const ifSearch:any=ref(false)
           title: '课时',
           dataIndex: 'contentClassesCount',
         },
+        {
+          title: '操作',
+          width:150,
+          key: 'action',
+          slots: { customRender: 'action' },
+        }
       ];
     const tableData:any=reactive({})
     const params:any=reactive({
@@ -188,6 +200,23 @@ const ifSearch:any=ref(false)
         defaultChecked: record.selected,
       }
     }
+    const dleDelete=(item:any)=>{
+      Modal.confirm({
+        title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "确定要删除吗？",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {
+          http.experDelete({param:{content_ids:[item.id]}}).then((res:any)=>{
+            if(res.code){
+              message.success('删除成功')
+              emit('updateData',{name:'',page:params.page,pageSize:params.pageSize,type:'',attribute:''})
+            }
+          })
+        }
+      })
+    }
     function batchDelete(){
       if(!tableData.selectedRowKeys?.length){
         message.warning('请至少选择一条数据！')
@@ -195,13 +224,14 @@ const ifSearch:any=ref(false)
       }
       Modal.confirm({
         title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
         content: "确定要删除吗？",
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
           http.experDelete({param:{content_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
-              message.success('删除成功！')
+              message.success('删除成功')
               emit('updateData',{name:'',page:params.page,pageSize:params.pageSize,type:'',attribute:''})
               tableData.selectedRowKeys=[]
             }

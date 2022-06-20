@@ -102,6 +102,9 @@
               <template #imageTags="{ record }">
                 <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
               </template>
+              <template #action="{record}">
+                <span class="action detail" @click="dleDelete(record)">删除</span>
+              </template>
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -140,6 +143,8 @@ const columns= [
           title: "镜像所属",
           dataIndex: "imageGroup",
           align: "center",
+          width:160,
+          ellipsis: true,
         },
         {
           title: "镜像类型",
@@ -164,6 +169,11 @@ const columns= [
           align: "center",
           ellipsis: true,
         },
+        {
+          title: '操作',
+          key: 'action',
+          slots: { customRender: 'action' },
+        }
       ]
 var searchInfo:any=reactive({
   imageName:'',
@@ -222,6 +232,21 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
 const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.imageBatchDelete({param:{image_ids:[item.id]}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   // return
@@ -386,6 +411,10 @@ onMounted(() => {
     }
     .tableContent{
       margin-top: 2rem;
+      .action{
+        color: var(--primary-color);
+        cursor: pointer;
+      }
     }
 
   }

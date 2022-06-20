@@ -68,6 +68,9 @@
               <template #name="{ record }">
                 <span class="courseName" :title="record.name" @click="viewDetail(record)">{{record.name}}</span>
               </template>
+              <template #action="{record}">
+                <span class="action courseName" @click="dleDelete(record)">删除</span>
+              </template>
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -126,6 +129,8 @@ const columns= [
     title: "素材所属",
     dataIndex: "username",
     align: "center",
+    width:160,
+    ellipsis: true,
   },
   {
     title: "素材类型",
@@ -153,8 +158,15 @@ const columns= [
     title: "描述",
     dataIndex: "description",
     align: "center",
+    width:120,
     ellipsis: true,
   },
+  {
+    title: '操作',
+    width:150,
+    key: 'action',
+    slots: { customRender: 'action'},
+  }
 ]
 var searchInfo:any=reactive({
   name:'',
@@ -258,6 +270,22 @@ const viewDetail=(val:any)=>{
 const searchList=()=> {
   searchInfo.page=1
   initData()
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.resourceBatchDelete({param: {datasetIds:`${item.id}`}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+        resourceStatistics()
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   if(!searchInfo.selectedRowKeys?.length){

@@ -71,7 +71,8 @@
     </div>
 </template>
 <script lang="ts" setup>
-    import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+    import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
     import PdfVue from "src/components/pdf/pdf.vue";
     import { downloadUrl } from "src/utils/download";
     import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
@@ -191,6 +192,7 @@ function downLoad(item:any){
   function dleDelete(item: any){
         Modal.confirm({
           title: "提示",
+          icon: createVNode(ExclamationCircleOutlined),
           content: "确定删除实验报告模板?删除后不可恢复",
           okText: "确定",
           cancelText: "取消",
@@ -210,6 +212,7 @@ function batchDelete(){
       }
       Modal.confirm({
         title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
         content: "确定要删除吗？",
         okText: "确定",
         cancelText: "取消",
