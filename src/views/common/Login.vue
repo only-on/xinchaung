@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { reactive, ref,watch } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { Modal, message } from "ant-design-vue";
+import { reactive, ref,watch,createVNode } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -91,7 +93,9 @@ if (needCheckLoggedIn) {
     if (res) {
       router.push(getHomePath(res.data.role));
     }
-  }).catch(() => {});
+  }).catch(() => {
+    router.push(getHomePath(9))
+  });
 }
 
 // 检查是否需要显示验证码
@@ -113,7 +117,7 @@ http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
 watch(()=>{return store.state.systemInfo},(val:any)=>{
   console.log(val)
 },{deep:true})
-const login = () => {
+const login = (repeat?:boolean) => {
   refForm.value
     .validate()
     .then(() => {
@@ -125,11 +129,16 @@ const login = () => {
       if (needCaptcha.value) {
         param["verifyCode"] = formState.captcha;
       }
+      if (repeat) {
+        param["force_login"] = true;
+      }
       http
         .login({
           param: param,
         })
         .then((res: IBusinessResp | null) => {
+          // againLogin()
+          // return
           lStorage.set("role", res!.data.role);
           lStorage.set("uid", res!.data.uid);
           lStorage.set("username", res!.data.username);
@@ -148,6 +157,10 @@ const login = () => {
         })
         .catch((res: any) => {
           console.error("login failed: ", res);
+          if(res.data.unique_confirm){
+            againLogin()
+            return
+          }
           if (res.data.need_verify) {
             needCaptcha.value = true;
             captchaUrl.value =
@@ -160,6 +173,19 @@ const login = () => {
       console.error("login form error: ", error);
     });
 };
+const againLogin=()=>{
+  submitLoading.value = false;
+  Modal.confirm({
+    title: "提示",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "该账号已在其他终端登录！是否使其下线？",
+    okText: "登录",
+    cancelText: "取消",
+    onOk() {
+      login(true)
+    }
+  });
+}
 // 获取教师信息接口
 const getTeacherInfo = () => {
   http.getTeacherInfo().then((res: IBusinessResp | null) => {

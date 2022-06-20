@@ -190,7 +190,7 @@
                   <div v-if="classVal.full" class="course-full flex-center">
                     <div class="course-full-leave">
                       <div>已约满</div>
-                      <div style="font-size: 12px">如有冲突可联系管理员</div>
+                      <!-- <div style="font-size: 12px">如有冲突可联系管理员</div> -->
                     </div>
                     <div v-if="role == 2" class="course-full-hover">
                       <div class="make-base-list">
@@ -237,7 +237,7 @@
                           class="course-info-title"
                           :class="!classVal.full ? 'course-info-title-active' : ''"
                         >
-                          <span class="course-info-text">剩余可约人数</span>
+                          <span class="course-info-text">剩余可预约人数</span>
                           <span class="course-info-num">{{ classVal.left_stunum }}</span>
                         </div>
                       </template>
@@ -246,7 +246,7 @@
                         class="course-info-title"
                         :class="!classVal.full ? 'course-info-title-active' : ''"
                       >
-                        <span class="course-info-text">剩余可约人数</span>
+                        <span class="course-info-text">剩余可预约人数</span>
                         <span class="course-info-num">{{ classVal.left_stunum }}</span>
                       </div>
                     </div>
@@ -1332,7 +1332,7 @@ onMounted(() => {
 }
 .teacher_name{
   display: inline-block;
-  width:70px;
+  width:68px;
   height: 100%;
   white-space: nowrap;
   overflow: hidden;
