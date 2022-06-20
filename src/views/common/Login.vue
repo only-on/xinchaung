@@ -157,7 +157,7 @@ const login = (repeat?:boolean) => {
         })
         .catch((res: any) => {
           console.error("login failed: ", res);
-          if(res.data.unique_confirm){
+          if(res.data.unique_confirm && res.data.unique_confirm===true){
             againLogin()
             return
           }
