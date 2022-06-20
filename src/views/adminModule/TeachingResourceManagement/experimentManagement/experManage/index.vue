@@ -266,7 +266,7 @@ const ifSearch:any=ref(false)
      >div:nth-child(1){
       //  display: flex;
        >div{
-        margin-right: 20px;
+        margin-right: 12px;
          >span{
              margin-right: 10px;
          }
@@ -277,7 +277,7 @@ const ifSearch:any=ref(false)
     border-radius: 20px;
  }
  .custom_input{
-  width: 285px;
+  width: 270px;
  }
  .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
    border-radius: 20px;
