@@ -88,7 +88,8 @@
         </div>
         <div class="listBox" v-if="v.openItem">
           <div class="list" v-for="(a,i) in v.list" :key="a">
-            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
+          <!-- @click.stop="ViewExperiment(a,v)" -->
+            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v),Number(currentTab)===1?ViewExperiment(a,v):''" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
               <div class="TitLeft flexCenter" :class="getTitLeftClass()">
                 <div class="experimentType">
                   <span v-if="a.TeachingAids">教辅</span>
@@ -108,10 +109,10 @@
                   <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
                     <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
                     @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
-                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
+                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click.stop="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
                     <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || role===3&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click="openVm(a, 'continue')">进入</a-button>
-                    <a-button v-else type="primary" class="brightBtn" size="small"  @click="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
+                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || role===3&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click.stop="openVm(a, 'continue')">进入</a-button>
+                    <a-button v-else type="primary" class="brightBtn" size="small"  @click.stop="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
                   </span>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
@@ -375,6 +376,10 @@ function selectExperiment(a:any,v:any){
   state.activeTab.chapterId=v.id
   state.activeExperimentObj=a
   emit('selectExperiment',a)
+  // if(Number(currentTab) === 1){
+  //   console.log('公开');
+  //   ViewExperiment(a,v)
+  // }
   // pdf 视频 跳页面展示
   // const { href } = router.resolve({
   //   path: "/teacher/Workbench/open-jupyte",
