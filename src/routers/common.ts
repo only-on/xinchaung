@@ -9,6 +9,7 @@ const PathList = {
   3: "/teacher/home",
   4: "/student/statistics",
   5: "/teacher/teacherCourse",
+  9:'/login'
 };
 
 /**

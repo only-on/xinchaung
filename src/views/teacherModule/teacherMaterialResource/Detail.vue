@@ -126,7 +126,7 @@
       </template>
   </a-modal>
   <!-- 上传文件 弹窗 -->
-  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900">
+  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900" @cancel="cancelAddFile">
     <div>
       <upload-file ref="uploadFileRef" :type="state.detail.type" :fileList="AddFileLObj.AddFileList" :complete="AddFileLObj" />
     </div>

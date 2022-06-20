@@ -176,7 +176,7 @@ export default defineComponent({
     padding: 0 var(--padding-md);
     // color: var(--black-25);
     color: var(--menu-text);
-    font-size: var(--font-size-18);
+    font-size: var(--font-size-16);
     text-align: center;
     cursor: pointer;
     width: max-content;

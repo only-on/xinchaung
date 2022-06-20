@@ -108,6 +108,9 @@
               <template #courseName="{ record }">
                 <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
               </template>
+              <template #action="{record}">
+                <span class="action courseName" @click="dleDelete(record)">删除</span>
+              </template>
             </a-table>
             <template #renderEmpty>
               <div v-if="!loading"><Empty type="tableEmpty" /></div>
@@ -155,6 +158,8 @@ const columns= [
           title: "课程所属",
           dataIndex: "courseGroup",
           align: "center",
+          width:160,
+          ellipsis: true,
         },
         {
           title: "课程状态",
@@ -178,6 +183,12 @@ const columns= [
           align: "center",
           ellipsis: true,
         },
+        {
+          title: '操作',
+          width:150,
+          key: 'action',
+          slots: { customRender: 'action' },
+        }
       ]
 var searchInfo:any=reactive({
   courseName:'',
@@ -246,6 +257,21 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   console.log(searchInfo.selectedRowKeys);
   
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.CourseBatchDelete({param: {course_ids:[item.id]}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   // return

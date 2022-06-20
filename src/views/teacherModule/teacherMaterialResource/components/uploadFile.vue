@@ -275,7 +275,7 @@ function removeAllFile() {
       if (props.type === 1) {
         props.fileList[v].files.forEach((item: any) => {
           if (item.xhr) {
-            // console.log(item)
+            console.log(item)
             item.xhr.abort();
           }
         })
