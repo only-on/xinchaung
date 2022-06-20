@@ -122,8 +122,18 @@ async function beforeUpload(file: any) {
   const suffix = arr[arr.length-1]
   if (suffix === 'md') {
     const text = await readFile(file);
-    emit("uploadSuccess", text, suffix);
-    emit("update:visibleUpload", false);
+    const info = {
+      name: file.name,
+      suffix,
+      text,
+    }
+    uploadFileList.percent = 100
+    uploadFileList.status = "done"
+    uploadFileList.suffix = 'md'
+    uploadFileList.text = text
+    uploadFileList.name = file.name
+    // emit("uploadSuccess", info, dataset_id.value);
+    // emit("update:visibleUpload", false);
     return false
   }
   const accept = props.type === 'file' ? ['md','doc','docx','pdf'] : ['mp4']

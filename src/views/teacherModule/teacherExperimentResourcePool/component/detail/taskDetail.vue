@@ -67,6 +67,9 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 
 interface ItaskList {
   id?: number;
@@ -127,7 +130,10 @@ const onSubmit = () => {
   })
   http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: any) => {
     console.log(res)
-    router.go(-1);
+    // router.go(-1);
+    $message.success("更新成功")
+    emit('getExperimentDetail');
+    preview.value = true
   })
 };
 const cancel = () => {

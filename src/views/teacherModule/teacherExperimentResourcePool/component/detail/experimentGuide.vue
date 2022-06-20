@@ -54,6 +54,9 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 let experimentContent = ref<any>(props.detail.guide || '');
 interface IDetail {
   id: number
@@ -75,7 +78,10 @@ const onSubmit = () => {
       guide: props.detail.guide
     }
   }).then((res: IBusinessResp) => {
-    router.go(-1)
+    // router.go(-1)
+    $message.success("更新成功")
+    emit('getExperimentDetail');
+    preview.value = true
   })
 };
 const cancel = () => {

@@ -107,7 +107,8 @@ let activeFile = reactive({
   suffix: 'md',
   file_url: '',
   pdf_url: '',
-  file_html: ''
+  file_html: '',
+  file_name: ''
 })
 
 watch(
@@ -119,6 +120,7 @@ watch(
     } else if (props.detail.guide) {
       idDelte.value = false
       activeFile.suffix = 'md'
+      experimentContent.value = props.detail.guide;
     } else {
       idDelte.value = true
       preview.value = false
@@ -144,15 +146,16 @@ const uploadFile = () => {
 const visibleUpload = ref<boolean>(false);
 const directoryId = ref(0)
 const uploadSuccess = (uploadFileList: any, id: any) => {
-  // console.log(uploadFileList)
-  if (id === 'md') {
+  console.log(uploadFileList)
+  Object.assign(activeFile, uploadFileList)
+  if (uploadFileList.suffix === 'md') {
     // props.detail.guide = uploadFileList
-    experimentContent.value = uploadFileList
+    Object.assign(activeFile, uploadFileList)
+    experimentContent.value = uploadFileList.text
     preview.value = false
-    activeFile.suffix = 'md'
+    directoryId.value = id
     return
   }
-  Object.assign(activeFile, uploadFileList)
   if (uploadFileList.suffix === 'pdf') {
     activeFile.suffix = 'pdf'
     // activeFile.pdf_url = uploadFileList.tusdDocumentUrl
@@ -174,7 +177,7 @@ const removeAct=()=>{
     suffix: 'md',
     file_url: '',
     pdf_url: '',
-    file_html: ''
+    file_html: '',
   }
   Object.assign(activeFile, obj)
   console.log(activeFile)
@@ -183,6 +186,7 @@ const removeAct=()=>{
 const visible = ref<boolean>(false);
 const selectDocOrMp4File = (val: any) => {
   Object.assign(activeFile, val)
+  activeFile.name = activeFile.file_name
   // fetch('/proxyPrefix'+val.file_url, {responseType: 'text/plain;charset=utf-8', headers: {'Content-Type': 'text/plain;charset=utf-8'}}).then(res => {
   //   console.log(res)
   // })
@@ -238,7 +242,8 @@ const onSubmit = async () => {
     Object.assign(param, {
       document_file: {
         "file_path": activeFile.file_url,			// 文档实验-文件
-        "directory_id": directoryId.value // 实验指导 如果是选择的文件请求的时候不需要传此参数
+        "directory_id": directoryId.value, // 实验指导 如果是选择的文件请求的时候不需要传此参数
+        "file_name": activeFile.name // 实验指导 如果是选择的文件请求的时候不需要传此参数
       }
     })
   }
@@ -248,7 +253,9 @@ const onSubmit = async () => {
     param,
   }).then((res: any) => {
     $message.success("更新成功")
-    router.go(-1)
+    // router.go(-1)
+    emit('getExperimentDetail');
+    preview.value = true
   })
 };
 const cancel = () => {
