@@ -132,7 +132,7 @@ const searchParams = reactive<any>({
   limit: 10
 })
 const modalTitle = ref<string>('')
-const tableData = reactive<any>({
+const tableData = reactive<any>({       
   data: [],
   total: 0
 })

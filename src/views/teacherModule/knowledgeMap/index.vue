@@ -262,7 +262,8 @@ export default defineComponent({
     }
     const handleJump = (id: any) => {
       router.push({
-        path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+        // path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+        path: "/admin/TeachingResourceManagement/DirectionPlanning/experimentDetail",
         query: {
           id
         }

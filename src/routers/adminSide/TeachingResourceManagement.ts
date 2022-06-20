@@ -14,12 +14,32 @@ export default {
     children: [
         {
             path: "DirectionPlanning",
-            name: "",
-            component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
+            name: "DirectionPlanning",
+            component: RouterViews,
+            // component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
             meta: {
                 title: "方向规划",
                 authCode: ''
             },
+            children:[
+                {
+                    path: '',
+                    name: 'DirectionPlanning',
+                    component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
+                    meta: {
+                        authCode: 'DirectionPlanning'
+                    },
+                },
+                {
+                    path: "experimentDetail",
+                    name: "adminexperimentDetail",
+                    component: () =>import( "src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+                    meta: {
+                        title: "实验详情",
+                        authCode: 'courseManagementDetail'
+                    },
+                },
+            ]
         },
         {
             path: "courseManagement",
