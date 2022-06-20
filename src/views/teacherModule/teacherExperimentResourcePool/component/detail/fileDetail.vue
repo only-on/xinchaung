@@ -2,7 +2,7 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
-      <a-button type="primary" v-if="(props.detail.content_task_files&&props.detail.content_task_files.length) || props.detail.guide" @click="deleteFile"
+      <a-button type="primary" v-if="!idDelte" @click="delet"
         >移除</a-button
       >
       <span v-else>
@@ -18,7 +18,7 @@
     <div v-if="activeFile.suffix === 'md'">
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
-    <div v-else-if="activeFile.file_html === ''" class="pdfBox">
+    <div v-else-if="activeFile.file_html === ''&&activeFile.name" class="pdfBox">
       <div class="flexCenter">
         <h2 class="single_ellipsis" :title="activeFile.name">{{activeFile.name}}</h2>
         <span class="iconfont icon-shanchu" @click="removeAct()"></span>
@@ -30,7 +30,7 @@
     </div>
     <PdfVue :url="activeFile.file_html" v-else />
   </div>
-  <Submit v-if="(!preview || !props.detail.content_task_files || !props.detail.content_task_files.length) && role!==2" @submit="onSubmit" @cancel="cancel"></Submit>
+  <Submit v-if="idDelte" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
   <SelectDocOrMp4 
     :activeFile="activeFile" 
@@ -48,7 +48,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive, PropType, onMounted } from "vue";
+import { ref, inject, reactive, PropType, onMounted, watch } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -95,7 +95,11 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 
+const idDelte = ref(false)  // 是否显示移除按钮
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>(props.detail.guide);
 let activeFile = reactive({
@@ -105,6 +109,26 @@ let activeFile = reactive({
   pdf_url: '',
   file_html: ''
 })
+
+watch(
+  () => props.detail,
+  () => {
+    if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+      idDelte.value = false
+      Object.assign(activeFile, props.detail.content_task_files[0])
+    } else if (props.detail.guide) {
+      idDelte.value = false
+      activeFile.suffix = 'md'
+    } else {
+      idDelte.value = true
+      preview.value = false
+      activeFile.suffix = 'md'
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+
 if (props.detail.content_task_files?.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
   // activeFile.pdf_url=props.detail.content_task_files[0].file_url
@@ -176,6 +200,14 @@ const selectFileClick = () => {
 };
 
 // 移除文件
+const delet = () => {
+  idDelte.value = true
+  preview.value = false
+  activeFile.suffix = 'md'
+  activeFile.file_html = ''
+  activeFile.name = ''
+  experimentContent.value = ''
+}
 const deleteFile = () => {
   // if (props.detail.guide) {
   //   props.detail.guide = ''
@@ -194,7 +226,7 @@ const deleteFile = () => {
   })
 };
 
-const onSubmit = () => {
+const onSubmit = async () => {
   if (!(experimentContent.value || activeFile.file_url)) {
     $message.warn("请上传或选择文件")
     return
@@ -210,6 +242,7 @@ const onSubmit = () => {
       }
     })
   }
+  await deleteFile()
   http.updateDocumentGuide({
     urlParams: {content_id: props.detail.id},
     param,

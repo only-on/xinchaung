@@ -55,7 +55,7 @@
           <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
-        <span class="save pointer" @click="saveTomy" v-if="Number(currentTab) === 1&&experimentDetail.is_init === 0 && experimentDetail.is_share === 1 && currentUid !== experimentDetail.user_id">
+        <span class="save pointer" @click="saveTomy" v-if="experimentDetail.save_my_content">
           <span class="iconfont icon-baocun1"></span>
           <span>保存到我的</span>
         </span>
@@ -270,7 +270,8 @@ let experimentDetail = reactive<IExperimentDetail>({
   },
   content_type: 1,
   is_webssh: 0,
-  is_high:false
+  is_high:false,
+  save_my_content: true
 });
 const getExperimentDetail = () => {
   http.getExperimentDetail({urlParams: {id}}).then((res: IBusinessResp) => { 
@@ -362,6 +363,7 @@ interface IExperimentDetail {
   content_type: number
   is_webssh: number
   is_high:boolean
+  save_my_content: boolean
 }
 </script>
 <style scoped lang="less">
