@@ -265,8 +265,9 @@ export default defineComponent({
         // path: "/teacher/teacherExperimentResourcePool/experimentDetail",
         path: "/admin/TeachingResourceManagement/DirectionPlanning/experimentDetail",
         query: {
-          id
-        }
+          sign: 'direction',
+          id,
+        },
       });
     }
     onMounted(()=>{

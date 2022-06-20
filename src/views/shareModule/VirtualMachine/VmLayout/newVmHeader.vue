@@ -1374,13 +1374,12 @@ async function openQuizModal() {
     currentShowType.value = 1;
   } else {
     // await getQuestionList(false);
-    // 一个题目都没有答
     if(!quizPaperList.value?.length||(quizPaperList.value?.length&&quizPaperList.value?.length!==oldQuizPaperList.value?.length)){
         currentQuestionIds = [];
       let tempData: any[] = cloneDeep(oldQuizPaperList.value);
       tempData = tempData.filter((item: any) => {
         return !item.student_answer;
-      });1
+      });
       for (let i = 0; i < tempData.length; i++) {
         currentQuestionIds.push(tempData[i].id);
         if (!tempData[i].student_answer) {

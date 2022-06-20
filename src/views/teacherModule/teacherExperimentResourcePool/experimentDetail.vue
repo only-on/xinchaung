@@ -125,7 +125,7 @@ const router = useRouter();
 const route = useRoute();
 const store = useStore()
 const routeQuery = route.query
-const { id, currentTab, type } = route.query;
+const { id, currentTab, type, sign } = route.query;
 const { lStorage } = extStorage;
 const role = lStorage.get("role") || 3;
 const currentUid = lStorage.get('uid')
@@ -222,6 +222,16 @@ const openVnc = () => {
 const reportTemplate = () => {
   // isShowReport.value = true
   const templateId = experimentDetail.content_template?experimentDetail.content_template.template_id : ''
+  sign == 'direction' ? 
+  router.push({
+    path: "/admin/TeachingResourceManagement/DirectionPlanning/reportTemplate",
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
+  }):
+  role === 2 ?
+  router.push({
+    path: "/admin/TeachingResourceManagement/experimentManagement/reportTemplate",
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
+  }):
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
     query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},

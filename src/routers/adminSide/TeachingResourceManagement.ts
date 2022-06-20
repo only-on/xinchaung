@@ -16,12 +16,11 @@ export default {
             path: "DirectionPlanning",
             name: "DirectionPlanning",
             component: RouterViews,
-            // component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
             meta: {
                 title: "方向规划",
                 authCode: ''
             },
-            children:[
+            children: [
                 {
                     path: '',
                     name: 'DirectionPlanning',
@@ -32,11 +31,20 @@ export default {
                 },
                 {
                     path: "experimentDetail",
-                    name: "adminexperimentDetail",
-                    component: () =>import( "src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
                     meta: {
                         title: "实验详情",
-                        authCode: 'courseManagementDetail'
+                        authCode: ''
+                    },
+                },
+                {
+                    path: "reportTemplate",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentReportTemplate.vue"),
+                    meta: {
+                        title: "实验报告模板",
+                        authCode: ''
                     },
                 },
             ]
@@ -92,6 +100,15 @@ export default {
                     component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
                     meta: {
                         title: "实验详情",
+                        authCode: ''
+                    },
+                },
+                {
+                    path: "reportTemplate",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentReportTemplate.vue"),
+                    meta: {
+                        title: "实验报告模板",
                         authCode: ''
                     },
                 },
