@@ -7,7 +7,7 @@
             style="width: 245px"
             v-model:value="searchParams.name"
             placeholder="请输入搜索关键词"
-            @pressEnter="getList"
+            @pressEnter="onSearch"
           />
           <a-button
             class="editable-add-btn"
@@ -238,6 +238,10 @@ const onChangePage = (page:number,pageSize:number) => {
 const onShowSizeChange=(page:number,pageSize:number)=>{
   searchParams.page = 1
   searchParams.limit=pageSize
+  getList()
+}
+const onSearch = () => {
+  searchParams.page = 1
   getList()
 }
 const changeTab = (key: any) => {
