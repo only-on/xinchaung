@@ -63,9 +63,11 @@ export default defineComponent({
       }, 1000);
     }
     function cancel() {
+      clearTimeout(timer);
       loginOut();
     }
     function ok() {
+      clearTimeout(timer);
       if (!isSaveEnv) {
         loginOut();
       } else {
