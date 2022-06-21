@@ -6,10 +6,19 @@
   title="选择知识点" 
   @ok="handleOk"
   @cancel="handleCancel"
-  :width="600"
+  :width="540"
 >
   <div class="prompt">最多选择3个知识点</div>
-  <div class="tree">
+  
+  <div class="search_input">
+    <a-input-search
+      v-model:value="keyword"
+      placeholder="请输入搜索关键词"
+      @search="onSearch"
+      width="340px"
+    />
+  </div>
+  <div class="tree textScrollbar">
     <a-tree
       v-if="treeData.length"
       checkable
@@ -57,7 +66,7 @@ export default defineComponent({
       treeData: []
     })
     const getKnowledgeList = () => {
-      http.getKnowledgeList({param: {type: 'tree'}})
+      http.getKnowledgeList({param: {type: 'tree', keyword: keyword.value}})
         .then((res: IBusinessResp) => {
           let list= res.data.data
           // console.log(list)
@@ -106,6 +115,12 @@ export default defineComponent({
       emit('update:isShow', false)
     }
 
+    // 关键字搜索
+    const keyword = ref('')
+    const onSearch = () => {
+      console.log(keyword.value)
+      getKnowledgeList()
+    }
     onMounted(() => {
       getKnowledgeList()
     })
@@ -125,6 +140,8 @@ export default defineComponent({
       ...toRefs(data),
       handleOk,
       handleCancel,
+      keyword,
+      onSearch,
     };
   },
 });
@@ -140,8 +157,14 @@ interface ItreeData {
 </script>
 
 <style lang="less" scoped>
+.search_input {
+  margin-bottom: 16px;
+  .ant-input-search {
+    width: 340px;
+  }
+}
 .tree {
-  height: 600px;
+  height: 352px;
   overflow: auto;
 }
 .prompt {
