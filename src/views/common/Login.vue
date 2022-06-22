@@ -110,7 +110,9 @@ http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   // const {site_setting}=res.data
   onlineUserInfo.value = res!.data.online_info;
-  store.commit('setSystemInfo', res!.data.site_setting)
+  if (res!.data.site_setting) {
+    store.commit('setSystemInfo', res!.data.site_setting)
+  }
   const site_setting=res!.data.site_setting
   // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });

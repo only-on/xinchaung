@@ -106,7 +106,7 @@ const themeColorList:any = [
     primary: '#FFB849', // 主色
     secondary: '#FF8A17', // 辅色
     menuBg: '#fff',
-    menuText: 'rgba(0, 0, 0, 0.65)', 
+    menuText: 'rgba(0, 0, 0, 0.65)',
     menuActive: '#FFB849',
     primary1: '#FCFAF0', // 较浅主题颜色
     primary2: '#FFF7E7', // 浅主题颜色
@@ -117,7 +117,7 @@ const themeColorList:any = [
 ]
  const loginStyleList = [
   {
-    value: 'A',  
+    value: 'A',
     label: loginA
   },
   {
@@ -134,7 +134,7 @@ const THomeEchartsThemeColor={
     Tcolor1:'rgba(255, 149, 68,.25)',// 课程完成率
     Tcolor2:'#FF9544',
 
-    
+
     Tcolor3:'#FF9544',// 课程成绩分布
     Tcolor4:'rgba(255, 149, 68,.25)',
     Tcolor5:'rgba(255, 149, 68,.25)'
@@ -149,7 +149,7 @@ const THomeEchartsThemeColor={
   },
   C:{
     Tcolor1:'rgba(255,186,73,0.20)',// 课程完成率
-    Tcolor2:'#FFBA49', 
+    Tcolor2:'#FFBA49',
 
     Tcolor3:'#FF9544',// 课程成绩分布
     Tcolor4:'rgba(255, 149, 68,.25)',
@@ -162,7 +162,7 @@ const AHomeEchartsThemeColor = {
     Acolor2: '#FF9544',
     Acolor3: '#9872EB',
     Acolor4: '#6993FE',
-  }, 
+  },
   B: {
     Acolor1: '#74C77D',
     Acolor2: '#FAAD14',
@@ -191,6 +191,9 @@ function getTheme () {
 }
 function setTheme () {
   let {systemInfo, themeData} = getTheme()
+  if (!systemInfo) {
+    return;
+  }
   if (!Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
     if (key === 'theme') {
@@ -227,7 +230,7 @@ let imageData = {
     },
     Ahome: {
       entranceLeft: greenImg,
-      entranceRight: purpleImg, 
+      entranceRight: purpleImg,
       adminHome1: home1,
       adminHome2: home2,
       adminHome3: home3,
