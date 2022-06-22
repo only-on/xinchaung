@@ -65,7 +65,7 @@
         <span class="user-name">{{experimentDetail.user_profile.name||'TEACHERNAME'}}</span>
       </div>
     </div>
-    <div class="detail-content">
+    <div class="detail-content" :class="experimentDetail.content_type===4?'jupterDetail-content':''">
       <!-- <experiment-guide></experiment-guide> -->
       <!-- <video-detail></video-detail> -->
       <!-- <file-detail></file-detail> -->
@@ -533,6 +533,10 @@ interface IExperimentDetail {
     background-color: var(--white-100);
     border: 1px solid var(--lightgray-3);
     padding: 0 24px 24px;
+  }
+  .jupterDetail-content{
+    padding: 0 0 24px;
+    border: 0;
   }
 }
 </style>
