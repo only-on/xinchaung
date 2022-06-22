@@ -78,7 +78,7 @@
             <div class="upload-tip">
               <div class="upload-title">上传说明</div>
               <div class="upload-desc">
-                仅允许同时上传一个大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
+                仅允许上传大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
               </div>
               <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\":"/simpleupload"}}</div>
             </div>

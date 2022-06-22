@@ -905,6 +905,10 @@ var upDoc: any = reactive({
 });
 var upDocVisible = ref<boolean>(false);
 const docBeforeUpload =(file: any) => {
+  if (!upDoc.catalogue) {
+    message.warn("上传文件时请选择目录");
+    return false;
+  }
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
