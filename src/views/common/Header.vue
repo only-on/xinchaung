@@ -143,6 +143,7 @@ export default defineComponent({
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
         lStorage.clean();
+        sStorage.clean();
         clearAllCookies();
         if (longWs1.value) {
           longWs1.value.close();

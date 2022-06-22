@@ -194,7 +194,7 @@ function setTheme () {
   if (!systemInfo) {
     return;
   }
-  if (!Object.keys(systemInfo).length) return
+  if (! systemInfo || !Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
     if (key === 'theme') {
       let bodyEle = document.getElementsByTagName('body')[0]
