@@ -155,6 +155,7 @@ const login = (repeat?:boolean) => {
             router.replace("/teacher/teacherCourse");
             getTeacherInfo()
           }
+          store.commit("saveTheme");
           submitLoading.value = false;
         })
         .catch((res: any) => {
