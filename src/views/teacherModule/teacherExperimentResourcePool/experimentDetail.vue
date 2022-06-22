@@ -26,7 +26,7 @@
       </div>
       <div class="info">
         <span class="level" :class="['level' + experimentDetail.level]">{{levelList[experimentDetail.level]}}</span>
-        <a-tooltip placement="top" :color="theme.cyanColor">
+        <a-tooltip placement="top" :color="theme.cyanColor" v-if="experimentDetail.konwledge_map?.length">
           <template #title>
             <div v-for="(v, index) in experimentDetail.konwledge_map" :key="index">{{v}}</div>
           </template>
@@ -36,7 +36,7 @@
               }}</span>
           </span>
         </a-tooltip>
-        <a-tooltip placement="top" :color="theme.themeColor">
+        <a-tooltip placement="top" :color="theme.themeColor" v-if="experimentDetail.tag?.length">
           <template #title>
             <div v-for="(v, index) in experimentDetail.tag" :key="index">{{v.name}}</div>
           </template>
