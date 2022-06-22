@@ -32,6 +32,7 @@
     >
       <!-- <template #switcherIcon><down-outlined /></template> -->
     </a-tree>
+    <empty v-else :type="keyword ? 'searchEmpty' : 'empty'"></empty>
   </div>
 </a-modal>
 </template>
@@ -41,9 +42,11 @@ import { defineComponent, ref, onMounted, reactive, toRefs, computed, PropType, 
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { message } from 'ant-design-vue'
+import Empty from 'src/components/Empty.vue';
 export default defineComponent({
   name: 'knowledge',
   components: {
+    Empty
     // CarryOutOutlined,
     // DownOutlined ,
   },
@@ -68,6 +71,9 @@ export default defineComponent({
     const getKnowledgeList = () => {
       http.getKnowledgeList({param: {type: 'tree', keyword: keyword.value}})
         .then((res: IBusinessResp) => {
+          if (!res.data?.length) {
+            data.treeData = []
+          }
           let list= res.data.data
           // console.log(list)
           data.treeData = [{
