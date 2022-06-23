@@ -99,11 +99,31 @@ export default defineConfig({
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            return id
-              .toString()
-              .split("node_modules/")[1]
-              .split("/")[0]
-              .toString();
+            // return id
+            //   .toString()
+            //   .split("node_modules/")[1]
+            //   .split("/")[0]
+            //   .toString();
+            const arr=id.toString().split('node_modules/')[1].split('/')
+            // console.log(arr);
+            if (arr[0].includes("@xianfe")) {
+                return arr[1].toString()
+            }
+            else{
+              switch (arr[0]) {
+              case "ant-design-vue":
+              case "ace-builds":
+              case "lodash":  
+              case "@novnc":
+                return '_'+arr[0]
+                break;
+              default:
+                return '__vendor'
+                break;
+              }
+            }
+            
+            // return arr[0].toString();
           }
         },
       },
