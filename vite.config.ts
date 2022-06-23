@@ -3,6 +3,7 @@ import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import viteRawPlugin from "vite-raw-plugin";
+import viteCompression from 'vite-plugin-compression';
 const proxyTarget={
   130:'http://192.168.101.130',
   221:'http://192.168.101.221:84',
@@ -13,6 +14,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    viteCompression(),
     viteRawPlugin({
       fileRegex: /\.md$/,
     }),
