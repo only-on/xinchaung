@@ -85,12 +85,7 @@ export default defineComponent({
         })
         .catch((error:any)=>{
           // console.log(error)
-           data.treeData = [{
-            children: error.data.children,
-            id: error.data.id,
-            text: error.data.text,
-            disabled: true
-          }]
+           data.treeData = []
         })
     }
     let checkedNodes: ItreeData[] = props.selectedList

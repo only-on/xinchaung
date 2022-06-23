@@ -129,6 +129,10 @@ const emit = defineEmits<{
   (e: "handleOk", val: any): void;
 }>();
 const handleOk = () => {
+  if(!currentImage.image_id) {
+    message.warn('请选择镜像！')
+    return
+  }
   var obj = {
     flavor: { ...currentImage.flavor },
     imageName: currentImage.imageName,

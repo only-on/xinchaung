@@ -286,12 +286,16 @@ function fileRemove(file: any) {
 }
 const reportHandleOk = () => {
   // 返回选择的对象即可
-  let active = {};
+  let active:any = {};
   if (reportActive.value == 2) {
     let v = formState.reportUploadList[0];
     active = { id: v.id, name: v.name,typeText:v.typeText };
   } else {
     active = activeTemplateItem;
+  }
+  if (!active.id) {
+    message.warn(`请选择或上传模板！`)
+    return
   }
   console.log(active);
   emit("reportOk", active);
