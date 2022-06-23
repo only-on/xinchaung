@@ -253,7 +253,7 @@
     </div>
     <template #footer>
       <div class="btns">
-        <a-button @click="finishTest">结束</a-button>
+        <a-button @click="finishTest" :type="delayNum < 5?'default':'primary'">结束</a-button>
         <a-button type="primary" v-if="delayNum < 5" @click="delayedTime">延时</a-button>
       </div>
     </template>

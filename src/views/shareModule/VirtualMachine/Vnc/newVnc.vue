@@ -374,7 +374,7 @@ function settingCurrentVM(data: any) {
   currentOption.value.wsUrl =
     getVmConnectSetting.VNCPROTOC +
     "://" +
-    data.host_ip +
+    data.base_ip +
     ":" +
     getVmConnectSetting.VNCPORT +
     "/websockify?vm_uuid=" +
