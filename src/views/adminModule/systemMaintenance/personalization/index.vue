@@ -29,8 +29,8 @@
                 </div>
               </a-upload>
           </div>
-          <div class="logo-size">60x60px</div>
-          <div class="logo-hint">支持小于20K的png文件</div>
+          <div class="logo-size">建议尺寸60x60px，仅支持png</div>
+          <!-- <div class="logo-hint">仅支持png</div> -->
         </div>
       </div>
       <div class="themeStyle">
@@ -182,7 +182,7 @@
     .logo-size{
       font-size: 12px;
       color: #808294;
-      padding: 5px 10px 10px;
+      padding: 5px 10px 10px 0;
     }
     .logo-hint {
       font-size: 12px;
