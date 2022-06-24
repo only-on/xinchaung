@@ -161,9 +161,11 @@ const cancel = () => {
 }
 .experiment-content {
   // margin-top: 16px;
-  padding: 0 23px;
+  // padding: 0 23px;
   .task-list {
     margin-top: 24px;
+    padding: 0 22px;
+    background: #f9f9f9;
   }
 }
 .submit {

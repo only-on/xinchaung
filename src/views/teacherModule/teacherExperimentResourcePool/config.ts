@@ -50,7 +50,7 @@ return {
     name: "视频",
     color: "#cccc33",
     backgroundColor:
-      "linear-gradient("+deg+",rgba(204,204,51,0.14), rgba(204,204,51,0.14) 36%, rgba(255,255,255,0.14));",
+      "linear-gradient("+deg+",rgba(204,204,51,0.14), rgba(204,204,51,0.14), rgba(255,255,255,0.14))",
       detailebBackgroundColor:"linear-gradient("+deg+",rgba(204,204,51,0.14), rgba(204,204,51,0.14) 36%, #133355)",  
   },
 }

@@ -529,6 +529,7 @@ interface IExperimentDetail {
     }
   }
   .detail-content {
+    min-height: 570px;
     margin-top: 16px;
     background-color: var(--white-100);
     border: 1px solid var(--lightgray-3);

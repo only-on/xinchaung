@@ -92,7 +92,7 @@ export default defineComponent({
     height: 100%;
     // height: 300px;
     height: 190px;
-    background-color: white;
+    // background-color: white;
     display: flex;
     justify-content: center;
     align-items: center;

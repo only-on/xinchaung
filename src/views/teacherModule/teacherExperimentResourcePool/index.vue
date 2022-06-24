@@ -68,7 +68,7 @@
         <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
           <!-- -->
         <a-pagination 
-          v-if="totalCount > 10"
+          v-if="totalCount > 10&&!loading"
           show-size-changer
           v-model:current="searchInfo.page"
           :pageSize="searchInfo.limit"
@@ -437,6 +437,7 @@ const getDirection = () => {
   margin-bottom: 50px;
 }
 .mainBox {
+  min-height: 570;
   flex-wrap: wrap;
   justify-content: space-between;
   .item {
@@ -447,6 +448,7 @@ const getDirection = () => {
     border-radius: 32px;
     background: var(--white-100);
     padding-right: 40px;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
     &:hover {
       box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
       .label {
@@ -462,12 +464,12 @@ const getDirection = () => {
       margin-right: 16px;
       border-radius: 32px 0px 0px 32px;
       color: var(--brightBtn);
-      background: linear-gradient(
-        90deg,
-        rgba(28, 178, 179, 0.14),
-        rgba(85, 218, 219, 0.14) 36%,
-        rgba(255, 255, 255, 0.14)
-      );
+      // background: linear-gradient(
+      //   90deg,
+      //   rgba(28, 178, 179, 0.14),
+      //   rgba(85, 218, 219, 0.14) 36%,
+      //   rgba(255, 255, 255, 0.14)
+      // );
     }
     .exper-name {
       // width: 800px;

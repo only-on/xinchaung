@@ -140,7 +140,7 @@ const tusFileUpload = {
           data.UpState.upload.url.split("/")[
             data.UpState.upload.url.split("/").length - 1
           ];
-        const type = file.name.split(".")[file.name.split(".").length - 1];
+        const type = file.name.split(".")[file.name.split(".").length - 1].toLowerCase();
         const file_url = `${FileConfig[directory]}/${name}.${type}`;
         // console.log(`${FileConfig[directory]}/${name}.${type}`)
         if (type === "mp4") {

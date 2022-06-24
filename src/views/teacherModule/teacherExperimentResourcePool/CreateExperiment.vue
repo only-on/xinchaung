@@ -1,6 +1,7 @@
 <template>
   <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
-    <h3>实验基本信息</h3>
+    <div class="base-info">
+    <h3 class="title">实验基本信息</h3>
     <div class="create-middle">
       <div class="left">
         <a-form-item label="实验名称" name="name">
@@ -101,6 +102,7 @@
         </a-form-item>
       </div>
     </div>
+    </div>
     <!-- 实验环境配置 -->
     <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
@@ -135,10 +137,25 @@
       <MarkedEditor v-model="formState.guide" class="markdown__editor" />
     </div>
     <!-- jupyter实验   实验指导 ipynb -->
-    <div class="jupyter" v-if="componentsList.includes('jupyter')">
-      <h3>实验指导</h3>
+    <div class="jupyter docxBox" v-if="componentsList.includes('jupyter')">
+      <!-- <h3 class="guide-title">实验指导</h3> -->
+      <div class="docTop flexCenter guide-title">
+        <h3>实验指导</h3>
+        <div class="docTopRight flexCenter docx">
+          <span class="data-set-hint">仅支持ipynb文件</span>
+          <a-upload
+            accept=".ipynb"
+            :custom-request="()=>{}"
+            :show-upload-list="false"
+            :before-upload="beforeUploadIpynb"
+            :remove="IpynbFileRemove"
+          >
+            <a-button type="primary"> 上传文档</a-button>
+          </a-upload>
+        </div>
+      </div>
       <div class="jupyterBox">
-        <div class="uploadBox">
+        <!-- <div class="uploadBox">
           <a-upload
             accept=".ipynb"
             :custom-request="()=>{}"
@@ -149,12 +166,16 @@
             <a-button type="primary"> 上传文档</a-button>
           </a-upload>
         </div>
-        <div class="data-set-hint">仅选择ipynb文件</div>
+        <div class="data-set-hint">仅选择ipynb文件</div> -->
+        <div class="selectFile" v-if="formState.ipynbList.length">
+          <span>{{formState.ipynbList[0].name}}</span>
+          <span class="iconfont icon-shanchu" @click.stop="formState.ipynbList=[]"></span>
+        </div>
       </div>
     </div>
     <!-- 任务制实验 实验指导任务选择 -->
     <div class="TaskSystem" v-if="componentsList.includes('task')">
-      <div class="top flexCenter">
+      <div class="top flexCenter guide-title">
         <h3>实验指导</h3>
         <a-button
           type="primary"
@@ -165,10 +186,10 @@
         </a-button>
       </div>
       <div class="item" v-for="(v, k) in TaskLIst" :key="v">
-        <div class="title flexCenter">
+        <div class="title flexCenter" :class="{show: v.open}">
           <div class="left">
             <span class="num">{{ `任务${["一", "二", "三"][k]}` }}</span>
-            <span>{{ v.name }}</span>
+            <span v-show="!v.open">{{ v.name }}</span>
           </div>
           <div class="right">
             <span @click="deleteTask(k)">删除</span>
@@ -234,7 +255,7 @@
     </div>
     <!-- 文档实验  实验指导文件 -->
     <div class="docxBox" v-if="componentsList.includes('text')">
-      <div class="docTop flexCenter">
+      <div class="docTop flexCenter guide-title">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter docx">
           <span class="data-set-hint">仅支持单个md、doc、docx、pdf文件</span>
@@ -256,7 +277,7 @@
     </div>
     <!-- 视频实验  实验指导文件 -->
     <div class="docxBox" v-if="componentsList.includes('video')">
-      <div class="docTop flexCenter">
+      <div class="docTop flexCenter guide-title">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter">
           <span class="data-set-hint">仅支持单个MP4文件上传</span>
@@ -264,8 +285,8 @@
           <a-button type="primary" @click="selectDocx(2)"> 选择视频 </a-button>
         </div>
       </div>
-      <div v-if="formState.document.videoUrl" class="video-box">
-      <video :src="formState.document.videoUrl" :controls="true" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
+      <div class="video-box">
+      <video v-if="formState.document.videoUrl" :src="formState.document.videoUrl" :controls="true" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
         <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
         <!-- <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
           您的浏览器不支持 video 标签
@@ -1021,7 +1042,7 @@ const selectDocOrMp4File = (val: any) => {
 };
 //  视频实验
 const confirmDoc = () => {
-  console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0])
+  console.log('file_url',upDoc.docFileList)
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
     if(upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''
@@ -1062,8 +1083,13 @@ onMounted(()=>{
 
 </script>
 <style scoped lang="less">
-h3 {
-  padding-left: 2rem;
+.ant-form {
+  margin-top: 32px;
+  .guide-title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .datasets-box {
    margin-bottom: 1rem;
@@ -1079,7 +1105,7 @@ h3 {
 }
 .Knowledge{
   .ant-btn {
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
 }
 .data-set-hint {
@@ -1089,12 +1115,30 @@ h3 {
   margin-left: 1rem;
 }
 .configuration {
-  padding: 2rem;
-  padding-top: 0;
+  // padding: 2rem;
+  // padding-top: 0;
+  margin-bottom: 24px;
+  padding: 0 24px;
+  padding-bottom: 30px;
+  background-color: var(--white);
+  .title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
+}
+.base-info {
+  background-color: var(--white);
+  margin-bottom: 24px;
+  padding: 0 24px;
+  .title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .create-middle {
   display: flex;
-  padding: 2rem;
   .left,
   .right {
     width: 50%;
@@ -1135,6 +1179,9 @@ h3 {
 }
 
 .zhuomian {
+  h3 {
+    margin-left: 24px;
+  }
   .guide-top {
     display: flex;
     .upload-box {
@@ -1156,29 +1203,44 @@ h3 {
       }
     }
   }
+  .markdown__editor {
+    height: 400px;
+    padding: 1rem 24px 0;
+  }
 }
 .markdown__editor {
   height: 400px;
-  padding: 1rem 2rem 0;
+  padding-top: 8px;
 }
 .jupyter {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding: 0 24px;
+  background-color: var(--white);
   .jupyterBox {
-    padding: 2rem;
+    // padding: 2rem;
   }
   .uploadBox {
     width: 40%;
   }
 }
 .TaskSystem {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding: 0 23px;
+  background: var(--white);
+  overflow: auto;
   .top {
     justify-content: space-between;
   }
   .item {
+    padding: 0 24px;
+    background-color: #F9F9F9;
+    margin-bottom: 24px;
     .title {
       justify-content: space-between;
-      padding: 1rem 2rem;
+      padding: 1rem 0;
+      &.show {
+        border-bottom: 1px dashed #dbdbdb;
+      }
       .left {
         color: var(--black-85);
         font-size: 16px;
@@ -1200,15 +1262,18 @@ h3 {
         color: red;
       }
       .taskName {
-        padding: 6px 2rem;
+        margin-top: 16px;
+        margin-bottom: 24px;
+        // padding: 6px 0;
         .ant-input {
           width: 400px;
           margin-top: 5px;
         }
       }
       .taskDescription {
+        padding-bottom: 24px;
         .statusBox {
-          padding: 1rem 2rem 0;
+          // padding-top: 1rem;
           justify-content: space-between;
         }
         .status {
@@ -1218,17 +1283,19 @@ h3 {
         }
       }
       .taskStep {
+        margin-bottom: 24px;
         .taskStepBox {
-          padding: 0rem 2rem 0;
+          // padding: 0rem 2rem 0;
           justify-content: space-between;
         }
-        margin-top: 20px;
       }
     }
   }
 }
 .docxBox {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding: 0 24px;
+  background-color: var(--white);
   .docTop {
     justify-content: space-between;
   }
@@ -1236,14 +1303,14 @@ h3 {
     width: 100%;
     height: 500px;
     margin-top: 24px;
-    .selectFile{
-      padding-left: 2rem;
-      justify-content: space-between;
-      // width: 40%;
-      .iconfont{
-        margin-left: 3rem;
-        cursor: pointer;
-      }
+  }
+  .selectFile{
+    padding-left: 2rem;
+    justify-content: space-between;
+    // width: 40%;
+    .iconfont{
+      margin-left: 3rem;
+      cursor: pointer;
     }
   }
   .docTopRight {
@@ -1260,7 +1327,8 @@ h3 {
     // width: 38%;
   }
   .video-box {
-    height: 500px;
+    min-height: 155px;
+    // height: 500px;
     width: 100%;
     padding: 2rem;
     video {
@@ -1288,6 +1356,6 @@ h3 {
   }
 }
 .submitBox {
-  margin-top: 2rem;
+  margin: 24px 0;
 }
 </style>

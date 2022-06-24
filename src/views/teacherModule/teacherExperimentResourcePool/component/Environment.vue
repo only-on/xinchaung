@@ -2,7 +2,7 @@
   <div v-show="loading">
 
   </div>
-  <h3>实验环境</h3>
+  <h3 class="title">实验环境</h3>
   <div v-if="props.type">
     <ConfigModal
       :imageList="imageList"
@@ -116,6 +116,7 @@ const defaultConfig: any = reactive({
   editIdx: "",
 });
 watch(()=>props.envList, newVal => {
+  if (!newVal.length) return
   selectList.length = 0
   selectList.push(...JSON.parse(JSON.stringify(newVal)))
   // 单环镜
@@ -205,7 +206,9 @@ h3 {
   padding-bottom: 2rem;
 }
 .title {
-  padding-bottom: 10px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 16px;
 }
 .configs {
   margin: 2rem 0 1rem 0;
@@ -214,7 +217,7 @@ h3 {
   .item {
     width: 240px;
     height: 100px;
-    background: #f9f9f9;
+    background: #fafafb;
     border-radius: 10px;
     margin-right: 1rem;
     padding: 10px;

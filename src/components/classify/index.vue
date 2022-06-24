@@ -85,11 +85,11 @@ defineExpose({
   .title {
     // margin-right: 16px;
     width: 80px;
-    line-height: 44px;
+    // line-height: 44px;
   }
   .labelBox{
     flex:1;
-    line-height: 44px;
+    // line-height: 44px;
   }
   .label-btn {
     display: inline-block;

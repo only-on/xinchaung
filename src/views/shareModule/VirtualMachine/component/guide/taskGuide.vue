@@ -18,13 +18,13 @@
       >
     </div>
     <div class="content">
-      <marked-editor v-model="currentTask.detail" :preview="preview" />
+      <marked-editor v-model="currentTask.summary" :preview="preview" />
     </div>
   </div>
   <div class="step-content" v-if="!recommendType&&(isLookStep&&currentTask.state || role !== 4)">
     <div class="title">任务步骤</div>
     <div class="content">
-      <marked-editor v-model="currentTask.summary" :preview="preview" />
+      <marked-editor v-model="currentTask.detail" :preview="preview" />
     </div>
   </div>
   </div>
