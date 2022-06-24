@@ -59,13 +59,23 @@
           :file-list="formState.reportUploadList"
           :before-upload="beforeUploadReport"
           :remove="fileRemove"
+          @change="onChange"
+          :showUploadList="false"
+          :action="uploadAction"
         >
           <a-button type="primary"> 上传文件</a-button>
         </a-upload>
+        <div v-if="formState.reportUploadList[0]?.name" class="progress-box">
+          <div class="file-base-info">
+            <span>文件名称：{{ formState.reportUploadList[0].name }}</span
+            ><span class="icon-shanchu iconfont" @click="fileRemove"></span>
+          </div>
+          <a-progress :percent="uploadPercent" />
+        </div>
       </div>
     </div>
     <template #footer>
-      <Submit @submit="reportHandleOk" @cancel="reportCancel"></Submit>
+      <Submit @submit="reportHandleOk" @cancel="reportCancel" :loading="uploadLoading"></Submit>
     </template>
   </a-modal>
   <!-- 在线制作 预览  编辑实验模板 -->
@@ -247,8 +257,11 @@ const handleDelete = (item: any) => {
     },
   });
 };
+
+const uploadAction = (env ? '/proxyPrefix':'')+'/api/simple/report/templates/import-template'
+const uploadLoading = ref(false)
 function beforeUploadReport(file: any) {
-  // console.log(file);
+  console.log(file);
   //  formState.reportUploadList[0] = {
   //     uid: file.uid,
   //     id:1,
@@ -259,30 +272,59 @@ function beforeUploadReport(file: any) {
   //   };
     //  console.log(formState.reportUploadList)
   // return;
-  const fs = new FormData();
-  fs.append("file", file);
-  http.upLoadExperimentReport({ param: fs }).then((res: any) => {
-    // reportUploadList.status = true      status: 'done',
-      let data = res.data
-      message.success("上传成功");
-      activeTemplateItem.id = data.id;
-      activeTemplateItem.name = data.name;
-      formState.reportUploadList[0] = {
-      uid: data.id,
-      id:data.id,
-      name: data.name,
-      status: "done",
-      url:data.word_path,
-      file: file,
-      typeText:'【离线】',
-    };
-    console.log(formState.reportUploadList)
-  });
-  return false
+  // const fs = new FormData();
+  // fs.append("file", file);
+  // http.upLoadExperimentReport({ param: fs }).then((res: any) => {
+  //   // reportUploadList.status = true      status: 'done',
+  //     let data = res.data
+  //     message.success("上传成功");
+  //     activeTemplateItem.id = data.id;
+  //     activeTemplateItem.name = data.name;
+  //     formState.reportUploadList[0] = {
+  //     uid: data.id,
+  //     id:data.id,
+  //     name: data.name,
+  //     status: "done",
+  //     url:data.word_path,
+  //     file: file,
+  //     typeText:'【离线】',
+  //   };
+  //   console.log(formState.reportUploadList)
+  // });
+  // return false
+  let obj:any={
+    uid: file.uid,
+    name: file.name,
+    typeText:'【离线】',
+  }
+  formState.reportUploadList[0] = obj
+  uploadLoading.value = true
+}
+const uploadPercent = ref(0)
+const onChange = (info: any) => {
+  console.log(info)
+  const {event, file} = info
+  if (event) {
+    if (event.percent===100) {
+      return
+    } else {
+      uploadPercent.value = Math.floor(event.percent)
+    }
+  }
+  if (file.status === 'done') { // 上传成功
+    uploadLoading.value = false
+    uploadPercent.value = 100
+    const {id, name, word_path} = file.response?.data
+    activeTemplateItem.id = id;
+    activeTemplateItem.name = name;
+    formState.reportUploadList[0].id = id
+    formState.reportUploadList[0].url = word_path
+  }
 }
 function fileRemove(file: any) {
   // console.log(file)
   formState.reportUploadList = [];
+  uploadLoading.value = false
 }
 const reportHandleOk = () => {
   // 返回选择的对象即可
@@ -311,6 +353,7 @@ const reportCancel = () => {
   // activeTemplateItem.name = "";
   reportVisible.value = false;
   emit("reportCancel");
+  uploadLoading.value = false
 };
 const cancelTemplate = (val: number,id?:number) => {
   console.log(2,id);
@@ -427,6 +470,14 @@ const cancelTemplate = (val: number,id?:number) => {
     }
     .contentRight {
       padding: 20px;
+      .progress-box {
+        margin-top: 24px;
+        .file-base-info {
+          display: flex;
+          justify-content: space-between;
+          padding-right: 14px;
+        }
+      }
     }
   }
   .pdfBox {
