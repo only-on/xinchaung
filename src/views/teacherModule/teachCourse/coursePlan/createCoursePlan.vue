@@ -121,7 +121,7 @@
       </a-form-item>
     </a-form>
   </div>
-  <select-stu v-model:visable="visible" :selectedStuIds='selectedStuIds' :total='tableData.total' :data='data' @updateStuParams='updateStuParams' @updateSelectStuVisable="updateSelectStuVisable"></select-stu>
+  <select-stu v-model:visable="visible" :selectedStuIds='selectedStuIds' :leftNumText="leftStuNum ? leftNumText : 0" :total='tableData.total' :data='data' :loading='loading' @updateStuParams='updateStuParams' @updateSelectStuVisable="updateSelectStuVisable"></select-stu>
 </template>
 
 <script lang="ts">
@@ -135,7 +135,7 @@ import { IBusinessResp} from 'src/typings/fetch.d';
 
 export default defineComponent({
   name: 'schedule-create',
-  components: { selectStu },
+  components: { 'select-stu':selectStu },
   props: {},
   emit: [],
   setup() {
@@ -176,7 +176,6 @@ export default defineComponent({
       class: [],
       student: [],
     })
-
     let visible = ref(false)
     let activeName = ref('student')
     let selectName = ref('已选学生')
@@ -202,6 +201,7 @@ export default defineComponent({
           size:10,
         },
       });
+    const loading:any=ref(false)
     function updateStuParams(param:any){
       console.log(param,'shhhhhhhhh')
       params.pageinfo.index=param.page
@@ -307,8 +307,6 @@ export default defineComponent({
     provide('selectedIds', selectedIds)
     // 添加学生
     function updateSelectStuVisable(value: any,studentids:any,tableData:any) {
-      // visible.value = false;
-      // console.log(value,'value')
       if(value==='ok'){
         tableParams.student_id=studentids
         let ids:any=[]
@@ -461,9 +459,11 @@ export default defineComponent({
       total:0
     })
     function getallstudent(){
+      loading.value=true
       http.getStudentList({param:params}).then((res:any)=>{
         data.value=res.data?.data
         tableData.total=res.data.total
+        loading.value=false
       })
     }
     return {

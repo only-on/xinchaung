@@ -37,6 +37,7 @@
           <a-table
           :columns="columns"
           :data-source="data"
+          :loading='loading'
           rowKey='stu_id'
           :pagination="
             total > 10
@@ -70,6 +71,7 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,reactive,watch } from "vue";
 import request from 'src/api/index'
+import message, { MessageApi } from "ant-design-vue/lib/message";
 const http = (request as any).coursePlain;
 interface Props {
   // type: any;
@@ -77,7 +79,9 @@ interface Props {
   // courseId:any;
   total:any;
   data:any;
-  selectedStuIds:any
+  loading:any;
+  selectedStuIds:any;
+  leftNumText:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   // type: () => {},
@@ -85,7 +89,8 @@ const props = withDefaults(defineProps<Props>(), {
   // courseId:()=>{},
   total:()=>{},
   data:()=>{},
-  selectedStuIds:()=>{}
+  selectedStuIds:()=>{},
+  leftNumText:()=>{}
 })
 const option: any = ref();
 option.value = [
@@ -239,6 +244,10 @@ function handleCancel() {
   modalVisable.value = false;
 }
 function handleOkSelect(){
+  if(props.leftNumText<tableData.selectedRowKeys.length){
+    message.warning('最多可以选'+props.leftNumText+'人')
+    return
+  }
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
   tableData.selectedRowKeys=[]
   params.pageinfo = {
