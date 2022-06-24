@@ -1118,8 +1118,8 @@ onMounted(()=>{
   // padding: 2rem;
   // padding-top: 0;
   margin-bottom: 24px;
-  padding: 0 24px;
-  padding-bottom: 30px;
+  padding:  24px;
+  // padding-bottom: 30px;
   background-color: var(--white);
   .title {
     padding: 15px 0;
@@ -1130,7 +1130,7 @@ onMounted(()=>{
 .base-info {
   background-color: var(--white);
   margin-bottom: 24px;
-  padding: 0 24px;
+  padding: 0 24px 24px;
   .title {
     padding: 15px 0;
     border-bottom: 1px solid #e8e8e8;
@@ -1179,6 +1179,8 @@ onMounted(()=>{
 }
 
 .zhuomian {
+  padding: 24px;
+  background-color: var(--white);
   h3 {
     margin-left: 24px;
   }
@@ -1225,7 +1227,7 @@ onMounted(()=>{
 }
 .TaskSystem {
   // padding-top: 2rem;
-  padding: 0 23px;
+  padding:  24px;
   background: var(--white);
   overflow: auto;
   .top {
