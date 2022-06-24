@@ -572,7 +572,7 @@ export default defineComponent({
     color: var(--black-65);
   }
   .vm-list-title {
-    @extend .list-title;
+    &:extend(.list-title);
     font-size: 14px;
   }
   .dataset-url {
