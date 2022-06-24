@@ -39,14 +39,14 @@
     </div>
     </a-spin>
     <div class="comment-box">
-      <a-input v-model:value="replyContent" placeholder="请写下你的评论" />
+      <a-input ref="inputRef" v-model:value="replyContent" placeholder="请写下你的评论" />
       <span class="pointer" @click="submitReply(item.id)">回应</span>
     </div>
   </div>
   <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
     <div class="left">
       <span>{{ item.reply_number_count }}</span>
-      <span class="pointer" @click="isReply = !isReply">{{
+      <span class="pointer" @click="viewReplyClick">{{
         !isReply ? "回应" : "收起回应"
       }}</span>
     </div>
@@ -71,6 +71,7 @@ import {
   PropType,
   createVNode,
   provide,
+  nextTick,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ReplyList from "./ReplyList.vue";
@@ -167,7 +168,24 @@ export default defineComponent({
     }
 
     const bottomStyle: any = inject("bottomStyle");
+    const inputRef: any = ref(null)
+    const viewReplyClick = () => {
+      isReply.value = !isReply.value
+      // console.log(inputRef.value)
+      nextTick(() => {
+        inputRef.value?.focus()
+      })
+      page.value = 1
+      replyList.length = 0
+      getReplyList(props.item.id)
+    }
+    const handleChange = (e:any) => {
+      replyContent.value = e.target.value
+    }
     return {
+      inputRef,
+      viewReplyClick,
+      handleChange,
       ...toRefs(props),
       isReply,
       child,
