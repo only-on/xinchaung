@@ -124,7 +124,22 @@ function isLoginPage() {
   let path = hash.substring(1, hash.length);
   return path === "/login";
 }
-
+function ProcessingError(res:IBusinessResp,silent:boolean | ((data?:IBusinessResp) => boolean)){
+  var msg:string = "请求出错";
+  if (res.message) {
+    msg = res.message;
+  }
+  if (res.msg) {
+    msg = res.msg;
+  }
+  if (res.error) {
+    msg = res.error.msg;
+  }
+  const silent2=(typeof silent) === 'boolean'?silent:(silent as ((data?:IBusinessResp) => boolean))(res)
+  if(!silent2){
+    message.warning(msg);
+  }
+}
 // fetch 简易包装
 export default function request({
   url = "",
@@ -205,9 +220,7 @@ export default function request({
           if (store.state.longWs) {
             (store.state.longWs as IWmc).close();
           }
-          if (!silent) {
-            message.warning(res.msg);
-          }
+          ProcessingError(res,silent)
           reject(res);
           // 1. 没有登录状态，跳转到登录页
           // 2. 登录页不再检查是否需要登录了
@@ -216,19 +229,7 @@ export default function request({
             router.replace({ path: "/login", query: {s: 1} }).catch(() => {});
           }
         } else {
-          let meg = "请求出错";
-          if (res.message) {
-            meg = res.message;
-          }
-          if (res.msg) {
-            meg = res.msg;
-          }
-          if (res.error) {
-            meg = res.error.msg;
-          }
-          if (!silent) {
-            message.warning(meg);
-          }
+          ProcessingError(res,silent)
           reject(res);
         }
       })

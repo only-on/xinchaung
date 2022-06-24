@@ -126,6 +126,7 @@ import {
   defineProps,
   createVNode,
 } from "vue";
+import storage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -282,6 +283,25 @@ const deleteFun = (val: any) => {
   });
 };
 const GenerateImage = (val: any,k:any) => {
+  console.log(val);
+  var iamgeSaveStatus:any = storage.lStorage.get("iamgeSaveStatus")? storage.lStorage.get("iamgeSaveStatus"): [];
+  iamgeSaveStatus.forEach((v:any,index:number)=>{
+    if(val.id===v.id){
+      console.log(val);
+      
+      var time = new Date().getTime() - new Date(v.beginIime).getTime();
+      if (time / 1000 / 60 > 10) {
+        // reactiveData.isSaveImage = true;
+        iamgeSaveStatus.splice(index, 1);
+        storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
+        // clearInterval(reactiveData.timer as any);
+      } else {
+         message.warning('保存镜像后10分钟内无法再次操作')
+         return
+        // reactiveData.isSaveImage = false;
+      }
+    }
+  })
   createFormData.name=''
   createFormData.description=''
   saveVisible.value=true

@@ -139,6 +139,7 @@ const login = (repeat?:boolean) => {
       http
         .login({
           param: param,
+          silent:silentFn
         })
         .then((res: IBusinessResp | null) => {
           // againLogin()
@@ -178,6 +179,13 @@ const login = (repeat?:boolean) => {
       console.error("login form error: ", error);
     });
 };
+function silentFn(res:IBusinessResp){
+  if(res.data.unique_confirm && res.data.unique_confirm===true){
+      return true
+  }else{
+    return false
+  }    
+}
 const againLogin=()=>{
   submitLoading.value = false;
   Modal.confirm({
