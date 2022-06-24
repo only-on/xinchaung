@@ -3,7 +3,7 @@ import Layout from "src/views/common/Layout.vue";
 import { LocationQuery, RouteParams } from 'vue-router';
 import extStorage from "src/utils/extStorage";
 const { lStorage } = extStorage;
-const role = Number(lStorage.get("role"));
+// const role = Number(lStorage.get("role"));
 export default {
   path: "coursePlan",
   component: Layout,
@@ -11,6 +11,7 @@ export default {
   meta: {
     // title: "教学过程",
     title: (params?: RouteParams, query?: RouteParams) => {
+      const role = Number(lStorage.get("role"));
       const dataDetailMap = {
           '3': '教学过程',
           '2': '资源预约',

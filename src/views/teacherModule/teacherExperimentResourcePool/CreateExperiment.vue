@@ -1130,7 +1130,7 @@ onMounted(()=>{
 .base-info {
   background-color: var(--white);
   margin-bottom: 24px;
-  padding: 0 24px;
+  padding: 0 24px 24px;
   .title {
     padding: 15px 0;
     border-bottom: 1px solid #e8e8e8;
