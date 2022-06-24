@@ -495,7 +495,8 @@ export default defineComponent({
       onDeleteClass,
       updateSelectStuVisable,
       updateStuParams,
-      selectedStuIds
+      selectedStuIds,
+      loading,
     }
   },
 })
