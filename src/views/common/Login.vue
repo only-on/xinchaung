@@ -131,8 +131,10 @@ const login = (repeat?:boolean) => {
       if (needCaptcha.value) {
         param["verifyCode"] = formState.captcha;
       }
-      if (repeat) {
+      if (repeat && repeat===true) {
         param["force_login"] = true;
+      }else{
+        param["force_login"]=false
       }
       http
         .login({
