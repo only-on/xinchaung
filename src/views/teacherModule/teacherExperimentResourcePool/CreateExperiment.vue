@@ -1118,8 +1118,8 @@ onMounted(()=>{
   // padding: 2rem;
   // padding-top: 0;
   margin-bottom: 24px;
-  padding: 0 24px;
-  padding-bottom: 30px;
+  padding:  24px;
+  // padding-bottom: 30px;
   background-color: var(--white);
   .title {
     padding: 15px 0;
@@ -1179,6 +1179,8 @@ onMounted(()=>{
 }
 
 .zhuomian {
+  padding: 24px;
+  background-color: var(--white);
   h3 {
     margin-left: 24px;
   }
@@ -1225,7 +1227,7 @@ onMounted(()=>{
 }
 .TaskSystem {
   // padding-top: 2rem;
-  padding: 0 23px;
+  padding:  24px;
   background: var(--white);
   overflow: auto;
   .top {
