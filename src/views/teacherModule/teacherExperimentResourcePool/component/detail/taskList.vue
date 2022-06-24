@@ -51,7 +51,7 @@
       <div class="form-switch">
         状态
         <a-switch
-          v-model:checked="props.taskList.state"
+          v-model:checked="state"
           :disabled="props.preview"
           @change="onChange"
         />
@@ -79,7 +79,7 @@
 </template>
 
 <script lang="ts" setup="props">
-import { ref, reactive, inject,Ref } from "vue";
+import { ref, reactive, inject,Ref, computed } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { NoToCh } from "src/utils/common";
@@ -107,6 +107,9 @@ const emit = defineEmits<{
   (e: "delet", i: number): void;
 }>();
 props.taskList.state = props.taskList.state ? true : false
+const state = computed(() => {
+  return props.taskList.state ? true : false
+})
 const onChange = (val: any) => {
   props.taskList.state = val
 }

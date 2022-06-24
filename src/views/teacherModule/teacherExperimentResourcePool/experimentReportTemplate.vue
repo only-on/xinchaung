@@ -52,13 +52,13 @@ import viewTemplate from "src/components/report/viewTemplate.vue"
 const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
-let {id, createExperUserId} = route.query;
+let {id, createExperUserId, currentTab, type} = route.query;
 let templateId: number = Number(route.query.templateId)
 var updata = inject("updataNav") as Function;
 const { lStorage } = extStorage
 // 当前用户id === 创建实验用户id
 const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
-const canEdit = ref<boolean>(Number(createExperUserId) === uid ? true : false)
+const canEdit = ref<boolean>(Number(createExperUserId)===uid&&type!=='recommend'&&Number(currentTab)!=1 ? true : false)
 updata({
   tabs: [{ name: "报告模板预览", componenttype: 0 }],
   showContent: false,

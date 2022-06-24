@@ -684,13 +684,14 @@ const toolList = toolData;
 const roleArry: any = ref([])
 
 function back() {
-  let content = '返回!'
+  let content = '确定结束演示吗？'
   if (experType === 6 || experType === 7) {
     content = '返回课程详情!'
   } else if (recommendType) {
     content = '返回实验详情，实验环境直接被删除!'
   } else if (opType === 'prepare') {
-    content = '返回课程详情，实验环境直接被删除!'
+    const t = String(type)=='course'?'课程':'实验'
+    content = `返回${t}详情，实验环境直接被删除!`
   } else if (route.query.isClose && opType === 'help') {
     content = '关闭当前页签'
   } else if (opType === 'continue'||opType === 'start') {
@@ -1365,6 +1366,10 @@ function settingCurrentVM() {
 //
 // 打开随堂测试
 async function openQuizModal() {
+  if (!oldQuizPaperList.value.length) {
+    message.warn('暂时还没有随堂测试题目哦~')
+    return
+  }
   await getQuestionList(false);
   if (oldQuizPaperList.value.length == answerNum.value) {
 

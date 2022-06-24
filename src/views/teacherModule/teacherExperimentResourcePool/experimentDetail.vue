@@ -55,7 +55,7 @@
           <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
-        <span class="save pointer" @click="saveTomy" v-if="experimentDetail.save_my_content">
+        <span class="save pointer" @click="saveTomy" v-if="experimentDetail.save_my_content&&(role!==2||role!==1)">
           <span class="iconfont icon-baocun1"></span>
           <span>保存到我的</span>
         </span>
@@ -225,16 +225,16 @@ const reportTemplate = () => {
   sign == 'direction' ? 
   router.push({
     path: "/admin/TeachingResourceManagement/DirectionPlanning/reportTemplate",
-    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type, currentTab},
   }):
   role === 2 ?
   router.push({
     path: "/admin/TeachingResourceManagement/experimentManagement/reportTemplate",
-    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type, currentTab},
   }):
   router.push({
     path: "/teacher/teacherExperimentResourcePool/experimentReportTemplate",
-    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type},
+    query: { templateId: templateId, id:  experimentDetail.id, createExperUserId: experimentDetail.user_id, type, currentTab},
   });
 };
 // 编辑基本信息

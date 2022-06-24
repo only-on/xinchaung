@@ -170,7 +170,6 @@ const getExperimentGuide=(id:number)=>{
     }
     console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false
-    
     if (![3, 6, 7].includes(data.task_type)) {
       getPrepareEnv()
     }
@@ -257,12 +256,13 @@ const lessonPreparation=()=>{
 }
 // 检查备课环境
 const vmApi = request.vmApi;
-const createExamplesInfo: any = reactive({})
+let createExamplesInfo: any = reactive({})
 const getPrepareEnv = () => {
   const param = {
     "type": "course",
     "taskId": props.courseId
   }
+  createExamplesInfo = {}
   vmApi.getPrepareEnv({param}).then((res: any) => {
     if (res?.data[Number(state.activeExperimentObj.id)]) {
       const {topoinst_id, is_feedback} = res?.data[Number(state.activeExperimentObj.id)]
