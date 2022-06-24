@@ -230,7 +230,7 @@ export const scaterOptions = (type: number, data: any) => {
       // show:true,
       
       // end: Object.keys(data).length >= 7 ? 30 : 100,
-      // backgroundColor: theme.nextThemeColor, //组件的背景颜色
+      // backgroundColor: '', //组件的背景颜色
       fillerColor: systemColor.Tcolor2, //选中范围的填充颜色
       // handleSize: 10,//滑动条的 左右2个滑动条的大小
       // showDetail: false,

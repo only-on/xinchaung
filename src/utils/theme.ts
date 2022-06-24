@@ -61,19 +61,6 @@ const theme:TThemeColor={
   cyanColor: "#00cbc2",
 }
 
-type TImageColor={
-  mainColor:string,
-  nextColor:string,
-}
-const image:TImageColor={
-  mainColor:"#73deb3",
-  nextColor:"#73a0fa"
-}
-interface ImoduleObj {
-  class: string,
-  type: string
-}
-
 const themeColorList:any = [
   {
     value: 'A',
@@ -82,9 +69,10 @@ const themeColorList:any = [
     menuBg: '#192843',
     menuText: 'rgba(255, 255, 255, 0.45)',
     menuActive: '#fff',
-    primary1: '#fff7e6',
-    primary2: '#FDF6F0',
-    primary3: '#fff2d9',
+    primary1: '#FAFAFB',
+    primary2: '#FFF2D9',
+    primary3: '#FFE1B4',
+    primary4: '#FFCB8E',
     primary5: '#fe8020 ', // 鼠标移入颜色
     primary7: '#D78D0E' //主色点击颜色
   },
@@ -196,6 +184,7 @@ function setTheme () {
   }
   if (!systemInfo || !Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
+    console.log(systemInfo);
     if (key === 'theme') {
       let bodyEle = document.getElementsByTagName('body')[0]
       bodyEle.style.setProperty('--primary-color', themeData.primary) // 主题色
@@ -296,7 +285,6 @@ export function getThemeData () {
 }
 export{
   theme,
-  image,
   themeColorList,
   loginStyleList,
   setTheme
