@@ -101,26 +101,27 @@
         message.warn('支持格式为png!');
         reject(false)
       }
-      if (file.size / 1024 > 20) {
-        message.warn('文件大小超过20K!');
-        reject(false)
-      }
+      resolve(true)
+      // if (file.size / 1024 > 20) {
+      //   message.warn('文件大小超过20K!');
+      //   reject(false)
+      // }
       let reader = new FileReader()
       reader.readAsDataURL(file)
-      reader.onload= ()=>{
-        const image=new Image()
-        image.src= reader.result as string
-        image.onload=()=>{
-          let w=image.width
-          let h=image.height
-          if (w > 60 || h > 60) {
-            message.warn('图片尺寸不能超过60*60px')
-            reject(false)
-          } else {
-            resolve(true);
-          }
-        }
-      }
+      // reader.onload= ()=>{
+      //   const image=new Image()
+      //   image.src= reader.result as string
+      //   image.onload=()=>{
+      //     let w=image.width
+      //     let h=image.height
+      //     if (w > 60 || h > 60) {
+      //       message.warn('图片尺寸不能超过60*60px')
+      //       reject(false)
+      //     } else {
+      //       resolve(true);
+      //     }
+      //   }
+      // }
     })
   }
   function handleChange (info:any) {

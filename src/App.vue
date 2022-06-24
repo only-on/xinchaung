@@ -18,6 +18,7 @@ import enUS from "ant-design-vue/es/locale/en_US";
 import * as echarts from 'echarts'
 import extStorage from "src/utils/extStorage";
 import { useRouter ,useRoute } from 'vue-router';
+import {setTheme} from 'src/utils/theme'
 export default defineComponent({
   name: "App",
   components: {
@@ -40,6 +41,7 @@ export default defineComponent({
       n2.value = arr;
     }
     onMounted(() => {
+      setTheme()
       //  console.log(textWord)
     });
     const role = computed(()=>{
