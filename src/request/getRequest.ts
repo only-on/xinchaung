@@ -40,7 +40,7 @@ GetRequest.prototype.sendServe = function (
   const concurrent = config.concurrent ? config.concurrent : false; // 相同接口是否需要并发请求
   const param = config.param || {}; //  调用接口需要的参数 格式为param
   const dataType = init.dataType ? init.dataType : "urlencoded"; //  请求接口参数的数据格式   可选JSON   TEXT  FORMDATA
-  const silent = config.silent ? config.silent : false;
+  const silent = config.silent ? config.silent : false;     // 是否禁止弹出错误提示  boolean或者 返回boolean值的function
 
   // let url = this.baseUrl + init.url; // 接口地址
   let url = init.url; // 接口地址
