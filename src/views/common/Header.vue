@@ -447,7 +447,7 @@ export default defineComponent({
       2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
       3:[teacherHome,center,material,teacherCourse,forum],
       4:[statistics,forum,studentCourse],
-      5:[center,teacherCourse,material]
+      5:[center,material,teacherCourse]
     }[role]
     menus.push(...arr)
     var systemBaseInfo: any = reactive({
