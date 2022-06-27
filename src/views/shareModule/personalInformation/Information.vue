@@ -10,6 +10,11 @@
     >
       <a-form-item label="旧密码" name="oldpass">
         <a-input-password v-model:value="formState.oldpass" />
+        <!-- <a-input-password class="login-input" placeholder="请输入您的密码" v-model:value="formState.oldpass">
+          <template #prefix>
+            <span class="iconfont icon-mima1"></span>
+          </template>
+        </a-input-password> -->
       </a-form-item>
       <a-form-item label="新密码" name="newpass">
         <a-input-password v-model:value="formState.newpass" />
@@ -141,6 +146,9 @@ export default defineComponent({
 .creatpost {
   height: 100%;
   overflow: auto;
+  :deep(.ant-input){
+    padding-left: 2px;
+  }
 }
 .header {
   display: flex;
