@@ -55,7 +55,7 @@
           <span class="iconfont icon-bianji"></span>
           <span>编辑基本信息</span>
         </span>
-        <span class="save pointer" @click="saveTomy" v-if="experimentDetail.save_my_content&&(role!==2||role!==1)">
+        <span class="save pointer" @click="saveTomy" v-if="experimentDetail.save_my_content&&(role==3||role==5)&&type!=='recommend'">
           <span class="iconfont icon-baocun1"></span>
           <span>保存到我的</span>
         </span>
