@@ -110,10 +110,12 @@ export default defineComponent({
       }
       emit('update:selectedList', checkedNodes)
       emit('update:isShow', false)
+      keyword.value = ''
     }
     const handleCancel = () => {
       emit('update:selectedList', props.selectedList)
       emit('update:isShow', false)
+      keyword.value = ''
     }
 
     // 关键字搜索
@@ -130,6 +132,7 @@ export default defineComponent({
       (newVal) => {
         if (newVal) {
           checkedKeys.value =  props.selectedList?.map(v => v.id)
+          getKnowledgeList()
         }
       },
       {deep: true}
