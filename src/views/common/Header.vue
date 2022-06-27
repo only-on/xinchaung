@@ -533,6 +533,7 @@ export default defineComponent({
       // let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
       // const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
+      const tuid = lStorage.get("tuid")
       const uid = lStorage.get("uid")
       // console.log(user_id,longWs)
       // console.log(ws_config)
@@ -546,7 +547,7 @@ export default defineComponent({
           uid+'_0',
         open: () => {
           if (longWs1.value && (role === 3 || role === 5)) {
-            longWs1.value.join(uid+"_teacher" + "_room");
+            longWs1.value.join((role===5?tuid:uid)+"_teacher" + "_room");
           }
         },
         close: (ev: CloseEvent) => {
