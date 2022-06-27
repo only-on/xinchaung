@@ -37,6 +37,7 @@
 </template>
 
 <script lang="ts" setup>
+import { message,Modal } from "ant-design-vue";
 import { ref, toRefs, onMounted,reactive } from "vue";
 import handGroupCom from './handGroupCom/index.vue'
 import autoGroupCom from './autoGroupCom/index.vue'
@@ -124,12 +125,23 @@ function updateVisable(val:any,groupok:any){
   }
 }
 function deleteGroup(id:any){
-    http.deleteGroup({urlParams:{group:id}}).then((res:any)=>{
-      if(res.code){
-        groupListParams.page=1
-        getGroupList()
-      }
-    })
+  Modal.confirm({
+        title: "确认删除吗？",
+        icon: '',
+        content: "删除后不可恢复",
+        okText: "确认",
+        cancelText: "取消",
+        onOk() {
+          http.deleteGroup({urlParams:{group:id}}).then((res:any)=>{
+            if(res.code){
+              groupListParams.page=1
+              getGroupList()
+              message.success("删除成功");
+            }
+          })
+        },
+      });
+    
 }
 function editGroup(id:any,name:any){
   groupType.value='hand';
