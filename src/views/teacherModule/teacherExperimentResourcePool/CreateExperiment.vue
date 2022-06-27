@@ -622,14 +622,16 @@ function create() {
       message.warning('请选择实验环境')
       return
     }
+    if(createTypeNumber === 3 && TaskLIst.length === 0){
+      message.warning('请添加实验任务')
+      return
+    }
     if(createTypeNumber === 3 && TaskLIst.length !== 0){
       let flage=checkTask(TaskLIst)
       console.log(flage);
       if(!flage){
         return
       }
-      // message.warning('请选择实验指导')
-      // return
     }
     if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
       console.log(docMp4FileObj)
