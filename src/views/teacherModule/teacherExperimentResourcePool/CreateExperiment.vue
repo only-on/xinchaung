@@ -320,7 +320,7 @@
   ></SelectReport>
 
   <!-- 上传文档 视频 文件 弹窗 -->
-  <a-modal v-model:visible="upDocVisible"  :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
+  <a-modal v-model:visible="upDocVisible" @cancel="cancelUpDoc" :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
     class="uploadImage" :width="640">
     <a-select
       style="width: 400px; margin-bottom: 3rem"
@@ -1024,6 +1024,12 @@ const closeDrawerDoc = () => {
   docOrMp4Drawer.visible = false;
 };
 const cancelUpDoc = () => {
+  upDoc.nowDocument.mdValue=''
+  if(upDoc.docFileList.length && upDoc.docFileList[0].status !== "done"){
+    tusFileUpload.remove(upDoc.docFileList[0])
+  }
+  upDoc.docFileList=[]
+  docOrMp4Drawer.activeFile={}
   upDocVisible.value = false;
 };
 // 选择系统内置文档或者视频

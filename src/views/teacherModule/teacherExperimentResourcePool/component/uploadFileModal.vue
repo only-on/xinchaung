@@ -147,12 +147,13 @@ function abort() {
   if(uploadFileList.status !== "done"){
     tusFileUpload.remove(uploadFileList)
   }
+  uploadFileList.name = ''
+  uploadFileList.percent = 0
+  uploadFileList.status = 'done'
 }
 // 移除
 function remove() {
   abort();
-  uploadFileList.name = ''
-  uploadFileList.percent = 0
 }
 function uploadvideoOk() {
   emit("uploadSuccess", uploadFileList, dataset_id.value);
@@ -162,6 +163,7 @@ function uploadvideoOk() {
   uploadFileList.percent = 0
 }
 function cancel() {
+  abort()
   emit("update:visibleUpload", false);
 }
 console.log(props.type);

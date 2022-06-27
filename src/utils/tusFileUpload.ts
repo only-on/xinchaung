@@ -84,6 +84,11 @@ const tusFileUpload = {
     }
      */
     const type = file.name.split(".")[file.name.split(".").length - 1].toLowerCase();
+    // 视频文件限制在500M以内
+    if (type == 'mp4' && file.size > 500*1024*1024) {
+      message.warn("请上传小于500M的文件");
+      return
+    }
     data.percent = 0;
     data.name = file.name;
     data.size = file.size;
