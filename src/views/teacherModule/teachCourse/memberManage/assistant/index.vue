@@ -68,7 +68,7 @@
               <a-input v-model:value="formState.username" :disabled='editId?true:false' />
             </a-form-item>
             <a-form-item label="姓名"  name="name">
-              <a-input v-model:value="formState.name" />
+              <a-input v-model:value="formState.name" :maxLength='10' />
             </a-form-item>
             <a-form-item label="性别"  name="gender">
               <a-select v-model:value="formState.gender" placeholder="请选择">

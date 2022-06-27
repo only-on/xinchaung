@@ -151,7 +151,7 @@ export default function request({
   mode = "cors",
   dataType = "urlencoded",
   timeout = 0,
-  silent = false,
+  silent = false, // 是否禁止弹出错误提示
 }: IRequestParams): Promise<IBusinessResp> {
   // fetch 参数方便后续调整
   let init: RequestInit = {
