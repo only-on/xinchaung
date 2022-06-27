@@ -820,11 +820,12 @@ function getTopoVmInfo(id: number) {
           }, 1500);
         }
       } else {
+        openScreenLoading.value=false
         message.warn(res.msg);
       }
       resolve(res);
     }).catch(() => {
-      openScreenLoading.value=true
+      openScreenLoading.value=false
     });
   });
 }
