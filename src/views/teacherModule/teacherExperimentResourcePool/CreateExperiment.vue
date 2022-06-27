@@ -663,7 +663,7 @@ function create() {
     // return
     http[createMethod]({param:{...param,...obj}}).then((res: IBusinessResp)=>{
       message.success('创建成功')
-      cancel()
+      router.go(-1);
     })
   });
 }
@@ -691,6 +691,7 @@ const checkTask=(list:any)=>{
 }
 // 取消
 function cancel() {
+  currentUuid ? removeTopo() : ''
   router.go(-1);
 }
 
