@@ -274,7 +274,9 @@ interface IVmInfo {
           border: 1px solid var(--cyan-100);
           color: var(--cyan-100);
           :deep(.ant-select-selector) {
-            border: 1px solid var(--cyan-100);
+            border: none;
+            box-shadow: none;
+            // border: 1px solid var(--cyan-100);
             color: var(--cyan-100);
             background: rgba(0, 0, 0, 0);
           }
