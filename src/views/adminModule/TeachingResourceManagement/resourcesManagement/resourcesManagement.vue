@@ -257,7 +257,7 @@ const viewDetail=(val:any)=>{
       query:{
         ...query,  
         avatar: val.user.avatar,
-        username: val.user.username
+        username: val.username
       }
     })
   }else{

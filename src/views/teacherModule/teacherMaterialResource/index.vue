@@ -46,7 +46,7 @@
           <div class="user-num">
             <div class="user" v-if="currentTab === 0 && list.user">
               <img :src="list.user.avatar||defaultAvatar" alt="" srcset="" />
-              <span class="name">{{list.user.username}}</span>
+              <span class="name" :title="list.username">{{list.username}}</span>
             </div>
             <div class="num-size">
               <span class="num">数量 {{ list.item_count }}</span>
@@ -153,7 +153,7 @@ const detail=(val:any)=>{
       query:{
         ...query,  
         avatar: val.user.avatar,
-        username: val.user.username
+        username: val.username
       }
     })
   }else{
@@ -406,6 +406,15 @@ const getTypeList = () => {
           height: 20px;
           // background-color: pink;
           margin-right: 4px;
+        }
+        .name {
+          display: inline-block;
+          max-width: 90px;
+          word-break: normal;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          vertical-align: middle;
         }
       }
       .num-size {

@@ -20,7 +20,7 @@
         <div class="info flexCenter">
           <div class="item userAvatar">
             <img :src="state.detail.user?.avatar" alt="">
-            <span>{{state.detail.user?.username}}</span>
+            <span>{{state.detail.username}}</span>
           </div>
           <div class="item">
             <span>数量</span>
