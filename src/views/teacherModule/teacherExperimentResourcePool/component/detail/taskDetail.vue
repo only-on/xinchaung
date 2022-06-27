@@ -33,6 +33,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import extStorage from "src/utils/extStorage";
+import { Modal, message } from "ant-design-vue";
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const $message: MessageApi = inject("$message")!;
@@ -128,6 +129,11 @@ const onSubmit = () => {
       "state": v.state // (非必填 默认开启)
     })
   })
+  // console.log(tasks);
+  if(tasks.length === 0){
+    message.warning('请添加实验任务')
+    return
+  }
   http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: any) => {
     console.log(res)
     // router.go(-1);
