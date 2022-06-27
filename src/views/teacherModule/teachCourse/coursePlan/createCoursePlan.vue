@@ -40,7 +40,7 @@
         <div class="title flex_center">
           <h3 class="">排课成员列表</h3>
           <div class="addStudent">
-            <a-button type="primary" @click="addStudentOrClass('student')">添加学生</a-button>
+            <a-button type="primary" :class='(leftStuNum ? leftNumText :0)==0?"cannot":""' @click="(leftStuNum ? leftNumText :0)==0?'':addStudentOrClass('student')">添加学生</a-button>
             <!-- <a-button type="primary" @click="addStudentOrClass('class')">添加班级</a-button> -->
           </div>
         </div>
@@ -724,5 +724,12 @@ interface IForm {
   .iconfont{
     color: var(--purpleblue-6);
   }
+}
+.cannot{
+  background-color:var(--black-15);
+  border-color:var(--black-15);  
+}
+.cannot:hover{
+  cursor:not-allowed;
 }
 </style>

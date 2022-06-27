@@ -172,7 +172,7 @@ const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:an
 function getCheckboxProps(record: any) {
   return {
     disabled:props.selectedStuIds.includes(record.stu_id),
-    defaultChecked:props.selectedStuIds.includes(record.stu_id),
+    // defaultChecked:props.selectedStuIds.includes(record.stu_id),
   };
 }
 function handleChange() {}
@@ -221,8 +221,8 @@ function onShowSizeChange(current: any, size: any) {
   }
   emit('updateStuParams',param)
 }
-function onSelectChange(selectedRowKeys: any) {
-  console.log(selectedRowKeys);
+function onSelectChange(selectedRowKeys: any,selectedRows:any) {
+  console.log(selectedRowKeys,selectedRowKeys.length,selectedRows,'selectedRowKeys');
   tableData.selectedRowKeys=selectedRowKeys
 }
 function neverShow(record: any) {
@@ -244,8 +244,9 @@ function handleCancel() {
   modalVisable.value = false;
 }
 function handleOkSelect(){
-  if(props.leftNumText<tableData.selectedRowKeys.length){
-    message.warning('最多可以选'+props.leftNumText+'人')
+  console.log(tableData.selectedRowKeys,tableData.selectedRowKeys.length,props.selectedStuIds.length,'tableData.selectedRowKeys.length')
+  if(props.leftNumText<tableData.selectedRowKeys.length-props.selectedStuIds.length){
+    message.warning('可选'+props.leftNumText+'人')
     return
   }
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
@@ -314,6 +315,7 @@ watch(
       () => {
         if(props.selectedStuIds){
           tableData.selectedRowKeys=props.selectedStuIds
+          console.log(tableData.selectedRowKeys,'tableData.selectedRowKeystableData.selectedRowKeys')
         }
       },
       { deep: true, immediate: true }

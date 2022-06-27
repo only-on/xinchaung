@@ -196,7 +196,7 @@
                       <div class="make-base-list">
                         <div
                           class="make-item-item"
-                          v-for="(mit, aindex) in classVal.arrangements"
+                          v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
                         >
                           <span>{{ classVal.arrangements[aindex].teacher_name }}</span>
                           <span
@@ -289,7 +289,7 @@
                           <div class="make-base-list">
                             <div
                               class="make-item-item"
-                              v-for="(mit, aindex) in classVal.arrangements"
+                              v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
                             >
                             <div>
                               <span :title="classVal.arrangements[aindex].teacher_name" class="teacher_name">
