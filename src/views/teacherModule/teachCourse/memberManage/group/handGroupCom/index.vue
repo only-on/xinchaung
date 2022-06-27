@@ -4,6 +4,7 @@
       :width="900"
       cancelText="取消"
       okText="分组"
+      :destroyOnClose="true"
       :visible="visable"
       @ok="handleOk"
       @cancel="handleCancel"
@@ -277,7 +278,8 @@ function changeChecks(){
 }
 //把学生添加到分组里
 function toLeft(){
-  console.log(selectedGroup.value,treeData.value)
+  console.log(selectedGroup.value)
+  console.log(treeData.value)
   if (!selectedGroup.value && selectedGroup.value !== 0) {
     message.warning("请选择或者创建分组!");
     return;
@@ -351,6 +353,8 @@ watch(
 watch(
       () =>props.visable,
       () => {
+        // console.log(props.visable);
+        
         if(props.visable){
           //分组列表置空
           treeData.value=[]
