@@ -9,7 +9,6 @@
   :width="540"
 >
   <div class="prompt">最多选择3个知识点</div>
-  
   <div class="search_input">
     <a-input-search
       v-model:value="keyword"
@@ -38,7 +37,7 @@
 </template>
 <script lang="ts">
 // import { CarryOutOutlined, DownOutlined  } from '@ant-design/icons-vue';
-import { defineComponent, ref, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
+import { defineComponent, ref, nextTick, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { message } from 'ant-design-vue'
@@ -68,7 +67,9 @@ export default defineComponent({
     let data = reactive<Idata>({
       treeData: []
     })
+    let checkedNodes: ItreeData[] = props.selectedList
     const getKnowledgeList = () => {
+      checkedKeys.value =  []
       http.getKnowledgeList({param: {type: 'tree', keyword: keyword.value}})
         .then((res: IBusinessResp) => {
           if (!res.data?.length) {
@@ -82,14 +83,24 @@ export default defineComponent({
             text: list.text,
             disabled: true
           }]
+          nextTick(() => {
+            if (keyword.value) {
+              checkedNodes?.map(v => {
+                if (v.text.indexOf(keyword.value)!=-1) {
+                  checkedKeys.value.push(v.id)
+                }
+              })
+            } else {
+              checkedKeys.value =  checkedNodes?.map(v => v.id)
+            }
+          })
         })
         .catch((error:any)=>{
           // console.log(error)
            data.treeData = []
         })
     }
-    let checkedNodes: ItreeData[] = props.selectedList
-    const onCheck = (key: string[], e: any) => {
+    const onCheck1 = (key: string[], e: any) => {
       let arr = e.checkedNodes
       if (arr.length) {
         checkedNodes = []
@@ -102,6 +113,37 @@ export default defineComponent({
         checkedNodes = []
       }
       checkedKeys.value = checkedNodes.map(v => v.id)
+    }
+    const onCheck = (key: string[], e: any) => {
+      checkedNodes = [...checkedNodes]
+      let arr = e.checkedNodes
+      let node = e.node
+      function handle(node: any) {
+        if (node.children&&node.children.length) {
+          node.children.forEach((v: any) => {
+            handle(v)
+          })
+        } else {
+          checkedNodes.filter((v: any, k: number) => {
+            if (v.id === node.id) {
+              checkedNodes.splice(k, 1)
+            }
+          })
+        }
+      }
+      if (!e.checked) {
+        handle(node.dataRef)
+      } else {
+        // checkedNodes = []
+        arr.forEach((v:any) => {
+          if (!(v.props.dataRef.children && v.props.dataRef.children.length)) {
+            if (!checkedNodes.filter((vv: any) => vv.id===v.props.dataRef?.id)[0]) {
+              checkedNodes.push(v.props.dataRef)
+            }
+          }
+        })
+      } 
+      // checkedKeys.value = checkedNodes.map(v => v.id)
     }
     const handleOk = () => {
       if (checkedNodes.length > 3) {
@@ -132,12 +174,14 @@ export default defineComponent({
       (newVal) => {
         if (newVal) {
           checkedKeys.value =  props.selectedList?.map(v => v.id)
+          checkedNodes = props.selectedList
           getKnowledgeList()
         }
       },
       {deep: true}
     )
     return {
+      onCheck1,
       onCheck,
       checkedKeys,
       replaceFields,
