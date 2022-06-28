@@ -1,5 +1,11 @@
 <template>
   <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
+    <div class="base-info">
+      <!-- <div class="base-info-title">
+        <span class="name">基本信息</span>
+        <span class="line"></span>
+      </div> -->
+      <h3 class="title">基本信息</h3>
     <div class="create-middle">
       <div class="left">
         <a-form-item label="实验名称" name="name">
@@ -98,7 +104,12 @@
         </a-form-item>
       </div>
     </div>
+    </div>
     <!-- 实验环境配置 -->
+    <!-- <div class="base-info-title">
+      <span class="name">实验环境</span>
+      <span class="line"></span>
+    </div> -->
     <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
         :type="createTypeNumber === 4 ? true : false"
@@ -449,12 +460,36 @@ onMounted(()=>{
   margin-left: 1rem;
 }
 .configuration {
-  padding: 2rem;
+  padding: 20px;
   padding-top: 0;
+}
+.base-info-title {
+  padding: 0 20px;
+  display: flex;
+  margin-bottom: 16px;
+  .name {
+    margin-right: 4px;
+    color: var(--black-45);
+  }
+  .line {
+    display: inline-block;
+    height: 1px;
+    background: var(--black-15);
+    margin-top: 10px;
+    flex: 1;
+  }
+}
+.base-info {
+  .title {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .create-middle {
   display: flex;
-  padding: 2rem;
+  padding: 20px;
+  padding-top: 0;
   .left,
   .right {
     width: 50%;
