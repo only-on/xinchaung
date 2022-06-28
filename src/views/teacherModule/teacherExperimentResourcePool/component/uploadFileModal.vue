@@ -156,6 +156,11 @@ function remove() {
   abort();
 }
 function uploadvideoOk() {
+  console.log(uploadFileList)
+   if (!uploadFileList.name) {
+    message.warning('请上传文件')
+    return
+  }
   emit("uploadSuccess", uploadFileList, dataset_id.value);
   emit("update:visibleUpload", false);
   uploadFileList.status = 'done'

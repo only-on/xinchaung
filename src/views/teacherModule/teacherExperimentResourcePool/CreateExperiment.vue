@@ -1053,6 +1053,10 @@ const selectDocOrMp4File = (val: any) => {
 //  视频实验
 const confirmDoc = () => {
   console.log('file_url',upDoc.docFileList)
+  if (!(upDoc.docFileList&&upDoc.docFileList.length)) {
+    message.warning('请上传文件')
+    return
+  }
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
     if(upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''
