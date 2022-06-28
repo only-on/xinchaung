@@ -120,6 +120,7 @@ export default function Upload(option: UploadOptions) {
   const ObjectKey = 'key' + UUID.uuid4()
   let md5String: any = ''
   let upload_id: any = ''
+  let newFileName:string=''
   let currentIndex: any = 0
   const uploadStatus = []
   var FilesChunk: any = []
@@ -187,7 +188,7 @@ export default function Upload(option: UploadOptions) {
         request({ url: option.startUploadURL, body })
           .then((res: any) => {
             if (res.code === 200) {
-              resolve(res.data.upload_id)
+              resolve({upload_id:res.data.upload_id,newFileName:res.data.file_name})
             } else {
               reject(new Error('获取上传upload_id错误'))
             }
@@ -265,6 +266,7 @@ export default function Upload(option: UploadOptions) {
     body.append('file_size', (option.file as any).size)
     body.append('part_count', part_count)
     body.append('upload_id', upload_id)
+    body.append('file_name', newFileName)
     body.append('md5', md5String)
     body.append('external_parameters', '1') // 勿删 勿修改 2代表文件可用状态， 未确认和未保存的文件为1 不可用
     request({
@@ -334,8 +336,10 @@ export default function Upload(option: UploadOptions) {
       // 文件转md5码
       md5String = await fileToMd5()
       // console.log('md', md5String)
-
-      upload_id = await startUpload()
+      const obj:any=await startUpload()
+      console.log(obj); // newFileName
+      upload_id = obj.upload_id
+      newFileName = obj.file_name
       // console.log('m2', upload_id)
       multiUploadStart()
     } catch (error) {
