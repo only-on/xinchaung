@@ -16,7 +16,13 @@
           />
         </a-form-item>
         <div class="type">
-          <a-form-item label="帖子类型" name="type" v-if="role !== 2">
+          <a-form-item class="forum-label" label="添加标签" name="label">
+            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
+            <div class="label-list">
+              <LabelList :tag="formState.label_name" />
+            </div>
+          </a-form-item>
+          <a-form-item class="forum-type" label="帖子类型" name="type" v-if="role !== 2">
             <a-select
               v-model:value="formState.type"
               placeholder="请选择帖子类型"
@@ -24,12 +30,6 @@
               <a-select-option :value="item.name" v-for="item in tagList" :key="item.name">{{item.name}}</a-select-option>
               <!-- <a-select-option value="2">分享</a-select-option> -->
             </a-select>
-          </a-form-item>
-          <a-form-item label="添加标签" name="label">
-            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
-            <div class="label-list">
-              <LabelList :tag="formState.label_name" />
-            </div>
           </a-form-item>
         </div>
         <a-form-item name="content">
@@ -246,11 +246,11 @@ const getTagsList = (param: any) => {
       display: flex;
       justify-content: space-between;
       .ant-form-item {
-        &:first-child {
+        &.forum-type {
           width: 206px;
-          margin-right: 80px;
         }
-        &:nth-child(2) {
+        &.forum-label {
+          margin-right: 80px;
           flex: 1;
           .add-btn {
             display: inline-block;

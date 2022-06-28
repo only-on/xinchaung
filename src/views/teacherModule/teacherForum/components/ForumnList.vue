@@ -32,7 +32,8 @@
     <div class="reply-total">回应区 （{{totalReply}}条）</div>
     <a-spin :spinning="loading" tip="Loading...">
     <div class="reply-content">
-      <reply-list :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
+      <div v-if="!replyList.length" class="no-reply-data">该帖子暂无评论！</div>
+      <reply-list v-else :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
       <div class="more" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(item.id)">
         <span class="pointer">加载更多</span>
       </div>
@@ -299,6 +300,11 @@ export default defineComponent({
   .reply-content {
     background: var(--lightgray-2);
     /*margin: 16px 20px;*/
+    .no-reply-data {
+      text-align: center;
+      padding-top: 30px;
+      color: var(--black-45);
+    }
     .more {
       padding: 19px 0 24px;
       text-align: center;
