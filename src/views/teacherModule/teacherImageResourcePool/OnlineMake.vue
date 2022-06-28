@@ -90,7 +90,7 @@
          <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback label="镜像名称" name="name">
+              <a-form-item  label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
               <a-form-item label="添加标签" name="tags">
@@ -98,7 +98,7 @@
                   <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
                 </div>
               </a-form-item>
-              <a-form-item has-feedback label="镜像描述" name="description">
+              <a-form-item  label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请在这里输入镜像描述文字"
@@ -173,7 +173,8 @@ const nameValidator = (rule: any, value: any, callback: any) => {
       }
     };
 const rules: any = {
-      name: [{ validator: nameValidator, required:true, trigger: "change" }],
+      name: [{ validator: nameValidator, required:true, trigger: "blur" }],
+      // name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
       description: [{  required:true, max: 200, message: "镜像描述最长200个字", trigger: "change",}],
       tags: [
         {required: true,validator: fileListValidator,trigger: "blur"},

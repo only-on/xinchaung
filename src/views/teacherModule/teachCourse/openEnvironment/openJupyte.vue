@@ -20,10 +20,15 @@
           <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback label="镜像名称" name="name">
+              <a-form-item  label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" />
               </a-form-item>
-              <a-form-item has-feedback label="镜像描述" name="description">
+              <a-form-item label="添加标签" name="tags">
+                <div>
+                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
+                </div>
+              </a-form-item>
+              <a-form-item  label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请输入描述"
@@ -63,7 +68,10 @@ import _ from "lodash";
 import storage from "src/utils/extStorage";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
-
+import LabelList from 'src/components/LabelList.vue'
+import Submit from "src/components/submit/index.vue";
+import request from "src/api/index";
+const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
   id: number;
   jupyteUrl: string;
@@ -75,6 +83,7 @@ type TreactiveData = {
   createFormData: {
     name: string;
     description: string;
+    tags:any[]
   };
 
   isSaveImage: boolean; // 是否可以保存
@@ -82,6 +91,10 @@ type TreactiveData = {
   timer: null | NodeJS.Timer;
 };
 export default defineComponent({
+  components: {
+    LabelList,
+    Submit
+  },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
     const route = useRoute();
@@ -99,18 +112,37 @@ export default defineComponent({
         return Promise.resolve();
       }
     };
-    const rules = {
-      name: [{ validator: nameValidator, trigger: "change" }],
+    const rules: any = {
+      name: [{required: true, validator: nameValidator, trigger: "blur" }],
       description: [
-        {
-          required: false,
-          max: 200,
-          message: "镜像描述最长200个字",
-          trigger: "change",
-        },
+        {required: false,max: 200, message: "镜像描述最长200个字",trigger: "change",},
+      ],
+      tags: [
+        {required: true,validator: fileListValidator,trigger: "blur"},
       ],
     };
-    const createForm = ref(null);
+    async function fileListValidator() {
+      console.log(reactiveData.createFormData.tags);
+      if (reactiveData.createFormData.tags.length === 0) {
+        message.warn("请选择镜像标签");
+        return Promise.reject("请选择镜像标签");
+      } else if(!(reactiveData.createFormData.tags.includes('vnc') || reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需至少选择一个");
+        return Promise.reject();
+      }else if((reactiveData.createFormData.tags.includes('vnc') && reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需只需任选其一");
+        return Promise.reject();
+      }
+      else {
+        createForm.value.clearValidate('tags')
+        return Promise.resolve();
+      }
+    }
+    const selectTag=async (val:any,arr:any)=>{
+      console.log(val);
+      fileListValidator()
+    }
+    const createForm: any = ref(null);
     const jupyteIframe = ref(null);
     const reactiveData: TreactiveData = reactive({
       id: route.query.id as any,
@@ -123,16 +155,14 @@ export default defineComponent({
       createFormData: {
         name: "",
         description: "",
+        tags:[]
       },
 
       isSaveImage: true, // 是否可以保存
       myTimer: null,
       timer: null,
     });
-    onMounted(() => {
-      init();
-      // extendSess();
-    });
+    
     onBeforeRouteLeave(() => {
       clearInterval(Number(reactiveData.myTimer));
     });
@@ -295,6 +325,23 @@ export default defineComponent({
       }
       (jupyteIframe.value as any).appendChild(frm);
     }
+    const recommend:any=reactive([])
+    function getImgTag() {
+      recommend.length=0
+      http.getImgTag().then((res: any) => {
+        let  data= res.data;
+        let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+        recommend.push(...arr)
+        data.forEach((v:any) => {
+          recommend.push({name:v.name,value:v.name})
+        });
+      });
+    }
+    onMounted(() => {
+      init();
+      getImgTag()
+      // extendSess();
+    });
     return {
       ...toRefs(reactiveData),
       createForm,
@@ -303,7 +350,9 @@ export default defineComponent({
       stop,
       create,
       saveImage,
-      jupyteIframe
+      jupyteIframe,
+      recommend,
+      selectTag
     };
   },
 });

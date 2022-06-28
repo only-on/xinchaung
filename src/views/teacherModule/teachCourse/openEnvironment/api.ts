@@ -167,7 +167,7 @@ export async function getVmBaseInfoApi(params:{id:number}) {
 /**
  * @description 保存镜像
  */
-export async function createImageApi(params:{name:string,description:string},urlParams:{id:number}) {
+export async function createImageApi(params:any,urlParams:{id:number}) {
     return await workbenchApi.createImageApi({urlParams:urlParams,param:params})
 }
 
