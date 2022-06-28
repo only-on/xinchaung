@@ -339,7 +339,7 @@ export default function Upload(option: UploadOptions) {
       const obj:any=await startUpload()
       console.log(obj); // newFileName
       upload_id = obj.upload_id
-      newFileName = obj.file_name
+      newFileName = obj.newFileName
       // console.log('m2', upload_id)
       multiUploadStart()
     } catch (error) {
