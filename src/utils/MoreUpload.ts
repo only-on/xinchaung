@@ -337,7 +337,7 @@ export default function Upload(option: UploadOptions) {
       md5String = await fileToMd5()
       // console.log('md', md5String)
       const obj:any=await startUpload()
-      console.log(obj); // newFileName
+      console.log(obj); //  newFileName
       upload_id = obj.upload_id
       newFileName = obj.newFileName
       // console.log('m2', upload_id)
