@@ -93,6 +93,11 @@
               <a-form-item has-feedback label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
+              <a-form-item label="添加标签" name="tags">
+                <div>
+                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
+                </div>
+              </a-form-item>
               <a-form-item has-feedback label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
@@ -102,11 +107,8 @@
               </a-form-item>
             </a-form>
           </div>
-          <template v-slot:footer>
-            <div>
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="saveImage">确定</a-button>
-            </div>
+          <template #footer>
+            <Submit @submit="saveImage" @cancel="cancel"></Submit>
           </template> 
           
         </a-modal>
@@ -126,6 +128,7 @@ import {
   defineProps,
   createVNode,
 } from "vue";
+import LabelList from 'src/components/LabelList.vue'
 import storage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
@@ -150,11 +153,12 @@ updata({
   showNav: true,
 });
 const saveVisible:any=ref(false)
-const createFormData=reactive({
+const createFormData:any=reactive({
     name:'',
-    description:''
+    description:'',
+    tags:[]
 })
-const createForm:any=ref()
+const createForm=ref()
 // 镜像名称校验
 const nameValidator = (rule: any, value: any, callback: any) => {
       var reg = /^[a-zA-Z0-9_]+$/g;
@@ -170,15 +174,32 @@ const nameValidator = (rule: any, value: any, callback: any) => {
     };
 const rules: any = {
       name: [{ validator: nameValidator, required:true, trigger: "change" }],
-      description: [
-        {
-          required:true,
-          max: 200,
-          message: "镜像描述最长200个字",
-          trigger: "change",
-        },
+      description: [{  required:true, max: 200, message: "镜像描述最长200个字", trigger: "change",}],
+      tags: [
+        {required: true,validator: fileListValidator,trigger: "blur"},
       ],
     };
+async function fileListValidator() {
+  console.log(createFormData.tags);
+  if (createFormData.tags.length === 0) {
+    message.warn("请选择镜像标签");
+    return Promise.reject("请选择镜像标签");
+  } else if(!(createFormData.tags.includes('vnc') || createFormData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需至少选择一个");
+    return Promise.reject();
+  }else if((createFormData.tags.includes('vnc') && createFormData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需只需任选其一");
+    return Promise.reject();
+  }
+  else {
+    createForm.value.clearValidate('tags')
+    return Promise.resolve();
+  }
+}
+const selectTag=async (val:any,arr:any)=>{
+  console.log(val);
+  fileListValidator()
+}
 const imageid:any=ref()
 const saveIndex:any=ref()
 const OnlineAdd = () => {
@@ -309,34 +330,18 @@ const GenerateImage = (val: any,k:any) => {
   saveIndex.value=k
 };
 const saveImage=()=>{
-
-  if(!createFormData.name){
-    message.warning('镜像名称不能为空！')
-    return
-  }
-  if(!createFormData.description){
-    message.warning('镜像描述不能为空！')
-    return
-  }
-  // createForm.value.validate().then((res:any)=> {
-
-  // }).catch((err:any)=>{message.warning(err)})
-   let obj={
-    name:createFormData.name,
-    description:createFormData.description
-  }
-  list[saveIndex.value].generateLoad=true
-  // val.generateLoad=true
-  http.GenerateImage({urlParams:{imageID:imageid.value},param:{...obj}}).then((res: IBusinessResp) => {
-    message.success("生成成功");
-    createForm.value.resetFields();
-    saveVisible.value=false
-    list[saveIndex.value].generateLoad=false
-  //  val.generateLoad=false
-  })
-  .catch(() => {
-    // val.generateLoad=false
-    list[saveIndex.value].generateLoad=false
+  createForm.value.validate().then(async ()=>{
+    const val= await fileListValidator()
+    list[saveIndex.value].generateLoad=true
+    http.GenerateImage({urlParams:{imageID:imageid.value},param:{...createFormData}}).then((res: IBusinessResp) => {
+      message.success("生成成功");
+      createForm.value.resetFields();
+      saveVisible.value=false
+      list[saveIndex.value].generateLoad=false
+    })
+    .catch(() => {
+      list[saveIndex.value].generateLoad=false
+    })
   })
 }
 const cancel=()=>{
@@ -361,10 +366,22 @@ const initData = () => {
     loading.value = false;
   });
 };
-
+const recommend:any=reactive([])
+function getImgTag() {
+  recommend.length=0
+  http.getImgTag().then((res: any) => {
+    let  data= res.data;
+    let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+    recommend.push(...arr)
+    data.forEach((v:any) => {
+      recommend.push({name:v.name,value:v.name})
+    });
+  });
+}
 onMounted(() => {
   // initData();
   init()
+  getImgTag()
 });
 async function init() {
     await initData();
