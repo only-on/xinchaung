@@ -11,7 +11,7 @@
           </a-form-item>
           <a-form-item label="添加标签" name="tag">
             <div>
-              <LabelList :tag="image.tag" :recommend="recommend" />
+              <LabelList :tag="image.tag" :recommend="recommend" @selectTag="selectTag" />
             </div>
           </a-form-item>
           <!-- <a-form-item label="系统类型" name="ostype">
@@ -123,17 +123,17 @@ updata({
 const rules = {
   fileName: [{ required: true, message: "请选择镜像文件", trigger: "change" }],
   name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
-  classify_id: [{ required: true, message: "请选择系统类型" }],
+  ostype: [{ required: true, message: "请选择镜像类型" }],
   tag: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    // { validator: fileListValidator,},
+    {required: true,validator: fileListValidator,trigger: "blur"},
   ],
 };
 async function fileListValidator() {
-  // console.log(image);
+  console.log(image.tag);
   if (image.tag.length === 0) {
     message.warn("请选择镜像标签");
-    return Promise.reject();
+    return Promise.reject("请选择镜像标签");
   } else if(!(image.tag.includes('vnc') || image.tag.includes('jupyter'))){
     message.warn("vnc或jupyter标签需至少选择一个");
     return Promise.reject();
@@ -142,8 +142,13 @@ async function fileListValidator() {
     return Promise.reject();
   }
   else {
+    formRef.value.clearValidate('tag')
     return Promise.resolve();
   }
+}
+const selectTag=async (val:any,arr:any)=>{
+  console.log(val);
+  fileListValidator()
 }
 const image: ImageType = reactive({
   name: "",

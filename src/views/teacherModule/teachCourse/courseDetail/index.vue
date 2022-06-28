@@ -212,14 +212,14 @@ const http=(request as any).teachCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
 const { currentTab,courseId, activeTabOrder } = route.query;
-const detailTabs=[
+const detailTabs:any=[
   {name:'课程章节',value:'courseChapter'},
   {name:'实验环境管理',value:'courseExperiment'},
   {name:'随堂测试',value:'popQuiz'},
   {name:'成绩评阅',value:'performanceReview'},
   {name:'学情分析',value:'studentAnalysis'},
   {name:'成员管理',value:'memberManagement'},]
-const detailTabs2=[{name:'课程章节',value:'courseChapter'},]
+const detailTabs2:any=[]
 const  studentDetailTabs=[
   {name:'课程内容',value:'courseChapter'},
   {name:'课程成绩',value:'courseAchievement'},
@@ -444,6 +444,9 @@ const getCourseSetup=()=>{
 }
 onMounted(() => {
   initData()
+  if(Number(currentTab)===1){
+    selectTab({name:'课程章节',value:'courseChapter'})
+  }
   // if(Number(currentTab)===0 && role === 3){
   //   getCourseSetup()
   // }

@@ -62,7 +62,7 @@
             <a-form-item  label="镜像名称" name="name">
               <a-input class="form-input" v-model:value="imageData.name"></a-input>
             </a-form-item>
-            <a-form-item  label="系统类型" name="ostype">
+            <a-form-item  label="镜像类型" name="ostype">
               <a-select
                 class="form-input"
                 v-model:value="imageData.ostype"
@@ -81,7 +81,7 @@
           <div class="row"> 
             <a-form-item label="添加标签" name="tags">
               <div>
-                <LabelList :tag="imageData.tags" :recommend="recommend" />
+                <LabelList :tag="imageData.tags" :recommend="recommend" @selectTag="selectTag"  />
               </div>
             </a-form-item>
           </div>
@@ -300,7 +300,7 @@ const rules = {
   ostype: [{ required: true, message: "请选择系统类型" }],
   tags: [
     // { required: true, message: "请选择镜像标签",trigger: "blur"},
-    // { validator: fileListValidator,},
+    {required: true,validator: fileListValidator,trigger: "blur"},
   ],
 };
 async function fileListValidator() {
@@ -316,8 +316,13 @@ async function fileListValidator() {
     return Promise.reject();
   }
   else {
+    formRef.value.clearValidate('tag')
     return Promise.resolve();
   }
+}
+const selectTag=async (val:any,arr:any)=>{
+  console.log(val);
+  fileListValidator()
 }
 const formRef = ref();
 const handleOk=()=> {

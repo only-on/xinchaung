@@ -48,6 +48,7 @@ import {
   nextTick,
 } from "vue";
 import { message } from "ant-design-vue";
+import { defaults } from "lodash";
 interface Props {
   tag: any;
   recommend?:any;
@@ -60,6 +61,9 @@ const state: any = reactive({
   customLabelV: "",
   config: {},
 });
+const emit=defineEmits<{
+  (e:'selectTag',val:any,arr:any):void,
+}>()
 var showTag: Ref<boolean> = ref(false);
 var openCustom: Ref<boolean> = ref(false);
 const refCustomLabel = ref<HTMLElement>();
@@ -96,6 +100,7 @@ function addTag(val: any) {
   } else {
     props.tag.length >= 3 ? message.warn("最多添加3个标签"):''
   }
+  emit('selectTag',val,props.tag)
 }
 function changeLabel() {
   // console.log(val)
