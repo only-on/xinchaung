@@ -156,7 +156,7 @@ updata({
 });
 const columns: any = [
   {
-    title: "账号",
+    title: "学号",
     dataIndex: "username",
     key: "username",
   },
