@@ -608,7 +608,7 @@ onMounted(() => {
           }
           .file{
             max-height: 460px;
-            overflow-y: scroll;
+            overflow-y: auto;
           }
         }
         .right{
