@@ -73,7 +73,7 @@
             </div>
           </div>
         </template>
-        <empty v-else></empty>
+        <empty v-if="dataSetList.length === 0 && !loading"></empty>
         <a-pagination
           v-if="count > 12"
           v-model:current="params.page"
