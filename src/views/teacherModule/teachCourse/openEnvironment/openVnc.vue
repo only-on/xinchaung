@@ -127,7 +127,7 @@
             </a-form>
           </div>
           <template #footer>
-            <Submit @submit="saveImage" @cancel="cancel"></Submit>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template>
         </a-modal>
       </div>
@@ -319,10 +319,12 @@ export default defineComponent({
       (createForm.value as any).resetFields();
       reactiveData.saveVisible = false;
     }
+    var saveImageLoad: Ref<boolean> = ref(false);
     // 保存镜像
     function saveImage() {
       (createForm.value as any).validate().then((valid: any) => {
         if (valid) {
+          saveImageLoad.value=true
           createImageApi(
             {
               name: reactiveData.createFormData.name,
@@ -331,6 +333,7 @@ export default defineComponent({
             },
             { id: reactiveData.id as any }
           ).then((res: any) => {
+            saveImageLoad.value=false
             message.success("保存成功");
             const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
               ? storage.lStorage.get("iamgeSaveStatus")
@@ -356,7 +359,9 @@ export default defineComponent({
                 path: "/teacher/teacherImageResourcePool/OnlineMake",
               });
             },100)
-          });
+          }).catch(()=>{
+            saveImageLoad.value=false
+          })
         }
       });
     }
@@ -500,7 +505,8 @@ export default defineComponent({
       fileList,
       novncEl,
       recommend,
-      selectTag
+      selectTag,
+      saveImageLoad
     };
   },
 });

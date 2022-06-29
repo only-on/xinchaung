@@ -37,11 +37,8 @@
               </a-form-item>
             </a-form>
           </div>
-          <template v-slot:footer>
-            <div>
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="saveImage">确定</a-button>
-            </div>
+          <template #footer>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template>
         </a-modal>
       </div>
@@ -57,6 +54,7 @@ import {
   reactive,
   ref,
   toRefs,
+  Ref
 } from "vue";
 import {
   getVmBaseInfoApi,
@@ -201,14 +199,17 @@ export default defineComponent({
       (createForm.value as any).resetFields();
       reactiveData.saveVisible = false;
     }
+    var saveImageLoad: Ref<boolean> = ref(false);
     // 保存镜像
     function saveImage() {
       (createForm.value as any).validate().then((valid: any) => {
         if (valid) {
+          saveImageLoad.value=true
           createImageApi(reactiveData.createFormData, {
             id: reactiveData.id,
           }).then((res: any) => {
             if (res.code === 1) {
+              saveImageLoad.value=false
               message.success("保存成功");
               const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
                 ? storage.lStorage.get("iamgeSaveStatus")
@@ -239,6 +240,7 @@ export default defineComponent({
               });
             },100)
             } else {
+              saveImageLoad.value=false
               message.warn(res.msg);
             }
           });
@@ -352,7 +354,8 @@ export default defineComponent({
       saveImage,
       jupyteIframe,
       recommend,
-      selectTag
+      selectTag,
+      saveImageLoad
     };
   },
 });
