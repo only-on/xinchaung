@@ -225,7 +225,9 @@ const createTypeNumber = props.detail.task_type;
 const createMethod = currentTypeInfo.method;
 const isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
-const formState = reactive<any>({})
+const formState = reactive<any>({
+  drawerVisible: false
+})
 const saveImages = reactive<any>([])
 watch(()=>props.detail, newVal => {
   Object.assign(formState, newVal)
@@ -244,6 +246,7 @@ watch(()=>props.detail, newVal => {
   formState.selectedName = []
   formState.datasets = []
   formState.dataset?.forEach((v: any) => {
+    v.uid = v.id
     formState.selectedName.push(v)
     formState.datasets.push(v.id)
   })
@@ -330,7 +333,7 @@ function removeKnowledge(val: any, index: number) {
 }
 // 移除数据集
 function remove(val: any, index: number) {
-  let i = formState.datasets.indexOf(val.id);
+  let i = formState.datasets.indexOf(val.uid);
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
