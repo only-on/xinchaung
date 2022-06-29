@@ -464,7 +464,7 @@
   >
 
     <img :src="loadingGif" alt="" srcset="" />
-    <span>正在结束中...</span>
+    <span>正在{{isBack?'返回':'结束'}}中...</span>
   </a-modal>
 </template>
 
@@ -682,7 +682,7 @@ const toolList = toolData;
 //   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
 //   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 const roleArry: any = ref([])
-
+const isBack = ref(false)
 function back() {
   let content = '确定结束演示吗？'
   if (experType === 6 || experType === 7) {
@@ -703,6 +703,8 @@ function back() {
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
+      finishingExperimentVisible.value = true
+      isBack.value = true
       // 课程详情-实验环境管理-开启实验环境（新打开的标签页）
       if (opType === 'help' && route.query.isClose) {
         window.close();
@@ -1981,6 +1983,9 @@ i {
     .img {
       margin-right: 8px;
     }
+  }
+  img {
+    margin-right: 8px;
   }
 }
 </style>
