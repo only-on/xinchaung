@@ -31,7 +31,7 @@ const courseRankList=()=>{
   http.courseRankList({urlParams: {courseId:props.courseId}}).then((res: any) => {
     const {data}=res
     data.forEach((v:any)=>{
-      v.progress=Math.ceil(v.progress*100)
+      v.progress=Math.round(v.progress*100)
     })
     list.push(...data)
   });
