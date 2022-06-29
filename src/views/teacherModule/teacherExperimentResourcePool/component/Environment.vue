@@ -44,6 +44,7 @@
     v-model:visible="visible"
     title="设置实验环境"
     :destroyOnClose="true"
+    @cancel="cancel"
   >
     <ConfigModal
       :imageList="imageList"

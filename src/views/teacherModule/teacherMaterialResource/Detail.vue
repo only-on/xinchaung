@@ -402,7 +402,7 @@ onMounted(() => {
 }
 
 .detail{
-  height: 600px;
+  // height: 600px;
   // border: 1px solid #76e6bb;
   .header{
     margin-bottom: 24px;

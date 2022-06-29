@@ -108,7 +108,7 @@
             </a-form>
           </div>
           <template #footer>
-            <Submit @submit="saveImage" @cancel="cancel"></Submit>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template> 
           
         </a-modal>
@@ -175,7 +175,7 @@ const nameValidator = (rule: any, value: any, callback: any) => {
 const rules: any = {
       name: [{ validator: nameValidator, required:true, trigger: "blur" }],
       // name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
-      description: [{  required:true, max: 200, message: "镜像描述最长200个字", trigger: "change",}],
+      // description: [{  required:true, max: 200, message: "镜像描述最长200个字", trigger: "change",}],
       tags: [
         {required: true,validator: fileListValidator,trigger: "blur"},
       ],
@@ -330,17 +330,21 @@ const GenerateImage = (val: any,k:any) => {
   imageid.value=val.id
   saveIndex.value=k
 };
+var saveImageLoad: Ref<boolean> = ref(false);
 const saveImage=()=>{
   createForm.value.validate().then(async ()=>{
     const val= await fileListValidator()
     list[saveIndex.value].generateLoad=true
+    saveImageLoad.value=true
     http.GenerateImage({urlParams:{imageID:imageid.value},param:{...createFormData}}).then((res: IBusinessResp) => {
       message.success("生成成功");
       createForm.value.resetFields();
       saveVisible.value=false
       list[saveIndex.value].generateLoad=false
+      saveImageLoad.value=false
     })
     .catch(() => {
+      saveImageLoad.value=false
       list[saveIndex.value].generateLoad=false
     })
   })

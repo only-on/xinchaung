@@ -35,7 +35,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="(uploadComplete.complete || createDataSetLoad)"></Submit>
   </div>
 </template>
 
@@ -165,6 +165,7 @@ const RemoveMdFile = () => {
 }
 
 // 创建
+var createDataSetLoad: Ref<boolean> = ref(false);
 const formRef = ref()
 const baseInfoRef = ref()
 const submit = async() => {
@@ -193,8 +194,13 @@ const submit = async() => {
       fd.append(`items[${i}][suffix]`, formState.fileList[k].suffix)
       fd.append(`items[${i}][size]`, formState.fileList[k].size)
     })
+    createDataSetLoad.value=true
     http.create({param: fd}).then((res: IBusinessResp) => {
+      $message.success("创建成功");
+      createDataSetLoad.value=false
       router.go(-1)
+    }).catch(()=>{
+      createDataSetLoad.value=false
     })
   })
 }
@@ -250,11 +256,15 @@ const createDataSet = async () => {
       tags: formState.tags,
     }
     UpdataObj.data_id=res.data.uid
+    createDataSetLoad.value=true
     http.createDatasets({param}).then((res: IBusinessResp) => {
       // 下接口为更新数据集文件可用状态  external_parameters 2
       http.uodataFileStatus({param:UpdataObj}).then((res: IBusinessResp) => {
         $message.success("创建成功");
+        createDataSetLoad.value=false
         router.go(-1);
+      }).catch(()=>{
+        createDataSetLoad.value=false
       })
     })
   });
