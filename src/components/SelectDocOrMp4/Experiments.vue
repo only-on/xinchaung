@@ -248,31 +248,32 @@ onMounted(()=>{
               margin-left: 1rem;
             }
           }
-          .right {
-            width:188px;
-            justify-content: space-between;
-            .class-time{
-              color:var(--black-45);
-            }
-            .icon{
-              // width: 60px;
-              // margin-right:60px;
-              .iconfont {
-                color: var(--primary-color);
-                // display: none;
-              }
+        .right {
+          width:188px;
+          justify-content: space-between;
+          .class-time{
+            color:var(--black-45);
+          }
+          .icon{
+            // width: 60px;
+            // margin-right:60px;
+            .iconfont {
+              color: var(--primary-color);
+              // display: none;
             }
           }
-          .icon-gaopei{
-              font-size: 16px;
-              margin-right: 4px;
-            }
-          .quName {
-            // word-break: break-all;
-            color: var(--black-85);
-            max-width: 200px;
-            margin-bottom: 6px;
+        }
+        .icon-gaopei{
+            font-size: 16px;
+            margin-right: 4px;
+            margin-top: 2px;
           }
+        .quName {
+          // word-break: break-all;
+          color: var(--black-85);
+          max-width: 200px;
+          // margin-bottom: 2px;
+        }
       }
       .item:hover {
         background: #ffeed8;
