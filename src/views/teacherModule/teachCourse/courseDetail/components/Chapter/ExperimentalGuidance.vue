@@ -1,12 +1,13 @@
 <template>
   <template v-if="!props.activeExperimentObj.TeachingAids">
     <!-- 桌面实验 -->
+    <!-- {{props.activeExperimentObj.type}} -->
     <!-- {{props.activeExperimentObj.Newguidance.guide}} -->
     <template v-if="props.activeExperimentObj.type===1">
       <MarkedEditor v-model="props.activeExperimentObj.Newguidance.guide" class="markdown__editor" :preview="true" :class="privateCourse?'markdown__editor2':''" />
     </template>
     <!-- ide -->
-    <template v-if="props.activeExperimentObj.is_webide || props.activeExperimentObj.type===3">
+    <template v-if="props.activeExperimentObj.is_webide || props.activeExperimentObj.type===3 || props.activeExperimentObj.type===2">
       <iframe v-if="props.activeExperimentObj.Newguidance.content_task_files?.length" :src="props.activeExperimentObj.Newguidance.content_task_files[0].file_html" frameborder="0" style="width:100%;height:100%"></iframe>
       <MarkedEditor v-else v-model="props.activeExperimentObj.Newguidance.guide" class="markdown__editor" :preview="true" :class="privateCourse?'markdown__editor2':''" />
     </template>

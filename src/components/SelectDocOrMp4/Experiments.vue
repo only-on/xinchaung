@@ -1,7 +1,7 @@
 <template>
   <div class="search flexCenter">
     <div class="flexCenter classifyTabs">
-      <span class="left" :class="init_type === 1? 'active':''" @click="changeTab(1)">内置实验</span>
+      <span class="left" :class="init_type === 1? 'active':''" @click="changeTab(1)">公开实验</span>
       <span class="right" :class="init_type === 0? 'active':''" @click="changeTab(0)">我的实验</span>
     </div>
     <div class="baocun">
