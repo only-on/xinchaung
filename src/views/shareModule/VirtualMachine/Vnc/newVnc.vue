@@ -6,7 +6,7 @@
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <div class="vncloading" v-if="loading">
+        <div class="vncloading" v-if="loading || vncLoading&&!isClose">
           <div class="word">
             <div class="loading">
               <img :src="loadingGif" alt="" srcset="" />
@@ -93,6 +93,7 @@ const evaluateData:any=inject("evaluateData")
 const evaluateVisible:any=inject("evaluateVisible")
 const initEvaluate:any=inject("initEvaluate")
 const isScreenRecording: any = inject("isScreenRecording", ref(false));
+const vncLoading: any = inject("vncLoading", ref(false));
 
 const disableVisable:any=ref(false)
 const disableData:any=ref({})
@@ -219,6 +220,7 @@ function initWs() {
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
+            vncLoading.value = true
             if (
               ind === 0 &&
               baseInfo.value.base_info &&
@@ -409,6 +411,26 @@ onMounted(async () => {
     initWs();
   }
 });
+watch(
+  () => sshUrl.value,
+  (val) => {
+    if (!val) return
+    nextTick(() => {
+      const sshIframe: any = document.querySelector('#sshIframe')
+      // 处理兼容性问题
+      if (sshIframe?.attachEvent) {
+        sshIframe.attachEvent('onload', () => {
+          loading.value = false
+        })
+      } else {
+        sshIframe.onload = () => {
+          loading.value = false
+        }
+      }
+    })
+  },
+  { deep: true, immediate: true }
+)
 </script>
 <style lang="less">
 .vm-layout {

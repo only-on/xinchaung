@@ -54,9 +54,12 @@ export default defineComponent({
     let loading:Ref<boolean>|undefined=inject("loading")
     const refName=ref(props.refName)
     let isClose:Ref<boolean>|undefined=inject("isClose",ref(false))
+    const vncLoading: any = inject("vncLoading", ref(false));
 
     // 连接断开
     function disconnect(msg: any) {
+      console.log("vnc连接断开");
+      vncLoading.value = true
       if(isClose!.value) return;
       setTimeout(() => {
         if (msg.detail.clean) {
@@ -74,8 +77,11 @@ export default defineComponent({
     // 连接成功
     function success(msg: any) {
       // console.log(msg);
-      console.log("连接成功");
-        setTimeout(()=>{loading!.value=false},5000)
+      console.log("vnc连接成功");
+      setTimeout(()=>{
+        vncLoading.value = false
+        loading!.value=false
+      },5000)
     }
 
     function securityfailure(msg: any) {

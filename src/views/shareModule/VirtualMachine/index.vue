@@ -104,7 +104,7 @@ provide("baseInfo", baseInfo); // pageinfo接口获取的基本数据
 provide("vmsInfo", ref({})); // 存储vms虚拟机数据
 provide("currentOption", ref({})); // 当前开启的虚拟机配置
 provide("recommendData", ref([])); // 推荐实验数据
-provide("loading", ref(false)); // 虚拟机是否加载中 ture加载中 fasle加载完成
+provide("loading", ref(false)); // 虚拟机信息是否加载中 ture加载中 fasle加载完成
 provide("isClose", ref(true)); // 是否是关机状态 true 是，false 否
 provide("novncEl", ref(null)); // novnc的Vue实例
 provide("currentUuid", ref("")); // 当前uuid
@@ -123,6 +123,7 @@ provide("rightWidth", ref(window.innerWidth - 45)); // 右侧容易宽度
 provide("evaluateVisible", evaluateVisible); // 控制自评推荐实验modal显示隐藏
 provide("initEvaluate", initEvaluate);  // 初始化自评modal图
 provide("evaluateData", evaluateData); // 自评数据
+provide("vncLoading", ref(false)); // vnc是否加载成功 ture加载中 fasle加载完成
 
 
 // 提交评价

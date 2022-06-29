@@ -44,7 +44,6 @@
       </div>
       <div
         class="delayed"
-        :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('delayed')"
       >
         <span>
@@ -54,7 +53,7 @@
       </div>
       <div
         class="vnc-change pointer"
-        :class="loading ? 'none-event' : ''"
+        :class="loading || !vmStartStatus ? 'none-event' : ''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1 && roleArry.includes('switchSSH')"
       >
@@ -91,37 +90,90 @@
     >
       <div class="vm-operate">
         <ul>
-          <template v-for="(list, index) in toolList" :key="index">
+          <!-- <template v-for="(list, index) in toolList" :key="index"> -->
             <li
               class="pointer"
-              @click="list.function"
-              v-if="list.key == 'closeOrStart'"
-              :class="roleArry.includes(list.key as any)?'':'none-event'"
+              @click="fullScreen"
+              :class="roleArry.includes('full')?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
+              <span class="iconfont icon-quanping"></span>
+              <span>开启 / 全屏</span>
+            </li>
+            <li
+              class="pointer"
+              @click="saveKvm"
+              :class="roleArry.includes('save')?'':'none-event'"
+            >
+              <span class="iconfont icon-baocun"></span>
+              <span>保存进度</span>
+            </li>
+            <li
+              class="pointer"
+              @click="colseOrStart"
+              :class="roleArry.includes('closeOrStart')?'':'none-event'"
+            >
+              <span class="iconfont icon-guanbi1"></span>
               <span v-if="vmsInfo && vmsInfo?.vms && vmsInfo?.vms.length">{{
-                vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
+                vmStartStatus ? "关机" : "开机"
               }}</span>
             </li>
             <li
               class="pointer"
-              @click="list.function"
-              v-if="list.key == 'record'"
-              :class="roleArry.includes(list.key as any)&&currentInterface === 'vnc'?'':'none-event'"
+              @click="resetVm"
+              :class="roleArry.includes('reset')?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
+              <span class="iconfont icon-zhongzhi"></span>
+              <span>重置</span>
+            </li>
+            <li
+              class="pointer"
+              @click="upload"
+              :class="roleArry.includes('upload')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-shangchuan"></span>
+              <span>上传文件</span>
+            </li>
+            <li
+              class="pointer"
+              @click="download"
+              :class="roleArry.includes('down')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-xiazai"></span>
+              <span>下载文件</span>
+            </li>
+            <li
+              class="pointer"
+              @click="copyPaste"
+              :class="roleArry.includes('copy')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-fuzhiniantie"></span>
+              <span>选中粘贴</span>
+            </li>
+            <li
+              class="pointer"
+              @click="startEndRecord"
+              :class="roleArry.includes('record')&&currentInterface === 'vnc'&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-kaishijieshuluzhi"></span>
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
-              v-else-if="list.name && !['record', 'closeOrStart'].includes(list.key)"
               class="pointer"
-              @click="list.function"
-              :class="roleArry.includes(list.key as any)?'':'none-event'"
+              @click="shareDesktop"
+              :class="roleArry.includes('share')&&vmStartStatus?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
-              <span>{{ list.name }}</span>
+              <span class="iconfont icon-gongxiangzhuomian"></span>
+              <span>桌面共享</span>
             </li>
-          </template>
+            <li
+              class="pointer"
+              @click="remoteAssist"
+              :class="roleArry.includes('help')&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-yuanchengxiezhu"></span>
+              <span>请求老师远程协助</span>
+            </li>
+          <!-- </template> -->
         </ul>
       </div>
       <div class="vm-info">
@@ -520,6 +572,7 @@ const isScreenRecording: any = inject("isScreenRecording", ref(false));
 const use_time: any = inject("use_time");
 const currentUuid: any = inject("currentUuid");
 const loading: any = inject("loading");
+const vncLoading: any = inject("vncLoading", ref(false));
 const isClose: any = inject("isClose");
 const initVnc: any = inject("initVnc");
 const novncEl: any = inject("novncEl");
@@ -753,13 +806,13 @@ async function switchVm() {
       } else {
         await VmOperatesHandle("startVm");
         vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-        loading.value = true;
+        vncLoading.value = true;
         settingCurrentVM();
         initVnc.value();
       }
     }
   } else {
-    loading.value = true;
+    vncLoading.value = true;
     isClose.value = false;
     // await VmOperatesHandle("startVm");
     vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
@@ -795,7 +848,7 @@ function delayedTime() {
 async function showChange() {
   // currentvm.value=baseInfo.value.data.vms[vmCurrentIndex.value]
   let cureentIp = location.protocol+"//"+location.hostname
-  loading.value=false
+  // loading.value=false
   if (currentInterface.value==="vnc") {
     if (isScreenRecording.value) {
       await startEndRecord();
@@ -961,6 +1014,15 @@ function fullScreen() {
 }
 // 关机
 function colseOrStart() {
+  isClose.value = true;
+  vncLoading.value = true
+  if (currentInterface.value==="ssh") {
+    sshUrl.value=""
+    setTimeout(()=>{
+      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+      loading.vaue=true
+    },2000)
+  }
   if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
 
     closeVm();
@@ -980,6 +1042,9 @@ async function closeVm() {
 
   message.success("操作成功");
 }
+const vmStartStatus = computed(() => {
+  return vmsInfo.value.vms&&vmsInfo.value.vms.length&&vmsInfo.value.vms[currentVmIndex.value].status === "ACTIVE"
+})
 // 开机
 async function startVm() {
   await VmOperatesHandle("startVm");
@@ -990,11 +1055,18 @@ async function startVm() {
 }
 // 重置
 async function resetVm() {
+  if (currentInterface.value==="ssh") {
+    sshUrl.value=""
+    setTimeout(()=>{
+      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+      loading.vaue=true
+    },2000)
+  }
   if (isScreenRecording.value) {
     await startEndRecord();
   }
   await VmOperatesHandle("resetVm");
-  loading.value = true;
+  vncLoading.value = true;
   message.success("操作成功");
 }
 
@@ -1705,6 +1777,11 @@ i {
     .vnc-change {
       padding: 0 20px;
       border-left: 1px solid #2c3a54;
+      &.none-event {
+        pointer-events: none;
+        cursor: not-allowed;
+        color: #5c5c5c;
+      }
     }
     .delayed {
       // border: none;
