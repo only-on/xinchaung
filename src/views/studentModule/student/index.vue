@@ -13,7 +13,7 @@
             <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/hege.png">
             <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/lianghao.png">
             <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/youxiu.png">
-            <img v-if="state.staticInfo.avgRank=='暂无评价'" src="src/assets/images/excellent-no.png" />
+            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/excellent-no.png" />
             </div>
           </div>
           <div class="right-f1-img">
@@ -21,7 +21,7 @@
             <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/qualified.png">
             <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/good.png">
             <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/excellent.png">
-            <img v-if="state.staticInfo.avgRank=='暂无评价'" src="src/assets/images/evaluate-no.png" />
+            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/evaluate-no.png" />
           </div>
         </div>
       </div>
