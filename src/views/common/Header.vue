@@ -217,7 +217,7 @@ export default defineComponent({
       name: "素材资源",
       parent_id: 0,
       sort: 3,
-      url: "/teacher/teacherMaterialResource",
+      url: "/teacher/teacherMaterialResource?currentTab=0",
       children: [],
     };
     // 教师课程
