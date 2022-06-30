@@ -9,8 +9,13 @@
     :closable="false"
   >
     <div class="disable-student-box">
-      <p>抱歉，您的登录权限已被禁用，禁用时间段为</p>
-      <p>{{ currentData.start_time }}至{{ currentData.end_time }}</p>
+      <div v-if="!isAutoRemove">
+        <p>抱歉，您的登录权限已被禁用，禁用时间段为</p>
+        <p>{{ currentData.start_time }}至{{ currentData.end_time }}</p>
+      </div>
+      <div v-else>
+        <p>{{currentData.msg}}</p>
+      </div>
       <p v-if="isSaveEnv">您是否要保存当前实验环境？</p>
       <p>（倒计时 {{ time }}s）</p>
       <div class="footer-action-btn-wrap">
@@ -22,7 +27,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, inject, computed } from "vue";
+import { defineComponent, ref, onMounted, inject, computed, toRefs } from "vue";
 import extStorage from "src/utils/extStorage";
 import request from "src/api/index";
 import { operatesHandle } from "src/utils/vncInspect";
@@ -31,7 +36,7 @@ import store from 'src/store';
 import { IWmc } from "src/typings/wmc";
 
 export default defineComponent({
-  props: ["visable", "data", "opType", "type", "uuid", "taskId", "current"],
+  props: ["visable", "data", "opType", "type", "uuid", "taskId", "current", 'isAutoRemove'],
   emits: ["update:visable"],
   setup(props, { emit }) {
     const time = ref(30);
@@ -118,6 +123,7 @@ export default defineComponent({
       cancel,
       ok,
       isSaveEnv,
+      ...toRefs(props)
     };
   },
 });

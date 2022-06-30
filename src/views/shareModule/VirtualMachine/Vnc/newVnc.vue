@@ -37,6 +37,7 @@
     :taskId="taskId"
     :opType="opType"
     :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
   ></disableStudent>
 </template>
 
@@ -51,7 +52,6 @@ import { wsConnect } from "src/request/websocket";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
-
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -175,6 +175,7 @@ function getVmBase() {
   });
 }
 
+const isAutoRemove = ref(false)
 let layoutRef: any = ref(null)
 function initWs() {
   clearTimeout(Number(timerout));
@@ -339,6 +340,10 @@ function initWs() {
           use_time.value = wsJsonData.data.remaining_time
         }else if (wsJsonData.type=="manual-disable") {
           // 禁用学生
+          disableVisable.value=true
+          disableData.value=wsJsonData.data
+        }else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
           disableVisable.value=true
           disableData.value=wsJsonData.data
         }else if (wsJsonData.type=="switch_success") {
