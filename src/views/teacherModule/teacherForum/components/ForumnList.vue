@@ -110,6 +110,10 @@ export default defineComponent({
     }
     // 回应
     function submitReply(id: number) {
+      if (!replyContent.value) {
+        message.warn('请输入评论内容')
+        return
+      }
       let param = {
         content: replyContent.value,
         id
@@ -352,6 +356,7 @@ export default defineComponent({
   position: fixed;
   bottom: 0;
   width: 830px;
+  z-index: 1;
   .right {
     color: var(--primary-color);
     margin-left: 12px;

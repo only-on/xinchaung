@@ -46,8 +46,8 @@ export default defineComponent({
   setup: (props, { emit }) => {
     const route = useRoute();
     const router = useRouter();
-    const { query, path } = route;
-    const {type, tab, currentTab } = query
+    let { query, path } = route;
+    let {type, tab, currentTab } = query
     let ForumSearch = reactive<IForumSearch>({
       title: "",
       type: '',
@@ -63,6 +63,7 @@ export default defineComponent({
       },
     ]);
     watch(props.tagList, (val: any) => {
+      type = route.query.type
       if (!val.length) return
       classifyList[0].value = type ? String(type) : val[0].value;
       ForumSearch.type = type ? String(type) : val[0].value;
@@ -78,7 +79,7 @@ export default defineComponent({
     const classifyChange = async (obj: any) => {
       ForumSearch.title = ''
       ForumSearch.type = obj.label;
-      // console.log(query)
+      query = route.query
       let NewQuery = { type: ForumSearch.type, currentTab, tab: query.tab };
       await router.replace({
         path: path,

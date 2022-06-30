@@ -82,6 +82,8 @@ const loading = ref(false)
 let forumnList = reactive<IForumnList[]>([]);
 const total = ref(0)
 function initData() {
+  forumSearch.type = String(route.query.type);
+  // currentTab.value = Number(route.query.currentTab);
   loading.value = true
   // 获取帖子列表
   const param = {

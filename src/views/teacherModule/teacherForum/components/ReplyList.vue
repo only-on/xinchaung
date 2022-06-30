@@ -99,6 +99,10 @@ export default defineComponent({
 
     let replyList = reactive<IReplyList[]>([])
     function submitReply(list: {id: number, forum_id: number}) {
+      if (!replyContent.value) {
+        message.warn('请输入评论内容')
+        return
+      }
       let param = {
         content: replyContent.value,
         id: list.forum_id,
@@ -236,6 +240,7 @@ export default defineComponent({
   .reply-info {
     margin: 8px 0 12px;
     line-height: 19px;
+    word-break: break-all;
   }
   .reply-btn {
     line-height: 19px;
