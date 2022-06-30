@@ -514,7 +514,7 @@ function submitReport() {
 }
 // 选择tree章节
 function selectExperiment(val: any) {
-  if (!experitId.value||experitId.value!=val.id) {
+  if ((!experitId.value||experitId.value!=val.id) && (val && val.id)) {
     experitId.value = val.id;
     getTeacherEvaluates();
   }

@@ -141,7 +141,7 @@ const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "创建课程", componenttype: 0 }],
+  tabs: [{ name: EditId?'复用课程信息编辑':"创建课程", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -173,9 +173,16 @@ const next=(val:number)=>{
         stup1Loading.value=false
         currentStep.value=val
         courseId.value=data.id
+        let obj:any={
+          currentTab:currentTab,
+          courseId:data.id
+        }
+        if(EditId){
+          obj.EditId=EditId
+        }
         router.replace({
           path: "/teacher/teacherCourse/CreateCourse",
-          query: { currentTab:currentTab,courseId:data.id}
+          query: { ...obj}
         });
         setTimeout(() => {
           currentStep.value=val
@@ -206,9 +213,16 @@ const multiplexingCourse=(val:number)=>{
         stup1Loading.value=false
         currentStep.value=val
         courseId.value=data.id
+        let obj:any={
+          currentTab:currentTab,
+          courseId:data.id
+        }
+        if(EditId){
+          obj.EditId=EditId
+        }
         router.replace({
           path: "/teacher/teacherCourse/CreateCourse",
-          query: { currentTab:currentTab,courseId:data.id}
+          query: { ...obj}
         });
         setTimeout(() => {
           currentStep.value=val

@@ -137,8 +137,10 @@ function deleteQues(id: any) {
 // 选择tree章节
 function selectExperiment(val: any) {
   console.log(val);
-  experitId.value=val.id
-  inclassTestList()
+  if(val && val.id){
+    experitId.value=val.id
+    inclassTestList()
+  }
 }
 function inclassTestList(){
   http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:100,needs_answer:true}}).then((res:any)=>{

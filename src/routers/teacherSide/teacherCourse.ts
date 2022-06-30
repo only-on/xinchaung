@@ -41,7 +41,17 @@ export default {
       name:"CreateCourse",
       component: () => import("src/views/teacherModule/teachCourse/createCourse/index.vue"),
       meta: {
-        title: "创建课程",
+        // title: "创建课程",  // EditId
+        title: (params?: RouteParams, query?: RouteParams) => {
+          // const dataDetailMap = {
+          //     '2': '教学资源管理',
+          //     '3': '教学过程',
+          //     '4': '教学过程',
+          //     '5': '教学过程',
+          // }
+          // return dataDetailMap[query!.EditId && query!.EditId.toString()] || dataDetailMap[3]
+          return query!.EditId?'复用课程':'创建课程'
+        },
         authCode: 'CreateCourse'
       },
     },

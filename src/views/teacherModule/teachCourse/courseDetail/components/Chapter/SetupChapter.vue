@@ -1,6 +1,6 @@
 <template>
   <div class="chartTerr">
-    <div class="chartTerrLeft textScrollbar" :id="fromT==='CreateCourse'?'borBot':''" :class="((currentTab === '1' && (role === 3 || role===5)) || role === 4 || role ===2)?'chartTerrLeft2':''">
+    <div class="chartTerrLeft textScrollbar" :id="fromT==='CreateCourse'?'borBot':''" :class="showChartTerrLeft()?'chartTerrLeft2':''">
       <div class="myChapter ">
         <ChapterList
           :ExternalOpen="ExternalOpen"
@@ -12,7 +12,7 @@
            />
       </div>
     </div>
-    <div class="chartTerrRight" :id="fromT==='CreateCourse'?'borBot':''" v-if="currentTab === '0' && (role === 3 || role===5)" :class="state.activeExperimentObj.id?'':'flexCenter'">
+    <div class="chartTerrRight" :id="fromT==='CreateCourse'?'borBot':''" v-if="showChartTerrRight()" :class="state.activeExperimentObj.id?'':'flexCenter'">
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
           <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
@@ -95,7 +95,7 @@ const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
 const routeQuery = route.query
-const { currentTab,course_id } = route.query;
+const { currentTab,course_id,EditId } = route.query;
 const fromT=route.path.indexOf('CreateCourse')!==-1?'CreateCourse':'Detail'
 // console.log(fromT);
 
@@ -278,6 +278,20 @@ const getPrepareEnv = () => {
   })
 }
 
+const showChartTerrLeft=()=>{
+  if((currentTab === '1' && (role === 3 || role===5)) || role === 4 || role ===2){
+    return true
+  }else{
+    return false
+  }
+}
+const showChartTerrRight=()=>{
+  if(currentTab === '0' && (role === 3 || role===5)){
+    return true
+  }else{
+    return false
+  }
+}
 onMounted(() => {
   // if(Number(currentTab) === 0) {
   //   connectEnv().then(() => {

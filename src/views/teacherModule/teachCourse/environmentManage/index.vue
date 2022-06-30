@@ -125,6 +125,9 @@ function getList(type?: any, i?: any) {
   http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IBusinessResp) => {
     loading.value = false;
     let { list, page } = res.data;
+    if(!list || !list.length){
+        return
+    }
     envList.push(...list);
     // console.log("envList", envList);
     searchInfo.page = page.currentPage

@@ -127,6 +127,8 @@ columns.value = [
     title: "姓名",
     dataIndex: "userProfile.name",
     key: "userProfile.name",
+    width:80,
+    ellipsis: true,
   },
   {
     title: "性别",
@@ -137,6 +139,8 @@ columns.value = [
     title: "班级",
     dataIndex: "classes",
     key: "classes",
+    width:80,
+    ellipsis: true,
   },
   {
     title: "年级",
@@ -147,16 +151,22 @@ columns.value = [
     title: "专业",
     dataIndex: "userProfile.major",
     key: "userProfile.major",
+    width:80,
+    ellipsis: true,
   },
   {
     title: "学院",
     dataIndex: "userProfile.department",
     key: "userProfile.department",
+    width:100,
+    ellipsis: true,
   },
   {
     title: "邮箱",
     dataIndex: "user.email",
     key: "user.email",
+    width:120,
+    ellipsis: true,
   },
   {
     title: "电话",

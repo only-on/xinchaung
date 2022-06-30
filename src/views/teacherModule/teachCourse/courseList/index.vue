@@ -388,7 +388,8 @@ const deleteFun = (val: any) => {
 const multiplexing=(val: any)=>{
   router.push({ 
     path: "/teacher/teacherCourse/CreateCourse",
-    query: { currentTab:currentTab.value,EditId:val.id}
+    query: { currentTab:0,EditId:val.id}       // currentTab=0   为了让复用第二步 和创建时一致
+    // query: { currentTab:currentTab.value,EditId:val.id}
     });
   // router.push({ path: "/teacher/teacherCourse/CreateCourse"});    //  courseCreate
 }
