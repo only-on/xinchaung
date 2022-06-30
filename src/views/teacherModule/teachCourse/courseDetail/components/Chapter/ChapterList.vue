@@ -142,7 +142,7 @@
   <!-- 编辑章节的实验名称 -->
   <a-modal v-model:visible="Visible"  :title="state.activeExperiment.title" class="setupVisible" :width="500">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item :label="`${state.activeExperiment.typeName}名称`" name="name">
+      <a-form-item :label="`${state.activeExperiment.typeName}名称888`" name="name">
         <a-input v-model:value="formState.name" :placeholder="`请输入${state.activeExperiment.typeName}名称`" />
       </a-form-item>
     </a-form>
@@ -309,6 +309,7 @@ const selectFile=(val:any)=>{
   Pro.then((res: any) => {
     message.success("操作成功");
     getChaptersTree()
+    emit('editExperiment',{})
   });
 }
 var Visible: Ref<boolean> = ref(false);
@@ -336,18 +337,20 @@ const EditCreateChapterName=(id:number)=>{
         formState.name=''
         Visible.value=false
         getChaptersTree()
+        state.activeExperiment.type === 2?emit('editChapter',{}):emit('editExperiment',{})
     })
   })
 }
 const Save=()=>{
   if(state.activeExperiment.type === 1){ // 新建章节
-  console.log(props.courseId)
+    console.log(props.courseId)
     formRef.value.validate().then(()=>{ 
         http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId}}).then((res: any)=>{
           message.success('操作成功')
           formState.name=''
           Visible.value=false
           getChaptersTree()
+          emit('editChapter',{})
       })
     })
   }
@@ -604,10 +607,10 @@ const deleteChapter=(val:any)=>{
         message.success("删除成功");
         state.activeExperimentObj={}
         getChaptersTree()
+        emit('deleteChapter',{})
       });
     },
   });
-  // emit('deleteChapter',val)
 }
 
 // 编辑章节下实验名称
@@ -653,10 +656,10 @@ const deleteExperiment=(v:any,a:any)=>{
       Pro.then((res: any) => {
         message.success("删除成功");
         getChaptersTree()
+        emit('deleteExperiment',{})
       });;
     },
   });
-  // emit('deleteExperiment',obj)
 }
 const ProcessingData=(data:any)=>{
     let obj= {3:'课件',5:'备课资料',6:'教学指导'}

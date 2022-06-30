@@ -8,7 +8,11 @@
           :courseId="props.courseId"
           :Editable="props.Editable"
           @selectChaptert="selectChaptert"
-          @selectExperiment="selectExperiment" 
+          @selectExperiment="selectExperiment"
+          @editExperiment="feedback"
+          @deleteExperiment="feedback"
+          @editChapter="feedback"
+          @deleteChapter="feedback"
            />
       </div>
     </div>
@@ -98,7 +102,9 @@ const routeQuery = route.query
 const { currentTab,course_id,EditId } = route.query;
 const fromT=route.path.indexOf('CreateCourse')!==-1?'CreateCourse':'Detail'
 // console.log(fromT);
-
+const emit = defineEmits<{
+  (e: "feedback", val: any): void;
+}>();
 interface Props {
   // chapterList:any
   create?:boolean
@@ -197,7 +203,9 @@ const viewReport=()=>{
 const cancelViewReport=()=>{
   TemplatePreview.value=false
 }
-
+const feedback=(val:any)=>{
+  emit('feedback',val)
+}
 
 // 开始备课
 // 1未开始学习  2准备中   3准备完成 待进入

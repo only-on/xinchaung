@@ -3,7 +3,7 @@
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
-    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseDetail="state.courseDetail" />
+    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseDetail="state.courseDetail" @feedback="initData()" />
     <!-- 课程实验管理 -->
     <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
     <!-- 随堂测试 -->
