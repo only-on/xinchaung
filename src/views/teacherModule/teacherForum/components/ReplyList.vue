@@ -134,6 +134,7 @@ export default defineComponent({
         const { list, page } = res.data
         totalReply.value = page.totalCount
         replyList.push(...list.data)
+        props.list.second_reply_number_count = page.totalCount
       })
     }
 
@@ -144,7 +145,8 @@ export default defineComponent({
       viewReply.value = !viewReply.value
       replyList.length = 0
       page.value = 1
-      viewReply.value ? getReplyList(list.forum_id,  list.id) : ''
+      // viewReply.value ? getReplyList(list.forum_id,  list.id) : ''
+      getReplyList(list.forum_id,  list.id)
     }
     // 加载更多
     const clickLoadingMore = (list: {id: number, forum_id: number}) => {
