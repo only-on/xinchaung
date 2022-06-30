@@ -158,6 +158,9 @@ function removeLabel(val: string) {
 
 const contentValidator = (rule: any, value: Delta) => {
   if (value.ops && value.ops.length) {
+    if (value.ops[0]&&JSON.stringify(value.ops[0].insert).length < 5) {
+      return Promise.reject("请输入帖子内容");
+    }
     return Promise.resolve();
   } else {
     return Promise.reject("请输入帖子内容");

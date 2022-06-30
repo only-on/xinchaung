@@ -20,7 +20,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num">{{ item.reply_number_count }}</span>
+        <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
       </span>
       <span class="delet pointer" v-if="item.is_del" @click="delet(item.id)">
         <span class="division" v-if="item.is_del"></span>删除
@@ -46,7 +46,7 @@
   </div>
   <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
     <div class="left">
-      <span>{{ item.reply_number_count }}</span>
+      <span v-if="!isReply">{{ item.reply_number_count }}</span>
       <span class="pointer" @click="viewReplyClick">{{
         !isReply ? "回应" : "收起回应"
       }}</span>
@@ -121,6 +121,7 @@ export default defineComponent({
       http.replyForum({param}).then((res: IBusinessResp) => {
         replyContent.value = ''
         // replyList.length = 0
+        page.value = 1
         getReplyList(id)
         props.item.reply_number_count ++
       })
@@ -141,6 +142,7 @@ export default defineComponent({
         const { list, page } = res.data
         replyList.push(...list.data)
         totalReply.value = page.totalCount
+        props.item.reply_number_count = page.totalCount
       })
     }
     onMounted(() => {

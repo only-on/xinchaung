@@ -184,7 +184,8 @@ let bottomStyle = reactive({
 provide("bottomStyle", bottomStyle);
 
 onMounted(async() => {
-  
+  tab = tab ? tab : '0'
+  type = type ? type : 'wiki'
   let NewQuery = { currentTab:route.query.currentTab, tab, type };
   await router.replace({
     path: path,

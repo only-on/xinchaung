@@ -13,7 +13,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num">{{ replyList.length }}</span>
+        <span class="reply-num" v-if="!isReply">{{ replyList.length }}</span>
       </span>
       <span class="delet pointer" v-if="detail.is_del" @click="deleteForum(detail.id)">
         <span class="division" v-if="detail.is_del"></span>删除
@@ -96,6 +96,10 @@ const detail = reactive<IForumnList>({
 
 // 回应
 function submitReply(id: number) {
+  if (!replyContent.value) {
+    message.warn('请输入评论内容')
+    return
+  }
   let param = {
     content: replyContent.value,
     id
@@ -103,6 +107,7 @@ function submitReply(id: number) {
   http.replyForum({param}).then((res: IBusinessResp) => {
     replyContent.value = ''
     replyList.length = 0
+    page.value = 1
     getReplyList(id)
     detail.reply_number_count ++
   })

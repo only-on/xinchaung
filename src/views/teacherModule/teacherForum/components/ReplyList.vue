@@ -123,7 +123,7 @@ export default defineComponent({
     const loading = ref(false)
     const totalReply = ref(0)
     function getReplyList(id: number, pid: number) {
-      replyList.length = 0
+      page.value === 1 ? replyList.length = 0 : ''
       loading.value = true
       let param = {
         page: page.value,
