@@ -14,7 +14,7 @@
         <div class="hasGroup">
           <div class="title">分组列表({{treeData.length}})</div>
           <div class="createInpt">
-              <a-input v-model:value="groupName">
+              <a-input v-model:value="groupName" maxLength="15">
                 <template #addonAfter>
                   <div class="createBtn" @click="createGroup()">创建</div>
                 </template>
