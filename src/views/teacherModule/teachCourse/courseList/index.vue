@@ -40,7 +40,11 @@
             <div class="date flexCenter">
               <span class="single_ellipsis">实验:{{v.content_total}}</span>
               <span class="single_ellipsis">课时:{{v.class_total}}</span>
-              <span class="single_ellipsis">学生:{{v.student_total}}</span>
+              <span class="single_ellipsis">
+                <template v-if="currentTab === 0">
+                  学生:{{v.student_total}}
+                </template>
+              </span>
             </div>
             <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
               <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
