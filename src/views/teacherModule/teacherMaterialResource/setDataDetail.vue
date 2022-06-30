@@ -24,7 +24,7 @@
           </div>
           <div class="item">
             <span>数量</span>
-            <span>{{state.detail.item_count}}</span>
+            <span>{{state.fileList && state.fileList.length}}</span>
           </div>
           <div class="item">
             <span>大小</span>
