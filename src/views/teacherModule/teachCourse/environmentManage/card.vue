@@ -1,9 +1,11 @@
 <template>
   <div class="stu">
-    <span class="stu-name">姓名：{{ list.username || "--" }}</span>
-    <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')"
-      ><span class="stu-idname">学号：</span>{{ list.number || "--" }}</span
-    >
+    <span class="stu-name">姓名：
+      <span :title="list.username">{{ list.username || "--" }}</span>
+    </span>
+    <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')">学号：
+      <span class="stu-idname" :title="list.number">{{ list.number || "--" }}</span>
+    </span>
   </div>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange" :dots="false">
@@ -186,9 +188,14 @@ function jumpHandle(list: any) {
   display: flex;
   justify-content: space-between;
   .stu-name {
+    margin-right: 8px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .stu-id {
-    width: 110px;
+    width: 100px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
