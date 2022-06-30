@@ -3,7 +3,6 @@
   <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div></div>
       <div class="itemBox" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" >
         <div class="item" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
           <div class="coverBox">
@@ -335,9 +334,8 @@ const initData = () => {
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: any) => {
-      // v.is_authorized=false
       v.is_authorizedText=v.is_authorized?'':'Unauthorized'
-      // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
+      
     });
     courseList.push(...list)
     totalCount.value = page.totalCount
@@ -506,6 +504,7 @@ onMounted(() => {
 <style scoped lang="less">
   .mainBox{
     flex-wrap: wrap;
+    min-height: 400px;
     .item{
       cursor: pointer;
       width: 282px;

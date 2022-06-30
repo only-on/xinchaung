@@ -284,6 +284,7 @@ onMounted(() => {
 }
   .mainBox{
     flex-wrap: wrap;
+    min-height: 400px;
     .item{
       cursor: pointer;
       width: 282px;
