@@ -64,7 +64,7 @@
     >
     <a-popover placement="bottom">
       <template #content>
-        <div class="btn vm-revert pointer" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
+        <div class="btn vm-revert pointer" :class="currentStatus ? '' : 'isOpen'" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
         <div  class="btn vm-reset pointer" @click="btnClick(3)" style="padding: 0 10px;">重置</div>
       </template>
       <!-- <a-button type="primary">Hover me</a-button> style="border-right: 1px solid var(--brightBtn-25);color: #007879;"-->
@@ -237,6 +237,8 @@ function jumpHandle(list: any) {
     }
     &.isOpen {
       color: rgba(0, 120, 121, 0.25);
+      pointer-events: none;
+      cursor: not-allowed;
     }
   }
   .btn.disabled {
@@ -301,5 +303,10 @@ function jumpHandle(list: any) {
   line-height: 150px;
   // background: #364d79;
   overflow: hidden;
+}
+.isOpen {
+  color: rgba(0, 120, 121, 0.25);
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>
