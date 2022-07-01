@@ -171,13 +171,14 @@
                     <div class="productinfo">
                     <div class="infoName">产品信息</div>
                     <div class='infoCon'>
-                        <div class="name" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                        <div class="name single_ellipsis" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                        <!-- <div></div> -->
                     </div>
                 </div>
                 <div class="quickEntrance">
                     <div class="infoName">快捷入口</div>
                     <div class='infoCon'>
-                        <div class="name quicklyEnter" v-for="(item,i) in enterInfo" :key="i" @click="toJump(item.link)">{{item.name}}</div>
+                        <div class="name quicklyEnter single_ellipsis" v-for="(item,i) in enterInfo" :key="i" @click="toJump(item.link)">{{item.name}}</div>
                     </div>
                 </div>
                 </div>
@@ -207,11 +208,13 @@
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
     import router from "src/routers";
     import {getThemeData} from 'src/utils/theme'
+    import {useStore} from 'vuex';
     const {systemColor} = getThemeData()
     const http = (request as any).adminHome;
     const {systemImages} = getThemeData()
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
+    const store = useStore();
     updata({ tabs: [], showContent:false, showNav: false });
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
@@ -280,8 +283,8 @@
         {name:'版本信息'},
         {name:'实施时间息'},
         {name:'售后联系方式'},
-        {name:'人工只能平台'},
-        {name:'4.1.10'},
+        {name:store.state.systemInfo.site_name},
+        {name:'1.1.0'},
         {name:'2022/03/17 17:34:00'},
         {name:'14567855671'},
     ]
@@ -826,8 +829,10 @@
         .name{
             // width: 150px;
             color:#7E8085;
-            margin-right:40px;
-            margin-bottom: 20px;
+            // margin-right:40px;
+            // margin-bottom: 20px;
+            width: 25%;
+            line-height: 30px;
         }
     }
 }
