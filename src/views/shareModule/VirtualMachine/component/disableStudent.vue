@@ -73,7 +73,7 @@ export default defineComponent({
     }
     function ok() {
       clearTimeout(timer);
-      if (!isSaveEnv) {
+      if (!isSaveEnv.value) {
         loginOut();
       } else {
         if (!props.type) {
