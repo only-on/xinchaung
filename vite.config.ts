@@ -6,7 +6,7 @@ import viteRawPlugin from "vite-raw-plugin";
 import viteCompression from 'vite-plugin-compression';
 const proxyTarget={
   130:'http://192.168.101.130',
-  221:'http://192.168.101.221:84',
+  221:'http://192.168.101.221',
   222:'http://192.168.101.222:84',
 }
 export default defineConfig({
@@ -78,13 +78,17 @@ export default defineConfig({
         target: proxyTarget[130],
         changeOrigin: true,
       },
+      '/wssh': {
+        target: proxyTarget[221],
+        changeOrigin: true,
+      },
       '/ws': {
         target: "ws://192.168.101.221:84",
         // target: 'ws://192.168.101.130',
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/ws/, '')
-      }
+      },
     },
     port: 3010,
     host: "0.0.0.0",

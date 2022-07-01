@@ -53,7 +53,7 @@
       </div>
       <div
         class="vnc-change pointer"
-        :class="loading || !vmStartStatus ? 'none-event' : ''"
+        :class="loading || !vmStartStatus || vncLoading ? 'none-event' : ''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1 && roleArry.includes('switchSSH')"
       >
@@ -582,6 +582,7 @@ const evaluateVisible: any = inject("evaluateVisible");
 const initEvaluate: any = inject("initEvaluate");
 const ws: any = inject("ws");
 const sshUrl: any = inject("sshUrl")
+const testSSHServe: any = inject("testSSHServe")
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -849,19 +850,22 @@ async function showChange() {
   // currentvm.value=baseInfo.value.data.vms[vmCurrentIndex.value]
   let cureentIp = location.protocol+"//"+location.hostname
   // loading.value=false
+  vncLoading.value = true
   if (currentInterface.value==="vnc") {
     if (isScreenRecording.value) {
       await startEndRecord();
     }
     currentInterface.value="ssh"
     sshUrl.value=""
-    setTimeout(()=>{
-      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
-      loading.vaue=true
-    },2000)
+    // setTimeout(()=>{
+      // sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+    //   loading.vaue=true
+    // },2000)
     return
   }
   if (currentInterface.value==="ssh") {
+    currentOption.value.wsUrl = ''
+    sshUrl.value=""
     currentInterface.value="vnc"
     let param={
       action:"switch2Vnc",
@@ -1014,31 +1018,31 @@ function fullScreen() {
 }
 // 关机
 function colseOrStart() {
-  isClose.value = true;
-  vncLoading.value = true
-  if (currentInterface.value==="ssh") {
-    sshUrl.value=""
-    setTimeout(()=>{
-      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
-      loading.vaue=true
-    },2000)
-  }
+  // if (currentInterface.value==="ssh") {
+    // sshUrl.value=""
+    // setTimeout(()=>{
+      // sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+      // loading.vaue=true
+    // },2000)
+  // }
   if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
 
     closeVm();
   } else {
+    vncLoading.value = true
     startVm();
   }
 }
 
+
 // 关机
 async function closeVm() {
+  isClose.value = true;
   if (isScreenRecording.value) {
     await startEndRecord();
   }
   await VmOperatesHandle("closeVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "SHUTOFF";
-  isClose.value = true;
 
   message.success("操作成功");
 }
@@ -1047,27 +1051,31 @@ const vmStartStatus = computed(() => {
 })
 // 开机
 async function startVm() {
+  isClose.value = false;
   await VmOperatesHandle("startVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-  isClose.value = false;
+  if (currentInterface.value==="ssh") {
+    sshUrl.value=""
+    testSSHServe()
+    return
+  }
   initVnc.value();
   message.success("操作成功");
 }
 // 重置
 async function resetVm() {
-  if (currentInterface.value==="ssh") {
-    sshUrl.value=""
-    setTimeout(()=>{
-      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
-      loading.vaue=true
-    },2000)
-  }
+  vncLoading.value = true;
   if (isScreenRecording.value) {
     await startEndRecord();
   }
   await VmOperatesHandle("resetVm");
-  vncLoading.value = true;
   message.success("操作成功");
+  if (currentInterface.value==="ssh") {
+    sshUrl.value=""
+    setTimeout(()=>{
+      testSSHServe()
+    },2000)
+  }
 }
 
 // 选中粘贴
@@ -1302,6 +1310,8 @@ function times() {
           delayTime.value--;
           if (delayTime.value == 0) {
             clearInterval(Number(delayTimer));
+            delayVisiable.value = true
+            finishingExperimentVisible.value = true
             finishTest();
           }
         }, 1000);

@@ -3,6 +3,17 @@
     <template v-slot:right
       >
       <template v-if="currentInterface === 'ssh'">
+        <div v-if="!sshIsOpen" class="close-vm-bg">
+          <img :src="closevmImg" alt="" srcset="" width="324" height="68">
+        </div>
+        <div class="vncloading" v-else-if="loading || vncLoading">
+          <div class="word">
+            <div class="loading">
+              <img :src="loadingGif" alt="" srcset="" />
+              <span>虚拟机加载中，请稍后...</span>
+            </div>
+          </div>
+        </div>
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
@@ -42,7 +53,7 @@
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, onMounted,nextTick, computed, WritableComputedRef, watch } from "vue";
+import { inject, ref, onMounted,nextTick, computed, WritableComputedRef, watch, provide } from "vue";
 import loadingGif from "src/assets/images/vmloading.gif";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import disableStudent from "../component/disableStudent.vue"
@@ -52,6 +63,7 @@ import { wsConnect } from "src/request/websocket";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
+import httpBuildQuery from "http-build-query"
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -63,6 +75,10 @@ import {
 
 import storage from "src/utils/extStorage";
 import { getVmConnectSetting } from "src/utils/seeting";
+import request from "src/request/getRequest";
+import { IBusinessResp } from "src/typings/fetch";
+import closevmImg from "src/assets/images/vm/vm_close.png"
+const vmApi = request.vmApi;
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
@@ -176,6 +192,7 @@ function getVmBase() {
 }
 
 const isAutoRemove = ref(false)
+const sshIsOpen = ref(true)   // ssh是否是开机的状态
 let layoutRef: any = ref(null)
 function initWs() {
   clearTimeout(Number(timerout));
@@ -235,21 +252,24 @@ function initWs() {
               currentInterface.value = "ssh";
               currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
               currentUuid.value = currentVm.value.uuid;
-              setTimeout(() => {
-                console.log(sshUrl)
-                sshUrl.value =
-                  getVmConnectSetting.SSHHOST +
-                  ":2222/ssh/host/" +
-                  currentVm.value.host_ip +
-                  "/" +
-                  currentVm.value.ssh_port;
-              }, 2000);
+              // setTimeout(() => {
+              //   console.log(sshUrl)
+              //   sshUrl.value =
+              //     getVmConnectSetting.SSHHOST +
+              //     ":2222/ssh/host/" +
+              //     currentVm.value.host_ip +
+              //     "/" +
+              //     currentVm.value.ssh_port;
+              // }, 2000);
               setTimeout(() => {
                 loading.value = false;
                 if (currentVm.value.status == "ACTIVE") {
                   isClose.value = false;
                 }
               }, 1500);
+              if (currentVm.value.status == "SHUTOFF") {
+                sshIsOpen.value = false
+              }
             } else {
               if (
                 currentInterface.value == "ssh" ||
@@ -328,7 +348,7 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(-1);
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead!=1 ? router.go(-1) : '';
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -416,23 +436,42 @@ onMounted(async () => {
     initWs();
   }
 });
+
+// 测试ssh服务
+let testSSHServeTimer: any = null
+let timerNum = 1
+const testSSHServe = () => {
+  const param = {
+    hostname: currentVm.value.host_ip,
+    port: currentVm.value.ssh_port
+  }
+  vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
+    if (res?.code === 1) {
+      vncLoading.value = false
+      clearTimeout(testSSHServeTimer)
+      sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
+
+      timerNum = 1
+    }
+  }).catch(() => {
+    if (timerNum >= getVmConnectSetting.SSHConnectNum) {
+      clearTimeout(testSSHServeTimer)
+      message.warn(`已超过最大连接次数${getVmConnectSetting.SSHConnectNum}次`);
+      return
+    }
+    testSSHServeTimer = setTimeout(() => {
+      timerNum++
+      testSSHServe()
+    }, timerNum*getVmConnectSetting.SSHConnectSpace)
+  })
+}
+provide("testSSHServe", testSSHServe);
 watch(
-  () => sshUrl.value,
+  () => currentInterface.value,
   (val) => {
-    if (!val) return
-    nextTick(() => {
-      const sshIframe: any = document.querySelector('#sshIframe')
-      // 处理兼容性问题
-      if (sshIframe?.attachEvent) {
-        sshIframe.attachEvent('onload', () => {
-          loading.value = false
-        })
-      } else {
-        sshIframe.onload = () => {
-          loading.value = false
-        }
-      }
-    })
+    if (currentInterface.value === 'ssh'&&sshIsOpen.value) {
+      testSSHServe()
+    }
   },
   { deep: true, immediate: true }
 )

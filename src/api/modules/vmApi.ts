@@ -59,6 +59,8 @@ export default {
     updateReadStatusApi:{url:"/api/operate/operates/handle",method:"POST",dataType: 'json'},
     // 查询备课环境
     getPrepareEnv: {url: '/api/operate/operates/prepares', method:"POST",dataType: 'json'},
+    // 测试ssh服务
+    testSSHServe: {url: `/wssh/sniff?hostname={hostname}&port={port}`, method:"POST", dataType: 'json'},
 }
 
 // 
@@ -101,6 +103,7 @@ export interface IvmApi {
     getHelpFinfoApi:TFHttpSend
     updateReadStatusApi:TFHttpSend
     getPrepareEnv:TFHttpSend
+    testSSHServe:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"
