@@ -168,6 +168,9 @@ const currentState = ref(1)// 1未开始学习  2准备中   3准备完成 待�
 const openVnc = () => {
   // console.log(experimentDetail)
   let {id, task_type, content_type} = experimentDetail
+  if (experimentDetail.programing_type == 1) {
+    task_type = 3
+  }
   const param: any = {
     type: type ? "course":"content",  // 实验
     opType: type && role === 4 ? type : "prepare",
