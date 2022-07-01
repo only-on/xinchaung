@@ -74,8 +74,8 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "classname",
-    key: "classname",
+    dataIndex: "class_name",
+    key: "class_name",
   },
   {
     title: "成绩",
