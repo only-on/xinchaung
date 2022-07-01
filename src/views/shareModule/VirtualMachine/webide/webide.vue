@@ -99,6 +99,7 @@
     :taskId="taskId"
     :opType="opType"
     :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
   ></disableStudent>
 </template>
 
@@ -213,6 +214,7 @@ function getVmBase() {
   });
 }
 
+const isAutoRemove = ref(false)   // 是否是自动排课结束前15分钟，推送消息
 // 初始化ws
 function initWs() {
   clearTimeout(Number(timerout));
@@ -300,6 +302,10 @@ function initWs() {
           // 禁用学生
           disableVisable.value = true;
           disableData.value = wsJsonData.data;
+        } else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
+          disableVisable.value = true
+          disableData.value = wsJsonData.data
         }
       }
     },
