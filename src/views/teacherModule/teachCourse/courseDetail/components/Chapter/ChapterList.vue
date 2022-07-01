@@ -142,7 +142,7 @@
   <!-- 编辑章节的实验名称 -->
   <a-modal v-model:visible="Visible"  :title="state.activeExperiment.title" class="setupVisible" :width="500">
     <a-form :layout="'vertical'" :rules="rules" :model="formState" ref="formRef">
-      <a-form-item :label="`${state.activeExperiment.typeName}名称888`" name="name">
+      <a-form-item :label="`${state.activeExperiment.typeName}名称`" name="name">
         <a-input v-model:value="formState.name" :placeholder="`请输入${state.activeExperiment.typeName}名称`" />
       </a-form-item>
     </a-form>
