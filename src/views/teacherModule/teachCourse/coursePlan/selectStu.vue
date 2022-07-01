@@ -104,7 +104,7 @@ const columns: any = ref();
 const modalVisable: any = ref(false);
 columns.value = [
   {
-    title: "账号",
+    title: "学号",
     dataIndex: "stu_no",
     key: "stu_no",
   },
@@ -122,6 +122,11 @@ columns.value = [
     title: "班级",
     dataIndex: "classname",
     key: "classname",
+  },
+  {
+    title: "年级",
+    dataIndex: "grade",
+    key: "grade",
   },
   {
     title: "专业",
