@@ -99,9 +99,6 @@
               "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #imageTags="{ record }">
-                <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
-              </template>
               <template #action="{record}">
                 <span class="action detail" @click="dleDelete(record)">删除</span>
               </template>
@@ -158,10 +155,11 @@ const columns= [
         },
         {
           title: "镜像标签",
-          dataIndex: "imageTags",
+          dataIndex: "imageTagsText",
           align: "center",
+          width:160,
           ellipsis: true,
-          slots: { customRender: "imageTags" },
+          // slots: { customRender: "imageTags" },
         },
         {
           title: "镜像描述",
@@ -203,6 +201,7 @@ const initData = () => {
     if (!res) return
     const { list, page,analysis }  = res.data
     list.forEach((v: any) => {
+      v.imageTagsText=v.imageTags?.length?v.imageTags.join(' / '):''       // .imageTags.join(' / ')
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     Object.assign(analysisObj,analysis)
