@@ -13,7 +13,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num" v-if="!isReply">{{ replyList.length }}</span>
+        <span class="reply-num" v-if="!isReply">{{ totalReply }}</span>
       </span>
       <span class="delet pointer" v-if="detail.is_del" @click="deleteForum(detail.id)">
         <span class="division" v-if="detail.is_del"></span>删除
@@ -128,7 +128,7 @@ function getReplyList(id: number) {
     loading.value = false
     const { list, page } = res.data
     replyList.push(...list.data)
-    totalReply.value = page.totalCount
+    totalReply.value = list.num
   })
 }
 const getDetail = () => {

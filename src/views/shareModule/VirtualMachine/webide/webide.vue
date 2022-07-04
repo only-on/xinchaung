@@ -24,7 +24,7 @@
               ><i class="iconfont icon-zhongzhi1"></i>
               <a-popover trigger="click" class="roll-back-popover">
                 <template v-slot:title class="111">
-                  <div class="roll-back-item" @click="rollBack('')">回到初始版本</div>
+                  <div class="roll-back-item" @click="backInit()">回到初始版本</div>
                 </template>
                 <template #content>
                   <ul>
@@ -35,7 +35,8 @@
                       @click="rollBack(item)"
                       :class="item.id === version_id ? 'active' : ''"
                     >
-                      {{ item.version_name }}
+                      <span>{{ item.version_name }}</span>
+                      <i class="iconfont icon-guanbi" @click.stop="deleteVersion(item)"></i>
                     </li>
                   </ul>
                 </template>
@@ -126,8 +127,10 @@ import {
   switchVersionApi,
   runCodeApi,
   createTopoApi,
+  deleteVersionApi,
 } from "src/utils/webideInspect";
 import { LoadingOutlined, } from '@ant-design/icons-vue';
+import { IBusinessResp } from "src/typings/fetch";
 
 const route = useRoute();
 const router = useRouter();
@@ -163,7 +166,7 @@ const version_name: any = ref("");
 const detailLoading: any = ref(false);
 const content: any = ref("");
 const backupVisible: any = ref(false);
-const versionListData: any = ref(false);
+const versionListData: any = ref([]);
 const runResult: any = ref("");
 
 let connection_id: any = "";
@@ -222,8 +225,6 @@ function initWs() {
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
     open: () => {
       if (baseInfo.value && baseInfo.value?.current) {
-        console.log(11111);
-
         ws.value.join(topoinst_id + "_room");
       }
       if (opType == "help") {
@@ -318,8 +319,6 @@ function openOrClose() {
 
 // 创建实例
 function createTopo() {
-  console.log(12121);
-
   let params: any = {
     type: type,
     opType: opType,
@@ -328,7 +327,6 @@ function createTopo() {
   return new Promise((resolve: any, reject: any) => {
     createTopoApi(params)
       .then((res:any) => {
-        console.log(res);
         connection_id = res?.data.connection_id;
         topoinst_id = res?.data.topoinst_id;
         resolve(res?.data);
@@ -390,7 +388,7 @@ function getVersionListData() {
   return new Promise((resolve: any, reject: any) => {
     getVersionList(params)
       .then((res:any) => {
-        console.log(res);
+        // console.log(res);
         resolve(res?.data);
       })
       .catch((err:any) => {
@@ -410,7 +408,6 @@ function getFileListData() {
   return new Promise((resolve: any, reject: any) => {
     getFileList(params)
       .then((res: any) => {
-        console.log(res);
         fileListData.value = res.data.file_list;
         file_id = fileListData.value[currentIndex.value].file_id;
         resolve(res.data);
@@ -449,7 +446,6 @@ function getCurrentSWitchFile() {
   };
 
   switchFile(params).then((res:any) => {
-    console.log(res);
     content.value = res?.data.file_content;
     detailLoading.value = true;
   });
@@ -475,7 +471,6 @@ function saveFileData() {
     file_content: content.value,
   };
   saveFile(params).then((res: any) => {
-    console.log(res);
     if (res.status === 1) {
       message.success("保存成功");
     }
@@ -507,7 +502,6 @@ function switchVersion(v_id: number, is_return: number) {
 
 // 打开备份modal
 function openBackupModal() {
-  console.log(1212);
   last_version_name = version_name.value;
   version_name.value = "";
   backupVisible.value = true;
@@ -521,7 +515,7 @@ function cancelBackupModal() {
 
 // 确认备份，提交
 function okBackupModal() {
-  console.log(version_name.value);
+  // console.log(version_name.value);
 
   createVersionData().then((res: any) => {
     console.log(res);
@@ -530,7 +524,7 @@ function okBackupModal() {
       backupVisible.value = false;
       rollBack(res.data)
     }
-    console.log(version_name.value);
+    // console.log(version_name.value);
   });
 }
 
@@ -538,15 +532,52 @@ function okBackupModal() {
 async function openRollBack() {
   let versions: any = await getVersionListData();
   versionListData.value = versions;
-  console.log(versions);
+  // console.log(versions);
 }
 
 async function rollBack(val: any) {
-  console.log(val);
   await switchVersion(val ? val.id : version_id.value, val ? 0 : 1);
   version_name.value = val.version_name;
   await getFileListData();
   getCurrentSWitchFile();
+}
+function backInit() {
+  Modal.confirm({
+    title: "提示",
+    content: "是否要将当前版本恢复到初始版本？",
+    okText: "确定",
+    cancelText: "取消",
+    zIndex: 1031,
+    onOk: () => {
+      rollBack('')
+    }
+  })
+}
+function deleteVersion(val: any) {
+  if (val.id === version_id.value) {
+    message.warn('不能删除当前版本')
+    return
+  }
+  const param: any = {
+    type: type,
+    opType: opType,
+    taskId: taskId,
+    version_id: val.id,
+  };
+  Modal.confirm({
+    title: "提示",
+    content: "版本删除后不可恢复，确定要删除？",
+    okText: "确定",
+    cancelText: "取消",
+    zIndex: 1031,
+    onOk: () => {
+      deleteVersionApi(param).then(async (res: IBusinessResp | null) => {
+        if (!res) return
+        message.success('删除成功')
+        // versionListData.value = await getVersionListData()
+      })
+    }
+  })
 }
 
 const isRunning = ref(false)
@@ -563,7 +594,6 @@ function runCode() {
   isRunning.value = true
   runCodeApi(params)
     .then((res: any) => {
-      console.log(res);
       isRunning.value = false
       if (res?.data?.output) {
         runResult.value = res.data.output;
@@ -590,16 +620,16 @@ onMounted(async () => {
       // initWs();
     // }
     let versions: any = await getVersionListData();
-    console.log(versions);
+    // console.log(versions);
     if (versions.length > 0) {
       version_id.value = versions[0].id;
       version_name.value = versions[0].version_name;
     } else {
       version_name.value = "基础版本";
       let versionsData = await createVersionData();
-      console.log(versionsData);
+      // console.log(versionsData);
       let versions: any = await getVersionListData();
-      console.log(versions);
+      // console.log(versions);
       if (versions.length > 0) {
         version_id.value = versions[0].id;
         version_name.value = versions[0].version_name;
@@ -750,11 +780,23 @@ onMounted(async () => {
   font-size: 14px;
   line-height: 24px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  .iconfont {
+    opacity: 0.2;
+    font-size: 14px;
+  }
   &:hover {
-    color: #3485fb;
+    color: var(--primary-color);
+    .iconfont {
+      opacity: 1;
+    }
   }
   &.active {
-    color: #3485fb;
+    color: var(--primary-color);
+    .iconfont {
+      opacity: 1;
+    }
   }
 }
 .reset-ws-modal {

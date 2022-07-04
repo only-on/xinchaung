@@ -24,6 +24,8 @@ export default {
     cryptsSwitchFileApi: { url: "/api/operate/crypts/switchFile", method: 'POST' },
     runCodeApi: { url: "/api/operate/crypts/run", method: 'POST' },
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
+    deleteVersion: { url: "/api/operate/crypts/deleteVersion", method: 'POST', dataType: 'json'}, // 删除版本
+    
     // 实验报告
     experimentalReport: { url: "/api/yii/report/record/create", method: 'POST' },
     updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
@@ -86,6 +88,7 @@ export interface IvmApi {
     cryptsSwitchFileApi: TFHttpSend
     runCodeApi: TFHttpSend
     taskDetailApi: TFHttpSend
+    deleteVersion: TFHttpSend
     experimentalReport: TFHttpSend
     updateTemplateReport: TFHttpSend
     updateOnlineTemplateReport:TFHttpSend

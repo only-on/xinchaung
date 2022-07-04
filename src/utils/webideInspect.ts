@@ -142,6 +142,19 @@ function runCodeApi(params: IRunCode) {
     return vmApi.runCodeApi({ param: params })
 }
 
+/**
+ * @description 删除版本
+ * @param params type	是	string	学习类别：course:课程实验/实训；train:实训	course
+                opType	是	string	操作类型:start/continue/rebuild/test	0
+                taskId	是	int	课程实验id/实训id	0
+                file_id  是	string	版本文件id 0
+                file_content	是	string	版本文件的执行内容	0
+                vm_uuid	是	string	虚机uuid
+                version_id	是	int	版本文件id	0
+ */
+function deleteVersionApi(params: FilesVersion) {
+    return vmApi.deleteVersion({ param: params })
+}
 export {
     getTaskInfo,
     getVersionList,
@@ -151,5 +164,6 @@ export {
     saveFile,
     switchVersionApi,
     runCodeApi,
-    createTopoApi
+    createTopoApi,
+    deleteVersionApi,
 }
