@@ -77,25 +77,27 @@
                 <div class="diskTitle">
                    操作记录 
                 </div>
-                <a-table
-                    :columns="columns"
-                    :data-source="tabledata"
-                    row-key="id"
-                    :pagination="
-                    tableData.total > 10
-                    ? {
-                        hideOnSinglePage: false,
-                        showSizeChanger:true,
-                        total: tableData.total,
-                        current: tableData.page,
-                        pageSize: tableData.limit,
-                        onChange: onChange,
-                        onShowSizeChange: onShowSizeChange,
-                        }
-                    : false
-                "
-                >
-                </a-table>
+                
+                <a-spin :spinning="loading" size="large" tip="Loading...">
+                    <a-config-provider>
+                        <a-table :columns="columns"  :data-source="tabledata"  row-key="id" :pagination=" tableData.total > 10? {
+                                hideOnSinglePage: false,
+                                showSizeChanger:true,
+                                total: tableData.total,
+                                current: tableData.page,
+                                pageSize: tableData.limit,
+                                onChange: onChange,
+                                onShowSizeChange: onShowSizeChange,
+                                }
+                            : false
+                        "
+                        >
+                        </a-table>
+                        <template #renderEmpty>
+                        <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                        </template>
+                    </a-config-provider>
+                </a-spin>
             </div>
         </div>
         <cleanModal  v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
@@ -107,7 +109,8 @@
       ref,
       onMounted,
       reactive,
-      inject
+      inject,
+      Ref
     } from "vue";
     import {option}  from './option';
     import * as echarts from 'echarts';
@@ -137,6 +140,7 @@ const tableData = reactive({
   limit: 10,
 });
 const tabledata: any = ref();
+var loading: Ref<boolean> = ref(false);
 columns.value = [
   {
     title: "时间",
@@ -202,9 +206,11 @@ const visible:any=ref(false)
             limit: tableData.limit,
             page: tableData.page,
         };
+        loading.value = true;
         http.operateRecords({param:params}).then((res:any)=>{
             tabledata.value=res.data.list
             tableData.total=res.data.page.totalCount
+            loading.value = false
         })
     }
     function clearScreenData(day:any){

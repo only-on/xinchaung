@@ -67,24 +67,27 @@
         <div class="settingList">
             <div class="tit">授权设置</div>
             <div class="tableHeight">
-              <a-table
-            rowKey='module'
-            :columns="columns"
-            :data-source="data"
-            :pagination="
-                tableData.total > 10
-                ? {
-                    showSizeChanger: true,
-                    total: tableData.total,
-                    current: tableData.page,
-                    pageSize: tableData.limit,
-                    onChange: onChange,
-                    onShowSizeChange: onShowSizeChange,
-                    }
-                : false
-            "
-            >
-            </a-table>
+              
+            <a-spin :spinning="loading" size="large" tip="Loading...">
+                <a-config-provider>
+                    <a-table rowKey='module' :columns="columns" :data-source="data" :pagination=" tableData.total > 10
+                          ? {
+                              showSizeChanger: true,
+                              total: tableData.total,
+                              current: tableData.page,
+                              pageSize: tableData.limit,
+                              onChange: onChange,
+                              onShowSizeChange: onShowSizeChange,
+                              }
+                          : false
+                      "
+                      >
+                      </a-table>
+                    <template #renderEmpty>
+                    <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                    </template>
+                </a-config-provider>
+            </a-spin>
             </div>
         </div>
     </div>
@@ -96,7 +99,8 @@
       onMounted,
       reactive,
       inject,
-      h
+      h,
+      Ref
     } from "vue";
     import uploadFile from "src/request/uploadFile";
     import cleanModal from './cleanModal.vue'
@@ -119,6 +123,7 @@
 const codeRef = ref(null);
 const columns: any = ref();
 const data: any = ref([]);
+var loading: Ref<boolean> = ref(false);
 const statisData:any=ref()
 const tableData: any = reactive({
   total: 0,
@@ -278,7 +283,9 @@ function copyCode(e: Event) {
       // 获取系统日志时间配置
 
       function getPowerList(){
+        loading.value = true;
         http.powerList().then((res:any)=>{
+          loading.value = false
           data.value=res.data.auth_data
           tableData.total=res.data.auth_data?.length
           authorizationData.authorization_code =res.data?.auth_code
@@ -354,8 +361,8 @@ function copyCode(e: Event) {
     }
     .settingList{
       .tableHeight{
-        height:420px;
-        overflow-y:auto;
+        // height:420px;
+        // overflow-y:auto;
       }
     }
     .filename{

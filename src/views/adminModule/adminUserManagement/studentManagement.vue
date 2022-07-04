@@ -867,7 +867,6 @@ const studentColumns = [
   }
 }
 .studentList {
-  min-height: 400px;
   .heard {
     margin-bottom: 22px;
     display: flex;
