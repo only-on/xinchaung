@@ -14,14 +14,14 @@
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="getpercent(analysisObj.progressingCourseCount)" :status="'success'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.progressingCourseCount)" :status="'success'" :strokeColor="'#83D540'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">进行中课程</span>
             <span class="num">{{analysisObj.progressingCourseCount}}</span>
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="getpercent(analysisObj.closingCourseCount)" :strokeColor="'#86A7FF'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.closingCourseCount)" :strokeColor="'#808294'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">结束课程</span>
             <span class="num">{{analysisObj.closingCourseCount}}</span>
@@ -103,7 +103,7 @@
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
               <template #courseState="{ record }">
-                <div :class="{'进行中':'in','未开始':'nostarted','已结束':''}[record.courseState]">{{record.courseState}}</div>
+                <div :class="{'进行中':'in','未开始':'nostarted','已结束':'end'}[record.courseState]">{{record.courseState}}</div>
               </template>
               <template #courseName="{ record }">
                 <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
@@ -441,6 +441,9 @@ onMounted(() => {
       .nostarted,.courseName{
         color:var(--primary-color);
         cursor: pointer;
+      }
+      .end{
+        color: #808294;
       }
     }
 
