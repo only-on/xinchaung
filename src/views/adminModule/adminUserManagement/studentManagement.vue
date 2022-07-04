@@ -177,7 +177,7 @@
           </a-form-item>
         </div>
         <div class="right">
-          <a-form-item label="班级" name="class">
+          <a-form-item label="班级" name="classname">
             <a-input :maxLength='10' v-model:value="formState.classname" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
@@ -416,7 +416,7 @@ const studentColumns = [
           trigger: "blur",
         },
       ],
-      class: [{ required: true, message: "请输入班级", trigger: "blur" }],
+      classname: [{ required: true, message: "请输入班级", trigger: "blur" }],
       grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
       major: [{ required: true, message: "请输入专业", trigger: "blur" }],
     };
