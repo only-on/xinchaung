@@ -795,6 +795,7 @@ async function switchVm() {
   currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
   currentUuid.value = currentVm.value.uuid;
   role === 4 && !recommendType ? await VmOperatesHandle('active') : ''  // 标记当前虚机
+  currentInterface.value = 'vnc'
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
@@ -813,12 +814,20 @@ async function switchVm() {
       }
     }
   } else {
-    vncLoading.value = true;
-    isClose.value = false;
-    // await VmOperatesHandle("startVm");
-    vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-    settingCurrentVM();
-    initVnc.value();
+    if (
+      baseInfo.value &&
+      baseInfo.value.base_info &&
+      baseInfo.value.base_info.is_webssh === 1
+    ) {
+      currentInterface.value = "ssh";
+    } else {
+      vncLoading.value = true;
+      isClose.value = false;
+      // await VmOperatesHandle("startVm");
+      vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
+      settingCurrentVM();
+      initVnc.value();
+    }
   }
 }
 
