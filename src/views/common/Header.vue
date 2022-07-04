@@ -179,7 +179,7 @@ export default defineComponent({
       name:['','交流问答','学习问答','学习交流',''][role-1],
       parent_id: 0,
       sort: 9,
-      url: "/teacher/teacherForum?currentTab=0&type=wiki",
+      url: "/teacher/teacherForum?currentTab=0",
     }
     // 实验中心
     let center = {

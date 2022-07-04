@@ -56,7 +56,7 @@ export default defineComponent({
     let classifyList = reactive([
       {
         title: "",
-        value: props.tagList[0]?props.tagList[0].name:'',
+        value: props.tagList[1]?props.tagList[1].name:'',
         keyName: "label",
         // data: labelList.value,
         data: props.tagList,
@@ -65,8 +65,8 @@ export default defineComponent({
     watch(props.tagList, (val: any) => {
       type = route.query.type
       if (!val.length) return
-      classifyList[0].value = type ? String(type) : val[0].value;
-      ForumSearch.type = type ? String(type) : val[0].value;
+      classifyList[0].value = type ? String(type) : val[1].value;
+      ForumSearch.type = type ? String(type) : val[1].value;
       // emit("search", ForumSearch);
     })
     function search() {

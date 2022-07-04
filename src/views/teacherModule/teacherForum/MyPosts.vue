@@ -129,7 +129,7 @@ function pageChange(page: number,pageSize:number) {
 //
 async function tabChange(id: number) {
   currentTab.value = id;
-  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: 'wiki', };
+  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: id==0?'求助':'hot', };
   await router.replace({
     path: path,
     query: NewQuery,
@@ -185,7 +185,7 @@ provide("bottomStyle", bottomStyle);
 
 onMounted(async() => {
   tab = tab ? tab : '0'
-  type = type ? type : 'wiki'
+  type = type ? type : (Number(tab) == 0 ? '求助' : 'hot')
   let NewQuery = { currentTab:route.query.currentTab, tab, type };
   await router.replace({
     path: path,
