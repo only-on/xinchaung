@@ -59,7 +59,7 @@ export default {
         // title: "数据集详情",
         title: (params?: RouteParams, query?: RouteParams) => {
           const dataDetailMap = {
-              '0': '公有素材',
+              '0': '公开素材',
               '1': '我的素材',
           }
           return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
@@ -76,8 +76,8 @@ export default {
         // title: "数据集详情",
         title: (params?: RouteParams, query?: RouteParams) => {
           const dataDetailMap = {
-              '0': '公有素材',
-              '1': '私有素材',
+              '0': '公开素材',
+              '1': '我的素材',
           }
           return (query && query!.currentTab)?dataDetailMap[query!.currentTab.toString()]:dataDetailMap[0]
         },
