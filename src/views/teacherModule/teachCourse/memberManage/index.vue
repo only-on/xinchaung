@@ -1,6 +1,6 @@
 <template>
   <div id="memberManage">
-    <a-tabs default-active-key="1" @change="callback">
+    <a-tabs default-active-key="1" @change="callback" destroyInactiveTabPane="true">
       <a-tab-pane key="1" tab="学生"><student></student> </a-tab-pane>
       <a-tab-pane key="2" tab="分组"><group @updateGroup='updateGroup'></group></a-tab-pane>
       <a-tab-pane key="3" tab="助教"><assistant></assistant> </a-tab-pane>
