@@ -9,6 +9,7 @@ export default {
         authCode: '',
         showInBreadcrumb:true,
     },
+    redirect: '/admin/systemMaintenance/diskManagement',
     children: [
         {
             path: "diskManagement",
