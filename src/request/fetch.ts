@@ -212,7 +212,7 @@ export default function request({
             // message.warning('超时');
             // router.replace({ path: "/login" }).catch(() => {});
           // }, 3000);
-        } else if (res.code === RESP_AUTH_FAILURE) {
+        } else if (RESP_AUTH_FAILURE.indexOf(res.code) !== -1) {
           // console.log('[fetch] RESP_AUTH_FAILURE, will replace to login page');
           // 登录失效或其他特殊状态码处理
           lStorage.clean();

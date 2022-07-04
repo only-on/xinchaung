@@ -32,7 +32,7 @@
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
         @click="detail(list)"
       >
-        <div class="item-top" :style="list.cover?`background-image: url(${list.cover});`:defaultCover">
+        <div class="item-top" :style="list.cover?`background-image: url(${encodeURI(list.cover)});`:defaultCover">
           <div class="labels">
             <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
