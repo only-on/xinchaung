@@ -251,6 +251,7 @@ const changeTab = (key: any) => {
   columns[0].title = planTtab[key].title
   searchParams.page = 1
   searchParams.name = ''
+  searchParams.limit=10
   getList()
 };
 const edit = (record:any, key: number) => {
