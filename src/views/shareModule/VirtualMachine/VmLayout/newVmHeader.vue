@@ -53,7 +53,7 @@
       </div>
       <div
         class="vnc-change pointer"
-        :class="loading || !vmStartStatus || vncLoading ? 'none-event' : ''"
+        :class="loading || !vmStartStatus ? 'none-event' : ''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1 && roleArry.includes('switchSSH')"
       >
