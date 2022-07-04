@@ -40,11 +40,7 @@
         虚机状态：<span>{{ currentStatus ? "开启" : "关闭" }}</span>
       </p>
       <p class="operation-status">
-        操作状态：<span>{{
-          list.is_online&& list.vms.vms[current]?.uuid === list.current
-            ? "繁忙"
-            : "空闲"
-        }}</span>
+        操作状态：<span>{{ isBusy ? "繁忙" : "空闲" }}</span>
       </p>
     </div>
     <div class="mask" @click="jumpHandle(list)"></div>
@@ -112,6 +108,12 @@ let current = ref(0);
 function beforeChange(from: Function, to: number) {
   current.value = to;
 }
+
+// 繁忙或空闲
+const isBusy = computed(() => {
+  const sign = props.list.course_student_content.filter((v: any) => v.vm_uuid === props.list.vms.vms[current.value]?.uuid)[0]
+  return sign&&props.list.is_online
+})
 
 // 当前环境状态 开启是true
 const currentStatus = computed(

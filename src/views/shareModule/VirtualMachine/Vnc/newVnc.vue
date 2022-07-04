@@ -458,6 +458,7 @@ const testSSHServe = () => {
     if (timerNum >= getVmConnectSetting.SSHConnectNum) {
       clearTimeout(testSSHServeTimer)
       message.warn(`已超过最大连接次数${getVmConnectSetting.SSHConnectNum}次`);
+      timerNum = 1
       return
     }
     testSSHServeTimer = setTimeout(() => {
