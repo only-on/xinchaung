@@ -441,6 +441,7 @@ onMounted(async () => {
 let testSSHServeTimer: any = null
 let timerNum = 1
 const testSSHServe = () => {
+  console.log(timerNum)
   const param = {
     hostname: currentVm.value.host_ip,
     port: currentVm.value.ssh_port
@@ -470,6 +471,7 @@ watch(
   () => currentInterface.value,
   (val) => {
     if (currentInterface.value === 'ssh'&&sshIsOpen.value) {
+      timerNum = 1
       testSSHServe()
     }
   },
