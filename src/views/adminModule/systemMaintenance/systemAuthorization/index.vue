@@ -23,7 +23,9 @@
                     <div class="step-row">
                         <div class="step-text">导入授权文件</div>
                         <div class="upload-code-file">
+                          <!-- accept=".so" -->
                             <a-upload
+                            accept=".so"
                             name="file"
                             :multiple="false"
                             :showUploadList="false"
@@ -276,7 +278,7 @@ function copyCode(e: Event) {
         };
          http.saveSettingApi({param:params}).then((res: any) => {
           // reactiveData.authorizationData.authorization_code = res.authNumber;
-            message.warning('授权成功！')
+            message.success('授权成功！')
             getPowerList()
         });
     }
