@@ -287,8 +287,8 @@ function initWs() {
           }
         } else if (wsJsonData.type == "return_message") {
           if (Object.keys(wsJsonData.data).length > 0) {
-            if (wsJsonData.data?.message) {
-              message.warn(wsJsonData.data.message);
+            if (wsJsonData.data?.msg) {
+              message.warn(wsJsonData.data.msg);
             } else {
               message.warn(wsJsonData.data);
             }

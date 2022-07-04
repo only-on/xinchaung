@@ -29,7 +29,7 @@
         :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('switchVm')"
       >
-        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
+        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm" v-if="vmsInfo.vms?.length">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
             :key="index"
