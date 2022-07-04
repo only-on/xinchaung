@@ -35,7 +35,10 @@
                       @click="rollBack(item)"
                       :class="item.id === version_id ? 'active' : ''"
                     >
-                      <span>{{ item.version_name }}</span>
+                      <span class="version-name">
+                        <span class="name single_ellipsis" :title="item.version_name">{{ item.version_name }}</span>
+                        <span class="current" v-show="item.id === version_id">(当前版本)</span>
+                      </span>
                       <i class="iconfont icon-guanbi" @click.stop="deleteVersion(item)"></i>
                     </li>
                   </ul>
@@ -87,7 +90,7 @@
     @ok="okBackupModal"
     title="版本备份"
   >
-    <a-input v-model:value="version_name" />
+    <a-input v-model:value="version_name" maxlength="10" placeholder="请输入版本名称，最多10个字" />
   </a-modal>
   <!--禁用modal-->
   <disableStudent
@@ -777,14 +780,23 @@ onMounted(async () => {
   }
 }
 .roll-back-item {
+  width: 190px;
   font-size: 14px;
   line-height: 24px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
+  .version-name {
+    flex: 1;
+    display: flex;
+    .name {
+      flex: 1;
+    }
+  }
   .iconfont {
     opacity: 0.2;
     font-size: 14px;
+    margin-left: 24px;
   }
   &:hover {
     color: var(--primary-color);
