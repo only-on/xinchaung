@@ -55,6 +55,7 @@
             </template>
             <template #operation="{ record, index }">
               <span class="functionButton" v-if="editableData[index]">
+                <a @click="cancelSave(index)">取消</a>
                 <a @click="save(index)">确定</a>
               </span>
               <span class="functionButton" v-else>
@@ -282,7 +283,9 @@ const save = (key: number) => {
     getList()
   });
 };
-
+const cancelSave=(key: number)=>{
+  delete editableData[key];
+}
 const onDelete = (id: number) => {
   Modal.confirm({
     title: "删除",
