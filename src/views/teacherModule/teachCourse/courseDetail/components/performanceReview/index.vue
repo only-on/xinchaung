@@ -19,23 +19,20 @@
             >/{{ total }}
           </span>
         </div>
-        <div class="t-right">
-          <a-button type="primary" class="auto-preview-btn" size="" @click="autoReview">
+        <div class="t-right flexCenter">
+          <a-button type="primary" class="auto-preview-btn flexCenter" size="" @click="autoReview">
             <a-tooltip overlay-class-name="numeric-input">
               <template #title>
                 <span>一键评阅</span>
               </template>
               <span class="preview-btn">一键评阅</span>
+              <span class="suffixText"></span>
             </a-tooltip>
-            <a-tooltip overlay-class-name="numeric-input">
+            <a-tooltip overlay-class-name="numeric-input" class="">
               <template #title>
                 <span>一键评阅权重设置</span>
               </template>
-              <i
-                title="设置权重"
-                @click.stop="autoWeight"
-                class="icon-shezhi iconfont setting-btn"
-              ></i>
+              <i title="设置权重" @click.stop="autoWeight" class="icon-shezhi iconfont setting-btn"></i>
             </a-tooltip>
           </a-button>
           <a-button type="primary" size="" @click="exportScore">导出成绩</a-button>
@@ -674,6 +671,12 @@ onMounted(() => {
       &:hover {
         background: var(--primary-5);
       }
+    }
+    .suffixText{
+      // width: 1px;
+      height: 12px;
+      // background-color: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
     }
     .setting-btn {
       padding: 0 27px 0 10px;
