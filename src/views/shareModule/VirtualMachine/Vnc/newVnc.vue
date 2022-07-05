@@ -262,8 +262,8 @@ function initWs() {
               //     "/" +
               //     currentVm.value.ssh_port;
               // }, 2000);
+              loading.value = false;
               setTimeout(() => {
-                loading.value = false;
                 if (currentVm.value.status == "ACTIVE") {
                   isClose.value = false;
                 }
@@ -450,12 +450,14 @@ const testSSHServe = () => {
   }
   vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
     if (res?.code === 1) {
-      vncLoading.value = false
-      sshIsOpen.value = true
-      clearTimeout(testSSHServeTimer)
-      sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
+      setTimeout(() => {
+        vncLoading.value = false
+        sshIsOpen.value = true
+        clearTimeout(testSSHServeTimer)
+        sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
 
-      timerNum = 1
+        timerNum = 1
+      }, 2000);
     }
   }).catch(() => {
     if (timerNum >= getVmConnectSetting.SSHConnectNum) {
