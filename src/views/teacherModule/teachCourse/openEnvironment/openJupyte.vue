@@ -243,7 +243,9 @@ export default defineComponent({
               saveImageLoad.value=false
               message.warn(res.msg);
             }
-          });
+          }).catch(()=>{
+            saveImageLoad.value=false
+          })
         }
       });
     }
