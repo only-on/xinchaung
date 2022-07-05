@@ -111,6 +111,9 @@ const initEvaluate:any=inject("initEvaluate")
 const isScreenRecording: any = inject("isScreenRecording", ref(false));
 const vncLoading: any = inject("vncLoading", ref(false));
 
+// 非响应式
+let historyLength = history.length;
+
 const disableVisable:any=ref(false)
 const disableData:any=ref({})
 const navData = [
@@ -327,7 +330,7 @@ function initWs() {
             isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
           }
         }else if (wsJsonData.type=="return_message") {
-          if (Object.keys(wsJsonData).length>0) {
+          if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
             if (wsJsonData.data?.msg) {
               message.warn(wsJsonData.data.msg)
             }else{
@@ -335,7 +338,7 @@ function initWs() {
             }
           }
           if (layout.value) {
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(-1);
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
             // 自评推荐
             evaluateVisible.value=true
             evaluateData.value = wsJsonData.data;
@@ -348,7 +351,7 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead!=1 ? router.go(-1) : '';
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead!=1 ? router.go(historyLength - history.length - 1) : '';
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐

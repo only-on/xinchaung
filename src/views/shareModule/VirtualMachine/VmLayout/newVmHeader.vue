@@ -889,19 +889,6 @@ async function showChange() {
   }
 }
 
-watch(
-  () => currentInterface.value,
-  (val) => {
-    if (experType === 1 || experType === 2) {
-      const roleArry1 = ["recommend", "test", "help"].includes(opType as any)
-        ? (getMenuRole(role as any, val as any, opType as any) as any)
-        : (getMenuRole(role as any, val as any) as any);
-      roleArry.value = roleArry1
-    }
-  },
-  { deep: true, immediate: true }
-);
-
 // 结束实验
 let finishingExperimentVisible = ref(false)
 function finishExperiment() {
@@ -1325,11 +1312,12 @@ function times() {
           }
         }, 1000);
         return
+      } else {
+        use_time.value--;
       }
       if (use_time.value < 0) {
         use_time.value = 0;
       }
-      use_time.value--;
     }
   }, 1000);
 }
@@ -1629,6 +1617,22 @@ watch(
         ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
         : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
         roleArry.value = roleArry1
+    }
+  },
+  { deep: true, immediate: true }
+);
+watch(
+  () => currentInterface.value,
+  (val) => {
+    if (role === 4&&baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0) {  // 高配分组 非组长
+      isShowDelayBtn.value = !(baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0)
+      roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
+      // console.log('roleArry2',roleArry.value)
+    }else if (experType === 1 || experType === 2) {
+      const roleArry1 = ["recommend", "test", "help"].includes(opType as any)
+        ? (getMenuRole(role as any, val as any, opType as any) as any)
+        : (getMenuRole(role as any, val as any) as any);
+      roleArry.value = roleArry1
     }
   },
   { deep: true, immediate: true }
