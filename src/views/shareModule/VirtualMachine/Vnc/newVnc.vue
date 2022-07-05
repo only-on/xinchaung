@@ -246,10 +246,8 @@ function initWs() {
               ind === 0 &&
               baseInfo.value.base_info &&
               baseInfo.value.base_info.is_webssh === 1 &&
-              ((role == 4 &&
-                baseInfo.value.current &&
-                baseInfo.value.current.is_switch == 0) ||
-                role == 3)
+              ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) ||
+                role != 4)
             ) {
               ind++;
               currentInterface.value = "ssh";
@@ -431,6 +429,7 @@ initVnc.value = () => {
     onBeforeRouteLeave(() => {
       isCurrentPage = false;
       clearTimeout(Number(timerout));
+      clearTimeout(testSSHServeTimer)
       closeWs();
     });
 onMounted(async () => {
@@ -452,6 +451,7 @@ const testSSHServe = () => {
   vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
     if (res?.code === 1) {
       vncLoading.value = false
+      sshIsOpen.value = true
       clearTimeout(testSSHServeTimer)
       sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
 
@@ -471,6 +471,7 @@ const testSSHServe = () => {
   })
 }
 provide("testSSHServe", testSSHServe);
+provide("sshIsOpen", sshIsOpen);
 watch(
   () => currentInterface.value,
   (val) => {

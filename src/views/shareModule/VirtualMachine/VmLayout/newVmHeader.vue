@@ -583,6 +583,7 @@ const initEvaluate: any = inject("initEvaluate");
 const ws: any = inject("ws");
 const sshUrl: any = inject("sshUrl")
 const testSSHServe: any = inject("testSSHServe")
+const sshIsOpen: any = inject("sshIsOpen")
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -796,13 +797,16 @@ async function switchVm() {
   currentUuid.value = currentVm.value.uuid;
   role === 4 && !recommendType ? await VmOperatesHandle('active') : ''  // 标记当前虚机
   currentInterface.value = 'vnc'
+  vncLoading.value = true;
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1
+      baseInfo.value.base_info.is_webssh === 1 &&
+      ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
+      sshIsOpen.value = false
     } else {
       if (currentInterface.value == "ssh") {
       } else {
@@ -817,9 +821,11 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1
+      baseInfo.value.base_info.is_webssh === 1 && 
+      ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
+      sshIsOpen.value = true
     } else {
       vncLoading.value = true;
       isClose.value = false;
@@ -1034,6 +1040,8 @@ function colseOrStart() {
 // 关机
 async function closeVm() {
   isClose.value = true;
+  vncLoading.value = false
+  sshIsOpen.value = false
   if (isScreenRecording.value) {
     await startEndRecord();
   }
@@ -1047,10 +1055,12 @@ const vmStartStatus = computed(() => {
 })
 // 开机
 async function startVm() {
+  vncLoading.value = true
   isClose.value = false;
   await VmOperatesHandle("startVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
   if (currentInterface.value==="ssh") {
+    sshIsOpen.value = true
     sshUrl.value=""
     testSSHServe()
     return
@@ -1593,8 +1603,8 @@ const delayNum = ref(0)
 // f
 watch(
   () => vmsInfo.value,
-  async(val) => {
-    if (val.vms?.length && role===4 && !recommendType) {
+  async(newval, oldval) => {
+    if (newval.vms?.length && role===4 && !recommendType && !oldval.vms?.length) {
       await VmOperatesHandle('active')  // 标记当前虚机  只在学生端
     }
   },
@@ -1670,7 +1680,11 @@ onMounted(() => {
 function stopRecord() {
   return new Promise(async (resolve) => {
     if (isScreenRecording.value) {
-      await VmOperatesHandle("stopRecord")
+      // await VmOperatesHandle("stopRecord")
+      isScreenRecording.value = false;
+      videoTime.value = 0;
+      clearInterval(Number(viodeTimer));
+      videoTimeText.value = secondToHHMMSS(Number(videoTime.value));
       resolve(1)
     }
   })
