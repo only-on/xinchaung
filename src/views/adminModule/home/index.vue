@@ -83,7 +83,8 @@
             <div class="serverNode-left">
                 <div class="flexTitle">
                     <div class="title-bac">服务器节点状态</div>
-                    <div>评级:<span class="status" :class="serveNodeStatus=='优秀'?'youxiu':(serveNodeStatus=='差'?'cha':'lianghao')">{{serveNodeStatus}}</span></div>
+                    <!-- 优秀 -->
+                    <div>评级:<span class="status" :class="serveNodeStatus=='优秀'?'youxiu':(serveNodeStatus=='差'?'cha':'lianghao')">{{serveNodeStatus}}</span></div>
                     <div>
                         <a-select class="select-input"  @change="handleChange" v-model:value="serveNodeValue">
                             <a-select-option
@@ -377,7 +378,8 @@
                 warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
-                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'优秀':(serveNode.value?.nodeRiskLevel=='high'?'差':'良好')
+                let obj={'low':'优秀','high':'差','medium':'良好'}      // {'low':'差','high':'优秀','medium':'良好'} 返回的是风险等级   对应的状态是反的
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel?obj[serveNode.value.nodeRiskLevel]:''
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
                 drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
@@ -413,7 +415,9 @@
                 warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
-                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
+                let obj={'low':'优秀','high':'差','medium':'良好'}      // {'low':'差','high':'优秀','medium':'良好'} 返回的是风险等级   对应的状态是反的
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel?obj[serveNode.value.nodeRiskLevel]:''
+                // serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
                 drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
