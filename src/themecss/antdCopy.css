@@ -22757,7 +22757,7 @@ textarea.ant-mentions {
   border-radius: 2px 2px 0 0;
 }
 .ant-modal-body {
-  padding: 24px;
+  padding: 16px 24px;
   font-size: var(--base-font-size);
   line-height: var(--base-line-height);
   word-wrap: break-word;
