@@ -1,6 +1,6 @@
 <template>
   <a-modal
-    :width="700"
+    :width="800"
     cancelText="关闭"
     title="成绩统计"
     :visible="props.modalVisable"
@@ -21,43 +21,46 @@
           <span>总分 <span class="number">{{statis.scores}}</span>分</span>
         </div>
       </div>
-      <a-config-provider>
-        <a-table :columns="columns" :data-source="data" 
-          :pagination="
-            tableData.total > 10
-              ? {
-                  hideOnSinglePage: false,
-                  showSizeChanger: true,
-                  total: tableData.total,
-                  current: tableData.page,
-                  pageSize: tableData.limit,
-                  onChange: onChange,
-                  onShowSizeChange: onShowSizeChange,
-                }
-              : false
-          "> 
-          <template #score_total='{record}'>
-                <span v-if="record.score_total==null">--</span>
-                <span v-else>{{record.score_total}}</span>
-            </template>
-            <template #wrong_answers_number='{record}'>
-                <span v-if="record.wrong_answers_number==null">--</span>
-                <span v-else>{{record.wrong_answers_number}}</span>
-            </template>
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+        <a-config-provider>
+          <a-table :columns="columns" :data-source="data" 
+            :pagination="
+              tableData.total > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger: true,
+                    total: tableData.total,
+                    current: tableData.page,
+                    pageSize: tableData.limit,
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+            "> 
+            <template #score_total='{record}'>
+                  <span v-if="record.score_total==null">--</span>
+                  <span v-else>{{record.score_total}}</span>
+              </template>
+              <template #wrong_answers_number='{record}'>
+                  <span v-if="record.wrong_answers_number==null">--</span>
+                  <span v-else>{{record.wrong_answers_number}}</span>
+              </template>
           </a-table>
           <template #renderEmpty>
             <div><Empty type="tableEmpty" /></div>
           </template>
-          </a-config-provider>
+        </a-config-provider>
+      </a-spin>
     </div>
   </a-modal>
 </template>
 <script lang="ts" setup>
-import { defineComponent, ref, toRef, inject, reactive, toRefs, onMounted } from "vue";
+import { defineComponent, ref, toRef, inject, reactive, Ref, onMounted } from "vue";
 import request from 'src/api/index'
 const http = (request as any).teacherInclassTest;
 const columns: any = ref("");
 const data: any = ref("");
+var loading: Ref<boolean> = ref(false);
 const statis:any=ref('')
 const tableData: any = reactive({
   total: 0,
@@ -119,9 +122,13 @@ function getStatisticGrands(){
   })
 }
 function getAchiveList(){
+  loading.value = true;
   http.achivelist({urlParams:{content_id:props.experitId},param:{limit:tableData.limit,page:tableData.page}}).then((res:any)=>{
     data.value=res.data.list
     tableData.total=res.data.page.totalCount
+    loading.value = false
+  }).catch(()=>{
+    loading.value = false
   })
 }
 function onChange(page: any, pageSize: any) {
@@ -140,6 +147,7 @@ onMounted(()=>{
 </script>
 <style lang="less" scoped>
 .achievement {
+  min-height: 400px;
   .header {
     display: flex;
     justify-content: space-between;

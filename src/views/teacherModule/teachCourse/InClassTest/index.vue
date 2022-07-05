@@ -44,19 +44,19 @@
       </div>
     </div>
     <achievementStatis
-      v-if="componentName == 'achievementStatis'"
+      v-if="componentName == 'achievementStatis' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
     ></achievementStatis>
     <choiceques
-      v-if="componentName == 'choiceques'"
+      v-if="componentName == 'choiceques' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
     ></choiceques>
     <explainques
-      v-if="componentName == 'explainques'"
+      v-if="componentName == 'explainques' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
