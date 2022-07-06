@@ -14,6 +14,7 @@ import router from "src/routers";
 import {clearAllCookies} from "../utils/cookieHelper";
 import {IWmc} from "../typings/wmc";
 const { lStorage } = extStorage;
+let currentCode = 0
 
 // 检查是否为对象
 function isObject(value: any) {
@@ -220,7 +221,13 @@ export default function request({
           if (store.state.longWs) {
             (store.state.longWs as IWmc).close();
           }
-          ProcessingError(res,silent)
+          if (res.code !== currentCode) {
+            currentCode = res.code
+            ProcessingError(res,silent)
+            setTimeout(() => {
+              currentCode = 0
+            }, 5000)
+          }
           reject(res);
           // 1. 没有登录状态，跳转到登录页
           // 2. 登录页不再检查是否需要登录了

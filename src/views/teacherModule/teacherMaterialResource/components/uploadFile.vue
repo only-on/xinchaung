@@ -108,15 +108,15 @@ function fileBeforeUpload(file: any) {
     $message.warn(`${file.name}文件大小不能为空`);
     return false;
   }
-  if (file.name.length > 100) {
-    $message.warn(`文件名称不能大于100`);
-    return
-  }
   if (props.type === 4 && file.size > 500*1024*1024) {
     $message.warn(`上传文件大小必须要在500M以内`);
     return
   }
   if (props.type !== 1) {
+    if (file.name.length > 100) {
+      $message.warn(`文件名称长度不能大于100`);
+      return
+    }
     let obj = {
       data: {},
       file,
@@ -140,6 +140,10 @@ function fileBeforeUpload(file: any) {
     tusFileUpload.onUpload(file, tusdDirKey, accept, props.fileList[sign])
     sign ++
     return false;
+  }
+  if (file.name.length > 60) {
+    $message.warn(`文件名称长度不能大于60`);
+    return
   }
   Upload({
     startUploadURL: "/dmc/v1.0/create_multi_part",
