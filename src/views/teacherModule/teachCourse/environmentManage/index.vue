@@ -194,12 +194,13 @@ onUnmounted(() => {
 // 开启实验环境
 const openEnvNum: any = ref('')
 const limit = ref(0);
+const totalLimit = ref(0);
 const visible = ref(false)
 function getLimit() {
   return new Promise((resolve) => {
     http.maxLimit().then((res: IBusinessResp) => {
       limit.value = res.data.limit;
-      // limit.value = 10
+      totalLimit.value = res.data.total_limit
       resolve(1)
     });
   })
@@ -212,7 +213,7 @@ async function openEnv() {
   // }
   await getLimit()
   if (!limit.value) {
-    message.warning('授权人数为0，无法开启!');
+    message.warning(`开启环境已达授权数量(${totalLimit.value})上限!`);
     return;
   } 
   visible.value = true
