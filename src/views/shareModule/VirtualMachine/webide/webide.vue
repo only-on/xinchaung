@@ -602,7 +602,9 @@ function runCode() {
         runResult.value = res.data.output;
       }
     })
-    .catch((res:any) => {});
+    .catch((res:any) => {
+      isRunning.value = false
+    });
 }
 // saveKvm
 function saveKvm() {}
