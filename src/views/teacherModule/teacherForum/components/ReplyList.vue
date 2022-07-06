@@ -239,6 +239,10 @@ export default defineComponent({
   padding-left: 30px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--lightgray-4);
+  
+  .ant-spin-nested-loading {
+    min-height: 80px!important;
+  }
   .reply-info {
     margin: 8px 0 12px;
     line-height: 19px;
@@ -285,8 +289,5 @@ export default defineComponent({
       color: var(--black-65);
     }
   }
-}
-.ant-spin-nested-loading {
-  min-height: 80px;
 }
 </style>
