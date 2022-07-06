@@ -40,7 +40,7 @@
     </div>
     </a-spin>
     <div class="comment-box">
-      <a-input ref="inputRef" v-model:value="replyContent" placeholder="请写下你的评论" />
+      <a-input ref="inputRef" :maxlength="500" v-model:value="replyContent" placeholder="请写下你的评论" />
       <span class="pointer" @click="submitReply(item.id)">回应</span>
     </div>
   </div>
@@ -344,6 +344,9 @@ export default defineComponent({
       color: var(--white-100);
     }
   }
+  .ant-spin-nested-loading {
+    min-height: 80px!important;
+  }
 }
 .bottom {
   height: 54px;
@@ -373,9 +376,6 @@ export default defineComponent({
       margin-left: 4px;
     }
   }
-}
-.ant-spin-nested-loading {
-  min-height: 80px;
 }
 .forum-content-all{
   :deep(.ql-image){
