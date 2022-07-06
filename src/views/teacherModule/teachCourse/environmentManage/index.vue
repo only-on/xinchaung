@@ -117,7 +117,9 @@ const onSearch = () => {
   getList();
 }
 
+let sign = false    // 判断当前页有没有操作的虚机
 function getList(type?: any, i?: any) {
+  sign = false
   clearTimeout(Number(timer));
   envList.length = 0;
   loading.value = true;
@@ -144,6 +146,7 @@ function getList(type?: any, i?: any) {
         if (v.uuid === i.stack_id&&type) {
           v.vms?.vms?.forEach((vv: any) => {
             if (vv.uuid === i.uuid) {
+              sign = true
               // status: "ACTIVE" status: "SHUTOFF"
               if (type === 'closeVm') {
                 vv.status === "SHUTOFF" ? isCorrect = true : ''
@@ -156,7 +159,7 @@ function getList(type?: any, i?: any) {
       }) : ''
       if (isCorrect) {
         // message.success({ content: "请求成功!", duration: 2 });
-      } else {
+      } else if (sign) {
         timer = setTimeout(() => {
           getList(type, i);
         }, 1500);

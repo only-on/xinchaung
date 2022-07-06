@@ -42,6 +42,7 @@
                 <widget-create
                   :type="element.type"
                   v-model:fields="element.fields"
+                  :disable="isCheck"
                 >
                   <template #toolbar v-if="!isCheck">
                     <div class="actions">
@@ -164,7 +165,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const templateId = ref<any>("");
 const isCheck = computed(() => {
-  return props.type && props.type === "view";
+  return !!(props.type && props.type === "view");
 });
 var form = reactive<any>({
   name: "",
