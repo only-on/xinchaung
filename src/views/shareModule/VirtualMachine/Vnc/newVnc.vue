@@ -245,9 +245,9 @@ function initWs() {
             if (
               ind === 0 &&
               baseInfo.value.base_info &&
-              baseInfo.value.base_info.is_webssh === 1 &&
-              ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) ||
-                role != 4)
+              baseInfo.value.base_info.is_webssh === 1 
+              // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) ||
+              //   role != 4)
             ) {
               ind++;
               currentInterface.value = "ssh";
@@ -368,7 +368,7 @@ function initWs() {
           disableVisable.value=true
           disableData.value=wsJsonData.data
         }else if (wsJsonData.type=="switch_success") {
-          message.success("切换成功")
+          // message.success("切换成功")
           currentInterface.value = "vnc";
             vmsInfo.value = wsJsonData.data;
               settingCurrentVM(

@@ -802,8 +802,8 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 &&
-      ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
+      baseInfo.value.base_info.is_webssh === 1 
+      // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = false
@@ -821,8 +821,8 @@ async function switchVm() {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1 && 
-      ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
+      baseInfo.value.base_info.is_webssh === 1 
+      // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
       sshIsOpen.value = true
@@ -1059,14 +1059,15 @@ async function startVm() {
   isClose.value = false;
   await VmOperatesHandle("startVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-  if (currentInterface.value==="ssh") {
+  message.success("操作成功");
+  if (baseInfo.value.base_info.is_webssh === 1) {
+    currentInterface.value = "ssh"
     sshIsOpen.value = true
     sshUrl.value=""
     testSSHServe()
     return
   }
   initVnc.value();
-  message.success("操作成功");
 }
 // 重置
 async function resetVm() {
@@ -1076,7 +1077,8 @@ async function resetVm() {
   }
   await VmOperatesHandle("resetVm");
   message.success("操作成功");
-  if (currentInterface.value==="ssh") {
+  if (baseInfo.value.base_info.is_webssh === 1) {
+    currentInterface.value = "ssh"
     sshUrl.value=""
     setTimeout(()=>{
       testSSHServe()
@@ -1099,9 +1101,9 @@ function saveKvm() {
     cancelText: "取消",
     onOk: () => {
       VmOperatesHandle("saveKvm").then((res: any) => {
-        if (res.data) {
+        if (res?.data) {
           if (baseInfo.value?.current?.is_teamed == 0) {
-            router.go(-1);
+            router.go(historyLength - history.length - 1)
             // backTo(router, type, 3, routerQuery);
           }
         } else {
@@ -1109,7 +1111,7 @@ function saveKvm() {
             course: [],
             train: [],
           };
-          if (isJsonString(res.msg)) {
+          if (isJsonString(res?.msg)) {
             progressVisible.value = true;
             let jsonData = JSON.parse(res.msg);
             saveExperimentData.value = jsonData;
@@ -1382,7 +1384,7 @@ function okProgress() {
     .then((res: any) => {
       if (res.data) {
         // backTo(router, type, 3, routerQuery);
-        router.go(-1);
+        router.go(historyLength - history.length - 1)
         progressVisible.value = false;
       }
     })
