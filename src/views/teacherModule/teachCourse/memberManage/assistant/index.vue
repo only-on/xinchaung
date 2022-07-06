@@ -124,16 +124,20 @@ columns.value = [
     title: "姓名",
     dataIndex: "name",
     key: "name",
+    width:160,
+    ellipsis: true,
   },
   {
     title: "性别",
-    dataIndex: "gender",
-    key: "gender",
+    dataIndex: "genderText",
+    key: "genderText",
   },
   {
     title: "邮箱",
     dataIndex: "email",
     key: "email",
+    width:120,
+    ellipsis: true,
   },
   {
     title: "电话",
@@ -144,6 +148,8 @@ columns.value = [
     title: "所属教师",
     dataIndex: "teacher_name",
     key: "teacher_name",
+    width:140,
+    ellipsis: true,
   },
   {
     title: "状态",
@@ -350,10 +356,13 @@ function getAssistantList(){
         },
       };
   http.assistantList({param:obj}).then((res:any)=>{
-      if(res.status==1){
-        data.value=res.data.list
+        let obj={'1':'男','2':'女'}
+        let arr=res.data.list
+        arr.forEach((v:any)=>{
+          v.genderText=obj[v.gender]?obj[v.gender]:'保密'
+        })
+        data.value=arr
         tableData.total=res.data.page.totalCount
-      }
   })
 }
 onMounted(()=>{
@@ -405,7 +414,7 @@ onMounted(()=>{
   }
 }
 .tableScrollbar{
-  height: 530px;
-  overflow-y: auto;
+  // height: 530px;
+  // overflow-y: auto;
 }
 </style>
