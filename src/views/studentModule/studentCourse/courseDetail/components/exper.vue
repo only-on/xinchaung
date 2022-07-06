@@ -1,9 +1,25 @@
 <template>
+  <div class="Statistics">
+    <div class="item">
+      <span>共</span>
+      <span class="one mid">{{detailInfo && detailInfo.length}}</span>
+      <span>题</span>
+    </div>
+    <div class="item">
+      <span>总分</span>
+      <span class="one mid">{{origin_score}}</span>
+      <span>分</span>
+    </div>
+    <div class="item">
+      <span>得分</span>
+      <span class="two mid">{{student_score}}</span>
+      <span>分</span>
+    </div>
+  </div>
   <div class="exper">
     <div class="test" v-for="(item, index) in detailInfo" :key="index.toString()">
       <div :class="item.answer_is_right?'title':'redtitlt'">
-        <!-- {{ Number(index) + 1 }}、 -->
-        <span>{{ item.question }}（）</span>
+        <span>{{ item.question }}</span>
         <span class="score"
           >
           <!-- {{ item.student_score }} -->
@@ -109,6 +125,8 @@ import { defineComponent, reactive, toRefs, watch,ref } from "vue";
 interface Istate {
   data: any[];
   answerClass: string;
+  origin_score:number;
+  student_score:number;
 }
 export default defineComponent({
   name: "exper",
@@ -127,6 +145,8 @@ export default defineComponent({
         },
       ],
       answerClass: "",
+      origin_score:0,
+      student_score:0,
     });
     const methods = {
       ifAnswerTrue(item: any, it: any,index:any) {
@@ -168,10 +188,21 @@ export default defineComponent({
            }
          })
         }
-        console.log(allanswer,rightIndex)
+        // console.log(allanswer,rightIndex)
         return rightIndex.join(',')
       }
     };
+    console.log(props.detailInfo)
+    watch(()=>{return props.detailInfo},(val:any)=>{
+      if(val.length){
+        state.origin_score=0
+        state.student_score=0
+        val.forEach((v:any)=>{
+          state.origin_score+=Number(v.origin_score)
+          state.student_score+=Number(v.student_score)
+        })
+      }
+    },{immediate:true,deep:true})
     return { ...toRefs(state), optionItemName, ...methods};
   },
 });
@@ -235,4 +266,21 @@ export default defineComponent({
     margin-right: 10px;
     margin-left: 10px;
   }
+.Statistics{
+  display: flex;
+  padding: 0 20px;
+  .item{
+    margin-right: 16px;
+    color: var(--black-45);
+    .mid{
+      padding:0 6px
+    }
+    .one{
+      color:var(--primary-color)
+    }
+    .two{
+      color: var(--brightBtn);
+    }
+  }
+}  
 </style>

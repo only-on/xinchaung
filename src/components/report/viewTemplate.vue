@@ -3,7 +3,7 @@
     <PdfVue :url="pdfUrl" />
   </div>
   <div class="wrapper" v-else>
-    <div class="content">
+    <div class="contentT">
       <div class="dnd-space">
         <a-form :model="form" layout="vertical" ref="formRef">
           <a-form-item label="报告模板名称" name="name">
@@ -63,6 +63,7 @@ const route = useRoute();
 const formRef = ref<any>(null);
 interface Props {
   id?: number;
+  reportTemplateData?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   id: 0,
@@ -81,6 +82,14 @@ onMounted(() => {
   templateId.value = props.id !== 0 ? props.id : "";
   if (templateId.value) {
     getDetail();
+  }
+  if(props.reportTemplateData && props.reportTemplateData.json_content.length > 0){
+    // console.log(props.reportTemplateData);
+    form.name = props.reportTemplateData.filename || props.reportTemplateData.name
+    Object.assign(dataList, props.reportTemplateData.json_content);
+    dataList.forEach((item: WidgetModel, index: number) => {
+      item.idx = index;
+    });
   }
 });
 const pdfUrl = ref('')
@@ -111,11 +120,11 @@ defineExpose({
   justify-content: space-between;
   height: 100%;
 }
-.content {
+.contentT {
   flex: 1;
   overflow: auto;
   padding-right: 10px;
-  max-height: 806px;
+  max-height: 900px;
   .dnd-space {
     padding-left: 25px;
     // min-height: 800px;

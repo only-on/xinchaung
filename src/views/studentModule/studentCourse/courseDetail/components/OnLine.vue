@@ -1,4 +1,5 @@
 <template>
+  <!-- 已弃用组件 -->
   <div
     class="report-template-data"
     v-if="reportTemplateData && reportTemplateData.json_content.length > 0"

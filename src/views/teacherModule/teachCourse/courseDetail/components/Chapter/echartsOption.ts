@@ -667,7 +667,7 @@ function setTagData(knowledge_map: any,size:number) {
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.length?item.contentvia.knowledages.forEach((knowledage: any,key:number) => {
-        console.log(knowledage.knowledge_map);
+        // console.log(knowledage.knowledge_map);
         const knowledge_map_name=knowledage.knowledge_map?knowledage.knowledge_map.knowledge_map_name:''
         const id=knowledage.knowledge_map?knowledage.knowledge_map.id:''
         // const {id}=knowledage.knowledge_map

@@ -1,28 +1,21 @@
 <template>
   <div>
     <template v-if="baseInfo?.template_type=='form'">
-      <onLine :reportTemplateData='baseInfo' :preview='true'></onLine>
+      <!-- <onLine :reportTemplateData='baseInfo' :preview='true'></onLine> -->
+      <viewTemplate :reportTemplateData='baseInfo'  />
     </template>
     <template v-else>
       <div class="pdfshow">
         <pdf :url="detailInfo"></pdf>
       </div>
     </template>
-    <!-- <table style="width: 100%" class="teacherRemark" v-if="baseInfo?.remark">
-      <tr>
-        <td style="width: 16.7%" class="remark">教师批注</td>
-        <td colspan="6" class="remarkValue">
-          {{ baseInfo?.remark }}
-        </td>
-      </tr>
-    </table> -->
   </div>
 </template>
 <script lang="ts">
 import { defineComponent, reactive, toRefs, watch, provide } from "vue";
 import onLine from "./OnLine.vue";
 import pdf from "src/components/pdf/pdf.vue";
-
+import viewTemplate from "src/components/report/viewTemplate.vue";
 interface Istate {
   reportUrl: string;
 }
@@ -30,6 +23,7 @@ export default defineComponent({
   components: {
     onLine,
     pdf,
+    viewTemplate
   },
   name: "report",
   props: ["detailInfo", "baseInfo"],

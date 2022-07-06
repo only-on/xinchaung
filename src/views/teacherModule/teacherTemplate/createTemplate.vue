@@ -19,7 +19,7 @@
         </drag-gable>
       </div>
     </div>
-    <div class="content">
+    <div class="contentC">
       <div class="dnd-space">
         <a-form :model="form" :rules="rules" layout="vertical" ref="formRef">
           <a-form-item label="报告模板名称" name="name">
@@ -307,7 +307,7 @@ const settingReport = () => {
   justify-content: space-between;
   height: 100%;
 }
-.content {
+.contentC {
   flex: 1;
   overflow: auto;
   padding-right: 10px;

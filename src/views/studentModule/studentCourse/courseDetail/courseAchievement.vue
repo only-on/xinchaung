@@ -121,18 +121,22 @@
     </div>
     <a-modal
         :title="modaldata.title"
-        :footer="null"
         :visible="modaldata.visableDetail"
         @ok="detailOk"
         @cancel="detailCancel"
-        width="1000px"
+        :width="modaldata.componentName=='remark'?600:1000"
+        :destroyOnClose="true"
       >
         <div>
           <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
-          <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
+          <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" ></exper>
           <report v-if="modaldata.componentName=='report'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
           <remark v-if="modaldata.componentName=='remark'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
         </div>
+        <template #footer>
+          <a-button @click="detailCancel" v-if="['exper','remark'].includes(modaldata.componentName)">关闭</a-button>
+          <span v-else></span>
+        </template>
       </a-modal>
   </div>
 </template>
@@ -143,6 +147,7 @@ import * as echarts from "echarts";
 import { ref, toRefs, onMounted,reactive} from "vue";
 import request from "src/api/index";
 import { useRouter ,useRoute } from 'vue-router';
+import viewTemplate from "src/components/report/viewTemplate.vue";
 import exper from "../courseDetail/components/exper.vue";
 import report from "../courseDetail/components/report.vue";
 import cvideo from "../courseDetail/components/video.vue";
@@ -329,6 +334,7 @@ function noclick(){
 }
 // table操作
 function clickFun(resultData: any, type: any, report?: any) {
+  // console.log(resultData)
   modaldata.baseInfo=''
   // console.log(val);
   // if (["updateReport", "video"].includes(type)) {
@@ -342,14 +348,15 @@ function clickFun(resultData: any, type: any, report?: any) {
     
       const types = {
         exper: "随堂测试详情",
-        video: "操作视频",
-        report: "报告",
-        remark:'评语'
+        video: "查看录屏",
+        report: "实验报告详情",
+        remark:'预览教师评语'
       };
       modaldata.title = types[type];
       modaldata.detailInfo = resultData;
       modaldata.baseInfo = report;
       modaldata.visableDetail = true;
+   console.log(modaldata.baseInfo)   
 }
 function detailOk(){
   modaldata.visableDetail= false;
