@@ -350,7 +350,7 @@ onMounted(()=>{
   }
 }
 .tableHeight{
-  height: 530px;
-  overflow-y: auto;
+  // height: 530px;
+  // overflow-y: auto;
 }
 </style>

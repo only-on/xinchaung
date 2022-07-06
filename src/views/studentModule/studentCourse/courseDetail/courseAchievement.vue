@@ -91,9 +91,7 @@
     @Change='onChangePage' 
     @showSizeChange="showSizeChange"
     show-size-changer
-
     >
-      
     </a-pagination>
 
     <div class="footer">
@@ -147,7 +145,6 @@ import * as echarts from "echarts";
 import { ref, toRefs, onMounted,reactive} from "vue";
 import request from "src/api/index";
 import { useRouter ,useRoute } from 'vue-router';
-import viewTemplate from "src/components/report/viewTemplate.vue";
 import exper from "../courseDetail/components/exper.vue";
 import report from "../courseDetail/components/report.vue";
 import cvideo from "../courseDetail/components/video.vue";

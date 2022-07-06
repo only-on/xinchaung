@@ -194,7 +194,7 @@ onMounted(()=>{
   cursor: pointer;
 }
 .tableScrollbar{
-  height: 530px;
-  overflow-y: auto;
+  // height: 530px;
+  // overflow-y: auto;
 }
 </style>
