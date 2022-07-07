@@ -238,7 +238,7 @@
                           :class="!classVal.full ? 'course-info-title-active' : ''"
                         >
                           <span class="course-info-text">剩余可预约人数</span>
-                          <span class="course-info-num">{{ classVal.left_stunum }}</span>
+                          <span class="course-info-num">{{ classVal.left_stunum>0?classVal.left_stunum:0 }}</span>
                         </div>
                       </template>
                       <div
@@ -247,7 +247,7 @@
                         :class="!classVal.full ? 'course-info-title-active' : ''"
                       >
                         <span class="course-info-text">剩余可预约人数</span>
-                        <span class="course-info-num">{{ classVal.left_stunum }}</span>
+                        <span class="course-info-num">{{ classVal.left_stunum>0?classVal.left_stunum:0 }}</span>
                       </div>
                     </div>
                     <div
