@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
-          <!-- <iframe id="iframe" :src="jupyteUrl" frameborder="0"></iframe> -->
+          <iframe id="image-jupyter-iframe" v-if="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
         </div>
         <a-modal class="save-image-modal" :visible="saveVisible"  :closable="false">
           <template v-slot:title>保存镜像</template>
@@ -189,7 +189,8 @@ export default defineComponent({
             reactiveData.jupyteData.ip +
             ":" +
             reactiveData.jupyteData.port;
-          getJupyteIframe(reactiveData.jupyteUrl);
+          // getJupyteIframe(reactiveData.jupyteUrl);
+          onLoadIframe()
         }
       });
     }
@@ -331,6 +332,33 @@ export default defineComponent({
       }
       (jupyteIframe.value as any).appendChild(frm);
     }
+    const showIframe = ref(true)
+    let TimerIframe: NodeJS.Timeout | null = null;
+    function onLoadIframe() {
+      const iframe: any = document.querySelector('#image-jupyter-iframe')
+      let onloadIframe = false
+      // 处理兼容性问题
+      if (iframe?.attachEvent) {
+        iframe.attachEvent('onload', () => {
+          clearInterval(Number(TimerIframe));
+          onloadIframe = true
+        })
+      } else {
+        iframe.onload = () => {
+          clearInterval(Number(TimerIframe));
+          onloadIframe = true
+        }
+      }
+      TimerIframe = setInterval(() => {
+        // console.log(onloadIframe)
+        if (!onloadIframe) {
+          showIframe.value = false
+          setTimeout(() => {showIframe.value = true}, 200);
+        }
+        // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
+      }, 6000)
+    }
+
     const recommend:any=reactive([])
     function getImgTag() {
       recommend.length=0
@@ -348,6 +376,9 @@ export default defineComponent({
       getImgTag()
       // extendSess();
     });
+    onBeforeRouteLeave(() => {
+      clearTimeout(Number(TimerIframe));
+    });
     return {
       ...toRefs(reactiveData),
       createForm,
@@ -359,7 +390,8 @@ export default defineComponent({
       jupyteIframe,
       recommend,
       selectTag,
-      saveImageLoad
+      saveImageLoad,
+      showIframe,
     };
   },
 });
@@ -431,7 +463,7 @@ export default defineComponent({
   .iframe {
     height: 100%;
 
-    #iframe {
+    #iframe, #image-jupyter-iframe {
       height: 100%;
       width: 100%;
     }

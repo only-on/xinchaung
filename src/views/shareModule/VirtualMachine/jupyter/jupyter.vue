@@ -275,7 +275,7 @@ onMounted(async () => {
       setTimeout(() => {showIframe.value = true}, 200);
     }
     // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
-  }, 60000)
+  }, 6000)
 });
 </script>
 
