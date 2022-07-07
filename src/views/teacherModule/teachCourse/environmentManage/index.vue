@@ -118,6 +118,7 @@ const onSearch = () => {
 }
 
 let sign = false    // 判断当前页有没有操作的虚机
+// type：虚机的状态 i:操作的虚机信息
 function getList(type?: any, i?: any) {
   sign = false
   clearTimeout(Number(timer));
@@ -126,7 +127,7 @@ function getList(type?: any, i?: any) {
   // console.log(searchInfo, "searchInfo");
   http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IBusinessResp) => {
     loading.value = false;
-    let { list, page } = res.data;
+    let { list, page } = res?.data;
     if(!list || !list.length){
         return
     }
@@ -159,7 +160,7 @@ function getList(type?: any, i?: any) {
       }) : ''
       if (isCorrect) {
         // message.success({ content: "请求成功!", duration: 2 });
-      } else if (sign) {
+      } else if (i&&sign || !i) {
         timer = setTimeout(() => {
           getList(type, i);
         }, 1500);
