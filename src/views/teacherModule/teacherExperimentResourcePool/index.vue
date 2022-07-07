@@ -435,6 +435,10 @@ const getDirection = () => {
 <style scoped lang="less">
 .teacherExperimentList{
   margin-bottom: 50px;
+  overflow: hidden;
+  .labelSearchBox {
+    margin-top: 10px;
+  }
 }
 .mainBox {
   min-height: 570;
