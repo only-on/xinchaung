@@ -32,12 +32,12 @@
   </div>
   <Submit v-if="idDelte" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
-  <SelectDocOrMp4 
-    :activeFile="activeFile" 
-    :visible="visible" 
-    :docOrMp4Type="1" 
-    @selectDocOrMp4File="selectDocOrMp4File" 
-    @closeDrawerDoc="closeDrawerDoc" 
+  <SelectDocOrMp4
+    :activeFile="activeFile"
+    :visible="visible"
+    :docOrMp4Type="1"
+    @selectDocOrMp4File="selectDocOrMp4File"
+    @closeDrawerDoc="closeDrawerDoc"
   />
   <!-- 上传文档 -->
   <upload-file-modal
@@ -216,7 +216,7 @@ const deleteFile = () => {
   // if (props.detail.guide) {
   //   props.detail.guide = ''
   //   experimentContent.value = ''
-  //   return 
+  //   return
   // }
   http.deleteDocument({urlParams: {content_id: props.detail.id}})
   .then((res: any) => {
@@ -293,7 +293,7 @@ const cancel = () => {
   :deep(.mark__body) {
     .mark__editor,
     .mark__preview {
-      height: 455px;
+      min-height: 455px;
     }
   }
   .submit {

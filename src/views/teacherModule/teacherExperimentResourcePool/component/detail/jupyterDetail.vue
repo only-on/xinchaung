@@ -131,7 +131,7 @@ const beforeUpload = async (file: any, fileList: any) => {
   :deep(.mark__body) {
     .mark__editor,
     .mark__preview {
-      height: 455px;
+      min-height: 455px;
     }
   }
   .submit {
