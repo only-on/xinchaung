@@ -316,7 +316,7 @@ export default defineComponent({
         http.classStuIntersect({param:{stuIds:tableParams.student_id}})
         .then((res: IBusinessResp) => {
          if(res.code==1){
-           message.warning('添加成功')
+           message.success('添加成功')
            visible.value = false;
            data.value.forEach((item:any,index:any)=>{
             if(studentids.includes(item.stu_id)&&ids.indexOf(item.stu_id)==-1){
@@ -370,7 +370,7 @@ export default defineComponent({
     function handleSubmit () {
       ruleForm.value.validate().then(() => {
         if (!id&&!tableParams.student_id?.length) {
-          $message.warn('请选择学生')
+          $message.warning('请选择学生')
           return
         }
         let ids:any=[]

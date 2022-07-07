@@ -198,17 +198,18 @@
                           class="make-item-item"
                           v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
                         >
-                          <span>{{ classVal.arrangements[aindex].teacher_name }}</span>
-                          <span
+                          <span class="teacherName" :title="classVal.arrangements[aindex].teacher_name">{{ classVal.arrangements[aindex].teacher_name }}</span>
+                          <span class='subscribe'
                             >共预约{{ classVal.arrangements[aindex].stu_num }}人
                             <span class="edit-del-btn-wrap">
                               <i
+                                v-if="classVal.arrangements[aindex].teacher_name=='管理员'"
                                 @click="adminEdit(classVal.arrangements[aindex])"
                                 class="icon-bianji iconfont"
                               ></i>
                               <i
                                 @click="adminDel(classVal.arrangements[aindex])"
-                                class="icon-shanchu iconfont"
+                                class="icon-shanchu admin-shanchu iconfont"
                               ></i>
                             </span>
                           </span>
@@ -1247,6 +1248,14 @@ onMounted(() => {
         .edit-del-btn-wrap {
           display: none;
           right: 10px;
+          height: 24px;
+        }
+        .teacherName{
+          width: 68px;
+          display: inline-block;
+          height: 100%;
+          white-space: nowrap;
+          overflow: hidden;
         }
         &:hover {
           background: var(--black-15);
@@ -1313,6 +1322,7 @@ onMounted(() => {
 }
 .subscribe{
   // margin-right: 20px;
+  height: 24px;
 }
 .admin-shanchu{
   margin-left: 5px;
