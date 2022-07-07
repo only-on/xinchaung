@@ -241,6 +241,7 @@ const selectTemplate = (val: any) => {
 
 // 删除模板
 const handleDelete = (item: any) => {
+  return new Promise((resolve) => {
   $confirm({
     title: "提示",
     content: "确定删除实验报告模板?删除后不可恢复",
@@ -255,9 +256,11 @@ const handleDelete = (item: any) => {
           activeTemplateItem.typeText=''
         }
         getTemplateList()
+        resolve(1)
       })
     },
   });
+  })
 };
 
 const uploadAction = (env ? '/proxyPrefix':'')+'/api/simple/report/templates/import-template'
@@ -328,9 +331,9 @@ const onChange = (info: any) => {
     getTemplateList()
   }
 }
-function fileRemove(file: any) {
+async function fileRemove(file: any) {
   // console.log(file)
-  uploadPercent.value === 100 ? handleDelete(activeTemplateItem) : ''
+  uploadPercent.value === 100 ? await handleDelete(activeTemplateItem) : ''
   formState.reportUploadList = [];
   uploadLoading.value = false
 }
