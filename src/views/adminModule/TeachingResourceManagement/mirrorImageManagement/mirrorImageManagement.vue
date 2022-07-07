@@ -42,7 +42,7 @@
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
-            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
+            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}G</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
