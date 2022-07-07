@@ -241,9 +241,11 @@ export default defineComponent({
             },100)
             } else {
               saveImageLoad.value=false
-              message.warn(res.msg);
+              message.warning(res.msg);
+              // message.success("保存成功");
             }
-          }).catch(()=>{
+          }).catch((err:any)=>{
+            message.warning(err);
             saveImageLoad.value=false
           })
         }

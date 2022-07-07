@@ -128,9 +128,10 @@
             placeholder="请选择结束时间"
             show-time
             format="YYYY-MM-DD HH:mm:ss"
-            :disabled-date="disabledDate"
-            :disabled-time="disabledDateTime"
+            :disabled-date="disabledDate2"
           />
+          <!-- :disabled-date="disabledDate"
+            :disabled-time="disabledDateTime" -->
         </span>
       </div>
     </div>
@@ -298,11 +299,11 @@ function batchDisabled() {
 // 确认
 function handleOk() {
   if (!endTime.value) {
-        message.error('请选择时间', 3)
+        message.error('请选择时间')
         return
       }
       if (moment(beginTime.value).unix() > moment(endTime.value).unix()) {
-        message.error('结束时间必须大于开始时间', 3)
+        message.error('结束时间必须大于开始时间')
         return
       }
       let param = {
@@ -311,7 +312,7 @@ function handleOk() {
         end_time: endTime.value?.format('YYYY-MM-DD HH:mm:ss')
       }
       http.forbiddenUser({param}).then((res: any) => {
-        message.success('禁用成功', 3)
+        message.success('禁用成功')
         beginTime.value = moment(new Date())
         selectedRowKeys.value=[]
         endTime.value = undefined
@@ -328,6 +329,9 @@ function handleCancel() {
 }
 function disabledDate(current: any) {
   return current && moment(current).add(0, "days") < moment();
+}
+function disabledDate2(current: any) {
+  return moment(current).add(0, "days") < moment();
 }
 function range (start: number, end: number){
       const result = [];
