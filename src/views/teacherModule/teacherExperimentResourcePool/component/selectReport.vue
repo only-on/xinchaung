@@ -68,7 +68,7 @@
         <div v-if="formState.reportUploadList[0]?.name" class="progress-box">
           <div class="file-base-info">
             <span>文件名称：{{ formState.reportUploadList[0].name }}</span
-            ><span class="icon-shanchu iconfont" @click="fileRemove"></span>
+            ><span class="icon-shanchu iconfont" @click="fileRemove" v-if="uploadPercent"></span>
           </div>
           <a-progress :percent="uploadPercent" />
         </div>
