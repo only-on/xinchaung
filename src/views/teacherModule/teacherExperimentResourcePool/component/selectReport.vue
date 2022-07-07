@@ -24,7 +24,7 @@
       <div class="online" @click="viewTemplate(3)">在线制作</div>
     </div>
     <div class="content textScrollbar">
-      <div v-if="reportActive === 1" class="contentLeft">
+      <div v-show="reportActive === 1" class="contentLeft">
         <div class="reportList flexCenter">
           <div class="search">
             <a-input-search v-model:value="TemplaName" placeholder="请输入关键字搜索" @keyup.enter="getTemplateList" />
@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div v-if="reportActive === 2" class="contentRight">
+      <div v-show="reportActive === 2" class="contentRight">
         <a-upload
           accept=".doc,.docx"
           :file-list="formState.reportUploadList"
@@ -150,6 +150,8 @@ const reportTab = (val: number) => {
   reportActive.value = val;
   if (val === 1) {
     getTemplateList();
+  } else {
+    uploadPercent.value === 100 ? formState.reportUploadList = [] : ''
   }
 };
 const getTemplateList = (ActId?:number) => {
@@ -262,6 +264,10 @@ const uploadAction = (env ? '/proxyPrefix':'')+'/api/simple/report/templates/imp
 const uploadLoading = ref(false)
 function beforeUploadReport(file: any) {
   console.log(file);
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   //  formState.reportUploadList[0] = {
   //     uid: file.uid,
   //     id:1,
@@ -319,10 +325,12 @@ const onChange = (info: any) => {
     activeTemplateItem.name = name;
     formState.reportUploadList[0].id = id
     formState.reportUploadList[0].url = word_path
+    getTemplateList()
   }
 }
 function fileRemove(file: any) {
   // console.log(file)
+  uploadPercent.value === 100 ? handleDelete(activeTemplateItem) : ''
   formState.reportUploadList = [];
   uploadLoading.value = false
 }
@@ -476,6 +484,7 @@ const cancelTemplate = (val: number,id?:number) => {
           display: flex;
           justify-content: space-between;
           padding-right: 14px;
+          word-break: break-all;
         }
       }
     }

@@ -867,6 +867,10 @@ function beforeUploadIpynb(file: any) {
     message.warn("请上传jupyter文件");
     return;
   }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   // formState.ipynbList[0]={}
   // console.log(file)
   let obj={
@@ -933,6 +937,10 @@ const docBeforeUpload =(file: any) => {
   if (!upDoc.catalogue) {
     message.warn("上传文件时请选择目录");
     return false;
+  }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
   }
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频

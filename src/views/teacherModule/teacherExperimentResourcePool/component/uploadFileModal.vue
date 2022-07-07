@@ -118,6 +118,10 @@ async function beforeUpload(file: any) {
     message.warn("上传文件时请选择目录");
     return false;
   }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   const arr = file.name.split('.')
   const suffix = arr[arr.length-1]
   if (suffix === 'md') {

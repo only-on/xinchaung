@@ -69,6 +69,10 @@ const beforeUpload = async (file: any, fileList: any) => {
     $message.warn(`请上传 .ipynb格式文件`)
     return false;
   }
+  if (file.name.length > 100) {
+    $message.warn(`文件名称长度不能超过100`);
+    return
+  }
   let fd = new FormData()
   fd.append('jupyter_file', file)
   http.uploadJuptyFile({param: fd}).then((res: any) => {
