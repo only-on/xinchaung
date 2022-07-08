@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="courseManagementContent">
-      <div class="search flexCenter">
+      <div class="searchcourse flexCenter">
         <div class="left flexCenter">
           <div class="item">
             <span>素材名称：</span>
@@ -398,7 +398,7 @@ onMounted(() => {
     margin-top: 2rem;
     min-height: 750px;
     padding: 24px 30px 0;
-    .search{
+    .searchcourse{
       justify-content: space-between;
       .left{
         .item{

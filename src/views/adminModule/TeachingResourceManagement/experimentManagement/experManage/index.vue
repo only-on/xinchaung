@@ -1,6 +1,6 @@
 <template>
     <div class="experManage">
-        <div class="search">
+        <div class="searchManag">
           <div class='search_left'>
             <div class="item custom_input custom_input2">
               <span style="width:50px">实验名称</span>
@@ -256,7 +256,7 @@ const ifSearch:any=ref(false)
 };
 </script>
 <style lang="less" scoped>
- .search{
+ .searchManag{
      display: flex;
      justify-content: space-between;
      margin-bottom: 20px;
