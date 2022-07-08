@@ -102,7 +102,7 @@
                 <MarkedEditor v-model="state.fileItem.file_html" class="markdown__editor" :preview="true" />
               </div>
               <div v-else-if="state.fileItem.suffix === 'mp4'">
-                <video src="" :controls="true" height="440" width="847" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
+                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
               </div>
               <div v-else-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
