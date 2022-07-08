@@ -248,16 +248,16 @@ function setChart(data:any){
   var option = {
     color: ["#FF9544"],
     grid: {
-      left: 1,
+      left: 40,
       top: 40,
       // bottom:20,
-      right: 100,
+      right: 1,
       containLabel: true,
     },
     xAxis: {
       type: "category",
-      boundaryGap: false,
-      name: "实验",
+      boundaryGap: false, 
+      name: "实验",  // 学生位置  实验
       nameTextStyle: {
         color: "#333333",
       },
@@ -274,7 +274,7 @@ function setChart(data:any){
     },
     yAxis: {
       type: "value",
-      name: "学习效率",
+      name: "学习效率", // +'学习效率=log(实验总得分/实验总耗时)'
       nameTextStyle: {
         color: "#333333",
       },

@@ -730,7 +730,7 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: 100px;
+    margin-right: 50px;
     .a-logo {
       display: flex;
       align-items: center;
@@ -744,7 +744,7 @@ export default defineComponent({
     }
     .web-title {
       color: var(--white);
-      font-size: 22px;
+      font-size: 18px;
     }
   }
   > .header-middle {

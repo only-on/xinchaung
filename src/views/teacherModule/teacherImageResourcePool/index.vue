@@ -414,23 +414,6 @@ onMounted(() => {
 
 </script>
 <style scoped lang="less">
-.reference {
-  position: fixed;
-  width: 100%;
-  top: 110px;
-  left: 0;
-  height: 50px;
-  .addBox {
-    width: var(--center-width);
-    margin: 0 auto;
-    .add {
-      justify-content: end;
-      .addCircular {
-        margin-left: 20px;
-      }
-    }
-  }
-}
 .mainBox {
   flex-wrap: wrap;
   // justify-content: space-between;

@@ -1,5 +1,5 @@
 <template>
-  <div class="reference">
+  <div class="reference" :class=" configuration.showNav || configuration.tabs.length ? 'reference2' : '' ">
     <div class="addBox">
       <div class="add flexCenter">
         <span
@@ -401,7 +401,7 @@ async function init() {
 .reference {
   position: fixed;
   width: 100%;
-  top: 110px;
+  top: 90px;
   left: 0;
   height: 50px;
   .addBox {
@@ -414,6 +414,9 @@ async function init() {
       }
     }
   }
+}
+.reference2{
+  top: 110px;
 }
 .mainBox {
   flex-wrap: wrap;
