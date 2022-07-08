@@ -172,10 +172,11 @@ function getStuStatis(){
       console.log(res.data?.length,'res.data?.length')
       columns.value=columns1
       legend.value=legend1.value
-      if(res.code&&res.data?.length!==0){
+      // &&res.data?.length!==0
+      if(res.code){
         statisData.value=res.data
         //过滤columns
-        if(res.data?.automaticScoringCorrectRate==null){
+        if(!res.data?.hasAuto){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='automaticScore'
           })
@@ -183,7 +184,7 @@ function getStuStatis(){
             return jt!=='自动评分'
           })
         }
-        if(res.data?.experimentalReportSubmissionRate==null){
+        if(!res.data?.hasReport){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='reportScore'
           })
@@ -191,7 +192,7 @@ function getStuStatis(){
             return jt!=='实验报告'
           })
         }
-        if(res.data?.inClassTestAccuracyRate==null){
+        if(!res.data?.haQuestion){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='inClassTestScore'
           })

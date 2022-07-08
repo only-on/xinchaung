@@ -3,22 +3,22 @@
        <div class="statistic">
            实验成绩分布图
            <span class="score">
-               <span class="max">(最高分:{{statisData?.maxScore}}</span>
-               <span class="min">最低分:{{statisData?.minScore}}</span>
-               <span class="average">平均分:{{statisData?.avgScore}})</span>
+               <span class="max">(最高分:{{statisData?.maxScore?statisData?.maxScore:'--'}}</span>
+               <span class="min">最低分:{{statisData?.minScore?statisData?.minScore:'--'}}</span>
+               <span class="average">平均分:{{statisData?.avgScore?statisData?.avgScore:'--'}})</span>
            </span>
        </div>
        <div class="chart">
         <div :id="lineChart" class="line-chart"></div>
         <div id="pie-chart">
             <div class="pie-chart-row">
-                <div class='pie-item' v-if="statisData?.experimentalReportSubmissionRate!==null">
+                <div class='pie-item' v-if="statisData?.hasReport">
                 <div class="title">
                     实验报告提交率
                 </div>
                 <Progress type="circle" :percent='statisData?.experimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
             </div>
-            <div class='pie-item' v-if="statisData?.inClassTestAccuracyRate!==null">
+            <div class='pie-item' v-if="statisData?.haQuestion">
                 <div class="title">
                     随测正确率
                 </div>
@@ -26,7 +26,7 @@
             </div>
             </div>
             <!-- (experType!==6&&experType!==7)&& -->
-            <div class='pie-item' v-if="statisData?.automaticScoringCorrectRate!==null">
+            <div class='pie-item' v-if="statisData?.hasAuto">
                 <div class="title">
                     自动评分率
                 </div>
