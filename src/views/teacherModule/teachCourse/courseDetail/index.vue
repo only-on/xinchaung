@@ -426,6 +426,7 @@ const uploadCoverHandle=(file:any)=>{
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
     formState.url = res.data.url
+    formState.cover=res.data.url
   })
 }
 const getCourseSetup=()=>{

@@ -123,10 +123,6 @@ export default defineComponent({
     onMounted(() => {
       initData();
     });
-    var getClass:any=computed(()=>{
-      // ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor activeBto' : 'active' : ''
-      return 'active'
-    })
     watch(
       () => {
         return configuration.componenttype;
@@ -175,7 +171,7 @@ export default defineComponent({
     watch(()=>store.state.systemInfo, newVal => {
       themeClass.value = 'theme'+newVal.theme
     },{deep: true, immediate: true})
-    return { activeName, ActiveName, tabChange, configuration, themeClass , getClass};
+    return { activeName, ActiveName, tabChange, configuration, themeClass };
   },
 });
 </script>
