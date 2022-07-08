@@ -651,13 +651,13 @@ export default defineComponent({
     watch(() => router.currentRoute.value.path, newVal => {
       // 根据当前路由高亮对应的菜单
       menus.forEach((item:any) => {
-        if(item.url && item.url.indexOf(newVal) !== -1){
+        if(item.url && newVal.includes(item.url)){
           activeMenu.value = item.name
           lStorage.set("menuActiveName", item.name);
         }
         if (item.children.length) {
           item.children.forEach((childItem:any) => {
-            if(childItem.url && childItem.url.indexOf(newVal) !== -1){
+            if(childItem.url && newVal.includes(childItem.url)){
               activeMenu.value = item.name
               lStorage.set("menuActiveName", item.name);
             }
