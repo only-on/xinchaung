@@ -168,7 +168,7 @@
         </div>
         <div class="data-set-hint">仅选择ipynb文件</div> -->
         <div class="selectFile" v-if="formState.ipynbList.length">
-          <span>{{formState.ipynbList[0].name}}</span>
+          <span class="single_ellipsis" :title="formState.ipynbList[0].name">{{formState.ipynbList[0].name}}</span>
           <span class="iconfont icon-shanchu" @click.stop="formState.ipynbList=[]"></span>
         </div>
       </div>
@@ -269,7 +269,7 @@
       <div v-if="formState.document.type === 'pdf'" class="pdfBox">
         <!-- <PdfVue :url="formState.document.pdf" /> -->
         <div class="selectFile">
-          <span v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
+          <span class="single_ellipsis" :title="upDoc.docFileList[0] && upDoc.docFileList[0].name" v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
           <span v-else>{{docOrMp4Drawer.activeFile.file_name}}</span>
           <span class="iconfont icon-shanchu" v-if="upDoc.docFileList.length || docOrMp4Drawer.activeFile.file_name" @click.stop="removeDocMp4"></span>
         </div>
@@ -1330,6 +1330,7 @@ onMounted(()=>{
   }
   .selectFile{
     padding-left: 2rem;
+    display: flex;
     justify-content: space-between;
     // width: 40%;
     .iconfont{

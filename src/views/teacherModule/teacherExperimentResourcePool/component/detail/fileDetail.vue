@@ -302,11 +302,11 @@ const cancel = () => {
 }
 .pdfBox{
   .flexCenter{
-    width: 50%;
+    // width: 50%;
     justify-content: space-between;
     height: 40px;
     h2{
-      width: 80%;
+      // width: 80%;
     }
     .iconfont{
       cursor: pointer;
