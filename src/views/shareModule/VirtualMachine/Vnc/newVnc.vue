@@ -324,7 +324,7 @@ function initWs() {
           }
         }else if (wsJsonData.type=="vm_act_message"){ 
           // 分组成员在操作或教师在操作
-          if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
+          if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
             isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
           }
