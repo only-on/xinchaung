@@ -37,14 +37,9 @@ interface tab {
 }
 interface config {
   showNav?: boolean;
-  navPosition?: string;
-  navType?: boolean;
   tabs?: tab[];
   componenttype: number | undefined;
   showContent: boolean;
-  backOff: boolean;
-  showPageEdit: boolean;
-  pageEdit: () => void;
 }
 export default defineComponent({
   name: "Layout",
@@ -59,12 +54,6 @@ export default defineComponent({
       tabs: [], // tab切换项 例 [{name:'随堂论坛',componenttype:0}]
       componenttype: undefined, //  tab选中项   传tabs时需赋值 undefined做初始化，随后navtab组件会改其值为tabs的首项。 可监听configuration.componenttype 回调处理
       showContent: false, //  是否需要内容区盒子   不需要则 layout只带顶部导航
-
-      backOff: false, // 现已取消
-      showPageEdit: false, // 现已取消
-      pageEdit: () => {}, // 现已取消
-      navPosition: "inside", //  现已取消
-      navType: true, // 现已取消
     });
     function updataNav(val: config) {
       // console.log(val)

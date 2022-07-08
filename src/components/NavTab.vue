@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="navBox"
-    :class=" configuration.showNav || configuration.tabs.length ? 'showNavBox' : '' "
-  >
-    <div class="crumbs">
+  <div class="navBox" :class=" configuration.showNav ? 'showNavBox' : '' " v-show="configuration.showNav || configuration.tabs.length">
+    <div class="crumbs" v-show="configuration.showNav">
       <breadcrumb v-show="configuration.showNav" />
     </div>
     <div class="navList" :class="configuration.tabs.length > 1?'navListTab':''">
@@ -126,6 +123,10 @@ export default defineComponent({
     onMounted(() => {
       initData();
     });
+    var getClass:any=computed(()=>{
+      // ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor activeBto' : 'active' : ''
+      return 'active'
+    })
     watch(
       () => {
         return configuration.componenttype;
@@ -174,7 +175,7 @@ export default defineComponent({
     watch(()=>store.state.systemInfo, newVal => {
       themeClass.value = 'theme'+newVal.theme
     },{deep: true, immediate: true})
-    return { activeName, ActiveName, tabChange, configuration, themeClass };
+    return { activeName, ActiveName, tabChange, configuration, themeClass , getClass};
   },
 });
 </script>
@@ -185,6 +186,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 60px;
+  justify-content: flex-end;
 }
 .showNavBox {
   height: 80px;
