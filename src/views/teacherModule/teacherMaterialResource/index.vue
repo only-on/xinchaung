@@ -409,7 +409,7 @@ const getTypeList = () => {
         }
         .name {
           display: inline-block;
-          max-width: 90px;
+          max-width: 56px;
           word-break: normal;
           overflow: hidden;
           white-space: nowrap;
