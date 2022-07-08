@@ -279,9 +279,6 @@ function changeChecks(){
 //把学生添加到分组里
 function toLeft(){
   console.log(selectedGroup.value,treeData.value)
-  if(props.ifedit){
-    selectedGroup.value=0
-  }
   if (!selectedGroup.value && selectedGroup.value !== 0) {
     message.warning("请选择或者创建分组!");
     return;
