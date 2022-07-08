@@ -28,7 +28,9 @@
         <!-- 请确认保存后查看文档转换 -->
       </h2>
     </div>
-    <PdfVue :url="activeFile.file_html" v-else />
+    <div v-else class="pdfBox">
+      <PdfVue :url="activeFile.file_html"/>
+    </div>
   </div>
   <Submit v-if="idDelte" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
@@ -285,8 +287,8 @@ const cancel = () => {
   }
 }
 .experiment-content {
-  margin-top: 16px;
-  height: 563px;
+  margin: 16px 0;
+  min-height: 563px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }
@@ -301,6 +303,7 @@ const cancel = () => {
   }
 }
 .pdfBox{
+  height: 563px;
   .flexCenter{
     // width: 50%;
     justify-content: space-between;
