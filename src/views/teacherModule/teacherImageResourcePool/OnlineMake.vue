@@ -309,25 +309,26 @@ const deleteFun = (val: any) => {
   });
 };
 const GenerateImage = (val: any,k:any) => {
-  console.log(val);
+  // console.log(val);
   var iamgeSaveStatus:any = storage.lStorage.get("iamgeSaveStatus")? storage.lStorage.get("iamgeSaveStatus"): [];
+  let flage:any=false
   iamgeSaveStatus.forEach((v:any,index:number)=>{
-    if(val.id===v.id){
-      console.log(val);
-      
+    if(val.id==v.id){
       var time = new Date().getTime() - new Date(v.beginIime).getTime();
       if (time / 1000 / 60 > 10) {
         // reactiveData.isSaveImage = true;
         iamgeSaveStatus.splice(index, 1);
         storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
-        // clearInterval(reactiveData.timer as any);
       } else {
+         flage=true
          message.warning('保存镜像后10分钟内无法再次操作')
          return
-        // reactiveData.isSaveImage = false;
       }
     }
   })
+  if(flage === true){
+    return
+  }
   createFormData.name=''
   createFormData.description=''
   saveVisible.value=true
