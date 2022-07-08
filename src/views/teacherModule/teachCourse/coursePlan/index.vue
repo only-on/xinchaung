@@ -215,7 +215,7 @@
                           </span>
                         </div>
                       </div>
-                      <div class="make-create-btn" @click="
+                      <div v-if="!classVal.full" class="make-create-btn" @click="
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,

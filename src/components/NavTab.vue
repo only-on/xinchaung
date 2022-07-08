@@ -1,9 +1,6 @@
 <template>
-  <div
-    class="navBox"
-    :class=" configuration.showNav || configuration.tabs.length ? 'showNavBox' : '' "
-  >
-    <div class="crumbs">
+  <div class="navBox" :class=" configuration.showNav ? 'showNavBox' : '' " v-show="configuration.showNav || configuration.tabs.length">
+    <div class="crumbs" v-show="configuration.showNav">
       <breadcrumb v-show="configuration.showNav" />
     </div>
     <div class="navList" :class="configuration.tabs.length > 1?'navListTab':''">
@@ -185,6 +182,7 @@ export default defineComponent({
   display: flex;
   flex-direction: column;
   height: 60px;
+  justify-content: flex-end;
 }
 .showNavBox {
   height: 80px;

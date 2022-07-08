@@ -97,6 +97,7 @@
     <div class="footer">
       <div class="footer-left">
         <div class="statisTit">图形统计</div>
+        <div class="effect">学习效率<span>学习效率=log(实验总得分/实验总耗时)</span></div>
         <div class="graphic-statistics" id="graphicStatistics"></div>
       </div>
 
@@ -249,11 +250,32 @@ function setChart(data:any){
     color: ["#FF9544"],
     grid: {
       left: 40,
-      top: 40,
+      top:10,
       // bottom:20,
-      right: 1,
+      right:55,
       containLabel: true,
     },
+    tooltip: {
+      trigger: 'axis',
+        // axisPointer: {
+        //   type: 'cross',
+        //   // label: {
+        //   //   backgroundColor: '#6a7985'
+        //   // }
+        // }
+    },
+     dataZoom: [
+      {
+      type:data.names.length>10?'slider':'inside',
+      show: true,
+      startValue: 1,
+      endValue:data.names.length>10?10:data.names.length,
+      xAxisIndex: 0,
+      bottom:50,
+      filterMode: "none",
+      height:20,
+      },
+    ],
     xAxis: {
       type: "category",
       boundaryGap: false, 
@@ -267,14 +289,14 @@ function setChart(data:any){
         },
       },
       axisTick: {
-        show: false,
+        show:false,
       },
       data:data.names,
       // ["实验名称", "实验名称", "实验名称", "实验名称"],
     },
     yAxis: {
       type: "value",
-      name: "学习效率", // +'学习效率=log(实验总得分/实验总耗时)'
+      // name: "学习效率"+`<span>学习效率=log(实验总得分/实验总耗时)</span>`, // +'学习效率=log(实验总得分/实验总耗时)'
       nameTextStyle: {
         color: "#333333",
       },
@@ -292,7 +314,6 @@ function setChart(data:any){
     },
     series: [
       {
-        name: "Highest",
         type: "line",
         symbol: "circle",
         symbolSize: 10,
@@ -301,7 +322,6 @@ function setChart(data:any){
           data: [
             {
               type: "average",
-              name: "Avg",
               label: {
                 position: "end", // 表现内容展示的位置
                 formatter: "平均线", // 标线展示的内容
@@ -501,5 +521,14 @@ onMounted(() => {
 }
 .table_black{
   color: var(--black-65);
+}
+.effect{
+  font-size: 14px;
+  margin-left:150px;
+  >span{
+    margin-left: 5px;
+    font-size: 12px;
+    color: var(--black-65);
+  }
 }
 </style>

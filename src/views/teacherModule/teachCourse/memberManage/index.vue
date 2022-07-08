@@ -1,6 +1,6 @@
 <template>
   <div id="memberManage">
-    <a-tabs default-active-key="1" @change="callback" destroyInactiveTabPane="true">
+    <a-tabs default-active-key="1" @change="callback" :destroyInactiveTabPane="true">
       <a-tab-pane key="1" tab="学生"><student></student> </a-tab-pane>
       <a-tab-pane key="2" tab="分组"><group @updateGroup='updateGroup'></group></a-tab-pane>
       <a-tab-pane key="3" tab="助教"><assistant></assistant> </a-tab-pane>
@@ -39,13 +39,13 @@ function updateGroup(val:any){
 
 <style lang="less" scoped>
 #memberManage {
-  width: 100%;
-  height: 714px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px 0 var(--black-0-7);
-  background: var(--white-100);
-  padding: 41px;
-  margin-top:10px;
+  // width: 100%;
+  // height: 714px;
+  // border-radius: 10px;
+  // box-shadow: 0 2px 4px 0 var(--black-0-7);
+  // background: var(--white-100);
+  padding: 40px;
+  // margin-top:10px;
   position: relative;
 }
 .tooTip{
