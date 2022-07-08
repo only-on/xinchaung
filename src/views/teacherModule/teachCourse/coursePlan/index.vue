@@ -215,7 +215,11 @@
                           </span>
                         </div>
                       </div>
+<<<<<<< Updated upstream
                       <div v-if="!classVal.full" class="make-create-btn" @click="
+=======
+                      <div class="make-create-btn" @click="classVal.belongs_to_currentteacher||classVal.left_stunum<=0?'':
+>>>>>>> Stashed changes
                           createTeachingSchedule(
                             classVal.left_stunum,
                             weekIndex,
@@ -265,7 +269,7 @@
                             classIndex
                           )
                         "
-                        v-if="!classVal.belongs_to_currentteacher"
+                        v-if="!classVal.belongs_to_currentteacher&&classVal.left_stunum>0"
                       >
                         创建排课
                       </div>
