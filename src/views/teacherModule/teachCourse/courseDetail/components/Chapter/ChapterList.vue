@@ -89,7 +89,7 @@
         <div class="listBox" v-if="v.openItem">
           <div class="list" v-for="(a,i) in v.list" :key="a">
           <!-- @click.stop="ViewExperiment(a,v)" -->
-            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v),Number(currentTab)===1?ViewExperiment(a,v):''" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
+            <div class="itemTit flexCenter" @click.stop="Overview(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
               <div class="TitLeft flexCenter" :class="getTitLeftClass()">
                 <div class="experimentType">
                   <span v-if="a.TeachingAids">教辅</span>
@@ -373,7 +373,14 @@ const selectChaptert=(val:any)=>{
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
   emit('selectChaptert',val)
 }
-  // 选中章节下实验
+ // 选中章节下实验
+function Overview (a:any,v:any){
+  selectExperiment(a,v)
+  if((Number(currentTab)===1 && role==3) || role===4){     //公开课程点击整条  显示实验指导
+    ViewExperiment(a,v)
+  }
+}
+// 选中章节下实验
 function selectExperiment(a:any,v:any){
   console.log('实验',a)
   state.activeTab.chapterId=v.id
