@@ -669,11 +669,6 @@ const ProcessingData=(data:any)=>{
       data.forEach((v:any,k:number)=>{
         v.openItem=false
         v.list=[]
-        // v.group={
-        //   name: "itxst",
-        //   put: true,
-        //   pull: true,
-        // }
         v.orderNuumber=v.resource && v.resource.length?v.resource.length:0
         v.resource.length?v.resource.forEach((i:any)=>{
           i.power=true
@@ -701,8 +696,8 @@ const ProcessingData=(data:any)=>{
             i.task_type = i.type
           }
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
-          if(i.task_type === 5){
-            i.is_show_task_step=true
+          if(i.task_type === 5){    // 公开课程不展示任务制的指导
+            i.is_show_task_step=(Number(currentTab) === 0 && role===3)?true:false
           }
           if(props.Environment){
             if(i.type!==6 && i.type!==7){
