@@ -238,10 +238,11 @@ function initWs() {
       let regex = /\{.*?\}/g;
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
+        let oldVmsInfo = vmsInfo.value
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
-            vncLoading.value = true
+            Object.keys(oldVmsInfo).length ? '' : vncLoading.value = true
             if (
               ind === 0 &&
               baseInfo.value.base_info &&
@@ -349,7 +350,7 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead!=1 ? router.go(historyLength - history.length - 1) : '';
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
