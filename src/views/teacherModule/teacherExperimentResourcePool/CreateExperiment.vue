@@ -349,7 +349,7 @@
         支持单个MP4格式文件上传 且文件小于500M
       </p>
     </a-upload-dragger>
-    <div v-if="upDoc.docFileList.length" class="progress-box">
+    <div v-if="upDoc.docFileList.length&&upDoc.docFileList[0]?.name" class="progress-box">
       <div class="file-base-info">
         <span>文件名称：{{ upDoc.docFileList[0].name }}</span
         ><span class="icon-shanchu iconfont" @click="removeDocMp4"></span>
@@ -945,15 +945,16 @@ const docBeforeUpload =(file: any) => {
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
+  upDoc.docFileList[0]={}
   const postfix = (file && file.name).split(".")[1];
-  let obj:any={
-    uid: file.uid,    // ant  渲染的key
-    file_url:'',
-    name:file.name
-  }
-  upDoc.docFileList[0]=obj
   if(postfix === "md" && docOrMp4Type.value === 1){
-     upDoc.nowDocument.type = "md";
+    let obj:any={
+      uid: file.uid,    // ant  渲染的key
+      file_url:'',
+      name:file.name
+    }
+    upDoc.docFileList[0]=obj
+    upDoc.nowDocument.type = "md";
   }else{
     upDoc.nowDocument.type = "pdf";
   }
