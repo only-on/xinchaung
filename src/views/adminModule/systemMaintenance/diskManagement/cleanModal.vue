@@ -3,7 +3,7 @@
         <a-modal v-model:visible="visible" :width='480' :title="cleanType?'自动清理设置':(diskType==='video'?'录屏':'系统日志')" @cancel='handCancel'  @ok="handleOk">
             <div v-if="cleanType">
                 <div >
-                    <div>单个节点磁盘使用量达到80%</div>
+                    <!-- <div>单个节点磁盘使用量达到80%</div> -->
                     <div class="cnadelBox">
                         自动清除系统中
                         <before-icon class="select" :icon="selectIcon">
