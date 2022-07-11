@@ -170,6 +170,8 @@ function jumpHandle(list: any) {
             taskId: list.taskId,
             connection_id: ls.lStorage.get("uid") + "_" + list.id,
             experType: props.currentExperiment.type,
+            // topoinst_uuid: res.data.topoinst_uuid,
+            topoinst_id: props.list.id,
             isClose: 1 // 打开的标签页
           },
         }); // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
