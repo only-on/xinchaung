@@ -112,13 +112,15 @@ export default defineComponent({
             message.warn("输入新密码不一致");
             return;
           }
-          if (lStorage.get('role') === 4) {
-            request = requestObj['student']
-            params = { ...state.formState}
-          } else {
-            request = requestObj['other']
-            params = { reset_password_params: { ...state.formState }}
-          }
+          // if (lStorage.get('role') === 4) {
+          //   request = requestObj['student']
+          //   params = { ...state.formState}
+          // } else {
+          //   request = requestObj['other']
+          //   params = { reset_password_params: { ...state.formState }}
+          // }
+          request = requestObj['student']
+          params = { ...state.formState}
           // console.log(request);
           state.loading=true
           httpLogout[request]({
