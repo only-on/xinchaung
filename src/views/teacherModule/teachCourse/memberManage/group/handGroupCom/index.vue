@@ -199,8 +199,8 @@ function handleOk(){
           return http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
             if(res.code){
               // emit("updateVisable",'false',true);
-              treeData.value=[]
-              unGroupData.value=[]
+              // treeData.value=[]
+              // unGroupData.value=[]
                 resolve((res:any)=>{
                   return res
                 })
