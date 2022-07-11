@@ -1,6 +1,6 @@
 <template>
   <div class="report-template">
-    <viewTemplate ref="viewTemplateRef" :id="templateId"></viewTemplate>
+    <viewTemplate ref="viewTemplateRef" :id="TemplatePreview"></viewTemplate>
     <!-- <div class="report-template-name">{{reportName}}</div>
     <div class="report-template-content">
       <div class="pdfBox" v-if="pdfUrl">
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, inject, onMounted, reactive, ref } from "vue";
+import { defineComponent, inject, onMounted, reactive, ref,Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 import dragGable from "vuedraggable";
@@ -65,6 +65,8 @@ updata({
   componenttype: 0,
   showNav: true,
 });
+var TemplatePreview: Ref<number> = ref(0);
+TemplatePreview.value=templateId
 onMounted(() => {
   // templateId.value = route.query.templateId
   // console.log(templateId);
@@ -116,7 +118,8 @@ const reportOk = (val: any) => {
       path: path,
       query: { ...query, templateId: val.id},
     });
-    viewTemplateRef.value.getDetail(val.id)
+    TemplatePreview.value=val.id
+    // viewTemplateRef.value.getDetail(val.id)
   })
 };
 const reportCancel = () => {

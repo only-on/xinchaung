@@ -43,6 +43,7 @@ import {
   onMounted,
   reactive,
   ref,
+  watch,
   computed,
 } from "vue";
 import { initialWidgetThumb, deepClone } from "./utils";
@@ -109,8 +110,16 @@ const getDetail = (id?: number) => {
       }
     });
 };
+watch(()=>{return props.id},(val:any)=>{
+  console.log(val);
+  
+  templateId.value=val
+  if (templateId.value) {
+    getDetail();
+  }
+})
 defineExpose({
-  getDetail
+  // getDetail
 })
 </script>
 <style lang="less" scoped>

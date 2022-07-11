@@ -50,7 +50,7 @@
   <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
     <div class="box" v-if="TemplatePreview">
       <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
-      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template.template_id" />
+      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template?.template_id" />
     </div>
     <template #footer>
       <!-- <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit> -->
@@ -192,12 +192,12 @@ const Reselection=()=>{
 var TemplatePreview: Ref<boolean> = ref(false);
 
 const viewReport=()=>{
-  // TemplatePreview.value=true
-  if(state.activeExperimentObj.Newguidance.content_template){
-    TemplatePreview.value=true
-  }else{
-    message.warning('该实验暂无报告模板')
-  }
+  TemplatePreview.value=true
+  // if(state.activeExperimentObj.Newguidance.content_template){
+  //   TemplatePreview.value=true
+  // }else{
+  //   message.warning('该实验暂无报告模板')
+  // }
   
 }
 const cancelViewReport=()=>{
