@@ -140,8 +140,10 @@ export default defineComponent({
             : "";
         });
       }
+      lStorage.set("menuActiveName", activeName.value);
     }
     watch(()=>props.activeMenu, newVal => {
+      // console.log(newVal);
       activeName.value = newVal
     })
     const http = (request as any).common;

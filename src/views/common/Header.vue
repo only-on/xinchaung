@@ -459,9 +459,11 @@ export default defineComponent({
       // router.push(`${homePath}`);
       if (role == 3) {
         // return "/teacher" // 教师端首页
+        activeMenu.value='首页'
         router.push("/teacher");
       }
       if (role == 4) {
+        activeMenu.value='首页'
         router.push("/student");
       }
       if (role == 1) {
@@ -469,10 +471,12 @@ export default defineComponent({
         // router.push("/teacher");
       }
       if (role == 2) {
+        activeMenu.value='首页'
         // return "/admin" // 管理端
         router.push("/admin");
       }
       if (role == 5) {
+        activeMenu.value='教学过程'
         router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
         // router.push("/");
       }
@@ -649,21 +653,22 @@ export default defineComponent({
     }
     // 监测学生端课程详情连接ws,其他页面断开ws
     watch(() => router.currentRoute.value.path, newVal => {
-      // 根据当前路由高亮对应的菜单
-      menus.forEach((item:any) => {
-        if(item.url && newVal.includes(item.url)){
-          activeMenu.value = item.name
-          lStorage.set("menuActiveName", item.name);
-        }
-        if (item.children.length) {
-          item.children.forEach((childItem:any) => {
-            if(childItem.url && newVal.includes(childItem.url)){
-              activeMenu.value = item.name
-              lStorage.set("menuActiveName", item.name);
-            }
-          })
-        }
-      })
+      // 根据当前路由高亮对应的菜单 // menuBar  组件菜单点击时有此功能 function select(level: string, val: MenuItem)
+      // console.log(newVal);
+      // menus.forEach((item:any) => {
+      //   if(item.url && item.url.includes(newVal)){
+      //     activeMenu.value = item.name
+      //     lStorage.set("menuActiveName", item.name);
+      //   }
+      //   if (item.children.length) {
+      //     item.children.forEach((childItem:any) => {
+      //       if(childItem.url && childItem.url.includes(newVal)){  
+      //         activeMenu.value = item.name
+      //         lStorage.set("menuActiveName", item.name);
+      //       }
+      //     })
+      //   }
+      // })
       if (role === 4) {
         closeWs()
         if (newVal === '/student/studentCourse/Detail') {
@@ -675,7 +680,7 @@ export default defineComponent({
           return
         }
       }
-    },{immediate: true})
+    },{immediate: true,deep:true})
     onUnmounted(() => {
       closeWs()
     })
