@@ -152,11 +152,14 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
   Object.assign(activeFile, uploadFileList)
   if (uploadFileList.suffix === 'md') {
     // props.detail.guide = uploadFileList
-    Object.assign(activeFile, uploadFileList)
-    experimentContent.value = uploadFileList.text
-    preview.value = false
-    directoryId.value = id
-    return
+    // Object.assign(activeFile, uploadFileList)
+    // experimentContent.value = uploadFileList.text
+    // preview.value = false
+    // directoryId.value = id
+    // return
+    activeFile.suffix = 'md'
+    experimentContent.value = uploadFileList.mdValue
+    activeFile.file_html=''
   }
   if (uploadFileList.suffix === 'pdf') {
     activeFile.suffix = 'pdf'
@@ -239,7 +242,12 @@ const onSubmit = async () => {
   }
   const param = {}
   if (activeFile.suffix === 'md' || experimentContent.value) {
-    Object.assign(param, {guide: experimentContent.value})
+    Object.assign(param, {
+      directory_id: directoryId.value,
+      guide: experimentContent.value,
+      file_path: activeFile.file_url,
+      file_name: activeFile.name
+    })
   } else {
     Object.assign(param, {
       document_file: {

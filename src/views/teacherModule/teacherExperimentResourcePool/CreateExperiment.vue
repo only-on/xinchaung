@@ -599,7 +599,9 @@ function create() {
       container:formState.imageConfigs
     }
     if(docMp4File.suffix === 'md' || formState.document.mdValue){
+      docMp4FileObj.directory_id = upDoc.catalogue
       docMp4FileObj.guide=formState.document.mdValue
+      docMp4FileObj.file_path=docMp4File.file_url
     }else{
       docMp4FileObj.directory_id = docMp4File.dataset_id      // 取的已选资源的目录id
       docMp4FileObj.file_path=docMp4File.file_url
@@ -945,30 +947,30 @@ const docBeforeUpload =(file: any) => {
   upDoc.docFileList[0]={}
   const postfix = (file && file.name).split(".")[1];
   if(postfix === "md" && docOrMp4Type.value === 1){
-    let obj:any={
-      uid: file.uid,    // ant  渲染的key
-      file_url:'',
-      name:file.name
-    }
-    upDoc.docFileList[0]=obj
+    // let obj:any={
+    //   uid: file.uid,    // ant  渲染的key
+    //   file_url:'',
+    //   name:file.name
+    // }
+    // upDoc.docFileList[0]=obj
     upDoc.nowDocument.type = "md";
   }else{
     upDoc.nowDocument.type = "pdf";
   }
-  if (postfix === "md" && docOrMp4Type.value === 1){
-    readFile(file).then((text:any)=>{
-      // formState.document.mdValue = text;
-      upDoc.nowDocument.mdValue = text;
-      upDoc.docFileList[0].percent=100
-      upDoc.docFileList[0].status="done"
-      upDoc.docFileList[0].suffix='md'
-    })
-  }else{
+  // if (postfix === "md" && docOrMp4Type.value === 1){
+  //   readFile(file).then((text:any)=>{
+  //     // formState.document.mdValue = text;
+  //     upDoc.nowDocument.mdValue = text;
+  //     upDoc.docFileList[0].percent=100
+  //     upDoc.docFileList[0].status="done"
+  //     upDoc.docFileList[0].suffix='md'
+  //   })
+  // }else{
     let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
     let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
     console.log(file)
     tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
-  }
+  // }
   docOrMp4Drawer.activeFile={}
   return false
 };
@@ -1068,6 +1070,7 @@ const confirmDoc = () => {
       upDoc.nowDocument.mdValue=''
       upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
     }else{
+      upDoc.nowDocument.mdValue = upDoc.docFileList[0].mdValue
       upDoc.nowDocument.pdf=''
     }
   }else if(upDoc.docFileList && upDoc.docFileList.length && docOrMp4Type.value === 2){
@@ -1083,7 +1086,7 @@ const confirmDoc = () => {
 
 const detailInfoUrl = "/professor/classic/video/112/22/1523425771.mp4";
 
-//
+// 
 const directionList:any=reactive([])
 
 function getDirection() {

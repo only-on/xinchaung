@@ -2,6 +2,7 @@
 import * as tus from "tus-js-client";
 import { message } from "ant-design-vue";
 import { lStorage } from "./extStorage";
+import { readFile } from "src/utils/getFileType";
 var state: any = {
   upload: "",
   file: "",
@@ -155,6 +156,11 @@ const tusFileUpload = {
         }
         if (type === "pdf") {
           data.tusdDocumentUrl = `/document/${name}.${type}`;
+        }
+        if (type === 'md') {
+          readFile(file).then((text:any)=>{
+            data.mdValue = text;
+          })
         }
         data.file_url = file_url;
         data.status = "done";
