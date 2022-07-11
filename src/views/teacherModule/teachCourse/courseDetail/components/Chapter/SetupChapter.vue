@@ -72,7 +72,7 @@ import { Modal, message } from "ant-design-vue";
 import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv, createExamples } from "src/utils/vncInspect"; // 打开虚拟机
 
 import { useStore } from "vuex";
 const store = useStore()
@@ -211,7 +211,7 @@ const feedback=(val:any)=>{
 // 1未开始学习  2准备中   3准备完成 待进入
 const currentState = ref(1)
 const is_connect = ref(false)  // 当前ws是否连接成功
-const lessonPreparation=()=>{
+const lessonPreparation = async () => {
   
   let {task_type, id} = state.activeExperimentObj
   const param: any = {
@@ -241,12 +241,13 @@ const lessonPreparation=()=>{
 
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
+    const createExamplesInfo: any = await createExamples(param)
     Object.assign(param, {
-      connection_id: createExamplesInfo.connection_id,
-      topoinst_uuid: createExamplesInfo.topoinst_uuid,
-      topoinst_id: createExamplesInfo.topoinst_id,
+      connection_id: createExamplesInfo.data.connection_id,
+      topoinst_uuid: createExamplesInfo.data.topoinst_uuid,
+      topoinst_id: createExamplesInfo.data.topoinst_id,
     })
-    createExamplesInfo.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
+    createExamplesInfo.data.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1

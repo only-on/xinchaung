@@ -112,7 +112,7 @@ import { theme } from "src/utils/theme"
 import { useStore } from "vuex"
 import extStorage from "src/utils/extStorage";
 import defaultAvatar from 'src/assets/images/admin/home/env3.png'
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv, createExamples } from "src/utils/vncInspect"; // 打开虚拟机
 import {getThemeData} from 'src/utils/theme'
 import baseInfo from "src/views/teacherModule/teacherExperimentResourcePool/component/baseInfo.vue"
 import experimentGuide from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/experimentGuide.vue";
@@ -165,7 +165,7 @@ let connectStatus = computed({
 })
 const openVncState = ref(false)
 const currentState = ref(1)// 1未开始学习  2准备中   3准备完成 待进入
-const openVnc = () => {
+const openVnc = async() => {
   // console.log(experimentDetail)
   let {id, task_type, content_type} = experimentDetail
   if (experimentDetail.programing_type == 1) {
@@ -201,12 +201,13 @@ const openVnc = () => {
 
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
+    const createExamplesInfo: any = await createExamples(param)
     Object.assign(param, {
-      connection_id: createExamplesInfo.connection_id,
-      topoinst_uuid: createExamplesInfo.topoinst_uuid,
-      topoinst_id: createExamplesInfo.topoinst_id,
+      connection_id: createExamplesInfo.data.connection_id,
+      topoinst_uuid: createExamplesInfo.data.topoinst_uuid,
+      topoinst_id: createExamplesInfo.data.topoinst_id,
     })
-    createExamplesInfo.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
+    createExamplesInfo.data.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1
