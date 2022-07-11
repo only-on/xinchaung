@@ -269,7 +269,7 @@ function beforeUploadReport(file: any) {
   console.log(file);
   if (file.name.length > 100) {
     message.warn(`文件名称长度不能超过100`);
-    return
+    return false
   }
   //  formState.reportUploadList[0] = {
   //     uid: file.uid,
