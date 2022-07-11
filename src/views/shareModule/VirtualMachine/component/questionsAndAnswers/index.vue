@@ -175,7 +175,7 @@ defineExpose({ getForumnList})
   white-space: normal;
   padding: 10px;
   margin-right: 10px;
-  text-align: justify;
+  // text-align: justify;
   height: calc(100% - 85px);
   // background: var(--black-100);
 }
