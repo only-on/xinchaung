@@ -16,7 +16,7 @@
       <div class="vm-top">
         <div class="vm-base-left">
           <a-select class="ip-select" v-model:value="hostIp" @change="ipChange">
-            <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.uuid">
+            <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.ip">
               {{ item.ip }}
             </a-select-option>
           </a-select>
