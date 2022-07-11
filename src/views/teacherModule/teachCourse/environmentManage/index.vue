@@ -114,6 +114,7 @@ const EmptyType:any=computed(()=>{
 
 // 查询
 const onSearch = () => {
+  searchInfo.page = 1
   getList();
 }
 

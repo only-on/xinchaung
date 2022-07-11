@@ -85,7 +85,7 @@ const beforeUpload = async (file: any, fileList: any) => {
         size: data.size,
         sort: 0,
         suffix: data.suffix,
-        type: 1 // 实验指导文件类型
+        type: 2 // 实验指导文件类型
       }
     }
     const content_id = props.detail.content_task_files.length ? props.detail.content_task_files[0].content_id : ''

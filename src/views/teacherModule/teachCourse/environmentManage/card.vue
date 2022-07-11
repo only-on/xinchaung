@@ -1,11 +1,12 @@
 <template>
   <div class="stu">
-    <span class="stu-name">姓名：
-      <span :title="list.username">{{ list.username || "--" }}</span>
+    <span class="stu-name" :title="list.number">姓名：
+      <span>{{ list.username || "--" }}</span>
+      <span class="stu-id" :title="list.number" v-if="list.number">（ {{ list.number || "--" }} ）</span>
     </span>
-    <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')">学号：
+    <!-- <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')">学号：
       <span class="stu-idname" :title="list.number">{{ list.number || "--" }}</span>
-    </span>
+    </span> -->
   </div>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange" :dots="false">
@@ -65,7 +66,7 @@
       </template>
       <!-- <a-button type="primary">Hover me</a-button> style="border-right: 1px solid var(--brightBtn-25);color: #007879;"-->
     
-      <span class="iconfont icon-chakangengduo btn vm-revert pointer"></span>
+      <span class="iconfont icon-gengduotianchong btn vm-revert pointer"></span>
     </a-popover>
     <!-- <span
       class="btn vm-revert pointer"
@@ -150,6 +151,9 @@ function btnClick(v: any) {
 }
 
 function jumpHandle(list: any) {
+  if (props.currentExperiment.type == 3 || props.currentExperiment.type == 4) {
+    return false
+  }
   http
     .canAccessVm({
       param: { uuid: props.list.vms.vms[current.value].uuid },
