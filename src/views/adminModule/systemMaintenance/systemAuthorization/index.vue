@@ -292,6 +292,12 @@ function copyCode(e: Event) {
           tableData.total=res.data.auth_data?.length
           authorizationData.authorization_code =res.data?.auth_code
           // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
+        }).catch((res:any)=>{
+          console.log(res);
+          loading.value = false
+          data.value=res.data?.auth_data
+          tableData.total=res.data?.auth_data?.length
+          authorizationData.authorization_code =res.data?.auth_code
         })
       }
       onMounted(()=>{
