@@ -79,7 +79,7 @@
     </template>
   </a-modal>
   <!-- 在线制作 预览  编辑实验模板 -->
-  <a-modal v-if="reportTemplate" :destroyOnClose="true" v-model:visible="reportTemplate" :title="reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
+  <a-modal v-if="reportTemplate" :destroyOnClose="true" v-model:visible="reportTemplate" :title="reportTitle" class="report" :width="1200" @cancel="cancelTemplate(1)">
     <div class="pdfBox" v-if="pdfUrl">
       <PdfVue :url="pdfUrl" />
     </div>
