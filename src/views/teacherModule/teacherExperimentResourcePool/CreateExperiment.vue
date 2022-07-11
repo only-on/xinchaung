@@ -286,11 +286,7 @@
         </div>
       </div>
       <div class="video-box">
-      <video v-if="formState.document.videoUrl" :src="formState.document.videoUrl" :controls="true" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
-        <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
-        <!-- <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
-          您的浏览器不支持 video 标签
-        </video> -->
+        <common-video v-if="formState.document.videoUrl" :src="formState.document.videoUrl" controls="true"></common-video>
       </div>
     </div>
     <div class="submitBox">
@@ -334,7 +330,7 @@
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
       :multiple="false"
-      
+
       :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
     >
@@ -406,6 +402,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { resolve } from "path/posix";
+import CommonVideo from "../../../components/common/CommonVideo.vue";
 const $confirm: ModalFunc = inject("$confirm")!;
 const router = useRouter();
 const route = useRoute();
@@ -591,7 +588,7 @@ function create() {
     }
     const param={
       tags:formState.tags,
-      type:createTypeNumber,  // 
+      type:createTypeNumber,  //
       name:formState.name,
       level:formState.level,
       direction:formState.direction,
@@ -608,7 +605,7 @@ function create() {
       docMp4FileObj.file_path=docMp4File.file_url
     }
     // console.log(docMp4File);
-    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
+    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue
     // console.log(ipynbFileObj)
     if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
       message.warning('请添加实验环境')
@@ -633,7 +630,7 @@ function create() {
         return
       }
     }
-    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
+    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){
       console.log(docMp4FileObj)
       message.warning('请选择实验指导')
       return
@@ -780,7 +777,7 @@ async function openScreen() {
 }
 function removeTopo() {
   return new Promise((response: any, reject: any) => {
-    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {  
+    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {
       currentUuid = ''
       response(res);
     }).catch((err: any) => {
@@ -878,7 +875,7 @@ function beforeUploadIpynb(file: any) {
     suffix:'ipynb',
     uid: file.uid,
     type:2,
-    status: "uploading",// uploading 
+    status: "uploading",// uploading
     sort:0,
     file_name:file.name,
     name:file.name,
@@ -1074,7 +1071,7 @@ const confirmDoc = () => {
       upDoc.nowDocument.pdf=''
     }
   }else if(upDoc.docFileList && upDoc.docFileList.length && docOrMp4Type.value === 2){
-      // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4     
+      // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4
       upDoc.nowDocument.videoUrl=upDoc.docFileList[0].tusdVideoUrl
   }
   formState.document = {
@@ -1086,7 +1083,7 @@ const confirmDoc = () => {
 
 const detailInfoUrl = "/professor/classic/video/112/22/1523425771.mp4";
 
-// 
+//
 const directionList:any=reactive([])
 
 function getDirection() {
@@ -1178,7 +1175,7 @@ onMounted(()=>{
         cursor: pointer;
       }
       .icon-fujian{
-        padding: 0 4px;     
+        padding: 0 4px;
       }
       .name{
         max-width: 300px;

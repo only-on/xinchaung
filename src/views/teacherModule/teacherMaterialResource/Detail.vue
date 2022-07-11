@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="header_right">
-        <div v-if="(currentTab === '1' && [3,5].includes(role))"> 
+        <div v-if="(currentTab === '1' && [3,5].includes(role))">
           <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
           <a-button type="primary" class="delete" @click="deleteImages()"> 删除</a-button>
         </div>
@@ -102,7 +102,7 @@
                 <MarkedEditor v-model="state.fileItem.file_html" class="markdown__editor" :preview="true" />
               </div>
               <div v-else-if="state.fileItem.suffix === 'mp4'">
-                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
+                <common-video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" controls="true" height="440" width="847"></common-video>
               </div>
               <div v-else-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
@@ -119,7 +119,7 @@
     </div>
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" 
+    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name"
     :editInfo="{name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover}" class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
@@ -164,6 +164,8 @@ import uploadFile from './components/uploadFile.vue'
 import { downloadUrl } from "src/utils/download";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
 import extStorage from "src/utils/extStorage";
+import commonVideo from "../../../components/common/CommonVideo.vue";
+
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -245,9 +247,9 @@ const searchFileList=computed(()=>{
   console.log(arr)
   return arr
 })
-// 
+//
 const selectFile=(val:any)=>{
-  console.log(val) 
+  console.log(val)
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
@@ -270,7 +272,7 @@ const downLoadAll=()=>{
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(a.href);
-  return 
+  return
   http.downLoadAll({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
     //  也可以下载成功   不能选择文件夹
       message.success('下载成功')
@@ -485,7 +487,7 @@ onMounted(() => {
     background: var(--white-100);
     // border: 1px solid #76e6bb;
     .title{
-      
+
       justify-content: space-between;
       .tab{
         // width: 300px;

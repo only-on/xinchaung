@@ -26,9 +26,8 @@
     <template v-if="props.activeExperimentObj.type===6">
       <!-- 视频 -->
       <div class="video-box" :class="privateCourse?'video-box2':''">
-        <video v-if="props.activeExperimentObj.Newguidance.id" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" :controls="true" :poster="videoCover">
-          您的浏览器不支持 video 标签
-        </video>
+        <common-video v-if="props.activeExperimentObj.Newguidance.id" :src="env ? '/proxyPrefix' +props.activeExperimentObj.Newguidance.file_url : props.activeExperimentObj.Newguidance.file_url" controls="true">
+        </common-video>
       </div>
     </template>
     <template v-if="props.activeExperimentObj.type===7">
@@ -44,9 +43,9 @@
   <template v-if="props.activeExperimentObj.TeachingAids">
     <!-- 教辅 -->
     <div class="video-box" v-if="props.activeExperimentObj.suffix==='mp4'">
-      <video :src="env ? '/proxyPrefix' + props.activeExperimentObj.file_url : props.activeExperimentObj.file_url" :controls="true">
+      <common-video :src="env ? '/proxyPrefix' + props.activeExperimentObj.file_url : props.activeExperimentObj.file_url" controls="true">
         您的浏览器不支持 video 标签
-      </video>
+      </common-video>
     </div>
     <div class="pdfBox" :class="privateCourse?'pdfBox2':''" v-if="['doc','docx','ppt','pptx','pdf'].includes(props.activeExperimentObj.suffix)">
       <PdfVue :url="props.activeExperimentObj.file_html" />
@@ -69,6 +68,8 @@ import PdfVue from "src/components/pdf/pdf.vue";
 import taskDetail from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskDetail.vue";
 import taskList from "src/views/teacherModule/teacherExperimentResourcePool/component/detail/taskList.vue";
 import extStorage from "src/utils/extStorage";
+import CommonVideo from "../../../../../../components/common/CommonVideo.vue";
+
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const route = useRoute();

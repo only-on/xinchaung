@@ -13,22 +13,21 @@
     </div>
   </div>
   <div class="experiment-content">
-    <video
-      :poster="videoCover"
+    <common-video
       style="width: 100%; height: 650px"
       controls="true"
       :src="fileInfo.tusdVideoUrl"
       v-if="fileInfo.tusdVideoUrl"
-    ></video>
+    ></common-video>
   </div>
   <!-- <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit> -->
   <!-- 选择视频抽屉 -->
-  <SelectDocOrMp4 
-    :activeFile="fileInfo" 
-    :visible="visible" 
-    :docOrMp4Type="2" 
-    @selectDocOrMp4File="selectDocOrMp4File" 
-    @closeDrawerDoc="closeDrawerDoc" 
+  <SelectDocOrMp4
+    :activeFile="fileInfo"
+    :visible="visible"
+    :docOrMp4Type="2"
+    @selectDocOrMp4File="selectDocOrMp4File"
+    @closeDrawerDoc="closeDrawerDoc"
   />
   <!-- 上传视频弹窗 -->
   <upload-file-modal
@@ -49,6 +48,8 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter, useRoute } from "vue-router";
 import Submit from "src/components/submit/index.vue";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
+import CommonVideo from "../../../../../components/common/CommonVideo.vue";
+
 const router = useRouter();
 const route = useRoute();
 const { currentTab, type }  = route.query

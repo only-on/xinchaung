@@ -3,13 +3,8 @@
     <template v-slot:right>
       <div style="height: 100%;" v-if="baseInfo.base_info&&baseInfo.base_info.files&&baseInfo.base_info.files.length || baseInfo.base_info&&baseInfo.base_info.guide">
       <div class="video-wrap" v-if="taskType == 6">
-        <video
-          :poster="videoCover"
-          style="width: 100%; height: 650px"
-          controls="true"
-          v-if="baseInfo.base_info.files.length"
-          :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.files[0].file_url"
-        ></video>
+        <common-video style="width: 100%; height: 650px" controls="true" v-if="baseInfo.base_info.files.length"
+                      :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.files[0].file_url"></common-video>
       </div>
       <div class="document-wrap setScrollbar" v-else-if="taskType == 7">
         <marked-editor
@@ -64,6 +59,7 @@ import {
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
 import { wsConnect } from "src/request/websocket";
+import CommonVideo from "../../../../components/common/CommonVideo.vue";
 const http = (request as any).teacherExperimentResourcePool;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const store = useStore();
@@ -135,7 +131,7 @@ function createTopo() {
             router.go(-1);
           }, 3000)
         }
-        
+
         if(err.msg === "您已完成当前实验的学习") {
           setTimeout(() => {
             router.go(-1);
