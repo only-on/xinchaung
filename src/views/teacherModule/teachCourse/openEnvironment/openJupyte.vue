@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-drawer class="jupyter-detail-drawer" :visible="true" :closable="false">
+    <!-- <a-drawer class="jupyter-detail-drawer" :visible="true" :closable="false"> -->
       <div class="jupyte-detail-box">
         <div class="jupyte-detail-info">
           <span>在线制作</span>
@@ -42,7 +42,7 @@
           </template>
         </a-modal>
       </div>
-    </a-drawer>
+    <!-- </a-drawer> -->
   </div>
 </template>
 
@@ -246,7 +246,7 @@ export default defineComponent({
               // message.success("保存成功");
             }
           }).catch((err:any)=>{
-            message.warning(err);
+            // message.warning(err);
             saveImageLoad.value=false
           })
         }
@@ -419,6 +419,10 @@ export default defineComponent({
   display: none;
 }
 .jupyte-detail-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   background: #ffffff;
   padding-top: 4px;
