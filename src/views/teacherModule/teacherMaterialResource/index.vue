@@ -57,7 +57,7 @@
       </div>
       <Empty v-if="!materialList.length && !loading" :type="EmptyType" />
       <a-pagination
-        v-if="pageTotal > 8"
+        v-if="pageTotal > 12"
         v-model:current="pageInfo.page"
         :pageSize="pageInfo.limit"
         :total="pageTotal"
@@ -132,7 +132,7 @@ const materialTypeList = reactive([
 const loading = ref<boolean>(false);
 const pageInfo = reactive({
   page: 1,
-  limit: 8,
+  limit: 12,
 });
 const pageTotal = ref<number>(0);
 const pageChange = (page: number) => {
