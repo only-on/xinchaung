@@ -129,7 +129,7 @@ function getReplyList(id: number) {
     loading.value = false
     const { list, page } = res.data
     replyList.push(...list.data)
-    totalReply.value = list.num
+    totalReply.value = page.totalCount
   })
 }
 const getDetail = () => {
