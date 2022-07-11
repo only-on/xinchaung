@@ -26,7 +26,7 @@
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
             <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-            <div class="quName single_ellipsis flexCenter">
+            <div class="quName single_ellipsis">
               {{v.name}}
             </div>
           </div>
@@ -271,7 +271,7 @@ onMounted(()=>{
         .quName {
           // word-break: break-all;
           color: var(--black-85);
-          max-width: 200px;
+          max-width: 220px;
           // margin-bottom: 2px;
         }
       }
