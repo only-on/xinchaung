@@ -25,7 +25,7 @@
           <div class="flexCenter left">
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
-            <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
+            <span  class="iconfont icon-gaopei gaopeiColor"></span>
             <div class="quName single_ellipsis flexCenter">
               {{v.name}}
             </div>
@@ -264,9 +264,9 @@ onMounted(()=>{
           }
         }
         .icon-gaopei{
-            font-size: 16px;
+            // font-size: 16px;
             margin-right: 4px;
-            margin-top: 2px;
+            // margin-top: 2px;
           }
         .quName {
           // word-break: break-all;
