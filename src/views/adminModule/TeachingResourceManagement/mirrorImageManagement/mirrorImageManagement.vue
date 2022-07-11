@@ -97,10 +97,11 @@
                   }
                 : false
               "
-              :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
+              :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,getCheckboxProps:getCheckboxProps}"
               rowKey="id">
               <template #action="{record}">
-                <span class="action detail" @click="dleDelete(record)">删除</span>
+                <a-button type="link" @click="dleDelete(record)" :disabled="!record.imageCanDelete">删除</a-button>
+                <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
               </template>
             </a-table>
             <template #renderEmpty>
@@ -228,6 +229,11 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
   console.log(searchInfo.selectedRowKeys);
 }
+const getCheckboxProps=(record: any) => ({
+    disabled: record.imageCanDelete === false, // Column configuration not to be checked
+    name: record.name,
+  })
+// disabled: record.imageCanDelete === true
 const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()

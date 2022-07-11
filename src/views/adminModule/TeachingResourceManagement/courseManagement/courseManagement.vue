@@ -109,7 +109,8 @@
                 <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
               </template>
               <template #action="{record}">
-                <span class="action courseName" @click="dleDelete(record)">删除</span>
+                <a-button type="link" @click="dleDelete(record)">删除</a-button>
+                <!-- <span class="action courseName" @click="dleDelete(record)">删除</span> -->
               </template>
             </a-table>
             <template #renderEmpty>

@@ -48,10 +48,14 @@
       </div>
     </template>
         <template #action="{record}">
-            <span class="action action-delete" @click="dleDelete(record)">删除</span>
-            <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
+            <div class="flexCenter">
+              <a-button type="link" @click="dleDelete(record)">删除</a-button>
+              <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
+            </div>
+            <!-- <span class="action action-delete" @click="dleDelete(record)">删除</span> -->
+            <!-- <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
                 下载
-            </span>
+            </span> -->
         </template>
     </a-table>
       <template #renderEmpty>
@@ -129,8 +133,9 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
         },
         {
           title: '操作',
-          width:150,
+          // width:120,
           key: 'action',
+          align:'center',
           slots: { customRender: 'action' },
         }
       ];

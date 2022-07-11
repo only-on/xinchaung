@@ -84,7 +84,8 @@
       </div>
     </template>
     <template #action="{record}">
-      <span class="action detail" @click="dleDelete(record)">删除</span>
+      <a-button type="link" @click="dleDelete(record)">删除</a-button>
+      <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
     </template>
     </a-table>
       <template #renderEmpty>
@@ -160,6 +161,7 @@ const ifSearch:any=ref(false)
           title: '操作',
           width:150,
           key: 'action',
+          align:'center',
           slots: { customRender: 'action' },
         }
       ];
