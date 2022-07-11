@@ -20,7 +20,7 @@
           </span>
         </div>
         <div class="t-right flexCenter">
-          <a-button type="primary" class="auto-preview-btn flexCenter" size="" @click="autoReview">
+          <a-button type="primary" :disabled='experitId?false:true' class="auto-preview-btn flexCenter" size="" @click="autoReview">
             <a-tooltip overlay-class-name="numeric-input">
               <template #title>
                 <span>一键评阅</span>
@@ -35,7 +35,7 @@
               <i title="设置权重" @click.stop="autoWeight" class="icon-shezhi iconfont setting-btn"></i>
             </a-tooltip>
           </a-button>
-          <a-button type="primary" size="" @click="exportScore">导出成绩</a-button>
+          <a-button type="primary" size="" :disabled='experitId?false:true' @click="exportScore">导出成绩</a-button>
         </div>
       </div>
       <div class="c-table">
@@ -662,7 +662,6 @@ onMounted(() => {
     border: none;
     .preview-btn {
       padding: 0 10px 0 27px;
-      background: var(--primary-color);
       height: 100%;
       line-height: 33.99px;
       border-top-left-radius: 17px;
@@ -680,7 +679,6 @@ onMounted(() => {
     }
     .setting-btn {
       padding: 0 27px 0 10px;
-      background: var(--primary-color);
       line-height: 33.99px;
       border-top-right-radius: 17px;
       border-bottom-right-radius: 17px;
