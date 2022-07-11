@@ -125,20 +125,20 @@ async function beforeUpload(file: any) {
   const arr = file.name.split('.')
   const suffix = arr[arr.length-1]
   if (suffix === 'md') {
-    const text = await readFile(file);
-    const info = {
-      name: file.name,
-      suffix,
-      text,
-    }
-    uploadFileList.percent = 100
-    uploadFileList.status = "done"
-    uploadFileList.suffix = 'md'
-    uploadFileList.text = text
-    uploadFileList.name = file.name
-    // emit("uploadSuccess", info, dataset_id.value);
-    // emit("update:visibleUpload", false);
-    return false
+    // const text = await readFile(file);
+    // const info = {
+    //   name: file.name,
+    //   suffix,
+    //   text,
+    // }
+    // uploadFileList.percent = 100
+    // uploadFileList.status = "done"
+    // uploadFileList.suffix = 'md'
+    // uploadFileList.text = text
+    // uploadFileList.name = file.name
+    // // emit("uploadSuccess", info, dataset_id.value);
+    // // emit("update:visibleUpload", false);
+    // return false
   }
   const accept = props.type === 'file' ? ['md','doc','docx','pdf'] : ['mp4']
   const tusdDirKey = props.type === 'file' ? 'document_path' : 'video_path';
