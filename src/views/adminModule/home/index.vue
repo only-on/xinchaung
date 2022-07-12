@@ -202,6 +202,7 @@
 <script lang='ts' setup>
     import { defineComponent, ref, reactive, onMounted, toRefs, inject, watch } from "vue";
     import * as echarts from 'echarts';
+    import MenuBar from "src/components/MenuBar.vue";
     import moment from 'moment';
     import activityList from './activityLIst.vue'
     import request from "src/api/index";
@@ -210,12 +211,14 @@
     import router from "src/routers";
     import {getThemeData} from 'src/utils/theme'
     import {useStore} from 'vuex';
+    import extStorage from "src/utils/extStorage";
     const {systemColor} = getThemeData()
     const http = (request as any).adminHome;
     const {systemImages} = getThemeData()
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
     const store = useStore();
+    const { lStorage } = extStorage;
     updata({ tabs: [], showContent:false, showNav: false });
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
@@ -279,6 +282,7 @@
     const productInfo:any=ref([])
     const enterInfo:any=ref([])
     const aboutData:any=ref([])
+    const activeMenu = ref<string>('')
     productInfo.value=[
         {name:'产品名称'},
         {name:'版本信息'},
@@ -307,6 +311,14 @@
         {name:'关注西普科技'},
     ]
     function toJump(value:any){
+        console.log(value);
+        let obj={
+            '/teacher/coursePlan':'资源预约',
+            '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理'
+        }
+        if(obj[value]){
+            store.commit("changemenuActiveName",obj[value])
+        }
         router.push(value)
     }
     
