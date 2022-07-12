@@ -276,15 +276,25 @@ const selectFile=(val:any)=>{
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
-  const deleteParam = {
-  file_id: val.uid,
-  file_name: val.name,
-}
-http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
-  message.success('删除成功')
-  getDataFileList()
-  detailed()
-})
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+        const deleteParam = {
+        file_id: val.uid,
+        file_name: val.name,
+      }
+      http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
+        message.success('删除成功')
+        getDataFileList()
+        detailed()
+      })
+    },
+  });
+    
 }
 const downLoadFile=(val:any)=>{
   http.download({param:{data_id:editId,file_id:val.uid}}).then((res:any)=>{
@@ -318,7 +328,7 @@ const deleteImages=()=>{
           message.success({duration:1,content:'删除成功'})
           setTimeout(()=>{
             router.go(-1);
-          },1000)
+          },500)
         });
       });
     },
