@@ -104,7 +104,7 @@ const emit = defineEmits<{
 const idDelte = ref(false)  // 是否显示移除按钮
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>(props.detail.guide);
-let activeFile = reactive({
+let activeFile: any = reactive({
   name:'',
   suffix: 'md',
   file_url: '',
@@ -242,12 +242,16 @@ const onSubmit = async () => {
   }
   const param = {}
   if (activeFile.suffix === 'md' || experimentContent.value) {
-    Object.assign(param, {
-      directory_id: directoryId.value,
-      guide: experimentContent.value,
-      file_path: activeFile.file_url,
-      file_name: activeFile.name
-    })
+    if (activeFile.id) {
+      Object.assign(param, {guide: experimentContent.value})
+    } else {
+      Object.assign(param, {
+        directory_id: directoryId.value,
+        guide: experimentContent.value,
+        file_path: activeFile.file_url,
+        file_name: activeFile.name
+      })
+    }
   } else {
     Object.assign(param, {
       document_file: {
