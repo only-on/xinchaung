@@ -346,6 +346,7 @@
     function getData(){
         http.statisData().then((res:any)=>{
             if(res.code==1){
+                options.value.length=0
                 statisticData.value=res.data
                 // nodes_ip_list
                 res.data?.nodes_ip_list.forEach((item:any)=>{
