@@ -32,6 +32,7 @@ import {
   watch,
   onMounted,
   PropType,
+  computed,
   nextTick,
 } from "vue";
 import { FakeMenu, MenuItem } from "src/api/modules/common";
@@ -122,7 +123,7 @@ export default defineComponent({
     };
     var activeName: Ref<string> = ref(lStorage.get("menuActiveName") || "");
 
-    function select(level: string, val: MenuItem) {
+    function select(level: string, val: MenuItem){
       // console.log(val)
       console.log("to：path：" + val.url);
       router.replace(String(val.url));
@@ -141,16 +142,23 @@ export default defineComponent({
         });
       }
       lStorage.set("menuActiveName", activeName.value);
+      // store.commit("changemenuActiveName",activeName.value)
     }
+    // store
+    watch(()=>store.state.menuActiveName, newVal => {
+      // console.log(newVal);
+      activeName.value = newVal
+      lStorage.set("menuActiveName", activeName.value);
+    })
     watch(()=>props.activeMenu, newVal => {
       // console.log(newVal);
       activeName.value = newVal
+      lStorage.set("menuActiveName", activeName.value);
     })
     const http = (request as any).common;
 
     const visibleChange=(val:any)=>{
       // console.log(val);
-      
       nextTick(()=>{
         // var dom:any=document.querySelector('.meanBarOverlay')
         // console.log(dom); 

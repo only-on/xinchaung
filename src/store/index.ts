@@ -2,7 +2,7 @@ import { createStore } from "vuex";
 import CommonState from "./common/common"
 import extStorage from "../utils/extStorage";
 import {setTheme} from '../utils/theme'
-const { sStorage } = extStorage;
+const { sStorage,lStorage } = extStorage;
 // 登录数据恢复和保存
 const restore = (key:any) => sStorage.get(key);
 const backup = (key:any, val:any) => sStorage.set(key, val);
@@ -32,7 +32,8 @@ const clearStore = (keys:any) =>
      isWsConnect: false,
      connectStatus: 0,   // 0失败 1 连接中 2 成功
      longWs: null,
-     systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : defaultTheme
+     systemInfo: sStorage.get('systemInfo') ? sStorage.get('systemInfo') : defaultTheme,
+     menuActiveName:lStorage.get("menuActiveName") || '首页'
   },
   getters: {
     isLogged() {
@@ -40,6 +41,9 @@ const clearStore = (keys:any) =>
     },
   },
   mutations: {
+    changemenuActiveName(state,val){
+      state.menuActiveName=val
+    },
     saveTheme(){
       if (sStorage.get('systemInfo')) {
         setTheme()
