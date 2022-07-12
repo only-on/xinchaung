@@ -1,6 +1,6 @@
 <template>
   <div class="report-template">
-    <viewTemplate ref="viewTemplateRef" :id="TemplatePreview"></viewTemplate>
+    <viewTemplate ref="viewTemplateRef" :id="templateId"></viewTemplate>
     <!-- <div class="report-template-name">{{reportName}}</div>
     <div class="report-template-content">
       <div class="pdfBox" v-if="pdfUrl">
@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, inject, onMounted, reactive, ref,Ref } from "vue";
+import { defineComponent, inject, onMounted, reactive, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 import dragGable from "vuedraggable";
@@ -53,7 +53,7 @@ const router = useRouter();
 const route = useRoute();
 const http = (request as any).teacherExperimentResourcePool;
 let {id, createExperUserId, currentTab, type} = route.query;
-let templateId: number = Number(route.query.templateId)
+let templateId = ref(Number(route.query.templateId))
 var updata = inject("updataNav") as Function;
 const { lStorage } = extStorage
 // 当前用户id === 创建实验用户id
@@ -111,7 +111,7 @@ const reportVisible = ref<boolean>(false);
 const reportOk = (val: any) => {
   // console.log(val);
   http.updateReport({urlParams: {id}, param: {report: val.id}}).then((res: IBusinessResp) => {
-    templateId = val.id
+    templateId.value = val.id
     reportInfo.id = val.id
     const { query, path } = route;
     router.replace({
@@ -136,6 +136,9 @@ const replaceReport = () => {
   margin-top: 32px;
   background: var(--white-100);
   padding: 24px 40px;
+  :deep(.contentT) {
+    max-height: 100%;
+  }
   &-name {
     text-align: center;
     font-size: var(--font-size-16);
@@ -153,6 +156,9 @@ const replaceReport = () => {
     .ant-btn-primary {
       margin-left: 16px;
     }
+  }
+  .pdfBox {
+    height: 800px;
   }
 }
 </style>
