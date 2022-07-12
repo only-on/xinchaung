@@ -37,7 +37,7 @@
   
   <style lang="less" scoped>
     .adminHomeRanking{
-      margin-bottom: 2rem;
+      // margin-bottom: 2rem;
       .flexCenter{
         width: 100%;
       }
