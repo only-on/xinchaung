@@ -46,7 +46,7 @@
         </div>
         <div class="right">
           <a-form-item label="班级" name="class">
-            <a-input :maxLength='15' v-model:value="formState.class" />
+            <a-input :maxLength='10' v-model:value="formState.class" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
             <a-input  :maxLength='15' v-model:value="formState.grade" />
