@@ -142,6 +142,7 @@ const { opType, type, taskId, recommendType } = route.query;
 let role = storage.lStorage.get("role");
 
 let ws_config = storage.lStorage.get("ws_config");
+const user_id = storage.lStorage.get("uid");
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
@@ -284,17 +285,16 @@ function initWs() {
             message.warn(wsJsonData.data)
           }
         }else if (wsJsonData.type=="vm_act_message"){ 
-          // 教师在操作
-          if (wsJsonData.data?.msg?.indexOf('教师正在') !== -1) {
+          // 分组成员在操作或教师在操作
+          if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
-            return
           }
-        } else if (wsJsonData.type == "return_message") {
-          if (Object.keys(wsJsonData.data).length > 0) {
+        }else if (wsJsonData.type=="return_message") {
+          if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
             if (wsJsonData.data?.msg) {
-              message.warn(wsJsonData.data.msg);
-            } else {
-              message.warn(wsJsonData.data);
+              message.warn(wsJsonData.data.msg)
+            }else{
+              message.warn(wsJsonData.data)
             }
           }
           // router.go(-1)
@@ -505,6 +505,10 @@ function switchVersion(v_id: number, is_return: number) {
 
 // 打开备份modal
 function openBackupModal() {
+  if (versionListData.value.length >= 10) {
+    message.warn("最多创建10个版本");
+    return
+  }
   last_version_name = version_name.value;
   version_name.value = "";
   backupVisible.value = true;
@@ -520,11 +524,12 @@ function cancelBackupModal() {
 function okBackupModal() {
   // console.log(version_name.value);
 
-  createVersionData().then((res: any) => {
+  createVersionData().then(async (res: any) => {
     console.log(res);
     if (res.status === 1) {
       message.success("备份成功");
       backupVisible.value = false;
+      versionListData.value = await getVersionListData()
       rollBack(res.data)
     }
     // console.log(version_name.value);
@@ -577,7 +582,7 @@ function deleteVersion(val: any) {
       deleteVersionApi(param).then(async (res: IBusinessResp | null) => {
         if (!res) return
         message.success('删除成功')
-        // versionListData.value = await getVersionListData()
+        versionListData.value = await getVersionListData()
       })
     }
   })
@@ -625,6 +630,7 @@ onMounted(async () => {
       // initWs();
     // }
     let versions: any = await getVersionListData();
+    versionListData.value = versions;
     // console.log(versions);
     if (versions.length > 0) {
       version_id.value = versions[0].id;
@@ -634,6 +640,7 @@ onMounted(async () => {
       let versionsData = await createVersionData();
       // console.log(versionsData);
       let versions: any = await getVersionListData();
+      versionListData.value = versions;
       // console.log(versions);
       if (versions.length > 0) {
         version_id.value = versions[0].id;

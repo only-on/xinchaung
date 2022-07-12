@@ -43,6 +43,7 @@ const { opType, type, taskId, topoinst_id, connection_id, recommendType } = rout
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
+const user_id = storage.lStorage.get("uid");
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
@@ -203,17 +204,16 @@ function initWs() {
             message.warn(wsJsonData.data)
           }
         }else if (wsJsonData.type=="vm_act_message"){ 
-          // 教师在操作
-          if (wsJsonData.data?.msg?.indexOf('教师正在') !== -1) {
+          // 分组成员在操作或教师在操作
+          if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
-            return
           }
-        } else if (wsJsonData.type == "return_message") {
-          if (Object.keys(wsJsonData.data).length > 0) {
+        }else if (wsJsonData.type=="return_message") {
+          if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
             if (wsJsonData.data?.msg) {
-              message.warn(wsJsonData.data.msg);
-            } else {
-              message.warn(wsJsonData.data);
+              message.warn(wsJsonData.data.msg)
+            }else{
+              message.warn(wsJsonData.data)
             }
           }
           // router.go(-1)
