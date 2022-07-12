@@ -3,7 +3,7 @@
     <div class="title3 flexCenter" v-if="props.Editable !== 'readOnly'">
       <h3 class="courseh3">章节目录</h3>
       <div>
-        <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && role === 3 && props.Editable === 'canEdit')">新建章节</a-button>
+        <a-button class="brightBtn" type="primary" @click="createChart()" v-if="(currentTab === '0' && (role === 3 || role===5) && props.Editable === 'canEdit')">新建章节</a-button>
       </div>
     </div>   
     <a-spin :spinning="chartLoading" size="large" tip="Loading...">
@@ -75,7 +75,7 @@
         <div class="title flexCenter" @click.stop="selectChaptert(v),v.openItem=!v.openItem">
           <div class="flexCenter titleBox" :class="props.Editable === 'readOnly'?'noEdit':''">
             <div class="titleItem titleItem1">{{`第${k+1}章`}}</div>
-            <div class="titleItem titleItem2 single_ellipsis">{{v.name}}</div>
+            <div class="titleItem titleItem2 single_ellipsis" :title="v.name">{{v.name}}</div>
           </div>
           <div class="titleBoxRight flexCenter">
             <div class="operation flexCenter" v-if="props.Editable === 'canEdit'">
@@ -88,13 +88,14 @@
         </div>
         <div class="listBox" v-if="v.openItem">
           <div class="list" v-for="(a,i) in v.list" :key="a">
-            <div class="itemTit flexCenter" @click.stop="selectExperiment(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
+          <!-- @click.stop="ViewExperiment(a,v)" -->
+            <div class="itemTit flexCenter" @click.stop="Overview(a,v)" :class="state.activeExperimentObj.id === a.id?'ActiveItem':''">
               <div class="TitLeft flexCenter" :class="getTitLeftClass()">
                 <div class="experimentType">
                   <span v-if="a.TeachingAids">教辅</span>
                   <span v-else :style="{ color: a.type_obj.color, background: a.type_obj.backgroundColor,}">{{a.type_obj.name}}</span>
                 </div>
-                <div class="experimentTitle single_ellipsis" :class="a.TeachingAids?'TeachingAids':''">
+                <div class="experimentTitle single_ellipsis" :title="a.name" :class="a.TeachingAids?'TeachingAids':''">
                   <span v-if="a.TeachingAids">{{`【${a.TeachingAidsName}】`}}&nbsp;</span>
                   <span v-if="a.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
                   <span v-if="!a.TeachingAids">{{`${k+1}-${i+1-v.orderNuumber}`}}&nbsp;&nbsp;</span>
@@ -108,10 +109,10 @@
                   <span v-if="!a.TeachingAids && ['canStudy'].includes(props.Editable) && role !==2">
                     <!-- <a-button type="primary" class="brightBtn" size="small" :loading="a.startup===2&&connectStatus===1 || a.startup===3" 
                     @click.stop="prepare(a, i)">{{a.startup===1 || !connectStatus?'开始学习':(a.startup===2&&connectStatus===1&&(currentClickIndex===i)?'准备中...':'进入')}}</a-button> -->
-                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || role===3&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
+                    <a-button v-if="(!a.studys||!a.studys.length)&&role===4 || (role===3||role===5)&&!a.topoinst_id" type="primary" class="brightBtn" size="small" @click.stop="studyHandle(a, 'start')" :loading="a.startup===2 || a.startup===3">{{a.startup===2?'准备中...':'开始学习'}}</a-button>
                     <a-button v-else-if="a.studys&&a.studys[0].status>=2" type="primary" class="brightBtn" size="small" :disabled="true">学习结束</a-button>
-                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || role===3&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click="openVm(a, 'continue')">进入</a-button>
-                    <a-button v-else type="primary" class="brightBtn" size="small"  @click="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
+                    <a-button v-else-if="a.studys&&Number(a.studys[0].status)===1&&a.studys[0].topoinst_id || (role===3||role===5)&&a.topoinst_id" type="primary" class="brightBtn" size="small" :loading="a.startup===2" @click.stop="openVm(a, 'continue')">进入</a-button>
+                    <a-button v-else type="primary" class="brightBtn" size="small"  @click.stop="studyHandle(a, 'continue')" :loading="a.startup===2 ||a.startup===3">{{a.startup===2?'准备中...':'继续学习'}}</a-button>
                   </span>
                   <!-- <a-button  v-if="!a.TeachingAids" type="primary" class="brightBtn" size="small" @click="rebuild(a)">重修</a-button> -->
                   <!-- 不以学生端还是教师端区分      “查看指导”用在实验上  “查看文档”用在教辅上 -->
@@ -308,6 +309,7 @@ const selectFile=(val:any)=>{
   Pro.then((res: any) => {
     message.success("操作成功");
     getChaptersTree()
+    emit('editExperiment',{})
   });
 }
 var Visible: Ref<boolean> = ref(false);
@@ -335,18 +337,20 @@ const EditCreateChapterName=(id:number)=>{
         formState.name=''
         Visible.value=false
         getChaptersTree()
+        state.activeExperiment.type === 2?emit('editChapter',{}):emit('editExperiment',{})
     })
   })
 }
 const Save=()=>{
   if(state.activeExperiment.type === 1){ // 新建章节
-  console.log(props.courseId)
+    console.log(props.courseId)
     formRef.value.validate().then(()=>{ 
         http.createChapter({param:{chapter_name:formState.name},urlParams:{courseId:props.courseId}}).then((res: any)=>{
           message.success('操作成功')
           formState.name=''
           Visible.value=false
           getChaptersTree()
+          emit('editChapter',{})
       })
     })
   }
@@ -369,12 +373,23 @@ const selectChaptert=(val:any)=>{
   ExperimentsAndMaterialsObj.activeExperiments=val.contents
   emit('selectChaptert',val)
 }
-  // 选中章节下实验
+ // 选中章节下实验
+function Overview (a:any,v:any){
+  selectExperiment(a,v)
+  if((Number(currentTab)===1 && role==3) || role===4){     //公开课程点击整条  显示实验指导
+    ViewExperiment(a,v)
+  }
+}
+// 选中章节下实验
 function selectExperiment(a:any,v:any){
   console.log('实验',a)
   state.activeTab.chapterId=v.id
   state.activeExperimentObj=a
   emit('selectExperiment',a)
+  // if(Number(currentTab) === 1){
+  //   console.log('公开');
+  //   ViewExperiment(a,v)
+  // }
   // pdf 视频 跳页面展示
   // const { href } = router.resolve({
   //   path: "/teacher/Workbench/open-jupyte",
@@ -388,7 +403,7 @@ function studyHandle(a: any, studyType: string) {
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: role === 3 ? 'prepare' : studyType,
+    opType: role === 4 ? studyType : 'prepare',
     taskId: id,
     experType: task_type
   };
@@ -436,7 +451,7 @@ function prepare(a:any, i: number) {
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: role === 3 ? "prepare" : 'start',
+    opType: role === 3 || role===5 ? "prepare" : 'start',
     taskId: id,
     experType: task_type
   };
@@ -489,7 +504,7 @@ const openVm = (a: any, opType: string) => {
   const task_type = a.is_webssh ? 2 : a.is_webide ? 3 : a.task_type
   const param: any = {
     type: "course",  // 实验
-    opType: role === 3 ? 'prepare' : opType,
+    opType: (role === 3||role === 5) ? 'prepare' : opType,
     taskId: id,
     experType: task_type
   };
@@ -599,10 +614,10 @@ const deleteChapter=(val:any)=>{
         message.success("删除成功");
         state.activeExperimentObj={}
         getChaptersTree()
+        emit('deleteChapter',{})
       });
     },
   });
-  // emit('deleteChapter',val)
 }
 
 // 编辑章节下实验名称
@@ -648,10 +663,10 @@ const deleteExperiment=(v:any,a:any)=>{
       Pro.then((res: any) => {
         message.success("删除成功");
         getChaptersTree()
+        emit('deleteExperiment',{})
       });;
     },
   });
-  // emit('deleteExperiment',obj)
 }
 const ProcessingData=(data:any)=>{
     let obj= {3:'课件',5:'备课资料',6:'教学指导'}
@@ -661,11 +676,6 @@ const ProcessingData=(data:any)=>{
       data.forEach((v:any,k:number)=>{
         v.openItem=false
         v.list=[]
-        // v.group={
-        //   name: "itxst",
-        //   put: true,
-        //   pull: true,
-        // }
         v.orderNuumber=v.resource && v.resource.length?v.resource.length:0
         v.resource.length?v.resource.forEach((i:any)=>{
           i.power=true
@@ -693,8 +703,8 @@ const ProcessingData=(data:any)=>{
             i.task_type = i.type
           }
           i.type_obj = Object.assign({}, getTypeList('90deg')[i.task_type]);
-          if(i.task_type === 5){
-            i.is_show_task_step=true
+          if(i.task_type === 5){    // 公开课程不展示任务制的指导
+            i.is_show_task_step=(Number(currentTab) === 0 && role===3)?true:false
           }
           if(props.Environment){
             if(i.type!==6 && i.type!==7){
@@ -719,15 +729,14 @@ const ProcessingData=(data:any)=>{
               }
               if(i.task_type === 5){
                 // console.log(i.type_obj.name+'任务制')
-                // i.power=v.course_setting['is_show_task_step']===1?true:false
-                i.is_show_task_step=v.course_setting['is_show_task_step']===1?true:false
+                // i.is_show_task_step=v.course_setting['is_show_task_step']===1?true:false
+                i.is_show_task_step=false       //规则改了学生端统一不显示     // 所以教师端的控制按钮只管学生端虚拟机内的指导
               }
               if([6,7].includes(i.task_type)){
                 // console.log(i.type_obj.name+'文档视频')
                 i.power=true
               }
             }
-
           }):''
         }
       })
@@ -769,7 +778,7 @@ function StudentChaptersTree(course_student_id:number){
 onMounted(() => {
   console.log(props.courseId)
   // const { course_student_id,from} = route.query;
-  if((props.courseId && role === 3) || (from && from === 'courseManagement' && role===2)){
+  if((props.courseId && (role === 3 || role===5)) || (from && from === 'courseManagement' && role===2)){
     getChaptersTree()
   }
   if(role === 4){
@@ -789,7 +798,7 @@ watch(
     if (val === 2 && role === 4&&!isOpen.value) {   // 学生端课程详情页面
       StudentChaptersTree(Number(course_student_id))
     }
-    if (val === 2 && role === 3&&!isOpen.value&&currentTab === '1') {  // 教师端 公开课程详情页面
+    if (val === 2 && (role === 3 || role===5)&&!isOpen.value&&currentTab === '1') {  // 教师端 公开课程详情页面
       getChaptersTree()
     }
   },
@@ -867,6 +876,7 @@ watch(
         padding-right: 10px;
         .TitLeft{
           width: 100%;
+          flex: 1;
           
           .experimentType{
             color: #1CB2B3;

@@ -12,7 +12,7 @@
         <div class="upload-content">
           <a-form-item :label="createType === 'dataSet' ? '数据集' : ''" name="fileList">
             <div class="upload">
-              <upload-file :type="createMaterialType.id" :fileList="formState.fileList" :complete="uploadComplete"></upload-file>
+              <upload-file ref="uploadRef" :type="createMaterialType.id" :fileList="formState.fileList" :complete="uploadComplete"></upload-file>
             </div>
           </a-form-item>
           <a-form-item label="说明" v-if="createType === 'dataSet'">
@@ -35,7 +35,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel" :loading="uploadComplete.complete&&createMaterialType.id!==1"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="(uploadComplete.complete || createDataSetLoad)"></Submit>
   </div>
 </template>
 
@@ -165,6 +165,7 @@ const RemoveMdFile = () => {
 }
 
 // 创建
+var createDataSetLoad: Ref<boolean> = ref(false);
 const formRef = ref()
 const baseInfoRef = ref()
 const submit = async() => {
@@ -193,8 +194,13 @@ const submit = async() => {
       fd.append(`items[${i}][suffix]`, formState.fileList[k].suffix)
       fd.append(`items[${i}][size]`, formState.fileList[k].size)
     })
+    createDataSetLoad.value=true
     http.create({param: fd}).then((res: IBusinessResp) => {
+      $message.success("创建成功");
+      createDataSetLoad.value=false
       router.go(-1)
+    }).catch(()=>{
+      createDataSetLoad.value=false
     })
   })
 }
@@ -210,6 +216,11 @@ function defaultCover() {
 const createDataSet = async () => {
   await defaultCover()
   const file = []
+  let UpdataObj:any={
+    data_id:'',
+    external_parameters:'2',
+    data_uid:[]
+  }
   for (const key in formState.fileList) {
     if (
       Object.prototype.hasOwnProperty.call(formState.fileList, key)
@@ -219,6 +230,7 @@ const createDataSet = async () => {
           uid: formState.fileList[key].data.uid,
           path: formState.fileList[key].data.path,
         });
+        UpdataObj.data_uid.push(formState.fileList[key].data.uid)
       }
     }
   }
@@ -243,13 +255,24 @@ const createDataSet = async () => {
       slab_uid: res.data.uid,
       tags: formState.tags,
     }
+    UpdataObj.data_id=res.data.uid
+    createDataSetLoad.value=true
     http.createDatasets({param}).then((res: IBusinessResp) => {
-      $message.success("创建成功");
-      router.go(-1);
+      // 下接口为更新数据集文件可用状态  external_parameters 2
+      http.uodataFileStatus({param:UpdataObj}).then((res: IBusinessResp) => {
+        $message.success("创建成功");
+        createDataSetLoad.value=false
+        router.go(-1);
+      }).catch(()=>{
+        createDataSetLoad.value=false
+      })
     })
   });
 }
+
+let uploadRef: any = ref(null)
 const cancel = () => {
+  uploadRef.value?.removeAllFile()
   router.go(-1)
 }
 </script>

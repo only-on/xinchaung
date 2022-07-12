@@ -13,7 +13,7 @@
                         <div class="content-right">
                             <div class="tit tit1">录制视频</div>
                             <a-button type='primary' @click="clean('video',false)">清理</a-button>
-                            <div class="detailClear">详细清理</div>
+                            <div class="detailClear" @click="jump('/admin/TeachingResourceManagement/courseManagement')">详细清理 ></div>
                         </div>
                         
                     </div>
@@ -36,7 +36,7 @@
                         <div class="content-right">
                             <div class="tit tit1">系统日志</div>
                             <a-button type='primary' @click="clean('systemLog',false)">清理</a-button>
-                            <div class="detailClear">详细清理</div>
+                            <!-- <div class="detailClear">详细清理</div> -->
                         </div>
                     </div>
                     <div class="autoclear" @click="clean('systemLog',true)">
@@ -53,12 +53,12 @@
                         <div class='toMaterial'>
                             <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/resourcesManagement')">
                                 <span class="icon iconfont icon-material"></span>
-                                <span> 到素材资源</span>                          
+                                <span> 到素材资源 ></span>                          
                             </a-button></div>
                         <div class="toImage">
                             <a-button class="jumpBtn" @click="jump('/admin/TeachingResourceManagement/mirrorImageManagement')">
                             <span class="icon iconfont icon-rongqijingxiangfuwu"></span>
-                            <span>到镜像</span>
+                            <span>到镜像 ></span>
                             </a-button>
                         </div>   
                     </div>
@@ -77,28 +77,30 @@
                 <div class="diskTitle">
                    操作记录 
                 </div>
-                <a-table
-                    :columns="columns"
-                    :data-source="tabledata"
-                    row-key="id"
-                    :pagination="
-                    tableData.total > 10
-                    ? {
-                        hideOnSinglePage: false,
-                        showSizeChanger: false,
-                        total: tableData.total,
-                        current: tableData.page,
-                        pageSize: tableData.limit,
-                        onChange: onChange,
-                        onShowSizeChange: onShowSizeChange,
-                        }
-                    : false
-                "
-                >
-                </a-table>
+                
+                <a-spin :spinning="loading" size="large" tip="Loading...">
+                    <a-config-provider>
+                        <a-table :columns="columns"  :data-source="tabledata"  row-key="id" :pagination=" tableData.total > 10? {
+                                hideOnSinglePage: false,
+                                showSizeChanger:true,
+                                total: tableData.total,
+                                current: tableData.page,
+                                pageSize: tableData.limit,
+                                onChange: onChange,
+                                onShowSizeChange: onShowSizeChange,
+                                }
+                            : false
+                        "
+                        >
+                        </a-table>
+                        <template #renderEmpty>
+                        <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                        </template>
+                    </a-config-provider>
+                </a-spin>
             </div>
         </div>
-        <cleanModal v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
+        <cleanModal  v-model:visible='visible' @getday='getday' :diskType='diskType' :cleanType='cleanType'></cleanModal>
     </div>
 </template>
 <script lang="ts" setup>
@@ -107,7 +109,8 @@
       ref,
       onMounted,
       reactive,
-      inject
+      inject,
+      Ref
     } from "vue";
     import {option}  from './option';
     import * as echarts from 'echarts';
@@ -137,6 +140,7 @@ const tableData = reactive({
   limit: 10,
 });
 const tabledata: any = ref();
+var loading: Ref<boolean> = ref(false);
 columns.value = [
   {
     title: "时间",
@@ -186,6 +190,7 @@ const visible:any=ref(false)
         visible.value=true
         diskType.value=type
         cleanType.value=ifauto
+        
     }
     function onChange(page: any, pageSize: any) {
         tableData.page = page;
@@ -201,19 +206,21 @@ const visible:any=ref(false)
             limit: tableData.limit,
             page: tableData.page,
         };
+        loading.value = true;
         http.operateRecords({param:params}).then((res:any)=>{
             tabledata.value=res.data.list
             tableData.total=res.data.page.totalCount
+            loading.value = false
         })
     }
     function clearScreenData(day:any){
         http.clearScreen({param:{day:day}}).then((res:any)=>{
-            message.success('清除成功')
+            message.success('设置成功')
         })
     }
     function clearLogData(day:any){
         http.clearLog({param:{day:day}}).then((res:any)=>{
-            message.success('清除成功')
+            message.success('设置成功')
         })
     }
     function handclearScreenData(day:any){
@@ -228,6 +235,16 @@ const visible:any=ref(false)
     }
     function jump(url:any){
         router.push(url)
+    }
+    function getLogDay(){
+        http.dayOfsetLog().then((res:any)=>{
+
+        })
+    }
+    function getVideoDay(){
+        http.dayOfsetVideo().then((res:any)=>{
+            
+        })
     }
     onMounted(()=>{
         getOperateList()
@@ -274,6 +291,9 @@ const visible:any=ref(false)
             position: absolute;
             top: 0;
             right: -150px;
+        }
+        .detailClear:hover{
+            cursor: pointer;
         }
         .content{
             padding: 20px;
@@ -342,6 +362,9 @@ const visible:any=ref(false)
             .icon{
                 margin-right: 10px;
             }
+        }
+        .autoclear:hover{
+            cursor: pointer;
         }
         .clearImg{
             margin-left: 30px;

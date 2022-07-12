@@ -81,13 +81,10 @@
                 getCheckboxProps: getCheckboxProps,
               }"
             >
-            <template #score_total='{record}'>
-                  <span v-if="record.score_total==null">--</span>
-                  <span v-else>{{record.score_total}}</span>
-              </template>
-              <template #wrong_answers_number='{record}'>
-                  <span v-if="record.wrong_answers_number==null">--</span>
-                  <span v-else>{{record.wrong_answers_number}}</span>
+              <template #gpu>
+                <div>
+                  --
+                </div>
               </template>
             </a-table>
           <template #renderEmpty>
@@ -131,8 +128,10 @@
             placeholder="请选择结束时间"
             show-time
             format="YYYY-MM-DD HH:mm:ss"
-            :disabled-date="disabledDate"
+            :disabled-date="disabledDate2"
           />
+          <!-- :disabled-date="disabledDate"
+            :disabled-time="disabledDateTime" -->
         </span>
       </div>
     </div>
@@ -155,11 +154,11 @@ updata({
   ],
   showContent: false,
   componenttype: undefined,
-  showNav: false,
+  showNav: true,
 });
 const columns: any = [
   {
-    title: "账号",
+    title: "学号",
     dataIndex: "username",
     key: "username",
   },
@@ -192,6 +191,7 @@ const columns: any = [
     title: "占用GPU",
     dataIndex: "gpu",
     key: "gpu",
+    slots: { customRender: "gpu" },
   },
 ];
 const selectedRowKeys: Ref<any> = ref([]);
@@ -210,8 +210,9 @@ const formData = reactive({
   pageSize: 10,
   total: 0,
 });
+var time:any=''
 const beginTime = ref<Moment>(moment(new Date()));
-let endTime = ref<Moment>();
+let endTime = ref<any>();
 const searchMode = ref(false); // false 简单  true高级
 const ifSearch:any=ref(false)
 function getList() {
@@ -286,7 +287,6 @@ function batchDelete() {
     message.warn("请选择要删除的学生");
   }
 }
-
 // 批量禁用
 function batchDisabled() {
   if (selectedRowKeys.value.length == 0) {
@@ -299,11 +299,11 @@ function batchDisabled() {
 // 确认
 function handleOk() {
   if (!endTime.value) {
-        message.error('请选择时间', 3)
+        message.error('请选择时间')
         return
       }
       if (moment(beginTime.value).unix() > moment(endTime.value).unix()) {
-        message.error('结束时间必须大于开始时间', 3)
+        message.error('结束时间必须大于开始时间')
         return
       }
       let param = {
@@ -312,7 +312,7 @@ function handleOk() {
         end_time: endTime.value?.format('YYYY-MM-DD HH:mm:ss')
       }
       http.forbiddenUser({param}).then((res: any) => {
-        message.success('禁用成功', 3)
+        message.success('禁用成功')
         beginTime.value = moment(new Date())
         selectedRowKeys.value=[]
         endTime.value = undefined
@@ -328,7 +328,29 @@ function handleCancel() {
       endTime.value = undefined
 }
 function disabledDate(current: any) {
-  return current && moment(current).add(1, "days") < moment();
+  return current && moment(current).add(0, "days") < moment();
+}
+function disabledDate2(current: any) {
+  return moment(current).add(0, "days") < moment();
+}
+function range (start: number, end: number){
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+
+      return result;
+}
+function disabledDateTime(date:any){
+   let h=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[0]
+   let m=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[1]
+   let s=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[2]
+   console.log(h,m,s,'hhhhhhhh')
+      return {
+        disabledHours: () =>range(0, 24).splice(0,h),
+        disabledMinutes: () =>range(0,60).splice(0,m),
+        disabledSeconds: () =>range(0,60).splice(0,s),
+      }
 }
 function dateAdd(){
 //1.获取当前日期

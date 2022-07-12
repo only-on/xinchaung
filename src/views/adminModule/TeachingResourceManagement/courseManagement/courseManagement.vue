@@ -14,14 +14,14 @@
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="getpercent(analysisObj.progressingCourseCount)" :status="'success'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.progressingCourseCount)" :status="'success'" :strokeColor="'#83D540'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">进行中课程</span>
             <span class="num">{{analysisObj.progressingCourseCount}}</span>
           </div>
         </div>
         <div class="progressItem">
-          <a-progress :percent="getpercent(analysisObj.closingCourseCount)" :strokeColor="'#86A7FF'" :showInfo="false" :trailColor="'#E5E9F2'" />
+          <a-progress :percent="getpercent(analysisObj.closingCourseCount)" :strokeColor="'#808294'" :showInfo="false" :trailColor="'#E5E9F2'" />
           <div class="tip flexCenter">
             <span class="name">结束课程</span>
             <span class="num">{{analysisObj.closingCourseCount}}</span>
@@ -36,11 +36,11 @@
         </div>
       </div>
       <div class="item item4">
-        <h3 class="statisticalTitle">录像</h3>
+        <h3 class="statisticalTitle">录屏</h3>
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
-            <span class="left2">{{analysisObj.videoUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
+            <span class="left2">{{analysisObj.videoUsedDisk}}/{{analysisObj.allTotalDisk}}G</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
@@ -65,7 +65,7 @@
             <a-select v-model:value="searchInfo.courseAttribute" placeholder="请选择课程属性" @change="courseAttributechange">
               <a-select-option value="">全部</a-select-option>
               <a-select-option :value="1">公开课程</a-select-option>
-              <a-select-option :value="0">教师课程</a-select-option>
+              <a-select-option :value="0">私有课程</a-select-option>
             </a-select>
           </div>
           <div class="item">
@@ -87,14 +87,30 @@
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <a-config-provider>
             <a-table :columns="columns" :data-source="courseList"
-              :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
+            :pagination="
+              totalCount > 10
+                ? {
+                    hideOnSinglePage: false,
+                    showSizeChanger:true,
+                    total: totalCount, 
+                    pageSize: searchInfo.limit,
+                    current: searchInfo.page, 
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+              "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
               <template #courseState="{ record }">
-                <div :class="{'进行中':'in','未开始':'nostarted','已结束':''}[record.courseState]">{{record.courseState}}</div>
+                <div :class="{'进行中':'in','未开始':'nostarted','已结束':'end'}[record.courseState]">{{record.courseState}}</div>
               </template>
               <template #courseName="{ record }">
-                <div class="courseName" @click="viewDetail(record)">{{record.courseName}}</div>
+                <span class="courseName" :title="record.courseName" @click="viewDetail(record)">{{record.courseName}}</span>
+              </template>
+              <template #action="{record}">
+                <a-button type="link" @click="dleDelete(record)">删除</a-button>
+                <!-- <span class="action courseName" @click="dleDelete(record)">删除</span> -->
               </template>
             </a-table>
             <template #renderEmpty>
@@ -143,6 +159,8 @@ const columns= [
           title: "课程所属",
           dataIndex: "courseGroup",
           align: "center",
+          width:160,
+          ellipsis: true,
         },
         {
           title: "课程状态",
@@ -166,6 +184,12 @@ const columns= [
           align: "center",
           ellipsis: true,
         },
+        {
+          title: '操作',
+          width:150,
+          key: 'action',
+          slots: { customRender: 'action' },
+        }
       ]
 var searchInfo:any=reactive({
   courseName:'',
@@ -205,6 +229,13 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.limit=pageSize
+  searchInfo.selectedRowKeys=[]
+  initData()
+}
+const onShowSizeChange=(page:any,pageSize:any)=>{
+  searchInfo.page=1
+  searchInfo.limit=pageSize
   searchInfo.selectedRowKeys=[]
   initData()
 }
@@ -227,6 +258,21 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   console.log(searchInfo.selectedRowKeys);
   
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.CourseBatchDelete({param: {course_ids:[item.id]}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   // return
@@ -271,8 +317,9 @@ const getpercent=(val:number)=>{
 // /teacher/teacherCourse/Detail?currentTab=1&courseId=500173
 const viewDetail=(val:any)=>{
   router.push({
-    path:'/teacher/teacherCourse/Detail',
+    path:'/admin/TeachingResourceManagement/courseManagement/courseManagementDetail',
     query:{
+      role:2,
       currentTab:1,
       courseId:val.id,
       from:'courseManagement'
@@ -395,6 +442,9 @@ onMounted(() => {
       .nostarted,.courseName{
         color:var(--primary-color);
         cursor: pointer;
+      }
+      .end{
+        color: #808294;
       }
     }
 

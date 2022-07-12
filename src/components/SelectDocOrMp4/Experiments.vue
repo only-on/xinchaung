@@ -1,7 +1,7 @@
 <template>
   <div class="search flexCenter">
     <div class="flexCenter classifyTabs">
-      <span class="left" :class="init_type === 1? 'active':''" @click="changeTab(1)">内置实验</span>
+      <span class="left" :class="init_type === 1? 'active':''" @click="changeTab(1)">公开实验</span>
       <span class="right" :class="init_type === 0? 'active':''" @click="changeTab(0)">我的实验</span>
     </div>
     <div class="baocun">
@@ -26,7 +26,7 @@
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
             <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-            <div class="quName single_ellipsis flexCenter">
+            <div class="quName single_ellipsis">
               {{v.name}}
             </div>
           </div>
@@ -248,31 +248,32 @@ onMounted(()=>{
               margin-left: 1rem;
             }
           }
-          .right {
-            width:188px;
-            justify-content: space-between;
-            .class-time{
-              color:var(--black-45);
-            }
-            .icon{
-              // width: 60px;
-              // margin-right:60px;
-              .iconfont {
-                color: var(--primary-color);
-                // display: none;
-              }
+        .right {
+          width:188px;
+          justify-content: space-between;
+          .class-time{
+            color:var(--black-45);
+          }
+          .icon{
+            // width: 60px;
+            // margin-right:60px;
+            .iconfont {
+              color: var(--primary-color);
+              // display: none;
             }
           }
-          .icon-gaopei{
-              font-size: 16px;
-              margin-right: 4px;
-            }
-          .quName {
-            // word-break: break-all;
-            color: var(--black-85);
-            max-width: 200px;
-            margin-bottom: 6px;
+        }
+        .icon-gaopei{
+            // font-size: 16px;
+            margin-right: 4px;
+            // margin-top: 2px;
           }
+        .quName {
+          // word-break: break-all;
+          color: var(--black-85);
+          max-width: 220px;
+          // margin-bottom: 2px;
+        }
       }
       .item:hover {
         background: #ffeed8;

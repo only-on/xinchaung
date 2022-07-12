@@ -1,13 +1,12 @@
 <template>
   <div class="app_content">
     <div class="header">
-      <Header></Header>
+      <div :class="['headerBox', 'theme'+systemTheme]">
+        <Header></Header>
+      </div>
       <NavTab @tabSwitch="tabSwitch" />
     </div>
-    <div
-      class="main-box"
-      :class="configuration.tabs && configuration.tabs.length > 1 ? 'line' : ''"
-    >
+    <div class="main-box" :class="configuration.tabs && configuration.tabs.length > 1 ? 'line' : ''" >
       <div :class="configuration.showContent ? 'regulations' : 'customized'">
         <router-view />
       </div>
@@ -29,6 +28,8 @@ import {
   computed,
 } from "vue";
 import { useRouter } from "vue-router";
+import {getThemeData} from 'src/utils/theme'
+const {systemTheme} = getThemeData()
 // import router from "../../routers/index";
 interface tab {
   name: string;
@@ -36,14 +37,9 @@ interface tab {
 }
 interface config {
   showNav?: boolean;
-  navPosition?: string;
-  navType?: boolean;
   tabs?: tab[];
   componenttype: number | undefined;
   showContent: boolean;
-  backOff: boolean;
-  showPageEdit: boolean;
-  pageEdit: () => void;
 }
 export default defineComponent({
   name: "Layout",
@@ -58,12 +54,6 @@ export default defineComponent({
       tabs: [], // tab切换项 例 [{name:'随堂论坛',componenttype:0}]
       componenttype: undefined, //  tab选中项   传tabs时需赋值 undefined做初始化，随后navtab组件会改其值为tabs的首项。 可监听configuration.componenttype 回调处理
       showContent: false, //  是否需要内容区盒子   不需要则 layout只带顶部导航
-
-      backOff: false, // 现已取消
-      showPageEdit: false, // 现已取消
-      pageEdit: () => {}, // 现已取消
-      navPosition: "inside", //  现已取消
-      navType: true, // 现已取消
     });
     function updataNav(val: config) {
       // console.log(val)
@@ -85,7 +75,7 @@ export default defineComponent({
       },
       () => {}
     );
-    return { tabSwitch, configuration };
+    return { tabSwitch, configuration ,systemTheme};
   },
 });
 </script>
@@ -103,6 +93,11 @@ export default defineComponent({
     .header {
       background: var(--menu-bg);
     }
+    .headerBox{
+      &.themeC{
+        box-shadow: 0px 2px 4px 0px rgba(0,0,0,0.14); 
+      }
+    }
   }
   .main-box {
     flex: 1;
@@ -113,14 +108,18 @@ export default defineComponent({
     overflow: auto;
     width: 100%;
     height: 100%;
+    min-height: 700px;
+    overflow-y: auto;
     .regulations {
       width: var(--center-width);
       margin: 0 auto;
       // padding-top: 20px;
       margin-top: 20px;
       // background-color: #fff;
+      margin-bottom: 50px;
     }
     .customized {
+      margin-bottom: 50px;
     }
   }
   .line {

@@ -17,10 +17,10 @@
       v-for="(v, i) in props.detail.task_steps"
       :key="v.content_id"
     >
-      <task-list :preview="preview" :taskList="v" :index="i" @delet="delet" :is_show_task_step="true"></task-list>
+      <task-list :preview="preview" :taskList="v" :index="i" @delet="delet" :is_show_task_step="type!=='recommend'"></task-list>
     </div>
   </div>
-  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2"></Submit>
+  <Submit @submit="onSubmit" @cancel="cancel" v-if="!preview && role!==2" okText="保存"></Submit>
 </template>
 
 <script lang="ts" setup>
@@ -33,6 +33,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { MessageApi } from "ant-design-vue/lib/message";
 import extStorage from "src/utils/extStorage";
+import { Modal, message } from "ant-design-vue";
 const { lStorage } = extStorage;
 const role = Number(lStorage.get("role"));
 const $message: MessageApi = inject("$message")!;
@@ -67,6 +68,9 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 
 interface ItaskList {
   id?: number;
@@ -125,9 +129,17 @@ const onSubmit = () => {
       "state": v.state // (非必填 默认开启)
     })
   })
+  // console.log(tasks);
+  if(tasks.length === 0){
+    message.warning('请添加实验任务')
+    return
+  }
   http.updateTaskGuide({param: {tasks}, urlParams: {content_id: props.detail.id}}).then((res: any) => {
     console.log(res)
-    router.go(-1);
+    // router.go(-1);
+    $message.success("更新成功")
+    emit('getExperimentDetail');
+    preview.value = true
   })
 };
 const cancel = () => {
@@ -155,9 +167,11 @@ const cancel = () => {
 }
 .experiment-content {
   // margin-top: 16px;
-  padding: 0 23px;
+  // padding: 0 23px;
   .task-list {
     margin-top: 24px;
+    padding: 0 22px;
+    background: #f9f9f9;
   }
 }
 .submit {

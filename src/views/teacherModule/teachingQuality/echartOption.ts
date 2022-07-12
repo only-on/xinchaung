@@ -203,10 +203,19 @@ let knowledageErrorOption = (data: any) => {
         type: "treemap",
         data: data,
         top: "10",
-        bottom: "70",
+        left:'0',
+        right:'0',
+        bottom: "0",
         breadcrumb: {
           show: false,
         },
+        roam: false,
+        nodeClick: false,
+        // roam : 'scale',//禁止拖拽
+        // scaleLimit:{ //所属组件的z分层，z值小的图形会被z值大的图形覆盖
+        //   min:0.7, //最小的缩放值
+        //   max:3, //最大的缩放值
+        // },
       },
     ],
   };
@@ -278,9 +287,12 @@ let gradeDistributionOption = (data: any) => {
           color: "rgba(0,0,0,0.14)",
         },
       },
+      // axisLabel: {
+      //   color: "rgba(0,0,0,0.45)",
+      //   rotate: 30
+      // },
       axisLabel: {
-        color: "rgba(0,0,0,0.45)",
-        rotate: 30
+        formatter: handleText
       },
     },
     dataZoom: [

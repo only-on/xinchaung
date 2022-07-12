@@ -96,6 +96,7 @@
       </div>
     </div>
     <a-drawer
+      title="选择数据集"
       class="select-imag-drawer"
       :closable="false"
       placement="right"

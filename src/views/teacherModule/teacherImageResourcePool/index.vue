@@ -31,7 +31,7 @@
               </div>
             </div>
             <div class="PostDisplay">
-              <div class="text ellipsis">
+              <div class="text ellipsis" :title="v.description?v.description:''">
               {{v.description?v.description:'该镜像暂无描述'}}
               </div>
               <div class="caoZuo flexCenter" v-if="!v.is_init">
@@ -55,14 +55,14 @@
   </a-spin>
 
   <!-- 编辑镜像 -->
-    <a-modal title="编辑镜像" width="850px" :visible="visible" @cancel="handleCancel" class="editImage">
+    <a-modal title="编辑镜像" width="850px" :visible="visible" @cancel="handleCancel" class="editImage" :destroyOnClose="true">
       <div>
-        <a-form layout="vertical">
+        <a-form layout="vertical" :rules="rules" ref="formRef" :model="imageData">
           <div class="row">
-            <a-form-item required label="镜像名称">
+            <a-form-item  label="镜像名称" name="name">
               <a-input class="form-input" v-model:value="imageData.name"></a-input>
             </a-form-item>
-            <a-form-item required label="系统类型">
+            <a-form-item  label="镜像类型" name="ostype">
               <a-select
                 class="form-input"
                 v-model:value="imageData.ostype"
@@ -78,40 +78,13 @@
               </a-select>
             </a-form-item>
           </div>
-          <a-form-item label="添加标签" name="tag">
-            <div class="label-list">
-              <span v-for="(item, index) in imageData.tags" :key="index" class="active">
-                {{ item }}
-                <i class="remove iconfont icon-guanbi" @click="removeLabel(item)" ></i>
-              </span>
-              <span class="edit-box" v-if="imageData.tags && imageData.tags.length < 3">
-                <span @click="clickCustomLabel" v-show="!openCustom">
-                  <span class="iconfont iconbiaoqian"></span>
-                  + 自定义标签
-                </span>
-                <a-input
-                  ref="refCustomLabel"
-                  @pressEnter="customFinish"
-                  @blur="customFinish"
-                  @change="changeLabel"
-                  v-show="openCustom"
-                  v-model:value="imageData.customLabelV"
-                />
-              </span>
-            </div>
-            <div class="recommend" v-if="showTag">
-              <div class="tit">或从推荐中选择</div>
-              <div class="tagBox">
-                <div v-for="v in recommend" :key="v">
-                  <span
-                    @click="addTag(v.value)"
-                    :class="imageData.tags.includes(v.value) ? 'act' : ''"
-                    >{{v.value}}</span
-                  >
-                </div>
+          <div class="row"> 
+            <a-form-item label="添加标签" name="tags">
+              <div>
+                <LabelList :tag="imageData.tags" :recommend="recommend" @selectTag="selectTag"  />
               </div>
-            </div>
-          </a-form-item>
+            </a-form-item>
+          </div>
           <a-form-item label="描述">
             <a-textarea
               placeholder="镜像描述"
@@ -130,6 +103,7 @@
 import Submit from "src/components/submit/index.vue";
 import Classify from "src/components/classify/index.vue";
 import searchAdd from "src/components/searchAdd/searchAdd.vue";
+import LabelList from 'src/components/LabelList.vue'
 import {
   createVNode,
   ref,
@@ -321,16 +295,52 @@ const edit=(val:any)=>{
 const handleCancel=()=>{
   visible.value=false
 }
+const rules = {
+  name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
+  ostype: [{ required: true, message: "请选择系统类型" }],
+  tags: [
+    // { required: true, message: "请选择镜像标签",trigger: "blur"},
+    {required: true,validator: fileListValidator,trigger: "blur"},
+  ],
+};
+async function fileListValidator() {
+  console.log(imageData);
+  if (imageData.tags.length === 0) {
+    message.warn("请选择镜像标签");
+    return Promise.reject();
+  } else if(!(imageData.tags.includes('vnc') || imageData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需至少选择一个");
+    return Promise.reject();
+  }else if((imageData.tags.includes('vnc') && imageData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需只需任选其一");
+    return Promise.reject();
+  }
+  else {
+    formRef.value.clearValidate('tag')
+    return Promise.resolve();
+  }
+}
+const selectTag=async (val:any,arr:any)=>{
+  console.log(val);
+  fileListValidator()
+}
+const formRef = ref();
 const handleOk=()=> {
+  console.log(formRef.value);
+  
   // state.visible = false;
-  let params: any = {
-    ...imageData,
-  };
-  http.editMyImage({param:{...params},urlParams:{imageID:imageData.id}}).then((res: any) => {
-    message.success('编辑成功')
-    visible.value=false
-    initData();
-  });
+  formRef.value.validate().then( async ()=>{
+    const val= await fileListValidator()
+    let params: any = {
+      ...imageData,
+    };
+    http.editMyImage({param:{...params},urlParams:{imageID:imageData.id}}).then((res: any) => {
+      message.success('编辑成功')
+      visible.value=false
+      initData();
+    });
+  })
+  
 }
 var showTag: Ref<boolean> = ref(false);
 var openCustom: Ref<boolean> = ref(false);
@@ -387,6 +397,8 @@ const recommend:any=reactive([])
 function getImgTag() {
   http.getImgTag().then((res: any) => {
     let  data= res.data;
+    let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+    recommend.push(...arr)
     data.forEach((v:any) => {
       classifyList[1].data.push({name:v.name,value:v.name})
       recommend.push({name:v.name,value:v.name})
@@ -402,23 +414,6 @@ onMounted(() => {
 
 </script>
 <style scoped lang="less">
-.reference {
-  position: fixed;
-  width: 100%;
-  top: 110px;
-  left: 0;
-  height: 50px;
-  .addBox {
-    width: var(--center-width);
-    margin: 0 auto;
-    .add {
-      justify-content: end;
-      .addCircular {
-        margin-left: 20px;
-      }
-    }
-  }
-}
 .mainBox {
   flex-wrap: wrap;
   // justify-content: space-between;
@@ -514,7 +509,8 @@ onMounted(() => {
         }
       }
       .labelsBg{
-        background: rgba(255,149,68,0.07);
+        background: var(--primary-1);
+        padding-left: 6px;
       }
       .text {
         height: 41px;
@@ -628,7 +624,7 @@ onMounted(() => {
       background: #ffffff;
 
       &:hover {
-        background: #f8efff;
+        background: var(--primary-1);
       }
     }
   }

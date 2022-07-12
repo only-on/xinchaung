@@ -19,8 +19,8 @@
     <guide v-show="lastKey == 'guide'"></guide>
     <note v-if="lastKey == 'note'"></note>
     <!-- <report v-if="lastKey == 'report'"></report> -->
-    <questionsAndAnswers v-else-if="lastKey == 'question'"></questionsAndAnswers>
-    <create-post></create-post>
+    <questionsAndAnswers ref="froum" v-else-if="lastKey == 'question'"></questionsAndAnswers>
+    <create-post @forumChange="forumChange"></create-post>
     <div class="shouqi pointer" @click="open()"></div>
   </div>
   <a-modal
@@ -152,6 +152,11 @@ function open(key?: string) {
     }
     currentNavKey.value = key;
   }
+}
+
+const froum: any = ref(null)
+function forumChange() {
+  froum.value?.getForumnList()
 }
 </script>
 

@@ -9,7 +9,7 @@
         </a-spin>
       </div>
       <div class="right" v-if="role !== 2">
-        <div v-show="!loading">
+        <div>
         <div class="post pointer" @click="createPost">发帖</div>
         <!-- 热门标签 -->
         <hot-label></hot-label>
@@ -61,7 +61,7 @@ var forumSearch = reactive<IForumSearch>({
   title: "",
   pageSize: 10,
   page: 1,
-  type: type ? String(type) : 'wiki',
+  type: type ? String(type) : 'hot',
 });
 const loading = ref(false)
 const total = ref(0)
@@ -110,8 +110,9 @@ function search(params: IForumSearch) {
   initData();
 }
 // 页码变化
-function pageChange(page: number) {
+function pageChange(page: number,pageSize:number) {
   forumSearch.page = page;
+  forumSearch.pageSize = pageSize;
   const target:any=document.getElementsByClassName('main-box')[0];
   target.scrollTop='0px';
   initData();
@@ -185,7 +186,7 @@ const getHotLabels = () => {
 // 点击展开全文 底部收起样式
 let bottomStyle = reactive({
   bottom: "0px",
-  width: "830px",
+  width: role !== 2 ? "830px" : "1200px",
 });
 provide("bottomStyle", bottomStyle);
 </script>
@@ -200,6 +201,9 @@ provide("bottomStyle", bottomStyle);
     .left {
       // width: 830px;
       width: 100%;
+      .ant-spin-nested-loading {
+        min-height: 300px;
+      }
     }
     .right {
       width: 300px;

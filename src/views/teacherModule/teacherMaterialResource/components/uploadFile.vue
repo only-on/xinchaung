@@ -18,10 +18,8 @@
     <div class="rightBox textScrollbar">
       <div class="chunk-list">
         <div v-for="(v, k, i) in ChunkStatus" :key="i">
-          <span>文件名称：{{ v.name }}</span>
-          <span
-            >计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span
-          >
+          <span v-if="v.name">文件名称：{{ v.name }}</span>
+          <span v-if="v.currentChunk">计算md5进度：{{ v.currentChunk + "/" + v.chunks }}</span>
         </div>
       </div>
       <div class="progress-box textScrollbar">
@@ -65,13 +63,15 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, reactive, inject, onMounted ,watch} from 'vue'
+import { ref, reactive, inject, onMounted ,watch, markRaw} from 'vue'
 import { MessageApi } from "ant-design-vue/lib/message";
 import { getFileType,getFileTypeIcon } from "src/utils/getFileType";
 import Upload from 'src/utils/MoreUpload'
 import { UUID } from "src/utils/uuid";
 import tusFileUpload from 'src/utils/tusFileUpload'
 import { bytesToSize } from "src/utils/common"
+import request from "src/api/index";
+const http = (request as any).teacherMaterialResource;
 const $message: MessageApi = inject("$message")!;
 // import api from 'src/api';
 interface Props {
@@ -99,7 +99,7 @@ const typeInfo = reactive({
 });
 const currentType = reactive(typeInfo[props.type])
 const uploadFileUuid = ref(UUID.uuid4());
-const ChunkStatus: any = reactive({});
+let ChunkStatus: any = reactive({});
 const uploadFileList: any = reactive([])
 let sign = 0
 function fileBeforeUpload(file: any) {
@@ -108,15 +108,15 @@ function fileBeforeUpload(file: any) {
     $message.warn(`${file.name}文件大小不能为空`);
     return false;
   }
-  if (file.name.length > 100) {
-    $message.warn(`文件名称不能大于100`);
-    return
-  }
   if (props.type === 4 && file.size > 500*1024*1024) {
     $message.warn(`上传文件大小必须要在500M以内`);
     return
   }
   if (props.type !== 1) {
+    if (file.name.length > 100) {
+      $message.warn(`文件名称长度不能大于100`);
+      return
+    }
     let obj = {
       data: {},
       file,
@@ -140,6 +140,10 @@ function fileBeforeUpload(file: any) {
     tusFileUpload.onUpload(file, tusdDirKey, accept, props.fileList[sign])
     sign ++
     return false;
+  }
+  if (file.name.length > 60) {
+    $message.warn(`文件名称长度不能大于60`);
+    return
   }
   Upload({
     startUploadURL: "/dmc/v1.0/create_multi_part",
@@ -174,6 +178,8 @@ function chunkFun(
   currentChunk: number,
   key: string
 ) {
+  // console.log(currentChunk)
+  if (currentChunk!==1 && !ChunkStatus[key].name) return
   Object.assign(ChunkStatus, {
     [key]: { name: name, chunks: chunks, currentChunk: currentChunk },
   });
@@ -220,11 +226,13 @@ function processFun(e: any, v: any, length: number) {
       : 99;
 }
 function endUploadFun(v: any, d: any) {
+  if (!props.fileList[v]) return
   props.fileList[v].status = "end";
   props.fileList[v].progress = 100;
   props.fileList[v].data = d;
 }
 function deleteFile(file: any, key: any) {
+  ChunkStatus[key] = {}
   if (props.type !== 1) { // 不是数据集
     if(props.fileList[key] !== "done"){
       tusFileUpload.remove(props.fileList[key])
@@ -240,19 +248,51 @@ function deleteFile(file: any, key: any) {
   delete props.fileList[key];
 }
 function removeFile(file: any, index: any) {
+  // console.log(file);
+  // console.log(props.fileList);
   file.files.forEach((item: any) => {
     if (item.xhr) {
       // console.log(item)
       item.xhr.abort();
     }
   });
-  delete props.fileList[index];
+  if(props.type!==1){
+    delete props.fileList[index];
+  }else{
+    const deleteParam = {
+      file_id: file.data.uid,
+      file_name: file.data.name,
+    }
+    http.deleteItemFile({param:{...deleteParam}}).then((res:any)=>{
+      delete props.fileList[index];
+    })
+  }
+  // delete props.fileList[index];
 }
 function removeAllFile() {
-  props.fileList.forEach((v: any) => {
-    // console.log(version)
+  ChunkStatus = {}
+  Object.keys(props.fileList).forEach((v: any) => {
+    console.log(props.fileList[v], props.type===1)
+    if (props.fileList[v].status==='end' || props.fileList[v].status === 'done') {
+      delete props.fileList[v];
+    } else {
+      if (props.type === 1) {
+        props.fileList[v].files.forEach((item: any) => {
+          if (item.xhr) {
+            console.log(item)
+            item.xhr.abort();
+          }
+        })
+      } else {
+        tusFileUpload.remove(props.fileList[v]);
+      }
+      delete props.fileList[v];
+    }
   })
 }
+defineExpose({
+  removeAllFile
+})
 onMounted(() => {
   tusFileUpload.init()
 })

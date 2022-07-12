@@ -1,6 +1,7 @@
 <template>
   <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
-    <h3>实验基本信息</h3>
+    <div class="base-info">
+    <h3 class="title">实验基本信息</h3>
     <div class="create-middle">
       <div class="left">
         <a-form-item label="实验名称" name="name">
@@ -78,7 +79,7 @@
           </div>
           <div class="reportName flexCenter" v-if="formState.report.name">
             <span class="iconfont icon-fujian"></span>
-            <span class="name single_ellipsis">{{ formState.report.name }}</span>
+            <span class="name single_ellipsis" :title="formState.report.name">{{ formState.report.name }}</span>
             <span
               class="iconfont icon-shanchu"
               @click="delSelectedReport()"
@@ -100,6 +101,7 @@
           <LabelDisplay :labels="formState.selectedName" @remove="remove"></LabelDisplay>
         </a-form-item>
       </div>
+    </div>
     </div>
     <!-- 实验环境配置 -->
     <div class="configuration" v-if="componentsList.includes('configuration')">
@@ -128,17 +130,32 @@
           </div>
           <div class="osd-mode">
             <!-- <span @click="openScreen()"> 进入同屏模式 </span> -->
-            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中。。。':'进入同屏模式'}}</a-button>
+            <a-button type="link" @click.stop="openScreen()" :loading="openScreenLoading">{{openScreenLoading?'连接中...':'进入同屏模式'}}</a-button>
           </div>
         </div>
       </div>
       <MarkedEditor v-model="formState.guide" class="markdown__editor" />
     </div>
     <!-- jupyter实验   实验指导 ipynb -->
-    <div class="jupyter" v-if="componentsList.includes('jupyter')">
-      <h3>实验指导</h3>
+    <div class="jupyter docxBox" v-if="componentsList.includes('jupyter')">
+      <!-- <h3 class="guide-title">实验指导</h3> -->
+      <div class="docTop flexCenter guide-title">
+        <h3>实验指导</h3>
+        <div class="docTopRight flexCenter docx">
+          <span class="data-set-hint">仅支持ipynb文件</span>
+          <a-upload
+            accept=".ipynb"
+            :custom-request="()=>{}"
+            :show-upload-list="false"
+            :before-upload="beforeUploadIpynb"
+            :remove="IpynbFileRemove"
+          >
+            <a-button type="primary"> 上传文档</a-button>
+          </a-upload>
+        </div>
+      </div>
       <div class="jupyterBox">
-        <div class="uploadBox">
+        <!-- <div class="uploadBox">
           <a-upload
             accept=".ipynb"
             :custom-request="()=>{}"
@@ -149,12 +166,16 @@
             <a-button type="primary"> 上传文档</a-button>
           </a-upload>
         </div>
-        <div class="data-set-hint">仅选择ipynb文件</div>
+        <div class="data-set-hint">仅选择ipynb文件</div> -->
+        <div class="selectFile" v-if="formState.ipynbList.length">
+          <span class="single_ellipsis" :title="formState.ipynbList[0].name">{{formState.ipynbList[0].name}}</span>
+          <span class="iconfont icon-shanchu" @click.stop="formState.ipynbList=[]"></span>
+        </div>
       </div>
     </div>
     <!-- 任务制实验 实验指导任务选择 -->
     <div class="TaskSystem" v-if="componentsList.includes('task')">
-      <div class="top flexCenter">
+      <div class="top flexCenter guide-title">
         <h3>实验指导</h3>
         <a-button
           type="primary"
@@ -165,10 +186,10 @@
         </a-button>
       </div>
       <div class="item" v-for="(v, k) in TaskLIst" :key="v">
-        <div class="title flexCenter">
+        <div class="title flexCenter" :class="{show: v.open}">
           <div class="left">
             <span class="num">{{ `任务${["一", "二", "三"][k]}` }}</span>
-            <span>{{ v.name }}</span>
+            <span v-show="!v.open">{{ v.name }}</span>
           </div>
           <div class="right">
             <span @click="deleteTask(k)">删除</span>
@@ -234,7 +255,7 @@
     </div>
     <!-- 文档实验  实验指导文件 -->
     <div class="docxBox" v-if="componentsList.includes('text')">
-      <div class="docTop flexCenter">
+      <div class="docTop flexCenter guide-title">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter docx">
           <span class="data-set-hint">仅支持单个md、doc、docx、pdf文件</span>
@@ -248,7 +269,7 @@
       <div v-if="formState.document.type === 'pdf'" class="pdfBox">
         <!-- <PdfVue :url="formState.document.pdf" /> -->
         <div class="selectFile">
-          <span v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
+          <span class="single_ellipsis" :title="upDoc.docFileList[0] && upDoc.docFileList[0].name" v-if="upDoc.docFileList.length">{{upDoc.docFileList[0] && upDoc.docFileList[0].name}}</span>
           <span v-else>{{docOrMp4Drawer.activeFile.file_name}}</span>
           <span class="iconfont icon-shanchu" v-if="upDoc.docFileList.length || docOrMp4Drawer.activeFile.file_name" @click.stop="removeDocMp4"></span>
         </div>
@@ -256,7 +277,7 @@
     </div>
     <!-- 视频实验  实验指导文件 -->
     <div class="docxBox" v-if="componentsList.includes('video')">
-      <div class="docTop flexCenter">
+      <div class="docTop flexCenter guide-title">
         <h3>实验指导</h3>
         <div class="docTopRight flexCenter">
           <span class="data-set-hint">仅支持单个MP4文件上传</span>
@@ -264,12 +285,8 @@
           <a-button type="primary" @click="selectDocx(2)"> 选择视频 </a-button>
         </div>
       </div>
-      <div v-if="formState.document.videoUrl" class="video-box">
-      <video :src="formState.document.videoUrl" :controls="true" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
-        <!-- <video :src="env ? '/proxyPrefix' + formState.document.videoUrl : formState.document.videoUrl" :controls="true"> 您的浏览器不支持 video 标签</video> -->
-        <!-- <video :src="env ? '/proxyPrefix' + detailInfoUrl : detailInfoUrl"  :controls="true">
-          您的浏览器不支持 video 标签
-        </video> -->
+      <div class="video-box">
+        <common-video v-if="formState.document.videoUrl" :src="formState.document.videoUrl" controls="true"></common-video>
       </div>
     </div>
     <div class="submitBox">
@@ -299,7 +316,7 @@
   ></SelectReport>
 
   <!-- 上传文档 视频 文件 弹窗 -->
-  <a-modal v-model:visible="upDocVisible"  :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
+  <a-modal v-model:visible="upDocVisible" @cancel="cancelUpDoc" :title="`上传${docOrMp4Type === 1 ? '文档' : '视频'}文件`"
     class="uploadImage" :width="640">
     <a-select
       style="width: 400px; margin-bottom: 3rem"
@@ -313,7 +330,7 @@
       :before-upload="docBeforeUpload"
       :remove="removeDocMp4"
       :multiple="false"
-      
+
       :accept="docOrMp4Type === 1?`.md,.doc,.docx,.pdf`:`.mp4`"
       class="upload"
     >
@@ -328,7 +345,7 @@
         支持单个MP4格式文件上传 且文件小于500M
       </p>
     </a-upload-dragger>
-    <div v-if="upDoc.docFileList.length" class="progress-box">
+    <div v-if="upDoc.docFileList.length&&upDoc.docFileList[0]?.name" class="progress-box">
       <div class="file-base-info">
         <span>文件名称：{{ upDoc.docFileList[0].name }}</span
         ><span class="icon-shanchu iconfont" @click="removeDocMp4"></span>
@@ -346,6 +363,7 @@
     v-model:screenStatus="screenStatus"
     v-model="formState.guide"
     :screenInfo="screenVmInfo"
+    :connection_id="connection_id"
   ></SameScreen>
 </template>
 <script lang="ts" setup>
@@ -384,6 +402,7 @@ import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import { resolve } from "path/posix";
+import CommonVideo from "../../../components/common/CommonVideo.vue";
 const $confirm: ModalFunc = inject("$confirm")!;
 const router = useRouter();
 const route = useRoute();
@@ -550,10 +569,12 @@ function remove(val: any, index: number) {
   formState.selectedName.splice(index, 1);
 }
 
+let currentUuid = ''
 function create() {
   // console.log(TaskLIst)
   // return
-  formRef.value.validate().then(() => {
+  formRef.value.validate().then(async () => {
+    currentUuid ? await removeTopo() : ''
     const docMp4File:any=upDoc.docFileList.length?upDoc.docFileList[0]:docOrMp4Drawer.activeFile;  // tusd上传的 或者选择的素材资源的
     const ipynbFileObj:any=createTypeNumber === 2 ? formState.ipynbList[0]:{}               // 是视频和文档公用一个 文件对象
     let selectedKnowledgeIds= formState.selectedKnowledgeList.reduce((pre:any, cur:any) => {
@@ -561,12 +582,13 @@ function create() {
       return pre
     }, [])
      const docMp4FileObj:any={
+       file_name:docMp4File.name || docMp4File.file_name
       // directory_id:upDoc.catalogue, // 选择资源时不用 目录id  docOrMp4Drawer.activeFile.file_url?
       // file_path:docMp4File.file_url  // md文件是guide  其他文件是file_path
     }
     const param={
       tags:formState.tags,
-      type:createTypeNumber,  // 
+      type:createTypeNumber,  //
       name:formState.name,
       level:formState.level,
       direction:formState.direction,
@@ -577,13 +599,15 @@ function create() {
       container:formState.imageConfigs
     }
     if(docMp4File.suffix === 'md' || formState.document.mdValue){
+      docMp4FileObj.directory_id = upDoc.catalogue
       docMp4FileObj.guide=formState.document.mdValue
+      docMp4FileObj.file_path=docMp4File.file_url
     }else{
       docMp4FileObj.directory_id = docMp4File.dataset_id      // 取的已选资源的目录id
       docMp4FileObj.file_path=docMp4File.file_url
     }
     // console.log(docMp4File);
-    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue 
+    (docOrMp4Drawer.activeFile.file_url || docMp4File.suffix === 'md' || formState.document.mdValue) ? '' : docMp4FileObj.directory_id=upDoc.catalogue
     // console.log(ipynbFileObj)
     if (createTypeNumber === 1 && formState.imageConfigs.length === 0) {
       message.warning('请添加实验环境')
@@ -597,16 +621,18 @@ function create() {
       message.warning('请选择实验环境')
       return
     }
+    if(createTypeNumber === 3 && TaskLIst.length === 0){
+      message.warning('请添加实验任务')
+      return
+    }
     if(createTypeNumber === 3 && TaskLIst.length !== 0){
       let flage=checkTask(TaskLIst)
       console.log(flage);
       if(!flage){
         return
       }
-      // message.warning('请选择实验指导')
-      // return
     }
-    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){   
+    if([4,5].includes(createTypeNumber) && (!docMp4File.file_url && !docMp4FileObj.guide)){
       console.log(docMp4FileObj)
       message.warning('请选择实验指导')
       return
@@ -636,7 +662,7 @@ function create() {
     // return
     http[createMethod]({param:{...param,...obj}}).then((res: IBusinessResp)=>{
       message.success('创建成功')
-      cancel()
+      router.go(-1);
     })
   });
 }
@@ -664,6 +690,7 @@ const checkTask=(list:any)=>{
 }
 // 取消
 function cancel() {
+  currentUuid ? removeTopo() : ''
   router.go(-1);
 }
 
@@ -688,6 +715,7 @@ const reportOk = (val: any) => {
 // 同屏vm连接信息
 let screenVmInfo: any = reactive([]);
 let screenStatus = ref<boolean>(false);
+const connection_id = ref('')
 // 获取同屏连接信息请求参数
 let screenParam: any = reactive({
   container: [],
@@ -705,11 +733,12 @@ function pollGetVM(id: number) {
   getTopoVmInfo(id);
 }
 var openScreenLoading= ref<boolean>(false);
-function openScreen() {
+async function openScreen() {
   // message.warn("接口暂未调试");
   // return
   screenParam.container = [];
   screenParam.dataset_id = [];
+  screenParam.topo_id = '';
   formState.selectedName.forEach((item: any) => {
     screenParam.dataset_id.push(item.uid);
   });
@@ -727,6 +756,7 @@ function openScreen() {
   console.log(sameScreen.value);
   sameScreen.value.detail = formState.guide;
   // screenStatus.value = true
+  currentUuid ? await removeTopo() : ''
   if (_.isEqual(oldImageDataSelected, formState.imageConfigs)) {
     pollGetVM(topoinstId);
   } else {
@@ -737,13 +767,25 @@ function openScreen() {
           if (res.data?.topo?.id) {
             screenParam.topo_id = res.data.topo.id;
           }
-          oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
+          currentUuid = res.data?.topoinst?.info?.uuid
+          connection_id.value = res.data?.topoinst?.connection_id
+          // oldImageDataSelected = _.cloneDeep(formState.imageConfigs);
           topoinstId = res.data.topoinst.topoinst_id;
           pollGetVM(res.data.topoinst.topoinst_id);
           // this.screenStatus = true
         }
       })
   }
+}
+function removeTopo() {
+  return new Promise((response: any, reject: any) => {
+    http.removeTopo({ param: {uuid: currentUuid} }).then((res: IBusinessResp) => {
+      currentUuid = ''
+      response(res);
+    }).catch((err: any) => {
+      reject(err);
+    });
+  })
 }
 function getTopoBaseInfo() {
   return new Promise((response: any, reject: any) => {
@@ -777,9 +819,12 @@ function getTopoVmInfo(id: number) {
           }, 1500);
         }
       } else {
+        openScreenLoading.value=false
         message.warn(res.msg);
       }
       resolve(res);
+    }).catch(() => {
+      openScreenLoading.value=false
     });
   });
 }
@@ -821,6 +866,10 @@ function beforeUploadIpynb(file: any) {
     message.warn("请上传jupyter文件");
     return;
   }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   // formState.ipynbList[0]={}
   // console.log(file)
   let obj={
@@ -828,7 +877,7 @@ function beforeUploadIpynb(file: any) {
     suffix:'ipynb',
     uid: file.uid,
     type:2,
-    status: "uploading",// uploading 
+    status: "uploading",// uploading
     sort:0,
     file_name:file.name,
     name:file.name,
@@ -884,35 +933,44 @@ var upDoc: any = reactive({
 });
 var upDocVisible = ref<boolean>(false);
 const docBeforeUpload =(file: any) => {
+  if (!upDoc.catalogue) {
+    message.warn("上传文件时请选择目录");
+    return false;
+  }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
+  upDoc.docFileList[0]={}
   const postfix = (file && file.name).split(".")[1];
-  let obj:any={
-    uid: file.uid,    // ant  渲染的key
-    file_url:'',
-    name:file.name
-  }
-  upDoc.docFileList[0]=obj
   if(postfix === "md" && docOrMp4Type.value === 1){
-     upDoc.nowDocument.type = "md";
+    // let obj:any={
+    //   uid: file.uid,    // ant  渲染的key
+    //   file_url:'',
+    //   name:file.name
+    // }
+    // upDoc.docFileList[0]=obj
+    upDoc.nowDocument.type = "md";
   }else{
     upDoc.nowDocument.type = "pdf";
   }
-  if (postfix === "md" && docOrMp4Type.value === 1){
-    readFile(file).then((text:any)=>{
-      // formState.document.mdValue = text;
-      upDoc.nowDocument.mdValue = text;
-      upDoc.docFileList[0].percent=100
-      upDoc.docFileList[0].status="done"
-      upDoc.docFileList[0].suffix='md'
-    })
-  }else{
+  // if (postfix === "md" && docOrMp4Type.value === 1){
+  //   readFile(file).then((text:any)=>{
+  //     // formState.document.mdValue = text;
+  //     upDoc.nowDocument.mdValue = text;
+  //     upDoc.docFileList[0].percent=100
+  //     upDoc.docFileList[0].status="done"
+  //     upDoc.docFileList[0].suffix='md'
+  //   })
+  // }else{
     let accept=docOrMp4Type.value === 1 ? ['md','doc','docx','pdf']:['mp4']
     let tusdDirKey=docOrMp4Type.value === 1 ? 'document_path' : 'video_path';
     console.log(file)
     tusFileUpload.onUpload(file,tusdDirKey,accept,upDoc.docFileList[0])
-  }
+  // }
   docOrMp4Drawer.activeFile={}
   return false
 };
@@ -978,6 +1036,12 @@ const closeDrawerDoc = () => {
   docOrMp4Drawer.visible = false;
 };
 const cancelUpDoc = () => {
+  upDoc.nowDocument.mdValue=''
+  if(upDoc.docFileList.length && upDoc.docFileList[0].status !== "done"){
+    tusFileUpload.remove(upDoc.docFileList[0])
+  }
+  upDoc.docFileList=[]
+  docOrMp4Drawer.activeFile={}
   upDocVisible.value = false;
 };
 // 选择系统内置文档或者视频
@@ -996,16 +1060,21 @@ const selectDocOrMp4File = (val: any) => {
 };
 //  视频实验
 const confirmDoc = () => {
-  console.log('file_url',upDoc.docFileList && upDoc.docFileList.length && upDoc.docFileList[0])
+  console.log('file_url',upDoc.docFileList)
+  if (!(upDoc.docFileList&&upDoc.docFileList.length)) {
+    message.warning('请上传文件')
+    return
+  }
   if(docOrMp4Type.value === 1 && upDoc.docFileList && upDoc.docFileList.length){
     if(upDoc.docFileList[0].suffix !== 'md'){
       upDoc.nowDocument.mdValue=''
       upDoc.nowDocument.pdf=upDoc.docFileList[0].file_url
     }else{
+      upDoc.nowDocument.mdValue = upDoc.docFileList[0].mdValue
       upDoc.nowDocument.pdf=''
     }
   }else if(upDoc.docFileList && upDoc.docFileList.length && docOrMp4Type.value === 2){
-      // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4     
+      // http://192.168.101.221:84/video/8f1fa06626f8cb2c1593787353fc6f5a.mp4
       upDoc.nowDocument.videoUrl=upDoc.docFileList[0].tusdVideoUrl
   }
   formState.document = {
@@ -1037,8 +1106,13 @@ onMounted(()=>{
 
 </script>
 <style scoped lang="less">
-h3 {
-  padding-left: 2rem;
+.ant-form {
+  margin-top: 32px;
+  .guide-title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .datasets-box {
    margin-bottom: 1rem;
@@ -1054,7 +1128,7 @@ h3 {
 }
 .Knowledge{
   .ant-btn {
-    margin-bottom: 1rem;
+    // margin-bottom: 1rem;
   }
 }
 .data-set-hint {
@@ -1064,12 +1138,30 @@ h3 {
   margin-left: 1rem;
 }
 .configuration {
-  padding: 2rem;
-  padding-top: 0;
+  // padding: 2rem;
+  // padding-top: 0;
+  margin-bottom: 24px;
+  padding:  24px;
+  // padding-bottom: 30px;
+  background-color: var(--white);
+  .title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
+}
+.base-info {
+  background-color: var(--white);
+  margin-bottom: 24px;
+  padding: 0 24px 24px;
+  .title {
+    padding: 15px 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .create-middle {
   display: flex;
-  padding: 2rem;
   .left,
   .right {
     width: 50%;
@@ -1086,7 +1178,7 @@ h3 {
         cursor: pointer;
       }
       .icon-fujian{
-        padding: 0 4px;     
+        padding: 0 4px;
       }
       .name{
         max-width: 300px;
@@ -1110,6 +1202,11 @@ h3 {
 }
 
 .zhuomian {
+  padding: 24px;
+  background-color: var(--white);
+  h3 {
+    margin-left: 24px;
+  }
   .guide-top {
     display: flex;
     .upload-box {
@@ -1131,29 +1228,44 @@ h3 {
       }
     }
   }
+  .markdown__editor {
+    height: 400px;
+    padding: 1rem 24px 0;
+  }
 }
 .markdown__editor {
   height: 400px;
-  padding: 1rem 2rem 0;
+  padding-top: 8px;
 }
 .jupyter {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding: 0 24px;
+  background-color: var(--white);
   .jupyterBox {
-    padding: 2rem;
+    // padding: 2rem;
   }
   .uploadBox {
     width: 40%;
   }
 }
 .TaskSystem {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding:  24px;
+  background: var(--white);
+  overflow: auto;
   .top {
     justify-content: space-between;
   }
   .item {
+    padding: 0 24px;
+    background-color: #F9F9F9;
+    margin-bottom: 24px;
     .title {
       justify-content: space-between;
-      padding: 1rem 2rem;
+      padding: 1rem 0;
+      &.show {
+        border-bottom: 1px dashed #dbdbdb;
+      }
       .left {
         color: var(--black-85);
         font-size: 16px;
@@ -1175,15 +1287,18 @@ h3 {
         color: red;
       }
       .taskName {
-        padding: 6px 2rem;
+        margin-top: 16px;
+        margin-bottom: 24px;
+        // padding: 6px 0;
         .ant-input {
           width: 400px;
           margin-top: 5px;
         }
       }
       .taskDescription {
+        padding-bottom: 24px;
         .statusBox {
-          padding: 1rem 2rem 0;
+          // padding-top: 1rem;
           justify-content: space-between;
         }
         .status {
@@ -1193,17 +1308,19 @@ h3 {
         }
       }
       .taskStep {
+        margin-bottom: 24px;
         .taskStepBox {
-          padding: 0rem 2rem 0;
+          // padding: 0rem 2rem 0;
           justify-content: space-between;
         }
-        margin-top: 20px;
       }
     }
   }
 }
 .docxBox {
-  padding-top: 2rem;
+  // padding-top: 2rem;
+  padding: 0 24px;
+  background-color: var(--white);
   .docTop {
     justify-content: space-between;
   }
@@ -1211,14 +1328,15 @@ h3 {
     width: 100%;
     height: 500px;
     margin-top: 24px;
-    .selectFile{
-      padding-left: 2rem;
-      justify-content: space-between;
-      // width: 40%;
-      .iconfont{
-        margin-left: 3rem;
-        cursor: pointer;
-      }
+  }
+  .selectFile{
+    padding-left: 2rem;
+    display: flex;
+    justify-content: space-between;
+    // width: 40%;
+    .iconfont{
+      margin-left: 3rem;
+      cursor: pointer;
     }
   }
   .docTopRight {
@@ -1235,7 +1353,8 @@ h3 {
     // width: 38%;
   }
   .video-box {
-    height: 500px;
+    min-height: 155px;
+    // height: 500px;
     width: 100%;
     padding: 2rem;
     video {
@@ -1263,6 +1382,6 @@ h3 {
   }
 }
 .submitBox {
-  margin-top: 2rem;
+  margin: 24px 0;
 }
 </style>

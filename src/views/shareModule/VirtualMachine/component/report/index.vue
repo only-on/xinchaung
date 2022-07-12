@@ -47,7 +47,7 @@
         <div class="file-list" v-if="fileList.length">
           <div class="file">
             <div class="type"><img :src="iconList['word']" alt="" srcset=""></div>
-            <div class="name single_ellipsis">{{fileList[0].name}}</div>
+            <div class="name single_ellipsis" :title="fileList[0].name">{{fileList[0].name}}</div>
             <div class="pointer" @click="move"><span class="iconfont icon-shanchu"></span></div>
           </div>
         </div>

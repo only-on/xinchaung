@@ -1,4 +1,5 @@
 <template>
+  <span class="tip">建议封面尺寸282*150px，支持格式png、jpg。</span>
   <img v-if="imageUrl" :src="imageUrl" alt="" srcset="">
   <a-upload
     v-model:file-list="fileList"
@@ -6,12 +7,11 @@
     class="uploader"
     :show-upload-list="false"
     :before-upload="beforeUpload"
-    @change="handleChange"
-    accept="image/*"
+    accept="image/png,image/jpeg"
   >
     <div class="upload">
       <div class="cover">
-        <img src="src/assets/images/teacherMaterialResource/cover.png" alt="">
+        <img :src="systemImages.uploadCoverImg" alt="上传封面">
       </div>
       <loading-outlined v-if="loading"></loading-outlined>
     </div>
@@ -22,6 +22,9 @@
 import { defineComponent, Ref, ref, inject ,watch} from 'vue'
 import { LoadingOutlined } from '@ant-design/icons-vue';
 import { MessageApi } from "ant-design-vue/lib/message";
+import {getThemeData} from 'src/utils/theme'
+const {systemImages} = getThemeData()
+// console.log(systemImages)
 const $message: MessageApi = inject("$message")!;
 
 interface Props {
@@ -57,10 +60,12 @@ const beforeUpload = (file:any) => {
     $message.warn('图片类型不正确')
     return false
   }
-  props.coverUrl.cover = file
+  // props.coverUrl.cover = file
   if (props.isUpload) {
     emit("uploadCoverHandle", file)
     // return
+  } else {
+    props.coverUrl.cover = file
   }
   return false
 }
@@ -71,7 +76,7 @@ interface FileItem {
   status?: string;
   response?: string;
   url?: string;
-  type?: string;
+  type: string;
   size: number;
   originFileObj: any;
 }
@@ -107,6 +112,13 @@ const handleChange = (info: FileInfo) => {
 </script>
 
 <style scoped lang="less">
+.tip {
+  position: absolute;
+  top: -27px;
+  left: 50px;
+  color: var(--black-25);
+  font-size: var(--font-size-sm);
+}
 img {
   width: 162px;
   height: 90px;

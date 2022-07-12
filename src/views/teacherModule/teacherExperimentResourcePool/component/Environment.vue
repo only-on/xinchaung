@@ -2,7 +2,7 @@
   <div v-show="loading">
 
   </div>
-  <h3>实验环境</h3>
+  <h3 class="title">实验环境</h3>
   <div v-if="props.type">
     <ConfigModal
       :imageList="imageList"
@@ -23,7 +23,7 @@
       <div class="limit">最多添加三个环境</div>
     </div>
     <div class="item" v-for="(v, idx) in selectList" :key="v">
-      <div class="single_ellipsis">
+      <div class="single_ellipsis" :title="v.imageName">
         {{ v.imageName }}
       </div>
       <div class="content">
@@ -44,6 +44,7 @@
     v-model:visible="visible"
     title="设置实验环境"
     :destroyOnClose="true"
+    @cancel="cancel"
   >
     <ConfigModal
       :imageList="imageList"
@@ -116,6 +117,7 @@ const defaultConfig: any = reactive({
   editIdx: "",
 });
 watch(()=>props.envList, newVal => {
+  if (!newVal.length) return
   selectList.length = 0
   selectList.push(...JSON.parse(JSON.stringify(newVal)))
   // 单环镜
@@ -129,6 +131,10 @@ const emit = defineEmits<{
   (e: "handleOk", val: any): void;
 }>();
 const handleOk = () => {
+  if(!currentImage.image_id) {
+    message.warn('请选择镜像！')
+    return
+  }
   var obj = {
     flavor: { ...currentImage.flavor },
     imageName: currentImage.imageName,
@@ -201,7 +207,9 @@ h3 {
   padding-bottom: 2rem;
 }
 .title {
-  padding-bottom: 10px;
+  padding: 15px 0;
+  border-bottom: 1px solid #e8e8e8;
+  margin-bottom: 16px;
 }
 .configs {
   margin: 2rem 0 1rem 0;
@@ -210,7 +218,7 @@ h3 {
   .item {
     width: 240px;
     height: 100px;
-    background: #f9f9f9;
+    background: #fafafb;
     border-radius: 10px;
     margin-right: 1rem;
     padding: 10px;

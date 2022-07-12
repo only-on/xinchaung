@@ -92,7 +92,7 @@ function daWithdata(res:any){
     });
     console.log(echartsData.experType)
     // echartsPie('experStatistic',echartsData.statistic)
-    echartsBar('experType',echartsData.experType)
+    // echartsBar('experType',echartsData.experType)
     //技术方向
     // for (let i in res.data?.analysis?.technicalDirection) {
     //   echartsData.hotLabelList.push(res.data.analysis.technicalDirection[i])
@@ -100,7 +100,7 @@ function daWithdata(res:any){
     // }
     console.log(Object.values(res.data.analysis.technicalDirection))
     echartsData.hotLabelList=Object.values(res.data.analysis.technicalDirection)
-    HotWords('directPoints',doHotData(echartsData.hotLabelList))
+    // HotWords('directPoints',doHotData(echartsData.hotLabelList))
 }
 function updateData(val:any){
   console.log(val)
@@ -109,10 +109,12 @@ function updateData(val:any){
     experParams.search.contentAttribute=val?.attribute
     experParams.search.contentType=val?.type
     experParams.page=val?.page
+    experParams.limit=val?.pageSize
     experData()
   }else{
     experTemplateParams.search.templateName=val?.expername
     experTemplateParams.page=val?.page
+    experTemplateParams.limit=val?.pageSize
     experTemplateData()
   }
 }
@@ -126,8 +128,6 @@ function experTemplateData(){
   }
   http.experTemplateList({param:param}).then((res:any)=>{
     daWithdata(res)
-    // tableData.data=res.data.list
-    // tableData.total=res.data.page.totalCount
   })
 }
 function experData(){
@@ -140,8 +140,6 @@ function experData(){
   }
   http.experList({param:param}).then((res:any)=>{
     daWithdata(res)
-    // tableData.data=res.data.list
-    // tableData.total=res.data.page.totalCount
   })
 }
 function doHotData(directData:any){
@@ -173,10 +171,38 @@ function doHotData(directData:any){
 }
 function callBack(key:any){
   // console.log(key)
+  experParams.search.contentName=''
+    experParams.search.contentAttribute=''
+    experParams.search.contentType=''
+    experTemplateParams.search.templateName=''
     key==1?experData():experTemplateData()
 }
 onMounted(()=>{
-  experData()
+  const param:any={
+    'search[contentName]':'',
+    'search[contentAttribute]':'',
+    'search[contentType]':'',
+    page:experParams.page,
+    limit:experParams.limit
+  }
+  http.experList({param:param}).then((res:any)=>{
+    echartsData.experType={
+      names:[],
+      numbers:[]
+    }
+    tableData.data=res.data.list
+    tableData.total=res.data.page.totalCount
+    echartsData.hotLabelList=[]
+    echartsData.statistic.publicContentsCount=res.data.analysis.publicContentsCount
+    echartsData.statistic.privateContentsCount=res.data.analysis.privateContentsCount
+    res.data?.analysis?.contentsCountWithType.forEach((item:any)=> {
+      echartsData.experType.names.push(item[0])
+      echartsData.experType.numbers.push(item[1]) 
+    });
+    echartsBar('experType',echartsData.experType)
+    echartsData.hotLabelList=Object.values(res.data.analysis.technicalDirection)
+    HotWords('directPoints',doHotData(echartsData.hotLabelList))
+  })
 })
 </script>
 
@@ -216,5 +242,6 @@ onMounted(()=>{
   background-color: var(--white);
   margin-top: 20px;
   padding: 20px;
+  min-height:750px;
 }
 </style>

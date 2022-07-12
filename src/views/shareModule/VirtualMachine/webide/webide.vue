@@ -24,7 +24,7 @@
               ><i class="iconfont icon-zhongzhi1"></i>
               <a-popover trigger="click" class="roll-back-popover">
                 <template v-slot:title class="111">
-                  <div class="roll-back-item" @click="rollBack('')">回到初始版本</div>
+                  <div class="roll-back-item" @click="backInit()">回到初始版本</div>
                 </template>
                 <template #content>
                   <ul>
@@ -35,7 +35,11 @@
                       @click="rollBack(item)"
                       :class="item.id === version_id ? 'active' : ''"
                     >
-                      {{ item.version_name }}
+                      <span class="version-name">
+                        <span class="name single_ellipsis" :title="item.version_name">{{ item.version_name }}</span>
+                        <span class="current" v-show="item.id === version_id">(当前版本)</span>
+                      </span>
+                      <i class="iconfont icon-guanbi" @click.stop="deleteVersion(item)"></i>
                     </li>
                   </ul>
                 </template>
@@ -76,6 +80,7 @@
             </div>
           </div>
         </div>
+        <div class="loading" v-if="isRunning"><LoadingOutlined></LoadingOutlined></div>
       </div>
     </template>
   </layout>
@@ -85,7 +90,7 @@
     @ok="okBackupModal"
     title="版本备份"
   >
-    <a-input v-model:value="version_name" />
+    <a-input v-model:value="version_name" maxlength="10" placeholder="请输入版本名称，最多10个字" />
   </a-modal>
   <!--禁用modal-->
   <disableStudent
@@ -98,6 +103,7 @@
     :taskId="taskId"
     :opType="opType"
     :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
   ></disableStudent>
 </template>
 
@@ -124,12 +130,15 @@ import {
   switchVersionApi,
   runCodeApi,
   createTopoApi,
+  deleteVersionApi,
 } from "src/utils/webideInspect";
+import { LoadingOutlined, } from '@ant-design/icons-vue';
+import { IBusinessResp } from "src/typings/fetch";
 
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const { opType, type, taskId } = route.query;
+const { opType, type, taskId, recommendType } = route.query;
 let role = storage.lStorage.get("role");
 
 let ws_config = storage.lStorage.get("ws_config");
@@ -160,7 +169,7 @@ const version_name: any = ref("");
 const detailLoading: any = ref(false);
 const content: any = ref("");
 const backupVisible: any = ref(false);
-const versionListData: any = ref(false);
+const versionListData: any = ref([]);
 const runResult: any = ref("");
 
 let connection_id: any = "";
@@ -211,6 +220,7 @@ function getVmBase() {
   });
 }
 
+const isAutoRemove = ref(false)   // 是否是自动排课结束前15分钟，推送消息
 // 初始化ws
 function initWs() {
   clearTimeout(Number(timerout));
@@ -218,8 +228,6 @@ function initWs() {
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
     open: () => {
       if (baseInfo.value && baseInfo.value?.current) {
-        console.log(11111);
-
         ws.value.join(topoinst_id + "_room");
       }
       if (opType == "help") {
@@ -283,8 +291,8 @@ function initWs() {
           }
         } else if (wsJsonData.type == "return_message") {
           if (Object.keys(wsJsonData.data).length > 0) {
-            if (wsJsonData.data?.message) {
-              message.warn(wsJsonData.data.message);
+            if (wsJsonData.data?.msg) {
+              message.warn(wsJsonData.data.msg);
             } else {
               message.warn(wsJsonData.data);
             }
@@ -298,6 +306,10 @@ function initWs() {
           // 禁用学生
           disableVisable.value = true;
           disableData.value = wsJsonData.data;
+        } else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
+          disableVisable.value = true
+          disableData.value = wsJsonData.data
         }
       }
     },
@@ -310,8 +322,6 @@ function openOrClose() {
 
 // 创建实例
 function createTopo() {
-  console.log(12121);
-
   let params: any = {
     type: type,
     opType: opType,
@@ -320,7 +330,6 @@ function createTopo() {
   return new Promise((resolve: any, reject: any) => {
     createTopoApi(params)
       .then((res:any) => {
-        console.log(res);
         connection_id = res?.data.connection_id;
         topoinst_id = res?.data.topoinst_id;
         resolve(res?.data);
@@ -338,6 +347,7 @@ function getTaskInfoData() {
     opType: opType,
     taskId: taskId,
   };
+  recommendType ? params.recommendType = recommendType : ''
   getTaskInfo(params).then((res: any) => {
     if (Number(res?.data?.current?.status)>=2) {
       let modal = Modal.confirm({
@@ -381,7 +391,7 @@ function getVersionListData() {
   return new Promise((resolve: any, reject: any) => {
     getVersionList(params)
       .then((res:any) => {
-        console.log(res);
+        // console.log(res);
         resolve(res?.data);
       })
       .catch((err:any) => {
@@ -401,7 +411,6 @@ function getFileListData() {
   return new Promise((resolve: any, reject: any) => {
     getFileList(params)
       .then((res: any) => {
-        console.log(res);
         fileListData.value = res.data.file_list;
         file_id = fileListData.value[currentIndex.value].file_id;
         resolve(res.data);
@@ -440,7 +449,6 @@ function getCurrentSWitchFile() {
   };
 
   switchFile(params).then((res:any) => {
-    console.log(res);
     content.value = res?.data.file_content;
     detailLoading.value = true;
   });
@@ -466,7 +474,6 @@ function saveFileData() {
     file_content: content.value,
   };
   saveFile(params).then((res: any) => {
-    console.log(res);
     if (res.status === 1) {
       message.success("保存成功");
     }
@@ -498,7 +505,6 @@ function switchVersion(v_id: number, is_return: number) {
 
 // 打开备份modal
 function openBackupModal() {
-  console.log(1212);
   last_version_name = version_name.value;
   version_name.value = "";
   backupVisible.value = true;
@@ -512,7 +518,7 @@ function cancelBackupModal() {
 
 // 确认备份，提交
 function okBackupModal() {
-  console.log(version_name.value);
+  // console.log(version_name.value);
 
   createVersionData().then((res: any) => {
     console.log(res);
@@ -521,7 +527,7 @@ function okBackupModal() {
       backupVisible.value = false;
       rollBack(res.data)
     }
-    console.log(version_name.value);
+    // console.log(version_name.value);
   });
 }
 
@@ -529,17 +535,55 @@ function okBackupModal() {
 async function openRollBack() {
   let versions: any = await getVersionListData();
   versionListData.value = versions;
-  console.log(versions);
+  // console.log(versions);
 }
 
 async function rollBack(val: any) {
-  console.log(val);
   await switchVersion(val ? val.id : version_id.value, val ? 0 : 1);
   version_name.value = val.version_name;
   await getFileListData();
   getCurrentSWitchFile();
 }
+function backInit() {
+  Modal.confirm({
+    title: "提示",
+    content: "是否要将当前版本恢复到初始版本？",
+    okText: "确定",
+    cancelText: "取消",
+    zIndex: 1031,
+    onOk: () => {
+      rollBack('')
+    }
+  })
+}
+function deleteVersion(val: any) {
+  if (val.id === version_id.value) {
+    message.warn('不能删除当前版本')
+    return
+  }
+  const param: any = {
+    type: type,
+    opType: opType,
+    taskId: taskId,
+    version_id: val.id,
+  };
+  Modal.confirm({
+    title: "提示",
+    content: "版本删除后不可恢复，确定要删除？",
+    okText: "确定",
+    cancelText: "取消",
+    zIndex: 1031,
+    onOk: () => {
+      deleteVersionApi(param).then(async (res: IBusinessResp | null) => {
+        if (!res) return
+        message.success('删除成功')
+        // versionListData.value = await getVersionListData()
+      })
+    }
+  })
+}
 
+const isRunning = ref(false)
 function runCode() {
   let params: any = {
     type: type,
@@ -550,14 +594,17 @@ function runCode() {
     version_id: version_id.value,
     vm_uuid: currentUuid.value,
   };
+  isRunning.value = true
   runCodeApi(params)
     .then((res: any) => {
-      console.log(res);
+      isRunning.value = false
       if (res?.data?.output) {
         runResult.value = res.data.output;
       }
     })
-    .catch((res:any) => {});
+    .catch((res:any) => {
+      isRunning.value = false
+    });
 }
 // saveKvm
 function saveKvm() {}
@@ -578,16 +625,16 @@ onMounted(async () => {
       // initWs();
     // }
     let versions: any = await getVersionListData();
-    console.log(versions);
+    // console.log(versions);
     if (versions.length > 0) {
       version_id.value = versions[0].id;
       version_name.value = versions[0].version_name;
     } else {
       version_name.value = "基础版本";
       let versionsData = await createVersionData();
-      console.log(versionsData);
+      // console.log(versionsData);
       let versions: any = await getVersionListData();
-      console.log(versions);
+      // console.log(versions);
       if (versions.length > 0) {
         version_id.value = versions[0].id;
         version_name.value = versions[0].version_name;
@@ -626,6 +673,20 @@ onMounted(async () => {
   display: flex;
   flex-direction: row;
   height: 100%;
+  position: relative;
+  .loading {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: var(--black-45);
+    margin-right: 6px;
+    font-size: 30px;
+    color: var(--primary-color);
+    text-align: center;
+    .anticon {
+      margin-top: 300px;
+    }
+  }
 }
 .ace-left {
   width: 200px;
@@ -721,14 +782,35 @@ onMounted(async () => {
   }
 }
 .roll-back-item {
+  width: 190px;
   font-size: 14px;
   line-height: 24px;
   cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  .version-name {
+    flex: 1;
+    display: flex;
+    .name {
+      flex: 1;
+    }
+  }
+  .iconfont {
+    opacity: 0.2;
+    font-size: 14px;
+    margin-left: 24px;
+  }
   &:hover {
-    color: #3485fb;
+    color: var(--primary-color);
+    .iconfont {
+      opacity: 1;
+    }
   }
   &.active {
-    color: #3485fb;
+    color: var(--primary-color);
+    .iconfont {
+      opacity: 1;
+    }
   }
 }
 .reset-ws-modal {

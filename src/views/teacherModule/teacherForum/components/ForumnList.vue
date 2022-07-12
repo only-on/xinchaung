@@ -1,7 +1,7 @@
 <template>
   <h3 class="forum-title">
     <span class="sub">#标题#</span>
-    <span class="title single_ellipsis">{{ item.title }}</span>
+    <span class="title single_ellipsis" :title="item.title">{{ item.title }}</span>
   </h3>
   <div class="forum-content" v-if="!item.isAllText">
     <span class="desc" v-html="item.desc"></span>
@@ -12,7 +12,7 @@
   </div>
   <div class="forum-content-all" v-else v-html="item.content"></div>
   <div class="user-info">
-    <img :src="item.user.avatar || defaultAvatar" alt="" />
+    <img :src="item.user?.avatar || defaultAvatar" alt="" />
     <span class="user-name">{{ item.user_profile?.name }}</span>
     <span class="create-time">{{ dateFormat1(item.created_at * 1000) }}</span>
     <span class="btns">
@@ -20,7 +20,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num">{{ item.reply_number_count }}</span>
+        <span class="reply-num" v-if="!isReply">{{ item.reply_number_count }}</span>
       </span>
       <span class="delet pointer" v-if="item.is_del" @click="delet(item.id)">
         <span class="division" v-if="item.is_del"></span>删除
@@ -32,21 +32,22 @@
     <div class="reply-total">回应区 （{{totalReply}}条）</div>
     <a-spin :spinning="loading" tip="Loading...">
     <div class="reply-content">
-      <reply-list :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
+      <div v-if="!replyList.length" class="no-reply-data">该帖子暂无评论！</div>
+      <reply-list v-else :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
       <div class="more" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(item.id)">
         <span class="pointer">加载更多</span>
       </div>
     </div>
     </a-spin>
     <div class="comment-box">
-      <a-input v-model:value="replyContent" placeholder="请写下你的评论" />
+      <a-input ref="inputRef" :maxlength="500" v-model:value="replyContent" placeholder="请写下你的评论" />
       <span class="pointer" @click="submitReply(item.id)">回应</span>
     </div>
   </div>
   <div class="bottom" :style="bottomStyle" v-if="item.isAllText">
     <div class="left">
-      <span>{{ item.reply_number_count }}</span>
-      <span class="pointer" @click="isReply = !isReply">{{
+      <span v-if="!isReply">{{ item.reply_number_count }}</span>
+      <span class="pointer" @click="viewReplyClick">{{
         !isReply ? "回应" : "收起回应"
       }}</span>
     </div>
@@ -71,6 +72,7 @@ import {
   PropType,
   createVNode,
   provide,
+  nextTick,
 } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import ReplyList from "./ReplyList.vue";
@@ -108,6 +110,10 @@ export default defineComponent({
     }
     // 回应
     function submitReply(id: number) {
+      if (!replyContent.value) {
+        message.warn('请输入评论内容')
+        return
+      }
       let param = {
         content: replyContent.value,
         id
@@ -115,6 +121,7 @@ export default defineComponent({
       http.replyForum({param}).then((res: IBusinessResp) => {
         replyContent.value = ''
         // replyList.length = 0
+        page.value = 1
         getReplyList(id)
         props.item.reply_number_count ++
       })
@@ -135,6 +142,7 @@ export default defineComponent({
         const { list, page } = res.data
         replyList.push(...list.data)
         totalReply.value = page.totalCount
+        props.item.reply_number_count = page.totalCount
       })
     }
     onMounted(() => {
@@ -154,8 +162,9 @@ export default defineComponent({
       deleteForum(id)
     }
     // 删除一级回复
-    const deleteReply = (id: number) => {
+    const deleteReply = (id: number, pid: number) => {
       getReplyList(id)
+      pid ? "" : props.item.reply_number_count --
     }
     provide("deleteReply", deleteReply)
 
@@ -166,7 +175,24 @@ export default defineComponent({
     }
 
     const bottomStyle: any = inject("bottomStyle");
+    const inputRef: any = ref(null)
+    const viewReplyClick = () => {
+      isReply.value = !isReply.value
+      // console.log(inputRef.value)
+      nextTick(() => {
+        inputRef.value?.focus()
+      })
+      page.value = 1
+      replyList.length = 0
+      getReplyList(props.item.id)
+    }
+    const handleChange = (e:any) => {
+      replyContent.value = e.target.value
+    }
     return {
+      inputRef,
+      viewReplyClick,
+      handleChange,
       ...toRefs(props),
       isReply,
       child,
@@ -280,6 +306,11 @@ export default defineComponent({
   .reply-content {
     background: var(--lightgray-2);
     /*margin: 16px 20px;*/
+    .no-reply-data {
+      text-align: center;
+      padding-top: 30px;
+      color: var(--black-45);
+    }
     .more {
       padding: 19px 0 24px;
       text-align: center;
@@ -313,6 +344,9 @@ export default defineComponent({
       color: var(--white-100);
     }
   }
+  .ant-spin-nested-loading {
+    min-height: 80px!important;
+  }
 }
 .bottom {
   height: 54px;
@@ -327,6 +361,7 @@ export default defineComponent({
   position: fixed;
   bottom: 0;
   width: 830px;
+  z-index: 1;
   .right {
     color: var(--primary-color);
     margin-left: 12px;
@@ -341,9 +376,6 @@ export default defineComponent({
       margin-left: 4px;
     }
   }
-}
-.ant-spin-nested-loading {
-  min-height: 80px;
 }
 .forum-content-all{
   :deep(.ql-image){

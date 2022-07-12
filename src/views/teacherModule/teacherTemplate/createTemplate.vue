@@ -19,7 +19,7 @@
         </drag-gable>
       </div>
     </div>
-    <div class="content">
+    <div class="contentC">
       <div class="dnd-space">
         <a-form :model="form" :rules="rules" layout="vertical" ref="formRef">
           <a-form-item label="报告模板名称" name="name">
@@ -42,6 +42,7 @@
                 <widget-create
                   :type="element.type"
                   v-model:fields="element.fields"
+                  :disable="isCheck"
                 >
                   <template #toolbar v-if="!isCheck">
                     <div class="actions">
@@ -164,7 +165,7 @@ const props = withDefaults(defineProps<Props>(), {
 });
 const templateId = ref<any>("");
 const isCheck = computed(() => {
-  return props.type && props.type === "view";
+  return !!(props.type && props.type === "view");
 });
 var form = reactive<any>({
   name: "",
@@ -307,7 +308,7 @@ const settingReport = () => {
   justify-content: space-between;
   height: 100%;
 }
-.content {
+.contentC {
   flex: 1;
   overflow: auto;
   padding-right: 10px;

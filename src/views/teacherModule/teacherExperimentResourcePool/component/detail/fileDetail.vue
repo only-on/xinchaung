@@ -2,7 +2,7 @@
   <div class="title">
     <h3>实验指导</h3>
     <div class="operate-btns" v-if="currentTab === '0'&&type!=='recommend'">
-      <a-button type="primary" v-if="(props.detail.content_task_files&&props.detail.content_task_files.length) || props.detail.guide" @click="deleteFile"
+      <a-button type="primary" v-if="!idDelte" @click="delet"
         >移除</a-button
       >
       <span v-else>
@@ -18,9 +18,9 @@
     <div v-if="activeFile.suffix === 'md'">
       <marked-editor v-model="experimentContent" :preview="preview" />
     </div>
-    <div v-else-if="activeFile.file_html === ''" class="pdfBox">
+    <div v-else-if="activeFile.file_html === ''&&activeFile.name" class="pdfBox">
       <div class="flexCenter">
-        <h2 class="single_ellipsis">{{activeFile.name}}</h2>
+        <h2 class="single_ellipsis" :title="activeFile.name">{{activeFile.name}}</h2>
         <span class="iconfont icon-shanchu" @click="removeAct()"></span>
       </div>
       <h2>
@@ -28,16 +28,18 @@
         <!-- 请确认保存后查看文档转换 -->
       </h2>
     </div>
-    <PdfVue :url="activeFile.file_html" v-else />
+    <div v-else class="pdfBox">
+      <PdfVue :url="activeFile.file_html"/>
+    </div>
   </div>
-  <Submit v-if="(!preview || !props.detail.content_task_files || !props.detail.content_task_files.length) && role!==2" @submit="onSubmit" @cancel="cancel"></Submit>
+  <Submit v-if="idDelte" @submit="onSubmit" @cancel="cancel"></Submit>
   <!-- 选择文档抽屉 -->
-  <SelectDocOrMp4 
-    :activeFile="activeFile" 
-    :visible="visible" 
-    :docOrMp4Type="1" 
-    @selectDocOrMp4File="selectDocOrMp4File" 
-    @closeDrawerDoc="closeDrawerDoc" 
+  <SelectDocOrMp4
+    :activeFile="activeFile"
+    :visible="visible"
+    :docOrMp4Type="1"
+    @selectDocOrMp4File="selectDocOrMp4File"
+    @closeDrawerDoc="closeDrawerDoc"
   />
   <!-- 上传文档 -->
   <upload-file-modal
@@ -48,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive, PropType, onMounted } from "vue";
+import { ref, inject, reactive, PropType, onMounted, watch } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import Submit from "src/components/submit/index.vue";
@@ -95,7 +97,11 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 
+const idDelte = ref(false)  // 是否显示移除按钮
 const preview = ref<boolean>(true);
 const experimentContent = ref<any>(props.detail.guide);
 let activeFile = reactive({
@@ -103,8 +109,30 @@ let activeFile = reactive({
   suffix: 'md',
   file_url: '',
   pdf_url: '',
-  file_html: ''
+  file_html: '',
+  file_name: ''
 })
+
+watch(
+  () => props.detail,
+  () => {
+    if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+      idDelte.value = false
+      Object.assign(activeFile, props.detail.content_task_files[0])
+    } else if (props.detail.guide) {
+      idDelte.value = false
+      activeFile.suffix = 'md'
+      experimentContent.value = props.detail.guide;
+    } else {
+      idDelte.value = true
+      preview.value = false
+      activeFile.suffix = 'md'
+    }
+  },
+  { deep: true, immediate: true }
+);
+
+
 if (props.detail.content_task_files?.length) {
   Object.assign(activeFile, props.detail.content_task_files[0])
   // activeFile.pdf_url=props.detail.content_task_files[0].file_url
@@ -120,15 +148,19 @@ const uploadFile = () => {
 const visibleUpload = ref<boolean>(false);
 const directoryId = ref(0)
 const uploadSuccess = (uploadFileList: any, id: any) => {
-  // console.log(uploadFileList)
-  if (id === 'md') {
-    // props.detail.guide = uploadFileList
-    experimentContent.value = uploadFileList
-    preview.value = false
-    activeFile.suffix = 'md'
-    return
-  }
+  console.log(uploadFileList)
   Object.assign(activeFile, uploadFileList)
+  if (uploadFileList.suffix === 'md') {
+    // props.detail.guide = uploadFileList
+    // Object.assign(activeFile, uploadFileList)
+    // experimentContent.value = uploadFileList.text
+    // preview.value = false
+    // directoryId.value = id
+    // return
+    activeFile.suffix = 'md'
+    experimentContent.value = uploadFileList.mdValue
+    activeFile.file_html=''
+  }
   if (uploadFileList.suffix === 'pdf') {
     activeFile.suffix = 'pdf'
     // activeFile.pdf_url = uploadFileList.tusdDocumentUrl
@@ -150,7 +182,7 @@ const removeAct=()=>{
     suffix: 'md',
     file_url: '',
     pdf_url: '',
-    file_html: ''
+    file_html: '',
   }
   Object.assign(activeFile, obj)
   console.log(activeFile)
@@ -159,6 +191,7 @@ const removeAct=()=>{
 const visible = ref<boolean>(false);
 const selectDocOrMp4File = (val: any) => {
   Object.assign(activeFile, val)
+  activeFile.name = activeFile.file_name
   // fetch('/proxyPrefix'+val.file_url, {responseType: 'text/plain;charset=utf-8', headers: {'Content-Type': 'text/plain;charset=utf-8'}}).then(res => {
   //   console.log(res)
   // })
@@ -176,11 +209,19 @@ const selectFileClick = () => {
 };
 
 // 移除文件
+const delet = () => {
+  idDelte.value = true
+  preview.value = false
+  activeFile.suffix = 'md'
+  activeFile.file_html = ''
+  activeFile.name = ''
+  experimentContent.value = ''
+}
 const deleteFile = () => {
   // if (props.detail.guide) {
   //   props.detail.guide = ''
   //   experimentContent.value = ''
-  //   return 
+  //   return
   // }
   http.deleteDocument({urlParams: {content_id: props.detail.id}})
   .then((res: any) => {
@@ -194,28 +235,37 @@ const deleteFile = () => {
   })
 };
 
-const onSubmit = () => {
+const onSubmit = async () => {
   if (!(experimentContent.value || activeFile.file_url)) {
     $message.warn("请上传或选择文件")
     return
   }
   const param = {}
   if (activeFile.suffix === 'md' || experimentContent.value) {
-    Object.assign(param, {guide: experimentContent.value})
+    Object.assign(param, {
+      directory_id: directoryId.value,
+      guide: experimentContent.value,
+      file_path: activeFile.file_url,
+      file_name: activeFile.name
+    })
   } else {
     Object.assign(param, {
       document_file: {
         "file_path": activeFile.file_url,			// 文档实验-文件
-        "directory_id": directoryId.value // 实验指导 如果是选择的文件请求的时候不需要传此参数
+        "directory_id": directoryId.value, // 实验指导 如果是选择的文件请求的时候不需要传此参数
+        "file_name": activeFile.name // 实验指导 如果是选择的文件请求的时候不需要传此参数
       }
     })
   }
+  await deleteFile()
   http.updateDocumentGuide({
     urlParams: {content_id: props.detail.id},
     param,
   }).then((res: any) => {
     $message.success("更新成功")
-    router.go(-1)
+    // router.go(-1)
+    emit('getExperimentDetail');
+    preview.value = true
   })
 };
 const cancel = () => {
@@ -245,15 +295,15 @@ const cancel = () => {
   }
 }
 .experiment-content {
-  margin-top: 16px;
-  height: 563px;
+  margin: 16px 0;
+  min-height: 563px;
   .demo__container :deep(.ant-btn) {
     padding: 0 !important;
   }
   :deep(.mark__body) {
     .mark__editor,
     .mark__preview {
-      height: 455px;
+      min-height: 455px;
     }
   }
   .submit {
@@ -261,12 +311,13 @@ const cancel = () => {
   }
 }
 .pdfBox{
+  height: 563px;
   .flexCenter{
-    width: 50%;
+    // width: 50%;
     justify-content: space-between;
     height: 40px;
     h2{
-      width: 80%;
+      // width: 80%;
     }
     .iconfont{
       cursor: pointer;

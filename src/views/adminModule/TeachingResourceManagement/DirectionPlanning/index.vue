@@ -7,7 +7,7 @@
             style="width: 245px"
             v-model:value="searchParams.name"
             placeholder="请输入搜索关键词"
-            @pressEnter="getList"
+            @pressEnter="onSearch"
           />
           <a-button
             class="editable-add-btn"
@@ -24,13 +24,19 @@
             :data-source="tableData.data"
             :columns="columns"
             rowKey="id"
-            :pagination="{
-              current: searchParams.page,
-              pageSize: searchParams.limit,
-              total: tableData.total,
-              onChange: onChangePage,
-              hideOnSinglePage: true,
-            }">
+            :pagination="
+            tableData.total > 10
+              ? {
+                  hideOnSinglePage: false,
+                  showSizeChanger:true,
+                  current: searchParams.page,
+                  pageSize: searchParams.limit,
+                  total: tableData.total,
+                  onChange: onChangePage,
+                  onShowSizeChange: onShowSizeChange,
+                }
+              : false
+          ">
             <template #name="{ text, index }">
               <div class="editable-cell">
                 <div
@@ -49,6 +55,7 @@
             </template>
             <template #operation="{ record, index }">
               <span class="functionButton" v-if="editableData[index]">
+                <a @click="cancelSave(index)">取消</a>
                 <a @click="save(index)">确定</a>
               </span>
               <span class="functionButton" v-else>
@@ -69,6 +76,7 @@
     v-model:visible="dialogVisible"
     :title="'添加' + modalTitle"
     :width="500"
+    @cancel="cancel"
   >
     <a-form
       :layout="'vertical'"
@@ -125,7 +133,7 @@ const searchParams = reactive<any>({
   limit: 10
 })
 const modalTitle = ref<string>('')
-const tableData = reactive<any>({
+const tableData = reactive<any>({       
   data: [],
   total: 0
 })
@@ -160,7 +168,7 @@ const planTtab: any = [
   { tabList: "知识图谱规划", title: "知识图谱" },
   { tabList: "标签规划", title: "标签" },
 ];
-var editableDataKey: any;
+let editableDataKey: any;
 let obj: any = {
   0: {
     list: "classList",
@@ -214,7 +222,7 @@ const columns = reactive<any>([
 
 function getList () {
   if (activeKey.value !== 3) {
-    var newhttp = http[obj[activeKey.value]["list"]]({
+    let newhttp = http[obj[activeKey.value]["list"]]({
       param: searchParams
     });
     newhttp.then((res: IBusinessResp) => {
@@ -223,8 +231,18 @@ function getList () {
     });
   }
 }
-const onChangePage = (val:number) => {
-  searchParams.page = val
+const onChangePage = (page:number,pageSize:number) => {
+  searchParams.page = page
+  searchParams.limit=pageSize
+  getList()
+}
+const onShowSizeChange=(page:number,pageSize:number)=>{
+  searchParams.page = 1
+  searchParams.limit=pageSize
+  getList()
+}
+const onSearch = () => {
+  searchParams.page = 1
   getList()
 }
 const changeTab = (key: any) => {
@@ -234,6 +252,7 @@ const changeTab = (key: any) => {
   columns[0].title = planTtab[key].title
   searchParams.page = 1
   searchParams.name = ''
+  searchParams.limit=10
   getList()
 };
 const edit = (record:any, key: number) => {
@@ -252,7 +271,7 @@ const save = (key: number) => {
     message.warn(planTtab[activeKey.value].title + '不能超过30个字符')
     return
   }
-  var newhttp = http[obj[activeKey.value]["modify"]]({
+  let newhttp = http[obj[activeKey.value]["modify"]]({
     urlParams: { ID: editableData[key].id },
     param: {
       name: editableData[key].name
@@ -264,7 +283,9 @@ const save = (key: number) => {
     getList()
   });
 };
-
+const cancelSave=(key: number)=>{
+  delete editableData[key];
+}
 const onDelete = (id: number) => {
   Modal.confirm({
     title: "删除",
@@ -273,7 +294,7 @@ const onDelete = (id: number) => {
     cancelText: "取消",
     onOk: () => {
       if (!id) return
-      var newhttp = http[obj[activeKey.value]["delete"]]({
+      let newhttp = http[obj[activeKey.value]["delete"]]({
         urlParams: { ID: id },
       });
       newhttp.then((res: IBusinessResp) => {
@@ -290,10 +311,10 @@ const handleAdd = () => {
   formState.name = ''
 };
 const saveAdd = () => {
-  var newhttp = http[obj[activeKey.value]["add"]]({
-    param: formState,
-  });
   formRef.value.validate().then(() => {
+    let newhttp = http[obj[activeKey.value]["add"]]({
+      param: formState,
+    });
     newhttp.then((res: IBusinessResp) => {
       dialogVisible.value = false
       message.success('添加成功')

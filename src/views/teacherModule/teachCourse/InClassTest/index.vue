@@ -1,6 +1,6 @@
 <template>
   <div id="inClassTest">
-    <div class="tree">
+    <div class="tree chartTerrLeft textScrollbar">
           <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
     </div>
     <div class="test">
@@ -44,19 +44,19 @@
       </div>
     </div>
     <achievementStatis
-      v-if="componentName == 'achievementStatis'"
+      v-if="componentName == 'achievementStatis' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
     ></achievementStatis>
     <choiceques
-      v-if="componentName == 'choiceques'"
+      v-if="componentName == 'choiceques' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
     ></choiceques>
     <explainques
-      v-if="componentName == 'explainques'"
+      v-if="componentName == 'explainques' && state.visible"
       :modalVisable="state.visible"
       :experitId='experitId'
       @updateVisable="updateVisable"
@@ -137,8 +137,10 @@ function deleteQues(id: any) {
 // 选择tree章节
 function selectExperiment(val: any) {
   console.log(val);
-  experitId.value=val.id
-  inclassTestList()
+  if(val && val.id){
+    experitId.value=val.id
+    inclassTestList()
+  }
 }
 function inclassTestList(){
   http.inClasstestList({urlParams:{content_id:experitId.value},param:{limit:100,needs_answer:true}}).then((res:any)=>{
@@ -154,18 +156,20 @@ function inclassTestList(){
 }
 .tree,
 .test {
-  height: 714px;
-  overflow-y: auto;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px 0 var(--black-0-7);
-  background: var(--white-100);
+  // height: 714px;
+  // overflow-y: auto;
+  // padding: 20px;
+  // border-radius: 10px;
+  // box-shadow: 0 2px 4px 0 var(--black-0-7);
+  // background: var(--white-100);
+  padding-top: 12px;
 }
 .tree {
-  width: 470px;
+  // width: 470px;
 }
 .test {
-  width: 714px;
+  // width: 714px;
+  flex: 1;
   padding: 24px;
   .inTestHeader {
     display: flex;

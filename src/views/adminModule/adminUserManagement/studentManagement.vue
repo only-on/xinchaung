@@ -58,9 +58,9 @@
     </div>
     <div class="header-btn">
       <a-button class="addStudent" @click="createStu()" type="primary">创建学生</a-button>
-      <a-button class="brightBtn addStudent" @click="ImportStudent()" type="primary">批量导入</a-button>
+      <a-button class="addStudent" @click="ImportStudent()" type="primary">批量导入</a-button>
       <a-button class="addStudent" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
-      <a-button class="brightBtn addStudent" @click="BatchDelete()" type="primary">批量删除</a-button>
+      <a-button class="addStudent" @click="BatchDelete()" type="primary">批量删除</a-button>
     </div>
   </div>
   <a-config-provider>
@@ -69,19 +69,39 @@
       :loading="loading"
       :data-source="list"
       row-key="id"
-      :pagination="{
-        current: ForumSearch.page,
-        pageSize: ForumSearch.pageSize,
-        total: total,
-        onChange: onChangePage,
-        hideOnSinglePage: true,
-      }"
+      :pagination="
+        total > 10
+          ? {
+            showSizeChanger:true,
+            current: ForumSearch.page,
+            pageSize: ForumSearch.pageSize,
+            total: total,
+            onChange: onChangePage,
+            onShowSizeChange: onShowSizeChange,
+                }
+          : false
+      "
       :row-selection="{
         selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
       }"
       class="components-table-demo-nested"
-    >
+    > 
+      <template #classname="{record}">
+        <div :title="record?.classname" class="eslipse">{{record?.classname}}</div>
+      </template>
+      <template #grade="{record}">
+        <div :title="record?.grade" class="eslipse">{{record?.grade}}</div>
+      </template>
+      <template #major="{record}">
+        <div :title="record?.major" class="eslipse">{{record?.major}}</div>
+      </template>
+      <template  #department="{record}">
+        <div :title="record?.department" class="eslipse">{{record.department}}</div>
+      </template>
+      <template #email="{record}">
+        <div :title="record?.email" class="eslipse">{{record.email}}</div>
+      </template>
       <template #operation="{ record }">
         <!-- iconfont icon-bianji -->
         <span
@@ -131,11 +151,12 @@
             />
           </a-form-item>
           <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
+            <a-input :maxLength='10' v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+              :maxLength='16'
               v-model:value="formState.password_hash"
               :visibilityToggle="false"
             />
@@ -143,6 +164,7 @@
           <a-form-item label="确认密码" name="repassword">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+            :maxLength='16'
               v-model:value="formState.repassword"
               :visibilityToggle="false"
             />
@@ -155,23 +177,23 @@
           </a-form-item>
         </div>
         <div class="right">
-          <a-form-item label="班级" name="class">
-            <a-input v-model:value="formState.classname" />
+          <a-form-item label="班级" name="classname">
+            <a-input :maxLength='10' v-model:value="formState.classname" />
           </a-form-item>
           <a-form-item label="年级" name="grade">
-            <a-input v-model:value="formState.grade" />
+            <a-input :maxLength='15' v-model:value="formState.grade" />
           </a-form-item>
           <a-form-item label="专业" name="major">
-            <a-input v-model:value="formState.major" />
+            <a-input :maxLength='20' v-model:value="formState.major" />
           </a-form-item>
            <a-form-item label="学院" name="department">
-            <a-input v-model:value="formState.department" />
+            <a-input :maxLength='20' v-model:value="formState.department" />
           </a-form-item>
           <a-form-item label="手机" name="phone">
             <a-input v-model:value="formState.phone" />
           </a-form-item>
           <a-form-item label="邮箱" name="email">
-            <a-input v-model:value="formState.email" />
+            <a-input :maxLength='30' v-model:value="formState.email" />
           </a-form-item>
         </div>
       </div>
@@ -224,6 +246,11 @@
           row-key="username"
           class="components-table-demo-nested"
         >
+          <template #result='{record}'>
+            <div :class='record.result=="添加成功"?"success":"wrong"'>
+              {{record?.result}}
+            </div>
+          </template>
         </a-table>
         <div v-else>
           <a-spin tip="Loading...">
@@ -283,34 +310,32 @@ const columns = [
   {
     title: "姓名",
     dataIndex: "name",
-    align: "center",
     width: 120,
   },
   {
     title: "班级",
     dataIndex: "classname",
-    align: "classname",
+    slots: { customRender: "classname" },
   },
   {
     title: "年级",
     dataIndex: "grade",
-    align: "center"
+    slots: { customRender: "grade" },
   },
   {
     title: "专业",
     dataIndex: "major",
-    align: "center"
+    slots: { customRender: "major" },
   },
   {
     title: "学院",
     dataIndex: "department",
-    align: "center"
+    slots: { customRender: "department" },
   },
   {
     title: "邮箱",
     dataIndex: "email",
-    align: "center",
-    width:150,
+    slots: { customRender: "email" },
   },
   {
     title: "电话",
@@ -324,12 +349,12 @@ const columns = [
     align: "center",
     slots: { customRender: "operation" },
     fixed: "right",
-    width: 200,
+    width: 170,
   },
 ];
 const studentColumns = [
   {
-    title: "学号",
+    title: "账号",
     dataIndex: "username",
   },
   {
@@ -339,9 +364,10 @@ const studentColumns = [
   {
     title: "导入情况",
     dataIndex: "result",
+    slots: { customRender: "result" },
   },
 ]; 
-const router = useRouter();
+    const router = useRouter();
     const route = useRoute();
 
     var updata = inject("updataNav") as Function;
@@ -390,6 +416,9 @@ const router = useRouter();
           trigger: "blur",
         },
       ],
+      classname: [{ required: true, message: "请输入班级", trigger: "blur" }],
+      grade: [{ required: true, message: "请输入年级", trigger: "blur" }],
+      major: [{ required: true, message: "请输入专业", trigger: "blur" }],
     };
     var ForumSearch: any = reactive({
       username: "",
@@ -700,6 +729,17 @@ const router = useRouter();
       });
       initData();
     }
+    function onShowSizeChange(page:number,pageSize:number){
+      const { query, path } = route;
+      ForumSearch.page = 1;
+      ForumSearch.pageSize = pageSize;
+      state.selectedRowKeys.length = 0;
+      router.replace({
+        path: path,
+        query: { ...query, page: ForumSearch.page,PageSize:pageSize},
+      });
+      initData();
+    }
     function addStudent() {
     }
     function fileBeforeUpload(file: any) {
@@ -760,6 +800,7 @@ const router = useRouter();
     flex: 1;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     .item {
       display: flex;
       align-items: center;
@@ -792,16 +833,6 @@ const router = useRouter();
         z-index: 10;
       }
     }
-  //   .custom_input2 {
-  //     &::before {
-  //       // background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-  //     }
-  //   }
-  //   .custom_input3 {
-  //     &::before {
-  //       // background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-  //     }
-  //   }
   }
 
   .header-btn{
@@ -810,6 +841,9 @@ const router = useRouter();
   }
   .addStudent {
     margin-right: 16px;
+  }
+  .addStudent:nth-last-child(1){
+    margin-right: 0;
   }
 }
 :deep(.ant-form-item-control) {
@@ -833,7 +867,6 @@ const router = useRouter();
   }
 }
 .studentList {
-  min-height: 400px;
   .heard {
     margin-bottom: 22px;
     display: flex;
@@ -865,9 +898,6 @@ const router = useRouter();
     }
   }
 }
-:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-  border-radius: 20px;
-}
 .formBox {
   width: 100%;
   display: flex;
@@ -876,5 +906,16 @@ const router = useRouter();
   .right {
     width: 46%;
   }
+}
+.success{
+  color: green;
+}
+.wrong{
+  color: red;
+}
+.eslipse{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

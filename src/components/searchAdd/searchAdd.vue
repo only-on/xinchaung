@@ -1,5 +1,5 @@
 <template>
-  <div class="reference">
+  <div class="reference1" :class=" configuration.showNav || configuration.tabs.length ? 'reference2' : '' ">
     <div class="addBox">
       <div class="add flexCenter fr">
         <div @mouseover="isMouseOver = true" @mouseout="isMouseOver = false" v-if="props.isShowSearch">
@@ -32,7 +32,8 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, watch } from "vue";
+import { ref, watch ,inject} from "vue";
+var configuration: any = inject("configuration");
 const isMouseOver = ref<boolean>(false);
 const searchKey = ref<string>("");
 const searchFn = () => {
@@ -67,10 +68,10 @@ const emit = defineEmits<{
 </script>
 
 <style lang="less" scoped>
-.reference {
+.reference1 {
   position: fixed;
   width: 100%;
-  top: 110px;
+  top: 90px;
   left: 0;
   height: 0px;
   z-index: 1;
@@ -122,5 +123,8 @@ const emit = defineEmits<{
       }
     }
   }
+}
+.reference2{
+  // top: 90px;
 }
 </style>

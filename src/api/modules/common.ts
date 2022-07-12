@@ -34,12 +34,13 @@ export default {
     doesLoggedIn: { url: `/api/common/does-logged-in`, method: 'GET' },
     //  获取公共配置
     getFileConfig:{ url: `/api/config/public-config`, method: "GET"},
-    //   退出登录
+    //   修改密码
     resetPassword:{url: `/api/yii/site/change-password`, method: 'POST', dataType: "json"},
     // 学生端修改密码
     stuResetPassword:{url: `/api/user/update-pwd`, method: 'POST', dataType: "json"},
     operationLog:{ url: '/api/system/user-logs', method: 'GET',},
-    
+    // 获取教师信息
+    getTeacherInfo: {url: '/api/yii/site/teacher-info', method: 'GET'},
 
 }
 export interface ICommonAps {
@@ -56,6 +57,7 @@ export interface ICommonAps {
     doesLoggedIn: TFHttpSend
     resetPassword: TFHttpSend
     operationLog:TFHttpSend
+    getTeacherInfo: TFHttpSend
 }
 export const FakeMenu = {
     msg: "success",

@@ -1,12 +1,23 @@
 <template>
-  <layout :navData="navData">
+  <layout :navData="navData" ref="layoutRef">
     <template v-slot:right
       >
       <template v-if="currentInterface === 'ssh'">
+        <div v-if="!sshIsOpen" class="close-vm-bg">
+          <img :src="closevmImg" alt="" srcset="" width="324" height="68">
+        </div>
+        <div class="vncloading" v-else-if="loading || vncLoading">
+          <div class="word">
+            <div class="loading">
+              <img :src="loadingGif" alt="" srcset="" />
+              <span>虚拟机加载中，请稍后...</span>
+            </div>
+          </div>
+        </div>
         <iframe id="sshIframe" :src="sshUrl" frameborder="0"></iframe>
       </template>
       <template v-else>
-        <div class="vncloading" v-if="loading">
+        <div class="vncloading" v-if="loading || vncLoading&&!isClose">
           <div class="word">
             <div class="loading">
               <img :src="loadingGif" alt="" srcset="" />
@@ -37,11 +48,12 @@
     :taskId="taskId"
     :opType="opType"
     :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
   ></disableStudent>
 </template>
 
 <script lang="ts" setup>
-import { inject, ref, onMounted,nextTick, computed, WritableComputedRef, watch } from "vue";
+import { inject, ref, onMounted,nextTick, computed, WritableComputedRef, watch, provide } from "vue";
 import loadingGif from "src/assets/images/vmloading.gif";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import disableStudent from "../component/disableStudent.vue"
@@ -51,7 +63,7 @@ import { wsConnect } from "src/request/websocket";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
-
+import httpBuildQuery from "http-build-query"
 import {
   onBeforeRouteLeave,
   useRoute,
@@ -63,6 +75,10 @@ import {
 
 import storage from "src/utils/extStorage";
 import { getVmConnectSetting } from "src/utils/seeting";
+import request from "src/request/getRequest";
+import { IBusinessResp } from "src/typings/fetch";
+import closevmImg from "src/assets/images/vm/vm_close.png"
+const vmApi = request.vmApi;
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
@@ -70,7 +86,7 @@ const user_id = storage.lStorage.get("uid");
 const route = useRoute();
 const router=useRouter();
 const store = useStore();
-const { opType, type, taskId, topoinst_id, connection_id, experType } = route.query;
+const { opType, type, taskId, topoinst_id, connection_id, experType, recommendType } = route.query;
 const currentOption = inject(
   "currentOption",
   ref({ password: "", wsUrl: "", userName: "" })
@@ -92,6 +108,11 @@ const initVnc: any = inject("initVnc");
 const evaluateData:any=inject("evaluateData")
 const evaluateVisible:any=inject("evaluateVisible")
 const initEvaluate:any=inject("initEvaluate")
+const isScreenRecording: any = inject("isScreenRecording", ref(false));
+const vncLoading: any = inject("vncLoading", ref(false));
+
+// 非响应式
+let historyLength = history.length;
 
 const disableVisable:any=ref(false)
 const disableData:any=ref({})
@@ -123,6 +144,7 @@ function getVmBase() {
       type: type,
       taskId: taskId,
     };
+    recommendType ? params.recommendType = recommendType : ''
     getVmBaseInfo(params).then((res: any) => {
       if (Number(res.data?.current?.status)>=2) {
         let modal = Modal.confirm({
@@ -172,6 +194,9 @@ function getVmBase() {
   });
 }
 
+const isAutoRemove = ref(false)
+const sshIsOpen = ref(true)   // ssh是否是开机的状态
+let layoutRef: any = ref(null)
 function initWs() {
   clearTimeout(Number(timerout));
   ws.value = wsConnect({
@@ -213,37 +238,40 @@ function initWs() {
       let regex = /\{.*?\}/g;
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
+        let oldVmsInfo = vmsInfo.value
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
+            Object.keys(oldVmsInfo).length ? '' : vncLoading.value = true
             if (
               ind === 0 &&
               baseInfo.value.base_info &&
-              baseInfo.value.base_info.is_webssh === 1 &&
-              ((role == 4 &&
-                baseInfo.value.current &&
-                baseInfo.value.current.is_switch == 0) ||
-                role == 3)
+              baseInfo.value.base_info.is_webssh === 1 
+              // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) ||
+              //   role != 4)
             ) {
               ind++;
               currentInterface.value = "ssh";
               currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
               currentUuid.value = currentVm.value.uuid;
+              // setTimeout(() => {
+              //   console.log(sshUrl)
+              //   sshUrl.value =
+              //     getVmConnectSetting.SSHHOST +
+              //     ":2222/ssh/host/" +
+              //     currentVm.value.host_ip +
+              //     "/" +
+              //     currentVm.value.ssh_port;
+              // }, 2000);
+              loading.value = false;
               setTimeout(() => {
-                console.log(sshUrl)
-                sshUrl.value =
-                  getVmConnectSetting.SSHHOST +
-                  ":2222/ssh/host/" +
-                  currentVm.value.host_ip +
-                  "/" +
-                  currentVm.value.ssh_port;
-              }, 2000);
-              setTimeout(() => {
-                loading.value = false;
                 if (currentVm.value.status == "ACTIVE") {
                   isClose.value = false;
                 }
               }, 1500);
+              if (currentVm.value.status == "SHUTOFF") {
+                sshIsOpen.value = false
+              }
             } else {
               if (
                 currentInterface.value == "ssh" ||
@@ -296,32 +324,33 @@ function initWs() {
           }
         }else if (wsJsonData.type=="vm_act_message"){ 
           // 分组成员在操作或教师在操作
-          if (wsJsonData.data?.send_user_id!==user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
+          if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
+            isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
           }
         }else if (wsJsonData.type=="return_message") {
-          if (Object.keys(wsJsonData).length>0) {
+          if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
             if (wsJsonData.data?.msg) {
               message.warn(wsJsonData.data.msg)
             }else{
               message.warn(wsJsonData.data)
             }
           }
-          if (!["train"].includes(type as any)) {
-            if (layout.value) {
-              router.go(-1);
-              // 自评推荐
-              evaluateVisible.value=true
-              evaluateData.value = wsJsonData.data;
+          if (layout.value) {
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            // 自评推荐
+            evaluateVisible.value=true
+            evaluateData.value = wsJsonData.data;
 
-              nextTick(()=>{
-                // initEvaluate()
-              })
-              sendDisconnect();
-              isClose.value=true
-            }
-          }else{
-            router.go(-1)
+            nextTick(()=>{
+              // initEvaluate()
+            })
+            sendDisconnect();
+            isClose.value=true
+          } else {
+            layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
+            sendDisconnect();
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -335,8 +364,12 @@ function initWs() {
           // 禁用学生
           disableVisable.value=true
           disableData.value=wsJsonData.data
+        }else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
+          disableVisable.value=true
+          disableData.value=wsJsonData.data
         }else if (wsJsonData.type=="switch_success") {
-          message.success("切换成功")
+          // message.success("切换成功")
           currentInterface.value = "vnc";
             vmsInfo.value = wsJsonData.data;
               settingCurrentVM(
@@ -370,7 +403,7 @@ function settingCurrentVM(data: any) {
   currentOption.value.wsUrl =
     getVmConnectSetting.VNCPROTOC +
     "://" +
-    data.host_ip +
+    data.base_ip +
     ":" +
     getVmConnectSetting.VNCPORT +
     "/websockify?vm_uuid=" +
@@ -397,14 +430,61 @@ initVnc.value = () => {
     onBeforeRouteLeave(() => {
       isCurrentPage = false;
       clearTimeout(Number(timerout));
+      clearTimeout(testSSHServeTimer)
       closeWs();
     });
 onMounted(async () => {
   await getVmBase();
-  if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
+  if (Number(baseInfo.value?.current?.status)<2||role !== 4 || recommendType) {
     initWs();
   }
 });
+
+// 测试ssh服务
+let testSSHServeTimer: any = null
+let timerNum = 1
+const testSSHServe = () => {
+  console.log(timerNum)
+  const param = {
+    hostname: currentVm.value.host_ip,
+    port: currentVm.value.ssh_port
+  }
+  vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
+    if (res?.code === 1) {
+      setTimeout(() => {
+        vncLoading.value = false
+        sshIsOpen.value = true
+        clearTimeout(testSSHServeTimer)
+        sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
+
+        timerNum = 1
+      }, 2000);
+    }
+  }).catch(() => {
+    if (timerNum >= getVmConnectSetting.SSHConnectNum) {
+      clearTimeout(testSSHServeTimer)
+      message.warn(`已超过最大连接次数${getVmConnectSetting.SSHConnectNum}次`);
+      timerNum = 1
+      return
+    }
+    testSSHServeTimer = setTimeout(() => {
+      timerNum++
+      testSSHServe()
+    }, timerNum*getVmConnectSetting.SSHConnectSpace)
+  })
+}
+provide("testSSHServe", testSSHServe);
+provide("sshIsOpen", sshIsOpen);
+watch(
+  () => currentInterface.value,
+  (val) => {
+    if (currentInterface.value === 'ssh'&&sshIsOpen.value) {
+      timerNum = 1
+      testSSHServe()
+    }
+  },
+  { deep: true, immediate: true }
+)
 </script>
 <style lang="less">
 .vm-layout {

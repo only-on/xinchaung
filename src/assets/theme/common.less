@@ -221,6 +221,10 @@ a {
   }
   .ant-input {
     font-size: 14px;
+    border-radius: 20px;
+  }
+  .ant-input-search .ant-input {
+    border-radius: 0;
   }
   .ant-form-item-label {
     label {
@@ -229,14 +233,22 @@ a {
   }
   .ant-select {
     font-size: 14px;
+    border-radius: 20px;
+  }// ant-input-search greenSearch ant-input-affix-wrapper
+  .ant-input-password,.ant-select-selector,.ant-input-search{
+    border-radius: 20px;
+  }
+  .greenSearch{
+    border-radius: 25px;
   }
   .ant-checkbox-group {
     label {
       font-size: 14px;
     }
   }
-  .ant-spin-nested-loading{
-    height: 100%;
+  .ant-spin-nested-loading,.ant-spin-spinning{ 
+    min-height: 400px;
+    width: 100%;
   }
   .ant-spin-container{
     height: 100%;
@@ -275,6 +287,14 @@ a {
       font-weight: 400;
       font-size: 16px;
       letter-spacing: 2px;
+    }
+  }
+  .ant-modal-body{
+    .ant-input-password,.ant-select-selector,.ant-input-search,.ant-input{
+      border-radius: 20px;
+    }
+    .ant-input-search .ant-input {
+      border-radius: 0;
     }
   }
   .ant-modal-footer {
@@ -329,6 +349,9 @@ a {
   .ant-pagination {
     width: 100%;
     text-align: center;
+  }
+  .ant-input-password,.ant-select-selector,.ant-input-search{
+    border-radius: 20px;
   }
 }
 
@@ -494,6 +517,7 @@ h3 {
   }
 }
 .forumn {
+  .forum-content-all {
   pre {
     margin: 0;
     padding: 10px;
@@ -501,7 +525,7 @@ h3 {
     border-radius: 4px;
   }
   a {
-    color: rgb(0, 102, 255);
+    color: var(--primary-color);
   }
   blockquote {
     margin: 1.4em 0;
@@ -518,6 +542,7 @@ h3 {
   ol, ul {
     margin-left: 15px;
   }
+  }
 }
 // table中按钮btn
 .table-a-link{
@@ -526,4 +551,12 @@ h3 {
   &:hover{
     color: var(--primary-5);
   }
+}
+.chartTerrLeft{
+  width: 350px;
+  background: #ffffff;
+  padding:0 16px;
+  min-height:700px;
+  max-height: 850px;
+  overflow-y: auto;
 }

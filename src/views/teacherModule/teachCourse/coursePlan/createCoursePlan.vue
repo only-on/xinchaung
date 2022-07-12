@@ -40,7 +40,7 @@
         <div class="title flex_center">
           <h3 class="">排课成员列表</h3>
           <div class="addStudent">
-            <a-button type="primary" @click="addStudentOrClass('student')">添加学生</a-button>
+            <a-button type="primary" :class='(leftStuNum ? leftNumText :0)==0?"cannot":""' @click="(leftStuNum ? leftNumText :0)==0?'':addStudentOrClass('student')">添加学生</a-button>
             <!-- <a-button type="primary" @click="addStudentOrClass('class')">添加班级</a-button> -->
           </div>
         </div>
@@ -121,7 +121,7 @@
       </a-form-item>
     </a-form>
   </div>
-  <select-stu v-model:visable="visible" :selectedStuIds='selectedStuIds' :total='tableData.total' :data='data' @updateStuParams='updateStuParams' @updateSelectStuVisable="updateSelectStuVisable"></select-stu>
+  <select-stu v-model:visable="visible" :selectedStuIds='selectedStuIds' :leftNumText="leftStuNum ? leftNumText : 0" :total='tableData.total' :data='data' :loading='loading' @updateStuParams='updateStuParams' @updateSelectStuVisable="updateSelectStuVisable"></select-stu>
 </template>
 
 <script lang="ts">
@@ -135,14 +135,21 @@ import { IBusinessResp} from 'src/typings/fetch.d';
 
 export default defineComponent({
   name: 'schedule-create',
-  components: { selectStu },
+  components: { 'select-stu':selectStu },
   props: {},
   emit: [],
   setup() {
     const $message: MessageApi = inject("$message")!;
     const http=(request as any).coursePlain
     var updata = inject("updataNav") as Function;
-    updata({tabs:[],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+    // updata({tabs:[{ name: "创建排课", componenttype: 0 }],navPosition:'outside',navType:false,showContent:false,componenttype:undefined})
+    updata({
+      tabs: [{ name: "创建排课", componenttype: 0 }],
+      // tabs: [],
+      showContent: false,
+      componenttype: undefined,
+      showNav: true,
+    });
     let router = useRouter()
     let route = useRoute()
     // let week: any = route.query.weekIndex
@@ -169,7 +176,6 @@ export default defineComponent({
       class: [],
       student: [],
     })
-
     let visible = ref(false)
     let activeName = ref('student')
     let selectName = ref('已选学生')
@@ -195,9 +201,11 @@ export default defineComponent({
           size:10,
         },
       });
+    const loading:any=ref(false)
     function updateStuParams(param:any){
       console.log(param,'shhhhhhhhh')
       params.pageinfo.index=param.page
+      params.pageinfo.size=param.pageSize
       params.query.stu_no=param.stu_no
       params.query.classname=param.classname
       params.query.grade=param.grade
@@ -299,8 +307,6 @@ export default defineComponent({
     provide('selectedIds', selectedIds)
     // 添加学生
     function updateSelectStuVisable(value: any,studentids:any,tableData:any) {
-      // visible.value = false;
-      // console.log(value,'value')
       if(value==='ok'){
         tableParams.student_id=studentids
         let ids:any=[]
@@ -310,7 +316,7 @@ export default defineComponent({
         http.classStuIntersect({param:{stuIds:tableParams.student_id}})
         .then((res: IBusinessResp) => {
          if(res.code==1){
-           message.warning('添加成功')
+           message.success('添加成功')
            visible.value = false;
            data.value.forEach((item:any,index:any)=>{
             if(studentids.includes(item.stu_id)&&ids.indexOf(item.stu_id)==-1){
@@ -364,7 +370,7 @@ export default defineComponent({
     function handleSubmit () {
       ruleForm.value.validate().then(() => {
         if (!id&&!tableParams.student_id?.length) {
-          $message.warn('请选择学生')
+          $message.warning('请选择学生')
           return
         }
         let ids:any=[]
@@ -379,7 +385,8 @@ export default defineComponent({
           teacherOccupied: form.teacher_occupied ? 1 : 0,
           weekRecycle: checkDate.value ? 1 : 0,
           // stuIds: selectedIds['student'],
-          stuIds:id?ids:tableParams.student_id,
+          // stuIds:id?ids:tableParams.student_id,
+          stuIds:ids,
           classIds: selectedIds['class'],
         }
         if (id !== 'undefined' && id) {
@@ -394,7 +401,6 @@ export default defineComponent({
           http.createSchedule({param: {params: param}}).then((res: IBusinessResp) => {
           $message.success('创建成功！')
           router.go(-1)
-          // visible.value = false;
         })
         }
         
@@ -453,9 +459,11 @@ export default defineComponent({
       total:0
     })
     function getallstudent(){
+      loading.value=true
       http.getStudentList({param:params}).then((res:any)=>{
         data.value=res.data?.data
         tableData.total=res.data.total
+        loading.value=false
       })
     }
     return {
@@ -487,7 +495,8 @@ export default defineComponent({
       onDeleteClass,
       updateSelectStuVisable,
       updateStuParams,
-      selectedStuIds
+      selectedStuIds,
+      loading,
     }
   },
 })
@@ -547,7 +556,7 @@ const selectedStudentsColumns = [
   },
   {
     title: '班级',
-    dataIndex: 'class_name',
+    dataIndex: 'classname',
     ellipsis: true,
     align: 'center',
   },
@@ -715,5 +724,12 @@ interface IForm {
   .iconfont{
     color: var(--purpleblue-6);
   }
+}
+.cannot{
+  background-color:var(--black-15);
+  border-color:var(--black-15);  
+}
+.cannot:hover{
+  cursor:not-allowed;
 }
 </style>

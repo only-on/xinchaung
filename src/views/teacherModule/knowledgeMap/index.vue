@@ -262,10 +262,12 @@ export default defineComponent({
     }
     const handleJump = (id: any) => {
       router.push({
-        path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+        // path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+        path: "/admin/TeachingResourceManagement/DirectionPlanning/experimentDetail",
         query: {
-          id
-        }
+          sign: 'direction',
+          id,
+        },
       });
     }
     onMounted(()=>{
@@ -411,7 +413,7 @@ export default defineComponent({
       transition: all 0.2s;
       text-align: center;
       &:hover{
-        background: #FEF7DF;
+        background: var(--primary-1);
       }
     }
   }

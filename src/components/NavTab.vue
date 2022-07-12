@@ -1,25 +1,12 @@
 <template>
-  <div
-    class="navBox"
-    :class="
-      configuration.showNav || configuration.tabs.length ? 'showNavBox' : ''
-    "
-  >
-    <div class="crumbs">
+  <div class="navBox" :class=" configuration.showNav ? 'showNavBox' : '' " v-show="configuration.showNav || configuration.tabs.length">
+    <div class="crumbs" v-show="configuration.showNav">
       <breadcrumb v-show="configuration.showNav" />
     </div>
-    <div class="navList">
+    <div class="navList" :class="configuration.tabs.length > 1?'navListTab':''">
       <div :class="['tab', themeClass]">
         <div
-          v-for="(v, i) in configuration.tabs"
-          :key="v.name"
-          :class="
-            ActiveName === v.name || (!ActiveName && i == 0)
-              ? configuration.tabs.length > 1
-                ? 'active activeBor'
-                : 'active'
-              : ''
-          "
+          v-for="(v, i) in configuration.tabs" :key="v.name" :class=" ActiveName === v.name || (!ActiveName && i == 0)? configuration.tabs.length > 1 ? 'active activeBor' : 'active' : '' "
           @click="ActiveName !== v.name ? tabChange(v) : ''"
         >
           {{ v.name }}
@@ -194,6 +181,8 @@ export default defineComponent({
   margin: 0 auto;
   display: flex;
   flex-direction: column;
+  height: 60px;
+  justify-content: flex-end;
 }
 .showNavBox {
   height: 80px;
@@ -201,21 +190,24 @@ export default defineComponent({
 .navList {
   display: flex;
   justify-content: space-between;
-  line-height: 43px;
-  margin-bottom: -3px;
+  line-height: 36px;
   position: relative;
   // margin-bottom: 20px;
+  &.navListTab{
+    margin-bottom: -3px;
+  }
   .tab {
     display: flex;
     div {
       border-top-left-radius: 5px;
       border-top-right-radius: 5px;
-      margin-right: 15px;
+      margin-right: 48px;
       color: var(--menu-text);
-      font-size: var(--font-size-16);
+      font-size: var(--font-size-18);
       // padding-right: 15px;
       border-bottom: 3px solid transparent;
-      padding:0 8px;
+      // padding:0 8px;
+      letter-spacing: 0.79px;
       text-align: center;
       cursor: pointer;
       &:hover {

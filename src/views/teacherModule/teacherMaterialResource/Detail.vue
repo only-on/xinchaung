@@ -7,7 +7,7 @@
       <div class="header_mid">
         <div class="title flexCenter">
           <div class="sign">{{state.detail.type_name}}</div>
-          <div class="titText single_ellipsis">{{state.detail.name}}</div>
+          <div class="titText single_ellipsis" :title="state.detail.name">{{state.detail.name}}</div>
         </div>
         <div class="describe ellipsis">
           {{state.detail.description}}
@@ -20,7 +20,7 @@
         <div class="info flexCenter">
           <div class="item userAvatar">
             <img :src="state.detail.user?.avatar" alt="">
-            <span>{{state.detail.user?.username}}</span>
+            <span>{{state.detail.username}}</span>
           </div>
           <div class="item">
             <span>数量</span>
@@ -37,7 +37,7 @@
         </div>
       </div>
       <div class="header_right">
-        <div v-if="currentTab === '1'"> 
+        <div v-if="(currentTab === '1' && [3,5].includes(role))">
           <a-button type="primary" class="brightBtn" @click="edit()"> 编辑</a-button>
           <a-button type="primary" class="delete" @click="deleteImages()"> 删除</a-button>
         </div>
@@ -63,7 +63,7 @@
             <a-button type="primary" @click="docUpload"> 保 存 </a-button>
           </template>
           <a-button type="primary" v-if="activeTab==='文件列表'" class="brightBtn" :disabled="state.fileList.length?false:true" @click="downLoadAll()"> 下载全部</a-button>
-          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表'" class="" @click="addFile()"> 上传文件</a-button>
+          <a-button type="primary" v-if="currentTab === '1' && activeTab==='文件列表' && [3,5].includes(role)" class="" @click="addFile()"> 上传文件</a-button>
         </div>
       </div>
       <div class="content">
@@ -84,7 +84,7 @@
               <div class="flexCenter">
                 <div class="img" :style="`background-image: url(${getFileTypeIcon(state.fileItem.file_name)});`"> </div>
                 <div class="fileInfo">
-                  <div class="fileName single_ellipsis">{{state.fileItem.file_name}}</div>
+                  <div class="fileName single_ellipsis" :title="state.fileItem.file_name">{{state.fileItem.file_name}}</div>
                   <div class="info">
                     <span>{{bytesToSize(state.fileItem.size)}}</span>
                     <span>{{state.fileItem.created_at}}</span>
@@ -92,7 +92,7 @@
                 </div>
               </div>
               <div class="flexCenter caozuo">
-                <a-button v-if="currentTab === '1'" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
+                <a-button v-if="currentTab === '1' && [3,5].includes(role)" type="primary" size="small" @click="deleteFile(state.fileItem)"> 删 除 </a-button>
                 <a-button type="primary" class="brightBtn" size="small" @click="downLoadFile(state.fileItem)"> 下 载 </a-button>
               </div>
             </div>
@@ -102,7 +102,7 @@
                 <MarkedEditor v-model="state.fileItem.file_html" class="markdown__editor" :preview="true" />
               </div>
               <div v-else-if="state.fileItem.suffix === 'mp4'">
-                <video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" :controls="true" height="440" width="847" :poster="videoCover"> 您的浏览器不支持 video 标签</video>
+                <common-video :src="env ? '/proxyPrefix' + state.fileItem.file_url : state.fileItem.file_url" controls="true" height="440" width="847"></common-video>
               </div>
               <div v-else-if="['doc','docx','ppt','pptx','pdf'].includes(state.fileItem.suffix)" class="pdfBox">
                 <!-- <PdfVue :url="'/professor/classic/courseware/112/13/1638337036569.pdf'"/> -->
@@ -119,14 +119,14 @@
     </div>
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" 
+    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name"
     :editInfo="{name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover}" class="con"/>
     <template #footer>
         <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
       </template>
   </a-modal>
   <!-- 上传文件 弹窗 -->
-  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900">
+  <a-modal v-model:visible="addFileVisible"  :title="`上传文件`" class="uploadImage" :width="900" @cancel="cancelAddFile">
     <div>
       <upload-file ref="uploadFileRef" :type="state.detail.type" :fileList="AddFileLObj.AddFileList" :complete="AddFileLObj" />
     </div>
@@ -163,6 +163,9 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
 import uploadFile from './components/uploadFile.vue'
 import { downloadUrl } from "src/utils/download";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
+import extStorage from "src/utils/extStorage";
+import commonVideo from "../../../components/common/CommonVideo.vue";
+
 const env = process.env.NODE_ENV == "development" ? true : false;
 const router = useRouter();
 const route = useRoute();
@@ -170,6 +173,8 @@ const {currentTab, editId ,cardType,type,user_id} = route.query;
 const http = (request as any).teacherMaterialResource;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 updata({
   tabs: [{ name: `${type}详情`, componenttype: 0 }],
   showContent: true,
@@ -202,13 +207,9 @@ var activeKey: Ref<number> = ref(1);
 var isDataSet: Ref<boolean> = ref(true);
 
 const tabs=computed(()=>{
-  if(isDataSet.value===true){
-    return ['说明文档','文件列表']
-  }else{
-    return ['文件列表']
-  }
+  return ['文件列表']
 })
-const activeTab: Ref<string> = ref('');
+const activeTab: Ref<string> = ref('文件列表');
 const clickTab=(v:string)=>{
   activeTab.value=v
 }
@@ -246,9 +247,9 @@ const searchFileList=computed(()=>{
   console.log(arr)
   return arr
 })
-// 
+//
 const selectFile=(val:any)=>{
-  console.log(val) 
+  console.log(val)
   state.fileItem=val
 }
 const deleteFile=(val:any)=>{
@@ -271,7 +272,7 @@ const downLoadAll=()=>{
   a.click();
   document.body.removeChild(a);
   window.URL.revokeObjectURL(a.href);
-  return 
+  return
   http.downLoadAll({urlParams:{editId:editId}}).then((res: IBusinessResp) => {
     //  也可以下载成功   不能选择文件夹
       message.success('下载成功')
@@ -388,6 +389,7 @@ const SaveFile=()=>{
   }
 }
 const cancelAddFile=()=>{
+  uploadFileRef.value?.removeAllFile()
   addFileVisible.value=false
   AddFileLObj.AddFileList={}
 }
@@ -402,7 +404,7 @@ onMounted(() => {
 }
 
 .detail{
-  height: 600px;
+  // height: 600px;
   // border: 1px solid #76e6bb;
   .header{
     margin-bottom: 24px;
@@ -485,7 +487,7 @@ onMounted(() => {
     background: var(--white-100);
     // border: 1px solid #76e6bb;
     .title{
-      
+
       justify-content: space-between;
       .tab{
         // width: 300px;
@@ -528,7 +530,7 @@ onMounted(() => {
           }
           .file{
             max-height: 460px;
-            overflow-y: scroll;
+            overflow-y: auto;
           }
         }
         .right{

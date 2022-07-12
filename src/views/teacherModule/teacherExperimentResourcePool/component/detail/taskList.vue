@@ -47,12 +47,13 @@
         class="markdown__editor"
       />
     </a-form-item>
-    <a-form-item label="任务步骤" class="item2" name="detail" required v-if="props.is_show_task_step">
+    <a-form-item label="任务步骤" class="step" name="detail" required v-if="props.is_show_task_step">
       <div class="form-switch">
         状态
         <a-switch
-          v-model:checked="props.taskList.state"
+          v-model:checked="state"
           :disabled="props.preview"
+          @change="onChange"
         />
       </div>
       <div class="form-upload" v-if="!props.preview">
@@ -78,7 +79,7 @@
 </template>
 
 <script lang="ts" setup="props">
-import { ref, reactive, inject,Ref } from "vue";
+import { ref, reactive, inject,Ref, computed } from "vue";
 import { MessageApi } from "ant-design-vue/lib/message";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import { NoToCh } from "src/utils/common";
@@ -106,6 +107,12 @@ const emit = defineEmits<{
   (e: "delet", i: number): void;
 }>();
 props.taskList.state = props.taskList.state ? true : false
+const state = computed(() => {
+  return props.taskList.state ? true : false
+})
+const onChange = (val: any) => {
+  props.taskList.state = val
+}
 const beforeUpload = async (file: any, fileList: any) => {
   const text = await readFile(file);
   props.taskList.detail = text;
@@ -184,6 +191,10 @@ interface ItaskList {
     position: absolute;
     top: -31px;
     left: 80px;
+  }
+  .ant-form-item.step {
+    padding-bottom: 24px;
+    margin-bottom: 0;
   }
 }
 .demo__container {

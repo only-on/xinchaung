@@ -57,6 +57,9 @@ const props: Props = defineProps({
     }
   }
 })
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
 
 const beforeUpload = async (file: any, fileList: any) => {
   // console.log(props.detail.content_task_files[0])
@@ -65,6 +68,10 @@ const beforeUpload = async (file: any, fileList: any) => {
   if (suffix !== 'ipynb') {
     $message.warn(`请上传 .ipynb格式文件`)
     return false;
+  }
+  if (file.name.length > 100) {
+    $message.warn(`文件名称长度不能超过100`);
+    return
   }
   let fd = new FormData()
   fd.append('jupyter_file', file)
@@ -78,14 +85,16 @@ const beforeUpload = async (file: any, fileList: any) => {
         size: data.size,
         sort: 0,
         suffix: data.suffix,
-        type: 1 // 实验指导文件类型
+        type: 2 // 实验指导文件类型
       }
     }
     const content_id = props.detail.content_task_files.length ? props.detail.content_task_files[0].content_id : ''
     http.updateJupyterGuide({urlParams: {content_id: props.detail.id}, param})
     .then((res: any) => {
-      router.go(-1)
-      props.detail.content_task_files[0] = Object.assign(props.detail.content_task_files[0], data, {file_url: data.url})
+      // router.go(-1)
+      // props.detail.content_task_files[0] = Object.assign(props.detail.content_task_files[0], data, {file_url: data.url})
+      $message.success("更新成功")
+      emit('getExperimentDetail');
     })
   })
   return false
@@ -122,7 +131,7 @@ const beforeUpload = async (file: any, fileList: any) => {
   :deep(.mark__body) {
     .mark__editor,
     .mark__preview {
-      height: 455px;
+      min-height: 455px;
     }
   }
   .submit {

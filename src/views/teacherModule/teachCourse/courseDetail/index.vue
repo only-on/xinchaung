@@ -3,7 +3,7 @@
   <div class="tab-course-content">
     <!-- 每个tab对应的组件 -->
     <!--课程章节-->
-    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseDetail="state.courseDetail" />
+    <courseChapter v-if="state.activeTab.value === 'courseChapter'" :courseDetail="state.courseDetail" @feedback="initData()" />
     <!-- 课程实验管理 -->
     <courseExperiment v-if="state.activeTab.value=='courseExperiment'" />
     <!-- 随堂测试 -->
@@ -13,9 +13,7 @@
     <!-- 学情分析 -->
     <studentAnalysis v-if="state.activeTab.value=='studentAnalysis'" />
     <!-- 成员管理 -->
-    <memberManagement v-if="state.activeTab.value=='memberManagement'" :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
-    <!-- 课程成绩 -->
-    <!-- <courseAchievement v-if="state.activeTab.value=='courseAchievement'" /> -->
+    <memberManagement v-if="state.activeTab.value=='memberManagement'" @updateGroup='updateGroup'  :is_teamed='state.courseDetail.is_teamed' :is_high="state.courseDetail.is_high" />
   </div>
 
   <!-- 编辑课程基本信息 弹窗 -->
@@ -69,7 +67,10 @@
               </a-select-option>
             </a-select>
           </a-form-item>
-          <a-form-item label="课时" name="class_total">
+          <a-form-item label="课时" name="class_total" class="class-total">
+            <template #extra>
+              设置范围为0-200分钟
+            </template>
             <a-input v-model:value="formState.class_total" placeholder="请输入课时" />
           </a-form-item>
           <a-form-item label="实验时长" name="content_duration" class="conentDuration">
@@ -117,7 +118,7 @@
         </a-form-item>
       </a-form> -->
       <div class="item flexCenter">
-        <span>实验指导（VNC、IDE、命令行）是否显示</span>
+        <span>实验指导（桌面、IDE、命令行）是否显示</span>
         <a-switch v-model:checked="steupFormState.is_show_content_guidance" />
       </div>
       <div class="item flexCenter">
@@ -146,7 +147,7 @@
       </div>
       <div v-if="steupFormState.reportObj.id" class="item report">
         <span class="type">{{`${steupFormState.reportObj.typeText}`}}</span>
-        <span>{{`${steupFormState.reportObj.name}`}}</span>
+        <span class="report-name single_ellipsis" :title="steupFormState.reportObj.name">{{`${steupFormState.reportObj.name}`}}</span>
       </div>
     </div>
     <template #footer>
@@ -214,14 +215,14 @@ const http=(request as any).teachCourse
 const role = Number(storage.lStorage.get("role"));
 const routeQuery = useRoute().query;
 const { currentTab,courseId, activeTabOrder } = route.query;
-const detailTabs=[
+const detailTabs:any=[
   {name:'课程章节',value:'courseChapter'},
   {name:'实验环境管理',value:'courseExperiment'},
   {name:'随堂测试',value:'popQuiz'},
   {name:'成绩评阅',value:'performanceReview'},
   {name:'学情分析',value:'studentAnalysis'},
   {name:'成员管理',value:'memberManagement'},]
-const detailTabs2=[{name:'课程章节',value:'courseChapter'},]
+const detailTabs2:any=[]
 const  studentDetailTabs=[
   {name:'课程内容',value:'courseChapter'},
   {name:'课程成绩',value:'courseAchievement'},
@@ -242,6 +243,9 @@ function initData(){
 const selectTab=(val:any)=>{
   console.log(val)
   state.activeTab={...val}
+}
+function updateGroup(val:any){
+  initData()
 }
 // 编辑课程信息
 const formRef = ref();
@@ -266,12 +270,17 @@ const formState = reactive<any>({
   content_duration: '',// 实验时长
 })
 let validateNum = async (rule: any, value: string) => {
-  let validateor = /^[0-9]*[1-9][0-9]*$/
+  // let validateor = /^[0-9]*[1-9][0-9]*$/
+  let validateor = /^([1-9]{1}[0-9]*|0)$/
   if (!validateor.test(value)) {
     return Promise.reject('请输入正整数');
   } else if (rule.field === 'content_duration') {
     if (Number(value) < 40 || Number(value) > 120) {
       return Promise.reject('时间设置范围为40-120分钟');
+    }
+  } else if (rule.field === 'class_total') {
+    if (Number(value) < 0 || Number(value) > 200) {
+      return Promise.reject('课时设置范围为0-200');
     }
   } else {
     return Promise.resolve();
@@ -417,6 +426,7 @@ const uploadCoverHandle=(file:any)=>{
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
     formState.url = res.data.url
+    formState.cover=res.data.url
   })
 }
 const getCourseSetup=()=>{
@@ -443,6 +453,9 @@ const getCourseSetup=()=>{
 }
 onMounted(() => {
   initData()
+  if(Number(currentTab)===1){
+    selectTab({name:'课程章节',value:'courseChapter'})
+  }
   // if(Number(currentTab)===0 && role === 3){
   //   getCourseSetup()
   // }
@@ -462,6 +475,15 @@ onMounted(() => {
       justify-content: space-around;
       .left,.right{
         width: 40%;
+      }
+      .class-total {
+        position: relative;
+        :deep(.ant-form-item-extra){
+          position: absolute;
+          top: -28px;
+          left: 40px;
+          font-size: 12px;
+        }
       }
       .conentDuration{
         position: relative;
@@ -492,8 +514,13 @@ onMounted(() => {
       }
       .report {
         line-height: 44px;
+        display: flex;
         .type{
+          width: 56px;
           color: var(--brightBtn);
+        }
+        .report-name {
+          flex: 1;
         }
       }
     }

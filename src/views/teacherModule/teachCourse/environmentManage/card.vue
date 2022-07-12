@@ -1,9 +1,12 @@
 <template>
   <div class="stu">
-    <span class="stu-name">姓名：{{ list.username || "--" }}</span>
-    <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')"
-      ><span class="stu-idname">学号：</span>{{ list.number || "--" }}</span
-    >
+    <span class="stu-name" :title="list.number">姓名：
+      <span>{{ list.username || "--" }}</span>
+      <span class="stu-id" :title="list.number" v-if="list.number">（ {{ list.number || "--" }} ）</span>
+    </span>
+    <!-- <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')">学号：
+      <span class="stu-idname" :title="list.number">{{ list.number || "--" }}</span>
+    </span> -->
   </div>
   <div class="swiper-box">
     <a-carousel arrows :beforeChange="beforeChange" :dots="false">
@@ -15,7 +18,7 @@
       <template #nextArrow>
         <div
           class="custom-slick-arrow"
-          :class="current === list.vms.vms.length - 1 ? 'last' : ''"
+          :class="current === list.vms.vms?.length - 1 ? 'last' : ''"
         >
           <span class="iconfont icon-youjiantou"></span>
         </div>
@@ -32,22 +35,18 @@
     <div
       class="kvm-info"
       :class="currentStatus ? '' : 'close'"
-      v-if="list.vms.vms.length > 0"
+      v-if="list.vms.vms?.length > 0"
     >
       <p class="kvm-status">
         虚机状态：<span>{{ currentStatus ? "开启" : "关闭" }}</span>
       </p>
       <p class="operation-status">
-        操作状态：<span>{{
-          list.is_online&& list.vms.vms[current].uuid === list.current
-            ? "繁忙"
-            : "空闲"
-        }}</span>
+        操作状态：<span>{{ isBusy ? "繁忙" : "空闲" }}</span>
       </p>
     </div>
     <div class="mask" @click="jumpHandle(list)"></div>
   </div>
-  <div class="btns" v-if="list.vms.vms.length > 0">
+  <div class="btns" v-if="list.vms.vms?.length > 0">
     <span
       class="btn vm-open pointer"
       @click="btnClick(0)"
@@ -60,7 +59,16 @@
       :class="currentStatus ? '' : 'isOpen'"
       >关机</span
     >
-    <span
+    <a-popover placement="bottom">
+      <template #content>
+        <div class="btn vm-revert pointer" :class="currentStatus ? '' : 'isOpen'" @click="btnClick(2)" style="marginBottom:10px;padding: 0 10px;">重启</div>
+        <div  class="btn vm-reset pointer" @click="btnClick(3)" style="padding: 0 10px;">重置</div>
+      </template>
+      <!-- <a-button type="primary">Hover me</a-button> style="border-right: 1px solid var(--brightBtn-25);color: #007879;"-->
+    
+      <span class="iconfont icon-gengduotianchong btn vm-revert pointer"></span>
+    </a-popover>
+    <!-- <span
       class="btn vm-revert pointer"
       @click="btnClick(2)"
       >重启</span
@@ -69,7 +77,7 @@
       class="btn vm-reset pointer"
       @click="btnClick(3)"
       >重置</span
-    >
+    > -->
   </div>
 </template>
 
@@ -101,6 +109,12 @@ let current = ref(0);
 function beforeChange(from: Function, to: number) {
   current.value = to;
 }
+
+// 繁忙或空闲
+const isBusy = computed(() => {
+  const sign = props.list.course_student_content.filter((v: any) => v.vm_uuid === props.list.vms.vms[current.value]?.uuid)[0]
+  return sign&&props.list.is_online
+})
 
 // 当前环境状态 开启是true
 const currentStatus = computed(
@@ -137,6 +151,9 @@ function btnClick(v: any) {
 }
 
 function jumpHandle(list: any) {
+  if (props.currentExperiment.type == 3 || props.currentExperiment.type == 4) {
+    return false
+  }
   http
     .canAccessVm({
       param: { uuid: props.list.vms.vms[current.value].uuid },
@@ -145,16 +162,20 @@ function jumpHandle(list: any) {
       if (res.status) {
         // console.log(res);
         // openVm({type:"course",opType:"help",taskId:list.taskId})
-        router.push({
+        const {href} = router.resolve({
           path: "/vm",
           query: {
             opType: "help",
             type: "course",
             taskId: list.taskId,
             connection_id: ls.lStorage.get("uid") + "_" + list.id,
-            experType: props.currentExperiment.type
+            experType: props.currentExperiment.type,
+            // topoinst_uuid: res.data.topoinst_uuid,
+            topoinst_id: props.list.id,
+            isClose: 1 // 打开的标签页
           },
         }); // 一个是vnc的 /vm/vnc，一个是webide的 /vm/ace
+        window.open(href, '_blank');
         // router.push({
         //   name: 'classicalAsset',
         //   params: {
@@ -175,9 +196,14 @@ function jumpHandle(list: any) {
   display: flex;
   justify-content: space-between;
   .stu-name {
+    margin-right: 8px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .stu-id {
-    width: 110px;
+    width: 100px;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -208,15 +234,19 @@ function jumpHandle(list: any) {
     display: inline-block;
     height: 19px;
     line-height: 19px;
-    padding: 0 25px;
+    // padding: 0 25px;
     margin: 10px 0;
     border-right: 1px solid var(--brightBtn-25);
     color: rgba(0, 120, 121, 1);
+    width: 80px;
+    text-align: center;
     &:last-child {
       border-right: 0;
     }
     &.isOpen {
       color: rgba(0, 120, 121, 0.25);
+      pointer-events: none;
+      cursor: not-allowed;
     }
   }
   .btn.disabled {
@@ -263,6 +293,8 @@ function jumpHandle(list: any) {
     &.last,
     &.first {
       opacity: 0.25;
+      pointer-events: none;
+      cursor: not-allowed;
     }
     .iconfont {
       font-size: var(--font-size-20);
@@ -279,5 +311,10 @@ function jumpHandle(list: any) {
   line-height: 150px;
   // background: #364d79;
   overflow: hidden;
+}
+.isOpen {
+  color: rgba(0, 120, 121, 0.25);
+  pointer-events: none;
+  cursor: not-allowed;
 }
 </style>

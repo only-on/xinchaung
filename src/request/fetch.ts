@@ -14,6 +14,7 @@ import router from "src/routers";
 import {clearAllCookies} from "../utils/cookieHelper";
 import {IWmc} from "../typings/wmc";
 const { lStorage } = extStorage;
+let currentCode = 0
 
 // 检查是否为对象
 function isObject(value: any) {
@@ -124,7 +125,22 @@ function isLoginPage() {
   let path = hash.substring(1, hash.length);
   return path === "/login";
 }
-
+function ProcessingError(res:IBusinessResp,silent:boolean | ((data?:IBusinessResp) => boolean)){
+  var msg:string = "请求出错";
+  if (res.message) {
+    msg = res.message;
+  }
+  if (res.msg) {
+    msg = res.msg;
+  }
+  if (res.error) {
+    msg = res.error.msg;
+  }
+  const silent2=(typeof silent) === 'boolean'?silent:(silent as ((data?:IBusinessResp) => boolean))(res)
+  if(!silent2){
+    message.warning(msg);
+  }
+}
 // fetch 简易包装
 export default function request({
   url = "",
@@ -136,7 +152,7 @@ export default function request({
   mode = "cors",
   dataType = "urlencoded",
   timeout = 0,
-  silent = false,
+  silent = false, // 是否禁止弹出错误提示
 }: IRequestParams): Promise<IBusinessResp> {
   // fetch 参数方便后续调整
   let init: RequestInit = {
@@ -197,7 +213,7 @@ export default function request({
             // message.warning('超时');
             // router.replace({ path: "/login" }).catch(() => {});
           // }, 3000);
-        } else if (res.code === RESP_AUTH_FAILURE) {
+        } else if (res.code===RESP_AUTH_FAILURE[0]||res.code===RESP_AUTH_FAILURE[1]||res.code===RESP_AUTH_FAILURE[2]||res.code===RESP_AUTH_FAILURE[3]) {
           // console.log('[fetch] RESP_AUTH_FAILURE, will replace to login page');
           // 登录失效或其他特殊状态码处理
           lStorage.clean();
@@ -205,8 +221,12 @@ export default function request({
           if (store.state.longWs) {
             (store.state.longWs as IWmc).close();
           }
-          if (!silent) {
-            message.warning(res.msg);
+          if (res.code !== currentCode) {
+            currentCode = res.code
+            ProcessingError(res,silent)
+            setTimeout(() => {
+              currentCode = 0
+            }, 5000)
           }
           reject(res);
           // 1. 没有登录状态，跳转到登录页
@@ -216,19 +236,7 @@ export default function request({
             router.replace({ path: "/login", query: {s: 1} }).catch(() => {});
           }
         } else {
-          let meg = "请求出错";
-          if (res.message) {
-            meg = res.message;
-          }
-          if (res.msg) {
-            meg = res.msg;
-          }
-          if (res.error) {
-            meg = res.error.msg;
-          }
-          if (!silent) {
-            message.warning(meg);
-          }
+          ProcessingError(res,silent)
           reject(res);
         }
       })

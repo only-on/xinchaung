@@ -24,6 +24,8 @@ export default {
     cryptsSwitchFileApi: { url: "/api/operate/crypts/switchFile", method: 'POST' },
     runCodeApi: { url: "/api/operate/crypts/run", method: 'POST' },
     taskDetailApi: { url: "/api/operate/crypts/info", method: 'GET' },
+    deleteVersion: { url: "/api/operate/crypts/deleteVersion", method: 'POST', dataType: 'json'}, // 删除版本
+    
     // 实验报告
     experimentalReport: { url: "/api/yii/report/record/create", method: 'POST' },
     updateTemplateReport: { url: '/api/yii/report/record/student-update', method: 'POST', dataType: 'formdata' },
@@ -57,6 +59,10 @@ export default {
     // 远程协助消息
     getHelpFinfoApi:{ url: '/api/operate/teacherResults/questions', method: 'GET' },
     updateReadStatusApi:{url:"/api/operate/operates/handle",method:"POST",dataType: 'json'},
+    // 查询备课环境
+    getPrepareEnv: {url: '/api/operate/operates/prepares', method:"POST",dataType: 'json'},
+    // 测试ssh服务
+    testSSHServe: {url: `/wssh/sniff?hostname={hostname}&port={port}`, method:"POST", dataType: 'json'},
 }
 
 // 
@@ -82,6 +88,7 @@ export interface IvmApi {
     cryptsSwitchFileApi: TFHttpSend
     runCodeApi: TFHttpSend
     taskDetailApi: TFHttpSend
+    deleteVersion: TFHttpSend
     experimentalReport: TFHttpSend
     updateTemplateReport: TFHttpSend
     updateOnlineTemplateReport:TFHttpSend
@@ -98,6 +105,8 @@ export interface IvmApi {
     evaluateApi:TFHttpSend
     getHelpFinfoApi:TFHttpSend
     updateReadStatusApi:TFHttpSend
+    getPrepareEnv:TFHttpSend
+    testSSHServe:TFHttpSend
 }
 
 export const MODULE_NAME = "vmApi"

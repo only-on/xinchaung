@@ -1,36 +1,11 @@
 <template>
     <div id="statistic" class="setScrollbar">
-      <div class="box-left">
-        <div class="left-f1 f1">
+      <div class="rowOne">
+        <div class="row1-f1 left">
           <p class="hint">{{ state.staticInfo.userProfile?.name }}，又是元气满满的一天！</p>
           <div class="hint-msg">每天进步一点点，成长足迹看得见！</div>
         </div>
-        <div class="left-f2 f2">
-          <div :id="myChartid" class="myCharts"></div>
-        </div>
-        <div class="left-f3 f3">
-          <div class="left-f3-course">
-            <list-item
-              :infoList="state.staticInfo.weakKnowledges"
-              :title="'课程薄弱点'"
-              :listname="'knowledge_map_name'"
-              :color1="state.linePurple"
-              :circlecolor="state.circlecolor1"
-            ></list-item>
-          </div>
-          <div class="left-f3-exper">
-            <list-item
-              :infoList="state?.staticInfo?.weakCourseContents"
-              :title="'推荐实验'"
-              :listname="'name'"
-              :color1="state.lineOrange"
-              :circlecolor="state.circlecolor2"
-            ></list-item>
-          </div>
-        </div>
-      </div>
-      <div class="box-right">
-        <div class="right-f1 f1">
+          <div class="right-f1 right">
           <div class="right-f1-left">
             <div class="top-title">综合评价</div>
             <div class="evaluate">
@@ -38,7 +13,7 @@
             <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/hege.png">
             <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/lianghao.png">
             <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/youxiu.png">
-            <img v-if="state.staticInfo.avgRank==''" src="src/assets/images/excellent-no.png" />
+            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/excellent-no.png" />
             </div>
           </div>
           <div class="right-f1-img">
@@ -46,10 +21,16 @@
             <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/qualified.png">
             <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/good.png">
             <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/excellent.png">
-            <img v-if="state.staticInfo.avgRank==''" src="src/assets/images/evaluate-no.png" />
+            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/evaluate-no.png" />
           </div>
         </div>
-        <div class="right-f2 f2">
+      </div>
+      <div class='rowTwo'>
+        <div :id="myChartid" class="myCharts left"></div>
+        <!-- <div class="myCharts left">
+          <Empty />
+        </div> -->
+        <div class="right">
           <div class="stu-proess">学习进度概况</div>
           <div class="stu-proess-con">
             <div class="proess-con-left">
@@ -97,15 +78,33 @@
             <div class="proess-con-right"></div>
           </div>
         </div>
-        <div class="right-f3 f3">
-          <list-item
+        
+      </div>
+      <div class="bottomStatic">
+        <list-item
+            class="statisitem"
             :infoList="state.staticInfo.jobDirections"
             :title="'发展方向'"
             :listname="'name'"
             :color1="state.lineBlue"
             :circlecolor="state.circlecolor3"
-          ></list-item>
-        </div>
+        ></list-item>
+        <list-item
+          class="statisitem"
+          :infoList="state.staticInfo.weakKnowledges"
+          :title="'课程薄弱点'"
+          :listname="'knowledge_map_name'"
+          :color1="state.linePurple"
+          :circlecolor="state.circlecolor1"
+        ></list-item>
+        <list-item
+          class="statisitem"
+          :infoList="state?.staticInfo?.weakCourseContents"
+          :title="'推荐实验'"
+          :listname="'name'"
+          :color1="state.lineOrange"
+          :circlecolor="state.circlecolor2"
+        ></list-item> 
       </div>
     </div>
   </template>
@@ -179,7 +178,7 @@
           left: 40,
           right: 40,
           top: 80,
-          bottom: 80,
+          bottom: 30,
         },
         xAxis: {
           name: "课程",
@@ -191,8 +190,14 @@
           axisLabel: {
             color: "#999",
             interval:0,
+            formatter: function (params:any) {
+              if(params.length>9){
+                return params.substring(0,9)+'...'
+              }else{
+                return params
+              }
+            }
           },
-          interval: 0,
           axisTick: {
             show: false,
           },
@@ -274,77 +279,37 @@
   </script>
   <style lang="less" scoped>
   #statistic {
-    display: flex;
     margin: 0 auto;
     background: #f7f7f7;
-    .box-left {
-      width: 64.7%;
-      display: flex;
-      flex-direction: column;
-    }
-    .box-right {
-      width: calc(35.3% - 30px);
-      margin-left: 30px;
-    }
-    .content-title {
-      font-size: var(--font-size-16);
-      color: #050101;
-      letter-spacing: 1px;
-      font-weight: 700;
-      flex-shrink: 0;
-      line-height: 45px;
-    }
-    .min-content-item {
-      height: 44px;
-    }
-    .max-content-item {
-      height: 44px;
-    }
-    .content-item {
-      border-radius: 14px;
-      padding-left: 13px;
-      display: flex;
-      align-items: center;
-      margin-bottom: 30px;
-      font-size: 12px;
-      background: linear-gradient(
-        90deg,
-        rgba(18, 144, 239, 0.12) 24%,
-        rgba(98, 126, 234, 0) 78%
-      );
-      > span:nth-child(1) {
-        width: 26px;
-        height: 26px;
-        border-radius: 50%;
-        display: inline-block;
-        line-height: 22px;
-        text-align: center;
-        padding: 2px;
-        margin-right: 14px;
-        border: 1px solid #1290ef;
-        > span {
-          display: inline-block;
-          width: 100%;
-          height: 100%;
-          border-radius: 50%;
-          background: #1290ef;
-          color: var(--white-100);
-        }
-      }
-    }
-    .f1 {
-      height: 170px;
-    }
-    .f2 {
-      height: 375px;
-      margin-top: 30px;
-      margin-bottom: 30px;
-    }
-    .f3 {
-      height: 300px;
-    }
-    .left-f1 {
-      width: 100%;
+    width: 100%;
+  }
+  .rowOne{
+    display: flex;
+    justify-content: space-between;
+  }
+  .rowTwo{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 30px;
+    margin-bottom: 30px;
+  }
+  .bottomStatic{
+    display: flex;
+    width: 100%;
+  }
+  .left{
+    width: 64.7%;
+    background-color: var(--white-100);
+    padding: var(--padding-lg) 30px;
+    border-radius: 8px;
+  }
+  .right{
+    width:calc(35.3% - 30px);
+    background-color: var(--white-100);
+    padding: var(--padding-lg) 30px;
+    border-radius: 8px;
+  }
+  .row1-f1{
       background-image: url("src/assets/images/bg1.jpg");
       background-repeat: no-repeat;
       background-size:100% 100%;
@@ -359,8 +324,8 @@
         color: var(--white-100);
         font-size: 32px;
       }
-    }
-    .right-f1 {
+  }
+  .right-f1 {
       background-image: url(src/assets/images/bg2.jpg);
       border-radius: 8px;
       background-repeat: no-repeat;
@@ -384,23 +349,9 @@
         align-items: center;
       }
     }
-    .left-f2 {
-      border-radius: 8px;
-      padding: var(--padding-lg) 30px;
-      box-sizing: border-box;
-      background: var(--white-100);
-      #myChart {
+    .myCharts {
         height: 375px;
       }
-      .myCharts {
-        height: 375px;
-      }
-    }
-    .right-f2 {
-      border-radius: 8px;
-      padding: var(--padding-lg) 30px;
-      box-sizing: border-box;
-      background: var(--white-100);
       .stu-proess {
         font-size: var(--font-size-16);
         color: #050101;
@@ -462,40 +413,23 @@
           background-repeat: no-repeat;
         }
       }
-    }
-    .left-f3 {
-      display: flex;
-      justify-content: space-between;
-      .left-f3-course {
-        width: 49%;
-        height: 100%;
-        min-height: 300px;
-        border-radius: 8px;
-        padding: 15px 26px 30px 26px;
+      .statisitem{
+        background-color: white;
+        padding: 15px 26px 10px 26px;
         box-sizing: border-box;
-        background: var(--white-100);
-      }
-      .left-f3-exper {
-        width: 49%;
-        height: 100%;
+        margin-bottom: 20px;
         border-radius: 8px;
-        padding: 15px 26px 30px 26px;
-        box-sizing: border-box;
-        background: var(--white-100);
       }
-    }
-    .right-f3 {
-      border-radius: 8px;
-      padding: 15px 26px 30px 26px;
-      box-sizing: border-box;
-      background: var(--white-100);
-    }
-  }
-  
-  </style>
-  <style>
-  #app div.main-box div#customSide.c1{
-    height: auto;
-  }
+      .statisitem:nth-child(1){
+        width:29.5%;
+        margin-right:30px;
+      }
+      .statisitem:nth-child(2){
+       flex: 1;
+       margin-right:30px;
+      }
+      .statisitem:nth-child(3){
+        width:calc(35.3% - 30px);
+      }
   </style>
   

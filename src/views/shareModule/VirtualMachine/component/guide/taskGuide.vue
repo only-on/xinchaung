@@ -1,30 +1,30 @@
 <template>
 <div v-if="baseInfo.base_info.step.length" class="vm-task-guide">
-  <p class="guide-waraing" v-if="!isLookStep&&currentTask.state&&role===4">
+  <p class="guide-waraing" v-if="!isLookStep&&currentTask.state&&role===4&&!recommendType">
     <span class="icon-jinggao iconfont"></span>查看任务步骤扣除50%的任务得分
   </p>
   <div class="current-task-content">
-  <div class="task-name single_ellipsis">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
-  <div class="task-content" :class="isLookStep&&currentTask.state || role !== 4 ? 'show-step' : ''">
+  <div class="task-name single_ellipsis" :title="currentTask.name">任务{{ NoToCh(currentTaskIndex + 1) }}：{{ currentTask.name }}</div>
+  <div class="task-content" :class="!recommendType&&(isLookStep&&currentTask.state || role !== 4) ? 'show-step' : ''">
   <div class="desc-content">
     <div class="title">
       <span>任务描述</span>
       <a-button
         type="primary"
         size="small"
-        v-if="!isLookStep&&currentTask.state&&role===4"
+        v-if="!isLookStep&&currentTask.state&&role===4&&!recommendType"
         @click="lookStep"
         >查看步骤</a-button
       >
     </div>
     <div class="content">
-      <marked-editor v-model="currentTask.detail" :preview="preview" />
+      <marked-editor v-model="currentTask.summary" :preview="preview" />
     </div>
   </div>
-  <div class="step-content" v-if="isLookStep&&currentTask.state || role !== 4">
+  <div class="step-content" v-if="!recommendType&&(isLookStep&&currentTask.state || role !== 4)">
     <div class="title">任务步骤</div>
     <div class="content">
-      <marked-editor v-model="currentTask.summary" :preview="preview" />
+      <marked-editor v-model="currentTask.detail" :preview="preview" />
     </div>
   </div>
   </div>
@@ -69,6 +69,7 @@ let {
   type,
   topoinst_id,
   routerQuery,
+  recommendType,
 }: any = vmQuery;
 topoinst_id = topoinst_uuid;
 console.log(opType, taskId, type, topoinst_id);

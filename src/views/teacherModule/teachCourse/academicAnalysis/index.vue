@@ -1,6 +1,6 @@
 <template>
     <div class="academicAnalysis">
-       <div class="tree myChapter textScrollbar">
+       <div class="tree myChapter textScrollbar chartTerrLeft">
          <chapterTree :courseId="Number(courseId)" @selectExperiment="selectExperiment" />
        </div>
        <div class="analy-right">
@@ -28,7 +28,7 @@
                           tableData.total > 10
                             ? {
                                 hideOnSinglePage: false,
-                                showSizeChanger:false,
+                                showSizeChanger:true,
                                 total: tableData.total,
                                 current: tableData.page,
                                 pageSize: tableData.limit,
@@ -144,6 +144,9 @@ function onShowSizeChange(current: any, size: any) {
   getStugrandsList()
 }
 function getStugrandsList(){
+  if(!experitId.value){
+      return
+    }
   http.stuGrandsList({urlParams:{content_id:experitId.value},param:{className:className.value,limit:tableData.limit,page:tableData.page}}).then((res:any)=>{
     if(res.code==1){
       data.value=res.data.list
@@ -162,14 +165,18 @@ function onSearch(){
 }
 const columnDataShow:any=ref([])
 function getStuStatis(){
+    if(!experitId.value){
+      return
+    }
     http.grandsStatisAnalysis({urlParams:{content_id:experitId.value}}).then((res:any)=>{
       console.log(res.data?.length,'res.data?.length')
       columns.value=columns1
       legend.value=legend1.value
-      if(res.code&&res.data?.length!==0){
+      // &&res.data?.length!==0
+      if(res.code){
         statisData.value=res.data
         //过滤columns
-        if(res.data?.automaticScoringCorrectRate==null){
+        if(!res.data?.hasAuto){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='automaticScore'
           })
@@ -177,7 +184,7 @@ function getStuStatis(){
             return jt!=='自动评分'
           })
         }
-        if(res.data?.experimentalReportSubmissionRate==null){
+        if(!res.data?.hasReport){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='reportScore'
           })
@@ -185,7 +192,7 @@ function getStuStatis(){
             return jt!=='实验报告'
           })
         }
-        if(res.data?.inClassTestAccuracyRate==null){
+        if(!res.data?.haQuestion){
           columns.value=columns.value.filter((item:any)=>{
             return item.key!=='inClassTestScore'
           })
@@ -200,10 +207,12 @@ function getStuStatis(){
 }
 function selectExperiment(val: any) {
   console.log(val);
-  experitId.value=val.id
-  experType.value=val.type
-  getStuStatis()
-  getStugrandsList()
+  if(val){
+    experitId.value=val.id
+    experType.value=val.type
+    getStuStatis()
+    getStugrandsList()
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -212,16 +221,17 @@ function selectExperiment(val: any) {
     display: flex;
 }
    .tree{
-       width: 300px;
-       padding: 24px;
+      //  width: 300px;
+      //  padding: 24px;
        margin-right: 16px;
-       background-color: var(--white-100);
+       padding-top: 12px;
+      //  background-color: var(--white-100);
    } 
    .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
+        // padding:0 24px;
+        // min-height:700px;
+        // max-height: 850px;
+        // overflow: auto;
         // padding-right: 10px;
       }
    .analy-right{

@@ -118,13 +118,27 @@ async function beforeUpload(file: any) {
     message.warn("上传文件时请选择目录");
     return false;
   }
+  if (file.name.length > 100) {
+    message.warn(`文件名称长度不能超过100`);
+    return
+  }
   const arr = file.name.split('.')
   const suffix = arr[arr.length-1]
   if (suffix === 'md') {
-    const text = await readFile(file);
-    emit("uploadSuccess", text, suffix);
-    emit("update:visibleUpload", false);
-    return false
+    // const text = await readFile(file);
+    // const info = {
+    //   name: file.name,
+    //   suffix,
+    //   text,
+    // }
+    // uploadFileList.percent = 100
+    // uploadFileList.status = "done"
+    // uploadFileList.suffix = 'md'
+    // uploadFileList.text = text
+    // uploadFileList.name = file.name
+    // // emit("uploadSuccess", info, dataset_id.value);
+    // // emit("update:visibleUpload", false);
+    // return false
   }
   const accept = props.type === 'file' ? ['md','doc','docx','pdf'] : ['mp4']
   const tusdDirKey = props.type === 'file' ? 'document_path' : 'video_path';
@@ -137,18 +151,28 @@ function abort() {
   if(uploadFileList.status !== "done"){
     tusFileUpload.remove(uploadFileList)
   }
+  uploadFileList.name = ''
+  uploadFileList.percent = 0
+  uploadFileList.status = 'done'
 }
 // 移除
 function remove() {
   abort();
+}
+function uploadvideoOk() {
+  console.log(uploadFileList)
+   if (!uploadFileList.name) {
+    message.warning('请上传文件')
+    return
+  }
+  emit("uploadSuccess", uploadFileList, dataset_id.value);
+  emit("update:visibleUpload", false);
+  uploadFileList.status = 'done'
   uploadFileList.name = ''
   uploadFileList.percent = 0
 }
-function uploadvideoOk() {
-  emit("uploadSuccess", uploadFileList, dataset_id.value);
-  emit("update:visibleUpload", false);
-}
 function cancel() {
+  abort()
   emit("update:visibleUpload", false);
 }
 console.log(props.type);

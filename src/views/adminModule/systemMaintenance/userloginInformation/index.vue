@@ -37,7 +37,7 @@
         tableData.total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger: false,
+              showSizeChanger:true,
               total: tableData.total,
               current: tableData.page,
               pageSize: tableData.limit,
@@ -76,6 +76,10 @@ columns.value = [
   {
     title: "用户名",
     dataIndex: "user_name",
+  },
+  {
+    title: "账号",
+    dataIndex: "user_account",
   },
   {
     title: "操作类型",
@@ -150,6 +154,7 @@ function onShowSizeChange(page: any, pageSize: any) {
   getSystemList();
 }
 function handleChange() {
+  tableData.page = 1;
   getSystemList();
 }
 onMounted(() => {

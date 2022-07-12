@@ -1,6 +1,6 @@
 <template>
   <div class="courseContent">
-    <div class="leftContent content">
+    <div class="leftContent contentL">
       <div class="introduceBox">
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
@@ -99,10 +99,6 @@ onMounted(() => {
     width: var(--center-width);
     margin: 0 auto;
     display: flex;
-    
-    .content{
-      // padding: 20px;
-    }
     .leftContent{
       // background-color: #fff;
       // width: 70%;

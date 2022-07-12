@@ -19,9 +19,9 @@
       </div>
     </div>
     <a-button class="addTeacher" @click="createteacher()" type="primary">创建教师</a-button>
-      <a-button class="addTeacher brightBtn" @click="batchImport()" type="primary">批量导入</a-button>
+      <a-button class="addTeacher" @click="batchImport()" type="primary">批量导入</a-button>
       <a-button class="addTeacher" @click="batchResetPassword()" type="primary">批量重置密码</a-button>
-      <a-button class="brightBtn" @click="BatchDelete()" type="primary">批量删除</a-button>
+      <a-button class="addTeacher" @click="BatchDelete()" type="primary">批量删除</a-button>
   </div>
   <a-config-provider>
     <a-table
@@ -29,32 +29,43 @@
       :loading="loading"
       :data-source="list"
       row-key="id"
-      :pagination="{
-        current: ForumSearch.page,
-        pageSize: ForumSearch.pageSize,
-        total: total,
-        onChange: onChangePage,
-        hideOnSinglePage: true,
-      }"
+      :pagination="
+        total > 10
+          ? {
+            showSizeChanger:true,
+            current: ForumSearch.page,
+            pageSize: ForumSearch.pageSize,
+            total: total,
+            onChange: onChangePage,
+            onShowSizeChange: onShowSizeChange
+            }
+          : false
+      "
       :row-selection="{
         selectedRowKeys: state.selectedRowKeys,
         onChange: onSelectChange,
       }"
       class="components-table-demo-nested"
     >
-      <template #title="{ record, text }">
-        <a @click="details(record.id)">{{ text }}</a>
+    <template #perTitle="{record}">
+        <div :title="record?.title" class="eslipse">{{record?.title}}</div>
+      </template>
+      <template  #department="{record}">
+        <div :title="record?.department" class="eslipse">{{record.department}}</div>
+      </template>
+      <template #email="{record}">
+        <div :title="record?.email" class="eslipse">{{record.email}}</div>
       </template>
       <template #operation="{ record }">
         <!-- icon-bianji -->
         <span
-          class="caozuo iconfont"
+          class="caozuo"
           @click="editCard(record)"
           title="更新"
         >编辑</span>
         <!-- icon-shanchu -->
         <span
-          class="caozuo iconfont"
+          class="caozuo"
           @click="delateCard(record.id)"
           title="删除"
         >删除</span>
@@ -94,11 +105,12 @@
             />
           </a-form-item>
           <a-form-item label="姓名" name="name">
-            <a-input v-model:value="formState.name" />
+            <a-input :maxLength='10' v-model:value="formState.name" />
           </a-form-item>
           <a-form-item label="密码" name="password_hash">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+              :maxLength='16'
               v-model:value="formState.password_hash"
               :visibilityToggle="false"
             />
@@ -106,6 +118,7 @@
           <a-form-item label="确认密码" name="repassword">
             <!-- :visibilityToggle="false" -->
             <a-input-password
+              :maxLength='16'
               v-model:value="formState.repassword"
               :visibilityToggle="false"
             />
@@ -119,6 +132,7 @@
           </div> -->
           <a-form-item label="职称" name="title">
             <a-input
+            :maxLength='20'
               v-model:value="formState.title"
             />
           </a-form-item>
@@ -131,13 +145,13 @@
                   </a-radio-group>
             </a-form-item>
             <a-form-item label="学院" name="department">
-              <a-input v-model:value="formState.department" />
+              <a-input :maxLength='20' v-model:value="formState.department" />
             </a-form-item>
             <a-form-item label="手机" name="phone">
               <a-input v-model:value="formState.phone" />
             </a-form-item>
             <a-form-item label="邮箱" name="email">
-              <a-input v-model:value="formState.email" />
+              <a-input :maxLength='30'  v-model:value="formState.email" />
             </a-form-item>
         </div>
       </div>
@@ -190,6 +204,11 @@
           row-key="username"
           class="components-table-demo-nested"
         >
+        <template #result='{record}'>
+            <div :class='record.result=="添加成功"?"success":"wrong"'>
+              {{record?.result}}
+            </div>
+          </template>
         </a-table>
         <div v-else>
           <a-spin tip="Loading...">
@@ -266,7 +285,6 @@ const columns = [
     dataIndex: "stu_no",
     align: "center",
     width: 120,
-    // slots: { customRender: 'title' },
   },
   {
     title: "姓名",
@@ -277,12 +295,14 @@ const columns = [
   {
     title: "职称",
     dataIndex: "title",
-    align: "center"
+    align: "center",
+    slots: { customRender: 'perTitle' },
   },
   {
     title: "学院",
     dataIndex: "department",
-    align: "center"
+    align: "center",
+    slots: { customRender: "department" },
   },
   // {
   //   title: "研究方向",
@@ -299,6 +319,7 @@ const columns = [
     dataIndex: "email",
     align: "center",
     width: 200,
+    slots: { customRender: "email" },
   },
   {
     title: "电话",
@@ -317,7 +338,7 @@ const columns = [
 ];
 const teacherColumns = [
   {
-    title: "学号",
+    title: "账号",
     dataIndex: "username",
   },
   {
@@ -327,6 +348,7 @@ const teacherColumns = [
   {
     title: "导入情况",
     dataIndex: "result",
+    slots: { customRender: "result" },
   },
 ]; 
     const router = useRouter();
@@ -399,6 +421,8 @@ const teacherColumns = [
       ],
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
       // gender: [{ required: true, message: "请选择性别", trigger: "change" }],
+      title:[{ required: true, message: "请输入职称", trigger: "blur" }],
+      department: [{ required: true, message: "请输入学院", trigger: "blur" }],
       email: [
         {
           pattern:
@@ -698,6 +722,17 @@ const teacherColumns = [
       });
       initData();
     }
+    function onShowSizeChange(page:number,pageSize:number){
+      const { query, path } = route;
+      ForumSearch.page = 1;
+      ForumSearch.pageSize = pageSize;
+      state.selectedRowKeys.length = 0;
+      router.replace({
+        path: path,
+        query: { ...query, page: ForumSearch.page,PageSize:pageSize},
+      });
+      initData();
+    }
     function addTeacher() {
       editId.value = 0;
       visible.value = true;
@@ -798,19 +833,12 @@ const teacherColumns = [
         z-index: 10;
       }
     }
-    // .custom_input2 {
-    //   &::before {
-    //     background: url(../../assets/images/screenicon/Group6.png) no-repeat;
-    //   }
-    // }
-    // .custom_input3 {
-    //   &::before {
-    //     background: url(../../assets/images/screenicon/Group8.png) no-repeat;
-    //   }
-    // }
   }
   .addTeacher {
     margin-right: 16px;
+  }
+  .addTeacher:nth-last-child(1){
+    margin-right: 0;
   }
 }
 :deep(.ant-form-item-control) {
@@ -842,9 +870,6 @@ const teacherColumns = [
     margin: 0 10px;
   }
 }
-:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
-  border-radius: 20px;
-}
 .ant-upload {
   button {
     background: var(--primary-color);
@@ -857,7 +882,6 @@ const teacherColumns = [
   }
 }
 .studentList {
-  min-height: 400px;
   .heard {
     margin-bottom: 22px;
     display: flex;
@@ -877,5 +901,16 @@ const teacherColumns = [
       }
     }
   }
+}
+.success{
+  color: green;
+}
+.wrong{
+  color: red;
+}
+.eslipse{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 </style>

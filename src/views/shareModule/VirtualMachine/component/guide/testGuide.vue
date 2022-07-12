@@ -56,12 +56,11 @@
     ></iframe>
   </div>
   <div v-else-if="allInfo.base_info.guide && Number(taskType) === 6">
-    <video
-      :poster="videoCover"
+    <common-video
       style="width: 100%; height: 650px"
       controls="true"
       :src="allInfo.base_info.guide"
-    ></video>
+    ></common-video>
   </div>
   <div v-else-if="allInfo.base_info.guide && Number(taskType) === 7">
     <div v-if="true">
@@ -84,6 +83,8 @@ import { Modal } from "ant-design-vue";
 import empty from "src/components/Empty.vue";
 import extStorage from "src/utils/extStorage";
 import { useRoute, useRouter } from "vue-router";
+import CommonVideo from "../../../../../components/common/CommonVideo.vue";
+
 const route = useRoute();
 const router = useRouter();
 let vmQuery = route.query as any;

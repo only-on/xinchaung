@@ -136,6 +136,8 @@
           >
             {{ item.fields[0].value }}
           </td>
+        </tr>
+        <tr v-if="item.type === 'w8'" class="editable-markdown">
           <td class="editable-markdown" colspan="6">
             <div>
               <marked-editor
@@ -144,7 +146,7 @@
               />
               <marked-editor
                 v-else
-                :preview-only="true"
+                :preview="true"
                 v-model="item.fields[1].value"
               />
             </div>
@@ -170,7 +172,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 .report-template-data {
   .template-name {
     margin-bottom: 24px;
@@ -192,6 +194,16 @@ export default defineComponent({
     }
     td {
       border: 1px solid #a3a3a3;
+    }
+  }
+  :deep(.ant-input) {
+    border-radius: 0;
+    box-shadow: none;
+    &:hover {
+      border-color: var(--gray-5);
+    }
+    &:focus {
+      border-color: var(--gray-5);
     }
   }
 }

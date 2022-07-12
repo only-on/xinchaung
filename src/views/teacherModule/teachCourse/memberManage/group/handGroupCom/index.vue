@@ -4,6 +4,7 @@
       :width="900"
       cancelText="取消"
       okText="分组"
+      :destroyOnClose="true"
       :visible="visable"
       @ok="handleOk"
       @cancel="handleCancel"
@@ -13,7 +14,7 @@
         <div class="hasGroup">
           <div class="title">分组列表({{treeData.length}})</div>
           <div class="createInpt">
-              <a-input v-model:value="groupName">
+              <a-input v-model:value="groupName" maxLength="15">
                 <template #addonAfter>
                   <div class="createBtn" @click="createGroup()">创建</div>
                 </template>
@@ -198,8 +199,8 @@ function handleOk(){
           return http.editGroup({urlParams:{group:props.group_id},param:params}).then((res:any)=>{
             if(res.code){
               // emit("updateVisable",'false',true);
-              treeData.value=[]
-              unGroupData.value=[]
+              // treeData.value=[]
+              // unGroupData.value=[]
                 resolve((res:any)=>{
                   return res
                 })
@@ -287,9 +288,7 @@ function toLeft(){
   })
   console.log(checkedValues.value,'checkedValues.value',selectstu,'selectstu',selectedGroup.value,'selectedGroup.value')
   selectstu.forEach((item:any)=> {
-    console.log(item,'item',treeData.value)
     treeData.value[selectedGroup.value].student_list.push(item)
-    console.log(treeData.value[selectedGroup.value],'treeData.value')
   });
   treeData.value=[...treeData.value]
   //过滤学生列表数据
@@ -301,21 +300,25 @@ function toLeft(){
 //把分组的学生移回
 function toRight(){
   const allstuids:any=[]
-    console.log(treeData.value,groupedKeys.value,'groupedKeys')
+  const numberNum:any=[]
     groupedKeys.value.forEach((item:any) => {
         const i=item.split('-')[0] //treeData里的第几个数据
         const id=item.split('-')[1]  //学生id
         allstuids.push(id)
-        console.log(treeData.value[i].student_list,'gggg')
-        const j=treeData.value[i].student_list.filter((it:any)=>{
-          console.log(id,it)
+        const j=treeData.value[i].student_list.filter((it:any,n:any)=>{
           return it.userProfile.id==id;
         })
+        console.log(j,'jjjjjjjjjjjjjjj')
         j.forEach((item:any,index:any)=> {
           unGroupData.value.push(item) 
-          treeData.value[i].student_list.splice(index,1)
+
+          // treeData.value[i].student_list.splice(index,1)
         });
-        console.log(allstuids,'allstuids')
+       treeData.value[i].student_list.forEach((it:any,n:any)=>{
+         if(it.userProfile.id==id){
+          treeData.value[i].student_list.splice(n,1)
+         }
+        })
     }) 
     groupedKeys.value=[]
 }
@@ -349,6 +352,8 @@ watch(
 watch(
       () =>props.visable,
       () => {
+        // console.log(props.visable);
+        
         if(props.visable){
           //分组列表置空
           treeData.value=[]

@@ -13,7 +13,7 @@
         !isReply ? "回应" : "收起回应"
       }}
       <!--  v-if="!isReply" -->
-        <span class="reply-num">{{ detail.reply_number_count }}</span>
+        <span class="reply-num" v-if="!isReply">{{ totalReply }}</span>
       </span>
       <span class="delet pointer" v-if="detail.is_del" @click="deleteForum(detail.id)">
         <span class="division" v-if="detail.is_del"></span>删除
@@ -25,14 +25,15 @@
     <div class="reply-total">回应区 （{{totalReply}}条）</div>
     <a-spin :spinning="loading" tip="Loading...">
     <div class="reply-content">
-      <reply-list :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
+      <div v-if="!replyList.length" class="no-reply-data">该帖子暂无评论！</div>
+      <reply-list v-else :child="child" v-for="list in replyList" :key="list.id" :list="list"></reply-list>
       <div class="more" v-if="totalReply !== replyList.length && replyList.length" @click="clickLoadingMore(detail.id)">
         <span class="pointer">加载更多</span>
       </div>
     </div>
     </a-spin>
     <div class="comment-box">
-      <a-input v-model:value="replyContent" placeholder="请写下你的评论" />
+      <a-input v-model:value="replyContent" :maxlength="500" placeholder="请写下你的评论" />
       <span class="pointer" @click="submitReply(detail.id)">回应</span>
     </div>
   </div>
@@ -64,7 +65,7 @@ import defaultAvatar from 'src/assets/images/user/admin_p.png'
 const http = (request as any).teacherForum;
 const route = useRoute();
 const router = useRouter();
-let {currentTab} = route.query
+let {currentTab, id} = route.query
 let isReply = ref<boolean>(true);
 let child = ref<boolean>(true);
 let replyContent = ref<string>("");
@@ -96,6 +97,10 @@ const detail = reactive<IForumnList>({
 
 // 回应
 function submitReply(id: number) {
+  if (!replyContent.value) {
+    message.warn('请输入评论内容')
+    return
+  }
   let param = {
     content: replyContent.value,
     id
@@ -103,6 +108,7 @@ function submitReply(id: number) {
   http.replyForum({param}).then((res: IBusinessResp) => {
     replyContent.value = ''
     replyList.length = 0
+    page.value = 1
     getReplyList(id)
     detail.reply_number_count ++
   })
@@ -115,6 +121,7 @@ const totalReply = ref(0)
 function getReplyList(id: number) {
   loading.value = true
   // replyList.length = 0
+  page.value === 1 ?replyList.length = 0 : ''
   let param = {
     page: page.value,
   }
@@ -130,9 +137,9 @@ const getDetail = () => {
     page: 1,
     limit: 1
   }
-  http.getForumList({urlParams: {keyword: ''}, param}).then((res: IBusinessResp) => {
-    console.log(res)
-    Object.assign(detail, res.data.list[0])
+  http.getForumDetail({urlParams: {id}}).then((res: IBusinessResp) => {
+    // console.log(res)
+    Object.assign(detail, res.data)
     detail.content = goHtml(detail.content)
     getReplyList(detail.id)
   })
@@ -167,8 +174,9 @@ const deleteForum = (id: number) => {
   });
 }
 // 删除一级回复
-const deleteReply = (id: number) => {
+const deleteReply = (id: number, pid: number) => {
   getReplyList(id)
+  // pid ? "" : detail.reply_number_count --
 }
 provide("deleteReply", deleteReply)
 
@@ -249,6 +257,11 @@ const clickLoadingMore = (id: number) => {
   .reply-content {
     background: var(--lightgray-2);
     /*margin: 16px 20px;*/
+    .no-reply-data {
+      text-align: center;
+      padding-top: 30px;
+      color: var(--black-45);
+    }
     .more {
       padding: 19px 0 24px;
       text-align: center;
@@ -282,9 +295,9 @@ const clickLoadingMore = (id: number) => {
       color: var(--white-100);
     }
   }
-}
-.ant-spin-nested-loading {
-  min-height: 80px;
+  .ant-spin-nested-loading {
+    min-height: 80px!important;
+  }
 }
 .forum-content-all{
   :deep(.ql-image){

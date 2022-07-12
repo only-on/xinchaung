@@ -2,6 +2,7 @@
 import * as tus from "tus-js-client";
 import { message } from "ant-design-vue";
 import { lStorage } from "./extStorage";
+import { readFile } from "src/utils/getFileType";
 var state: any = {
   upload: "",
   file: "",
@@ -84,6 +85,11 @@ const tusFileUpload = {
     }
      */
     const type = file.name.split(".")[file.name.split(".").length - 1].toLowerCase();
+    // 视频文件限制在500M以内
+    if (type == 'mp4' && file.size > 500*1024*1024) {
+      message.warn("请上传小于500M的文件");
+      return
+    }
     data.percent = 0;
     data.name = file.name;
     data.size = file.size;
@@ -140,7 +146,7 @@ const tusFileUpload = {
           data.UpState.upload.url.split("/")[
             data.UpState.upload.url.split("/").length - 1
           ];
-        const type = file.name.split(".")[file.name.split(".").length - 1];
+        const type = file.name.split(".")[file.name.split(".").length - 1].toLowerCase();
         const file_url = `${FileConfig[directory]}/${name}.${type}`;
         // console.log(`${FileConfig[directory]}/${name}.${type}`)
         if (type === "mp4") {
@@ -150,6 +156,11 @@ const tusFileUpload = {
         }
         if (type === "pdf") {
           data.tusdDocumentUrl = `/document/${name}.${type}`;
+        }
+        if (type === 'md') {
+          readFile(file).then((text:any)=>{
+            data.mdValue = text;
+          })
         }
         data.file_url = file_url;
         data.status = "done";
@@ -170,7 +181,7 @@ const tusFileUpload = {
   },
   remove(data: any) {
     // data  同onUpload()  方法里的data
-    data.UpState.upload?.abort();
+    data.UpState?.upload?.abort();
     data.UpState = {};
   },
 };

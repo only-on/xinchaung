@@ -1,25 +1,23 @@
 <template>
   <div class="content">
-    <video
-      :poster="videoCover"
+    <common-video
       :src="videoUrl"
-      :controls="true"
-      webkit-playsinline="true"
-      playsinline="true"
-      x-webkit-airplay="allow"
-      x5-playsinline
+      controls="true"
       width="950"
-    ></video>
+    ></common-video>
   </div>
 </template>
 <script lang="ts">
 import videoCover from 'src/assets/images/common/videoCover.jpg'
 import { defineComponent, reactive, toRefs, watch } from "vue";
+import CommonVideo from "../../../../../components/common/CommonVideo.vue";
+
 interface Istate {
   videoUrl: string;
 }
 export default defineComponent({
   name: "video1",
+  components: {CommonVideo},
   props: ["detailInfo"],
   setup: (props, context) => {
     const state: Istate = reactive({

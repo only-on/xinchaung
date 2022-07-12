@@ -60,7 +60,10 @@
                   </a-select-option>
                 </a-select>
               </a-form-item>
-              <a-form-item label="课时" name="class_total">
+              <a-form-item label="课时" name="class_total" class="class-total">
+                <template #extra>
+                  设置范围为0-200分钟
+                </template>
                 <a-input v-model:value="formState.class_total" placeholder="请输入课时" />
               </a-form-item>
               <a-form-item label="实验时长" name="content_duration" class="conentDuration">
@@ -141,7 +144,7 @@ const http = (request as any).teachCourse;
 var configuration: any = inject("configuration");
 var updata = inject("updataNav") as Function;
 updata({
-  tabs: [{ name: "创建课程", componenttype: 0 }],
+  tabs: [{ name: EditId?'复用课程信息编辑':"创建课程", componenttype: 0 }],
   showContent: true,
   componenttype: undefined,
   showNav: true,
@@ -173,9 +176,16 @@ const next=(val:number)=>{
         stup1Loading.value=false
         currentStep.value=val
         courseId.value=data.id
+        let obj:any={
+          currentTab:currentTab,
+          courseId:data.id
+        }
+        if(EditId){
+          obj.EditId=EditId
+        }
         router.replace({
           path: "/teacher/teacherCourse/CreateCourse",
-          query: { currentTab:currentTab,courseId:data.id}
+          query: { ...obj}
         });
         setTimeout(() => {
           currentStep.value=val
@@ -206,9 +216,16 @@ const multiplexingCourse=(val:number)=>{
         stup1Loading.value=false
         currentStep.value=val
         courseId.value=data.id
+        let obj:any={
+          currentTab:currentTab,
+          courseId:data.id
+        }
+        if(EditId){
+          obj.EditId=EditId
+        }
         router.replace({
           path: "/teacher/teacherCourse/CreateCourse",
-          query: { currentTab:currentTab,courseId:data.id}
+          query: { ...obj}
         });
         setTimeout(() => {
           currentStep.value=val
@@ -238,12 +255,14 @@ function UpdateCourse(val:number){
   http.UpdateCourse({param:{...formState},urlParams: {courseId: courseId.value}}).then((res: IBusinessResp)=>{
     const {data}=res
     stup1Loading.value=false
-    if(val === 4){
-      cancel()
-      return
-    }
+    // if(val === 4){
+    //   cancel()
+    //   return
+    // }
     currentStep.value=val
     courseId.value=data.id
+    cancel()
+    return
   }).catch((err:any)=>{
     stup1Loading.value=false
   })
@@ -289,12 +308,17 @@ const formState:any = reactive({
   content_duration: 40,// 实验时长
 })
 let validateNum = async (rule: any, value: string) => {
-  let validateor = /^[0-9]*[1-9][0-9]*$/
+  // let validateor = /^[0-9]*[1-9][0-9]*$/
+  let validateor = /^([1-9]{1}[0-9]*|0)$/
   if (!validateor.test(value)) {
     return Promise.reject('请输入正整数');
   } else if (rule.field === 'content_duration') {
     if (Number(value) < 40 || Number(value) > 120) {
       return Promise.reject('时间设置范围为40-120分钟');
+    }
+  } else if (rule.field === 'class_total') {
+    if (Number(value) < 0 || Number(value) > 200) {
+      return Promise.reject('课时设置范围为0-200');
     }
   } else {
     return Promise.resolve();
@@ -398,6 +422,15 @@ onMounted(()=>{
       justify-content: space-between;
       .left,.right{
         width: 40%;
+      }
+      .class-total {
+        position: relative;
+        :deep(.ant-form-item-extra){
+          position: absolute;
+          top: -28px;
+          left: 40px;
+          font-size: 12px;
+        }
       }
       .conentDuration{
         position: relative;

@@ -1,4 +1,5 @@
 <template>
+  <!-- 已弃用组件 -->
   <div
     class="report-template-data"
     v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
@@ -136,11 +137,11 @@ export default defineComponent({
   components: {
     markdown,
   },
-  props:['preview'],
+  props:['preview','reportTemplateData'],
   setup() {
-    const reportTemplateData: any = inject("reportTemplateData");
+    // const reportTemplateData: any = inject("reportTemplateData");
     return {
-      reportTemplateData,
+      // reportTemplateData,
     };
   },
 });

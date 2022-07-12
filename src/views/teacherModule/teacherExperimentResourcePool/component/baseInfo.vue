@@ -1,5 +1,11 @@
 <template>
   <a-form :model="formState"  ref="formRef" layout="vertical" :label-col="{ span: 10 }" :wrapperCol="{ span: 20 }" :rules="rules">
+    <div class="base-info">
+      <!-- <div class="base-info-title">
+        <span class="name">基本信息</span>
+        <span class="line"></span>
+      </div> -->
+      <h3 class="title">基本信息</h3>
     <div class="create-middle">
       <div class="left">
         <a-form-item label="实验名称" name="name">
@@ -74,7 +80,7 @@
           </div>
           <div class="reportName flexCenter" v-if="formState.report.name">
             <span class="iconfont icon-fujian"></span>
-            <span class="name single_ellipsis">{{ formState.report.name }}</span>
+            <span class="name single_ellipsis" :title="formState.report.name">{{ formState.report.name }}</span>
             <span
               class="iconfont icon-shanchu"
               @click="delSelectedReport()"
@@ -98,7 +104,12 @@
         </a-form-item>
       </div>
     </div>
+    </div>
     <!-- 实验环境配置 -->
+    <!-- <div class="base-info-title">
+      <span class="name">实验环境</span>
+      <span class="line"></span>
+    </div> -->
     <div class="configuration" v-if="componentsList.includes('configuration')">
       <Environment
         :type="createTypeNumber === 4 ? true : false"
@@ -214,7 +225,9 @@ const createTypeNumber = props.detail.task_type;
 const createMethod = currentTypeInfo.method;
 const isShowKnowledge = ref<boolean>(false);
 const formRef = ref();
-const formState = reactive<any>({})
+const formState = reactive<any>({
+  drawerVisible: false
+})
 const saveImages = reactive<any>([])
 watch(()=>props.detail, newVal => {
   Object.assign(formState, newVal)
@@ -229,10 +242,11 @@ watch(()=>props.detail, newVal => {
   }) : ''
   formState.know_point = arr
   formState.tags = formState.tag.map((v : any) => v.name)
-  formState.report = formState.content_template ? {id: formState.content_template.template_id, name: formState.content_template.name} : ''
+  formState.report = formState.content_template ? {id: formState.content_template.template_id, name: formState.content_template.name} : {id: 0, name: ''}
   formState.selectedName = []
   formState.datasets = []
   formState.dataset?.forEach((v: any) => {
+    v.uid = v.id
     formState.selectedName.push(v)
     formState.datasets.push(v.id)
   })
@@ -319,7 +333,7 @@ function removeKnowledge(val: any, index: number) {
 }
 // 移除数据集
 function remove(val: any, index: number) {
-  let i = formState.datasets.indexOf(val.id);
+  let i = formState.datasets.indexOf(val.uid);
   i != -1 ? formState.datasets.splice(i, 1) : "";
   formState.selectedName.splice(index, 1);
 }
@@ -449,12 +463,36 @@ onMounted(()=>{
   margin-left: 1rem;
 }
 .configuration {
-  padding: 2rem;
+  padding: 20px;
   padding-top: 0;
+}
+.base-info-title {
+  padding: 0 20px;
+  display: flex;
+  margin-bottom: 16px;
+  .name {
+    margin-right: 4px;
+    color: var(--black-45);
+  }
+  .line {
+    display: inline-block;
+    height: 1px;
+    background: var(--black-15);
+    margin-top: 10px;
+    flex: 1;
+  }
+}
+.base-info {
+  .title {
+    padding: 0 20px 15px;
+    border-bottom: 1px solid #e8e8e8;
+    margin-bottom: 16px;
+  }
 }
 .create-middle {
   display: flex;
-  padding: 2rem;
+  padding: 20px;
+  padding-top: 0;
   .left,
   .right {
     width: 50%;

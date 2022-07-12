@@ -95,7 +95,7 @@ function dataChange(e: InputEvent) {
 }
 
 // 校验
-function verifyNumber(val: string) {
+function verifyNumber(val:any) {
   if (!/^\d+\.?\d*\%?$/.test(val)) {
     message.warn("请输入数字");
     return false;
@@ -109,14 +109,32 @@ function verifyNumber(val: string) {
 
 // 应用到本课程
 function apply() {
+  //  props.weightData.calc.report
+  //  props.weightData.calc.question
+  //  props.weightData.calc.auto
+  var flag=true
   if (!exceed.value) {
     if (sum == 100) {
-      emit("apply");
+      let verifyNumber:any=[props.weightData.calc.report,props.weightData.calc.question,props.weightData.calc.auto]
+      for(var i=0;i<3;i++){
+        if(verifyNumber[i]&&Number(verifyNumber[i])%1!==0){
+          message.warn("请输入整数");
+          flag=false
+        }
+      }
+      if(flag){
+        emit("apply");
+      }else{
+        return false;
+      }
+      
     } else {
       message.warn("权重比例加起来必须是100");
+      return
     }
   } else {
     message.warning("权重总和超过已超过100%，无法应用！");
+    return
   }
 }
 // 取消
@@ -125,14 +143,28 @@ function cancel() {
 }
 // 提交
 function submit() {
+   var flag=true
   if (!exceed.value) {
     if (sum == 100) {
-      emit("submit");
+      let verifyNumber:any=[props.weightData.calc.report,props.weightData.calc.question,props.weightData.calc.auto]
+      for(var i=0;i<3;i++){
+        if(verifyNumber[i]&&Number(verifyNumber[i])%1!==0){
+          message.warn("请输入整数");
+          flag=false
+        }
+      }
+      if(flag){
+        emit("submit");
+      }else{
+        return false;
+      } 
     } else {
       message.warn("权重比例加起来必须是100");
+      return
     }
   } else {
     message.warning("权重总和超过已超过100%，无法提交！");
+    return
   }
 }
 onMounted(() => {

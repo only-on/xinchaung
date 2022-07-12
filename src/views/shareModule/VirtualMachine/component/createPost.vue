@@ -17,8 +17,9 @@
         <a-form-item name="content">
           <QuillEditor
             v-model="formState.content"
-            :height="'200px'"
+            :height="'596px'"
             :uploadPathName="'teacherForum'"
+            :toolbar="toolbarOptions"
           />
         </a-form-item>
         <a-form-item class="btn">
@@ -37,6 +38,29 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { Modal, message } from "ant-design-vue";
 import QuillEditor from "src/components/editor/quill.vue";
 const http = (request as any).teacherForum;
+
+const emit = defineEmits<{
+  (e: "forumChange"): void;
+}>();
+const toolbarOptions: any = [
+  ['bold', 'italic', 'underline', 'strike'],        // toggled buttons
+  ['blockquote', 'code-block'],
+
+  [{ 'header': 1 }, { 'header': 2 }],               // custom button values
+  [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+  [{ 'script': 'sub'}, { 'script': 'super' }],      // superscript/subscript
+  [{ 'indent': '-1'}, { 'indent': '+1' }],          // outdent/indent
+  [{ 'direction': 'rtl' }],                         // text direction
+
+  // [{ 'size': ['small', false, 'large', 'huge'] }],  // custom dropdown
+  // [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+
+  // [{ 'color': [] }, { 'background': [] }],          // dropdown with defaults from theme
+  // [{ 'font': [] }],
+  [{ 'align': [] }],
+  ['link', 'image', 'video'],
+  ['clean']                                         // remove formatting button
+];
 // 论坛
 const isShowForumn = ref<boolean>(false);
 interface IFormState {
@@ -51,6 +75,9 @@ const formState = reactive<IFormState>({
 });
 const contentValidator = (rule: any, value: Delta) => {
   if (value.ops && value.ops.length) {
+    if (value.ops[0]&&JSON.stringify(value.ops[0].insert).length < 5) {
+      return Promise.reject("请输入帖子内容");
+    }
     return Promise.resolve();
   } else {
     return Promise.reject("请输入帖子内容");
@@ -83,6 +110,7 @@ function onSubmit() {
       formState.content = {
         ops: [],
       };
+      emit('forumChange')
     });
   })
 }

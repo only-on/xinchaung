@@ -78,9 +78,9 @@
             <div class="upload-tip">
               <div class="upload-title">上传说明</div>
               <div class="upload-desc">
-                仅允许同时上传一个大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
+                仅允许上传大小不超过500MB的文件，文件类型不限制，上传完后请到指定目录寻找上传的文件。
               </div>
-              <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}</div>
+              <div class="upload-path">文件目录：{{vmData?.classify === "Windows" ? "C:\\":"/simpleupload"}}</div>
             </div>
             <div class="text-center">
               <a-space>
@@ -109,10 +109,15 @@
           <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback label="镜像名称" name="name">
+              <a-form-item  label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" />
               </a-form-item>
-              <a-form-item has-feedback label="镜像描述" name="description">
+              <a-form-item label="添加标签" name="tags">
+                <div>
+                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
+                </div>
+              </a-form-item>
+              <a-form-item  label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请输入描述"
@@ -121,11 +126,8 @@
               </a-form-item>
             </a-form>
           </div>
-          <template v-slot:footer>
-            <div>
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="saveImage">确定</a-button>
-            </div>
+          <template #footer>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template>
         </a-modal>
       </div>
@@ -152,13 +154,16 @@ import {
   vmUploadApi,
   extendSessionApi,
 } from "./api";
+import LabelList from 'src/components/LabelList.vue'
+import Submit from "src/components/submit/index.vue";
 import { useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
 import storage from "src/utils/extStorage";
 import _ from "lodash";
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import uploadFile from "src/request/uploadFile";
-
+import request from "src/api/index";
+const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
   test: number;
   id: number | any;
@@ -166,6 +171,7 @@ type TreactiveData = {
   createFormData: {
     name: string;
     description: string;
+    tags:any[]
   };
   vmData: any;
   isSaveImage: boolean;
@@ -182,6 +188,8 @@ type TreactiveData = {
 export default defineComponent({
   components: {
     "vue-no-vnc": VueNoVnc,
+    LabelList,
+    Submit
   },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
@@ -201,16 +209,35 @@ export default defineComponent({
       }
     };
     const rules: any = {
-      name: [{ validator: nameValidator, trigger: "change" }],
+      name: [{required: true, validator: nameValidator, trigger: "blur" }],
       description: [
-        {
-          required: false,
-          max: 200,
-          message: "镜像描述最长200个字",
-          trigger: "change",
-        },
+        {required: false,max: 200, message: "镜像描述最长200个字",trigger: "change",},
+      ],
+      tags: [
+        {required: true,validator: fileListValidator,trigger: "blur"},
       ],
     };
+    async function fileListValidator() {
+      console.log(reactiveData.createFormData.tags);
+      if (reactiveData.createFormData.tags.length === 0) {
+        message.warn("请选择镜像标签");
+        return Promise.reject("请选择镜像标签");
+      } else if(!(reactiveData.createFormData.tags.includes('vnc') || reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需至少选择一个");
+        return Promise.reject();
+      }else if((reactiveData.createFormData.tags.includes('vnc') && reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需只需任选其一");
+        return Promise.reject();
+      }
+      else {
+        createForm.value.clearValidate('tags')
+        return Promise.resolve();
+      }
+    }
+    const selectTag=async (val:any,arr:any)=>{
+      console.log(val);
+      fileListValidator()
+    }
     const createForm: any = ref(null);
     const loading: Ref<boolean> = ref(false);
     const vncLoading: Ref<boolean> = ref(false);
@@ -223,6 +250,7 @@ export default defineComponent({
       createFormData: {
         name: "",
         description: "",
+        tags:[]
       },
       vmData: {},
       isSaveImage: true,
@@ -237,13 +265,6 @@ export default defineComponent({
     });
     provide("vncLoading", vncLoading);
     provide("loading", loading);
-    onMounted(() => {
-      nextTick(() => {
-        initVm();
-      });
-      // extendSess();
-    });
-
     function extendSess() {
       const fun = (sum: string) => {
         extendSessionApi({ num: sum })
@@ -298,17 +319,21 @@ export default defineComponent({
       (createForm.value as any).resetFields();
       reactiveData.saveVisible = false;
     }
+    var saveImageLoad: Ref<boolean> = ref(false);
     // 保存镜像
     function saveImage() {
       (createForm.value as any).validate().then((valid: any) => {
         if (valid) {
+          saveImageLoad.value=true
           createImageApi(
             {
               name: reactiveData.createFormData.name,
               description: reactiveData.createFormData.description,
+              tags:reactiveData.createFormData.tags,
             },
             { id: reactiveData.id as any }
           ).then((res: any) => {
+            saveImageLoad.value=false
             message.success("保存成功");
             const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
               ? storage.lStorage.get("iamgeSaveStatus")
@@ -334,7 +359,9 @@ export default defineComponent({
                 path: "/teacher/teacherImageResourcePool/OnlineMake",
               });
             },100)
-          });
+          }).catch(()=>{
+            saveImageLoad.value=false
+          })
         }
       });
     }
@@ -444,6 +471,25 @@ export default defineComponent({
         }
       }, 1000);
     }
+    const recommend:any=reactive([])
+    function getImgTag() {
+      recommend.length=0
+      http.getImgTag().then((res: any) => {
+        let  data= res.data;
+        let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+        recommend.push(...arr)
+        data.forEach((v:any) => {
+          recommend.push({name:v.name,value:v.name})
+        });
+      });
+    }
+    onMounted(() => {
+      nextTick(() => {
+        initVm();
+      });
+      getImgTag()
+      // extendSess();
+    });
     return {
       ...toRefs(reactiveData),
       rules,
@@ -457,7 +503,10 @@ export default defineComponent({
       removeFile,
       loading,
       fileList,
-      novncEl
+      novncEl,
+      recommend,
+      selectTag,
+      saveImageLoad
     };
   },
 });
@@ -572,7 +621,7 @@ export default defineComponent({
     color: var(--black-65);
   }
   .vm-list-title {
-    @extend .list-title;
+    &:extend(.list-title);
     font-size: 14px;
   }
   .dataset-url {

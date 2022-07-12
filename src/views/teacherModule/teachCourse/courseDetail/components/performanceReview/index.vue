@@ -1,6 +1,6 @@
 <template>
   <div class="correct-wrap">
-    <div class="c-d-left myChapter textScrollbar">
+    <div class="c-d-left myChapter chartTerrLeft textScrollbar">
       <chapterTree :courseId="courseId" @selectExperiment="selectExperiment" />
     </div>
     <div class="correct-right right">
@@ -19,26 +19,23 @@
             >/{{ total }}
           </span>
         </div>
-        <div class="t-right">
-          <a-button type="primary" class="auto-preview-btn" size="" @click="autoReview">
+        <div class="t-right flexCenter">
+          <a-button type="primary" :disabled='experitId?false:true' class="auto-preview-btn flexCenter" size="" @click="autoReview">
             <a-tooltip overlay-class-name="numeric-input">
               <template #title>
                 <span>一键评阅</span>
               </template>
               <span class="preview-btn">一键评阅</span>
+              <span class="suffixText"></span>
             </a-tooltip>
-            <a-tooltip overlay-class-name="numeric-input">
+            <a-tooltip overlay-class-name="numeric-input" class="">
               <template #title>
                 <span>一键评阅权重设置</span>
               </template>
-              <i
-                title="设置权重"
-                @click.stop="autoWeight"
-                class="icon-shezhi iconfont setting-btn"
-              ></i>
+              <i title="设置权重" @click.stop="autoWeight" class="icon-shezhi iconfont setting-btn"></i>
             </a-tooltip>
           </a-button>
-          <a-button type="primary" size="" @click="exportScore">导出成绩</a-button>
+          <a-button type="primary" size="" :disabled='experitId?false:true' @click="exportScore">导出成绩</a-button>
         </div>
       </div>
       <div class="c-table">
@@ -128,10 +125,12 @@
       <a-pagination
         v-if="total>10"
         :total="total"
+        show-size-changer
         v-model:current="params.page"
         v-model:pageSize="params.limit"
         class="page-wrap"
         @change="pageChange"
+        @ShowSizeChange='onShowSizeChange'
       >
         <!-- <template #itemRender="{ page, type, originalElement }">
           <a v-if="type === 'prev'">上一页</a>
@@ -249,7 +248,7 @@ const oldColumns: any[] = [
     width: 49,
     algin: "center",
     customRender: ({ text, record, index }: any) => {
-      return index+1;
+      return (params.value.page - 1) * params.value.limit +index + 1;
     },
   },
   {
@@ -335,6 +334,13 @@ function getTeacherEvaluates() {
 
 // 分页发生变化
 function pageChange(page: number, pageSize: number) {
+  params.value.page=page
+  getTeacherEvaluates();
+}
+function onShowSizeChange(page: number, pageSize: number){ 
+  params.value.page=1
+  params.value.limit=pageSize
+  console.log('哈哈哈哈')
   getTeacherEvaluates();
 }
 // 分页渲染dom
@@ -505,7 +511,7 @@ function submitReport() {
 }
 // 选择tree章节
 function selectExperiment(val: any) {
-  if (!experitId.value||experitId.value!=val.id) {
+  if ((!experitId.value||experitId.value!=val.id) && (val && val.id)) {
     experitId.value = val.id;
     getTeacherEvaluates();
   }
@@ -565,28 +571,18 @@ onMounted(() => {
   width: var(--center-width);
   margin: 0 auto;
   .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
+        // padding:0 24px;
+        // min-height:700px;
+        // max-height: 850px;
+        // overflow: auto;
         // padding-right: 10px;
       }
   .c-d-left {
-    padding-top: 24px;
-    width: 300px;
+    padding-top: 20px;
+    // width: 300px;
     margin-right: 16px;
-    height: 100%;
-    background: white;
-    :deep(.chapterList) {
-      .title {
-        padding: 0 24px;
-      }
-      .list {
-        .itemTit {
-          padding: 0 26px;
-        }
-      }
-    }
+    // height: 100%;
+    // background: white;
   }
   .left,
   .right {
@@ -640,7 +636,7 @@ onMounted(() => {
     }
   }
   .page-wrap {
-    margin-top: auto;
+    margin-top:30px;
   }
   .correct-table {
     :deep(.ant-table-thead > tr > th),
@@ -666,7 +662,6 @@ onMounted(() => {
     border: none;
     .preview-btn {
       padding: 0 10px 0 27px;
-      background: var(--primary-color);
       height: 100%;
       line-height: 33.99px;
       border-top-left-radius: 17px;
@@ -676,9 +671,14 @@ onMounted(() => {
         background: var(--primary-5);
       }
     }
+    .suffixText{
+      // width: 1px;
+      height: 12px;
+      // background-color: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.25);
+    }
     .setting-btn {
       padding: 0 27px 0 10px;
-      background: var(--primary-color);
       line-height: 33.99px;
       border-top-right-radius: 17px;
       border-bottom-right-radius: 17px;

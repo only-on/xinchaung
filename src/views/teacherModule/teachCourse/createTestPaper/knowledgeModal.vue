@@ -6,10 +6,18 @@
   title="选择知识点" 
   @ok="handleOk"
   @cancel="handleCancel"
-  :width="600"
+  :width="540"
 >
   <div class="prompt">最多选择3个知识点</div>
-  <div class="tree">
+  <div class="search_input">
+    <a-input-search
+      v-model:value="keyword"
+      placeholder="请输入搜索关键词"
+      @search="onSearch"
+      width="340px"
+    />
+  </div>
+  <div class="tree textScrollbar">
     <a-tree
       v-if="treeData.length"
       checkable
@@ -23,18 +31,21 @@
     >
       <!-- <template #switcherIcon><down-outlined /></template> -->
     </a-tree>
+    <empty v-else :type="keyword ? 'searchEmpty' : 'empty'"></empty>
   </div>
 </a-modal>
 </template>
 <script lang="ts">
 // import { CarryOutOutlined, DownOutlined  } from '@ant-design/icons-vue';
-import { defineComponent, ref, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
+import { defineComponent, ref, nextTick, onMounted, reactive, toRefs, computed, PropType, watch } from 'vue';
 import request from 'src/api/index'
 import { IBusinessResp } from 'src/typings/fetch.d'
 import { message } from 'ant-design-vue'
+import Empty from 'src/components/Empty.vue';
 export default defineComponent({
   name: 'knowledge',
   components: {
+    Empty
     // CarryOutOutlined,
     // DownOutlined ,
   },
@@ -56,9 +67,14 @@ export default defineComponent({
     let data = reactive<Idata>({
       treeData: []
     })
+    let checkedNodes: ItreeData[] = props.selectedList
     const getKnowledgeList = () => {
-      http.getKnowledgeList({param: {type: 'tree'}})
+      checkedKeys.value =  []
+      http.getKnowledgeList({param: {type: 'tree', keyword: keyword.value}})
         .then((res: IBusinessResp) => {
+          if (!res.data?.length) {
+            data.treeData = []
+          }
           let list= res.data.data
           // console.log(list)
           data.treeData = [{
@@ -67,19 +83,24 @@ export default defineComponent({
             text: list.text,
             disabled: true
           }]
+          nextTick(() => {
+            if (keyword.value) {
+              checkedNodes?.map(v => {
+                if (v.text.indexOf(keyword.value)!=-1) {
+                  checkedKeys.value.push(v.id)
+                }
+              })
+            } else {
+              checkedKeys.value =  checkedNodes?.map(v => v.id)
+            }
+          })
         })
         .catch((error:any)=>{
           // console.log(error)
-           data.treeData = [{
-            children: error.data.children,
-            id: error.data.id,
-            text: error.data.text,
-            disabled: true
-          }]
+           data.treeData = []
         })
     }
-    let checkedNodes: ItreeData[] = props.selectedList
-    const onCheck = (key: string[], e: any) => {
+    const onCheck1 = (key: string[], e: any) => {
       let arr = e.checkedNodes
       if (arr.length) {
         checkedNodes = []
@@ -93,6 +114,37 @@ export default defineComponent({
       }
       checkedKeys.value = checkedNodes.map(v => v.id)
     }
+    const onCheck = (key: string[], e: any) => {
+      checkedNodes = [...checkedNodes]
+      let arr = e.checkedNodes
+      let node = e.node
+      function handle(node: any) {
+        if (node.children&&node.children.length) {
+          node.children.forEach((v: any) => {
+            handle(v)
+          })
+        } else {
+          checkedNodes.filter((v: any, k: number) => {
+            if (v.id === node.id) {
+              checkedNodes.splice(k, 1)
+            }
+          })
+        }
+      }
+      if (!e.checked) {
+        handle(node.dataRef)
+      } else {
+        // checkedNodes = []
+        arr.forEach((v:any) => {
+          if (!(v.props.dataRef.children && v.props.dataRef.children.length)) {
+            if (!checkedNodes.filter((vv: any) => vv.id===v.props.dataRef?.id)[0]) {
+              checkedNodes.push(v.props.dataRef)
+            }
+          }
+        })
+      } 
+      // checkedKeys.value = checkedNodes.map(v => v.id)
+    }
     const handleOk = () => {
       if (checkedNodes.length > 3) {
         message.warn('此处最多选择3个知识点！')
@@ -100,12 +152,20 @@ export default defineComponent({
       }
       emit('update:selectedList', checkedNodes)
       emit('update:isShow', false)
+      keyword.value = ''
     }
     const handleCancel = () => {
       emit('update:selectedList', props.selectedList)
       emit('update:isShow', false)
+      keyword.value = ''
     }
 
+    // 关键字搜索
+    const keyword = ref('')
+    const onSearch = () => {
+      console.log(keyword.value)
+      getKnowledgeList()
+    }
     onMounted(() => {
       getKnowledgeList()
     })
@@ -114,17 +174,22 @@ export default defineComponent({
       (newVal) => {
         if (newVal) {
           checkedKeys.value =  props.selectedList?.map(v => v.id)
+          checkedNodes = props.selectedList
+          getKnowledgeList()
         }
       },
       {deep: true}
     )
     return {
+      onCheck1,
       onCheck,
       checkedKeys,
       replaceFields,
       ...toRefs(data),
       handleOk,
       handleCancel,
+      keyword,
+      onSearch,
     };
   },
 });
@@ -140,8 +205,14 @@ interface ItreeData {
 </script>
 
 <style lang="less" scoped>
+.search_input {
+  margin-bottom: 16px;
+  .ant-input-search {
+    width: 340px;
+  }
+}
 .tree {
-  height: 600px;
+  height: 352px;
   overflow: auto;
 }
 .prompt {

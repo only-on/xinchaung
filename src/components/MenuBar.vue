@@ -49,6 +49,9 @@ export default defineComponent({
       // type: Array as PropType<MenuItem>,
       default: () => [],
     },
+    activeMenu: {
+      default: ''
+    }
   },
   setup(props, context) {
     const renderFlag: Ref<boolean> = ref(true);
@@ -137,10 +140,12 @@ export default defineComponent({
             : "";
         });
       }
+      lStorage.set("menuActiveName", activeName.value);
     }
-    watch(()=>activeName.value, (val: any) => {
-      lStorage.set("menuActiveName", val);
-    });
+    watch(()=>props.activeMenu, newVal => {
+      // console.log(newVal);
+      activeName.value = newVal
+    })
     const http = (request as any).common;
 
     const visibleChange=(val:any)=>{
@@ -173,7 +178,7 @@ export default defineComponent({
     padding: 0 var(--padding-md);
     // color: var(--black-25);
     color: var(--menu-text);
-    font-size: var(--font-size-18);
+    font-size: var(--font-size-16);
     text-align: center;
     cursor: pointer;
     width: max-content;

@@ -29,7 +29,7 @@
             <span class="user-name">{{v.user_profile.name||'内置实验'}}</span>
           </div>
           <div class="operate" v-if="currentTab === 1">
-            <span  v-show="v.is_init === 0 && v.is_share === 1 && currentUid !== v.user_id" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
+            <span  v-show="v.save_my_content" class="pointer" @click.stop="saveTomy(v.id, v.name)">保存到我的</span>
           </div>
           <div class="operate" v-if="currentTab === 0">
             <!-- is_share:1 就是共享数据 -->
@@ -68,11 +68,13 @@
         <Empty v-if="!experimentList.length && !loading" :type="EmptyType"/>
           <!-- -->
         <a-pagination 
-          v-if="totalCount > 10"
+          v-if="totalCount > 10&&!loading"
+          show-size-changer
           v-model:current="searchInfo.page"
           :pageSize="searchInfo.limit"
           :total="totalCount"
           @change="pageChange"
+          @showSizeChange="showSizeChange"
         />
       </div>
     </a-spin>
@@ -134,7 +136,7 @@ const isShowAdd = ref<boolean>(true);
 const resetKeyword = ref<boolean>(false);
 const formRef = ref<any>();
 const saveVisible = ref<boolean>(false);
-const currentUid = lStorage.get('uid')
+const currentUid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
 const formState=reactive<any>({
   name:'',
   id: 0
@@ -278,6 +280,7 @@ interface IExperimentList {
   programing_type: number
   is_high:boolean
   is_authorize:boolean
+  save_my_content: boolean
 }
 var experimentList: IExperimentList[] = reactive([]);
 var loading: Ref<boolean> = ref(false);
@@ -324,6 +327,12 @@ const pageChange = async (current: any, pageSize: any) => {
   // });
   initData();
 };
+const showSizeChange=async (current: any, pageSize: any) => {
+  searchInfo.page = 1;
+  searchInfo.limit=pageSize;
+  initData();
+};
+
 
 const ExperimentTypeList = reactive([
   { name: "桌面实验", key: "desktop" },
@@ -426,8 +435,13 @@ const getDirection = () => {
 <style scoped lang="less">
 .teacherExperimentList{
   margin-bottom: 50px;
+  overflow: hidden;
+  .labelSearchBox {
+    margin-top: 10px;
+  }
 }
 .mainBox {
+  min-height: 570;
   flex-wrap: wrap;
   justify-content: space-between;
   .item {
@@ -436,8 +450,9 @@ const getDirection = () => {
     line-height: 64px;
     margin-bottom: 24px;
     border-radius: 32px;
-    background: var(--white-65);
+    background: var(--white-100);
     padding-right: 40px;
+    box-shadow: 0px 1px 1px 0px rgba(0,0,0,0.07);
     &:hover {
       box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14);
       .label {
@@ -453,12 +468,12 @@ const getDirection = () => {
       margin-right: 16px;
       border-radius: 32px 0px 0px 32px;
       color: var(--brightBtn);
-      background: linear-gradient(
-        90deg,
-        rgba(28, 178, 179, 0.14),
-        rgba(85, 218, 219, 0.14) 36%,
-        rgba(255, 255, 255, 0.14)
-      );
+      // background: linear-gradient(
+      //   90deg,
+      //   rgba(28, 178, 179, 0.14),
+      //   rgba(85, 218, 219, 0.14) 36%,
+      //   rgba(255, 255, 255, 0.14)
+      // );
     }
     .exper-name {
       // width: 800px;

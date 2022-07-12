@@ -1,54 +1,55 @@
 <template>
     <div class="experManage">
-        <div class="search">
-          <div>
+        <div class="searchManag">
+          <div class='search_left'>
             <div class="item custom_input custom_input2">
-        <span style="width:50px">实验名称</span>
-        <a-input
-          style="width:224px"
-          v-model:value="ForumSearch.name"
-          placeholder="请输入实验名称关键词搜索"
-          @keyup.enter="search()"
-        />
-      </div>
-      <div class="item custom_input custom_input2">
-        <span style="width:50px">实验属性</span>
-        <!-- <a-input
-          style="width:224px"
-          v-model:value="ForumSearch.type"
-          placeholder="请输入搜索关键词"
-          @keyup.enter="search()"
-        /> -->
-          <a-select
-          v-model:value="ForumSearch.attribute"
-          placeholder="请选择实验属性"
-          @change="search()"
-          style="width: 240px; margin-right: 16px"
-        >
-          <a-select-option value="">全部</a-select-option>
-          <a-select-option value="0">私有</a-select-option>
-          <a-select-option value="1">公有</a-select-option>
-        </a-select>
-      </div>
-      <div class="item custom_input custom_input2">
-        <span style="width:50px">实验类型</span>
-        <a-select
-          v-model:value="ForumSearch.type"
-          placeholder="请选择实验类型"
-          @change="search()"
-          style="width: 240px; margin-right: 16px"
-        >
-          <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
-        </a-select>
-      </div>
+              <span style="width:50px">实验名称</span>
+              <a-input
+                style="width:196px"
+                v-model:value="ForumSearch.name"
+                placeholder="请输入实验名称关键词搜索"
+                @keyup.enter="search()"
+              />
+           </div>
+          <div class="item custom_input custom_input2">
+            <span style="width:50px">实验属性</span>
+            <!-- <a-input
+              style="width:224px"
+              v-model:value="ForumSearch.type"
+              placeholder="请输入搜索关键词"
+              @keyup.enter="search()"
+            /> -->
+              <a-select
+              v-model:value="ForumSearch.attribute"
+              placeholder="请选择实验属性"
+              @change="search()"
+              style="width: 176px; margin-right: 16px"
+            >
+              <a-select-option value="">全部</a-select-option>
+              <a-select-option value="0">私有</a-select-option>
+              <a-select-option value="1">公有</a-select-option>
+            </a-select>
           </div>
-      <div class="item">
-        <!-- <a-button type="primary" @click="search()">查询</a-button>
-        <a-button type="primary" @click="clearSearch()">清空</a-button> -->
-        <a-button type="primary" @click="batchDelete">批量删除</a-button>
-      </div>
+        <div class="item custom_input custom_input2">
+          <span style="width:50px">实验类型</span>
+          <a-select
+            v-model:value="ForumSearch.type"
+            placeholder="请选择实验类型"
+            @change="search()"
+            style="width:176px; margin-right: 16px"
+          >
+            <a-select-option v-for="(item,index) in allexperTypes" :value='item.type'>{{item.name}}</a-select-option>
+          </a-select>
+        </div>
+            </div>
+        <div class="item">
+          <!-- <a-button type="primary" @click="search()">查询</a-button>
+          <a-button type="primary" @click="clearSearch()">清空</a-button> -->
+          <a-button type="primary" @click="batchDelete">批量删除</a-button>
+        </div>
     </div>
-    <a-table
+    <a-config-provider>
+      <a-table
       :columns="columns"
       :data-source="listdata"
       rowKey='id'
@@ -56,10 +57,10 @@
         total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger:false,
+              showSizeChanger:true,
               total:total,
               current: params.page,
-              pageSize: params.limit,
+              pageSize: params.pageSize,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -73,17 +74,30 @@
     >
     <!-- detail -->
     <template #contentName='{record}'>
-      <div class="detail" @click="detail(record,record.contentAttribute)">
+      <div class="detail" :title="record.contentName" @click="detail(record,record.contentAttribute)">
         {{record.contentName}}
       </div>
     </template>
+    <template #contentTechnicalDirectionGroup='{record}'>
+        <div class="detailDirName" :title="record.contentTechnicalDirectionGroup">
+        {{record.contentTechnicalDirectionGroup}}
+      </div>
+    </template>
+    <template #action="{record}">
+      <a-button type="link" @click="dleDelete(record)">删除</a-button>
+      <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
+    </template>
     </a-table>
-    
+      <template #renderEmpty>
+          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+      </template>
+    </a-config-provider>
     </div>
 </template>
 <script lang="ts" setup>
 import { message,Modal } from "ant-design-vue";
-import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 const http = (request as any).TeachingResourceManagement;
@@ -99,7 +113,10 @@ const allexperTypes:any=ref([
   {name:'视频实验',type:6},
   {name:'文档实验',type:7},
 ])
+const ifSearch:any=ref(false)
     const ForumSearch:any=reactive({
+      type:'',
+      attribute:''
     })
     interface Props {
       listdata: any[]; 
@@ -123,6 +140,8 @@ const allexperTypes:any=ref([
         {
           title: '实验所属',
           dataIndex: 'contentGroup',
+          width:120,
+          ellipsis: true,
         },
         {
           title: '实验类型',
@@ -131,29 +150,48 @@ const allexperTypes:any=ref([
         {
           title: '所属技术方向',
           dataIndex: 'contentTechnicalDirectionGroup',
+          // ellipsis:true,
+          slots: { customRender: 'contentTechnicalDirectionGroup' },
         },
         {
           title: '课时',
           dataIndex: 'contentClassesCount',
         },
+        {
+          title: '操作',
+          width:150,
+          key: 'action',
+          align:'center',
+          slots: { customRender: 'action' },
+        }
       ];
     const tableData:any=reactive({})
     const params:any=reactive({
-      page:1
+      page:1,
+      pageSize:10,
     })
     const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
     function search(){
-        emit('updateData',{name:ForumSearch.name,page:1,type:ForumSearch.type,attribute:ForumSearch.attribute})
+      if(ForumSearch.name||ForumSearch.attribute||ForumSearch.type){
+          ifSearch.value=true
+        }else{
+          ifSearch.value=false
+        }
+        params.page=1
+        emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onChange(page:any,size:any){
       params.page=page
-      emit('updateData',{name:ForumSearch.name,page:params.page,type:ForumSearch.type,attribute:ForumSearch.attribute})
+      params.pageSize=size
+      emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
       
     }
-    function onShowSizeChange(){
-
+    function onShowSizeChange(page:any,size:any){
+      params.page=1
+      params.pageSize=size
+      emit('updateData',{name:ForumSearch.name,page:params.page,pageSize:params.pageSize,type:ForumSearch.type,attribute:ForumSearch.attribute})
     }
     function onSelectChange(selectedRowKeys:any, selectedRows:any){
       tableData.selectedRowKeys=selectedRowKeys
@@ -164,6 +202,23 @@ const allexperTypes:any=ref([
         defaultChecked: record.selected,
       }
     }
+    const dleDelete=(item:any)=>{
+      Modal.confirm({
+        title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
+        content: "确定要删除吗？",
+        okText: "确定",
+        cancelText: "取消",
+        onOk: () => {
+          http.experDelete({param:{content_ids:[item.id]}}).then((res:any)=>{
+            if(res.code){
+              message.success('删除成功')
+              emit('updateData',{name:'',page:params.page,pageSize:params.pageSize,type:'',attribute:''})
+            }
+          })
+        }
+      })
+    }
     function batchDelete(){
       if(!tableData.selectedRowKeys?.length){
         message.warning('请至少选择一条数据！')
@@ -171,14 +226,15 @@ const allexperTypes:any=ref([
       }
       Modal.confirm({
         title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
         content: "确定要删除吗？",
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
           http.experDelete({param:{content_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
-              message.success('删除成功！')
-              emit('updateData',{name:'',page:params.page,type:'',attribute:''})
+              message.success('删除成功')
+              emit('updateData',{name:'',page:params.page,pageSize:params.pageSize,type:'',attribute:''})
               tableData.selectedRowKeys=[]
             }
           })
@@ -193,22 +249,26 @@ const allexperTypes:any=ref([
     return
   }
   router.push({
-    path: "/teacher/teacherExperimentResourcePool/experimentDetail",
+    path: "/admin/TeachingResourceManagement/experimentManagement/experimentDetail",
     query: {
+      role:2,
       id:val.id,
     },
   });
 };
 </script>
 <style lang="less" scoped>
- .search{
+ .searchManag{
      display: flex;
      justify-content: space-between;
      margin-bottom: 20px;
-     >div:nth-child(1){
+     .search_left{
        display: flex;
+     }
+     >div:nth-child(1){
+      //  display: flex;
        >div{
-        margin-right: 20px;
+        margin-right: 12px;
          >span{
              margin-right: 10px;
          }
@@ -218,15 +278,26 @@ const allexperTypes:any=ref([
  :deep(.ant-input) {
     border-radius: 20px;
  }
- :deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
+ .custom_input{
+  width: 270px;
+ }
+ .custom_input:deep(.ant-select:not(.ant-select-customize-input) .ant-select-selector){
    border-radius: 20px;
  }
  .detail{
    color: var(--primary-color);
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .detail:hover{
    cursor: pointer;
    color: var(--primary-color);
+ }
+ .detailDirName{
+  overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .experManage{
    margin: 20px;

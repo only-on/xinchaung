@@ -29,8 +29,8 @@
                 </div>
               </a-upload>
           </div>
-          <div class="logo-size">60x60px</div>
-          <div class="logo-hint">支持小于20K的png文件</div>
+          <div class="logo-size">建议尺寸60x60px，仅支持png</div>
+          <!-- <div class="logo-hint">仅支持png</div> -->
         </div>
       </div>
       <div class="themeStyle">
@@ -101,26 +101,27 @@
         message.warn('支持格式为png!');
         reject(false)
       }
-      if (file.size / 1024 > 20) {
-        message.warn('文件大小超过20K!');
-        reject(false)
-      }
+      resolve(true)
+      // if (file.size / 1024 > 20) {
+      //   message.warn('文件大小超过20K!');
+      //   reject(false)
+      // }
       let reader = new FileReader()
       reader.readAsDataURL(file)
-      reader.onload= ()=>{
-        const image=new Image()
-        image.src= reader.result as string
-        image.onload=()=>{
-          let w=image.width
-          let h=image.height
-          if (w > 60 || h > 60) {
-            message.warn('图片尺寸不能超过60*60px')
-            reject(false)
-          } else {
-            resolve(true);
-          }
-        }
-      }
+      // reader.onload= ()=>{
+      //   const image=new Image()
+      //   image.src= reader.result as string
+      //   image.onload=()=>{
+      //     let w=image.width
+      //     let h=image.height
+      //     if (w > 60 || h > 60) {
+      //       message.warn('图片尺寸不能超过60*60px')
+      //       reject(false)
+      //     } else {
+      //       resolve(true);
+      //     }
+      //   }
+      // }
     })
   }
   function handleChange (info:any) {
@@ -181,7 +182,7 @@
     .logo-size{
       font-size: 12px;
       color: #808294;
-      padding: 5px 10px 10px;
+      padding: 5px 10px 10px 0;
     }
     .logo-hint {
       font-size: 12px;

@@ -36,7 +36,7 @@
       </template> -->
       <template #report_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
+          <span :class="['未提交','--'].includes(record?.report_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.report_score)?'':clickFun(record.report?.pdf_path, 'report',record.report)">
           {{record?.report_score}}
         </span>
         </div>
@@ -52,7 +52,7 @@
       </template> -->
       <template #question_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','未评阅','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
+          <span :class="['未提交','--'].includes(record?.question_score)?'no-link':'table-a-link'" @click="['未提交','--'].includes(record?.question_score)?'':clickFun(record.exper, 'exper')">
           {{record?.question_score}}
         </span>
         </div>
@@ -69,26 +69,35 @@
       -->
        <template #auto_score='{record}'>
         <div>
-          <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
+          <span :class="['未提交','--'].includes(record?.auto_score)?'no-link':'table_black'">
           {{record?.auto_score}}
         </span>
         </div>
       </template>
       <!-- //最终成绩 -->
       <template #score='{record}'>
-        <span :class="['未提交','未评阅','--'].includes(record?.auto_score)?'no-link':'table_black'">
+        <span :class="['未提交','--','未评阅'].includes(record?.auto_score)?'no-link':'table_black'">
           {{record?.score}}
         </span>
       </template>
      
     </a-table>
-    <a-pagination :total="allData?.all?.page?.totalCount" class="page-wrap" @Change='onChangePage' :hideOnSinglePage='true'>
-      
+    <a-pagination 
+    v-if="allData?.all?.page?.totalCount>10" 
+    :total="allData?.all?.page?.totalCount" 
+    class="page-wrap" 
+    v-model:current="datapage"
+    v-model:pageSize="datapageSize"
+    @Change='onChangePage' 
+    @showSizeChange="showSizeChange"
+    show-size-changer
+    >
     </a-pagination>
 
     <div class="footer">
       <div class="footer-left">
         <div class="statisTit">图形统计</div>
+        <div class="effect">学习效率<span>学习效率=log(实验总得分/实验总耗时)</span></div>
         <div class="graphic-statistics" id="graphicStatistics"></div>
       </div>
 
@@ -111,18 +120,22 @@
     </div>
     <a-modal
         :title="modaldata.title"
-        :footer="null"
         :visible="modaldata.visableDetail"
         @ok="detailOk"
         @cancel="detailCancel"
-        width="1000px"
+        :width="modaldata.componentName=='remark'?600:1000"
+        :destroyOnClose="true"
       >
         <div>
           <cvideo v-if="modaldata.componentName=='cvideo'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></cvideo>
-          <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></exper>
+          <exper v-if="modaldata.componentName=='exper'" :detailInfo="modaldata.detailInfo" ></exper>
           <report v-if="modaldata.componentName=='report'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></report>
           <remark v-if="modaldata.componentName=='remark'" :detailInfo="modaldata.detailInfo" :baseInfo="modaldata.baseInfo"></remark>
         </div>
+        <template #footer>
+          <a-button @click="detailCancel" v-if="['exper','remark'].includes(modaldata.componentName)">关闭</a-button>
+          <span v-else></span>
+        </template>
       </a-modal>
   </div>
 </template>
@@ -226,7 +239,8 @@ const data = ref([
   },
 ]);
 const tableData = ref([]);
-const datapage:any=ref('')
+const datapage:any=ref(1)
+const datapageSize:any=ref(10)
 const allData:any=ref({})
 const modaldata:any=reactive({
 
@@ -235,16 +249,37 @@ function setChart(data:any){
   var option = {
     color: ["#FF9544"],
     grid: {
-      left: 1,
-      top: 40,
+      left: 40,
+      top:10,
       // bottom:20,
-      right: 100,
+      right:55,
       containLabel: true,
     },
+    tooltip: {
+      trigger: 'axis',
+        // axisPointer: {
+        //   type: 'cross',
+        //   // label: {
+        //   //   backgroundColor: '#6a7985'
+        //   // }
+        // }
+    },
+     dataZoom: [
+      {
+      type:data.names.length>10?'slider':'inside',
+      show: true,
+      startValue: 1,
+      endValue:data.names.length>10?10:data.names.length,
+      xAxisIndex: 0,
+      bottom:50,
+      filterMode: "none",
+      height:20,
+      },
+    ],
     xAxis: {
       type: "category",
-      boundaryGap: false,
-      name: "实验",
+      boundaryGap: false, 
+      name: "实验",  // 学生位置  实验
       nameTextStyle: {
         color: "#333333",
       },
@@ -254,14 +289,14 @@ function setChart(data:any){
         },
       },
       axisTick: {
-        show: false,
+        show:false,
       },
       data:data.names,
       // ["实验名称", "实验名称", "实验名称", "实验名称"],
     },
     yAxis: {
       type: "value",
-      name: "学习效率",
+      // name: "学习效率"+`<span>学习效率=log(实验总得分/实验总耗时)</span>`, // +'学习效率=log(实验总得分/实验总耗时)'
       nameTextStyle: {
         color: "#333333",
       },
@@ -279,7 +314,6 @@ function setChart(data:any){
     },
     series: [
       {
-        name: "Highest",
         type: "line",
         symbol: "circle",
         symbolSize: 10,
@@ -288,7 +322,6 @@ function setChart(data:any){
           data: [
             {
               type: "average",
-              name: "Avg",
               label: {
                 position: "end", // 表现内容展示的位置
                 formatter: "平均线", // 标线展示的内容
@@ -318,6 +351,8 @@ function noclick(){
 }
 // table操作
 function clickFun(resultData: any, type: any, report?: any) {
+  // console.log(resultData)
+  modaldata.baseInfo=''
   // console.log(val);
   // if (["updateReport", "video"].includes(type)) {
   //   console.log("录屏click");
@@ -330,14 +365,15 @@ function clickFun(resultData: any, type: any, report?: any) {
     
       const types = {
         exper: "随堂测试详情",
-        video: "操作视频",
-        report: "报告",
-        remark:'评语'
+        video: "查看录屏",
+        report: "实验报告详情",
+        remark:'预览教师评语'
       };
       modaldata.title = types[type];
       modaldata.detailInfo = resultData;
       modaldata.baseInfo = report;
       modaldata.visableDetail = true;
+   console.log(modaldata.baseInfo)   
 }
 function detailOk(){
   modaldata.visableDetail= false;
@@ -357,7 +393,7 @@ function drawCharts() {
 function getallScoreList() {
   console.log('111111')
   // courseId
-  http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:10} }).then((res: any) => {
+  http.allScoreList({ param: { course_id: courseId,page:datapage.value,limit:datapageSize.value} }).then((res: any) => {
     // console.log("allScoreList成功！！！");
     tableData.value = res.data.all.list;
     allData.value=res.data
@@ -367,6 +403,11 @@ function onChangePage(page:any){
   console.log(page)
   datapage.value=page
     getallScoreList() 
+}
+function showSizeChange(page:any,pageSize:any){
+  datapage.value=page=1
+  datapageSize.value=pageSize
+  getallScoreList() 
 }
 function studyChart(){
   http.statisTicChart({param:{course_id:courseId}}).then((res:any)=>{
@@ -427,6 +468,9 @@ onMounted(() => {
   // .page-wrap {
   //   margin: var(--margin-lg) 0 var(--margin-lg) 0;
   // }
+  .page-wrap{
+    margin-top: 30px;
+  }
   .footer {
     display: flex;
     justify-content: space-between;
@@ -477,5 +521,14 @@ onMounted(() => {
 }
 .table_black{
   color: var(--black-65);
+}
+.effect{
+  font-size: 14px;
+  margin-left:150px;
+  >span{
+    margin-left: 5px;
+    font-size: 12px;
+    color: var(--black-65);
+  }
 }
 </style>

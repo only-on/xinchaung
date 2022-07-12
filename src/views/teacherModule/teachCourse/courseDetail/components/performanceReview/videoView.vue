@@ -11,19 +11,13 @@
   >
     <div class="code-wrap">
       <div class="video-template">
-        <video
-          :poster="videoCover"
+        <common-video
           :src="url"
-          :controls="true"
-          class="video-js vjs-big-play-centered vjs-fluid"
-          webkit-playsinline="true"
-          playsinline="true"
-          x-webkit-airplay="allow"
-          x5-playsinline
+          controls="true"
           style="width: 100%;"
-          :autoplay="true"
+          autoplay="true"
           ref="video"
-        ></video>
+        ></common-video>
       </div>
       <div class="action-footer">
         <a-button type="primary" @click="colseModal">关闭</a-button>
@@ -35,6 +29,7 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
+import CommonVideo from "../../../../../../components/common/CommonVideo.vue";
 // props传值
 const props = defineProps({
   visible: {

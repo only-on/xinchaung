@@ -25,6 +25,7 @@ export default {
   detailTemplate:{ url: `/api/simple/report/templates/{id}`, method: "GET" ,},
 
   // 同屏
+  removeTopo: {url: '/api/env/topos/remove', method: "POST" , dataType: 'json'},
   getSameScreenInfo: {
     url: `/api/env/topos/templates`,
     method: "POST",
@@ -96,6 +97,7 @@ export interface ITeacherExperimentResourcePool {
   deleteTemplate:TFHttpSend;
   detailTemplate:TFHttpSend;
 
+  removeTopo: TFHttpSend;
   getSameScreenInfo: TFHttpSend;
   getTopoVmInfo: TFHttpSend;
   deleteTopo: TFHttpSend;

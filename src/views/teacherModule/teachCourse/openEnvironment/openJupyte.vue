@@ -1,6 +1,6 @@
 <template>
   <div>
-    <a-drawer class="jupyter-detail-drawer" :visible="true" :closable="false">
+    <!-- <a-drawer class="jupyter-detail-drawer" :visible="true" :closable="false"> -->
       <div class="jupyte-detail-box">
         <div class="jupyte-detail-info">
           <span>在线制作</span>
@@ -14,16 +14,21 @@
           </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
-          <!-- <iframe id="iframe" :src="jupyteUrl" frameborder="0"></iframe> -->
+          <iframe id="image-jupyter-iframe" v-if="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
         </div>
         <a-modal class="save-image-modal" :visible="saveVisible"  :closable="false">
           <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback label="镜像名称" name="name">
+              <a-form-item  label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" />
               </a-form-item>
-              <a-form-item has-feedback label="镜像描述" name="description">
+              <a-form-item label="添加标签" name="tags">
+                <div>
+                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
+                </div>
+              </a-form-item>
+              <a-form-item  label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请输入描述"
@@ -32,15 +37,12 @@
               </a-form-item>
             </a-form>
           </div>
-          <template v-slot:footer>
-            <div>
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="saveImage">确定</a-button>
-            </div>
+          <template #footer>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template>
         </a-modal>
       </div>
-    </a-drawer>
+    <!-- </a-drawer> -->
   </div>
 </template>
 
@@ -52,6 +54,7 @@ import {
   reactive,
   ref,
   toRefs,
+  Ref
 } from "vue";
 import {
   getVmBaseInfoApi,
@@ -63,7 +66,10 @@ import _ from "lodash";
 import storage from "src/utils/extStorage";
 import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import { message } from "ant-design-vue";
-
+import LabelList from 'src/components/LabelList.vue'
+import Submit from "src/components/submit/index.vue";
+import request from "src/api/index";
+const http = (request as any).teacherImageResourcePool;
 type TreactiveData = {
   id: number;
   jupyteUrl: string;
@@ -75,6 +81,7 @@ type TreactiveData = {
   createFormData: {
     name: string;
     description: string;
+    tags:any[]
   };
 
   isSaveImage: boolean; // 是否可以保存
@@ -82,6 +89,10 @@ type TreactiveData = {
   timer: null | NodeJS.Timer;
 };
 export default defineComponent({
+  components: {
+    LabelList,
+    Submit
+  },
   setup() {
     const env = process.env.NODE_ENV == "development" ? true : false;
     const route = useRoute();
@@ -99,18 +110,37 @@ export default defineComponent({
         return Promise.resolve();
       }
     };
-    const rules = {
-      name: [{ validator: nameValidator, trigger: "change" }],
+    const rules: any = {
+      name: [{required: true, validator: nameValidator, trigger: "blur" }],
       description: [
-        {
-          required: false,
-          max: 200,
-          message: "镜像描述最长200个字",
-          trigger: "change",
-        },
+        {required: false,max: 200, message: "镜像描述最长200个字",trigger: "change",},
+      ],
+      tags: [
+        {required: true,validator: fileListValidator,trigger: "blur"},
       ],
     };
-    const createForm = ref(null);
+    async function fileListValidator() {
+      console.log(reactiveData.createFormData.tags);
+      if (reactiveData.createFormData.tags.length === 0) {
+        message.warn("请选择镜像标签");
+        return Promise.reject("请选择镜像标签");
+      } else if(!(reactiveData.createFormData.tags.includes('vnc') || reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需至少选择一个");
+        return Promise.reject();
+      }else if((reactiveData.createFormData.tags.includes('vnc') && reactiveData.createFormData.tags.includes('jupyter'))){
+        message.warn("vnc或jupyter标签需只需任选其一");
+        return Promise.reject();
+      }
+      else {
+        createForm.value.clearValidate('tags')
+        return Promise.resolve();
+      }
+    }
+    const selectTag=async (val:any,arr:any)=>{
+      console.log(val);
+      fileListValidator()
+    }
+    const createForm: any = ref(null);
     const jupyteIframe = ref(null);
     const reactiveData: TreactiveData = reactive({
       id: route.query.id as any,
@@ -123,16 +153,14 @@ export default defineComponent({
       createFormData: {
         name: "",
         description: "",
+        tags:[]
       },
 
       isSaveImage: true, // 是否可以保存
       myTimer: null,
       timer: null,
     });
-    onMounted(() => {
-      init();
-      // extendSess();
-    });
+    
     onBeforeRouteLeave(() => {
       clearInterval(Number(reactiveData.myTimer));
     });
@@ -161,7 +189,8 @@ export default defineComponent({
             reactiveData.jupyteData.ip +
             ":" +
             reactiveData.jupyteData.port;
-          getJupyteIframe(reactiveData.jupyteUrl);
+          // getJupyteIframe(reactiveData.jupyteUrl);
+          onLoadIframe()
         }
       });
     }
@@ -171,14 +200,17 @@ export default defineComponent({
       (createForm.value as any).resetFields();
       reactiveData.saveVisible = false;
     }
+    var saveImageLoad: Ref<boolean> = ref(false);
     // 保存镜像
     function saveImage() {
       (createForm.value as any).validate().then((valid: any) => {
         if (valid) {
+          saveImageLoad.value=true
           createImageApi(reactiveData.createFormData, {
             id: reactiveData.id,
           }).then((res: any) => {
             if (res.code === 1) {
+              saveImageLoad.value=false
               message.success("保存成功");
               const iamgeSaveStatus = storage.lStorage.get("iamgeSaveStatus")
                 ? storage.lStorage.get("iamgeSaveStatus")
@@ -209,9 +241,14 @@ export default defineComponent({
               });
             },100)
             } else {
-              message.warn(res.msg);
+              saveImageLoad.value=false
+              message.warning(res.msg);
+              // message.success("保存成功");
             }
-          });
+          }).catch((err:any)=>{
+            // message.warning(err);
+            saveImageLoad.value=false
+          })
         }
       });
     }
@@ -295,6 +332,53 @@ export default defineComponent({
       }
       (jupyteIframe.value as any).appendChild(frm);
     }
+    const showIframe = ref(true)
+    let TimerIframe: NodeJS.Timeout | null = null;
+    function onLoadIframe() {
+      const iframe: any = document.querySelector('#image-jupyter-iframe')
+      let onloadIframe = false
+      // 处理兼容性问题
+      if (iframe?.attachEvent) {
+        iframe.attachEvent('onload', () => {
+          clearInterval(Number(TimerIframe));
+          onloadIframe = true
+        })
+      } else {
+        iframe.onload = () => {
+          clearInterval(Number(TimerIframe));
+          onloadIframe = true
+        }
+      }
+      TimerIframe = setInterval(() => {
+        // console.log(onloadIframe)
+        if (!onloadIframe) {
+          showIframe.value = false
+          setTimeout(() => {showIframe.value = true}, 200);
+        }
+        // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
+      }, 6000)
+    }
+
+    const recommend:any=reactive([])
+    function getImgTag() {
+      recommend.length=0
+      http.getImgTag().then((res: any) => {
+        let  data= res.data;
+        let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+        recommend.push(...arr)
+        data.forEach((v:any) => {
+          recommend.push({name:v.name,value:v.name})
+        });
+      });
+    }
+    onMounted(() => {
+      init();
+      getImgTag()
+      // extendSess();
+    });
+    onBeforeRouteLeave(() => {
+      clearTimeout(Number(TimerIframe));
+    });
     return {
       ...toRefs(reactiveData),
       createForm,
@@ -303,7 +387,11 @@ export default defineComponent({
       stop,
       create,
       saveImage,
-      jupyteIframe
+      jupyteIframe,
+      recommend,
+      selectTag,
+      saveImageLoad,
+      showIframe,
     };
   },
 });
@@ -331,6 +419,10 @@ export default defineComponent({
   display: none;
 }
 .jupyte-detail-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
   height: 100%;
   background: #ffffff;
   padding-top: 4px;
@@ -375,7 +467,7 @@ export default defineComponent({
   .iframe {
     height: 100%;
 
-    #iframe {
+    #iframe, #image-jupyter-iframe {
       height: 100%;
       width: 100%;
     }

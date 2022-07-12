@@ -37,12 +37,13 @@
           <a-table
           :columns="columns"
           :data-source="data"
+          :loading='loading'
           rowKey='stu_id'
           :pagination="
             total > 10
               ? {
                   hideOnSinglePage: false,
-                  showSizeChanger: false,
+                  showSizeChanger:true,
                   total:total,
                   current: params.pageinfo.index,
                   pageSize: params.pageinfo.size,
@@ -70,6 +71,7 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted,reactive,watch } from "vue";
 import request from 'src/api/index'
+import message, { MessageApi } from "ant-design-vue/lib/message";
 const http = (request as any).coursePlain;
 interface Props {
   // type: any;
@@ -77,7 +79,9 @@ interface Props {
   // courseId:any;
   total:any;
   data:any;
-  selectedStuIds:any
+  loading:any;
+  selectedStuIds:any;
+  leftNumText:any;
 }
 const props = withDefaults(defineProps<Props>(), {
   // type: () => {},
@@ -85,7 +89,8 @@ const props = withDefaults(defineProps<Props>(), {
   // courseId:()=>{},
   total:()=>{},
   data:()=>{},
-  selectedStuIds:()=>{}
+  selectedStuIds:()=>{},
+  leftNumText:()=>{}
 })
 const option: any = ref();
 option.value = [
@@ -99,7 +104,7 @@ const columns: any = ref();
 const modalVisable: any = ref(false);
 columns.value = [
   {
-    title: "账号",
+    title: "学号",
     dataIndex: "stu_no",
     key: "stu_no",
   },
@@ -115,13 +120,18 @@ columns.value = [
   },
   {
     title: "班级",
-    dataIndex: "class_name",
-    key: "class_name",
+    dataIndex: "classname",
+    key: "classname",
+  },
+  {
+    title: "年级",
+    dataIndex: "grade",
+    key: "grade",
   },
   {
     title: "专业",
-    dataIndex: "age",
-    key: "age",
+    dataIndex: "major",
+    key: "major",
   },
   {
     title: "学院",
@@ -136,8 +146,8 @@ columns.value = [
   },
   {
     title: "电话",
-    dataIndex: "user_profile.phone",
-    key: "user_profile.phone",
+    dataIndex: "phone",
+    key: "phone",
   },
 ];
 const tableData: any = reactive({
@@ -167,7 +177,7 @@ const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:an
 function getCheckboxProps(record: any) {
   return {
     disabled:props.selectedStuIds.includes(record.stu_id),
-    defaultChecked:props.selectedStuIds.includes(record.stu_id),
+    // defaultChecked:props.selectedStuIds.includes(record.stu_id),
   };
 }
 function handleChange() {}
@@ -176,11 +186,12 @@ function onSearch(value: any) {
   params.pageinfo.index=1
   // getallstudent()
   let param:any={
-   page:1,
-   stu_no:params.name,
-   classname:params.class,
-   grade:params.grade,
-   major:params.direct
+    page:1,
+    pageSize: params.pageinfo.size,
+    stu_no:params.name,
+    classname:params.class,
+    grade:params.grade,
+    major:params.direct
   }
   emit('updateStuParams',param)
   if(params.name||params.class||params.grade||params.direct){
@@ -194,6 +205,7 @@ function onChange(page: any, pageSize: any) {
   // getallstudent()
   let param:any={
     page:page,
+    pageSize: params.pageinfo.size,
     stu_no:params.name,
     classname:params.class,
     grade:params.grade,
@@ -204,10 +216,18 @@ function onChange(page: any, pageSize: any) {
 function onShowSizeChange(current: any, size: any) {
   params.pageinfo.index=1;
   params.pageinfo.size=size;
-  // getallstudent()
+  let param:any={
+    page:params.pageinfo.index,
+    pageSize:size,
+    stu_no:params.name,
+    classname:params.class,
+    grade:params.grade,
+    major:params.direct
+  }
+  emit('updateStuParams',param)
 }
-function onSelectChange(selectedRowKeys: any) {
-  console.log(selectedRowKeys);
+function onSelectChange(selectedRowKeys: any,selectedRows:any) {
+  console.log(selectedRowKeys,selectedRowKeys.length,selectedRows,'selectedRowKeys');
   tableData.selectedRowKeys=selectedRowKeys
 }
 function neverShow(record: any) {
@@ -229,16 +249,52 @@ function handleCancel() {
   modalVisable.value = false;
 }
 function handleOkSelect(){
+  console.log(tableData.selectedRowKeys,tableData.selectedRowKeys.length,props.selectedStuIds.length,'tableData.selectedRowKeys.length')
+  if(props.leftNumText<tableData.selectedRowKeys.length-props.selectedStuIds.length){
+    message.warning('可选'+props.leftNumText+'人')
+    return
+  }
   emit("updateSelectStuVisable",'ok',tableData.selectedRowKeys);
+  tableData.selectedRowKeys=[]
+  params.pageinfo = {
+    index: 1,
+    size: 10
+  }
+  params.name=''
+  params.class=''
+  params.grade=''
+  params.direct=''
+  let param:any={
+   page:1,
+   pageSize: 10,
+   stu_no:params.name,
+   classname:params.class,
+   grade:params.grade,
+   major:params.direct
+  }
+  emit('updateStuParams',param)
   // tableData.selectedRowKeys=[]
 }
 function handleCancelSelect(){
   emit("updateSelectStuVisable", 'cancel',[]);
   tableData.selectedRowKeys=[]
+  params.pageinfo = {
+    index: 1,
+    size: 10
+  }
   params.name=''
   params.class=''
   params.grade=''
   params.direct=''
+  let param:any={
+   page:1,
+   pageSize: 10,
+   stu_no:params.name,
+   classname:params.class,
+   grade:params.grade,
+   major:params.direct
+  }
+  emit('updateStuParams',param)
 }
 // function getStudentList() {
 //       loading.value = true;
@@ -264,6 +320,7 @@ watch(
       () => {
         if(props.selectedStuIds){
           tableData.selectedRowKeys=props.selectedStuIds
+          console.log(tableData.selectedRowKeys,'tableData.selectedRowKeystableData.selectedRowKeys')
         }
       },
       { deep: true, immediate: true }

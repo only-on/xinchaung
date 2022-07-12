@@ -82,6 +82,8 @@ const loading = ref(false)
 let forumnList = reactive<IForumnList[]>([]);
 const total = ref(0)
 function initData() {
+  forumSearch.type = String(route.query.type);
+  // currentTab.value = Number(route.query.currentTab);
   loading.value = true
   // 获取帖子列表
   const param = {
@@ -100,6 +102,7 @@ function initData() {
     Object.assign(param, {self: 1, type: forumSearch.type})
   http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
     loading.value = false
+    if (!res?.data) return 
     forumnList.length = 0
     const { list, page } = res.data
     list.forEach((v: IForumnList) => {
@@ -118,19 +121,20 @@ function search(params: IForumSearch) {
   initData();
 }
 // 页码变化
-function pageChange(page: number) {
+function pageChange(page: number,pageSize:number) {
   forumSearch.page = page;
+  forumSearch.pageSize = pageSize;
   initData();
 }
 //
 async function tabChange(id: number) {
   currentTab.value = id;
-  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: type ? type : 'wiki', };
+  let NewQuery = { tab: id,currentTab: route.query.currentTab, type: id==0?'求助':'hot', };
   await router.replace({
     path: path,
     query: NewQuery,
   });
-  // initData();
+  initData();
   id === 0 ? getTagsList({scene: 'private'}) : (id === 1 ? getTagsList({}) : '')
 }
 // 常驻类型
@@ -180,7 +184,8 @@ let bottomStyle = reactive({
 provide("bottomStyle", bottomStyle);
 
 onMounted(async() => {
-  
+  tab = tab ? tab : '0'
+  type = type ? type : (Number(tab) == 0 ? '求助' : 'hot')
   let NewQuery = { currentTab:route.query.currentTab, tab, type };
   await router.replace({
     path: path,
@@ -244,6 +249,9 @@ const tabs = [
     }
     .right {
       // width: 1044px;
+      .ant-spin-nested-loading {
+        min-height: 300px;
+      }
     }
   }
 }

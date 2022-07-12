@@ -1,5 +1,7 @@
 <script lang="ts" setup>
-import { reactive, ref,watch } from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+import { Modal, message } from "ant-design-vue";
+import { reactive, ref, watch, createVNode } from "vue";
 import { useRouter, useRoute } from "vue-router";
 // import http from "src/api";
 import extStorage from "src/utils/extStorage";
@@ -9,15 +11,15 @@ import { IBusinessResp } from "../../typings/fetch";
 import request from "src/api/index";
 import { getHomePath } from "../../routers/common";
 import { PictureOutlined } from "@ant-design/icons-vue";
-import {useStore} from 'vuex';
-import loginA from 'src/assets/images/login/loginA.png'
-import loginB from 'src/assets/images/login/loginB.png'
-import loginC from 'src/assets/images/login/loginC.png'
+import { useStore } from "vuex";
+import loginA from "src/assets/images/login/loginA.png";
+import loginB from "src/assets/images/login/loginB.png";
+import loginC from "src/assets/images/login/loginC.png";
 const loginBg = {
   A: loginA,
   B: loginB,
-  C: loginC
-}
+  C: loginC,
+};
 const http = (request as any).common;
 const { lStorage, sStorage } = extStorage;
 const router = useRouter();
@@ -27,8 +29,8 @@ const loginInfo = ref<any>({
   src: loginBg[store.state.systemInfo.theme],
   logo: store.state.systemInfo.logo_url,
   name: store.state.systemInfo.site_name,
-  class: 'login' + store.state.systemInfo.theme
-})
+  class: "login" + store.state.systemInfo.theme,
+});
 interface FormState {
   username: string;
   password: string;
@@ -86,12 +88,17 @@ const refreshCaptcha = () => {
 // 检查是否应该直接登入
 const needCheckLoggedIn = route.query.s === undefined;
 if (needCheckLoggedIn) {
-  http.doesLoggedIn({ silent: true }).then((res: any) => {
-    // res为null代表请求未执行，因为遇到了customState不是wait
-    if (res) {
-      router.push(getHomePath(res.data.role));
-    }
-  }).catch(() => {});
+  http
+    .doesLoggedIn({ silent: true })
+    .then((res: any) => {
+      // res为null代表请求未执行，因为遇到了customState不是wait
+      if (res) {
+        router.push(getHomePath(res.data.role));
+      }
+    })
+    .catch(() => {
+      router.push(getHomePath(9));
+    });
 }
 
 // 检查是否需要显示验证码
@@ -106,14 +113,22 @@ http.doesNeedCaptcha({}).then((res: IBusinessResp | null) => {
 http.onlineUserInfo({}).then((res: IBusinessResp | null) => {
   // const {site_setting}=res.data
   onlineUserInfo.value = res!.data.online_info;
-  store.commit('setSystemInfo', res!.data.site_setting)
-  const site_setting=res!.data.site_setting
+  if (res!.data.site_setting) {
+    store.commit("setSystemInfo", res!.data.site_setting);
+  }
+  const site_setting = res!.data.site_setting;
   // site_setting.theme?loginInfo.src=loginBg[site_setting.theme]:''
 });
-watch(()=>{return store.state.systemInfo},(val:any)=>{
-  console.log(val)
-},{deep:true})
-const login = () => {
+watch(
+  () => {
+    return store.state.systemInfo;
+  },
+  (val: any) => {
+    console.log(val);
+  },
+  { deep: true }
+);
+const login = (repeat?: boolean) => {
   refForm.value
     .validate()
     .then(() => {
@@ -125,11 +140,19 @@ const login = () => {
       if (needCaptcha.value) {
         param["verifyCode"] = formState.captcha;
       }
+      if (repeat && repeat === true) {
+        param["force_login"] = true;
+      } else {
+        param["force_login"] = false;
+      }
       http
         .login({
           param: param,
+          silent: silentFn,
         })
         .then((res: IBusinessResp | null) => {
+          // againLogin()
+          // return
           lStorage.set("role", res!.data.role);
           lStorage.set("uid", res!.data.uid);
           lStorage.set("username", res!.data.username);
@@ -140,18 +163,27 @@ const login = () => {
             router.replace("/teacher");
           } else if (res!.data.role === 4) {
             router.replace("/student");
-          }else if (res!.data.role === 5) {
+          } else if (res!.data.role === 5) {
             router.replace("/teacher/teacherCourse");
+            getTeacherInfo();
           }
+          store.commit("saveTheme");
           submitLoading.value = false;
         })
         .catch((res: any) => {
           console.error("login failed: ", res);
+          if (res.data.unique_confirm && res.data.unique_confirm === true) {
+            againLogin();
+            return;
+          }
           if (res.data.need_verify) {
             needCaptcha.value = true;
             captchaUrl.value =
               "/api/yii/site/captcha?v=" + new Date().getTime();
           }
+          submitLoading.value = false;
+        })
+        .finally(() => {
           submitLoading.value = false;
         });
     })
@@ -159,9 +191,35 @@ const login = () => {
       console.error("login form error: ", error);
     });
 };
+function silentFn(res: IBusinessResp) {
+  if (res.data.unique_confirm && res.data.unique_confirm === true) {
+    return true;
+  } else {
+    return false;
+  }
+}
+const againLogin = () => {
+  submitLoading.value = false;
+  Modal.confirm({
+    title: "提示",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "该账号已在其他终端登录！是否使其下线？",
+    okText: "登录",
+    cancelText: "取消",
+    onOk() {
+      login(true);
+    },
+  });
+};
+// 获取教师信息接口
+const getTeacherInfo = () => {
+  http.getTeacherInfo().then((res: IBusinessResp | null) => {
+    lStorage.set("tuid", res!.data?.user.id);
+  });
+};
 </script>
 <template>
-<!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->
+  <!-- :style="v.url?`background-image: url(${v.url});`:''"  loginInfo.class  -->
   <div :class="['container', loginInfo.class]">
     <div class="online-info">
       <span class="online-title">当前在线人数：</span>
@@ -174,7 +232,7 @@ const login = () => {
       <div class="login-box">
         <div class="logo">
           <div :style="`background-image: url(${loginInfo.logo});`"></div>
-          <h1>欢迎登录{{loginInfo.name}}平台</h1>
+          <h1>欢迎登录{{ loginInfo.name }}</h1>
         </div>
         <div class="form">
           <a-form
@@ -246,16 +304,16 @@ const login = () => {
   display: flex;
   flex-direction: column;
   position: relative;
-  &.loginA{
+  &.loginA {
     background: linear-gradient(135deg, #1f227d 0%, #141c65 39%, #00113b);
-    .banner{
+    .banner {
       width: 871px;
       height: 100%;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
     }
-    .login-button{
+    .login-button {
       background: linear-gradient(
         90deg,
         #f5c05b,
@@ -265,29 +323,29 @@ const login = () => {
       );
     }
   }
-  &.loginB{
-    background:  url(src/assets/images/login/bgB.jpg) no-repeat center center;
+  &.loginB {
+    background: url(src/assets/images/login/bgB.jpg) no-repeat center center;
     background-size: 100% 100%;
-    .banner{
+    .banner {
       width: 1064px;
       display: flex;
       flex-direction: column;
       justify-content: center;
     }
-    .login-button{
-      background: linear-gradient(90deg,#04eacc, #04bbcc);
+    .login-button {
+      background: linear-gradient(90deg, #04eacc, #04bbcc);
     }
   }
-  &.loginC{
-    background:  linear-gradient(46deg,#ffd249 1%, #feb849 1%, #feed9a 100%);;
-    .banner{
+  &.loginC {
+    background: linear-gradient(46deg, #ffd249 1%, #feb849 1%, #feed9a 100%);
+    .banner {
       width: 1064px;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
     }
-    .login-button{
-      background: linear-gradient(90deg,#f16624, #ffb849 62%, #ffe749);
+    .login-button {
+      background: linear-gradient(90deg, #f16624, #ffb849 62%, #ffe749);
     }
   }
 
@@ -329,7 +387,7 @@ const login = () => {
         display: flex;
         flex-direction: column;
         align-items: center;
-        div{
+        div {
           width: 70px;
           height: 74px;
           background-size: 100% 100%;

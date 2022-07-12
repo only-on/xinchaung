@@ -29,7 +29,7 @@
         <span class="delet pointer" v-if="list.is_del" @click="deleteReply(list.id, list.pid, list.forum_id)">删除</span>
       </div>
       <div class="reply-box" v-if="isReply">
-        <a-input v-model:value="replyContent" :placeholder="'回复 '+ list.user_profile?.name" />
+        <a-input :maxlength="500" v-model:value="replyContent" :placeholder="'回复 '+ list.user_profile?.name" />
         <span class="pointer" @click="submitReply(list)">回应</span>
         <!-- <a-button type="primary">回应</a-button> -->
       </div>
@@ -99,6 +99,10 @@ export default defineComponent({
 
     let replyList = reactive<IReplyList[]>([])
     function submitReply(list: {id: number, forum_id: number}) {
+      if (!replyContent.value) {
+        message.warn('请输入评论内容')
+        return
+      }
       let param = {
         content: replyContent.value,
         id: list.forum_id,
@@ -119,7 +123,7 @@ export default defineComponent({
     const loading = ref(false)
     const totalReply = ref(0)
     function getReplyList(id: number, pid: number) {
-      replyList.length = 0
+      page.value === 1 ? replyList.length = 0 : ''
       loading.value = true
       let param = {
         page: page.value,
@@ -130,6 +134,7 @@ export default defineComponent({
         const { list, page } = res.data
         totalReply.value = page.totalCount
         replyList.push(...list.data)
+        props.list.second_reply_number_count = page.totalCount
       })
     }
 
@@ -140,7 +145,8 @@ export default defineComponent({
       viewReply.value = !viewReply.value
       replyList.length = 0
       page.value = 1
-      viewReply.value ? getReplyList(list.forum_id,  list.id) : ''
+      // viewReply.value ? getReplyList(list.forum_id,  list.id) : ''
+      getReplyList(list.forum_id,  list.id)
     }
     // 加载更多
     const clickLoadingMore = (list: {id: number, forum_id: number}) => {
@@ -160,13 +166,13 @@ export default defineComponent({
         onOk(){
           http.deleteReply({urlParams: {id}}).then((res:IBusinessResp)=>{
             message.success('删除成功')
-            if (pid) {
+            // if (pid) {
               // emit("deleteSecondReply", forum_id, pid)
               // deleteSecondReply(forum_id, pid)
-              deleteFirstReply(forum_id)
-            } else {
-              deleteFirstReply(forum_id)
-            }
+              deleteFirstReply(forum_id, pid)
+            // } else {
+            //   deleteFirstReply(forum_id, pid)
+            // }
           })
         }
       });
@@ -233,9 +239,14 @@ export default defineComponent({
   padding-left: 30px;
   padding-bottom: 16px;
   border-bottom: 1px solid var(--lightgray-4);
+  
+  .ant-spin-nested-loading {
+    min-height: 80px!important;
+  }
   .reply-info {
     margin: 8px 0 12px;
     line-height: 19px;
+    word-break: break-all;
   }
   .reply-btn {
     line-height: 19px;
@@ -278,8 +289,5 @@ export default defineComponent({
       color: var(--black-65);
     }
   }
-}
-.ant-spin-nested-loading {
-  min-height: 80px;
 }
 </style>

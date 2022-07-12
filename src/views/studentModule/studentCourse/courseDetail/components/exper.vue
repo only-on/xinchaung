@@ -1,9 +1,25 @@
 <template>
+  <div class="Statistics">
+    <div class="item">
+      <span>共</span>
+      <span class="one mid">{{detailInfo && detailInfo.length}}</span>
+      <span>题</span>
+    </div>
+    <div class="item">
+      <span>总分</span>
+      <span class="one mid">{{origin_score}}</span>
+      <span>分</span>
+    </div>
+    <div class="item">
+      <span>得分</span>
+      <span class="two mid">{{student_score}}</span>
+      <span>分</span>
+    </div>
+  </div>
   <div class="exper">
     <div class="test" v-for="(item, index) in detailInfo" :key="index.toString()">
-      <div :class="item.type_id==2?'title':'redtitlt'">
-        <!-- {{ Number(index) + 1 }}、 -->
-        <span>{{ item.question }}（）</span>
+      <div :class="item.answer_is_right?'title':'redtitlt'">
+        <span>{{ item.question }}</span>
         <span class="score"
           >
           <!-- {{ item.student_score }} -->
@@ -95,7 +111,10 @@
         </div>
         <div class="keywordColor">
           <span class="label">关键词:</span>
-          <span v-for="(it,i) in item?.keywords">{{it?.keyword}}</span>
+          <span v-for="(it,i) in item?.keywords" :key="i">
+            {{it?.keyword}}
+            <span v-show="i !== (item?.keywords && item?.keywords.length - 1)">,</span>
+          </span>
         </div>
       </div>
     </div>
@@ -106,6 +125,8 @@ import { defineComponent, reactive, toRefs, watch,ref } from "vue";
 interface Istate {
   data: any[];
   answerClass: string;
+  origin_score:number;
+  student_score:number;
 }
 export default defineComponent({
   name: "exper",
@@ -124,6 +145,8 @@ export default defineComponent({
         },
       ],
       answerClass: "",
+      origin_score:0,
+      student_score:0,
     });
     const methods = {
       ifAnswerTrue(item: any, it: any,index:any) {
@@ -161,14 +184,25 @@ export default defineComponent({
           });
          item.options.forEach((it:any,i:any)=>{
            if(allanswer.indexOf(it.id) !== -1){
-            rightIndex.push(it.option)
+            rightIndex.push(optionItemName[i])
            }
          })
         }
-        console.log(allanswer,rightIndex)
+        // console.log(allanswer,rightIndex)
         return rightIndex.join(',')
       }
     };
+    console.log(props.detailInfo)
+    watch(()=>{return props.detailInfo},(val:any)=>{
+      if(val.length){
+        state.origin_score=0
+        state.student_score=0
+        val.forEach((v:any)=>{
+          state.origin_score+=Number(v.origin_score)
+          state.student_score+=Number(v.student_score)
+        })
+      }
+    },{immediate:true,deep:true})
     return { ...toRefs(state), optionItemName, ...methods};
   },
 });
@@ -186,13 +220,11 @@ export default defineComponent({
   padding: 20px;
   .title {
     background-color:#DDF9F3;
-    height: 36px;
     line-height: 36px;
     padding-left: 10px;
   }
   .redtitlt{
     background-color:#FFF3F3;
-    height: 36px;
     line-height: 36px;
     padding-left: 10px;
   }
@@ -234,4 +266,21 @@ export default defineComponent({
     margin-right: 10px;
     margin-left: 10px;
   }
+.Statistics{
+  display: flex;
+  padding: 0 20px;
+  .item{
+    margin-right: 16px;
+    color: var(--black-45);
+    .mid{
+      padding:0 6px
+    }
+    .one{
+      color:var(--primary-color)
+    }
+    .two{
+      color: var(--brightBtn);
+    }
+  }
+}  
 </style>

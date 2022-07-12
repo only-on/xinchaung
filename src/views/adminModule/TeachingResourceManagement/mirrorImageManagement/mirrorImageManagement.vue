@@ -42,7 +42,7 @@
         <div class="flexCenter proportion">
           <div class="left flexCenter">
             <span class="left1">{{analysisObj.diskRatio}}%</span>
-            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}</span>
+            <span class="left2">{{analysisObj.imageUsedDisk}}/{{analysisObj.allTotalDisk}}G</span>
           </div>
           <div class="right">
             <a-progress type="circle" :percent="analysisObj.diskRatio" :strokeColor="'#9872EB'" :strokeWidth="12">
@@ -85,11 +85,23 @@
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <a-config-provider>
             <a-table :columns="columns" :data-source="courseList"
-              :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
-              :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
+            :pagination="
+              totalCount > 10
+                ? {
+                    showSizeChanger:true,
+                    total: totalCount, 
+                    pageSize: searchInfo.limit,
+                    current: searchInfo.page, 
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+              "
+              :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,getCheckboxProps:getCheckboxProps}"
               rowKey="id">
-              <template #imageTags="{ record }">
-                <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
+              <template #action="{record}">
+                <a-button type="link" @click="dleDelete(record)" :disabled="!record.imageCanDelete">删除</a-button>
+                <!-- <span class="action detail" @click="dleDelete(record)">删除</span> -->
               </template>
             </a-table>
             <template #renderEmpty>
@@ -129,6 +141,8 @@ const columns= [
           title: "镜像所属",
           dataIndex: "imageGroup",
           align: "center",
+          width:160,
+          ellipsis: true,
         },
         {
           title: "镜像类型",
@@ -142,10 +156,11 @@ const columns= [
         },
         {
           title: "镜像标签",
-          dataIndex: "imageTags",
+          dataIndex: "imageTagsText",
           align: "center",
+          width:160,
           ellipsis: true,
-          slots: { customRender: "imageTags" },
+          // slots: { customRender: "imageTags" },
         },
         {
           title: "镜像描述",
@@ -153,6 +168,11 @@ const columns= [
           align: "center",
           ellipsis: true,
         },
+        {
+          title: '操作',
+          key: 'action',
+          slots: { customRender: 'action' },
+        }
       ]
 var searchInfo:any=reactive({
   imageName:'',
@@ -182,6 +202,7 @@ const initData = () => {
     if (!res) return
     const { list, page,analysis }  = res.data
     list.forEach((v: any) => {
+      v.imageTagsText=v.imageTags?.length?v.imageTags.join(' / '):''       // .imageTags.join(' / ')
       // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
     });
     Object.assign(analysisObj,analysis)
@@ -192,6 +213,13 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.limit=pageSize
+  searchInfo.selectedRowKeys=[]
+  initData()
+}
+const onShowSizeChange=(page: any, pageSize: any)=> {
+  searchInfo.page=1
+  searchInfo.limit=pageSize
   searchInfo.selectedRowKeys=[]
   initData()
 }
@@ -201,9 +229,29 @@ const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
   // state.selectedRows = selectedRows; // 弹窗当前页已选 list
   console.log(searchInfo.selectedRowKeys);
 }
+const getCheckboxProps=(record: any) => ({
+    disabled: record.imageCanDelete === false, // Column configuration not to be checked
+    name: record.name,
+  })
+// disabled: record.imageCanDelete === true
 const courseStatechange=(val: any)=> {
   searchInfo.page=1
   initData()
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.imageBatchDelete({param:{image_ids:[item.id]}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   // return
@@ -368,6 +416,10 @@ onMounted(() => {
     }
     .tableContent{
       margin-top: 2rem;
+      .action{
+        color: var(--primary-color);
+        cursor: pointer;
+      }
     }
 
   }

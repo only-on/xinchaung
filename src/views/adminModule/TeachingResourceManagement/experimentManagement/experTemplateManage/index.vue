@@ -18,7 +18,8 @@
                 <a-button type="primary" @click="batchDelete">批量删除</a-button>
             </div>
     </div>
-    <a-table
+    <a-config-provider>
+      <a-table
       :columns="columns"
       :data-source="listdata"
       rowKey='id'
@@ -26,10 +27,10 @@
         total > 10
           ? {
               hideOnSinglePage: false,
-              showSizeChanger:false,
+              showSizeChanger:true,
               total:total,
               current: params.page,
-              pageSize: params.limit,
+              pageSize: params.pageSize,
               onChange: onChange,
               onShowSizeChange: onShowSizeChange,
             }
@@ -42,31 +43,40 @@
       }"
     >
     <template #templateName='{record}'>
-      <div class="detail" @click="detail(record.id,record.templateType,record.pdfPath)">
+      <div class="detail" :title="record.templateName" @click="detail(record.id,record.templateType,record.pdfPath)">
         {{record.templateName}}
       </div>
     </template>
         <template #action="{record}">
-            <span class="action action-delete" @click="dleDelete(record)">删除</span>
-            <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
+            <div class="flexCenter">
+              <a-button type="link" @click="dleDelete(record)">删除</a-button>
+              <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
+            </div>
+            <!-- <span class="action action-delete" @click="dleDelete(record)">删除</span> -->
+            <!-- <span @click="downLoad(record)" v-if="record.templateType=='离线'" class="action action-download">
                 下载
-            </span>
+            </span> -->
         </template>
     </a-table>
+      <template #renderEmpty>
+          <div><Empty :height='80' :text='ifSearch?"抱歉，未搜到相关数据！":"抱歉，暂无数据！"' type="tableEmpty" /></div>
+      </template>
+    </a-config-provider>
      <!-- 在线制作 预览实验模板 -->
     <a-modal :destroyOnClose="true" v-model:visible="template.templateVisble" :title="template.reportTitle" class="report" :width="1080" @cancel="cancelTemplate(1)">
       <div class="pdfBox" v-if="template.pdfUrl">
-        <PdfVue :url="template.pdfUrl" />
+        <PdfVue style="height:550px" :url="template.pdfUrl" />
       </div>
       <viewTemplateShow v-else :id="template.Templateid" />
       <template #footer>
-        <span></span>
+        <span class='closeBtn' @click="cancelTemplate(1)">关闭</span>
       </template>
     </a-modal>
     </div>
 </template>
 <script lang="ts" setup>
-    import { ref, toRefs, onMounted,inject, reactive} from "vue";
+import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
+    import { ref, toRefs, onMounted,inject, reactive,createVNode} from "vue";
     import PdfVue from "src/components/pdf/pdf.vue";
     import { downloadUrl } from "src/utils/download";
     import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
@@ -82,6 +92,7 @@
     const ForumSearch:any=reactive({
         name:''
     })
+    const ifSearch:any=ref(false)
     interface Props {
       listdata: any[]; 
       total:any;
@@ -122,29 +133,40 @@
         },
         {
           title: '操作',
-          width:150,
+          // width:120,
           key: 'action',
+          align:'center',
           slots: { customRender: 'action' },
         }
       ];
     const data:any=ref([]) 
     const tableData:any=reactive({})
     const params:any=reactive({
-      page:1
+      page:1,
+      pageSize:10
     })
         const emit = defineEmits<{
       (e: "updateData", val: any): void;
     }>();
     function search(){
-      emit('updateData',{expername:ForumSearch.name,page:1})
+      if(ForumSearch.name){
+          ifSearch.value=true
+        }else{
+          ifSearch.value=false
+        }
+        params.page=1
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
     }
     function onChange(page:any,size:any){
-        params.page=page
-      emit('updateData',{expername:ForumSearch.name,page:params.page})
+      params.page=page
+      params.pageSize=size
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
         
     }
-    function onShowSizeChange(){
-
+    function onShowSizeChange(page:any,size:any){
+      params.page=1
+      params.pageSize=size
+      emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
     }
     function onSelectChange(selectedRowKeys:any, selectedRows:any){
       tableData.selectedRowKeys=selectedRowKeys
@@ -161,8 +183,10 @@ function detail(id:any,type:any,path:any){
   template.templateVisble=true
   if(type=='在线'){
     template.Templateid=id
+    template.reportTitle='在线报告模版'
   }else{
     template.pdfUrl=path
+    template.reportTitle='离线报告模版'
   }
 }
 function downLoad(item:any){
@@ -173,6 +197,7 @@ function downLoad(item:any){
   function dleDelete(item: any){
         Modal.confirm({
           title: "提示",
+          icon: createVNode(ExclamationCircleOutlined),
           content: "确定删除实验报告模板?删除后不可恢复",
           okText: "确定",
           cancelText: "取消",
@@ -180,7 +205,7 @@ function downLoad(item:any){
             http1.deleteTemplate({urlParams: {id: item.id}}).then((res:any) => {
               message.success(`删除成功！`)
               // getTemplateList()
-              emit('updateData',{expername:ForumSearch.name,page:params.page})
+              emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
             })
           },
         });
@@ -192,13 +217,14 @@ function batchDelete(){
       }
       Modal.confirm({
         title: "提示",
+        icon: createVNode(ExclamationCircleOutlined),
         content: "确定要删除吗？",
         okText: "确定",
         cancelText: "取消",
         onOk: () => {
           http.experTemplateDelete({param:{template_ids:tableData.selectedRowKeys}}).then((res:any)=>{
             if(res.code){
-              emit('updateData',{expername:ForumSearch.name,page:params.page})
+              emit('updateData',{expername:ForumSearch.name,page:params.page,pageSize:params.pageSize})
               tableData.selectedRowKeys=[]
             }
           })
@@ -206,7 +232,7 @@ function batchDelete(){
       })
     }
 const cancelTemplate = (val: number) => {
-
+  template.templateVisble=false
 }
 </script>
 <style lang="less" scoped>
@@ -239,6 +265,9 @@ const cancelTemplate = (val: number) => {
  }
  .detail{
    color: var(--primary-color);
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
  }
  .detail:hover{
    cursor: pointer;
@@ -251,4 +280,22 @@ const cancelTemplate = (val: number) => {
    background: var(--brightBtn);
    border-color: var(--brightBtn);
  }
+ .closeBtn{
+   display: inline-block;
+   width:75px;
+   height: 34px;
+   border-radius:20px;
+   background-color: #EEEEEE;
+   line-height: 34px;
+   margin-top: 15px;
+ }
+ .closeBtn:hover{
+   cursor: pointer;
+ }
+//  .pdfBox{
+//    min-height: 750px;
+//    >div{
+//      height: 100%;
+//    }
+//  }
 </style>

@@ -47,14 +47,23 @@ const Detail=(val:any)=>{
     message.success('该实验未授权，暂不能查看！')
     return
   }
-  router.push({
+  const { href } = router.resolve({
     path:'/teacher/teacherExperimentResourcePool/experimentDetail',
-    query:{
+    query: {
       id:val.id,
       currentTab:0,
       type: 'recommend'
-    }
-  })
+    },
+  });
+  window.open(href, "_blank");
+  // router.push({
+  //   path:'/teacher/teacherExperimentResourcePool/experimentDetail',
+  //   query:{
+  //     id:val.id,
+  //     currentTab:0,
+  //     type: 'recommend'
+  //   }
+  // })
 }
 onMounted(() => {
   courseExperimentRecommend()

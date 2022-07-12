@@ -1,12 +1,23 @@
 import RouterViews from "src/components/RouterView.vue";
 import Layout from "src/views/common/Layout.vue";
 import { LocationQuery, RouteParams } from 'vue-router';
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+// const role = Number(lStorage.get("role"));
 export default {
   path: "coursePlan",
   component: Layout,
   name:'coursePlan',
   meta: {
-    title: "排课",
+    // title: "教学过程",
+    title: (params?: RouteParams, query?: RouteParams) => {
+      const role = Number(lStorage.get("role"));
+      const dataDetailMap = {
+          '3': '教学过程',
+          '2': '资源预约',
+      }
+      return dataDetailMap[role.toString()] || dataDetailMap[3]
+    },
     authCode: "coursePlan",
   },
   children: [
@@ -24,7 +35,7 @@ export default {
       component: () => import("src/views/teacherModule/teachCourse/coursePlan/environmentalManagement.vue"),
       meta: {
         icon: "",
-        title: "环境管理",
+        title: "课程安排",
         authCode: "environmental",
       },
     },
@@ -34,7 +45,7 @@ export default {
       component: () => import("src/views/teacherModule/teachCourse/coursePlan/createCoursePlan.vue"),
       meta: {
         icon: "",
-        title: "创建排课",
+        title: "课程安排", 
         authCode: "createCoursePlan",
       },
     },

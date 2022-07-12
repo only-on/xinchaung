@@ -18,6 +18,7 @@
                   ? {
                       hideOnSinglePage: false,
                       total: total,
+                      showSizeChanger:true,
                       current: forumSearch.page,
                       pageSize: forumSearch.pageSize,
                       onChange: pageChange,
@@ -31,7 +32,7 @@
               }"
             >
               <template #title='{record}'>
-                <div class="title pointer single_ellipsis">
+                <div class="title pointer single_ellipsis" :title="record?.title">
                   <span class='delete' @click="detail(record.id)">{{record?.title}}</span>
                 </div>
               </template>
@@ -173,7 +174,11 @@ function pageChange(page: number) {
   forumSearch.page = page;
   initData();
 }
-function onShowSizeChange(current: any, size: any) {}
+function onShowSizeChange(current: any, size: any) {
+  forumSearch.page = 1;
+  forumSearch.pageSize=size;
+  initData();
+}
 const tableSelect = reactive({
   selectedRowKeys: []
 })
@@ -221,10 +226,10 @@ const batchDelete = () => {
     okText: '确认',
     cancelText: '取消',
     onOk(){
-      // http.deleteForum({urlParams: {id}}).then((res:IBusinessResp)=>{
-      //   message.success('删除成功')
-      //   initData()
-      // })
+      http.batchDeleteForum({param: {forum_ids: tableSelect.selectedRowKeys}}).then((res:IBusinessResp)=>{
+        message.success('删除成功')
+        initData()
+      })
     }
   });
 }
@@ -235,7 +240,7 @@ onMounted(async() => {
     path: path,
     query: NewQuery,
   });
-  if (currentTab === '2') {
+  if (currentTab === '1') {
     initData();
   }
 });

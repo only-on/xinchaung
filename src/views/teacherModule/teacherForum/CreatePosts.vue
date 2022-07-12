@@ -16,7 +16,13 @@
           />
         </a-form-item>
         <div class="type">
-          <a-form-item label="帖子类型" name="type" v-if="role !== 2">
+          <a-form-item class="forum-label" label="添加标签" name="label">
+            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
+            <div class="label-list">
+              <LabelList :tag="formState.label_name" />
+            </div>
+          </a-form-item>
+          <a-form-item class="forum-type" label="帖子类型" name="type" v-if="role !== 2">
             <a-select
               v-model:value="formState.type"
               placeholder="请选择帖子类型"
@@ -24,12 +30,6 @@
               <a-select-option :value="item.name" v-for="item in tagList" :key="item.name">{{item.name}}</a-select-option>
               <!-- <a-select-option value="2">分享</a-select-option> -->
             </a-select>
-          </a-form-item>
-          <a-form-item label="添加标签" name="label">
-            <!-- <span class="pointer add-btn"><i class="iconfont icon-tianjia"></i>添加标签</span> -->
-            <div class="label-list">
-              <LabelList :tag="formState.label_name" />
-            </div>
           </a-form-item>
         </div>
         <a-form-item name="content">
@@ -43,7 +43,7 @@
           </div>
         </a-form-item>
         <a-form-item>
-          <Submit @submit="onSubmit" @cancel="cancel"></Submit>
+          <Submit @submit="onSubmit" @cancel="cancel" :loading="loading"></Submit>
         </a-form-item>
       </a-form>
     </div>
@@ -158,6 +158,9 @@ function removeLabel(val: string) {
 
 const contentValidator = (rule: any, value: Delta) => {
   if (value.ops && value.ops.length) {
+    if (value.ops[0]&&JSON.stringify(value.ops[0].insert).length < 5) {
+      return Promise.reject("请输入帖子内容");
+    }
     return Promise.resolve();
   } else {
     return Promise.reject("请输入帖子内容");
@@ -185,6 +188,7 @@ const formState = reactive<IFormState>({
   },
   label_name: []
 })
+const loading = ref(false)
 const onSubmit = () => {
   // return
   formRef.value.validate().then(() => {
@@ -193,10 +197,12 @@ const onSubmit = () => {
       ...formState,
       content: JSON.stringify(formState.content),
     };
+    loading.value = true
     http
       .createForum({ param: { ...obj } })
       .then((res: IBusinessResp) => {
         message.success(editId ? "修改成功" : "发布成功");
+        loading.value = false
         router.go(-1);
       });
   });
@@ -243,11 +249,11 @@ const getTagsList = (param: any) => {
       display: flex;
       justify-content: space-between;
       .ant-form-item {
-        &:first-child {
+        &.forum-type {
           width: 206px;
-          margin-right: 80px;
         }
-        &:nth-child(2) {
+        &.forum-label {
+          margin-right: 80px;
           flex: 1;
           .add-btn {
             display: inline-block;

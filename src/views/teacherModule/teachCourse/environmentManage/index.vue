@@ -1,6 +1,6 @@
 <template>
   <div class="env-manage">
-    <div class="tree myChapter textScrollbar">
+    <div class="tree myChapter textScrollbar chartTerrLeft">
       <chapter-tree 
         :Environment="true"
         :courseId="Number(courseId)"
@@ -24,7 +24,7 @@
         </div>
       </div>
       <a-spin :spinning="loading" size="large" tip="Loading...">
-      <div class="env-lists" v-if="envList.length">
+      <div class="env-lists" >
         <div class="env-list" v-for="v in envList" :key="v.id">
           <card :list="v" @getList="getList" :currentExperiment="currentExperiment"></card>
         </div>
@@ -36,6 +36,7 @@
       <Empty v-if="!envList.length&&!loading" :type="EmptyType" />
       </a-spin>
       <a-pagination
+        v-if="envList.length"
         v-model:current="searchInfo.page"
         :pageSize="searchInfo.limit"
         :total="searchInfo.total"
@@ -50,12 +51,12 @@
     :ok-button-props="{ disabled: false }"
     :cancel-button-props="{ disabled: false }"
     @ok="handleOk"
-    @Cancel="visible = false"
+    @Cancel="visible = false;openEnvNum=''"
     cancel-text="取消"
     ok-text="确定"
     :width="400"
   >
-    <a-input-number v-model:value="openEnvNum" :max="limit" :min="1"  allow-clear autofocus />
+    <a-input-number v-model:value="openEnvNum" :max="limit" :min="0"  allow-clear autofocus />
     <p class="prompt">*最多开启{{limit}}套环境</p>
   </a-modal>
 </template>
@@ -93,7 +94,7 @@ let timer: NodeJS.Timer | null = null;
 const searchInfo: any = reactive({
   total: 0,
   page: 1,
-  limit: 4,
+  limit: 6,
   keyword: '',
   taskId: 0,
   type: 'course'
@@ -113,17 +114,24 @@ const EmptyType:any=computed(()=>{
 
 // 查询
 const onSearch = () => {
+  searchInfo.page = 1
   getList();
 }
 
+let sign = false    // 判断当前页有没有操作的虚机
+// type：虚机的状态 i:操作的虚机信息
 function getList(type?: any, i?: any) {
+  sign = false
   clearTimeout(Number(timer));
   envList.length = 0;
   loading.value = true;
   // console.log(searchInfo, "searchInfo");
   http.getCourseEnvirment({ param: {...searchInfo} }).then((res: IBusinessResp) => {
     loading.value = false;
-    let { list, page } = res.data;
+    let { list, page } = res?.data;
+    if(!list || !list.length){
+        return
+    }
     envList.push(...list);
     // console.log("envList", envList);
     searchInfo.page = page.currentPage
@@ -140,6 +148,7 @@ function getList(type?: any, i?: any) {
         if (v.uuid === i.stack_id&&type) {
           v.vms?.vms?.forEach((vv: any) => {
             if (vv.uuid === i.uuid) {
+              sign = true
               // status: "ACTIVE" status: "SHUTOFF"
               if (type === 'closeVm') {
                 vv.status === "SHUTOFF" ? isCorrect = true : ''
@@ -152,7 +161,7 @@ function getList(type?: any, i?: any) {
       }) : ''
       if (isCorrect) {
         // message.success({ content: "请求成功!", duration: 2 });
-      } else {
+      } else if (i&&sign || !i) {
         timer = setTimeout(() => {
           getList(type, i);
         }, 1500);
@@ -176,7 +185,7 @@ const selectExperiment = (val: any) => {
 
 onMounted(() => {
   // getList()
-  getLimit();
+  // getLimit();
   // let timer = setInterval(() => {
   //   clearInterval(timer)
   //   getLimit()
@@ -188,28 +197,37 @@ onUnmounted(() => {
 })
 
 // 开启实验环境
-const openEnvNum = ref()
+const openEnvNum: any = ref('')
 const limit = ref(0);
+const totalLimit = ref(0);
 const visible = ref(false)
 function getLimit() {
-  http.maxLimit().then((res: IBusinessResp) => {
-    limit.value = res.data.limit;
-    // limit.value = 10
-  });
+  return new Promise((resolve) => {
+    http.maxLimit().then((res: IBusinessResp) => {
+      limit.value = res.data.limit;
+      totalLimit.value = res.data.total_limit
+      resolve(1)
+    });
+  })
 }
-function openEnv() {
+async function openEnv() {
   // console.log(currentExperiment)
-  if (currentExperiment.is_high) {
-    message.warning(`该${name}为高配${name}，无法预启动${name}环境!`);
-    return;
-  }
+  // if (currentExperiment.is_high) {
+  //   message.warning(`该实验为高配实验，无法预启动实验环境!`);
+  //   return;
+  // }
+  await getLimit()
   if (!limit.value) {
-    message.warning('授权人数为0，无法开启!');
+    message.warning(`开启环境已达授权数量(${totalLimit.value})上限!`);
     return;
   } 
   visible.value = true
 }
 function handleOk(num: number) {
+  if (!openEnvNum.value || openEnvNum.value==null) {
+    message.warning('请输入开启数量！');
+    return
+  }
   const limitParams = {
     opType: "precreate", // 预创建
     type: "course", // 学习类别：course:课程实验；train:实训
@@ -221,7 +239,7 @@ function handleOk(num: number) {
     if (res && res.status) {
       visible.value = false
       getList();
-      openEnvNum.value = 0
+      openEnvNum.value = ''
       // message.success({ content: "请求成功!", duration: 2 });
     }
   });
@@ -233,23 +251,24 @@ function handleOk(num: number) {
   border-radius: 10px;
   display: flex;
   .tree {
-    width: 470px;
-    height: 714px;
-    padding: 24px;
+    // width: 350px;
+    // height: 714px;
     margin-right: 16px;
-    background-color: var(--white-100);
+    padding-top: 18px;
+    // background-color: var(--white-100);
   }
   .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
-        // padding-right: 10px;
-      }
+    // padding:0 16px;
+    // min-height:700px;
+    // max-height: 850px;
+    // overflow: auto;
+    // padding-right: 10px;
+  }
   .content {
     flex: 1;
     padding: 24px;
     background-color: var(--white-100);
+    height: 100%;
     .top-box {
       display: flex;
       justify-content: space-between;
@@ -262,18 +281,19 @@ function handleOk(num: number) {
     }
     .env-lists {
       // height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
+      // display: flex;
+      // flex-wrap: wrap;
+      // justify-content: space-between;
       .env-list {
-        // display: inline-block;
-        width: 320px;
+        display: inline-block;
+        width: 245px;
         height: 240px;
-        // margin-right: 24px;
+        margin-right: 24px;
         background: var(--brightBtn-14);
         border-radius: 4px;
         margin-bottom: 24px;
-        &:nth-child(2n) {
+        vertical-align: middle;
+        &:nth-child(3n) {
           margin-right: 0;
         }
       }

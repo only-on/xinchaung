@@ -7,7 +7,7 @@
       </div>-->
       <div class="selected">
         <span class="iconfont icon-zuojiantou pointer" @click="back"></span>
-        <span class="name">{{ baseInfo?.base_info?.name }}</span>
+        <span class="name single_ellipsis" :title="baseInfo?.base_info?.name">{{ baseInfo?.base_info?.name }}</span>
       </div>
       <div class="class-test pointer" @click="openQuizModal" v-if="roleArry.includes('classTest')">
         <span>随堂测试</span>
@@ -29,7 +29,7 @@
         :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('switchVm')"
       >
-        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm">
+        <a-select class="ip-select" v-model:value="currentVmIndex" @change="switchVm" v-if="vmsInfo.vms?.length">
           <a-select-option
             v-for="(item, index) in vmsInfo.vms"
             :key="index"
@@ -44,7 +44,6 @@
       </div>
       <div
         class="delayed"
-        :class="loading ? 'none-event' : ''"
         v-if="roleArry.includes('delayed')"
       >
         <span>
@@ -54,7 +53,7 @@
       </div>
       <div
         class="vnc-change pointer"
-        :class="loading ? 'none-event' : ''"
+        :class="loading || !vmStartStatus ? 'none-event' : ''"
         @click="showChange"
         v-if="baseInfo?.base_info?.is_webssh === 1 && roleArry.includes('switchSSH')"
       >
@@ -91,37 +90,90 @@
     >
       <div class="vm-operate">
         <ul>
-          <template v-for="(list, index) in toolList" :key="index">
+          <!-- <template v-for="(list, index) in toolList" :key="index"> -->
             <li
               class="pointer"
-              @click="list.function"
-              v-if="list.key == 'closeOrStart'"
-              :class="roleArry.includes(list.key as any)?'':'none-event'"
+              @click="fullScreen"
+              :class="roleArry.includes('full')?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
+              <span class="iconfont icon-quanping"></span>
+              <span>开启 / 全屏</span>
+            </li>
+            <li
+              class="pointer"
+              @click="saveKvm"
+              :class="roleArry.includes('save')?'':'none-event'"
+            >
+              <span class="iconfont icon-baocun"></span>
+              <span>保存进度</span>
+            </li>
+            <li
+              class="pointer"
+              @click="colseOrStart"
+              :class="roleArry.includes('closeOrStart')?'':'none-event'"
+            >
+              <span class="iconfont icon-guanbi1"></span>
               <span v-if="vmsInfo && vmsInfo?.vms && vmsInfo?.vms.length">{{
-                vmsInfo?.vms[currentVmIndex].status == "ACTIVE" ? "关机" : "开机"
+                vmStartStatus ? "关机" : "开机"
               }}</span>
             </li>
             <li
               class="pointer"
-              @click="list.function"
-              v-if="list.key == 'record'"
-              :class="roleArry.includes(list.key as any)&&currentInterface === 'vnc'?'':'none-event'"
+              @click="resetVm"
+              :class="roleArry.includes('reset')?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
+              <span class="iconfont icon-zhongzhi"></span>
+              <span>重置</span>
+            </li>
+            <li
+              class="pointer"
+              @click="upload"
+              :class="roleArry.includes('upload')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-shangchuan"></span>
+              <span>上传文件</span>
+            </li>
+            <li
+              class="pointer"
+              @click="download"
+              :class="roleArry.includes('down')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-xiazai"></span>
+              <span>下载文件</span>
+            </li>
+            <li
+              class="pointer"
+              @click="copyPaste"
+              :class="roleArry.includes('copy')&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-fuzhiniantie"></span>
+              <span>选中粘贴</span>
+            </li>
+            <li
+              class="pointer"
+              @click="startEndRecord"
+              :class="roleArry.includes('record')&&currentInterface === 'vnc'&&!vncLoading&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-kaishijieshuluzhi"></span>
               <span> {{ isScreenRecording ? "结束" : "开始" }}录屏 </span>
             </li>
             <li
-              v-else-if="list.name && !['record', 'closeOrStart'].includes(list.key)"
               class="pointer"
-              @click="list.function"
-              :class="roleArry.includes(list.key as any)?'':'none-event'"
+              @click="shareDesktop"
+              :class="roleArry.includes('share')&&vmStartStatus?'':'none-event'"
             >
-              <span class="iconfont" :class="list.icon"></span>
-              <span>{{ list.name }}</span>
+              <span class="iconfont icon-gongxiangzhuomian"></span>
+              <span>桌面共享</span>
             </li>
-          </template>
+            <li
+              class="pointer"
+              @click="remoteAssist"
+              :class="roleArry.includes('help')&&vmStartStatus?'':'none-event'"
+            >
+              <span class="iconfont icon-yuanchengxiezhu"></span>
+              <span>请求老师远程协助</span>
+            </li>
+          <!-- </template> -->
         </ul>
       </div>
       <div class="vm-info">
@@ -253,7 +305,7 @@
     </div>
     <template #footer>
       <div class="btns">
-        <a-button @click="finishTest">结束</a-button>
+        <a-button @click="finishTest" :type="delayNum < 5?'default':'primary'">结束</a-button>
         <a-button type="primary" v-if="delayNum < 5" @click="delayedTime">延时</a-button>
       </div>
     </template>
@@ -311,7 +363,7 @@
       <template v-if="[1, 2].includes(currentShowType)">
         <div>
           <div v-if="currentShowType == 2" class="static-box">
-            <span>共<i>{{oldQuizPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
+            <span>共<i>{{answerPaperList.length}}</i>题</span><span>总分<i>{{totalPoints}}</i>分</span
             ><span>得分<i class="goal">{{goalNum}}</i>分</span>
           </div>
           <div v-for="item in answerPaperList" :key="item.id">
@@ -420,10 +472,10 @@
       </p>
       <p class="ant-upload-text">点击上传图标，选择要上传的文件或将文件拖拽到此</p>
       <p class="ant-upload-hint">
-        (单个文件最味限制为20MB)
+        (单个文件最大限制为20MB)
       </p>
       <p class="ant-upload-dir">
-        默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\simpleupload":"/simpleupload"}}
+        默认存放目录路径为{{currentVm?.classify === "Windows" ? "C:\\":"/simpleupload"}}
       </p>
     </a-upload-dragger>
     <div v-if="uploadFile.fileList.length" class="progress-box">
@@ -464,7 +516,7 @@
   >
 
     <img :src="loadingGif" alt="" srcset="" />
-    <span>正在结束实验...</span>
+    <span>正在{{isBack?'返回':'结束'}}中...</span>
   </a-modal>
 </template>
 
@@ -502,7 +554,7 @@ const router = useRouter();
 const vmApi = request.vmApi;
 const http=(request as any).common
 // const examApi = request.studentExam;
-const { type, opType, taskId, topoinst_id, topoinst_uuid } = route.query;
+const { type, opType, taskId, topoinst_id, topoinst_uuid, recommendType } = route.query;
 const experType = Number(route.query.experType);
 
 let role = storage.lStorage.get("role");
@@ -520,6 +572,7 @@ const isScreenRecording: any = inject("isScreenRecording", ref(false));
 const use_time: any = inject("use_time");
 const currentUuid: any = inject("currentUuid");
 const loading: any = inject("loading");
+const vncLoading: any = inject("vncLoading", ref(false));
 const isClose: any = inject("isClose");
 const initVnc: any = inject("initVnc");
 const novncEl: any = inject("novncEl");
@@ -529,6 +582,8 @@ const evaluateVisible: any = inject("evaluateVisible");
 const initEvaluate: any = inject("initEvaluate");
 const ws: any = inject("ws");
 const sshUrl: any = inject("sshUrl")
+const testSSHServe: any = inject("testSSHServe")
+const sshIsOpen: any = inject("sshIsOpen")
 
 // 本组件变量
 const progressVisible: Ref<boolean> = ref(false);
@@ -554,9 +609,9 @@ const visible = ref(false);
 
 // 随堂测试
 const quizVisiable = ref(false);
-const oldQuizPaperList: Ref<any> = ref([]); // 原始数据
-const quizPaperList: Ref<any> = ref([]);
-const currentQuizIndex: Ref<number> = ref(0);
+const oldQuizPaperList: Ref<any> = ref([]); // 不带答案的原始数据
+const quizPaperList: Ref<any> = ref([]);   // 没有答完的题
+const currentQuizIndex: Ref<number> = ref(0);  // 当前在答的题目的索引
 const currentShowType: Ref<any> = ref(0); // 0 未答完 1提交结果 2 随测记录
 const answerPaperList: Ref<any> = ref([]);  // 带答案的试题
 
@@ -572,7 +627,7 @@ const answerNum = computed(() => {
 
 const goalNum = computed(() => {
   let num = 0;
-  oldQuizPaperList.value.forEach((item: any) => {
+  answerPaperList.value.forEach((item: any) => {
     if (item.student_score) {
       num+=item.student_score;
     }
@@ -582,7 +637,7 @@ const goalNum = computed(() => {
 
 const totalPoints  = computed(() => {
   let num = 0;
-  oldQuizPaperList.value.forEach((item: any) => {
+  answerPaperList.value.forEach((item: any) => {
     if (item.score) {
       num+=item.score;
     }
@@ -593,9 +648,7 @@ const totalPoints  = computed(() => {
 const delayVisiable = ref(false);
 const delayTime = ref(60); // 实验时间结束，延时提示框倒计时
 let delayTimer: NodeJS.Timer | null = null; // 延时倒计时
-// 随堂测试
-const classTestTotal = ref<number>(5);
-const testNum = ref<number>(0);
+
 // 实验计时
 let experimentTime: Ref<any> = ref({
   h: 0,
@@ -684,14 +737,33 @@ const toolList = toolData;
 //   ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
 //   : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
 const roleArry: any = ref([])
-
+const isBack = ref(false)
 function back() {
+  let content = '确定结束演示吗？'
+  if (experType === 6 || experType === 7) {
+    content = '返回课程详情!'
+  } else if (recommendType) {
+    content = '返回实验详情，实验环境直接被删除!'
+  } else if (opType === 'prepare') {
+    const t = String(type)=='course'?'课程':'实验'
+    content = `返回${t}详情，实验环境直接被删除!`
+  } else if (route.query.isClose && opType === 'help') {
+    content = '关闭当前页签'
+  } else if (opType === 'continue'||opType === 'start') {
+    content = "返回课程详情，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！"
+  }
   Modal.confirm({
     title: "提示",
-    content: experType === 6 || experType === 7 ? "返回实验列表" : "返回实验列表，10分钟不继续实验虚机将关机，30分钟不继续实验虚机将删除！",
+    content: content,
     okText: "确定",
     cancelText: "取消",
     onOk: () => {
+      finishingExperimentVisible.value = true
+      isBack.value = true
+      // 课程详情-实验环境管理-开启实验环境（新打开的标签页）
+      if (opType === 'help' && route.query.isClose) {
+        window.close();
+      }
       if (experType === 6 || experType === 7) {
         router.go(historyLength - history.length - 1);
         return
@@ -699,7 +771,7 @@ function back() {
       if (ws && baseInfo.value?.current?.is_teamed == 1) {
         ws.value?.leave(topoinst_id + "_room");
       }
-      if (opType === "test" || opType === "prepare") {
+      if (opType === "test" || opType === "prepare" || recommendType) {
         endVmEnvirment();
       } else {
         // if (allInfo.value?.base_info?.task_type.type==4&&allInfo.value?.base_info?.task_type.programing_type==0) {
@@ -723,31 +795,45 @@ async function switchVm() {
   }
   currentVm.value = vmsInfo.value.vms[currentVmIndex.value];
   currentUuid.value = currentVm.value.uuid;
-  role === 4 ? await VmOperatesHandle('active') : ''  // 标记当前虚机
+  role === 4 && !recommendType ? await VmOperatesHandle('active') : ''  // 标记当前虚机
+  currentInterface.value = 'vnc'
+  vncLoading.value = true;
   if (currentVm.value.status == "SHUTOFF") {
     if (
       baseInfo.value &&
       baseInfo.value.base_info &&
-      baseInfo.value.base_info.is_webssh === 1
+      baseInfo.value.base_info.is_webssh === 1 
+      // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
     ) {
       currentInterface.value = "ssh";
+      sshIsOpen.value = false
     } else {
       if (currentInterface.value == "ssh") {
       } else {
         await VmOperatesHandle("startVm");
         vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-        loading.value = true;
+        vncLoading.value = true;
         settingCurrentVM();
         initVnc.value();
       }
     }
   } else {
-    loading.value = true;
-    isClose.value = false;
-    // await VmOperatesHandle("startVm");
-    vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-    settingCurrentVM();
-    initVnc.value();
+    if (
+      baseInfo.value &&
+      baseInfo.value.base_info &&
+      baseInfo.value.base_info.is_webssh === 1 
+      // && ((role == 4 && vmsInfo.value.vms[currentVmIndex.value].switch == 0) || role != 4)
+    ) {
+      currentInterface.value = "ssh";
+      sshIsOpen.value = true
+    } else {
+      vncLoading.value = true;
+      isClose.value = false;
+      // await VmOperatesHandle("startVm");
+      vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
+      settingCurrentVM();
+      initVnc.value();
+    }
   }
 }
 
@@ -778,20 +864,23 @@ function delayedTime() {
 async function showChange() {
   // currentvm.value=baseInfo.value.data.vms[vmCurrentIndex.value]
   let cureentIp = location.protocol+"//"+location.hostname
-  loading.value=false
+  // loading.value=false
+  vncLoading.value = true
   if (currentInterface.value==="vnc") {
     if (isScreenRecording.value) {
       await startEndRecord();
     }
     currentInterface.value="ssh"
     sshUrl.value=""
-    setTimeout(()=>{
-      sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
-      loading.vaue=true
-    },2000)
+    // setTimeout(()=>{
+      // sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+    //   loading.vaue=true
+    // },2000)
     return
   }
   if (currentInterface.value==="ssh") {
+    currentOption.value.wsUrl = ''
+    sshUrl.value=""
     currentInterface.value="vnc"
     let param={
       action:"switch2Vnc",
@@ -805,19 +894,6 @@ async function showChange() {
     vmApi.switchInterfaceApi({param:{...param}})
   }
 }
-
-watch(
-  () => currentInterface.value,
-  (val) => {
-    if (experType === 1 || experType === 2) {
-      const roleArry1 = ["recommend", "test", "help"].includes(opType as any)
-        ? (getMenuRole(role as any, val as any, opType as any) as any)
-        : (getMenuRole(role as any, val as any) as any);
-      roleArry.value = roleArry1
-    }
-  },
-  { deep: true, immediate: true }
-);
 
 // 结束实验
 let finishingExperimentVisible = ref(false)
@@ -886,7 +962,7 @@ function endVmEnvirment() {
       taskId: taskId,
     };
   }
-        
+  recommendType ? Object.assign(params, {recommendType}) : ''    
   setTimeout(() => {
     endExperiment(params).then((res: any) => {
       if (
@@ -908,7 +984,12 @@ function endVmEnvirment() {
         // })
       } else {
         // backTo(router, type, 3, routerQuery);
-        router.go(historyLength - history.length - 1);
+        // 课程详情-实验环境管理-开启实验环境（新打开的标签页）
+        if (opType === 'help' && route.query.isClose) {
+          window.close();
+        } else {
+          router.go(historyLength - history.length - 1);
+        }
       }
       // message.success("结束成功");
     }).catch((err) => {
@@ -939,41 +1020,70 @@ function fullScreen() {
 }
 // 关机
 function colseOrStart() {
+  // if (currentInterface.value==="ssh") {
+    // sshUrl.value=""
+    // setTimeout(()=>{
+      // sshUrl.value=getVmConnectSetting.SSHHOST+":2222/ssh/host/"+currentVm.value.host_ip+"/"+currentVm.value.ssh_port
+      // loading.vaue=true
+    // },2000)
+  // }
   if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
 
     closeVm();
   } else {
+    vncLoading.value = true
     startVm();
   }
 }
 
+
 // 关机
 async function closeVm() {
+  isClose.value = true;
+  vncLoading.value = false
+  sshIsOpen.value = false
   if (isScreenRecording.value) {
     await startEndRecord();
   }
   await VmOperatesHandle("closeVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "SHUTOFF";
-  isClose.value = true;
 
   message.success("操作成功");
 }
+const vmStartStatus = computed(() => {
+  return vmsInfo.value.vms&&vmsInfo.value.vms.length&&vmsInfo.value.vms[currentVmIndex.value].status === "ACTIVE"
+})
 // 开机
 async function startVm() {
+  vncLoading.value = true
+  isClose.value = false;
   await VmOperatesHandle("startVm");
   vmsInfo.value.vms[currentVmIndex.value].status = "ACTIVE";
-  isClose.value = false;
-  initVnc.value();
   message.success("操作成功");
+  if (baseInfo.value.base_info.is_webssh === 1) {
+    currentInterface.value = "ssh"
+    sshIsOpen.value = true
+    sshUrl.value=""
+    testSSHServe()
+    return
+  }
+  initVnc.value();
 }
 // 重置
 async function resetVm() {
+  vncLoading.value = true;
   if (isScreenRecording.value) {
     await startEndRecord();
   }
   await VmOperatesHandle("resetVm");
-  loading.value = true;
   message.success("操作成功");
+  if (baseInfo.value.base_info.is_webssh === 1) {
+    currentInterface.value = "ssh"
+    sshUrl.value=""
+    setTimeout(()=>{
+      testSSHServe()
+    },2000)
+  }
 }
 
 // 选中粘贴
@@ -991,9 +1101,9 @@ function saveKvm() {
     cancelText: "取消",
     onOk: () => {
       VmOperatesHandle("saveKvm").then((res: any) => {
-        if (res.data) {
+        if (res?.data) {
           if (baseInfo.value?.current?.is_teamed == 0) {
-            router.go(-1);
+            router.go(historyLength - history.length - 1)
             // backTo(router, type, 3, routerQuery);
           }
         } else {
@@ -1001,7 +1111,7 @@ function saveKvm() {
             course: [],
             train: [],
           };
-          if (isJsonString(res.msg)) {
+          if (isJsonString(res?.msg)) {
             progressVisible.value = true;
             let jsonData = JSON.parse(res.msg);
             saveExperimentData.value = jsonData;
@@ -1171,6 +1281,7 @@ function remoteAssist() {
 }
 
 // 轮询实验时间
+let isDelayModal: any = null
 function times() {
   if (timer) {
     clearInterval(timer);
@@ -1183,14 +1294,16 @@ function times() {
     } else {
       if (use_time.value === 600 && delayNum.value < 5 && isShowDelayBtn.value) {
         // clearInterval(Number(timer));
-        Modal.confirm({
+        isDelayModal = Modal.confirm({
           title: "是否延时？",
           okText: "确认",
           onOk: () => {
+            isDelayModal?.destroy();
             delayedTime();
           },
           cancelText: "取消",
           onCancel: () => {
+            isDelayModal?.destroy();
             times();
           },
         });
@@ -1205,15 +1318,18 @@ function times() {
           delayTime.value--;
           if (delayTime.value == 0) {
             clearInterval(Number(delayTimer));
+            delayVisiable.value = true
+            finishingExperimentVisible.value = true
             finishTest();
           }
         }, 1000);
         return
+      } else {
+        use_time.value--;
       }
       if (use_time.value < 0) {
         use_time.value = 0;
       }
-      use_time.value--;
     }
   }, 1000);
 }
@@ -1268,7 +1384,7 @@ function okProgress() {
     .then((res: any) => {
       if (res.data) {
         // backTo(router, type, 3, routerQuery);
-        router.go(-1);
+        router.go(historyLength - history.length - 1)
         progressVisible.value = false;
       }
     })
@@ -1300,8 +1416,8 @@ function okAssistance() {
     message.warn("请输入请求协助内容");
     return;
   }
-  if (assistanceQuestion.value.length >= 30) {
-    message.warn("请将你的问题用少于30个字来描述");
+  if (assistanceQuestion.value.length > 30) {
+    message.warn("请将你的问题用30个字以内来描述");
     return;
   }
   let param = {
@@ -1343,14 +1459,19 @@ function settingCurrentVM() {
 //
 // 打开随堂测试
 async function openQuizModal() {
+  if (!oldQuizPaperList.value.length) {
+    message.warn('暂时还没有随堂测试题目哦~')
+    return
+  }
+  await getQuestionList(false);
   if (oldQuizPaperList.value.length == answerNum.value) {
 
     // await getQuestionList(true);
     await getAnswerList()
-    quizPaperList.value=cloneDeep(oldQuizPaperList.value)
+    // quizPaperList.value=cloneDeep(oldQuizPaperList.value)
     currentShowType.value = 1;
   } else {
-    await getQuestionList(false);
+    // await getQuestionList(false);
     if(!quizPaperList.value?.length||(quizPaperList.value?.length&&quizPaperList.value?.length!==oldQuizPaperList.value?.length)){
         currentQuestionIds = [];
       let tempData: any[] = cloneDeep(oldQuizPaperList.value);
@@ -1366,8 +1487,8 @@ async function openQuizModal() {
       
     quizPaperList.value = tempData;
     currentQuizIndex.value = 0;
-    currentShowType.value = 0;
     }
+    currentShowType.value = 0;
   }
   quizVisiable.value = true;
 }
@@ -1397,8 +1518,14 @@ async function getAnswerList(needs_answer: boolean = false) {
     .getAnswerListApi({ param: param, urlParams: { content_id: taskId } })
     .then((res: any) => {
       if (!res) return
-      answerPaperList.value = res.data;
-      return res.data;
+      const arr: any = []
+      res.data.map((v: any) => {
+        if (v.student_answer) {
+          arr.push(v)
+        }
+      });
+      answerPaperList.value = arr
+      return answerPaperList.value;
     });
 }
 // 提交
@@ -1444,7 +1571,7 @@ function next() {
 // 实验随测记录
 function lookRecord() {
   currentShowType.value = 2;
-  quizPaperList.value = cloneDeep(oldQuizPaperList.value);
+  // quizPaperList.value = cloneDeep(oldQuizPaperList.value);
 }
 // 获取多选题答案
 function getChoiceAnswer(val: any) {
@@ -1478,8 +1605,8 @@ const delayNum = ref(0)
 // f
 watch(
   () => vmsInfo.value,
-  async(val) => {
-    if (val.vms?.length && role===4) {
+  async(newval, oldval) => {
+    if (newval.vms?.length && role===4 && !recommendType && !oldval.vms?.length) {
       await VmOperatesHandle('active')  // 标记当前虚机  只在学生端
     }
   },
@@ -1497,11 +1624,27 @@ watch(
       isShowDelayBtn.value = !(baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0)
       roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
       // console.log('roleArry2',roleArry.value)
-    } else {
+    } else if (experType!==2) {
       const roleArry1: menuTypeArr = ["recommend", "test", "help"].includes(opType as any)
         ? (getMenuRole(role as any, experimentTypeList[experType].name, opType as any) as any)
         : (getMenuRole(role as any, experimentTypeList[experType].name) as any);
         roleArry.value = roleArry1
+    }
+  },
+  { deep: true, immediate: true }
+);
+watch(
+  () => currentInterface.value,
+  (val) => {
+    if (role === 4&&baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0) {  // 高配分组 非组长
+      isShowDelayBtn.value = !(baseInfo.value?.current?.is_teamed == 1&&baseInfo.value?.current?.is_lead == 0)
+      roleArry.value = getMenuRole(4, experimentTypeList[experType].name, 'highGroup') as any // 高配分组 非组长
+      // console.log('roleArry2',roleArry.value)
+    }else if (experType === 1 || experType === 2) {
+      const roleArry1 = ["recommend", "test", "help"].includes(opType as any)
+        ? (getMenuRole(role as any, val as any, opType as any) as any)
+        : (getMenuRole(role as any, val as any) as any);
+      roleArry.value = roleArry1
     }
   },
   { deep: true, immediate: true }
@@ -1528,12 +1671,30 @@ onMounted(() => {
     clearInterval(Number(viodeTimer));
     clearInterval(Number(delayTimer));
     clearInterval(Number(questionTimer));
+    isDelayModal?.destroy();
   });
 
 // function test(){
 //   evaluateVisible.value = true;
 //   initEvaluate()
 // }
+// 结束录屏
+function stopRecord() {
+  return new Promise(async (resolve) => {
+    if (isScreenRecording.value) {
+      // await VmOperatesHandle("stopRecord")
+      isScreenRecording.value = false;
+      videoTime.value = 0;
+      clearInterval(Number(viodeTimer));
+      videoTimeText.value = secondToHHMMSS(Number(videoTime.value));
+      resolve(1)
+    }
+  })
+}
+defineExpose({
+  stopRecord,
+  finishingExperimentVisible,
+})
 </script>
 
 <style lang="less" scoped>
@@ -1576,8 +1737,13 @@ i {
       // line-height: 26px;
       font-size: var(--font-size-20);
       margin-left: 24px;
+      flex: 1;
+      display: flex;
+      align-items: center;
       .name {
         padding: 0 10px;
+        display: inline-block;
+        max-width: 400px;
       }
       .iconfont {
         font-size: 20px;
@@ -1650,12 +1816,18 @@ i {
     .vnc-change {
       padding: 0 20px;
       border-left: 1px solid #2c3a54;
+      &.none-event {
+        pointer-events: none;
+        cursor: not-allowed;
+        color: #5c5c5c;
+      }
     }
     .delayed {
       // border: none;
       color: var(--primary-color);
       span:last-child {
-        height: 20px;
+        display: inline-block;
+        height: 18px;
         line-height: 20px;
         padding: 0 21px;
         color: var(--white-100);
@@ -1927,6 +2099,9 @@ i {
     .img {
       margin-right: 8px;
     }
+  }
+  img {
+    margin-right: 8px;
   }
 }
 </style>

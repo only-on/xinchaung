@@ -3,9 +3,10 @@ import vue from "@vitejs/plugin-vue";
 import { resolve } from "path";
 import vueJsx from "@vitejs/plugin-vue-jsx";
 import viteRawPlugin from "vite-raw-plugin";
+import viteCompression from 'vite-plugin-compression';
 const proxyTarget={
   130:'http://192.168.101.130',
-  221:'http://192.168.101.221:84',
+  221:'http://192.168.101.221',
   222:'http://192.168.101.222:84',
 }
 export default defineConfig({
@@ -13,6 +14,7 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
+    viteCompression(),
     viteRawPlugin({
       fileRegex: /\.md$/,
     }),
@@ -56,7 +58,7 @@ export default defineConfig({
         // target: proxyTarget[130]",
         target: proxyTarget[221],
         changeOrigin: true,
-      },    
+      },
       "/dmc": {
         // target: proxyTarget[130]",
         target: proxyTarget[221],
@@ -71,9 +73,13 @@ export default defineConfig({
         // target: proxyTarget[130]",
         target: proxyTarget[221],
         changeOrigin: true,
-      },        
+      },
       "/knowledge-map1": {
         target: proxyTarget[130],
+        changeOrigin: true,
+      },
+      '/wssh': {
+        target: proxyTarget[221],
         changeOrigin: true,
       },
       '/ws': {
@@ -82,7 +88,7 @@ export default defineConfig({
         changeOrigin: true,
         ws: true,
         rewrite: (path) => path.replace(/^\/ws/, '')
-      }
+      },
     },
     port: 3010,
     host: "0.0.0.0",
@@ -90,18 +96,38 @@ export default defineConfig({
     force: true,
   },
   build: {
-    sourcemap: false,
+    sourcemap: true,
     brotliSize: false,
     chunkSizeWarningLimit: 10000,
     rollupOptions: {
       output: {
         manualChunks(id) {
           if (id.includes("node_modules")) {
-            return id
-              .toString()
-              .split("node_modules/")[1]
-              .split("/")[0]
-              .toString();
+            // return id
+            //   .toString()
+            //   .split("node_modules/")[1]
+            //   .split("/")[0]
+            //   .toString();
+            const arr=id.toString().split('node_modules/')[1].split('/')
+            // console.log(arr);
+            if (arr[0].includes("@xianfe")) {
+                return arr[1].toString()
+            }
+            else{
+              switch (arr[0]) {
+              case "ant-design-vue":
+              case "ace-builds":
+              case "lodash":  
+              case "@novnc":
+                return '_'+arr[0]
+                break;
+              default:
+                return '__vendor'
+                break;
+              }
+            }
+            
+            // return arr[0].toString();
           }
         },
       },

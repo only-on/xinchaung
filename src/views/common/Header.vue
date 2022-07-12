@@ -1,5 +1,5 @@
 <template>
-  <header :class="['header-box', 'theme'+systemTheme]">
+  <header :class="['header-box', 'theme'+store.state.systemInfo.theme]">
     <div class="header-left">
       <div class="a-logo" @click="goHome()">
         <div class="logo" :style="`background-image: url(${ getLogoUrl});`"></div>
@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="header-middle">
-      <menu-bar :menus="menus"></menu-bar>
+      <menu-bar :menus="menus" :activeMenu="activeMenu"></menu-bar>
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
@@ -90,15 +90,13 @@ import {clearAllCookies} from "src/utils/cookieHelper";
 import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "src/typings/wmc";
 import api from "src/api";
-import { AnyMxRecord } from "dns";
 import logoImg from "src/assets/images/user/logo.png"
-import {getThemeData} from 'src/utils/theme'
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
   setup() {
-    const {systemTheme} = getThemeData()
     const env = process.env.NODE_ENV == "development" ? true : false;
+    const activeMenu = ref<string>('')
     const router = useRouter();
     const store = useStore()
     const { lStorage,sStorage } = extStorage;
@@ -125,11 +123,11 @@ export default defineComponent({
     });
     const isOperation = computed(() => {
       // 教师有远程协助消息提醒
-      return role === 3;
+      return role === 3 || role===5;
     });
     const power = computed(() => {
       //  4  个人信息  3 1 2修改密码
-      return role === 3 || role === 1 || role === 2 || role === 4;
+      return role === 3 || role === 1 || role === 2 || role === 4  || role === 5;
     });
     const getLogoUrl=computed(()=>{
       // env? '/proxyPrefix' + systemBaseInfo.logo_url : systemBaseInfo.logo_url
@@ -145,6 +143,7 @@ export default defineComponent({
     function loginOut() {
       http.loginOut().then((res: IBusinessResp) => {
         lStorage.clean();
+        sStorage.clean();
         clearAllCookies();
         if (longWs1.value) {
           longWs1.value.close();
@@ -180,7 +179,7 @@ export default defineComponent({
       name:['','交流问答','学习问答','学习交流',''][role-1],
       parent_id: 0,
       sort: 9,
-      url: "/teacher/teacherForum?currentTab=0&type=wiki",
+      url: "/teacher/teacherForum?currentTab=0",
     }
     // 实验中心
     let center = {
@@ -218,7 +217,7 @@ export default defineComponent({
       name: "素材资源",
       parent_id: 0,
       sort: 3,
-      url: "/teacher/teacherMaterialResource",
+      url: "/teacher/teacherMaterialResource?currentTab=0",
       children: [],
     };
     // 教师课程
@@ -448,7 +447,7 @@ export default defineComponent({
       2:[adminHome,systemMaintenance,TeachingResourceManagement,adminUserManagement,coursePlan,forum],
       3:[teacherHome,center,material,teacherCourse,forum],
       4:[statistics,forum,studentCourse],
-      5:[center,teacherCourse,material]
+      5:[center,material,teacherCourse]
     }[role]
     menus.push(...arr)
     var systemBaseInfo: any = reactive({
@@ -460,9 +459,11 @@ export default defineComponent({
       // router.push(`${homePath}`);
       if (role == 3) {
         // return "/teacher" // 教师端首页
+        activeMenu.value='首页'
         router.push("/teacher");
       }
       if (role == 4) {
+        activeMenu.value='首页'
         router.push("/student");
       }
       if (role == 1) {
@@ -470,11 +471,13 @@ export default defineComponent({
         // router.push("/teacher");
       }
       if (role == 2) {
+        activeMenu.value='首页'
         // return "/admin" // 管理端
         router.push("/admin");
       }
       if (role == 5) {
-        router.push("/teacher"); // 助教端
+        activeMenu.value='教学过程'
+        router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
         // router.push("/");
       }
     }
@@ -533,6 +536,8 @@ export default defineComponent({
     function initWs(ws_config: any) {
       // let ws_config = lStorage.get("ws_config")
       let user_id = lStorage.get("user_id");
+      // const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
+      const tuid = lStorage.get("tuid")
       const uid = lStorage.get("uid")
       // console.log(user_id,longWs)
       // console.log(ws_config)
@@ -545,8 +550,8 @@ export default defineComponent({
           "/?uid=" +
           uid+'_0',
         open: () => {
-          if (longWs1.value && role === 3) {
-            longWs1.value.join(uid+"_teacher" + "_room");
+          if (longWs1.value && (role === 3 || role === 5)) {
+            longWs1.value.join((role===5?tuid:uid)+"_teacher" + "_room");
           }
         },
         close: (ev: CloseEvent) => {
@@ -648,6 +653,22 @@ export default defineComponent({
     }
     // 监测学生端课程详情连接ws,其他页面断开ws
     watch(() => router.currentRoute.value.path, newVal => {
+      // 根据当前路由高亮对应的菜单 // menuBar  组件菜单点击时有此功能 function select(level: string, val: MenuItem)
+      // console.log(newVal);
+      // menus.forEach((item:any) => {
+      //   if(item.url && item.url.includes(newVal)){
+      //     activeMenu.value = item.name
+      //     lStorage.set("menuActiveName", item.name);
+      //   }
+      //   if (item.children.length) {
+      //     item.children.forEach((childItem:any) => {
+      //       if(childItem.url && childItem.url.includes(newVal)){  
+      //         activeMenu.value = item.name
+      //         lStorage.set("menuActiveName", item.name);
+      //       }
+      //     })
+      //   }
+      // })
       if (role === 4) {
         closeWs()
         if (newVal === '/student/studentCourse/Detail') {
@@ -659,10 +680,7 @@ export default defineComponent({
           return
         }
       }
-      if (['/teacher/home', '/admin/home', '/student/statistics'].includes(newVal)) {
-        lStorage.set("menuActiveName", '首页');
-      }
-    },{immediate: true})
+    },{immediate: true,deep:true})
     onUnmounted(() => {
       closeWs()
     })
@@ -688,7 +706,7 @@ export default defineComponent({
       store,
       logoImg,
       getLogoUrl,
-      systemTheme
+      activeMenu
     };
   },
 });
@@ -717,7 +735,7 @@ export default defineComponent({
     display: flex;
     flex-direction: row;
     align-items: center;
-    margin-right: 100px;
+    margin-right: 50px;
     .a-logo {
       display: flex;
       align-items: center;
@@ -731,7 +749,7 @@ export default defineComponent({
     }
     .web-title {
       color: var(--white);
-      font-size: 22px;
+      font-size: 18px;
     }
   }
   > .header-middle {

@@ -10,42 +10,146 @@ export default {
         title: "教学资源管理",
         authCode: 'TeachingResourceManagement'
     },
+    redirect: '/admin/TeachingResourceManagement/DirectionPlanning',
     children: [
         {
             path: "DirectionPlanning",
-            name: "",
-            component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
+            name: "DirectionPlanning",
+            component: RouterViews,
             meta: {
                 title: "方向规划",
                 authCode: ''
             },
+            children: [
+                {
+                    path: '',
+                    name: 'DirectionPlanning',
+                    component: () => import("src/views/adminModule/TeachingResourceManagement/DirectionPlanning/index.vue"),
+                    meta: {
+                        authCode: 'DirectionPlanning'
+                    },
+                },
+                {
+                    path: "experimentDetail",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+                    meta: {
+                        title: "实验详情",
+                        authCode: ''
+                    },
+                },
+                {
+                    path: "reportTemplate",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentReportTemplate.vue"),
+                    meta: {
+                        title: "实验报告模板",
+                        authCode: ''
+                    },
+                },
+            ]
         },
         {
             path: "courseManagement",
-            name: "",
-            component: () => import("src/views/adminModule/TeachingResourceManagement/courseManagement/courseManagement.vue"),
+            name: "courseManagement",
+            component: RouterViews,
             meta: {
                 title: "课程管理",
-                authCode: ''
+                authCode: 'courseManagement'
             },
+            children: [
+                {
+                    path: '',
+                    name: 'courseManagement',
+                    component: () => import("src/views/adminModule/TeachingResourceManagement/courseManagement/courseManagement.vue"),
+                    meta: {
+                        authCode: 'courseManagement'
+                    },
+                },
+                {
+                    path: "courseManagementDetail",
+                    name: "courseManagementDetail",
+                    component: () => import("src/views/teacherModule/teachCourse/courseDetail/index.vue"),
+                    meta: {
+                        title: "课程详情",
+                        authCode: 'courseManagementDetail'
+                    },
+                },
+            ]
         },
         {
             path: "experimentManagement",
-            name: "",
-            component: () => import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue"),
+            name: "experimentManagement",
+            component: RouterViews,
             meta: {
                 title: "实验管理",
-                authCode: ''
+                authCode: 'experimentManagement'
             },
+            children: [
+                {
+                    path: '',
+                    name: 'experimentManagement',
+                    component: () => import("src/views/adminModule/TeachingResourceManagement/experimentManagement/experimentManagement.vue"),
+                    meta: {
+                        authCode: 'experimentManagement'
+                    },
+                },
+                {
+                    path: "experimentDetail",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentDetail.vue"),
+                    meta: {
+                        title: "实验详情",
+                        authCode: ''
+                    },
+                },
+                {
+                    path: "reportTemplate",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherExperimentResourcePool/experimentReportTemplate.vue"),
+                    meta: {
+                        title: "实验报告模板",
+                        authCode: ''
+                    },
+                },
+            ]
         },
         {
             path: "resourcesManagement",
-            name: "",
-            component: () => import("src/views/adminModule/TeachingResourceManagement/resourcesManagement/resourcesManagement.vue"),
+            name: "resourcesManagement",
+            component: RouterViews,
             meta: {
                 title: "素材资源管理",
-                authCode: ''
+                authCode: 'resourcesManagement'
             },
+            children: [
+                {
+                    path: '',
+                    name: 'resourcesManagement',
+                    component: () => import("src/views/adminModule/TeachingResourceManagement/resourcesManagement/resourcesManagement.vue"),
+                    meta: {
+                        authCode: 'resourcesManagement'
+                    },
+                },
+                {
+                    path: "setDataDetail",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherMaterialResource/setDataDetail.vue"),
+                    meta: {
+                        title: "素材资源详情",
+                        authCode: ''
+                    },
+                },
+                {
+                    path: "resourcesDetail",
+                    name: "",
+                    component: () => import("src/views/teacherModule/teacherMaterialResource/Detail.vue"),
+                    meta: {
+                        title: "素材资源详情",
+                        authCode: ''
+                    },
+                },
+            ]
         },
         {
             path: "mirrorImageManagement",

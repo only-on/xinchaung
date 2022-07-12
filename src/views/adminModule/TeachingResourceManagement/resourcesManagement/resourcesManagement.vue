@@ -18,7 +18,7 @@
       </div>
     </div>
     <div class="courseManagementContent">
-      <div class="search flexCenter">
+      <div class="searchcourse flexCenter">
         <div class="left flexCenter">
           <div class="item">
             <span>素材名称：</span>
@@ -48,14 +48,29 @@
         <a-spin :spinning="loading" size="large" tip="Loading...">
           <a-config-provider>
             <a-table :columns="columns" :data-source="courseList"
-              :pagination="{ hideOnSinglePage: false, total: totalCount, pageSize: searchInfo.limit,current: searchInfo.page, onChange: onChange}"
+              :pagination="
+              totalCount > 10
+                ? {
+                    showSizeChanger:true,
+                    total: totalCount, 
+                    pageSize: searchInfo.limit,
+                    current: searchInfo.page, 
+                    onChange: onChange,
+                    onShowSizeChange: onShowSizeChange,
+                  }
+                : false
+              "
               :row-selection="{ selectedRowKeys: searchInfo.selectedRowKeys, onChange: onSelectChange,}"
               rowKey="id">
-              <template #imageTags="{ record }">
-                <div>{{(record.imageTags && record.imageTags.length)?`${record.imageTags.join(' / ')}`:''}}</div>
+              <template #tags="{ record }">
+                <span :title="(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''">{{(record.tags && record.tags.length)?`${record.tags.join(' / ')}`:''}}</span>
               </template>
               <template #name="{ record }">
-                <div class="courseName" @click="viewDetail(record)">{{record.name}}</div>
+                <span class="courseName" :title="record.name" @click="viewDetail(record)">{{record.name}}</span>
+              </template>
+              <template #action="{record}">
+                <a-button type="link" @click="dleDelete(record)">删除</a-button>
+                <!-- <span class="action courseName" @click="dleDelete(record)">删除</span> -->
               </template>
             </a-table>
             <template #renderEmpty>
@@ -115,6 +130,8 @@ const columns= [
     title: "素材所属",
     dataIndex: "username",
     align: "center",
+    width:160,
+    ellipsis: true,
   },
   {
     title: "素材类型",
@@ -133,17 +150,24 @@ const columns= [
   },
   {
     title: "标签",
-    dataIndex: "imageTags",
+    dataIndex: "tags",
     align: "center",
     ellipsis: true,
-    slots: { customRender: "imageTags" },
+    slots: { customRender: "tags" },
   },
   {
     title: "描述",
     dataIndex: "description",
     align: "center",
+    width:120,
     ellipsis: true,
   },
+  {
+    title: '操作',
+    width:150,
+    key: 'action',
+    slots: { customRender: 'action'},
+  }
 ]
 var searchInfo:any=reactive({
   name:'',
@@ -185,9 +209,16 @@ const initData = () => {
 
 const onChange=(page: any, pageSize: any)=> {
   searchInfo.page=page
+  searchInfo.limit=pageSize
   searchInfo.selectedRowKeys=[]
   initData()
   console.log(searchInfo.selectedRowKeys);
+}
+const onShowSizeChange=(page: any, pageSize: any)=>{
+  searchInfo.page=1
+  searchInfo.limit=pageSize
+  searchInfo.selectedRowKeys=[]
+  initData()
 }
 type Key = ColumnProps["key"];
 const onSelectChange=(selectedRowKeys: Key[], selectedRows: Key[])=> {
@@ -215,6 +246,7 @@ const resourceStatistics=()=>{
 const viewDetail=(val:any)=>{
   let query:any={
     currentTab:val.is_public?0:1,
+    role:2,
     editId: val.slab_uid ? val.slab_uid: val.id,
     type:val.type_name,
     cardType: val.slab_uid ? 'setData':'other',
@@ -222,16 +254,16 @@ const viewDetail=(val:any)=>{
   }
   if(val.slab_uid){
     router.push({
-      path:'/teacher/teacherMaterialResource/setDataDetail',
+      path:'/admin/TeachingResourceManagement/resourcesManagement/setDataDetail',
       query:{
         ...query,  
         avatar: val.user.avatar,
-        username: val.user.username
+        username: val.username
       }
     })
   }else{
     router.push({
-      path:'/teacher/teacherMaterialResource/ResourceDetail',
+      path:'/admin/TeachingResourceManagement/resourcesManagement/resourcesDetail',
       query:{...query}
     })
   }
@@ -239,6 +271,22 @@ const viewDetail=(val:any)=>{
 const searchList=()=> {
   searchInfo.page=1
   initData()
+}
+const dleDelete=(item:any)=>{
+  Modal.confirm({
+    title: "确认删除吗？",
+    icon: createVNode(ExclamationCircleOutlined),
+    content: "删除后不可恢复",
+    okText: "确认",
+    cancelText: "取消",
+    onOk() {
+      http.resourceBatchDelete({param: {datasetIds:`${item.id}`}}).then((res: any) => {
+        message.success("删除成功"); //
+        initData();
+        resourceStatistics()
+      });
+    },
+  });
 }
 const BatchDelete=()=>{
   if(!searchInfo.selectedRowKeys?.length){
@@ -351,7 +399,7 @@ onMounted(() => {
     margin-top: 2rem;
     min-height: 750px;
     padding: 24px 30px 0;
-    .search{
+    .searchcourse{
       justify-content: space-between;
       .left{
         .item{

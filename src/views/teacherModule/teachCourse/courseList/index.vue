@@ -3,7 +3,6 @@
   <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
-      <div></div>
       <div class="itemBox" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" >
         <div class="item" :class="[1,2,5,6,9,10].includes(k)?'midItem':''">
           <div class="coverBox">
@@ -14,7 +13,7 @@
                   
                   <template v-if="v.is_authorized">
                     <span class="img" :style="`background-image: url(${v.portrait});`" ></span>
-                    <span class="userName">{{v.is_init?'系统内置':v.profile_name}}</span>
+                    <span class="userName" :title="v.is_init?'系统内置':v.profile_name">{{v.is_init?'系统内置':v.profile_name}}</span>
                   </template>
                   <template v-else>
                     <span class="">未授权</span>
@@ -32,15 +31,19 @@
               <span class="text" @click.stop="multiplexing(v)">复用</span>
               <span class="text" v-if="currentTab === 0 && v.state===2" @click.stop="deleteFun(v)">删除</span>
               <!-- <span class="text text2" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)">{{v.loading?'生成中。。。':'学情归档'}}</span> -->
-              <a-button type="link" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)" :loading="v.loading">{{v.loading?'生成中。。。':'学情归档'}}</a-button>
+              <a-button type="link" v-if="currentTab === 0  && v.state===1" @click.stop="archives(v)" :loading="v.loading">{{v.loading?'生成中...':'学情归档'}}</a-button>
             </div>
           </div>
           <div class="info">
-            <div class="name">{{v.name}}</div>
-            <div class="date">
-              <span>实验:{{v.content_total}}</span>
-              <span>课时:{{v.class_total}}</span>
-              <span>学生:{{v.student_total}}</span>
+            <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
+            <div class="date flexCenter">
+              <span class="single_ellipsis">实验:{{v.content_total}}</span>
+              <span class="single_ellipsis">课时:{{v.class_total}}</span>
+              <span class="single_ellipsis">
+                <template v-if="currentTab === 0">
+                  学生:{{v.student_total}}
+                </template>
+              </span>
             </div>
             <div class="createDate flexCenter" v-if="currentTab === 0 && v.start_time && v.end_time">
               <span>{{v.start_time.split(' ')[0]}} - {{v.end_time.split(' ')[0]}}</span>
@@ -331,9 +334,8 @@ const initData = () => {
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: any) => {
-      // v.is_authorized=false
       v.is_authorizedText=v.is_authorized?'':'Unauthorized'
-      // v.type_obj = Object.assign({}, getTypeList('90deg')[v.task_type]);
+      
     });
     courseList.push(...list)
     totalCount.value = page.totalCount
@@ -386,7 +388,8 @@ const deleteFun = (val: any) => {
 const multiplexing=(val: any)=>{
   router.push({ 
     path: "/teacher/teacherCourse/CreateCourse",
-    query: { currentTab:currentTab.value,EditId:val.id}
+    query: { currentTab:0,EditId:val.id}       // currentTab=0   为了让复用第二步 和创建时一致
+    // query: { currentTab:currentTab.value,EditId:val.id}
     });
   // router.push({ path: "/teacher/teacherCourse/CreateCourse"});    //  courseCreate
 }
@@ -528,9 +531,6 @@ onMounted(() => {
           background-repeat: no-repeat;
           background-image: url(src/assets/images/teacherCourse/defaultCover.jpg);
           .top{
-            border-radius: 6px 0px 6px 0px;
-            // opacity: .5;
-            padding: 3px 0;
             .state{
               background-color: rgba(0, 0, 0,.5);
               color: var(--white-70);
@@ -542,9 +542,11 @@ onMounted(() => {
               }
             }
             .user{
+              padding: 3px 10px 3px 3px;
+              border-top-left-radius: 6px;
+              border-bottom-right-radius: 6px;
               color: var(--white);
               background-color: rgba(0, 0, 0,.5);
-              width: 100px;
               justify-content: center;
               .img{
                 width: 20px;
@@ -613,9 +615,10 @@ onMounted(() => {
         }
         .date{
          padding-bottom: 10px;
+        justify-content: space-between;
           span{
             color: var(--black-45);
-            padding-right: 2rem;
+            // padding-right: 2rem;
           }
         }
         .createDate{

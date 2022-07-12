@@ -54,9 +54,12 @@ export default defineComponent({
     let loading:Ref<boolean>|undefined=inject("loading")
     const refName=ref(props.refName)
     let isClose:Ref<boolean>|undefined=inject("isClose",ref(false))
+    const vncLoading: any = inject("vncLoading", ref(false));
 
     // 连接断开
     function disconnect(msg: any) {
+      console.log("vnc连接断开");
+      vncLoading.value = true
       if(isClose!.value) return;
       setTimeout(() => {
         if (msg.detail.clean) {
@@ -74,8 +77,11 @@ export default defineComponent({
     // 连接成功
     function success(msg: any) {
       // console.log(msg);
-      console.log("连接成功");
-        setTimeout(()=>{loading!.value=false},5000)
+      console.log("vnc连接成功");
+      setTimeout(()=>{
+        vncLoading.value = false
+        loading!.value=false
+      },5000)
     }
 
     function securityfailure(msg: any) {
@@ -120,7 +126,26 @@ export default defineComponent({
 
     function  sendSelectContent(text:string){
       if (text&&rfb.value) {
-        rfb.value.clipboardPasteFrom(text)
+        // rfb.value.clipboardPasteFrom(text)
+        f(text.split(''))
+        function f(strArr: any) {
+          var character = strArr.shift();
+          var i=[];
+          var code = character.charCodeAt();
+          var needs_shift = character.match(/[A-Z!@#$%^&*()_+{}:\"<>?~|]/);
+          if (needs_shift) {
+            rfb.value.sendKey(0xffe1,1);
+          }
+          rfb.value.sendKey(code,1);
+          // rfb.value.sendKey(code,0);
+          if (needs_shift) {
+            rfb.value.sendKey(0xffe1,0);
+          }
+
+          if (strArr.length > 0) {
+            setTimeout(function() {f(strArr);}, 10);
+          }
+        }
       }
     }
     function sendCtrlAltDel(){

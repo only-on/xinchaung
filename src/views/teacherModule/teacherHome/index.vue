@@ -15,7 +15,7 @@
         @setTranslate="setTranslate"
       >
       <!-- @slideChangeTransitionEnd="slideChangeTransitionEnd" -->
-        <swiper-slide v-for="item in courseLists" :key="item.id">
+        <swiper-slide v-for="item in courseLists" :key="item.id" :style="`background-image: url(${systemImages.ThomeLunbo.bannerlunBo});`">
           {{ item.name }}
         </swiper-slide>
       </swiper>
@@ -320,7 +320,6 @@ interface Ilists {
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      color:v-bind(systemColor)
     }
     .swiper-button-prev {
       left: 0;
@@ -353,7 +352,7 @@ interface Ilists {
         border-radius: 20px;
         text-align: center;
         font-size: 18px;
-        background: var(--white-100);
+        background: var(--primary-color);
         height: 130px;
         box-shadow: 0 0 10px 2px rgba(0, 0, 0, 0.34);
         display: flex;
@@ -361,7 +360,7 @@ interface Ilists {
         align-items: center;
         transition-property: all;
         // background: url(src/assets/images/teacher-default/banner-bg2.png) no-repeat;
-        background-image: v-bind(bannerlunBo);
+        // background-image: v-bind(bannerlunBo);
         background-repeat: no-repeat;
         background-size: 100% 100%;
         word-break: break-all;

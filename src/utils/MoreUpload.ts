@@ -1,5 +1,6 @@
 import SparkMD5 from 'spark-md5'
 import { UUID } from 'src/utils/uuid'
+import { message } from "ant-design-vue";
 // 上传配置
 export interface UploadOptions {
   startUploadURL: string
@@ -119,8 +120,10 @@ export default function Upload(option: UploadOptions) {
   const ObjectKey = 'key' + UUID.uuid4()
   let md5String: any = ''
   let upload_id: any = ''
+  let newFileName:string=''
   let currentIndex: any = 0
   const uploadStatus = []
+  var FilesChunk: any = []
   // 封装http请求
 
   // 文件生成md5码
@@ -185,7 +188,7 @@ export default function Upload(option: UploadOptions) {
         request({ url: option.startUploadURL, body })
           .then((res: any) => {
             if (res.code === 200) {
-              resolve(res.data.upload_id)
+              resolve({upload_id:res.data.upload_id,newFileName:res.data.file_name})
             } else {
               reject(new Error('获取上传upload_id错误'))
             }
@@ -199,7 +202,7 @@ export default function Upload(option: UploadOptions) {
   // 分片上传
   function multiUpload(FilesChunk: any, i?: any) {
     return new Promise((resolve, reject) => {
-      const index = i ? i : currentIndex
+      const index = i||i==0 ? i : currentIndex
       const body = new FormData()
       body.append('upload_id', upload_id)
       body.append('upload_file', FilesChunk[index].upload_file)
@@ -232,6 +235,7 @@ export default function Upload(option: UploadOptions) {
             if (option.eruptNum < 5 && currentIndex < FilesChunk.length - 1) {
               currentIndex++
               // console.log(currentIndex)
+              // console.log('FilesChunk.length',FilesChunk.length)
               await multiUpload(FilesChunk)
             }
             if (currentIndex === FilesChunk.length - 1) {
@@ -239,26 +243,32 @@ export default function Upload(option: UploadOptions) {
               resolve(currentIndex)
             }
           } else {
-            multiUpload(FilesChunk, index)
-            reject(new Error('第' + index + '分片上传失败'))
+            console.log(res)
+            console.log(currentIndex)
+            console.log('FilesChunk.length',FilesChunk.length)
+            message.warning('第' + index + '分片上传失败');
+            reject(new Error(res))
           }
         })
         .catch(err => {
           option.eruptNum = 6
-          console.error(err)
-          // reject(new Error(err))
+          // console.error(err)
+          reject(new Error(err))
           return
         })
     }).catch()
   }
   // 合并分片
-  function mergeUpload(part_count: any) {
+  function mergeUpload(part_count: any, type: string) {
+    console.log(type)
     const body = new FormData()
     body.append('data_id', option.data_set_id)
     body.append('file_size', (option.file as any).size)
     body.append('part_count', part_count)
     body.append('upload_id', upload_id)
+    body.append('file_name', newFileName)
     body.append('md5', md5String)
+    body.append('external_parameters', '1') // 勿删 勿修改 2代表文件可用状态， 未确认和未保存的文件为1 不可用
     request({
       url: option.mergeUploadUrl,
       body,
@@ -268,14 +278,24 @@ export default function Upload(option: UploadOptions) {
           // console.log('分片文件合并成功')
 
           option.endUploadFun(ObjectKey, res.data)
+        } else if (res.code === 20000) {
+          const queue: any = []
+          res.data?.chunk.forEach((v: number) => {
+            queue.push(multiUpload(FilesChunk, v))
+          })
+          Promise.all(queue).then(() => {
+            mergeUpload(FilesChunk.length, 'mergeUpload')
+          }).catch(() => {
+            mergeUpload(FilesChunk.length, 'mergeUploadError')
+          })
         }
       })
       .catch()
   }
   // 切片开始上传
-  async function multiUpload1() {
+  async function multiUploadStart() {
     option.eruptNum = 1
-    var FilesChunk = createFileChunk(option.file, option.chunkSize)
+    FilesChunk = createFileChunk(option.file, option.chunkSize)
     const queue: any = []
     queue.push(multiUpload(FilesChunk))
     if (FilesChunk.length > 3) {
@@ -292,7 +312,9 @@ export default function Upload(option: UploadOptions) {
     Promise.all(queue).then(() => {
       // console.log('分片上传成功')
 
-      mergeUpload(FilesChunk.length)
+      mergeUpload(FilesChunk.length, 'multiUploadStart')
+    }).catch(() => {
+      mergeUpload(FilesChunk.length, 'multiUploadStartError')
     })
     // timer = setInterval(() => {
     //   if (FilesChunk.length - 1 === currentIndex && uploadStatus.length === FilesChunk.length) {
@@ -314,10 +336,12 @@ export default function Upload(option: UploadOptions) {
       // 文件转md5码
       md5String = await fileToMd5()
       // console.log('md', md5String)
-
-      upload_id = await startUpload()
+      const obj:any=await startUpload()
+      console.log(obj); //  newFileName
+      upload_id = obj.upload_id
+      newFileName = obj.newFileName
       // console.log('m2', upload_id)
-      multiUpload1()
+      multiUploadStart()
     } catch (error) {
       // console.log(error)
     }

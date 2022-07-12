@@ -3,13 +3,8 @@
     <template v-slot:right>
       <div style="height: 100%;" v-if="baseInfo.base_info&&baseInfo.base_info.files&&baseInfo.base_info.files.length || baseInfo.base_info&&baseInfo.base_info.guide">
       <div class="video-wrap" v-if="taskType == 6">
-        <video
-          :poster="videoCover"
-          style="width: 100%; height: 650px"
-          controls="true"
-          v-if="baseInfo.base_info.files.length"
-          :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.files[0].file_url"
-        ></video>
+        <common-video style="width: 100%; height: 650px" controls="true" v-if="baseInfo.base_info.files.length"
+                      :src="env ? '/proxyPrefix'+baseInfo.base_info.files[0].file_url : baseInfo.base_info.files[0].file_url"></common-video>
       </div>
       <div class="document-wrap setScrollbar" v-else-if="taskType == 7">
         <marked-editor
@@ -23,6 +18,19 @@
       <empty v-else> </empty>
     </template>
   </layout>
+  <!--禁用modal-->
+  <disableStudent
+    v-if="disableVisable"
+    v-model:visable="disableVisable"
+    :data="disableData"
+    @save="saveKvm"
+    :type="type"
+    :uuid="currentUuid"
+    :taskId="taskId"
+    :opType="opType"
+    :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
+  ></disableStudent>
 </template>
 
 <script lang="ts" setup>
@@ -36,6 +44,7 @@ import { message, Modal } from "ant-design-vue";
 import request from "src/api/index";
 import markedEditor from "src/components/editor/markedEditor.vue";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
+import disableStudent from "../component/disableStudent.vue"
 import {
   getTaskInfo,
   getVersionList,
@@ -50,6 +59,7 @@ import {
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
 import { wsConnect } from "src/request/websocket";
+import CommonVideo from "../../../../components/common/CommonVideo.vue";
 const http = (request as any).teacherExperimentResourcePool;
 const env = process.env.NODE_ENV == "development" ? true : false;
 const store = useStore();
@@ -79,6 +89,10 @@ let {
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const taskType: any = inject("taskType");
+
+const disableVisable: any = ref(false);
+const disableData: any = ref({});
+const currentUuid = ref('')
 // 左侧导航数据
 
 const navData = [
@@ -117,7 +131,7 @@ function createTopo() {
             router.go(-1);
           }, 3000)
         }
-        
+
         if(err.msg === "您已完成当前实验的学习") {
           setTimeout(() => {
             router.go(-1);
@@ -161,6 +175,8 @@ let ws: WritableComputedRef<IWmc> = computed({
     store.commit("setLongWs",val)
   }
 })
+
+const isAutoRemove = ref(false)   // 是否是自动排课结束前15分钟，推送消息
 // 连接ws
 function initWs() {
   clearTimeout(Number(timerout));
@@ -202,7 +218,15 @@ function initWs() {
       let regex = /\{.*?\}/g;
       if (typeof ev.data === "string" && regex.test(ev.data)) {
         let wsJsonData = JSON.parse(ev.data);
-        console.log(wsJsonData)
+        if (wsJsonData.type == "manual-disable") {
+          // 禁用学生
+          disableVisable.value = true;
+          disableData.value = wsJsonData.data;
+        } else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
+          disableVisable.value = true
+          disableData.value = wsJsonData.data
+        }
       }
     },
   });
@@ -211,6 +235,7 @@ function initWs() {
 function closeWs() {
   (ws.value as any)?.close();
 }
+function saveKvm() {}
 onBeforeRouteLeave(() => {
   isCurrentPage = false;
   clearTimeout(Number(timerout));

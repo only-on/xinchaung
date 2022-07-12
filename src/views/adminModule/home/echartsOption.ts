@@ -15,7 +15,7 @@ function activityOption(data:any){
               }
             }
           },
-          color:[systemColor.primary,systemColor.secondary,systemColor.Acolor1],
+          color:[systemColor.primary,systemColor.secondary,systemColor.Acolor3],
           legend: {
             x:'3%',
             data: ['总数', '学生', '教师']
@@ -90,11 +90,11 @@ function resourceOption(data:any,){
           color:[systemColor.Acolor1,systemColor.Acolor2,systemColor.Acolor3,systemColor.Acolor4],
           legend: {
             x:'3%',
-            data: ['cpu', '内存', 'GPU','磁盘'] 
+            data: ['CPU', '内存', 'GPU','磁盘'] 
           },
           grid: {
             left: '3%',
-            right: '5%',
+            right: '7%',
             bottom: '3%',
             containLabel: true
           },
@@ -114,7 +114,7 @@ function resourceOption(data:any,){
           ],
           series: [
             {
-              name: 'cpu',
+              name: 'CPU',
               type: 'line',
               emphasis: {
                 focus: 'series'
@@ -166,9 +166,9 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         pointer: {
         show: true,
         showAbove:false,
-        width:8,
+        width:8,    
         offsetCenter: [-3, -24],
-        length: "14%"
+        length: "18%"
         },
         axisLine: {
           lineStyle: {
@@ -195,7 +195,7 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         anchor: {
           show:true,
           showAbove: true,
-          size:50,
+          size:70,
           itemStyle: {
             borderWidth: 1,
             borderColor:'white',
@@ -213,14 +213,14 @@ function dashboardResource(data:any,data1:any,type:any,color:any){
         },
         detail: {
           valueAnimation: true,
-          fontSize:10,
+          fontSize:14,
           fontWeight: "bolder",
           offsetCenter: [0, '20%'],
           // formatter:function (value:any) {
           //   return `${value}G`
           // },
           // formatter: "{value}"+type,
-          formatter: data+type,
+          formatter:data1!==null?data+type:'--',
           rich: {
             "<style_name>": {
               align: "left"
@@ -295,7 +295,7 @@ function dashboardService(data:any,color:any){
           show: true,
           offsetCenter: [0,"40%"],
           color: "black", 
-          fontSize: 20, 
+          fontSize: 16, 
         },
         detail: {
           valueAnimation:false,
@@ -304,10 +304,10 @@ function dashboardService(data:any,color:any){
           color:'#999',
           offsetCenter: [0, '90%'],
           formatter:function (value:any) {
-            if(data.total){
+            if(data.total!==null){
               return data.use+'/'+data.total+data.type
             }else{
-              return ''
+              return '--/--'
             }
           }
         },

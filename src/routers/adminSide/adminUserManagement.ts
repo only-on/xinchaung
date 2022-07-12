@@ -9,6 +9,7 @@ export default {
     showInBreadcrumb: true,
     authCode: "UserManagement",
   },
+  redirect: '/admin/adminUserManagement/teacherManagement',
   children: [
     {
       path: "teacherManagement",

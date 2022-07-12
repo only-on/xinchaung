@@ -160,11 +160,14 @@ onMounted(() => {
   getForumnList();
 });
 // 页码变化
-function pageChange(page: number) {
+function pageChange(page: number,pageSize:number) {
   // console.log(page);
   forumSearch.page = page;
+  forumSearch.pageSize = pageSize;
   getForumnList();
 }
+
+defineExpose({ getForumnList})
 </script>
 
 <style lang="less" scoped>
@@ -172,7 +175,7 @@ function pageChange(page: number) {
   white-space: normal;
   padding: 10px;
   margin-right: 10px;
-  text-align: justify;
+  // text-align: justify;
   height: calc(100% - 85px);
   // background: var(--black-100);
 }

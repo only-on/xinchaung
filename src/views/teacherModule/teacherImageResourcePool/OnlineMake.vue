@@ -1,5 +1,5 @@
 <template>
-  <div class="reference">
+  <div class="reference" :class=" configuration.showNav || configuration.tabs.length ? 'reference2' : '' ">
     <div class="addBox">
       <div class="add flexCenter">
         <span
@@ -14,10 +14,14 @@
       <div class="imageBox" v-for="(v, k) in list" :key="v" :class="getClass(k)">
         <div class="image">
           <!-- imgType 四种-->
-          <div class="top flexCenter" :class="v.image && v.image.ostype">
+          <div class="top" :class="v.image && v.image.ostype">
             <div class="left">
-              <div class="tit">{{v.image && v.image.name}}</div>
-              <div class="text single_ellipsis">{{v.image && v.image.description}}</div>
+              <div class="tit2 flexCenter">
+                <span>使用镜像</span>
+                <span>{{v.image && v.image.ostype}}</span>
+              </div>
+              <div class="tit single_ellipsis">{{v.image && v.image.name}}</div>
+              <!-- <div class="text single_ellipsis" :title="v.image?.description">{{v.image && v.image.description}}</div> -->
               <div class="parameter flexCenter">
                 <div class="item">
                   <span>内存</span>
@@ -39,7 +43,7 @@
               <!-- <div class="name single_ellipsis">{{v.dataset[0]}}</div> -->
               <div class="name">数据集</div>
               <div class="miaoshu single_ellipsis flexCenter">
-                <div class="one single_ellipsis">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
+                <div class="one single_ellipsis" :title="v.dataset && v.dataset[0] && v.dataset[0].name">{{v.dataset && v.dataset[0] && v.dataset[0].name}}</div>
                 <div class="more" v-if="v.dataset && v.dataset.length>1">
                   <a-popover>
                     <template #content>
@@ -69,8 +73,8 @@
             <a-button type="text" @click="deleteFun(v)">删除</a-button>
             <a-button :type="v.status?'link':'text'" :loading="v.status" v-if="statusList[k]?.status=='ACTIVE'"  @click="enterFun(v)">{{v.status?'进入中...':'进入'}}</a-button>
             <a-button class='cursor' :type="v.generateLoad?'link':'text'" v-else @click="openEnv(statusList[k].id,k,'开启')">
-              <span v-if="!v.opening&&statusList[k]?.status!=='none'">开启</span>
-              <span v-if='v.opening||statusList[k]?.status=="none"' class="openStatus">
+              <span v-if="!v.opening && statusList[k]?.status!=='none'">开启</span>
+              <span v-if='v.opening || statusList[k]?.status=="none"' class="openStatus">
                 <LoadingOutlined></LoadingOutlined>
                 准备中...
               </span>
@@ -86,10 +90,15 @@
          <template v-slot:title>保存镜像</template>
           <div>
             <a-form ref="createForm" :model="createFormData" :rules="rules">
-              <a-form-item has-feedback label="镜像名称" name="name">
+              <a-form-item  label="镜像名称" name="name">
                 <a-input v-model:value="createFormData.name" placeholder="请在这里输入镜像标题" />
               </a-form-item>
-              <a-form-item has-feedback label="镜像描述" name="description">
+              <a-form-item label="添加标签" name="tags">
+                <div>
+                  <LabelList :tag="createFormData.tags" :recommend="recommend" @selectTag="selectTag" />
+                </div>
+              </a-form-item>
+              <a-form-item  label="镜像描述" name="description">
                 <a-textarea
                   v-model:value="createFormData.description"
                   placeholder="请在这里输入镜像描述文字"
@@ -98,11 +107,8 @@
               </a-form-item>
             </a-form>
           </div>
-          <template v-slot:footer>
-            <div>
-              <a-button @click="cancel">取消</a-button>
-              <a-button type="primary" @click="saveImage">确定</a-button>
-            </div>
+          <template #footer>
+            <Submit @submit="saveImage" @cancel="cancel" :loading="saveImageLoad"></Submit>
           </template> 
           
         </a-modal>
@@ -122,6 +128,8 @@ import {
   defineProps,
   createVNode,
 } from "vue";
+import LabelList from 'src/components/LabelList.vue'
+import storage from "src/utils/extStorage";
 import { useRouter, useRoute } from "vue-router";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
@@ -145,11 +153,12 @@ updata({
   showNav: true,
 });
 const saveVisible:any=ref(false)
-const createFormData=reactive({
+const createFormData:any=reactive({
     name:'',
-    description:''
+    description:'',
+    tags:[]
 })
-const createForm:any=ref()
+const createForm=ref()
 // 镜像名称校验
 const nameValidator = (rule: any, value: any, callback: any) => {
       var reg = /^[a-zA-Z0-9_]+$/g;
@@ -164,16 +173,34 @@ const nameValidator = (rule: any, value: any, callback: any) => {
       }
     };
 const rules: any = {
-      name: [{ validator: nameValidator, required:true, trigger: "change" }],
-      description: [
-        {
-          required:true,
-          max: 200,
-          message: "镜像描述最长200个字",
-          trigger: "change",
-        },
+      name: [{ validator: nameValidator, required:true, trigger: "blur" }],
+      // name: [{ required: true, message: "请输入镜像名称", trigger: "blur" }],
+      // description: [{  required:true, max: 200, message: "镜像描述最长200个字", trigger: "change",}],
+      tags: [
+        {required: true,validator: fileListValidator,trigger: "blur"},
       ],
     };
+async function fileListValidator() {
+  console.log(createFormData.tags);
+  if (createFormData.tags.length === 0) {
+    message.warn("请选择镜像标签");
+    return Promise.reject("请选择镜像标签");
+  } else if(!(createFormData.tags.includes('vnc') || createFormData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需至少选择一个");
+    return Promise.reject();
+  }else if((createFormData.tags.includes('vnc') && createFormData.tags.includes('jupyter'))){
+    message.warn("vnc或jupyter标签需只需任选其一");
+    return Promise.reject();
+  }
+  else {
+    createForm.value.clearValidate('tags')
+    return Promise.resolve();
+  }
+}
+const selectTag=async (val:any,arr:any)=>{
+  console.log(val);
+  fileListValidator()
+}
 const imageid:any=ref()
 const saveIndex:any=ref()
 const OnlineAdd = () => {
@@ -215,6 +242,8 @@ const getWorkbenchStatus=(operate?:any,index?:any)=>{
             getWorkbenchStatus(operate,index)
           },100)
         }
+      }).catch(()=>{
+        list[index].opening=false
       })
 };
 const enterFun = (val: any) => {
@@ -260,6 +289,8 @@ const openEnv=(val:any,index:any,operate:any)=>{
     // message.success('开启成功！')
     // list[index].opening=false
     getWorkbenchStatus(operate,index);
+  }).catch(()=>{
+    list[index].opening=false
   })
 }
 const deleteFun = (val: any) => {
@@ -278,41 +309,49 @@ const deleteFun = (val: any) => {
   });
 };
 const GenerateImage = (val: any,k:any) => {
+  // console.log(val);
+  var iamgeSaveStatus:any = storage.lStorage.get("iamgeSaveStatus")? storage.lStorage.get("iamgeSaveStatus"): [];
+  let flage:any=false
+  iamgeSaveStatus.forEach((v:any,index:number)=>{
+    if(val.id==v.id){
+      var time = new Date().getTime() - new Date(v.beginIime).getTime();
+      if (time / 1000 / 60 > 10) {
+        // reactiveData.isSaveImage = true;
+        iamgeSaveStatus.splice(index, 1);
+        storage.lStorage.set("iamgeSaveStatus", JSON.stringify(iamgeSaveStatus));
+      } else {
+         flage=true
+         message.warning('保存镜像后10分钟内无法再次操作')
+         return
+      }
+    }
+  })
+  if(flage === true){
+    return
+  }
   createFormData.name=''
   createFormData.description=''
   saveVisible.value=true
   imageid.value=val.id
   saveIndex.value=k
 };
+var saveImageLoad: Ref<boolean> = ref(false);
 const saveImage=()=>{
-
-  if(!createFormData.name){
-    message.warning('镜像名称不能为空！')
-    return
-  }
-  if(!createFormData.description){
-    message.warning('镜像描述不能为空！')
-    return
-  }
-  // createForm.value.validate().then((res:any)=> {
-
-  // }).catch((err:any)=>{message.warning(err)})
-   let obj={
-    name:createFormData.name,
-    description:createFormData.description
-  }
-  list[saveIndex.value].generateLoad=true
-  // val.generateLoad=true
-  http.GenerateImage({urlParams:{imageID:imageid.value},param:{...obj}}).then((res: IBusinessResp) => {
-    message.success("生成成功");
-    createForm.value.resetFields();
-    saveVisible.value=false
-    list[saveIndex.value].generateLoad=false
-  //  val.generateLoad=false
-  })
-  .catch(() => {
-    // val.generateLoad=false
-    list[saveIndex.value].generateLoad=false
+  createForm.value.validate().then(async ()=>{
+    const val= await fileListValidator()
+    list[saveIndex.value].generateLoad=true
+    saveImageLoad.value=true
+    http.GenerateImage({urlParams:{imageID:imageid.value},param:{...createFormData}}).then((res: IBusinessResp) => {
+      message.success("生成成功");
+      createForm.value.resetFields();
+      saveVisible.value=false
+      list[saveIndex.value].generateLoad=false
+      saveImageLoad.value=false
+    })
+    .catch(() => {
+      saveImageLoad.value=false
+      list[saveIndex.value].generateLoad=false
+    })
   })
 }
 const cancel=()=>{
@@ -337,10 +376,22 @@ const initData = () => {
     loading.value = false;
   });
 };
-
+const recommend:any=reactive([])
+function getImgTag() {
+  recommend.length=0
+  http.getImgTag().then((res: any) => {
+    let  data= res.data;
+    let arr=[{name:'vnc',value:'vnc'},{name:'jupyter',value:'jupyter'}]
+    recommend.push(...arr)
+    data.forEach((v:any) => {
+      recommend.push({name:v.name,value:v.name})
+    });
+  });
+}
 onMounted(() => {
   // initData();
   init()
+  getImgTag()
 });
 async function init() {
     await initData();
@@ -351,7 +402,7 @@ async function init() {
 .reference {
   position: fixed;
   width: 100%;
-  top: 110px;
+  top: 90px;
   left: 0;
   height: 50px;
   .addBox {
@@ -364,6 +415,9 @@ async function init() {
       }
     }
   }
+}
+.reference2{
+  top: 110px;
 }
 .mainBox {
   flex-wrap: wrap;
@@ -386,6 +440,7 @@ async function init() {
     // height: 224px;
     color: var(--white);
     .top {
+      display: flex;
       justify-content: space-between;
       padding: 1rem;
       height: 180px;
@@ -397,7 +452,14 @@ async function init() {
         width: 70%;
         .tit {
           color: var(--white-65);
+          font-size: 14px;
+        }
+        .tit2{
           font-size: 12px;
+          span:nth-child(2){
+            color:#fffa75;
+            margin-left: 8px;
+          }
         }
         .parameter {
           margin: 14px 0 20px 0;

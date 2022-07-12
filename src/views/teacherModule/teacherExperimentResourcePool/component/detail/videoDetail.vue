@@ -7,28 +7,27 @@
         <a-button type="primary" @click="uploadVideo">上传视频</a-button>
         <a-button type="primary" @click="selectVideoClick">选择视频</a-button>
       </span>
-      <a-button type="primary" @click="deletVideo" v-else
+      <a-button type="primary" @click="delet" v-else
         >移除</a-button
       >
     </div>
   </div>
   <div class="experiment-content">
-    <video
-      :poster="videoCover"
+    <common-video
       style="width: 100%; height: 650px"
       controls="true"
       :src="fileInfo.tusdVideoUrl"
       v-if="fileInfo.tusdVideoUrl"
-    ></video>
+    ></common-video>
   </div>
   <!-- <Submit @submit="onSubmit" @cancel="cancel" v-if="!fileInfo.id"></Submit> -->
   <!-- 选择视频抽屉 -->
-  <SelectDocOrMp4 
-    :activeFile="activeFile" 
-    :visible="visible" 
-    :docOrMp4Type="2" 
-    @selectDocOrMp4File="selectDocOrMp4File" 
-    @closeDrawerDoc="closeDrawerDoc" 
+  <SelectDocOrMp4
+    :activeFile="fileInfo"
+    :visible="visible"
+    :docOrMp4Type="2"
+    @selectDocOrMp4File="selectDocOrMp4File"
+    @closeDrawerDoc="closeDrawerDoc"
   />
   <!-- 上传视频弹窗 -->
   <upload-file-modal
@@ -39,7 +38,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, inject, reactive, PropType } from "vue";
+import { ref, inject, reactive, PropType, watch } from "vue";
 import videoCover from 'src/assets/images/common/videoCover.jpg'
 import { MessageApi } from "ant-design-vue/lib/message";
 import selectFile from "src/components/selectFile/selectFile.vue";
@@ -49,6 +48,8 @@ import { IBusinessResp } from "src/typings/fetch.d";
 import { useRouter, useRoute } from "vue-router";
 import Submit from "src/components/submit/index.vue";
 import SelectDocOrMp4 from 'src/components/SelectDocOrMp4/index.vue'
+import CommonVideo from "../../../../../components/common/CommonVideo.vue";
+
 const router = useRouter();
 const route = useRoute();
 const { currentTab, type }  = route.query
@@ -78,40 +79,58 @@ const props: Props = defineProps({
     }
   }
 })
-const fileInfo = props.detail.content_task_files&&props.detail.content_task_files.length ? 
-  Object.assign(props.detail.content_task_files[0], {tusdVideoUrl:props.detail.content_task_files[0].file_url}) : {
-    id: 0,
-    tusdVideoUrl: '',
-    file_url: ''
-  }
-
-
+const emit = defineEmits<{
+  (e: "getExperimentDetail"): void;
+}>();
+let fileInfo: any = reactive({})
+watch(
+  () => props.detail,
+  () => {
+    if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+      fileInfo.id = props.detail.content_task_files[0].id
+      fileInfo.tusdVideoUrl = props.detail.content_task_files[0].file_url
+    } else {
+      fileInfo.id = 0
+      fileInfo.tusdVideoUrl = ''
+      fileInfo.file_url = ''
+    }
+  },
+  { deep: true, immediate: true }
+);
+const delet = () => {
+  fileInfo.id = 0
+  fileInfo.tusdVideoUrl = ''
+  fileInfo.file_url = ''
+}
 // 移除视频
 const deletVideo = () => {
-  http.deleteVideo({urlParams: {content_id: props.detail.id}})
-  .then((res: any) => {
-    fileInfo.id = 0
-    fileInfo.tusdVideoUrl = ''
-    fileInfo.file_url = ''
+  return new Promise((resolve) => {
+    http.deleteVideo({urlParams: {content_id: props.detail.id}})
+      .then((res: any) => {
+        fileInfo.id = 0
+        fileInfo.tusdVideoUrl = ''
+        fileInfo.file_url = ''
+        resolve(res)
+      })
   })
 };
 
 
 // 选择视频
 const visible = ref<boolean>(false);
-let activeFile: any = reactive({})
 const selectVideoClick = () => {
   visible.value = true;
 };
 const selectDocOrMp4File = (val: any) => {
   // console.log(val)
-  Object.assign(activeFile, val)
+  Object.assign(fileInfo, val)
   fileInfo.tusdVideoUrl = val.file_url
-  fileInfo.file_url = val.file_url
-  // activeFile.id = val.id
+  fileInfo.file_url = fileInfo.file_html
+  fileInfo.name = val.file_name
 };
 const closeDrawerDoc = () => {
   visible.value = false;
+  fileInfo.file_url ? updateVideoGuide() : ''
 };
 
 // 上传视频
@@ -120,16 +139,23 @@ const uploadVideo = () => {
   visibleUpload.value = true;
 };
 let dataId = 0
-const uploadSuccess = (uploadFileList: any, id: any) => {
+const uploadSuccess = (uploadFileList?: any, id?: any) => {
+  // console.log(fileInfo)
   // console.log(uploadFileList)
   dataId = id
   fileInfo.tusdVideoUrl = uploadFileList.tusdVideoUrl
   fileInfo.file_url = uploadFileList.file_url
-
+  fileInfo.name = uploadFileList.name
+  updateVideoGuide()
+};
+const updateVideoGuide = async () => {
+  // console.log(fileInfo)
   const file = {
     "file_path": fileInfo.file_url,// 文档实验-文件
+    file_name: fileInfo.name
   }
-  Object.assign(file, {"directory_id": dataId || activeFile.dataset_id})
+  Object.assign(file, {"directory_id": dataId || fileInfo.dataset_id})
+  await deletVideo()
   http.updateVideoGuide({
     param: {video_file:file},
     urlParams: {content_id: props.detail.id}
@@ -137,8 +163,9 @@ const uploadSuccess = (uploadFileList: any, id: any) => {
     dataId = 0
     $message.success("更新成功")
     // router.go(-1)
+    emit('getExperimentDetail')
   })
-};
+}
 
 const onSubmit = () => {
   if (!fileInfo.file_url) {
@@ -148,7 +175,7 @@ const onSubmit = () => {
   const file = {
     "file_path": fileInfo.file_url,// 文档实验-文件
   }
-  Object.assign(file, {"directory_id": dataId || activeFile.dataset_id})
+  Object.assign(file, {"directory_id": dataId || fileInfo.dataset_id})
   http.updateVideoGuide({
     param: {video_file:file},
     urlParams: {content_id: props.detail.id}

@@ -1,10 +1,52 @@
 {
   "id": "3150577",
-  "name": "信创",
+  "name": "统一教学平台",
   "font_family": "iconfont",
   "css_prefix_text": "icon-",
   "description": "",
   "glyphs": [
+    {
+      "icon_id": "2418241",
+      "name": "放大",
+      "font_class": "fangda",
+      "unicode": "e67a",
+      "unicode_decimal": 59002
+    },
+    {
+      "icon_id": "7594802",
+      "name": "24gl-folder3",
+      "font_class": "24gl-folder3",
+      "unicode": "eabe",
+      "unicode_decimal": 60094
+    },
+    {
+      "icon_id": "7594806",
+      "name": "24gl-folderOpen",
+      "font_class": "24gl-folderOpen",
+      "unicode": "eac0",
+      "unicode_decimal": 60096
+    },
+    {
+      "icon_id": "145706",
+      "name": "更多_填充",
+      "font_class": "gengduotianchong",
+      "unicode": "e67f",
+      "unicode_decimal": 59007
+    },
+    {
+      "icon_id": "30062544",
+      "name": "录像",
+      "font_class": "luxiang",
+      "unicode": "e678",
+      "unicode_decimal": 59000
+    },
+    {
+      "icon_id": "30062545",
+      "name": "系统日志",
+      "font_class": "xitongrizhi",
+      "unicode": "e679",
+      "unicode_decimal": 59001
+    },
     {
       "icon_id": "30030610",
       "name": "高配",

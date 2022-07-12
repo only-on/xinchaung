@@ -2,7 +2,7 @@
   <div class="vm-layout">
     <div class="vm-header">
     <slot name="header">
-      <vm-header></vm-header>
+      <vm-header ref="vmHeaderRef"></vm-header>
     </slot>
       
     </div>
@@ -114,6 +114,10 @@ onMounted(() => {
     document.body.style.userSelect = "auto";
   };
 });
+let vmHeaderRef = ref(null)
+defineExpose({
+  vmHeaderRef
+})
 </script>
 
 <style lang="less" scoped>

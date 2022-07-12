@@ -32,8 +32,8 @@ function HotWords(id:any, data: any){
           right:'2%',
           bottom:'10%'
         },
-        backgroundColor: '#fff',
         tooltip: {},
+        backgroundColor: '#fff',
         // animationDurationUpdate: function(idx) {
             // 越往后的数据延迟越大
             //  return idx * 100;
@@ -165,6 +165,12 @@ function echartsBar(id:any,data:any){
       top: "20%",
       right:'2%',
       bottom:'12%'
+    },
+      tooltip: {
+        // trigger: "axis",
+        // formatter:function(params:any){
+        //   return params[0].name+'<br>'+params[0].seriesname
+        // }
     },
     xAxis: {
       type: 'category',

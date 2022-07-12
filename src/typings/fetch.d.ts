@@ -18,7 +18,7 @@ export interface IRequestParams {
     credentials?: RequestCredentials;
     mode?: RequestMode;
     timeout?: number;
-    silent?: Boolean // 静默？静默状态下不会弹出气泡
+    silent?:boolean | ((data?:IBusinessResp) => boolean) // 静默？静默状态下不会弹出气泡
 }
 /**
  * 业务响应结构

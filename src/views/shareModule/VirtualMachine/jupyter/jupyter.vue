@@ -2,9 +2,11 @@
   <layout :navData="navData">
     <template v-slot:right>
       <iframe
+        id="iframe"
         :src="'http://' + noteUrl"
         frameborder="0"
         style="width: 100%; height: 100%"
+        v-if="showIframe"
       ></iframe>
     </template>
   </layout>
@@ -19,6 +21,7 @@
     :taskId="taskId"
     :opType="opType"
     :current="baseInfo?.current"
+    :isAutoRemove="isAutoRemove"
   ></disableStudent>
 </template>
 
@@ -36,7 +39,7 @@ import { useStore } from "vuex";
 
 const route = useRoute();
 const router = useRouter();
-const { opType, type, taskId, topoinst_id, connection_id } = route.query;
+const { opType, type, taskId, topoinst_id, connection_id, recommendType } = route.query;
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
@@ -62,6 +65,8 @@ let isCurrentPage = true; // 是否是当前页面
 const disableVisable: any = ref(false);
 const disableData: any = ref({});
 
+let TimerIframe: NodeJS.Timeout | null = null;
+
 // 获取虚拟机基本信息pageinfo
 function getVmBase() {
   loading.value = true;
@@ -71,6 +76,7 @@ function getVmBase() {
       type: type,
       taskId: taskId,
     };
+    recommendType ? params.recommendType = recommendType : ''
     getVmBaseInfo(params).then((res: any) => {
       if (Number(res.data?.current?.status)>=2) {
         let modal = Modal.confirm({
@@ -125,6 +131,8 @@ let ws: WritableComputedRef<IWmc> = computed({
     store.commit("setLongWs",val)
   }
 })
+
+const isAutoRemove = ref(false)   // 是否是自动排课结束前15分钟，推送消息
 // 初始化ws
 function initWs() {
   // if (ws.value) {
@@ -135,7 +143,7 @@ function initWs() {
     url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + connection_id,
     open: () => {
       if (baseInfo.value && baseInfo.value?.current) {
-        console.log(11111);
+        // console.log(11111);
 
         ws.value.join(topoinst_id + "_room");
       }
@@ -202,8 +210,8 @@ function initWs() {
           }
         } else if (wsJsonData.type == "return_message") {
           if (Object.keys(wsJsonData.data).length > 0) {
-            if (wsJsonData.data?.message) {
-              message.warn(wsJsonData.data.message);
+            if (wsJsonData.data?.msg) {
+              message.warn(wsJsonData.data.msg);
             } else {
               message.warn(wsJsonData.data);
             }
@@ -217,6 +225,10 @@ function initWs() {
           // 禁用学生
           disableVisable.value = true;
           disableData.value = wsJsonData.data;
+        } else if (wsJsonData.type=="auto-remove") {
+          isAutoRemove.value = true
+          disableVisable.value = true
+          disableData.value = wsJsonData.data
         }
       }
     },
@@ -234,12 +246,36 @@ onBeforeRouteLeave(() => {
   isCurrentPage = false;
   clearTimeout(Number(timerout));
   closeWs();
+  clearTimeout(Number(TimerIframe));
 });
+let showIframe = ref(true)
 onMounted(async () => {
   await getVmBase();
-  if (Number(baseInfo.value?.current?.status)<2||role !== 4) {
+  if (Number(baseInfo.value?.current?.status)<2||role !== 4||recommendType) {
     initWs();
   }
+  const iframe: any = document.querySelector('#iframe')
+  let onloadIframe = false
+  // 处理兼容性问题
+  if (iframe?.attachEvent) {
+    iframe.attachEvent('onload', () => {
+      clearInterval(Number(TimerIframe));
+      onloadIframe = true
+    })
+  } else {
+    iframe.onload = () => {
+      clearInterval(Number(TimerIframe));
+      onloadIframe = true
+    }
+  }
+  TimerIframe = setInterval(() => {
+    // console.log(onloadIframe)
+    if (!onloadIframe) {
+      showIframe.value = false
+      setTimeout(() => {showIframe.value = true}, 200);
+    }
+    // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
+  }, 6000)
 });
 </script>
 

@@ -23,7 +23,9 @@
                     <div class="step-row">
                         <div class="step-text">导入授权文件</div>
                         <div class="upload-code-file">
+                          <!-- accept=".so" -->
                             <a-upload
+                            accept=".so"
                             name="file"
                             :multiple="false"
                             :showUploadList="false"
@@ -67,25 +69,27 @@
         <div class="settingList">
             <div class="tit">授权设置</div>
             <div class="tableHeight">
-              <a-table
-            rowKey='module'
-            :columns="columns"
-            :data-source="data"
-            :pagination="
-                tableData.total > 10
-                ? {
-                    hideOnSinglePage: false,
-                    showSizeChanger: true,
-                    total: tableData.total,
-                    current: tableData.page,
-                    pageSize: tableData.limit,
-                    onChange: onChange,
-                    onShowSizeChange: onShowSizeChange,
-                    }
-                : false
-            "
-            >
-            </a-table>
+              
+            <a-spin :spinning="loading" size="large" tip="Loading...">
+                <a-config-provider>
+                    <a-table rowKey='module' :columns="columns" :data-source="data" :pagination=" tableData.total > 10
+                          ? {
+                              showSizeChanger: true,
+                              total: tableData.total,
+                              current: tableData.page,
+                              pageSize: tableData.limit,
+                              onChange: onChange,
+                              onShowSizeChange: onShowSizeChange,
+                              }
+                          : false
+                      "
+                      >
+                      </a-table>
+                    <template #renderEmpty>
+                    <div v-if="!loading"><Empty type="tableEmpty" /></div>
+                    </template>
+                </a-config-provider>
+            </a-spin>
             </div>
         </div>
     </div>
@@ -97,7 +101,8 @@
       onMounted,
       reactive,
       inject,
-      h
+      h,
+      Ref
     } from "vue";
     import uploadFile from "src/request/uploadFile";
     import cleanModal from './cleanModal.vue'
@@ -120,6 +125,7 @@
 const codeRef = ref(null);
 const columns: any = ref();
 const data: any = ref([]);
+var loading: Ref<boolean> = ref(false);
 const statisData:any=ref()
 const tableData: any = reactive({
   total: 0,
@@ -162,12 +168,10 @@ const reactiveData:any=reactive({
 })
 function onChange(page: any, pageSize: any) {
   tableData.page=page
-//   getStugrandsList()
 }
 function onShowSizeChange(current: any, size: any) {
   tableData.page=1
   tableData.limit=size
-//   getStugrandsList()
 }
 function modalEl(){
   return h(
@@ -220,7 +224,7 @@ function copyCode(e: Event) {
           body,
           success: (res: any) => {
             if (res.status === 1) {
-              authorizationFile.url = res.data.url;
+              authorizationFile.url = res.data.full_url;
               reactiveData.isShowBtn = false;
               authorizationFile.progress = 100;
             } else {
@@ -274,18 +278,26 @@ function copyCode(e: Event) {
         };
          http.saveSettingApi({param:params}).then((res: any) => {
           // reactiveData.authorizationData.authorization_code = res.authNumber;
-            message.warning('授权成功！')
+            message.success('授权成功！')
             getPowerList()
         });
     }
       // 获取系统日志时间配置
 
       function getPowerList(){
+        loading.value = true;
         http.powerList().then((res:any)=>{
+          loading.value = false
           data.value=res.data.auth_data
           tableData.total=res.data.auth_data?.length
           authorizationData.authorization_code =res.data?.auth_code
           // authorizationData.authorization_code ='34c9d5719cc75b75330df7b34a490b07ed1316bedae365966538766e22cb554e.d84e1e8e0a064bd62a858ad3b7dbf475'
+        }).catch((res:any)=>{
+          console.log(res);
+          loading.value = false
+          data.value=res.data?.auth_data
+          tableData.total=res.data?.auth_data?.length
+          authorizationData.authorization_code =res.data?.auth_code
         })
       }
       onMounted(()=>{
@@ -357,8 +369,8 @@ function copyCode(e: Event) {
     }
     .settingList{
       .tableHeight{
-        height:430px;
-        overflow-y: hidden;
+        // height:420px;
+        // overflow-y:auto;
       }
     }
     .filename{

@@ -6,8 +6,8 @@
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber1" :key="index.toString()" @click="toJump(item.link)">
-                        <div>
-                            <img :src="item.img">
+                        <div class='imgBox'>
+                            <img class='img' :src="item.img">
                         </div>
                         <div class="courseNumber">{{item.course}}</div>
                         <div class="number">{{item.number}}</div>
@@ -18,8 +18,8 @@
                 <div class="title">快捷入口</div>
                 <div class="entranceCon">
                     <div class="enterItem" v-for="(item,index) in enterNumber2" :key="index.toString()" @click="toJump(item.link)">
-                        <div>
-                            <img :src="item.img">
+                        <div class='imgBox'>
+                            <img class='img' :src="item.img">
                         </div>
                         <div class="courseNumber">{{item.course}}</div>
                         <div class="number">{{item.number}}</div>
@@ -62,19 +62,19 @@
                 <div class="plateRight">
                     <div>
                         <div id="plate1"></div>
-                        <div><span class="labelCon">内存</span><span class='contentCon'>{{statisticData?.platform_resource.memTotal}}G</span></div>
+                        <div><span class="labelCon">内存</span><span class='contentCon'>{{statisticData?.platform_resource.memTotal==null?'--' :statisticData?.platform_resource.memTotal+'G'}}</span></div>
                     </div>
                     <div>
                         <div id="plate2"></div>
-                        <div><span class="labelCon">CPU</span><span class='contentCon'>{{statisticData?.platform_resource.cpuCores}}核</span></div>
+                        <div><span class="labelCon">CPU</span><span class='contentCon'>{{statisticData?.platform_resource.cpuCores==null?'--' :statisticData?.platform_resource.cpuCores+'核'}}</span></div>
                     </div>
                     <div>
                         <div id="plate3"></div>
-                        <div><span class="labelCon">硬盘</span><span class='contentCon'>{{statisticData?.platform_resource.disk}}G</span></div>
+                        <div><span class="labelCon">硬盘</span><span class='contentCon'>{{statisticData?.platform_resource.disk==null?'--' :statisticData?.platform_resource.disk+'G'}}</span></div>
                     </div>
                    <div>
                         <div id="plate4"></div>
-                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem}}G</span></div>
+                        <div><span class="labelCon">GPU</span><span class='contentCon'>{{statisticData?.platform_resource.gpuMem==null? '--' :statisticData?.platform_resource.gpuMem+'G'}}</span></div>
                    </div>   
                 </div>
             </div>
@@ -83,7 +83,8 @@
             <div class="serverNode-left">
                 <div class="flexTitle">
                     <div class="title-bac">服务器节点状态</div>
-                    <div>评级:<span class="status">{{serveNodeStatus}}</span></div>
+                    <!-- 优秀 -->
+                    <div>评级:<span class="status" :class="serveNodeStatus=='优秀'?'youxiu':(serveNodeStatus=='差'?'cha':'lianghao')">{{serveNodeStatus}}</span></div>
                     <div>
                         <a-select class="select-input"  @change="handleChange" v-model:value="serveNodeValue">
                             <a-select-option
@@ -93,7 +94,7 @@
                                 >{{ item.label }}
                             </a-select-option>
                         </a-select>
-                        <span class="ifRun">运行</span>
+                        <span class='ifRun'>{{serveNode?.state=='up'?'运行':'关闭'}}</span>
                     </div>
                 </div>
                 <div class="node">
@@ -117,13 +118,13 @@
                                     {{item.title}}:
                                 </span>
                                 <span class='percent'>
-                                    {{item.percent}}%
+                                    {{item.percent==null?'--':(item.percent+'%')}}
                                 </span>
                                 <span>
                                     等级:
                                 </span>
-                                <span :class="item.grade=='low'?'low':(item.grade=='middle'?'middle':'high')">
-                                    {{item.grade=='low'?'低风险':(item.grade=='middle'?'中风险':'高风险')}}
+                                <span :class="item.grade=='low'?'low':(item.grade=='medium'?'middle':'high')">
+                                    {{item.grade=='low'?'低风险':(item.grade=='medium'?'中风险':'高风险')}}
                                 </span>
                                 <span class='maintain' @click="toMaintain(item.link)">
                                     去维护 
@@ -171,13 +172,14 @@
                     <div class="productinfo">
                     <div class="infoName">产品信息</div>
                     <div class='infoCon'>
-                        <div class="name" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                        <div class="name single_ellipsis" v-for="(item,i) in productInfo" :key="i">{{item.name}}</div>
+                        <!-- <div></div> -->
                     </div>
                 </div>
                 <div class="quickEntrance">
                     <div class="infoName">快捷入口</div>
                     <div class='infoCon'>
-                        <div class="name quicklyEnter" v-for="(item,i) in enterInfo" :key="i" @click="toJump(item.link)">{{item.name}}</div>
+                        <div class="name quicklyEnter single_ellipsis" v-for="(item,i) in enterInfo" :key="i" @click="toJump(item.link)">{{item.name}}</div>
                     </div>
                 </div>
                 </div>
@@ -207,11 +209,13 @@
     import {activityOption,resourceOption,dashboardResource,dashboardService}  from './echartsOption';
     import router from "src/routers";
     import {getThemeData} from 'src/utils/theme'
+    import {useStore} from 'vuex';
     const {systemColor} = getThemeData()
     const http = (request as any).adminHome;
     const {systemImages} = getThemeData()
     var configuration: any = inject("configuration");
     var updata = inject("updataNav") as Function;
+    const store = useStore();
     updata({ tabs: [], showContent:false, showNav: false });
     const disabledDate = (current:any) => {
         return current && current > moment().endOf('day');
@@ -220,16 +224,16 @@
     const options:any = ref([
     ])
     const warningMessage:any=ref([
-        {title:'CPU使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
-        {title:'内存使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan'},
-        {title:'GPU使用率',percent:'--',grade:'中风险',link:'/teacher/coursePlan'},
+        {title:'CPU使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan/environmental'},
+        {title:'内存使用率',percent:'--',grade:'低风险',link:'/teacher/coursePlan/environmental'},
+        {title:'GPU使用率',percent:'--',grade:'中风险',link:'/teacher/coursePlan/environmental'},
         {title:'硬盘使用率',percent:'--',grade:'高风险',link:'/admin/systemMaintenance/diskManagement'}
     ])
     //资源历史使用概览
-    const radioTime:any=ref('yesterday')
+    const radioTime:any=ref('today')
     const pickTime:any=ref()
     //用户活跃度
-    const radioTimeUser:any=ref('yesterday')
+    const radioTimeUser:any=ref('today')
     const pickTimeUser:any=ref()
     // 今日
     const today=moment(new Date(), "YYYY-MM-DD")
@@ -280,8 +284,8 @@
         {name:'版本信息'},
         {name:'实施时间息'},
         {name:'售后联系方式'},
-        {name:'人工只能平台'},
-        {name:'4.1.10'},
+        {name:store.state.systemInfo.site_name},
+        {name:'1.1.0'},
         {name:'2022/03/17 17:34:00'},
         {name:'14567855671'},
     ]
@@ -326,7 +330,7 @@
         disk:[]
     })
     const serveNode:any=ref()
-    const serveNodeStatus:any=ref()
+    const serveNodeStatus:any=ref('')
     function getData(){
         http.statisData().then((res:any)=>{
             if(res.code==1){
@@ -374,7 +378,8 @@
                 warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
-                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
+                let obj={'low':'优秀','high':'差','medium':'良好'}      // {'low':'差','high':'优秀','medium':'良好'} 返回的是风险等级   对应的状态是反的
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel?obj[serveNode.value.nodeRiskLevel]:''
                 drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
                 drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
                 drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
@@ -400,7 +405,7 @@
     //服务节点变化
     function handleChange(value:any){
         console.log(value,serveNodeValue.value?.value)
-        http.serveStatus({param:{id:serveNodeValue.value?.value}}).then((res:any)=>{
+        http.serveStatus({param:{id:value}}).then((res:any)=>{
                 serveNode.value=res.data?.single_node_resource
                 warningMessage.value[0].percent=serveNode.value?.cpuUseRate
                 warningMessage.value[0].grade=serveNode.value?.cpuRiskLevel
@@ -410,11 +415,13 @@
                 warningMessage.value[2].grade=serveNode.value?.gpuRiskLevel
                 warningMessage.value[3].percent=serveNode.value?.diskUseRate
                 warningMessage.value[3].grade=serveNode.value?.diskRiskLevel
-                serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
-                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.memUseRate},systemColor.secondary))
-                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.primary))
-                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor1))
-                drawEcharts('node4',dashboardService({name:'GPU',type:'块',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.gpuUseRate},systemColor.Acolor2))
+                let obj={'low':'优秀','high':'差','medium':'良好'}      // {'low':'差','high':'优秀','medium':'良好'} 返回的是风险等级   对应的状态是反的
+                serveNodeStatus.value=serveNode.value?.nodeRiskLevel?obj[serveNode.value.nodeRiskLevel]:''
+                // serveNodeStatus.value=serveNode.value?.nodeRiskLevel=='low'?'良好':(serveNode.value?.nodeRiskLevel=='high'?'差':'中等')
+                drawEcharts('node1',dashboardService({name:'内存',type:'G',use:serveNode.value?.memUsed,total:serveNode.value?.memTotal,rate:serveNode.value?.memUseRate},systemColor.Acolor1))
+                drawEcharts('node2',dashboardService({name:'CPU',type:'core',use:serveNode.value?.cpuUsed,total:serveNode.value?.cpuCores,rate:serveNode.value?.cpuUseRate},systemColor.Acolor2))
+                drawEcharts('node3',dashboardService({name:'硬盘',type:'G',use:serveNode.value?.diskUsed,total:serveNode.value?.disk,rate:serveNode.value?.diskUseRate},systemColor.Acolor3))
+                drawEcharts('node4',dashboardService({name:'GPU',type:'G',use:serveNode.value?.gpuMemUsed,total:serveNode.value?.gpuMem,rate:serveNode.value?.gpuUseRate},systemColor.Acolor4))
         })
     }
     //用户活跃度改变日期
@@ -541,15 +548,23 @@
             padding: 10px 30px;
         }
         .number{
-            font-weight:20px;
+            font-size: 18px;
             font-weight: bold;
             margin-top: 10px;
         }
         .courseNumber{
             margin-top: 10px;
+            font-size: 16px;
         }
         .enterItem{
             text-align: center;
+            .imgBox{
+                width:100px;
+                height:100px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
             img{
                 width: 100px;
                 height: 100px;
@@ -557,6 +572,10 @@
         }
         .enterItem:hover{
             cursor: pointer;
+            .img{
+                width:90px;
+                height:90px;
+            }
         }
     }
     .entrance-left{
@@ -566,6 +585,7 @@
     .entrance-right{
         background-repeat: no-repeat;
         background-size: 100% 100%;
+        border-radius: 10px;
     }
 }
 
@@ -604,13 +624,29 @@
                 height: 27px;
                 text-align: center;
                 line-height: 27px;
-                background-color:#DBFCF3;
-                color: #07A15E;
+                // background-color:#DBFCF3;
+                // color: #07A15E;
                 border-radius: 13.5px;
                 margin-left: 10px;
             }
+            .youxiu{
+                color: #07A15E;
+                background-color: rgba(#07A15E,0.2);
+            }
+            .lianghao{
+                color: var(--primary-color);
+                background-color:var(--primary-1);
+            }
+            .cha{
+                color: red;
+                background-color: rgba(red,0.1);
+            }
             .ifRun{
                 color:var(--primary-color);
+                margin-left: 10px;
+            }
+            .close{
+                color:red;
                 margin-left: 10px;
             }
             :deep(.ant-select-selector){
@@ -671,7 +707,7 @@
     display: flex;
     padding-right: 100px;
     .labelCon{
-       font-size: 18px; 
+       font-size: 16px; 
        font-weight: bold;
     }
     .contentCon{
@@ -797,8 +833,10 @@
         .name{
             // width: 150px;
             color:#7E8085;
-            margin-right:40px;
-            margin-bottom: 20px;
+            // margin-right:40px;
+            // margin-bottom: 20px;
+            width: 25%;
+            line-height: 30px;
         }
     }
 }

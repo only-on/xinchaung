@@ -1,9 +1,9 @@
 <template>
   <div id="memberManage">
-    <a-tabs default-active-key="1" @change="callback">
+    <a-tabs default-active-key="1" @change="callback" :destroyInactiveTabPane="true">
       <a-tab-pane key="1" tab="学生"><student></student> </a-tab-pane>
       <a-tab-pane key="2" tab="分组"><group @updateGroup='updateGroup'></group></a-tab-pane>
-      <a-tab-pane key="3" tab="助教"><assistant></assistant> </a-tab-pane>
+      <a-tab-pane v-if="role===3" key="3" tab="助教"><assistant></assistant> </a-tab-pane>
     </a-tabs>
    <div class="tooTip" v-if="is_high&&is_teamed==false&&visableHigh">
       <div>有高配实验建议分组 <span class="icon-guanbi icon iconfont" @click="noshow"></span></div>
@@ -17,6 +17,9 @@ import { ref, toRefs, onMounted} from "vue";
 import student from "./student/index.vue";
 import group from "./group/index.vue";
 import assistant from "./assistant/index.vue";
+import extStorage from "src/utils/extStorage";
+const { lStorage } = extStorage;
+const role = Number(lStorage.get("role"));
 interface Props {
   is_high:any;
   is_teamed:any
@@ -30,20 +33,22 @@ function callback() {}
 function noshow(){
   visableHigh.value=false
 }
+const emit = defineEmits<{ (e: "updateGroup",groupok:any): void }>();
 function updateGroup(val:any){
   visableHigh.value=val
+  emit("updateGroup",val);
 }
 </script>
 
 <style lang="less" scoped>
 #memberManage {
-  width: 100%;
-  height: 714px;
-  border-radius: 10px;
-  box-shadow: 0 2px 4px 0 var(--black-0-7);
-  background: var(--white-100);
-  padding: 41px;
-  margin-top:10px;
+  // width: 100%;
+  // height: 714px;
+  // border-radius: 10px;
+  // box-shadow: 0 2px 4px 0 var(--black-0-7);
+  // background: var(--white-100);
+  padding: 40px;
+  // margin-top:10px;
   position: relative;
 }
 .tooTip{

@@ -13,7 +13,7 @@
       </div>
       <div class="header-right">
         <a-button type="primary" @click="BatchDelete">移除助教</a-button>
-        <a-button type="primary" class="brightBtn right-btn1" @click="addHelp">添加助教</a-button>
+        <a-button type="primary" class="marginBtn right-btn1" @click="addHelp">添加助教</a-button>
       </div>
     </div>
     <div class="tableScrollbar">
@@ -68,7 +68,7 @@
               <a-input v-model:value="formState.username" :disabled='editId?true:false' />
             </a-form-item>
             <a-form-item label="姓名"  name="name">
-              <a-input v-model:value="formState.name" />
+              <a-input v-model:value="formState.name" :maxLength='10' />
             </a-form-item>
             <a-form-item label="性别"  name="gender">
               <a-select v-model:value="formState.gender" placeholder="请选择">
@@ -124,16 +124,20 @@ columns.value = [
     title: "姓名",
     dataIndex: "name",
     key: "name",
+    width:160,
+    ellipsis: true,
   },
   {
     title: "性别",
-    dataIndex: "gender",
-    key: "gender",
+    dataIndex: "genderText",
+    key: "genderText",
   },
   {
     title: "邮箱",
     dataIndex: "email",
     key: "email",
+    width:120,
+    ellipsis: true,
   },
   {
     title: "电话",
@@ -144,6 +148,8 @@ columns.value = [
     title: "所属教师",
     dataIndex: "teacher_name",
     key: "teacher_name",
+    width:140,
+    ellipsis: true,
   },
   {
     title: "状态",
@@ -312,6 +318,7 @@ function submit(){
   if(editId.value){
     http.updateAssistant({ urlParams: { id: editId.value }, param:params}).then((res:any)=>{
       if(res){
+        formRef.value.resetFields()
         visible.value=false;
         editId.value=''
         getAssistantList()
@@ -320,6 +327,7 @@ function submit(){
   }else{
     http.addAssistanter({param:params}).then((res:any)=>{
       if(res){
+        formRef.value.resetFields()
         visible.value=false;
         getAssistantList()
       }
@@ -348,10 +356,13 @@ function getAssistantList(){
         },
       };
   http.assistantList({param:obj}).then((res:any)=>{
-      if(res.status==1){
-        data.value=res.data.list
+        let obj={'1':'男','2':'女'}
+        let arr=res.data.list
+        arr.forEach((v:any)=>{
+          v.genderText=obj[v.gender]?obj[v.gender]:'保密'
+        })
+        data.value=arr
         tableData.total=res.data.page.totalCount
-      }
   })
 }
 onMounted(()=>{
@@ -403,7 +414,7 @@ onMounted(()=>{
   }
 }
 .tableScrollbar{
-  height: 530px;
-  overflow-y: auto;
+  // height: 530px;
+  // overflow-y: auto;
 }
 </style>

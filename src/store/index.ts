@@ -12,11 +12,7 @@ const defaultTheme = {
   theme: "A",
   login: "A"
 }
-if (sStorage.get('systemInfo')) {
-  setTheme()
-} else {
-  sStorage.set('systemInfo', defaultTheme)
-}
+
 const clearStore = (keys:any) =>
   keys.forEach((key:any) => {
     sStorage.del(key);
@@ -44,6 +40,13 @@ const clearStore = (keys:any) =>
     },
   },
   mutations: {
+    saveTheme(){
+      if (sStorage.get('systemInfo')) {
+        setTheme()
+      } else {
+        sStorage.set('systemInfo', defaultTheme)
+      }
+    },
     // 保存登录后管理员信息
     saveAdminInfo(state, adminInfo) {
       state.adminInfo = adminInfo;

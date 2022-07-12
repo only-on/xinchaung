@@ -51,6 +51,7 @@ export const pieOptions = (data: IpieData) => {
 // 课程成绩分布
 export const radarOptions = (data: any) => {
   const {systemColor} = getThemeData()
+  console.log(systemColor)
   // let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   let datas: any[] = [data["0"], data.D, data.C, data.B, data.A]
   var assmax = Math.max.apply(null, datas);
@@ -192,6 +193,9 @@ export const scaterOptions = (type: number, data: any) => {
     tooltip: {
       position: 'right',
       formatter: function (params: any) {
+        if (params.componentType === 'markLine') {
+          return null;
+        }
         var tips = ''
         if (type == 1) {
           params['data'][2]?.forEach(function (item: any) {
@@ -226,7 +230,7 @@ export const scaterOptions = (type: number, data: any) => {
       // show:true,
       
       // end: Object.keys(data).length >= 7 ? 30 : 100,
-      // backgroundColor: theme.nextThemeColor, //组件的背景颜色
+      // backgroundColor: '', //组件的背景颜色
       fillerColor: systemColor.Tcolor2, //选中范围的填充颜色
       // handleSize: 10,//滑动条的 左右2个滑动条的大小
       // showDetail: false,

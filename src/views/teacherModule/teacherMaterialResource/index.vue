@@ -32,24 +32,21 @@
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
         @click="detail(list)"
       >
-        <div class="item-top">
-          <img :src="list.cover?list.cover:defaultCover" alt="封面" />
+        <div class="item-top" :style="list.cover?`background-image: url(${encodeURI(list.cover)});`:defaultCover">
           <div class="labels">
-            <span v-for="(v, index) in list.tags" :key="index">{{
-              v + (index !== list.tags.length - 1 ? " / " : "")
-            }}</span>
+            <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
         </div>
         <div class="item-content">
-          <div class="item-name single_ellipsis">{{ list.name }}</div>
+          <div class="item-name single_ellipsis" :title="list.name">{{ list.name }}</div>
           <div class="item-desc">
             <span class="type">{{ list.type_name }}</span>
-            <span class="desc single_ellipsis">{{ list.description }}</span>
+            <span class="desc single_ellipsis" :title="list.description">{{ list.description }}</span>
           </div>
           <div class="user-num">
             <div class="user" v-if="currentTab === 0 && list.user">
               <img :src="list.user.avatar||defaultAvatar" alt="" srcset="" />
-              <span class="name">{{list.user.username}}</span>
+              <span class="name" :title="list.username">{{list.username}}</span>
             </div>
             <div class="num-size">
               <span class="num">数量 {{ list.item_count }}</span>
@@ -60,7 +57,7 @@
       </div>
       <Empty v-if="!materialList.length && !loading" :type="EmptyType" />
       <a-pagination
-        v-if="pageTotal > 8"
+        v-if="pageTotal > 12"
         v-model:current="pageInfo.page"
         :pageSize="pageInfo.limit"
         :total="pageTotal"
@@ -135,7 +132,7 @@ const materialTypeList = reactive([
 const loading = ref<boolean>(false);
 const pageInfo = reactive({
   page: 1,
-  limit: 8,
+  limit: 12,
 });
 const pageTotal = ref<number>(0);
 const pageChange = (page: number) => {
@@ -156,7 +153,7 @@ const detail=(val:any)=>{
       query:{
         ...query,  
         avatar: val.user.avatar,
-        username: val.user.username
+        username: val.username
       }
     })
   }else{
@@ -355,21 +352,16 @@ const getTypeList = () => {
     &-top {
       height: 150px;
       position: relative;
-      img {
-        width: 100%;
-        height: 100%;
-        border-radius: 6px 6px 0 0;
-      }
+      background-size: 100% 100%;
+      background-repeat: no-repeat;
+      display: flex;
+      align-items: flex-end;
       .labels {
         width: 100%;
-        position: absolute;
-        bottom: 0;
-        height: 24px;
-        line-height: 24px;
+        padding: 1px 6px;
         background: var(--black-5);
         font-size: var(--font-size-sm);
         color: var(--white-85);
-        padding-left: 9px;
       }
     }
     &-content {
@@ -414,6 +406,15 @@ const getTypeList = () => {
           height: 20px;
           // background-color: pink;
           margin-right: 4px;
+        }
+        .name {
+          display: inline-block;
+          max-width: 56px;
+          word-break: normal;
+          overflow: hidden;
+          white-space: nowrap;
+          text-overflow: ellipsis;
+          vertical-align: middle;
         }
       }
       .num-size {

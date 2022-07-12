@@ -16,7 +16,7 @@
       <div class="vm-top">
         <div class="vm-base-left">
           <a-select class="ip-select" v-model:value="hostIp" @change="ipChange">
-            <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.uuid">
+            <a-select-option v-for="(item, index) in screenInfo" :key="index" :value="item.ip">
               {{ item.ip }}
             </a-select-option>
           </a-select>
@@ -29,8 +29,8 @@
           <span>
             {{
               currentVmInfo.classify === 'Linux'
-                ? `ssh端口：${currentVmInfo.ssh_port}`
-                : `rdp端口：${currentVmInfo.rdp_port}`
+                ? `SSH端口：${currentVmInfo.ssh_port}`
+                : `RDP端口：${currentVmInfo.rdp_port}`
             }}
           </span>
         </div>
@@ -56,6 +56,8 @@
 import { defineComponent, ref, reactive, watch, onMounted, toRefs, nextTick, PropType, provide } from 'vue'
 import VueNoVnc from "src/components/noVnc/noVnc.vue";
 import MarkedEditor from "src/components/editor/markedEditor.vue";
+import { wsConnect } from "src/request/websocket";
+import storage from "src/utils/extStorage";
 type TvncConnectOption={
   vmOptions:any
 }
@@ -70,6 +72,10 @@ export default defineComponent({
     screenInfo: {
       type: Array as PropType<IVmInfo[]>,
       default: []
+    },
+    connection_id: {
+      type: String,
+      default: ''
     }
   },
   setup(props, {emit}) {
@@ -77,10 +83,35 @@ export default defineComponent({
     const vncLoading=ref(false)
     provide("loading",vncLoading)
     function quitScreen() {
+      closeWs()
       emit('update:screenStatus', false)
       emit('update:modelValue', detail.value)
     }
     const novncEl: any = ref(null)
+    const ws: any = ref(null)
+    let ws_config = storage.lStorage.get("ws_config");
+    function initWs() {
+      console.log(props.connection_id)
+      ws.value = wsConnect({
+        url: "://" + ws_config.host + ":" + ws_config.port + "/?uid=" + props.connection_id,
+        open: () => {
+          
+        },
+        close: (ev: CloseEvent) => {
+          if (ev.type === "close") {
+          }
+        },
+        message: (ev: MessageEvent) => {
+          let regex = /\{.*?\}/g;
+          if (typeof ev.data === "string" && regex.test(ev.data)) {
+            let wsJsonData = JSON.parse(ev.data);
+          }
+        }
+      })
+    }
+    function closeWs() {
+      (ws.value as any)?.close();
+    }
     onMounted(() => {
       nextTick(() => {
         document.addEventListener('keyup', (e: any) => {
@@ -92,6 +123,7 @@ export default defineComponent({
           }
         })
       })
+
     })
     let currentVmInfo = reactive<IVmInfo>({
       ip: '',
@@ -144,6 +176,13 @@ export default defineComponent({
     //   },
     //   {deep: true}
     // )
+    watch(
+      () => props.connection_id,
+      (newVal) => {
+        newVal ? initWs() : ''
+      },
+      {deep: true}
+    )
     return {
       quitScreen,
       detail,
@@ -235,7 +274,9 @@ interface IVmInfo {
           border: 1px solid var(--cyan-100);
           color: var(--cyan-100);
           :deep(.ant-select-selector) {
-            border: 1px solid var(--cyan-100);
+            border: none;
+            box-shadow: none;
+            // border: 1px solid var(--cyan-100);
             color: var(--cyan-100);
             background: rgba(0, 0, 0, 0);
           }

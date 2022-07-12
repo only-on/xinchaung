@@ -5,10 +5,9 @@
         <h3 class="courseH3">课程简介</h3>
         <div class="introduce">{{props.courseDetail.introduce}}</div>
       </div>
-      <SetupChapter :Editable="getPower()" :courseId="Number(courseId)" />
+      <SetupChapter :Editable="getPower()" :courseId="Number(courseId)" @feedback="feedback" />
     </div>
-    <!-- rightContent 公开课详情 和学生端详情  v-if="role === 4 || (currentTab === '1' && role === 3)"     -->
-    <div class="rightContent" v-if="role === 4 || (currentTab === '1' && role === 3) || role===2">
+    <div class="rightContent" v-if="role === 4 || (currentTab === '1' && [3,5].includes(role)) || role===2">
       <Ranking :courseId="Number(courseId)"  v-if="role === 4"/>
       <graph :courseId="Number(courseId)" />
       <relevantExpert :courseId="Number(courseId)" v-if="role !== 2" />
@@ -50,20 +49,27 @@ const props = withDefaults(defineProps<Props>(), {
   courseDetail: ()=> {},      // 
 });
 console.log(props.courseDetail);
+const emit = defineEmits<{
+  (e: "feedback", val: any): void;
+}>();
+const feedback=(val:any)=>{
+  emit('feedback',val)
+}
 const getPower=()=>{
   let str=''
   if(role===2){
     str='readOnly'
   }
-  if(currentTab === '0' && role === 3){
+  if(currentTab === '0' && [3,5].includes(role)){
     str='canEdit'
   }
-  if((currentTab === '1' && role === 3) || role===4){
+  if((currentTab === '1' && [3,5].includes(role)) || role===4){
     str='canStudy'
   }
   if(is_authorizedText === 'Unauthorized'){
     str='readOnly'
   }
+  console.log(str);
   return str
 }
 onMounted(() => {

@@ -1,18 +1,22 @@
 <template>
   <div class="chartTerr">
-    <div class="chartTerrLeft" :id="fromT==='CreateCourse'?'borBot':''" :class="((currentTab === '1' && role === 3) || role === 4 || role ===2)?'chartTerrLeft2':''">
-      <div class="myChapter textScrollbar">
+    <div class="chartTerrLeft textScrollbar" :id="fromT==='CreateCourse'?'borBot':''" :class="showChartTerrLeft()?'chartTerrLeft2':''">
+      <div class="myChapter ">
         <ChapterList
           :ExternalOpen="ExternalOpen"
           @closeExternalOpen="Reselection"
           :courseId="props.courseId"
           :Editable="props.Editable"
           @selectChaptert="selectChaptert"
-          @selectExperiment="selectExperiment" 
+          @selectExperiment="selectExperiment"
+          @editExperiment="feedback"
+          @deleteExperiment="feedback"
+          @editChapter="feedback"
+          @deleteChapter="feedback"
            />
       </div>
     </div>
-    <div class="chartTerrRight" :id="fromT==='CreateCourse'?'borBot':''" v-if="currentTab === '0' && role === 3" :class="state.activeExperimentObj.id?'':'flexCenter'">
+    <div class="chartTerrRight" :id="fromT==='CreateCourse'?'borBot':''" v-if="showChartTerrRight()" :class="state.activeExperimentObj.id?'':'flexCenter'">
       <template v-if="state.activeExperimentObj.id">
         <div class="title flexCenter">
           <h3 class="courseh3">{{`${!state.activeExperimentObj.TeachingAids?'实验指导':{5:'备课资料',6:'教学指导',3:'课件'}[state.activeExperimentObj.type]}`}}</h3>
@@ -46,7 +50,7 @@
   <a-modal :visible="TemplatePreview"  :title="`模板预览`" class="setupVisible" :width="1080"  @cancel="cancelViewReport">
     <div class="box" v-if="TemplatePreview">
       <!-- {{state.activeExperimentObj.Newguidance.content_template}} -->
-      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template.template_id" />
+      <viewTemplate :id="state.activeExperimentObj.Newguidance.content_template?.template_id" />
     </div>
     <template #footer>
       <!-- <Submit @submit="SaveSetup()" @cancel="cancelSetup()" :loading="SetupLoading"></Submit> -->
@@ -68,7 +72,7 @@ import { Modal, message } from "ant-design-vue";
 import viewTemplate from "src/components/report/viewTemplate.vue"
 
 import CreateTemplate from "src/views/teacherModule/teacherTemplate/createTemplate.vue";
-import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv } from "src/utils/vncInspect"; // 打开虚拟机
+import { toVmConnect, IEnvirmentsParam, prepareEnv, goToVm, connectEnv, inspectEnv, createExamples } from "src/utils/vncInspect"; // 打开虚拟机
 
 import { useStore } from "vuex";
 const store = useStore()
@@ -95,10 +99,12 @@ const role = Number(lStorage.get("role"));
 const route = useRoute();
 const router = useRouter();
 const routeQuery = route.query
-const { currentTab,course_id } = route.query;
+const { currentTab,course_id,EditId } = route.query;
 const fromT=route.path.indexOf('CreateCourse')!==-1?'CreateCourse':'Detail'
 // console.log(fromT);
-
+const emit = defineEmits<{
+  (e: "feedback", val: any): void;
+}>();
 interface Props {
   // chapterList:any
   create?:boolean
@@ -154,7 +160,7 @@ const selectExperiment=(val:any)=>{
   state.activeExperimentObj={...val}
   experimentGuideLoading.value=false
   // 获取实验详情
-  if(!val.TeachingAids && currentTab === '0' && role===3 && val.id){
+  if(!val.TeachingAids && currentTab === '0' && (role === 3 || role===5) && val.id){
     // 教师端我的教学  才在右边展示实验指导
     getExperimentGuide(val.id)
   }
@@ -170,6 +176,9 @@ const getExperimentGuide=(id:number)=>{
     }
     console.log(state.activeExperimentObj.Newguidance)
     experimentGuideLoading.value=false
+    if (![3, 6, 7].includes(data.task_type)) {
+      getPrepareEnv()
+    }
   }).catch((err:any)=>{
     experimentGuideLoading.value=false
   })
@@ -183,24 +192,26 @@ const Reselection=()=>{
 var TemplatePreview: Ref<boolean> = ref(false);
 
 const viewReport=()=>{
-  // TemplatePreview.value=true
-  if(state.activeExperimentObj.Newguidance.content_template){
-    TemplatePreview.value=true
-  }else{
-    message.warning('该实验暂无报告模板')
-  }
+  TemplatePreview.value=true
+  // if(state.activeExperimentObj.Newguidance.content_template){
+  //   TemplatePreview.value=true
+  // }else{
+  //   message.warning('该实验暂无报告模板')
+  // }
   
 }
 const cancelViewReport=()=>{
   TemplatePreview.value=false
 }
-
+const feedback=(val:any)=>{
+  emit('feedback',val)
+}
 
 // 开始备课
 // 1未开始学习  2准备中   3准备完成 待进入
 const currentState = ref(1)
 const is_connect = ref(false)  // 当前ws是否连接成功
-const lessonPreparation=()=>{
+const lessonPreparation = async () => {
   
   let {task_type, id} = state.activeExperimentObj
   const param: any = {
@@ -214,13 +225,7 @@ const lessonPreparation=()=>{
     inspectEnv(param).then(() => {
       router.push({
         path: "/vm",
-        query: {
-          type: param.type,
-          opType: param.opType,
-          taskId: param.taskId,
-          // routerQuery: JSON.stringify(routeQuery),
-          experType: task_type
-        },
+        query: param,
       });
     })
     return
@@ -229,40 +234,23 @@ const lessonPreparation=()=>{
   if (task_type === 6 || task_type === 7) {
     router.push({
       path: "/vm",
-      query: {
-        type: param.type,
-        opType: param.opType,
-        taskId: param.taskId,
-        routerQuery: JSON.stringify(routeQuery),
-        experType: task_type
-      },
+      query: param,
     });
     return
   }
 
   if (currentState.value === 2&& connectStatus.value===2) {
     currentState.value = 3
-    goToVm(router, routeQuery)
+    const createExamplesInfo: any = await createExamples(param)
+    Object.assign(param, {
+      connection_id: createExamplesInfo.data.connection_id,
+      topoinst_uuid: createExamplesInfo.data.topoinst_uuid,
+      topoinst_id: createExamplesInfo.data.topoinst_id,
+    })
+    createExamplesInfo.data.connection_id ? router.push({path: "/vm",query: param}):goToVm(router, routeQuery)
     return
   }
   connectStatus.value = 1
-  // const {id} = state.activeExperimentObj
-  // let task_type = state.activeExperimentObj.task_type
-  // if (state.activeExperimentObj.is_webide && state.activeExperimentObj.type === 4) {
-  //   task_type = 3
-  // }
-  // const param: any = {
-  //   type: "course",  // 实验
-  //   opType: "prepare",
-  //   taskId: id,
-  //   experType: task_type
-  // };
-  // if (task_type === 6 || task_type === 7 || task_type === 3) {
-  //   isWsConnect.value = true
-  //   connectStatus.value = 2
-  // } else {
-  //   isWsConnect.value = false
-  // }
   // 准备环境
   if (currentState.value === 1) {
     // currentState.value = 2
@@ -275,7 +263,44 @@ const lessonPreparation=()=>{
     return
   }
 }
+// 检查备课环境
+const vmApi = request.vmApi;
+let createExamplesInfo: any = reactive({})
+const getPrepareEnv = () => {
+  const param = {
+    "type": "course",
+    "taskId": props.courseId
+  }
+  createExamplesInfo = {}
+  vmApi.getPrepareEnv({param}).then((res: any) => {
+    if (res?.data[Number(state.activeExperimentObj.id)]) {
+      const {topoinst_id, is_feedback} = res?.data[Number(state.activeExperimentObj.id)]
+      if (topoinst_id && is_feedback == 1) {
+        currentState.value = 2
+        connectStatus.value = 2
+        Object.assign(createExamplesInfo, res.data[Number(state.activeExperimentObj.id)])
+      } else if (topoinst_id && is_feedback == 0) {
+        currentState.value = 2
+        connectStatus.value = 1
+      }
+    }
+  })
+}
 
+const showChartTerrLeft=()=>{
+  if((currentTab === '1' && (role === 3 || role===5)) || role === 4 || role ===2){
+    return true
+  }else{
+    return false
+  }
+}
+const showChartTerrRight=()=>{
+  if(currentTab === '0' && (role === 3 || role===5)){
+    return true
+  }else{
+    return false
+  }
+}
 onMounted(() => {
   // if(Number(currentTab) === 0) {
   //   connectEnv().then(() => {
@@ -291,8 +316,8 @@ onMounted(() => {
     display: flex;
     
     .chartTerrLeft{
-      width: 470px;
-      background: #ffffff;
+      // width: 470px;
+      // background: #ffffff;
       // border: 1px solid rgba(0,0,0,0.15);
       // flex: 1;
       // padding: 10px;
@@ -302,10 +327,10 @@ onMounted(() => {
       //   // margin-bottom: 1rem;
       // }
       .myChapter{
-        padding:0 24px;
-        min-height:700px;
-        max-height: 850px;
-        overflow: auto;
+        // padding:0 24px;
+        // min-height:700px;
+        // max-height: 850px;
+        // overflow: auto;
         // padding-right: 10px;
       }
     }
@@ -321,14 +346,27 @@ onMounted(() => {
       padding:10px 22px 22px 30px;
       .title{
         justify-content: space-between;
+        .report,.Lesson{
+          line-height: 25px;
+          .iconfont{
+            padding-right: 6px;
+          }
+        }
         .report{
           color: var(--primary-color);
           cursor: pointer;
+          >span:last-child{
+            margin-left: 5px;
+          }
         }
         .Lesson{
           margin-left: 2rem;
           cursor: pointer;
           color: var(--brightBtn);
+          >span:last-child{
+            margin-left: 5px;
+            font-size: 14px;
+          }
           &.none-event {
             pointer-events: none;
             cursor: not-allowed;
@@ -347,7 +385,7 @@ onMounted(() => {
         padding: 24px 10px 20px 0px;
         // max-height: 500px;
         // overflow: auto;
-        max-width: 646px;
+        max-width: 782px;
       }
       
     }

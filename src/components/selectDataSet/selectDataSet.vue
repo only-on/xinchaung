@@ -28,7 +28,7 @@
         <a-input-search
           v-model:value="params.name"
           placeholder="请输入搜索关键字"
-          @search="getDataList"
+          @search="searchFn()"
         />
       </div>
     </div>
@@ -73,7 +73,7 @@
             </div>
           </div>
         </template>
-        <empty v-else></empty>
+        <empty v-if="dataSetList.length === 0 && !loading"></empty>
         <a-pagination
           v-if="count > 12"
           v-model:current="params.page"
@@ -157,6 +157,10 @@ export default defineComponent({
       },
       { deep: true, immediate: true }
     );
+    function searchFn(){
+      reactiveData.params.page=1
+      getDataList()
+    }
     // 获取数据集列表
     var loading: Ref<boolean> = ref(false);
     function getDataList() {
@@ -267,6 +271,7 @@ export default defineComponent({
     return {
       ...toRefs(reactiveData),
       changeTab,
+      searchFn,
       getDataList,
       onSearch,
       dataSetChange,

@@ -2,6 +2,9 @@ import {sStorage} from 'src/utils/extStorage'
 import loginA from 'src/assets/images/admin/systemmain/loginA.png'
 import loginB from 'src/assets/images/admin/systemmain/loginB.png'
 import loginC from 'src/assets/images/admin/systemmain/loginC.png'
+// 上传文件的封面
+import uploadCoverImg from 'src/assets/images/teacherMaterialResource/cover.png'
+import uploadCoverImg2 from 'src/assets/images/teacherMaterialResource/cover2.png'
 // 实验详情顶部图片
 import experimentA from 'src/assets/images/themeA/teacherExperiment/base_info_bg.png'
 import experimentB from 'src/assets/images/themeB/teacherExperiment/base_info_bg.jpg'
@@ -17,8 +20,8 @@ import Bleft from 'src/assets/images/teacher-default/Bleft.png'
 import Bright from 'src/assets/images/teacher-default/Bright.png'
 import Cleft from 'src/assets/images/teacher-default/Cleft.png'
 import Cright from 'src/assets/images/teacher-default/Cright.png'
-import bannerlunBoA from 'src/assets/images/teacher-default/banner-bg3.jpg'
-import bannerlunBoB from 'src/assets/images/teacher-default/banner-bg2.png'
+import bannerlunBoA from 'src/assets/images/teacher-default/bannerA.jpg'
+import bannerlunBoB from 'src/assets/images/teacher-default/bannerB.png'
 
 // 管理端首页
 import greenImg from 'src/assets/images/themeA/adminHome/enter.png'
@@ -58,19 +61,6 @@ const theme:TThemeColor={
   cyanColor: "#00cbc2",
 }
 
-type TImageColor={
-  mainColor:string,
-  nextColor:string,
-}
-const image:TImageColor={
-  mainColor:"#73deb3",
-  nextColor:"#73a0fa"
-}
-interface ImoduleObj {
-  class: string,
-  type: string
-}
-
 const themeColorList:any = [
   {
     value: 'A',
@@ -79,9 +69,10 @@ const themeColorList:any = [
     menuBg: '#192843',
     menuText: 'rgba(255, 255, 255, 0.45)',
     menuActive: '#fff',
-    primary1: '#fff7e6',
-    primary2: '#FDF6F0',
-    primary3: '#fff2d9',
+    primary1: '#FAFAFB',
+    primary2: '#FFF2D9',
+    primary3: '#FFE1B4',
+    primary4: '#FFCB8E',
     primary5: '#fe8020 ', // 鼠标移入颜色
     primary7: '#D78D0E' //主色点击颜色
   },
@@ -103,7 +94,7 @@ const themeColorList:any = [
     primary: '#FFB849', // 主色
     secondary: '#FF8A17', // 辅色
     menuBg: '#fff',
-    menuText: 'rgba(0, 0, 0, 0.65)', 
+    menuText: 'rgba(0, 0, 0, 0.65)',
     menuActive: '#FFB849',
     primary1: '#FCFAF0', // 较浅主题颜色
     primary2: '#FFF7E7', // 浅主题颜色
@@ -114,7 +105,7 @@ const themeColorList:any = [
 ]
  const loginStyleList = [
   {
-    value: 'A',  
+    value: 'A',
     label: loginA
   },
   {
@@ -131,7 +122,8 @@ const THomeEchartsThemeColor={
     Tcolor1:'rgba(255, 149, 68,.25)',// 课程完成率
     Tcolor2:'#FF9544',
 
-    Tcolor3:'#05BBC9',// 课程成绩分布
+
+    Tcolor3:'#FF9544',// 课程成绩分布
     Tcolor4:'rgba(255, 149, 68,.25)',
     Tcolor5:'rgba(255, 149, 68,.25)'
   },
@@ -139,13 +131,13 @@ const THomeEchartsThemeColor={
     Tcolor1:'rgba(5,187,201,0.20)',// 课程完成率
     Tcolor2:'#05BBC9',
 
-    Tcolor3:'#FF9544',// 课程成绩分布
+    Tcolor3:'#05BBC9',// 课程成绩分布
     Tcolor4:'#05BBC9',
     Tcolor5:'#fff'
   },
   C:{
     Tcolor1:'rgba(255,186,73,0.20)',// 课程完成率
-    Tcolor2:'#FFBA49', 
+    Tcolor2:'#FFBA49',
 
     Tcolor3:'#FF9544',// 课程成绩分布
     Tcolor4:'rgba(255, 149, 68,.25)',
@@ -158,7 +150,7 @@ const AHomeEchartsThemeColor = {
     Acolor2: '#FF9544',
     Acolor3: '#9872EB',
     Acolor4: '#6993FE',
-  }, 
+  },
   B: {
     Acolor1: '#74C77D',
     Acolor2: '#FAAD14',
@@ -175,7 +167,7 @@ const AHomeEchartsThemeColor = {
 function getTheme () {
   // A默认的橘黄系统色    B 暗色蓝绿   C 白色+浅色黄色
   let systemInfo = sStorage.get('systemInfo')
-  let theme = systemInfo ? systemInfo.theme : 'A'
+  let theme = systemInfo && systemInfo.theme ? systemInfo.theme : 'A'
   let themeData = themeColorList.filter((item:any) => item.value === theme)[0]
   Object.assign(themeData,THomeEchartsThemeColor[theme])
   Object.assign(themeData, AHomeEchartsThemeColor[theme])
@@ -187,8 +179,12 @@ function getTheme () {
 }
 function setTheme () {
   let {systemInfo, themeData} = getTheme()
-  if (!Object.keys(systemInfo).length) return
+  if (!systemInfo) {
+    return;
+  }
+  if (!systemInfo || !Object.keys(systemInfo).length) return
   for (let key in systemInfo) {
+    console.log(systemInfo);
     if (key === 'theme') {
       let bodyEle = document.getElementsByTagName('body')[0]
       bodyEle.style.setProperty('--primary-color', themeData.primary) // 主题色
@@ -223,7 +219,7 @@ let imageData = {
     },
     Ahome: {
       entranceLeft: greenImg,
-      entranceRight: purpleImg, 
+      entranceRight: purpleImg,
       adminHome1: home1,
       adminHome2: home2,
       adminHome3: home3,
@@ -233,6 +229,7 @@ let imageData = {
     },
     qualityPrev: prevImg, // 教学质量 轮播图按钮
     qualityNext: nextImg, // 教学质量 轮播图按钮
+    uploadCoverImg:uploadCoverImg, // 上传文件的封面
   },
   B: {
     courseBan: courseB,
@@ -244,7 +241,7 @@ let imageData = {
     },
     Ahome: {
       entranceLeft: greenImg,
-      entranceRight: purpleImg,
+      entranceRight: orangeImg,
       adminHome1: home1,
       adminHome2: home2,
       adminHome3: home3,
@@ -253,7 +250,8 @@ let imageData = {
       adminHome6: home9,
     },
     qualityPrev: prevImg,
-    qualityNext: nextImg
+    qualityNext: nextImg,
+    uploadCoverImg:uploadCoverImg2, // 上传文件的封面
   },
   C: {
     courseBan: courseC,
@@ -264,7 +262,7 @@ let imageData = {
       bannerlunBo:bannerlunBoA
     },
     Ahome:{
-      entranceLeft: greenImg,
+      entranceLeft: orangeImg,
       entranceRight: purpleImg,
       adminHome1: home10,
       adminHome2: home11,
@@ -274,7 +272,8 @@ let imageData = {
       adminHome6: home6,
     },
     qualityPrev: prevImg1,
-    qualityNext: nextImg1
+    qualityNext: nextImg1,
+    uploadCoverImg:uploadCoverImg, // 上传文件的封面
   }
 }
 export function getThemeData () {
@@ -286,7 +285,6 @@ export function getThemeData () {
 }
 export{
   theme,
-  image,
   themeColorList,
   loginStyleList,
   setTheme

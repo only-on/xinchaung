@@ -3,7 +3,7 @@
   <div class="graphBox">
     <div id="graph"></div>
     <div class="magnifier" @click="viewAtlas()">
-      <span class="iconfont icon-sousuo"></span>
+      <span class="iconfont icon-fangda"></span>
     </div>
   </div>
   <a-modal v-model:visible="Visible" title="知识点" :width="1200" class="modal-post" :destroyOnClose="true">
