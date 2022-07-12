@@ -1,5 +1,5 @@
 <template>
-    <div class="Ranking">
+    <div class="adminHomeRanking">
         <div class="gamePlayer flexCenter" v-for="(v,k) in activeList" :key="v">
             <div class="user flexCenter">
             <div class="rank" :class="Number(k)<3?`rank${Number(k)+1}`:''">{{Number(k)>2?Number(k)+1:''}}</div>
@@ -36,7 +36,7 @@
   </script>
   
   <style lang="less" scoped>
-    .Ranking{
+    .adminHomeRanking{
       margin-bottom: 2rem;
       .flexCenter{
         width: 100%;

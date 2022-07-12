@@ -608,10 +608,10 @@
     }
     .activity-right{
         width: 33%;
-        height: 480px;
+        // height: 480px;
         background-color: var(--white-100);
         padding: 20px;
-        overflow-y: auto;
+        // overflow-y: auto;
     }
 }
 .flexTitle{
