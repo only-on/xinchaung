@@ -65,8 +65,8 @@ updata({
   componenttype: 0,
   showNav: true,
 });
-var TemplatePreview: Ref<number> = ref(0);
-TemplatePreview.value=templateId
+// var TemplatePreview: Ref<number> = ref(0);
+// TemplatePreview.value=templateId
 onMounted(() => {
   // templateId.value = route.query.templateId
   // console.log(templateId);
@@ -118,7 +118,7 @@ const reportOk = (val: any) => {
       path: path,
       query: { ...query, templateId: val.id},
     });
-    TemplatePreview.value=val.id
+    // TemplatePreview.value=val.id
     // viewTemplateRef.value.getDetail(val.id)
   })
 };
