@@ -260,6 +260,8 @@ export default defineComponent({
   // margin: 12px 0;
   margin-top: 16px;
   line-height: 32px;
+  display: flex;
+  align-items: center;
   img {
     width: 24px;
     height: 24px;
@@ -274,7 +276,7 @@ export default defineComponent({
     padding: 0 22px;
     background: var(--primary-3);
     color: var(--primary-color);
-    height: 32px;
+    height:28px;
     display: inline-block;
     border-radius: 16px;
   }
@@ -308,7 +310,7 @@ export default defineComponent({
     /*margin: 16px 20px;*/
     .no-reply-data {
       text-align: center;
-      padding-top: 30px;
+      padding: 30px 0;
       color: var(--black-45);
     }
     .more {

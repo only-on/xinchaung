@@ -49,7 +49,7 @@ export default defineComponent({
       line-height: 24px;
       padding: 0 12px;
       margin-top: 16px;
-      margin-right: 16px;
+      margin-right:8px;
       border: 1px solid var(--lightgray-6);
       border-radius: 12px;
       color: var(--primary-color);
