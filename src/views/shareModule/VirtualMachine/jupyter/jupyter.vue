@@ -6,7 +6,7 @@
         :src="'http://' + noteUrl"
         frameborder="0"
         style="width: 100%; height: 100%"
-        v-if="showIframe"
+        v-show="showIframe"
       ></iframe>
     </template>
   </layout>
@@ -26,7 +26,7 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref, inject, computed,WritableComputedRef } from "vue";
+import { ref, toRefs, onMounted, Ref, inject, computed,WritableComputedRef, nextTick } from "vue";
 import layout from "../VmLayout/newLayout.vue";
 import { getVmBaseInfo } from "src/utils/vncInspect";
 import { useRoute, useRouter, onBeforeRouteLeave } from "vue-router";
@@ -254,28 +254,30 @@ onMounted(async () => {
   if (Number(baseInfo.value?.current?.status)<2||role !== 4||recommendType) {
     initWs();
   }
-  const iframe: any = document.querySelector('#iframe')
-  let onloadIframe = false
-  // 处理兼容性问题
-  if (iframe?.attachEvent) {
-    iframe.attachEvent('onload', () => {
-      clearInterval(Number(TimerIframe));
-      onloadIframe = true
-    })
-  } else {
-    iframe.onload = () => {
-      clearInterval(Number(TimerIframe));
-      onloadIframe = true
+  nextTick(() => {
+    const iframe: any = document.querySelector('#iframe')
+    let onloadIframe = false
+    // 处理兼容性问题
+    if (iframe?.attachEvent) {
+      iframe.attachEvent('onload', () => {
+        clearInterval(Number(TimerIframe));
+        onloadIframe = true
+      })
+    } else {
+      iframe.onload = () => {
+        clearInterval(Number(TimerIframe));
+        onloadIframe = true
+      }
     }
-  }
-  TimerIframe = setInterval(() => {
-    // console.log(onloadIframe)
-    if (!onloadIframe) {
-      showIframe.value = false
-      setTimeout(() => {showIframe.value = true}, 200);
-    }
-    // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
-  }, 6000)
+    TimerIframe = setInterval(() => {
+      // console.log(onloadIframe)
+      if (!onloadIframe) {
+        showIframe.value = false
+        setTimeout(() => {showIframe.value = true}, 200);
+      }
+      // onloadIframe ? '' : iframe?.contentWindow?.location?.reload(true);
+    }, 6000)
+  })
 });
 </script>
 

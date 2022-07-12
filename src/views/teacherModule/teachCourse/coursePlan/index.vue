@@ -269,17 +269,17 @@
                       >
                         创建排课
                       </div>
-                      <div v-else class="edit-delete-wrap">
+                      <div v-else :class="classVal.left_stunum>0?'edit-delete-wrap':'cannot_click'">
                         <span
-                          @click="
+                          @click="classVal.left_stunum>0?
                             editTeachingSchedule(
                               classVal.arrangements[0].cid,
                               classVal.arrangements[0].start
-                            )
+                            ):''
                           "
                           >编辑</span
                         >
-                        <span @click="cancelScheduleConfirm(classVal.arrangements[0].cid)"
+                        <span @click="classVal.left_stunum>0?cancelScheduleConfirm(classVal.arrangements[0].cid):''"
                           >删除</span
                         >
                       </div>
@@ -1339,6 +1339,23 @@ onMounted(() => {
   line-height: 24px;
   margin: auto auto 10px auto;
   margin-top: auto;
+}
+.cannot_click{
+  cursor: not-allowed;
+  color: #828282;
+  // background: var(--primary-color);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color:var(--black-15);
+    > span {
+      &:nth-child(1) {
+        margin-bottom: 16px;
+      }
+    }
 }
 .teacher_name{
   display: inline-block;

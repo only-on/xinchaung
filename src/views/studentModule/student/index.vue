@@ -1,84 +1,83 @@
 <template>
-    <div id="statistic" class="setScrollbar">
+  <div id="statistic" class="setScrollbar">
       <div class="rowOne">
-        <div class="row1-f1 left">
-          <p class="hint">{{ state.staticInfo.userProfile?.name }}，又是元气满满的一天！</p>
-          <div class="hint-msg">每天进步一点点，成长足迹看得见！</div>
-        </div>
-          <div class="right-f1 right">
-          <div class="right-f1-left">
-            <div class="top-title">综合评价</div>
-            <div class="evaluate">
-            <img v-if="state.staticInfo.avgRank=='差'" src="src/assets/images/unhege.png">
-            <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/hege.png">
-            <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/lianghao.png">
-            <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/youxiu.png">
-            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/excellent-no.png" />
+          <div class="row1-f1 left">
+            <p class="hint">{{ state.staticInfo.userProfile?.name }}，又是元气满满的一天！</p>
+            <div class="hint-msg">每天进步一点点，成长足迹看得见！</div>
+          </div>
+            <div class="right-f1 right">
+            <div class="right-f1-left">
+              <div class="top-title">综合评价</div>
+              <div class="evaluate">
+              <img v-if="state.staticInfo.avgRank=='差'" src="src/assets/images/unhege.png">
+              <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/hege.png">
+              <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/lianghao.png">
+              <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/youxiu.png">
+              <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/excellent-no.png" />
+              </div>
+            </div>
+            <div class="right-f1-img">
+              <img v-if="state.staticInfo.avgRank=='差'" src="src/assets/images/unqualified.png">
+              <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/qualified.png">
+              <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/good.png">
+              <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/excellent.png">
+              <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/evaluate-no.png" />
             </div>
           </div>
-          <div class="right-f1-img">
-            <img v-if="state.staticInfo.avgRank=='差'" src="src/assets/images/unqualified.png">
-            <img v-if="state.staticInfo.avgRank=='及格'" src="src/assets/images/qualified.png">
-            <img v-if="state.staticInfo.avgRank=='良'" src="src/assets/images/good.png">
-            <img v-if="state.staticInfo.avgRank=='优'" src="src/assets/images/excellent.png">
-            <img v-if="state.staticInfo.avgRank=='暂无评价' || !state.staticInfo.avgRank" src="src/assets/images/evaluate-no.png" />
-          </div>
-        </div>
       </div>
       <div class='rowTwo'>
-        <div :id="myChartid" class="myCharts left"></div>
-        <!-- <div class="myCharts left">
-          <Empty />
-        </div> -->
-        <div class="right">
-          <div class="stu-proess">学习进度概况</div>
-          <div class="stu-proess-con">
-            <div class="proess-con-left">
-              <div class="stu-state-row">
-                <div class="study-left course-state-icon course-state-icon1"></div>
-                <div class="study-right">
-                  <div class="study-right-left">
-                    <span>学习进度排名</span>
+          <div :id="myChartid" class="myCharts left"></div>
+          <!-- <div class="myCharts left">
+            <Empty />
+          </div> -->
+          <div class="right">
+            <div class="stu-proess">学习进度概况</div>
+            <div class="stu-proess-con">
+              <div class="proess-con-left">
+                <div class="stu-state-row">
+                  <div class="study-left course-state-icon course-state-icon1"></div>
+                  <div class="study-right">
+                    <div class="study-right-left">
+                      <span>学习进度排名</span>
+                    </div>
+                    <div class="progressdiv">
+                      <span class="courseProgress">NO.</span
+                      ><span class="courseProgress">{{ state.staticInfo.courseProgress?.id }}</span>
+                    </div>
                   </div>
-                  <div class="progressdiv">
-                    <span class="courseProgress">NO.</span
-                    ><span class="courseProgress">{{ state.staticInfo.courseProgress?.id }}</span>
+                </div>
+                <div class="stu-state-row">
+                  <div class="study-left course-state-icon course-state-icon2"></div>
+                  <div class="study-right">
+                    <div class="study-right-left">
+                      <span>课程已完成实验数</span>
+                    </div>
+                    <div class="progressdiv">
+                      <span class="courseProgress">{{
+                        state.staticInfo.courseProgress?.finished_content_count
+                      }}</span
+                      ><span class="unit">/ 个</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="stu-state-row">
+                  <div class="study-left course-state-icon course-state-icon3"></div>
+                  <div class="study-right">
+                    <div class="study-right-left">
+                      <span>未完成实验数</span>
+                    </div>
+                    <div class="progressdiv">
+                      <span class="courseProgress">{{
+                        state.staticInfo.courseProgress?.left_content_count
+                      }}</span
+                      ><span class="unit">/ 个</span>
+                    </div>
                   </div>
                 </div>
               </div>
-              <div class="stu-state-row">
-                <div class="study-left course-state-icon course-state-icon2"></div>
-                <div class="study-right">
-                  <div class="study-right-left">
-                    <span>课程已完成实验数</span>
-                  </div>
-                  <div class="progressdiv">
-                    <span class="courseProgress">{{
-                      state.staticInfo.courseProgress?.finished_content_count
-                    }}</span
-                    ><span class="unit">/ 个</span>
-                  </div>
-                </div>
-              </div>
-              <div class="stu-state-row">
-                <div class="study-left course-state-icon course-state-icon3"></div>
-                <div class="study-right">
-                  <div class="study-right-left">
-                    <span>未完成实验数</span>
-                  </div>
-                  <div class="progressdiv">
-                    <span class="courseProgress">{{
-                      state.staticInfo.courseProgress?.left_content_count
-                    }}</span
-                    ><span class="unit">/ 个</span>
-                  </div>
-                </div>
-              </div>
+              <div class="proess-con-right"></div>
             </div>
-            <div class="proess-con-right"></div>
           </div>
-        </div>
-        
       </div>
       <div class="bottomStatic">
         <list-item
@@ -106,9 +105,9 @@
           :circlecolor="state.circlecolor2"
         ></list-item> 
       </div>
-    </div>
-  </template>
-  <script lang="ts" setup>
+  </div>
+</template>
+<script lang="ts" setup>
   import { message } from "ant-design-vue";
   import { defineComponent, inject, onMounted, provide, reactive, toRefs, ref } from "vue";
   import request from 'src/api/index'
@@ -163,7 +162,13 @@
       });
       // 绘制图表
       var courseOption = {
-        title: { text: "课程成绩" }, //图标中的表题
+        title: { text: "课程成绩",
+        textStyle:{
+        fontWeight:700,
+         //字体大小
+　　　　  fontSize:16
+          },
+        }, //图标中的表题
         tooltip: {
           trigger: "axis",
           axisPointer: {
@@ -296,6 +301,7 @@
   .bottomStatic{
     display: flex;
     width: 100%;
+    min-height: 250px;
   }
   .left{
     width: 64.7%;
@@ -310,7 +316,7 @@
     border-radius: 8px;
   }
   .row1-f1{
-      background-image: url("src/assets/images/bg1.jpg");
+      background-image: url("src/assets/images/bg1.jpeg");
       background-repeat: no-repeat;
       background-size:100% 100%;
       border-radius: 8px;
@@ -326,7 +332,7 @@
       }
   }
   .right-f1 {
-      background-image: url(src/assets/images/bg2.jpg);
+      background-image: url(src/assets/images/bg2.jpeg);
       border-radius: 8px;
       background-repeat: no-repeat;
       background-size: 100% 100%;
@@ -334,7 +340,7 @@
       flex-direction: row;
       .right-f1-left {
         width: 60%;
-        padding: 14px 0px 14px 30px;
+        margin-right: 15px;
         .top-title {
           color: var(--white-100);
           font-size: var(--font-size-16);
@@ -432,4 +438,4 @@
         width:calc(35.3% - 30px);
       }
   </style>
-  
+ 

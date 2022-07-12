@@ -49,7 +49,7 @@
     </template>
         <template #action="{record}">
             <div class="flexCenter">
-              <a-button type="link" @click="dleDelete(record)">删除</a-button>
+              <a-button type="link" @click="dleDelete(record)" :disabled="record.is_init">删除</a-button>
               <a-button type="link" @click="downLoad(record)" v-if="record.templateType=='离线'">下载</a-button>
             </div>
             <!-- <span class="action action-delete" @click="dleDelete(record)">删除</span> -->
@@ -171,12 +171,10 @@ import { ExclamationCircleOutlined } from "@ant-design/icons-vue";
     function onSelectChange(selectedRowKeys:any, selectedRows:any){
       tableData.selectedRowKeys=selectedRowKeys
     }
-    function getCheckboxProps(record: any) {
-    return {
-      disabled: record.selected,
-      defaultChecked: record.selected,
-    };
-}
+    const getCheckboxProps=(record: any) => ({
+      disabled: record.is_init === true, // Column configuration not to be checked
+      name: record.name,
+    })
 function detail(id:any,type:any,path:any){
   template.pdfUrl=''
   template.Templateid=''

@@ -71,6 +71,7 @@ import {
   provide,
   WritableComputedRef,
   onUnmounted,
+  h
 } from "vue";
 import MenuBar from "src/components/MenuBar.vue";
 import request from "src/api/index";
@@ -91,6 +92,7 @@ import i18nWebMsg from 'src/i18n/zh_CN/webmsg';
 import {IWmc} from "src/typings/wmc";
 import api from "src/api";
 import logoImg from "src/assets/images/user/logo.png"
+
 export default defineComponent({
   name: "Header",
   components: { MenuBar },
@@ -539,6 +541,12 @@ export default defineComponent({
       // const uid = lStorage.get("role")===5 ? lStorage.get("tuid"):lStorage.get("uid")
       const tuid = lStorage.get("tuid")
       const uid = lStorage.get("uid")
+      let notice = i18nWebMsg["The user id has been registered by another client."] || "The user id has been registered by another client.";
+      const resetMsgNode = h('span', [
+        notice,
+        h('a', {href: 'javascript:window.location.reload()'}, '重新连接')
+      ]);
+
       // console.log(user_id,longWs)
       // console.log(ws_config)
       longWs1.value = wsConnect({
@@ -558,7 +566,7 @@ export default defineComponent({
           if (ev.type === "close") {
             console.log('[Header] longWs1: ', longWs1);
             if (longWs1.value && longWs1.value.isReset()) {
-              message.warn(i18nWebMsg["The user id has been registered by another client."] || "The user id has been registered by another client.");
+              message.warn(resetMsgNode, 0);
             }
           }
         },
@@ -662,7 +670,7 @@ export default defineComponent({
       //   }
       //   if (item.children.length) {
       //     item.children.forEach((childItem:any) => {
-      //       if(childItem.url && childItem.url.includes(newVal)){  
+      //       if(childItem.url && childItem.url.includes(newVal)){
       //         activeMenu.value = item.name
       //         lStorage.set("menuActiveName", item.name);
       //       }
