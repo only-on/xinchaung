@@ -14,7 +14,7 @@
           </div>
         </div>
         <div class="iframe" ref="jupyteIframe">
-          <iframe id="image-jupyter-iframe" v-if="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
+          <iframe id="image-jupyter-iframe" v-show="showIframe" :src="jupyteUrl" frameborder="0"></iframe>
         </div>
         <a-modal class="save-image-modal" :visible="saveVisible"  :closable="false">
           <template v-slot:title>保存镜像</template>
@@ -190,7 +190,7 @@ export default defineComponent({
             ":" +
             reactiveData.jupyteData.port;
           // getJupyteIframe(reactiveData.jupyteUrl);
-          onLoadIframe()
+            loadIframe()
         }
       });
     }
@@ -334,7 +334,7 @@ export default defineComponent({
     }
     const showIframe = ref(true)
     let TimerIframe: NodeJS.Timeout | null = null;
-    function onLoadIframe() {
+    function loadIframe() {
       const iframe: any = document.querySelector('#image-jupyter-iframe')
       let onloadIframe = false
       // 处理兼容性问题

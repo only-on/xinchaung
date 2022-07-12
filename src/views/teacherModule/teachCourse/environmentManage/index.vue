@@ -180,6 +180,7 @@ const selectExperiment = (val: any) => {
   Object.assign(currentExperiment, val)
   searchInfo.taskId = val.id
   searchInfo.keyword = ''
+  searchInfo.page = 1
   getList();
 }
 
