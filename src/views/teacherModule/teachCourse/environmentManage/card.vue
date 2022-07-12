@@ -1,6 +1,6 @@
 <template>
   <div class="stu">
-    <span class="stu-name" :title="list.number">姓名：
+    <span class="stu-name" :title="list.username+'(+list.number+)'">姓名：
       <span>{{ list.username || "--" }}</span>
       <span class="stu-id" :title="list.number" v-if="list.number">（ {{ list.number || "--" }} ）</span>
     </span>

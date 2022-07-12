@@ -300,9 +300,12 @@ const cancel = () => {
 }
 .experiment-content {
   margin: 16px 0;
-  min-height: 563px;
+  min-height: 480px;
+  .demo__container {
+    height: 480px;
+  }
   .demo__container :deep(.ant-btn) {
-    padding: 0 !important;
+    // padding: 0 !important;
   }
   :deep(.mark__body) {
     .mark__editor,
