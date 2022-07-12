@@ -35,7 +35,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { defineComponent, inject, onMounted, reactive, ref } from "vue";
+import { defineComponent, inject, onMounted, reactive, ref, Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import SelectReport from "src/views/teacherModule/teacherExperimentResourcePool/component/selectReport.vue";
 import dragGable from "vuedraggable";
