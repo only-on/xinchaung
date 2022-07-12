@@ -59,7 +59,7 @@ const props = withDefaults(defineProps<Props>(), {
   padding-left: 13px;
   display: flex;
   align-items: center;
-  margin-bottom: 30px;
+  margin-bottom:24px;
   font-size: 12px;
   // background: linear-gradient(90deg,rgba(18,144,239,0.12) 24%, rgba(98,126,234,0.00) 78%);
   > span:nth-child(1) {
