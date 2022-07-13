@@ -232,16 +232,23 @@ const classifyList: any = reactive([
     keyName: "year",
     data: [
       { name: "全部", value: 0 },
-      { name: "2022年", value: 1 },
-      { name: "2021年", value: 2 },
-      { name: "2019年", value: 3 },
-      { name: "2018年", value: 4 },
-      { name: "2017年", value: 5 },
+      // { name: "2022年", value: 1 },
+      // { name: "2021年", value: 2 },
+      // { name: "2019年", value: 3 },
+      // { name: "2018年", value: 4 },
+      // { name: "2017年", value: 5 },
       { name: "近5-10年", value: 6 },
       { name: "10年以前", value: 7 },
     ],
   },
 ]);
+let data:any=new Date()
+let couYear:number=data.getFullYear()
+let arr:any=[]
+for(let i=0; i<5; i++){
+  arr.push({name:`${couYear-i}年`,value:`${i+1}`})
+}
+classifyList[1].data.splice(1,0,...arr)
 const publicClassifyList: any = reactive([
   {
     title: "课程方向",

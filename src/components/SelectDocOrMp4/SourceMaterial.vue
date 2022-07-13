@@ -26,9 +26,9 @@
               <div class="information">
                 <div class="portrait flexCenter">
                   <div class="flexCenter imgBox" v-if="is_public === 1">
-                    <span class="img" v-if="v.is_public"></span>
-                    <span class="img" v-if="!v.is_public" :style="`background-image: url(${v.avatar});`"></span>
-                    <span class="text">{{v.is_public?'系统内置':v.username}}</span>
+                    <!--  <span class="img" v-if="v.is_public"></span>-->
+                    <span class="img" v-if="v.is_public" :style="`background-image: url(${v.user.avatar});`"></span>
+                    <span class="text">{{v.username}}</span>
                   </div>
                   <div class="tags flexCenter">
                     <span>{{`${v.tags.join('/')}`}}</span>
