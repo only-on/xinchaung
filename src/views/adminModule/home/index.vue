@@ -298,7 +298,7 @@
         {name:'产品授权',link:'/admin/systemMaintenance/systemAuthorization'},
         {name:'方向规划',link:'/admin/TeachingResourceManagement/DirectionPlanning'},
         {name:'个性化设置',link:'/admin/systemMaintenance/personalization'},
-        {name:'运行环境清理',link:'/admin/systemMaintenance/diskManagement'},
+        {name:'运行环境清理',link:'/teacher/coursePlan/environmental'},
         {name:'用户登录信息',link:'/admin/systemMaintenance/userloginInformation'},
         {name:'磁盘管理',link:'/admin/systemMaintenance/diskManagement'},
         {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
@@ -313,6 +313,7 @@
     function toJump(value:any){
         // console.log(value);
         let obj={
+            '/teacher/coursePlan/environmental':'资源预约',
             '/teacher/coursePlan':'资源预约',
             '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理',
             '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
