@@ -150,6 +150,7 @@ watch(() => props.modalVisable, (val:any) => {
   color: var(--brightBtn);
   margin-left: 10px;
   margin-right: 10px;
+  cursor: pointer;
 }
 .title {
   color: var(--black-45);

@@ -83,10 +83,11 @@
       @ok="handleOk"
       @cancel="handleCancel"
       :okButtonProps="okButtonProps"
+      title="批量导入"
     >
-      <template #title>
+      <!-- <template #title>
         <span><span class="icon iconfont icon-fanhui1"></span>批量导入</span>
-      </template>
+      </template> -->
       <div>
         <batchImportStu :modalVisable='modalVisable' @updateSelectStuVisable="updateSelectStuVisable"></batchImportStu>
       </div>

@@ -1,6 +1,6 @@
 <template>
-  <search-add @searchFn="searchFn" @handleMenuClick="handleMenuClick" :isShowAdd="isShowAdd" :isReset="resetKeyword"></search-add>
-  <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange"></classify>
+  <search-add @searchFn="searchFn" @handleMenuClick="handleMenuClick" :isShowAdd="isShowAdd" :isReset="resetKeyword" />
+  <classify :list="currentTab ===1?publicClassifyList:classifyList" @change="classifyChange" /> 
   <a-spin :spinning="loading" size="large" tip="Loading...">
     <div class="flexCenter mainBox">
       <div class="itemBox" v-for="(v, k) in courseList" @click="courseDetail(v)" :key="v" >
