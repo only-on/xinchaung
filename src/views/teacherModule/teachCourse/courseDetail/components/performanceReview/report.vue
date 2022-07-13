@@ -11,7 +11,8 @@
   >
     <div class="report-wrap">
       <div :class="reportType=='form'?'report-template':'report-pdf'">
-        <onlinePreview v-if="reportType=='form'"  :content="data.json_content"></onlinePreview>
+        <viewTemplate v-if="reportType=='form'" :reportTemplateData='data' />
+        <!-- <onlinePreview v-if="reportType=='form'"  :content="data.json_content"></onlinePreview> -->
         <!-- <div v-html="data.html_content"></div> -->
         <PdfVue class="pdfHeight" v-else :url="data.pdf_path" />
       </div>
@@ -27,6 +28,7 @@
 <script lang="ts" setup>
 import { ref, toRefs, onMounted, Ref, defineProps, defineEmits } from "vue";
 import onlinePreview from "src/components/report/onlinePreview.vue"
+import viewTemplate from "src/components/report/viewTemplate.vue";
 import { message } from "ant-design-vue";
 import PdfVue from "src/components/pdf/pdf.vue";
 
@@ -101,6 +103,9 @@ function submit() {
       padding:0 40px 0 40px;
       max-height: 700px;
       overflow-y: auto;
+      .contentT {
+        max-height: 660px;
+      }
     }
     .report-pdf{
       height: 700px;

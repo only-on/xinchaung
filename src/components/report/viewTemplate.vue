@@ -81,7 +81,7 @@ var dataList = reactive<any[]>([
 ]);
 onMounted(() => {
   templateId.value = props.id !== 0 ? props.id : 1;
-  if (templateId.value) {
+  if (templateId.value&&!props.reportTemplateData) {
     getDetail();
   }
   if(props.reportTemplateData && props.reportTemplateData.json_content.length > 0){
