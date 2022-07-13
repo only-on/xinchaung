@@ -1027,13 +1027,21 @@ function colseOrStart() {
       // loading.vaue=true
     // },2000)
   // }
-  if (vmsInfo.value.vms[currentVmIndex.value].status == "ACTIVE") {
-
-    closeVm();
-  } else {
-    vncLoading.value = true
-    startVm();
-  }
+  
+  Modal.confirm({
+    title: "提示",
+    content: `是否确认${vmStartStatus.value?'关机':'开机'}？`,
+    okText: "确定",
+    cancelText: "取消",
+    onOk: () => {
+      if (vmStartStatus.value) {
+        closeVm();
+      } else {
+        vncLoading.value = true
+        startVm();
+      }
+    }
+  })
 }
 
 
@@ -1070,20 +1078,28 @@ async function startVm() {
   initVnc.value();
 }
 // 重置
-async function resetVm() {
-  vncLoading.value = true;
-  if (isScreenRecording.value) {
-    await startEndRecord();
-  }
-  await VmOperatesHandle("resetVm");
-  message.success("操作成功");
-  if (baseInfo.value.base_info.is_webssh === 1) {
-    currentInterface.value = "ssh"
-    sshUrl.value=""
-    setTimeout(()=>{
-      testSSHServe()
-    },2000)
-  }
+async function resetVm() { 
+  Modal.confirm({
+    title: "提示",
+    content: `是否确认重置？`,
+    okText: "确定",
+    cancelText: "取消",
+    onOk: async () => {
+      vncLoading.value = true;
+      if (isScreenRecording.value) {
+        await startEndRecord();
+      }
+      await VmOperatesHandle("resetVm");
+      message.success("操作成功");
+      if (baseInfo.value.base_info.is_webssh === 1) {
+        currentInterface.value = "ssh"
+        sshUrl.value=""
+        setTimeout(()=>{
+          testSSHServe()
+        },2000)
+      }
+    }
+  })
 }
 
 // 选中粘贴
@@ -1191,10 +1207,12 @@ const onChange = (info: any) => {
       uploadPercent.value = Math.floor(event.percent)
     }
   }
-  if (file.status === 'done') { // 上传成功
+  if (file.status === 'done'&&file.response?.data) { // 上传成功
     fileLoading.value = false
     uploadPercent.value = 100
     uploadFilePath.value = file.response?.data?.full_url
+  } else if(file.status === 'done') {
+    message.warn(file.response?.msg)
   }
 }
 

@@ -398,6 +398,8 @@ export default defineComponent({
             if (res.data.full_url) {
               vmUpload(res.data.full_url);
             }
+          } else {
+            message.warn(res.msg)
           }
           (fileList.value as any)[i].upload = "";
           (fileList as any).value.push({});
@@ -405,9 +407,8 @@ export default defineComponent({
         },
         progress: (e: ProgressEvent) => {
           if (e.total > 0) {
-            (fileList as any).value[i].progress = Number(
-              Number((e.loaded / e.total) * 100).toFixed(2)
-            );
+            let prog: any = Number(Number((e.loaded / e.total) * 100).toFixed(2))as any
+            (fileList as any).value[i].progress = prog==100 ? 99 : prog;
             (fileList as any).value[i] = Object.assign((fileList as any).value[i], {
               progress: (fileList as any).value[i].progress,
             });

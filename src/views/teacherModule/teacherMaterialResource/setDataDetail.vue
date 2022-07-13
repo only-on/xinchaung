@@ -325,8 +325,8 @@ const deleteImages=()=>{
     cancelText: "取消",
     onOk() {
     let deleteParam = `data_id=${state.detail.uid}&data_name=${state.detail.name}`;
-      http.deleteDataSet({ urlParams: { deleteParam: deleteParam } }).then((res: IBusinessResp) => {
-        http.deletDataset({ urlParams: { datasetID: editId } }).then((res: IBusinessResp) => {
+      http.deletDataset({ urlParams: { datasetID: editId } }).then((res: IBusinessResp) => {
+        http.deleteDataSet({ urlParams: { deleteParam: deleteParam } }).then((res: IBusinessResp) => {
           message.success({duration:1,content:'删除成功'})
           setTimeout(()=>{
             router.go(-1);
