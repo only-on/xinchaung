@@ -246,6 +246,7 @@ export default defineComponent({
       http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
         jm.remove_node(selectNode.id)
         message.success('删除成功')
+        contentList.length = 0
         getMapdata()
       })
     }
@@ -256,7 +257,7 @@ export default defineComponent({
         if (res&&res.data.length > 0) {
           contentList.push(...res.data)
         } else {
-          $message.warning('该知识点无关联实验!')
+          // $message.warning('该知识点无关联实验!')
         }
       })
     }
