@@ -7,7 +7,7 @@
           <img :src="item.url|| defaultCover" alt="" srcset="" />
         </div>
         <div class="right">
-          <span class="name">{{ item.name }}</span>
+          <span class="name" :title="item.name">{{ item.name }}</span>
           <span class="study_num">{{ item.learned_count }}人在学</span>
         </div>
       </div>
@@ -64,9 +64,10 @@ export default defineComponent({
 .recommend-course {
   margin-top: 40px;
   .course-list {
-    margin-top: 4px;
+    margin-top:16px;
     .list {
-      margin: 12px 0;
+      // margin: 12px 0;
+      margin-bottom:24px;
       display: flex;
       justify-content: space-around;
       .left {
@@ -86,6 +87,11 @@ export default defineComponent({
         justify-content: space-between;
         .name {
           color: var(--black-65);
+          width:221px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+
         }
         .study_num {
           color: var(--black-45);
