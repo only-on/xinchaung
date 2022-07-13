@@ -73,9 +73,7 @@
             </div>
             <div class="ace-result-box">
               <div class="ace-result-content">
-                <code>
-                  {{ runResult }}
-                </code>
+                <pre>{{ runResult }}</pre>
               </div>
             </div>
           </div>
