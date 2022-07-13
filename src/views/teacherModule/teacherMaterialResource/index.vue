@@ -147,7 +147,7 @@ const detail=(val:any)=>{
     cardType: val.slab_uid ? 'setData':'other',
     user_id: uid
   }
-  if(val.slab_uid){
+  if(val.type==1){
     router.push({
       path:'/teacher/teacherMaterialResource/setDataDetail',
       query:{
