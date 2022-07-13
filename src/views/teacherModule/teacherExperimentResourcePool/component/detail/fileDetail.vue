@@ -116,13 +116,13 @@ let activeFile: any = reactive({
 watch(
   () => props.detail,
   () => {
-    if (props.detail.content_task_files&&props.detail.content_task_files.length) {
-      idDelte.value = false
-      Object.assign(activeFile, props.detail.content_task_files[0])
-    } else if (props.detail.guide) {
+    if (props.detail.guide) {
       idDelte.value = false
       activeFile.suffix = 'md'
       experimentContent.value = props.detail.guide;
+    } if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+      idDelte.value = false
+      Object.assign(activeFile, props.detail.content_task_files[0])
     } else {
       idDelte.value = true
       preview.value = false
@@ -143,6 +143,7 @@ if (props.detail.content_task_files?.length) {
 
 // 上传文件
 const uploadFile = () => {
+  activeFile.id = 0
   visibleUpload.value = true;
 };
 const visibleUpload = ref<boolean>(false);
@@ -246,10 +247,12 @@ const onSubmit = async () => {
       Object.assign(param, {guide: experimentContent.value})
     } else {
       Object.assign(param, {
-        directory_id: directoryId.value,
         guide: experimentContent.value,
-        file_path: activeFile.file_url,
-        file_name: activeFile.name
+        document_file: {
+          file_path:activeFile.file_url,
+          file_name:activeFile.name,
+          directory_id:directoryId.value
+        },
       })
     }
   } else {
