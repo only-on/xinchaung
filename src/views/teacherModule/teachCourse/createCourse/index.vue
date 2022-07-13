@@ -80,8 +80,8 @@
         </a-form>
         <div class="first-step-btn">
           <a-button @click="cancel">取消</a-button>
-          <a-button type="primary" @click="next(1)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'下一步'}`}}</a-button>
-          <a-button type="primary" v-if="EditId" @click="next(4)" :loading="stup1Loading">{{`${stup1Loading?'保存中...':'保存'}`}}</a-button>
+          <a-button type="primary" @click="next(1)" :loading="stup1Loading||coverLoading">{{`${stup1Loading?'保存中...':'下一步'}`}}</a-button>
+          <a-button type="primary" v-if="EditId" @click="next(4)" :loading="stup1Loading||coverLoading">{{`${stup1Loading?'保存中...':'保存'}`}}</a-button>
         </div>
       </template>
       <template v-if="currentStep === 1">
@@ -152,6 +152,7 @@ updata({
 
 var currentStep:Ref<number>=ref(0)
 var stup1Loading:Ref<boolean>=ref(false)
+const coverLoading = ref(false)
 const last=(val:number)=>{
   currentStep.value=val
   console.log(formState)
@@ -349,9 +350,11 @@ const dateChange=(val:any)=>{
   // console.log(formState)
 }
 const uploadCoverHandle=(file:any)=>{
+  coverLoading.value = true
   const fd = new FormData()
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
+    coverLoading.value = false
     formState.url = res.data.url
     formState.cover = res.data.url
   })

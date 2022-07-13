@@ -119,10 +119,10 @@
     </div>
   </div>
   <a-modal title="编辑" width="620px" :visible="visible" @cancel="handleCancel" class="editImage">
-    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name"
+    <BaseInfo v-if="visible"  ref="baseInfoRef" :materialType="state.detail.type_name" v-model:coverLoading="coverLoading"
     :editInfo="{name:state.detail.name,description:state.detail.description,tags:state.detail.tags,is_public:state.detail.is_public,cover:state.detail.cover}" class="con"/>
     <template #footer>
-        <Submit @submit="handleOk" @cancel="handleCancel"></Submit>
+        <Submit @submit="handleOk" @cancel="handleCancel" :loading="loading||coverLoading"></Submit>
       </template>
   </a-modal>
   <!-- 上传文件 弹窗 -->
@@ -203,6 +203,9 @@ const state:any=reactive({
   fileKeyWord:'',  //  搜索文件列表关键词
 })
 var activeKey: Ref<number> = ref(1);
+
+const loading = ref(false)
+const coverLoading = ref(false)
 
 var isDataSet: Ref<boolean> = ref(true);
 
@@ -316,6 +319,7 @@ const baseInfoRef = ref()
 
 const handleOk=async()=> {
   // state.visible = false;
+  loading.value = true
   let params: any = {};
   await baseInfoRef.value.fromValidate()
   Object.assign(params, baseInfoRef.value.formState)
@@ -330,6 +334,7 @@ const handleOk=async()=> {
   fd.append('cover', params.cover)
   http.editMyImage({param:fd,urlParams:{editId:editId}}).then((res: any) => {
     visible.value=false
+    loading.value = false
     message.success('编辑成功')
     initData();
   });

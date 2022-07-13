@@ -86,7 +86,7 @@
       </div>
     </a-form>
     <template #footer>
-      <Submit @submit="Save()" @cancel="cancel()" :loading="editLoading"></Submit>
+      <Submit @submit="Save()" @cancel="cancel()" :loading="editLoading || coverLoading"></Submit>
     </template>
   </a-modal>
 
@@ -231,6 +231,7 @@ var state:IState=reactive({
   activeTab:{value:''},
   courseDetail:{}
 })
+let coverLoading = ref(false)
 function initData(){
   editLoading.value=true
   http.courseDetail({urlParams:{courseId:courseId}}).then((res:IBusinessResp)=>{
@@ -422,9 +423,11 @@ const dateChange=(val:any)=>{
   // console.log(formState)
 }
 const uploadCoverHandle=(file:any)=>{
+  coverLoading.value = true
   const fd = new FormData()
   fd.append('file', file)
   http.courseCoverUpload({param:fd}).then((res:any)=>{
+    coverLoading.value = false
     formState.url = res.data.url
     formState.cover=res.data.url
   })
