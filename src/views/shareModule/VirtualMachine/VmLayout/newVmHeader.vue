@@ -879,9 +879,6 @@ async function showChange() {
     return
   }
   if (currentInterface.value==="ssh") {
-    currentOption.value.wsUrl = ''
-    sshUrl.value=""
-    currentInterface.value="vnc"
     let param={
       action:"switch2Vnc",
       params:{
@@ -891,7 +888,14 @@ async function showChange() {
         taskId:taskId
       }
     }
-    vmApi.switchInterfaceApi({param:{...param}})
+    vmApi.switchInterfaceApi({param:{...param}}).then(() => {
+      currentOption.value.wsUrl = ''
+      sshUrl.value=""
+      currentInterface.value="vnc"
+      settingCurrentVM();
+      loading.value=false
+      initVnc.value()
+    })
   }
 }
 

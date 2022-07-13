@@ -241,6 +241,7 @@ function initWs() {
         let oldVmsInfo = vmsInfo.value
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
+          currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
             Object.keys(oldVmsInfo).length ? '' : vncLoading.value = true
             if (
@@ -327,6 +328,22 @@ function initWs() {
           if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
             isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
+            if (baseInfo.value.base_info.is_webssh === 1) {
+              if (currentVm.value.status == "SHUTOFF"&&wsJsonData.data.msg.indexOf('关闭')!==-1) {
+                currentInterface.value = 'ssh'
+                sshIsOpen.value = false
+                return
+              }
+              vncLoading.value = true
+              if (currentInterface.value === 'ssh') {  // ssh重连
+                timerNum = 1
+                setTimeout(() => {
+                  testSSHServe()
+                }, 2000)
+              } else {
+                currentInterface.value = 'ssh'
+              }
+            }
           }
         }else if (wsJsonData.type=="return_message") {
           if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
@@ -370,13 +387,13 @@ function initWs() {
           disableData.value=wsJsonData.data
         }else if (wsJsonData.type=="switch_success") {
           // message.success("切换成功")
-          currentInterface.value = "vnc";
+          // currentInterface.value = "vnc";
             vmsInfo.value = wsJsonData.data;
-              settingCurrentVM(
-                wsJsonData.data.vms[currentVmIndex.value]
-              );
-              loading.value=false
-              initVnc.value()
+              // settingCurrentVM(
+              //   wsJsonData.data.vms[currentVmIndex.value]
+              // );
+              // loading.value=false
+              // initVnc.value()
         }else if (wsJsonData.type=="save_return_message") {
           if (Object.keys(wsJsonData).length>0) {
             if (wsJsonData.data?.msg) {
