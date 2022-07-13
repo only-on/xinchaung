@@ -944,7 +944,7 @@ const docBeforeUpload =(file: any) => {
   console.log(file)
   // docOrMp4Type === 1  文档    docOrMp4Type === 2  视频
   // console.log(file)
-  upDoc.docFileList[0]={}
+  upDoc.docFileList[0]={status: 'done'}
   const postfix = (file && file.name).split(".")[1];
   if(postfix === "md" && docOrMp4Type.value === 1){
     // let obj:any={
