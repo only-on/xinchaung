@@ -311,10 +311,15 @@
         {name:'关注西普科技'},
     ]
     function toJump(value:any){
-        console.log(value);
+        // console.log(value);
         let obj={
             '/teacher/coursePlan':'资源预约',
-            '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理'
+            '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理',
+            '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
+            '/admin/TeachingResourceManagement/experimentManagement':'教学资源管理',
+            '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
+            '/admin/adminUserManagement/teacherManagement':'用户管理',
+            '/admin/adminUserManagement/studentManagement':'用户管理',
         }
         if(obj[value]){
             store.commit("changemenuActiveName",obj[value])
@@ -496,6 +501,14 @@
     　　return y + "-" + m + "-" + d;
     };
     function toMaintain(link:any){
+        // store.commit("changemenuActiveName",obj[value]) warningMessage
+        let obj={
+            '/teacher/coursePlan/environmental':'资源预约',
+            '/admin/systemMaintenance/diskManagement':'系统维护'
+        }
+        if(obj[link]){
+            store.commit("changemenuActiveName",obj[link])
+        }
         router.push(link)
     }
     function nodeOpera(ip: any, node_type: any, action: any) {
