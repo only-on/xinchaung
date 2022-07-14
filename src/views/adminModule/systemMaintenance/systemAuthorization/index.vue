@@ -262,7 +262,7 @@ function copyCode(e: Event) {
         authorizationFile.url=''
       }
       // 授权
-      function authorizationFun() {
+      async function  authorizationFun() {
         if (!authorizationFile.url) {
           message.warn("请上传授权文件");
           return;
@@ -276,17 +276,21 @@ function copyCode(e: Event) {
           auth_code: authorizationData.authorization_code,
           auth_file: authorizationFile.url,
         };
-         http.saveSettingApi({param:params}).then((res: any) => {
+        let silent:boolean=false
+        await http.saveSettingApi({param:params}).then((res: any) => {
           // reactiveData.authorizationData.authorization_code = res.authNumber;
             message.success('授权成功！')
-            getPowerList()
-        });
+            silent=false
+        }).catch(()=>{
+          silent=true
+        })
+        getPowerList(silent)
     }
       // 获取系统日志时间配置
 
-      function getPowerList(){
+      function getPowerList(silent?:boolean){
         loading.value = true;
-        http.powerList().then((res:any)=>{
+        http.powerList({silent:silent?silent:false}).then((res:any)=>{
           loading.value = false
           data.value=res.data.auth_data
           tableData.total=res.data.auth_data?.length
