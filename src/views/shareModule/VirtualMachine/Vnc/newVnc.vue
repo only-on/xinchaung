@@ -344,7 +344,7 @@ function initWs() {
                 setTimeout(() => {
                   sshUrl.value = ''
                   testSSHServe()
-                }, 2000)
+                }, 3000)
               } else {
                 currentInterface.value = 'ssh'
               }
@@ -372,7 +372,7 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==0 ? router.go(historyLength - history.length - 1) : '';
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -473,14 +473,14 @@ const testSSHServe = () => {
   }
   vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
     if (res?.code === 1) {
-      setTimeout(() => {
+      // setTimeout(() => {
         vncLoading.value = false
         sshIsOpen.value = true
         clearTimeout(testSSHServeTimer)
         sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
 
         timerNum = 1
-      }, 2000);
+      // }, 2000);
     }
   }).catch(() => {
     if (timerNum >= getVmConnectSetting.SSHConnectNum) {
