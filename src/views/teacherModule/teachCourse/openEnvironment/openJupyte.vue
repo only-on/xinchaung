@@ -5,7 +5,7 @@
         <div class="jupyte-detail-info">
           <span>在线制作</span>
           <div>
-            <a-button type="primary" :disabled="!isSaveImage" @click="stop"
+            <a-button :disabled="!isSaveImage" @click="stop" :class="isSaveImage?'stopenv':''"
               >停止环境</a-button
             >
             <a-button type="primary" :disabled="!isSaveImage" @click="create"
@@ -441,14 +441,15 @@ export default defineComponent({
       color: #33394B;
     }
     >div{
-      button:first-child{
-        margin-right: 20px;
+      button.stopenv{
+        // margin-right: 20px;
         background: #eee;
         color: #535353;
         border-color: #eee;
       }
       button{
         border-radius: 17px;
+        margin-right: 16px;
       }
     }
     > div.link-info {
