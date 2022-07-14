@@ -266,10 +266,10 @@ function setChart(data:any){
     },
      dataZoom: [
       {
-      type:data.names.length>10?'slider':'inside',
+      type:'slider',
       show: true,
       startValue: 1,
-      endValue:data.names.length>10?10:data.names.length,
+      endValue:10,
       xAxisIndex: 0,
       bottom:50,
       filterMode: "none",
