@@ -198,7 +198,7 @@
                           class="make-item-item"
                           v-for="(mit, aindex) in classVal.arrangements" :key="aindex"
                         >
-                          <span class="teacherName" :title="classVal.arrangements[aindex].teacher_name">{{ classVal.arrangements[aindex].teacher_name }}</span>
+                          <span class="teacherName single_ellipsis" :title="classVal.arrangements[aindex].teacher_name">{{ classVal.arrangements[aindex].teacher_name }}</span>
                           <span class='subscribe'
                             >共预约{{ classVal.arrangements[aindex].stu_num }}人
                             <span class="edit-del-btn-wrap">
@@ -1241,7 +1241,7 @@ onMounted(() => {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        padding: 0 10px;
+        padding: 0 6px;
         cursor: pointer;
         line-height: 20px;
         position: relative;
