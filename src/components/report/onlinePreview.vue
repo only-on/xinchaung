@@ -1,124 +1,194 @@
 <template>
-  <div class="online-preview-report-wrap">
-    <table style="width: 100%" v-if="content&&content.length>0">
-      <template v-for="(item, index) in content" :key="index">
-        <tr v-if="item.type == 'w1'" :class="item.type">
-          <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td colspan="4" :name="it.name" :align="it.align">
-              {{ it.value }}
-            </td>
-          </template>
+  <div
+    class="report-template-data"
+    v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
+  >
+    <div class="template-name">{{reportTemplateData.filename.split('.')[0]}}</div>
+    <table style="width: 100%" id="onlineReportTableEditable">
+      <template v-for="(item, index) in reportTemplateData.json_content" :key="index">
+        <tr v-if="item.type === 'w1'">
+          <td
+            colspan="6"
+            class="report-title"
+            :title="item.fields[0].value"
+            :align="item.fields[0].align"
+          >
+            {{ item.fields[0].value }}
+            <!-- <div v-if="reportTemplateData.can_student_update&&cid!==0">
+                <a-input :placeholder='item.placeholder' v-model:value="item.fields[0].value"></a-input>
+            </div>
+            <div v-else>{{item.fields[0].value}}</div> -->
+          </td>
         </tr>
-       <tr v-if="['w2'].includes(item.type)"  :class="item.type">
-            <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
-              {{ it.value }}
-            </td>
-          </template>
+        <tr v-if="['w2', 'w5'].includes(item.type)">
+          <td
+            class="title-text"
+            style="width: 20%"
+            :title="item.fields[0].value"
+            :align="item.fields[0].align"
+          >
+            {{ item.fields[0].value }}
+          </td>
+          <td colspan="5" class="title-text" style="word-break: break-all">
+            <!-- {{ item.fields[1].value }} -->
+            <div>
+              <a-textarea
+                :disabled="true"
+                :placeholder="item.placeholder"
+                :auto-size="{ minRows: 2, maxRows: 6 }"
+                v-model:value="item.fields[1].value"
+              ></a-textarea>
+            </div>
+            <!-- <div v-else>{{ item.fields[1].value }}</div> -->
+          </td>
         </tr>
-        <tr v-if="['w3'].includes(item.type)"  :class="item.type">
-            <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="1" :name="it.name" :align="it.align">
-              {{ it.value }}
-            </td>
-          </template>
+        <tr v-if="item.type === 'w3'">
+          <td style="width: 20%" class="title-text" :align="item.fields[0].align">
+            {{ item.fields[0].value }}
+          </td>
+          <td colspan="2" style="word-break: break-all">
+            <!-- {{ item.fields[1].value }} -->
+            <div>
+              <a-textarea
+                :disabled="true"
+                :placeholder="item.placeholder"
+                :auto-size="{ minRows: 2, maxRows: 6 }"
+                v-model:value="item.fields[1].value"
+              ></a-textarea>
+            </div>
+            <!-- <div v-else>{{ item.fields[1].value }}</div> -->
+          </td>
+          <td style="width: 20%" class="title-text" :align="item.fields[0].align">
+            {{ item.fields[2].value }}
+          </td>
+          <td colspan="2" style="word-break: break-all">
+            <!-- {{ item.fields[3].value }} -->
+            <div>
+              <a-textarea
+                :disabled="true"
+                :placeholder="item.placeholder"
+                :auto-size="{ minRows: 2, maxRows: 6 }"
+                v-model:value="item.fields[3].value"
+              ></a-textarea>
+            </div>
+            <!-- <div v-else>{{ item.fields[3].value }}</div> -->
+          </td>
         </tr>
-        <template v-if="['w4'].includes(item.type)">
-            <tr v-for="(it,ind) in item.fields"  :class="item.type" :key="item.type+ind">
-                <td :colspan="4" :name="it.name" :align="it.align">
-                  {{ it.value }}
-                </td>
-            </tr>
-        </template>
-        
-        <tr v-if="['w5'].includes(item.type)"  :class="item.type">
-            <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
-              {{ it.value }}
-            </td>
-          </template>
+        <tr v-if="['w4', 'w6'].includes(item.type)">
+          <td
+            colspan="6"
+            class="title-text"
+            :align="item.fields[0].align"
+            style="height: 30px"
+          >
+            {{ item.fields[0].value }}
+          </td>
         </tr>
-        <template v-if="['w6'].includes(item.type)">
-            <tr v-for="(it,ind) in item.fields"  :class="item.type" :key="item.type+ ind">
-                <td :colspan="4" :name="it.name" :align="it.align">
-                  {{ it.value }}
-                </td>
-            </tr>
-        </template>
-        <tr v-if="['w7'].includes(item.type)"  :class="item.type">
-            <template v-for="(it,ind) in item.fields" :key="item.type + ind">
-            <td :colspan="ind==0?1:3" :name="it.name" :align="it.align">
-              <template v-if="ind==0">
-                {{ it.value }}
-              </template>
-              <template v-else>
-                <markedEditor v-model="it.value" :preview="true"></markedEditor>
-              </template>
-            </td>
-          </template>
+        <tr v-if="['w4', 'w6'].includes(item.type)">
+          <td colspan="6" style="word-break: break-all">
+            <!-- {{ item.fields[1].value }} -->
+            <div>
+              <a-textarea
+                :disabled="true"
+                :auto-size="{ minRows: 2, maxRows: 6 }"
+                :placeholder="item.placeholder"
+                v-model:value="item.fields[1].value"
+              ></a-textarea>
+            </div>
+            <!-- <div v-else>{{ item.fields[1].value }}</div> -->
+          </td>
         </tr>
-        <template v-if="['w8'].includes(item.type)">
-            <tr v-for="(it,ind) in item.fields"  :class="item.type+'-'+ind" :key="item.type+ind">
-                <td :colspan="4" :name="it.name" :align="it.align">
-                  <template v-if="ind==0">{{ it.value }}</template>
-                  <template v-else>
-                    <markedEditor v-model="it.value" :preview="true"></markedEditor>
-                  </template>
-                </td>
-            </tr>
-        </template>
+        <tr v-if="item.type === 'w7'" class="editable-markdown">
+          <td class="title-text" style="width: 20%" :align="item.fields[0].align">
+            {{ item.fields[0].value }}
+          </td>
+          <td class="" colspan="5">
+            <div>
+              <markdown v-model="item.fields[1].value" :preview="true" />
+              <!-- <markdown
+                v-else
+                :preview="true"
+                v-model="item.fields[1].value"
+              /> -->
+            </div>
+          </td>
+        </tr>
+        <tr v-if="item.type === 'w8'" class="editable-markdown">
+          <td class="title-text" style="height: 30px" :align="item.fields[0].align">
+            {{ item.fields[0].value }}
+          </td>
+          <td class="editable-markdown" colspan="5">
+            <div>
+              <markdown v-model="item.fields[1].value" :preview="true" />
+              <!-- <markdown
+                v-else
+                :preview="true"
+                v-model="item.fields[1].value"
+              /> -->
+            </div>
+          </td>
+        </tr>
       </template>
     </table>
-    <Empty v-else></Empty>
   </div>
 </template>
 
-<script lang="ts" setup>
-import { ref, toRefs, onMounted, Ref,defineProps } from "vue";
-import markedEditor from "src/components/editor/markedEditor.vue"
-import Empty from "../Empty.vue";
+<script lang="ts">
+import { defineComponent, inject } from "vue";
+import markdown from "src/components/editor/markedEditor.vue";
 
-const props=defineProps({
-    content:{
-        type:Array as any,
-        defaule:[],
-        require:true    
-    }
-})
+export default defineComponent({
+  components: {
+    markdown,
+  },
+  props:['preview','reportTemplateData'],
+  setup() {
+    // const reportTemplateData: any = inject("reportTemplateData");
+    return {
+      // reportTemplateData,
+    };
+  },
+});
 </script>
-<style lang="less" scoped>
-.online-preview-report-wrap {
+
+<style lang="less">
+.report-template-data {
+  .template-name {
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 16px;
+  }
+  .mark__body .mark__editor,
+  .mark__body .mark__preview {
+    min-width: auto;
+    border-bottom: none;
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .mark__body .mark__preview {
+    min-width: auto;
+  }
+  .mark__container {
+    border: none !important;
+  }
   table {
     border: 1px solid #a3a3a3;
     border-collapse: collapse;
     border-spacing: 0;
-    tr{
-        border: 1px solid #a3a3a3;
+    tr {
+      border: 1px solid #a3a3a3;
     }
-    td{
-    border: 1px solid #a3a3a3;
-    padding: 15px;
+    td {
+      border: 1px solid #a3a3a3;
+      .ant-input-disabled {
+        color: var(--black-85);
+        cursor: auto;
+      }
     }
-    .w1,.w2,.w3{
-        height: 50px;
-    }
-    .w7{
-        >td:nth-child(2){
-            padding: 0;
-            
-            :deep(.mark__body .mark__preview){
-                overflow: hidden;
-            }
-        }
-    }
-    .w8-1{
-        td{
-            padding: 0;
-            :deep(.mark__body .mark__preview){
-                overflow: hidden;
-            }
-        }
-    }
+  }
+  textarea {
+    outline: none;
+    border: none;
   }
 }
 </style>

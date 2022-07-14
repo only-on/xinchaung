@@ -11,8 +11,8 @@
   >
     <div class="report-wrap">
       <div :class="reportType=='form'?'report-template':'report-pdf'">
-        <viewTemplate v-if="reportType=='form'" :reportTemplateData='data' />
-        <!-- <onlinePreview v-if="reportType=='form'"  :content="data.json_content"></onlinePreview> -->
+        <!-- <viewTemplate v-if="reportType=='form'" :reportTemplateData='data' /> -->
+        <onlinePreview v-if="reportType=='form'"  :reportTemplateData="data"></onlinePreview>
         <!-- <div v-html="data.html_content"></div> -->
         <PdfVue class="pdfHeight" v-else :url="data.pdf_path" />
       </div>
@@ -101,14 +101,14 @@ function submit() {
     padding: 0;
     .report-template{
       padding:0 40px 0 40px;
-      max-height: 700px;
+      max-height: 668px;
       overflow-y: auto;
       .contentT {
         max-height: 660px;
       }
     }
     .report-pdf{
-      height: 700px;
+      height: 668px;
       padding:0 40px 0 40px;
     }
   }
