@@ -335,9 +335,14 @@ function initWs() {
                 return
               }
               vncLoading.value = true
+              if (currentVm.value.status == "ACTIVE"&&wsJsonData.data.msg.indexOf('开启')!==-1) {
+                currentInterface.value = 'ssh'
+                sshIsOpen.value = true
+              }
               if (currentInterface.value === 'ssh') {  // ssh重连
                 timerNum = 1
                 setTimeout(() => {
+                  sshUrl.value = ''
                   testSSHServe()
                 }, 2000)
               } else {
