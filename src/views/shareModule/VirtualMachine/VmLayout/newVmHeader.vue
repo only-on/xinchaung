@@ -889,6 +889,7 @@ async function showChange() {
       }
     }
     vmApi.switchInterfaceApi({param:{...param}}).then(() => {
+      isClose.value = false
       currentOption.value.wsUrl = ''
       sshUrl.value=""
       currentInterface.value="vnc"
