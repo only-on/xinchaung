@@ -224,15 +224,18 @@ const deleteFile = () => {
   //   experimentContent.value = ''
   //   return
   // }
-  http.deleteDocument({urlParams: {content_id: props.detail.id}})
-  .then((res: any) => {
-    preview.value = false
-    props.detail.content_task_files = [];
-    props.detail.guide = ''
-    experimentContent.value = ''
-    activeFile.file_url = ''
-    activeFile.file_html = ''
-    activeFile.suffix = 'md'
+  return new Promise((resolve) => {
+    http.deleteDocument({urlParams: {content_id: props.detail.id}})
+    .then((res: any) => {
+      preview.value = false
+      props.detail.content_task_files = [];
+      props.detail.guide = ''
+      experimentContent.value = ''
+      activeFile.file_url = ''
+      activeFile.file_html = ''
+      activeFile.suffix = 'md'
+      resolve(1)
+    })
   })
 };
 
