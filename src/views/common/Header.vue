@@ -8,7 +8,7 @@
       </div>
     </div>
     <div class="header-middle">
-      <menu-bar :menus="menus" :activeMenu="activeMenu"></menu-bar>
+      <menu-bar :menus="menus" />
     </div>
     <div class="header-right">
       <a-popover title="" trigger="click" placement="bottom">
@@ -461,11 +461,11 @@ export default defineComponent({
       // router.push(`${homePath}`);
       if (role == 3) {
         // return "/teacher" // 教师端首页
-        activeMenu.value='首页'
+        store.commit("changemenuActiveName",'首页')
         router.push("/teacher");
       }
       if (role == 4) {
-        activeMenu.value='首页'
+        store.commit("changemenuActiveName",'首页')
         router.push("/student");
       }
       if (role == 1) {
@@ -473,12 +473,12 @@ export default defineComponent({
         // router.push("/teacher");
       }
       if (role == 2) {
-        activeMenu.value='首页'
+        store.commit("changemenuActiveName",'首页')
         // return "/admin" // 管理端
         router.push("/admin");
       }
       if (role == 5) {
-        activeMenu.value='教学过程'
+        store.commit("changemenuActiveName",'教学过程')
         router.push("/teacher/teacherCourse?currentTab=0"); // 助教端
         // router.push("/");
       }
@@ -714,7 +714,6 @@ export default defineComponent({
       store,
       logoImg,
       getLogoUrl,
-      activeMenu
     };
   },
 });
