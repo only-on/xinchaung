@@ -321,6 +321,11 @@
             '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
             '/admin/adminUserManagement/teacherManagement':'用户管理',
             '/admin/adminUserManagement/studentManagement':'用户管理',
+
+            '/admin/systemMaintenance/systemAuthorization':'系统维护',
+            '/admin/systemMaintenance/personalization':'系统维护',
+            '/admin/systemMaintenance/userloginInformation':'系统维护',
+            '/admin/systemMaintenance/diskManagement':'系统维护',
         }
         if(obj[value]){
             store.commit("changemenuActiveName",obj[value])
