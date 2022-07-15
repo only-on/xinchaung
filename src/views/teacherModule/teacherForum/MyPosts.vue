@@ -100,10 +100,10 @@ function initData() {
         Object.assign(param, {order: 2}) : 
         Object.assign(param, {type: forumSearch.type}))) : 
     Object.assign(param, {self: 1, type: forumSearch.type})
-  http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
-    loading.value = false
-    if (!res?.data) return 
     forumnList.length = 0
+    total.value=0
+  http[httpList[currentTab.value]]({urlParams: {keyword: forumSearch.title}, param}).then((res: IBusinessResp) => {
+    if (!res?.data) return 
     const { list, page } = res.data
     list.forEach((v: IForumnList) => {
       v.content = goHtml(v.content)
@@ -112,6 +112,9 @@ function initData() {
     })
     forumnList.push(...list)
     total.value = page.totalCount
+    loading.value = false
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 function search(params: IForumSearch) {
@@ -145,6 +148,7 @@ const tags = [
 let tagList = reactive<ITagList[]>([])
 const getTagsList = (param: any) => {
   tagList.length = 0
+  loading.value=true
   http.getForumTags({param}).then((res: IBusinessResp) => {
     const { data } = res
     data.forEach((v: ITagList) => {
@@ -154,6 +158,8 @@ const getTagsList = (param: any) => {
     tagList.push(...data)
     // forumSearch.type = data[0].name
     initData()
+  }).catch((err:any)=>{
+    loading.value=false
   })
 }
 

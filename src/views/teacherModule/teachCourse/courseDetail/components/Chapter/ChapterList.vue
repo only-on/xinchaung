@@ -767,11 +767,13 @@ const getChaptersTree=()=>{
 var course_setting:any=reactive({})
 function StudentChaptersTree(course_student_id:number){
   ChaptersTreeList.length=0
+  chartLoading.value=true
   studentHttp.StudentChaptersTree({urlParams:{course_student_id:course_student_id}}).then((res:IBusinessResp)=>{
     if (!res) return
     const {data}=res
     course_setting=data.length?{...data[0].course_setting}:{}
     ProcessingData(data)
+    chartLoading.value=false
     console.log(course_setting)
   })
 }

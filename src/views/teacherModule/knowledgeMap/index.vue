@@ -2,6 +2,8 @@
   <div class="knowledgeMap">
     <div class="left">
       <!-- <div class="saveimg" @click="handleImg"></div> -->
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+      </a-spin>
       <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
     <div class="right">
@@ -26,7 +28,7 @@
   
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted, reactive, inject, nextTick } from 'vue'
+import { defineComponent,ref, onMounted, reactive, inject, nextTick,Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import 'jsmind/style/jsmind.css'
 import jsMind from 'jsmind/js/jsmind.js'
@@ -91,12 +93,17 @@ export default defineComponent({
       size: 10,
       knowledge_map_id: ''
     })
+    var loading: Ref<boolean> = ref(false);
     const getMapdata = () => {
+      loading.value=true
       http.knowledgesList().then((res:IBusinessResp) => {
         if (res && res.data) {
           // mapData.role = res.data.role
+          loading.value=false
           initData(res.data)
         }
+      }).catch((err:any)=>{
+        loading.value=false
       })
     }
     const initData = (data: any) => {
@@ -292,7 +299,8 @@ export default defineComponent({
       showMenu,
       showEdit,
       isShow,
-      props
+      props,
+      loading
     }
   },
 })
