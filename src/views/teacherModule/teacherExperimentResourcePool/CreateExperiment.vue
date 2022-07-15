@@ -1359,8 +1359,8 @@ onMounted(()=>{
     padding: 2rem;
     video {
       width: 100%;
-      height: 100%;
-      object-fit: cover;
+      height: 650px;
+      // object-fit: cover;
     }
   }
 }
