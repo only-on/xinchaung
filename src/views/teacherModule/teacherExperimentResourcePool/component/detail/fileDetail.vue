@@ -241,47 +241,15 @@ const onSubmit = async () => {
     $message.warn("请上传或选择文件")
     return
   }
-  const param = {}
-  // if (activeFile.suffix === 'md' || experimentContent.value) {
-  //   if (activeFile.id) {
-  //     Object.assign(param, {guide: experimentContent.value})
-  //   } else {
-  //     Object.assign(param, {
-  //       guide: experimentContent.value,
-  //       document_file: {
-  //         file_path:activeFile.file_url,
-  //         file_name:activeFile.name,
-  //         directory_id:directoryId.value
-  //       },
-  //     })
-  //   }
-  // } else {
-  //   Object.assign(param, {
-  //     document_file: {
-  //       "file_path": activeFile.file_url,			// 文档实验-文件
-  //       "directory_id": directoryId.value, // 实验指导 如果是选择的文件请求的时候不需要传此参数
-  //       "file_name": activeFile.name // 实验指导 如果是选择的文件请求的时候不需要传此参数
-  //     }
-  //   })
-  // }
-  if(['doc','docx','pdf'].includes(activeFile.suffix)){
-     Object.assign(param, {
-          guide:'',
-          document_file: {
-            file_path:activeFile.file_url,
-            file_name:activeFile.name,
-            directory_id:directoryId.value
-        },
-     })
-  }else{
-     Object.assign(param, {
-          guide:experimentContent.value,
-          document_file: {
-            file_path:'',
-            file_name:'',
-            directory_id:''
-        },
-     })
+  const param = {
+    document_file: {
+      file_path:activeFile.file_url,
+      file_name:activeFile.name,
+      directory_id:directoryId.value
+    },
+  }
+  if (activeFile.suffix === 'md' || experimentContent.value) {
+      Object.assign(param, {guide: experimentContent.value})
   }
   await deleteFile()
   http.updateDocumentGuide({
