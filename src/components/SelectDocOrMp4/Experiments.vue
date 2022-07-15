@@ -26,7 +26,7 @@
             <!-- <a-checkbox v-model:checked="v.checked"></a-checkbox> -->
             <div class="task_type" :style="{ color: v.type_obj.color}">{{v.type_obj.name}}</div>
             <span v-if="v.is_high" class="iconfont icon-gaopei gaopeiColor"></span>
-            <div class="quName single_ellipsis">
+            <div class="quName single_ellipsis" :title="v.name">
               {{v.name}}
             </div>
           </div>
