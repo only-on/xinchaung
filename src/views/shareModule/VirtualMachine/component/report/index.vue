@@ -268,6 +268,8 @@ onMounted(() => {
   padding: 15px;
   word-break: break-all;
   white-space: normal;
+  position: relative;
+  z-index: 10;
 }
 .report-table {
   width: 100%;

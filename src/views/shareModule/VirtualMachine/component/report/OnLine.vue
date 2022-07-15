@@ -179,6 +179,13 @@ export default defineComponent({
     text-align: center;
     font-size: 16px;
   }
+  :deep(.mark__body) {
+    .mark__editor, .mark__preview {
+      max-height: 200px;
+      overflow: auto;
+      min-width: 50%;
+    }
+  }
   .mark__body .mark__editor {
     min-width: auto;
   }

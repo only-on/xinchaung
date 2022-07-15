@@ -1,6 +1,6 @@
 <template>
   <div
-    class="report-template-data"
+    class="report-template-online"
     v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
   >
     <div class="template-name">{{reportTemplateData.name||reportTemplateData.filename}}</div>
@@ -152,7 +152,7 @@ export default defineComponent({
 </script>
 
 <style lang="less">
-.report-template-data {
+.report-template-online {
   .template-name {
     margin-bottom: 16px;
     text-align: center;
