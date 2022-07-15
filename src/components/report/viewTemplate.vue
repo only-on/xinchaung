@@ -1,39 +1,9 @@
 <template>
-  <div class="pdfBox" v-if="pdfUrl">
-    <PdfVue :url="pdfUrl" />
+  <div class="wrapper" v-if="reportTemplateData?.template_type=='form'||reportTemplateData?.type=='form'">
+    <onlinePreview :reportTemplateData="reportTemplateData"></onlinePreview>
   </div>
-  <div class="wrapper" v-else>
-    <div class="contentT">
-      <div class="dnd-space">
-        <a-form :model="form" layout="vertical" ref="formRef">
-          <a-form-item label="报告模板名称" name="name">
-            <a-input
-              v-model:value="form.name"
-              :disabled="true"
-              placeholder="请输入报告模板名称"
-            />
-          </a-form-item>
-          <a-form-item>
-            <drag-gable
-              :list="dataList"
-              class="tableDom"
-              :sort="true"
-              tag="table"
-              ignore="a, img, input, textarea"
-              item-key="idx"
-            >
-              <template #item="{ element, index }">
-                <widget-create
-                  :type="element.type"
-                  v-model:fields="element.fields"
-                >
-                </widget-create>
-              </template>
-            </drag-gable>
-          </a-form-item>
-        </a-form>
-      </div>
-    </div>
+  <div class="pdfBox" v-else>
+    <PdfVue :url="reportTemplateData.pdf_path" />
   </div>
 </template>
 <script lang="ts" setup>
@@ -46,67 +16,37 @@ import {
   watch,
   computed,
 } from "vue";
-import { initialWidgetThumb, deepClone } from "./utils";
-import widgetThumb from "./components/widgetThumb.vue";
-import widgetCreate from "./components/widgetCreate.vue";
-import { widgetDataModel } from "./DM";
 import { useRoute, useRouter } from "vue-router";
 import { MessageApi } from "ant-design-vue/lib/message";
-import dragGable from "vuedraggable";
 import request from "src/api/index";
 import { IBusinessResp } from "src/typings/fetch.d";
 import { ITeacherTemplateHttp, Iform, WidgetModel } from "./templateTyping";
 import PdfVue from "src/components/pdf/pdf.vue";
+import onlinePreview from "src/components/report/onlinePreview.vue"
 const http = (request as ITeacherTemplateHttp).teacherTemplate;
 const $message: MessageApi = inject("$message")!;
 const router = useRouter();
 const route = useRoute();
-const formRef = ref<any>(null);
 interface Props {
   id?: number;
-  reportTemplateData?:any
 }
 const props = withDefaults(defineProps<Props>(), {
   id: 0,
 });
 const templateId = ref<any>("");
-var form = reactive<any>({
-  name: "",
-});
-var dataList = reactive<any[]>([
-  {
-    ...deepClone(widgetDataModel.w1),
-    idx: 0,
-  },
-]);
 onMounted(() => {
   templateId.value = props.id !== 0 ? props.id : 1;
-  if (templateId.value&&!props.reportTemplateData) {
+  if (templateId.value) {
     getDetail();
   }
-  if(props.reportTemplateData && props.reportTemplateData.json_content.length > 0){
-    // console.log(props.reportTemplateData);
-    form.name = props.reportTemplateData.filename || props.reportTemplateData.name
-    Object.assign(dataList, props.reportTemplateData.json_content);
-    dataList.forEach((item: WidgetModel, index: number) => {
-      item.idx = index;
-    });
-  }
 });
-const pdfUrl = ref('')
+const reportTemplateData: any = reactive({})
 const getDetail = (id?: number) => {
-  dataList.length = 0;  // {urlParams: {id: templateId.value}}
   http.viewTemplate({urlParams: {id: id||templateId.value}})
     .then((res: IBusinessResp) => {
       if (res && res.data) {
         let result = res.data;
-        form.name = result.name;
-        pdfUrl.value = result.pdf_path
-        Object.assign(dataList, result.json_content);
-        // 增加唯一标识， 否则拖拽排序时input的value值会被影响
-        dataList.forEach((item: WidgetModel, index: number) => {
-          item.idx = index;
-        });
+        Object.assign(reportTemplateData, result)
       }
     });
 };

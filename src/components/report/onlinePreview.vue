@@ -3,7 +3,7 @@
     class="report-template-data"
     v-if="reportTemplateData && reportTemplateData.json_content.length > 0"
   >
-    <div class="template-name">{{reportTemplateData.filename.split('.')[0]}}</div>
+    <div class="template-name">{{reportTemplateData.name||reportTemplateData.filename}}</div>
     <table style="width: 100%" id="onlineReportTableEditable">
       <template v-for="(item, index) in reportTemplateData.json_content" :key="index">
         <tr v-if="item.type === 'w1'">
@@ -13,7 +13,7 @@
             :title="item.fields[0].value"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
             <!-- <div v-if="reportTemplateData.can_student_update&&cid!==0">
                 <a-input :placeholder='item.placeholder' v-model:value="item.fields[0].value"></a-input>
             </div>
@@ -27,7 +27,7 @@
             :title="item.fields[0].value"
             :align="item.fields[0].align"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td colspan="5" class="title-text" style="word-break: break-all">
             <!-- {{ item.fields[1].value }} -->
@@ -44,7 +44,7 @@
         </tr>
         <tr v-if="item.type === 'w3'">
           <td style="width: 20%" class="title-text" :align="item.fields[0].align">
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td colspan="2" style="word-break: break-all">
             <!-- {{ item.fields[1].value }} -->
@@ -59,7 +59,7 @@
             <!-- <div v-else>{{ item.fields[1].value }}</div> -->
           </td>
           <td style="width: 20%" class="title-text" :align="item.fields[0].align">
-            {{ item.fields[2].value }}
+            <div class="title">{{ item.fields[2].value }}</div>
           </td>
           <td colspan="2" style="word-break: break-all">
             <!-- {{ item.fields[3].value }} -->
@@ -81,7 +81,7 @@
             :align="item.fields[0].align"
             style="height: 30px"
           >
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
         </tr>
         <tr v-if="['w4', 'w6'].includes(item.type)">
@@ -100,7 +100,7 @@
         </tr>
         <tr v-if="item.type === 'w7'" class="editable-markdown">
           <td class="title-text" style="width: 20%" :align="item.fields[0].align">
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td class="" colspan="5">
             <div>
@@ -115,7 +115,7 @@
         </tr>
         <tr v-if="item.type === 'w8'" class="editable-markdown">
           <td class="title-text" style="height: 30px" :align="item.fields[0].align">
-            {{ item.fields[0].value }}
+            <div class="title">{{ item.fields[0].value }}</div>
           </td>
           <td class="editable-markdown" colspan="5">
             <div>
@@ -177,12 +177,22 @@ export default defineComponent({
     border-spacing: 0;
     tr {
       border: 1px solid #a3a3a3;
+      &.editable-markdown {
+        td .title {
+          max-height: 200px;
+        }
+      }
     }
     td {
       border: 1px solid #a3a3a3;
       .ant-input-disabled {
         color: var(--black-85);
         cursor: auto;
+      }
+      .title {
+        min-height: 52px;
+        max-height: 140px;
+        overflow: auto;
       }
     }
   }
