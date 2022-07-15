@@ -266,9 +266,9 @@ const handleDelete = (item: any) => {
 const uploadAction = (env ? '/proxyPrefix':'')+'/api/simple/report/templates/import-template'
 const uploadLoading = ref(false)
 function beforeUploadReport(file: any) {
-  console.log(file);
-  if (file.name.length > 100) {
-    message.warn(`文件名称长度不能超过100`);
+  console.log(file.name.length);
+  if (file.name.length > 60) {
+    message.warn(`文件名称长度不能超过60`);
     return false
   }
   //  formState.reportUploadList[0] = {

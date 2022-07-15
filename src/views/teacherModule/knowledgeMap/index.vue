@@ -224,6 +224,8 @@ export default defineComponent({
             message.success('添加成功')
             getMapdata()
             // initData(res.data)
+          }).catch(()=>{
+            getMapdata()
           })
         } else {
           params.parentID = selectNode.parent.id;
@@ -232,6 +234,8 @@ export default defineComponent({
           ele.removeEventListener('blur', setParams)
           http.editKnowledgeMap({urlParams: {nodeID: selectNode.id}, param: params}).then((res:IBusinessResp) => {
             message.success('修改成功')
+            getMapdata()
+          }).catch(()=>{
             getMapdata()
           })
         }
