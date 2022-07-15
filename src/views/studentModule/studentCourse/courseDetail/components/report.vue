@@ -2,7 +2,8 @@
   <div>
     <template v-if="baseInfo?.template_type=='form'">
       <!-- <onLine :reportTemplateData='baseInfo' :preview='true'></onLine> -->
-      <viewTemplate :reportTemplateData='baseInfo'  />
+      <!-- <viewTemplate :reportTemplateData='baseInfo'  /> -->
+      <onlinePreview :reportTemplateData="baseInfo"></onlinePreview>
     </template>
     <template v-else>
       <div class="pdfshow">
@@ -16,6 +17,7 @@ import { defineComponent, reactive, toRefs, watch, provide } from "vue";
 import onLine from "./OnLine.vue";
 import pdf from "src/components/pdf/pdf.vue";
 import viewTemplate from "src/components/report/viewTemplate.vue";
+import onlinePreview from "src/components/report/onlinePreview.vue"
 interface Istate {
   reportUrl: string;
 }
@@ -23,7 +25,8 @@ export default defineComponent({
   components: {
     onLine,
     pdf,
-    viewTemplate
+    viewTemplate,
+    onlinePreview,
   },
   name: "report",
   props: ["detailInfo", "baseInfo"],
@@ -62,7 +65,7 @@ export default defineComponent({
 }
 .pdfshow {
   width: 100%;
-  height: 700px;
+  height: 800px;
   display: flex;
   align-items: center;
   justify-content: center;

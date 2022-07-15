@@ -86,8 +86,15 @@ const props = defineProps({
     type: Object as PropType<any>,
     require: false,
     default: {}
+  },
+  coverLoading: {
+    type: Boolean,
+    default: false
   }
 })
+const emit = defineEmits<{
+  (e: "update:coverLoading", val: boolean): void;  // 上传文件的回调
+}>();
 interface IFormState {
   name: string
   description: string
@@ -119,10 +126,11 @@ if(Object.keys(props.editInfo).length){
 }
 // 上传封面图
 const uploadCoverHandle = (file: any) => {
+  emit("update:coverLoading", true)
   const fd = new FormData()
   fd.append('upload_file', file)
   datasetHttp.upLoadCover({param:fd}).then((res:any)=>{
-    loading.value = false
+    emit("update:coverLoading", false)
     console.log(res)
     formState.cover = res.data.path
   })

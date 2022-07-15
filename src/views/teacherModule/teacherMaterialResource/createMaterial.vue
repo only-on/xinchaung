@@ -3,7 +3,7 @@
     <div class="baseinfo">
       <h3 class="title">{{createMaterialType.subname}}基本信息</h3>
       <div class="baseinfo-content">
-        <base-info ref="baseInfoRef" :materialType="createMaterialType.subname" class="create"></base-info>
+        <base-info ref="baseInfoRef" :materialType="createMaterialType.subname" v-model:coverLoading="coverLoading" class="create"></base-info>
       </div>
     </div>
     <a-form :layout="'vertical'" :model="formState" :rules="rules" ref="formRef">
@@ -35,7 +35,7 @@
         </div>
       </div>
     </a-form>
-    <Submit @submit="submit" @cancel="cancel" :loading="(uploadComplete.complete || createDataSetLoad)"></Submit>
+    <Submit @submit="submit" @cancel="cancel" :loading="(uploadComplete.complete || createDataSetLoad||coverLoading)"></Submit>
   </div>
 </template>
 
@@ -110,6 +110,7 @@ const formState = reactive<IFormState>({
   documents: '',
   doc_name: ''
 })
+let coverLoading = ref(false)
 // const rules = {
 //   name: [{ required: true, message: "请输入名称", trigger: "blur" }],
 // };

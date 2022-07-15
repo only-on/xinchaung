@@ -2,6 +2,8 @@
   <div class="knowledgeMap">
     <div class="left">
       <!-- <div class="saveimg" @click="handleImg"></div> -->
+      <a-spin :spinning="loading" size="large" tip="Loading...">
+      </a-spin>
       <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
     <div class="right">
@@ -26,7 +28,7 @@
   
 </template>
 <script lang="ts">
-import { defineComponent,ref, onMounted, reactive, inject, nextTick } from 'vue'
+import { defineComponent,ref, onMounted, reactive, inject, nextTick,Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import 'jsmind/style/jsmind.css'
 import jsMind from 'jsmind/js/jsmind.js'
@@ -91,12 +93,17 @@ export default defineComponent({
       size: 10,
       knowledge_map_id: ''
     })
+    var loading: Ref<boolean> = ref(false);
     const getMapdata = () => {
+      loading.value=true
       http.knowledgesList().then((res:IBusinessResp) => {
         if (res && res.data) {
           // mapData.role = res.data.role
+          loading.value=false
           initData(res.data)
         }
+      }).catch((err:any)=>{
+        loading.value=false
       })
     }
     const initData = (data: any) => {
@@ -224,6 +231,8 @@ export default defineComponent({
             message.success('添加成功')
             getMapdata()
             // initData(res.data)
+          }).catch(()=>{
+            getMapdata()
           })
         } else {
           params.parentID = selectNode.parent.id;
@@ -232,6 +241,8 @@ export default defineComponent({
           ele.removeEventListener('blur', setParams)
           http.editKnowledgeMap({urlParams: {nodeID: selectNode.id}, param: params}).then((res:IBusinessResp) => {
             message.success('修改成功')
+            getMapdata()
+          }).catch(()=>{
             getMapdata()
           })
         }
@@ -246,6 +257,7 @@ export default defineComponent({
       http.delKnowledgeMap({urlParams: {nodeID: selectNode.id}}).then((res:IBusinessResp) => {
         jm.remove_node(selectNode.id)
         message.success('删除成功')
+        contentList.length = 0
         getMapdata()
       })
     }
@@ -256,7 +268,7 @@ export default defineComponent({
         if (res&&res.data.length > 0) {
           contentList.push(...res.data)
         } else {
-          $message.warning('该知识点无关联实验!')
+          // $message.warning('该知识点无关联实验!')
         }
       })
     }
@@ -287,7 +299,8 @@ export default defineComponent({
       showMenu,
       showEdit,
       isShow,
-      props
+      props,
+      loading
     }
   },
 })

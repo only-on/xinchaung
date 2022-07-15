@@ -32,7 +32,7 @@
         :style="{ marginRight: !((k + 1) % 4) ? 0 : '24px' }"
         @click="detail(list)"
       >
-        <div class="item-top" :style="list.cover?`background-image: url(${encodeURI(list.cover)});`:defaultCover">
+        <div class="item-top" :style="list.cover?`background-image: url('${encodeURI(list.cover)}');`:defaultCover">
           <div class="labels">
             <span>{{(list.tags && list.tags.length)?`${list.tags.join(' / ')}`:''}}</span>
           </div>
@@ -147,7 +147,7 @@ const detail=(val:any)=>{
     cardType: val.slab_uid ? 'setData':'other',
     user_id: uid
   }
-  if(val.slab_uid){
+  if(val.type==1){
     router.push({
       path:'/teacher/teacherMaterialResource/setDataDetail',
       query:{
@@ -210,7 +210,6 @@ interface Iuser {
 }
 let materialList = reactive<IMaterialList[]>([]);
 const initData = () => {
-  materialList.length = 0
   tag.value = !labelSearch.type ? 
       (!labelSearch.label ? '' : labelSearch.label) : 
       (!labelSearch.label ? labelSearch.type : labelSearch.type + ',' + labelSearch.label)
@@ -220,29 +219,9 @@ const initData = () => {
     tags: tag.value,
     ...pageInfo,
   };
-  // if (labelSearch.type === '数据集') {
-  //   http.getDatasetsUidList({param}).then((res: IBusinessResp) => {
-  //     if (!res) return
-  //     // console.log(Object.values(res.data.list))
-  //     http.getDataSetsList({param: {datasets: Object.values(res.data.list)}}).then((res: any) => {
-  //       // console.log(res)
-  //       if (!res) return
-  //       const { data, total} = res
-  //       // data.forEach((v: any) => {
-  //       //   v.id = v.uid
-  //       //   v.item_count = v.amount
-  //       //   v.item_size = v.size
-  //       //   v.tags = v.labels?.map((v: any) => v.name)
-  //       //   v.type_name = '数据集'
-  //       //   v.username = v.username ? v.username : 'teach'
-  //       //   v.avatar = v.cover ? v.cover : 'src/assets/images/user/teacher_p.png'
-  //       // })
-  //       materialList.push(...data);
-  //       pageTotal.value = total;
-  //     })
-  //   })
-  //   return
-  // }
+  materialList.length = 0
+  pageTotal.value=0
+  loading.value=true
   http.dataSets({ param }).then((res: any) => {
     if (!res) return
     const { list, page } = res.data;
@@ -251,7 +230,10 @@ const initData = () => {
     // })
     materialList.push(...list);
     pageTotal.value = page.totalCount;
-  });
+    loading.value=false
+  }).catch((err:any)=>{
+    loading.value=false
+  })
 };
 onMounted(() => {
   if (!Number(route.query.currentTab)) {

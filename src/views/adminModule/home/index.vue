@@ -298,7 +298,7 @@
         {name:'产品授权',link:'/admin/systemMaintenance/systemAuthorization'},
         {name:'方向规划',link:'/admin/TeachingResourceManagement/DirectionPlanning'},
         {name:'个性化设置',link:'/admin/systemMaintenance/personalization'},
-        {name:'运行环境清理',link:'/admin/systemMaintenance/diskManagement'},
+        {name:'运行环境清理',link:'/teacher/coursePlan/environmental'},
         {name:'用户登录信息',link:'/admin/systemMaintenance/userloginInformation'},
         {name:'磁盘管理',link:'/admin/systemMaintenance/diskManagement'},
         {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
@@ -311,10 +311,21 @@
         {name:'关注西普科技'},
     ]
     function toJump(value:any){
-        console.log(value);
+        // console.log(value);
         let obj={
+            '/teacher/coursePlan/environmental':'资源预约',
             '/teacher/coursePlan':'资源预约',
-            '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理'
+            '/admin/TeachingResourceManagement/DirectionPlanning':'教学资源管理',
+            '/admin/TeachingResourceManagement/courseManagement':'教学资源管理',
+            '/admin/TeachingResourceManagement/experimentManagement':'教学资源管理',
+            '/admin/TeachingResourceManagement/resourcesManagement':'教学资源管理',
+            '/admin/adminUserManagement/teacherManagement':'用户管理',
+            '/admin/adminUserManagement/studentManagement':'用户管理',
+
+            '/admin/systemMaintenance/systemAuthorization':'系统维护',
+            '/admin/systemMaintenance/personalization':'系统维护',
+            '/admin/systemMaintenance/userloginInformation':'系统维护',
+            '/admin/systemMaintenance/diskManagement':'系统维护',
         }
         if(obj[value]){
             store.commit("changemenuActiveName",obj[value])
@@ -496,6 +507,14 @@
     　　return y + "-" + m + "-" + d;
     };
     function toMaintain(link:any){
+        // store.commit("changemenuActiveName",obj[value]) warningMessage
+        let obj={
+            '/teacher/coursePlan/environmental':'资源预约',
+            '/admin/systemMaintenance/diskManagement':'系统维护'
+        }
+        if(obj[link]){
+            store.commit("changemenuActiveName",obj[link])
+        }
         router.push(link)
     }
     function nodeOpera(ip: any, node_type: any, action: any) {

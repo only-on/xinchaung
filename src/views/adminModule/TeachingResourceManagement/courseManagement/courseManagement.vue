@@ -88,8 +88,7 @@
           <a-config-provider>
             <a-table :columns="columns" :data-source="courseList"
             :pagination="
-              totalCount > 10
-                ? {
+              totalCount > 10? {
                     hideOnSinglePage: false,
                     showSizeChanger:true,
                     total: totalCount, 
@@ -224,6 +223,8 @@ const initData = () => {
     Object.assign(analysisObj,analysis)
     courseList.push(...list)
     totalCount.value = page.totalCount
+  }).catch((err:any)=>{
+      loading.value = false
   })
 };
 

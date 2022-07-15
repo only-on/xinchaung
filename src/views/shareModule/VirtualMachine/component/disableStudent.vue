@@ -48,9 +48,10 @@ export default defineComponent({
     });
     const isSaveEnv = computed(() => {
       let boolean = false
+      // 学生学习时，只有分组实验 的组长或者是非推荐的桌面实验、ssh、任务制才有保存环境按钮
       if (
         baseInfo.value?.current?.is_teamed==1&&baseInfo.value?.current?.is_lead==1 ||
-        baseInfo.value?.current?.is_teamed!=1&&(taskType.value===1||taskType.value===2||taskType.value===5)
+        baseInfo.value?.current?.is_teamed!=1&&props.opType!='recommend'&&(taskType.value===1||taskType.value===2||taskType.value===5)
       ) {
         boolean = true
       }

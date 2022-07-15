@@ -241,6 +241,7 @@ function initWs() {
         let oldVmsInfo = vmsInfo.value
         if (wsJsonData.type == "base_vminfo") {
           vmsInfo.value = wsJsonData.data;
+          currentVm.value = wsJsonData.data.vms[currentVmIndex.value];
           if (wsJsonData.data.vms && wsJsonData.data.vms.length > 0) {
             Object.keys(oldVmsInfo).length ? '' : vncLoading.value = true
             if (
@@ -327,6 +328,27 @@ function initWs() {
           if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
             isScreenRecording.value ? layoutRef.value.vmHeaderRef.stopRecord() : ''
+            if (baseInfo.value.base_info.is_webssh === 1) {
+              if (currentVm.value.status == "SHUTOFF"&&wsJsonData.data.msg.indexOf('关闭')!==-1) {
+                currentInterface.value = 'ssh'
+                sshIsOpen.value = false
+                return
+              }
+              vncLoading.value = true
+              if (currentVm.value.status == "ACTIVE"&&wsJsonData.data.msg.indexOf('开启')!==-1) {
+                currentInterface.value = 'ssh'
+                sshIsOpen.value = true
+              }
+              if (currentInterface.value === 'ssh') {  // ssh重连
+                timerNum = 1
+                setTimeout(() => {
+                  sshUrl.value = ''
+                  testSSHServe()
+                }, 3000)
+              } else {
+                currentInterface.value = 'ssh'
+              }
+            }
           }
         }else if (wsJsonData.type=="return_message") {
           if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
@@ -350,7 +372,7 @@ function initWs() {
           } else {
             layoutRef.value.vmHeaderRef.finishingExperimentVisible = true
             sendDisconnect();
-            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==1 ? '' : router.go(historyLength - history.length - 1);
+            baseInfo.value?.current?.is_teamed==1 && baseInfo.value?.current?.is_lead==0 ? router.go(historyLength - history.length - 1) : '';
           }
         }else if (wsJsonData.type=="recommends") {
           // 推荐
@@ -370,13 +392,13 @@ function initWs() {
           disableData.value=wsJsonData.data
         }else if (wsJsonData.type=="switch_success") {
           // message.success("切换成功")
-          currentInterface.value = "vnc";
+          // currentInterface.value = "vnc";
             vmsInfo.value = wsJsonData.data;
-              settingCurrentVM(
-                wsJsonData.data.vms[currentVmIndex.value]
-              );
-              loading.value=false
-              initVnc.value()
+              // settingCurrentVM(
+              //   wsJsonData.data.vms[currentVmIndex.value]
+              // );
+              // loading.value=false
+              // initVnc.value()
         }else if (wsJsonData.type=="save_return_message") {
           if (Object.keys(wsJsonData).length>0) {
             if (wsJsonData.data?.msg) {
@@ -451,14 +473,14 @@ const testSSHServe = () => {
   }
   vmApi.testSSHServe({urlParams: param, silent: true}).then((res: IBusinessResp | null) => {
     if (res?.code === 1) {
-      setTimeout(() => {
+      // setTimeout(() => {
         vncLoading.value = false
         sshIsOpen.value = true
         clearTimeout(testSSHServeTimer)
         sshUrl.value = getVmConnectSetting.SSHHOST + ':' + getVmConnectSetting.SSHPORT + '?' + httpBuildQuery(param)
 
         timerNum = 1
-      }, 2000);
+      // }, 2000);
     }
   }).catch(() => {
     if (timerNum >= getVmConnectSetting.SSHConnectNum) {

@@ -46,7 +46,7 @@ function updateGroup(val:any){
   // height: 714px;
   // border-radius: 10px;
   // box-shadow: 0 2px 4px 0 var(--black-0-7);
-  // background: var(--white-100);
+  background: var(--white-100);
   padding: 40px;
   // margin-top:10px;
   position: relative;

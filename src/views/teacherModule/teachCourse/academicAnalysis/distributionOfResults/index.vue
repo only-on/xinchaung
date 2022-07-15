@@ -11,24 +11,24 @@
        <div class="chart">
         <div :id="lineChart" class="line-chart"></div>
         <div id="pie-chart">
-            <div class="pie-chart-row">
-                <div class='pie-item' v-if="statisData?.hasReport">
+            <!-- <div class="pie-chart-row"> -->
+              <div class='pie-item' v-if="statisData?.hasReport">
                 <div class="title">
                     实验报告提交率
                 </div>
                 <Progress type="circle" :percent='statisData?.experimentalReportSubmissionRate' :width='100' :strokeWidth='10' strokeColor='#00C8Bf' />
-            </div>
+              </div>
             <div class='pie-item' v-if="statisData?.haQuestion">
                 <div class="title">
                     随测正确率
                 </div>
                 <Progress type="circle" :percent='statisData?.inClassTestAccuracyRate' :width='100' :strokeWidth='10' strokeColor='#f6bc3a' />
             </div>
-            </div>
+            <!-- </div> -->
             <!-- (experType!==6&&experType!==7)&& -->
             <div class='pie-item' v-if="statisData?.hasAuto">
                 <div class="title">
-                    自动评分率
+                    自动评分正确率
                 </div>
                 <Progress type="circle" :percent='statisData?.automaticScoringCorrectRate' :width='100' :strokeWidth='10' strokeColor='#6791fb' />
             </div>
@@ -189,6 +189,8 @@ onMounted(()=>{
     }
     #pie-chart{
         flex: 1;
+        display: flex;
+        flex-wrap: wrap;
         .title{
             text-align: center;
             margin-bottom: 10px;
@@ -196,6 +198,9 @@ onMounted(()=>{
         .pie-item{
             text-align: center;
             width:45%;
+        }
+        .pie-item:nth-child(1){
+          margin-right:20px;
         }
     }
 </style>

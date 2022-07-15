@@ -269,8 +269,12 @@ export default defineComponent({
     background: pink;
     margin-right: 6px;
   }
+  .user-name {
+    word-break: keep-all;
+  }
   .create-time {
     margin: 0 24px;
+    word-break: keep-all;
   }
   .btns {
     padding: 0 22px;
@@ -279,6 +283,9 @@ export default defineComponent({
     height:28px;
     display: inline-block;
     border-radius: 16px;
+    word-break: keep-all;
+    overflow: hidden;
+    line-height: 28px;
   }
   .reply-num {
     margin-left: 4px;
@@ -344,6 +351,7 @@ export default defineComponent({
       border-radius: 17px;
       background: var(--primary-color);
       color: var(--white-100);
+      word-break: keep-all;
     }
   }
   .ant-spin-nested-loading {

@@ -1,8 +1,10 @@
 <template>
   <div class="stu">
-    <span class="stu-name" :title="list.number">姓名：
-      <span>{{ list.username || "--" }}</span>
-      <span class="stu-id" :title="list.number" v-if="list.number">（ {{ list.number || "--" }} ）</span>
+    <span class="stu-name">姓名：
+      <span :title="list.number?list.username+'('+list.number+')':list.username" class="pointer">
+        <span>{{ list.username || "--" }}</span>
+        <span class="stu-id" v-if="list.number">（ {{ list.number || "--" }} ）</span>
+      </span>
     </span>
     <!-- <span class="stu-id" v-if="!(list.student_id == '' && list.number == '')">学号：
       <span class="stu-idname" :title="list.number">{{ list.number || "--" }}</span>
@@ -44,7 +46,7 @@
         操作状态：<span>{{ isBusy ? "繁忙" : "空闲" }}</span>
       </p>
     </div>
-    <div class="mask" @click="jumpHandle(list)"></div>
+    <div class="mask" @click="jumpHandle(list)" :class="props.currentExperiment.type==3||props.currentExperiment.type==4?'':'pointer'"></div>
   </div>
   <div class="btns" v-if="list.vms.vms?.length > 0">
     <span
@@ -261,7 +263,7 @@ function jumpHandle(list: any) {
     position: absolute;
     top: 0;
     left: 21px;
-    cursor: pointer;
+    // cursor: pointer;
     // background-color: papayawhip;
   }
   .active {

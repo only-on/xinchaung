@@ -1,6 +1,6 @@
 import { TAvailableModules } from '../typings/api';
 // import  request  from "../utils/fetch.js";
-// //   预设了四中数据格式  URLENCODED(默认)    JSON   TEXT  FORMDATA
+// //   预设了四种数据格式  URLENCODED(默认)    JSON   TEXT  FORMDATA
 
 import MyServer from 'src/request/getRequest'
 
@@ -9,12 +9,14 @@ const teacherFiles: any = import.meta.globEager("./teacher/*.ts")
 const studentFiles: any = import.meta.globEager("./student/*.ts")
 const adminFiles: any = import.meta.globEager("./admin/*.ts")
 const files:any=Object.assign(modulesFiles,teacherFiles,studentFiles,adminFiles)
-
-for (const key in files) {
-    let file_name = key.split('/')[2].split('.')[0]
-    let moduleFiles = files[key].default
-    MyServer.parseRouter(file_name as TAvailableModules, moduleFiles)
+if(MyServer){
+    for (const key in files) {
+        let file_name = key.split('/')[2].split('.')[0]
+        let moduleFiles = files[key].default
+        MyServer.parseRouter(file_name as TAvailableModules, moduleFiles)
+    }
 }
+
 
 export default MyServer;
 

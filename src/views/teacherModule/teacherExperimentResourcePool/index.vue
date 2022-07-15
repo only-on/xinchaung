@@ -301,8 +301,9 @@ const initData = () => {
   param.content_type ? '' : delete param.content_type
   loading.value = true;
   experimentList.length = 0
+  totalCount.value=0
   http.getExperimentList({param}).then((res: IBusinessResp) => {
-    loading.value = false
+    
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: IExperimentList) => {
@@ -316,6 +317,9 @@ const initData = () => {
     });
     experimentList.push(...list)
     totalCount.value = page.totalCount
+    loading.value = false
+  }).catch((err:any)=>{
+    loading.value=false
   })
 };
 const pageChange = async (current: any, pageSize: any) => {

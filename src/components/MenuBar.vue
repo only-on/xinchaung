@@ -142,7 +142,7 @@ export default defineComponent({
         });
       }
       lStorage.set("menuActiveName", activeName.value);
-      // store.commit("changemenuActiveName",activeName.value)
+      store.commit("changemenuActiveName",activeName.value)
     }
     // store
     watch(()=>store.state.menuActiveName, newVal => {

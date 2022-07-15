@@ -1,5 +1,6 @@
 import {
   createRouter,
+  createWebHistory,
   createWebHashHistory,
   NavigationFailure,
   NavigationGuardNext,
@@ -31,7 +32,7 @@ const routes: Array<RouteRecordRaw> = [
   ...[RoutesStudentSide],
 ];
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHashHistory(), // createWebHistory(process.env.BASE_URL),  
   routes,
 });
 // console.log(routes);

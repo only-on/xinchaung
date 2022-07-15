@@ -145,7 +145,7 @@ function open(key?: string) {
   if (currentNavKey.value != key) {
     contentShow.value = true;
     if (leftWidth.value == 45) {
-      leftWidth.value = 400;
+      leftWidth.value = 420;
       rightWidth.value = window.innerWidth - leftWidth.value;
       // currentNavKey.value = key;
     } else {

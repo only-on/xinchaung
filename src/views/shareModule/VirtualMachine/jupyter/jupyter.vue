@@ -1,6 +1,10 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right>
+      <div v-if="isLoading" class="loading">
+        <img :src="loadingGif" alt="" srcset="" />
+        <span>虚拟机加载中，请稍后...</span>
+      </div>
       <iframe
         id="iframe"
         :src="'http://' + noteUrl"
@@ -36,6 +40,7 @@ import { Modal, message } from "ant-design-vue";
 import disableStudent from "../component/disableStudent.vue"
 import {IWmc} from "src/typings/wmc";
 import { useStore } from "vuex";
+import loadingGif from "src/assets/images/vmloading.gif";
 
 const route = useRoute();
 const router = useRouter();
@@ -43,6 +48,7 @@ const { opType, type, taskId, topoinst_id, connection_id, recommendType } = rout
 
 let ws_config = storage.lStorage.get("ws_config");
 let role = storage.lStorage.get("role");
+const user_id = storage.lStorage.get("uid");
 
 const baseInfo: any = inject("baseInfo", ref({}));
 const loading: any = inject("loading", ref(true));
@@ -203,17 +209,16 @@ function initWs() {
             message.warn(wsJsonData.data)
           }
         }else if (wsJsonData.type=="vm_act_message"){ 
-          // 教师在操作
-          if (wsJsonData.data?.msg?.indexOf('教师正在') !== -1) {
+          // 分组成员在操作或教师在操作
+          if (wsJsonData.data?.send_user_id!=user_id && wsJsonData.data?.uuid===currentVm.value.uuid) {
             message.warn(wsJsonData.data.msg)
-            return
           }
-        } else if (wsJsonData.type == "return_message") {
-          if (Object.keys(wsJsonData.data).length > 0) {
+        }else if (wsJsonData.type=="return_message") {
+          if (Object.keys(wsJsonData).length>0&&wsJsonData.data?.sender?.indexOf(connection_id)===-1) {
             if (wsJsonData.data?.msg) {
-              message.warn(wsJsonData.data.msg);
-            } else {
-              message.warn(wsJsonData.data);
+              message.warn(wsJsonData.data.msg)
+            }else{
+              message.warn(wsJsonData.data)
             }
           }
           // router.go(-1)
@@ -249,6 +254,7 @@ onBeforeRouteLeave(() => {
   clearTimeout(Number(TimerIframe));
 });
 let showIframe = ref(true)
+let isLoading = ref(true)
 onMounted(async () => {
   await getVmBase();
   if (Number(baseInfo.value?.current?.status)<2||role !== 4||recommendType) {
@@ -262,11 +268,17 @@ onMounted(async () => {
       iframe.attachEvent('onload', () => {
         clearInterval(Number(TimerIframe));
         onloadIframe = true
+        setTimeout(() =>{
+          isLoading.value = false
+        }, 2000)
       })
     } else {
       iframe.onload = () => {
         clearInterval(Number(TimerIframe));
         onloadIframe = true
+        setTimeout(() =>{
+          isLoading.value = false
+        }, 2000)
       }
     }
     TimerIframe = setInterval(() => {
@@ -285,6 +297,16 @@ onMounted(async () => {
 .vm-finish-modal {
   .ant-btn-ghost {
     display: none;
+  }
+}
+
+.loading {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  color: var(--white);
+  img {
+    margin-right: 8px;
   }
 }
 </style>

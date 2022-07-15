@@ -178,9 +178,12 @@
           :show-upload-list="false"
           accept=".xls,.xlsx"
         >
-          <a-button>
-            <span class="icon iconfont icon-upload"></span>
-            选择文件
+          <a-button :loading="ImportData.loading" :disabled="ImportData.loading">
+            <template v-if="!ImportData.loading">
+              <span class="icon iconfont icon-upload"></span>
+              选择文件
+            </template>
+            <span v-else>导入中...</span>
           </a-button>
         </a-upload>
         <!-- <div>
@@ -505,6 +508,7 @@ const teacherColumns = [
       list: [],
       finished: 0,
       unfinished: 0,
+      loading: false
     });
     function initData() {
       loading.value = true;
@@ -749,6 +753,7 @@ const teacherColumns = [
         message.warn("文件大小不能为空");
         return false;
       }
+      ImportData.loading = true
       // loading.value=true
       const fd = new FormData();
       fd.append("file", file);
@@ -757,7 +762,10 @@ const teacherColumns = [
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
         message.success("导入完成");
+        ImportData.loading = false
         initData();
+      }).catch(() => {
+        ImportData.loading = false
       });
       return false
     }
@@ -870,17 +878,7 @@ const teacherColumns = [
     margin: 0 10px;
   }
 }
-.ant-upload {
-  button {
-    background: var(--primary-color);
-    border-radius: 5px;
-    color: #ffffff;
-    .icon-upload {
-      font-size: 12px;
-      padding-right: 6px;
-    }
-  }
-}
+
 .studentList {
   .heard {
     margin-bottom: 22px;
@@ -892,6 +890,17 @@ const teacherColumns = [
       color: red;
       padding-left: 16px;
       font-size: 13px;
+    }
+    .ant-upload {
+      button {
+        background: var(--primary-color);
+        border-radius: 5px;
+        color: #ffffff;
+        .icon-upload {
+          font-size: 12px;
+          padding-right: 6px;
+        }
+      }
     }
   }
   .list {

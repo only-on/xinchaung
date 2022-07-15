@@ -22,13 +22,13 @@
             <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
             <div class="docBg" :style="`background-image: url(${v.cover});`"></div>
             <div class="info">
-              <div class="quName single_ellipsis">{{v.name}}</div>
+              <div class="quName single_ellipsis" :title="v.name">{{v.name}}</div>
               <div class="information">
                 <div class="portrait flexCenter">
                   <div class="flexCenter imgBox" v-if="is_public === 1">
-                    <span class="img" v-if="v.is_public"></span>
-                    <span class="img" v-if="!v.is_public" :style="`background-image: url(${v.avatar});`"></span>
-                    <span class="text">{{v.is_public?'系统内置':v.username}}</span>
+                    <!--  <span class="img" v-if="v.is_public"></span>-->
+                    <span class="img" v-if="v.is_public" :style="`background-image: url(${v.user.avatar});`"></span>
+                    <span class="text">{{v.username}}</span>
                   </div>
                   <div class="tags flexCenter">
                     <span>{{`${v.tags.join('/')}`}}</span>

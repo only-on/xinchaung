@@ -82,7 +82,7 @@
           <div class="data-set-hint">最多可选3个数据集</div>
         </a-form-item>
       </div>
-      <Submit @submit="create" @cancel="cancel"></Submit>
+      <Submit @submit="create" @cancel="cancel" :loading="loading"></Submit>
     </a-form>
     <div v-show="AddedSuccessfully" class="ContinueAdding">
       <div class="img"></div>
@@ -239,6 +239,7 @@ const ContinueAdding = () => {
   AddedSuccessfully.value = false;
 };
 const ruleFormDom = ref();
+const loading = ref(false)
 // 创建
 function create() {
   // AddedSuccessfully.value = true;
@@ -259,9 +260,11 @@ function create() {
     };
     console.log(params)
     // reactiveData.loading = true;
+    loading.value = true
     http.createWorkbenchApi({param:{...params}}).then((res: any) => {
       message.success("创建成功!");
       AddedSuccessfully.value = true;
+      loading.value = false
       // reactiveData.loading = false;
       // router.go(-1);
     });
