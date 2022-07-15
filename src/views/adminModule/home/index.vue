@@ -301,7 +301,7 @@
         {name:'运行环境清理',link:'/teacher/coursePlan/environmental'},
         {name:'用户登录信息',link:'/admin/systemMaintenance/userloginInformation'},
         {name:'磁盘管理',link:'/admin/systemMaintenance/diskManagement'},
-        {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
+        // {name:'平台设置',link:'/admin/systemMaintenance/systemAuthorization'},
     ]
     aboutData.value=[
         {name:'了解西普'},
