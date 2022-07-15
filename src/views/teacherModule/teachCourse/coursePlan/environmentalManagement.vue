@@ -109,7 +109,10 @@
     class="disable-modal"
   >
     <div>
-      <h2 class="time-lable">请选择禁用时间段</h2>
+      <div class="flexCenter" style="margin: 1rem 0;">
+        <h2 class="time-lable">请选择禁用时间段 </h2>
+        <span> (结束时间需晚于开始时间)</span>
+      </div>
       <div class="select-time-wrap">
         <span>
           <a-date-picker
@@ -331,15 +334,15 @@ function disabledDate(current: any) {
   return current && moment(current).add(0, "days") < moment();
 }
 function disabledDate2(current: any) {
-  return moment(current).add(0, "days") < moment();
+  return current && current < moment().endOf('day').subtract(1, 'days')
 }
 function range (start: number, end: number){
-      const result = [];
-      for (let i = start; i < end; i++) {
-        result.push(i);
-      }
+    const result = [];
+    for (let i = start; i < end; i++) {
+      result.push(i);
+    }
 
-      return result;
+    return result;
 }
 function disabledDateTime(date:any){
    let h=(endTime.value.format('YYYY-MM-DD HH:mm:ss').toString().split(' ')[1]).split(':')[0]
