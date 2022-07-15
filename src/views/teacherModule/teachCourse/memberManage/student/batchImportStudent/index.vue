@@ -9,7 +9,10 @@
           accept=".xlsx"
           :customRequest="beforeUpload"
         >
-        <a-button type="primary">选择文件</a-button>
+        <a-button :loading="loading" :disabled="loading">
+          <span v-if="loading">导入中...</span>
+          <span v-else>选择文件</span>
+        </a-button>
         </a-upload>
       <span>
         <span class="downTemplate" @click="downloadTemplate">下载学生模板</span>
@@ -63,6 +66,7 @@ const http = (request as any).teacherMemberManage;
 const columns: any = ref();
 const data: any = ref([]);
 const hasImport:any=ref(0)
+const loading = ref(false)
 interface Props {
   modalVisable:any;
 }
@@ -96,7 +100,7 @@ const allTableData:any=ref([])
 const successData:any=ref([])
 const emit = defineEmits<{ (e: "updateSelectStuVisable", val: any,selectkeyws:any): void }>();
 function beforeUpload(file:any){
-  console.log(file)
+  loading.value = true
   const fd = new FormData()
   fd.append('file',file.file)
  http.importStu({param:fd}).then((res:any)=>{
@@ -108,7 +112,6 @@ function beforeUpload(file:any){
         successData.value=data.value?.filter((item:any)=>{
           return item.success==true&&item.result==''
         })
-        console.log(successData.value)
         hasImport.value=successData.value?.length
         let ids:any=[]
         successData.value.forEach((item:any)=> {
@@ -117,7 +120,10 @@ function beforeUpload(file:any){
         if(ids?.length){
           emit("updateSelectStuVisable",'ok',ids);
         }
+        loading.value = false
       }
+ }).catch(() => {
+  // loading.value = false
  })
 }
 function onChange(page: any, pageSize: any) {
@@ -145,6 +151,12 @@ watch(() => props.modalVisable, (val:any) => {
 </script>
 
 <style lang="less" scoped>
+.batchTop{
+  .ant-upload button{
+    background: var(--primary-color);
+    color: var(--white-100);
+  }
+}
 .downTemplate {
   text-decoration: underline;
   color: var(--brightBtn);
