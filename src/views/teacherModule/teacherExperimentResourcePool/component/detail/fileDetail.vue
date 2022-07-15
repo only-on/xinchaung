@@ -120,7 +120,7 @@ watch(
       idDelte.value = false
       activeFile.suffix = 'md'
       experimentContent.value = props.detail.guide;
-    } if (props.detail.content_task_files&&props.detail.content_task_files.length) {
+    } else if (props.detail.content_task_files&&props.detail.content_task_files.length) {
       idDelte.value = false
       Object.assign(activeFile, props.detail.content_task_files[0])
     } else {
