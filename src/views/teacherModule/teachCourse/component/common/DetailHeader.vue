@@ -372,6 +372,7 @@ const edit=()=>{
       padding-top: 34px;
       border-top: 1px dashed rgba(255,255,255,0.24);
       span{
+        font-size: 18px;
         border-bottom: 4px solid transparent;
         margin-right: 70px;
         padding-bottom: 8px;

@@ -818,7 +818,7 @@ watch(
     text-align: center;
     // justify-content: center;
     .title3{
-      padding: 10px 0;
+      padding: 16px 0;
       justify-content: space-between;
       border-bottom: 1px solid rgba(0,0,0,0.15);
     }
@@ -828,7 +828,7 @@ watch(
     // padding-bottom: 2rem;
     .title{
       justify-content: space-between;
-      height: 46px;
+      height: 52px;
       border-bottom: 1px dashed #e8e8e8;
       // padding: 0 8px;
       padding-right: 10px;
@@ -892,7 +892,7 @@ watch(
               // height: 24px;
               // line-height: 24px;
               padding: 4px 6px;
-              border-radius: 10px;
+              border-radius: 20px;
             }
           }
           .experimentTitle{

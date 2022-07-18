@@ -760,7 +760,7 @@ const studentColumns = [
         ImportData.unfinished = res.data.total.unfinished;
         ImportData.list = res.data.msg;
         message.success("导入完成");
-        ImportData.loading = true
+        ImportData.loading = false
         initData();
       }).catch(() => {
         ImportData.loading = false

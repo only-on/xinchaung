@@ -4,7 +4,7 @@
       <!-- <div class="saveimg" @click="handleImg"></div> -->
       <a-spin :spinning="loading" size="large" tip="Loading...">
       </a-spin>
-      <div id="jsmind_container" @click="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
+      <div id="jsmind_container" @click="handleClick"  @dblclick="handleClick" @contextmenu.prevent="handleContextMenu($event)"></div>  
     </div>
     <div class="right">
       <div class="title">
@@ -154,9 +154,13 @@ export default defineComponent({
       }, 400);
     }
     const handleClick = (event:any)=>{
+      console.log('点击； ',event.type)
       setMenuStatus(false)
       if (event.target.nodeName == "DIV" || event.target.nodeName == "JMEXPANDER" || event.button == 2) {
           return;
+      }
+      if (event.type === 'dblclick') {
+        handleBlur('edit')
       }
       selectNode = jm.get_selected_node()
       if (selectNode) {
@@ -227,7 +231,6 @@ export default defineComponent({
           params.topicName = ele.value;
           ele.removeEventListener('blur', setParams)
           http.addKnowledgeMap({param: params}).then((res:IBusinessResp) => {
-            console.log('添加成功')
             message.success('添加成功')
             getMapdata()
             // initData(res.data)

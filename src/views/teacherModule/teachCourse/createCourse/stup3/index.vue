@@ -263,11 +263,15 @@ onMounted(()=>{
       cursor: pointer;
       span{
         margin: 0 10px;
+        font-size: 14px;
       }
       // .spanleft {
       //   margin-right: 10px;
       // }
     }
+  }
+  .ant-table-thead > tr > th{
+    background: var(--gray-4);
   }
 }
 :deep(.ant-table-pagination.ant-pagination) {

@@ -72,5 +72,8 @@ export default defineComponent({
   height: 100%;
   margin: 0 auto;
   border: 1px solid var(--gray-5);
+  &.preview-status{
+    border: 0;
+  }
 }
 </style>

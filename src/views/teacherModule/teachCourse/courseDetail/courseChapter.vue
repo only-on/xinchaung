@@ -79,7 +79,7 @@ onMounted(() => {
 
 <style lang="less" scope>
  .courseH3{
-    margin-bottom: 1rem;
+    margin-bottom: 8px;
     // color: var(--blue-6-2);
   }
   .courseContent{
@@ -101,7 +101,7 @@ onMounted(() => {
       // padding-top: 40px;
       .introduceBox{
         background-color: #fff;
-        padding: 24px;
+        padding: 20px;
         margin-bottom: 24px;
       }
       .introduce{

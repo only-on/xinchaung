@@ -58,10 +58,10 @@
           <!-- 是否有文件列表 -->
           <div class="fileList" v-if="v.show && v.fileList.length" :class="(v.show && v.fileList.length)?'openFile':''">
             <a-spin :spinning="v.loading" size="large" tip="Loading...">
-              <div v-for="i in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''">
+              <div v-for="(i,index) in v.fileList" class="flexCenter fileItem" :class="docOrMp4Drawer.activeFile.id === i.id ? 'activeFileItem':''" :key="index">
                 <div class="flexCenter fileLeft">
                   <!-- <span class="fileIcon" :style="`background-image: url(${iconList[props.docOrMp4Type === 1?'ppt':'mp4']});`"></span> -->
-                  <span class="fileIcon" :style="`background-image: url(${iconList[getFileTypeIcon(v.file_name)]});`"></span>
+                  <span class="fileIcon" :style="`background-image: url(${getFileTypeIcon(v.file_name)});`"></span>
                   <span class="single_ellipsis">{{i.file_name}}</span>
                 </div>
                 <div class="flexCenter fileRight">
@@ -282,6 +282,8 @@ onMounted(()=>{
                 margin-right: 6px;
               }
               .tags{
+                background: var(--primary-1);
+                padding: 0 14px;
                 span{
                   color: var(--primary-color);
                   font-size: var(--font-size-sm);
@@ -332,7 +334,7 @@ onMounted(()=>{
             }
           }
           .fileItem:hover{
-            background: rgb(255, 238, 217,.24);
+            background: var(--primary-1)
           }
           .activeFileItem{
             background: #fffbf6;
