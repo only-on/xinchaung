@@ -399,6 +399,7 @@ export default defineComponent({
               vmUpload(res.data.full_url);
             }
           } else {
+            (fileList.value as any)[i].progress = 0;
             message.warn(res.msg)
           }
           (fileList.value as any)[i].upload = "";
