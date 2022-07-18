@@ -340,6 +340,7 @@ function setTagData(knowledge_map: IknowledgeMap) {
       })
       links.push({
         source: knowledge_map.parentNode,
+        // target: item.contentvia.id,
         target: item.contentvia.id,
       })
       item.contentvia.knowledages.forEach((knowledage: any) => {
@@ -360,7 +361,8 @@ function setTagData(knowledge_map: IknowledgeMap) {
           })
           links.push({
             source: item.contentvia.id,
-            target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+            // target: item.contentvia.id + "->" + knowledage.knowledgeMap.id,
+            target: item.contentvia.name + "->" + knowledage.knowledgeMap.name,
           })
         }
       })
@@ -373,7 +375,16 @@ export const graphOptions = (data: any) => {
   let options = {
     tooltip: {
       formatter: function (val: any) {
-        return val.name
+        console.log(val)
+        if(val.dataType=="edge"){
+          const filterdata=datas.data.filter((item:any)=>{
+            return item.id==val.data.target
+          })
+          const chiName=filterdata[0].name
+          return val.data.source+'>'+chiName
+        }else{
+          return val.name
+        }
       }
     },
     animationDurationUpdate: 1500,
