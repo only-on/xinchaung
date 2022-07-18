@@ -6,8 +6,8 @@ import viteRawPlugin from "vite-raw-plugin";
 import viteCompression from 'vite-plugin-compression';
 const proxyTarget={
   130:'http://192.168.101.130',
-  221:'http://192.168.101.221',
-  222:'http://192.168.101.222:84',
+  // 221:'http://192.168.101.221',
+  221:'http://192.168.101.123'
 }
 export default defineConfig({
   base: "./",
