@@ -16,7 +16,7 @@
           </div>
         </div>
         <div class="right" >
-          <div class="name single_ellipsis">{{v.name}}</div>
+          <div class="name single_ellipsis" :title="v.name">{{v.name}}</div>
           <div class="change">
             <div class="FrontDisplay">
               <div class="information flexCenter">
@@ -30,8 +30,8 @@
                 </template>
               </div>
             </div>
-            <div class="PostDisplay">
-              <div class="text ellipsis" :title="v.description?v.description:''">
+            <div class="PostDisplay single_ellipsis">
+              <div class="text single_ellipsis" :title="v.description?v.description:''">
               {{v.description?v.description:'该镜像暂无描述'}}
               </div>
               <div class="caoZuo flexCenter" v-if="!v.is_init">
@@ -90,6 +90,7 @@
               placeholder="镜像描述"
               v-model:value="imageData.description"
               class="ant-input-desc"
+              :maxlength="200"
             ></a-textarea>
           </a-form-item>
         </a-form>
@@ -542,6 +543,7 @@ onMounted(() => {
         display: block;
       }
       .PostDisplay{
+        width: 253px;
         display: none;
       }
     }
