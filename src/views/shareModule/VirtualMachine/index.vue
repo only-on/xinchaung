@@ -218,9 +218,12 @@ function initEvaluate(){
   }
 }
 
-.vm-finish-modal {
-  .ant-btn-ghost {
-    display: none;
+</style>
+
+<style lang="less">
+  .vm-finish-modal {
+    .ant-btn-ghost {
+      display: none;
+    }
   }
-}
 </style>

@@ -1,7 +1,7 @@
 <template>
   <layout :navData="navData">
     <template v-slot:right>
-      <div v-if="isLoading" class="loading">
+      <div v-if="isLoading" class="jupyter-loading">
         <img :src="loadingGif" alt="" srcset="" />
         <span>虚拟机加载中，请稍后...</span>
       </div>
@@ -293,14 +293,9 @@ onMounted(async () => {
 });
 </script>
 
-<style lang="less">
-.vm-finish-modal {
-  .ant-btn-ghost {
-    display: none;
-  }
-}
+<style lang="less" scoped>
 
-.loading {
+.jupyter-loading {
   position: absolute;
   top: 50%;
   left: 50%;
