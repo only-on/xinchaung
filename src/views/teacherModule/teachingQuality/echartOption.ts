@@ -301,7 +301,7 @@ let gradeDistributionOption = (data: any) => {
         show: true,
         xAxisIndex: 0,
         top: "80%",
-        filterMode: "none",
+        // filterMode: "none",
         height: 10,
         start: 0,
         end: data.name.length && data.name.length > 4 ? (4 / data.name.length) * 100 : 100 
