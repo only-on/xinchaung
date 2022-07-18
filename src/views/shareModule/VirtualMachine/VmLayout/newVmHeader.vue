@@ -481,7 +481,7 @@
     <div v-if="uploadFile.fileList.length" class="progress-box">
       <div class="file-base-info">
         <span>文件名称：{{ uploadFile.fileList[0].name }}</span
-        ><span class="icon-shanchu iconfont" @click="remove"></span>
+        ><span class="icon-shanchu iconfont pointer" @click="remove"></span>
       </div>
       <a-progress :percent="uploadPercent" />
     </div>
@@ -1196,6 +1196,7 @@ const beforeUpload = (file: any) => {
   //   uploadFilePath.value = res.data.full_url
   // })
   // return false;
+  uploadFilePath.value = ''
   fileLoading.value = true
 }
 const remove = () => {
@@ -1217,6 +1218,9 @@ const onChange = (info: any) => {
     uploadPercent.value = 100
     uploadFilePath.value = file.response?.data?.full_url
   } else if(file.status === 'done') {
+    fileLoading.value = false
+    uploadPercent.value = 0
+    uploadFilePath.value = ''
     message.warn(file.response?.msg)
   }
 }
