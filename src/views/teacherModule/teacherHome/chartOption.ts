@@ -375,7 +375,6 @@ export const graphOptions = (data: any) => {
   let options = {
     tooltip: {
       formatter: function (val: any) {
-        console.log(val)
         if(val.dataType=="edge"){
           const filterdata=datas.data.filter((item:any)=>{
             return item.id==val.data.target
