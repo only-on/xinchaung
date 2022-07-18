@@ -148,6 +148,7 @@ interface ItaskList {
   background-color: var(--lightgray-2);
   display: flex;
   justify-content: space-between;
+  margin-bottom: 8px;
   .task-num,
   .task-name {
     font-size: var(--font-size-16);

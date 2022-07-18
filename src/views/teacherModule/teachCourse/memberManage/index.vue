@@ -77,4 +77,7 @@ function updateGroup(val:any){
 .icon-guanbi:hover{
   cursor: pointer;
 }
+.ant-tabs .ant-tabs-top-content > .ant-tabs-tabpane{
+  margin-top: 10px;
+}
 </style>

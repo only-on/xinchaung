@@ -255,7 +255,7 @@ function selectExperiment(val: any) {
      display: flex;
    }
    .tableHeight{
-     height:400px;
-     overflow-y: auto;
+    //  height:400px;
+    //  overflow-y: auto;
    }
 </style>

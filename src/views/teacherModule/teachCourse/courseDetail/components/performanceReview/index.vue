@@ -659,10 +659,10 @@ onMounted(() => {
   }
   button.auto-preview-btn {
     padding: 0 !important;
-    border: none;
+    border: 0;
     .preview-btn {
       padding: 0 10px 0 27px;
-      height: 100%;
+      height: 97%;
       line-height: 33.99px;
       border-top-left-radius: 17px;
       border-bottom-left-radius: 17px;

@@ -336,7 +336,7 @@ onMounted(()=>{
     }
     .header-right {
       .marginBtn {
-        margin-left: 20px;
+        margin-left: 8px;
       }
     }
   }

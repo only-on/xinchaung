@@ -73,6 +73,9 @@ option.value = {
   legend: {
     x:leftPanelVue,
     icon:'circle',
+    itemWidth: 10,
+    itemHeight: 10,
+    itemGap: 16,
     // data: ['最终成绩', '实验报告', '自动评分', '随测']
     data:[],
   },
@@ -171,7 +174,7 @@ onMounted(()=>{
     .score{
         margin-left: 10px;
         .max,.min,.average{
-            color: var(--gray-6);
+            color: var(--black-45);
             margin-right: 16px;
         }
     }

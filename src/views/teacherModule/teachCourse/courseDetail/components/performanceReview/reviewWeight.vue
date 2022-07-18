@@ -199,7 +199,7 @@ onMounted(() => {
     // margin-bottom: 18px;
   }
   .modal-footer {
-    margin-top: 18px;
+    margin-top: 42px;
     text-align: center;
     button {
       margin-left: 8px;

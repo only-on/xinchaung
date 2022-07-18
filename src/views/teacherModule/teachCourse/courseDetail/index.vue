@@ -508,16 +508,24 @@ onMounted(() => {
       padding: 0 1rem;
       font-size: 12px;
       background: linear-gradient(90deg,rgba(0,0,0,0.04), rgba(84,84,84,0.04));
+      color: var(--black-45);
+      &>span:first-child{
+        margin-right: 4px;
+      }
     }
     .box{
       padding:1rem;
       .item{
         height: 44px;
         justify-content: space-between;
+        color: var(--black-65);
       }
       .report {
-        line-height: 44px;
+        height: 34px;
+        background: rgba(0,0,0,0.04);
+        line-height: 34px;
         display: flex;
+        padding: 0 10px;
         .type{
           width: 56px;
           color: var(--brightBtn);

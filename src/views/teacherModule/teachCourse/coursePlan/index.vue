@@ -746,7 +746,6 @@ onMounted(() => {
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
   // overflow: hidden;
-  margin-top: 20px;
   .table-th {
     flex-direction: row;
     display: flex;
@@ -758,7 +757,7 @@ onMounted(() => {
       font-size: 22px;
       // padding-right: 10px;
       &.active {
-        color: var(--orangeyellow-6);
+        color: var(--primary-color);
       }
     }
     .table-week-date {
@@ -1073,11 +1072,12 @@ onMounted(() => {
             flex-direction: column;
             .course-info-text {
               font-size: 12px;
-              margin-bottom:20px;
+              margin-bottom:12px;
             }
             .course-info-num {
               font-size: 50px;
               line-height: 1;
+              font-weight: 700;
             }
           }
           .course-info-title-active {
@@ -1132,13 +1132,19 @@ onMounted(() => {
   }
   .table-title {
     padding: 10px;
-    background: #f7f7f7;
+    background: #ececec;
+    &:first-child{
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
   }
   .table-time-col {
     width: 100px;
     min-width: 100px;
     display: flex;
     flex-direction: column;
+    background: var(--white-100);
     .table-time-list {
       transition: all 0.2s;
       flex: 1;
@@ -1288,7 +1294,7 @@ onMounted(() => {
     // background: #FF9D00;
     width: 100%;
     height: 100%;
-    background-color: #f2f2f2;
+    background-color: var(--white-100);
     display: none;
     cursor: pointer;
     position: absolute;
@@ -1300,6 +1306,7 @@ onMounted(() => {
       margin: 0 auto;
       background: var(--primary-color);
       border-radius:20px;
+      box-shadow: 0px 3px 6px 0px rgba(0,0,0,0.14); 
     }
   }
   .a-create-wrap{
@@ -1380,6 +1387,7 @@ onMounted(() => {
   line-height: 30px;
   font-size: 12px;
   color: var(--primary-color);
+  margin: 8px 0;
   .iconfont{
     font-size: 12px;
   }

@@ -376,7 +376,7 @@ onMounted(()=>{
   justify-content: space-between;
   margin-bottom: 20px;
   .right-btn1 {
-    margin-left: 16px;
+    margin-left: 8px;
   }
 }
 
