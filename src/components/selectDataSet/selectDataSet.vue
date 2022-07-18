@@ -75,11 +75,13 @@
         </template>
         <empty v-if="dataSetList.length === 0 && !loading"></empty>
         <a-pagination
-          v-if="count > 12"
+          v-if="count > 10"
+          show-size-changer
           v-model:current="params.page"
           :pageSize="params.limit"
           :total="count"
           @change="pageChange"
+          @showSizeChange="showSizeChange"
         />
         <!-- <p
           class="look-more-btn"
@@ -212,6 +214,12 @@ export default defineComponent({
       reactiveData.params.page=current
       getDataList();
     }
+    const showSizeChange = (current: any,size: any) => {
+      // console.log(size);
+      reactiveData.params.page = 1
+      reactiveData.params.limit = size;
+      getDataList();
+    };
     // pageChange
 
     // 移除
@@ -278,6 +286,7 @@ export default defineComponent({
       tagChange,
       lookMore,
       pageChange,
+      showSizeChange,
       remove,
       select,
       bytesToSize,
