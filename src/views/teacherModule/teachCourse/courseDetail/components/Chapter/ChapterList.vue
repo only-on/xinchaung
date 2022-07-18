@@ -376,7 +376,7 @@ const selectChaptert=(val:any)=>{
  // 选中章节下实验
 function Overview (a:any,v:any){
   selectExperiment(a,v)
-  if((Number(currentTab)===1 && role==3) || role===4){     //公开课程点击整条  显示实验指导
+  if((Number(currentTab)===1 && role==3) || (role===4 && a.power)){     //公开课程点击整条  显示实验指导
     ViewExperiment(a,v)
   }
 }
@@ -728,9 +728,9 @@ const ProcessingData=(data:any)=>{
                 i.power=v.course_setting['is_show_content_guidance']===1?true:false 
               }
               if(i.task_type === 5){
+                // i.power=v.course_setting['is_show_task_step']===1?true:false
                 // console.log(i.type_obj.name+'任务制')
-                // i.is_show_task_step=v.course_setting['is_show_task_step']===1?true:false
-                i.is_show_task_step=false       //规则改了学生端统一不显示     // 所以教师端的控制按钮只管学生端虚拟机内的指导
+                i.is_show_task_step=false       //学生端任务步骤和状态统一不显示     // 所以教师端的控制按钮只管学生端虚拟机内的指导
               }
               if([6,7].includes(i.task_type)){
                 // console.log(i.type_obj.name+'文档视频')

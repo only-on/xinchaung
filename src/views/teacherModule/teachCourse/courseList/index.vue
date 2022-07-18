@@ -336,8 +336,9 @@ const initData = () => {
   }
   loading.value = true;
   courseList.length = 0
+  totalCount.value=0
   http.getCourseList({param}).then((res: IBusinessResp) => {
-    loading.value = false
+    
     if (!res) return
     const { list, page }  = res.data
     list.forEach((v: any) => {
@@ -346,7 +347,10 @@ const initData = () => {
     });
     courseList.push(...list)
     totalCount.value = page.totalCount
+    loading.value = false
     // console.log(courseList);
+  }).catch((err:any)=>{
+    loading.value = false
   })
 };
 const pageChange = async (current: any, pageSize: any) => {
