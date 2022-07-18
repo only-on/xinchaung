@@ -136,7 +136,7 @@
           </div>
         </div>
       </div>
-      <Empty v-if="!ChaptersTreeList.length && !chartLoading" :text="'暂无章节'" />
+      <Empty class="chapterEmpty" v-if="!ChaptersTreeList.length && !chartLoading" :text="'暂无章节'"/>
     </a-spin>
   </div>
   <!-- 编辑章节的实验名称 -->
@@ -977,5 +977,8 @@ watch(
       cursor: pointer;
       padding: 0 6px;
     }
+  }
+  .chapterEmpty.emptyContent{
+    margin-top: 156px;
   }
 </style>

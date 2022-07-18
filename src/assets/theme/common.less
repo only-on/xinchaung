@@ -496,7 +496,6 @@ h3 {
   border-radius: 18px;
   height: 34px;
   background: #ffffff;
-  border: 1px solid rgba(0,0,0,0.14);
   span{
     width: 100px;
     height: 100%;
@@ -504,16 +503,20 @@ h3 {
     line-height: 34px;
     color: var(--black-45);
     cursor: pointer;
+    border: 1px solid rgba(0,0,0,0.14);
   }
   span.left{
     border-radius: 18px 0 0 18px;
+    border-right: 0;
   }
   span.right{
     border-radius: 0 18px 18px 0;
+    border-left: 0;
   }
   .active{
     background-color: var(--primary-color);
     color: var(--white);
+    border-color: var(--primary-color);
   }
 }
 .forumn {
